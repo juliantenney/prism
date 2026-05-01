@@ -36,7 +36,7 @@ Optional: User intent category
 Primary user/audience:
 <Who this is for>
 
-Inputs / artefacts:
+Inputs / artifacts:
 <What will be provided to run this workflow>
 
 Scope and constraints:
@@ -62,9 +62,11 @@ QUALITY REQUIREMENTS
 - Keep pedagogy alignment explicit (outcomes -> activities -> assessments).
 - Each step should be understandable and executable in isolation given its declared inputs.
 - Specify output format explicitly whenever outputs are reused downstream.
-- Do not introduce artefacts unless required by final outputs or used downstream.
+- Do not introduce artifacts unless required by final outputs or used downstream.
 - Prefer 5-8 steps unless complexity clearly requires more.
 - Avoid splitting steps unless task type changes, human review is needed, or output is reused.
+- If a page-like deliverable is required, preserve structured activity materials and full assessment item coverage by default unless explicit constraints request reduction.
+- For page deliverables with assessment display modes, keep answer/explanation-bearing fields available when policy permits so renderer behavior is supported.
 
 SELF-CHECK BEFORE FINAL OUTPUT
 - JSON parses successfully.
@@ -84,7 +86,7 @@ Using the attached PRISM docs, generate ONE import-ready PRISM bundle JSON.
 Return JSON only.
 
 Goal: <...>
-Inputs/artefacts: <...>
+Inputs/artifacts: <...>
 Scope/constraints: <...>
 Required outputs: <...>
 ```

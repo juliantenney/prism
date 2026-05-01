@@ -72,7 +72,7 @@ Recommended shape:
   "id": "workflow-instructor-guide-v1",
   "name": "Instructor guide from raw content",
   "description": "Turns raw content into a complete instructor guide.",
-  "artefacts": "Raw content, audience profile, delivery format",
+  "artifacts": "Raw content, audience profile, delivery format",
   "scopeAndConstraints": "Short course, 60-minute learner effort, accessibility requirements",
   "steps": [],
   "createdAt": 1710000000000,
@@ -84,7 +84,7 @@ Workflow fields:
 - `id`: string, unique
 - `name`: workflow title
 - `description`: short purpose
-- `artefacts`: key inputs/resources
+- `artifacts`: key inputs/resources
 - `scopeAndConstraints`: scope details (duration, level, effort, constraints)
 - `steps`: ordered list of step objects
 - `createdAt` / `updatedAt`: epoch milliseconds
@@ -125,28 +125,28 @@ Step execution principle:
 
 ## Artefact Design Principles
 
-Treat workflows as data pipelines. Each step should produce reusable artefacts.
+Treat workflows as data pipelines. Each step should produce reusable artifacts.
 
-Output artefacts should be:
+Output artifacts should be:
 - Reusable by downstream steps
 - Stable in meaning across the workflow
 - Named descriptively (for example `knowledge_model` instead of `result`)
 
 Rules:
 - If a step output is consumed later, that step should set `outputName`.
-- Prompts and notes should refer to artefacts explicitly by role/name.
+- Prompts and notes should refer to artifacts explicitly by role/name.
 - Avoid generic output labels when outputs are reused.
-- Do not introduce artefacts that are not used downstream or required by final outputs.
+- Do not introduce artifacts that are not used downstream or required by final outputs.
 
 ## Step Type Patterns
 
 Use these common step categories to improve consistency:
 
 - Extraction: raw input -> structured representation
-- Transformation: intermediate artefact -> refined artefact
-- Generation: artefact(s) -> new output asset
-- Evaluation: draft artefact -> critique/quality report
-- Synthesis: multiple artefacts -> unified deliverable
+- Transformation: intermediate artifact -> refined artifact
+- Generation: artifact(s) -> new output asset
+- Evaluation: draft artifact -> critique/quality report
+- Synthesis: multiple artifacts -> unified deliverable
 
 Pattern guidance:
 - Keep step boundaries aligned to one dominant type.
@@ -161,7 +161,7 @@ Prompts should:
 - Define the task clearly
 - Define constraints and must-haves
 - Define output format/structure
-- Refer to expected input artefacts explicitly
+- Refer to expected input artifacts explicitly
 - Specify output format explicitly whenever outputs are reused downstream (for example JSON schema, table columns, or heading structure).
 
 Prompts should not:
@@ -197,3 +197,16 @@ When importing bundled object:
 - `createdAt` and `updatedAt` are epoch milliseconds.
 - IDs are unique and deterministic enough for later updates.
 - Reused step outputs are explicitly named with `outputName`.
+
+## Page Assembly and Renderer Compatibility Notes
+
+When workflows include page-oriented learning design steps:
+
+- Keep `artifact_type` stable as `page` for page artifacts.
+- Preserve structured `assessment_items` content in page assembly inputs when available.
+- Avoid compressing learner-facing activity materials into label-only placeholders.
+- Preserve assessment item structure fields where available (`item_id`, `stem`, `options`, and answer/explanation fields when policy permits) so downstream renderer modes can present them correctly.
+
+Renderer-specific behavior is documented in:
+
+- `docs/renderer-export-behavior.md`

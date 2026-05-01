@@ -43,11 +43,11 @@ Use step type patterns to avoid inconsistent boundaries:
   - Example: raw content -> concept map
 - **Transformation**: intermediate -> improved intermediate
   - Example: draft outcomes -> measurable outcomes
-- **Generation**: intermediate(s) -> new artefact
+- **Generation**: intermediate(s) -> new artifact
   - Example: outcomes + sequence -> activity plan
-- **Evaluation**: artefact -> critique/report
+- **Evaluation**: artifact -> critique/report
   - Example: assessment pack -> alignment QA report
-- **Synthesis**: multiple artefacts -> unified output
+- **Synthesis**: multiple artifacts -> unified output
   - Example: outcomes + activities + assessments -> instructor guide
 
 ## Pedagogy Workflow Template
@@ -85,7 +85,7 @@ Good prompt tags:
 
 Workflow-level fields:
 - `description`: one-sentence mission
-- `artefacts`: exact inputs provided by user
+- `artifacts`: exact inputs provided by user
 - `scopeAndConstraints`: format/duration/effort/level/accessibility constraints
 
 Step-level fields:
@@ -96,15 +96,15 @@ Step-level fields:
 - `outputName`: stable name for later references
 - `notes`: key run instructions and conditions
 
-## Artefact Contract (Practical)
+## Artifact Contract (Practical)
 
-Design outputs as reusable artefacts, not incidental text.
+Design outputs as reusable artifacts, not incidental text.
 
 - Use descriptive `outputName` values (for example `alignment_matrix`, `facilitation_notes`).
 - If downstream steps depend on a result, always name the upstream output.
-- In notes/prompts, explicitly reference the artefact being consumed.
-- Keep artefact naming consistent across steps to reduce ambiguity.
-- Do not introduce artefacts unless required by final outputs or consumed by downstream steps.
+- In notes/prompts, explicitly reference the artifact being consumed.
+- Keep artifact naming consistent across steps to reduce ambiguity.
+- Do not introduce artifacts unless required by final outputs or consumed by downstream steps.
 
 ## Anti-Patterns
 
@@ -124,6 +124,15 @@ Before saving/exporting a workflow:
 - Estimated learner effort is realistic and explicit.
 - Accessibility requirements are called out.
 - All `promptId` references resolve to imported prompts.
+
+## Design Page Assembly Guardrails
+
+If a workflow includes a Design Page style composition step:
+
+- Preserve upstream learner-facing material structure (do not flatten to label-only summaries).
+- When `assessment_items` are present, include all items by default unless an explicit reduction constraint exists.
+- Preserve item structure fields needed for downstream rendering (`item_id`, `stem`, `options`, and available answer/explanation fields per policy).
+- Treat page assembly as composition, not regeneration.
 
 ## Maintenance Checklist
 

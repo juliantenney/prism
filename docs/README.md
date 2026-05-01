@@ -12,6 +12,8 @@ This folder contains workflow-bundle documentation intended for:
   - Practical authoring guidance (pedagogy-first)
 - `pattern-library.md`
   - Domain pattern starter set (currently pedagogy)
+- `renderer-export-behavior.md`
+  - Active Utilities page export path, rendering/sanitization behavior, and regression checklist
 - `examples/`
   - Import-ready JSON bundles
 
@@ -28,7 +30,7 @@ Use `examples/pedagogy-complex-bundle.json` as the reference example for AI gene
 
 It demonstrates:
 - Clear, action-oriented step naming
-- Strong `outputName` usage for reusable artefacts
+- Strong `outputName` usage for reusable artifacts
 - Consistent step chaining with `inputFromStepId`
 - Explicit scope/constraints and pedagogical alignment
 - Prompt-step coherence across the full workflow
@@ -41,3 +43,4 @@ When app schema/behavior changes:
 2. Update JSON examples
 3. Update authoring/pattern docs where relevant
 4. Re-import examples into PRISM to confirm compatibility
+5. If page export rendering changed, update `renderer-export-behavior.md` and run the renderer regression checklist

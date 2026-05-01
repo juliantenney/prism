@@ -95,3 +95,11 @@ For each new domain pattern, include:
 - Typical steps
 - Suggested prompt tags
 - Common pitfalls
+
+## Page-Output QA Add-on
+
+For patterns that end in page-like outputs, add a final QA check for:
+
+- activity-material fidelity (no label-only compression)
+- assessment item completeness when provided upstream
+- render-ready structure for activities and assessment sections

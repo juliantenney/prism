@@ -33,6 +33,7 @@ Everything runs client-side from static files. No backend, no server. Your data 
 - [Troubleshooting](#troubleshooting)
 - [Privacy and Data](#privacy-and-data)
 - [Recommended Working Pattern](#recommended-working-pattern)
+- [Utilities HTML Export Renderer](#utilities-html-export-renderer)
 
 ---
 
@@ -87,7 +88,7 @@ Use this to quickly generate workflow structures from:
 
 - Workflow name
 - Description
-- Inputs/artefacts
+- Inputs/artifacts
 - Scope and constraints (e.g. 5-minute video vs full module, expected student time, accessibility, target level)
 
 You can review suggestions, switch between **Draft** and **Refined**, edit step titles/roles, delete steps, then save to Workflows.
@@ -271,7 +272,7 @@ In Prompt Factory, placeholders remain untouched while authoring.
 
 ### Edit mode
 
-- Edit workflow name, description, inputs/artefacts, and scope and constraints
+- Edit workflow name, description, inputs/artifacts, and scope and constraints
 - Add, remove, or reorder steps
 - Link steps to library prompts (each step can use a saved prompt)
 - Set input type per step: `Text`, `File`, `URL`, or `None`
@@ -476,3 +477,26 @@ For most users:
 5. **Backup and sync:** Use Export all periodically. When moving machines or syncing, Import the file.
 
 This gives reusable, maintainable prompt systems instead of one-off prompts, with safe backup and sync between devices.
+
+---
+
+## Utilities HTML Export Renderer
+
+PRISM includes a Utilities HTML export/preview path for renderable artifacts such as `page`.
+
+Current active path:
+
+- `handleUtilitiesGenerate()` resolves render metadata and renders HTML
+- `buildUtilityStructuredHtml(...)` builds page HTML for document/page variants
+- `utilityRenderPageSections(...)` handles section-level rendering (activities, assessment, support notes, etc.)
+- `sanitizeUtilityHtmlOutput(...)` applies a conservative cleanup pass before the final HTML is stored and downloaded
+
+Important behavior:
+
+- `handleUtilitiesDownloadHtml()` downloads `state.utilitiesLastHtml` and does **not** re-render.
+- If output seems stale, regenerate first, then download.
+- The workflow-step button label in the Workflows editor is now **Settings**.
+
+For detailed renderer behavior and regression checks, see:
+
+- `docs/renderer-export-behavior.md`

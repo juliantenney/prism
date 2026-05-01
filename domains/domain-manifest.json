@@ -1,0 +1,40 @@
+{
+  "platformFiles": [
+    "docs/workflow-spec.md",
+    "docs/workflow-authoring.md",
+    "docs/workflow-generation-template.md",
+    "docs/pattern-library.md"
+  ],
+  "alwaysOnDomains": [
+    "general"
+  ],
+  "domains": {
+    "general": {
+      "label": "General",
+      "files": [
+        "domains/general/domain-general-principles.md",
+        "domains/general/domain-general-artefacts.md",
+        "domains/general/domain-general-step-patterns.md",
+        "domains/general/domain-general-prompt-rules.md"
+      ]
+    },
+    "learning-design": {
+      "label": "Learning Design",
+      "files": [
+        "domains/learning-design/domain-learning-design-principles.md",
+        "domains/learning-design/domain-learning-design-artefacts.md",
+        "domains/learning-design/domain-learning-design-step-patterns.md",
+        "domains/learning-design/domain-learning-design-prompt-rules.md"
+      ]
+    },
+    "research": {
+      "label": "Research",
+      "files": [
+        "domains/research/domain-research-principles.md",
+        "domains/research/domain-research-artefacts.md",
+        "domains/research/domain-research-step-patterns.md",
+        "domains/research/domain-research-prompt-rules.md"
+      ]
+    }
+  }
+}

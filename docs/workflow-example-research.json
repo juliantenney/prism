@@ -1,0 +1,44 @@
+{
+  "name": "Research synthesis workflow",
+  "description": "Produces a structured synthesis and evidence memo.",
+  "artefacts": "Research question, corpus notes, quality criteria.",
+  "workflowInputs": [
+    "research_question",
+    "corpus_notes",
+    "quality_criteria"
+  ],
+  "workflowOutputs": [
+    "evidence_matrix",
+    "synthesis_memo"
+  ],
+  "scopeAndConstraints": "Rapid review style, transparent assumptions, citation-ready outputs.",
+  "steps": [
+    {
+      "title": "Extract evidence units",
+      "roleLabel": "Evidence extraction",
+      "inputKind": "text",
+      "outputName": "evidence_units",
+      "notes": "Extract claims, methods, limits, and findings."
+    },
+    {
+      "title": "Build evidence matrix",
+      "roleLabel": "Synthesis structure",
+      "depends_on": [
+        1
+      ],
+      "inputKind": "text",
+      "outputName": "evidence_matrix",
+      "notes": "Organize evidence by themes and confidence."
+    },
+    {
+      "title": "Draft synthesis memo",
+      "roleLabel": "Research communication",
+      "depends_on": [
+        2
+      ],
+      "inputKind": "text",
+      "outputName": "synthesis_memo",
+      "notes": "Summarize implications, uncertainties, and next actions."
+    }
+  ]
+}

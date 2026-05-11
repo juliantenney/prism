@@ -499,4 +499,4 @@ Important behavior:
 
 For detailed renderer behavior and regression checks, see:
 
-- `docs/renderer-export-behavior.md`
+- `docs/architecture/renderer-export-behavior.md`

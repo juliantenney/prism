@@ -6,10 +6,10 @@
 
   var fallbackManifest = {
     platformFiles: [
-      "docs/workflow-spec.md",
-      "docs/workflow-authoring.md",
-      "docs/workflow-generation-template.md",
-      "docs/pattern-library.md"
+      "docs/workflow/workflow-spec.md",
+      "docs/workflow/workflow-authoring.md",
+      "docs/workflow/workflow-generation-template.md",
+      "docs/workflow/pattern-library.md"
     ],
     alwaysOnDomains: ["general"],
     domains: {

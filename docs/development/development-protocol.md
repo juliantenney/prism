@@ -76,6 +76,7 @@ CHECK-IN
 HANDOVER
 
 - generate next-chat bootstrap
+- prepare bounded context pack
 
 NEW CHAT
 

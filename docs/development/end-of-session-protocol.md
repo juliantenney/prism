@@ -38,6 +38,7 @@ A chat is a bounded architectural working context, not permanent conversational 
 8. Generate session handover
 9. Generate next-chat bootstrap prompt
 10. Define next bounded task
+11. Prepare bounded context pack
 
 ---
 
@@ -47,6 +48,7 @@ A chat is a bounded architectural working context, not permanent conversational 
 - avoid carrying unnecessary implementation archaeology into new chats
 - keep next chats tightly scoped
 - avoid omnibus chats covering unrelated redesigns
+- prepare the context pack only after the next bounded task is known
 
 ---
 

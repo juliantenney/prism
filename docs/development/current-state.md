@@ -24,11 +24,18 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 
 - workflow generation is not the immediate focus
 - domain-pack rationalisation is planned later, not during current stabilisation work
+- tidy-up/governance phase is complete
+- continuity workflow is now operational
+- shared operational vocabulary is established
 - recent documentation cleanup and archive moves are complete
 - conservative artefacts naming policy is retained for stability
 - consolidation sprint structure now exists under `docs/consolidation/`
 - backlog system now exists under `docs/backlog/`
 - current focus remains manual system stabilisation before workflow generation redesign
+
+## Next Active Focus
+
+- Sprint 01 - Prompt Studio Consolidation
 
 ## Active Focus Areas
 

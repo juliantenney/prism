@@ -26,6 +26,7 @@ Before ending a chat:
 - follow `end-of-session-protocol.md`
 - complete `session-handover-template.md`
 - prepare a new-chat prompt using `chat-bootstrap-template.md`
+- prepare a minimal bounded context pack with only the files required for the next chat
 
 When starting a new chat:
 

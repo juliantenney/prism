@@ -106,3 +106,24 @@ Architectural continuity, runtime stability, and reduced conceptual drift are hi
 - continuity artifacts (state snapshots, handovers, decisions) are part of normal delivery
 - new feature work is gated by architectural clarity and verification readiness
 
+## 2026-05-11 - Continuity vocabulary and bounded consolidation roadmap
+
+### Date
+
+2026-05-11
+
+### Decision
+
+PRISM now uses a shared operational vocabulary, bounded consolidation sprint docs, backlog capture docs, and explicit commit/check-in continuity conventions as part of the standard development continuity workflow.
+
+### Rationale
+
+Long-horizon AI-assisted development requires stable shorthand, bounded task framing, and explicit continuity artifacts across chat/session boundaries. This improves architectural traceability while keeping process lightweight.
+
+### Consequences
+
+- shared phrase meanings are documented in `docs/development/shared-vocabulary.md`
+- active bounded work is tracked in `docs/consolidation/` sprint docs
+- deferred ideas/issues are captured in `docs/backlog/` to reduce scope drift
+- commit/check-in preparation is treated as a continuity artifact, not only source-control bookkeeping
+

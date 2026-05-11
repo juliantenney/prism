@@ -33,6 +33,29 @@ Single coherent next objective.
 
 Clarify what NOT to drift into.
 
+## Recommended Context Pack
+
+The context pack should include only files needed to bootstrap the next bounded chat.
+
+Required files:
+
+- core continuity docs
+- latest session handover
+- latest chat bootstrap
+- active sprint definition
+- directly relevant implementation files
+
+Optional files:
+
+- one or two directly relevant architecture/spec docs
+- one recent decision record if needed for constraints
+
+Excluded areas:
+
+- unrelated modules or historical files
+- broad exploratory docs not needed for the bounded task
+- full-project exports, backups, or archive sweeps
+
 ## Suggested Opening Prompt
 
 Use this concise starter format for the next chat:

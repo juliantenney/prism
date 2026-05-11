@@ -40,6 +40,22 @@ Generate:
 - relevant file list
 - constraints/context for the next chat
 
+## "Prepare context pack"
+
+Meaning:
+
+Create a bounded file bundle for the next architectural chat including:
+
+- core continuity files
+- latest handover/bootstrap
+- relevant sprint definition
+- relevant implementation files
+- relevant architecture/spec docs only
+
+Clarification:
+
+Context packs should remain intentionally minimal and tightly aligned to the next bounded task. They are not archives, backups, or full project exports.
+
 ## "Run continuity update"
 
 Meaning:

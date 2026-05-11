@@ -26,6 +26,9 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 - domain-pack rationalisation is planned later, not during current stabilisation work
 - recent documentation cleanup and archive moves are complete
 - conservative artefacts naming policy is retained for stability
+- consolidation sprint structure now exists under `docs/consolidation/`
+- backlog system now exists under `docs/backlog/`
+- current focus remains manual system stabilisation before workflow generation redesign
 
 ## Active Focus Areas
 

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "prompts": [
+    {
+      "id": "prompt-minimal-lesson-outline-v1",
+      "title": "Minimal Lesson Outline Prompt",
+      "body": "Create a concise lesson outline with objectives, activities, and assessment.",
+      "model": "",
+      "temperature": null,
+      "maxTokens": null,
+      "tags": [
+        "pedagogy",
+        "lesson-design"
+      ],
+      "createdAt": 1710000000000,
+      "updatedAt": 1710000000000,
+      "usageCount": 0,
+      "source": "manual",
+      "versions": [
+        {
+          "id": "prompt-minimal-lesson-outline-v1-v1",
+          "timestamp": 1710000000000,
+          "body": "Create a concise lesson outline with objectives, activities, and assessment.",
+          "notes": ""
+        }
+      ],
+      "notes": ""
+    }
+  ],
+  "workflows": [
+    {
+      "id": "workflow-minimal-v1",
+      "name": "Minimal Pedagogy Workflow",
+      "description": "Simple one-step workflow for lesson outline drafting.",
+      "artefacts": "Topic, audience level, duration",
+      "scopeAndConstraints": "Single lesson; keep learner effort under 45 minutes.",
+      "steps": [
+        {
+          "id": "step-min-1",
+          "title": "Draft lesson outline",
+          "roleLabel": "Lesson design",
+          "promptId": "prompt-minimal-lesson-outline-v1",
+          "inputKind": "text",
+          "inputFromStepId": "",
+          "outputName": "lesson_outline",
+          "notes": "Use provided topic, level, and duration. Keep structure clear and practical."
+        }
+      ],
+      "createdAt": 1710000000000,
+      "updatedAt": 1710000000000
+    }
+  ]
+}

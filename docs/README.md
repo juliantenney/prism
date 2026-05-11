@@ -14,6 +14,8 @@ This folder contains workflow-bundle documentation intended for:
   - Domain pattern starter set (currently pedagogy)
 - `architecture/renderer-export-behavior.md`
   - Active Utilities page export path, rendering/sanitization behavior, and regression checklist
+- `development/README.md`
+  - Lightweight continuity docs for session handovers, check-ins, and new-chat bootstrapping
 - `examples/`
   - Import-ready JSON bundles
 

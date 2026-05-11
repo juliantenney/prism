@@ -1,0 +1,37 @@
+# PRISM Current State
+
+## Strategic Position
+
+PRISM is in a consolidation and stabilisation phase focused on architectural clarity, continuity, and reduction of conceptual drift.
+
+## Strongest Current Capabilities
+
+- Prompt Studio for structured prompt refinement
+- Prompt Library for reusable prompt storage and management
+- Manual Workflow Builder and step-by-step workflow execution
+- Utilities pipeline for HTML-oriented rendering and export
+- Domain-pack constrained workflow context loading
+
+## Current Consolidation Priorities
+
+- preserve runtime and manifest path stability
+- keep architecture and filesystem structure coherent
+- maintain explicit workflow semantics and artefact contracts
+- improve continuity documentation and check-in discipline
+- archive legacy content rather than deleting
+
+## Focus and Scope Notes
+
+- workflow generation is not the immediate focus
+- domain-pack rationalisation is planned later, not during current stabilisation work
+- recent documentation cleanup and archive moves are complete
+- conservative artefacts naming policy is retained for stability
+
+## Active Focus Areas
+
+- Prompt Studio
+- Prompt Library
+- Manual Workflow Builder
+- workflow semantics
+- artefact contracts
+

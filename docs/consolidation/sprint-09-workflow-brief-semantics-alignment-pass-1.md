@@ -143,6 +143,29 @@ Verified against commit **`3d88600`**.
 
 Sprint 09 Pass 1 is **closed** as **implementation- and verification-complete** on commit **`3d88600`**: bounded author-facing wording alignment, **local browser smoke passed**, continuity updated. **Deferred** medium/high-risk items remain documented above and are **not** rescoped by this closure.
 
+## Sprint 09 governance: workflow-generation **contract surface** (frozen)
+
+The Sprint 09 audit confirms that the following are part of the **workflow-generation contract surface** — not “low-risk semantics copy”:
+
+- **`briefLines`** assembly (including string prefixes such as `Desired outputs: `, `Inputs / artefacts: `, `Goal / outcome: `, `Starting artefact: `, etc.)
+- **`extractWorkflowBriefExplicitFactors`** (including synthetic brief blob lines used for factor extraction)
+- **Step-context builders** (prompt-scaffolding `lines.push(...)` / similar that echo brief or output-spec semantics)
+- **`workflowGenerationContext.js`** (manifest / brief config extraction and related contract paths)
+- **Domain-pack** factor **ids**, **labels**, **choice values**, **`uiHints`**, **`helpText`**, and prompt bodies where they feed generation or persisted brief semantics
+
+**Under Sprint 09 (including any Pass 2): do not** implement **prompt-contract** or **factor-extraction** changes. Changing any of the above is **no longer** a low-risk semantics-alignment pass; it requires a **dedicated** sprint with explicit blast-radius and regression posture.
+
+## Sprint 09 Pass 2 — **allowed** scope (non-contract only)
+
+Pass 2 may continue **only** for:
+
+- **Isolated non-prompt-facing UI wording** (copy that is **not** concatenated into `briefLines`, `promptContext`, step prompt assembly, or export payloads)
+- **Explanatory copy** (same isolation rule)
+- **ARIA / help / placeholder** cleanup (display-only; no change to collected values, keys, or assembled brief text)
+- **Organisational / grouping clarification** in HTML structure or headings **without** changing ids, names, or data bound to save/import/export
+
+If proposed work would change **any** of: prompt prefixes, factor-extraction semantics, domain brief semantics, generation-context semantics, persistence field names, or import/export structure — **stop**. Classify it as candidate scope for a **future dedicated sprint** (working title): **“Workflow Brief Contract Rationalisation”**. **Do not** implement contract-level semantics changes under Sprint 09.
+
 ## Success criteria
 
 Sprint 09 pass 1 succeeds if:
@@ -167,6 +190,7 @@ Sprint 09 pass 1 succeeds if:
 - **2026-05-12** — **Pass 1 implementation merged:** author-facing Workflow Factory and Workflows-tab copy only; internal brief prefixes (`Desired outputs: `, etc.) unchanged; domain-pack files unchanged (LD hints overridden in `app.js` for selected domain).
 - **2026-05-12** — **Stabilisation review (post–Pass 1):** `git diff` of `app.js` and `index.html` reviewed against Sprint 09 charter. Confirmed: edits are **user-facing copy, placeholders, helper text, and `aria-label` casing only**; `textContent` / static HTML updates and hint-string defaults only—**no** persisted-key, save-shape, import/export, generator brief-prefix, workflow-runtime, sequencing, renderer, assessment, or domain-pack file changes. Learning-design hint **display** override in `renderWorkflowFactoryDomainUiHints` does **not** alter collected field values or `briefLines`. Portable `context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` verified **byte-identical** to this canonical file (SHA256 match). **No reverts** required.
 - **2026-05-12** — **Pass 1 closure:** **Local browser smoke passed** on **`3d88600`** (Workflow Factory and Workflows tabs without console errors; existing workflow loaded; export/import round-trip passed; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. **Sprint 09 Pass 1 closed** (implementation + verification complete). Continuity and canonical doc updated.
+- **2026-05-12** — **Sprint 09 governance (post–Pass 1):** Confirmed **contract surface** — `briefLines`, `extractWorkflowBriefExplicitFactors`, step-context builders, `workflowGenerationContext.js`, domain-pack factor ids/labels/values and prompt-coupled config — is **out of scope** for Sprint 09 **including Pass 2** except via a future dedicated sprint **“Workflow Brief Contract Rationalisation”**. Sprint 09 Pass 2 **may** continue only for **non-prompt-facing** UI wording, explanatory copy, ARIA/help/placeholder cleanup, and organisational/grouping clarification. **No** prompt-prefix, factor-extraction, domain brief semantics, generation-context semantics, persistence-name, or import/export structure changes under Sprint 09.
 
 ### Check-in summary (for commit / handover)
 

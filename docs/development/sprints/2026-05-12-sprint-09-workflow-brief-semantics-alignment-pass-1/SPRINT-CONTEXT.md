@@ -28,3 +28,7 @@ Non-goals (charter — fixed unless explicitly rescoped):
 Portable pack:
 
 - This folder, including `context-files/` physical copies and summaries
+
+Governance (2026-05-12):
+
+- **Contract surface frozen under Sprint 09** (including Pass 2): no `briefLines` / `extractWorkflowBriefExplicitFactors` / step-context / `workflowGenerationContext.js` / domain-pack contract edits — see canonical **Sprint 09 governance** and **Workflow Brief Contract Rationalisation** deferral. Pass 2 = **non-prompt-facing** UI wording only.

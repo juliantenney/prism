@@ -18,7 +18,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 **Portable sprint pack (Sprint 09):** `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`
 
-**Active focus:** **Sprint 09 Pass 1 — closed.** **Next:** charter follow-on work explicitly (e.g. from Sprint 08 **Potential follow-on implementation candidates (not approved)** or `docs/backlog/`) — not auto-approved by Sprint 09 closure.
+**Active focus:** **Sprint 09 Pass 1 — closed.** **Governance:** **contract surface** (`briefLines`, `extractWorkflowBriefExplicitFactors`, step-context builders, `workflowGenerationContext.js`, domain-pack factor ids/labels/values) is **frozen** under Sprint 09 **including Pass 2**; further Sprint 09 work = **non-prompt-facing UI only**; contract rationalisation → future **“Workflow Brief Contract Rationalisation”** sprint (see canonical Sprint 09 doc). **Next:** charter follow-on explicitly.
 
 
 

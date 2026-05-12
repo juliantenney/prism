@@ -7939,19 +7939,6 @@
     }
   }
 
-  function resetWorkflowRunNavigationState(options) {
-    var opts = options && typeof options === "object" ? options : {};
-    if (opts.resetIndex === true) {
-      state.currentWorkflowRunIndex = 0;
-    }
-    state.workflowRunVisibleStepId = "";
-    state.workflowRunCopiedStepId = "";
-  }
-
-  // Workflow runtime lifecycle model (transient navigation state):
-  // - run mode source-of-truth: workflow detail run-mode class + active mode buttons
-  // - transient run navigation: currentWorkflowRunIndex/workflowRunVisibleStepId/workflowRunCopiedStepId
-  // - definition state remains canonical in state.workflows/state.selectedWorkflowId
   function updateWorkflowRunView() {
     if (!els.workflowDetail || !els.workflowSteps) return;
 
@@ -7978,7 +7965,8 @@
           copyBtn.textContent = "Copy";
         }
       });
-      resetWorkflowRunNavigationState();
+      state.workflowRunVisibleStepId = "";
+      state.workflowRunCopiedStepId = "";
       if (els.workflowRunStatus) {
         els.workflowRunStatus.textContent = "";
       }
@@ -8134,7 +8122,9 @@
     // shifts numbering because the summary card is Step 1).
     renumberWorkflowSteps();
     if (isRun) {
-      resetWorkflowRunNavigationState({ resetIndex: true });
+      state.currentWorkflowRunIndex = 0;
+      state.workflowRunVisibleStepId = "";
+      state.workflowRunCopiedStepId = "";
     }
     updateWorkflowRunView();
   }
@@ -10611,8 +10601,8 @@
     if (els.duplicateWorkflowBtn) els.duplicateWorkflowBtn.disabled = false;
     if (els.renameWorkflowBtn) els.renameWorkflowBtn.disabled = false;
 
-    // Reset transient run navigation when loading/selecting a workflow.
-    resetWorkflowRunNavigationState({ resetIndex: true });
+    // Reset run index when loading a workflow.
+    state.currentWorkflowRunIndex = 0;
     updateWorkflowRunView();
     renderWorkflowValidationWarnings(validateWorkflow(wf));
   }
@@ -10748,18 +10738,6 @@
       }
     }
     return "";
-  }
-
-  function getStepNumberById(stepId) {
-    if (!stepId || !els.workflowSteps) return 0;
-    var steps = getWorkflowStepElements();
-    for (var i = 0; i < steps.length; i++) {
-      var li = steps[i];
-      if ((li.getAttribute("data-step-id") || "") === stepId) {
-        return i + 1;
-      }
-    }
-    return 0;
   }
 
   function refreshWorkflowInputSources() {
@@ -11582,12 +11560,7 @@
         chip.className = "tag-pill";
         var label = "";
         if (binding.kind === "internal") {
-          var sourceStepNumber = getStepNumberById(binding.sourceStepId);
-          if (sourceStepNumber > 0) {
-            label = "Step " + sourceStepNumber + ": " + binding.artifactName;
-          } else {
-            label = binding.artifactName;
-          }
+          label = binding.artifactName;
         } else {
           label = binding.artifactName;
         }
@@ -14029,8 +14002,6 @@
         showToast("Workflow step not found.", "error");
         return;
       }
-      // Workflow-step outcome A: persist prompt text directly on the step
-      // as a local runtime override (no library asset link).
       step.override_prompt_body = manualBody;
       step.prompt_source_type = "local_override";
       step.prompt_source = "local_override";
@@ -14125,8 +14096,6 @@
                 return String(s && s.id ? s.id : "") === targetStepId;
               });
               if (step) {
-                // Workflow-step outcome B: link the step to the newly saved
-                // Prompt Library asset (library_prompt source), clearing local override.
                 step.promptId = saved.id;
                 step.prompt_source_type = "library_prompt";
                 step.prompt_source = "library_prompt";

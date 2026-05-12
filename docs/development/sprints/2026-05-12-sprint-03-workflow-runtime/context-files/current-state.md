@@ -41,8 +41,8 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 
 ## Next Active Focus
 
-- Sprint 03 closeout and check-in preparation
-- Next bounded task suggestion: Sprint 03 workflow runtime ambiguity documentation pass (comments/continuity only, no behavior changes)
+- Sprint 03 - Workflow Runtime Consolidation
+- Sprint 03 should begin with an architecture-first workflow runtime semantic/state/lifecycle review before implementation edits.
 
 ## Sprint Status Notes
 
@@ -54,17 +54,7 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
   - canonical durable state remains `state.prompts` + `state.selectedPromptId`; filters/list/detail/version views remain derived projections
   - preserved policy: `usageCount` increments only on Use as template; duplicate keeps historical versions and adds duplicate/save snapshots; metadata ownership remains split between handlers and `Library` persistence
 - Sprint 02 Prompt Library Consolidation is completed and committed.
-- Sprint 03 Workflow Runtime Consolidation (review + passes 1-2) completed:
-  - clarified workflow definition vs runtime navigation semantics
-  - documented and stabilized run-mode lifecycle/reset inspectability without behavior redesign
-  - clarified Prompt Studio workflow hydration/save boundary semantics for step outcomes
-  - improved internal input-binding chip inspectability with source-step identity display only
-  - manual smoke checks confirmed runtime compatibility preserved
-- Sprint 03 intentionally deferred:
-  - run-mode redesign/state-machine work
-  - schema/storage restructuring
-  - workflow generation/domain-pack redesign
-  - app.js module-boundary restructuring
+- Sprint 03 now targets workflow runtime definition/execution semantics, run-mode state, step navigation/runtime state, and artefact visibility inspectability.
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions

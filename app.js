@@ -125,16 +125,26 @@
   var state = {
     apiKey: null,
     messages: [],
+    // Refinement runtime lifecycle flags (Prompt Studio).
+    // These model conversation phase only; they are not durable prompt assets.
     sessionActive: false,
+    // Finalized runtime refinement result currently shown in Final Prompt.
     finalResult: null,
-    // When the model returns completion JSON but the user has not confirmed yet
+    // Draft/refined candidate awaiting a lifecycle decision (review/confirm/finalize).
     pendingFinal: null,
+    // User is reviewing candidate final text and can accept ("no") or add changes.
     awaitingFinalConfirmation: false,
+    // Reviewer follow-up questions are active and waiting for user answers.
     awaitingReviewAnswer: false,
+    // Marks that current final JSON pass is post-review (used to branch apply flow).
     fromReview: false,
+    // Runtime displayed refinement outputs (draft/refined) for current session only.
     promptVersions: null,
+    // Which runtime refinement version is currently displayed in Final Prompt textarea.
     selectedPromptVersion: null,
+    // Waiting for yes/no on whether to run reviewer pass against pendingFinal.
     awaitingReviewOptIn: false,
+    // Remaining queued reviewer questions for current review phase.
     reviewQuestions: [],
     // Prompt asset state (Prompt Library).
     prompts: [],
@@ -7275,8 +7285,21 @@
   // Refinement conversation logic
   // -----------------------------
 
+  function hasActiveRefinementSession() {
+    return !!(state.sessionActive && state.messages && state.messages.length);
+  }
+
+  function hasPendingFinalCandidate() {
+    return !!state.pendingFinal;
+  }
+
   function resetConversationState() {
     // Runtime-only reset: keep brief fields and saved library assets unchanged.
+    // Lifecycle after reset:
+    // - idle/no active refinement
+    // - no pending candidate
+    // - no review or confirmation sub-phases
+    // - no displayed runtime draft/refined versions
     state.messages = [];
     state.sessionActive = false;
     state.finalResult = null;
@@ -8380,15 +8403,15 @@
   }
 
   function handleSendFollowUp() {
-    if (!state.sessionActive || !state.messages.length) return;
+    if (!hasActiveRefinementSession()) return;
     var answer = (els.followUpAnswer.value || "").trim();
     if (!answer) {
       showToast("Please type an answer first.", "error");
       return;
     }
 
-    // If we're in the "review final prompt" phase, treat this as confirmation or extra details.
-    if (state.awaitingFinalConfirmation && state.pendingFinal) {
+    // Lifecycle branch: candidate exists and we're waiting for final user confirmation.
+    if (state.awaitingFinalConfirmation && hasPendingFinalCandidate()) {
       var lower = answer.toLowerCase();
       var isNo =
         lower === "no" ||
@@ -8424,9 +8447,10 @@
       return;
     }
 
+    // Lifecycle branch: candidate exists and we're waiting for review opt-in.
     // If we're waiting to know whether the user wants to run a review step,
     // interpret this as a yes/no answer.
-    if (state.awaitingReviewOptIn && state.pendingFinal) {
+    if (state.awaitingReviewOptIn && hasPendingFinalCandidate()) {
       var ans = answer.toLowerCase();
       var wantsReview = !(
         ans === "no" ||
@@ -8460,6 +8484,7 @@
       return;
     }
 
+    // Lifecycle branch: reviewer Q&A phase (state.reviewQuestions queue may continue).
     // If we're waiting for the user's response to reviewer suggestions,
     // treat this answer as additional detail to feed into a final JSON request.
     if (state.awaitingReviewAnswer) {
@@ -8530,7 +8555,7 @@
   }
 
   function handleFinishRefinement() {
-    if (!state.sessionActive || !state.messages.length) {
+    if (!hasActiveRefinementSession()) {
       showToast("Start a refinement conversation first.", "error");
       return;
     }
@@ -9240,6 +9265,7 @@
       return;
     }
     state.sessionActive = false;
+    // Runtime lifecycle reaches finalized state; keep finalResult for save/copy actions.
     state.finalResult = {
       status: "complete",
       final_prompt: safePrompt,
@@ -9256,6 +9282,7 @@
       "empty",
       !parsed.summary || !parsed.summary.trim()
     );
+    // Save button readiness derives from finalized prompt text presence.
     els.saveToLibraryBtn.disabled = !safePrompt;
     try {
       var edges = summarizePromptEdge(safePrompt);

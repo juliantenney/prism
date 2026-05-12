@@ -489,14 +489,16 @@
       <section
         id="workflowFactoryPanel"
         class="refinement-panel hidden"
-        aria-label="Workflow factory"
+        aria-label="Workflow Factory"
         role="tabpanel"
         aria-hidden="true"
       >
         <div class="card workflow-factory-basics-card">
           <h2>Workflow basics</h2>
           <p class="helper-text">
-            Start by describing the workflow you want to design. You can refine and add prompts later in the Workflows tab.
+            Describe the learning design you want <strong>workflows</strong> to orchestrate. The usual end product is a
+            <strong>learner-facing page</strong> (HTML) plus any supporting artefacts; use the Workflows tab to refine
+            orchestration steps and prompts.
           </p>
           <div class="workflow-factory-basics-grid">
             <div class="form-group">
@@ -540,7 +542,7 @@
             </div>
             <div class="form-group">
               <label for="wfDesignScale">What is the scale / scope?</label>
-              <p id="wfDesignScaleHint" class="helper-text">e.g. single task, short session, multi-step workflow, or programme</p>
+              <p id="wfDesignScaleHint" class="helper-text">e.g. single task, short session, multi-step design, or programme</p>
               <input
                 type="text"
                 id="wfDesignScale"
@@ -550,14 +552,14 @@
             </div>
             <div class="form-group">
               <label for="wfDesignStartingArtefact">Starting point (optional)</label>
-              <p id="wfDesignStartingArtefactHint" class="helper-text">What are you starting from? Select if you already have something (e.g. learning outcomes, activities, or assessment items).</p>
+              <p id="wfDesignStartingArtefactHint" class="helper-text">What are you starting from? Select if you already have something (e.g. learning outcomes, learning activities for the learner-facing page, or assessment items).</p>
               <select id="wfDesignStartingArtefact" autocomplete="off">
                 <option value="">From source material (e.g. document, notes, PDF)</option>
               </select>
             </div>
             <div class="form-group wf-span-2">
               <label id="wfDesignInputsLabel" for="wfDesignInputs">Source material / inputs</label>
-              <p id="wfDesignInputsHint" class="helper-text">Describe the source content or inputs available at the start.</p>
+              <p id="wfDesignInputsHint" class="helper-text">Describe source materials or other inputs available at the start (runtime artefacts, not workflow mechanics).</p>
               <textarea
                 id="wfDesignInputs"
                 rows="2"
@@ -566,18 +568,18 @@
               ></textarea>
             </div>
             <div class="form-group wf-span-2">
-              <label for="wfDesignDesiredOutputs">Desired outputs (optional)</label>
-              <p id="wfDesignDesiredOutputsHint" class="helper-text">What the workflow should produce.</p>
+              <label for="wfDesignDesiredOutputs">Learner-facing page and supporting outputs (optional)</label>
+              <p id="wfDesignDesiredOutputsHint" class="helper-text">What the learner-facing page should contain, plus any supporting artefacts this design run should produce (orchestrated through the workflow below).</p>
               <textarea
                 id="wfDesignDesiredOutputs"
                 rows="2"
-                placeholder="e.g. activities, sequence, assessment, slide deck, facilitator guide, handout"
+                placeholder="e.g. activities, assessment on the page, slide deck, facilitator guide, handout"
                 autocomplete="off"
               ></textarea>
             </div>
             <div class="form-group wf-span-2">
               <label for="wfDesignScopeConstraints">Scope and constraints</label>
-              <p id="wfDesignConstraintsHint" class="helper-text">Hard requirements: time, tools, policy, accessibility, delivery conditions.</p>
+              <p id="wfDesignConstraintsHint" class="helper-text">Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe learner pace or grouping in plain language if it matters—there is no separate sequencing editor.</p>
               <textarea
                 id="wfDesignScopeConstraints"
                 rows="2"
@@ -635,7 +637,7 @@
             </div>
           </div>
           <p id="wfDesignSummary" class="summary-text empty">
-            When the assistant designs a workflow, its summary and steps will appear here.
+            When the assistant proposes an orchestration, its summary and authoring steps will appear here.
           </p>
           <ol id="wfDesignSteps" class="workflow-steps-list"></ol>
           <div class="button-row">
@@ -720,18 +722,18 @@
                 />
               </div>
               <div class="form-group">
-                <label for="workflowGoal">Goal / outcome (workflow output)</label>
-                <p id="workflowGoalHint" class="helper-text">Describe the final result this workflow should deliver.</p>
+                <label for="workflowGoal">Goal / outcome (learner-facing run)</label>
+                <p id="workflowGoalHint" class="helper-text">What the saved workflow should achieve for the learner-facing run (workflows orchestrate generation; they are not the primary learner artefact).</p>
                 <textarea
                   id="workflowGoal"
                   rows="3"
-                  placeholder="What should the final workflow output achieve?"
+                  placeholder="What should the learner-facing output achieve?"
                   autocomplete="off"
                 ></textarea>
               </div>
               <div class="form-group">
-                <label for="workflowConstraints">Constraints and must haves (workflow output)</label>
-                <p id="workflowConstraintsHint" class="helper-text">Non-negotiables such as policy, compliance, style, or delivery constraints.</p>
+                <label for="workflowConstraints">Constraints and must haves (learner-facing run)</label>
+                <p id="workflowConstraintsHint" class="helper-text">Non-negotiables such as policy, compliance, style, or venue/channel delivery constraints (plain language; not a sequencing engine).</p>
                 <input
                   type="text"
                   id="workflowConstraints"
@@ -740,8 +742,8 @@
                 />
               </div>
               <div class="form-group">
-                <label for="workflowAudience">Audience (workflow output)</label>
-                <p id="workflowAudienceHint" class="helper-text">Primary end users or learners for this workflow output.</p>
+                <label for="workflowAudience">Audience (learner-facing run)</label>
+                <p id="workflowAudienceHint" class="helper-text">Primary end users or learners for the learner-facing output.</p>
                 <input
                   type="text"
                   id="workflowAudience"
@@ -750,8 +752,8 @@
                 />
               </div>
               <div class="form-group">
-                <label for="workflowArtefacts">Workflow inputs / artefacts</label>
-                <p id="workflowArtefactsHint" class="helper-text">Source materials this workflow expects at runtime.</p>
+                <label for="workflowArtefacts">Runtime inputs / artefacts</label>
+                <p id="workflowArtefactsHint" class="helper-text">Source materials this workflow expects at run time (artefacts passed into steps).</p>
                 <textarea
                   id="workflowArtefacts"
                   rows="1"
@@ -760,8 +762,8 @@
                 ></textarea>
               </div>
               <div class="form-group">
-                <label for="workflowOutputs">Workflow outputs (list)</label>
-                <p id="workflowOutputsHint" class="helper-text">Comma-separated artefact names this workflow should produce.</p>
+                <label for="workflowOutputs">Named outputs / artefacts (list)</label>
+                <p id="workflowOutputsHint" class="helper-text">Comma-separated artefact names this workflow should produce for the learner-facing run.</p>
                 <textarea
                   id="workflowOutputs"
                   rows="1"

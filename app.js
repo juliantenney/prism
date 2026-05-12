@@ -2595,7 +2595,7 @@
   function renderWorkflowFactoryDomainUiHints(uiHints) {
     var hints = uiHints && typeof uiHints === "object" ? uiHints : {};
     var scopeScaleHint = String(
-      hints.scope_scale || "e.g. single task, short session, multi-step workflow, or programme"
+      hints.scope_scale || "e.g. single task, short session, multi-step design, or programme"
     );
     if (els.wfDesignIntentHint) {
       els.wfDesignIntentHint.textContent =
@@ -2616,15 +2616,35 @@
     }
     if (els.wfDesignInputsHint) {
       els.wfDesignInputsHint.textContent =
-        String(hints.inputs || "Source content or artefacts available at start.");
+        String(
+          hints.inputs ||
+            "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics)."
+        );
     }
     if (els.wfDesignDesiredOutputsHint) {
       els.wfDesignDesiredOutputsHint.textContent =
-        String(hints.desired_outputs || "What the workflow should produce.");
+        String(
+          hints.desired_outputs ||
+            "What the learner-facing page should contain, plus supporting artefacts this design run should produce (orchestrated through the workflow below)."
+        );
     }
     if (els.wfDesignConstraintsHint) {
       els.wfDesignConstraintsHint.textContent =
-        String(hints.constraints || "Hard requirements: time, tools, policy, accessibility, delivery conditions.");
+        String(
+          hints.constraints ||
+            "Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe learner pace or grouping in plain language if it matters—there is no separate sequencing editor."
+        );
+    }
+    var selectedDomainsForHints = getSelectedWorkflowDomains();
+    if (selectedDomainsForHints.indexOf("learning-design") !== -1) {
+      if (els.wfDesignDesiredOutputsHint) {
+        els.wfDesignDesiredOutputsHint.textContent =
+          "Primary learner-facing page and supporting artefacts (activities, assessment on the page, facilitator materials, etc.).";
+      }
+      if (els.wfDesignConstraintsHint) {
+        els.wfDesignConstraintsHint.textContent =
+          "Hard constraints: timing, policy, tools, accessibility, venue/channel delivery conditions. Say pace or grouping in plain language if needed—no separate sequencing editor.";
+      }
     }
   }
 
@@ -2780,7 +2800,7 @@
     }
     if (els.wfDesignInputsHint) {
       els.wfDesignInputsHint.textContent = sourceMaterialMode
-        ? "Describe the source content or inputs available at the start."
+        ? "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics)."
         : "Describe or provide the selected starting point.";
     }
     els.wfDesignInputs.placeholder = sourceMaterialMode
@@ -2968,11 +2988,14 @@
 
   function renderWorkflowDetailDomainUiHints(selectedDomains) {
     var defaults = {
-      goal: "Describe the final result this workflow should deliver.",
-      audience: "Primary end users or learners for this workflow output.",
-      constraints: "Non-negotiables such as policy, compliance, style, or delivery constraints.",
-      inputs: "Source materials this workflow expects at runtime.",
-      desired_outputs: "Comma-separated artefact names this workflow should produce."
+      goal:
+        "What the saved workflow should achieve for the learner-facing run (workflows orchestrate generation; they are not the primary learner artefact).",
+      audience: "Primary end users or learners for the learner-facing output.",
+      constraints:
+        "Non-negotiables such as policy, compliance, style, or venue/channel delivery constraints (plain language; not a sequencing engine).",
+      inputs: "Source materials this workflow expects at run time (artefacts passed into steps).",
+      desired_outputs:
+        "Comma-separated artefact names this workflow should produce for the learner-facing run."
     };
     function apply(hints) {
       var h = hints && typeof hints === "object" ? hints : {};
@@ -5622,7 +5645,7 @@
     }
     if (els.wfDesignSummary) {
       els.wfDesignSummary.textContent =
-        "When the assistant designs a workflow, its summary and steps will appear here.";
+        "When the assistant proposes an orchestration, its summary and authoring steps will appear here.";
       els.wfDesignSummary.classList.add("empty");
     }
     if (els.wfDesignSteps) {

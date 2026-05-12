@@ -118,6 +118,10 @@
   // -----------------------------
 
   var els = {};
+  // Prompt Studio canonical state boundaries:
+  // - brief state: user-authored refinement inputs from Prompt Studio fields
+  // - runtime session state: transient conversation/refinement lifecycle fields
+  // - prompt asset state: durable Prompt Library entities and selection
   var state = {
     apiKey: null,
     messages: [],
@@ -132,6 +136,7 @@
     selectedPromptVersion: null,
     awaitingReviewOptIn: false,
     reviewQuestions: [],
+    // Prompt asset state (Prompt Library).
     prompts: [],
     selectedPromptId: null,
     workflows: [],
@@ -7271,6 +7276,7 @@
   // -----------------------------
 
   function resetConversationState() {
+    // Runtime-only reset: keep brief fields and saved library assets unchanged.
     state.messages = [];
     state.sessionActive = false;
     state.finalResult = null;
@@ -7560,7 +7566,8 @@
   }
 
   function resetSession() {
-    // Full reset: conversation + brief fields.
+    // Full Prompt Studio reset: runtime session + authored brief state.
+    // Does not mutate saved prompt assets in the library.
     resetConversationState();
 
     // Clear brief fields so each reset starts from a clean slate.
@@ -7581,6 +7588,7 @@
   }
 
   function getCurrentBriefSnapshot() {
+    // Canonical brief snapshot used for refinement context and saved asset metadata.
     var outputType = getSelectedOutputType();
 
     function getTrimmed(el) {
@@ -7614,6 +7622,45 @@
       structuredSchema: getTrimmed(els.structuredSchema),
       structuredValidation: getTrimmed(els.structuredValidation)
     };
+  }
+
+  function buildRefinementBriefParts(brief) {
+    var parts = [];
+    var outputType = brief && brief.outputType ? brief.outputType : "text";
+    if (!brief || typeof brief !== "object") return parts;
+
+    if (brief.audience) parts.push("Audience: " + brief.audience);
+    if (brief.role) parts.push("AI role / persona (act as): " + brief.role);
+    if (brief.context) parts.push("Context: " + brief.context);
+    if (brief.goal) parts.push("Goal / outcome: " + brief.goal);
+    if (brief.tone && outputType !== "code") parts.push("Tone / voice: " + brief.tone);
+    if (brief.format) parts.push("Desired output format: " + brief.format);
+    if (outputType === "text" && brief.length) parts.push("Length / depth: " + brief.length);
+    if (brief.constraints) parts.push("Constraints & must-haves: " + brief.constraints);
+
+    if (outputType === "text") {
+      if (brief.textReadingLevel) parts.push("Reading level: " + brief.textReadingLevel);
+    } else if (outputType === "code") {
+      if (brief.codeLanguage) parts.push("Code language: " + brief.codeLanguage);
+      if (brief.codeFramework) parts.push("Framework / libraries: " + brief.codeFramework);
+      if (brief.codeEnvironment) parts.push("Environment / constraints: " + brief.codeEnvironment);
+      if (brief.codeStyle) parts.push("Code style: " + brief.codeStyle);
+    } else if (outputType === "image") {
+      if (brief.imageSubject) parts.push("Image subject: " + brief.imageSubject);
+      if (brief.imageStyle) parts.push("Image style: " + brief.imageStyle);
+      if (brief.imageComposition) parts.push("Image composition / camera: " + brief.imageComposition);
+      if (brief.imageLighting) parts.push("Image lighting / mood: " + brief.imageLighting);
+      if (brief.imageAspectRatio) parts.push("Image aspect ratio: " + brief.imageAspectRatio);
+      if (brief.imageSize) parts.push("Image size / usage: " + brief.imageSize);
+      if (brief.imagePalette) parts.push("Image colour palette: " + brief.imagePalette);
+      if (brief.imageText) parts.push("Text in image: " + brief.imageText);
+      if (brief.imageScene) parts.push("Scene / setting: " + brief.imageScene);
+    } else if (outputType === "structured") {
+      if (brief.structuredSchema) parts.push("Structured schema / fields: " + brief.structuredSchema);
+      if (brief.structuredValidation) parts.push("Structured validation rules: " + brief.structuredValidation);
+    }
+
+    return parts;
   }
 
   function buildBriefSummaryForExternalTool() {
@@ -8090,69 +8137,10 @@
       return;
     }
 
-    // Collect structured brief fields to give the model a strong starting context.
-    var briefParts = [];
-    var outputType = getSelectedOutputType();
-    var audience = (els.promptAudience.value || "").trim();
-    var role = els.promptRole ? (els.promptRole.value || "").trim() : "";
-    var tone = (els.promptTone.value || "").trim();
-    var context = (els.promptContext.value || "").trim();
-    var goal = (els.promptGoal.value || "").trim();
-    var format = (els.promptFormat.value || "").trim();
-    var length = (els.promptLength.value || "").trim();
-    var constraints = (els.promptConstraints.value || "").trim();
-
-    // Type-specific brief fields
-    var textReadingLevel = els.textReadingLevel ? (els.textReadingLevel.value || "").trim() : "";
-
-    var codeLanguage = els.codeLanguage ? (els.codeLanguage.value || "").trim() : "";
-    var codeFramework = els.codeFramework ? (els.codeFramework.value || "").trim() : "";
-    var codeEnvironment = els.codeEnvironment ? (els.codeEnvironment.value || "").trim() : "";
-    var codeStyle = els.codeStyle ? (els.codeStyle.value || "").trim() : "";
-
-    var imageSubject = els.imageSubject ? (els.imageSubject.value || "").trim() : "";
-    var imageStyle = els.imageStyle ? (els.imageStyle.value || "").trim() : "";
-    var imageComposition = els.imageComposition ? (els.imageComposition.value || "").trim() : "";
-    var imageLighting = els.imageLighting ? (els.imageLighting.value || "").trim() : "";
-    var imageAspectRatio = els.imageAspectRatio ? (els.imageAspectRatio.value || "").trim() : "";
-    var imageSize = els.imageSize ? (els.imageSize.value || "").trim() : "";
-    var imagePalette = els.imagePalette ? (els.imagePalette.value || "").trim() : "";
-    var imageText = els.imageText ? (els.imageText.value || "").trim() : "";
-    var imageScene = els.imageScene ? (els.imageScene.value || "").trim() : "";
-
-    var structuredSchema = els.structuredSchema ? (els.structuredSchema.value || "").trim() : "";
-    var structuredValidation = els.structuredValidation ? (els.structuredValidation.value || "").trim() : "";
-
-    if (audience) briefParts.push("Audience: " + audience);
-    if (role) briefParts.push("AI role / persona (act as): " + role);
-    if (context) briefParts.push("Context: " + context);
-    if (goal) briefParts.push("Goal / outcome: " + goal);
-    if (tone && outputType !== "code") briefParts.push("Tone / voice: " + tone);
-    if (format) briefParts.push("Desired output format: " + format);
-    if (outputType === "text" && length) briefParts.push("Length / depth: " + length);
-    if (constraints) briefParts.push("Constraints & must-haves: " + constraints);
-
-    if (outputType === "text") {
-      if (textReadingLevel) briefParts.push("Reading level: " + textReadingLevel);
-    } else if (outputType === "code") {
-      if (codeLanguage) briefParts.push("Code language: " + codeLanguage);
-      if (codeFramework) briefParts.push("Framework / libraries: " + codeFramework);
-      if (codeEnvironment) briefParts.push("Environment / constraints: " + codeEnvironment);
-      if (codeStyle) briefParts.push("Code style: " + codeStyle);
-    } else if (outputType === "image") {
-      if (imageSubject) briefParts.push("Image subject: " + imageSubject);
-      if (imageStyle) briefParts.push("Image style: " + imageStyle);
-      if (imageComposition) briefParts.push("Image composition / camera: " + imageComposition);
-      if (imageLighting) briefParts.push("Image lighting / mood: " + imageLighting);
-      if (imageAspectRatio) briefParts.push("Image aspect ratio: " + imageAspectRatio);
-      if (imageSize) briefParts.push("Image size / usage: " + imageSize);
-      if (imagePalette) briefParts.push("Image colour palette: " + imagePalette);
-      if (imageText) briefParts.push("Text in image: " + imageText);
-      if (imageScene) briefParts.push("Scene / setting: " + imageScene);
-    } else if (outputType === "structured") {
-      if (structuredSchema) briefParts.push("Structured schema / fields: " + structuredSchema);
-      if (structuredValidation) briefParts.push("Structured validation rules: " + structuredValidation);
-    }
+    // Build model-visible brief context from canonical brief state.
+    var brief = getCurrentBriefSnapshot();
+    var outputType = brief.outputType;
+    var briefParts = buildRefinementBriefParts(brief);
 
     var combinedUserContent = "Output type: " + outputType + "\n\nTask description: " + initial;
     if (briefParts.length) {
@@ -8398,7 +8386,6 @@
       return;
     }
 
-     // If we're in the "review final prompt" phase, treat this as confirmation or extra details.
     // If we're in the "review final prompt" phase, treat this as confirmation or extra details.
     if (state.awaitingFinalConfirmation && state.pendingFinal) {
       var lower = answer.toLowerCase();
@@ -13863,7 +13850,9 @@
   }
 
   function handleSaveRefinedToLibrary() {
-    // In workflow-step mode this saves to the step; otherwise it saves to library.
+    // Save target boundary:
+    // - workflow step mode: write runtime editor prompt into selected step config
+    // - standalone Prompt Studio: persist a durable prompt asset in Prompt Library
     var wfCtx = state.promptFactoryWorkflowContext || null;
     var inWorkflowStepMode = !!(wfCtx && wfCtx.workflowId && wfCtx.stepId);
 
@@ -13914,7 +13903,7 @@
       showToast("Prompt saved to workflow step.", "success");
       return;
     }
-    var entry;
+    var promptAssetDraft;
 
     if (state.finalResult && state.finalResult.final_prompt) {
       // Normal path: save the refined prompt from the API.
@@ -13930,12 +13919,13 @@
         showToast("Prompt name cannot be empty.", "error");
         return;
       }
-      entry = {
+      promptAssetDraft = {
         title: chosenTitle,
         body: body,
         tags: [],
         source: "refined",
         notes: summary,
+        // Persist the authored brief so loading this prompt can restore inputs.
         brief: getCurrentBriefSnapshot()
       };
     } else if (manualBody) {
@@ -13950,7 +13940,7 @@
         showToast("Prompt name cannot be empty.", "error");
         return;
       }
-      entry = {
+      promptAssetDraft = {
         title: chosenTitle2,
         body: manualBody,
         tags: [],
@@ -13966,9 +13956,8 @@
       return;
     }
 
-    var now = Date.now();
     window.Library
-      .savePrompt(entry)
+      .savePrompt(promptAssetDraft)
       .then(function (saved) {
         state.prompts.push(saved);
         selectPrompt(saved.id);

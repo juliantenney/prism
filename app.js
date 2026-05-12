@@ -8064,7 +8064,8 @@
     var versions = state.promptVersions || {};
     var selected = state.selectedPromptVersion;
 
-    // Decide which version to show; fall back sensibly.
+    // Decide which displayed refinement version to show (draft/refined only).
+    // This selector is separate from durable Prompt Library version history.
     if (!selected) {
       if (versions.refined) selected = "refined";
       else if (versions.draft) selected = "draft";
@@ -8092,7 +8093,7 @@
       els.saveToLibraryBtn.disabled = !(els.finalPrompt.value || "").trim();
     }
 
-    // Configure the version selector visibility and options.
+    // Configure the displayed-version selector visibility and options.
     if (els.promptVersionSelect) {
       // Show selector only if we have at least a draft or refined version.
       var hasDraft = !!versions.draft;
@@ -8116,7 +8117,7 @@
       }
     }
 
-    // Keep pendingFinal in sync with the selected version for finalization.
+    // Keep pendingFinal in sync with the selected displayed version for finalization.
     if (current) {
       state.pendingFinal = {
         status: "complete",
@@ -10005,20 +10006,20 @@
     }
   }
 
-  function populateDetailForm(entry) {
-    state.selectedPromptId = entry.id;
-    els.detailTitle.value = entry.title || "";
-    els.detailTags.value = (entry.tags || []).join(", ");
-    els.detailNotes.value = entry.notes || "";
-    els.detailBody.value = entry.body || "";
+  function populateDetailForm(promptAsset) {
+    state.selectedPromptId = promptAsset.id;
+    els.detailTitle.value = promptAsset.title || "";
+    els.detailTags.value = (promptAsset.tags || []).join(", ");
+    els.detailNotes.value = promptAsset.notes || "";
+    els.detailBody.value = promptAsset.body || "";
     els.detailMetaCreated.textContent =
       "Created: " +
-      (window.Utils ? window.Utils.formatDate(entry.createdAt) : "");
+      (window.Utils ? window.Utils.formatDate(promptAsset.createdAt) : "");
     els.detailMetaUpdated.textContent =
       "Updated: " +
-      (window.Utils ? window.Utils.formatDate(entry.updatedAt) : "");
+      (window.Utils ? window.Utils.formatDate(promptAsset.updatedAt) : "");
     els.detailMetaUsage.textContent =
-      "Usage: " + (entry.usageCount || 0);
+      "Usage: " + (promptAsset.usageCount || 0);
 
     els.duplicatePromptBtn.disabled = false;
     els.renamePromptBtn.disabled = false;
@@ -10029,12 +10030,13 @@
       els.copyPromptBodyBtn.disabled = false;
     }
 
-    renderVersions(entry);
+    renderVersions(promptAsset);
   }
 
-  function renderVersions(entry) {
+  function renderVersions(promptAsset) {
     els.versionsList.innerHTML = "";
-    (entry.versions || [])
+    // Durable Prompt Library asset history (distinct from displayed draft/refined selector).
+    (promptAsset.versions || [])
       .slice()
       .sort(function (a, b) {
         return (b.timestamp || 0) - (a.timestamp || 0);
@@ -10056,13 +10058,13 @@
   }
 
   function selectPrompt(id) {
-    var entry = findPromptById(id);
-    if (!entry) {
+    var promptAsset = findPromptById(id);
+    if (!promptAsset) {
       clearDetailForm();
       renderLibraryList();
       return;
     }
-    populateDetailForm(entry);
+    populateDetailForm(promptAsset);
     renderLibraryList();
   }
 
@@ -10131,8 +10133,8 @@
 
   function handleDeletePrompt() {
     if (!state.selectedPromptId) return;
-    var entry = findPromptById(state.selectedPromptId);
-    var title = entry ? entry.title || "this prompt" : "this prompt";
+    var promptAsset = findPromptById(state.selectedPromptId);
+    var title = promptAsset ? promptAsset.title || "this prompt" : "this prompt";
     var confirmed = window.confirm(
       "Delete \"" + title + "\" from the library? This cannot be undone."
     );
@@ -10151,10 +10153,10 @@
 
   function handleDuplicatePrompt() {
     if (!state.selectedPromptId) return;
-    var entry = findPromptById(state.selectedPromptId);
-    if (!entry) return;
+    var promptAsset = findPromptById(state.selectedPromptId);
+    if (!promptAsset) return;
     var now = Date.now();
-    var clone = JSON.parse(JSON.stringify(entry));
+    var clone = JSON.parse(JSON.stringify(promptAsset));
     clone.id = window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now);
     clone.title = clone.title + " (copy)";
     clone.createdAt = now;
@@ -10166,7 +10168,7 @@
       id: (window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now)) + "-v",
       timestamp: now,
       body: clone.body,
-      notes: "Duplicated from " + (entry.title || "another prompt")
+      notes: "Duplicated from " + (promptAsset.title || "another prompt")
     });
 
     window.Library.savePrompt(clone).then(function (saved) {
@@ -10180,15 +10182,15 @@
 
   function handleRenamePrompt() {
     if (!state.selectedPromptId) return;
-    var entry = findPromptById(state.selectedPromptId);
-    if (!entry) return;
+    var promptAsset = findPromptById(state.selectedPromptId);
+    if (!promptAsset) return;
     var newTitle = (els.detailTitle.value || "").trim();
     if (!newTitle) {
       showToast("Prompt title cannot be empty.", "error");
       return;
     }
     window.Library
-      .updatePrompt({ id: entry.id, title: newTitle })
+      .updatePrompt({ id: promptAsset.id, title: newTitle })
       .then(function (saved) {
         var idx = state.prompts.findIndex(function (p) {
           return p.id === saved.id;
@@ -10203,22 +10205,22 @@
 
   function handleUsePrompt() {
     if (!state.selectedPromptId) return;
-    var entry = findPromptById(state.selectedPromptId);
-    if (!entry) return;
+    var promptAsset = findPromptById(state.selectedPromptId);
+    if (!promptAsset) return;
 
-    // Start from a completely clean Factory state for this library entry:
+    // Start from a clean Prompt Studio state for the selected library asset:
     // - wipe any existing refinement conversation
     // - clear all brief fields
-    // Then apply the template's metadata.
+    // Then hydrate the brief/task fields from the asset body + brief metadata.
     resetConversationState();
     clearBriefFields();
-    applyPromptEntryToBrief(entry);
+    applyPromptEntryToBrief(promptAsset);
     updateOutputTypeVisibility();
 
     // Increment usage count.
-    var currentCount = entry.usageCount || 0;
+    var currentCount = promptAsset.usageCount || 0;
     window.Library
-      .updatePrompt({ id: entry.id, usageCount: currentCount + 1 })
+      .updatePrompt({ id: promptAsset.id, usageCount: currentCount + 1 })
       .then(function (saved) {
         var idx = state.prompts.findIndex(function (p) {
           return p.id === saved.id;

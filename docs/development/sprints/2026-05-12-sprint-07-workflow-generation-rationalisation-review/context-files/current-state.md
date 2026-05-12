@@ -22,8 +22,8 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Focus and Scope Notes
 
-- workflow generation rationalisation **review** (Sprint 07) is **documented**; **brief and planning semantics alignment** (Sprint 08) is the **next bounded focus** — see consolidation docs
-- domain-pack **rewrite** remains out of scope until explicitly scoped; Sprint 08 targets **brief/elicitation/planning semantics**, not domain-pack overhaul
+- workflow generation rationalisation is the **next bounded consolidation focus** (Sprint 07 — review-first; see consolidation doc)
+- domain-pack and generation **redesign** remain out of scope until Sprint 07 audit recommendations are explicit
 - tidy-up/governance phase is complete
 - continuity workflow is now operational
 - shared operational vocabulary is established
@@ -32,7 +32,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - consolidation sprint structure now exists under `docs/consolidation/`
 - sprint transition portability now uses `docs/development/sprints/YYYY-MM-DD-sprint-name/`
 - backlog system now exists under `docs/backlog/`
-- manual workflow builder and definition foundations are stabilised; **Sprint 07** captured workflow-generation rationalisation in **review documentation**; **Sprint 08** translates that into **planning and brief semantics alignment** (planning-first)
+- manual workflow builder and definition foundations are stabilised; generation pipeline rationalisation is now the active planning/review track (Sprint 07)
 - Prompt Studio consolidation model is now explicit:
   - brief state = user-authored refinement inputs/parameters
   - runtime refinement session state = transient conversational refinement lifecycle
@@ -41,10 +41,8 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-- **Sprint 08 — Workflow Planning and Brief Semantics Alignment** (planning, audit tables, boundary notes; implementation only when explicitly scoped): `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
-- Portable sprint pack: `docs/development/sprints/2026-05-12-sprint-08-workflow-planning-and-brief-semantics-alignment/`
-- **Sprint 07 — Workflow Generation Rationalisation Review** — **review documentation complete** (input to Sprint 08): `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
-- Prior sprint pack (reference): `docs/development/sprints/2026-05-12-sprint-07-workflow-generation-rationalisation-review/`
+- **Sprint 07 — Workflow Generation Rationalisation Review** (review-first; planning and audit only until explicitly scoped): `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
+- Portable sprint pack: `docs/development/sprints/2026-05-12-sprint-07-workflow-generation-rationalisation-review/`
 - **Sprint 06 documentation alignment is complete** — closure: `docs/consolidation/sprint-06-check-in-closure.md`
 - Consolidation vocabulary baseline: `docs/development/shared-vocabulary.md` (validation lifecycle, prompt attachment modes, import/export narrative, step identity, continuity artefacts)
 
@@ -84,10 +82,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - Sprint 06 — Continuity & documentation alignment — **closed (docs-only):**
   - terminology aligned across consolidation notes, `shared-vocabulary.md`, and `development-protocol.md`
   - closure: `docs/consolidation/sprint-06-check-in-closure.md`
-- Sprint 07 — Workflow Generation Rationalisation Review — **review documentation complete** (learner-facing model, planning lifecycle, pedagogic dimensions, sequencing, open questions, closing conclusion): `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
-- Sprint 08 — Workflow Planning and Brief Semantics Alignment — **active (planning-first):**
-  - brief field semantics, desired outputs / delivery context framing, elicitation boundaries, assessment-planning surfacing, sequencing/interaction semantics, step vs planning state
-  - planning: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
+- Sprint 07 — Workflow Generation Rationalisation Review — **active (review-first):**
+  - domain packs, generation pipeline, elicitation, brief form, LD design-information balance; no implementation until audit complete and follow-on scoped
+  - planning: `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions
@@ -100,4 +97,4 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - Manual Workflow Builder
 - workflow semantics
 - artefact contracts
-- workflow planning and brief semantics (Sprint 08 — planning-first)
+- workflow generation rationalisation (Sprint 07 — review-first)

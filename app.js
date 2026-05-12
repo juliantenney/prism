@@ -7293,6 +7293,13 @@
     return !!state.pendingFinal;
   }
 
+  function syncSavePromptAssetButtonFromFinalPrompt() {
+    if (!els.saveToLibraryBtn || !els.finalPrompt) return;
+    // Save readiness belongs to prompt-asset operations, but this value is driven
+    // by Prompt Studio editor/runtime output text.
+    els.saveToLibraryBtn.disabled = !(els.finalPrompt.value || "").trim();
+  }
+
   function resetConversationState() {
     // Runtime-only reset: keep brief fields and saved library assets unchanged.
     // Lifecycle after reset:
@@ -8112,9 +8119,7 @@
     }
 
     // Enable "Save to library" whenever a final prompt is present (including manual edits).
-    if (els.saveToLibraryBtn && els.finalPrompt) {
-      els.saveToLibraryBtn.disabled = !(els.finalPrompt.value || "").trim();
-    }
+    syncSavePromptAssetButtonFromFinalPrompt();
 
     // Configure the displayed-version selector visibility and options.
     if (els.promptVersionSelect) {
@@ -8836,6 +8841,10 @@
         els.sessionStatus.className = "badge badge-success";
       });
   }
+
+  // -----------------------------
+  // Prompt Studio <-> Prompt Library boundary operations
+  // -----------------------------
 
   function callOpenAIForWorkflowDesign(promptContext, hints) {
     var apiKey = state.apiKey;
@@ -13985,6 +13994,7 @@
       return;
     }
 
+    // Persist as durable Prompt Library asset, then refresh library-linked UI state.
     window.Library
       .savePrompt(promptAssetDraft)
       .then(function (saved) {
@@ -18642,6 +18652,7 @@
   // -----------------------------
 
   function attachEventListeners() {
+    // Prompt Studio wiring: brief capture, refinement orchestration, runtime controls.
     els.apiKeyFile.addEventListener("change", handleApiKeyFileChange);
 
     els.startRefinementBtn.addEventListener("click", handleStartRefinement);
@@ -18674,10 +18685,10 @@
     els.copyFinalPromptBtn.addEventListener("click", handleCopyFinalPrompt);
     els.saveToLibraryBtn.addEventListener("click", handleSaveRefinedToLibrary);
 
-    // Allow saving manually refined prompts: enable Save when final prompt has text.
+    // Prompt asset save readiness in Prompt Studio panel.
     if (els.finalPrompt && els.saveToLibraryBtn) {
       els.finalPrompt.addEventListener("input", function () {
-        els.saveToLibraryBtn.disabled = !(els.finalPrompt.value || "").trim();
+        syncSavePromptAssetButtonFromFinalPrompt();
       });
     }
     if (els.promptVersionSelect) {
@@ -18690,6 +18701,7 @@
       });
     }
 
+    // Prompt Library wiring: durable asset browse/filter/edit operations.
     var debouncedFilter = window.Utils.debounce(function () {
       renderLibraryList();
     }, 200);
@@ -18721,6 +18733,7 @@
           els.copyBriefForCopilotBtn.addEventListener("click", handleCopyBriefForCopilot);
         }
 
+    // Prompt Studio tuning controls.
     if (els.creativitySelect) {
       els.creativitySelect.addEventListener("change", function () {
         debugOpenAI("Creativity changed to '" + getCreativityPreset() + "'");
@@ -18734,6 +18747,7 @@
       });
     }
 
+    // Workflow Factory / Workflow panels wiring (kept separate from Prompt Studio concerns).
     if (els.wfDesignStartBtn) {
       els.wfDesignStartBtn.addEventListener("click", handleStartWorkflowDesign);
     }
@@ -18804,6 +18818,7 @@
     ensureWorkflowFactorySaveBinding();
 
 
+    // Main tab navigation wiring.
     if (els.tabRefiner) {
       els.tabRefiner.addEventListener("click", function () {
         switchTab("promptFactory");
@@ -18830,6 +18845,7 @@
       });
     }
 
+    // Utilities panel wiring.
     if (els.utilitiesGenerateBtn) {
       els.utilitiesGenerateBtn.addEventListener("click", handleUtilitiesGenerate);
     }
@@ -18843,6 +18859,7 @@
       els.utilitiesClearBtn.addEventListener("click", handleUtilitiesClear);
     }
 
+    // Workflow run/edit wiring and keyboard shortcuts.
     if (els.workflowList) {
       els.workflowList.addEventListener("click", handleWorkflowListClick);
     }
@@ -18952,6 +18969,15 @@
 
   }
 
+  function finalizeInitialUiSetup() {
+    attachEventListeners();
+    updateOutputTypeVisibility();
+    updateWorkflowFactoryInputsCopyFromStartingPoint();
+    renderWorkflowPromptWizardNotice();
+    setWorkflowMode("edit");
+    switchTab("workflowFactory");
+  }
+
   function init() {
     cacheElements();
     initWorkflowDomainSelector();
@@ -18962,22 +18988,12 @@
         return loadWorkflows();
       })
       .then(function () {
-        attachEventListeners();
-        updateOutputTypeVisibility();
-        updateWorkflowFactoryInputsCopyFromStartingPoint();
-        renderWorkflowPromptWizardNotice();
-        setWorkflowMode("edit");
-        switchTab("workflowFactory");
+        finalizeInitialUiSetup();
       })
       .catch(function () {
         // If anything fails during initial async setup, still attach listeners
         // so the user can interact with whatever did load.
-        attachEventListeners();
-        updateOutputTypeVisibility();
-        updateWorkflowFactoryInputsCopyFromStartingPoint();
-        renderWorkflowPromptWizardNotice();
-        setWorkflowMode("edit");
-        switchTab("workflowFactory");
+        finalizeInitialUiSetup();
       });
   }
 

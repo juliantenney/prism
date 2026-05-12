@@ -41,8 +41,8 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 
 ## Next Active Focus
 
-- Sprint 03 closeout and check-in preparation
-- Next bounded task suggestion: Sprint 03 workflow runtime ambiguity documentation pass (comments/continuity only, no behavior changes)
+- Sprint 04 - Workflow Definition Consolidation stabilization and check-in
+- maintain bounded behavior-preserving posture while closing Sprint 04 continuity and verification notes
 
 ## Sprint Status Notes
 
@@ -65,6 +65,21 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
   - schema/storage restructuring
   - workflow generation/domain-pack redesign
   - app.js module-boundary restructuring
+- Sprint 03 Workflow Runtime Consolidation is completed, continuity-updated, smoke-checked, and stabilised for check-in.
+- Sprint 04 now targets authored workflow definition consolidation:
+  - workflow definition schema semantics and canonical step ownership
+  - prompt attachment/reference semantics
+  - normalization and validation ownership boundaries
+  - import/export and DOM <-> persisted definition synchronization inspectability
+- Sprint 04 passes completed (bounded, behavior-preserving):
+  - Pass 1: prompt attachment canonicalization helper extraction
+  - Pass 2: UI read-path consolidation for prompt attachment state projection
+  - Pass 3: canonical step identity clarification (`step.id` vs `canonical_step_id`)
+  - Pass 4: validation lifecycle clarification (normalize->validate usage, warning-only/non-mutating contract, caller-owned surfacing)
+- Sprint 04 stabilization notes:
+  - no schema/runtime/import/export redesign was introduced
+  - validation warnings remain non-blocking by design
+  - smoke verification remains lightweight/manual in this environment (no browser automation harness in repo)
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions

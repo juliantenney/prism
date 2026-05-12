@@ -5882,6 +5882,8 @@
   }
 
   function getPatternByCanonicalStepId(canonicalStepId, stepPatternCatalog) {
+    // Identity preference:
+    // canonical_step_id is the authoritative semantic/domain identity when present.
     var target = normalizeCanonicalStepId(canonicalStepId);
     if (!target) return null;
     var pool = Array.isArray(stepPatternCatalog) ? stepPatternCatalog : [];
@@ -5898,6 +5900,8 @@
   }
 
   function pickCanonicalWorkflowStepTitle(rawTitle, stepPatternCatalog) {
+    // Title matching is a compatibility fallback for semantic matching when
+    // canonical_step_id is absent. It does not replace local step.id ownership.
     var title = String(rawTitle || "").trim();
     var pool = Array.isArray(stepPatternCatalog) ? stepPatternCatalog : [];
     if (!title || !pool.length) return title;
@@ -6013,6 +6017,8 @@
       pattern = getPatternByCanonicalStepId(canonicalId, catalog);
     }
     if (!pattern) {
+      // Fallback path: infer semantic match from editable step title only when
+      // canonical_step_id is not available/resolvable.
       var canonicalTitle = pickCanonicalWorkflowStepTitle(title, catalog);
       pattern = getPatternByCanonicalWorkflowTitle(canonicalTitle || title, catalog);
     }
@@ -6293,6 +6299,9 @@
       inputs.indexOf("document") !== -1;
     out.steps = out.steps.map(function (step, idx) {
       var s = Object.assign({}, step || {});
+      // step.id remains workflow-local durable instance identity.
+      // title is editable display label and may be canonicalized for compatibility.
+      // canonical_step_id is semantic/domain identity populated when matched.
       var originalTitle = String(s.title || "").trim();
       var canonicalized = pickCanonicalWorkflowStepTitle(originalTitle, stepPatternCatalog);
       var matchedPattern = getPatternByCanonicalWorkflowTitle(canonicalized, stepPatternCatalog);
@@ -10614,6 +10623,7 @@
     // Reset transient run navigation when loading/selecting a workflow.
     resetWorkflowRunNavigationState({ resetIndex: true });
     updateWorkflowRunView();
+    // Selection/render path: evaluate current definition snapshot and project warnings in UI.
     renderWorkflowValidationWarnings(validateWorkflow(wf));
   }
 
@@ -10863,6 +10873,53 @@
     return "none";
   }
 
+  function canonicalizeWorkflowStepPromptAttachment(stepLike, options) {
+    var row = stepLike && typeof stepLike === "object" ? stepLike : {};
+    var opts = options && typeof options === "object" ? options : {};
+    var sourceType = normalizePromptSourceType(
+      row.prompt_source_type != null
+        ? row.prompt_source_type
+        : row.promptSourceType != null
+        ? row.promptSourceType
+        : row.prompt_source != null
+        ? row.prompt_source
+        : row.promptSource != null
+        ? row.promptSource
+        : ""
+    );
+    var promptId = row.promptId != null ? String(row.promptId).trim() : "";
+    var overrideBody = String(
+      row.override_prompt_body != null ? row.override_prompt_body : row.overridePromptBody || ""
+    ).trim();
+
+    if (opts.preferPromptId === true && promptId) {
+      sourceType = "library_prompt";
+    }
+
+    if (sourceType === "none" && opts.inferWhenNone !== false) {
+      if (overrideBody) sourceType = "local_override";
+      else if (promptId) sourceType = "library_prompt";
+    }
+
+    var finalPromptId = promptId;
+    var finalOverrideBody = overrideBody;
+    if (sourceType === "library_prompt") {
+      finalOverrideBody = overrideBody;
+    } else if (sourceType === "local_override") {
+      finalPromptId = "";
+    } else {
+      finalPromptId = "";
+      finalOverrideBody = opts.keepOverrideWhenNone === true ? overrideBody : "";
+    }
+
+    return {
+      prompt_source_type: sourceType,
+      prompt_source: sourceType,
+      promptId: finalPromptId,
+      override_prompt_body: finalOverrideBody
+    };
+  }
+
   function resolveLibraryPromptBody(promptId) {
     var id = String(promptId || "").trim();
     if (!id) return "";
@@ -10919,7 +10976,9 @@
   function createWorkflowStepElement(step, index) {
     var li = document.createElement("li");
     li.className = "workflow-step";
+    // step.id is the workflow-local durable step instance identity.
     li.setAttribute("data-step-id", step.id);
+    // canonical_step_id is semantic/domain identity (not the local instance id).
     li.setAttribute("data-canonical-step-id", String(step.canonical_step_id || ""));
     li.setAttribute("data-prompt-source", getStepPromptSourceType(step));
     li.setAttribute("data-domain-version", String(step.domain_version || ""));
@@ -11444,7 +11503,8 @@
     promptLabel.textContent = "Step prompt";
     var promptSelect = document.createElement("select");
     promptSelect.setAttribute("data-field", "promptId");
-    var source = getStepPromptSourceType(step);
+    // step.title is an editable display label; canonical_step_id remains the
+    // semantic/domain identity when present.
     var canonicalStepRef = String(step.canonical_step_id || "").trim();
     var liveWorkflowForPrompt = findWorkflowById(state.selectedWorkflowId || "");
     var liveStepForPrompt = null;
@@ -11454,28 +11514,41 @@
       }) || null;
     }
     if (liveStepForPrompt) {
-      source = String(
-        liveStepForPrompt.prompt_source_type != null
-          ? liveStepForPrompt.prompt_source_type
-          : (liveStepForPrompt.prompt_source != null ? liveStepForPrompt.prompt_source : source)
-      ).toLowerCase();
-      source = normalizePromptSourceType(source);
       canonicalStepRef = String(
         liveStepForPrompt.canonical_step_id != null
           ? liveStepForPrompt.canonical_step_id
           : canonicalStepRef
       ).trim();
     }
+    var promptRowForUi = liveStepForPrompt || step || {};
+    var promptAttachmentForUi = canonicalizeWorkflowStepPromptAttachment(
+      {
+        prompt_source_type:
+          promptRowForUi.prompt_source_type != null
+            ? promptRowForUi.prompt_source_type
+            : getStepPromptSourceType(step),
+        promptSourceType: promptRowForUi.promptSourceType,
+        prompt_source: promptRowForUi.prompt_source,
+        promptSource: promptRowForUi.promptSource,
+        promptId: promptRowForUi.promptId,
+        override_prompt_body:
+          promptRowForUi.override_prompt_body != null
+            ? promptRowForUi.override_prompt_body
+            : promptRowForUi.overridePromptBody
+      },
+      {
+        // UI read-path stays compatibility-tolerant: if promptId is present,
+        // treat this step as library_prompt for label/selection interpretation.
+        preferPromptId: true
+      }
+    );
+    li.setAttribute("data-prompt-source", promptAttachmentForUi.prompt_source_type);
     var noneOpt = document.createElement("option");
     noneOpt.value = "";
-    var rawPromptIdValue =
-      liveStepForPrompt && Object.prototype.hasOwnProperty.call(liveStepForPrompt, "promptId")
-        ? liveStepForPrompt.promptId
-        : step.promptId;
-    var effectivePromptId = rawPromptIdValue == null ? "" : String(rawPromptIdValue).trim();
+    var effectivePromptId = promptAttachmentForUi.promptId || "";
     var promptInstanceValue = "";
     noneOpt.textContent = getStepPromptEmptyOptionLabel({
-      promptSource: source,
+      promptSource: promptAttachmentForUi.prompt_source_type,
       promptId: effectivePromptId,
       canonicalStepId: canonicalStepRef,
       promptInstance: promptInstanceValue,
@@ -11486,7 +11559,7 @@
       var opt = document.createElement("option");
       opt.value = p.id;
       opt.textContent = p.title || "(untitled)";
-      if (step.promptId && step.promptId === p.id) {
+      if (effectivePromptId && effectivePromptId === p.id) {
         opt.selected = true;
       }
       promptSelect.appendChild(opt);
@@ -11703,6 +11776,9 @@
   }
 
   function gatherWorkflowDetailFormData() {
+    // Workflow definition gather boundary:
+    // collect editable DOM fields into a workflow-definition draft shape.
+    // This is a derived capture pass (DOM -> object), not persistence.
     var name = (els.workflowName && els.workflowName.value) || "";
     var artefacts = (els.workflowArtefacts && els.workflowArtefacts.value) || "";
     var workflowOutputs = (els.workflowOutputs && els.workflowOutputs.value) || "";
@@ -11738,6 +11814,10 @@
           (existingStep && existingStep.prompt_source_type ? existingStep.prompt_source_type : "") ||
           (existingStep && existingStep.prompt_source ? existingStep.prompt_source : "");
         var sourceType = normalizePromptSourceType(existingSource);
+        // Prompt attachment precedence in gathered draft:
+        // - selected promptId forces library_prompt
+        // - otherwise preserve normalized existing source where possible
+        // - if library_prompt has no promptId selected, fall back to none
         if (promptIdValue) {
           sourceType = "library_prompt";
         } else if (sourceType === "library_prompt") {
@@ -11747,14 +11827,29 @@
           existingStep && typeof existingStep.override_prompt_body === "string"
             ? existingStep.override_prompt_body
             : "";
-        var finalPromptId = sourceType === "library_prompt" ? promptIdValue : "";
+        var promptAttachment = canonicalizeWorkflowStepPromptAttachment(
+          {
+            prompt_source_type: sourceType,
+            prompt_source: sourceType,
+            promptId: promptIdValue,
+            override_prompt_body: overrideBodyValue
+          },
+          {
+            // Gather path keeps current draft semantics: do not infer source from
+            // override text, and keep override text in draft when source is none.
+            preferPromptId: true,
+            inferWhenNone: false,
+            keepOverrideWhenNone: true
+          }
+        );
         steps.push({
+          // Canonical step identity is step.id; canonical_step_id is semantic/catalog lineage.
           id: id,
           title: titleInput ? titleInput.value : "",
           roleLabel: roleInput ? roleInput.value : "",
-          promptId: finalPromptId,
-          prompt_source_type: sourceType,
-          prompt_source: sourceType,
+          promptId: promptAttachment.promptId,
+          prompt_source_type: promptAttachment.prompt_source_type,
+          prompt_source: promptAttachment.prompt_source,
           canonical_step_id:
             String(child.getAttribute("data-canonical-step-id") || "").trim() ||
             (existingStep && existingStep.canonical_step_id ? existingStep.canonical_step_id : ""),
@@ -11766,6 +11861,8 @@
             existingStep && existingStep.prompt_bindings && typeof existingStep.prompt_bindings === "object"
               ? JSON.parse(JSON.stringify(existingStep.prompt_bindings))
               : null,
+          // Gather path preserves existing draft/body text as-is; no additional
+          // trimming/clearing is applied at this DOM capture stage.
           override_prompt_body: overrideBodyValue,
           inputKind: inputKindSelect ? (inputKindSelect.value || "text") : "text",
           outputName: outputInput ? outputInput.value : "",
@@ -11826,18 +11923,33 @@
   function handleSaveWorkflow() {
     if (!els.workflowName) return;
     var data = gatherWorkflowDetailFormData();
+    // Workflow definition canonicalization before persistence:
+    // normalize prompt-source combinations into one compatible stored shape.
     data.steps = (Array.isArray(data.steps) ? data.steps : []).map(function (step) {
       var s = Object.assign({}, step || {});
       var sourceType = getStepPromptSourceType(s);
-      if (s.promptId) sourceType = "library_prompt";
-      s.prompt_source_type = sourceType;
-      s.prompt_source = sourceType;
-      if (sourceType === "library_prompt") {
+      var promptAttachment = canonicalizeWorkflowStepPromptAttachment(
+        Object.assign({}, s, {
+          prompt_source_type: sourceType,
+          prompt_source: sourceType
+        }),
+        {
+          // Save path keeps existing precedence where selected promptId wins.
+          preferPromptId: true
+        }
+      );
+      s.prompt_source_type = promptAttachment.prompt_source_type;
+      s.prompt_source = promptAttachment.prompt_source;
+      // Persisted prompt attachment compatibility policy:
+      // - library_prompt keeps promptId and optional override body text
+      // - local_override clears promptId
+      // - none clears both promptId and override body
+      s.promptId = promptAttachment.promptId;
+      if (promptAttachment.prompt_source_type === "library_prompt") {
         s.override_prompt_body = String(s.override_prompt_body || "").trim();
-      } else if (sourceType === "local_override") {
-        s.promptId = "";
+      } else if (promptAttachment.prompt_source_type === "local_override") {
+        s.override_prompt_body = String(s.override_prompt_body || "");
       } else {
-        s.promptId = "";
         s.override_prompt_body = "";
       }
       s.prompt_instance = "";
@@ -11852,6 +11964,8 @@
       return;
     }
 
+    // Save path: warning-only validation on the to-be-persisted definition snapshot.
+    // Persistence is intentionally non-blocking even when warnings are present.
     var warnings = validateWorkflow(data);
     renderWorkflowValidationWarnings(warnings);
     if (warnings.length) {
@@ -12470,6 +12584,9 @@
   }
 
   function normalizeWorkflowForV1(rawWorkflow, warningTarget) {
+    // Import/load normalization owner:
+    // translate legacy/variant workflow definitions into a runtime-compatible v1 shape
+    // while preserving existing schema compatibility (no migration framework).
     if (!Array.isArray(warningTarget)) warningTarget = [];
     if (!rawWorkflow || typeof rawWorkflow !== "object") return rawWorkflow;
     var wf = Object.assign({}, rawWorkflow);
@@ -12485,28 +12602,14 @@
         (window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(Date.now() + index));
       s.outputName = String(s.outputName || "").trim();
       s.prompt_source = String(s.prompt_source || s.promptSource || "").trim().toLowerCase();
-      s.prompt_source_type = normalizePromptSourceType(
-        s.prompt_source_type || s.promptSourceType || s.prompt_source || s.promptSource || ""
-      );
+      // Legacy prompt attachment recovery + canonicalization for imported records.
+      var promptAttachment = canonicalizeWorkflowStepPromptAttachment(s);
+      s.prompt_source_type = promptAttachment.prompt_source_type;
+      s.prompt_source = promptAttachment.prompt_source;
       s.canonical_step_id = String(s.canonical_step_id || s.canonicalStepId || "").trim();
       s.domain_version = String(s.domain_version || s.domainVersion || "").trim();
-      if (s.prompt_source_type === "none") {
-        if (s.override_prompt_body || s.overridePromptBody) {
-          s.prompt_source_type = "local_override";
-        } else if (s.promptId) {
-          s.prompt_source_type = "library_prompt";
-        }
-      }
-      s.override_prompt_body = String(s.override_prompt_body || s.overridePromptBody || "").trim();
-      if (s.prompt_source_type === "library_prompt") {
-        s.override_prompt_body = String(s.override_prompt_body || "").trim();
-      } else if (s.prompt_source_type === "local_override") {
-        s.promptId = "";
-      } else {
-        s.promptId = "";
-        s.override_prompt_body = "";
-      }
-      s.prompt_source = s.prompt_source_type;
+      s.promptId = promptAttachment.promptId;
+      s.override_prompt_body = promptAttachment.override_prompt_body;
       s.prompt_instance = "";
       delete s.canonical_prompt_id;
       delete s.canonicalPromptId;
@@ -12524,6 +12627,8 @@
     normalizedSteps.forEach(function (s, index) {
       var inputBindings = normalizeStepInputBindings(s.inputBindings || []);
       if (!inputBindings.length && Array.isArray(s.depends_on) && s.depends_on.length) {
+        // Legacy depends_on compatibility path:
+        // derive explicit inputBindings from legacy dependency references.
         s.depends_on.forEach(function (dep) {
           var sourceStepId = "";
           var sourceIndex = null;
@@ -12609,6 +12714,9 @@
   }
 
   function validateWorkflow(wf) {
+    // Validation ownership boundary:
+    // evaluate a workflow-definition snapshot and return warnings only.
+    // This function does not mutate workflow definition state.
     var warnings = [];
     if (!wf || typeof wf !== "object") return warnings;
     var steps = Array.isArray(wf.steps) ? wf.steps : [];
@@ -12818,7 +12926,11 @@
         importedWorkflows.forEach(function (wf) {
           if (!wf || typeof wf !== "object") return;
           var normalizeWarnings = [];
+          // Import path ownership:
+          // normalize first, then validate normalized workflow, then merge by id/update policy.
           var normalizedWorkflow = normalizeWorkflowForV1(wf, normalizeWarnings);
+          // Import path: normalize first, validate second; validation is warning-only and
+          // does not block merge/update decisions for normalized records.
           var validationWarnings = validateWorkflow(normalizedWorkflow);
           if (normalizeWarnings.length || validationWarnings.length) {
             workflowWarnings = workflowWarnings.concat(
@@ -19040,6 +19152,7 @@
       els.workflowDetail.addEventListener("input", function () {
         if (!state.selectedWorkflowId) return;
         var draft = gatherWorkflowDetailFormData();
+        // Draft/edit path: validate gathered draft snapshot for real-time warning projection only.
         renderWorkflowValidationWarnings(validateWorkflow(draft));
       });
     }

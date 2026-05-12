@@ -2,33 +2,42 @@
 
 Sprint:
 
-- **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)**
+- **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1 / sprint closure)**
 
 Status:
 
-- **Closed** (2026-05-12) — Pass 1 **implementation** on **`3d88600`**; **local browser smoke passed** (Workflow Factory + Workflows, console clean, workflow load, export/import round-trip; optional design-from-brief + run-mode **skipped**); **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. See canonical **Sprint 09 Pass 1 closure** and **Local browser smoke**.
+- **Sprint closed** (2026-05-12) — **bounded** Pass 1 on **`3d88600`**; **local browser smoke passed**; **governance / contract boundary** on **`4b9f5ca`**; formal closure `docs/consolidation/sprint-09-pass-1-closure.md`. **No further Sprint 09 passes** implied; contract rationalisation is **Sprint 10** (bootstrap).
 
 Purpose:
 
-- First **implementation-bounded** pass after **Sprint 07** (review) and **Sprint 08** (planning). Execute **workflow brief semantics alignment pass 1** per canonical planning doc.
+- **Completed:** first **implementation-bounded** semantics pass after Sprint 07 (review) and Sprint 08 (planning), plus **explicit documentation** of workflow-generation **contract surface** out of scope for UI-only sprints.
 
-Canonical planning:
+Canonical planning + audit:
 
 - `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
+
+Formal sprint closure:
+
+- `docs/consolidation/sprint-09-pass-1-closure.md`
 
 Upstream:
 
 - Sprint 08 planning: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
 - Sprint 07 review: `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
 
-Non-goals (charter — fixed unless explicitly rescoped):
+Next sprint (bootstrap — not chartered implementation):
 
-- no generator rewrite, workflow-engine redesign, sequencing engine, renderer redesign, domain-pack rewrite, broad brief-field restructuring, hidden behavioural changes, major `app.js` restructuring, assessment-system redesign
+- `docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md`
+- Portable: `docs/development/sprints/2026-05-12-sprint-10-workflow-brief-contract-rationalisation/`
+
+Non-goals (charter — preserved in closure):
+
+- no generator rewrite, workflow-engine redesign, sequencing engine, renderer redesign, domain-pack rewrite, broad brief-field restructuring, hidden behavioural changes, major `app.js` restructuring, assessment-system redesign under Sprint 09 scope
 
 Portable pack:
 
 - This folder, including `context-files/` physical copies and summaries
 
-Governance (2026-05-12):
+Governance outcome:
 
-- **Contract surface frozen under Sprint 09** (including Pass 2): no `briefLines` / `extractWorkflowBriefExplicitFactors` / step-context / `workflowGenerationContext.js` / domain-pack contract edits — see canonical **Sprint 09 governance** and **Workflow Brief Contract Rationalisation** deferral. Pass 2 = **non-prompt-facing** UI wording only.
+- **Contract surface** documented: `briefLines`, `extractWorkflowBriefExplicitFactors`, step-context builders, `workflowGenerationContext.js`, domain-pack contract fields — **Sprint 10** ownership for rationalisation when chartered.

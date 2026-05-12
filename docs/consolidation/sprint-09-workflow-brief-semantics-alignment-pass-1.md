@@ -157,6 +157,8 @@ The Sprint 09 audit confirms that the following are part of the **workflow-gener
 
 ## Sprint 09 Pass 2 — **allowed** scope (non-contract only)
 
+**Sprint closure note (2026-05-12):** Sprint 09 is **closed** as a **complete** bounded sprint; **Pass 2 was not executed**. The scope below remains **documentation** of what would have been **safe** under Sprint 09 governance had a Pass 2 been chartered; **contract-tier** work is **not** Sprint 09 and is deferred to **Sprint 10** bootstrap/charter (`docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md`). Formal closure: `docs/consolidation/sprint-09-pass-1-closure.md`.
+
 Pass 2 may continue **only** for:
 
 - **Isolated non-prompt-facing UI wording** (copy that is **not** concatenated into `briefLines`, `promptContext`, step prompt assembly, or export payloads)
@@ -177,6 +179,8 @@ Sprint 09 pass 1 succeeds if:
 
 ## Related references
 
+- `docs/consolidation/sprint-09-pass-1-closure.md` — **sprint closure** (scope, governance outcome, commits, handoff to Sprint 10 bootstrap)
+- `docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md` — **Sprint 10 bootstrap** (audit/review only; not implementation charter)
 - `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
 - `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
 - `docs/development/shared-vocabulary.md`
@@ -191,11 +195,12 @@ Sprint 09 pass 1 succeeds if:
 - **2026-05-12** — **Stabilisation review (post–Pass 1):** `git diff` of `app.js` and `index.html` reviewed against Sprint 09 charter. Confirmed: edits are **user-facing copy, placeholders, helper text, and `aria-label` casing only**; `textContent` / static HTML updates and hint-string defaults only—**no** persisted-key, save-shape, import/export, generator brief-prefix, workflow-runtime, sequencing, renderer, assessment, or domain-pack file changes. Learning-design hint **display** override in `renderWorkflowFactoryDomainUiHints` does **not** alter collected field values or `briefLines`. Portable `context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` verified **byte-identical** to this canonical file (SHA256 match). **No reverts** required.
 - **2026-05-12** — **Pass 1 closure:** **Local browser smoke passed** on **`3d88600`** (Workflow Factory and Workflows tabs without console errors; existing workflow loaded; export/import round-trip passed; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. **Sprint 09 Pass 1 closed** (implementation + verification complete). Continuity and canonical doc updated.
 - **2026-05-12** — **Sprint 09 governance (post–Pass 1):** Confirmed **contract surface** — `briefLines`, `extractWorkflowBriefExplicitFactors`, step-context builders, `workflowGenerationContext.js`, domain-pack factor ids/labels/values and prompt-coupled config — is **out of scope** for Sprint 09 **including Pass 2** except via a future dedicated sprint **“Workflow Brief Contract Rationalisation”**. Sprint 09 Pass 2 **may** continue only for **non-prompt-facing** UI wording, explanatory copy, ARIA/help/placeholder cleanup, and organisational/grouping clarification. **No** prompt-prefix, factor-extraction, domain brief semantics, generation-context semantics, persistence-name, or import/export structure changes under Sprint 09.
+- **2026-05-12** — **Sprint 09 sprint closure:** Sprint 09 **closed** as a **complete** bounded sprint (Pass 1 + governance); optional Pass 2 **not** pursued as part of Sprint 09; contract-tier work handed to **Sprint 10 bootstrap** only. Formal record: `docs/consolidation/sprint-09-pass-1-closure.md`. Continuity and Sprint 10 bootstrap materials updated (`docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md`, portable pack under `docs/development/sprints/2026-05-12-sprint-10-workflow-brief-contract-rationalisation/`).
 
 ### Check-in summary (for commit / handover)
 
 - **Audit:** Completed; audit table, risk classification, and deferrals recorded in this document (see **Pass 1 risk classification**, **Pass 1 implementation log**, and **Explicitly not changed (deferred)**).
 - **Implemented:** Low-risk wording only in `index.html` (Workflow Factory + Workflows edit panel) and `app.js` (`renderWorkflowFactoryDomainUiHints` defaults + learning-design display-only hint overrides, `updateWorkflowFactoryInputsCopyFromStartingPoint`, `renderWorkflowDetailDomainUiHints` defaults, `handleStartWorkflowDesign` empty-summary placeholder).
 - **Explicit deferrals:** Internal brief/elicitation prefixes (e.g. `Desired outputs: ` in `briefLines` / `extractWorkflowBriefExplicitFactors`), domain-pack source edits, generator templates / `workflowGenerationContext.js`, save-format and runtime paths—unchanged; see **Explicitly not changed (deferred)** above.
-- **Verification:** **Local browser smoke passed** on commit **`3d88600`** (Workflow Factory + Workflows, console clean, existing workflow load, export/import round-trip; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. Sprint 09 Pass 1 **closed** — see **Sprint 09 Pass 1 closure** and **Review log**.
+- **Verification:** **Local browser smoke passed** on commit **`3d88600`** (Workflow Factory + Workflows, console clean, existing workflow load, export/import round-trip; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. **Sprint 09 sprint-closed** — see **`docs/consolidation/sprint-09-pass-1-closure.md`** and **Review log** (governance commit **`4b9f5ca`**).
 - **Portable parity:** `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` should match this file; re-copy after canonical edits.

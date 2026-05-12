@@ -8,6 +8,14 @@ Consolidate Prompt Studio into a clearer, lower-complexity authoring/refinement 
 
 Prompt Studio is functional and central to PRISM, but flow/state complexity has accumulated across prompt definition, refinement, and output shaping.
 
+## Progress So Far
+
+- Prompt Studio state boundaries are now explicit in `app.js`: brief state, runtime refinement session state, and prompt asset state.
+- Prompt terminology has been tightened to distinguish displayed refinement outputs (draft/refined) from durable Prompt Library assets.
+- Refinement lifecycle semantics are documented in-place around session/reset/follow-up/review/finalization paths.
+- Responsibility boundaries are clearer in `app.js` section markers and wiring comments (UI wiring vs refinement orchestration vs prompt asset operations).
+- Workflow prompt context remains a secondary consideration in Sprint 01; standalone Prompt Studio authoring/refinement quality remains the primary priority.
+
 ## Goals
 
 - streamline prompt creation/refinement flow

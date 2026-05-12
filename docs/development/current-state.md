@@ -32,6 +32,11 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 - consolidation sprint structure now exists under `docs/consolidation/`
 - backlog system now exists under `docs/backlog/`
 - current focus remains manual system stabilisation before workflow generation redesign
+- Prompt Studio consolidation model is now explicit:
+  - brief state = user-authored refinement inputs/parameters
+  - runtime refinement session state = transient conversational refinement lifecycle
+  - prompt asset state = durable Prompt Library entity
+- workflow prompt context is treated as a secondary/future consideration in Sprint 01, not a driver of current Prompt Studio design
 
 ## Next Active Focus
 

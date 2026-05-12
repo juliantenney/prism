@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRISM</title>
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+      <div class="app-shell">
+    <header class="app-header">
+      <div class="app-title">
+        <div class="app-title-top">
+          <img src="icon.png" alt="" class="app-icon" />
+          <h1>PRISM</h1>
+          <p class="subtitle">Programmable Reasoning<br>Intelligent System Mapping</p>
+        </div>
+      </div>
+      <div class="api-key-loader">
+        <h2 class="sr-only">OpenAI API</h2>
+        <label for="apiKeyFile" class="label">OpenAI API</label>
+        <div class="api-key-controls">
+          <input type="file" id="apiKeyFile" accept=".txt" />
+          <span id="apiKeyStatus" class="badge badge-danger">Not loaded</span>
+        </div>
+        <p id="apiKeyHelperText" class="helper-text">
+          The file must contain <strong>only</strong> your API key. It is kept in memory only and never stored.
+        </p>
+        <div id="apiSettings" class="api-settings hidden">
+          <div class="form-row compact">
+            <div class="form-group small">
+              <label for="creativitySelect">Creativity</label>
+              <select id="creativitySelect" autocomplete="off">
+                <option value="focused">Focused</option>
+                <option value="balanced" selected>Balanced</option>
+                <option value="exploratory">Exploratory</option>
+              </select>
+            </div>
+            <div class="form-group small">
+              <label for="responseDetailSelect">Response detail</label>
+              <select id="responseDetailSelect" autocomplete="off">
+                <option value="short">Short</option>
+                <option value="standard" selected>Standard</option>
+                <option value="detailed">Detailed</option>
+              </select>
+            </div>
+          </div>
+          <p id="tokenUsage" class="helper-text">
+            Input: 0; Output: 0; Total: 0; Approx cost: $0.0000
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="app-tabs" role="tablist" aria-label="Main sections">
+        <button id="tabWorkflowFactory" class="tab active" role="tab" aria-selected="true" aria-controls="workflowFactoryPanel">
+          Create Workflow
+        </button>
+        <button id="tabWorkflows" class="tab" role="tab" aria-selected="false" aria-controls="workflowsPanel">
+          My Workflows
+        </button>
+        <button id="tabRefiner" class="tab" role="tab" aria-selected="false" aria-controls="refinementPanel">
+          Prompt Studio
+        </button>
+        <button id="tabLibrary" class="tab" role="tab" aria-selected="false" aria-controls="libraryPanel">
+          Prompt Library
+        </button>
+        <button id="tabUtilities" class="tab" role="tab" aria-selected="false" aria-controls="utilitiesPanel">
+          Utilities
+        </button>
+      </div>
+
+      <section id="refinementPanel" class="refinement-panel" aria-label="Prompt refinement" role="tabpanel">
+        <div class="card">
+          <h2>Define the Brief</h2>
+          <div id="workflowPromptWizardNotice" class="workflow-wizard-notice hidden" aria-live="polite">
+            <p id="workflowPromptWizardTitle" class="workflow-wizard-title"></p>
+            <p id="workflowPromptWizardHint" class="workflow-wizard-hint"></p>
+            <button id="exitWorkflowPromptWizardBtn" type="button" class="btn small ghost">Exit workflow prompt mode</button>
+          </div>
+          <div id="workflowStepConfigPanel" class="workflow-step-config-panel hidden">
+            <p id="workflowStepConfigTitle" class="workflow-step-config-title"></p>
+            <p id="workflowStepConfigHint" class="workflow-step-config-hint"></p>
+            <div id="workflowStepConfigOptions" class="workflow-step-config-options"></div>
+          </div>
+          <div class="form-row compact" id="outputTypeGroup">
+            <div class="form-group small">
+              <label for="outputType">Output type</label>
+              <p class="helper-text">Choose the type of result you want to generate.</p>
+              <select id="outputType" autocomplete="off">
+                <option value="text" selected>Text</option>
+                <option value="image">Image</option>
+                <option value="code">Code</option>
+                <option value="structured">Structured (JSON / table)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row compact">
+            <div class="form-group small" id="promptAudienceGroup">
+              <label for="promptAudience">Audience</label>
+              <p class="helper-text">Who should the output be written for?</p>
+              <input type="text" id="promptAudience" placeholder="e.g. non-technical executives, beginners" autocomplete="off" />
+            </div>
+            <div class="form-group small" id="promptRoleGroup">
+              <label for="promptRole">Act as</label>
+              <p class="helper-text">Optional role/persona the model should adopt.</p>
+              <input type="text" id="promptRole" placeholder="e.g. senior copywriter, strict code reviewer" autocomplete="off" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="initialPrompt">Task description</label>
+            <p class="helper-text">Describe clearly what you want the model to do.</p>
+            <textarea id="initialPrompt" rows="5" placeholder="Describe what you want the AI to do..." autocomplete="off"></textarea>
+          </div>
+          <div class="form-row compact">
+            <div class="form-group small" id="promptGoalGroup">
+              <label for="promptGoal">Goal / outcome</label>
+              <p class="helper-text">What does a successful result look like?</p>
+              <input type="text" id="promptGoal" placeholder="What does success look like for this?" autocomplete="off" />
+            </div>
+            <div class="form-group small" id="promptContextGroup">
+              <label for="promptContext">Context / background</label>
+              <p class="helper-text">Relevant facts or situation the model should consider.</p>
+              <input type="text" id="promptContext" placeholder="What should the model know about the situation?" autocomplete="off" />
+            </div>
+          </div>
+          <div class="form-row compact">
+            <div class="form-group small" id="promptToneGroup">
+              <label for="promptTone">Tone / voice</label>
+              <p class="helper-text">Style of writing/voice for the output.</p>
+              <input
+                type="text"
+                id="promptTone"
+                placeholder="Describe the tone, e.g. professional, playful, warm, authoritative"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group small" id="textReadingLevelGroup">
+              <label for="textReadingLevel">Reading level</label>
+              <p class="helper-text">How simple or advanced should the language be?</p>
+              <input
+                type="text"
+                id="textReadingLevel"
+                placeholder="Describe the reading level, e.g. very simple, general adult, technical expert"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div id="typeFieldsCode" class="type-fields hidden">
+            <div class="form-row compact">
+              <div class="form-group small" id="codeLanguageGroup">
+                <label for="codeLanguage">Language</label>
+                <p class="helper-text">Primary programming language to target.</p>
+                <input type="text" id="codeLanguage" placeholder="e.g. Python, TypeScript" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="codeFrameworkGroup">
+                <label for="codeFramework">Framework / libraries</label>
+                <p class="helper-text">Runtime, framework, or key libraries to use.</p>
+                <input type="text" id="codeFramework" placeholder="e.g. React, FastAPI, Node 20" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-group" id="codeEnvironmentGroup">
+              <label for="codeEnvironment">Environment / constraints</label>
+              <p class="helper-text">Platform, performance, security, or runtime constraints.</p>
+              <input type="text" id="codeEnvironment" placeholder="OS, runtime, performance, security constraints, etc." autocomplete="off" />
+            </div>
+            <div class="form-group" id="codeStyleGroup">
+              <label for="codeStyle">Code style</label>
+              <p class="helper-text">How the code should be structured and presented.</p>
+              <input
+                type="text"
+                id="codeStyle"
+                placeholder="e.g. production-ready, tutorial-style with comments, minimal, idiomatic"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div id="typeFieldsImage" class="type-fields hidden">
+            <div class="form-row compact">
+              <div class="form-group small" id="imageSubjectGroup">
+                <label for="imageSubject">Subject</label>
+                <p class="helper-text">Main thing(s) the image should depict.</p>
+                <input type="text" id="imageSubject" placeholder="Main subject(s) of the image" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="imageStyleGroup">
+                <label for="imageStyle">Style</label>
+                <p class="helper-text">Visual style direction for the image.</p>
+                <input type="text" id="imageStyle" placeholder="e.g. photorealistic, watercolor, anime" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-row compact">
+              <div class="form-group small" id="imageCompositionGroup">
+                <label for="imageComposition">Composition / camera</label>
+                <p class="helper-text">Framing, shot type, or camera perspective.</p>
+                <input type="text" id="imageComposition" placeholder="e.g. close-up, wide shot, isometric" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="imageLightingGroup">
+                <label for="imageLighting">Lighting / mood</label>
+                <p class="helper-text">Lighting setup and emotional tone.</p>
+                <input type="text" id="imageLighting" placeholder="e.g. golden hour, studio, moody" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-row compact">
+              <div class="form-group small" id="imageAspectRatioGroup">
+                <label for="imageAspectRatio">Aspect ratio</label>
+                <p class="helper-text">Shape of the output image.</p>
+                <input type="text" id="imageAspectRatio" placeholder="e.g. 16:9, 1:1, 9:16" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="imageSizeGroup">
+                <label for="imageSize">Size / usage</label>
+                <p class="helper-text">Where the image will be used.</p>
+                <input type="text" id="imageSize" placeholder="e.g. social post, poster, icon" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-row compact">
+              <div class="form-group small" id="imagePaletteGroup">
+                <label for="imagePalette">Colour palette</label>
+                <p class="helper-text">Preferred color scheme or constraints.</p>
+                <input type="text" id="imagePalette" placeholder="e.g. muted pastels, neon, black and white" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="imageTextGroup">
+                <label for="imageText">Text in image</label>
+                <p class="helper-text">Exact wording to render, if any.</p>
+                <input type="text" id="imageText" placeholder="Exact text to include, if any" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-group" id="imageSceneGroup">
+              <label for="imageScene">Scene / setting</label>
+              <p class="helper-text">Location or setting details for the composition.</p>
+              <input type="text" id="imageScene" placeholder="Overall scene or setting, e.g. busy Tokyo street at night" autocomplete="off" />
+            </div>
+          </div>
+
+          <div id="typeFieldsStructured" class="type-fields hidden">
+            <div class="form-group" id="structuredSchemaGroup">
+              <label for="structuredSchema">Schema / fields</label>
+              <p class="helper-text">Field names/types expected in the structured output.</p>
+              <input type="text" id="structuredSchema" placeholder="Fields, types, keys to include in JSON or table" autocomplete="off" />
+            </div>
+            <div class="form-group" id="structuredValidationGroup">
+              <label for="structuredValidation">Validation rules</label>
+              <p class="helper-text">Rules the structured data must satisfy.</p>
+              <input type="text" id="structuredValidation" placeholder="Any rules the data must follow" autocomplete="off" />
+            </div>
+          </div>
+          <div class="form-row compact">
+            <div class="form-group small" id="promptFormatGroup">
+              <label for="promptFormat">Desired output format</label>
+              <p class="helper-text">Format the response should return in.</p>
+              <input
+                type="text"
+                id="promptFormat"
+                placeholder="e.g. content format (bullets, email, JSON) or file format (CSV, PDF, markdown)"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group small" id="promptLengthGroup">
+              <label for="promptLength">Length / depth</label>
+              <p class="helper-text">Target length or depth of response.</p>
+              <input
+                type="text"
+                id="promptLength"
+                placeholder="e.g. short overview, 3–5 bullets, ~500 words, deep dive with examples"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+          <div class="form-group" id="promptConstraintsGroup">
+            <label for="promptConstraints">Constraints and must haves</label>
+            <p class="helper-text">Hard requirements, exclusions, or mandatory points to include.</p>
+            <input type="text" id="promptConstraints" placeholder="Style rules, do/don'ts, specific points to include, etc." autocomplete="off" />
+          </div>
+          <div class="button-row">
+            <button id="newBriefBtn" type="button" class="btn ghost">
+              New brief
+            </button>
+            <button id="copyBriefForCopilotBtn" type="button" class="btn ghost">
+              Refine manually
+            </button>
+          </div>
+        </div>
+
+        <div class="card conversation-card">
+          <div class="conversation-header">
+            <div class="conversation-header-main">
+              <h2>Refine the Brief</h2>
+              <button id="startRefinementBtn" class="btn primary">Start refinement</button>
+            </div>
+            <span id="sessionStatus" class="badge badge-muted">Idle</span>
+          </div>
+          <div id="conversationLog" class="conversation-log" aria-live="polite" aria-label="Refinement conversation log">
+          </div>
+          <div id="followUpContainer" class="followup-container">
+            <div class="form-group">
+              <label for="followUpAnswer">Your answer:</label>
+              <textarea id="followUpAnswer" rows="3" placeholder="Type your answer here..." disabled autocomplete="off"></textarea>
+            </div>
+            <div class="button-row">
+              <button id="sendFollowUpBtn" class="btn primary" disabled>Send answer</button>
+              <button id="finishRefinementBtn" class="btn" disabled>Finish &amp; generate final prompt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Final Prompt</h2>
+          <div class="final-prompt-layout">
+              <div class="final-prompt-main">
+              <div class="form-row compact">
+                <div class="form-group small">
+                  <label for="promptVersionSelect">Displayed prompt version</label>
+                  <select id="promptVersionSelect" autocomplete="off">
+                    <option value="refined">Refined</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
+              <label for="finalPrompt" class="sr-only">Final refined prompt</label>
+              <textarea id="finalPrompt" rows="8" placeholder="Your final prompt will appear here after refinement, or paste a prompt refined manually in Copilot/ChatGPT to save it to your library."></textarea>
+              <div class="button-row">
+                <button id="copyFinalPromptBtn" class="btn">Copy</button>
+                <button id="saveToLibraryBtn" class="btn primary" disabled>Save to library</button>
+              </div>
+            </div>
+            <aside class="final-prompt-summary">
+              <h3>Summary</h3>
+              <p id="finalSummary" class="summary-text empty">The summary of this prompt will appear here once refinement is complete.</p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <aside id="libraryPanel" class="library-panel hidden" aria-label="Prompt library" role="tabpanel" aria-hidden="true">
+        <div class="card library-card">
+          <div class="library-header">
+            <h2>Prompt Library</h2>
+            <div class="library-header-actions">
+              <button id="newPromptBtn" class="btn small">New prompt</button>
+              <button id="duplicatePromptBtn" class="btn small" disabled>Duplicate</button>
+              <button id="renamePromptBtn" class="btn small" disabled>Rename</button>
+              <label class="btn small file-button">
+                Import
+                <input type="file" id="importFileInput" accept=".json" />
+              </label>
+              <button id="exportPromptBtn" class="btn small" disabled>Export selected</button>
+              <button id="exportAllBtn" class="btn small">Export all</button>
+              <button id="deletePromptBtn" class="btn small danger" disabled>Delete</button>
+            </div>
+          </div>
+
+          <div class="library-filters">
+            <div class="form-row compact">
+              <div class="form-group small">
+                <label for="librarySearch">Search</label>
+                <input type="search" id="librarySearch" placeholder="Title, body, tags..." />
+              </div>
+              <div class="form-group small">
+                <label for="tagFilter">Tag filter</label>
+                <input type="text" id="tagFilter" placeholder="tag1, tag2, tag3 (all must match)" />
+              </div>
+              <div class="form-group small">
+                <label for="libraryWorkflowFilter">Workflow</label>
+                <select id="libraryWorkflowFilter">
+                  <option value="">All workflows</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="sortSelect">Sort by</label>
+              <select id="sortSelect">
+                <option value="updatedDesc">Updated (newest)</option>
+                <option value="createdDesc">Created (newest)</option>
+                <option value="title">Title A–Z</option>
+                <option value="usage">Usage count</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="library-body">
+            <div class="library-list" id="libraryList" aria-label="Saved prompts"></div>
+            <div class="library-detail" id="libraryDetail" aria-label="Prompt details">
+              <div class="detail-header">
+                <input type="text" id="detailTitle" placeholder="Prompt title" />
+              </div>
+              <div class="form-group">
+                <label for="detailTags">Tags (comma separated)</label>
+                <input type="text" id="detailTags" placeholder="e.g. copywriting, email, marketing" />
+              </div>
+              <div class="form-group">
+                <label for="detailNotes">Notes</label>
+                <textarea id="detailNotes" rows="2" placeholder="Internal notes about how/when to use this prompt"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="detailBody">Prompt body</label>
+                <textarea id="detailBody" rows="6"></textarea>
+              </div>
+
+              <div class="detail-meta">
+                <span id="detailMetaCreated">Created: —</span>
+                <span id="detailMetaUpdated">Updated: —</span>
+                <span id="detailMetaUsage">Usage: 0</span>
+              </div>
+
+              <div class="detail-buttons">
+                <button id="savePromptChangesBtn" class="btn primary">Save changes</button>
+                <button id="usePromptBtn" class="btn" disabled>Use as template</button>
+                <button id="copyPromptBodyBtn" class="btn" disabled>Copy Prompt Body</button>
+              </div>
+
+              <div class="versions-section">
+                <h3>Version history</h3>
+                <ul id="versionsList" class="versions-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section
+        id="utilitiesPanel"
+        class="utilities-panel hidden"
+        aria-label="Utilities"
+        role="tabpanel"
+        aria-hidden="true"
+      >
+        <div class="card">
+          <h2>Utilities</h2>
+          <p class="helper-text">
+            Paste structured JSON from PRISM outputs to preview browser-native HTML and download a `.html` file.
+          </p>
+          <div class="form-row compact">
+            <div class="form-group small">
+              <label for="utilitiesOutputFormat">Output format</label>
+              <select id="utilitiesOutputFormat" autocomplete="off">
+                <option value="html" selected>HTML</option>
+              </select>
+            </div>
+            <div class="form-group small">
+              <label for="utilitiesPresentationMode">Presentation mode</label>
+              <select id="utilitiesPresentationMode" autocomplete="off">
+                <option value="single_page" selected>Single page HTML</option>
+                <option value="learning_object">Learning object HTML</option>
+              </select>
+            </div>
+            <div class="form-group small">
+              <label for="utilitiesFileName">File name (optional)</label>
+              <input
+                type="text"
+                id="utilitiesFileName"
+                placeholder="e.g. session-handout"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="utilitiesJsonInput">Structured text (JSON)</label>
+            <textarea
+              id="utilitiesJsonInput"
+              rows="12"
+              placeholder='Paste JSON here with a top-level "artifact_type" field.'
+              autocomplete="off"
+            ></textarea>
+          </div>
+          <div class="button-row">
+            <button id="utilitiesGenerateBtn" type="button" class="btn primary">Preview HTML</button>
+            <button id="utilitiesDownloadBtn" type="button" class="btn" disabled>Download HTML</button>
+            <button id="utilitiesOpenTabBtn" type="button" class="btn" disabled>Open in New Tab</button>
+            <button id="utilitiesClearBtn" type="button" class="btn ghost">Clear</button>
+          </div>
+          <div id="utilitiesPreviewPanel" class="utilities-preview hidden" aria-live="polite">
+            <div id="utilitiesPreviewError" class="utilities-preview-error hidden" role="alert"></div>
+            <iframe
+              id="utilitiesPreviewFrame"
+              class="utilities-preview-frame"
+              title="Utilities HTML preview"
+              sandbox=""
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="workflowFactoryPanel"
+        class="refinement-panel hidden"
+        aria-label="Workflow factory"
+        role="tabpanel"
+        aria-hidden="true"
+      >
+        <div class="card workflow-factory-basics-card">
+          <h2>Workflow basics</h2>
+          <p class="helper-text">
+            Start by describing the workflow you want to design. You can refine and add prompts later in the Workflows tab.
+          </p>
+          <div class="workflow-factory-basics-grid">
+            <div class="form-group">
+              <label for="wfDesignName">Workflow name</label>
+              <p id="wfDesignNameHint" class="helper-text">A short internal name for this workflow.</p>
+              <input
+                type="text"
+                id="wfDesignName"
+                placeholder="Name this workflow"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group">
+              <label for="wfDesignDomainSelect">Domain</label>
+              <p class="helper-text">
+                General is always included. Select a domain layer to add extra quality rules.
+              </p>
+              <select id="wfDesignDomainSelect" aria-label="Workflow design domain">
+                <option value="general">General</option>
+              </select>
+            </div>
+            <div class="form-group wf-span-2">
+              <label for="wfDesignIntent">What are you trying to design or produce?</label>
+              <p id="wfDesignIntentHint" class="helper-text">State the primary design intent in one line.</p>
+              <textarea
+                id="wfDesignIntent"
+                rows="2"
+                placeholder="e.g. workshop, lesson, module, assessment materials, research summary workflow"
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="wfDesignAudience">Who is this for?</label>
+              <p id="wfDesignAudienceHint" class="helper-text">Primary target users or learners.</p>
+              <input
+                type="text"
+                id="wfDesignAudience"
+                placeholder="e.g. university staff, undergraduate students, researchers"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group">
+              <label for="wfDesignScale">What is the scale / scope?</label>
+              <p id="wfDesignScaleHint" class="helper-text">e.g. single task, short session, multi-step workflow, or programme</p>
+              <input
+                type="text"
+                id="wfDesignScale"
+                placeholder="e.g. 30 mins, 1 day, 1 week, ongoing"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-group">
+              <label for="wfDesignStartingArtefact">Starting point (optional)</label>
+              <p id="wfDesignStartingArtefactHint" class="helper-text">What are you starting from? Select if you already have something (e.g. learning outcomes, activities, or assessment items).</p>
+              <select id="wfDesignStartingArtefact" autocomplete="off">
+                <option value="">From source material (e.g. document, notes, PDF)</option>
+              </select>
+            </div>
+            <div class="form-group wf-span-2">
+              <label id="wfDesignInputsLabel" for="wfDesignInputs">Source material / inputs</label>
+              <p id="wfDesignInputsHint" class="helper-text">Describe the source content or inputs available at the start.</p>
+              <textarea
+                id="wfDesignInputs"
+                rows="2"
+                placeholder="e.g. PDF, notes, transcript, list of topics..."
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="form-group wf-span-2">
+              <label for="wfDesignDesiredOutputs">Desired outputs (optional)</label>
+              <p id="wfDesignDesiredOutputsHint" class="helper-text">What the workflow should produce.</p>
+              <textarea
+                id="wfDesignDesiredOutputs"
+                rows="2"
+                placeholder="e.g. activities, sequence, assessment, slide deck, facilitator guide, handout"
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="form-group wf-span-2">
+              <label for="wfDesignScopeConstraints">Scope and constraints</label>
+              <p id="wfDesignConstraintsHint" class="helper-text">Hard requirements: time, tools, policy, accessibility, delivery conditions.</p>
+              <textarea
+                id="wfDesignScopeConstraints"
+                rows="2"
+                placeholder="e.g. 5-minute video, lesson, lecture, short course, or full module; expected student time (e.g. 30 mins); accessibility requirements; target audience level; language; prerequisites; any do/don'ts…"
+                autocomplete="off"
+              ></textarea>
+            </div>
+          </div>
+          <div id="wfDomainExtraFields" class="hidden"></div>
+        </div>
+
+        <details id="wfBriefResolvedDetails" class="card hidden">
+          <summary id="wfBriefResolvedSummary">Resolved workflow brief</summary>
+          <p class="helper-text">
+            Inspect asked, inferred, and mapped brief state before generation.
+          </p>
+          <pre id="wfBriefResolvedContent" class="json-preview"></pre>
+        </details>
+
+        <div class="card">
+          <div class="conversation-header">
+            <div class="conversation-header-main">
+              <h2>Workflow design assistant</h2>
+              <button id="wfDesignStartBtn" class="btn primary">Design workflow</button>
+            </div>
+            <span id="wfDesignStatus" class="badge badge-muted">Idle</span>
+          </div>
+          <div id="wfDesignLog" class="conversation-log" aria-live="polite" aria-label="Workflow design log">
+          </div>
+          <div class="followup-container">
+            <div class="form-group">
+              <label for="wfDesignAnswer">Your answer:</label>
+              <textarea
+                id="wfDesignAnswer"
+                rows="2"
+                placeholder="Type yes/no or any follow-up answer here..."
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="button-row">
+              <button id="wfDesignSendBtn" class="btn">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Suggested workflow</h2>
+          <div class="form-row compact">
+            <div class="form-group small">
+              <label for="wfDesignVersionSelect">Workflow version</label>
+              <select id="wfDesignVersionSelect" autocomplete="off">
+                <option value="refined">Refined</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+          </div>
+          <p id="wfDesignSummary" class="summary-text empty">
+            When the assistant designs a workflow, its summary and steps will appear here.
+          </p>
+          <ol id="wfDesignSteps" class="workflow-steps-list"></ol>
+          <div class="button-row">
+            <button id="wfDesignReviewBtn" class="btn" disabled>Review &amp; suggest improvements</button>
+            <button id="wfDesignSaveBtn" class="btn primary" disabled>Save as workflow</button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="workflowsPanel"
+        class="workflows-panel hidden"
+        aria-label="Workflows"
+        role="tabpanel"
+        aria-hidden="true"
+      >
+        <div class="card workflow-card">
+          <div class="workflow-header">
+            <h2>Workflows</h2>
+            <div class="workflow-header-actions">
+              <div class="workflow-actions-group">
+                <button id="newWorkflowBtn" class="btn small">New</button>
+                <button id="duplicateWorkflowBtn" class="btn small" disabled>Duplicate</button>
+                  <button id="renameWorkflowBtn" class="btn small" disabled>Rename</button>
+              </div>
+              <div class="workflow-actions-group">
+                <label class="btn small file-button">
+                  Import
+                  <input type="file" id="importWorkflowsInput" accept=".json" />
+                </label>
+                <button id="exportWorkflowBtn" class="btn small" disabled>Export selected</button>
+                <button id="exportAllWorkflowsBtn" class="btn small">Export all</button>
+              </div>
+              <div class="workflow-actions-group">
+                <button id="saveWorkflowBtn" class="btn small primary">Save</button>
+                <button id="deleteWorkflowBtn" class="btn small danger" disabled>Delete</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-body">
+            <div class="workflow-list" id="workflowList" aria-label="Workflows list"></div>
+
+            <div class="workflow-detail" id="workflowDetail" aria-label="Workflow details">
+              <div class="workflow-mode-row">
+                <div class="workflow-mode-tabs" role="tablist" aria-label="Workflow mode">
+                  <button
+                    id="workflowModeEditBtn"
+                    class="workflow-mode-tab active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    id="workflowModeRunBtn"
+                    class="workflow-mode-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    Run
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="workflow-run-summary">
+                <div id="workflowRunName" class="workflow-run-name"></div>
+                <div id="workflowRunText" class="workflow-run-text"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="workflowName">Workflow name</label>
+                <p id="workflowNameHint" class="helper-text">A clear internal name for this saved workflow.</p>
+                <input
+                  type="text"
+                  id="workflowName"
+                  placeholder="e.g. Summarise document → Quiz → Follow-up email"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="workflowGoal">Goal / outcome (workflow output)</label>
+                <p id="workflowGoalHint" class="helper-text">Describe the final result this workflow should deliver.</p>
+                <textarea
+                  id="workflowGoal"
+                  rows="3"
+                  placeholder="What should the final workflow output achieve?"
+                  autocomplete="off"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="workflowConstraints">Constraints and must haves (workflow output)</label>
+                <p id="workflowConstraintsHint" class="helper-text">Non-negotiables such as policy, compliance, style, or delivery constraints.</p>
+                <input
+                  type="text"
+                  id="workflowConstraints"
+                  placeholder="Style rules, do/don'ts, required inclusions"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="workflowAudience">Audience (workflow output)</label>
+                <p id="workflowAudienceHint" class="helper-text">Primary end users or learners for this workflow output.</p>
+                <input
+                  type="text"
+                  id="workflowAudience"
+                  placeholder="e.g. beginner learners, senior leaders"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="workflowArtefacts">Workflow inputs / artefacts</label>
+                <p id="workflowArtefactsHint" class="helper-text">Source materials this workflow expects at runtime.</p>
+                <textarea
+                  id="workflowArtefacts"
+                  rows="1"
+                  placeholder="Describe the main inputs, e.g. source document text, image descriptions, data links..."
+                  autocomplete="off"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="workflowOutputs">Workflow outputs (list)</label>
+                <p id="workflowOutputsHint" class="helper-text">Comma-separated artefact names this workflow should produce.</p>
+                <textarea
+                  id="workflowOutputs"
+                  rows="1"
+                  placeholder="e.g. learning_outcomes, page"
+                  autocomplete="off"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="workflowStartingArtefact">Starting artefact</label>
+                <p class="helper-text">Structured start point chosen in Workflow Factory.</p>
+                <input
+                  type="text"
+                  id="workflowStartingArtefact"
+                  placeholder="Start from raw content / unspecified"
+                  autocomplete="off"
+                  readonly
+                />
+              </div>
+              <div id="workflowValidationPanel" class="workflow-validation-panel hidden" aria-live="polite"></div>
+
+              <div class="workflow-steps-section">
+                <div class="workflow-steps-header">
+                  <h3>Steps</h3>
+                </div>
+                <ol id="workflowSteps" class="workflow-steps-list">
+                  <li class="workflow-steps-empty">No steps yet. Add your first step.</li>
+                </ol>
+                <div class="workflow-run-controls">
+                  <span id="workflowRunStatus" class="helper-text"></span>
+                  <div class="workflow-run-buttons">
+                    <button id="workflowPrevStepBtn" class="btn small" type="button">Previous</button>
+                    <button id="workflowNextStepBtn" class="btn small primary" type="button">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-buttons">
+                <button id="addWorkflowStepBtn" class="btn small">Add step</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="utils.js?v=20260326-1"></script>
+  <script src="library.js?v=20260326-1"></script>
+  <script src="workflowGenerationContext.js?v=20260326-1"></script>
+  <script src="app.js?v=20260326-1"></script>
+</body>
+</html>

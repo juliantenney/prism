@@ -6,7 +6,7 @@
 
 
 
-PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 are complete. **Sprint 07 — Workflow Generation Rationalisation Review** is **documented** (review-only artefacts). **Sprint 08 — Workflow Planning and Brief Semantics Alignment** is **closed** as a **planning / documentation sprint**: audit tables, classification, elicitation boundary notes, **assessment planning** and **sequencing semantics** notes, terminology consolidation, closure summary, and **implementation candidates extracted (not approved)**. **No** source, runtime, domain-pack **content**, **renderer**, or **generation behaviour** changes were made under Sprint 08. **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** is **opened (2026-05-12)** as a **tightly scoped**, **implementation-bounded**, **semantics-first** sprint (not an architectural redesign); see canonical charter below.
+PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 are complete. **Sprint 07 — Workflow Generation Rationalisation Review** is **documented** (review-only artefacts). **Sprint 08 — Workflow Planning and Brief Semantics Alignment** is **closed** as a **planning / documentation sprint**: audit tables, classification, elicitation boundary notes, **assessment planning** and **sequencing semantics** notes, terminology consolidation, closure summary, and **implementation candidates extracted (not approved)**. **No** source, runtime, domain-pack **content**, **renderer**, or **generation behaviour** changes were made under Sprint 08. **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** is **closed** (2026-05-12): **local browser smoke passed** on **`3d88600`** (Workflow Factory + Workflows without console errors; existing workflow loaded; export/import round-trip; optional design-from-brief and run-mode **skipped**); **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. Closure and verification tables: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` (**Sprint 09 Pass 1 closure**, **Local browser smoke**).
 
 
 
@@ -18,7 +18,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 **Portable sprint pack (Sprint 09):** `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`
 
-**Active focus:** **Sprint 09** — **Workflow Brief Semantics Alignment (Pass 1)** — terminology/help text/narrow brief wording alignment; **compatibility-preserving**; audit table in charter doc is the **first task**. Sprint 08 **does not** retroactively approve implementation; Sprint 09 **explicitly charters** pass 1 scope.
+**Active focus:** **Sprint 09 Pass 1 — closed.** **Next:** charter follow-on work explicitly (e.g. from Sprint 08 **Potential follow-on implementation candidates (not approved)** or `docs/backlog/`) — not auto-approved by Sprint 09 closure.
 
 
 
@@ -58,7 +58,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 - **Sprint 08** **planning and documentation complete**: field/factor audit, planning-factor classification, pre/post-synthesis boundary note, assessment-planning note, sequencing and learner-interaction note, consolidation pass, closure summary, **Potential follow-on implementation candidates (not approved)** table; continuity docs updated
 
-- **Sprint 09** — **Workflow Brief Semantics Alignment (Pass 1)** — **opened (2026-05-12)** — bounded implementation charter and portable pack prepared (`docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`, `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`); continuity docs updated (**documentation-only** governance step)
+- **Sprint 09** — **Pass 1 closed (2026-05-12):** implementation commit **`3d88600`**; **local browser smoke passed** (Workflow Factory + Workflows, console clean, existing workflow load, export/import round-trip; optional design-from-brief + run-mode **skipped**); **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing; continuity + canonical doc updated (**Sprint 09 Pass 1 closure**)
 
 
 
@@ -72,7 +72,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 - **no domain-specific logic** in general app/runtime code paths (preserve as architectural constraint for follow-on implementation)
 
-- **Sprint 09 (pass 1)** is **chartered** as **bounded implementation** (terminology/help/narrow brief wording); **Sprint 08** remains **planning-only** output—Sprint 09 scope is **explicit** in `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
+- **Sprint 09 Pass 1** is **closed** after **local browser smoke passed** on **`3d88600`** (2026-05-12); deferred medium/high-risk items remain documented in the Sprint 09 canonical doc only
 
 
 
@@ -80,11 +80,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 
 
-1. **Sprint 09 is open:** complete the **UI term / field audit table** in `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` before substantive code changes; keep scope to **pass 1** (wording / clarification) unless the charter is amended.
+1. **Post–Sprint 09:** pick next bounded sprint or backlog items explicitly—Sprint 08 **implementation candidates** remain **not approved** until re-chartered.
 
-2. Preserve Sprint 07 stable behaviours in Sprint 09 implementation: **compact workflows**, **artefact chaining**, **learner-facing coherence**, **lightweight elicitation**, **emergent pedagogic sequencing behaviour**.
+2. Preserve Sprint 07 stable behaviours in any further work: **compact workflows**, **artefact chaining**, **learner-facing coherence**, **lightweight elicitation**, **emergent pedagogic sequencing behaviour**.
 
-3. Optional: record additional candidates under `docs/backlog/` only when explicitly adopted—distinct from Sprint 08 **planning sign-off** and Sprint 09 **pass 1** charter boundaries.
+3. Optional: record additional candidates under `docs/backlog/` only when explicitly adopted—distinct from Sprint 08 **planning sign-off** and any future sprint charter.
 
 
 
@@ -100,11 +100,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 
 
-1. Read **Sprint 09** charter: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` (non-goals, boundaries, audit table).
+1. Use Sprint 09 canonical **Sprint 09 Pass 1 closure** and **Local browser smoke** as the verification record for **`3d88600`**.
 
-2. Keep Sprint 08 consolidation as **planning reference** only—Sprint 09 charter bounds implementation; do **not** expand into generator/renderer/domain-pack work without a **new** explicit scope.
+2. Keep Sprint 08 consolidation as **planning reference** only—follow-on implementation requires a **new** sprint charter.
 
-3. Keep `docs/development/current-state.md` and portable sprint `CURRENT-STATE.md` / `HANDOVER.md` aligned as Sprint 09 work progresses.
+3. Keep `docs/development/current-state.md` and portable sprint snapshots aligned after each continuity pass.
 
 
 
@@ -146,7 +146,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase. Sprints 02–06 
 
 
 
-- **Sprint 09 (pass 1)** is **chartered** for **bounded semantics alignment** only—see `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`; expanding into generator, renderer, domain-pack, or broad brief restructuring requires **explicit** rescope
+- **Sprint 09 Pass 1** is **closed** (implementation + **local browser smoke passed** on **`3d88600`**); see `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` **Sprint 09 Pass 1 closure**
+
+- **Sprint 09 (pass 1)** was **chartered** for **bounded semantics alignment** only—follow-on generator/renderer/domain-pack work requires **explicit** rescope
 
 - Sprint 08 **closure** does **not** authorise code, domain-pack **content**, **renderer**, or **generation behaviour** changes by itself
 

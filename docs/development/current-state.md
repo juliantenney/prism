@@ -22,7 +22,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Focus and Scope Notes
 
-- workflow generation rationalisation **review** (Sprint 07) is **documented**; **brief and planning semantics alignment** (Sprint 08) is **complete (planning documentation)** — see `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md` (closure summary and **not approved** implementation-candidate table); **Sprint 09** is **opened** as **bounded implementation (pass 1)** — see `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` (semantics-first, compatibility-preserving; **not** an architectural redesign sprint)
+- workflow generation rationalisation **review** (Sprint 07) is **documented**; **brief and planning semantics alignment** (Sprint 08) is **complete (planning documentation)** — see `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md` (closure summary and **not approved** implementation-candidate table); **Sprint 09 Pass 1** — **closed** (implementation + **local browser smoke passed** on **`3d88600`**; optional design-from-brief and run-mode **skipped**; **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing — see `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` **Sprint 09 Pass 1 closure**)
 - domain-pack **rewrite** remains out of scope until explicitly scoped; Sprint 08 **did not** target domain-pack overhaul (**documentation-only**); same boundary applies until a sprint explicitly rescopes it
 - tidy-up/governance phase is complete
 - continuity workflow is now operational
@@ -32,7 +32,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - consolidation sprint structure now exists under `docs/consolidation/`
 - sprint transition portability now uses `docs/development/sprints/YYYY-MM-DD-sprint-name/`
 - backlog system now exists under `docs/backlog/`
-- manual workflow builder and definition foundations are stabilised; **Sprint 07** captured workflow-generation rationalisation in **review documentation**; **Sprint 08** completed **planning and brief semantics alignment** (audit, classification, boundary and assessment/sequencing notes, consolidation closure—**documentation only**; outputs are **planning foundations**, not approved implementation); **Sprint 09** (**Workflow Brief Semantics Alignment — Pass 1**) is the **first chartered bounded implementation** pass after Sprint 08—terminology/help text/narrow brief wording only unless audit explicitly expands scope
+- manual workflow builder and definition foundations are stabilised; **Sprint 07** captured workflow-generation rationalisation in **review documentation**; **Sprint 08** completed **planning and brief semantics alignment** (audit, classification, boundary and assessment/sequencing notes, consolidation closure—**documentation only**; outputs are **planning foundations**, not approved implementation); **Sprint 09 Pass 1** — **closed** on **`3d88600`** after **local browser smoke passed** (see Sprint 09 canonical **Sprint 09 Pass 1 closure**)
 - Prompt Studio consolidation model is now explicit:
   - brief state = user-authored refinement inputs/parameters
   - runtime refinement session state = transient conversational refinement lifecycle
@@ -41,7 +41,8 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-- **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** — **opened (2026-05-12)** — **tightly scoped**, **review-led**, **implementation-bounded**, **semantics-first**, **compatibility-preserving**; canonical charter: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`; portable pack: `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`. **Not** an architectural redesign sprint (no generator rewrite, sequencing engine, renderer redesign, domain-pack rewrite, broad brief restructuring, hidden behaviour changes). **Sprint 08** remains **planning foundation only**—Sprint 09 **charters** pass 1 implementation subset explicitly.
+- **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** — **closed (2026-05-12)** — **implementation- and verification-complete** on **`3d88600`**: **local browser smoke passed** (Workflow Factory + Workflows without console errors; existing workflow loaded; export/import round-trip; optional design-from-brief and run-mode **skipped**; **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing). Canonical closure: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` (**Sprint 09 Pass 1 closure**). Portable pack: `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`.
+- **Next:** pick follow-on work from Sprint 08 **Potential follow-on implementation candidates (not approved)** or backlog only when a **new** sprint is chartered — not auto-approved by Sprint 09 closure.
 - **Sprint 08 — Workflow Planning and Brief Semantics Alignment** — **closed (planning / documentation complete)**; canonical consolidation: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md` (includes **Potential follow-on implementation candidates (not approved)** and historical **Recommended Sprint 09 direction**).
 - Portable sprint pack (reference): `docs/development/sprints/2026-05-12-sprint-08-workflow-planning-and-brief-semantics-alignment/`
 - **Sprint 07 — Workflow Generation Rationalisation Review** — **review documentation complete** (input to Sprint 08): `docs/consolidation/sprint-07-workflow-generation-rationalisation-review.md`
@@ -90,7 +91,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
   - field/factor audit, planning-factor classification, pre/post-synthesis boundary note, **assessment planning** and **sequencing semantics** notes, terminology consolidation, backlog-vs-decision separation, closure summary, **implementation candidates extracted (not approved)**
   - **no** source, runtime, domain-pack **content**, **renderer**, or **generation behaviour** changes under Sprint 08
   - planning foundation only: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
-- Sprint 09 — Workflow Brief Semantics Alignment (Pass 1) — **opened (2026-05-12)** — **bounded implementation** (Workflow Factory terminology, UI/help copy, learner-facing wording alignment, narrow brief semantics clarification; audit-gated); canonical: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`; portable: `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/`
+- Sprint 09 — Workflow Brief Semantics Alignment (Pass 1) — **closed** (2026-05-12): **local browser smoke passed** on **`3d88600`** (Workflow Factory + Workflows, console clean, existing workflow load, export/import round-trip; optional design-from-brief + run-mode **skipped**); **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing; closure: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions
@@ -103,4 +104,4 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - Manual Workflow Builder
 - workflow semantics
 - artefact contracts
-- workflow planning and brief semantics (**Sprint 08** — **complete**, planning-only foundation); **Sprint 09 (pass 1)** — **bounded implementation alignment** chartered separately (`docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`)
+- workflow planning and brief semantics (**Sprint 08** — **complete**, planning-only foundation); **Sprint 09 Pass 1** — **closed** on **`3d88600`** after **local browser smoke passed** (`docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`)

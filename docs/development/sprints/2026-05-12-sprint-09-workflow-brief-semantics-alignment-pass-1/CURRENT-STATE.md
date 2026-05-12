@@ -6,6 +6,5 @@ Canonical source:
 
 Sprint transition snapshot:
 
-- **Sprint 08 — Workflow Planning and Brief Semantics Alignment** is **complete** (planning / documentation only). **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** — **Pass 1 copy landed**; **stabilisation review (2026-05-12)** recorded in canonical doc (charter-compliant, copy-only; **browser smoke** still advised before commit)—see `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`.
-- Sprint 09 is **not** an architectural redesign sprint; **no** generator rewrite, sequencing engine, renderer redesign, domain-pack rewrite, or broad brief restructuring in charter.
-- **Portable doc parity:** `context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` is kept in sync with the canonical consolidation doc after edits.
+- **Sprint 09 — Workflow Brief Semantics Alignment (Pass 1)** — **closed (2026-05-12)**. **Local browser smoke passed** on commit **`3d88600`**: Workflow Factory and Workflows tabs **without console errors**; **existing workflow loaded**; **export/import round-trip passed**; optional design-from-brief (API key) and run-mode spot-check **skipped**; **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. Canonical record: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md` (**Local browser smoke**, **Sprint 09 Pass 1 closure**).
+- **Portable doc parity:** `context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` matches the canonical Sprint 09 doc after edits (re-copy when the canonical file changes).

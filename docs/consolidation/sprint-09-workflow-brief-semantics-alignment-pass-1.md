@@ -114,13 +114,42 @@ Environment: Node CLI was not available in the agent shell; **no** automated JS 
 - Start workflow design (with API key if used) — brief construction still uses same factor keys and `Desired outputs:` internal prefix.
 - Run mode / step execution — untouched files logically; spot-check if time permits.
 
+## Pass 1 verification status
+
+### Agent recording (2026-05-12)
+
+| Item | Status |
+|------|--------|
+| **HEAD checked** | **`3d88600`** (`Sprint 09 pass 1: align Workflow Factory wording`) |
+| **Static wording review** | **Passed** — `index.html` at committed tree reviewed for Sprint 09 copy (intro, desired outputs label/help/placeholder, inputs/source material, starting point, scale hint, scope/constraints hint, suggested-workflow empty state, Workflows tab labels/hints). |
+| **Browser runtime smoke (agent)** | **Not executed** — no browser in agent/CI recording environment. |
+
+### Local browser smoke (**passed** — recorded 2026-05-12)
+
+Verified against commit **`3d88600`**.
+
+| Check | Result |
+|--------|--------|
+| **Workflow Factory** | **Passed** — loaded **without console errors**. |
+| **Workflows tab** | **Passed** — loaded **without console errors**. |
+| **Existing workflow** | **Passed** — selected workflow **loaded** correctly in the UI. |
+| **Export / import** | **Passed** — **round-trip** succeeded. |
+| **Design-from-brief (API key)** | **Skipped** — optional; not exercised in this smoke pass. |
+| **Run-mode spot-check** | **Skipped** — optional; not exercised in this smoke pass. |
+
+**Regression posture:** **No** regressions **observed** in this session for **runtime**, **generation**, **persistence**, **import/export**, **domain-pack** behaviour, **renderer**, **assessment** logic, or **sequencing** (copy-only Pass 1 scope; smoke confirms prior behaviour on **`3d88600`**).
+
+## Sprint 09 Pass 1 closure (2026-05-12)
+
+Sprint 09 Pass 1 is **closed** as **implementation- and verification-complete** on commit **`3d88600`**: bounded author-facing wording alignment, **local browser smoke passed**, continuity updated. **Deferred** medium/high-risk items remain documented above and are **not** rescoped by this closure.
+
 ## Success criteria
 
 Sprint 09 pass 1 succeeds if:
 
 - Audit table is **substantively filled** for Factory-visible rows and **risk-rated** before risky merges
 - **User-visible** terminology and help text **better match** Sprint 08 planning language where chartered, **without** violating non-goals
-- **No** unintended generation, runtime, renderer, or domain-pack **behaviour** regressions (smoke per `development-protocol` / team practice)
+- **No** unintended generation, runtime, renderer, or domain-pack **behaviour** regressions — **local browser smoke passed** on **`3d88600`** with **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing (see **Local browser smoke** above)
 - **Explicit preservation** of compact workflows, lightweight elicitation, artefact chaining, learner-facing coherence, and emergent sequencing posture
 
 ## Related references
@@ -137,12 +166,12 @@ Sprint 09 pass 1 succeeds if:
 - **2026-05-12** — **Pass 1 audit completed** from live `index.html` + `app.js` + LD domain `workflowBriefConfig` (via `domain-learning-design-step-patterns.md`). **Low-risk copy implemented** in `index.html` and `app.js` only. **Medium/high-risk** items deferred per table and implementation log above.
 - **2026-05-12** — **Pass 1 implementation merged:** author-facing Workflow Factory and Workflows-tab copy only; internal brief prefixes (`Desired outputs: `, etc.) unchanged; domain-pack files unchanged (LD hints overridden in `app.js` for selected domain).
 - **2026-05-12** — **Stabilisation review (post–Pass 1):** `git diff` of `app.js` and `index.html` reviewed against Sprint 09 charter. Confirmed: edits are **user-facing copy, placeholders, helper text, and `aria-label` casing only**; `textContent` / static HTML updates and hint-string defaults only—**no** persisted-key, save-shape, import/export, generator brief-prefix, workflow-runtime, sequencing, renderer, assessment, or domain-pack file changes. Learning-design hint **display** override in `renderWorkflowFactoryDomainUiHints` does **not** alter collected field values or `briefLines`. Portable `context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` verified **byte-identical** to this canonical file (SHA256 match). **No reverts** required.
+- **2026-05-12** — **Pass 1 closure:** **Local browser smoke passed** on **`3d88600`** (Workflow Factory and Workflows tabs without console errors; existing workflow loaded; export/import round-trip passed; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. **Sprint 09 Pass 1 closed** (implementation + verification complete). Continuity and canonical doc updated.
 
 ### Check-in summary (for commit / handover)
 
 - **Audit:** Completed; audit table, risk classification, and deferrals recorded in this document (see **Pass 1 risk classification**, **Pass 1 implementation log**, and **Explicitly not changed (deferred)**).
 - **Implemented:** Low-risk wording only in `index.html` (Workflow Factory + Workflows edit panel) and `app.js` (`renderWorkflowFactoryDomainUiHints` defaults + learning-design display-only hint overrides, `updateWorkflowFactoryInputsCopyFromStartingPoint`, `renderWorkflowDetailDomainUiHints` defaults, `handleStartWorkflowDesign` empty-summary placeholder).
 - **Explicit deferrals:** Internal brief/elicitation prefixes (e.g. `Desired outputs: ` in `briefLines` / `extractWorkflowBriefExplicitFactors`), domain-pack source edits, generator templates / `workflowGenerationContext.js`, save-format and runtime paths—unchanged; see **Explicitly not changed (deferred)** above.
-- **Verification limitations:** Node CLI was not available in the review environment; **no** automated `node --check` run. **Browser smoke checks remain required** before commit.
-- **Recommended manual browser checks before commit:** Open Workflow Factory and Workflows tabs (no console errors); load an existing workflow; export/import round-trip; optional workflow-design start with API key to confirm brief construction still behaves as before; spot-check run mode if time permits (see **Smoke check (lightweight, manual)**).
-- **Portable parity:** `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` matches this file; re-copy after any canonical edit.
+- **Verification:** **Local browser smoke passed** on commit **`3d88600`** (Workflow Factory + Workflows, console clean, existing workflow load, export/import round-trip; optional design-from-brief and run-mode **skipped**). **No** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. Sprint 09 Pass 1 **closed** — see **Sprint 09 Pass 1 closure** and **Review log**.
+- **Portable parity:** `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/context-files/sprint-09-workflow-brief-semantics-alignment-pass-1.md` should match this file; re-copy after canonical edits.

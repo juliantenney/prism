@@ -6,7 +6,7 @@ Sprint:
 
 Status:
 
-- **Opened** (2026-05-12) — **bounded implementation** sprint (semantics-first, compatibility-preserving). **Pass 1** focuses on **Workflow Factory terminology**, **UI/help-text clarification**, and **narrow** brief-field **wording** alignment—not architecture.
+- **Closed** (2026-05-12) — Pass 1 **implementation** on **`3d88600`**; **local browser smoke passed** (Workflow Factory + Workflows, console clean, workflow load, export/import round-trip; optional design-from-brief + run-mode **skipped**); **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing. See canonical **Sprint 09 Pass 1 closure** and **Local browser smoke**.
 
 Purpose:
 

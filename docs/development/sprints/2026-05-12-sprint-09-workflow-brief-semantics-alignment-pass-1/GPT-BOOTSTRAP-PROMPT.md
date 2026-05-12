@@ -16,3 +16,5 @@ Constraints:
 Starter pack:
 
 - `docs/development/sprints/2026-05-12-sprint-09-workflow-brief-semantics-alignment-pass-1/` including `context-files/`
+
+Verification note (2026-05-12): Pass 1 **closed** on **`3d88600`** after **local browser smoke passed** (see canonical **Local browser smoke** and **Sprint 09 Pass 1 closure**). Optional design-from-brief + run-mode were **skipped**; **no** regressions **observed** in runtime, generation, persistence, import/export, domain-pack, renderer, assessment, or sequencing.

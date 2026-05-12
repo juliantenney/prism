@@ -7759,7 +7759,6 @@
 
     // Type‑specific details
     if (brief.outputType === "text") {
-      if (brief.textLength) lines.push("Text length detail: " + brief.textLength);
       if (brief.textReadingLevel) lines.push("Reading level: " + brief.textReadingLevel);
     } else if (brief.outputType === "code") {
       if (brief.codeLanguage) lines.push("Code language: " + brief.codeLanguage);
@@ -8754,16 +8753,6 @@
                 prompt: parsed.final_prompt || "",
                 summary: parsed.summary || ""
               };
-              try {
-                console.info("[PRISM] Refinement apply lengths", {
-                  stage: "review_refined",
-                  rawLength: sanitizedRefinement.diagnostics.rawLength,
-                  storedLength: String(state.promptVersions.refined.prompt || "").length,
-                  renderedLength: els.finalPrompt ? String(els.finalPrompt.value || "").length : 0,
-                  head: sanitizedRefinement.diagnostics.normalizedEdges.head,
-                  tail: sanitizedRefinement.diagnostics.normalizedEdges.tail
-                });
-              } catch (_e1) {}
               state.selectedPromptVersion = "refined";
               updatePromptVersionUI();
 
@@ -8797,16 +8786,6 @@
               summary: parsed.summary || ""
             }
           };
-          try {
-            console.info("[PRISM] Refinement apply lengths", {
-              stage: "draft_generated",
-              rawLength: sanitizedRefinement.diagnostics.rawLength,
-              storedLength: String(state.promptVersions.draft.prompt || "").length,
-              renderedLength: els.finalPrompt ? String(els.finalPrompt.value || "").length : 0,
-              head: sanitizedRefinement.diagnostics.normalizedEdges.head,
-              tail: sanitizedRefinement.diagnostics.normalizedEdges.tail
-            });
-          } catch (_e2) {}
           state.selectedPromptVersion = "draft";
           updatePromptVersionUI();
 
@@ -9328,15 +9307,6 @@
     );
     // Save button readiness derives from finalized prompt text presence.
     els.saveToLibraryBtn.disabled = !safePrompt;
-    try {
-      var edges = summarizePromptEdge(safePrompt);
-      console.info("[PRISM] Refinement finalize lengths", {
-        storedLength: safePrompt.length,
-        renderedLength: els.finalPrompt ? String(els.finalPrompt.value || "").length : 0,
-        head: edges.head,
-        tail: edges.tail
-      });
-    } catch (_e) {}
     els.sessionStatus.textContent = "Complete";
     els.sessionStatus.className = "badge badge-success";
     els.followUpAnswer.disabled = true;

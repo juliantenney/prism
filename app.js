@@ -7617,8 +7617,22 @@
     updateOutputTypeVisibility();
   }
 
+  // -----------------------------
+  // Prompt Studio brief model (canonical vs derived)
+  // -----------------------------
+
+  function getCurrentTaskDescription() {
+    // User-authored task text is part of the authored brief intent,
+    // but remains a separate input from structured brief fields.
+    return els.initialPrompt && typeof els.initialPrompt.value === "string"
+      ? els.initialPrompt.value.trim()
+      : "";
+  }
+
   function getCurrentBriefSnapshot() {
-    // Canonical brief snapshot used for refinement context and saved asset metadata.
+    // Canonical authored brief snapshot.
+    // This is the inspectable source-of-truth capture of Prompt Studio brief fields.
+    // Derived/runtime formatting happens in separate builder helpers.
     var outputType = getSelectedOutputType();
 
     function getTrimmed(el) {
@@ -7655,6 +7669,8 @@
   }
 
   function buildRefinementBriefParts(brief) {
+    // Derived refinement context lines from canonical brief snapshot.
+    // This is model-facing runtime shaping, not canonical state.
     var parts = [];
     var outputType = brief && brief.outputType ? brief.outputType : "text";
     if (!brief || typeof brief !== "object") return parts;
@@ -7693,7 +7709,26 @@
     return parts;
   }
 
+  function buildRefinementUserContentFromBrief(taskDescription, brief) {
+    // Compose model-visible refinement context from:
+    // - authored task description
+    // - canonical brief snapshot
+    // - derived brief lines for runtime prompt assembly
+    var safeTaskDescription = String(taskDescription || "").trim();
+    var safeBrief = brief && typeof brief === "object" ? brief : {};
+    var outputType = safeBrief.outputType || "text";
+    var briefParts = buildRefinementBriefParts(safeBrief);
+
+    var userContent = "Output type: " + outputType + "\n\nTask description: " + safeTaskDescription;
+    if (briefParts.length) {
+      userContent += "\n\nAdditional brief:\n- " + briefParts.join("\n- ");
+    }
+    return userContent;
+  }
+
   function buildBriefSummaryForExternalTool() {
+    // Display-oriented formatting for manual external refinement workflows.
+    // This is intentionally presentation text, not canonical brief storage.
     var brief = getCurrentBriefSnapshot();
     var lines = [];
 
@@ -7747,10 +7782,11 @@
     }
 
     // Task description from textarea, if present
-    if (els.initialPrompt && (els.initialPrompt.value || "").trim()) {
+    var taskDescription = getCurrentTaskDescription();
+    if (taskDescription) {
       lines.push("");
       lines.push("Current task description (if any):");
-      lines.push((els.initialPrompt.value || "").trim());
+      lines.push(taskDescription);
     }
 
     // Fallback if user has not filled much in
@@ -8160,21 +8196,15 @@
       showToast("Load your OpenAI API key first.", "error");
       return;
     }
-    var initial = (els.initialPrompt.value || "").trim();
+    var initial = getCurrentTaskDescription();
     if (!initial) {
       showToast("Enter a task description to refine.", "error");
       return;
     }
 
-    // Build model-visible brief context from canonical brief state.
+    // Build model-visible refinement context from canonical authored brief + task text.
     var brief = getCurrentBriefSnapshot();
-    var outputType = brief.outputType;
-    var briefParts = buildRefinementBriefParts(brief);
-
-    var combinedUserContent = "Output type: " + outputType + "\n\nTask description: " + initial;
-    if (briefParts.length) {
-      combinedUserContent += "\n\nAdditional brief:\n- " + briefParts.join("\n- ");
-    }
+    var combinedUserContent = buildRefinementUserContentFromBrief(initial, brief);
     // Workflow-step policy below applies only when Prompt Factory is opened
     // from Workflow Designer (step prompt generation mode).
     var workflowStepCfg = null;

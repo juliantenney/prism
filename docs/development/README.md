@@ -31,7 +31,7 @@ Before ending a chat:
 When starting a new chat:
 
 - use the latest sprint folder in `docs/development/sprints/`
-- upload bounded `context-files/` plus sprint snapshot docs
+- upload bounded copied files from `context-files/` plus sprint snapshot docs
 - paste `GPT-BOOTSTRAP-PROMPT.md`
 - keep the chat architecture-first and bounded
 
@@ -44,6 +44,8 @@ Each sprint transition should produce one portable folder containing:
 - `CURRENT-STATE.md`
 - `HANDOVER.md`
 - `context-files/`
+
+`context-files/` should hold copied physical snapshot files (not references/symlinks) so sprint folders are directly uploadable.
 
 Canonical continuity sources remain in their existing locations (`current-state`, `session-handovers`, `chat-bootstraps`, `consolidation` docs). Sprint folders are operational snapshots for low-friction restart.
 

@@ -12,6 +12,8 @@ Required structure per sprint folder:
 - `HANDOVER.md`
 - `context-files/`
 
+`context-files/` must contain copied physical snapshots of bounded sprint files (no references/symlinks), so the folder is directly portable for fresh-chat upload.
+
 Use:
 
 1. Open a fresh chat.

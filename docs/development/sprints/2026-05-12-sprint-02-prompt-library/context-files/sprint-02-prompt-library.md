@@ -58,39 +58,6 @@ Prompt Library supports save/use/edit/delete/copy/export/import and version meta
 - core library flows remain stable with no runtime regressions
 - consolidation remains bounded to Prompt Library concerns only
 
-## Prompt Asset Lifecycle Model
-
-- canonical durable state in app runtime: `state.prompts`, `state.selectedPromptId`
-- derived UI projections: active filters, rendered library list, detail form values, version list rendering
-- Prompt Studio runtime refinement state remains separate from durable Prompt Library assets
-
-## Operation Semantics (Passes 1-3)
-
-- **Save new**: detail form payload is persisted through `Library.savePrompt`; durable metadata and initial version snapshot are assigned by persistence.
-- **Save changes**: selected asset is updated through `Library.updatePrompt`; version snapshot behavior remains persistence-owned (append only when body changes).
-- **Delete**: selected durable asset is removed via `Library.deletePrompt`, then in-memory selection/detail UI is cleared.
-- **Duplicate**: selected asset is deep-copied with regenerated durable metadata (`id`, `createdAt`, `updatedAt`, `usageCount`) and duplicate marker version retained.
-- **Use as template**: selected asset hydrates Prompt Studio fields; `usageCount` increments only through this operation.
-- **Copy body**: read-only utility from detail body with existing template-fill behavior preserved.
-- **Export selected/export all**: export payload shapes remain unchanged (`exportPrompts([id])`; bundle with prompts/workflows).
-- **Import**: existing import paths and merge policy remain unchanged; canonical library state is reloaded after import.
-
-## Preserved Policy Choices
-
-- `usageCount` increments only on **Use as template**
-- duplicate flow preserves existing versions and currently results in duplicate-marker + save snapshot versions
-- metadata ownership remains intentionally split:
-  - handler-side lifecycle steps for duplicate/use boundaries
-  - `Library` persistence layer for save/update/import normalization and durable defaults
-
-## Verification Summary (Pass 3)
-
-- `app.js` lint check is clean
-- Prompt Library lifecycle flows were traced and verified behavior-stable after helper extraction
-- no schema changes
-- no runtime behavior redesign
-- no UI redesign
-
 ## Likely Relevant Files
 
 - `app.js`

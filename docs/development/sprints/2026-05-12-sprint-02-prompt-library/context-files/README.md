@@ -1,22 +1,33 @@
-# Context Files (Bounded)
+# Context Files (Bounded Portable Copies)
 
-Use only these files for a fresh Sprint 02 chat restart bundle:
+This directory contains **physical copied snapshots** for Sprint 02 chat restart use.
 
-- `docs/consolidation/sprint-02-prompt-library.md`
-- `docs/development/current-state.md`
-- `docs/development/development-protocol.md`
-- `docs/development/shared-vocabulary.md`
-- `docs/development/session-handovers/2026-05-11-session-handover.md`
-- `docs/development/chat-bootstraps/2026-05-12-sprint-02-bootstrap.md`
+Important:
+
+- files here are copied snapshots, not references
+- no symlinks should be used
+- canonical project files remain in their original locations
+
+Upload workflow:
+
+1. Open a fresh chat.
+2. Upload the bounded files in this folder.
+3. Paste `../GPT-BOOTSTRAP-PROMPT.md`.
+4. Start with architecture-first review before implementation edits.
+
+Included files:
+
+- `sprint-02-prompt-library.md`
+- `current-state.md`
+- `development-protocol.md`
+- `shared-vocabulary.md`
+- `2026-05-11-session-handover.md`
 - `app.js`
 - `library.js`
 - `index.html`
 - `style.css`
-- `README.md` (optional, only if useful)
 
-Fresh chat startup:
+Optional:
 
-1. Upload this bounded set.
-2. Paste `../GPT-BOOTSTRAP-PROMPT.md`.
-3. Start with architecture-first review.
+- add a copied project `README.md` only if useful for the specific sprint chat.
 

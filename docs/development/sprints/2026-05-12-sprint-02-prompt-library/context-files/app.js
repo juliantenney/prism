@@ -146,12 +146,7 @@
     awaitingReviewOptIn: false,
     // Remaining queued reviewer questions for current review phase.
     reviewQuestions: [],
-    // Prompt Asset Lifecycle Contract (durable/canonical Prompt Library state):
-    // - canonical durable state in app runtime: state.prompts + state.selectedPromptId
-    // - user-authored fields: title, body, notes, tags
-    // - system-derived fields: id, createdAt, updatedAt, usageCount, versions
-    // - Prompt Studio runtime/brief state remains separate (non-durable)
-    // - library filters/detail panes are derived projections of canonical prompt assets
+    // Prompt asset state (Prompt Library).
     prompts: [],
     selectedPromptId: null,
     workflows: [],
@@ -9820,8 +9815,6 @@
   // -----------------------------
 
   function loadLibrary() {
-    // Canonical durable prompt-asset hydration into app state.
-    // UI list/detail are re-derived from state.prompts/state.selectedPromptId.
     if (!window.Library || !window.Library.getAllPrompts) {
       return Promise.resolve();
     }
@@ -9839,7 +9832,6 @@
   }
 
   function getActiveFilters() {
-    // Derived UI-only projection state (not canonical/durable prompt-asset state).
     var tagInput = (els.tagFilter.value || "").trim();
     var tagList = tagInput
       ? tagInput.split(",").map(function (t) {
@@ -10034,68 +10026,6 @@
     });
   }
 
-  function findPromptAssetById(id) {
-    // Alias keeps existing findPromptById behavior while clarifying prompt-asset intent.
-    return findPromptById(id);
-  }
-
-  function buildPromptAssetFromDetailForm(existingAsset) {
-    var title = (els.detailTitle.value || "").trim();
-    var tagsRaw = els.detailTags.value;
-    var notes = (els.detailNotes.value || "").trim();
-    var body = (els.detailBody.value || "").trim();
-    var tags =
-      tagsRaw && tagsRaw.trim()
-        ? tagsRaw.split(",").map(function (t) {
-            return t.trim();
-          }).filter(Boolean)
-        : [];
-    return {
-      id: state.selectedPromptId || (existingAsset && existingAsset.id ? existingAsset.id : null),
-      title: title || "Untitled prompt",
-      tags: tags,
-      notes: notes,
-      body: body
-    };
-  }
-
-  function appendPromptAssetVersion(asset, body, note) {
-    if (!asset) return asset;
-    var target = asset;
-    target.versions = Array.isArray(target.versions) ? target.versions : [];
-    var timestamp = typeof target.updatedAt === "number" ? target.updatedAt : Date.now();
-    target.versions.push({
-      id: (window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(timestamp)) + "-v",
-      timestamp: timestamp,
-      body: body,
-      notes: note || ""
-    });
-    return target;
-  }
-
-  function updatePromptAssetMetadata(asset, metadata) {
-    if (!asset || !metadata) return asset;
-    var target = asset;
-    if (Object.prototype.hasOwnProperty.call(metadata, "createdAt")) {
-      target.createdAt = metadata.createdAt;
-    }
-    if (Object.prototype.hasOwnProperty.call(metadata, "updatedAt")) {
-      target.updatedAt = metadata.updatedAt;
-    }
-    if (Object.prototype.hasOwnProperty.call(metadata, "usageCount")) {
-      target.usageCount = metadata.usageCount;
-    }
-    return target;
-  }
-
-  function hydratePromptStudioFromPromptAsset(asset) {
-    // Keep Prompt Studio runtime reset/hydration sequence unchanged for template use.
-    resetConversationState();
-    clearBriefFields();
-    applyPromptEntryToBrief(asset);
-    updateOutputTypeVisibility();
-  }
-
   function clearDetailForm() {
     state.selectedPromptId = null;
     els.detailTitle.value = "";
@@ -10169,7 +10099,7 @@
   }
 
   function selectPrompt(id) {
-    var promptAsset = findPromptAssetById(id);
+    var promptAsset = findPromptById(id);
     if (!promptAsset) {
       clearDetailForm();
       renderLibraryList();
@@ -10179,11 +10109,30 @@
     renderLibraryList();
   }
 
+  function gatherDetailFormData() {
+    var title = (els.detailTitle.value || "").trim();
+    var tagsRaw = els.detailTags.value;
+    var notes = (els.detailNotes.value || "").trim();
+    var body = (els.detailBody.value || "").trim();
+
+    var tags =
+      tagsRaw && tagsRaw.trim()
+        ? tagsRaw.split(",").map(function (t) {
+            return t.trim();
+          }).filter(Boolean)
+        : [];
+
+    return {
+      id: state.selectedPromptId,
+      title: title || "Untitled prompt",
+      tags: tags,
+      notes: notes,
+      body: body
+    };
+  }
+
   function handleSavePromptChanges() {
-    // Prompt Library lifecycle op: save/edit durable prompt asset.
-    // Canonical state update: persist via Library API, then upsert state.prompts + selection.
-    var existingAsset = findPromptAssetById(state.selectedPromptId);
-    var data = buildPromptAssetFromDetailForm(existingAsset);
+    var data = gatherDetailFormData();
     if (!data.body) {
       showToast("Prompt body cannot be empty.", "error");
       return;
@@ -10224,9 +10173,8 @@
   }
 
   function handleDeletePrompt() {
-    // Prompt Library lifecycle op: delete durable prompt asset.
     if (!state.selectedPromptId) return;
-    var promptAsset = findPromptAssetById(state.selectedPromptId);
+    var promptAsset = findPromptById(state.selectedPromptId);
     var title = promptAsset ? promptAsset.title || "this prompt" : "this prompt";
     var confirmed = window.confirm(
       "Delete \"" + title + "\" from the library? This cannot be undone."
@@ -10245,26 +10193,24 @@
   }
 
   function handleDuplicatePrompt() {
-    // Prompt Library lifecycle op: duplicate durable prompt asset.
-    // User-authored content is copied; system-derived metadata is regenerated.
     if (!state.selectedPromptId) return;
-    var promptAsset = findPromptAssetById(state.selectedPromptId);
+    var promptAsset = findPromptById(state.selectedPromptId);
     if (!promptAsset) return;
     var now = Date.now();
     var clone = JSON.parse(JSON.stringify(promptAsset));
     clone.id = window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now);
     clone.title = clone.title + " (copy)";
-    updatePromptAssetMetadata(clone, {
-      createdAt: now,
-      updatedAt: now,
-      usageCount: 0
-    });
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    clone.usageCount = 0;
     // Keep versions but append a marker version.
-    appendPromptAssetVersion(
-      clone,
-      clone.body,
-      "Duplicated from " + (promptAsset.title || "another prompt")
-    );
+    clone.versions = clone.versions || [];
+    clone.versions.push({
+      id: (window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now)) + "-v",
+      timestamp: now,
+      body: clone.body,
+      notes: "Duplicated from " + (promptAsset.title || "another prompt")
+    });
 
     window.Library.savePrompt(clone).then(function (saved) {
       state.prompts.push(saved);
@@ -10277,7 +10223,7 @@
 
   function handleRenamePrompt() {
     if (!state.selectedPromptId) return;
-    var promptAsset = findPromptAssetById(state.selectedPromptId);
+    var promptAsset = findPromptById(state.selectedPromptId);
     if (!promptAsset) return;
     var newTitle = (els.detailTitle.value || "").trim();
     if (!newTitle) {
@@ -10299,20 +10245,20 @@
   }
 
   function handleUsePrompt() {
-    // Prompt Library -> Prompt Studio boundary:
-    // read selected durable prompt asset and hydrate Prompt Studio runtime/brief fields.
-    // This does not merge Prompt Studio runtime state into canonical library state.
     if (!state.selectedPromptId) return;
-    var promptAsset = findPromptAssetById(state.selectedPromptId);
+    var promptAsset = findPromptById(state.selectedPromptId);
     if (!promptAsset) return;
 
     // Start from a clean Prompt Studio state for the selected library asset:
     // - wipe any existing refinement conversation
     // - clear all brief fields
     // Then hydrate the brief/task fields from the asset body + brief metadata.
-    hydratePromptStudioFromPromptAsset(promptAsset);
+    resetConversationState();
+    clearBriefFields();
+    applyPromptEntryToBrief(promptAsset);
+    updateOutputTypeVisibility();
 
-    // Lifecycle metadata update on use: increment system-derived usageCount.
+    // Increment usage count.
     var currentCount = promptAsset.usageCount || 0;
     window.Library
       .updatePrompt({ id: promptAsset.id, usageCount: currentCount + 1 })
@@ -10348,7 +10294,6 @@
   }
 
   function handleExportPrompt() {
-    // Prompt Library lifecycle op: export selected durable prompt asset JSON.
     if (!state.selectedPromptId) return;
     window.Library
       .exportPrompts([state.selectedPromptId])
@@ -10374,7 +10319,6 @@
   }
 
   function exportAllData() {
-    // Prompt Library lifecycle op: export full durable bundle (prompts + workflows).
     var promptsPromise = window.Library && window.Library.getAllPrompts
       ? window.Library.getAllPrompts()
       : Promise.resolve([]);
@@ -12703,7 +12647,6 @@
   }
 
   function handleImportChange(event) {
-    // Prompt Library lifecycle op: import durable asset JSON and rehydrate canonical state.
     var file = event.target.files && event.target.files[0];
     if (!file) return;
     var reader = new FileReader();
@@ -12957,7 +12900,6 @@
   }
 
   function handleCopyPromptBody() {
-    // Read-only lifecycle utility: copy selected durable prompt-asset body.
     if (!els.detailBody) return;
     var text = els.detailBody.value || "";
     if (!text.trim()) {
@@ -14071,15 +14013,7 @@
       return;
     }
 
-    // Keep explicit system-derived defaults at the handler boundary.
-    // Library.savePrompt applies the same default when omitted.
-    updatePromptAssetMetadata(promptAssetDraft, { usageCount: 0 });
-
-    // Prompt Studio -> Prompt Library boundary:
-    // persist runtime final prompt as a durable prompt asset, then refresh canonical library state.
-    // Ownership split:
-    // - user-authored payload: title/body/notes/tags (+ brief snapshot)
-    // - system-derived metadata is assigned/maintained by Library persistence.
+    // Persist as durable Prompt Library asset, then refresh library-linked UI state.
     window.Library
       .savePrompt(promptAssetDraft)
       .then(function (saved) {

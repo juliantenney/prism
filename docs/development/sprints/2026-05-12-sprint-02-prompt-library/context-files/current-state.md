@@ -48,11 +48,6 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 
 - Sprint 01 - Prompt Studio Consolidation completed its first pass.
 - Sprint 01 outcomes: clearer Prompt Studio semantics/state boundaries, improved refinement lifecycle and payload/display clarity, and narrow accessibility/technical-debt cleanup.
-- Sprint 02 - Prompt Library Consolidation passes 1-3 completed:
-  - lifecycle contract comments and helper extraction landed in `app.js` without schema/runtime redesign
-  - Prompt Library lifecycle flows (new/save/delete/duplicate/use/copy/export/import) were verified stable
-  - canonical durable state remains `state.prompts` + `state.selectedPromptId`; filters/list/detail/version views remain derived projections
-  - preserved policy: `usageCount` increments only on Use as template; duplicate keeps historical versions and adds duplicate/save snapshots; metadata ownership remains split between handlers and `Library` persistence
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions

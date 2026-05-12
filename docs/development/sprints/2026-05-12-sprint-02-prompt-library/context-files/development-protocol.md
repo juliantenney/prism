@@ -42,12 +42,6 @@ Required files inside:
 - `HANDOVER.md`
 - `context-files/`
 
-`context-files/` rule:
-
-- contain copied physical snapshots of bounded sprint files
-- do not use references/symlinks
-- keep set intentionally minimal and directly uploadable to fresh chats
-
 Purpose:
 
 - make fresh chat startup low-friction

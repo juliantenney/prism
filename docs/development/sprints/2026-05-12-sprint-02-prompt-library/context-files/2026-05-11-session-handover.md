@@ -12,7 +12,6 @@ PRISM is now in a materially more stable operational state for consolidation wor
 - consolidation sprint structure established
 - backlog system established
 - continuity/update/check-in conventions documented
-- Sprint 02 Prompt Library passes 1-3 documented and verified (lifecycle model + helper-extraction stability check)
 
 ## Decisions Made
 
@@ -24,12 +23,11 @@ PRISM is now in a materially more stable operational state for consolidation wor
 ## Current Priorities
 
 - Sprint 02 - Prompt Library Consolidation
-- keep Sprint 02 bounded to Prompt Library lifecycle inspectability and continuity capture
 
 ## Open Questions
 
-- what remaining Prompt Library complexity should be documented vs changed in bounded follow-up passes?
-- are any additional tiny inspectability-only cleanups needed after lifecycle helper extraction?
+- what is the minimal, inspectable Prompt Library operating model for durable prompt assets?
+- which Prompt Library interactions (save/use/edit/export/import) still carry avoidable complexity?
 - what continuity/test checklist is required before any later module-boundary extraction work?
 
 ## Next Recommended Actions

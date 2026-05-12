@@ -26,14 +26,31 @@ Before ending a chat:
 - follow `end-of-session-protocol.md`
 - complete `session-handover-template.md`
 - prepare a new-chat prompt using `chat-bootstrap-template.md`
-- prepare a minimal bounded context pack with only the files required for the next chat
+- prepare a sprint folder under `docs/development/sprints/YYYY-MM-DD-sprint-name/`
 
 When starting a new chat:
 
-- provide `current-state.md`
-- provide the latest handover
-- provide relevant task-specific files only
-- use `chat-bootstrap-template.md` to keep the new chat bounded
+- use the latest sprint folder in `docs/development/sprints/`
+- upload bounded `context-files/` plus sprint snapshot docs
+- paste `GPT-BOOTSTRAP-PROMPT.md`
+- keep the chat architecture-first and bounded
+
+## Sprint Folder Standard (Official)
+
+Each sprint transition should produce one portable folder containing:
+
+- `SPRINT-CONTEXT.md`
+- `GPT-BOOTSTRAP-PROMPT.md`
+- `CURRENT-STATE.md`
+- `HANDOVER.md`
+- `context-files/`
+
+Canonical continuity sources remain in their existing locations (`current-state`, `session-handovers`, `chat-bootstraps`, `consolidation` docs). Sprint folders are operational snapshots for low-friction restart.
+
+Legacy note:
+
+- `context-packs` naming remains as historical artifacts from Sprint 01.
+- New sprint transitions should use the sprint-folder workflow.
 
 ## Consolidation and Backlog
 

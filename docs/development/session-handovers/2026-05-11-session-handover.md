@@ -33,7 +33,7 @@ PRISM is now in a materially more stable operational state for consolidation wor
 ## Next Recommended Actions
 
 1. Close out Sprint 01 continuity artifacts and keep implementation scope frozen for Prompt Studio.
-2. Start Sprint 02 with a bounded Prompt Library inspectability and technical-debt scan.
+2. Start Sprint 02 with an architecture-first Prompt Library semantic/state/lifecycle review before implementation edits.
 3. Prioritise safe simplification/deletion of clearly obsolete Prompt Library paths before new abstractions.
 4. Capture any module-boundary extraction candidates as deferred work, not in-sprint redesign.
 
@@ -43,10 +43,11 @@ PRISM is now in a materially more stable operational state for consolidation wor
 - `docs/development/development-protocol.md`
 - `docs/development/checkin-checklist.md`
 - `docs/development/shared-vocabulary.md`
-- `docs/development/chat-bootstrap-template.md`
-- `docs/consolidation/sprint-01-prompt-studio.md`
+- `docs/development/chat-bootstraps/2026-05-12-sprint-02-bootstrap.md`
+- `docs/consolidation/sprint-02-prompt-library.md`
 - `docs/architecture/decisions.md`
 - `app.js`
+- `library.js`
 - `index.html`
 - `style.css`
 

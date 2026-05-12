@@ -38,7 +38,7 @@ A chat is a bounded architectural working context, not permanent conversational 
 8. Generate session handover
 9. Generate next-chat bootstrap prompt
 10. Define next bounded task
-11. Prepare bounded context pack
+11. Prepare portable sprint folder (`docs/development/sprints/YYYY-MM-DD-sprint-name/`)
 
 ---
 
@@ -48,7 +48,7 @@ A chat is a bounded architectural working context, not permanent conversational 
 - avoid carrying unnecessary implementation archaeology into new chats
 - keep next chats tightly scoped
 - avoid omnibus chats covering unrelated redesigns
-- prepare the context pack only after the next bounded task is known
+- prepare sprint-folder `context-files/` only after the next bounded task is known
 
 ---
 
@@ -76,4 +76,13 @@ ChatGPT should help:
 - critique
 - continuity interpretation
 - strategic prioritisation
+
+---
+
+## How to Start a Fresh Sprint Chat
+
+1. Open latest folder in `docs/development/sprints/`.
+2. Upload bounded files from `context-files/` plus sprint snapshot docs.
+3. Paste `GPT-BOOTSTRAP-PROMPT.md`.
+4. Begin with architecture-first review before implementation edits.
 

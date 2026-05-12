@@ -1,5 +1,12 @@
 # PRISM Context Pack
 
+Historical note:
+
+This Sprint 01 context-pack artifact is retained for continuity history.
+New sprint transitions should use the canonical sprint-folder workflow in:
+
+`docs/development/sprints/`
+
 Purpose:
 This context pack bootstraps a bounded ChatGPT conversation for:
 

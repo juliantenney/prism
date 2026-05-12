@@ -30,6 +30,7 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 - recent documentation cleanup and archive moves are complete
 - conservative artefacts naming policy is retained for stability
 - consolidation sprint structure now exists under `docs/consolidation/`
+- sprint transition portability now uses `docs/development/sprints/YYYY-MM-DD-sprint-name/`
 - backlog system now exists under `docs/backlog/`
 - current focus remains manual system stabilisation before workflow generation redesign
 - Prompt Studio consolidation model is now explicit:
@@ -41,6 +42,7 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 ## Next Active Focus
 
 - Sprint 02 - Prompt Library Consolidation
+- Sprint 02 should begin with an architecture-first Prompt Library semantic/state/lifecycle review before implementation edits.
 
 ## Sprint Status Notes
 

@@ -31,4 +31,5 @@
 - [ ] Session handover prepared
 - [ ] Next bounded task identified
 - [ ] New-chat bootstrap prompt prepared if needed
+- [ ] Sprint folder prepared/updated (`docs/development/sprints/YYYY-MM-DD-sprint-name/`)
 

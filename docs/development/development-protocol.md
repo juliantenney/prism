@@ -28,6 +28,42 @@ Typical cycle:
 6. perform continuity update
 7. check in coherent changes
 
+## Sprint Transition Standard (Canonical)
+
+Every sprint transition should produce one portable sprint folder:
+
+`docs/development/sprints/YYYY-MM-DD-sprint-name/`
+
+Required files inside:
+
+- `SPRINT-CONTEXT.md`
+- `GPT-BOOTSTRAP-PROMPT.md`
+- `CURRENT-STATE.md`
+- `HANDOVER.md`
+- `context-files/`
+
+Purpose:
+
+- make fresh chat startup low-friction
+- preserve bounded continuity
+- avoid ad-hoc file selection each restart
+
+### Canonical vs Legacy
+
+Canonical continuity sources remain:
+
+- `docs/development/current-state.md`
+- `docs/development/session-handovers/`
+- `docs/development/chat-bootstraps/`
+- `docs/consolidation/`
+
+Sprint folders are portable snapshots for restart convenience.
+
+Legacy/superseded pattern:
+
+- `docs/development/context-packs/` naming is now legacy terminology.
+- Existing context-pack artifacts remain valid historical references, but new sprint transitions should use sprint folders under `docs/development/sprints/`.
+
 ## Cursor / ChatGPT Collaboration Model
 
 ### ChatGPT
@@ -75,10 +111,18 @@ CHECK-IN
 
 HANDOVER
 
-- generate next-chat bootstrap
-- prepare bounded context pack
+- generate sprint bootstrap prompt
+- generate portable sprint folder
 
 NEW CHAT
 
 - continue bounded architectural task
+
+## How to Start a Fresh Sprint Chat
+
+1. Open a new chat.
+2. Open the latest sprint folder in `docs/development/sprints/`.
+3. Upload `context-files/` bounded files plus sprint snapshot docs as needed.
+4. Paste `GPT-BOOTSTRAP-PROMPT.md`.
+5. Start with architecture-first review before implementation edits.
 

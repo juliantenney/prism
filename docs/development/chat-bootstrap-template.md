@@ -33,17 +33,17 @@ Single coherent next objective.
 
 Clarify what NOT to drift into.
 
-## Recommended Context Pack
+## Recommended Sprint Folder
 
-The context pack should include only files needed to bootstrap the next bounded chat.
+The sprint folder should include only files needed to bootstrap the next bounded chat.
 
 Required files:
 
-- core continuity docs
-- latest session handover
-- latest chat bootstrap
-- active sprint definition
-- directly relevant implementation files
+- `SPRINT-CONTEXT.md`
+- `GPT-BOOTSTRAP-PROMPT.md`
+- `CURRENT-STATE.md`
+- `HANDOVER.md`
+- `context-files/` (bounded implementation/docs files only)
 
 Optional files:
 

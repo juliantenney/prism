@@ -2,6 +2,7 @@
 
 **Working title:** Sprint 10 — Workflow Brief Contract Rationalisation  
 **Document type:** **Audit / architecture artefact** — documentation only  
+**Canonical:** **yes** — this path is the **canonical Sprint 10 bootstrap** workflow-generation contract audit artefact (committed **`3bd6d10`**).  
 **Status:** **Bootstrap + audit synthesis (§§9–12)** — inventories **§§3–8** are populated; **§§9–12** record architecture/governance synthesis from that evidence. This file **still does not** charter implementation, approve migrations, or authorise edits to production code or domain packs.
 
 ## Authority and read order
@@ -1231,6 +1232,8 @@ The **process** stages **Audit complete → Compatibility design → Pilot → B
 
 ## Review log
 
+- **2026-05-12** — **Bootstrap continuity alignment (documentation):** canonical audit artefact and **`3bd6d10`** recorded across `current-state.md`, session handover, Sprint 09 closure handoff, portable pack snapshots, Sprint 07 pack `CURRENT-STATE.md`; duplicate Sprint 09 block removed from pack `HANDOVER.md`. **No** implementation charter; Sprint 09 contract boundary **unchanged**.
+- **2026-05-12** — **Bootstrap closure / continuity alignment (documentation):** continuity artefacts updated to record committed bootstrap audit (**`3bd6d10`**); **no** implementation charter; Sprint 09 governance boundaries unchanged; future contract implementation **requires explicit charter/pass approval**. **Documentation only.**
 - **2026-05-12** — **Final governance-language skim (documentation):** normative/roadmap token pass (`must` / `should` / `will` / `required` / `need` / `require` / `forces` / `breaks` / `assume` where not UI or code fact); residual wording softened toward **possible / may / could / if chartered / appears to**; **no** implementation charter implied; audit-only posture **may** read consistently end-to-end. **No** source-code changes.
 - **2026-05-12** — **Bootstrap governance review (documentation):** tightened evidence vs interpretation language in §§9–12; softened imperative / sequencing wording; added §12.1 **Governance posture after bootstrap audit**; removed duplicate `## Related artefacts` then **restored** a single heading before artefact bullets; aligned Option A/D and process-table language with “non-selected / indicative only”; light touch on §§3, §5–§7 wording where audit read as prescriptive. **No** source-code changes.
 - **2026-05-12** — **§§9–12 synthesis added:** cross-system compatibility matrix; contract-surface classification (major families); stability expectations; **candidate governance checks** (§10.3); open questions (evidence-refined); migration options **A–D** (benefits/risks/complexity/fixtures/rollback/preconditions/sprint-scale); process staging table; **Architectural conclusions from Sprint 10 bootstrap audit**; **documentation only** (no implementation recommendation).

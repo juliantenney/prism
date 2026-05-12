@@ -1,7 +1,7 @@
 # Sprint 10 — Workflow Brief Contract Rationalisation (Bootstrap)
 
 **Working title:** Sprint 10 — Workflow Brief Contract Rationalisation  
-**Status (this document):** **Bootstrap / architecture preparation only** — **not** a charter for immediate implementation. **No** code, generator, persistence, import/export, or domain-pack edits are authorised by this file alone.
+**Status (this document):** **Bootstrap / architecture framing** — companion to the **committed** contract audit (`docs/consolidation/sprint-10-contract-audit.md`, **`3bd6d10`**). **Not** a charter for immediate implementation. **No** code, generator, persistence, import/export, or domain-pack edits are authorised by this file alone.
 
 ## Purpose
 
@@ -72,7 +72,7 @@ Sprint 07 (**review**) and Sprint 08 (**planning**) established concepts; Sprint
 
 ## Related references
 
-- Sprint 10 contract audit scaffold (placeholders + governance): `docs/consolidation/sprint-10-contract-audit.md`
+- **Canonical** Sprint 10 bootstrap contract audit (**committed `3bd6d10`**): `docs/consolidation/sprint-10-contract-audit.md` — inventories §§3–8 + governance synthesis §§9–12; **audit-only** / **no** implementation charter implied.
 - Sprint 09 closure: `docs/consolidation/sprint-09-pass-1-closure.md`
 - Sprint 09 charter + audit: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
 - Sprint 08 planning: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
@@ -85,5 +85,7 @@ Bootstrap prompt and continuity snapshots: `docs/development/sprints/2026-05-12-
 
 ## Review log
 
+- **2026-05-12** — **Bootstrap continuity alignment:** canonical audit path + **`3bd6d10`** echoed in consolidation refs; Sprint 09 closure handoff line updated; pack `HANDOVER` duplicate removed.
+- **2026-05-12** — **Bootstrap closure / continuity alignment:** contract audit **committed** (**`3bd6d10`**); `docs/development/current-state.md`, `docs/development/session-handovers/2026-05-12-session-handover.md`, and portable sprint snapshots aligned; **audit-only** posture preserved; implementation **still** unchartered; Sprint 09 governance boundary unchanged.
 - **2026-05-12** — **Contract audit scaffold added:** `docs/consolidation/sprint-10-contract-audit.md` (sections 1–11; inventory placeholders; staged migration discussion only).
 - **2026-05-12** — **Bootstrap created:** goals, non-goals, audit order, risks, regression and fixture notes, governance posture. **Implementation explicitly out of scope** until Sprint 10 is chartered.

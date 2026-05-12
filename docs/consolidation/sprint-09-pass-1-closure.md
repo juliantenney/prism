@@ -96,6 +96,6 @@ Continuing “alignment” into those layers would **convert** a bounded copy sp
 
 - **Sprint 09 canonical charter + audit:** `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
 - **This closure note:** `docs/consolidation/sprint-09-pass-1-closure.md`
-- **Next (documentation / architecture only):** Sprint 10 bootstrap — `docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md` and portable pack `docs/development/sprints/2026-05-12-sprint-10-workflow-brief-contract-rationalisation/`
+- **Sprint 10 bootstrap (continuity):** **canonical** contract audit + governance synthesis committed — `docs/consolidation/sprint-10-contract-audit.md` (**`3bd6d10`**); framing `docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md`; portable pack `docs/development/sprints/2026-05-12-sprint-10-workflow-brief-contract-rationalisation/`. **No** implementation pass was chartered during bootstrap.
 
-**No Sprint 10 implementation** is implied by this closure — charter and passes must be agreed before code or domain-pack edits.
+**No Sprint 10 implementation** is implied by this closure — **Sprint 09’s** **contract-boundary governance remains in force**; charter and passes must be agreed before **new** contract-level code or domain-pack edits.

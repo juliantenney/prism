@@ -72,6 +72,7 @@ Sprint 07 (**review**) and Sprint 08 (**planning**) established concepts; Sprint
 
 ## Related references
 
+- Sprint 10 contract audit scaffold (placeholders + governance): `docs/consolidation/sprint-10-contract-audit.md`
 - Sprint 09 closure: `docs/consolidation/sprint-09-pass-1-closure.md`
 - Sprint 09 charter + audit: `docs/consolidation/sprint-09-workflow-brief-semantics-alignment-pass-1.md`
 - Sprint 08 planning: `docs/consolidation/sprint-08-workflow-planning-and-brief-semantics-alignment.md`
@@ -84,4 +85,5 @@ Bootstrap prompt and continuity snapshots: `docs/development/sprints/2026-05-12-
 
 ## Review log
 
+- **2026-05-12** — **Contract audit scaffold added:** `docs/consolidation/sprint-10-contract-audit.md` (sections 1–11; inventory placeholders; staged migration discussion only).
 - **2026-05-12** — **Bootstrap created:** goals, non-goals, audit order, risks, regression and fixture notes, governance posture. **Implementation explicitly out of scope** until Sprint 10 is chartered.

@@ -6,7 +6,7 @@ PRISM completed governance/continuity formalisation, documentation consolidation
 
 ## Current Priorities
 
-- Sprint 01 - Prompt Studio Consolidation
+- Sprint 02 - Prompt Library Consolidation
 
 ## Current Constraints
 
@@ -38,11 +38,11 @@ PRISM completed governance/continuity formalisation, documentation consolidation
 
 ## Immediate Task
 
-Run an architecture-first consolidation pass on Prompt Studio to clarify prompt asset semantics, parameterisation semantics, and core state boundaries before narrow implementation edits.
+Run a bounded Prompt Library consolidation pass focused on durable prompt-asset operations, inspectability, and low-risk technical-debt cleanup.
 
 ## Suggested Focus
 
-Focus on Prompt Studio semantics/state clarity and bounded consolidation changes only.
+Focus on Prompt Library semantics/operations clarity and bounded consolidation changes only.
 
 Do not drift into:
 
@@ -51,11 +51,19 @@ Do not drift into:
 - speculative future architecture
 - unrelated renderer/utilities work
 
+## Sprint Transition Notes
+
+- Sprint 01 Prompt Studio Consolidation completed first-pass objectives (semantics, lifecycle clarity, boundary readability, payload/display cleanup, narrow accessibility and debt cleanup).
+- Deferred items for later sprints:
+  - major `app.js` size reduction via module-boundary extraction
+  - generated-workflow integration decisions
+  - broader UI polish
+
 ## Suggested Opening Prompt
 
-Context: PRISM is in consolidation mode with continuity/docs/sprint/backlog structure now established.  
-Task: Sprint 01 - Prompt Studio Consolidation (bounded).  
-Scope: Prompt Studio semantics, parameterisation clarity, prompt/runtime boundaries, state complexity in `app.js` + related UI markup.  
+Context: PRISM is in consolidation mode with Sprint 01 Prompt Studio first pass complete.  
+Task: Sprint 02 - Prompt Library Consolidation (bounded).  
+Scope: Prompt Library durable asset operations, save/use/edit/export/import inspectability, and narrow low-risk simplification in `app.js` + related UI wiring.  
 Non-goals: workflow-generation redesign, domain-pack redesign, speculative architecture.  
-Success criteria: clearer Prompt Studio semantics and state handling with narrow verified changes and updated continuity docs.
+Success criteria: clearer Prompt Library operational semantics, reduced avoidable complexity, preserved runtime behavior, and updated continuity docs.
 

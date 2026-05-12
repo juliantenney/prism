@@ -22,21 +22,20 @@ PRISM is now in a materially more stable operational state for consolidation wor
 
 ## Current Priorities
 
-- Sprint 01 - Prompt Studio Consolidation
+- Sprint 02 - Prompt Library Consolidation
 
 ## Open Questions
 
-- what is the canonical prompt asset semantic contract between Prompt Studio and Prompt Library?
-- how should parameterisation be simplified while preserving flexibility?
-- where should prompt/runtime boundaries be made explicit?
-- which Prompt Studio state transitions are canonical vs derived?
+- what is the minimal, inspectable Prompt Library operating model for durable prompt assets?
+- which Prompt Library interactions (save/use/edit/export/import) still carry avoidable complexity?
+- what continuity/test checklist is required before any later module-boundary extraction work?
 
 ## Next Recommended Actions
 
-1. Start Sprint 01 with a narrow architecture-first scan of Prompt Studio flow/state semantics.
-2. Define bounded consolidation targets (semantics, state, naming) before code edits.
-3. Apply narrow implementation slices with smoke-check verification.
-4. Update continuity docs and check-in checklist as sprint work progresses.
+1. Close out Sprint 01 continuity artifacts and keep implementation scope frozen for Prompt Studio.
+2. Start Sprint 02 with a bounded Prompt Library inspectability and technical-debt scan.
+3. Prioritise safe simplification/deletion of clearly obsolete Prompt Library paths before new abstractions.
+4. Capture any module-boundary extraction candidates as deferred work, not in-sprint redesign.
 
 ## Relevant Files
 
@@ -53,7 +52,7 @@ PRISM is now in a materially more stable operational state for consolidation wor
 
 ## Warnings / Constraints
 
-- stay bounded to Sprint 01 (Prompt Studio only)
+- Sprint 01 is closed as a first pass; avoid reopening unbounded Prompt Studio edits
 - do not drift into workflow-generation redesign
 - do not drift into domain-pack redesign
 - preserve runtime compatibility and manifest stability

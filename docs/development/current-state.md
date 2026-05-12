@@ -40,7 +40,16 @@ PRISM is in a consolidation and stabilisation phase focused on architectural cla
 
 ## Next Active Focus
 
-- Sprint 01 - Prompt Studio Consolidation
+- Sprint 02 - Prompt Library Consolidation
+
+## Sprint Status Notes
+
+- Sprint 01 - Prompt Studio Consolidation completed its first pass.
+- Sprint 01 outcomes: clearer Prompt Studio semantics/state boundaries, improved refinement lifecycle and payload/display clarity, and narrow accessibility/technical-debt cleanup.
+- Deferred from Sprint 01 by design:
+  - major `app.js` size reduction (requires later module-boundary sprint)
+  - generated workflow integration decisions
+  - broader UI polish
 
 ## Active Focus Areas
 

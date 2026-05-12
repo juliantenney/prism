@@ -8410,7 +8410,12 @@
       });
     };
 
+    // Keep standalone Prompt Studio refinement concise.
+    // Domain/platform context injection is retained only for workflow-step prompt mode,
+    // where step-scoped policy and artefact naming conventions are relevant.
+    var shouldInjectDomainContext = !!state.promptFactoryWorkflowContext;
     var contextApi =
+      shouldInjectDomainContext &&
       window.WorkflowGenerationContext &&
       typeof window.WorkflowGenerationContext.buildPromptRefinementContext === "function"
         ? window.WorkflowGenerationContext
@@ -10294,8 +10299,22 @@
         if (idx >= 0) state.prompts[idx] = saved;
         populateDetailForm(saved);
         renderLibraryList();
+        // Accessibility: move focus out of Library before the panel is hidden.
+        var activeEl = document.activeElement;
+        var focusWasInLibrary = !!(
+          els.libraryPanel &&
+          activeEl &&
+          typeof els.libraryPanel.contains === "function" &&
+          els.libraryPanel.contains(activeEl)
+        );
+        if (focusWasInLibrary && els.tabRefiner && typeof els.tabRefiner.focus === "function") {
+          els.tabRefiner.focus();
+        }
         // Switch back to Prompt Studio so the user can edit the template.
         switchTab("promptFactory");
+        if (els.initialPrompt && typeof els.initialPrompt.focus === "function") {
+          els.initialPrompt.focus();
+        }
       });
     showToast("Prompt inserted into initial prompt field.", "success");
   }

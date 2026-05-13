@@ -2635,26 +2635,15 @@
       els.wfDesignDesiredOutputsHint.textContent =
         String(
           hints.desired_outputs ||
-            "What the learner-facing page should contain, plus supporting artefacts this design run should produce (orchestrated through the workflow below)."
+            "Primary deliverables and supporting artefacts this design run should produce (orchestrated through the workflow below)."
         );
     }
     if (els.wfDesignConstraintsHint) {
       els.wfDesignConstraintsHint.textContent =
         String(
           hints.constraints ||
-            "Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe learner pace or grouping in plain language if it matters—there is no separate sequencing editor."
+            "Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe pace or grouping in plain language if it matters—there is no separate sequencing editor."
         );
-    }
-    var selectedDomainsForHints = getSelectedWorkflowDomains();
-    if (selectedDomainsForHints.indexOf("learning-design") !== -1) {
-      if (els.wfDesignDesiredOutputsHint) {
-        els.wfDesignDesiredOutputsHint.textContent =
-          "Primary learner-facing page and supporting artefacts (activities, assessment on the page, facilitator materials, etc.).";
-      }
-      if (els.wfDesignConstraintsHint) {
-        els.wfDesignConstraintsHint.textContent =
-          "Hard constraints: timing, policy, tools, accessibility, venue/channel delivery conditions. Say pace or grouping in plain language if needed—no separate sequencing editor.";
-      }
     }
   }
 

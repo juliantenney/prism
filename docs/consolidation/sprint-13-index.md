@@ -17,7 +17,9 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 
 **Delivered in first pass (per closure):** **S13-07** (v1 descriptive documentation) and **S13-01** (narrow, strict-parity **`#wfDesignDomainSelect`** tidy in **`app.js`** only).
 
-**Not delivered as implementation:** **S13-02** (default domain semantics / policy) and **S13-03** (hint neutralisation) — **documentation and gates only** in-repo.
+**Not delivered as implementation:** **S13-02** (default domain semantics / policy) — **documentation and gates only** in-repo.
+
+**S13-03 (narrow, delivered):** **DOM-only** Factory hint copy in **`renderWorkflowFactoryDomainUiHints`** only — [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md). Broader S13-03 (pack / prompt channels) remains **out of scope** for this slice; see [`sprint-13-s13-03-decision-gate-note.md`](sprint-13-s13-03-decision-gate-note.md).
 
 **Additional read-only portability documentation** (starting artefact / Learning Design starting-point coupling) is listed in **§3** — **audit + decision framing only**; **not** first-pass delivery and **not** implementation approval.
 
@@ -29,6 +31,7 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 |----|-------------|-------------------------|
 | **S13-07** | v1 reference: **General**, **`alwaysOnDomains`**, **`normalizeSelectedDomains`**, first structured domain for **`getWorkflowBriefConfig`**, Factory domain list context, manifest vs embedded fallback. | [`sprint-13-general-alwayson-first-structured-domain-behaviour.md`](sprint-13-general-alwayson-first-structured-domain-behaviour.md) |
 | **S13-01** | Narrow implementation: parity-preserving de-duplication for Factory **`#wfDesignDomainSelect`** (helpers + **`renderWorkflowDomainSelector`** / **`initWorkflowDomainSelector`** only — see closure). | Recorded in [`sprint-13-first-pass-closure.md`](sprint-13-first-pass-closure.md); evidence in §4–§6 below |
+| **S13-03 (narrow)** | DOM-only: **`renderWorkflowFactoryDomainUiHints`** hint fallbacks + removal of LD-only DOM overwrite (`app.js` only). | [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md) |
 
 ---
 
@@ -38,6 +41,8 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 |-------|----------|
 | **S13-03** — display-only hint audit | [`sprint-13-s13-03-display-only-hint-neutralisation-audit.md`](sprint-13-s13-03-display-only-hint-neutralisation-audit.md) |
 | **S13-03** — decision gate | [`sprint-13-s13-03-decision-gate-note.md`](sprint-13-s13-03-decision-gate-note.md) |
+| **S13-03** — bounded implementation proposal (`renderWorkflowFactoryDomainUiHints` only) | [`sprint-13-s13-03-implementation-review-bounded-proposal.md`](sprint-13-s13-03-implementation-review-bounded-proposal.md) |
+| **S13-03** — DOM-only hint neutralisation **closure** (implementation outcome) | [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md) |
 | **S13-02** — default-domain framing audit | [`sprint-13-s13-02-decision-framing-audit.md`](sprint-13-s13-02-decision-framing-audit.md) |
 | **S13-02** — decision options (bounded models, no policy pick) | [`sprint-13-s13-02-decision-options-note.md`](sprint-13-s13-02-decision-options-note.md) |
 | **Starting artefact / LD starting-point** — portability audit | [`sprint-13-starting-artefact-ld-starting-point-portability-audit.md`](sprint-13-starting-artefact-ld-starting-point-portability-audit.md) |
@@ -147,6 +152,8 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 | `sprint-13-s13-02-decision-options-note.md` |
 | `sprint-13-s13-03-display-only-hint-neutralisation-audit.md` |
 | `sprint-13-s13-03-decision-gate-note.md` |
+| `sprint-13-s13-03-implementation-review-bounded-proposal.md` |
+| `sprint-13-s13-03-dom-only-hint-neutralisation-closure.md` |
 | `sprint-13-starting-artefact-ld-starting-point-portability-audit.md` |
 | `sprint-13-starting-artefact-portability-decision-framing.md` |
 | `sprint-13-prompt-config-portability-tracing-audit.md` |
@@ -166,3 +173,4 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 - **2026-05-13** — §1 + §10: explicit links to pragmatic target + persistence audit (round-trip framing); pragmatic target note expanded (lifecycle bar, persistence red flag, import/export versioning).
 - **2026-05-13** — Workflow semantics / orchestration portability audit linked (§3, §10, file list).
 - **2026-05-13** — §11 synthesis / strategy note + `sprint-13-portability-strategy-synthesis.md` (file list).
+- **2026-05-13** — S13-03: bounded proposal + DOM-only closure linked; §1 S13-03 narrow delivery note; `app.js` `renderWorkflowFactoryDomainUiHints` slice (file list).

@@ -2551,6 +2551,22 @@
     return selected;
   }
 
+  /** v1 fallback rows for `#wfDesignDomainSelect` when `getDomainOptions` is unavailable or rejects — must stay aligned with `getDomainOptions` + manifest for strict parity (S13-01). */
+  function getWorkflowFactoryDomainSelectFallbackDomains() {
+    return [
+      { id: "general", label: "General", alwaysOn: true },
+      { id: "learning-design", label: "Learning Design", alwaysOn: false },
+      { id: "research", label: "Research", alwaysOn: false }
+    ];
+  }
+
+  function appendWorkflowFactoryDomainGeneralOption(selectEl) {
+    var opt = document.createElement("option");
+    opt.value = "general";
+    opt.textContent = "General";
+    selectEl.appendChild(opt);
+  }
+
   function renderWorkflowDomainSelector(options) {
     if (!els.wfDesignDomainSelect) return;
     var opts = options && typeof options === "object" ? options : {};
@@ -2563,18 +2579,12 @@
     els.wfDesignDomainSelect.innerHTML = "";
 
     if (!domains.length) {
-      var fallback = document.createElement("option");
-      fallback.value = "general";
-      fallback.textContent = "General";
-      els.wfDesignDomainSelect.appendChild(fallback);
+      appendWorkflowFactoryDomainGeneralOption(els.wfDesignDomainSelect);
       els.wfDesignDomainSelect.value = "general";
       return;
     }
 
-    var generalOption = document.createElement("option");
-    generalOption.value = "general";
-    generalOption.textContent = "General";
-    els.wfDesignDomainSelect.appendChild(generalOption);
+    appendWorkflowFactoryDomainGeneralOption(els.wfDesignDomainSelect);
 
     domains.forEach(function (domain) {
       if (!domain || !domain.id) return;
@@ -3065,11 +3075,7 @@
   }
 
   function initWorkflowDomainSelector() {
-    var fallbackDomains = [
-      { id: "general", label: "General", alwaysOn: true },
-      { id: "learning-design", label: "Learning Design", alwaysOn: false },
-      { id: "research", label: "Research", alwaysOn: false }
-    ];
+    var fallbackDomains = getWorkflowFactoryDomainSelectFallbackDomains();
 
     // Always default to General on load.
     state.workflowSelectedDomains = ["general"];

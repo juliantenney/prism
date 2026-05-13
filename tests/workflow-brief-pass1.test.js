@@ -14,10 +14,15 @@ function loadFixture(fileName) {
 }
 
 function assertSubset(actual, expected, label) {
+  const canonicalActual = canonicalizeJson(actual);
   Object.keys(expected).forEach((key) => {
-    assert.ok(Object.prototype.hasOwnProperty.call(actual, key), `${label}: missing key "${key}"`);
-    assert.deepEqual(actual[key], expected[key], `${label}: value mismatch for "${key}"`);
+    assert.ok(Object.prototype.hasOwnProperty.call(canonicalActual, key), `${label}: missing key "${key}"`);
+    assert.deepEqual(canonicalActual[key], expected[key], `${label}: value mismatch for "${key}"`);
   });
+}
+
+function canonicalizeJson(value) {
+  return JSON.parse(JSON.stringify(value));
 }
 
 function loadPrismTestApi() {
@@ -60,7 +65,7 @@ const fixtures = [
 test("buildWorkflowDesignBase returns stable trimmed base object", () => {
   fixtures.forEach((fixture) => {
     const actual = api.buildWorkflowDesignBase(fixture.baseInput);
-    assert.deepEqual(actual, fixture.expectedBase, `base mismatch for ${fixture.caseId}`);
+    assert.deepEqual(canonicalizeJson(actual), fixture.expectedBase, `base mismatch for ${fixture.caseId}`);
   });
 });
 
@@ -69,7 +74,7 @@ test("buildWorkflowDesignBrief preserves exact briefLines ordering and prefixes"
     const base = api.buildWorkflowDesignBase(fixture.baseInput);
     const briefPayload = api.buildWorkflowDesignBrief(base, fixture.resolvedState);
     assert.deepEqual(
-      briefPayload.briefLines,
+      canonicalizeJson(briefPayload.briefLines),
       fixture.expectedBriefLines,
       `briefLines mismatch for ${fixture.caseId}`
     );

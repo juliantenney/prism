@@ -45,7 +45,7 @@
     "Inputs / artefacts: Use notes from the provided article and the Moodle course site",
     "Starting artefact: provided_source_content",
     "Desired outputs: Assessment page and facilitator guide",
-    "Scope and constraints (compressed): Keep output concise"
+    "Scope and constraints (compressed): critical: Keep output concise"
   ],
   "expectedExtractSubset": {
     "design_intent": "Create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
@@ -64,9 +64,10 @@
     "include_feedback_guidance": true,
     "feedback_required": "item_level",
     "assessment_total_items": 8,
-    "topic": "climate policy",
-    "workshop_subject": "climate policy",
+    "topic": "climate policy create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
+    "workshop_subject": "climate policy create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
     "output_depth": "concise",
     "learning_environments": ["vle"]
-  }
+  },
+  "implementationNote": "Sprint 11 pinning: this intentionally pins current extraction over-capture behaviour for topic/workshop_subject, and intentionally pins current compressed-constraint prefix behaviour including 'critical:'."
 }

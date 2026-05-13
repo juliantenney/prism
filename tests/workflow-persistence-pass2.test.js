@@ -16,18 +16,97 @@ function flushAsync(ms = 0) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function canonicalizeJson(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function createElementStub(tagName = "div") {
+  const classSet = new Set();
+  return {
+    tagName: String(tagName).toUpperCase(),
+    value: "",
+    checked: false,
+    disabled: false,
+    innerHTML: "",
+    textContent: "",
+    className: "",
+    classList: {
+      add: (...names) => {
+        names.forEach((n) => classSet.add(String(n)));
+      },
+      remove: (...names) => {
+        names.forEach((n) => classSet.delete(String(n)));
+      },
+      contains: (name) => classSet.has(String(name)),
+      toggle: (name, force) => {
+        const key = String(name);
+        if (force === true) {
+          classSet.add(key);
+          return true;
+        }
+        if (force === false) {
+          classSet.delete(key);
+          return false;
+        }
+        if (classSet.has(key)) {
+          classSet.delete(key);
+          return false;
+        }
+        classSet.add(key);
+        return true;
+      }
+    },
+    style: {},
+    dataset: {},
+    children: [],
+    appendChild(child) {
+      this.children.push(child);
+      return child;
+    },
+    removeChild(child) {
+      this.children = this.children.filter((c) => c !== child);
+      return child;
+    },
+    setAttribute(name, value) {
+      this[name] = value;
+    },
+    removeAttribute(name) {
+      delete this[name];
+    },
+    getAttribute(name) {
+      return this[name];
+    },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    querySelector: () => createElementStub("div"),
+    querySelectorAll: () => [],
+    focus: () => {},
+    click: () => {}
+  };
+}
+
 function loadPrismTestApi() {
   const source = fs.readFileSync(appJsPath, "utf8");
   const sandbox = {
     console,
     setTimeout,
     clearTimeout,
-    Promise
+    Promise,
+    _: {
+      debounce: (fn) => fn
+    }
   };
+  const elementStore = new Map();
   const documentStub = {
-    readyState: "loading",
+    readyState: "complete",
     addEventListener: () => {},
-    createElement: () => ({ click: () => {} }),
+    createElement: (tagName) => createElementStub(tagName),
+    getElementById: (id) => {
+      if (!elementStore.has(id)) elementStore.set(id, createElementStub("div"));
+      return elementStore.get(id);
+    },
+    querySelector: () => createElementStub("div"),
+    querySelectorAll: () => [],
     body: {
       appendChild: () => {},
       removeChild: () => {}
@@ -35,6 +114,13 @@ function loadPrismTestApi() {
   };
   const windowStub = {
     document: documentStub,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    location: { hash: "", pathname: "/" },
+    _: sandbox._,
+    Utils: {
+      debounce: (fn) => fn
+    },
     localStorage: {
       getItem: () => null,
       setItem: () => {}
@@ -68,31 +154,36 @@ function loadPrismTestApi() {
   return { api, sandbox };
 }
 
-test("PE-normalise-minimal: normalizeWorkflowForV1 preserves required normalized subset", () => {
+test("PE-normalise-minimal: normalizeWorkflowForV1 preserves required normalized subset", async () => {
   const fixture = loadFixture("pe-normalise-minimal.json");
   const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
   const warnings = [];
   const normalized = api.normalizeWorkflowForV1(fixture.inputWorkflow, warnings);
+  const normalizedCanonical = canonicalizeJson(normalized);
 
-  assert.equal(normalized.id, fixture.expectedSubset.id);
-  assert.deepEqual(normalized.selectedDomains, fixture.expectedSubset.selectedDomains);
-  assert.deepEqual(normalized.workflowInputs, fixture.expectedSubset.workflowInputs);
-  assert.deepEqual(normalized.workflowOutputs, fixture.expectedSubset.workflowOutputs);
-  assert.equal(normalized.workflowOutputSpec.goal, fixture.expectedSubset.workflowOutputSpec.goal);
+  assert.equal(normalizedCanonical.id, fixture.expectedSubset.id);
+  assert.deepEqual(normalizedCanonical.selectedDomains, fixture.expectedSubset.selectedDomains);
+  assert.deepEqual(normalizedCanonical.workflowInputs, fixture.expectedSubset.workflowInputs);
+  assert.deepEqual(normalizedCanonical.workflowOutputs, fixture.expectedSubset.workflowOutputs);
+  assert.equal(normalizedCanonical.workflowOutputSpec.goal, fixture.expectedSubset.workflowOutputSpec.goal);
   assert.equal(
-    normalized.workflowOutputSpec.constraints,
+    normalizedCanonical.workflowOutputSpec.constraints,
     fixture.expectedSubset.workflowOutputSpec.constraints
   );
-  assert.equal(normalized.steps[0].id, fixture.expectedSubset.steps[0].id);
-  assert.equal(normalized.steps[0].outputName, fixture.expectedSubset.steps[0].outputName);
+  assert.equal(normalizedCanonical.steps[0].id, fixture.expectedSubset.steps[0].id);
+  assert.equal(normalizedCanonical.steps[0].outputName, fixture.expectedSubset.steps[0].outputName);
   fixture.expectedRemovedTopLevelKeys.forEach((k) => {
-    assert.equal(Object.prototype.hasOwnProperty.call(normalized, k), false, `expected key removed: ${k}`);
+    assert.equal(Object.prototype.hasOwnProperty.call(normalizedCanonical, k), false, `expected key removed: ${k}`);
   });
 });
 
-test("PE-export-workflow-only: buildWorkflowBundle keeps workflow shape and ids", () => {
+test("PE-export-workflow-only: buildWorkflowBundle keeps workflow shape and ids", async () => {
   const fixture = loadFixture("pe-export-workflow-only.json");
   const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
 
   api.setPromptsForTest(fixture.statePrompts);
   const bundle = api.buildWorkflowBundle(fixture.workflowsInput);
@@ -106,6 +197,8 @@ test("PE-export-workflow-only: buildWorkflowBundle keeps workflow shape and ids"
 test("PE-import-workflow-array-object: importWorkflowsAndPrompts merges workflow arrays deterministically", async () => {
   const fixture = loadFixture("pe-import-workflow-array-object.json");
   const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
 
   api.setWorkflowsForTest([]);
   api.importWorkflowsAndPrompts(fixture.bundleObjectWorkflows, [], { newerWins: true });
@@ -115,7 +208,7 @@ test("PE-import-workflow-array-object: importWorkflowsAndPrompts merges workflow
   await flushAsync();
   await flushAsync();
 
-  const imported = api.getWorkflowsForTest();
+  const imported = canonicalizeJson(api.getWorkflowsForTest());
   const ids = imported.map((wf) => wf && wf.id).filter(Boolean);
   fixture.expectedIdsPresent.forEach((id) => {
     assert.ok(ids.includes(id), `missing imported workflow id: ${id}`);
@@ -125,6 +218,8 @@ test("PE-import-workflow-array-object: importWorkflowsAndPrompts merges workflow
 test("PE-conflict-newerWins: updatedAt precedence keeps newer workflow", async () => {
   const fixture = loadFixture("pe-conflict-newerWins.json");
   const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
 
   api.setWorkflowsForTest(fixture.existingWorkflows);
   api.importWorkflowsAndPrompts([fixture.incomingOlder], [], { newerWins: true });

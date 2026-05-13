@@ -45,5 +45,7 @@
 
 ## Verification
 
-- Test command intended: `node --test tests/workflow-persistence-pass2.test.js`
-- Local environment note: `node` is unavailable in current shell (`CommandNotFoundException`), so execution must be run on a Node-enabled machine.
+- Verified locally on Node-enabled runtime:
+  - `node --version` = `v24.15.0`
+  - `npm --version` = `11.12.1`
+  - `node --test tests/workflow-persistence-pass2.test.js` = pass (final status after harness stabilization)

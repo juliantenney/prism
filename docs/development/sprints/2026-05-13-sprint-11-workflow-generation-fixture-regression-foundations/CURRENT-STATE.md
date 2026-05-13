@@ -6,8 +6,8 @@
 
 **Sprint 10:** **Bootstrap audit and governance synthesis complete** (**`3bd6d10`**) — `docs/consolidation/sprint-10-contract-audit.md`. **No** implementation pass chartered during bootstrap.
 
-**Sprint 11:** **Charter + prep only** — `docs/consolidation/sprint-11-workflow-generation-fixture-regression-foundations.md`. **Not started.** **Next:** confirm **pass scope** (charter §§11–12); **no** application code or fixture files until then. Portable pack: this directory (`HANDOVER.md`, `SPRINT-CONTEXT.md`, `GPT-BOOTSTRAP-PROMPT.md`, `context-files/`).
+**Sprint 11:** **Closed** — closure summary `docs/consolidation/sprint-11-closure.md`. Completed work remains bounded to fixture/regression foundations; deferred WGC/runtime orchestration coverage is explicitly recorded in closure notes.
 
 ## Review log
 
-- **2026-05-13** — **Portable continuity pack aligned**; implementation **not yet started**; **tomorrow** = pass-scope confirmation first.
+- **2026-05-13** — **Sprint 11 closure recorded** in `docs/consolidation/sprint-11-closure.md`; future work is candidate/prep only in `docs/consolidation/sprint-12-candidate-prep-note.md` (not approved, not started).

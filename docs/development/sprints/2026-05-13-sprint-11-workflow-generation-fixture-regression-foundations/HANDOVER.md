@@ -6,8 +6,10 @@
 
 **Sprint 10:** **Bootstrap contract audit complete** (**`3bd6d10`**). **Canonical:** `docs/consolidation/sprint-10-contract-audit.md` — use §§3–8 as evidence map; §§9–12 as synthesis / risk context, **not** a product spec.
 
-**Sprint 11:** **Chartered and preparation docs exist** — **implementation not started** until **written pass scope** is agreed (charter §§11–12). **Tomorrow:** explicit pass-scope confirmation first; then open the pass per charter / working checklist. **Fresh chat:** `GPT-BOOTSTRAP-PROMPT.md` in this folder.
+**Sprint 11:** **Closed** — closure summary `docs/consolidation/sprint-11-closure.md`. Completed work is bounded to fixture/regression foundations; deferred WGC/runtime orchestration coverage is explicitly recorded in closure notes.
+
+**Future work status:** candidate/prep only in `docs/consolidation/sprint-12-candidate-prep-note.md` (**not approved**, **not started**).
 
 ## Review log
 
-- **2026-05-13** — **Portable continuity pack aligned** with Sprint 09 / Sprint 10 pack pattern (`HANDOVER.md`, `SPRINT-CONTEXT.md`, `CURRENT-STATE.md`, `context-files/`). Implementation **not yet started**.
+- **2026-05-13** — **Sprint 11 closure documented** in `docs/consolidation/sprint-11-closure.md`; candidate next-sprint prep documented in `docs/consolidation/sprint-12-candidate-prep-note.md` (not approved, not started).

@@ -41,6 +41,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
+- **Cross-sprint architecture & portability backlog (descriptive only, not a roadmap):** [`docs/consolidation/prism-architecture-portability-backlog.md`](../consolidation/prism-architecture-portability-backlog.md) — unfinished themes after Sprint 12–13 consolidation; **no** implementation charter implied.
 - **Sprint 13 — first-pass is documented and closed in consolidation** (post-commit posture). **Map:** `docs/consolidation/sprint-13-index.md`. **Closure and verification:** `docs/consolidation/sprint-13-first-pass-closure.md`. **Delivered:** **S13-07** — v1 reference doc (`docs/consolidation/sprint-13-general-alwayson-first-structured-domain-behaviour.md`); **S13-01** — narrow Workflow Factory **`#wfDesignDomainSelect`** strict-parity tidy (see closure; `app.js` only). **Decision-gated / not implemented:** **S13-02** default-domain rule; **S13-03** display-only hint neutralisation — audits and gate notes are linked from the index (no implementation closure). **Sprint 12** first-pass structural observability (A–E) remains **closed** (`docs/consolidation/sprint-12-first-pass-structural-observability-closure.md`) — **not** reopened. **No** full drop-in domain-pack portability claim in Sprint 13 first-pass artefacts. **Further Sprint 13 work remains unchartered** unless explicitly approved (no implied roadmap commitment).
 
 - **Sprint 11 is closed** — closure summary: `docs/consolidation/sprint-11-closure.md`.

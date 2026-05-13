@@ -21,7 +21,7 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 
 **S13-03 (narrow, delivered):** **DOM-only** Factory hint copy in **`renderWorkflowFactoryDomainUiHints`** only — [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md). Broader S13-03 (pack / prompt channels) remains **out of scope** for this slice; see [`sprint-13-s13-03-decision-gate-note.md`](sprint-13-s13-03-decision-gate-note.md).
 
-**Additional read-only portability documentation** (starting artefact / Learning Design starting-point coupling) is listed in **§3** — **audit + decision framing only**; **not** first-pass delivery and **not** implementation approval.
+**Additional read-only portability documentation** (starting artefact / Learning Design starting-point coupling) is listed in **§3** — **audit + decision framing + bounded implementation review + code-derived parity matrix + runtime parity baseline + closure/deferral note**; **not** first-pass delivery and **not** implementation approval.
 
 ---
 
@@ -47,6 +47,10 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 | **S13-02** — decision options (bounded models, no policy pick) | [`sprint-13-s13-02-decision-options-note.md`](sprint-13-s13-02-decision-options-note.md) |
 | **Starting artefact / LD starting-point** — portability audit | [`sprint-13-starting-artefact-ld-starting-point-portability-audit.md`](sprint-13-starting-artefact-ld-starting-point-portability-audit.md) |
 | **Starting artefact / LD starting-point** — decision framing | [`sprint-13-starting-artefact-portability-decision-framing.md`](sprint-13-starting-artefact-portability-decision-framing.md) |
+| **Starting artefact / LD starting-point** — bounded implementation review (strict-parity cleanup slice; documentation only) | [`sprint-13-starting-artefact-bounded-implementation-review.md`](sprint-13-starting-artefact-bounded-implementation-review.md) |
+| **Starting artefact / LD starting-point** — code-derived parity matrix (runtime + `app.js` / WGC) | [`sprint-13-starting-artefact-starting-point-code-derived-parity-matrix.md`](sprint-13-starting-artefact-starting-point-code-derived-parity-matrix.md) |
+| **Starting artefact / LD starting-point** — runtime parity baseline (live browser MCP; documentation only) | [`sprint-13-starting-artefact-runtime-parity-baseline.md`](sprint-13-starting-artefact-runtime-parity-baseline.md) |
+| **Starting artefact / LD starting-point** — portability **closure / deferral** (implementation paused; documentation only) | [`sprint-13-starting-artefact-portability-deferral-note.md`](sprint-13-starting-artefact-portability-deferral-note.md) |
 | **Prompt / config portability** — tracing audit (domain markdown, **`uiHints`**, brief config → prompts / persistence / exports) | [`sprint-13-prompt-config-portability-tracing-audit.md`](sprint-13-prompt-config-portability-tracing-audit.md) |
 | **Persistence / export** — portability audit | [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md) |
 | **Portability boundary** — summary | [`sprint-13-portability-boundary-summary.md`](sprint-13-portability-boundary-summary.md) |
@@ -156,6 +160,10 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 | `sprint-13-s13-03-dom-only-hint-neutralisation-closure.md` |
 | `sprint-13-starting-artefact-ld-starting-point-portability-audit.md` |
 | `sprint-13-starting-artefact-portability-decision-framing.md` |
+| `sprint-13-starting-artefact-bounded-implementation-review.md` |
+| `sprint-13-starting-artefact-starting-point-code-derived-parity-matrix.md` |
+| `sprint-13-starting-artefact-runtime-parity-baseline.md` |
+| `sprint-13-starting-artefact-portability-deferral-note.md` |
 | `sprint-13-prompt-config-portability-tracing-audit.md` |
 | `sprint-13-persistence-export-portability-audit.md` |
 | `sprint-13-portability-boundary-summary.md` |
@@ -174,3 +182,7 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 - **2026-05-13** — Workflow semantics / orchestration portability audit linked (§3, §10, file list).
 - **2026-05-13** — §11 synthesis / strategy note + `sprint-13-portability-strategy-synthesis.md` (file list).
 - **2026-05-13** — S13-03: bounded proposal + DOM-only closure linked; §1 S13-03 narrow delivery note; `app.js` `renderWorkflowFactoryDomainUiHints` slice (file list).
+- **2026-05-13** — Starting artefact / LD starting-point bounded implementation review linked (§3, file list).
+- **2026-05-13** — Starting artefact / LD starting-point code-derived parity matrix linked (§3, file list).
+- **2026-05-13** — Starting artefact / LD starting-point runtime parity baseline linked (§3, file list).
+- **2026-05-13** — Starting artefact / LD starting-point portability deferral / closure note linked (§3, file list).

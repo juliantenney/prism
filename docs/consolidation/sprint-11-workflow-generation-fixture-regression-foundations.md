@@ -164,6 +164,14 @@ Sprint 11 **may** add **test-only** shims, helpers, or **documentation** that **
 
 ## Related artefacts
 
+- `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/HANDOVER.md` — pack handover snapshot (canonical kickoff below)
+- `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/SPRINT-CONTEXT.md` — sprint status and links
+- `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/CURRENT-STATE.md` — programme snapshot pointer
+- `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/context-files/` — lightweight continuity mirrors (not a second audit copy)
+- `docs/development/session-handovers/2026-05-13-sprint-11-kickoff.md` — implementation entry handover (**not started** gate)
+- `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/GPT-BOOTSTRAP-PROMPT.md` — fresh-chat bootstrap
+- `docs/consolidation/sprint-11-fixture-candidate-inventory.md` — candidate fixture categories (documentation only)
+- `docs/consolidation/sprint-11-working-checklist.md` — **preparation** checklist (this charter → operational tasks; **no** implementation by checklist alone)
 - `docs/consolidation/sprint-10-contract-audit.md` — evidence §§3–8; synthesis §§9–12  
 - `docs/consolidation/sprint-10-workflow-brief-contract-rationalisation-bootstrap.md` — goals, risks, suggested fixture ideas  
 - `docs/consolidation/sprint-09-pass-1-closure.md` — frozen contract surface  
@@ -171,4 +179,8 @@ Sprint 11 **may** add **test-only** shims, helpers, or **documentation** that **
 
 ## Review log
 
+- **2026-05-13** — **Portable sprint pack aligned** with Sprint 09 / Sprint 10 layout: `HANDOVER.md`, `SPRINT-CONTEXT.md`, `CURRENT-STATE.md`, `context-files/` under `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/`; implementation **not started**; **tomorrow** = pass-scope confirmation (§§11–12).
+- **2026-05-13** — **Readiness review (documentation):** Related artefacts link kickoff handover + Sprint 11 `GPT-BOOTSTRAP-PROMPT.md`; alignment with working checklist / `current-state.md` **not started** gate.
+- **2026-05-12** — **Fixture candidate inventory added:** `docs/consolidation/sprint-11-fixture-candidate-inventory.md` (documentation only).
+- **2026-05-12** — **Working checklist added:** `docs/consolidation/sprint-11-working-checklist.md` (preparation only; links from Related artefacts).
 - **2026-05-12** — **Charter created** (documentation only): Sprint 11 scope, non-goals, strategies, criteria; **no** implementation started; **no** fixture files added by this charter.

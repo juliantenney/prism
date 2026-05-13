@@ -14,6 +14,6 @@
 
 **Non-goals (bootstrap recommendation):** renderer redesign, sequencing engine redesign, domain-pack wholesale rewrite, broad workflow-engine rewrite, uncontrolled feature expansion.
 
-**Proposed next (not started):** Sprint 11 fixture/regression charter — `docs/consolidation/sprint-11-workflow-generation-fixture-regression-foundations.md`
+**Proposed next (not started):** Sprint 11 fixture/regression charter — `docs/consolidation/sprint-11-workflow-generation-fixture-regression-foundations.md` — portable pack `docs/development/sprints/2026-05-13-sprint-11-workflow-generation-fixture-regression-foundations/` (`HANDOVER.md`, `SPRINT-CONTEXT.md`, `CURRENT-STATE.md`, `GPT-BOOTSTRAP-PROMPT.md`, `context-files/`).
 
 **Portable pack:** this folder; `context-files/` holds copies of canonical continuity snapshots (`current-state.md`, session handover) and related consolidation refs for offline parity.

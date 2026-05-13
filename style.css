@@ -738,6 +738,46 @@ textarea:focus {
   flex: 0 0 auto;
 }
 
+.workflow-clear-filters-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.workflow-hidden-selection-hint {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  background: rgba(254, 243, 199, 0.55);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+}
+
+.workflow-hidden-selection-hint.hidden {
+  display: none;
+}
+
+.workflow-hidden-selection-hint-text {
+  margin: 0;
+}
+
+#workflowsPanel .workflow-item {
+  min-width: 0;
+}
+
+#workflowsPanel .workflow-list .workflow-item .library-item-tags {
+  min-width: 0;
+}
+
+#workflowsPanel .workflow-list .workflow-item .library-item-tags .tag-pill {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .workflow-list,
 .library-list {
   border-radius: var(--radius-md);
@@ -752,6 +792,16 @@ textarea:focus {
 .library-list-empty {
   padding: 12px;
   font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.workflow-list-empty .workflow-list-empty-main {
+  margin: 0 0 6px;
+}
+
+.workflow-list-empty .workflow-list-empty-hint {
+  margin: 0;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 

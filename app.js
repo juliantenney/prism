@@ -374,6 +374,9 @@
     els.workflowListSearch = document.getElementById("workflowListSearch");
     els.workflowTagFilter = document.getElementById("workflowTagFilter");
     els.workflowSortSelect = document.getElementById("workflowSortSelect");
+    els.workflowClearFiltersBtn = document.getElementById("workflowClearFiltersBtn");
+    els.workflowHiddenSelectionHint = document.getElementById("workflowHiddenSelectionHint");
+    els.workflowHiddenSelectionHintText = document.getElementById("workflowHiddenSelectionHintText");
     els.workflowDetail = document.getElementById("workflowDetail");
     els.workflowName = document.getElementById("workflowName");
     els.workflowLibraryTags = document.getElementById("workflowLibraryTags");
@@ -10601,6 +10604,38 @@
     };
   }
 
+  function clearWorkflowDiscoveryFilters() {
+    if (els.workflowListSearch) els.workflowListSearch.value = "";
+    if (els.workflowTagFilter) els.workflowTagFilter.value = "";
+    if (els.workflowSortSelect) els.workflowSortSelect.value = "updatedDesc";
+    renderWorkflowList();
+  }
+
+  function updateWorkflowDiscoveryHelperState(all, visible) {
+    var hint = els.workflowHiddenSelectionHint;
+    var hintText = els.workflowHiddenSelectionHintText;
+    if (!hint || !hintText) return;
+    var sel = state.selectedWorkflowId;
+    var selWf = sel ? findWorkflowById(sel) : null;
+    var selectedExcluded =
+      !!selWf &&
+      Array.isArray(all) &&
+      all.length > 0 &&
+      !visible.some(function (w) {
+        return w && w.id === sel;
+      });
+    if (selectedExcluded) {
+      hint.classList.remove("hidden");
+      hintText.textContent =
+        'Editing "' +
+        (selWf.name || "Untitled workflow") +
+        '" — it is hidden by the current filters. Use Clear filters to show it in the list.';
+    } else {
+      hint.classList.add("hidden");
+      hintText.textContent = "";
+    }
+  }
+
   function findWorkflowById(id) {
     return state.workflows.find(function (w) {
       return w.id === id;
@@ -10668,13 +10703,23 @@
       emptyAll.className = "workflow-list-empty";
       emptyAll.textContent = "No workflows yet. Click \"New workflow\" to create one.";
       els.workflowList.appendChild(emptyAll);
+      updateWorkflowDiscoveryHelperState(all, visible);
       return;
     }
     if (!visible.length) {
       var emptyFiltered = document.createElement("div");
       emptyFiltered.className = "workflow-list-empty";
-      emptyFiltered.textContent = "No workflows match your filters.";
+      var pMain = document.createElement("p");
+      pMain.className = "workflow-list-empty-main";
+      pMain.textContent = "No workflows match the current search or tag filters.";
+      var pHint = document.createElement("p");
+      pHint.className = "workflow-list-empty-hint";
+      pHint.textContent =
+        "Try clearing filters, removing tag tokens, or broadening your search.";
+      emptyFiltered.appendChild(pMain);
+      emptyFiltered.appendChild(pHint);
       els.workflowList.appendChild(emptyFiltered);
+      updateWorkflowDiscoveryHelperState(all, visible);
       return;
     }
 
@@ -10710,6 +10755,7 @@
         var span = document.createElement("span");
         span.className = "tag-pill";
         span.textContent = tag;
+        span.setAttribute("title", String(tag));
         tagsWrap.appendChild(span);
       });
 
@@ -10720,6 +10766,7 @@
       }
       els.workflowList.appendChild(item);
     });
+    updateWorkflowDiscoveryHelperState(all, visible);
   }
 
   function clearWorkflowDetail() {
@@ -19406,6 +19453,11 @@
     }
     if (els.workflowSortSelect) {
       els.workflowSortSelect.addEventListener("change", renderWorkflowList);
+    }
+    if (els.workflowClearFiltersBtn) {
+      els.workflowClearFiltersBtn.addEventListener("click", function () {
+        clearWorkflowDiscoveryFilters();
+      });
     }
     if (els.newWorkflowBtn) {
       els.newWorkflowBtn.addEventListener("click", handleNewWorkflow);

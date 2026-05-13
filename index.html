@@ -717,6 +717,23 @@
                     <option value="stepsAsc">Step count (low–high)</option>
                   </select>
                 </div>
+                <div class="workflow-clear-filters-row">
+                  <button
+                    type="button"
+                    id="workflowClearFiltersBtn"
+                    class="btn small"
+                    aria-label="Clear workflow search and tag filter and reset sort to default"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+              <div
+                id="workflowHiddenSelectionHint"
+                class="workflow-hidden-selection-hint hidden"
+                role="status"
+              >
+                <p id="workflowHiddenSelectionHintText" class="workflow-hidden-selection-hint-text"></p>
               </div>
               <div class="workflow-list" id="workflowList" aria-label="Workflows list"></div>
             </div>

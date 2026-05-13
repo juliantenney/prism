@@ -371,6 +371,9 @@
 
     // Workflows
     els.workflowList = document.getElementById("workflowList");
+    els.workflowListSearch = document.getElementById("workflowListSearch");
+    els.workflowTagFilter = document.getElementById("workflowTagFilter");
+    els.workflowSortSelect = document.getElementById("workflowSortSelect");
     els.workflowDetail = document.getElementById("workflowDetail");
     els.workflowName = document.getElementById("workflowName");
     els.workflowLibraryTags = document.getElementById("workflowLibraryTags");
@@ -10477,6 +10480,127 @@
   // Workflows (design-only, no API execution)
   // -----------------------------
 
+  function buildWorkflowSearchHaystack(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var spec = normalizeWorkflowOutputSpec(wf.workflowOutputSpec);
+    var parts = [];
+    parts.push(wf.name || "");
+    parts.push(spec.goal, spec.constraints, spec.audience);
+    parts.push(wf.artefacts || "");
+    var inputs = Array.isArray(wf.workflowInputs) ? wf.workflowInputs : [];
+    parts.push(
+      inputs
+        .map(function (x) {
+          return String(x || "").trim();
+        })
+        .filter(Boolean)
+        .join(" ")
+    );
+    var outputs = Array.isArray(wf.workflowOutputs) ? wf.workflowOutputs : [];
+    parts.push(
+      outputs
+        .map(function (x) {
+          return String(x || "").trim();
+        })
+        .filter(Boolean)
+        .join(" ")
+    );
+    (Array.isArray(wf.steps) ? wf.steps : []).forEach(function (step) {
+      if (step && step.title) parts.push(String(step.title));
+    });
+    parts.push((Array.isArray(wf.tags) ? wf.tags : []).join(" "));
+    parts.push(typeof wf.notes === "string" ? wf.notes : String(wf.notes || ""));
+    return parts.join(" ").toLowerCase();
+  }
+
+  function applyWorkflowListFilters(sourceWorkflows, filters) {
+    var items = (Array.isArray(sourceWorkflows) ? sourceWorkflows : []).slice();
+    var fi = filters || {};
+    var query = String(fi.query || "").trim().toLowerCase();
+    var tagFilters = Array.isArray(fi.tag) ? fi.tag : [];
+    var sort = String(fi.sort || "updatedDesc").trim() || "updatedDesc";
+
+    if (query) {
+      items = items.filter(function (wf) {
+        if (!wf) return false;
+        return buildWorkflowSearchHaystack(wf).indexOf(query) !== -1;
+      });
+    }
+
+    if (tagFilters.length) {
+      items = items.filter(function (wf) {
+        var workflowTags = (Array.isArray(wf.tags) ? wf.tags : []).map(function (t) {
+          return String(t).toLowerCase();
+        });
+        return tagFilters.every(function (ft) {
+          return workflowTags.some(function (pt) {
+            return pt.indexOf(ft) !== -1;
+          });
+        });
+      });
+    }
+
+    if (sort === "updatedAsc") {
+      items.sort(function (a, b) {
+        return (a.updatedAt || 0) - (b.updatedAt || 0);
+      });
+    } else if (sort === "createdDesc") {
+      items.sort(function (a, b) {
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+    } else if (sort === "createdAsc") {
+      items.sort(function (a, b) {
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      });
+    } else if (sort === "nameAsc") {
+      items.sort(function (a, b) {
+        return String((a && a.name) || "").localeCompare(String((b && b.name) || ""));
+      });
+    } else if (sort === "nameDesc") {
+      items.sort(function (a, b) {
+        return String((b && b.name) || "").localeCompare(String((a && a.name) || ""));
+      });
+    } else if (sort === "stepsDesc") {
+      items.sort(function (a, b) {
+        var la = Array.isArray(a.steps) ? a.steps.length : 0;
+        var lb = Array.isArray(b.steps) ? b.steps.length : 0;
+        return lb - la;
+      });
+    } else if (sort === "stepsAsc") {
+      items.sort(function (a, b) {
+        var la = Array.isArray(a.steps) ? a.steps.length : 0;
+        var lb = Array.isArray(b.steps) ? b.steps.length : 0;
+        return la - lb;
+      });
+    } else {
+      // updatedDesc (default) and any unknown sort value
+      items.sort(function (a, b) {
+        return (b.updatedAt || 0) - (a.updatedAt || 0);
+      });
+    }
+
+    return items;
+  }
+
+  function getActiveWorkflowListFilters() {
+    var tagInput = els.workflowTagFilter ? String(els.workflowTagFilter.value || "").trim() : "";
+    var tagList = tagInput
+      ? tagInput.split(",").map(function (t) {
+          return t.trim().toLowerCase();
+        }).filter(Boolean)
+      : [];
+    var query = els.workflowListSearch
+      ? String(els.workflowListSearch.value || "").trim().toLowerCase()
+      : "";
+    var sort = els.workflowSortSelect ? String(els.workflowSortSelect.value || "").trim() : "updatedDesc";
+    if (!sort) sort = "updatedDesc";
+    return {
+      query: query,
+      tag: tagList,
+      sort: sort
+    };
+  }
+
   function findWorkflowById(id) {
     return state.workflows.find(function (w) {
       return w.id === id;
@@ -10534,15 +10658,27 @@
   function renderWorkflowList() {
     if (!els.workflowList) return;
     renderLibraryWorkflowFilterOptions();
+    var all = Array.isArray(state.workflows) ? state.workflows : [];
+    var filters = getActiveWorkflowListFilters();
+    var visible = applyWorkflowListFilters(all, filters);
+
     els.workflowList.innerHTML = "";
-    if (!state.workflows.length) {
-      var empty = document.createElement("div");
-      empty.className = "workflow-list-empty";
-      empty.textContent = "No workflows yet. Click \"New workflow\" to create one.";
-      els.workflowList.appendChild(empty);
+    if (!all.length) {
+      var emptyAll = document.createElement("div");
+      emptyAll.className = "workflow-list-empty";
+      emptyAll.textContent = "No workflows yet. Click \"New workflow\" to create one.";
+      els.workflowList.appendChild(emptyAll);
       return;
     }
-    state.workflows.forEach(function (wf) {
+    if (!visible.length) {
+      var emptyFiltered = document.createElement("div");
+      emptyFiltered.className = "workflow-list-empty";
+      emptyFiltered.textContent = "No workflows match your filters.";
+      els.workflowList.appendChild(emptyFiltered);
+      return;
+    }
+
+    visible.forEach(function (wf) {
       var item = document.createElement("div");
       item.className =
         "workflow-item" + (wf.id === state.selectedWorkflowId ? " selected" : "");
@@ -10554,13 +10690,34 @@
 
       var meta = document.createElement("div");
       meta.className = "workflow-item-meta";
-      var stepsLabel =
-        (wf.steps && wf.steps.length ? wf.steps.length : 0) + " step" +
-        ((wf.steps && wf.steps.length) === 1 ? "" : "s");
-      meta.textContent = stepsLabel;
+      var stepCount = wf.steps && wf.steps.length ? wf.steps.length : 0;
+      var stepsLabel = stepCount + " step" + (stepCount === 1 ? "" : "s");
+      var updated =
+        typeof wf.updatedAt === "number" &&
+        isFinite(wf.updatedAt) &&
+        window.Utils &&
+        window.Utils.formatDate
+          ? window.Utils.formatDate(wf.updatedAt)
+          : "";
+      var metaText = document.createElement("span");
+      metaText.textContent =
+        "Updated " + (updated || "—") + " · " + stepsLabel;
+      meta.appendChild(metaText);
+
+      var tagsWrap = document.createElement("div");
+      tagsWrap.className = "library-item-tags";
+      (Array.isArray(wf.tags) ? wf.tags : []).slice(0, 4).forEach(function (tag) {
+        var span = document.createElement("span");
+        span.className = "tag-pill";
+        span.textContent = tag;
+        tagsWrap.appendChild(span);
+      });
 
       item.appendChild(title);
       item.appendChild(meta);
+      if ((wf.tags || []).length) {
+        item.appendChild(tagsWrap);
+      }
       els.workflowList.appendChild(item);
     });
   }
@@ -11990,6 +12147,7 @@
 
   function handleNewWorkflow() {
     clearWorkflowDetail();
+    renderWorkflowList();
     if (els.workflowName) {
       els.workflowName.focus();
     }
@@ -19232,6 +19390,23 @@
     if (els.workflowList) {
       els.workflowList.addEventListener("click", handleWorkflowListClick);
     }
+    var debouncedWorkflowListFilter =
+      window.Utils && typeof window.Utils.debounce === "function"
+        ? window.Utils.debounce(function () {
+            renderWorkflowList();
+          }, 200)
+        : function () {
+            renderWorkflowList();
+          };
+    if (els.workflowListSearch) {
+      els.workflowListSearch.addEventListener("input", debouncedWorkflowListFilter);
+    }
+    if (els.workflowTagFilter) {
+      els.workflowTagFilter.addEventListener("input", debouncedWorkflowListFilter);
+    }
+    if (els.workflowSortSelect) {
+      els.workflowSortSelect.addEventListener("change", renderWorkflowList);
+    }
     if (els.newWorkflowBtn) {
       els.newWorkflowBtn.addEventListener("click", handleNewWorkflow);
     }
@@ -19375,6 +19550,8 @@
     prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
+    prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
+    prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
     prismTestApi.buildWorkflowBundle = buildWorkflowBundle;
     prismTestApi.importWorkflowsAndPrompts = importWorkflowsAndPrompts;
     prismTestApi.setWorkflowsForTest = function (workflows) {

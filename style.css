@@ -722,6 +722,22 @@ textarea:focus {
   overflow: hidden;
 }
 
+.workflow-list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.workflow-list-stack .workflow-list {
+  flex: 1;
+  min-height: 0;
+}
+
+.workflow-list-stack .library-filters {
+  flex: 0 0 auto;
+}
+
 .workflow-list,
 .library-list {
   border-radius: var(--radius-md);

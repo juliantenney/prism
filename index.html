@@ -679,7 +679,47 @@
           </div>
 
           <div class="workflow-body">
-            <div class="workflow-list" id="workflowList" aria-label="Workflows list"></div>
+            <div class="workflow-list-stack">
+              <div
+                class="library-filters workflow-discovery-filters"
+                aria-label="Workflow search and filters"
+              >
+                <div class="form-row compact">
+                  <div class="form-group small">
+                    <label for="workflowListSearch">Search</label>
+                    <input
+                      type="search"
+                      id="workflowListSearch"
+                      placeholder="Name, goal, steps, tags, notes…"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <div class="form-group small">
+                    <label for="workflowTagFilter">Tag filter</label>
+                    <input
+                      type="text"
+                      id="workflowTagFilter"
+                      placeholder="tag1, tag2 (all must match)"
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="workflowSortSelect">Sort by</label>
+                  <select id="workflowSortSelect" autocomplete="off">
+                    <option value="updatedDesc">Updated (newest)</option>
+                    <option value="updatedAsc">Updated (oldest)</option>
+                    <option value="createdDesc">Created (newest)</option>
+                    <option value="createdAsc">Created (oldest)</option>
+                    <option value="nameAsc">Name A–Z</option>
+                    <option value="nameDesc">Name Z–A</option>
+                    <option value="stepsDesc">Step count (high–low)</option>
+                    <option value="stepsAsc">Step count (low–high)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="workflow-list" id="workflowList" aria-label="Workflows list"></div>
+            </div>
 
             <div class="workflow-detail" id="workflowDetail" aria-label="Workflow details">
               <div class="workflow-mode-row">

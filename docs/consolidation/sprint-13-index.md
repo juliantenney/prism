@@ -17,6 +17,8 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 
 **Not delivered as implementation:** **S13-02** (default domain semantics / policy) and **S13-03** (hint neutralisation) — **documentation and gates only** in-repo.
 
+**Additional read-only portability documentation** (starting artefact / Learning Design starting-point coupling) is listed in **§3** — **audit + decision framing only**; **not** first-pass delivery and **not** implementation approval.
+
 ---
 
 ## 2. Delivered first-pass work
@@ -36,6 +38,9 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 | **S13-03** — decision gate | [`sprint-13-s13-03-decision-gate-note.md`](sprint-13-s13-03-decision-gate-note.md) |
 | **S13-02** — default-domain framing audit | [`sprint-13-s13-02-decision-framing-audit.md`](sprint-13-s13-02-decision-framing-audit.md) |
 | **S13-02** — decision options (bounded models, no policy pick) | [`sprint-13-s13-02-decision-options-note.md`](sprint-13-s13-02-decision-options-note.md) |
+| **Starting artefact / LD starting-point** — portability audit | [`sprint-13-starting-artefact-ld-starting-point-portability-audit.md`](sprint-13-starting-artefact-ld-starting-point-portability-audit.md) |
+| **Starting artefact / LD starting-point** — decision framing | [`sprint-13-starting-artefact-portability-decision-framing.md`](sprint-13-starting-artefact-portability-decision-framing.md) |
+| **Prompt / config portability** — tracing audit (domain markdown, **`uiHints`**, brief config → prompts / persistence / exports) | [`sprint-13-prompt-config-portability-tracing-audit.md`](sprint-13-prompt-config-portability-tracing-audit.md) |
 
 ---
 
@@ -74,6 +79,7 @@ Details and rationale: **`sprint-13-first-pass-closure.md`** § “Explicit defe
 - **S13-02** — default domain rule / semantics (implementation **not** done; framing + options docs only).
 - **S13-03** — hint neutralisation (implementation **not** done; audit + gate only).
 - Semantic prompt migration; **`briefLines`** / extraction; multi-domain brief merge; **`getGeneralFallbackBriefConfig`** relocation; starting-artefact / title-injection refactors; broad **`app.js`** refactor; persistence/import/export migration; cache / manifest promise work; domain-pack schema redesign — unless **separately** chartered.
+- **Starting artefact / Learning Design starting-point coupling** — **read-only** audit + decision framing (`sprint-13-starting-artefact-ld-starting-point-portability-audit.md`, `sprint-13-starting-artefact-portability-decision-framing.md`); **not** implementation; does **not** change first-pass closure claims.
 
 ---
 
@@ -110,9 +116,12 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 | `sprint-13-s13-02-decision-options-note.md` |
 | `sprint-13-s13-03-display-only-hint-neutralisation-audit.md` |
 | `sprint-13-s13-03-decision-gate-note.md` |
+| `sprint-13-starting-artefact-ld-starting-point-portability-audit.md` |
+| `sprint-13-starting-artefact-portability-decision-framing.md` |
 
 ---
 
 ## Review log
 
 - **2026-05-13** — Sprint 13 consolidation index added (`sprint-13-index.md`).
+- **2026-05-13** — Index updated: starting artefact / LD starting-point audit + decision framing linked (§3, §7, file list); **no** closure wording changes.

@@ -46,4 +46,8 @@ Capture candidate next-sprint preparation only, following Sprint 11 closure. Thi
 
 - Candidate/prep only.
 - Not approved.
-- Not started.
+- Not started as an umbrella Sprint 12 implementation program (the **first-pass A–E** slice is **closed separately** — see Related closure below; that closure does **not** approve or start the candidate items above).
+
+## Related closure (first-pass only)
+
+- **Sprint 12 — first-pass structural observability (Phases A–E)** — **closed**: `docs/consolidation/sprint-12-first-pass-structural-observability-closure.md` (**bounded** tests; **no** implied completion of broader Sprint 12 or of deferred WGC/runtime orchestration). This pointer does **not** retract or promote the candidate focus areas or suggested passes above.

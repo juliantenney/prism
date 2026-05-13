@@ -5307,9 +5307,27 @@
     );
   }
 
-  function continueWorkflowDesignGeneration(base, resolvedState, configForPostRefinement, options) {
-    var opts = options && typeof options === "object" ? options : {};
-    var skipPostGenerationRefinement = !!opts.skipPostGenerationRefinement;
+  function buildWorkflowDesignBase(input) {
+    var source = input && typeof input === "object" ? input : {};
+    return {
+      name: String(source.name || "").trim(),
+      goal: String(source.goal || "").trim(),
+      designIntent: String(source.designIntent || "").trim(),
+      audience: String(source.audience || "").trim(),
+      scopeScale: String(source.scopeScale || "").trim(),
+      inputs: String(source.inputs || "").trim(),
+      startingArtefact: String(source.startingArtefact || "").trim(),
+      desiredOutputs: String(source.desiredOutputs || "").trim(),
+      domainExtraValues:
+        source.domainExtraValues && typeof source.domainExtraValues === "object"
+          ? source.domainExtraValues
+          : {},
+      scopeConstraints: String(source.scopeConstraints || "").trim(),
+      selectedDomains: Array.isArray(source.selectedDomains) ? source.selectedDomains : []
+    };
+  }
+
+  function buildWorkflowDesignBrief(base, resolvedState) {
     var name = String((base && base.name) || "").trim();
     var goal = String((base && base.goal) || "").trim();
     var designIntent = String((base && base.designIntent) || "").trim();
@@ -5326,8 +5344,6 @@
     var effectiveStartingArtefact = startingArtefact || resolvedStartingArtefact;
     var desiredOutputs = String((base && base.desiredOutputs) || "").trim();
     var scopeConstraints = String((base && base.scopeConstraints) || "").trim();
-    var selectedDomains = Array.isArray(base && base.selectedDomains) ? base.selectedDomains : getSelectedWorkflowDomains();
-
     var mappedConstraints = (resolvedState && resolvedState.mappedBindings && resolvedState.mappedBindings.workflowConstraintPatch)
       ? resolvedState.mappedBindings.workflowConstraintPatch
       : {};
@@ -5338,7 +5354,6 @@
     var mergedConstraints = [scopeConstraints, constraintLines.join("; ")].filter(function (s) {
       return !!String(s || "").trim();
     }).join("; ");
-
     var briefLines = [];
     briefLines.push("Name: " + name);
     if (designIntent) briefLines.push("Task / design intent: " + designIntent);
@@ -5354,7 +5369,24 @@
         briefLines.push("Scope and constraints (compressed): " + compressedForDesign.compact);
       }
     }
-    var brief = briefLines.join("\n");
+    return {
+      briefLines: briefLines,
+      brief: briefLines.join("\n"),
+      effectiveStartingArtefact: effectiveStartingArtefact
+    };
+  }
+
+  function continueWorkflowDesignGeneration(base, resolvedState, configForPostRefinement, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var skipPostGenerationRefinement = !!opts.skipPostGenerationRefinement;
+    var goal = String((base && base.goal) || "").trim();
+    var designIntent = String((base && base.designIntent) || "").trim();
+    var inputs = String((base && base.inputs) || "").trim();
+    var desiredOutputs = String((base && base.desiredOutputs) || "").trim();
+    var selectedDomains = Array.isArray(base && base.selectedDomains) ? base.selectedDomains : getSelectedWorkflowDomains();
+    var briefPayload = buildWorkflowDesignBrief(base, resolvedState);
+    var brief = briefPayload.brief;
+    var effectiveStartingArtefact = briefPayload.effectiveStartingArtefact;
     appendWorkflowDesignLog("assistant", "Designing workflow from your brief and resolved essentials.");
 
     var buildContext =
@@ -5695,7 +5727,7 @@
       return;
     }
 
-    var base = {
+    var base = buildWorkflowDesignBase({
       name: name,
       goal: goal,
       designIntent: designIntent,
@@ -5707,7 +5739,7 @@
       domainExtraValues: collectWorkflowDomainExtraFieldValues(),
       scopeConstraints: scopeConstraints,
       selectedDomains: selectedDomains
-    };
+    });
     var briefConfigPromise =
       window.WorkflowGenerationContext &&
       typeof window.WorkflowGenerationContext.getWorkflowBriefConfig === "function"
@@ -19247,6 +19279,16 @@
         // so the user can interact with whatever did load.
         finalizeInitialUiSetup();
       });
+  }
+
+  if (typeof window !== "undefined") {
+    var prismTestApi = window.__PRISM_TEST_API && typeof window.__PRISM_TEST_API === "object"
+      ? window.__PRISM_TEST_API
+      : {};
+    prismTestApi.buildWorkflowDesignBase = buildWorkflowDesignBase;
+    prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
+    prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
+    window.__PRISM_TEST_API = prismTestApi;
   }
 
   if (document.readyState === "loading") {

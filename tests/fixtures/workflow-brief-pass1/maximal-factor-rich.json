@@ -1,0 +1,72 @@
+{
+  "caseId": "maximal-factor-rich",
+  "baseInput": {
+    "name": "Climate Session Workflow",
+    "goal": "Plan a workshop on climate policy",
+    "designIntent": "Create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
+    "audience": "Year 1 undergraduate students",
+    "scopeScale": "session",
+    "inputs": "Use notes from the provided article and the Moodle course site",
+    "startingArtefact": "provided_source_content",
+    "desiredOutputs": "Assessment page and facilitator guide",
+    "domainExtraValues": {
+      "custom_factor": "keep-me"
+    },
+    "scopeConstraints": "Keep output concise",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "resolvedState": {
+    "resolvedFactors": {},
+    "mappedBindings": {
+      "workflowConstraintPatch": {}
+    }
+  },
+  "expectedBase": {
+    "name": "Climate Session Workflow",
+    "goal": "Plan a workshop on climate policy",
+    "designIntent": "Create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
+    "audience": "Year 1 undergraduate students",
+    "scopeScale": "session",
+    "inputs": "Use notes from the provided article and the Moodle course site",
+    "startingArtefact": "provided_source_content",
+    "desiredOutputs": "Assessment page and facilitator guide",
+    "domainExtraValues": {
+      "custom_factor": "keep-me"
+    },
+    "scopeConstraints": "Keep output concise",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "expectedBriefLines": [
+    "Name: Climate Session Workflow",
+    "Task / design intent: Create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
+    "Goal / outcome: Plan a workshop on climate policy",
+    "Audience: Year 1 undergraduate students",
+    "Scope / scale: session",
+    "Inputs / artefacts: Use notes from the provided article and the Moodle course site",
+    "Starting artefact: provided_source_content",
+    "Desired outputs: Assessment page and facilitator guide",
+    "Scope and constraints (compressed): Keep output concise"
+  ],
+  "expectedExtractSubset": {
+    "design_intent": "Create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
+    "audience": "Year 1 undergraduate students",
+    "scope_scale": "session",
+    "desired_outputs": "Assessment page and facilitator guide",
+    "input_strategy": "provided_source_content",
+    "custom_factor": "keep-me",
+    "duration_minutes": 45,
+    "learner_level": "intermediate",
+    "delivery_mode": "live_workshop",
+    "assessment_required": true,
+    "page_profile": "assessment",
+    "assessment_type": "mcq",
+    "include_answers": true,
+    "include_feedback_guidance": true,
+    "feedback_required": "item_level",
+    "assessment_total_items": 8,
+    "topic": "climate policy",
+    "workshop_subject": "climate policy",
+    "output_depth": "concise",
+    "learning_environments": ["vle"]
+  }
+}

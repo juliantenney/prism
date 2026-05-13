@@ -1,0 +1,49 @@
+{
+  "caseId": "minimal",
+  "baseInput": {
+    "name": "  Intro Workflow  ",
+    "goal": "",
+    "designIntent": "  Design a short learner page  ",
+    "audience": " New starters ",
+    "scopeScale": " single_activity ",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": " learner page ",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general"]
+  },
+  "resolvedState": {
+    "resolvedFactors": {},
+    "mappedBindings": {
+      "workflowConstraintPatch": {}
+    }
+  },
+  "expectedBase": {
+    "name": "Intro Workflow",
+    "goal": "",
+    "designIntent": "Design a short learner page",
+    "audience": "New starters",
+    "scopeScale": "single_activity",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "learner page",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general"]
+  },
+  "expectedBriefLines": [
+    "Name: Intro Workflow",
+    "Task / design intent: Design a short learner page",
+    "Goal / outcome: Design a short learner page",
+    "Audience: New starters",
+    "Scope / scale: single_activity",
+    "Desired outputs: learner page"
+  ],
+  "expectedExtractSubset": {
+    "design_intent": "Design a short learner page",
+    "audience": "New starters",
+    "scope_scale": "single_activity",
+    "desired_outputs": "learner page"
+  }
+}

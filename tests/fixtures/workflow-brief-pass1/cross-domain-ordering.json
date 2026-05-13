@@ -1,0 +1,65 @@
+{
+  "caseId": "cross-domain-ordering",
+  "baseInput": {
+    "name": "Cross Domain Workflow",
+    "goal": "Build a seminar on inclusive assessment",
+    "designIntent": "Create a learner page with MCQ checks for postgraduate learners in a seminar",
+    "audience": "Postgraduate researchers",
+    "scopeScale": "module",
+    "inputs": "Use the existing guide and Moodle page",
+    "startingArtefact": "",
+    "desiredOutputs": "Learner page",
+    "domainExtraValues": {
+      "domain_priority_note": "research-first"
+    },
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research", "learning-design"]
+  },
+  "resolvedState": {
+    "resolvedFactors": {
+      "input_strategy": "provided_source_content"
+    },
+    "mappedBindings": {
+      "workflowConstraintPatch": {}
+    }
+  },
+  "expectedBase": {
+    "name": "Cross Domain Workflow",
+    "goal": "Build a seminar on inclusive assessment",
+    "designIntent": "Create a learner page with MCQ checks for postgraduate learners in a seminar",
+    "audience": "Postgraduate researchers",
+    "scopeScale": "module",
+    "inputs": "Use the existing guide and Moodle page",
+    "startingArtefact": "",
+    "desiredOutputs": "Learner page",
+    "domainExtraValues": {
+      "domain_priority_note": "research-first"
+    },
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research", "learning-design"]
+  },
+  "expectedBriefLines": [
+    "Name: Cross Domain Workflow",
+    "Task / design intent: Create a learner page with MCQ checks for postgraduate learners in a seminar",
+    "Goal / outcome: Build a seminar on inclusive assessment",
+    "Audience: Postgraduate researchers",
+    "Scope / scale: module",
+    "Inputs / artefacts: Use the existing guide and Moodle page",
+    "Starting artefact: provided_source_content",
+    "Desired outputs: Learner page"
+  ],
+  "expectedExtractSubset": {
+    "design_intent": "Create a learner page with MCQ checks for postgraduate learners in a seminar",
+    "audience": "Postgraduate researchers",
+    "scope_scale": "module",
+    "desired_outputs": "Learner page",
+    "input_strategy": "provided_source_content",
+    "domain_priority_note": "research-first",
+    "learner_level": "postgraduate",
+    "delivery_mode": "seminar",
+    "assessment_required": true,
+    "assessment_type": "mcq",
+    "page_profile": "assessment",
+    "learning_environments": ["vle"]
+  }
+}

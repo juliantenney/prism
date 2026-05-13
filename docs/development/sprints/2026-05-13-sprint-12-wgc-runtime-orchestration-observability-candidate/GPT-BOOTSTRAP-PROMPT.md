@@ -1,5 +1,9 @@
 # GPT bootstrap — Sprint 12 candidate (WGC/runtime orchestration observability)
 
+**Role:** authoritative
+
+**Proposal-only, non-authorizing draft; no Sprint 12 approval implied.**
+
 **Use this prompt to start a fresh chat** for Sprint 12 preparation work only. This pack is for `2026-05-13-sprint-12-wgc-runtime-orchestration-observability-candidate`.
 
 **Pack path:** `docs/development/sprints/2026-05-13-sprint-12-wgc-runtime-orchestration-observability-candidate/`
@@ -19,7 +23,7 @@ This pack supports continuity and preparation only; it does not authorize code, 
 
 ## 2. Candidate focus
 
-Primary candidate focus is deferred WGC/runtime orchestration observability, especially PA-WGC coverage.
+Primary candidate focus is deferred workflow-generation-context assembly surface observability, especially WGC prompt-assembly surface coverage (PA-WGC in Sprint 10 audit terminology).
 
 Keep completed/deferred/future separation explicit:
 
@@ -48,9 +52,11 @@ Suggested Sprint 10 audit focus lanes for this prep:
 
 ## 4. Proposal-only first pass scope (not approved)
 
+**Candidate/prep only; no Sprint 12 implementation authorization implied.**
+
 Proposed first pass:
 
-- PA-WGC deterministic excerpt coverage
+- WGC prompt-assembly surface deterministic excerpt coverage
 - stubbed `fetch`
 - manifest/file ordering assertions
 - platform -> domain -> brief sequencing assertions

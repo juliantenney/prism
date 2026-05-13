@@ -1,5 +1,7 @@
 # Session handover — portable mirror (Sprint 12 candidate)
 
+**Role:** pointer mirror
+
 **Canonical references:** `docs/consolidation/sprint-11-closure.md` and `docs/consolidation/sprint-12-candidate-prep-note.md`
 
 This mirror is for portable pack parity. Update canonical consolidation files first; refresh this mirror only when continuity framing materially changes.

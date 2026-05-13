@@ -1,8 +1,12 @@
 # Sprint Context
 
+**Role:** authoritative
+
+**Proposal-only, non-authorizing draft; no Sprint 12 approval implied.**
+
 **Sprint:** Sprint 12 — WGC/runtime orchestration observability (candidate)
 
-**Status:** **Candidate/prep only**. **Not approved. Not started.**
+**Status:** **candidate/prep only**. **Not approved. Not started.**
 
 **Upstream:** Sprint 11 closure `docs/consolidation/sprint-11-closure.md`; Sprint 12 prep note `docs/consolidation/sprint-12-candidate-prep-note.md`; Sprint 10 canonical evidence map `docs/consolidation/sprint-10-contract-audit.md` (`3bd6d10`).
 
@@ -12,8 +16,8 @@
 
 ## Candidate focus (preparation)
 
-- Deferred WGC/runtime orchestration coverage from Sprint 11.
-- Priority candidate lane: PA-WGC deterministic observability.
+- Deferred workflow-generation-context assembly surface observability from Sprint 11.
+- Priority candidate lane: WGC prompt-assembly surface deterministic observability.
 - Secondary candidate lanes: bounded runtime/prompt assembly slices and persistence dual-save compatibility checks (as prep direction only).
 
 ## Read-first order
@@ -27,7 +31,9 @@
 
 ## Proposal-only first pass (not approved)
 
-Proposed first pass target: **PA-WGC deterministic excerpt coverage** with:
+**Candidate/prep only; no Sprint 12 implementation authorization implied.**
+
+Proposed first pass target: **WGC prompt-assembly surface deterministic excerpt coverage** with:
 
 - stubbed `fetch`
 - deterministic manifest and file ordering

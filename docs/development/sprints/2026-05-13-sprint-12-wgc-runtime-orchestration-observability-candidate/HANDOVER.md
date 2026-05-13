@@ -1,12 +1,16 @@
 # Session Handover Snapshot
 
+**Role:** authoritative
+
+**Proposal-only, non-authorizing draft; no Sprint 12 approval implied.**
+
 **Canonical source:** `docs/consolidation/sprint-11-closure.md` and `docs/consolidation/sprint-12-candidate-prep-note.md`
 
 **Sprint 11:** **Closed.** Closure record: `docs/consolidation/sprint-11-closure.md`.
 
 **Sprint 12:** **Candidate/prep only** (not approved, not started). Prep note: `docs/consolidation/sprint-12-candidate-prep-note.md`.
 
-**Main deferred focus carried forward:** WGC/runtime orchestration coverage (especially PA-WGC) remains deferred from Sprint 11 and is the primary candidate preparation focus for Sprint 12.
+**Main deferred focus carried forward:** workflow-generation-context assembly surface observability (WGC prompt-assembly surface; PA-WGC in Sprint 10 audit terminology) remains deferred from Sprint 11 and is the primary candidate preparation focus for Sprint 12.
 
 **Implementation gate:** no implementation is allowed before written pass scope is accepted. This pack is preparation-only continuity material.
 
@@ -21,7 +25,9 @@
 
 ## Proposal-only first pass (not approved)
 
-- PA-WGC deterministic excerpt coverage
+**Candidate/prep only; no Sprint 12 implementation authorization implied.**
+
+- workflow-generation-context assembly surface deterministic excerpt coverage
 - stubbed `fetch` for deterministic loading
 - manifest/file ordering assertions
 - platform -> domain -> brief sequencing assertions

@@ -1,5 +1,7 @@
 # Current state — portable slice (Sprint 12 pack)
 
+**Role:** pointer mirror
+
 **Full programme state:** `docs/development/current-state.md` (authoritative).
 
 ## Sprint 12 continuity (this pack)

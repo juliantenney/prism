@@ -1,0 +1,36 @@
+{
+  "caseId": "pe-import-workflow-array-object",
+  "bundleObjectWorkflows": [
+    {
+      "id": "wf-import-object",
+      "name": "Imported From Object",
+      "updatedAt": 1700000001000,
+      "selectedDomains": ["general", "research"],
+      "steps": [
+        {
+          "id": "step-object-1",
+          "title": "Step Object 1",
+          "outputName": "obj_output",
+          "depends_on": []
+        }
+      ]
+    }
+  ],
+  "arrayPayloadWorkflows": [
+    {
+      "id": "wf-import-array",
+      "name": "Imported From Array",
+      "updatedAt": 1700000002000,
+      "selectedDomains": ["general", "learning-design"],
+      "steps": [
+        {
+          "id": "step-array-1",
+          "title": "Step Array 1",
+          "outputName": "arr_output",
+          "depends_on": []
+        }
+      ]
+    }
+  ],
+  "expectedIdsPresent": ["wf-import-object", "wf-import-array"]
+}

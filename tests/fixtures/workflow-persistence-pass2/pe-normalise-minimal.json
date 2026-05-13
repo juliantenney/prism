@@ -1,0 +1,38 @@
+{
+  "caseId": "pe-normalise-minimal",
+  "inputWorkflow": {
+    "id": "wf-normalise-1",
+    "name": "Normalise Minimal",
+    "selectedDomains": ["general", "learning-design", "research"],
+    "workflowInputs": "brief notes, slide deck",
+    "workflowOutputs": "learner page",
+    "scopeAndConstraints": "Keep it concise",
+    "description": "Design a workshop page",
+    "steps": [
+      {
+        "id": "step-1",
+        "title": "Draft",
+        "outputName": "draft_output",
+        "prompt_source": "template",
+        "depends_on": []
+      }
+    ]
+  },
+  "expectedSubset": {
+    "id": "wf-normalise-1",
+    "selectedDomains": ["general", "learning-design"],
+    "workflowInputs": ["brief notes", "slide deck"],
+    "workflowOutputs": ["learner page"],
+    "workflowOutputSpec": {
+      "goal": "Design a workshop page",
+      "constraints": "Keep it concise"
+    },
+    "steps": [
+      {
+        "id": "step-1",
+        "outputName": "draft_output"
+      }
+    ]
+  },
+  "expectedRemovedTopLevelKeys": ["scopeAndConstraints", "description"]
+}

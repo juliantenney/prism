@@ -19288,6 +19288,18 @@
     prismTestApi.buildWorkflowDesignBase = buildWorkflowDesignBase;
     prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
+    prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
+    prismTestApi.buildWorkflowBundle = buildWorkflowBundle;
+    prismTestApi.importWorkflowsAndPrompts = importWorkflowsAndPrompts;
+    prismTestApi.setWorkflowsForTest = function (workflows) {
+      state.workflows = Array.isArray(workflows) ? workflows.slice() : [];
+    };
+    prismTestApi.getWorkflowsForTest = function () {
+      return Array.isArray(state.workflows) ? state.workflows.slice() : [];
+    };
+    prismTestApi.setPromptsForTest = function (prompts) {
+      state.prompts = Array.isArray(prompts) ? prompts.slice() : [];
+    };
     window.__PRISM_TEST_API = prismTestApi;
   }
 

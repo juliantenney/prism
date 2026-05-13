@@ -1,0 +1,52 @@
+{
+  "caseId": "pe-conflict-newerWins",
+  "existingWorkflows": [
+    {
+      "id": "wf-conflict-1",
+      "name": "Local Workflow",
+      "updatedAt": 1700000003000,
+      "steps": [
+        {
+          "id": "step-local-1",
+          "title": "Local Step",
+          "outputName": "local_output",
+          "depends_on": []
+        }
+      ]
+    }
+  ],
+  "incomingOlder": {
+    "id": "wf-conflict-1",
+    "name": "Incoming Older Workflow",
+    "updatedAt": 1700000002000,
+    "steps": [
+      {
+        "id": "step-old-1",
+        "title": "Old Step",
+        "outputName": "old_output",
+        "depends_on": []
+      }
+    ]
+  },
+  "incomingNewer": {
+    "id": "wf-conflict-1",
+    "name": "Incoming Newer Workflow",
+    "updatedAt": 1700000004000,
+    "steps": [
+      {
+        "id": "step-new-1",
+        "title": "New Step",
+        "outputName": "new_output",
+        "depends_on": []
+      }
+    ]
+  },
+  "expectedAfterOlderImport": {
+    "name": "Local Workflow",
+    "updatedAt": 1700000003000
+  },
+  "expectedAfterNewerImport": {
+    "name": "Incoming Newer Workflow",
+    "updatedAt": 1700000004000
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "caseId": "pe-export-workflow-only",
+  "workflowsInput": [
+    {
+      "id": "wf-export-1",
+      "name": "Export Workflow",
+      "updatedAt": 1700000000000,
+      "steps": [
+        {
+          "id": "step-export-1",
+          "title": "Step 1",
+          "promptId": "prompt-export-1"
+        }
+      ]
+    }
+  ],
+  "statePrompts": [],
+  "expectedSubset": {
+    "version": 1,
+    "workflowsLength": 1,
+    "firstWorkflowId": "wf-export-1",
+    "promptsLength": 0
+  }
+}

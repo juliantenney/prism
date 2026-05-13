@@ -146,6 +146,18 @@ They provide a consistent way to structure workflows and ensure that research pr
         "choices": ["summary", "analysis", "briefing", "questions"]
       },
       {
+        "id": "input_strategy",
+        "label": "Input strategy",
+        "question": "Should this workflow generate from a topic, rely on uploaded material, or combine both?",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "generate_from_topic", "label": "Generate content" },
+          { "value": "provided_source_content", "label": "Use uploaded material" },
+          { "value": "mixed", "label": "Mix uploaded material and generated content" }
+        ]
+      },
+      {
         "id": "audience",
         "label": "Audience",
         "question": "Who is the output for?",
@@ -173,7 +185,9 @@ They provide a consistent way to structure workflows and ensure that research pr
     "uiHints": {
       "design_intent": "Describe the research workflow outcome to produce.",
       "audience": "Who will consume this research output.",
-      "scope_scale": "Scale/depth expected for this workflow.",
+      "scope_scale": "Describe the expected breadth, depth, or stage of the research output.",
+      "scope_scale_label": "Research scope",
+      "scope_scale_placeholder": "e.g. short evidence scan, literature summary, full report section, ongoing research workflow",
       "inputs": "Source materials available at workflow start.",
       "desired_outputs": "Expected deliverables (summary, briefing, matrix, questions, etc.).",
       "constraints": "Hard requirements: method, policy, citation, tooling, delivery."
@@ -196,6 +210,12 @@ They provide a consistent way to structure workflows and ensure that research pr
       }
     ],
     "mappingRules": [
+      {
+        "factor": "input_strategy",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.input_strategy"
+        ]
+      },
       {
         "factor": "audience",
         "mapsTo": [

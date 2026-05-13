@@ -360,13 +360,13 @@ They provide a consistent way to structure workflows and ensure that learning de
       {
         "id": "input_strategy",
         "label": "Input strategy",
-        "question": "Will this workflow use existing source content, generate from topic, or both?",
+        "question": "Should this workflow generate from a topic, rely on uploaded material, or combine both?",
         "type": "select",
         "required": true,
         "choices": [
-          { "value": "provided_source_content", "label": "Use existing source content" },
-          { "value": "generate_from_topic", "label": "Generate from topic" },
-          { "value": "mixed", "label": "Both source content and generated content" }
+          { "value": "generate_from_topic", "label": "Generate content" },
+          { "value": "provided_source_content", "label": "Use uploaded material" },
+          { "value": "mixed", "label": "Mix uploaded material and generated content" }
         ]
       }
     ],
@@ -661,7 +661,8 @@ They provide a consistent way to structure workflows and ensure that learning de
     "uiHints": {
       "design_intent": "Describe the learning-design output to produce (workshop, lesson, module, assessment pack).",
       "audience": "Primary learner/cohort for this design.",
-      "scope_scale": "Delivery scale and time envelope (for example: 60-minute workshop).",
+      "scope_scale": "Delivery scale and duration (for example: 60-minute workshop, two-week module, or full course).",
+      "scope_scale_placeholder": "e.g. single activity, workshop block, multi-week module, programme",
       "inputs": "Source content or note that content must be generated from topic.",
       "desired_outputs": "Target artefacts (activities, sequence, assessment, facilitator materials).",
       "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."

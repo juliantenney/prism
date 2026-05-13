@@ -852,15 +852,39 @@
     var opts = options && typeof options === "object" ? options : {};
     return loadManifest().then(function (manifest) {
       var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
-      // MVP rule: first structured domain only, ignore general and no merging.
+      // Structured domains: first non-general only, no cross-domain merge.
+      // General-only: load the general domain step-patterns brief block (e.g. input_strategy).
       var structuredDomainId = selectedDomains.find(function (id) {
         return String(id || "").toLowerCase() !== "general";
       });
       if (!structuredDomainId) {
-        return {
-          domainId: "",
-          config: null
-        };
+        var dGeneral = manifest.domains && manifest.domains.general;
+        var generalStepPath = "";
+        if (dGeneral && Array.isArray(dGeneral.files)) {
+          generalStepPath =
+            dGeneral.files.find(function (path) {
+              return /step-patterns/i.test(String(path || ""));
+            }) || "";
+        }
+        if (!generalStepPath) {
+          return {
+            domainId: "general",
+            config: null
+          };
+        }
+        return readTextFile(generalStepPath)
+          .then(function (text) {
+            return {
+              domainId: "general",
+              config: extractWorkflowBriefConfigFromText(text) || null
+            };
+          })
+          .catch(function () {
+            return {
+              domainId: "general",
+              config: null
+            };
+          });
       }
       var d = manifest.domains[structuredDomainId];
       var stepPatternsPath = "";

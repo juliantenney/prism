@@ -300,6 +300,7 @@
     els.wfDesignIntentHint = document.getElementById("wfDesignIntentHint");
     els.wfDesignAudienceHint = document.getElementById("wfDesignAudienceHint");
     els.wfDesignScaleHint = document.getElementById("wfDesignScaleHint");
+    els.wfDesignScaleLabel = document.getElementById("wfDesignScaleLabel");
     els.wfDesignInputsHint = document.getElementById("wfDesignInputsHint");
     els.wfDesignStartingArtefactHint = document.getElementById("wfDesignStartingArtefactHint");
     els.wfDesignDesiredOutputsHint = document.getElementById("wfDesignDesiredOutputsHint");
@@ -2612,11 +2613,28 @@
     els.wfDesignDomainSelect.onchange = handleWorkflowDomainSelectionChange;
   }
 
+  function getWorkflowFactoryStructuredDomainId() {
+    var d = getSelectedWorkflowDomains();
+    var extra = d.find(function (id) {
+      return id && id !== "general";
+    });
+    return extra ? String(extra) : "";
+  }
+
   function renderWorkflowFactoryDomainUiHints(uiHints) {
     var hints = uiHints && typeof uiHints === "object" ? uiHints : {};
-    var scopeScaleHint = String(
-      hints.scope_scale || "e.g. single task, short session, multi-step design, or programme"
-    );
+    var structuredId = getWorkflowFactoryStructuredDomainId();
+    var generalScaleHint =
+      "Describe the expected size, duration, or breadth of the output.";
+    var generalScalePlaceholder =
+      "e.g. short summary, detailed guide, multi-part workflow, ongoing process";
+    var defaultScaleLabel =
+      structuredId === "research"
+        ? "Research scope"
+        : structuredId === "learning-design"
+        ? "What is the scale / scope?"
+        : "Scope / size";
+    var scopeScaleHint = String(hints.scope_scale || generalScaleHint);
     if (els.wfDesignIntentHint) {
       els.wfDesignIntentHint.textContent =
         String(hints.design_intent || "State the primary design intent in one line.");
@@ -2625,12 +2643,21 @@
       els.wfDesignAudienceHint.textContent =
         String(hints.audience || "Primary target users or learners.");
     }
+    if (els.wfDesignScaleLabel) {
+      els.wfDesignScaleLabel.textContent = String(
+        hints.scope_scale_label != null && String(hints.scope_scale_label).trim()
+          ? hints.scope_scale_label
+          : defaultScaleLabel
+      );
+    }
     if (els.wfDesignScaleHint) {
       els.wfDesignScaleHint.textContent = scopeScaleHint;
     }
     if (els.wfDesignScale) {
       var scalePlaceholder = String(
-        hints.scope_scale_placeholder || "e.g. 30 mins, 1 day, 1 week, ongoing"
+        hints.scope_scale_placeholder != null && String(hints.scope_scale_placeholder).trim()
+          ? hints.scope_scale_placeholder
+          : generalScalePlaceholder
       );
       els.wfDesignScale.placeholder = scalePlaceholder;
     }
@@ -2801,25 +2828,62 @@
     var selected = els.wfDesignStartingArtefact
       ? String(els.wfDesignStartingArtefact.value || "").trim()
       : "";
-    var sourceMaterialMode = !selected;
     if (els.wfDesignInputsLabel) {
-      els.wfDesignInputsLabel.textContent = sourceMaterialMode
-        ? "Source material / inputs"
-        : "Input details (optional)";
+      if (!selected) {
+        els.wfDesignInputsLabel.textContent = "Source material / inputs";
+      } else if (selected === "provided_source_content") {
+        els.wfDesignInputsLabel.textContent = "Uploaded material / inputs";
+      } else if (selected === "generate_from_topic") {
+        els.wfDesignInputsLabel.textContent = "Input details (optional)";
+      } else if (selected === "mixed") {
+        els.wfDesignInputsLabel.textContent = "Input details (optional)";
+      } else {
+        els.wfDesignInputsLabel.textContent = "Input details (optional)";
+      }
     }
     if (els.wfDesignInputsHint) {
-      els.wfDesignInputsHint.textContent = sourceMaterialMode
-        ? "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics)."
-        : "Describe or provide the selected starting point.";
+      if (!selected) {
+        els.wfDesignInputsHint.textContent =
+          "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics).";
+      } else if (selected === "provided_source_content") {
+        els.wfDesignInputsHint.textContent =
+          "Describe or paste uploaded source material this workflow should treat as authoritative at the start.";
+      } else if (selected === "generate_from_topic") {
+        els.wfDesignInputsHint.textContent =
+          "Optional: extra constraints, tone, or reference notes. The main topic usually lives in design intent / goal.";
+      } else if (selected === "mixed") {
+        els.wfDesignInputsHint.textContent =
+          "Describe uploaded material to use and what should be generated fresh (or how they should combine).";
+      } else {
+        els.wfDesignInputsHint.textContent =
+          "This workflow uses a saved custom starting value. Describe how that starting point should be interpreted.";
+      }
     }
-    els.wfDesignInputs.placeholder = sourceMaterialMode
-      ? "e.g. PDF, notes, transcript, list of topics..."
-      : "e.g. paste or describe the selected starting point, or note where it comes from";
+    if (!selected) {
+      els.wfDesignInputs.placeholder = "e.g. PDF, notes, transcript, list of topics...";
+    } else if (selected === "provided_source_content") {
+      els.wfDesignInputs.placeholder = "e.g. paste excerpts, file names, links, or notes on what is uploaded";
+    } else if (selected === "generate_from_topic") {
+      els.wfDesignInputs.placeholder = "e.g. constraints, tone, references (optional)";
+    } else if (selected === "mixed") {
+      els.wfDesignInputs.placeholder =
+        "e.g. what is uploaded vs what should be generated, and any constraints on how they combine";
+    } else {
+      els.wfDesignInputs.placeholder =
+        "e.g. describe how the saved starting value should be used (the value itself is preserved on the starting-point control)";
+    }
   }
 
   function renderWorkflowFactoryStartingArtefactOptions(selectedDomains) {
     if (!els.wfDesignStartingArtefact) return;
     var current = String(els.wfDesignStartingArtefact.value || "").trim();
+    function getUniversalInputStrategyChoices() {
+      return [
+        { value: "generate_from_topic", label: "Generate content" },
+        { value: "provided_source_content", label: "Use uploaded material" },
+        { value: "mixed", label: "Mix uploaded material and generated content" }
+      ];
+    }
     function normalizeChoiceRow(choice) {
       if (choice && typeof choice === "object") {
         var value = choice.value != null ? String(choice.value).trim() : "";
@@ -2831,168 +2895,72 @@
       if (!raw) return null;
       return { value: raw, label: raw };
     }
-    function renderInputStrategyOptions(choices) {
-      var opts = (Array.isArray(choices) ? choices : [])
+    function selectHasExactValue(selectEl, value) {
+      var opts = selectEl.querySelectorAll("option");
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].value === value) return true;
+      }
+      return false;
+    }
+    function renderUniversalStartingPointSelect(choices) {
+      var rows = (Array.isArray(choices) ? choices : [])
         .map(normalizeChoiceRow)
         .filter(function (row) { return !!row; });
+      if (!rows.length) {
+        rows = getUniversalInputStrategyChoices()
+          .map(normalizeChoiceRow)
+          .filter(function (row) { return !!row; });
+      }
       els.wfDesignStartingArtefact.innerHTML = "";
       var placeholder = document.createElement("option");
       placeholder.value = "";
       placeholder.textContent = "Select starting point…";
       els.wfDesignStartingArtefact.appendChild(placeholder);
-      opts.forEach(function (row) {
+      rows.forEach(function (row) {
         var opt = document.createElement("option");
         opt.value = row.value;
         opt.textContent = row.label;
         els.wfDesignStartingArtefact.appendChild(opt);
       });
-      els.wfDesignStartingArtefact.value =
-        els.wfDesignStartingArtefact.querySelector('option[value="' + current + '"]')
-          ? current
-          : "";
-      updateWorkflowFactoryInputsCopyFromStartingPoint();
-    }
-    var STARTING_ARTEFACT_ALLOWLIST = {
-      general: [
-        "normalized_content",
-        "summary",
-        "key_points",
-        "structured_data",
-        "analysis",
-        "entities",
-        "relationships"
-      ],
-      "learning-design": [
-        "normalized_content",
-        "knowledge_model",
-        "learning_outcomes",
-        "learning_activities",
-        "activity_materials",
-        "assessment_blueprint",
-        "mcq_items",
-        "learning_sequence",
-        "marking_rubric"
-      ]
-    };
-    function getVisibleDomainId() {
-      var domains = Array.isArray(selectedDomains) ? selectedDomains : [];
-      var structured = domains.find(function (id) {
-        return String(id || "").toLowerCase() !== "general";
-      });
-      return String(structured || "general").toLowerCase();
-    }
-    function getAllowSetForDomain(domainId) {
-      var list = STARTING_ARTEFACT_ALLOWLIST[String(domainId || "").toLowerCase()];
-      if (!Array.isArray(list) || !list.length) return null;
-      var set = {};
-      list.forEach(function (id) {
-        var key = String(id || "").toLowerCase().trim();
-        if (key) set[key] = true;
-      });
-      return set;
-    }
-    function renderLearningDesignStartingPointOptions() {
-      var learningDesignOptions = [
-        { id: "generate_from_topic", label: "Generate from topic" },
-        { id: "provided_source_content", label: "Use existing source content" },
-        { id: "mixed", label: "Both source content and generated content" }
-      ];
-      els.wfDesignStartingArtefact.innerHTML = "";
-      var placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = "Select starting point…";
-      els.wfDesignStartingArtefact.appendChild(placeholder);
-      learningDesignOptions.forEach(function (item) {
-        var opt = document.createElement("option");
-        opt.value = String(item.id);
-        opt.textContent = String(item.label);
-        els.wfDesignStartingArtefact.appendChild(opt);
-      });
-      els.wfDesignStartingArtefact.value =
-        els.wfDesignStartingArtefact.querySelector('option[value="' + current + '"]')
-          ? current
-          : "";
-      updateWorkflowFactoryInputsCopyFromStartingPoint();
-    }
-    function renderOptions(items) {
-      var opts = Array.isArray(items) ? items : [];
-      var visibleDomainId = getVisibleDomainId();
-      var allowSet = getAllowSetForDomain(visibleDomainId);
-      opts = opts.filter(function (item) {
-        if (!item || !item.id) return false;
-        var itemDomain = String((item.domainId || "")).toLowerCase();
-        if (visibleDomainId && itemDomain && itemDomain !== visibleDomainId) return false;
-        if (!allowSet) return true;
-        return !!allowSet[String(item.id).toLowerCase().trim()];
-      });
-      els.wfDesignStartingArtefact.innerHTML = "";
-      var placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = "Select starting point…";
-      els.wfDesignStartingArtefact.appendChild(placeholder);
-      opts.forEach(function (item) {
-        if (!item || !item.id) return;
-        var opt = document.createElement("option");
-        opt.value = String(item.id);
-        opt.textContent = String(item.label || item.id);
-        els.wfDesignStartingArtefact.appendChild(opt);
-      });
-      els.wfDesignStartingArtefact.value =
-        els.wfDesignStartingArtefact.querySelector('option[value="' + current + '"]')
-          ? current
-          : "";
-      updateWorkflowFactoryInputsCopyFromStartingPoint();
-    }
-    function renderFromBriefConfig() {
-      if (
-        !window.WorkflowGenerationContext ||
-        typeof window.WorkflowGenerationContext.getWorkflowBriefConfig !== "function"
-      ) {
-        return Promise.resolve(false);
+      if (current && !selectHasExactValue(els.wfDesignStartingArtefact, current)) {
+        var preserve = document.createElement("option");
+        preserve.value = current;
+        preserve.textContent = "Saved starting point (" + current + ")";
+        els.wfDesignStartingArtefact.appendChild(preserve);
       }
-      return window.WorkflowGenerationContext
-        .getWorkflowBriefConfig({ selectedDomains: selectedDomains })
-        .then(function (result) {
-          var cfg = result && result.config ? normalizeWorkflowBriefConfig(result.config) : null;
-          if (!cfg) return false;
+      if (current && selectHasExactValue(els.wfDesignStartingArtefact, current)) {
+        els.wfDesignStartingArtefact.value = current;
+      } else {
+        els.wfDesignStartingArtefact.value = "";
+      }
+      updateWorkflowFactoryInputsCopyFromStartingPoint();
+    }
+    if (
+      !window.WorkflowGenerationContext ||
+      typeof window.WorkflowGenerationContext.getWorkflowBriefConfig !== "function"
+    ) {
+      renderUniversalStartingPointSelect(getUniversalInputStrategyChoices());
+      return;
+    }
+    window.WorkflowGenerationContext
+      .getWorkflowBriefConfig({ selectedDomains: selectedDomains })
+      .then(function (result) {
+        var cfg = result && result.config ? normalizeWorkflowBriefConfig(result.config) : null;
+        var choices = [];
+        if (cfg) {
           var factors = (cfg.requiredFactors || []).concat(cfg.optionalFactors || []);
           var inputStrategyFactor = factors.find(function (f) {
             return String((f && f.id) || "").trim() === "input_strategy";
           });
-          var choices = inputStrategyFactor && Array.isArray(inputStrategyFactor.choices)
-            ? inputStrategyFactor.choices
-            : [];
-          if (!choices.length) return false;
-          renderInputStrategyOptions(choices);
-          return true;
-        })
-        .catch(function () {
-          return false;
-        });
-    }
-    renderFromBriefConfig().then(function (usedBriefConfigOptions) {
-      var visibleDomainId = getVisibleDomainId();
-      if (visibleDomainId === "learning-design") {
-        renderLearningDesignStartingPointOptions();
-        return;
-      }
-      if (usedBriefConfigOptions) return;
-      if (
-        !window.WorkflowGenerationContext ||
-        typeof window.WorkflowGenerationContext.getDomainArtefactOptions !== "function"
-      ) {
-        renderOptions([]);
-        return;
-      }
-      window.WorkflowGenerationContext
-        .getDomainArtefactOptions({ selectedDomains: selectedDomains })
-        .then(function (items) {
-          renderOptions(items);
-        })
-        .catch(function () {
-          renderOptions([]);
-        });
-    });
+          if (inputStrategyFactor && Array.isArray(inputStrategyFactor.choices)) {
+            choices = inputStrategyFactor.choices;
+          }
+        }
+        renderUniversalStartingPointSelect(choices);
+      })
+      .catch(function () {
+        renderUniversalStartingPointSelect(getUniversalInputStrategyChoices());
+      });
   }
 
   function renderWorkflowDetailDomainUiHints(selectedDomains) {

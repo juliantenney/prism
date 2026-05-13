@@ -81,3 +81,39 @@ These are generic families only. Domains define concrete canonical steps built f
 - Combine pattern families to build coherent workflows.
 - Keep steps aligned to one primary transformation intent where possible.
 - Use workflow policy to preserve dependency integrity and stable execution ordering.
+
+### Workflow Brief Config
+```json
+{
+  "workflowBriefConfig": {
+    "version": "1",
+    "requiredFactors": [
+      {
+        "id": "input_strategy",
+        "label": "Input strategy",
+        "question": "Should this workflow generate from a topic, rely on uploaded material, or combine both?",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "generate_from_topic", "label": "Generate content" },
+          { "value": "provided_source_content", "label": "Use uploaded material" },
+          { "value": "mixed", "label": "Mix uploaded material and generated content" }
+        ]
+      }
+    ],
+    "optionalFactors": [],
+    "inferenceRules": [],
+    "mappingRules": [
+      {
+        "factor": "input_strategy",
+        "mapsTo": ["workflow.workflowOutputSpec.constraints.input_strategy"]
+      }
+    ],
+    "stopConditions": ["all_required_factors_resolved"],
+    "questionPolicy": {
+      "maxDefaultQuestions": 4,
+      "askOptionalByDefault": false
+    }
+  }
+}
+```

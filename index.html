@@ -496,9 +496,8 @@
         <div class="card workflow-factory-basics-card">
           <h2>Workflow basics</h2>
           <p class="helper-text">
-            Describe the learning design you want <strong>workflows</strong> to orchestrate. The usual end product is a
-            <strong>learner-facing page</strong> (HTML) plus any supporting artefacts; use the Workflows tab to refine
-            orchestration steps and prompts.
+            Describe what you want this workflow to produce. The usual end product is an HTML page; use the Workflows
+            tab to refine workflow steps and prompts.
           </p>
           <div class="workflow-factory-basics-grid">
             <div class="form-group">
@@ -541,18 +540,20 @@
               />
             </div>
             <div class="form-group">
-              <label for="wfDesignScale">What is the scale / scope?</label>
-              <p id="wfDesignScaleHint" class="helper-text">e.g. single task, short session, multi-step design, or programme</p>
+              <label for="wfDesignScale" id="wfDesignScaleLabel">Scope / size</label>
+              <p id="wfDesignScaleHint" class="helper-text">
+                Describe the expected size, duration, or breadth of the output.
+              </p>
               <input
                 type="text"
                 id="wfDesignScale"
-                placeholder="e.g. 30 mins, 1 day, 1 week, ongoing"
+                placeholder="e.g. short summary, detailed guide, multi-part workflow, ongoing process"
                 autocomplete="off"
               />
             </div>
             <div class="form-group">
               <label for="wfDesignStartingArtefact">Starting point (optional)</label>
-              <p id="wfDesignStartingArtefactHint" class="helper-text">What are you starting from? Select if you already have something (e.g. learning outcomes, learning activities for the learner-facing page, or assessment items).</p>
+              <p id="wfDesignStartingArtefactHint" class="helper-text">Choose how this workflow begins: generate from a topic, rely on uploaded material, or combine both. Legacy saved values appear as an extra option until you change them.</p>
               <select id="wfDesignStartingArtefact" autocomplete="off">
                 <option value="">From source material (e.g. document, notes, PDF)</option>
               </select>

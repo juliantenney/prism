@@ -13,6 +13,8 @@
 
 Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-pack portability and manifest clarity for v1**, bounded to what the **first pass** actually delivered, plus **read-only** audits and **decision** notes for items that remain **gated**.
 
+**Pragmatic portability aim** (minimal registration + pack-owned specifics) and **persistence / export / import** tracing for round-trip expectations: [`sprint-13-pragmatic-domain-pack-portability-target.md`](sprint-13-pragmatic-domain-pack-portability-target.md) · [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md).
+
 **Delivered in first pass (per closure):** **S13-07** (v1 descriptive documentation) and **S13-01** (narrow, strict-parity **`#wfDesignDomainSelect`** tidy in **`app.js`** only).
 
 **Not delivered as implementation:** **S13-02** (default domain semantics / policy) and **S13-03** (hint neutralisation) — **documentation and gates only** in-repo.
@@ -41,6 +43,9 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 | **Starting artefact / LD starting-point** — portability audit | [`sprint-13-starting-artefact-ld-starting-point-portability-audit.md`](sprint-13-starting-artefact-ld-starting-point-portability-audit.md) |
 | **Starting artefact / LD starting-point** — decision framing | [`sprint-13-starting-artefact-portability-decision-framing.md`](sprint-13-starting-artefact-portability-decision-framing.md) |
 | **Prompt / config portability** — tracing audit (domain markdown, **`uiHints`**, brief config → prompts / persistence / exports) | [`sprint-13-prompt-config-portability-tracing-audit.md`](sprint-13-prompt-config-portability-tracing-audit.md) |
+| **Persistence / export** — portability audit | [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md) |
+| **Portability boundary** — summary | [`sprint-13-portability-boundary-summary.md`](sprint-13-portability-boundary-summary.md) |
+| **Workflow semantics / orchestration** — portability audit (generation, refinement, LD coupling, title heuristics) | [`sprint-13-workflow-semantics-orchestration-portability-audit.md`](sprint-13-workflow-semantics-orchestration-portability-audit.md) |
 
 ---
 
@@ -101,6 +106,32 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 
 ---
 
+## 10. Portability boundary and future validation
+
+**Purpose:** Cross-link **boundary summaries**, **tracing audits**, and the **pragmatic portability target** (reframed aim + hypothetical “new pack” acceptance direction, including **persistence round-trips**). This section **does not** approve implementation.
+
+**Primary pair for target vs durable behaviour:** [`sprint-13-pragmatic-domain-pack-portability-target.md`](sprint-13-pragmatic-domain-pack-portability-target.md) (aim + acceptance test) · [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md) (current save / import / export / normalise map).
+
+| Role | Artefact |
+|------|----------|
+| **Portability boundaries** (categories, coupling, non-claim) | [`sprint-13-portability-boundary-summary.md`](sprint-13-portability-boundary-summary.md) |
+| **Prompt / config → model** tracing | [`sprint-13-prompt-config-portability-tracing-audit.md`](sprint-13-prompt-config-portability-tracing-audit.md) |
+| **Workflow semantics / orchestration** (generation, refinement, domain coupling) | [`sprint-13-workflow-semantics-orchestration-portability-audit.md`](sprint-13-workflow-semantics-orchestration-portability-audit.md) |
+| **Persistence / export / import** tracing | [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md) |
+| **Pragmatic target** — minimal registration + pack-owned specifics; hypothetical validation exercise | [`sprint-13-pragmatic-domain-pack-portability-target.md`](sprint-13-pragmatic-domain-pack-portability-target.md) |
+
+---
+
+## 11. Synthesis and strategy notes
+
+**Purpose:** High-level **synthesis** of Sprint 13 findings into a **practical strategy posture** — **not** implementation guidance, **not** schema design, **not** roadmap.
+
+| Role | Artefact |
+|------|----------|
+| **Portability strategy synthesis** — practical vs deep portability, tractable vs coupled areas, lessons, descriptive strategic direction | [`sprint-13-portability-strategy-synthesis.md`](sprint-13-portability-strategy-synthesis.md) |
+
+---
+
 ## Consolidation file list (`docs/consolidation/sprint-13-*.md`)
 
 | File |
@@ -118,6 +149,12 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 | `sprint-13-s13-03-decision-gate-note.md` |
 | `sprint-13-starting-artefact-ld-starting-point-portability-audit.md` |
 | `sprint-13-starting-artefact-portability-decision-framing.md` |
+| `sprint-13-prompt-config-portability-tracing-audit.md` |
+| `sprint-13-persistence-export-portability-audit.md` |
+| `sprint-13-portability-boundary-summary.md` |
+| `sprint-13-pragmatic-domain-pack-portability-target.md` |
+| `sprint-13-workflow-semantics-orchestration-portability-audit.md` |
+| `sprint-13-portability-strategy-synthesis.md` |
 
 ---
 
@@ -125,3 +162,7 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 
 - **2026-05-13** — Sprint 13 consolidation index added (`sprint-13-index.md`).
 - **2026-05-13** — Index updated: starting artefact / LD starting-point audit + decision framing linked (§3, §7, file list); **no** closure wording changes.
+- **2026-05-13** — §10 portability boundary / future validation + pragmatic target note; §3 and file list updated for persistence audit, boundary summary, pragmatic target.
+- **2026-05-13** — §1 + §10: explicit links to pragmatic target + persistence audit (round-trip framing); pragmatic target note expanded (lifecycle bar, persistence red flag, import/export versioning).
+- **2026-05-13** — Workflow semantics / orchestration portability audit linked (§3, §10, file list).
+- **2026-05-13** — §11 synthesis / strategy note + `sprint-13-portability-strategy-synthesis.md` (file list).

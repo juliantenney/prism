@@ -373,6 +373,10 @@
     els.workflowList = document.getElementById("workflowList");
     els.workflowDetail = document.getElementById("workflowDetail");
     els.workflowName = document.getElementById("workflowName");
+    els.workflowLibraryTags = document.getElementById("workflowLibraryTags");
+    els.workflowLibraryNotes = document.getElementById("workflowLibraryNotes");
+    els.workflowMetaCreated = document.getElementById("workflowMetaCreated");
+    els.workflowMetaUpdated = document.getElementById("workflowMetaUpdated");
     els.workflowArtefacts = document.getElementById("workflowArtefacts");
     els.workflowOutputs = document.getElementById("workflowOutputs");
     els.workflowStartingArtefact = document.getElementById("workflowStartingArtefact");
@@ -8139,6 +8143,12 @@
     if (els.workflowConstraints) {
       els.workflowConstraints.readOnly = isRun;
     }
+    if (els.workflowLibraryTags) {
+      els.workflowLibraryTags.readOnly = isRun;
+    }
+    if (els.workflowLibraryNotes) {
+      els.workflowLibraryNotes.readOnly = isRun;
+    }
 
     // Update run-mode summary header (read-only view in Run mode).
     if (els.workflowRunName && els.workflowRunText) {
@@ -10559,6 +10569,10 @@
     if (!els.workflowDetail) return;
     state.selectedWorkflowId = null;
     if (els.workflowName) els.workflowName.value = "";
+    if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
+    if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
+    if (els.workflowMetaCreated) els.workflowMetaCreated.textContent = "Created: —";
+    if (els.workflowMetaUpdated) els.workflowMetaUpdated.textContent = "Updated: —";
     if (els.workflowArtefacts) els.workflowArtefacts.value = "";
     if (els.workflowOutputs) els.workflowOutputs.value = "";
     if (els.workflowStartingArtefact) els.workflowStartingArtefact.value = "";
@@ -10638,6 +10652,26 @@
     });
 
     if (els.workflowName) els.workflowName.value = wf.name || "";
+    if (els.workflowLibraryTags) {
+      els.workflowLibraryTags.value = (Array.isArray(wf.tags) ? wf.tags : []).join(", ");
+    }
+    if (els.workflowLibraryNotes) {
+      els.workflowLibraryNotes.value = typeof wf.notes === "string" ? wf.notes : "";
+    }
+    if (els.workflowMetaCreated) {
+      els.workflowMetaCreated.textContent =
+        "Created: " +
+        (typeof wf.createdAt === "number" && isFinite(wf.createdAt) && window.Utils && window.Utils.formatDate
+          ? window.Utils.formatDate(wf.createdAt)
+          : "—");
+    }
+    if (els.workflowMetaUpdated) {
+      els.workflowMetaUpdated.textContent =
+        "Updated: " +
+        (typeof wf.updatedAt === "number" && isFinite(wf.updatedAt) && window.Utils && window.Utils.formatDate
+          ? window.Utils.formatDate(wf.updatedAt)
+          : "—");
+    }
     if (els.workflowArtefacts) els.workflowArtefacts.value = wf.artefacts || "";
     if (els.workflowOutputs) els.workflowOutputs.value = formatStringList(wf.workflowOutputs || []);
     if (els.workflowStartingArtefact) {
@@ -11830,6 +11864,18 @@
     // collect editable DOM fields into a workflow-definition draft shape.
     // This is a derived capture pass (DOM -> object), not persistence.
     var name = (els.workflowName && els.workflowName.value) || "";
+    var tagsRaw = els.workflowLibraryTags && els.workflowLibraryTags.value;
+    var workflowTags =
+      tagsRaw && String(tagsRaw).trim()
+        ? String(tagsRaw)
+            .split(",")
+            .map(function (t) {
+              return String(t || "").trim();
+            })
+            .filter(Boolean)
+        : [];
+    var workflowNotes = (els.workflowLibraryNotes && els.workflowLibraryNotes.value) || "";
+    workflowNotes = String(workflowNotes).trim();
     var artefacts = (els.workflowArtefacts && els.workflowArtefacts.value) || "";
     var workflowOutputs = (els.workflowOutputs && els.workflowOutputs.value) || "";
     var workflowOutputSpec = normalizeWorkflowOutputSpec({
@@ -11931,6 +11977,8 @@
     return {
       id: state.selectedWorkflowId,
       name: name.trim() || "Untitled workflow",
+      tags: workflowTags,
+      notes: workflowNotes,
       selectedDomains: getSelectedWorkflowDomains(),
       artefacts: artefacts.trim(),
       workflowInputs: parseStringList(artefacts),
@@ -12035,7 +12083,10 @@
     if (existingIdx >= 0) {
       var existing = state.workflows[existingIdx];
       data.id = existing.id;
-      data.createdAt = typeof existing.createdAt === "number" ? existing.createdAt : now;
+      data.createdAt =
+        typeof existing.createdAt === "number" && isFinite(existing.createdAt)
+          ? existing.createdAt
+          : now;
       data.updatedAt = now;
       state.workflows[existingIdx] = data;
     } else {
@@ -12084,6 +12135,8 @@
       });
       return s;
     });
+    var dupNormWarnings = [];
+    clone = normalizeWorkflowForV1(clone, dupNormWarnings);
     state.workflows.push(clone);
     saveWorkflows();
     renderWorkflowList();
@@ -12141,6 +12194,8 @@
       return s;
     });
 
+    var renameNormWarnings = [];
+    clone = normalizeWorkflowForV1(clone, renameNormWarnings);
     state.workflows.push(clone);
     saveWorkflows();
     renderWorkflowList();
@@ -12760,6 +12815,42 @@
     delete wf.scopeAndConstraints;
     delete wf.description;
     wf.steps = normalizedSteps;
+
+    // Workflow library metadata (My Workflows): tags, notes, timestamps — distinct from per-step `notes`.
+    var tagsSource = wf.tags;
+    var normalizedWorkflowTags = [];
+    if (typeof tagsSource === "string") {
+      normalizedWorkflowTags = String(tagsSource)
+        .split(",")
+        .map(function (t) {
+          return String(t || "").trim();
+        })
+        .filter(Boolean);
+    } else if (Array.isArray(tagsSource)) {
+      tagsSource.forEach(function (t) {
+        var s = String(t == null ? "" : t).trim();
+        if (s) normalizedWorkflowTags.push(s);
+      });
+    }
+    wf.tags = normalizedWorkflowTags;
+
+    wf.notes =
+      typeof wf.notes === "string" ? wf.notes : String(wf.notes == null ? "" : wf.notes);
+
+    var createdMs = wf.createdAt;
+    var updatedMs = wf.updatedAt;
+    var createdOk = typeof createdMs === "number" && isFinite(createdMs);
+    var updatedOk = typeof updatedMs === "number" && isFinite(updatedMs);
+    if (!createdOk && updatedOk) {
+      wf.createdAt = updatedMs;
+    } else if (createdOk && !updatedOk) {
+      wf.updatedAt = createdMs;
+    } else if (!createdOk && !updatedOk) {
+      var stamp = Date.now();
+      wf.createdAt = stamp;
+      wf.updatedAt = stamp;
+    }
+
     return wf;
   }
 

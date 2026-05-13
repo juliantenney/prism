@@ -722,6 +722,36 @@
                 />
               </div>
               <div class="form-group">
+                <label for="workflowLibraryTags">Tags (comma separated)</label>
+                <p id="workflowLibraryTagsHint" class="helper-text">
+                  Labels for organising and discovering this workflow in My Workflows (separate from step notes).
+                </p>
+                <input
+                  type="text"
+                  id="workflowLibraryTags"
+                  placeholder="e.g. onboarding, compliance, workshop"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="workflowLibraryNotes">Workflow notes</label>
+                <p id="workflowLibraryNotesHint" class="helper-text">
+                  Internal notes about this saved workflow (not the same as per-step notes in the steps list).
+                </p>
+                <textarea
+                  id="workflowLibraryNotes"
+                  rows="2"
+                  placeholder="How or when to use this workflow, caveats, ownership…"
+                  autocomplete="off"
+                ></textarea>
+              </div>
+              <div class="form-group workflow-library-meta">
+                <div class="detail-meta" aria-live="polite">
+                  <span id="workflowMetaCreated">Created: —</span>
+                  <span id="workflowMetaUpdated">Updated: —</span>
+                </div>
+              </div>
+              <div class="form-group">
                 <label for="workflowGoal">Goal / outcome (learner-facing run)</label>
                 <p id="workflowGoalHint" class="helper-text">What the saved workflow should achieve for the learner-facing run (workflows orchestrate generation; they are not the primary learner artefact).</p>
                 <textarea

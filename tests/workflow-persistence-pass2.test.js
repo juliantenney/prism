@@ -177,6 +177,58 @@ test("PE-normalise-minimal: normalizeWorkflowForV1 preserves required normalized
   fixture.expectedRemovedTopLevelKeys.forEach((k) => {
     assert.equal(Object.prototype.hasOwnProperty.call(normalizedCanonical, k), false, `expected key removed: ${k}`);
   });
+
+  assert.deepEqual(normalizedCanonical.tags, []);
+  assert.equal(normalizedCanonical.notes, "");
+  assert.equal(typeof normalizedCanonical.createdAt, "number");
+  assert.equal(typeof normalizedCanonical.updatedAt, "number");
+  assert.ok(Number.isFinite(normalizedCanonical.createdAt));
+  assert.ok(Number.isFinite(normalizedCanonical.updatedAt));
+  assert.equal(normalizedCanonical.createdAt, normalizedCanonical.updatedAt);
+});
+
+test("PE-normalise-library-metadata: tags string, malformed tags, notes coercion, timestamp fill", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  const warnings = [];
+  const normalized = api.normalizeWorkflowForV1(
+    {
+      id: "wf-lib-meta",
+      name: "Lib meta",
+      selectedDomains: ["general"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [],
+      tags: " Alpha , beta ",
+      notes: null
+    },
+    warnings
+  );
+  const n = canonicalizeJson(normalized);
+  assert.deepEqual(n.tags, ["Alpha", "beta"]);
+  assert.equal(n.notes, "");
+  const w2 = [];
+  const n2 = api.normalizeWorkflowForV1(
+    {
+      id: "wf-tags-num",
+      name: "Tags num",
+      selectedDomains: ["general"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [],
+      tags: 42,
+      notes: 0,
+      createdAt: 100,
+      updatedAt: 200
+    },
+    w2
+  );
+  const n2c = canonicalizeJson(n2);
+  assert.deepEqual(n2c.tags, []);
+  assert.equal(n2c.notes, "0");
+  assert.equal(n2c.createdAt, 100);
+  assert.equal(n2c.updatedAt, 200);
 });
 
 test("PE-export-workflow-only: buildWorkflowBundle keeps workflow shape and ids", async () => {

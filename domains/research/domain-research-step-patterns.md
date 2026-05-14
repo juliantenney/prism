@@ -111,9 +111,14 @@ They provide a consistent way to structure workflows and ensure that research pr
       {
         "whenResolvedFactorsInclude": { "objective_type": "questions" },
         "include": ["Generate Research Questions"]
+      },
+      {
+        "whenResolvedFactorsInclude": { "objective_type": "analysis" },
+        "include": ["Conduct Thematic Analysis"]
       }
     ],
     "stepRoleAnchors": {
+      "Generate Research Content": "Generate or extend structured grounding content for downstream extraction, modelling, and synthesis.",
       "Normalize Content": "Prepare source material into clean, structured research-ready input.",
       "Extract Key Findings": "Extract high-confidence findings and evidence-backed takeaways.",
       "Model Argument Structure": "Model claims, evidence, assumptions, and counterpositions.",
@@ -130,6 +135,8 @@ They provide a consistent way to structure workflows and ensure that research pr
   }
 }
 ```
+
+**Documentation order vs `canonicalSteps`:** `workflowPolicy.canonicalSteps` lists **Generate Research Content** before **Normalize Content** for planner composition. The **numbered sections** below place **Normalize Content** first (§1) then **Generate Research Content** (§2) for a “prepare material → generate” reading order; headings still use the exact canonical step titles.
 
 ### Workflow Brief Config
 ```json

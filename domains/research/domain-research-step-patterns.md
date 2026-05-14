@@ -150,7 +150,12 @@ They provide a consistent way to structure workflows and ensure that research pr
         "question": "What is the primary objective? (summary/analysis/briefing/questions)",
         "type": "select",
         "required": true,
-        "choices": ["summary", "analysis", "briefing", "questions"]
+        "choices": [
+          { "value": "summary", "label": "Summary" },
+          { "value": "analysis", "label": "Analysis" },
+          { "value": "briefing", "label": "Briefing Note" },
+          { "value": "questions", "label": "Research Questions" }
+        ]
       },
       {
         "id": "input_strategy",

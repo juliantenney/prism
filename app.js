@@ -15335,8 +15335,60 @@
   }
 
   function utilityRenderMarkdownBlock(text) {
-    var raw = String(text == null ? "" : text).replace(/\r\n/g, "\n").trim();
+    var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n").trim();
     if (!raw) return "";
+    var bulletLineRe = /^[-*•]\s+(.+)$/;
+    function renderParagraphWithInlineBullets(joined) {
+      var rawJoin = String(joined == null ? "" : joined);
+      var t = rawJoin.trim();
+      if (!t) return "";
+      if (t.indexOf("•") === -1) {
+        return "<p>" + utilityRenderMarkdownInline(t) + "</p>";
+      }
+      var segments = t
+        .split(/\s+•\s+/)
+        .map(function (s) {
+          return String(s || "")
+            .replace(/^\s*•\s+/, "")
+            .trim();
+        })
+        .filter(function (s) {
+          return !!s;
+        });
+      if (!segments.length) return "<p>" + utilityRenderMarkdownInline(t) + "</p>";
+      var startsWithBullet = /^\s*•\s+/.test(rawJoin);
+      if (segments.length === 1) {
+        if (startsWithBullet) {
+          return "<ul><li>" + utilityRenderMarkdownInline(segments[0]) + "</li></ul>";
+        }
+        return "<p>" + utilityRenderMarkdownInline(t) + "</p>";
+      }
+      if (startsWithBullet) {
+        return (
+          "<ul>" +
+          segments
+            .map(function (s) {
+              return "<li>" + utilityRenderMarkdownInline(s) + "</li>";
+            })
+            .join("") +
+          "</ul>"
+        );
+      }
+      var firstSeg = segments[0];
+      var restSeg = segments.slice(1);
+      var out = [];
+      if (firstSeg) out.push("<p>" + utilityRenderMarkdownInline(firstSeg) + "</p>");
+      out.push(
+        "<ul>" +
+          restSeg
+            .map(function (s) {
+              return "<li>" + utilityRenderMarkdownInline(s) + "</li>";
+            })
+            .join("") +
+          "</ul>"
+      );
+      return out.join("");
+    }
     var lines = raw.split("\n");
     var i = 0;
     var parts = [];
@@ -15365,13 +15417,28 @@
         i += 1;
         continue;
       }
-      var bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
+      var bulletMatch = trimmed.match(bulletLineRe);
       if (bulletMatch) {
         var ulItems = [];
         while (i < lines.length) {
-          var bl = String(lines[i] || "").trim().match(/^[-*]\s+(.+)$/);
+          var bl = String(lines[i] || "").trim().match(bulletLineRe);
           if (!bl) break;
-          ulItems.push("<li>" + utilityRenderMarkdownInline(bl[1]) + "</li>");
+          var bodyText = String(bl[1] || "").trim();
+          if (/\s+•\s+/.test(bodyText)) {
+            bodyText
+              .split(/\s+•\s+/)
+              .map(function (piece) {
+                return String(piece || "").trim();
+              })
+              .filter(function (piece) {
+                return !!piece;
+              })
+              .forEach(function (piece) {
+                ulItems.push("<li>" + utilityRenderMarkdownInline(piece) + "</li>");
+              });
+          } else {
+            ulItems.push("<li>" + utilityRenderMarkdownInline(bodyText) + "</li>");
+          }
           i += 1;
         }
         parts.push("<ul>" + ulItems.join("") + "</ul>");
@@ -15395,14 +15462,14 @@
         var next = String(lines[i] || "").trim();
         if (!next) break;
         if (/^(#{1,6})\s+/.test(next)) break;
-        if (/^[-*]\s+/.test(next) || /^\d+[\)\.]\s+/.test(next)) break;
+        if (bulletLineRe.test(next) || /^\d+[\)\.]\s+/.test(next)) break;
         if (/^(-{3,}|\*{3,}|_{3,})$/.test(next)) break;
         if (utilityIsMarkdownTableDivider(next)) break;
         if (next.indexOf("|") !== -1 && i + 1 < lines.length && utilityIsMarkdownTableDivider(lines[i + 1])) break;
         paraLines.push(next);
         i += 1;
       }
-      parts.push("<p>" + utilityRenderMarkdownInline(paraLines.join(" ")) + "</p>");
+      parts.push(renderParagraphWithInlineBullets(paraLines.join(" ")));
     }
     return parts.join("");
   }
@@ -15565,7 +15632,7 @@
   function utilityRenderPrimitive(value, opts) {
     var renderOpts = utilityNormalizeRenderOpts(opts);
     if (utilityIsEmptyValue(value)) return "";
-    var text = String(value == null ? "" : value).replace(/\r\n/g, "\n").trim();
+    var text = String(value == null ? "" : value).replace(/\r\n?/g, "\n").trim();
     if (renderOpts.humanizeEnumValues && /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(text)) {
       text = text.replace(/_/g, " ");
     }
@@ -16187,7 +16254,7 @@
         }
         var text = String(value || "").trim();
         if (!text) return "";
-        if (/\n|^[-*]\s+|^\d+[\)\.]\s+/m.test(text)) {
+        if (/\n|^[-*•]\s+|^\d+[\)\.]\s+/m.test(text)) {
           return renderCardScopedMarkdown(text);
         }
         return "<ul><li>" + utilityRenderMarkdownInline(text) + "</li></ul>";
@@ -16361,7 +16428,7 @@
               .trim();
           }
           function parseCheckboxToken(textLine) {
-            var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*]\s+/, "");
+            var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*•]\s+/, "");
             var m = raw.match(/^(☐|☑|☒|\[(?: |x|X)\])\s+(.+)$/);
             if (!m) return null;
             var token = String(m[1] || "").trim();
@@ -16381,7 +16448,7 @@
               var lines = raw.split(/\r?\n/);
               var bulletLines = lines
                 .map(function (ln) {
-                  var m = String(ln || "").match(/^\s*[-*]\s+(.+)$/);
+                  var m = String(ln || "").match(/^\s*[-*•]\s+(.+)$/);
                   return m ? String(m[1] || "").trim() : "";
                 })
                 .filter(function (x) { return !!x; });
@@ -16409,7 +16476,7 @@
                   });
                 }
                 var para = lines
-                  .filter(function (ln) { return !/^\s*[-*]\s+/.test(String(ln || "")); })
+                  .filter(function (ln) { return !/^\s*[-*•]\s+/.test(String(ln || "")); })
                   .join(" ")
                   .trim();
                 if (para && !isPlaceholderOnly(stripHeadingMarkersLocal(para))) {
@@ -16418,8 +16485,8 @@
                 return;
               }
               var single = String(raw || "").trim();
-              if (/^\s*[-*]\s+/.test(single)) {
-                single = single.replace(/^\s*[-*]\s+/, "").trim();
+              if (/^\s*[-*•]\s+/.test(single)) {
+                single = single.replace(/^\s*[-*•]\s+/, "").trim();
               }
               single = stripHeadingMarkersLocal(single);
               if (isPlaceholderOnly(single)) return;
@@ -16493,7 +16560,7 @@
           var hint = String(keyHint || "").toLowerCase().trim();
           function renderPlainStructuredText(rawText, textOpts) {
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
-            var text = String(rawText == null ? "" : rawText).replace(/\r\n/g, "\n").trim();
+            var text = String(rawText == null ? "" : rawText).replace(/\r\n?/g, "\n").trim();
             if (!text) return "";
             text = text.replace(/:\s+-\s+/g, ":\n- ");
             function splitMarkdownTableRow(line) {
@@ -16606,7 +16673,7 @@
               return '<label class="util-line-label">' + utilityRenderMarkdownInline(clean) + '</label><div class="util-template-note-line" aria-hidden="true"></div>';
             }
             function parseCheckboxItem(textLine) {
-              var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*]\s+/, "");
+              var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*•]\s+/, "");
               if (!raw) return null;
               var m = raw.match(/^(☐|☑|☒|\[(?: |x|X)\])\s+(.+)$/);
               if (!m) return null;
@@ -16635,7 +16702,7 @@
             function splitInlineDashPromptItems(lineText) {
               var raw = String(lineText == null ? "" : lineText).trim();
               if (!raw) return [];
-              var content = raw.replace(/^\s*[-*]\s+/, "").trim();
+              var content = raw.replace(/^\s*[-*•]\s+/, "").trim();
               if (!content) return [];
               var parts = content.split(/\s+-\s+(?=(?:[A-Z]|[0-9]|\*\*|<strong>))/);
               var clean = parts.map(function (p) { return String(p || "").trim(); }).filter(function (p) { return !!p; });
@@ -16653,7 +16720,7 @@
               var expandedLines = [];
               lines.forEach(function (ln) {
                 var rawLn = String(ln || "");
-                if (/^\s*[-*]\s+/.test(rawLn)) {
+                if (/^\s*[-*•]\s+/.test(rawLn)) {
                   var splitItems = splitInlineDashPromptItems(rawLn);
                   if (splitItems.length > 1) {
                     splitItems.forEach(function (item) {
@@ -16679,12 +16746,12 @@
               }
               var bulletLines = lines
                 .map(function (ln) {
-                  var m = String(ln || "").match(/^\s*[-*]\s+(.+)$/);
+                  var m = String(ln || "").match(/^\s*[-*•]\s+(.+)$/);
                   return m ? String(m[1] || "").trim() : "";
                 })
                 .filter(function (x) { return !!x; });
               if (!bulletLines.length && trimmedLines.length === 1) {
-                var inlineBulletRun = String(trimmedLines[0] || "").match(/^\s*[-*]\s+(.+?)\s+-\s+(.+)$/);
+                var inlineBulletRun = String(trimmedLines[0] || "").match(/^\s*[-*•]\s+(.+?)\s+-\s+(.+)$/);
                 if (inlineBulletRun) {
                   bulletLines = [String(inlineBulletRun[1] || "").trim(), String(inlineBulletRun[2] || "").trim()];
                 }
@@ -16692,7 +16759,7 @@
               if (worksheetMode && trimmedLines.length) {
                 var wsParts = [];
                 trimmedLines.forEach(function (ln) {
-                  var lnNoBullet = String(ln || "").replace(/^\s*[-*]\s+/, "").trim();
+                  var lnNoBullet = String(ln || "").replace(/^\s*[-*•]\s+/, "").trim();
                   var lnClean = cleanResidualHeadingMarkers(lnNoBullet);
                   var heading3 = parseHeadingWithTail(lnNoBullet, "###");
                   if (heading3 && heading3.heading) {
@@ -16725,7 +16792,7 @@
                     wsParts.push(renderWorksheetPromptLine(lnClean));
                     return;
                   }
-                  var lineBullet = lnClean.match(/^\s*[-*]\s+(.+)$/);
+                  var lineBullet = lnClean.match(/^\s*[-*•]\s+(.+)$/);
                   if (lineBullet) {
                     wsParts.push("<ul><li>" + utilityRenderMarkdownInline(String(lineBullet[1] || "").trim()) + "</li></ul>");
                     return;
@@ -16883,7 +16950,7 @@
               } else {
                 var para = lines.join(" ").trim();
                 if (para) {
-                  var bulletLine = para.match(/^\s*[-*]\s+(.+)$/);
+                  var bulletLine = para.match(/^\s*[-*•]\s+(.+)$/);
                   if (bulletLine) {
                     var checkboxSingle = parseCheckboxItem(String(bulletLine[1] || "").trim());
                     if (checkboxSingle) {
@@ -17914,7 +17981,7 @@
         }
         var text = String(value || "").trim();
         if (!text) return "";
-        if (/\n|^[-*]\s+|^\d+[\)\.]\s+/m.test(text)) {
+        if (/\n|^[-*•]\s+|^\d+[\)\.]\s+|\s+•\s+/m.test(text)) {
           return utilityRenderMarkdownBlock(text);
         }
         return "<ul><li>" + utilityRenderMarkdownInline(text) + "</li></ul>";
@@ -20158,6 +20225,24 @@
     prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
+    prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed) {
+      return buildUtilityStructuredHtml(
+        parsed,
+        {
+          artefactType: "page",
+          renderHints: {
+            renderConfig: {
+              labels: {},
+              omitIfMissing: [],
+              sectionOrder: ["sections"]
+            }
+          }
+        },
+        "",
+        {}
+      );
+    };
+    prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
     prismTestApi.setSelectedWorkflowIdForTest = function (id) {
       state.selectedWorkflowId = id ? String(id) : null;
     };

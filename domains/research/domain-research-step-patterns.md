@@ -52,7 +52,8 @@ They provide a consistent way to structure workflows and ensure that research pr
       "Generate Research Summary",
       "Generate Briefing Note",
       "Validate Research Output",
-      "Format Final Output"
+      "Format Final Output",
+      "Design Page"
     ],
     "maxOccurrences": {
       "Generate Research Content": 1,
@@ -66,7 +67,8 @@ They provide a consistent way to structure workflows and ensure that research pr
       "Generate Research Summary": 1,
       "Generate Briefing Note": 1,
       "Validate Research Output": 1,
-      "Format Final Output": 1
+      "Format Final Output": 1,
+      "Design Page": 1
     },
     "dependencies": {
       "Generate Research Content": { "requiresAnyOf": ["topic", "normalized_content"], "produces": ["research_content"] },
@@ -80,7 +82,8 @@ They provide a consistent way to structure workflows and ensure that research pr
       "Generate Research Summary": { "requiresAnyOf": ["key_findings", "evidence_map", "thematic_analysis", "argument_structure", "research_content"], "produces": ["research_summary"] },
       "Generate Briefing Note": { "requiresAnyOf": ["research_summary", "evidence_map", "thematic_analysis", "research_content"], "produces": ["briefing_note"] },
       "Validate Research Output": { "requiresAnyOf": ["research_questions", "research_summary", "briefing_note", "thematic_analysis", "literature_matrix", "evidence_map"], "produces": ["validated_research_output"] },
-      "Format Final Output": { "requiresAnyOf": ["validated_research_output", "research_summary", "briefing_note", "research_questions"], "produces": ["final_output"] }
+      "Format Final Output": { "requiresAnyOf": ["validated_research_output", "research_summary", "briefing_note", "research_questions"], "produces": ["final_output"] },
+      "Design Page": { "requiresAnyOf": ["validated_research_output", "final_output", "briefing_note", "research_summary", "thematic_analysis", "evidence_map", "research_questions"], "produces": ["page"] }
     },
     "precedenceRules": [
       ["Generate Research Content", "Normalize Content"],
@@ -97,7 +100,9 @@ They provide a consistent way to structure workflows and ensure that research pr
       ["Generate Research Questions", "Validate Research Output"],
       ["Generate Research Summary", "Validate Research Output"],
       ["Generate Briefing Note", "Validate Research Output"],
-      ["Validate Research Output", "Format Final Output"]
+      ["Validate Research Output", "Format Final Output"],
+      ["Validate Research Output", "Design Page"],
+      ["Format Final Output", "Design Page"]
     ],
     "triggerRules": [
       {
@@ -129,9 +134,10 @@ They provide a consistent way to structure workflows and ensure that research pr
       "Generate Research Summary": "Produce concise evidence-grounded synthesis for stakeholders.",
       "Generate Briefing Note": "Package findings into decision-oriented briefing output.",
       "Validate Research Output": "Check fidelity, traceability, rigor, and usability before delivery.",
-      "Format Final Output": "Render validated research artefacts into final delivery format."
+      "Format Final Output": "Render validated research artefacts into final delivery format.",
+      "Design Page": "Assemble renderer-ready page JSON from validated research artefacts for downstream HTML/VLE delivery."
     },
-    "finalSteps": ["Format Final Output"]
+    "finalSteps": ["Format Final Output", "Design Page"]
   }
 }
 ```
@@ -996,6 +1002,61 @@ delivery-specific output
 
 ---
 
+## 13. Design Page
+
+### Type
+Assembly
+
+### Input
+validated_research_output, optional final_output, optional briefing_note, optional research_summary, optional thematic_analysis, optional evidence_map, optional research_questions
+
+### Output
+page
+
+### Purpose
+- Assemble one renderer-ready page artefact (artifact_type = page) from upstream research outputs
+- Bridge validated research synthesis to the same JSON → HTML delivery path used by Learning Design workflows
+- Read-only composition: do not reinterpret evidence or change substantive conclusions
+
+### Aliases
+- Build Research Page
+- Render Research Briefing Page
+
+### Prompt Factory
+```json
+{
+  "canonical_step_id": "step_design_page",
+  "canonical_prompt_id": "prompt_design_page",
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Assemble one self-contained page JSON (artifact_type = page) from research workflow artefacts for downstream HTML/VLE rendering; use the same top-level page contract as platform Design Page outputs (title, audience, page_profile, sections, source_artefacts, constraints_applied, generation_notes).",
+  "runnerInstructions": {
+    "what_this_step_does": "This step composes a readable page JSON from validated research outputs so the standard renderer can produce HTML."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "title", "audience", "page_profile", "sections", "source_artefacts", "constraints_applied", "generation_notes"]
+  },
+  "userOptions": [
+    {
+      "id": "page_profile",
+      "label": "Page profile",
+      "type": "select",
+      "default": "learner",
+      "choices": [
+        { "value": "learner", "label": "Stakeholder / learner readable" },
+        { "value": "facilitator", "label": "Facilitator briefing" },
+        { "value": "assessment", "label": "Evidence appendix style" }
+      ]
+    }
+  ],
+  "promptTemplate": "Context:\nYou may receive validated_research_output, final_output, briefing_note, research_summary, thematic_analysis, evidence_map, and/or research_questions from upstream research steps.\n\nTask:\nAssemble one readable, self-contained page artefact with artifact_type = page for downstream HTML rendering.\n\nInstructions:\n- This is a read-only composition step; do not reinterpret evidence, methods, or conclusions from upstream artefacts\n- Ground every section in provided upstream artefacts only; do not invent new findings\n- Set page_profile from the configured option: {{option:page_profile}}\n- Prefer validated_research_output and briefing_note when present; otherwise synthesise sections from the strongest available upstream artefacts\n- Use meaningful section headings (for example: Executive overview, Key findings, Evidence and limitations, Recommendations, Open questions)\n- Emit sections as an array of objects each with section_id, heading, and content\n- Populate source_artefacts as an object of booleans keyed by artefact names you used\n- If constraints cannot be met, list them in generation_notes.limitations\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return JSON only with: artifact_type (must be page), title, audience, page_profile, sections, source_artefacts, constraints_applied, generation_notes\n- Return only the JSON."
+}
+```
+
+---
+
 # Usage Guidelines
 
 - Not all workflows require all steps.
@@ -1011,6 +1072,7 @@ delivery-specific output
   3. Synthesis / generation
   4. Validation
   5. Formatting
+  6. Renderer-ready page assembly (Design Page), when included for delivery
 
 ---
 

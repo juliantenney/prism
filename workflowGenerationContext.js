@@ -805,7 +805,7 @@
       return loadFiles(files).then(function (result) {
         var all = [];
         var seen = {};
-        result.loaded.forEach(function (f) {
+        (result.loaded || []).forEach(function (f) {
           extractStepPatternCatalogFromText(f.text).forEach(function (pattern) {
             var k = String(
               (pattern && (pattern.canonicalStepId || pattern.title)) || ""

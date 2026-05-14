@@ -6662,6 +6662,41 @@
           if (!exists) out.steps.push({ title: c, role: "" });
         });
       });
+      // Sprint 14 — Research: append Design Page as renderer terminal for briefing / synthesis chains,
+      // not for questions-only briefs; skip when objective is unset, when Design Page already exists,
+      // or when the draft has no substantive terminal to wire (handled after triggers, before delivery merges).
+      if (hasResearchDomainInHints()) {
+        var researchObjectiveGate = String(resolvedBriefFactors.objective_type || "").toLowerCase().trim();
+        if (researchObjectiveGate && researchObjectiveGate !== "questions") {
+          var designPageResearch = canonicalizeFromPolicy("Design Page");
+          if (designPageResearch) {
+            var hasDesignPageAlready = out.steps.some(function (s) {
+              return String((s && s.title) || "").toLowerCase() === String(designPageResearch).toLowerCase();
+            });
+            if (!hasDesignPageAlready) {
+              var lowerTitles = out.steps.map(function (s) {
+                return String((s && s.title) || "").toLowerCase().trim();
+              });
+              var bn = canonicalizeFromPolicy("Generate Briefing Note");
+              var rs = canonicalizeFromPolicy("Generate Research Summary");
+              var vr = canonicalizeFromPolicy("Validate Research Output");
+              var hasBriefingStep = bn && lowerTitles.indexOf(String(bn).toLowerCase()) !== -1;
+              var hasSummaryStep = rs && lowerTitles.indexOf(String(rs).toLowerCase()) !== -1;
+              var hasValidateStep = vr && lowerTitles.indexOf(String(vr).toLowerCase()) !== -1;
+              var wantsResearchDesignPage =
+                hasBriefingStep ||
+                hasSummaryStep ||
+                (hasValidateStep &&
+                  (researchObjectiveGate === "analysis" ||
+                    researchObjectiveGate === "summary" ||
+                    researchObjectiveGate === "briefing"));
+              if (wantsResearchDesignPage) {
+                out.steps.push({ title: designPageResearch, role: "" });
+              }
+            }
+          }
+        }
+      }
       __prismStepsAfterTriggerRules = out.steps.map(function (s) {
         return String((s && s.title) || "");
       });
@@ -19786,6 +19821,7 @@
         ? state.workflowSelectedDomains.slice()
         : ["general"];
     };
+    prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     window.__PRISM_TEST_API = prismTestApi;
   }
 

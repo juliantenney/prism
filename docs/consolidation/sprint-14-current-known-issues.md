@@ -67,6 +67,17 @@
 
 ---
 
+## 9. Runnable delivery & ingestion (validated under live workflow generation)
+
+**Scope note:** Items here record **observed product/runtime behaviour** from **live** Workflow Factory generation runs. They are **not** approved changes, **not** a charter to redesign orchestration, and **not** portability work.
+
+- **I9.1** — **Uploaded-source ingestion posture:** Workflows that rely on **authoritative uploaded material** currently **over-trigger** or over-emphasise **Generate Research Content**. Observed expectation: processing should **preferentially** begin **Normalize → Extract Key Findings →** downstream analysis/synthesis as the brief implies **Generate Research Content** should mainly denote **topic-only** materialisation, **exploratory synthesis**, **grounding expansion**, or **gap-filling**—not the default first hop when uploads are primary. **Evidence:** live generation (Sprint 14); treat as **runnable-quality** register entry, not a hypothesis alone. **Mitigation (2026-05-14):** `applyWorkflowDesignHeuristics` in `app.js` strips **Generate Research Content** when **Research** is in `hints.selectedDomains`, **`input_strategy`** is **`provided_source_content`**, the brief is not **generation-only**, and either **source inputs** are present or the Factory **starting artefact** is **provided_source_content** (parallel to the existing LD rule for **Generate Learning Content**; **`mixed`** and **`generate_from_topic`** unchanged).
+- **I9.2** — **Render / review endpoint:** Research-shaped generated workflows commonly **terminate at abstract synthesis or formatting** stages and **do not** normally end in a **Design Page**-class step the way many **Learning Design** flows do. Effect: weaker **renderer integration**, **human reviewability**, and **downstream platform consistency** relative to LD-shaped “page at the end” expectations. **Possible** future direction (documentation only): a **normal runnable endpoint** using **Design Page** (or equivalent) as a **render bridge**—**not** chartered here.
+
+---
+
 ## Review log
 
 - **2026-05-14** — Initial register seeded from charter context and high-level pack skim (documentation only).
+- **2026-05-14** — §**9** added (**I9.1**, **I9.2**): validated live-generation notes on ingestion semantics and render-bridge gap (observations only).
+- **2026-05-14** — **I9.1** mitigation: Research upload-path **Generate Research Content** suppression in `app.js` `applyWorkflowDesignHeuristics` (see **I9.1** bullet).

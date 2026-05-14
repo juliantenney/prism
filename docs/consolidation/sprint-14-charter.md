@@ -94,6 +94,18 @@ Deliverables are **staged**; exact commits depend on a future implementation gat
 
 ---
 
-## 10. Review log
+## 10. Validated live observations (register only)
+
+During Sprint 14, **live** Workflow Factory generation runs surfaced two **Research runnable-delivery** expectations worth holding before further implementation:
+
+1. **Uploaded-source workflows** — current behaviour tends to **over-use Generate Research Content** where **Normalize → Extract →** analysis-oriented steps better match authoritative uploads; desired semantics for **Generate Research Content** skew toward **topic-only**, **exploratory synthesis**, **grounding expansion**, and **gap-filling** (not a default “start here for every upload” hop). **Registered as** **`sprint-14-current-known-issues.md`** §**9** — **I9.1**.
+2. **Render / review bridge** — Research outputs often **lack a Design Page–class terminal** compared to **Learning Design**, affecting renderer hooks and review posture. **Registered as** **`sprint-14-current-known-issues.md`** §**9** — **I9.2**.
+
+These bullets are **documentation of observed behaviour and product gaps** only. They **do not** constitute an approved behavioural or orchestration change set for Sprint 14 unless a later implementation gate explicitly adopts them.
+
+---
+
+## 11. Review log
 
 - **2026-05-14** — Initial charter drafted (scaffolding; documentation only).
+- **2026-05-14** — §**10** added: pointer to **I9.1** / **I9.2** (validated observations; no implied redesign).

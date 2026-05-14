@@ -124,6 +124,8 @@
 - **K8.3** — **Bare-string** select choices for `objective_type` vs labelled choices elsewhere.
 - **K8.4** — **Long chains** (12 steps) vs **short** Factory briefs — default generation may **skip** or **collapse** steps unpredictably without tests.
 
+**Post-baseline (live generation, Sprint 14):** Runnable-delivery observations from **live** Factory runs—upload-first vs **Generate Research Content** semantics, and absence of a **Design Page**-class render terminal—are registered in **`sprint-14-current-known-issues.md`** §**9** as **I9.1** / **I9.2** (see **`sprint-14-charter.md`** §**10**). This audit file is not re-run for those items.
+
 ---
 
 ## 9. Assumptions not yet validated
@@ -137,3 +139,4 @@
 ## Review log
 
 - **2026-05-14** — Initial baseline audit from repository files (documentation only).
+- **2026-05-14** — §**8** cross-reference to **I9.1** / **I9.2** (live observation register; charter §**10**).

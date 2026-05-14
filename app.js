@@ -6273,6 +6273,12 @@
     }
     var hasSourceInput = hasSourceContentSignal();
     var explicitGenerationOnly = hasExplicitGenerationOnlySignal();
+    var selectedDomainsForHints = Array.isArray(h.selectedDomains) ? h.selectedDomains : [];
+    function hasResearchDomainInHints() {
+      return selectedDomainsForHints.some(function (id) {
+        return String(id || "").toLowerCase().trim() === "research";
+      });
+    }
     var explicitRegenerateSelectedArtefact = (function () {
       if (!selectedStartingArtefact) return false;
       var blob = [goalText, inputs, desiredOutputsText].join("\n");
@@ -7291,6 +7297,20 @@
     if (hasSourceInput && !explicitGenerationOnly) {
       out.steps = out.steps.filter(function (s) {
         return String((s && s.title) || "").toLowerCase() !== "generate learning content";
+      });
+    }
+
+    // Research (I9.1): uploaded-source Factory path should not keep "Generate Research Content"
+    // when authoritative material is the starting posture—prefer normalize / extract first.
+    // Symmetric to the LD rule above; topic-only / generate_from_topic / mixed stay untouched.
+    var researchUploadAuthoritative =
+      hasResearchDomainInHints() &&
+      String(resolvedBriefFactors.input_strategy || "").trim() === "provided_source_content" &&
+      !explicitGenerationOnly &&
+      (hasSourceInput || selectedStartingArtefact === "provided_source_content");
+    if (researchUploadAuthoritative) {
+      out.steps = out.steps.filter(function (s) {
+        return String((s && s.title) || "").toLowerCase().trim() !== "generate research content";
       });
     }
 

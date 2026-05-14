@@ -1,0 +1,7 @@
+{
+  "name": "prism",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev-server.js"
+  }
+}

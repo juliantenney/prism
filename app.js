@@ -7321,11 +7321,12 @@
       delete row.__originalIndex;
       var explicitDeps = Array.isArray(row.__dependsOn) ? row.__dependsOn.slice() : null;
       delete row.__dependsOn;
-      if (explicitDeps) {
+      if (Array.isArray(explicitDeps) && explicitDeps.length) {
         row.depends_on = explicitDeps;
       } else if (idx <= 0) {
         row.depends_on = [];
       } else {
+        // idx is 0-based; depends_on uses 1-based step indices (see normalizeWorkflowForV1).
         row.depends_on = [idx];
       }
       return row;
@@ -7379,6 +7380,36 @@
     if (els.wfDesignStartBtn) {
       els.wfDesignStartBtn.disabled = !loaded;
     }
+  }
+
+  /**
+   * When the app is opened on localhost and served by `npm run dev`, the dev server
+   * exposes OPENAI_API_KEY from repo-root `.env.local` at GET /__prism/dev-api-key.
+   * Does nothing on non-local hosts, without fetch, or if a key is already set.
+   */
+  function tryLoadLocalDevOpenAiApiKey() {
+    if (typeof window === "undefined" || typeof fetch !== "function") return;
+    if (!window.location || typeof window.location.hostname !== "string") return;
+    var h = String(window.location.hostname || "").toLowerCase();
+    if (h !== "localhost" && h !== "127.0.0.1" && h !== "[::1]") return;
+    if (state.apiKey) return;
+    fetch("/__prism/dev-api-key", { cache: "no-store", credentials: "same-origin" })
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data || typeof data.openaiApiKey !== "string") return;
+        var k = data.openaiApiKey.trim();
+        if (!k) return;
+        if (state.apiKey) return;
+        state.apiKey = k;
+        updateApiKeyStatus(true);
+        try {
+          showToast("OpenAI API key loaded from .env.local (dev server).", "success");
+        } catch (_e) {}
+      })
+      .catch(function () {});
   }
 
   // -----------------------------
@@ -11010,6 +11041,27 @@
       .filter(Boolean);
   }
 
+  /** Drop internal bindings that point at the same step (invalid DAG / runner semantics). */
+  function stripSelfInternalInputBindings(bindings, stepId, stepOrdinalOneBased, warningTarget) {
+    var sid = String(stepId || "").trim();
+    var list = normalizeStepInputBindings(bindings || []);
+    if (!sid) return list;
+    return list.filter(function (b) {
+      if (!b || b.kind !== "internal") return true;
+      if (String(b.sourceStepId || "").trim() !== sid) return true;
+      if (Array.isArray(warningTarget)) {
+        warningTarget.push(
+          "Step " +
+            stepOrdinalOneBased +
+            " omitted self-referential internal input binding (" +
+            String(b.artifactName || "") +
+            ")."
+        );
+      }
+      return false;
+    });
+  }
+
   function writeStepInputBindings(li, bindings) {
     if (!li) return;
     var normalized = normalizeStepInputBindings(bindings);
@@ -12961,11 +13013,20 @@
     });
 
     normalizedSteps.forEach(function (s, index) {
-      var inputBindings = normalizeStepInputBindings(s.inputBindings || []);
-      if (!inputBindings.length && Array.isArray(s.depends_on) && s.depends_on.length) {
+      var rawDependsOn = Array.isArray(s.depends_on) ? s.depends_on.slice() : [];
+      var explicitNorm = normalizeStepInputBindings(s.inputBindings || []);
+      var explicitStripped = stripSelfInternalInputBindings(
+        explicitNorm,
+        s.id,
+        index + 1,
+        warningTarget
+      );
+      var removedFromExplicit = explicitNorm.length > explicitStripped.length;
+      var inputBindings = explicitStripped.slice();
+      if (!inputBindings.length && rawDependsOn.length) {
         // Legacy depends_on compatibility path:
         // derive explicit inputBindings from legacy dependency references.
-        s.depends_on.forEach(function (dep) {
+        rawDependsOn.forEach(function (dep) {
           var sourceStepId = "";
           var sourceIndex = null;
           if (typeof dep === "number") {
@@ -12982,6 +13043,12 @@
           if (!sourceStepId) {
             warningTarget.push(
               "Step " + (index + 1) + " has unresolved depends_on reference: " + String(dep)
+            );
+            return;
+          }
+          if (String(sourceStepId) === String(s.id)) {
+            warningTarget.push(
+              "Step " + (index + 1) + " depends_on resolves to the same step; skipped."
             );
             return;
           }
@@ -13011,6 +13078,22 @@
             artifactName: artifactName
           });
         });
+      }
+      inputBindings = stripSelfInternalInputBindings(inputBindings, s.id, index + 1, warningTarget);
+      // When explicit model/input data or depends_on produced only invalid wiring, fall back to
+      // the immediate prior step's named output (linear factory pipelines).
+      if (!inputBindings.length && index > 0 && (removedFromExplicit || rawDependsOn.length)) {
+        var pred = normalizedSteps[index - 1];
+        if (pred && String(pred.id || "") !== String(s.id || "")) {
+          var predOut = String(pred.outputName || "").trim();
+          if (predOut) {
+            inputBindings.push({
+              kind: "internal",
+              sourceStepId: String(pred.id),
+              artifactName: predOut
+            });
+          }
+        }
       }
       s.inputBindings = normalizeStepInputBindings(inputBindings);
       delete s.depends_on;
@@ -19618,6 +19701,7 @@
     cacheElements();
     initWorkflowDomainSelector();
     updateApiKeyStatus(false);
+    tryLoadLocalDevOpenAiApiKey();
     resetSession();
     loadLibrary()
       .then(function () {

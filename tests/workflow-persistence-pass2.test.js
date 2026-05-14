@@ -290,3 +290,138 @@ test("PE-conflict-newerWins: updatedAt precedence keeps newer workflow", async (
   assert.equal(workflows[0].name, fixture.expectedAfterNewerImport.name);
   assert.equal(workflows[0].updatedAt, fixture.expectedAfterNewerImport.updatedAt);
 });
+
+test("PE-normalise-no-self-binding: strips internal binding where sourceStepId equals step id", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  const warnings = [];
+  const wf = api.normalizeWorkflowForV1(
+    {
+      id: "wf-self",
+      name: "Self bind",
+      selectedDomains: ["general", "research"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [
+        {
+          id: "a",
+          title: "Normalize Content",
+          outputName: "normalized_content",
+          inputBindings: [
+            { kind: "internal", sourceStepId: "a", artifactName: "normalized_content" }
+          ],
+          depends_on: []
+        },
+        {
+          id: "b",
+          title: "Extract Key Findings",
+          outputName: "key_findings",
+          inputBindings: [
+            { kind: "internal", sourceStepId: "b", artifactName: "key_findings" }
+          ],
+          depends_on: []
+        }
+      ]
+    },
+    warnings
+  );
+  const steps = wf.steps || [];
+  assert.equal(steps.length, 2);
+  assert.equal(steps[0].inputBindings.length, 0);
+  assert.ok(warnings.some((w) => String(w).indexOf("omitted self-referential") !== -1));
+  assert.equal(steps[1].inputBindings.length, 1);
+  assert.equal(steps[1].inputBindings[0].sourceStepId, "a");
+  assert.equal(steps[1].inputBindings[0].artifactName, "normalized_content");
+});
+
+test("PE-normalise-depends-on-self-skip: self-resolving depends_on is skipped with linear fallback", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  const warnings = [];
+  const wf = api.normalizeWorkflowForV1(
+    {
+      id: "wf-dep-self",
+      name: "Dep self",
+      selectedDomains: ["general", "research"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [
+        { id: "s1", title: "One", outputName: "out1", depends_on: [] },
+        { id: "s2", title: "Two", outputName: "out2", depends_on: [2] }
+      ]
+    },
+    warnings
+  );
+  const steps = wf.steps || [];
+  assert.equal(steps[1].inputBindings.length, 1);
+  assert.equal(steps[1].inputBindings[0].sourceStepId, "s1");
+  assert.equal(steps[1].inputBindings[0].artifactName, "out1");
+  assert.ok(warnings.some((w) => String(w).indexOf("same step") !== -1));
+});
+
+test("PE-normalise-preserves-valid-upstream: valid depends_on wiring kept", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  const warnings = [];
+  const wf = api.normalizeWorkflowForV1(
+    {
+      id: "wf-valid",
+      name: "Valid",
+      selectedDomains: ["general", "research"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [
+        { id: "x", title: "First", outputName: "alpha", depends_on: [] },
+        { id: "y", title: "Second", outputName: "beta", depends_on: [1] }
+      ]
+    },
+    warnings
+  );
+  const steps = wf.steps || [];
+  assert.equal(steps[1].inputBindings.length, 1);
+  assert.equal(steps[1].inputBindings[0].sourceStepId, "x");
+  assert.equal(steps[1].inputBindings[0].artifactName, "alpha");
+  assert.ok(!warnings.some((w) => String(w).includes("omitted self-referential")));
+});
+
+test("PE-normalise-external-plus-self-internal: keeps external, drops self internal", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  const warnings = [];
+  const wf = api.normalizeWorkflowForV1(
+    {
+      id: "wf-ext",
+      name: "Ext",
+      selectedDomains: ["general"],
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: [
+        {
+          id: "p",
+          title: "Producer",
+          outputName: "doc",
+          depends_on: []
+        },
+        {
+          id: "c",
+          title: "Consumer",
+          outputName: "out",
+          inputBindings: [
+            { kind: "external", sourceStepId: "", artifactName: "uploaded_notes" },
+            { kind: "internal", sourceStepId: "c", artifactName: "out" }
+          ],
+          depends_on: []
+        }
+      ]
+    },
+    warnings
+  );
+  const cons = wf.steps[1];
+  assert.equal(cons.inputBindings.length, 1);
+  assert.equal(cons.inputBindings[0].kind, "external");
+  assert.equal(cons.inputBindings[0].artifactName, "uploaded_notes");
+});

@@ -169,6 +169,12 @@
     currentWorkflowRunIndex: 0,
     workflowRunVisibleStepId: "",
     workflowRunCopiedStepId: "",
+    /** Ephemeral run-mode captured step output per step id, sanitized (not persisted on workflow). */
+    workflowRunCapturedOutputs: {},
+    /** Ephemeral: raw pasted Copilot output per step id (textarea rehydrate; not persisted). */
+    workflowRunCapturedOutputsRaw: {},
+    /** Run-mode: user advanced past this step (Next); drives UI-only completion line. */
+    workflowRunStepCompleted: {},
     workflowDesignResult: null,
     workflowDesignVersions: null,
     workflowSelectedVersion: "refined",
@@ -783,9 +789,6 @@
       var titleText = String((s && s.title) || "this step").trim();
       out.what_this_step_does = roleText || ("Complete " + titleText + " using the available workflow artefacts.");
     }
-    if (!out.what_to_expect && s && s.outputName) {
-      out.what_to_expect = 'A result suitable for artefact "' + String(s.outputName) + '".';
-    }
     if (!out.what_to_expect) {
       out.what_to_expect = "A structured output that can be used by downstream workflow steps.";
     }
@@ -1287,17 +1290,14 @@
         lines.push("- " + item);
       });
     }
-    if (ctx.stepOutputName) {
-      lines.push("Produce the named artefact: " + ctx.stepOutputName + ".");
-    }
     lines.push("");
     lines.push("Task:");
     lines.push("Perform the \"" + canonical + "\" transformation directly.");
     lines.push("");
     lines.push("Instructions:");
-    if (ctx.stepOutputName) {
-      lines.push("- Ensure the result is suitable for artefact \"" + ctx.stepOutputName + "\".");
-    }
+    lines.push(
+      "- Return only the primary deliverable body. Do not prefix the response with step numbers, 'STEP N OUTPUT' lines, workflow metadata, or machine artefact id headers."
+    );
     if (cfg.defaultPromptNotes) {
       lines.push("- " + cfg.defaultPromptNotes);
     }
@@ -1335,9 +1335,6 @@
       lines.push("- Return only the final output in " + cfg.preferredOutputFormat + ".");
     } else {
       lines.push("- Return only the final output.");
-    }
-    if (ctx.stepOutputName) {
-      lines.push("- Ensure the output can be used as artefact \"" + ctx.stepOutputName + "\".");
     }
     return lines.join("\n");
   }
@@ -6258,10 +6255,6 @@
         ? h.explicitBriefFactors
         : {};
     var selectedStartingArtefact = String(h.startingArtefact || "").toLowerCase().trim();
-    var resolvedBriefFactors =
-      h.resolvedBriefFactors && typeof h.resolvedBriefFactors === "object"
-        ? h.resolvedBriefFactors
-        : {};
     // IMPORTANT: explicit session-material overrides must come only from
     // explicitly captured brief inputs, not resolved/default values.
     var explicitSessionMaterials = Array.isArray(explicitBriefFactors.session_materials)
@@ -6662,36 +6655,184 @@
           if (!exists) out.steps.push({ title: c, role: "" });
         });
       });
-      // Sprint 14 — Research: append Design Page as renderer terminal for briefing / synthesis chains,
-      // not for questions-only briefs; skip when objective is unset, when Design Page already exists,
-      // or when the draft has no substantive terminal to wire (handled after triggers, before delivery merges).
-      if (hasResearchDomainInHints()) {
-        var researchObjectiveGate = String(resolvedBriefFactors.objective_type || "").toLowerCase().trim();
-        if (researchObjectiveGate && researchObjectiveGate !== "questions") {
+      // Research — validation gate (Sprint 15): pack `researchValidationIntent` mirrors Learning Design
+      // (Validate Learning Design is goal-triggered, not default). Strip model-injected Validate unless intent matches.
+      // Research — terminal Design Page (Sprint 14–15): driven by domain `workflowPolicy`
+      // (`dependencies` → default `outputName`, optional `researchDesignPageAppend` text/objective
+      // signals). Not a fixed per-workflow sequence.
+      if (hasResearchDomainInHints() && policy) {
+        var rvi = policy.researchValidationIntent && typeof policy.researchValidationIntent === "object"
+          ? policy.researchValidationIntent
+          : {};
+        var defaultResearchPhraseSignals = [
+          "quality assurance",
+          "review quality",
+          "peer review",
+          "critical review",
+          "independent review",
+          "formal review",
+          "expert review",
+          "review for accuracy",
+          "alignment audit",
+          "alignment check",
+          "quality audit",
+          "check against criteria",
+          "compliance check",
+          "verify accuracy",
+          "assess quality",
+          "evaluate the output"
+        ];
+        var defaultResearchWordBoundarySignals = ["validate", "validation", "qa", "audit", "critique"];
+        var phraseSignalsRV = Array.isArray(rvi.phraseSignals) ? rvi.phraseSignals : defaultResearchPhraseSignals;
+        var wordBoundarySignalsRV = Array.isArray(rvi.wordBoundarySignals)
+          ? rvi.wordBoundarySignals
+          : defaultResearchWordBoundarySignals;
+        var validateResearchCanon = canonicalizeFromPolicy("Validate Research Output");
+        function researchIntentBlobLower() {
+          return (goalText + "\n" + desiredOutputsText + "\n" + inputs).toLowerCase();
+        }
+        function researchBriefRequestsValidation() {
+          var blob = researchIntentBlobLower();
+          var pi;
+          for (pi = 0; pi < phraseSignalsRV.length; pi += 1) {
+            var ph = String(phraseSignalsRV[pi] || "").toLowerCase().trim();
+            if (ph && blob.indexOf(ph) !== -1) return true;
+          }
+          for (var wi = 0; wi < wordBoundarySignalsRV.length; wi += 1) {
+            var w = String(wordBoundarySignalsRV[wi] || "").trim();
+            if (!w) continue;
+            var esc = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            try {
+              if (new RegExp("\\b" + esc + "\\b", "i").test(blob)) return true;
+            } catch (eRV) {
+              /* ignore malformed pack entries */
+            }
+          }
+          return false;
+        }
+        if (validateResearchCanon) {
+          var vrKey = String(validateResearchCanon).toLowerCase();
+          if (!researchBriefRequestsValidation()) {
+            out.steps = out.steps.filter(function (s) {
+              return String((s && s.title) || "").toLowerCase() !== vrKey;
+            });
+          } else {
+            var hasValidateAlready = out.steps.some(function (s) {
+              return String((s && s.title) || "").toLowerCase() === vrKey;
+            });
+            if (!hasValidateAlready) {
+              out.steps.push({ title: validateResearchCanon, role: "" });
+            }
+          }
+        }
+
+        var rdpa = policy.researchDesignPageAppend && typeof policy.researchDesignPageAppend === "object"
+          ? policy.researchDesignPageAppend
+          : {};
+        var excludeTypes = Array.isArray(rdpa.excludeObjectiveTypes)
+          ? rdpa.excludeObjectiveTypes.map(function (x) {
+              return String(x || "").toLowerCase().trim();
+            })
+          : ["questions"];
+        var pageSignalsList = Array.isArray(rdpa.pageDeliveryTextSignals)
+          ? rdpa.pageDeliveryTextSignals
+          : [
+              "html-ready",
+              "html ready",
+              "structured",
+              "readable html",
+              "structured, readable",
+              "export-ready",
+              "export ready",
+              "vle page",
+              "policy-style",
+              "briefing page",
+              "html page",
+              "utilities"
+            ];
+
+        function inferResearchObjectiveFromBriefBlob() {
+          var blob = [goalText, desiredOutputsText, inputs].join(" ").toLowerCase();
+          var o = "";
+          if (/\b(summary|summarise)\b/.test(blob)) o = "summary";
+          if (/\b(analysis|analyze|analyse)\b/.test(blob)) o = "analysis";
+          if (/\b(briefing|briefing note|brief)\b/.test(blob)) o = "briefing";
+          if (/\b(research question|research questions)\b/.test(blob)) o = "questions";
+          return o;
+        }
+
+        var researchObj = String(resolvedBriefFactors.objective_type || "").toLowerCase().trim();
+        if (!researchObj && rdpa.inferObjectiveTypeFromBrief !== false) {
+          researchObj = inferResearchObjectiveFromBriefBlob();
+        }
+
+        function intentBlobHasPackPageSignal() {
+          var blob = (goalText + "\n" + desiredOutputsText + "\n" + inputs).toLowerCase();
+          for (var psi = 0; psi < pageSignalsList.length; psi += 1) {
+            var sig = String(pageSignalsList[psi] || "").toLowerCase().trim();
+            if (sig && blob.indexOf(sig) !== -1) return true;
+          }
+          return false;
+        }
+
+        var packPageCue = intentBlobHasPackPageSignal();
+        var lowerTitlesDp = out.steps.map(function (s) {
+          return String((s && s.title) || "").toLowerCase().trim();
+        });
+        var bnDp = canonicalizeFromPolicy("Generate Briefing Note");
+        var rsDp = canonicalizeFromPolicy("Generate Research Summary");
+        var hasBriefingStepDp = bnDp && lowerTitlesDp.indexOf(String(bnDp).toLowerCase()) !== -1;
+        var hasSummaryStepDp = rsDp && lowerTitlesDp.indexOf(String(rsDp).toLowerCase()) !== -1;
+        var hasSynthesisishDp = out.steps.some(function (s) {
+          var t = String((s && s.title) || "").toLowerCase();
+          return (
+            t.indexOf("thematic analysis") !== -1 ||
+            t.indexOf("briefing note") !== -1 ||
+            t.indexOf("research summary") !== -1 ||
+            t.indexOf("literature matrix") !== -1 ||
+            t.indexOf("evidence map") !== -1 ||
+            t.indexOf("research questions") !== -1
+          );
+        });
+        // `excludeObjectiveTypes` (pack): suppress Design Page for e.g. questions-only objectives,
+        // but not when the draft chain already includes briefing/summary delivery or page intent
+        // with synthesis (avoids under-trigger when objective_type disagrees with the model chain).
+        var excludedObjWouldBlockDesignPage =
+          excludeTypes.indexOf(researchObj) !== -1 &&
+          !hasBriefingStepDp &&
+          !hasSummaryStepDp &&
+          !(packPageCue && hasSynthesisishDp);
+
+        if (!excludedObjWouldBlockDesignPage) {
           var designPageResearch = canonicalizeFromPolicy("Design Page");
           if (designPageResearch) {
             var hasDesignPageAlready = out.steps.some(function (s) {
               return String((s && s.title) || "").toLowerCase() === String(designPageResearch).toLowerCase();
             });
             if (!hasDesignPageAlready) {
-              var lowerTitles = out.steps.map(function (s) {
-                return String((s && s.title) || "").toLowerCase().trim();
-              });
-              var bn = canonicalizeFromPolicy("Generate Briefing Note");
-              var rs = canonicalizeFromPolicy("Generate Research Summary");
-              var vr = canonicalizeFromPolicy("Validate Research Output");
-              var hasBriefingStep = bn && lowerTitles.indexOf(String(bn).toLowerCase()) !== -1;
-              var hasSummaryStep = rs && lowerTitles.indexOf(String(rs).toLowerCase()) !== -1;
-              var hasValidateStep = vr && lowerTitles.indexOf(String(vr).toLowerCase()) !== -1;
               var wantsResearchDesignPage =
-                hasBriefingStep ||
-                hasSummaryStep ||
-                (hasValidateStep &&
-                  (researchObjectiveGate === "analysis" ||
-                    researchObjectiveGate === "summary" ||
-                    researchObjectiveGate === "briefing"));
+                hasBriefingStepDp ||
+                hasSummaryStepDp ||
+                ((researchObj === "analysis" ||
+                  researchObj === "summary" ||
+                  researchObj === "briefing") &&
+                  hasSynthesisishDp) ||
+                (!researchObj && packPageCue && hasSynthesisishDp);
+
               if (wantsResearchDesignPage) {
-                out.steps.push({ title: designPageResearch, role: "" });
+                var dpDep =
+                  policy.dependencies &&
+                  typeof policy.dependencies === "object" &&
+                  (policy.dependencies[designPageResearch] ||
+                    policy.dependencies["Design Page"] ||
+                    null);
+                var dpProduces = dpDep && Array.isArray(dpDep.produces) ? dpDep.produces : [];
+                var dpOutputName = String(dpProduces[0] || "page").trim() || "page";
+                out.steps.push({
+                  title: designPageResearch,
+                  role: "",
+                  outputName: dpOutputName
+                });
               }
             }
           }
@@ -6702,7 +6843,10 @@
       });
 
       // Deterministic delivery-step inclusion from explicit session_materials.
-      if (hasExplicitSessionMaterials) {
+      // Use normalized delivery keys only (page / slide_deck / vle_structure). Raw
+      // `session_materials` may include non-delivery labels; those must not open the
+      // filter that strips Design Page when no normalized delivery was requested.
+      if (explicitSessionMaterials.length) {
         var materialToStep = {
           page: "Design Page",
           slide_deck: "Generate Slide Deck",
@@ -7312,6 +7456,19 @@
               chosenProducerIdx = pi;
             });
             if (chosenProducerIdx !== -1) depends.push(chosenProducerIdx + 1);
+          } else {
+            // Artefacts are already satisfied (e.g. no Validate step) but we still need an
+            // explicit upstream producer for depends_on — otherwise the linear fallback uses
+            // raw 0-based idx and can mis-wire the terminal step (Design Page → [self]).
+            var bestProvidedPi = -1;
+            anyOf.forEach(function (art) {
+              var producer = producerByArtefact[normalizeWorkflowDesignArtefactKey(art)];
+              if (!producer) return;
+              var pi2 = stepIndexByTitle[String(producer || "").toLowerCase().trim()];
+              if (typeof pi2 !== "number" || pi2 >= idx) return;
+              if (pi2 > bestProvidedPi) bestProvidedPi = pi2;
+            });
+            if (bestProvidedPi !== -1) depends.push(bestProvidedPi + 1);
           }
         }
         // Optional artefact dependencies should improve explicit input wiring
@@ -7388,7 +7545,13 @@
       var explicitDeps = Array.isArray(row.__dependsOn) ? row.__dependsOn.slice() : null;
       delete row.__dependsOn;
       if (Array.isArray(explicitDeps) && explicitDeps.length) {
-        row.depends_on = explicitDeps;
+        var maxUpstream1Based = idx;
+        row.depends_on = explicitDeps.filter(function (n) {
+          return typeof n === "number" && n >= 1 && n <= maxUpstream1Based;
+        });
+        if (!row.depends_on.length) {
+          row.depends_on = idx > 0 ? [idx] : [];
+        }
       } else if (idx <= 0) {
         row.depends_on = [];
       } else {
@@ -8079,6 +8242,10 @@
         summaryPanel.classList.toggle("hidden", !(isRun && runnerSummary));
         summaryBody.textContent = isRun ? String(runnerSummary || "") : "";
       }
+      var runOutWrap = li.querySelector('[data-role="run-step-output-wrap"]');
+      if (runOutWrap) {
+        runOutWrap.classList.toggle("hidden", !isRun);
+      }
       var notesLabelEl = li.querySelector('[data-role="notes-label"]');
       if (notesLabelEl) {
         notesLabelEl.textContent = "Notes";
@@ -8088,6 +8255,7 @@
       var fields = li.querySelectorAll("input, select, textarea");
       fields.forEach(function (el) {
         if (el.tagName === "INPUT" && el.type === "button") return;
+        if (String(el.getAttribute("data-field") || "") === "runStepOutput") return;
         if (el.tagName === "TEXTAREA") {
           el.readOnly = isRun;
           if (String(el.getAttribute("data-field") || "") === "notes") {
@@ -8138,6 +8306,68 @@
     }
     state.workflowRunVisibleStepId = "";
     state.workflowRunCopiedStepId = "";
+  }
+
+  /** UI-only completion line for run mode (never model prompts, never persisted on steps). */
+  function formatWorkflowRunStepCompleteStatus(outputName, hasCapturedBody, markedComplete) {
+    if (!hasCapturedBody && !markedComplete) return "";
+    var on = String(outputName || "").trim();
+    if (on) return "Step complete \u00b7 Artefact: " + on;
+    return "Step complete";
+  }
+
+  /** Strip trailing Copilot STEP N OUTPUT restatement and orphan closing ``` fences (not part of artefact body for bindings). */
+  function sanitizePrismRunCapturedOutput(raw) {
+    var s = String(raw || "");
+    var re = /\r?\nSTEP\s*\d+\s*OUTPUT:[\s\S]*$/i;
+    var prev;
+    do {
+      prev = s;
+      s = s.replace(re, "");
+    } while (s !== prev);
+    var fenceLine = /\r?\n```[a-zA-Z0-9_-]*\s*$/;
+    do {
+      prev = s;
+      s = s.replace(fenceLine, "");
+    } while (s !== prev);
+    if (/^\s*```[a-zA-Z0-9_-]*\s*$/.test(s)) {
+      s = "";
+    }
+    return s;
+  }
+
+  function syncWorkflowRunCapturedOutputToState(li) {
+    if (!li) return;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var ta = li.querySelector('[data-field="runStepOutput"]');
+    if (!sid || !ta) return;
+    var raw = String(ta.value || "");
+    state.workflowRunCapturedOutputsRaw[sid] = raw;
+    state.workflowRunCapturedOutputs[sid] = sanitizePrismRunCapturedOutput(raw);
+  }
+
+  function updateRunStepOutputStatus(li) {
+    if (!li) return;
+    var statusEl = li.querySelector('[data-role="run-step-output-status"]');
+    var outArea = li.querySelector('[data-field="runStepOutput"]');
+    var outputNameInput = li.querySelector('[data-field="outputName"]');
+    if (!statusEl || !outArea) return;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var body = String(outArea.value || "").trim();
+    var oname =
+      outputNameInput && typeof outputNameInput.value === "string"
+        ? outputNameInput.value.trim()
+        : "";
+    var marked = !!(sid && state.workflowRunStepCompleted[sid]);
+    var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
+    statusEl.textContent = text;
+    statusEl.classList.toggle("hidden", !text);
+  }
+
+  function refreshWorkflowRunStepOutputStatusDisplays() {
+    getWorkflowStepElements().forEach(function (li) {
+      updateRunStepOutputStatus(li);
+    });
   }
 
   // Workflow runtime lifecycle model (transient navigation state):
@@ -8228,12 +8458,19 @@
     if (els.workflowNextStepBtn) {
       els.workflowNextStepBtn.disabled = idx === total - 1;
     }
+    refreshWorkflowRunStepOutputStatusDisplays();
   }
 
   function setWorkflowMode(mode) {
     if (!els.workflowModeEditBtn || !els.workflowModeRunBtn) return;
 
     var isRun = mode === "run";
+
+    if (!isRun) {
+      state.workflowRunCapturedOutputs = {};
+      state.workflowRunCapturedOutputsRaw = {};
+      state.workflowRunStepCompleted = {};
+    }
 
     // Toggle active button styling.
     if (isRun) {
@@ -10895,6 +11132,9 @@
   function clearWorkflowDetail() {
     if (!els.workflowDetail) return;
     state.selectedWorkflowId = null;
+    state.workflowRunCapturedOutputs = {};
+    state.workflowRunCapturedOutputsRaw = {};
+    state.workflowRunStepCompleted = {};
     if (els.workflowName) els.workflowName.value = "";
     if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
     if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
@@ -10936,6 +11176,12 @@
       clearWorkflowDetail();
       renderWorkflowList();
       return;
+    }
+    var prevSelected = state.selectedWorkflowId;
+    if (String(prevSelected || "") !== String(wf.id || "")) {
+      state.workflowRunCapturedOutputs = {};
+      state.workflowRunCapturedOutputsRaw = {};
+      state.workflowRunStepCompleted = {};
     }
     state.selectedWorkflowId = wf.id;
     populateWorkflowDetail(wf);
@@ -11192,13 +11438,22 @@
   }
 
   function getStepTitleById(stepId) {
-    if (!stepId || !els.workflowSteps) return "";
-    var steps = getWorkflowStepElements();
-    for (var i = 0; i < steps.length; i++) {
-      var li = steps[i];
-      if ((li.getAttribute("data-step-id") || "") === stepId) {
-        return getStepTitleFromElement(li);
+    if (!stepId) return "";
+    if (els.workflowSteps) {
+      var steps = getWorkflowStepElements();
+      for (var i = 0; i < steps.length; i++) {
+        var li = steps[i];
+        if ((li.getAttribute("data-step-id") || "") === stepId) {
+          return getStepTitleFromElement(li);
+        }
       }
+    }
+    var wf = findWorkflowById(state.selectedWorkflowId || "");
+    if (wf && Array.isArray(wf.steps)) {
+      var row = wf.steps.find(function (s) {
+        return String(s && s.id ? s.id : "") === String(stepId);
+      });
+      if (row && row.title) return String(row.title).trim();
     }
     return "";
   }
@@ -12179,6 +12434,7 @@
     });
     outputInput.addEventListener("input", function () {
       refreshWorkflowInputSources();
+      updateRunStepOutputStatus(li);
     });
 
     fields.appendChild(titleGroup);
@@ -12211,10 +12467,41 @@
     notesGroup.appendChild(notesLabel);
     notesGroup.appendChild(notesArea);
 
+    var runOutputWrap = document.createElement("div");
+    runOutputWrap.className = "workflow-step-run-output-wrap hidden";
+    runOutputWrap.setAttribute("data-role", "run-step-output-wrap");
+    var runOutputLabel = document.createElement("label");
+    runOutputLabel.textContent = "Step output (paste model response)";
+    var runOutputArea = document.createElement("textarea");
+    runOutputArea.rows = 6;
+    runOutputArea.className = "workflow-step-run-output";
+    runOutputArea.setAttribute("data-field", "runStepOutput");
+    runOutputArea.setAttribute("autocomplete", "off");
+    runOutputArea.placeholder =
+      "Paste this step's model output here for your records. This text is not saved with the workflow JSON.";
+    var stepIdForRun = String(step.id != null ? step.id : "").trim();
+    var rawStored =
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[stepIdForRun]) || "";
+    var sanStored =
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[stepIdForRun]) || "";
+    runOutputArea.value = String(rawStored || sanStored || "");
+    runOutputArea.addEventListener("input", function () {
+      syncWorkflowRunCapturedOutputToState(li);
+      updateRunStepOutputStatus(li);
+    });
+    var runOutputStatus = document.createElement("div");
+    runOutputStatus.setAttribute("data-role", "run-step-output-status");
+    runOutputStatus.className = "workflow-step-run-output-status helper-text hidden";
+    runOutputWrap.appendChild(runOutputLabel);
+    runOutputWrap.appendChild(runOutputArea);
+    runOutputWrap.appendChild(runOutputStatus);
+
     li.appendChild(header);
     li.appendChild(fields);
     li.appendChild(notesGroup);
+    li.appendChild(runOutputWrap);
     renderInputBindings();
+    updateRunStepOutputStatus(li);
     return li;
   }
 
@@ -12751,8 +13038,6 @@
     if (!step) return "";
     var lines = [];
 
-    var stepNumber = index + 1;
-
     lines.push(
       "Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue."
     );
@@ -12786,17 +13071,6 @@
         ? "None"
         : "Paste text";
     lines.push("Optional additional input for this step: " + kindLabel + ".");
-    if (step.outputName) {
-      lines.push(
-        "Name the final result of this step as: " + step.outputName + "."
-      );
-      lines.push(
-        'At the end of your answer, restate the final output on a separate line, prefixed with "STEP ' +
-          stepNumber +
-          ' OUTPUT:".'
-      );
-    }
-
     var bindings = [];
     if (domElement) {
       bindings = readStepInputBindings(domElement);
@@ -12816,6 +13090,35 @@
         } else {
           lines.push('- External artefact: "' + b.artifactName + '".');
         }
+      });
+
+      var wfSelected = findWorkflowById(state.selectedWorkflowId || "");
+      bindings.forEach(function (b) {
+        if (b.kind !== "internal") return;
+        var sid = String(b.sourceStepId || "").trim();
+        var art = String(b.artifactName || "").trim();
+        if (!sid || !art || !wfSelected || !Array.isArray(wfSelected.steps)) return;
+        var prod = wfSelected.steps.find(function (r) {
+          return String(r && r.id ? r.id : "").trim() === sid;
+        });
+        if (!prod) return;
+        if (String(prod.outputName || "").trim() !== art) return;
+        var cap =
+          state.workflowRunCapturedOutputs &&
+          typeof state.workflowRunCapturedOutputs[sid] === "string"
+            ? state.workflowRunCapturedOutputs[sid]
+            : "";
+        if (!String(cap || "").trim()) return;
+        var sourceTitleCap = getStepTitleById(sid) || "an earlier step";
+        lines.push("");
+        lines.push(
+          'Upstream artefact "' +
+            art +
+            '" from step "' +
+            sourceTitleCap +
+            '" (runtime capture; use this text verbatim as the artefact body):'
+        );
+        lines.push(String(cap));
       });
     }
 
@@ -12838,6 +13141,23 @@
       lines.push("Here is the core prompt for this step:");
       lines.push("");
       lines.push(promptBody);
+    }
+
+    var outName = String(step && step.outputName != null ? step.outputName : "").trim();
+    if (outName) {
+      var stepNum =
+        typeof index === "number" && !isNaN(index) && index >= 0 ? Math.floor(index) + 1 : 1;
+      lines.push("");
+      lines.push(
+        "Finish the artefact in your main answer; do not include the machine artefact name inside that body."
+      );
+      lines.push(
+        "At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'."
+      );
+      lines.push(
+        "After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body."
+      );
+      lines.push("For this step, that line is: STEP " + stepNum + " OUTPUT: " + outName + ".");
     }
 
     return lines.join("\n");
@@ -13011,7 +13331,6 @@
     if (ctx.domainVersion) lines.push("Domain version: " + ctx.domainVersion);
     if (ctx.stepPromptSource) lines.push("Prompt source: " + ctx.stepPromptSource);
     if (ctx.stepRoleLabel) lines.push("Current step role/purpose: " + ctx.stepRoleLabel);
-    if (ctx.stepOutputName) lines.push("Current step output artefact: " + ctx.stepOutputName);
     if (ctx.stepAdditionalInput) lines.push("Current step additional input: " + ctx.stepAdditionalInput);
     if (Array.isArray(ctx.stepInputArtefacts) && ctx.stepInputArtefacts.length) {
       lines.push("Current step input artefacts:");
@@ -13756,7 +14075,7 @@
         override_prompt_body: "",
         inputKind: "text",
         inputBindings: [],
-        outputName: suggestedOutputName,
+        outputName: String(s.outputName || "").trim() || suggestedOutputName,
         notes: s.notes || "",
         depends_on: Array.isArray(s.depends_on) ? s.depends_on.slice() : []
       };
@@ -19701,6 +20020,17 @@
     }
     if (els.workflowNextStepBtn) {
       els.workflowNextStepBtn.addEventListener("click", function () {
+        var liSteps = getWorkflowStepElements();
+        var idx = state.currentWorkflowRunIndex;
+        var currentLi = liSteps[idx] || null;
+        if (currentLi) {
+          syncWorkflowRunCapturedOutputToState(currentLi);
+          var sid = String(currentLi.getAttribute("data-step-id") || "").trim();
+          if (sid) {
+            state.workflowRunStepCompleted[sid] = true;
+          }
+          updateRunStepOutputStatus(currentLi);
+        }
         state.currentWorkflowRunIndex += 1;
         updateWorkflowRunView();
       });
@@ -19822,6 +20152,21 @@
         : ["general"];
     };
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
+    prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
+    prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.buildPromptFactoryWorkflowContextText = buildPromptFactoryWorkflowContextText;
+    prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
+    prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
+    prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
+    prismTestApi.setSelectedWorkflowIdForTest = function (id) {
+      state.selectedWorkflowId = id ? String(id) : null;
+    };
+    prismTestApi.setWorkflowRunCaptureMapsForTest = function (sanitized, raw) {
+      state.workflowRunCapturedOutputs =
+        sanitized && typeof sanitized === "object" ? Object.assign({}, sanitized) : {};
+      state.workflowRunCapturedOutputsRaw =
+        raw && typeof raw === "object" ? Object.assign({}, raw) : {};
+    };
     window.__PRISM_TEST_API = prismTestApi;
   }
 

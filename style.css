@@ -996,6 +996,26 @@ textarea:focus {
   margin-bottom: 8px;
 }
 
+.workflow-step-run-output-wrap {
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+
+.workflow-step-run-output-wrap label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.workflow-step-run-output {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 4.5rem;
+}
+
+.workflow-step-run-output-status {
+  margin-top: 6px;
+}
+
 .workflow-validation-panel {
   border: 1px solid #f59e0b;
   background: #fffbeb;

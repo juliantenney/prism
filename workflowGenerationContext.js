@@ -830,20 +830,33 @@
     var opts = options && typeof options === "object" ? options : {};
     return loadManifest().then(function (manifest) {
       var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
-      var files = [];
-      selectedDomains.forEach(function (domainId) {
-        var d = manifest.domains[domainId];
-        if (!d || !Array.isArray(d.files)) return;
-        d.files.forEach(function (path) {
-          if (/step-patterns/i.test(path)) files.push(path);
-        });
+      var structuredIds = selectedDomains.filter(function (id) {
+        return String(id || "").toLowerCase() !== "general";
       });
-      return loadFiles(files).then(function (result) {
-        for (var i = 0; i < result.loaded.length; i++) {
-          var policy = extractWorkflowPolicyFromText(result.loaded[i].text);
-          if (policy && typeof policy === "object") return policy;
-        }
-        return null;
+      if (!structuredIds.length) {
+        return Promise.resolve(null);
+      }
+      // Single source of truth for Factory heuristics (applyWorkflowDesignHeuristics in app.js):
+      // load one domain pack's workflowPolicy, not "first file that parses" across all domains.
+      // When Research is active alongside another structured domain, use the Research pack so
+      // Design Page / researchValidationIntent / dependencies match research-shaped drafts;
+      // otherwise LD policy would win on file order and prune terminal Design Page (LD deps).
+      var policyDomainId = structuredIds[0];
+      if (structuredIds.indexOf("research") !== -1) {
+        policyDomainId = "research";
+      }
+      var d = manifest.domains[policyDomainId];
+      var stepPatternsPath = "";
+      if (d && Array.isArray(d.files)) {
+        stepPatternsPath = d.files.find(function (path) {
+          return /step-patterns/i.test(String(path || ""));
+        }) || "";
+      }
+      if (!stepPatternsPath) {
+        return Promise.resolve(null);
+      }
+      return readTextFile(stepPatternsPath).then(function (text) {
+        return extractWorkflowPolicyFromText(text) || null;
       });
     });
   }

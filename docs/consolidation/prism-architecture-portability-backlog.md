@@ -38,9 +38,15 @@ Per [`sprint-13-index.md`](sprint-13-index.md) and [`sprint-13-first-pass-closur
 
 ## 2.1 Sprint 14 — practical runnable-pack work (not portability redesign)
 
-**Sprint 14 — Research Domain Runnable Maturity** (`docs/consolidation/sprint-14-index.md`) is **product-focused**: improve **Research** as a **runnable** Workflow Factory domain (pack quality, prompts, elicitation fit, runner usability). It is **intentionally not** another **architecture / portability** sprint and **does not** supersede or reopen items in §**3** unless separately chartered. **2026-05-14:** first **implementation + verification** slice and **consolidation closure notes** are recorded in **`sprint-14-current-known-issues.md`** §§**10–11** and **`sprint-14-charter.md`** §§**7**, **10** — **not** a renderer redesign programme.
+**Sprint 14 — Research Domain Runnable Maturity** (`docs/consolidation/sprint-14-index.md`) was **product-focused** runnable-pack work. **2026-05-14:** first **implementation + verification** slice and **consolidation closure notes** are in **`sprint-14-current-known-issues.md`** §§**10–11** and **`sprint-14-charter.md`** §§**7**, **10**. Sprint **14** is **baseline closed** for active sprint focus; **`page`** / Utilities follow-up is **Sprint 15** (below)—**not** a Sprint **14** renderer programme retrofitted into §**2.1**.
 
-**Pointer:** [`sprint-14-charter.md`](sprint-14-charter.md) (goals, non-goals, exclusions). This backlog entry **does not** add Sprint 14 to the “unfinished portability themes” list in §**3** by default—Sprint 14 is **parallel** descriptive context for readers navigating from Sprint 12–13 to current work.
+**Pointer:** [`sprint-14-charter.md`](sprint-14-charter.md). This backlog entry **does not** add Sprint 14 to the “unfinished portability themes” list in §**3** by default.
+
+## 2.2 Sprint 15 — Research page delivery (not portability redesign)
+
+**Sprint 15 — Research Renderer and Page Delivery Maturity** (`docs/consolidation/sprint-15-index.md`) is **delivery-focused**: **Design Page → `page` JSON → Utilities → HTML** for **Research** first. It is **not** a broad renderer redesign, **not** a Learning Design renderer overhaul, and **not** portability architecture.
+
+**Pointer:** [`sprint-15-charter.md`](sprint-15-charter.md). Same rule as §**2.1**: **does not** add Sprint **15** to §**3** unfinished portability themes by default.
 
 ---
 

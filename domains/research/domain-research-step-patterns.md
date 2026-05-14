@@ -83,7 +83,7 @@ They provide a consistent way to structure workflows and ensure that research pr
       "Generate Briefing Note": { "requiresAnyOf": ["research_summary", "evidence_map", "thematic_analysis", "research_content"], "produces": ["briefing_note"] },
       "Validate Research Output": { "requiresAnyOf": ["research_questions", "research_summary", "briefing_note", "thematic_analysis", "literature_matrix", "evidence_map"], "produces": ["validated_research_output"] },
       "Format Final Output": { "requiresAnyOf": ["validated_research_output", "research_summary", "briefing_note", "research_questions"], "produces": ["final_output"] },
-      "Design Page": { "requiresAnyOf": ["validated_research_output", "final_output", "briefing_note", "research_summary", "thematic_analysis", "evidence_map", "research_questions"], "produces": ["page"] }
+      "Design Page": { "requiresAnyOf": ["validated_research_output", "final_output", "briefing_note", "research_summary", "thematic_analysis", "evidence_map", "research_questions", "literature_matrix", "argument_structure"], "produces": ["page"] }
     },
     "precedenceRules": [
       ["Generate Research Content", "Normalize Content"],
@@ -101,8 +101,7 @@ They provide a consistent way to structure workflows and ensure that research pr
       ["Generate Research Summary", "Validate Research Output"],
       ["Generate Briefing Note", "Validate Research Output"],
       ["Validate Research Output", "Format Final Output"],
-      ["Validate Research Output", "Design Page"],
-      ["Format Final Output", "Design Page"]
+      ["Validate Research Output", "Design Page"]
     ],
     "triggerRules": [
       {
@@ -122,6 +121,45 @@ They provide a consistent way to structure workflows and ensure that research pr
         "include": ["Conduct Thematic Analysis"]
       }
     ],
+    "researchDesignPageAppend": {
+      "excludeObjectiveTypes": ["questions"],
+      "inferObjectiveTypeFromBrief": true,
+      "pageDeliveryTextSignals": [
+        "html-ready",
+        "html ready",
+        "structured",
+        "readable html",
+        "structured, readable",
+        "export-ready",
+        "export ready",
+        "vle page",
+        "policy-style",
+        "briefing page",
+        "html page",
+        "utilities"
+      ]
+    },
+    "researchValidationIntent": {
+      "phraseSignals": [
+        "quality assurance",
+        "review quality",
+        "peer review",
+        "critical review",
+        "independent review",
+        "formal review",
+        "expert review",
+        "review for accuracy",
+        "alignment audit",
+        "alignment check",
+        "quality audit",
+        "check against criteria",
+        "compliance check",
+        "verify accuracy",
+        "assess quality",
+        "evaluate the output"
+      ],
+      "wordBoundarySignals": ["validate", "validation", "qa", "audit", "critique"]
+    },
     "stepRoleAnchors": {
       "Generate Research Content": "Generate or extend structured grounding content for downstream extraction, modelling, and synthesis.",
       "Normalize Content": "Prepare source material into clean, structured research-ready input.",
@@ -141,6 +179,12 @@ They provide a consistent way to structure workflows and ensure that research pr
   }
 }
 ```
+
+**Precedence (`Design Page`):** There is no `["Format Final Output", "Design Page"]` edge. `Format Final Output`’s artefact contract does not subsume every synthesis output that can feed page assembly; requiring Format before Design Page could deadlock the dependency-authoritative pass in `app.js` (both steps left unplaced and dropped). **`["Validate Research Output", "Design Page"]`** remains when Validate is present.
+
+**`researchDesignPageAppend`:** Optional signals consumed by PRISM workflow-design heuristics (`app.js` → `applyWorkflowDesignHeuristics`) so **Design Page** is appended as the **terminal renderer step** when the brief implies **HTML / page / export-ready** delivery but `objective_type` was not carried into `resolvedBriefFactors`. Adjust **`pageDeliveryTextSignals`** here (not in `app.js`) when authors need new cue phrases. **`excludeObjectiveTypes`** suppresses Design Page only for that objective when the draft chain has **no** briefing/summary step and **no** pack page cue with synthesis (so a mismatched `objective_type: questions` does not block a briefing+page brief).
+
+**`researchValidationIntent`:** Mirrors Learning Design semantics where **Validate Learning Design** is included from goal triggers, not by default: **Validate Research Output** is kept or injected only when the brief matches **`phraseSignals`** (substring) or **`wordBoundarySignals`** (whole-token, avoids `validated` / `review-ready` false positives). Ordinary delivery language (evidence-led, policy briefing, html-ready page, recommendations, etc.) does not enable it.
 
 **Documentation order vs `canonicalSteps`:** `workflowPolicy.canonicalSteps` lists **Generate Research Content** before **Normalize Content** for planner composition. The **numbered sections** below place **Normalize Content** first (§1) then **Generate Research Content** (§2) for a “prepare material → generate” reading order; headings still use the exact canonical step titles.
 

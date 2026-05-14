@@ -52,7 +52,14 @@ Sprint 14 is **practical and product-focused**: make the **Research** domain a *
 
 ---
 
+## 5. Follow-on sprint (active product focus)
+
+- **Sprint 15 — Research Renderer and Page Delivery Maturity** — **`docs/consolidation/sprint-15-index.md`** — Utilities / **`page`** delivery for Research (**Design Page → JSON → HTML**). Sprint **14** artefacts here remain **historical baseline** for runnable Research; **do not** duplicate Sprint **15** scope into Sprint **14** closure text.
+
+---
+
 ## Review log
 
 - **2026-05-14** — Sprint 14 scaffolding: index, charter, baseline audit, known-issues register; `current-state.md` and portability backlog pointers updated.
 - **2026-05-14** — **Consolidation pass:** known-issues register expanded (**E4.3**/**E4.4** ids, **mitigated** statuses for **E4.1**, **E4.5**, **I9.1**; **I9.2** **partially mitigated**); charter §§**7**/**10** aligned; baseline audit post-baseline notes for **K8.2**/**E4.4**; **`development/current-state.md`** Sprint **14** bullets refreshed.
+- **2026-05-14** — **Sprint 15 opened:** active focus moves to **`sprint-15-index.md`**; Sprint **14** treated as **closed baseline** in **`current-state.md`**; §**5** follow-on pointer added to this index.

@@ -7,7 +7,7 @@
 
 **Purpose:** Navigable map of **Sprint 14** documentation and (when chartered) implementation tracking. This index **does not** approve work beyond what the **charter** states, **does not** reopen Sprint 12 or Sprint 13, and **does not** subsume the architecture portability backlog.
 
-**Documentation posture (scaffolding):** Index + charter + baseline audit + known-issues register are **documentation only** until an explicit implementation gate is opened. **No** `app.js`, domain-pack implementation, persistence, or orchestration edits are implied by this folder alone.
+**Documentation posture (2026-05-14 consolidation):** The **first Research implementation / verification slice** is **documented** in **`sprint-14-current-known-issues.md`** (§§**10–11**), **`sprint-14-charter.md`** (§§**7**, **10**), and this index review log. **No** Sprint **12**/**13** reopeners; **no** renderer redesign charter—residual renderer polish stays in **known issues §11** only.
 
 ---
 
@@ -27,7 +27,7 @@ Sprint 14 is **practical and product-focused**: make the **Research** domain a *
 |----------|------|
 | [`sprint-14-charter.md`](sprint-14-charter.md) | Goals, non-goals, constraints, deliverables, verification expectations, explicit exclusions. |
 | [`sprint-14-research-pack-baseline-audit.md`](sprint-14-research-pack-baseline-audit.md) | Read-only snapshot of Research pack structure vs Learning Design; risks, gaps, assumptions. |
-| [`sprint-14-current-known-issues.md`](sprint-14-current-known-issues.md) | Register of observed concerns not yet deeply analysed (prompt quality, runner UX, elicitation, etc.). |
+| [`sprint-14-current-known-issues.md`](sprint-14-current-known-issues.md) | Known / mitigated register (**E4.x**, **I9.x**, **G2.x**, …), **§10 completed work**, **§11 remaining work** (not a renderer programme). |
 
 ---
 
@@ -55,3 +55,4 @@ Sprint 14 is **practical and product-focused**: make the **Research** domain a *
 ## Review log
 
 - **2026-05-14** — Sprint 14 scaffolding: index, charter, baseline audit, known-issues register; `current-state.md` and portability backlog pointers updated.
+- **2026-05-14** — **Consolidation pass:** known-issues register expanded (**E4.3**/**E4.4** ids, **mitigated** statuses for **E4.1**, **E4.5**, **I9.1**; **I9.2** **partially mitigated**); charter §§**7**/**10** aligned; baseline audit post-baseline notes for **K8.2**/**E4.4**; **`development/current-state.md`** Sprint **14** bullets refreshed.

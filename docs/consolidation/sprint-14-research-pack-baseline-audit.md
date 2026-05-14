@@ -52,11 +52,13 @@
 11. Validate Research Output  
 12. Format Final Output  
 
-**Also defined:** `maxOccurrences` (all `1` for listed steps), `dependencies` (requiresAnyOf / produces graph), `precedenceRules`, `triggerRules` (three branches keyed on **`objective_type`**: summary / briefing / questions — **no** branch for **`analysis`**), `stepRoleAnchors`, `finalSteps` (`Format Final Output`).
+**Also defined:** `maxOccurrences` (all `1` for listed steps), `dependencies` (requiresAnyOf / produces graph), `precedenceRules`, `triggerRules` (branches keyed on **`objective_type`**; **baseline** listed **summary** / **briefing** / **questions** only — **`analysis`** added in **Sprint 14**, see below), `stepRoleAnchors`, `finalSteps` (`Format Final Output`).
 
-**`stepRoleAnchors` completeness:** The JSON **`stepRoleAnchors`** map includes anchors for steps such as **Normalize Content** through **Format Final Output** but **does not** include an entry for **`Generate Research Content`**, despite that title being first in **`canonicalSteps`** — likely **oversight** in pack authoring (validate during Sprint 14).
+**Risk / gap (unchanged characterisation):** Large policy surface vs typical short Factory brief — planner may **over-include** steps unless triggers and inference reliably narrow the graph (**assumption not exhaustively validated** in this audit).
 
-**Risk / gap (baseline):** Large policy surface vs typical short Factory brief — planner may **over-include** steps unless triggers and inference reliably narrow the graph (**assumption not validated** in this audit).
+**`stepRoleAnchors` completeness (baseline gap):** The JSON **`stepRoleAnchors`** map initially omitted **`Generate Research Content`** despite that title appearing in **`canonicalSteps`** — recorded as **E4.5** in **`sprint-14-current-known-issues.md`**. **Sprint 14:** anchor text added; treat baseline audit snapshot as **historical** for this point.
+
+**`triggerRules` vs `objective_type: analysis` (baseline gap):** **`triggerRules`** initially omitted an **`analysis`** branch (**K8.2**). **Sprint 14:** **`analysis`** branch added — **E4.4** / **`sprint-14-current-known-issues.md`**.
 
 ---
 
@@ -66,7 +68,7 @@
 
 **Required factors (as defined):** `objective_type`, `input_strategy`, `audience`, `output_depth`.
 
-**Notable shape detail:** `objective_type` **`choices`** are **plain strings** in the JSON array (`"summary"`, `"analysis"`, …), not `{ value, label }` objects — differs from **`input_strategy`** in the same file and from many Learning Design select factors (**potential** UI/normalisation inconsistency; see `sprint-14-current-known-issues.md` **E4.1**).
+**Notable shape detail (historical baseline):** `objective_type` **`choices`** were **plain strings** in the JSON array — differed from **`input_strategy`** and many Learning Design select factors (**E4.1** in known issues). **Sprint 14:** **`{ value, label }`** objects adopted for **`objective_type`** in the live pack — see **`sprint-14-current-known-issues.md`** **E4.1**.
 
 **Optional factors:** e.g. `citation_style`.
 
@@ -120,11 +122,11 @@
 ## 8. Currently known risks / gaps (pack-level)
 
 - **K8.1** — **Step order presentation** in markdown vs **`canonicalSteps`** order — author confusion and planner mismatch risk.
-- **K8.2** — **`triggerRules`** include **`objective_type`** values **`summary`**, **`briefing`**, and **`questions`** only — there is **no** rule for **`analysis`** despite **`analysis`** being a required **`objective_type`** choice in **`workflowBriefConfig`**. Impact on step inclusion for “analysis” workflows **not validated**.
-- **K8.3** — **Bare-string** select choices for `objective_type` vs labelled choices elsewhere.
+- **K8.2** — **`triggerRules`** historically omitted **`analysis`** despite **`analysis`** being a required **`objective_type`** choice. **Status (post–Sprint 14 consolidation):** **Mitigated** in live pack — cross-reference **E4.4** / **`sprint-14-current-known-issues.md`**.
+- **K8.3** — **Bare-string** select choices for `objective_type` vs labelled choices elsewhere. **Status (post–Sprint 14):** **Mitigated** for **`objective_type`** primary select — **E4.1**; other factors may still mix shapes (non-blocking).
 - **K8.4** — **Long chains** (12 steps) vs **short** Factory briefs — default generation may **skip** or **collapse** steps unpredictably without tests.
 
-**Post-baseline (live generation, Sprint 14):** Runnable-delivery observations from **live** Factory runs—upload-first vs **Generate Research Content** semantics, and absence of a **Design Page**-class render terminal—are registered in **`sprint-14-current-known-issues.md`** §**9** as **I9.1** / **I9.2** (see **`sprint-14-charter.md`** §**10**). This audit file is not re-run for those items.
+**Post-baseline (live generation, Sprint 14):** Runnable-delivery observations from **live** Factory runs—upload-first vs **Generate Research Content** semantics, and absence of a **Design Page**-class render terminal—were registered in **`sprint-14-current-known-issues.md`** §**9** as **I9.1** / **I9.2** (see **`sprint-14-charter.md`** §**10**). **2026-05-14 consolidation:** **I9.1** **mitigated**; **I9.2** **partially mitigated** with Research **Design Page** terminal + manual verification — see known issues §§**9–11**. This audit file remains a **read-only baseline snapshot**; post-fix pack truth is the live **`domains/research/*.md`** files.
 
 ---
 
@@ -140,3 +142,4 @@
 
 - **2026-05-14** — Initial baseline audit from repository files (documentation only).
 - **2026-05-14** — §**8** cross-reference to **I9.1** / **I9.2** (live observation register; charter §**10**).
+- **2026-05-14** — **Consolidation pass:** §§**3–4** annotated for **Sprint 14** fixes (**E4.1**, **E4.4**, **E4.5**); **K8.2** marked **mitigated** with pointer to **E4.4**; §**8** post-baseline paragraph updated for **I9.x** closure posture.

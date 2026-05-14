@@ -38,7 +38,7 @@ Per [`sprint-13-index.md`](sprint-13-index.md) and [`sprint-13-first-pass-closur
 
 ## 2.1 Sprint 14 — practical runnable-pack work (not portability redesign)
 
-**Sprint 14 — Research Domain Runnable Maturity** (`docs/consolidation/sprint-14-index.md`) is **product-focused**: improve **Research** as a **runnable** Workflow Factory domain (pack quality, prompts, elicitation fit, runner usability). It is **intentionally not** another **architecture / portability** sprint and **does not** supersede or reopen items in §**3** unless separately chartered.
+**Sprint 14 — Research Domain Runnable Maturity** (`docs/consolidation/sprint-14-index.md`) is **product-focused**: improve **Research** as a **runnable** Workflow Factory domain (pack quality, prompts, elicitation fit, runner usability). It is **intentionally not** another **architecture / portability** sprint and **does not** supersede or reopen items in §**3** unless separately chartered. **2026-05-14:** first **implementation + verification** slice and **consolidation closure notes** are recorded in **`sprint-14-current-known-issues.md`** §§**10–11** and **`sprint-14-charter.md`** §§**7**, **10** — **not** a renderer redesign programme.
 
 **Pointer:** [`sprint-14-charter.md`](sprint-14-charter.md) (goals, non-goals, exclusions). This backlog entry **does not** add Sprint 14 to the “unfinished portability themes” list in §**3** by default—Sprint 14 is **parallel** descriptive context for readers navigating from Sprint 12–13 to current work.
 

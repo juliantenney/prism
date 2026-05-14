@@ -4,13 +4,13 @@
 
 **Canonical live source (outside this pack):** `docs/development/current-state.md` in the repository.
 
-**Snapshots in this pack:** `context-files/current-state.md` (copy dated when the pack was built).
+**Snapshots in this pack:** `context-files/current-state.md` (refreshed **2026-05-14** consolidation pass).
 
 ---
 
 ## Active sprint
 
-- **Sprint 14 — Research Domain Runnable Maturity** — **implementation/verification** focus: make **Research** a **usable, trustworthy** runnable Workflow Factory domain. **Charter:** `context-files/sprint-14-charter.md`. **Map:** `context-files/sprint-14-index.md`.
+- **Sprint 14 — Research Domain Runnable Maturity** — **first implementation / verification slice documented** (2026-05-14): make **Research** a **usable, trustworthy** runnable Workflow Factory domain. **Charter:** `context-files/sprint-14-charter.md`. **Map:** `context-files/sprint-14-index.md`. **Closure register:** `context-files/sprint-14-current-known-issues.md` (**§§10–11** completed vs remaining; **E4.1**, **E4.3**, **E4.4**, **E4.5**, **I9.1** **mitigated**; **I9.2** **partially mitigated**).
 
 ---
 
@@ -23,22 +23,23 @@
 
 ---
 
-## Current known issues (starting register)
+## Current known issues (register + closure)
 
-See **`context-files/sprint-14-current-known-issues.md`** and the concrete pack gaps in **`context-files/sprint-14-research-pack-baseline-audit.md`** (including **`objective_type: analysis`** missing from **`triggerRules`**, **`Generate Research Content`** missing from **`stepRoleAnchors`**, markdown **##** order vs **`canonicalSteps`**).
+See **`context-files/sprint-14-current-known-issues.md`** (authoritative). **`context-files/sprint-14-research-pack-baseline-audit.md`** remains a **read-only baseline snapshot**; live pack truth is repo **`domains/research/*.md`**.
 
 ---
 
-## Immediate next action
+## Next actions (optional follow-ups — not Sprint 14 core)
 
-1. Open **`context-files/sprint-14-charter.md`** and confirm scope for the first implementation slice.
-2. Pick **one** baseline-audit item or known-issue id; implement or document verification steps; add/adjust **tests** if behaviour changes.
-3. Run **`node --test tests/*.test.js`** before considering the slice done.
+1. **Renderer polish** for Research-originated **`page`** payloads (Utilities) — **known issues §11**; **not** a chartered renderer redesign.
+2. **Optional export JSON audit** for governance-heavy reviews.
+3. **`runnerInstructions`** editorial pass (**R3.1**).
 
-**Implementation gate:** Do not start broad refactors; keep changes **Research-scoped** and **charter-aligned** unless the user explicitly widens scope in session.
+**Regression guard:** Run **`node --test tests/*.test.js`** before further Research generation changes.
 
 ---
 
 ## Review log
 
 - **2026-05-14** — Pack `CURRENT-STATE.md` created for Sprint 14 portable context.
+- **2026-05-14** — **Consolidation pass:** aligned with repo **`docs/development/current-state.md`** and **`sprint-14-current-known-issues.md`** closure sections; refreshed **`context-files/current-state.md`**; replaced “immediate next action” with **optional follow-ups** (first slice delivered).

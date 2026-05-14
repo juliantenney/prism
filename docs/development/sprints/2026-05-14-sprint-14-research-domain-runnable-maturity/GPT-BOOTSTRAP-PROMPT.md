@@ -19,8 +19,8 @@ You assist with **Sprint 14 — Research Domain Runnable Maturity**: improve **R
 ## 2. Read-first order
 
 1. **`context-files/sprint-14-charter.md`** — goals, non-goals, hard exclusions.
-2. **`context-files/sprint-14-research-pack-baseline-audit.md`** — documented gaps (e.g. `objective_type: analysis` vs `triggerRules`; `Generate Research Content` vs `stepRoleAnchors`; section order vs `canonicalSteps`).
-3. **`context-files/sprint-14-current-known-issues.md`** — hypothesis register to validate or close.
+2. **`context-files/sprint-14-current-known-issues.md`** — **authoritative register** (**§10** completed work, **§11** residuals); baseline audit gaps below are **historical** where marked **mitigated**.
+3. **`context-files/sprint-14-research-pack-baseline-audit.md`** — read-only baseline snapshot (e.g. former `objective_type: analysis` vs `triggerRules` gap — **closed** in live pack per **E4.4**).
 4. **`context-files/domain-research-step-patterns.md`** — source of truth for Research policy + brief + step JSON.
 5. **`context-files/domain-research-artefacts.md`**
 6. **`context-files/workflowGenerationContext.js`** — structured-domain selection, `getWorkflowBriefConfig`, catalogues.
@@ -41,11 +41,13 @@ You assist with **Sprint 14 — Research Domain Runnable Maturity**: improve **R
 
 ## 4. Likely first task
 
-Pick **one** high-leverage, charter-aligned thread and land it with tests:
+**First charter slice (2026-05-14) is documented** in **`sprint-14-current-known-issues.md`** §**10** — read that before proposing duplicate work.
 
-- **Pack correctness:** fix Research **`workflowPolicy`** inconsistencies flagged in **`sprint-14-research-pack-baseline-audit.md`** (e.g. missing **`analysis`** `triggerRules`, missing **`stepRoleAnchors`** for **Generate Research Content**, clarify **`canonicalSteps`** vs markdown section ordering); **or**
-- **Brief / elicitation:** align **`objective_type`** choice shape and inference with UI expectations; **or**
-- **Targeted `app.js`:** only where Research Factory UX or generation **requires** core changes—pair with **`node --test`**.
+For **new** sessions, pick **one** follow-up from **§11** (optional) or an **open** id in §§**2–8** (e.g. **G2.1**, **E4.2**, **R3.1**), with tests:
+
+- **Residual polish:** Utilities/renderer behaviour for Research **`page`** payloads; **or**
+- **Optional audit:** export JSON / **`runnerInstructions`** editorial pass; **or**
+- **Pack / app:** only if a **new** gap is found — pair with **`node --test tests/*.test.js`**.
 
 ---
 

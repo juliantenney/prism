@@ -5,7 +5,7 @@
 
 **Sprint title:** Sprint 14 — Research Domain Runnable Maturity
 
-**Status:** **Charter / scaffolding** — defines intent and boundaries before implementation passes are opened. This document **does not** alone authorise code or pack edits; execution requires an explicit implementation gate consistent with project governance.
+**Status:** **Charter + first implementation / verification slice (2026-05-14)** — intent, boundaries, and **documented closure** of the initial Research runnable-quality pass. Further work stays bounded by **§9** exclusions (no renderer programme, no Sprint **12**/**13** reopeners). **Residual risks:** **`sprint-14-current-known-issues.md`** §§**10–11**.
 
 ---
 
@@ -62,14 +62,11 @@ Sprint 14 **owns depth** on **`research`** only for this sprint’s implementati
 
 ---
 
-## 7. Expected deliverables (when implementation is chartered)
+## 7. Expected deliverables
 
-Deliverables are **staged**; exact commits depend on a future implementation gate. **Illustrative** categories:
+**First slice (delivered, 2026-05-14 — see `sprint-14-current-known-issues.md` §10):** Research pack policy/brief fixes (analysis **`triggerRules`**, **`Generate Research Content`** **`stepRoleAnchors`**, **`objective_type`** value/label selects, **`extraFields` / `uiHints` / `mappingRules`** alignment), targeted **`app.js`** heuristics and normalisation (upload-path **Generate Research Content** suppression, **Design Page** terminal append for briefing-style Research flows, self-binding strip, **`selectedDomains`** sync on edit/save), Node tests under **`node --test tests/*.test.js`**, and **manual API-backed verification** on the local dev server (**`npm run dev`** / **`scripts/dev-server.js`**).
 
-1. **Research pack revisions** — step titles, policies, prompt factories, runner instructions, artefact names, brief factors, and **`uiHints`** tuned for research workflows.
-2. **Targeted `app.js` adjustments** — only where Research **must** align with Factory UI, elicitation, or generation (no broad refactors).
-3. **Tests / fixtures** — Node or golden tests where Sprint 11 / 12 patterns already exist; extend **only** as needed for Research assertions.
-4. **Documentation** — closure or “pass” note updating this charter with **verified** behaviours and **known residual risks**.
+**Later slices (not implied):** further prompt-quality tuning, exhaustive export audits, renderer polish — **§11** remaining-work list; **not** a charter to widen Sprint 14 into LD-style renderer redesign.
 
 ---
 
@@ -94,6 +91,21 @@ Deliverables are **staged**; exact commits depend on a future implementation gat
 
 ---
 
-## 10. Review log
+## 10. Live observations → closure status (pointer)
+
+Original **2026-05-14** observations (**upload-first vs Generate Research Content**, **missing Design Page terminal**) remain **archived in intent** in **`sprint-14-current-known-issues.md`** §**9** as **I9.1** / **I9.2**.
+
+**Current posture (same consolidation pass):**
+
+- **I9.1** — **Mitigated** (heuristic suppression + normalisation/tests).
+- **I9.2** — **Partially mitigated / validated** — **Design Page** append for Research briefing-style flows; **manual** runtime chain verified (**Normalize → findings → thematic analysis / briefing → validation → Design Page**). **Residual:** Utilities/renderer polish for Research **`page`** output — **explicitly not** a Sprint 14 scope expansion into full renderer redesign (**known issues §11**).
+
+Authoritative detail, evidence pointers, and **E4.x** register updates: **`sprint-14-current-known-issues.md`**.
+
+---
+
+## 11. Review log
 
 - **2026-05-14** — Initial charter drafted (scaffolding; documentation only).
+- **2026-05-14** — §**10** added: pointer to **I9.1** / **I9.2** (validated observations; no implied redesign).
+- **2026-05-14** — **Consolidation pass:** §**7** reframed for **delivered first slice**; §**10** updated to **mitigated / partially mitigated** status with pointer to **`sprint-14-current-known-issues.md`** §§**9–11**; document **status** header updated.

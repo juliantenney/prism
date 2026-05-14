@@ -41,9 +41,9 @@
 | `context-files/sprint-14-index.md` | Sprint 14 map |
 | `context-files/sprint-14-charter.md` | Goals, non-goals, constraints, exclusions |
 | `context-files/sprint-14-research-pack-baseline-audit.md` | Read-only Research pack baseline vs LD |
-| `context-files/sprint-14-current-known-issues.md` | Issue register before deep implementation |
+| `context-files/sprint-14-current-known-issues.md` | Issue register: **mitigated** / open items, **§10** completed work, **§11** remaining (no renderer programme) |
 
-**Portability backlog (context only):** `context-files/prism-architecture-portability-backlog.md` — Sprint 14 is **practical runnable-pack work** (§2.1), **not** portability redesign.
+**Portability backlog (context only):** `context-files/prism-architecture-portability-backlog.md` — Sprint 14 is **practical runnable-pack work** (§2.1), **not** portability redesign. **Note:** pack copy may lag repo consolidation; prefer live **`docs/consolidation/prism-architecture-portability-backlog.md`** for §**2.1** wording.
 
 ---
 
@@ -67,3 +67,4 @@
 ## Review log
 
 - **2026-05-14** — Sprint 14 portable context pack created (`SPRINT-CONTEXT.md`, bootstrap prompt, `CURRENT-STATE.md`, `HANDOVER.md`, `context-files/` snapshots).
+- **2026-05-14** — **Consolidation pass:** `sprint-14-current-known-issues.md` role updated in this table; **`context-files/`** refreshed from repo **`docs/consolidation/sprint-14-*.md`** where listed.

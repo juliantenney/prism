@@ -2571,10 +2571,10 @@
     ];
   }
 
-  function appendWorkflowFactoryDomainGeneralOption(selectEl) {
+  function appendWorkflowFactoryDomainPlaceholderOption(selectEl) {
     var opt = document.createElement("option");
-    opt.value = "general";
-    opt.textContent = "General";
+    opt.value = "";
+    opt.textContent = "Choose a domain…";
     selectEl.appendChild(opt);
   }
 
@@ -2584,18 +2584,18 @@
     var domains = Array.isArray(opts.domains) ? opts.domains : [];
     state.workflowDomainOptions = domains.slice();
     var selected = getSelectedWorkflowDomains();
-    var selectedExtra = selected.find(function (d) {
-      return d !== "general";
-    }) || "general";
+    var selectedExtra =
+      selected.find(function (d) {
+        return d !== "general";
+      }) || "";
     els.wfDesignDomainSelect.innerHTML = "";
+    appendWorkflowFactoryDomainPlaceholderOption(els.wfDesignDomainSelect);
 
     if (!domains.length) {
-      appendWorkflowFactoryDomainGeneralOption(els.wfDesignDomainSelect);
-      els.wfDesignDomainSelect.value = "general";
+      els.wfDesignDomainSelect.value = "";
+      els.wfDesignDomainSelect.onchange = handleWorkflowDomainSelectionChange;
       return;
     }
-
-    appendWorkflowFactoryDomainGeneralOption(els.wfDesignDomainSelect);
 
     domains.forEach(function (domain) {
       if (!domain || !domain.id) return;
@@ -2606,10 +2606,10 @@
       els.wfDesignDomainSelect.appendChild(option);
     });
 
-    if (!els.wfDesignDomainSelect.querySelector('option[value="' + selectedExtra + '"]')) {
-      selectedExtra = "general";
+    if (selectedExtra && !els.wfDesignDomainSelect.querySelector('option[value="' + selectedExtra + '"]')) {
+      selectedExtra = "";
     }
-    els.wfDesignDomainSelect.value = selectedExtra;
+    els.wfDesignDomainSelect.value = selectedExtra || "";
     els.wfDesignDomainSelect.onchange = handleWorkflowDomainSelectionChange;
   }
 
@@ -3017,9 +3017,9 @@
 
   function handleWorkflowDomainSelectionChange() {
     if (!els.wfDesignDomainSelect) return;
-    var selectedValue = els.wfDesignDomainSelect.value || "general";
+    var selectedValue = String(els.wfDesignDomainSelect.value || "").trim();
     var next = ["general"];
-    if (selectedValue !== "general") next.push(selectedValue);
+    if (selectedValue && selectedValue !== "general") next.push(selectedValue);
     state.workflowSelectedDomains = next;
     if (
       window.WorkflowGenerationContext &&
@@ -3044,7 +3044,7 @@
   function initWorkflowDomainSelector() {
     var fallbackDomains = getWorkflowFactoryDomainSelectFallbackDomains();
 
-    // Always default to General on load.
+    // Baseline "general" is always implied; runnable domain is explicit until the user chooses one.
     state.workflowSelectedDomains = ["general"];
 
     if (
@@ -5700,6 +5700,18 @@
       return;
     }
 
+    if (isGeneralOnlySelection(selectedDomains)) {
+      showToast(
+        "Choose a domain (Learning Design or Research) before generating a workflow.",
+        "error"
+      );
+      if (els.wfDesignStatus) {
+        els.wfDesignStatus.textContent = "Needs domain";
+        els.wfDesignStatus.className = "badge badge-muted";
+      }
+      return;
+    }
+
     var base = buildWorkflowDesignBase({
       name: name,
       goal: goal,
@@ -5727,11 +5739,10 @@
       .then(function (briefCfgResult) {
         var domainId = String((briefCfgResult && briefCfgResult.domainId) || "").trim();
         var briefConfig = briefCfgResult && briefCfgResult.config ? briefCfgResult.config : null;
-        var structuredDomainId = getFirstStructuredDomainId(selectedDomains);
 
         var effectiveConfig = briefConfig;
         var effectiveDomainId = domainId;
-        if (!structuredDomainId || !domainId || !briefConfig) {
+        if (!domainId || !briefConfig) {
           effectiveConfig = getGeneralFallbackBriefConfig();
           effectiveDomainId = "general";
         }
@@ -13750,7 +13761,10 @@
         }
         appendWorkflowDesignLog("assistant", "Switched to Learning Design. Click Design workflow again.");
       } else {
-        appendWorkflowDesignLog("assistant", "Okay, keeping current domain. Click Design workflow to continue.");
+        appendWorkflowDesignLog(
+          "assistant",
+          "Okay. Choose Learning Design or Research in the Domain control, then click Design workflow again."
+        );
       }
       return;
     }

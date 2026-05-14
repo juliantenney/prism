@@ -27,12 +27,20 @@ Per [`sprint-13-index.md`](sprint-13-index.md) and [`sprint-13-first-pass-closur
 
 | Class | What shipped |
 |-------|----------------|
-| **Documentation (delivered)** | **S13-07** — v1 reference: General, **`alwaysOnDomains`**, **`normalizeSelectedDomains`**, first structured domain for **`getWorkflowBriefConfig`**, Factory domain list context, manifest vs embedded fallback — [`sprint-13-general-alwayson-first-structured-domain-behaviour.md`](sprint-13-general-alwayson-first-structured-domain-behaviour.md). |
-| **Narrow implementation (delivered)** | **S13-01** — strict-parity-preserving **`#wfDesignDomainSelect`** tidy (**`app.js`** only) with parity matrix + runtime baselines. |
+| **Documentation (delivered)** | **S13-07** — v1 reference: General, **`alwaysOnDomains`**, **`normalizeSelectedDomains`**, first structured domain for **`getWorkflowBriefConfig`**, Factory domain list context, manifest vs embedded fallback — [`sprint-13-general-alwayson-first-structured-domain-behaviour.md`](sprint-13-general-alwayson-first-structured-domain-behaviour.md). **Post–first-pass (2026-05-14):** same note updated for **General baseline-only** Workflow Factory behaviour (runnable domains **Learning Design** / **Research**; S13-01 matrices **historical** for option list). |
+| **Narrow implementation (delivered)** | **S13-01** — strict-parity-preserving **`#wfDesignDomainSelect`** tidy (**`app.js`** only) with parity matrix + runtime baselines. **Historical:** matrices describe the **2026-05-13** Factory option list (**superseded** for ordered `<option>` rows after baseline-only General). |
 | **Narrow implementation (delivered, post-index posture)** | **S13-03 (DOM-only)** — Factory hint copy in **`renderWorkflowFactoryDomainUiHints`** only — [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md). Broader S13-03 remains **gated** — [`sprint-13-s13-03-decision-gate-note.md`](sprint-13-s13-03-decision-gate-note.md). |
 | **Read-only consolidation (not “portability implementation”)** | Audits and decision notes: default-domain framing (**S13-02** options, no policy pick), prompt/config tracing, persistence/export tracing, pragmatic portability target, workflow semantics / orchestration audit, portability boundary summary, strategy synthesis, starting-artefact audit + parity matrix + runtime baseline + **deferral closure** — see **`sprint-13-index.md` §3**. |
 
 **Explicit non-claim:** Sprint 13 **did not** establish **drop-in** domain-pack portability — [`sprint-13-portability-boundary-summary.md`](sprint-13-portability-boundary-summary.md), [`sprint-13-first-pass-closure.md`](sprint-13-first-pass-closure.md) §Portability claim.
+
+---
+
+## 2.1 Sprint 14 — practical runnable-pack work (not portability redesign)
+
+**Sprint 14 — Research Domain Runnable Maturity** (`docs/consolidation/sprint-14-index.md`) is **product-focused**: improve **Research** as a **runnable** Workflow Factory domain (pack quality, prompts, elicitation fit, runner usability). It is **intentionally not** another **architecture / portability** sprint and **does not** supersede or reopen items in §**3** unless separately chartered.
+
+**Pointer:** [`sprint-14-charter.md`](sprint-14-charter.md) (goals, non-goals, exclusions). This backlog entry **does not** add Sprint 14 to the “unfinished portability themes” list in §**3** by default—Sprint 14 is **parallel** descriptive context for readers navigating from Sprint 12–13 to current work.
 
 ---
 
@@ -165,3 +173,5 @@ For each group: **evidence** = where the concern is already documented; **risk**
 ## Review log
 
 - **2026-05-13** — Consolidated PRISM architecture and portability backlog note drafted (`prism-architecture-portability-backlog.md`).
+- **2026-05-14** — **General baseline-only (Workflow Factory):** cross-links — **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1**; S13-01 **`#wfDesignDomainSelect`** matrices **superseded** for option list (historical **2026-05-13**). **Sprint 12** closure unchanged. **No** full portability claim.
+- **2026-05-14** — **Sprint 14 pointer:** §**2.1** — Research runnable maturity as **practical** work, not portability redesign (`sprint-14-index.md`).

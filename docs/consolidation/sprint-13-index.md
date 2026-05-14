@@ -15,6 +15,8 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 
 **Pragmatic portability aim** (minimal registration + pack-owned specifics) and **persistence / export / import** tracing for round-trip expectations: [`sprint-13-pragmatic-domain-pack-portability-target.md`](sprint-13-pragmatic-domain-pack-portability-target.md) · [`sprint-13-persistence-export-portability-audit.md`](sprint-13-persistence-export-portability-audit.md).
 
+**Product documentation alignment (2026-05-14):** **General baseline-only** Workflow Factory domain selection — **General** always-on in normalised context; **runnable** Factory choices **Learning Design** / **Research**; **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1** is authoritative. S13-01 **`#wfDesignDomainSelect`** parity matrices remain **historical** for the **2026-05-13** option list (**superseded** for ordered `<option>` rows). **No** full portability claim; **Sprint 12** closure unchanged.
+
 **Delivered in first pass (per closure):** **S13-07** (v1 descriptive documentation) and **S13-01** (narrow, strict-parity **`#wfDesignDomainSelect`** tidy in **`app.js`** only).
 
 **Not delivered as implementation:** **S13-02** (default domain semantics / policy) — **documentation and gates only** in-repo.
@@ -29,8 +31,8 @@ Sprint 13 material under `docs/consolidation/sprint-13-*.md` supports **domain-p
 
 | ID | Description | Consolidation artefact |
 |----|-------------|-------------------------|
-| **S13-07** | v1 reference: **General**, **`alwaysOnDomains`**, **`normalizeSelectedDomains`**, first structured domain for **`getWorkflowBriefConfig`**, Factory domain list context, manifest vs embedded fallback. | [`sprint-13-general-alwayson-first-structured-domain-behaviour.md`](sprint-13-general-alwayson-first-structured-domain-behaviour.md) |
-| **S13-01** | Narrow implementation: parity-preserving de-duplication for Factory **`#wfDesignDomainSelect`** (helpers + **`renderWorkflowDomainSelector`** / **`initWorkflowDomainSelector`** only — see closure). | Recorded in [`sprint-13-first-pass-closure.md`](sprint-13-first-pass-closure.md); evidence in §4–§6 below |
+| **S13-07** | v1 reference: **General**, **`alwaysOnDomains`**, **`normalizeSelectedDomains`**, first structured domain for **`getWorkflowBriefConfig`**, Factory domain list context, manifest vs embedded fallback — **updated 2026-05-14** for **General baseline-only** Factory behaviour (runnable domains **Learning Design** / **Research**; general-only brief path). | [`sprint-13-general-alwayson-first-structured-domain-behaviour.md`](sprint-13-general-alwayson-first-structured-domain-behaviour.md) |
+| **S13-01** | Narrow implementation: parity-preserving de-duplication for Factory **`#wfDesignDomainSelect`** (helpers + **`renderWorkflowDomainSelector`** / **`initWorkflowDomainSelector`** only — see closure). **Historical:** S13-01 parity matrices / runtime baselines describe the **2026-05-13** option list (**superseded** for ordered options after baseline-only Factory). | Recorded in [`sprint-13-first-pass-closure.md`](sprint-13-first-pass-closure.md); evidence in §4–§6 below |
 | **S13-03 (narrow)** | DOM-only: **`renderWorkflowFactoryDomainUiHints`** hint fallbacks + removal of LD-only DOM overwrite (`app.js` only). | [`sprint-13-s13-03-dom-only-hint-neutralisation-closure.md`](sprint-13-s13-03-dom-only-hint-neutralisation-closure.md) |
 
 ---
@@ -186,3 +188,4 @@ Sprint 13 consolidation describes **incremental** documentation and a **single-c
 - **2026-05-13** — Starting artefact / LD starting-point code-derived parity matrix linked (§3, file list).
 - **2026-05-13** — Starting artefact / LD starting-point runtime parity baseline linked (§3, file list).
 - **2026-05-13** — Starting artefact / LD starting-point portability deferral / closure note linked (§3, file list).
+- **2026-05-14** — **General baseline-only (Workflow Factory):** **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** updated (current v1 + historical note). S13-01 parity / runtime notes for **`#wfDesignDomainSelect`** flagged **superseded** for option list (historical **2026-05-13** snapshot). **`current-state.md`**, **`prism-architecture-portability-backlog.md`**, **`sprint-13-portability-boundary-summary.md`**, **`sprint-13-first-pass-closure.md`**, **`sprint-13-s13-01-*.md`**, **`sprint-13-s13-02-*.md`** — doc-only alignment. **Sprint 12** closure **unchanged**. **No** full portability claim.

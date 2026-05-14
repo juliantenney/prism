@@ -9,6 +9,8 @@
 
 **Constraints honoured:** **No** production code, domain-pack, prompt, persistence, import/export, orchestration, or Sprint 12 edits. **No** portability completion claim.
 
+**Superseded (2026-05-14):** Any scenario text that assumes **General** is the selected **Factory domain** combobox value or that **general-only** **`getWorkflowBriefConfig`** yields pack **`input_strategy`** reflects the **2026-05-13** capture. See **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only** and the **Superseded** note in **`sprint-13-starting-artefact-starting-point-code-derived-parity-matrix.md`**.
+
 ---
 
 ## Capture environment

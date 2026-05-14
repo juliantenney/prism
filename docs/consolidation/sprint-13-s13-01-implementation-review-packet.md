@@ -4,6 +4,8 @@
 
 **No code changes** are part of this packet.
 
+**Superseded (2026-05-14) for §4 parity definition:** **`selectedExtra`** / ordered-option rules in this packet describe the **2026-05-13** Factory UI (explicit **General** `<option>`). **Current** rules: placeholder + runnable domains only — **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. Treat §§4–5 below as **historical** unless re-baselined.
+
 ---
 
 ## Packet inputs (inventory)

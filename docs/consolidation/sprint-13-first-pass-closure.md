@@ -87,7 +87,18 @@ Aligned with the candidate charter / prep guardrails; **not** implied as approve
 
 ---
 
+## Post–first-pass documentation alignment (2026-05-14) — General baseline-only Factory
+
+**Documentation only** (no re-opening of Sprint 13 first-pass **code** closure): **General baseline-only** Workflow Factory behaviour is recorded in **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. **Runnable** Factory domains for v1: **Learning Design** and **Research**; **General** remains **always-on** baseline in normalised lists; **general-only** Factory generation is **blocked** until a runnable domain is chosen.
+
+**Superseded as exact UI truth:** verification **Row A** (§Verification summary) and the S13-01 parity / runtime notes for **`#wfDesignDomainSelect`** ordered options and initial selection, which described the **2026-05-13** snapshot with an explicit **General** `<option>`. Those artefacts remain **historical** baselines.
+
+**Sprint 12** first-pass structural observability (**A–E**) remains **closed** and was **not** modified. **No** full portability claim is added by this alignment note.
+
+---
+
 ## Review log
 
 - **2026-05-13** — First-pass closure note added: S13-07 + narrow S13-01 recorded; verification summarised; deferred list and boundaries stated.
 - **2026-05-13** — Release-readiness: full **`docs/consolidation/sprint-13-*.md`** inventory added; test command recorded as **`node --test tests/*.test.js`** (16 passed).
+- **2026-05-14** — **General baseline-only (Workflow Factory):** documentation alignment note added (§**Post–first-pass documentation alignment**); **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** is authoritative for **current** Factory domain UI; S13-01 matrices **superseded** for option list. **Sprint 12** unchanged.

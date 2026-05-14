@@ -16,6 +16,24 @@ It is **descriptive only**. It does **not** change product policy, prescribe fix
 
 ---
 
+## Current v1 — General baseline-only (Workflow Factory)
+
+**Documentation alignment:** 2026-05-14. This section describes **current** product behaviour after **General baseline-only** Workflow Factory domain selection. It **does not** claim full drop-in domain-pack portability.
+
+1. **General** remains **always-on baseline** context: `alwaysOnDomains` and `normalizeSelectedDomains` in `workflowGenerationContext.js` still merge **`general`** into effective selected-domain lists for loaders, `getWorkflowBriefConfig` **when a structured domain is present**, and related paths.
+2. **Runnable v1 domains** for Workflow Factory are **Learning Design** and **Research** only (explicit user choice).
+3. **General** is **not** user-selectable as the active / runnable Factory domain on **`#wfDesignDomainSelect`**: the dropdown lists a **placeholder** (“Choose a domain…”) plus the runnable domains; **`alwaysOn`** manifest rows (including **General**) are still skipped when building options from **`getDomainOptions`**. Internal Factory state remains **`["general"]`** or **`["general", exactlyOneOtherId]`** via **`getSelectedWorkflowDomains`** / **`handleWorkflowDomainSelectionChange`**.
+4. **General-only** Workflow Factory **generation** is **prevented** (user-facing message) until **Learning Design** or **Research** is selected. **Compatibility:** workflows persisted with **`selectedDomains: ["general"]`** alone are not assumed to crash; normalisation and non–Factory paths still treat baseline General as documented elsewhere.
+5. **`getWorkflowBriefConfig`:** when the normalised selection is **general-only** (no structured domain id), the implementation returns **`{ domainId: "general", config: null }`** — **no** runnable workflow-brief pack is loaded from the General domain for that path; structured packs remain on **learning-design** / **research** step-patterns sources.
+
+---
+
+## Historical note — Sprint 13 first-pass UI snapshot (2026-05-13)
+
+The parity matrices, runtime baselines (`docs/consolidation/sprint-13-s13-01-*.md`), and **`sprint-13-first-pass-closure.md`** verification **Row A** described **`#wfDesignDomainSelect`** when **General** was an **explicit first `<option>`**. That presentation is **superseded by baseline-only Factory behaviour** (see **Current v1 — General baseline-only** above). Those Sprint 13 artefacts remain valid as **historical** evidence and for the **narrow S13-01** refactor they recorded; they are **not** an exact description of the current Factory option list or initial combobox value.
+
+---
+
 ## Two sources of domain registry (v1)
 
 ### On-disk manifest
@@ -71,7 +89,7 @@ This function is used when building workflow generation context and when resolvi
 
 - **`general`** appears in **`alwaysOnDomains`** in `domains/domain-manifest.json`, so it is **always** merged into normalized selection by **`normalizeSelectedDomains`** when that domain exists in the manifest.
 - In **`getWorkflowBriefConfig`** (see below), domains whose id compares equal to **`"general"`** (case-insensitive) are **not** treated as the “structured” domain for brief-config loading; the **first** other domain in the normalized list fills that role.
-- In **`app.js`**, **`getSelectedWorkflowDomains`** **currently** ensures **`general`** is present in the array returned for Workflow Factory state and **at most one** additional domain id (see Factory state below).
+- In **`app.js`**, **`getSelectedWorkflowDomains`** **currently** ensures **`general`** is present in the array returned for Workflow Factory state and **at most one** additional domain id (see Factory state below). The Factory **`#wfDesignDomainSelect`** does **not** expose **General** as a user-selectable runnable row (**Current v1 — General baseline-only** above).
 
 **As implemented**, **`general`** is both a **normal manifest domain** and a **special case** in multiple code paths (not only “listed in alwaysOnDomains”). This note records that fact only; it does **not** speculate on later changes.
 
@@ -87,7 +105,7 @@ This function is used when building workflow generation context and when resolvi
 
 1. Calls **`loadManifest()`** then **`normalizeSelectedDomains(opts.selectedDomains, manifest)`**.
 2. Finds the **first** domain id in that normalized array for which **`String(id).toLowerCase() !== "general"`**. That id is treated as the **structured** domain id for this call.
-3. If no such id exists, returns **`{ domainId: "", config: null }`**.
+3. If no such id exists (**general-only** normalised selection), returns **`{ domainId: "general", config: null }`** — General is baseline-only; there is **no** runnable brief pack on this path.
 4. Otherwise resolves that domain’s **`files`** list from the manifest, picks the first path whose name matches the **`/step-patterns/i`** test, reads that file via **`readTextFile`**, and extracts **`workflowBriefConfig`** via **`extractWorkflowBriefConfigFromText`**. On read/parse failure, **`config`** may be **`null`** while **`domainId`** is still the structured id.
 
 **Currently**, there is **no** merge of brief configuration from multiple structured domains; only the **first** non-`general` domain in the normalized list drives this path.
@@ -107,23 +125,24 @@ This function is used when building workflow generation context and when resolvi
 
 So the Factory-facing selection state **currently** collapses to **`["general"]`** or **`["general", exactlyOneOtherId]`**, even though the manifest may list more than two domains and **`normalizeSelectedDomains`** can yield longer lists in other code paths.
 
-**Related:** **`handleWorkflowDomainSelectionChange`** in `app.js` sets `state.workflowSelectedDomains` to **`["general"]`** or **`["general", selectedValue]`** when the Factory domain `<select>` changes, and calls **`persistSelectedDomains`** on `WorkflowGenerationContext` when available.
+**Related:** **`handleWorkflowDomainSelectionChange`** in `app.js` sets `state.workflowSelectedDomains` to **`["general"]`** when the placeholder is selected, or **`["general", selectedValue]`** when a runnable domain is chosen, and calls **`persistSelectedDomains`** on `WorkflowGenerationContext` when available.
 
 ---
 
-## `renderWorkflowDomainSelector` — manual General row and `alwaysOn` skip
+## `renderWorkflowDomainSelector` — placeholder, runnable rows only, `alwaysOn` skip
 
 **File:** `app.js`  
 **Function:** `renderWorkflowDomainSelector(options)`
 
-**As implemented:**
+**As implemented (baseline-only Factory):**
 
 - Clears **`#wfDesignDomainSelect`** (`els.wfDesignDomainSelect`).
-- If **`opts.domains`** is empty: appends a single option with **`value`** **`"general"`** and label text **`"General"`**, and sets the select value to **`"general"`**.
-- If there are domains: appends a **`general`** option **manually** (same value/label pattern), then iterates **`opts.domains`**. For each entry with an **`id`**, if **`domain.alwaysOn`** is true, the entry is **skipped** in the loop. Non–always-on entries become `<option>` elements using **`domain.id`** and **`domain.label || domain.id`**.
-- Finally, the selected value is set from **`getSelectedWorkflowDomains()`** (preferring the non-`general` extra if still a valid option; otherwise **`"general"`**).
+- Appends a **placeholder** option with empty **`value`** and label **Choose a domain…** (not a persisted domain id).
+- If **`opts.domains`** is empty: sets the select value to **`""`** (placeholder), attaches **`onchange`**, and returns.
+- If there are domains: iterates **`opts.domains`**. For each entry with an **`id`**, if **`domain.alwaysOn`** is true, the entry is **skipped**. Non–always-on entries become `<option>` elements using **`domain.id`** and **`domain.label || domain.id`** (v1: **Learning Design**, **Research**).
+- **`selectedExtra`** is the first non-**`general`** id from **`getSelectedWorkflowDomains()`**, or empty when state is **`["general"]`** only; if **`selectedExtra`** does not match a real `<option>`, it falls back to **`""`** (placeholder). **`onchange`** is **`handleWorkflowDomainSelectionChange`**.
 
-So **`general`** appears as an explicit row built in code, while manifest rows with **`alwaysOn: true`** (which **currently** includes **`general`** from **`getDomainOptions`**) are **not** duplicated from the iterated list.
+**General** is therefore **not** duplicated as its own Factory `<option>`; it remains in normalised domain lists via **`alwaysOnDomains`** / **`normalizeSelectedDomains`** for loaders and prompts when a runnable domain is selected.
 
 ---
 
@@ -153,7 +172,7 @@ This is a **second** source of domain rows for the Factory `<select>` alongside 
 
 The following are **not** specified here and are **not** implied to be in scope for Sprint 13 documentation-only work beyond this file:
 
-- **S13-01** implementation (Factory domain row de-duplication or code changes).
+- **S13-01** first-pass narrow tidy (historical); subsequent **General baseline-only** Factory behaviour is documented in **Current v1** above — see also **Historical note** for parity-matrix supersession.
 - **S13-02** default domain product rules.
 - **S13-03** display-only hint neutralisation or Learning Design–specific **`app.js`** hint branches.
 - Starting artefact allowlists, title-based domain injection, `getGeneralFallbackBriefConfig`, multi-domain brief merge, semantic prompt changes, persistence/import/export behaviour, broad **`app.js`** refactors, or cache/fallback observability.
@@ -166,3 +185,4 @@ Additional **Learning Design–specific** behaviour remains in **`app.js`** else
 ## Review log
 
 - **2026-05-13** — Initial v1 descriptive consolidation note added (documentation only; no code or domain-pack changes).
+- **2026-05-14** — **General baseline-only (Workflow Factory):** added **Current v1** and **Historical note** sections; updated **`getWorkflowBriefConfig`** general-only return shape, **`renderWorkflowDomainSelector`**, and **`handleWorkflowDomainSelectionChange`** description. Sprint **12** closure unchanged. **No** full portability claim added.

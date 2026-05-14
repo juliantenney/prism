@@ -4,6 +4,8 @@
 
 This document records **observed runtime behaviour** of the Workflow Factory **domain** dropdown (`#wfDesignDomainSelect`, accessibility name **“Workflow design domain”**) **as captured in one session**, for comparison against any later S13-01 strict-parity work.
 
+**Superseded (2026-05-14):** This capture describes the **2026-05-13** UI (**General** as explicit first option). **Current** Factory behaviour is **General baseline-only** (placeholder + **Learning Design** / **Research**); see **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. Rows below remain **historical** evidence.
+
 **This is baseline evidence only.** It is **not** implementation approval, **not** a charter sign-off, and **does not** change product policy.
 
 **Out of scope for this capture:** hints beyond what the browser exposed incidentally, prompts, persistence/import/export, `getWorkflowBriefConfig` semantics, S13-02/S13-03, Sprint 12 A–E, and any code or domain-pack edits. **No production files were modified** to produce this report; observation used a **local** HTTP URL in an automated browser session.

@@ -9,6 +9,8 @@
 
 **Code references (authoritative line numbers):** `app.js` **`renderWorkflowFactoryStartingArtefactOptions`** ~2810–2986; **`updateWorkflowFactoryInputsCopyFromStartingPoint`** ~2789–2808; **`renderWorkflowFactoryDomainUiConfig`** ~2746–2786; **`workflowGenerationContext.js`** **`getDomainArtefactOptions`** ~714–749.
 
+**Superseded (2026-05-14) — row 1 “General selected” / brief path (a):** This matrix was derived against a snapshot where **General** could be the **only** “visible” structured domain and **`getWorkflowBriefConfig`** could still supply **`input_strategy`** from a General pack. **Current:** **General baseline-only** Factory (**Learning Design** / **Research** runnable); **general-only** **`getWorkflowBriefConfig`** returns **`config: null`** — row **1 (a)** is **not** a steady-state for new installs at that coupling. Row **1** remains **historical** code-path evidence; re-derive if baselines change.
+
 ---
 
 ## 1. Matrix table

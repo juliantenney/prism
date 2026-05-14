@@ -10,6 +10,8 @@
 
 **Scope boundary:** This note **does not** add new Sprint 13 work items beyond framing S13-02 against the completed audit.
 
+**Superseded (2026-05-14) — Factory `<select>` presentation:** Bullets in §**1. Current v1 behaviour summary** that describe **General** as the visible Factory combobox value / **`selectedExtra`** → **`"general"`** reflect the **2026-05-13** UI. **Current** product: **placeholder** + runnable **Learning Design** / **Research**; internal state **`["general"]`** until a runnable id is chosen. **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. **Sprint 12** unchanged.
+
 ---
 
 ## 1. Current v1 behaviour summary

@@ -6,6 +6,8 @@ This document captures the **current behavioural baseline** for **`#wfDesignDoma
 
 **Functions in scope for this matrix:** `initWorkflowDomainSelector`, `renderWorkflowDomainSelector`, `getSelectedWorkflowDomains`, `handleWorkflowDomainSelectionChange` (`app.js`); `getDomainOptions` (`workflowGenerationContext.js`). **`fallbackDomains`** is the literal array inside `initWorkflowDomainSelector` (`app.js`).
 
+**Superseded (2026-05-14) — read before using rows as “current” truth:** Matrix rows **A–D** below describe **`#wfDesignDomainSelect`** **before** **General baseline-only** Workflow Factory behaviour (explicit **`(general, General)`** row; initial value **`general`**). **Current** product: **placeholder** + **Learning Design** / **Research** only; **General** stays **always-on** in normalised domain lists, not as a user-selectable runnable Factory row. Authoritative wording: **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. **Sprint 12** closure unchanged. **No** full portability claim.
+
 **Assumptions (v1 repository default):**
 
 - `domains/domain-manifest.json` lists **`general`**, **`learning-design`**, **`research`** with labels **General**, **Learning Design**, **Research**, and **`alwaysOnDomains`** includes **`general`**.

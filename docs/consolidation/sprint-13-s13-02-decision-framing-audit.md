@@ -9,6 +9,8 @@
 
 **Out of scope for this note:** S13-03 implementation; Sprint 12 reopening; **full drop-in portability** claims.
 
+**Superseded (2026-05-14) — Factory `<select>` rows:** Inventory rows that tie default **`["general"]`** state to a visible **General** `<option>` / **`selectedExtra`** coercion to **`"general"`** describe the **2026-05-13** implementation snapshot. **Current** Factory UI: **General baseline-only** (placeholder + **Learning Design** / **Research**). See **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. Rows below remain **useful** for S13-02 framing but are **not** exact line-level UI truth for **`#wfDesignDomainSelect`**.
+
 ---
 
 ## 1. Inventory of default-domain behaviours

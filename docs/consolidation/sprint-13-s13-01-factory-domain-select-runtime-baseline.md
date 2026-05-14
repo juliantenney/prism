@@ -4,6 +4,8 @@
 
 This consolidation note records **observed runtime behaviour** of the Workflow Factory **domain** dropdown **`#wfDesignDomainSelect`** (accessibility name **“Workflow design domain”**) for **S13-01** parity baselining.
 
+**Superseded (2026-05-14):** This baseline describes the **2026-05-13** UI (**General** explicit option). **Current** behaviour: **General baseline-only** Factory domain control — see **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1 — General baseline-only**. Content below is **historical**.
+
 **In scope:** Scenario **A** only — normal page load at **`http://localhost/prism/index.html`** with **Create Workflow** selected, and observed option list / selection after two user-driven changes on that control.
 
 **Out of scope:** S13-02 and S13-03; Sprint 12 first-pass structural observability (A–E); prompts; persistence/import/export; `getWorkflowBriefConfig` semantics beyond what is needed to name init/change handlers; any code or domain-pack edits. **No fixes or implementation steps** are recorded here.

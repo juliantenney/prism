@@ -27,7 +27,7 @@ The audit maps **`renderWorkflowFactoryStartingArtefactOptions`** in **`app.js`*
 
 ## 3. Why this is not parity-safe like S13-01
 
-**S13-01** bounded **`#wfDesignDomainSelect`** with a **single** control surface, **two** clear sources (**`getDomainOptions`** vs **`fallbackDomains`**) and a **documented** parity matrix + runtime baseline for **ordered options, labels, selection, and fallbacks**.
+**S13-01** bounded **`#wfDesignDomainSelect`** with a **single** control surface, **two** clear sources (**`getDomainOptions`** vs **`fallbackDomains`**) and a **documented** parity matrix + runtime baseline for **ordered options, labels, selection, and fallbacks**. **Superseded (2026-05-14) for “current” ordered options:** parity artefacts describe the **2026-05-13** UI; **General baseline-only** Factory — **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** §**Current v1**.
 
 Starting-point behaviour **instead**:
 

@@ -23,8 +23,8 @@ It **does not** mean that a third party can drop in an arbitrary pack with **no*
 
 Per **`sprint-13-first-pass-closure.md`**:
 
-- **S13-07 (documentation):** v1 reference for General, `alwaysOnDomains`, `normalizeSelectedDomains`, first structured domain behaviour for `getWorkflowBriefConfig`, Factory domain selector context, and manifest vs embedded fallback — **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`**.
-- **S13-01 (narrow code):** Parity-preserving centralisation for Workflow Factory **`#wfDesignDomainSelect`** only (`app.js` — fallback domain rows + General option helper; selection semantics and handlers unchanged).
+- **S13-07 (documentation):** v1 reference for General, `alwaysOnDomains`, `normalizeSelectedDomains`, first structured domain behaviour for `getWorkflowBriefConfig`, Factory domain selector context, and manifest vs embedded fallback — **`sprint-13-general-alwayson-first-structured-domain-behaviour.md`** (**updated 2026-05-14** for **General baseline-only** Factory: runnable **Learning Design** / **Research**; general-only brief path).
+- **S13-01 (narrow code):** Parity-preserving centralisation for Workflow Factory **`#wfDesignDomainSelect`** only (`app.js` — fallback domain rows + Factory `<select>` wiring). **Historical:** first-pass parity notes assumed an explicit **General** `<option>` (**superseded** for ordered options — see S13-07 **Historical note**).
 
 **Read-only** audits and decision framing for other topics were added **without** counting them as delivered portability **implementation**.
 

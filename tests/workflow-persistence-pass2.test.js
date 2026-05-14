@@ -151,6 +151,8 @@ function loadPrismTestApi() {
   assert.equal(typeof api.setWorkflowsForTest, "function");
   assert.equal(typeof api.getWorkflowsForTest, "function");
   assert.equal(typeof api.setPromptsForTest, "function");
+  assert.equal(typeof api.syncWorkflowSelectedDomainsFromWorkflowRecord, "function");
+  assert.equal(typeof api.getWorkflowSelectedDomainsForTest, "function");
   return { api, sandbox };
 }
 
@@ -424,4 +426,67 @@ test("PE-normalise-external-plus-self-internal: keeps external, drops self inter
   assert.equal(cons.inputBindings.length, 1);
   assert.equal(cons.inputBindings[0].kind, "external");
   assert.equal(cons.inputBindings[0].artifactName, "uploaded_notes");
+});
+
+test("PE-selected-domains-sync: Research workflow record restores global domains for Save/gather", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  api.syncWorkflowSelectedDomainsFromWorkflowRecord({
+    id: "wf-r",
+    name: "Research wf",
+    selectedDomains: ["general", "research"]
+  });
+  assert.deepEqual(
+    canonicalizeJson(api.getWorkflowSelectedDomainsForTest()),
+    ["general", "research"]
+  );
+});
+
+test("PE-selected-domains-sync: general-only workflow leaves baseline General", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  api.syncWorkflowSelectedDomainsFromWorkflowRecord({
+    id: "wf-g",
+    name: "General wf",
+    selectedDomains: ["general"]
+  });
+  assert.deepEqual(canonicalizeJson(api.getWorkflowSelectedDomainsForTest()), ["general"]);
+});
+
+test("PE-selected-domains-sync: first non-general wins (matches normalize cap)", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  api.syncWorkflowSelectedDomainsFromWorkflowRecord({
+    id: "wf-x",
+    selectedDomains: ["research", "learning-design"]
+  });
+  assert.deepEqual(
+    canonicalizeJson(api.getWorkflowSelectedDomainsForTest()),
+    ["general", "research"]
+  );
+});
+
+test("PE-selected-domains-save-shape: after sync, gather-equivalent domains survive normalize", async () => {
+  const { api } = loadPrismTestApi();
+  await flushAsync();
+  await flushAsync();
+  api.syncWorkflowSelectedDomainsFromWorkflowRecord({
+    selectedDomains: ["general", "research"]
+  });
+  const warnings = [];
+  const wf = api.normalizeWorkflowForV1(
+    {
+      id: "wf-save",
+      name: "T",
+      selectedDomains: api.getWorkflowSelectedDomainsForTest(),
+      workflowInputs: [],
+      workflowOutputs: [],
+      steps: []
+    },
+    warnings
+  );
+  assert.deepEqual(canonicalizeJson(wf.selectedDomains), ["general", "research"]);
 });

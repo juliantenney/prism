@@ -2562,6 +2562,37 @@
     return selected;
   }
 
+  /**
+   * Align global Factory / gather domain state with a persisted workflow record.
+   * My Workflows → Save uses getSelectedWorkflowDomains(); without this, opening a Research
+   * workflow leaves state.workflowSelectedDomains at ["general"] and overwrites saved domains.
+   */
+  function syncWorkflowSelectedDomainsFromWorkflowRecord(wf) {
+    var raw = Array.isArray(wf && wf.selectedDomains) ? wf.selectedDomains : [];
+    var filtered = raw.filter(function (d) {
+      return typeof d === "string" && String(d).trim();
+    });
+    var extra = filtered.find(function (d) {
+      return String(d).trim().toLowerCase() !== "general";
+    });
+    var next = ["general"];
+    if (extra) next.push(String(extra).trim());
+    state.workflowSelectedDomains = next;
+    if (els && els.wfDesignDomainSelect) {
+      var extraId = next.length > 1 ? next[1] : "";
+      if (extraId && !els.wfDesignDomainSelect.querySelector('option[value="' + extraId + '"]')) {
+        extraId = "";
+      }
+      els.wfDesignDomainSelect.value = extraId || "";
+    }
+    if (
+      window.WorkflowGenerationContext &&
+      typeof window.WorkflowGenerationContext.persistSelectedDomains === "function"
+    ) {
+      window.WorkflowGenerationContext.persistSelectedDomains(next);
+    }
+  }
+
   /** v1 fallback rows for `#wfDesignDomainSelect` when `getDomainOptions` is unavailable or rejects — must stay aligned with `getDomainOptions` + manifest for strict parity (S13-01). */
   function getWorkflowFactoryDomainSelectFallbackDomains() {
     return [
@@ -10840,6 +10871,16 @@
     if (els.workflowAudience) els.workflowAudience.value = "";
     if (els.workflowGoal) els.workflowGoal.value = "";
     if (els.workflowConstraints) els.workflowConstraints.value = "";
+    state.workflowSelectedDomains = ["general"];
+    if (els.wfDesignDomainSelect) {
+      els.wfDesignDomainSelect.value = "";
+    }
+    if (
+      window.WorkflowGenerationContext &&
+      typeof window.WorkflowGenerationContext.persistSelectedDomains === "function"
+    ) {
+      window.WorkflowGenerationContext.persistSelectedDomains(["general"]);
+    }
     renderWorkflowDetailDomainUiHints(["general"]);
     renderWorkflowValidationWarnings([]);
     if (els.workflowSteps) {
@@ -10871,7 +10912,8 @@
 
   function populateWorkflowDetail(wf) {
     if (!els.workflowDetail) return;
-    var selectedDomains = Array.isArray(wf.selectedDomains) ? wf.selectedDomains : ["general"];
+    syncWorkflowSelectedDomainsFromWorkflowRecord(wf);
+    var selectedDomains = getSelectedWorkflowDomains();
     renderWorkflowDetailDomainUiHints(selectedDomains);
     refreshWorkflowStepPatternCatalogForDomains(selectedDomains).then(function (catalog) {
       if (workflowHasRunnerGuidanceInCatalog(wf, catalog)) {
@@ -19737,6 +19779,12 @@
     };
     prismTestApi.setPromptsForTest = function (prompts) {
       state.prompts = Array.isArray(prompts) ? prompts.slice() : [];
+    };
+    prismTestApi.syncWorkflowSelectedDomainsFromWorkflowRecord = syncWorkflowSelectedDomainsFromWorkflowRecord;
+    prismTestApi.getWorkflowSelectedDomainsForTest = function () {
+      return Array.isArray(state.workflowSelectedDomains)
+        ? state.workflowSelectedDomains.slice()
+        : ["general"];
     };
     window.__PRISM_TEST_API = prismTestApi;
   }

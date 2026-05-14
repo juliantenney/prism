@@ -3182,6 +3182,8 @@
       requiredFactors: Array.isArray(cfg.requiredFactors) ? cfg.requiredFactors : [],
       optionalFactors: Array.isArray(cfg.optionalFactors) ? cfg.optionalFactors : [],
       refinementFactors: Array.isArray(cfg.refinementFactors) ? cfg.refinementFactors : [],
+      extraFields: Array.isArray(cfg.extraFields) ? cfg.extraFields : [],
+      uiHints: cfg.uiHints && typeof cfg.uiHints === "object" ? cfg.uiHints : {},
       inferenceRules: Array.isArray(cfg.inferenceRules) ? cfg.inferenceRules : [],
       mappingRules: Array.isArray(cfg.mappingRules) ? cfg.mappingRules : [],
       intentClasses: cfg.intentClasses && typeof cfg.intentClasses === "object" ? cfg.intentClasses : {},
@@ -3987,6 +3989,26 @@
       return "";
     }
     return text;
+  }
+
+  function mergeWorkflowBriefExtraFieldExplicitIntoResolved(config, resolvedFactors, explicitValues) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var r =
+      resolvedFactors && typeof resolvedFactors === "object"
+        ? Object.assign({}, resolvedFactors)
+        : {};
+    var ex = explicitValues && typeof explicitValues === "object" ? explicitValues : {};
+    (cfg.extraFields || []).forEach(function (f) {
+      if (!f || !f.id) return;
+      var id = String(f.id || "").trim();
+      if (!id) return;
+      if (!Object.prototype.hasOwnProperty.call(ex, id)) return;
+      var v = ex[id];
+      if (v == null) return;
+      if (!Array.isArray(v) && String(v).trim() === "") return;
+      r[id] = v;
+    });
+    return r;
   }
 
   function applyWorkflowBriefMappings(config, resolvedFactors) {
@@ -5843,14 +5865,19 @@
               confirmedInferredAuto[p.id] = p.value;
             });
 
-            var mapped = applyWorkflowBriefMappings(config, firstPass.resolved);
+            var resolvedForMapping = mergeWorkflowBriefExtraFieldExplicitIntoResolved(
+              config,
+              firstPass.resolved,
+              explicitValues
+            );
+            var mapped = applyWorkflowBriefMappings(config, resolvedForMapping);
             var resolvedState = {
               initialBrief: base,
               askedFactors: [],
               inferredFactors: inferredValues,
               confirmedInferredFactors: confirmedInferredAuto,
               resolvedSources: firstPass.sources || {},
-              resolvedFactors: firstPass.resolved,
+              resolvedFactors: resolvedForMapping,
               mappedBindings: mapped,
               missing: []
             };
@@ -13873,7 +13900,12 @@
           if (Object.prototype.hasOwnProperty.call(resolvedElicited, p.id)) return;
           confirmedInferred[p.id] = p.value;
         });
-        var mappedInf = applyWorkflowBriefMappings(inf.config, currentResolved.resolved);
+        var resolvedInfForMapping = mergeWorkflowBriefExtraFieldExplicitIntoResolved(
+          inf.config,
+          currentResolved.resolved,
+          inf.explicitValues
+        );
+        var mappedInf = applyWorkflowBriefMappings(inf.config, resolvedInfForMapping);
         var finalInfResolved = {
           initialBrief: inf.base,
           askedFactors: Object.keys(resolvedElicited).map(function (id) {
@@ -13883,7 +13915,7 @@
           confirmedInferredFactors: confirmedInferred,
           pendingInferredConfirmation: {},
           resolvedSources: currentResolved.sources || {},
-          resolvedFactors: currentResolved.resolved,
+          resolvedFactors: resolvedInfForMapping,
           mappedBindings: mappedInf,
           missing: currentResolved.missing.map(function (m) { return m.id; }),
           warnings: mappedInf.warnings || []
@@ -14213,7 +14245,12 @@
             return;
           }
 
-          var mapped = applyWorkflowBriefMappings(elicit.config, current.resolved);
+          var resolvedElicitForMapping = mergeWorkflowBriefExtraFieldExplicitIntoResolved(
+            elicit.config,
+            current.resolved,
+            elicit.explicitValues
+          );
+          var mapped = applyWorkflowBriefMappings(elicit.config, resolvedElicitForMapping);
           var finalResolved = {
             initialBrief: elicit.base,
             askedFactors: Object.keys(elicit.elicitedValues).map(function (id) {
@@ -14222,7 +14259,7 @@
             inferredFactors: elicit.inferredValues,
             confirmedInferredFactors: {},
             resolvedSources: current.sources || {},
-            resolvedFactors: current.resolved,
+            resolvedFactors: resolvedElicitForMapping,
             mappedBindings: mapped,
             missing: current.missing.map(function (m) { return m.id; }),
             warnings: mapped.warnings || []

@@ -848,6 +848,9 @@
     });
   }
 
+  // Returns the domain pack's workflowBriefConfig JSON as stored (including
+  // extraFields / uiHints). Downstream UI must preserve those keys when
+  // normalising configs so Factory extras and constraint mapping stay aligned.
   function getWorkflowBriefConfig(options) {
     var opts = options && typeof options === "object" ? options : {};
     return loadManifest().then(function (manifest) {

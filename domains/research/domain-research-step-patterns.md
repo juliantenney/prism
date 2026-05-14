@@ -223,6 +223,18 @@ They provide a consistent way to structure workflows and ensure that research pr
     ],
     "mappingRules": [
       {
+        "factor": "objective_type",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.objective_type"
+        ]
+      },
+      {
+        "factor": "evidence_rigour",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.evidence_rigour"
+        ]
+      },
+      {
         "factor": "input_strategy",
         "mapsTo": [
           "workflow.workflowOutputSpec.constraints.input_strategy"

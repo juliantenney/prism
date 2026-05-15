@@ -189,6 +189,10 @@
     workflowBriefInferenceConfirmation: null,
     workflowBriefResolved: null,
     workflowBriefShowDefaults: false,
+    workflowBriefShowRejected: false,
+    workflowBriefShowInferredAll: false,
+    workflowBriefShowWorkflowMappings: false,
+    workflowBriefShowPlanningInfo: false,
     workflowSelectedDomains: ["general"],
     workflowDomainOptions: [],
     workflowStepPatternCatalog: [],
@@ -896,6 +900,1132 @@
     var parsed = parseWorkflowStepParamBlock(step.notes || "");
     if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
     return {};
+  }
+
+  var WORKFLOW_SETTINGS_SUMMARY_PARAM_IDS = [
+    "assessment_type",
+    "assessment_total_items",
+    "activity_type",
+    "total_items",
+    "number_of_items",
+    "page_profile",
+    "tone_style",
+    "depth_level",
+    "include_examples"
+  ];
+
+  var WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TARGETS = {
+    ld_page_profile_facilitator_mismatch: { canonicalStepId: "step_design_page" },
+    ld_assessment_generate_step_missing: { canonicalStepId: "step_generate_assessment_items" }
+  };
+
+  function getWorkflowBriefConfigFromResolvedState(resolvedState) {
+    if (
+      resolvedState &&
+      resolvedState.briefConfig &&
+      typeof resolvedState.briefConfig === "object"
+    ) {
+      return normalizeWorkflowBriefConfig(resolvedState.briefConfig);
+    }
+    if (
+      state.workflowBriefElicitation &&
+      state.workflowBriefElicitation.config &&
+      typeof state.workflowBriefElicitation.config === "object"
+    ) {
+      return normalizeWorkflowBriefConfig(state.workflowBriefElicitation.config);
+    }
+    return null;
+  }
+
+  function humanizeWorkflowSettingsParamKey(key) {
+    var id = String(key || "").trim();
+    var labels = {
+      assessment_type: "Assessment type",
+      assessment_total_items: "Items",
+      activity_type: "Activity type",
+      total_items: "Items",
+      number_of_items: "Items",
+      page_profile: "Page profile",
+      tone_style: "Tone",
+      depth_level: "Depth",
+      include_examples: "Examples"
+    };
+    return labels[id] || id.replace(/_/g, " ");
+  }
+
+  function formatWorkflowSettingsParamDisplayValue(key, value) {
+    var text = String(value == null ? "" : value).trim();
+    if (!text) return "";
+    if (String(key || "") === "include_examples") {
+      if (text === "true") return "yes";
+      if (text === "false") return "no";
+    }
+    return text.replace(/_/g, " ");
+  }
+
+  function getWorkflowStepPatternForStep(step, catalog) {
+    var s = step && typeof step === "object" ? step : {};
+    var pool = Array.isArray(catalog) ? catalog : [];
+    var canonicalId = String(s.canonical_step_id || "").trim();
+    var pattern = canonicalId ? getPatternByCanonicalStepId(canonicalId, pool) : null;
+    if (!pattern) {
+      var title = String(s.title || "").trim();
+      pattern = getPatternByCanonicalWorkflowTitle(title, pool);
+      if (!pattern && title) {
+        pattern = getPatternByCanonicalWorkflowTitle(pickCanonicalWorkflowStepTitle(title, pool), pool);
+      }
+    }
+    return pattern;
+  }
+
+  function stepHasBriefMappingTargets(canonicalStepId, briefConfig) {
+    var cid = normalizeCanonicalStepId(canonicalStepId);
+    if (!cid || !briefConfig) return false;
+    var prefix = "stepparams." + cid + ".";
+    var rules = Array.isArray(briefConfig.mappingRules) ? briefConfig.mappingRules : [];
+    for (var i = 0; i < rules.length; i++) {
+      var mapsTo = Array.isArray(rules[i] && rules[i].mapsTo) ? rules[i].mapsTo : [];
+      for (var j = 0; j < mapsTo.length; j++) {
+        var target = String(mapsTo[j] || "").toLowerCase();
+        if (target.indexOf(prefix) === 0) return true;
+      }
+    }
+    return false;
+  }
+
+  function isWorkflowStepConfigurableInSettings(step, catalog, briefConfig) {
+    var pattern = getWorkflowStepPatternForStep(step, catalog);
+    var pf = pattern && pattern.promptFactory ? pattern.promptFactory : null;
+    var cfg = normalizeWorkflowStepPromptConfig(pf);
+    if (cfg.configurationMode === "simple" && cfg.userOptions.length) return true;
+    var canonicalId =
+      String((step && step.canonical_step_id) || cfg.canonicalStepId || "").trim() ||
+      String((pattern && (pattern.canonicalStepId || pattern.canonical_step_id)) || "").trim();
+    return stepHasBriefMappingTargets(canonicalId, briefConfig);
+  }
+
+  function collectWorkflowStepSettingsSummaryValues(step, canonicalStepId, briefConfig, resolvedState) {
+    var values = {};
+    var cid = normalizeCanonicalStepId(canonicalStepId);
+    if (!cid) return values;
+
+    var params = readWorkflowStepParamsObject(step);
+    WORKFLOW_SETTINGS_SUMMARY_PARAM_IDS.forEach(function (key) {
+      if (params[key]) values[key] = params[key];
+    });
+
+    var wf = findWorkflowById(state.selectedWorkflowId || "");
+    var patch =
+      wf &&
+      wf.workflowBriefResolution &&
+      wf.workflowBriefResolution.mappedBindings &&
+      wf.workflowBriefResolution.mappedBindings.stepParamPatch &&
+      typeof wf.workflowBriefResolution.mappedBindings.stepParamPatch === "object"
+        ? wf.workflowBriefResolution.mappedBindings.stepParamPatch[cid]
+        : null;
+    if (patch && typeof patch === "object") {
+      Object.keys(patch).forEach(function (k) {
+        var v = String(patch[k] == null ? "" : patch[k]).trim();
+        if (v) values[k] = v;
+      });
+    }
+
+    if (resolvedState && resolvedState.mappedBindings && resolvedState.mappedBindings.stepParamPatch) {
+      var designPatch = resolvedState.mappedBindings.stepParamPatch[cid];
+      if (designPatch && typeof designPatch === "object") {
+        Object.keys(designPatch).forEach(function (k) {
+          var v = String(designPatch[k] == null ? "" : designPatch[k]).trim();
+          if (v) values[k] = v;
+        });
+      }
+    }
+
+    var cfg = briefConfig && typeof briefConfig === "object" ? briefConfig : null;
+    var resolved =
+      resolvedState && resolvedState.resolvedFactors && typeof resolvedState.resolvedFactors === "object"
+        ? resolvedState.resolvedFactors
+        : {};
+    if (cfg) {
+      (Array.isArray(cfg.mappingRules) ? cfg.mappingRules : []).forEach(function (rule) {
+        if (!rule || !rule.factor) return;
+        var factorId = String(rule.factor || "").trim();
+        if (!Object.prototype.hasOwnProperty.call(resolved, factorId)) return;
+        var factorValue = resolved[factorId];
+        if (factorValue == null || String(factorValue).trim() === "") return;
+        (Array.isArray(rule.mapsTo) ? rule.mapsTo : []).forEach(function (target) {
+          var bits = String(target || "").split(".");
+          if (bits.length < 3) return;
+          if (normalizeCanonicalStepId(bits[1]) !== cid) return;
+          if (String(bits[0] || "").toLowerCase() !== "stepparams") return;
+          values[bits[2]] = factorValue;
+        });
+      });
+    }
+
+    return values;
+  }
+
+  function buildWorkflowStepSettingsSummaryText(step, catalog, resolvedState, briefConfig) {
+    var pattern = getWorkflowStepPatternForStep(step, catalog);
+    var pfCfg = normalizeWorkflowStepPromptConfig(
+      pattern && pattern.promptFactory ? pattern.promptFactory : null
+    );
+    var canonicalId =
+      String((step && step.canonical_step_id) || pfCfg.canonicalStepId || "").trim() ||
+      String((pattern && (pattern.canonicalStepId || pattern.canonical_step_id)) || "").trim();
+    var values = collectWorkflowStepSettingsSummaryValues(
+      step,
+      canonicalId,
+      briefConfig,
+      resolvedState
+    );
+    var parts = [];
+    WORKFLOW_SETTINGS_SUMMARY_PARAM_IDS.forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(values, key)) return;
+      var display = formatWorkflowSettingsParamDisplayValue(key, values[key]);
+      if (!display) return;
+      parts.push(humanizeWorkflowSettingsParamKey(key) + ": " + display);
+    });
+    if (!parts.length) return "";
+    return parts.slice(0, 4).join(" · ");
+  }
+
+  function resolvePlanningAdequacySettingsNavigationTarget(row) {
+    if (!row || typeof row !== "object") return null;
+    var disclosureId = String(row.disclosureId || row.id || "").trim();
+    if (
+      disclosureId &&
+      WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TARGETS[disclosureId] &&
+      WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TARGETS[disclosureId].canonicalStepId
+    ) {
+      return {
+        canonicalStepId: WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TARGETS[disclosureId].canonicalStepId
+      };
+    }
+    var action = String(row.action || "").toLowerCase();
+    if (action.indexOf("page profile") !== -1 || action.indexOf("design page") !== -1) {
+      return { canonicalStepId: "step_design_page" };
+    }
+    if (action.indexOf("assessment") !== -1 && action.indexOf("generate") !== -1) {
+      return { canonicalStepId: "step_generate_assessment_items" };
+    }
+    return null;
+  }
+
+  function clearWorkflowStepSettingsDiscoverability(li) {
+    if (!li) return;
+    var badge = li.querySelector(".workflow-step-settings-badge");
+    if (badge) badge.remove();
+    var cue = li.querySelector(".workflow-step-settings-cue");
+    if (cue) cue.remove();
+    li.classList.remove("workflow-step-settings-focus");
+  }
+
+  function decorateWorkflowStepSettingsDiscoverability(li, step, options) {
+    if (!li) return;
+    var opts = options && typeof options === "object" ? options : {};
+    clearWorkflowStepSettingsDiscoverability(li);
+
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var resolvedState =
+      state.workflowBriefResolved && typeof state.workflowBriefResolved === "object"
+        ? state.workflowBriefResolved
+        : null;
+    var briefConfig = getWorkflowBriefConfigFromResolvedState(resolvedState);
+    var configurable = isWorkflowStepConfigurableInSettings(step, catalog, briefConfig);
+    var summary = buildWorkflowStepSettingsSummaryText(step, catalog, resolvedState, briefConfig);
+    if (!configurable && !summary) return;
+
+    var titleEl = li.querySelector(".workflow-step-header-title");
+    if (configurable && titleEl) {
+      var badge = document.createElement("span");
+      badge.className = "workflow-step-settings-badge badge badge-muted";
+      badge.textContent = opts.context === "design" ? "Tunable" : "Settings";
+      badge.title = "Step parameters can be tuned in Settings";
+      titleEl.appendChild(document.createTextNode(" "));
+      titleEl.appendChild(badge);
+    }
+
+    var cue = document.createElement("div");
+    cue.className = "workflow-step-settings-cue muted";
+    var cueParts = [];
+    if (configurable) {
+      cueParts.push(
+        opts.context === "design"
+          ? "Editable in Settings after you save this workflow."
+          : "Editable in Settings — open Settings to tune step parameters."
+      );
+    }
+    if (summary) cueParts.push(summary);
+    cue.textContent = cueParts.join(" ");
+    var header = li.querySelector(".workflow-step-header");
+    if (header && header.nextSibling) {
+      li.insertBefore(cue, header.nextSibling);
+    } else if (header) {
+      li.appendChild(cue);
+    } else {
+      li.insertBefore(cue, li.firstChild);
+    }
+    li.setAttribute("data-settings-configurable", configurable ? "1" : "0");
+  }
+
+  function refreshWorkflowStepsSettingsDiscoverability(containerEl, steps, options) {
+    if (!containerEl) return;
+    var list = Array.isArray(steps) ? steps : [];
+    var stepById = {};
+    list.forEach(function (step) {
+      if (step && step.id) stepById[String(step.id)] = step;
+    });
+    Array.prototype.forEach.call(containerEl.children, function (child) {
+      if (!child.classList || !child.classList.contains("workflow-step")) return;
+      var stepId = String(child.getAttribute("data-step-id") || "").trim();
+      var step = stepById[stepId] || null;
+      if (!step) {
+        step = {
+          id: stepId,
+          title: (function () {
+            var input = child.querySelector('[data-field="title"]');
+            return input && typeof input.value === "string" ? input.value.trim() : "";
+          })(),
+          canonical_step_id: String(child.getAttribute("data-canonical-step-id") || "").trim(),
+          notes: (function () {
+            var notes = child.querySelector('[data-field="notes"]');
+            return notes && typeof notes.value === "string" ? notes.value : "";
+          })()
+        };
+      }
+      decorateWorkflowStepSettingsDiscoverability(child, step, options);
+    });
+  }
+
+  function normalizeWorkflowStepTitleForMatch(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function findWorkflowStepListItem(containerEl, target) {
+    if (!containerEl) return null;
+    var canonicalStepId = normalizeCanonicalStepId(
+      target && target.canonicalStepId ? target.canonicalStepId : ""
+    );
+    var titleHint = normalizeWorkflowStepTitleForMatch(
+      target && target.titleHint ? target.titleHint : ""
+    );
+    var found = null;
+    Array.prototype.forEach.call(containerEl.children, function (child) {
+      if (found || !child.classList || !child.classList.contains("workflow-step")) return;
+      var cid = normalizeCanonicalStepId(child.getAttribute("data-canonical-step-id") || "");
+      if (canonicalStepId && cid === canonicalStepId) {
+        found = child;
+        return;
+      }
+      var titleInput = child.querySelector('[data-field="title"]');
+      var titleValue = titleInput && typeof titleInput.value === "string" ? titleInput.value : "";
+      var titleNorm = normalizeWorkflowStepTitleForMatch(titleValue);
+      if (titleHint && titleNorm && titleNorm.indexOf(titleHint) !== -1) {
+        found = child;
+      }
+    });
+    return found;
+  }
+
+  function highlightWorkflowStepSettingsTarget(li) {
+    if (!li) return;
+    Array.prototype.forEach.call(document.querySelectorAll(".workflow-step-settings-focus"), function (node) {
+      node.classList.remove("workflow-step-settings-focus");
+    });
+    li.classList.add("workflow-step-settings-focus");
+    try {
+      li.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (e) {
+      li.scrollIntoView();
+    }
+    window.setTimeout(function () {
+      li.classList.remove("workflow-step-settings-focus");
+    }, 2400);
+  }
+
+  function openWorkflowStepSettingsFromElement(li) {
+    if (!li) return false;
+    var btn = li.querySelector(".workflow-step-new-prompt");
+    if (!btn) return false;
+    btn.click();
+    return true;
+  }
+
+  function focusWorkflowStepSettings(target, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var navTarget = target && typeof target === "object" ? target : {};
+    var openSettings = opts.openSettings !== false;
+
+    var libraryLi = els.workflowSteps ? findWorkflowStepListItem(els.workflowSteps, navTarget) : null;
+    if (libraryLi && state.selectedWorkflowId) {
+      switchTab("workflows");
+      highlightWorkflowStepSettingsTarget(libraryLi);
+      if (openSettings) {
+        openWorkflowStepSettingsFromElement(libraryLi);
+      }
+      return true;
+    }
+
+    var designLi = els.wfDesignSteps ? findWorkflowStepListItem(els.wfDesignSteps, navTarget) : null;
+    if (designLi) {
+      switchTab("workflowFactory");
+      if (els.wfBriefResolvedDetails) {
+        els.wfBriefResolvedDetails.open = false;
+      }
+      highlightWorkflowStepSettingsTarget(designLi);
+      showToast(
+        "Save the workflow, then open Settings on the matching step to tune parameters.",
+        "success"
+      );
+      return true;
+    }
+
+    showToast("No matching workflow step found yet — design or save the workflow first.", "error");
+    return false;
+  }
+
+  function buildWorkflowBriefPlanningNoticeRows(config, resolvedState) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    return Array.isArray(rs.planningDisclosures)
+      ? rs.planningDisclosures.slice()
+      : buildWorkflowBriefPlanningDisclosures(cfg, {
+          disclosures: rs.validationDisclosures || [],
+          rejectedInference: rs.rejectedInference || [],
+          missingFactorIds: Array.isArray(rs.missing) ? rs.missing : [],
+          resolvedFactors: rs.resolvedFactors || {}
+        });
+  }
+
+  var WORKFLOW_BRIEF_PLANNING_INFO_COLLAPSE_AT = 3;
+
+  function classifyWorkflowBriefPlanningNoticeRow(row) {
+    if (!row || typeof row !== "object") return "informational";
+    var cat = String(row.category || "").trim().toLowerCase();
+    if (
+      cat === "validation" ||
+      cat === "conflict" ||
+      cat === "blocked_unsafe_inference" ||
+      cat === "conflicting_intent" ||
+      cat === "missing_essential" ||
+      cat === "rejected_inference" ||
+      cat === "gated_planning"
+    ) {
+      return "safety";
+    }
+    if (row.blockedValue != null && String(row.blockedValue).trim() !== "") return "safety";
+    var settingsTarget = resolvePlanningAdequacySettingsNavigationTarget(row);
+    if (settingsTarget && settingsTarget.canonicalStepId) return "actionable";
+    if (row.action && String(row.action).trim()) return "actionable";
+    return "informational";
+  }
+
+  function sortWorkflowBriefPlanningNoticeRows(rows) {
+    var tierOrder = { safety: 0, actionable: 1, informational: 2 };
+    return (Array.isArray(rows) ? rows : [])
+      .map(function (row, index) {
+        return { row: row, index: index, tier: classifyWorkflowBriefPlanningNoticeRow(row) };
+      })
+      .sort(function (a, b) {
+        var ta = tierOrder[a.tier] != null ? tierOrder[a.tier] : 2;
+        var tb = tierOrder[b.tier] != null ? tierOrder[b.tier] : 2;
+        if (ta !== tb) return ta - tb;
+        return a.index - b.index;
+      })
+      .map(function (entry) {
+        return entry.row;
+      });
+  }
+
+  function buildWorkflowBriefResolvedStatusStrip(resolvedState, model) {
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var summary =
+      model && model.summary && typeof model.summary === "object"
+        ? model.summary
+        : {
+            resolvedCount: Object.keys(rs.resolvedFactors || {}).length,
+            mappedCount: Array.isArray(rs.mappedBindings && rs.mappedBindings.mapped)
+              ? rs.mappedBindings.mapped.length
+              : 0,
+            missingCount: Array.isArray(rs.missing) ? rs.missing.length : 0,
+            warningCount: Array.isArray(rs.warnings) ? rs.warnings.length : 0,
+            sourceCounts: { explicit: 0, elicited: 0, inferred: 0, default: 0 }
+          };
+    if (!model || !model.summary) {
+      Object.keys(rs.resolvedSources || {}).forEach(function (id) {
+        var src = String((rs.resolvedSources || {})[id] || "");
+        if (summary.sourceCounts[src] != null) summary.sourceCounts[src] += 1;
+      });
+    }
+    var sc = summary.sourceCounts || { explicit: 0, elicited: 0, inferred: 0, default: 0 };
+    var parts = [];
+    parts.push(summary.resolvedCount + " resolved");
+    parts.push(summary.mappedCount + " mapped");
+    parts.push(sc.explicit + " explicit");
+    if (sc.elicited) parts.push(sc.elicited + " answered");
+    if (sc.inferred) parts.push(sc.inferred + " inferred");
+    if (sc.default) parts.push(sc.default + " defaulted");
+    if (summary.missingCount) parts.push(summary.missingCount + " still needed");
+    else parts.push("essentials complete");
+    if (summary.warningCount) parts.push(summary.warningCount + " warnings");
+    return parts.join(" \u00b7 ");
+  }
+
+  function appendWorkflowBriefResolvedStatusStrip(parent, resolvedState, model) {
+    if (!parent) return;
+    var strip = document.createElement("div");
+    strip.className = "workflow-brief-panel-section workflow-brief-status-strip";
+    strip.textContent = buildWorkflowBriefResolvedStatusStrip(resolvedState, model);
+    parent.appendChild(strip);
+  }
+
+  function appendWorkflowBriefPlanningNoticeDom(parent, config, row) {
+    if (!parent || !row) return;
+    var item = document.createElement("div");
+    var tier = classifyWorkflowBriefPlanningNoticeRow(row);
+    item.className = "workflow-brief-planning-item workflow-brief-planning-item-" + tier;
+
+    var message = document.createElement("div");
+    message.className = "workflow-brief-planning-message";
+    message.textContent = String(row.message || "").trim();
+    item.appendChild(message);
+
+    if (row.blockedValue != null && String(row.blockedValue).trim() !== "") {
+      var rejected = document.createElement("div");
+      rejected.className = "workflow-brief-planning-meta muted";
+      rejected.textContent = "Rejected value: " + String(row.blockedValue).trim();
+      item.appendChild(rejected);
+    }
+
+    if (row.action) {
+      var actionRow = document.createElement("div");
+      actionRow.className = "workflow-brief-planning-action-row";
+      var actionText = document.createElement("span");
+      actionText.className = "workflow-brief-planning-action muted";
+      actionText.textContent = "Suggestion: " + String(row.action).trim();
+      actionRow.appendChild(actionText);
+
+      var settingsTarget = resolvePlanningAdequacySettingsNavigationTarget(row);
+      if (settingsTarget && settingsTarget.canonicalStepId) {
+        var linkBtn = document.createElement("button");
+        linkBtn.type = "button";
+        linkBtn.className = "btn small workflow-planning-settings-link";
+        linkBtn.textContent = "Open step Settings";
+        linkBtn.addEventListener("click", function () {
+          focusWorkflowStepSettings(settingsTarget, { openSettings: true });
+        });
+        actionRow.appendChild(linkBtn);
+      }
+      item.appendChild(actionRow);
+    }
+
+    parent.appendChild(item);
+  }
+
+  function appendWorkflowBriefPlanningNoticesGrouped(parent, config, rows) {
+    var primaryRows = [];
+    var informationalRows = [];
+    rows.forEach(function (row) {
+      if (classifyWorkflowBriefPlanningNoticeRow(row) === "informational") {
+        informationalRows.push(row);
+      } else {
+        primaryRows.push(row);
+      }
+    });
+
+    if (primaryRows.length) {
+      appendWorkflowBriefPlanningNoticesGrouped(wrap, config, primaryRows);
+    }
+
+    if (informationalRows.length) {
+      if (informationalRows.length > WORKFLOW_BRIEF_PLANNING_INFO_COLLAPSE_AT) {
+        var infoWrap = document.createElement("div");
+        infoWrap.className = "workflow-brief-planning-collapsible workflow-brief-provenance-collapsible";
+        var infoToggle = document.createElement("button");
+        infoToggle.type = "button";
+        infoToggle.className = "btn small";
+        infoToggle.textContent = state.workflowBriefShowPlanningInfo
+          ? "Hide additional planning notes \u25be"
+          : "Additional planning notes (" + informationalRows.length + ") \u25b8";
+        infoWrap.appendChild(infoToggle);
+        var infoBody = document.createElement("div");
+        infoBody.className = "workflow-brief-provenance-collapsible-body";
+        infoBody.style.display = state.workflowBriefShowPlanningInfo ? "block" : "none";
+        if (state.workflowBriefShowPlanningInfo) {
+          appendWorkflowBriefPlanningNoticesGrouped(infoBody, config, informationalRows);
+        }
+        infoToggle.addEventListener("click", function () {
+          state.workflowBriefShowPlanningInfo = !state.workflowBriefShowPlanningInfo;
+          renderWorkflowBriefResolvedPanel(resolvedState);
+        });
+        infoWrap.appendChild(infoBody);
+        wrap.appendChild(infoWrap);
+      } else {
+        appendWorkflowBriefPlanningNoticesGrouped(wrap, config, informationalRows);
+      }
+    }
+
+    parent.appendChild(wrap);
+  }
+
+  var WORKFLOW_BRIEF_PROVENANCE_INFERRED_PREVIEW = 8;
+  var WORKFLOW_BRIEF_PROVENANCE_INFERRED_EXPAND_AT = 12;
+
+  function getWorkflowBriefFactorById(config, factorId) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var fid = String(factorId || "").trim();
+    if (!fid) return null;
+    var pools = (cfg.requiredFactors || [])
+      .concat(cfg.optionalFactors || [])
+      .concat(cfg.refinementFactors || []);
+    for (var i = 0; i < pools.length; i++) {
+      var factor = pools[i];
+      if (factor && String(factor.id || "") === fid) return factor;
+    }
+    return null;
+  }
+
+  function formatWorkflowBriefFactorDisplayLabel(config, factorId) {
+    var factor = getWorkflowBriefFactorById(config, factorId);
+    if (factor) {
+      var label = String(factor.label || factor.plainEnglish || factor.gloss || "").trim();
+      if (label) return label;
+    }
+    var fid = String(factorId || "").trim();
+    if (!fid) return "";
+    return fid.replace(/_/g, " ");
+  }
+
+  function formatWorkflowBriefFactorDisplayValue(value) {
+    if (value == null) return "";
+    if (Array.isArray(value)) {
+      return value
+        .map(function (v) {
+          return String(v == null ? "" : v).trim();
+        })
+        .filter(function (v) {
+          return !!v;
+        })
+        .join(", ");
+    }
+    if (typeof value === "object") return "";
+    return String(value).trim();
+  }
+
+  function getWorkflowBriefProvenanceSourceLabel(source) {
+    var src = String(source || "").trim();
+    if (src === "explicit") return "Explicit";
+    if (src === "elicited") return "You answered";
+    if (src === "inferred") return "Inferred";
+    if (src === "default") return "Default";
+    return src || "Unknown";
+  }
+
+  function getWorkflowBriefProvenanceSourceBadgeClass(source) {
+    var src = String(source || "").trim();
+    if (src === "explicit" || src === "elicited") return "workflow-brief-provenance-badge-user";
+    if (src === "inferred") return "workflow-brief-provenance-badge-inferred";
+    if (src === "default") return "workflow-brief-provenance-badge-default";
+    return "workflow-brief-provenance-badge-muted";
+  }
+
+  function canonicalStepIdToDisplayTitle(canonicalStepId, catalog) {
+    var cid = normalizeCanonicalStepId(canonicalStepId);
+    if (!cid) return "";
+    var pool = Array.isArray(catalog) ? catalog : [];
+    var pattern = getPatternByCanonicalStepId(cid, pool);
+    if (pattern && pattern.title) return String(pattern.title).trim();
+    return cid
+      .replace(/^step_/, "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, function (ch) {
+        return ch.toUpperCase();
+      });
+  }
+
+  function getDesignStepPresenceIndex(design, catalog) {
+    var canonicalIds = {};
+    var titleNorms = {};
+    if (!design || !Array.isArray(design.steps)) {
+      return { canonicalIds: canonicalIds, titleNorms: titleNorms };
+    }
+    design.steps.forEach(function (step) {
+      if (!step) return;
+      var title = String(step.title || "").trim();
+      if (title) {
+        titleNorms[normalizeWorkflowStepTitleForMatch(title)] = title;
+      }
+      var cid = String(step.canonical_step_id || "").trim();
+      if (cid) {
+        canonicalIds[normalizeCanonicalStepId(cid)] = true;
+      } else if (title) {
+        var pattern = getPatternByCanonicalWorkflowTitle(title, catalog);
+        if (pattern) {
+          var pid = normalizeCanonicalStepId(
+            pattern.canonicalStepId || pattern.canonical_step_id || ""
+          );
+          if (pid) canonicalIds[pid] = true;
+        }
+      }
+    });
+    return { canonicalIds: canonicalIds, titleNorms: titleNorms };
+  }
+
+  function stepRelevanceMatchesDesign(stepEntry, presence) {
+    if (!stepEntry || !presence) return false;
+    var cid = normalizeCanonicalStepId(stepEntry.canonicalStepId || "");
+    if (cid && presence.canonicalIds[cid]) return true;
+    var titleNorm = normalizeWorkflowStepTitleForMatch(stepEntry.stepTitle || "");
+    if (titleNorm && presence.titleNorms[titleNorm]) return true;
+    return false;
+  }
+
+  function buildWorkflowBriefStepRelevanceIndex(config, resolvedState, design, catalog) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var mapped =
+      rs.mappedBindings && Array.isArray(rs.mappedBindings.mapped) ? rs.mappedBindings.mapped : [];
+    var stepMap = {};
+    var workflowLevelMap = {};
+    mapped.forEach(function (row) {
+      if (!row) return;
+      var factor = String(row.factor || "").trim();
+      var target = String(row.target || "").trim();
+      if (!factor || !target) return;
+      if (target.indexOf("stepParams.") === 0) {
+        var bits = target.split(".");
+        if (bits.length < 3) return;
+        var sid = normalizeCanonicalStepId(bits[1]);
+        var paramKey = bits.slice(2).join(".");
+        if (!sid) return;
+        if (!stepMap[sid]) {
+          stepMap[sid] = {
+            canonicalStepId: sid,
+            stepTitle: canonicalStepIdToDisplayTitle(sid, catalog),
+            factors: {}
+          };
+        }
+        if (!stepMap[sid].factors[factor]) {
+          stepMap[sid].factors[factor] = {
+            id: factor,
+            label: formatWorkflowBriefFactorDisplayLabel(cfg, factor),
+            paramKeys: []
+          };
+        }
+        if (paramKey && stepMap[sid].factors[factor].paramKeys.indexOf(paramKey) === -1) {
+          stepMap[sid].factors[factor].paramKeys.push(paramKey);
+        }
+        return;
+      }
+      if (target.indexOf("workflow.workflowOutputSpec.") === 0) {
+        var sub = target.slice("workflow.workflowOutputSpec.".length);
+        if (!workflowLevelMap[factor]) {
+          workflowLevelMap[factor] = {
+            id: factor,
+            label: formatWorkflowBriefFactorDisplayLabel(cfg, factor),
+            targets: []
+          };
+        }
+        if (sub && workflowLevelMap[factor].targets.indexOf(sub) === -1) {
+          workflowLevelMap[factor].targets.push(sub);
+        }
+      }
+    });
+
+    var presence = getDesignStepPresenceIndex(design, catalog);
+    var hasDesign = !!(design && Array.isArray(design.steps) && design.steps.length);
+    var stepRelevance = [];
+    var designOrder = hasDesign ? design.steps : [];
+    var orderIndex = {};
+    designOrder.forEach(function (step, idx) {
+      var title = String((step && step.title) || "").trim();
+      var cid = String((step && step.canonical_step_id) || "").trim();
+      if (cid) orderIndex[normalizeCanonicalStepId(cid)] = idx;
+      if (title) orderIndex["title:" + normalizeWorkflowStepTitleForMatch(title)] = idx;
+    });
+
+    Object.keys(stepMap).forEach(function (sid) {
+      var entry = stepMap[sid];
+      if (hasDesign && !stepRelevanceMatchesDesign(entry, presence)) return;
+      var factorList = Object.keys(entry.factors)
+        .sort()
+        .map(function (k) {
+          return entry.factors[k];
+        });
+      stepRelevance.push({
+        canonicalStepId: entry.canonicalStepId,
+        stepTitle: entry.stepTitle,
+        factors: factorList,
+        sortKey:
+          orderIndex[entry.canonicalStepId] != null
+            ? orderIndex[entry.canonicalStepId]
+            : orderIndex["title:" + normalizeWorkflowStepTitleForMatch(entry.stepTitle)] != null
+            ? orderIndex["title:" + normalizeWorkflowStepTitleForMatch(entry.stepTitle)]
+            : 9999
+      });
+    });
+    stepRelevance.sort(function (a, b) {
+      return (a.sortKey || 0) - (b.sortKey || 0);
+    });
+
+    var workflowLevel = Object.keys(workflowLevelMap)
+      .sort()
+      .map(function (k) {
+        return workflowLevelMap[k];
+      });
+
+    return { stepRelevance: stepRelevance, workflowLevel: workflowLevel };
+  }
+
+  function buildWorkflowBriefProvenanceViewModel(config, resolvedState, design, options) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var opts = options && typeof options === "object" ? options : {};
+    var catalog = Array.isArray(opts.catalog) ? opts.catalog : [];
+    var resolvedFactors =
+      rs.resolvedFactors && typeof rs.resolvedFactors === "object" ? rs.resolvedFactors : {};
+    var resolvedSources =
+      rs.resolvedSources && typeof rs.resolvedSources === "object" ? rs.resolvedSources : {};
+    var confirmedInferred =
+      rs.confirmedInferredFactors && typeof rs.confirmedInferredFactors === "object"
+        ? rs.confirmedInferredFactors
+        : {};
+    var sourceCounts = { explicit: 0, elicited: 0, inferred: 0, default: 0 };
+    var groupsBySource = { explicit: [], elicited: [], inferred: [], default: [] };
+
+    Object.keys(resolvedFactors)
+      .sort()
+      .forEach(function (id) {
+        var src = String(resolvedSources[id] || "").trim();
+        if (src !== "explicit" && src !== "elicited" && src !== "inferred" && src !== "default") {
+          src = "inferred";
+        }
+        if (sourceCounts[src] != null) sourceCounts[src] += 1;
+        var row = {
+          id: id,
+          label: formatWorkflowBriefFactorDisplayLabel(cfg, id),
+          value: formatWorkflowBriefFactorDisplayValue(resolvedFactors[id]),
+          source: src,
+          confirmed: !!confirmedInferred[id]
+        };
+        groupsBySource[src].push(row);
+      });
+
+    var rejectedRaw = Array.isArray(rs.rejectedInference) ? rs.rejectedInference : [];
+    var rejected = rejectedRaw
+      .map(function (rej) {
+        if (!rej || typeof rej !== "object") return null;
+        var factorId = String(rej.factorId || rej.id || "").trim();
+        return {
+          factorId: factorId,
+          label: factorId ? formatWorkflowBriefFactorDisplayLabel(cfg, factorId) : "",
+          value: formatWorkflowBriefFactorDisplayValue(rej.value),
+          message: String(rej.message || "").trim(),
+          source: String(rej.source || "").trim()
+        };
+      })
+      .filter(Boolean);
+
+    var relevance = buildWorkflowBriefStepRelevanceIndex(cfg, rs, design, catalog);
+    var askedCount = Array.isArray(rs.askedFactors) ? rs.askedFactors.length : 0;
+    var inferredCount = Object.keys(rs.inferredFactors || {}).length;
+    var confirmedCount = Object.keys(confirmedInferred).length;
+    var resolvedCount = Object.keys(resolvedFactors).length;
+    var mappedCount = Array.isArray(rs.mappedBindings && rs.mappedBindings.mapped)
+      ? rs.mappedBindings.mapped.length
+      : 0;
+
+    return {
+      summary: {
+        askedCount: askedCount,
+        resolvedCount: resolvedCount,
+        mappedCount: mappedCount,
+        inferredCount: inferredCount,
+        confirmedCount: confirmedCount,
+        sourceCounts: sourceCounts,
+        missingCount: Array.isArray(rs.missing) ? rs.missing.length : 0,
+        warningCount: Array.isArray(rs.warnings) ? rs.warnings.length : 0
+      },
+      groups: [
+        { source: "explicit", title: "Explicit (from brief)", factors: groupsBySource.explicit },
+        { source: "elicited", title: "You answered", factors: groupsBySource.elicited },
+        { source: "inferred", title: "Inferred assumptions", factors: groupsBySource.inferred },
+        { source: "default", title: "Defaulted values", factors: groupsBySource.default }
+      ],
+      rejected: rejected,
+      stepRelevance: relevance.stepRelevance,
+      workflowLevel: relevance.workflowLevel,
+      hasDesign: !!(design && Array.isArray(design.steps) && design.steps.length)
+    };
+  }
+
+  function appendWorkflowBriefProvenanceFactorList(container, factors, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var list = document.createElement("ul");
+    list.className = "workflow-brief-provenance-factor-list";
+    (Array.isArray(factors) ? factors : []).forEach(function (row) {
+      if (!row || !row.id) return;
+      var li = document.createElement("li");
+      li.className = "workflow-brief-provenance-factor-row";
+      var badge = document.createElement("span");
+      badge.className =
+        "workflow-brief-provenance-badge " + getWorkflowBriefProvenanceSourceBadgeClass(row.source);
+      badge.textContent = getWorkflowBriefProvenanceSourceLabel(row.source);
+      var label = document.createElement("span");
+      label.className = "workflow-brief-provenance-factor-label";
+      label.textContent = row.label || row.id;
+      var value = document.createElement("span");
+      value.className = "workflow-brief-provenance-factor-value";
+      value.textContent = row.value || "\u2014";
+      li.appendChild(badge);
+      li.appendChild(label);
+      li.appendChild(document.createTextNode(": "));
+      li.appendChild(value);
+      if (row.confirmed) {
+        var confirmed = document.createElement("span");
+        confirmed.className = "workflow-brief-provenance-confirmed muted";
+        confirmed.textContent = " (confirmed)";
+        li.appendChild(confirmed);
+      }
+      list.appendChild(li);
+    });
+    if (!list.children.length) {
+      var empty = document.createElement("div");
+      empty.className = "muted workflow-brief-provenance-empty";
+      empty.textContent = opts.emptyText || "None.";
+      container.appendChild(empty);
+      return;
+    }
+    container.appendChild(list);
+  }
+
+
+  function appendWorkflowBriefProvenanceStepRelevanceSection(parent, model, config, resolvedState, catalog) {
+    if (!parent || !model || !model.hasDesign || !model.stepRelevance.length) return;
+    var section = document.createElement("div");
+    section.className = "workflow-brief-panel-section workflow-brief-provenance-section";
+    var stepHeading = document.createElement("div");
+    stepHeading.className = "workflow-brief-panel-section-heading workflow-brief-provenance-section-heading";
+    stepHeading.textContent = "Brief affects these steps";
+    section.appendChild(stepHeading);
+    var stepList = document.createElement("ul");
+    stepList.className = "workflow-brief-provenance-step-list";
+    model.stepRelevance.forEach(function (stepRow) {
+      var stepLi = document.createElement("li");
+      stepLi.className = "workflow-brief-provenance-step-item";
+      var stepTitle = document.createElement("div");
+      stepTitle.className = "workflow-brief-provenance-step-title";
+      stepTitle.textContent = stepRow.stepTitle || stepRow.canonicalStepId;
+      stepLi.appendChild(stepTitle);
+      var factorUl = document.createElement("ul");
+      factorUl.className = "workflow-brief-provenance-step-factors";
+      (stepRow.factors || []).forEach(function (factor) {
+        var fLi = document.createElement("li");
+        var text = factor.label || factor.id;
+        if (factor.paramKeys && factor.paramKeys.length) {
+          text += " (" + factor.paramKeys.join(", ") + ")";
+        }
+        fLi.textContent = text;
+        factorUl.appendChild(fLi);
+      });
+      stepLi.appendChild(factorUl);
+      if (stepRow.canonicalStepId) {
+        var pseudoStep = { canonical_step_id: stepRow.canonicalStepId, title: stepRow.stepTitle };
+        if (
+          isWorkflowStepConfigurableInSettings(pseudoStep, catalog, config) &&
+          typeof focusWorkflowStepSettings === "function"
+        ) {
+          var settingsLink = document.createElement("button");
+          settingsLink.type = "button";
+          settingsLink.className = "btn small workflow-brief-provenance-settings-link";
+          settingsLink.textContent = "Open step Settings";
+          settingsLink.addEventListener("click", function () {
+            focusWorkflowStepSettings(
+              { canonicalStepId: stepRow.canonicalStepId, titleHint: stepRow.stepTitle },
+              { openSettings: true }
+            );
+          });
+          stepLi.appendChild(settingsLink);
+        }
+      }
+      stepList.appendChild(stepLi);
+    });
+    section.appendChild(stepList);
+    parent.appendChild(section);
+  }
+
+  function appendWorkflowBriefProvenanceDetailSections(parent, model, resolvedState) {
+    if (!parent || !model) return;
+    var wrap = document.createElement("div");
+    wrap.className = "workflow-brief-panel-section workflow-brief-provenance workflow-brief-provenance-detail";
+    var detailHeading = document.createElement("div");
+    detailHeading.className = "workflow-brief-panel-section-heading workflow-brief-provenance-section-heading";
+    detailHeading.textContent = "Assumption detail";
+    wrap.appendChild(detailHeading);
+    model.groups.forEach(function (group) {
+      if (group.source === "default") return;
+      if (!group.factors.length) return;
+      var section = document.createElement("div");
+      section.className = "workflow-brief-provenance-section";
+      var heading = document.createElement("div");
+      heading.className = "workflow-brief-provenance-section-heading";
+      heading.textContent = group.title;
+      section.appendChild(heading);
+      var factors = group.factors;
+      if (group.source === "inferred" && factors.length > WORKFLOW_BRIEF_PROVENANCE_INFERRED_EXPAND_AT) {
+        var showAll = !!state.workflowBriefShowInferredAll;
+        var visible = showAll ? factors : factors.slice(0, WORKFLOW_BRIEF_PROVENANCE_INFERRED_PREVIEW);
+        appendWorkflowBriefProvenanceFactorList(section, visible);
+        if (!showAll) {
+          var moreBtn = document.createElement("button");
+          moreBtn.type = "button";
+          moreBtn.className = "btn small";
+          moreBtn.textContent = "Show all inferred (" + factors.length + ") \u25b8";
+          moreBtn.addEventListener("click", function () {
+            state.workflowBriefShowInferredAll = true;
+            renderWorkflowBriefResolvedPanel(resolvedState);
+          });
+          section.appendChild(moreBtn);
+        }
+      } else {
+        appendWorkflowBriefProvenanceFactorList(section, factors);
+      }
+      wrap.appendChild(section);
+    });
+    if (wrap.children.length > 1) parent.appendChild(wrap);
+  }
+
+  function appendWorkflowBriefProvenanceTailSections(parent, model, resolvedState) {
+    if (!parent || !model) return;
+    var wrap = document.createElement("div");
+    wrap.className = "workflow-brief-panel-section workflow-brief-provenance workflow-brief-provenance-tail";
+
+    if (model.workflowLevel.length) {
+      var wfWrap = document.createElement("div");
+      wfWrap.className = "workflow-brief-provenance-section workflow-brief-provenance-collapsible";
+      var wfToggle = document.createElement("button");
+      wfToggle.type = "button";
+      wfToggle.className = "btn small";
+      wfToggle.textContent = state.workflowBriefShowWorkflowMappings
+        ? "Hide workflow-level mappings \u25be"
+        : "Workflow-level mappings (" + model.workflowLevel.length + ") \u25b8";
+      wfWrap.appendChild(wfToggle);
+      var wfBody = document.createElement("div");
+      wfBody.className = "workflow-brief-provenance-collapsible-body";
+      wfBody.style.display = state.workflowBriefShowWorkflowMappings ? "block" : "none";
+      if (state.workflowBriefShowWorkflowMappings) {
+        var wfList = document.createElement("ul");
+        wfList.className = "workflow-brief-provenance-factor-list";
+        model.workflowLevel.forEach(function (row) {
+          var li = document.createElement("li");
+          li.className = "workflow-brief-provenance-factor-row";
+          li.textContent =
+            (row.label || row.id) +
+            (row.targets && row.targets.length ? " \u2192 " + row.targets.join(", ") : "");
+          wfList.appendChild(li);
+        });
+        wfBody.appendChild(wfList);
+      }
+      wfToggle.addEventListener("click", function () {
+        state.workflowBriefShowWorkflowMappings = !state.workflowBriefShowWorkflowMappings;
+        renderWorkflowBriefResolvedPanel(resolvedState);
+      });
+      wfWrap.appendChild(wfBody);
+      wrap.appendChild(wfWrap);
+    }
+
+    var defaultGroup = model.groups.filter(function (g) {
+      return g.source === "default";
+    })[0];
+    if (defaultGroup && defaultGroup.factors.length) {
+      var defWrap = document.createElement("div");
+      defWrap.className = "workflow-brief-provenance-section workflow-brief-provenance-collapsible";
+      var defToggle = document.createElement("button");
+      defToggle.type = "button";
+      defToggle.className = "btn small";
+      defToggle.textContent = state.workflowBriefShowDefaults
+        ? "Hide defaulted values \u25be"
+        : "Defaulted values hidden (" + defaultGroup.factors.length + ") \u25b8";
+      defWrap.appendChild(defToggle);
+      var defBody = document.createElement("div");
+      defBody.className = "workflow-brief-provenance-collapsible-body";
+      defBody.style.display = state.workflowBriefShowDefaults ? "block" : "none";
+      if (state.workflowBriefShowDefaults) {
+        appendWorkflowBriefProvenanceFactorList(defBody, defaultGroup.factors);
+      }
+      defToggle.addEventListener("click", function () {
+        state.workflowBriefShowDefaults = !state.workflowBriefShowDefaults;
+        renderWorkflowBriefResolvedPanel(resolvedState);
+      });
+      defWrap.appendChild(defBody);
+      wrap.appendChild(defWrap);
+    }
+
+    if (model.rejected.length) {
+      var rejWrap = document.createElement("div");
+      rejWrap.className = "workflow-brief-provenance-section workflow-brief-provenance-collapsible";
+      var rejToggle = document.createElement("button");
+      rejToggle.type = "button";
+      rejToggle.className = "btn small";
+      rejToggle.textContent = state.workflowBriefShowRejected
+        ? "Hide rejected inference \u25be"
+        : "Rejected inference hidden (" + model.rejected.length + ") \u25b8";
+      rejWrap.appendChild(rejToggle);
+      var rejBody = document.createElement("div");
+      rejBody.className = "workflow-brief-provenance-collapsible-body";
+      rejBody.style.display = state.workflowBriefShowRejected ? "block" : "none";
+      if (state.workflowBriefShowRejected) {
+        var rejList = document.createElement("ul");
+        rejList.className = "workflow-brief-provenance-factor-list";
+        model.rejected.forEach(function (row) {
+          var li = document.createElement("li");
+          li.className = "workflow-brief-provenance-factor-row";
+          var label = document.createElement("span");
+          label.className = "workflow-brief-provenance-factor-label";
+          label.textContent = row.label || row.factorId;
+          var value = document.createElement("span");
+          value.className = "workflow-brief-provenance-factor-value";
+          value.textContent = row.value ? ": " + row.value : "";
+          li.appendChild(label);
+          li.appendChild(value);
+          if (row.message) {
+            var msg = document.createElement("div");
+            msg.className = "muted workflow-brief-provenance-rejected-msg";
+            msg.textContent = row.message;
+            li.appendChild(msg);
+          }
+          rejList.appendChild(li);
+        });
+        rejBody.appendChild(rejList);
+      }
+      rejToggle.addEventListener("click", function () {
+        state.workflowBriefShowRejected = !state.workflowBriefShowRejected;
+        renderWorkflowBriefResolvedPanel(resolvedState);
+      });
+      rejWrap.appendChild(rejBody);
+      wrap.appendChild(rejWrap);
+    }
+
+    if (wrap.children.length) parent.appendChild(wrap);
+  }
+
+  function appendWorkflowBriefProvenanceUi(parent, config, resolvedState, design, options) {
+    if (!parent) return;
+    var opts = options && typeof options === "object" ? options : {};
+    var catalog = Array.isArray(opts.catalog) ? opts.catalog : state.workflowStepPatternCatalog || [];
+    var model = buildWorkflowBriefProvenanceViewModel(config, resolvedState, design, {
+      catalog: catalog
+    });
+    appendWorkflowBriefProvenanceStepRelevanceSection(parent, model, config, resolvedState, catalog);
+    appendWorkflowBriefProvenanceDetailSections(parent, model, resolvedState);
+    appendWorkflowBriefProvenanceTailSections(parent, model, resolvedState);
   }
 
   function resolveAssessmentItemsInheritedOptions(context, currentStep5Params, opts) {
@@ -2377,6 +3507,7 @@
         fields.appendChild(roleGroup);
         li.appendChild(fields);
 
+        decorateWorkflowStepSettingsDiscoverability(li, step, { context: "design" });
         els.wfDesignSteps.appendChild(li);
       });
     }
@@ -5186,37 +6317,6 @@
     var missingCount = Array.isArray(resolvedState.missing) ? resolvedState.missing.length : 0;
     els.wfBriefResolvedSummary.textContent =
       "Resolved workflow brief (" + (missingCount ? "missing: " + missingCount : "complete") + ")";
-    var askedCount = Array.isArray(resolvedState.askedFactors) ? resolvedState.askedFactors.length : 0;
-    var inferredCount = Object.keys(resolvedState.inferredFactors || {}).length;
-    var confirmedCount = Object.keys(resolvedState.confirmedInferredFactors || {}).length;
-    var resolvedCount = Object.keys(resolvedState.resolvedFactors || {}).length;
-    var sourceCounts = { explicit: 0, elicited: 0, inferred: 0, default: 0 };
-    Object.keys(resolvedState.resolvedSources || {}).forEach(function (id) {
-      var src = String((resolvedState.resolvedSources || {})[id] || "");
-      if (sourceCounts[src] != null) sourceCounts[src] += 1;
-    });
-    var mappedCount = Array.isArray(resolvedState.mappedBindings && resolvedState.mappedBindings.mapped)
-      ? resolvedState.mappedBindings.mapped.length
-      : 0;
-    var warningCount = Array.isArray(resolvedState.warnings) ? resolvedState.warnings.length : 0;
-    var lines = [];
-    lines.push("Asked factors: " + askedCount);
-    lines.push("Inferred factors: " + inferredCount + (confirmedCount ? " (" + confirmedCount + " confirmed)" : ""));
-    lines.push(
-      "Resolved factors: " +
-        resolvedCount +
-        " (explicit " + sourceCounts.explicit +
-        ", elicited " + sourceCounts.elicited +
-        ", inferred " + sourceCounts.inferred +
-        ", default " + sourceCounts.default + ")"
-    );
-    lines.push("Mapped bindings: " + mappedCount);
-    if (warningCount) lines.push("Warnings: " + warningCount);
-    if (missingCount) {
-      lines.push("Still needed: " + (resolvedState.missing || []).join(", "));
-    } else {
-      lines.push("Ready: all required factors resolved.");
-    }
     var briefConfig =
       resolvedState.briefConfig && typeof resolvedState.briefConfig === "object"
         ? resolvedState.briefConfig
@@ -5225,111 +6325,56 @@
             typeof state.workflowBriefElicitation.config === "object"
           ? state.workflowBriefElicitation.config
           : null;
-    var planningNoticeLines = briefConfig
-      ? formatWorkflowBriefPlanningNoticesLines(briefConfig, resolvedState)
-      : [];
-    if (planningNoticeLines.length) {
-      lines.push("");
-      planningNoticeLines.forEach(function (line) {
-        lines.push(line);
-      });
-    } else {
-      var validationDisclosures = Array.isArray(resolvedState.validationDisclosures)
-        ? resolvedState.validationDisclosures
-        : [];
-      if (validationDisclosures.length) {
-        lines.push("");
-        lines.push("Planning notices:");
-        validationDisclosures.forEach(function (row) {
-          if (!row || !row.message) return;
-          lines.push("- " + String(row.message));
-        });
-      }
-    }
-    function stableValueText(v) {
-      if (Array.isArray(v)) return JSON.stringify(v);
-      if (v && typeof v === "object") return JSON.stringify(v);
-      if (typeof v === "string") return v;
-      return String(v);
-    }
-    function pushSourceBlock(title, pairs) {
-      if (!pairs.length) return;
-      lines.push("");
-      lines.push(title + ":");
-      pairs
-        .sort(function (a, b) { return a.id.localeCompare(b.id); })
-        .forEach(function (row) {
-          lines.push("- " + row.id + ": " + stableValueText(row.value));
-        });
-    }
-    var resolvedFactors = resolvedState.resolvedFactors && typeof resolvedState.resolvedFactors === "object"
-      ? resolvedState.resolvedFactors
-      : {};
-    var resolvedSources = resolvedState.resolvedSources && typeof resolvedState.resolvedSources === "object"
-      ? resolvedState.resolvedSources
-      : {};
-    var explicitPairs = [];
-    var inferredPairs = [];
-    var defaultPairs = [];
-    var elicitedPairs = [];
-    Object.keys(resolvedFactors).forEach(function (id) {
-      var src = String(resolvedSources[id] || "").trim();
-      var row = { id: id, value: resolvedFactors[id] };
-      if (src === "explicit") explicitPairs.push(row);
-      else if (src === "inferred") inferredPairs.push(row);
-      else if (src === "default") defaultPairs.push(row);
-      else if (src === "elicited") elicitedPairs.push(row);
-    });
-    // Compact trust-oriented rendering:
-    // 1) User-provided values first (explicit + elicited)
-    // 2) Inferred assumptions second
-    // 3) Defaulted values collapsed to reduce low-value noise
-    var userProvidedPairs = explicitPairs.concat(elicitedPairs);
-    userProvidedPairs.sort(function (a, b) {
-      return a.id.localeCompare(b.id);
-    });
-    pushSourceBlock("User-provided values", userProvidedPairs);
-    pushSourceBlock("Inferred assumptions", inferredPairs);
+    var designSnapshot = getSelectedWorkflowDesign();
+    var catalog = state.workflowStepPatternCatalog || [];
+    var model =
+      briefConfig && typeof buildWorkflowBriefProvenanceViewModel === "function"
+        ? buildWorkflowBriefProvenanceViewModel(briefConfig, resolvedState, designSnapshot, {
+            catalog: catalog
+          })
+        : null;
+
     els.wfBriefResolvedContent.innerHTML = "";
-    var primary = document.createElement("div");
-    primary.textContent = lines.join("\n");
-    els.wfBriefResolvedContent.appendChild(primary);
+    appendWorkflowBriefResolvedStatusStrip(els.wfBriefResolvedContent, resolvedState, model);
 
-    if (defaultPairs.length) {
-      var wrap = document.createElement("div");
-      wrap.className = "muted";
-      wrap.style.marginTop = "8px";
-
-      var toggleBtn = document.createElement("button");
-      toggleBtn.type = "button";
-      toggleBtn.className = "btn small";
-      toggleBtn.textContent = state.workflowBriefShowDefaults
-        ? "Hide defaults \u25be"
-        : "Defaulted values hidden (" + defaultPairs.length + ") \u25b8";
-
-      var defaultsList = document.createElement("div");
-      defaultsList.className = "muted";
-      defaultsList.style.marginTop = "6px";
-      defaultsList.style.display = state.workflowBriefShowDefaults ? "block" : "none";
-      if (state.workflowBriefShowDefaults) {
-        var listLines = [];
-        defaultPairs
-          .slice()
-          .sort(function (a, b) { return a.id.localeCompare(b.id); })
-          .forEach(function (row) {
-            listLines.push("- " + row.id + ": " + stableValueText(row.value));
+    if (briefConfig) {
+      appendWorkflowBriefPlanningNoticesUi(els.wfBriefResolvedContent, briefConfig, resolvedState);
+      if (!buildWorkflowBriefPlanningNoticeRows(briefConfig, resolvedState).length) {
+        var validationDisclosures = Array.isArray(resolvedState.validationDisclosures)
+          ? resolvedState.validationDisclosures
+          : [];
+        if (validationDisclosures.length) {
+          var legacyWrap = document.createElement("div");
+          legacyWrap.className = "workflow-brief-panel-section workflow-brief-planning-notices";
+          var legacyHeading = document.createElement("div");
+          legacyHeading.className = "workflow-brief-panel-section-heading";
+          legacyHeading.textContent = "Planning guidance";
+          legacyWrap.appendChild(legacyHeading);
+          validationDisclosures.forEach(function (row) {
+            if (!row || !row.message) return;
+            var item = document.createElement("div");
+            item.className = "workflow-brief-planning-item";
+            item.textContent = String(row.message).trim();
+            legacyWrap.appendChild(item);
           });
-        defaultsList.textContent = listLines.join("\n");
+          els.wfBriefResolvedContent.appendChild(legacyWrap);
+        }
       }
-
-      toggleBtn.addEventListener("click", function () {
-        state.workflowBriefShowDefaults = !state.workflowBriefShowDefaults;
-        renderWorkflowBriefResolvedPanel(resolvedState);
-      });
-
-      wrap.appendChild(toggleBtn);
-      wrap.appendChild(defaultsList);
-      els.wfBriefResolvedContent.appendChild(wrap);
+      if (model) {
+        appendWorkflowBriefProvenanceStepRelevanceSection(
+          els.wfBriefResolvedContent,
+          model,
+          briefConfig,
+          resolvedState,
+          catalog
+        );
+        appendWorkflowBriefProvenanceDetailSections(
+          els.wfBriefResolvedContent,
+          model,
+          resolvedState
+        );
+        appendWorkflowBriefProvenanceTailSections(els.wfBriefResolvedContent, model, resolvedState);
+      }
     }
   }
 
@@ -9457,6 +10502,15 @@
     if (els.deleteWorkflowBtn) {
       els.deleteWorkflowBtn.disabled = false;
     }
+
+    var wfForDiscoverability = findWorkflowById(state.selectedWorkflowId || "");
+    refreshWorkflowStepsSettingsDiscoverability(
+      els.workflowSteps,
+      wfForDiscoverability && Array.isArray(wfForDiscoverability.steps)
+        ? wfForDiscoverability.steps
+        : [],
+      { context: "library" }
+    );
   }
 
   function resetWorkflowRunNavigationState(options) {
@@ -13662,6 +14716,7 @@
     li.appendChild(runOutputWrap);
     renderInputBindings();
     updateRunStepOutputStatus(li);
+    decorateWorkflowStepSettingsDiscoverability(li, step, { context: "library" });
     return li;
   }
 
@@ -21464,6 +22519,22 @@
       applyWorkflowBriefPlanningAdequacyAfterDesign;
     prismTestApi.hasWorkflowDesignSnapshotForAdequacy = hasWorkflowDesignSnapshotForAdequacy;
     prismTestApi.formatWorkflowBriefPlanningNoticesLines = formatWorkflowBriefPlanningNoticesLines;
+    prismTestApi.buildWorkflowBriefPlanningNoticeRows = buildWorkflowBriefPlanningNoticeRows;
+    prismTestApi.resolvePlanningAdequacySettingsNavigationTarget =
+      resolvePlanningAdequacySettingsNavigationTarget;
+    prismTestApi.isWorkflowStepConfigurableInSettings = isWorkflowStepConfigurableInSettings;
+    prismTestApi.buildWorkflowStepSettingsSummaryText = buildWorkflowStepSettingsSummaryText;
+    prismTestApi.collectWorkflowStepSettingsSummaryValues = collectWorkflowStepSettingsSummaryValues;
+    prismTestApi.stepHasBriefMappingTargets = stepHasBriefMappingTargets;
+    prismTestApi.getWorkflowBriefFactorById = getWorkflowBriefFactorById;
+    prismTestApi.formatWorkflowBriefFactorDisplayLabel = formatWorkflowBriefFactorDisplayLabel;
+    prismTestApi.formatWorkflowBriefFactorDisplayValue = formatWorkflowBriefFactorDisplayValue;
+    prismTestApi.getWorkflowBriefProvenanceSourceLabel = getWorkflowBriefProvenanceSourceLabel;
+    prismTestApi.buildWorkflowBriefProvenanceViewModel = buildWorkflowBriefProvenanceViewModel;
+    prismTestApi.buildWorkflowBriefResolvedStatusStrip = buildWorkflowBriefResolvedStatusStrip;
+    prismTestApi.classifyWorkflowBriefPlanningNoticeRow = classifyWorkflowBriefPlanningNoticeRow;
+    prismTestApi.sortWorkflowBriefPlanningNoticeRows = sortWorkflowBriefPlanningNoticeRows;
+    prismTestApi.buildWorkflowBriefStepRelevanceIndex = buildWorkflowBriefStepRelevanceIndex;
     prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
     prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;

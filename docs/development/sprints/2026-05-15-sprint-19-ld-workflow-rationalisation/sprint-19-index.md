@@ -2,11 +2,11 @@
 
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-19-ld-workflow-rationalisation/`  
 **Date:** 2026-05-15  
-**Status:** **Active** — bootstrap / audit-first (**Sprint 19 ready**)
+**Status:** **Closed** — see [`SPRINT-19-CHECKPOINT.md`](SPRINT-19-CHECKPOINT.md) and [`docs/consolidation/sprint-19-closeout.md`](../../../consolidation/sprint-19-closeout.md)
 
-**Entry point:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md)
+**Entry point:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) (historical)
 
-**Verification baseline:** **100 passed**, 0 failed
+**Verification at closeout:** **118 passed**, 0 failed
 
 ---
 
@@ -72,7 +72,7 @@
 node --test tests/*.test.js
 ```
 
-**Expected:** **100 passed**, 0 failed.
+**At closeout:** **118 passed**, 0 failed.
 
 ---
 

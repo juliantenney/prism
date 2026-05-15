@@ -95,6 +95,38 @@ node --test tests/*.test.js
 
 ---
 
+## 2026-05-15 — Sprint 19 programme closed
+
+| Record | Value |
+|--------|--------|
+| Implementation | **Complete** — Slices 19-1, 19-2, 19-3 shipped (pack-only) |
+| Tests | **118 passed**, 0 failed |
+| `app.js` | **Unchanged** |
+| Research | **S1–S13 preserved** |
+| Manual validation | **Passed** — harness M1–M4; live API automation limitation noted |
+| Slice 19-4 | **Not run** — validation/conflict port deferred to backlog |
+
+**Programme closeout:** [`docs/consolidation/sprint-19-closeout.md`](../../../consolidation/sprint-19-closeout.md)  
+**Checkpoint:** [`SPRINT-19-CHECKPOINT.md`](SPRINT-19-CHECKPOINT.md)
+
+### Future backlog
+
+- Optional live API M2 confidence run (`npm run dev` + API key Loaded)  
+- Optional profile copy cleanup  
+- LD validation/conflict policies — only if evidence emerges  
+
+---
+
+## 2026-05-15 — Handover to Sprint 20
+
+| Record | Value |
+|--------|--------|
+| Sprint 19 implementation | **Complete** — final state handed over to Sprint 20 |
+| Test floor | **118 passed**, 0 failed |
+| Successor | [`docs/development/sprints/2026-05-15-sprint-20-workflow-explainability-settings-ux/`](../2026-05-15-sprint-20-workflow-explainability-settings-ux/) — Workflow Explainability and Settings UX |
+
+---
+
 ## Status
 
-**Sprint 19 active** — Slices **19-1**, **19-2**, and **19-3** **closed**; manual Factory validation M1–M4 recommended; next: **Slice 19-4** charter (LD validation/conflict port) if evidence supports.
+**Sprint 19 closed** — successor **Sprint 20** bootstrap pack created (charter pending).

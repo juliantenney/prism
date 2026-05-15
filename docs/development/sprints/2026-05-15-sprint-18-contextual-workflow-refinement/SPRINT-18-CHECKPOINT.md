@@ -18,7 +18,7 @@
 |--------|--------|
 | **Sprint 17** | **Closed** — S1–S6 sparse-brief safety; **85 tests** at closeout |
 | **Sprint 18** | **Closed** — Slices 1–2, 3C-1/3C-2, conflict exceptions (S13); **100 tests** at closeout |
-| **Sprint 19** | **Active** — bootstrap / audit-first; LD rationalisation pack (docs-only bootstrap) |
+| **Sprint 19** | **Closed** — LD question policy, adequacy, profile thinning; **118 tests** — [`SPRINT-19-CHECKPOINT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/SPRINT-19-CHECKPOINT.md) |
 
 ---
 

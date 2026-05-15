@@ -258,7 +258,9 @@ Documented subset for **string `content`** (via `utilityRenderMarkdownBlock` + s
 
 **Run:** `node --test tests/*.test.js`
 
-**Prep run (2026-05-15):** 77 tests, **0 failures** after fixture assertions scoped to section bodies.
+**Regression run (2026-05-15):** **80** tests, **0 failures** (`utility-page-render.test.js` shape semantics + existing suite).
+
+**Bounded E2E HTML smoke (2026-05-15):** `node scripts/sprint-16-e2e-html-smoke.js` → HTML under `tests/output/sprint-16-e2e/` for Research briefing (`shape-metadata-with-body.json`), LD learner + facilitator (`ld-learning-activities-assessment.json`), and assessment MCQ (`shape-structured-assessment-mcq.json`). Inline bullet, prose+bullets, table, and checkbox shapes covered by automated shape fixtures in `utility-page-render.test.js`.
 
 ### 10.3 Future fixtures (Sprint 16 implementation)
 
@@ -280,3 +282,4 @@ Documented subset for **string `content`** (via `utilityRenderMarkdownBlock` + s
 ## 12. Review log
 
 - **2026-05-15** — Sprint 16 prep: domain prompt audit, renderer path audit, shared contract proposal, fixtures + `utility-page-render.test.js`, test API `sectionOrder` override; full `node --test tests/*.test.js` green.
+- **2026-05-15** — Closure verification: shape-first page renderer hardening confirmed with 80-test green run and bounded E2E Utilities HTML smoke checks for Research, Learning Design, and assessment-oriented page outputs. No schema, workflow generation, Utilities UI, or domain-specific renderer changes.

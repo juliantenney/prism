@@ -1,0 +1,35 @@
+{
+  "caseId": "S8-evidence-language-generate-from-topic",
+  "scenario": "Evidence/source language in brief with generate-from-topic and ingest-oriented plan steps.",
+  "baseInput": {
+    "name": "S8 Evidence Language Mismatch",
+    "goal": "",
+    "designIntent": "Analyse the evidence and produce an executive briefing on AI governance risks for the board",
+    "audience": "Executive leadership",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "executive briefing",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "resolvedFactorsForAdequacy": {
+      "objective_type": "briefing",
+      "input_strategy": "generate_from_topic",
+      "audience": "Executive leadership",
+      "output_depth": "standard"
+    },
+    "missingFactorIdsForAdequacy": [],
+    "planningAdequacy": [
+      {
+        "id": "evidence_language_generate_from_topic_mismatch",
+        "disclosureId": "evidence_language_generate_from_topic_mismatch",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "source": "planningAdequacyChecks"
+      }
+    ]
+  }
+}

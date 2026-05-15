@@ -1,0 +1,62 @@
+{
+  "caseId": "S7-topic-sufficiency-smoke",
+  "scenario": "Post-closeout smoke: essentials complete after elicitation, generate-from-topic, analysis chain, broad topic without scope cues.",
+  "baseInput": {
+    "name": "S7 Topic Sufficiency Smoke",
+    "goal": "",
+    "designIntent": "Analyse the evidence and produce an executive briefing on AI governance risks",
+    "audience": "Executive leadership",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "executive briefing",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Analyse the evidence and produce an executive briefing on AI governance risks",
+      "audience": "Executive leadership",
+      "desired_outputs": "executive briefing",
+      "topic": "ai governance risks",
+      "workshop_subject": "ai governance risks",
+      "objective_type": "briefing"
+    },
+    "resolvedFactorsForAdequacy": {
+      "objective_type": "briefing",
+      "input_strategy": "generate_from_topic",
+      "audience": "Executive leadership",
+      "output_depth": "standard"
+    },
+    "missingFactorIdsForAdequacy": [],
+    "heuristics": {
+      "stepTitles": [
+        "Generate Research Content",
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output",
+        "Design Page"
+      ],
+      "hasDesignPage": true,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": true
+    },
+    "planningAdequacy": [
+      {
+        "id": "topic_scope_under_specified",
+        "disclosureId": "topic_scope_under_specified",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "source": "planningAdequacyChecks"
+      }
+    ]
+  },
+  "desiredFuture": {
+    "notes": "Optional chat clarification, dismiss state, and scope facet mapping—not asserted in Slice 1 adequacy tests."
+  }
+}

@@ -27,8 +27,9 @@ Portable snapshots for **fresh-chat bootstrap**. When the repo is mounted, **can
 | Path | Why |
 |------|-----|
 | `domains/research/domain-research-step-patterns.md` | Large; changes during implementation |
-| `tests/fixtures/workflow-brief-research-sparse/S1`–`S6.json` | Golden fixtures |
-| `tests/workflow-research-sparse-briefs.test.js` | Regression tests |
+| `tests/fixtures/workflow-brief-research-sparse/S1`–`S7.json` | Golden + adequacy fixtures |
+| `tests/workflow-research-sparse-briefs.test.js` | S1–S6 regression |
+| `tests/workflow-research-adequacy.test.js` | S7 adequacy (91-test checkpoint) |
 | `app.js` | Runtime interpreters |
 
 ---

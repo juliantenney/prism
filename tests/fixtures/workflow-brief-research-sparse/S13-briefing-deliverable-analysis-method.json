@@ -1,0 +1,63 @@
+{
+  "caseId": "S13-briefing-deliverable-analysis-method",
+  "scenario": "Analysis/evidence phrasing as method with explicit briefing deliverable — no mixed-signal conflict.",
+  "baseInput": {
+    "name": "S13 Briefing Deliverable Analysis Method",
+    "goal": "",
+    "designIntent": "Analyse the evidence and produce a concise executive briefing on AI governance risks",
+    "audience": "Executive leadership",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "executive briefing",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Analyse the evidence and produce a concise executive briefing on AI governance risks",
+      "audience": "Executive leadership",
+      "desired_outputs": "executive briefing",
+      "topic": "ai governance risks",
+      "workshop_subject": "ai governance risks",
+      "objective_type": "briefing",
+      "output_depth": "concise"
+    },
+    "ruleInferred": {
+      "objective_type": "briefing"
+    },
+    "resolvedFactors": {
+      "objective_type": "briefing",
+      "audience": "Executive leadership",
+      "output_depth": "concise"
+    },
+    "resolvedSources": {
+      "objective_type": "explicit",
+      "audience": "explicit",
+      "output_depth": "explicit"
+    },
+    "missingFactorIds": ["input_strategy"],
+    "elicitationRequired": true,
+    "validationDisclosures": [],
+    "rejectedInference": [],
+    "planningDisclosureCategories": ["missing_essential", "gated_planning"],
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "When input_strategy is resolved, post-synthesis adequacy may stack topic_scope and evidence_language (see S7/S8)."
+  }
+}

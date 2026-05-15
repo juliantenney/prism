@@ -361,6 +361,49 @@ They provide a consistent way to structure workflows and ensure that research pr
             "mentionAnyOf": ["research question", "research questions", "questions"]
           }
         ],
+        "exceptions": [
+          {
+            "id": "briefing_deliverable_with_analysis_method",
+            "when": {
+              "excludeMentionAnyOf": [
+                "analysis briefing",
+                "analysis and briefing",
+                "briefing and analysis",
+                "both analysis",
+                "both briefing",
+                "summary and briefing",
+                "briefing and summary",
+                "analysis and summary",
+                "summary and analysis",
+                "research questions and",
+                "questions and briefing"
+              ],
+              "briefDeliverableMentionAnyOf": [
+                "executive briefing",
+                "briefing note",
+                "produce a briefing",
+                "produce an executive briefing",
+                "decision briefing",
+                "briefing for"
+              ],
+              "methodLanguageMentionAnyOf": [
+                "analyse the evidence",
+                "analyze the evidence",
+                "analysing the evidence",
+                "analyzing the evidence",
+                "analysis of the evidence",
+                "from the evidence",
+                "evidence-led",
+                "evidence based",
+                "evidence-based",
+                "review the evidence",
+                "synthesise the evidence",
+                "synthesize the evidence"
+              ]
+            },
+            "suppressSignals": ["analysis"]
+          }
+        ],
         "effect": {
           "blockFactor": true,
           "disclosureId": "objective_type_mixed_signals"
@@ -370,7 +413,10 @@ They provide a consistent way to structure workflows and ensure that research pr
     "disclosurePolicy": {
       "messages": {
         "upload_language_without_inputs": "The brief mentions uploaded/source material, but no inputs are attached or listed.",
-        "objective_type_mixed_signals": "The brief contains both analysis and briefing signals; choose the primary research output."
+        "objective_type_mixed_signals": "The brief contains both analysis and briefing signals; choose the primary research output.",
+        "topic_scope_under_specified": "This workflow includes analysis steps (for example thematic analysis or an evidence map) from a broad topic. Narrowing by sector, jurisdiction, timeframe, or policy frame can sharpen the plan—or confirm you want a broad exploratory scan.",
+        "evidence_language_generate_from_topic_mismatch": "The brief uses evidence or source-material language, but the plan is set to generate from a topic without attached sources.",
+        "plan_heavy_for_output_depth": "A concise output depth was requested, but the draft plan includes a relatively heavy analysis and synthesis chain."
       },
       "categories": {
         "missing_essential": {
@@ -392,6 +438,10 @@ They provide a consistent way to structure workflows and ensure that research pr
         "gated_planning": {
           "label": "Planning steps withheld",
           "order": 5
+        },
+        "planning_adequacy": {
+          "label": "Planning adequacy",
+          "order": 6
         }
       },
       "entries": {
@@ -402,9 +452,105 @@ They provide a consistent way to structure workflows and ensure that research pr
         "objective_type_mixed_signals": {
           "category": "conflicting_intent",
           "action": "Choose one primary output: summary, analysis, briefing note, or research questions."
+        },
+        "topic_scope_under_specified": {
+          "category": "planning_adequacy",
+          "action": "Add sector, jurisdiction, timeframe, or policy frame to the brief—or proceed if a broad exploratory scan is intended."
+        },
+        "evidence_language_generate_from_topic_mismatch": {
+          "category": "planning_adequacy",
+          "action": "Attach source files in Inputs, list corpus materials, or confirm you want topic-only generation without existing evidence."
+        },
+        "plan_heavy_for_output_depth": {
+          "category": "planning_adequacy",
+          "action": "Set output depth to standard or detailed, or remove deep synthesis steps if you want a lighter plan."
         }
       }
     },
+    "planningAdequacyChecks": [
+      {
+        "id": "topic_scope_under_specified",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "input_strategy": "generate_from_topic"
+          },
+          "stepsIncludeAny": [
+            "Conduct Thematic Analysis",
+            "Build Evidence Map"
+          ],
+          "weakTopicScope": {
+            "topicFactorIds": ["topic", "workshop_subject"],
+            "maxSignificantTokens": 4,
+            "scopeCueFields": [
+              "designIntent",
+              "goal",
+              "scopeScale",
+              "scopeConstraints",
+              "desiredOutputs"
+            ],
+            "scopeCueMentionAnyOf": [
+              "university",
+              "universities",
+              "higher education",
+              "sector",
+              "jurisdiction",
+              "UK",
+              "EU",
+              "global",
+              "timeframe",
+              "horizon",
+              "policy frame",
+              "regulatory",
+              "governance model"
+            ]
+          }
+        },
+        "disclosureId": "topic_scope_under_specified"
+      },
+      {
+        "id": "evidence_language_generate_from_topic_mismatch",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "input_strategy": "generate_from_topic"
+          },
+          "briefFieldMentionAnyOf": {
+            "fields": ["designIntent", "goal", "desiredOutputs"],
+            "terms": [
+              "evidence",
+              "analyse the evidence",
+              "analyze the evidence",
+              "from sources",
+              "source material",
+              "corpus",
+              "literature",
+              "sector report",
+              "uploaded"
+            ]
+          },
+          "stepsIncludeAny": ["Normalize Content", "Extract Key Findings"]
+        },
+        "disclosureId": "evidence_language_generate_from_topic_mismatch"
+      },
+      {
+        "id": "plan_heavy_for_output_depth",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "output_depth": "concise"
+          },
+          "stepCountAtLeast": {
+            "minSteps": 7
+          },
+          "stepsIncludeAny": ["Conduct Thematic Analysis", "Build Literature Matrix"]
+        },
+        "disclosureId": "plan_heavy_for_output_depth"
+      }
+    ],
     "planningGateDisclosures": [
       {
         "id": "heuristic_proceed_gates",

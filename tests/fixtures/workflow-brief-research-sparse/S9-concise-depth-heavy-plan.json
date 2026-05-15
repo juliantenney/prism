@@ -1,0 +1,35 @@
+{
+  "caseId": "S9-concise-depth-heavy-plan",
+  "scenario": "Concise output depth with a relatively heavy analysis and synthesis chain.",
+  "baseInput": {
+    "name": "S9 Concise Depth Heavy Plan",
+    "goal": "",
+    "designIntent": "Concise executive briefing on university AI policy for provosts",
+    "audience": "University provosts",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "briefing note",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "resolvedFactorsForAdequacy": {
+      "objective_type": "briefing",
+      "input_strategy": "generate_from_topic",
+      "audience": "University provosts",
+      "output_depth": "concise"
+    },
+    "missingFactorIdsForAdequacy": [],
+    "planningAdequacy": [
+      {
+        "id": "plan_heavy_for_output_depth",
+        "disclosureId": "plan_heavy_for_output_depth",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "source": "planningAdequacyChecks"
+      }
+    ]
+  }
+}

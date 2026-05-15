@@ -20,25 +20,22 @@ You advance **Sprint 18** for PRISM: design and (when chartered) implement **con
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 18** | **Active (bootstrap)** — exploration / docs-first; implementation charter TBD |
-| **Sprint 17** | **Closed** — sparse fixtures S1–S6; validation/conflict/disclosure/gates; **85 tests green** |
+| **Sprint 18** | **Checkpoint** — Slices 1–2 **closed**; **91 tests green** — see **`SPRINT-18-CHECKPOINT.md`** |
+| **Sprint 17** | **Closed** — sparse fixtures S1–S6; **85 tests** at closeout |
 | **Sprint 16** | **Closed baseline** — `page` renderer; do not reopen unless hard regression |
 
 ---
 
 ## 3. Read-first order
 
-1. **`HANDOVER.md`** — pack purpose and next steps  
-2. **`sprint-18-bootstrap.md`** — architecture, four concepts, constraints, manual tests  
-3. **`context-files/sprint-17-implementation-summary.md`** — Sprint 17 closeout  
-4. **`context-files/contextual-refinement-architecture-note.md`** — four layers, breakthrough framing  
-5. **`context-files/sprint-17-topic-sufficiency-gap.md`** — post-closeout smoke test gap  
-6. **`context-files/workflow-aware-refinement-concepts.md`** — candidate pack concepts  
-7. **`context-files/existing-refinement-infrastructure-audit.md`** — what code already does  
-8. **`context-files/sprint-18-research-questions.md`** — open design questions (S1–S6 grounded)  
-9. **`context-files/sprint-17-research-elicitation-sparse-brief-prep.md`** — sparse brief S1–S6 table  
-10. **`context-files/prompt-studio-workflow-factory-lessons.md`** — PS patterns, no merge  
-11. **Live repo (when mounted):** `domains/research/domain-research-step-patterns.md`, `tests/fixtures/workflow-brief-research-sparse/`, `app.js` elicitation + `continueWorkflowDesignGeneration`
+1. **`SPRINT-18-CHECKPOINT.md`** — Slices 1–2 closeout, verification, next candidate slices  
+2. **`HANDOVER.md`** — pack purpose and next steps  
+3. **`sprint-18-bootstrap.md`** — architecture, four concepts, constraints, manual tests  
+4. **`context-files/sprint-17-implementation-summary.md`** — Sprint 17 closeout  
+5. **`context-files/sprint-17-topic-sufficiency-gap.md`** — smoke gap (addressed by S7)  
+6. **`docs/consolidation/sprint-18-slice-1-charter.md`** — Slice 1 charter (closed)  
+7. **`review-log.md`** — decisions and closeout log  
+8. **Live repo (when mounted):** `domains/research/domain-research-step-patterns.md`, fixtures S1–S7, `workflow-research-adequacy.test.js`, `app.js`
 
 ---
 
@@ -54,15 +51,17 @@ Sprint 17 made sparse briefs **safe**. Sprint 18 makes plans **adequate and impr
 
 ---
 
-## 5. Sprint 18 focus (bootstrap)
+## 5. Sprint 18 delivered (checkpoint)
 
-| Area | Direction |
-|------|-----------|
-| **Substrate** | First workflow design creates step-level semantic context |
-| **Policy** | Pack triggers on workflow shape + brief (Research first) |
-| **UX** | Workflow-level recommendations; step Settings = advanced override |
-| **First adequacy candidate** | Topic scope when `generate_from_topic` + analysis chain (smoke test) |
-| **Regression** | Keep S1–S6; plan S7+ for adequacy |
+| Area | Status |
+|------|--------|
+| **Refinement context** | `buildWorkflowRefinementContext` — **done** (Slice 1) |
+| **Topic sufficiency rule** | `topic_scope_under_specified` — **done** (Slice 1) |
+| **Planning panel** | Post-synthesis `planning_adequacy` — **done** (Slice 2) |
+| **S7 fixture** | Proves adequacy notice for smoke brief — **done** |
+| **Regression** | S1–S6 unchanged; **91 tests** |
+
+**Next (charter required):** Slice 3A manual/copy, 3B dismiss, 3C more rules; renderer separate.
 
 ---
 
@@ -83,16 +82,15 @@ Sprint 17 made sparse briefs **safe**. Sprint 18 makes plans **adequate and impr
 node --test tests/*.test.js
 ```
 
-**Baseline:** **85 passed**, 0 failed (2026-05-15).
+**Checkpoint:** **91 passed**, 0 failed (2026-05-15). S1–S6 unchanged.
 
 ---
 
 ## 8. Recommended first tasks (fresh session)
 
-1. Read **`sprint-18-bootstrap.md`** §§3–9 and §13 (manual tests).  
-2. Read **`context-files/sprint-18-research-questions.md`** — answer or narrow RQ-T1, RQ-B1, RQ-P1.  
-3. Run tests — confirm **85 passed**.  
-4. If implementing: draft **refinement context contract** doc only, then one Research pack rule + **S7** fixture proposal — no broad `app.js` refactor without charter.
+1. Read **`SPRINT-18-CHECKPOINT.md`**.  
+2. Run tests — confirm **91 passed**.  
+3. If implementing: charter **Slice 3A**, **3B**, or **3C** explicitly — bounded diffs; do not bundle renderer work.
 
 ---
 
@@ -100,28 +98,23 @@ node --test tests/*.test.js
 
 You are assisting with Sprint 18 — Contextual Workflow Refinement for PRISM.
 
-Sprint 17 (closed): Research sparse-brief planning is safe via pack-driven validationRules, conflictPolicies, disclosurePolicy, proceed gates, and golden fixtures S1–S6 (85 tests green). Post-closeout gap: brief "Analyse the evidence and produce an executive briefing on AI governance risks" resolved all required factors including generate_from_topic but never clarified topic scope before a full analysis chain was planned.
+Sprint 17 (closed): Research sparse-brief planning is safe via pack-driven validationRules, conflictPolicies, disclosurePolicy, proceed gates, and golden fixtures S1–S6 (85 tests at closeout).
 
-Sprint 18 focus:
-- workflow-aware, recommendation-driven, usually non-blocking refinement on top of deterministic planning
-- workflow generation creates semantic context for elicitation (step list + artefacts + disclosures), not factor enumeration alone
-- distinguish: required essentials (blocking), proceedability (gates), refinement opportunities (assistive), workflow-quality enrichment (derived signals)
-- Research-first; LD deferred; Prompt Studio lessons only (no orchestration merge)
-- preserve: runtime interprets policy, packs declare policy
+Sprint 18 checkpoint (Slices 1–2 closed):
+- Slice 1: refinement context contract + Research topic_scope_under_specified adequacy rule + S7 fixture + evaluator tests
+- Slice 2: post-synthesis Planning-panel surfacing of planning_adequacy via continueWorkflowDesignGeneration
+- S7 proves assistive topic-sufficiency notice for smoke brief "AI governance risks" after analysis steps exist
+- S1–S6 regression unchanged
+- 91 tests passed, 0 failed
 
-Start by reading (in order):
-1. docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/HANDOVER.md
-2. docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/sprint-18-bootstrap.md
-3. docs/consolidation/sprint-17-implementation-summary.md (or context-files/sprint-17-implementation-summary.md)
-4. docs/consolidation/contextual-refinement-architecture-note.md
-5. docs/exploration/workflow-aware-refinement-concepts.md
-6. docs/audits/existing-refinement-infrastructure-audit.md
-7. docs/exploration/sprint-18-research-questions.md
-8. docs/consolidation/sprint-17-research-elicitation-sparse-brief-prep.md (S1–S6)
-9. context-files/prompt-studio-workflow-factory-lessons.md in the Sprint 18 pack
+Four concepts (keep distinct): required essentials (blocking), proceedability (gates), refinement opportunities (assistive planning_adequacy), workflow-quality enrichment (derived in adequacy when clauses).
 
-Do not: merge Prompt Studio, redesign renderer/schema/orchestration, reopen Sprint 17 implementation, implement LD refinement unless chartered.
+Out of scope unless chartered: chat clarification, dismiss/suppress, LD rollout, AI phrasing, renderer/schema redesign, Prompt Studio merge.
 
-Baseline: node --test tests/*.test.js → 85 passed.
+Next candidate slices: 3A manual M0/M2/M4 + copy polish; 3B dismiss lifecycle; 3C more adequacy rules; renderer contract separate.
 
-Active exploration: refinement timing, assistive vs blocking, refinement context contract, topic sufficiency / highImpactClarificationRules, S7+ fixtures, manual tests M0–M8 in sprint-18-bootstrap.md §13.
+Start by reading:
+1. docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/SPRINT-18-CHECKPOINT.md
+2. HANDOVER.md, review-log.md, docs/consolidation/sprint-18-slice-1-charter.md
+
+Baseline: node --test tests/*.test.js → 91 passed.

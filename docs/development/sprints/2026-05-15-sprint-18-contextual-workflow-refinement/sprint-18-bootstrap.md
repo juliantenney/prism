@@ -3,7 +3,7 @@
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/`  
 **Sprint title:** Sprint 18 — Contextual Workflow Refinement  
-**Status:** **Bootstrap / handover** — documentation and exploration; **no implementation charter** in this pack.
+**Status:** **Checkpoint** — Slices 1–2 **closed**; see [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md). Architecture bootstrap below remains valid; verification floor is **91 tests**.
 
 **Portable handover:** Use **`GPT-BOOTSTRAP-PROMPT.md`** + **`HANDOVER.md`** to start a fresh chat. **`context-files/`** holds snapshots when the repo root is not attached.
 
@@ -15,7 +15,7 @@
 
 **Sprint 17 (closed)** proved that **pack-driven deterministic planning** makes sparse Research briefs **safe**: validation, conflict, disclosure, proceed gates, and golden fixtures **S1–S6** (**85 tests green**).
 
-**Sprint 18** addresses what Sprint 17 deliberately did not: **planning adequacy** and **workflow-aware refinement** — intelligent, usually **non-blocking** guidance grounded in the **designed workflow**, not an ever-growing upfront factor questionnaire.
+**Sprint 18 (Slices 1–2 closed)** delivered **planning adequacy** and **workflow-aware refinement** for Research: assistive, **non-blocking** `planning_adequacy` guidance grounded in the **designed workflow**, starting with **topic scope** when `generate_from_topic` meets an analysis chain (S7).
 
 **Architectural breakthrough (one sentence):**  
 *Workflow generation turns abstract brief factors into a concrete step-and-artefact commitment; that record is the semantic substrate for elicitation and refinement that factor IDs alone cannot provide.*
@@ -28,12 +28,13 @@
 
 | Delivered | Role for Sprint 18 |
 |-----------|-------------------|
-| Fixtures **S1–S6** + `workflow-research-sparse-briefs.test.js` | Regression baseline — extend with **S7+** for adequacy, do not break S1–S6 semantics |
+| Fixtures **S1–S6** + `workflow-research-sparse-briefs.test.js` | Regression baseline — **unchanged** at checkpoint |
+| **S7** + `workflow-research-adequacy.test.js` | Topic-sufficiency adequacy — **delivered** Slice 1–2 |
 | `validationRules`, `conflictPolicies`, `disclosurePolicy` | Stay **deterministic** and **blocking** when unsafe |
 | Proceed gates (`generateResearchContentHeuristic`, `researchDesignPageAppend`) | **Proceedability** — withhold steps until essentials allow |
 | Planning disclosure (categories, `rejectedInference`, `planningGateDisclosures`) | Template for **assistive** adequacy notices |
 | `explicitExtract` proposal (Slice 4) | **Deferred** — optional parallel track |
-| **85 tests** | Verification floor |
+| **85 tests** (S17) → **91 tests** (S18 checkpoint) | Verification floor |
 
 **Post-closeout gap (motivation, not a defect):**  
 Brief: *“Analyse the evidence and produce an executive briefing on AI governance risks.”*  
@@ -288,7 +289,8 @@ Run in Factory with Research domain; record Planning panel + chat + step list.
 | `HANDOVER.md` | Session handover summary |
 | `SPRINT-CONTEXT.md` | Focus, boundaries, verification |
 | `CURRENT-STATE.md` | Active sprint pointer |
-| `review-log.md` | Decisions and open questions |
+| `SPRINT-18-CHECKPOINT.md` | Slices 1–2 closeout + next candidate slices |
+| `review-log.md` | Decisions and closeout log |
 | `context-files/` | Portable snapshots |
 
 ---
@@ -299,8 +301,12 @@ Run in Factory with Research domain; record Planning panel + chat + step list.
 node --test tests/*.test.js
 ```
 
-**Baseline:** **85 passed**, 0 failed (Sprint 17 closeout, 2026-05-15).  
-Sprint 18 documentation-only work must not change test outcomes until an implementation charter explicitly adds tests.
+| Milestone | Result |
+|-----------|--------|
+| Sprint 17 closeout | **85 passed**, 0 failed |
+| Sprint 18 checkpoint (Slices 1–2) | **91 passed**, 0 failed |
+
+S1–S6 sparse-brief semantics unchanged. See [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md) for next candidate slices (3A–3C).
 
 ---
 

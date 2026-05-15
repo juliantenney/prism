@@ -12,10 +12,11 @@
 
 ## Sprint 18 focus
 
-- **Goal:** Design (and later implement) **workflow-aware contextual refinement** on deterministic planning — **Research first**.
+- **Goal:** **Workflow-aware contextual refinement** on deterministic planning — **Research first** (Slices 1–2 **closed**).
 - **Breakthrough:** Workflow synthesis creates **semantic context** for elicitation; refinement reads **steps + brief + disclosures**, not only factor IDs.
-- **Framing:** Sprint 17 = **safe**; Sprint 18 = **adequate + improvable** without factor-schema explosion.
-- **Not in scope:** renderer, schema redesign, Prompt Studio merge, LD implementation (default), Sprint 17 reopen.
+- **Framing:** Sprint 17 = **safe**; Sprint 18 Slices 1–2 = **assistive adequacy** surfaced in Planning panel after synthesis.
+- **Checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
+- **Not in scope (ongoing):** chat, dismiss state, LD rollout, AI phrasing, renderer/schema, Prompt Studio merge; Sprint 17 reopen.
 
 ---
 
@@ -34,8 +35,8 @@
 |---------|---------------------|
 | **Required essentials** | Four Research factors; essentials queue |
 | **Proceedability** | GRC / Design Page gates |
-| **Refinement opportunities** | Sprint 18 target (assistive) |
-| **Workflow-quality enrichment** | Sprint 18 target (derived) |
+| **Refinement opportunities** | Slice 1–2: `planning_adequacy` (assistive) |
+| **Workflow-quality enrichment** | Folded into adequacy `when` (e.g. `weakTopicScope`) |
 
 ---
 
@@ -45,8 +46,8 @@
 |-------|----------|
 | Pack | `domain-research-step-patterns.md` — extend `workflowBriefConfig` when chartered |
 | Runtime | `app.js` — generic interpreters; `continueWorkflowDesignGeneration` |
-| Fixtures | `tests/fixtures/workflow-brief-research-sparse/` S1–S6 (+ S7 planned) |
-| Tests | `workflow-research-sparse-briefs.test.js` |
+| Fixtures | `tests/fixtures/workflow-brief-research-sparse/` S1–S7 |
+| Tests | `workflow-research-sparse-briefs.test.js` (S1–S6); `workflow-research-adequacy.test.js` (S7) |
 
 **LD:** Audit and lessons only unless separate charter.
 
@@ -73,7 +74,18 @@
 node --test tests/*.test.js
 ```
 
-**Baseline:** **85 passed**, 0 failed (2026-05-15).
+**Checkpoint:** **91 passed**, 0 failed (2026-05-15). S1–S6 unchanged.
+
+---
+
+## Next candidate slices
+
+1. **Slice 3A** — manual M0/M2/M4 + copy polish  
+2. **Slice 3B** — dismiss / recommendation lifecycle  
+3. **Slice 3C** — additional Research adequacy checks  
+4. **Renderer contract** — separate charter
+
+Details: [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md).
 
 ---
 

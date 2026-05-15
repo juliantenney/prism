@@ -3225,6 +3225,9 @@
       planningGateDisclosures: Array.isArray(cfg.planningGateDisclosures)
         ? cfg.planningGateDisclosures
         : [],
+      planningAdequacyChecks: Array.isArray(cfg.planningAdequacyChecks)
+        ? cfg.planningAdequacyChecks
+        : [],
       questionPolicy: {
         maxDefaultQuestions: Number(qp.maxDefaultQuestions || 4),
         askOptionalByDefault: !!qp.askOptionalByDefault,
@@ -3268,7 +3271,8 @@
       conflicting_intent: { label: "Conflicting intent", order: 2 },
       blocked_unsafe_inference: { label: "Blocked unsafe inference", order: 3 },
       rejected_inference: { label: "Inferred but not used", order: 4 },
-      gated_planning: { label: "Planning steps withheld", order: 5 }
+      gated_planning: { label: "Planning steps withheld", order: 5 },
+      planning_adequacy: { label: "Planning adequacy", order: 6 }
     };
     var base = defaults[key] || { label: key || "Planning", order: 99 };
     return {
@@ -3295,6 +3299,418 @@
             ? defaults.blockedValue
             : ""
     };
+  }
+
+  function workflowBriefCountSignificantTokens(text) {
+    var raw = String(text || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+    if (!raw) return 0;
+    return raw.split(/\s+/).filter(Boolean).length;
+  }
+
+  function workflowBriefReadScopeCueFieldText(brief, fieldId) {
+    var b = brief && typeof brief === "object" ? brief : {};
+    var key = String(fieldId || "").trim();
+    if (!key) return "";
+    if (key === "designIntent" || key === "design_intent") return String(b.designIntent || "");
+    if (key === "goal") return String(b.goal || "");
+    if (key === "scopeScale" || key === "scope_scale") return String(b.scopeScale || "");
+    if (key === "scopeConstraints" || key === "scope_constraints") {
+      return String(b.scopeConstraints || "");
+    }
+    if (key === "desiredOutputs" || key === "desired_outputs") {
+      return String(b.desiredOutputs || "");
+    }
+    if (key === "audience") return String(b.audience || "");
+    if (key === "inputs") return String(b.inputs || "");
+    return "";
+  }
+
+  var WORKFLOW_BRIEF_PLANNING_ADEQUACY_MAX_ROWS = 3;
+
+  function workflowBriefBriefFieldMentionAnyOf(rule, ctx) {
+    var cfg = rule && typeof rule === "object" ? rule : {};
+    var fields = Array.isArray(cfg.fields) ? cfg.fields : [];
+    var terms = Array.isArray(cfg.terms) ? cfg.terms : [];
+    if (!terms.length) return true;
+    if (!fields.length) return false;
+    var brief = ctx && ctx.brief && typeof ctx.brief === "object" ? ctx.brief : {};
+    var blob = fields
+      .map(function (fieldId) {
+        return workflowBriefReadScopeCueFieldText(brief, fieldId);
+      })
+      .join("\n")
+      .toLowerCase();
+    if (!blob.trim()) return false;
+    return terms.some(function (term) {
+      var needle = String(term || "").toLowerCase().trim();
+      return needle && blob.indexOf(needle) !== -1;
+    });
+  }
+
+  function workflowBriefReadAudienceFactorValue(ctx, audienceFactorIds) {
+    var ids = Array.isArray(audienceFactorIds) ? audienceFactorIds : ["audience"];
+    var explicit =
+      ctx && ctx.explicitValues && typeof ctx.explicitValues === "object" ? ctx.explicitValues : {};
+    var resolved =
+      ctx && ctx.resolvedFactors && typeof ctx.resolvedFactors === "object"
+        ? ctx.resolvedFactors
+        : {};
+    for (var i = 0; i < ids.length; i += 1) {
+      var id = String(ids[i] || "").trim();
+      if (!id) continue;
+      if (Object.prototype.hasOwnProperty.call(explicit, id)) {
+        var explicitValue = String(explicit[id] != null ? explicit[id] : "").trim();
+        if (explicitValue) return explicitValue;
+      }
+      if (Object.prototype.hasOwnProperty.call(resolved, id)) {
+        var resolvedValue = String(resolved[id] != null ? resolved[id] : "").trim();
+        if (resolvedValue) return resolvedValue;
+      }
+    }
+    var brief = ctx && ctx.brief && typeof ctx.brief === "object" ? ctx.brief : {};
+    return String(brief.audience || "").trim();
+  }
+
+  function workflowBriefAudienceCueMentioned(ctx, audienceCueFields, audienceCueMentionAnyOf) {
+    var fields = Array.isArray(audienceCueFields) ? audienceCueFields : [];
+    var terms = Array.isArray(audienceCueMentionAnyOf) ? audienceCueMentionAnyOf : [];
+    if (!terms.length) return false;
+    var brief = ctx && ctx.brief && typeof ctx.brief === "object" ? ctx.brief : {};
+    var audienceText = workflowBriefReadAudienceFactorValue(ctx, ["audience"]);
+    var fieldList = fields.slice();
+    if (fieldList.indexOf("audience") === -1) fieldList.push("audience");
+    var blob = fieldList
+      .map(function (fieldId) {
+        if (fieldId === "audience") return audienceText;
+        return workflowBriefReadScopeCueFieldText(brief, fieldId);
+      })
+      .join("\n")
+      .toLowerCase();
+    if (!blob.trim()) return false;
+    return terms.some(function (term) {
+      var cue = String(term || "").toLowerCase().trim();
+      return cue && blob.indexOf(cue) !== -1;
+    });
+  }
+
+  function workflowBriefWeakAudienceCueIsWeak(weakAudienceCue, ctx) {
+    var rule = weakAudienceCue && typeof weakAudienceCue === "object" ? weakAudienceCue : {};
+    var audienceText = workflowBriefReadAudienceFactorValue(ctx, rule.audienceFactorIds);
+    if (!audienceText) return false;
+    var genericTerms = Array.isArray(rule.weakAudienceMentionAnyOf)
+      ? rule.weakAudienceMentionAnyOf
+      : Array.isArray(rule.genericAudienceMentionAnyOf)
+        ? rule.genericAudienceMentionAnyOf
+        : [];
+    if (workflowBriefAudienceCueMentioned(ctx, rule.audienceCueFields, rule.audienceCueMentionAnyOf)) {
+      return false;
+    }
+    if (workflowBriefScopeCueMentioned(ctx.brief, rule.audienceCueFields, rule.audienceCueMentionAnyOf)) {
+      return false;
+    }
+    if (!genericTerms.length) return false;
+    var audienceBlob = audienceText.toLowerCase();
+    return genericTerms.some(function (term) {
+      var cue = String(term || "").toLowerCase().trim();
+      return cue && audienceBlob.indexOf(cue) !== -1;
+    });
+  }
+
+  function workflowBriefStepTitlesLackAny(ctx, excludedTitles) {
+    var titles = Array.isArray(excludedTitles) ? excludedTitles : [];
+    if (!titles.length) return true;
+    return !workflowBriefStepTitlesIncludeAny(ctx, titles);
+  }
+
+  function workflowBriefStepCountAtLeast(rule, ctx) {
+    var cfg = rule && typeof rule === "object" ? rule : {};
+    var minSteps = Number(cfg.minSteps != null ? cfg.minSteps : cfg.min);
+    if (!isFinite(minSteps) || minSteps <= 0) return true;
+    var context = ctx && typeof ctx === "object" ? ctx : {};
+    var design = context.design && typeof context.design === "object" ? context.design : null;
+    var designSteps = design && Array.isArray(design.steps) ? design.steps : [];
+    var heuristics =
+      context.heuristics && typeof context.heuristics === "object" ? context.heuristics : null;
+    var heuristicTitles =
+      heuristics && Array.isArray(heuristics.stepTitles) ? heuristics.stepTitles : [];
+    if (designSteps.length >= minSteps || heuristicTitles.length >= minSteps) return true;
+    return workflowBriefCollectStepTitles(context).length >= minSteps;
+  }
+
+  function workflowBriefScopeCueMentioned(brief, scopeCueFields, scopeCueMentionAnyOf) {
+    var fields = Array.isArray(scopeCueFields) ? scopeCueFields : [];
+    var terms = Array.isArray(scopeCueMentionAnyOf) ? scopeCueMentionAnyOf : [];
+    if (!fields.length || !terms.length) return false;
+    var blob = fields
+      .map(function (fieldId) {
+        return workflowBriefReadScopeCueFieldText(brief, fieldId);
+      })
+      .join("\n")
+      .toLowerCase();
+    if (!blob.trim()) return false;
+    return terms.some(function (term) {
+      var cue = String(term || "").toLowerCase().trim();
+      return cue && blob.indexOf(cue) !== -1;
+    });
+  }
+
+  function workflowBriefReadTopicFactorValue(ctx, topicFactorIds) {
+    var ids = Array.isArray(topicFactorIds) ? topicFactorIds : [];
+    var explicit =
+      ctx && ctx.explicitValues && typeof ctx.explicitValues === "object" ? ctx.explicitValues : {};
+    var resolved =
+      ctx && ctx.resolvedFactors && typeof ctx.resolvedFactors === "object"
+        ? ctx.resolvedFactors
+        : {};
+    for (var i = 0; i < ids.length; i += 1) {
+      var id = String(ids[i] || "").trim();
+      if (!id) continue;
+      if (Object.prototype.hasOwnProperty.call(explicit, id)) {
+        var explicitValue = String(explicit[id] != null ? explicit[id] : "").trim();
+        if (explicitValue) return explicitValue;
+      }
+      if (Object.prototype.hasOwnProperty.call(resolved, id)) {
+        var resolvedValue = String(resolved[id] != null ? resolved[id] : "").trim();
+        if (resolvedValue) return resolvedValue;
+      }
+    }
+    return "";
+  }
+
+  function workflowBriefWeakTopicScopeIsWeak(weakTopicScope, ctx) {
+    var rule = weakTopicScope && typeof weakTopicScope === "object" ? weakTopicScope : {};
+    var topicText = workflowBriefReadTopicFactorValue(ctx, rule.topicFactorIds);
+    if (!topicText) return false;
+    var maxTokens = Number(rule.maxSignificantTokens);
+    if (!isFinite(maxTokens) || maxTokens < 0) maxTokens = 0;
+    if (workflowBriefScopeCueMentioned(ctx.brief, rule.scopeCueFields, rule.scopeCueMentionAnyOf)) {
+      return false;
+    }
+    return workflowBriefCountSignificantTokens(topicText) <= maxTokens;
+  }
+
+  function workflowBriefNormalizeStepTitle(title) {
+    return String(title || "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function workflowBriefCollectStepTitles(ctx) {
+    var titles = [];
+    var seen = {};
+    var design = ctx && ctx.design && typeof ctx.design === "object" ? ctx.design : null;
+    var steps = design && Array.isArray(design.steps) ? design.steps : [];
+    steps.forEach(function (step) {
+      if (!step || typeof step !== "object") return;
+      var normalized = workflowBriefNormalizeStepTitle(step.title);
+      if (!normalized || seen[normalized]) return;
+      seen[normalized] = true;
+      titles.push(normalized);
+    });
+    var heuristics = ctx && ctx.heuristics && typeof ctx.heuristics === "object" ? ctx.heuristics : null;
+    var heuristicTitles =
+      heuristics && Array.isArray(heuristics.stepTitles) ? heuristics.stepTitles : [];
+    heuristicTitles.forEach(function (title) {
+      var normalized = workflowBriefNormalizeStepTitle(title);
+      if (!normalized || seen[normalized]) return;
+      seen[normalized] = true;
+      titles.push(normalized);
+    });
+    return titles;
+  }
+
+  function workflowBriefStepTitlesIncludeAny(ctx, requiredTitles) {
+    var required = Array.isArray(requiredTitles) ? requiredTitles : [];
+    if (!required.length) return true;
+    var present = workflowBriefCollectStepTitles(ctx);
+    return required.some(function (title) {
+      var needle = workflowBriefNormalizeStepTitle(title);
+      return needle && present.indexOf(needle) !== -1;
+    });
+  }
+
+  function workflowBriefStepTitlesIncludeAll(ctx, requiredTitles) {
+    var required = Array.isArray(requiredTitles) ? requiredTitles : [];
+    if (!required.length) return true;
+    var present = workflowBriefCollectStepTitles(ctx);
+    return required.every(function (title) {
+      var needle = workflowBriefNormalizeStepTitle(title);
+      return needle && present.indexOf(needle) !== -1;
+    });
+  }
+
+  function workflowBriefAdequacyWhenMatches(when, ctx) {
+    if (!when || typeof when !== "object") return true;
+    var context = ctx && typeof ctx === "object" ? ctx : {};
+    var resolved =
+      context.resolvedFactors && typeof context.resolvedFactors === "object"
+        ? context.resolvedFactors
+        : {};
+    var equals =
+      when.resolvedFactorEquals && typeof when.resolvedFactorEquals === "object"
+        ? when.resolvedFactorEquals
+        : null;
+    if (equals) {
+      var factorKeys = Object.keys(equals);
+      for (var fi = 0; fi < factorKeys.length; fi += 1) {
+        var factorId = String(factorKeys[fi] || "").trim();
+        if (!factorId) continue;
+        var expected = String(equals[factorId] != null ? equals[factorId] : "")
+          .trim()
+          .toLowerCase();
+        var actual = String(resolved[factorId] != null ? resolved[factorId] : "")
+          .trim()
+          .toLowerCase();
+        if (actual !== expected) return false;
+      }
+    }
+    if (Array.isArray(when.stepsIncludeAny) && when.stepsIncludeAny.length) {
+      if (!workflowBriefStepTitlesIncludeAny(context, when.stepsIncludeAny)) return false;
+    }
+    if (Array.isArray(when.stepsIncludeAll) && when.stepsIncludeAll.length) {
+      if (!workflowBriefStepTitlesIncludeAll(context, when.stepsIncludeAll)) return false;
+    }
+    if (when.weakTopicScope && typeof when.weakTopicScope === "object") {
+      if (!workflowBriefWeakTopicScopeIsWeak(when.weakTopicScope, context)) return false;
+    }
+    if (when.briefFieldMentionAnyOf && typeof when.briefFieldMentionAnyOf === "object") {
+      if (!workflowBriefBriefFieldMentionAnyOf(when.briefFieldMentionAnyOf, context)) return false;
+    }
+    var stepsLackTitles = Array.isArray(when.stepsLackAny)
+      ? when.stepsLackAny
+      : Array.isArray(when.stepsExclude)
+        ? when.stepsExclude
+        : null;
+    if (stepsLackTitles && stepsLackTitles.length) {
+      if (!workflowBriefStepTitlesLackAny(context, stepsLackTitles)) return false;
+    }
+    if (when.stepCountAtLeast && typeof when.stepCountAtLeast === "object") {
+      if (!workflowBriefStepCountAtLeast(when.stepCountAtLeast, context)) return false;
+    }
+    if (when.weakAudienceCue && typeof when.weakAudienceCue === "object") {
+      if (!workflowBriefWeakAudienceCueIsWeak(when.weakAudienceCue, context)) return false;
+    }
+    return true;
+  }
+
+  function buildWorkflowRefinementContext(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var briefInput = opts.brief && typeof opts.brief === "object" ? opts.brief : opts.base;
+    var brief =
+      briefInput && typeof briefInput === "object" ? buildWorkflowDesignBase(briefInput) : null;
+    var config = normalizeWorkflowBriefConfig(opts.config);
+    var resolvedFactors =
+      opts.resolvedFactors && typeof opts.resolvedFactors === "object"
+        ? Object.assign({}, opts.resolvedFactors)
+        : {};
+    var resolvedSources =
+      opts.resolvedSources && typeof opts.resolvedSources === "object"
+        ? Object.assign({}, opts.resolvedSources)
+        : {};
+    var explicitValues =
+      opts.explicitValues && typeof opts.explicitValues === "object"
+        ? Object.assign({}, opts.explicitValues)
+        : {};
+    var inferredValues =
+      opts.inferredValues && typeof opts.inferredValues === "object"
+        ? Object.assign({}, opts.inferredValues)
+        : {};
+    var missingFactorIds = Array.isArray(opts.missingFactorIds)
+      ? opts.missingFactorIds.map(function (id) {
+          return String(id || "").trim();
+        }).filter(Boolean)
+      : [];
+    var designInput = opts.design && typeof opts.design === "object" ? opts.design : {};
+    var designSteps = Array.isArray(designInput.steps) ? designInput.steps : [];
+    var steps = designSteps.map(function (step) {
+      var s = step && typeof step === "object" ? step : {};
+      var depends =
+        Array.isArray(s.depends_on) || Array.isArray(s.dependsOn)
+          ? (Array.isArray(s.depends_on) ? s.depends_on : s.dependsOn).slice()
+          : [];
+      return {
+        title: String(s.title || "").trim(),
+        role: String(s.role || "").trim(),
+        depends_on: depends,
+        canonical_step_id: String(s.canonical_step_id || s.canonicalStepId || "").trim()
+      };
+    });
+    var heuristicsInput = opts.heuristics && typeof opts.heuristics === "object" ? opts.heuristics : {};
+    var stepTitles = Array.isArray(heuristicsInput.stepTitles)
+      ? heuristicsInput.stepTitles.map(function (title) {
+          return String(title || "").trim();
+        }).filter(Boolean)
+      : steps.map(function (step) {
+          return String(step.title || "").trim();
+        }).filter(Boolean);
+    var validationInput = opts.validation && typeof opts.validation === "object" ? opts.validation : {};
+    var metaInput = opts.meta && typeof opts.meta === "object" ? opts.meta : {};
+    return {
+      brief: brief,
+      config: config,
+      resolvedFactors: resolvedFactors,
+      resolvedSources: resolvedSources,
+      explicitValues: explicitValues,
+      inferredValues: inferredValues,
+      missingFactorIds: missingFactorIds.slice(),
+      design: {
+        summary: String(designInput.summary || "").trim(),
+        steps: steps
+      },
+      heuristics: {
+        stepTitles: stepTitles.slice(),
+        hasGenerateResearchContent: !!heuristicsInput.hasGenerateResearchContent,
+        hasDesignPage: !!heuristicsInput.hasDesignPage,
+        hasValidateResearchOutput: !!heuristicsInput.hasValidateResearchOutput
+      },
+      validation: {
+        disclosures: Array.isArray(validationInput.disclosures)
+          ? validationInput.disclosures.slice()
+          : [],
+        rejectedInference: Array.isArray(validationInput.rejectedInference)
+          ? validationInput.rejectedInference.slice()
+          : []
+      },
+      meta: {
+        domainId: String(metaInput.domainId || "").trim(),
+        fixtureId: String(metaInput.fixtureId || "").trim()
+      }
+    };
+  }
+
+  function evaluateWorkflowBriefPlanningAdequacyChecks(config, ctx) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var context = ctx && typeof ctx === "object" ? ctx : buildWorkflowRefinementContext({});
+    var missing = Array.isArray(context.missingFactorIds) ? context.missingFactorIds : [];
+    if (missing.length) return [];
+    var checks = Array.isArray(cfg.planningAdequacyChecks) ? cfg.planningAdequacyChecks : [];
+    var out = [];
+    var maxRows = WORKFLOW_BRIEF_PLANNING_ADEQUACY_MAX_ROWS;
+    checks.forEach(function (check) {
+      if (out.length >= maxRows) return;
+      if (!check || typeof check !== "object") return;
+      var when = check.when && typeof check.when === "object" ? check.when : {};
+      if (!workflowBriefAdequacyWhenMatches(when, context)) return;
+      var disclosureId = String(check.disclosureId || check.id || "").trim();
+      var entry = getWorkflowBriefDisclosureEntry(cfg, disclosureId);
+      var category = String(check.category || entry.category || "planning_adequacy").trim();
+      var severity = String(check.severity || "recommendation").trim();
+      var message = String(entry.message || "").trim();
+      if (!message) return;
+      out.push({
+        id: String(check.id || disclosureId).trim(),
+        category: category,
+        severity: severity,
+        message: message,
+        action: String(entry.action || "").trim(),
+        disclosureId: disclosureId,
+        source: "planningAdequacyChecks"
+      });
+    });
+    return out.length > maxRows ? out.slice(0, maxRows) : out;
   }
 
   function buildWorkflowBriefPlanningDisclosures(config, options) {
@@ -3401,6 +3817,16 @@
       });
     });
 
+    (Array.isArray(opts.planningAdequacyRows) ? opts.planningAdequacyRows : []).forEach(function (row) {
+      if (!row || !row.message) return;
+      pushRow({
+        id: String(row.id || row.disclosureId || "").trim(),
+        category: String(row.category || "planning_adequacy").trim(),
+        message: String(row.message || "").trim(),
+        action: String(row.action || "").trim()
+      });
+    });
+
     out.sort(function (a, b) {
       var ao = getWorkflowBriefPlanningCategoryMeta(cfg, a.category).order;
       var bo = getWorkflowBriefPlanningCategoryMeta(cfg, b.category).order;
@@ -3470,6 +3896,62 @@
     return resolvedState;
   }
 
+  function hasWorkflowDesignSnapshotForAdequacy(design) {
+    return !!(design && typeof design === "object" && Array.isArray(design.steps) && design.steps.length);
+  }
+
+  function applyWorkflowBriefPlanningAdequacyAfterDesign(config, resolvedState, base, design, options) {
+    if (!resolvedState || typeof resolvedState !== "object") return resolvedState;
+    if (!hasWorkflowDesignSnapshotForAdequacy(design)) return resolvedState;
+    var missing = Array.isArray(resolvedState.missing) ? resolvedState.missing : [];
+    if (missing.length) return resolvedState;
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var b = base && typeof base === "object" ? base : {};
+    var opts = options && typeof options === "object" ? options : {};
+    var explicitValues =
+      opts.explicitValues && typeof opts.explicitValues === "object"
+        ? opts.explicitValues
+        : extractWorkflowBriefExplicitFactors(b);
+    var stepTitles = design.steps.map(function (step) {
+      return String((step && step.title) || "").trim();
+    });
+    var refinementCtx = buildWorkflowRefinementContext({
+      brief: b,
+      config: cfg,
+      resolvedFactors: resolvedState.resolvedFactors || {},
+      resolvedSources: resolvedState.resolvedSources || {},
+      explicitValues: explicitValues,
+      inferredValues: resolvedState.inferredFactors || {},
+      missingFactorIds: [],
+      design: {
+        summary: String(design.summary || "").trim(),
+        steps: design.steps
+      },
+      heuristics: {
+        stepTitles: stepTitles,
+        hasGenerateResearchContent: stepTitles.some(function (t) {
+          return /generate research content/i.test(t);
+        }),
+        hasDesignPage: stepTitles.some(function (t) {
+          return /design page/i.test(t);
+        }),
+        hasValidateResearchOutput: stepTitles.some(function (t) {
+          return /validate research output/i.test(t);
+        })
+      }
+    });
+    var adequacyRows = evaluateWorkflowBriefPlanningAdequacyChecks(cfg, refinementCtx);
+    resolvedState.planningDisclosures = buildWorkflowBriefPlanningDisclosures(cfg, {
+      disclosures: resolvedState.validationDisclosures || [],
+      rejectedInference: resolvedState.rejectedInference || [],
+      missingFactors: [],
+      missingFactorIds: [],
+      resolvedFactors: resolvedState.resolvedFactors || {},
+      planningAdequacyRows: adequacyRows
+    });
+    return resolvedState;
+  }
+
   function workflowBriefValidationRuleWhenMatches(when, base) {
     if (!when || typeof when !== "object") return true;
     var b = base && typeof base === "object" ? base : {};
@@ -3520,10 +4002,65 @@
     }
   }
 
+  function workflowBriefConflictGoalBlob(base) {
+    var b = base && typeof base === "object" ? base : {};
+    return [b.designIntent, b.goal, b.desiredOutputs].join("\n");
+  }
+
+  function workflowBriefConflictBlobMentionAnyOf(goalBlob, terms) {
+    var list = Array.isArray(terms) ? terms : [];
+    if (!list.length) return false;
+    return list.some(function (term) {
+      return workflowBriefConflictSignalMatchesText(goalBlob, term);
+    });
+  }
+
+  function workflowBriefConflictExceptionMatches(exception, base) {
+    var exc = exception && typeof exception === "object" ? exception : {};
+    var when = exc.when && typeof exc.when === "object" ? exc.when : {};
+    var goalBlob = workflowBriefConflictGoalBlob(base);
+    var exclude = Array.isArray(when.excludeMentionAnyOf)
+      ? when.excludeMentionAnyOf
+      : Array.isArray(exc.excludeMentionAnyOf)
+        ? exc.excludeMentionAnyOf
+        : [];
+    if (exclude.length && workflowBriefConflictBlobMentionAnyOf(goalBlob, exclude)) {
+      return false;
+    }
+    var deliverable = Array.isArray(when.briefDeliverableMentionAnyOf)
+      ? when.briefDeliverableMentionAnyOf
+      : [];
+    var methodLanguage = Array.isArray(when.methodLanguageMentionAnyOf)
+      ? when.methodLanguageMentionAnyOf
+      : [];
+    if (!deliverable.length || !methodLanguage.length) return false;
+    if (!workflowBriefConflictBlobMentionAnyOf(goalBlob, deliverable)) return false;
+    if (!workflowBriefConflictBlobMentionAnyOf(goalBlob, methodLanguage)) return false;
+    return true;
+  }
+
+  function applyWorkflowBriefConflictPolicyExceptions(detected, policy, base) {
+    var values = Array.isArray(detected) ? detected.slice() : [];
+    var exceptions = Array.isArray(policy.exceptions) ? policy.exceptions : [];
+    if (!exceptions.length) return values;
+    var suppressAll = {};
+    exceptions.forEach(function (exception) {
+      if (!workflowBriefConflictExceptionMatches(exception, base)) return;
+      var suppress = Array.isArray(exception.suppressSignals) ? exception.suppressSignals : [];
+      suppress.forEach(function (signalValue) {
+        var key = String(signalValue || "").toLowerCase().trim();
+        if (key) suppressAll[key] = true;
+      });
+    });
+    return values.filter(function (value) {
+      return !suppressAll[String(value || "").toLowerCase().trim()];
+    });
+  }
+
   function collectWorkflowBriefConflictSignalValues(policy, base) {
     if (!policy || typeof policy !== "object") return [];
     var b = base && typeof base === "object" ? base : {};
-    var goalBlob = [b.designIntent, b.goal, b.desiredOutputs].join("\n").toLowerCase();
+    var goalBlob = workflowBriefConflictGoalBlob(b);
     var matched = {};
     var signals = Array.isArray(policy.signals) ? policy.signals : [];
     signals.forEach(function (sig) {
@@ -3536,7 +4073,8 @@
       });
       if (hit) matched[value] = true;
     });
-    return Object.keys(matched);
+    var detected = Object.keys(matched);
+    return applyWorkflowBriefConflictPolicyExceptions(detected, policy, b);
   }
 
   function applyWorkflowBriefConflictPolicies(config, base, explicitValues, inferredValues) {
@@ -6003,6 +6541,19 @@
         });
         var cfg = configForPostRefinement ? normalizeWorkflowBriefConfig(configForPostRefinement) : null;
         if (!cfg) return;
+        if (resolvedState && hasWorkflowDesignSnapshotForAdequacy(queuedDesign)) {
+          resolvedState = applyWorkflowBriefPlanningAdequacyAfterDesign(
+            cfg,
+            resolvedState,
+            base,
+            queuedDesign,
+            {
+              explicitValues: extractWorkflowBriefExplicitFactors(base)
+            }
+          );
+          state.workflowBriefResolved = resolvedState;
+          renderWorkflowBriefResolvedPanel(resolvedState);
+        }
         if (skipPostGenerationRefinement) {
           state.workflowAwaitingDeepRefineOptIn = false;
           state.workflowDeepRefineContext = null;
@@ -20896,6 +21447,22 @@
     prismTestApi.applyWorkflowBriefInferenceRules = applyWorkflowBriefInferenceRules;
     prismTestApi.applyWorkflowBriefValidationRules = applyWorkflowBriefValidationRules;
     prismTestApi.buildWorkflowBriefPlanningDisclosures = buildWorkflowBriefPlanningDisclosures;
+    prismTestApi.buildWorkflowRefinementContext = buildWorkflowRefinementContext;
+    prismTestApi.workflowBriefConflictExceptionMatches = workflowBriefConflictExceptionMatches;
+    prismTestApi.applyWorkflowBriefConflictPolicyExceptions =
+      applyWorkflowBriefConflictPolicyExceptions;
+    prismTestApi.collectWorkflowBriefConflictSignalValues = collectWorkflowBriefConflictSignalValues;
+    prismTestApi.workflowBriefAdequacyWhenMatches = workflowBriefAdequacyWhenMatches;
+    prismTestApi.workflowBriefBriefFieldMentionAnyOf = workflowBriefBriefFieldMentionAnyOf;
+    prismTestApi.workflowBriefStepTitlesLackAny = workflowBriefStepTitlesLackAny;
+    prismTestApi.workflowBriefStepCountAtLeast = workflowBriefStepCountAtLeast;
+    prismTestApi.workflowBriefWeakAudienceCueIsWeak = workflowBriefWeakAudienceCueIsWeak;
+    prismTestApi.WORKFLOW_BRIEF_PLANNING_ADEQUACY_MAX_ROWS = WORKFLOW_BRIEF_PLANNING_ADEQUACY_MAX_ROWS;
+    prismTestApi.evaluateWorkflowBriefPlanningAdequacyChecks =
+      evaluateWorkflowBriefPlanningAdequacyChecks;
+    prismTestApi.applyWorkflowBriefPlanningAdequacyAfterDesign =
+      applyWorkflowBriefPlanningAdequacyAfterDesign;
+    prismTestApi.hasWorkflowDesignSnapshotForAdequacy = hasWorkflowDesignSnapshotForAdequacy;
     prismTestApi.formatWorkflowBriefPlanningNoticesLines = formatWorkflowBriefPlanningNoticesLines;
     prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
     prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;

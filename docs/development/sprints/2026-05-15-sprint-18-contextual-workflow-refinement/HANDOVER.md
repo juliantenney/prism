@@ -16,12 +16,14 @@ Portable context for **Sprint 18 — Contextual Workflow Refinement**. Physical 
 
 ---
 
-## Sprint 17 closed — Sprint 18 active
+## Sprint 17 closed — Sprint 18 checkpoint
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 17** | **Closed** — Slices 0–5; **85 tests green**; `explicitExtract` deferred |
-| **Sprint 18** | **Bootstrap** — docs/exploration; implementation charter not yet in this pack |
+| **Sprint 17** | **Closed** — Slices 0–5; **85 tests** at closeout; `explicitExtract` deferred |
+| **Sprint 18** | **Slices 1–2 closed** — adequacy interpreter + Planning-panel surfacing; **91 tests green** |
+
+**Checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
 
 ---
 
@@ -42,7 +44,7 @@ Move from **factor-only elicitation** to **workflow-aware refinement**:
 
 > Resolving required factors makes planning **safe**; seeing the **designed workflow** makes planning **discussable**.
 
-Sprint 17 smoke test: all four Research essentials resolved for an executive briefing on “AI governance risks”, but no **topic scope** question before thematic analysis steps appeared. That gap motivates Sprint 18 — not a Sprint 17 defect.
+Sprint 17 smoke test: all four Research essentials resolved for an executive briefing on “AI governance risks”, but no **topic scope** question before thematic analysis steps appeared. **S7** + Slice 1–2 now prove an assistive **`planning_adequacy`** notice after synthesis — not a Sprint 17 defect, addressed as adequacy not a new required factor.
 
 ---
 
@@ -67,7 +69,8 @@ Sprint 17 smoke test: all four Research essentials resolved for an executive bri
 | `CURRENT-STATE.md` | Active sprint pointer |
 | `sprint-18-bootstrap.md` | Primary architecture bootstrap |
 | `sprint-18-index.md` | Pack index |
-| `review-log.md` | Decisions / open questions |
+| `review-log.md` | Decisions / closeout log |
+| `SPRINT-18-CHECKPOINT.md` | **Slices 1–2 closeout** + next candidate slices |
 | `context-files/` | Snapshots (see README) |
 
 ---
@@ -100,10 +103,9 @@ Sprint 17 smoke test: all four Research essentials resolved for an executive bri
 | **S4** | Mixed analysis + briefing |
 | **S5** | HTML-ready page delivery |
 | **S6** | Minimal ambiguous |
+| **S7** | Topic sufficiency smoke — essentials complete, `generate_from_topic`, analysis chain, `planning_adequacy` after design |
 
-Tests: `tests/workflow-research-sparse-briefs.test.js` — **do not break** when adding Sprint 18 behaviour.
-
-**Planned:** **S7+** for topic sufficiency / adequacy (charter).
+Tests: `tests/workflow-research-sparse-briefs.test.js` (S1–S6) — **unchanged**. `tests/workflow-research-adequacy.test.js` (S7 + negatives).
 
 ---
 
@@ -119,21 +121,37 @@ See **`sprint-18-bootstrap.md` §13** — **M0** (smoke), **M1–M6** (S1–S6 p
 node --test tests/*.test.js
 ```
 
-**85 passed**, 0 failed (2026-05-15).
+**91 passed**, 0 failed (2026-05-15 checkpoint). S1–S6 semantics unchanged.
+
+---
+
+## Remaining out of scope (unless chartered)
+
+Chat clarification, dismiss/suppress state, LD rollout, AI phrasing, renderer/schema redesign, Prompt Studio merge.
+
+---
+
+## Next candidate slices
+
+See **`SPRINT-18-CHECKPOINT.md`** § Next candidate slices:
+
+1. **Slice 3A** — manual M0/M2/M4 + copy polish  
+2. **Slice 3B** — recommendation lifecycle / dismiss state  
+3. **Slice 3C** — additional Research adequacy checks  
+4. **Renderer contract** — separate track
 
 ---
 
 ## What to do next
 
-1. Open **`GPT-BOOTSTRAP-PROMPT.md`** — paste copy-paste block into fresh chat.  
-2. Read **`sprint-18-bootstrap.md`** and **`context-files/sprint-18-research-questions.md`**.  
-3. Confirm **85 tests** still pass.  
-4. Narrow open questions in **`review-log.md`** (RQ-T1, RQ-B1, RQ-P1).  
-5. When chartered: refinement context contract → one Research rule → S7 fixture — bounded diffs only.
+1. Read **`SPRINT-18-CHECKPOINT.md`**.  
+2. Open **`GPT-BOOTSTRAP-PROMPT.md`** for fresh-chat bootstrap.  
+3. Run tests — confirm **91 passed**.  
+4. Charter next slice (3A/3B/3C) before further implementation.
 
 ---
 
 ## Review log
 
-- **2026-05-15** — Sprint 18 handover pack equivalent to Sprint 17 bootstrap (docs only).
-- **2026-05-15** — Prior bootstrap entries: architecture note, infrastructure audit, research questions.
+- **2026-05-15** — Sprint 18 handover pack (docs only).
+- **2026-05-15** — **Checkpoint:** Slices 1–2 closed; **91 passed**; S7 proves topic-sufficiency adequacy notice.

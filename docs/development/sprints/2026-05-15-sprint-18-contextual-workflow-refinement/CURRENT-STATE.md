@@ -2,15 +2,17 @@
 
 **Role:** authoritative for **this pack only** (portable continuity).
 
-**Canonical live source:** `docs/development/current-state.md` in the repository (may lag; **this file** defines Sprint 18 active focus for handover).
+**Checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md) (2026-05-15)
+
+**Canonical live source:** `docs/development/current-state.md` in the repository (may lag; **this file** defines Sprint 18 handover state).
 
 ---
 
 ## Active sprint
 
-- **Sprint 18 — Contextual Workflow Refinement** — exploration and bootstrap documentation; implementation charter TBD.
+- **Sprint 18 — Contextual Workflow Refinement** — **Slices 1–2 closed**; next work is **candidate slices** (3A–3C) pending charter.
 - **Pack:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/`
-- **Entry:** `GPT-BOOTSTRAP-PROMPT.md`
+- **Entry:** `GPT-BOOTSTRAP-PROMPT.md` → **`SPRINT-18-CHECKPOINT.md`**
 
 ---
 
@@ -18,44 +20,36 @@
 
 | Sprint | Role |
 |--------|------|
-| **Sprint 17** | **Closed** — Research sparse-brief safety; S1–S6; **85 tests green** |
+| **Sprint 17** | **Closed** — Research sparse-brief safety; S1–S6; **85 tests** at closeout |
 | **Sprint 16** | **Closed** — `page` renderer |
 
 ---
 
-## Proven (carry into Sprint 18)
+## Sprint 18 delivered (checkpoint)
 
-- Pack-driven validation, conflict, disclosure, proceed gates (Research).
-- Golden sparse fixtures S1–S6 pin factor resolution and heuristic step sets.
-- Planning panel categories and `rejectedInference` surfacing.
-- `node --test tests/*.test.js` → **85 passed** (2026-05-15).
+| Slice | Delivered |
+|-------|-----------|
+| **Slice 1** | Refinement context contract; Research `topic_scope_under_specified` adequacy rule; S7 fixture; adequacy evaluator + tests (**88 passed**) |
+| **Slice 2** | Post-synthesis `planning_adequacy` in Planning panel via `continueWorkflowDesignGeneration` (**91 passed**) |
+
+**Verification:** `node --test tests/*.test.js` → **91 passed**, **0 failed**.
+
+**Regression:** S1–S6 sparse-brief golden semantics **unchanged** (`workflow-research-sparse-briefs.test.js`).
+
+**S7:** Proves assistive **topic-sufficiency** adequacy notice after workflow synthesis for the Sprint 17 smoke gap brief.
 
 ---
 
-## Documented gap (Sprint 18 motivation)
+## Remaining out of scope (default)
 
-- **Topic-generation sufficiency:** essentials resolved ≠ topic scope adequate for `generate_from_topic` + analysis chain (manual smoke test + S1 analogue).
-- **Refinement not workflow-aware:** factor queues and generic AI review do not reference plan adequacy holistically.
+Chat clarification, dismiss/suppress state, LD rollout, AI phrasing of adequacy messages, renderer/schema redesign, Prompt Studio merge.
 
----
-
-## Open work (Sprint 18)
-
-- Answer research questions (`docs/exploration/sprint-18-research-questions.md`).
-- Refinement **context contract** (fields passed to evaluators / optional AI).
-- Charter first implementation slice: one Research adequacy rule + S7 fixture (when approved).
-- Manual workflow tests M0–M8 (`sprint-18-bootstrap.md` §13).
+See checkpoint § “Remaining out of scope” and § “Next candidate slices”.
 
 ---
 
 ## Immediate next action
 
-1. Paste **`GPT-BOOTSTRAP-PROMPT.md`** copy-paste block into a fresh chat.
-2. Run **`node --test tests/*.test.js`** — confirm **85 passed**.
-3. Read **`sprint-18-bootstrap.md`** §§3–9 before any code change.
-
----
-
-## Out of scope (default)
-
-Renderer, schema redesign, Prompt Studio merge, LD implementation, Sprint 17 slice reopen.
+1. Read **`SPRINT-18-CHECKPOINT.md`**.
+2. Run **`node --test tests/*.test.js`** — confirm **91 passed**.
+3. To implement further work: charter **Slice 3A**, **3B**, or **3C** explicitly (renderer work stays separate).

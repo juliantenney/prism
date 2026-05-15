@@ -287,3 +287,26 @@ test("applyWorkflowDesignHeuristics matches expectedCurrent.heuristics snapshot"
     );
   });
 });
+
+test("S13 golden: method-language briefing deliverable resolution snapshot", () => {
+  const s13 = loadFixture("S13-briefing-deliverable-analysis-method.json");
+  const base = api.buildWorkflowDesignBase(s13.baseInput);
+  const pass = resolveResearchBriefPass(api, researchBriefConfig, base);
+  const exp = s13.expectedCurrent;
+
+  assertSubset(pass.resolved.resolved, exp.resolvedFactors, "S13 resolvedFactors");
+  assert.equal(pass.validated.disclosures.length, exp.validationDisclosures.length);
+  assert.equal(pass.validated.rejectedInference.length, exp.rejectedInference.length);
+  const categories = (pass.planning.planningDisclosures || []).map((row) =>
+    String(row.category || "")
+  );
+  assert.equal(categories.length, exp.planningDisclosureCategories.length);
+  exp.planningDisclosureCategories.forEach((cat, i) => {
+    assert.equal(categories[i], cat, `S13 planning category index ${i}`);
+  });
+  assert.equal(
+    categories.some((c) => c === "conflicting_intent"),
+    false,
+    "S13: no conflicting_intent"
+  );
+});

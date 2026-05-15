@@ -76,17 +76,17 @@
       </div>
 
       <section id="refinementPanel" class="refinement-panel" aria-label="Prompt refinement" role="tabpanel">
-        <div class="card">
-          <h2>Define the Brief</h2>
+        <div id="workflowStepConfigPanel" class="workflow-step-config-panel hidden">
+          <p id="workflowStepConfigTitle" class="workflow-step-config-title"></p>
+          <p id="workflowStepConfigHint" class="workflow-step-config-hint"></p>
+          <div id="workflowStepConfigOptions" class="workflow-step-config-options"></div>
+        </div>
+        <div class="card pf-card-brief">
+          <h2 id="defineBriefHeading">Define the Brief</h2>
           <div id="workflowPromptWizardNotice" class="workflow-wizard-notice hidden" aria-live="polite">
             <p id="workflowPromptWizardTitle" class="workflow-wizard-title"></p>
             <p id="workflowPromptWizardHint" class="workflow-wizard-hint"></p>
             <button id="exitWorkflowPromptWizardBtn" type="button" class="btn small ghost">Exit workflow prompt mode</button>
-          </div>
-          <div id="workflowStepConfigPanel" class="workflow-step-config-panel hidden">
-            <p id="workflowStepConfigTitle" class="workflow-step-config-title"></p>
-            <p id="workflowStepConfigHint" class="workflow-step-config-hint"></p>
-            <div id="workflowStepConfigOptions" class="workflow-step-config-options"></div>
           </div>
           <div class="form-row compact" id="outputTypeGroup">
             <div class="form-group small">
@@ -112,11 +112,34 @@
               <input type="text" id="promptRole" placeholder="e.g. senior copywriter, strict code reviewer" autocomplete="off" />
             </div>
           </div>
-          <div class="form-group">
-            <label for="initialPrompt">Task description</label>
-            <p class="helper-text">Describe clearly what you want the model to do.</p>
-            <textarea id="initialPrompt" rows="5" placeholder="Describe what you want the AI to do..." autocomplete="off"></textarea>
-          </div>
+          <details id="workflowContextDisclosure" class="workflow-context-disclosure">
+            <summary id="workflowContextDisclosureSummary" class="workflow-context-disclosure-summary">Workflow context</summary>
+            <div id="workflowContextGroup" class="form-group workflow-context-group">
+              <label for="initialPrompt" id="initialPromptLabel">Task description</label>
+              <p id="initialPromptHelper" class="helper-text">Describe clearly what you want the model to do.</p>
+              <div id="workflowContextDocumentHost" class="workflow-context-document-host hidden">
+                <pre
+                  id="workflowContextDocument"
+                  class="workflow-context-document"
+                  tabindex="0"
+                  role="document"
+                  aria-readonly="true"
+                  aria-label="Generated workflow context"
+                ></pre>
+                <div class="button-row workflow-context-actions">
+                  <button
+                    id="copyWorkflowContextBtn"
+                    type="button"
+                    class="btn ghost"
+                    aria-label="Copy workflow context"
+                  >
+                    Copy context
+                  </button>
+                </div>
+              </div>
+              <textarea id="initialPrompt" rows="5" placeholder="Describe what you want the AI to do..." autocomplete="off"></textarea>
+            </div>
+          </details>
           <div class="form-row compact">
             <div class="form-group small" id="promptGoalGroup">
               <label for="promptGoal">Goal / outcome</label>
@@ -277,7 +300,7 @@
             <p class="helper-text">Hard requirements, exclusions, or mandatory points to include.</p>
             <input type="text" id="promptConstraints" placeholder="Style rules, do/don'ts, specific points to include, etc." autocomplete="off" />
           </div>
-          <div class="button-row">
+          <div id="pfBriefAuthoringActions" class="button-row pf-brief-authoring-actions">
             <button id="newBriefBtn" type="button" class="btn ghost">
               New brief
             </button>
@@ -287,33 +310,12 @@
           </div>
         </div>
 
-        <div class="card conversation-card">
-          <div class="conversation-header">
-            <div class="conversation-header-main">
-              <h2>Refine the Brief</h2>
-              <button id="startRefinementBtn" class="btn primary">Start refinement</button>
-            </div>
-            <span id="sessionStatus" class="badge badge-muted">Idle</span>
-          </div>
-          <div id="conversationLog" class="conversation-log" aria-live="polite" aria-label="Refinement conversation log">
-          </div>
-          <div id="followUpContainer" class="followup-container">
-            <div class="form-group">
-              <label for="followUpAnswer">Your answer:</label>
-              <textarea id="followUpAnswer" rows="3" placeholder="Type your answer here..." disabled autocomplete="off"></textarea>
-            </div>
-            <div class="button-row">
-              <button id="sendFollowUpBtn" class="btn primary" disabled>Send answer</button>
-              <button id="finishRefinementBtn" class="btn" disabled>Finish &amp; generate final prompt</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Final Prompt</h2>
+        <div class="card pf-card-editable-prompt">
+          <h2 id="editablePromptHeading">Final Prompt</h2>
+          <p id="editablePromptHelper" class="helper-text pf-editable-prompt-helper hidden"></p>
           <div class="final-prompt-layout">
-              <div class="final-prompt-main">
-              <div class="form-row compact">
+            <div class="final-prompt-main">
+              <div class="form-row compact" id="promptVersionSelectRow">
                 <div class="form-group small">
                   <label for="promptVersionSelect">Displayed prompt version</label>
                   <select id="promptVersionSelect" autocomplete="off">
@@ -322,17 +324,47 @@
                   </select>
                 </div>
               </div>
-              <label for="finalPrompt" class="sr-only">Final refined prompt</label>
+              <label for="finalPrompt" id="finalPromptLabel" class="sr-only">Final refined prompt</label>
               <textarea id="finalPrompt" rows="8" placeholder="Your final prompt will appear here after refinement, or paste a prompt refined manually in Copilot/ChatGPT to save it to your library."></textarea>
               <div class="button-row">
-                <button id="copyFinalPromptBtn" class="btn">Copy</button>
-                <button id="saveToLibraryBtn" class="btn primary" disabled>Save to library</button>
+                <button id="copyFinalPromptBtn" type="button" class="btn">Copy</button>
+                <button id="saveToLibraryBtn" type="button" class="btn primary" disabled>Save to library</button>
               </div>
             </div>
-            <aside class="final-prompt-summary">
+            <aside id="finalPromptSummaryAside" class="final-prompt-summary">
               <h3>Summary</h3>
               <p id="finalSummary" class="summary-text empty">The summary of this prompt will appear here once refinement is complete.</p>
             </aside>
+          </div>
+        </div>
+
+        <div id="pfCardRefinement" class="card conversation-card pf-card-refinement">
+          <div class="conversation-header">
+            <div class="conversation-header-main">
+              <h2 id="refinementSectionHeading">Refine the Brief</h2>
+              <p id="refinementSectionHelper" class="helper-text pf-refinement-helper hidden">
+                Optional: use AI to ask clarifying questions. You can also edit the prompt draft directly above.
+              </p>
+              <p id="pfRefinementIdlePrompt" class="helper-text pf-refinement-idle-prompt hidden">
+                Need help improving this prompt?
+              </p>
+              <button id="startRefinementBtn" type="button" class="btn primary">Start refinement</button>
+            </div>
+            <span id="sessionStatus" class="badge badge-muted">Idle</span>
+          </div>
+          <div id="pfRefinementActivePanel" class="pf-refinement-active-panel">
+            <div id="conversationLog" class="conversation-log" aria-live="polite" aria-label="Refinement conversation log">
+            </div>
+            <div id="followUpContainer" class="followup-container">
+              <div class="form-group">
+                <label for="followUpAnswer">Your answer:</label>
+                <textarea id="followUpAnswer" rows="3" placeholder="Type your answer here..." disabled autocomplete="off"></textarea>
+              </div>
+              <div class="button-row">
+                <button id="sendFollowUpBtn" type="button" class="btn primary" disabled>Send answer</button>
+                <button id="finishRefinementBtn" type="button" class="btn" disabled>Finish &amp; generate final prompt</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

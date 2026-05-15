@@ -3,9 +3,11 @@
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-21-pack-defined-step-parameter-controls/`  
 **Sprint:** 21 — Pack-defined Step Parameter Controls  
-**Status:** **Proposed / ready for charter** — bootstrap pack only; **no implementation**
+**Status:** **Closed — complete for scoped Settings operability programme**
 
-**Entry point:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md)
+**Consolidation closeout:** [`docs/consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md)
+
+**Entry point (historical):** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md)
 
 **Predecessor:** [`docs/consolidation/sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md)
 
@@ -15,7 +17,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 21** | **Bootstrap** — charter pending |
+| **Sprint 21** | **Closed** — **149 tests** — [`../../../consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) |
 | **Sprint 20** | **Closed** — **135 tests** — [`../../../consolidation/sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md) |
 | **Sprint 19** | **Closed** — **118 tests** |
 | **Sprint 18** | **Closed** — **100 tests** |
@@ -30,90 +32,63 @@ node --test tests/*.test.js
 
 | Metric | Value |
 |--------|-------|
-| **Tests** | **135 passed**, 0 failed |
-| **Baseline** | Sprint 20 closeout |
+| **Tests** | **149 passed**, 0 failed |
+| **Baseline** | Sprint 20 closeout (**135**) |
+| **Slice 21-1** | **Closed** — +10 tests → 145 |
+| **Slice 21-2** | **Closed** — +4 tests → 149 |
 | **Research fixtures** | S1–S13 — **frozen** unless chartered |
 
 ---
 
-## Problem statement (entry gap)
+## Programme outcome (closed)
 
-The runtime already supports:
+Sprint 21 delivered the **parameterised workflow Settings front-end**:
 
-- resolved factors  
-- `mappingRules` → `stepParams`  
-- provenance and step relevance  
-- Settings discoverability and navigation  
-- parameter propagation into execution  
-
-Step **Settings** still expose only **part** of the parameter surface (Prompt Factory `userOptions`, notes, partial summaries). Many mapped `stepParams` are not **first-class editable controls**.
-
----
-
-## Sprint 21 goal
-
-Every **relevant** pack-defined workflow parameter should be:
-
-| Property | Intent |
+| Property | State |
 |----------|--------|
-| **Inspectable** | Visible in Settings with pack label/description |
-| **Editable** | Generic control, not notes-only |
-| **Human-readable** | Pack-authored copy |
-| **Pack-defined** | Metadata in domain packs |
-| **Generically rendered** | Runtime control by type/metadata — no per-param bespoke UI |
+| Pack-defined `stepParams` | First-class editable Settings controls (LD pilot) |
+| Runtime | Generic, metadata-driven renderer |
+| Workflow-mode Prompt Factory | Deterministic: parameters → draft → save → context |
+| Prompt authority | Editable Prompt Draft only |
+| Workflow context | Read-only provenance; Copy context |
 
 ---
 
-## Architectural position
+## Slice status
 
-Sprint 21 is the **completion of the parameterised workflow front-end model**, not a new synthesis architecture.
-
-| Layer | Sprint 21 touch |
-|-------|-----------------|
-| Brief / essentials | **Unchanged** — elicited tier only |
-| Synthesis | **Unchanged** |
-| Adequacy | **Unchanged** interpreters |
-| Provenance | **Integrate** — reflect Settings edits |
-| **Settings** | **Primary programme surface** |
+| Slice | Status |
+|-------|--------|
+| **21-1** | **Closed** — [`slice-21-1-closeout.md`](slice-21-1-closeout.md) |
+| **21-2** | **Closed** — [`slice-21-2-charter.md`](slice-21-2-charter.md) |
+| **21-3** | **Not started** — provenance relabelling deferred |
+| **PF workflow-mode UX** | **Closed** — see [`review-log.md`](review-log.md) |
 
 ---
 
-## Two-tier model (documented target)
+## Metadata contract (implemented)
 
-| Tier | Where | Examples |
-|------|-------|----------|
-| **Elicited** | Brief / essentials | Assessment type, item count, learner level, topic/scope, formative/summative intent |
-| **Settings-only** | Step Settings post-design | Sequencing, difficulty progression, distractor style, feedback granularity, answer visibility, retry/remediation, explanation depth, scaffolding intensity |
+`workflowBriefConfig.stepParameterControls[]` — fields: `key`, `canonicalStepId`, `label`, `description`, `controlType`, `default`, `options`, `visible`, `advanced`, `elicitation`, optional `group`.
 
----
-
-## Bootstrap deliverables
-
-| Artefact | Status |
-|----------|--------|
-| Portable pack (7 files) | **Done** |
-| Slice 21-1 charter | **Not started** |
-| Implementation | **Not started** |
+**Control types:** `select`, `boolean`, `number`, `text`.
 
 ---
 
-## Key runtime / pack touchpoints (investigation starting points)
+## Key runtime / pack touchpoints
 
-| Area | Path (illustrative) |
-|------|---------------------|
-| Settings UI | `app.js` — Prompt Factory step config, `userOptions`, `[PRISM_STEP_PARAMS]` |
-| Discoverability | `decorateWorkflowStepSettingsDiscoverability`, summaries (Sprint 20-1) |
-| Mappings | `applyWorkflowBriefMappings`, pack `mappingRules` |
+| Area | Path |
+|------|------|
+| Settings UI | `app.js` — `renderWorkflowStepPromptConfigUI`, `[PRISM_STEP_PARAMS]` |
 | LD pack | `domains/learning-design/domain-learning-design-step-patterns.md` |
-| Research pack | **Frozen** — charter required for changes |
+| Tests | `tests/workflow-step-parameter-controls.test.js` |
+| Mappings | `applyWorkflowBriefMappings` — **unchanged** |
+| Research pack | **Frozen** |
 
 ---
 
 ## Recommended next work
 
-1. Charter **Slice 21-1** — parameter metadata conventions + generic Settings renderer MVP  
-2. Define minimal pack metadata schema (control type, label, default, options, `tier`: basic/advanced, `elicitation`: elicited/settings-only, visibility)  
-3. LD pilot parameters before cross-domain expansion  
+1. **Sprint 22 charter** — provenance alignment for Settings overrides **or** parameter audit/adoption  
+2. Do **not** reopen Sprint 21 UX without new charter  
 
 ---
 
@@ -121,6 +96,7 @@ Sprint 21 is the **completion of the parameterised workflow front-end model**, n
 
 | Document | Role |
 |----------|------|
-| [`sprint-21-bootstrap.md`](sprint-21-bootstrap.md) | Programme thesis and slices |
-| [`sprint-20-parameterisation-reflection.md`](../../../consolidation/sprint-20-parameterisation-reflection.md) | Why parameters matter |
-| [`contextual-refinement-architecture-note.md`](../../../consolidation/contextual-refinement-architecture-note.md) | Guidance layers |
+| [`sprint-21-index.md`](sprint-21-index.md) | Pack index |
+| [`review-log.md`](review-log.md) | Implementation log |
+| [`HANDOVER.md`](HANDOVER.md) | Session handover |
+| [`sprint-21-bootstrap.md`](sprint-21-bootstrap.md) | Original programme thesis |

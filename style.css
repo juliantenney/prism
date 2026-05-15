@@ -186,6 +186,146 @@ body {
   gap: 10px;
 }
 
+.workflow-pack-param-heading {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.workflow-pack-param-section {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 0 10px 8px;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.workflow-pack-param-section-advanced {
+  border-style: dashed;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.workflow-pack-param-section-title {
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 0 6px;
+  list-style: none;
+}
+
+.workflow-pack-param-section-title::-webkit-details-marker {
+  display: none;
+}
+
+.workflow-pack-param-section-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.workflow-pack-param-section-body .workflow-pack-param-group {
+  margin: 0;
+}
+
+/* Prompt Factory: standalone card order (brief → refine → final) */
+#refinementPanel .pf-card-brief {
+  order: 1;
+}
+
+#refinementPanel .pf-card-refinement {
+  order: 2;
+}
+
+#refinementPanel .pf-card-editable-prompt {
+  order: 3;
+}
+
+/* Workflow step Settings: params → editable draft → workflow context (provenance) */
+#refinementPanel.prompt-factory-workflow-step-mode #workflowStepConfigPanel {
+  order: 1;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .pf-card-editable-prompt {
+  order: 2;
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .pf-card-refinement {
+  display: none !important;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .pf-card-brief {
+  order: 3;
+  border-color: rgba(148, 163, 184, 0.35);
+  background: rgba(241, 245, 249, 0.65);
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-document {
+  margin: 0;
+  padding: 10px 12px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(248, 250, 252, 0.98);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  user-select: text;
+  cursor: default;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-document:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 2px;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-document.empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-actions {
+  margin-top: 8px;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode #finalPrompt {
+  min-height: 220px;
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-disclosure {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  background: rgba(241, 245, 249, 0.5);
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-disclosure-summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  list-style: none;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-disclosure-summary::-webkit-details-marker {
+  display: none;
+}
+
+#refinementPanel.prompt-factory-workflow-step-mode .workflow-context-disclosure[open] .workflow-context-group {
+  margin-top: 8px;
+}
+
+#refinementPanel:not(.prompt-factory-workflow-step-mode) .workflow-context-disclosure-summary.hidden {
+  display: none;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

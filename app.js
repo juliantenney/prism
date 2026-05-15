@@ -128,6 +128,7 @@
     // Refinement runtime lifecycle flags (Prompt Studio).
     // These model conversation phase only; they are not durable prompt assets.
     sessionActive: false,
+    workflowRefinementUiActivated: false,
     // Finalized runtime refinement result currently shown in Final Prompt.
     finalResult: null,
     // Draft/refined candidate awaiting a lifecycle decision (review/confirm/finalize).
@@ -254,6 +255,26 @@
     els.workflowStepConfigHint = document.getElementById("workflowStepConfigHint");
     els.workflowStepConfigOptions = document.getElementById("workflowStepConfigOptions");
     els.exitWorkflowPromptWizardBtn = document.getElementById("exitWorkflowPromptWizardBtn");
+    els.defineBriefHeading = document.getElementById("defineBriefHeading");
+    els.workflowContextGroup = document.getElementById("workflowContextGroup");
+    els.initialPromptLabel = document.getElementById("initialPromptLabel");
+    els.initialPromptHelper = document.getElementById("initialPromptHelper");
+    els.editablePromptHeading = document.getElementById("editablePromptHeading");
+    els.editablePromptHelper = document.getElementById("editablePromptHelper");
+    els.promptVersionSelectRow = document.getElementById("promptVersionSelectRow");
+    els.finalPromptLabel = document.getElementById("finalPromptLabel");
+    els.refinementSectionHeading = document.getElementById("refinementSectionHeading");
+    els.refinementSectionHelper = document.getElementById("refinementSectionHelper");
+    els.pfCardRefinement = document.getElementById("pfCardRefinement");
+    els.pfRefinementIdlePrompt = document.getElementById("pfRefinementIdlePrompt");
+    els.pfRefinementActivePanel = document.getElementById("pfRefinementActivePanel");
+    els.workflowContextDisclosure = document.getElementById("workflowContextDisclosure");
+    els.workflowContextDisclosureSummary = document.getElementById(
+      "workflowContextDisclosureSummary"
+    );
+    els.workflowContextDocumentHost = document.getElementById("workflowContextDocumentHost");
+    els.workflowContextDocument = document.getElementById("workflowContextDocument");
+    els.copyWorkflowContextBtn = document.getElementById("copyWorkflowContextBtn");
 
     // Type-specific brief fields
     els.typeFieldsText = document.getElementById("typeFieldsText");
@@ -285,6 +306,8 @@
     els.startRefinementBtn = document.getElementById("startRefinementBtn");
     els.copyBriefForCopilotBtn = document.getElementById("copyBriefForCopilotBtn");
     els.newBriefBtn = document.getElementById("newBriefBtn");
+    els.pfBriefAuthoringActions = document.getElementById("pfBriefAuthoringActions");
+    els.finalPromptSummaryAside = document.getElementById("finalPromptSummaryAside");
 
     els.tabRefiner = document.getElementById("tabRefiner");
     els.tabLibrary = document.getElementById("tabLibrary");
@@ -603,6 +626,196 @@
 
     // Structured: keep schema, hide validation in minimal mode.
     toggle(els.structuredValidationGroup, inWorkflowMode);
+    toggle(els.typeFieldsCode, inWorkflowMode);
+    toggle(els.typeFieldsImage, inWorkflowMode);
+    toggle(els.typeFieldsStructured, inWorkflowMode);
+    toggle(els.defineBriefHeading, inWorkflowMode);
+    toggle(els.pfBriefAuthoringActions, inWorkflowMode);
+    toggle(els.finalPromptSummaryAside, inWorkflowMode);
+    toggle(els.copyFinalPromptBtn, inWorkflowMode);
+    applyWorkflowPromptFactoryStepUx();
+  }
+
+  function setInitialPromptFieldValue(text) {
+    if (!els.initialPrompt) return;
+    els.initialPrompt.value = text == null ? "" : String(text);
+    syncWorkflowContextPresentation();
+  }
+
+  function syncWorkflowContextPresentation() {
+    var inWorkflow = !!state.promptFactoryWorkflowContext;
+    if (els.initialPrompt) {
+      els.initialPrompt.classList.toggle("hidden", inWorkflow);
+      els.initialPrompt.setAttribute("aria-hidden", inWorkflow ? "true" : "false");
+      if (inWorkflow) {
+        els.initialPrompt.tabIndex = -1;
+      } else {
+        els.initialPrompt.removeAttribute("tabindex");
+      }
+    }
+    if (els.workflowContextDocumentHost) {
+      els.workflowContextDocumentHost.classList.toggle("hidden", !inWorkflow);
+    }
+    if (els.workflowContextDocument && els.initialPrompt) {
+      var contextText = String(els.initialPrompt.value || "");
+      els.workflowContextDocument.textContent = contextText;
+      els.workflowContextDocument.classList.toggle("empty", !contextText.trim());
+    }
+    if (els.copyWorkflowContextBtn) {
+      var hasContext =
+        els.initialPrompt && String(els.initialPrompt.value || "").trim().length > 0;
+      els.copyWorkflowContextBtn.disabled = inWorkflow ? !hasContext : true;
+    }
+  }
+
+  function syncStartRefinementButtonState() {
+    if (!els.startRefinementBtn) return;
+    var inWorkflow = !!state.promptFactoryWorkflowContext;
+    var apiLoaded = !!state.apiKey;
+    els.startRefinementBtn.disabled = !inWorkflow && !apiLoaded;
+    els.startRefinementBtn.classList.toggle("primary", !inWorkflow);
+    els.startRefinementBtn.classList.toggle("ghost", inWorkflow);
+  }
+
+  function applyWorkflowPromptFactoryStepUx() {
+    var inWorkflowMode = !!state.promptFactoryWorkflowContext;
+    if (els.refinementPanel) {
+      els.refinementPanel.classList.toggle("prompt-factory-workflow-step-mode", inWorkflowMode);
+    }
+    if (els.editablePromptHeading) {
+      els.editablePromptHeading.textContent = inWorkflowMode ? "Editable Prompt Draft" : "Final Prompt";
+    }
+    if (els.editablePromptHelper) {
+      els.editablePromptHelper.textContent = inWorkflowMode
+        ? "This is the prompt that will run for this workflow step. Editing it directly overrides the generated draft."
+        : "";
+      els.editablePromptHelper.classList.toggle("hidden", !inWorkflowMode);
+    }
+    if (els.finalPromptLabel) {
+      els.finalPromptLabel.textContent = inWorkflowMode
+        ? "Editable prompt draft"
+        : "Final refined prompt";
+    }
+    if (els.initialPromptLabel) {
+      els.initialPromptLabel.textContent = inWorkflowMode ? "Workflow context" : "Task description";
+    }
+    if (els.initialPromptHelper) {
+      els.initialPromptHelper.textContent = inWorkflowMode
+        ? "Generated provenance from workflow brief and settings. Use Copy context if needed; edit the prompt draft above to change what runs."
+        : "Describe clearly what you want the model to do.";
+    }
+    if (els.workflowContextGroup) {
+      els.workflowContextGroup.classList.toggle("workflow-context-readonly", inWorkflowMode);
+    }
+    if (els.pfCardRefinement) {
+      els.pfCardRefinement.classList.toggle("hidden", inWorkflowMode);
+      els.pfCardRefinement.setAttribute("aria-hidden", inWorkflowMode ? "true" : "false");
+    }
+    syncStartRefinementButtonState();
+    syncWorkflowContextPresentation();
+    if (els.initialPromptLabel) {
+      els.initialPromptLabel.classList.toggle("hidden", inWorkflowMode);
+    }
+    if (els.promptVersionSelectRow) {
+      els.promptVersionSelectRow.classList.toggle("hidden", inWorkflowMode);
+    }
+    syncWorkflowRefinementPanelUx();
+  }
+
+  function shouldExpandWorkflowRefinementPanel() {
+    if (!state.promptFactoryWorkflowContext) return true;
+    if (state.workflowRefinementUiActivated) return true;
+    if (hasActiveRefinementSession()) return true;
+    if (
+      state.awaitingReviewAnswer ||
+      state.awaitingFinalConfirmation ||
+      state.awaitingReviewOptIn
+    ) {
+      return true;
+    }
+    if (els.conversationLog && String(els.conversationLog.textContent || "").trim()) {
+      return true;
+    }
+    return false;
+  }
+
+  function focusWorkflowRefinementActivePanel() {
+    if (!state.promptFactoryWorkflowContext) return;
+    var target = null;
+    if (els.followUpAnswer && !els.followUpAnswer.disabled) {
+      target = els.followUpAnswer;
+    } else if (els.finishRefinementBtn && !els.finishRefinementBtn.disabled) {
+      target = els.finishRefinementBtn;
+    } else if (els.conversationLog) {
+      if (!els.conversationLog.hasAttribute("tabindex")) {
+        els.conversationLog.setAttribute("tabindex", "-1");
+      }
+      target = els.conversationLog;
+    }
+    if (target && typeof target.focus === "function") {
+      target.focus();
+    }
+  }
+
+  function syncWorkflowRefinementPanelUx(opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
+    var inWorkflow = !!state.promptFactoryWorkflowContext;
+    if (inWorkflow) {
+      if (els.pfCardRefinement) {
+        els.pfCardRefinement.classList.add("hidden");
+        els.pfCardRefinement.setAttribute("aria-hidden", "true");
+      }
+      if (els.workflowContextDisclosure) {
+        if (!els.workflowContextDisclosure.hasAttribute("data-pf-user-toggled")) {
+          els.workflowContextDisclosure.open = false;
+        }
+        els.workflowContextDisclosureSummary.classList.remove("hidden");
+      }
+      return;
+    }
+    var expanded = shouldExpandWorkflowRefinementPanel();
+
+    if (els.pfCardRefinement) {
+      els.pfCardRefinement.classList.remove("hidden");
+      els.pfCardRefinement.setAttribute("aria-hidden", "false");
+      els.pfCardRefinement.classList.toggle("pf-refinement-idle", false);
+    }
+    if (els.pfRefinementActivePanel) {
+      var hideActive = inWorkflow && !expanded;
+      els.pfRefinementActivePanel.classList.toggle("hidden", hideActive);
+      els.pfRefinementActivePanel.setAttribute("aria-hidden", hideActive ? "true" : "false");
+    }
+    if (els.pfRefinementIdlePrompt) {
+      els.pfRefinementIdlePrompt.classList.toggle("hidden", !inWorkflow || expanded);
+    }
+    if (els.refinementSectionHeading) {
+      els.refinementSectionHeading.classList.toggle("hidden", inWorkflow && !expanded);
+    }
+    if (els.refinementSectionHelper) {
+      var showExpandedHelper = inWorkflow && expanded;
+      els.refinementSectionHelper.classList.toggle("hidden", !showExpandedHelper);
+    }
+    if (els.sessionStatus) {
+      els.sessionStatus.classList.toggle("hidden", inWorkflow && !expanded);
+    }
+    if (els.workflowContextDisclosure) {
+      if (inWorkflow) {
+        if (!els.workflowContextDisclosure.hasAttribute("data-pf-user-toggled")) {
+          els.workflowContextDisclosure.open = false;
+        }
+        els.workflowContextDisclosureSummary.classList.remove("hidden");
+      } else {
+        els.workflowContextDisclosure.open = true;
+        els.workflowContextDisclosureSummary.classList.add("hidden");
+      }
+    }
+    if (opts.focusActivePanel && inWorkflow && expanded) {
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(focusWorkflowRefinementActivePanel);
+      } else {
+        focusWorkflowRefinementActivePanel();
+      }
+    }
   }
 
   function normalizeWorkflowStepPromptConfig(rawConfig) {
@@ -902,6 +1115,287 @@
     return {};
   }
 
+  var WORKFLOW_PACK_PARAM_CONTROL_TYPES = {
+    select: true,
+    boolean: true,
+    number: true,
+    text: true
+  };
+
+  function normalizeWorkflowStepParameterControl(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    var key = String(raw.key || "").trim();
+    var canonicalStepId = normalizeCanonicalStepId(raw.canonicalStepId || "");
+    var label = String(raw.label || key).trim();
+    var controlType = String(raw.controlType || "").toLowerCase().trim();
+    if (!key || !canonicalStepId || !label) return null;
+    if (!WORKFLOW_PACK_PARAM_CONTROL_TYPES[controlType]) return null;
+    var elicitation = String(raw.elicitation || "settings-only").toLowerCase().trim();
+    if (elicitation !== "elicited" && elicitation !== "settings-only") {
+      elicitation = "settings-only";
+    }
+    var description = String(raw.description || "").trim();
+    var options = [];
+    if (controlType === "select") {
+      options = (Array.isArray(raw.options) ? raw.options : [])
+        .map(function (o) {
+          if (!o || typeof o !== "object") return null;
+          var value = String(o.value == null ? "" : o.value).trim();
+          if (!value) return null;
+          return {
+            value: value,
+            label: String(o.label || value).trim()
+          };
+        })
+        .filter(Boolean);
+      if (!options.length) return null;
+    }
+    var def = raw.default;
+    if (controlType === "boolean") {
+      if (typeof def === "boolean") {
+        def = def ? "true" : "false";
+      } else {
+        def =
+          String(def == null ? "false" : def).toLowerCase().trim() === "true" ? "true" : "false";
+      }
+    } else if (controlType === "number") {
+      def = def == null || def === "" ? "" : String(def);
+    } else {
+      def = def == null ? "" : String(def);
+    }
+    return {
+      key: key,
+      canonicalStepId: canonicalStepId,
+      label: label,
+      description: description,
+      controlType: controlType,
+      default: def,
+      options: options,
+      visible: raw.visible !== false,
+      advanced: !!raw.advanced,
+      group: String(raw.group || "").trim(),
+      elicitation: elicitation,
+      min: typeof raw.min === "number" ? raw.min : null,
+      max: typeof raw.max === "number" ? raw.max : null,
+      placeholder: String(raw.placeholder || "").trim()
+    };
+  }
+
+  function normalizeWorkflowStepParameterControls(rawList) {
+    var seen = {};
+    var out = [];
+    (Array.isArray(rawList) ? rawList : []).forEach(function (raw) {
+      var row = normalizeWorkflowStepParameterControl(raw);
+      if (!row) return;
+      var dedupeKey = row.canonicalStepId + "\0" + row.key;
+      if (seen[dedupeKey]) return;
+      seen[dedupeKey] = true;
+      out.push(row);
+    });
+    return out;
+  }
+
+  function getWorkflowStepParameterControlsFromBriefConfig(briefConfig) {
+    var cfg = normalizeWorkflowBriefConfig(briefConfig);
+    return normalizeWorkflowStepParameterControls(cfg.stepParameterControls);
+  }
+
+  function filterWorkflowStepParameterControlsForStep(controls, canonicalStepId, opts) {
+    var cid = normalizeCanonicalStepId(canonicalStepId);
+    if (!cid) return [];
+    var includeHidden = !!(opts && opts.includeHidden);
+    return (Array.isArray(controls) ? controls : []).filter(function (c) {
+      if (!c || c.canonicalStepId !== cid) return false;
+      if (!includeHidden && c.visible === false) return false;
+      return true;
+    });
+  }
+
+  function groupWorkflowStepParameterControlsForSettings(controls) {
+    var sections = [];
+    var index = {};
+    (Array.isArray(controls) ? controls : []).forEach(function (c) {
+      if (!c) return;
+      var tier = c.advanced ? "advanced" : "basic";
+      var label = String(c.group || "").trim();
+      if (!label) {
+        label =
+          tier === "advanced" ? "Advanced workflow parameters" : "Basic workflow parameters";
+      }
+      var key = tier + "\0" + label;
+      if (!index[key]) {
+        index[key] = {
+          label: label,
+          tier: tier,
+          collapsed: tier === "advanced",
+          controls: []
+        };
+        sections.push(index[key]);
+      }
+      index[key].controls.push(c);
+    });
+    sections.sort(function (a, b) {
+      if (a.tier === b.tier) return 0;
+      return a.tier === "basic" ? -1 : 1;
+    });
+    return sections;
+  }
+
+  function resolveWorkflowSettingsParamLabel(key, canonicalStepId, briefConfig) {
+    var k = String(key || "").trim();
+    if (!k) return "";
+    var cid = normalizeCanonicalStepId(canonicalStepId);
+    if (!cid || !briefConfig) return humanizeWorkflowSettingsParamKey(k);
+    var controls = filterWorkflowStepParameterControlsForStep(
+      getWorkflowStepParameterControlsFromBriefConfig(briefConfig),
+      cid,
+      { includeHidden: true }
+    );
+    for (var i = 0; i < controls.length; i++) {
+      if (controls[i].key === k) return controls[i].label;
+    }
+    return humanizeWorkflowSettingsParamKey(k);
+  }
+
+  function resolveWorkflowStepParameterValue(control, params) {
+    if (!control || !control.key) return "";
+    var p = params && typeof params === "object" ? params : {};
+    if (Object.prototype.hasOwnProperty.call(p, control.key)) {
+      var stored = p[control.key];
+      if (stored != null && String(stored).trim() !== "") return String(stored).trim();
+    }
+    var def = control.default;
+    return def == null ? "" : String(def);
+  }
+
+  function buildPackOwnedUserOptionIdMap(controls) {
+    var map = {};
+    (Array.isArray(controls) ? controls : []).forEach(function (c) {
+      if (c && c.key) map[String(c.key)] = true;
+    });
+    return map;
+  }
+
+  function filterUserOptionsExcludingPackKeys(userOptions, packOwnedIds) {
+    var owned = packOwnedIds && typeof packOwnedIds === "object" ? packOwnedIds : {};
+    return (Array.isArray(userOptions) ? userOptions : []).filter(function (opt) {
+      if (!opt || !opt.id) return false;
+      return !owned[String(opt.id)];
+    });
+  }
+
+  function mergeWorkflowStepParamValueMap(existingMap, rows) {
+    var map =
+      existingMap && typeof existingMap === "object" ? Object.assign({}, existingMap) : {};
+    (Array.isArray(rows) ? rows : []).forEach(function (row) {
+      if (!row || !row.id) return;
+      var value = row.value == null ? "" : String(row.value).trim();
+      if (!value) return;
+      map[row.id] = value;
+    });
+    return map;
+  }
+
+  function workflowStepParamMapToSelectionRows(map) {
+    return Object.keys(map || {}).map(function (id) {
+      return { id: id, value: map[id] };
+    });
+  }
+
+  function appendWorkflowPackParameterControlDom(parent, control, params) {
+    if (!parent || !control) return;
+    var group = document.createElement("div");
+    group.className = "form-group small workflow-pack-param-group";
+    var label = document.createElement("label");
+    label.textContent = control.label;
+    group.appendChild(label);
+    if (control.description) {
+      var desc = document.createElement("div");
+      desc.className = "muted workflow-pack-param-desc";
+      desc.textContent = control.description;
+      group.appendChild(desc);
+    }
+    var resolved = resolveWorkflowStepParameterValue(control, params);
+    var input = null;
+    if (control.controlType === "select") {
+      input = document.createElement("select");
+      (control.options || []).forEach(function (o) {
+        var option = document.createElement("option");
+        option.value = o.value;
+        option.textContent = o.label || o.value;
+        input.appendChild(option);
+      });
+      if (resolved) input.value = resolved;
+    } else if (control.controlType === "boolean") {
+      input = document.createElement("select");
+      var yes = document.createElement("option");
+      yes.value = "true";
+      yes.textContent = "Yes";
+      var no = document.createElement("option");
+      no.value = "false";
+      no.textContent = "No";
+      input.appendChild(yes);
+      input.appendChild(no);
+      input.value = String(resolved).toLowerCase() === "false" ? "false" : "true";
+    } else if (control.controlType === "number") {
+      input = document.createElement("input");
+      input.type = "number";
+      if (typeof control.min === "number") input.min = String(control.min);
+      if (typeof control.max === "number") input.max = String(control.max);
+      if (resolved) input.value = resolved;
+    } else {
+      input = document.createElement("input");
+      input.type = "text";
+      if (control.placeholder) input.placeholder = control.placeholder;
+      if (resolved) input.value = resolved;
+    }
+    input.autocomplete = "off";
+    input.setAttribute("data-workflow-pack-param", "1");
+    input.setAttribute("data-param-key", control.key);
+    input.setAttribute("data-param-label", control.label);
+    input.addEventListener("change", function () {
+      applyWorkflowStepPromptDefaults({
+        source: "workflow_pack_param_change"
+      });
+    });
+    input.addEventListener("input", function () {
+      if (control.controlType === "number" || control.controlType === "text") {
+        applyWorkflowStepPromptDefaults({
+          source: "workflow_pack_param_input"
+        });
+      }
+    });
+    group.appendChild(input);
+    parent.appendChild(group);
+  }
+
+  function renderWorkflowPackParameterControlsSection(container, controls, params) {
+    if (!container || !controls.length) return;
+    var heading = document.createElement("div");
+    heading.className = "workflow-pack-param-heading muted";
+    heading.textContent = "Workflow parameters";
+    container.appendChild(heading);
+    var sections = groupWorkflowStepParameterControlsForSettings(controls);
+    sections.forEach(function (section) {
+      var wrap = document.createElement("details");
+      wrap.className =
+        "workflow-pack-param-section" +
+        (section.tier === "advanced" ? " workflow-pack-param-section-advanced" : "");
+      if (!section.collapsed) wrap.setAttribute("open", "open");
+      var summary = document.createElement("summary");
+      summary.className = "workflow-pack-param-section-title";
+      summary.textContent = section.label;
+      wrap.appendChild(summary);
+      var body = document.createElement("div");
+      body.className = "workflow-pack-param-section-body";
+      (section.controls || []).forEach(function (control) {
+        appendWorkflowPackParameterControlDom(body, control, params);
+      });
+      wrap.appendChild(body);
+      container.appendChild(wrap);
+    });
+  }
+
   var WORKFLOW_SETTINGS_SUMMARY_PARAM_IDS = [
     "assessment_type",
     "assessment_total_items",
@@ -1084,7 +1578,9 @@
       if (!Object.prototype.hasOwnProperty.call(values, key)) return;
       var display = formatWorkflowSettingsParamDisplayValue(key, values[key]);
       if (!display) return;
-      parts.push(humanizeWorkflowSettingsParamKey(key) + ": " + display);
+      parts.push(
+        resolveWorkflowSettingsParamLabel(key, canonicalId, briefConfig) + ": " + display
+      );
     });
     if (!parts.length) return "";
     return parts.slice(0, 4).join(" · ");
@@ -2126,8 +2622,22 @@
       els.workflowStepConfigTitle.textContent =
         "Step configuration: " + (ctx.stepCanonicalTitle || ctx.stepTitle || "Current step");
     }
+    var briefConfig = getWorkflowBriefConfigFromResolvedState(state.workflowBriefResolved);
+    var allPackControls = getWorkflowStepParameterControlsFromBriefConfig(briefConfig);
+    var stepCanonicalId = normalizeCanonicalStepId(ctx.stepCanonicalStepId || "");
+    var packControls = filterWorkflowStepParameterControlsForStep(allPackControls, stepCanonicalId);
+    var packControlsForOwnership = filterWorkflowStepParameterControlsForStep(
+      allPackControls,
+      stepCanonicalId,
+      { includeHidden: true }
+    );
+    var packOwnedIds = buildPackOwnedUserOptionIdMap(packControlsForOwnership);
+
     if (els.workflowStepConfigHint) {
-      if (cfg.configurationMode === "none") {
+      if (packControls.length) {
+        els.workflowStepConfigHint.textContent =
+          "Workflow parameters are stored on the step and applied when the step runs.";
+      } else if (cfg.configurationMode === "none") {
         var stepTitle = String(ctx.stepCanonicalTitle || ctx.stepTitle || "").toLowerCase();
         els.workflowStepConfigHint.textContent =
           stepTitle === "generate assessment items"
@@ -2141,7 +2651,17 @@
           "This step allows standard prompt customization.";
       }
     }
-    if (cfg.configurationMode !== "simple" || !cfg.userOptions.length) return;
+
+    if (packControls.length) {
+      renderWorkflowPackParameterControlsSection(
+        els.workflowStepConfigOptions,
+        packControls,
+        existingParams
+      );
+    }
+
+    var userOptionsForStep = filterUserOptionsExcludingPackKeys(cfg.userOptions, packOwnedIds);
+    if (cfg.configurationMode !== "simple" || !userOptionsForStep.length) return;
 
     var isAssessmentItemsStep = isGenerateAssessmentItemsContext(ctx);
     var inheritedAssessmentOptionIds = {
@@ -2189,7 +2709,7 @@
         })
       : Object.assign({}, existingParams);
 
-    cfg.userOptions.forEach(function (opt) {
+    userOptionsForStep.forEach(function (opt) {
       if (
         isAssessmentItemsStep &&
         !state.assessmentItemsShowAdvancedOptions &&
@@ -2279,6 +2799,19 @@
     var cfg = normalizeWorkflowStepPromptConfig(ctx && ctx.stepPromptFactoryConfig);
     var map = {};
     if (els.workflowStepConfigOptions) {
+      var packNodes = els.workflowStepConfigOptions.querySelectorAll("[data-workflow-pack-param='1']");
+      for (var pi = 0; pi < packNodes.length; pi++) {
+        var pnode = packNodes[pi];
+        var pid = pnode.getAttribute("data-param-key") || "";
+        var plabel = pnode.getAttribute("data-param-label") || pid;
+        var pvalue = typeof pnode.value === "string" ? pnode.value.trim() : "";
+        if (!pid) continue;
+        map[pid] = {
+          id: pid,
+          label: plabel,
+          value: pvalue
+        };
+      }
       var nodes = els.workflowStepConfigOptions.querySelectorAll("[data-workflow-step-option='1']");
       for (var i = 0; i < nodes.length; i++) {
         var node = nodes[i];
@@ -2293,8 +2826,15 @@
         };
       }
     }
+    var briefConfig = getWorkflowBriefConfigFromResolvedState(state.workflowBriefResolved);
+    var stepCid = ctx && ctx.stepCanonicalStepId ? ctx.stepCanonicalStepId : "";
+    var allPackForStep = getWorkflowStepParameterControlsFromBriefConfig(briefConfig);
+    var packControls = filterWorkflowStepParameterControlsForStep(allPackForStep, stepCid);
+    var packOwnedIds = buildPackOwnedUserOptionIdMap(
+      filterWorkflowStepParameterControlsForStep(allPackForStep, stepCid, { includeHidden: true })
+    );
     if (includeDefaults) {
-      (cfg.userOptions || []).forEach(function (opt) {
+      filterUserOptionsExcludingPackKeys(cfg.userOptions, packOwnedIds).forEach(function (opt) {
         if (!opt || !opt.id) return;
         if (!map[opt.id] || !String(map[opt.id].value || "").trim()) {
           var fallback = opt.default;
@@ -2617,7 +3157,7 @@
           });
         } catch (_e) {}
       } else {
-      els.initialPrompt.value = overrideBody;
+      setInitialPromptFieldValue(overrideBody);
       if (els.finalPrompt) {
         var current = String(els.finalPrompt.value || "");
         if (!current || current === String(state.workflowStepGeneratedDraft || "")) {
@@ -3230,7 +3770,7 @@
     draft = withMcqDefaultFeedbackScaffold(draft, ctx, optionMap);
     draft = withPageTaskModeScaffold(draft, ctx, optionMap);
 
-    els.initialPrompt.value = draft;
+    setInitialPromptFieldValue(draft);
 
     // Keep draft generation side-effect free. Step prompt persistence is explicit
     // when users save as local override or choose a library prompt.
@@ -4345,6 +4885,9 @@
       uiHints: cfg.uiHints && typeof cfg.uiHints === "object" ? cfg.uiHints : {},
       inferenceRules: Array.isArray(cfg.inferenceRules) ? cfg.inferenceRules : [],
       mappingRules: Array.isArray(cfg.mappingRules) ? cfg.mappingRules : [],
+      stepParameterControls: Array.isArray(cfg.stepParameterControls)
+        ? cfg.stepParameterControls
+        : [],
       intentClasses: cfg.intentClasses && typeof cfg.intentClasses === "object" ? cfg.intentClasses : {},
       stopConditions: Array.isArray(cfg.stopConditions) ? cfg.stopConditions : [],
       validationRules: Array.isArray(cfg.validationRules) ? cfg.validationRules : [],
@@ -9808,9 +10351,7 @@
     if (els.apiKeyHelperText) {
       els.apiKeyHelperText.classList.toggle("hidden", loaded);
     }
-    if (els.startRefinementBtn) {
-      els.startRefinementBtn.disabled = !loaded;
-    }
+    syncStartRefinementButtonState();
     if (els.wfDesignStartBtn) {
       els.wfDesignStartBtn.disabled = !loaded;
     }
@@ -9912,6 +10453,10 @@
       els.tokenUsage.textContent =
         "Input: 0; Output: 0; Total: 0; Approx cost: $0.0000";
     }
+    if (state.promptFactoryWorkflowContext) {
+      state.workflowRefinementUiActivated = false;
+    }
+    syncWorkflowRefinementPanelUx();
   }
 
   function clearBriefFields() {
@@ -9924,7 +10469,7 @@
     if (els.promptFormat) els.promptFormat.value = "";
     if (els.promptLength) els.promptLength.value = "";
     if (els.promptConstraints) els.promptConstraints.value = "";
-    if (els.initialPrompt) els.initialPrompt.value = "";
+    setInitialPromptFieldValue("");
 
     // Type-specific fields
     if (els.textReadingLevel) els.textReadingLevel.value = "";
@@ -9968,12 +10513,10 @@
     els.workflowPromptWizardNotice.classList.toggle("hidden", !hasCtx);
     setWorkflowManagedBriefMode(hasCtx);
     if (!hasCtx) {
-      if (els.startRefinementBtn) {
-        els.startRefinementBtn.textContent = "Start refinement";
-      }
       if (els.saveToLibraryBtn) {
         els.saveToLibraryBtn.textContent = "Save to library";
       }
+      applyWorkflowPromptFactoryStepUx();
       return;
     }
 
@@ -10025,9 +10568,7 @@
       }
     }
     if (els.startRefinementBtn) {
-      els.startRefinementBtn.textContent = isWorkflowStepLowFrictionMode()
-        ? "Review or refine"
-        : "Refine prompt";
+      els.startRefinementBtn.textContent = "Refine with AI";
     }
     if (els.saveToLibraryBtn) {
       els.saveToLibraryBtn.textContent = "Save to step";
@@ -10039,6 +10580,7 @@
   function clearWorkflowPromptContext() {
     state.promptFactoryWorkflowContext = null;
     state.workflowStepGeneratedDraft = "";
+    state.workflowRefinementUiActivated = false;
     renderWorkflowPromptWizardNotice();
     if (els.saveToLibraryBtn) {
       els.saveToLibraryBtn.textContent = "Save to library";
@@ -10058,7 +10600,7 @@
 
     // Core body into task description.
     if (els.initialPrompt) {
-      els.initialPrompt.value = entry.body || "";
+      setInitialPromptFieldValue(entry.body || "");
     }
 
     var brief = entry.brief && typeof entry.brief === "object" ? entry.brief : null;
@@ -10425,6 +10967,7 @@
       els.conversationLog.appendChild(item);
     });
     els.conversationLog.scrollTop = els.conversationLog.scrollHeight;
+    syncWorkflowRefinementPanelUx();
   }
 
   function updateWorkflowStepInteractivity() {
@@ -10855,6 +11398,9 @@
   }
 
   function handleStartRefinement() {
+    if (state.promptFactoryWorkflowContext) {
+      return;
+    }
     if (!state.apiKey) {
       showToast("Load your OpenAI API key first.", "error");
       return;
@@ -14060,7 +14606,7 @@
           if (stepRole) promptTask.push(stepRole);
           if (stepTitle) promptTask.push('Create a prompt for step "' + stepTitle + '"');
           if (stepOutputName) promptTask.push('target output artefact "' + stepOutputName + '"');
-          els.initialPrompt.value = promptTask.join(". ");
+          setInitialPromptFieldValue(promptTask.join(". "));
         }
 
         var promptCfg =
@@ -16137,6 +16683,26 @@
       return Object.prototype.hasOwnProperty.call(values, key)
         ? values[key]
         : "{{" + raw + "}}";
+    });
+  }
+
+  function handleCopyWorkflowContext() {
+    var text =
+      els.initialPrompt && typeof els.initialPrompt.value === "string"
+        ? els.initialPrompt.value
+        : "";
+    if (!text.trim()) {
+      showToast("There is no workflow context to copy yet.", "error");
+      return;
+    }
+    window.Utils.copyText(text).then(function (ok) {
+      if (ok) {
+        showToast("Workflow context copied to clipboard.", "success");
+      } else {
+        showToast("Unable to copy workflow context to clipboard.", "error");
+      }
+    }).catch(function () {
+      showToast("Unable to copy workflow context to clipboard.", "error");
     });
   }
 
@@ -22115,6 +22681,15 @@
     els.apiKeyFile.addEventListener("change", handleApiKeyFileChange);
 
     els.startRefinementBtn.addEventListener("click", handleStartRefinement);
+    if (els.workflowContextDisclosure) {
+      els.workflowContextDisclosure.addEventListener("toggle", function () {
+        if (!state.promptFactoryWorkflowContext) return;
+        els.workflowContextDisclosure.setAttribute("data-pf-user-toggled", "true");
+      });
+    }
+    if (els.copyWorkflowContextBtn) {
+      els.copyWorkflowContextBtn.addEventListener("click", handleCopyWorkflowContext);
+    }
     if (els.newBriefBtn) {
       els.newBriefBtn.addEventListener("click", handleNewBrief);
     }
@@ -22525,6 +23100,22 @@
     prismTestApi.isWorkflowStepConfigurableInSettings = isWorkflowStepConfigurableInSettings;
     prismTestApi.buildWorkflowStepSettingsSummaryText = buildWorkflowStepSettingsSummaryText;
     prismTestApi.collectWorkflowStepSettingsSummaryValues = collectWorkflowStepSettingsSummaryValues;
+    prismTestApi.normalizeWorkflowStepParameterControl = normalizeWorkflowStepParameterControl;
+    prismTestApi.normalizeWorkflowStepParameterControls = normalizeWorkflowStepParameterControls;
+    prismTestApi.getWorkflowStepParameterControlsFromBriefConfig =
+      getWorkflowStepParameterControlsFromBriefConfig;
+    prismTestApi.filterWorkflowStepParameterControlsForStep =
+      filterWorkflowStepParameterControlsForStep;
+    prismTestApi.groupWorkflowStepParameterControlsForSettings =
+      groupWorkflowStepParameterControlsForSettings;
+    prismTestApi.resolveWorkflowSettingsParamLabel = resolveWorkflowSettingsParamLabel;
+    prismTestApi.resolveWorkflowStepParameterValue = resolveWorkflowStepParameterValue;
+    prismTestApi.buildPackOwnedUserOptionIdMap = buildPackOwnedUserOptionIdMap;
+    prismTestApi.filterUserOptionsExcludingPackKeys = filterUserOptionsExcludingPackKeys;
+    prismTestApi.mergeWorkflowStepParamValueMap = mergeWorkflowStepParamValueMap;
+    prismTestApi.workflowStepParamMapToSelectionRows = workflowStepParamMapToSelectionRows;
+    prismTestApi.parseWorkflowStepParamBlock = parseWorkflowStepParamBlock;
+    prismTestApi.upsertWorkflowStepParamBlock = upsertWorkflowStepParamBlock;
     prismTestApi.stepHasBriefMappingTargets = stepHasBriefMappingTargets;
     prismTestApi.getWorkflowBriefFactorById = getWorkflowBriefFactorById;
     prismTestApi.formatWorkflowBriefFactorDisplayLabel = formatWorkflowBriefFactorDisplayLabel;

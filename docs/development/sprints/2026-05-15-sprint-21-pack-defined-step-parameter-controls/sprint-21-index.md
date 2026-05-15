@@ -2,13 +2,15 @@
 
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-21-pack-defined-step-parameter-controls/`  
 **Date:** 2026-05-15  
-**Status:** **Proposed / ready for charter**
+**Status:** **Closed — complete for scoped Settings operability programme**
 
-**Entry point:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md)
+**Consolidation closeout:** [`docs/consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md)
+
+**Entry point (historical):** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md)
 
 **Predecessor closeout:** [`docs/consolidation/sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md)
 
-**Verification at bootstrap:** **135 passed**, 0 failed
+**Verification at close:** **149 passed**, 0 failed
 
 ---
 
@@ -16,13 +18,16 @@
 
 | File | Purpose |
 |------|---------|
-| [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) | Fresh-chat entry |
-| [`HANDOVER.md`](HANDOVER.md) | Purpose, boundaries, slice sequence |
-| [`SPRINT-CONTEXT.md`](SPRINT-CONTEXT.md) | Goals, scope, risks |
-| [`CURRENT-STATE.md`](CURRENT-STATE.md) | Gap statement + test floor |
-| [`sprint-21-bootstrap.md`](sprint-21-bootstrap.md) | Thesis, two-tier model, slice outlines |
+| [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) | Historical fresh-chat entry |
+| [`HANDOVER.md`](HANDOVER.md) | Post-close handover |
+| [`SPRINT-CONTEXT.md`](SPRINT-CONTEXT.md) | Original goals, scope, risks |
+| [`CURRENT-STATE.md`](CURRENT-STATE.md) | Closed snapshot + test floor |
+| [`sprint-21-bootstrap.md`](sprint-21-bootstrap.md) | Programme thesis, two-tier model |
 | [`sprint-21-index.md`](sprint-21-index.md) | This index |
-| [`review-log.md`](review-log.md) | Decisions R21-001+ |
+| [`review-log.md`](review-log.md) | Decisions R21-001+ and implementation log |
+| [`slice-21-1-closeout.md`](slice-21-1-closeout.md) | Slice 21-1 closeout |
+| [`slice-21-1-charter.md`](slice-21-1-charter.md) | Slice 21-1 charter |
+| [`slice-21-2-charter.md`](slice-21-2-charter.md) | Slice 21-2 charter |
 
 ---
 
@@ -30,28 +35,40 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 21** | **Bootstrap** — no implementation |
+| **Sprint 21** | **Closed** — [`sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) — **149 tests** |
 | **Sprint 20** | **Closed** — [`sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md) |
 | **Sprint 19** | **Closed** — [`SPRINT-19-CHECKPOINT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/SPRINT-19-CHECKPOINT.md) |
 | **Sprint 18** | **Closed** — [`SPRINT-18-CHECKPOINT.md`](../2026-05-15-sprint-18-contextual-workflow-refinement/SPRINT-18-CHECKPOINT.md) |
 
 ---
 
-## Programme thesis
+## Programme thesis (achieved)
 
-**Settings = full workflow parameter editor.** Packs declare parameters and rendering metadata; runtime renders generic controls, persists values, propagates execution, and keeps provenance aligned.
+**Settings = full workflow parameter editor** for pack-declared step parameters. Packs declare metadata; runtime renders generic controls, persists through `[PRISM_STEP_PARAMS]`, and workflow-mode Prompt Factory is draft-centric.
 
 **Not:** new synthesis architecture.
 
 ---
 
-## Proposed slice sequence
+## Slice sequence (final)
 
 | Slice | Focus | Status |
 |-------|--------|--------|
-| **21-1** | Parameter metadata + generic Settings renderer | Charter pending |
-| **21-2** | Advanced/basic grouping + visibility | Deferred |
-| **21-3** | LD pilot + provenance integration | Deferred |
+| **21-1** | Parameter metadata + generic Settings renderer | **Closed** |
+| **21-2** | Grouping, visibility, summary labels, LD expansion | **Closed** |
+| **21-3** | Provenance alignment for Settings overrides | **Not started** (deferred) |
+| **PF workflow-mode UX** | Deterministic editor; refinement removed from workflow mode | **Closed** |
+
+---
+
+## Test progression
+
+| Milestone | Result |
+|-----------|--------|
+| Sprint 20 close | **135 passed** |
+| Sprint 21 bootstrap | **135 passed** (docs only) |
+| Slice 21-1 | **145 passed** (+10) |
+| Sprint 21 close | **149 passed** (+4) |
 
 ---
 
@@ -59,31 +76,31 @@
 
 | Document | Path |
 |----------|------|
+| Sprint 21 closeout | [`docs/consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) |
 | Sprint 20 closeout | [`docs/consolidation/sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md) |
 | Parameterisation reflection | [`docs/consolidation/sprint-20-parameterisation-reflection.md`](../../../consolidation/sprint-20-parameterisation-reflection.md) |
 | Contextual refinement | [`docs/consolidation/contextual-refinement-architecture-note.md`](../../../consolidation/contextual-refinement-architecture-note.md) |
-| Sprint 20 pack (closed) | [`../2026-05-15-sprint-20-workflow-explainability-settings-ux/`](../2026-05-15-sprint-20-workflow-explainability-settings-ux/) |
 
 ---
 
-## Investigation starting points (when chartered)
+## Implementation touchpoints
 
 | Area | Path |
 |------|------|
-| Factory Settings UI | `app.js` — step config, `userOptions`, `[PRISM_STEP_PARAMS]` |
-| Sprint 20 discoverability | `decorateWorkflowStepSettingsDiscoverability` |
-| Mappings | `applyWorkflowBriefMappings`, pack `mappingRules` |
-| LD pack | `domains/learning-design/domain-learning-design-step-patterns.md` |
-| Tests | `workflow-settings-discoverability.test.js`, `workflow-brief-provenance.test.js` |
+| Settings UI | `app.js` — pack parameter controls, workflow-mode PF UX |
+| LD pack metadata | `domains/learning-design/domain-learning-design-step-patterns.md` |
+| Tests | `tests/workflow-step-parameter-controls.test.js` |
+| Sprint 20 discoverability | `tests/workflow-settings-discoverability.test.js` |
+| Sprint 20 provenance | `tests/workflow-brief-provenance.test.js` |
 
 ---
 
-## Test baseline
+## Recommended next sprint
 
-| Milestone | Result |
-|-----------|--------|
-| Sprint 20 close | **135 passed** |
-| Sprint 21 bootstrap | **135 passed** (no code delta expected) |
+**Sprint 22** — charter one of:
+
+- Provenance alignment for explicit Settings overrides, **or**
+- Parameter audit / adoption expansion
 
 ---
 
@@ -93,4 +110,4 @@
 node --test tests/*.test.js
 ```
 
-**At bootstrap:** **135 passed**, 0 failed.
+**At close:** **149 passed**, 0 failed.

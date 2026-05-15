@@ -839,6 +839,113 @@ They provide a consistent way to structure workflows and ensure that learning de
         }
       }
     ],
+    "stepParameterControls": [
+      {
+        "key": "page_profile",
+        "canonicalStepId": "step_design_page",
+        "label": "Page profile",
+        "description": "Who the assembled page is primarily for.",
+        "controlType": "select",
+        "default": "learner",
+        "options": [
+          { "value": "learner", "label": "Learner" },
+          { "value": "facilitator", "label": "Facilitator" },
+          { "value": "assessment", "label": "Assessment" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "elicited"
+      },
+      {
+        "key": "tone_style",
+        "canonicalStepId": "step_design_page",
+        "label": "Tone / style",
+        "description": "Voice and register for page content.",
+        "controlType": "select",
+        "default": "academic",
+        "options": [
+          { "value": "formal", "label": "Formal" },
+          { "value": "friendly", "label": "Friendly" },
+          { "value": "academic", "label": "Academic" },
+          { "value": "conversational", "label": "Conversational" },
+          { "value": "mixed", "label": "Mixed" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "depth_level",
+        "canonicalStepId": "step_design_page",
+        "label": "Depth level",
+        "description": "How deep page content should go.",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          { "value": "foundational", "label": "Foundational" },
+          { "value": "application", "label": "Application" },
+          { "value": "analysis", "label": "Analysis" },
+          { "value": "mixed", "label": "Mixed" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "activity_type",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Question strategy",
+        "description": "Assessment type for the blueprint (maps from brief assessment type).",
+        "controlType": "select",
+        "default": "mcq",
+        "options": [
+          { "value": "mcq", "label": "Selected response" },
+          { "value": "short_answer", "label": "Short written response" },
+          { "value": "essay", "label": "Extended response" },
+          { "value": "problem", "label": "Problem-solving response" },
+          { "value": "case_study", "label": "Scenario-based response" },
+          { "value": "mixed", "label": "Mixed response types" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "elicited"
+      },
+      {
+        "key": "number_of_items",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Number of items",
+        "description": "How many assessment items to generate.",
+        "controlType": "number",
+        "default": "10",
+        "visible": true,
+        "advanced": false,
+        "elicitation": "elicited"
+      },
+      {
+        "key": "include_examples",
+        "canonicalStepId": "step_design_page",
+        "label": "Include examples",
+        "description": "Whether the page should include illustrative examples.",
+        "controlType": "boolean",
+        "default": "true",
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "total_items",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Total assessment items",
+        "description": "Total items/questions in the assessment blueprint.",
+        "controlType": "number",
+        "default": "10",
+        "min": 1,
+        "max": 200,
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      }
+    ],
     "mappingRules": [
       {
         "factor": "duration_minutes",

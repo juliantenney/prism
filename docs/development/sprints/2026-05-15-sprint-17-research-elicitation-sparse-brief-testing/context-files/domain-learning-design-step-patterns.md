@@ -1,0 +1,2687 @@
+# domain-learning-design-step-patterns.md
+
+## Purpose
+
+This document defines the canonical step patterns used in learning design workflows within PRISM.
+
+Step patterns describe **common transformations** that occur in instructional design workflows.  
+They provide a consistent way to structure workflows and ensure that learning design processes are applied correctly.
+
+---
+
+# Design Principles
+
+- Each step should have:
+  - a clear purpose
+  - a defined input artefact (where applicable)
+  - a well-defined output artefact
+
+- Steps should:
+  - represent meaningful transformations
+  - avoid combining unrelated tasks
+  - produce reusable artefacts
+
+- Prefer:
+  - clear boundaries between steps
+  - reuse of canonical artefacts
+
+---
+
+# Core Step Patterns
+
+### Workflow Policy
+```json
+{
+  "workflowPolicy": {
+    "canonicalSteps": [
+      "Normalize Content",
+      "Model Knowledge",
+      "Define Learning Outcomes",
+      "Design Learning Activities",
+      "Generate Activity Materials",
+      "Design Page",
+      "Generate Slide Deck",
+      "Generate VLE Structure",
+      "Generate Learning Object Set",
+      "Generate Assessment Items",
+      "Construct Learning Sequence",
+      "Generate Learning Content",
+      "Design Assessment",
+      "Design Feedback",
+      "Validate Learning Design",
+      "Revise Assessment Based on QA",
+      "Design Marking Rubric"
+    ],
+    "maxOccurrences": {
+      "Normalize Content": 1,
+      "Model Knowledge": 1,
+      "Define Learning Outcomes": 1,
+      "Design Learning Activities": 1,
+      "Generate Activity Materials": 1,
+      "Design Page": 1,
+      "Generate Slide Deck": 1,
+      "Generate VLE Structure": 1,
+      "Generate Learning Object Set": 1,
+      "Generate Assessment Items": 1,
+      "Construct Learning Sequence": 1,
+      "Generate Learning Content": 1,
+      "Design Assessment": 1,
+      "Design Feedback": 1,
+      "Validate Learning Design": 1,
+      "Revise Assessment Based on QA": 1,
+      "Design Marking Rubric": 1
+    },
+    "dependencies": {
+      "Model Knowledge": { "requiresAnyOf": ["normalized_content", "learning_content"], "produces": ["knowledge_model"] },
+      "Define Learning Outcomes": { "requires": ["knowledge_model"], "produces": ["learning_outcomes"] },
+      "Design Learning Activities": { "requires": ["learning_outcomes"], "produces": ["learning_activities"] },
+      "Generate Activity Materials": { "requires": ["learning_activities"], "produces": ["activity_materials", "session_materials"] },
+      "Design Page": { "requiresAnyOf": ["knowledge_model", "activity_materials", "assessment_items", "learning_sequence", "learning_content"], "optionalRequires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence", "assessment_items", "feedback_pack", "marking_rubric", "assessment_blueprint"], "produces": ["page"] },
+      "Generate Slide Deck": { "requires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence"], "produces": ["slide_deck"] },
+      "Generate VLE Structure": { "requires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence"], "produces": ["vle_structure"] },
+      "Generate Learning Object Set": { "requires": ["learning_outcomes", "learning_activities", "activity_materials"], "produces": ["learning_object_set"] },
+      "Generate Learning Content": { "requiresAnyOf": ["topic", "normalized_content"], "produces": ["learning_content"] },
+      "Design Assessment": { "requires": ["learning_outcomes"], "produces": ["assessment_blueprint"] },
+      "Generate Assessment Items": { "requiresAnyOf": ["learning_outcomes", "assessment_blueprint"], "produces": ["assessment_items"] },
+      "Design Feedback": { "requires": ["assessment_items"], "produces": ["feedback_pack"] },
+      "Construct Learning Sequence": { "requires": ["learning_activities", "activity_materials"], "produces": ["learning_sequence"] },
+      "Validate Learning Design": { "requires": ["assessment_items", "learning_outcomes"], "produces": ["qa"] },
+      "Revise Assessment Based on QA": { "requires": ["qa", "assessment_items"], "produces": ["revised_assessment_items"] },
+      "Design Marking Rubric": {
+        "requires": ["assessment_blueprint"],
+        "requiresAnyOf": ["revised_assessment_items", "assessment_items"],
+        "produces": ["marking_rubric"]
+      }
+    },
+    "precedenceRules": [
+      ["Model Knowledge", "Define Learning Outcomes"],
+      ["Define Learning Outcomes", "Design Learning Activities"],
+      ["Design Learning Activities", "Generate Activity Materials"],
+      ["Generate Activity Materials", "Construct Learning Sequence"],
+      ["Generate Learning Content", "Design Page"],
+      ["Model Knowledge", "Design Page"],
+      ["Define Learning Outcomes", "Design Page"],
+      ["Design Learning Activities", "Design Page"],
+      ["Generate Activity Materials", "Design Page"],
+      ["Design Assessment", "Design Page"],
+      ["Generate Assessment Items", "Design Page"],
+      ["Generate Assessment Items", "Construct Learning Sequence"],
+      ["Generate Activity Materials", "Generate Slide Deck"],
+      ["Generate Activity Materials", "Generate VLE Structure"],
+      ["Generate Activity Materials", "Generate Learning Object Set"],
+      ["Construct Learning Sequence", "Design Page"],
+      ["Construct Learning Sequence", "Generate Slide Deck"],
+      ["Construct Learning Sequence", "Generate VLE Structure"],
+      ["Construct Learning Sequence", "Generate Learning Object Set"],
+      ["Design Feedback", "Design Page"],
+      ["Design Marking Rubric", "Design Page"],
+      ["Design Assessment", "Generate Assessment Items"],
+      ["Validate Learning Design", "Revise Assessment Based on QA"]
+    ],
+    "triggerRules": [
+      {
+        "whenGoalMentionsAnyOf": ["lesson", "session", "workshop", "class", "minute", "module", "course", "programme", "weekly schedule"],
+        "include": ["Construct Learning Sequence"]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "session_materials": ["page"],
+          "design_scope": ["session", "sequence", "module"]
+        },
+        "include": [
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Construct Learning Sequence",
+          "Design Page"
+        ]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "assessment_required": true
+        },
+        "include": [
+          "Generate Assessment Items"
+        ]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "session_materials": ["page"],
+          "input_strategy": "provided_source_content"
+        },
+        "whenGoalMentionsAnyOf": ["from supplied", "from source", "from transcript", "from notes", "convert into page", "turn into page"],
+        "include": ["Model Knowledge", "Design Page"],
+        "exclude": [
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Construct Learning Sequence"
+        ]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "session_materials": ["page"]
+        },
+        "whenGoalMentionsAnyOf": [
+          "outcomes",
+          "learning outcomes",
+          "activities",
+          "activity",
+          "tasks",
+          "task",
+          "learner tasks",
+          "worksheet"
+        ],
+        "include": [
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Construct Learning Sequence",
+          "Design Page"
+        ]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["face_to_face", "facilitator guide", "teaching guide", "runbook"],
+        "include": ["Design Page"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["mostly_online", "participant handout", "learner handout", "learner pack"],
+        "include": ["Design Page"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["learner page", "student page", "moodle page", "vle page", "online content page", "learner-facing page", "student-facing page"],
+        "include": ["Design Page", "Generate Learning Content", "Model Knowledge"],
+        "exclude": ["Generate Assessment Items", "Design Feedback"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["page", "content page", "readable page"],
+        "include": ["Design Page", "Generate Learning Content", "Model Knowledge"],
+        "exclude": ["Generate Assessment Items", "Design Feedback"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["blended", "slide deck", "slide_deck", "slides"],
+        "include": ["Generate Slide Deck"]
+      },
+      {
+        "whenInputsMentionAnyOf": ["page"],
+        "include": ["Design Page", "Generate Learning Content", "Model Knowledge"],
+        "exclude": ["Generate Assessment Items", "Design Feedback"]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "session_materials": ["page"]
+        },
+        "include": ["Design Page", "Generate Learning Content", "Model Knowledge"],
+        "exclude": ["Generate Assessment Items", "Design Feedback"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["activity", "activities", "task", "tasks", "exercise", "exercises", "worksheet", "discussion prompt", "reflection prompt", "learner task"],
+        "include": ["Define Learning Outcomes", "Design Learning Activities", "Generate Activity Materials"]
+      },
+      {
+        "whenInputsMentionAnyOf": ["slide_deck"],
+        "include": ["Generate Slide Deck"]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "delivery_context": "self_directed"
+        },
+        "include": ["Design Page"],
+        "exclude": ["Generate Slide Deck"]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "delivery_context": "self_directed",
+          "learning_environments": ["xerte"]
+        },
+        "include": ["Generate Learning Object Set"]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "learning_environments": ["xerte"]
+        },
+        "include": ["Generate Learning Object Set"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["vle structure", "moodle structure", "lms structure", "course shell", "topic blocks", "weekly blocks"],
+        "include": ["Generate VLE Structure"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["xerte", "learning object", "interactive object", "digital learning object"],
+        "include": ["Generate Learning Object Set"]
+      },
+      {
+        "whenInputsMentionAnyOf": ["generate content", "no content", "create content", "from topic only"],
+        "include": ["Generate Learning Content"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["quiz", "mcq", "mcqs", "multiple choice", "test", "question bank", "item bank", "knowledge check", "assessment items", "question set", "formative question", "formative questions"],
+        "include": ["Generate Assessment Items"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["assessment blueprint", "blueprint", "coverage map", "difficulty profile", "item distribution", "assessment specification", "assessment design"],
+        "include": ["Design Assessment"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["validate", "quality assurance", "qa", "review quality", "alignment audit", "alignment check", "quality audit"],
+        "include": ["Validate Learning Design"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["revise based on qa", "apply qa feedback", "revision pass", "refine using qa", "improve assessment", "refine assessment"],
+        "include": ["Revise Assessment Based on QA"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["rubric", "marking rubric", "grading criteria", "mark scheme", "tutor marking"],
+        "include": ["Design Marking Rubric"]
+      },
+      {
+        "whenGoalMentionsAnyOf": ["feedback pack", "learner feedback", "feedback guidance", "formative feedback"],
+        "include": ["Design Feedback"]
+      },
+      {
+        "whenGoalMentionsAnyOf": [
+          "assessment pack",
+          "formative assessment pack",
+          "formative assessment",
+          "quiz pack",
+          "printable quiz",
+          "assessment document",
+          "assessment booklet",
+          "tutor assessment pack",
+          "student assessment pack"
+        ],
+        "include": ["Generate Assessment Items", "Design Page"],
+        "exclude": [
+          "Design Assessment",
+          "Design Marking Rubric",
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Generate Learning Content",
+          "Model Knowledge",
+          "Construct Learning Sequence"
+        ]
+      }
+    ],
+    "stepRoleAnchors": {
+      "Design Learning Activities": "Design runnable learning tasks with explicit learner actions, facilitation moves, and delivery-ready outputs.",
+      "Generate Activity Materials": "Generate complete, facilitator-ready teaching materials from activity material specifications.",
+      "Construct Learning Sequence": "Build a timed facilitation-ready session flow with transitions, learner actions, and facilitator actions.",
+      "Design Page": "Assemble one readable, profile-aware page artefact from upstream artefacts while preserving explicit component, quantity, and exclusion constraints.",
+      "Generate Slide Deck": "Assemble a presentation-support deck without replacing materials or redesigning pedagogy.",
+      "Generate VLE Structure": "Assemble a VLE-ready structured representation of the learning design without converting it into a platform-specific package.",
+      "Generate Learning Object Set": "Assemble one or more structured learning objects from existing artefacts without producing final rendered packages or redesigning pedagogy.",
+      "Design Feedback": "Create actionable learner feedback guidance aligned to assessment items and likely misconceptions."
+    },
+    "finalSteps": ["Design Page"]
+  }
+}
+```
+
+### Workflow Brief Config
+```json
+{
+  "workflowBriefConfig": {
+    "version": "1",
+    "requiredFactors": [
+      {
+        "id": "topic",
+        "label": "Topic",
+        "question": "What topic or subject should this focus on?",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "learner_level",
+        "label": "Learner level",
+        "question": "What learner level should this workflow target? (beginner/intermediate/advanced/undergraduate/postgraduate)",
+        "type": "select",
+        "required": true,
+        "choices": ["beginner", "intermediate", "advanced", "undergraduate", "postgraduate"]
+      },
+      {
+        "id": "design_scope",
+        "label": "Design scope",
+        "question": "What is the design scope? (single_activity/session/sequence/module)",
+        "type": "select",
+        "required": true,
+        "choices": ["single_activity", "session", "sequence", "module"],
+        "default": "session"
+      },
+      {
+        "id": "delivery_pattern",
+        "label": "Delivery pattern",
+        "question": "What delivery pattern should this use? (face_to_face/blended/mostly_online)",
+        "type": "select",
+        "required": true,
+        "choices": ["face_to_face", "blended", "mostly_online"],
+        "default": "face_to_face"
+      },
+      {
+        "id": "input_strategy",
+        "label": "Input strategy",
+        "question": "Should this workflow generate from a topic, rely on uploaded material, or combine both?",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "generate_from_topic", "label": "Generate content" },
+          { "value": "provided_source_content", "label": "Use uploaded material" },
+          { "value": "mixed", "label": "Mix uploaded material and generated content" }
+        ]
+      }
+    ],
+    "optionalFactors": [
+      {
+        "id": "duration_minutes",
+        "label": "Session duration (minutes)",
+        "question": "How long is the session?",
+        "type": "number",
+        "min": 10,
+        "max": 480
+      },
+      {
+        "id": "delivery_mode",
+        "label": "Delivery mode",
+        "question": "What delivery mode should this use? (live_workshop/seminar/async)",
+        "type": "select",
+        "choices": ["live_workshop", "seminar", "async"]
+      },
+      {
+        "id": "delivery_context",
+        "label": "Delivery context",
+        "question": "What pedagogic delivery context should this use? (in_person/online_sync/online_async/blended/self_directed)",
+        "type": "select",
+        "choices": ["in_person", "online_sync", "online_async", "blended", "self_directed"]
+      },
+      {
+        "id": "session_materials",
+        "label": "Session-level materials",
+        "question": "Which session materials should be generated? (comma-separated: page, slide_deck)",
+        "type": "multi_select",
+        "choices": ["page", "slide_deck"],
+        "default": ["page"]
+      },
+      {
+        "id": "page_profile",
+        "label": "Page profile",
+        "question": "What page profile should be used? (learner/facilitator/assessment)",
+        "type": "select",
+        "choices": ["learner", "facilitator", "assessment"],
+        "default": "learner"
+      },
+      {
+        "id": "assessment_required",
+        "label": "Assessment required",
+        "question": "Do you need assessment outputs? (yes/no)",
+        "type": "boolean"
+      },
+      {
+        "id": "learning_environments",
+        "label": "Learning environments",
+        "question": "Which learning environments are in scope? (classroom, vle, xerte, external_tools)",
+        "type": "multi_select",
+        "choices": ["classroom", "vle", "xerte", "external_tools"],
+        "default": ["classroom"]
+      },
+      {
+        "id": "assessment_strategy",
+        "label": "Assessment strategy",
+        "question": "Assessment strategy (none/formative/summative/mixed)",
+        "type": "select",
+        "choices": ["none", "formative", "summative", "mixed"],
+        "default": "none"
+      }
+    ],
+    "refinementFactors": [
+      {
+        "id": "coverage_scope",
+        "label": "Coverage scope",
+        "question": "Should this focus on selected themes, broad coverage, or a balanced middle ground?",
+        "plainEnglish": "Do you want this to focus on a few key topics, cover lots of topics, or sit between the two?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": [
+          { "value": "selected_themes", "label": "Selected themes", "description": "Focus on the most important topics rather than covering everything." },
+          { "value": "balanced", "label": "Balanced", "description": "Cover key topics with a practical balance of depth and breadth." },
+          { "value": "broad_coverage", "label": "Broad coverage", "description": "Sample across many topics for wider overall coverage." }
+        ],
+        "default": "balanced",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "task", "exercise"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "cognitive_demand",
+        "label": "Cognitive demand profile",
+        "question": "What level of thinking should most tasks target?",
+        "plainEnglish": "Should learners mainly recall facts, apply ideas, or do higher-order analysis/evaluation?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": [
+          { "value": "recall_foundation", "label": "Recall and understanding", "description": "Mostly checks core facts, concepts, and basic understanding." },
+          { "value": "application_oriented", "label": "Application and problem-solving", "description": "Focuses on applying ideas to tasks and practical problems." },
+          { "value": "analysis_evaluation", "label": "Analysis and evaluation (higher-order)", "description": "Emphasizes comparison, critique, judgement, and deeper reasoning." },
+          { "value": "mixed", "label": "Mixed levels", "description": "Uses a deliberate mix from foundational to higher-order thinking." }
+        ],
+        "default": "mixed",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "task", "exercise"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "question_style_mix",
+        "label": "Response mode mix",
+        "question": "What kind of responses should learners give?",
+        "plainEnglish": "Do you want multiple choice, written answers, or a mix?",
+        "type": "select",
+        "choices": [
+          { "value": "selected_response_only", "label": "Selected response only (e.g. MCQ)", "description": "Learners choose from provided options (faster marking, tighter structure)." },
+          { "value": "constructed_response_only", "label": "Constructed response only (e.g. short/essay)", "description": "Learners write their own responses (more depth, richer evidence)." },
+          { "value": "mixed_response_modes", "label": "Mixed selected + constructed responses", "description": "Combine option-based and written-response items in one set." },
+          { "value": "integrative_performance_oriented", "label": "Integrative/performance-style responses", "description": "Use more authentic responses that integrate multiple skills or outcomes." }
+        ],
+        "default": "mixed_response_modes",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "assessment_type",
+        "label": "Assessment type",
+        "question": "What assessment type should this use?",
+        "plainEnglish": "Should this be multiple-choice, short-answer, essay, case-study, problem-based, or mixed?",
+        "type": "select",
+        "choices": [
+          { "value": "mcq", "label": "MCQ", "description": "Single-best-answer multiple-choice questions." },
+          { "value": "short_answer", "label": "Short answer", "description": "Brief written responses demonstrating understanding or application." },
+          { "value": "essay", "label": "Essay", "description": "Extended written responses with argument, analysis, or evaluation." },
+          { "value": "problem", "label": "Problem solving", "description": "Solve a problem using methods, reasoning, and justified steps." },
+          { "value": "case_study", "label": "Case study", "description": "Analyze a realistic case and respond using evidence-based reasoning." },
+          { "value": "mixed", "label": "Mixed types", "description": "Use a deliberate mix of assessment types." }
+        ],
+        "default": "mixed",
+        "mustAsk": true,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "mcq", "exam"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "feedback_required",
+        "label": "Feedback mode",
+        "question": "What feedback mode should the workflow produce for learners/tutors?",
+        "plainEnglish": "Should feedback be none, per question, overall summary, or both?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": [
+          { "value": "none", "label": "No feedback", "description": "Provide answers/results without learner-facing feedback commentary." },
+          { "value": "item_level", "label": "Per item", "description": "Provide feedback for each question or task response." },
+          { "value": "aggregate", "label": "Overall summary", "description": "Provide a consolidated summary of strengths and gaps." },
+          { "value": "both_item_and_aggregate", "label": "Per item + overall summary", "description": "Provide both per-item guidance and an overall summary." }
+        ],
+        "default": "item_level",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "difficulty_profile",
+        "label": "Difficulty distribution",
+        "question": "How should difficulty be distributed across the assessment set?",
+        "plainEnglish": "Should this be mostly easier items, balanced, or mostly harder items?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": [
+          { "value": "foundation_heavy", "label": "Mostly foundational items", "description": "Bias toward easier/foundational items with fewer advanced ones." },
+          { "value": "balanced", "label": "Balanced mix", "description": "Use a balanced spread across easier and harder items." },
+          { "value": "higher_order_heavy", "label": "Mostly higher-order items", "description": "Bias toward more challenging analysis/application items." }
+        ],
+        "default": "balanced",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "assessment_total_items",
+        "label": "Total assessment items",
+        "question": "How many assessment items/questions should be generated in total?",
+        "plainEnglish": "What is the total number of questions/items you want (for example: 8, 10, or 20)?",
+        "skipIfContextResolved": true,
+        "type": "number",
+        "min": 1,
+        "max": 200,
+        "default": 10,
+        "mustAsk": true,
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "mcq", "exam"],
+        "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
+      },
+      {
+        "id": "activity_pattern_mix",
+        "label": "Activity pattern mix",
+        "question": "What activity pattern mix should learning activities use?",
+        "plainEnglish": "Should activities be mostly guided, mixed, or more applied/collaborative?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": [
+          { "value": "guided", "label": "Guided", "description": "Structured tasks led by the tutor, with clear instructions and support." },
+          { "value": "balanced", "label": "Balanced", "description": "A mix of tutor-guided tasks and more student-led discussion or group work." },
+          { "value": "applied_collaborative", "label": "Applied collaborative", "description": "More open-ended tasks where students work together to apply ideas in practice." }
+        ],
+        "default": "balanced",
+        "askWhenGoalMentionsAnyOf": ["workshop", "session", "lesson", "module", "teaching", "learning"],
+        "askWhenDesignScopeIn": ["session", "sequence", "module"]
+      },
+      {
+        "id": "sequencing_granularity",
+        "label": "Sequencing granularity",
+        "question": "How detailed should the learning sequence structure be?",
+        "plainEnglish": "Do you want a light plan, a standard plan, or a very detailed step-by-step sequence?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": ["lightweight", "standard", "detailed"],
+        "default": "standard",
+        "askWhenGoalMentionsAnyOf": ["workshop", "session", "sequence", "module", "weekly", "lecture"],
+        "askWhenDesignScopeIn": ["session", "sequence", "module"]
+      },
+      {
+        "id": "assessment_cadence",
+        "label": "Assessment cadence",
+        "question": "How should assessment be distributed across the broader learning scope?",
+        "plainEnglish": "Should assessment happen only at the end, regularly during learning, or as a mix of formative and summative?",
+        "skipIfContextResolved": true,
+        "type": "select",
+        "choices": ["single_end_point", "periodic_formative", "mixed_formative_summative"],
+        "default": "periodic_formative",
+        "askWhenResolvedFactorEquals": { "assessment_required": true },
+        "askWhenGoalMentionsAnyOf": ["module", "course", "programme", "sequence"],
+        "askWhenDesignScopeIn": ["sequence", "module"]
+      },
+      {
+        "id": "tone_style",
+        "label": "Tone / style",
+        "question": "What tone and style should the page use?",
+        "plainEnglish": "Should the language be formal, friendly, academic, or conversational?",
+        "type": "select",
+        "choices": ["formal", "friendly", "academic", "conversational", "mixed"],
+        "default": "academic",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "session_materials": ["page"] },
+        "askWhenGoalMentionsAnyOf": ["page", "content", "lesson", "module", "course"]
+      },
+      {
+        "id": "depth_level",
+        "label": "Depth level",
+        "question": "What depth level should the page content target?",
+        "plainEnglish": "Should it cover foundational concepts, application, or deeper analysis?",
+        "type": "select",
+        "choices": ["foundational", "application", "analysis", "mixed"],
+        "default": "mixed",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "session_materials": ["page"] },
+        "askWhenGoalMentionsAnyOf": ["page", "content", "lesson", "module", "course"]
+      },
+      {
+        "id": "include_examples",
+        "label": "Include examples",
+        "question": "Should the page include illustrative examples?",
+        "type": "boolean",
+        "default": true,
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "session_materials": ["page"] },
+        "askWhenGoalMentionsAnyOf": ["page", "content", "lesson", "module", "course"]
+      },
+      {
+        "id": "include_practice_tasks",
+        "label": "Include practice tasks",
+        "question": "Should the page include short practice tasks or questions?",
+        "type": "boolean",
+        "default": false,
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "session_materials": ["page"] },
+        "askWhenGoalMentionsAnyOf": ["page", "content", "activity", "tasks"]
+      },
+      {
+        "id": "compact_vs_detailed",
+        "label": "Page compactness",
+        "question": "Should the page be compact or detailed?",
+        "plainEnglish": "Do you want a concise summary or a more detailed explanation?",
+        "type": "select",
+        "choices": ["compact", "standard", "detailed"],
+        "default": "standard",
+        "mustAsk": false,
+        "askWhenResolvedFactorEquals": { "session_materials": ["page"] },
+        "askWhenGoalMentionsAnyOf": ["page", "content", "summary"]
+      }
+    ],
+    "uiHints": {
+      "design_intent": "Describe the learning-design output to produce (workshop, lesson, module, assessment pack).",
+      "audience": "Primary learner/cohort for this design.",
+      "scope_scale": "Delivery scale and duration (for example: 60-minute workshop, two-week module, or full course).",
+      "scope_scale_placeholder": "e.g. single activity, workshop block, multi-week module, programme",
+      "inputs": "Source content or note that content must be generated from topic.",
+      "desired_outputs": "Target artefacts (activities, sequence, assessment, facilitator materials).",
+      "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."
+    },
+    "extraFields": [
+      {
+        "id": "delivery_context",
+        "label": "Delivery context (optional)",
+        "type": "select",
+        "choices": [
+          { "value": "in_person", "label": "In-person classroom/workshop" },
+          { "value": "online_sync", "label": "Live online (synchronous)" },
+          { "value": "online_async", "label": "Self-paced online (asynchronous)" },
+          { "value": "blended", "label": "Blended (in-person + online)" },
+          { "value": "self_directed", "label": "Self-directed independent progression" }
+        ],
+        "helpText": "Pedagogic delivery mode (how learners progress), not just platform/environment."
+      }
+    ],
+    "inferenceRules": [
+      {
+        "whenInputsMentionAnyOf": [
+          "undergraduate",
+          "undergraduates",
+          "first-year undergraduate",
+          "first year undergraduate",
+          "first-year undergraduates",
+          "first year undergraduates",
+          "second-year undergraduate",
+          "second year undergraduate",
+          "second-year undergraduates",
+          "second year undergraduates",
+          "final-year undergraduate",
+          "final year undergraduate",
+          "final-year undergraduates",
+          "final year undergraduates"
+        ],
+        "set": {
+          "learner_level": "undergraduate"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["postgraduate", "postgraduates", "postgraduate taught students"],
+        "set": {
+          "learner_level": "postgraduate"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": [
+          "year 7",
+          "year 8",
+          "year 9",
+          "ks3",
+          "key stage 3"
+        ],
+        "set": {
+          "learner_level": "beginner"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": [
+          "year 10",
+          "year 11",
+          "ks4",
+          "key stage 4",
+          "gcse"
+        ],
+        "set": {
+          "learner_level": "intermediate"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": [
+          "year 12",
+          "year 13",
+          "ks5",
+          "key stage 5",
+          "a-level",
+          "a level"
+        ],
+        "set": {
+          "learner_level": "advanced"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["primary", "primary school"],
+        "set": {
+          "learner_level": "beginner"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["beginner", "beginners"],
+        "set": {
+          "learner_level": "beginner"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["intermediate"],
+        "set": {
+          "learner_level": "intermediate"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["advanced"],
+        "set": {
+          "learner_level": "advanced"
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["quiz", "activity", "exercise", "question set", "worksheet", "task"],
+        "set": {
+          "design_scope": "single_activity"
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["workshop", "session", "class", "live"],
+        "set": {
+          "delivery_mode": "live_workshop"
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["quiz", "mcq", "assessment", "test"],
+        "set": {
+          "assessment_required": true
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["module", "course", "programme", "6-week", "weekly schedule"],
+        "set": {
+          "design_scope": "module"
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["online", "moodle"],
+        "set": {
+          "delivery_pattern": "blended",
+          "learning_environments": ["classroom", "vle"]
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["vle", "moodle", "course site", "online course space", "vle structure", "moodle structure", "moodle course structure"],
+        "set": {
+          "learning_environments": ["vle"]
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["vle", "moodle", "course site", "online course space", "vle structure", "moodle structure", "moodle course structure"],
+        "set": {
+          "learning_environments": ["vle"]
+        }
+      },
+      {
+        "whenGoalMentionsAnyOf": ["self-directed", "independent study", "self study", "study independently", "work through on their own"],
+        "set": {
+          "delivery_context": "self_directed"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["self-directed", "independent study", "self study", "study independently", "work through on their own"],
+        "set": {
+          "delivery_context": "self_directed"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["no source content", "generate from topic", "from topic only"],
+        "set": {
+          "input_strategy": "generate_from_topic"
+        }
+      },
+      {
+        "whenInputsMentionAnyOf": ["transcript", "article", "notes", "document", "pdf", "slides"],
+        "set": {
+          "input_strategy": "provided_source_content"
+        }
+      }
+    ],
+    "mappingRules": [
+      {
+        "factor": "duration_minutes",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.duration_minutes",
+          "stepParams.step_construct_learning_sequence.duration_minutes"
+        ]
+      },
+      {
+        "factor": "topic",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.topic"
+        ]
+      },
+      {
+        "factor": "learner_level",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.audience",
+          "stepParams.step_define_learning_outcomes.learnerLevel"
+        ]
+      },
+      {
+        "factor": "delivery_mode",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.delivery_mode"
+        ]
+      },
+      {
+        "factor": "design_scope",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.design_scope"
+        ]
+      },
+      {
+        "factor": "delivery_pattern",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.delivery_pattern"
+        ]
+      },
+      {
+        "factor": "delivery_context",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.delivery_context"
+        ]
+      },
+      {
+        "factor": "input_strategy",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.input_strategy"
+        ]
+      },
+      {
+        "factor": "learning_environments",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.learning_environments"
+        ]
+      },
+      {
+        "factor": "assessment_strategy",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.assessment_strategy"
+        ]
+      },
+      {
+        "factor": "coverage_scope",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.coverage_scope",
+          "stepParams.step_design_assessment.coverage_scope"
+        ]
+      },
+      {
+        "factor": "cognitive_demand",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.cognitive_demand",
+          "stepParams.step_design_assessment.cognitive_demand"
+        ]
+      },
+      {
+        "factor": "question_style_mix",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.question_style_mix",
+          "stepParams.step_generate_assessment_items.question_style_mix"
+        ]
+      },
+      {
+        "factor": "assessment_type",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.assessment_type",
+          "stepParams.step_design_assessment.activity_type"
+        ]
+      },
+      {
+        "factor": "feedback_required",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.feedback_required",
+          "stepParams.step_design_feedback.feedback_required"
+        ]
+      },
+      {
+        "factor": "difficulty_profile",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.difficulty_profile",
+          "stepParams.step_design_assessment.difficulty_profile",
+          "stepParams.step_generate_assessment_items.difficulty_profile"
+        ]
+      },
+      {
+        "factor": "assessment_total_items",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.assessment_total_items",
+          "stepParams.step_design_assessment.total_items",
+          "stepParams.step_generate_assessment_items.number_of_items"
+        ]
+      },
+      {
+        "factor": "activity_pattern_mix",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.activity_pattern_mix",
+          "stepParams.step_design_learning_activities.activity_pattern_mix"
+        ]
+      },
+      {
+        "factor": "sequencing_granularity",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.sequencing_granularity",
+          "stepParams.step_construct_learning_sequence.sequencing_granularity"
+        ]
+      },
+      {
+        "factor": "assessment_cadence",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.assessment_cadence",
+          "stepParams.step_design_assessment.assessment_cadence"
+        ]
+      },
+      {
+        "factor": "session_materials",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.session_materials",
+          "stepParams.step_generate_activity_materials.session_materials"
+        ]
+      },
+      {
+        "factor": "page_profile",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.page_profile",
+          "stepParams.step_design_page.page_profile"
+        ]
+      },
+      {
+        "factor": "learner_level",
+        "mapsTo": [
+          "stepParams.step_design_page.audience_level"
+        ]
+      },
+      {
+        "factor": "tone_style",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.tone_style",
+          "stepParams.step_design_page.tone_style"
+        ]
+      },
+      {
+        "factor": "depth_level",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.depth_level",
+          "stepParams.step_design_page.depth_level"
+        ]
+      },
+      {
+        "factor": "include_examples",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.include_examples",
+          "stepParams.step_design_page.include_examples"
+        ]
+      },
+      {
+        "factor": "include_practice_tasks",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.include_practice_tasks",
+          "stepParams.step_design_page.include_practice_tasks"
+        ]
+      },
+      {
+        "factor": "compact_vs_detailed",
+        "mapsTo": [
+          "workflow.workflowOutputSpec.constraints.output_density",
+          "stepParams.step_design_page.output_density"
+        ]
+      }
+    ],
+    "intentClasses": {
+      "assessment_pack": {
+        "stepIncludes": ["generate_assessment_items"],
+        "detection": {
+          "whenResolvedFactorsInclude": {
+            "assessment_required": true
+          },
+          "whenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "mcq",
+            "question set",
+            "question bank",
+            "assessment pack",
+            "test"
+          ]
+        },
+        "elicitation": {
+          "orderedFactors": [
+            "assessment_type",
+            "assessment_total_items",
+            "question_style_mix",
+            "difficulty_profile",
+            "feedback_required",
+            "coverage_scope",
+            "cognitive_demand"
+          ],
+          "mustAskFactors": [
+            "assessment_type",
+            "assessment_total_items"
+          ],
+          "optionalFactors": [
+            "question_style_mix",
+            "difficulty_profile",
+            "feedback_required",
+            "coverage_scope"
+          ],
+          "optionalHighValueFactors": [
+            "cognitive_demand"
+          ]
+        },
+        "stepBiasHints": {
+          "preferLeanAssessmentFlow": true,
+          "defaultInclude": ["Generate Assessment Items"],
+          "defaultExclude": ["Design Assessment"]
+        }
+      }
+    },
+    "stepRefinementProfiles": {
+      "assessment_pack": {
+        "applicability": {
+          "intentClassAnyOf": ["assessment_pack"],
+          "requiresAnyCanonicalSteps": ["generate_assessment_items"]
+        },
+        "bindingMode": "factor_ids_via_mapping_rules",
+        "optionalOptInPrompt": "Do you want to refine the assessment further? I can ask about difficulty, coverage, feedback/model answers, and question mix. (yes/no)",
+        "tiers": {
+          "required": [
+            {
+              "factorId": "assessment_type",
+              "questionText": "What assessment type should this use?\nChoose one: MCQ, short answer, essay, case study, problem-based, or mixed.\nIf you're unsure, say 'recommend'.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "mcq": "mcq",
+                  "multiple choice": "mcq",
+                  "multiple-choice": "mcq",
+                  "short answer": "short_answer",
+                  "short-answer": "short_answer",
+                  "essay": "essay",
+                  "case study": "case_study",
+                  "case-study": "case_study",
+                  "problem based": "problem",
+                  "problem-based": "problem",
+                  "mixed": "mixed"
+                }
+              }
+            },
+            {
+              "factorId": "assessment_total_items",
+              "questionText": "How many assessment items should be generated?\nFor example: 8, 10, or 20.",
+              "parseHints": {
+                "numberExtraction": true
+              }
+            }
+          ],
+          "optional": [
+            {
+              "factorId": "difficulty_profile",
+              "questionText": "What difficulty level should the items target?\nChoose one: introductory, balanced, or challenging.",
+              "parseHints": {
+                "aliases": {
+                  "introductory": "foundation_heavy",
+                  "easy": "foundation_heavy",
+                  "balanced": "balanced",
+                  "challenging": "higher_order_heavy",
+                  "advanced": "higher_order_heavy"
+                }
+              }
+            },
+            {
+              "factorId": "coverage_scope",
+              "questionText": "What should the questions cover?\nChoose one: broad coverage, selected themes, or key concepts only.",
+              "parseHints": {
+                "aliases": {
+                  "broad coverage": "broad_coverage",
+                  "selected themes": "selected_themes",
+                  "key concepts only": "selected_themes"
+                }
+              }
+            },
+            {
+              "factorId": "feedback_required",
+              "questionText": "Should the pack include feedback or model answers?\nAnswer yes or no.",
+              "parseHints": {
+                "booleanAliases": {
+                  "yes": "item_level",
+                  "y": "item_level",
+                  "true": "item_level",
+                  "1": "item_level",
+                  "no": "none",
+                  "n": "none",
+                  "false": "none",
+                  "0": "none"
+                }
+              }
+            },
+            {
+              "factorId": "question_style_mix",
+              "questionText": "Should the question style be consistent or varied?\nChoose one: consistent, varied, or mixed.",
+              "parseHints": {
+                "aliases": {
+                  "consistent": "selected_response_only",
+                  "varied": "constructed_response_only",
+                  "mixed": "mixed_response_modes"
+                }
+              }
+            },
+            {
+              "factorId": "cognitive_demand",
+              "questionText": "What cognitive level should the questions target?\nChoose one: recall, application, analysis, or mixed.",
+              "parseHints": {
+                "aliases": {
+                  "recall": "recall_foundation",
+                  "application": "application_oriented",
+                  "analysis": "analysis_evaluation",
+                  "mixed": "mixed"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "design_page": {
+        "applicability": {
+          "requiresAnyCanonicalSteps": ["design_page"],
+          "whenGoalMentionsAnyOf": [
+            "learner page",
+            "student page",
+            "learner-facing page",
+            "student-facing page",
+            "revision page",
+            "resource page",
+            "tutor resource page",
+            "content page",
+            "readable page"
+          ]
+        },
+        "bindingMode": "factor_ids_via_mapping_rules",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about tone, depth, examples, practice tasks, and compactness. (yes/no)",
+        "tiers": {
+          "required": [
+            {
+              "factorId": "page_profile",
+              "questionText": "What page profile should this use?\nChoose one: learner, facilitator (tutor), or assessment.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "learner": "learner",
+                  "student": "learner",
+                  "revision": "learner",
+                  "facilitator": "facilitator",
+                  "tutor": "facilitator",
+                  "teacher": "facilitator",
+                  "assessment": "assessment"
+                }
+              }
+            },
+            {
+              "factorId": "learner_level",
+              "questionText": "What audience level should this page target?\nChoose one: beginner, intermediate, advanced, undergraduate, or postgraduate.",
+              "parseHints": {
+                "recommendEnabled": true
+              }
+            }
+          ],
+          "optional": [
+            {
+              "factorId": "tone_style",
+              "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "formal": "formal",
+                  "friendly": "friendly",
+                  "academic": "academic",
+                  "conversational": "conversational",
+                  "mixed": "mixed"
+                }
+              }
+            },
+            {
+              "factorId": "depth_level",
+              "questionText": "What depth level should the page content target?\nChoose one: foundational, application, analysis, or mixed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "foundational": "foundational",
+                  "application": "application",
+                  "analysis": "analysis",
+                  "mixed": "mixed"
+                }
+              }
+            },
+            {
+              "factorId": "include_examples",
+              "questionText": "Should the page include illustrative examples?\nAnswer yes or no.",
+              "parseHints": {
+                "booleanAliases": {
+                  "yes": true,
+                  "y": true,
+                  "no": false,
+                  "n": false
+                }
+              }
+            },
+            {
+              "factorId": "include_practice_tasks",
+              "questionText": "Should the page include short practice tasks or questions?\nAnswer yes or no.",
+              "parseHints": {
+                "booleanAliases": {
+                  "yes": true,
+                  "y": true,
+                  "no": false,
+                  "n": false
+                }
+              }
+            },
+            {
+              "factorId": "compact_vs_detailed",
+              "questionText": "Should the page be compact or detailed?\nChoose one: compact, standard, or detailed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "compact": "compact",
+                  "standard": "standard",
+                  "detailed": "detailed"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "learner_page_pack": {
+        "applicability": {
+          "requiresAnyCanonicalSteps": ["design_page"],
+          "whenGoalMentionsAnyOf": [
+            "learner page",
+            "student page",
+            "learner-facing page",
+            "student-facing page",
+            "revision page",
+            "resource page",
+            "tutor resource page",
+            "content page",
+            "readable page"
+          ]
+        },
+        "bindingMode": "factor_ids_via_mapping_rules",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about tone, depth, examples, practice tasks, and compactness. (yes/no)",
+        "tiers": {
+          "required": [
+            {
+              "factorId": "page_profile",
+              "questionText": "What page profile should this use?\nChoose one: learner, facilitator (tutor), or assessment.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "learner": "learner",
+                  "student": "learner",
+                  "revision": "learner",
+                  "facilitator": "facilitator",
+                  "tutor": "facilitator",
+                  "teacher": "facilitator",
+                  "assessment": "assessment"
+                }
+              }
+            },
+            {
+              "factorId": "learner_level",
+              "questionText": "What audience level should this page target?\nChoose one: beginner, intermediate, advanced, undergraduate, or postgraduate.",
+              "parseHints": {
+                "recommendEnabled": true
+              }
+            }
+          ],
+          "optional": [
+            {
+              "factorId": "tone_style",
+              "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "formal": "formal",
+                  "friendly": "friendly",
+                  "academic": "academic",
+                  "conversational": "conversational",
+                  "mixed": "mixed"
+                }
+              }
+            },
+            {
+              "factorId": "depth_level",
+              "questionText": "What depth level should the page content target?\nChoose one: foundational, application, analysis, or mixed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "foundational": "foundational",
+                  "application": "application",
+                  "analysis": "analysis",
+                  "mixed": "mixed"
+                }
+              }
+            },
+            {
+              "factorId": "include_examples",
+              "questionText": "Should the page include illustrative examples?\nAnswer yes or no.",
+              "parseHints": {
+                "booleanAliases": {
+                  "yes": true,
+                  "y": true,
+                  "no": false,
+                  "n": false
+                }
+              }
+            },
+            {
+              "factorId": "include_practice_tasks",
+              "questionText": "Should the page include short practice tasks or questions?\nAnswer yes or no.",
+              "parseHints": {
+                "booleanAliases": {
+                  "yes": true,
+                  "y": true,
+                  "no": false,
+                  "n": false
+                }
+              }
+            },
+            {
+              "factorId": "compact_vs_detailed",
+              "questionText": "Should the page be compact or detailed?\nChoose one: compact, standard, or detailed.",
+              "parseHints": {
+                "recommendEnabled": true,
+                "aliases": {
+                  "compact": "compact",
+                  "standard": "standard",
+                  "detailed": "detailed"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "stopConditions": ["all_required_factors_resolved"],
+    "questionPolicy": {
+      "maxDefaultQuestions": 8,
+      "askOptionalByDefault": false,
+      "maxRefinementQuestions": 8,
+      "askRefinementByDefault": true
+    }
+  }
+}
+```
+
+## 1. Normalize Content
+
+### Type
+Extraction
+
+### Input
+Raw content (e.g. transcript, text, document) or learning_content
+
+### Output
+normalized_content
+
+### Purpose
+- Clean and structure raw content
+- Remove noise and redundancy
+- Segment into meaningful units
+
+### Aliases
+- Extract Text
+- Parse File
+- Clean Content
+- Normalize Text
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "allowWorkflowGoalContext": false,
+  "promptScope": "step_only",
+  "defaultPromptStrategy": "default_template",
+  "promptTemplate": "You are preparing raw source material for normalization.\n\nTask:\nTransform the provided content into clean, coherent normalized_content while preserving the original meaning.\n\nInstructions:\n- Remove irrelevant material such as navigation text, duplicate content, formatting artefacts, and non-essential references\n- Preserve meaningful content, including definitions, examples, explanations, and important distinctions\n- Organise content into clear sections and headings when structure mode is sectioned\n- Improve clarity where sentences are fragmented or poorly structured, without changing meaning\n- Keep terminology consistent\n- Do not introduce new ideas, interpretation, or analysis\n- Prioritise fidelity and completeness, but if source size exceeds practical single-response limits, produce the best possible comprehensive structured normalization within response limits\n- In large-input cases, continue autonomously with best-effort structured normalization; do not ask the user to choose sections, chunking strategy, or continuation mode\n\nConfiguration:\n- Structure mode: {{option:structure_mode}}\n- Detail level: {{option:detail_level}}\n- Keep examples: {{option:keep_examples}}\n\nOutput requirements:\n- Return normalized content in {{preferredOutputFormat}}\n- Use descriptive sections, headings, and coherent paragraphs\n- Focus only on transforming raw content into normalized_content\n- Do not ask follow-up questions\n\nReturn only the normalized content.",
+  "preferredOutputFormat": "structured_markdown",
+  "defaultPromptNotes": "Use a canonical normalize-content prompt that cleans and reorganises source content into coherent sections while preserving important detail and examples for downstream modelling.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step prepares and normalizes source content so it is clean, structured, and ready for downstream learning-design steps."
+  },
+  "defaultOutputStructure": {
+    "sections": ["Source overview", "Cleaned content", "Key terms", "Retained examples"]
+  },
+  "userOptions": [
+    {
+      "id": "structure_mode",
+      "label": "Structure mode",
+      "type": "select",
+      "default": "reorganise_into_sections",
+      "choices": [
+        {
+          "value": "preserve_original_structure",
+          "label": "Preserve original structure",
+          "promptInstruction": "Preserve the source structure as much as possible while cleaning content."
+        },
+        {
+          "value": "reorganise_into_sections",
+          "label": "Reorganise into sections",
+          "promptInstruction": "Reorganise the normalized output into clear thematic sections."
+        }
+      ]
+    },
+    {
+      "id": "detail_level",
+      "label": "Detail level",
+      "type": "select",
+      "default": "lightly_simplify_language",
+      "choices": [
+        {
+          "value": "preserve_full_detail",
+          "label": "Preserve full detail",
+          "promptInstruction": "Preserve full informational detail; do not reduce substantive content."
+        },
+        {
+          "value": "lightly_simplify_language",
+          "label": "Lightly simplify language",
+          "promptInstruction": "Lightly simplify language while preserving meaning and key detail."
+        }
+      ]
+    },
+    {
+      "id": "keep_examples",
+      "label": "Keep examples",
+      "type": "boolean",
+      "default": true,
+      "promptInstructionWhenTrue": "Retain meaningful examples from the source where they aid understanding.",
+      "promptInstructionWhenFalse": "Do not prioritize retaining source examples unless they are essential to meaning."
+    }
+  ]
+}
+```
+
+---
+
+## 2. Generate Learning Content
+
+### Type
+Generation
+
+### Input
+optional topic, optional audience, optional level, optional source_material
+
+### Output
+learning_content
+
+### Purpose
+- Generate teaching-ready instructional content when source content is missing
+- Extend or improve existing source material when provided
+- Produce structured content suitable for downstream learning-design steps
+
+### Aliases
+- Create Learning Content
+- Draft Instructional Content
+- Extend Teaching Content
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate or extend pedagogically structured learning content that is ready for downstream modelling and design.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step creates baseline learning content from topic and/or source inputs for downstream design steps."
+  },
+  "defaultOutputStructure": {
+    "keys": ["title", "sections", "key_concepts", "examples"]
+  },
+  "promptTemplate": "Context:\nYou may be provided with topic, audience, level, and optional source_material.\n\nTask:\nGenerate or extend teaching-ready learning_content that is pedagogically structured and suitable for downstream learning design.\n\nInstructions:\n- If source_material is provided, extend and improve it by clarifying explanations, adding suitable examples, and improving structure\n- Do not discard or contradict valid source material when extending it\n- If source_material is not provided, generate content from topic, audience, and level\n- Use clear explanations, logical sectioning, key concepts, and illustrative examples\n- Organise progression from simpler ideas to more complex ideas\n- Adapt depth, terminology, and explanation style to the specified audience and level\n- Avoid unnecessary technicality unless required by audience/level\n- Avoid generic summaries; produce purposeful teaching content\n- Keep content grounded in provided topic and/or source material\n- Do not hallucinate unnecessary detail\n- Ensure output can be consumed by downstream steps such as knowledge modelling, learning-outcome generation, and activity design\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing: title, sections, key_concepts, examples\n- sections should be an ordered array with section title and section content suitable for teaching use\n- Return only the JSON."
+}
+```
+
+---
+
+## 3. Model Knowledge
+
+### Type
+Transformation
+
+### Input
+normalized_content or learning_content
+
+### Output
+knowledge_model
+
+### Purpose
+- Identify key concepts
+- Define relationships between concepts
+- Surface processes and structures
+- Identify misconceptions
+
+### Aliases
+- Build Knowledge Model
+- Extract Concepts
+- Map Concepts
+- Identify Key Concepts
+- Identify key concepts and facts
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "allowWorkflowGoalContext": false,
+  "promptScope": "step_only",
+  "structureStyle": "schema_structured",
+  "defaultPromptStrategy": "default_template",
+  "promptTemplate": "You are given structured content representing source material.\n\nYour task is to model the conceptual knowledge contained in this content as a structured artefact called \"knowledge_model\".\n\nInstructions:\n- Identify key concepts from the source and include a clear definition for each concept\n- Make important relationships between concepts explicit (e.g. prerequisite, part-of, causes, enables, contrasts)\n- Identify meaningful groupings or hierarchies of concepts where relevant\n- Identify processes, sequences, or workflows when present in the source\n- Identify likely misconceptions or confusion points when supported by the source\n- Keep all output faithful to the provided content only\n- Do not introduce external knowledge, assumptions, or unsupported interpretation\n- Write with clarity and precision so the output can be reused directly downstream\n\nStep notes (if provided): {{stepNotes}}\n\nOutput requirements:\n- Return output as JSON only (no prose outside JSON)\n- The JSON must include:\n  - concepts (each with name and definition)\n  - relationships between concepts (when present)\n  - groupings or hierarchy (when present)\n  - processes or sequences (when present)\n  - misconceptions (when supported by the content)\n- Keep the structure reusable for downstream learning outcomes and assessment design without reinterpretation\n\nReturn only the JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate a knowledge model from normalized content using canonical learning-design structures. Emphasize concepts and relationships, include misconceptions where relevant, and include processes/workflows when present in source material.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step transforms content into an explicit concept-and-relationship model for planning."
+  },
+  "defaultOutputStructure": {
+    "keys": ["concepts", "relationships", "misconceptions", "processes"]
+  },
+  "userOptions": [
+    {
+      "id": "include_relationships",
+      "label": "Include concept relationships",
+      "type": "boolean",
+      "default": true,
+      "promptInstructionWhenTrue": "Include explicit relationships between concepts when supported by the source."
+    },
+    {
+      "id": "include_misconceptions",
+      "label": "Include misconceptions",
+      "type": "boolean",
+      "default": true,
+      "promptInstructionWhenTrue": "Include likely misconceptions when evidence in the source supports them."
+    },
+    {
+      "id": "include_processes",
+      "label": "Include processes/workflows if present",
+      "type": "boolean",
+      "default": true,
+      "promptInstructionWhenTrue": "Include processes or workflows when present in the source material."
+    }
+  ]
+}
+```
+
+---
+
+## 4. Define Learning Outcomes
+
+### Type
+Generation
+
+### Input
+knowledge_model or learning_content
+
+### Output
+learning_outcomes
+
+### Purpose
+- Translate concepts into assessable performance
+- Define what learners should be able to do
+
+### Aliases
+- Generate Learning Outcomes
+- Create Learning Outcomes
+- Define Outcomes
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "promptTemplate": "You are designing learning outcomes from a structured knowledge model.\n\nTask:\nGenerate clear, observable, and assessable learning outcomes derived from the provided knowledge model.\n\nInstructions:\n- Use measurable language and avoid vague verbs such as \"understand\", \"know\", or \"appreciate\"\n- Ensure each outcome aligns with concepts in the knowledge model\n- Set cognitive demand in line with the specified learner level, scope, and cognitive emphasis\n- Produce balanced coverage without redundancy\n- Keep all outcomes grounded in the knowledge model and source content\n- Keep wording precise so outcomes can be reused directly for assessment and activity design\n- Outcomes must be realistically achievable within the stated time and structure\n- Avoid attempting to cover all concepts in short designs\n- Prefer tightly focused, demonstrable outcomes\n\nScope-aware outcome guidance:\n- If the design is a short session (<= 30 minutes) or explicitly single_activity: generate 2-4 outcomes maximum, focus on depth over coverage, and select only the most essential and achievable goals\n- If the design is a standard session (30-120 minutes): generate 3-6 outcomes with moderate breadth and progression\n- If the design is extended (multi-session, module, or longer duration): generate a broader set of outcomes reflecting wider coverage\n\nConstraints:\n- Learner level: {{option:learnerLevel}}\n- Number of outcomes: {{option:numberOfOutcomes}}\n- Cognitive emphasis: {{option:cognitiveEmphasis}}\n- Scope: {{option:scope}}\n- Step notes: {{stepNotes}}\n\nOutput requirements:\n- Return the learning outcomes as {{preferredOutputFormat}}\n- Include context for learner level and scope\n- For each outcome include statement, related concepts, cognitive level, and notes where needed\n\nReturn only the JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate observable and assessable outcomes aligned with the knowledge model, suitable for downstream assessment and activity design.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step defines measurable learning outcomes aligned to the modelled knowledge."
+  },
+  "defaultOutputStructure": {
+    "keys": ["outcomes", "alignment_notes"]
+  },
+  "userOptions": [
+    {
+      "id": "learnerLevel",
+      "label": "Learner level",
+      "type": "select",
+      "default": "general_adult",
+      "choices": [
+        { "value": "school", "label": "School", "promptInstruction": "Write outcomes suitable for school-level learners." },
+        { "value": "undergraduate", "label": "Undergraduate", "promptInstruction": "Write outcomes suitable for undergraduate learners." },
+        { "value": "postgraduate", "label": "Postgraduate", "promptInstruction": "Write outcomes suitable for postgraduate learners." },
+        { "value": "professional", "label": "Professional", "promptInstruction": "Write outcomes suitable for professional learners." },
+        { "value": "general_adult", "label": "General adult", "promptInstruction": "Write outcomes suitable for a general adult audience." }
+      ]
+    },
+    {
+      "id": "numberOfOutcomes",
+      "label": "Number of outcomes",
+      "type": "number",
+      "default": 6,
+      "min": 3,
+      "max": 12,
+      "promptInstructionTemplate": "Generate exactly {{value}} learning outcomes."
+    },
+    {
+      "id": "cognitiveEmphasis",
+      "label": "Cognitive emphasis",
+      "type": "select",
+      "default": "mixed",
+      "choices": [
+        { "value": "mixed", "label": "Mixed", "promptInstruction": "Use a mixed cognitive emphasis across outcomes." },
+        { "value": "foundational", "label": "Foundational understanding", "promptInstruction": "Emphasize foundational understanding in the outcomes." },
+        { "value": "application", "label": "Application and transfer", "promptInstruction": "Emphasize application and transfer in the outcomes." },
+        { "value": "analysis", "label": "Analysis and evaluation", "promptInstruction": "Emphasize analysis and evaluation in the outcomes." }
+      ]
+    },
+    {
+      "id": "scope",
+      "label": "Scope",
+      "type": "select",
+      "default": "module",
+      "choices": [
+        { "value": "lesson", "label": "Lesson", "promptInstruction": "Keep outcome scope appropriate for a lesson." },
+        { "value": "module", "label": "Module", "promptInstruction": "Keep outcome scope appropriate for a module." },
+        { "value": "course", "label": "Course", "promptInstruction": "Keep outcome scope appropriate for a course." }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 5. Design Learning Activities
+
+### Type
+Generation
+
+### Input
+learning_outcomes (and optionally knowledge_model or learning_content)
+
+### Output
+learning_activities
+
+### Purpose
+- Create tasks that enable learners to achieve outcomes
+- Encourage active engagement
+
+### Blended / HE Guidance
+- Respect resolved workflow constraints: `design_scope`, `delivery_pattern`, `learning_environments`
+- Design activities that are valid for each selected environment
+- Keep this step focused on activity design; do not generate full material content here
+
+### Aliases
+- Generate Learning Activities
+- Create Learning Activities
+- Design Activities
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes (and optionally knowledge_model or learning_content).\n\nTask:\nDesign executable learning_activities that are directly runnable in teaching delivery.\n\nInstructions:\n- Every activity must be implementation-ready, not descriptive-only\n- Every activity must map to one or more learning outcomes\n- Every activity must include explicit learner_task and observable expected_output\n- Learner-facing text fields such as learner_task and expected_output may use a limited Markdown subset only: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules\n- Every activity must include required_materials, grouping, duration_minutes, and facilitator_moves\n- Every activity must include failure_mode with mitigation cues for facilitator handling\n- Use workflow constraints when present: design_scope, delivery_pattern, learning_environments\n- Activities must be appropriate to the selected learning_environments and delivery context\n- You are specifying the materials needed, not creating them\n- For each activity, define required_materials clearly\n- required_materials must specify what each material is used for and what it must contain\n- Do not generate full material content in this step\n- If design_scope is single_activity, produce one focused activity by default\n- For single_activity scope, only produce more than one activity when clearly justified by the request\n- For single_activity scope, avoid broad session framing or multi-phase programme structure unless explicitly requested\n- Ensure each activity has a clear learner-facing product, performance, or decision that can be observed\n- Do not produce generic discussion-only activities without concrete task/output\n- Do not produce activities that require facilitator redesign before use\n- Do not produce activities that are impossible in the stated delivery context\n- Ensure variation across grouping modes and task forms where appropriate while maintaining coherent progression\n- Ensure activities collectively cover all outcomes and progress from understanding -> application -> evaluation where relevant\n- Keep all activities grounded in provided artefacts\n- Apply step notes when provided: {{stepNotes}}\n\nConstraints:\n- Grouping preference: {{option:grouping_preference}}\n- Difficulty level: {{option:difficulty_level}}\n- Coverage breadth: {{option:coverage_breadth}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing activities, outcome_alignment, and delivery_notes\n- activities must be an array where each activity includes:\n  - activity_id\n  - title\n  - grouping (individual | pair | small_group | whole_group)\n  - duration_minutes\n  - mapped_learning_outcomes\n  - required_materials: [{ material_id, type, purpose, specification }]\n  - learner_task\n  - expected_output\n  - failure_mode\n  - facilitator_moves\n- type should be one of: task_cards | prompt_set | scenario | checklist | template | sample_output | text\n- required_materials entries define requirements only; material content is generated in Generate Activity Materials\n- Return only the JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Design executable learning activities that are directly runnable; when delivery_context is self_directed, prioritise independently completable tasks with explicit learner instructions and minimal facilitator dependence. For page-focused outputs requesting learner tasks, default to concise embedded individual/self-directed tasks and avoid classroom orchestration patterns unless explicitly requested.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step designs runnable learning activities linked directly to outcomes."
+  },
+  "defaultOutputStructure": {
+    "keys": ["activities", "outcome_alignment", "delivery_notes"]
+  },
+  "userOptions": [
+    {
+      "id": "grouping_preference",
+      "label": "Grouping preference",
+      "type": "select",
+      "default": "mixed",
+      "choices": [
+        { "value": "mixed", "label": "Mixed", "promptInstruction": "Use a balanced mix of grouping modes across activities." },
+        { "value": "individual", "label": "Individual", "promptInstruction": "Prioritize individually completed activities." },
+        { "value": "pair", "label": "Pair", "promptInstruction": "Prioritize pair-based activities." },
+        { "value": "small_group", "label": "Small group", "promptInstruction": "Prioritize small-group activities." },
+        { "value": "whole_group", "label": "Whole group", "promptInstruction": "Prioritize whole-group activity formats." }
+      ]
+    },
+    {
+      "id": "difficulty_level",
+      "label": "Difficulty level",
+      "type": "select",
+      "default": "moderate",
+      "choices": [
+        { "value": "introductory", "label": "Introductory", "promptInstruction": "Set activity challenge at an introductory level." },
+        { "value": "moderate", "label": "Moderate", "promptInstruction": "Set activity challenge at a moderate level." },
+        { "value": "advanced", "label": "Advanced", "promptInstruction": "Set activity challenge at an advanced level." }
+      ]
+    },
+    {
+      "id": "coverage_breadth",
+      "label": "Coverage breadth",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        { "value": "narrow", "label": "Narrow (key outcomes only)", "promptInstruction": "Focus activity coverage on a narrower set of key outcomes." },
+        { "value": "balanced", "label": "Balanced", "promptInstruction": "Use balanced coverage across the intended outcomes." },
+        { "value": "broad", "label": "Broad coverage", "promptInstruction": "Use broad coverage across outcomes where feasible." }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 6. Generate Activity Materials
+
+### Type
+Generation
+
+### Input
+learning_activities, optional knowledge_model, optional normalized_content
+
+### Output
+activity_materials, session_materials
+
+### Purpose
+- Generate complete, usable teaching materials from activity material specifications
+- Ensure each activity has facilitator-ready artefacts with no placeholders
+
+### Blended / HE Guidance
+- Treat `learning_environments` as a multi-select constraint (array semantics)
+- Generate environment-appropriate materials:
+  - classroom -> slides, handouts, facilitation prompts
+  - vle -> structured VLE-ready sections and activity instructions
+  - xerte -> structured learning object content
+- Regression guards:
+  - do not generate `learning_object_set` unless environments include `xerte`
+  - do not generate `vle_structure` unless environments include `vle`
+
+### Aliases
+- Create Activity Materials
+- Build Activity Materials
+- Produce Workshop Materials
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "allowWorkflowGoalContext": false,
+  "promptScope": "step_only",
+  "structureStyle": "text_structured",
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "text",
+  "defaultPromptNotes": "Generate complete, usable activity materials directly from required_material specifications; when delivery_context is self_directed, ensure all materials are self-contained and do not depend on live tutor clarification. For display-oriented learner-facing material text, use only a limited Markdown subset: ##/### headings, - bullet lists, 1. numbered lists, **bold**, pipe tables, and --- horizontal rules.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step realises full delivery-ready material content for each activity requirement."
+  },
+  "promptTemplate": "Context:\nYou are provided with learning_activities containing required_materials specifications (and optionally knowledge_model, normalized_content, workflow brief, or session context).\n\nRole:\nYou are generating facilitator-ready structured materials content from learning activity specifications.\n\nTask:\nGenerate the full content of all required materials so they can be used immediately in delivery.\n\nInstructions:\n- Treat learning_activities as the source of truth for what to generate in this step\n- This is a materials realisation step, not an activity design step\n- Do not redesign activities, invent new tasks, or change activity structure\n- Use required_materials, learner_task, and expected_output as the primary anchors for generating materials\n- Ensure each material directly supports the learner_task and expected_output of its activity\n- Also use grouping, duration_minutes, mapped_learning_outcomes, and facilitator_moves to keep materials fit-for-purpose\n- Hard rule: Where a material is specified, generate its full usable content. Do not describe or outline the material; produce the exact text, table, scenario, or resource as it would appear to learners or facilitators.\n- For each required_material in the input, produce the actual material content as it would be used in teaching\n- For each required_material, generate the actual material content; do not restate or paraphrase only the specification\n- Keep each material aligned to the activity intent and outcome alignment\n- Do not assume a specific output medium (for example, document, slides, or platform export package)\n- For display-oriented learner-facing text, use only this Markdown subset: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules\n- Avoid exotic Markdown features and malformed table-like text\n- If a table is needed, produce a complete pipe table with header, divider, and rows\n- Do not rely on blank-space alignment for table rendering\n\nMaterial-type realisation guidance:\n- For each required_material, use its type to determine output\n- task_cards: write the actual learner-facing card text for each card, with clear instructions\n- prompt_set: write the actual prompts/questions learners will use\n- scenario: write the full scenario text aligned to activity purpose and source content\n- checklist: write complete checklist items that can be followed directly\n- template: write a fully usable fillable template layout learners can complete\n- sample_output: write a concrete worked example response aligned to expected_output and quality expectations\n- text: write the full specified supporting content directly usable in the activity\n\nUsability requirements:\n- Materials must be complete enough to use without major rewriting\n- Materials must be clearly labelled and easy to read\n- Use learner-facing wording unless facilitator guidance is explicitly needed\n- Avoid placeholders and vague instructions (for example, \"insert discussion questions here\")\n- Do not produce generic commentary instead of material content\n- Do not return plans about materials; return the materials themselves\n- Outputs must not include phrases like \"should include\", \"describe\", or \"specification\". These indicate incomplete material generation.\n- If some details are unspecified, make only minimal, reasonable assumptions necessary to produce a complete and usable output\n\nScope boundaries:\n- Generate activity materials (and session-level materials only when clearly required by the brief/context)\n- Do not perform final platform/export packaging in this step\n\nOutput organisation:\n- Organise content with clear sections using this exact structure for every generated material:\n\nActivity: <activity title>\nActivity ID: <activity_id>\nMapped outcomes: <comma-separated outcomes>\n\nMaterial: <material_id> (<type>)\nPurpose: <brief purpose>\nContent:\n<full usable material content>\n\nFacilitator use:\n<when/how the facilitator introduces and uses this material>\n\n---\n\n- Repeat the structure for all required materials across activities\n- Keep IDs and schema field names as structured labels (for example Activity ID, Material) rather than replacing them with freeform Markdown\n- Return only the final organised materials content."
+}
+```
+
+---
+
+## 7. Design Assessment
+
+### Type
+Generation
+
+### Input
+learning_outcomes, knowledge_model, or learning_content
+
+### Output
+assessment_blueprint
+
+### Purpose
+- Define how learning will be assessed
+- Ensure valid evidence of learning
+
+### Aliases
+- Design Assessment Blueprint
+- Generate Assessment
+- Create Assessment Plan
+- Generate multiple-choice questions
+- Generate MCQs
+- Generate quiz questions
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "allowWorkflowGoalContext": false,
+  "promptScope": "step_only",
+  "structureStyle": "schema_structured",
+  "defaultPromptStrategy": "default_template",
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes and optional supporting artefacts such as knowledge_model or learning_content.\n\nTask:\nDesign an assessment_blueprint that defines how the outcomes will be assessed.\n\nInstructions:\n- Align the blueprint to all provided learning outcomes\n- Question strategy: {{option:activity_type}}\n- Feedback display mode: {{option:feedback_display}}\n- Difficulty level: {{option:difficulty_level}}\n- Coverage breadth: {{option:coverage_breadth}}\n- Total required items/questions: {{option:total_items}}\n- Treat feedback_display as prompt-shaping guidance only; do not require or invent new output schema fields in this step\n- Design should reflect the selected question strategy\n- Define coverage_map so outcomes are covered appropriately across topics/tasks\n- Ensure coverage_map item counts sum exactly to total_items\n- Define difficulty_profile.item_counts with concrete numeric counts using ONLY these keys: recall, comprehension, application, analysis\n- Do NOT use alternative difficulty buckets such as easy/moderate/hard in item_counts\n- Ensure recall + comprehension + application + analysis counts sum exactly to total_items\n- Include marking intent/rationale suitable for downstream item generation and feedback steps\n- Keep output grounded in provided artefacts only\n- Do not generate assessment items in this step\n- Apply step notes if provided: {{stepNotes}}\n\nOutput requirements:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing: assessment_blueprint, coverage_map, difficulty_profile, design_rationale\n- assessment_blueprint must include total_items\n- difficulty_profile must include item_counts as concrete numbers with keys recall, comprehension, application, analysis\n- Return only JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Design assessment artefacts aligned to learning outcomes with valid coverage and clear marking intent.",
+  "defaultOutputStructure": {
+    "keys": [
+      "assessment_blueprint",
+      "coverage_map",
+      "difficulty_profile",
+      "design_rationale"
+    ]
+  },
+  "userOptions": [
+    {
+      "id": "activity_type",
+      "label": "Question strategy",
+      "type": "select",
+      "default": "mcq",
+      "choices": [
+        {
+          "value": "mcq",
+          "label": "Selected response",
+          "promptInstruction": "Design the blueprint for selected-response assessment items."
+        },
+        {
+          "value": "short_answer",
+          "label": "Short written response",
+          "promptInstruction": "Design the blueprint for short written-response assessment items."
+        },
+        {
+          "value": "essay",
+          "label": "Extended response",
+          "promptInstruction": "Design the blueprint for extended written-response assessment items."
+        },
+        {
+          "value": "problem",
+          "label": "Problem-solving response",
+          "promptInstruction": "Design the blueprint for problem-solving response assessment items."
+        },
+        {
+          "value": "case_study",
+          "label": "Scenario-based response",
+          "promptInstruction": "Design the blueprint for scenario-based response assessment items."
+        },
+        {
+          "value": "mixed",
+          "label": "Mixed response types",
+          "promptInstruction": "Design the blueprint for a mixed response-type assessment set."
+        }
+      ]
+    },
+    {
+      "id": "feedback_display",
+      "label": "Feedback display",
+      "type": "select",
+      "default": "answer_grid_end",
+      "choices": [
+        {
+          "value": "none",
+          "label": "None",
+          "promptInstruction": "Do not plan learner-facing feedback/answer display beyond core assessment prompts."
+        },
+        {
+          "value": "answer_grid_end",
+          "label": "Answer grid at end",
+          "promptInstruction": "Plan for answers to be presented as an answer grid at the end."
+        },
+        {
+          "value": "answers_explanations",
+          "label": "Answers + explanations",
+          "promptInstruction": "Plan for answers to be presented with concise explanations."
+        },
+        {
+          "value": "reflection_then_answers",
+          "label": "Reflection first, answers after",
+          "promptInstruction": "Plan for a reflection-first flow, with answers shown after reflection."
+        }
+      ]
+    },
+    {
+      "id": "difficulty_level",
+      "label": "Difficulty level",
+      "type": "select",
+      "default": "moderate",
+      "choices": [
+        {
+          "value": "introductory",
+          "label": "Introductory",
+          "promptInstruction": "Set overall assessment difficulty at an introductory level."
+        },
+        {
+          "value": "moderate",
+          "label": "Moderate",
+          "promptInstruction": "Set overall assessment difficulty at a moderate level."
+        },
+        {
+          "value": "advanced",
+          "label": "Advanced",
+          "promptInstruction": "Set overall assessment difficulty at an advanced level."
+        }
+      ]
+    },
+    {
+      "id": "coverage_breadth",
+      "label": "Coverage breadth",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        {
+          "value": "narrow",
+          "label": "Narrow",
+          "promptInstruction": "Use narrower topic coverage in the assessment blueprint."
+        },
+        {
+          "value": "balanced",
+          "label": "Balanced",
+          "promptInstruction": "Use balanced topic coverage in the assessment blueprint."
+        },
+        {
+          "value": "broad",
+          "label": "Broad",
+          "promptInstruction": "Use broad topic coverage in the assessment blueprint."
+        }
+      ]
+    },
+    {
+      "id": "total_items",
+      "label": "Total assessment items",
+      "type": "number",
+      "default": 10,
+      "promptInstructionTemplate": "Set total assessment items to exactly {{value}}."
+    }
+  ]
+}
+```
+
+---
+
+## 8. Design Feedback
+
+### Type
+Generation
+
+### Input
+assessment_items (optionally with knowledge_model)
+
+### Output
+feedback_pack
+
+### Purpose
+- Provide explanations and guidance
+- Address misconceptions
+- Support improvement
+
+### Aliases
+- Generate Feedback
+- Create Feedback Pack
+- Build Feedback
+- Generate feedback pack for MCQs
+- Generate feedback pack
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "inputPriority": {
+    "primary": "assessment_items",
+    "secondary": "knowledge_model"
+  },
+  "inputArtefactSchemas": [
+    {
+      "type": "assessment_items",
+      "artefact": "assessment_items",
+      "schema": {
+        "items": [
+          {
+            "item_id": "string",
+            "item_type": "string",
+            "topic": "string",
+            "related_learning_outcomes": "array",
+            "stem_or_prompt": "string",
+            "response_structure": "object",
+            "answer_or_guidance": "string",
+            "explanation_or_rationale": "string",
+            "integration_type": "string"
+          }
+        ],
+        "difficulty_distribution": "object",
+        "answer_key": "object",
+        "explanations": "object"
+      }
+    },
+    {
+      "type": "assessment_items",
+      "artefact": "mcqs",
+      "schema": {
+        "items": [
+          {
+            "item_id": "string",
+            "item_type": "string",
+            "topic": "string",
+            "related_learning_outcomes": "array",
+            "stem_or_prompt": "string",
+            "response_structure": "object",
+            "answer_or_guidance": "string",
+            "explanation_or_rationale": "string",
+            "integration_type": "string"
+          }
+        ],
+        "difficulty_distribution": "object",
+        "answer_key": "object",
+        "explanations": "object"
+      }
+    }
+  ],
+  "promptTemplate": "Context:\nYou are provided with assessment_items and a knowledge_model.\n\nTask:\nGenerate a feedback_pack that gives useful learning feedback aligned to the assessment content.\n\nInstructions:\n- Use assessment_items as the primary input to produce per-item and aggregate feedback\n- Use the item structure as provided by the assessment type (mcq, essay, short_answer, problem, case_study, or mixed)\n- Do not assume MCQ-only fields when items are not MCQs\n- Use knowledge_model as a secondary reference for conceptual accuracy and misconception diagnosis\n- Assume each input item includes core fields such as item_id, topic, related_learning_outcomes, and explanation_or_rationale, plus type-specific fields\n- For each item, provide concise correctness rationale and actionable guidance\n- Where relevant, explain likely misconceptions and how to correct them\n- Keep feedback clear, supportive, and instructionally useful\n- Do not ask for or redefine input structure; use provided artefact schemas\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing feedback_items, misconception_guidance, and next_steps\n- Return only the JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate actionable feedback/guidance aligned with assessment outputs and common misconceptions.",
+  "defaultOutputStructure": {
+    "keys": ["feedback_items", "misconception_guidance", "next_steps"]
+  }
+}
+```
+
+---
+
+## 9. Generate Assessment Items
+
+### Type
+Generation
+
+### Input
+learning design artefacts which may include learning_outcomes, knowledge_model, and optionally assessment_blueprint
+
+### Output
+assessment_items
+
+### Purpose
+- Generate concrete assessment/activity items from available learning design artefacts
+- Support standalone generation from learning_outcomes with optional blueprint-guided refinement
+
+### Aliases
+- Generate Activity Items
+- Generate Assessment Questions
+- Generate Quiz Items
+- Create MCQ Items
+- Generate Multiple Choice Questions
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "allowWorkflowGoalContext": false,
+  "promptScope": "step_only",
+  "structureStyle": "schema_structured",
+  "defaultPromptStrategy": "default_template",
+  "inputPriority": {
+    "primary": "learning_outcomes",
+    "secondary": "knowledge_model",
+    "tertiary": "assessment_blueprint"
+  },
+  "promptTemplate": "Context:\nYou are provided with learning design artefacts which may include learning_outcomes, a knowledge_model, and optionally an assessment_blueprint.\n\nTask:\nGenerate assessment_items that are instructionally useful and aligned to the available artefacts.\n\nInstructions:\n- Treat learning_outcomes as the default foundation for item generation\n- If assessment_blueprint is present, use it as an advanced design contract for item count, assessment structure, coverage distribution, and difficulty distribution\n- If assessment_blueprint is not present, derive a sensible assessment structure from learning_outcomes\n- When deriving structure without a blueprint, ensure topic coverage, cognitive balance, and item variety are coherent and reusable\n- Use knowledge_model (if present) to improve conceptual fidelity, strengthen distractors, and surface misconception-aware choices where appropriate\n- Keep all items grounded in provided artefacts\n- Do not invent unsupported domain facts\n- Generate some integrative items that connect multiple outcomes when appropriate\n- Include integration_type per item with value \"single\" or \"multi_outcome\"\n- Include difficulty_level per item with one of: \"recall\", \"comprehension\", \"application\", \"analysis\"\n- Respect configured response formats, composition mode, stimulus mode, and feedback mode\n- If multiple response formats are configured, generate a mix from only the configured formats and include item_type per item\n- IMPORTANT: if assessment_type is mcq (explicitly requested or present in workflow constraints), use single_answer_mcq only\n- For assessment_type = mcq, enforce one-correct-answer MCQ structure only: item_type must be single_answer_mcq, exactly 4 options by default (A-D), one correct_answer, and no true_false/multiple_answer_mcq/short_answer/essay items unless explicitly requested\n- For single_answer_mcq items, include a clear stem, plausible distractors, and one best answer\n- For multiple_answer_mcq items, include a clear stem, select-all-that-apply style instructions, plausible distractors, and all correct answers\n- For true_false items, include a clear proposition, true_false_answer, and concise explanation_or_rationale\n- For short_answer items, include prompt and model_answer_guidance\n- For essay items, include prompt, expected_focus, indicative_points, and marking_guidance\n- If stimulus mode is direct_questions, generate direct items from outcomes/knowledge/blueprint\n- If stimulus mode is scenario_based, problem_based, or case_based, generate realistic source-grounded stimuli and ensure items are anchored to those stimuli\n- Align stimulus complexity to learner level and cognitive emphasis\n- If scenario scope is shared_scenario_for_set, one shared stimulus may support multiple items\n- If scenario scope is scenario_per_item, provide an individual stimulus per relevant item\n- For per-item feedback modes, provide learner-facing feedback for objective/short-response items where applicable\n- For essay items, prioritize marking_guidance and indicative_points rather than simplistic correct/incorrect feedback\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing:\n  - items: assessment items with item_id, item_type, topic, related_learning_outcomes, integration_type, difficulty_level, explanation_or_rationale, and type-specific fields\n  - single_answer_mcq items must include stem, options, and correct_answer\n  - for single_answer_mcq, include correct_answer_text when available\n  - multiple_answer_mcq items must include stem, options, and correct_answers\n  - true_false items must include proposition and true_false_answer\n  - short_answer items must include prompt and model_answer_guidance\n  - essay items must include prompt, expected_focus, indicative_points, and marking_guidance\n  - scenario/problem/case-based items must include stimulus_type and stimulus_text (or shared_stimulus_ref when reused)\n  - difficulty_distribution\n  - answer_key (for MCQ items include item_id, correct_answer, and optionally correct_answer_text)\n  - explanations\n- Return only the JSON.",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate assessment items from learning outcomes by default, with optional blueprint-guided constraints when available.",
+  "defaultOutputStructure": {
+    "keys": ["items", "difficulty_distribution", "answer_key", "explanations", "integration_summary"]
+  },
+  "userOptions": [
+    {
+      "id": "number_of_items",
+      "label": "Number of items",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "max": 200,
+      "promptInstructionTemplate": "Generate exactly {{value}} assessment items."
+    },
+    {
+      "id": "response_formats",
+      "label": "Allowed response formats",
+      "type": "select",
+      "default": "single_answer_mcq",
+      "choices": [
+        { "value": "single_answer_mcq", "label": "Single-answer MCQ", "promptInstruction": "Allow single-answer MCQ items only." },
+        { "value": "multiple_answer_mcq", "label": "Multiple-answer MCQ", "promptInstruction": "Allow multiple-answer MCQ items only; include select-all-that-apply style prompts where appropriate." },
+        { "value": "true_false", "label": "True/false", "promptInstruction": "Allow true/false items only." },
+        { "value": "short_answer", "label": "Short answer", "promptInstruction": "Allow short-answer items only." },
+        { "value": "essay", "label": "Essay", "promptInstruction": "Allow essay items only, requiring extended written responses with clear assessable focus." },
+        { "value": "single_mcq_and_true_false", "label": "Single-answer MCQ + true/false", "promptInstruction": "Allow a mix of single-answer MCQ and true/false items only." },
+        { "value": "objective_mix_all", "label": "Objective mix (single MCQ + multiple MCQ + true/false)", "promptInstruction": "Allow a mix of objective formats: single-answer MCQ, multiple-answer MCQ, and true/false." },
+        { "value": "constructed_mix", "label": "Constructed mix (short answer + essay)", "promptInstruction": "Allow a mix of constructed-response formats: short answer and essay." },
+        { "value": "all_formats_mix", "label": "All supported formats", "promptInstruction": "Allow a mixed set across all supported formats: single-answer MCQ, multiple-answer MCQ, true/false, short answer, and essay." }
+      ]
+    },
+    {
+      "id": "composition_mode",
+      "label": "Composition mode",
+      "type": "select",
+      "default": "single_format",
+      "choices": [
+        { "value": "single_format", "label": "Single format", "promptInstruction": "Use a single response format across the item set unless format configuration explicitly permits a multi-format combination." },
+        { "value": "mixed_set", "label": "Mixed set", "promptInstruction": "Generate a mixed-format item set consistent with the configured allowed response formats." }
+      ]
+    },
+    {
+      "id": "stimulus_mode",
+      "label": "Stimulus mode",
+      "type": "select",
+      "default": "direct_questions",
+      "choices": [
+        { "value": "direct_questions", "label": "Direct questions", "promptInstruction": "Generate direct questions without requiring additional scenario/case stimuli." },
+        { "value": "scenario_based", "label": "Scenario based", "promptInstruction": "Generate scenario-based items anchored to realistic contextual stimuli." },
+        { "value": "problem_based", "label": "Problem based", "promptInstruction": "Generate problem-based items anchored to realistic problem contexts." },
+        { "value": "case_based", "label": "Case based", "promptInstruction": "Generate case-based items anchored to realistic case contexts." }
+      ]
+    },
+    {
+      "id": "scenario_scope",
+      "label": "Stimulus scope",
+      "type": "select",
+      "default": "shared_scenario_for_set",
+      "choices": [
+        { "value": "shared_scenario_for_set", "label": "Shared stimulus for set", "promptInstruction": "When using scenario/problem/case-based mode, allow one shared stimulus to support multiple items." },
+        { "value": "scenario_per_item", "label": "Stimulus per item", "promptInstruction": "When using scenario/problem/case-based mode, provide a separate stimulus for each relevant item." }
+      ]
+    },
+    {
+      "id": "cognitive_emphasis",
+      "label": "Cognitive emphasis",
+      "type": "select",
+      "default": "mixed",
+      "choices": [
+        { "value": "mixed", "label": "Mixed", "promptInstruction": "Use a mixed cognitive emphasis across items." },
+        { "value": "foundational", "label": "Foundational understanding", "promptInstruction": "Emphasize foundational recall and comprehension." },
+        { "value": "application", "label": "Application and transfer", "promptInstruction": "Emphasize application and transfer in item design." },
+        { "value": "analysis", "label": "Analysis and evaluation", "promptInstruction": "Emphasize analysis and evaluation in item design." }
+      ]
+    },
+    {
+      "id": "difficulty_profile",
+      "label": "Difficulty profile",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        { "value": "foundational", "label": "Foundational-heavy", "promptInstruction": "Use a foundational-heavy difficulty profile." },
+        { "value": "balanced", "label": "Balanced", "promptInstruction": "Use a balanced difficulty profile across the item set." },
+        { "value": "higher_order", "label": "Higher-order-heavy", "promptInstruction": "Use a higher-order-heavy difficulty profile." }
+      ]
+    },
+    {
+      "id": "feedback_mode",
+      "label": "Feedback mode",
+      "type": "select",
+      "default": "per_item",
+      "choices": [
+        { "value": "none", "label": "None", "promptInstruction": "Do not include learner-facing feedback beyond essential answer_key and explanation fields." },
+        { "value": "per_item", "label": "Per item", "promptInstruction": "Include concise learner-facing feedback for each item." },
+        { "value": "aggregate", "label": "Aggregate", "promptInstruction": "Include an aggregate feedback summary across the item set." },
+        { "value": "both", "label": "Per item + aggregate", "promptInstruction": "Include both per-item learner feedback and an aggregate feedback summary." }
+      ]
+    },
+    {
+      "id": "coverage_mode",
+      "label": "Coverage mode",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        { "value": "selected_themes", "label": "Selected themes", "promptInstruction": "Focus items on selected high-priority themes." },
+        { "value": "balanced", "label": "Balanced", "promptInstruction": "Use balanced coverage across available learning outcomes." },
+        { "value": "broad_coverage", "label": "Broad coverage", "promptInstruction": "Use broad coverage across as many relevant outcomes/themes as feasible." }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 10. Construct Learning Sequence
+
+### Type
+Synthesis
+
+### Input
+learning_activities, activity_materials, assessments
+
+### Output
+learning_sequence
+
+### Purpose
+- Organise content and activities
+- Create a coherent learning journey
+- Manage progression and scaffolding
+
+### Blended / HE Guidance
+- If scope indicates module/course/programme context, produce multi-week planning outputs (`module_map`)
+- Otherwise default to a standard session timeline
+- Avoid module artefacts for default session workflows unless explicitly triggered
+
+### Aliases
+- Build Learning Sequence
+- Sequence Learning Activities
+- Organize Learning Flow
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "simple",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Construct a usable learning progression; when delivery_context is self_directed, frame it as independent learner progression rather than live facilitation choreography.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step builds an ordered learning progression from activities and materials; in self-directed workflows it represents learner study flow rather than live facilitation."
+  },
+  "promptTemplate": "Context:\nYou are provided with learning_activities, activity_materials, and relevant assessment artefacts.\n\nTask:\nConstruct learning_sequence as a timed facilitation plan that can be delivered directly.\n\nInstructions:\n- Build a concrete session plan, not pedagogical commentary\n- Enforce total duration compliance with configured duration\n- You may only reference activities provided in input learning_activities\n- Do not invent new activities\n- Do not rename activities\n- Do not extend the activity set\n- Only include an activity if there is enough time to run it properly\n- Do not include activities just to tick a coverage box\n- Prefer fewer well-run activities over squeezing all activities into insufficient time\n- If time is too short, omit an activity or merge it with another activity\n- If provided activities are insufficient, reuse, combine, or reschedule existing activities\n- You may only reference materials explicitly defined in activity_materials\n\nMaterial usage rules:\n- When referring to materials, always use the exact material_id and material title as defined in the input artefact (for example: \"Material A1.1 - Concept Map Template\")\n- Do not paraphrase or generalise material names (for example, avoid \"the worksheet\", \"the template\", \"the handout\" unless that is the exact title)\n- All materials referenced must correspond exactly to those defined in the input artefact; do not introduce new materials or rename existing ones\n- When instructing facilitators to distribute or use materials, explicitly reference them using their identifiers\n- Where helpful, include a \"Materials used:\" line at the start of each activity block listing referenced material_id + title pairs\n\n- All materials referenced in facilitator actions must correspond exactly to required_materials defined in learning_activities\n- Do not invent new materials or rename existing ones; use the exact identifiers from activity definitions\n- When referring to materials, always include both material_id and material title (for example: \"Material A1.1 - Concept Map Template\")\n- Do not use vague references such as \"the template\" or \"the worksheet\"\n- Do not introduce new handouts, excerpts, scenarios, slides, checklists, templates, or examples unless already present in activity_materials\n- If design_scope is single_activity, do not generate a broad multi-step session timeline\n- For single_activity scope, produce a minimal one-step structure around the target activity, or state via checks/omissions that no broader sequence is required\n- For single_activity scope, avoid session/module framing unless explicitly requested\n- Include facilitator_actions and learner_actions for each timeline block\n- Include grouping and explicit transition_to_next for each block\n- Use sensible alternation between explanation, activity, and discussion\n- Ensure increasing complexity across the session\n- Include at least two plenary/synthesis moments where appropriate to session length\n- For cognitively demanding tasks (creation, evaluation, iteration, comparison), allocate sufficient time\n- Avoid placing high-complexity tasks into very short final blocks\n- If total time is constrained, reduce, merge, or simplify activities rather than compressing them unrealistically\n- Do not create zero-minute blocks\n- Do not create bookkeeping-only wrap-up steps\n- Closure must have real allocated time, or be explicitly integrated into the final meaningful block\n- Prefer one fewer activity plus a real ending over superficial full coverage\n- If closure is integrated into the final activity, state closure integration explicitly in checks\n- Optimize for learnability and depth, not just coverage\n- Keep sequence grounded in upstream artefacts and constraints\n- Do not output rationale-only prose\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object with:\n  - sequence_title\n  - total_duration_minutes\n  - timeline\n  - activities_used\n  - activities_omitted\n  - checks\n- Each timeline block must include:\n  - block_id\n  - start_minute\n  - duration_minutes\n  - phase_type\n  - activity_id (where relevant)\n  - grouping\n  - facilitator_actions\n  - learner_actions\n  - transition_to_next\n- activities_used must list activity_ids used in timeline\n- activities_omitted must be an array of objects: { activity_id, reason }\n- checks must include:\n  - all_activity_ids_valid\n  - no_new_activities_introduced\n  - all_materials_traceable_to_activity_materials\n  - cognitive_timing_feasible\n  - closure_integrated\n  - no_zero_minute_blocks\n  - omissions_justified\n- Return only the JSON.",
+  "defaultOutputStructure": {
+    "keys": ["sequence_title", "total_duration_minutes", "timeline", "activities_used", "activities_omitted", "checks"]
+  },
+  "userOptions": [
+    {
+      "id": "total_duration_minutes",
+      "label": "Total duration (minutes)",
+      "type": "number",
+      "default": 60,
+      "min": 15,
+      "max": 240,
+      "promptInstructionTemplate": "Build the sequence to fit exactly {{value}} minutes total duration."
+    },
+    {
+      "id": "sequencing_style",
+      "label": "Sequencing style",
+      "type": "select",
+      "default": "progressive_scaffold",
+      "choices": [
+        { "value": "progressive_scaffold", "label": "Progressive scaffold", "promptInstruction": "Use a progressive scaffold sequencing style." },
+        { "value": "spiral_revisit", "label": "Spiral revisit", "promptInstruction": "Use a spiral revisit sequencing style." },
+        { "value": "assessment_anchored", "label": "Assessment anchored", "promptInstruction": "Use an assessment-anchored sequencing style." }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 13. Design Page
+
+### Type
+Assembly
+
+### Input
+learning_outcomes, learning_activities, activity_materials, optional learning_sequence, optional assessment_items, optional feedback_pack, optional marking_rubric, optional assessment_blueprint
+
+### Output
+page
+
+### Purpose
+- Assemble one profile-aware readable page artefact from upstream artefacts
+- Keep output directly usable for HTML/VLE rendering
+- Preserve explicit component, quantity, and exclusion constraints without redesigning pedagogy
+
+### Aliases
+- Build Page
+- Create Readable Page
+- Create Moodle Page Content
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Assemble one profile-aware readable and self-contained page from upstream artefacts with strict fidelity to explicit components, quantities, and exclusions; enforce strict JSON contract: sections must always be an array of section objects, each section object must include these required keys (section_id, heading, content), and do not emit alternate wrapper shapes; canonical section_id order (when applicable): overview, learning_purpose, knowledge_summary, learning_activities, assessment_check, support_notes; if knowledge_model or learning_content exists, include knowledge_summary; learning_activities.content must always be an array of activity objects with predictable keys (activity_id, title, timing/duration_minutes, purpose, learner_instructions, materials, expected_output, support_note); each activity.materials must be a structured object containing usable learner-facing content (not a bullet list string or markdown blob), and markdown content must remain in named material fields; do not flatten materials into label+markdown strings and do not place raw markdown tables inside bullet-list strings; examples of valid material fields include task_cards (array), scenarios (array), checklist (bullet list), worksheet (markdown table or worksheet lines), prompts, and examples; do not output materials as labels-only arrays such as [\"Task Cards\", \"Checklist\"]; prefer object form such as {\"task_cards\":[...],\"checklist\":[...]}; assessment_check.content must be an object with items array; when assessment_items are provided, include all provided items by default and do not sample/omit/compress unless an explicit page constraint requires reduction; preserve item_id, stem, options, and any available answer/explanation fields; if feedback_display is answer_grid_end or answers_explanations and answer-bearing data is available, preserve those answer-bearing fields in page JSON for renderer use; source_artefacts must be object booleans; internal enum values (for example selected_response_only) must not appear in learner-facing content; for learning_activities.content[].materials, copy learner-facing material content verbatim or near-verbatim from upstream activity_materials and preserve full delivery structure (including scenarios, observation sets, background information, checklist sections, prompt labels, response options, templates, and sequenced records); treat scenario/checklist/template/prompt_set content as delivery materials, not source notes; design-page assembly may reorganise and relabel, but must not rewrite into abstracts or summary-only prose; if content is long, preserve structure and shorten only clearly non-essential prose while retaining all learner-actionable blocks; omit unsupported sections and record unmet hard constraints in generation_notes.limitations.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step assembles a profile-aware readable page for HTML/VLE use from existing artefacts.",
+    "what_to_check": "Requested component types and quantities are preserved, exclusions are respected, sections are emitted only as an array of section objects with required keys (section_id, heading, content), canonical section_ids are used where applicable (overview, learning_purpose, knowledge_summary, learning_activities, assessment_check, support_notes), no alternate section wrapper shapes are emitted, knowledge_summary is included when knowledge_model or learning_content is available, learning_activities.content is an array of rich self-contained activity objects with predictable keys, each activity.materials is a structured object with named fields and usable learner-facing content (not flattened bullet strings/markdown blobs), markdown tables are kept as named field values (not inside bullet-list strings), materials are not emitted as labels-only arrays (for example [\"Task Cards\", \"Checklist\"]) and are emitted as objects (for example {\"task_cards\":[...],\"checklist\":[...]}), assessment_check.content is an object with an items array, and when assessment_items are provided all items are preserved by default (no sampling/omission/compression unless explicitly constrained) with item_id/stem/options plus any available answer/explanation fields retained; if feedback_display is answer_grid_end or answers_explanations and answer-bearing data exists, those answer-bearing fields are retained for renderer use; source_artefacts is an object of booleans keyed by artefact name, learner-facing content excludes internal enum values (for example selected_response_only), learning_sequence contributes timing/order when present, and for learning_activities.content[].materials the page copies upstream learner-facing delivery content verbatim or near-verbatim (including scenario detail, background information, observation sets, checklist subsections, prompt labels, response options, templates, and structured tool outputs) without collapsing to abstract summaries; if shortening is needed for length, only clearly non-essential prose is reduced while structure and actionable material blocks remain intact, and any unmet hard requirements are listed in generation_notes.limitations."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "title", "audience", "page_profile", "sections", "source_artefacts", "constraints_applied", "generation_notes"]
+  },
+  "userOptions": [
+    {
+      "id": "page_profile",
+      "label": "Page profile",
+      "type": "select",
+      "default": "learner",
+      "choices": [
+        { "value": "learner", "label": "Learner", "promptInstruction": "Set page_profile to learner and prioritise substantive summary plus learner tasks/instructions." },
+        { "value": "facilitator", "label": "Facilitator", "promptInstruction": "Set page_profile to facilitator and prioritise run guidance and facilitation/logistics support." },
+        { "value": "assessment", "label": "Assessment", "promptInstruction": "Set page_profile to assessment and preserve structured item schema integrity." }
+      ]
+    },
+    {
+      "id": "include_answers",
+      "label": "Include answers",
+      "type": "boolean",
+      "default": false,
+      "promptInstructionWhenTrue": "Include answer-bearing fields where appropriate.",
+      "promptInstructionWhenFalse": "Exclude answer-bearing fields from learner-visible sections."
+    },
+    {
+      "id": "include_marking_guidance",
+      "label": "Include marking guidance",
+      "type": "boolean",
+      "default": false,
+      "promptInstructionWhenTrue": "Include marking guidance when supported by upstream artefacts.",
+      "promptInstructionWhenFalse": "Do not include marking guidance."
+    },
+    {
+      "id": "include_feedback_guidance",
+      "label": "Include feedback guidance",
+      "type": "boolean",
+      "default": false,
+      "promptInstructionWhenTrue": "Include feedback guidance when supported by upstream artefacts.",
+      "promptInstructionWhenFalse": "Do not include feedback guidance."
+    }
+  ],
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, and may also receive learning_sequence, assessment_items, feedback_pack, marking_rubric, and assessment_blueprint.\n\nTask:\nAssemble one readable, self-contained page artefact with artifact_type = page.\n\nInstructions:\n- This is a read-only composition step; do not redesign pedagogy\n- Treat explicit user requirements from workflow goal, desired outputs, and step notes as hard constraints\n- Hard constraints include requested component types, requested quantities, and explicit exclusions\n- Set page_profile using the configured option: {{option:page_profile}}\n- Include audience as provided or infer a coherent audience from context\n- Preserve explicit numeric requests for components unless impossible from available artefacts\n- Ground all sections in provided upstream artefacts only\n- Exclude unsupported/fabricated content\n- The final page JSON must be self-contained for downstream rendering; do not rely on external chat context at render time\n- Do not output labels-only references to upstream artefacts where usable content is available\n- Use meaningful section headings derived from content intent; do not use placeholder headings such as Section 1 unless no better heading is possible\n- Avoid schema-style labels in learner-facing content (for example: Heading, Materials, Material Id)\n- Keep section ordering coherent and generic where applicable: pre-activity context/knowledge summary, learning purpose/outcomes, learning activities, assessment/check understanding, facilitator/support notes\n- For page_profile = assessment, preserve structured assessment item schema integrity and do not flatten items into prose\n- If learning_activities are present, include a clearly named Learning Activities section\n- In Learning Activities, include one self-contained entry per activity where available, including: title, timing/duration (if available), learner-facing purpose/intro, learner_task/instructions, activity-linked resources/materials with usable content, reflection prompt/checklist/worksheet/template/scenario/task-card content when available, expected_output (if available), and facilitator/support note as secondary\n- learning_activities.content MUST be an array of activity objects (do not emit alternate wrappers)\n- For each activity, materials MUST be a structured object with named fields; do not flatten materials into bullet strings or markdown blobs\n- If material content is markdown, keep it as a named field value inside materials (for example materials.analysis_table, materials.scenarios, materials.task_cards)\n- Do not place raw markdown tables inside bullet-list strings; keep tables in their own named material fields\n- When upstream activity_materials are provided, copy full selected learner-facing material content into page.sections[].content[].materials\n- Do not rewrite, summarise, condense, abstract, or paraphrase scenario/checklist/template/prompt_set content\n- Preserve original headings, subsections, prompt group labels, response options, and facilitator-use-relevant learner instructions where learner-facing\n- Design Page assembles selected upstream materials; it must not regenerate simplified substitute versions\n- Avoid thin/minimal entries (for example title plus grouping only); include meaningful learner-task substance and usable material content for each activity\n- If learning_sequence is present, use it to drive activity order and timing where possible\n- If assessment_items are present, include a clearly named Formative Assessment Check section containing actual questions/items from assessment_items (not summary-only prose)\n- For MCQ items include stem and options; include correct answer only when include_answers is true; include feedback/explanation only when include_feedback_guidance is true\n- If answers/feedback are not enabled, render questions only\n- assessment_check.content MUST be an object with an items array\n- Include answer-bearing fields only when include_answers is true\n- Include marking guidance only when include_marking_guidance is true and upstream artefacts support it\n- Include feedback guidance only when include_feedback_guidance is true and upstream artefacts support it\n- When activity_materials are present, embed them as usable learner-facing content rather than mention-only descriptions\n- Include inline usable versions where feasible: do not merely describe the resource\n- Prefer usable completeness over brief description for activity_materials-backed resources\n- Keep full learner-usable material structure where available (for example observation set 1/2/3, nursing notes, checklist section headings, structured tool output, judgement summary, escalation decision, justification prompt) rather than collapsing into single-paragraph prose\n- Use summarisation only when material payload is genuinely too long; in that case preserve structure and shorten only clearly non-essential prose\n- Do not dump raw JSON structures\n- If any hard constraint cannot be fully met, record it explicitly in generation_notes.limitations\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return JSON only\n- Return a JSON object with:\n  - artifact_type (must be page)\n  - title\n  - audience\n  - page_profile (must be one of: learner, facilitator, assessment)\n  - sections (must be an array of section objects with meaningful headings and self-contained content)\n  - source_artefacts\n  - constraints_applied\n  - generation_notes\n- For learner profile, include at minimum substantive pre-activity context/content, learner-purpose/outcome framing, rich learning activities, and learner tasks/instructions\n- For learner profile with learning_activities present, include a Learning Activities section carrying usable activity-linked content, not labels-only references\n- For learner profile with learning_sequence present, preserve sequence order/timing within the activity flow\n- For learner profile with assessment_items present, include a Formative Assessment Check section with actual item content\n- For facilitator profile, include at minimum run/session guidance and sequencing/logistics/facilitation notes\n- For assessment profile, include at minimum a structured questions/items section; do not flatten questions into narrative prose\n- Include generation_notes.limitations only when hard constraints cannot be fully satisfied\n- Before returning JSON, validate: learning_activities.content is an array, each activity.materials is an object, assessment_check.content is an object with items array, and learner-facing text does not leak internal enum values (for example selected_response_only)\n- Return only the JSON."
+}
+```
+
+---
+
+## 14. Generate Slide Deck
+
+### Type
+Assembly
+
+### Input
+learning_outcomes, learning_activities, activity_materials, learning_sequence
+
+### Output
+slide_deck
+
+### Purpose
+- Assemble a presentation-support deck aligned to the learning sequence
+- Support launches, transitions, debriefs, and closure
+- Preserve existing learning design without replacing materials
+
+### Aliases
+- Build Slide Deck
+- Create Presentation Support
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Assemble a presentation-support slide deck from existing sequence and materials.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step assembles a slide deck aligned to sequence moments and activity/material references."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "title", "audience", "slides"]
+  },
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, and learning_sequence.\n\nTask:\nAssemble a slide_deck as structured presentation support for delivery.\n\nInstructions:\n- This is a read-only assembly step; do not redesign pedagogy\n- Align slides to sequence moments (for example: introduction, task launch, debrief, closure)\n- Preserve activity IDs and material IDs/titles in references where relevant\n- Do not duplicate full activity materials unless needed for slide usability\n- Do not replace activity_materials or learning_sequence; this deck supports delivery alongside them\n- Keep slides concise, facilitation-aware, and classroom/workshop usable\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object with:\n  - title\n  - audience\n  - slides: [\n      {\n        slide_id,\n        slide_title,\n        purpose,\n        content,\n        facilitator_notes,\n        linked_activity_ids,\n        linked_material_ids\n      }\n    ]\n- Return only the JSON."
+}
+```
+
+---
+
+## 15. Generate VLE Structure
+
+### Type
+Assembly
+
+### Input
+learning_outcomes, learning_activities, activity_materials, learning_sequence
+
+### Output
+vle_structure
+
+### Purpose
+- Assemble a VLE-ready structure from existing learning design artefacts
+- Preserve pedagogic sequencing while organising for learner-facing platform use
+- Keep output platform-neutral (not Moodle export format)
+
+### Aliases
+- Build VLE Structure
+- Create LMS Structure
+- Organize VLE Course Shell
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Assemble a VLE-ready structure from existing sequence, activities, and materials; when delivery_context is self_directed, optimise for independent learner progression.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step builds a platform-neutral VLE structure from the existing learning design."
+  },
+  "defaultOutputStructure": {
+    "keys": ["title", "organisation_mode", "sections"]
+  },
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, and learning_sequence.\n\nTask:\nAssemble a vle_structure artefact that organises the design for VLE/LMS delivery.\n\nInstructions:\n- This is a read-only transformation step; do not redesign pedagogy\n- Preserve pedagogic progression and sequencing intent from learning_sequence\n- Use only provided activities/materials; do not invent new activities\n- Keep structure learner-facing and implementation-ready at conceptual level\n- Do not convert to Moodle XML, Common Cartridge, SCORM, or any platform-specific package format\n- Keep sections pedagogically meaningful (for example: week/topic/session), not purely technical folders\n- Include clear section summaries and practical learner guidance where useful\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object with:\n  - title\n  - organisation_mode\n  - sections: [\n      {\n        section_id,\n        title,\n        summary,\n        resources,\n        activities,\n        learner_instructions,\n        release_notes\n      }\n    ]\n- Return only the JSON."
+}
+```
+
+---
+
+## 16. Generate Learning Object Set
+
+### Type
+Assembly
+
+### Input
+learning_outcomes, learning_activities, activity_materials, optional learning_sequence
+
+### Output
+learning_object_set
+
+### Purpose
+- Assemble one or more structured digital learning objects from existing artefacts
+- Support interactive/digital delivery without redesigning learning
+- Keep output platform-neutral (not final package/export format)
+
+### Aliases
+- Build Learning Object Set
+- Create Interactive Learning Objects
+- Generate Digital Learning Objects
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Assemble a coherent set of structured learning objects from existing design artefacts; when delivery_context is self_directed, organise objects for independent progression without facilitation assumptions.",
+  "runnerInstructions": {
+    "what_this_step_does": "This step assembles one artefact containing structured learning objects from upstream design inputs."
+  },
+  "defaultOutputStructure": {
+    "keys": ["title", "audience", "objects"]
+  },
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, and optionally learning_sequence.\n\nTask:\nAssemble a learning_object_set artefact containing one or more structured digital learning objects.\n\nInstructions:\n- This is a read-only transformation step; do not redesign pedagogy\n- Ground all objects in provided outcomes, activities, and materials\n- Use learning_sequence only when useful for sequencing/context continuity\n- Do not invent unsupported new pedagogy or unrelated content\n- Keep objects coherent, reusable, and suitable for interactive learning implementations\n- Do not produce Xerte package files, SCORM, Common Cartridge, or final rendering/export artefacts\n- Keep output as structured source content for downstream transformation\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object with:\n  - title\n  - audience\n  - objects: [\n      {\n        object_id,\n        title,\n        purpose,\n        pages,\n        interaction_type,\n        content,\n        linked_activity_ids,\n        linked_outcomes\n      }\n    ]\n- Return only the JSON."
+}
+```
+
+---
+
+## 18. Validate Learning Design
+
+### Type
+Evaluation
+
+### Input
+assessment_items, learning_outcomes, optional learning_activities, optional assessment_blueprint, optional feedback_pack
+
+### Output
+qa
+
+### Purpose
+- Check alignment
+- Identify weaknesses
+- Improve quality
+
+### Aliases
+- Validate Assessment
+- Quality Check Learning Design
+- Review Learning Design
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "inputPriority": {
+    "primary": "assessment_items",
+    "secondary": "assessment_blueprint",
+    "tertiary": "feedback_pack"
+  },
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Validate assessment quality and blueprint alignment using a strict evaluative rubric with issue-level specificity.",
+  "promptTemplate": "Context:\nYou are provided with assessment_items as primary evidence, assessment_blueprint as design contract, and feedback_pack when available.\n\nTask:\nEvaluate assessment quality and alignment strictly against the blueprint and provided artefacts.\n\nInstructions:\n- This step is strictly evaluative\n- Do NOT generate new assessment items\n- Do NOT rewrite existing items\n- Use assessment_items as the primary source for analysis\n- Use assessment_blueprint as the hard reference for coverage, difficulty, and total item constraints\n- Use feedback_pack (if available) only to evaluate feedback quality\n\nEvaluation dimensions:\nA. Alignment\n- Determine whether items accurately assess the stated learning outcomes\n- Check whether topics are correctly mapped to outcomes\n\nB. Coverage fidelity\n- Verify whether item distribution exactly matches assessment_blueprint.coverage_map\n- Identify any over- or under-representation of topics\n\nC. Difficulty fidelity\n- Verify whether actual item distribution exactly matches assessment_blueprint.difficulty_profile.item_counts\n- Identify any drift across recall, comprehension, application, and analysis\n\nD. Item quality\n- Evaluate stems for clarity, ambiguity, and well-formedness\n- Evaluate distractors for plausibility and diagnostic value\n- Identify multiple-correct ambiguity, flawed keys, or weak distractors\n\nE. Misconception targeting\n- Evaluate whether distractors reflect meaningful misconceptions\n- Evaluate whether diagnostic value is present\n\nF. Redundancy and gaps\n- Identify duplicated concepts or overly similar items\n- Identify conceptual gaps or underrepresented areas\n\nG. Feedback quality (if feedback_pack provided)\n- Evaluate whether feedback explains reasoning correctly\n- Evaluate whether feedback addresses misconceptions\n- Evaluate pedagogical usefulness and actionability\n\nIssue specificity requirements:\n- All issues must reference specific item_id values where relevant\n- Avoid generic statements\n- Each issue must include:\n  - issue\n  - affected_items\n  - severity (minor | moderate | major)\n  - recommendation\n\nValidation checks before finalising output:\n- Verify coverage_map alignment exactly\n- Verify difficulty_profile alignment exactly\n- Verify total_items consistency exactly\n- If any mismatch is found, record it explicitly in coverage_analysis and difficulty_validation with affected item_ids where possible\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object with this structure:\n  {\n    \"alignment_review\": {},\n    \"coverage_analysis\": {},\n    \"difficulty_validation\": {},\n    \"item_quality_issues\": [],\n    \"misconception_analysis\": {},\n    \"redundancy_and_gaps\": {},\n    \"feedback_quality_review\": {},\n    \"overall_judgement\": \"\",\n    \"recommended_improvements\": []\n  }\n- Return only the JSON.",
+  "defaultOutputStructure": {
+    "keys": [
+      "alignment_review",
+      "coverage_analysis",
+      "difficulty_validation",
+      "item_quality_issues",
+      "misconception_analysis",
+      "redundancy_and_gaps",
+      "feedback_quality_review",
+      "overall_judgement",
+      "recommended_improvements"
+    ]
+  }
+}
+```
+
+---
+
+## 19. Revise Assessment Based on QA
+
+### Type
+Revision
+
+### Input
+assessment_items, qa, optional assessment_blueprint, optional feedback_pack
+
+### Output
+revised_assessment_items
+
+### Purpose
+- Revise an existing assessment artefact using structured QA findings
+- Preserve strengths while improving weaknesses
+- Maintain blueprint fidelity and downstream compatibility
+
+### Aliases
+- Refine Assessment
+- Improve Assessment from QA
+- Revise Questions Based on Validation
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "inputPriority": {
+    "primary": "qa",
+    "secondary": "assessment_items",
+    "tertiary": "assessment_blueprint",
+    "quaternary": "feedback_pack"
+  },
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Revise assessment items based on QA findings without unnecessary regeneration.",
+  "defaultOutputStructure": {
+    "keys": ["revised_assessment_items", "revision_summary"]
+  },
+  "promptTemplate": "Context:\nYou are provided with qa findings and assessment_items, with optional assessment_blueprint and feedback_pack.\n\nTask:\nRevise the provided assessment items in response to QA findings while preserving strengths and structural compatibility.\n\nInstructions:\n- Use qa as the primary driver for what must change\n- Use assessment_items as the artefact to revise\n- Use assessment_blueprint to preserve design constraints and intended assessment structure\n- Use feedback_pack (if available) to improve pedagogical usefulness and misconception targeting\n- This is a revision step, not a fresh generation step\n- Revise the provided assessment items in response to QA findings\n- Do not generate a completely new assessment unless revision is impossible\n- Preserve assessment items that are already sound\n\nRevision focus:\n- Address alignment issues where item intent does not match related learning outcomes\n- Address weak topic-to-outcome mapping where QA identifies problems\n- Correct coverage_map drift (topic over/under-representation) when identified\n- Correct difficulty_profile drift across recall/comprehension/application/analysis when identified\n- Improve item quality: ambiguous stems, implausible distractors, weak discrimination, multiple defensible answers\n- Improve misconception targeting and explanation quality where QA identifies weak diagnostic value\n- Reduce redundancy and close conceptual gaps highlighted by QA\n\nBlueprint fidelity constraints:\n- Preserve total_items, coverage_map, difficulty_profile, intended assessment type, and topic structure unless QA indicates a justified change and blueprint permits it\n- Do not silently drift from blueprint constraints during revision\n- Do not change item counts unless QA explicitly requires it and blueprint permits it\n- Do not remove valid items unnecessarily\n- Do not weaken strong items during revision\n- Keep all content grounded in the knowledge model and blueprint\n\nCompatibility constraints:\n- Maintain exact JSON compatibility where possible\n- Keep revised item structure compatible with downstream steps\n- Each revised item should preserve fields used by assessment_items artefacts, including: item_id, topic, related_learning_outcomes, integration_type, difficulty_level, stem, options, correct_answer, explanation_or_rationale\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing:\n  - revised_assessment_items: revised items in a structure compatible with assessment_items\n  - revision_summary: {\n      issues_addressed: [],\n      issues_deferred: [],\n      notes: \"\"\n    }\n- If no changes are needed, return the original compatible item set in revised_assessment_items and state explicitly in revision_summary.notes that no revisions were necessary\n- Return only the JSON."
+}
+```
+
+---
+
+## 20. Design Marking Rubric
+
+### Type
+Specification
+
+### Input
+assessment_blueprint, revised_assessment_items (or assessment_items)
+
+### Output
+marking_rubric
+
+### Purpose
+- Produce tutor-facing marking guidance for the generated assessment pack
+- Define criteria, descriptors, weightings, and moderation guidance
+- Keep rubric aligned with outcomes and assessment blueprint
+
+### Aliases
+- Create Marking Rubric
+- Build Tutor Rubric
+- Generate Assessment Rubric
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "inputPriority": {
+    "primary": "assessment_blueprint",
+    "secondary": "revised_assessment_items",
+    "tertiary": "assessment_items"
+  },
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Generate a tutor-facing marking rubric and grading guidance aligned to blueprint and items.",
+  "defaultOutputStructure": {
+    "keys": ["rubric", "criteria", "grading_scale", "moderation_guidance", "assessor_notes"]
+  },
+  "promptTemplate": "Context:\nYou are provided with assessment_blueprint and assessment items (prefer revised_assessment_items when available).\n\nTask:\nGenerate a tutor-facing marking_rubric that can be used to assess submitted responses consistently.\n\nInstructions:\n- Use assessment_blueprint as the primary source of alignment and intent\n- Use revised_assessment_items when present; otherwise use assessment_items\n- Create explicit marking criteria aligned to outcomes/topics\n- Define level descriptors per criterion (for example: excellent, good, satisfactory, limited)\n- Include criterion weightings that sum to 100\n- Include guidance for borderline cases and common misconceptions\n- Include moderation guidance for consistency across markers\n- Keep guidance practical and ready for assessor use\n- Do not redesign the assessment tasks\n- Keep all guidance grounded in provided artefacts\n- Apply step notes when provided: {{stepNotes}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing:\n  - rubric: { title, purpose }\n  - criteria: [ { criterion_id, criterion, weight, descriptors } ]\n  - grading_scale\n  - moderation_guidance\n  - assessor_notes\n- Return only the JSON."
+}
+```
+
+---
+
+# Usage Guidelines
+
+- Not all workflows require all steps.
+- Select step patterns based on:
+  - user intent
+  - required outputs
+  - level of complexity
+
+- Maintain logical ordering:
+  1. Analysis (Normalize, Generate Learning Content, Model Knowledge)
+  2. Specification (Outcomes)
+  3. Design (Activities, Assessment, Feedback)
+  4. Organisation (Sequence)
+  5. Evaluation (Validation)
+  6. Revision (Revise Assessment Based on QA)
+  7. Tutor Marking Support (Design Marking Rubric)
+  8. Delivery composition (Design Page)
+
+---
+
+# Summary
+
+Step patterns provide a **standardised structure** for learning design workflows.
+
+They ensure:
+- consistency
+- clarity
+- reuse
+- alignment with instructional design principles

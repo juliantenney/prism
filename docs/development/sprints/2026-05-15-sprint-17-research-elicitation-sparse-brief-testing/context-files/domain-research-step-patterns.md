@@ -121,11 +121,7 @@ They provide a consistent way to structure workflows and ensure that research pr
         "include": ["Conduct Thematic Analysis"]
       }
     ],
-    "generateResearchContentHeuristic": {
-      "requiresResolvedFactors": ["objective_type", "input_strategy"]
-    },
     "researchDesignPageAppend": {
-      "requiresResolvedFactors": ["objective_type", "input_strategy"],
       "excludeObjectiveTypes": ["questions"],
       "inferObjectiveTypeFromBrief": true,
       "pageDeliveryTextSignals": [
@@ -311,108 +307,6 @@ They provide a consistent way to structure workflows and ensure that research pr
         "mapsTo": [
           "workflow.workflowOutputSpec.constraints.citation_style"
         ]
-      }
-    ],
-    "validationRules": [
-      {
-        "id": "upload_language_requires_inputs",
-        "when": {
-          "goalOrBriefMentionAnyOf": [
-            "upload",
-            "uploaded",
-            "pdf",
-            "document",
-            "source material",
-            "source content",
-            "transcript",
-            "reading"
-          ],
-          "fieldsEmpty": ["inputs"],
-          "startingArtefactIn": ["provided_source_content", "mixed"]
-        },
-        "effect": {
-          "blockResolvedValues": {
-            "input_strategy": ["provided_source_content"]
-          },
-          "disclosureId": "upload_language_without_inputs"
-        }
-      }
-    ],
-    "conflictPolicies": [
-      {
-        "id": "objective_type_mixed_signals",
-        "factorId": "objective_type",
-        "minConflictingSignals": 2,
-        "signals": [
-          {
-            "value": "summary",
-            "mentionAnyOf": ["summary", "summarise", "summarize"]
-          },
-          {
-            "value": "analysis",
-            "mentionAnyOf": ["analysis", "analyze", "analyse"]
-          },
-          {
-            "value": "briefing",
-            "mentionAnyOf": ["briefing", "briefing note", "brief"]
-          },
-          {
-            "value": "questions",
-            "mentionAnyOf": ["research question", "research questions", "questions"]
-          }
-        ],
-        "effect": {
-          "blockFactor": true,
-          "disclosureId": "objective_type_mixed_signals"
-        }
-      }
-    ],
-    "disclosurePolicy": {
-      "messages": {
-        "upload_language_without_inputs": "The brief mentions uploaded/source material, but no inputs are attached or listed.",
-        "objective_type_mixed_signals": "The brief contains both analysis and briefing signals; choose the primary research output."
-      },
-      "categories": {
-        "missing_essential": {
-          "label": "Still needed",
-          "order": 1
-        },
-        "conflicting_intent": {
-          "label": "Conflicting intent",
-          "order": 2
-        },
-        "blocked_unsafe_inference": {
-          "label": "Blocked unsafe inference",
-          "order": 3
-        },
-        "rejected_inference": {
-          "label": "Inferred but not used",
-          "order": 4
-        },
-        "gated_planning": {
-          "label": "Planning steps withheld",
-          "order": 5
-        }
-      },
-      "entries": {
-        "upload_language_without_inputs": {
-          "category": "blocked_unsafe_inference",
-          "action": "Attach source files in Inputs, pick a starting artefact, or rephrase as topic-only generation."
-        },
-        "objective_type_mixed_signals": {
-          "category": "conflicting_intent",
-          "action": "Choose one primary output: summary, analysis, briefing note, or research questions."
-        }
-      }
-    },
-    "planningGateDisclosures": [
-      {
-        "id": "heuristic_proceed_gates",
-        "category": "gated_planning",
-        "whenMissingAnyOf": ["objective_type", "input_strategy"],
-        "message": "Generate Research Content and Design Page stay out of the draft plan until the primary objective and input strategy are confirmed.",
-        "action": "Answer the essentials for objective type and how source material will be provided.",
-        "suppressedSteps": ["Generate Research Content", "Design Page"]
       }
     ],
     "stopConditions": ["all_required_factors_resolved"],

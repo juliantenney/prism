@@ -1,0 +1,76 @@
+{
+  "caseId": "S4-mixed-analysis-briefing",
+  "scenario": "Mixed analysis and briefing language in one design intent line.",
+  "baseInput": {
+    "name": "S4 Mixed Intent",
+    "goal": "",
+    "designIntent": "Produce an analysis briefing on digital inclusion evidence",
+    "audience": "",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Produce an analysis briefing on digital inclusion evidence",
+      "topic": "digital inclusion evidence",
+      "workshop_subject": "digital inclusion evidence",
+      "objective_type": "briefing"
+    },
+    "ruleInferred": {
+      "objective_type": "briefing"
+    },
+    "resolvedFactors": {},
+    "resolvedSources": {},
+    "missingFactorIds": ["audience", "input_strategy", "objective_type", "output_depth"],
+    "elicitationRequired": true,
+    "validationDisclosures": [
+      {
+        "id": "objective_type_mixed_signals",
+        "message": "The brief contains both analysis and briefing signals; choose the primary research output.",
+        "category": "conflicting_intent",
+        "action": "Choose one primary output: summary, analysis, briefing note, or research questions.",
+        "factorId": "objective_type",
+        "blockedValue": ""
+      }
+    ],
+    "rejectedInference": [
+      {
+        "factorId": "objective_type",
+        "value": "briefing",
+        "source": "explicit",
+        "ruleId": "objective_type_mixed_signals"
+      }
+    ],
+    "planningDisclosureCategories": [
+      "missing_essential",
+      "missing_essential",
+      "missing_essential",
+      "missing_essential",
+      "conflicting_intent",
+      "rejected_inference",
+      "gated_planning"
+    ],
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "Explicit extract may still pick a single objective keyword; conflict policy blocks resolution until the user chooses one primary output."
+  }
+}

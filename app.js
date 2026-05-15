@@ -3216,6 +3216,15 @@
       mappingRules: Array.isArray(cfg.mappingRules) ? cfg.mappingRules : [],
       intentClasses: cfg.intentClasses && typeof cfg.intentClasses === "object" ? cfg.intentClasses : {},
       stopConditions: Array.isArray(cfg.stopConditions) ? cfg.stopConditions : [],
+      validationRules: Array.isArray(cfg.validationRules) ? cfg.validationRules : [],
+      conflictPolicies: Array.isArray(cfg.conflictPolicies) ? cfg.conflictPolicies : [],
+      disclosurePolicy:
+        cfg.disclosurePolicy && typeof cfg.disclosurePolicy === "object"
+          ? cfg.disclosurePolicy
+          : { messages: {} },
+      planningGateDisclosures: Array.isArray(cfg.planningGateDisclosures)
+        ? cfg.planningGateDisclosures
+        : [],
       questionPolicy: {
         maxDefaultQuestions: Number(qp.maxDefaultQuestions || 4),
         askOptionalByDefault: !!qp.askOptionalByDefault,
@@ -3225,6 +3234,466 @@
             ? !!qp.askRefinementByDefault
             : true
       }
+    };
+  }
+
+  function getWorkflowBriefDisclosureMessage(config, disclosureId) {
+    var entry = getWorkflowBriefDisclosureEntry(config, disclosureId);
+    return entry.message;
+  }
+
+  function getWorkflowBriefDisclosureEntry(config, disclosureId) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var dp = cfg.disclosurePolicy && typeof cfg.disclosurePolicy === "object" ? cfg.disclosurePolicy : {};
+    var messages = dp.messages && typeof dp.messages === "object" ? dp.messages : {};
+    var entries = dp.entries && typeof dp.entries === "object" ? dp.entries : {};
+    var id = String(disclosureId || "").trim();
+    var row = id && entries[id] && typeof entries[id] === "object" ? entries[id] : {};
+    return {
+      message: id && messages[id] != null ? String(messages[id]) : "",
+      category: String(row.category || "").trim(),
+      action: String(row.action || "").trim()
+    };
+  }
+
+  function getWorkflowBriefPlanningCategoryMeta(config, categoryId) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var dp = cfg.disclosurePolicy && typeof cfg.disclosurePolicy === "object" ? cfg.disclosurePolicy : {};
+    var categories =
+      dp.categories && typeof dp.categories === "object" ? dp.categories : {};
+    var key = String(categoryId || "").trim();
+    var row = key && categories[key] && typeof categories[key] === "object" ? categories[key] : {};
+    var defaults = {
+      missing_essential: { label: "Still needed", order: 1 },
+      conflicting_intent: { label: "Conflicting intent", order: 2 },
+      blocked_unsafe_inference: { label: "Blocked unsafe inference", order: 3 },
+      rejected_inference: { label: "Inferred but not used", order: 4 },
+      gated_planning: { label: "Planning steps withheld", order: 5 }
+    };
+    var base = defaults[key] || { label: key || "Planning", order: 99 };
+    return {
+      label: String(row.label || base.label || key).trim(),
+      order: Number(row.order != null ? row.order : base.order)
+    };
+  }
+
+  function enrichWorkflowBriefDisclosureRow(config, row, defaults) {
+    var base = row && typeof row === "object" ? row : {};
+    defaults = defaults && typeof defaults === "object" ? defaults : {};
+    var id = String(base.id || defaults.id || "").trim();
+    var entry = getWorkflowBriefDisclosureEntry(config, id);
+    return {
+      id: id,
+      message: String(base.message || entry.message || defaults.message || "").trim(),
+      category: String(base.category || entry.category || defaults.category || "planning").trim(),
+      action: String(base.action || entry.action || defaults.action || "").trim(),
+      factorId: String(base.factorId || defaults.factorId || "").trim(),
+      blockedValue:
+        base.blockedValue != null && base.blockedValue !== ""
+          ? base.blockedValue
+          : defaults.blockedValue != null && defaults.blockedValue !== ""
+            ? defaults.blockedValue
+            : ""
+    };
+  }
+
+  function buildWorkflowBriefPlanningDisclosures(config, options) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var opts = options && typeof options === "object" ? options : {};
+    var out = [];
+    var seen = {};
+
+    function pushRow(row) {
+      if (!row || !row.message) return;
+      var key =
+        String(row.category || "") +
+        "|" +
+        String(row.id || "") +
+        "|" +
+        String(row.message || "");
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(enrichWorkflowBriefDisclosureRow(cfg, row, {}));
+    }
+
+    (Array.isArray(opts.disclosures) ? opts.disclosures : []).forEach(function (row) {
+      pushRow(row);
+    });
+
+    (Array.isArray(opts.rejectedInference) ? opts.rejectedInference : []).forEach(function (rej) {
+      if (!rej || !rej.factorId) return;
+      var valueText = String(rej.value != null ? rej.value : "").trim();
+      if (!valueText) return;
+      var source = String(rej.source || "inferred").trim();
+      pushRow({
+        id: "rejected_" + String(rej.ruleId || rej.factorId),
+        category: "rejected_inference",
+        factorId: rej.factorId,
+        blockedValue: valueText,
+        message:
+          "Detected " +
+          rej.factorId +
+          " = " +
+          valueText +
+          " (" +
+          source +
+          ") but it was not applied to planning.",
+        action: "Confirm or correct this value when answering the essentials."
+      });
+    });
+
+    var resolved =
+      opts.resolvedFactors && typeof opts.resolvedFactors === "object" ? opts.resolvedFactors : {};
+    var missingFactors = Array.isArray(opts.missingFactors) ? opts.missingFactors : [];
+    missingFactors.forEach(function (factor) {
+      if (!factor || !factor.id) return;
+      if (Object.prototype.hasOwnProperty.call(resolved, factor.id) && resolved[factor.id] !== "") {
+        return;
+      }
+      var q = String(factor.question || factor.label || factor.id).trim();
+      pushRow({
+        id: "missing_" + factor.id,
+        category: "missing_essential",
+        factorId: factor.id,
+        message: "Required factor not resolved: " + factor.id + ".",
+        action: q ? "Next question: " + q : "Provide " + factor.id + " to continue."
+      });
+    });
+
+    var missingIds = Array.isArray(opts.missingFactorIds) ? opts.missingFactorIds : [];
+    if (missingIds.length && !missingFactors.length) {
+      var factorById = {};
+      (cfg.requiredFactors || []).concat(cfg.optionalFactors || []).forEach(function (factor) {
+        if (factor && factor.id) factorById[factor.id] = factor;
+      });
+      missingIds.forEach(function (fid) {
+        pushRow({
+          id: "missing_" + fid,
+          category: "missing_essential",
+          factorId: fid,
+          message: "Required factor not resolved: " + fid + ".",
+          action: factorById[fid]
+            ? "Next question: " +
+              String(factorById[fid].question || factorById[fid].label || fid).trim()
+            : "Provide " + fid + " to continue."
+        });
+      });
+    }
+
+    var resolvedIds = Object.keys(resolved);
+    (Array.isArray(cfg.planningGateDisclosures) ? cfg.planningGateDisclosures : []).forEach(function (gate) {
+      if (!gate || typeof gate !== "object") return;
+      var whenMissing = Array.isArray(gate.whenMissingAnyOf) ? gate.whenMissingAnyOf : [];
+      if (!whenMissing.length) return;
+      var missingGate = whenMissing.some(function (fid) {
+        return resolvedIds.indexOf(String(fid || "").trim()) === -1;
+      });
+      if (!missingGate) return;
+      var suppressed = Array.isArray(gate.suppressedSteps) ? gate.suppressedSteps : [];
+      var suppressedNote = suppressed.length
+        ? " Steps withheld: " + suppressed.join(", ") + "."
+        : "";
+      pushRow({
+        id: String(gate.id || "heuristic_proceed_gates").trim(),
+        category: String(gate.category || "gated_planning").trim(),
+        message: String(gate.message || "").trim() + suppressedNote,
+        action: String(gate.action || "").trim()
+      });
+    });
+
+    out.sort(function (a, b) {
+      var ao = getWorkflowBriefPlanningCategoryMeta(cfg, a.category).order;
+      var bo = getWorkflowBriefPlanningCategoryMeta(cfg, b.category).order;
+      if (ao !== bo) return ao - bo;
+      return String(a.id || "").localeCompare(String(b.id || ""));
+    });
+    return out;
+  }
+
+  function formatWorkflowBriefPlanningNoticesLines(config, resolvedState) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var rows = Array.isArray(rs.planningDisclosures)
+      ? rs.planningDisclosures
+      : buildWorkflowBriefPlanningDisclosures(cfg, {
+          disclosures: rs.validationDisclosures || [],
+          rejectedInference: rs.rejectedInference || [],
+          missingFactorIds: Array.isArray(rs.missing) ? rs.missing : [],
+          resolvedFactors: rs.resolvedFactors || {}
+        });
+    if (!rows.length) return [];
+    var lines = [];
+    lines.push("Planning notices:");
+    var grouped = {};
+    rows.forEach(function (row) {
+      var cat = String(row.category || "planning").trim();
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(row);
+    });
+    Object.keys(grouped)
+      .sort(function (a, b) {
+        return (
+          getWorkflowBriefPlanningCategoryMeta(cfg, a).order -
+          getWorkflowBriefPlanningCategoryMeta(cfg, b).order
+        );
+      })
+      .forEach(function (cat) {
+        lines.push("");
+        lines.push(getWorkflowBriefPlanningCategoryMeta(cfg, cat).label + ":");
+        grouped[cat].forEach(function (row) {
+          lines.push("- " + String(row.message || "").trim());
+          if (row.blockedValue != null && String(row.blockedValue).trim() !== "") {
+            lines.push("  Rejected value: " + String(row.blockedValue).trim());
+          }
+          if (row.action) lines.push("  Action: " + String(row.action).trim());
+        });
+      });
+    return lines;
+  }
+
+  function attachWorkflowBriefPlanningToResolvedState(config, resolvedState, validated, missingFactors) {
+    if (!resolvedState || typeof resolvedState !== "object") return resolvedState;
+    var validatedObj = validated && typeof validated === "object" ? validated : {};
+    var disclosures = Array.isArray(validatedObj.disclosures) ? validatedObj.disclosures : [];
+    var rejectedInference = Array.isArray(validatedObj.rejectedInference)
+      ? validatedObj.rejectedInference
+      : [];
+    resolvedState.validationDisclosures = disclosures;
+    resolvedState.rejectedInference = rejectedInference;
+    resolvedState.planningDisclosures = buildWorkflowBriefPlanningDisclosures(config, {
+      disclosures: disclosures,
+      rejectedInference: rejectedInference,
+      missingFactors: Array.isArray(missingFactors) ? missingFactors : [],
+      missingFactorIds: Array.isArray(resolvedState.missing) ? resolvedState.missing : [],
+      resolvedFactors: resolvedState.resolvedFactors || {}
+    });
+    return resolvedState;
+  }
+
+  function workflowBriefValidationRuleWhenMatches(when, base) {
+    if (!when || typeof when !== "object") return true;
+    var b = base && typeof base === "object" ? base : {};
+    var goalBlob = [b.designIntent, b.goal, b.desiredOutputs].join("\n").toLowerCase();
+    var goalTerms = Array.isArray(when.goalOrBriefMentionAnyOf)
+      ? when.goalOrBriefMentionAnyOf
+      : Array.isArray(when.goalMentionsAnyOf)
+        ? when.goalMentionsAnyOf
+        : [];
+    if (goalTerms.length) {
+      var goalHit = goalTerms.some(function (kw) {
+        return goalBlob.indexOf(String(kw || "").toLowerCase()) !== -1;
+      });
+      if (!goalHit) return false;
+    }
+    var fieldsEmpty = Array.isArray(when.fieldsEmpty) ? when.fieldsEmpty : [];
+    for (var fi = 0; fi < fieldsEmpty.length; fi += 1) {
+      var fieldKey = String(fieldsEmpty[fi] || "").trim();
+      if (!fieldKey) continue;
+      if (fieldKey === "inputs" && String(b.inputs || "").trim()) return false;
+      if (fieldKey === "startingArtefact" && String(b.startingArtefact || "").trim()) return false;
+    }
+    var startingBypass = Array.isArray(when.startingArtefactIn)
+      ? when.startingArtefactIn
+      : [];
+    if (startingBypass.length) {
+      var sa = String(b.startingArtefact || "").trim().toLowerCase();
+      var allowed = startingBypass.map(function (v) {
+        return String(v || "").toLowerCase().trim();
+      });
+      if (sa && allowed.indexOf(sa) !== -1) return false;
+    }
+    return true;
+  }
+
+  function workflowBriefConflictSignalMatchesText(goalBlob, keyword) {
+    var blob = String(goalBlob || "").toLowerCase();
+    var k = String(keyword || "").toLowerCase().trim();
+    if (!k) return false;
+    if (/\s/.test(k)) {
+      return blob.indexOf(k) !== -1;
+    }
+    try {
+      var esc = k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp("\\b" + esc + "\\b", "i").test(blob);
+    } catch (_eConflictKw) {
+      return blob.indexOf(k) !== -1;
+    }
+  }
+
+  function collectWorkflowBriefConflictSignalValues(policy, base) {
+    if (!policy || typeof policy !== "object") return [];
+    var b = base && typeof base === "object" ? base : {};
+    var goalBlob = [b.designIntent, b.goal, b.desiredOutputs].join("\n").toLowerCase();
+    var matched = {};
+    var signals = Array.isArray(policy.signals) ? policy.signals : [];
+    signals.forEach(function (sig) {
+      if (!sig || typeof sig !== "object") return;
+      var value = String(sig.value || "").toLowerCase().trim();
+      if (!value) return;
+      var terms = Array.isArray(sig.mentionAnyOf) ? sig.mentionAnyOf : [];
+      var hit = terms.some(function (kw) {
+        return workflowBriefConflictSignalMatchesText(goalBlob, kw);
+      });
+      if (hit) matched[value] = true;
+    });
+    return Object.keys(matched);
+  }
+
+  function applyWorkflowBriefConflictPolicies(config, base, explicitValues, inferredValues) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var explicit = Object.assign({}, explicitValues && typeof explicitValues === "object" ? explicitValues : {});
+    var inferred = Object.assign({}, inferredValues && typeof inferredValues === "object" ? inferredValues : {});
+    var disclosures = [];
+    var rejectedInference = [];
+    var policies = Array.isArray(cfg.conflictPolicies) ? cfg.conflictPolicies : [];
+    policies.forEach(function (policy) {
+      if (!policy || typeof policy !== "object") return;
+      var detected = collectWorkflowBriefConflictSignalValues(policy, base);
+      var minConflicting = Number(policy.minConflictingSignals || 2);
+      if (!isFinite(minConflicting) || minConflicting < 2) minConflicting = 2;
+      if (detected.length < minConflicting) return;
+      var factorId = String(policy.factorId || "").trim();
+      var effect = policy.effect && typeof policy.effect === "object" ? policy.effect : {};
+      if (factorId && effect.blockFactor !== false) {
+        var rejectedValue = "";
+        var rejectedSource = "";
+        if (
+          Object.prototype.hasOwnProperty.call(explicit, factorId) &&
+          explicit[factorId] !== "" &&
+          explicit[factorId] != null
+        ) {
+          rejectedValue = explicit[factorId];
+          rejectedSource = "explicit";
+        } else if (
+          Object.prototype.hasOwnProperty.call(inferred, factorId) &&
+          inferred[factorId] !== "" &&
+          inferred[factorId] != null
+        ) {
+          rejectedValue = inferred[factorId];
+          rejectedSource = "inferred";
+        } else if (detected.length) {
+          rejectedValue = detected.join(" + ");
+          rejectedSource = "conflicting_signals";
+        }
+        if (rejectedValue !== "" && rejectedValue != null) {
+          rejectedInference.push({
+            factorId: factorId,
+            value: rejectedValue,
+            source: rejectedSource,
+            ruleId: String(policy.id || "conflict").trim()
+          });
+        }
+        delete explicit[factorId];
+        delete inferred[factorId];
+      }
+      var blockResolved =
+        effect.blockResolvedValues && typeof effect.blockResolvedValues === "object"
+          ? effect.blockResolvedValues
+          : {};
+      Object.keys(blockResolved).forEach(function (fid) {
+        if (!fid) return;
+        delete explicit[fid];
+        delete inferred[fid];
+      });
+      var disclosureId = String(effect.disclosureId || policy.id || "").trim();
+      var message =
+        getWorkflowBriefDisclosureMessage(cfg, disclosureId) ||
+        String(effect.disclosureMessage || "").trim();
+      if (message) {
+        disclosures.push(
+          enrichWorkflowBriefDisclosureRow(cfg, {
+            id: disclosureId || String(policy.id || "conflict"),
+            message: message,
+            factorId: factorId
+          }, { category: "conflicting_intent" })
+        );
+      }
+    });
+    return {
+      explicitValues: explicit,
+      inferredValues: inferred,
+      disclosures: disclosures,
+      rejectedInference: rejectedInference
+    };
+  }
+
+  function applyWorkflowBriefValidationRules(config, base, explicitValues, inferredValues) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var explicit = Object.assign({}, explicitValues && typeof explicitValues === "object" ? explicitValues : {});
+    var inferred = Object.assign({}, inferredValues && typeof inferredValues === "object" ? inferredValues : {});
+    var disclosures = [];
+    var rejectedInference = [];
+    var rules = Array.isArray(cfg.validationRules) ? cfg.validationRules : [];
+    rules.forEach(function (rule) {
+      if (!rule || typeof rule !== "object") return;
+      if (!workflowBriefValidationRuleWhenMatches(rule.when, base)) return;
+      var effect = rule.effect && typeof rule.effect === "object" ? rule.effect : {};
+      var blockResolved =
+        effect.blockResolvedValues && typeof effect.blockResolvedValues === "object"
+          ? effect.blockResolvedValues
+          : {};
+      Object.keys(blockResolved).forEach(function (factorId) {
+        if (!factorId) return;
+        var blockedValues = Array.isArray(blockResolved[factorId]) ? blockResolved[factorId] : [];
+        var blockedNorm = blockedValues.map(function (v) {
+          return String(v || "").toLowerCase().trim();
+        });
+        function shouldBlockValue(value) {
+          var normalized = String(value || "").toLowerCase().trim();
+          if (!normalized) return false;
+          return !blockedNorm.length || blockedNorm.indexOf(normalized) !== -1;
+        }
+        if (Object.prototype.hasOwnProperty.call(explicit, factorId) && shouldBlockValue(explicit[factorId])) {
+          rejectedInference.push({
+            factorId: factorId,
+            value: explicit[factorId],
+            source: "explicit",
+            ruleId: String(rule.id || "validation").trim()
+          });
+          delete explicit[factorId];
+        }
+        if (Object.prototype.hasOwnProperty.call(inferred, factorId) && shouldBlockValue(inferred[factorId])) {
+          rejectedInference.push({
+            factorId: factorId,
+            value: inferred[factorId],
+            source: "inferred",
+            ruleId: String(rule.id || "validation").trim()
+          });
+          delete inferred[factorId];
+        }
+      });
+      var disclosureId = String(effect.disclosureId || rule.id || "").trim();
+      var message =
+        getWorkflowBriefDisclosureMessage(cfg, disclosureId) ||
+        String(effect.disclosureMessage || "").trim();
+      if (message) {
+        disclosures.push(
+          enrichWorkflowBriefDisclosureRow(
+            cfg,
+            {
+              id: disclosureId || String(rule.id || "validation"),
+              message: message,
+              factorId: Object.keys(blockResolved)[0] || ""
+            },
+            { category: "blocked_unsafe_inference" }
+          )
+        );
+      }
+    });
+    var conflict = applyWorkflowBriefConflictPolicies(cfg, base, explicit, inferred);
+    explicit = conflict.explicitValues;
+    inferred = conflict.inferredValues;
+    if (Array.isArray(conflict.disclosures) && conflict.disclosures.length) {
+      disclosures = disclosures.concat(conflict.disclosures);
+    }
+    if (Array.isArray(conflict.rejectedInference) && conflict.rejectedInference.length) {
+      rejectedInference = rejectedInference.concat(conflict.rejectedInference);
+    }
+    return {
+      explicitValues: explicit,
+      inferredValues: inferred,
+      disclosures: disclosures,
+      rejectedInference: rejectedInference
     };
   }
 
@@ -4209,6 +4678,35 @@
       lines.push("Still needed: " + (resolvedState.missing || []).join(", "));
     } else {
       lines.push("Ready: all required factors resolved.");
+    }
+    var briefConfig =
+      resolvedState.briefConfig && typeof resolvedState.briefConfig === "object"
+        ? resolvedState.briefConfig
+        : state.workflowBriefElicitation &&
+            state.workflowBriefElicitation.config &&
+            typeof state.workflowBriefElicitation.config === "object"
+          ? state.workflowBriefElicitation.config
+          : null;
+    var planningNoticeLines = briefConfig
+      ? formatWorkflowBriefPlanningNoticesLines(briefConfig, resolvedState)
+      : [];
+    if (planningNoticeLines.length) {
+      lines.push("");
+      planningNoticeLines.forEach(function (line) {
+        lines.push(line);
+      });
+    } else {
+      var validationDisclosures = Array.isArray(resolvedState.validationDisclosures)
+        ? resolvedState.validationDisclosures
+        : [];
+      if (validationDisclosures.length) {
+        lines.push("");
+        lines.push("Planning notices:");
+        validationDisclosures.forEach(function (row) {
+          if (!row || !row.message) return;
+          lines.push("- " + String(row.message));
+        });
+      }
     }
     function stableValueText(v) {
       if (Array.isArray(v)) return JSON.stringify(v);
@@ -5836,6 +6334,14 @@
             // so clear user wording (e.g. "mcq") is not flipped by softer AI guesses.
             // explicit > elicited > inferred > default precedence is preserved downstream.
             var inferredValues = Object.assign({}, aiFactors, ruleInferredValues);
+            var validatedCandidates = applyWorkflowBriefValidationRules(
+              config,
+              base,
+              explicitValues,
+              inferredValues
+            );
+            explicitValues = validatedCandidates.explicitValues;
+            inferredValues = validatedCandidates.inferredValues;
             var firstPass = resolveWorkflowBriefFactors(config, explicitValues, {}, inferredValues, base);
             if (firstPass.missing.length) {
               // Ask unresolved required factors first.
@@ -5851,21 +6357,27 @@
                 index: 0,
                 stage: "required"
               };
-              state.workflowBriefResolved = {
-                initialBrief: base,
-                askedFactors: [],
-                inferredFactors: inferredValues,
-                resolvedSources: firstPass.sources || {},
-                resolvedFactors: firstPass.resolved,
-                mappedBindings: {
-                  workflowOutputSpecPatch: {},
-                  workflowConstraintPatch: {},
-                  stepParamPatch: {},
-                  mapped: [],
-                  warnings: []
+              state.workflowBriefResolved = attachWorkflowBriefPlanningToResolvedState(
+                config,
+                {
+                  initialBrief: base,
+                  askedFactors: [],
+                  inferredFactors: inferredValues,
+                  resolvedSources: firstPass.sources || {},
+                  resolvedFactors: firstPass.resolved,
+                  mappedBindings: {
+                    workflowOutputSpecPatch: {},
+                    workflowConstraintPatch: {},
+                    stepParamPatch: {},
+                    mapped: [],
+                    warnings: []
+                  },
+                  missing: queue.map(function (q) { return q.id; }),
+                  briefConfig: config
                 },
-                missing: queue.map(function (q) { return q.id; })
-              };
+                validatedCandidates,
+                queue
+              );
               renderWorkflowBriefResolvedPanel(state.workflowBriefResolved);
               appendWorkflowDesignLog(
                 "assistant",
@@ -5899,16 +6411,22 @@
               explicitValues
             );
             var mapped = applyWorkflowBriefMappings(config, resolvedForMapping);
-            var resolvedState = {
-              initialBrief: base,
-              askedFactors: [],
-              inferredFactors: inferredValues,
-              confirmedInferredFactors: confirmedInferredAuto,
-              resolvedSources: firstPass.sources || {},
-              resolvedFactors: resolvedForMapping,
-              mappedBindings: mapped,
-              missing: []
-            };
+            var resolvedState = attachWorkflowBriefPlanningToResolvedState(
+              config,
+              {
+                initialBrief: base,
+                askedFactors: [],
+                inferredFactors: inferredValues,
+                confirmedInferredFactors: confirmedInferredAuto,
+                resolvedSources: firstPass.sources || {},
+                resolvedFactors: resolvedForMapping,
+                mappedBindings: mapped,
+                missing: [],
+                briefConfig: config
+              },
+              validatedCandidates,
+              []
+            );
             state.workflowBriefResolved = resolvedState;
             renderWorkflowBriefResolvedPanel(resolvedState);
             continueWorkflowDesignGeneration(base, resolvedState, config);
@@ -6386,6 +6904,27 @@
       hasTimedSessionCue &&
       explicitSessionOrActivityRequested &&
       assessmentItemsRequested;
+    function workflowBriefHeuristicGateSatisfied(gateConfig, resolvedFactors) {
+      if (!gateConfig || typeof gateConfig !== "object") return true;
+      var required = Array.isArray(gateConfig.requiresResolvedFactors)
+        ? gateConfig.requiresResolvedFactors
+        : [];
+      if (!required.length) return true;
+      var resolved = resolvedFactors && typeof resolvedFactors === "object" ? resolvedFactors : {};
+      return required.every(function (factorId) {
+        if (!factorId) return true;
+        var value = resolved[factorId];
+        return value !== "" && value != null && String(value).trim() !== "";
+      });
+    }
+
+    function stepTitleMatchesCanonical(stepTitle, canonicalLabel) {
+      return (
+        String(stepTitle || "").toLowerCase().trim() ===
+        String(canonicalLabel || "").toLowerCase().trim()
+      );
+    }
+
     var allowGenerateLearningContent =
       explicitGenerationOnly || (!hasSourceInput && /\b(create|generate)\b/.test(goalText));
     var hasIngestionInput =
@@ -6819,7 +7358,10 @@
                   hasSynthesisishDp) ||
                 (!researchObj && packPageCue && hasSynthesisishDp);
 
-              if (wantsResearchDesignPage) {
+              if (
+                wantsResearchDesignPage &&
+                workflowBriefHeuristicGateSatisfied(rdpa, resolvedBriefFactors)
+              ) {
                 var dpDep =
                   policy.dependencies &&
                   typeof policy.dependencies === "object" &&
@@ -6990,7 +7532,19 @@
         providedArtefacts[normalizeWorkflowDesignArtefactKey(selectedStartingArtefact)] = true;
       }
       if (String(goalText || "").trim()) {
-        providedArtefacts.topic = true;
+        var generateContentGate =
+          policy.generateResearchContentHeuristic &&
+          typeof policy.generateResearchContentHeuristic === "object"
+            ? policy.generateResearchContentHeuristic
+            : null;
+        if (
+          !generateContentGate ||
+          !Array.isArray(generateContentGate.requiresResolvedFactors) ||
+          !generateContentGate.requiresResolvedFactors.length ||
+          workflowBriefHeuristicGateSatisfied(generateContentGate, resolvedBriefFactors)
+        ) {
+          providedArtefacts.topic = true;
+        }
       }
       // Demo-safety heuristic: only explicit MCQ/item-bank briefs with no
       // explicit starting-point selection should bypass prerequisite chain
@@ -7142,6 +7696,21 @@
             var insertBeforeIdx = out.steps.findIndex(function (row) {
               return String((row && row.title) || "").toLowerCase() === title.toLowerCase();
             });
+            var generateContentGateForInsert =
+              policy.generateResearchContentHeuristic &&
+              typeof policy.generateResearchContentHeuristic === "object"
+                ? policy.generateResearchContentHeuristic
+                : null;
+            if (
+              generateContentGateForInsert &&
+              stepTitleMatchesCanonical(canonicalProducer, "Generate Research Content") &&
+              !workflowBriefHeuristicGateSatisfied(
+                generateContentGateForInsert,
+                resolvedBriefFactors
+              )
+            ) {
+              continue;
+            }
             var newRow = { title: canonicalProducer, role: "" };
             if (insertBeforeIdx >= 0) {
               out.steps.splice(insertBeforeIdx, 0, newRow);
@@ -7363,6 +7932,7 @@
         }
         return true;
       }
+      var stepsBeforeDependencyOrder = out.steps.slice();
       var availableArtefacts = Object.assign({}, providedArtefacts);
       var pendingSteps = out.steps.slice();
       var orderedValid = [];
@@ -7397,6 +7967,11 @@
         }
       }
       out.steps = orderedValid;
+      // Proceed gates may withhold starting artefacts (e.g. topic) while a model step
+      // chain is still intentional — do not drop the whole workflow when ordering stalls.
+      if (!out.steps.length && stepsBeforeDependencyOrder.length) {
+        out.steps = stepsBeforeDependencyOrder;
+      }
 
       // Optional role anchors from domain policy plus canonical metadata fallback.
       out.steps = out.steps.map(function (row) {
@@ -7486,6 +8061,40 @@
         });
         return next;
       });
+
+      var generateContentGateFinal =
+        policy.generateResearchContentHeuristic &&
+        typeof policy.generateResearchContentHeuristic === "object"
+          ? policy.generateResearchContentHeuristic
+          : null;
+      if (
+        generateContentGateFinal &&
+        !workflowBriefHeuristicGateSatisfied(generateContentGateFinal, resolvedBriefFactors)
+      ) {
+        var generateResearchCanon = canonicalizeFromPolicy("Generate Research Content");
+        if (generateResearchCanon) {
+          var grcKey = String(generateResearchCanon).toLowerCase();
+          out.steps = out.steps.filter(function (s) {
+            return String((s && s.title) || "").toLowerCase() !== grcKey;
+          });
+        }
+      }
+      var designPageGatePolicy =
+        policy.researchDesignPageAppend && typeof policy.researchDesignPageAppend === "object"
+          ? policy.researchDesignPageAppend
+          : null;
+      if (
+        designPageGatePolicy &&
+        !workflowBriefHeuristicGateSatisfied(designPageGatePolicy, resolvedBriefFactors)
+      ) {
+        var designPageCanon = canonicalizeFromPolicy("Design Page");
+        if (designPageCanon) {
+          var dpKey = String(designPageCanon).toLowerCase();
+          out.steps = out.steps.filter(function (s) {
+            return String((s && s.title) || "").toLowerCase() !== dpKey;
+          });
+        }
+      }
     } else {
       // Generic fallback without domain policy: semantic + canonical sorting.
       var kindOrder = {
@@ -14386,11 +14995,17 @@
       function finalizeInferenceResponse(extraOverrides) {
         var elicitedOverrides = extraOverrides && typeof extraOverrides === "object" ? extraOverrides : {};
         var resolvedElicited = Object.assign({}, inf.elicitedValues || {}, elicitedOverrides);
+        var validatedInf = applyWorkflowBriefValidationRules(
+          inf.config,
+          inf.base,
+          inf.explicitValues,
+          inf.inferredValues
+        );
         var currentResolved = resolveWorkflowBriefFactors(
           inf.config,
-          inf.explicitValues,
+          validatedInf.explicitValues,
           resolvedElicited,
-          inf.inferredValues,
+          validatedInf.inferredValues,
           inf.base
         );
         var confirmedInferred = {};
@@ -14405,20 +15020,26 @@
           inf.explicitValues
         );
         var mappedInf = applyWorkflowBriefMappings(inf.config, resolvedInfForMapping);
-        var finalInfResolved = {
-          initialBrief: inf.base,
-          askedFactors: Object.keys(resolvedElicited).map(function (id) {
-            return { id: id, value: resolvedElicited[id] };
-          }),
-          inferredFactors: inf.inferredValues,
-          confirmedInferredFactors: confirmedInferred,
-          pendingInferredConfirmation: {},
-          resolvedSources: currentResolved.sources || {},
-          resolvedFactors: resolvedInfForMapping,
-          mappedBindings: mappedInf,
-          missing: currentResolved.missing.map(function (m) { return m.id; }),
-          warnings: mappedInf.warnings || []
-        };
+        var finalInfResolved = attachWorkflowBriefPlanningToResolvedState(
+          inf.config,
+          {
+            initialBrief: inf.base,
+            askedFactors: Object.keys(resolvedElicited).map(function (id) {
+              return { id: id, value: resolvedElicited[id] };
+            }),
+            inferredFactors: inf.inferredValues,
+            confirmedInferredFactors: confirmedInferred,
+            pendingInferredConfirmation: {},
+            resolvedSources: currentResolved.sources || {},
+            resolvedFactors: resolvedInfForMapping,
+            mappedBindings: mappedInf,
+            missing: currentResolved.missing.map(function (m) { return m.id; }),
+            warnings: mappedInf.warnings || [],
+            briefConfig: inf.config
+          },
+          validatedInf,
+          currentResolved.missing
+        );
         state.workflowBriefResolved = finalInfResolved;
         state.workflowBriefInferenceConfirmation = null;
         renderWorkflowBriefResolvedPanel(finalInfResolved);
@@ -14676,6 +15297,14 @@
             appliedCount = 1;
           }
 
+          var validatedElicit = applyWorkflowBriefValidationRules(
+            elicit.config,
+            elicit.base,
+            elicit.explicitValues,
+            elicit.inferredValues
+          );
+          elicit.explicitValues = validatedElicit.explicitValues;
+          elicit.inferredValues = validatedElicit.inferredValues;
           var current = resolveWorkflowBriefFactors(
             elicit.config,
             elicit.explicitValues,
@@ -14711,23 +15340,29 @@
           }
           if (elicit.index < queue.length) {
             var nextFactor = queue[elicit.index];
-            var provisional = {
-              initialBrief: elicit.base,
-              askedFactors: Object.keys(elicit.elicitedValues).map(function (id) {
-                return { id: id, value: elicit.elicitedValues[id] };
-              }),
-              inferredFactors: elicit.inferredValues,
-              resolvedSources: current.sources || {},
-              resolvedFactors: current.resolved,
-              mappedBindings: {
-                workflowOutputSpecPatch: {},
-                workflowConstraintPatch: {},
-                stepParamPatch: {},
-                mapped: [],
-                warnings: []
+            var provisional = attachWorkflowBriefPlanningToResolvedState(
+              elicit.config,
+              {
+                initialBrief: elicit.base,
+                askedFactors: Object.keys(elicit.elicitedValues).map(function (id) {
+                  return { id: id, value: elicit.elicitedValues[id] };
+                }),
+                inferredFactors: elicit.inferredValues,
+                resolvedSources: current.sources || {},
+                resolvedFactors: current.resolved,
+                mappedBindings: {
+                  workflowOutputSpecPatch: {},
+                  workflowConstraintPatch: {},
+                  stepParamPatch: {},
+                  mapped: [],
+                  warnings: []
+                },
+                missing: current.missing.map(function (m) { return m.id; }),
+                briefConfig: elicit.config
               },
-              missing: current.missing.map(function (m) { return m.id; })
-            };
+              validatedElicit,
+              current.missing
+            );
             state.workflowBriefResolved = provisional;
             renderWorkflowBriefResolvedPanel(provisional);
             if (appliedCount > 1) {
@@ -14750,19 +15385,25 @@
             elicit.explicitValues
           );
           var mapped = applyWorkflowBriefMappings(elicit.config, resolvedElicitForMapping);
-          var finalResolved = {
-            initialBrief: elicit.base,
-            askedFactors: Object.keys(elicit.elicitedValues).map(function (id) {
-              return { id: id, value: elicit.elicitedValues[id] };
-            }),
-            inferredFactors: elicit.inferredValues,
-            confirmedInferredFactors: {},
-            resolvedSources: current.sources || {},
-            resolvedFactors: resolvedElicitForMapping,
-            mappedBindings: mapped,
-            missing: current.missing.map(function (m) { return m.id; }),
-            warnings: mapped.warnings || []
-          };
+          var finalResolved = attachWorkflowBriefPlanningToResolvedState(
+            elicit.config,
+            {
+              initialBrief: elicit.base,
+              askedFactors: Object.keys(elicit.elicitedValues).map(function (id) {
+                return { id: id, value: elicit.elicitedValues[id] };
+              }),
+              inferredFactors: elicit.inferredValues,
+              confirmedInferredFactors: {},
+              resolvedSources: current.sources || {},
+              resolvedFactors: resolvedElicitForMapping,
+              mappedBindings: mapped,
+              missing: current.missing.map(function (m) { return m.id; }),
+              warnings: mapped.warnings || [],
+              briefConfig: elicit.config
+            },
+            validatedElicit,
+            current.missing
+          );
           if (finalResolved.missing.length) {
             state.workflowBriefResolved = finalResolved;
             state.workflowBriefElicitation = null;
@@ -20251,6 +20892,13 @@
     prismTestApi.buildWorkflowDesignBase = buildWorkflowDesignBase;
     prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
+    prismTestApi.normalizeWorkflowBriefConfig = normalizeWorkflowBriefConfig;
+    prismTestApi.applyWorkflowBriefInferenceRules = applyWorkflowBriefInferenceRules;
+    prismTestApi.applyWorkflowBriefValidationRules = applyWorkflowBriefValidationRules;
+    prismTestApi.buildWorkflowBriefPlanningDisclosures = buildWorkflowBriefPlanningDisclosures;
+    prismTestApi.formatWorkflowBriefPlanningNoticesLines = formatWorkflowBriefPlanningNoticesLines;
+    prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
+    prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;

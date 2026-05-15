@@ -1,0 +1,44 @@
+{
+  "caseId": "S6-minimal-ambiguous",
+  "scenario": "Minimal ambiguous brief with only a vague design intent.",
+  "baseInput": {
+    "name": "S6 Minimal",
+    "goal": "",
+    "designIntent": "Research help",
+    "audience": "",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Research help"
+    },
+    "ruleInferred": {},
+    "resolvedFactors": {},
+    "resolvedSources": {},
+    "missingFactorIds": ["objective_type", "input_strategy", "audience", "output_depth"],
+    "elicitationRequired": true,
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "Should block autonomous planning until minimum viable factors; should not append Design Page or full synthesis chain without essentials."
+  }
+}

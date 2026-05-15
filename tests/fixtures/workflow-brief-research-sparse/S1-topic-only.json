@@ -1,0 +1,46 @@
+{
+  "caseId": "S1-topic-only",
+  "scenario": "Topic-only research brief: design intent names a topic with no upload language and empty inputs.",
+  "baseInput": {
+    "name": "S1 Topic Only",
+    "goal": "",
+    "designIntent": "Need research on AI policy for universities",
+    "audience": "",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Need research on AI policy for universities",
+      "topic": "ai policy for universities",
+      "workshop_subject": "ai policy for universities"
+    },
+    "ruleInferred": {},
+    "resolvedFactors": {},
+    "resolvedSources": {},
+    "missingFactorIds": ["objective_type", "input_strategy", "audience", "output_depth"],
+    "elicitationRequired": true,
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "May infer objective_type or input_strategy from topic-only intent; may avoid Design Page until objective is resolved; promote stakeholder audience from goal text."
+  }
+}

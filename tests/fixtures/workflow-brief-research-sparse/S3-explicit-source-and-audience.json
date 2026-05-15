@@ -1,0 +1,59 @@
+{
+  "caseId": "S3-explicit-source-and-audience",
+  "scenario": "Explicit source materials, starting artefact, and audience field populated.",
+  "baseInput": {
+    "name": "S3 Source And Audience",
+    "goal": "",
+    "designIntent": "Briefing from sector evidence",
+    "audience": "Faculty leaders",
+    "scopeScale": "",
+    "inputs": "sector-report.pdf and interview notes",
+    "startingArtefact": "provided_source_content",
+    "desiredOutputs": "briefing note",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Briefing from sector evidence",
+      "audience": "Faculty leaders",
+      "desired_outputs": "briefing note",
+      "input_strategy": "provided_source_content",
+      "objective_type": "briefing"
+    },
+    "ruleInferred": {
+      "objective_type": "briefing"
+    },
+    "resolvedFactors": {
+      "objective_type": "briefing",
+      "input_strategy": "provided_source_content",
+      "audience": "Faculty leaders"
+    },
+    "resolvedSources": {
+      "objective_type": "explicit",
+      "input_strategy": "explicit",
+      "audience": "explicit"
+    },
+    "missingFactorIds": ["output_depth"],
+    "elicitationRequired": true,
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output",
+        "Design Page"
+      ],
+      "hasDesignPage": true,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "May default output_depth to standard when audience and input_strategy are explicit."
+  }
+}

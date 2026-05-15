@@ -1,0 +1,79 @@
+{
+  "caseId": "S2-upload-language-no-inputs",
+  "scenario": "Upload/PDF language in design intent but the inputs field is empty.",
+  "baseInput": {
+    "name": "S2 Upload Language",
+    "goal": "",
+    "designIntent": "Summarise uploaded PDFs on hybrid learning for our team",
+    "audience": "",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "summary document",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Summarise uploaded PDFs on hybrid learning for our team",
+      "desired_outputs": "summary document",
+      "topic": "hybrid learning for our team",
+      "workshop_subject": "hybrid learning for our team",
+      "objective_type": "summary",
+      "input_strategy": "provided_source_content"
+    },
+    "ruleInferred": {},
+    "resolvedFactors": {
+      "objective_type": "summary"
+    },
+    "resolvedSources": {
+      "objective_type": "explicit"
+    },
+    "missingFactorIds": ["audience", "output_depth", "input_strategy"],
+    "elicitationRequired": true,
+    "validationDisclosures": [
+      {
+        "id": "upload_language_without_inputs",
+        "message": "The brief mentions uploaded/source material, but no inputs are attached or listed.",
+        "category": "blocked_unsafe_inference",
+        "action": "Attach source files in Inputs, pick a starting artefact, or rephrase as topic-only generation.",
+        "factorId": "input_strategy",
+        "blockedValue": ""
+      }
+    ],
+    "rejectedInference": [
+      {
+        "factorId": "input_strategy",
+        "value": "provided_source_content",
+        "source": "explicit",
+        "ruleId": "upload_language_requires_inputs"
+      }
+    ],
+    "planningDisclosureCategories": [
+      "missing_essential",
+      "missing_essential",
+      "missing_essential",
+      "blocked_unsafe_inference",
+      "rejected_inference",
+      "gated_planning"
+    ],
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "Explicit extract may still detect upload wording; validation blocks unsafe input_strategy until inputs or starting artefact are provided."
+  }
+}

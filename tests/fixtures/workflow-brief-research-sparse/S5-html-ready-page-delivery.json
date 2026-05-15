@@ -1,0 +1,53 @@
+{
+  "caseId": "S5-html-ready-page-delivery",
+  "scenario": "HTML-ready / page delivery wording in desired outputs without validation intent.",
+  "baseInput": {
+    "name": "S5 Page Delivery",
+    "goal": "",
+    "designIntent": "Climate evidence briefing for institutional leaders",
+    "audience": "",
+    "scopeScale": "",
+    "inputs": "",
+    "startingArtefact": "",
+    "desiredOutputs": "HTML-ready structured page for utilities export",
+    "domainExtraValues": {},
+    "scopeConstraints": "no validation pass",
+    "selectedDomains": ["general", "research"]
+  },
+  "expectedCurrent": {
+    "explicitSubset": {
+      "design_intent": "Climate evidence briefing for institutional leaders",
+      "desired_outputs": "HTML-ready structured page for utilities export",
+      "session_materials": ["page"],
+      "objective_type": "briefing"
+    },
+    "ruleInferred": {
+      "objective_type": "briefing"
+    },
+    "resolvedFactors": {
+      "objective_type": "briefing"
+    },
+    "resolvedSources": {
+      "objective_type": "explicit"
+    },
+    "missingFactorIds": ["input_strategy", "audience", "output_depth"],
+    "elicitationRequired": true,
+    "heuristics": {
+      "stepTitles": [
+        "Normalize Content",
+        "Extract Key Findings",
+        "Build Evidence Map",
+        "Conduct Thematic Analysis",
+        "Generate Research Summary",
+        "Generate Briefing Note",
+        "Format Final Output"
+      ],
+      "hasDesignPage": false,
+      "hasValidateResearchOutput": false,
+      "hasGenerateResearchContent": false
+    }
+  },
+  "desiredFuture": {
+    "notes": "May infer audience from institutional leaders in goal; may tie Design Page append to resolved briefing objective only."
+  }
+}

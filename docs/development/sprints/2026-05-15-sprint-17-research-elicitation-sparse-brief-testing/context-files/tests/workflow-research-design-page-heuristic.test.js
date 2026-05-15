@@ -264,7 +264,7 @@ test("Research Design Page: duplicate not inserted when model already emitted De
   );
 });
 
-test("Research page-delivery cues without resolved objective_type: Design Page gated (no default Validate)", async () => {
+test("Research page-delivery cues without resolved objective_type: Design Page appended without default Validate", async () => {
   const { api } = loadPrismTestApi();
   await flushAsync();
   const workflowPolicy = extractResearchWorkflowPolicy(fs.readFileSync(researchPatternsPath, "utf8"));
@@ -293,14 +293,18 @@ test("Research page-delivery cues without resolved objective_type: Design Page g
     0,
     "page delivery without validation intent must not add Validate"
   );
+  assert.ok(titles.includes("Design Page"), "expected Design Page when page-delivery cues present");
+  assert.equal(titles[titles.length - 1], "Design Page", "Design Page must be terminal");
   assert.equal(
-    titles.filter((t) => t.toLowerCase() === "design page").length,
-    0,
-    "Design Page requires resolved objective_type (researchDesignPageAppend gate)"
+    out.steps.filter((s) => String(s.title || "").toLowerCase() === "design page").length,
+    1,
+    "must not insert duplicate Design Page"
   );
+  const dp = out.steps[out.steps.length - 1];
+  assert.equal(String(dp.outputName || "").trim(), "page", "Design Page outputName from pack dependencies");
 });
 
-test("Research briefing chain + page brief without objective_type: Design Page gated (Sprint 15 chain shape)", async () => {
+test("Research briefing chain + page brief without objective_type: Design Page appended (Sprint 15 chain shape)", async () => {
   const { api } = loadPrismTestApi();
   await flushAsync();
   const workflowPolicy = extractResearchWorkflowPolicy(fs.readFileSync(researchPatternsPath, "utf8"));
@@ -332,11 +336,15 @@ test("Research briefing chain + page brief without objective_type: Design Page g
     0,
     "no default Validate for this brief"
   );
+  assert.ok(titles.includes("Design Page"), "expected Design Page for briefing + page-delivery brief");
+  assert.equal(titles[titles.length - 1], "Design Page", "Design Page must be terminal");
   assert.equal(
-    titles.filter((t) => t.toLowerCase() === "design page").length,
-    0,
-    "Design Page requires resolved objective_type (researchDesignPageAppend gate)"
+    out.steps.filter((s) => String(s.title || "").toLowerCase() === "design page").length,
+    1,
+    "single Design Page"
   );
+  const dp = out.steps[out.steps.length - 1];
+  assert.equal(String(dp.outputName || "").trim(), "page");
 });
 
 test("Research objective_type questions with briefing + page cues still appends Design Page", async () => {

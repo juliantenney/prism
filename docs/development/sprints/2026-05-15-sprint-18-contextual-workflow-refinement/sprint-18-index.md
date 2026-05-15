@@ -2,26 +2,46 @@
 
 **Date:** 2026-05-15  
 **Sprint title:** Sprint 18 — Contextual Workflow Refinement  
-**Status:** **Bootstrap** — documentation and exploration only.
+**Status:** **Bootstrap / handover** — documentation and exploration; implementation charter TBD.
+
+**Fresh chat:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) → [`HANDOVER.md`](HANDOVER.md) → [`sprint-18-bootstrap.md`](sprint-18-bootstrap.md)
 
 ---
 
 ## Goal
 
-Document and prepare the architectural shift from **factor-only elicitation** to **workflow-aware, recommendation-driven refinement** sitting on deterministic planning — informed by Sprint 17 outcomes and post-closeout adequacy findings.
+Enable continuation of **Contextual Workflow Refinement**: workflow-aware, recommendation-driven refinement on **pack-driven deterministic planning**, **Research-first**, informed by Sprint 17 outcomes and post-closeout adequacy findings.
 
 ---
 
-## Pack contents
+## Pack contents (handover equivalent to Sprint 17)
 
 | File | Role |
 |------|------|
-| [`sprint-18-bootstrap.md`](sprint-18-bootstrap.md) | Primary bootstrap: architecture, constraints, exploration areas |
+| [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) | Fresh-chat entry + **copy-paste block** |
+| [`HANDOVER.md`](HANDOVER.md) | Session handover summary |
+| [`SPRINT-CONTEXT.md`](SPRINT-CONTEXT.md) | Focus, boundaries, read-first |
+| [`CURRENT-STATE.md`](CURRENT-STATE.md) | Active sprint pointer |
+| [`sprint-18-bootstrap.md`](sprint-18-bootstrap.md) | Primary bootstrap: architecture, tests, constraints |
 | [`sprint-18-index.md`](sprint-18-index.md) | This index |
-| [`review-log.md`](review-log.md) | Sprint 18 review and decision log |
+| [`review-log.md`](review-log.md) | Decisions and open questions |
 | [`context-files/README.md`](context-files/README.md) | Snapshot inventory |
-| [`docs/audits/existing-refinement-infrastructure-audit.md`](../../../audits/existing-refinement-infrastructure-audit.md) | **Existing refinement infrastructure audit** (2026-05-15) |
-| [`docs/exploration/sprint-18-research-questions.md`](../../../exploration/sprint-18-research-questions.md) | **Sprint 18 research questions** — open design questions with S1–S6 examples |
+
+---
+
+## Live repo artefacts (canonical when mounted)
+
+| Path | Role |
+|------|------|
+| [`docs/consolidation/sprint-17-implementation-summary.md`](../../../consolidation/sprint-17-implementation-summary.md) | Closed Sprint 17 |
+| [`docs/consolidation/contextual-refinement-architecture-note.md`](../../../consolidation/contextual-refinement-architecture-note.md) | Sprint 17→18 architecture |
+| [`docs/exploration/workflow-aware-refinement-concepts.md`](../../../exploration/workflow-aware-refinement-concepts.md) | Candidate concepts |
+| [`docs/exploration/sprint-18-research-questions.md`](../../../exploration/sprint-18-research-questions.md) | Open design questions |
+| [`docs/audits/existing-refinement-infrastructure-audit.md`](../../../audits/existing-refinement-infrastructure-audit.md) | Code inventory |
+| [`docs/consolidation/sprint-17-research-elicitation-sparse-brief-prep.md`](../../../consolidation/sprint-17-research-elicitation-sparse-brief-prep.md) | S1–S6 sparse brief table |
+| `domains/research/domain-research-step-patterns.md` | Research pack |
+| `tests/fixtures/workflow-brief-research-sparse/` | S1–S6 golden fixtures |
+| `tests/workflow-research-sparse-briefs.test.js` | Regression |
 
 ---
 
@@ -39,27 +59,31 @@ Document and prepare the architectural shift from **factor-only elicitation** to
 
 ---
 
-## Sprint 18 exploration themes (initial)
+## Exploration themes
 
 1. Contextual refinement model (workflow as substrate)
-2. Assistive vs blocking elicitation balance
-3. Topic-generation sufficiency / high-impact clarification (Research)
+2. Assistive vs blocking refinement
+3. Topic-generation sufficiency / high-impact clarification
 4. Pack-driven recommendation policy (generic runtime)
-5. Refinement timing relative to `continueWorkflowDesignGeneration`
+5. Refinement timing vs `continueWorkflowDesignGeneration`
+6. Research vs LD divergence
+7. Pack vs AI reasoning boundary
+8. Regression (S7+, manual M0–M8)
 
 ---
 
-## Out of scope
+## Non-goals
 
-- Renderer, schema redesign, Prompt Studio merge, LD implementation, broad UI redesign
+- Renderer, schema redesign, Prompt Studio merge, LD implementation (default)
 - Reopening Sprint 17 implementation
+- Step-settings-first refinement UX
 
 ---
 
-## Live repo anchors (when mounted)
+## Live repo anchors
 
 | Layer | Path |
 |-------|------|
 | Research pack | `domains/research/domain-research-step-patterns.md` |
-| Planning / elicitation | `app.js` — `resolveWorkflowBriefFactors`, `applyWorkflowDesignHeuristics`, elicitation queue, `getWorkflowRefinementQueue` |
+| Planning / elicitation | `app.js` — resolve, heuristics, elicitation, `continueWorkflowDesignGeneration`, planning disclosures |
 | Sparse regression | `tests/workflow-research-sparse-briefs.test.js`, `tests/fixtures/workflow-brief-research-sparse/` |

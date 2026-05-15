@@ -2,186 +2,308 @@
 
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/`  
-**Status:** **Bootstrap / exploration** — documentation only; no implementation charter yet.
+**Sprint title:** Sprint 18 — Contextual Workflow Refinement  
+**Status:** **Bootstrap / handover** — documentation and exploration; **no implementation charter** in this pack.
 
-**Sprint title:** Sprint 18 — Contextual Workflow Refinement
+**Portable handover:** Use **`GPT-BOOTSTRAP-PROMPT.md`** + **`HANDOVER.md`** to start a fresh chat. **`context-files/`** holds snapshots when the repo root is not attached.
 
-**Canonical consolidation (live repo):** `docs/consolidation/` — prefer live paths when implementing; `context-files/` are portable snapshots.
+**Canonical live repo:** Prefer `docs/consolidation/`, `docs/exploration/`, `docs/audits/`, and live `app.js` / `domains/research/` when implementing.
 
 ---
 
 ## 1. Executive summary
 
-Sprint 17 proved that **pack-driven deterministic planning** can make sparse Research briefs **safe** (validation, conflict, disclosure, proceed gates). Post-closeout manual testing showed it is **not sufficient** for **planning adequacy**: resolving four required factors does not guarantee that a topic-only workflow has enough semantic scope to justify the generated step chain.
+**Sprint 17 (closed)** proved that **pack-driven deterministic planning** makes sparse Research briefs **safe**: validation, conflict, disclosure, proceed gates, and golden fixtures **S1–S6** (**85 tests green**).
 
-Sprint 18 documents and explores an architectural shift:
+**Sprint 18** addresses what Sprint 17 deliberately did not: **planning adequacy** and **workflow-aware refinement** — intelligent, usually **non-blocking** guidance grounded in the **designed workflow**, not an ever-growing upfront factor questionnaire.
 
-1. **Deterministic essentials** establish guardrails; they do not replace judgment about scope and fit.
-2. **Workflow generation** produces the first concrete artefact of “what this workflow is” — steps, roles, dependencies — and thereby creates the **substrate for meaningful refinement**.
-3. **Refinement** should become **workflow-aware**, **recommendation-driven**, and **contextual** — informed by the designed workflow, not only by upfront factor enumeration.
-4. **AI refinement** should sit **on top of** deterministic planning, not **replace** it.
+**Architectural breakthrough (one sentence):**  
+*Workflow generation turns abstract brief factors into a concrete step-and-artefact commitment; that record is the semantic substrate for elicitation and refinement that factor IDs alone cannot provide.*
+
+**Carry-forward rule:** Runtime interprets policy; domain packs declare policy.
 
 ---
 
-## 2. Sprint 17 outcomes (baseline for Sprint 18)
+## 2. Sprint 17 outcomes (do not reopen implementation)
 
-| Delivered | Role |
-|-----------|------|
-| Sparse fixtures **S1–S6** + `workflow-research-sparse-briefs.test.js` | Pin extract, resolve, heuristics |
-| `validationRules`, `conflictPolicies`, `disclosurePolicy` | Block unsafe inference; Planning notices |
-| Heuristic proceed gates (`generateResearchContentHeuristic`, `researchDesignPageAppend`) | Withhold GRC / Design Page until essentials resolved |
-| Structured planning disclosure (Slice 5) | Categories: missing, blocked, conflict, rejected, gated |
-| `explicitExtract` proposal (Slice 4) | **Deferred** — shared parser still LD-heavy |
-| **85 tests green** | Sprint 16 renderer baseline preserved |
+| Delivered | Role for Sprint 18 |
+|-----------|-------------------|
+| Fixtures **S1–S6** + `workflow-research-sparse-briefs.test.js` | Regression baseline — extend with **S7+** for adequacy, do not break S1–S6 semantics |
+| `validationRules`, `conflictPolicies`, `disclosurePolicy` | Stay **deterministic** and **blocking** when unsafe |
+| Proceed gates (`generateResearchContentHeuristic`, `researchDesignPageAppend`) | **Proceedability** — withhold steps until essentials allow |
+| Planning disclosure (categories, `rejectedInference`, `planningGateDisclosures`) | Template for **assistive** adequacy notices |
+| `explicitExtract` proposal (Slice 4) | **Deferred** — optional parallel track |
+| **85 tests** | Verification floor |
 
-**Architectural rule (carry forward):** Runtime interprets policy; domain packs declare policy.
-
-**Post-closeout gap (not a Sprint 17 defect):**  
+**Post-closeout gap (motivation, not a defect):**  
 Brief: *“Analyse the evidence and produce an executive briefing on AI governance risks.”*  
-Elicitation correctly resolved factors including `input_strategy = generate_from_topic`, but **no clarification** on topical scope of “AI governance risks” before a full analysis chain was planned. See `context-files/sprint-17-topic-sufficiency-gap.md`.
+All four required factors resolved including `generate_from_topic`; full analysis chain generated; **no topic scope question**. See `context-files/sprint-17-topic-sufficiency-gap.md`.
 
 ---
 
-## 3. Deterministic planning vs AI refinement
+## 3. The four planning concepts (explicit distinctions)
 
-| Layer | Responsibility | Sprint 17 state |
-|-------|----------------|-----------------|
-| **Deterministic planning** | Factor extract/infer/validate/resolve; step heuristics; gates; disclosures; mapping to `workflowOutputSpec` | Research pack + generic `app.js` interpreters |
-| **AI workflow design** | Model proposes step list, roles, narrative design from brief + policy context | Factory `continueWorkflowDesignGeneration` |
-| **AI refinement (today)** | Post-generation factor queue (LD-heavy); Prompt Studio separate product surface | Research: no `refinementFactors`; LD: long refinement list |
-| **Gap** | Refinement not strongly coupled to **designed workflow semantics** or **assistive recommendations** | Sprint 18 exploration target |
+Sprint 18 work must keep these separate in design, packs, UX, and tests.
 
-**Principle:** Deterministic layer answers *“Is it allowed and coherent?”* AI layer answers *“What should change, given what we built?”* Refinement must read **workflow context** (steps, artefacts, bindings), not only **brief factor IDs**.
-
----
-
-## 4. Prompt Studio lessons (patterns, not merge)
-
-| Prompt Studio strength | Implication for Workflow Factory |
-|------------------------|----------------------------------|
-| Assumptions visible before proceed | Sprint 17 Planning notices — extend to **planning adequacy** and **post-design** assumptions |
-| Clear rejected vs accepted inference | `rejectedInference` category — extend to **workflow-level** recommendations |
-| User steers without retyping everything | Refinement as **targeted deltas**, not full brief re-entry |
-| Session grounded in prior choices | **Workflow record** as session substrate after first design |
-
-**Non-goal:** Merge Prompt Studio UI, template library, or orchestration into Factory in Sprint 18.
-
----
-
-## 5. Workflow-aware refinement
-
-**Today:** Refinement is largely **factor-centric** (`getWorkflowRefinementQueue`, post-gen elicitation keyed by factor ids). Step-level nuance lives in **step settings** and manual edit, disconnected from elicitation narrative.
-
-**Target shape (exploration):**
-
-- Refinement prompts reference **canonical step titles**, **artefact flow**, and **resolved brief factors** together.
-- Recommendations are **scoped**: e.g. “Your plan includes Thematic Analysis but topic scope is broad — narrow sector or geography?”
-- Pack may declare **`refinementRecommendations`** or **`contextualClarificationRules`** triggered by workflow shape + brief posture (Research first).
-
-**Workflow-aware** means: the system knows which steps made it into the design and what each step is for, not only that `objective_type = analysis`.
-
----
-
-## 6. Assistive vs blocking elicitation
-
-| Mode | Purpose | Sprint 17 examples |
-|------|---------|-------------------|
-| **Blocking** | Cannot proceed until resolved | Required factor queue; validation blocks unsafe `input_strategy`; conflict strips `objective_type` |
-| **Assistive** | Proceed, but surface what was assumed | Planning notices; rejected inference; gated step disclosures |
-| **Missing today** | Assistive **high-impact clarification** before or after design | Topic scope for `generate_from_topic` |
-
-Sprint 18 should bias toward **assistive refinement after workflow exists**, supplemented by **selective blocking** when safety or adequacy fails — not toward more upfront questionnaires.
-
----
-
-## 7. Why step settings are the wrong primary UX
-
-- Step settings are **implementation knobs** (role text, output names, bindings) — expert-facing, per-step, high friction.
-- Users asking *“Is this the right workflow for my intent?”* need **workflow-level** conversation, not twelve textareas.
-- Elicitation and refinement should **propose changes** (“add Validate”, “remove Design Page”, “narrow objective”) and optionally apply them — settings remain **advanced override**, not the main refinement surface.
-
----
-
-## 8. Why upfront factor enumeration does not scale
-
-- LD packs need many factors + refinement factors; Research needed only four yet still proved **insufficient** for adequacy.
-- Enumerating every semantic dimension as a **required factor** explodes Factory UX and still misses emergent gaps (topic scope, evidence base, geographic frame).
-- **Workflow generation** reveals implicit commitments (analysis chain, briefing path, page delivery) that factors alone do not surface until steps exist.
-- Better model: **small essential factor set** + **deterministic safety** + **contextual refinement pass** over the designed workflow.
-
----
-
-## 9. Workflow generation as elicitation substrate
+| Concept | Question it answers | Blocking? | Sprint 17 examples |
+|---------|---------------------|-----------|-------------------|
+| **Required essentials** | “What must be known before planning is contractually valid?” | **Yes** when missing or unsafe | Four Research factors; S2 upload-without-inputs validation |
+| **Proceedability** | “Which heuristic steps may attach to the plan now?” | **Yes** for gated steps only | GRC / Design Page withheld until `objective_type` + `input_strategy` (S1, S2, S4, S6) |
+| **Refinement opportunities** | “What could improve fit or clarity?” | **Usually no** | Future: topic scope prompt after design; LD post-gen optional tiers |
+| **Workflow-quality enrichment** | “What signals describe plan shape?” | **No** (derived) | Future: `workflowQualitySignals`; analysis chain without sources |
 
 ```text
-Brief (sparse) → deterministic pass → [optional essentials queue]
-       → AI designs workflow (steps, order, roles)
-       → workflow record becomes semantic context
-       → contextual refinement (recommendations, clarifications, deltas)
-       → user confirms → run / edit / save
+Required essentials ──► Proceedability gates ──► Workflow synthesis
+                                                        │
+                        ◄── Workflow-quality signals ───┤
+                        ◄── Refinement opportunities ─┘
 ```
 
-**Substrate properties the refinement layer can use:**
-
-- Canonical step list and `depends_on` / artefact producers
-- Resolved `workflowOutputSpec` / constraints from factor mapping
-- Planning disclosures already shown (blocked, rejected, gated)
-- Domain `workflowPolicy` (what could have been included but was not)
-
-**Insight from Sprint 17 smoke test:** Only after seeing analysis + evidence-map steps does the user (or system) recognize that “AI governance risks” was never bounded — factor elicitation alone did not make that visible.
+**Anti-pattern:** Adding every adequacy nuance as a new **required factor** — recreates LD-scale enumeration and still misses emergent plan shape (Sprint 17 smoke test).
 
 ---
 
-## 10. Constraints and non-goals
+## 4. Deterministic planning vs contextual refinement
 
-| In scope (exploration / future implementation) | Out of scope |
-|---------------------------------------------|--------------|
-| Research-first contextual refinement design | Renderer / Utilities HTML |
-| Pack-declared recommendation / clarification policy | Workflow schema redesign |
-| Generic runtime interpreters (Sprint 17 pattern) | Prompt Studio product merge |
-| Docs, fixtures plan, spike charters | LD implementation sprint |
-| Assistive adequacy after design | Broad Factory UI redesign |
-| | Replacing deterministic planning with end-to-end AI elicitation |
+| Layer | Responsibility | Owner |
+|-------|----------------|-------|
+| **Deterministic essentials** | Extract, infer, validate, conflict, resolve, map, disclose, gate | Pack + generic `app.js` interpreters |
+| **Workflow synthesis** | AI + `workflowPolicy` heuristics → step list, roles, deps | Factory generation |
+| **Contextual refinement** | Recommendations, clarifications, deltas scoped to **workflow + brief** | Sprint 18 target (pack triggers + runtime + optional AI phrasing) |
+| **Expert tuning** | Per-step Settings, manual edit | Advanced override — not primary UX |
 
-**LD:** Document cross-domain lessons; **do not** implement LD refinement in Sprint 18 unless explicitly chartered later.
+**Principles:**
 
-**Verification baseline:** `node --test tests/*.test.js` → **85 passed** (Sprint 17 closeout). Sprint 18 docs must not regress tests.
-
----
-
-## 11. Proposed exploration areas
-
-| Area | Question |
-|------|----------|
-| **A. Contextual refinement model** | What inputs does refinement receive (workflow JSON subset, disclosures, factor map)? What outputs (recommendations, factor patches, step add/remove)? |
-| **B. Recommendation policy** | Pack shape for `refinementRecommendations` / `highImpactClarificationRules` — trigger on workflow + brief, not factors alone |
-| **C. Topic-generation sufficiency** | First Research candidate from Sprint 17 §12 — `topicSpecificityChecks`, `minimumContextForTopicGeneration` |
-| **D. Timing** | Refinement **after** initial design vs interleaved before save; relationship to `continueWorkflowDesignGeneration` |
-| **E. UX surface** | Factory chat / resolved panel extensions vs dedicated “Review plan” — minimal DOM, no step-settings-first |
-| **F. Fixtures** | S7+ sparse briefs for adequacy + post-design recommendation snapshots |
-| **G. explicitExtract** | Optional parallel track (Slice 4 proposal) — reduces upstream noise before design |
-
-**Suggested first charter slice (when implementation starts):** Document-only **refinement context contract** (fields passed to AI + pack triggers) → one Research **assistive** rule with fixture → no step-settings UI.
+- Deterministic layer: *“Is it allowed and coherent?”*
+- Refinement layer: *“Given what we built, what should the user consider changing?”*
+- AI **augments** refinement; it does **not** replace validation, conflict, or factor precedence.
 
 ---
 
-## 12. Read-first order (this pack)
+## 5. Why upfront factor enumeration does not scale
 
-1. `sprint-18-bootstrap.md` (this file)
-2. `sprint-18-index.md`
-3. `context-files/sprint-17-implementation-summary.md`
-4. `context-files/sprint-17-topic-sufficiency-gap.md`
-5. Live `docs/consolidation/sprint-17-*.md`
-6. Live `domains/research/domain-research-step-patterns.md`
-7. Live `app.js` — elicitation queue, `continueWorkflowDesignGeneration`, `getWorkflowRefinementQueue`, `renderWorkflowBriefResolvedPanel`
+| Evidence | Implication |
+|----------|-------------|
+| Research needs only **four** required factors yet smoke test failed **adequacy** | Essentials ⊂ fit-for-purpose |
+| LD **`refinementFactors`** + post-gen profiles — long queues | Works for step params; poor for “is this the right workflow?” |
+| **S4** mixed analysis+briefing — conflict blocks factor; step bloat is a **plan** issue | Factor layer + workflow layer both needed |
+| **S1** topic in goal but `input_strategy` unset | Must ask essentials; scope may still be vague after resolve |
+| Factors are **labels**; steps are **commitments** | Thematic Analysis in the plan makes under-specified topics visible |
+
+**Target model:** Small essential set + deterministic safety + **contextual refinement pass** over the designed workflow.
 
 ---
 
-## 13. Related artefacts
+## 6. Workflow generation as elicitation substrate
+
+```text
+Brief (sparse)
+  → deterministic essentials [blocking when unsafe/incomplete]
+  → proceedability gates
+  → AI designs workflow (steps, order, roles, artefact graph)
+  → workflow record = semantic context
+  → contextual refinement (recommendations, optional clarifications)
+  → confirm / edit / save / run
+```
+
+**Substrate properties refinement may read:**
+
+- Canonical step titles and `depends_on`
+- Which gates fired (GRC, Design Page, Validate stripped)
+- `workflowOutputSpec` / mapped constraints
+- Planning disclosures already shown
+- Pack `workflowPolicy` (what could have been included)
+
+**Insight:** The smoke-test gap appeared **after** successful generation — factor elicitation alone did not surface that “AI governance risks” was never bounded.
+
+---
+
+## 7. Workflow-aware refinement (Sprint 18 focus)
+
+**Today (audit):** Factor-centric `getWorkflowRefinementQueue` (LD); post-gen `stepRefinementProfiles` keyed on **which steps exist**; generic `callOpenAIForWorkflowReview`; Research has **no** `refinementFactors`.
+
+**Target (exploration):**
+
+- Triggers on **workflow shape + brief posture**, not only missing factor ids
+- Messages reference **steps and artefacts** (“Thematic Analysis + generate_from_topic + broad topic”)
+- Pack-declared policy interpreted generically (Sprint 17 pattern)
+
+**Research-first; LD later** — same bounded-lab approach as Sprint 17.
+
+---
+
+## 8. Assistive vs blocking refinement
+
+| Mode | When | Examples |
+|------|------|----------|
+| **Blocking** | Safety or incomplete contract | S2 `upload_language_without_inputs`; S4 `objective_type_mixed_signals`; missing essentials (S6) |
+| **Assistive (transparent)** | Proceed but disclose | Planning notices; rejected inference; gated step disclosures |
+| **Assistive (recommendation)** | Proceed; suggest improvement | **Sprint 18** — topic scope; optional step add/remove; reflection prompts |
+
+**Bias:** More **assistive after design**; selective blocking only when essentials/safety demand it — not another long upfront form.
+
+---
+
+## 9. Prompt Studio lessons (no orchestration merge)
+
+See `context-files/prompt-studio-workflow-factory-lessons.md`.
+
+| Adopt | Do not merge |
+|-------|----------------|
+| Concrete session object (workflow record ≈ prompt body) | PS UI, library DB, template flows |
+| Visible assumptions and rejected inference | Shared orchestration with `handleStartRefinement` |
+| Delta-oriented suggestions | Making step Settings the main refinement surface |
+| Non-blocking ambiguity handling | Copying PS `brief` field names into Factory planning |
+
+---
+
+## 10. Active exploration themes
+
+| # | Theme | Primary doc |
+|---|--------|-------------|
+| 1 | Contextual refinement model (inputs/outputs contract) | `context-files/contextual-refinement-architecture-note.md` |
+| 2 | Assistive vs blocking balance | `context-files/sprint-18-research-questions.md` §2 |
+| 3 | Topic-generation sufficiency / high-impact clarification | `context-files/sprint-17-topic-sufficiency-gap.md` |
+| 4 | Pack-driven recommendation policy | `context-files/workflow-aware-refinement-concepts.md` |
+| 5 | Refinement timing vs `continueWorkflowDesignGeneration` | research-questions §1 |
+| 6 | UX surface (Planning vs chat vs step annotations) | research-questions §3 |
+| 7 | Research vs LD divergence | research-questions §9; infrastructure audit §9 |
+| 8 | Pack vs AI reasoning boundary | research-questions §10 |
+| 9 | Regression strategy (S7+, manual tests) | research-questions §11 |
+
+---
+
+## 11. Candidate refinement concepts (not implemented)
+
+Illustrative pack/runtime names from exploration — **no JSON committed in this sprint pack:**
+
+| Concept | Purpose |
+|---------|---------|
+| `recommendedRefinementPrompts` | Template messages when triggers fire |
+| `workflowQualitySignals` | Derived flags on designed workflow |
+| `planningAdequacyChecks` | Fit-for-purpose after synthesis |
+| `highImpactClarificationRules` | One targeted question when consequence + weak scope |
+| `topicSpecificityChecks` | Topic-only / generate-from-topic heuristics |
+| `refinementRecommendationEngine` | Evaluate pack rules → ranked recommendations |
+| `refinement opportunity detection` | Deterministic predicate before AI phrasing |
+
+---
+
+## 12. Likely first experiments (when implementation is chartered)
+
+| Order | Experiment | Success signal |
+|-------|--------------|----------------|
+| 1 | **Refinement context contract** (doc + TypeScript-shaped comment or test stub) | Fields: steps[], factors{}, disclosures[], gates{} |
+| 2 | One Research **`highImpactClarificationRule`** or adequacy check for smoke-test pattern | Fixture **S7** pins trigger + non-blocking message |
+| 3 | Runtime interpreter: evaluate `when` on workflow snapshot | No change to S1–S6 resolve semantics |
+| 4 | Planning panel or chat renders **one** recommendation id | Dismiss does not alter resolve map |
+| 5 | Manual: smoke brief + S2/S4 regressions in browser | Blocking behaviour unchanged |
+
+**Not first:** LD `refinementFactors` port; full AI review rewrite; `explicitExtract` unless parallel charter.
+
+---
+
+## 13. Suggested manual workflow tests
+
+Run in Factory with Research domain; record Planning panel + chat + step list.
+
+| ID | Brief / scenario | What to observe |
+|----|------------------|-----------------|
+| **M0** | Smoke: “Analyse the evidence… executive briefing on **AI governance risks**” | Essentials OK → plan generated → **should** surface scope adequacy (Sprint 18 target) |
+| **M1** | **S1** text: “Need research on AI policy for universities” | Essentials asked; gated chain; no spurious Design Page |
+| **M2** | **S2** text: “Summarise **uploaded PDFs**…” empty inputs | Blocking validation; upload disclosure |
+| **M3** | **S3** with inputs + audience | Design Page when gates pass |
+| **M4** | **S4** “analysis briefing on digital inclusion” | Conflict blocks silent briefing resolve |
+| **M5** | **S5** HTML-ready desired outputs | Page cues; Design Page timing vs essentials |
+| **M6** | **S6** “Research help” | Essentials only; minimal chain |
+| **M7** | After M0, user dismisses scope suggestion | Save allowed; dismissal remembered? (design choice) |
+| **M8** | “Review & suggest improvements” button | Unchanged generic reviewer unless chartered |
+
+---
+
+## 14. Implementation constraints
+
+| Constraint | Detail |
+|------------|--------|
+| **Research proving surface** | Policy and fixtures in Research pack first |
+| **LD rollout deferred** | Document lessons; no LD implementation unless chartered |
+| **Pack declares; runtime interprets** | Same as Sprint 17 |
+| **85 tests must stay green** | Extend, do not break S1–S6 |
+| **No renderer / schema / orchestration redesign** | Per sprint boundaries |
+| **No Prompt Studio merge** | Patterns only |
+| **No step-settings-first refinement UX** | Workflow-level recommendations primary |
+
+---
+
+## 15. Non-goals
+
+- Reopening Sprint 17 slices 0–5 implementation
+- Replacing deterministic planning with end-to-end AI elicitation
+- Broad Factory UI redesign
+- LD `refinementFactors` alignment sprint
+- `explicitExtract` unless explicitly parallel-chartered
+- Committing full pack JSON for all exploration concepts in bootstrap phase
+
+---
+
+## 16. Read-first order
+
+### From this pack (fresh chat without repo)
+
+1. `GPT-BOOTSTRAP-PROMPT.md` (or copy-paste block at end)
+2. `HANDOVER.md`
+3. `sprint-18-bootstrap.md` (this file)
+4. `context-files/sprint-17-implementation-summary.md`
+5. `context-files/contextual-refinement-architecture-note.md`
+6. `context-files/sprint-17-topic-sufficiency-gap.md`
+7. `context-files/workflow-aware-refinement-concepts.md`
+8. `context-files/existing-refinement-infrastructure-audit.md`
+9. `context-files/sprint-18-research-questions.md`
+10. `context-files/sprint-17-research-elicitation-sparse-brief-prep.md` (S1–S6 table)
+11. `context-files/prompt-studio-workflow-factory-lessons.md`
+
+### Live repo (when mounted)
 
 | Path | Role |
 |------|------|
-| [`sprint-18-index.md`](sprint-18-index.md) | Pack index |
-| [`review-log.md`](review-log.md) | Sprint 18 decision log |
+| `docs/consolidation/sprint-17-implementation-summary.md` | Closed Sprint 17 |
+| `docs/consolidation/contextual-refinement-architecture-note.md` | Architecture |
+| `docs/exploration/workflow-aware-refinement-concepts.md` | Concept catalogue |
+| `docs/exploration/sprint-18-research-questions.md` | Open questions |
+| `docs/audits/existing-refinement-infrastructure-audit.md` | What exists in code |
+| `domains/research/domain-research-step-patterns.md` | Pack policy |
+| `tests/fixtures/workflow-brief-research-sparse/S1`–`S6.json` | Golden sparse briefs |
+| `tests/workflow-research-sparse-briefs.test.js` | Regression |
+| `app.js` | `continueWorkflowDesignGeneration`, elicitation, `buildWorkflowBriefPlanningDisclosures`, `getWorkflowRefinementQueue`, `callOpenAIForWorkflowReview` |
+
+---
+
+## 17. Pack file map
+
+| File | Role |
+|------|------|
+| `sprint-18-bootstrap.md` | Primary architecture bootstrap (this file) |
+| `sprint-18-index.md` | Pack index |
+| `GPT-BOOTSTRAP-PROMPT.md` | Fresh-chat entry + copy-paste block |
+| `HANDOVER.md` | Session handover summary |
+| `SPRINT-CONTEXT.md` | Focus, boundaries, verification |
+| `CURRENT-STATE.md` | Active sprint pointer |
+| `review-log.md` | Decisions and open questions |
 | `context-files/` | Portable snapshots |
-| `docs/consolidation/sprint-17-implementation-summary.md` | Closed Sprint 17 closeout |
+
+---
+
+## 18. Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Baseline:** **85 passed**, 0 failed (Sprint 17 closeout, 2026-05-15).  
+Sprint 18 documentation-only work must not change test outcomes until an implementation charter explicitly adds tests.
+
+---
+
+## 19. Related Sprint 17 pack
+
+`docs/development/sprints/2026-05-15-sprint-17-research-elicitation-sparse-brief-testing/` — closed implementation handover; use for historical slice detail and original S1–S6 prep.

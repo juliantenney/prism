@@ -145,9 +145,17 @@ node --test tests/*.test.js
 
 ---
 
-## 10. Recommendation
+## 10. Manual validation (post-19-3)
 
-**Next step:** Manual LD Factory validation **M1–M4** (charter matrix) with:
+Recorded in [`sprint-19-manual-validation-post-19-3.md`](sprint-19-manual-validation-post-19-3.md).
+
+**Summary:** Harness + pack tests confirm **no required post-gen block** for M1–M4-shaped briefs; **no** `learner_level` / forced assessment type/count / required `page_profile`; adequacy remains **non-blocking**; **118** tests green. Repeat live Factory with API key **Loaded** for full synthesis UX.
+
+---
+
+## 11. Recommendation
+
+**Next step (optional):** Repeat live LD Factory validation **M1–M4** with API key confirmed:
 
 ```bash
 npm run dev
@@ -166,7 +174,7 @@ Record remaining prompts vs duplicates removed in sprint review-log after manual
 
 ---
 
-## 11. Deferred
+## 12. Deferred
 
 | Item | Notes |
 |------|--------|
@@ -177,7 +185,7 @@ Record remaining prompts vs duplicates removed in sprint review-log after manual
 
 ---
 
-## 12. Sprint 19 slice sequence (updated)
+## 13. Sprint 19 slice sequence (updated)
 
 | Slice | Status |
 |-------|--------|
@@ -188,7 +196,7 @@ Record remaining prompts vs duplicates removed in sprint review-log after manual
 
 ---
 
-## 13. References
+## 14. References
 
 | Document | Role |
 |----------|------|

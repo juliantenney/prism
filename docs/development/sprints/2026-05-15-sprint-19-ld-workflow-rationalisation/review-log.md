@@ -87,7 +87,9 @@ node --test tests/*.test.js
 | Research | **S1–S13 untouched** |
 | Tests | **118 passed**, 0 failed (+10 `workflow-ld-profile-thinning.test.js`) |
 | Defects | **None blocking**; assessment fallback unchanged |
-| Manual validation | **Pending** — M1–M4 with `npm run dev` + `.env.local` |
+| Manual validation | **Recorded** — see [`docs/consolidation/sprint-19-manual-validation-post-19-3.md`](../../../consolidation/sprint-19-manual-validation-post-19-3.md) |
+| M1–M4 summary | No required post-gen block; no `learner_level`/type/count/page_profile forced required; adequacy non-blocking; **118** tests green |
+| Live Factory | Harness + form wiring on `127.0.0.1:8787`; confirm API key **Loaded** before Design workflow for full synthesis pass |
 
 **Closeout:** [`docs/consolidation/sprint-19-slice-3-closeout.md`](../../../consolidation/sprint-19-slice-3-closeout.md)
 

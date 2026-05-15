@@ -1,0 +1,31 @@
+{
+  "caseId": "L4-coherent-no-false-positives",
+  "scenario": "Source-provided session with a short coherent plan — no adequacy rows.",
+  "baseInput": {
+    "name": "L4 Coherent Source",
+    "goal": "",
+    "designIntent": "Design a face-to-face workshop from the provided negotiation case study.",
+    "audience": "professional learners",
+    "scopeScale": "session",
+    "inputs": "Provided: facilitator notes and case study PDF.",
+    "startingArtefact": "provided_source_content",
+    "desiredOutputs": "facilitator guide",
+    "domainExtraValues": {},
+    "scopeConstraints": "face-to-face 90 minutes",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "modelSteps": [
+    { "title": "Normalize Content", "role": "" },
+    { "title": "Define Learning Outcomes", "role": "" },
+    { "title": "Design Learning Activities", "role": "" },
+    { "title": "Construct Learning Sequence", "role": "" }
+  ],
+  "expectedAdequacyIds": [],
+  "resolvedFactorsForAdequacy": {
+    "topic": "negotiation case study",
+    "learner_level": "advanced",
+    "design_scope": "session",
+    "delivery_pattern": "face_to_face",
+    "input_strategy": "provided_source_content"
+  }
+}

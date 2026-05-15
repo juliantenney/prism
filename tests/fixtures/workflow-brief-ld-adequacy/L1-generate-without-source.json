@@ -1,0 +1,31 @@
+{
+  "caseId": "L1-generate-without-source",
+  "scenario": "Evidence/source language with generate_from_topic and Normalize Content in plan.",
+  "baseInput": {
+    "name": "L1 Generate Without Source",
+    "goal": "",
+    "designIntent": "Design a workshop using the uploaded PDF case study on negotiation skills.",
+    "audience": "undergraduate students",
+    "scopeScale": "session",
+    "inputs": "Attached: 12-page PDF with three negotiation scenarios.",
+    "startingArtefact": "generate_from_topic",
+    "desiredOutputs": "learner handout",
+    "domainExtraValues": {},
+    "scopeConstraints": "blended delivery",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "modelSteps": [
+    { "title": "Normalize Content", "role": "" },
+    { "title": "Define Learning Outcomes", "role": "" },
+    { "title": "Design Learning Activities", "role": "" },
+    { "title": "Construct Learning Sequence", "role": "" }
+  ],
+  "expectedAdequacyIds": ["ld_generate_without_source"],
+  "resolvedFactorsForAdequacy": {
+    "topic": "negotiation skills",
+    "learner_level": "undergraduate",
+    "design_scope": "session",
+    "delivery_pattern": "blended",
+    "input_strategy": "generate_from_topic"
+  }
+}

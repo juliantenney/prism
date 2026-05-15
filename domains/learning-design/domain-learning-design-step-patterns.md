@@ -1087,7 +1087,8 @@ They provide a consistent way to structure workflows and ensure that learning de
         "bindingMode": "factor_ids_via_mapping_rules",
         "optionalOptInPrompt": "Do you want to refine the assessment further? I can ask about difficulty, coverage, feedback/model answers, and question mix. (yes/no)",
         "tiers": {
-          "required": [
+          "required": [],
+          "optional": [
             {
               "factorId": "assessment_type",
               "questionText": "What assessment type should this use?\nChoose one: MCQ, short answer, essay, case study, problem-based, or mixed.\nIf you're unsure, say 'recommend'.",
@@ -1114,9 +1115,7 @@ They provide a consistent way to structure workflows and ensure that learning de
               "parseHints": {
                 "numberExtraction": true
               }
-            }
-          ],
-          "optional": [
+            },
             {
               "factorId": "difficulty_profile",
               "questionText": "What difficulty level should the items target?\nChoose one: introductory, balanced, or challenging.",
@@ -1199,9 +1198,10 @@ They provide a consistent way to structure workflows and ensure that learning de
           ]
         },
         "bindingMode": "factor_ids_via_mapping_rules",
-        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about tone, depth, examples, practice tasks, and compactness. (yes/no)",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, tone, depth, examples, practice tasks, and compactness — or adjust these in step Settings. (yes/no)",
         "tiers": {
-          "required": [
+          "required": [],
+          "optional": [
             {
               "factorId": "page_profile",
               "questionText": "What page profile should this use?\nChoose one: learner, facilitator (tutor), or assessment.",
@@ -1218,15 +1218,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                 }
               }
             },
-            {
-              "factorId": "learner_level",
-              "questionText": "What audience level should this page target?\nChoose one: beginner, intermediate, advanced, undergraduate, or postgraduate.",
-              "parseHints": {
-                "recommendEnabled": true
-              }
-            }
-          ],
-          "optional": [
             {
               "factorId": "tone_style",
               "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
@@ -1309,9 +1300,10 @@ They provide a consistent way to structure workflows and ensure that learning de
           ]
         },
         "bindingMode": "factor_ids_via_mapping_rules",
-        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about tone, depth, examples, practice tasks, and compactness. (yes/no)",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, tone, depth, examples, practice tasks, and compactness — or adjust these in step Settings. (yes/no)",
         "tiers": {
-          "required": [
+          "required": [],
+          "optional": [
             {
               "factorId": "page_profile",
               "questionText": "What page profile should this use?\nChoose one: learner, facilitator (tutor), or assessment.",
@@ -1328,15 +1320,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                 }
               }
             },
-            {
-              "factorId": "learner_level",
-              "questionText": "What audience level should this page target?\nChoose one: beginner, intermediate, advanced, undergraduate, or postgraduate.",
-              "parseHints": {
-                "recommendEnabled": true
-              }
-            }
-          ],
-          "optional": [
             {
               "factorId": "tone_style",
               "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
@@ -1404,12 +1387,152 @@ They provide a consistent way to structure workflows and ensure that learning de
         }
       }
     },
+    "disclosurePolicy": {
+      "messages": {
+        "ld_generate_without_source": "The brief mentions uploaded or source material, but the plan is set to generate from a topic without aligning source-ingest steps to that intent.",
+        "ld_scope_step_mismatch": "A session-scale design was requested, but the draft plan has a relatively long step chain.",
+        "ld_assessment_generate_step_missing": "The brief targets assessment outputs, but the draft plan does not yet include a step to generate assessment items.",
+        "ld_page_profile_facilitator_mismatch": "The brief points to facilitator or tutor materials, but the page profile is set to learner."
+      },
+      "categories": {
+        "missing_essential": {
+          "label": "Still needed",
+          "order": 1
+        },
+        "conflicting_intent": {
+          "label": "Conflicting intent",
+          "order": 2
+        },
+        "blocked_unsafe_inference": {
+          "label": "Blocked unsafe inference",
+          "order": 3
+        },
+        "rejected_inference": {
+          "label": "Inferred but not used",
+          "order": 4
+        },
+        "gated_planning": {
+          "label": "Planning steps withheld",
+          "order": 5
+        },
+        "planning_adequacy": {
+          "label": "Planning adequacy",
+          "order": 6
+        }
+      },
+      "entries": {
+        "ld_generate_without_source": {
+          "category": "planning_adequacy",
+          "action": "Attach source content in Inputs, set starting point to uploaded material, or confirm topic-only generation."
+        },
+        "ld_scope_step_mismatch": {
+          "category": "planning_adequacy",
+          "action": "Narrow design scope, remove optional steps, or change scope to sequence or module if a longer workflow is intended."
+        },
+        "ld_assessment_generate_step_missing": {
+          "category": "planning_adequacy",
+          "action": "Add or confirm a Generate Assessment Items step, or adjust the brief if assessment is not required."
+        },
+        "ld_page_profile_facilitator_mismatch": {
+          "category": "planning_adequacy",
+          "action": "Set page profile to facilitator in the brief or step Settings, or confirm a learner-facing page is intended."
+        }
+      }
+    },
+    "planningAdequacyChecks": [
+      {
+        "id": "ld_generate_without_source",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "input_strategy": "generate_from_topic"
+          },
+          "briefFieldMentionAnyOf": {
+            "fields": ["designIntent", "goal", "desiredOutputs", "inputs"],
+            "terms": [
+              "evidence",
+              "source material",
+              "uploaded",
+              "pdf",
+              "document",
+              "transcript",
+              "attached",
+              "case study materials",
+              "provided source"
+            ]
+          },
+          "stepsIncludeAny": ["Normalize Content"]
+        },
+        "disclosureId": "ld_generate_without_source"
+      },
+      {
+        "id": "ld_scope_step_mismatch",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "design_scope": "session"
+          },
+          "stepCountAtLeast": {
+            "minSteps": 8
+          }
+        },
+        "disclosureId": "ld_scope_step_mismatch"
+      },
+      {
+        "id": "ld_assessment_generate_step_missing",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "briefFieldMentionAnyOf": {
+            "fields": ["designIntent", "goal", "desiredOutputs"],
+            "terms": [
+              "assessment",
+              "quiz",
+              "mcq",
+              "question set",
+              "assessment pack",
+              "formative assessment",
+              "test"
+            ]
+          },
+          "stepsLackAny": ["Generate Assessment Items"]
+        },
+        "disclosureId": "ld_assessment_generate_step_missing"
+      },
+      {
+        "id": "ld_page_profile_facilitator_mismatch",
+        "category": "planning_adequacy",
+        "severity": "recommendation",
+        "when": {
+          "resolvedFactorEquals": {
+            "page_profile": "learner"
+          },
+          "briefFieldMentionAnyOf": {
+            "fields": ["designIntent", "goal", "desiredOutputs"],
+            "terms": [
+              "facilitator",
+              "tutor",
+              "instructor",
+              "facilitator guide",
+              "tutor resource"
+            ]
+          },
+          "stepsIncludeAny": ["Design Page"]
+        },
+        "disclosureId": "ld_page_profile_facilitator_mismatch"
+      }
+    ],
     "stopConditions": ["all_required_factors_resolved"],
     "questionPolicy": {
       "maxDefaultQuestions": 8,
       "askOptionalByDefault": false,
       "maxRefinementQuestions": 8,
-      "askRefinementByDefault": true
+      "askRefinementByDefault": false
     }
   }
 }

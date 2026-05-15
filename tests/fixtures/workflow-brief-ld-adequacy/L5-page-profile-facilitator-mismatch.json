@@ -1,0 +1,31 @@
+{
+  "caseId": "L5-page-profile-facilitator-mismatch",
+  "scenario": "Facilitator-oriented brief with learner page profile and Design Page in plan.",
+  "baseInput": {
+    "name": "L5 Page Profile Mismatch",
+    "goal": "",
+    "designIntent": "Create a tutor resource page for a postgraduate seminar on ethics in AI.",
+    "audience": "postgraduate seminar participants",
+    "scopeScale": "session",
+    "inputs": "",
+    "startingArtefact": "generate_from_topic",
+    "desiredOutputs": "tutor resource page",
+    "domainExtraValues": {},
+    "scopeConstraints": "",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "modelSteps": [
+    { "title": "Define Learning Outcomes", "role": "" },
+    { "title": "Design Learning Activities", "role": "" },
+    { "title": "Design Page", "role": "" }
+  ],
+  "expectedAdequacyIds": ["ld_page_profile_facilitator_mismatch"],
+  "resolvedFactorsForAdequacy": {
+    "topic": "ethics in ai",
+    "learner_level": "postgraduate",
+    "design_scope": "session",
+    "delivery_pattern": "face_to_face",
+    "input_strategy": "generate_from_topic",
+    "page_profile": "learner"
+  }
+}

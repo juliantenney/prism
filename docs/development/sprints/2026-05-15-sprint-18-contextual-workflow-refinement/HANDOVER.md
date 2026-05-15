@@ -16,14 +16,15 @@ Portable context for **Sprint 18 — Contextual Workflow Refinement**. Physical 
 
 ---
 
-## Sprint 17 closed — Sprint 18 checkpoint
+## Sprint status
 
 | Sprint | Status |
 |--------|--------|
 | **Sprint 17** | **Closed** — Slices 0–5; **85 tests** at closeout; `explicitExtract` deferred |
-| **Sprint 18** | **Slices 1–2 closed** — adequacy interpreter + Planning-panel surfacing; **91 tests green** |
+| **Sprint 18** | **Closed** — Slices 1–2, 3C, conflict exceptions (S13); **100 tests** at closeout |
+| **Sprint 19** | **Active** — bootstrap / audit-first — [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md) |
 
-**Checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
+**Sprint 18 checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md) (points forward to Sprint 19)
 
 ---
 
@@ -121,7 +122,7 @@ See **`sprint-18-bootstrap.md` §13** — **M0** (smoke), **M1–M6** (S1–S6 p
 node --test tests/*.test.js
 ```
 
-**91 passed**, 0 failed (2026-05-15 checkpoint). S1–S6 semantics unchanged.
+**100 passed**, 0 failed (Sprint 18 closeout). S1–S6 semantics unchanged.
 
 ---
 
@@ -144,14 +145,15 @@ See **`SPRINT-18-CHECKPOINT.md`** § Next candidate slices:
 
 ## What to do next
 
-1. Read **`SPRINT-18-CHECKPOINT.md`**.  
-2. Open **`GPT-BOOTSTRAP-PROMPT.md`** for fresh-chat bootstrap.  
-3. Run tests — confirm **91 passed**.  
-4. Charter next slice (3A/3B/3C) before further implementation.
+**New work:** use **Sprint 19** — [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md) and [`docs/audits/ld-workflow-generation-rationalisation-audit.md`](../../../audits/ld-workflow-generation-rationalisation-audit.md).
+
+1. Read **`SPRINT-18-CHECKPOINT.md`** (historical closeout).  
+2. Run tests — confirm **100 passed**.  
+3. Optional Research backlog: Slice 3A/3B/3C-pass-2 — charter before implementation.
 
 ---
 
 ## Review log
 
 - **2026-05-15** — Sprint 18 handover pack (docs only).
-- **2026-05-15** — **Checkpoint:** Slices 1–2 closed; **91 passed**; S7 proves topic-sufficiency adequacy notice.
+- **2026-05-15** — **Closed:** Slices 1–2, 3C, conflict exceptions; **100 passed**; successor **Sprint 19** bootstrap.

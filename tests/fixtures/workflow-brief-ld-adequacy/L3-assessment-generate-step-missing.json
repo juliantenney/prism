@@ -1,0 +1,32 @@
+{
+  "caseId": "L3-assessment-generate-step-missing",
+  "scenario": "Assessment-oriented brief without Generate Assessment Items in plan.",
+  "baseInput": {
+    "name": "L3 Assessment Step Missing",
+    "goal": "",
+    "designIntent": "Create an online formative assessment pack for first-year biology students on cell structure.",
+    "audience": "first-year biology students",
+    "scopeScale": "single activity",
+    "inputs": "",
+    "startingArtefact": "generate_from_topic",
+    "desiredOutputs": "assessment pack",
+    "domainExtraValues": {},
+    "scopeConstraints": "online",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "modelSteps": [
+    { "title": "Define Learning Outcomes", "role": "" },
+    { "title": "Design Assessment", "role": "" },
+    { "title": "Design Feedback", "role": "" },
+    { "title": "Construct Learning Sequence", "role": "" }
+  ],
+  "expectedAdequacyIds": ["ld_assessment_generate_step_missing"],
+  "resolvedFactorsForAdequacy": {
+    "topic": "cell structure",
+    "learner_level": "undergraduate",
+    "design_scope": "single_activity",
+    "delivery_pattern": "blended",
+    "input_strategy": "generate_from_topic",
+    "assessment_required": true
+  }
+}

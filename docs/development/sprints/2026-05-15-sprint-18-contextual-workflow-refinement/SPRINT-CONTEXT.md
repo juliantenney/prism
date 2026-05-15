@@ -10,13 +10,13 @@
 
 ---
 
-## Sprint 18 focus
+## Sprint 18 status
 
-- **Goal:** **Workflow-aware contextual refinement** on deterministic planning — **Research first** (Slices 1–2 **closed**).
-- **Breakthrough:** Workflow synthesis creates **semantic context** for elicitation; refinement reads **steps + brief + disclosures**, not only factor IDs.
-- **Framing:** Sprint 17 = **safe**; Sprint 18 Slices 1–2 = **assistive adequacy** surfaced in Planning panel after synthesis.
+- **Status:** **Closed** (2026-05-15) — **100 passed**, 0 failed at closeout.
+- **Goal (delivered):** **Workflow-aware contextual refinement** on deterministic planning — **Research** proved (Slices 1–2, 3C, conflict exceptions).
+- **Successor:** **Sprint 19** — LD workflow rationalisation (audit-first) — [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md)
 - **Checkpoint:** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
-- **Not in scope (ongoing):** chat, dismiss state, LD rollout, AI phrasing, renderer/schema, Prompt Studio merge; Sprint 17 reopen.
+- **Research backlog (optional):** chat, dismiss state, 3C-pass-2; LD work is **Sprint 19**.
 
 ---
 
@@ -74,7 +74,7 @@
 node --test tests/*.test.js
 ```
 
-**Checkpoint:** **91 passed**, 0 failed (2026-05-15). S1–S6 unchanged.
+**Closeout:** **100 passed**, 0 failed (2026-05-15). S1–S6 unchanged.
 
 ---
 

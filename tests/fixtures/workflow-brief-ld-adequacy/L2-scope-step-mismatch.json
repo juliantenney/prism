@@ -1,0 +1,35 @@
+{
+  "caseId": "L2-scope-step-mismatch",
+  "scenario": "Session scope with an oversized step chain.",
+  "baseInput": {
+    "name": "L2 Scope Mismatch",
+    "goal": "",
+    "designIntent": "Create a short classroom session on climate literacy for first-year students.",
+    "audience": "first-year undergraduate students",
+    "scopeScale": "session",
+    "inputs": "",
+    "startingArtefact": "generate_from_topic",
+    "desiredOutputs": "learner page",
+    "domainExtraValues": {},
+    "scopeConstraints": "face-to-face 90 minutes",
+    "selectedDomains": ["general", "learning-design"]
+  },
+  "modelSteps": [
+    { "title": "Define Learning Outcomes", "role": "" },
+    { "title": "Model Knowledge", "role": "" },
+    { "title": "Design Learning Activities", "role": "" },
+    { "title": "Generate Activity Materials", "role": "" },
+    { "title": "Construct Learning Sequence", "role": "" },
+    { "title": "Generate Learning Content", "role": "" },
+    { "title": "Design Page", "role": "" },
+    { "title": "Validate Learning Design", "role": "" }
+  ],
+  "expectedAdequacyIds": ["ld_scope_step_mismatch"],
+  "resolvedFactorsForAdequacy": {
+    "topic": "climate literacy",
+    "learner_level": "undergraduate",
+    "design_scope": "session",
+    "delivery_pattern": "face_to_face",
+    "input_strategy": "generate_from_topic"
+  }
+}

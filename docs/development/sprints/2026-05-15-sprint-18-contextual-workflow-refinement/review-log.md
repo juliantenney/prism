@@ -104,7 +104,7 @@ Further detail: [`docs/exploration/sprint-18-research-questions.md`](../../../ex
 |--------|--------|
 | Slice 1 | Refinement context + Research adequacy rule + S7 — **closed** |
 | Slice 2 | Post-synthesis Planning-panel surfacing — **closed** |
-| Tests | **95 passed**, 0 failed (after 3C-2) |
+| Tests | **100 passed**, 0 failed (Sprint 18 closeout) |
 | S1–S6 | Unchanged |
 | S7 | Topic-sufficiency `planning_adequacy` notice (assistive) |
 
@@ -162,5 +162,16 @@ Further detail: [`docs/exploration/sprint-18-research-questions.md`](../../../ex
 | Item | Target |
 |------|--------|
 | Manual Phase E (M0, M2, M4) | **Slice 3A** candidate |
-| LD `refinementFactors` alignment | Separate charter |
+| LD `refinementFactors` alignment | **Sprint 19** — [`ld-workflow-generation-rationalisation-audit.md`](../../../audits/ld-workflow-generation-rationalisation-audit.md) |
 | `explicitExtract` | Sprint 17 Slice 4 proposal — parallel optional |
+
+---
+
+## Sprint 18 closed — Sprint 19 successor (2026-05-15)
+
+| Record | Value |
+|--------|--------|
+| Sprint 18 | **Closed** — Research contextual refinement reference implementation |
+| Verification | **100 passed**, 0 failed |
+| Successor | **Sprint 19** — LD workflow rationalisation (audit-first bootstrap) |
+| Sprint 19 entry | [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md) |

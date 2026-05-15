@@ -1,10 +1,14 @@
-# Sprint 18 — checkpoint (docs-only)
+# Sprint 18 — checkpoint (closed)
 
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/`  
-**Sprint title:** Sprint 18 — Contextual Workflow Refinement
+**Sprint title:** Sprint 18 — Contextual Workflow Refinement  
+**Status:** **Closed** — verification baseline **100 passed**, 0 failed
 
-**Purpose:** Record implementation closeout for Slices 1–2 and set direction for next chartered work. **No code changes** in this checkpoint.
+**Purpose:** Authoritative closeout for Research contextual refinement (Slices 1–2, 3C, method-vs-output conflict). **Successor sprint:** Sprint 19 — LD workflow rationalisation (audit-first bootstrap).
+
+**Next active sprint entry point:**  
+[`docs/development/sprints/2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md)
 
 ---
 
@@ -13,7 +17,8 @@
 | Sprint | Status |
 |--------|--------|
 | **Sprint 17** | **Closed** — S1–S6 sparse-brief safety; **85 tests** at closeout |
-| **Sprint 18** | **Slices 1–2, 3C closed** — three adequacy checks live; **95 tests green**; **3A planned** (manual) |
+| **Sprint 18** | **Closed** — Slices 1–2, 3C-1/3C-2, conflict exceptions (S13); **100 tests** at closeout |
+| **Sprint 19** | **Active** — bootstrap / audit-first; LD rationalisation pack (docs-only bootstrap) |
 
 ---
 
@@ -61,10 +66,13 @@ node --test tests/*.test.js
 | After Slice 1 (Phase D) | **88 passed**, 0 failed (+3 adequacy evaluator tests) |
 | **After Slice 2** | **91 passed**, 0 failed |
 | **After Slice 3C (3C-1 + 3C-2)** | **95 passed**, 0 failed (+4 adequacy tests) |
+| **Sprint 18 closeout** (conflict exceptions + S13) | **100 passed**, 0 failed |
 
 **Regression:** `tests/workflow-research-sparse-briefs.test.js` — **S1–S6 semantics unchanged**.
 
-**Adequacy proving surface:** `tests/workflow-research-adequacy.test.js` + fixture **S7**.
+**Adequacy proving surface:** `tests/workflow-research-adequacy.test.js` — fixtures **S7–S9**.
+
+**Conflict proving surface:** `tests/workflow-research-conflict-exceptions.test.js` — fixture **S13**; **S4** unchanged.
 
 ---
 
@@ -148,7 +156,21 @@ These are **candidates only** — require explicit slice charter before implemen
 
 ---
 
-## Pack documents (read order after checkpoint)
+## Forward to Sprint 19
+
+Sprint 18 proved **contextual refinement on Research**. Sprint 19 applies the same four-layer model to **Learning Design** — audit-first, no LD implementation until chartered.
+
+| Artefact | Path |
+|----------|------|
+| **Sprint 19 entry** | [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md) |
+| LD rationalisation audit | [`docs/audits/ld-workflow-generation-rationalisation-audit.md`](../../../audits/ld-workflow-generation-rationalisation-audit.md) |
+| Sprint 19 handover | [`../2026-05-15-sprint-19-ld-workflow-rationalisation/HANDOVER.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/HANDOVER.md) |
+
+**Verification baseline (ongoing):** `node --test tests/*.test.js` → **100 passed**, 0 failed.
+
+---
+
+## Pack documents (read order — historical Sprint 18)
 
 1. **`SPRINT-18-CHECKPOINT.md`** (this file)
 2. **`HANDOVER.md`** / **`CURRENT-STATE.md`**

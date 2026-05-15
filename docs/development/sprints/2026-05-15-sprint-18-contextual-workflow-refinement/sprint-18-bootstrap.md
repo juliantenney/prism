@@ -3,7 +3,7 @@
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/`  
 **Sprint title:** Sprint 18 — Contextual Workflow Refinement  
-**Status:** **Checkpoint** — Slices 1–2 **closed**; see [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md). Architecture bootstrap below remains valid; verification floor is **91 tests**.
+**Status:** **Closed** — see [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md). Architecture bootstrap below remains valid reference; verification floor at closeout is **100 tests**. **Active sprint:** Sprint 19 — [`../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md).
 
 **Portable handover:** Use **`GPT-BOOTSTRAP-PROMPT.md`** + **`HANDOVER.md`** to start a fresh chat. **`context-files/`** holds snapshots when the repo root is not attached.
 
@@ -34,7 +34,7 @@
 | Proceed gates (`generateResearchContentHeuristic`, `researchDesignPageAppend`) | **Proceedability** — withhold steps until essentials allow |
 | Planning disclosure (categories, `rejectedInference`, `planningGateDisclosures`) | Template for **assistive** adequacy notices |
 | `explicitExtract` proposal (Slice 4) | **Deferred** — optional parallel track |
-| **85 tests** (S17) → **91 tests** (S18 checkpoint) | Verification floor |
+| **85 tests** (S17) → **100 tests** (S18 closeout) | Verification floor |
 
 **Post-closeout gap (motivation, not a defect):**  
 Brief: *“Analyse the evidence and produce an executive briefing on AI governance risks.”*  
@@ -304,7 +304,7 @@ node --test tests/*.test.js
 | Milestone | Result |
 |-----------|--------|
 | Sprint 17 closeout | **85 passed**, 0 failed |
-| Sprint 18 checkpoint (Slices 1–2) | **91 passed**, 0 failed |
+| Sprint 18 closeout | **100 passed**, 0 failed |
 
 S1–S6 sparse-brief semantics unchanged. See [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md) for next candidate slices (3A–3C).
 

@@ -2,11 +2,13 @@
 
 **Date:** 2026-05-15  
 **Sprint title:** Sprint 18 — Contextual Workflow Refinement  
-**Status:** **Checkpoint** — Slices 1–2 closed; Slice **3C chartered** (not implemented); **91 tests green**.
+**Status:** **Closed** — Slices 1–2, 3C-1/3C-2, conflict exceptions (S13); **100 tests** at closeout.
 
 **Checkpoint (authoritative closeout):** [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
 
-**Fresh chat:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) → [`HANDOVER.md`](HANDOVER.md) → [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
+**Active sprint (fresh chat):** [**Sprint 19** `GPT-BOOTSTRAP-PROMPT.md`](../2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md)
+
+**Historical Sprint 18 pack:** [`GPT-BOOTSTRAP-PROMPT.md`](GPT-BOOTSTRAP-PROMPT.md) → [`HANDOVER.md`](HANDOVER.md) → [`SPRINT-18-CHECKPOINT.md`](SPRINT-18-CHECKPOINT.md)
 
 ---
 
@@ -22,7 +24,7 @@
 |------|--------|
 | **Slice 1** | **Closed** — refinement context contract + Research `topic_scope_under_specified` rule + S7 + evaluator tests |
 | **Slice 2** | **Closed** — post-synthesis Planning-panel `planning_adequacy` surfacing |
-| **Verification** | **91 passed**, 0 failed |
+| **Verification** | **100 passed**, 0 failed (Sprint 18 closeout) |
 | **S1–S6** | Unchanged (`workflow-research-sparse-briefs.test.js`) |
 | **S7** | Proves topic-sufficiency adequacy notice (Sprint 17 smoke gap) |
 
@@ -52,22 +54,20 @@ Post-synthesis merge into `planningDisclosures`; `continueWorkflowDesignGenerati
 
 ---
 
-## Slice 3C (chartered — not implemented)
+## Slice 3C (closed)
 
 | Doc | Role |
 |-----|------|
-| [`docs/consolidation/sprint-18-slice-3c-charter.md`](../../../consolidation/sprint-18-slice-3c-charter.md) | **Implementation charter** |
+| [`docs/consolidation/sprint-18-slice-3c-charter.md`](../../../consolidation/sprint-18-slice-3c-charter.md) | Implementation charter (closed) |
 | [`docs/consolidation/sprint-18-slice-3c-adequacy-proposal.md`](../../../consolidation/sprint-18-slice-3c-adequacy-proposal.md) | Design reference (checks A–E) |
 
-| Phase | Scope |
+| Phase | Status |
 |-------|--------|
-| **3C-1** | Runtime: `briefFieldMentionAnyOf`, `stepsLackAny` / `stepsExclude`, `stepCountAtLeast`, `weakAudienceCue`; cap at **3** adequacy rows |
-| **3C-2** | Pack + tests: checks **A**, **B**; fixtures **S8**, **S9**; negatives **S3**, **S7** (`output_depth: standard`) |
-| **Deferred** | Checks **C–E**; S10–S12 |
+| **3C-1** | **Closed** — runtime predicates; cap **3** adequacy rows |
+| **3C-2** | **Closed** — checks **A**, **B**; fixtures **S8**, **S9** |
+| **Deferred** | Checks **C–E**; S10–S12 (3C-pass-2) |
 
-**Constraints:** assistive-only; `planning_adequacy`; deterministic pack rules; no chat/dismiss/AI/LD/renderer/schema.
-
-**Baseline:** 91 passed → ~95–97 expected after 3C-2.
+**Closeout verification:** **100 passed** (includes conflict exceptions + S13).
 
 ---
 

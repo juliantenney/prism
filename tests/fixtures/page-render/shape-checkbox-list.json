@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — checkbox list",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "- ☐ Task one\n- ☐ Task two\n- ☑ Task three done"
+    }
+  ]
+}

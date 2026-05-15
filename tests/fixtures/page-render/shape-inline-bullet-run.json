@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — inline bullet run",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "• alpha. • beta. • gamma."
+    }
+  ]
+}

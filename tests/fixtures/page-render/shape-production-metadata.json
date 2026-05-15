@@ -1,0 +1,24 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — production metadata",
+  "audience": "Review panel",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "Body copy for metadata fold test."
+    }
+  ],
+  "source_artefacts": {
+    "upstream_alpha": true,
+    "upstream_beta": true,
+    "upstream_unused": false
+  },
+  "constraints_applied": {
+    "include_answers": false
+  },
+  "generation_notes": {
+    "limitations": ["Example limitation entry."]
+  }
+}

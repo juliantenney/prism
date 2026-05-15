@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — bullets then checkbox",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "• Plain bullet one.\n• Plain bullet two.\n\n- ☐ Checkbox task one.\n- ☐ Checkbox task two."
+    }
+  ]
+}

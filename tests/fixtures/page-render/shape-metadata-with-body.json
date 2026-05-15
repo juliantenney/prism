@@ -1,0 +1,18 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — body plus metadata keys",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "• Body bullet one.\n• Body bullet two.\n• Body bullet three."
+    }
+  ],
+  "source_artefacts": {
+    "upstream_alpha": true,
+    "upstream_beta": true
+  },
+  "constraints_applied": [],
+  "generation_notes": {}
+}

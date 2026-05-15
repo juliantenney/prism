@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — string bullet block",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "• First line in a multiline bullet block.\n• Second line in a multiline bullet block.\n• Third line in a multiline bullet block."
+    }
+  ]
+}

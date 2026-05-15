@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — prose bullets prose",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "Opening prose paragraph.\n\n• Bullet one.\n• Bullet two.\n\nClosing prose paragraph."
+    }
+  ]
+}

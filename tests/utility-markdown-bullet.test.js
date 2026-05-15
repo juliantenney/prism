@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("path");
 const vm = require("node:vm");
 
+// Markdown block-level shapes: full page HTML semantics live in utility-page-render.test.js
+// (tests/fixtures/page-render/shape-*.json).
+
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 

@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — markdown table",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_a",
+      "heading": "Section A",
+      "content": "| Col A | Col B |\n| --- | --- |\n| cell x | cell y |"
+    }
+  ]
+}

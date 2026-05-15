@@ -19466,9 +19466,18 @@
         return '<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(String(heading || "").trim()) + "</h5>";
       });
       out = out.replace(/(<(?:p|li|h4|h5)[^>]*>\s*)#{2,3}\s+/gi, "$1");
-      // Merge adjacent bullet lists when no content in between.
+      // Merge adjacent plain bullet lists only (never merge with util-checkbox-list).
       for (var mergeIdx = 0; mergeIdx < 4; mergeIdx += 1) {
-        var merged = out.replace(/<\/ul>\s*<ul>/gi, "");
+        var mergeSource = out;
+        var merged = mergeSource.replace(/<\/ul>\s*<ul\b([^>]*)>/gi, function (whole, attrs, offset) {
+          if (/\butil-checkbox-list\b/i.test(String(attrs || ""))) return whole;
+          var before = mergeSource.slice(0, offset);
+          var lastUl = before.lastIndexOf("<ul");
+          if (lastUl === -1) return whole;
+          var openTag = before.slice(lastUl).match(/^<ul\b[^>]*>/i);
+          if (openTag && /\butil-checkbox-list\b/i.test(openTag[0])) return whole;
+          return "";
+        });
         if (merged === out) break;
         out = merged;
       }

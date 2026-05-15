@@ -1,0 +1,21 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — structured assessment MCQ",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "item_1",
+            "stem": "Select the best response.",
+            "options": ["A. Option alpha", "B. Option beta", "C. Option gamma"],
+            "item_type": "mcq"
+          }
+        ]
+      }
+    }
+  ]
+}

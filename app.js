@@ -15474,6 +15474,28 @@
     return parts.join("");
   }
 
+  function utilityIsPrimitiveOnlyArray(values) {
+    var arr = (Array.isArray(values) ? values : []).filter(function (row) {
+      return !utilityIsEmptyValue(row);
+    });
+    if (!arr.length) return false;
+    return arr.every(function (row) {
+      var t = typeof row;
+      return t === "string" || t === "number" || t === "boolean";
+    });
+  }
+
+  function utilityJoinPrimitiveArrayLines(values) {
+    return (Array.isArray(values) ? values : [])
+      .map(function (row) {
+        return String(row == null ? "" : row).trim();
+      })
+      .filter(function (line) {
+        return !!line;
+      })
+      .join("\n");
+  }
+
   function utilityDetectStructuredObjectShape(obj) {
     if (!obj || typeof obj !== "object" || Array.isArray(obj)) return "";
     var keys = Object.keys(obj).filter(function (key) {
@@ -15648,6 +15670,13 @@
     var arr = Array.isArray(values) ? values : [];
     var filtered = arr.filter(function (row) { return !utilityIsEmptyValue(row); });
     if (!filtered.length) return "";
+    if (renderOpts.cleanupInlineMarkdown && utilityIsPrimitiveOnlyArray(filtered)) {
+      var joinedPrimitive = utilityJoinPrimitiveArrayLines(filtered);
+      if (joinedPrimitive) {
+        var joinedHtml = utilityRenderPrimitive(joinedPrimitive, renderOpts);
+        if (String(joinedHtml || "").trim()) return joinedHtml;
+      }
+    }
     var items = filtered.map(function (row, idx) {
       if (row && typeof row === "object" && !Array.isArray(row)) {
         var shaped = utilityRenderStructuredObjectShape(row, 0, renderOpts, { arrayIndex: idx });
@@ -18898,6 +18927,8 @@
               ? (sectionValue.some(function (r) { return isQuestionLikeRow(r); })
                   ? renderQuestionBlocks(sectionValue, { feedbackDisplay: nestedFeedbackDisplay || renderOpts.feedbackDisplay })
                   : renderTaskBlocks(sectionValue))
+              : utilityIsPrimitiveOnlyArray(sectionValue)
+              ? utilityRenderPrimitive(utilityJoinPrimitiveArrayLines(sectionValue), renderOpts)
               : utilityRenderArray(sectionValue, renderOpts))
           : nestedQuestionRows
           ? renderQuestionBlocks(nestedQuestionRows, { feedbackDisplay: nestedFeedbackDisplay || renderOpts.feedbackDisplay })
@@ -19087,6 +19118,8 @@
         var sectionBody = Array.isArray(contentValue)
           ? (looksTaskLikeSection(sectionHeading, contentValue)
               ? renderTaskBlocks(contentValue)
+              : utilityIsPrimitiveOnlyArray(contentValue)
+              ? utilityRenderPrimitive(utilityJoinPrimitiveArrayLines(contentValue), renderOpts)
               : utilityRenderArray(contentValue, renderOpts))
           : contentValue && typeof contentValue === "object"
           ? utilityRenderObject(contentValue, 0, renderOpts)
@@ -19198,6 +19231,7 @@
       constraints_applied: true,
       generation_notes: true
     };
+    var pageMetadataKeyOrder = ["source_artefacts", "constraints_applied", "generation_notes"];
     function buildLearningObjectSectionBlocksFromPageSections() {
       if (!isPageArtefact || !parsed || utilityIsEmptyValue(parsed.sections)) return [];
       var blocks = [];
@@ -19322,9 +19356,10 @@
 
     if (sectionOrder.length) {
       sectionOrder.forEach(function (key) {
+        if (isPageArtefact && metadataKeys[key]) return;
         var rendered = renderSectionKey(key);
         if (!rendered) return;
-        if (metadataKeys[key]) metadataBlocks.push(rendered);
+        if (!isPageArtefact && metadataKeys[key]) metadataBlocks.push(rendered);
         else primaryBlocks.push(rendered);
       });
     }
@@ -19332,11 +19367,20 @@
     Object.keys(parsed || {}).forEach(function (key) {
       if (key === "artifact_type" || key === "title" || key === "audience" || key === "page_profile") return;
       if (sectionOrder.indexOf(key) !== -1) return;
+      if (isPageArtefact && metadataKeys[key]) return;
       var rendered = renderSectionKey(key);
       if (!rendered) return;
-      if (metadataKeys[key]) metadataBlocks.push(rendered);
+      if (!isPageArtefact && metadataKeys[key]) metadataBlocks.push(rendered);
       else primaryBlocks.push(rendered);
     });
+
+    if (isPageArtefact) {
+      pageMetadataKeyOrder.forEach(function (metaKey) {
+        var metaRendered = renderSectionKey(metaKey);
+        if (String(metaRendered || "").trim()) metadataBlocks.push(metaRendered);
+      });
+    }
+
     htmlParts = htmlParts.concat(primaryBlocks);
     if (isPageArtefact && presentationMode === "learning_object") {
       var loBlocks = buildLearningObjectSectionBlocksFromPageSections();
@@ -20225,7 +20269,11 @@
     prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
-    prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed) {
+    prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride) {
+      var sectionOrder =
+        Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
+          ? sectionOrderOverride.slice()
+          : ["sections"];
       return buildUtilityStructuredHtml(
         parsed,
         {
@@ -20234,7 +20282,9 @@
             renderConfig: {
               labels: {},
               omitIfMissing: [],
-              sectionOrder: ["sections"]
+              sectionOrder: sectionOrder,
+              grouping: "document_sections",
+              itemKeyMap: {}
             }
           }
         },

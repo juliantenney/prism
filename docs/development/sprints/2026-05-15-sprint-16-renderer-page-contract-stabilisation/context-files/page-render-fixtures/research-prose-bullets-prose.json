@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Evidence summary",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "key_findings",
+      "heading": "Key findings",
+      "content": "Intro paragraph stays.\n\n• First bullet.\n• Second bullet.\n\nClosing line."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "artifact_type": "page",
+  "title": "Page with production metadata",
+  "audience": "Review panel",
+  "page_profile": "assessment",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Minimal body for metadata regression."
+    }
+  ],
+  "source_artefacts": {
+    "briefing_note": true,
+    "thematic_analysis": true,
+    "evidence_map": false
+  },
+  "constraints_applied": {
+    "include_answers": false,
+    "page_profile": "assessment"
+  },
+  "generation_notes": {
+    "limitations": ["Could not include full evidence appendix within length cap."]
+  }
+}

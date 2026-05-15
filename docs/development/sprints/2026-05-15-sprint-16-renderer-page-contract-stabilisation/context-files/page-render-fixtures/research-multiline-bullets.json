@@ -1,0 +1,24 @@
+{
+  "artifact_type": "page",
+  "title": "AI in Higher Education — Research Briefing",
+  "audience": "Policy stakeholders",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "executive_overview",
+      "heading": "Executive overview",
+      "content": "This briefing summarises evidence on AI adoption in higher education from validated upstream synthesis."
+    },
+    {
+      "section_id": "key_findings",
+      "heading": "Key findings",
+      "content": "• Infrastructure vs practice: tools exist but adoption lags.\n• Efficiency vs impact: speed gains do not always improve outcomes.\n• AI adoption pattern: pilots cluster in low-risk workflows first."
+    }
+  ],
+  "source_artefacts": {
+    "briefing_note": true,
+    "validated_research_output": true
+  },
+  "constraints_applied": [],
+  "generation_notes": {}
+}

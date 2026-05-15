@@ -1,0 +1,16 @@
+{
+  "artifact_type": "page",
+  "title": "Findings as string array",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "key_findings",
+      "heading": "Key findings",
+      "content": [
+        "• First finding from array element.",
+        "• Second finding from array element.",
+        "• Third finding from array element."
+      ]
+    }
+  ]
+}

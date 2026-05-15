@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Comparison matrix",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key knowledge summary",
+      "content": "| Theme | Evidence strength | Implication |\n| --- | --- | --- |\n| Adoption | Moderate | Pilot-first pattern |\n| Equity | Emerging | Access gaps persist |"
+    }
+  ]
+}

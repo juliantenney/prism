@@ -1,0 +1,56 @@
+{
+  "artifact_type": "page",
+  "title": "Workshop page — Patient safety scenarios",
+  "audience": "Year 2 nursing students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "A facilitated workshop applying observation and escalation judgement to simulated ward scenarios."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "act_01",
+          "title": "Scenario walkthrough",
+          "duration_minutes": 25,
+          "purpose": "Apply structured observation before escalation.",
+          "learner_instructions": "Work in pairs. Complete the checklist for each scenario before discussing escalation.",
+          "materials": {
+            "checklist": "- ☐ Confirm patient identity\n- ☐ Note vital signs trend\n- ☐ Identify escalation trigger",
+            "scenarios": [
+              {
+                "title": "Scenario A",
+                "content": "Patient reports increasing breathlessness; observations borderline."
+              }
+            ]
+          },
+          "expected_output": "Completed checklist plus one escalation rationale.",
+          "support_note": "Facilitator circulates during minutes 10–20."
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "q1",
+            "stem": "Which observation most strongly supports immediate escalation?",
+            "options": ["Stable saturation", "Rising respiratory rate with distress", "Mild headache"],
+            "item_type": "mcq"
+          }
+        ]
+      }
+    }
+  ],
+  "source_artefacts": {
+    "learning_activities": true,
+    "assessment_items": true
+  },
+  "generation_notes": { "limitations": [] }
+}

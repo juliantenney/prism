@@ -1,0 +1,13 @@
+{
+  "artifact_type": "page",
+  "title": "Research snapshot",
+  "audience": "Faculty leads",
+  "page_profile": "facilitator",
+  "sections": [
+    {
+      "section_id": "key_findings",
+      "heading": "Key findings",
+      "content": "• item one. • item two. • item three."
+    }
+  ]
+}

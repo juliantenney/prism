@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Pre-session checklist",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "support_notes",
+      "heading": "Preparation checklist",
+      "content": "- ☐ Read the briefing note\n- ☐ Bring annotated sources\n- ☑ Confirm session time"
+    }
+  ]
+}

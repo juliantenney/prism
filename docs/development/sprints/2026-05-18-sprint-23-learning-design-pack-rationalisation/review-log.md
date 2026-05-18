@@ -60,6 +60,36 @@ node --test tests/*.test.js
 
 ---
 
+## 2026-05-18 — Slice 23-1 LD pack inventory + semantics matrix
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-011 | Slice 23-1 deliverable = **`ld-semantics-matrix.md`** | Single audit artefact for downstream slices |
+| R23-012 | Confirmed DA control gap (2 Settings vs 5 PF vs 4 mapping targets) | Blocks pack rationalisation until 23-5/23-6 |
+| R23-013 | Confirmed vocabulary split: `difficulty_profile`/`coverage_scope` (mapping) vs `difficulty_level`/`coverage_breadth` (PF + inheritance) | Runtime reads PF keys, not mapping target names |
+| R23-014 | No pack or runtime edits in 23-1 | Audit-only charter |
+| R23-015 | `assessment_required` documented as topology gate without `mappingRule` | Explains WGC/inference vs parameter model |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Semantics matrix | [`ld-semantics-matrix.md`](ld-semantics-matrix.md) |
+| Slice charter (closed) | [`slice-23-1-charter.md`](slice-23-1-charter.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **188 passed**, 0 failed.
+
+---
+
 ## Status
 
-**Bootstrap complete.** **No slices chartered.** Next: **Slice 23-1** — LD pack inventory + semantics matrix.
+**Slice 23-1 closed.** Next: **Slice 23-2** — elicitation alignment (charter required). **No pack metadata edits** until **23-6** is chartered.
+

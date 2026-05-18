@@ -3,7 +3,7 @@
 **Date:** 2026-05-18  
 **Pack path:** `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/`  
 **Sprint:** 23 — Learning Design pack rationalisation  
-**Status:** **Proposed / ready for charter** — bootstrap pack only; **no implementation**
+**Status:** **Slice 23-1 closed** — semantics matrix complete; **no pack/runtime implementation**
 
 **Predecessor:** [`../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md`](../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md)
 
@@ -15,7 +15,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 23** | **Bootstrap** — documentation only |
+| **Sprint 23** | **Active** — Slice **23-1** closed; **23-2+** not chartered |
 | **Sprint 22** | **Feature-complete (chartered slices)** — **185 tests** documented — unified Settings + LD metadata expansion |
 | **Sprint 21** | **Closed** — **149 tests** |
 | **Sprint 20** | **Closed** — **135 tests** |
@@ -106,4 +106,5 @@ Sprint 23 closes the **semantics and metadata** gap — not the **Settings surfa
 | [`sprint-23-index.md`](sprint-23-index.md) | Pack index |
 | [`review-log.md`](review-log.md) | Decisions log |
 | [`HANDOVER.md`](HANDOVER.md) | Boundaries and handover |
-| [`slice-23-1-charter.md`](slice-23-1-charter.md) | Proposed Slice 23-1 (not chartered) |
+| [`ld-semantics-matrix.md`](ld-semantics-matrix.md) | Slice 23-1 audit deliverable |
+| [`slice-23-1-charter.md`](slice-23-1-charter.md) | Slice 23-1 charter (closed) |

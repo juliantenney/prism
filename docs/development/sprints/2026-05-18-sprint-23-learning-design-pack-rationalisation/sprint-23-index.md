@@ -2,7 +2,7 @@
 
 **Pack path:** `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/`  
 **Date:** 2026-05-18  
-**Status:** **Proposed / ready for charter** — bootstrap pack only
+**Status:** **Slice 23-1 closed** — semantics matrix delivered
 
 **Entry point:** [`GPT-bootstrap-sprint-23.md`](GPT-bootstrap-sprint-23.md)
 
@@ -24,7 +24,8 @@
 | [`sprint-23-bootstrap.md`](sprint-23-bootstrap.md) | Thesis, focus areas, slice sketch |
 | [`sprint-23-index.md`](sprint-23-index.md) | This index |
 | [`review-log.md`](review-log.md) | Decisions R23-001+ |
-| [`slice-23-1-charter.md`](slice-23-1-charter.md) | Proposed Slice 23-1 (placeholder) |
+| [`ld-semantics-matrix.md`](ld-semantics-matrix.md) | Slice 23-1 semantics audit |
+| [`slice-23-1-charter.md`](slice-23-1-charter.md) | Slice 23-1 charter (closed) |
 | [`context-files/README.md`](context-files/README.md) | Bounded snapshot placeholder |
 
 ---
@@ -33,7 +34,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 23** | **Bootstrap** — no implementation |
+| **Sprint 23** | **Active** — 23-1 closed; 23-2+ not chartered |
 | **Sprint 22** | **Feature-complete (chartered slices)** — **185 tests** documented |
 | **Sprint 21** | **Closed** — [`sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) — **149 tests** |
 | **Sprint 20** | **Closed** — [`sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md) |
@@ -44,7 +45,7 @@
 
 | Slice | Focus | Status |
 |-------|--------|--------|
-| **23-1** | LD pack inventory + semantics matrix | **Proposed** — see charter placeholder |
+| **23-1** | LD pack inventory + semantics matrix | **Closed** — [`ld-semantics-matrix.md`](ld-semantics-matrix.md) |
 | **23-2** | Elicitation alignment + burden reduction | **Proposed** |
 | **23-3** | Prompt Factory bespoke-control audit | **Proposed** |
 | **23-4** | Workflow vs step parameter ownership | **Proposed** |

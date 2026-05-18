@@ -211,9 +211,77 @@ node --test tests/*.test.js
 
 ---
 
+## 2026-05-18 — Slice 23-6 Pack metadata rationalisation
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-042 | `stepParameterControls` count **25 → 39** (+14) | DA +5, Gen +9 per §11 |
+| R23-043 | DA PF ids aligned to controls; template placeholders updated | `filterUserOptionsExcludingPackKeys` pattern |
+| R23-044 | Gen Items controls **`settings-only`** elicitation | Operational authority post-synthesis |
+| R23-045 | `assessmentPolicy` declared in pack | Documents authority + inheritance rows |
+| R23-046 | Minimal runtime: read `difficulty_profile`/`coverage_scope` with legacy fallback | Pack canonical keys; helpers preserved |
+| R23-047 | `extraFields` delivery_context removed; `workflowParameterControls` retained | Safe dedupe |
+| R23-048 | Construct Sequence PF `duration_minutes` id aligns step control | Low-risk naming fix |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| LD pack (implemented) | `domains/learning-design/domain-learning-design-step-patterns.md` |
+| Slice charter (closed) | [`slice-23-6-charter.md`](slice-23-6-charter.md) |
+| Tests | `tests/workflow-step-parameter-controls.test.js` (+7 cases) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **195 passed**, 0 failed.
+
+---
+
+## 2026-05-18 — Sprint 23 closeout
+
+### Summary
+
+| Item | Value |
+|------|-------|
+| **Sprint 23** | **Complete** |
+| **Slices** | **23-1–23-6** closed |
+| **Tests** | **195 passed**, 0 failed |
+
+### Closeout decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-049 | Sprint 23 programme **complete** | All chartered slices delivered |
+| R23-050 | Governed declarative LD pack semantics is the sprint outcome | Emergent → documented + applied metadata |
+| R23-051 | Runtime inheritance **retained**; retirement deferred | Parity gates §10.2 not yet chartered |
+| R23-052 | Research packs, Settings UI, provenance, workflow graph **unchanged** | Explicit non-goals honoured |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Sprint closeout | [`sprint-23-closeout.md`](sprint-23-closeout.md) |
+| Current state | [`CURRENT-STATE.md`](CURRENT-STATE.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **195 passed**, 0 failed.
+
+---
+
 ## Status
 
-**Slices 23-1–23-5 closed.** Next: **Slice 23-6** — pack metadata rationalisation (charter required). Runtime inheritance retirement: separate charter after 23-6.
+**Sprint 23 complete.** Slices **23-1–23-6** closed. Optional follow-up: runtime inheritance retirement charter when parity gates §10.2 are met; renderer/v1 UX; cross-pack consistency.
 
 
 

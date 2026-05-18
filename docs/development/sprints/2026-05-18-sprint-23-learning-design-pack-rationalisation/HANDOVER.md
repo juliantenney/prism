@@ -1,16 +1,20 @@
 # Session Handover — Sprint 23 portable pack
 
-**Role:** authoritative for **this pack** until Sprint 23 closes.
+**Role:** historical handover for the Sprint 23 pack (sprint **complete**).
 
 **Pack path:** `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/`
 
-**Date:** 2026-05-18 (bootstrap)
+**Date:** 2026-05-18
 
-**Status:** **Proposed / ready for charter** — bootstrap only; **no implementation**
+**Status:** **Complete** — see [`sprint-23-closeout.md`](sprint-23-closeout.md)
 
 **Predecessor:** [`../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md`](../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md)
 
-**Fresh-chat bootstrap:** [`GPT-bootstrap-sprint-23.md`](GPT-bootstrap-sprint-23.md)
+---
+
+## Architectural headline
+
+**Sprint 23 completes the transition from emergent LD semantics to governed declarative pack semantics.**
 
 ---
 
@@ -18,45 +22,30 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 23** | **Bootstrap** — no implementation |
-| **Sprint 22** | **Feature-complete (chartered slices)** — **185 tests** documented |
-| **Sprint 21** | **Closed** — **149 tests** |
+| **Sprint 23** | **Complete** — slices 23-1–23-6 closed; **195** tests |
+| **Sprint 22** | **Feature-complete (chartered slices)** — unified Settings |
+| **Sprint 21** | **Closed** |
 
 ---
 
-## Why Sprint 23 exists
+## What Sprint 23 delivered
 
-Sprint 22 delivered **unified Settings** and expanded **LD pack metadata** so workflow-scale parameter tuning works through a generic runtime.
+### Governance (23-1–23-5)
 
-**Gap:** Pack semantics are not yet fully rationalised:
+- LD semantics matrix  
+- Elicitation alignment model  
+- PF bespoke-control audit  
+- Workflow vs step parameter ownership model  
+- Design Assessment semantics model  
 
-- Elicitation may **duplicate** Settings/synthesis commitments.  
-- **Design Assessment** spans bespoke runtime logic, pack controls, and brief mappings without a single precedence story.  
-- **Prompt Factory** may still expose **bespoke controls** not declared in `stepParameterControls`.  
-- **Workflow vs step** ownership for assessment and delivery params needs explicit rules.  
+### Pack implementation (23-6)
 
-Sprint 23 is a **pack semantics** programme — **not** a Settings or runtime architecture sprint.
-
----
-
-## Sprint 23 thesis (one sentence)
-
-*Rationalise the Learning Design domain pack so elicitation initialises persistent pedagogical state, pack metadata is declarative authority, and bespoke controls are audited — preserving Sprint 22 unified Settings and generic runtime architecture.*
-
----
-
-## What Sprint 22 already provides (do not rebuild)
-
-| Capability | Source |
-|------------|--------|
-| Unified Settings `[Run] [Settings] [Edit]` | Sprint 22 |
-| Workflow + included-step aggregation | Sprint 22 |
-| `workflowParameterControls` / `stepParameterControls` | Sprint 22 LD expansion |
-| Generic renderer + persistence | Sprint 21–22 |
-| Pack-agnostic discovery | Sprint 22 `discoverPackBriefConfigForWorkflow` |
-| Provenance + discoverability | Sprint 20 |
-
-Sprint 23 **rationalises pack meaning** consumed by these surfaces — it does not replace them.
+- `stepParameterControls`: **25 → 39**  
+- Design Assessment: **7** declared controls; **canonical assessment authority**  
+- Generate Assessment Items: **10** declared controls; **inherits by default**, explicit override wins  
+- PF ids aligned with pack controls; `assessmentPolicy` block in pack  
+- Runtime inheritance **preserved** with canonical-key compatibility (minimal fallback only)  
+- Research packs **untouched**; unified Settings **not redesigned**  
 
 ---
 
@@ -64,7 +53,7 @@ Sprint 23 **rationalises pack meaning** consumed by these surfaces — it does n
 
 | Surface | Content |
 |---------|---------|
-| **Elicitation** | Initialises structured state (reduced burden over time) |
+| **Elicitation** | Initialises structured state (burden reduced where params/Settings own values) |
 | **Settings** | Operational parameter authority (workflow + included steps) |
 | **Edit** | Step prompt drafts, implementation detail |
 | **Run** | Execution and outcomes |
@@ -74,57 +63,43 @@ Sprint 23 **rationalises pack meaning** consumed by these surfaces — it does n
 
 ---
 
-## In scope (programme intent)
+## Assessment doctrine (closed in Sprint 23)
 
-- LD pack inventory and semantics matrix  
-- Elicitation alignment and burden-reduction plan  
-- Prompt Factory bespoke-control audit (`app.js` + pack)  
-- Workflow vs step parameter ownership (documented rules)  
-- Design Assessment priority review  
-- Pack metadata rationalisation (chartered slices)  
-- Minimal runtime cleanup **only** when parity proven  
+| Rule | Detail |
+|------|--------|
+| Authority | `step_design_assessment` |
+| Inheritance | Generate Items ← DA for `response_formats`, `number_of_items`, `difficulty_profile`, `coverage_mode` |
+| Override | Explicit Gen step param wins over inherited default |
+| Topology | `assessment_required` gates workflow shape — **not** a Settings control |
+| Alias | Brief `assessment_type` → step `activity_type` (documented) |
 
 ---
 
-## Out of scope (bootstrap default)
+## Preserved from Sprint 22 (do not rebuild)
 
-| Item | Reason |
+| Capability | Source |
+|------------|--------|
+| Unified Settings `[Run] [Settings] [Edit]` | Sprint 22 |
+| Workflow + included-step aggregation | Sprint 22 |
+| Generic renderer + `[PRISM_STEP_PARAMS]` | Sprint 21–22 |
+| Pack-agnostic discovery | Sprint 22 |
+| Provenance + discoverability | Sprint 20 |
+
+Sprint 23 **rationalised pack meaning** on these surfaces — it did not replace them.
+
+---
+
+## Out of scope / future work
+
+| Item | Notes |
 |------|--------|
-| Implementation in bootstrap | Planning only |
-| Runtime rewrite | Pack-first |
-| Unified Settings redesign | Sprint 22 delivered |
+| Renderer / v1 UX | Not Sprint 23 |
+| Runtime inheritance retirement | Optional charter after parity gates (`ld-design-assessment-semantics.md` §10.2) |
+| Immediate runtime rewrite | Not planned |
 | Provenance redesign | Sprint 20 preserved |
 | Workflow graph redesign | Out of scope |
-| New synthesis architecture | Preserve WGC |
-| Research pack changes | Frozen |
-| `mappingRules` auto-promotion to controls | Sprint 22 rejected |
-
----
-
-## Architectural continuity (must preserve)
-
-- Sprint 22 unified Settings and mode chrome  
-- Lightweight elicitation (aligned, not removed wholesale)  
-- Essentials gating  
-- Advisory adequacy only  
-- Pack-driven metadata  
-- Generic runtime (no new per-key UI branches without charter)  
-- No wizard regression  
-
----
-
-## Recommended slice sequence
-
-| Order | Slice | Focus |
-|-------|-------|--------|
-| 1 | **23-1** | LD pack inventory + semantics matrix |
-| 2 | **23-2** | Elicitation alignment + burden reduction |
-| 3 | **23-3** | Prompt Factory bespoke-control audit |
-| 4 | **23-4** | Workflow vs step parameter ownership |
-| 5 | **23-5** | Design Assessment semantics + controls |
-| 6 | **23-6** | Pack metadata rationalisation (apply edits) |
-
-Charter **23-1** first. Defer runtime deletion of bespoke branches until **23-5** parity is documented.
+| Cross-pack consistency | Later programme |
+| `step_generate_learning_content` | Still no pack step controls — documented gap |
 
 ---
 
@@ -134,10 +109,13 @@ Charter **23-1** first. Defer runtime deletion of bespoke branches until **23-5*
 node --test tests/*.test.js
 ```
 
-**Floor at bootstrap:** **185+** passed, 0 failed (Sprint 22 documented **185**).
+**Sprint 23 closeout:** **195 passed**, 0 failed.
 
 ---
 
-## Recommended first task
+## Where to start next
 
-Read **`sprint-23-bootstrap.md`**, export LD `workflowBriefConfig` inventory, grep `app.js` for `step_design_assessment`, then draft **Slice 23-1 charter** from [`slice-23-1-charter.md`](slice-23-1-charter.md) template.
+1. [`sprint-23-closeout.md`](sprint-23-closeout.md) — authoritative delivered/out-of-scope summary  
+2. [`CURRENT-STATE.md`](CURRENT-STATE.md) — test floor and pack counts  
+3. [`ld-design-assessment-semantics.md`](ld-design-assessment-semantics.md) — assessment doctrine + retirement gates  
+4. Live pack: `domains/learning-design/domain-learning-design-step-patterns.md`

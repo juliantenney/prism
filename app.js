@@ -1102,7 +1102,12 @@
     var map = {
       introductory: "foundational",
       moderate: "balanced",
-      advanced: "higher_order"
+      advanced: "higher_order",
+      foundation_heavy: "foundational",
+      balanced: "balanced",
+      higher_order_heavy: "higher_order",
+      foundational: "foundational",
+      higher_order: "higher_order"
     };
     return map[v] || "";
   }
@@ -1113,7 +1118,9 @@
     var map = {
       narrow: "selected_themes",
       balanced: "balanced",
-      broad: "broad_coverage"
+      broad: "broad_coverage",
+      selected_themes: "selected_themes",
+      broad_coverage: "broad_coverage"
     };
     return map[v] || "";
   }
@@ -3516,11 +3523,19 @@
     }
     if (step4) {
       var step4Params = readWorkflowStepParamsObject(step4);
+      var daDifficulty =
+        step4Params.difficulty_profile != null && String(step4Params.difficulty_profile).trim()
+          ? step4Params.difficulty_profile
+          : step4Params.difficulty_level;
+      var daCoverage =
+        step4Params.coverage_scope != null && String(step4Params.coverage_scope).trim()
+          ? step4Params.coverage_scope
+          : step4Params.coverage_breadth;
       var translated = {
         response_formats: mapDesignAssessmentActivityTypeToResponseFormats(step4Params.activity_type),
         number_of_items: normalizeAssessmentItemCount(step4Params.total_items),
-        difficulty_profile: mapDesignAssessmentDifficultyToItemsDifficultyProfile(step4Params.difficulty_level),
-        coverage_mode: mapDesignAssessmentCoverageToItemsCoverageMode(step4Params.coverage_breadth)
+        difficulty_profile: mapDesignAssessmentDifficultyToItemsDifficultyProfile(daDifficulty),
+        coverage_mode: mapDesignAssessmentCoverageToItemsCoverageMode(daCoverage)
       };
       Object.keys(translated).forEach(function (k) {
         var v = String(translated[k] == null ? "" : translated[k]).trim();
@@ -24137,6 +24152,11 @@
     };
     prismTestApi.resolveWorkflowSettingsParamLabel = resolveWorkflowSettingsParamLabel;
     prismTestApi.resolveWorkflowStepParameterValue = resolveWorkflowStepParameterValue;
+    prismTestApi.resolveAssessmentItemsInheritedOptions = resolveAssessmentItemsInheritedOptions;
+    prismTestApi.mapDesignAssessmentDifficultyToItemsDifficultyProfile =
+      mapDesignAssessmentDifficultyToItemsDifficultyProfile;
+    prismTestApi.mapDesignAssessmentCoverageToItemsCoverageMode =
+      mapDesignAssessmentCoverageToItemsCoverageMode;
     prismTestApi.buildPackOwnedUserOptionIdMap = buildPackOwnedUserOptionIdMap;
     prismTestApi.filterUserOptionsExcludingPackKeys = filterUserOptionsExcludingPackKeys;
     prismTestApi.mergeWorkflowStepParamValueMap = mergeWorkflowStepParamValueMap;

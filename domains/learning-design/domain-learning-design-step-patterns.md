@@ -323,6 +323,16 @@ They provide a consistent way to structure workflows and ensure that learning de
 {
   "workflowBriefConfig": {
     "version": "1",
+    "assessmentPolicy": {
+      "authorityStep": "step_design_assessment",
+      "overridePrecedence": "explicit_downstream_wins",
+      "inheritance": [
+        { "targetStep": "step_generate_assessment_items", "targetKey": "response_formats", "sourceStep": "step_design_assessment", "sourceKey": "activity_type", "transform": "activity_type_to_response_formats" },
+        { "targetStep": "step_generate_assessment_items", "targetKey": "number_of_items", "sourceStep": "step_design_assessment", "sourceKey": "total_items" },
+        { "targetStep": "step_generate_assessment_items", "targetKey": "difficulty_profile", "sourceStep": "step_design_assessment", "sourceKey": "difficulty_profile", "transform": "da_difficulty_to_gen_difficulty_profile" },
+        { "targetStep": "step_generate_assessment_items", "targetKey": "coverage_mode", "sourceStep": "step_design_assessment", "sourceKey": "coverage_scope", "transform": "da_coverage_to_gen_coverage_mode" }
+      ]
+    },
     "requiredFactors": [
       {
         "id": "topic",
@@ -503,7 +513,8 @@ They provide a consistent way to structure workflows and ensure that learning de
           { "value": "mixed", "label": "Mixed types", "description": "Use a deliberate mix of assessment types." }
         ],
         "default": "mixed",
-        "mustAsk": true,
+        "mustAsk": false,
+        "skipIfContextResolved": true,
         "askWhenResolvedFactorEquals": { "assessment_required": true },
         "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "mcq", "exam"],
         "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
@@ -555,7 +566,8 @@ They provide a consistent way to structure workflows and ensure that learning de
         "min": 1,
         "max": 200,
         "default": 10,
-        "mustAsk": true,
+        "mustAsk": false,
+        "skipIfContextResolved": true,
         "askWhenResolvedFactorEquals": { "assessment_required": true },
         "askWhenGoalMentionsAnyOf": ["assessment", "quiz", "test", "question", "essay", "mcq", "exam"],
         "askWhenDesignScopeIn": ["single_activity", "session", "sequence", "module"]
@@ -667,21 +679,7 @@ They provide a consistent way to structure workflows and ensure that learning de
       "desired_outputs": "Target artefacts (activities, sequence, assessment, facilitator materials).",
       "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."
     },
-    "extraFields": [
-      {
-        "id": "delivery_context",
-        "label": "Delivery context (optional)",
-        "type": "select",
-        "choices": [
-          { "value": "in_person", "label": "In-person classroom/workshop" },
-          { "value": "online_sync", "label": "Live online (synchronous)" },
-          { "value": "online_async", "label": "Self-paced online (asynchronous)" },
-          { "value": "blended", "label": "Blended (in-person + online)" },
-          { "value": "self_directed", "label": "Self-directed independent progression" }
-        ],
-        "helpText": "Pedagogic delivery mode (how learners progress), not just platform/environment."
-      }
-    ],
+    "extraFields": [],
     "inferenceRules": [
       {
         "whenInputsMentionAnyOf": [
@@ -976,12 +974,166 @@ They provide a consistent way to structure workflows and ensure that learning de
         "key": "number_of_items",
         "canonicalStepId": "step_generate_assessment_items",
         "label": "Number of items",
-        "description": "How many assessment items to generate.",
+        "description": "How many assessment items to generate (inherits Design Assessment total_items by default).",
         "controlType": "number",
         "default": "10",
+        "min": 1,
+        "max": 200,
         "visible": true,
         "advanced": false,
-        "elicitation": "elicited"
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "response_formats",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Allowed response formats",
+        "description": "Permitted item response formats (inherits from Design Assessment activity_type by default).",
+        "controlType": "select",
+        "default": "single_answer_mcq",
+        "options": [
+          { "value": "single_answer_mcq", "label": "Single-answer MCQ" },
+          { "value": "multiple_answer_mcq", "label": "Multiple-answer MCQ" },
+          { "value": "true_false", "label": "True/false" },
+          { "value": "short_answer", "label": "Short answer" },
+          { "value": "essay", "label": "Essay" },
+          { "value": "single_mcq_and_true_false", "label": "Single-answer MCQ + true/false" },
+          { "value": "objective_mix_all", "label": "Objective mix (MCQ + true/false)" },
+          { "value": "constructed_mix", "label": "Constructed mix (short answer + essay)" },
+          { "value": "all_formats_mix", "label": "All supported formats" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "difficulty_profile",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Difficulty profile",
+        "description": "Item-set difficulty emphasis (inherits from Design Assessment by default).",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "foundational", "label": "Foundational-heavy" },
+          { "value": "balanced", "label": "Balanced" },
+          { "value": "higher_order", "label": "Higher-order-heavy" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "coverage_mode",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Coverage mode",
+        "description": "Outcome/theme coverage for generated items (inherits from Design Assessment coverage_scope by default).",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "selected_themes", "label": "Selected themes" },
+          { "value": "balanced", "label": "Balanced" },
+          { "value": "broad_coverage", "label": "Broad coverage" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "composition_mode",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Composition mode",
+        "description": "Whether the item set uses a single format or a mixed set.",
+        "controlType": "select",
+        "default": "single_format",
+        "options": [
+          { "value": "single_format", "label": "Single format" },
+          { "value": "mixed_set", "label": "Mixed set" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "stimulus_mode",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Stimulus mode",
+        "description": "Whether items are direct questions or anchored to scenarios/problems/cases.",
+        "controlType": "select",
+        "default": "direct_questions",
+        "options": [
+          { "value": "direct_questions", "label": "Direct questions" },
+          { "value": "scenario_based", "label": "Scenario based" },
+          { "value": "problem_based", "label": "Problem based" },
+          { "value": "case_based", "label": "Case based" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "scenario_scope",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Stimulus scope",
+        "description": "Shared vs per-item stimulus when using scenario/problem/case-based items.",
+        "controlType": "select",
+        "default": "shared_scenario_for_set",
+        "options": [
+          { "value": "shared_scenario_for_set", "label": "Shared stimulus for set" },
+          { "value": "scenario_per_item", "label": "Stimulus per item" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "cognitive_emphasis",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Cognitive emphasis",
+        "description": "Dominant cognitive level emphasis across generated items.",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          { "value": "mixed", "label": "Mixed" },
+          { "value": "foundational", "label": "Foundational understanding" },
+          { "value": "application", "label": "Application and transfer" },
+          { "value": "analysis", "label": "Analysis and evaluation" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "feedback_mode",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Item feedback mode",
+        "description": "Learner-facing feedback included with generated items (distinct from Design Feedback step).",
+        "controlType": "select",
+        "default": "per_item",
+        "options": [
+          { "value": "none", "label": "None" },
+          { "value": "per_item", "label": "Per item" },
+          { "value": "aggregate", "label": "Aggregate" },
+          { "value": "both", "label": "Per item + aggregate" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "question_style_mix",
+        "canonicalStepId": "step_generate_assessment_items",
+        "label": "Response mode mix",
+        "description": "Preferred mix of selected vs constructed response modes.",
+        "controlType": "select",
+        "default": "mixed_response_modes",
+        "options": [
+          { "value": "selected_response_only", "label": "Selected response only" },
+          { "value": "constructed_response_only", "label": "Constructed response only" },
+          { "value": "mixed_response_modes", "label": "Mixed selected + constructed" },
+          { "value": "integrative_performance_oriented", "label": "Integrative/performance-style" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
       },
       {
         "key": "include_examples",
@@ -1003,6 +1155,88 @@ They provide a consistent way to structure workflows and ensure that learning de
         "default": "10",
         "min": 1,
         "max": 200,
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "coverage_scope",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Coverage scope",
+        "description": "How broadly the assessment blueprint should cover outcomes/themes.",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "selected_themes", "label": "Selected themes" },
+          { "value": "balanced", "label": "Balanced" },
+          { "value": "broad_coverage", "label": "Broad coverage" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "difficulty_profile",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Difficulty profile",
+        "description": "Overall difficulty distribution for the assessment blueprint (maps from brief difficulty_profile).",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "foundation_heavy", "label": "Mostly foundational items" },
+          { "value": "balanced", "label": "Balanced mix" },
+          { "value": "higher_order_heavy", "label": "Mostly higher-order items" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "cognitive_demand",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Cognitive demand profile",
+        "description": "Dominant thinking level targeted by assessment tasks.",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          { "value": "recall_foundation", "label": "Recall and understanding" },
+          { "value": "application_oriented", "label": "Application and problem-solving" },
+          { "value": "analysis_evaluation", "label": "Analysis and evaluation" },
+          { "value": "mixed", "label": "Mixed levels" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "assessment_cadence",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Assessment cadence",
+        "description": "How assessment is distributed across the broader learning scope.",
+        "controlType": "select",
+        "default": "periodic_formative",
+        "options": [
+          { "value": "single_end_point", "label": "Single end-point" },
+          { "value": "periodic_formative", "label": "Periodic formative" },
+          { "value": "mixed_formative_summative", "label": "Mixed formative and summative" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "feedback_display",
+        "canonicalStepId": "step_design_assessment",
+        "label": "Feedback display",
+        "description": "How answers/feedback are planned in the blueprint (prompt-shaping; distinct from Design Feedback step).",
+        "controlType": "select",
+        "default": "answer_grid_end",
+        "options": [
+          { "value": "none", "label": "None" },
+          { "value": "answer_grid_end", "label": "Answer grid at end" },
+          { "value": "answers_explanations", "label": "Answers + explanations" },
+          { "value": "reflection_then_answers", "label": "Reflection first, answers after" }
+        ],
         "visible": true,
         "advanced": true,
         "elicitation": "settings-only"
@@ -2291,7 +2525,7 @@ learning_activities
   "configurationMode": "simple",
   "askForCustomSchema": false,
   "defaultPromptStrategy": "default_template",
-  "promptTemplate": "Context:\nYou are provided with learning_outcomes (and optionally knowledge_model or learning_content).\n\nTask:\nDesign executable learning_activities that are directly runnable in teaching delivery.\n\nInstructions:\n- Every activity must be implementation-ready, not descriptive-only\n- Every activity must map to one or more learning outcomes\n- Every activity must include explicit learner_task and observable expected_output\n- Learner-facing text fields such as learner_task and expected_output may use a limited Markdown subset only: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules\n- Every activity must include required_materials, grouping, duration_minutes, and facilitator_moves\n- Every activity must include failure_mode with mitigation cues for facilitator handling\n- Use workflow constraints when present: design_scope, delivery_pattern, learning_environments\n- Activities must be appropriate to the selected learning_environments and delivery context\n- You are specifying the materials needed, not creating them\n- For each activity, define required_materials clearly\n- required_materials must specify what each material is used for and what it must contain\n- Do not generate full material content in this step\n- If design_scope is single_activity, produce one focused activity by default\n- For single_activity scope, only produce more than one activity when clearly justified by the request\n- For single_activity scope, avoid broad session framing or multi-phase programme structure unless explicitly requested\n- Ensure each activity has a clear learner-facing product, performance, or decision that can be observed\n- Do not produce generic discussion-only activities without concrete task/output\n- Do not produce activities that require facilitator redesign before use\n- Do not produce activities that are impossible in the stated delivery context\n- Ensure variation across grouping modes and task forms where appropriate while maintaining coherent progression\n- Ensure activities collectively cover all outcomes and progress from understanding -> application -> evaluation where relevant\n- Keep all activities grounded in provided artefacts\n- Apply step notes when provided: {{stepNotes}}\n\nConstraints:\n- Grouping preference: {{option:grouping_preference}}\n- Difficulty level: {{option:difficulty_level}}\n- Coverage breadth: {{option:coverage_breadth}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing activities, outcome_alignment, and delivery_notes\n- activities must be an array where each activity includes:\n  - activity_id\n  - title\n  - grouping (individual | pair | small_group | whole_group)\n  - duration_minutes\n  - mapped_learning_outcomes\n  - required_materials: [{ material_id, type, purpose, specification }]\n  - learner_task\n  - expected_output\n  - failure_mode\n  - facilitator_moves\n- type should be one of: task_cards | prompt_set | scenario | checklist | template | sample_output | text\n- required_materials entries define requirements only; material content is generated in Generate Activity Materials\n- Return only the JSON.",
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes (and optionally knowledge_model or learning_content).\n\nTask:\nDesign executable learning_activities that are directly runnable in teaching delivery.\n\nInstructions:\n- Every activity must be implementation-ready, not descriptive-only\n- Every activity must map to one or more learning outcomes\n- Every activity must include explicit learner_task and observable expected_output\n- Learner-facing text fields such as learner_task and expected_output may use a limited Markdown subset only: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules\n- Every activity must include required_materials, grouping, duration_minutes, and facilitator_moves\n- Every activity must include failure_mode with mitigation cues for facilitator handling\n- Use workflow constraints when present: design_scope, delivery_pattern, learning_environments\n- Activities must be appropriate to the selected learning_environments and delivery context\n- You are specifying the materials needed, not creating them\n- For each activity, define required_materials clearly\n- required_materials must specify what each material is used for and what it must contain\n- Do not generate full material content in this step\n- If design_scope is single_activity, produce one focused activity by default\n- For single_activity scope, only produce more than one activity when clearly justified by the request\n- For single_activity scope, avoid broad session framing or multi-phase programme structure unless explicitly requested\n- Ensure each activity has a clear learner-facing product, performance, or decision that can be observed\n- Do not produce generic discussion-only activities without concrete task/output\n- Do not produce activities that require facilitator redesign before use\n- Do not produce activities that are impossible in the stated delivery context\n- Ensure variation across grouping modes and task forms where appropriate while maintaining coherent progression\n- Ensure activities collectively cover all outcomes and progress from understanding -> application -> evaluation where relevant\n- Keep all activities grounded in provided artefacts\n- Apply step notes when provided: {{stepNotes}}\n\nConstraints:\n- Activity pattern mix: {{option:activity_pattern_mix}}\n- Grouping preference: {{option:grouping_preference}}\n- Difficulty level: {{option:difficulty_level}}\n- Coverage breadth: {{option:coverage_breadth}}\n\nOutput:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing activities, outcome_alignment, and delivery_notes\n- activities must be an array where each activity includes:\n  - activity_id\n  - title\n  - grouping (individual | pair | small_group | whole_group)\n  - duration_minutes\n  - mapped_learning_outcomes\n  - required_materials: [{ material_id, type, purpose, specification }]\n  - learner_task\n  - expected_output\n  - failure_mode\n  - facilitator_moves\n- type should be one of: task_cards | prompt_set | scenario | checklist | template | sample_output | text\n- required_materials entries define requirements only; material content is generated in Generate Activity Materials\n- Return only the JSON.",
   "preferredOutputFormat": "json",
   "defaultPromptNotes": "Design executable learning activities that are directly runnable; when delivery_context is self_directed, prioritise independently completable tasks with explicit learner instructions and minimal facilitator dependence. For page-focused outputs requesting learner tasks, default to concise embedded individual/self-directed tasks and avoid classroom orchestration patterns unless explicitly requested.",
   "runnerInstructions": {
@@ -2301,6 +2535,17 @@ learning_activities
     "keys": ["activities", "outcome_alignment", "delivery_notes"]
   },
   "userOptions": [
+    {
+      "id": "activity_pattern_mix",
+      "label": "Activity pattern mix",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        { "value": "guided", "label": "Guided", "promptInstruction": "Prioritize guided, tutor-led activity patterns." },
+        { "value": "balanced", "label": "Balanced", "promptInstruction": "Use a balanced mix of guided and applied/collaborative patterns." },
+        { "value": "applied_collaborative", "label": "Applied collaborative", "promptInstruction": "Prioritize applied, collaborative activity patterns." }
+      ]
+    },
     {
       "id": "grouping_preference",
       "label": "Grouping preference",
@@ -2424,7 +2669,7 @@ assessment_blueprint
   "promptScope": "step_only",
   "structureStyle": "schema_structured",
   "defaultPromptStrategy": "default_template",
-  "promptTemplate": "Context:\nYou are provided with learning_outcomes and optional supporting artefacts such as knowledge_model or learning_content.\n\nTask:\nDesign an assessment_blueprint that defines how the outcomes will be assessed.\n\nInstructions:\n- Align the blueprint to all provided learning outcomes\n- Question strategy: {{option:activity_type}}\n- Feedback display mode: {{option:feedback_display}}\n- Difficulty level: {{option:difficulty_level}}\n- Coverage breadth: {{option:coverage_breadth}}\n- Total required items/questions: {{option:total_items}}\n- Treat feedback_display as prompt-shaping guidance only; do not require or invent new output schema fields in this step\n- Design should reflect the selected question strategy\n- Define coverage_map so outcomes are covered appropriately across topics/tasks\n- Ensure coverage_map item counts sum exactly to total_items\n- Define difficulty_profile.item_counts with concrete numeric counts using ONLY these keys: recall, comprehension, application, analysis\n- Do NOT use alternative difficulty buckets such as easy/moderate/hard in item_counts\n- Ensure recall + comprehension + application + analysis counts sum exactly to total_items\n- Include marking intent/rationale suitable for downstream item generation and feedback steps\n- Keep output grounded in provided artefacts only\n- Do not generate assessment items in this step\n- Apply step notes if provided: {{stepNotes}}\n\nOutput requirements:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing: assessment_blueprint, coverage_map, difficulty_profile, design_rationale\n- assessment_blueprint must include total_items\n- difficulty_profile must include item_counts as concrete numbers with keys recall, comprehension, application, analysis\n- Return only JSON.",
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes and optional supporting artefacts such as knowledge_model or learning_content.\n\nTask:\nDesign an assessment_blueprint that defines how the outcomes will be assessed.\n\nInstructions:\n- Align the blueprint to all provided learning outcomes\n- Question strategy: {{option:activity_type}}\n- Feedback display mode: {{option:feedback_display}}\n- Difficulty profile: {{option:difficulty_profile}}\n- Coverage scope: {{option:coverage_scope}}\n- Total required items/questions: {{option:total_items}}\n- Treat feedback_display as prompt-shaping guidance only; do not require or invent new output schema fields in this step\n- Design should reflect the selected question strategy\n- Define coverage_map so outcomes are covered appropriately across topics/tasks\n- Ensure coverage_map item counts sum exactly to total_items\n- Define difficulty_profile.item_counts with concrete numeric counts using ONLY these keys: recall, comprehension, application, analysis\n- Do NOT use alternative difficulty buckets such as easy/moderate/hard in item_counts\n- Ensure recall + comprehension + application + analysis counts sum exactly to total_items\n- Include marking intent/rationale suitable for downstream item generation and feedback steps\n- Keep output grounded in provided artefacts only\n- Do not generate assessment items in this step\n- Apply step notes if provided: {{stepNotes}}\n\nOutput requirements:\n- Return output as {{preferredOutputFormat}}\n- Return a JSON object containing: assessment_blueprint, coverage_map, difficulty_profile, design_rationale\n- assessment_blueprint must include total_items\n- difficulty_profile must include item_counts as concrete numbers with keys recall, comprehension, application, analysis\n- Return only JSON.",
   "preferredOutputFormat": "json",
   "defaultPromptNotes": "Design assessment artefacts aligned to learning outcomes with valid coverage and clear marking intent.",
   "defaultOutputStructure": {
@@ -2503,38 +2748,38 @@ assessment_blueprint
       ]
     },
     {
-      "id": "difficulty_level",
-      "label": "Difficulty level",
-      "type": "select",
-      "default": "moderate",
-      "choices": [
-        {
-          "value": "introductory",
-          "label": "Introductory",
-          "promptInstruction": "Set overall assessment difficulty at an introductory level."
-        },
-        {
-          "value": "moderate",
-          "label": "Moderate",
-          "promptInstruction": "Set overall assessment difficulty at a moderate level."
-        },
-        {
-          "value": "advanced",
-          "label": "Advanced",
-          "promptInstruction": "Set overall assessment difficulty at an advanced level."
-        }
-      ]
-    },
-    {
-      "id": "coverage_breadth",
-      "label": "Coverage breadth",
+      "id": "difficulty_profile",
+      "label": "Difficulty profile",
       "type": "select",
       "default": "balanced",
       "choices": [
         {
-          "value": "narrow",
-          "label": "Narrow",
-          "promptInstruction": "Use narrower topic coverage in the assessment blueprint."
+          "value": "foundation_heavy",
+          "label": "Mostly foundational items",
+          "promptInstruction": "Set overall assessment difficulty toward foundational items."
+        },
+        {
+          "value": "balanced",
+          "label": "Balanced mix",
+          "promptInstruction": "Set overall assessment difficulty to a balanced mix."
+        },
+        {
+          "value": "higher_order_heavy",
+          "label": "Mostly higher-order items",
+          "promptInstruction": "Set overall assessment difficulty toward higher-order items."
+        }
+      ]
+    },
+    {
+      "id": "coverage_scope",
+      "label": "Coverage scope",
+      "type": "select",
+      "default": "balanced",
+      "choices": [
+        {
+          "value": "selected_themes",
+          "label": "Selected themes",
+          "promptInstruction": "Focus assessment blueprint coverage on selected high-priority themes."
         },
         {
           "value": "balanced",
@@ -2542,9 +2787,9 @@ assessment_blueprint
           "promptInstruction": "Use balanced topic coverage in the assessment blueprint."
         },
         {
-          "value": "broad",
-          "label": "Broad",
-          "promptInstruction": "Use broad topic coverage in the assessment blueprint."
+          "value": "broad_coverage",
+          "label": "Broad coverage",
+          "promptInstruction": "Use broad topic coverage across outcomes where feasible."
         }
       ]
     },
@@ -2797,6 +3042,18 @@ assessment_items
         { "value": "balanced", "label": "Balanced", "promptInstruction": "Use balanced coverage across available learning outcomes." },
         { "value": "broad_coverage", "label": "Broad coverage", "promptInstruction": "Use broad coverage across as many relevant outcomes/themes as feasible." }
       ]
+    },
+    {
+      "id": "question_style_mix",
+      "label": "Response mode mix",
+      "type": "select",
+      "default": "mixed_response_modes",
+      "choices": [
+        { "value": "selected_response_only", "label": "Selected response only", "promptInstruction": "Generate items using selected-response formats only." },
+        { "value": "constructed_response_only", "label": "Constructed response only", "promptInstruction": "Generate items using constructed-response formats only." },
+        { "value": "mixed_response_modes", "label": "Mixed selected + constructed", "promptInstruction": "Generate a deliberate mix of selected- and constructed-response items." },
+        { "value": "integrative_performance_oriented", "label": "Integrative/performance-style", "promptInstruction": "Favour integrative or performance-style response tasks where appropriate." }
+      ]
     }
   ]
 }
@@ -2847,7 +3104,7 @@ learning_sequence
   },
   "userOptions": [
     {
-      "id": "total_duration_minutes",
+      "id": "duration_minutes",
       "label": "Total duration (minutes)",
       "type": "number",
       "default": 60,

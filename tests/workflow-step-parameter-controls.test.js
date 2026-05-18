@@ -136,7 +136,7 @@ test("resolveWorkflowStepParameterValue uses stored params over default", () => 
 test("LD pack defines stepParameterControls for core LD workflow steps", () => {
   const config = loadLdWorkflowBriefConfig();
   assert.ok(Array.isArray(config.stepParameterControls));
-  assert.equal(config.stepParameterControls.length, 25);
+  assert.equal(config.stepParameterControls.length, 39);
   const keys = config.stepParameterControls.map((c) => `${c.canonicalStepId}.${c.key}`);
   assert.ok(keys.includes("step_design_page.page_profile"));
   assert.ok(keys.includes("step_normalize_content.structure_mode"));
@@ -163,7 +163,7 @@ test("getWorkflowStepParameterControlsFromBriefConfig loads LD pilot controls", 
   const api = loadPrismTestApi();
   const config = loadLdWorkflowBriefConfig();
   const controls = api.getWorkflowStepParameterControlsFromBriefConfig(config);
-  assert.equal(controls.length, 25);
+  assert.equal(controls.length, 39);
   const numberControl = controls.find(
     (c) => c.canonicalStepId === "step_generate_assessment_items" && c.key === "number_of_items"
   );
@@ -288,6 +288,203 @@ test("hidden pack controls are excluded from render but still own userOptions ke
     owned
   );
   assert.equal(filtered.length, 0);
+});
+
+const DA_CONTROL_KEYS = [
+  "activity_type",
+  "total_items",
+  "coverage_scope",
+  "difficulty_profile",
+  "cognitive_demand",
+  "assessment_cadence",
+  "feedback_display"
+];
+
+const GEN_CONTROL_KEYS = [
+  "number_of_items",
+  "response_formats",
+  "difficulty_profile",
+  "coverage_mode",
+  "composition_mode",
+  "stimulus_mode",
+  "scenario_scope",
+  "cognitive_emphasis",
+  "feedback_mode",
+  "question_style_mix"
+];
+
+function loadLdPfUserOptionIds(md, sectionHeading) {
+  const idx = md.indexOf(sectionHeading);
+  assert.ok(idx !== -1, `LD pack should contain ${sectionHeading}`);
+  const fence = md.indexOf("```json", idx);
+  assert.ok(fence !== -1);
+  const close = md.indexOf("```", fence + 7);
+  const block = JSON.parse(md.slice(fence + 7, close).trim());
+  const options = Array.isArray(block.userOptions) ? block.userOptions : [];
+  return options.map((o) => o.id);
+}
+
+test("LD pack Design Assessment stepParameterControls include Sprint 23-6 authority fields", () => {
+  const config = loadLdWorkflowBriefConfig();
+  const da = config.stepParameterControls.filter(
+    (c) => c.canonicalStepId === "step_design_assessment"
+  );
+  assert.equal(da.length, DA_CONTROL_KEYS.length);
+  DA_CONTROL_KEYS.forEach((key) => {
+    assert.ok(da.some((c) => c.key === key), `expected DA control ${key}`);
+  });
+});
+
+test("LD pack Generate Assessment Items stepParameterControls include Sprint 23-6 fields", () => {
+  const config = loadLdWorkflowBriefConfig();
+  const gen = config.stepParameterControls.filter(
+    (c) => c.canonicalStepId === "step_generate_assessment_items"
+  );
+  assert.equal(gen.length, GEN_CONTROL_KEYS.length);
+  GEN_CONTROL_KEYS.forEach((key) => {
+    assert.ok(gen.some((c) => c.key === key), `expected Gen control ${key}`);
+  });
+  const numberControl = gen.find((c) => c.key === "number_of_items");
+  assert.equal(numberControl.elicitation, "settings-only");
+});
+
+test("LD Design Assessment PF userOptions ids match pack stepParameterControls", () => {
+  const md = fs.readFileSync(ldPatternsPath, "utf8");
+  const pfIds = loadLdPfUserOptionIds(md, "## 7. Design Assessment");
+  const config = loadLdWorkflowBriefConfig();
+  const daKeys = config.stepParameterControls
+    .filter((c) => c.canonicalStepId === "step_design_assessment")
+    .map((c) => c.key);
+  pfIds.forEach((id) => {
+    assert.ok(daKeys.includes(id), `PF userOption ${id} should match a DA control key`);
+  });
+  daKeys.forEach((key) => {
+    if (key === "cognitive_demand" || key === "assessment_cadence") return;
+    assert.ok(pfIds.includes(key), `DA control ${key} should have PF userOption when prompt-facing`);
+  });
+});
+
+test("LD Generate Items PF userOptions exclude keys owned by pack stepParameterControls", () => {
+  const api = loadPrismTestApi();
+  const md = fs.readFileSync(ldPatternsPath, "utf8");
+  const pfIds = loadLdPfUserOptionIds(md, "## 9. Generate Assessment Items");
+  const config = loadLdWorkflowBriefConfig();
+  const genControls = api.filterWorkflowStepParameterControlsForStep(
+    api.getWorkflowStepParameterControlsFromBriefConfig(config),
+    "step_generate_assessment_items",
+    { includeHidden: true }
+  );
+  const owned = api.buildPackOwnedUserOptionIdMap(genControls);
+  const filtered = api.filterUserOptionsExcludingPackKeys(
+    pfIds.map((id) => ({ id, label: id })),
+    owned
+  );
+  assert.equal(filtered.length, 0);
+});
+
+test("aggregateUnifiedWorkflowParameterSections includes expanded Design Assessment controls", () => {
+  const api = loadPrismTestApi();
+  const config = loadLdWorkflowBriefConfig();
+  const wf = {
+    id: "wf-da",
+    name: "Assessment workflow",
+    steps: [
+      {
+        id: "da1",
+        title: "Design Assessment",
+        canonical_step_id: "step_design_assessment",
+        notes: "[PRISM_STEP_PARAMS]\nactivity_type=mcq\ntotal_items=10\n[/PRISM_STEP_PARAMS]"
+      },
+      {
+        id: "gen1",
+        title: "Generate Assessment Items",
+        canonical_step_id: "step_generate_assessment_items",
+        notes: ""
+      }
+    ]
+  };
+  const result = api.aggregateUnifiedWorkflowParameterSections(wf, config);
+  const assessment = result.steps.find((s) => s.canonicalStepId === "step_design_assessment");
+  assert.ok(assessment);
+  assert.equal(assessment.controls.length, DA_CONTROL_KEYS.length);
+  const gen = result.steps.find((s) => s.canonicalStepId === "step_generate_assessment_items");
+  assert.ok(gen);
+  assert.equal(gen.controls.length, GEN_CONTROL_KEYS.length);
+});
+
+test("resolveAssessmentItemsInheritedOptions reads canonical DA keys", () => {
+  const api = loadPrismTestApi();
+  const wf = {
+    id: "wf-inherit",
+    name: "Inherit test",
+    steps: [
+      {
+        id: "da1",
+        title: "Design Assessment",
+        canonical_step_id: "step_design_assessment",
+        notes:
+          "[PRISM_STEP_PARAMS]\nactivity_type=mcq\ntotal_items=10\ndifficulty_profile=balanced\ncoverage_scope=balanced\n[/PRISM_STEP_PARAMS]"
+      },
+      {
+        id: "gen1",
+        title: "Generate Assessment Items",
+        canonical_step_id: "step_generate_assessment_items",
+        notes: ""
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-inherit");
+  const resolved = api.resolveAssessmentItemsInheritedOptions(
+    {
+      workflowId: "wf-inherit",
+      stepId: "gen1",
+      stepCanonicalStepId: "step_generate_assessment_items",
+      stepTitle: "Generate Assessment Items"
+    },
+    {},
+    { allowInheritedOverrides: true }
+  );
+  assert.equal(resolved.response_formats, "single_answer_mcq");
+  assert.equal(resolved.number_of_items, "10");
+  assert.equal(resolved.difficulty_profile, "balanced");
+  assert.equal(resolved.coverage_mode, "balanced");
+});
+
+test("resolveAssessmentItemsInheritedOptions supports legacy DA PF keys", () => {
+  const api = loadPrismTestApi();
+  const wf = {
+    id: "wf-legacy",
+    name: "Legacy inherit",
+    steps: [
+      {
+        id: "da1",
+        title: "Design Assessment",
+        canonical_step_id: "step_design_assessment",
+        notes:
+          "[PRISM_STEP_PARAMS]\nactivity_type=mcq\ntotal_items=10\ndifficulty_level=moderate\ncoverage_breadth=balanced\n[/PRISM_STEP_PARAMS]"
+      },
+      {
+        id: "gen1",
+        title: "Generate Assessment Items",
+        canonical_step_id: "step_generate_assessment_items",
+        notes: ""
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-legacy");
+  const resolved = api.resolveAssessmentItemsInheritedOptions(
+    {
+      workflowId: "wf-legacy",
+      stepId: "gen1",
+      stepCanonicalStepId: "step_generate_assessment_items"
+    },
+    {},
+    { allowInheritedOverrides: true }
+  );
+  assert.equal(resolved.difficulty_profile, "balanced");
+  assert.equal(resolved.coverage_mode, "balanced");
 });
 
 test("resolveWorkflowSettingsParamLabel prefers pack metadata with fallback", () => {

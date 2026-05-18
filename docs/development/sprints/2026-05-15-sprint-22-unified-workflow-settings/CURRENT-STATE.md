@@ -3,7 +3,7 @@
 **Date:** 2026-05-15  
 **Pack path:** `docs/development/sprints/2026-05-15-sprint-22-unified-workflow-settings/`  
 **Sprint:** 22 — Unified Workflow Settings surface  
-**Status:** **Proposed / ready for charter** — bootstrap only; **no implementation**
+**Status:** **Slices 22-1 through 22-3 implemented**; **LD metadata coverage expansion complete**
 
 **Predecessor closeout:** [`docs/consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md)
 
@@ -15,7 +15,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 22** | **Bootstrap** — charter pending |
+| **Sprint 22** | **In progress (feature-complete for chartered slices)** — **185 tests** |
 | **Sprint 21** | **Closed** — **149 tests** — [`../../../consolidation/sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) |
 | **Sprint 20** | **Closed** — **135 tests** |
 | **Sprint 19** | **Closed** — **118 tests** |
@@ -30,85 +30,66 @@ node --test tests/*.test.js
 
 | Metric | Value |
 |--------|-------|
-| **Tests** | **149 passed**, 0 failed (at bootstrap) |
-| **Baseline** | Sprint 21 closeout (**149**) |
+| **Tests** | **185 passed**, 0 failed |
+| **Baseline** | Sprint 21 closeout (**149**) + Sprint 22 (**+34**) |
 | **Research fixtures** | S1–S13 — **frozen** unless chartered |
 
 ---
 
-## Problem statement (entry gap)
+## Delivered (chartered slices)
 
-Sprint 21 made **per-step** pack-defined parameters editable in step Settings with a generic renderer.
-
-**Remaining gap:** Users tuning a **whole workflow** must open step Settings repeatedly. There is no **single workflow-level surface** that shows:
-
-- workflow-level pedagogical parameters (when pack-defined), and  
-- **included-step** parameter controls for steps actually in the current workflow instance.
-
-Sprint 22 proposes **[Run] [Settings] [Edit]** — with **Settings** as the unified pedagogical tuning mode.
-
----
-
-## Sprint 22 goal (bootstrap)
-
-Expose **workflow-level** and **included-step** parameter controls together in a **unified Settings surface**, aggregating only steps in the current workflow — reusing Sprint 21 rendering and persistence.
-
-**Not:** modal redesign, parameter-semantics rewrite, or prompt editing in Settings.
+| Slice | Focus | Status |
+|-------|--------|--------|
+| **22-1 / 22-1.1** | Unified Settings shell, included-step aggregation, sync to notes | **Closed** |
+| **22-2a** | Async brief-config recovery + Save merge | **Closed** |
+| **22-2b** | `workflowParameterControls` + workflow notes persistence | **Closed** |
+| **22-2c** | DOM-first re-read, partial briefConfig merge on Save, discovery by canonical step ID | **Closed** |
+| **22-3** | Mode tabs, badge, save hint, planning/provenance → Settings navigation | **Closed** |
+| **LD metadata expansion** | Pack-declared controls for core LD steps + workflow tunables | **Closed** |
 
 ---
 
-## Intended UI model
+## UI model (implemented)
 
 ```text
 [ Run ]    [ Settings ]    [ Edit ]
 ```
 
-| Mode | Purpose |
-|------|---------|
-| **Run** | Primary default workflow interaction |
-| **Settings** | Unified pedagogical tuning (parameters only) |
-| **Edit** | Implementation / prompt / step inspection |
+- **Settings:** pack-declared workflow + included-step parameters only (no prompts).
+- **Badge:** count of visible workflow + step controls for the selected workflow.
+- **Save hint:** changes sync to notes; **Save** in workflow header persists.
 
 ---
 
-## Architectural position
+## Architectural position (verified)
 
-| Layer | Sprint 22 touch |
-|-------|-----------------|
-| Pack metadata | **Extend only as needed** for workflow-scoped controls (charter) |
-| Sprint 21 renderer | **Reuse** |
-| Persistence | **Existing pathways** |
-| Synthesis / mappings / adequacy | **Unchanged** |
-| Provenance | **Unchanged** |
-| Prompt editing | **Edit / step Settings only** |
-
----
-
-## Likely approach (hypothesis — not implemented)
-
-1. Collect `canonicalStepId` (or equivalent) from **included workflow steps** only.  
-2. Aggregate visible controls from active domain pack(s).  
-3. Render grouped: workflow section + per-step sections.  
-4. Persist through Sprint 21 / existing `stepParams` mechanisms.  
-5. No prompt editing, refinement, or global parameter catalogue.
+| Check | Result |
+|-------|--------|
+| Domain-pack agnostic runtime | Pass — manifest-driven discovery, no LD branches in unified paths |
+| Controls source | Pack `workflowBriefConfig` only — not synthesized from `mappingRules` |
+| Sprint 21 renderer / `[PRISM_STEP_PARAMS]` | Reused |
+| Prompt editing | Edit / per-step Prompt Factory only |
+| Synthesis / adequacy / provenance | Unchanged |
 
 ---
 
-## Out of scope (bootstrap)
+## LD pack metadata (post-expansion)
 
-- Prompt editing redesign  
-- Provenance redesign  
-- Parameter AI review/refine  
-- Workflow graph redesign  
-- Manual workflow parameter authoring (future note)  
-- Research pack expansion  
-- Schema overhaul  
+| Category | Count | Notes |
+|----------|-------|--------|
+| `workflowParameterControls` | **4** | `delivery_context`, `design_scope`, `input_strategy`, `duration_minutes` |
+| `stepParameterControls` | **25** | Pilot expanded to core LD chain steps |
+| Intentionally unmatched | `step_generate_learning_content` | No Prompt Factory `userOptions`; diagnostics name canonical ID |
 
 ---
 
-## Recommended first task
+## Accepted limitations
 
-Read **`sprint-22-bootstrap.md`**, then draft **Slice 22-1 charter** (unified Settings shell + included-step aggregation MVP).
+- **Unsupported steps** only where the pack has no declared `stepParameterControls` (e.g. `step_generate_learning_content`).
+- Steps without `canonical_step_id` are excluded from Settings aggregation.
+- **Same-session** recovered cache is refreshed when it under-covers included canonical step IDs; full page reload always re-fetches pack files.
+- **Persisted** partial `briefConfig` is union-augmented on Settings open when canonical coverage is incomplete; **Save** merges empty control arrays from recovered config (22-2c).
+- Research and general-only workflows have no step-level Settings controls unless pack metadata is added later.
 
 ---
 
@@ -117,6 +98,6 @@ Read **`sprint-22-bootstrap.md`**, then draft **Slice 22-1 charter** (unified Se
 | Document | Role |
 |----------|------|
 | [`sprint-22-index.md`](sprint-22-index.md) | Pack index |
-| [`HANDOVER.md`](HANDOVER.md) | Boundaries and handover |
 | [`review-log.md`](review-log.md) | Decisions log |
-| Sprint 21 pack | Renderer and metadata reference |
+| [`HANDOVER.md`](HANDOVER.md) | Boundaries and handover |
+| [`slice-22-1-charter.md`](slice-22-1-charter.md) | Slice 22-1 charter |

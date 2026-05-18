@@ -200,6 +200,10 @@
     workflowDomainUiConfig: null,
     promptFactoryWorkflowContext: null,
     workflowStepGeneratedDraft: "",
+    workflowDetailMode: "edit",
+    /** Session cache: pack briefConfig recovered for unified Settings when workflow lacks persisted briefConfig. */
+    unifiedSettingsRecoveredBriefConfigById: {},
+    unifiedSettingsBriefConfigLoadSeq: 0,
     assessmentItemsShowAdvancedOptions: false,
     utilitiesLastHtml: "",
     utilitiesLastFileName: "",
@@ -444,7 +448,13 @@
     els.exportWorkflowBtn = document.getElementById("exportWorkflowBtn");
     els.importWorkflowsInput = document.getElementById("importWorkflowsInput");
     els.workflowModeEditBtn = document.getElementById("workflowModeEditBtn");
+    els.workflowModeSettingsBtn = document.getElementById("workflowModeSettingsBtn");
     els.workflowModeRunBtn = document.getElementById("workflowModeRunBtn");
+    els.unifiedWorkflowSettingsPanel = document.getElementById("unifiedWorkflowSettingsPanel");
+    els.unifiedWorkflowSettingsHint = document.getElementById("unifiedWorkflowSettingsHint");
+    els.unifiedWorkflowSettingsSaveHint = document.getElementById("unifiedWorkflowSettingsSaveHint");
+    els.unifiedWorkflowSettingsOptions = document.getElementById("unifiedWorkflowSettingsOptions");
+    els.workflowModeSettingsBadge = document.getElementById("workflowModeSettingsBadge");
     els.workflowRunStatus = document.getElementById("workflowRunStatus");
     els.workflowPrevStepBtn = document.getElementById("workflowPrevStepBtn");
     els.workflowNextStepBtn = document.getElementById("workflowNextStepBtn");
@@ -1129,6 +1139,27 @@
     var label = String(raw.label || key).trim();
     var controlType = String(raw.controlType || "").toLowerCase().trim();
     if (!key || !canonicalStepId || !label) return null;
+    return normalizePackParameterControlRow(
+      raw,
+      key,
+      label,
+      controlType,
+      canonicalStepId
+    );
+  }
+
+  function normalizeWorkflowParameterControl(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    var key = String(raw.key || "").trim();
+    var label = String(raw.label || key).trim();
+    var controlType = String(raw.controlType || "").toLowerCase().trim();
+    if (!key || !label) return null;
+    return normalizePackParameterControlRow(raw, key, label, controlType, "");
+  }
+
+  function normalizePackParameterControlRow(raw, key, label, controlType, canonicalStepId) {
+    if (!raw || typeof raw !== "object") return null;
+    if (!key || !label) return null;
     if (!WORKFLOW_PACK_PARAM_CONTROL_TYPES[controlType]) return null;
     var elicitation = String(raw.elicitation || "settings-only").toLowerCase().trim();
     if (elicitation !== "elicited" && elicitation !== "settings-only") {
@@ -1163,9 +1194,8 @@
     } else {
       def = def == null ? "" : String(def);
     }
-    return {
+    var row = {
       key: key,
-      canonicalStepId: canonicalStepId,
       label: label,
       description: description,
       controlType: controlType,
@@ -1179,6 +1209,8 @@
       max: typeof raw.max === "number" ? raw.max : null,
       placeholder: String(raw.placeholder || "").trim()
     };
+    if (canonicalStepId) row.canonicalStepId = canonicalStepId;
+    return row;
   }
 
   function normalizeWorkflowStepParameterControls(rawList) {
@@ -1195,9 +1227,145 @@
     return out;
   }
 
+  function normalizeWorkflowParameterControls(rawList) {
+    var seen = {};
+    var out = [];
+    (Array.isArray(rawList) ? rawList : []).forEach(function (raw) {
+      var row = normalizeWorkflowParameterControl(raw);
+      if (!row) return;
+      if (seen[row.key]) return;
+      seen[row.key] = true;
+      out.push(row);
+    });
+    return out;
+  }
+
   function getWorkflowStepParameterControlsFromBriefConfig(briefConfig) {
     var cfg = normalizeWorkflowBriefConfig(briefConfig);
     return normalizeWorkflowStepParameterControls(cfg.stepParameterControls);
+  }
+
+  function getWorkflowParameterControlsFromBriefConfig(briefConfig) {
+    var cfg = normalizeWorkflowBriefConfig(briefConfig);
+    return normalizeWorkflowParameterControls(cfg.workflowParameterControls);
+  }
+
+  function filterVisiblePackParameterControls(controls) {
+    return (Array.isArray(controls) ? controls : []).filter(function (c) {
+      return c && c.visible !== false;
+    });
+  }
+
+  function readWorkflowParamsObject(workflow) {
+    if (!workflow || typeof workflow !== "object") return {};
+    var parsed = parseWorkflowStepParamBlock(workflow.notes || "");
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
+    return {};
+  }
+
+  function findWorkflowStepDomByStepId(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid || !els.workflowSteps) return null;
+    var found = null;
+    Array.prototype.forEach.call(els.workflowSteps.children, function (child) {
+      if (found) return;
+      if (!child.classList || !child.classList.contains("workflow-step")) return;
+      if (String(child.getAttribute("data-step-id") || "").trim() === sid) found = child;
+    });
+    return found;
+  }
+
+  function readNotesFieldParamBlock(notesArea) {
+    if (!notesArea) return {};
+    var raw =
+      notesArea.hasAttribute && notesArea.hasAttribute("data-run-raw-notes")
+        ? String(notesArea.getAttribute("data-run-raw-notes") || "")
+        : String(notesArea.value || "");
+    var parsed = parseWorkflowStepParamBlock(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
+    return {};
+  }
+
+  function isUnifiedSettingsDomActiveForWorkflow(workflowId) {
+    var wfId = String(workflowId || "").trim();
+    var selectedId = String(state.selectedWorkflowId || "").trim();
+    return !!(wfId && selectedId && wfId === selectedId);
+  }
+
+  function readWorkflowParamsForUnifiedSettings(workflow) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    if (!wf) return {};
+    if (isUnifiedSettingsDomActiveForWorkflow(wf.id) && els.workflowLibraryNotes) {
+      return readNotesFieldParamBlock(els.workflowLibraryNotes);
+    }
+    return readWorkflowParamsObject(wf);
+  }
+
+  function readWorkflowStepParamsForUnifiedSettings(workflow, step, stepId) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    var sid = String(stepId || "").trim();
+    if (wf && sid && isUnifiedSettingsDomActiveForWorkflow(wf.id)) {
+      var li = findWorkflowStepDomByStepId(sid);
+      if (li) {
+        return readNotesFieldParamBlock(li.querySelector('[data-field="notes"]'));
+      }
+    }
+    return readWorkflowStepParamsObject(step);
+  }
+
+  function mergeRecoveredBriefConfigIntoResolution(existingResolution, recoveredConfig) {
+    if (!recoveredConfig || typeof recoveredConfig !== "object") {
+      return existingResolution && typeof existingResolution === "object"
+        ? JSON.parse(JSON.stringify(existingResolution))
+        : null;
+    }
+    var recovered = normalizeWorkflowBriefConfig(recoveredConfig);
+    var base =
+      existingResolution && typeof existingResolution === "object"
+        ? JSON.parse(JSON.stringify(existingResolution))
+        : null;
+    if (!base) {
+      return {
+        mappedBindings: {
+          workflowOutputSpecPatch: {},
+          workflowConstraintPatch: {},
+          stepParamPatch: {},
+          mapped: [],
+          warnings: []
+        },
+        missing: [],
+        briefConfig: recovered
+      };
+    }
+    var existingCfg =
+      base.briefConfig && typeof base.briefConfig === "object"
+        ? normalizeWorkflowBriefConfig(base.briefConfig)
+        : null;
+    if (!existingCfg) {
+      base.briefConfig = recovered;
+      return base;
+    }
+    var mergedCfg = normalizeWorkflowBriefConfig(existingCfg);
+    var persistedWf = Array.isArray(mergedCfg.workflowParameterControls)
+      ? mergedCfg.workflowParameterControls
+      : [];
+    var persistedSt = Array.isArray(mergedCfg.stepParameterControls)
+      ? mergedCfg.stepParameterControls
+      : [];
+    var recoveredWf = Array.isArray(recovered.workflowParameterControls)
+      ? recovered.workflowParameterControls
+      : [];
+    var recoveredSt = Array.isArray(recovered.stepParameterControls)
+      ? recovered.stepParameterControls
+      : [];
+    if (!persistedWf.length && recoveredWf.length) {
+      mergedCfg.workflowParameterControls = recoveredWf.slice();
+    }
+    if (!persistedSt.length && recoveredSt.length) {
+      mergedCfg.stepParameterControls = recoveredSt.slice();
+    }
+    base.briefConfig = mergedCfg;
+    return base;
   }
 
   function filterWorkflowStepParameterControlsForStep(controls, canonicalStepId, opts) {
@@ -1211,7 +1379,13 @@
     });
   }
 
-  function groupWorkflowStepParameterControlsForSettings(controls) {
+  function groupWorkflowStepParameterControlsForSettings(controls, opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
+    var scope = String(opts.parameterScope || "workflow").toLowerCase();
+    var basicTierLabel =
+      scope === "step" ? "Basic step parameters" : "Basic workflow parameters";
+    var advancedTierLabel =
+      scope === "step" ? "Advanced step parameters" : "Advanced workflow parameters";
     var sections = [];
     var index = {};
     (Array.isArray(controls) ? controls : []).forEach(function (c) {
@@ -1219,8 +1393,7 @@
       var tier = c.advanced ? "advanced" : "basic";
       var label = String(c.group || "").trim();
       if (!label) {
-        label =
-          tier === "advanced" ? "Advanced workflow parameters" : "Basic workflow parameters";
+        label = tier === "advanced" ? advancedTierLabel : basicTierLabel;
       }
       var key = tier + "\0" + label;
       if (!index[key]) {
@@ -1239,6 +1412,766 @@
       return a.tier === "basic" ? -1 : 1;
     });
     return sections;
+  }
+
+  function workflowHasPersistedBriefConfig(workflow) {
+    return !!(
+      workflow &&
+      workflow.workflowBriefResolution &&
+      workflow.workflowBriefResolution.briefConfig &&
+      typeof workflow.workflowBriefResolution.briefConfig === "object"
+    );
+  }
+
+  function inferSelectedDomainsFromWorkflowRecord(workflow) {
+    var raw = Array.isArray(workflow && workflow.selectedDomains) ? workflow.selectedDomains : [];
+    var filtered = raw.filter(function (d) {
+      return typeof d === "string" && String(d).trim();
+    });
+    var extra = filtered.find(function (d) {
+      return String(d).trim().toLowerCase() !== "general";
+    });
+    var next = ["general"];
+    if (extra) next.push(String(extra).trim());
+    return next;
+  }
+
+  function isGeneralOnlyDomainSelection(domains) {
+    return !(Array.isArray(domains) ? domains : []).some(function (d) {
+      return String(d || "").trim().toLowerCase() !== "general";
+    });
+  }
+
+  function getUnifiedSettingsStepPatternCatalog() {
+    return Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : null;
+  }
+
+  function collectWorkflowCanonicalStepIds(workflow, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (!opts.stepPatternCatalog) {
+      opts.stepPatternCatalog = getUnifiedSettingsStepPatternCatalog();
+    }
+    var rows = collectIncludedWorkflowStepRows(workflow, opts);
+    var ids = [];
+    var seen = {};
+    rows.forEach(function (row) {
+      var cid = normalizeCanonicalStepId(row && row.canonicalStepId ? row.canonicalStepId : "");
+      if (!cid || seen[cid]) return;
+      seen[cid] = true;
+      ids.push(cid);
+    });
+    return ids;
+  }
+
+  function getBriefConfigStepControlCanonicalStepIds(briefConfig) {
+    var cfg =
+      briefConfig && typeof briefConfig === "object"
+        ? normalizeWorkflowBriefConfig(briefConfig)
+        : null;
+    if (!cfg) return [];
+    var seen = {};
+    var ids = [];
+    getWorkflowStepParameterControlsFromBriefConfig(cfg).forEach(function (control) {
+      var cid = normalizeCanonicalStepId(control && control.canonicalStepId ? control.canonicalStepId : "");
+      if (!cid || seen[cid]) return;
+      seen[cid] = true;
+      ids.push(cid);
+    });
+    return ids;
+  }
+
+  function scoreBriefConfigForCanonicalStepIds(briefConfig, canonicalStepIds) {
+    var ids = Array.isArray(canonicalStepIds) ? canonicalStepIds : [];
+    if (!briefConfig || !ids.length) {
+      if (!briefConfig) return 0;
+      return getWorkflowParameterControlsFromBriefConfig(briefConfig).length > 0 ? 1 : 0;
+    }
+    var packIds = getBriefConfigStepControlCanonicalStepIds(briefConfig);
+    var packSet = {};
+    packIds.forEach(function (id) {
+      packSet[id] = true;
+    });
+    var score = 0;
+    ids.forEach(function (id) {
+      var cid = normalizeCanonicalStepId(id);
+      if (cid && packSet[cid]) score += 1;
+    });
+    var wfControls = getWorkflowParameterControlsFromBriefConfig(briefConfig);
+    if (!score && wfControls.length) score = 1;
+    return score;
+  }
+
+  function fetchAllStructuredPackBriefConfigs() {
+    if (
+      !window.WorkflowGenerationContext ||
+      typeof window.WorkflowGenerationContext.loadManifest !== "function" ||
+      typeof window.WorkflowGenerationContext.getWorkflowBriefConfig !== "function"
+    ) {
+      return Promise.resolve([]);
+    }
+    return window.WorkflowGenerationContext.loadManifest().then(function (manifest) {
+      var domainIds = Object.keys((manifest && manifest.domains) || {}).filter(function (id) {
+        return String(id || "").trim().toLowerCase() !== "general";
+      });
+      return Promise.all(
+        domainIds.map(function (domainId) {
+          return fetchPackBriefConfigForSelectedDomains(["general", domainId]).then(function (payload) {
+            return {
+              domainId: String((payload && payload.domainId) || domainId || "").trim(),
+              config: payload && payload.config ? payload.config : null
+            };
+          });
+        })
+      );
+    });
+  }
+
+  function discoverPackBriefConfigForWorkflow(workflow) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    if (!wf) return Promise.resolve({ domainId: "", config: null });
+    var canonicalIds = collectWorkflowCanonicalStepIds(wf, {
+      stepPatternCatalog: getUnifiedSettingsStepPatternCatalog()
+    });
+    var recordDomains = inferSelectedDomainsFromWorkflowRecord(wf);
+    return fetchPackBriefConfigForSelectedDomains(recordDomains).then(function (primaryPayload) {
+      var primary = primaryPayload || { domainId: "", config: null };
+      var primaryConfig = primary.config;
+      var primaryScore = scoreBriefConfigForCanonicalStepIds(primaryConfig, canonicalIds);
+      var generalOnly = isGeneralOnlyDomainSelection(recordDomains);
+      var needsDiscovery =
+        !primaryConfig ||
+        generalOnly ||
+        (canonicalIds.length > 0 && primaryScore < canonicalIds.length);
+      if (!needsDiscovery) return primary;
+      if (!canonicalIds.length) return primary;
+      return fetchAllStructuredPackBriefConfigs().then(function (packs) {
+        var best = null;
+        var bestScore = -1;
+        (Array.isArray(packs) ? packs : []).forEach(function (row) {
+          if (!row || !row.config) return;
+          var score = scoreBriefConfigForCanonicalStepIds(row.config, canonicalIds);
+          if (score > bestScore) {
+            bestScore = score;
+            best = {
+              domainId: String(row.domainId || "").trim(),
+              config: row.config
+            };
+          }
+        });
+        if (best && bestScore > 0) return best;
+        if (primaryConfig) return primary;
+        return best || primary;
+      });
+    });
+  }
+
+  function unionWorkflowBriefConfigsForDisplay(primary, supplemental) {
+    var a =
+      primary && typeof primary === "object" ? normalizeWorkflowBriefConfig(primary) : null;
+    var b =
+      supplemental && typeof supplemental === "object"
+        ? normalizeWorkflowBriefConfig(supplemental)
+        : null;
+    if (!b) return a;
+    if (!a) return b;
+    var wfMap = {};
+    var wfOut = [];
+    (a.workflowParameterControls || []).forEach(function (control) {
+      if (!control || !control.key || wfMap[control.key]) return;
+      wfMap[control.key] = true;
+      wfOut.push(control);
+    });
+    (b.workflowParameterControls || []).forEach(function (control) {
+      if (!control || !control.key || wfMap[control.key]) return;
+      wfMap[control.key] = true;
+      wfOut.push(control);
+    });
+    var stMap = {};
+    var stOut = [];
+    (a.stepParameterControls || []).forEach(function (control) {
+      if (!control || !control.key) return;
+      var cid = normalizeCanonicalStepId(control.canonicalStepId || "");
+      if (!cid) return;
+      var key = cid + "\0" + control.key;
+      if (stMap[key]) return;
+      stMap[key] = true;
+      stOut.push(control);
+    });
+    (b.stepParameterControls || []).forEach(function (control) {
+      if (!control || !control.key) return;
+      var cid = normalizeCanonicalStepId(control.canonicalStepId || "");
+      if (!cid) return;
+      var key = cid + "\0" + control.key;
+      if (stMap[key]) return;
+      stMap[key] = true;
+      stOut.push(control);
+    });
+    return normalizeWorkflowBriefConfig({
+      workflowParameterControls: wfOut,
+      stepParameterControls: stOut
+    });
+  }
+
+  function diagnoseUnifiedWorkflowParameterCoverage(workflow, briefConfig) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    var cfg =
+      briefConfig && typeof briefConfig === "object"
+        ? normalizeWorkflowBriefConfig(briefConfig)
+        : null;
+    var included = collectIncludedWorkflowStepRows(wf, {
+      stepPatternCatalog: getUnifiedSettingsStepPatternCatalog()
+    });
+    var allControls = cfg ? getWorkflowStepParameterControlsFromBriefConfig(cfg) : [];
+    var workflowControls = cfg ? filterVisiblePackParameterControls(
+      getWorkflowParameterControlsFromBriefConfig(cfg)
+    ) : [];
+    var matchedSections = [];
+    var unmatchedCanonicalStepIds = [];
+    included.forEach(function (row) {
+      var controls = filterWorkflowStepParameterControlsForStep(
+        allControls,
+        row.canonicalStepId
+      );
+      if (controls.length) matchedSections.push(row.canonicalStepId);
+      else unmatchedCanonicalStepIds.push(row.canonicalStepId);
+    });
+    return {
+      workflowControlCount: workflowControls.length,
+      includedStepCount: included.length,
+      matchedStepSectionCount: matchedSections.length,
+      unmatchedCanonicalStepIds: unmatchedCanonicalStepIds,
+      packStepControlCanonicalStepIds: getBriefConfigStepControlCanonicalStepIds(cfg)
+    };
+  }
+
+  function buildUnifiedWorkflowSettingsCoverageHint(workflow, briefConfig) {
+    var diag = diagnoseUnifiedWorkflowParameterCoverage(workflow, briefConfig);
+    var ids = diag.unmatchedCanonicalStepIds;
+    if (!ids.length) return "";
+    if (ids.length === 1) {
+      return (
+        "No pack-declared Settings controls matched 1 included step: " +
+        ids[0] +
+        ". This step can still run, but the domain pack does not currently expose tunable Settings controls for it."
+      );
+    }
+    return (
+      "No pack-declared Settings controls matched " +
+      ids.length +
+      " included steps: " +
+      ids.join(", ") +
+      ". These steps can still run, but the domain pack does not currently expose tunable Settings controls for them."
+    );
+  }
+
+  function shouldRefreshRecoveredBriefConfigForUnifiedSettings(workflow) {
+    if (!workflow || typeof workflow !== "object") return false;
+    if (workflowHasPersistedBriefConfig(workflow)) return false;
+    var cached = getRecoveredBriefConfigForWorkflow(workflow.id);
+    if (!cached) return false;
+    var canonicalIds = collectWorkflowCanonicalStepIds(workflow, {
+      stepPatternCatalog: getUnifiedSettingsStepPatternCatalog()
+    });
+    if (!canonicalIds.length) return false;
+    return scoreBriefConfigForCanonicalStepIds(cached, canonicalIds) < canonicalIds.length;
+  }
+
+  function getRecoveredBriefConfigForWorkflow(workflowId) {
+    var id = String(workflowId || "").trim();
+    if (!id || !state.unifiedSettingsRecoveredBriefConfigById) return null;
+    var row = state.unifiedSettingsRecoveredBriefConfigById[id];
+    return row && row.config && typeof row.config === "object" ? row.config : null;
+  }
+
+  function cacheRecoveredBriefConfigForWorkflow(workflowId, payload) {
+    var id = String(workflowId || "").trim();
+    if (!id || !payload || !payload.config || typeof payload.config !== "object") return;
+    state.unifiedSettingsRecoveredBriefConfigById =
+      state.unifiedSettingsRecoveredBriefConfigById || {};
+    state.unifiedSettingsRecoveredBriefConfigById[id] = {
+      domainId: String(payload.domainId || "").trim(),
+      config: normalizeWorkflowBriefConfig(payload.config)
+    };
+  }
+
+  function workflowNeedsUnifiedSettingsBriefConfigRecovery(workflow) {
+    if (!workflow || typeof workflow !== "object") return false;
+    if (workflowHasPersistedBriefConfig(workflow)) {
+      return shouldAugmentPersistedBriefConfigForUnifiedSettings(
+        workflow,
+        workflow.workflowBriefResolution.briefConfig
+      );
+    }
+    if (shouldRefreshRecoveredBriefConfigForUnifiedSettings(workflow)) return true;
+    if (getRecoveredBriefConfigForWorkflow(workflow.id)) return false;
+    var catalogOpts = { stepPatternCatalog: getUnifiedSettingsStepPatternCatalog() };
+    if (collectIncludedWorkflowStepRows(workflow, catalogOpts).length > 0) return true;
+    var domains = inferSelectedDomainsFromWorkflowRecord(workflow);
+    return domains.some(function (d) {
+      return String(d || "").trim().toLowerCase() !== "general";
+    });
+  }
+
+  function fetchPackBriefConfigForSelectedDomains(selectedDomains) {
+    if (
+      !window.WorkflowGenerationContext ||
+      typeof window.WorkflowGenerationContext.getWorkflowBriefConfig !== "function"
+    ) {
+      return Promise.resolve({ domainId: "", config: null });
+    }
+    return window.WorkflowGenerationContext.getWorkflowBriefConfig({
+      selectedDomains: Array.isArray(selectedDomains) ? selectedDomains : ["general"]
+    })
+      .then(function (result) {
+        var domainId = String((result && result.domainId) || "").trim();
+        var config =
+          result && result.config && typeof result.config === "object"
+            ? normalizeWorkflowBriefConfig(result.config)
+            : null;
+        return { domainId: domainId, config: config };
+      })
+      .catch(function () {
+        return { domainId: "", config: null };
+      });
+  }
+
+  function recoverWorkflowBriefConfigForUnifiedSettings(workflow) {
+    return discoverPackBriefConfigForWorkflow(workflow).then(function (payload) {
+      if (workflow && workflow.id && payload && payload.config) {
+        cacheRecoveredBriefConfigForWorkflow(workflow.id, payload);
+      }
+      return payload || { domainId: "", config: null };
+    });
+  }
+
+  function shouldAugmentPersistedBriefConfigForUnifiedSettings(workflow, briefConfig) {
+    if (!workflow || !briefConfig) return false;
+    var canonicalIds = collectWorkflowCanonicalStepIds(workflow);
+    if (!canonicalIds.length) return false;
+    var score = scoreBriefConfigForCanonicalStepIds(briefConfig, canonicalIds);
+    return score < canonicalIds.length;
+  }
+
+  function resolveWorkflowBriefConfigForWorkflow(workflow, resolvedState) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    if (workflowHasPersistedBriefConfig(wf)) {
+      return normalizeWorkflowBriefConfig(wf.workflowBriefResolution.briefConfig);
+    }
+    var recovered = getRecoveredBriefConfigForWorkflow(wf && wf.id ? wf.id : "");
+    if (recovered) return recovered;
+    return getWorkflowBriefConfigFromResolvedState(resolvedState);
+  }
+
+  function collectIncludedWorkflowStepRows(workflow, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var catalog = Array.isArray(opts.stepPatternCatalog) ? opts.stepPatternCatalog : null;
+    var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
+    var rows = [];
+    steps.forEach(function (step, index) {
+      if (!step || typeof step !== "object") return;
+      var canonicalStepId = normalizeCanonicalStepId(step.canonical_step_id || "");
+      if (!canonicalStepId && catalog) {
+        var title = String(step.title || "").trim();
+        var pattern = getPatternByCanonicalWorkflowTitle(title, catalog);
+        if (pattern) {
+          canonicalStepId = normalizeCanonicalStepId(
+            pattern.canonicalStepId || pattern.canonical_step_id || ""
+          );
+        }
+      }
+      if (!canonicalStepId) return;
+      var stepId = String(step.id || "").trim();
+      if (!stepId) stepId = "step-" + String(index);
+      rows.push({
+        stepId: stepId,
+        stepIndex: index,
+        canonicalStepId: canonicalStepId,
+        stepTitle: String(step.title || "").trim() || canonicalStepId
+      });
+    });
+    return rows;
+  }
+
+  function aggregateUnifiedWorkflowParameterSections(workflow, briefConfig) {
+    var cfg =
+      briefConfig && typeof briefConfig === "object"
+        ? normalizeWorkflowBriefConfig(briefConfig)
+        : null;
+    if (!cfg) return { workflow: null, steps: [] };
+    var workflowControls = filterVisiblePackParameterControls(
+      getWorkflowParameterControlsFromBriefConfig(cfg)
+    );
+    var workflowSection =
+      workflowControls.length > 0
+        ? {
+            controls: workflowControls,
+            params: readWorkflowParamsForUnifiedSettings(workflow)
+          }
+        : null;
+    var allControls = getWorkflowStepParameterControlsFromBriefConfig(cfg);
+    var included = collectIncludedWorkflowStepRows(workflow, {
+      stepPatternCatalog: getUnifiedSettingsStepPatternCatalog()
+    });
+    var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
+    var stepSections = [];
+    included.forEach(function (row) {
+      var step =
+        steps.find(function (s) {
+          return String(s && s.id ? s.id : "").trim() === row.stepId;
+        }) || steps[row.stepIndex] || null;
+      if (!step) return;
+      var controls = filterWorkflowStepParameterControlsForStep(
+        allControls,
+        row.canonicalStepId
+      );
+      if (!controls.length) return;
+      stepSections.push({
+        stepId: row.stepId,
+        canonicalStepId: row.canonicalStepId,
+        stepTitle: row.stepTitle,
+        controls: controls,
+        params: readWorkflowStepParamsForUnifiedSettings(workflow, step, row.stepId)
+      });
+    });
+    return { workflow: workflowSection, steps: stepSections };
+  }
+
+  function countUnifiedWorkflowVisibleParameterControls(workflow, briefConfig) {
+    var aggregate = aggregateUnifiedWorkflowParameterSections(workflow, briefConfig);
+    var count = 0;
+    if (aggregate.workflow && Array.isArray(aggregate.workflow.controls)) {
+      count += aggregate.workflow.controls.length;
+    }
+    (aggregate.steps || []).forEach(function (section) {
+      if (section && Array.isArray(section.controls)) count += section.controls.length;
+    });
+    return count;
+  }
+
+  function setUnifiedWorkflowSettingsSaveHintVisible(visible) {
+    if (!els.unifiedWorkflowSettingsSaveHint) return;
+    els.unifiedWorkflowSettingsSaveHint.classList.toggle("hidden", !visible);
+  }
+
+  function refreshWorkflowModeSettingsTabBadge() {
+    if (!els.workflowModeSettingsBadge) return;
+    var wf = findWorkflowById(state.selectedWorkflowId || "");
+    if (!wf) {
+      els.workflowModeSettingsBadge.classList.add("hidden");
+      els.workflowModeSettingsBadge.textContent = "";
+      if (els.workflowModeSettingsBtn) {
+        els.workflowModeSettingsBtn.removeAttribute("title");
+      }
+      return;
+    }
+    var briefConfig = resolveWorkflowBriefConfigForWorkflow(wf, state.workflowBriefResolved);
+    if (!briefConfig) {
+      var recovered = getRecoveredBriefConfigForWorkflow(wf.id);
+      if (recovered) briefConfig = recovered;
+    }
+    if (!briefConfig) {
+      els.workflowModeSettingsBadge.classList.add("hidden");
+      els.workflowModeSettingsBadge.textContent = "";
+      if (els.workflowModeSettingsBtn) {
+        els.workflowModeSettingsBtn.setAttribute(
+          "title",
+          "Tune pack-defined workflow and step parameters (metadata may load after save)"
+        );
+      }
+      return;
+    }
+    var count = countUnifiedWorkflowVisibleParameterControls(wf, briefConfig);
+    if (count > 0) {
+      els.workflowModeSettingsBadge.textContent = String(count);
+      els.workflowModeSettingsBadge.classList.remove("hidden");
+      if (els.workflowModeSettingsBtn) {
+        els.workflowModeSettingsBtn.setAttribute(
+          "title",
+          count + " pack parameter control" + (count === 1 ? "" : "s") + " available"
+        );
+      }
+    } else {
+      els.workflowModeSettingsBadge.classList.add("hidden");
+      els.workflowModeSettingsBadge.textContent = "";
+      if (els.workflowModeSettingsBtn) {
+        els.workflowModeSettingsBtn.setAttribute(
+          "title",
+          "No pack parameters apply to this workflow"
+        );
+      }
+    }
+  }
+
+  function updateWorkflowModeTabsAria(isRun, isSettings, isEdit) {
+    if (els.workflowModeRunBtn) {
+      els.workflowModeRunBtn.setAttribute("aria-selected", isRun ? "true" : "false");
+    }
+    if (els.workflowModeSettingsBtn) {
+      els.workflowModeSettingsBtn.setAttribute("aria-selected", isSettings ? "true" : "false");
+    }
+    if (els.workflowModeEditBtn) {
+      els.workflowModeEditBtn.setAttribute("aria-selected", isEdit ? "true" : "false");
+    }
+  }
+
+  function focusUnifiedWorkflowSettingsSection(target) {
+    if (!els.unifiedWorkflowSettingsOptions) return false;
+    var canonicalStepId = normalizeCanonicalStepId(
+      target && target.canonicalStepId ? target.canonicalStepId : ""
+    );
+    var section = null;
+    if (canonicalStepId) {
+      section = els.unifiedWorkflowSettingsOptions.querySelector(
+        '[data-unified-canonical-step-id="' + canonicalStepId + '"]'
+      );
+    }
+    if (!section) {
+      section = els.unifiedWorkflowSettingsOptions.querySelector(
+        '[data-unified-workflow-level="1"]'
+      );
+    }
+    if (!section) {
+      section = els.unifiedWorkflowSettingsOptions.querySelector(
+        ".unified-workflow-settings-step"
+      );
+    }
+    if (!section) return false;
+    Array.prototype.forEach.call(
+      els.unifiedWorkflowSettingsOptions.querySelectorAll(
+        ".unified-workflow-settings-section-focus"
+      ),
+      function (node) {
+        node.classList.remove("unified-workflow-settings-section-focus");
+      }
+    );
+    section.classList.add("unified-workflow-settings-section-focus");
+    try {
+      section.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (e) {
+      section.scrollIntoView();
+    }
+    window.setTimeout(function () {
+      section.classList.remove("unified-workflow-settings-section-focus");
+    }, 2400);
+    return true;
+  }
+
+  function collectPackParamRowsFromDomContainer(container) {
+    var rows = [];
+    if (!container) return rows;
+    var packNodes = container.querySelectorAll("[data-workflow-pack-param='1']");
+    for (var pi = 0; pi < packNodes.length; pi++) {
+      var pnode = packNodes[pi];
+      var pid = pnode.getAttribute("data-param-key") || "";
+      var plabel = pnode.getAttribute("data-param-label") || pid;
+      var pvalue = typeof pnode.value === "string" ? pnode.value.trim() : "";
+      if (!pid) continue;
+      rows.push({
+        id: pid,
+        label: plabel,
+        value: pvalue
+      });
+    }
+    return rows;
+  }
+
+  function syncUnifiedWorkflowSettingsToStepNotes() {
+    if (!els.unifiedWorkflowSettingsOptions) return;
+    var workflowSection = els.unifiedWorkflowSettingsOptions.querySelector(
+      '[data-unified-workflow-level="1"]'
+    );
+    if (workflowSection && els.workflowLibraryNotes) {
+      var wfRows = collectPackParamRowsFromDomContainer(workflowSection);
+      els.workflowLibraryNotes.value = upsertWorkflowStepParamBlock(
+        els.workflowLibraryNotes.value,
+        wfRows
+      );
+    }
+    if (!els.workflowSteps) return;
+    var sections = els.unifiedWorkflowSettingsOptions.querySelectorAll(
+      "[data-unified-step-id]"
+    );
+    for (var si = 0; si < sections.length; si++) {
+      var section = sections[si];
+      var stepId = String(section.getAttribute("data-unified-step-id") || "").trim();
+      if (!stepId) continue;
+      var li = null;
+      Array.prototype.forEach.call(els.workflowSteps.children, function (child) {
+        if (li) return;
+        if (!child.classList || !child.classList.contains("workflow-step")) return;
+        if (String(child.getAttribute("data-step-id") || "") === stepId) li = child;
+      });
+      if (!li) continue;
+      var notesArea = li.querySelector('[data-field="notes"]');
+      if (!notesArea) continue;
+      var rows = collectPackParamRowsFromDomContainer(section);
+      notesArea.value = upsertWorkflowStepParamBlock(notesArea.value, rows);
+    }
+  }
+
+  function renderUnifiedWorkflowSettingsEmptyHint(message) {
+    if (els.unifiedWorkflowSettingsHint) {
+      els.unifiedWorkflowSettingsHint.textContent = String(message || "");
+    }
+    setUnifiedWorkflowSettingsSaveHintVisible(false);
+  }
+
+  function renderUnifiedWorkflowSettingsContent(workflow, briefConfig) {
+    var wf = workflow && typeof workflow === "object" ? workflow : null;
+    var cfg =
+      briefConfig && typeof briefConfig === "object"
+        ? normalizeWorkflowBriefConfig(briefConfig)
+        : null;
+    if (!els.unifiedWorkflowSettingsOptions || !wf || !cfg) return;
+    var aggregate = aggregateUnifiedWorkflowParameterSections(wf, cfg);
+    var hasWorkflowSection = !!(aggregate.workflow && aggregate.workflow.controls.length);
+    var hasStepSections = aggregate.steps.length > 0;
+    if (!hasWorkflowSection && !hasStepSections) {
+      var emptyMsg =
+        "No pack-defined parameters apply to this workflow yet. Included steps may lack pack metadata, or the saved domain selection may be general-only.";
+      var coverageHint = buildUnifiedWorkflowSettingsCoverageHint(wf, cfg);
+      renderUnifiedWorkflowSettingsEmptyHint(
+        coverageHint ? emptyMsg + " " + coverageHint : emptyMsg
+      );
+      refreshWorkflowModeSettingsTabBadge();
+      return;
+    }
+    if (els.unifiedWorkflowSettingsHint) {
+      var contextMsg =
+        "Tune workflow and step parameters for this saved workflow.";
+      var partialHint = buildUnifiedWorkflowSettingsCoverageHint(wf, cfg);
+      els.unifiedWorkflowSettingsHint.textContent = partialHint
+        ? contextMsg + " " + partialHint
+        : contextMsg;
+    }
+    setUnifiedWorkflowSettingsSaveHintVisible(true);
+    refreshWorkflowModeSettingsTabBadge();
+    var onPackParamChange = function () {
+      syncUnifiedWorkflowSettingsToStepNotes();
+      setUnifiedWorkflowSettingsSaveHintVisible(true);
+    };
+    if (hasWorkflowSection) {
+      var wfWrap = document.createElement("section");
+      wfWrap.className =
+        "unified-workflow-settings-step card unified-workflow-settings-workflow-level";
+      wfWrap.setAttribute("data-unified-workflow-level", "1");
+      var wfHeading = document.createElement("h3");
+      wfHeading.className = "unified-workflow-settings-step-title";
+      wfHeading.textContent = "Workflow parameters";
+      wfWrap.appendChild(wfHeading);
+      var wfBody = document.createElement("div");
+      wfBody.className = "unified-workflow-settings-step-body";
+      renderWorkflowPackParameterControlsSection(
+        wfBody,
+        aggregate.workflow.controls,
+        aggregate.workflow.params,
+        {
+          sectionHeading: "",
+          parameterScope: "workflow",
+          onPackParamChange: onPackParamChange
+        }
+      );
+      wfWrap.appendChild(wfBody);
+      els.unifiedWorkflowSettingsOptions.appendChild(wfWrap);
+    }
+    aggregate.steps.forEach(function (section) {
+      var stepWrap = document.createElement("section");
+      stepWrap.className = "unified-workflow-settings-step card";
+      stepWrap.setAttribute("data-unified-step-id", section.stepId);
+      stepWrap.setAttribute("data-unified-canonical-step-id", section.canonicalStepId);
+      var stepHeading = document.createElement("h3");
+      stepHeading.className = "unified-workflow-settings-step-title";
+      stepHeading.textContent = section.stepTitle;
+      stepWrap.appendChild(stepHeading);
+      var body = document.createElement("div");
+      body.className = "unified-workflow-settings-step-body";
+      renderWorkflowPackParameterControlsSection(
+        body,
+        section.controls,
+        section.params,
+        {
+          sectionHeading: "",
+          parameterScope: "step",
+          onPackParamChange: onPackParamChange
+        }
+      );
+      stepWrap.appendChild(body);
+      els.unifiedWorkflowSettingsOptions.appendChild(stepWrap);
+    });
+  }
+
+  function renderUnifiedWorkflowSettingsUI() {
+    if (!els.unifiedWorkflowSettingsPanel || !els.unifiedWorkflowSettingsOptions) return;
+    var wf = findWorkflowById(state.selectedWorkflowId || "");
+    els.unifiedWorkflowSettingsOptions.innerHTML = "";
+    if (!wf) {
+      renderUnifiedWorkflowSettingsEmptyHint("Select a workflow to tune parameters.");
+      return;
+    }
+    var briefConfig = resolveWorkflowBriefConfigForWorkflow(wf, state.workflowBriefResolved);
+    if (
+      briefConfig &&
+      (shouldAugmentPersistedBriefConfigForUnifiedSettings(wf, briefConfig) ||
+        shouldRefreshRecoveredBriefConfigForUnifiedSettings(wf))
+    ) {
+      var priorConfig = briefConfig;
+      renderUnifiedWorkflowSettingsEmptyHint("Loading pack parameter metadata…");
+      state.unifiedSettingsBriefConfigLoadSeq =
+        (state.unifiedSettingsBriefConfigLoadSeq || 0) + 1;
+      var augmentSeq = state.unifiedSettingsBriefConfigLoadSeq;
+      var augmentWfId = String(wf.id || "").trim();
+      recoverWorkflowBriefConfigForUnifiedSettings(wf).then(function (payload) {
+        if (augmentSeq !== state.unifiedSettingsBriefConfigLoadSeq) return;
+        if (String(state.selectedWorkflowId || "").trim() !== augmentWfId) return;
+        if (state.workflowDetailMode !== "settings") return;
+        if (!els.unifiedWorkflowSettingsOptions) return;
+        els.unifiedWorkflowSettingsOptions.innerHTML = "";
+        var discovered = payload && payload.config ? payload.config : null;
+        var merged = unionWorkflowBriefConfigsForDisplay(priorConfig, discovered);
+        if (!merged) {
+          renderUnifiedWorkflowSettingsEmptyHint(
+            "No pack parameter metadata is available for this workflow."
+          );
+          return;
+        }
+        renderUnifiedWorkflowSettingsContent(wf, merged);
+        refreshWorkflowModeSettingsTabBadge();
+      });
+      return;
+    }
+    if (briefConfig) {
+      renderUnifiedWorkflowSettingsContent(wf, briefConfig);
+      return;
+    }
+    if (!workflowNeedsUnifiedSettingsBriefConfigRecovery(wf)) {
+      renderUnifiedWorkflowSettingsEmptyHint(
+        "No pack parameter metadata is available for this workflow. Choose a structured domain pack when designing, or open a workflow saved with pack metadata."
+      );
+      return;
+    }
+    renderUnifiedWorkflowSettingsEmptyHint("Loading pack parameter metadata…");
+    state.unifiedSettingsBriefConfigLoadSeq =
+      (state.unifiedSettingsBriefConfigLoadSeq || 0) + 1;
+    var loadSeq = state.unifiedSettingsBriefConfigLoadSeq;
+    var wfId = String(wf.id || "").trim();
+    recoverWorkflowBriefConfigForUnifiedSettings(wf).then(function (payload) {
+      if (loadSeq !== state.unifiedSettingsBriefConfigLoadSeq) return;
+      if (String(state.selectedWorkflowId || "").trim() !== wfId) return;
+      if (state.workflowDetailMode !== "settings") return;
+      if (!els.unifiedWorkflowSettingsOptions) return;
+      els.unifiedWorkflowSettingsOptions.innerHTML = "";
+      var cfg = payload && payload.config ? payload.config : null;
+      if (!cfg) {
+        renderUnifiedWorkflowSettingsEmptyHint(
+          "No pack parameter metadata is available for this workflow. The saved domain selection may be general-only, or the pack could not be loaded."
+        );
+        return;
+      }
+      renderUnifiedWorkflowSettingsContent(wf, cfg);
+      refreshWorkflowModeSettingsTabBadge();
+    });
   }
 
   function resolveWorkflowSettingsParamLabel(key, canonicalStepId, briefConfig) {
@@ -1302,7 +2235,8 @@
     });
   }
 
-  function appendWorkflowPackParameterControlDom(parent, control, params) {
+  function appendWorkflowPackParameterControlDom(parent, control, params, opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
     if (!parent || !control) return;
     var group = document.createElement("div");
     group.className = "form-group small workflow-pack-param-group";
@@ -1353,29 +2287,39 @@
     input.setAttribute("data-workflow-pack-param", "1");
     input.setAttribute("data-param-key", control.key);
     input.setAttribute("data-param-label", control.label);
-    input.addEventListener("change", function () {
-      applyWorkflowStepPromptDefaults({
-        source: "workflow_pack_param_change"
-      });
-    });
+    var onPackParamChange =
+      typeof opts.onPackParamChange === "function"
+        ? opts.onPackParamChange
+        : function () {
+            applyWorkflowStepPromptDefaults({
+              source: "workflow_pack_param_change"
+            });
+          };
+    input.addEventListener("change", onPackParamChange);
     input.addEventListener("input", function () {
       if (control.controlType === "number" || control.controlType === "text") {
-        applyWorkflowStepPromptDefaults({
-          source: "workflow_pack_param_input"
-        });
+        onPackParamChange();
       }
     });
     group.appendChild(input);
     parent.appendChild(group);
   }
 
-  function renderWorkflowPackParameterControlsSection(container, controls, params) {
+  function renderWorkflowPackParameterControlsSection(container, controls, params, opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
     if (!container || !controls.length) return;
-    var heading = document.createElement("div");
-    heading.className = "workflow-pack-param-heading muted";
-    heading.textContent = "Workflow parameters";
-    container.appendChild(heading);
-    var sections = groupWorkflowStepParameterControlsForSettings(controls);
+    var headingText =
+      Object.prototype.hasOwnProperty.call(opts, "sectionHeading") &&
+      opts.sectionHeading !== undefined
+        ? opts.sectionHeading
+        : "Workflow parameters";
+    if (headingText) {
+      var heading = document.createElement("div");
+      heading.className = "workflow-pack-param-heading muted";
+      heading.textContent = headingText;
+      container.appendChild(heading);
+    }
+    var sections = groupWorkflowStepParameterControlsForSettings(controls, opts);
     sections.forEach(function (section) {
       var wrap = document.createElement("details");
       wrap.className =
@@ -1389,7 +2333,7 @@
       var body = document.createElement("div");
       body.className = "workflow-pack-param-section-body";
       (section.controls || []).forEach(function (control) {
-        appendWorkflowPackParameterControlDom(body, control, params);
+        appendWorkflowPackParameterControlDom(body, control, params, opts);
       });
       wrap.appendChild(body);
       container.appendChild(wrap);
@@ -1650,8 +2594,8 @@
     if (configurable) {
       cueParts.push(
         opts.context === "design"
-          ? "Editable in Settings after you save this workflow."
-          : "Editable in Settings — open Settings to tune step parameters."
+          ? "Editable in the Settings tab after you save this workflow."
+          : "Editable in the Settings tab — open Settings to tune step parameters."
       );
     }
     if (summary) cueParts.push(summary);
@@ -1762,10 +2706,12 @@
     var libraryLi = els.workflowSteps ? findWorkflowStepListItem(els.workflowSteps, navTarget) : null;
     if (libraryLi && state.selectedWorkflowId) {
       switchTab("workflows");
-      highlightWorkflowStepSettingsTarget(libraryLi);
       if (openSettings) {
-        openWorkflowStepSettingsFromElement(libraryLi);
+        setWorkflowMode("settings");
+        focusUnifiedWorkflowSettingsSection(navTarget);
+        return true;
       }
+      highlightWorkflowStepSettingsTarget(libraryLi);
       return true;
     }
 
@@ -1913,7 +2859,7 @@
         var linkBtn = document.createElement("button");
         linkBtn.type = "button";
         linkBtn.className = "btn small workflow-planning-settings-link";
-        linkBtn.textContent = "Open step Settings";
+        linkBtn.textContent = "Open Settings";
         linkBtn.addEventListener("click", function () {
           focusWorkflowStepSettings(settingsTarget, { openSettings: true });
         });
@@ -2341,7 +3287,7 @@
           var settingsLink = document.createElement("button");
           settingsLink.type = "button";
           settingsLink.className = "btn small workflow-brief-provenance-settings-link";
-          settingsLink.textContent = "Open step Settings";
+          settingsLink.textContent = "Open Settings";
           settingsLink.addEventListener("click", function () {
             focusWorkflowStepSettings(
               { canonicalStepId: stepRow.canonicalStepId, titleHint: stepRow.stepTitle },
@@ -4887,6 +5833,9 @@
       mappingRules: Array.isArray(cfg.mappingRules) ? cfg.mappingRules : [],
       stepParameterControls: Array.isArray(cfg.stepParameterControls)
         ? cfg.stepParameterControls
+        : [],
+      workflowParameterControls: Array.isArray(cfg.workflowParameterControls)
+        ? cfg.workflowParameterControls
         : [],
       intentClasses: cfg.intentClasses && typeof cfg.intentClasses === "object" ? cfg.intentClasses : {},
       stopConditions: Array.isArray(cfg.stopConditions) ? cfg.stopConditions : [],
@@ -11221,7 +12170,11 @@
   function setWorkflowMode(mode) {
     if (!els.workflowModeEditBtn || !els.workflowModeRunBtn) return;
 
-    var isRun = mode === "run";
+    var normalized = String(mode || "edit").toLowerCase();
+    var isRun = normalized === "run";
+    var isSettings = normalized === "settings";
+    var isEdit = !isRun && !isSettings;
+    state.workflowDetailMode = normalized;
 
     if (!isRun) {
       state.workflowRunCapturedOutputs = {};
@@ -11229,48 +12182,54 @@
       state.workflowRunStepCompleted = {};
     }
 
-    // Toggle active button styling.
-    if (isRun) {
-      els.workflowModeRunBtn.classList.add("active");
-      els.workflowModeEditBtn.classList.remove("active");
-    } else {
-      els.workflowModeEditBtn.classList.add("active");
-      els.workflowModeRunBtn.classList.remove("active");
+    if (els.workflowModeRunBtn) {
+      els.workflowModeRunBtn.classList.toggle("active", isRun);
     }
+    if (els.workflowModeSettingsBtn) {
+      els.workflowModeSettingsBtn.classList.toggle("active", isSettings);
+    }
+    if (els.workflowModeEditBtn) {
+      els.workflowModeEditBtn.classList.toggle("active", isEdit);
+    }
+    updateWorkflowModeTabsAria(isRun, isSettings, isEdit);
+    refreshWorkflowModeSettingsTabBadge();
 
-    // Add a mode class on the detail container so CSS can hide edit-only UI in Run mode.
     if (els.workflowDetail) {
-      if (isRun) {
-        els.workflowDetail.classList.add("run-mode");
-      } else {
-        els.workflowDetail.classList.remove("run-mode");
-      }
+      els.workflowDetail.classList.toggle("run-mode", isRun);
+      els.workflowDetail.classList.toggle("settings-mode", isSettings);
+    }
+    if (els.unifiedWorkflowSettingsPanel) {
+      els.unifiedWorkflowSettingsPanel.classList.toggle("hidden", !isSettings);
     }
 
-    // Top-level workflow fields: read-only in run mode.
+    if (isSettings) {
+      renderUnifiedWorkflowSettingsUI();
+    }
+
+    var readOnlyTopLevel = isRun || isSettings;
     if (els.workflowName) {
-      els.workflowName.readOnly = isRun;
+      els.workflowName.readOnly = readOnlyTopLevel;
     }
     if (els.workflowArtefacts) {
-      els.workflowArtefacts.readOnly = isRun;
+      els.workflowArtefacts.readOnly = readOnlyTopLevel;
     }
     if (els.workflowOutputs) {
-      els.workflowOutputs.readOnly = isRun;
+      els.workflowOutputs.readOnly = readOnlyTopLevel;
     }
     if (els.workflowAudience) {
-      els.workflowAudience.readOnly = isRun;
+      els.workflowAudience.readOnly = readOnlyTopLevel;
     }
     if (els.workflowGoal) {
-      els.workflowGoal.readOnly = isRun;
+      els.workflowGoal.readOnly = readOnlyTopLevel;
     }
     if (els.workflowConstraints) {
-      els.workflowConstraints.readOnly = isRun;
+      els.workflowConstraints.readOnly = readOnlyTopLevel;
     }
     if (els.workflowLibraryTags) {
-      els.workflowLibraryTags.readOnly = isRun;
+      els.workflowLibraryTags.readOnly = readOnlyTopLevel;
     }
     if (els.workflowLibraryNotes) {
-      els.workflowLibraryNotes.readOnly = isRun;
+      els.workflowLibraryNotes.readOnly = readOnlyTopLevel;
     }
 
     // Update run-mode summary header (read-only view in Run mode).
@@ -13946,6 +14905,10 @@
     state.selectedWorkflowId = wf.id;
     populateWorkflowDetail(wf);
     renderWorkflowList();
+    refreshWorkflowModeSettingsTabBadge();
+    if (state.workflowDetailMode === "settings") {
+      renderUnifiedWorkflowSettingsUI();
+    }
     if (els.exportWorkflowBtn) {
       els.exportWorkflowBtn.disabled = false;
     }
@@ -14053,6 +15016,9 @@
     updateWorkflowRunView();
     // Selection/render path: evaluate current definition snapshot and project warnings in UI.
     renderWorkflowValidationWarnings(validateWorkflow(wf));
+    if (state.workflowDetailMode === "settings") {
+      renderUnifiedWorkflowSettingsUI();
+    }
   }
 
   function renumberWorkflowSteps() {
@@ -15496,6 +16462,16 @@
           ? existing.createdAt
           : now;
       data.updatedAt = now;
+      if (existing.workflowBriefResolution && typeof existing.workflowBriefResolution === "object") {
+        data.workflowBriefResolution = JSON.parse(JSON.stringify(existing.workflowBriefResolution));
+      }
+      var recoveredBriefConfig = getRecoveredBriefConfigForWorkflow(data.id);
+      if (recoveredBriefConfig) {
+        data.workflowBriefResolution = mergeRecoveredBriefConfigIntoResolution(
+          data.workflowBriefResolution,
+          recoveredBriefConfig
+        );
+      }
       state.workflows[existingIdx] = data;
     } else {
       data.id =
@@ -22977,14 +23953,19 @@
         updateWorkflowRunView();
       });
     }
-    if (els.workflowModeEditBtn) {
-      els.workflowModeEditBtn.addEventListener("click", function () {
-        setWorkflowMode("edit");
-      });
-    }
     if (els.workflowModeRunBtn) {
       els.workflowModeRunBtn.addEventListener("click", function () {
         setWorkflowMode("run");
+      });
+    }
+    if (els.workflowModeSettingsBtn) {
+      els.workflowModeSettingsBtn.addEventListener("click", function () {
+        setWorkflowMode("settings");
+      });
+    }
+    if (els.workflowModeEditBtn) {
+      els.workflowModeEditBtn.addEventListener("click", function () {
+        setWorkflowMode("edit");
       });
     }
     if (els.workflowDetail) {
@@ -23101,13 +24082,59 @@
     prismTestApi.buildWorkflowStepSettingsSummaryText = buildWorkflowStepSettingsSummaryText;
     prismTestApi.collectWorkflowStepSettingsSummaryValues = collectWorkflowStepSettingsSummaryValues;
     prismTestApi.normalizeWorkflowStepParameterControl = normalizeWorkflowStepParameterControl;
+    prismTestApi.normalizeWorkflowParameterControl = normalizeWorkflowParameterControl;
     prismTestApi.normalizeWorkflowStepParameterControls = normalizeWorkflowStepParameterControls;
+    prismTestApi.normalizeWorkflowParameterControls = normalizeWorkflowParameterControls;
     prismTestApi.getWorkflowStepParameterControlsFromBriefConfig =
       getWorkflowStepParameterControlsFromBriefConfig;
+    prismTestApi.getWorkflowParameterControlsFromBriefConfig =
+      getWorkflowParameterControlsFromBriefConfig;
+    prismTestApi.readWorkflowParamsObject = readWorkflowParamsObject;
+    prismTestApi.readWorkflowParamsForUnifiedSettings = readWorkflowParamsForUnifiedSettings;
+    prismTestApi.readWorkflowStepParamsForUnifiedSettings = readWorkflowStepParamsForUnifiedSettings;
+    prismTestApi.mergeRecoveredBriefConfigIntoResolution = mergeRecoveredBriefConfigIntoResolution;
     prismTestApi.filterWorkflowStepParameterControlsForStep =
       filterWorkflowStepParameterControlsForStep;
     prismTestApi.groupWorkflowStepParameterControlsForSettings =
       groupWorkflowStepParameterControlsForSettings;
+    prismTestApi.resolveWorkflowBriefConfigForWorkflow = resolveWorkflowBriefConfigForWorkflow;
+    prismTestApi.collectIncludedWorkflowStepRows = collectIncludedWorkflowStepRows;
+    prismTestApi.aggregateUnifiedWorkflowParameterSections =
+      aggregateUnifiedWorkflowParameterSections;
+    prismTestApi.countUnifiedWorkflowVisibleParameterControls =
+      countUnifiedWorkflowVisibleParameterControls;
+    prismTestApi.refreshWorkflowModeSettingsTabBadge = refreshWorkflowModeSettingsTabBadge;
+    prismTestApi.setUnifiedWorkflowSettingsSaveHintVisible = setUnifiedWorkflowSettingsSaveHintVisible;
+    prismTestApi.renderUnifiedWorkflowSettingsContentForTest = renderUnifiedWorkflowSettingsContent;
+    prismTestApi.focusUnifiedWorkflowSettingsSection = focusUnifiedWorkflowSettingsSection;
+    prismTestApi.setWorkflowDetailModeForTest = setWorkflowMode;
+    prismTestApi.getWorkflowDetailModeForTest = function () {
+      return state.workflowDetailMode;
+    };
+    prismTestApi.collectPackParamRowsFromDomContainer = collectPackParamRowsFromDomContainer;
+    prismTestApi.syncUnifiedWorkflowSettingsToStepNotes = syncUnifiedWorkflowSettingsToStepNotes;
+    prismTestApi.workflowHasPersistedBriefConfig = workflowHasPersistedBriefConfig;
+    prismTestApi.inferSelectedDomainsFromWorkflowRecord = inferSelectedDomainsFromWorkflowRecord;
+    prismTestApi.collectWorkflowCanonicalStepIds = collectWorkflowCanonicalStepIds;
+    prismTestApi.scoreBriefConfigForCanonicalStepIds = scoreBriefConfigForCanonicalStepIds;
+    prismTestApi.discoverPackBriefConfigForWorkflow = discoverPackBriefConfigForWorkflow;
+    prismTestApi.diagnoseUnifiedWorkflowParameterCoverage =
+      diagnoseUnifiedWorkflowParameterCoverage;
+    prismTestApi.shouldRefreshRecoveredBriefConfigForUnifiedSettings =
+      shouldRefreshRecoveredBriefConfigForUnifiedSettings;
+    prismTestApi.buildUnifiedWorkflowSettingsCoverageHint =
+      buildUnifiedWorkflowSettingsCoverageHint;
+    prismTestApi.unionWorkflowBriefConfigsForDisplay = unionWorkflowBriefConfigsForDisplay;
+    prismTestApi.workflowNeedsUnifiedSettingsBriefConfigRecovery =
+      workflowNeedsUnifiedSettingsBriefConfigRecovery;
+    prismTestApi.fetchPackBriefConfigForSelectedDomains = fetchPackBriefConfigForSelectedDomains;
+    prismTestApi.recoverWorkflowBriefConfigForUnifiedSettings =
+      recoverWorkflowBriefConfigForUnifiedSettings;
+    prismTestApi.cacheRecoveredBriefConfigForWorkflow = cacheRecoveredBriefConfigForWorkflow;
+    prismTestApi.getRecoveredBriefConfigForWorkflow = getRecoveredBriefConfigForWorkflow;
+    prismTestApi.clearRecoveredBriefConfigCacheForTest = function () {
+      state.unifiedSettingsRecoveredBriefConfigById = {};
+    };
     prismTestApi.resolveWorkflowSettingsParamLabel = resolveWorkflowSettingsParamLabel;
     prismTestApi.resolveWorkflowStepParameterValue = resolveWorkflowStepParameterValue;
     prismTestApi.buildPackOwnedUserOptionIdMap = buildPackOwnedUserOptionIdMap;

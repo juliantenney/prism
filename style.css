@@ -853,6 +853,40 @@ textarea:focus {
   transform: translateY(-0.5px);
 }
 
+.workflow-mode-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1;
+  background: rgba(59, 130, 246, 0.18);
+  color: rgb(37, 99, 235);
+}
+
+.workflow-mode-tab-badge.hidden {
+  display: none;
+}
+
+.unified-workflow-settings-save-hint {
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+}
+
+.unified-workflow-settings-section-focus {
+  outline: 2px solid rgba(59, 130, 246, 0.55);
+  outline-offset: 2px;
+}
+
 .workflow-body {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.3fr);
@@ -1516,6 +1550,49 @@ textarea:focus {
 .workflow-detail.run-mode > .form-group,
 .workflow-detail.run-mode > #workflowValidationPanel {
   display: none;
+}
+
+/* In Settings mode: unified parameter surface only (no step edit chrome). */
+.workflow-detail.settings-mode .workflow-step-fields,
+.workflow-detail.settings-mode .detail-buttons,
+.workflow-detail.settings-mode .workflow-step-move-btn,
+.workflow-detail.settings-mode .workflow-step-remove-btn,
+.workflow-detail.settings-mode .workflow-detail-actions,
+.workflow-detail.settings-mode .workflow-run-controls,
+.workflow-detail.settings-mode .workflow-run-summary,
+.workflow-detail.settings-mode > .form-group,
+.workflow-detail.settings-mode > #workflowValidationPanel,
+.workflow-detail.settings-mode .workflow-steps-section {
+  display: none;
+}
+
+.unified-workflow-settings-panel {
+  margin-bottom: 12px;
+}
+
+.unified-workflow-settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.unified-workflow-settings-step {
+  padding: 12px 14px;
+}
+
+.unified-workflow-settings-step-title {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.unified-workflow-settings-step-body .workflow-pack-param-section {
+  margin-bottom: 0;
+}
+
+.unified-workflow-settings-workflow-level {
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .library-card {

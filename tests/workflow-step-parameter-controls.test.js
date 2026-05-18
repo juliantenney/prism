@@ -133,25 +133,37 @@ test("resolveWorkflowStepParameterValue uses stored params over default", () => 
   assert.equal(api.resolveWorkflowStepParameterValue(control, {}), "learner");
 });
 
-test("LD pack defines seven pilot stepParameterControls", () => {
+test("LD pack defines stepParameterControls for core LD workflow steps", () => {
   const config = loadLdWorkflowBriefConfig();
   assert.ok(Array.isArray(config.stepParameterControls));
-  assert.equal(config.stepParameterControls.length, 7);
+  assert.equal(config.stepParameterControls.length, 25);
   const keys = config.stepParameterControls.map((c) => `${c.canonicalStepId}.${c.key}`);
   assert.ok(keys.includes("step_design_page.page_profile"));
-  assert.ok(keys.includes("step_design_page.tone_style"));
-  assert.ok(keys.includes("step_design_page.depth_level"));
-  assert.ok(keys.includes("step_design_page.include_examples"));
-  assert.ok(keys.includes("step_design_assessment.activity_type"));
-  assert.ok(keys.includes("step_design_assessment.total_items"));
-  assert.ok(keys.includes("step_generate_assessment_items.number_of_items"));
+  assert.ok(keys.includes("step_normalize_content.structure_mode"));
+  assert.ok(keys.includes("step_model_knowledge.include_relationships"));
+  assert.ok(keys.includes("step_define_learning_outcomes.learnerLevel"));
+  assert.ok(keys.includes("step_design_learning_activities.activity_pattern_mix"));
+  assert.ok(keys.includes("step_generate_activity_materials.session_materials"));
+  assert.ok(keys.includes("step_construct_learning_sequence.sequencing_granularity"));
+  assert.ok(!keys.some((k) => k.startsWith("step_generate_learning_content.")));
+});
+
+test("LD pack defines workflowParameterControls for mapped workflow constraints", () => {
+  const config = loadLdWorkflowBriefConfig();
+  assert.ok(Array.isArray(config.workflowParameterControls));
+  assert.equal(config.workflowParameterControls.length, 4);
+  const wfKeys = config.workflowParameterControls.map((c) => c.key);
+  assert.ok(wfKeys.includes("delivery_context"));
+  assert.ok(wfKeys.includes("design_scope"));
+  assert.ok(wfKeys.includes("input_strategy"));
+  assert.ok(wfKeys.includes("duration_minutes"));
 });
 
 test("getWorkflowStepParameterControlsFromBriefConfig loads LD pilot controls", () => {
   const api = loadPrismTestApi();
   const config = loadLdWorkflowBriefConfig();
   const controls = api.getWorkflowStepParameterControlsFromBriefConfig(config);
-  assert.equal(controls.length, 7);
+  assert.equal(controls.length, 25);
   const numberControl = controls.find(
     (c) => c.canonicalStepId === "step_generate_assessment_items" && c.key === "number_of_items"
   );

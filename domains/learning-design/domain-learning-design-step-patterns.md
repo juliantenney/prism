@@ -839,6 +839,68 @@ They provide a consistent way to structure workflows and ensure that learning de
         }
       }
     ],
+    "workflowParameterControls": [
+      {
+        "key": "delivery_context",
+        "label": "Delivery context",
+        "description": "How learners progress through the design (pedagogic delivery mode).",
+        "controlType": "select",
+        "default": "blended",
+        "options": [
+          { "value": "in_person", "label": "In-person classroom/workshop" },
+          { "value": "online_sync", "label": "Live online (synchronous)" },
+          { "value": "online_async", "label": "Self-paced online (asynchronous)" },
+          { "value": "blended", "label": "Blended (in-person + online)" },
+          { "value": "self_directed", "label": "Self-directed independent progression" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "design_scope",
+        "label": "Design scope",
+        "description": "Breadth of the learning design (single activity through module).",
+        "controlType": "select",
+        "default": "session",
+        "options": [
+          { "value": "single_activity", "label": "Single activity" },
+          { "value": "session", "label": "Session" },
+          { "value": "sequence", "label": "Sequence" },
+          { "value": "module", "label": "Module" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "input_strategy",
+        "label": "Input strategy",
+        "description": "Whether the workflow generates from a topic, uses uploaded material, or both.",
+        "controlType": "select",
+        "default": "generate_from_topic",
+        "options": [
+          { "value": "generate_from_topic", "label": "Generate content" },
+          { "value": "provided_source_content", "label": "Use uploaded material" },
+          { "value": "mixed", "label": "Mix uploaded and generated content" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "duration_minutes",
+        "label": "Session duration (minutes)",
+        "description": "Total session duration used for sequencing and workflow constraints.",
+        "controlType": "number",
+        "default": "60",
+        "min": 10,
+        "max": 480,
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      }
+    ],
     "stepParameterControls": [
       {
         "key": "page_profile",
@@ -941,6 +1003,271 @@ They provide a consistent way to structure workflows and ensure that learning de
         "default": "10",
         "min": 1,
         "max": 200,
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "structure_mode",
+        "canonicalStepId": "step_normalize_content",
+        "label": "Structure mode",
+        "description": "How normalized source content is structured.",
+        "controlType": "select",
+        "default": "reorganise_into_sections",
+        "options": [
+          { "value": "preserve_original_structure", "label": "Preserve original structure" },
+          { "value": "reorganise_into_sections", "label": "Reorganise into sections" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "detail_level",
+        "canonicalStepId": "step_normalize_content",
+        "label": "Detail level",
+        "description": "How much detail to preserve when normalizing content.",
+        "controlType": "select",
+        "default": "lightly_simplify_language",
+        "options": [
+          { "value": "preserve_full_detail", "label": "Preserve full detail" },
+          { "value": "lightly_simplify_language", "label": "Lightly simplify language" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "keep_examples",
+        "canonicalStepId": "step_normalize_content",
+        "label": "Keep examples",
+        "description": "Whether to retain meaningful examples from the source.",
+        "controlType": "boolean",
+        "default": "true",
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "include_relationships",
+        "canonicalStepId": "step_model_knowledge",
+        "label": "Include concept relationships",
+        "description": "Include explicit relationships between concepts in the knowledge model.",
+        "controlType": "boolean",
+        "default": "true",
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "include_misconceptions",
+        "canonicalStepId": "step_model_knowledge",
+        "label": "Include misconceptions",
+        "description": "Include likely misconceptions when supported by the source.",
+        "controlType": "boolean",
+        "default": "true",
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "include_processes",
+        "canonicalStepId": "step_model_knowledge",
+        "label": "Include processes/workflows",
+        "description": "Include processes or workflows when present in the source.",
+        "controlType": "boolean",
+        "default": "true",
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "learnerLevel",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "label": "Learner level",
+        "description": "Target learner level for outcome wording (maps from brief learner level).",
+        "controlType": "select",
+        "default": "general_adult",
+        "options": [
+          { "value": "school", "label": "School" },
+          { "value": "undergraduate", "label": "Undergraduate" },
+          { "value": "postgraduate", "label": "Postgraduate" },
+          { "value": "professional", "label": "Professional" },
+          { "value": "general_adult", "label": "General adult" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "numberOfOutcomes",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "label": "Number of outcomes",
+        "description": "How many learning outcomes to generate.",
+        "controlType": "number",
+        "default": "6",
+        "min": 2,
+        "max": 12,
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "cognitiveEmphasis",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "label": "Cognitive emphasis",
+        "description": "Cognitive emphasis across generated outcomes.",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          { "value": "mixed", "label": "Mixed" },
+          { "value": "foundational", "label": "Foundational understanding" },
+          { "value": "application", "label": "Application and transfer" },
+          { "value": "analysis", "label": "Analysis and evaluation" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "scope",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "label": "Outcome scope",
+        "description": "Scope framing for generated outcomes.",
+        "controlType": "select",
+        "default": "module",
+        "options": [
+          { "value": "lesson", "label": "Lesson" },
+          { "value": "module", "label": "Module" },
+          { "value": "course", "label": "Course" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "activity_pattern_mix",
+        "canonicalStepId": "step_design_learning_activities",
+        "label": "Activity pattern mix",
+        "description": "Balance of guided vs applied/collaborative activity patterns.",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "guided", "label": "Guided" },
+          { "value": "balanced", "label": "Balanced" },
+          { "value": "applied_collaborative", "label": "Applied collaborative" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "grouping_preference",
+        "canonicalStepId": "step_design_learning_activities",
+        "label": "Grouping preference",
+        "description": "Preferred learner grouping modes across activities.",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          { "value": "mixed", "label": "Mixed" },
+          { "value": "individual", "label": "Individual" },
+          { "value": "pair", "label": "Pair" },
+          { "value": "small_group", "label": "Small group" },
+          { "value": "whole_group", "label": "Whole group" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "difficulty_level",
+        "canonicalStepId": "step_design_learning_activities",
+        "label": "Activity difficulty",
+        "description": "Challenge level for designed learning activities.",
+        "controlType": "select",
+        "default": "moderate",
+        "options": [
+          { "value": "introductory", "label": "Introductory" },
+          { "value": "moderate", "label": "Moderate" },
+          { "value": "advanced", "label": "Advanced" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "coverage_breadth",
+        "canonicalStepId": "step_design_learning_activities",
+        "label": "Coverage breadth",
+        "description": "How broadly activities should cover outcomes.",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          { "value": "narrow", "label": "Narrow (key outcomes only)" },
+          { "value": "balanced", "label": "Balanced" },
+          { "value": "broad", "label": "Broad coverage" }
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "session_materials",
+        "canonicalStepId": "step_generate_activity_materials",
+        "label": "Session materials",
+        "description": "Which session-level material types to generate.",
+        "controlType": "select",
+        "default": "page",
+        "options": [
+          { "value": "page", "label": "Page" },
+          { "value": "slide_deck", "label": "Slide deck" },
+          { "value": "page,slide_deck", "label": "Page and slide deck" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "duration_minutes",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "label": "Sequence duration (minutes)",
+        "description": "Total duration for the constructed learning sequence.",
+        "controlType": "number",
+        "default": "60",
+        "min": 15,
+        "max": 240,
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "sequencing_granularity",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "label": "Sequencing granularity",
+        "description": "How detailed the learning sequence plan should be.",
+        "controlType": "select",
+        "default": "standard",
+        "options": [
+          { "value": "lightweight", "label": "Lightweight" },
+          { "value": "standard", "label": "Standard" },
+          { "value": "detailed", "label": "Detailed" }
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only"
+      },
+      {
+        "key": "sequencing_style",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "label": "Sequencing style",
+        "description": "Pedagogic sequencing style for the session plan.",
+        "controlType": "select",
+        "default": "progressive_scaffold",
+        "options": [
+          { "value": "progressive_scaffold", "label": "Progressive scaffold" },
+          { "value": "spiral_revisit", "label": "Spiral revisit" },
+          { "value": "assessment_anchored", "label": "Assessment anchored" }
+        ],
         "visible": true,
         "advanced": true,
         "elicitation": "settings-only"

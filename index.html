@@ -627,7 +627,7 @@
         <details id="wfBriefResolvedDetails" class="card hidden">
           <summary id="wfBriefResolvedSummary">Resolved workflow brief</summary>
           <p class="helper-text">
-            Review planning suggestions first, then inspect assumptions and step mappings. Tune execution in step Settings; planning guidance is advisory and does not block saving.
+            Review planning suggestions first, then inspect assumptions and step mappings. Tune execution in the workflow Settings tab; planning guidance is advisory and does not block saving.
           </p>
           <div id="wfBriefResolvedContent" class="workflow-brief-resolved-content"></div>
         </details>
@@ -775,26 +775,65 @@
               <div class="workflow-mode-row">
                 <div class="workflow-mode-tabs" role="tablist" aria-label="Workflow mode">
                   <button
-                    id="workflowModeEditBtn"
-                    class="workflow-mode-tab active"
-                    type="button"
-                    role="tab"
-                    aria-selected="true"
-                  >
-                    Edit
-                  </button>
-                  <button
                     id="workflowModeRunBtn"
                     class="workflow-mode-tab"
                     type="button"
                     role="tab"
                     aria-selected="false"
+                    aria-controls="workflowDetail"
                   >
                     Run
+                  </button>
+                  <button
+                    id="workflowModeSettingsBtn"
+                    class="workflow-mode-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="unifiedWorkflowSettingsPanel"
+                    aria-label="Settings — workflow and step parameters"
+                    title="Tune pack-defined workflow and step parameters"
+                  >
+                    Settings
+                    <span
+                      id="workflowModeSettingsBadge"
+                      class="workflow-mode-tab-badge hidden"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+                  <button
+                    id="workflowModeEditBtn"
+                    class="workflow-mode-tab active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="workflowDetail"
+                  >
+                    Edit
                   </button>
                 </div>
 
               </div>
+
+              <section
+                id="unifiedWorkflowSettingsPanel"
+                class="unified-workflow-settings-panel hidden"
+                aria-label="Workflow settings — pack parameters"
+                role="tabpanel"
+              >
+                <p id="unifiedWorkflowSettingsHint" class="helper-text unified-workflow-settings-context-hint">
+                  Select a saved workflow, then open Settings to tune pack-defined parameters.
+                </p>
+                <p
+                  id="unifiedWorkflowSettingsSaveHint"
+                  class="helper-text unified-workflow-settings-save-hint hidden"
+                  role="status"
+                >
+                  Changes sync to workflow and step notes as you edit. Use <strong>Save</strong> in the
+                  workflow header to persist this workflow.
+                </p>
+                <div id="unifiedWorkflowSettingsOptions" class="unified-workflow-settings-options"></div>
+              </section>
 
               <div class="workflow-run-summary">
                 <div id="workflowRunName" class="workflow-run-name"></div>

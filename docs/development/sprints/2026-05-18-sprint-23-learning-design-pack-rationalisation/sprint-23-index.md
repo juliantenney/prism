@@ -2,7 +2,7 @@
 
 **Pack path:** `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/`  
 **Date:** 2026-05-18  
-**Status:** **Slice 23-1 closed** — semantics matrix delivered
+**Status:** **Slices 23-1–23-5 closed** — through Design Assessment semantics delivered
 
 **Entry point:** [`GPT-bootstrap-sprint-23.md`](GPT-bootstrap-sprint-23.md)
 
@@ -25,7 +25,14 @@
 | [`sprint-23-index.md`](sprint-23-index.md) | This index |
 | [`review-log.md`](review-log.md) | Decisions R23-001+ |
 | [`ld-semantics-matrix.md`](ld-semantics-matrix.md) | Slice 23-1 semantics audit |
+| [`ld-elicitation-alignment-plan.md`](ld-elicitation-alignment-plan.md) | Slice 23-2 elicitation plan |
+| [`ld-pf-bespoke-control-audit.md`](ld-pf-bespoke-control-audit.md) | Slice 23-3 PF bespoke audit |
+| [`ld-parameter-ownership-model.md`](ld-parameter-ownership-model.md) | Slice 23-4 ownership model |
+| [`ld-design-assessment-semantics.md`](ld-design-assessment-semantics.md) | Slice 23-5 DA semantics |
 | [`slice-23-1-charter.md`](slice-23-1-charter.md) | Slice 23-1 charter (closed) |
+| [`slice-23-2-charter.md`](slice-23-2-charter.md) | Slice 23-2 charter (closed) |
+| [`slice-23-3-charter.md`](slice-23-3-charter.md) | Slice 23-3 charter (closed) |
+| [`slice-23-4-charter.md`](slice-23-4-charter.md) | Slice 23-4 charter (closed) |
 | [`context-files/README.md`](context-files/README.md) | Bounded snapshot placeholder |
 
 ---
@@ -34,7 +41,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 23** | **Active** — 23-1 closed; 23-2+ not chartered |
+| **Sprint 23** | **Active** — 23-1–23-5 closed; 23-6 not chartered |
 | **Sprint 22** | **Feature-complete (chartered slices)** — **185 tests** documented |
 | **Sprint 21** | **Closed** — [`sprint-21-closeout.md`](../../../consolidation/sprint-21-closeout.md) — **149 tests** |
 | **Sprint 20** | **Closed** — [`sprint-20-closeout.md`](../../../consolidation/sprint-20-closeout.md) |
@@ -46,10 +53,10 @@
 | Slice | Focus | Status |
 |-------|--------|--------|
 | **23-1** | LD pack inventory + semantics matrix | **Closed** — [`ld-semantics-matrix.md`](ld-semantics-matrix.md) |
-| **23-2** | Elicitation alignment + burden reduction | **Proposed** |
-| **23-3** | Prompt Factory bespoke-control audit | **Proposed** |
-| **23-4** | Workflow vs step parameter ownership | **Proposed** |
-| **23-5** | Design Assessment semantics + controls | **Proposed** |
+| **23-2** | Elicitation alignment + burden reduction | **Closed** — [`ld-elicitation-alignment-plan.md`](ld-elicitation-alignment-plan.md) |
+| **23-3** | Prompt Factory bespoke-control audit | **Closed** — [`ld-pf-bespoke-control-audit.md`](ld-pf-bespoke-control-audit.md) |
+| **23-4** | Workflow vs step parameter ownership | **Closed** — [`ld-parameter-ownership-model.md`](ld-parameter-ownership-model.md) |
+| **23-5** | Design Assessment semantics | **Closed** — [`ld-design-assessment-semantics.md`](ld-design-assessment-semantics.md) |
 | **23-6** | Pack metadata rationalisation (apply) | **Proposed** |
 
 ---

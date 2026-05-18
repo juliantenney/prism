@@ -89,7 +89,133 @@ node --test tests/*.test.js
 
 ---
 
+## 2026-05-18 — Slice 23-2 elicitation alignment + burden reduction
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-016 | Six posture vocabulary adopted (blocking, topology, initializer, settings-only, deferral, removal) | Consistent classification across 29 factors |
+| R23-017 | `design_scope` / `input_strategy` = **initializer at brief** + **settings-only after synthesis** | Preserves synthesis gate; reduces refinement duplication in 23-6 |
+| R23-018 | `assessment_required` = **topology gate** only (no mappingRule) | Matches WGC/inference behaviour |
+| R23-019 | `assessment_type` / `assessment_total_items` mustAsk → **defer in refinement** when mapped (pack 23-6) | Addresses triple-ask with DA/Gen controls |
+| R23-020 | No runtime elicitation removal in 23-2 | Plan-only slice |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Elicitation alignment plan | [`ld-elicitation-alignment-plan.md`](ld-elicitation-alignment-plan.md) |
+| Slice charter (closed) | [`slice-23-2-charter.md`](slice-23-2-charter.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **188 passed**, 0 failed.
+
+---
+
+## 2026-05-18 — Slice 23-3 PF bespoke-control audit
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-021 | Audit **all 17** canonical LD steps, not DA-only | DA/Gen Items exemplify systemic PF ⊃ Settings pattern |
+| R23-022 | **3 steps** at full PF ↔ Settings parity (Normalize, Model Knowledge, Define LO) | Reference pattern for 23-6 |
+| R23-023 | Assessment inheritance B2–B7 **retire only after** pack key alignment (23-5/23-6) | Avoid runtime drift |
+| R23-024 | `filterUserOptionsExcludingPackKeys` = **preserve** (generic, pack-driven) | Not bespoke |
+| R23-025 | DLA `activity_pattern_mix` = inverse gap (Settings without PF) | 23-6 add PF option or drop control |
+| R23-026 | No pack/runtime edits in 23-3 | Audit-only slice |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| PF bespoke audit | [`ld-pf-bespoke-control-audit.md`](ld-pf-bespoke-control-audit.md) |
+| Slice charter (closed) | [`slice-23-3-charter.md`](slice-23-3-charter.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **188 passed**, 0 failed.
+
+---
+
+## 2026-05-18 — Slice 23-4 workflow vs step parameter ownership
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-027 | **Design Assessment** = canonical assessment authority | Approved semantic model |
+| R23-028 | **Generate Items** inherits from DA by default; explicit override wins | §5 inheritance doctrine |
+| R23-029 | Six ownership classes: workflow, step, inherited, topology, artefact, prompt-local | Governance vocabulary |
+| R23-030 | `assessment_required` = **topology-only** — not Settings | No mappingRule |
+| R23-031 | Runtime inheritance **preserved** in 23-4 | Until 23-5/23-6 parity gates |
+| R23-032 | Alias policy: unify `difficulty_profile`, `coverage_scope`, `duration_minutes` in 23-6 | PF/mapping/brief splits |
+| R23-033 | No pack/runtime edits in 23-4 | Governance slice |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Parameter ownership model | [`ld-parameter-ownership-model.md`](ld-parameter-ownership-model.md) |
+| Slice charter (closed) | [`slice-23-4-charter.md`](slice-23-4-charter.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **188 passed**, 0 failed.
+
+---
+
+## 2026-05-18 — Slice 23-5 Design Assessment semantics
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R23-034 | DA = **canonical assessment authority** | Approved model |
+| R23-035 | `assessment_type` → **`activity_type`** remains **documented alias** | mappingRule stable; step key canonical |
+| R23-036 | DA canonical keys: **`difficulty_profile`**, **`coverage_scope`**, **`total_items`** | Unify brief, mapping, output JSON |
+| R23-037 | Gen: **`number_of_items`**, **`coverage_mode`**, **`response_formats`** with inheritance | Realisation layer |
+| R23-038 | `feedback_display` (DA) ≠ `feedback_required` (Design Feedback) | Separate semantics |
+| R23-039 | `cognitive_demand`, `assessment_cadence` → **DA step controls** in 23-6 | mappingRules target DA |
+| R23-040 | Runtime inheritance preserved until gates §10.2 | No 23-5 code changes |
+| R23-041 | Three-layer difficulty vocabulary documented for 23-6 enum map | Brief vs PF vs Gen |
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Design Assessment semantics | [`ld-design-assessment-semantics.md`](ld-design-assessment-semantics.md) |
+| Slice charter (closed) | [`slice-23-5-charter.md`](slice-23-5-charter.md) |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**Result:** **188 passed**, 0 failed.
+
+---
+
 ## Status
 
-**Slice 23-1 closed.** Next: **Slice 23-2** — elicitation alignment (charter required). **No pack metadata edits** until **23-6** is chartered.
+**Slices 23-1–23-5 closed.** Next: **Slice 23-6** — pack metadata rationalisation (charter required). Runtime inheritance retirement: separate charter after 23-6.
+
+
+
+
 

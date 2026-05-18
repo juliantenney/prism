@@ -3,7 +3,7 @@
 **Date:** 2026-05-18  
 **Pack path:** `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/`  
 **Sprint:** 23 — Learning Design pack rationalisation  
-**Status:** **Slice 23-1 closed** — semantics matrix complete; **no pack/runtime implementation**
+**Status:** **Slices 23-1–23-5 closed** — through Design Assessment semantics; **no pack/runtime implementation**
 
 **Predecessor:** [`../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md`](../2026-05-15-sprint-22-unified-workflow-settings/CURRENT-STATE.md)
 
@@ -15,7 +15,7 @@
 
 | Sprint | Status |
 |--------|--------|
-| **Sprint 23** | **Active** — Slice **23-1** closed; **23-2+** not chartered |
+| **Sprint 23** | **Active** — Slices **23-1–23-5** closed; **23-6** not chartered |
 | **Sprint 22** | **Feature-complete (chartered slices)** — **185 tests** documented — unified Settings + LD metadata expansion |
 | **Sprint 21** | **Closed** — **149 tests** |
 | **Sprint 20** | **Closed** — **135 tests** |
@@ -107,4 +107,12 @@ Sprint 23 closes the **semantics and metadata** gap — not the **Settings surfa
 | [`review-log.md`](review-log.md) | Decisions log |
 | [`HANDOVER.md`](HANDOVER.md) | Boundaries and handover |
 | [`ld-semantics-matrix.md`](ld-semantics-matrix.md) | Slice 23-1 audit deliverable |
+| [`ld-elicitation-alignment-plan.md`](ld-elicitation-alignment-plan.md) | Slice 23-2 elicitation plan |
+| [`ld-pf-bespoke-control-audit.md`](ld-pf-bespoke-control-audit.md) | Slice 23-3 PF bespoke audit |
+| [`ld-parameter-ownership-model.md`](ld-parameter-ownership-model.md) | Slice 23-4 ownership model |
+| [`ld-design-assessment-semantics.md`](ld-design-assessment-semantics.md) | Slice 23-5 DA semantics |
 | [`slice-23-1-charter.md`](slice-23-1-charter.md) | Slice 23-1 charter (closed) |
+| [`slice-23-2-charter.md`](slice-23-2-charter.md) | Slice 23-2 charter (closed) |
+| [`slice-23-3-charter.md`](slice-23-3-charter.md) | Slice 23-3 charter (closed) |
+| [`slice-23-4-charter.md`](slice-23-4-charter.md) | Slice 23-4 charter (closed) |
+| [`slice-23-5-charter.md`](slice-23-5-charter.md) | Slice 23-5 charter (closed) |

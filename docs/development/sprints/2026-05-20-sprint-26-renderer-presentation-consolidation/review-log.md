@@ -32,7 +32,7 @@
 
 ## Status
 
-**Sprint 26 open.** **26-1:** kitchen sink + audit. **26-2:** spacing/hierarchy/density (**238** tests). **26-3:** fallback/structural cleanup (**244** tests).
+**Sprint 26 open.** **26-1:** kitchen sink + audit. **26-2:** spacing/hierarchy/density (**238** tests). **26-3:** fallback/structural cleanup (**244** tests). **26-4:** professional polish (**246** tests). **26-5:** typographic finish (**248** tests).
 
 ---
 
@@ -113,3 +113,63 @@ Validated against kitchen sink HTML, with emphasis on **KS-A3** (six task cards,
 | Tests | `tests/utility-renderer-kitchen-sink.test.js` (+6) |
 
 **Pack/runtime delta:** Structural renderer helpers + metadata fold rule. **244** tests passing.
+
+---
+
+## 2026-05-20 — Slice 26-4: professional renderer polish
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R26-020 | v26-4 polish in **`getUtilityPagePresentationCssV26_4()`**, exported via **`getUtilityPagePresentationCss()`** | Separates rhythm (26-2) from hierarchy/icon/card polish (26-4); both paths append to export `<style>` |
+| R26-021 | **Linked-journey** sequence rows use timeline wrapper/classes when simple; **`util-task-block`** when rich linked materials present | Timeline no longer reads as generic activity cards on kitchen sink / inflation sequence sections |
+| R26-022 | **`utilityRenderIconHeading`** always includes **`util-icon-heading`** | Single alignment model for section, material, output, support, and meta summary headings |
+| R26-023 | Kitchen sink 26-4 tests assert **CSS class markers** (timeline wrapper, material heading rules, `util-meta`) — not function names or pixels | Durable structural expectations per governance |
+
+### Before / after (visual)
+
+Validated against kitchen sink HTML, with inflation full fixture regression:
+
+- **Before:** Icon gaps uneven; material `h4` competed with activity titles; session timeline resembled task cards; tables and metadata fold felt functional but basic.
+- **After:** Calmer heading tiers; aligned icon headings; timeline stack with meta/title treatment; table wrapper and metadata card polish; LO export inherits full presentation CSS.
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Slice charter | [`slice-26-4-charter.md`](slice-26-4-charter.md) |
+| CSS helpers | `app.js` — `getUtilityPagePresentationCssV26_4`, `getUtilityPagePresentationCss` |
+| Tests | `tests/utility-renderer-kitchen-sink.test.js` (+2) |
+
+**Pack/runtime delta:** Presentation CSS + timeline HTML classes only. **246** tests passing.
+
+---
+
+## 2026-05-20 — Slice 26-5: typographic refinement and presentation finish
+
+### Decisions
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R26-024 | v26-5 in **`getUtilityPagePresentationCssV26_5()`**, composed after v26-2/v26-4 | Final polish layer without rewriting prior slices |
+| R26-025 | Assessment uses **`util-assessment-item`** (+ section/list wrappers); retains `util-task-block` | Distinct formative-check identity; no composition change |
+| R26-026 | Metadata summary → **“Document information”**; folded section `h3` still uses fixture heading (**Production Metadata**) | Professional footer affordance; inflation/kitchen sink metadata strings preserved in fold body |
+| R26-027 | `utility-page-render` fold test accepts summary or section metadata label | Summary label change must not break metadata fold smoke |
+
+### Before / after
+
+- **Icons:** centre-aligned flex rows replace per-icon margin-top nudges on headings and meta summary.
+- **Assessment:** numbered items, teal accent, explanation/answer blocks — no longer indistinguishable from activity cards.
+- **Timeline:** numbered step markers on left rail; white step cards vs flat dashed blocks.
+- **Print:** shadows stripped on cards/timeline/assessment for cleaner grayscale output.
+
+### Artefacts
+
+| Artefact | Path |
+|----------|------|
+| Slice charter | [`slice-26-5-charter.md`](slice-26-5-charter.md) |
+| CSS | `app.js` — `getUtilityPagePresentationCssV26_5` |
+| Tests | `tests/utility-renderer-kitchen-sink.test.js` (+2) |
+
+**Pack/runtime delta:** Presentation CSS + assessment HTML classes only. **248** tests passing.

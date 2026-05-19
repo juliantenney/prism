@@ -222,7 +222,8 @@ Materials are **embedded in activity rows** (canonical composed shape). No separ
 | **26-2** | **Done** — spacing pass via `getUtilityPagePresentationCssV26_2` (KS-A3 density/print) |
 | **26-3** | **Done** — fallback safety, metadata fold, checklist distinction, no worksheet injection |
 | **26-3b** | Material pattern polish (M05–M13) |
-| **26-4** | Print CSS on KS-A3; a11y pass on checklist/tables |
+| **26-4** | **Done** — professional polish (`getUtilityPagePresentationCssV26_4`, timeline/meta/table/card hierarchy) |
+| **26-5** | **Done** — typographic finish (`getUtilityPagePresentationCssV26_5`, assessment identity, print shadow strip) |
 | **26-5** | Extend tests: class counts, section icons, meta fold, KS-A1–A4 titles |
 | **26-6** | Optional: `renderer-kitchen-sink-page-answers.json` variant with `feedback_display: answer_grid_end` |
 

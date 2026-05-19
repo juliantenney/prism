@@ -195,7 +195,7 @@ function assertStandardListSemantics(html, scope, expectedLiCount) {
 }
 
 function assertProductionMetadataFold(html) {
-  assert.match(html, /Production Metadata/);
+  assert.match(html, /(?:Production Metadata|Document information)/);
   const body = mainBodyHtml(html);
   const meta = html.match(/<details class="util-meta"[\s\S]*$/i);
   assert.ok(meta, "expected util-meta details");

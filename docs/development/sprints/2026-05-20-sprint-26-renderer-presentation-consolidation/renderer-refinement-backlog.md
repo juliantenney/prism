@@ -16,7 +16,7 @@
 |----|------|------|-------|
 | B26-001 | Section spacing rhythm (`h2` → content, section → section) | Safe | **Done (26-2)** — `getUtilityPagePresentationCssV26_2` section/`h2` rules |
 | B26-002 | Activity block density (`util-task-block` padding vs nested materials) | Safe | **Done (26-2)** — activity block + materials border rhythm |
-| B26-003 | Heading hierarchy clarity (activity `h3` vs material `h4`) | Safe | **Partial (26-2)** — typographic weight/size; tag levels unchanged |
+| B26-003 | Heading hierarchy clarity (activity `h3` vs material `h4`) | Safe | **Done (26-4, 26-5)** — material tier + markdown section heading calm-down in v26-5 |
 | B26-004 | Table overflow / print (A2 comparison table, worksheets) | Safe · Charter | **Done (26-2)** — `.util-table-scroll` + print overflow |
 | B26-005 | Long prompt set scannability (A2, A5) | Safe | **Done (26-2)** — prompt set + list spacing / wrap |
 
@@ -26,13 +26,13 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-010 | Task card grid alignment (`util-card-grid`, `util-task-card`) | Safe | **Partial (26-2)** — grid gap/minmax; accent borders unchanged |
-| B26-011 | Scenario card stack (`util-scenario-list`, titles) | Safe | Scenario A/B vs numbered scenarios — consistent title class |
-| B26-012 | Prompt set + checklist grouping (A2) | Safe | Reduce duplicate `fa-comments` confusion between prompt vs checklist headings |
-| B26-013 | Worksheet / table heading pattern | Safe | `util-material-heading` + table spacing |
+| B26-010 | Task card grid alignment (`util-card-grid`, `util-task-card`) | Safe | **Partial (26-2, 26-4)** — grid gap/minmax; light card shadow in v26-4 |
+| B26-011 | Scenario card stack (`util-scenario-list`, titles) | Safe | **Partial (26-4, 26-5)** — unified card radius/shadow restraint |
+| B26-012 | Prompt set + checklist grouping (A2) | Safe | **Done (26-3, 26-5)** — distinct accent colours (blue vs slate) in v26-5 |
+| B26-013 | Worksheet / table heading pattern | Safe | **Partial (26-4)** — material heading + `.util-table-scroll` border/header/empty-cell treatment |
 | B26-014 | Support note vs output block distinction | Safe | **Done (26-2)** — margin separation after output block |
-| B26-015 | Session timeline / sequence blocks (if in fixture) | Safe | Dashed `util-session-step` polish |
-| B26-016 | Metadata collapse (`util-meta`, production metadata) | Safe | Clear summary line; print: expand or hide per rule |
+| B26-015 | Session timeline / sequence blocks (if in fixture) | Safe | **Done (26-4, 26-5)** — numbered step progression in v26-5 |
+| B26-016 | Metadata collapse (`util-meta`, production metadata) | Safe | **Partial (26-4, 26-5)** — document-information summary + footer typography; print expand deferred |
 
 ---
 
@@ -40,8 +40,8 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-020 | Heading structure audit per exported page | Safe | One `h1`; section `h2`; activity `h3` |
-| B26-021 | Icon accessibility pass | Safe | Decorative only; no new unlabeled interactive icons |
+| B26-020 | Heading structure audit per exported page | Safe | **Partial (26-5)** — markdown `h2`–`h4` calm-down inside sections; tag levels unchanged |
+| B26-021 | Icon accessibility pass | Safe | **Partial (26-4)** — `util-icon-heading` alignment; decorative FA unchanged |
 | B26-022 | Colour contrast on badges and muted text | Safe | Badge blues/greens on grey backgrounds |
 | B26-023 | Checkbox list readability | Safe | **Done (26-2)** — `util-checkbox-list` line-height/margins |
 | B26-024 | Mobile reflow (max-width 980 → narrow) | Safe · Charter | Card grids stack; tables scroll |
@@ -52,11 +52,11 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-030 | Print-specific CSS (`@media print`) | Charter | **Partial (26-2)** — break-inside on activities/cards; hide chrome deferred |
+| B26-030 | Print-specific CSS (`@media print`) | Charter | **Partial (26-2, 26-5)** — break-inside + v26-5 shadow removal / grayscale borders |
 | B26-031 | Compact mode for long workshops | Charter | Toggle via render option only — **no content omission** |
 | B26-032 | Facilitator note styling variant | Safe · Charter | Secondary typographic tier |
-| B26-033 | Material grouping subheadings (icon + label consistency) | Safe | `util-material-heading` icon map review |
-| B26-034 | Learning object mode presentation parity | Charter | LO screens inherit 26-2 spacing rules |
+| B26-033 | Material grouping subheadings (icon + label consistency) | Safe | **Partial (26-4)** — calmer `util-material-heading` + `util-icon-heading` gap |
+| B26-034 | Learning object mode presentation parity | Charter | **Partial (26-4)** — LO export appends full `getUtilityPagePresentationCss()`; LO chrome polish deferred |
 
 ---
 
@@ -66,7 +66,7 @@
 |----|------|------|-------|
 | B26-040 | Fixture: dense nested materials slice | Safe | Extract A1-only fragment JSON |
 | B26-041 | Fixture: long prompt set fragment | Safe | A2 prompt_set + checklist |
-| B26-042 | Test: print-critical CSS classes exist | Safe | **Partial (26-2)** — kitchen sink asserts `@media print` + `break-inside` in inline CSS |
+| B26-042 | Test: print-critical CSS classes exist | Safe | **Partial (26-2, 26-4)** — kitchen sink asserts print rules + timeline print `break-inside` in v26-4 |
 | B26-043 | Test: metadata collapsed by default | Safe | `<details class="util-meta">` |
 | B26-044 | Test: no placeholder markdown leaks | Safe | Extend existing sanitizer tests |
 | B26-045 | Catalog `sectionOrder` parity render smoke | Safe | Already in inflation tests — keep green |
@@ -107,10 +107,10 @@ See gap audit in [`renderer-kitchen-sink-fixture-design.md`](renderer-kitchen-si
 | **26-1** | Audit all P0; confirm priorities |
 | **26-2** | B26-001–005, B26-010/014/023 (partial), B26-030 (partial) — **complete** |
 | **26-3** | Fallback safety, metadata fold, B26-054 — **complete** |
-| **26-3b** | B26-010–016, B26-033 |
-| **26-4** | B26-020–024, B26-030 |
-| **26-5** | B26-040–045 |
-| **26-6** | B26-030–034 (pick one per charter) |
+| **26-3b** | B26-010–016, B26-033 (residual polish) |
+| **26-4** | B26-003, 010–016 (partial), 021, 033–034 (partial), 042 (partial) — **complete** |
+| **26-5** | B26-003, 011–016 (partial), 012, 020 (partial), 021, 030 (partial), assessment identity — **complete** |
+| **26-6** | B26-040–045, B26-022, B26-031–034 (optional) |
 
 ---
 

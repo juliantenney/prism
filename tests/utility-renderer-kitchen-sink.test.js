@@ -196,3 +196,36 @@ test("kitchen sink fixture (26-3): session timeline renders safely", () => {
   assert.match(html, /util-session-step/);
   assert.match(html, /Complete pattern showcase materials/i);
 });
+
+test("kitchen sink fixture (26-4): professional polish CSS and timeline structure", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-session-timeline\{/);
+  assert.match(html, /<div class="util-session-timeline">/);
+  assert.match(html, /util-timeline-step/);
+  assert.match(html, /util-timeline-meta/);
+  assert.match(html, /h4\.util-material-heading/);
+  assert.match(html, /<details class="util-meta"/);
+});
+
+test("kitchen sink fixture (26-4): material headings use icon-heading alignment", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /util-material-heading util-icon-heading/);
+});
+
+test("kitchen sink fixture (26-5): typographic polish and assessment identity", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-assessment-section\{/);
+  assert.match(html, /<section class="util-assessment-section">/);
+  assert.match(html, /util-assessment-item/);
+  assert.match(html, /util-assessment-number/);
+  assert.match(html, /util-assessment-options/);
+  assert.match(html, /util-assessment-explanation/);
+  assert.match(html, /Document information/);
+});
+
+test("kitchen sink fixture (26-5): icon alignment and print polish CSS markers", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-icon-heading\{[^}]*align-items:center/);
+  assert.match(html, /counter-reset:timeline-step/);
+  assert.match(html, /box-shadow:none!important/);
+});

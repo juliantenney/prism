@@ -8,7 +8,7 @@
 
 - [Sprint 25 — Design Page composition and renderer consolidation](../2026-05-19-sprint-25-design-page-composition-renderer-consolidation/sprint-25-closeout.md) — composition + export contracts **implemented**; live workshop **A1–A5** preserved; **229** tests passing
 
-**Verification floor (entry):** **229 passed**, 0 failed · **current:** **244 passed** (kitchen sink + 26-2/26-3 smoke)
+**Verification floor (entry):** **229 passed**, 0 failed · **current:** **248 passed** (kitchen sink + 26-2–26-5 smoke)
 
 ---
 
@@ -50,6 +50,8 @@ Sprint 26 is **presentation-only**. It does **not** reopen composition semantics
 | [`renderer-kitchen-sink-fixture-design.md`](renderer-kitchen-sink-fixture-design.md) | **Kitchen sink** fixture design, coverage matrix, gap audit |
 | [`slice-26-2-charter.md`](slice-26-2-charter.md) | **26-2** spacing/hierarchy/density pass (complete) |
 | [`slice-26-3-charter.md`](slice-26-3-charter.md) | **26-3** fallback safety + structural cleanup (complete) |
+| [`slice-26-4-charter.md`](slice-26-4-charter.md) | **26-4** professional renderer polish (complete) |
+| [`slice-26-5-charter.md`](slice-26-5-charter.md) | **26-5** typographic refinement and finish (complete) |
 | [`tests/fixtures/page-render/renderer-kitchen-sink-page.json`](../../../tests/fixtures/page-render/renderer-kitchen-sink-page.json) | Synthetic renderer stress JSON |
 | [`tests/utility-renderer-kitchen-sink.test.js`](../../../tests/utility-renderer-kitchen-sink.test.js) | Kitchen sink smoke tests |
 
@@ -62,10 +64,9 @@ Sprint 26 is **presentation-only**. It does **not** reopen composition semantics
 | **26-1** | Governance refresh + renderer audit baseline (inflation HTML review) | **Complete** |
 | **26-2** | Global visual rhythm (spacing, headings, section transitions, density) | **Complete** |
 | **26-3** | Fallback safety + structural cleanup | **Complete** |
-| **26-3b** | Material pattern polish (cards, prompts, scenarios, tables, worksheets) | Proposed |
-| **26-4** | Accessibility, print/PDF CSS, mobile tolerance | Proposed |
-| **26-5** | Regression fixtures + test extensions | Proposed |
-| **26-6** | Optional bounded enhancements (compact mode, print sheet, etc.) | Optional — charter per item |
+| **26-4** | Professional renderer polish (hierarchy, icons, cards, timeline, tables, metadata) | **Complete** |
+| **26-5** | Typographic refinement and presentation finish | **Complete** |
+| **26-6** | Fragment fixtures + optional enhancements (compact mode, etc.) | Optional — charter per item |
 
 Slices are **not implementation-approved** until chartered individually. **26-1** may be documentation + audit only.
 

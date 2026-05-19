@@ -1,0 +1,137 @@
+{
+  "artifact_type": "page",
+  "title": "RNA Viruses and Hepatitis C — Self-Study",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Self-study page on RNA viruses with emphasis on hepatitis C virus (HCV) biology."
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative Assessment Check",
+      "content": {
+        "items": [
+          {
+            "item_id": "Q1",
+            "stem": "Which type of RNA virus genome can be directly translated by host ribosomes without a transcription step?",
+            "options": {
+              "A": "Positive-sense RNA",
+              "B": "Negative-sense RNA",
+              "C": "Double-stranded RNA only",
+              "D": "Retroviral DNA provirus"
+            }
+          },
+          {
+            "item_id": "Q2",
+            "stem": "Why is microRNA-122 essential for efficient hepatitis C virus replication in hepatocytes?",
+            "options": {
+              "A": "It stabilizes the viral 5' UTR and promotes RNA abundance",
+              "B": "It encodes the viral polymerase",
+              "C": "It cleaves host interferon mRNA",
+              "D": "It integrates the viral genome into chromosome 22"
+            }
+          },
+          {
+            "item_id": "Q3",
+            "stem": "Which HCV protein is primarily responsible for RNA-dependent RNA polymerase activity?",
+            "options": {
+              "A": "NS5B",
+              "B": "E2",
+              "C": "Core",
+              "D": "NS3 only, with no cofactor"
+            }
+          },
+          {
+            "item_id": "Q4",
+            "stem": "What is a key reason negative-sense RNA viruses carry an RNA-dependent RNA polymerase in the virion?",
+            "options": {
+              "A": "Host ribosomes cannot translate genomic RNA directly",
+              "B": "They require reverse transcriptase for integration",
+              "C": "They package DNA-dependent DNA polymerase instead",
+              "D": "They lack any capsid protein"
+            }
+          },
+          {
+            "item_id": "Q5",
+            "stem": "Which statement best describes the HCV life cycle entry step?",
+            "options": {
+              "A": "Attachment and receptor-mediated endocytosis followed by fusion",
+              "B": "Immediate integration into host DNA",
+              "C": "Budding from the nuclear membrane only",
+              "D": "Lytic exit without prior replication"
+            }
+          },
+          {
+            "item_id": "Q6",
+            "stem": "How do many RNA viruses avoid detection by innate immunity early in infection?",
+            "options": {
+              "A": "Shielding or modifying viral RNA so RIG-I-like sensors are not triggered",
+              "B": "Deleting all host ribosomes",
+              "C": "Converting genomes permanently to DNA",
+              "D": "Stopping host transcription globally within seconds"
+            }
+          },
+          {
+            "item_id": "Q7",
+            "stem": "Which genome structure is characteristic of influenza A virus?",
+            "options": {
+              "A": "Segmented negative-sense RNA",
+              "B": "Single positive-sense RNA only",
+              "C": "Circular DNA",
+              "D": "Non-segmented double-stranded DNA"
+            }
+          },
+          {
+            "item_id": "Q8",
+            "stem": "What distinguishes retroviruses from most other RNA viruses?",
+            "options": {
+              "A": "Reverse transcription of RNA into DNA before integration",
+              "B": "Direct translation of negative-sense RNA without polymerase",
+              "C": "Lack of any envelope",
+              "D": "Replication solely in the nucleus without capsids"
+            }
+          },
+          {
+            "item_id": "Q9",
+            "stem": "Which host factor is commonly associated with lipid droplets during HCV assembly?",
+            "options": {
+              "A": "Core protein interactions organizing particle assembly",
+              "B": "Host mitochondrial DNA polymerase",
+              "C": "Bacterial peptidoglycan synthase",
+              "D": "Plant chloroplast RNA"
+            }
+          },
+          {
+            "item_id": "Q10",
+            "stem": "Why is error-prone replication an evolutionary advantage for many RNA viruses?",
+            "options": {
+              "A": "It increases quasispecies diversity under selection pressure",
+              "B": "It guarantees faithful repair of all mutations",
+              "C": "It eliminates the need for any polymerase",
+              "D": "It prevents antigenic variation entirely"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "section_id": "support_notes",
+      "heading": "Study and Revision Guidance",
+      "content": "- Re-read the knowledge summary before attempting the self-check.\n- Note one misconception you corrected while studying.\n- Use the item rationales only after you have answered each question."
+    },
+    {
+      "section_id": "metadata",
+      "heading": "Production Metadata",
+      "content": {
+        "fixture_id": "ld-rna-hcv-assessment-page",
+        "page_profile": "learner"
+      }
+    }
+  ],
+  "source_artefacts": {
+    "learning_content": true,
+    "assessment_items": true
+  }
+}

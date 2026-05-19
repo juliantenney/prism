@@ -41,7 +41,23 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 26 — Renderer presentation consolidation (**active**, 2026-05-20)
+### Sprint 26 — Pedagogical intent & workflow topology (**active**, 2026-05-20)
+
+**Portable pack:** [`docs/development/sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/)
+
+| Entry | Path |
+|-------|------|
+| Index | [`sprint-26-index.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/sprint-26-index.md) |
+| Handover | [`HANDOVER.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/HANDOVER.md) |
+| 26-1 charter | [`slice-26-1-charter.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/slice-26-1-charter.md) |
+
+**Scope:** Sparse LD briefs — **Track A open** (topology / missing activity steps); **Track B closed** (assessment export rendering, R26-PI-007–009). **Case:** RNA virus / HCV self-study brief.
+
+**Verification floor:** `node --test tests/*.test.js` → **252 passed**.
+
+---
+
+### Sprint 26 — Renderer presentation consolidation (**paused**, 2026-05-20)
 
 **Portable pack:** [`docs/development/sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/)
 

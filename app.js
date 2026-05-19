@@ -20290,7 +20290,96 @@
     function looksAssessmentItemsSection(name) {
       var t = String(name || "").toLowerCase();
       if (looksStudyTipsSection(t)) return false;
-      return /\b(assessment[_\s-]?items|formative[_\s-]?(assessment|questions|check)|questions?)\b/.test(t);
+      return /\b(assessment[_\s-]?(items|check)|formative[_\s-]?(assessment|questions|check)|questions?)\b/.test(t);
+    }
+    function isAssessmentCheckSection(sectionId, headingText, orderedKey) {
+      var heading = String(headingText || "").trim();
+      if (looksStudyTipsSection(heading) || looksStudyTipsSection(sectionId)) return false;
+      if (looksStudyTipsSection(orderedKey)) return false;
+      var sid = String(sectionId || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+      if (sid === "support_notes" || sid === "study_tips" || sid === "study_tip") return false;
+      if (resolveSectionKind(sectionId, headingText) === "assessment_check") return true;
+      if (sid) return false;
+      return looksAssessmentItemsSection(headingText) || looksAssessmentItemsSection(orderedKey);
+    }
+    function looksSupportNotesSection(sectionId, headingText) {
+      var sid = String(sectionId || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+      if (sid === "support_notes") return true;
+      var heading = String(headingText || "").toLowerCase();
+      return /\b(support notes?|facilitator notes?|study and revision guidance)\b/.test(heading);
+    }
+    function resolvePageSectionHeadingFromEntry(item, idx, orderedKeys, labelsMap) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        return "Section " + (idx + 1);
+      }
+      var headingValue = firstNonEmpty([
+        item.title,
+        item.heading,
+        item.name,
+        item.section_title,
+        item.section_heading,
+        item.label,
+        item.section
+      ]);
+      var sectionIdValue = String(item.section_id || item.id || "").trim();
+      if (String(headingValue || "").trim()) return String(headingValue).trim();
+      if (sectionIdValue && labelsMap[sectionIdValue]) return labelsMap[sectionIdValue];
+      if (sectionIdValue) return utilityLabelFromKey(sectionIdValue);
+      var orderedKey = orderedKeys[idx] || "";
+      if (orderedKey && labelsMap[orderedKey]) return labelsMap[orderedKey];
+      if (orderedKey) return utilityLabelFromKey(orderedKey);
+      return "Section " + (idx + 1);
+    }
+    function resolvePageSectionContentFromEntry(item) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+      var contentValue =
+        item.content != null ? item.content :
+        item.body != null ? item.body :
+        item.text != null ? item.text :
+        "";
+      if (!utilityIsEmptyValue(contentValue)) return contentValue;
+      var contentKeys = Object.keys(item).filter(function (k) {
+        return [
+          "title",
+          "heading",
+          "name",
+          "section_title",
+          "section_heading",
+          "label",
+          "section",
+          "content",
+          "body",
+          "text",
+          "section_id",
+          "id"
+        ].indexOf(String(k || "")) === -1 && !utilityIsEmptyValue(item[k]);
+      });
+      if (contentKeys.length === 1) return item[contentKeys[0]];
+      if (!contentKeys.length) return item;
+      return contentValue;
+    }
+    function collectAssessmentQuestionRows(sectionValue) {
+      if (!sectionValue) return [];
+      if (Array.isArray(sectionValue)) {
+        return sectionValue.filter(function (row) { return !utilityIsEmptyValue(row); });
+      }
+      if (typeof sectionValue !== "object") return [];
+      var fromObject = collectQuestionRowsFromObject(sectionValue);
+      if (fromObject && fromObject.length) return fromObject;
+      if (Array.isArray(sectionValue.assessment_items)) {
+        return sectionValue.assessment_items.filter(function (row) { return !utilityIsEmptyValue(row); });
+      }
+      if (sectionValue.assessment_items && typeof sectionValue.assessment_items === "object") {
+        var nestedItems = collectQuestionRowsFromObject(sectionValue.assessment_items);
+        if (nestedItems && nestedItems.length) return nestedItems;
+      }
+      return [];
     }
     function looksLearningActivitiesSection(name) {
       var t = String(name || "").toLowerCase();
@@ -23551,7 +23640,9 @@
         ]) || ""
       ).toLowerCase();
       var hasPrompt = !!firstNonEmpty([row.stem, row.question, row.prompt, row.learner_task, row.instructions]);
-      var hasOptions = Array.isArray(row.options) && row.options.length > 0;
+      var hasOptions =
+        (Array.isArray(row.options) && row.options.length > 0) ||
+        (row.options && typeof row.options === "object" && !Array.isArray(row.options) && Object.keys(row.options).length > 0);
       return (
         /\b(mcq|multiple choice|single_answer_mcq|multiple_answer_mcq|short_answer|essay|true_false|question)\b/.test(typeBlob) ||
         hasPrompt ||
@@ -23849,6 +23940,47 @@
         }
       }
       return cardsHtml;
+    }
+    function renderAssessmentCheckSectionBlock(sectionValue, displayHeading, tokenLookupSectionsValue) {
+      function resolveAssessmentRowsFromToken(rawValue) {
+        if (!rawValue) return [];
+        if (Array.isArray(rawValue)) return rawValue;
+        if (rawValue && typeof rawValue === "object") return collectAssessmentQuestionRows(rawValue);
+        return [];
+      }
+      var assessmentRows = collectAssessmentQuestionRows(sectionValue);
+      if (
+        (!assessmentRows || !assessmentRows.length) &&
+        typeof sectionValue === "string" &&
+        String(sectionValue).trim().toLowerCase() === "assessment_check" &&
+        tokenLookupSectionsValue &&
+        typeof tokenLookupSectionsValue === "object" &&
+        !Array.isArray(tokenLookupSectionsValue)
+      ) {
+        assessmentRows = resolveAssessmentRowsFromToken(tokenLookupSectionsValue.assessment_check);
+        if (
+          (!assessmentRows || !assessmentRows.length) &&
+          tokenLookupSectionsValue.sections &&
+          typeof tokenLookupSectionsValue.sections === "object"
+        ) {
+          assessmentRows = resolveAssessmentRowsFromToken(tokenLookupSectionsValue.sections.assessment_check);
+        }
+      }
+      var assessmentHeadingText = String(displayHeading || "").trim() || "Formative Assessment Check";
+      var assessmentHeadingHtml = renderSectionHeadingH2(assessmentHeadingText, "assessment_check");
+      var assessmentHtml = renderQuestionBlocks(assessmentRows || [], {
+        feedbackDisplay: resolveSectionFeedbackDisplay(sectionValue) || renderOpts.feedbackDisplay
+      });
+      if (!String(assessmentHtml || "").trim()) {
+        if (typeof sectionValue === "string" && String(sectionValue).trim().toLowerCase() === "assessment_check") {
+          return "";
+        }
+        return utilityWrapAssessmentSectionHtml(
+          assessmentHeadingHtml,
+          "<p>Self-check questions will appear here.</p>"
+        );
+      }
+      return utilityWrapAssessmentSectionHtml(assessmentHeadingHtml, assessmentHtml);
     }
     function resolveSectionFeedbackDisplay(sectionValue) {
       if (!sectionValue || typeof sectionValue !== "object" || Array.isArray(sectionValue)) return "";
@@ -24206,43 +24338,8 @@
             return "<section>" + renderSectionHeadingH2(sectionHeading, "study_tips") + studyTipsHtml + "</section>";
           }
         }
-        if (looksAssessmentItemsSection(sectionName) || looksAssessmentItemsSection(sectionHeading)) {
-          function resolveAssessmentRowsFromToken(rawValue) {
-            if (!rawValue) return [];
-            if (Array.isArray(rawValue)) return rawValue;
-            if (rawValue && typeof rawValue === "object") return collectQuestionRowsFromObject(rawValue) || [];
-            return [];
-          }
-          var assessmentRows = Array.isArray(sectionValue)
-            ? sectionValue
-            : collectQuestionRowsFromObject(sectionValue);
-          if ((!assessmentRows || !assessmentRows.length) && typeof sectionValue === "string" && String(sectionValue).trim().toLowerCase() === "assessment_check" && sectionsValue && typeof sectionsValue === "object" && !Array.isArray(sectionsValue)) {
-            assessmentRows = resolveAssessmentRowsFromToken(sectionsValue.assessment_check);
-            if ((!assessmentRows || !assessmentRows.length) && sectionsValue.sections && typeof sectionsValue.sections === "object") {
-              assessmentRows = resolveAssessmentRowsFromToken(sectionsValue.sections.assessment_check);
-            }
-          }
-          var sectionFeedbackDisplay = "";
-          if (sectionValue && typeof sectionValue === "object" && !Array.isArray(sectionValue)) {
-            sectionFeedbackDisplay = firstNonEmpty([
-              sectionValue.feedback_display,
-              sectionValue.feedbackDisplay,
-              sectionValue.metadata && sectionValue.metadata.feedback_display,
-              sectionValue.blueprint && sectionValue.blueprint.feedback_display,
-              sectionValue.assessment_blueprint && sectionValue.assessment_blueprint.feedback_display
-            ]);
-          }
-          var assessmentHtml = renderQuestionBlocks(assessmentRows || [], {
-            feedbackDisplay: sectionFeedbackDisplay || renderOpts.feedbackDisplay
-          });
-          if (!String(assessmentHtml || "").trim()) {
-            if (typeof sectionValue === "string" && String(sectionValue).trim().toLowerCase() === "assessment_check") return "";
-            return "<section>" + renderSectionHeadingH2("Formative Assessment Check", "assessment_check") + "<p>Self-check questions will appear here.</p></section>";
-          }
-          return utilityWrapAssessmentSectionHtml(
-            renderSectionHeadingH2("Formative Assessment Check", "assessment_check"),
-            assessmentHtml
-          );
+        if (isAssessmentCheckSection(sectionName, sectionHeading, sectionName)) {
+          return renderAssessmentCheckSectionBlock(sectionValue, sectionHeading, sectionsValue);
         }
         if (looksKnowledgeSummarySection(sectionName)) {
           var ksHtml = renderKnowledgeSummaryBlocks(sectionValue);
@@ -24338,48 +24435,10 @@
             ("Section " + (idx + 1));
           return "<section>" + renderSectionHeadingH2(fallbackHeading, orderedKeyForIndex) + fallbackBody + "</section>";
         }
-        var headingValue = firstNonEmpty([
-          item.title,
-          item.heading,
-          item.name,
-          item.section_title,
-          item.section_heading,
-          item.label,
-          item.section
-        ]);
-        var contentValue =
-          item.content != null ? item.content :
-          item.body != null ? item.body :
-          item.text != null ? item.text :
-          "";
-        if (utilityIsEmptyValue(contentValue)) {
-          var contentKeys = Object.keys(item).filter(function (k) {
-            return [
-              "title",
-              "heading",
-              "name",
-              "section_title",
-              "section_heading",
-              "label",
-              "section",
-              "content",
-              "body",
-              "text"
-            ].indexOf(String(k || "")) === -1 && !utilityIsEmptyValue(item[k]);
-          });
-          if (contentKeys.length === 1) {
-            if (!headingValue) headingValue = utilityLabelFromKey(contentKeys[0]);
-            contentValue = item[contentKeys[0]];
-          } else if (!contentKeys.length) {
-            contentValue = item;
-          }
-        }
-        var orderedKey = orderedKeys[idx] || "";
-        var sectionHeading =
-          String(headingValue || "").trim() ||
-          labelsMap[orderedKey] ||
-          utilityLabelFromKey(orderedKey) ||
-          ("Section " + (idx + 1));
+        var sectionIdValue = String(item.section_id || item.id || "").trim();
+        var orderedKey = sectionIdValue || orderedKeys[idx] || "";
+        var sectionHeading = resolvePageSectionHeadingFromEntry(item, idx, orderedKeys, labelsMap);
+        var contentValue = resolvePageSectionContentFromEntry(item);
         if (looksLearningActivitiesSection(sectionHeading) || looksLearningActivitiesSection(orderedKey)) {
           var arrActivityRows = resolveLearningActivityRowsForRender(
             contentValue,
@@ -24438,22 +24497,30 @@
             };
           }
         }
-        if (looksAssessmentItemsSection(sectionHeading) || looksAssessmentItemsSection(orderedKey)) {
-          var arrAssessmentRows = Array.isArray(contentValue)
-            ? contentValue
-            : collectQuestionRowsFromObject(contentValue);
-          var arrAssessmentFeedbackDisplay = resolveSectionFeedbackDisplay(contentValue);
-          var arrAssessmentHtml = renderQuestionBlocks(arrAssessmentRows || [], {
-            feedbackDisplay: arrAssessmentFeedbackDisplay || renderOpts.feedbackDisplay
-          });
-          if (!String(arrAssessmentHtml || "").trim()) return "";
-          return {
-            kind: "other",
-            html: utilityWrapAssessmentSectionHtml(
-              renderSectionHeadingH2("Formative Assessment Check", "assessment_check"),
-              arrAssessmentHtml
-            )
-          };
+        if (isAssessmentCheckSection(sectionIdValue, sectionHeading, orderedKey)) {
+          var arrAssessmentSectionHtml = renderAssessmentCheckSectionBlock(
+            contentValue,
+            sectionHeading,
+            null
+          );
+          if (!String(arrAssessmentSectionHtml || "").trim()) return "";
+          return { kind: "other", html: arrAssessmentSectionHtml };
+        }
+        if (looksSupportNotesSection(sectionIdValue, sectionHeading)) {
+          var arrSupportHtml =
+            typeof contentValue === "string"
+              ? utilityRenderMarkdownBlock(String(contentValue))
+              : Array.isArray(contentValue)
+              ? utilityRenderArray(contentValue, renderOpts)
+              : contentValue && typeof contentValue === "object"
+              ? utilityRenderObject(contentValue, 0, renderOpts)
+              : utilityRenderPrimitive(contentValue, renderOpts);
+          if (String(arrSupportHtml || "").trim()) {
+            return {
+              kind: "other",
+              html: "<section>" + renderSectionHeadingH2(sectionHeading, "support_notes") + arrSupportHtml + "</section>"
+            };
+          }
         }
         if (looksKnowledgeSummarySection(sectionHeading) || looksKnowledgeSummarySection(orderedKey)) {
           var arrKsHtml = renderKnowledgeSummaryBlocks(contentValue);
@@ -24473,12 +24540,31 @@
         var sectionKind = looksActivityResourcesSection(sectionHeading) || looksActivityResourcesSection(orderedKey)
           ? "resources"
           : "other";
+        var nestedAssessmentRows = collectAssessmentQuestionRows(contentValue);
+        if (nestedAssessmentRows.length && isAssessmentCheckSection(sectionIdValue, sectionHeading, orderedKey)) {
+          var nestedAssessmentHtml = renderAssessmentCheckSectionBlock(
+            contentValue,
+            sectionHeading,
+            null
+          );
+          if (String(nestedAssessmentHtml || "").trim()) {
+            return { kind: "other", html: nestedAssessmentHtml };
+          }
+        }
         var sectionBody = Array.isArray(contentValue)
           ? (looksTaskLikeSection(sectionHeading, contentValue)
-              ? renderTaskBlocks(contentValue)
+              ? (contentValue.some(function (r) { return isQuestionLikeRow(r); })
+                  ? renderQuestionBlocks(contentValue, {
+                      feedbackDisplay: resolveSectionFeedbackDisplay(contentValue) || renderOpts.feedbackDisplay
+                    })
+                  : renderTaskBlocks(contentValue))
               : utilityIsPrimitiveOnlyArray(contentValue)
               ? utilityRenderPrimitive(utilityJoinPrimitiveArrayLines(contentValue), renderOpts)
               : utilityRenderArray(contentValue, renderOpts))
+          : nestedAssessmentRows.length
+          ? renderQuestionBlocks(nestedAssessmentRows, {
+              feedbackDisplay: resolveSectionFeedbackDisplay(contentValue) || renderOpts.feedbackDisplay
+            })
           : contentValue && typeof contentValue === "object"
           ? utilityRenderObject(contentValue, 0, renderOpts)
           : utilityRenderPrimitive(contentValue, renderOpts);

@@ -14,11 +14,11 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-001 | Section spacing rhythm (`h2` → content, section → section) | Safe | Audit inflation HTML; unify `margin` on `section`, `util-section-heading` |
-| B26-002 | Activity block density (`util-task-block` padding vs nested materials) | Safe | A1 six cards + A3 four scenarios — avoid double padding |
-| B26-003 | Heading hierarchy clarity (activity `h3` vs material `h4`) | Safe | Ensure visual distinction without changing tags inappropriately |
-| B26-004 | Table overflow / print (A2 comparison table, worksheets) | Safe · Charter | Print CSS + `overflow-x` for narrow viewports |
-| B26-005 | Long prompt set scannability (A2, A5) | Safe | List spacing, prompt set container |
+| B26-001 | Section spacing rhythm (`h2` → content, section → section) | Safe | **Done (26-2)** — `getUtilityPagePresentationCssV26_2` section/`h2` rules |
+| B26-002 | Activity block density (`util-task-block` padding vs nested materials) | Safe | **Done (26-2)** — activity block + materials border rhythm |
+| B26-003 | Heading hierarchy clarity (activity `h3` vs material `h4`) | Safe | **Partial (26-2)** — typographic weight/size; tag levels unchanged |
+| B26-004 | Table overflow / print (A2 comparison table, worksheets) | Safe · Charter | **Done (26-2)** — `.util-table-scroll` + print overflow |
+| B26-005 | Long prompt set scannability (A2, A5) | Safe | **Done (26-2)** — prompt set + list spacing / wrap |
 
 ---
 
@@ -26,11 +26,11 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-010 | Task card grid alignment (`util-card-grid`, `util-task-card`) | Safe | Equal gaps; consistent left border accent |
+| B26-010 | Task card grid alignment (`util-card-grid`, `util-task-card`) | Safe | **Partial (26-2)** — grid gap/minmax; accent borders unchanged |
 | B26-011 | Scenario card stack (`util-scenario-list`, titles) | Safe | Scenario A/B vs numbered scenarios — consistent title class |
 | B26-012 | Prompt set + checklist grouping (A2) | Safe | Reduce duplicate `fa-comments` confusion between prompt vs checklist headings |
 | B26-013 | Worksheet / table heading pattern | Safe | `util-material-heading` + table spacing |
-| B26-014 | Support note vs output block distinction | Safe | `util-support-note` vs `util-output-block` visual language |
+| B26-014 | Support note vs output block distinction | Safe | **Done (26-2)** — margin separation after output block |
 | B26-015 | Session timeline / sequence blocks (if in fixture) | Safe | Dashed `util-session-step` polish |
 | B26-016 | Metadata collapse (`util-meta`, production metadata) | Safe | Clear summary line; print: expand or hide per rule |
 
@@ -43,7 +43,7 @@
 | B26-020 | Heading structure audit per exported page | Safe | One `h1`; section `h2`; activity `h3` |
 | B26-021 | Icon accessibility pass | Safe | Decorative only; no new unlabeled interactive icons |
 | B26-022 | Colour contrast on badges and muted text | Safe | Badge blues/greens on grey backgrounds |
-| B26-023 | Checkbox list readability | Safe | `util-checkbox-list` spacing |
+| B26-023 | Checkbox list readability | Safe | **Done (26-2)** — `util-checkbox-list` line-height/margins |
 | B26-024 | Mobile reflow (max-width 980 → narrow) | Safe · Charter | Card grids stack; tables scroll |
 
 ---
@@ -52,7 +52,7 @@
 
 | ID | Item | Type | Notes |
 |----|------|------|-------|
-| B26-030 | Print-specific CSS (`@media print`) | Charter | Hide nav chrome if any; page-break rules before activities |
+| B26-030 | Print-specific CSS (`@media print`) | Charter | **Partial (26-2)** — break-inside on activities/cards; hide chrome deferred |
 | B26-031 | Compact mode for long workshops | Charter | Toggle via render option only — **no content omission** |
 | B26-032 | Facilitator note styling variant | Safe · Charter | Secondary typographic tier |
 | B26-033 | Material grouping subheadings (icon + label consistency) | Safe | `util-material-heading` icon map review |
@@ -66,7 +66,7 @@
 |----|------|------|-------|
 | B26-040 | Fixture: dense nested materials slice | Safe | Extract A1-only fragment JSON |
 | B26-041 | Fixture: long prompt set fragment | Safe | A2 prompt_set + checklist |
-| B26-042 | Test: print-critical CSS classes exist | Safe | Smoke assert linked stylesheet rules optional |
+| B26-042 | Test: print-critical CSS classes exist | Safe | **Partial (26-2)** — kitchen sink asserts `@media print` + `break-inside` in inline CSS |
 | B26-043 | Test: metadata collapsed by default | Safe | `<details class="util-meta">` |
 | B26-044 | Test: no placeholder markdown leaks | Safe | Extend existing sanitizer tests |
 | B26-045 | Catalog `sectionOrder` parity render smoke | Safe | Already in inflation tests — keep green |
@@ -85,13 +85,29 @@
 
 ---
 
+## Kitchen sink coverage (B26-050+)
+
+| ID | Item | Type | Notes |
+|----|------|------|-------|
+| B26-050 | Kitchen sink fixture + smoke tests | Done | `renderer-kitchen-sink-page.json`, 7 tests |
+| B26-051 | Feedback-display variant fixture | Charter | `answer_grid_end` / `answers_explanations` |
+| B26-052 | Remove or gate PRISM TRACE material logs | P2 | DevTools noise |
+| B26-053 | First-class `comparison_table` key | P2 | Today uses remainder loop |
+| B26-054 | Checklist vs prompt_set icon differentiation | P2 | **Done (26-3)** — `fa-list-check`, `util-checklist-block` |
+| B26-055 | Configurable worksheet intro (not hard-coded) | P2 | analysis/impact table path |
+
+See gap audit in [`renderer-kitchen-sink-fixture-design.md`](renderer-kitchen-sink-fixture-design.md) §5.
+
+---
+
 ## Slice mapping (proposed)
 
 | Slice | Backlog IDs |
 |-------|-------------|
 | **26-1** | Audit all P0; confirm priorities |
-| **26-2** | B26-001–004, B26-020 |
-| **26-3** | B26-010–016 |
+| **26-2** | B26-001–005, B26-010/014/023 (partial), B26-030 (partial) — **complete** |
+| **26-3** | Fallback safety, metadata fold, B26-054 — **complete** |
+| **26-3b** | B26-010–016, B26-033 |
 | **26-4** | B26-020–024, B26-030 |
 | **26-5** | B26-040–045 |
 | **26-6** | B26-030–034 (pick one per charter) |

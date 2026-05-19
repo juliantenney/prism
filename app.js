@@ -19722,6 +19722,98 @@
     return "";
   }
 
+  function utilityIsRenderableScalar(value) {
+    if (value == null) return false;
+    var t = typeof value;
+    return t === "string" || t === "number" || t === "boolean";
+  }
+
+  function utilityFirstScalar(values) {
+    var list = Array.isArray(values) ? values : [];
+    for (var i = 0; i < list.length; i += 1) {
+      var v = list[i];
+      if (!utilityIsRenderableScalar(v)) continue;
+      var text = String(v).trim();
+      if (text) return text;
+    }
+    return "";
+  }
+
+  function utilityFirstPresent(values) {
+    var list = Array.isArray(values) ? values : [];
+    for (var i = 0; i < list.length; i += 1) {
+      if (!utilityIsEmptyValue(list[i])) return list[i];
+    }
+    return null;
+  }
+
+  function utilityRenderExportFieldValue(value, opts) {
+    if (utilityIsEmptyValue(value)) return "";
+    if (utilityIsRenderableScalar(value)) {
+      return utilityRenderMarkdownInline(String(value));
+    }
+    if (Array.isArray(value)) {
+      var arrHtml = utilityRenderArray(value, opts);
+      return String(arrHtml || "").trim() ? arrHtml : "";
+    }
+    if (value && typeof value === "object") {
+      return utilityRenderObject(value, 0, opts);
+    }
+    return "";
+  }
+
+  function utilityStripObjectObjectLeaks(html) {
+    return String(html || "").replace(/\[object Object\]/gi, "");
+  }
+
+  function utilityIsPageMetadataSectionEntry(entry) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+    var sid = String(entry.section_id || entry.id || "").toLowerCase().replace(/[\s-]+/g, "_");
+    if (sid === "metadata" || sid === "production_metadata") return true;
+    var heading = String(entry.heading || entry.title || entry.name || "").toLowerCase();
+    return /\b(production\s+metadata|page\s+metadata)\b/.test(heading);
+  }
+
+  function utilityRenderPageMetadataSectionHtml(entry, renderOpts) {
+    if (!entry || typeof entry !== "object") return "";
+    var metaOpts = Object.assign({}, renderOpts || {}, {
+      cleanupInlineMarkdown: false,
+      suppressInternalMetadata: false,
+      humanizeEnumValues: true
+    });
+    var heading = String(
+      utilityFirstScalar([entry.heading, entry.title, entry.name]) || "Production metadata"
+    ).trim();
+    var content =
+      entry.content != null ? entry.content :
+      entry.body != null ? entry.body :
+      entry.text != null ? entry.text :
+      null;
+    var body = Array.isArray(content)
+      ? utilityRenderArray(content, metaOpts)
+      : content && typeof content === "object"
+      ? utilityRenderObject(content, 0, metaOpts)
+      : utilityRenderPrimitive(content, metaOpts);
+    body = utilityStripObjectObjectLeaks(body);
+    if (!String(body || "").trim()) return "";
+    return (
+      '<section class="util-meta-section">' +
+      "<h3>" + utilityEscapeHtml(heading) + "</h3>" +
+      body +
+      "</section>"
+    );
+  }
+
+  function utilityPartitionPageSectionsArray(sections) {
+    var body = [];
+    var meta = [];
+    (Array.isArray(sections) ? sections : []).forEach(function (entry) {
+      if (utilityIsPageMetadataSectionEntry(entry)) meta.push(entry);
+      else body.push(entry);
+    });
+    return { bodySections: body, metadataSections: meta };
+  }
+
   function utilityRenderPrimitive(value, opts) {
     var renderOpts = utilityNormalizeRenderOpts(opts);
     if (utilityIsEmptyValue(value)) return "";
@@ -19788,7 +19880,8 @@
     var t = String(materialType || "").toLowerCase().trim();
     if (t === "task_card" || t === "task_cards") return "fa-layer-group";
     if (t === "scenario" || t === "scenarios") return "fa-map-location-dot";
-    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "checklist" || t === "discussion") return "fa-comments";
+    if (t === "checklist" || t === "checklists") return "fa-list-check";
+    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "discussion") return "fa-comments";
     if (t === "template" || t === "templates" || t === "worksheet_template") return "fa-file-lines";
     if (t === "table" || t === "worksheet" || t === "analysis_table") return "fa-table";
     if (t === "output" || t === "expected_output") return "fa-circle-check";
@@ -19803,7 +19896,8 @@
     var t = String(materialType || "").toLowerCase().trim();
     if (t === "task_card" || t === "task_cards") return "util-task-card-icon";
     if (t === "scenario" || t === "scenarios") return "util-scenario-card-icon";
-    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "checklist" || t === "discussion") return "util-prompt-set-icon";
+    if (t === "checklist" || t === "checklists") return "util-checklist-icon";
+    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "discussion") return "util-prompt-set-icon";
     if (t === "template" || t === "templates" || t === "worksheet_template") return "util-template-icon";
     if (t === "table" || t === "worksheet" || t === "analysis_table") return "util-table-icon";
     if (t === "output" || t === "expected_output") return "util-output-icon";
@@ -19947,7 +20041,7 @@
       var headHtml = "<tr>" + headerLabels.map(function (h) {
         return "<th>" + utilityEscapeHtml(h) + "</th>";
       }).join("") + "</tr>";
-      return "<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>";
+      return utilityWrapExportTableHtml("<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>");
     }
     var tableHtml = renderColumnRowsTable(obj);
     if (tableHtml) return tableHtml;
@@ -19988,7 +20082,7 @@
         return String(value).trim();
       }
       if (value && typeof value === "object" && !Array.isArray(value)) {
-        return firstNonEmpty([
+        return utilityFirstScalar([
           value.statement,
           value.purpose,
           value.summary,
@@ -20108,16 +20202,20 @@
           return "";
         }
         if (lowerKey === "expected_output") {
+          var expectedOutputHtml = utilityRenderExportFieldValue(value, renderOpts);
+          if (!String(expectedOutputHtml || "").trim()) return "";
           return (
             '<p class="util-output-inline util-icon-heading">' +
             utilityRenderMaterialIcon("output") +
             "<span><strong>What you will produce:</strong> " +
-            utilityRenderMarkdownInline(String(value == null ? "" : value)) +
+            expectedOutputHtml +
             "</span></p>"
           );
         }
         if (lowerKey === "support_note" || lowerKey === "support_notes") {
-          return utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(value == null ? "" : value)));
+          var supportHtml = utilityRenderExportFieldValue(value, renderOpts);
+          if (!String(supportHtml || "").trim()) return "";
+          return utilityRenderSupportNoteParagraph(supportHtml);
         }
         var headingLabel = humanKeyLabels[lowerKey] || utilityLabelFromKey(key);
         var heading = "<" + titleTag + ">" + utilityEscapeHtml(headingLabel) + "</" + titleTag + ">";
@@ -20158,10 +20256,14 @@
     function firstNonEmpty(values) {
       for (var i = 0; i < values.length; i += 1) {
         if (values[i] == null) continue;
+        if (typeof values[i] === "object") continue;
         var text = String(values[i]).trim();
         if (text) return text;
       }
       return "";
+    }
+    function firstPresent(values) {
+      return utilityFirstPresent(values);
     }
     function looksLearningSequenceSection(name) {
       var t = String(name || "").toLowerCase();
@@ -20386,6 +20488,7 @@
         .join("");
     }
     function summarizeOneSentence(text) {
+      if (text != null && typeof text === "object") return "";
       var raw = String(text == null ? "" : text).trim();
       if (!raw) return "";
       var firstLine = raw.split(/\r?\n/)[0].trim();
@@ -20660,13 +20763,13 @@
         return [{ content: raw }];
       }
       if (value && typeof value === "object") {
-        var body = firstNonEmpty([value.content, value.text, value.body]);
+        var body = utilityFirstScalar([value.content, value.text, value.body]);
         if (typeof body === "string" && /#{2,3}\s+/m.test(body)) {
           var nested = expandScenarioMaterialEntries(body);
           if (nested.length > 1 || (nested.length === 1 && nested[0].label)) {
             return nested.map(function (item) {
               return Object.assign({}, value, item, {
-                title: item.title || firstNonEmpty([value.title, value.name, value.label]) || item.label,
+                title: item.title || utilityFirstScalar([value.title, value.name, value.label]) || item.label,
                 content: item.content
               });
             });
@@ -21347,17 +21450,27 @@
             }
             if (entry && typeof entry === "object") {
               var t = firstNonEmpty([entry.title, entry.name, entry.label, entry.option]);
-              var d = firstNonEmpty([entry.description, entry.text, entry.content, entry.value]);
-              if (t && d) {
-                if (plainLabels) {
-                  rows.push("<li>" + utilityEscapeHtml(String(t)) + ": " + utilityRenderMarkdownInline(String(d)) + "</li>");
-                } else {
-                  rows.push("<li><strong>" + utilityEscapeHtml(String(t)) + ":</strong> " + utilityRenderMarkdownInline(String(d)) + "</li>");
+              var descriptionRaw = firstPresent([entry.description, entry.text, entry.content, entry.value]);
+              if (t && !utilityIsEmptyValue(descriptionRaw)) {
+                var descriptionHtml = utilityIsRenderableScalar(descriptionRaw)
+                  ? utilityRenderMarkdownInline(String(descriptionRaw))
+                  : utilityRenderExportFieldValue(descriptionRaw, renderOpts);
+                if (descriptionHtml) {
+                  if (plainLabels) {
+                    rows.push("<li>" + utilityEscapeHtml(String(t)) + ": " + descriptionHtml + "</li>");
+                  } else {
+                    rows.push("<li><strong>" + utilityEscapeHtml(String(t)) + ":</strong> " + descriptionHtml + "</li>");
+                  }
                 }
                 return;
               }
-              if (d) {
-                if (!isPlaceholderOnly(d)) rows.push("<li>" + utilityRenderMarkdownInline(String(d)) + "</li>");
+              if (!utilityIsEmptyValue(descriptionRaw)) {
+                var onlyDescHtml = utilityIsRenderableScalar(descriptionRaw)
+                  ? utilityRenderMarkdownInline(String(descriptionRaw))
+                  : utilityRenderExportFieldValue(descriptionRaw, renderOpts);
+                if (onlyDescHtml && (!utilityIsRenderableScalar(descriptionRaw) || !isPlaceholderOnly(String(descriptionRaw)))) {
+                  rows.push("<li>" + onlyDescHtml + "</li>");
+                }
                 return;
               }
               if (t) {
@@ -21454,7 +21567,7 @@
                   return "<td>" + utilityRenderMarkdownInline(String(cells[idx] == null ? "" : cells[idx])) + "</td>";
                 }).join("") + "</tr>";
               }).join("");
-              return "<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>";
+              return utilityWrapExportTableHtml("<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>");
             }
             function renderInlineBulletRun(blockText) {
               var raw = String(blockText == null ? "" : blockText).trim();
@@ -21868,7 +21981,7 @@
             }).join("");
             if (!bodyRows) return "";
             var head = "<tr>" + headers.map(function (h) { return "<th>" + utilityEscapeHtml(h) + "</th>"; }).join("") + "</tr>";
-            return "<table><thead>" + head + "</thead><tbody>" + bodyRows + "</tbody></table>";
+            return utilityWrapExportTableHtml("<table><thead>" + head + "</thead><tbody>" + bodyRows + "</tbody></table>");
           }
           try {
             console.log("[PRISM TRACE] renderMaterialValue:", {
@@ -21994,7 +22107,9 @@
                 })
                 .filter(function (x) { return !!String(x || "").trim(); })
                 .join("");
-              if (checklistSections) return checklistSections;
+              if (checklistSections) {
+                return '<div class="util-checklist-block">' + checklistSections + "</div>";
+              }
             }
             if (Array.isArray(value.sections) && (hint === "template" || hint === "templates" || hint === "escalation_template")) {
               var templateSections = value.sections
@@ -22197,7 +22312,11 @@
         }
         var checklistValue = materials.checklist;
         if (!utilityIsEmptyValue(checklistValue)) {
-          var checklistHtml = renderPromptSetBlocks(checklistValue) || renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
+          var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
+          if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistValue);
+          if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
+            checklistHtml = '<div class="util-checklist-block">' + checklistHtml + "</div>";
+          }
           if (checklistHtml) {
             parts.push(utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading") + checklistHtml);
             checklistRendered = true;
@@ -22253,7 +22372,6 @@
           if (tableHtml) {
             parts.push(
               utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
-              "<p>Use this table to record your group's decision for each scenario.</p>" +
               tableHtml
             );
           }
@@ -22325,10 +22443,14 @@
               if (!rendered) return;
             }
           }
-          var title = "<h4>" + utilityEscapeHtml(String(subsectionTitle || prettyMaterialHeading(k))) + "</h4>";
+          var materialTypeKey = utilityMaterialTypeFromKeyHint(k);
+          var headingLabel = String(subsectionTitle || prettyMaterialHeading(k));
+          var title = utilityRenderIconHeading("h4", headingLabel, materialTypeKey, "util-material-heading");
           if (String(k || "").toLowerCase() === "table") title = "";
           if (isCardLikeMaterialKey(k)) {
             parts.push('<article class="util-material-card">' + title + rendered + "</article>");
+          } else if (String(k || "").toLowerCase().indexOf("unknown") !== -1 || /^experimental_/.test(String(k || ""))) {
+            parts.push('<div class="util-material-fallback">' + title + rendered + "</div>");
           } else {
             parts.push(title + rendered);
           }
@@ -22485,8 +22607,8 @@
         var minute = firstNonEmpty([row.start_minute, row.startMinute, row.time, row.start_time]);
         var duration = firstNonEmpty([row.duration_minutes, row.duration, row.minutes]);
         var phase = firstNonEmpty([row.phase_type, row.phase, row.segment_type]);
-        var learnerTask = firstNonEmpty([row.learner_actions, row.learner_task, row.task, row.instructions, row.activity]);
-        var facilitator = firstNonEmpty([row.facilitator_actions, row.facilitator_notes, row.notes]);
+        var learnerTaskRaw = firstPresent([row.learner_actions, row.learner_task, row.task, row.instructions, row.activity]);
+        var facilitatorRaw = firstPresent([row.facilitator_actions, row.facilitator_notes, row.notes]);
         var mappedTitle = lookup[normalizeActivityLookupKey(firstNonEmpty([row.activity_id, row.activityId]))] || "";
         var title = firstNonEmpty([mappedTitle, row.title, row.activity_title, row.name]) || ("Activity " + (idx + 1));
         var metaLine = [];
@@ -22496,11 +22618,20 @@
         var body = [];
         if (metaLine.length) body.push("<p><strong>" + utilityEscapeHtml(metaLine.join(" | ")) + "</strong></p>");
         body.push("<h3>" + utilityEscapeHtml(title) + "</h3>");
-        if (learnerTask) body.push("<p><strong>Learner task:</strong> " + utilityRenderMarkdownInline(String(learnerTask)) + "</p>");
-        timeline.push('<article class="util-task-block">' + body.join("") + "</article>");
-        if (facilitator) {
+        var learnerTaskHtml = utilityRenderExportFieldValue(learnerTaskRaw, renderOpts);
+        if (learnerTaskHtml) {
+          body.push(
+            '<div class="util-sequence-field util-sequence-learner">' +
+            '<p class="util-line-label"><strong>Learner task:</strong></p>' +
+            learnerTaskHtml +
+            "</div>"
+          );
+        }
+        timeline.push('<article class="util-task-block util-session-step">' + body.join("") + "</article>");
+        var facilitatorHtml = utilityRenderExportFieldValue(facilitatorRaw, renderOpts);
+        if (facilitatorHtml) {
           facilitatorNotes.push(
-            "<li><strong>" + utilityEscapeHtml(title) + ":</strong> " + utilityRenderMarkdownInline(String(facilitator)) + "</li>"
+            "<li><strong>" + utilityEscapeHtml(title) + ":</strong> " + facilitatorHtml + "</li>"
           );
         }
       });
@@ -22791,11 +22922,13 @@
               hintedType
             ]) || "").toLowerCase();
             var title = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]);
-            var content = firstNonEmpty([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
+            var contentRaw = firstPresent([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
+            var content = utilityIsRenderableScalar(contentRaw) ? String(contentRaw).trim() : "";
             flattened.push({
               type: type,
               title: title,
               content: content,
+              contentRaw: contentRaw,
               source: entry
             });
             if (Array.isArray(entry.cards)) pushEntry(entry.cards, type || "task_cards");
@@ -22815,7 +22948,8 @@
         function pick(predicate) {
           for (var i = 0; i < flattened.length; i += 1) {
             var item = flattened[i];
-            if (!item || utilityIsEmptyValue(item.content)) continue;
+            if (!item) continue;
+            if (utilityIsEmptyValue(item.content) && utilityIsEmptyValue(item.contentRaw)) continue;
             if (predicate(item)) return item;
           }
           return null;
@@ -22827,7 +22961,18 @@
           pick(function (x) { return /\btemplate|worksheet\b/.test(x.type); }) ||
           pick(function (_x) { return true; });
         if (!chosen) return "";
+        var resourcesLabel = chosen.title || utilityLabelFromKey(chosen.type || "resource");
+        var html = [];
         var bodyText = String(chosen.content || "").trim();
+        if (!bodyText && !utilityIsEmptyValue(chosen.contentRaw)) {
+          var structuredBody = utilityRenderExportFieldValue(chosen.contentRaw, renderOpts);
+          if (structuredBody) {
+            html.push("<h4>" + utilityEscapeHtml(resourcesLabel || "Materials") + "</h4>");
+            html.push('<div class="util-sequence-field">' + structuredBody + "</div>");
+            return html.join("");
+          }
+          return "";
+        }
         if (!bodyText) return "";
         var lines = bodyText.split(/\r?\n/).map(function (l) { return String(l || "").trim(); }).filter(Boolean);
         var firstLine = lines.length ? lines[0] : bodyText;
@@ -22836,8 +22981,6 @@
         if (/\breflect|reflection\b/.test(lower)) modeHeading = "Reflect";
         else if (/\bdiscuss|discussion\b/.test(lower)) modeHeading = "Discuss";
         var excerpt = summarizeOneSentence(firstLine);
-        var resourcesLabel = chosen.title || utilityLabelFromKey(chosen.type || "resource");
-        var html = [];
         html.push("<h4>" + utilityEscapeHtml(modeHeading) + "</h4>");
         html.push("<p>" + utilityRenderMarkdownInline(excerpt) + "</p>");
         if (lines.length > 1) {
@@ -22866,7 +23009,7 @@
         ]) || (hasActivityId ? ("Activity " + (idx + 1)) : friendlySessionStepTitle(row.phase_type || row.phase, idx + 1));
         var minute = firstNonEmpty([row.start_minute, row.startMinute, row.time, row.start_time]);
         var duration = firstNonEmpty([row.duration_minutes, row.duration, row.minutes, activityRow && activityRow.duration_minutes]);
-        var learnerTaskRaw = firstNonEmpty([
+        var learnerTaskRaw = firstPresent([
           activityRow && activityRow.learner_task,
           row.learner_actions,
           row.learner_task,
@@ -22874,7 +23017,7 @@
           row.instructions,
           activityRow && activityRow.instructions
         ]);
-        var intro = summarizeOneSentence(learnerTaskRaw);
+        var intro = summarizeOneSentence(utilityIsRenderableScalar(learnerTaskRaw) ? learnerTaskRaw : "");
         var expectedOutput = firstNonEmpty([
           activityRow && activityRow.expected_output,
           row.expected_output,
@@ -22901,10 +23044,22 @@
         }
         parts.push("<h3>" + utilityEscapeHtml(title) + "</h3>");
         var introNorm = normalizeComparableText(intro);
-        var taskNorm = normalizeComparableText(learnerTaskRaw);
-        var showTaskDetail = !!learnerTaskRaw && taskNorm && taskNorm !== introNorm;
+        var taskNorm = utilityIsRenderableScalar(learnerTaskRaw)
+          ? normalizeComparableText(learnerTaskRaw)
+          : "";
+        var showTaskDetail = !!learnerTaskRaw && (!taskNorm || taskNorm !== introNorm);
         if (intro) parts.push("<p>" + utilityRenderMarkdownInline(intro) + "</p>");
-        if (showTaskDetail) parts.push("<p><strong>Learner task:</strong> " + utilityRenderMarkdownInline(String(learnerTaskRaw)) + "</p>");
+        if (showTaskDetail) {
+          var learnerDetailHtml = utilityRenderExportFieldValue(learnerTaskRaw, renderOpts);
+          if (learnerDetailHtml) {
+            parts.push(
+              '<div class="util-sequence-field util-sequence-learner">' +
+              '<p class="util-line-label"><strong>Learner task:</strong></p>' +
+              learnerDetailHtml +
+              "</div>"
+            );
+          }
+        }
         if (hasActivityId && grouping) parts.push("<p><strong>Grouping:</strong> " + utilityRenderMarkdownInline(
           (function () {
             var raw = String(grouping == null ? "" : grouping).trim().toLowerCase();
@@ -23991,7 +24146,7 @@
           var renderedSequence = renderLearningSequenceBlocks(sequenceRows, activityLookup);
           if (renderedSequence.facilitatorHtml) facilitatorAppendix.push(renderedSequence.facilitatorHtml);
           if (!String(renderedSequence.timelineHtml || "").trim()) return "";
-          return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(sequenceRows.length || 0), "learning_activities") + renderedSequence.timelineHtml + "</section>";
+          return "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + renderedSequence.timelineHtml + "</section>";
         }
         if (looksLearningPurposeOrOutcomesSection(sectionName)) {
           var lpoHtml = renderLearningPurposeOutcomes(sectionValue);
@@ -24128,6 +24283,9 @@
       var arrayFlowState = { activitiesDetailRendered: false };
       var renderedArraySections = sectionsValue.map(function (item, idx) {
         if (utilityIsEmptyValue(item)) return "";
+        if (utilityIsPageMetadataSectionEntry(item)) {
+          return { kind: "metadata", html: "" };
+        }
         if (!item || typeof item !== "object") {
           var fallbackBody = utilityRenderPrimitive(item, renderOpts);
           if (!String(fallbackBody || "").trim()) return "";
@@ -24210,7 +24368,7 @@
           }
           var arrRenderedSequence = renderLearningSequenceBlocks(arrSeqRows, arrayActivityLookup);
           if (!String(arrRenderedSequence.timelineHtml || "").trim()) return "";
-          var arrSequenceSection = "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(arrSeqRows.length || 0), "learning_activities") + arrRenderedSequence.timelineHtml + "</section>";
+          var arrSequenceSection = "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + arrRenderedSequence.timelineHtml + "</section>";
           if (arrRenderedSequence.facilitatorHtml) {
             arrSequenceSection += arrRenderedSequence.facilitatorHtml;
           }
@@ -24300,6 +24458,52 @@
     return "";
   }
 
+  function utilityWrapExportTableHtml(tableHtml) {
+    var html = String(tableHtml || "").trim();
+    if (!html || html.indexOf("<table") !== 0) return html;
+    return '<div class="util-table-scroll">' + html + "</div>";
+  }
+
+  function getUtilityPagePresentationCssV26_2() {
+    return [
+      "h2.util-section-heading{margin-top:28px;margin-bottom:10px}",
+      "section{margin-bottom:22px}",
+      "article.util-task-block{padding:18px 20px;margin:20px 0}",
+      ".util-activity-header{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}",
+      ".util-activity-header h3{font-size:1.0625rem;font-weight:600;color:#0f172a;line-height:1.3}",
+      ".util-activity-task{margin:0 0 14px}",
+      ".util-activity-materials{margin:10px 0 0;padding-top:12px;border-top:1px solid #f1f5f9;max-width:100%}",
+      ".util-task-block h4.util-material-heading{margin:18px 0 8px;font-size:.9375rem;font-weight:600;color:#475569}",
+      ".util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set,.util-task-block h4.util-material-heading+.util-table-scroll{margin-top:4px}",
+      ".util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:14px}",
+      ".util-card-grid{gap:14px;margin:8px 0 14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}",
+      ".util-task-card{margin-bottom:10px}",
+      ".util-task-card:last-child,.util-scenario-card:last-child{margin-bottom:0}",
+      ".util-scenario-list{margin:6px 0 12px}",
+      ".util-scenario-card{margin-bottom:10px;padding:12px 14px}",
+      ".util-prompt-set{margin:8px 0 14px;padding:14px 16px;line-height:1.55}",
+      ".util-prompt-set h5{margin:0 0 10px;font-size:.9rem;color:#334155}",
+      ".util-prompt-set ul{margin:0 0 4px 1.15rem}",
+      ".util-prompt-set li{line-height:1.5;margin-bottom:8px;overflow-wrap:anywhere}",
+      ".util-checkbox-list li{margin-bottom:8px;line-height:1.45;align-items:flex-start}",
+      ".util-checklist-block{margin:8px 0 14px;padding:12px 14px;border:1px solid #e2e8f0;border-left:3px solid #64748b;border-radius:8px;background:#fafafa}",
+      ".util-checklist-block h5{margin:0 0 8px;font-size:.9rem;color:#334155}",
+      ".util-checklist-icon{color:#475569}",
+      ".util-sequence-field{margin:8px 0 12px}",
+      ".util-material-fallback{margin:8px 0 12px}",
+      ".util-meta-section{margin:0 0 12px}",
+      ".util-meta-section h3{font-size:.95rem;margin:0 0 8px;color:#374151}",
+      ".util-table-scroll{margin:10px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}",
+      ".util-table-scroll table{margin:0}",
+      ".util-activity-materials>p:only-child{margin-bottom:8px}",
+      ".util-output-block{margin:16px 0 10px}",
+      ".util-support-note{margin-top:14px}",
+      ".util-output-block+.util-support-note{margin-top:12px}",
+      "@media (max-width:720px){.util-card-grid{grid-template-columns:1fr}}",
+      "@media print{article.util-task-block{break-inside:avoid-page;page-break-inside:avoid}.util-scenario-card,.util-prompt-set,.util-card-grid{break-inside:avoid-page}.util-table-scroll{overflow:visible}@page{margin:12mm}}"
+    ].join("");
+  }
+
   function buildUtilityLearningObjectHtml(title, audience, sectionHtmlBlocks, metadataHtmlBlocks) {
     var sections = Array.isArray(sectionHtmlBlocks) ? sectionHtmlBlocks.filter(function (x) { return !!String(x || "").trim(); }) : [];
     if (!sections.length) {
@@ -24328,7 +24532,9 @@
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
       "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
-      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}</style>",
+      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}" +
+        getUtilityPagePresentationCssV26_2() +
+        "</style>",
       "</head>",
       "<body>",
       '<div class="lo-shell">',
@@ -24799,6 +25005,11 @@
         buildPageSectionRenderOpts()
       );
       if (String(pageBodyHtml || "").trim()) primaryBlocks.push(pageBodyHtml);
+      pageSectionsArray.forEach(function (metaEntry) {
+        if (!utilityIsPageMetadataSectionEntry(metaEntry)) return;
+        var metaSectionHtml = utilityRenderPageMetadataSectionHtml(metaEntry, buildPageSectionRenderOpts());
+        if (String(metaSectionHtml || "").trim()) metadataBlocks.push(metaSectionHtml);
+      });
     }
 
     if (sectionOrder.length) {
@@ -24946,7 +25157,7 @@
         if (!textOnly) return "";
         return full;
       });
-      return out;
+      return utilityStripObjectObjectLeaks(out);
     }
     htmlParts.unshift(
       "<style>.util-checkbox-list{list-style:none;margin-left:0;padding-left:0}.util-checkbox-list li{display:flex;gap:.5rem;align-items:flex-start}.util-checkbox{flex:0 0 auto}</style>"
@@ -24960,7 +25171,9 @@
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
       "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
-      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}</style>",
+      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}" +
+        getUtilityPagePresentationCssV26_2() +
+        "</style>",
       "</head>",
       "<body>",
       htmlParts.join(""),

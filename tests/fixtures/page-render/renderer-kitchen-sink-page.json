@@ -1,0 +1,273 @@
+{
+  "artifact_type": "page",
+  "title": "PRISM renderer kitchen sink (synthetic)",
+  "audience": "Renderer QA — not for learners",
+  "page_profile": "learner",
+  "feedback_display": "none",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Synthetic **renderer stress** page for Sprint 26. Exercises Utility HTML patterns only. Not workflow-generated; not a composition exemplar."
+    },
+    {
+      "section_id": "learning_purpose",
+      "heading": "Learning purpose",
+      "content": {
+        "statement": "This fixture exists to validate presentation rendering:\n- section headings and icons\n- purpose statement with inline bullets",
+        "outcomes": [
+          "Render task cards and scenario cards without content loss",
+          "Render tables, checklists, and prompt sets deterministically",
+          "Surface unknown material keys via fallback paths"
+        ]
+      }
+    },
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key ideas",
+      "content": "## Summary block\n\n- Markdown **headings** and lists in a primitive string section\n- Pipe tables below\n\n| Concept | Role |\n| --- | --- |\n| sections[] | Canonical body |\n| strictCompositionClosure | No activity fabrication |"
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "KS-A1",
+          "title": "Pattern showcase — all material types",
+          "duration_minutes": 45,
+          "grouping": "small_group",
+          "purpose": "Exercise every first-class material renderer path in one activity block.",
+          "learner_task": "Work through each material block in order.\n- Complete the task cards\n- Read both scenarios\n- Answer every prompt",
+          "learner_instructions": "Alternate field: numbered steps as array",
+          "materials": {
+            "task_cards": [
+              { "title": "Card 1 — Warm-up", "text": "Write one sentence defining the target skill." },
+              { "title": "Card 2 — Evidence", "text": "Cite one datum from the table below." },
+              "### Card 3 — Markdown heading card\nStrip leading ### from card body when rendered."
+            ],
+            "scenario_section_title": "Case studies",
+            "scenarios": [
+              {
+                "scenario_title": "Scenario A",
+                "text": "A short narrative body for **scenario A** with inline emphasis."
+              },
+              "### Scenario B: Escalation path\nRent is fixed; utility costs rise 18% year-on-year.",
+              {
+                "title": "Scenario C",
+                "stages": [
+                  "Stage 1 — Observe: note three price changes",
+                  { "stage": "2", "title": "Compare", "content": "Place outcomes in the worksheet table." }
+                ]
+              }
+            ],
+            "prompt_set": {
+              "heading": "Discussion prompts",
+              "prompts": [
+                "What assumption in Scenario A is weakest?",
+                "How would you explain this to a non-specialist audience in under 30 seconds?",
+                "Long prompt stress: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
+              ]
+            },
+            "checklist": {
+              "sections": [
+                {
+                  "heading": "Before you submit",
+                  "items": [
+                    "☐ Table has at least two completed rows",
+                    "☐ You answered two discussion prompts",
+                    "- Plain bullet mixed with checkboxes"
+                  ]
+                },
+                {
+                  "heading": "Quality check",
+                  "items": ["☑ Self-reviewed spelling", "☐ Peer reviewed"]
+                }
+              ]
+            },
+            "template": {
+              "sections": [
+                "Reflection line 1",
+                {
+                  "heading": "Structured fields",
+                  "items": ["Field A: ______", "Field B: ______"]
+                }
+              ]
+            },
+            "escalation_template": {
+              "situation": "Patient observations worsening over 2 hours.",
+              "background": "Known history of asthma; no new medications.",
+              "assessment": "RR 28, SpO2 91% on room air.",
+              "recommendation": "Escalate to senior nurse; prepare salbutamol per protocol."
+            },
+            "analysis_table": "| Factor | Rating | Notes |\n| --- | --- | --- |\n| Clarity | High |  |\n| Feasibility | Medium |  |\n| Risk | Low |  |",
+            "impact_table": "| Stakeholder | Impact | Mitigation |\n| --- | --- | --- |\n| Learners | Medium | Scaffolded tables |",
+            "strategy_options": [
+              { "label": "Option A", "description": "Front-load concepts" },
+              { "label": "Option B", "description": "Problem-first inquiry" }
+            ],
+            "experimental_unknown_key": {
+              "heading": "Unknown material shape",
+              "body": "This key should fall through to renderMaterialValue / generic object rendering without breaking export."
+            }
+          },
+          "expected_output": "Completed cards, table rows, and at least two prompt responses.",
+          "support_note": "Circulate during minutes 10–35; prompt groups to justify table ratings."
+        },
+        {
+          "activity_id": "KS-A2",
+          "title": "Edge cases — optional fields and fallbacks",
+          "duration_minutes": 20,
+          "learner_task": "Single string learner_task only; no grouping badge expected.",
+          "materials": {
+            "prompts": "## Inline markdown prompts\n- First bullet prompt\n- Second bullet with **bold** label\n\nParagraph after list.",
+            "comparison_table": "| Measure | Value |\n| --- | --- |\n| Alpha | 1.2 |\n| Beta | 3.4 |",
+            "worksheet": "| Step | Done? |\n| --- | --- |\n| 1 |  |\n| 2 |  |"
+          },
+          "expected_output": "A single paragraph reflecting on trade-offs.",
+          "facilitator_note": "Long facilitator note stress: Use this block to verify support-note wrapping, contrast, and print margins. Repeat key timing cues. Confirm groups do not skip the comparison table. Offer one worked example if table rows are empty after five minutes."
+        },
+        {
+          "activity_id": "KS-A3",
+          "title": "Density and print stress",
+          "duration_minutes": 30,
+          "grouping": "pair",
+          "purpose": "Dense materials for spacing, print, and scannability review.",
+          "learner_task": "Complete all tables; use checklists as you go.",
+          "materials": {
+            "task_cards": [
+              { "text": "Dense card 1" },
+              { "text": "Dense card 2" },
+              { "text": "Dense card 3" },
+              { "text": "Dense card 4" },
+              { "text": "Dense card 5" },
+              { "text": "Dense card 6" }
+            ],
+            "scenarios": [
+              "### Scenario 1\nFirst dense scenario paragraph.",
+              "### Scenario 2\nSecond dense scenario paragraph.",
+              "### Scenario 3\nThird dense scenario paragraph.",
+              "### Scenario 4\nFourth dense scenario paragraph."
+            ],
+            "analysis_table": "| Row | C1 | C2 | C3 | C4 |\n| --- | --- | --- | --- | --- |\n| 1 |  |  |  |  |\n| 2 |  |  |  |  |\n| 3 |  |  |  |  |\n| 4 |  |  |  |  |\n| 5 |  |  |  |  |",
+            "prompt_set": [
+              "Short prompt 1",
+              "Short prompt 2",
+              "Short prompt 3",
+              "Short prompt 4",
+              "Short prompt 5",
+              "Short prompt 6",
+              "Short prompt 7",
+              "Short prompt 8"
+            ],
+            "checklist": {
+              "sections": [
+                {
+                  "heading": "Print checklist",
+                  "items": [
+                    "☐ Margins acceptable",
+                    "☐ Tables do not clip",
+                    "☐ Headings do not orphan"
+                  ]
+                }
+              ]
+            }
+          },
+          "expected_output": "All tables started; at least half the cells filled.",
+          "support_note": ""
+        },
+        {
+          "activity_id": "KS-A4",
+          "title": "Minimal activity row",
+          "learner_task": "Confirm minimal rows still render a task block."
+        }
+      ]
+    },
+    {
+      "section_id": "learning_sequence",
+      "heading": "Session timeline",
+      "content": [
+        {
+          "activity_id": "KS-A1",
+          "start_minute": 0,
+          "duration_minutes": 45,
+          "phase_type": "main",
+          "learner_actions": "Complete pattern showcase materials.",
+          "facilitator_actions": "Time-check at 20 minutes; redirect to table if groups stall."
+        },
+        {
+          "activity_id": "KS-A2",
+          "start_minute": 45,
+          "duration_minutes": 20,
+          "learner_actions": "Edge-case materials and markdown prompts.",
+          "facilitator_notes": "Optional sequence-only facilitator line."
+        },
+        {
+          "activity_id": "KS-A3",
+          "start_minute": 65,
+          "duration_minutes": 30,
+          "learner_actions": "Dense print review.",
+          "facilitator_actions": "Prepare printed worksheets if using paper."
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "ks-q1",
+            "stem": "Which HTML class wraps a single learning activity?",
+            "options": ["util-section-heading", "util-task-block", "util-meta", "util-card-grid"],
+            "item_type": "mcq",
+            "correct_answer": "util-task-block",
+            "explanation": "Each activity renders as an article.util-task-block."
+          },
+          {
+            "item_id": "ks-q2",
+            "stem": "Select all material types explicitly handled in the first-pass materials loop.",
+            "options": ["task_cards", "scenarios", "prompt_set", "experimental_unknown_key"],
+            "item_type": "mcq",
+            "correct_answers": ["task_cards", "scenarios", "prompt_set"]
+          }
+        ]
+      }
+    },
+    {
+      "section_id": "study_tips",
+      "heading": "Study tips",
+      "content": "- Re-read tables before submitting.\n- Use headings in the browser print preview.\n- Compare your answers with the checklist."
+    },
+    {
+      "section_id": "support_notes",
+      "heading": "Facilitator support",
+      "content": "## Run notes\n\n- This page is **synthetic**; do not use as teaching content.\n- Verify collapsed metadata in export footer.\n- Session pacing: 95 minutes total."
+    },
+    {
+      "section_id": "metadata",
+      "heading": "Production Metadata",
+      "content": {
+        "fixture_id": "renderer-kitchen-sink-page",
+        "sprint": "26",
+        "generated_at": "2026-05-20T00:00:00Z",
+        "page_profile": "learner"
+      }
+    }
+  ],
+  "source_artefacts": {
+    "synthetic_fixture": true,
+    "learning_activities": false,
+    "activity_materials": false
+  },
+  "constraints_applied": {
+    "renderer_coverage_only": true,
+    "pedagogy": "none"
+  },
+  "generation_notes": {
+    "limitations": [
+      "Synthetic renderer stress fixture — not produced by Design Page workflow.",
+      "Does not define composition membership rules; see Sprint 25 contracts."
+    ],
+    "activities_omitted": []
+  }
+}

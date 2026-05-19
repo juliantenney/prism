@@ -3,7 +3,7 @@
 **Date:** 2026-05-20  
 **Pack path:** `docs/development/sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/`  
 **Sprint:** 26 — Renderer presentation consolidation  
-**Status:** **Open** — Slice **26-1** proposed (governance + audit)
+**Status:** **Open** — Slice **26-3** complete; **26-3b** next (material pattern polish)
 
 **Predecessor:** [Sprint 25 closeout](../2026-05-19-sprint-25-design-page-composition-renderer-consolidation/sprint-25-closeout.md) — **CLOSED**
 
@@ -29,9 +29,10 @@ Remaining quality work is **presentation and governance** of the existing utilit
 
 | Slice | Focus | Status |
 |-------|--------|--------|
-| **26-1** | Governance refresh + inflation HTML audit baseline | **Proposed — active** |
-| **26-2** | Global visual rhythm (spacing, headings, density) | Not chartered |
-| **26-3** | Material pattern polish | Not chartered |
+| **26-1** | Governance refresh + inflation HTML audit baseline | **Complete** |
+| **26-2** | Global visual rhythm (spacing, headings, density) | **Complete** — [`slice-26-2-charter.md`](slice-26-2-charter.md) |
+| **26-3** | Fallback safety + structural cleanup | **Complete** — [`slice-26-3-charter.md`](slice-26-3-charter.md) |
+| **26-3b** | Material pattern polish | Proposed |
 | **26-4** | Accessibility + print CSS | Not chartered |
 | **26-5** | Regression fixtures / tests | Not chartered |
 | **26-6** | Optional bounded enhancements | Not chartered |
@@ -59,17 +60,24 @@ See [`renderer-governance.md`](renderer-governance.md).
 | Sections | FA icons, `util-section-heading`, collapsed `util-meta` |
 | Export path | `buildUtilityStructuredHtml` → `utilityRenderPageSections` |
 | Strict mode | No activity fabrication when `sections[]` authoritative |
-| Tests | Inflation full/reduced fixtures; **229** pass |
+| Tests | Inflation + kitchen sink; **244** pass |
+| Presentation (26-2) | `getUtilityPagePresentationCssV26_2`, `.util-table-scroll` |
+| Structural (26-3) | `utilityRenderExportFieldValue`, metadata fold, `util-checklist-block` |
 
 ---
 
+## Kitchen sink fixture (26-1 deliverable)
+
+| Item | Path |
+|------|------|
+| Design note + matrix + gaps | [`renderer-kitchen-sink-fixture-design.md`](renderer-kitchen-sink-fixture-design.md) |
+| JSON | [`tests/fixtures/page-render/renderer-kitchen-sink-page.json`](../../../tests/fixtures/page-render/renderer-kitchen-sink-page.json) |
+| Smoke tests | [`tests/utility-renderer-kitchen-sink.test.js`](../../../tests/utility-renderer-kitchen-sink.test.js) |
+
 ## Next step
 
-Execute **Slice 26-1**:
+1. Charter **26-3b** — material pattern polish (B26-011–013, B26-033).
+2. Visual review: inflation full fixture after 26-2 CSS (sanity).
+3. Optional: baseline screenshots for 26-4 print/a11y pass.
 
-1. Read [`renderer-governance.md`](renderer-governance.md).
-2. Render inflation workshop full fixture; capture audit notes (spacing, hierarchy, a11y, print).
-3. Prioritise [`renderer-refinement-backlog.md`](renderer-refinement-backlog.md) (P0–P2).
-4. Log decisions in [`review-log.md`](review-log.md).
-
-**Verification floor:** `node --test tests/*.test.js` → **229 passed**.
+**Verification floor:** `node --test tests/*.test.js` → **244 passed**.

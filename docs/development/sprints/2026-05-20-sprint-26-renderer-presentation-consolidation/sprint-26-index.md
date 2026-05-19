@@ -8,7 +8,7 @@
 
 - [Sprint 25 — Design Page composition and renderer consolidation](../2026-05-19-sprint-25-design-page-composition-renderer-consolidation/sprint-25-closeout.md) — composition + export contracts **implemented**; live workshop **A1–A5** preserved; **229** tests passing
 
-**Verification floor (entry):** **229 passed**, 0 failed (`node --test tests/*.test.js`)
+**Verification floor (entry):** **229 passed**, 0 failed · **current:** **244 passed** (kitchen sink + 26-2/26-3 smoke)
 
 ---
 
@@ -28,7 +28,12 @@ Sprint 26 is **presentation-only**. It does **not** reopen composition semantics
 | **Export authority** | `sections[]` canonical body; `strictCompositionClosure` | **Frozen** — no authority changes |
 | **Renderer** | Faithful when JSON complete; typed material patterns | **Spacing, hierarchy, a11y, print, pattern polish** |
 
-**Benchmark fixture:** inflation workshop full page — [`tests/fixtures/page-render/ld-inflation-workshop-page-full.json`](../../../tests/fixtures/page-render/ld-inflation-workshop-page-full.json) + [`tests/utility-ld-inflation-page-render.test.js`](../../../tests/utility-ld-inflation-page-render.test.js).
+**Benchmark fixtures:**
+
+| Fixture | Role |
+|---------|------|
+| [`ld-inflation-workshop-page-full.json`](../../../tests/fixtures/page-render/ld-inflation-workshop-page-full.json) | Production-shaped composition fidelity (Sprint 25) |
+| [`renderer-kitchen-sink-page.json`](../../../tests/fixtures/page-render/renderer-kitchen-sink-page.json) | Synthetic renderer pattern coverage (Sprint 26) |
 
 ---
 
@@ -42,6 +47,11 @@ Sprint 26 is **presentation-only**. It does **not** reopen composition semantics
 | [`review-log.md`](review-log.md) | Decisions R26-001+ |
 | [`renderer-governance.md`](renderer-governance.md) | Safe vs prohibited renderer changes |
 | [`renderer-refinement-backlog.md`](renderer-refinement-backlog.md) | Scoped presentation backlog |
+| [`renderer-kitchen-sink-fixture-design.md`](renderer-kitchen-sink-fixture-design.md) | **Kitchen sink** fixture design, coverage matrix, gap audit |
+| [`slice-26-2-charter.md`](slice-26-2-charter.md) | **26-2** spacing/hierarchy/density pass (complete) |
+| [`slice-26-3-charter.md`](slice-26-3-charter.md) | **26-3** fallback safety + structural cleanup (complete) |
+| [`tests/fixtures/page-render/renderer-kitchen-sink-page.json`](../../../tests/fixtures/page-render/renderer-kitchen-sink-page.json) | Synthetic renderer stress JSON |
+| [`tests/utility-renderer-kitchen-sink.test.js`](../../../tests/utility-renderer-kitchen-sink.test.js) | Kitchen sink smoke tests |
 
 ---
 
@@ -49,9 +59,10 @@ Sprint 26 is **presentation-only**. It does **not** reopen composition semantics
 
 | Slice | Focus | Status |
 |-------|--------|--------|
-| **26-1** | Governance refresh + renderer audit baseline (inflation HTML review) | **Proposed — first** |
-| **26-2** | Global visual rhythm (spacing, headings, section transitions, density) | Proposed |
-| **26-3** | Material pattern polish (cards, prompts, scenarios, tables, worksheets) | Proposed |
+| **26-1** | Governance refresh + renderer audit baseline (inflation HTML review) | **Complete** |
+| **26-2** | Global visual rhythm (spacing, headings, section transitions, density) | **Complete** |
+| **26-3** | Fallback safety + structural cleanup | **Complete** |
+| **26-3b** | Material pattern polish (cards, prompts, scenarios, tables, worksheets) | Proposed |
 | **26-4** | Accessibility, print/PDF CSS, mobile tolerance | Proposed |
 | **26-5** | Regression fixtures + test extensions | Proposed |
 | **26-6** | Optional bounded enhancements (compact mode, print sheet, etc.) | Optional — charter per item |

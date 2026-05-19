@@ -1,0 +1,216 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation workshop — first-year economics",
+  "audience": "First-year undergraduate economics students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "A 60-minute workshop introducing inflation, price level changes, and simple measures used in introductory economics."
+    },
+    {
+      "section_id": "learning_purpose",
+      "heading": "Learning purpose",
+      "content": {
+        "statement": "By the end of this session you will be able to:\n- explain what inflation means in everyday and economic terms\n- compare CPI and GDP deflator at an introductory level\n- interpret a simple inflation scenario for different households"
+      }
+    },
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key ideas",
+      "content": "Inflation is a sustained rise in the general price level. CPI and the GDP deflator are common introductory measures with different coverage."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Inflation concepts warm-up",
+          "duration_minutes": 15,
+          "grouping": "small_group",
+          "purpose": "Activate prior knowledge and agree a working definition of inflation.",
+          "learner_task": "Discuss in your group and complete the task cards.",
+          "materials": [],
+          "expected_output": "A shared definition plus evidence from scenarios.",
+          "support_note": "Circulate during minutes 5–12."
+        },
+        {
+          "activity_id": "A3",
+          "title": "Household scenario — fixed income",
+          "duration_minutes": 10,
+          "grouping": "pair",
+          "learner_task": "Read all scenarios and complete the worksheet table.",
+          "materials": [],
+          "expected_output": "Completed worksheet rows for each scenario."
+        },
+        {
+          "activity_id": "A4",
+          "title": "Household scenario — variable costs",
+          "duration_minutes": 10,
+          "grouping": "pair",
+          "learner_task": "Compare impacts across scenarios using the worksheet.",
+          "materials": [],
+          "expected_output": "A short comparison statement supported by table evidence."
+        },
+        {
+          "activity_id": "A5",
+          "title": "Policy and communication wrap-up",
+          "duration_minutes": 5,
+          "grouping": "whole_group",
+          "learner_task": "Use the discussion prompts to debrief as a class.",
+          "materials": [],
+          "expected_output": "Two contributions per group to the whole-class discussion."
+        }
+      ]
+    },
+    {
+      "section_id": "activity_materials",
+      "heading": "Activity materials",
+      "content": [
+        {
+          "activity_id": "A1",
+          "material_type": "scenario",
+          "content": "## Inflation Scenarios\n\n### Scenario A: Grocery prices\nBread rises from £1.20 to £1.50 over a year while wages are unchanged.\n\n### Scenario B: Rent and energy\nRent is fixed but energy bills increase sharply for a student household."
+        },
+        {
+          "activity_id": "A1",
+          "type": "task_cards",
+          "content": "### Card 1 — Define inflation\nWrite a one-sentence definition of inflation in your own words.\n\n### Card 2 — Spot the price change\nList three prices that increased and one that stayed the same.\n\n### Card 3 — Who is affected?\nName one winner and one loser from the scenarios.\n\n### Card 4 — Everyday language\nRewrite your definition without jargon.\n\n### Card 5 — Evidence check\nQuote one number from a scenario to support your definition.\n\n### Card 6 — Group agreement\nAgree a final definition with your group."
+        },
+        {
+          "activity_id": "A1",
+          "material_type": "classification_table",
+          "content": "| Item | Rising price? | Affects students? |\n| --- | --- | --- |\n| Bread |  |  |\n| Rent |  |  |\n| Energy |  |  |"
+        },
+        {
+          "activity_id": "A2",
+          "material_type": "comparison_table",
+          "content": "| Measure | What it tracks | Limitation |\n| --- | --- | --- |\n| CPI | Consumer basket prices | Basket may not match your spending |\n| PPI | Producer input prices | Not a direct cost-of-living measure |\n| GDP deflator | All domestically produced goods | Less intuitive for learners |"
+        },
+        {
+          "activity_id": "A2",
+          "type": "prompt_set",
+          "content": {
+            "heading": "Discussion prompts",
+            "prompts": [
+              "Which measure would you report to a student newspaper?",
+              "Who might be harmed most by the scenarios?",
+              "What policy response is hinted at in the overview?"
+            ]
+          }
+        },
+        {
+          "activity_id": "A2",
+          "type": "checklist",
+          "content": {
+            "sections": [
+              {
+                "heading": "Before you submit",
+                "items": [
+                  "☐ Table has at least two completed rows",
+                  "☐ You answered two discussion prompts"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "activity_id": "A3",
+          "type": "scenario",
+          "content": "## Household impacts\n\n### Scenario A: Pensioner on fixed income\nMost spending is on food and heating; income does not rise with prices.\n\n### Scenario B: Graduate with student loan\nRent is fixed but transport and food costs rise faster than wages.\n\n### Scenario C: Dual-income family\nMortgage is fixed but childcare and groceries rise quickly.\n\n### Scenario D: Casual worker\nHours are cut while prices rise on essentials."
+        },
+        {
+          "activity_id": "A3",
+          "type": "analysis_table",
+          "content": "| Scenario | Who is affected? | Main price pressure | Policy angle |\n| --- | --- | --- | --- |\n|  |  |  |  |"
+        },
+        {
+          "activity_id": "A4",
+          "material_type": "scenario",
+          "content": "### Scenario 1: Young renter\nEnergy and food bills rise; rent is unchanged this year.\n\n### Scenario 2: Small shop owner\nInput costs rise but customers resist higher shelf prices.\n\n### Scenario 3: Exporter\nDomestic costs rise while foreign demand is weak."
+        },
+        {
+          "activity_id": "A4",
+          "type": "impact_table",
+          "content": "| Scenario | Cost pressure | Revenue pressure | Short-run response |\n| --- | --- | --- | --- |\n|  |  |  |  |"
+        },
+        {
+          "activity_id": "A5",
+          "material_type": "discussion_prompts",
+          "content": "## Discussion prompts\n- Name one group helped and one group harmed by recent inflation.\n- Which measure (CPI or GDP deflator) would you cite in a news headline?\n- What is one limitation of your chosen measure?"
+        }
+      ]
+    },
+    {
+      "section_id": "learning_sequence",
+      "heading": "Session plan",
+      "content": [
+        {
+          "activity_id": "A1",
+          "start_minute": 0,
+          "duration_minutes": 15,
+          "learner_actions": "Discuss scenarios and complete task cards."
+        },
+        {
+          "activity_id": "A2",
+          "start_minute": 15,
+          "duration_minutes": 20,
+          "learner_actions": "Complete comparison table and prompts."
+        },
+        {
+          "activity_id": "A3",
+          "start_minute": 35,
+          "duration_minutes": 10,
+          "learner_actions": "Work through household scenarios."
+        },
+        {
+          "activity_id": "A4",
+          "start_minute": 45,
+          "duration_minutes": 10,
+          "learner_actions": "Compare variable-cost impacts."
+        },
+        {
+          "activity_id": "A5",
+          "start_minute": 55,
+          "duration_minutes": 5,
+          "learner_actions": "Whole-group debrief using discussion prompts."
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "q1",
+            "stem": "Which situation best illustrates inflation rather than a one-off price change?",
+            "options": [
+              "A single product sale",
+              "A general rise in many prices over time",
+              "A fall in quality of one good"
+            ],
+            "item_type": "mcq"
+          }
+        ]
+      }
+    },
+    {
+      "section_id": "metadata",
+      "heading": "Production Metadata",
+      "content": {
+        "workflow_id": "ld-workshop-inflation",
+        "generated_at": "2026-05-18T12:00:00Z",
+        "page_profile": "learner"
+      }
+    }
+  ],
+  "source_artefacts": {
+    "learning_content": true,
+    "learning_activities": true,
+    "activity_materials": true,
+    "learning_sequence": true
+  }
+}

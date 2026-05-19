@@ -41,9 +41,46 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-- **Sprint 19 — Learning Design Workflow Rationalisation** (**active**, 2026-05-15): **bootstrap / audit-first** — classify LD `workflowBriefConfig` using Sprint 18 four-layer model (essentials → synthesis → planning adequacy → Settings); **no LD implementation** until chartered. **Entry:** `docs/development/sprints/2026-05-15-sprint-19-ld-workflow-rationalisation/GPT-BOOTSTRAP-PROMPT.md`. **Audit:** `docs/audits/ld-workflow-generation-rationalisation-audit.md`. **Verification baseline:** `node --test tests/*.test.js` → **100 passed**, 0 failed.
-- **Sprint 18 — Contextual Workflow Refinement** (**closed**, 2026-05-15): Research `planning_adequacy`, Slice 3C, conflict exceptions (S13); **100 tests** at closeout. **Checkpoint:** `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/SPRINT-18-CHECKPOINT.md` (forwards to Sprint 19).
-- **Sprint 15 — Research Renderer and Page Delivery Maturity** (**prior focus; see Sprint 18/19 for workflow refinement**): **Research-first** verification and improvement of **Design Page → `page` JSON → Utilities → HTML**; **minimal Research `page` contract**; briefing-oriented typography/presentation — **not** a broad renderer redesign, **not** LD renderer overhaul, **not** workflow schema or portability work. **Map / charter:** `docs/consolidation/sprint-15-index.md`, `sprint-15-charter.md`. **Portable pack:** `docs/development/sprints/2026-05-14-sprint-15-research-renderer-page-delivery-maturity/`. **Recommended first task:** one **E2E** Research run through Utilities, then document the **minimal `page` contract** (charter §**9**).
+### Sprint 26 — Renderer presentation consolidation (**active**, 2026-05-20)
+
+**Portable pack:** [`docs/development/sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/)
+
+| Entry | Path |
+|-------|------|
+| Index | [`sprint-26-index.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/sprint-26-index.md) |
+| Charter | [`sprint-26-charter.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/sprint-26-charter.md) |
+| Sprint state | [`CURRENT-STATE.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/CURRENT-STATE.md) |
+| Governance | [`renderer-governance.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/renderer-governance.md) |
+| Backlog | [`renderer-refinement-backlog.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/renderer-refinement-backlog.md) |
+
+**Scope:** Presentation-only renderer refinement (spacing, typography, material patterns, a11y, print). **Frozen:** composition contract, export authority, activity closure, `page.sections[]` semantics.
+
+**Benchmark:** inflation workshop full fixture — `tests/fixtures/page-render/ld-inflation-workshop-page-full.json`.
+
+**Active slice:** **26-1** — governance refresh + HTML audit baseline (documentation-first).
+
+**Verification floor:** `node --test tests/*.test.js` → **229 passed**, 0 failed.
+
+---
+
+### Completed predecessors (Sprint 25–26 programme)
+
+- **Sprint 25 — Design Page composition and export** (**closed**, 2026-05-19): composition + export contracts implemented; live **A1–A5** validated; **229** tests. **Closeout:** [`sprint-25-closeout.md`](sprints/2026-05-19-sprint-25-design-page-composition-renderer-consolidation/sprint-25-closeout.md).
+
+---
+
+### Earlier completed (Sprint 23–24)
+
+- **Sprint 23 — Learning Design pack rationalisation** (**complete**, 2026-05-18): declarative LD pack semantics; elicitation, PF/Settings ownership, Design Assessment semantics. **Closeout:** [`sprint-23-closeout.md`](sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/sprint-23-closeout.md).
+- **Sprint 24 — Research pack semantic conformance** (**complete**, 2026-05-19): Research pack conforms sufficiently to Sprint 23 governance; **no LD-style remediation** required. **Index:** [`sprint-24-index.md`](sprints/2026-05-19-sprint-24-research-pack-conformance/sprint-24-index.md).
+
+---
+
+### Earlier sprints (reference continuity)
+
+- **Sprint 19 — Learning Design Workflow Rationalisation** (**closed** for active focus; audit delivered 2026-05-15): `docs/development/sprints/2026-05-15-sprint-19-ld-workflow-rationalisation/`. Superseded as active focus by Sprints 23–25.
+- **Sprint 18 — Contextual Workflow Refinement** (**closed**, 2026-05-15): `docs/development/sprints/2026-05-15-sprint-18-contextual-workflow-refinement/SPRINT-18-CHECKPOINT.md`.
+- **Sprint 15 — Research Renderer and Page Delivery Maturity** (**prior focus; renderer/page delivery themes continue under Sprint 25**): `docs/consolidation/sprint-15-index.md`; portable pack `docs/development/sprints/2026-05-14-sprint-15-research-renderer-page-delivery-maturity/`.
 - **Sprint 14 — Research Domain Runnable Maturity** (**closed baseline, 2026-05-14**): runnable Research + **Design Page** endpoint + save/export/normalisation integrity — **not** reopened as active sprint focus. **Record:** `docs/consolidation/sprint-14-index.md`, `sprint-14-current-known-issues.md` §**10** (completed work).
 - **Cross-sprint architecture & portability backlog (descriptive only, not a roadmap):** [`docs/consolidation/prism-architecture-portability-backlog.md`](../consolidation/prism-architecture-portability-backlog.md) — unfinished themes after Sprint 12–13 consolidation; **no** implementation charter implied. **Sprint 14** / **Sprint 15** are linked there as **parallel product work** (§§**2.1–2.2**), **not** portability redesign.
 - **Sprint 13 — first-pass is documented and closed in consolidation** (post-commit posture). **Map:** `docs/consolidation/sprint-13-index.md`. **Closure and verification:** `docs/consolidation/sprint-13-first-pass-closure.md`. **Delivered:** **S13-07** — v1 reference doc (`docs/consolidation/sprint-13-general-alwayson-first-structured-domain-behaviour.md`); **S13-01** — narrow Workflow Factory **`#wfDesignDomainSelect`** strict-parity tidy (see closure; `app.js` only). **Decision-gated / not implemented:** **S13-02** default-domain rule; **S13-03** display-only hint neutralisation — audits and gate notes are linked from the index (no implementation closure). **Sprint 12** first-pass structural observability (A–E) remains **closed** (`docs/consolidation/sprint-12-first-pass-structural-observability-closure.md`) — **not** reopened. **No** full drop-in domain-pack portability claim in Sprint 13 first-pass artefacts. **Further Sprint 13 work remains unchartered** unless explicitly approved (no implied roadmap commitment).
@@ -110,8 +147,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 - Sprint 10 — Workflow Brief Contract Rationalisation — **bootstrap contract audit complete** (2026-05-12, docs commit **`3bd6d10`**): **canonical** `docs/consolidation/sprint-10-contract-audit.md` — **documentation / governance synthesis only**; **no** implementation pass chartered during bootstrap; Sprint 09 **contract surface** boundary **unchanged** (`docs/consolidation/sprint-09-pass-1-closure.md`)
 - Sprint 11 — Workflow Generation Fixture & Regression Foundations — **closed**; see `docs/consolidation/sprint-11-closure.md` for completed channels, pinned baseline behaviours, and deferred WGC/runtime coverage.
 - Sprint 13 — first-pass — **documented/closed in consolidation** (2026-05-13): map `docs/consolidation/sprint-13-index.md`; closure `docs/consolidation/sprint-13-first-pass-closure.md`; **delivered** S13-07 (v1 reference) + S13-01 (narrow `#wfDesignDomainSelect` parity tidy); **S13-02** / **S13-03** remain decision-gated (no implementation closure); **no** full drop-in portability claim; further Sprint 13 work **unchartered** unless explicitly approved. **Doc alignment (2026-05-14):** **General baseline-only** Workflow Factory — see `sprint-13-general-alwayson-first-structured-domain-behaviour.md` §**Current v1**; S13-01 matrices **historical** for Factory option list.
-- Sprint 15 — **Research Renderer and Page Delivery Maturity** — **chartered (2026-05-14):** index `docs/consolidation/sprint-15-index.md`; charter `sprint-15-charter.md`; portable pack `docs/development/sprints/2026-05-14-sprint-15-research-renderer-page-delivery-maturity/`. **Research-first** Utilities / **`page`** path; **not** LD renderer overhaul or schema redesign.
-- Sprint 14 — **Research Domain Runnable Maturity** — **baseline closed for active focus (2026-05-14):** first implementation slice + consolidation — `sprint-14-index.md`, **`sprint-14-current-known-issues.md`** §**10**; **`page`**/renderer follow-up → **Sprint 15**.
+- Sprint 15 — **Research Renderer and Page Delivery Maturity** — **chartered (2026-05-14):** index `docs/consolidation/sprint-15-index.md`; charter `sprint-15-charter.md`; portable pack `docs/development/sprints/2026-05-14-sprint-15-research-renderer-page-delivery-maturity/`. **Research-first** Utilities / **`page`** path; themes carried forward under **Sprint 25** for LD composition/export.
+- Sprint 14 — **Research Domain Runnable Maturity** — **baseline closed for active focus (2026-05-14):** first implementation slice + consolidation — `sprint-14-index.md`, **`sprint-14-current-known-issues.md`** §**10**; **`page`**/renderer follow-up → **Sprint 15** → **Sprint 25**.
+- Sprint 23 — **Learning Design pack rationalisation** — **complete (2026-05-18):** declarative pack semantics, elicitation alignment, PF/Settings ownership, Design Assessment semantics; closeout `docs/development/sprints/2026-05-18-sprint-23-learning-design-pack-rationalisation/sprint-23-closeout.md`.
+- Sprint 24 — **Research pack semantic conformance review** — **complete (2026-05-19):** Research conforms sufficiently to Sprint 23 governance; no LD-style remediation; `docs/development/sprints/2026-05-19-sprint-24-research-pack-conformance/sprint-24-index.md`.
+- Sprint 25 — **Design Page composition and renderer consolidation** — **open (2026-05-19):** Slice **25-1** investigation/governance only (no fixes); pack `docs/development/sprints/2026-05-19-sprint-25-design-page-composition-renderer-consolidation/`; slices **25-2–25-5** proposed, **not chartered**.
 - Deferred from Sprint 01 by design:
   - major `app.js` size reduction (requires later module-boundary sprint)
   - generated workflow integration decisions
@@ -119,9 +159,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Active Focus Areas
 
-- Prompt Studio
-- Prompt Library
-- Manual Workflow Builder
-- workflow semantics
-- artefact contracts
-- workflow planning and brief semantics (**Sprint 08** — **complete**, planning-only foundation); **Sprint 09** — **sprint closed** (bounded Pass 1 + contract-boundary governance; `docs/consolidation/sprint-09-pass-1-closure.md`); **Sprint 10** — **bootstrap audit complete** (**canonical** `docs/consolidation/sprint-10-contract-audit.md`, **`3bd6d10`**); **Sprint 11** — **closed** (`docs/consolidation/sprint-11-closure.md`); **Sprint 12 first-pass structural observability (A–E)** — **closed** (`docs/consolidation/sprint-12-first-pass-structural-observability-closure.md`); **broader Sprint 12** candidate directions and deferred orchestration remain **future** / prep-only context in `docs/consolidation/sprint-12-candidate-prep-note.md` (**not** implied complete); **Sprint 13 first-pass** — **documented/closed** in consolidation (`docs/consolidation/sprint-13-index.md`; S13-02/S13-03 decision-gated; **no** full drop-in portability claim); further Sprint 13 work **unchartered** unless explicitly approved; **Sprint 14 — Research Domain Runnable Maturity** — **baseline closed (2026-05-14)** (`docs/consolidation/sprint-14-index.md`; runnable Research + **Design Page**); **Sprint 15 — Research Renderer and Page Delivery Maturity** — **active** (`docs/consolidation/sprint-15-index.md`; Utilities **`page`** path, **not** LD renderer overhaul)
+- **Sprint 25 — Design Page composition and renderer consolidation** (**active**): investigation-led delivery on **`page` artefact fidelity**, **export / `pageSections` integration**, and **bounded utility renderer consolidation** — [`sprint-25-index.md`](sprints/2026-05-19-sprint-25-design-page-composition-renderer-consolidation/sprint-25-index.md); Slice **25-1** investigation only
+- Design Page → `page` JSON → Utilities → HTML (LD workshop path; A2 trace as anchor case)
+- Utility renderer v1 presentation patterns (task cards, scenarios, materials, export fixtures)—**no broad rewrite**
+- Prompt Studio, Prompt Library, Manual Workflow Builder (stable foundations)
+- Declarative pack semantics (**Sprint 23** — complete) and Research conformance (**Sprint 24** — complete)
+- Workflow planning / brief semantics foundations (**Sprint 08–11** — closed; historical reference in consolidation docs)

@@ -1165,6 +1165,70 @@ textarea:focus {
   color: var(--text-muted, #64748b);
 }
 
+.workflow-brief-resolved-factors-compact {
+  margin-top: 8px;
+}
+
+.workflow-brief-resolved-factors-compact-summary {
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.workflow-brief-resolved-factors-compact-summary::-webkit-details-marker {
+  display: none;
+}
+
+.workflow-brief-resolved-factors-compact-body {
+  margin-top: 8px;
+}
+
+.workflow-brief-resolved-factors-compact-group {
+  margin: 0 0 10px;
+}
+
+.workflow-brief-resolved-factors-compact-group:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-brief-resolved-factors-compact-group-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--text-primary, inherit);
+}
+
+.workflow-brief-resolved-factors-compact-hint {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+}
+
+.workflow-brief-resolved-factor-compact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.workflow-brief-resolved-factor-compact-row {
+  font-size: 0.76rem;
+  line-height: 1.35;
+  margin: 0 0 3px;
+  padding: 0;
+}
+
+.workflow-brief-resolved-factor-compact-label {
+  font-weight: 600;
+}
+
+.workflow-brief-resolved-factor-compact-value {
+  color: var(--text-muted, #64748b);
+}
+
+.workflow-brief-resolved-factor-compact-mapped {
+  font-size: 0.72rem;
+}
+
 .workflow-brief-planning-notices {
   margin-top: 0;
   padding-top: 0;

@@ -2,6 +2,8 @@
 
 This document captures the current behavior of the active Utilities HTML export path for page artifacts.
 
+**Presentation governance (Sprint 26+):** [`docs/development/sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/renderer-governance.md`](../development/sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/renderer-governance.md). **Composition/export contracts (frozen):** Sprint 25 pack — do not change in renderer-only work.
+
 ## Active Export Path
 
 For `artifact_type = "page"`:

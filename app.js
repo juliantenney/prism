@@ -2835,6 +2835,176 @@
     parent.appendChild(strip);
   }
 
+  function getWorkflowBriefMappedFactorIdSet(resolvedState) {
+    var out = {};
+    var mapped = Array.isArray(
+      resolvedState &&
+        resolvedState.mappedBindings &&
+        resolvedState.mappedBindings.mapped
+    )
+      ? resolvedState.mappedBindings.mapped
+      : [];
+    mapped.forEach(function (entry) {
+      var fid = String((entry && entry.factor) || "").trim();
+      if (fid) out[fid] = true;
+    });
+    return out;
+  }
+
+  function getWorkflowBriefMappedFactorRows(config, resolvedState) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var resolvedFactors =
+      rs.resolvedFactors && typeof rs.resolvedFactors === "object" ? rs.resolvedFactors : {};
+    var mapped = Array.isArray(rs.mappedBindings && rs.mappedBindings.mapped)
+      ? rs.mappedBindings.mapped
+      : [];
+    var seen = {};
+    var rows = [];
+    mapped.forEach(function (entry) {
+      if (!entry || typeof entry !== "object") return;
+      var fid = String(entry.factor || "").trim();
+      if (!fid || seen[fid]) return;
+      seen[fid] = true;
+      var rawValue =
+        entry.value != null && String(entry.value).trim() !== ""
+          ? entry.value
+          : resolvedFactors[fid];
+      rows.push({
+        id: fid,
+        label: formatWorkflowBriefFactorDisplayLabel(cfg, fid),
+        value: formatWorkflowBriefFactorDisplayValue(rawValue)
+      });
+    });
+    rows.sort(function (a, b) {
+      return String(a.label || a.id).localeCompare(String(b.label || b.id));
+    });
+    return rows;
+  }
+
+  function buildWorkflowBriefResolvedFactorsCompactGroups(config, resolvedState) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var rs = resolvedState && typeof resolvedState === "object" ? resolvedState : {};
+    var resolvedFactors =
+      rs.resolvedFactors && typeof rs.resolvedFactors === "object" ? rs.resolvedFactors : {};
+    var resolvedSources =
+      rs.resolvedSources && typeof rs.resolvedSources === "object" ? rs.resolvedSources : {};
+    var mappedIds = getWorkflowBriefMappedFactorIdSet(rs);
+    var buckets = { explicit: [], elicited: [], inferred: [], default: [], resolved: [] };
+
+    Object.keys(resolvedFactors)
+      .sort()
+      .forEach(function (id) {
+        var src = String(resolvedSources[id] || "").trim();
+        var row = {
+          id: id,
+          label: formatWorkflowBriefFactorDisplayLabel(cfg, id),
+          value: formatWorkflowBriefFactorDisplayValue(resolvedFactors[id]),
+          mapped: !!mappedIds[id]
+        };
+        if (src === "explicit") buckets.explicit.push(row);
+        else if (src === "elicited") buckets.elicited.push(row);
+        else if (src === "inferred") buckets.inferred.push(row);
+        else if (src === "default") buckets.default.push(row);
+        else buckets.resolved.push(row);
+      });
+
+    var groups = [];
+    if (buckets.explicit.length) {
+      groups.push({ id: "explicit", title: "Explicit", factors: buckets.explicit });
+    }
+    if (buckets.elicited.length) {
+      groups.push({ id: "elicited", title: "Answered", factors: buckets.elicited });
+    }
+    if (buckets.inferred.length) {
+      groups.push({ id: "inferred", title: "Inferred", factors: buckets.inferred });
+    }
+    if (buckets.default.length) {
+      groups.push({ id: "default", title: "Defaulted", factors: buckets.default });
+    }
+    var mappedRows = getWorkflowBriefMappedFactorRows(cfg, rs);
+    if (mappedRows.length) {
+      groups.push({ id: "mapped", title: "Mapped", factors: mappedRows });
+    }
+    if (buckets.resolved.length) {
+      groups.push({ id: "resolved", title: "Resolved", factors: buckets.resolved });
+    }
+    return groups;
+  }
+
+  function appendWorkflowBriefResolvedFactorsCompactList(parent, factors, options) {
+    if (!parent) return;
+    var opts = options && typeof options === "object" ? options : {};
+    var list = document.createElement("ul");
+    list.className = "workflow-brief-resolved-factor-compact-list";
+    (Array.isArray(factors) ? factors : []).forEach(function (row) {
+      if (!row || !row.id) return;
+      var li = document.createElement("li");
+      li.className = "workflow-brief-resolved-factor-compact-row";
+      var label = document.createElement("span");
+      label.className = "workflow-brief-resolved-factor-compact-label";
+      label.textContent = row.label || row.id;
+      var value = document.createElement("span");
+      value.className = "workflow-brief-resolved-factor-compact-value";
+      value.textContent = row.value || "\u2014";
+      li.appendChild(label);
+      li.appendChild(document.createTextNode(": "));
+      li.appendChild(value);
+      if (opts.showMappedTag && row.mapped) {
+        var tag = document.createElement("span");
+        tag.className = "workflow-brief-resolved-factor-compact-mapped muted";
+        tag.textContent = " \u00b7 mapped";
+        li.appendChild(tag);
+      }
+      list.appendChild(li);
+    });
+    if (list.children.length) parent.appendChild(list);
+  }
+
+  function appendWorkflowBriefResolvedFactorsCompact(parent, config, resolvedState) {
+    if (!parent || !config || !resolvedState) return;
+    var groups = buildWorkflowBriefResolvedFactorsCompactGroups(config, resolvedState);
+    if (!groups.length) return;
+    var resolvedCount = Object.keys(
+      resolvedState.resolvedFactors && typeof resolvedState.resolvedFactors === "object"
+        ? resolvedState.resolvedFactors
+        : {}
+    ).length;
+
+    var details = document.createElement("details");
+    details.className =
+      "workflow-brief-panel-section workflow-brief-resolved-factors-compact";
+    var summary = document.createElement("summary");
+    summary.className = "workflow-brief-resolved-factors-compact-summary";
+    summary.textContent = "View resolved assumptions (" + resolvedCount + ")";
+    details.appendChild(summary);
+
+    var body = document.createElement("div");
+    body.className = "workflow-brief-resolved-factors-compact-body";
+    groups.forEach(function (group) {
+      var section = document.createElement("div");
+      section.className = "workflow-brief-resolved-factors-compact-group";
+      var heading = document.createElement("div");
+      heading.className = "workflow-brief-resolved-factors-compact-group-title";
+      heading.textContent = group.title + " (" + group.factors.length + ")";
+      section.appendChild(heading);
+      if (group.id === "mapped") {
+        var hint = document.createElement("p");
+        hint.className =
+          "helper-text workflow-brief-resolved-factors-compact-hint";
+        hint.textContent =
+          "Applied to workflow or step settings. Technical mapping paths are hidden.";
+        section.appendChild(hint);
+      }
+      appendWorkflowBriefResolvedFactorsCompactList(section, group.factors, {
+        showMappedTag: group.id !== "mapped"
+      });
+      body.appendChild(section);
+    });
+    details.appendChild(body);
+    parent.appendChild(details);
+  }
+
   function appendWorkflowBriefPlanningNoticeDom(parent, config, row) {
     if (!parent || !row) return;
     var item = document.createElement("div");
@@ -2879,6 +3049,7 @@
   }
 
   function appendWorkflowBriefPlanningNoticesGrouped(parent, config, rows) {
+    if (!parent || !Array.isArray(rows) || !rows.length) return;
     var primaryRows = [];
     var informationalRows = [];
     rows.forEach(function (row) {
@@ -2889,9 +3060,9 @@
       }
     });
 
-    if (primaryRows.length) {
-      appendWorkflowBriefPlanningNoticesGrouped(wrap, config, primaryRows);
-    }
+    primaryRows.forEach(function (row) {
+      appendWorkflowBriefPlanningNoticeDom(parent, config, row);
+    });
 
     if (informationalRows.length) {
       if (informationalRows.length > WORKFLOW_BRIEF_PLANNING_INFO_COLLAPSE_AT) {
@@ -2908,19 +3079,39 @@
         infoBody.className = "workflow-brief-provenance-collapsible-body";
         infoBody.style.display = state.workflowBriefShowPlanningInfo ? "block" : "none";
         if (state.workflowBriefShowPlanningInfo) {
-          appendWorkflowBriefPlanningNoticesGrouped(infoBody, config, informationalRows);
+          informationalRows.forEach(function (row) {
+            appendWorkflowBriefPlanningNoticeDom(infoBody, config, row);
+          });
         }
         infoToggle.addEventListener("click", function () {
           state.workflowBriefShowPlanningInfo = !state.workflowBriefShowPlanningInfo;
-          renderWorkflowBriefResolvedPanel(resolvedState);
+          renderWorkflowBriefResolvedPanel(state.workflowBriefResolved);
         });
         infoWrap.appendChild(infoBody);
-        wrap.appendChild(infoWrap);
+        parent.appendChild(infoWrap);
       } else {
-        appendWorkflowBriefPlanningNoticesGrouped(wrap, config, informationalRows);
+        informationalRows.forEach(function (row) {
+          appendWorkflowBriefPlanningNoticeDom(parent, config, row);
+        });
       }
     }
+  }
 
+  function appendWorkflowBriefPlanningNoticesUi(parent, config, resolvedState) {
+    if (!parent || !config || !resolvedState) return;
+    var rows = buildWorkflowBriefPlanningNoticeRows(config, resolvedState);
+    if (!rows.length) return;
+    var wrap = document.createElement("div");
+    wrap.className = "workflow-brief-panel-section workflow-brief-planning-notices";
+    var heading = document.createElement("div");
+    heading.className = "workflow-brief-panel-section-heading";
+    heading.textContent = "Planning guidance";
+    wrap.appendChild(heading);
+    appendWorkflowBriefPlanningNoticesGrouped(
+      wrap,
+      config,
+      sortWorkflowBriefPlanningNoticeRows(rows)
+    );
     parent.appendChild(wrap);
   }
 
@@ -7845,6 +8036,11 @@
     appendWorkflowBriefResolvedStatusStrip(els.wfBriefResolvedContent, resolvedState, model);
 
     if (briefConfig) {
+      appendWorkflowBriefResolvedFactorsCompact(
+        els.wfBriefResolvedContent,
+        briefConfig,
+        resolvedState
+      );
       appendWorkflowBriefPlanningNoticesUi(els.wfBriefResolvedContent, briefConfig, resolvedState);
       if (!buildWorkflowBriefPlanningNoticeRows(briefConfig, resolvedState).length) {
         var validationDisclosures = Array.isArray(resolvedState.validationDisclosures)
@@ -9900,10 +10096,23 @@
       "file"
     ];
     function hasSourceContentSignal() {
-      if (!String(inputs || "").trim()) return false;
+      var blob = [goalText, inputs].join("\n");
+      if (!String(blob || "").trim()) return false;
       return sourceContentTerms.some(function (kw) {
-        return inputs.indexOf(kw) !== -1;
-      }) || !!String(inputs || "").trim();
+        return blob.indexOf(kw) !== -1;
+      });
+    }
+    var inputStrategyHint = String(resolvedBriefFactors.input_strategy || "").toLowerCase().trim();
+    function hasAuthoritativeProvidedSource() {
+      if (inputStrategyHint === "provided_source_content") return true;
+      if (selectedStartingArtefact === "provided_source_content") return true;
+      if (
+        inputStrategyHint === "generate_from_topic" ||
+        selectedStartingArtefact === "generate_from_topic"
+      ) {
+        return false;
+      }
+      return hasSourceContentSignal();
     }
     function hasExplicitGenerationOnlySignal() {
       var blob = (goalText + "\n" + inputs).toLowerCase();
@@ -10028,8 +10237,17 @@
       );
     }
 
+    var generateFromTopic =
+      inputStrategyHint === "generate_from_topic" ||
+      selectedStartingArtefact === "generate_from_topic";
     var allowGenerateLearningContent =
-      explicitGenerationOnly || (!hasSourceInput && /\b(create|generate)\b/.test(goalText));
+      explicitGenerationOnly ||
+      generateFromTopic ||
+      (!hasAuthoritativeProvidedSource() &&
+        (/\b(create|generate|design)\b/.test(goalText) ||
+          explicitSessionOrActivityRequested ||
+          String(resolvedBriefFactors.delivery_context || "").toLowerCase().trim() ===
+            "self_directed"));
     var hasIngestionInput =
       inputs.indexOf("pdf") !== -1 ||
       inputs.indexOf("file") !== -1 ||
@@ -10543,6 +10761,7 @@
       }
       if (workshopRichWorkflowIntent) {
         [
+          "Generate Learning Content",
           "Define Learning Outcomes",
           "Design Learning Activities",
           "Generate Activity Materials",
@@ -10577,9 +10796,9 @@
         });
       }
 
-      // Strong fail-safe: when source content exists, do not keep Generate Learning Content
-      // unless user explicitly asked for generation-only behavior.
-      if (hasSourceInput && !explicitGenerationOnly) {
+      // Strong fail-safe: when authoritative source content is provided, do not keep
+      // Generate Learning Content unless user explicitly asked for generation-only behavior.
+      if (hasAuthoritativeProvidedSource() && !explicitGenerationOnly) {
         out.steps = out.steps.filter(function (s) {
           return String((s && s.title) || "").toLowerCase() !== "generate learning content";
         });
@@ -10587,7 +10806,7 @@
 
       // Structural safety for ingest workflows:
       // never place Generate Learning Content into Normalize->Model transformation flows.
-      if (hasSourceInput && isIngestTransformationIntent()) {
+      if (hasAuthoritativeProvidedSource() && isIngestTransformationIntent()) {
         out.steps = out.steps.filter(function (s) {
           return String((s && s.title) || "").toLowerCase() !== "generate learning content";
         });
@@ -10677,9 +10896,17 @@
       });
       // If users explicitly describe having an artefact in free text inputs,
       // treat it as provided at workflow start.
+      var allowBriefArtefactProvision =
+        hasAuthoritativeProvidedSource() ||
+        selectedStartingArtefact === "provided_source_content";
       Object.keys(producerByArtefact).forEach(function (artKey) {
         var plain = String(artKey || "").replace(/_/g, " ").trim();
         if (!plain) return;
+        if (selectedStartingArtefact && selectedStartingArtefact === artKey) {
+          providedArtefacts[artKey] = true;
+          return;
+        }
+        if (!allowBriefArtefactProvision) return;
         if (inputs.indexOf(artKey) !== -1 || inputs.indexOf(plain) !== -1) {
           providedArtefacts[artKey] = true;
         }
@@ -10969,6 +11196,11 @@
           moveAfter(second, first);
         });
       }
+      // Instructional content must precede knowledge modelling when both are present.
+      moveAfter(
+        canonicalizeFromPolicy("Model Knowledge"),
+        canonicalizeFromPolicy("Generate Learning Content")
+      );
 
       // Final steps must be last.
       (policy.finalSteps || []).forEach(function (title) {
@@ -11227,9 +11459,9 @@
     }
 
     // Final fail-safe (applies with or without policy):
-    // if source content exists, do not include Generate Learning Content unless
-    // user explicitly asked for generation-only behavior.
-    if (hasSourceInput && !explicitGenerationOnly) {
+    // if authoritative source content is provided, do not include Generate Learning
+    // Content unless user explicitly asked for generation-only behavior.
+    if (hasAuthoritativeProvidedSource() && !explicitGenerationOnly) {
       out.steps = out.steps.filter(function (s) {
         return String((s && s.title) || "").toLowerCase() !== "generate learning content";
       });
@@ -12065,6 +12297,19 @@
     var raw = String(ta.value || "");
     state.workflowRunCapturedOutputsRaw[sid] = raw;
     state.workflowRunCapturedOutputs[sid] = sanitizePrismRunCapturedOutput(raw);
+    var outputNameInput = li.querySelector('[data-field="outputName"]');
+    var outputName =
+      outputNameInput && typeof outputNameInput.value === "string"
+        ? outputNameInput.value.trim().toLowerCase().replace(/\s+/g, "_")
+        : "";
+    if (outputName === "page") {
+      applyPageCompositionValidationForCapturedPage(li, raw);
+    } else {
+      var parsedPage = tryParseWorkflowArtefactJson(raw);
+      if (parsedPage && String(parsedPage.artifact_type || "").toLowerCase() === "page") {
+        applyPageCompositionValidationForCapturedPage(li, raw);
+      }
+    }
   }
 
   function updateRunStepOutputStatus(li) {
@@ -19146,7 +19391,29 @@
       var rawJoin = String(joined == null ? "" : joined);
       var t = rawJoin.trim();
       if (!t) return "";
-      if (t.indexOf("•") === -1) {
+      if (t.indexOf("•") === -1 && !/\s+-\s+/.test(t)) {
+        return "<p>" + utilityRenderMarkdownInline(t) + "</p>";
+      }
+      if (t.indexOf("•") === -1 && /\s+-\s+/.test(t)) {
+        var hyphenIntro = t.match(/^(.+?)\s+-\s+(.+)$/);
+        if (hyphenIntro) {
+          var hyphenTail = String(hyphenIntro[2] || "")
+            .split(/\s+-\s+/)
+            .map(function (s) { return String(s || "").trim(); })
+            .filter(function (s) { return !!s; });
+          if (hyphenTail.length >= 2) {
+            var introHtml = "<p>" + utilityRenderMarkdownInline(String(hyphenIntro[1] || "").trim()) + "</p>";
+            var listHtml =
+              "<ul>" +
+              hyphenTail
+                .map(function (s) {
+                  return "<li>" + utilityRenderMarkdownInline(s) + "</li>";
+                })
+                .join("") +
+              "</ul>";
+            return introHtml + listHtml;
+          }
+        }
         return "<p>" + utilityRenderMarkdownInline(t) + "</p>";
       }
       var segments = t
@@ -19517,6 +19784,110 @@
     return text;
   }
 
+  function utilityMaterialTypeIconClass(materialType) {
+    var t = String(materialType || "").toLowerCase().trim();
+    if (t === "task_card" || t === "task_cards") return "fa-layer-group";
+    if (t === "scenario" || t === "scenarios") return "fa-map-location-dot";
+    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "checklist" || t === "discussion") return "fa-comments";
+    if (t === "template" || t === "templates" || t === "worksheet_template") return "fa-file-lines";
+    if (t === "table" || t === "worksheet" || t === "analysis_table") return "fa-table";
+    if (t === "output" || t === "expected_output") return "fa-circle-check";
+    if (t === "support_note" || t === "support" || t === "support_notes") return "fa-life-ring";
+    if (t === "materials") return "fa-box-open";
+    if (t === "what_to_do" || t === "guidance" || t === "instructions") return "fa-list-check";
+    if (t === "metadata" || t === "production") return "fa-gears";
+    if (t === "strategy" || t === "strategy_options") return "fa-shuffle";
+    return "fa-file-lines";
+  }
+  function utilityMaterialIconModifierClass(materialType) {
+    var t = String(materialType || "").toLowerCase().trim();
+    if (t === "task_card" || t === "task_cards") return "util-task-card-icon";
+    if (t === "scenario" || t === "scenarios") return "util-scenario-card-icon";
+    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "checklist" || t === "discussion") return "util-prompt-set-icon";
+    if (t === "template" || t === "templates" || t === "worksheet_template") return "util-template-icon";
+    if (t === "table" || t === "worksheet" || t === "analysis_table") return "util-table-icon";
+    if (t === "output" || t === "expected_output") return "util-output-icon";
+    if (t === "support_note" || t === "support" || t === "support_notes") return "util-support-note-icon";
+    if (t === "materials") return "util-materials-icon";
+    if (t === "what_to_do" || t === "guidance" || t === "instructions") return "util-activity-task-icon";
+    if (t === "metadata" || t === "production") return "util-meta-icon";
+    if (t === "strategy" || t === "strategy_options") return "util-strategy-icon";
+    return "util-generic-material-icon";
+  }
+  function utilityRenderMaterialIcon(materialType) {
+    var icon = utilityMaterialTypeIconClass(materialType);
+    var mod = utilityMaterialIconModifierClass(materialType);
+    return (
+      '<i class="fa-solid ' +
+      utilityEscapeHtml(icon) +
+      " util-material-icon " +
+      utilityEscapeHtml(mod) +
+      '" aria-hidden="true"></i>'
+    );
+  }
+  function utilityRenderIconHeading(tag, text, materialType, extraClasses) {
+    var tn = String(tag || "h4").toLowerCase();
+    var cls = String(extraClasses || "").trim();
+    var classAttr = cls ? (' class="' + utilityEscapeHtml(cls) + '"') : "";
+    return (
+      "<" + tn + classAttr + ">" + utilityRenderMaterialIcon(materialType) + "<span>" + utilityEscapeHtml(String(text || "")) + "</span></" + tn + ">"
+    );
+  }
+  function utilityRenderPlainMaterialHeading(tag, text, extraClasses) {
+    var tn = String(tag || "h4").toLowerCase();
+    var cls = String(extraClasses || "util-material-heading util-material-heading--plain").trim();
+    return (
+      "<" + tn + ' class="' + utilityEscapeHtml(cls) + '"><span>' + utilityEscapeHtml(String(text || "")) + "</span></" + tn + ">"
+    );
+  }
+  function utilityRenderScenarioTitleHtml(label) {
+    return (
+      '<p class="util-scenario-title"><strong>' + utilityEscapeHtml(String(label || "")) + "</strong></p>"
+    );
+  }
+  function utilityRenderTaskCardHeadingHtml(title) {
+    return (
+      '<h5 class="util-task-card-heading"><span>' + utilityEscapeHtml(String(title || "")) + "</span></h5>"
+    );
+  }
+  function utilityRenderPromptSetHeadingHtml(heading) {
+    if (heading) {
+      return utilityRenderIconHeading("h5", heading, "prompt_set", "util-icon-heading util-prompt-set-heading");
+    }
+    return (
+      '<div class="util-prompt-set-heading util-icon-heading">' +
+      utilityRenderMaterialIcon("prompt_set") +
+      '<span class="util-visually-hidden">Prompts</span></div>'
+    );
+  }
+  function utilityRenderMetaSummaryHtml() {
+    return (
+      '<summary class="util-meta-summary util-icon-heading">' +
+      utilityRenderMaterialIcon("metadata") +
+      "<span>Production Metadata</span></summary>"
+    );
+  }
+  function utilityRenderSupportNoteParagraph(inlineHtml) {
+    return (
+      '<aside class="util-support-note" role="note">' +
+      utilityRenderMaterialIcon("support_note") +
+      '<div class="util-support-note-body"><span class="util-support-note-label">Support note:</span> ' +
+      inlineHtml +
+      "</div></aside>"
+    );
+  }
+  function utilityMaterialTypeFromKeyHint(key) {
+    var k = String(key || "").toLowerCase().trim();
+    if (k === "task_cards" || k === "cards") return "task_card";
+    if (k === "scenarios" || k === "study_scenarios" || k === "scenario_set") return "scenarios";
+    if (k === "prompt_set" || k === "prompts" || k === "discussion_prompts") return "prompt_set";
+    if (k === "checklist" || k === "checklists") return "checklist";
+    if (k === "template" || k === "templates" || k === "worksheet_template") return "template";
+    if (k === "analysis_table" || k === "impact_table" || k === "table") return "table";
+    if (k === "strategy_options" || k === "options" || k === "strategies") return "strategy";
+    return "material";
+  }
+
   function utilityRenderObject(obj, level, opts, ctx) {
     var renderOpts = utilityNormalizeRenderOpts(opts);
     var depth = Number.isFinite(level) ? level : 0;
@@ -19737,10 +20108,16 @@
           return "";
         }
         if (lowerKey === "expected_output") {
-          return "<p><strong>What you will produce:</strong> " + utilityRenderMarkdownInline(String(value == null ? "" : value)) + "</p>";
+          return (
+            '<p class="util-output-inline util-icon-heading">' +
+            utilityRenderMaterialIcon("output") +
+            "<span><strong>What you will produce:</strong> " +
+            utilityRenderMarkdownInline(String(value == null ? "" : value)) +
+            "</span></p>"
+          );
         }
         if (lowerKey === "support_note" || lowerKey === "support_notes") {
-          return '<p class="util-support-note"><strong>Support note:</strong> ' + utilityRenderMarkdownInline(String(value == null ? "" : value)) + "</p>";
+          return utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(value == null ? "" : value)));
         }
         var headingLabel = humanKeyLabels[lowerKey] || utilityLabelFromKey(key);
         var heading = "<" + titleTag + ">" + utilityEscapeHtml(headingLabel) + "</" + titleTag + ">";
@@ -19754,6 +20131,24 @@
       })
       .filter(function (block) { return !!String(block || "").trim(); })
       .join("");
+  }
+
+  var PAGE_BODY_SECTION_IDS = {
+    overview: true,
+    learning_purpose: true,
+    knowledge_summary: true,
+    learning_activities: true,
+    learning_sequence: true,
+    activity_materials: true,
+    assessment_check: true,
+    support_notes: true,
+    study_tips: true
+  };
+
+  function getPageSectionsArray(parsed) {
+    if (!parsed || typeof parsed !== "object") return [];
+    if (Array.isArray(parsed.sections)) return parsed.sections;
+    return [];
   }
 
   function utilityRenderPageSections(sectionsValue, labels, sectionOrder, opts) {
@@ -19772,8 +20167,13 @@
       var t = String(name || "").toLowerCase();
       return /\b(learning[_\s-]?sequence|workshop schedule|session plan|timeline)\b/.test(t);
     }
+    function looksStudyTipsSection(name) {
+      var t = String(name || "").toLowerCase();
+      return /\b(study[_\s-]?tips?)\b/.test(t);
+    }
     function looksAssessmentItemsSection(name) {
       var t = String(name || "").toLowerCase();
+      if (looksStudyTipsSection(t)) return false;
       return /\b(assessment[_\s-]?items|formative[_\s-]?(assessment|questions|check)|questions?)\b/.test(t);
     }
     function looksLearningActivitiesSection(name) {
@@ -19795,33 +20195,139 @@
     function activitySectionHeadingForCount(count) {
       return count === 1 ? "Learning Activity" : "Learning Activities";
     }
-    function sectionIconClass(sectionId, headingText) {
-      var sid = String(sectionId || "").toLowerCase().trim();
+    function resolveSectionKind(sectionId, headingText) {
       var heading = String(headingText || "").toLowerCase().trim();
-      if (!sid) {
-        if (looksLearningActivitiesSection(heading)) sid = "learning_activities";
-        else if (looksLearningPurposeOrOutcomesSection(heading)) sid = "learning_purpose";
-        else if (looksKnowledgeSummarySection(heading)) sid = "knowledge_summary";
-        else if (looksAssessmentItemsSection(heading)) sid = "assessment_check";
-        else if (/\b(support|facilitator notes?)\b/.test(heading)) sid = "support_notes";
-        else if (/\b(overview|introduction|intro)\b/.test(heading)) sid = "overview";
+      if (looksStudyTipsSection(heading)) return "study_tips";
+      var sid = String(sectionId || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+      if (sid === "study_tip" || sid === "study_tips" || sid === "studytips") return "study_tips";
+      if (
+        sid === "overview" ||
+        sid === "learning_purpose" ||
+        sid === "knowledge_summary" ||
+        sid === "learning_activities" ||
+        sid === "learning_sequence" ||
+        sid === "assessment_check" ||
+        sid === "support_notes" ||
+        sid === "metadata"
+      ) {
+        return sid;
       }
+      if (!sid || /^section_\d+$/.test(sid)) {
+        if (looksLearningActivitiesSection(heading)) return "learning_activities";
+        if (looksLearningPurposeOrOutcomesSection(heading)) return "learning_purpose";
+        if (looksKnowledgeSummarySection(heading)) return "knowledge_summary";
+        if (looksAssessmentItemsSection(heading)) return "assessment_check";
+        if (looksStudyTipsSection(heading)) return "study_tips";
+        if (/\b(support|facilitator notes?)\b/.test(heading)) return "support_notes";
+        if (/\b(overview|introduction|intro)\b/.test(heading)) return "overview";
+      }
+      return sid;
+    }
+    function sectionIconClass(sectionId, headingText) {
+      var sid = resolveSectionKind(sectionId, headingText);
       if (sid === "overview") return "fa-circle-info";
       if (sid === "learning_purpose") return "fa-bullseye";
       if (sid === "knowledge_summary") return "fa-lightbulb";
       if (sid === "learning_activities") return "fa-puzzle-piece";
       if (sid === "assessment_check") return "fa-clipboard-check";
+      if (sid === "study_tips") return "fa-graduation-cap";
       if (sid === "support_notes") return "fa-life-ring";
       return "fa-file-lines";
+    }
+    function sectionIconModifierClass(sectionId, headingText) {
+      var sid = resolveSectionKind(sectionId, headingText);
+      if (sid === "overview") return "util-section-icon--overview";
+      if (sid === "learning_purpose") return "util-section-icon--learning-purpose";
+      if (sid === "knowledge_summary") return "util-section-icon--knowledge-summary";
+      if (sid === "learning_activities") return "util-section-icon--learning-activities";
+      if (sid === "assessment_check") return "util-section-icon--assessment";
+      if (sid === "study_tips" || sid === "support_notes") return "util-section-icon--study-tips";
+      return "util-section-icon--default";
     }
     function renderSectionHeadingH2(headingText, sectionId) {
       var heading = utilityEscapeHtml(String(headingText || ""));
       var iconClass = sectionIconClass(sectionId, headingText);
-      return '<h2><i class="fa-solid ' + utilityEscapeHtml(iconClass) + ' util-section-icon" aria-hidden="true"></i><span>' + heading + "</span></h2>";
+      var iconMod = sectionIconModifierClass(sectionId, headingText);
+      return (
+        '<h2 class="util-section-heading">' +
+        '<i class="fa-solid ' +
+        utilityEscapeHtml(iconClass) +
+        " util-section-icon util-material-icon " +
+        utilityEscapeHtml(iconMod) +
+        '" aria-hidden="true"></i><span>' +
+        heading +
+        "</span></h2>"
+      );
+    }
+    function buildPageSectionProbeContext(pageSections) {
+      var ctx = {
+        learningActivitiesValue: null,
+        learningSequenceValue: null,
+        resourcesValue: null,
+        materialsByActivityId: {},
+        activityLookup: {},
+        linkedIndex: {}
+      };
+      if (!Array.isArray(pageSections) || !pageSections.length) return ctx;
+      var sectionsObj = {};
+      pageSections.forEach(function (item, idx) {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return;
+        var orderedKeyProbe = "section_" + String(idx + 1);
+        var sectionIdProbe = String(item.section_id || item.id || "").trim();
+        var headingProbe = firstNonEmpty([
+          item.title,
+          item.heading,
+          item.name,
+          item.section_title,
+          item.section_heading,
+          item.label,
+          item.section
+        ]);
+        var probeContent =
+          item.content != null ? item.content :
+          item.body != null ? item.body :
+          item.text != null ? item.text :
+          "";
+        if (!ctx.learningActivitiesValue && (looksLearningActivitiesSection(sectionIdProbe) || looksLearningActivitiesSection(headingProbe) || looksLearningActivitiesSection(orderedKeyProbe))) {
+          ctx.learningActivitiesValue = probeContent;
+        }
+        if (!ctx.learningSequenceValue && (looksLearningSequenceSection(sectionIdProbe) || looksLearningSequenceSection(headingProbe) || looksLearningSequenceSection(orderedKeyProbe))) {
+          ctx.learningSequenceValue = probeContent;
+        }
+        if (!ctx.resourcesValue && (looksActivityResourcesSection(headingProbe) || looksActivityResourcesSection(orderedKeyProbe))) {
+          ctx.resourcesValue = probeContent;
+        }
+        var key = sectionIdProbe || normalizeActivityLookupKey(headingProbe) || orderedKeyProbe;
+        sectionsObj[key] = probeContent;
+      });
+      ctx.linkedIndex = buildLinkedItemIndexFromSectionsObject(sectionsObj, null);
+      ctx.materialsByActivityId = collectActivityMaterialsByActivityId(sectionsObj, ctx.linkedIndex);
+      ctx.activityLookup = buildLearningActivityLookup(ctx.learningActivitiesValue);
+      pageSections.forEach(function (section) {
+        if (!section || typeof section !== "object" || Array.isArray(section)) return;
+        var sid = String(section.section_id || section.id || "").toLowerCase();
+        var headingProbe = firstNonEmpty([
+          section.title,
+          section.heading,
+          section.name,
+          section.section_title,
+          section.section_heading,
+          section.label,
+          section.section
+        ]);
+        if (!looksLearningActivitiesSection(sid) && !looksLearningActivitiesSection(headingProbe)) return;
+        var laContent =
+          section.content != null ? section.content :
+          section.body != null ? section.body :
+          section.text != null ? section.text :
+          "";
+        Object.assign(ctx.activityLookup, buildLearningActivityLookup(laContent));
+      });
+      return ctx;
     }
     function renderLearningPurposeOutcomes(value) {
       if (utilityIsEmptyValue(value)) return "";
-      if (typeof value === "string") return "<p>" + utilityRenderMarkdownInline(String(value)) + "</p>";
+      if (typeof value === "string") return utilityRenderMarkdownBlock(String(value));
       if (Array.isArray(value)) {
         var arr = value.filter(function (x) { return !utilityIsEmptyValue(x); });
         if (!arr.length) return "";
@@ -19838,7 +20344,7 @@
         var statement = firstNonEmpty([value.statement, value.purpose, value.summary, value.intro, value.description]);
         var outcomes = Array.isArray(value.outcomes) ? value.outcomes.filter(function (x) { return !utilityIsEmptyValue(x); }) : [];
         var parts = [];
-        if (statement) parts.push("<p>" + utilityRenderMarkdownInline(String(statement)) + "</p>");
+        if (statement) parts.push(utilityRenderMarkdownBlock(String(statement)));
         if (outcomes.length) {
           var outcomesLis = outcomes.map(function (outcome) {
             if (typeof outcome === "string" || typeof outcome === "number" || typeof outcome === "boolean") {
@@ -19906,19 +20412,14 @@
     }
     function buildLearningActivityLookup(container) {
       var lookup = {};
-      var rows = [];
-      if (Array.isArray(container)) {
-        rows = container.slice();
-      } else if (container && typeof container === "object" && !Array.isArray(container)) {
-        if (Array.isArray(container.items)) rows = container.items.slice();
-        else if (Array.isArray(container.activities)) rows = container.activities.slice();
-      }
-      rows.forEach(function (row) {
+      getLearningActivitiesRows(container).forEach(function (row) {
         if (!row || typeof row !== "object" || Array.isArray(row)) return;
         var id = firstNonEmpty([row.activity_id, row.activityId, row.id]);
         var title = firstNonEmpty([row.title, row.activity_title, row.name, row.activity_name]);
         var key = normalizeActivityLookupKey(id);
         if (!key || !title) return;
+        var titleKey = normalizeActivityLookupKey(title);
+        if (titleKey && titleKey === key) return;
         lookup[key] = String(title);
       });
       return lookup;
@@ -20008,7 +20509,398 @@
       }
       return utilityRenderPrimitive(sectionValue, renderOpts);
     }
-    function renderLearningActivitiesBlocks(activityRows) {
+    function materialTypeToRenderKey(type) {
+      var t = String(type || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+      if (t === "scenario") return "scenarios";
+      if (t === "task_card") return "task_cards";
+      if (t === "prompt" || t === "prompts") return "prompt_set";
+      if (t === "discussion_prompts" || t === "discussion_prompt" || t === "wrap_up_prompts") return "prompt_set";
+      if (t === "analysis_table" || t === "comparison_table" || t === "classification_table") return "impact_table";
+      return t;
+    }
+    function normalizeMarkdownHeadingLine(line) {
+      return String(line == null ? "" : line).trim().replace(/\u2014|\u2013/g, "-");
+    }
+    function parseMaterialSectionHeadingLine(line, kind) {
+      var raw = normalizeMarkdownHeadingLine(line);
+      if (!raw) return null;
+      if (kind === "task_card") {
+        var cardM = raw.match(/^#{2,3}\s+Card\s+(\d+)\s*(?:[:\-]\s*(.*))?$/i);
+        if (!cardM) return null;
+        var cardNum = String(cardM[1] || "").trim();
+        var cardRest = String(cardM[2] || "").trim();
+        return {
+          isChild: true,
+          label: "Card " + cardNum,
+          title: cardRest ? ("Card " + cardNum + " \u2014 " + cardRest) : ("Card " + cardNum)
+        };
+      }
+      var scenM = raw.match(/^#{2,3}\s+(?:(?:Scenario|Case)\s+)?([A-D]|\d+)\s*(?:[:\-]\s*(.*))?$/i);
+      if (scenM) {
+        var scenId = String(scenM[1] || "").trim();
+        var scenSuffix = String(scenM[2] || "").trim();
+        var scenLabel = /^[A-D]$/i.test(scenId) ? ("Scenario " + scenId.toUpperCase()) : ("Scenario " + scenId);
+        return {
+          isChild: true,
+          label: scenLabel,
+          title: scenSuffix ? (scenLabel + ": " + scenSuffix) : scenLabel
+        };
+      }
+      var letterM = raw.match(/^#{2,3}\s+([A-D])\s*(?:[:\-]\s*(.*))?$/i);
+      if (letterM) {
+        var letter = String(letterM[1] || "").toUpperCase();
+        var letterSuffix = String(letterM[2] || "").trim();
+        var letterLabel = "Scenario " + letter;
+        return {
+          isChild: true,
+          label: letterLabel,
+          title: letterSuffix ? (letterLabel + ": " + letterSuffix) : letterLabel
+        };
+      }
+      var numOnlyM = raw.match(/^#{2,3}\s+(\d+)\s*(?:[:\-]\s*(.*))?$/i);
+      if (numOnlyM) {
+        var numId = String(numOnlyM[1] || "").trim();
+        var numSuffix = String(numOnlyM[2] || "").trim();
+        var numLabel = "Scenario " + numId;
+        return {
+          isChild: true,
+          label: numLabel,
+          title: numSuffix ? (numLabel + ": " + numSuffix) : numLabel
+        };
+      }
+      if (kind === "scenario" && /^##\s+/.test(raw) && !/^##\s+(?:Scenario|Case)\s+[A-D0-9]/i.test(raw)) {
+        var parentM = raw.match(/^##\s+(.+)$/);
+        if (parentM) {
+          return { isParent: true, parentTitle: String(parentM[1] || "").trim() };
+        }
+      }
+      return null;
+    }
+    function splitMarkdownMaterialSections(raw, kind) {
+      var text = String(raw == null ? "" : raw).replace(/\r\n/g, "\n").trim();
+      if (!text) return { parentTitle: "", items: [] };
+      var lines = text.split("\n");
+      var parentTitle = "";
+      var items = [];
+      var current = null;
+      var preamble = [];
+      function pushCurrent() {
+        if (!current) return;
+        items.push({
+          label: current.label,
+          title: current.title,
+          content: String(current.bodyLines.join("\n") || "").trim()
+        });
+        current = null;
+      }
+      lines.forEach(function (line) {
+        var parsed = parseMaterialSectionHeadingLine(line, kind);
+        if (parsed && parsed.isParent) {
+          pushCurrent();
+          parentTitle = parsed.parentTitle;
+          return;
+        }
+        if (parsed && parsed.isChild) {
+          pushCurrent();
+          current = {
+            label: parsed.label,
+            title: parsed.title,
+            bodyLines: []
+          };
+          return;
+        }
+        if (current) current.bodyLines.push(line);
+        else preamble.push(line);
+      });
+      pushCurrent();
+      if (!items.length) {
+        var combined = preamble.join("\n").trim();
+        if (combined) items.push({ label: "", title: "", content: combined });
+      }
+      return { parentTitle: parentTitle, items: items };
+    }
+    function expandScenarioMaterialEntries(value) {
+      if (utilityIsEmptyValue(value)) return [];
+      if (Array.isArray(value)) {
+        var merged = [];
+        value.forEach(function (entry) {
+          expandScenarioMaterialEntries(entry).forEach(function (piece) {
+            merged.push(piece);
+          });
+        });
+        return merged;
+      }
+      if (typeof value === "string") {
+        var split = splitMarkdownMaterialSections(value, "scenario");
+        if (split.items.length > 1 || (split.items.length === 1 && split.items[0].label)) {
+          return split.items.map(function (item) {
+            return {
+              label: item.label,
+              title: item.title || item.label,
+              content: item.content,
+              scenario_section_title: split.parentTitle
+            };
+          });
+        }
+        var raw = String(value).replace(/\r\n/g, "\n").trim();
+        if (!raw) return [];
+        if (/^##\s+scenario\b/im.test(raw) || /\n##\s+scenario\b/im.test(raw)) {
+          return raw.split(/\n(?=##\s+scenario\b)/i).map(function (chunk) {
+            var piece = String(chunk || "").trim();
+            if (!piece) return null;
+            var m = piece.match(/^##\s+scenario\s+([^:\n]+)\s*:?\s*\n?([\s\S]*)$/i);
+            if (m) {
+              var token = String(m[1] || "").trim();
+              var label = /^[A-D]$/i.test(token) ? ("Scenario " + token.toUpperCase()) : ("Scenario " + token);
+              return { label: label, title: label, content: String(m[2] || "").trim() };
+            }
+            return { content: piece.replace(/^##\s+scenario\s+[^:\n]+:?\s*/i, "").trim() };
+          }).filter(function (x) { return !!x; });
+        }
+        return [{ content: raw }];
+      }
+      if (value && typeof value === "object") {
+        var body = firstNonEmpty([value.content, value.text, value.body]);
+        if (typeof body === "string" && /#{2,3}\s+/m.test(body)) {
+          var nested = expandScenarioMaterialEntries(body);
+          if (nested.length > 1 || (nested.length === 1 && nested[0].label)) {
+            return nested.map(function (item) {
+              return Object.assign({}, value, item, {
+                title: item.title || firstNonEmpty([value.title, value.name, value.label]) || item.label,
+                content: item.content
+              });
+            });
+          }
+        }
+        return [value];
+      }
+      return [];
+    }
+    function expandTaskCardMaterialEntries(value) {
+      if (utilityIsEmptyValue(value)) return [];
+      if (Array.isArray(value)) {
+        var out = [];
+        value.forEach(function (entry) {
+          expandTaskCardMaterialEntries(entry).forEach(function (piece) {
+            out.push(piece);
+          });
+        });
+        return out;
+      }
+      if (typeof value === "string") {
+        var split = splitMarkdownMaterialSections(value, "task_card");
+        if (split.items.length > 1 || (split.items.length === 1 && split.items[0].label)) {
+          return split.items.map(function (item) {
+            return {
+              title: item.title || item.label,
+              label: item.label,
+              instruction: item.content
+            };
+          });
+        }
+        return [{ instruction: String(value).trim() }];
+      }
+      if (value && typeof value === "object") {
+        var body = firstNonEmpty([value.content, value.text, value.body, value.instruction]);
+        if (typeof body === "string" && /#{2,3}\s+Card\s+\d+/i.test(body)) {
+          return expandTaskCardMaterialEntries(body);
+        }
+        if (value.text && !value.instruction && !value.content) {
+          return [Object.assign({}, value, { instruction: value.text })];
+        }
+        return [value];
+      }
+      return [];
+    }
+    function appendMaterialBucket(target, key, value) {
+      if (!key || utilityIsEmptyValue(value)) return;
+      var listKeys = { scenarios: true, task_cards: true, cards: true };
+      if (listKeys[key]) {
+        if (!Array.isArray(target[key])) target[key] = [];
+        var entries = key === "scenarios"
+          ? expandScenarioMaterialEntries(value)
+          : expandTaskCardMaterialEntries(value);
+        entries.forEach(function (entry) {
+          target[key].push(entry);
+        });
+        if (key === "scenarios" && value && typeof value === "object" && !Array.isArray(value) && entries.length) {
+          var parentTitle = firstNonEmpty([value.heading, value.title, value.name]);
+          if (parentTitle) target.scenario_section_title = parentTitle;
+        }
+        if (key === "scenarios" && entries.length && entries[0].scenario_section_title && !target.scenario_section_title) {
+          target.scenario_section_title = entries[0].scenario_section_title;
+        }
+        return;
+      }
+      if (utilityIsEmptyValue(target[key])) {
+        target[key] = value;
+      }
+    }
+    function normalizeActivityMaterialsForRender(materials) {
+      if (utilityIsEmptyValue(materials)) return null;
+      if (materials && typeof materials === "object" && !Array.isArray(materials)) {
+        if (Array.isArray(materials.items)) {
+          return normalizeActivityMaterialsForRender(materials.items);
+        }
+        if (Array.isArray(materials.materials)) {
+          return normalizeActivityMaterialsForRender(materials.materials);
+        }
+        if (Array.isArray(materials.content)) {
+          var contentArr = materials.content;
+          var typed = contentArr.length && contentArr.every(function (entry) {
+            return entry && typeof entry === "object" && !Array.isArray(entry) &&
+              !!(entry.type || entry.material_type || entry.materialType);
+          });
+          if (typed) return normalizeActivityMaterialsForRender(contentArr);
+        }
+        var clone = Object.assign({}, materials);
+        if (!utilityIsEmptyValue(clone.scenarios)) {
+          var expandedScenarios = expandScenarioMaterialEntries(clone.scenarios);
+          clone.scenarios = expandedScenarios;
+          if (!clone.scenario_section_title) {
+            clone.scenario_section_title = firstNonEmpty([
+              clone.scenarios && expandedScenarios[0] && expandedScenarios[0].scenario_section_title,
+              clone.scenario_heading,
+              clone.scenario_title
+            ]);
+          }
+        }
+        if (!utilityIsEmptyValue(clone.task_cards)) {
+          clone.task_cards = expandTaskCardMaterialEntries(clone.task_cards);
+        }
+        if (!utilityIsEmptyValue(clone.cards)) {
+          clone.cards = expandTaskCardMaterialEntries(clone.cards);
+        }
+        return clone;
+      }
+      if (!Array.isArray(materials)) return materials;
+      var out = {};
+      materials.forEach(function (entry) {
+        if (utilityIsEmptyValue(entry)) return;
+        if (typeof entry === "string") {
+          appendMaterialBucket(out, "content", entry);
+          return;
+        }
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return;
+        var typeKey = materialTypeToRenderKey(
+          firstNonEmpty([entry.type, entry.material_type, entry.materialType, entry.kind])
+        );
+        var payload =
+          entry.content != null ? entry.content :
+          entry.body != null ? entry.body :
+          entry.text != null ? entry.text :
+          entry;
+        if (typeKey === "task_cards" && Array.isArray(payload)) {
+          payload = payload.map(function (card) {
+            if (!card || typeof card !== "object") return card;
+            if (card.text && !card.instruction && !card.content) {
+              return Object.assign({}, card, { instruction: card.text });
+            }
+            return card;
+          });
+        }
+        if (typeKey === "scenarios") {
+          appendMaterialBucket(out, "scenarios", payload);
+          return;
+        }
+        if (typeKey === "checklist") {
+          appendMaterialBucket(out, "checklist", payload);
+          return;
+        }
+        if (typeKey === "prompt_set") {
+          if (typeof payload === "string") {
+            appendMaterialBucket(out, "prompt_set", payload);
+            return;
+          }
+          if (Array.isArray(payload)) {
+            appendMaterialBucket(out, "prompt_set", payload);
+          } else if (payload && typeof payload === "object" && Array.isArray(payload.prompts)) {
+            appendMaterialBucket(out, "prompt_set", payload);
+          } else if (payload && typeof payload === "object" && Array.isArray(payload.sections)) {
+            var promptItems = [];
+            payload.sections.forEach(function (sec) {
+              if (!sec || typeof sec !== "object") return;
+              var secItems = Array.isArray(sec.items) ? sec.items : Array.isArray(sec.prompts) ? sec.prompts : [];
+              secItems.forEach(function (item) { promptItems.push(item); });
+            });
+            if (promptItems.length) appendMaterialBucket(out, "prompt_set", { prompts: promptItems });
+            else appendMaterialBucket(out, "prompt_set", payload);
+          } else {
+            appendMaterialBucket(out, "prompt_set", payload);
+          }
+          return;
+        }
+        appendMaterialBucket(out, typeKey, payload);
+      });
+      return out;
+    }
+    function mergeActivityMaterialObjects(primary, secondary) {
+      var merged = Object.assign({}, secondary || {}, primary || {});
+      ["scenarios", "task_cards", "cards", "prompt_set", "checklist"].forEach(function (key) {
+        var a = primary && Array.isArray(primary[key]) ? primary[key] : [];
+        var b = secondary && Array.isArray(secondary[key]) ? secondary[key] : [];
+        if (a.length || b.length) merged[key] = b.concat(a);
+      });
+      return merged;
+    }
+    function collectActivityMaterialsByActivityId(sectionsValue, linkedIndex) {
+      var byId = {};
+      var absorbedSignatures = {};
+      function absorbTypedMaterial(entry) {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return;
+        var aid = normalizeActivityLookupKey(
+          firstNonEmpty([entry.activity_id, entry.activityId, entry.for_activity, entry.parent_activity_id])
+        );
+        var type = firstNonEmpty([entry.type, entry.material_type, entry.materialType, entry.kind, entry.schema]);
+        if (!aid || !type) return;
+        var payload = entry.content != null ? entry.content : entry.body != null ? entry.body : entry.text;
+        var signature = aid + "::" + type + "::" + (typeof payload === "string" ? payload : JSON.stringify(payload));
+        if (absorbedSignatures[signature]) return;
+        absorbedSignatures[signature] = true;
+        if (!byId[aid]) byId[aid] = [];
+        byId[aid].push(entry);
+      }
+      function walk(node) {
+        if (utilityIsEmptyValue(node)) return;
+        if (Array.isArray(node)) {
+          node.forEach(walk);
+          return;
+        }
+        if (node && typeof node === "object") {
+          absorbTypedMaterial(node);
+          Object.keys(node).forEach(function (k) {
+            walk(node[k]);
+          });
+        }
+      }
+      if (sectionsValue && typeof sectionsValue === "object") {
+        if (Array.isArray(sectionsValue)) {
+          sectionsValue.forEach(function (section) {
+            if (!section || typeof section !== "object") return;
+            var sid = String(section.section_id || section.id || "").toLowerCase();
+            var heading = String(section.heading || section.title || "").toLowerCase();
+            if (sid.indexOf("activity_material") !== -1 || heading.indexOf("activity material") !== -1) {
+              walk(section.content != null ? section.content : section);
+            }
+          });
+        } else {
+          Object.keys(sectionsValue).forEach(function (key) {
+            if (!looksActivityResourcesSection(key) && String(key || "").toLowerCase().indexOf("activity_material") === -1) return;
+            walk(sectionsValue[key]);
+          });
+        }
+      }
+      var normalized = {};
+      Object.keys(byId).forEach(function (aid) {
+        normalized[aid] = normalizeActivityMaterialsForRender(byId[aid]);
+      });
+      return normalized;
+    }
+    function renderLearningActivitiesBlocks(activityRows, renderContext) {
+      var ctx = renderContext && typeof renderContext === "object" ? renderContext : {};
+      var materialsByActivityId = ctx.materialsByActivityId && typeof ctx.materialsByActivityId === "object"
+        ? ctx.materialsByActivityId
+        : {};
       var rows = Array.isArray(activityRows) ? activityRows.filter(function (row) { return !utilityIsEmptyValue(row); }) : [];
       if (!rows.length) return "";
       function firstNonEmptyRaw(values) {
@@ -20092,11 +20984,21 @@
         }
         return "<ul><li>" + utilityRenderMarkdownInline(text) + "</li></ul>";
       }
+      function resolveRowMaterials(row) {
+        if (!row || typeof row !== "object" || Array.isArray(row)) return null;
+        var aid = normalizeActivityLookupKey(firstNonEmpty([row.activity_id, row.activityId, row.id]));
+        var inline = firstNonEmptyRaw([row.materials, row.activity_materials, row.resources]);
+        var normalizedInline = normalizeActivityMaterialsForRender(inline);
+        var external = aid && materialsByActivityId[aid] ? materialsByActivityId[aid] : null;
+        if (utilityIsEmptyValue(normalizedInline) && utilityIsEmptyValue(external)) return null;
+        if (utilityIsEmptyValue(normalizedInline)) return external;
+        if (utilityIsEmptyValue(external)) return normalizedInline;
+        return mergeActivityMaterialObjects(normalizedInline, external);
+      }
       function renderMaterialsForActivity(materials) {
         if (utilityIsEmptyValue(materials)) return "";
-        try {
-          console.log("[PRISM TRACE] renderMaterialsForActivity: materials keys =", materials && typeof materials === "object" ? Object.keys(materials) : typeof materials);
-        } catch (_) {}
+        materials = normalizeActivityMaterialsForRender(materials);
+        if (utilityIsEmptyValue(materials)) return "";
         // Content preservation rule:
         // - Never mark a key as consumed unless that value is definitely rendered.
         // - For unknown object/array shapes, always fall back to renderMaterialValue/generic rendering.
@@ -20129,9 +21031,48 @@
         }
         function renderScenarioBlocks(items) {
           var arr = Array.isArray(items) ? items : [];
+          function resolveScenarioCardLabel(entry, idx) {
+            var fromEntry = firstNonEmpty([entry && entry.label, entry && entry.title, entry && entry.name]);
+            if (fromEntry) {
+              var raw = String(fromEntry).replace(/^\s*#{1,6}\s+/, "").trim();
+              var m = raw.match(/^((?:Scenario|Case)\s+[A-D0-9]+)(?:\s*[:\-–]\s*(.+))?$/i);
+              if (m) {
+                return m[2] ? (String(m[1]) + ": " + String(m[2]).trim()) : String(m[1]);
+              }
+              var letterOnly = raw.match(/^([A-D])$/i);
+              if (letterOnly) return "Scenario " + String(letterOnly[1]).toUpperCase();
+              return raw;
+            }
+            return "Scenario " + (idx + 1);
+          }
+          function stripLeadingScenarioHeading(bodyText, labelText) {
+            var body = String(bodyText == null ? "" : bodyText).replace(/\r\n/g, "\n").trim();
+            if (!body) return "";
+            var lines = body.split("\n");
+            if (!lines.length) return body;
+            var first = String(lines[0] || "").trim();
+            if (/^#{1,6}\s+/.test(first)) {
+              var parsed = parseMaterialSectionHeadingLine(first, "scenario");
+              if (parsed && parsed.isChild) {
+                lines.shift();
+                while (lines.length && !String(lines[0] || "").trim()) lines.shift();
+                body = lines.join("\n").trim();
+              }
+            }
+            if (labelText) {
+              var labelCore = String(labelText).replace(/^\s*#{1,6}\s+/, "").trim();
+              var esc = labelCore.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              body = body.replace(new RegExp("^" + esc + "\\s*", "i"), "").trim();
+            }
+            return body;
+          }
           function extractScenarioLabelAndBody(rawText) {
             var raw = String(rawText == null ? "" : rawText).trim();
             if (!raw) return { label: "", body: "" };
+            var heading = parseMaterialSectionHeadingLine(raw.split("\n")[0], "scenario");
+            if (heading && heading.isChild) {
+              return { label: heading.label, body: stripLeadingScenarioHeading(raw, heading.label) };
+            }
             var m = raw.match(/^scenario\s+([a-z0-9]+)\s*[:\-]\s*(.+)$/i);
             if (m) {
               return { label: "Scenario " + String(m[1]).toUpperCase(), body: String(m[2] || "").trim() };
@@ -20162,22 +21103,19 @@
             if (utilityIsEmptyValue(entry)) return "";
             if (typeof entry === "string") {
               var parsed = extractScenarioLabelAndBody(entry);
-              var fallbackLabel = "Scenario " + (idx + 1);
-              var label = parsed.label || fallbackLabel;
-              var suppressAuto = bodyStartsWithScenarioHeading(parsed.body);
-              var block = utilityRenderMarkdownBlock(parsed.body);
+              var label = parsed.label || resolveScenarioCardLabel(null, idx);
+              var bodyClean = stripLeadingScenarioHeading(parsed.body, label);
+              var suppressAuto = bodyStartsWithScenarioHeading(bodyClean);
+              var block = utilityRenderMarkdownBlock(bodyClean);
               return block
-                ? ('<div class="util-scenario-inline">' + (suppressAuto ? "" : ('<p class="util-scenario-title"><strong>' + utilityEscapeHtml(label) + "</strong></p>")) + block + "</div>")
+                ? ('<div class="util-scenario-card">' + (suppressAuto ? "" : utilityRenderScenarioTitleHtml(label)) + block + "</div>")
                 : "";
             }
             if (entry && typeof entry === "object") {
-              var fallbackLabelText = "Scenario " + (idx + 1);
+              var labelText = resolveScenarioCardLabel(entry, idx);
               var rawTitle = firstNonEmpty([entry.title, entry.name, entry.label, entry.scenario_title]);
-              var titleParsed = extractScenarioLabelAndBody(rawTitle || "");
-              var labelText = titleParsed.label || fallbackLabelText;
-              var displayTitle = stripScenarioPrefix(rawTitle || "");
-              var showTitle = !!displayTitle;
               var bodyRaw = firstNonEmpty([entry.content, entry.text, entry.body, entry.description, entry.prompt]);
+              bodyRaw = stripLeadingScenarioHeading(bodyRaw, labelText);
               var suppressAutoObj = bodyStartsWithScenarioHeading(bodyRaw);
               if (!suppressAutoObj && !bodyRaw && /^(?:#{1,6}\s*)?scenario\s+[a-z0-9]+\s*[:\-]/i.test(String(rawTitle || ""))) {
                 suppressAutoObj = true;
@@ -20223,9 +21161,8 @@
                 }).filter(function (x) { return !!x; }).join("") + "</div>";
               }
               var body = stageHtml || (bodyRaw ? utilityRenderMarkdownBlock(String(bodyRaw)) : utilityRenderObject(entry, 0, renderOpts));
-              var compactLabel = showTitle ? (labelText + ": " + displayTitle) : labelText;
               return body
-                ? ('<div class="util-scenario-inline">' + (suppressAutoObj ? "" : ('<p class="util-scenario-title"><strong>' + utilityEscapeHtml(compactLabel) + "</strong></p>")) + body + "</div>")
+                ? ('<div class="util-scenario-card">' + (suppressAutoObj ? "" : utilityRenderScenarioTitleHtml(labelText)) + body + "</div>")
                 : "";
             }
             return "";
@@ -20248,6 +21185,88 @@
             }
             return false;
           });
+        }
+        function renderTaskCardBlocks(items) {
+          var expanded = expandTaskCardMaterialEntries(items);
+          var arr = expanded.filter(function (x) { return !utilityIsEmptyValue(x); });
+          if (!arr.length) return "";
+          var cards = arr.map(function (entry, idx) {
+            if (utilityIsEmptyValue(entry)) return "";
+            if (typeof entry === "string") {
+              var bodyFromString = utilityRenderMarkdownBlock(String(entry));
+              if (!bodyFromString) return "";
+              return '<article class="util-task-card">' + utilityRenderTaskCardHeadingHtml("Task card " + (idx + 1)) + bodyFromString + "</article>";
+            }
+            if (!entry || typeof entry !== "object" || Array.isArray(entry)) return "";
+            var cardTitle = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]) || ("Card " + (idx + 1));
+            var cardBodyRaw = firstNonEmpty([
+              entry.instruction,
+              entry.prompt,
+              entry.content,
+              entry.text,
+              entry.body,
+              entry.task,
+              entry.description
+            ]);
+            if (cardBodyRaw) {
+              var cardLines = String(cardBodyRaw).replace(/\r\n/g, "\n").split("\n");
+              var cardFirst = String(cardLines[0] || "").trim();
+              if (parseMaterialSectionHeadingLine(cardFirst, "task_card")) {
+                cardLines.shift();
+                while (cardLines.length && !String(cardLines[0] || "").trim()) cardLines.shift();
+                cardBodyRaw = cardLines.join("\n").trim();
+              }
+            }
+            var cardBody = cardBodyRaw
+              ? utilityRenderMarkdownBlock(String(cardBodyRaw))
+              : utilityRenderObject(entry, 1, renderOpts);
+            if (!String(cardBody || "").trim()) return "";
+            return '<article class="util-task-card">' + utilityRenderTaskCardHeadingHtml(String(cardTitle)) + cardBody + "</article>";
+          }).filter(function (x) { return !!String(x || "").trim(); });
+          return cards.length ? ('<div class="util-card-grid">' + cards.join("") + "</div>") : "";
+        }
+        function renderPromptSetBlocks(value) {
+          if (utilityIsEmptyValue(value)) return "";
+          var prompts = [];
+          var heading = "";
+          if (typeof value === "string") {
+            var rawPrompt = String(value).replace(/\r\n/g, "\n").trim();
+            if (!rawPrompt) return "";
+            var promptHeadingMatch = rawPrompt.match(/^#{1,3}\s+(.+?)(?:\n|$)/);
+            if (promptHeadingMatch) {
+              heading = String(promptHeadingMatch[1] || "").trim();
+              rawPrompt = rawPrompt.replace(/^#{1,3}\s+.+?(?:\n+|$)/, "").trim();
+            }
+            if (/^[-*•]\s/m.test(rawPrompt)) {
+              prompts = rawPrompt.split("\n").map(function (ln) {
+                return String(ln || "").replace(/^\s*[-*•]\s+/, "").trim();
+              }).filter(function (x) { return !!x; });
+            } else {
+              var promptBlock = utilityRenderMarkdownBlock(rawPrompt);
+              return promptBlock ? ('<div class="util-prompt-set">' + promptBlock + "</div>") : "";
+            }
+          } else if (Array.isArray(value)) {
+            prompts = value.slice();
+          } else if (value && typeof value === "object" && !Array.isArray(value)) {
+            heading = firstNonEmpty([value.heading, value.title, value.name, value.label]);
+            prompts = Array.isArray(value.prompts)
+              ? value.prompts.slice()
+              : Array.isArray(value.items)
+              ? value.items.slice()
+              : Array.isArray(value.lines)
+              ? value.lines.slice()
+              : [];
+          }
+          prompts = prompts.filter(function (x) { return !utilityIsEmptyValue(x); });
+          if (!prompts.length) return "";
+          var listHtml = renderBulletArray(prompts, { plainLabels: true, stripStandaloneBold: true });
+          if (!listHtml) return "";
+          return (
+            '<div class="util-prompt-set">' +
+            (heading ? ("<h5>" + utilityEscapeHtml(String(heading)) + "</h5>") : "") +
+            listHtml +
+            "</div>"
+          );
         }
         function renderBulletArray(arr, opts) {
           var cfg = opts && typeof opts === "object" ? opts : {};
@@ -20858,7 +21877,13 @@
               objectKeys: value && typeof value === "object" && !Array.isArray(value) ? Object.keys(value) : null
             });
           } catch (_) {}
-          var tableLikeKey = hint === "table" || hint === "observation_table" || hint === "observations_table" || hint === "data_table";
+          var tableLikeKey =
+            hint === "table" ||
+            hint === "analysis_table" ||
+            hint === "impact_table" ||
+            hint === "observation_table" ||
+            hint === "observations_table" ||
+            hint === "data_table";
           if (value && typeof value === "object" && !Array.isArray(value)) {
             var tableHtml = renderColumnRowsTable(value);
             if (tableHtml && (tableLikeKey || (Array.isArray(value.columns) && Array.isArray(value.rows)))) {
@@ -21095,38 +22120,98 @@
         }
         if (!materials || typeof materials !== "object") return "";
         var parts = [];
+        var scenarioSectionTitle = firstNonEmpty([
+          materials.scenario_section_title,
+          materials.scenario_heading,
+          materials.scenario_title
+        ]);
         var scenarios = firstNonEmptyRaw([materials.scenarios, materials.study_scenarios, materials.scenario_set]);
-        try {
-          console.log("[PRISM TRACE] scenarios encountered:", {
-            hasScenariosKey: Object.prototype.hasOwnProperty.call(materials, "scenarios"),
-            scenariosType: Array.isArray(scenarios) ? "array" : typeof scenarios,
-            scenariosKeys: scenarios && typeof scenarios === "object" && !Array.isArray(scenarios) ? Object.keys(scenarios) : null
+        if (typeof scenarios === "string") {
+          scenarios = expandScenarioMaterialEntries(scenarios);
+        } else if (Array.isArray(scenarios)) {
+          var flatScenarios = [];
+          scenarios.forEach(function (entry) {
+            if (typeof entry === "string") {
+              expandScenarioMaterialEntries(entry).forEach(function (piece) { flatScenarios.push(piece); });
+            } else {
+              flatScenarios.push(entry);
+            }
           });
-        } catch (_) {}
+          scenarios = flatScenarios;
+        }
+        if (!scenarioSectionTitle && Array.isArray(scenarios) && scenarios.length) {
+          scenarioSectionTitle = firstNonEmpty(
+            scenarios.map(function (entry) {
+              return entry && typeof entry === "object" ? entry.scenario_section_title : "";
+            })
+          );
+        }
         var scenariosRendered = false;
+        var taskCardsRendered = false;
+        var promptSetRendered = false;
+        var templateRendered = false;
+        var checklistRendered = false;
+        var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
+        if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
+          taskCards = expandTaskCardMaterialEntries(taskCards);
+        }
+        if (Array.isArray(taskCards) && taskCards.length) {
+          var taskCardsHtml = renderTaskCardBlocks(taskCards);
+          if (taskCardsHtml) {
+            parts.push(utilityRenderIconHeading("h4", "Task cards", "task_cards", "util-material-heading") + taskCardsHtml);
+            taskCardsRendered = true;
+          }
+        }
         if (Array.isArray(scenarios) && scenarios.length) {
-          try {
-            console.log("[PRISM TRACE] scenarios render helper = renderScenarioBlocks (array path), count =", scenarios.length);
-          } catch (_) {}
           var scenarioHtml = renderScenarioBlocks(scenarios);
           if (scenarioHtml) {
-            var hideScenariosHeading = scenarioItemsAreSelfLabeled(scenarios);
-            parts.push((hideScenariosHeading ? "" : "<h4>Scenarios</h4>") + scenarioHtml);
+            var scenariosHeading = scenarioSectionTitle
+              ? String(scenarioSectionTitle)
+              : (scenarioItemsAreSelfLabeled(scenarios) ? "" : "Scenarios");
+            parts.push(
+              (scenariosHeading
+                ? utilityRenderIconHeading("h4", scenariosHeading, "scenarios", "util-material-heading")
+                : "") + scenarioHtml
+            );
             scenariosRendered = true;
-            try {
-              console.log("[PRISM TRACE] scenarios rendered via renderScenarioBlocks");
-            } catch (_) {}
-          } else {
-            try {
-              console.log("[PRISM TRACE] scenarios array path produced empty HTML");
-            } catch (_) {}
           }
         } else if (!utilityIsEmptyValue(scenarios)) {
-          try {
-            console.log("[PRISM TRACE] scenarios present but not array; array path skipped");
-          } catch (_) {}
+          var scenarioFallbackHtml = renderScenarioBlocks(expandScenarioMaterialEntries(scenarios));
+          if (scenarioFallbackHtml) {
+            parts.push(
+              (scenarioSectionTitle
+                ? utilityRenderIconHeading("h4", String(scenarioSectionTitle), "scenarios", "util-material-heading")
+                : utilityRenderIconHeading("h4", "Scenarios", "scenarios", "util-material-heading")) +
+                scenarioFallbackHtml
+            );
+            scenariosRendered = true;
+          }
         }
-        var analysisTable = firstNonEmptyRaw([materials.analysis_table, materials.table]);
+        var promptSetValue = firstNonEmptyRaw([materials.prompt_set, materials.prompts]);
+        if (!utilityIsEmptyValue(promptSetValue)) {
+          var promptSetHtml = renderPromptSetBlocks(promptSetValue);
+          if (promptSetHtml) {
+            parts.push(utilityRenderIconHeading("h4", "Prompt set", "prompt_set", "util-material-heading") + promptSetHtml);
+            promptSetRendered = true;
+          }
+        }
+        var checklistValue = materials.checklist;
+        if (!utilityIsEmptyValue(checklistValue)) {
+          var checklistHtml = renderPromptSetBlocks(checklistValue) || renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
+          if (checklistHtml) {
+            parts.push(utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading") + checklistHtml);
+            checklistRendered = true;
+          }
+        }
+        var templateValue = firstNonEmptyRaw([materials.template, materials.templates, materials.worksheet_template]);
+        if (!utilityIsEmptyValue(templateValue)) {
+          var templateHtml = renderMaterialValue(templateValue, "template", { materialHint: "template" });
+          if (templateHtml) {
+            parts.push(utilityRenderIconHeading("h4", "Template", "template", "util-material-heading") + templateHtml);
+            templateRendered = true;
+          }
+        }
+        var analysisTable = firstNonEmptyRaw([materials.analysis_table, materials.impact_table, materials.table]);
         if (!utilityIsEmptyValue(analysisTable)) {
           var tableSource = analysisTable;
           if (typeof tableSource === "string") {
@@ -21167,7 +22252,7 @@
           }
           if (tableHtml) {
             parts.push(
-              "<h4>Worksheet</h4>" +
+              utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
               "<p>Use this table to record your group's decision for each scenario.</p>" +
               tableHtml
             );
@@ -21175,7 +22260,9 @@
         }
         var strategyOptions = firstNonEmptyRaw([materials.strategy_options, materials.options, materials.strategies]);
         var strategyHtml = renderMaterialValue(strategyOptions, "strategy_options");
-        if (strategyHtml) parts.push("<h4>Strategy options</h4>" + strategyHtml);
+        if (strategyHtml) {
+          parts.push(utilityRenderIconHeading("h4", "Strategy options", "strategy", "util-material-heading") + strategyHtml);
+        }
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
           if (lowerK === "scenarios" && !scenariosRendered) {
@@ -21183,7 +22270,7 @@
             if (scenariosVal && typeof scenariosVal === "object" && !Array.isArray(scenariosVal)) {
               var scenariosFallback = renderMaterialValue(scenariosVal, "Scenarios");
               if (scenariosFallback) {
-                parts.push("<h4>Scenarios</h4>" + scenariosFallback);
+                parts.push(utilityRenderIconHeading("h4", "Scenarios", "scenarios", "util-material-heading") + scenariosFallback);
                 scenariosRendered = true;
                 try {
                   console.log("[PRISM TRACE] scenarios rendered via renderMaterialValue fallback (object path)");
@@ -21205,7 +22292,22 @@
             try {
               console.log("[PRISM TRACE] scenarios not yet rendered; allowing generic remainder render:", k);
             } catch (_) {}
-          } else if (["study_scenarios", "scenario_set", "analysis_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items"].indexOf(String(k || "")) !== -1 || (lowerK === "scenarios" && scenariosRendered)) {
+          } else if (
+            ["study_scenarios", "scenario_set", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+            (lowerK === "scenario_section_title") ||
+            (lowerK === "scenario_heading") ||
+            (lowerK === "scenario_title") ||
+            (lowerK === "template" && templateRendered) ||
+            (lowerK === "templates" && templateRendered) ||
+            (lowerK === "worksheet_template" && templateRendered) ||
+            (lowerK === "checklist" && checklistRendered) ||
+            (lowerK === "checklists" && checklistRendered) ||
+            (lowerK === "scenarios" && scenariosRendered) ||
+            (lowerK === "task_cards" && taskCardsRendered) ||
+            (lowerK === "cards" && taskCardsRendered) ||
+            (lowerK === "prompt_set" && promptSetRendered) ||
+            (lowerK === "prompts" && promptSetRendered)
+          ) {
             try {
               console.log("[PRISM TRACE] material key skipped in remainder loop:", k);
             } catch (_) {}
@@ -21243,13 +22345,18 @@
             if (!String(primitive || "").trim()) return "";
             return '<article class="util-task-block"><h3>' + utilityEscapeHtml("Activity " + (idx + 1)) + "</h3>" + primitive + "</article>";
           }
+          var activityIdLabel = firstNonEmpty([row.activity_id, row.activityId, row.id]);
           var title = firstNonEmpty([
             row.title,
             row.activity_title,
             row.name,
             row.activity_name,
             row.activity
-          ]) || ("Activity " + (idx + 1));
+          ]);
+          if (title && activityIdLabel && normalizeActivityLookupKey(title) === normalizeActivityLookupKey(activityIdLabel)) {
+            title = "";
+          }
+          title = title || activityIdLabel || ("Activity " + (idx + 1));
           var purposeFromRow = "";
           function asPurposeScalar(value) {
             if (value == null) return "";
@@ -21317,7 +22424,7 @@
             row.instructions
           ]);
           var instructions = firstNonEmptyRaw([row.learner_instructions, row.instructions, row.instruction, row.steps, row.concise_instructions]);
-          var materials = firstNonEmptyRaw([row.materials, row.activity_materials, row.resources]);
+          var materials = resolveRowMaterials(row);
           var supportNote = firstNonEmpty([row.support_note, row.support_notes, row.facilitator_note, row.facilitator_notes]);
           var parts = [];
           var headerBadges = [];
@@ -21334,23 +22441,34 @@
           }
           var learnerTaskHtml = renderListFromInstructions(learnerTaskRaw);
           if (learnerTaskHtml) {
-            parts.push('<div class="util-activity-task"><h4>What to do</h4>' + learnerTaskHtml + "</div>");
+            parts.push(
+              '<div class="util-activity-task">' +
+              utilityRenderIconHeading("h4", "What to do", "what_to_do", "util-material-heading") +
+              learnerTaskHtml +
+              "</div>"
+            );
           }
           var instructionHtml = renderListFromInstructions(instructions);
           if (instructionHtml && normalizeComparableText(String(instructionHtml)) !== normalizeComparableText(String(learnerTaskHtml || ""))) {
-            parts.push("<h4>Guidance</h4>" + instructionHtml);
+            parts.push(utilityRenderIconHeading("h4", "Guidance", "guidance", "util-material-heading") + instructionHtml);
           }
           var materialsHtml = renderMaterialsForActivity(materials);
           if (materialsHtml) {
-            parts.push("<h4>Materials</h4>" + materialsHtml);
+            parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
           if (expectedOutput) {
-            parts.push("<h4>Output</h4><p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>");
+            parts.push(
+              '<div class="util-output-block">' +
+              utilityRenderIconHeading("h4", "Output", "output", "util-output-heading util-icon-heading") +
+              "<p>" +
+              utilityRenderMarkdownInline(String(expectedOutput)) +
+              "</p></div>"
+            );
           }
           if (supportNote) {
-            parts.push('<p class="util-support-note"><strong>Support note:</strong> ' + utilityRenderMarkdownInline(String(supportNote)) + "</p>");
+            parts.push(utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(supportNote))));
           }
-          if (parts.length <= 1) return "";
+          if (!parts.length) return "";
           return '<article class="util-task-block">' + parts.join("") + "</article>";
         })
         .filter(function (x) { return !!String(x || "").trim(); })
@@ -21393,13 +22511,176 @@
           : ""
       };
     }
+    function isPresentActivityRow(row) {
+      if (utilityIsEmptyValue(row)) return false;
+      if (typeof row !== "object" || Array.isArray(row)) return true;
+      var id = firstNonEmpty([row.activity_id, row.activityId, row.id]);
+      if (id) return true;
+      return !utilityIsEmptyValue(
+        firstNonEmpty([
+          row.title,
+          row.activity_title,
+          row.name,
+          row.activity_name,
+          row.learner_task,
+          row.task,
+          row.purpose,
+          row.instructions,
+          row.learner_instructions,
+          row.expected_output,
+          row.materials,
+          row.activity_materials
+        ])
+      );
+    }
     function getLearningActivitiesRows(value) {
-      if (Array.isArray(value)) return value.filter(function (row) { return !utilityIsEmptyValue(row); });
-      if (value && typeof value === "object") {
-        if (Array.isArray(value.items)) return value.items.filter(function (row) { return !utilityIsEmptyValue(row); });
-        if (Array.isArray(value.activities)) return value.activities.filter(function (row) { return !utilityIsEmptyValue(row); });
+      function normalizeRows(arr) {
+        return (Array.isArray(arr) ? arr : []).filter(isPresentActivityRow);
+      }
+      if (Array.isArray(value)) return normalizeRows(value);
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        if (Array.isArray(value.content)) return normalizeRows(value.content);
+        if (Array.isArray(value.items)) return normalizeRows(value.items);
+        if (Array.isArray(value.activities)) return normalizeRows(value.activities);
+        var keys = Object.keys(value);
+        if (keys.length) {
+          var mapRows = keys
+            .map(function (key) {
+              var row = value[key];
+              if (utilityIsEmptyValue(row)) return null;
+              var id = firstNonEmpty([
+                row && typeof row === "object" && !Array.isArray(row)
+                  ? firstNonEmpty([row.activity_id, row.activityId, row.id])
+                  : "",
+                key
+              ]);
+              if (!id) return null;
+              if (Array.isArray(row)) {
+                return { activity_id: id, materials: row };
+              }
+              if (!row || typeof row !== "object") return null;
+              if (row.activity_id || row.activityId) return row;
+              return Object.assign({}, row, { activity_id: id });
+            })
+            .filter(function (x) { return !!x; });
+          if (mapRows.length) return normalizeRows(mapRows);
+        }
       }
       return [];
+    }
+    function getLearningSequenceRows(value) {
+      if (Array.isArray(value)) return value.filter(function (row) { return !utilityIsEmptyValue(row); });
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        if (Array.isArray(value.timeline)) return value.timeline.filter(function (row) { return !utilityIsEmptyValue(row); });
+        if (Array.isArray(value.content)) return value.content.filter(function (row) { return !utilityIsEmptyValue(row); });
+        if (Array.isArray(value.items)) return value.items.filter(function (row) { return !utilityIsEmptyValue(row); });
+      }
+      return [];
+    }
+    function buildActivityRowFromSequenceEntry(seqRow) {
+      if (!seqRow || typeof seqRow !== "object" || Array.isArray(seqRow)) return null;
+      var id = firstNonEmpty([seqRow.activity_id, seqRow.activityId, seqRow.id]);
+      if (!id) return null;
+      return {
+        activity_id: id,
+        title: firstNonEmpty([seqRow.title, seqRow.activity_title, seqRow.name, seqRow.label]),
+        duration_minutes: firstNonEmpty([seqRow.duration_minutes, seqRow.duration, seqRow.minutes]),
+        grouping: firstNonEmpty([seqRow.grouping, seqRow.group_size, seqRow.grouping_mode]),
+        learner_task: firstNonEmpty([
+          seqRow.learner_actions,
+          seqRow.learner_task,
+          seqRow.task,
+          seqRow.instructions,
+          seqRow.instruction
+        ]),
+        expected_output: firstNonEmpty([seqRow.expected_output, seqRow.output, seqRow.deliverable]),
+        support_note: firstNonEmpty([
+          seqRow.support_note,
+          seqRow.support_notes,
+          seqRow.facilitator_actions,
+          seqRow.facilitator_notes,
+          seqRow.notes
+        ]),
+        materials: []
+      };
+    }
+    function resolveLearningActivityRowsForRender(
+      activitiesValue,
+      sequenceValue,
+      materialsByActivityId,
+      titleLookupOverride,
+      strictCompositionClosure
+    ) {
+      var rows = getLearningActivitiesRows(activitiesValue);
+      var titleLookup = buildLearningActivityLookup(activitiesValue);
+      if (titleLookupOverride && typeof titleLookupOverride === "object") {
+        titleLookup = Object.assign({}, titleLookupOverride, titleLookup);
+      }
+      var matsMap = materialsByActivityId && typeof materialsByActivityId === "object" ? materialsByActivityId : {};
+      var strict = !!strictCompositionClosure;
+      var byId = {};
+      var anonymous = [];
+      rows.forEach(function (row) {
+        if (!isPresentActivityRow(row)) return;
+        var id = normalizeActivityLookupKey(firstNonEmpty([row.activity_id, row.activityId, row.id]));
+        if (id) {
+          if (!byId[id]) {
+            byId[id] = row;
+          } else {
+            byId[id] = Object.assign({}, byId[id], row);
+          }
+          return;
+        }
+        anonymous.push(row);
+      });
+      if (!strict) {
+        getLearningSequenceRows(sequenceValue).forEach(function (seqRow) {
+          var id = normalizeActivityLookupKey(firstNonEmpty([seqRow.activity_id, seqRow.activityId, seqRow.id]));
+          if (!id || byId[id]) return;
+          var stub = buildActivityRowFromSequenceEntry(seqRow);
+          if (!stub || !isPresentActivityRow(stub)) return;
+          var mappedTitle = titleLookup[id];
+          if (mappedTitle && (!stub.title || normalizeActivityLookupKey(stub.title) === id)) {
+            stub.title = mappedTitle;
+          }
+          byId[id] = stub;
+        });
+        Object.keys(matsMap).forEach(function (matKey) {
+          var id = normalizeActivityLookupKey(matKey);
+          if (!id || byId[id] || utilityIsEmptyValue(matsMap[id])) return;
+          var materialStub = {
+            activity_id: id,
+            title: firstNonEmpty([titleLookup[id], id])
+          };
+          if (!isPresentActivityRow(materialStub)) return;
+          byId[id] = materialStub;
+        });
+      }
+      var ordered = [];
+      var used = {};
+      getLearningSequenceRows(sequenceValue).forEach(function (seqRow) {
+        var id = normalizeActivityLookupKey(firstNonEmpty([seqRow.activity_id, seqRow.activityId, seqRow.id]));
+        if (!id || used[id] || !byId[id]) return;
+        used[id] = true;
+        ordered.push(byId[id]);
+      });
+      rows.forEach(function (row) {
+        var id = normalizeActivityLookupKey(firstNonEmpty([row.activity_id, row.activityId, row.id]));
+        if (id) {
+          if (used[id]) return;
+          used[id] = true;
+          ordered.push(byId[id] || row);
+          return;
+        }
+        ordered.push(row);
+      });
+      Object.keys(byId).forEach(function (id) {
+        if (used[id]) return;
+        used[id] = true;
+        ordered.push(byId[id]);
+      });
+      if (!ordered.length) return anonymous;
+      return ordered;
     }
     function buildLearningActivityRowLookup(value) {
       var map = {};
@@ -21640,7 +22921,15 @@
           var actionableSnippet = renderActionableResourceSnippet(activityResources);
           if (actionableSnippet) parts.push(actionableSnippet);
         }
-        if (hasActivityId && expectedOutput) parts.push("<p><strong>Expected output:</strong> " + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>");
+        if (hasActivityId && expectedOutput) {
+          parts.push(
+            '<p class="util-output-inline util-icon-heading">' +
+            utilityRenderMaterialIcon("output") +
+            "<span><strong>Expected output:</strong> " +
+            utilityRenderMarkdownInline(String(expectedOutput)) +
+            "</span></p>"
+          );
+        }
         if (hasActivityId && reflectionPrompt) parts.push("<p><strong>Reflection prompt:</strong> " + utilityRenderMarkdownInline(String(reflectionPrompt)) + "</p>");
         if (facilitatorTip) {
           var subtleTip = summarizeOneSentence(facilitatorTip);
@@ -21893,11 +23182,11 @@
         var chunks = [];
         if (typeof materialsValue === "string") {
           var block = utilityRenderMarkdownBlock(materialsValue);
-          return block ? ("<h4>Materials</h4>" + block) : "";
+          return block || "";
         }
         if (Array.isArray(materialsValue)) {
           var list = renderStrategyBullets(materialsValue);
-          return list ? ("<h4>Materials</h4>" + list) : "";
+          return list || "";
         }
         if (!materialsValue || typeof materialsValue !== "object") return "";
         // Keep linked-journey materials rendering aligned with the primary
@@ -21947,7 +23236,7 @@
           }
         });
         if (!chunks.length) return "";
-        return '<div class="util-materials-stack"><h4>Materials</h4>' + chunks.join("") + "</div>";
+        return '<div class="util-materials-stack">' + chunks.join("") + "</div>";
       }
       var cards = rows.map(function (row, idx) {
         if (!row || typeof row !== "object" || Array.isArray(row)) return "";
@@ -22548,7 +23837,9 @@
         var scalarOutput = firstNonEmpty([row.expected_output, row.output, row.deliverable, row.artefact]);
         if (scalarOutput) scalarBits.push("<p><strong>What you will produce:</strong> " + utilityRenderMarkdownInline(String(scalarOutput)) + "</p>");
         var scalarSupport = firstNonEmpty([row.support_note, row.support_notes]);
-        if (scalarSupport) scalarBits.push('<p class="util-support-note"><strong>Support note:</strong> ' + utilityRenderMarkdownInline(String(scalarSupport)) + "</p>");
+        if (scalarSupport) {
+          scalarBits.push(utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(scalarSupport))));
+        }
         var consumed = {
           title: true,
           activity_title: true,
@@ -22635,9 +23926,37 @@
         if (!learningSequenceValue && looksLearningSequenceSection(key)) learningSequenceValue = sectionsValue[key];
         if (!resourcesValue && looksActivityResourcesSection(key)) resourcesValue = sectionsValue[key];
       });
-      var activityLookup = buildLearningActivityLookup(learningActivitiesValue);
-      var linkedIndex = buildLinkedItemIndexFromSectionsObject(sectionsValue, null);
-      var activityFlowState = { rendered: false };
+      var pageProbe = Array.isArray(renderOpts.pageSections) && renderOpts.pageSections.length
+        ? buildPageSectionProbeContext(renderOpts.pageSections)
+        : null;
+      if (pageProbe) {
+        if (!learningSequenceValue) learningSequenceValue = pageProbe.learningSequenceValue;
+        if (!resourcesValue) resourcesValue = pageProbe.resourcesValue;
+        if (!learningActivitiesValue) learningActivitiesValue = pageProbe.learningActivitiesValue;
+      }
+      var activityLookup = buildLearningActivityLookup(
+        learningActivitiesValue || (pageProbe && pageProbe.learningActivitiesValue)
+      );
+      if (pageProbe && pageProbe.activityLookup && typeof pageProbe.activityLookup === "object") {
+        activityLookup = Object.assign({}, pageProbe.activityLookup, activityLookup);
+      }
+      var linkedIndex = pageProbe && pageProbe.linkedIndex
+        ? pageProbe.linkedIndex
+        : buildLinkedItemIndexFromSectionsObject(sectionsValue, null);
+      var materialsByActivityId = pageProbe && pageProbe.materialsByActivityId
+        ? Object.assign({}, pageProbe.materialsByActivityId)
+        : {};
+      var localMaterials = collectActivityMaterialsByActivityId(sectionsValue, linkedIndex);
+      Object.keys(localMaterials).forEach(function (aid) {
+        if (utilityIsEmptyValue(localMaterials[aid])) return;
+        if (utilityIsEmptyValue(materialsByActivityId[aid])) {
+          materialsByActivityId[aid] = localMaterials[aid];
+          return;
+        }
+        if (pageProbe && renderOpts.pageSections === sectionsValue) return;
+        materialsByActivityId[aid] = mergeActivityMaterialObjects(materialsByActivityId[aid], localMaterials[aid]);
+      });
+      var activityFlowState = { activitiesDetailRendered: false };
       if (activityIdx !== -1 && resourcesIdx !== -1 && activityIdx > resourcesIdx) {
         var activityKey = keys.splice(activityIdx, 1)[0];
         keys.splice(resourcesIdx, 0, activityKey);
@@ -22648,12 +23967,16 @@
         if (utilityIsEmptyValue(sectionValue)) return "";
         var sectionHeading = labelsMap[sectionName] || utilityLabelFromKey(sectionName);
         if (looksLearningActivitiesSection(sectionName)) {
-          if (activityFlowState.rendered) return "";
-          var activityRows = Array.isArray(sectionValue)
-            ? sectionValue
-            : (sectionValue && Array.isArray(sectionValue.items) ? sectionValue.items : []);
-          var activitiesHtml = renderLearningActivitiesBlocks(activityRows);
+          var activityRows = resolveLearningActivityRowsForRender(
+            sectionValue,
+            learningSequenceValue,
+            materialsByActivityId,
+            activityLookup,
+            renderOpts.strictCompositionClosure
+          );
+          var activitiesHtml = renderLearningActivitiesBlocks(activityRows, { materialsByActivityId: materialsByActivityId });
           if (!String(activitiesHtml || "").trim()) return "";
+          activityFlowState.activitiesDetailRendered = true;
           return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(activityRows.length || 0), "learning_activities") + activitiesHtml + "</section>";
         }
         if (looksLearningSequenceSection(sectionName)) {
@@ -22662,9 +23985,8 @@
             : (sectionValue && Array.isArray(sectionValue.timeline) ? sectionValue.timeline : []);
           var flow = renderLinkedJourneyBlocks(sequenceRows, linkedIndex, resourcesValue);
           if (String(flow.html || "").trim()) {
-            activityFlowState.rendered = true;
             if (flow.facilitatorHtml) facilitatorAppendix.push(flow.facilitatorHtml);
-            return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(sequenceRows.length || 0), "learning_activities") + flow.html + "</section>";
+            return "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + flow.html + "</section>";
           }
           var renderedSequence = renderLearningSequenceBlocks(sequenceRows, activityLookup);
           if (renderedSequence.facilitatorHtml) facilitatorAppendix.push(renderedSequence.facilitatorHtml);
@@ -22677,7 +23999,20 @@
             return "<section>" + renderSectionHeadingH2(sectionHeading, sectionName) + lpoHtml + "</section>";
           }
         }
-        if (looksAssessmentItemsSection(sectionName)) {
+        if (looksStudyTipsSection(sectionHeading) || looksStudyTipsSection(sectionName)) {
+          var studyTipsHtml =
+            typeof sectionValue === "string"
+              ? utilityRenderMarkdownBlock(String(sectionValue))
+              : Array.isArray(sectionValue)
+              ? utilityRenderArray(sectionValue, renderOpts)
+              : sectionValue && typeof sectionValue === "object"
+              ? utilityRenderObject(sectionValue, 0, renderOpts)
+              : utilityRenderPrimitive(sectionValue, renderOpts);
+          if (String(studyTipsHtml || "").trim()) {
+            return "<section>" + renderSectionHeadingH2(sectionHeading, "study_tips") + studyTipsHtml + "</section>";
+          }
+        }
+        if (looksAssessmentItemsSection(sectionName) || looksAssessmentItemsSection(sectionHeading)) {
           function resolveAssessmentRowsFromToken(rawValue) {
             if (!rawValue) return [];
             if (Array.isArray(rawValue)) return rawValue;
@@ -22719,7 +24054,7 @@
           }
         }
         if (looksActivityResourcesSection(sectionName)) {
-          if (activityFlowState.rendered) return "";
+          if (activityFlowState.activitiesDetailRendered) return "";
           var resourcesHtml = renderActivityResourcesSection(sectionValue);
           if (!String(resourcesHtml || "").trim()) return "";
           return "<section>" + renderSectionHeadingH2(sectionHeading, sectionName) + resourcesHtml + "</section>";
@@ -22747,38 +24082,16 @@
 
     // Array form: [{ title, content }, ...]
     if (Array.isArray(sectionsValue)) {
-      var arrayLearningActivitiesValue = null;
-      var arrayResourcesValue = null;
-      sectionsValue.forEach(function (item, idx) {
-        if (!item || typeof item !== "object" || Array.isArray(item)) return;
-        var orderedKeyProbe = orderedKeys[idx] || "";
-        var headingProbe = firstNonEmpty([
-          item.title,
-          item.heading,
-          item.name,
-          item.section_title,
-          item.section_heading,
-          item.label,
-          item.section
-        ]);
-        if (!arrayLearningActivitiesValue && (looksLearningActivitiesSection(headingProbe) || looksLearningActivitiesSection(orderedKeyProbe))) {
-          var probeContent =
-            item.content != null ? item.content :
-            item.body != null ? item.body :
-            item.text != null ? item.text :
-            "";
-          arrayLearningActivitiesValue = probeContent;
-        }
-        if (!arrayResourcesValue && (looksActivityResourcesSection(headingProbe) || looksActivityResourcesSection(orderedKeyProbe))) {
-          var probeResources =
-            item.content != null ? item.content :
-            item.body != null ? item.body :
-            item.text != null ? item.text :
-            "";
-          arrayResourcesValue = probeResources;
-        }
-      });
-      var arrayActivityLookup = buildLearningActivityLookup(arrayLearningActivitiesValue);
+      var probeSource = Array.isArray(renderOpts.pageSections) && renderOpts.pageSections.length
+        ? renderOpts.pageSections
+        : sectionsValue;
+      var arrayPageProbe = buildPageSectionProbeContext(probeSource);
+      var arrayLearningActivitiesValue = arrayPageProbe.learningActivitiesValue;
+      var arrayLearningSequenceValue = arrayPageProbe.learningSequenceValue;
+      var arrayResourcesValue = arrayPageProbe.resourcesValue;
+      var arrayActivityLookup = arrayPageProbe.activityLookup || {};
+      var arrayLinkedIndex = arrayPageProbe.linkedIndex || {};
+      var arrayMaterialsByActivityId = Object.assign({}, arrayPageProbe.materialsByActivityId || {});
       var arraySectionsObj = {};
       sectionsValue.forEach(function (item, idx) {
         var orderedKeyProbe = orderedKeys[idx] || ("section_" + String(idx + 1));
@@ -22786,7 +24099,7 @@
           var headingProbe = firstNonEmpty([
             item.title, item.heading, item.name, item.section_title, item.section_heading, item.label, item.section
           ]);
-          var key = normalizeActivityLookupKey(headingProbe) || orderedKeyProbe;
+          var key = String(item.section_id || item.id || "").trim() || normalizeActivityLookupKey(headingProbe) || orderedKeyProbe;
           var content =
             item.content != null ? item.content :
             item.body != null ? item.body :
@@ -22797,8 +24110,22 @@
           arraySectionsObj[orderedKeyProbe] = item;
         }
       });
-      var arrayLinkedIndex = buildLinkedItemIndexFromSectionsObject(arraySectionsObj, null);
-      var arrayFlowState = { rendered: false };
+      var localArrayLinkedIndex = buildLinkedItemIndexFromSectionsObject(arraySectionsObj, null);
+      var localArrayMaterials = collectActivityMaterialsByActivityId(arraySectionsObj, localArrayLinkedIndex);
+      Object.keys(localArrayMaterials).forEach(function (aid) {
+        if (utilityIsEmptyValue(localArrayMaterials[aid])) return;
+        if (utilityIsEmptyValue(arrayMaterialsByActivityId[aid])) {
+          arrayMaterialsByActivityId[aid] = localArrayMaterials[aid];
+          return;
+        }
+        if (probeSource === sectionsValue) return;
+        arrayMaterialsByActivityId[aid] = mergeActivityMaterialObjects(
+          arrayMaterialsByActivityId[aid],
+          localArrayMaterials[aid]
+        );
+      });
+      arrayActivityLookup = Object.assign({}, arrayActivityLookup, buildLearningActivityLookup(arrayLearningActivitiesValue));
+      var arrayFlowState = { activitiesDetailRendered: false };
       var renderedArraySections = sectionsValue.map(function (item, idx) {
         if (utilityIsEmptyValue(item)) return "";
         if (!item || typeof item !== "object") {
@@ -22854,12 +24181,18 @@
           utilityLabelFromKey(orderedKey) ||
           ("Section " + (idx + 1));
         if (looksLearningActivitiesSection(sectionHeading) || looksLearningActivitiesSection(orderedKey)) {
-          if (arrayFlowState.rendered) return "";
-          var arrActivityRows = Array.isArray(contentValue)
-            ? contentValue
-            : (contentValue && Array.isArray(contentValue.items) ? contentValue.items : []);
-          var arrActivitiesHtml = renderLearningActivitiesBlocks(arrActivityRows);
+          var arrActivityRows = resolveLearningActivityRowsForRender(
+            contentValue,
+            arrayLearningSequenceValue,
+            arrayMaterialsByActivityId,
+            arrayActivityLookup,
+            renderOpts.strictCompositionClosure
+          );
+          var arrActivitiesHtml = renderLearningActivitiesBlocks(arrActivityRows, {
+            materialsByActivityId: arrayMaterialsByActivityId
+          });
           if (!String(arrActivitiesHtml || "").trim()) return "";
+          arrayFlowState.activitiesDetailRendered = true;
           return {
             kind: "activities",
             html: "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(arrActivityRows.length || 0), "learning_activities") + arrActivitiesHtml + "</section>"
@@ -22871,8 +24204,7 @@
             : (contentValue && Array.isArray(contentValue.timeline) ? contentValue.timeline : []);
           var arrFlow = renderLinkedJourneyBlocks(arrSeqRows, arrayLinkedIndex, arrayResourcesValue);
           if (String(arrFlow.html || "").trim()) {
-            arrayFlowState.rendered = true;
-            var arrFlowSection = "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(arrSeqRows.length || 0), "learning_activities") + arrFlow.html + "</section>";
+            var arrFlowSection = "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + arrFlow.html + "</section>";
             if (arrFlow.facilitatorHtml) arrFlowSection += arrFlow.facilitatorHtml;
             return { kind: "other", html: arrFlowSection };
           }
@@ -22888,6 +24220,22 @@
           var arrLpoHtml = renderLearningPurposeOutcomes(contentValue);
           if (String(arrLpoHtml || "").trim()) {
             return { kind: "other", html: "<section>" + renderSectionHeadingH2(sectionHeading, orderedKey) + arrLpoHtml + "</section>" };
+          }
+        }
+        if (looksStudyTipsSection(sectionHeading) || looksStudyTipsSection(orderedKey)) {
+          var arrStudyTipsHtml =
+            typeof contentValue === "string"
+              ? utilityRenderMarkdownBlock(String(contentValue))
+              : Array.isArray(contentValue)
+              ? utilityRenderArray(contentValue, renderOpts)
+              : contentValue && typeof contentValue === "object"
+              ? utilityRenderObject(contentValue, 0, renderOpts)
+              : utilityRenderPrimitive(contentValue, renderOpts);
+          if (String(arrStudyTipsHtml || "").trim()) {
+            return {
+              kind: "other",
+              html: "<section>" + renderSectionHeadingH2(sectionHeading, "study_tips") + arrStudyTipsHtml + "</section>"
+            };
           }
         }
         if (looksAssessmentItemsSection(sectionHeading) || looksAssessmentItemsSection(orderedKey)) {
@@ -22908,7 +24256,7 @@
           }
         }
         if (looksActivityResourcesSection(sectionHeading) || looksActivityResourcesSection(orderedKey)) {
-          if (arrayFlowState.rendered) return "";
+          if (arrayFlowState.activitiesDetailRendered) return "";
           var arrResourcesHtml = renderActivityResourcesSection(contentValue);
           if (!String(arrResourcesHtml || "").trim()) return "";
           return {
@@ -22967,7 +24315,7 @@
     }).join("");
     var metadataHtml = metadata.length
       ? (
-          '<details class="util-meta lo-meta"><summary>Production Metadata</summary>' +
+          '<details class="util-meta lo-meta">' + utilityRenderMetaSummaryHtml() +
             metadata.join("") +
           "</details>"
         )
@@ -22980,7 +24328,7 @@
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
       "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
-      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #d1d5db;padding:8px;text-align:left;vertical-align:top}th{background:#f3f4f6;font-weight:600}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-icon{font-size:.9em;color:#64748b;margin-right:.45rem}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-inline{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-scenario-inline:last-child{margin-bottom:0}.util-scenario-inline h3,.util-scenario-inline h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 8px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-inline p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-support-note{font-size:.9rem;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:8px;margin-top:10px}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}</style>",
+      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}</style>",
       "</head>",
       "<body>",
       '<div class="lo-shell">',
@@ -22994,6 +24342,278 @@
       "</html>"
     ].join("");
     return { html: htmlDoc };
+  }
+
+  function pageActivityIdKey(value) {
+    return String(value == null ? "" : value).trim().toLowerCase();
+  }
+
+  function pageActivityRowHasId(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    var id =
+      row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id;
+    return !!pageActivityIdKey(id);
+  }
+
+  function collectActivityIdsFromLearningActivitiesValue(value) {
+    var ids = [];
+    var seen = {};
+    function pushId(raw) {
+      var k = pageActivityIdKey(raw);
+      if (!k || seen[k]) return;
+      seen[k] = true;
+      ids.push(k);
+    }
+    function fromRows(rows) {
+      (Array.isArray(rows) ? rows : []).forEach(function (row) {
+        if (!pageActivityRowHasId(row)) return;
+        pushId(
+          row.activity_id != null
+            ? row.activity_id
+            : row.activityId != null
+            ? row.activityId
+            : row.id
+        );
+      });
+    }
+    if (Array.isArray(value)) {
+      fromRows(value);
+      return ids;
+    }
+    if (value && typeof value === "object") {
+      if (Array.isArray(value.content)) fromRows(value.content);
+      else if (Array.isArray(value.items)) fromRows(value.items);
+      else if (Array.isArray(value.activities)) fromRows(value.activities);
+      else {
+        Object.keys(value).forEach(function (key) {
+          var row = value[key];
+          if (!row || typeof row !== "object" || Array.isArray(row)) return;
+          if (pageActivityRowHasId(row)) {
+            pushId(row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id);
+          } else {
+            pushId(key);
+          }
+        });
+      }
+    }
+    return ids;
+  }
+
+  function looksPageLearningActivitiesSection(section) {
+    if (!section || typeof section !== "object") return false;
+    var sid = pageActivityIdKey(section.section_id || section.id || "");
+    var heading = String(section.heading || section.title || section.name || "").toLowerCase();
+    if (sid === "learning_activities" || sid === "learning_activity") return true;
+    return /\b(learning[_\s-]?activities|workshop[_\s-]?activities)\b/.test(heading);
+  }
+
+  function collectComposedActivityIdsFromPage(page) {
+    var ids = [];
+    var seen = {};
+    if (!page || !Array.isArray(page.sections)) return ids;
+    page.sections.forEach(function (section) {
+      if (!looksPageLearningActivitiesSection(section)) return;
+      var content = section.content != null ? section.content : section.body;
+      collectActivityIdsFromLearningActivitiesValue(content).forEach(function (id) {
+        if (seen[id]) return;
+        seen[id] = true;
+        ids.push(id);
+      });
+    });
+    return ids;
+  }
+
+  function collectTracedOmissionIdsFromPage(page) {
+    var traced = {};
+    if (!page || typeof page !== "object") return [];
+    var gn = page.generation_notes;
+    if (!gn || typeof gn !== "object") return [];
+    if (Array.isArray(gn.activities_omitted)) {
+      gn.activities_omitted.forEach(function (entry) {
+        if (!entry || typeof entry !== "object") return;
+        var k = pageActivityIdKey(entry.activity_id || entry.activityId);
+        if (k) traced[k] = true;
+      });
+    }
+    return Object.keys(traced);
+  }
+
+  function validatePageActivityClosure(page, upstreamLearningActivities, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var explicitExclude = {};
+    (Array.isArray(opts.explicitExcludeIds) ? opts.explicitExcludeIds : []).forEach(function (id) {
+      var k = pageActivityIdKey(id);
+      if (k) explicitExclude[k] = true;
+    });
+    var upstreamIds = collectActivityIdsFromLearningActivitiesValue(upstreamLearningActivities);
+    var composedIds = collectComposedActivityIdsFromPage(page);
+    var tracedList = collectTracedOmissionIdsFromPage(page);
+    var tracedSet = {};
+    tracedList.forEach(function (k) {
+      tracedSet[k] = true;
+    });
+    var upstreamSet = {};
+    upstreamIds.forEach(function (k) {
+      upstreamSet[k] = true;
+    });
+    var composedSet = {};
+    composedIds.forEach(function (k) {
+      composedSet[k] = true;
+    });
+    var untracedOmissions = [];
+    var phantomIds = [];
+    upstreamIds.forEach(function (uid) {
+      if (explicitExclude[uid]) return;
+      if (!composedSet[uid] && !tracedSet[uid]) untracedOmissions.push(uid);
+    });
+    if (upstreamIds.length) {
+      composedIds.forEach(function (cid) {
+        if (!upstreamSet[cid] && !explicitExclude[cid]) phantomIds.push(cid);
+      });
+    }
+    var messages = [];
+    untracedOmissions.forEach(function (uid) {
+      messages.push(
+        "Activity " +
+          uid +
+          " is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted."
+      );
+    });
+    phantomIds.forEach(function (pid) {
+      messages.push("Activity " + pid + " appears on the page but not in upstream learning_activities.");
+    });
+    var outcome = "pass";
+    if (untracedOmissions.length || phantomIds.length) outcome = "fail";
+    else if (!upstreamIds.length) outcome = "warn";
+    return {
+      validation: "page_activity_closure",
+      outcome: outcome,
+      upstream_activity_ids: upstreamIds,
+      composed_activity_ids: composedIds,
+      traced_omission_ids: tracedList,
+      untraced_omission_ids: untracedOmissions,
+      phantom_ids: phantomIds,
+      messages: messages
+    };
+  }
+
+  function appendPageCompositionClosureWarnings(page, validationResult) {
+    if (!page || typeof page !== "object" || !validationResult) return page;
+    if (validationResult.outcome === "pass") return page;
+    if (!Array.isArray(validationResult.messages) || !validationResult.messages.length) return page;
+    if (!page.generation_notes || typeof page.generation_notes !== "object") {
+      page.generation_notes = {};
+    }
+    var gn = page.generation_notes;
+    if (!Array.isArray(gn.limitations)) {
+      gn.limitations = gn.limitations != null && String(gn.limitations).trim() ? [String(gn.limitations)] : [];
+    }
+    validationResult.messages.forEach(function (msg) {
+      var line = "[PRISM page composition] " + String(msg);
+      if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
+    });
+    if (!Array.isArray(gn.activities_omitted)) gn.activities_omitted = [];
+    (validationResult.untraced_omission_ids || []).forEach(function (uid) {
+      var found = gn.activities_omitted.some(function (entry) {
+        return pageActivityIdKey(entry && entry.activity_id) === uid;
+      });
+      if (!found) {
+        gn.activities_omitted.push({
+          activity_id: uid,
+          title: uid,
+          reason: "Missing from composed page learning_activities without trace (runtime validation).",
+          authority: "duration_constraint"
+        });
+      }
+    });
+    return page;
+  }
+
+  function tryParseWorkflowArtefactJson(raw) {
+    var s = sanitizePrismRunCapturedOutput(String(raw || "").trim());
+    if (!s) return null;
+    try {
+      var parsed = JSON.parse(s);
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+    } catch (_) {}
+    var start = s.indexOf("{");
+    var end = s.lastIndexOf("}");
+    if (start !== -1 && end > start) {
+      try {
+        var inner = JSON.parse(s.slice(start, end + 1));
+        return inner && typeof inner === "object" && !Array.isArray(inner) ? inner : null;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function resolveUpstreamLearningActivitiesFromWorkflowCaptures() {
+    var captures = state.workflowRunCapturedOutputs || {};
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !Array.isArray(wf.steps)) return null;
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      var step = wf.steps[i];
+      if (!step) continue;
+      var oname = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
+      if (oname !== "learning_activities") continue;
+      var sid = String(step.id || "").trim();
+      var raw = sid && captures[sid] ? captures[sid] : "";
+      var parsed = tryParseWorkflowArtefactJson(raw);
+      if (parsed) return parsed;
+    }
+    return null;
+  }
+
+  function resolveUpstreamLearningActivitiesForPageStep(stepLi) {
+    if (!stepLi) return null;
+    var bindings = readStepInputBindings(stepLi);
+    var captures = state.workflowRunCapturedOutputs || {};
+    var i;
+    for (i = 0; i < bindings.length; i += 1) {
+      var b = bindings[i];
+      if (!b || b.kind !== "internal") continue;
+      var art = String(b.artifactName || "").trim().toLowerCase().replace(/\s+/g, "_");
+      if (art !== "learning_activities") continue;
+      var sid = String(b.sourceStepId || "").trim();
+      var raw = sid && captures[sid] ? captures[sid] : "";
+      var parsed = tryParseWorkflowArtefactJson(raw);
+      if (parsed) return parsed;
+    }
+    return resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+  }
+
+  function applyPageCompositionValidationForCapturedPage(stepLi, rawCapture) {
+    var parsed = tryParseWorkflowArtefactJson(rawCapture);
+    if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") return null;
+    var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
+    var validation = validatePageActivityClosure(parsed, upstream, {});
+    if (validation.outcome === "fail") {
+      appendPageCompositionClosureWarnings(parsed, validation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page composition]", validation);
+      }
+    }
+    return validation;
+  }
+
+  function applyPageCompositionValidationForUtilitiesPage(parsed, options) {
+    if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") return null;
+    var opts = options && typeof options === "object" ? options : {};
+    var upstream =
+      opts.upstreamLearningActivities != null
+        ? opts.upstreamLearningActivities
+        : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+    var validation = validatePageActivityClosure(parsed, upstream, {
+      explicitExcludeIds: opts.explicitExcludeIds
+    });
+    if (validation.outcome === "fail") {
+      appendPageCompositionClosureWarnings(parsed, validation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page composition]", validation);
+      }
+    }
+    return validation;
   }
 
   function buildUtilityStructuredHtml(parsed, plan, _baseName, renderOptions) {
@@ -23036,12 +24656,19 @@
       generation_notes: true
     };
     var pageMetadataKeyOrder = ["source_artefacts", "constraints_applied", "generation_notes"];
-    function buildLearningObjectSectionBlocksFromPageSections() {
-      if (!isPageArtefact || !parsed || utilityIsEmptyValue(parsed.sections)) return [];
-      var blocks = [];
-      var sectionRenderOpts = {
+    var pageSectionsArray = getPageSectionsArray(parsed);
+    var pageBodyFromSectionsArray =
+      isPageArtefact && Array.isArray(pageSectionsArray) && pageSectionsArray.length > 0;
+    function buildPageSectionRenderOpts() {
+      var pageSectionsForRender =
+        Array.isArray(options.pageSections) && options.pageSections.length
+          ? options.pageSections
+          : pageSectionsArray;
+      return {
         cleanupInlineMarkdown: true,
         suppressInternalMetadata: true,
+        pageSections: pageSectionsForRender,
+        strictCompositionClosure: !!pageBodyFromSectionsArray,
         pageProfile: parsed && parsed.page_profile ? String(parsed.page_profile) : "",
         feedbackDisplay:
           parsed && !utilityIsEmptyValue(parsed.feedback_display)
@@ -23052,6 +24679,18 @@
                     ? String(parsed.assessment_blueprint.feedback_display)
                     : ""))
       };
+    }
+    function shouldSkipPageBodySectionKey(sectionKey) {
+      if (!pageBodyFromSectionsArray) return false;
+      var k = String(sectionKey || "").trim();
+      if (!k) return false;
+      if (k === "sections") return true;
+      return !!PAGE_BODY_SECTION_IDS[k];
+    }
+    function buildLearningObjectSectionBlocksFromPageSections() {
+      if (!isPageArtefact || !parsed || utilityIsEmptyValue(parsed.sections)) return [];
+      var blocks = [];
+      var sectionRenderOpts = buildPageSectionRenderOpts();
       if (Array.isArray(parsed.sections)) {
         parsed.sections.forEach(function (entry) {
           if (utilityIsEmptyValue(entry)) return;
@@ -23084,6 +24723,7 @@
     function renderSectionKey(sectionKey) {
       var key = String(sectionKey || "").trim();
       if (!key) return "";
+      if (shouldSkipPageBodySectionKey(key)) return "";
       var value = parsed && parsed[key];
       if (utilityIsEmptyValue(value) && omitIfMissing.indexOf(key) !== -1) {
         return "";
@@ -23092,19 +24732,12 @@
       if (isPageArtefact && key === "page_profile") return "";
       var heading = labels[key] || utilityLabelFromKey(key);
       if (isPageArtefact && key === "sections") {
-        return utilityRenderPageSections(value, labels, sectionOrder, {
-          cleanupInlineMarkdown: true,
-          suppressInternalMetadata: true,
-          pageProfile: parsed && parsed.page_profile ? String(parsed.page_profile) : "",
-          feedbackDisplay:
-            parsed && !utilityIsEmptyValue(parsed.feedback_display)
-              ? String(parsed.feedback_display)
-              : (parsed && parsed.metadata && !utilityIsEmptyValue(parsed.metadata.feedback_display)
-                  ? String(parsed.metadata.feedback_display)
-                  : (parsed && parsed.assessment_blueprint && !utilityIsEmptyValue(parsed.assessment_blueprint.feedback_display)
-                      ? String(parsed.assessment_blueprint.feedback_display)
-                      : ""))
-        });
+        return utilityRenderPageSections(value, labels, sectionOrder, buildPageSectionRenderOpts());
+      }
+      if (isPageArtefact && PAGE_BODY_SECTION_IDS[key]) {
+        var pageSectionMap = {};
+        pageSectionMap[key] = value;
+        return utilityRenderPageSections(pageSectionMap, labels, sectionOrder, buildPageSectionRenderOpts());
       }
       if (isPageArtefact && key === "source_artefacts" && value && typeof value === "object" && !Array.isArray(value)) {
         var trueKeys = Object.keys(value).filter(function (k) {
@@ -23158,9 +24791,20 @@
       return "<section><h2>" + utilityEscapeHtml(heading) + "</h2>" + bodyHtml + "</section>";
     }
 
+    if (pageBodyFromSectionsArray) {
+      var pageBodyHtml = utilityRenderPageSections(
+        pageSectionsArray,
+        labels,
+        sectionOrder,
+        buildPageSectionRenderOpts()
+      );
+      if (String(pageBodyHtml || "").trim()) primaryBlocks.push(pageBodyHtml);
+    }
+
     if (sectionOrder.length) {
       sectionOrder.forEach(function (key) {
         if (isPageArtefact && metadataKeys[key]) return;
+        if (shouldSkipPageBodySectionKey(key)) return;
         var rendered = renderSectionKey(key);
         if (!rendered) return;
         if (!isPageArtefact && metadataKeys[key]) metadataBlocks.push(rendered);
@@ -23172,6 +24816,7 @@
       if (key === "artifact_type" || key === "title" || key === "audience" || key === "page_profile") return;
       if (sectionOrder.indexOf(key) !== -1) return;
       if (isPageArtefact && metadataKeys[key]) return;
+      if (shouldSkipPageBodySectionKey(key)) return;
       var rendered = renderSectionKey(key);
       if (!rendered) return;
       if (!isPageArtefact && metadataKeys[key]) metadataBlocks.push(rendered);
@@ -23193,7 +24838,7 @@
     }
     if (metadataBlocks.length) {
       htmlParts.push(
-        "<details class=\"util-meta\"><summary>Production Metadata</summary>" +
+        "<details class=\"util-meta\">" + utilityRenderMetaSummaryHtml() +
           metadataBlocks.join("") +
           "</details>"
       );
@@ -23315,7 +24960,7 @@
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
       "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
-      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #d1d5db;padding:8px;text-align:left;vertical-align:top}th{background:#f3f4f6;font-weight:600}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-icon{font-size:.9em;color:#64748b;margin-right:.45rem}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-inline{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-scenario-inline:last-child{margin-bottom:0}.util-scenario-inline h3,.util-scenario-inline h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 8px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-inline p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-support-note{font-size:.9rem;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:8px;margin-top:10px}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}</style>",
+      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}</style>",
       "</head>",
       "<body>",
       htmlParts.join(""),
@@ -23557,6 +25202,17 @@
       showToast('Include top-level "artifact_type" in your JSON.', "error");
       return;
     }
+    var pageClosureValidation = null;
+    if (String(parsed.artifact_type || "").toLowerCase() === "page") {
+      pageClosureValidation = applyPageCompositionValidationForUtilitiesPage(parsed, {});
+      if (pageClosureValidation && pageClosureValidation.outcome === "fail") {
+        try {
+          if (els.utilitiesJsonInput) {
+            els.utilitiesJsonInput.value = JSON.stringify(parsed, null, 2);
+          }
+        } catch (_) {}
+      }
+    }
     var presentationMode = String(
       (els.utilitiesPresentationMode && els.utilitiesPresentationMode.value) ||
       state.utilitiesPresentationMode ||
@@ -23577,7 +25233,8 @@
           return null;
         }
         var rendered = runUtilityRendererByPlan(plan, parsed, baseName, {
-          presentationMode: state.utilitiesPresentationMode
+          presentationMode: state.utilitiesPresentationMode,
+          pageSections: Array.isArray(parsed.sections) ? parsed.sections : null
         });
         if (!rendered || rendered.error) {
           applyUtilityPreviewError((rendered && rendered.error) || "Could not render HTML output.");
@@ -23594,7 +25251,15 @@
         return true;
       })
       .then(function (ok) {
-        if (ok) showToast("HTML preview generated.", "success");
+        if (!ok) return;
+        if (pageClosureValidation && pageClosureValidation.outcome === "fail") {
+          showToast(
+            "HTML preview generated with page composition warnings (see generation_notes).",
+            "warning"
+          );
+          return;
+        }
+        showToast("HTML preview generated.", "success");
       })
       .catch(function (err) {
         applyUtilityPreviewError((err && err.message) || "Could not render HTML output.");
@@ -24091,6 +25756,7 @@
     prismTestApi.hasWorkflowDesignSnapshotForAdequacy = hasWorkflowDesignSnapshotForAdequacy;
     prismTestApi.formatWorkflowBriefPlanningNoticesLines = formatWorkflowBriefPlanningNoticesLines;
     prismTestApi.buildWorkflowBriefPlanningNoticeRows = buildWorkflowBriefPlanningNoticeRows;
+    prismTestApi.appendWorkflowBriefPlanningNoticesUi = appendWorkflowBriefPlanningNoticesUi;
     prismTestApi.resolvePlanningAdequacySettingsNavigationTarget =
       resolvePlanningAdequacySettingsNavigationTarget;
     prismTestApi.isWorkflowStepConfigurableInSettings = isWorkflowStepConfigurableInSettings;
@@ -24170,6 +25836,9 @@
     prismTestApi.getWorkflowBriefProvenanceSourceLabel = getWorkflowBriefProvenanceSourceLabel;
     prismTestApi.buildWorkflowBriefProvenanceViewModel = buildWorkflowBriefProvenanceViewModel;
     prismTestApi.buildWorkflowBriefResolvedStatusStrip = buildWorkflowBriefResolvedStatusStrip;
+    prismTestApi.buildWorkflowBriefResolvedFactorsCompactGroups =
+      buildWorkflowBriefResolvedFactorsCompactGroups;
+    prismTestApi.getWorkflowBriefMappedFactorRows = getWorkflowBriefMappedFactorRows;
     prismTestApi.classifyWorkflowBriefPlanningNoticeRow = classifyWorkflowBriefPlanningNoticeRow;
     prismTestApi.sortWorkflowBriefPlanningNoticeRows = sortWorkflowBriefPlanningNoticeRows;
     prismTestApi.buildWorkflowBriefStepRelevanceIndex = buildWorkflowBriefStepRelevanceIndex;
@@ -24202,11 +25871,12 @@
     prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
-    prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride) {
+    prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride, renderOptions) {
       var sectionOrder =
         Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
           ? sectionOrderOverride.slice()
           : ["sections"];
+      var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
       return buildUtilityStructuredHtml(
         parsed,
         {
@@ -24222,8 +25892,11 @@
           }
         },
         "",
-        {}
+        options
       );
+    };
+    prismTestApi.utilityRenderPageSectionsForTest = function (sectionsValue, renderOptions) {
+      return utilityRenderPageSections(sectionsValue, {}, [], renderOptions || {});
     };
     prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
     prismTestApi.setSelectedWorkflowIdForTest = function (id) {
@@ -24235,6 +25908,13 @@
       state.workflowRunCapturedOutputsRaw =
         raw && typeof raw === "object" ? Object.assign({}, raw) : {};
     };
+    prismTestApi.validatePageActivityClosure = validatePageActivityClosure;
+    prismTestApi.appendPageCompositionClosureWarnings = appendPageCompositionClosureWarnings;
+    prismTestApi.collectComposedActivityIdsFromPage = collectComposedActivityIdsFromPage;
+    prismTestApi.collectActivityIdsFromLearningActivitiesValue =
+      collectActivityIdsFromLearningActivitiesValue;
+    prismTestApi.applyPageCompositionValidationForUtilitiesPage =
+      applyPageCompositionValidationForUtilitiesPage;
     window.__PRISM_TEST_API = prismTestApi;
   }
 

@@ -453,7 +453,8 @@ A structured readable composite artefact assembled from existing learning design
 - source_artefacts (optional)
 - constraints_applied (optional)
 - generation_notes (optional):
-  - limitations[] (required when any explicit hard requirement cannot be fully satisfied)
+  - limitations[] (required when any explicit hard requirement cannot be fully satisfied or when any activity is omitted)
+  - activities_omitted[] (required for each intentional activity omission: activity_id, title, reason, authority = user_constraint | duration_constraint | explicit_exclusion)
 
 ### Requirements
 - Must be assembled from `learning_outcomes`, `learning_activities`, and `activity_materials`
@@ -468,6 +469,9 @@ A structured readable composite artefact assembled from existing learning design
 - Must preserve requested counts for learner-facing components (for example MCQs, tasks, reflection prompts) unless impossible
 - Sections must use meaningful headings/titles derived from intent/content; generic placeholders like "Section 1" are fallback-only when no better heading is available
 - If explicit hard constraints cannot be met from available upstream artefacts, must record the gap in `generation_notes.limitations` instead of silently reducing scope
+- When upstream `learning_activities` is provided, every upstream `activity_id` must appear in `sections[]` learning_activities content unless traceably omitted in `generation_notes.activities_omitted[]`
+- `learning_sequence` controls order and timing only; it must not reduce activity membership below upstream `learning_activities`
+- `activity_materials` enrich activities only; they must not define which activities exist on the page
 - If `page_profile` is `learner`, include at minimum substantive summary/content plus learner tasks/instructions
 - If `page_profile` is `facilitator`, include at minimum run/session guidance plus sequencing/logistics/facilitation notes
 - If page_profile is `assessment`, must preserve structured assessment item integrity (do not flatten questions into narrative prose)

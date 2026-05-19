@@ -1,0 +1,104 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation workshop — first-year economics",
+  "audience": "First-year undergraduate economics students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "A 60-minute workshop introducing inflation, price level changes, and simple measures used in introductory economics."
+    },
+    {
+      "section_id": "learning_purpose",
+      "heading": "Learning purpose",
+      "content": {
+        "statement": "By the end of this session you will be able to:\n- explain what inflation means in everyday and economic terms\n- compare CPI and GDP deflator at an introductory level\n- interpret a simple inflation scenario for different households"
+      }
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Inflation concepts warm-up",
+          "duration_minutes": 15,
+          "grouping": "small_group",
+          "purpose": "Activate prior knowledge and agree a working definition of inflation.",
+          "learner_task": "Discuss in your group:\n- What changed in the shop prices?\n- Who is most affected?",
+          "materials": {
+            "scenarios": [
+              {
+                "title": "Scenario A — Grocery prices",
+                "content": "Bread rises from £1.20 to £1.50 over a year while wages are unchanged."
+              },
+              {
+                "title": "Scenario B — Rent and energy",
+                "content": "Rent is fixed but energy bills increase sharply for a student household."
+              }
+            ],
+            "task_cards": [
+              {
+                "title": "Card 1 — Define inflation",
+                "instruction": "Write a one-sentence definition of inflation in your own words."
+              },
+              {
+                "title": "Card 2 — Spot the price change",
+                "instruction": "List three prices in the scenario that increased and one that stayed the same."
+              }
+            ]
+          },
+          "expected_output": "A shared definition plus one example from each scenario.",
+          "support_note": "Circulate during minutes 5–12; prompt groups to use evidence from the scenarios."
+        },
+        {
+          "activity_id": "A2",
+          "title": "Measures and impacts table",
+          "duration_minutes": 20,
+          "grouping": "small_group",
+          "learner_task": "Complete the table and answer the prompt set.",
+          "materials": {
+            "impact_table": "| Measure | What it tracks | Limitation |\n| --- | --- | --- |\n| CPI | Consumer basket prices | Basket may not match your spending |\n| GDP deflator | All domestically produced goods | Less intuitive for learners |",
+            "prompt_set": {
+              "heading": "Discussion prompts",
+              "prompts": [
+                "Which measure would you report to a student newspaper?",
+                "Who might be harmed most by the scenarios?",
+                "What policy response is hinted at in the overview?"
+              ]
+            }
+          },
+          "expected_output": "Completed table rows plus short answers to two prompts.",
+          "support_note": "Offer a worked example for CPI if groups stall in the first five minutes."
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "q1",
+            "stem": "Which situation best illustrates inflation rather than a one-off price change?",
+            "options": [
+              "A single product sale",
+              "A general rise in many prices over time",
+              "A fall in quality of one good"
+            ],
+            "item_type": "mcq"
+          }
+        ]
+      }
+    }
+  ],
+  "source_artefacts": {
+    "learning_content": true,
+    "learning_activities": true,
+    "activity_materials": true
+  },
+  "generation_notes": {
+    "limitations": ["Representative fixture for renderer regression tests."]
+  }
+}

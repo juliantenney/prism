@@ -57,9 +57,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Benchmarks:** inflation full (`ld-inflation-workshop-page-full.json`) + renderer kitchen sink (`renderer-kitchen-sink-page.json`) — see [`renderer-kitchen-sink-fixture-design.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/renderer-kitchen-sink-fixture-design.md).
 
-**Active slice:** **26-6** optional (fragment fixtures / enhancements). **26-5 complete:** typographic refinement and presentation finish — [`slice-26-5-charter.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/slice-26-5-charter.md).
+**Status:** **Paused** — slices **26-2–26-5** complete; renderer structurally safe and visually polished. **Pause note:** [`sprint-26-pause-note.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/sprint-26-pause-note.md).
 
-**Verification floor:** `node --test tests/*.test.js` → **248 passed**, 0 failed.
+**Verification floor:** `node --test tests/*.test.js` → **248 passed**, 0 failed. Manual browser/print checks outstanding (see pause note).
 
 ---
 

@@ -41,7 +41,28 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 26 — Pedagogical intent & workflow topology (**active**, 2026-05-20)
+### Sprint 27 — Assessment & feedback elicitation semantics (**active**, 2026-05-21)
+
+**Portable pack:** [`docs/development/sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/)
+
+| Entry | Path |
+|-------|------|
+| Index | [`sprint-27-index.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/sprint-27-index.md) |
+| Charter | [`sprint-27-charter.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/sprint-27-charter.md) |
+| Handover | [`HANDOVER.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/HANDOVER.md) |
+| Evidence matrix | [`elicitation-evidence-matrix.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/elicitation-evidence-matrix.md) |
+
+**Scope:** Assessment/feedback **elicitation semantics** (E → O → G → C → R). **Investigation complete** (27-1–27-3). **Implementation complete** (27-4a–4f): [`slice-27-4-charter.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/slice-27-4-charter.md), [`CURRENT-STATE.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/CURRENT-STATE.md).
+
+**Key question:** How does PRISM model and preserve pedagogical assessment intent — not merely whether it can generate MCQs?
+
+**Evidence cases (Sprint 26):** RNA/HCV topology, inflation retrieval quiz, climate misconception discussion.
+
+**Verification floor:** `node --test tests/*.test.js` → **284 passed**.
+
+---
+
+### Sprint 26 — Pedagogical intent & workflow topology (**closed**, 2026-05-20)
 
 **Portable pack:** [`docs/development/sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/)
 
@@ -49,11 +70,8 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 |-------|------|
 | Index | [`sprint-26-index.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/sprint-26-index.md) |
 | Handover | [`HANDOVER.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/HANDOVER.md) |
-| 26-1 charter | [`slice-26-1-charter.md`](sprints/2026-05-20-sprint-26-pedagogical-intent-elicitation-orchestration/slice-26-1-charter.md) |
 
-**Scope:** Sparse LD briefs — **Track A open** (topology / missing activity steps); **Track B closed** (assessment export rendering, R26-PI-007–009). **Case:** RNA virus / HCV self-study brief.
-
-**Verification floor:** `node --test tests/*.test.js` → **252 passed**.
+**Outcome:** **Track A fixed** (`activities_required`, topology); **Track B closed** (assessment export render). Superseded by Sprint 27 for assessment/feedback **semantics**.
 
 ---
 
@@ -75,7 +93,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Status:** **Paused** — slices **26-2–26-5** complete; renderer structurally safe and visually polished. **Pause note:** [`sprint-26-pause-note.md`](sprints/2026-05-20-sprint-26-renderer-presentation-consolidation/sprint-26-pause-note.md).
 
-**Verification floor:** `node --test tests/*.test.js` → **248 passed**, 0 failed. Manual browser/print checks outstanding (see pause note).
+**Verification floor:** `node --test tests/*.test.js` → **259 passed**, 0 failed. Pre–Sprint 27 typed-materials hotfix included. Manual browser/print checks outstanding (see pause note).
 
 ---
 

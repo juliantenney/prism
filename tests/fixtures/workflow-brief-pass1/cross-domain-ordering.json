@@ -53,13 +53,12 @@
     "audience": "Postgraduate researchers",
     "scope_scale": "module",
     "desired_outputs": "Learner page",
-    "input_strategy": "provided_source_content",
     "domain_priority_note": "research-first",
     "learner_level": "postgraduate",
     "delivery_mode": "seminar",
     "assessment_required": true,
     "assessment_type": "mcq",
-    "page_profile": "assessment",
+    "page_profile": "learner",
     "learning_environments": ["vle"]
   }
 }

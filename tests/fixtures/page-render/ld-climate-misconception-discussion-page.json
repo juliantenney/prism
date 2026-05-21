@@ -1,0 +1,64 @@
+{
+  "artifact_type": "page",
+  "title": "Climate Change Misconceptions — Discussion",
+  "audience": "Undergraduate environmental science learners",
+  "page_profile": "learner",
+  "feedback_display": "none",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Discuss and evaluate common climate change misconceptions using structured materials and a short formative check."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "CC-MIS-1",
+          "title": "Climate misconception discussion",
+          "duration_minutes": 40,
+          "grouping": "small_group",
+          "purpose": "Surface and challenge common misconceptions about climate change.",
+          "learner_task": "Work through the misconception cards, complete the analysis template, and discuss using the prompt set.",
+          "materials": {
+            "task_cards": "- \"Cold winters disprove global warming\"\n- \"Climate has always changed naturally\"\n- \"The sun is solely responsible for recent warming\"\n- \"Scientists disagree that humans are causing warming\"\n- \"Carbon dioxide is not a pollutant so it cannot warm the planet\"\n- \"Renewable energy cannot replace fossil fuels\"\n- \"Climate models are unreliable\"\n- \"Extreme weather cannot be linked to climate change\"\n- \"Arctic ice loss is only a local issue\"\n- \"Individual actions do not matter for global climate\"",
+            "analysis_template": "## Misconception analysis worksheet\n\nClaim under review:\n\nEvidence for / against:\n\n- Supported by data\n- Contradicted by data\n\nClassification:\n\n☐ Scientifically supported\n☐ Misconception\n☐ Uncertain — needs more evidence\n\nResponse notes:\n\n---",
+            "discussion_prompts": [
+              "Which misconception did your group find most persuasive at first, and why?",
+              "What evidence from the lecture would you use to challenge that claim?",
+              "How would you explain the difference between weather and climate to a peer?"
+            ],
+            "evaluation_checklist": [
+              "☐ Each group member reviewed at least three misconception cards",
+              "☐ Analysis template completed for the focal claim",
+              "☐ Group agreed on supported vs misconception classification",
+              "☐ Discussion prompts addressed with evidence from course materials"
+            ]
+          },
+          "expected_output": "## What you will produce\n\n- A completed analysis template for one focal misconception\n- Brief group notes citing at least two evidence sources\n- A one-sentence corrected explanation suitable for peers"
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "TF-1",
+            "item_type": "true_false",
+            "proposition": "Cold winters in one region prove that global warming is not happening.",
+            "true_false_answer": "False"
+          },
+          {
+            "item_id": "TF-2",
+            "item_type": "true_false",
+            "statement": "Climate models are unreliable because they cannot predict daily weather.",
+            "true_false_answer": "False"
+          }
+        ]
+      }
+    }
+  ]
+}

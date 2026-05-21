@@ -1,0 +1,358 @@
+﻿[PRISM TRACE] renderMaterialValue: { hint: 'template', valueType: 'string', objectKeys: null }
+[PRISM TRACE] renderMaterialValue: { hint: 'checklist', valueType: 'array', objectKeys: null }
+[PRISM TRACE] material key skipped in remainder loop: task_cards
+[PRISM TRACE] material key skipped in remainder loop: analysis_template
+[PRISM TRACE] material key skipped in remainder loop: discussion_prompts
+[PRISM TRACE] material key skipped in remainder loop: evaluation_checklist
+{
+  "capturedAt": "2026-05-21T07:45:11.988Z",
+  "method": "Read-only: extractWorkflowBriefExplicitFactors + applyWorkflowDesignHeuristics; no live LLM",
+  "probes": [
+    {
+      "probeId": "P27-02",
+      "brief": {
+        "goal": "Design a 60-minute seminar on ocean acidification for undergraduate marine science students. Small groups discuss scenario questions using provided prompts, then complete a 5-item formative check. Do not reveal correct answers on the student handout ÔÇö tutor will debrief.",
+        "inputs": "Include facilitator notes with pacing for discussion, scenario prompts, and debrief guidance for the formative check.",
+        "desiredOutputs": "Learner handout page plus facilitator session notes.",
+        "startingArtefact": "generate_from_topic",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "session_materials": [
+          "page"
+        ],
+        "desired_outputs": "Learner handout page plus facilitator session notes.",
+        "input_strategy": "generate_from_topic",
+        "learner_level": "undergraduate",
+        "delivery_mode": "seminar",
+        "page_profile": "facilitator",
+        "include_answers": true,
+        "topic": "ocean acidification",
+        "workshop_subject": "ocean acidification for undergraduate marine science students",
+        "objective_type": "questions",
+        "design_scope": "session",
+        "delivery_pattern": "face_to_face"
+      },
+      "explicitExtract": {
+        "desired_outputs": "Learner handout page plus facilitator session notes.",
+        "input_strategy": "generate_from_topic",
+        "session_materials": [
+          "page"
+        ],
+        "learner_level": "undergraduate",
+        "delivery_mode": "seminar",
+        "page_profile": "facilitator",
+        "include_answers": true,
+        "topic": "ocean acidification for undergraduate marine science students",
+        "workshop_subject": "ocean acidification for undergraduate marine science students",
+        "objective_type": "questions"
+      },
+      "workflowSteps": [
+        "Normalize Content",
+        "Generate Learning Content",
+        "Model Knowledge",
+        "Define Learning Outcomes",
+        "Generate Assessment Items",
+        "Design Learning Activities",
+        "Generate Activity Materials",
+        "Construct Learning Sequence",
+        "Design Page"
+      ],
+      "designAssessmentPresent": false,
+      "designFeedbackPresent": false,
+      "candidateSemantics": {
+        "feedback_timing": {
+          "desired": "after_peer_discussion | tutor_led_reveal_only",
+          "captured": null,
+          "note": "No brief factor; feedback_required is commentary mode only"
+        },
+        "assessment_interaction_mode": {
+          "desired": "discussion_oriented",
+          "captured": null,
+          "note": "No factor; infer from brief prose only (not in resolved JSON)"
+        },
+        "learner_answer_visibility": {
+          "desired": "hidden_until_reveal",
+          "captured": "show (include_answers true)",
+          "note": ""
+        },
+        "tutor_answer_artefact": {
+          "desired": "generate_internal_only | include_in_facilitator_page",
+          "captured": "page_profile facilitator (collateral)",
+          "note": "No tutor_answer_artefact factor"
+        },
+        "peer_instruction_phase": {
+          "desired": "small_group_discussion_then_check",
+          "captured": "sequence step present (weak proxy)",
+          "note": "pair/small_group not on assessment"
+        },
+        "misconception_assessment_link": {
+          "desired": "optional",
+          "captured": null,
+          "note": "No factor"
+        },
+        "confidence_rating_required": {
+          "desired": false,
+          "captured": false,
+          "note": "Absent in extract"
+        },
+        "design_feedback_required": {
+          "desired": true,
+          "captured": false,
+          "note": "Topology inclusion only"
+        }
+      },
+      "liveGeneration": {
+        "assessment_items": "PENDING ÔÇö no Factory/OpenAI run in 27-3",
+        "feedback_pack": "PENDING",
+        "page": "PENDING"
+      }
+    },
+    {
+      "probeId": "P27-03",
+      "brief": {
+        "goal": "Create a peer instruction session on stoichiometry: students attempt problems individually, discuss in pairs, then revise answers. Include 6 MCQs and reflection prompts. Emphasise pair discussion before confirming solutions.",
+        "inputs": "First-year chemistry; 90-minute lab session.",
+        "desiredOutputs": "Learner-facing session page with activities and MCQ check.",
+        "startingArtefact": "generate_from_topic",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "session_materials": [
+          "page"
+        ],
+        "desired_outputs": "Learner-facing session page with activities and MCQ check.",
+        "input_strategy": "generate_from_topic",
+        "assessment_required": true,
+        "activities_required": true,
+        "page_profile": "assessment",
+        "assessment_type": "mcq",
+        "assessment_total_items": 6,
+        "topic": "stoichiometry",
+        "workshop_subject": "stoichiometry: students attempt problems individually",
+        "materials_required": true,
+        "design_scope": "session",
+        "delivery_pattern": "face_to_face",
+        "learner_level": "undergraduate"
+      },
+      "explicitExtract": {
+        "desired_outputs": "Learner-facing session page with activities and MCQ check.",
+        "input_strategy": "generate_from_topic",
+        "session_materials": [
+          "page"
+        ],
+        "assessment_required": true,
+        "activities_required": true,
+        "page_profile": "assessment",
+        "assessment_type": "mcq",
+        "assessment_total_items": 6,
+        "topic": "stoichiometry: students attempt problems individually",
+        "workshop_subject": "stoichiometry: students attempt problems individually",
+        "materials_required": true
+      },
+      "workflowSteps": [
+        "Normalize Content",
+        "Generate Learning Content",
+        "Model Knowledge",
+        "Define Learning Outcomes",
+        "Design Learning Activities",
+        "Generate Activity Materials",
+        "Generate Assessment Items",
+        "Construct Learning Sequence",
+        "Design Page"
+      ],
+      "designAssessmentPresent": false,
+      "designFeedbackPresent": false,
+      "candidateSemantics": {
+        "feedback_timing": {
+          "desired": "after_peer_discussion",
+          "captured": null,
+          "note": "No brief factor; feedback_required is commentary mode only"
+        },
+        "assessment_interaction_mode": {
+          "desired": "discussion_oriented | retrieval_practice",
+          "captured": null,
+          "note": "No factor; infer from brief prose only (not in resolved JSON)"
+        },
+        "learner_answer_visibility": {
+          "desired": "hidden_until_reveal | show_after_activity_block",
+          "captured": "unset",
+          "note": ""
+        },
+        "tutor_answer_artefact": {
+          "desired": "n/a",
+          "captured": "unset",
+          "note": "No tutor_answer_artefact factor"
+        },
+        "peer_instruction_phase": {
+          "desired": "think_pair_share",
+          "captured": "sequence step present (weak proxy)",
+          "note": "pair/small_group not on assessment"
+        },
+        "misconception_assessment_link": {
+          "captured": null,
+          "note": "No factor"
+        },
+        "confidence_rating_required": {
+          "desired": false,
+          "captured": false,
+          "note": "Absent in extract"
+        },
+        "design_feedback_required": {
+          "desired": false,
+          "captured": false,
+          "note": "Topology inclusion only"
+        }
+      },
+      "liveGeneration": {
+        "assessment_items": "PENDING ÔÇö no Factory/OpenAI run in 27-3",
+        "feedback_pack": "PENDING",
+        "page": "PENDING"
+      }
+    },
+    {
+      "probeId": "P27-04",
+      "brief": {
+        "goal": "Using the uploaded lecture on climate change, create a misconception discussion workshop. Provide task cards of common false claims, an analysis worksheet, and discussion prompts. End with true/false diagnostic statements ÔÇö learners should not see correct answers on the handout.",
+        "inputs": "Uploaded lecture transcript on climate change science.",
+        "desiredOutputs": "Learner page for workshop discussion and formative check.",
+        "startingArtefact": "provided_source_content",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "session_materials": [
+          "page"
+        ],
+        "desired_outputs": "Learner page for workshop discussion and formative check.",
+        "input_strategy": "provided_source_content",
+        "delivery_mode": "live_workshop",
+        "activities_required": true,
+        "page_profile": "learner",
+        "include_answers": true,
+        "topic": "climate change",
+        "workshop_subject": "climate change",
+        "materials_required": true,
+        "objective_type": "analysis",
+        "design_scope": "session",
+        "delivery_pattern": "face_to_face"
+      },
+      "explicitExtract": {
+        "desired_outputs": "Learner page for workshop discussion and formative check.",
+        "input_strategy": "provided_source_content",
+        "session_materials": [
+          "page"
+        ],
+        "delivery_mode": "live_workshop",
+        "activities_required": true,
+        "page_profile": "learner",
+        "include_answers": true,
+        "topic": "climate change",
+        "workshop_subject": "climate change",
+        "materials_required": true,
+        "objective_type": "analysis"
+      },
+      "workflowSteps": [
+        "Normalize Content",
+        "Model Knowledge",
+        "Define Learning Outcomes",
+        "Design Learning Activities",
+        "Generate Activity Materials",
+        "Generate Assessment Items",
+        "Construct Learning Sequence",
+        "Design Page"
+      ],
+      "designAssessmentPresent": false,
+      "designFeedbackPresent": false,
+      "candidateSemantics": {
+        "feedback_timing": {
+          "desired": "tutor_led_reveal_only | after_peer_discussion",
+          "captured": null,
+          "note": "No brief factor; feedback_required is commentary mode only"
+        },
+        "assessment_interaction_mode": {
+          "desired": "diagnostic_misconception",
+          "captured": null,
+          "note": "No factor; infer from brief prose only (not in resolved JSON)"
+        },
+        "learner_answer_visibility": {
+          "desired": "hidden_until_reveal",
+          "captured": "show (include_answers true)",
+          "note": ""
+        },
+        "tutor_answer_artefact": {
+          "desired": "n/a",
+          "captured": "unset",
+          "note": "No tutor_answer_artefact factor"
+        },
+        "peer_instruction_phase": {
+          "desired": "n/a",
+          "captured": "sequence step present (weak proxy)",
+          "note": "pair/small_group not on assessment"
+        },
+        "misconception_assessment_link": {
+          "desired": true,
+          "captured": null,
+          "note": "No factor"
+        },
+        "confidence_rating_required": {
+          "desired": false,
+          "captured": false,
+          "note": "Absent in extract"
+        },
+        "design_feedback_required": {
+          "desired": false,
+          "captured": false,
+          "note": "Topology inclusion only"
+        }
+      },
+      "liveGeneration": {
+        "assessment_items": "PENDING ÔÇö no Factory/OpenAI run in 27-3",
+        "feedback_pack": "PENDING",
+        "page": "PENDING"
+      }
+    }
+  ],
+  "p27_04_fixtureProxy": {
+    "source": "tests/fixtures/page-render/ld-climate-misconception-discussion-page.json",
+    "label": "27-1 fixture proxy ÔÇö NOT generated from P27-04 exact brief in this run",
+    "page_profile": "learner",
+    "feedback_display": "none",
+    "sectionIdsHeadings": [
+      {
+        "section_id": "overview",
+        "heading": "Overview"
+      },
+      {
+        "section_id": "learning_activities",
+        "heading": "Learning activities"
+      },
+      {
+        "section_id": "assessment_check",
+        "heading": "Formative assessment check"
+      }
+    ],
+    "assessmentItemsExcerpt": [
+      {
+        "item_id": "TF-1",
+        "item_type": "true_false",
+        "has_true_false_answer": true,
+        "true_false_answer": "False"
+      },
+      {
+        "item_id": "TF-2",
+        "item_type": "true_false",
+        "has_true_false_answer": true,
+        "true_false_answer": "False"
+      }
+    ],
+    "feedback_pack": "absent in fixture (no feedback_pack artefact)",
+    "exportHtmlAnswersVisible": false,
+    "exportHtmlTrueFalseOptions": true
+  }
+}

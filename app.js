@@ -6022,13 +6022,149 @@
     };
   }
 
+  var SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE = { assessment_required: true };
+
+  var SPRINT_27_ASSESSMENT_SEMANTIC_OPTIONAL_FACTORS = [
+    {
+      id: "feedback_timing",
+      label: "Feedback timing",
+      question: "When should learners see feedback or correct answers?",
+      type: "select",
+      choices: [
+        "immediate_self_check",
+        "after_peer_discussion",
+        "end_of_session_reveal",
+        "tutor_led_reveal_only"
+      ],
+      default: "immediate_self_check",
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    },
+    {
+      id: "assessment_interaction_mode",
+      label: "Assessment interaction mode",
+      question: "What interaction mode should the assessment support?",
+      type: "select",
+      choices: ["retrieval_practice", "discussion_oriented", "diagnostic_misconception"],
+      default: "retrieval_practice",
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    },
+    {
+      id: "learner_answer_visibility",
+      label: "Learner answer visibility",
+      question: "When should learners see correct answers on exported materials?",
+      type: "select",
+      choices: [
+        "hidden_until_reveal",
+        "show_after_activity_block",
+        "show_answer_grid_end",
+        "show_with_explanations"
+      ],
+      default: "show_answer_grid_end",
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    },
+    {
+      id: "peer_instruction_phase",
+      label: "Peer instruction phase",
+      question: "Does the session include a structured peer-instruction phase?",
+      type: "select",
+      choices: ["none", "think_pair_share", "small_group_discussion_then_check"],
+      default: "none",
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    },
+    {
+      id: "misconception_assessment_link",
+      label: "Link assessment to misconceptions",
+      question: "Should assessment items explicitly target misconception themes from activities?",
+      type: "boolean",
+      default: false,
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    },
+    {
+      id: "design_feedback_required",
+      label: "Design feedback step required",
+      question: "Should the workflow include a Design Feedback step?",
+      type: "boolean",
+      default: false,
+      askWhenResolvedFactorEquals: SPRINT_27_ASSESSMENT_SEMANTIC_RELEVANCE
+    }
+  ];
+
+  var SPRINT_27_ASSESSMENT_PACK_QUEUE_FACTOR_IDS = [
+    "feedback_timing",
+    "learner_answer_visibility",
+    "assessment_interaction_mode"
+  ];
+
+  function mergeWorkflowBriefFactorDefinitions(existingList, additions) {
+    var existing = Array.isArray(existingList) ? existingList.slice() : [];
+    var seen = {};
+    existing.forEach(function (factor) {
+      if (factor && factor.id) seen[String(factor.id)] = true;
+    });
+    (Array.isArray(additions) ? additions : []).forEach(function (factor) {
+      if (!factor || !factor.id) return;
+      var id = String(factor.id);
+      if (seen[id]) return;
+      seen[id] = true;
+      existing.push(factor);
+    });
+    return existing;
+  }
+
+  function appendUniqueWorkflowBriefFactorIds(list, ids) {
+    var out = Array.isArray(list) ? list.slice() : [];
+    (Array.isArray(ids) ? ids : []).forEach(function (id) {
+      var key = String(id || "").trim();
+      if (!key || out.indexOf(key) !== -1) return;
+      out.push(key);
+    });
+    return out;
+  }
+
+  function augmentWorkflowBriefConfigAssessmentSemantics(normalized) {
+    if (!normalized || typeof normalized !== "object") return normalized;
+    normalized.optionalFactors = mergeWorkflowBriefFactorDefinitions(
+      normalized.optionalFactors,
+      SPRINT_27_ASSESSMENT_SEMANTIC_OPTIONAL_FACTORS
+    );
+    var classes =
+      normalized.intentClasses && typeof normalized.intentClasses === "object"
+        ? normalized.intentClasses
+        : {};
+    var assessmentPack =
+      classes.assessment_pack && typeof classes.assessment_pack === "object"
+        ? classes.assessment_pack
+        : null;
+    if (assessmentPack) {
+      var elicitation =
+        assessmentPack.elicitation && typeof assessmentPack.elicitation === "object"
+          ? assessmentPack.elicitation
+          : {};
+      var nextElicitation = Object.assign({}, elicitation);
+      nextElicitation.orderedFactors = appendUniqueWorkflowBriefFactorIds(
+        elicitation.orderedFactors,
+        SPRINT_27_ASSESSMENT_PACK_QUEUE_FACTOR_IDS
+      );
+      nextElicitation.optionalFactors = appendUniqueWorkflowBriefFactorIds(
+        elicitation.optionalFactors,
+        SPRINT_27_ASSESSMENT_PACK_QUEUE_FACTOR_IDS
+      );
+      normalized.intentClasses = Object.assign({}, classes, {
+        assessment_pack: Object.assign({}, assessmentPack, {
+          elicitation: nextElicitation
+        })
+      });
+    }
+    return normalized;
+  }
+
   function normalizeWorkflowBriefConfig(raw) {
     var cfg = raw && typeof raw === "object" ? raw : {};
     var qp =
       cfg.questionPolicy && typeof cfg.questionPolicy === "object"
         ? cfg.questionPolicy
         : {};
-    return {
+    return augmentWorkflowBriefConfigAssessmentSemantics({
       version: String(cfg.version || "1"),
       requiredFactors: Array.isArray(cfg.requiredFactors) ? cfg.requiredFactors : [],
       optionalFactors: Array.isArray(cfg.optionalFactors) ? cfg.optionalFactors : [],
@@ -6066,7 +6202,7 @@
             ? !!qp.askRefinementByDefault
             : true
       }
-    };
+    });
   }
 
   function getWorkflowBriefDisclosureMessage(config, disclosureId) {
@@ -7213,6 +7349,20 @@
     return out;
   }
 
+  function hasStrongSourceContentEvidence(blob) {
+    var text = String(blob || "").toLowerCase();
+    if (!String(text || "").trim()) return false;
+    return (
+      /\b(uploaded file|uploaded lecture|uploaded pdfs?|uploaded (?:material|content|document|reading|transcript|slides?)|provided lecture|provided reading|provided (?:source|material|content|document)|attached material|source material|lecture transcript|uploaded transcript)\b/.test(
+        text
+      ) ||
+      /\b(?:from|using)\s+(?:the\s+)?(?:uploaded|provided)\s+(?:lecture|reading|transcript|article|document|pdf|slides?|source|material)\b/.test(
+        text
+      ) ||
+      /\b(transcript|article|document|pdf|slides?)\b/.test(text)
+    );
+  }
+
   function interpretWorkflowBriefText(briefText) {
     var text = String(briefText || "");
     var out = {};
@@ -7250,7 +7400,7 @@
     if (inputStrategy) {
       out.input_strategy = inputStrategy;
     }
-    if (inputs && !out.input_strategy) {
+    if (inputs && !out.input_strategy && hasStrongSourceContentEvidence(inputs)) {
       out.input_strategy = "provided_source_content";
     }
     var domainExtraValues = base && base.domainExtraValues && typeof base.domainExtraValues === "object"
@@ -7291,10 +7441,64 @@
     else if (/\b(workshop|live session|classroom|class)\b/.test(blob)) out.delivery_mode = "live_workshop";
 
     var mcqTypeCueRe = /\b(mcq|mcqs|multiple[ -]?choice(?:\s+questions?)?)\b/;
-    if (/\b(quiz|assessment|test)\b/.test(blob) || mcqTypeCueRe.test(blob)) out.assessment_required = true;
-    if (/\b(no assessment|without assessment)\b/.test(blob)) out.assessment_required = false;
+    function assessmentTermIsNegated(text, matchIndex) {
+      var start = Math.max(0, matchIndex - 80);
+      var windowText = String(text || "").slice(start, matchIndex);
+      return (
+        /\b(?:no|without|not)\s+$/i.test(windowText) ||
+        /\bno\s+(?:quiz|assessment|test)\s+or\s+$/i.test(windowText) ||
+        /\b(?:no|without)\s+(?:\w+\s+){0,4}or\s+$/i.test(windowText) ||
+        /\b(?:do\s+not|don'?t)\s+(?:include\s+(?:a\s+)?)?$/i.test(windowText)
+      );
+    }
+    function blobMentionsTermUnlessNegated(text, term) {
+      var src = String(text || "");
+      if (!src) return false;
+      var re = new RegExp("\\b" + term + "\\b", "gi");
+      var match;
+      while ((match = re.exec(src))) {
+        if (!assessmentTermIsNegated(src, match.index)) return true;
+      }
+      return false;
+    }
+    function hasExplicitNegativeAssessmentIntent(text) {
+      var src = String(text || "").toLowerCase();
+      if (!src) return false;
+      return (
+        /\bno\s+(?:quiz|assessment)(?:\s+or\s+(?:a\s+)?(?:quiz|assessment))?\b/.test(src) ||
+        /\bno\s+quiz\b/.test(src) ||
+        /\bno\s+assessment\b/.test(src) ||
+        /\bwithout\s+assessment\b/.test(src) ||
+        /\b(?:do\s+not|don'?t)\s+include\s+(?:a\s+)?quiz\b/.test(src) ||
+        /\bno\s+questions\b/.test(src) ||
+        /\bteaching\s+page\s+only\b/.test(src)
+      );
+    }
+    function hasExplicitPositiveAssessmentIntent(text) {
+      var src = String(text || "").toLowerCase();
+      if (!src) return false;
+      if (/\b(formative\s+assessment|formative\s+checks?|knowledge\s+checks?|practice\s+questions?)\b/.test(src)) {
+        return true;
+      }
+      if (mcqTypeCueRe.test(src)) return true;
+      if (/\b\d{1,2}[-\s]?item\s+(?:formative\s+)?(?:check|quiz|assessment)\b/.test(src)) return true;
+      if (/\b(?:quiz|assessment|test)\s+(?:with|pack|items?|questions?)\b/.test(src)) return true;
+      if (blobMentionsTermUnlessNegated(src, "quiz")) return true;
+      if (blobMentionsTermUnlessNegated(src, "assessment")) return true;
+      if (blobMentionsTermUnlessNegated(src, "test")) return true;
+      if (/\b(formative check|knowledge check)\b/.test(src)) return true;
+      return false;
+    }
+    var negativeAssessmentIntent = hasExplicitNegativeAssessmentIntent(blob);
+    var positiveAssessmentIntent = hasExplicitPositiveAssessmentIntent(blob);
+    if (negativeAssessmentIntent && !positiveAssessmentIntent) {
+      out.assessment_required = false;
+      out.include_answers = false;
+    } else if (positiveAssessmentIntent) {
+      out.assessment_required = true;
+    }
     var activityCueRe =
-      /\b(learning activit(?:y|ies)|short activit(?:y|ies)|activit(?:y|ies)|practice(?:\s+tasks?)?|exercises?|worksheets?|learner tasks?|reflection(?:\s+prompts?)?|discussion prompts?)\b/;
+      /\b(learning activit(?:y|ies)|short activit(?:y|ies)|activit(?:y|ies)|practice(?:\s+tasks?)?|exercises?|worksheets?|learner tasks?|reflection(?:\s+prompts?)?|discussion prompts?|task cards?|misconception discussion|peer instruction|think[- ]pair[- ]share)\b/;
     if (activityCueRe.test(blob)) out.activities_required = true;
     if (/\b(no activit|without activit|no learning tasks?|without learning tasks?)\b/.test(blob)) {
       out.activities_required = false;
@@ -7305,6 +7509,15 @@
     } else if (/\b(facilitator guide|teaching guide|runbook|facilitator-facing|facilitator)\b/.test(blob)) {
       out.page_profile = "facilitator";
     } else if (/\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing)\b/.test(blob)) {
+      out.page_profile = "learner";
+    }
+    var desiredOutputsLower = String(desiredOutputs || "").toLowerCase();
+    if (
+      out.page_profile === "assessment" &&
+      /\b(learner[- ]facing|learner page|student page|learner handout|participant handout|learner pack)\b/.test(
+        desiredOutputsLower
+      )
+    ) {
       out.page_profile = "learner";
     }
     // Prefer explicit non-MCQ type mentions over generic quiz wording.
@@ -7318,19 +7531,67 @@
     var explicitIncludeFeedbackCueRe =
       /\b(brief feedback|item[- ]level feedback|explanations?)\b/;
     var explicitHideAnswersCueRe =
-      /\b(no answers?|without answers?|hide answers?|do not include answers?|answers?\s+(?:only\s+)?after submission|reveal answers?\s+after submission|post[- ]submission answers?)\b/;
+      /\b(?:no answers?|without answers?|hide answers?|do not include answers?|do not reveal(?:\s+the)?\s+(?:correct\s+)?answers?|don'?t reveal(?:\s+the)?\s+(?:correct\s+)?answers?|must not reveal(?:\s+the)?\s+(?:correct\s+)?answers?|(?:learners?|students?|participants?)\s+should\s+not\s+see(?:\s+the)?\s+(?:correct\s+)?answers?|should\s+not\s+see(?:\s+the)?\s+(?:correct\s+)?answers?|handout without answers?|answers?\s+(?:only\s+)?after submission|reveal answers?\s+after submission|post[- ]submission answers?)\b/;
+    function answerVisibilityCueIsNegated(text, matchIndex) {
+      var start = Math.max(0, matchIndex - 72);
+      var windowText = String(text || "").slice(start, matchIndex);
+      return /\b(?:do\s+not|don'?t|must\s+not|should\s+not|without|never|not)\s+(?:reveal|show|include|display|give|provide|see)\b\s*$/i.test(
+        windowText
+      );
+    }
+    function hasPositiveIncludeAnswersCue(text) {
+      var src = String(text || "");
+      if (!explicitIncludeAnswersCueRe.test(src)) return false;
+      var re = new RegExp(explicitIncludeAnswersCueRe.source, "gi");
+      var match;
+      while ((match = re.exec(src))) {
+        if (!answerVisibilityCueIsNegated(src, match.index)) return true;
+      }
+      return false;
+    }
     if (explicitHideAnswersCueRe.test(blob)) {
       out.include_answers = false;
       out.include_feedback_guidance = false;
       out.feedback_required = "none";
-    } else {
-      if (explicitIncludeAnswersCueRe.test(blob)) {
-        out.include_answers = true;
-      }
-      if (explicitIncludeFeedbackCueRe.test(blob)) {
-        out.include_feedback_guidance = true;
-        out.feedback_required = "item_level";
-      }
+      out.learner_answer_visibility = "hidden_until_reveal";
+    } else if (hasPositiveIncludeAnswersCue(blob)) {
+      out.include_answers = true;
+      if (!out.learner_answer_visibility) out.learner_answer_visibility = "show_with_explanations";
+    }
+    if (explicitIncludeFeedbackCueRe.test(blob) && !explicitHideAnswersCueRe.test(blob)) {
+      out.include_feedback_guidance = true;
+      out.feedback_required = "item_level";
+    }
+    if (/\b(answer grid at end|answers? at end of page|show answers? at end)\b/.test(blob)) {
+      out.learner_answer_visibility = "show_answer_grid_end";
+    } else if (/\b(show answers? after activit|answers? after (?:the )?activit)\b/.test(blob)) {
+      out.learner_answer_visibility = "show_after_activity_block";
+    }
+    if (/\b(tutor will debrief|tutor[- ]led reveal|facilitator reveal|instructor reveal)\b/.test(blob)) {
+      out.feedback_timing = "tutor_led_reveal_only";
+    } else if (/\b(after (?:peer |pair |small[- ]group )?discussion|after pairs? discuss|following discussion|post[- ]discussion reveal)\b/.test(blob)) {
+      out.feedback_timing = "after_peer_discussion";
+    } else if (/\b(end of (?:the )?session|end of (?:the )?workshop|reveal at end)\b/.test(blob)) {
+      out.feedback_timing = "end_of_session_reveal";
+    } else if (/\b(immediate feedback|self[- ]check|check answers? immediately)\b/.test(blob)) {
+      out.feedback_timing = "immediate_self_check";
+    }
+    if (/\b(misconception discussion|false claims?|diagnostic (?:true\/false|statements?)|misconception check)\b/.test(blob)) {
+      out.assessment_interaction_mode = "diagnostic_misconception";
+      out.misconception_assessment_link = true;
+    } else if (
+      /\b(discuss(?:ion)?(?:\s+oriented)?|scenario questions?|small groups? discuss|group discussion|debate|facilitated discussion)\b/.test(
+        blob
+      )
+    ) {
+      out.assessment_interaction_mode = "discussion_oriented";
+    }
+    if (/\b(think[- ]pair[- ]share|attempt .{0,40} discuss in pairs?|pairs? (?:then|before) revise)\b/.test(blob)) {
+      out.peer_instruction_phase = "think_pair_share";
+      out.activities_required = true;
+    } else if (/\b(small groups? discuss|group discussion then|discuss in (?:small )?groups? then)\b/.test(blob)) {
+      out.peer_instruction_phase = "small_group_discussion_then_check";
+      out.activities_required = true;
     }
 
     function parseCountToken(token) {
@@ -7365,7 +7626,22 @@
       var src = String(text || "").toLowerCase();
       if (!src) return NaN;
       var countToken = "(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)";
+      var itemCheckKinds = "(?:formative|assessment|knowledge)\\s+checks?";
       var patterns = [
+        new RegExp(
+          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+            countToken +
+            "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+" +
+            itemCheckKinds +
+            "\\b",
+          "i"
+        ),
+        new RegExp(
+          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+            countToken +
+            "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+quiz(?:zes)?\\b",
+          "i"
+        ),
         new RegExp("\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?"+ countToken + "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|formative\\s+questions?|assessment\\s+items?|questions?)\\b", "i"),
         new RegExp("\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+page\\s+with\\s+)?(?:exactly\\s+)?"+ countToken + "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|questions?|assessment\\s+items?)\\b", "i")
       ];
@@ -7424,7 +7700,7 @@
 
     if (!out.input_strategy && /\b(no source content|generate from topic|topic only|from topic)\b/.test(blob)) {
       out.input_strategy = "generate_from_topic";
-    } else if (!out.input_strategy && /\b(transcript|article|notes|document|pdf|slides)\b/.test(blob)) {
+    } else if (!out.input_strategy && hasStrongSourceContentEvidence(blob)) {
       out.input_strategy = "provided_source_content";
     }
 
@@ -7459,6 +7735,28 @@
       });
     });
     return inferred;
+  }
+
+  function deriveAssessmentSemanticFactors(resolved, explicit) {
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var x = explicit && typeof explicit === "object" ? explicit : {};
+    var timing = String(r.feedback_timing || x.feedback_timing || "").trim();
+    var mode = String(r.assessment_interaction_mode || x.assessment_interaction_mode || "").trim();
+    var delayedTiming = {
+      after_peer_discussion: true,
+      tutor_led_reveal_only: true,
+      end_of_session_reveal: true
+    };
+    if (!r.learner_answer_visibility && delayedTiming[timing]) {
+      r.learner_answer_visibility = "hidden_until_reveal";
+    }
+    if (r.misconception_assessment_link !== true && mode === "diagnostic_misconception") {
+      r.misconception_assessment_link = true;
+    }
+    if (delayedTiming[timing]) {
+      r.design_feedback_required = true;
+    }
+    return r;
   }
 
   function factorHasRelevancePredicates(factor) {
@@ -7523,7 +7821,16 @@
     // as formal domain refinement factors yet. This keeps explicit brief intent
     // (for example "with model answers and brief feedback") alive through
     // resolved -> mapped -> stepParamPatch flow.
-    ["include_answers", "include_feedback_guidance"].forEach(function (id) {
+    [
+      "include_answers",
+      "include_feedback_guidance",
+      "feedback_timing",
+      "assessment_interaction_mode",
+      "learner_answer_visibility",
+      "peer_instruction_phase",
+      "misconception_assessment_link",
+      "design_feedback_required"
+    ].forEach(function (id) {
       if (
         Object.prototype.hasOwnProperty.call(explicit, id) &&
         explicit[id] !== "" &&
@@ -7541,6 +7848,14 @@
         resolved[id] = elicited[id];
         sources[id] = "elicited";
       }
+    });
+    resolved = deriveAssessmentSemanticFactors(resolved, explicit);
+    Object.keys(resolved).forEach(function (id) {
+      if (!id || sources[id]) return;
+      if (Object.prototype.hasOwnProperty.call(explicit, id)) sources[id] = "explicit";
+      else if (Object.prototype.hasOwnProperty.call(inferred, id)) sources[id] = "inferred";
+      else if (Object.prototype.hasOwnProperty.call(elicited, id)) sources[id] = "elicited";
+      else sources[id] = "default";
     });
     return { resolved: resolved, sources: sources, missing: missing };
   }
@@ -7892,6 +8207,101 @@
     return r;
   }
 
+  function resolveAssessmentPresentationFromBriefFactors(values) {
+    var v = values && typeof values === "object" ? values : {};
+    var visibility = String(v.learner_answer_visibility || "").trim();
+    var timing = String(v.feedback_timing || "").trim();
+    var hasSemantic = !!(visibility || timing);
+    var includeAnswers = null;
+    var feedbackDisplay = "";
+
+    if (visibility === "hidden_until_reveal" || visibility === "tutor_only") {
+      includeAnswers = false;
+      feedbackDisplay = "none";
+    } else if (visibility === "show_answer_grid_end") {
+      includeAnswers = true;
+      feedbackDisplay = "answer_grid_end";
+    } else if (visibility === "show_with_explanations") {
+      includeAnswers = true;
+      feedbackDisplay = "answers_explanations";
+    } else if (visibility === "show_after_activity_block") {
+      includeAnswers = false;
+      feedbackDisplay = "reflection_then_answers";
+    } else if (timing === "tutor_led_reveal_only") {
+      includeAnswers = false;
+      feedbackDisplay = "none";
+    } else if (timing === "after_peer_discussion") {
+      includeAnswers = false;
+      feedbackDisplay = "reflection_then_answers";
+    } else if (timing === "end_of_session_reveal") {
+      includeAnswers = true;
+      feedbackDisplay = "answer_grid_end";
+    }
+
+    var explicitIncludeAnswers = (function () {
+      var raw = v.include_answers;
+      if (raw === true || raw === false) return raw;
+      var s = String(raw == null ? "" : raw).toLowerCase().trim();
+      if (["true", "1", "yes", "y"].indexOf(s) !== -1) return true;
+      if (["false", "0", "no", "n"].indexOf(s) !== -1) return false;
+      return null;
+    })();
+    if (explicitIncludeAnswers === true) includeAnswers = true;
+    else if (explicitIncludeAnswers === false) includeAnswers = false;
+
+    if (includeAnswers === false && !feedbackDisplay) feedbackDisplay = "none";
+    if (includeAnswers === true && !feedbackDisplay) feedbackDisplay = "answers_explanations";
+
+    return {
+      hasSemanticPresentation: hasSemantic,
+      learnerAnswerVisibility: visibility,
+      feedbackTiming: timing,
+      includeAnswers: includeAnswers,
+      feedbackDisplay: feedbackDisplay
+    };
+  }
+
+  function applyAssessmentSemanticsToComposedPage(page, resolvedFactors) {
+    if (!page || typeof page !== "object") return page;
+    var presentation = resolveAssessmentPresentationFromBriefFactors(resolvedFactors || {});
+    if (!presentation.feedbackDisplay && presentation.includeAnswers == null) return page;
+    var next = JSON.parse(JSON.stringify(page));
+    if (presentation.feedbackDisplay) {
+      next.feedback_display = presentation.feedbackDisplay;
+    }
+    if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
+    if (presentation.feedbackDisplay) next.metadata.feedback_display = presentation.feedbackDisplay;
+    if (presentation.learnerAnswerVisibility) {
+      next.metadata.learner_answer_visibility = presentation.learnerAnswerVisibility;
+    }
+    if (presentation.feedbackTiming) next.metadata.feedback_timing = presentation.feedbackTiming;
+    if (!next.constraints_applied || typeof next.constraints_applied !== "object") {
+      next.constraints_applied = {};
+    }
+    if (presentation.feedbackTiming) {
+      next.constraints_applied.feedback_timing = presentation.feedbackTiming;
+    }
+    if (presentation.learnerAnswerVisibility) {
+      next.constraints_applied.learner_answer_visibility = presentation.learnerAnswerVisibility;
+    }
+    if (presentation.feedbackDisplay) {
+      next.constraints_applied.feedback_display = presentation.feedbackDisplay;
+    }
+    if (!next.generation_notes || typeof next.generation_notes !== "object") {
+      next.generation_notes = {};
+    }
+    if (
+      !next.generation_notes.constraints_applied ||
+      typeof next.generation_notes.constraints_applied !== "object"
+    ) {
+      next.generation_notes.constraints_applied = {};
+    }
+    Object.keys(next.constraints_applied).forEach(function (k) {
+      next.generation_notes.constraints_applied[k] = next.constraints_applied[k];
+    });
+    return next;
+  }
+
   function applyWorkflowBriefMappings(config, resolvedFactors) {
     var cfg = normalizeWorkflowBriefConfig(config);
     var values = resolvedFactors && typeof resolvedFactors === "object" ? resolvedFactors : {};
@@ -7987,20 +8397,67 @@
     var explicitIncludeFeedback = parseBooleanLike(values.include_feedback_guidance);
     var needsItemLevelFeedback =
       feedbackMode === "item_level" || feedbackMode === "hybrid" || feedbackMode === "summary_only";
+    var presentation = resolveAssessmentPresentationFromBriefFactors(values);
+    var designPageId = normalizeCanonicalStepId("step_design_page");
+    if (
+      presentation.hasSemanticPresentation ||
+      presentation.feedbackDisplay ||
+      presentation.includeAnswers !== null
+    ) {
+      if (!out.stepParamPatch[designPageId]) out.stepParamPatch[designPageId] = {};
+      if (presentation.includeAnswers === true) {
+        out.stepParamPatch[designPageId].include_answers = "true";
+      } else if (presentation.includeAnswers === false) {
+        out.stepParamPatch[designPageId].include_answers = "false";
+      }
+      if (presentation.feedbackDisplay) {
+        out.stepParamPatch[designPageId].feedback_display = presentation.feedbackDisplay;
+        out.workflowConstraintPatch.feedback_display = presentation.feedbackDisplay;
+      }
+      if (presentation.learnerAnswerVisibility) {
+        out.workflowConstraintPatch.learner_answer_visibility = presentation.learnerAnswerVisibility;
+      }
+      if (presentation.feedbackTiming) {
+        out.workflowConstraintPatch.feedback_timing = presentation.feedbackTiming;
+      }
+      var constraintsApplied = {};
+      if (presentation.feedbackTiming) {
+        constraintsApplied.feedback_timing = presentation.feedbackTiming;
+      }
+      if (presentation.learnerAnswerVisibility) {
+        constraintsApplied.learner_answer_visibility = presentation.learnerAnswerVisibility;
+      }
+      if (presentation.feedbackDisplay) {
+        constraintsApplied.feedback_display = presentation.feedbackDisplay;
+      }
+      if (Object.keys(constraintsApplied).length) {
+        out.workflowConstraintPatch.assessment_semantics_constraints_applied = JSON.stringify(
+          constraintsApplied
+        );
+      }
+    }
+    var skipMcqIncludeAnswersDefault =
+      presentation.includeAnswers === false ||
+      presentation.feedbackDisplay === "none" ||
+      presentation.feedbackDisplay === "reflection_then_answers";
     if (
       needsItemLevelFeedback ||
       assessmentType === "mcq" ||
       explicitIncludeAnswers !== null ||
-      explicitIncludeFeedback !== null
+      explicitIncludeFeedback !== null ||
+      presentation.includeAnswers !== null ||
+      presentation.feedbackDisplay
     ) {
-      var designPageId = normalizeCanonicalStepId("step_design_page");
       if (!out.stepParamPatch[designPageId]) out.stepParamPatch[designPageId] = {};
-      // Ensure assessment pages can surface answer keys/model answers when requested.
       if (explicitIncludeAnswers === true) {
         out.stepParamPatch[designPageId].include_answers = "true";
       } else if (explicitIncludeAnswers === false) {
         out.stepParamPatch[designPageId].include_answers = "false";
-      } else if (needsItemLevelFeedback || assessmentType === "mcq") {
+      } else if (presentation.includeAnswers === true) {
+        out.stepParamPatch[designPageId].include_answers = "true";
+      } else if (presentation.includeAnswers === false) {
+        out.stepParamPatch[designPageId].include_answers = "false";
+      } else if ((needsItemLevelFeedback || assessmentType === "mcq") && !skipMcqIncludeAnswersDefault) {
         out.stepParamPatch[designPageId].include_answers = "true";
       }
       if (explicitIncludeFeedback === true) {
@@ -8910,6 +9367,7 @@
   function isClearlyAssessmentBrief(base, resolved) {
     var baseObj = base && typeof base === "object" ? base : {};
     var resolvedObj = resolved && typeof resolved === "object" ? resolved : {};
+    if (resolvedObj.assessment_required === false) return false;
     if (resolvedObj.assessment_required === true) return true;
     var blob = String([
       baseObj.designIntent || "",
@@ -8998,7 +9456,10 @@
         "difficulty_profile",
         "feedback_required",
         "coverage_scope",
-        "cognitive_demand"
+        "cognitive_demand",
+        "feedback_timing",
+        "learner_answer_visibility",
+        "assessment_interaction_mode"
       ];
     }
     var ordered = [];
@@ -10097,31 +10558,11 @@
           .filter(function (v) { return !!v; })
       : [];
     var hasExplicitSessionMaterials = explicitSessionMaterials.length > 0;
-    var sourceContentTerms = [
-      "pdf",
-      "document",
-      "article",
-      "transcript",
-      "notes",
-      "text",
-      "source material",
-      "uploaded file",
-      "reading",
-      "manifesto",
-      "chapter",
-      "paper",
-      "file"
-    ];
     function hasSourceContentSignal() {
-      var blob = [goalText, inputs].join("\n");
-      if (!String(blob || "").trim()) return false;
-      return sourceContentTerms.some(function (kw) {
-        return blob.indexOf(kw) !== -1;
-      });
+      return hasStrongSourceContentEvidence([goalText, inputs].join("\n"));
     }
     var inputStrategyHint = String(resolvedBriefFactors.input_strategy || "").toLowerCase().trim();
     function hasAuthoritativeProvidedSource() {
-      if (inputStrategyHint === "provided_source_content") return true;
       if (selectedStartingArtefact === "provided_source_content") return true;
       if (
         inputStrategyHint === "generate_from_topic" ||
@@ -10129,13 +10570,16 @@
       ) {
         return false;
       }
+      if (inputStrategyHint === "provided_source_content") {
+        return hasSourceContentSignal();
+      }
       return hasSourceContentSignal();
     }
     function hasExplicitGenerationOnlySignal() {
       var blob = (goalText + "\n" + inputs).toLowerCase();
       return (
         /\b(no source content|without source content|from topic only|create content|generate content)\b/.test(blob) &&
-        !/\b(pdf|document|article|transcript|notes|uploaded file|source material|reading|manifesto|chapter|paper)\b/.test(blob)
+        !hasStrongSourceContentEvidence(blob)
       );
     }
     function isIngestTransformationIntent() {
@@ -10166,9 +10610,56 @@
     function hasIntent(regex) {
       return regex.test(intentBlob);
     }
-    var explicitFeedbackRequested = hasIntent(
-      /\b(feedback pack|design feedback|learner feedback|feedback guidance|formative feedback)\b/
+    var feedbackTimingFactor = String(
+      resolvedBriefFactors.feedback_timing || explicitBriefFactors.feedback_timing || ""
+    ).trim();
+    var learnerAnswerVisibilityFactor = String(
+      resolvedBriefFactors.learner_answer_visibility ||
+        explicitBriefFactors.learner_answer_visibility ||
+        ""
+    ).trim();
+    var assessmentInteractionModeFactor = String(
+      resolvedBriefFactors.assessment_interaction_mode ||
+        explicitBriefFactors.assessment_interaction_mode ||
+        ""
+    ).trim();
+    var peerInstructionPhaseFactor = String(
+      resolvedBriefFactors.peer_instruction_phase ||
+        explicitBriefFactors.peer_instruction_phase ||
+        ""
+    ).trim();
+    var delayedFeedbackTimingFactors = {
+      after_peer_discussion: true,
+      tutor_led_reveal_only: true,
+      end_of_session_reveal: true
+    };
+    var designFeedbackRequiredFactor =
+      resolvedBriefFactors.design_feedback_required === true ||
+      explicitBriefFactors.design_feedback_required === true;
+    var semanticFeedbackRequested =
+      designFeedbackRequiredFactor ||
+      !!delayedFeedbackTimingFactors[feedbackTimingFactor] ||
+      learnerAnswerVisibilityFactor === "hidden_until_reveal";
+    var explicitFeedbackRequested =
+      hasIntent(
+        /\b(feedback pack|design feedback|learner feedback|feedback guidance|formative feedback|debrief|delayed feedback|after discussion|do not reveal|tutor will|tutor debrief)\b/
+      ) || semanticFeedbackRequested;
+    var discussionOrientedAssessmentWorkflow =
+      assessmentInteractionModeFactor === "discussion_oriented" ||
+      assessmentInteractionModeFactor === "diagnostic_misconception" ||
+      (!!peerInstructionPhaseFactor && peerInstructionPhaseFactor !== "none") ||
+      !!delayedFeedbackTimingFactors[feedbackTimingFactor];
+    var diagnosticMisconceptionAssessment =
+      assessmentInteractionModeFactor === "diagnostic_misconception";
+    var assessmentItemCountHint = Number(
+      resolvedBriefFactors.assessment_total_items ||
+        explicitBriefFactors.assessment_total_items ||
+        0
     );
+    var keepDesignAssessmentStep =
+      assessmentBlueprintRequested ||
+      (diagnosticMisconceptionAssessment &&
+        (assessmentItemCountHint > 0 || assessmentItemsRequested));
     var explicitQaRequested = hasIntent(
       /\b(validate|quality assurance|qa|review quality|alignment audit|alignment check|quality audit|check the assessment|review the assessment)\b/
     );
@@ -10178,9 +10669,14 @@
     var explicitItemBankOrMcqRequested = hasIntent(
       /\b(question bank|item bank|mcq|mcqs|multiple choice)\b/
     );
-    var assessmentItemsRequested = hasIntent(
-      /\b(assessment questions?|question pack|question set|question bank|item bank|mcq|mcqs|multiple choice|quiz|test|formative questions?|formative assessment|assessment items?)\b/
-    );
+    var assessmentExplicitlyDeclined =
+      resolvedBriefFactors.assessment_required === false ||
+      explicitBriefFactors.assessment_required === false;
+    var assessmentItemsRequested =
+      !assessmentExplicitlyDeclined &&
+      hasIntent(
+        /\b(assessment questions?|question pack|question set|question bank|item bank|mcq|mcqs|multiple choice|quiz|test|formative questions?|formative assessment|assessment items?)\b/
+      );
     var assessmentBlueprintRequested = hasIntent(
       /\b(assessment blueprint|blueprint|distribution|difficulty profile|assessment plan|coverage map|specification)\b/
     );
@@ -10808,13 +11304,26 @@
           if (!hasSequenceStep) out.steps.push({ title: sequenceStepTitle, role: "" });
         }
       }
+      if (semanticFeedbackRequested) {
+        var designFeedbackStep = canonicalizeFromPolicy("Design Feedback");
+        if (designFeedbackStep) {
+          var hasDesignFeedbackStep = out.steps.some(function (s) {
+            return (
+              String((s && s.title) || "").toLowerCase() ===
+              String(designFeedbackStep).toLowerCase()
+            );
+          });
+          if (!hasDesignFeedbackStep) {
+            out.steps.push({ title: designFeedbackStep, role: "" });
+          }
+        }
+      }
       if (workshopRichWorkflowIntent) {
         [
           "Generate Learning Content",
           "Define Learning Outcomes",
           "Design Learning Activities",
           "Generate Activity Materials",
-          "Design Assessment",
           "Construct Learning Sequence",
           "Design Page"
         ].forEach(function (title) {
@@ -11163,6 +11672,12 @@
           explicitlyRequiredStepSet[k] = true;
         });
       }
+      if (explicitFeedbackRequested) {
+        var feedbackProtectedSet = collectRequiredStepsClosure(["Design Feedback"]);
+        Object.keys(feedbackProtectedSet).forEach(function (k) {
+          explicitlyRequiredStepSet[k] = true;
+        });
+      }
 
       // Optional-step pruning from explicit intent signals.
       out.steps = out.steps.filter(function (s) {
@@ -11175,6 +11690,16 @@
           return false;
         }
         if (
+          assessmentExplicitlyDeclined &&
+          (
+            title === "generate assessment items" ||
+            title === "design assessment" ||
+            title === "design marking rubric"
+          )
+        ) {
+          return false;
+        }
+        if (
           title === "validate learning design" &&
           (assessmentItemsRequested || formativeAssessmentPackDefaultIntent) &&
           !explicitQaRequested
@@ -11184,8 +11709,7 @@
         if (
           title === "design assessment" &&
           (assessmentItemsRequested || formativeAssessmentPackDefaultIntent) &&
-          !assessmentBlueprintRequested &&
-          !workshopRichWorkflowIntent
+          !keepDesignAssessmentStep
         ) {
           return false;
         }
@@ -11382,6 +11906,33 @@
       if (!out.steps.length && stepsBeforeDependencyOrder.length) {
         out.steps = stepsBeforeDependencyOrder;
       }
+      if (discussionOrientedAssessmentWorkflow) {
+        var dlaTitle = canonicalizeFromPolicy("Design Learning Activities");
+        var gamTitle = canonicalizeFromPolicy("Generate Activity Materials");
+        var gaiTitle = canonicalizeFromPolicy("Generate Assessment Items");
+        for (var discussionOrderPass = 0; discussionOrderPass < 4; discussionOrderPass += 1) {
+          if (dlaTitle && gamTitle) moveAfter(gamTitle, dlaTitle);
+          if (gamTitle && gaiTitle) moveAfter(gaiTitle, gamTitle);
+          if (dlaTitle && gaiTitle) moveAfter(gaiTitle, dlaTitle);
+        }
+      }
+      // Assessment feedback should follow item generation, before session sequencing.
+      var designFeedbackTitle = canonicalizeFromPolicy("Design Feedback");
+      var assessmentItemsTitle = canonicalizeFromPolicy("Generate Assessment Items");
+      var sequenceTitle = canonicalizeFromPolicy("Construct Learning Sequence");
+      if (
+        designFeedbackTitle &&
+        assessmentItemsTitle &&
+        indexOfTitle(designFeedbackTitle) !== -1 &&
+        indexOfTitle(assessmentItemsTitle) !== -1
+      ) {
+        for (var assessmentFeedbackOrderPass = 0; assessmentFeedbackOrderPass < 4; assessmentFeedbackOrderPass += 1) {
+          moveAfter(designFeedbackTitle, assessmentItemsTitle);
+          if (sequenceTitle && indexOfTitle(sequenceTitle) !== -1) {
+            moveAfter(sequenceTitle, designFeedbackTitle);
+          }
+        }
+      }
 
       // Optional role anchors from domain policy plus canonical metadata fallback.
       out.steps = out.steps.map(function (row) {
@@ -11540,6 +12091,35 @@
       out.steps = out.steps.filter(function (s) {
         return String((s && s.title) || "").toLowerCase() !== "generate learning content";
       });
+    }
+
+    // Epistemic grounding: topic-only paths must not run Model Knowledge without a content producer.
+    if (!hasAuthoritativeProvidedSource()) {
+    (function ensureEpistemicGroundingBeforeModelKnowledge() {
+      var mkKey = "model knowledge";
+      var glcKey = "generate learning content";
+      var normKey = "normalize content";
+      var mkIdx = -1;
+      var hasGlc = false;
+      var hasNorm = false;
+      var glcTitle = "Generate Learning Content";
+      var normTitle = "Normalize Content";
+      if (policy && Array.isArray(policy.canonicalSteps)) {
+        policy.canonicalSteps.forEach(function (c) {
+          var k = String(c || "").toLowerCase().trim();
+          if (k === glcKey) glcTitle = c;
+          if (k === normKey) normTitle = c;
+        });
+      }
+      out.steps.forEach(function (s, idx) {
+        var t = String((s && s.title) || "").toLowerCase().trim();
+        if (t === mkKey) mkIdx = idx;
+        if (t === glcKey) hasGlc = true;
+        if (t === normKey) hasNorm = true;
+      });
+      if (mkIdx === -1 || hasGlc || hasNorm) return;
+      out.steps.splice(mkIdx, 0, { title: glcTitle, role: "" });
+    })();
     }
 
     // Research (I9.1): uploaded-source Factory path should not keep "Generate Research Content"
@@ -23975,15 +24555,30 @@
         feedbackDisplayMode = "answers_explanations";
       } else if (feedbackDisplayModeRaw === "none" || /\bnone|off\b/.test(feedbackDisplayModeRaw)) {
         feedbackDisplayMode = "none";
+      } else if (
+        feedbackDisplayModeRaw === "reflection_then_answers" ||
+        /\breflection\b.*\banswers?\b/.test(feedbackDisplayModeRaw)
+      ) {
+        feedbackDisplayMode = "reflection_then_answers";
       }
       var localPageProfile = !utilityIsEmptyValue(localOpts.pageProfile) ? String(localOpts.pageProfile) : String(renderOpts.pageProfile || "");
       var modeApplies =
         feedbackDisplayMode === "none" ||
         feedbackDisplayMode === "answer_grid_end" ||
-        feedbackDisplayMode === "answers_explanations";
-      var hideAnswers = modeApplies && feedbackDisplayMode === "none";
-      var gridAtEnd = modeApplies && (feedbackDisplayMode === "answer_grid_end" || feedbackDisplayMode === "answers_explanations");
-      var includeRationalesInGrid = modeApplies && feedbackDisplayMode === "answers_explanations";
+        feedbackDisplayMode === "answers_explanations" ||
+        feedbackDisplayMode === "reflection_then_answers";
+      var hideAnswers =
+        modeApplies &&
+        (feedbackDisplayMode === "none" || feedbackDisplayMode === "reflection_then_answers");
+      var gridAtEnd =
+        modeApplies &&
+        (feedbackDisplayMode === "answer_grid_end" ||
+          feedbackDisplayMode === "answers_explanations" ||
+          feedbackDisplayMode === "reflection_then_answers");
+      var includeRationalesInGrid =
+        modeApplies &&
+        (feedbackDisplayMode === "answers_explanations" ||
+          feedbackDisplayMode === "reflection_then_answers");
       var answerRows = [];
       var cardsHtml = rows.map(function (row, idx) {
         if (!row || typeof row !== "object" || Array.isArray(row)) {
@@ -24130,6 +24725,16 @@
         return renderAssessmentItemArticle(idx, parts.join("") + extraHtml);
       }).filter(function (x) { return !!String(x || "").trim(); }).join("");
       if (gridAtEnd && (answerRows.length || feedbackDisplayMode === "answer_grid_end")) {
+        var revealSectionClass =
+          feedbackDisplayMode === "reflection_then_answers"
+            ? "util-assessment-key util-reflection-answers"
+            : "util-assessment-key";
+        var revealSectionTitle =
+          feedbackDisplayMode === "reflection_then_answers"
+            ? "Self-check answers"
+            : feedbackDisplayMode === "answer_grid_end"
+              ? "Answer Grid"
+              : "Answer Key";
         if (feedbackDisplayMode === "answer_grid_end") {
           var placeholderCount = rows.length;
           var placeholderRows = [];
@@ -24137,7 +24742,14 @@
             placeholderRows.push("<p>Q" + utilityEscapeHtml(String(pi)) + " ___</p>");
           }
           if (!placeholderRows.length) return cardsHtml;
-          cardsHtml += '<section class="util-assessment-key"><h3 class="util-assessment-key-title">Answer Grid</h3>' + placeholderRows.join("") + "</section>";
+          cardsHtml +=
+            '<section class="' +
+            revealSectionClass +
+            '"><h3 class="util-assessment-key-title">' +
+            utilityEscapeHtml(revealSectionTitle) +
+            "</h3>" +
+            placeholderRows.join("") +
+            "</section>";
         } else {
           var headCells = ["Question", "Answer"];
           if (includeRationalesInGrid) headCells.push("Explanation");
@@ -24151,7 +24763,16 @@
               (includeRationalesInGrid ? ("<td>" + utilityRenderMarkdownInline(String(row.rationale || "")) + "</td>") : "") +
               "</tr>";
           }).join("");
-          cardsHtml += '<section class="util-assessment-key"><h3 class="util-assessment-key-title">Answer Key</h3><div class="util-table-scroll"><table><thead>' + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table></div></section>";
+          cardsHtml +=
+            '<section class="' +
+            revealSectionClass +
+            '"><h3 class="util-assessment-key-title">' +
+            utilityEscapeHtml(revealSectionTitle) +
+            '</h3><div class="util-table-scroll"><table><thead>' +
+            headHtml +
+            "</thead><tbody>" +
+            bodyHtml +
+            "</tbody></table></div></section>";
         }
       }
       return cardsHtml;
@@ -26507,6 +27128,12 @@
     prismTestApi.buildWorkflowBriefStepRelevanceIndex = buildWorkflowBriefStepRelevanceIndex;
     prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
     prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;
+    prismTestApi.resolveAssessmentPresentationFromBriefFactors =
+      resolveAssessmentPresentationFromBriefFactors;
+    prismTestApi.applyAssessmentSemanticsToComposedPage = applyAssessmentSemanticsToComposedPage;
+    prismTestApi.applyWorkflowBriefMappings = applyWorkflowBriefMappings;
+    prismTestApi.deriveAssessmentSemanticFactors = deriveAssessmentSemanticFactors;
+    prismTestApi.getAssessmentPostGenerationElicitationQueue = getAssessmentPostGenerationElicitationQueue;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;

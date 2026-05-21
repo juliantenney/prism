@@ -1,0 +1,27 @@
+{
+  "id": "LD-S1-rna-virus",
+  "domain": ["learning-design"],
+  "brief": {
+    "goal": "Create a one hour follow up session for individual to build on the knowledge they gained in the lecture. Include some short learning activities and a short formative assessment.",
+    "inputs": "Uploaded lecture transcript on RNA viruses and hepatitis C (HCV).",
+    "desiredOutputs": "Learner-facing page with activities and formative check.",
+    "startingArtefact": "provided_source_content"
+  },
+  "expect": {
+    "resolvedFactors": {
+      "activities_required": true,
+      "assessment_required": true,
+      "materials_required": true
+    },
+    "stepsInclude": [
+      "Normalize Content",
+      "Model Knowledge",
+      "Define Learning Outcomes",
+      "Design Learning Activities",
+      "Generate Activity Materials",
+      "Generate Assessment Items",
+      "Design Page"
+    ],
+    "stepsExclude": []
+  }
+}

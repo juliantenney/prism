@@ -22696,8 +22696,101 @@
       });
       return normalized;
     }
+    var COGNITION_ACTIVITY_FIELD_RENDER_GROUPS = [
+      {
+        modifier: "util-cognition--revision",
+        fields: [
+          { id: "initial_position_prompt", label: "Initial position" },
+          { id: "revision_trigger", label: "Revision trigger" },
+          { id: "reasoning_revision_prompt", label: "Reasoning revision" }
+        ]
+      },
+      {
+        modifier: "util-cognition--repair",
+        fields: [
+          { id: "misconception_claim", label: "Misconception claim" },
+          { id: "reconciliation_prompt", label: "Reconciliation prompt" },
+          { id: "evidence_contrast", label: "Evidence contrast" }
+        ]
+      },
+      {
+        modifier: "util-cognition--uncertainty",
+        fields: [{ id: "uncertainty_tension_prompt", label: "Uncertainty tension" }]
+      },
+      {
+        modifier: "util-cognition--transformation",
+        fields: [
+          { id: "transformation_activity", label: "Transformation activity" },
+          { id: "source_to_application_prompt", label: "Source to application" }
+        ]
+      }
+    ];
+    var COGNITION_ACTIVITY_FIELD_IDS = {};
+    COGNITION_ACTIVITY_FIELD_RENDER_GROUPS.forEach(function (group) {
+      (group.fields || []).forEach(function (fieldDef) {
+        if (fieldDef && fieldDef.id) COGNITION_ACTIVITY_FIELD_IDS[String(fieldDef.id)] = true;
+      });
+    });
+    function renderCognitionFieldBodyForActivity(value) {
+      if (utilityIsEmptyValue(value)) return "";
+      if (Array.isArray(value)) {
+        var listItems = value
+          .map(function (entry) {
+            if (utilityIsEmptyValue(entry)) return "";
+            var text =
+              typeof entry === "string"
+                ? entry
+                : entry && typeof entry === "object"
+                ? utilityFirstPresent([entry.text, entry.prompt, entry.content, entry.step, entry.instruction])
+                : String(entry);
+            if (!String(text || "").trim()) return "";
+            return "<li>" + utilityRenderMarkdownInline(String(text).trim()) + "</li>";
+          })
+          .filter(function (x) { return !!x; });
+        return listItems.length ? "<ul>" + listItems.join("") + "</ul>" : "";
+      }
+      var raw = String(value == null ? "" : value).replace(/\r\n/g, "\n").trim();
+      if (!raw) return "";
+      return utilityRenderMarkdownBlock(raw) || "<p>" + utilityRenderMarkdownInline(raw) + "</p>";
+    }
+    function renderCognitionFieldsForActivity(row, cognitionProfile) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+      var blocks = [];
+      COGNITION_ACTIVITY_FIELD_RENDER_GROUPS.forEach(function (group) {
+        var items = [];
+        (group.fields || []).forEach(function (fieldDef) {
+          if (!fieldDef || !fieldDef.id) return;
+          var value = row[fieldDef.id];
+          if (utilityIsEmptyValue(value)) return;
+          var body = renderCognitionFieldBodyForActivity(value);
+          if (!String(body || "").trim()) return;
+          items.push(
+            '<div class="util-cognition__item" data-cognition-field="' +
+              utilityEscapeHtml(fieldDef.id) +
+              '">' +
+              '<div class="util-cognition__label">' +
+              utilityEscapeHtml(fieldDef.label || utilityLabelFromKey(fieldDef.id)) +
+              "</div>" +
+              '<div class="util-cognition__body">' +
+              body +
+              "</div></div>"
+          );
+        });
+        if (!items.length) return;
+        blocks.push(
+          '<div class="util-cognition ' +
+            group.modifier +
+            '" role="region" aria-label="Cognition prompts">' +
+            items.join("") +
+            "</div>"
+        );
+      });
+      return blocks.join("");
+    }
     function renderLearningActivitiesBlocks(activityRows, renderContext) {
       var ctx = renderContext && typeof renderContext === "object" ? renderContext : {};
+      var cognitionProfile =
+        ctx.cognitionProfile && typeof ctx.cognitionProfile === "object" ? ctx.cognitionProfile : null;
       var materialsByActivityId = ctx.materialsByActivityId && typeof ctx.materialsByActivityId === "object"
         ? ctx.materialsByActivityId
         : {};
@@ -22795,10 +22888,16 @@
         if (utilityIsEmptyValue(external)) return normalizedInline;
         return mergeActivityMaterialObjects(normalizedInline, external);
       }
-      function renderMaterialsForActivity(materials) {
+      function renderMaterialsForActivity(materials, activityRow) {
         if (utilityIsEmptyValue(materials)) return "";
         materials = normalizeActivityMaterialsForRender(materials);
         if (utilityIsEmptyValue(materials)) return "";
+        var cognitionKeysOnRow = {};
+        if (activityRow && typeof activityRow === "object" && !Array.isArray(activityRow)) {
+          Object.keys(COGNITION_ACTIVITY_FIELD_IDS).forEach(function (fieldId) {
+            if (!utilityIsEmptyValue(activityRow[fieldId])) cognitionKeysOnRow[fieldId] = true;
+          });
+        }
         // Content preservation rule:
         // - Never mark a key as consumed unless that value is definitely rendered.
         // - For unknown object/array shapes, always fall back to renderMaterialValue/generic rendering.
@@ -24129,6 +24228,12 @@
         }
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
+          if (cognitionKeysOnRow[k] || cognitionKeysOnRow[lowerK]) {
+            try {
+              console.log("[PRISM TRACE] cognition field skipped in materials remainder:", k);
+            } catch (_) {}
+            return;
+          }
           if (lowerK === "scenarios" && !scenariosRendered) {
             var scenariosVal = materials[k];
             if (scenariosVal && typeof scenariosVal === "object" && !Array.isArray(scenariosVal)) {
@@ -24323,7 +24428,11 @@
           if (instructionHtml && normalizeComparableText(String(instructionHtml)) !== normalizeComparableText(String(learnerTaskHtml || ""))) {
             parts.push(utilityRenderIconHeading("h4", "Guidance", "guidance", "util-material-heading") + instructionHtml);
           }
-          var materialsHtml = renderMaterialsForActivity(materials);
+          var cognitionHtml = renderCognitionFieldsForActivity(row, cognitionProfile);
+          if (cognitionHtml) {
+            parts.push(cognitionHtml);
+          }
+          var materialsHtml = renderMaterialsForActivity(materials, row);
           if (materialsHtml) {
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
@@ -26031,7 +26140,10 @@
             activityLookup,
             renderOpts.strictCompositionClosure
           );
-          var activitiesHtml = renderLearningActivitiesBlocks(activityRows, { materialsByActivityId: materialsByActivityId });
+          var activitiesHtml = renderLearningActivitiesBlocks(activityRows, {
+            materialsByActivityId: materialsByActivityId,
+            cognitionProfile: renderOpts.cognitionProfile
+          });
           if (!String(activitiesHtml || "").trim()) return "";
           activityFlowState.activitiesDetailRendered = true;
           return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(activityRows.length || 0), "learning_activities") + activitiesHtml + "</section>";
@@ -26179,7 +26291,8 @@
             renderOpts.strictCompositionClosure
           );
           var arrActivitiesHtml = renderLearningActivitiesBlocks(arrActivityRows, {
-            materialsByActivityId: arrayMaterialsByActivityId
+            materialsByActivityId: arrayMaterialsByActivityId,
+            cognitionProfile: renderOpts.cognitionProfile
           });
           if (!String(arrActivitiesHtml || "").trim()) return "";
           arrayFlowState.activitiesDetailRendered = true;
@@ -26466,8 +26579,30 @@
     ].join("");
   }
 
+  function getUtilityCognitionPresentationCss() {
+    return [
+      ".util-cognition{margin:14px 0 16px;padding:12px 14px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}",
+      ".util-cognition__item{margin:0 0 10px}",
+      ".util-cognition__item:last-child{margin-bottom:0}",
+      ".util-cognition__label{font-size:.8rem;font-weight:600;letter-spacing:.02em;color:#475569;margin:0 0 4px}",
+      ".util-cognition__body{font-size:.92rem;line-height:1.55;color:#1e293b}",
+      ".util-cognition__body p:last-child,.util-cognition__body ul:last-child{margin-bottom:0}",
+      ".util-cognition--revision{border-left:3px solid #6366f1}",
+      ".util-cognition--repair{border-left:3px solid #d97706}",
+      ".util-cognition--uncertainty{border-left:3px solid #0891b2}",
+      ".util-cognition--transformation{border-left:3px solid #059669}",
+      ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
+      "@media print{.util-cognition{background:#fff;break-inside:avoid-page;page-break-inside:avoid}}"
+    ].join("");
+  }
+
   function getUtilityPagePresentationCss() {
-    return getUtilityPagePresentationCssV26_2() + getUtilityPagePresentationCssV26_4() + getUtilityPagePresentationCssV26_5();
+    return (
+      getUtilityPagePresentationCssV26_2() +
+      getUtilityPagePresentationCssV26_4() +
+      getUtilityPagePresentationCssV26_5() +
+      getUtilityCognitionPresentationCss()
+    );
   }
 
   function buildUtilityLearningObjectHtml(title, audience, sectionHtmlBlocks, metadataHtmlBlocks) {
@@ -27224,6 +27359,10 @@
         pageSections: pageSectionsForRender,
         strictCompositionClosure: !!pageBodyFromSectionsArray,
         pageProfile: parsed && parsed.page_profile ? String(parsed.page_profile) : "",
+        cognitionProfile:
+          parsed && parsed.metadata && parsed.metadata.cognition_profile && typeof parsed.metadata.cognition_profile === "object"
+            ? parsed.metadata.cognition_profile
+            : null,
         feedbackDisplay:
           parsed && !utilityIsEmptyValue(parsed.feedback_display)
             ? String(parsed.feedback_display)

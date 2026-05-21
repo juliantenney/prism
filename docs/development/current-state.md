@@ -41,6 +41,24 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
+### Sprint 29 — Renderer cognition semantics (**closed**, 2026-05-21)
+
+**Portable pack:** [`docs/development/sprints/2026-05-21-sprint-29-renderer-cognition-semantics/`](sprints/2026-05-21-sprint-29-renderer-cognition-semantics/)
+
+| Entry | Path |
+|-------|------|
+| Closure | [`sprint-29-closure.md`](sprints/2026-05-21-sprint-29-renderer-cognition-semantics/sprint-29-closure.md) |
+| Index | [`sprint-29-index.md`](sprints/2026-05-21-sprint-29-renderer-cognition-semantics/sprint-29-index.md) |
+| Handover | [`HANDOVER.md`](sprints/2026-05-21-sprint-29-renderer-cognition-semantics/HANDOVER.md) |
+
+**Outcome:** Top-level activity-row cognition fields render as `util-cognition*` semantic blocks (29-2). HTML audit complete (29-1). Workflow, generation, composition, and assessment rendering unchanged.
+
+**Residual:** Cognition inside `task_cards` markdown stays generic; row promotion is composition scope (Sprint 28).
+
+**Test floor:** **355** passing.
+
+---
+
 ### Sprint 28 — Pedagogic richness & cognitive engagement architecture (**closed**, 2026-05-21)
 
 **Portable pack:** [`docs/development/sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/)

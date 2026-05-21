@@ -1,0 +1,95 @@
+[
+  {
+    "probe": "R29-P01",
+    "scores": {
+      "D-R1": 1,
+      "D-R2": 2,
+      "D-R3": 0,
+      "D-R4": 1,
+      "D-R5": 0,
+      "D-R6": 2,
+      "D-R7": 0,
+      "D-R8": 2,
+      "D-R9": 1,
+      "D-R10": 2
+    },
+    "metrics": {
+      "htmlLen": 33849,
+      "laHtmlLen": 9225,
+      "acHtmlLen": 1949,
+      "h2Count": 8,
+      "activityBlockCount": 2,
+      "assessmentItemCount": 3,
+      "utilCognitionClass": false,
+      "hasWhatToDo": true,
+      "cognitionMaterialHeadings": false,
+      "cognitionEmbeddedProse": true,
+      "cognitionVisibleAsSemantic": false,
+      "revisionFlowVisible": false,
+      "repairPairVisible": true,
+      "phaseMarkers": 0
+    }
+  },
+  {
+    "probe": "R29-P02",
+    "scores": {
+      "D-R1": 1,
+      "D-R2": 2,
+      "D-R3": 1,
+      "D-R4": 0,
+      "D-R5": 1,
+      "D-R6": 2,
+      "D-R7": 1,
+      "D-R8": 2,
+      "D-R9": 1,
+      "D-R10": 2
+    },
+    "metrics": {
+      "htmlLen": 47553,
+      "laHtmlLen": 20378,
+      "acHtmlLen": 3169,
+      "h2Count": 10,
+      "activityBlockCount": 4,
+      "assessmentItemCount": 18,
+      "utilCognitionClass": false,
+      "hasWhatToDo": true,
+      "cognitionMaterialHeadings": true,
+      "cognitionEmbeddedProse": true,
+      "cognitionVisibleAsSemantic": false,
+      "revisionFlowVisible": true,
+      "repairPairVisible": false,
+      "phaseMarkers": 18
+    }
+  },
+  {
+    "probe": "R29-P07",
+    "scores": {
+      "D-R1": 1,
+      "D-R2": 2,
+      "D-R3": 0,
+      "D-R4": 1,
+      "D-R5": 1,
+      "D-R6": 2,
+      "D-R7": 0,
+      "D-R8": 2,
+      "D-R9": 1,
+      "D-R10": 2
+    },
+    "metrics": {
+      "htmlLen": 43263,
+      "laHtmlLen": 19008,
+      "acHtmlLen": 5297,
+      "h2Count": 9,
+      "activityBlockCount": 12,
+      "assessmentItemCount": 30,
+      "utilCognitionClass": false,
+      "hasWhatToDo": true,
+      "cognitionMaterialHeadings": false,
+      "cognitionEmbeddedProse": true,
+      "cognitionVisibleAsSemantic": false,
+      "revisionFlowVisible": false,
+      "repairPairVisible": true,
+      "phaseMarkers": 0
+    }
+  }
+]

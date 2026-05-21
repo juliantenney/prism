@@ -41,7 +41,29 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 27 — Assessment & feedback elicitation semantics (**active**, 2026-05-21)
+### Sprint 28 — Pedagogic richness & cognitive engagement architecture (**closed**, 2026-05-21)
+
+**Portable pack:** [`docs/development/sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/)
+
+| Entry | Path |
+|-------|------|
+| Index | [`sprint-28-index.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/sprint-28-index.md) |
+| Charter | [`sprint-28-charter.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/sprint-28-charter.md) |
+| Handover | [`HANDOVER.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/HANDOVER.md) |
+| Evidence matrix | [`pedagogic-richness-evidence-matrix.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/pedagogic-richness-evidence-matrix.md) |
+| Implementation charter | [`slice-28-4-charter.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/slice-28-4-charter.md) (**draft**) |
+
+**Status:** **Closed** after post-5d live validation (P28-01/02/07). Closure: [`sprint-28-closure.md`](sprints/2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/sprint-28-closure.md).
+
+**Delivered:** 28-5a factors/packs → 28-5b topology → 28-5c DLA/GAM contracts → 28-5d composition parity. **350** tests; Sprint 27 assessment semantics preserved.
+
+**28-5e (harness automation):** **Deferred.** Recommended next work: new thematic track (renderer/illustration) or optional governance slice — not further cognition ontology without a new charter.
+
+**Verification floor:** `node --test tests/*.test.js` → **332 passed**.
+
+---
+
+### Sprint 27 — Assessment & feedback elicitation semantics (**complete / stabilised**, 2026-05-21)
 
 **Portable pack:** [`docs/development/sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/)
 
@@ -54,11 +76,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Scope:** Assessment/feedback **elicitation semantics** (E → O → G → C → R). **Investigation complete** (27-1–27-3). **Implementation complete** (27-4a–4f): [`slice-27-4-charter.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/slice-27-4-charter.md), [`CURRENT-STATE.md`](sprints/2026-05-21-sprint-27-assessment-feedback-elicitation-semantics/CURRENT-STATE.md).
 
-**Key question:** How does PRISM model and preserve pedagogical assessment intent — not merely whether it can generate MCQs?
+**Stabilisation (post–27-4f):** Epistemic grounding (facilitator notes ≠ provided source); Design Feedback ordering; assessment item-count extraction; negative assessment intent; post-Sprint-27 observation harness.
 
-**Evidence cases (Sprint 26):** RNA/HCV topology, inflation retrieval quiz, climate misconception discussion.
+**Key question (answered for assessment path):** How does PRISM model and preserve pedagogical assessment intent — not merely whether it can generate MCQs?
 
-**Verification floor:** `node --test tests/*.test.js` → **284 passed**.
+**Verification floor:** `node --test tests/*.test.js` → **311 passed**.
 
 ---
 

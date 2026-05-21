@@ -4921,6 +4921,7 @@
     }
     draft = withMcqDefaultFeedbackScaffold(draft, ctx, optionMap);
     draft = withPageTaskModeScaffold(draft, ctx, optionMap);
+    draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
 
     setInitialPromptFieldValue(draft);
 
@@ -6095,6 +6096,109 @@
     "assessment_interaction_mode"
   ];
 
+  var SPRINT_28_COGNITION_FACTOR_IDS = [
+    "cognitive_engagement_required",
+    "reasoning_revision_required",
+    "misconception_reconciliation_required",
+    "adaptive_scaffolding_required",
+    "productive_uncertainty_required"
+  ];
+
+  var SPRINT_28_COGNITION_OPTIONAL_FACTORS = [
+    {
+      id: "cognitive_engagement_required",
+      label: "Cognitive engagement required",
+      question: "Should materials encode a structured learning process (not only content delivery)?",
+      type: "boolean",
+      default: false
+    },
+    {
+      id: "reasoning_revision_required",
+      label: "Reasoning revision required",
+      question: "Should learners predict, discuss, and revise their reasoning?",
+      type: "boolean",
+      default: false
+    },
+    {
+      id: "misconception_reconciliation_required",
+      label: "Misconception reconciliation required",
+      question: "Should activities confront and reconcile misconceptions with evidence?",
+      type: "boolean",
+      default: false
+    },
+    {
+      id: "adaptive_scaffolding_required",
+      label: "Adaptive scaffolding required",
+      question: "Should materials include contingent scaffolding (hints, if-then guidance)?",
+      type: "boolean",
+      default: false
+    },
+    {
+      id: "productive_uncertainty_required",
+      label: "Productive uncertainty required",
+      question: "Should learners work through uncertainty, conflict, or competing evidence?",
+      type: "boolean",
+      default: false
+    }
+  ];
+
+  var SPRINT_28_COGNITION_PACK_IDS = [
+    "self_study_cognition_pack",
+    "peer_instruction_pack",
+    "misconception_repair_pack",
+    "transcript_transformation_pack"
+  ];
+
+  var SPRINT_28_COGNITION_INTENT_CLASSES = {
+    self_study_cognition_pack: {
+      stepIncludes: ["design_learning_activities", "generate_activity_materials"],
+      detection: {
+        whenAnyResolvedFactorTrue: ["cognitive_engagement_required", "adaptive_scaffolding_required"],
+        whenDeliveryContextAnyOf: ["self_directed", "async"]
+      },
+      stepBiasHints: {
+        preferLeanAssessmentFlow: false,
+        cognitionPack: true
+      }
+    },
+    peer_instruction_pack: {
+      stepIncludes: ["design_learning_activities", "generate_activity_materials"],
+      detection: {
+        whenAnyResolvedFactorTrue: ["reasoning_revision_required"]
+      },
+      stepBiasHints: {
+        preferLeanAssessmentFlow: false,
+        cognitionPack: true
+      }
+    },
+    misconception_repair_pack: {
+      stepIncludes: ["design_learning_activities", "generate_activity_materials"],
+      detection: {
+        whenAnyResolvedFactorTrue: ["misconception_reconciliation_required"]
+      },
+      stepBiasHints: {
+        preferLeanAssessmentFlow: false,
+        cognitionPack: true
+      }
+    },
+    transcript_transformation_pack: {
+      stepIncludes: ["design_learning_activities", "generate_activity_materials"],
+      detection: {
+        whenInputStrategyAnyOf: ["provided_source_content"],
+        whenAnyResolvedFactorTrue: [
+          "cognitive_engagement_required",
+          "misconception_reconciliation_required",
+          "productive_uncertainty_required"
+        ],
+        whenActivitiesRequired: true
+      },
+      stepBiasHints: {
+        preferLeanAssessmentFlow: false,
+        cognitionPack: true
+      }
+    }
+  };
+
   function mergeWorkflowBriefFactorDefinitions(existingList, additions) {
     var existing = Array.isArray(existingList) ? existingList.slice() : [];
     var seen = {};
@@ -6158,13 +6262,29 @@
     return normalized;
   }
 
+  function augmentWorkflowBriefConfigPedagogicCognition(normalized) {
+    if (!normalized || typeof normalized !== "object") return normalized;
+    var classes =
+      normalized.intentClasses && typeof normalized.intentClasses === "object"
+        ? normalized.intentClasses
+        : {};
+    if (!classes.assessment_pack) return normalized;
+    normalized.optionalFactors = mergeWorkflowBriefFactorDefinitions(
+      normalized.optionalFactors,
+      SPRINT_28_COGNITION_OPTIONAL_FACTORS
+    );
+    normalized.intentClasses = Object.assign({}, classes, SPRINT_28_COGNITION_INTENT_CLASSES);
+    return normalized;
+  }
+
   function normalizeWorkflowBriefConfig(raw) {
     var cfg = raw && typeof raw === "object" ? raw : {};
     var qp =
       cfg.questionPolicy && typeof cfg.questionPolicy === "object"
         ? cfg.questionPolicy
         : {};
-    return augmentWorkflowBriefConfigAssessmentSemantics({
+    return augmentWorkflowBriefConfigPedagogicCognition(
+      augmentWorkflowBriefConfigAssessmentSemantics({
       version: String(cfg.version || "1"),
       requiredFactors: Array.isArray(cfg.requiredFactors) ? cfg.requiredFactors : [],
       optionalFactors: Array.isArray(cfg.optionalFactors) ? cfg.optionalFactors : [],
@@ -6202,7 +6322,600 @@
             ? !!qp.askRefinementByDefault
             : true
       }
+    })
+    );
+  }
+
+  function workflowBriefCognitionFactorIsTrue(resolved, explicit, factorId) {
+    var id = String(factorId || "").trim();
+    if (!id) return false;
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    return r[id] === true || e[id] === true;
+  }
+
+  function workflowBriefPedagogicCognitionBlob(base) {
+    var b = base && typeof base === "object" ? base : {};
+    return [
+      b.designIntent || "",
+      b.goal || "",
+      b.inputs || "",
+      b.desiredOutputs || "",
+      b.scopeConstraints || ""
+    ]
+      .join("\n")
+      .toLowerCase();
+  }
+
+  function workflowBriefCognitionPackDetectionMatches(packMeta, resolved, explicit, base) {
+    if (!packMeta || typeof packMeta !== "object") return false;
+    var detection =
+      packMeta.detection && typeof packMeta.detection === "object" ? packMeta.detection : {};
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    var blob = workflowBriefPedagogicCognitionBlob(base);
+    var anyTrue = Array.isArray(detection.whenAnyResolvedFactorTrue)
+      ? detection.whenAnyResolvedFactorTrue
+      : [];
+    if (
+      anyTrue.length &&
+      !anyTrue.some(function (factorId) {
+        return workflowBriefCognitionFactorIsTrue(r, e, factorId);
+      })
+    ) {
+      return false;
+    }
+    var includeRules =
+      detection.whenResolvedFactorsInclude && typeof detection.whenResolvedFactorsInclude === "object"
+        ? detection.whenResolvedFactorsInclude
+        : {};
+    var includeMatch = Object.keys(includeRules).every(function (k) {
+      var expected = includeRules[k];
+      var actual = Object.prototype.hasOwnProperty.call(r, k) ? r[k] : e[k];
+      if (Array.isArray(expected)) {
+        return expected.some(function (v) {
+          return String(actual) === String(v);
+        });
+      }
+      return String(actual) === String(expected);
     });
+    if (Object.keys(includeRules).length && !includeMatch) return false;
+    var deliveryTerms = Array.isArray(detection.whenDeliveryContextAnyOf)
+      ? detection.whenDeliveryContextAnyOf
+      : [];
+    if (deliveryTerms.length) {
+      var delivery = String(r.delivery_context || e.delivery_context || r.delivery_mode || e.delivery_mode || "")
+        .toLowerCase()
+        .trim();
+      if (!deliveryTerms.some(function (v) {
+        return delivery === String(v || "").toLowerCase().trim();
+      })) {
+        return false;
+      }
+    }
+    var inputStrategies = Array.isArray(detection.whenInputStrategyAnyOf)
+      ? detection.whenInputStrategyAnyOf
+      : [];
+    if (inputStrategies.length) {
+      var strategy = String(
+        (base && base.startingArtefact) || r.input_strategy || e.input_strategy || ""
+      ).trim();
+      if (
+        !inputStrategies.some(function (v) {
+          return strategy === String(v || "").trim();
+        })
+      ) {
+        return false;
+      }
+    }
+    if (detection.whenActivitiesRequired === true) {
+      if (!(r.activities_required === true || e.activities_required === true)) return false;
+    }
+    if (anyTrue.length || Object.keys(includeRules).length || deliveryTerms.length) {
+      return true;
+    }
+    if (inputStrategies.length && detection.whenActivitiesRequired === true) {
+      return true;
+    }
+    return false;
+  }
+
+  function resolvePedagogicCognitionPackIds(config, resolved, explicit, base) {
+    var cfg = normalizeWorkflowBriefConfig(config);
+    var classes = cfg.intentClasses && typeof cfg.intentClasses === "object" ? cfg.intentClasses : {};
+    var packs = [];
+    SPRINT_28_COGNITION_PACK_IDS.forEach(function (packId) {
+      var meta = classes[packId];
+      if (!meta) return;
+      if (workflowBriefCognitionPackDetectionMatches(meta, resolved, explicit, base)) {
+        packs.push(packId);
+      }
+    });
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    var blob = workflowBriefPedagogicCognitionBlob(base);
+    if (
+      packs.indexOf("peer_instruction_pack") === -1 &&
+      (workflowBriefCognitionFactorIsTrue(r, e, "reasoning_revision_required") ||
+        (r.peer_instruction_phase &&
+          r.peer_instruction_phase !== "none" &&
+          r.peer_instruction_phase !== ""))
+    ) {
+      packs.push("peer_instruction_pack");
+    }
+    if (
+      packs.indexOf("misconception_repair_pack") === -1 &&
+      workflowBriefCognitionFactorIsTrue(r, e, "misconception_reconciliation_required")
+    ) {
+      packs.push("misconception_repair_pack");
+    }
+    if (
+      packs.indexOf("transcript_transformation_pack") === -1 &&
+      String(r.input_strategy || e.input_strategy || (base && base.startingArtefact) || "").trim() ===
+        "provided_source_content" &&
+      (r.activities_required === true || e.activities_required === true)
+    ) {
+      packs.push("transcript_transformation_pack");
+    }
+    if (
+      packs.indexOf("self_study_cognition_pack") === -1 &&
+      /\b(self[- ]study|solo(?: learning)?|asynchronous(?: cpd)?|cpd resource)\b/.test(blob) &&
+      (workflowBriefCognitionFactorIsTrue(r, e, "cognitive_engagement_required") ||
+        workflowBriefCognitionFactorIsTrue(r, e, "adaptive_scaffolding_required"))
+    ) {
+      packs.push("self_study_cognition_pack");
+    }
+    return packs.filter(function (id, idx, arr) {
+      return arr.indexOf(id) === idx;
+    });
+  }
+
+  function hasPedagogicCognitionIntent(resolved, explicit, base, config) {
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    if (
+      SPRINT_28_COGNITION_FACTOR_IDS.some(function (factorId) {
+        return workflowBriefCognitionFactorIsTrue(r, e, factorId);
+      })
+    ) {
+      return true;
+    }
+    return resolvePedagogicCognitionPackIds(config, r, e, base).length > 0;
+  }
+
+  function resolvePedagogicCognitionOrchestrationSemantics(activePacks, resolved, explicit, base) {
+    var packs = Array.isArray(activePacks) ? activePacks.slice() : [];
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    var prevented = [];
+    if (!packs.length) {
+      return {
+        cognitionTopologyRequired: false,
+        preserveLearningActivityChain: false,
+        cognitionAwareAssessmentFlow: false,
+        preservedCognitionStages: [],
+        cognitionPruningPrevented: prevented
+      };
+    }
+    var preserved = [];
+    var preserveLearningActivityChain = false;
+    var cognitionAwareAssessmentFlow = false;
+    function pushStage(title) {
+      var t = String(title || "").trim();
+      if (!t || preserved.indexOf(t) !== -1) return;
+      preserved.push(t);
+    }
+    function packActive(id) {
+      return packs.indexOf(id) !== -1;
+    }
+    if (packActive("peer_instruction_pack")) {
+      preserveLearningActivityChain = true;
+      cognitionAwareAssessmentFlow = true;
+      pushStage("Define Learning Outcomes");
+      pushStage("Design Learning Activities");
+      pushStage("Generate Activity Materials");
+    }
+    if (packActive("misconception_repair_pack")) {
+      preserveLearningActivityChain = true;
+      cognitionAwareAssessmentFlow = true;
+      pushStage("Define Learning Outcomes");
+      pushStage("Design Learning Activities");
+      pushStage("Generate Activity Materials");
+      pushStage("Construct Learning Sequence");
+    }
+    if (packActive("transcript_transformation_pack")) {
+      preserveLearningActivityChain = true;
+      cognitionAwareAssessmentFlow = true;
+      pushStage("Normalize Content");
+      pushStage("Model Knowledge");
+      pushStage("Define Learning Outcomes");
+      pushStage("Design Learning Activities");
+      pushStage("Generate Activity Materials");
+    }
+    if (packActive("self_study_cognition_pack")) {
+      preserveLearningActivityChain = true;
+      cognitionAwareAssessmentFlow =
+        r.assessment_required === true ||
+        e.assessment_required === true ||
+        cognitionAwareAssessmentFlow;
+      pushStage("Generate Learning Content");
+      pushStage("Design Learning Activities");
+      pushStage("Generate Activity Materials");
+    }
+    return {
+      cognitionTopologyRequired: true,
+      preserveLearningActivityChain: preserveLearningActivityChain,
+      cognitionAwareAssessmentFlow: cognitionAwareAssessmentFlow,
+      preservedCognitionStages: preserved,
+      cognitionPruningPrevented: prevented
+    };
+  }
+
+  var SPRINT_28_COGNITION_PACK_CONTRACT = {
+    peer_instruction_pack: {
+      fields: [
+        { id: "reasoning_revision_prompt", gamLabel: "Reasoning revision" },
+        { id: "initial_position_prompt", gamLabel: "Initial position" },
+        { id: "revision_trigger", gamLabel: "Revision trigger" }
+      ]
+    },
+    misconception_repair_pack: {
+      fields: [
+        { id: "misconception_claim", gamLabel: "Misconception claim" },
+        { id: "reconciliation_prompt", gamLabel: "Reconciliation prompt" },
+        { id: "evidence_contrast", gamLabel: "Evidence contrast" }
+      ]
+    },
+    transcript_transformation_pack: {
+      fields: [
+        { id: "transformation_activity", gamLabel: "Transformation activity" },
+        { id: "source_to_application_prompt", gamLabel: "Source to application" }
+      ]
+    },
+    self_study_cognition_pack: {
+      fields: [
+        { id: "self_explanation_prompt", gamLabel: "Self-explanation" },
+        { id: "transfer_or_application_task", gamLabel: "Transfer or application" }
+      ]
+    }
+  };
+
+  var SPRINT_28_COGNITION_FACTOR_CONTRACT = {
+    adaptive_scaffolding_required: {
+      fields: [{ id: "scaffold_hint_sequence", gamLabel: "Scaffold hint sequence", arrayOrString: true }]
+    },
+    productive_uncertainty_required: {
+      fields: [{ id: "uncertainty_tension_prompt", gamLabel: "Uncertainty tension" }]
+    }
+  };
+
+  function isWorkflowStepDesignLearningActivities(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_design_learning_activities" ||
+      title === "design learning activities" ||
+      title.indexOf("design learning activit") !== -1
+    );
+  }
+
+  function isWorkflowStepGenerateActivityMaterials(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_generate_activity_materials" ||
+      title === "generate activity materials" ||
+      title.indexOf("generate activity material") !== -1
+    );
+  }
+
+  function resolvePedagogicCognitionContractRequirements(activePacks, resolved, explicit, config, base) {
+    var packs = Array.isArray(activePacks) ? activePacks.slice() : [];
+    if (!packs.length) {
+      packs = resolvePedagogicCognitionPackIds(config, resolved, explicit, base);
+    }
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    var dlaFieldMap = {};
+    var gamLabelSet = {};
+    packs.forEach(function (packId) {
+      var spec = SPRINT_28_COGNITION_PACK_CONTRACT[packId];
+      if (!spec || !Array.isArray(spec.fields)) return;
+      spec.fields.forEach(function (field) {
+        if (!field || !field.id) return;
+        dlaFieldMap[field.id] = {
+          id: field.id,
+          packId: packId,
+          gamLabel: field.gamLabel || field.id,
+          arrayOrString: !!field.arrayOrString
+        };
+        if (field.gamLabel) gamLabelSet[field.gamLabel] = true;
+      });
+    });
+    Object.keys(SPRINT_28_COGNITION_FACTOR_CONTRACT).forEach(function (factorId) {
+      if (!workflowBriefCognitionFactorIsTrue(r, e, factorId)) return;
+      var factorSpec = SPRINT_28_COGNITION_FACTOR_CONTRACT[factorId];
+      if (!factorSpec || !Array.isArray(factorSpec.fields)) return;
+      factorSpec.fields.forEach(function (field) {
+        if (!field || !field.id) return;
+        dlaFieldMap[field.id] = {
+          id: field.id,
+          factorId: factorId,
+          gamLabel: field.gamLabel || field.id,
+          arrayOrString: !!field.arrayOrString
+        };
+        if (field.gamLabel) gamLabelSet[field.gamLabel] = true;
+      });
+    });
+    var dlaFields = Object.keys(dlaFieldMap).map(function (key) {
+      return dlaFieldMap[key];
+    });
+    var gamSections = Object.keys(gamLabelSet);
+    if (!packs.length && !dlaFields.length) return null;
+    return {
+      active: true,
+      packIds: packs.slice(),
+      dlaFields: dlaFields,
+      dlaFieldIds: dlaFields.map(function (row) {
+        return row.id;
+      }),
+      gamSections: gamSections,
+      gamSectionLabels: gamSections.slice()
+    };
+  }
+
+  function buildPedagogicCognitionContractPromptBlock(stage, requirements) {
+    if (!requirements || !requirements.active) return "";
+    var stageKey = String(stage || "").toLowerCase();
+    var lines = [
+      "",
+      "Pedagogic cognition contract (auto-applied):",
+      "- Active cognition packs: " + (requirements.packIds || []).join(", ")
+    ];
+    if (stageKey === "dla") {
+      lines.push(
+        "- Each activity in the JSON activities array MUST include these additional cognition fields (non-empty, learner-facing):"
+      );
+      (requirements.dlaFields || []).forEach(function (field) {
+        if (!field || !field.id) return;
+        if (field.arrayOrString) {
+          lines.push(
+            "  - " +
+              field.id +
+              ": string or JSON array of 2–5 short contingent scaffold hints"
+          );
+        } else {
+          lines.push("  - " + field.id);
+        }
+      });
+      lines.push(
+        "- Cognition fields are additive; keep existing required activity schema fields."
+      );
+    } else if (stageKey === "gam") {
+      lines.push(
+        "- For each activity material block, after Facilitator use, add a Cognition cues section:"
+      );
+      (requirements.gamSections || []).forEach(function (label) {
+        lines.push("  - " + label + ": <usable facilitator/learner text>");
+      });
+      lines.push(
+        "- Ground each subsection in matching cognition fields from learning_activities when present."
+      );
+    }
+    return lines.join("\n");
+  }
+
+  function resolvePedagogicCognitionBriefContextForPrompt(context) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var wf = findWorkflowById(String(ctx.workflowId || state.selectedWorkflowId || "").trim());
+    var config = wf
+      ? resolveWorkflowBriefConfigForWorkflow(wf)
+      : normalizeWorkflowBriefConfig(null);
+    var outputSpec =
+      (ctx.workflowOutputSpec && typeof ctx.workflowOutputSpec === "object"
+        ? ctx.workflowOutputSpec
+        : null) ||
+      (wf && wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object"
+        ? wf.workflowOutputSpec
+        : normalizeWorkflowOutputSpec({}));
+    var base = {
+      goal: String(ctx.workflowGoal || outputSpec.goal || (wf && wf.goal) || "").trim(),
+      inputs: String((wf && wf.inputs) || "").trim(),
+      desiredOutputs: String((wf && wf.desiredOutputs) || "").trim(),
+      startingArtefact: String((wf && wf.startingArtefact) || "").trim()
+    };
+    var explicit = extractWorkflowBriefExplicitFactors(
+      Object.assign({ selectedDomains: ["learning-design"] }, base)
+    );
+    var resolved = {};
+    if (
+      wf &&
+      wf.workflowBriefResolution &&
+      wf.workflowBriefResolution.resolvedFactors &&
+      typeof wf.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      resolved = wf.workflowBriefResolution.resolvedFactors;
+    } else {
+      resolved = resolveWorkflowBriefFactors(config, explicit, {}, {}, base).resolved || {};
+    }
+    var packs = resolvePedagogicCognitionPackIds(config, resolved, explicit, base);
+    var contract = resolvePedagogicCognitionContractRequirements(
+      packs,
+      resolved,
+      explicit,
+      config,
+      base
+    );
+    return {
+      config: config,
+      explicit: explicit,
+      resolved: resolved,
+      packs: packs,
+      contract: contract
+    };
+  }
+
+  function applyPedagogicCognitionContractScaffoldToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (/pedagogic cognition contract \(auto-applied\)/i.test(draftBody)) return draftBody;
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    if (!isDla && !isGam) return draftBody;
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var contract = briefCtx && briefCtx.contract ? briefCtx.contract : null;
+    if (!contract || !contract.active) return draftBody;
+    var block = buildPedagogicCognitionContractPromptBlock(isDla ? "dla" : "gam", contract);
+    if (!block) return draftBody;
+    return (draftBody + block).trim();
+  }
+
+  function pedagogicCognitionFieldHasValue(value, arrayOrString) {
+    if (value == null) return false;
+    if (arrayOrString) {
+      if (Array.isArray(value)) return value.length > 0;
+      if (typeof value === "string") {
+        var trimmed = value.trim();
+        if (!trimmed) return false;
+        if (trimmed.charAt(0) === "[") {
+          try {
+            var parsed = JSON.parse(trimmed);
+            return Array.isArray(parsed) && parsed.length > 0;
+          } catch (err) {
+            return true;
+          }
+        }
+        return true;
+      }
+      return false;
+    }
+    return String(value).trim().length > 0;
+  }
+
+  function listPedagogicCognitionFieldsFromDlaOutput(output, requirements) {
+    var req = requirements && requirements.active ? requirements : null;
+    if (!req) return [];
+    var payload = output;
+    if (typeof output === "string") {
+      try {
+        payload = JSON.parse(output);
+      } catch (err) {
+        return [];
+      }
+    }
+    if (!payload || typeof payload !== "object") return [];
+    var activities = Array.isArray(payload.activities) ? payload.activities : [];
+    var found = {};
+    var fieldMeta = {};
+    (req.dlaFields || []).forEach(function (field) {
+      if (field && field.id) fieldMeta[field.id] = field;
+    });
+    activities.forEach(function (activity) {
+      if (!activity || typeof activity !== "object") return;
+      Object.keys(fieldMeta).forEach(function (fieldId) {
+        if (found[fieldId]) return;
+        var meta = fieldMeta[fieldId];
+        if (
+          pedagogicCognitionFieldHasValue(activity[fieldId], meta && meta.arrayOrString)
+        ) {
+          found[fieldId] = true;
+        }
+      });
+    });
+    return Object.keys(found);
+  }
+
+  function listPedagogicCognitionFieldsFromGamText(text, requirements) {
+    var req = requirements && requirements.active ? requirements : null;
+    if (!req) return [];
+    var blob = String(text || "");
+    var found = [];
+    (req.gamSections || []).forEach(function (label) {
+      var escaped = String(label || "")
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      if (new RegExp("(^|\\n)\\s*" + escaped + "\\s*:", "im").test(blob)) {
+        found.push(label);
+      }
+    });
+    return found;
+  }
+
+  function evaluatePedagogicCognitionContractSatisfaction(output, requirements, stage) {
+    var req = requirements && requirements.active ? requirements : null;
+    if (!req) {
+      return {
+        satisfied: true,
+        missingFields: [],
+        generatedFields: [],
+        cognitionContractSatisfied: true
+      };
+    }
+    var stageKey = String(stage || "").toLowerCase();
+    var generated = [];
+    var missing = [];
+    if (stageKey === "dla") {
+      var fieldMeta = {};
+      (req.dlaFields || []).forEach(function (field) {
+        if (field && field.id) fieldMeta[field.id] = field;
+      });
+      generated = listPedagogicCognitionFieldsFromDlaOutput(output, req);
+      Object.keys(fieldMeta).forEach(function (fieldId) {
+        if (generated.indexOf(fieldId) === -1) missing.push(fieldId);
+      });
+    } else if (stageKey === "gam") {
+      generated = listPedagogicCognitionFieldsFromGamText(output, req);
+      (req.gamSections || []).forEach(function (label) {
+        if (generated.indexOf(label) === -1) missing.push(label);
+      });
+    }
+    return {
+      satisfied: missing.length === 0,
+      missingFields: missing,
+      generatedFields: generated,
+      cognitionContractSatisfied: missing.length === 0
+    };
+  }
+
+  var COGNITION_PAGE_CANONICAL_SECTION_ORDER = [
+    "overview",
+    "learning_purpose",
+    "knowledge_summary",
+    "learning_sequence",
+    "learning_activities",
+    "assessment_check",
+    "support_notes",
+    "study_tips"
+  ];
+
+  function resolvePedagogicCognitionCompositionSemantics(activePacks, contract, resolved, explicit, base, config) {
+    var packs = Array.isArray(activePacks) ? activePacks.slice() : [];
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = explicit && typeof explicit === "object" ? explicit : {};
+    var contractActive = contract && contract.active;
+    var cognitionCompositionActive =
+      contractActive ||
+      packs.length > 0 ||
+      hasPedagogicCognitionIntent(r, e, base, config);
+    if (!cognitionCompositionActive) {
+      return {
+        cognitionCompositionActive: false,
+        cognitionActivityPriority: false,
+        preserveCognitionAdjacency: false,
+        cognitionSectionRequired: false
+      };
+    }
+    return {
+      cognitionCompositionActive: true,
+      cognitionActivityPriority: true,
+      preserveCognitionAdjacency: true,
+      cognitionSectionRequired:
+        r.activities_required === true ||
+        e.activities_required === true ||
+        packs.length > 0
+    };
   }
 
   function getWorkflowBriefDisclosureMessage(config, disclosureId) {
@@ -7594,6 +8307,87 @@
       out.activities_required = true;
     }
 
+    function cognitionCueIsNegated(text, matchIndex) {
+      var start = Math.max(0, matchIndex - 72);
+      var windowText = String(text || "").slice(start, matchIndex);
+      return (
+        /\b(?:no|without|not)\s+$/i.test(windowText) ||
+        /\b(?:do\s+not|don'?t|must\s+not|should\s+not)\s+(?:ask|tell|require|include)?\s*$/i.test(
+          windowText
+        )
+      );
+    }
+    function blobHasCognitionCue(text, patternSource) {
+      var src = String(text || "");
+      if (!src) return false;
+      var re = new RegExp(patternSource, "gi");
+      var match;
+      while ((match = re.exec(src))) {
+        if (cognitionCueIsNegated(src, match.index)) continue;
+        var pre = src.slice(Math.max(0, match.index - 64), match.index);
+        if (/\b(?:do\s+not|don'?t)\s+(?:ask|tell|require|have)\b/i.test(pre)) continue;
+        return true;
+      }
+      return false;
+    }
+    if (
+      blobHasCognitionCue(
+        blob,
+        "\\b(revise (?:your )?answers?|reasoning revision|change (?:your )?mind|update (?:your )?(?:prediction|answer)s?)\\b"
+      ) ||
+      /\b(predict(?:ion)?\s+.{0,80}discuss\s+.{0,80}revise)\b/.test(blob) ||
+      (out.peer_instruction_phase && out.peer_instruction_phase !== "none")
+    ) {
+      out.reasoning_revision_required = true;
+      out.activities_required = true;
+    }
+    if (
+      blobHasCognitionCue(
+        blob,
+        "\\b(misconceptions?|false claims?|myths?|common errors?|incorrect beliefs?)\\b"
+      ) &&
+      /\b(confront|challenge|reconcile|correct|evidence|diagnostic|discuss)\b/.test(blob)
+    ) {
+      out.misconception_reconciliation_required = true;
+    } else if (
+      out.misconception_assessment_link === true ||
+      out.assessment_interaction_mode === "diagnostic_misconception"
+    ) {
+      if (activityCueRe.test(blob)) out.misconception_reconciliation_required = true;
+    }
+    if (
+      blobHasCognitionCue(
+        blob,
+        "\\b(conflicting evidence|uncertain(?:ty)?|ambigu(?:ous|ity)|debate|disagree|competing (?:explanations?|models?))\\b"
+      )
+    ) {
+      out.productive_uncertainty_required = true;
+    }
+    if (
+      blobHasCognitionCue(
+        blob,
+        "\\b(step[- ]by[- ]step hints?|if learners? (?:struggle|are stuck|get stuck)|contingent (?:prompts?|moves?)|scaffold(?:ing)? (?:ladder|steps?)|escalat(?:e|ing) hints?)\\b"
+      )
+    ) {
+      out.adaptive_scaffolding_required = true;
+    }
+    if (
+      blobHasCognitionCue(
+        blob,
+        "\\b(cognitive engagement|learning experience|pedagogic(?:ally)? (?:rich|intelligent)|dialogic (?:learning|activity)|learning process)\\b"
+      ) ||
+      (activityCueRe.test(blob) &&
+        /\b(scaffold|misconception|revise answers?|uncertain|conflict|self[- ]explain)\b/.test(blob))
+    ) {
+      out.cognitive_engagement_required = true;
+    }
+    if (
+      /\b(self[- ]study|solo(?: learning)?|asynchronous(?: cpd)?|cpd resource)\b/.test(blob) &&
+      !/\b(revision page|revise (?:your )?answers?)\b/.test(blob)
+    ) {
+      out.delivery_mode = "async";
+    }
+
     function parseCountToken(token) {
       var t = String(token || "").trim().toLowerCase();
       if (!t) return NaN;
@@ -7830,7 +8624,9 @@
       "peer_instruction_phase",
       "misconception_assessment_link",
       "design_feedback_required"
-    ].forEach(function (id) {
+    ]
+      .concat(SPRINT_28_COGNITION_FACTOR_IDS)
+      .forEach(function (id) {
       if (
         Object.prototype.hasOwnProperty.call(explicit, id) &&
         explicit[id] !== "" &&
@@ -10549,7 +11345,17 @@
       h.explicitBriefFactors && typeof h.explicitBriefFactors === "object"
         ? h.explicitBriefFactors
         : {};
+    var heuristicBriefConfig =
+      h.workflowBriefConfig && typeof h.workflowBriefConfig === "object"
+        ? h.workflowBriefConfig
+        : {};
     var selectedStartingArtefact = String(h.startingArtefact || "").toLowerCase().trim();
+    var cognitionTraceBase = {
+      goal: String(h.goal || ""),
+      inputs: String(h.inputs || ""),
+      desiredOutputs: String(h.desiredOutputs || ""),
+      startingArtefact: selectedStartingArtefact
+    };
     // IMPORTANT: explicit session-material overrides must come only from
     // explicitly captured brief inputs, not resolved/default values.
     var explicitSessionMaterials = Array.isArray(explicitBriefFactors.session_materials)
@@ -10692,7 +11498,6 @@
     var explicitActivityPedagogyRequested = hasIntent(
       /\b(learning activit(?:y|ies)|activit(?:y|ies)|practice(?:\s+tasks?)?|exercises?|worksheets?|learner tasks?|reflection(?:\s+prompts?)?|discussion prompts?)\b/
     );
-    var activitiesRequired = activitiesRequiredFactor || explicitActivityPedagogyRequested;
     function briefRequestsPageDelivery() {
       var mats = []
         .concat(
@@ -10717,12 +11522,56 @@
       hasIntent(
         /\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing|learner-facing|content page|readable page|online module page)\b/
       );
+    var pedagogicCognitionIntent = hasPedagogicCognitionIntent(
+      resolvedBriefFactors,
+      explicitBriefFactors,
+      cognitionTraceBase,
+      heuristicBriefConfig
+    );
+    var activeCognitionPacks = resolvePedagogicCognitionPackIds(
+      heuristicBriefConfig,
+      resolvedBriefFactors,
+      explicitBriefFactors,
+      cognitionTraceBase
+    );
+    var cognitionOrchestration = resolvePedagogicCognitionOrchestrationSemantics(
+      activeCognitionPacks,
+      resolvedBriefFactors,
+      explicitBriefFactors,
+      cognitionTraceBase
+    );
+    var cognitionContractRequirements = resolvePedagogicCognitionContractRequirements(
+      activeCognitionPacks,
+      resolvedBriefFactors,
+      explicitBriefFactors,
+      heuristicBriefConfig,
+      cognitionTraceBase
+    );
+    var cognitionTopologyRequired = cognitionOrchestration.cognitionTopologyRequired === true;
+    if (
+      cognitionTopologyRequired &&
+      activeCognitionPacks.indexOf("transcript_transformation_pack") !== -1
+    ) {
+      activitiesRequiredFactor = true;
+    }
+    if (
+      cognitionTopologyRequired &&
+      activeCognitionPacks.indexOf("peer_instruction_pack") !== -1
+    ) {
+      activitiesRequiredFactor = true;
+    }
+    var activitiesRequired =
+      activitiesRequiredFactor || explicitActivityPedagogyRequested;
+    if (cognitionOrchestration.cognitionAwareAssessmentFlow === true) {
+      discussionOrientedAssessmentWorkflow = true;
+    }
     var leanAssessmentItemIntent =
       assessmentItemsRequested &&
       explicitItemBankOrMcqRequested &&
       !assessmentBlueprintRequested &&
       !explicitPageRequested &&
-      !explicitSessionOrActivityRequested;
+      !explicitSessionOrActivityRequested &&
+      !pedagogicCognitionIntent;
     // Normalize plain "formative assessment" requests onto the same lean
     // default path as assessment-pack intent, unless the user explicitly
     // asks for page/session/activity/blueprint/rubric or MCQ-item-bank-only.
@@ -10733,7 +11582,8 @@
       !explicitPageRequested &&
       !explicitSessionOrActivityRequested &&
       !explicitItemBankOrMcqRequested &&
-      !activitiesRequired;
+      !activitiesRequired &&
+      !pedagogicCognitionIntent;
     var hasTimedSessionCue = hasIntent(
       /\b(\d{1,3}\s*[- ]?(?:minute|min)\b|timed session|timed workshop|timed seminar|60[- ]?minute|90[- ]?minute)\b/
     );
@@ -10752,7 +11602,9 @@
     ) ||
       /\blearning_sequence\b/.test(desiredOutputsText) ||
       (hasSessionDeliveryCue && hasTimedSessionCue) ||
-      (hasSessionDeliveryCue && (hasActivityFlowCue || draftHasActivitiesStep));
+      (hasSessionDeliveryCue && (hasActivityFlowCue || draftHasActivitiesStep)) ||
+      (cognitionTopologyRequired &&
+        activeCognitionPacks.indexOf("misconception_repair_pack") !== -1);
     // Workshop delivery guardrail:
     // when the brief clearly asks for a timed live session with activities and
     // assessment, prefer the richer pedagogical chain over thin item/page paths.
@@ -11349,6 +12201,21 @@
           if (!exists) out.steps.push({ title: canonical, role: "" });
         });
       }
+      if (cognitionTopologyRequired) {
+        cognitionOrchestration.preservedCognitionStages.forEach(function (stageTitle) {
+          var canonical = canonicalizeFromPolicy(stageTitle);
+          if (!canonical) return;
+          var exists = out.steps.some(function (s) {
+            return String((s && s.title) || "").toLowerCase() === String(canonical).toLowerCase();
+          });
+          if (!exists) {
+            out.steps.push({ title: canonical, role: "" });
+            cognitionOrchestration.cognitionPruningPrevented.push(
+              "inject:" + String(canonical)
+            );
+          }
+        });
+      }
       if (explicitDeliveryOverride) {
         var allowed = {};
         requestedDeliverySteps.forEach(function (t) {
@@ -11448,7 +12315,8 @@
       if (
         leanAssessmentItemIntent &&
         explicitItemBankOrMcqRequested &&
-        !selectedStartingArtefact
+        !selectedStartingArtefact &&
+        !cognitionTopologyRequired
       ) {
         providedArtefacts.learning_outcomes = true;
       }
@@ -11678,6 +12546,15 @@
           explicitlyRequiredStepSet[k] = true;
         });
       }
+      if (cognitionTopologyRequired && cognitionOrchestration.preserveLearningActivityChain) {
+        var cognitionProtectedSet = collectRequiredStepsClosure(
+          cognitionOrchestration.preservedCognitionStages
+        );
+        Object.keys(cognitionProtectedSet).forEach(function (k) {
+          explicitlyRequiredStepSet[k] = true;
+        });
+        cognitionOrchestration.cognitionPruningPrevented.push("protect:activity_chain");
+      }
 
       // Optional-step pruning from explicit intent signals.
       out.steps = out.steps.filter(function (s) {
@@ -11724,7 +12601,11 @@
           title === "construct learning sequence" &&
           !sequenceRequested &&
           !selfDirectedPageNeedsSequence &&
-          !workshopRichWorkflowIntent
+          !workshopRichWorkflowIntent &&
+          !(
+            cognitionTopologyRequired &&
+            activeCognitionPacks.indexOf("misconception_repair_pack") !== -1
+          )
         ) {
           return false;
         }
@@ -11733,6 +12614,7 @@
         if (
           leanAssessmentItemIntent &&
           !activitiesRequired &&
+          !pedagogicCognitionIntent &&
           (
             title === "define learning outcomes" ||
             title === "design learning activities" ||
@@ -11748,6 +12630,7 @@
         if (
           formativeAssessmentPackDefaultIntent &&
           !activitiesRequired &&
+          !pedagogicCognitionIntent &&
           (
             title === "design learning activities" ||
             title === "generate activity materials" ||
@@ -11768,7 +12651,19 @@
         stepsAfterPruning: out.steps.map(function (s) {
           return String((s && s.title) || "");
         }),
-        leanAssessmentItemIntent: !!leanAssessmentItemIntent
+        leanAssessmentItemIntent: !!leanAssessmentItemIntent,
+        pedagogicCognitionIntent: !!pedagogicCognitionIntent,
+        activeCognitionPacks: activeCognitionPacks,
+        cognitionTopologyRequired: !!cognitionTopologyRequired,
+        preserveLearningActivityChain: cognitionOrchestration.preserveLearningActivityChain,
+        cognitionAwareAssessmentFlow: cognitionOrchestration.cognitionAwareAssessmentFlow,
+        preservedCognitionStages: cognitionOrchestration.preservedCognitionStages,
+        cognitionPruningPrevented: cognitionOrchestration.cognitionPruningPrevented,
+        cognitionContractRequirements: cognitionContractRequirements
+          ? cognitionContractRequirements.dlaFieldIds
+          : [],
+        generatedCognitionFields: [],
+        cognitionContractSatisfied: null
       });
 
       // Enforce precedence rules.
@@ -25684,6 +26579,368 @@
     return /\b(learning[_\s-]?activities|workshop[_\s-]?activities)\b/.test(heading);
   }
 
+  function pageSectionCanonicalKind(section) {
+    if (!section || typeof section !== "object") return "";
+    var sid = String(section.section_id || section.id || "")
+      .toLowerCase()
+      .trim()
+      .replace(/[\s-]+/g, "_");
+    var heading = String(section.heading || section.title || section.name || "")
+      .toLowerCase()
+      .trim();
+    if (sid === "learning_activities" || sid === "learning_activity") return "learning_activities";
+    if (sid === "assessment_check") return "assessment_check";
+    if (sid === "overview") return "overview";
+    if (sid === "learning_purpose") return "learning_purpose";
+    if (sid === "knowledge_summary") return "knowledge_summary";
+    if (sid === "learning_sequence") return "learning_sequence";
+    if (sid === "support_notes") return "support_notes";
+    if (sid === "study_tips" || sid === "study_tip") return "study_tips";
+    if (sid === "metadata" || sid === "production_metadata") return "metadata";
+    if (!sid || /^section_\d+$/.test(sid)) {
+      if (/\b(learning[_\s-]?activities|workshop[_\s-]?activities)\b/.test(heading)) {
+        return "learning_activities";
+      }
+      if (/\b(study[_\s-]?tips?)\b/.test(heading)) return "study_tips";
+      if (
+        /\b(assessment[_\s-]?(items|check)|formative[_\s-]?(assessment|check)|mcq|quiz)\b/.test(
+          heading
+        )
+      ) {
+        return "assessment_check";
+      }
+      if (/\b(learning[_\s-]?purpose|learning[_\s-]?outcomes?)\b/.test(heading)) {
+        return "learning_purpose";
+      }
+      if (/\b(knowledge[_\s-]?summary|key[_\s-]?concepts?)\b/.test(heading)) {
+        return "knowledge_summary";
+      }
+      if (/\b(learning[_\s-]?sequence|session plan|timeline)\b/.test(heading)) {
+        return "learning_sequence";
+      }
+      if (/\b(support|facilitator notes?)\b/.test(heading)) return "support_notes";
+      if (/\b(overview|introduction)\b/.test(heading)) return "overview";
+    }
+    return sid || "other";
+  }
+
+  function normalizePageSectionIdsForCognition(sections) {
+    return (Array.isArray(sections) ? sections : []).map(function (section) {
+      if (!section || typeof section !== "object") return section;
+      var kind = pageSectionCanonicalKind(section);
+      if (!kind || kind === "other" || kind === "metadata") return section;
+      var next = Object.assign({}, section);
+      next.section_id = kind;
+      return next;
+    });
+  }
+
+  function reorderPageSectionsForCognitionParity(sections, semantics) {
+    var list = Array.isArray(sections) ? sections.slice() : [];
+    if (!semantics || !semantics.cognitionActivityPriority || list.length < 2) return list;
+    var orderIndex = {};
+    COGNITION_PAGE_CANONICAL_SECTION_ORDER.forEach(function (id, idx) {
+      orderIndex[id] = idx;
+    });
+    var wrapped = list.map(function (section, index) {
+      return { section: section, index: index };
+    });
+    wrapped.sort(function (a, b) {
+      var ka = pageSectionCanonicalKind(a.section);
+      var kb = pageSectionCanonicalKind(b.section);
+      var ia = Object.prototype.hasOwnProperty.call(orderIndex, ka) ? orderIndex[ka] : 50;
+      var ib = Object.prototype.hasOwnProperty.call(orderIndex, kb) ? orderIndex[kb] : 50;
+      if (ia !== ib) return ia - ib;
+      return a.index - b.index;
+    });
+    return wrapped.map(function (row) {
+      return row.section;
+    });
+  }
+
+  function normalizeUpstreamActivitiesContentForPage(upstream) {
+    if (!upstream) return null;
+    if (Array.isArray(upstream.activities)) return upstream.activities.slice();
+    if (Array.isArray(upstream)) return upstream.slice();
+    if (upstream && typeof upstream === "object" && Array.isArray(upstream.content)) {
+      return upstream.content.slice();
+    }
+    return null;
+  }
+
+  function ensureCognitionLearningActivitiesSection(page, upstream) {
+    if (!page || !Array.isArray(page.sections)) return false;
+    var hasSection = page.sections.some(function (section) {
+      return pageSectionCanonicalKind(section) === "learning_activities";
+    });
+    if (hasSection) return false;
+    var rows = normalizeUpstreamActivitiesContentForPage(upstream);
+    if (!rows || !rows.length) return false;
+    page.sections.push({
+      section_id: "learning_activities",
+      heading: "Learning Activities",
+      content: rows
+    });
+    return true;
+  }
+
+  function mergeUpstreamCognitionFieldsIntoPageActivities(page, upstream, contract) {
+    if (!page || !Array.isArray(page.sections) || !contract || !contract.active) return 0;
+    var fieldIds = Array.isArray(contract.dlaFieldIds) ? contract.dlaFieldIds : [];
+    if (!fieldIds.length) return 0;
+    var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
+    var upstreamById = {};
+    upstreamRows.forEach(function (row) {
+      if (!row || typeof row !== "object") return;
+      var key = pageActivityIdKey(
+        row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+      );
+      if (key) upstreamById[key] = row;
+    });
+    var mergedCount = 0;
+    page.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      var rows = [];
+      var wrapObject = false;
+      if (Array.isArray(content)) rows = content;
+      else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        rows = content.activities;
+        wrapObject = true;
+      } else return;
+      rows.forEach(function (row) {
+        if (!row || typeof row !== "object") return;
+        var key = pageActivityIdKey(
+          row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+        );
+        var upstreamRow = key ? upstreamById[key] : null;
+        if (!upstreamRow) return;
+        fieldIds.forEach(function (fieldId) {
+          var arrayOrString = fieldId === "scaffold_hint_sequence";
+          if (pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString)) return;
+          if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString)) return;
+          row[fieldId] = upstreamRow[fieldId];
+          mergedCount += 1;
+        });
+      });
+      if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
+      else section.content = rows;
+    });
+    return mergedCount;
+  }
+
+  function pageRowAssessmentSignature(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+    if (
+      !(
+        row.item_id ||
+        row.itemId ||
+        row.item_type ||
+        row.stem ||
+        row.proposition ||
+        row.correct_answer ||
+        row.true_false_answer
+      )
+    ) {
+      return "";
+    }
+    return String(
+      row.item_id ||
+        row.itemId ||
+        row.stem ||
+        row.proposition ||
+        row.question ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+  }
+
+  function collectAssessmentSignaturesFromPageSections(sections) {
+    var sigs = {};
+    (Array.isArray(sections) ? sections : []).forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "assessment_check") return;
+      var content = section.content;
+      var rows = [];
+      if (Array.isArray(content)) rows = content;
+      else if (content && Array.isArray(content.items)) rows = content.items;
+      else if (content && typeof content === "object") rows = [content];
+      rows.forEach(function (row) {
+        var sig = pageRowAssessmentSignature(row);
+        if (sig) sigs[sig] = true;
+      });
+    });
+    return sigs;
+  }
+
+  function stripDuplicateAssessmentRowsFromLearningActivities(page) {
+    if (!page || !Array.isArray(page.sections)) return 0;
+    var assessmentSigs = collectAssessmentSignaturesFromPageSections(page.sections);
+    if (!Object.keys(assessmentSigs).length) return 0;
+    var removed = 0;
+    page.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      if (!Array.isArray(content)) return;
+      var filtered = content.filter(function (row) {
+        var sig = pageRowAssessmentSignature(row);
+        if (!sig || !assessmentSigs[sig]) return true;
+        removed += 1;
+        return false;
+      });
+      section.content = filtered;
+    });
+    return removed;
+  }
+
+  function buildCognitionProfileMetadata(briefCtx, semantics) {
+    var ctx = briefCtx && typeof briefCtx === "object" ? briefCtx : {};
+    var packs = Array.isArray(ctx.packs) ? ctx.packs.slice() : [];
+    var contract = ctx.contract && ctx.contract.active ? ctx.contract : null;
+    return {
+      active: !!(semantics && semantics.cognitionCompositionActive),
+      pack_ids: packs,
+      cognition_fields: contract ? contract.dlaFieldIds.slice() : [],
+      cognition_activity_priority: !!(semantics && semantics.cognitionActivityPriority),
+      cognition_section_required: !!(semantics && semantics.cognitionSectionRequired)
+    };
+  }
+
+  function resolveWorkflowBriefContextForPageComposition(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.resolvedFactors && typeof opts.resolvedFactors === "object") {
+      var cfgEarly = normalizeWorkflowBriefConfig(opts.workflowBriefConfig || null);
+      var baseEarly = opts.base && typeof opts.base === "object" ? opts.base : {};
+      var explicitEarly =
+        opts.explicitBriefFactors && typeof opts.explicitBriefFactors === "object"
+          ? opts.explicitBriefFactors
+          : {};
+      var resolvedEarly = opts.resolvedFactors;
+      var packsEarly = resolvePedagogicCognitionPackIds(
+        cfgEarly,
+        resolvedEarly,
+        explicitEarly,
+        baseEarly
+      );
+      var contractEarly = resolvePedagogicCognitionContractRequirements(
+        packsEarly,
+        resolvedEarly,
+        explicitEarly,
+        cfgEarly,
+        baseEarly
+      );
+      return {
+        config: cfgEarly,
+        explicit: explicitEarly,
+        resolved: resolvedEarly,
+        packs: packsEarly,
+        contract: contractEarly,
+        base: baseEarly
+      };
+    }
+    var wf = findWorkflowById(String(opts.workflowId || state.selectedWorkflowId || "").trim());
+    var config = wf
+      ? resolveWorkflowBriefConfigForWorkflow(wf)
+      : normalizeWorkflowBriefConfig(null);
+    var outputSpec =
+      wf && wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object"
+        ? wf.workflowOutputSpec
+        : normalizeWorkflowOutputSpec({});
+    var base = {
+      goal: String(outputSpec.goal || (wf && wf.goal) || "").trim(),
+      inputs: String((wf && wf.inputs) || "").trim(),
+      desiredOutputs: String((wf && wf.desiredOutputs) || "").trim(),
+      startingArtefact: String((wf && wf.startingArtefact) || "").trim()
+    };
+    var explicit = extractWorkflowBriefExplicitFactors(
+      Object.assign({ selectedDomains: ["learning-design"] }, base)
+    );
+    var resolved = {};
+    if (
+      wf &&
+      wf.workflowBriefResolution &&
+      wf.workflowBriefResolution.resolvedFactors &&
+      typeof wf.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      resolved = wf.workflowBriefResolution.resolvedFactors;
+    } else {
+      resolved = resolveWorkflowBriefFactors(config, explicit, {}, {}, base).resolved || {};
+    }
+    var packs = resolvePedagogicCognitionPackIds(config, resolved, explicit, base);
+    var contract = resolvePedagogicCognitionContractRequirements(
+      packs,
+      resolved,
+      explicit,
+      config,
+      base
+    );
+    return {
+      config: config,
+      explicit: explicit,
+      resolved: resolved,
+      packs: packs,
+      contract: contract,
+      base: base
+    };
+  }
+
+  function applyPedagogicCognitionSemanticsToComposedPage(page, options) {
+    if (!page || typeof page !== "object") return page;
+    var opts = options && typeof options === "object" ? options : {};
+    var briefCtx = resolveWorkflowBriefContextForPageComposition(opts);
+    var semantics = resolvePedagogicCognitionCompositionSemantics(
+      briefCtx.packs,
+      briefCtx.contract,
+      briefCtx.resolved,
+      briefCtx.explicit,
+      briefCtx.base,
+      briefCtx.config
+    );
+    if (!semantics.cognitionCompositionActive) return page;
+    var next = JSON.parse(JSON.stringify(page));
+    if (!Array.isArray(next.sections)) next.sections = [];
+    var trace = {
+      cognitionSectionsPreserved: [],
+      cognitionCompositionParity: semantics.cognitionActivityPriority,
+      cognitionActivitySuppressed: false,
+      cognitionAssessmentDominancePrevented: false,
+      cognitionFieldsMerged: 0,
+      duplicateAssessmentRowsRemoved: 0
+    };
+    next.sections = normalizePageSectionIdsForCognition(next.sections);
+    next.sections.forEach(function (section) {
+      var kind = pageSectionCanonicalKind(section);
+      if (kind && kind !== "other" && trace.cognitionSectionsPreserved.indexOf(kind) === -1) {
+        trace.cognitionSectionsPreserved.push(kind);
+      }
+    });
+    var upstream = opts.upstreamLearningActivities;
+    var injected = ensureCognitionLearningActivitiesSection(next, upstream);
+    if (injected) {
+      trace.cognitionAssessmentDominancePrevented = true;
+      trace.cognitionSectionsPreserved.push("learning_activities");
+    }
+    trace.cognitionFieldsMerged = mergeUpstreamCognitionFieldsIntoPageActivities(
+      next,
+      upstream,
+      briefCtx.contract
+    );
+    trace.duplicateAssessmentRowsRemoved = stripDuplicateAssessmentRowsFromLearningActivities(next);
+    if (trace.duplicateAssessmentRowsRemoved > 0) trace.cognitionActivitySuppressed = true;
+    next.sections = reorderPageSectionsForCognitionParity(next.sections, semantics);
+    if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
+    next.metadata.cognition_profile = buildCognitionProfileMetadata(briefCtx, semantics);
+    if (!next.constraints_applied || typeof next.constraints_applied !== "object") {
+      next.constraints_applied = {};
+    }
+    next.constraints_applied.cognition_composition_active = true;
+    if (!next.generation_notes || typeof next.generation_notes !== "object") {
+      next.generation_notes = {};
+    }
+    next.generation_notes.cognition_composition = trace;
+    return next;
+  }
+
   function collectComposedActivityIdsFromPage(page) {
     var ids = [];
     var seen = {};
@@ -25860,10 +27117,22 @@
     return resolveUpstreamLearningActivitiesFromWorkflowCaptures();
   }
 
+  function assignComposedPageMutations(target, source) {
+    if (!target || !source || target === source) return target;
+    Object.keys(source).forEach(function (key) {
+      target[key] = source[key];
+    });
+    return target;
+  }
+
   function applyPageCompositionValidationForCapturedPage(stepLi, rawCapture) {
     var parsed = tryParseWorkflowArtefactJson(rawCapture);
     if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") return null;
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
+    var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
+      upstreamLearningActivities: upstream
+    });
+    assignComposedPageMutations(parsed, nextPage);
     var validation = validatePageActivityClosure(parsed, upstream, {});
     if (validation.outcome === "fail") {
       appendPageCompositionClosureWarnings(parsed, validation);
@@ -25881,6 +27150,14 @@
       opts.upstreamLearningActivities != null
         ? opts.upstreamLearningActivities
         : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+    var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
+      upstreamLearningActivities: upstream,
+      resolvedFactors: opts.resolvedFactors,
+      explicitBriefFactors: opts.explicitBriefFactors,
+      workflowBriefConfig: opts.workflowBriefConfig,
+      base: opts.base
+    });
+    assignComposedPageMutations(parsed, nextPage);
     var validation = validatePageActivityClosure(parsed, upstream, {
       explicitExcludeIds: opts.explicitExcludeIds
     });
@@ -27128,6 +28405,28 @@
     prismTestApi.buildWorkflowBriefStepRelevanceIndex = buildWorkflowBriefStepRelevanceIndex;
     prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
     prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;
+    prismTestApi.resolvePedagogicCognitionPackIds = resolvePedagogicCognitionPackIds;
+    prismTestApi.hasPedagogicCognitionIntent = hasPedagogicCognitionIntent;
+    prismTestApi.resolvePedagogicCognitionOrchestrationSemantics =
+      resolvePedagogicCognitionOrchestrationSemantics;
+    prismTestApi.resolvePedagogicCognitionContractRequirements =
+      resolvePedagogicCognitionContractRequirements;
+    prismTestApi.buildPedagogicCognitionContractPromptBlock =
+      buildPedagogicCognitionContractPromptBlock;
+    prismTestApi.applyPedagogicCognitionContractScaffoldToDraft =
+      applyPedagogicCognitionContractScaffoldToDraft;
+    prismTestApi.evaluatePedagogicCognitionContractSatisfaction =
+      evaluatePedagogicCognitionContractSatisfaction;
+    prismTestApi.listPedagogicCognitionFieldsFromDlaOutput =
+      listPedagogicCognitionFieldsFromDlaOutput;
+    prismTestApi.listPedagogicCognitionFieldsFromGamText =
+      listPedagogicCognitionFieldsFromGamText;
+    prismTestApi.isWorkflowStepDesignLearningActivities =
+      isWorkflowStepDesignLearningActivities;
+    prismTestApi.isWorkflowStepGenerateActivityMaterials =
+      isWorkflowStepGenerateActivityMaterials;
+    prismTestApi.SPRINT_28_COGNITION_FACTOR_IDS = SPRINT_28_COGNITION_FACTOR_IDS.slice();
+    prismTestApi.SPRINT_28_COGNITION_PACK_IDS = SPRINT_28_COGNITION_PACK_IDS.slice();
     prismTestApi.resolveAssessmentPresentationFromBriefFactors =
       resolveAssessmentPresentationFromBriefFactors;
     prismTestApi.applyAssessmentSemanticsToComposedPage = applyAssessmentSemanticsToComposedPage;
@@ -27205,6 +28504,12 @@
       collectActivityIdsFromLearningActivitiesValue;
     prismTestApi.applyPageCompositionValidationForUtilitiesPage =
       applyPageCompositionValidationForUtilitiesPage;
+    prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
+      applyPedagogicCognitionSemanticsToComposedPage;
+    prismTestApi.resolvePedagogicCognitionCompositionSemantics =
+      resolvePedagogicCognitionCompositionSemantics;
+    prismTestApi.resolveWorkflowBriefContextForPageComposition =
+      resolveWorkflowBriefContextForPageComposition;
     window.__PRISM_TEST_API = prismTestApi;
   }
 

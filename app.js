@@ -21366,7 +21366,7 @@
     var has = function (k) {
       return !!lookup[String(k || "").toLowerCase()];
     };
-    if (has("term") && has("definition")) {
+    if ((has("term") || has("concept") || has("key_concept")) && has("definition")) {
       return "term_definition";
     }
     if (has("misconception") && has("clarification")) {
@@ -21404,7 +21404,7 @@
       return !scaffoldingKeys[lower];
     });
     if (meaningfulKeys.length !== 2) return null;
-    var headingKeys = ["title", "name", "term", "heading"];
+    var headingKeys = ["title", "name", "term", "concept", "key_concept", "heading"];
     var bodyKeys = ["content", "body", "description", "definition", "explanation"];
     var lowerToOriginal = {};
     meaningfulKeys.forEach(function (key) {
@@ -21464,14 +21464,16 @@
       );
     }
     if (shape === "term_definition") {
-      var term = clean(obj.term);
+      var term = clean(
+        utilityFirstScalar([obj.term, obj.concept, obj.key_concept, obj.name, obj.title])
+      );
       var definition = clean(obj.definition);
       if (!term || !definition) return "";
       return (
         "<article class=\"util-structured-block\">" +
-          "<" + titleTag + ">" + utilityEscapeHtml(term) + "</" + titleTag + ">" +
-          utilityRenderPrimitive(definition, renderOpts) +
-        "</article>"
+          "<p><strong>" + utilityEscapeHtml(term) + ":</strong> " +
+          utilityRenderMarkdownInline(definition) +
+          "</p></article>"
       );
     }
     if (shape === "misconception_clarification") {
@@ -21705,6 +21707,61 @@
       '" aria-hidden="true"></i>'
     );
   }
+  function utilityRenderDefinitionStyleBlock(term, definition) {
+    var label = String(term == null ? "" : term).trim();
+    var body = String(definition == null ? "" : definition).trim();
+    if (!label && !body) return "";
+    if (label && body) {
+      return (
+        '<article class="util-structured-block"><p><strong>' +
+        utilityEscapeHtml(label) +
+        ":</strong> " +
+        utilityRenderMarkdownInline(body) +
+        "</p></article>"
+      );
+    }
+    if (label) {
+      return '<article class="util-structured-block"><p><strong>' + utilityEscapeHtml(label) + "</strong></p></article>";
+    }
+    return '<article class="util-structured-block"><p>' + utilityRenderMarkdownInline(body) + "</p></article>";
+  }
+  function utilityNormalizeTemplateSeparatorArtefacts(text) {
+    return String(text == null ? "" : text)
+      .replace(/\r\n/g, "\n")
+      .replace(/(?:^|\n)\s*---+\s*(?=\n|$)/g, "\n")
+      .replace(/(^|\n)\s*---+\s*-\s+/gm, "$1")
+      .replace(/^\s*---+\s*-\s+/gm, "")
+      .replace(/\s*---+\s*-\s+/g, " - ");
+  }
+  function utilityNormalizeHeadingCompareText(text) {
+    return String(text == null ? "" : text)
+      .toLowerCase()
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"')
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+  function utilityMaterialHeadingRedundantWithInner(headingLabel, renderedHtml) {
+    var outer = utilityNormalizeHeadingCompareText(headingLabel);
+    if (!outer || !String(renderedHtml || "").trim()) return false;
+    var innerMatch = String(renderedHtml || "").match(
+      /class="util-card-subheading"[^>]*>([\s\S]*?)<\/h[45]>/i
+    );
+    if (!innerMatch) return false;
+    var inner = utilityNormalizeHeadingCompareText(String(innerMatch[1] || "").replace(/<[^>]+>/g, " "));
+    if (!inner) return false;
+    if (inner === outer || outer.indexOf(inner) !== -1 || inner.indexOf(outer) !== -1) return true;
+    var genericMaterialHeadings = {
+      "summary text": true,
+      "comparison prompts": true,
+      "cause effect table": true,
+      "comparison table": true,
+      "timeline template": true,
+      prompts: true,
+      checklist: true
+    };
+    return !!genericMaterialHeadings[outer];
+  }
   function utilityRenderIconHeading(tag, text, materialType, extraClasses) {
     var tn = String(tag || "h4").toLowerCase();
     var cls = String(extraClasses || "").trim();
@@ -21911,7 +21968,9 @@
       ["term", "definition"],
       ["heading", "body"],
       ["heading", "content"],
-      ["concept", "summary"]
+      ["concept", "summary"],
+      ["concept", "definition"],
+      ["name", "definition"]
     ];
     var selectedPair = null;
     pairCandidates.some(function (pair) {
@@ -21942,15 +22001,28 @@
       var extraHtmlForPair = utilityRenderObject(extraObj, depth + 1, renderOpts);
       if (headingText && String(bodyHtmlForPair || "").trim()) {
         if (
-          String(selectedPair.headingKey || "").toLowerCase() === "concept" &&
-          String(selectedPair.bodyKey || "").toLowerCase() === "summary"
+          (String(selectedPair.headingKey || "").toLowerCase() === "concept" &&
+            (String(selectedPair.bodyKey || "").toLowerCase() === "summary" ||
+              String(selectedPair.bodyKey || "").toLowerCase() === "definition")) ||
+          (String(selectedPair.headingKey || "").toLowerCase() === "name" &&
+            String(selectedPair.bodyKey || "").toLowerCase() === "definition") ||
+          (String(selectedPair.headingKey || "").toLowerCase() === "term" &&
+            String(selectedPair.bodyKey || "").toLowerCase() === "definition")
         ) {
-          return (
-            "<article class=\"util-structured-block\">" +
-              "<p><strong>" + utilityEscapeHtml(headingText) + ":</strong> " + bodyHtmlForPair.replace(/^<p>|<\/p>$/g, "") + "</p>" +
-              extraHtmlForPair +
-            "</article>"
-          );
+          var definitionBody =
+            typeof bodyValueForPair === "string" ||
+            typeof bodyValueForPair === "number" ||
+            typeof bodyValueForPair === "boolean"
+              ? String(bodyValueForPair)
+              : utilityFirstScalar([
+                  bodyValueForPair && bodyValueForPair.summary,
+                  bodyValueForPair && bodyValueForPair.definition,
+                  bodyValueForPair && bodyValueForPair.explanation,
+                  bodyValueForPair && bodyValueForPair.description,
+                  bodyValueForPair && bodyValueForPair.content,
+                  bodyValueForPair && bodyValueForPair.body
+                ]);
+          return utilityRenderDefinitionStyleBlock(headingText, definitionBody) + extraHtmlForPair;
         }
         return (
           "<article class=\"util-structured-block\">" +
@@ -21980,7 +22052,13 @@
             ? utilityRenderObject(value, depth + 1, renderOpts)
             : utilityRenderPrimitive(value, renderOpts);
         }
-        if (lowerKey === "description" || lowerKey === "summary" || lowerKey === "body" || lowerKey === "content") {
+        if (
+          lowerKey === "description" ||
+          lowerKey === "summary" ||
+          lowerKey === "definition" ||
+          lowerKey === "body" ||
+          lowerKey === "content"
+        ) {
           var desc = utilityRenderPrimitive(value, renderOpts);
           return desc ? ("<p>" + desc.replace(/^<p>|<\/p>$/g, "") + "</p>") : "";
         }
@@ -22354,27 +22432,83 @@
       return utilityRenderPrimitive(value, renderOpts);
     }
     function renderKnowledgeSummaryBlocks(value) {
-      var rows = Array.isArray(value)
-        ? value
-        : value && typeof value === "object" && Array.isArray(value.items)
-        ? value.items
-        : [];
+      var relationshipsText = "";
+      var rows = [];
+      if (Array.isArray(value)) {
+        rows = value;
+      } else if (value && typeof value === "object") {
+        if (Array.isArray(value.items)) rows = value.items;
+        else if (Array.isArray(value.concepts)) rows = value.concepts;
+        else if (Array.isArray(value.key_concepts)) rows = value.key_concepts;
+        relationshipsText = utilityFirstScalar([
+          value.relationships,
+          value.relationship,
+          value.connections,
+          value.summary_relationships
+        ]);
+        if (!rows.length) {
+          var loneConcept = utilityFirstScalar([
+            value.concept,
+            value.term,
+            value.title,
+            value.name,
+            value.key_concept
+          ]);
+          var loneSummary = utilityFirstScalar([
+            value.summary,
+            value.explanation,
+            value.definition,
+            value.description,
+            value.details,
+            value.content,
+            value.body
+          ]);
+          if (loneConcept || loneSummary) rows = [value];
+        }
+      }
       rows = rows.filter(function (row) { return !utilityIsEmptyValue(row); });
-      if (!rows.length) return "";
-      return rows
-        .map(function (row) {
-          if (!row || typeof row !== "object" || Array.isArray(row)) return "";
-          var concept = firstNonEmpty([row.concept, row.term, row.title, row.name, row.key_concept]);
-          var summary = firstNonEmpty([row.summary, row.explanation, row.definition, row.description, row.details, row.content, row.body]);
-          if (!concept && !summary) return "";
-          if (concept && summary) {
-            return '<article class="util-structured-block"><p><strong>' + utilityEscapeHtml(concept) + ":</strong> " + utilityRenderMarkdownInline(summary) + "</p></article>";
-          }
-          if (concept) return '<article class="util-structured-block"><p><strong>' + utilityEscapeHtml(concept) + "</strong></p></article>";
-          return '<article class="util-structured-block"><p>' + utilityRenderMarkdownInline(summary) + "</p></article>";
-        })
-        .filter(function (x) { return !!x; })
-        .join("");
+      function renderKnowledgeSummaryRow(row) {
+        if (row == null) return "";
+        if (typeof row === "string" || typeof row === "number" || typeof row === "boolean") {
+          var rowText = String(row).trim();
+          if (!rowText) return "";
+          var shapedText = utilityRenderStructuredObjectShape({ content: rowText }, 1, renderOpts);
+          if (shapedText) return shapedText;
+          return utilityRenderMarkdownBlock(rowText) || ("<p>" + utilityRenderMarkdownInline(rowText) + "</p>");
+        }
+        if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+        var shapedRow = utilityRenderStructuredObjectShape(row, 1, renderOpts);
+        if (shapedRow) return shapedRow;
+        var concept = utilityFirstScalar([
+          row.concept,
+          row.term,
+          row.title,
+          row.name,
+          row.key_concept
+        ]);
+        var summary = utilityFirstScalar([
+          row.summary,
+          row.explanation,
+          row.definition,
+          row.description,
+          row.details,
+          row.content,
+          row.body
+        ]);
+        if (!concept && !summary) return "";
+        return utilityRenderDefinitionStyleBlock(concept, summary);
+      }
+      var conceptBlocks = rows.map(renderKnowledgeSummaryRow).filter(function (x) { return !!x; }).join("");
+      var parts = [];
+      if (conceptBlocks) {
+        parts.push("<h3>Concepts</h3>");
+        parts.push(conceptBlocks);
+      }
+      if (relationshipsText) {
+        parts.push("<h3>Relationships</h3>");
+        parts.push("<p>" + utilityRenderMarkdownInline(relationshipsText) + "</p>");
+      }
+      return parts.join("");
     }
     function summarizeOneSentence(text) {
       if (text != null && typeof text === "object") return "";
@@ -23558,9 +23692,67 @@
           if (hint === "analysis_template" || hint === "worksheet_template") hint = "template";
           if (hint === "evaluation_checklist") hint = "checklist";
           if (hint === "discussion_prompts") hint = "prompt_set";
+          function isChecklistHeadingOnlyLine(textLine) {
+            var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*•]\s+/, "");
+            if (!raw || /^(?:--|-|—|___|\.{3})$/.test(raw)) return true;
+            var mdHeading = raw.match(/^#{1,6}\s+(.+)$/);
+            if (mdHeading) {
+              var headingBody = String(mdHeading[1] || "").trim();
+              if (!headingBody) return true;
+              if (/^(?:checklist|evaluation checklist)$/i.test(headingBody)) return true;
+              if (
+                headingBody.length <= 72 &&
+                !/[.!?]/.test(headingBody) &&
+                !/\b(identify|describe|explain|complete|write|read|use|link|provide|apply|compare|discuss|note|list)\b/i.test(
+                  headingBody
+                )
+              ) {
+                return true;
+              }
+              return false;
+            }
+            var labelOnly = raw.match(/^([^:\n]{1,100}):\s*$/);
+            if (labelOnly) {
+              var labelText = String(labelOnly[1] || "")
+                .trim()
+                .replace(/^#{1,6}\s+/, "")
+                .replace(/^\*\*|\*\*$/g, "");
+              if (/^(?:checklist|evaluation checklist)$/i.test(labelText)) return true;
+              if (labelText.length <= 60 && !/[.!?]/.test(labelText)) return true;
+            }
+            return false;
+          }
+          function checklistRowFromPlainLine(rawEntry) {
+            var raw = String(rawEntry == null ? "" : rawEntry).trim();
+            if (!raw || isChecklistHeadingOnlyLine(raw)) return null;
+            var parsed = parseCheckboxItem(raw) || parseCheckboxItem("- " + raw);
+            if (parsed) return parsed;
+            return { token: "☐", text: raw.replace(/^\s*[-*•]\s+/, "") };
+          }
+          function parseCheckboxItem(textLine) {
+            var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*•]\s+/, "");
+            if (!raw || isChecklistHeadingOnlyLine(raw)) return null;
+            var m = raw.match(/^(☐|☑|☒|\[(?: |x|X)\])\s+(.+)$/);
+            if (!m) return null;
+            var token = String(m[1] || "").trim();
+            if (/^\[(x|X)\]$/.test(token)) token = "☑";
+            if (/^\[\s\]$/.test(token)) token = "☐";
+            return { token: token, text: String(m[2] || "").trim() };
+          }
+          function renderCheckboxList(items) {
+            var rows = (Array.isArray(items) ? items : [])
+              .map(function (entry) {
+                if (!entry || !entry.text) return "";
+                return '<li><span class="util-checkbox" aria-hidden="true">' +
+                  utilityEscapeHtml(String(entry.token || "☐")) +
+                  '</span><span>' + utilityRenderMarkdownInline(String(entry.text)) + "</span></li>";
+              })
+              .filter(function (x) { return !!x; });
+            return rows.length ? ('<ul class="util-checkbox-list">' + rows.join("") + "</ul>") : "";
+          }
           function renderPlainStructuredText(rawText, textOpts) {
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
-            var text = String(rawText == null ? "" : rawText).replace(/\r\n?/g, "\n").trim();
+            var text = utilityNormalizeTemplateSeparatorArtefacts(rawText).replace(/\r\n?/g, "\n").trim();
             if (!text) return "";
             text = text.replace(/:\s+-\s+/g, ":\n- ");
             function splitMarkdownTableRow(line) {
@@ -23624,7 +23816,10 @@
               // Label pattern: "Label: - item - item"
               var labelMatch = raw.match(/^([^:\n]{1,220}:)\s*-\s+(.+)$/);
               if (labelMatch) {
-                var labelText = String(labelMatch[1] || "").trim();
+                var labelText = String(labelMatch[1] || "")
+                  .trim()
+                  .replace(/^---+?\s*-\s*/, "")
+                  .replace(/^---+\s*/, "");
                 var labelBody = String(labelMatch[2] || "").trim();
                 var labelItems = labelBody.split(/\s+-\s+/).map(function (x) { return String(x || "").trim(); });
                 var labelList = renderList(labelItems);
@@ -23671,27 +23866,6 @@
               var clean = String(labelText == null ? "" : labelText).trim().replace(/:\s*$/, "");
               if (!clean) return "";
               return '<label class="util-line-label">' + utilityRenderMarkdownInline(clean) + '</label><div class="util-template-note-line" aria-hidden="true"></div>';
-            }
-            function parseCheckboxItem(textLine) {
-              var raw = String(textLine == null ? "" : textLine).trim().replace(/^\s*[-*•]\s+/, "");
-              if (!raw) return null;
-              var m = raw.match(/^(☐|☑|☒|\[(?: |x|X)\])\s+(.+)$/);
-              if (!m) return null;
-              var token = String(m[1] || "").trim();
-              if (/^\[(x|X)\]$/.test(token)) token = "☑";
-              if (/^\[\s\]$/.test(token)) token = "☐";
-              return { token: token, text: String(m[2] || "").trim() };
-            }
-            function renderCheckboxList(items) {
-              var rows = (Array.isArray(items) ? items : [])
-                .map(function (entry) {
-                  if (!entry || !entry.text) return "";
-                  return '<li><span class="util-checkbox" aria-hidden="true">' +
-                    utilityEscapeHtml(String(entry.token || "☐")) +
-                    '</span><span>' + utilityRenderMarkdownInline(String(entry.text)) + "</span></li>";
-                })
-                .filter(function (x) { return !!x; });
-              return rows.length ? ('<ul class="util-checkbox-list">' + rows.join("") + "</ul>") : "";
             }
             function cleanResidualHeadingMarkers(s) {
               return String(s == null ? "" : s)
@@ -23743,6 +23917,19 @@
               if (checkboxLines.length && checkboxLines.length === trimmedLines.length) {
                 html.push(renderCheckboxList(checkboxLines));
                 return;
+              }
+              if (
+                (ro.materialHint === "checklist" || ro.materialHint === "checklists") &&
+                trimmedLines.length &&
+                !checkboxLines.length
+              ) {
+                var checklistItems = trimmedLines
+                  .map(function (ln) { return checklistRowFromPlainLine(ln); })
+                  .filter(function (x) { return !!x; });
+                if (checklistItems.length) {
+                  html.push(renderCheckboxList(checklistItems));
+                  return;
+                }
               }
               var bulletLines = lines
                 .map(function (ln) {
@@ -24107,6 +24294,14 @@
               return typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean";
             });
             if (onlyStrings) {
+              if (hint === "checklist" || hint === "checklists") {
+                var checklistRows = value
+                  .map(function (entry) { return checklistRowFromPlainLine(entry); })
+                  .filter(function (x) { return !!x; });
+                if (checklistRows.length) {
+                  return '<div class="util-checklist-block">' + renderCheckboxList(checklistRows) + "</div>";
+                }
+              }
               var asBlocks = value
                 .map(function (entry) {
                   var raw = String(entry == null ? "" : entry).trim();
@@ -24122,6 +24317,19 @@
             var keys = Object.keys(value).filter(function (k) { return !utilityIsEmptyValue(value[k]); });
             if (!keys.length) return "";
             var valueHeading = firstNonEmpty([value.heading, value.title]);
+            if ((hint === "checklist" || hint === "checklists") && Array.isArray(value.items)) {
+              var topChecklistRows = value.items
+                .map(function (entry) { return checklistRowFromPlainLine(entry); })
+                .filter(function (x) { return !!x; });
+              if (topChecklistRows.length) {
+                var topChecklistHtml =
+                  '<div class="util-checklist-block">' + renderCheckboxList(topChecklistRows) + "</div>";
+                if (valueHeading && !cfg.suppressOwnHeading) {
+                  return "<h5>" + utilityEscapeHtml(String(valueHeading)) + "</h5>" + topChecklistHtml;
+                }
+                return topChecklistHtml;
+              }
+            }
             if (!utilityIsEmptyValue(value.prompt) && Array.isArray(value.options)) {
               var promptHtml = renderPlainStructuredText(value.prompt) || ("<p>" + utilityRenderMarkdownInline(String(value.prompt)) + "</p>");
               var optionsHtml = renderBulletArray(value.options, { plainLabels: true, stripStandaloneBold: true });
@@ -24135,8 +24343,19 @@
                   if (typeof sec === "string") return renderPlainStructuredText(sec);
                   if (!sec || typeof sec !== "object" || Array.isArray(sec)) return "";
                   var secTitle = firstNonEmpty([sec.heading, sec.title, sec.name, sec.label, sec.section]);
-                  var secItems = renderBulletArray(firstNonEmptyRaw([sec.items, sec.prompts, sec.points, sec.lines]), { plainLabels: true, stripStandaloneBold: true });
-                  var secBody = secItems || renderMaterialValue(firstNonEmptyRaw([sec.content, sec.text, sec.body]), "content");
+                  var secLines = firstNonEmptyRaw([sec.items, sec.prompts, sec.points, sec.lines]);
+                  var secBody = "";
+                  if (Array.isArray(secLines)) {
+                    var secChecklistRows = secLines
+                      .map(function (entry) { return checklistRowFromPlainLine(entry); })
+                      .filter(function (x) { return !!x; });
+                    if (secChecklistRows.length) secBody = renderCheckboxList(secChecklistRows);
+                  }
+                  if (!secBody) {
+                    secBody =
+                      renderBulletArray(secLines, { plainLabels: true, stripStandaloneBold: true }) ||
+                      renderMaterialValue(firstNonEmptyRaw([sec.content, sec.text, sec.body]), "content");
+                  }
                   if (!secBody) return "";
                   return (secTitle ? ("<h5>" + utilityEscapeHtml(String(secTitle)) + "</h5>") : "") + secBody;
                 })
@@ -24224,15 +24443,21 @@
                   : "";
                 var forceBulletList =
                   nestedSimpleArray &&
-                  (
-                    (hint === "prompt_set" && lowerNestedKey === "prompts") ||
-                    (hint === "checklist" && lowerNestedKey === "items")
-                  );
-                var inner = forceBulletList
+                  (hint === "prompt_set" && lowerNestedKey === "prompts");
+                var inner = "";
+                if (hint === "checklist" && lowerNestedKey === "items" && nestedSimpleArray) {
+                  var nestedChecklistRows = nestedValue
+                    .map(function (entry) { return checklistRowFromPlainLine(entry); })
+                    .filter(function (x) { return !!x; });
+                  inner = nestedChecklistRows.length ? renderCheckboxList(nestedChecklistRows) : "";
+                }
+                if (!inner) {
+                  inner = forceBulletList
                   ? renderBulletArray(nestedValue)
                   : (nestedHeading
                     ? renderMaterialValue(nestedValue, k, { suppressOwnHeading: true })
                     : renderMaterialValue(nestedValue, k));
+                }
                 if (!String(inner || "").trim()) return "";
                 if (k === "items" || k === "table") return inner;
                 if (lowerNestedKey === "content" && valueHeading) {
@@ -24382,8 +24607,17 @@
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
             checklistHtml = '<div class="util-checklist-block">' + checklistHtml + "</div>";
           }
+          if (checklistHtml && utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)) {
+            checklistHtml = checklistHtml.replace(
+              /<h[45][^>]*class="util-card-subheading"[^>]*>[\s\S]*?<\/h[45]>\s*/i,
+              ""
+            );
+          }
           if (checklistHtml) {
-            parts.push(utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading") + checklistHtml);
+            var checklistHeading = utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)
+              ? ""
+              : utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading");
+            parts.push(checklistHeading + checklistHtml);
             checklistRendered = true;
           }
         }
@@ -24535,7 +24769,9 @@
           }
           var materialTypeKey = utilityMaterialTypeFromKeyHint(k);
           var headingLabel = String(subsectionTitle || prettyMaterialHeading(k));
-          var title = utilityRenderIconHeading("h4", headingLabel, materialTypeKey, "util-material-heading");
+          var title = utilityMaterialHeadingRedundantWithInner(headingLabel, rendered)
+            ? ""
+            : utilityRenderIconHeading("h4", headingLabel, materialTypeKey, "util-material-heading");
           if (String(k || "").toLowerCase() === "table") title = "";
           if (isCardLikeMaterialKey(k)) {
             parts.push('<article class="util-material-card">' + title + rendered + "</article>");

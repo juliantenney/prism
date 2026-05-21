@@ -1,0 +1,60 @@
+{
+  "artifact_type": "page",
+  "title": "Karl Marx: Life, Ideas, and Historical Context",
+  "audience": "Undergraduate (self-directed study)",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key Knowledge Summary",
+      "content": {
+        "concepts": [
+          { "name": "Karl Marx", "definition": "A German thinker whose work critiques capitalism and explains how social and economic systems shape society." },
+          { "name": "Class Struggle", "definition": "Conflict between social classes, especially between those who own production (bourgeoisie) and those who work (proletariat)." },
+          { "name": "Historical Materialism", "definition": "The idea that economic conditions shape historical development and social structures." },
+          { "name": "Alienation", "definition": "The disconnection workers experience from their labour, its products, and their own potential." }
+        ],
+        "relationships": "Capitalism produces class divisions (bourgeoisie vs proletariat). Class divisions lead to class struggle."
+      }
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A3",
+          "title": "Comparing Marx's Major Works",
+          "duration_minutes": 20,
+          "purpose": "Distinguish between Marx's key texts.",
+          "learner_task": "Complete the comparison table using prompts and identify differences and similarities.",
+          "materials": {
+            "comparison_prompts": "### Prompts\n\n- What is the purpose of each work?\n- Who is the audience?\n\n---\n\n- Key Difference: shorter political manifesto\n- Second Difference: longer economic analysis\n- Similarity: both critique capitalism"
+          }
+        },
+        {
+          "activity_id": "A4",
+          "title": "Explaining Marx's Core Concepts",
+          "duration_minutes": 15,
+          "purpose": "Apply Marx's ideas to a real-world scenario.",
+          "learner_task": "Read the scenario and write a short explanation using the checklist.",
+          "materials": {
+            "checklist": [
+              "## Checklist",
+              "Identify capitalism",
+              "Describe bourgeoisie",
+              "Describe proletariat",
+              "Explain class struggle",
+              "Explain alienation",
+              "Link to Industrial Revolution",
+              "Provide final judgement"
+            ],
+            "summary_text": {
+              "heading": "Factory Scenario",
+              "content": "Workers in a London factory work long hours under strict supervision."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

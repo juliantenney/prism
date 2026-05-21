@@ -10,9 +10,9 @@
 
 ---
 
-## Continue here — Track A only (next chat)
+## Continue here — verification & Sprint 27
 
-**Assessment rendering is no longer a blocker.** Track B is **closed** (renderer/export hotfix complete, tests passing). Resume Sprint 26 on **workflow topology / elicitation** for the RNA/HCV case.
+**Track B (assessment render)** and **Track A (workflow topology)** have bounded fixes in `app.js` with regression tests (**259** pass). Next: optional browser re-run of RNA/HCV and climate misconception pages; **Sprint 27** focuses on assessment/feedback **elicitation semantics** (not further renderer cleanup).
 
 ### Primary case (unchanged)
 
@@ -50,7 +50,7 @@ Track B reference (closed): [`context-files/assessment-items-output-trace.md`](c
 
 | Track | Issue | Status |
 |-------|--------|--------|
-| **A** | Missing Generate Learning Activities / Generate Activity Materials despite brief | **Open** — 26-1 primary investigation |
+| **A** | Missing Design Learning Activities / Generate Activity Materials despite brief | **Fixed** — `activities_required`, pack `triggerRules`, pruning guards |
 | **B** | Assessment MCQs missing from rendered/exported HTML | **Closed** — renderer/export hotfix (R26-PI-007, R26-PI-008) |
 
 ---
@@ -88,7 +88,7 @@ Track B reference (closed): [`context-files/assessment-items-output-trace.md`](c
 node --test tests/*.test.js
 ```
 
-**252 passed**, 0 failed (last run 2026-05-20).
+**259 passed**, 0 failed (last run 2026-05-20).
 
 | Item | Path |
 |------|------|
@@ -105,11 +105,13 @@ node --test tests/*.test.js
 
 ---
 
-## Track A — open (workflow topology)
+## Track A — fixed (workflow topology)
 
-Workflow omitted activity/material steps while assessment ran. Failure locus: **elicitation → workflow design → heuristics / pack triggerRules** (see pipeline below).
+Workflow omitted activity/material steps when brief mentioned learning activities **and** formative assessment. Root cause: pack `triggerRules` matched `formative assessment` and **excluded** activity steps; no symmetric `activities_required` factor.
 
-**Open decisions:** D1–D4 in review log (D5–D6 resolved for Track B).
+**Fix (bounded):** `extractWorkflowBriefExplicitFactors` sets `activities_required` / `materials_required`; pack includes activity chain; heuristics protect steps from lean/formative pruning; `tests/workflow-ld-rna-sparse-brief-topology.test.js`.
+
+**Pre–Sprint 27 renderer hotfix (sibling pack):** typed materials on climate misconception page — `tests/utility-ld-climate-misconception-page-render.test.js` (renderer-local only).
 
 ---
 
@@ -156,7 +158,7 @@ Factory brief
 node --test tests/*.test.js
 ```
 
-**252 passed**, 0 failed.
+**259 passed**, 0 failed (includes Track A topology tests + renderer materials hotfix).
 
 ---
 
@@ -175,4 +177,4 @@ When 26-1 completes: propose 26-2 (rules design) and 26-3 (fixtures) in review l
 | Sprint 23 | `assessment_required` gates topology |
 | Sprint 17 | Sparse brief Research lab |
 | Sprint 25 | Page composition when activities exist upstream |
-| Renderer pack (sibling) | Presentation CSS — **paused**, orthogonal to Track B hotfix |
+| Renderer pack (sibling) | Presentation CSS — **paused**; pre–Sprint 27 **typed materials hotfix** in `app.js` (climate misconception fixture, **259** tests) |

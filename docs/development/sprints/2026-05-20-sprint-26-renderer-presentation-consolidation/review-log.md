@@ -173,3 +173,43 @@ Validated against kitchen sink HTML, with inflation full fixture regression:
 | Tests | `tests/utility-renderer-kitchen-sink.test.js` (+2) |
 
 **Pack/runtime delta:** Presentation CSS + assessment HTML classes only. **248** tests passing.
+
+---
+
+## 2026-05-20 — Pre–Sprint 27 hotfix: typed activity materials (climate misconception)
+
+### Root cause
+
+| Issue | Cause |
+|-------|--------|
+| One giant task card for ten claims | `expandTaskCardMaterialEntries` treated bullet-list markdown as a single card body |
+| Analysis template / discussion prompts / checklist as plain bullets | Material keys (`analysis_template`, `discussion_prompts`, `evaluation_checklist`) not mapped to typed render paths in `renderMaterialsForActivity` |
+| `expected_output` hyphen literals in one `<p>` | Output block used `utilityRenderMarkdownInline` only |
+| True/false “Proposition” heading | `proposition` field rendered via generic object heading; no learner-facing True/False options |
+
+### Decision
+
+| ID | Decision | Rationale |
+|----|----------|-----------|
+| R26-007 | **Renderer-local only** — no orchestration, elicitation, or Design Page prompt changes | Hotfix before Sprint 27; composition contracts frozen |
+| R26-008 | `splitTaskCardBulletClaims` for bullet/numbered claim lists without `## Card N` headings | Matches climate misconception page artefact shape |
+| R26-009 | Explicit handlers + hint aliases for typed material keys | Bounded fix; avoids broad object walker rewrite |
+| R26-010 | `isTrueFalseLikeRow` + `util-true-false-options`; suppress answers when `feedback_display: none` | Learner-facing layout without semantics redesign |
+
+### Changed files
+
+| File | Change |
+|------|--------|
+| `app.js` | `splitTaskCardBulletClaims`, material routing, output block markdown, true/false assessment branch |
+| `tests/fixtures/page-render/ld-climate-misconception-discussion-page.json` | Regression fixture |
+| `tests/utility-ld-climate-misconception-page-render.test.js` | 3 assertions |
+
+### Verification
+
+```bash
+node --test tests/*.test.js
+```
+
+**259 passed**, 0 failed.
+
+**Sprint 27** scope remains assessment/feedback **elicitation semantics**, not further renderer cleanup.

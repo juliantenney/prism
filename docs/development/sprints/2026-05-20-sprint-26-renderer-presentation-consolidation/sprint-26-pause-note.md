@@ -11,7 +11,25 @@
 node --test tests/*.test.js
 ```
 
-**248 tests passing**, 0 failed.
+**259 tests passing**, 0 failed (includes pre–Sprint 27 climate misconception materials hotfix).
+
+---
+
+## Pre–Sprint 27 hotfix (2026-05-20) — typed activity materials
+
+**Scope:** renderer-local only (`app.js`); no orchestration, elicitation, or pack prompt changes.
+
+| Symptom | Cause | Fix |
+|---------|--------|-----|
+| Ten misconception claims in one task card | `expandTaskCardMaterialEntries` did not split bullet-list `task_cards` strings | `splitTaskCardBulletClaims` → one `.util-task-card` per claim |
+| `analysis_template` / `discussion_prompts` / `evaluation_checklist` flattened | Keys not routed to typed render paths; pack lean rules N/A | Explicit material handlers + hint aliases |
+| `expected_output` literal hyphen text | Inline-only markdown in output block | `utilityRenderMarkdownBlock` for output body |
+| True/false “Proposition” heading | `proposition` leaked via generic object shape | `isTrueFalseLikeRow` + True/False options; hide answer when `feedback_display: none` |
+
+**Fixture:** `tests/fixtures/page-render/ld-climate-misconception-discussion-page.json`  
+**Tests:** `tests/utility-ld-climate-misconception-page-render.test.js` (3)
+
+**Sprint 27** remains focused on assessment/feedback **elicitation semantics**, not further renderer cleanup.
 
 ---
 
@@ -75,7 +93,7 @@ No slice is chartered for 26-6 until explicitly opened.
 
 ## Resume here
 
-1. Run `node --test tests/*.test.js` (expect **248** pass).
+1. Run `node --test tests/*.test.js` (expect **259** pass).
 2. Complete manual checks above if not already done.
 3. Charter **26-6** or close Sprint 26 after sign-off.
 

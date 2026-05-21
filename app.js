@@ -7293,6 +7293,12 @@
     var mcqTypeCueRe = /\b(mcq|mcqs|multiple[ -]?choice(?:\s+questions?)?)\b/;
     if (/\b(quiz|assessment|test)\b/.test(blob) || mcqTypeCueRe.test(blob)) out.assessment_required = true;
     if (/\b(no assessment|without assessment)\b/.test(blob)) out.assessment_required = false;
+    var activityCueRe =
+      /\b(learning activit(?:y|ies)|short activit(?:y|ies)|activit(?:y|ies)|practice(?:\s+tasks?)?|exercises?|worksheets?|learner tasks?|reflection(?:\s+prompts?)?|discussion prompts?)\b/;
+    if (activityCueRe.test(blob)) out.activities_required = true;
+    if (/\b(no activit|without activit|no learning tasks?|without learning tasks?)\b/.test(blob)) {
+      out.activities_required = false;
+    }
     // Priority: assessment > facilitator > learner
     if (/\b(assessment page|assessment pack|quiz pack|quiz|mcq|mcqs|multiple choice|knowledge check|formative question|formative questions|assessment document|assessment booklet|tutor assessment|marking guidance)\b/.test(blob)) {
       out.page_profile = "assessment";
@@ -7394,6 +7400,17 @@
     if (!Array.isArray(out.session_materials) || !out.session_materials.length) {
       var mats = extractSessionMaterialsFromBriefText(blob);
       if (mats.length) out.session_materials = mats;
+    }
+    var learnerFacingDeliveryCue =
+      /\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing|learner-facing|content page|readable page|online module page)\b/.test(
+        blob
+      );
+    if (
+      out.activities_required === true &&
+      (learnerFacingDeliveryCue ||
+        (Array.isArray(out.session_materials) && out.session_materials.indexOf("page") !== -1))
+    ) {
+      out.materials_required = true;
     }
 
     if (/\b(summary|summarise)\b/.test(blob)) out.objective_type = "summary";
@@ -10171,8 +10188,39 @@
       /\b(learner page|student page|moodle page|vle page|online content page|learner-facing page|student-facing page|content page|readable page)\b/
     );
     var explicitSessionOrActivityRequested = hasIntent(
-      /\b(session|lesson|workshop|class|activities?|tasks?|exercise|learning outcomes?|learning sequence)\b/
+      /\b(session|lesson|workshop|class|learning activit(?:y|ies)|activit(?:y|ies)|tasks?|exercises?|practice|learning outcomes?|learning sequence)\b/
     );
+    var activitiesRequiredFactor =
+      resolvedBriefFactors.activities_required === true ||
+      explicitBriefFactors.activities_required === true;
+    var explicitActivityPedagogyRequested = hasIntent(
+      /\b(learning activit(?:y|ies)|activit(?:y|ies)|practice(?:\s+tasks?)?|exercises?|worksheets?|learner tasks?|reflection(?:\s+prompts?)?|discussion prompts?)\b/
+    );
+    var activitiesRequired = activitiesRequiredFactor || explicitActivityPedagogyRequested;
+    function briefRequestsPageDelivery() {
+      var mats = []
+        .concat(
+          Array.isArray(explicitBriefFactors.session_materials)
+            ? explicitBriefFactors.session_materials
+            : []
+        )
+        .concat(
+          Array.isArray(resolvedBriefFactors.session_materials)
+            ? resolvedBriefFactors.session_materials
+            : []
+        );
+      return mats.some(function (m) {
+        return String(m || "").toLowerCase().trim() === "page";
+      });
+    }
+    var learnerFacingMaterialsRequested =
+      resolvedBriefFactors.materials_required === true ||
+      explicitBriefFactors.materials_required === true ||
+      explicitPageRequested ||
+      briefRequestsPageDelivery() ||
+      hasIntent(
+        /\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing|learner-facing|content page|readable page|online module page)\b/
+      );
     var leanAssessmentItemIntent =
       assessmentItemsRequested &&
       explicitItemBankOrMcqRequested &&
@@ -10188,7 +10236,8 @@
       !explicitRubricRequested &&
       !explicitPageRequested &&
       !explicitSessionOrActivityRequested &&
-      !explicitItemBankOrMcqRequested;
+      !explicitItemBankOrMcqRequested &&
+      !activitiesRequired;
     var hasTimedSessionCue = hasIntent(
       /\b(\d{1,3}\s*[- ]?(?:minute|min)\b|timed session|timed workshop|timed seminar|60[- ]?minute|90[- ]?minute)\b/
     );
@@ -10777,6 +10826,20 @@
           if (!exists) out.steps.push({ title: canonical, role: "" });
         });
       }
+      if (activitiesRequired) {
+        var activityPedagogySteps = ["Define Learning Outcomes", "Design Learning Activities"];
+        if (learnerFacingMaterialsRequested) {
+          activityPedagogySteps.push("Generate Activity Materials");
+        }
+        activityPedagogySteps.forEach(function (title) {
+          var canonical = canonicalizeFromPolicy(title);
+          if (!canonical) return;
+          var exists = out.steps.some(function (s) {
+            return String((s && s.title) || "").toLowerCase() === String(canonical).toLowerCase();
+          });
+          if (!exists) out.steps.push({ title: canonical, role: "" });
+        });
+      }
       if (explicitDeliveryOverride) {
         var allowed = {};
         requestedDeliverySteps.forEach(function (t) {
@@ -11090,6 +11153,16 @@
           explicitlyRequiredStepSet[k] = true;
         });
       }
+      if (activitiesRequired) {
+        var activityChainTargets = ["Design Learning Activities"];
+        if (learnerFacingMaterialsRequested) {
+          activityChainTargets.push("Generate Activity Materials");
+        }
+        var activityProtectedSet = collectRequiredStepsClosure(activityChainTargets);
+        Object.keys(activityProtectedSet).forEach(function (k) {
+          explicitlyRequiredStepSet[k] = true;
+        });
+      }
 
       // Optional-step pruning from explicit intent signals.
       out.steps = out.steps.filter(function (s) {
@@ -11135,6 +11208,7 @@
         // user explicitly asks for page/session/activity scaffolding.
         if (
           leanAssessmentItemIntent &&
+          !activitiesRequired &&
           (
             title === "define learning outcomes" ||
             title === "design learning activities" ||
@@ -11149,6 +11223,7 @@
         }
         if (
           formativeAssessmentPackDefaultIntent &&
+          !activitiesRequired &&
           (
             title === "design learning activities" ||
             title === "generate activity materials" ||
@@ -19989,8 +20064,8 @@
     if (k === "task_cards" || k === "cards") return "task_card";
     if (k === "scenarios" || k === "study_scenarios" || k === "scenario_set") return "scenarios";
     if (k === "prompt_set" || k === "prompts" || k === "discussion_prompts") return "prompt_set";
-    if (k === "checklist" || k === "checklists") return "checklist";
-    if (k === "template" || k === "templates" || k === "worksheet_template") return "template";
+    if (k === "checklist" || k === "checklists" || k === "evaluation_checklist") return "checklist";
+    if (k === "template" || k === "templates" || k === "worksheet_template" || k === "analysis_template") return "template";
     if (k === "analysis_table" || k === "impact_table" || k === "table") return "table";
     if (k === "strategy_options" || k === "options" || k === "strategies") return "strategy";
     return "material";
@@ -20721,6 +20796,8 @@
       if (t === "task_card") return "task_cards";
       if (t === "prompt" || t === "prompts") return "prompt_set";
       if (t === "discussion_prompts" || t === "discussion_prompt" || t === "wrap_up_prompts") return "prompt_set";
+      if (t === "analysis_template" || t === "worksheet_template") return "template";
+      if (t === "evaluation_checklist") return "checklist";
       if (t === "analysis_table" || t === "comparison_table" || t === "classification_table") return "impact_table";
       return t;
     }
@@ -20882,6 +20959,42 @@
       }
       return [];
     }
+    function splitTaskCardBulletClaims(text) {
+      var raw = String(text == null ? "" : text).replace(/\r\n/g, "\n").trim();
+      if (!raw) return null;
+      if (/#{2,3}\s+Card\s+\d+/i.test(raw)) return null;
+      var claims = [];
+      raw.split("\n").forEach(function (line) {
+        var ln = String(line || "").trim();
+        if (!ln) return;
+        var bullet = ln.match(/^\s*[-*•]\s+(.+)$/);
+        if (bullet) {
+          var claim = String(bullet[1] || "").trim();
+          if (claim) claims.push(claim);
+          return;
+        }
+        var numbered = ln.match(/^\s*\d+[\.\)]\s+(.+)$/);
+        if (numbered) {
+          var numberedClaim = String(numbered[1] || "").trim();
+          if (numberedClaim) claims.push(numberedClaim);
+        }
+      });
+      if (claims.length < 2) {
+        var inlineParts = raw
+          .split(/\s+[-*•]\s+/)
+          .map(function (part) { return String(part || "").trim(); })
+          .filter(function (part) { return !!part; });
+        if (inlineParts.length >= 2) claims = inlineParts;
+      }
+      if (claims.length < 2) return null;
+      return claims.map(function (claim, idx) {
+        return {
+          title: "Card " + (idx + 1),
+          label: "Card " + (idx + 1),
+          instruction: claim
+        };
+      });
+    }
     function expandTaskCardMaterialEntries(value) {
       if (utilityIsEmptyValue(value)) return [];
       if (Array.isArray(value)) {
@@ -20904,12 +21017,18 @@
             };
           });
         }
+        var fromBullets = splitTaskCardBulletClaims(value);
+        if (fromBullets) return fromBullets;
         return [{ instruction: String(value).trim() }];
       }
       if (value && typeof value === "object") {
         var body = firstNonEmpty([value.content, value.text, value.body, value.instruction]);
         if (typeof body === "string" && /#{2,3}\s+Card\s+\d+/i.test(body)) {
           return expandTaskCardMaterialEntries(body);
+        }
+        if (typeof body === "string") {
+          var bodyBullets = splitTaskCardBulletClaims(body);
+          if (bodyBullets) return bodyBullets;
         }
         if (value.text && !value.instruction && !value.content) {
           return [Object.assign({}, value, { instruction: value.text })];
@@ -21626,6 +21745,9 @@
           var cfg = opts && typeof opts === "object" ? opts : {};
           if (utilityIsEmptyValue(value)) return "";
           var hint = String(keyHint || "").toLowerCase().trim();
+          if (hint === "analysis_template" || hint === "worksheet_template") hint = "template";
+          if (hint === "evaluation_checklist") hint = "checklist";
+          if (hint === "discussion_prompts") hint = "prompt_set";
           function renderPlainStructuredText(rawText, textOpts) {
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
             var text = String(rawText == null ? "" : rawText).replace(/\r\n?/g, "\n").trim();
@@ -22367,8 +22489,11 @@
         var scenariosRendered = false;
         var taskCardsRendered = false;
         var promptSetRendered = false;
+        var discussionPromptsRendered = false;
         var templateRendered = false;
+        var analysisTemplateRendered = false;
         var checklistRendered = false;
+        var evaluationChecklistRendered = false;
         var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
         if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
           taskCards = expandTaskCardMaterialEntries(taskCards);
@@ -22413,6 +22538,33 @@
             promptSetRendered = true;
           }
         }
+        var discussionPromptsValue = materials.discussion_prompts;
+        if (!utilityIsEmptyValue(discussionPromptsValue)) {
+          var discussionPromptsHtml = renderPromptSetBlocks(discussionPromptsValue);
+          if (discussionPromptsHtml) {
+            parts.push(
+              utilityRenderIconHeading("h4", "Discussion prompts", "prompt_set", "util-material-heading") +
+              discussionPromptsHtml
+            );
+            discussionPromptsRendered = true;
+          }
+        }
+        var analysisTemplateValue = materials.analysis_template;
+        if (!utilityIsEmptyValue(analysisTemplateValue)) {
+          var analysisTemplateHtml = renderMaterialValue(analysisTemplateValue, "template", { materialHint: "template" });
+          if (analysisTemplateHtml && analysisTemplateHtml.indexOf("util-template-block") === -1) {
+            analysisTemplateHtml =
+              '<article class="util-template-block">' + analysisTemplateHtml + "</article>";
+          }
+          if (analysisTemplateHtml) {
+            parts.push(
+              utilityRenderIconHeading("h4", "Analysis template", "template", "util-material-heading") +
+              analysisTemplateHtml
+            );
+            analysisTemplateRendered = true;
+            templateRendered = true;
+          }
+        }
         var checklistValue = materials.checklist;
         if (!utilityIsEmptyValue(checklistValue)) {
           var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
@@ -22422,6 +22574,22 @@
           }
           if (checklistHtml) {
             parts.push(utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading") + checklistHtml);
+            checklistRendered = true;
+          }
+        }
+        var evaluationChecklistValue = materials.evaluation_checklist;
+        if (!utilityIsEmptyValue(evaluationChecklistValue)) {
+          var evaluationChecklistHtml = renderMaterialValue(evaluationChecklistValue, "checklist", { materialHint: "checklist" });
+          if (!evaluationChecklistHtml) evaluationChecklistHtml = renderPromptSetBlocks(evaluationChecklistValue);
+          if (evaluationChecklistHtml && evaluationChecklistHtml.indexOf("util-checklist-block") === -1) {
+            evaluationChecklistHtml = '<div class="util-checklist-block">' + evaluationChecklistHtml + "</div>";
+          }
+          if (evaluationChecklistHtml) {
+            parts.push(
+              utilityRenderIconHeading("h4", "Evaluation checklist", "checklist", "util-material-heading") +
+              evaluationChecklistHtml
+            );
+            evaluationChecklistRendered = true;
             checklistRendered = true;
           }
         }
@@ -22514,7 +22682,7 @@
               console.log("[PRISM TRACE] scenarios not yet rendered; allowing generic remainder render:", k);
             } catch (_) {}
           } else if (
-            ["study_scenarios", "scenario_set", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+            ["study_scenarios", "scenario_set", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
             (lowerK === "scenario_section_title") ||
             (lowerK === "scenario_heading") ||
             (lowerK === "scenario_title") ||
@@ -22527,7 +22695,10 @@
             (lowerK === "task_cards" && taskCardsRendered) ||
             (lowerK === "cards" && taskCardsRendered) ||
             (lowerK === "prompt_set" && promptSetRendered) ||
-            (lowerK === "prompts" && promptSetRendered)
+            (lowerK === "prompts" && promptSetRendered) ||
+            (lowerK === "discussion_prompts" && discussionPromptsRendered) ||
+            (lowerK === "analysis_template" && analysisTemplateRendered) ||
+            (lowerK === "evaluation_checklist" && evaluationChecklistRendered)
           ) {
             try {
               console.log("[PRISM TRACE] material key skipped in remainder loop:", k);
@@ -22682,12 +22853,14 @@
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
           if (expectedOutput) {
+            var expectedOutputBody =
+              utilityRenderMarkdownBlock(String(expectedOutput)) ||
+              "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
             parts.push(
               '<div class="util-output-block">' +
               utilityRenderIconHeading("h4", "Output", "output", "util-output-heading util-icon-heading") +
-              "<p>" +
-              utilityRenderMarkdownInline(String(expectedOutput)) +
-              "</p></div>"
+              expectedOutputBody +
+              "</div>"
             );
           }
           if (supportNote) {
@@ -23764,6 +23937,24 @@
       if (nb.length >= 24 && na.indexOf(nb) !== -1) return true;
       return false;
     }
+    function isTrueFalseLikeRow(row) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+      var typeBlob = String(
+        firstNonEmpty([row.item_type, row.type, row.task_type, row.taskType, row.format]) || ""
+      ).toLowerCase();
+      if (/\btrue_false|true\/false\b/.test(typeBlob)) return true;
+      var hasProposition = !!firstNonEmpty([row.proposition, row.statement]);
+      if (hasProposition && !extractRenderableMcqOptions(row).length && !isMcqLikeType(row)) {
+        return true;
+      }
+      return false;
+    }
+    function renderTrueFalseOptionsList() {
+      return (
+        '<ul class="util-assessment-options util-true-false-options">' +
+        "<li>True</li><li>False</li></ul>"
+      );
+    }
     function renderQuestionBlocks(questionRows, overrides) {
       var rows = Array.isArray(questionRows) ? questionRows.filter(function (row) { return !utilityIsEmptyValue(row); }) : [];
       if (!rows.length) return "";
@@ -23800,31 +23991,54 @@
           if (!String(primitiveBody || "").trim()) return "";
           return renderAssessmentItemArticle(idx, primitiveBody);
         }
-        var promptText = firstNonEmpty([
-          row.stem,
-          row.question,
-          row.prompt,
-          row.learner_task,
-          row.instructions,
-          row.instruction,
-          row.text,
-          row.content,
-          row.body
-        ]);
         var parts = [];
-        if (promptText) {
-          var promptOut = renderOpts.cleanupInlineMarkdown
-            ? utilityCleanupInlineMarkdownMarkers(promptText)
-            : promptText;
-          parts.push("<p>" + utilityRenderMarkdownInline(promptOut) + "</p>");
-        }
-        var resolvedOptions = extractRenderableMcqOptions(row);
-        if (resolvedOptions.length) {
-          var resolvedOptionsHtml = renderMcqOptionsList(resolvedOptions);
-          if (resolvedOptionsHtml) parts.push(resolvedOptionsHtml);
+        if (isTrueFalseLikeRow(row)) {
+          var statementText = firstNonEmpty([
+            row.statement,
+            row.proposition,
+            row.stem,
+            row.question,
+            row.prompt,
+            row.learner_task,
+            row.text,
+            row.content,
+            row.body
+          ]);
+          if (statementText) {
+            var statementOut = renderOpts.cleanupInlineMarkdown
+              ? utilityCleanupInlineMarkdownMarkers(statementText)
+              : statementText;
+            parts.push(
+              '<p class="util-assessment-statement">' + utilityRenderMarkdownInline(statementOut) + "</p>"
+            );
+          }
+          parts.push(renderTrueFalseOptionsList());
         } else {
-          var missingOptionsWarning = renderMcqMissingOptionsWarning(row);
-          if (missingOptionsWarning) parts.push(missingOptionsWarning);
+          var promptText = firstNonEmpty([
+            row.stem,
+            row.question,
+            row.prompt,
+            row.learner_task,
+            row.instructions,
+            row.instruction,
+            row.text,
+            row.content,
+            row.body
+          ]);
+          if (promptText) {
+            var promptOut = renderOpts.cleanupInlineMarkdown
+              ? utilityCleanupInlineMarkdownMarkers(promptText)
+              : promptText;
+            parts.push("<p>" + utilityRenderMarkdownInline(promptOut) + "</p>");
+          }
+          var resolvedOptions = extractRenderableMcqOptions(row);
+          if (resolvedOptions.length) {
+            var resolvedOptionsHtml = renderMcqOptionsList(resolvedOptions);
+            if (resolvedOptionsHtml) parts.push(resolvedOptionsHtml);
+          } else {
+            var missingOptionsWarning = renderMcqMissingOptionsWarning(row);
+            if (missingOptionsWarning) parts.push(missingOptionsWarning);
+          }
         }
         var answerLabel = firstNonEmpty([
           row.correct_answer,
@@ -23888,6 +24102,7 @@
           item_type: true, type: true, task_type: true, format: true,
           stem: true, question: true, prompt: true, learner_task: true, instructions: true,
           instruction: true, text: true, content: true, body: true, task: true, options: true,
+          proposition: true, statement: true,
           correct_answer: true, correct_answers: true, answer: true, answer_key: true,
           answer_or_guidance: true, model_answer: true, model_answer_guidance: true, true_false_answer: true,
           explanation_or_rationale: true, rationale: true, feedback: true, feedback_text: true

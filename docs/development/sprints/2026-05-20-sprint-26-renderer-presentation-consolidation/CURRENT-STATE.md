@@ -17,8 +17,8 @@
 
 | Item | State |
 |------|--------|
-| **Tests** | **248 passing** (`node --test tests/*.test.js`) |
-| **Renderer** | Structurally safe, visually polished, kitchen sink validated |
+| **Tests** | **259 passing** (`node --test tests/*.test.js`) |
+| **Renderer** | Structurally safe, visually polished; kitchen sink + climate misconception materials hotfix |
 | **Contracts** | Sprint 25 composition/export authority **unchanged** |
 | **Next code work** | Optional **26-6** only (not chartered) |
 
@@ -45,7 +45,8 @@
 | Assessment | `util-assessment-section`, `util-assessment-item`, numbered headers, explanation blocks |
 | Timeline | Numbered step markers (`counter-reset:timeline-step`) |
 | Metadata | Summary “Document information”; fold body retains fixture headings |
-| Benchmarks | Kitchen sink + inflation full fixtures; composition tests frozen |
+| Benchmarks | Kitchen sink + inflation full + climate misconception materials fixture |
+| Typed materials | `task_cards` bullet split; `analysis_template`, `discussion_prompts`, `evaluation_checklist`; true/false layout |
 
 ---
 
@@ -62,6 +63,6 @@ See [`sprint-26-pause-note.md`](sprint-26-pause-note.md) § Manual checks:
 
 ## Resume
 
-1. Confirm **248** tests pass.
+1. Confirm **259** tests pass.
 2. Run or sign off manual checks above.
 3. Charter **26-6** (fragment fixtures, `feedback_display` variant) or close the sprint.

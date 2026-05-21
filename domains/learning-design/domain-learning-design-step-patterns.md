@@ -148,6 +148,23 @@ They provide a consistent way to structure workflows and ensure that learning de
       },
       {
         "whenResolvedFactorsInclude": {
+          "activities_required": true
+        },
+        "include": [
+          "Define Learning Outcomes",
+          "Design Learning Activities"
+        ]
+      },
+      {
+        "whenResolvedFactorsInclude": {
+          "materials_required": true
+        },
+        "include": [
+          "Generate Activity Materials"
+        ]
+      },
+      {
+        "whenResolvedFactorsInclude": {
           "session_materials": ["page"],
           "input_strategy": "provided_source_content"
         },
@@ -285,7 +302,6 @@ They provide a consistent way to structure workflows and ensure that learning de
         "whenGoalMentionsAnyOf": [
           "assessment pack",
           "formative assessment pack",
-          "formative assessment",
           "quiz pack",
           "printable quiz",
           "assessment document",

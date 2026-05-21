@@ -1,0 +1,8 @@
+{
+  "label": "Conflicting Evidence Clinical Reasoning Lab",
+  "goal": "Design a 60-minute Conflicting Evidence Clinical Reasoning Lab seminar for second-year medical students on antibiotic prescribing and diagnostic uncertainty in suspected respiratory infection. Learners work through clinical scenarios with conflicting evidence, misconception confrontation, productive uncertainty prompts, and reasoning revision after pair discussion. Include a short formative check (3-5 items) with tutor-led debrief; do not reveal correct answers on the handout. Verify the renderer produces visible util-cognition semantic blocks on activity rows when cognition fields are present.",
+  "inputs": "Facilitator pacing notes, scenario cards, pair discussion prompts, and formative check debrief guidance.",
+  "desiredOutputs": "Learner-facing seminar handout page with learning activities and a formative check.",
+  "audience": "Second-year medical students",
+  "scopeScale": "60-minute seminar"
+}

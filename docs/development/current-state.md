@@ -41,6 +41,18 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
+### Workflow brief pedagogic precedence (**complete**, 2026-05-21)
+
+**Investigation:** [`workflow-brief-pedagogic-precedence-investigation.md`](workflow-brief-pedagogic-precedence-investigation.md)
+
+**Outcome:** Clinical-reasoning-lab–style briefs no longer default to assessment-page profile, MCQ-only type, or 10-item counts when seminar/dialogic cognition is primary; assessment-first briefs still resolve correctly. Change is **resolver-only** in `app.js` (`reconcileWorkflowBriefPedagogicFactors` + extract/inference tweaks).
+
+**Tests:** `tests/workflow-ld-clinical-reasoning-lab-resolver.test.js` + existing Pass 1 pins.
+
+**Test floor:** **358** passing.
+
+---
+
 ### Sprint 29 — Renderer cognition semantics (**closed**, 2026-05-21)
 
 **Portable pack:** [`docs/development/sprints/2026-05-21-sprint-29-renderer-cognition-semantics/`](sprints/2026-05-21-sprint-29-renderer-cognition-semantics/)
@@ -55,7 +67,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Residual:** Cognition inside `task_cards` markdown stays generic; row promotion is composition scope (Sprint 28).
 
-**Test floor:** **355** passing.
+**Test floor:** **355** passing (superseded by brief-precedence fix floor **358**).
 
 ---
 

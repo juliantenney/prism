@@ -8086,6 +8086,173 @@
     return out;
   }
 
+  function workflowBriefPedagogicTextBlob(base) {
+    var b = base && typeof base === "object" ? base : {};
+    return [
+      b.designIntent || "",
+      b.goal || "",
+      b.desiredOutputs || "",
+      b.inputs || "",
+      b.scopeConstraints || "",
+      b.audience || "",
+      b.scopeScale || ""
+    ]
+      .join("\n")
+      .toLowerCase();
+  }
+
+  function sanitizeWorkflowBriefTopicCandidate(rawTopic) {
+    var topic = String(rawTopic == null ? "" : rawTopic).replace(/\r\n/g, "\n").trim();
+    if (!topic) return "";
+    var cutPatterns = [
+      /\s+(?:verify|confirm|check)\s+(?:that\s+)?(?:the\s+)?renderer\b/i,
+      /\s+renderer\s+(?:produces|renders|outputs?)\b/i,
+      /\s+util-cognition\b/i,
+      /\s+(?:semantic\s+)?blocks?\s+on\s+activity\s+rows?\b/i,
+      /\s+when\s+(?:cognition\s+)?fields?\s+are\s+present\b/i,
+      /\s+activity\s+rows?\s+when\b/i
+    ];
+    cutPatterns.forEach(function (re) {
+      var m = topic.match(re);
+      if (m && typeof m.index === "number" && m.index > 8) {
+        topic = topic.slice(0, m.index).trim();
+      }
+    });
+    return topic.replace(/[.,;:!?]+$/g, "").trim();
+  }
+
+  function isWorkflowBriefSeminarDialogicCognitionForward(blob, factors) {
+    if (isWorkflowBriefAssessmentPrimaryIntent(blob)) return false;
+    var f = factors && typeof factors === "object" ? factors : {};
+    if (/\b(seminar|clinical reasoning lab|reasoning lab|workshop session)\b/.test(blob)) return true;
+    if (f.delivery_mode === "seminar") return true;
+    if (f.delivery_mode === "live_workshop" && /\b(seminar|clinical reasoning lab|reasoning lab)\b/.test(blob)) {
+      return true;
+    }
+    if (
+      f.activities_required === true &&
+      (f.cognitive_engagement_required === true ||
+        f.reasoning_revision_required === true ||
+        f.misconception_reconciliation_required === true ||
+        f.productive_uncertainty_required === true)
+    ) {
+      return true;
+    }
+    if (
+      /\b(scenarios?|small groups?|pair discussion|dialogic|misconception confrontation|productive uncertainty|reasoning revision)\b/.test(
+        blob
+      ) &&
+      /\b(activities?|learning activities|task cards?|seminar|workshop|lab)\b/.test(blob)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function isWorkflowBriefAssessmentPrimaryIntent(blob) {
+    if (/\b(assessment page|assessment pack|quiz pack|item bank|exam paper|test paper|assessment[- ]only|mcq[- ]only)\b/.test(blob)) {
+      return true;
+    }
+    if (/\b(create|design|build|write|generate)\s+(?:an?\s+)?assessment page\b/.test(blob)) {
+      return true;
+    }
+    if (
+      /\b(create|build|design|write|generate|produce)\s+(?:a\s+)?(?:\d+[-\s]?item\s+)?(?:mcq|multiple[- ]choice)\s+(?:quiz|test|assessment|exam)\b/.test(
+        blob
+      )
+    ) {
+      return true;
+    }
+    if (/\b\d{1,2}[-\s]?item\s+mcq\s+(?:quiz|test)\b/.test(blob)) return true;
+    if (/\b(revision page|self[- ]study revision page).{0,40}\b\d+[-\s]?item\s+mcq\b/.test(blob)) {
+      return true;
+    }
+    if (
+      /\b(quiz on|mcq quiz on|mcq test on|assessment on)\s+[a-z]/i.test(blob) &&
+      !/\b(seminar|workshop|scenarios?|activities?|formative check|handout)\b/.test(blob)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function isWorkflowBriefSubordinateFormativeAssessment(blob) {
+    if (!/\b(formative (?:check|assessment)|short formative|knowledge check|formative questions?)\b/.test(blob)) {
+      return false;
+    }
+    return (
+      /\b(seminar|workshop|scenarios?|discuss|discussion|activities?|small groups?|pair|handout|lab|clinical)\b/.test(
+        blob
+      ) || isWorkflowBriefSeminarDialogicCognitionForward(blob, {})
+    );
+  }
+
+  function reconcileWorkflowBriefPedagogicFactors(factors, base) {
+    var out = factors && typeof factors === "object" ? factors : {};
+    var b = base && typeof base === "object" ? base : {};
+    var blob = workflowBriefPedagogicTextBlob(b);
+    var desiredOutputsLower = String(b.desiredOutputs || "").toLowerCase();
+    var seminarForward = isWorkflowBriefSeminarDialogicCognitionForward(blob, out);
+    var assessmentPrimary = isWorkflowBriefAssessmentPrimaryIntent(blob);
+    var subordinateFormative = isWorkflowBriefSubordinateFormativeAssessment(blob);
+
+    if (out.topic) {
+      out.topic = sanitizeWorkflowBriefTopicCandidate(out.topic);
+      if (!out.topic && factors.topic) out.topic = sanitizeWorkflowBriefTopicCandidate(factors.topic);
+    }
+    if (out.workshop_subject) out.workshop_subject = out.topic || out.workshop_subject;
+
+    if (seminarForward && !assessmentPrimary) {
+      if (out.page_profile === "assessment") out.page_profile = "learner";
+      if (!out.page_profile || out.page_profile === "facilitator") {
+        if (
+          /\b(learner[- ]facing|learner page|student page|learner handout|participant handout|handout page)\b/.test(
+            blob
+          ) ||
+          /\b(learner[- ]facing|learner page|student page|learner handout)\b/.test(desiredOutputsLower)
+        ) {
+          out.page_profile = "learner";
+        }
+      }
+      if (!out.delivery_mode || out.delivery_mode === "live_workshop") {
+        if (/\b(seminar|clinical reasoning lab|reasoning lab)\b/.test(blob)) out.delivery_mode = "seminar";
+      }
+      var duration = Number(out.duration_minutes);
+      if (
+        !out.design_scope ||
+        out.design_scope === "single_activity" ||
+        (isFinite(duration) && duration >= 45)
+      ) {
+        if (isFinite(duration) && duration >= 45) out.design_scope = "session";
+        else if (out.activities_required === true && seminarForward) out.design_scope = "session";
+      }
+      if (subordinateFormative) {
+        if (out.assessment_type === "mcq" && !/\b(mcq|multiple[- ]choice)\b/.test(blob)) {
+          out.assessment_type = "mixed";
+        }
+        if (out.assessment_total_items != null && Number(out.assessment_total_items) > 6) {
+          out.assessment_total_items = 5;
+        }
+        if (out.assessment_total_items == null || out.assessment_total_items === "") {
+          out.assessment_total_items = 5;
+        }
+      }
+      if (!out.assessment_strategy || out.assessment_strategy === "none") {
+        out.assessment_strategy = "formative";
+      }
+    }
+
+    if (assessmentPrimary) {
+      out.page_profile = "assessment";
+      out.assessment_required = true;
+      if (!out.assessment_type && /\b(mcq|multiple[- ]choice)\b/.test(blob)) {
+        out.assessment_type = "mcq";
+      }
+    }
+
+    return out;
+  }
+
   function extractWorkflowBriefExplicitFactors(base) {
     var goal = String((base && base.goal) || "").trim();
     var designIntent = String((base && base.designIntent) || "").trim();
@@ -8216,15 +8383,36 @@
     if (/\b(no activit|without activit|no learning tasks?|without learning tasks?)\b/.test(blob)) {
       out.activities_required = false;
     }
-    // Priority: assessment > facilitator > learner
-    if (/\b(assessment page|assessment pack|quiz pack|quiz|mcq|mcqs|multiple choice|knowledge check|formative question|formative questions|assessment document|assessment booklet|tutor assessment|marking guidance)\b/.test(blob)) {
+    var desiredOutputsLower = String(desiredOutputs || "").toLowerCase();
+    var seminarDialogicForwardEarly = isWorkflowBriefSeminarDialogicCognitionForward(blob, out);
+    var assessmentPrimaryEarly = isWorkflowBriefAssessmentPrimaryIntent(blob);
+    var subordinateFormativeEarly = isWorkflowBriefSubordinateFormativeAssessment(blob);
+    // Profile: assessment-primary briefs only — not formative checks on seminar handouts.
+    if (assessmentPrimaryEarly) {
       out.page_profile = "assessment";
-    } else if (/\b(facilitator guide|teaching guide|runbook|facilitator-facing|facilitator)\b/.test(blob)) {
+    } else if (seminarDialogicForwardEarly) {
+      if (
+        /\b(learner[- ]facing|learner page|student page|learner handout|participant handout|handout page)\b/.test(
+          blob
+        ) ||
+        /\b(learner[- ]facing|learner page|student page|learner handout)\b/.test(desiredOutputsLower)
+      ) {
+        out.page_profile = "learner";
+      }
+    } else if (
+      /\b(facilitator guide|teaching guide|runbook|facilitator-facing)\b/.test(blob) &&
+      !/\b(learner[- ]facing|learner page|student page|learner handout|handout page)\b/.test(blob)
+    ) {
       out.page_profile = "facilitator";
-    } else if (/\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing)\b/.test(blob)) {
+    } else if (
+      /\b(facilitator)\b/.test(blob) &&
+      !/\b(learner[- ]facing|learner page|student page|learner handout|handout page)\b/.test(blob) &&
+      !seminarDialogicForwardEarly
+    ) {
+      out.page_profile = "facilitator";
+    } else if (/\b(learner page|student page|moodle page|vle page|participant handout|learner handout|learner pack|student-facing|learner-facing)\b/.test(blob)) {
       out.page_profile = "learner";
     }
-    var desiredOutputsLower = String(desiredOutputs || "").toLowerCase();
     if (
       out.page_profile === "assessment" &&
       /\b(learner[- ]facing|learner page|student page|learner handout|participant handout|learner pack)\b/.test(
@@ -8238,7 +8426,11 @@
     else if (/\b(short answer|short-answer)\b/.test(blob)) out.assessment_type = "short_answer";
     else if (/\bcase study|case-study\b/.test(blob)) out.assessment_type = "case_study";
     else if (/\bproblem( solving)?\b/.test(blob)) out.assessment_type = "problem";
-    else if (mcqTypeCueRe.test(blob)) out.assessment_type = "mcq";
+    else if (mcqTypeCueRe.test(blob) && (!subordinateFormativeEarly || assessmentPrimaryEarly)) {
+      out.assessment_type = "mcq";
+    } else if (subordinateFormativeEarly && !assessmentPrimaryEarly) {
+      out.assessment_type = "mixed";
+    }
     var explicitIncludeAnswersCueRe =
       /\b(model answers?|answer key|correct answers?|worked answers?)\b/;
     var explicitIncludeFeedbackCueRe =
@@ -8419,6 +8611,14 @@
     function firstAssessmentItemCountFromText(text) {
       var src = String(text || "").toLowerCase();
       if (!src) return NaN;
+      var rangeMatch = src.match(/\b(\d+)\s*[-–]\s*(\d+)\s+items?\b/);
+      if (rangeMatch && rangeMatch[1] && rangeMatch[2]) {
+        var lo = Number(rangeMatch[1]);
+        var hi = Number(rangeMatch[2]);
+        if (isFinite(lo) && isFinite(hi) && lo > 0 && hi >= lo) {
+          return Math.round((lo + hi) / 2);
+        }
+      }
       var countToken = "(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)";
       var itemCheckKinds = "(?:formative|assessment|knowledge)\\s+checks?";
       var patterns = [
@@ -8436,8 +8636,30 @@
             "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+quiz(?:zes)?\\b",
           "i"
         ),
-        new RegExp("\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?"+ countToken + "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|formative\\s+questions?|assessment\\s+items?|questions?)\\b", "i"),
-        new RegExp("\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+page\\s+with\\s+)?(?:exactly\\s+)?"+ countToken + "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|questions?|assessment\\s+items?)\\b", "i")
+        new RegExp(
+          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+            countToken +
+            "(?:\\s*[- ]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice(?:\\s+questions?)?)\\b",
+          "i"
+        ),
+        new RegExp(
+          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+            countToken +
+            "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|formative\\s+questions?|assessment\\s+items?|questions?)\\b",
+          "i"
+        ),
+        new RegExp(
+          "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+)?" +
+            countToken +
+            "(?:\\s*[-–]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice)\\s+(?:quiz|test|assessment|exam)\\b",
+          "i"
+        ),
+        new RegExp(
+          "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+page\\s+with\\s+)?(?:exactly\\s+)?" +
+            countToken +
+            "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|questions?|assessment\\s+items?)\\b",
+          "i"
+        )
       ];
       for (var i = 0; i < patterns.length; i += 1) {
         var match = src.match(patterns[i]);
@@ -8460,10 +8682,19 @@
       goalLower.match(/\bon\s+([^.,;\n]+)/i) ||
       goalLower.match(/\babout\s+([^.,;\n]+)/i);
     if (subjectMatch && subjectMatch[1]) {
-      var subject = String(subjectMatch[1] || "").trim();
+      var subject = sanitizeWorkflowBriefTopicCandidate(String(subjectMatch[1] || "").trim());
       if (subject) {
         out.topic = subject;
         out.workshop_subject = subject; // Backward-compatible alias for older domain configs.
+      }
+    }
+    if (!out.topic) {
+      var domainMatch = blob.match(
+        /\b(?:on|about)\s+((?:antibiotic|diagnostic|clinical|respiratory|infection|prescribing)[^.;\n]{8,120})/i
+      );
+      if (domainMatch && domainMatch[1]) {
+        out.topic = sanitizeWorkflowBriefTopicCandidate(domainMatch[1]);
+        if (out.topic) out.workshop_subject = out.topic;
       }
     }
 
@@ -8498,7 +8729,11 @@
       out.input_strategy = "provided_source_content";
     }
 
-    return out;
+    if (isFinite(Number(out.duration_minutes)) && Number(out.duration_minutes) >= 45 && out.activities_required === true) {
+      out.design_scope = "session";
+    }
+
+    return reconcileWorkflowBriefPedagogicFactors(out, base);
   }
 
   function applyWorkflowBriefInferenceRules(config, goalText, inputText) {
@@ -8646,6 +8881,7 @@
       }
     });
     resolved = deriveAssessmentSemanticFactors(resolved, explicit);
+    resolved = reconcileWorkflowBriefPedagogicFactors(resolved, base);
     Object.keys(resolved).forEach(function (id) {
       if (!id || sources[id]) return;
       if (Object.prototype.hasOwnProperty.call(explicit, id)) sources[id] = "explicit";

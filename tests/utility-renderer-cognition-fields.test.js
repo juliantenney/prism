@@ -205,6 +205,14 @@ test("29-2: row-level cognition fields skip duplicate materials keys", () => {
 
 test("29-2: pages without cognition row fields omit util-cognition chrome", () => {
   const kitchen = JSON.parse(fs.readFileSync(kitchenSinkPath, "utf8"));
+  const laSection = (kitchen.sections || []).find(function (s) {
+    return s && s.section_id === "learning_activities";
+  });
+  if (laSection && Array.isArray(laSection.content)) {
+    laSection.content = laSection.content.filter(function (row) {
+      return String((row && row.activity_id) || "") !== "KS-A5";
+    });
+  }
   const r = api.buildUtilityStructuredHtmlForTest(kitchen);
   assert.ok(r && !r.error);
   const html = String(r.html || "");

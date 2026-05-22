@@ -69,7 +69,7 @@ function extractAndResolve(brief) {
   return { explicit, resolved: pack.resolved, sources: pack.sources, base };
 }
 
-function postGenQueueIds(resolved, sources, base) {
+function postGenQueueIds(resolved, sources, base, elicitedValues) {
   const design = {
     steps: [
       {
@@ -82,7 +82,7 @@ function postGenQueueIds(resolved, sources, base) {
     normalizedLdConfig,
     base,
     resolved,
-    {},
+    elicitedValues || {},
     sources,
     design
   );
@@ -216,4 +216,97 @@ test("mapping: assessment_total_items maps to Generate Assessment Items number_o
   const gen = mapped.stepParamPatch.step_generate_assessment_items;
   assert.ok(gen);
   assert.equal(gen.number_of_items, 5);
+});
+
+const MARX_GOAL_WITH_COUNT =
+  "Create a self study resource about Karl Marx with 10 formative assessment questions.";
+const MARX_GOAL_VAGUE_COUNT =
+  "Create a self study resource about Karl Marx with formative assessment questions.";
+
+function assessmentItemCountQuestionInQueue(queue) {
+  const factor = (queue || []).find((f) => f && f.id === "assessment_total_items");
+  if (!factor) return "";
+  return String(factor.question || factor.questionText || "");
+}
+
+test("extract: 10 formative assessment questions (Marx-style brief)", () => {
+  const { explicit } = extractAndResolve({ goal: MARX_GOAL_WITH_COUNT });
+  assert.equal(explicit.assessment_total_items, 10);
+});
+
+test("post-gen queue: Marx brief with 10 formative assessment questions omits item-count ask", () => {
+  const brief = { goal: MARX_GOAL_WITH_COUNT, desiredOutputs: "Learner page." };
+  const { resolved, sources, base } = extractAndResolve(brief);
+  assert.equal(resolved.assessment_total_items, 10);
+  const ids = postGenQueueIds(resolved, sources, base);
+  assert.equal(ids.includes("assessment_total_items"), false);
+  const question = assessmentItemCountQuestionInQueue(
+    api.getAssessmentPostGenerationElicitationQueue(
+      normalizedLdConfig,
+      base,
+      resolved,
+      {},
+      sources,
+      {
+        steps: [
+          {
+            title: "Generate Assessment Items",
+            canonical_step_id: "step_generate_assessment_items"
+          }
+        ]
+      }
+    )
+  );
+  assert.equal(question, "");
+});
+
+test("post-gen queue: Marx brief without item count may ask for assessment_total_items", () => {
+  const brief = { goal: MARX_GOAL_VAGUE_COUNT, desiredOutputs: "Learner page." };
+  const { explicit, resolved, sources, base } = extractAndResolve(brief);
+  assert.equal(explicit.assessment_total_items, undefined);
+  assert.equal(resolved.assessment_total_items, 10);
+  assert.equal(sources.assessment_total_items, "default");
+  const queue = api.getAssessmentPostGenerationElicitationQueue(
+    normalizedLdConfig,
+    base,
+    resolved,
+    {},
+    sources,
+    {
+      steps: [
+        {
+          title: "Generate Assessment Items",
+          canonical_step_id: "step_generate_assessment_items"
+        }
+      ]
+    }
+  );
+  assert.equal(
+    queue.some((f) => f && f.id === "assessment_total_items"),
+    true
+  );
+  assert.match(assessmentItemCountQuestionInQueue(queue), /how many assessment items/i);
+});
+
+test("post-gen queue: mapped number_of_items suppresses assessment_total_items ask", () => {
+  const brief = { goal: MARX_GOAL_VAGUE_COUNT, desiredOutputs: "Learner page." };
+  const { resolved, sources, base } = extractAndResolve(brief);
+  const mapped = api.applyWorkflowBriefMappings(normalizedLdConfig, {
+    assessment_total_items: 6,
+    assessment_required: true
+  });
+  assert.equal(mapped.stepParamPatch.step_generate_assessment_items.number_of_items, 6);
+  const resolvedWithStepCount = Object.assign({}, resolved, {
+    assessment_total_items: 10,
+    number_of_items: 6
+  });
+  const ids = postGenQueueIds(resolvedWithStepCount, sources, base);
+  assert.equal(ids.includes("assessment_total_items"), false);
+});
+
+test("post-gen queue: elicited item count still suppresses repeat ask", () => {
+  const brief = { goal: MARX_GOAL_VAGUE_COUNT, desiredOutputs: "Learner page." };
+  const { resolved, sources, base } = extractAndResolve(brief);
+  const ids = postGenQueueIds(resolved, sources, base, { assessment_total_items: 8 });
+  assert.equal(ids.includes("assessment_total_items"), false);
 });

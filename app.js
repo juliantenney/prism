@@ -1082,6 +1082,177 @@
     return String(Math.max(1, Math.round(n)));
   }
 
+  function parseAssessmentCountToken(token) {
+    var t = String(token || "").trim().toLowerCase();
+    if (!t) return NaN;
+    if (/^\d+$/.test(t)) return Number(t);
+    var wordMap = {
+      one: 1,
+      two: 2,
+      three: 3,
+      four: 4,
+      five: 5,
+      six: 6,
+      seven: 7,
+      eight: 8,
+      nine: 9,
+      ten: 10,
+      eleven: 11,
+      twelve: 12,
+      thirteen: 13,
+      fourteen: 14,
+      fifteen: 15,
+      sixteen: 16,
+      seventeen: 17,
+      eighteen: 18,
+      nineteen: 19,
+      twenty: 20
+    };
+    return Object.prototype.hasOwnProperty.call(wordMap, t) ? wordMap[t] : NaN;
+  }
+
+  function firstAssessmentItemCountFromBriefText(text) {
+    var src = String(text || "").toLowerCase();
+    if (!src) return NaN;
+    var rangeMatch = src.match(/\b(\d+)\s*[-–]\s*(\d+)\s+items?\b/);
+    if (rangeMatch && rangeMatch[1] && rangeMatch[2]) {
+      var lo = Number(rangeMatch[1]);
+      var hi = Number(rangeMatch[2]);
+      if (isFinite(lo) && isFinite(hi) && lo > 0 && hi >= lo) {
+        return Math.round((lo + hi) / 2);
+      }
+    }
+    var countToken =
+      "(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)";
+    var itemCheckKinds = "(?:formative|assessment|knowledge)\\s+checks?";
+    var patterns = [
+      new RegExp(
+        "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+          countToken +
+          "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+" +
+          itemCheckKinds +
+          "\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+          countToken +
+          "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+quiz(?:zes)?\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+          countToken +
+          "(?:\\s*[- ]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice(?:\\s+questions?)?)\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+          countToken +
+          "\\s+formative\\s+assessment\\s+questions?\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
+          countToken +
+          "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|formative\\s+questions?|assessment\\s+items?|questions?)\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+)?" +
+          countToken +
+          "(?:\\s*[-–]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice)\\s+(?:quiz|test|assessment|exam)\\b",
+        "i"
+      ),
+      new RegExp(
+        "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+page\\s+with\\s+)?(?:exactly\\s+)?" +
+          countToken +
+          "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|questions?|assessment\\s+items?)\\b",
+        "i"
+      )
+    ];
+    for (var i = 0; i < patterns.length; i += 1) {
+      var match = src.match(patterns[i]);
+      if (!match || !match[1]) continue;
+      var n = parseAssessmentCountToken(match[1]);
+      if (isFinite(n) && n > 0) {
+        return n;
+      }
+    }
+    return NaN;
+  }
+
+  function positiveAssessmentItemCount(value) {
+    var normalized = normalizeAssessmentItemCount(value);
+    if (!normalized) return 0;
+    var n = Number(normalized);
+    return isFinite(n) && n > 0 ? n : 0;
+  }
+
+  function workflowBriefAssessmentItemCountBlob(base) {
+    var b = base && typeof base === "object" ? base : {};
+    return [b.goal, b.designIntent, b.desiredOutputs, b.inputs, b.scopeConstraints]
+      .map(function (part) {
+        return String(part || "");
+      })
+      .join("\n");
+  }
+
+  function getMappedGenerateAssessmentItemCount() {
+    var rs =
+      state.workflowBriefResolved && typeof state.workflowBriefResolved === "object"
+        ? state.workflowBriefResolved
+        : null;
+    var patch =
+      rs &&
+      rs.mappedBindings &&
+      rs.mappedBindings.stepParamPatch &&
+      typeof rs.mappedBindings.stepParamPatch === "object"
+        ? rs.mappedBindings.stepParamPatch
+        : null;
+    if (!patch) return 0;
+    var genPatch =
+      patch[normalizeCanonicalStepId("step_generate_assessment_items")] &&
+      typeof patch[normalizeCanonicalStepId("step_generate_assessment_items")] === "object"
+        ? patch[normalizeCanonicalStepId("step_generate_assessment_items")]
+        : null;
+    if (genPatch) {
+      var fromGen = positiveAssessmentItemCount(genPatch.number_of_items);
+      if (fromGen > 0) return fromGen;
+    }
+    var daPatch =
+      patch[normalizeCanonicalStepId("step_design_assessment")] &&
+      typeof patch[normalizeCanonicalStepId("step_design_assessment")] === "object"
+        ? patch[normalizeCanonicalStepId("step_design_assessment")]
+        : null;
+    if (daPatch) {
+      return positiveAssessmentItemCount(daPatch.total_items);
+    }
+    return 0;
+  }
+
+  function isAssessmentItemCountResolvedForElicitation(base, resolved, elicited, sourceMap) {
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var e = elicited && typeof elicited === "object" ? elicited : {};
+    var sources = sourceMap && typeof sourceMap === "object" ? sourceMap : {};
+    if (Object.prototype.hasOwnProperty.call(e, "assessment_total_items")) {
+      if (positiveAssessmentItemCount(e.assessment_total_items) > 0) return true;
+    }
+    var resolvedCount = positiveAssessmentItemCount(r.assessment_total_items);
+    var src = String(sources.assessment_total_items || "").trim();
+    if (resolvedCount > 0) {
+      if (src === "explicit" || src === "inferred" || src === "elicited") return true;
+      var briefCount = firstAssessmentItemCountFromBriefText(workflowBriefAssessmentItemCountBlob(base));
+      if (isFinite(briefCount) && briefCount > 0 && Math.round(briefCount) === resolvedCount) {
+        return true;
+      }
+    }
+    if (positiveAssessmentItemCount(r.number_of_items) > 0) return true;
+    if (positiveAssessmentItemCount(r.total_items) > 0) return true;
+    if (getMappedGenerateAssessmentItemCount() > 0) return true;
+    return false;
+  }
+
   function mapDesignAssessmentActivityTypeToResponseFormats(value) {
     var v = String(value || "").trim().toLowerCase();
     if (!v) return "";
@@ -4922,6 +5093,7 @@
     draft = withMcqDefaultFeedbackScaffold(draft, ctx, optionMap);
     draft = withPageTaskModeScaffold(draft, ctx, optionMap);
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
+    draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
 
     setInitialPromptFieldValue(draft);
 
@@ -6739,8 +6911,16 @@
       typeof wf.workflowBriefResolution.resolvedFactors === "object"
     ) {
       resolved = wf.workflowBriefResolution.resolvedFactors;
+    } else if (
+      ctx.workflowBriefResolution &&
+      ctx.workflowBriefResolution.resolvedFactors &&
+      typeof ctx.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      resolved = ctx.workflowBriefResolution.resolvedFactors;
     } else {
-      resolved = resolveWorkflowBriefFactors(config, explicit, {}, {}, base).resolved || {};
+      var inferred = applyWorkflowBriefInferenceRules(config, base.goal, base.inputs);
+      resolved =
+        resolveWorkflowBriefFactors(config, explicit, {}, inferred, base).resolved || {};
     }
     var packs = resolvePedagogicCognitionPackIds(config, resolved, explicit, base);
     var contract = resolvePedagogicCognitionContractRequirements(
@@ -6759,18 +6939,398 @@
     };
   }
 
+  function isSelfDirectedDeliveryForMaterialShapeScaffold(resolved) {
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var delivery = String(r.delivery_context || r.delivery_mode || "")
+      .toLowerCase()
+      .trim();
+    return (
+      delivery === "self_directed" ||
+      delivery === "async" ||
+      delivery === "online_async"
+    );
+  }
+
+  function isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base) {
+    var bits = [];
+    var ctx = context && typeof context === "object" ? context : {};
+    bits.push(String(ctx.workflowGoal || ""));
+    bits.push(String(ctx.desiredOutputs || ""));
+    if (Array.isArray(ctx.workflowOutputs)) {
+      bits.push(ctx.workflowOutputs.join(" "));
+    }
+    var b = base && typeof base === "object" ? base : {};
+    bits.push(String(b.goal || ""));
+    bits.push(String(b.desiredOutputs || ""));
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var sessionMats = r.session_materials;
+    if (Array.isArray(sessionMats)) {
+      sessionMats.forEach(function (mat) {
+        bits.push(String(mat || ""));
+      });
+    } else if (sessionMats != null && sessionMats !== "") {
+      bits.push(String(sessionMats));
+    }
+    var blob = bits.join(" ").toLowerCase();
+    return /\b(page|learner page|student page|content page|readable page|learner-facing page)\b/.test(
+      blob
+    );
+  }
+
+  function shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) {
+    if (!isSelfDirectedDeliveryForMaterialShapeScaffold(resolved)) return false;
+    return isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base);
+  }
+
+  function shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base) {
+    if (!isWorkflowStepDesignLearningActivities(context)) return false;
+    return shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base);
+  }
+
+  function shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold(
+    context,
+    resolved,
+    base
+  ) {
+    if (!isWorkflowStepDesignPage(context)) return false;
+    return shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base);
+  }
+
+  function shouldApplySelfDirectedLearnerPageGamMaterialScaffold(context, resolved, base) {
+    if (!isWorkflowStepGenerateActivityMaterials(context)) return false;
+    return shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base);
+  }
+
+  function evaluateTableRowAdequacyForLearnerTask(tableObj, learnerTask) {
+    var rows = tableObj && Array.isArray(tableObj.rows) ? tableObj.rows : [];
+    var rowCount = rows.length;
+    var task = String(learnerTask || "");
+    var minRows = 1;
+    var numberWords = {
+      one: 1,
+      two: 2,
+      three: 3,
+      four: 4,
+      five: 5,
+      six: 6,
+      seven: 7,
+      eight: 8
+    };
+    function parseCountToken(token) {
+      var t = String(token || "").toLowerCase().trim();
+      if (!t) return 0;
+      if (/^\d+$/.test(t)) return parseInt(t, 10) || 0;
+      return numberWords[t] || 0;
+    }
+    var numberedStages = task.match(/\b(?:stage|phase|event|work|match|row)\s*\d+/gi) || [];
+    if (numberedStages.length >= 2) minRows = Math.max(minRows, numberedStages.length);
+    var countWords = task.match(/\b(\d+)\s+(?:events?|stages?|phases?|works?|matches?|rows?|items?|entries)\b/i);
+    if (countWords) minRows = Math.max(minRows, parseInt(countWords[1], 10) || 1);
+    var countWordName = task.match(
+      /\b(one|two|three|four|five|six|seven|eight)\s+(?:events?|stages?|phases?|works?|matches?|rows?|items?|entries)\b/i
+    );
+    if (countWordName) minRows = Math.max(minRows, parseCountToken(countWordName[1]));
+    var eachOf = task.match(/\beach\s+of\s+(?:the\s+)?(\d+|one|two|three|four|five|six|seven|eight)\b/i);
+    if (eachOf) minRows = Math.max(minRows, parseCountToken(eachOf[1]));
+    var listItems = (task.match(/(?:^|[,;])\s*[-*•]\s+/g) || []).length;
+    if (listItems >= 2) minRows = Math.max(minRows, listItems);
+    return {
+      rowCount: rowCount,
+      minimumRows: minRows,
+      adequate: rowCount >= minRows
+    };
+  }
+
+  function evaluateSelfDirectedSourceReadingSufficiency(readingText, dependentActivityCount) {
+    var words = String(readingText || "")
+      .trim()
+      .split(/\s+/)
+      .filter(function (w) {
+        return !!w;
+      }).length;
+    var count = Math.max(0, parseInt(dependentActivityCount, 10) || 0);
+    var minimumWords = count >= 3 ? 150 : count >= 2 ? 120 : 70;
+    return {
+      wordCount: words,
+      minimumWords: minimumWords,
+      sufficient: words >= minimumWords
+    };
+  }
+
+  function buildSelfDirectedLearnerPageMaterialShapePromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page material shape (auto-applied):",
+      "- For cause–effect, comparison, or table-completion scaffolds on one activity, prefer a single integrated template or analysis_table (prompts in row labels) rather than parallel task_cards plus a separate table for the same scaffold.",
+      "- Only add task_cards when each card maps to a distinct sub-activity, not duplicate prompts already in the table.",
+      "- For comparison activities, include a short orienting text or sample_output material introducing each entity before any comparison prompt_set or comparison table.",
+      "- For dense concept-application activities, stage application in numbered learner_task sub-steps (e.g. Step 1 identify, Step 2 apply) instead of one overloaded writing task.",
+      "- Cap checklist scope to roughly four meaningful items per short writing task unless the brief explicitly requires more; do not list every learning-outcome concept in one checklist for a single brief response.",
+      "- Keep required_materials self-contained for independent study; do not assume live tutor clarification."
+    ].join("\n");
+  }
+
+  var SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS = [
+    "activity_preamble",
+    "orienting_preamble",
+    "activity_framing",
+    "prior_knowledge_activation",
+    "prior_knowledge_prompt",
+    "reasoning_orientation",
+    "reasoning_orientation_prompt",
+    "self_explanation_prompt",
+    "transfer_or_application_task",
+    "scaffold_hint_sequence",
+    "uncertainty_tension_prompt"
+  ];
+
+  function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page activity framing (auto-applied):",
+      "- Before each substantial activity, include activity_preamble: 1–3 concise sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise).",
+      "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
+      "- Use cognition-oriented orientation fields selectively (not on every activity): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, uncertainty_tension_prompt, transfer_or_application_task, scaffold_hint_sequence (2–3 short hints).",
+      "- Coverage minimum for a multi-activity page: every activity MUST have activity_preamble; at least half of activities should include one cognition-orientation field beyond the preamble.",
+      "- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; do not add facilitator_moves prose or tutoring narration.",
+      "- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock() {
+    return [
+      "",
+      "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
+      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 sentences).",
+      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt.",
+      "- self_explanation_prompt: at least two activities; one short reflective orientation sentence each (not a full essay).",
+      "- prior_knowledge_activation: at least one activity when prior context helps.",
+      "- reasoning_orientation: on compare/analyse/application activities.",
+      "- transfer_or_application_task: at least one application-focused activity when relevant.",
+      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 short strings).",
+      "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedGamTableRowAdequacyPromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page table row adequacy (auto-applied):",
+      "- Tables, analysis_table, timeline templates, and mapping templates must include enough blank or prompt-labelled rows for the stated learner_task — never a single blank row when multiple learner responses are required.",
+      "- Matching or mapping tasks: include one row per expected match when the activity lists events, stages, works, or prompts (e.g. four life events → at least four data rows).",
+      "- Timeline tasks: include one row per listed stage or phase in learner_task or required_materials.",
+      "- Comparison tables: include enough rows for each entity or dimension the learner must compare.",
+      "- Label prompt rows in the first column when useful; leave response cells empty for learner completion."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedGamReadingSufficiencyPromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page reading sufficiency (auto-applied):",
+      "- Source readings, support texts, and orienting passages must be substantial enough for independent study (roughly 150–300+ words when several activities depend on the same reading).",
+      "- If multiple activities reuse one reading, include enough detail, examples, and context for learners to complete every dependent task without external sources.",
+      "- Avoid ultra-short placeholder readings for beginner self-study pages; prefer concrete names, dates, and brief explanations over vague summaries.",
+      "- Give each reading or support material a specific title (e.g. \"Key Life Events\", \"Class Struggle Explanation\") — not generic labels like \"Text\" or \"Support Text\"."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock() {
+    return [
+      "",
+      "Self-directed page activity field preservation (auto-applied):",
+      "- When composing learning_activities.content from upstream learning_activities, copy these fields verbatim onto each matching activity_id when present upstream:",
+      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt",
+      "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
+      "- Do not strip or summarise away cognition-orientation fields."
+    ].join("\n");
+  }
+
+  function isWorkflowStepDesignPage(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_design_page" ||
+      title === "design page" ||
+      title.indexOf("design page") !== -1
+    );
+  }
+
+  function applySelfDirectedLearnerPageStepScaffoldsToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isDesignPage = isWorkflowStepDesignPage(context);
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    if (!isDla && !isDesignPage && !isGam) return draftBody;
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var applyDlaScaffolds = shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(
+      context,
+      resolved,
+      base
+    );
+    var applyDesignPagePreservation =
+      shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold(
+        context,
+        resolved,
+        base
+      );
+    var applyGamScaffolds = shouldApplySelfDirectedLearnerPageGamMaterialScaffold(
+      context,
+      resolved,
+      base
+    );
+    if (!applyDlaScaffolds && !applyDesignPagePreservation && !applyGamScaffolds) {
+      return draftBody;
+    }
+    if (isDla && applyDlaScaffolds) {
+      if (!/self-directed learner-page material shape \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (
+          draftBody + buildSelfDirectedLearnerPageMaterialShapePromptBlock()
+        ).trim();
+      }
+      if (!/self-directed learner-page activity framing \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (
+          draftBody + buildSelfDirectedLearnerPageActivityFramingPromptBlock()
+        ).trim();
+      }
+      if (!/output contract \(self-directed learner page/i.test(draftBody)) {
+        draftBody = (
+          draftBody + buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock()
+        ).trim();
+      }
+    }
+    if (
+      isDesignPage &&
+      applyDesignPagePreservation &&
+      !/self-directed page activity field preservation \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (
+        draftBody + buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock()
+      ).trim();
+    }
+    if (isGam && applyGamScaffolds) {
+      if (!/self-directed learner-page table row adequacy \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedGamTableRowAdequacyPromptBlock()).trim();
+      }
+      if (!/self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedGamReadingSufficiencyPromptBlock()).trim();
+      }
+    }
+    return draftBody;
+  }
+
+  function activityRowHasSelfDirectedFramingField(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    return SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS.some(function (fieldId) {
+      if (fieldId === "scaffold_hint_sequence") {
+        return pedagogicCognitionFieldHasValue(row[fieldId], true);
+      }
+      return pedagogicCognitionFieldHasValue(row[fieldId], false);
+    });
+  }
+
+  function evaluateSelfDirectedDlaActivityFramingCoverage(activities) {
+    var rows = Array.isArray(activities) ? activities : [];
+    var substantial = rows.filter(function (row) {
+      return row && typeof row === "object" && !Array.isArray(row);
+    });
+    var count = substantial.length;
+    if (!count) {
+      return {
+        activityCount: 0,
+        preambleCount: 0,
+        cognitionCueCount: 0,
+        meetsPreambleCoverage: false,
+        meetsSelectiveCognitionCoverage: false
+      };
+    }
+    var preambleCount = 0;
+    var cognitionCueCount = 0;
+    substantial.forEach(function (row) {
+      if (pedagogicCognitionFieldHasValue(row.activity_preamble, false)) preambleCount += 1;
+      else if (
+        pedagogicCognitionFieldHasValue(row.orienting_preamble, false) ||
+        pedagogicCognitionFieldHasValue(row.activity_framing, false)
+      ) {
+        preambleCount += 1;
+      }
+      var hasCue = false;
+      [
+        "prior_knowledge_activation",
+        "prior_knowledge_prompt",
+        "reasoning_orientation",
+        "reasoning_orientation_prompt",
+        "self_explanation_prompt",
+        "transfer_or_application_task",
+        "uncertainty_tension_prompt"
+      ].forEach(function (fieldId) {
+        if (pedagogicCognitionFieldHasValue(row[fieldId], false)) hasCue = true;
+      });
+      if (pedagogicCognitionFieldHasValue(row.scaffold_hint_sequence, true)) hasCue = true;
+      if (hasCue) cognitionCueCount += 1;
+    });
+    var minPreamble = count;
+    var minCognition = count >= 4 ? 2 : count >= 2 ? 1 : 0;
+    return {
+      activityCount: count,
+      preambleCount: preambleCount,
+      cognitionCueCount: cognitionCueCount,
+      meetsPreambleCoverage: preambleCount >= minPreamble,
+      meetsSelectiveCognitionCoverage: cognitionCueCount >= minCognition
+    };
+  }
+
   function applyPedagogicCognitionContractScaffoldToDraft(draftText, context) {
     var draftBody = String(draftText || "").trim();
-    if (/pedagogic cognition contract \(auto-applied\)/i.test(draftBody)) return draftBody;
     var isDla = isWorkflowStepDesignLearningActivities(context);
     var isGam = isWorkflowStepGenerateActivityMaterials(context);
     if (!isDla && !isGam) return draftBody;
     var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
-    var contract = briefCtx && briefCtx.contract ? briefCtx.contract : null;
-    if (!contract || !contract.active) return draftBody;
-    var block = buildPedagogicCognitionContractPromptBlock(isDla ? "dla" : "gam", contract);
-    if (!block) return draftBody;
-    return (draftBody + block).trim();
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!/pedagogic cognition contract \(auto-applied\)/i.test(draftBody)) {
+      var contract = briefCtx && briefCtx.contract ? briefCtx.contract : null;
+      if (contract && contract.active) {
+        var cognitionBlock = buildPedagogicCognitionContractPromptBlock(
+          isDla ? "dla" : "gam",
+          contract
+        );
+        if (cognitionBlock) draftBody = (draftBody + cognitionBlock).trim();
+      }
+    }
+    return draftBody;
   }
 
   function pedagogicCognitionFieldHasValue(value, arrayOrString) {
@@ -8580,98 +9140,7 @@
       out.delivery_mode = "async";
     }
 
-    function parseCountToken(token) {
-      var t = String(token || "").trim().toLowerCase();
-      if (!t) return NaN;
-      if (/^\d+$/.test(t)) return Number(t);
-      var wordMap = {
-        one: 1,
-        two: 2,
-        three: 3,
-        four: 4,
-        five: 5,
-        six: 6,
-        seven: 7,
-        eight: 8,
-        nine: 9,
-        ten: 10,
-        eleven: 11,
-        twelve: 12,
-        thirteen: 13,
-        fourteen: 14,
-        fifteen: 15,
-        sixteen: 16,
-        seventeen: 17,
-        eighteen: 18,
-        nineteen: 19,
-        twenty: 20
-      };
-      return Object.prototype.hasOwnProperty.call(wordMap, t) ? wordMap[t] : NaN;
-    }
-    function firstAssessmentItemCountFromText(text) {
-      var src = String(text || "").toLowerCase();
-      if (!src) return NaN;
-      var rangeMatch = src.match(/\b(\d+)\s*[-–]\s*(\d+)\s+items?\b/);
-      if (rangeMatch && rangeMatch[1] && rangeMatch[2]) {
-        var lo = Number(rangeMatch[1]);
-        var hi = Number(rangeMatch[2]);
-        if (isFinite(lo) && isFinite(hi) && lo > 0 && hi >= lo) {
-          return Math.round((lo + hi) / 2);
-        }
-      }
-      var countToken = "(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)";
-      var itemCheckKinds = "(?:formative|assessment|knowledge)\\s+checks?";
-      var patterns = [
-        new RegExp(
-          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
-            countToken +
-            "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+" +
-            itemCheckKinds +
-            "\\b",
-          "i"
-        ),
-        new RegExp(
-          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
-            countToken +
-            "(?:\\s*[- ]\\s*items?|\\s+items?)\\s+quiz(?:zes)?\\b",
-          "i"
-        ),
-        new RegExp(
-          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
-            countToken +
-            "(?:\\s*[- ]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice(?:\\s+questions?)?)\\b",
-          "i"
-        ),
-        new RegExp(
-          "\\b(?:exactly\\s+|about\\s+|around\\s+|approximately\\s+)?" +
-            countToken +
-            "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|formative\\s+questions?|assessment\\s+items?|questions?)\\b",
-          "i"
-        ),
-        new RegExp(
-          "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+)?" +
-            countToken +
-            "(?:\\s*[-–]\\s*item)?\\s+(?:mcq(?:s)?|multiple[ -]?choice)\\s+(?:quiz|test|assessment|exam)\\b",
-          "i"
-        ),
-        new RegExp(
-          "\\b(?:create|generate|produce|write|build|make)\\s+(?:a\\s+page\\s+with\\s+)?(?:exactly\\s+)?" +
-            countToken +
-            "\\s+(?:mcq(?:s)?|multiple[ -]?choice\\s+questions?|quiz\\s+questions?|questions?|assessment\\s+items?)\\b",
-          "i"
-        )
-      ];
-      for (var i = 0; i < patterns.length; i += 1) {
-        var match = src.match(patterns[i]);
-        if (!match || !match[1]) continue;
-        var n = parseCountToken(match[1]);
-        if (isFinite(n) && n > 0) {
-          return n;
-        }
-      }
-      return NaN;
-    }
-    var inferredAssessmentItems = firstAssessmentItemCountFromText(blob);
+    var inferredAssessmentItems = firstAssessmentItemCountFromBriefText(blob);
     if (isFinite(inferredAssessmentItems) && inferredAssessmentItems > 0) {
       out.assessment_total_items = Math.max(1, Math.round(inferredAssessmentItems));
     }
@@ -10508,8 +10977,15 @@
       var userProvided =
         Object.prototype.hasOwnProperty.call(elicited, id) ||
         src === "explicit" ||
-        src === "elicited";
+        src === "elicited" ||
+        src === "inferred";
       if (userProvided) return;
+      if (
+        id === "assessment_total_items" &&
+        isAssessmentItemCountResolvedForElicitation(base, r, elicited, sourceMap)
+      ) {
+        return;
+      }
       // Must-ask assessment controls should be explicitly collected unless
       // already user-provided.
       if (mustAskIds[id]) {
@@ -10541,8 +11017,15 @@
         var userProvided =
           Object.prototype.hasOwnProperty.call(elicited, id) ||
           src === "explicit" ||
-          src === "elicited";
+          src === "elicited" ||
+          src === "inferred";
         if (userProvided) return;
+        if (
+          id === "assessment_total_items" &&
+          isAssessmentItemCountResolvedForElicitation(base, r, elicited, sourceMap)
+        ) {
+          return;
+        }
         seen[id] = true;
         ordered.push(factor);
       });
@@ -11714,10 +12197,26 @@
     var assessmentExplicitlyDeclined =
       resolvedBriefFactors.assessment_required === false ||
       explicitBriefFactors.assessment_required === false;
+    function briefResolvedAssessmentRequired(resolved, explicit) {
+      var r = resolved && typeof resolved === "object" ? resolved : {};
+      var e = explicit && typeof explicit === "object" ? explicit : {};
+      if (r.assessment_required === true || e.assessment_required === true) return true;
+      var itemCount = Number(
+        r.assessment_total_items != null && r.assessment_total_items !== ""
+          ? r.assessment_total_items
+          : e.assessment_total_items != null && e.assessment_total_items !== ""
+            ? e.assessment_total_items
+            : 0
+      );
+      return itemCount > 0;
+    }
     var assessmentItemsRequested =
       !assessmentExplicitlyDeclined &&
-      hasIntent(
-        /\b(assessment questions?|question pack|question set|question bank|item bank|mcq|mcqs|multiple choice|quiz|test|formative questions?|formative assessment|assessment items?)\b/
+      (
+        briefResolvedAssessmentRequired(resolvedBriefFactors, explicitBriefFactors) ||
+        hasIntent(
+          /\b(assessment questions?|question pack|question set|question bank|item bank|mcq|mcqs|multiple choice|quiz|test|formative questions?|formative assessment|assessment items?)\b/
+        )
       );
     var assessmentBlueprintRequested = hasIntent(
       /\b(assessment blueprint|blueprint|distribution|difficulty profile|assessment plan|coverage map|specification)\b/
@@ -12129,8 +12628,18 @@
         (Array.isArray(rule.exclude) ? rule.exclude : []).forEach(function (title) {
           var c = canonicalizeFromPolicy(title);
           if (!c) return;
+          var excludeLower = c.toLowerCase();
+          if (assessmentItemsRequested) {
+            if (excludeLower === "generate assessment items") return;
+            if (
+              excludeLower === "design feedback" &&
+              (explicitFeedbackRequested || semanticFeedbackRequested)
+            ) {
+              return;
+            }
+          }
           out.steps = out.steps.filter(function (s) {
-            return String((s && s.title) || "").toLowerCase() !== c.toLowerCase();
+            return String((s && s.title) || "").toLowerCase() !== excludeLower;
           });
         });
         (Array.isArray(rule.include) ? rule.include : []).forEach(function (title) {
@@ -12337,6 +12846,21 @@
       __prismStepsAfterTriggerRules = out.steps.map(function (s) {
         return String((s && s.title) || "");
       });
+
+      if (assessmentItemsRequested) {
+        var generateAssessmentItemsCanon = canonicalizeFromPolicy("Generate Assessment Items");
+        if (generateAssessmentItemsCanon) {
+          var hasGenerateAssessmentItems = out.steps.some(function (s) {
+            return (
+              String((s && s.title) || "").toLowerCase() ===
+              String(generateAssessmentItemsCanon).toLowerCase()
+            );
+          });
+          if (!hasGenerateAssessmentItems) {
+            out.steps.push({ title: generateAssessmentItemsCanon, role: "" });
+          }
+        }
+      }
 
       // Deterministic delivery-step inclusion from explicit session_materials.
       // Use normalized delivery keys only (page / slide_deck / vle_structure). Raw
@@ -12755,12 +13279,9 @@
         }
       }
       var explicitlyRequiredStepSet = collectRequiredStepsClosure(requestedDeliverySteps);
-      // For topic-start assessment flows, protect the assessment prerequisite
-      // chain from optional-pruning so Generate Assessment Items remains viable.
-      if (
-        selectedStartingArtefact === "generate_from_topic" &&
-        assessmentItemsRequested
-      ) {
+      // Protect the assessment prerequisite chain from optional-pruning when the
+      // resolved brief (or goal text) requires assessment items.
+      if (assessmentItemsRequested) {
         var assessmentRequiredSet = collectRequiredStepsClosure(["Generate Assessment Items"]);
         Object.keys(assessmentRequiredSet).forEach(function (k) {
           explicitlyRequiredStepSet[k] = true;
@@ -21100,6 +21621,30 @@
     return utilityEscapeHtml(text).replace(/`/g, "&#96;");
   }
 
+  function utilityNormalizeEmbeddedListItemText(text) {
+    var t = String(text == null ? "" : text).trim();
+    if (!t) return "";
+    var prev = "";
+    while (t !== prev) {
+      prev = t;
+      t = t
+        .replace(/^\s*[-*•]\s+/, "")
+        .replace(/^\s*\d+[\)\.]\s+/, "")
+        .trim();
+    }
+    return t;
+  }
+
+  function utilityIsGenericMaterialBodyKey(lowerKey) {
+    var k = String(lowerKey || "").toLowerCase();
+    return k === "body" || k === "content" || k === "text" || k === "value";
+  }
+
+  function utilityObjectHasMeaningfulTitle(source) {
+    if (!source || typeof source !== "object" || Array.isArray(source)) return false;
+    return !!utilityFirstScalar([source.title, source.heading, source.name, source.label]);
+  }
+
   function utilityRenderMarkdownInline(text) {
     var raw = String(text == null ? "" : text);
     if (!raw) return "";
@@ -21291,10 +21836,18 @@
                 return !!piece;
               })
               .forEach(function (piece) {
-                ulItems.push("<li>" + utilityRenderMarkdownInline(piece) + "</li>");
+                ulItems.push(
+                  "<li>" +
+                    utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(piece)) +
+                    "</li>"
+                );
               });
           } else {
-            ulItems.push("<li>" + utilityRenderMarkdownInline(bodyText) + "</li>");
+            ulItems.push(
+              "<li>" +
+                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(bodyText)) +
+                "</li>"
+            );
           }
           i += 1;
         }
@@ -21307,7 +21860,11 @@
         while (i < lines.length) {
           var ol = String(lines[i] || "").trim().match(/^\d+[\)\.]\s+(.+)$/);
           if (!ol) break;
-          olItems.push("<li>" + utilityRenderMarkdownInline(ol[1]) + "</li>");
+          olItems.push(
+            "<li>" +
+              utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(ol[1])) +
+              "</li>"
+          );
           i += 1;
         }
         parts.push("<ol>" + olItems.join("") + "</ol>");
@@ -21602,10 +22159,35 @@
     return { bodySections: body, metadataSections: meta };
   }
 
+  function utilityIsSnakeCaseConfigToken(text) {
+    return /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(String(text || "").trim());
+  }
+
+  function utilityRenderPlainConfigScalar(value, opts) {
+    var renderOpts = utilityNormalizeRenderOpts(opts);
+    if (utilityIsEmptyValue(value)) return "";
+    var text = String(value == null ? "" : value).replace(/\r\n?/g, "\n").trim();
+    if (!text) return "";
+    if (renderOpts.humanizeEnumValues && utilityIsSnakeCaseConfigToken(text)) {
+      text = text.replace(/_/g, " ");
+    }
+    if (renderOpts.cleanupInlineMarkdown) {
+      text = utilityCleanupInlineMarkdownMarkers(text);
+    }
+    if (!text) return "";
+    return "<p>" + utilityEscapeHtml(text) + "</p>";
+  }
+
   function utilityRenderPrimitive(value, opts) {
     var renderOpts = utilityNormalizeRenderOpts(opts);
     if (utilityIsEmptyValue(value)) return "";
     var text = String(value == null ? "" : value).replace(/\r\n?/g, "\n").trim();
+    if (renderOpts.humanizeEnumValues && utilityIsSnakeCaseConfigToken(text)) {
+      return utilityRenderPlainConfigScalar(value, renderOpts);
+    }
+    if (renderOpts.plainConfigScalars && utilityIsSnakeCaseConfigToken(text)) {
+      return utilityRenderPlainConfigScalar(value, renderOpts);
+    }
     if (renderOpts.humanizeEnumValues && /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(text)) {
       text = text.replace(/_/g, " ");
     }
@@ -21745,13 +22327,20 @@
     var outer = utilityNormalizeHeadingCompareText(headingLabel);
     if (!outer || !String(renderedHtml || "").trim()) return false;
     var innerMatch = String(renderedHtml || "").match(
-      /class="util-card-subheading"[^>]*>([\s\S]*?)<\/h[45]>/i
+      /class="util-card-subheading"[^>]*>([\s\S]*?)<\/h[45]>|<h5[^>]*>([\s\S]*?)<\/h5>/i
     );
     if (!innerMatch) return false;
-    var inner = utilityNormalizeHeadingCompareText(String(innerMatch[1] || "").replace(/<[^>]+>/g, " "));
+    var inner = utilityNormalizeHeadingCompareText(
+      String(innerMatch[1] || innerMatch[2] || "").replace(/<[^>]+>/g, " ")
+    );
     if (!inner) return false;
     if (inner === outer || outer.indexOf(inner) !== -1 || inner.indexOf(outer) !== -1) return true;
     var genericMaterialHeadings = {
+      text: true,
+      "reading text": true,
+      "support text": true,
+      reading: true,
+      "source text": true,
       "summary text": true,
       "comparison prompts": true,
       "cause effect table": true,
@@ -22060,7 +22649,15 @@
           lowerKey === "content"
         ) {
           var desc = utilityRenderPrimitive(value, renderOpts);
-          return desc ? ("<p>" + desc.replace(/^<p>|<\/p>$/g, "") + "</p>") : "";
+          if (!String(desc || "").trim()) return "";
+          if (utilityIsGenericMaterialBodyKey(lowerKey) && utilityObjectHasMeaningfulTitle(obj)) {
+            return desc;
+          }
+          return "<p>" + desc.replace(/^<p>|<\/p>$/g, "") + "</p>";
+        }
+        if (utilityIsGenericMaterialBodyKey(lowerKey) && utilityObjectHasMeaningfulTitle(obj)) {
+          var genericBody = utilityRenderPrimitive(value, renderOpts);
+          return genericBody || "";
         }
         if ((lowerKey === "title" || lowerKey === "heading" || lowerKey === "name") && (typeof value === "string" || typeof value === "number")) {
           var headingValue = String(value == null ? "" : value).trim();
@@ -22404,7 +23001,15 @@
           return typeof x === "string" || typeof x === "number" || typeof x === "boolean";
         });
         if (allStrings) {
-          var list = arr.map(function (x) { return "<li>" + utilityRenderMarkdownInline(String(x)) + "</li>"; }).join("");
+          var list = arr
+            .map(function (x) {
+              return (
+                "<li>" +
+                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(x))) +
+                "</li>"
+              );
+            })
+            .join("");
           return "<ul>" + list + "</ul>";
         }
         return utilityRenderArray(arr, renderOpts);
@@ -22417,11 +23022,19 @@
         if (outcomes.length) {
           var outcomesLis = outcomes.map(function (outcome) {
             if (typeof outcome === "string" || typeof outcome === "number" || typeof outcome === "boolean") {
-              return "<li>" + utilityRenderMarkdownInline(String(outcome)) + "</li>";
+              return (
+                "<li>" +
+                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(outcome))) +
+                "</li>"
+              );
             }
             if (outcome && typeof outcome === "object") {
               var txt = firstNonEmpty([outcome.outcome, outcome.statement, outcome.text, outcome.description, outcome.title, outcome.name]);
-              return txt ? ("<li>" + utilityRenderMarkdownInline(String(txt)) + "</li>") : "";
+              return txt
+                ? "<li>" +
+                    utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(txt))) +
+                    "</li>"
+                : "";
             }
             return "";
           }).filter(function (x) { return !!x; }).join("");
@@ -23093,6 +23706,18 @@
           { id: "transformation_activity", label: "Transformation activity" },
           { id: "source_to_application_prompt", label: "Source to application" }
         ]
+      },
+      {
+        modifier: "util-cognition--explain",
+        fields: [{ id: "self_explanation_prompt", label: "Reflect" }]
+      },
+      {
+        modifier: "util-cognition--transfer",
+        fields: [{ id: "transfer_or_application_task", label: "Apply your thinking" }]
+      },
+      {
+        modifier: "util-cognition--scaffold",
+        fields: [{ id: "scaffold_hint_sequence", label: "Scaffold hints", arrayOrString: true }]
       }
     ];
     var COGNITION_ACTIVITY_FIELD_IDS = {};
@@ -23157,6 +23782,50 @@
       });
       return blocks.join("");
     }
+    function renderActivityFramingForActivity(row) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+      var preamble = firstNonEmpty([
+        row.activity_preamble,
+        row.orienting_preamble,
+        row.activity_framing
+      ]);
+      var priorKnowledge = firstNonEmpty([row.prior_knowledge_activation, row.prior_knowledge_prompt]);
+      var reasoningOrientation = firstNonEmpty([
+        row.reasoning_orientation,
+        row.reasoning_orientation_prompt
+      ]);
+      var blocks = [];
+      if (preamble) {
+        var preambleBody =
+          utilityRenderMarkdownBlock(String(preamble)) ||
+          "<p>" + utilityRenderMarkdownInline(String(preamble)) + "</p>";
+        blocks.push('<div class="util-activity-preamble">' + preambleBody + "</div>");
+      }
+      if (
+        priorKnowledge &&
+        normalizeComparableText(String(priorKnowledge)) !== normalizeComparableText(String(preamble || ""))
+      ) {
+        blocks.push(
+          '<p class="util-activity-preamble-cue"><strong>Before you start:</strong> ' +
+            utilityRenderMarkdownInline(String(priorKnowledge)) +
+            "</p>"
+        );
+      }
+      if (
+        reasoningOrientation &&
+        normalizeComparableText(String(reasoningOrientation)) !==
+          normalizeComparableText(String(preamble || "")) &&
+        normalizeComparableText(String(reasoningOrientation)) !==
+          normalizeComparableText(String(priorKnowledge || ""))
+      ) {
+        blocks.push(
+          '<p class="util-activity-preamble-cue"><strong>How to think:</strong> ' +
+            utilityRenderMarkdownInline(String(reasoningOrientation)) +
+            "</p>"
+        );
+      }
+      return blocks.join("");
+    }
     function renderLearningActivitiesBlocks(activityRows, renderContext) {
       var ctx = renderContext && typeof renderContext === "object" ? renderContext : {};
       var cognitionProfile =
@@ -23174,7 +23843,9 @@
         return null;
       }
       function renderCardScopedMarkdown(text) {
-        var raw = String(text == null ? "" : text).replace(/\r\n/g, "\n");
+        var raw = utilityNormalizeTemplateSeparatorArtefacts(
+          String(text == null ? "" : text)
+        ).replace(/\r\n/g, "\n");
         if (!raw.trim()) return "";
         // Generation separator lines are not learner-facing instructions.
         raw = raw.replace(/(?:\n|^)\s*---\s*$/g, "");
@@ -23229,7 +23900,11 @@
             .map(function (entry) {
               if (utilityIsEmptyValue(entry)) return "";
               if (typeof entry === "string") {
-                return "<li>" + utilityRenderMarkdownInline(String(entry).replace(/^[-*\d\.\)\s]+/, "").trim()) + "</li>";
+                return (
+                  "<li>" +
+                  utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(entry))) +
+                  "</li>"
+                );
               }
               if (entry && typeof entry === "object") {
                 var text = firstNonEmpty([entry.step, entry.instruction, entry.text, entry.content, entry.prompt, entry.title]);
@@ -23584,14 +24259,18 @@
                   });
                 });
                 bulletLines.forEach(function (b) {
-                  var cleanBullet = stripHeadingMarkersLocal(String(b));
+                  var cleanBullet = utilityNormalizeEmbeddedListItemText(
+                    stripHeadingMarkersLocal(String(b))
+                  );
                   if (isPlaceholderOnly(cleanBullet)) return;
                   rows.push("<li>" + utilityRenderMarkdownInline(cleanBullet) + "</li>");
                 });
                 if (splitBullets.length && splitBullets.length !== bulletLines.length) {
                   rows = rows.slice(0, Math.max(0, rows.length - bulletLines.length));
                   splitBullets.forEach(function (b2) {
-                    var cleanSplit = stripHeadingMarkersLocal(String(b2));
+                    var cleanSplit = utilityNormalizeEmbeddedListItemText(
+                      stripHeadingMarkersLocal(String(b2))
+                    );
                     if (isPlaceholderOnly(cleanSplit)) return;
                     rows.push("<li>" + utilityRenderMarkdownInline(cleanSplit) + "</li>");
                   });
@@ -23609,7 +24288,7 @@
               if (/^\s*[-*•]\s+/.test(single)) {
                 single = single.replace(/^\s*[-*•]\s+/, "").trim();
               }
-              single = stripHeadingMarkersLocal(single);
+              single = utilityNormalizeEmbeddedListItemText(stripHeadingMarkersLocal(single));
               if (isPlaceholderOnly(single)) return;
               rows.push("<li>" + utilityRenderMarkdownInline(single) + "</li>");
               return;
@@ -23745,7 +24424,9 @@
                 if (!entry || !entry.text) return "";
                 return '<li><span class="util-checkbox" aria-hidden="true">' +
                   utilityEscapeHtml(String(entry.token || "☐")) +
-                  '</span><span>' + utilityRenderMarkdownInline(String(entry.text)) + "</span></li>";
+                  '</span><span>' +
+                  utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(entry.text))) +
+                  "</span></li>";
               })
               .filter(function (x) { return !!x; });
             return rows.length ? ('<ul class="util-checkbox-list">' + rows.join("") + "</ul>") : "";
@@ -23810,7 +24491,11 @@
                   .filter(function (x) { return !!x && !isPlaceholderOnly(x); });
                 if (!clean.length) return "";
                 return "<ul>" + clean.map(function (x) {
-                  return "<li>" + utilityRenderMarkdownInline(x) + "</li>";
+                  return (
+                    "<li>" +
+                    utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(x)) +
+                    "</li>"
+                  );
                 }).join("") + "</ul>";
               }
               // Label pattern: "Label: - item - item"
@@ -24316,6 +25001,24 @@
           if (value && typeof value === "object") {
             var keys = Object.keys(value).filter(function (k) { return !utilityIsEmptyValue(value[k]); });
             if (!keys.length) return "";
+            var textLikeHint =
+              hint === "text" ||
+              hint === "reading_text" ||
+              hint === "support_text" ||
+              hint === "summary_text";
+            if (textLikeHint) {
+              var titledLabel = firstNonEmpty([value.heading, value.title]);
+              var titledBody = firstNonEmpty([value.content, value.body, value.text]);
+              if (titledLabel && titledBody) {
+                return (
+                  '<h5 class="util-card-subheading">' +
+                  utilityEscapeHtml(String(titledLabel)) +
+                  "</h5><p>" +
+                  utilityRenderMarkdownInline(String(titledBody)) +
+                  "</p>"
+                );
+              }
+            }
             var valueHeading = firstNonEmpty([value.heading, value.title]);
             if ((hint === "checklist" || hint === "checklists") && Array.isArray(value.items)) {
               var topChecklistRows = value.items
@@ -24370,11 +25073,42 @@
                 .map(function (sec) {
                   if (utilityIsEmptyValue(sec)) return "";
                   if (typeof sec === "string") {
-                    var secHeading = String(sec).trim();
-                    if (!secHeading) return "";
-                    return '<article class="util-template-block"><h5>' +
-                      utilityEscapeHtml(secHeading) +
-                      '</h5><div class="util-template-note-line" aria-hidden="true"></div></article>';
+                    var secRaw = String(sec).trim();
+                    if (!secRaw) return "";
+                    var secHeadingLine = secRaw.match(/^#{1,6}\s+(.+?)(?:\r?\n|$)/);
+                    var secHasTable = /\|/.test(secRaw) && /\r?\n/.test(secRaw);
+                    if (secHeadingLine || secHasTable) {
+                      var secTitle = secHeadingLine ? String(secHeadingLine[1] || "").trim() : "";
+                      var secBodyRaw = secHeadingLine
+                        ? secRaw.slice(secHeadingLine[0].length).trim()
+                        : secRaw;
+                      var secBodyHtml =
+                        renderPlainStructuredText(secBodyRaw, { materialHint: "table" }) ||
+                        renderCardScopedMarkdown(secBodyRaw);
+                      if (!String(secBodyHtml || "").trim() && !secTitle) return "";
+                      return (
+                        '<article class="util-template-block">' +
+                        (secTitle ? "<h5>" + utilityEscapeHtml(secTitle) + "</h5>" : "") +
+                        (secBodyHtml || "") +
+                        '<div class="util-template-note-line" aria-hidden="true"></div></article>'
+                      );
+                    }
+                    if (!/\r?\n/.test(secRaw)) {
+                      return (
+                        '<article class="util-template-block"><h5>' +
+                        utilityEscapeHtml(secRaw) +
+                        '</h5><div class="util-template-note-line" aria-hidden="true"></div></article>'
+                      );
+                    }
+                    var secMultilineBody =
+                      renderPlainStructuredText(secRaw, { materialHint: "table" }) ||
+                      renderCardScopedMarkdown(secRaw);
+                    if (!String(secMultilineBody || "").trim()) return "";
+                    return (
+                      '<article class="util-template-block">' +
+                      secMultilineBody +
+                      '<div class="util-template-note-line" aria-hidden="true"></div></article>'
+                    );
                   }
                   if (!sec || typeof sec !== "object" || Array.isArray(sec)) return "";
                   var secTitle = firstNonEmpty([sec.heading, sec.title, sec.name, sec.label, sec.section]);
@@ -24468,6 +25202,9 @@
                   return inner;
                 }
                 var headingText = nestedHeading || prettyMaterialHeading(k);
+                if (nestedHeading && utilityIsGenericMaterialBodyKey(lowerNestedKey)) {
+                  return inner;
+                }
                 var heading = "<h5>" + utilityEscapeHtml(String(headingText)) + "</h5>";
                 if (isCardLikeMaterialKey(k)) {
                   return '<article class="util-material-card">' + heading + inner + "</article>";
@@ -24884,6 +25621,10 @@
             headerBadges.push('<span class="util-badge util-badge-group">' + utilityEscapeHtml("Grouping: " + prettyGroupingValue(grouping)) + "</span>");
           }
           parts.push('<div class="util-activity-header"><h3>' + utilityEscapeHtml(title) + "</h3>" + (headerBadges.length ? ('<div class="util-badge-row">' + headerBadges.join("") + "</div>") : "") + "</div>");
+          var framingHtml = renderActivityFramingForActivity(row);
+          if (framingHtml) {
+            parts.push(framingHtml);
+          }
           if (purposeTask) {
             parts.push("<p><strong>Task:</strong> " + utilityRenderMarkdownInline(summarizeOneSentence(String(purposeTask))) + "</p>");
           }
@@ -26135,6 +26876,7 @@
           );
         }
         var explanationOnlyText = firstNonEmpty([
+          row.explanation,
           row.explanation_or_rationale,
           row.answer_or_guidance,
           row.model_answer_guidance,
@@ -26152,7 +26894,8 @@
           // Keep both only when genuinely different.
           detailText = feedbackText + "\n\n" + explanationOnlyText;
         }
-        if (detailText && !hideAnswers && !gridAtEnd) {
+        var suppressInlineAssessmentFeedback = gridAtEnd || hideAnswers;
+        if (detailText && !suppressInlineAssessmentFeedback) {
           var detailLabel =
             feedbackText || localPageProfile.toLowerCase() === "assessment"
               ? "Feedback"
@@ -26176,7 +26919,11 @@
           proposition: true, statement: true,
           correct_answer: true, correct_answers: true, answer: true, answer_key: true,
           answer_or_guidance: true, model_answer: true, model_answer_guidance: true, true_false_answer: true,
-          explanation_or_rationale: true, rationale: true, feedback: true, feedback_text: true
+          explanation_or_rationale: true,
+          explanation: true,
+          rationale: true,
+          feedback: true,
+          feedback_text: true
         };
         var extra = {};
         Object.keys(row).forEach(function (k) {
@@ -26184,7 +26931,7 @@
           if (utilityIsEmptyValue(row[k])) return;
           extra[k] = row[k];
         });
-        var extraHtml = utilityRenderObject(extra, 0, renderOpts);
+        var extraHtml = suppressInlineAssessmentFeedback ? "" : utilityRenderObject(extra, 0, renderOpts);
         if (!String(parts.join("") || "").trim() && !String(extraHtml || "").trim()) return "";
         if (modeApplies) {
           var qTitle = "Question " + (idx + 1);
@@ -27063,6 +27810,14 @@
       ".util-cognition--repair{border-left:3px solid #d97706}",
       ".util-cognition--uncertainty{border-left:3px solid #0891b2}",
       ".util-cognition--transformation{border-left:3px solid #059669}",
+      ".util-cognition--explain{border-left:3px solid #8b5cf6}",
+      ".util-cognition--transfer{border-left:3px solid #0d9488}",
+      ".util-cognition--scaffold{border-left:3px solid #64748b}",
+      ".util-activity-preamble{margin:0 0 14px;padding:12px 14px;border-left:3px solid #6366f1;background:#f8fafc;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.55;color:#1e293b}",
+      ".util-activity-preamble p:last-child{margin-bottom:0}",
+      ".util-activity-preamble-cue{margin:0 0 12px;font-size:.92rem;line-height:1.5;color:#334155}",
+      ".util-activity-header+.util-activity-preamble{margin-top:6px}",
+      ".util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:4px}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
       "@media print{.util-cognition{background:#fff;break-inside:avoid-page;page-break-inside:avoid}}"
     ].join("");
@@ -27291,6 +28046,50 @@
     return true;
   }
 
+  function mergeSelfDirectedActivityFramingFieldsIntoPageActivities(page, upstream) {
+    if (!page || !Array.isArray(page.sections)) return 0;
+    var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
+    if (!upstreamRows.length) return 0;
+    var upstreamById = {};
+    upstreamRows.forEach(function (row) {
+      if (!row || typeof row !== "object") return;
+      var key = pageActivityIdKey(
+        row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+      );
+      if (key) upstreamById[key] = row;
+    });
+    var mergedCount = 0;
+    page.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      var rows = [];
+      var wrapObject = false;
+      if (Array.isArray(content)) rows = content;
+      else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        rows = content.activities;
+        wrapObject = true;
+      } else return;
+      rows.forEach(function (row) {
+        if (!row || typeof row !== "object") return;
+        var key = pageActivityIdKey(
+          row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+        );
+        var upstreamRow = key ? upstreamById[key] : null;
+        if (!upstreamRow) return;
+        SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS.forEach(function (fieldId) {
+          var arrayOrString = fieldId === "scaffold_hint_sequence";
+          if (pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString)) return;
+          if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString)) return;
+          row[fieldId] = upstreamRow[fieldId];
+          mergedCount += 1;
+        });
+      });
+      if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
+      else section.content = rows;
+    });
+    return mergedCount;
+  }
+
   function mergeUpstreamCognitionFieldsIntoPageActivities(page, upstream, contract) {
     if (!page || !Array.isArray(page.sections) || !contract || !contract.active) return 0;
     var fieldIds = Array.isArray(contract.dlaFieldIds) ? contract.dlaFieldIds : [];
@@ -27494,6 +28293,12 @@
   function applyPedagogicCognitionSemanticsToComposedPage(page, options) {
     if (!page || typeof page !== "object") return page;
     var opts = options && typeof options === "object" ? options : {};
+    var upstream = opts.upstreamLearningActivities;
+    var next = JSON.parse(JSON.stringify(page));
+    var framingFieldsMerged = mergeSelfDirectedActivityFramingFieldsIntoPageActivities(
+      next,
+      upstream
+    );
     var briefCtx = resolveWorkflowBriefContextForPageComposition(opts);
     var semantics = resolvePedagogicCognitionCompositionSemantics(
       briefCtx.packs,
@@ -27503,8 +28308,13 @@
       briefCtx.base,
       briefCtx.config
     );
-    if (!semantics.cognitionCompositionActive) return page;
-    var next = JSON.parse(JSON.stringify(page));
+    if (!semantics.cognitionCompositionActive) {
+      if (framingFieldsMerged > 0) {
+        if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
+        next.metadata.self_directed_framing_fields_merged = framingFieldsMerged;
+      }
+      return next;
+    }
     if (!Array.isArray(next.sections)) next.sections = [];
     var trace = {
       cognitionSectionsPreserved: [],
@@ -27521,7 +28331,6 @@
         trace.cognitionSectionsPreserved.push(kind);
       }
     });
-    var upstream = opts.upstreamLearningActivities;
     var injected = ensureCognitionLearningActivitiesSection(next, upstream);
     if (injected) {
       trace.cognitionAssessmentDominancePrevented = true;
@@ -27532,6 +28341,9 @@
       upstream,
       briefCtx.contract
     );
+    if (framingFieldsMerged > 0) {
+      trace.cognitionFieldsMerged = (trace.cognitionFieldsMerged || 0) + framingFieldsMerged;
+    }
     trace.duplicateAssessmentRowsRemoved = stripDuplicateAssessmentRowsFromLearningActivities(next);
     if (trace.duplicateAssessmentRowsRemoved > 0) trace.cognitionActivitySuppressed = true;
     next.sections = reorderPageSectionsForCognitionParity(next.sections, semantics);
@@ -27895,6 +28707,17 @@
       }
       if (utilityIsEmptyValue(value)) return "";
       if (isPageArtefact && key === "page_profile") return "";
+      if (
+        isPageArtefact &&
+        (key === "feedback_display" ||
+          key === "feedbackDisplay" ||
+          key === "learner_answer_visibility" ||
+          key === "learnerAnswerVisibility" ||
+          key === "feedback_timing" ||
+          key === "feedbackTiming")
+      ) {
+        return "";
+      }
       var heading = labels[key] || utilityLabelFromKey(key);
       if (isPageArtefact && key === "sections") {
         return utilityRenderPageSections(value, labels, sectionOrder, buildPageSectionRenderOpts());
@@ -29026,6 +29849,18 @@
       buildPedagogicCognitionContractPromptBlock;
     prismTestApi.applyPedagogicCognitionContractScaffoldToDraft =
       applyPedagogicCognitionContractScaffoldToDraft;
+    prismTestApi.applySelfDirectedLearnerPageStepScaffoldsToDraft =
+      applySelfDirectedLearnerPageStepScaffoldsToDraft;
+    prismTestApi.utilityNormalizeEmbeddedListItemText = utilityNormalizeEmbeddedListItemText;
+    prismTestApi.evaluateTableRowAdequacyForLearnerTask = evaluateTableRowAdequacyForLearnerTask;
+    prismTestApi.evaluateSelfDirectedSourceReadingSufficiency =
+      evaluateSelfDirectedSourceReadingSufficiency;
+    prismTestApi.utilityMaterialHeadingRedundantWithInner = utilityMaterialHeadingRedundantWithInner;
+    prismTestApi.evaluateSelfDirectedDlaActivityFramingCoverage =
+      evaluateSelfDirectedDlaActivityFramingCoverage;
+    prismTestApi.mergeSelfDirectedActivityFramingFieldsIntoPageActivities =
+      mergeSelfDirectedActivityFramingFieldsIntoPageActivities;
+    prismTestApi.isWorkflowStepDesignPage = isWorkflowStepDesignPage;
     prismTestApi.evaluatePedagogicCognitionContractSatisfaction =
       evaluatePedagogicCognitionContractSatisfaction;
     prismTestApi.listPedagogicCognitionFieldsFromDlaOutput =

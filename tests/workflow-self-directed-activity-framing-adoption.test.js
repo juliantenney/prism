@@ -1,0 +1,244 @@
+/**
+ * Self-directed activity framing adoption — prompt contract, DLA coverage, downstream preservation.
+ */
+
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
+
+const repoRoot = path.resolve(__dirname, "..");
+const appJsPath = path.join(repoRoot, "app.js");
+const ldPatternsPath = path.join(
+  repoRoot,
+  "domains",
+  "learning-design",
+  "domain-learning-design-step-patterns.md"
+);
+
+const MARX_SELF_STUDY_BRIEF = {
+  goal:
+    "Create a self-directed learning page on Karl Marx covering life phases, cause-effect links, comparison of major works, and application of core concepts.",
+  inputs: "Undergraduate (self-directed study)",
+  desiredOutputs: "Learner-facing page",
+  selectedDomains: ["learning-design"]
+};
+
+function extractWorkflowBriefConfig(md) {
+  const idx = md.indexOf("### Workflow Brief Config");
+  const fence = md.indexOf("```json", idx);
+  const close = md.indexOf("```", fence + 7);
+  return JSON.parse(md.slice(fence + 7, close).trim()).workflowBriefConfig;
+}
+
+function loadPrismTestApi() {
+  const source = fs.readFileSync(appJsPath, "utf8");
+  const sandbox = { console, setTimeout, clearTimeout, Promise };
+  const documentStub = { readyState: "loading", addEventListener: () => {} };
+  const windowStub = { document: documentStub };
+  sandbox.document = documentStub;
+  sandbox.window = windowStub;
+  windowStub.window = windowStub;
+  vm.createContext(sandbox);
+  vm.runInContext(source, sandbox, { filename: "app.js" });
+  return sandbox.window.__PRISM_TEST_API;
+}
+
+const api = loadPrismTestApi();
+const ldBriefConfig = api.normalizeWorkflowBriefConfig(
+  extractWorkflowBriefConfig(fs.readFileSync(ldPatternsPath, "utf8"))
+);
+
+function applyDlaPromptPipeline(baseDraft, briefCtx, resolved) {
+  const ctx = Object.assign({}, briefCtx, {
+    workflowBriefResolution: { resolvedFactors: resolved }
+  });
+  return api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+    api.applyPedagogicCognitionContractScaffoldToDraft(baseDraft, ctx),
+    ctx
+  );
+}
+
+function marxResolvedFactors() {
+  const explicit = api.extractWorkflowBriefExplicitFactors(MARX_SELF_STUDY_BRIEF);
+  const inferred = api.applyWorkflowBriefInferenceRules(
+    ldBriefConfig,
+    MARX_SELF_STUDY_BRIEF.goal,
+    MARX_SELF_STUDY_BRIEF.inputs
+  );
+  return api.resolveWorkflowBriefFactors(
+    ldBriefConfig,
+    explicit,
+    {},
+    inferred,
+    MARX_SELF_STUDY_BRIEF
+  ).resolved;
+}
+
+test("DLA prompt pipeline: output contract override reaches final prompt", () => {
+  const resolved = marxResolvedFactors();
+  resolved.session_materials = ["page"];
+  const prompt = applyDlaPromptPipeline("Design executable learning activities.\n", {
+    workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
+    desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities"
+  }, resolved);
+  assert.match(prompt, /output contract \(self-directed learner page/i);
+  assert.match(prompt, /each activity object must include activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt: at least two activities/i);
+  assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+});
+
+test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
+  const resolved = marxResolvedFactors();
+  resolved.delivery_context = "self_directed";
+  resolved.session_materials = ["page"];
+  const ctx = {
+    workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
+    desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Page",
+    stepCanonicalStepId: "step_design_page",
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+    "Assemble learner page.\n",
+    ctx
+  );
+  assert.match(prompt, /self-directed page activity field preservation \(auto-applied\)/i);
+  assert.match(prompt, /activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt/i);
+});
+
+test("evaluateSelfDirectedDlaActivityFramingCoverage: well-formed self-directed activities", () => {
+  const cov = api.evaluateSelfDirectedDlaActivityFramingCoverage([
+    {
+      activity_id: "A1",
+      activity_preamble: "Before analysing Marx's exile, consider how displacement shapes ideas.",
+      prior_knowledge_activation: "Recall one historical example of exile.",
+      learner_task: "Complete the table."
+    },
+    {
+      activity_id: "A2",
+      activity_preamble: "As you compare these texts, notice differences in audience and purpose.",
+      self_explanation_prompt: "After comparing, state which text is more persuasive and why.",
+      learner_task: "Fill the comparison table."
+    },
+    {
+      activity_id: "A3",
+      activity_preamble: "Apply Marx's concepts to the factory scenario step by step.",
+      transfer_or_application_task: "Link your explanation to one concept from the checklist.",
+      learner_task: "Write a short explanation."
+    }
+  ]);
+  assert.equal(cov.meetsPreambleCoverage, true);
+  assert.equal(cov.meetsSelectiveCognitionCoverage, true);
+});
+
+test("evaluateSelfDirectedDlaActivityFramingCoverage: procedural-only activities fail", () => {
+  const cov = api.evaluateSelfDirectedDlaActivityFramingCoverage([
+    { activity_id: "A1", learner_task: "Do the task.", expected_output: "Table" },
+    { activity_id: "A2", learner_task: "Compare works.", expected_output: "Notes" }
+  ]);
+  assert.equal(cov.meetsPreambleCoverage, false);
+});
+
+test("downstream: mergeSelfDirectedActivityFramingFieldsIntoPageActivities preserves DLA fields", () => {
+  const upstream = {
+    activities: [
+      {
+        activity_id: "A2",
+        title: "Linking Experience to Theory",
+        activity_preamble: "Before analysing Marx's ideas, consider how exile shapes thinking.",
+        self_explanation_prompt: "Note one way biography might influence theory.",
+        learner_task: "Complete the table."
+      }
+    ]
+  };
+  const page = {
+    artifact_type: "page",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            activity_id: "A2",
+            title: "Linking Experience to Theory",
+            learner_task: "Complete the table."
+          }
+        ]
+      }
+    ]
+  };
+  const merged = api.mergeSelfDirectedActivityFramingFieldsIntoPageActivities(page, upstream);
+  assert.ok(merged >= 2);
+  const row = page.sections[0].content[0];
+  assert.match(String(row.activity_preamble || ""), /exile shapes thinking/i);
+  assert.match(String(row.self_explanation_prompt || ""), /biography/i);
+});
+
+test("downstream: applyPedagogicCognitionSemanticsToComposedPage merges framing without cognition pack", () => {
+  const upstream = {
+    activities: [
+      {
+        activity_id: "A1",
+        activity_preamble: "Orienting preamble from DLA.",
+        learner_task: "Task"
+      }
+    ]
+  };
+  const page = {
+    artifact_type: "page",
+    sections: [
+      {
+        section_id: "learning_activities",
+        content: [{ activity_id: "A1", learner_task: "Task only on page." }]
+      }
+    ]
+  };
+  const brief = MARX_SELF_STUDY_BRIEF;
+  const explicit = api.extractWorkflowBriefExplicitFactors(brief);
+  const { resolved } = api.resolveWorkflowBriefFactors(ldBriefConfig, explicit, {}, {}, brief);
+  const out = api.applyPedagogicCognitionSemanticsToComposedPage(page, {
+    upstreamLearningActivities: upstream,
+    resolvedFactors: resolved,
+    explicitBriefFactors: explicit,
+    workflowBriefConfig: ldBriefConfig,
+    base: brief
+  });
+  assert.match(
+    String(out.sections[0].content[0].activity_preamble || ""),
+    /Orienting preamble from DLA/
+  );
+});
+
+test("renderer: merged framing fields surface in HTML before What to do", () => {
+  const page = {
+    artifact_type: "page",
+    title: "Marx",
+    sections: [
+      {
+        section_id: "learning_activities",
+        content: [
+          {
+            activity_id: "A2",
+            title: "Compare works",
+            activity_preamble: "As you compare these texts, notice how arguments differ.",
+            self_explanation_prompt: "State which text you find more convincing.",
+            learner_task: "Complete the comparison table."
+          }
+        ]
+      }
+    ]
+  };
+  const r = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(r && !r.error);
+  const html = String(r.html);
+  const preambleIdx = html.indexOf("util-activity-preamble");
+  const taskIdx = html.indexOf("What to do");
+  assert.ok(preambleIdx !== -1 && taskIdx !== -1);
+  assert.ok(preambleIdx < taskIdx);
+  assert.match(html, /util-cognition--explain/);
+});

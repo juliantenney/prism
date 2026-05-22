@@ -1,0 +1,81 @@
+{
+  "artifact_type": "page",
+  "title": "Karl Marx: Life, Ideas, and Historical Context",
+  "audience": "Undergraduate (self-directed study)",
+  "page_profile": "learner",
+  "constraints_applied": {
+    "delivery_mode": "self-directed",
+    "profile": "learner"
+  },
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A2",
+          "title": "Linking Experience to Theory",
+          "duration_minutes": 20,
+          "purpose": "Analyse how Marx's life experiences shaped his ideas.",
+          "learner_task": "Complete the cause–effect table using task cards. Explain how each experience influenced Marx's thinking.",
+          "materials": {
+            "task_cards": [
+              { "title": "Card 1", "text": "What challenges did Marx face?" },
+              { "title": "Card 2", "text": "How did this influence his ideas?" },
+              { "title": "Card 3", "text": "What did Engels contribute?" },
+              { "title": "Card 4", "text": "How did this shape Marx's work?" },
+              { "title": "Card 5", "text": "What did Marx observe?" },
+              { "title": "Card 6", "text": "How did this influence his critique?" }
+            ],
+            "cause_effect_table": {
+              "heading": "Cause–Effect Table",
+              "table": "| Experience | What Marx Observed | Resulting Idea |\n| --- | --- | --- |\n| Exile | | |\n| Collaboration | | |\n| Industrial Context | | |"
+            }
+          },
+          "expected_output": "A completed table showing clear causal links between experiences and ideas.",
+          "support_note": "Use cause-and-effect language such as 'this led to' or 'this influenced'."
+        },
+        {
+          "activity_id": "A3",
+          "title": "Comparing Marx's Major Works",
+          "duration_minutes": 20,
+          "purpose": "Distinguish between Marx's key texts.",
+          "learner_task": "Complete the comparison table using prompts and identify differences and similarities.",
+          "materials": {
+            "comparison_prompts": "### Prompts\n\n- What is the purpose of each work?\n- Who is the audience?\n- What is the style?\n- What is the focus?",
+            "comparison_table": {
+              "heading": "Comparison Table",
+              "table": "| Feature | Communist Manifesto | Das Kapital |\n| --- | --- | --- |\n| Purpose | | |\n| Audience | | |\n| Style | | |\n| Focus | | |"
+            }
+          },
+          "expected_output": "A completed comparison showing clear distinctions between the two works.",
+          "support_note": "Focus especially on political vs analytical purpose."
+        },
+        {
+          "activity_id": "A4",
+          "title": "Explaining Marx's Core Concepts",
+          "duration_minutes": 15,
+          "purpose": "Apply Marx's ideas to a real-world scenario and evaluate their relevance.",
+          "learner_task": "Read the scenario and write a 150–200 word explanation using the checklist.",
+          "materials": {
+            "checklist": [
+              "Identify capitalism",
+              "Describe bourgeoisie",
+              "Describe proletariat",
+              "Explain class struggle",
+              "Explain alienation",
+              "Link to Industrial Revolution",
+              "Provide final judgement"
+            ],
+            "scenario": {
+              "heading": "Factory Scenario",
+              "content": "Workers in a London factory work long hours under strict supervision. The owner controls wages and production."
+            }
+          },
+          "expected_output": "A short explanation linking concepts and ending with a clear evaluative statement.",
+          "support_note": "Ensure concepts are connected, not described in isolation."
+        }
+      ]
+    }
+  ]
+}

@@ -93,6 +93,21 @@ function renderKitchenSink(api) {
   return { parsed, html: String(r.html || "") };
 }
 
+function sectionScope(html, headingText) {
+  const re = new RegExp(
+    headingText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+      "[\\s\\S]*?(?=<h2|<details class=\"util-meta\"|$)",
+    "i"
+  );
+  const m = html.match(re);
+  return m ? m[0] : html;
+}
+
+function indexOfMarker(html, marker) {
+  const idx = html.indexOf(marker);
+  return idx === -1 ? Number.POSITIVE_INFINITY : idx;
+}
+
 const api = loadPrismTestApi();
 
 test("kitchen sink fixture: parses and declares synthetic renderer stress", () => {
@@ -219,7 +234,7 @@ test("kitchen sink fixture (26-5): typographic polish and assessment identity", 
   assert.match(html, /util-assessment-item/);
   assert.match(html, /util-assessment-number/);
   assert.match(html, /util-assessment-options/);
-  assert.match(html, /util-assessment-explanation/);
+  assert.match(html, /util-assessment-key/);
   assert.match(html, /Document information/);
 });
 
@@ -228,4 +243,130 @@ test("kitchen sink fixture (26-5): icon alignment and print polish CSS markers",
   assert.match(html, /\.util-icon-heading\{[^}]*align-items:center/);
   assert.match(html, /counter-reset:timeline-step/);
   assert.match(html, /box-shadow:none!important/);
+});
+
+test("kitchen sink stabilisation: learning purpose bullets without embedded markers", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "Learning purpose");
+  assert.match(scope, /<ul>/);
+  assert.match(scope, /Identify key renderer paths/i);
+  assert.doesNotMatch(scope, /<li>\s*-\s*Identify/i);
+  assert.doesNotMatch(scope, /<li>\s*1\.\s*Render tables/i);
+});
+
+test("kitchen sink stabilisation: markdown tables render as util-table-scroll (not pipe paragraphs)", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  const tableScrollCount = (html.match(/util-table-scroll/g) || []).length;
+  assert.ok(tableScrollCount >= 4, `expected multiple util-table-scroll wrappers, got ${tableScrollCount}`);
+  assert.doesNotMatch(edge, /<p>\s*\|[^<]+\|[^<]+\|/);
+  assert.doesNotMatch(edge, /<h5[^>]*>[^<]*\|[^<]*---/);
+});
+
+test("kitchen sink stabilisation: comparison separator artefacts normalized", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.doesNotMatch(edge, /---\s*-\s*Key Difference:/i);
+  assert.match(edge, /Key Difference:/i);
+  assert.match(edge, /Similarity:/i);
+});
+
+test("kitchen sink stabilisation: knowledge summary variants without nested heading stacks in li", () => {
+  const { html } = renderKitchenSink(api);
+  const obj = sectionScope(html, "Key ideas (object)");
+  const arr = sectionScope(html, "Key concepts (array)");
+  assert.match(obj, /util-structured-block/);
+  assert.doesNotMatch(obj, /<li>\s*<h3>/i);
+  assert.doesNotMatch(arr, /<li>\s*<h3>/i);
+  assert.match(arr, /Assessment visibility/i);
+});
+
+test("kitchen sink stabilisation: checklist string and array avoid heading-only checkbox rows", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  const lists = edge.match(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/gi) || [];
+  assert.ok(lists.length >= 1);
+  lists.forEach((listHtml) => {
+    assert.doesNotMatch(listHtml, /##\s*Checklist/i);
+    assert.doesNotMatch(listHtml, />Checklist</i);
+  });
+  assert.match(edge, /Complete plain-string table/i);
+});
+
+test("kitchen sink stabilisation: answer-grid mode hides inline correct answers", () => {
+  const { html } = renderKitchenSink(api);
+  const assess = sectionScope(html, "Formative assessment check");
+  const keyIdx = indexOfMarker(assess, "util-assessment-key");
+  const inlineIdx = indexOfMarker(assess, "Correct answer:");
+  assert.ok(keyIdx !== Number.POSITIVE_INFINITY, "expected answer key section");
+  assert.equal(inlineIdx, Number.POSITIVE_INFINITY, "inline correct answer must not appear in items");
+  assert.doesNotMatch(assess, /<div class="util-assessment-item-body">[\s\S]*?Explanation/i);
+  assert.match(assess, /util-true-false-options|True<\/li>/i);
+});
+
+test("kitchen sink stabilisation: activity framing and cognition blocks visible", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  const preambleIdx = edge.indexOf("util-activity-preamble");
+  const taskIdx = edge.indexOf("What to do");
+  assert.ok(preambleIdx !== -1 && taskIdx !== -1);
+  assert.ok(preambleIdx < taskIdx);
+  assert.match(edge, /util-cognition--explain/);
+  assert.match(edge, /util-cognition--transfer/);
+  assert.match(edge, /util-cognition--scaffold/);
+});
+
+test("kitchen sink stabilisation: generic Text/Support Text headings suppressed when inner title exists", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.match(edge, /Key Life Events/i);
+  assert.match(edge, /Class Struggle Explanation/i);
+  assert.doesNotMatch(
+    edge,
+    /Support Text[\s\S]{0,160}util-card-subheading[\s\S]{0,80}Class Struggle/i,
+    "redundant Support Text label before inner title"
+  );
+});
+
+test("kitchen sink stabilisation: template heading plus pipe table splits into h5 and util-table-scroll", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.match(edge, /Table after heading/i);
+  assert.match(edge, /Table after heading[\s\S]{0,700}util-table-scroll/i);
+  assert.doesNotMatch(edge, /<h5[^>]*>[^<]*\|[^<]*---/i);
+});
+
+test("kitchen sink stabilisation: template follow-up strips embedded ordered-list markers", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.match(edge, /Write one sentence/i);
+  assert.match(edge, /Add evidence/i);
+  assert.doesNotMatch(edge, /1\.\s*Write one sentence/i);
+  assert.doesNotMatch(edge, /2\.\s*Add evidence/i);
+});
+
+test("kitchen sink stabilisation: answer-grid items omit inline Explanation blocks", () => {
+  const { html } = renderKitchenSink(api);
+  const assess = sectionScope(html, "Formative assessment check");
+  assert.doesNotMatch(assess, /<h[34][^>]*>\s*Explanation\s*<\/h[34]>/i);
+  assert.doesNotMatch(assess, /util-assessment-explanation/i);
+  assert.doesNotMatch(
+    assess,
+    /<div class="util-assessment-item-body">[\s\S]*?Explanation/i
+  );
+});
+
+test("kitchen sink stabilisation: meaningful material titles suppress generic Body heading", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.match(edge, /Class Struggle Explanation/i);
+  assert.doesNotMatch(edge, /<h5>\s*Body\s*<\/h5>/i);
+});
+
+test("kitchen sink stabilisation: config scalars render as plain text not markdown emphasis", () => {
+  const { html } = renderKitchenSink(api);
+  const meta = html.slice(html.indexOf("Document information"));
+  assert.ok(meta.length > 0, "expected collapsed metadata footer");
+  assert.match(meta, /answer[\s_]grid[\s_]end/i);
+  assert.doesNotMatch(meta, /answer<em>grid<\/em>end/i);
 });

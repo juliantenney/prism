@@ -41,6 +41,78 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
+### Marx self-study design-quality hotfix (**applied**, 2026-05-21)
+
+**Investigation:** [`hotfix-marx-self-study-design-quality-investigation.md`](hotfix-marx-self-study-design-quality-investigation.md)
+
+**Outcome:** Bounded DLA prompt scaffold in `applyPedagogicCognitionContractScaffoldToDraft` steers self-directed learner-page activity design toward integrated scaffolds, orient-before-compare, staged concept application, and capped checklists—without renderer, Design Page, GAM, or workflow-step changes.
+
+**Tests:** `tests/utility-marx-self-study-design-quality.test.js` (renderer fidelity + DLA scaffold guards).
+
+**Test floor:** **371** passing.
+
+---
+
+### Assessment item-count elicitation hotfix (**applied**, 2026-05-21)
+
+**Outcome:** Post-generation assessment elicitation no longer asks “How many assessment items…” when `assessment_total_items`, brief-stated counts, `number_of_items` / `total_items`, or mapped Generate Assessment Items settings already supply a count. Vague briefs (pack default only) may still ask.
+
+**Tests:** `tests/workflow-ld-assessment-item-count.test.js` (Marx 10-question + vague-count scenarios).
+
+**Test floor:** **376** passing.
+
+---
+
+### Self-directed activity framing hotfix (**applied**, 2026-05-21)
+
+**Doc:** [`hotfix-self-directed-activity-framing.md`](hotfix-self-directed-activity-framing.md)
+
+**Outcome:** DLA scaffold requests concise `activity_preamble` and optional cognition-orientation fields on self-directed learner-page activities; renderer shows preambles before “What to do” and renders self-study cognition fields when generated.
+
+**Tests:** `tests/utility-self-directed-activity-framing.test.js`, `tests/workflow-self-directed-activity-framing-adoption.test.js`
+
+**Adoption fix:** DLA OUTPUT CONTRACT override + Design Page field preservation + upstream framing merge on compose (`hotfix-self-directed-activity-framing-adoption.md`).
+
+**Test floor:** **389** passing (after adoption tests).
+
+---
+
+### Self-directed learner-page formatting hotfix (**complete**, 2026-05-21)
+
+**Doc:** [`hotfix-self-directed-learner-page-formatting.md`](hotfix-self-directed-learner-page-formatting.md)
+
+**Outcome:** Learning Purpose list items no longer show literal `- ` prefixes (renderer normalisation); GAM prompts require adequate table rows and substantial readings for self-directed pages; generic material headings (`Text`, `Support Text`, …) suppress when a clearer inner title exists.
+
+**Tests:** `tests/workflow-self-directed-learner-page-formatting.test.js`
+
+**Test floor:** **397** passing.
+
+---
+
+### Assessment step assembly hotfix (**complete**, 2026-05-21)
+
+**Doc:** [`hotfix-assessment-step-assembly.md`](hotfix-assessment-step-assembly.md)
+
+**Outcome:** Resolved `assessment_required` / `assessment_total_items` again produce **Generate Assessment Items** on self-directed learner-page workflows; page trigger excludes no longer drop assessment when the brief requires it.
+
+**Tests:** `tests/workflow-assessment-step-assembly.test.js`
+
+**Test floor:** **402** passing.
+
+---
+
+### Renderer kitchen-sink stabilisation (**complete**, 2026-05-21)
+
+**Doc:** [`hotfix-renderer-kitchen-sink-stabilisation.md`](hotfix-renderer-kitchen-sink-stabilisation.md)
+
+**Outcome:** Extended synthetic kitchen-sink fixture and renderer fixes for template tables, text-like material objects, generic heading suppression, assessment explanation leakage, and list-marker normalisation in template bullets.
+
+**Tests:** `tests/utility-renderer-kitchen-sink.test.js` (32 tests)
+
+**Test floor:** **415** passing.
+
+---
+
 ### Workflow brief pedagogic precedence (**complete**, 2026-05-21)
 
 **Investigation:** [`workflow-brief-pedagogic-precedence-investigation.md`](workflow-brief-pedagogic-precedence-investigation.md)

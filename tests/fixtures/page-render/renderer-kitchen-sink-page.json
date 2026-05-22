@@ -3,7 +3,7 @@
   "title": "PRISM renderer kitchen sink (synthetic)",
   "audience": "Renderer QA — not for learners",
   "page_profile": "learner",
-  "feedback_display": "none",
+  "feedback_display": "answer_grid_end",
   "sections": [
     {
       "section_id": "overview",
@@ -16,16 +16,30 @@
       "content": {
         "statement": "This fixture exists to validate presentation rendering:\n- section headings and icons\n- purpose statement with inline bullets",
         "outcomes": [
-          "Render task cards and scenario cards without content loss",
-          "Render tables, checklists, and prompt sets deterministically",
-          "Surface unknown material keys via fallback paths"
+          "- Identify key renderer paths without literal list-marker leakage",
+          "1. Render tables inside strings, objects, and nested template fields",
+          "• Surface cognition and preamble blocks when upstream fields exist"
         ]
       }
     },
     {
       "section_id": "knowledge_summary",
-      "heading": "Key ideas",
-      "content": "## Summary block\n\n- Markdown **headings** and lists in a primitive string section\n- Pipe tables below\n\n| Concept | Role |\n| --- | --- |\n| sections[] | Canonical body |\n| strictCompositionClosure | No activity fabrication |"
+      "heading": "Key ideas (object)",
+      "content": {
+        "concepts": [
+          { "name": "Pipe tables", "definition": "Markdown tables must render as scroll-wrapped HTML tables." },
+          { "term": "List markers", "definition": "Embedded '- ' or '1.' prefixes must not appear inside rendered list items." }
+        ],
+        "relationships": "Tables and lists should stay visually distinct; concepts use definition blocks, not heading stacks inside bullets."
+      }
+    },
+    {
+      "section_id": "knowledge_summary_array",
+      "heading": "Key ideas (array)",
+      "content": [
+        { "concept": "Assessment visibility", "summary": "Answer-grid mode hides inline keys until the end section." },
+        { "name": "Generic headings", "definition": "Prefer inner titles over Text / Support Text labels." }
+      ]
     },
     {
       "section_id": "learning_activities",
@@ -176,6 +190,54 @@
           "support_note": ""
         },
         {
+          "activity_id": "KS-A5",
+          "title": "Renderer stabilisation edge cases",
+          "duration_minutes": 25,
+          "activity_preamble": "Before working through these blocks, recall how tables and lists should look on learner pages.",
+          "self_explanation_prompt": "After each table, note one thing you had to infer from the layout.",
+          "transfer_or_application_task": "Choose one edge case and explain how you would spot it in a live export.",
+          "scaffold_hint_sequence": [
+            "Start with the plain-string table.",
+            "Check list markers in Learning purpose above.",
+            "Finish with the comparison prompts separator test."
+          ],
+          "learner_task": "Complete each material block; use tables and checklists as directed.",
+          "materials": {
+            "text": {
+              "heading": "Key Life Events",
+              "content": "Marx was born in Trier (1818), studied in Bonn and Berlin, and later worked as a journalist in Cologne and exile capitals."
+            },
+            "support_text": {
+              "title": "Class Struggle Explanation",
+              "body": "Class struggle describes conflict between owners of production and workers who sell their labour."
+            },
+            "reading_text": "Short orienting paragraph only — inner title should win over this generic key.",
+            "comparison_prompts": "### Prompts\n\n- What is the purpose of each work?\n\n---\n\n- Key Difference: shorter political manifesto\n- Second Difference: longer economic analysis\n- Similarity: both critique capitalism",
+            "table": "| Event | Idea |\n| --- | --- |\n| Exile | Alienation |\n| Manifesto | Class struggle |",
+            "analysis_table": {
+              "heading": "Nested object table",
+              "columns": ["Stage", "Prompt", "Response"],
+              "rows": [
+                { "Stage": "1", "Prompt": "Observe", "Response": "" },
+                { "Stage": "2", "Prompt": "Connect", "Response": "" }
+              ]
+            },
+            "template": {
+              "sections": [
+                "### Table after heading\n| Field | Notes |\n| --- | --- |\n| A |  |\n| B |  |",
+                { "heading": "Follow-up", "items": ["1. Write one sentence", "2. Add evidence"] }
+              ]
+            },
+            "checklist": "## Checklist\n\n☐ Complete plain-string table\n☐ Verify separator prompts render cleanly\n☐ Confirm generic headings are suppressed",
+            "checklist_array": [
+              "## Checklist",
+              "☐ First real item",
+              "☐ Second real item"
+            ]
+          },
+          "expected_output": "All edge-case materials rendered without markdown artefacts."
+        },
+        {
           "activity_id": "KS-A4",
           "title": "Minimal activity row",
           "learner_task": "Confirm minimal rows still render a task block."
@@ -225,10 +287,16 @@
           },
           {
             "item_id": "ks-q2",
-            "stem": "Select all material types explicitly handled in the first-pass materials loop.",
-            "options": ["task_cards", "scenarios", "prompt_set", "experimental_unknown_key"],
-            "item_type": "mcq",
-            "correct_answers": ["task_cards", "scenarios", "prompt_set"]
+            "item_type": "true_false",
+            "statement": "Pipe-only markdown tables should appear as literal pipe text in learner HTML.",
+            "true_false_answer": "False",
+            "explanation": "Tables should render inside util-table-scroll wrappers."
+          },
+          {
+            "item_id": "ks-q3",
+            "stem": "In one sentence, name one renderer path that normalises embedded list markers.",
+            "item_type": "short_answer",
+            "model_answer": "Learning purpose outcomes or util-checkbox-list item text."
           }
         ]
       }
@@ -261,7 +329,8 @@
   },
   "constraints_applied": {
     "renderer_coverage_only": true,
-    "pedagogy": "none"
+    "pedagogy": "none",
+    "feedback_display": "answer_grid_end"
   },
   "generation_notes": {
     "limitations": [

@@ -238,6 +238,15 @@
           "expected_output": "All edge-case materials rendered without markdown artefacts."
         },
         {
+          "activity_id": "KS-A6",
+          "title": "PEL orientation field showcase",
+          "activity_preamble": "Before you open the materials, note how each block below should appear in order.",
+          "study_orientation": "Work through this synthetic activity in one sitting (about 20 minutes). It exists only to validate renderer passthrough for self-study orientation fields.",
+          "intellectual_frame": "You are checking layout like a learner scanning a page before starting tasks.",
+          "intellectual_coherence_bridge": "Use what you noticed in the edge-case activity when judging whether orientation labels appear correctly here.",
+          "learner_task": "Confirm Study orientation, Intellectual frame, and Connection labels all appear above this task block."
+        },
+        {
           "activity_id": "KS-A4",
           "title": "Minimal activity row",
           "learner_task": "Confirm minimal rows still render a task block."

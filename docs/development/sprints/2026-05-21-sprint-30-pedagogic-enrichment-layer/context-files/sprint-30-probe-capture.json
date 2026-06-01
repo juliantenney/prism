@@ -1,0 +1,741 @@
+{
+  "capturedAt": "2026-06-01T07:49:34.262Z",
+  "model": "gpt-4.1-mini",
+  "apiKeyPresent": true,
+  "probes": [
+    {
+      "id": "P30-01",
+      "eo": {
+        "explicit": {
+          "desired_outputs": "Learner-facing page",
+          "session_materials": [
+            "page"
+          ],
+          "learner_level": "undergraduate",
+          "delivery_context": "self_directed",
+          "page_profile": "learner",
+          "topic": "karl marx covering life phases",
+          "workshop_subject": "karl marx covering life phases",
+          "delivery_mode": "async",
+          "delivery_pattern": "mostly_online",
+          "learning_environments": [
+            "vle"
+          ]
+        },
+        "resolved": {
+          "delivery_context": "self_directed",
+          "delivery_mode": "async",
+          "delivery_pattern": "mostly_online",
+          "learning_environments": [
+            "vle"
+          ]
+        },
+        "inferred": {},
+        "steps": [
+          "Normalize Content",
+          "Generate Learning Content",
+          "Model Knowledge",
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Construct Learning Sequence",
+          "Design Page"
+        ]
+      },
+      "live": {
+        "prompts": {
+          "dlaHasPel": true,
+          "dpHasPel": true
+        },
+        "learning_outcomes": {
+          "learning_outcomes": [
+            "Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas.",
+            "Analyze cause-effect relationships between historical events and Marx's development of key theories.",
+            "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.",
+            "Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+          ]
+        },
+        "learning_activities": {
+          "activities": [
+            {
+              "activity_id": "A1",
+              "title": "Chronological Phases of Karl Marx's Life",
+              "grouping": "individual",
+              "duration_minutes": 20,
+              "mapped_learning_outcomes": [
+                "Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M1",
+                  "type": "text",
+                  "purpose": "Biographical timeline and summary",
+                  "specification": "A non-chronological unordered list of key events and phases in Karl Marx's life including birth, education, exile periods, major publications, and death."
+                }
+              ],
+              "learner_task": "Arrange the provided life events of Karl Marx into a correct chronological timeline. Then, write a brief summary (3-4 sentences) explaining how each major life phase influenced his philosophical and political ideas.",
+              "expected_output": "A correctly ordered timeline of Marx's life events and a concise summary linking life phases to his ideas.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Understanding the timeline of Karl Marx's life helps you see how his experiences shaped his thinking. By putting his life events in order, you will better grasp the context behind his theories.",
+              "prior_knowledge_activation": "Recall what you already know about 19th-century European history to help place Marx's life events in context.",
+              "self_explanation_prompt": "Explain why the timing of Marx's exile or publication of major works might have influenced his ideas.",
+              "study_orientation": "This page guides you through Karl Marx's life, theories, and their application. Start by situating his life events chronologically to build a foundation for understanding his work. Each activity builds on the previous to deepen your insight into Marxist thought."
+            },
+            {
+              "activity_id": "A2",
+              "title": "Cause-Effect Analysis of Marx's Theoretical Development",
+              "grouping": "individual",
+              "duration_minutes": 25,
+              "mapped_learning_outcomes": [
+                "Analyze cause-effect relationships between historical events and Marx's development of key theories."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M2",
+                  "type": "template",
+                  "purpose": "Cause-effect analysis table",
+                  "specification": "A table with two columns: 'Historical Event' and 'Effect on Marx's Theory'. Includes a list of shuffled historical events relevant to Marx's life and space for learners to fill in effects."
+                }
+              ],
+              "learner_task": "Using the table, match each historical event to its effect on Marx's theoretical development. Provide a brief explanation (1-2 sentences) of how the event influenced a specific Marxist concept or theory.",
+              "expected_output": "A completed cause-effect table with plausible links between historical events and Marx's theory development.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Marx's ideas did not develop in isolation but were responses to real historical events. Analyzing these cause-effect links reveals how his theories emerged from specific social and political contexts.",
+              "reasoning_orientation": "Focus on understanding how external events triggered or shaped Marx's concepts rather than just memorizing facts.",
+              "self_explanation_prompt": "Reflect on which historical event you think had the strongest impact on Marx's theory and why."
+            },
+            {
+              "activity_id": "A3",
+              "title": "Comparing Major Works: The Communist Manifesto vs. Das Kapital",
+              "grouping": "individual",
+              "duration_minutes": 30,
+              "mapped_learning_outcomes": [
+                "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M3",
+                  "type": "text",
+                  "purpose": "Orienting extracts",
+                  "specification": "Short paired excerpts from The Communist Manifesto and Das Kapital highlighting key themes and arguments."
+                },
+                {
+                  "material_id": "M4",
+                  "type": "template",
+                  "purpose": "Comparison table",
+                  "specification": "A table with rows for themes such as 'Purpose', 'Audience', 'Key Arguments', 'Style', and 'Impact', and two columns for each work."
+                }
+              ],
+              "learner_task": "Read the excerpts and complete the comparison table by identifying the purpose, audience, key arguments, style, and impact of each work. Then write a short paragraph summarizing the main differences and similarities.",
+              "expected_output": "A filled comparison table and a concise summary paragraph comparing the two works.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Comparing Marx's major works side-by-side helps clarify their distinct roles and messages. This comparison deepens your understanding of his evolving arguments and intended audiences.",
+              "reasoning_orientation": "Analyze the texts critically to identify both shared themes and unique features of each work.",
+              "self_explanation_prompt": "Which work do you find more accessible or persuasive, and why?"
+            },
+            {
+              "activity_id": "A4",
+              "title": "Applying Marxist Concepts to Contemporary Issues",
+              "grouping": "individual",
+              "duration_minutes": 30,
+              "mapped_learning_outcomes": [
+                "Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M5",
+                  "type": "text",
+                  "purpose": "Summary of core Marxist concepts",
+                  "specification": "Concise definitions and explanations of concepts such as class struggle, alienation, surplus value, and historical materialism."
+                },
+                {
+                  "material_id": "M6",
+                  "type": "prompt_set",
+                  "purpose": "Contemporary issue prompts",
+                  "specification": "A set of 3-4 brief descriptions of current social or economic issues (e.g., gig economy, wealth inequality, labor automation) for application."
+                },
+                {
+                  "material_id": "M7",
+                  "type": "template",
+                  "purpose": "Application worksheet",
+                  "specification": "A worksheet guiding learners through identifying a concept, describing the issue, applying the concept, and reflecting on implications."
+                }
+              ],
+              "learner_task": "Select one contemporary issue from the prompts. Using the worksheet, identify a relevant Marxist concept, explain the issue, apply the concept to analyze it, and reflect on what this reveals about the issue's social or economic dynamics.",
+              "expected_output": "A completed worksheet with a clear application of Marxist theory to a contemporary issue and a reflective insight.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Applying Marxist concepts to today's issues allows you to see the continuing relevance of his ideas. This exercise develops your critical thinking and ability to connect theory with real-world problems.",
+              "transfer_or_application_task": "Consider how Marxist analysis might suggest solutions or critiques for the issue you chose.",
+              "self_explanation_prompt": "Why does the Marxist concept you applied help explain the contemporary issue better than other perspectives?"
+            }
+          ],
+          "outcome_alignment": {
+            "A1": [
+              "Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas."
+            ],
+            "A2": [
+              "Analyze cause-effect relationships between historical events and Marx's development of key theories."
+            ],
+            "A3": [
+              "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital."
+            ],
+            "A4": [
+              "Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+            ]
+          },
+          "delivery_notes": "All activities are designed for self-directed individual study in an asynchronous online environment within a virtual learning environment (VLE). Materials are text-based and templated for independent completion without facilitation."
+        },
+        "activity_materials": {
+          "text": "Activity: Chronological Phases of Karl Marx's Life  \nActivity ID: A1  \nMapped outcomes: Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas.\n\nMaterial: M1 (text)  \nPurpose: Biographical timeline and summary  \nContent:  \n**Key Events and Phases in Karl Marx's Life (Unordered List)**\n\n- Born on May 5, 1818, in Trier, Prussia (now Germany).  \n- Studied law and philosophy at the University of Bonn and then the University of Berlin.  \n- Developed early philosophical ideas influenced by Hegelian philosophy during university years.  \n- Married Jenny von Westphalen in 1843.  \n- Exiled from Germany due to political activism; moved to Paris in 1843.  \n- Collaborated with Friedrich Engels and co-authored *The Communist Manifesto* in 1848.  \n- Expelled from France in 1849; moved to Brussels and later to London.  \n- Published *Das Kapital* Volume I in 1867, his major economic critique of capitalism.  \n- Continued writing and political activism while living in London until his death.  \n- Died on March 14, 1883, in London.\n\nFacilitator use:  \nThis material is introduced at the start of the activity to provide learners with the raw biographical data they need to sequence. Learners use this unordered list to create a chronological timeline and then reflect on how each phase influenced Marx’s ideas.\n\n---\n\nActivity: Cause-Effect Analysis of Marx's Theoretical Development  \nActivity ID: A2  \nMapped outcomes: Analyze cause-effect relationships between historical events and Marx's development of key theories.\n\nMaterial: M2 (template)  \nPurpose: Cause-effect analysis table  \nContent:  \n\n| Historical Event                                    | Effect on Marx's Theory                                                                 | Explanation (1-2 sentences)                                                                                  |\n|---------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|\n| Industrial Revolution in Europe                    | Developed the concept of class struggle between bourgeoisie and proletariat            | The rise of industrial capitalism created a new working class exploited by factory owners, inspiring Marx’s theory of class conflict. |\n| Revolutions of 1848 across Europe                   | Inspired Marx to co-author *The Communist Manifesto* advocating proletarian revolution | The widespread uprisings showed the potential for working-class revolution and political change.              |\n| Exile from Germany and France                       | Deepened Marx’s critique of political repression and capitalism                        | Forced exile exposed Marx to different political environments and strengthened his opposition to authoritarian regimes. |\n| Publication of *Capital* Volume I in 1867           | Provided a detailed economic analysis of capitalism’s dynamics                         | Marx’s economic critique explained how surplus value is extracted from labor, underpinning his theory of exploitation. |\n| Rise of capitalist imperialism in the late 19th century | Led to Marx’s theory of historical materialism and global capitalism                   | The expansion of capitalism worldwide showed the historical development of economic systems and contradictions. |\n\nFacilitator use:  \nPresented as a fillable table, learners match events to effects and write brief explanations. This material supports critical analysis of how historical contexts shaped Marx’s theories.\n\n---\n\nActivity: Comparing Major Works: The Communist Manifesto vs. Das Kapital  \nActivity ID: A3  \nMapped outcomes: Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.\n\nMaterial: M3 (text)  \nPurpose: Orienting extracts  \nContent:  \n\n**Excerpt from The Communist Manifesto (1848):**  \n\"A spectre is haunting Europe—the spectre of communism. All the powers of old Europe have entered into a holy alliance to exorcise this spectre... The history of all hitherto existing society is the history of class struggles.\"\n\n**Excerpt from Das Kapital, Volume I (1867):**  \n\"The wealth of societies in which the capitalist mode of production prevails appears as an ‘immense collection of commodities’... A commodity appears at first sight an extremely obvious, trivial thing.\"\n\n---\n\nMaterial: M4 (template)  \nPurpose: Comparison table  \nContent:  \n\n| Theme/Aspect   | The Communist Manifesto                         | Das Kapital                                   |\n|----------------|------------------------------------------------|-----------------------------------------------|\n| Purpose        | To call for proletarian revolution and overthrow of capitalist society | To analyze the economic laws and mechanisms of capitalism in detail |\n| Audience       | General public, workers, political activists   | Scholars, economists, political theorists    |\n| Key Arguments  | History is class struggle; capitalism exploits workers; proletariat must unite | Capitalism’s exploitation is rooted in surplus value extracted from labor; commodity fetishism obscures exploitation |\n| Style          | Concise, polemical, accessible political pamphlet | Detailed, academic, economic critique        |\n| Impact         | Sparked revolutionary movements and socialist politics worldwide | Influenced economic theory and Marxist scholarship deeply |\n\n---\n\nMaterial: M4 (text)  \nPurpose: Summary paragraph  \nContent:  \nThe *Communist Manifesto* and *Das Kapital* serve different but complementary purposes. The Manifesto is a concise, politically charged call to action aimed at mobilizing workers for revolution, emphasizing class struggle and the need for proletarian unity. In contrast, *Das Kapital* offers a thorough economic analysis of capitalism’s inner workings, focusing on exploitation through surplus value and commodity fetishism. While both works critique capitalism, the Manifesto is more accessible and activist in tone, whereas *Das Kapital* is scholarly and detailed. Together, they provide a foundation for Marxist theory and political practice.\n\nFacilitator use:  \nThese paired excerpts and the comparison table guide learners to identify and articulate the distinctive features of Marx’s major works. The summary paragraph helps consolidate understanding of their differences and similarities.\n\n---\n\nActivity: Applying Marxist Concepts to Contemporary Issues  \nActivity ID: A4  \nMapped outcomes: Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples.\n\nMaterial: M5 (text)  \nPurpose: Summary of core Marxist concepts  \nContent:  \n\n**Core Marxist Concepts**\n\n- **Class Struggle:** The ongoing conflict between different social classes, primarily between the bourgeoisie (owners of production) and the proletariat (working class).  \n- **Alienation:** The estrangement of workers from the products of their labor, the labor process, their own humanity, and other people under capitalism.  \n- **Surplus Value:** The difference between the value produced by labor and the wages paid to laborers, which is appropriated by capitalists as profit.  \n- **Historical Materialism:** The theory that material economic conditions and class relations drive historical development and social change.\n\n---\n\nMaterial: M6 (prompt_set)  \nPurpose: Contemporary issue prompts  \nContent:  \n\nChoose one of the following contemporary social or economic issues to analyze using Marxist concepts:\n\n1. The rise of the gig economy and precarious labor conditions.  \n2. Increasing wealth inequality and concentration of capital in the hands of a few.  \n3. Automation and the future of work: job displacement and technological change.  \n4. Globalization and its impact on labor exploitation in developing countries.\n\n---\n\nMaterial: M7 (template)  \nPurpose: Application worksheet  \nContent:  \n\n| Step                     | Your Response                                                                                   |\n|--------------------------|------------------------------------------------------------------------------------------------|\n| 1. Selected Contemporary Issue |                                                                                              |\n| 2. Relevant Marxist Concept    |                                                                                              |\n| 3. Description of the Issue    |                                                                                              |\n| 4. Application of the Concept  | Explain how the Marxist concept helps analyze or explain this issue.                           |\n| 5. Reflection on Implications  | What does this analysis reveal about the social or economic dynamics of the issue?            |\n| 6. Possible Marxist Critique or Solution | Consider what Marxist theory might suggest as a critique or solution for this issue.  |\n\nFacilitator use:  \nThis worksheet guides learners step-by-step to apply Marxist theory to a real-world problem, encouraging critical reflection and deeper understanding of Marxism’s contemporary relevance."
+        },
+        "page": {
+          "artifact_type": "page",
+          "title": "Self-Directed Study on Karl Marx: Life, Theories, and Contemporary Applications",
+          "audience": "Undergraduate students engaging in self-directed study",
+          "page_profile": "learner",
+          "sections": [
+            {
+              "heading": "Introduction and Study Orientation",
+              "content": [
+                "This page guides you through Karl Marx's life, his key theories, and their application to contemporary social and economic issues. You will begin by situating Marx's life events chronologically to build a foundation for understanding his work. Subsequent activities will deepen your insight into Marxist thought by analyzing cause-effect relationships in his theoretical development, comparing his major works, and applying core Marxist concepts to modern issues. The activities are designed for independent study and will take approximately 1 hour and 45 minutes in total."
+              ]
+            },
+            {
+              "heading": "Learning Outcomes",
+              "content": [
+                "By completing the activities on this page, you will be able to:",
+                "- Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas.",
+                "- Analyze cause-effect relationships between historical events and Marx's development of key theories.",
+                "- Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.",
+                "- Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+              ]
+            },
+            {
+              "heading": "Learning Activities",
+              "content": [
+                {
+                  "activity_id": "A1",
+                  "title": "Chronological Phases of Karl Marx's Life",
+                  "duration_minutes": 20,
+                  "activity_preamble": "Understanding the timeline of Karl Marx's life helps you see how his experiences shaped his thinking. By putting his life events in order, you will better grasp the context behind his theories.",
+                  "prior_knowledge_activation": "Recall what you already know about 19th-century European history to help place Marx's life events in context.",
+                  "study_orientation": "This page guides you through Karl Marx's life, theories, and their application. Start by situating his life events chronologically to build a foundation for understanding his work. Each activity builds on the previous to deepen your insight into Marxist thought.",
+                  "self_explanation_prompt": "Explain why the timing of Marx's exile or publication of major works might have influenced his ideas.",
+                  "learner_task": "Arrange the provided life events of Karl Marx into a correct chronological timeline. Then, write a brief summary (3-4 sentences) explaining how each major life phase influenced his philosophical and political ideas.",
+                  "expected_output": "A correctly ordered timeline of Marx's life events and a concise summary linking life phases to his ideas.",
+                  "materials": {
+                    "biographical_timeline_and_summary": "**Key Events and Phases in Karl Marx's Life (Unordered List)**\n\n- Born on May 5, 1818, in Trier, Prussia (now Germany).\n- Studied law and philosophy at the University of Bonn and then the University of Berlin.\n- Developed early philosophical ideas influenced by Hegelian philosophy during university years.\n- Married Jenny von Westphalen in 1843.\n- Exiled from Germany due to political activism; moved to Paris in 1843.\n- Collaborated with Friedrich Engels and co-authored *The Communist Manifesto* in 1848.\n- Expelled from France in 1849; moved to Brussels and later to London.\n- Published *Das Kapital* Volume I in 1867, his major economic critique of capitalism.\n- Continued writing and political activism while living in London until his death.\n- Died on March 14, 1883, in London."
+                  }
+                },
+                {
+                  "activity_id": "A2",
+                  "title": "Cause-Effect Analysis of Marx's Theoretical Development",
+                  "duration_minutes": 25,
+                  "activity_preamble": "Marx's ideas did not develop in isolation but were responses to real historical events. Analyzing these cause-effect links reveals how his theories emerged from specific social and political contexts.",
+                  "reasoning_orientation": "Focus on understanding how external events triggered or shaped Marx's concepts rather than just memorizing facts.",
+                  "self_explanation_prompt": "Reflect on which historical event you think had the strongest impact on Marx's theory and why.",
+                  "intellectual_coherence_bridge": "This activity builds on your understanding of Marx's life phases by exploring how specific historical events influenced his theoretical development.",
+                  "learner_task": "Using the table, match each historical event to its effect on Marx's theoretical development. Provide a brief explanation (1-2 sentences) of how the event influenced a specific Marxist concept or theory.",
+                  "expected_output": "A completed cause-effect table with plausible links between historical events and Marx's theory development.",
+                  "materials": {
+                    "cause_effect_analysis_table": "| Historical Event                                    | Effect on Marx's Theory                                                                 | Explanation (1-2 sentences)                                                                                  |\n|---------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|\n| Industrial Revolution in Europe                    | Developed the concept of class struggle between bourgeoisie and proletariat            | The rise of industrial capitalism created a new working class exploited by factory owners, inspiring Marx’s theory of class conflict. |\n| Revolutions of 1848 across Europe                   | Inspired Marx to co-author *The Communist Manifesto* advocating proletarian revolution | The widespread uprisings showed the potential for working-class revolution and political change.              |\n| Exile from Germany and France                       | Deepened Marx’s critique of political repression and capitalism                        | Forced exile exposed Marx to different political environments and strengthened his opposition to authoritarian regimes. |\n| Publication of *Capital* Volume I in 1867           | Provided a detailed economic analysis of capitalism’s dynamics                         | Marx’s economic critique explained how surplus value is extracted from labor, underpinning his theory of exploitation. |\n| Rise of capitalist imperialism in the late 19th century | Led to Marx’s theory of historical materialism and global capitalism                   | The expansion of capitalism worldwide showed the historical development of economic systems and contradictions. |"
+                  }
+                },
+                {
+                  "activity_id": "A3",
+                  "title": "Comparing Major Works: The Communist Manifesto vs. Das Kapital",
+                  "duration_minutes": 30,
+                  "activity_preamble": "Comparing Marx's major works side-by-side helps clarify their distinct roles and messages. This comparison deepens your understanding of his evolving arguments and intended audiences.",
+                  "reasoning_orientation": "Analyze the texts critically to identify both shared themes and unique features of each work.",
+                  "self_explanation_prompt": "Which work do you find more accessible or persuasive, and why?",
+                  "intellectual_coherence_bridge": "This activity extends your analysis by comparing the themes and arguments in Marx's key writings.",
+                  "learner_task": "Read the excerpts and complete the comparison table by identifying the purpose, audience, key arguments, style, and impact of each work. Then write a short paragraph summarizing the main differences and similarities.",
+                  "expected_output": "A filled comparison table and a concise summary paragraph comparing the two works.",
+                  "materials": {
+                    "orienting_extracts": "**Excerpt from The Communist Manifesto (1848):**\n\"A spectre is haunting Europe—the spectre of communism. All the powers of old Europe have entered into a holy alliance to exorcise this spectre... The history of all hitherto existing society is the history of class struggles.\"\n\n**Excerpt from Das Kapital, Volume I (1867):**\n\"The wealth of societies in which the capitalist mode of production prevails appears as an ‘immense collection of commodities’... A commodity appears at first sight an extremely obvious, trivial thing.\"",
+                    "comparison_table": "| Theme/Aspect   | The Communist Manifesto                         | Das Kapital                                   |\n|----------------|------------------------------------------------|-----------------------------------------------|\n| Purpose        | To call for proletarian revolution and overthrow of capitalist society | To analyze the economic laws and mechanisms of capitalism in detail |\n| Audience       | General public, workers, political activists   | Scholars, economists, political theorists    |\n| Key Arguments  | History is class struggle; capitalism exploits workers; proletariat must unite | Capitalism’s exploitation is rooted in surplus value extracted from labor; commodity fetishism obscures exploitation |\n| Style          | Concise, polemical, accessible political pamphlet | Detailed, academic, economic critique        |\n| Impact         | Sparked revolutionary movements and socialist politics worldwide | Influenced economic theory and Marxist scholarship deeply |",
+                    "summary_paragraph": "The *Communist Manifesto* and *Das Kapital* serve different but complementary purposes. The Manifesto is a concise, politically charged call to action aimed at mobilizing workers for revolution, emphasizing class struggle and the need for proletarian unity. In contrast, *Das Kapital* offers a thorough economic analysis of capitalism’s inner workings, focusing on exploitation through surplus value and commodity fetishism. While both works critique capitalism, the Manifesto is more accessible and activist in tone, whereas *Das Kapital* is scholarly and detailed. Together, they provide a foundation for Marxist theory and political practice."
+                  }
+                },
+                {
+                  "activity_id": "A4",
+                  "title": "Applying Marxist Concepts to Contemporary Issues",
+                  "duration_minutes": 30,
+                  "activity_preamble": "Applying Marxist concepts to today's issues allows you to see the continuing relevance of his ideas. This exercise develops your critical thinking and ability to connect theory with real-world problems.",
+                  "transfer_or_application_task": "Consider how Marxist analysis might suggest solutions or critiques for the issue you chose.",
+                  "self_explanation_prompt": "Why does the Marxist concept you applied help explain the contemporary issue better than other perspectives?",
+                  "intellectual_coherence_bridge": "This final activity applies your understanding of Marxist theory to analyze current social and economic challenges.",
+                  "learner_task": "Select one contemporary issue from the prompts. Using the worksheet, identify a relevant Marxist concept, explain the issue, apply the concept to analyze it, and reflect on what this reveals about the issue's social or economic dynamics.",
+                  "expected_output": "A completed worksheet with a clear application of Marxist theory to a contemporary issue and a reflective insight.",
+                  "materials": {
+                    "summary_of_core_concepts": "**Core Marxist Concepts**\n\n- **Class Struggle:** The ongoing conflict between different social classes, primarily between the bourgeoisie (owners of production) and the proletariat (working class).\n- **Alienation:** The estrangement of workers from the products of their labor, the labor process, their own humanity, and other people under capitalism.\n- **Surplus Value:** The difference between the value produced by labor and the wages paid to laborers, which is appropriated by capitalists as profit.\n- **Historical Materialism:** The theory that material economic conditions and class relations drive historical development and social change.",
+                    "contemporary_issue_prompts": "Choose one of the following contemporary social or economic issues to analyze using Marxist concepts:\n\n1. The rise of the gig economy and precarious labor conditions.\n2. Increasing wealth inequality and concentration of capital in the hands of a few.\n3. Automation and the future of work: job displacement and technological change.\n4. Globalization and its impact on labor exploitation in developing countries.",
+                    "application_worksheet": "| Step                     | Your Response                                                                                   |\n|--------------------------|------------------------------------------------------------------------------------------------|\n| 1. Selected Contemporary Issue |                                                                                              |\n| 2. Relevant Marxist Concept    |                                                                                              |\n| 3. Description of the Issue    |                                                                                              |\n| 4. Application of the Concept  | Explain how the Marxist concept helps analyze or explain this issue.                           |\n| 5. Reflection on Implications  | What does this analysis reveal about the social or economic dynamics of the issue?            |\n| 6. Possible Marxist Critique or Solution | Consider what Marxist theory might suggest as a critique or solution for this issue.  |"
+                  }
+                }
+              ]
+            }
+          ],
+          "source_artefacts": {
+            "learning_activities": [
+              "A1",
+              "A2",
+              "A3",
+              "A4"
+            ],
+            "activity_materials": [
+              "M1",
+              "M2",
+              "M3",
+              "M4",
+              "M5",
+              "M6",
+              "M7"
+            ]
+          },
+          "constraints_applied": [
+            "Preserved all activity_preamble and orientation fields from upstream",
+            "Included all four upstream activities in full",
+            "Embedded full learner-facing materials as provided",
+            "Maintained page_profile as learner",
+            "Excluded facilitator choreography and timing cues",
+            "No external or fabricated content added"
+          ],
+          "generation_notes": {
+            "limitations": []
+          }
+        },
+        "htmlExcerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" /><title>Self-Directed Study on Karl Marx: Life, Theories, and Contemporary Applications</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:",
+        "dlaOrientation": [
+          {
+            "activity_id": "A1",
+            "title": "Chronological Phases of Karl Marx's Life",
+            "study_orientation": "This page guides you through Karl Marx's life, theories, and their application. Start by situating his life events chronologically to build a foundation for understanding his work. Each activity builds on the previous to deepen your insight into Marxist thought.",
+            "activity_preamble": "Understanding the timeline of Karl Marx's life helps you see how his experiences shaped his thinking. By putting his life events in order, you will better grasp the context behind his theories."
+          },
+          {
+            "activity_id": "A2",
+            "title": "Cause-Effect Analysis of Marx's Theoretical Development",
+            "activity_preamble": "Marx's ideas did not develop in isolation but were responses to real historical events. Analyzing these cause-effect links reveals how his theories emerged from specific social and political contexts."
+          },
+          {
+            "activity_id": "A3",
+            "title": "Comparing Major Works: The Communist Manifesto vs. Das Kapital",
+            "activity_preamble": "Comparing Marx's major works side-by-side helps clarify their distinct roles and messages. This comparison deepens your understanding of his evolving arguments and intended audiences."
+          },
+          {
+            "activity_id": "A4",
+            "title": "Applying Marxist Concepts to Contemporary Issues",
+            "activity_preamble": "Applying Marxist concepts to today's issues allows you to see the continuing relevance of his ideas. This exercise develops your critical thinking and ability to connect theory with real-world problems."
+          }
+        ],
+        "pageOrientation": [],
+        "evaluation": {
+          "rubric": {
+            "purpose_clear_quickly": true,
+            "sequentially_connected": "No",
+            "no_facilitator_choreography": "No",
+            "topic_specific": "Yes",
+            "bridges_useful_not_boilerplate": "N/A"
+          },
+          "anti_patterns": {
+            "welcome": false,
+            "inSession": false,
+            "minutesChoreo": false,
+            "uploadedOnly": false
+          },
+          "counts": {
+            "studyCount": 1,
+            "bridgeCount": 0,
+            "preambleCount": 4,
+            "activityCount": 4
+          },
+          "htmlHasStudyOrientation": true,
+          "htmlHasIntellectualFrame": false,
+          "htmlHasBridge": true
+        },
+        "weaknessNote": "**G/model:** missing intellectual_coherence_bridge on follow-on activities.\n**C:** Design Page dropped or altered orientation fields vs DLA — composition merge or model."
+      },
+      "compare": {
+        "marx_dla_procedural": {
+          "activities": 2,
+          "activity_preamble_count": 0,
+          "facilitator_moves_count": 2,
+          "orientation_fields": 0
+        },
+        "live_dla": {
+          "activities": 4,
+          "activity_preamble_count": 4,
+          "study_orientation_count": 1,
+          "intellectual_coherence_bridge_count": 0
+        },
+        "marx_self_study_page_fixture": {
+          "activities_in_page": 2,
+          "had_framing_fields": false
+        },
+        "qualitative": "Live DLA should show more framing/orientation than marx-dla-procedural-output.json; compare HTML for learner-visible coherence."
+      }
+    },
+    {
+      "id": "P30-02",
+      "eo": {
+        "explicit": {
+          "desired_outputs": "Learner-facing page",
+          "input_strategy": "provided_source_content",
+          "session_materials": [
+            "page"
+          ],
+          "learner_level": "undergraduate",
+          "delivery_context": "self_directed",
+          "page_profile": "learner",
+          "delivery_mode": "async",
+          "topic": "RNA viruses and hepatitis C (HCV)",
+          "workshop_subject": "RNA viruses and hepatitis C (HCV)",
+          "delivery_pattern": "mostly_online",
+          "learning_environments": [
+            "vle"
+          ]
+        },
+        "resolved": {
+          "delivery_context": "self_directed",
+          "delivery_mode": "async",
+          "delivery_pattern": "mostly_online",
+          "learning_environments": [
+            "vle"
+          ],
+          "topic": "RNA viruses and hepatitis C (HCV)",
+          "workshop_subject": "RNA viruses and hepatitis C (HCV)"
+        },
+        "inferred": {},
+        "steps": [
+          "Normalize Content",
+          "Model Knowledge",
+          "Define Learning Outcomes",
+          "Design Learning Activities",
+          "Generate Activity Materials",
+          "Construct Learning Sequence",
+          "Design Page"
+        ]
+      },
+      "live": {
+        "prompts": {
+          "dlaHasPel": true,
+          "dpHasPel": true
+        },
+        "learning_outcomes": {
+          "learning_outcomes": [
+            "Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.",
+            "Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).",
+            "Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.",
+            "Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration."
+          ]
+        },
+        "learning_activities": {
+          "activities": [
+            {
+              "activity_id": "A1",
+              "title": "Understanding RNA Virus Genome Types and Replication",
+              "grouping": "individual",
+              "duration_minutes": 15,
+              "mapped_learning_outcomes": [
+                "Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M1",
+                  "type": "text",
+                  "purpose": "Reference material on RNA virus genome types and replication",
+                  "specification": "Concise summary text explaining positive-sense vs negative-sense RNA viruses, including translation and polymerase requirements."
+                },
+                {
+                  "material_id": "M2",
+                  "type": "template",
+                  "purpose": "Comparison table template",
+                  "specification": "A table with rows for 'Genome type', 'Replication mechanism', and 'Example viruses', and two columns for positive-sense and negative-sense RNA viruses."
+                }
+              ],
+              "learner_task": "Using the reference material, complete the comparison table by filling in key differences between positive-sense and negative-sense RNA viruses, including their replication mechanisms and examples.",
+              "expected_output": "A completed comparison table clearly distinguishing positive-sense and negative-sense RNA viruses with accurate replication details and examples.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "RNA viruses differ in how their genomes are interpreted and replicated. Understanding these differences is crucial to grasping viral biology and treatment approaches.",
+              "prior_knowledge_activation": "Recall basic concepts of RNA structure and protein synthesis.",
+              "reasoning_orientation": "Analyze and categorize viral genome types based on replication requirements.",
+              "self_explanation_prompt": "Explain why positive-sense RNA can be translated directly but negative-sense RNA cannot.",
+              "scaffold_hint_sequence": [
+                "Identify what 'sense' means in RNA genomes.",
+                "Consider how viral RNA is used for protein synthesis.",
+                "Think about the role of viral polymerase in replication."
+              ]
+            },
+            {
+              "activity_id": "A2",
+              "title": "Role of Host microRNA-122 in Hepatitis C Virus Stability",
+              "grouping": "individual",
+              "duration_minutes": 10,
+              "mapped_learning_outcomes": [
+                "Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR)."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M3",
+                  "type": "text",
+                  "purpose": "Explanation of microRNA-122 interaction with HCV 5' UTR",
+                  "specification": "Text describing how microRNA-122 binds and stabilizes the HCV 5' UTR to enhance viral replication."
+                }
+              ],
+              "learner_task": "Summarize in your own words how host microRNA-122 interacts with the Hepatitis C virus 5' UTR and why this interaction is important for viral stability.",
+              "expected_output": "A brief written summary explaining the stabilizing role of microRNA-122 on the HCV 5' UTR and its significance for viral replication.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Host factors can influence viral replication. The interaction between microRNA-122 and HCV's 5' UTR is a key example of how host molecules support virus stability.",
+              "self_explanation_prompt": "Why might a host microRNA stabilize a viral RNA rather than degrade it?"
+            },
+            {
+              "activity_id": "A3",
+              "title": "Identifying the Function of NS5B in HCV Replication",
+              "grouping": "individual",
+              "duration_minutes": 10,
+              "mapped_learning_outcomes": [
+                "Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M4",
+                  "type": "text",
+                  "purpose": "Description of NS5B protein function",
+                  "specification": "Text explaining NS5B as the RNA-dependent RNA polymerase responsible for replicating HCV RNA."
+                }
+              ],
+              "learner_task": "Explain the role of the NS5B protein in the Hepatitis C virus life cycle, focusing on its enzymatic activity and importance.",
+              "expected_output": "A concise explanation describing NS5B as the viral RNA-dependent RNA polymerase essential for HCV genome replication.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Viral replication depends on specialized enzymes. NS5B is a critical protein that enables HCV to copy its RNA genome.",
+              "self_explanation_prompt": "How does the activity of NS5B differ from host DNA polymerases?"
+            },
+            {
+              "activity_id": "A4",
+              "title": "Distinguishing Hepatitis C Virus from Other RNA Viruses",
+              "grouping": "individual",
+              "duration_minutes": 20,
+              "mapped_learning_outcomes": [
+                "Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration."
+              ],
+              "required_materials": [
+                {
+                  "material_id": "M5",
+                  "type": "text",
+                  "purpose": "Summary of HCV characteristics and common misconceptions",
+                  "specification": "Text clarifying that HCV is a positive-sense, non-segmented flavivirus that does not integrate into host DNA, contrasting with influenza and retroviruses."
+                },
+                {
+                  "material_id": "M6",
+                  "type": "template",
+                  "purpose": "Misconception correction table",
+                  "specification": "Table with columns: 'Misconception', 'Correct Fact', and 'Explanation'. Rows for influenza segmentation and retrovirus integration misconceptions."
+                }
+              ],
+              "learner_task": "Complete the misconception correction table by identifying the incorrect beliefs about HCV and providing the correct facts with explanations.",
+              "expected_output": "A completed table that clearly corrects misconceptions about HCV genome segmentation and integration with accurate facts and reasoning.",
+              "failure_mode": "",
+              "facilitator_moves": "",
+              "activity_preamble": "Misunderstandings about viruses can hinder learning. Clarifying how Hepatitis C virus differs from other RNA viruses helps solidify accurate knowledge.",
+              "prior_knowledge_activation": "Recall basic virus genome structures and replication strategies.",
+              "reasoning_orientation": "Evaluate and correct common misconceptions by comparing viral features.",
+              "self_explanation_prompt": "Why might learners confuse HCV with influenza or retroviruses?",
+              "transfer_or_application_task": "Consider how these misconceptions could impact approaches to treatment or research."
+            }
+          ],
+          "outcome_alignment": {
+            "Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.": [
+              "A1"
+            ],
+            "Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).": [
+              "A2"
+            ],
+            "Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.": [
+              "A3"
+            ],
+            "Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration.": [
+              "A4"
+            ]
+          },
+          "delivery_notes": "All activities are designed for asynchronous, self-directed individual study within a virtual learning environment (VLE). Each activity includes clear instructions, required reference materials, and scaffolded prompts to support independent learning and reflection."
+        },
+        "activity_materials": {
+          "text": "Activity: Understanding RNA Virus Genome Types and Replication  \nActivity ID: A1  \nMapped outcomes: Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.\n\nMaterial: M1 (text)  \nPurpose: Reference material on RNA virus genome types and replication  \nContent:  \n**RNA Virus Genome Types and Replication Mechanisms**\n\nRNA viruses carry their genetic information in the form of RNA genomes. These genomes can be classified based on their \"sense\" or polarity:\n\n- **Positive-sense RNA viruses:** Their RNA genome is similar in polarity to messenger RNA (mRNA). This means the viral RNA can be directly recognized by the host cell's ribosomes and translated into viral proteins immediately upon infection. No additional steps are needed before protein synthesis begins.\n\n- **Negative-sense RNA viruses:** Their RNA genome is complementary to mRNA and cannot be directly translated. Instead, these viruses carry an RNA-dependent RNA polymerase enzyme within the virion. Upon entry into the host cell, this polymerase synthesizes a complementary positive-sense RNA strand from the negative-sense genome. This positive-sense RNA then serves as mRNA for translation into viral proteins.\n\n**Key differences:**\n\n| Feature                    | Positive-sense RNA viruses                       | Negative-sense RNA viruses                        |\n|----------------------------|------------------------------------------------|--------------------------------------------------|\n| Genome polarity            | Same as mRNA (5' to 3')                        | Complementary to mRNA (3' to 5')                  |\n| Translation requirement    | Can be directly translated by host ribosomes   | Requires viral RNA polymerase to create mRNA     |\n| Virion polymerase presence| Usually absent                                  | Present in virion to initiate transcription      |\n| Examples                  | Hepatitis C virus, Poliovirus, West Nile virus | Influenza virus, Rabies virus, Ebola virus        |\n\nUnderstanding these differences is crucial for grasping how RNA viruses replicate and how antiviral strategies can target these processes.\n\nFacilitator use:  \nThis material is provided for learners to study independently before completing the comparison table. It introduces foundational concepts needed to distinguish positive-sense and negative-sense RNA viruses. Facilitators should encourage learners to refer back to this text when filling out the table and answering scaffolded prompts.\n\n---\n\nMaterial: M2 (template)  \nPurpose: Comparison table template  \nContent:  \n\n| Feature                 | Positive-sense RNA viruses                          | Negative-sense RNA viruses                         |\n|-------------------------|---------------------------------------------------|---------------------------------------------------|\n| Genome type             |                                                   |                                                   |\n| Replication mechanism   |                                                   |                                                   |\n| Example viruses         |                                                   |                                                   |\n\nFacilitator use:  \nLearners use this template to organize their understanding of the key differences between positive-sense and negative-sense RNA viruses. Facilitators can prompt learners to complete each row using the reference material and scaffold hints.\n\n---\n\nActivity: Role of Host microRNA-122 in Hepatitis C Virus Stability  \nActivity ID: A2  \nMapped outcomes: Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).\n\nMaterial: M3 (text)  \nPurpose: Explanation of microRNA-122 interaction with HCV 5' UTR  \nContent:  \n**Host microRNA-122 and Hepatitis C Virus 5' UTR Stability**\n\nMicroRNA-122 (miR-122) is a liver-specific small non-coding RNA molecule abundantly expressed in hepatocytes, the primary cells infected by Hepatitis C virus (HCV). Unlike many microRNAs that suppress gene expression by promoting RNA degradation or inhibiting translation, miR-122 interacts uniquely with the HCV genome.\n\n- miR-122 binds directly to two conserved sites near the 5' untranslated region (5' UTR) of the HCV RNA genome.\n- This binding stabilizes the viral RNA, protecting it from degradation by cellular exonucleases.\n- The interaction enhances the accumulation of HCV RNA, promoting efficient viral replication.\n- By stabilizing the 5' UTR, miR-122 helps maintain the integrity and availability of the viral genome for translation and replication.\n\nThis host-virus interaction exemplifies how viruses can exploit host molecules to their advantage, turning a typical gene regulatory mechanism into a viral replication enhancer.\n\nFacilitator use:  \nThis text supports learners in understanding the unusual role of a host microRNA in viral RNA stability. Facilitators should encourage learners to reflect on the significance of this interaction and how it differs from typical microRNA functions.\n\n---\n\nActivity: Identifying the Function of NS5B in HCV Replication  \nActivity ID: A3  \nMapped outcomes: Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.\n\nMaterial: M4 (text)  \nPurpose: Description of NS5B protein function  \nContent:  \n**NS5B Protein: The RNA-dependent RNA Polymerase of Hepatitis C Virus**\n\nNS5B is a nonstructural protein encoded by the Hepatitis C virus genome. It functions as the viral RNA-dependent RNA polymerase (RdRp), an enzyme critical for viral replication.\n\n- NS5B catalyzes the synthesis of new RNA strands using the viral RNA genome as a template.\n- It copies the positive-sense RNA genome into a complementary negative-sense RNA intermediate.\n- This negative-sense RNA then serves as a template for producing multiple positive-sense RNA genomes.\n- These new positive-sense RNAs are used for translation into viral proteins and packaging into new virions.\n- NS5B operates independently of host DNA polymerases and does not require a DNA intermediate.\n- Because of its essential role in replication, NS5B is a key target for antiviral drugs against HCV.\n\nUnderstanding NS5B’s enzymatic activity highlights the unique mechanisms RNA viruses use to replicate their genomes.\n\nFacilitator use:  \nThis material provides learners with a clear explanation of NS5B’s role. Facilitators should prompt learners to compare NS5B’s function with host polymerases and consider why targeting NS5B is effective in antiviral therapy.\n\n---\n\nActivity: Distinguishing Hepatitis C Virus from Other RNA Viruses  \nActivity ID: A4  \nMapped outcomes: Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration.\n\nMaterial: M5 (text)  \nPurpose: Summary of HCV characteristics and common misconceptions  \nContent:  \n**Characteristics of Hepatitis C Virus and Common Misconceptions**\n\n- **Hepatitis C virus (HCV)** is a positive-sense, single-stranded RNA virus belonging to the *Flaviviridae* family.\n- Its genome is **non-segmented**, meaning it consists of a single continuous RNA strand.\n- HCV replicates in hepatocytes without integrating its genome into the host DNA.\n- Unlike retroviruses (e.g., HIV), HCV does **not** reverse transcribe its RNA into DNA, nor does it insert viral DNA into the host genome.\n- Influenza virus, by contrast, has a **segmented** RNA genome composed of multiple RNA segments.\n- Retroviruses integrate into the host genome as part of their replication cycle, which is not the case for HCV.\n\n**Common Misconceptions:**\n\n- Confusing HCV with influenza virus due to both being RNA viruses, leading to the incorrect belief that HCV has a segmented genome.\n- Assuming HCV integrates into host DNA like retroviruses, which is false and affects understanding of treatment strategies.\n\nClarifying these points is important for accurate comprehension of viral biology and for guiding research and therapeutic approaches.\n\nFacilitator use:  \nThis text serves as a factual basis for learners to identify and correct misconceptions. Facilitators should encourage learners to reflect on why these misconceptions arise and their implications.\n\n---\n\nMaterial: M6 (template)  \nPurpose: Misconception correction table  \nContent:  \n\n| Misconception                              | Correct Fact                                                        | Explanation                                                                                         |\n|-------------------------------------------|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|\n| HCV has a segmented genome like influenza | HCV has a single, non-segmented positive-sense RNA genome         | Unlike influenza, HCV’s genome is one continuous RNA strand, not divided into segments.           |\n| HCV integrates into host DNA like retroviruses | HCV does not integrate into host DNA; it replicates in the cytoplasm as RNA | HCV lacks reverse transcriptase and does not form DNA intermediates, so it does not insert into host DNA. |\n\nFacilitator use:  \nLearners complete this table by matching misconceptions with correct facts and explanations. Facilitators can use this to reinforce understanding and address common errors in viral biology knowledge."
+        },
+        "page": {
+          "artifact_type": "page",
+          "title": "Self-Directed Study: RNA Viruses and Hepatitis C (HCV)",
+          "audience": "Undergraduate students studying virology or related biomedical sciences",
+          "page_profile": "learner",
+          "sections": [
+            {
+              "heading": "Introduction and Study Orientation",
+              "content": "This self-directed study page is designed to deepen your understanding of RNA viruses, focusing specifically on the Hepatitis C virus (HCV). The activities are structured to build your knowledge progressively, starting from fundamental concepts of RNA virus genome types and replication mechanisms, moving through host-virus molecular interactions, and culminating in distinguishing HCV from other RNA viruses while addressing common misconceptions. You will engage with concise reference materials, complete comparison and correction tables, and reflect on key viral biology concepts. This study is expected to take approximately one hour and is intended for independent completion within a virtual learning environment (VLE)."
+            },
+            {
+              "heading": "Learning Outcomes",
+              "content": "By completing the activities on this page, you will be able to:\n\n- Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.\n- Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).\n- Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.\n- Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including correcting common misconceptions about viral genome segmentation and integration."
+            },
+            {
+              "heading": "Learning Activities",
+              "content": [
+                {
+                  "activity_id": "A1",
+                  "title": "Understanding RNA Virus Genome Types and Replication",
+                  "duration_minutes": 15,
+                  "activity_preamble": "RNA viruses differ in how their genomes are interpreted and replicated. Understanding these differences is crucial to grasping viral biology and treatment approaches.",
+                  "prior_knowledge_activation": "Recall basic concepts of RNA structure and protein synthesis.",
+                  "reasoning_orientation": "Analyze and categorize viral genome types based on replication requirements.",
+                  "self_explanation_prompt": "Explain why positive-sense RNA can be translated directly but negative-sense RNA cannot.",
+                  "scaffold_hint_sequence": [
+                    "Identify what 'sense' means in RNA genomes.",
+                    "Consider how viral RNA is used for protein synthesis.",
+                    "Think about the role of viral polymerase in replication."
+                  ],
+                  "study_orientation": "This first activity introduces the fundamental differences between positive-sense and negative-sense RNA viruses, which is essential for understanding subsequent topics about HCV replication and host interactions.",
+                  "learner_task": "Using the reference material provided, complete the comparison table by filling in key differences between positive-sense and negative-sense RNA viruses, including their replication mechanisms and examples.",
+                  "expected_output": "A completed comparison table clearly distinguishing positive-sense and negative-sense RNA viruses with accurate replication details and examples.",
+                  "materials": {
+                    "reference_text": "**RNA Virus Genome Types and Replication Mechanisms**\n\nRNA viruses carry their genetic information in the form of RNA genomes. These genomes can be classified based on their \"sense\" or polarity:\n\n- **Positive-sense RNA viruses:** Their RNA genome is similar in polarity to messenger RNA (mRNA). This means the viral RNA can be directly recognized by the host cell's ribosomes and translated into viral proteins immediately upon infection. No additional steps are needed before protein synthesis begins.\n\n- **Negative-sense RNA viruses:** Their RNA genome is complementary to mRNA and cannot be directly translated. Instead, these viruses carry an RNA-dependent RNA polymerase enzyme within the virion. Upon entry into the host cell, this polymerase synthesizes a complementary positive-sense RNA strand from the negative-sense genome. This positive-sense RNA then serves as mRNA for translation into viral proteins.\n\n**Key differences:**\n\n| Feature                    | Positive-sense RNA viruses                       | Negative-sense RNA viruses                        |\n|----------------------------|------------------------------------------------|--------------------------------------------------|\n| Genome polarity            | Same as mRNA (5' to 3')                        | Complementary to mRNA (3' to 5')                  |\n| Translation requirement    | Can be directly translated by host ribosomes   | Requires viral RNA polymerase to create mRNA     |\n| Virion polymerase presence| Usually absent                                  | Present in virion to initiate transcription      |\n| Examples                  | Hepatitis C virus, Poliovirus, West Nile virus | Influenza virus, Rabies virus, Ebola virus        |\n\nUnderstanding these differences is crucial for grasping how RNA viruses replicate and how antiviral strategies can target these processes.",
+                    "comparison_table_template": "| Feature                 | Positive-sense RNA viruses                          | Negative-sense RNA viruses                         |\n|-------------------------|---------------------------------------------------|---------------------------------------------------|\n| Genome type             |                                                   |                                                   |\n| Replication mechanism   |                                                   |                                                   |\n| Example viruses         |                                                   |                                                   |"
+                  }
+                },
+                {
+                  "activity_id": "A2",
+                  "title": "Role of Host microRNA-122 in Hepatitis C Virus Stability",
+                  "duration_minutes": 10,
+                  "activity_preamble": "Host factors can influence viral replication. The interaction between microRNA-122 and HCV's 5' UTR is a key example of how host molecules support virus stability.",
+                  "self_explanation_prompt": "Why might a host microRNA stabilize a viral RNA rather than degrade it?",
+                  "intellectual_coherence_bridge": "Building on understanding RNA virus replication, this activity explores how host molecules specifically interact with HCV RNA to enhance viral stability.",
+                  "learner_task": "Summarize in your own words how host microRNA-122 interacts with the Hepatitis C virus 5' UTR and why this interaction is important for viral stability.",
+                  "expected_output": "A brief written summary explaining the stabilizing role of microRNA-122 on the HCV 5' UTR and its significance for viral replication.",
+                  "materials": {
+                    "explanation_text": "**Host microRNA-122 and Hepatitis C Virus 5' UTR Stability**\n\nMicroRNA-122 (miR-122) is a liver-specific small non-coding RNA molecule abundantly expressed in hepatocytes, the primary cells infected by Hepatitis C virus (HCV). Unlike many microRNAs that suppress gene expression by promoting RNA degradation or inhibiting translation, miR-122 interacts uniquely with the HCV genome.\n\n- miR-122 binds directly to two conserved sites near the 5' untranslated region (5' UTR) of the HCV RNA genome.\n- This binding stabilizes the viral RNA, protecting it from degradation by cellular exonucleases.\n- The interaction enhances the accumulation of HCV RNA, promoting efficient viral replication.\n- By stabilizing the 5' UTR, miR-122 helps maintain the integrity and availability of the viral genome for translation and replication.\n\nThis host-virus interaction exemplifies how viruses can exploit host molecules to their advantage, turning a typical gene regulatory mechanism into a viral replication enhancer."
+                  }
+                },
+                {
+                  "activity_id": "A3",
+                  "title": "Identifying the Function of NS5B in HCV Replication",
+                  "duration_minutes": 10,
+                  "activity_preamble": "Viral replication depends on specialized enzymes. NS5B is a critical protein that enables HCV to copy its RNA genome.",
+                  "self_explanation_prompt": "How does the activity of NS5B differ from host DNA polymerases?",
+                  "intellectual_coherence_bridge": "This activity extends your understanding of HCV replication by focusing on the viral enzyme responsible for RNA synthesis.",
+                  "learner_task": "Explain the role of the NS5B protein in the Hepatitis C virus life cycle, focusing on its enzymatic activity and importance.",
+                  "expected_output": "A concise explanation describing NS5B as the viral RNA-dependent RNA polymerase essential for HCV genome replication.",
+                  "materials": {
+                    "description_text": "**NS5B Protein: The RNA-dependent RNA Polymerase of Hepatitis C Virus**\n\nNS5B is a nonstructural protein encoded by the Hepatitis C virus genome. It functions as the viral RNA-dependent RNA polymerase (RdRp), an enzyme critical for viral replication.\n\n- NS5B catalyzes the synthesis of new RNA strands using the viral RNA genome as a template.\n- It copies the positive-sense RNA genome into a complementary negative-sense RNA intermediate.\n- This negative-sense RNA then serves as a template for producing multiple positive-sense RNA genomes.\n- These new positive-sense RNAs are used for translation into viral proteins and packaging into new virions.\n- NS5B operates independently of host DNA polymerases and does not require a DNA intermediate.\n- Because of its essential role in replication, NS5B is a key target for antiviral drugs against HCV.\n\nUnderstanding NS5B’s enzymatic activity highlights the unique mechanisms RNA viruses use to replicate their genomes."
+                  }
+                },
+                {
+                  "activity_id": "A4",
+                  "title": "Distinguishing Hepatitis C Virus from Other RNA Viruses",
+                  "duration_minutes": 20,
+                  "activity_preamble": "Misunderstandings about viruses can hinder learning. Clarifying how Hepatitis C virus differs from other RNA viruses helps solidify accurate knowledge.",
+                  "prior_knowledge_activation": "Recall basic virus genome structures and replication strategies.",
+                  "reasoning_orientation": "Evaluate and correct common misconceptions by comparing viral features.",
+                  "self_explanation_prompt": "Why might learners confuse HCV with influenza or retroviruses?",
+                  "transfer_or_application_task": "Consider how these misconceptions could impact approaches to treatment or research.",
+                  "intellectual_coherence_bridge": "This final activity consolidates your knowledge by addressing common misconceptions, reinforcing accurate distinctions between HCV and other RNA viruses.",
+                  "learner_task": "Complete the misconception correction table by identifying the incorrect beliefs about HCV and providing the correct facts with explanations.",
+                  "expected_output": "A completed table that clearly corrects misconceptions about HCV genome segmentation and integration with accurate facts and reasoning.",
+                  "materials": {
+                    "summary_text": "**Characteristics of Hepatitis C Virus and Common Misconceptions**\n\n- **Hepatitis C virus (HCV)** is a positive-sense, single-stranded RNA virus belonging to the *Flaviviridae* family.\n- Its genome is **non-segmented**, meaning it consists of a single continuous RNA strand.\n- HCV replicates in hepatocytes without integrating its genome into the host DNA.\n- Unlike retroviruses (e.g., HIV), HCV does **not** reverse transcribe its RNA into DNA, nor does it insert viral DNA into the host genome.\n- Influenza virus, by contrast, has a **segmented** RNA genome composed of multiple RNA segments.\n- Retroviruses integrate into the host genome as part of their replication cycle, which is not the case for HCV.\n\n**Common Misconceptions:**\n\n- Confusing HCV with influenza virus due to both being RNA viruses, leading to the incorrect belief that HCV has a segmented genome.\n- Assuming HCV integrates into host DNA like retroviruses, which is false and affects understanding of treatment strategies.\n\nClarifying these points is important for accurate comprehension of viral biology and for guiding research and therapeutic approaches.",
+                    "misconception_correction_table_template": "| Misconception                              | Correct Fact                                                        | Explanation                                                                                         |\n|-------------------------------------------|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|\n| HCV has a segmented genome like influenza | HCV has a single, non-segmented positive-sense RNA genome         | Unlike influenza, HCV’s genome is one continuous RNA strand, not divided into segments.           |\n| HCV integrates into host DNA like retroviruses | HCV does not integrate into host DNA; it replicates in the cytoplasm as RNA | HCV lacks reverse transcriptase and does not form DNA intermediates, so it does not insert into host DNA. |"
+                  }
+                }
+              ]
+            }
+          ],
+          "source_artefacts": {
+            "learning_activities": [
+              "A1",
+              "A2",
+              "A3",
+              "A4"
+            ],
+            "activity_materials": [
+              "M1",
+              "M2",
+              "M3",
+              "M4",
+              "M5",
+              "M6"
+            ]
+          },
+          "constraints_applied": [
+            "Preserved all activity_preamble and orientation fields from upstream",
+            "Included all upstream learning activities fully",
+            "Embedded full learner-facing material content for all activities",
+            "Maintained page_profile as learner",
+            "Structured materials as named fields within activities",
+            "Excluded any facilitator choreography or session timing",
+            "Excluded any fabricated or unsupported content"
+          ],
+          "generation_notes": {
+            "limitations": []
+          }
+        },
+        "htmlExcerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" /><title>Self-Directed Study: RNA Viruses and Hepatitis C (HCV)</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-",
+        "dlaOrientation": [
+          {
+            "activity_id": "A1",
+            "title": "Understanding RNA Virus Genome Types and Replication",
+            "activity_preamble": "RNA viruses differ in how their genomes are interpreted and replicated. Understanding these differences is crucial to grasping viral biology and treatment approaches."
+          },
+          {
+            "activity_id": "A2",
+            "title": "Role of Host microRNA-122 in Hepatitis C Virus Stability",
+            "activity_preamble": "Host factors can influence viral replication. The interaction between microRNA-122 and HCV's 5' UTR is a key example of how host molecules support virus stability."
+          },
+          {
+            "activity_id": "A3",
+            "title": "Identifying the Function of NS5B in HCV Replication",
+            "activity_preamble": "Viral replication depends on specialized enzymes. NS5B is a critical protein that enables HCV to copy its RNA genome."
+          },
+          {
+            "activity_id": "A4",
+            "title": "Distinguishing Hepatitis C Virus from Other RNA Viruses",
+            "activity_preamble": "Misunderstandings about viruses can hinder learning. Clarifying how Hepatitis C virus differs from other RNA viruses helps solidify accurate knowledge."
+          }
+        ],
+        "pageOrientation": [],
+        "evaluation": {
+          "rubric": {
+            "purpose_clear_quickly": "Yes",
+            "sequentially_connected": "No",
+            "no_facilitator_choreography": "No",
+            "topic_specific": "Yes",
+            "bridges_useful_not_boilerplate": "N/A"
+          },
+          "anti_patterns": {
+            "welcome": false,
+            "inSession": false,
+            "minutesChoreo": false,
+            "uploadedOnly": false
+          },
+          "counts": {
+            "studyCount": 0,
+            "bridgeCount": 0,
+            "preambleCount": 4,
+            "activityCount": 4
+          },
+          "htmlHasStudyOrientation": true,
+          "htmlHasIntellectualFrame": false,
+          "htmlHasBridge": true
+        },
+        "weaknessNote": "**G/model:** no study_orientation in DLA — prompt compliance gap.\n**G/model:** missing intellectual_coherence_bridge on follow-on activities.\n**C:** Design Page dropped or altered orientation fields vs DLA — composition merge or model."
+      },
+      "compare": {
+        "note": "RNA — no pre-30-1 Marx fixture pair"
+      }
+    }
+  ]
+}

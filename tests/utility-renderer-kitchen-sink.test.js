@@ -123,13 +123,14 @@ test("kitchen sink fixture: renders HTML without error", () => {
   assert.match(html, /<h1>/);
 });
 
-test("kitchen sink fixture: all activity titles present (KS-A1–KS-A4)", () => {
+test("kitchen sink fixture: all activity titles present (KS-A1–KS-A6)", () => {
   const { html } = renderKitchenSink(api);
   assert.match(html, /Pattern showcase/i);
   assert.match(html, /Edge cases/i);
   assert.match(html, /Density and print stress/i);
+  assert.match(html, /PEL orientation field showcase/i);
   assert.match(html, /Minimal activity row/i);
-  assert.ok((html.match(/util-task-block/gi) || []).length >= 4);
+  assert.ok((html.match(/util-task-block/gi) || []).length >= 5);
 });
 
 test("kitchen sink fixture: core material patterns present", () => {
@@ -361,6 +362,31 @@ test("kitchen sink stabilisation: meaningful material titles suppress generic Bo
   const edge = sectionScope(html, "Renderer stabilisation edge cases");
   assert.match(edge, /Class Struggle Explanation/i);
   assert.doesNotMatch(edge, /<h5>\s*Body\s*<\/h5>/i);
+});
+
+test("kitchen sink 30-1b: PEL orientation fields render with labels before What to do", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "PEL orientation field showcase");
+  assert.match(scope, /Study orientation:/i);
+  assert.match(scope, /Intellectual frame:/i);
+  assert.match(scope, /Connection to previous activity:/i);
+  assert.match(scope, /validate renderer passthrough for self-study orientation fields/i);
+  assert.match(scope, /checking layout like a learner scanning a page/i);
+  assert.match(scope, /edge-case activity when judging whether orientation labels/i);
+  const studyIdx = scope.indexOf("Study orientation:");
+  const taskIdx = scope.indexOf("What to do");
+  assert.ok(studyIdx !== -1 && taskIdx !== -1);
+  assert.ok(studyIdx < taskIdx);
+  assert.match(scope, /util-activity-study-orientation/);
+});
+
+test("kitchen sink 30-1b: minimal activity row omits empty orientation labels", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "Minimal activity row");
+  assert.match(scope, /What to do/i);
+  assert.doesNotMatch(scope, /Study orientation:/i);
+  assert.doesNotMatch(scope, /Intellectual frame:/i);
+  assert.doesNotMatch(scope, /Connection to previous activity:/i);
 });
 
 test("kitchen sink stabilisation: config scalars render as plain text not markdown emphasis", () => {

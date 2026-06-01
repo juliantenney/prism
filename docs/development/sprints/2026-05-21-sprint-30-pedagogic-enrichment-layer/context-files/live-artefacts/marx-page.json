@@ -1,0 +1,117 @@
+{
+  "artifact_type": "page",
+  "title": "Self-Directed Study on Karl Marx: Life, Theories, and Contemporary Applications",
+  "audience": "Undergraduate students engaging in self-directed study",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Introduction and Study Orientation",
+      "content": [
+        "This page guides you through Karl Marx's life, his key theories, and their application to contemporary social and economic issues. You will begin by situating Marx's life events chronologically to build a foundation for understanding his work. Subsequent activities will deepen your insight into Marxist thought by analyzing cause-effect relationships in his theoretical development, comparing his major works, and applying core Marxist concepts to modern issues. The activities are designed for independent study and will take approximately 1 hour and 45 minutes in total."
+      ]
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": [
+        "By completing the activities on this page, you will be able to:",
+        "- Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas.",
+        "- Analyze cause-effect relationships between historical events and Marx's development of key theories.",
+        "- Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.",
+        "- Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+      ]
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Chronological Phases of Karl Marx's Life",
+          "duration_minutes": 20,
+          "activity_preamble": "Understanding the timeline of Karl Marx's life helps you see how his experiences shaped his thinking. By putting his life events in order, you will better grasp the context behind his theories.",
+          "prior_knowledge_activation": "Recall what you already know about 19th-century European history to help place Marx's life events in context.",
+          "study_orientation": "This page guides you through Karl Marx's life, theories, and their application. Start by situating his life events chronologically to build a foundation for understanding his work. Each activity builds on the previous to deepen your insight into Marxist thought.",
+          "self_explanation_prompt": "Explain why the timing of Marx's exile or publication of major works might have influenced his ideas.",
+          "learner_task": "Arrange the provided life events of Karl Marx into a correct chronological timeline. Then, write a brief summary (3-4 sentences) explaining how each major life phase influenced his philosophical and political ideas.",
+          "expected_output": "A correctly ordered timeline of Marx's life events and a concise summary linking life phases to his ideas.",
+          "materials": {
+            "biographical_timeline_and_summary": "**Key Events and Phases in Karl Marx's Life (Unordered List)**\n\n- Born on May 5, 1818, in Trier, Prussia (now Germany).\n- Studied law and philosophy at the University of Bonn and then the University of Berlin.\n- Developed early philosophical ideas influenced by Hegelian philosophy during university years.\n- Married Jenny von Westphalen in 1843.\n- Exiled from Germany due to political activism; moved to Paris in 1843.\n- Collaborated with Friedrich Engels and co-authored *The Communist Manifesto* in 1848.\n- Expelled from France in 1849; moved to Brussels and later to London.\n- Published *Das Kapital* Volume I in 1867, his major economic critique of capitalism.\n- Continued writing and political activism while living in London until his death.\n- Died on March 14, 1883, in London."
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "Cause-Effect Analysis of Marx's Theoretical Development",
+          "duration_minutes": 25,
+          "activity_preamble": "Marx's ideas did not develop in isolation but were responses to real historical events. Analyzing these cause-effect links reveals how his theories emerged from specific social and political contexts.",
+          "reasoning_orientation": "Focus on understanding how external events triggered or shaped Marx's concepts rather than just memorizing facts.",
+          "self_explanation_prompt": "Reflect on which historical event you think had the strongest impact on Marx's theory and why.",
+          "intellectual_coherence_bridge": "This activity builds on your understanding of Marx's life phases by exploring how specific historical events influenced his theoretical development.",
+          "learner_task": "Using the table, match each historical event to its effect on Marx's theoretical development. Provide a brief explanation (1-2 sentences) of how the event influenced a specific Marxist concept or theory.",
+          "expected_output": "A completed cause-effect table with plausible links between historical events and Marx's theory development.",
+          "materials": {
+            "cause_effect_analysis_table": "| Historical Event                                    | Effect on Marx's Theory                                                                 | Explanation (1-2 sentences)                                                                                  |\n|---------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|\n| Industrial Revolution in Europe                    | Developed the concept of class struggle between bourgeoisie and proletariat            | The rise of industrial capitalism created a new working class exploited by factory owners, inspiring Marx’s theory of class conflict. |\n| Revolutions of 1848 across Europe                   | Inspired Marx to co-author *The Communist Manifesto* advocating proletarian revolution | The widespread uprisings showed the potential for working-class revolution and political change.              |\n| Exile from Germany and France                       | Deepened Marx’s critique of political repression and capitalism                        | Forced exile exposed Marx to different political environments and strengthened his opposition to authoritarian regimes. |\n| Publication of *Capital* Volume I in 1867           | Provided a detailed economic analysis of capitalism’s dynamics                         | Marx’s economic critique explained how surplus value is extracted from labor, underpinning his theory of exploitation. |\n| Rise of capitalist imperialism in the late 19th century | Led to Marx’s theory of historical materialism and global capitalism                   | The expansion of capitalism worldwide showed the historical development of economic systems and contradictions. |"
+          }
+        },
+        {
+          "activity_id": "A3",
+          "title": "Comparing Major Works: The Communist Manifesto vs. Das Kapital",
+          "duration_minutes": 30,
+          "activity_preamble": "Comparing Marx's major works side-by-side helps clarify their distinct roles and messages. This comparison deepens your understanding of his evolving arguments and intended audiences.",
+          "reasoning_orientation": "Analyze the texts critically to identify both shared themes and unique features of each work.",
+          "self_explanation_prompt": "Which work do you find more accessible or persuasive, and why?",
+          "intellectual_coherence_bridge": "This activity extends your analysis by comparing the themes and arguments in Marx's key writings.",
+          "learner_task": "Read the excerpts and complete the comparison table by identifying the purpose, audience, key arguments, style, and impact of each work. Then write a short paragraph summarizing the main differences and similarities.",
+          "expected_output": "A filled comparison table and a concise summary paragraph comparing the two works.",
+          "materials": {
+            "orienting_extracts": "**Excerpt from The Communist Manifesto (1848):**\n\"A spectre is haunting Europe—the spectre of communism. All the powers of old Europe have entered into a holy alliance to exorcise this spectre... The history of all hitherto existing society is the history of class struggles.\"\n\n**Excerpt from Das Kapital, Volume I (1867):**\n\"The wealth of societies in which the capitalist mode of production prevails appears as an ‘immense collection of commodities’... A commodity appears at first sight an extremely obvious, trivial thing.\"",
+            "comparison_table": "| Theme/Aspect   | The Communist Manifesto                         | Das Kapital                                   |\n|----------------|------------------------------------------------|-----------------------------------------------|\n| Purpose        | To call for proletarian revolution and overthrow of capitalist society | To analyze the economic laws and mechanisms of capitalism in detail |\n| Audience       | General public, workers, political activists   | Scholars, economists, political theorists    |\n| Key Arguments  | History is class struggle; capitalism exploits workers; proletariat must unite | Capitalism’s exploitation is rooted in surplus value extracted from labor; commodity fetishism obscures exploitation |\n| Style          | Concise, polemical, accessible political pamphlet | Detailed, academic, economic critique        |\n| Impact         | Sparked revolutionary movements and socialist politics worldwide | Influenced economic theory and Marxist scholarship deeply |",
+            "summary_paragraph": "The *Communist Manifesto* and *Das Kapital* serve different but complementary purposes. The Manifesto is a concise, politically charged call to action aimed at mobilizing workers for revolution, emphasizing class struggle and the need for proletarian unity. In contrast, *Das Kapital* offers a thorough economic analysis of capitalism’s inner workings, focusing on exploitation through surplus value and commodity fetishism. While both works critique capitalism, the Manifesto is more accessible and activist in tone, whereas *Das Kapital* is scholarly and detailed. Together, they provide a foundation for Marxist theory and political practice."
+          }
+        },
+        {
+          "activity_id": "A4",
+          "title": "Applying Marxist Concepts to Contemporary Issues",
+          "duration_minutes": 30,
+          "activity_preamble": "Applying Marxist concepts to today's issues allows you to see the continuing relevance of his ideas. This exercise develops your critical thinking and ability to connect theory with real-world problems.",
+          "transfer_or_application_task": "Consider how Marxist analysis might suggest solutions or critiques for the issue you chose.",
+          "self_explanation_prompt": "Why does the Marxist concept you applied help explain the contemporary issue better than other perspectives?",
+          "intellectual_coherence_bridge": "This final activity applies your understanding of Marxist theory to analyze current social and economic challenges.",
+          "learner_task": "Select one contemporary issue from the prompts. Using the worksheet, identify a relevant Marxist concept, explain the issue, apply the concept to analyze it, and reflect on what this reveals about the issue's social or economic dynamics.",
+          "expected_output": "A completed worksheet with a clear application of Marxist theory to a contemporary issue and a reflective insight.",
+          "materials": {
+            "summary_of_core_concepts": "**Core Marxist Concepts**\n\n- **Class Struggle:** The ongoing conflict between different social classes, primarily between the bourgeoisie (owners of production) and the proletariat (working class).\n- **Alienation:** The estrangement of workers from the products of their labor, the labor process, their own humanity, and other people under capitalism.\n- **Surplus Value:** The difference between the value produced by labor and the wages paid to laborers, which is appropriated by capitalists as profit.\n- **Historical Materialism:** The theory that material economic conditions and class relations drive historical development and social change.",
+            "contemporary_issue_prompts": "Choose one of the following contemporary social or economic issues to analyze using Marxist concepts:\n\n1. The rise of the gig economy and precarious labor conditions.\n2. Increasing wealth inequality and concentration of capital in the hands of a few.\n3. Automation and the future of work: job displacement and technological change.\n4. Globalization and its impact on labor exploitation in developing countries.",
+            "application_worksheet": "| Step                     | Your Response                                                                                   |\n|--------------------------|------------------------------------------------------------------------------------------------|\n| 1. Selected Contemporary Issue |                                                                                              |\n| 2. Relevant Marxist Concept    |                                                                                              |\n| 3. Description of the Issue    |                                                                                              |\n| 4. Application of the Concept  | Explain how the Marxist concept helps analyze or explain this issue.                           |\n| 5. Reflection on Implications  | What does this analysis reveal about the social or economic dynamics of the issue?            |\n| 6. Possible Marxist Critique or Solution | Consider what Marxist theory might suggest as a critique or solution for this issue.  |"
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": {
+    "learning_activities": [
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+    ],
+    "activity_materials": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7"
+    ]
+  },
+  "constraints_applied": [
+    "Preserved all activity_preamble and orientation fields from upstream",
+    "Included all four upstream activities in full",
+    "Embedded full learner-facing materials as provided",
+    "Maintained page_profile as learner",
+    "Excluded facilitator choreography and timing cues",
+    "No external or fabricated content added"
+  ],
+  "generation_notes": {
+    "limitations": []
+  }
+}

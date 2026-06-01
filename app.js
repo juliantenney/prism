@@ -7221,6 +7221,16 @@
     ].join("\n");
   }
 
+  var SPRINT_30_PEC_ORIENTATION_CONTRACT_ID = "orientation_contract";
+
+  var SPRINT_30_PEC_IDS = [SPRINT_30_PEC_ORIENTATION_CONTRACT_ID];
+
+  var PEL_ORIENTATION_FIELD_IDS = [
+    "study_orientation",
+    "intellectual_frame",
+    "intellectual_coherence_bridge"
+  ];
+
   var SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS = [
     "activity_preamble",
     "orienting_preamble",
@@ -7232,7 +7242,10 @@
     "self_explanation_prompt",
     "transfer_or_application_task",
     "scaffold_hint_sequence",
-    "uncertainty_tension_prompt"
+    "uncertainty_tension_prompt",
+    "study_orientation",
+    "intellectual_frame",
+    "intellectual_coherence_bridge"
   ];
 
   function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
@@ -7253,7 +7266,10 @@
       "",
       "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
       "- Each activity object MUST include activity_preamble (non-empty string, 1–3 sentences).",
-      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt.",
+      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
+      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page independently (not generic module welcome text).",
+      "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the disciplinary lens (e.g. historian, biologist) in 1–2 sentences.",
+      "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence linking to the prior activity's ideas (do not repeat the activity title).",
       "- self_explanation_prompt: at least two activities; one short reflective orientation sentence each (not a full essay).",
       "- prior_knowledge_activation: at least one activity when prior context helps.",
       "- reasoning_orientation: on compare/analyse/application activities.",
@@ -7325,13 +7341,26 @@
     ].join("\n");
   }
 
+  function buildSelfDirectedGamLearnerVoicePromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page material voice (auto-applied):",
+      "- All generated materials are for independent self-study — write directly to the learner, not to a tutor or classroom facilitator.",
+      "- Do not use facilitator-facing labels or notes such as: \"Facilitator use:\", \"Teacher notes\", \"Instructor guidance\", \"Tutor notes\", or \"For the facilitator\".",
+      "- Do not include live classroom timing or choreography (e.g. \"minutes 5–15\", \"at minute 20\", \"circulate during discussion\").",
+      "- Use learner-facing guidance instead, for example: \"Use this to…\", \"Check your notes against…\", \"Before moving on…\", \"If you get stuck…\".",
+      "- Material purpose lines should describe what the learner does with the resource — not how a teacher should run the activity."
+    ].join("\n");
+  }
+
   function buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock() {
     return [
       "",
       "Self-directed page activity field preservation (auto-applied):",
       "- When composing learning_activities.content from upstream learning_activities, copy these fields verbatim onto each matching activity_id when present upstream:",
-      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt",
+      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge",
       "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
+      "- Preserve study_orientation, intellectual_frame, and intellectual_coherence_bridge when present upstream — do not summarise them away.",
       "- learner_task (or learner_instructions when that is the upstream key) remains the actionable instruction block — preserve both when present.",
       "- Do not strip or summarise away cognition-orientation fields."
     ].join("\n");
@@ -7347,6 +7376,70 @@
       title === "design page" ||
       title.indexOf("design page") !== -1
     );
+  }
+
+  function buildPelOrientationContractPromptBlock() {
+    return [
+      "",
+      "Pedagogic enrichment — orientation contract (auto-applied):",
+      "- This is independent self-study: write for a learner working alone with notebook and pencil, not for a live class or tutor-led session.",
+      "- Use topic-specific orientation tied to the brief subject — never generic module welcomes.",
+      "- On the first activity when the page has multiple activities, include study_orientation (2–4 sentences): what this study page is for, how activities build on each other, and how long the work may take.",
+      "- Optional intellectual_frame once per page (first activity is fine): name the mode of inquiry in 1–2 sentences (e.g. thinking as a historian about evidence and change).",
+      "- On activities after the first, include intellectual_coherence_bridge: one sentence linking this activity to the previous activity's ideas (not a repeat of titles).",
+      "- Keep activity_preamble on every activity for task-level orientation; study_orientation is page-level entry — do not duplicate the same prose in both.",
+      "- Do not use facilitator choreography, session timing, or classroom framing.",
+      "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
+    ].join("\n");
+  }
+
+  function resolvePedagogicEnrichmentContractIds(context) {
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim(),
+      inputs: String(
+        (briefCtx && briefCtx.explicit && briefCtx.explicit.inputs) ||
+          (context && context.workflowInputs) ||
+          ""
+      ).trim()
+    };
+    var blob = workflowBriefPedagogicTextBlob(base);
+    if (isWorkflowBriefFacilitatedDeliveryIntent(blob, resolved)) {
+      return [];
+    }
+    if (!shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base)) {
+      return [];
+    }
+    return SPRINT_30_PEC_IDS.slice();
+  }
+
+  function applyPedagogicEnrichmentContractScaffoldToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var contractIds = resolvePedagogicEnrichmentContractIds(context);
+    if (!contractIds.length) return draftBody;
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isDesignPage = isWorkflowStepDesignPage(context);
+    if (!isDla && !isDesignPage) return draftBody;
+    if (
+      contractIds.indexOf(SPRINT_30_PEC_ORIENTATION_CONTRACT_ID) !== -1 &&
+      !/pedagogic enrichment — orientation contract \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildPelOrientationContractPromptBlock()).trim();
+    }
+    return draftBody;
   }
 
   function buildWorkflowStepPromptAugmentContextFromStep(step, wf) {
@@ -7396,6 +7489,7 @@
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
+    draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     return String(draft || "").trim();
   }
 
@@ -7484,6 +7578,9 @@
       if (!/self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedGamReadingSufficiencyPromptBlock()).trim();
       }
+      if (!/self-directed learner-page material voice \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedGamLearnerVoicePromptBlock()).trim();
+      }
       if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
@@ -7499,6 +7596,170 @@
       }
       return pedagogicCognitionFieldHasValue(row[fieldId], false);
     });
+  }
+
+  var PEL_ORIENTATION_FACILITATOR_LANGUAGE_RE =
+    /\b(facilitator use:|teacher notes|instructor guidance|tutor notes|for the facilitator|facilitator guide|in this session we will|welcome to this module)\b/i;
+  var PEL_ORIENTATION_TIMING_CHOREOGRAPHY_RE =
+    /\b(minutes?\s+\d+\s*[-–]\s*\d+|by minute\s+\d+|at minute\s+\d+|circulate during|whole[- ]group debrief)\b/i;
+
+  function normalizePelOrientationActivitiesList(output) {
+    if (Array.isArray(output)) return output;
+    if (output && typeof output === "object" && Array.isArray(output.activities)) {
+      return output.activities;
+    }
+    return [];
+  }
+
+  function activityRowHasOrientationPreamble(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    return (
+      pedagogicCognitionFieldHasValue(row.activity_preamble, false) ||
+      pedagogicCognitionFieldHasValue(row.orienting_preamble, false) ||
+      pedagogicCognitionFieldHasValue(row.activity_framing, false)
+    );
+  }
+
+  function collectPelOrientationRowsFromPage(page) {
+    var rows = [];
+    if (!page || typeof page !== "object" || !Array.isArray(page.sections)) return rows;
+    page.sections.forEach(function (section) {
+      if (typeof pageSectionCanonicalKind === "function") {
+        if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      } else {
+        var sid = String(section.section_id || section.id || "").toLowerCase();
+        var heading = String(section.heading || "").toLowerCase();
+        if (sid !== "learning_activities" && heading.indexOf("learning activit") === -1) return;
+      }
+      var content = section.content;
+      if (Array.isArray(content)) {
+        content.forEach(function (row) {
+          if (row && typeof row === "object" && !Array.isArray(row)) rows.push(row);
+        });
+      } else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        content.activities.forEach(function (row) {
+          if (row && typeof row === "object" && !Array.isArray(row)) rows.push(row);
+        });
+      }
+    });
+    return rows;
+  }
+
+  function pelOrientationBlobHasFacilitatorLanguage(blob) {
+    var text = String(blob || "");
+    if (!text.trim()) return false;
+    if (PEL_ORIENTATION_FACILITATOR_LANGUAGE_RE.test(text)) return true;
+    if (PEL_ORIENTATION_TIMING_CHOREOGRAPHY_RE.test(text)) return true;
+    return false;
+  }
+
+  function evaluatePelOrientationContractSatisfaction(output, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var activities = normalizePelOrientationActivitiesList(output);
+    var pageRows = Array.isArray(opts.pageActivities)
+      ? opts.pageActivities
+      : collectPelOrientationRowsFromPage(opts.page);
+    var rowsForChecks = pageRows.length ? pageRows : activities;
+    var gamText = String(opts.gamText || "");
+    var checkBlob =
+      JSON.stringify(rowsForChecks) +
+      gamText +
+      JSON.stringify(activities) +
+      String(opts.pageIntroText || "");
+    var warnings = [];
+    var missingFields = [];
+    var count = rowsForChecks.filter(function (row) {
+      return row && typeof row === "object" && !Array.isArray(row);
+    }).length;
+    var preambleCount = 0;
+    var studyOrientationPresent = false;
+    var bridgeCount = 0;
+    rowsForChecks.forEach(function (row, index) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return;
+      if (activityRowHasOrientationPreamble(row)) preambleCount += 1;
+      if (pedagogicCognitionFieldHasValue(row.study_orientation, false)) {
+        studyOrientationPresent = true;
+      }
+      if (
+        index > 0 &&
+        pedagogicCognitionFieldHasValue(row.intellectual_coherence_bridge, false)
+      ) {
+        bridgeCount += 1;
+      }
+      if (pedagogicCognitionFieldHasValue(row.facilitator_moves, false)) {
+        warnings.push("facilitator_moves present on activity " + String(row.activity_id || index + 1));
+      }
+    });
+    if (!studyOrientationPresent && opts.page && Array.isArray(opts.page.sections)) {
+      opts.page.sections.forEach(function (section) {
+        var heading = String(section.heading || "").toLowerCase();
+        if (heading.indexOf("study orientation") !== -1 || heading.indexOf("introduction") !== -1) {
+          var intro = section.content;
+          if (typeof intro === "string" && intro.trim().length > 40) {
+            studyOrientationPresent = true;
+          }
+        }
+        if (Array.isArray(section.content)) {
+          section.content.forEach(function (row) {
+            if (
+              row &&
+              pedagogicCognitionFieldHasValue(row.study_orientation, false)
+            ) {
+              studyOrientationPresent = true;
+            }
+          });
+        }
+      });
+    }
+    if (count && preambleCount < count) {
+      missingFields.push("activity_preamble");
+      warnings.push(
+        "activity_preamble missing on " + (count - preambleCount) + " of " + count + " activities"
+      );
+    }
+    if (count >= 2 && !studyOrientationPresent) {
+      missingFields.push("study_orientation");
+      warnings.push("study_orientation not found on page or first activity");
+    }
+    var followOnCount = count > 1 ? count - 1 : 0;
+    if (followOnCount > 0 && bridgeCount < 1) {
+      missingFields.push("intellectual_coherence_bridge");
+      warnings.push(
+        "intellectual_coherence_bridge missing on activities after the first (expected at least one)"
+      );
+    }
+    if (pelOrientationBlobHasFacilitatorLanguage(checkBlob)) {
+      missingFields.push("facilitator_facing_language");
+      warnings.push("facilitator-facing or session choreography language detected");
+    }
+    return {
+      contractId: SPRINT_30_PEC_ORIENTATION_CONTRACT_ID,
+      satisfied:
+        missingFields.length === 0 &&
+        (count === 0 || (preambleCount >= count && (count < 2 || studyOrientationPresent))),
+      activityCount: count,
+      preambleCount: preambleCount,
+      studyOrientationPresent: studyOrientationPresent,
+      bridgeCount: bridgeCount,
+      missingFields: missingFields,
+      warnings: warnings,
+      orientationContractSatisfied: missingFields.length === 0
+    };
+  }
+
+  function evaluatePedagogicEnrichmentContractSatisfaction(output, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var contractId = String(opts.contractId || SPRINT_30_PEC_ORIENTATION_CONTRACT_ID).trim();
+    if (contractId === SPRINT_30_PEC_ORIENTATION_CONTRACT_ID) {
+      return evaluatePelOrientationContractSatisfaction(output, opts);
+    }
+    return {
+      contractId: contractId,
+      satisfied: true,
+      missingFields: [],
+      warnings: ["Unsupported PEC for evaluator: " + contractId],
+      orientationContractSatisfied: true
+    };
   }
 
   function evaluateSelfDirectedDlaActivityFramingCoverage(activities) {
@@ -24264,13 +24525,55 @@
         row.orienting_preamble,
         row.activity_framing
       ]);
+      var studyOrientation = firstNonEmpty([row.study_orientation]);
+      var intellectualFrame = firstNonEmpty([row.intellectual_frame]);
+      var coherenceBridge = firstNonEmpty([row.intellectual_coherence_bridge]);
       var priorKnowledge = firstNonEmpty([row.prior_knowledge_activation, row.prior_knowledge_prompt]);
       var reasoningOrientation = firstNonEmpty([
         row.reasoning_orientation,
         row.reasoning_orientation_prompt
       ]);
       var blocks = [];
-      if (preamble) {
+      var comparableSeen = [];
+      function comparableKey(text) {
+        return normalizeComparableText(String(text || ""));
+      }
+      function markSeen(text) {
+        var key = comparableKey(text);
+        if (!key) return;
+        if (comparableSeen.indexOf(key) === -1) comparableSeen.push(key);
+      }
+      function isDuplicateOfSeen(text) {
+        var key = comparableKey(text);
+        return !key || comparableSeen.indexOf(key) !== -1;
+      }
+      function pushPelOrientationCue(label, text) {
+        if (!text || isDuplicateOfSeen(text)) return;
+        markSeen(text);
+        blocks.push(
+          '<p class="util-activity-preamble-cue util-pel-orientation-cue"><strong>' +
+            utilityEscapeHtml(label) +
+            ":</strong> " +
+            utilityRenderMarkdownInline(String(text)) +
+            "</p>"
+        );
+      }
+      if (studyOrientation && !isDuplicateOfSeen(studyOrientation)) {
+        markSeen(studyOrientation);
+        var studyBody =
+          utilityRenderMarkdownBlock(String(studyOrientation)) ||
+          "<p>" + utilityRenderMarkdownInline(String(studyOrientation)) + "</p>";
+        blocks.push(
+          '<div class="util-activity-preamble util-activity-study-orientation">' +
+            '<p class="util-activity-orientation-label"><strong>Study orientation:</strong></p>' +
+            studyBody +
+            "</div>"
+        );
+      }
+      pushPelOrientationCue("Intellectual frame", intellectualFrame);
+      pushPelOrientationCue("Connection to previous activity", coherenceBridge);
+      if (preamble && !isDuplicateOfSeen(preamble)) {
+        markSeen(preamble);
         var preambleBody =
           utilityRenderMarkdownBlock(String(preamble)) ||
           "<p>" + utilityRenderMarkdownInline(String(preamble)) + "</p>";
@@ -24278,21 +24581,17 @@
       }
       if (
         priorKnowledge &&
-        normalizeComparableText(String(priorKnowledge)) !== normalizeComparableText(String(preamble || ""))
+        !isDuplicateOfSeen(priorKnowledge)
       ) {
+        markSeen(priorKnowledge);
         blocks.push(
           '<p class="util-activity-preamble-cue"><strong>Before you start:</strong> ' +
             utilityRenderMarkdownInline(String(priorKnowledge)) +
             "</p>"
         );
       }
-      if (
-        reasoningOrientation &&
-        normalizeComparableText(String(reasoningOrientation)) !==
-          normalizeComparableText(String(preamble || "")) &&
-        normalizeComparableText(String(reasoningOrientation)) !==
-          normalizeComparableText(String(priorKnowledge || ""))
-      ) {
+      if (reasoningOrientation && !isDuplicateOfSeen(reasoningOrientation)) {
+        markSeen(reasoningOrientation);
         blocks.push(
           '<p class="util-activity-preamble-cue"><strong>How to think:</strong> ' +
             utilityRenderMarkdownInline(String(reasoningOrientation)) +
@@ -28290,7 +28589,9 @@
       ".util-cognition--scaffold{border-left:3px solid #64748b}",
       ".util-activity-preamble{margin:0 0 14px;padding:12px 14px;border-left:3px solid #6366f1;background:#f8fafc;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.55;color:#1e293b}",
       ".util-activity-preamble p:last-child{margin-bottom:0}",
+      ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 6px;font-size:.82rem;font-weight:600;letter-spacing:.02em;color:#475569}",
       ".util-activity-preamble-cue{margin:0 0 12px;font-size:.92rem;line-height:1.5;color:#334155}",
+      ".util-pel-orientation-cue strong{color:#475569}",
       ".util-activity-header+.util-activity-preamble{margin-top:6px}",
       ".util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:4px}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
@@ -30328,6 +30629,22 @@
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
       applyWorkflowStepRuntimePromptAugmentations;
+    prismTestApi.SPRINT_30_PEC_IDS = SPRINT_30_PEC_IDS;
+    prismTestApi.PEL_ORIENTATION_FIELD_IDS = PEL_ORIENTATION_FIELD_IDS;
+    prismTestApi.SPRINT_30_PEC_ORIENTATION_CONTRACT_ID =
+      SPRINT_30_PEC_ORIENTATION_CONTRACT_ID;
+    prismTestApi.resolvePedagogicEnrichmentContractIds =
+      resolvePedagogicEnrichmentContractIds;
+    prismTestApi.buildPelOrientationContractPromptBlock =
+      buildPelOrientationContractPromptBlock;
+    prismTestApi.applyPedagogicEnrichmentContractScaffoldToDraft =
+      applyPedagogicEnrichmentContractScaffoldToDraft;
+    prismTestApi.buildSelfDirectedGamLearnerVoicePromptBlock =
+      buildSelfDirectedGamLearnerVoicePromptBlock;
+    prismTestApi.evaluatePelOrientationContractSatisfaction =
+      evaluatePelOrientationContractSatisfaction;
+    prismTestApi.evaluatePedagogicEnrichmentContractSatisfaction =
+      evaluatePedagogicEnrichmentContractSatisfaction;
     prismTestApi.buildWorkflowStepPromptAugmentContextFromStep =
       buildWorkflowStepPromptAugmentContextFromStep;
     prismTestApi.resolveStepPromptText = resolveStepPromptText;

@@ -217,6 +217,33 @@ test("renderer: preamble wording is concise in fixture", () => {
   });
 });
 
+test("renderer 30-1b: study_orientation and intellectual_frame on A2 before What to do", () => {
+  const html = renderFramingFixture();
+  const a2 = html.match(/Linking Experience to Theory[\s\S]*?(?=Comparing Marx|$)/i);
+  assert.ok(a2, "A2 activity scope");
+  assert.match(a2[0], /Study orientation:/i);
+  assert.match(a2[0], /Intellectual frame:/i);
+  assert.match(a2[0], /life phases to comparing texts/i);
+  assert.match(a2[0], /thinking like a historian/i);
+  const orientIdx = a2[0].indexOf("Study orientation:");
+  const taskIdx = a2[0].indexOf("What to do");
+  assert.ok(orientIdx !== -1 && taskIdx !== -1);
+  assert.ok(orientIdx < taskIdx);
+});
+
+test("renderer 30-1b: intellectual_coherence_bridge on A3 before What to do", () => {
+  const html = renderFramingFixture();
+  const a3 = html.match(/Comparing Marx[\s\S]*?$/i);
+  assert.ok(a3, "A3 activity scope");
+  assert.match(a3[0], /Connection to previous activity:/i);
+  assert.match(a3[0], /cause–effect links you traced/i);
+  const bridgeIdx = a3[0].indexOf("Connection to previous activity:");
+  const taskIdx = a3[0].indexOf("What to do");
+  assert.ok(bridgeIdx !== -1 && taskIdx !== -1);
+  assert.ok(bridgeIdx < taskIdx);
+  assert.doesNotMatch(a3[0], /Study orientation:/i);
+});
+
 test("DLA scaffold: activity framing omitted for facilitated delivery", () => {
   const explicit = api.extractWorkflowBriefExplicitFactors(MARX_SELF_STUDY_BRIEF);
   const inferred = api.applyWorkflowBriefInferenceRules(

@@ -1,0 +1,133 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding RNA Virus Genome Types and Replication",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "Reference material on RNA virus genome types and replication",
+          "specification": "Concise summary text explaining positive-sense vs negative-sense RNA viruses, including translation and polymerase requirements."
+        },
+        {
+          "material_id": "M2",
+          "type": "template",
+          "purpose": "Comparison table template",
+          "specification": "A table with rows for 'Genome type', 'Replication mechanism', and 'Example viruses', and two columns for positive-sense and negative-sense RNA viruses."
+        }
+      ],
+      "learner_task": "Using the reference material, complete the comparison table by filling in key differences between positive-sense and negative-sense RNA viruses, including their replication mechanisms and examples.",
+      "expected_output": "A completed comparison table clearly distinguishing positive-sense and negative-sense RNA viruses with accurate replication details and examples.",
+      "failure_mode": "",
+      "facilitator_moves": "",
+      "activity_preamble": "RNA viruses differ in how their genomes are interpreted and replicated. Understanding these differences is crucial to grasping viral biology and treatment approaches.",
+      "prior_knowledge_activation": "Recall basic concepts of RNA structure and protein synthesis.",
+      "reasoning_orientation": "Analyze and categorize viral genome types based on replication requirements.",
+      "self_explanation_prompt": "Explain why positive-sense RNA can be translated directly but negative-sense RNA cannot.",
+      "scaffold_hint_sequence": [
+        "Identify what 'sense' means in RNA genomes.",
+        "Consider how viral RNA is used for protein synthesis.",
+        "Think about the role of viral polymerase in replication."
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Role of Host microRNA-122 in Hepatitis C Virus Stability",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR)."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M3",
+          "type": "text",
+          "purpose": "Explanation of microRNA-122 interaction with HCV 5' UTR",
+          "specification": "Text describing how microRNA-122 binds and stabilizes the HCV 5' UTR to enhance viral replication."
+        }
+      ],
+      "learner_task": "Summarize in your own words how host microRNA-122 interacts with the Hepatitis C virus 5' UTR and why this interaction is important for viral stability.",
+      "expected_output": "A brief written summary explaining the stabilizing role of microRNA-122 on the HCV 5' UTR and its significance for viral replication.",
+      "failure_mode": "",
+      "facilitator_moves": "",
+      "activity_preamble": "Host factors can influence viral replication. The interaction between microRNA-122 and HCV's 5' UTR is a key example of how host molecules support virus stability.",
+      "self_explanation_prompt": "Why might a host microRNA stabilize a viral RNA rather than degrade it?"
+    },
+    {
+      "activity_id": "A3",
+      "title": "Identifying the Function of NS5B in HCV Replication",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "text",
+          "purpose": "Description of NS5B protein function",
+          "specification": "Text explaining NS5B as the RNA-dependent RNA polymerase responsible for replicating HCV RNA."
+        }
+      ],
+      "learner_task": "Explain the role of the NS5B protein in the Hepatitis C virus life cycle, focusing on its enzymatic activity and importance.",
+      "expected_output": "A concise explanation describing NS5B as the viral RNA-dependent RNA polymerase essential for HCV genome replication.",
+      "failure_mode": "",
+      "facilitator_moves": "",
+      "activity_preamble": "Viral replication depends on specialized enzymes. NS5B is a critical protein that enables HCV to copy its RNA genome.",
+      "self_explanation_prompt": "How does the activity of NS5B differ from host DNA polymerases?"
+    },
+    {
+      "activity_id": "A4",
+      "title": "Distinguishing Hepatitis C Virus from Other RNA Viruses",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "text",
+          "purpose": "Summary of HCV characteristics and common misconceptions",
+          "specification": "Text clarifying that HCV is a positive-sense, non-segmented flavivirus that does not integrate into host DNA, contrasting with influenza and retroviruses."
+        },
+        {
+          "material_id": "M6",
+          "type": "template",
+          "purpose": "Misconception correction table",
+          "specification": "Table with columns: 'Misconception', 'Correct Fact', and 'Explanation'. Rows for influenza segmentation and retrovirus integration misconceptions."
+        }
+      ],
+      "learner_task": "Complete the misconception correction table by identifying the incorrect beliefs about HCV and providing the correct facts with explanations.",
+      "expected_output": "A completed table that clearly corrects misconceptions about HCV genome segmentation and integration with accurate facts and reasoning.",
+      "failure_mode": "",
+      "facilitator_moves": "",
+      "activity_preamble": "Misunderstandings about viruses can hinder learning. Clarifying how Hepatitis C virus differs from other RNA viruses helps solidify accurate knowledge.",
+      "prior_knowledge_activation": "Recall basic virus genome structures and replication strategies.",
+      "reasoning_orientation": "Evaluate and correct common misconceptions by comparing viral features.",
+      "self_explanation_prompt": "Why might learners confuse HCV with influenza or retroviruses?",
+      "transfer_or_application_task": "Consider how these misconceptions could impact approaches to treatment or research."
+    }
+  ],
+  "outcome_alignment": {
+    "Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.": [
+      "A1"
+    ],
+    "Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).": [
+      "A2"
+    ],
+    "Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.": [
+      "A3"
+    ],
+    "Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including common misconceptions about viral genome segmentation and integration.": [
+      "A4"
+    ]
+  },
+  "delivery_notes": "All activities are designed for asynchronous, self-directed individual study within a virtual learning environment (VLE). Each activity includes clear instructions, required reference materials, and scaffolded prompts to support independent learning and reflection."
+}

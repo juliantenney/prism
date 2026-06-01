@@ -1,7 +1,7 @@
 # Sprint 30 baseline test floor
 
 **Recorded:** 2026-06-01  
-**After 30-2c Design Page activity-row facilitator sanitisation (Phase 2 closed)**
+**Sprint 30 CLOSED** — final floor frozen at close-out ([R30-999](../review-log.md))
 
 ---
 
@@ -23,7 +23,16 @@ node --test tests/*.test.js
 
 ---
 
-## Sprint 30 gate
+## Sprint 30 final floor (frozen)
+
+| Metric | Value |
+|--------|-------|
+| **Pass** | **471** |
+| **Fail** | **0** |
+
+Sprint 30 programme complete. Post-close merges should not regress PEL/orientation/reasoning/sanitisation tests without review-log entry.
+
+## Sprint 30 gate (historical)
 
 - **No merge** that drops below **471** without documented justification in [`../review-log.md`](../review-log.md).
 

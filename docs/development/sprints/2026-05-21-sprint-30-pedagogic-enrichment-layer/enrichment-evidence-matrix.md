@@ -4,7 +4,7 @@
 
 **Legend:** ☐ Not run · ✅ Pass · ⚠️ Partial · ❌ Fail · — N/A
 
-**Last update:** 2026-06-01 — **Phase 2 closed / stable** (30-2b GAM sanitiser + **30-2c** Design Page activity-row sanitiser; GAP-30-10 closed; Design Page `facilitator_notes` closed for self-directed learner pages). Floor **471**.
+**Last update:** 2026-06-01 — **Sprint 30 CLOSED** ([`SPRINT-30-RETROSPECTIVE.md`](SPRINT-30-RETROSPECTIVE.md), R30-999). Phases 1–2 complete; Phase 3 deferred. Final floor **471**. Sprint 31 seeded (presentation only).
 
 ---
 

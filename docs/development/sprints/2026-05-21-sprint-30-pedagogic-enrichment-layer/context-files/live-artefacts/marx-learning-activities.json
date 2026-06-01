@@ -2,133 +2,133 @@
   "activities": [
     {
       "activity_id": "A1",
-      "title": "Chronological Phases of Karl Marx's Life",
-      "grouping": "individual",
-      "duration_minutes": 20,
-      "mapped_learning_outcomes": [
-        "Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas."
-      ],
+      "title": "Chronological Analysis of Karl Marx's Life Phases",
+      "activity_preamble": "Understanding the timeline of Marx's life helps reveal how his personal experiences and historical context shaped his ideas. This activity invites you to order key life events and reflect on their influence on his philosophy.",
+      "prior_knowledge_activation": "Recall any prior knowledge about 19th-century European history and Marx's biography to connect events with broader historical trends.",
+      "learner_task": "1. Arrange the provided unordered list of Karl Marx's life events chronologically.\n2. For each life phase, write a brief note on how it might have influenced his philosophical or political ideas.",
+      "expected_output": "A completed chronological timeline with annotations linking each life phase to specific influences on Marx's ideas.",
       "required_materials": [
         {
           "material_id": "M1",
           "type": "text",
-          "purpose": "Biographical timeline and summary",
-          "specification": "A non-chronological unordered list of key events and phases in Karl Marx's life including birth, education, exile periods, major publications, and death."
+          "purpose": "Unordered list of key events in Karl Marx's life",
+          "specification": "A list of 10-12 significant events in Marx's life presented in non-chronological order, including dates and brief descriptions."
         }
       ],
-      "learner_task": "Arrange the provided life events of Karl Marx into a correct chronological timeline. Then, write a brief summary (3-4 sentences) explaining how each major life phase influenced his philosophical and political ideas.",
-      "expected_output": "A correctly ordered timeline of Marx's life events and a concise summary linking life phases to his ideas.",
-      "failure_mode": "",
-      "facilitator_moves": "",
-      "activity_preamble": "Understanding the timeline of Karl Marx's life helps you see how his experiences shaped his thinking. By putting his life events in order, you will better grasp the context behind his theories.",
-      "prior_knowledge_activation": "Recall what you already know about 19th-century European history to help place Marx's life events in context.",
-      "self_explanation_prompt": "Explain why the timing of Marx's exile or publication of major works might have influenced his ideas.",
-      "study_orientation": "This page guides you through Karl Marx's life, theories, and their application. Start by situating his life events chronologically to build a foundation for understanding his work. Each activity builds on the previous to deepen your insight into Marxist thought."
-    },
-    {
-      "activity_id": "A2",
-      "title": "Cause-Effect Analysis of Marx's Theoretical Development",
       "grouping": "individual",
       "duration_minutes": 25,
       "mapped_learning_outcomes": [
-        "Analyze cause-effect relationships between historical events and Marx's development of key theories."
+        "Analyze the key phases of Karl Marx's life and their influence on his philosophical and political ideas."
       ],
+      "reasoning_orientation": "Chronological sequencing and causal reasoning to connect life events with intellectual development.",
+      "self_explanation_prompt": "Before checking your timeline, explain in your own words how one key life event might have shaped Marx's thinking.",
+      "study_orientation": "This page guides you through Karl Marx's life, ideas, and their relevance today. Start by mapping his life phases to understand how his experiences influenced his theories. This foundational step prepares you for deeper analysis and application in subsequent activities.",
+      "intellectual_frame": "Thinking as a historian about biographical influence and intellectual development."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Cause-and-Effect Mapping of Marx's Theoretical Developments",
+      "activity_preamble": "Marx's theories emerged in response to specific historical events and social conditions. Tracing these cause-and-effect relationships clarifies why and how his ideas developed.",
+      "learner_task": "Using the provided cause-effect template, match each historical event with the corresponding Marxist theoretical development it influenced. Then, write a brief explanation of the causal link.",
+      "expected_output": "A completed cause-effect map linking historical events to Marx's theoretical developments with concise explanations.",
       "required_materials": [
         {
           "material_id": "M2",
           "type": "template",
-          "purpose": "Cause-effect analysis table",
-          "specification": "A table with two columns: 'Historical Event' and 'Effect on Marx's Theory'. Includes a list of shuffled historical events relevant to Marx's life and space for learners to fill in effects."
-        }
-      ],
-      "learner_task": "Using the table, match each historical event to its effect on Marx's theoretical development. Provide a brief explanation (1-2 sentences) of how the event influenced a specific Marxist concept or theory.",
-      "expected_output": "A completed cause-effect table with plausible links between historical events and Marx's theory development.",
-      "failure_mode": "",
-      "facilitator_moves": "",
-      "activity_preamble": "Marx's ideas did not develop in isolation but were responses to real historical events. Analyzing these cause-effect links reveals how his theories emerged from specific social and political contexts.",
-      "reasoning_orientation": "Focus on understanding how external events triggered or shaped Marx's concepts rather than just memorizing facts.",
-      "self_explanation_prompt": "Reflect on which historical event you think had the strongest impact on Marx's theory and why."
-    },
-    {
-      "activity_id": "A3",
-      "title": "Comparing Major Works: The Communist Manifesto vs. Das Kapital",
-      "grouping": "individual",
-      "duration_minutes": 30,
-      "mapped_learning_outcomes": [
-        "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital."
-      ],
-      "required_materials": [
+          "purpose": "Cause-effect mapping template",
+          "specification": "A table with two columns: one for historical events (unordered) and one for Marx's theoretical developments (unordered), plus space for explanation."
+        },
         {
           "material_id": "M3",
           "type": "text",
-          "purpose": "Orienting extracts",
-          "specification": "Short paired excerpts from The Communist Manifesto and Das Kapital highlighting key themes and arguments."
-        },
-        {
-          "material_id": "M4",
-          "type": "template",
-          "purpose": "Comparison table",
-          "specification": "A table with rows for themes such as 'Purpose', 'Audience', 'Key Arguments', 'Style', and 'Impact', and two columns for each work."
+          "purpose": "Summary of relevant historical events and Marx's theories",
+          "specification": "Brief descriptions of key 19th-century events (e.g., 1848 Revolutions, Industrial Revolution) and related Marxist concepts/theories."
         }
       ],
-      "learner_task": "Read the excerpts and complete the comparison table by identifying the purpose, audience, key arguments, style, and impact of each work. Then write a short paragraph summarizing the main differences and similarities.",
-      "expected_output": "A filled comparison table and a concise summary paragraph comparing the two works.",
-      "failure_mode": "",
-      "facilitator_moves": "",
-      "activity_preamble": "Comparing Marx's major works side-by-side helps clarify their distinct roles and messages. This comparison deepens your understanding of his evolving arguments and intended audiences.",
-      "reasoning_orientation": "Analyze the texts critically to identify both shared themes and unique features of each work.",
-      "self_explanation_prompt": "Which work do you find more accessible or persuasive, and why?"
-    },
-    {
-      "activity_id": "A4",
-      "title": "Applying Marxist Concepts to Contemporary Issues",
       "grouping": "individual",
       "duration_minutes": 30,
       "mapped_learning_outcomes": [
-        "Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+        "Explain the cause-and-effect relationships between historical events and Marx's theoretical developments."
       ],
+      "reasoning_orientation": "Mechanism tracing and causal inference to understand how external events shaped theoretical ideas.",
+      "self_explanation_prompt": "Before finalizing your map, summarize why one specific historical event led to a particular Marxist theory.",
+      "intellectual_coherence_bridge": "Building on the timeline of Marx's life, this activity deepens understanding by linking historical context to his theoretical output."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Comparative Analysis of The Communist Manifesto and Das Kapital",
+      "activity_preamble": "Comparing Marx's major works reveals differences in purpose, audience, and argument style. This helps you grasp the scope and focus of his key writings.",
+      "reasoning_orientation": "Textual comparison focusing on argument structure, themes, and intended impact rather than summary.",
+      "argument_structure_hint": "For each work: identify one central claim, cite a supporting passage, and note one implication for Marxist theory or practice.",
+      "conceptual_contrast_prompt": "Contrast the revolutionary call in The Communist Manifesto with the systematic economic critique in Das Kapital, avoiding the common error of treating them as identical.",
+      "self_explanation_prompt": "Before reviewing the model comparison, write a sentence on which work you find more compelling and why.",
+      "learner_task": "Complete the comparison table by filling in the purpose, key theme, and one major difference for each work based on the provided extracts.",
+      "expected_output": "A filled comparison table with clear notes on purpose, theme, and differences between the two works.",
       "required_materials": [
         {
-          "material_id": "M5",
+          "material_id": "M4",
           "type": "text",
-          "purpose": "Summary of core Marxist concepts",
-          "specification": "Concise definitions and explanations of concepts such as class struggle, alienation, surplus value, and historical materialism."
+          "purpose": "Paired extracts from The Communist Manifesto and Das Kapital",
+          "specification": "Short excerpts highlighting major themes and claims from each work, labeled with titles."
         },
         {
+          "material_id": "M5",
+          "type": "template",
+          "purpose": "Comparison table template",
+          "specification": "Columns for work title, purpose, key theme, and major difference."
+        }
+      ],
+      "grouping": "individual",
+      "duration_minutes": 35,
+      "mapped_learning_outcomes": [
+        "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital."
+      ],
+      "intellectual_coherence_bridge": "This activity builds on understanding Marx's life and historical context by focusing on his written legacy and argumentation."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Applying Core Marxist Concepts to Contemporary Issues",
+      "activity_preamble": "Marxist concepts remain influential in analyzing modern social, economic, and political challenges. Applying these ideas sharpens your critical thinking and relevance of theory.",
+      "transfer_or_application_task": "Use Marxist concepts such as class struggle, alienation, and commodity fetishism to analyze a current social or economic issue of your choice.",
+      "learner_task": "1. Select a contemporary issue (e.g., income inequality, labor rights, globalization).\n2. Identify at least two core Marxist concepts relevant to this issue.\n3. Write a brief analysis applying these concepts to explain the issue's dynamics.",
+      "expected_output": "A short written analysis applying Marxist concepts to a contemporary issue, demonstrating understanding and critical application.",
+      "required_materials": [
+        {
           "material_id": "M6",
-          "type": "prompt_set",
-          "purpose": "Contemporary issue prompts",
-          "specification": "A set of 3-4 brief descriptions of current social or economic issues (e.g., gig economy, wealth inequality, labor automation) for application."
+          "type": "text",
+          "purpose": "Summary of core Marxist concepts",
+          "specification": "Concise definitions and explanations of key concepts such as class struggle, alienation, commodity fetishism, and historical materialism."
         },
         {
           "material_id": "M7",
-          "type": "template",
-          "purpose": "Application worksheet",
-          "specification": "A worksheet guiding learners through identifying a concept, describing the issue, applying the concept, and reflecting on implications."
+          "type": "text",
+          "purpose": "Brief overview of contemporary social, economic, or political issues",
+          "specification": "Short descriptions of current issues suitable for Marxist analysis."
         }
       ],
-      "learner_task": "Select one contemporary issue from the prompts. Using the worksheet, identify a relevant Marxist concept, explain the issue, apply the concept to analyze it, and reflect on what this reveals about the issue's social or economic dynamics.",
-      "expected_output": "A completed worksheet with a clear application of Marxist theory to a contemporary issue and a reflective insight.",
-      "failure_mode": "",
-      "facilitator_moves": "",
-      "activity_preamble": "Applying Marxist concepts to today's issues allows you to see the continuing relevance of his ideas. This exercise develops your critical thinking and ability to connect theory with real-world problems.",
-      "transfer_or_application_task": "Consider how Marxist analysis might suggest solutions or critiques for the issue you chose.",
-      "self_explanation_prompt": "Why does the Marxist concept you applied help explain the contemporary issue better than other perspectives?"
+      "grouping": "individual",
+      "duration_minutes": 40,
+      "mapped_learning_outcomes": [
+        "Apply core Marxist concepts to contemporary social, economic, and political issues."
+      ],
+      "reasoning_orientation": "Conceptual application and critical analysis to connect theory with current real-world phenomena.",
+      "self_explanation_prompt": "Before writing your analysis, explain in your own words how one Marxist concept helps illuminate the chosen issue.",
+      "intellectual_coherence_bridge": "This final activity applies your knowledge of Marx's life, context, and writings to analyze present-day challenges."
     }
   ],
   "outcome_alignment": {
-    "A1": [
-      "Describe the major phases of Karl Marx's life and their influence on his philosophical and political ideas."
+    "Analyze the key phases of Karl Marx's life and their influence on his philosophical and political ideas.": [
+      "A1"
     ],
-    "A2": [
-      "Analyze cause-effect relationships between historical events and Marx's development of key theories."
+    "Explain the cause-and-effect relationships between historical events and Marx's theoretical developments.": [
+      "A2"
     ],
-    "A3": [
-      "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital."
+    "Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.": [
+      "A3"
     ],
-    "A4": [
-      "Apply core Marxist concepts to contemporary social and economic issues through critical reflection and examples."
+    "Apply core Marxist concepts to contemporary social, economic, and political issues.": [
+      "A4"
     ]
   },
-  "delivery_notes": "All activities are designed for self-directed individual study in an asynchronous online environment within a virtual learning environment (VLE). Materials are text-based and templated for independent completion without facilitation."
+  "delivery_notes": "All activities are designed for asynchronous, self-directed individual study within a virtual learning environment. Each activity includes clear instructions, required materials for independent use, and learner-facing scaffolds to support understanding and application."
 }

@@ -1,0 +1,28 @@
+Activity: Chronological Phases of Karl Marx's Life  
+Activity ID: A1  
+Mapped outcomes: Describe the major phases of Karl Marx's life and their influence on his philosophical and economic ideas.
+
+Material: M1 (text)  
+Purpose: Provide key biographical events  
+Content:  
+### Major Life Events and Phases of Karl Marx (Unordered)
+
+- **1843: Move to Paris and Early Political Engagement**  
+Marx relocates to Paris, where he meets Friedrich Engels.
+
+---
+
+Facilitator use:  
+Use this unordered list to help learners sequence Marx's life events into a timeline. Encourage them to identify how each phase contributed to his intellectual development.
+
+---
+
+Activity: Cause-Effect Analysis of Historical Events and Marx's Theories  
+Activity ID: A2  
+
+Material: M2 (template)  
+Content:  
+
+| Historical Event | Description | Marx's Theoretical Response |
+| --- | --- | --- |
+| 1. Industrial Revolution | Rapid industrialization | Development of capitalism theory |

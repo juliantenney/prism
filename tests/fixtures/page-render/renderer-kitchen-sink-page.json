@@ -247,6 +247,18 @@
           "learner_task": "Confirm Study orientation, Intellectual frame, and Connection labels all appear above this task block."
         },
         {
+          "activity_id": "KS-A7",
+          "title": "PEL reasoning field showcase",
+          "activity_preamble": "This synthetic row validates Phase 2 reasoning field passthrough only.",
+          "disciplinary_lens": "Thinking as a virologist",
+          "reasoning_orientation": "Trace mechanism and host interaction — do not memorise labels without evidence.",
+          "evidence_use_prompt": "Quote the reference excerpt when you justify each row in your comparison table.",
+          "argument_structure_hint": "For each claim: state the claim, cite one passage, then note one implication.",
+          "conceptual_contrast_prompt": "Contrast positive-sense and negative-sense RNA viruses; avoid treating replication steps as interchangeable.",
+          "self_explanation_prompt": "Before checking the model row, summarise your answer in one sentence.",
+          "learner_task": "Confirm Disciplinary lens, How to think, Using evidence, Structuring your response, and Key distinction all appear above this task block."
+        },
+        {
           "activity_id": "KS-A4",
           "title": "Minimal activity row",
           "learner_task": "Confirm minimal rows still render a task block."

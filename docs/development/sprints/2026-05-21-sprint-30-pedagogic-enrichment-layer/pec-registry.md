@@ -1,6 +1,6 @@
 # Pedagogic Enrichment Contract (PEC) registry — Sprint 30
 
-**Status:** `orientation_contract` **implemented** in `app.js` (30-1 generation + 30-1b renderer + 30-1c GAM voice guard + warn/test evaluator). Other PECs remain spec-only.
+**Status:** `orientation_contract` and `reasoning_contract` **implemented** in `app.js` (30-1–30-1c + 30-2 core + **30-2r** renderer + **30-2b** GAM stabilisation). `metacognition_contract` and full `disciplinary_thinking_contract` remain spec-only.
 
 **Charter reference:** [`sprint-30-charter.md`](sprint-30-charter.md) §5
 
@@ -11,7 +11,7 @@
 | PEC id | Phase | Status | Primary steps |
 |--------|-------|--------|---------------|
 | `orientation_contract` | 30-1 / 30-1b | **Implemented** (generation + renderer) | DLA, Design Page |
-| `reasoning_contract` | 30-2 | Spec only | DLA, GAM |
+| `reasoning_contract` | 30-2 core + 30-2r | **Implemented** (generation + passive render) | DLA, GAM |
 | `disciplinary_thinking_contract` | 30-2/30-3 | Spec only | DLA, GAM, Design Page |
 | `metacognition_contract` | 30-3 | Spec only | DLA, GAM, Design Page |
 
@@ -19,9 +19,9 @@
 
 ---
 
-## Activation signals (implemented — 30-1)
+## Activation signals (implemented — 30-1 + 30-2)
 
-`resolvePedagogicEnrichmentContractIds(context)` returns `["orientation_contract"]` when **all** of:
+`resolvePedagogicEnrichmentContractIds(context)` returns **`["orientation_contract", "reasoning_contract"]`** when **all** of:
 
 1. Brief is **not** facilitated (`isWorkflowBriefFacilitatedDeliveryIntent` === false)
 2. `shouldApplySelfDirectedLearnerPageScaffoldBase` === true (self-directed delivery + learner-page output signals — same gate as self-directed material-shape scaffolds)
@@ -74,17 +74,44 @@ No workflow topology changes. `applyWorkflowDesignHeuristics` unchanged.
 
 Display order: study orientation → intellectual frame → coherence bridge → `activity_preamble` → prior-knowledge / reasoning cues. **No fallback text** — renderer does not invent pedagogy (R30-006).
 
-### GAM material voice (30-1c — not a PEC)
+### GAM material voice (30-1c + 30-2b — not a PEC)
 
-Self-directed learner-page **GAM** runs append `buildSelfDirectedGamLearnerVoicePromptBlock()` via `applySelfDirectedLearnerPageStepScaffoldsToDraft` (same gate as table-row / reading sufficiency scaffolds).
+Self-directed learner-page **GAM** runs append `buildSelfDirectedGamLearnerVoicePromptBlock()` via `applySelfDirectedLearnerPageStepScaffoldsToDraft` (same gate as table-row / reading sufficiency scaffolds). **30-2b** extends the block and adds post-generation sanitisation (R30-011).
 
 | Rule | Detail |
 |------|--------|
-| Forbid | “Facilitator use:”, “Teacher notes”, “Instructor guidance”, tutor/facilitator notes; live session timing/choreography |
-| Prefer | “Use this to…”, “Check your notes against…”, “Before moving on…” |
-| Facilitated GAM | **Excluded** — workshop/facilitated briefs do not get this block |
+| Forbid | “Facilitator use:”, “Teacher notes”, “Instructor guidance”, “Tutor guidance”, tutor/facilitator notes; live session timing/choreography; restating `learner_task`, preamble, `reasoning_orientation` in material prose |
+| Prefer | “Use this to…”, “Check your notes against…”, “Before moving on…”, “How to use this resource:” |
+| Preserve | Worked micro-examples, evidence tables, comparison scaffolds, static retrieval prompts |
+| Facilitated GAM | **Excluded** — workshop/facilitated briefs do not get this block or sanitiser |
 
 Marker: `Self-directed learner-page material voice (auto-applied):`
+
+### GAM material stabilisation (30-2b — not a PEC)
+
+| Function | Role |
+|----------|------|
+| `sanitizeSelfDirectedGamMaterialsOutput(text, context)` | Strips forbidden facilitator headings + short following blocks; optional dedupe vs upstream activity fields; **does not rewrite** learner pedagogy |
+| `shouldSanitizeSelfDirectedGamMaterialsOutput(context)` | Gate: self-directed learner-page GAM only |
+| `evaluatePelGamMaterialStabilisation(gamText, options)` | Warn/test — facilitator labels + redundancy vs upstream activities |
+| `sanitizeWorkflowRunCapturedOutputForStep(raw, stepContext)` | Applied on workflow run capture paste |
+
+**Cognition GAM scaffold (30-2b):** learner-facing “Cognition cues” — no “after Facilitator use” wording.
+
+### Design Page row sanitisation (30-2c — not a PEC)
+
+| Function | Role |
+|----------|------|
+| `sanitizeSelfDirectedLearnerPageActivityRows(page, context)` | Strips facilitator row fields and choreographic `support_note` on `learning_activities` rows |
+| `shouldSanitizeSelfDirectedLearnerPageActivityRows(page, context)` | Gate: `page_profile === learner` + self-directed delivery + not facilitated/workshop brief |
+| `pelPageSupportNoteLooksFacilitatorChoreography(text)` | Removes `support_note` / `support_notes` only when tutor/choreography language detected |
+| `applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(page, options)` | Called at end of `applyPedagogicCognitionSemanticsToComposedPage` (before render/export) |
+
+**Removed fields:** `facilitator_notes`, `facilitator_note`, `facilitator_moves`, `teacher_notes`, `instructor_guidance`, `tutor_guidance`.
+
+**Preserved:** learner-facing `support_note` (e.g. “If you are stuck…”, “Before moving on…”). **Facilitated/workshop pages:** no-op.
+
+**Probe:** `auditLearnerPageActivityRowSanitization` in `sprint-30-probe-runner.js`.
 
 ### Orientation compliance evaluator (30-1c — warn/test only)
 
@@ -99,16 +126,39 @@ Marker: `Self-directed learner-page material voice (auto-applied):`
 
 ## `reasoning_contract`
 
-**Purpose:** Make disciplinary thinking explicit in tasks and materials.
+**Purpose:** Make disciplinary thinking explicit in tasks and materials — **HOW TO THINK**, not a restatement of `learner_task`, `activity_preamble`, `study_orientation`, or `intellectual_frame`.
 
 | Field id | Scope | Notes |
 |----------|-------|-------|
-| `reasoning_orientation` | Activity | What kind of thinking is required |
-| `evidence_use_prompt` | Activity / material | Source-based briefs |
+| `reasoning_orientation` | Activity | What kind of thinking is required (1–2 sentences, topic-specific) |
+| `evidence_use_prompt` | Activity | Source/transcript activities — how to use evidence |
 | `argument_structure_hint` | Activity | Claim → evidence → implication |
-| `self_explanation_prompt` | Activity | **Reuse Sprint 28 key** |
+| `self_explanation_prompt` | Activity | **Reuse Sprint 28** — generative retrieval |
+| `disciplinary_lens` | Page / first activity | Short tag-like lens — do not duplicate `intellectual_frame` |
+| `conceptual_contrast_prompt` | Activity | Compare/distinguish/misconception repair |
 
-**Prompt block id (planned):** `pel_reasoning_contract_v1`
+**Prompt block:** `buildPelReasoningContractPromptBlock()` — marker `Pedagogic enrichment — reasoning contract (auto-applied):`
+
+**GAM materials (30-2):** `buildSelfDirectedGamPelReasoningMaterialPromptBlock()` — worked micro-examples, evidence spans, static “before you re-read” retrieval; reuses 30-1c learner voice guard.
+
+**Steps:** PEC scaffold on **DLA** and **GAM** only. **Design Page** preserves reasoning field ids; does **not** append reasoning PEC block.
+
+**Anti-patterns (prompt):** “Think critically”, Socratic loops, facilitator voice, duplicating `learner_task`, scaffold explosion — mitigated by 30-2b prompts + sanitiser (GAP-30-10 closed).
+
+**Evaluator (30-2 — warn/test only):** `evaluatePelReasoningContractSatisfaction` — presence/quality, source evidence, compare/contrast fields, generic phrasing, duplication vs `learner_task`, facilitator language. Routed via `evaluatePedagogicEnrichmentContractSatisfaction` when `contractId: "reasoning_contract"`.
+
+**Renderer visibility (R30-009, R30-010):**
+
+| Field | Render path | Label |
+|-------|-------------|-------|
+| `reasoning_orientation` | `renderActivityFramingForActivity` — `util-pel-reasoning-cue` | How to think: |
+| `self_explanation_prompt` | `util-cognition--explain` | Reflect |
+| `disciplinary_lens` | `renderActivityFramingForActivity` — `util-pel-orientation-cue` | Disciplinary lens: |
+| `evidence_use_prompt` | same | Using evidence: |
+| `argument_structure_hint` | same | Structuring your response: |
+| `conceptual_contrast_prompt` | same | Key distinction: |
+
+**30-2r:** Passive passthrough only when field present in activity JSON — no inference, generation, fallback text, or field transformation (R30-010). Dedupe via `comparableSeen` when cues substantially overlap.
 
 ---
 
@@ -133,7 +183,7 @@ Marker: `Self-directed learner-page material voice (auto-applied):`
 
 | Field id | Scope | Notes |
 |----------|-------|-------|
-| `disciplinary_lens` | Page / activity | Named mode of inquiry |
+| `disciplinary_lens` | Page / activity | Named mode of inquiry (**also in `reasoning_contract`**) |
 | `source_handling_note` | Activity | Transcript / extract reading |
 | `synthesis_prompt` | Page tail | Integrate across activities |
 | `intellectual_coherence_bridge` | Activity | Link to prior activity |
@@ -147,7 +197,7 @@ Marker: `Self-directed learner-page material voice (auto-applied):`
 1. **Precedence:** `orientation_contract` fields apply before task execution in page order; bridges link activities.
 2. **No duplicate prose:** If `activity_preamble` satisfies orientation, do not also emit empty `study_orientation`.
 3. **Namespace:** New PEC-only fields must be listed here before code; never collide with assessment item keys.
-4. **Renderer:** Orientation fields use activity-framing util blocks (see 30-1b table above). Cognition pack fields continue via `util-cognition` (see [`context-files/sprint-28-29-boundaries.md`](context-files/sprint-28-29-boundaries.md)).
+4. **Renderer:** Orientation fields use activity-framing util blocks (see 30-1b table above). Reasoning PEC fields use the same cue pattern (30-2r). Cognition pack fields continue via `util-cognition` (see [`context-files/sprint-28-29-boundaries.md`](context-files/sprint-28-29-boundaries.md)).
 
 ---
 
@@ -160,15 +210,23 @@ Marker: `Self-directed learner-page material voice (auto-applied):`
 | `PEL_ORIENTATION_FIELD_IDS` | Orientation field id list | **Implemented** |
 | `resolvePedagogicEnrichmentContractIds` | Resolver from brief + resolved factors | **Implemented** |
 | `buildPelOrientationContractPromptBlock` | Orientation prompt block | **Implemented** |
-| `applyPedagogicEnrichmentContractScaffoldToDraft` | Append prompt blocks per step | **Implemented** (DLA, Design Page) |
-| `buildSelfDirectedGamLearnerVoicePromptBlock` | GAM self-directed material voice (30-1c) | **Implemented** |
+| `SPRINT_30_PEC_REASONING_CONTRACT_ID` | `"reasoning_contract"` | **Implemented** |
+| `PEL_REASONING_FIELD_IDS` | Reasoning field id list | **Implemented** |
+| `buildPelReasoningContractPromptBlock` | Reasoning PEC prompt block | **Implemented** |
+| `buildSelfDirectedGamPelReasoningMaterialPromptBlock` | GAM reasoning materials (30-2) | **Implemented** |
+| `applyPedagogicEnrichmentContractScaffoldToDraft` | Append PEC blocks per step | **Implemented** (orientation: DLA + Design Page; reasoning: DLA + GAM) |
+| `buildSelfDirectedGamLearnerVoicePromptBlock` | GAM self-directed material voice (30-1c + 30-2b hardening) | **Implemented** |
+| `sanitizeSelfDirectedGamMaterialsOutput` | GAM post-generation sanitiser (30-2b) | **Implemented** |
+| `shouldSanitizeSelfDirectedGamMaterialsOutput` | GAM sanitiser gate (30-2b) | **Implemented** |
+| `evaluatePelGamMaterialStabilisation` | GAM stabilisation rubric — warn/test only (30-2b) | **Implemented** |
 | `evaluatePelOrientationContractSatisfaction` | Orientation rubric — warn/test only (30-1c) | **Implemented** |
-| `evaluatePedagogicEnrichmentContractSatisfaction` | PEC router → orientation evaluator (30-1c) | **Implemented** |
+| `evaluatePelReasoningContractSatisfaction` | Reasoning rubric — warn/test only (30-2) | **Implemented** |
+| `evaluatePedagogicEnrichmentContractSatisfaction` | PEC router (orientation + reasoning) | **Implemented** |
 | `mergePedagogicEnrichmentFieldsIntoPageActivities` | Design Page composition merge | Not implemented |
 
-Exported via `__PRISM_TEST_API` (30-1 + 30-1c symbols above).
+Exported via `__PRISM_TEST_API` (30-1 + 30-1c + 30-2 symbols above).
 
-**Tests:** `tests/workflow-pel-orientation.test.js` (30-1 + 30-1c, **11** tests); `tests/utility-renderer-kitchen-sink.test.js`, `tests/utility-self-directed-activity-framing.test.js` (30-1b)
+**Tests:** `tests/workflow-pel-orientation.test.js` (**11**); `tests/workflow-pel-reasoning.test.js` (**17** — includes 30-2b); renderer: `utility-renderer-kitchen-sink.test.js`, `utility-self-directed-activity-framing.test.js` (30-1b orientation + 30-2r reasoning)
 
 ---
 

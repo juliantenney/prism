@@ -1,111 +1,104 @@
 {
   "artifact_type": "page",
-  "title": "Self-Directed Study: RNA Viruses and Hepatitis C (HCV)",
-  "audience": "Undergraduate students studying virology or related biomedical sciences",
+  "title": "Self-Study Session: RNA Viruses and Hepatitis C (HCV)",
+  "audience": "Undergraduate students studying virology or molecular biology",
   "page_profile": "learner",
   "sections": [
     {
       "heading": "Introduction and Study Orientation",
-      "content": "This self-directed study page is designed to deepen your understanding of RNA viruses, focusing specifically on the Hepatitis C virus (HCV). The activities are structured to build your knowledge progressively, starting from fundamental concepts of RNA virus genome types and replication mechanisms, moving through host-virus molecular interactions, and culminating in distinguishing HCV from other RNA viruses while addressing common misconceptions. You will engage with concise reference materials, complete comparison and correction tables, and reflect on key viral biology concepts. This study is expected to take approximately one hour and is intended for independent completion within a virtual learning environment (VLE)."
-    },
-    {
-      "heading": "Learning Outcomes",
-      "content": "By completing the activities on this page, you will be able to:\n\n- Explain the difference between positive-sense and negative-sense RNA viruses and their replication mechanisms.\n- Describe the role of host microRNA-122 in stabilizing the Hepatitis C virus 5' untranslated region (UTR).\n- Identify the function of the NS5B protein as the RNA-dependent RNA polymerase in HCV replication.\n- Distinguish the characteristics of Hepatitis C virus from other RNA viruses, including correcting common misconceptions about viral genome segmentation and integration."
+      "content": [
+        "This self-directed study page is designed to deepen your understanding of RNA viruses, with a special focus on Hepatitis C virus (HCV). The activities are structured to build your knowledge step-by-step, starting from fundamental differences between RNA virus genome types, then exploring HCV’s unique features and replication mechanisms, and finally clarifying common misconceptions about HCV compared to other RNA viruses like influenza and retroviruses.",
+        "You will engage with four individual activities that include reading reference materials, completing comparison and summary tables, and answering guided questions. This session is expected to take approximately one hour to complete. Each activity includes prompts to help you reflect on and explain key concepts in your own words, reinforcing your learning and retention."
+      ]
     },
     {
       "heading": "Learning Activities",
       "content": [
         {
           "activity_id": "A1",
-          "title": "Understanding RNA Virus Genome Types and Replication",
+          "title": "Distinguish Positive-Sense and Negative-Sense RNA Viruses",
           "duration_minutes": 15,
-          "activity_preamble": "RNA viruses differ in how their genomes are interpreted and replicated. Understanding these differences is crucial to grasping viral biology and treatment approaches.",
-          "prior_knowledge_activation": "Recall basic concepts of RNA structure and protein synthesis.",
-          "reasoning_orientation": "Analyze and categorize viral genome types based on replication requirements.",
-          "self_explanation_prompt": "Explain why positive-sense RNA can be translated directly but negative-sense RNA cannot.",
-          "scaffold_hint_sequence": [
-            "Identify what 'sense' means in RNA genomes.",
-            "Consider how viral RNA is used for protein synthesis.",
-            "Think about the role of viral polymerase in replication."
-          ],
-          "study_orientation": "This first activity introduces the fundamental differences between positive-sense and negative-sense RNA viruses, which is essential for understanding subsequent topics about HCV replication and host interactions.",
-          "learner_task": "Using the reference material provided, complete the comparison table by filling in key differences between positive-sense and negative-sense RNA viruses, including their replication mechanisms and examples.",
-          "expected_output": "A completed comparison table clearly distinguishing positive-sense and negative-sense RNA viruses with accurate replication details and examples.",
+          "activity_preamble": "Understanding how RNA viruses differ in their genome translation and replication is fundamental to grasping their biology. This activity helps you clarify these differences by organizing key features side-by-side.",
+          "prior_knowledge_activation": "Recall basic concepts of RNA and protein synthesis from molecular biology.",
+          "reasoning_orientation": "Compare and contrast key mechanistic features of two virus genome types to clarify functional differences.",
+          "self_explanation_prompt": "Explain in your own words why positive-sense RNA can be directly translated but negative-sense RNA cannot.",
+          "evidence_use_prompt": "Refer to the provided text to support your table entries with specific terminology and examples.",
+          "conceptual_contrast_prompt": "Focus on contrasting genome polarity and its impact on translation and replication, avoiding confusion between genome type and virus family.",
+          "learner_task": "Using the provided reference text, complete the comparison table by filling in the key differences between positive-sense and negative-sense RNA viruses, focusing on genome translation and replication.",
+          "expected_output": "A completed comparison table accurately showing distinctions in genome type, translation process, replication enzyme requirements, and examples of each virus type.",
           "materials": {
-            "reference_text": "**RNA Virus Genome Types and Replication Mechanisms**\n\nRNA viruses carry their genetic information in the form of RNA genomes. These genomes can be classified based on their \"sense\" or polarity:\n\n- **Positive-sense RNA viruses:** Their RNA genome is similar in polarity to messenger RNA (mRNA). This means the viral RNA can be directly recognized by the host cell's ribosomes and translated into viral proteins immediately upon infection. No additional steps are needed before protein synthesis begins.\n\n- **Negative-sense RNA viruses:** Their RNA genome is complementary to mRNA and cannot be directly translated. Instead, these viruses carry an RNA-dependent RNA polymerase enzyme within the virion. Upon entry into the host cell, this polymerase synthesizes a complementary positive-sense RNA strand from the negative-sense genome. This positive-sense RNA then serves as mRNA for translation into viral proteins.\n\n**Key differences:**\n\n| Feature                    | Positive-sense RNA viruses                       | Negative-sense RNA viruses                        |\n|----------------------------|------------------------------------------------|--------------------------------------------------|\n| Genome polarity            | Same as mRNA (5' to 3')                        | Complementary to mRNA (3' to 5')                  |\n| Translation requirement    | Can be directly translated by host ribosomes   | Requires viral RNA polymerase to create mRNA     |\n| Virion polymerase presence| Usually absent                                  | Present in virion to initiate transcription      |\n| Examples                  | Hepatitis C virus, Poliovirus, West Nile virus | Influenza virus, Rabies virus, Ebola virus        |\n\nUnderstanding these differences is crucial for grasping how RNA viruses replicate and how antiviral strategies can target these processes.",
-            "comparison_table_template": "| Feature                 | Positive-sense RNA viruses                          | Negative-sense RNA viruses                         |\n|-------------------------|---------------------------------------------------|---------------------------------------------------|\n| Genome type             |                                                   |                                                   |\n| Replication mechanism   |                                                   |                                                   |\n| Example viruses         |                                                   |                                                   |"
+            "reference_text": "### RNA Virus Genome Types: Positive-Sense vs Negative-Sense RNA\n\nRNA viruses carry their genetic information as RNA genomes. These genomes can be classified based on their polarity:\n\n- **Positive-sense RNA (+RNA):**  \n  - The viral RNA genome has the same polarity as messenger RNA (mRNA).  \n  - It can be directly recognized by host ribosomes and translated into viral proteins immediately upon infection.  \n  - No need for a viral polymerase to generate a complementary strand before translation.  \n  - Example viruses: Hepatitis C virus (HCV), Poliovirus, West Nile virus.\n\n- **Negative-sense RNA (−RNA):**  \n  - The viral RNA genome is complementary to mRNA and cannot be translated directly.  \n  - The virus must carry its own RNA-dependent RNA polymerase (virion polymerase) within the virion to synthesize a positive-sense RNA strand from the negative-sense genome.  \n  - Only the synthesized positive-sense RNA can then be translated by host ribosomes.  \n  - Example viruses: Influenza virus, Rabies virus, Ebola virus.\n\n**Summary of key differences:**  \n| Feature                  | Positive-Sense RNA Virus            | Negative-Sense RNA Virus              |  \n|--------------------------|-----------------------------------|-------------------------------------|  \n| Genome polarity          | Same as mRNA                      | Complementary to mRNA                |  \n| Translation              | Directly translated by host ribosomes | Requires synthesis of complementary +RNA first |  \n| Viral polymerase         | Not packaged in virion (usually) | Packaged in virion (essential)      |  \n| Example viruses          | Hepatitis C virus, Poliovirus     | Influenza virus, Rabies virus       |",
+            "comparison_table_template": "| Feature                     | Positive-Sense RNA Virus                          | Negative-Sense RNA Virus                          |  \n|-----------------------------|-------------------------------------------------|-------------------------------------------------|  \n| Genome type                 |                                                 |                                                 |  \n| Translation mechanism       |                                                 |                                                 |  \n| Replication enzyme required |                                                 |                                                 |  \n| Example viruses             |                                                 |                                                 |"
           }
         },
         {
           "activity_id": "A2",
-          "title": "Role of Host microRNA-122 in Hepatitis C Virus Stability",
-          "duration_minutes": 10,
-          "activity_preamble": "Host factors can influence viral replication. The interaction between microRNA-122 and HCV's 5' UTR is a key example of how host molecules support virus stability.",
-          "self_explanation_prompt": "Why might a host microRNA stabilize a viral RNA rather than degrade it?",
-          "intellectual_coherence_bridge": "Building on understanding RNA virus replication, this activity explores how host molecules specifically interact with HCV RNA to enhance viral stability.",
-          "learner_task": "Summarize in your own words how host microRNA-122 interacts with the Hepatitis C virus 5' UTR and why this interaction is important for viral stability.",
-          "expected_output": "A brief written summary explaining the stabilizing role of microRNA-122 on the HCV 5' UTR and its significance for viral replication.",
+          "title": "Explore Hepatitis C Virus Features and Host Interaction",
+          "duration_minutes": 15,
+          "activity_preamble": "Hepatitis C virus has unique features that influence its replication and interaction with the host. This activity guides you to identify these critical aspects and understand their biological significance.",
+          "prior_knowledge_activation": "Recall what you know about virus-host interactions and RNA stability mechanisms.",
+          "reasoning_orientation": "Identify and explain biological roles of viral and host factors in HCV replication.",
+          "self_explanation_prompt": "Summarize why microRNA-122 is important for HCV replication before checking your worksheet.",
+          "evidence_use_prompt": "Use direct phrases from the extract to support your explanations.",
+          "conceptual_contrast_prompt": "Distinguish HCV’s host interaction mechanisms from general virus replication strategies.",
+          "learner_task": "Read the HCV overview extract and complete the summary worksheet by listing the virus classification, its replication site, and explaining the role of host microRNA-122 in stabilizing the viral genome.",
+          "expected_output": "A filled worksheet clearly stating HCV as a positive-sense flavivirus, its replication in hepatocytes, and a concise explanation of microRNA-122’s stabilizing role on the HCV 5' UTR.",
           "materials": {
-            "explanation_text": "**Host microRNA-122 and Hepatitis C Virus 5' UTR Stability**\n\nMicroRNA-122 (miR-122) is a liver-specific small non-coding RNA molecule abundantly expressed in hepatocytes, the primary cells infected by Hepatitis C virus (HCV). Unlike many microRNAs that suppress gene expression by promoting RNA degradation or inhibiting translation, miR-122 interacts uniquely with the HCV genome.\n\n- miR-122 binds directly to two conserved sites near the 5' untranslated region (5' UTR) of the HCV RNA genome.\n- This binding stabilizes the viral RNA, protecting it from degradation by cellular exonucleases.\n- The interaction enhances the accumulation of HCV RNA, promoting efficient viral replication.\n- By stabilizing the 5' UTR, miR-122 helps maintain the integrity and availability of the viral genome for translation and replication.\n\nThis host-virus interaction exemplifies how viruses can exploit host molecules to their advantage, turning a typical gene regulatory mechanism into a viral replication enhancer."
+            "hcv_overview_extract": "### Overview of Hepatitis C Virus (HCV)\n\nHepatitis C virus (HCV) is a member of the *Flaviviridae* family and is classified as a positive-sense single-stranded RNA virus. It primarily infects liver cells, known as hepatocytes, where it replicates its genome and produces new virus particles.\n\nA unique feature of HCV replication is its interaction with a host cellular factor called microRNA-122 (miR-122). This small RNA molecule binds to the 5' untranslated region (5' UTR) of the HCV RNA genome. The binding of miR-122 stabilizes the viral RNA, protecting it from degradation and enhancing viral replication efficiency.\n\nKey points:  \n- HCV is a positive-sense flavivirus.  \n- Replication occurs in hepatocytes.  \n- Host microRNA-122 binds to the 5' UTR of HCV RNA, stabilizing the genome and promoting replication.",
+            "summary_worksheet_template": "| Aspect                  | Your Response                                   |  \n|-------------------------|------------------------------------------------|  \n| Virus classification    |                                                |  \n| Replication site        |                                                |  \n| Role of microRNA-122    |                                                |"
           }
         },
         {
           "activity_id": "A3",
-          "title": "Identifying the Function of NS5B in HCV Replication",
+          "title": "Identify the Role of HCV NS5B Protein in Viral Replication",
           "duration_minutes": 10,
-          "activity_preamble": "Viral replication depends on specialized enzymes. NS5B is a critical protein that enables HCV to copy its RNA genome.",
-          "self_explanation_prompt": "How does the activity of NS5B differ from host DNA polymerases?",
-          "intellectual_coherence_bridge": "This activity extends your understanding of HCV replication by focusing on the viral enzyme responsible for RNA synthesis.",
-          "learner_task": "Explain the role of the NS5B protein in the Hepatitis C virus life cycle, focusing on its enzymatic activity and importance.",
-          "expected_output": "A concise explanation describing NS5B as the viral RNA-dependent RNA polymerase essential for HCV genome replication.",
+          "activity_preamble": "The NS5B protein is a key enzyme in HCV replication. Understanding its function helps clarify how the virus copies its RNA genome.",
+          "reasoning_orientation": "Focus on mechanistic explanation of enzyme function within viral replication.",
+          "self_explanation_prompt": "Before answering, try to explain how NS5B contributes to the viral life cycle in your own words.",
+          "evidence_use_prompt": "Support your answers with specific terms from the NS5B description.",
+          "conceptual_contrast_prompt": "Avoid confusing NS5B with host polymerases or other viral proteins.",
+          "learner_task": "Read the description of NS5B and answer the guided questions to explain its role and importance in HCV replication.",
+          "expected_output": "Clear, concise answers describing NS5B as the RNA-dependent RNA polymerase that synthesizes new viral RNA genomes, highlighting its essential role in viral replication.",
           "materials": {
-            "description_text": "**NS5B Protein: The RNA-dependent RNA Polymerase of Hepatitis C Virus**\n\nNS5B is a nonstructural protein encoded by the Hepatitis C virus genome. It functions as the viral RNA-dependent RNA polymerase (RdRp), an enzyme critical for viral replication.\n\n- NS5B catalyzes the synthesis of new RNA strands using the viral RNA genome as a template.\n- It copies the positive-sense RNA genome into a complementary negative-sense RNA intermediate.\n- This negative-sense RNA then serves as a template for producing multiple positive-sense RNA genomes.\n- These new positive-sense RNAs are used for translation into viral proteins and packaging into new virions.\n- NS5B operates independently of host DNA polymerases and does not require a DNA intermediate.\n- Because of its essential role in replication, NS5B is a key target for antiviral drugs against HCV.\n\nUnderstanding NS5B’s enzymatic activity highlights the unique mechanisms RNA viruses use to replicate their genomes."
+            "ns5b_description": "### The NS5B Protein of Hepatitis C Virus\n\nNS5B is a viral protein encoded by the Hepatitis C virus genome. It functions as an RNA-dependent RNA polymerase (RdRp), an enzyme that synthesizes RNA from an RNA template. This enzyme is essential for the replication of the HCV genome.\n\nBecause HCV has an RNA genome, it cannot use the host cell’s DNA-dependent RNA polymerases. Instead, NS5B catalyzes the synthesis of new viral RNA strands by copying the positive-sense RNA genome into a complementary negative-sense RNA intermediate and then back into positive-sense RNA genomes for packaging into new virions.\n\nWithout NS5B, the virus cannot replicate its RNA genome, making this protein a critical target for antiviral drugs.",
+            "guided_questions": [
+              "1. What is the function of the NS5B protein in HCV replication?",
+              "2. How does NS5B differ from host cell polymerases?",
+              "3. Why is NS5B essential for the viral life cycle?",
+              "4. Describe the mechanism by which NS5B synthesizes new viral RNA.",
+              "5. Explain why NS5B is a target for antiviral therapy."
+            ]
           }
         },
         {
           "activity_id": "A4",
-          "title": "Distinguishing Hepatitis C Virus from Other RNA Viruses",
+          "title": "Clarify Misconceptions: HCV vs Influenza and Retroviruses",
           "duration_minutes": 20,
-          "activity_preamble": "Misunderstandings about viruses can hinder learning. Clarifying how Hepatitis C virus differs from other RNA viruses helps solidify accurate knowledge.",
-          "prior_knowledge_activation": "Recall basic virus genome structures and replication strategies.",
-          "reasoning_orientation": "Evaluate and correct common misconceptions by comparing viral features.",
-          "self_explanation_prompt": "Why might learners confuse HCV with influenza or retroviruses?",
-          "transfer_or_application_task": "Consider how these misconceptions could impact approaches to treatment or research.",
-          "intellectual_coherence_bridge": "This final activity consolidates your knowledge by addressing common misconceptions, reinforcing accurate distinctions between HCV and other RNA viruses.",
-          "learner_task": "Complete the misconception correction table by identifying the incorrect beliefs about HCV and providing the correct facts with explanations.",
-          "expected_output": "A completed table that clearly corrects misconceptions about HCV genome segmentation and integration with accurate facts and reasoning.",
+          "activity_preamble": "Common misconceptions about viral genome organization and replication can hinder understanding. This activity helps you distinguish HCV’s biology from influenza and retroviruses by correcting typical errors.",
+          "reasoning_orientation": "Analyze and contrast virus genome structures and replication strategies to repair misconceptions.",
+          "self_explanation_prompt": "Before completing the table, write a sentence explaining why HCV is often confused with these other viruses.",
+          "evidence_use_prompt": "Quote or paraphrase key points from the briefing to support your corrections.",
+          "conceptual_contrast_prompt": "Focus on contrasting segmentation and integration mechanisms, avoiding conflation of these distinct viral features.",
+          "learner_task": "Using the misconceptions briefing, complete the correction table by identifying which viruses have segmented genomes or integrate into host DNA, and explain why HCV differs from influenza and retroviruses.",
+          "expected_output": "A completed table correctly showing influenza as segmented, retroviruses as integrating, and HCV as non-segmented and non-integrating, with brief explanations correcting common misconceptions.",
           "materials": {
-            "summary_text": "**Characteristics of Hepatitis C Virus and Common Misconceptions**\n\n- **Hepatitis C virus (HCV)** is a positive-sense, single-stranded RNA virus belonging to the *Flaviviridae* family.\n- Its genome is **non-segmented**, meaning it consists of a single continuous RNA strand.\n- HCV replicates in hepatocytes without integrating its genome into the host DNA.\n- Unlike retroviruses (e.g., HIV), HCV does **not** reverse transcribe its RNA into DNA, nor does it insert viral DNA into the host genome.\n- Influenza virus, by contrast, has a **segmented** RNA genome composed of multiple RNA segments.\n- Retroviruses integrate into the host genome as part of their replication cycle, which is not the case for HCV.\n\n**Common Misconceptions:**\n\n- Confusing HCV with influenza virus due to both being RNA viruses, leading to the incorrect belief that HCV has a segmented genome.\n- Assuming HCV integrates into host DNA like retroviruses, which is false and affects understanding of treatment strategies.\n\nClarifying these points is important for accurate comprehension of viral biology and for guiding research and therapeutic approaches.",
-            "misconception_correction_table_template": "| Misconception                              | Correct Fact                                                        | Explanation                                                                                         |\n|-------------------------------------------|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|\n| HCV has a segmented genome like influenza | HCV has a single, non-segmented positive-sense RNA genome         | Unlike influenza, HCV’s genome is one continuous RNA strand, not divided into segments.           |\n| HCV integrates into host DNA like retroviruses | HCV does not integrate into host DNA; it replicates in the cytoplasm as RNA | HCV lacks reverse transcriptase and does not form DNA intermediates, so it does not insert into host DNA. |"
+            "misconceptions_briefing": "### Clarifying Common Misconceptions About HCV, Influenza, and Retroviruses\n\n- **Influenza virus** has a segmented negative-sense RNA genome. This means its genome is divided into multiple separate RNA segments. This segmentation allows for reassortment (mixing of segments) during co-infection, contributing to influenza’s genetic diversity.\n\n- **Retroviruses** (e.g., HIV) carry RNA genomes but replicate through a DNA intermediate. They reverse transcribe their RNA into DNA and integrate this DNA into the host cell genome. This integration is a hallmark of retroviral replication.\n\n- **Hepatitis C virus (HCV)** differs from both:  \n  - It has a **non-segmented**, positive-sense RNA genome.  \n  - It **does not integrate** into the host DNA. Instead, it replicates entirely in the cytoplasm using its RNA-dependent RNA polymerase (NS5B).  \n  - Therefore, HCV replication and genome organization are distinct from influenza’s segmented genome and retroviral integration.\n\nMisconceptions often arise because:  \n- Both influenza and HCV are RNA viruses, but only influenza has a segmented genome.  \n- Because retroviruses have RNA genomes and integrate into host DNA, some mistakenly believe HCV also integrates, which it does not.",
+            "misconception_correction_table_template": "| Virus       | Genome Segmentation (Yes/No) | Integration into Host DNA (Yes/No) | Common Misconceptions and Corrections                                         |  \n|-------------|------------------------------|-----------------------------------|-------------------------------------------------------------------------------|  \n| Influenza   |                              |                                   |                                                                               |  \n| Retrovirus  |                              |                                   |                                                                               |  \n| Hepatitis C |                              |                                   |                                                                               |"
           }
         }
       ]
     }
   ],
-  "source_artefacts": {
-    "learning_activities": [
-      "A1",
-      "A2",
-      "A3",
-      "A4"
-    ],
-    "activity_materials": [
-      "M1",
-      "M2",
-      "M3",
-      "M4",
-      "M5",
-      "M6"
-    ]
-  },
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
   "constraints_applied": [
-    "Preserved all activity_preamble and orientation fields from upstream",
-    "Included all upstream learning activities fully",
-    "Embedded full learner-facing material content for all activities",
-    "Maintained page_profile as learner",
-    "Structured materials as named fields within activities",
-    "Excluded any facilitator choreography or session timing",
-    "Excluded any fabricated or unsupported content"
+    "Preserved all upstream activity content and materials fully",
+    "Included all four activities as requested",
+    "Maintained learner-facing orientation and instructions",
+    "Excluded facilitator or assessment-only content per learner profile",
+    "Kept original activity preambles, prompts, and materials verbatim"
   ],
   "generation_notes": {
     "limitations": []

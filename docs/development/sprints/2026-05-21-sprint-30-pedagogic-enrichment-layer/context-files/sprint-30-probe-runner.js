@@ -1,6 +1,7 @@
 /**
- * Sprint 30 Phase 1 — live Factory validation (P30-01, P30-02).
+ * Sprint 30 Phase 1–2 — live Factory validation (P30-01, P30-02).
  * Pack prompts + applyWorkflowStepRuntimePromptAugmentations + composition merge + render.
+ * Phase 2: reasoning_contract evaluation via evaluatePelReasoningContractSatisfaction.
  *
  * Run from repo root:
  *   node docs/development/sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/context-files/sprint-30-probe-runner.js
@@ -28,6 +29,15 @@ const ORIENTATION_FIELDS = [
   "intellectual_frame",
   "intellectual_coherence_bridge",
   "activity_preamble"
+];
+
+const REASONING_FIELDS = [
+  "reasoning_orientation",
+  "evidence_use_prompt",
+  "argument_structure_hint",
+  "self_explanation_prompt",
+  "conceptual_contrast_prompt",
+  "disciplinary_lens"
 ];
 
 const PROBES = [
@@ -245,6 +255,29 @@ function orientationSnapshot(activities) {
   });
 }
 
+function reasoningSnapshot(activities) {
+  return activities.map((a) => {
+    const row = { activity_id: a.activity_id, title: a.title };
+    if (a.learner_task) row.learner_task = String(a.learner_task).trim().slice(0, 120) + "…";
+    REASONING_FIELDS.forEach((f) => {
+      if (a[f] != null && String(a[f]).trim()) row[f] = String(a[f]).trim();
+    });
+    return row;
+  });
+}
+
+function htmlReasoningMarkers(html) {
+  const h = String(html || "");
+  return {
+    howToThink: /How to think:/i.test(h),
+    reflectCognition: /Reflect<\/div>|data-cognition-field="self_explanation_prompt"/i.test(h),
+    evidenceUse: /evidence_use_prompt|Evidence use:/i.test(h),
+    argumentHint: /argument_structure_hint|Argument structure:/i.test(h),
+    conceptualContrast: /conceptual_contrast_prompt|Conceptual contrast:/i.test(h),
+    disciplinaryLens: /disciplinary_lens|Disciplinary lens:/i.test(h)
+  };
+}
+
 function pageActivityOrientation(page) {
   const rows = [];
   if (!page?.sections) return rows;
@@ -261,6 +294,64 @@ function pageActivityOrientation(page) {
     });
   });
   return rows;
+}
+
+function listPageLearningActivityRows(page) {
+  const rows = [];
+  if (!page?.sections) return rows;
+  page.sections.forEach((s) => {
+    const sid = String(s.section_id || "").toLowerCase();
+    const heading = String(s.heading || "").toLowerCase();
+    if (sid !== "learning_activities" && !/learning activities/.test(heading)) return;
+    const content = s.content;
+    const acts = Array.isArray(content) ? content : content?.activities || [];
+    acts.forEach((a) => rows.push(a));
+  });
+  return rows;
+}
+
+function supportNoteLooksChoreographic(text) {
+  const s = String(text || "");
+  if (!s.trim()) return false;
+  return (
+    /\b(facilitator|teacher notes|instructor guidance|tutor notes|tutor guidance)\b/i.test(s) ||
+    /\bcirculate\b/i.test(s) ||
+    /\bask students to share\b/i.test(s) ||
+    /\bin pairs\b/i.test(s) ||
+    /\bsmall groups?\b/i.test(s) ||
+    /\bminutes?\s+\d+\s*[-–]\s*\d+\b/i.test(s) ||
+    /\bduring class\b/i.test(s)
+  );
+}
+
+function auditLearnerPageActivityRowSanitization(page, html) {
+  const rows = listPageLearningActivityRows(page);
+  const facilitatorNotesOnRows = rows.some(
+    (a) =>
+      (a.facilitator_notes != null && String(a.facilitator_notes).trim()) ||
+      (a.facilitator_note != null && String(a.facilitator_note).trim())
+  );
+  const choreoSupportNote = rows.some(
+    (a) =>
+      supportNoteLooksChoreographic(a.support_note) ||
+      supportNoteLooksChoreographic(a.support_notes)
+  );
+  const htmlBlob = String(html || "");
+  const supportNoteFromFacilitatorAlias =
+    facilitatorNotesOnRows && /<aside class="util-support-note"/i.test(htmlBlob);
+  const choreoSupportNoteHtml =
+    choreoSupportNote &&
+    /\butil-support-note[\s\S]*\b(circulate|ask students to share|in pairs|small groups?)\b/i.test(
+      htmlBlob
+    );
+  return {
+    facilitatorNotesOnRows,
+    choreoSupportNote,
+    supportNoteFromFacilitatorAlias,
+    choreoSupportNoteHtml,
+    clean:
+      !facilitatorNotesOnRows && !choreoSupportNote && !supportNoteFromFacilitatorAlias
+  };
 }
 
 function evaluateRubric(probeId, dlaActs, pageActs, html) {
@@ -364,16 +455,36 @@ async function runProbe(api, ldConfig, md, wp, apiKey, probe, eo) {
   );
   const learning_activities = parseJsonFromText(dlaText) || { raw: dlaText };
 
-  const gamText = await callOpenAI(
+  const gamPrompt = buildAugmentedPrompt(
+    api,
+    probe,
+    eo,
+    gamTemplate,
+    "step_generate_activity_materials",
+    "Generate Activity Materials"
+  );
+
+  let gamText = await callOpenAI(
     apiKey,
     "Follow the pack prompt; return learner-facing materials text.",
     ctxHeader +
       "\n\nUpstream learning_activities:\n" +
       JSON.stringify(learning_activities, null, 2) +
       "\n\n---\n\n" +
-      gamTemplate,
+      gamPrompt,
     5500
   );
+  const gamSanitizeCtx = {
+    workflowGoal: probe.brief.goal,
+    desiredOutputs: probe.brief.desiredOutputs,
+    workflowInputs: probe.brief.inputs || "",
+    stepCanonicalStepId: "step_generate_activity_materials",
+    stepCanonicalTitle: "Generate Activity Materials",
+    workflowBriefResolution: { resolvedFactors: eo.resolved },
+    upstreamActivities: listActivities(learning_activities)
+  };
+  const gamSanitized = api.sanitizeSelfDirectedGamMaterialsOutput(gamText, gamSanitizeCtx);
+  gamText = String(gamSanitized.text != null ? gamSanitized.text : gamText);
 
   const dpText = await callOpenAI(
     apiKey,
@@ -406,20 +517,59 @@ async function runProbe(api, ldConfig, md, wp, apiKey, probe, eo) {
 
   const dlaActs = listActivities(learning_activities);
   const evalResult = evaluateRubric(probe.id, dlaActs, pageActivityOrientation(page), html);
+  const reasoningEvalOpts = {
+    sourceBrief: probe.brief.startingArtefact === "provided_source_content",
+    inputStrategy: eo.resolved.input_strategy || eo.explicit.input_strategy,
+    startingArtefact: probe.brief.startingArtefact,
+    gamText: gamText,
+    page: page
+  };
+  const reasoningEval = api.evaluatePelReasoningContractSatisfaction(learning_activities, reasoningEvalOpts);
+  const orientationEval = api.evaluatePelOrientationContractSatisfaction(learning_activities, {
+    page,
+    gamText
+  });
+  const gamBlob = String(gamText).toLowerCase();
+  const phase2Heuristics = {
+    facilitatorUse: /\bfacilitator use:/i.test(gamBlob),
+    teacherNotes: /\bteacher notes\b/i.test(gamBlob),
+    minutesChoreo: /\bminutes?\s+\d+|\bminute\s+\d+/i.test(gamBlob),
+    thinkCritically: /\bthink critically\b/i.test(JSON.stringify(dlaActs).toLowerCase()),
+    beforeReread:
+      /\bbefore you re-read\b|\bwithout looking back\b|\bbefore checking\b/i.test(gamBlob) ||
+      /\bbefore you re-read\b|\bwithout looking back\b/i.test(JSON.stringify(dlaActs).toLowerCase()),
+    workedExample:
+      /\bworked example\b|\bsample row\b|\bexample:\b|\be\.g\.\s*["']/i.test(gamBlob) ||
+      /\|\s*[^|]+\s*\|\s*[^|]+\s*\|/.test(gamBlob.slice(0, 8000))
+  };
+  const htmlMarkers = htmlReasoningMarkers(html);
+  const pageRowSanitization = auditLearnerPageActivityRowSanitization(page, html);
 
   return {
     prompts: {
-      dlaHasPel: /pedagogic enrichment — orientation contract/i.test(dlaPrompt),
-      dpHasPel: /pedagogic enrichment — orientation contract/i.test(dpPrompt)
+      dlaHasPelOrientation: /pedagogic enrichment — orientation contract/i.test(dlaPrompt),
+      dlaHasPelReasoning: /pedagogic enrichment — reasoning contract/i.test(dlaPrompt),
+      gamHasPelReasoning: /pedagogic enrichment — reasoning contract/i.test(gamPrompt),
+      gamHasReasoningMaterials: /self-directed learner-page reasoning materials/i.test(gamPrompt),
+      gamHasVoiceGuard: /self-directed learner-page material voice/i.test(gamPrompt),
+      dpHasPel: /pedagogic enrichment — orientation contract/i.test(dpPrompt),
+      dpHasPelReasoning: /pedagogic enrichment — reasoning contract/i.test(dpPrompt)
     },
     learning_outcomes,
     learning_activities,
     activity_materials: { text: gamText },
     page,
+    html,
     htmlExcerpt: html.slice(0, 6000),
     dlaOrientation: orientationSnapshot(dlaActs),
     pageOrientation: pageActivityOrientation(page),
-    evaluation: evalResult
+    dlaReasoning: reasoningSnapshot(dlaActs),
+    evaluation: evalResult,
+    reasoningEval,
+    orientationEval,
+    phase2Heuristics,
+    htmlMarkers,
+    pageRowSanitization
   };
 }
 
@@ -460,9 +610,55 @@ function compareFixtures(repoRoot, probeSlug, dlaOrientation) {
   };
 }
 
+function phase2RubricScores(probeId, live) {
+  const acts = live.dlaReasoning || [];
+  const blob = JSON.stringify(acts).toLowerCase();
+  const gam = String(live.activity_materials?.text || "").toLowerCase();
+  const roCount = acts.filter((a) => a.reasoning_orientation).length;
+  const evCount = acts.filter((a) => a.evidence_use_prompt).length;
+  const argCount = acts.filter((a) => a.argument_structure_hint).length;
+  const ccCount = acts.filter((a) => a.conceptual_contrast_prompt).length;
+  const genericRo = acts.some((a) =>
+    a.reasoning_orientation && /\bthink critically|analyse the topic carefully\b/i.test(a.reasoning_orientation)
+  );
+  const topicOk =
+    probeId === "P30-02"
+      ? /hcv|hepatitis|ns5b|mir-122|rna virus|quasispecies/i.test(blob)
+      : /marx|manifesto|kapital|bourgeois|proletariat|class struggle/i.test(blob);
+  return {
+    thinking_visible:
+      roCount >= 2 && !genericRo && topicOk ? "Yes" : roCount >= 1 ? "Partial" : "No",
+    evidence_discipline:
+      probeId === "P30-02"
+        ? evCount >= 1 && topicOk
+          ? "Yes"
+          : evCount >= 1
+            ? "Partial"
+            : "No"
+        : evCount >= 1
+          ? "Partial"
+          : "N/A",
+    argument_structure: argCount >= 1 ? "Yes" : "Partial",
+    conceptual_contrast: ccCount >= 1 ? "Yes" : "Partial",
+    generative_retrieval: live.phase2Heuristics.beforeReread ? "Yes" : "Partial",
+    gam_worked_support: live.phase2Heuristics.workedExample ? "Partial" : "No",
+    redundancy:
+      (live.reasoningEval?.missingFields || []).includes("reasoning_field_duplication")
+        ? "Partial"
+        : "Yes",
+    facilitator_regression:
+      live.phase2Heuristics.facilitatorUse ||
+      live.phase2Heuristics.minutesChoreo ||
+      live.pageRowSanitization?.facilitatorNotesOnRows ||
+      live.pageRowSanitization?.choreoSupportNote
+        ? "No"
+        : "Yes"
+  };
+}
+
 function writeLiveMd(probe, eo, live, compare, apiKeyPresent) {
   const lines = [];
-  lines.push("# " + probe.id + " — Factory live validation (Sprint 30 Phase 1)");
+  lines.push("# " + probe.id + " — Factory live validation (Sprint 30 Phase 2)");
   lines.push("");
   lines.push("**Captured:** " + new Date().toISOString().slice(0, 19) + "Z");
   lines.push(
@@ -510,35 +706,122 @@ function writeLiveMd(probe, eo, live, compare, apiKeyPresent) {
   lines.push("");
   lines.push(eo.steps.join(" → "));
   lines.push("");
-  lines.push("Runtime prompts included PEL: DLA=" + live.prompts.dlaHasPel + ", Design Page=" + live.prompts.dpHasPel);
+  lines.push(
+    "Runtime PEC in prompts: DLA orientation=" +
+      live.prompts.dlaHasPelOrientation +
+      ", DLA reasoning=" +
+      live.prompts.dlaHasPelReasoning +
+      ", GAM reasoning=" +
+      live.prompts.gamHasPelReasoning +
+      ", Design Page orientation=" +
+      live.prompts.dpHasPel +
+      " (reasoning block on DP=" +
+      live.prompts.dpHasPelReasoning +
+      ")"
+  );
   lines.push("");
 
-  lines.push("## 4. DLA orientation fields");
+  lines.push("## 4. DLA reasoning fields (Phase 2)");
+  lines.push("");
+  lines.push("```json");
+  lines.push(JSON.stringify(live.dlaReasoning, null, 2));
+  lines.push("```");
+  lines.push("");
+  lines.push("**Evaluator (`evaluatePelReasoningContractSatisfaction`):**");
+  lines.push("");
+  lines.push("```json");
+  lines.push(
+    JSON.stringify(
+      {
+        satisfied: live.reasoningEval.satisfied,
+        missingFields: live.reasoningEval.missingFields,
+        warnings: live.reasoningEval.warnings,
+        counts: {
+          reasoningOrientationCount: live.reasoningEval.reasoningOrientationCount,
+          evidencePromptCount: live.reasoningEval.evidencePromptCount,
+          argumentHintCount: live.reasoningEval.argumentHintCount,
+          contrastPromptCount: live.reasoningEval.contrastPromptCount,
+          selfExplanationCount: live.reasoningEval.selfExplanationCount
+        }
+      },
+      null,
+      2
+    )
+  );
+  lines.push("```");
+  lines.push("");
+
+  lines.push("## 5. GAM materials excerpt");
+  lines.push("");
+  lines.push("**Artefact:** `live-artefacts/" + probe.slug + "-activity-materials.txt`");
+  lines.push("");
+  lines.push("```");
+  lines.push(String(live.activity_materials?.text || "").slice(0, 3500));
+  lines.push("```");
+  lines.push("");
+  lines.push("GAM heuristics: " + JSON.stringify(live.phase2Heuristics));
+  lines.push("");
+  lines.push(
+    "Page row sanitization (30-2c): " +
+      JSON.stringify(live.pageRowSanitization || { clean: true })
+  );
+  lines.push("");
+
+  lines.push("## 6. DLA orientation fields");
   lines.push("");
   lines.push("```json");
   lines.push(JSON.stringify(live.dlaOrientation, null, 2));
   lines.push("```");
   lines.push("");
 
-  lines.push("## 5. Composed page orientation fields (post-merge)");
+  lines.push("## 7. Composed page orientation fields (post-merge)");
   lines.push("");
   lines.push("```json");
   lines.push(JSON.stringify(live.pageOrientation, null, 2));
   lines.push("```");
   lines.push("");
 
-  lines.push("## 6. Rendered HTML excerpt");
+  lines.push("## 8. Rendered HTML excerpt");
   lines.push("");
   lines.push("```html");
   lines.push(live.htmlExcerpt);
   lines.push("```");
   lines.push("");
-  lines.push("Render markers: Study orientation=" + live.evaluation.htmlHasStudyOrientation +
-    "; Intellectual frame=" + live.evaluation.htmlHasIntellectualFrame +
-    "; Connection=" + live.evaluation.htmlHasBridge);
+  lines.push(
+    "Render markers (orientation): Study orientation=" +
+      live.evaluation.htmlHasStudyOrientation +
+      "; Intellectual frame=" +
+      live.evaluation.htmlHasIntellectualFrame +
+      "; Connection=" +
+      live.evaluation.htmlHasBridge
+  );
+  lines.push(
+    "Render markers (reasoning): How to think=" +
+      live.htmlMarkers.howToThink +
+      "; self_explanation cognition=" +
+      live.htmlMarkers.reflectCognition +
+      "; evidence_use_prompt=" +
+      live.htmlMarkers.evidenceUse +
+      "; argument_structure_hint=" +
+      live.htmlMarkers.argumentHint +
+      "; conceptual_contrast_prompt=" +
+      live.htmlMarkers.conceptualContrast +
+      "; disciplinary_lens=" +
+      live.htmlMarkers.disciplinaryLens
+  );
   lines.push("");
 
-  lines.push("## 7. Slice 30-1 rubric");
+  lines.push("## 9. Slice 30-2 rubric (Phase 2 — live)");
+  lines.push("");
+  lines.push("| Criterion | Score | Notes |");
+  lines.push("|-----------|-------|-------|");
+  const p2 = phase2RubricScores(probe.id, live);
+  Object.entries(p2).forEach(([k, v]) => {
+    lines.push("| " + k.replace(/_/g, " ") + " | **" + v + "** | |");
+  });
+  lines.push("");
+
+  lines.push("## 10. Slice 30-1 rubric (orientation — live)");
   lines.push("");
   lines.push("| Criterion | Score |");
   lines.push("|-----------|-------|");
@@ -550,24 +833,47 @@ function writeLiveMd(probe, eo, live, compare, apiKeyPresent) {
   lines.push("Field counts: " + JSON.stringify(live.evaluation.counts));
   lines.push("");
 
-  lines.push("## 8. Comparison vs pre-30-1 fixtures");
+  lines.push("## 11. Comparison vs pre-30-1 fixtures");
   lines.push("");
   lines.push("```json");
   lines.push(JSON.stringify(compare, null, 2));
   lines.push("```");
   lines.push("");
 
-  lines.push("## 9. Layer verdict");
+  lines.push("## 12. Layer verdict");
   lines.push("");
   lines.push("| Layer | Verdict |");
   lines.push("|-------|---------|");
   lines.push("| E | ✅ |");
-  lines.push("| G | " + (live.prompts.dlaHasPel && live.evaluation.counts.preambleCount > 0 ? "✅" : "⚠️") + " |");
+  lines.push(
+    "| G (orientation) | " +
+      (live.prompts.dlaHasPelOrientation && live.evaluation.counts.preambleCount > 0 ? "✅" : "⚠️") +
+      " |"
+  );
+  lines.push(
+    "| G (reasoning) | " +
+      (live.prompts.dlaHasPelReasoning && live.reasoningEval.reasoningOrientationCount >= 1 ? "✅" : "⚠️") +
+      " |"
+  );
   lines.push("| C | " + (live.pageOrientation.length ? "✅" : "⚠️") + " |");
-  lines.push("| R | " + (live.evaluation.htmlHasStudyOrientation || live.evaluation.htmlHasBridge ? "✅" : "⚠️") + " |");
+  lines.push(
+    "| R (orientation) | " +
+      (live.evaluation.htmlHasStudyOrientation || live.evaluation.htmlHasBridge ? "✅" : "⚠️") +
+      " |"
+  );
+  lines.push(
+    "| R (reasoning JSON→HTML) | " +
+      (live.htmlMarkers.howToThink ? "⚠️ partial" : "⚠️ gap") +
+      " — see visibility assessment |"
+  );
   lines.push("");
 
-  lines.push("## 10. Weaknesses / next slice (proposal only)");
+  lines.push("## 13. Visibility gap assessment");
+  lines.push("");
+  lines.push(live.visibilityNote || "(See capture JSON visibilityNote)");
+  lines.push("");
+
+  lines.push("## 14. Weaknesses / next slice (proposal only)");
   lines.push("");
   lines.push(live.weaknessNote || "(See sprint-30-probe-capture.json weaknessNotes)");
   lines.push("");
@@ -575,9 +881,37 @@ function writeLiveMd(probe, eo, live, compare, apiKeyPresent) {
   return lines.join("\n");
 }
 
+function visibilityGapNote(live) {
+  const m = live.htmlMarkers;
+  const inJson =
+    (live.reasoningEval?.evidencePromptCount || 0) > 0 ||
+    (live.reasoningEval?.argumentHintCount || 0) > 0 ||
+    (live.reasoningEval?.contrastPromptCount || 0) > 0;
+  const unrendered =
+    !m.evidenceUse && !m.argumentHint && !m.conceptualContrast && !m.disciplinaryLens;
+  if (!inJson) {
+    return (
+      "**Model compliance gap** — reasoning fields thin in DLA JSON; visibility is secondary. " +
+      "Prioritise prompt/model compliance before **30-2r** renderer work."
+    );
+  }
+  if (inJson && unrendered && m.howToThink) {
+    return (
+      "**Yes — materially harms learner experience** for source/compare activities: " +
+      "`reasoning_orientation` / `self_explanation_prompt` render, but " +
+      "`evidence_use_prompt`, `argument_structure_hint`, `conceptual_contrast_prompt`, and `disciplinary_lens` " +
+      "do not appear in HTML though present in JSON. Learners lose evidence/contrast guidance on the page. " +
+      "**Recommend 30-2r first** (minimal passthrough, ~4 labels) before **30-2b** (GAM anti-redundancy), " +
+      "unless live GAM shows severe scaffold explosion."
+    );
+  }
+  return "**Low material harm** — either fields absent in JSON or partial render sufficient for this probe.";
+}
+
 function weaknessNotes(probeId, live) {
   const notes = [];
   const e = live.evaluation;
+  const re = live.reasoningEval;
   if (e.counts.studyCount === 0) notes.push("**G/model:** no study_orientation in DLA — prompt compliance gap.");
   if (e.counts.bridgeCount === 0 && e.counts.activityCount > 1) {
     notes.push("**G/model:** missing intellectual_coherence_bridge on follow-on activities.");
@@ -604,6 +938,20 @@ function weaknessNotes(probeId, live) {
     );
     if (dupRisk) notes.push("**G:** study_orientation duplicates activity_preamble opening.");
   }
+  if (live.phase2Heuristics.facilitatorUse) {
+    notes.push("**GAM:** \"Facilitator use:\" still present — 30-1c guard not fully complied.");
+  }
+  if (live.pageRowSanitization && !live.pageRowSanitization.clean) {
+    notes.push(
+      "**C/page:** facilitator_notes/facilitator_note or choreographic support_note on learner activity rows (or in Support note HTML)."
+    );
+  }
+  if (re && re.missingFields && re.missingFields.length) {
+    notes.push("**Reasoning evaluator:** " + re.missingFields.join(", "));
+  }
+  if ((re?.warnings || []).some((w) => w.includes("substantially overlaps"))) {
+    notes.push("**Redundancy:** reasoning field duplicates learner_task or orientation.");
+  }
   if (!notes.length) notes.push("No major weaknesses flagged by heuristics; manual read still advised.");
   return notes.join("\n");
 }
@@ -627,11 +975,13 @@ async function main() {
       try {
         live = await runProbe(api, ldConfig, md, wp, apiKey, probe, eo);
         live.weaknessNote = weaknessNotes(probe.id, live);
+        live.visibilityNote = visibilityGapNote(live);
         compare = compareFixtures(repoRoot, probe.slug, live.dlaOrientation);
         const base = path.join(artefactDir, probe.slug);
         fs.writeFileSync(base + "-learning-activities.json", JSON.stringify(live.learning_activities, null, 2));
+        fs.writeFileSync(base + "-activity-materials.txt", String(live.activity_materials?.text || ""));
         fs.writeFileSync(base + "-page.json", JSON.stringify(live.page, null, 2));
-        fs.writeFileSync(base + "-render.html", live.htmlExcerpt + "\n<!-- truncated -->");
+        fs.writeFileSync(base + "-render.html", live.html || live.htmlExcerpt);
       } catch (err) {
         live = { error: String(err.message || err) };
       }

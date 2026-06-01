@@ -6898,10 +6898,10 @@
       );
     } else if (stageKey === "gam") {
       lines.push(
-        "- For each activity material block, after Facilitator use, add a Cognition cues section:"
+        "- For each activity material block, add a learner-facing Cognition cues section (never use Facilitator use, Teacher notes, or similar headings):"
       );
       (requirements.gamSections || []).forEach(function (label) {
-        lines.push("  - " + label + ": <usable facilitator/learner text>");
+        lines.push("  - " + label + ": <usable learner-facing text>");
       });
       lines.push(
         "- Ground each subsection in matching cognition fields from learning_activities when present."
@@ -7222,13 +7222,26 @@
   }
 
   var SPRINT_30_PEC_ORIENTATION_CONTRACT_ID = "orientation_contract";
+  var SPRINT_30_PEC_REASONING_CONTRACT_ID = "reasoning_contract";
 
-  var SPRINT_30_PEC_IDS = [SPRINT_30_PEC_ORIENTATION_CONTRACT_ID];
+  var SPRINT_30_PEC_IDS = [
+    SPRINT_30_PEC_ORIENTATION_CONTRACT_ID,
+    SPRINT_30_PEC_REASONING_CONTRACT_ID
+  ];
 
   var PEL_ORIENTATION_FIELD_IDS = [
     "study_orientation",
     "intellectual_frame",
     "intellectual_coherence_bridge"
+  ];
+
+  var PEL_REASONING_FIELD_IDS = [
+    "reasoning_orientation",
+    "evidence_use_prompt",
+    "argument_structure_hint",
+    "self_explanation_prompt",
+    "disciplinary_lens",
+    "conceptual_contrast_prompt"
   ];
 
   var SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS = [
@@ -7240,6 +7253,10 @@
     "reasoning_orientation",
     "reasoning_orientation_prompt",
     "self_explanation_prompt",
+    "evidence_use_prompt",
+    "argument_structure_hint",
+    "conceptual_contrast_prompt",
+    "disciplinary_lens",
     "transfer_or_application_task",
     "scaffold_hint_sequence",
     "uncertainty_tension_prompt",
@@ -7266,13 +7283,18 @@
       "",
       "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
       "- Each activity object MUST include activity_preamble (non-empty string, 1–3 sentences).",
-      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
+      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
       "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page independently (not generic module welcome text).",
-      "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the disciplinary lens (e.g. historian, biologist) in 1–2 sentences.",
+      "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).",
       "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence linking to the prior activity's ideas (do not repeat the activity title).",
-      "- self_explanation_prompt: at least two activities; one short reflective orientation sentence each (not a full essay).",
+      "- self_explanation_prompt: at least two activities; one short generative-retrieval sentence each (e.g. explain in your own words before checking) — not a full essay.",
       "- prior_knowledge_activation: at least one activity when prior context helps.",
-      "- reasoning_orientation: on compare/analyse/application activities.",
+      "- reasoning_orientation: on compare/analyse/application/cause-effect activities — 1–2 sentences on WHAT KIND OF THINKING (not a restatement of learner_task).",
+      "- evidence_use_prompt: on activities that use transcript/extract/reading — how to quote, paraphrase, or map claims to the source (not a bibliography).",
+      "- argument_structure_hint: on compare/evaluate/argument activities — short claim → evidence → implication scaffold.",
+      "- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one common error to avoid.",
+      "- disciplinary_lens: optional once per page — short tag-like lens (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
+      "- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.",
       "- transfer_or_application_task: at least one application-focused activity when relevant.",
       "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 short strings).",
       "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
@@ -7289,7 +7311,10 @@
       '  "activity_id": "A2",',
       '  "title": "Compare major works",',
       '  "activity_preamble": "Before you read the extracts, note what each author assumes about workers and the state.",',
-      '  "self_explanation_prompt": "After comparing, state in one sentence which text you find more convincing and why.",',
+      '  "reasoning_orientation": "Compare texts as historical arguments: trace claim, evidence, and implied audience — not plot summary.",',
+      '  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",',
+      '  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",',
+      '  "self_explanation_prompt": "Before checking the model row, write one sentence on which text you find more convincing and why.",',
       '  "learner_task": "Complete the comparison table with purpose and one key difference per work.",',
       '  "expected_output": "Filled comparison table with brief notes.",',
       '  "required_materials": [{ "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." }]',
@@ -7346,10 +7371,11 @@
       "",
       "Self-directed learner-page material voice (auto-applied):",
       "- All generated materials are for independent self-study — write directly to the learner, not to a tutor or classroom facilitator.",
-      "- Do not use facilitator-facing labels or notes such as: \"Facilitator use:\", \"Teacher notes\", \"Instructor guidance\", \"Tutor notes\", or \"For the facilitator\".",
-      "- Do not include live classroom timing or choreography (e.g. \"minutes 5–15\", \"at minute 20\", \"circulate during discussion\").",
-      "- Use learner-facing guidance instead, for example: \"Use this to…\", \"Check your notes against…\", \"Before moving on…\", \"If you get stuck…\".",
-      "- Material purpose lines should describe what the learner does with the resource — not how a teacher should run the activity."
+      "- Never emit facilitator-facing headings or labels, including: \"Facilitator use:\", \"Teacher notes\", \"Instructor guidance\", \"Tutor guidance\", \"Tutor notes\", or \"For the facilitator\" — even if other templates suggest them.",
+      "- Do not include live classroom timing or choreography (e.g. \"minutes 5–15\", \"at minute 20\", \"circulate during discussion\", \"encourage them to\", \"help learners\").",
+      "- Use learner-facing guidance instead, for example: \"Use this to…\", \"Check your notes against…\", \"Before moving on…\", \"If you get stuck…\", \"How to use this resource:\".",
+      "- Material purpose lines should describe what the learner does with the resource — not how a teacher should run the activity.",
+      "- Do not restate learner_task, activity_preamble, study_orientation, or reasoning_orientation in material prose — the activity row already shows those; add artefacts (tables, excerpts, worked rows) only."
     ].join("\n");
   }
 
@@ -7358,9 +7384,9 @@
       "",
       "Self-directed page activity field preservation (auto-applied):",
       "- When composing learning_activities.content from upstream learning_activities, copy these fields verbatim onto each matching activity_id when present upstream:",
-      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge",
+      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge",
       "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
-      "- Preserve study_orientation, intellectual_frame, and intellectual_coherence_bridge when present upstream — do not summarise them away.",
+      "- Preserve study_orientation, intellectual_frame, intellectual_coherence_bridge, and PEL reasoning fields when present upstream — do not summarise them away.",
       "- learner_task (or learner_instructions when that is the upstream key) remains the actionable instruction block — preserve both when present.",
       "- Do not strip or summarise away cognition-orientation fields."
     ].join("\n");
@@ -7391,6 +7417,424 @@
       "- Do not use facilitator choreography, session timing, or classroom framing.",
       "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
     ].join("\n");
+  }
+
+  function buildPelReasoningContractPromptBlock() {
+    return [
+      "",
+      "Pedagogic enrichment — reasoning contract (auto-applied):",
+      "- Make disciplinary thinking visible: reasoning fields state HOW TO THINK — never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
+      "- reasoning_orientation (1–2 sentences): name the thinking mode required (e.g. chronological causation, mechanism tracing, text comparison, misconception repair) — topic-specific, not \"think critically\".",
+      "- evidence_use_prompt: when an activity uses transcript, extract, or reading — tell the learner how to quote, paraphrase, or tie claims to the source (line/paragraph reference).",
+      "- argument_structure_hint: on compare/evaluate/argument tasks — short claim → evidence → implication scaffold in learner-facing prose.",
+      "- conceptual_contrast_prompt: on compare/distinguish/misconception tasks — name the two (or more) concepts and one common confusion to avoid.",
+      "- self_explanation_prompt: at least two activities — include static generative retrieval (e.g. predict or explain in your own words before re-reading or checking answers).",
+      "- disciplinary_lens: optional once per page — short tag-like label (e.g. \"Thinking as a virologist\") — not a paragraph duplicating intellectual_frame.",
+      "- Multi-activity pages: at least two activities with non-empty reasoning_orientation; source-based briefs require evidence_use_prompt on source-dependent activities.",
+      "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one concise reasoning cue set per activity).",
+      "- Explicitly avoid: \"think critically\", \"discuss in groups\", \"share with a partner\", hollow \"analyse the topic carefully\"."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedGamPelReasoningMaterialPromptBlock() {
+    return [
+      "",
+      "Self-directed learner-page reasoning materials (auto-applied):",
+      "- Materials must support the DLA reasoning fields — learner-facing only (see material voice guard).",
+      "- Include one short worked micro-example where a task uses tables, mapping, or multi-step analysis (labelled sample row or worked cause→effect pair) — topic-specific, not generic.",
+      "- For source-based activities: provide quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
+      "- Optional static generative retrieval in material body: \"Before you re-read…\" or \"Without looking back, write…\" — not adaptive or branching.",
+      "- Do not repeat learner_task, activity_preamble, study_orientation, reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, or disciplinary_lens sentences in material bodies — those appear on the activity card; realise them as tables, spans, and short worked examples only.",
+      "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in a narrative block and a table."
+    ].join("\n");
+  }
+
+  var PEL_GAM_FACILITATOR_HEADING_LINE_RES = [
+    /^\s*facilitator\s+use\s*:?\s*$/i,
+    /^\s*facilitator\s+use\s*:\s*.+$/i,
+    /^\s*teacher\s+notes\s*:?\s*$/i,
+    /^\s*teacher\s+notes\s*:\s*.+$/i,
+    /^\s*instructor\s+guidance\s*:?\s*$/i,
+    /^\s*instructor\s+guidance\s*:\s*.+$/i,
+    /^\s*tutor\s+guidance\s*:?\s*$/i,
+    /^\s*tutor\s+guidance\s*:\s*.+$/i,
+    /^\s*tutor\s+notes\s*:?\s*$/i,
+    /^\s*tutor\s+notes\s*:?\s*.+$/i,
+    /^\s*for\s+the\s+facilitator\s*:?\s*$/i,
+    /^\s*for\s+the\s+facilitator\s*:\s*.+$/i
+  ];
+  var PEL_GAM_MATERIAL_STRUCTURE_LINE_RE =
+    /^(?:---\s*|activity\s*:|material\s*:|mapped\s+outcomes\s*:|#{1,3}\s)/i;
+  var PEL_GAM_REDUNDANCY_FIELD_IDS = [
+    "learner_task",
+    "learner_instructions",
+    "activity_preamble",
+    "orienting_preamble",
+    "activity_framing",
+    "study_orientation",
+    "reasoning_orientation",
+    "reasoning_orientation_prompt",
+    "evidence_use_prompt",
+    "argument_structure_hint",
+    "conceptual_contrast_prompt",
+    "disciplinary_lens",
+    "intellectual_frame",
+    "intellectual_coherence_bridge"
+  ];
+
+  function pelGamLineIsFacilitatorHeading(line) {
+    var trimmed = String(line || "").trim();
+    if (!trimmed) return false;
+    for (var i = 0; i < PEL_GAM_FACILITATOR_HEADING_LINE_RES.length; i += 1) {
+      if (PEL_GAM_FACILITATOR_HEADING_LINE_RES[i].test(trimmed)) return true;
+    }
+    return false;
+  }
+
+  function pelGamLineIsMaterialStructure(line) {
+    return PEL_GAM_MATERIAL_STRUCTURE_LINE_RE.test(String(line || "").trim());
+  }
+
+  function pelGamCollectUpstreamReferenceTexts(context) {
+    var refs = [];
+    var acts = context && Array.isArray(context.upstreamActivities) ? context.upstreamActivities : [];
+    acts.forEach(function (row) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return;
+      PEL_GAM_REDUNDANCY_FIELD_IDS.forEach(function (fieldId) {
+        var val = row[fieldId];
+        if (!pedagogicCognitionFieldHasValue(val, false)) return;
+        var text = String(val || "").trim();
+        if (text.length >= 40) refs.push(text);
+      });
+    });
+    return refs;
+  }
+
+  function pelGamParagraphLooksLikeTable(paragraph) {
+    var p = String(paragraph || "");
+    return /\|/.test(p) && /---/.test(p);
+  }
+
+  function pelGamStripFacilitatorBlocksFromText(text) {
+    var lines = String(text || "").replace(/\r\n/g, "\n").split("\n");
+    var out = [];
+    var strippedLabels = [];
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      if (pelGamLineIsFacilitatorHeading(line)) {
+        strippedLabels.push(String(line || "").trim());
+        i += 1;
+        var skipped = 0;
+        while (i < lines.length && skipped < 10) {
+          var cur = lines[i];
+          if (!String(cur || "").trim()) {
+            i += 1;
+            break;
+          }
+          if (pelGamLineIsMaterialStructure(cur)) break;
+          i += 1;
+          skipped += 1;
+        }
+        continue;
+      }
+      out.push(line);
+      i += 1;
+    }
+    var joined = out.join("\n");
+    joined = joined.replace(/(?:\n---\s*){2,}/g, "\n---\n");
+    return { text: joined, strippedLabels: strippedLabels };
+  }
+
+  function pelGamStripRedundantParagraphsFromText(text, context) {
+    var refs = pelGamCollectUpstreamReferenceTexts(context);
+    if (!refs.length) return { text: text, droppedParagraphs: [] };
+    var parts = String(text || "").replace(/\r\n/g, "\n").split(/\n{2,}/);
+    var kept = [];
+    var dropped = [];
+    parts.forEach(function (para) {
+      var p = String(para || "").trim();
+      if (!p) return;
+      if (pelGamParagraphLooksLikeTable(p)) {
+        kept.push(p);
+        return;
+      }
+      if (pelGamLineIsFacilitatorHeading(p.split("\n")[0] || "")) {
+        kept.push(p);
+        return;
+      }
+      var dup = false;
+      for (var r = 0; r < refs.length && !dup; r += 1) {
+        if (pelReasoningTextsSubstantiallyOverlap(p, refs[r])) dup = true;
+      }
+      if (dup) dropped.push(p.slice(0, 120));
+      else kept.push(p);
+    });
+    return { text: kept.join("\n\n"), droppedParagraphs: dropped };
+  }
+
+  function shouldSanitizeSelfDirectedGamMaterialsOutput(context) {
+    if (!isWorkflowStepGenerateActivityMaterials(context)) return false;
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    if (
+      context &&
+      context.workflowBriefResolution &&
+      context.workflowBriefResolution.resolvedFactors &&
+      typeof context.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      resolved = context.workflowBriefResolution.resolvedFactors;
+    }
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var blob = workflowBriefPedagogicTextBlob(base);
+    if (isWorkflowBriefFacilitatedDeliveryIntent(blob, resolved)) return false;
+    return shouldApplySelfDirectedLearnerPageGamMaterialScaffold(context, resolved, base);
+  }
+
+  function sanitizeSelfDirectedGamMaterialsOutput(textOrValue, context) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var meta = {
+      sanitized: false,
+      strippedLabels: [],
+      droppedParagraphs: []
+    };
+    if (!shouldSanitizeSelfDirectedGamMaterialsOutput(ctx)) {
+      if (textOrValue && typeof textOrValue === "object" && !Array.isArray(textOrValue)) {
+        return Object.assign({ value: textOrValue, text: String(textOrValue.text || "") }, meta);
+      }
+      return Object.assign({ text: String(textOrValue == null ? "" : textOrValue), value: textOrValue }, meta);
+    }
+    meta.sanitized = true;
+    function runTextPipeline(rawText) {
+      var s = String(rawText || "");
+      var stripFac = pelGamStripFacilitatorBlocksFromText(s);
+      meta.strippedLabels = stripFac.strippedLabels || [];
+      var stripDup = pelGamStripRedundantParagraphsFromText(stripFac.text, ctx);
+      meta.droppedParagraphs = stripDup.droppedParagraphs || [];
+      return stripDup.text;
+    }
+    if (textOrValue && typeof textOrValue === "object" && !Array.isArray(textOrValue)) {
+      var clone = Object.assign({}, textOrValue);
+      clone.text = runTextPipeline(clone.text);
+      return Object.assign({ value: clone, text: clone.text }, meta);
+    }
+    var asString = String(textOrValue == null ? "" : textOrValue);
+    var parsed = null;
+    try {
+      parsed = JSON.parse(asString);
+    } catch (_e) {}
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      if (typeof parsed.text === "string") {
+        parsed.text = runTextPipeline(parsed.text);
+        return Object.assign(
+          { value: parsed, text: parsed.text, json: JSON.stringify(parsed, null, 2) },
+          meta
+        );
+      }
+    }
+    var cleaned = runTextPipeline(asString);
+    return Object.assign({ text: cleaned, value: cleaned }, meta);
+  }
+
+  function pelPageSupportNoteLooksFacilitatorChoreography(text) {
+    var s = String(text || "").trim();
+    if (!s) return false;
+    if (PEL_ORIENTATION_FACILITATOR_LANGUAGE_RE.test(s)) return true;
+    if (PEL_ORIENTATION_TIMING_CHOREOGRAPHY_RE.test(s)) return true;
+    if (PEL_PAGE_SUPPORT_NOTE_CHOREOGRAPHY_RE.test(s)) return true;
+    return false;
+  }
+
+  function buildLearnerPageActivityRowSanitizeContext(options, page) {
+    var opts = options && typeof options === "object" ? options : {};
+    var ctx = {
+      workflowGoal: String((opts.base && opts.base.goal) || "").trim(),
+      desiredOutputs: String((opts.base && opts.base.desiredOutputs) || "").trim(),
+      workflowInputs: String((opts.base && opts.base.inputs) || "").trim()
+    };
+    if (opts.resolvedFactors && typeof opts.resolvedFactors === "object") {
+      ctx.resolvedFactors = opts.resolvedFactors;
+      ctx.workflowBriefResolution = { resolvedFactors: opts.resolvedFactors };
+    }
+    if (page && page.page_profile) ctx.pageProfile = page.page_profile;
+    return ctx;
+  }
+
+  function shouldSanitizeSelfDirectedLearnerPageActivityRows(page, context) {
+    if (!page || typeof page !== "object" || !Array.isArray(page.sections)) return false;
+    var profile = String(
+      page.page_profile || (context && context.pageProfile) || ""
+    )
+      .toLowerCase()
+      .trim();
+    if (profile === "facilitator") return false;
+    var ctx = context && typeof context === "object" ? context : {};
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(ctx);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    if (
+      ctx.workflowBriefResolution &&
+      ctx.workflowBriefResolution.resolvedFactors &&
+      typeof ctx.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      resolved = ctx.workflowBriefResolution.resolvedFactors;
+    }
+    if (ctx.resolvedFactors && typeof ctx.resolvedFactors === "object") {
+      resolved = ctx.resolvedFactors;
+    }
+    var base = {
+      goal: String(
+        ctx.workflowGoal ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        ctx.desiredOutputs ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var blob = workflowBriefPedagogicTextBlob(base);
+    if (isWorkflowBriefFacilitatedDeliveryIntent(blob, resolved)) return false;
+    if (profile === "learner") {
+      var delivery = String(resolved.delivery_context || "")
+        .toLowerCase()
+        .trim();
+      if (delivery === "in_person" || delivery === "online_sync" || delivery === "blended") {
+        return false;
+      }
+      if (
+        delivery === "self_directed" ||
+        delivery === "online_async" ||
+        delivery === "async" ||
+        !delivery
+      ) {
+        return true;
+      }
+      return isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, ctx, base);
+    }
+    if (profile && profile !== "learner") return false;
+    return shouldApplySelfDirectedLearnerPageScaffoldBase(ctx, resolved, base);
+  }
+
+  function pelSanitizeLearnerPageActivityRow(row, meta) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return row;
+    PEL_PAGE_ACTIVITY_FACILITATOR_ROW_FIELD_IDS.forEach(function (fieldId) {
+      if (!pedagogicCognitionFieldHasValue(row[fieldId], false)) return;
+      meta.removedFields.push(fieldId);
+      delete row[fieldId];
+    });
+    ["support_note", "support_notes"].forEach(function (fieldId) {
+      if (!pedagogicCognitionFieldHasValue(row[fieldId], false)) return;
+      if (!pelPageSupportNoteLooksFacilitatorChoreography(row[fieldId])) return;
+      meta.removedFields.push(fieldId);
+      delete row[fieldId];
+    });
+    return row;
+  }
+
+  function sanitizeSelfDirectedLearnerPageActivityRows(page, context) {
+    var meta = { sanitized: false, removedFields: [], rowsTouched: 0 };
+    if (!shouldSanitizeSelfDirectedLearnerPageActivityRows(page, context)) {
+      return { page: page, sanitized: false, meta: meta };
+    }
+    var next = JSON.parse(JSON.stringify(page));
+    meta.sanitized = true;
+    next.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      var rows = [];
+      var wrapObject = false;
+      if (Array.isArray(content)) rows = content;
+      else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        rows = content.activities;
+        wrapObject = true;
+      } else return;
+      rows.forEach(function (row) {
+        if (!row || typeof row !== "object") return;
+        var before = JSON.stringify(row);
+        pelSanitizeLearnerPageActivityRow(row, meta);
+        if (JSON.stringify(row) !== before) meta.rowsTouched += 1;
+      });
+      if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
+      else section.content = rows;
+    });
+    return { page: next, sanitized: true, meta: meta };
+  }
+
+  function applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(page, options) {
+    if (!page || typeof page !== "object") return page;
+    var result = sanitizeSelfDirectedLearnerPageActivityRows(
+      page,
+      buildLearnerPageActivityRowSanitizeContext(options, page)
+    );
+    if (!result.sanitized) return page;
+    assignComposedPageMutations(page, result.page);
+    if (result.meta && result.meta.removedFields && result.meta.removedFields.length) {
+      if (!page.metadata || typeof page.metadata !== "object") page.metadata = {};
+      page.metadata.self_directed_learner_page_facilitator_rows_sanitized = result.meta;
+    }
+    return page;
+  }
+
+  function evaluatePelGamMaterialStabilisation(gamText, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var text = String(gamText || "");
+    var warnings = [];
+    var missingFields = [];
+    var hasFacilitatorHeading = String(text || "")
+      .replace(/\r\n/g, "\n")
+      .split("\n")
+      .some(function (line) {
+        return pelGamLineIsFacilitatorHeading(line);
+      });
+    if (hasFacilitatorHeading || PEL_ORIENTATION_FACILITATOR_LANGUAGE_RE.test(text)) {
+      missingFields.push("facilitator_facing_language");
+      warnings.push("forbidden facilitator-facing label in GAM materials");
+    }
+    if (PEL_ORIENTATION_TIMING_CHOREOGRAPHY_RE.test(text)) {
+      warnings.push("session timing or choreography language in GAM materials");
+    }
+    var acts = Array.isArray(opts.upstreamActivities) ? opts.upstreamActivities : [];
+    if (acts.length) {
+      var refs = pelGamCollectUpstreamReferenceTexts({ upstreamActivities: acts });
+      String(text || "")
+        .replace(/\r\n/g, "\n")
+        .split(/\n{2,}/)
+        .forEach(function (para) {
+          var p = String(para || "").trim();
+          if (!p || pelGamParagraphLooksLikeTable(p)) return;
+          refs.forEach(function (ref, idx) {
+            if (pelReasoningTextsSubstantiallyOverlap(p, ref)) {
+              warnings.push(
+                "GAM paragraph substantially overlaps upstream activity field (ref " + (idx + 1) + ")"
+              );
+            }
+          });
+        });
+    }
+    return {
+      satisfied: missingFields.length === 0,
+      missingFields: missingFields,
+      warnings: warnings,
+      facilitatorLabelsPresent: missingFields.indexOf("facilitator_facing_language") !== -1
+    };
   }
 
   function resolvePedagogicEnrichmentContractIds(context) {
@@ -7432,12 +7876,27 @@
     if (!contractIds.length) return draftBody;
     var isDla = isWorkflowStepDesignLearningActivities(context);
     var isDesignPage = isWorkflowStepDesignPage(context);
-    if (!isDla && !isDesignPage) return draftBody;
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    if (!isDla && !isDesignPage && !isGam) return draftBody;
     if (
       contractIds.indexOf(SPRINT_30_PEC_ORIENTATION_CONTRACT_ID) !== -1 &&
+      (isDla || isDesignPage) &&
       !/pedagogic enrichment — orientation contract \(auto-applied\)/i.test(draftBody)
     ) {
       draftBody = (draftBody + buildPelOrientationContractPromptBlock()).trim();
+    }
+    if (
+      contractIds.indexOf(SPRINT_30_PEC_REASONING_CONTRACT_ID) !== -1 &&
+      (isDla || isGam) &&
+      !/pedagogic enrichment — reasoning contract \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildPelReasoningContractPromptBlock()).trim();
+      if (
+        isGam &&
+        !/self-directed learner-page reasoning materials \(auto-applied\)/i.test(draftBody)
+      ) {
+        draftBody = (draftBody + buildSelfDirectedGamPelReasoningMaterialPromptBlock()).trim();
+      }
     }
     return draftBody;
   }
@@ -7602,6 +8061,16 @@
     /\b(facilitator use:|teacher notes|instructor guidance|tutor notes|for the facilitator|facilitator guide|in this session we will|welcome to this module)\b/i;
   var PEL_ORIENTATION_TIMING_CHOREOGRAPHY_RE =
     /\b(minutes?\s+\d+\s*[-–]\s*\d+|by minute\s+\d+|at minute\s+\d+|circulate during|whole[- ]group debrief)\b/i;
+  var PEL_PAGE_ACTIVITY_FACILITATOR_ROW_FIELD_IDS = [
+    "facilitator_notes",
+    "facilitator_note",
+    "facilitator_moves",
+    "teacher_notes",
+    "instructor_guidance",
+    "tutor_guidance"
+  ];
+  var PEL_PAGE_SUPPORT_NOTE_CHOREOGRAPHY_RE =
+    /\b(facilitator|for the facilitator|teacher notes|instructor guidance|tutor notes|tutor guidance|circulate(?:\s+during)?|ask students to share|ask learners to share|in pairs\b|small groups?\b|pair work|whole[- ]?group|during class|classroom session|debrief with the class)\b/i;
 
   function normalizePelOrientationActivitiesList(output) {
     if (Array.isArray(output)) return output;
@@ -7747,18 +8216,277 @@
     };
   }
 
+  var PEL_REASONING_GENERIC_CRITICAL_RE =
+    /\b(think critically|critical thinking|discuss in groups?|share with (a |the )?partner|your opinion matters)\b/i;
+  var PEL_REASONING_HOLLOW_ORIENTATION_RE =
+    /\b(analyse the topic carefully|think about the topic carefully|use your critical thinking|think deeply about)\b/i;
+
+  function pelReasoningNormalizeText(text) {
+    return String(text || "")
+      .toLowerCase()
+      .replace(/[^\w\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function pelReasoningTextsSubstantiallyOverlap(fieldText, otherText) {
+    var a = pelReasoningNormalizeText(fieldText);
+    var b = pelReasoningNormalizeText(otherText);
+    if (!a || !b || a.length < 20) return false;
+    if (b.indexOf(a) !== -1 || a.indexOf(b) !== -1) return true;
+    var words = a.split(" ").filter(function (w) {
+      return w.length > 3;
+    });
+    if (!words.length) return false;
+    var matched = 0;
+    words.forEach(function (w) {
+      if (b.indexOf(w) !== -1) matched += 1;
+    });
+    return matched / words.length >= 0.65;
+  }
+
+  function pelReasoningIsGenericCriticalText(text) {
+    var t = String(text || "").trim();
+    if (!t) return false;
+    if (PEL_REASONING_GENERIC_CRITICAL_RE.test(t)) return true;
+    if (PEL_REASONING_HOLLOW_ORIENTATION_RE.test(t)) return true;
+    return false;
+  }
+
+  function pelReasoningBriefIsSourceBased(opts) {
+    if (opts && opts.sourceBrief) return true;
+    if (String(opts && opts.inputStrategy ? opts.inputStrategy : "").trim() === "provided_source_content") {
+      return true;
+    }
+    if (opts && opts.startingArtefact === "provided_source_content") return true;
+    return false;
+  }
+
+  function pelReasoningActivityUsesSource(row) {
+    if (!row || typeof row !== "object") return false;
+    var task = String(row.learner_task || row.learner_instructions || "").toLowerCase();
+    if (
+      task.indexOf("transcript") !== -1 ||
+      task.indexOf("reading") !== -1 ||
+      task.indexOf("extract") !== -1 ||
+      task.indexOf("source") !== -1
+    ) {
+      return true;
+    }
+    var materials = row.required_materials;
+    if (!Array.isArray(materials)) return false;
+    return materials.some(function (mat) {
+      if (!mat || typeof mat !== "object") return false;
+      var blob = [
+        mat.type,
+        mat.purpose,
+        mat.specification,
+        mat.title,
+        mat.material_id
+      ]
+        .map(function (x) {
+          return String(x || "").toLowerCase();
+        })
+        .join(" ");
+      return (
+        blob.indexOf("transcript") !== -1 ||
+        blob.indexOf("extract") !== -1 ||
+        blob.indexOf("reading") !== -1 ||
+        blob.indexOf("source") !== -1
+      );
+    });
+  }
+
+  function pelReasoningActivityIsCompareOrEvaluate(row) {
+    if (!row || typeof row !== "object") return false;
+    var blob = [
+      row.title,
+      row.learner_task,
+      row.learner_instructions,
+      row.activity_preamble
+    ]
+      .map(function (x) {
+        return String(x || "").toLowerCase();
+      })
+      .join(" ");
+    return /\b(compare|contrast|distinguish|versus|vs\.|evaluate|misconception|which .+ more)\b/.test(blob);
+  }
+
+  function pelReasoningCollectDuplicationWarnings(row) {
+    var warnings = [];
+    if (!row || typeof row !== "object") return warnings;
+    var learnerTask = String(row.learner_task || row.learner_instructions || "");
+    var preamble = String(
+      row.activity_preamble || row.orienting_preamble || row.activity_framing || ""
+    );
+    var studyOrientation = String(row.study_orientation || "");
+    var intellectualFrame = String(row.intellectual_frame || "");
+    var aid = String(row.activity_id || "");
+    PEL_REASONING_FIELD_IDS.forEach(function (fieldId) {
+      if (!pedagogicCognitionFieldHasValue(row[fieldId], false)) return;
+      var val = String(row[fieldId] || "").trim();
+      if (
+        pelReasoningTextsSubstantiallyOverlap(val, learnerTask) ||
+        pelReasoningTextsSubstantiallyOverlap(val, preamble) ||
+        pelReasoningTextsSubstantiallyOverlap(val, studyOrientation) ||
+        pelReasoningTextsSubstantiallyOverlap(val, intellectualFrame)
+      ) {
+        warnings.push(
+          fieldId +
+            " on " +
+            (aid || "activity") +
+            " substantially overlaps learner_task or orientation fields"
+        );
+      }
+    });
+    return warnings;
+  }
+
+  function evaluatePelReasoningContractSatisfaction(output, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var activities = normalizePelOrientationActivitiesList(output);
+    var pageRows = Array.isArray(opts.pageActivities)
+      ? opts.pageActivities
+      : collectPelOrientationRowsFromPage(opts.page);
+    var rowsForChecks = pageRows.length ? pageRows : activities;
+    var gamText = String(opts.gamText || "");
+    var checkBlob = JSON.stringify(rowsForChecks) + gamText;
+    var warnings = [];
+    var missingFields = [];
+    var count = 0;
+    var reasoningOrientationCount = 0;
+    var genericReasoningCount = 0;
+    var evidencePromptCount = 0;
+    var sourceActivityCount = 0;
+    var compareActivityCount = 0;
+    var argumentHintCount = 0;
+    var contrastPromptCount = 0;
+    var selfExplanationCount = 0;
+    var sourceBased = pelReasoningBriefIsSourceBased(opts);
+
+    rowsForChecks.forEach(function (row) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return;
+      count += 1;
+      if (pedagogicCognitionFieldHasValue(row.reasoning_orientation, false)) {
+        reasoningOrientationCount += 1;
+        if (pelReasoningIsGenericCriticalText(row.reasoning_orientation)) {
+          genericReasoningCount += 1;
+        }
+      } else if (pedagogicCognitionFieldHasValue(row.reasoning_orientation_prompt, false)) {
+        reasoningOrientationCount += 1;
+        if (pelReasoningIsGenericCriticalText(row.reasoning_orientation_prompt)) {
+          genericReasoningCount += 1;
+        }
+      }
+      if (pedagogicCognitionFieldHasValue(row.evidence_use_prompt, false)) {
+        evidencePromptCount += 1;
+      }
+      if (pedagogicCognitionFieldHasValue(row.argument_structure_hint, false)) {
+        argumentHintCount += 1;
+      }
+      if (pedagogicCognitionFieldHasValue(row.conceptual_contrast_prompt, false)) {
+        contrastPromptCount += 1;
+      }
+      if (pedagogicCognitionFieldHasValue(row.self_explanation_prompt, false)) {
+        selfExplanationCount += 1;
+      }
+      if (sourceBased && pelReasoningActivityUsesSource(row)) {
+        sourceActivityCount += 1;
+      }
+      if (pelReasoningActivityIsCompareOrEvaluate(row)) {
+        compareActivityCount += 1;
+      }
+      pelReasoningCollectDuplicationWarnings(row).forEach(function (w) {
+        warnings.push(w);
+      });
+      PEL_REASONING_FIELD_IDS.forEach(function (fieldId) {
+        if (pedagogicCognitionFieldHasValue(row[fieldId], false)) {
+          if (pelReasoningIsGenericCriticalText(row[fieldId])) {
+            genericReasoningCount += 1;
+          }
+        }
+      });
+    });
+
+    if (count >= 2 && reasoningOrientationCount < Math.min(2, count)) {
+      missingFields.push("reasoning_orientation");
+      warnings.push(
+        "reasoning_orientation expected on at least 2 of " + count + " activities (found " + reasoningOrientationCount + ")"
+      );
+    }
+    if (count >= 2 && selfExplanationCount < Math.min(2, count)) {
+      missingFields.push("self_explanation_prompt");
+      warnings.push(
+        "self_explanation_prompt expected on at least 2 of " + count + " activities (found " + selfExplanationCount + ")"
+      );
+    }
+    if (sourceBased && sourceActivityCount > 0 && evidencePromptCount < sourceActivityCount) {
+      missingFields.push("evidence_use_prompt");
+      warnings.push(
+        "evidence_use_prompt missing on source-dependent activities (expected on " +
+          sourceActivityCount +
+          ", found " +
+          evidencePromptCount +
+          ")"
+      );
+    }
+    if (compareActivityCount > 0 && argumentHintCount < 1) {
+      missingFields.push("argument_structure_hint");
+      warnings.push("argument_structure_hint expected on compare/evaluate activities");
+    }
+    if (compareActivityCount > 0 && contrastPromptCount < 1) {
+      missingFields.push("conceptual_contrast_prompt");
+      warnings.push("conceptual_contrast_prompt expected on compare/distinguish activities");
+    }
+    if (genericReasoningCount > 0) {
+      missingFields.push("generic_critical_thinking");
+      warnings.push("generic or hollow critical-thinking phrasing detected in reasoning fields");
+    }
+    if (pelOrientationBlobHasFacilitatorLanguage(checkBlob)) {
+      missingFields.push("facilitator_facing_language");
+      warnings.push("facilitator-facing or session choreography language detected");
+    }
+    if (warnings.some(function (w) {
+      return w.indexOf("substantially overlaps") !== -1;
+    })) {
+      if (missingFields.indexOf("reasoning_field_duplication") === -1) {
+        missingFields.push("reasoning_field_duplication");
+      }
+    }
+
+    return {
+      contractId: SPRINT_30_PEC_REASONING_CONTRACT_ID,
+      satisfied: missingFields.length === 0,
+      activityCount: count,
+      reasoningOrientationCount: reasoningOrientationCount,
+      evidencePromptCount: evidencePromptCount,
+      argumentHintCount: argumentHintCount,
+      contrastPromptCount: contrastPromptCount,
+      selfExplanationCount: selfExplanationCount,
+      compareActivityCount: compareActivityCount,
+      sourceActivityCount: sourceActivityCount,
+      missingFields: missingFields,
+      warnings: warnings,
+      reasoningContractSatisfied: missingFields.length === 0
+    };
+  }
+
   function evaluatePedagogicEnrichmentContractSatisfaction(output, options) {
     var opts = options && typeof options === "object" ? options : {};
     var contractId = String(opts.contractId || SPRINT_30_PEC_ORIENTATION_CONTRACT_ID).trim();
     if (contractId === SPRINT_30_PEC_ORIENTATION_CONTRACT_ID) {
       return evaluatePelOrientationContractSatisfaction(output, opts);
     }
+    if (contractId === SPRINT_30_PEC_REASONING_CONTRACT_ID) {
+      return evaluatePelReasoningContractSatisfaction(output, opts);
+    }
     return {
       contractId: contractId,
       satisfied: true,
       missingFields: [],
       warnings: ["Unsupported PEC for evaluator: " + contractId],
-      orientationContractSatisfied: true
+      orientationContractSatisfied: true,
+      reasoningContractSatisfied: true
     };
   }
 
@@ -15317,6 +16045,35 @@
     return s;
   }
 
+  function buildGamSanitizeContextFromRunStepLi(li) {
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !li) return null;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var step = null;
+    if (Array.isArray(wf.steps)) {
+      step =
+        wf.steps.find(function (r) {
+          return String(r && r.id ? r.id : "") === sid;
+        }) || null;
+    }
+    if (!step) return null;
+    var ctx = buildWorkflowStepPromptAugmentContextFromStep(step, wf);
+    var upstream = resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+    if (upstream) {
+      ctx.upstreamActivities = normalizePelOrientationActivitiesList(upstream);
+    }
+    return ctx;
+  }
+
+  function sanitizeWorkflowRunCapturedOutputForStep(raw, stepContext) {
+    var s = sanitizePrismRunCapturedOutput(raw);
+    if (!stepContext || !shouldSanitizeSelfDirectedGamMaterialsOutput(stepContext)) {
+      return s;
+    }
+    var result = sanitizeSelfDirectedGamMaterialsOutput(s, stepContext);
+    return String(result.text != null ? result.text : s);
+  }
+
   function syncWorkflowRunCapturedOutputToState(li) {
     if (!li) return;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
@@ -15324,7 +16081,8 @@
     if (!sid || !ta) return;
     var raw = String(ta.value || "");
     state.workflowRunCapturedOutputsRaw[sid] = raw;
-    state.workflowRunCapturedOutputs[sid] = sanitizePrismRunCapturedOutput(raw);
+    var gamCtx = buildGamSanitizeContextFromRunStepLi(li);
+    state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
     var outputNameInput = li.querySelector('[data-field="outputName"]');
     var outputName =
       outputNameInput && typeof outputNameInput.value === "string"
@@ -24529,10 +25287,14 @@
       var intellectualFrame = firstNonEmpty([row.intellectual_frame]);
       var coherenceBridge = firstNonEmpty([row.intellectual_coherence_bridge]);
       var priorKnowledge = firstNonEmpty([row.prior_knowledge_activation, row.prior_knowledge_prompt]);
+      var disciplinaryLens = firstNonEmpty([row.disciplinary_lens]);
       var reasoningOrientation = firstNonEmpty([
         row.reasoning_orientation,
         row.reasoning_orientation_prompt
       ]);
+      var evidenceUsePrompt = firstNonEmpty([row.evidence_use_prompt]);
+      var argumentStructureHint = firstNonEmpty([row.argument_structure_hint]);
+      var conceptualContrastPrompt = firstNonEmpty([row.conceptual_contrast_prompt]);
       var blocks = [];
       var comparableSeen = [];
       function comparableKey(text) {
@@ -24590,14 +25352,18 @@
             "</p>"
         );
       }
+      pushPelOrientationCue("Disciplinary lens", disciplinaryLens);
       if (reasoningOrientation && !isDuplicateOfSeen(reasoningOrientation)) {
         markSeen(reasoningOrientation);
         blocks.push(
-          '<p class="util-activity-preamble-cue"><strong>How to think:</strong> ' +
+          '<p class="util-activity-preamble-cue util-pel-reasoning-cue"><strong>How to think:</strong> ' +
             utilityRenderMarkdownInline(String(reasoningOrientation)) +
             "</p>"
         );
       }
+      pushPelOrientationCue("Using evidence", evidenceUsePrompt);
+      pushPelOrientationCue("Structuring your response", argumentStructureHint);
+      pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
       return blocks.join("");
     }
     function renderLearningActivitiesBlocks(activityRows, renderContext) {
@@ -28591,7 +29357,7 @@
       ".util-activity-preamble p:last-child{margin-bottom:0}",
       ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 6px;font-size:.82rem;font-weight:600;letter-spacing:.02em;color:#475569}",
       ".util-activity-preamble-cue{margin:0 0 12px;font-size:.92rem;line-height:1.5;color:#334155}",
-      ".util-pel-orientation-cue strong{color:#475569}",
+      ".util-pel-orientation-cue strong,.util-pel-reasoning-cue strong{color:#475569}",
       ".util-activity-header+.util-activity-preamble{margin-top:6px}",
       ".util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:4px}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
@@ -29089,7 +29855,7 @@
         if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
         next.metadata.self_directed_framing_fields_merged = framingFieldsMerged;
       }
-      return next;
+      return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
     }
     if (!Array.isArray(next.sections)) next.sections = [];
     var trace = {
@@ -29133,7 +29899,7 @@
       next.generation_notes = {};
     }
     next.generation_notes.cognition_composition = trace;
-    return next;
+    return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
   }
 
   function collectComposedActivityIdsFromPage(page) {
@@ -30631,18 +31397,41 @@
       applyWorkflowStepRuntimePromptAugmentations;
     prismTestApi.SPRINT_30_PEC_IDS = SPRINT_30_PEC_IDS;
     prismTestApi.PEL_ORIENTATION_FIELD_IDS = PEL_ORIENTATION_FIELD_IDS;
+    prismTestApi.PEL_REASONING_FIELD_IDS = PEL_REASONING_FIELD_IDS;
     prismTestApi.SPRINT_30_PEC_ORIENTATION_CONTRACT_ID =
       SPRINT_30_PEC_ORIENTATION_CONTRACT_ID;
+    prismTestApi.SPRINT_30_PEC_REASONING_CONTRACT_ID =
+      SPRINT_30_PEC_REASONING_CONTRACT_ID;
     prismTestApi.resolvePedagogicEnrichmentContractIds =
       resolvePedagogicEnrichmentContractIds;
     prismTestApi.buildPelOrientationContractPromptBlock =
       buildPelOrientationContractPromptBlock;
+    prismTestApi.buildPelReasoningContractPromptBlock =
+      buildPelReasoningContractPromptBlock;
+    prismTestApi.buildSelfDirectedGamPelReasoningMaterialPromptBlock =
+      buildSelfDirectedGamPelReasoningMaterialPromptBlock;
     prismTestApi.applyPedagogicEnrichmentContractScaffoldToDraft =
       applyPedagogicEnrichmentContractScaffoldToDraft;
     prismTestApi.buildSelfDirectedGamLearnerVoicePromptBlock =
       buildSelfDirectedGamLearnerVoicePromptBlock;
+    prismTestApi.shouldSanitizeSelfDirectedGamMaterialsOutput =
+      shouldSanitizeSelfDirectedGamMaterialsOutput;
+    prismTestApi.sanitizeSelfDirectedGamMaterialsOutput =
+      sanitizeSelfDirectedGamMaterialsOutput;
+    prismTestApi.shouldSanitizeSelfDirectedLearnerPageActivityRows =
+      shouldSanitizeSelfDirectedLearnerPageActivityRows;
+    prismTestApi.sanitizeSelfDirectedLearnerPageActivityRows =
+      sanitizeSelfDirectedLearnerPageActivityRows;
+    prismTestApi.pelPageSupportNoteLooksFacilitatorChoreography =
+      pelPageSupportNoteLooksFacilitatorChoreography;
+    prismTestApi.evaluatePelGamMaterialStabilisation =
+      evaluatePelGamMaterialStabilisation;
+    prismTestApi.shouldApplySelfDirectedLearnerPageGamMaterialScaffold =
+      shouldApplySelfDirectedLearnerPageGamMaterialScaffold;
     prismTestApi.evaluatePelOrientationContractSatisfaction =
       evaluatePelOrientationContractSatisfaction;
+    prismTestApi.evaluatePelReasoningContractSatisfaction =
+      evaluatePelReasoningContractSatisfaction;
     prismTestApi.evaluatePedagogicEnrichmentContractSatisfaction =
       evaluatePedagogicEnrichmentContractSatisfaction;
     prismTestApi.buildWorkflowStepPromptAugmentContextFromStep =

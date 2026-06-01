@@ -129,8 +129,9 @@ test("kitchen sink fixture: all activity titles present (KS-A1–KS-A6)", () => 
   assert.match(html, /Edge cases/i);
   assert.match(html, /Density and print stress/i);
   assert.match(html, /PEL orientation field showcase/i);
+  assert.match(html, /PEL reasoning field showcase/i);
   assert.match(html, /Minimal activity row/i);
-  assert.ok((html.match(/util-task-block/gi) || []).length >= 5);
+  assert.ok((html.match(/util-task-block/gi) || []).length >= 6);
 });
 
 test("kitchen sink fixture: core material patterns present", () => {
@@ -378,6 +379,52 @@ test("kitchen sink 30-1b: PEL orientation fields render with labels before What 
   assert.ok(studyIdx !== -1 && taskIdx !== -1);
   assert.ok(studyIdx < taskIdx);
   assert.match(scope, /util-activity-study-orientation/);
+});
+
+test("kitchen sink 30-2r: PEL reasoning fields render with labels before What to do", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "PEL reasoning field showcase");
+  assert.match(scope, /Disciplinary lens:/i);
+  assert.match(scope, /How to think:/i);
+  assert.match(scope, /Using evidence:/i);
+  assert.match(scope, /Structuring your response:/i);
+  assert.match(scope, /Key distinction:/i);
+  assert.match(scope, /Trace mechanism and host interaction/i);
+  assert.match(scope, /Quote the reference excerpt/i);
+  const lensIdx = scope.indexOf("Disciplinary lens:");
+  const thinkIdx = scope.indexOf("How to think:");
+  const evidenceIdx = scope.indexOf("Using evidence:");
+  const structureIdx = scope.indexOf("Structuring your response:");
+  const contrastIdx = scope.indexOf("Key distinction:");
+  const taskIdx = scope.indexOf("What to do");
+  assert.ok(lensIdx !== -1 && thinkIdx !== -1 && evidenceIdx !== -1 && taskIdx !== -1);
+  assert.ok(lensIdx < thinkIdx, "disciplinary lens before how to think");
+  assert.ok(thinkIdx < evidenceIdx, "how to think before using evidence");
+  assert.ok(evidenceIdx < structureIdx, "using evidence before structuring");
+  assert.ok(structureIdx < contrastIdx, "structuring before key distinction");
+  assert.ok(contrastIdx < taskIdx, "reasoning cues before what to do");
+});
+
+test("kitchen sink 30-2r: duplicate reasoning field text is suppressed", () => {
+  const parsed = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
+  const activities = parsed.sections.find((s) => s.section_id === "learning_activities").content;
+  const ksA7 = activities.find((a) => a.activity_id === "KS-A7");
+  const dupText = "Same reasoning guidance text for dedupe test.";
+  ksA7.evidence_use_prompt = dupText;
+  ksA7.argument_structure_hint = dupText;
+  const r = api.buildUtilityStructuredHtmlForTest(parsed);
+  const scope = sectionScope(String(r.html), "PEL reasoning field showcase");
+  const matches = scope.match(/Same reasoning guidance text for dedupe test/gi) || [];
+  assert.equal(matches.length, 1, "duplicate reasoning prose should render once");
+});
+
+test("kitchen sink 30-2r: minimal activity row omits empty reasoning labels", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "Minimal activity row");
+  assert.doesNotMatch(scope, /Using evidence:/i);
+  assert.doesNotMatch(scope, /Structuring your response:/i);
+  assert.doesNotMatch(scope, /Key distinction:/i);
+  assert.doesNotMatch(scope, /Disciplinary lens:/i);
 });
 
 test("kitchen sink 30-1b: minimal activity row omits empty orientation labels", () => {

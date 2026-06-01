@@ -231,6 +231,22 @@ test("renderer 30-1b: study_orientation and intellectual_frame on A2 before What
   assert.ok(orientIdx < taskIdx);
 });
 
+test("renderer 30-2r: PEL reasoning fields on A3 before What to do", () => {
+  const html = renderFramingFixture();
+  const a3 = html.match(/Comparing Marx[\s\S]*?$/i);
+  assert.ok(a3, "A3 activity scope");
+  assert.match(a3[0], /Disciplinary lens:/i);
+  assert.match(a3[0], /Using evidence:/i);
+  assert.match(a3[0], /Structuring your response:/i);
+  assert.match(a3[0], /Key distinction:/i);
+  assert.match(a3[0], /Cite a phrase from each excerpt/i);
+  assert.match(a3[0], /revolutionary programme with systematic critique/i);
+  const evidenceIdx = a3[0].indexOf("Using evidence:");
+  const taskIdx = a3[0].indexOf("What to do");
+  assert.ok(evidenceIdx !== -1 && taskIdx !== -1);
+  assert.ok(evidenceIdx < taskIdx);
+});
+
 test("renderer 30-1b: intellectual_coherence_bridge on A3 before What to do", () => {
   const html = renderFramingFixture();
   const a3 = html.match(/Comparing Marx[\s\S]*?$/i);

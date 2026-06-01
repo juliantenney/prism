@@ -191,7 +191,7 @@ test("30-1: Marx self-directed learner page resolves orientation_contract", () =
     "Design Learning Activities"
   );
   const ids = [...api.resolvePedagogicEnrichmentContractIds(ctx)];
-  assert.deepEqual(ids, ["orientation_contract"]);
+  assert.deepEqual(ids, ["orientation_contract", "reasoning_contract"]);
   assert.equal(api.SPRINT_30_PEC_ORIENTATION_CONTRACT_ID, "orientation_contract");
 });
 
@@ -206,7 +206,7 @@ test("30-1: RNA transcript self-study resolves orientation_contract (source cont
     "Design Learning Activities"
   );
   const ids = [...api.resolvePedagogicEnrichmentContractIds(ctx)];
-  assert.deepEqual(ids, ["orientation_contract"]);
+  assert.deepEqual(ids, ["orientation_contract", "reasoning_contract"]);
 });
 
 test("30-1: facilitated workshop, seminar, and peer briefs resolve no PEC contracts", () => {
@@ -261,7 +261,7 @@ test("30-1: Design Page runtime prompt includes PEL orientation and field preser
   assert.match(prompt, /study_orientation, intellectual_frame, intellectual_coherence_bridge/);
   assert.match(
     prompt,
-    /preserve study_orientation, intellectual_frame, and intellectual_coherence_bridge/i
+    /preserve study_orientation, intellectual_frame, intellectual_coherence_bridge, and PEL reasoning fields/i
   );
 });
 

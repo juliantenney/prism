@@ -1,0 +1,191 @@
+Material: M1 (text)  
+Purpose: Reference material on RNA virus genome types  
+Content:  
+### RNA Virus Genome Types: Positive-Sense vs Negative-Sense RNA
+
+RNA viruses carry their genetic information as RNA genomes. These genomes can be classified based on their polarity:
+
+- **Positive-sense RNA (+RNA):**  
+  - The viral RNA genome has the same polarity as messenger RNA (mRNA).  
+  - It can be directly recognized by host ribosomes and translated into viral proteins immediately upon infection.  
+  - No need for a viral polymerase to generate a complementary strand before translation.  
+  - Example viruses: Hepatitis C virus (HCV), Poliovirus, West Nile virus.
+
+- **Negative-sense RNA (−RNA):**  
+  - The viral RNA genome is complementary to mRNA and cannot be translated directly.  
+  - The virus must carry its own RNA-dependent RNA polymerase (virion polymerase) within the virion to synthesize a positive-sense RNA strand from the negative-sense genome.  
+  - Only the synthesized positive-sense RNA can then be translated by host ribosomes.  
+  - Example viruses: Influenza virus, Rabies virus, Ebola virus.
+
+**Summary of key differences:**  
+| Feature                  | Positive-Sense RNA Virus            | Negative-Sense RNA Virus              |  
+|--------------------------|-----------------------------------|-------------------------------------|  
+| Genome polarity          | Same as mRNA                      | Complementary to mRNA                |  
+| Translation              | Directly translated by host ribosomes | Requires synthesis of complementary +RNA first |  
+| Viral polymerase         | Not packaged in virion (usually) | Packaged in virion (essential)      |  
+| Example viruses          | Hepatitis C virus, Poliovirus     | Influenza virus, Rabies virus       |
+
+---
+
+Material: M2 (template)  
+Purpose: Comparison table template  
+Content:  
+| Feature                     | Positive-Sense RNA Virus                          | Negative-Sense RNA Virus                          |  
+|-----------------------------|-------------------------------------------------|-------------------------------------------------|  
+| Genome type                 |                                                 |                                                 |  
+| Translation mechanism       |                                                 |                                                 |  
+| Replication enzyme required |                                                 |                                                 |  
+| Example viruses             |                                                 |                                                 |
+
+---
+
+Activity: Explore Hepatitis C Virus Features and Host Interaction  
+Activity ID: A2  
+Mapped outcomes: Describe the key features of Hepatitis C virus (HCV), including its classification, replication site, and role of host microRNA-122.
+
+Material: M3 (text)  
+Purpose: HCV overview extract  
+Content:  
+### Overview of Hepatitis C Virus (HCV)
+
+Hepatitis C virus (HCV) is a member of the *Flaviviridae* family and is classified as a positive-sense single-stranded RNA virus. It primarily infects liver cells, known as hepatocytes, where it replicates its genome and produces new virus particles.
+
+A unique feature of HCV replication is its interaction with a host cellular factor called microRNA-122 (miR-122). This small RNA molecule binds to the 5' untranslated region (5' UTR) of the HCV RNA genome. The binding of miR-122 stabilizes the viral RNA, protecting it from degradation and enhancing viral replication efficiency.
+
+Key points:  
+- HCV is a positive-sense flavivirus.  
+- Replication occurs in hepatocytes.  
+- Host microRNA-122 binds to the 5' UTR of HCV RNA, stabilizing the genome and promoting replication.
+
+---
+
+Material: M4 (template)  
+Purpose: Summary worksheet  
+Content:  
+| Aspect                  | Your Response                                   |  
+|-------------------------|------------------------------------------------|  
+| Virus classification    |                                                |  
+| Replication site        |                                                |  
+| Role of microRNA-122    |                                                |
+
+---
+
+Activity: Identify the Role of HCV NS5B Protein in Viral Replication  
+Activity ID: A3  
+Mapped outcomes: Identify the function of the HCV NS5B protein and its importance in viral replication.
+
+Material: M5 (text)  
+Purpose: Description of NS5B protein  
+Content:  
+### The NS5B Protein of Hepatitis C Virus
+
+NS5B is a viral protein encoded by the Hepatitis C virus genome. It functions as an RNA-dependent RNA polymerase (RdRp), an enzyme that synthesizes RNA from an RNA template. This enzyme is essential for the replication of the HCV genome.
+
+Because HCV has an RNA genome, it cannot use the host cell’s DNA-dependent RNA polymerases. Instead, NS5B catalyzes the synthesis of new viral RNA strands by copying the positive-sense RNA genome into a complementary negative-sense RNA intermediate and then back into positive-sense RNA genomes for packaging into new virions.
+
+Without NS5B, the virus cannot replicate its RNA genome, making this protein a critical target for antiviral drugs.
+
+---
+
+Material: M6 (prompt_set)  
+Purpose: Guided questions  
+Content:  
+1. What is the function of the NS5B protein in HCV replication?  
+2. How does NS5B differ from host cell polymerases?  
+3. Why is NS5B essential for the viral life cycle?  
+4. Describe the mechanism by which NS5B synthesizes new viral RNA.  
+5. Explain why NS5B is a target for antiviral therapy.
+
+---
+
+Activity: Clarify Misconceptions: HCV vs Influenza and Retroviruses  
+Activity ID: A4  
+Mapped outcomes: Differentiate between RNA virus genome segmentation and integration mechanisms, specifically clarifying common misconceptions about HCV compared to influenza and retroviruses.
+
+Material: M7 (text)  
+Purpose: Misconceptions briefing  
+Content:  
+### Clarifying Common Misconceptions About HCV, Influenza, and Retroviruses
+
+- **Influenza virus** has a segmented negative-sense RNA genome. This means its genome is divided into multiple separate RNA segments. This segmentation allows for reassortment (mixing of segments) during co-infection, contributing to influenza’s genetic diversity.
+
+- **Retroviruses** (e.g., HIV) carry RNA genomes but replicate through a DNA intermediate. They reverse transcribe their RNA into DNA and integrate this DNA into the host cell genome. This integration is a hallmark of retroviral replication.
+
+- **Hepatitis C virus (HCV)** differs from both:  
+  - It has a **non-segmented**, positive-sense RNA genome.  
+  - It **does not integrate** into the host DNA. Instead, it replicates entirely in the cytoplasm using its RNA-dependent RNA polymerase (NS5B).  
+  - Therefore, HCV replication and genome organization are distinct from influenza’s segmented genome and retroviral integration.
+
+Misconceptions often arise because:  
+- Both influenza and HCV are RNA viruses, but only influenza has a segmented genome.  
+- Because retroviruses have RNA genomes and integrate into host DNA, some mistakenly believe HCV also integrates, which it does not.
+
+---
+
+Material: M8 (template)  
+Purpose: Misconception correction table  
+Content:  
+| Virus       | Genome Segmentation (Yes/No) | Integration into Host DNA (Yes/No) | Common Misconceptions and Corrections                                         |  
+|-------------|------------------------------|-----------------------------------|-------------------------------------------------------------------------------|  
+| Influenza   |                              |                                   |                                                                               |  
+| Retrovirus  |                              |                                   |                                                                               |  
+| Hepatitis C |                              |                                   |                                                                               |
+
+---
+
+Material: M2 (template) — Sample completed row  
+Purpose: Sample output example for comparison table  
+Content:  
+| Feature                     | Positive-Sense RNA Virus                          | Negative-Sense RNA Virus                          |  
+|-----------------------------|-------------------------------------------------|-------------------------------------------------|  
+| Genome type                 | RNA genome is the same polarity as mRNA         | RNA genome is complementary to mRNA             |  
+| Translation mechanism       | Directly translated by host ribosomes            | Requires viral polymerase to make +RNA first     |  
+| Replication enzyme required | Usually no polymerase packaged in virion         | Virion carries RNA-dependent RNA polymerase      |  
+| Example viruses             | Hepatitis C virus, Poliovirus                     | Influenza virus, Rabies virus                     |
+
+---
+
+Activity: Explore Hepatitis C Virus Features and Host Interaction  
+Activity ID: A2  
+Mapped outcomes: Describe the key features of Hepatitis C virus (HCV), including its classification, replication site, and role of host microRNA-122.
+
+Material: M4 (template) — Sample completed row  
+Purpose: Sample output example for summary worksheet  
+Content:  
+| Aspect                  | Your Response                                   |  
+|-------------------------|------------------------------------------------|  
+| Virus classification    | Positive-sense flavivirus                        |  
+| Replication site        | Hepatocytes (liver cells)                       |  
+| Role of microRNA-122    | Binds to the 5' UTR of HCV RNA, stabilizing the genome and enhancing replication |
+
+---
+
+Activity: Identify the Role of HCV NS5B Protein in Viral Replication  
+Activity ID: A3  
+Mapped outcomes: Identify the function of the HCV NS5B protein and its importance in viral replication.
+
+Material: M6 (prompt_set) — Sample answers  
+Purpose: Sample output example for guided questions  
+Content:  
+1. NS5B functions as an RNA-dependent RNA polymerase that synthesizes new viral RNA genomes.  
+2. NS5B differs from host polymerases because it uses RNA as a template to make RNA, whereas host polymerases typically use DNA templates.  
+3. NS5B is essential because without it, the virus cannot replicate its RNA genome and produce new virions.  
+4. NS5B copies the positive-sense RNA genome into a negative-sense intermediate and then synthesizes new positive-sense RNA strands for packaging.  
+5. NS5B is a target for antiviral drugs because inhibiting it blocks viral replication.
+
+---
+
+Activity: Clarify Misconceptions: HCV vs Influenza and Retroviruses  
+Activity ID: A4  
+Mapped outcomes: Differentiate between RNA virus genome segmentation and integration mechanisms, specifically clarifying common misconceptions about HCV compared to influenza and retroviruses.
+
+Material: M8 (template) — Sample completed row  
+Purpose: Sample output example for misconception correction table  
+Content:  
+| Virus       | Genome Segmentation (Yes/No) | Integration into Host DNA (Yes/No) | Common Misconceptions and Corrections                                         |  
+|-------------|------------------------------|-----------------------------------|-------------------------------------------------------------------------------|  
+| Influenza   | Yes                          | No                                | Often confused with HCV; influenza genome is segmented, HCV’s is not.         |  
+| Retrovirus  | No                           | Yes                               | Retroviruses integrate into host DNA; HCV does not integrate.                 |  
+| Hepatitis C | No                           | No                                | HCV has a single, non-segmented RNA genome and replicates without integration.|
+
+---

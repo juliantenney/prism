@@ -210,7 +210,8 @@ test("29-2: pages without cognition row fields omit util-cognition chrome", () =
   });
   if (laSection && Array.isArray(laSection.content)) {
     laSection.content = laSection.content.filter(function (row) {
-      return String((row && row.activity_id) || "") !== "KS-A5";
+      var id = String((row && row.activity_id) || "");
+      return id !== "KS-A5" && id !== "KS-A7";
     });
   }
   const r = api.buildUtilityStructuredHtmlForTest(kitchen);

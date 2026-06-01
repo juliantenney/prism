@@ -1,0 +1,136 @@
+Activity: Chronological Analysis of Karl Marx's Life Phases  
+Activity ID: A1  
+Mapped outcomes: Analyze the key phases of Karl Marx's life and their influence on his philosophical and political ideas.
+
+Material: M1 (text)  
+Purpose: Unordered list of key events in Karl Marx's life  
+Content:  
+- 1883: Karl Marx dies in London after years of political activism and writing.  
+- 1848: Publication of *The Communist Manifesto*, co-authored with Friedrich Engels.  
+- 1818: Karl Marx is born on May 5th in Trier, Prussia (now Germany).  
+- 1843: Marx marries Jenny von Westphalen, his lifelong partner and supporter.  
+- 1849: Marx moves to London after political exile from Germany and France.  
+- 1835–1841: Studies law and philosophy at the universities of Bonn and Berlin.  
+- 1859: Publication of *A Contribution to the Critique of Political Economy*, marking the beginning of his economic writings.  
+- 1867: First volume of *Das Kapital* is published, presenting a detailed critique of capitalism.  
+- 1842: Begins work as a journalist in Cologne, writing for radical newspapers.  
+- 1871: Marx writes *The Civil War in France*, analyzing the Paris Commune.  
+- 1844: Writes the *Economic and Philosophic Manuscripts*, exploring alienation and human nature.  
+- 1824–1835: Childhood and early education in Trier, influenced by Enlightenment ideas and the political climate of the time.
+
+---
+
+Activity: Cause-and-Effect Mapping of Marx's Theoretical Developments  
+Activity ID: A2  
+Mapped outcomes: Explain the cause-and-effect relationships between historical events and Marx's theoretical developments.
+
+Material: M2 (template)  
+Purpose: Cause-effect mapping template  
+Content:
+
+| Historical Event                        | Marxist Theoretical Development          | Explanation of Causal Link                                                                                       |
+|---------------------------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| 1848 Revolutions                      | Call for proletarian revolution          |                                                                                                                 |
+| Industrial Revolution                 | Theory of alienation and exploitation    |                                                                                                                 |
+| Rise of capitalism in Europe          | Critique of political economy             |                                                                                                                 |
+| Paris Commune (1871)                  | Analysis of class struggle and state power|                                                                                                                 |
+| Growth of factory labor and wage system| Concept of commodity fetishism            |                                                                                                                 |
+| Censorship and political repression  | Emphasis on revolutionary praxis          |                                                                                                                 |
+| Expansion of bourgeois democracy      | Critique of ideology and false consciousness|                                                                                                                 |
+| Economic crises of the 19th century   | Theory of capitalist crises and contradictions|                                                                                                                 |
+
+Sample worked cause→effect pair:
+
+| Historical Event                        | Marxist Theoretical Development          | Explanation of Causal Link                                                                                       |
+|---------------------------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| 1848 Revolutions                      | Call for proletarian revolution          | The widespread 1848 revolutions showed the potential and necessity for the working class to overthrow capitalist rule, inspiring Marx’s revolutionary call in *The Communist Manifesto*. |
+
+---
+
+Material: M3 (text)  
+Purpose: Summary of relevant historical events and Marx's theories  
+Content:
+
+**Key 19th-Century Historical Events:**  
+- **Industrial Revolution:** Rapid industrialization transformed economies, creating a new working class subjected to harsh labor conditions and exploitation.  
+- **1848 Revolutions:** A series of political upheavals across Europe demanding democratic reforms and social change, highlighting class tensions.  
+- **Paris Commune (1871):** A radical socialist government briefly took control of Paris, demonstrating working-class self-governance and conflict with state power.  
+- **Economic Crises:** Periodic capitalist crises caused widespread unemployment and social unrest, revealing systemic contradictions.  
+- **Political Repression:** Governments often censored radical ideas and persecuted activists, influencing Marx’s emphasis on revolutionary action.
+
+**Marxist Theoretical Developments:**  
+- **Class Struggle:** History is driven by conflict between social classes, particularly between the bourgeoisie and proletariat.  
+- **Alienation:** Workers become estranged from their labor, the products they create, and their own human potential under capitalism.  
+- **Commodity Fetishism:** Social relationships are masked by the exchange of commodities, obscuring exploitation.  
+- **Historical Materialism:** Material economic conditions shape social structures and ideas.  
+- **Capitalist Crises:** Capitalism contains internal contradictions leading to periodic economic breakdowns.  
+- **Revolutionary Praxis:** Theory must be linked to practical action to overthrow capitalism and establish socialism.
+
+---
+
+Activity: Comparative Analysis of The Communist Manifesto and Das Kapital  
+Activity ID: A3  
+Mapped outcomes: Compare and contrast the main themes and arguments in Marx's major works, such as The Communist Manifesto and Das Kapital.
+
+Material: M4 (text)  
+Purpose: Paired extracts from The Communist Manifesto and Das Kapital  
+Content:
+
+**The Communist Manifesto (1848) – Extract:**  
+*"The history of all hitherto existing society is the history of class struggles... The proletarians have nothing to lose but their chains. They have a world to win."*  
+This passage captures the revolutionary call to the working class to rise against capitalist oppression and seize political power.
+
+**Das Kapital (Volume 1, 1867) – Extract:**  
+*"The commodity appears at first sight an extremely obvious, trivial thing. But its analysis brings out that it is a very strange thing, abounding in metaphysical subtleties and theological niceties."*  
+Here Marx introduces the concept of commodity fetishism, beginning a detailed critique of capitalism’s economic structures and social relations.
+
+---
+
+Material: M5 (template)  
+Purpose: Comparison table template  
+Content:
+
+| Work Title             | Purpose                                         | Key Theme                                    | Major Difference                                     |
+|-----------------------|------------------------------------------------|----------------------------------------------|-----------------------------------------------------|
+| The Communist Manifesto|                                                |                                              |                                                     |
+| Das Kapital           |                                                |                                              |                                                     |
+
+---
+
+Activity: Applying Core Marxist Concepts to Contemporary Issues  
+Activity ID: A4  
+Mapped outcomes: Apply core Marxist concepts to contemporary social, economic, and political issues.
+
+Material: M6 (text)  
+Purpose: Summary of core Marxist concepts  
+Content:
+
+- **Class Struggle:** The ongoing conflict between different social classes, primarily between those who own the means of production (bourgeoisie) and those who sell their labor (proletariat). This struggle drives social change.
+
+- **Alienation:** Under capitalism, workers become disconnected from the products they create, the labor process, their own human potential, and other people, leading to a sense of powerlessness and loss of identity.
+
+- **Commodity Fetishism:** Social relationships between people are expressed as relationships between commodities, obscuring the exploitation inherent in capitalist production.
+
+- **Historical Materialism:** The idea that material economic conditions and modes of production fundamentally shape society’s structure, culture, and politics over time.
+
+---
+
+Material: M7 (text)  
+Purpose: Brief overview of contemporary social, economic, or political issues  
+Content:
+
+**Contemporary Issues Suitable for Marxist Analysis:**
+
+- **Income Inequality:** The widening gap between rich and poor, with wealth concentrated in the hands of a few, while many struggle with low wages and precarious employment.
+
+- **Labor Rights:** Challenges faced by workers including job insecurity, exploitation, and the decline of unions in the face of global capitalism.
+
+- **Globalization:** The expansion of global markets and multinational corporations, affecting local economies, labor standards, and cultural identities.
+
+- **Automation and Technological Change:** The impact of new technologies on employment, worker alienation, and capitalist production.
+
+- **Environmental Crisis:** The capitalist drive for profit contributing to environmental degradation and climate change.
+
+---
+
+End of materials.

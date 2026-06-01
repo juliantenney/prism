@@ -32,6 +32,10 @@
           "intellectual_coherence_bridge": "Build on the cause–effect links you traced in the previous activity when judging each text's audience and purpose.",
           "activity_preamble": "As you compare these texts, notice how Marx's political and economic arguments differ.",
           "reasoning_orientation": "Focus on purpose, audience, and argument style—not only topic overlap.",
+          "disciplinary_lens": "Thinking as a historian comparing texts",
+          "evidence_use_prompt": "Cite a phrase from each excerpt when you fill the comparison table.",
+          "argument_structure_hint": "Claim → evidence from the text → implication for the reader.",
+          "conceptual_contrast_prompt": "Contrast revolutionary programme with systematic critique — do not treat the works as identical calls to action.",
           "self_explanation_prompt": "After comparing, explain in one sentence which text would persuade workers more effectively and why.",
           "learner_task": "Complete the comparison table using the prompts.",
           "materials": {

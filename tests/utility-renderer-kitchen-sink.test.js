@@ -166,7 +166,7 @@ test("kitchen sink fixture: unknown material key does not break render", () => {
 
 test("kitchen sink fixture (26-2): tables wrapped for horizontal scroll", () => {
   const { html } = renderKitchenSink(api);
-  assert.match(html, /<div class="util-table-scroll">/);
+  assert.match(html, /<div class="util-table-scroll(?: util-material-table)?">/);
 });
 
 test("kitchen sink fixture (26-2): presentation CSS includes print break rules", () => {
@@ -237,7 +237,7 @@ test("kitchen sink fixture (26-5): typographic polish and assessment identity", 
   assert.match(html, /util-assessment-number/);
   assert.match(html, /util-assessment-options/);
   assert.match(html, /util-assessment-key/);
-  assert.match(html, /Document information/);
+  assert.match(html, /About this page/);
 });
 
 test("kitchen sink fixture (26-5): icon alignment and print polish CSS markers", () => {
@@ -276,11 +276,80 @@ test("kitchen sink stabilisation: comparison separator artefacts normalized", ()
 test("kitchen sink stabilisation: knowledge summary variants without nested heading stacks in li", () => {
   const { html } = renderKitchenSink(api);
   const obj = sectionScope(html, "Key ideas (object)");
-  const arr = sectionScope(html, "Key concepts (array)");
-  assert.match(obj, /util-structured-block/);
+  const arr = sectionScope(html, "Key ideas (array)");
+  assert.match(obj, /util-knowledge-summary/);
+  assert.match(obj, /util-definition-list/);
+  assert.match(obj, /util-concept-relationships/);
   assert.doesNotMatch(obj, /<li>\s*<h3>/i);
   assert.doesNotMatch(arr, /<li>\s*<h3>/i);
+  assert.match(arr, /util-knowledge-summary/);
   assert.match(arr, /Assessment visibility/i);
+});
+
+test("slice 31-3: knowledge summary hierarchy CSS markers in export", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-knowledge-summary\{/);
+  assert.match(html, /\.util-concept-group\{/);
+  assert.match(html, /\.util-definition-list\{/);
+  assert.match(html, /\.util-concept-relationships\{/);
+});
+
+test("slice 31-4: activity materials use util-materials-stack and material-table tier", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /util-materials-stack/);
+  assert.match(html, /util-activity-materials[\s\S]{0,400}util-materials-stack/);
+  assert.match(html, /util-table-scroll util-material-table/);
+  assert.match(html, /util-template-block util-material-template/);
+  assert.match(html, /util-prompt-set util-material-prompt/);
+  assert.match(html, /\.util-materials-stack\{/);
+  assert.match(html, /\.util-table-scroll\.util-material-table\{/);
+});
+
+test("slice 31-5: density pacing CSS markers in export", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-activity-framing>\.util-activity-preamble-cue\{margin-bottom:4px\}/);
+  assert.match(html, /\.util-activity-framing\+\.util-activity-task--primary\{margin-top:10px\}/);
+});
+
+test("slice 31-6: formative assessment — prompt/choices hierarchy and answer-grid regression", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /util-assessment-section[\s\S]{0,800}Formative assessment check/i);
+  const assess = sectionScope(html, "Formative assessment check");
+  assert.match(assess, /util-assessment-item--formative/);
+  assert.match(assess, /util-assessment-prompt/);
+  assert.match(assess, /util-assessment-choices/);
+  assert.match(assess, /util-assessment-options/);
+  assert.doesNotMatch(assess, /util-checkbox-list/i);
+  const keyIdx = indexOfMarker(assess, "util-assessment-key");
+  const inlineIdx = indexOfMarker(assess, "Correct answer:");
+  assert.ok(keyIdx !== Number.POSITIVE_INFINITY);
+  assert.equal(inlineIdx, Number.POSITIVE_INFINITY);
+});
+
+test("slice 31-6: assessment presentation CSS in kitchen-sink export", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /\.util-assessment-prompt\{/);
+  assert.match(html, /\.util-assessment-choices\{/);
+});
+
+test("slice 31-5: distinct PEL orientation and reasoning cues retained on KS-A6", () => {
+  const { html } = renderKitchenSink(api);
+  const scope = sectionScope(html, "PEL orientation field showcase");
+  assert.match(scope, /Study orientation:/i);
+  assert.match(scope, /Intellectual frame:/i);
+  assert.match(scope, /Connection to previous activity:/i);
+  const studyIdx = scope.indexOf("Study orientation:");
+  const frameIdx = scope.indexOf("Intellectual frame:");
+  assert.ok(studyIdx !== -1 && frameIdx !== -1 && studyIdx < frameIdx);
+});
+
+test("slice 31-4: kitchen sink preserves comparison prompt wording and table structure", () => {
+  const { html } = renderKitchenSink(api);
+  const edge = sectionScope(html, "Renderer stabilisation edge cases");
+  assert.match(edge, /What is the purpose of each work\?/);
+  assert.match(edge, /Key Difference:/);
+  assert.match(edge, /util-materials-stack/);
+  assert.doesNotMatch(edge, /<p>\s*\|[^<]+\|[^<]+\|/);
 });
 
 test("kitchen sink stabilisation: checklist string and array avoid heading-only checkbox rows", () => {
@@ -436,9 +505,26 @@ test("kitchen sink 30-1b: minimal activity row omits empty orientation labels", 
   assert.doesNotMatch(scope, /Connection to previous activity:/i);
 });
 
+test("slice 31-2: activity framing rail and primary task hierarchy CSS", () => {
+  const { html } = renderKitchenSink(api);
+  assert.match(html, /util-activity-framing/);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /\.util-activity-framing\{/);
+  assert.match(html, /\.util-activity-task--primary\{/);
+  assert.match(html, /\.util-pel-orientation-cue\{/);
+  assert.match(html, /\.util-pel-reasoning-cue\{/);
+  const scope = sectionScope(html, "PEL orientation field showcase");
+  assert.match(scope, /util-activity-framing[\s\S]*Study orientation:/i);
+  assert.match(scope, /util-activity-task--primary[\s\S]*What to do/i);
+  const framingEnd = scope.indexOf("</div>", scope.indexOf("util-activity-framing"));
+  const taskStart = scope.indexOf("util-activity-task--primary");
+  assert.ok(framingEnd !== -1 && taskStart !== -1);
+  assert.ok(framingEnd < taskStart, "framing rail should precede primary task block");
+});
+
 test("kitchen sink stabilisation: config scalars render as plain text not markdown emphasis", () => {
   const { html } = renderKitchenSink(api);
-  const meta = html.slice(html.indexOf("Document information"));
+  const meta = html.slice(html.indexOf("About this page"));
   assert.ok(meta.length > 0, "expected collapsed metadata footer");
   assert.match(meta, /answer[\s_]grid[\s_]end/i);
   assert.doesNotMatch(meta, /answer<em>grid<\/em>end/i);

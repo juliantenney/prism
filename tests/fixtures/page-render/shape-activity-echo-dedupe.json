@@ -1,0 +1,28 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — activity echo dedupe",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "ECHO-A1",
+          "title": "Echo dedupe showcase",
+          "intellectual_frame": "Read the scenario carefully before you write.",
+          "activity_preamble": "Read the scenario carefully before you write.",
+          "reasoning_orientation": "Use evidence from the passage when you answer.",
+          "evidence_use_prompt": "Use evidence from the passage when you answer.",
+          "purpose": "Read the scenario carefully before you write.",
+          "learner_task": "Write a short paragraph comparing the two sources.",
+          "learner_instructions": "Write a short paragraph comparing the two sources.",
+          "support_note": "Write a short paragraph comparing the two sources.",
+          "materials": {
+            "reference_text": "Primary source excerpt for the comparison task."
+          }
+        }
+      ]
+    }
+  ]
+}

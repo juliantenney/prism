@@ -100,6 +100,38 @@ function hasCognitionMarkupInBody(html) {
 
 const api = loadPrismTestApi();
 
+test("slice 31-2: cognition blocks remain with softened hierarchy CSS", () => {
+  const r = api.buildUtilityStructuredHtmlForTest({
+    artifact_type: "page",
+    title: "Cognition hierarchy",
+    page_profile: "learner",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            title: "Explain step",
+            learner_task: "Write a short explanation.",
+            self_explanation_prompt: "State your mechanism in one sentence."
+          }
+        ]
+      }
+    ]
+  });
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /util-cognition/);
+  assert.match(html, /data-cognition-field="self_explanation_prompt"/);
+  assert.match(html, /State your mechanism in one sentence/);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /\.util-cognition__body\{[^}]*font-size:\.875rem/);
+  const taskIdx = html.indexOf("util-activity-task--primary");
+  const cognitionIdx = html.indexOf('class="util-cognition');
+  assert.ok(taskIdx !== -1 && cognitionIdx !== -1);
+  assert.ok(taskIdx < cognitionIdx, "primary task precedes cognition block");
+});
+
 test("29-2: peer-instruction cognition fields render as labelled util-cognition blocks", () => {
   const page = {
     artifact_type: "page",

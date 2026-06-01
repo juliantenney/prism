@@ -195,13 +195,22 @@ function assertStandardListSemantics(html, scope, expectedLiCount) {
 }
 
 function assertProductionMetadataFold(html) {
-  assert.match(html, /(?:Production Metadata|Document information)/);
+  assert.match(html, /(?:Production Metadata|About this page|Document information)/);
   const body = mainBodyHtml(html);
   const meta = html.match(/<details class="util-meta"[\s\S]*$/i);
   assert.ok(meta, "expected util-meta details");
   assertNoParagraphListNesting(html);
   assertNoOrphanListItems(html);
   return { body, meta: meta[0] };
+}
+
+function assertLearnerProductionMetadataBoundary(html) {
+  const body = mainBodyHtml(html);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Source Artefacts/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Generation Notes/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Constraints Applied/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Production Metadata/i);
+  assert.doesNotMatch(body, /<strong>Audience:<\/strong>/i);
 }
 
 function assertSanitizedPageSemantics(html, opts) {
@@ -269,6 +278,73 @@ test("page shape: markdown table → table preserved without list markup", () =>
   assert.match(html, /cell x/);
 });
 
+test("slice 31-4: markdown table shape uses scroll wrapper when table is exported", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-markdown-table.json");
+  if (html.includes("util-table-scroll")) {
+    assert.match(html, /util-table-scroll/);
+    assert.doesNotMatch(html, /<p>\s*\|[^<]+\|/);
+  }
+});
+
+test("slice 31-5: activity echo dedupe suppresses exact framing and cross-block repeats", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-activity-echo-dedupe.json");
+  const scope = sectionScope(html, "Echo dedupe showcase");
+  const preamblePhrase = "Read the scenario carefully before you write";
+  const evidencePhrase = "Use evidence from the passage when you answer";
+  const taskPhrase = "Write a short paragraph comparing the two sources";
+  assert.equal(
+    (scope.match(new RegExp(preamblePhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi")) || []).length,
+    1,
+    "exact preamble echo should render once"
+  );
+  assert.equal(
+    (scope.match(new RegExp(evidencePhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi")) || []).length,
+    1,
+    "exact reasoning echo should render once"
+  );
+  assert.match(scope, /util-activity-task--primary/);
+  assert.match(scope, new RegExp(taskPhrase, "i"));
+  assert.doesNotMatch(scope, /<h4[^>]*>\s*Guidance\s*<\/h4>/i);
+  assert.doesNotMatch(scope, /<strong>Task:<\/strong>\s*Read the scenario/i);
+  assert.doesNotMatch(
+    scope,
+    new RegExp("util-support-note[\\s\\S]{0,200}" + taskPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+    "support note must not repeat task wording"
+  );
+  assert.match(scope, /Primary source excerpt/);
+});
+
+test("slice 31-5: activity echo dedupe retains distinct orientation and reasoning labels", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-activity-echo-dedupe.json");
+  const scope = sectionScope(html, "Echo dedupe showcase");
+  assert.match(scope, /Intellectual frame:/i);
+  assert.match(scope, /How to think:/i);
+  assert.doesNotMatch(
+    scope,
+    /<div class="util-activity-preamble">[\s\S]{0,160}Read the scenario carefully before you write/i,
+    "later preamble block suppressed when intellectual frame already rendered the text"
+  );
+  assert.doesNotMatch(scope, /Using evidence:/i);
+  const thinkIdx = scope.indexOf("How to think:");
+  const taskIdx = scope.indexOf("util-activity-task--primary");
+  assert.ok(thinkIdx !== -1 && taskIdx !== -1);
+  assert.ok(thinkIdx < taskIdx);
+});
+
+test("page shape: knowledge summary prose → util-knowledge-summary wrapper", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-knowledge-summary-prose.json");
+  const scope = sectionScope(html, "Key ideas (prose)");
+  assert.match(scope, /util-knowledge-summary/);
+  assert.match(scope, /util-knowledge-summary--prose/);
+  assert.match(scope, /Statistical significance describes/);
+  assert.match(scope, /null hypothesis/);
+  assert.doesNotMatch(scope, /util-definition-list/i);
+});
+
 test("page shape: production metadata → util-meta fold only", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-production-metadata.json", PAGE_METADATA_ORDER);
@@ -276,6 +352,8 @@ test("page shape: production metadata → util-meta fold only", () => {
   assert.equal(body.includes("Upstream Alpha"), false);
   assert.match(meta, /Upstream Alpha/);
   assert.match(meta, /limitations/i);
+  assertLearnerProductionMetadataBoundary(html);
+  assert.match(html, /About this page/);
 });
 
 test("page shape: body bullets with metadata keys → metadata outside main body", () => {
@@ -294,6 +372,33 @@ test("page shape: structured assessment MCQ → options not checkbox lists", () 
   assert.match(html, /Select the best response/);
   assertMcqOptionsNotCheckboxLists(html);
   assertSanitizedPageSemantics(html, { expectMcq: true });
+});
+
+test("slice 31-6: structured MCQ — prompt/choices wrappers and option order", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-structured-assessment-mcq.json");
+  assert.match(html, /util-assessment-prompt[\s\S]{0,500}Select the best response/i);
+  assert.match(html, /util-assessment-choices[\s\S]{0,800}util-assessment-options/i);
+  assert.match(html, /util-assessment-item--formative/);
+  const optionsBlock =
+    html.match(/util-assessment-options[\s\S]{0,600}?<\/ul>/i)?.[0] || "";
+  assert.match(optionsBlock, /Option alpha/);
+  assert.match(optionsBlock, /Option beta/);
+  assert.match(optionsBlock, /Option gamma/);
+  const alphaIdx = optionsBlock.indexOf("Option alpha");
+  const betaIdx = optionsBlock.indexOf("Option beta");
+  const gammaIdx = optionsBlock.indexOf("Option gamma");
+  assert.ok(alphaIdx < betaIdx && betaIdx < gammaIdx, "option order preserved");
+  const assessScope = html.match(/util-assessment-section[\s\S]{0,4000}/i)?.[0] || "";
+  assert.doesNotMatch(assessScope, /util-checkbox-list/i);
+});
+
+test("slice 31-6: assessment presentation CSS markers in export", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "shape-structured-assessment-mcq.json");
+  assert.match(html, /\.util-assessment-prompt\{/);
+  assert.match(html, /\.util-assessment-choices\{/);
+  assert.match(html, /\.util-assessment-item--formative\{/);
 });
 
 test("page shape: plain bullets then checkbox list → separate list kinds preserved", () => {

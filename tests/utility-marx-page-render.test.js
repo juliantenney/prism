@@ -98,10 +98,24 @@ test("Marx knowledge summary: concept blocks without nested heading stacks in li
   const html = renderMarxPage(api);
   const ks = html.match(/Key Knowledge Summary[\s\S]*?(?=<h2|$)/i);
   assert.ok(ks, "expected knowledge summary section");
-  assert.match(ks[0], /util-structured-block/);
+  assert.match(ks[0], /util-knowledge-summary/);
+  assert.match(ks[0], /util-definition-list/);
   assert.match(ks[0], /Karl Marx/);
+  assert.match(ks[0], /Class Struggle/);
+  assert.match(ks[0], /util-concept-relationships/);
   assert.doesNotMatch(ks[0], /<li>\s*<h3>/i, "concepts must not render as heading stacks inside <li>");
   assert.doesNotMatch(ks[0], /<h3>\s*Definition\s*<\/h3>/i);
+});
+
+test("slice 31-3: Marx knowledge summary preserves concept order", () => {
+  const html = renderMarxPage(api);
+  const ks = html.match(/Key Knowledge Summary[\s\S]*?(?=<h2|$)/i);
+  assert.ok(ks);
+  const marxIdx = ks[0].indexOf("Karl Marx");
+  const classIdx = ks[0].indexOf("Class Struggle");
+  const histIdx = ks[0].indexOf("Historical Materialism");
+  const alienIdx = ks[0].indexOf("Alienation");
+  assert.ok(marxIdx < classIdx && classIdx < histIdx && histIdx < alienIdx);
 });
 
 test("Marx checklist material: renders util-checkbox-list, not loose paragraphs only", () => {
@@ -138,6 +152,27 @@ test("Marx comparison prompts: no markdown separator artefact in output", () => 
   assert.match(html, /Similarity:/i);
 });
 
+test("slice 31-5: Marx page preserves primary task and knowledge summary wrappers", () => {
+  const html = renderMarxPage(api);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /util-knowledge-summary/);
+  assert.match(html, /util-materials-stack/);
+  const core = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  assert.ok(core);
+  assert.match(core[0], /What to do/);
+  assert.match(core[0], /Identify capitalism/);
+});
+
+test("slice 31-4: Marx materials stack and prompt/table presentation tiers", () => {
+  const html = renderMarxPage(api);
+  const core = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  assert.ok(core, "expected core concepts activity");
+  assert.match(core[0], /util-materials-stack/);
+  assert.match(html, /What is the purpose of each work/);
+  assert.match(html, /util-table-scroll/);
+  assert.doesNotMatch(html, /---\s*-\s*Key Difference:/i);
+});
+
 test("Marx materials: suppress redundant generic headings when inner title exists", () => {
   const html = renderMarxPage(api);
   assert.doesNotMatch(
@@ -145,4 +180,42 @@ test("Marx materials: suppress redundant generic headings when inner title exist
     /Summary Text[\s\S]{0,120}util-card-subheading[\s\S]{0,80}Factory Scenario/i,
     "expected inner Factory Scenario title without redundant Summary Text label"
   );
+});
+
+test("slice 31-1: Marx learner page — no audience or production metadata in main body", () => {
+  const html = renderMarxPage(api);
+  const body = html.split('<details class="util-meta"')[0];
+  assert.doesNotMatch(body, /<strong>Audience:<\/strong>/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Source Artefacts/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Generation Notes/i);
+});
+
+test("slice 31-2: Marx learner page — framing rail and primary task without facilitator leakage", () => {
+  const html = renderMarxPage(api);
+  assert.match(html, /util-activity-task--primary/);
+  assert.doesNotMatch(html, /Facilitator use:/i);
+  assert.doesNotMatch(html, /Teacher notes:/i);
+  const activity = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  assert.ok(activity, "expected core concepts activity");
+  if (/util-activity-framing/.test(activity[0])) {
+    assert.match(activity[0], /util-activity-framing/);
+  }
+  assert.match(activity[0], /What to do/i);
+});
+
+test("slice 31-1: Marx live JSON — production keys only in util-meta when present", () => {
+  const livePath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/context-files/live-artefacts/marx-page.json"
+  );
+  const parsed = JSON.parse(fs.readFileSync(livePath, "utf8"));
+  const r = api.buildUtilityStructuredHtmlForTest(parsed);
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /<details class="util-meta"/);
+  const body = html.split('<details class="util-meta"')[0];
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Source Artefacts/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Generation Notes/i);
+  assert.doesNotMatch(body, /<strong>Audience:<\/strong>/i);
+  assert.match(html, /About this page/);
 });

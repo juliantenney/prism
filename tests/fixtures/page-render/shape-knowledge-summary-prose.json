@@ -1,0 +1,12 @@
+{
+  "artifact_type": "page",
+  "title": "Shape — knowledge summary prose",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key ideas (prose)",
+      "content": "Statistical significance describes how unlikely an observed result would be if the null hypothesis were true. It does not measure effect size or practical importance."
+    }
+  ]
+}

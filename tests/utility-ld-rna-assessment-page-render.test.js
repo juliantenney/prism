@@ -174,3 +174,86 @@ test("inflation workshop (full): assessment_check section still renders MCQ body
   assert.match(html, /Which situation best illustrates inflation/i);
   assert.match(html, /util-assessment-section/);
 });
+
+test("slice 31-1: RNA/HCV fixture — production metadata folded, not in main body", () => {
+  const html = renderPageFixture(api, fixturePath);
+  const body = html.split('<details class="util-meta"')[0];
+  assert.match(html, /<details class="util-meta"/);
+  assert.match(html, /About this page/);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Source Artefacts/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Production Metadata/i);
+  assert.doesNotMatch(body, /<strong>Audience:<\/strong>/i);
+  assert.match(html, /util-meta-section/);
+  assert.match(html, /learning content/i);
+});
+
+test("slice 31-3: RNA/HCV fixture — 31-1/31-2 regression smoke", () => {
+  const html = renderPageFixture(api, fixturePath);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /About this page/);
+  assert.doesNotMatch(html.split('<details class="util-meta"')[0], /<strong>Audience:<\/strong>/i);
+});
+
+test("slice 31-6: RNA assessment — formative item wrappers and no checkbox confusion", () => {
+  const html = renderPageFixture(api, fixturePath);
+  const scope = assessmentSectionScope(html);
+  assert.ok(scope);
+  assert.match(scope, /util-assessment-item--formative/);
+  assert.match(scope, /util-assessment-prompt/);
+  assert.match(scope, /util-assessment-choices/);
+  assert.match(scope, /util-assessment-options/);
+  assert.doesNotMatch(scope, /util-checkbox-list/i);
+  assert.equal((scope.match(/util-assessment-title/gi) || []).length, 10);
+  assert.match(scope, /Which type of RNA virus genome can be directly translated/i);
+});
+
+test("slice 31-5: RNA/HCV fixture — primary task and 31-1–31-4 regression smoke", () => {
+  const html = renderPageFixture(api, fixturePath);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /About this page/);
+  assert.doesNotMatch(html.split('<details class="util-meta"')[0], /<strong>Audience:<\/strong>/i);
+  if (html.includes("util-materials-stack")) {
+    assert.match(html, /util-materials-stack/);
+  }
+});
+
+test("slice 31-4: RNA/HCV fixture — materials stack and 31-3 knowledge wrappers intact", () => {
+  const html = renderPageFixture(api, fixturePath);
+  const body = html.split('<details class="util-meta"')[0];
+  assert.match(html, /util-activity-task--primary/);
+  if (body.includes("util-activity-materials")) {
+    assert.match(body, /util-materials-stack/);
+  }
+  if (body.includes("Key Knowledge") || body.includes("knowledge")) {
+    assert.match(body, /util-knowledge-summary|util-definition-list/);
+  }
+});
+
+test("slice 31-2: RNA/HCV fixture — PEL cues and primary task hierarchy preserved", () => {
+  const html = renderPageFixture(api, fixturePath);
+  assert.match(html, /util-activity-task--primary/);
+  assert.match(html, /\.util-activity-framing\{/);
+  assert.doesNotMatch(html.split('<details class="util-meta"')[0], /<strong>Audience:<\/strong>/i);
+  assert.match(html, /About this page/);
+  const body = html.split('<details class="util-meta"')[0];
+  if (/How to think:/i.test(body)) {
+    const thinkIdx = body.indexOf("How to think:");
+    const taskIdx = body.indexOf("util-activity-task--primary");
+    if (thinkIdx !== -1 && taskIdx !== -1) {
+      assert.ok(thinkIdx < taskIdx, "reasoning cue should precede primary task");
+    }
+  }
+});
+
+test("slice 31-1: RNA live JSON — generation_notes not in body H2", () => {
+  const livePath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/context-files/live-artefacts/rna-page.json"
+  );
+  const html = renderPageFixture(api, livePath);
+  const body = html.split('<details class="util-meta"')[0];
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Generation Notes/i);
+  assert.doesNotMatch(body, /<h2[^>]*>\s*Source Artefacts/i);
+  assert.doesNotMatch(body, /<strong>Audience:<\/strong>/i);
+  assert.match(html, /<details class="util-meta"/);
+});

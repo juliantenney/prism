@@ -260,6 +260,46 @@ test("renderer 30-1b: intellectual_coherence_bridge on A3 before What to do", ()
   assert.doesNotMatch(a3[0], /Study orientation:/i);
 });
 
+test("slice 31-2: framing rail wraps preamble before primary task", () => {
+  const html = renderFramingFixture();
+  const a2 = html.match(/Linking Experience to Theory[\s\S]*?(?=Comparing Marx|$)/i);
+  assert.ok(a2, "A2 activity scope");
+  assert.match(a2[0], /util-activity-framing/);
+  assert.match(a2[0], /util-activity-task--primary/);
+  const framingIdx = a2[0].indexOf("util-activity-framing");
+  const taskIdx = a2[0].indexOf("util-activity-task--primary");
+  assert.ok(framingIdx !== -1 && taskIdx !== -1);
+  assert.ok(framingIdx < taskIdx);
+  assert.match(a2[0], /Study orientation:/i);
+  assert.match(a2[0], /Intellectual frame:/i);
+});
+
+test("slice 31-5: framing fixture keeps distinct orientation and reasoning cues", () => {
+  const html = renderFramingFixture();
+  const a2 = html.match(/Linking Experience to Theory[\s\S]*?(?=Comparing Marx|$)/i);
+  assert.ok(a2);
+  assert.match(a2[0], /Study orientation:/i);
+  assert.match(a2[0], /Intellectual frame:/i);
+  assert.match(a2[0], /political exile might shape someone/i);
+  const a3 = html.match(/Comparing Marx[\s\S]*?$/i);
+  assert.ok(a3);
+  assert.match(a3[0], /How to think:/i);
+  assert.match(a3[0], /Using evidence:/i);
+  assert.match(a3[0], /Key distinction:/i);
+});
+
+test("slice 31-2: reasoning cues remain before primary task on A3", () => {
+  const html = renderFramingFixture();
+  const a3 = html.match(/Comparing Marx[\s\S]*?$/i);
+  assert.ok(a3, "A3 activity scope");
+  assert.match(a3[0], /How to think:/i);
+  assert.match(a3[0], /util-pel-reasoning-cue/);
+  const thinkIdx = a3[0].indexOf("How to think:");
+  const taskIdx = a3[0].indexOf("util-activity-task--primary");
+  assert.ok(thinkIdx !== -1 && taskIdx !== -1);
+  assert.ok(thinkIdx < taskIdx);
+});
+
 test("DLA scaffold: activity framing omitted for facilitated delivery", () => {
   const explicit = api.extractWorkflowBriefExplicitFactors(MARX_SELF_STUDY_BRIEF);
   const inferred = api.applyWorkflowBriefInferenceRules(

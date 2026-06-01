@@ -23783,10 +23783,52 @@
       '" aria-hidden="true"></i>'
     );
   }
-  function utilityRenderDefinitionStyleBlock(term, definition) {
+  function utilityMarkKnowledgeSummaryConceptHtml(html) {
+    var block = String(html || "").trim();
+    if (!block) return "";
+    if (block.indexOf("util-concept-item") !== -1) return block;
+    if (/class="util-structured-block"/.test(block)) {
+      return block.replace(
+        /class="util-structured-block"/g,
+        'class="util-structured-block util-concept-item"'
+      );
+    }
+    return '<div class="util-concept-item">' + block + "</div>";
+  }
+
+  function utilityRenderDefinitionStyleBlock(term, definition, blockOpts) {
+    var opts = blockOpts && typeof blockOpts === "object" ? blockOpts : {};
+    var knowledgeSummary = !!opts.knowledgeSummary;
     var label = String(term == null ? "" : term).trim();
     var body = String(definition == null ? "" : definition).trim();
     if (!label && !body) return "";
+    if (knowledgeSummary) {
+      if (label && body) {
+        return (
+          '<dl class="util-definition-list util-concept-item">' +
+          '<dt class="util-definition-term">' +
+          utilityEscapeHtml(label) +
+          "</dt>" +
+          '<dd class="util-definition-desc">' +
+          utilityRenderMarkdownInline(body) +
+          "</dd></dl>"
+        );
+      }
+      if (label) {
+        return (
+          '<dl class="util-definition-list util-concept-item">' +
+          '<dt class="util-definition-term">' +
+          utilityEscapeHtml(label) +
+          "</dt></dl>"
+        );
+      }
+      return (
+        '<div class="util-concept-item util-knowledge-summary-prose">' +
+        "<p>" +
+        utilityRenderMarkdownInline(body) +
+        "</p></div>"
+      );
+    }
     if (label && body) {
       return (
         '<article class="util-structured-block"><p><strong>' +
@@ -23883,11 +23925,25 @@
       '<span class="util-visually-hidden">Prompts</span></div>'
     );
   }
+  function utilityIsLearnerPageProfile(parsed) {
+    if (!parsed || typeof parsed !== "object") return false;
+    var profile = String(parsed.page_profile || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, "_");
+    return profile === "learner" || profile === "self_directed_learner";
+  }
+
+  function utilityShouldShowPageAudienceLine(parsed) {
+    if (!parsed || utilityIsEmptyValue(parsed.audience)) return false;
+    return !utilityIsLearnerPageProfile(parsed);
+  }
+
   function utilityRenderMetaSummaryHtml() {
     return (
       '<summary class="util-meta-summary util-icon-heading">' +
       utilityRenderMaterialIcon("metadata") +
-      "<span>Document information</span></summary>"
+      "<span>About this page</span></summary>"
     );
   }
   function utilityWrapAssessmentSectionHtml(sectionHeadingHtml, assessmentBodyHtml) {
@@ -24346,6 +24402,8 @@
     }
     function looksKnowledgeSummarySection(name) {
       var t = String(name || "").toLowerCase();
+      var sid = t.replace(/[\s-]+/g, "_");
+      if (sid === "knowledge_summary" || /^knowledge_summary[_]/.test(sid)) return true;
       return /\b(knowledge[_\s-]?summary|knowledge[_\s-]?model|key[_\s-]?concepts?|concept[_\s-]?summary)\b/.test(t);
     }
     function looksLearningPurposeOrOutcomesSection(name) {
@@ -24541,7 +24599,10 @@
     function renderKnowledgeSummaryBlocks(value) {
       var relationshipsText = "";
       var rows = [];
-      if (Array.isArray(value)) {
+      var proseScalar = "";
+      if (utilityIsRenderableScalar(value)) {
+        proseScalar = String(value).trim();
+      } else if (Array.isArray(value)) {
         rows = value;
       } else if (value && typeof value === "object") {
         if (Array.isArray(value.items)) rows = value.items;
@@ -24573,19 +24634,32 @@
           if (loneConcept || loneSummary) rows = [value];
         }
       }
+      if (proseScalar && !rows.length && !relationshipsText) {
+        var scalarHtml =
+          utilityRenderMarkdownBlock(proseScalar) ||
+          "<p>" + utilityRenderMarkdownInline(proseScalar) + "</p>";
+        return (
+          '<div class="util-knowledge-summary util-knowledge-summary--prose">' +
+          scalarHtml +
+          "</div>"
+        );
+      }
       rows = rows.filter(function (row) { return !utilityIsEmptyValue(row); });
+      var knowledgeBlockOpts = { knowledgeSummary: true };
       function renderKnowledgeSummaryRow(row) {
         if (row == null) return "";
         if (typeof row === "string" || typeof row === "number" || typeof row === "boolean") {
           var rowText = String(row).trim();
           if (!rowText) return "";
           var shapedText = utilityRenderStructuredObjectShape({ content: rowText }, 1, renderOpts);
-          if (shapedText) return shapedText;
-          return utilityRenderMarkdownBlock(rowText) || ("<p>" + utilityRenderMarkdownInline(rowText) + "</p>");
+          if (shapedText) return utilityMarkKnowledgeSummaryConceptHtml(shapedText);
+          return utilityMarkKnowledgeSummaryConceptHtml(
+            utilityRenderMarkdownBlock(rowText) || ("<p>" + utilityRenderMarkdownInline(rowText) + "</p>")
+          );
         }
         if (!row || typeof row !== "object" || Array.isArray(row)) return "";
         var shapedRow = utilityRenderStructuredObjectShape(row, 1, renderOpts);
-        if (shapedRow) return shapedRow;
+        if (shapedRow) return utilityMarkKnowledgeSummaryConceptHtml(shapedRow);
         var concept = utilityFirstScalar([
           row.concept,
           row.term,
@@ -24603,19 +24677,24 @@
           row.body
         ]);
         if (!concept && !summary) return "";
-        return utilityRenderDefinitionStyleBlock(concept, summary);
+        return utilityRenderDefinitionStyleBlock(concept, summary, knowledgeBlockOpts);
       }
       var conceptBlocks = rows.map(renderKnowledgeSummaryRow).filter(function (x) { return !!x; }).join("");
-      var parts = [];
+      var innerParts = [];
       if (conceptBlocks) {
-        parts.push("<h3>Concepts</h3>");
-        parts.push(conceptBlocks);
+        innerParts.push('<div class="util-concept-group">');
+        innerParts.push('<h3 class="util-knowledge-subheading">Concepts</h3>');
+        innerParts.push('<div class="util-definition-list">' + conceptBlocks + "</div>");
+        innerParts.push("</div>");
       }
       if (relationshipsText) {
-        parts.push("<h3>Relationships</h3>");
-        parts.push("<p>" + utilityRenderMarkdownInline(relationshipsText) + "</p>");
+        innerParts.push('<div class="util-concept-relationships">');
+        innerParts.push('<h3 class="util-knowledge-subheading">Relationships</h3>');
+        innerParts.push("<p>" + utilityRenderMarkdownInline(relationshipsText) + "</p>");
+        innerParts.push("</div>");
       }
-      return parts.join("");
+      if (!innerParts.length) return "";
+      return '<div class="util-knowledge-summary">' + innerParts.join("") + "</div>";
     }
     function summarizeOneSentence(text) {
       if (text != null && typeof text === "object") return "";
@@ -25276,7 +25355,48 @@
       });
       return blocks.join("");
     }
-    function renderActivityFramingForActivity(row) {
+    function createActivityComparableRegistry() {
+      var comparableSeen = [];
+      function comparableKey(text) {
+        return normalizeComparableText(String(text || ""));
+      }
+      return {
+        markSeen: function (text) {
+          var key = comparableKey(text);
+          if (!key) return;
+          if (comparableSeen.indexOf(key) === -1) comparableSeen.push(key);
+        },
+        isDuplicate: function (text) {
+          var key = comparableKey(text);
+          return !!key && comparableSeen.indexOf(key) !== -1;
+        }
+      };
+    }
+    function activityComparableSourceText(value) {
+      if (utilityIsEmptyValue(value)) return "";
+      if (Array.isArray(value)) {
+        return value
+          .map(function (entry) {
+            return activityComparableSourceText(entry);
+          })
+          .filter(function (x) {
+            return !!String(x || "").trim();
+          })
+          .join(" ");
+      }
+      if (value && typeof value === "object") {
+        return firstNonEmpty([
+          value.step,
+          value.instruction,
+          value.text,
+          value.content,
+          value.prompt,
+          value.title
+        ]);
+      }
+      return String(value == null ? "" : value).trim();
+    }
+    function renderActivityFramingForActivity(row, activityComparable) {
       if (!row || typeof row !== "object" || Array.isArray(row)) return "";
       var preamble = firstNonEmpty([
         row.activity_preamble,
@@ -25297,17 +25417,32 @@
       var conceptualContrastPrompt = firstNonEmpty([row.conceptual_contrast_prompt]);
       var blocks = [];
       var comparableSeen = [];
-      function comparableKey(text) {
-        return normalizeComparableText(String(text || ""));
-      }
-      function markSeen(text) {
-        var key = comparableKey(text);
-        if (!key) return;
-        if (comparableSeen.indexOf(key) === -1) comparableSeen.push(key);
-      }
-      function isDuplicateOfSeen(text) {
-        var key = comparableKey(text);
-        return !key || comparableSeen.indexOf(key) !== -1;
+      var markSeen;
+      var isDuplicateOfSeen;
+      if (
+        activityComparable &&
+        typeof activityComparable.markSeen === "function" &&
+        typeof activityComparable.isDuplicate === "function"
+      ) {
+        markSeen = function (text) {
+          activityComparable.markSeen(text);
+        };
+        isDuplicateOfSeen = function (text) {
+          return activityComparable.isDuplicate(text);
+        };
+      } else {
+        function comparableKey(text) {
+          return normalizeComparableText(String(text || ""));
+        }
+        markSeen = function (text) {
+          var key = comparableKey(text);
+          if (!key) return;
+          if (comparableSeen.indexOf(key) === -1) comparableSeen.push(key);
+        };
+        isDuplicateOfSeen = function (text) {
+          var key = comparableKey(text);
+          return !key || comparableSeen.indexOf(key) !== -1;
+        };
       }
       function pushPelOrientationCue(label, text) {
         if (!text || isDuplicateOfSeen(text)) return;
@@ -25364,7 +25499,12 @@
       pushPelOrientationCue("Using evidence", evidenceUsePrompt);
       pushPelOrientationCue("Structuring your response", argumentStructureHint);
       pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
-      return blocks.join("");
+      if (!blocks.length) return "";
+      return (
+        '<div class="util-activity-framing" role="complementary" aria-label="Study support">' +
+        blocks.join("") +
+        "</div>"
+      );
     }
     function renderLearningActivitiesBlocks(activityRows, renderContext) {
       var ctx = renderContext && typeof renderContext === "object" ? renderContext : {};
@@ -25727,7 +25867,9 @@
               }).filter(function (x) { return !!x; });
             } else {
               var promptBlock = utilityRenderMarkdownBlock(rawPrompt);
-              return promptBlock ? ('<div class="util-prompt-set">' + promptBlock + "</div>") : "";
+              return promptBlock
+                ? ('<div class="util-prompt-set util-material-prompt">' + promptBlock + "</div>")
+                : "";
             }
           } else if (Array.isArray(value)) {
             prompts = value.slice();
@@ -25746,7 +25888,7 @@
           var listHtml = renderBulletArray(prompts, { plainLabels: true, stripStandaloneBold: true });
           if (!listHtml) return "";
           return (
-            '<div class="util-prompt-set">' +
+            '<div class="util-prompt-set util-material-prompt">' +
             (heading ? ("<h5>" + utilityEscapeHtml(String(heading)) + "</h5>") : "") +
             listHtml +
             "</div>"
@@ -26627,7 +26769,7 @@
                         renderCardScopedMarkdown(secBodyRaw);
                       if (!String(secBodyHtml || "").trim() && !secTitle) return "";
                       return (
-                        '<article class="util-template-block">' +
+                        '<article class="util-template-block util-material-template">' +
                         (secTitle ? "<h5>" + utilityEscapeHtml(secTitle) + "</h5>" : "") +
                         (secBodyHtml || "") +
                         '<div class="util-template-note-line" aria-hidden="true"></div></article>'
@@ -26635,7 +26777,7 @@
                     }
                     if (!/\r?\n/.test(secRaw)) {
                       return (
-                        '<article class="util-template-block"><h5>' +
+                        '<article class="util-template-block util-material-template"><h5>' +
                         utilityEscapeHtml(secRaw) +
                         '</h5><div class="util-template-note-line" aria-hidden="true"></div></article>'
                       );
@@ -26645,7 +26787,7 @@
                       renderCardScopedMarkdown(secRaw);
                     if (!String(secMultilineBody || "").trim()) return "";
                     return (
-                      '<article class="util-template-block">' +
+                      '<article class="util-template-block util-material-template">' +
                       secMultilineBody +
                       '<div class="util-template-note-line" aria-hidden="true"></div></article>'
                     );
@@ -26656,7 +26798,7 @@
                   var secBody = renderBulletArray(secLines, { plainLabels: true, stripStandaloneBold: true });
                   if (!secBody) secBody = renderMaterialValue(firstNonEmptyRaw([sec.content, sec.text, sec.body]), "content");
                   if (!secBody) return "";
-                  return '<article class="util-template-block">' +
+                  return '<article class="util-template-block util-material-template">' +
                     (secTitle ? ("<h5>" + utilityEscapeHtml(String(secTitle)) + "</h5>") : "") +
                     secBody +
                     '<div class="util-template-note-line" aria-hidden="true"></div>' +
@@ -26679,7 +26821,7 @@
                   if (utilityIsEmptyValue(rawVal)) return "";
                   var sectionBody = renderMaterialValue(rawVal, pair[0]);
                   if (!sectionBody) return "";
-                  return '<article class="util-template-block"><h5>' +
+                  return '<article class="util-template-block util-material-template"><h5>' +
                     utilityEscapeHtml(pair[1]) +
                     "</h5>" +
                     sectionBody +
@@ -26866,7 +27008,7 @@
           var analysisTemplateHtml = renderMaterialValue(analysisTemplateValue, "template", { materialHint: "template" });
           if (analysisTemplateHtml && analysisTemplateHtml.indexOf("util-template-block") === -1) {
             analysisTemplateHtml =
-              '<article class="util-template-block">' + analysisTemplateHtml + "</article>";
+              '<article class="util-template-block util-material-template">' + analysisTemplateHtml + "</article>";
           }
           if (analysisTemplateHtml) {
             parts.push(
@@ -27050,10 +27192,15 @@
             ? ""
             : utilityRenderIconHeading("h4", headingLabel, materialTypeKey, "util-material-heading");
           if (String(k || "").toLowerCase() === "table") title = "";
+          rendered = utilityTagMaterialBlockHtml(rendered, k);
           if (isCardLikeMaterialKey(k)) {
-            parts.push('<article class="util-material-card">' + title + rendered + "</article>");
+            parts.push(
+              '<article class="util-material-card util-material-block">' + title + rendered + "</article>"
+            );
           } else if (String(k || "").toLowerCase().indexOf("unknown") !== -1 || /^experimental_/.test(String(k || ""))) {
-            parts.push('<div class="util-material-fallback">' + title + rendered + "</div>");
+            parts.push(
+              '<div class="util-material-fallback util-material-prose">' + title + rendered + "</div>"
+            );
           } else {
             parts.push(title + rendered);
           }
@@ -27061,7 +27208,9 @@
         if (parts.length === 1) {
           parts[0] = String(parts[0] || "").replace(/^<h4>[^<]+<\/h4>/, "");
         }
-        return parts.join("");
+        var materialsBody = parts.join("");
+        if (!String(materialsBody || "").trim()) return "";
+        return '<div class="util-materials-stack">' + materialsBody + "</div>";
       }
       return rows
         .map(function (row, idx) {
@@ -27161,25 +27310,38 @@
             headerBadges.push('<span class="util-badge util-badge-group">' + utilityEscapeHtml("Grouping: " + prettyGroupingValue(grouping)) + "</span>");
           }
           parts.push('<div class="util-activity-header"><h3>' + utilityEscapeHtml(title) + "</h3>" + (headerBadges.length ? ('<div class="util-badge-row">' + headerBadges.join("") + "</div>") : "") + "</div>");
-          var framingHtml = renderActivityFramingForActivity(row);
+          var activityComparable = createActivityComparableRegistry();
+          var framingHtml = renderActivityFramingForActivity(row, activityComparable);
           if (framingHtml) {
             parts.push(framingHtml);
           }
-          if (purposeTask) {
+          if (purposeTask && !activityComparable.isDuplicate(purposeTask)) {
             parts.push("<p><strong>Task:</strong> " + utilityRenderMarkdownInline(summarizeOneSentence(String(purposeTask))) + "</p>");
+            activityComparable.markSeen(purposeTask);
           }
+          var learnerTaskSource = activityComparableSourceText(learnerTaskRaw);
           var learnerTaskHtml = renderListFromInstructions(learnerTaskRaw);
           if (learnerTaskHtml) {
             parts.push(
-              '<div class="util-activity-task">' +
+              '<div class="util-activity-task util-activity-task--primary">' +
               utilityRenderIconHeading("h4", "What to do", "what_to_do", "util-material-heading") +
               learnerTaskHtml +
               "</div>"
             );
+            if (learnerTaskSource) {
+              activityComparable.markSeen(learnerTaskSource);
+            }
           }
+          var instructionsSource = activityComparableSourceText(instructions);
           var instructionHtml = renderListFromInstructions(instructions);
-          if (instructionHtml && normalizeComparableText(String(instructionHtml)) !== normalizeComparableText(String(learnerTaskHtml || ""))) {
+          if (
+            instructionHtml &&
+            instructionsSource &&
+            !activityComparable.isDuplicate(instructionsSource) &&
+            normalizeComparableText(instructionsSource) !== normalizeComparableText(learnerTaskSource)
+          ) {
             parts.push(utilityRenderIconHeading("h4", "Guidance", "guidance", "util-material-heading") + instructionHtml);
+            activityComparable.markSeen(instructionsSource);
           }
           var cognitionHtml = renderCognitionFieldsForActivity(row, cognitionProfile);
           if (cognitionHtml) {
@@ -27200,8 +27362,9 @@
               "</div>"
             );
           }
-          if (supportNote) {
+          if (supportNote && !activityComparable.isDuplicate(supportNote)) {
             parts.push(utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(supportNote))));
+            activityComparable.markSeen(supportNote);
           }
           if (!parts.length) return "";
           return '<article class="util-task-block">' + parts.join("") + "</article>";
@@ -28234,13 +28397,18 @@
         })
         .filter(function (x) { return !!x; });
       if (!items.length) return "";
-      return '<ul class="util-assessment-options">' + items.join("") + "</ul>";
+      return (
+        '<div class="util-assessment-choices">' +
+        '<ul class="util-assessment-options">' +
+        items.join("") +
+        "</ul></div>"
+      );
     }
     function renderAssessmentItemArticle(idx, innerHtml) {
       var n = idx + 1;
       var body = String(innerHtml || "").trim();
       return (
-        '<article class="util-task-block util-assessment-item">' +
+        '<article class="util-task-block util-assessment-item util-assessment-item--formative">' +
         '<header class="util-assessment-item-header">' +
         '<span class="util-assessment-number" aria-hidden="true">' +
         n +
@@ -28361,10 +28529,14 @@
               ? utilityCleanupInlineMarkdownMarkers(statementText)
               : statementText;
             parts.push(
-              '<p class="util-assessment-statement">' + utilityRenderMarkdownInline(statementOut) + "</p>"
+              '<div class="util-assessment-prompt"><p class="util-assessment-statement">' +
+                utilityRenderMarkdownInline(statementOut) +
+                "</p></div>"
             );
           }
-          parts.push(renderTrueFalseOptionsList());
+          parts.push(
+            '<div class="util-assessment-choices">' + renderTrueFalseOptionsList() + "</div>"
+          );
         } else {
           var promptText = firstNonEmpty([
             row.stem,
@@ -28381,7 +28553,11 @@
             var promptOut = renderOpts.cleanupInlineMarkdown
               ? utilityCleanupInlineMarkdownMarkers(promptText)
               : promptText;
-            parts.push("<p>" + utilityRenderMarkdownInline(promptOut) + "</p>");
+            parts.push(
+              '<div class="util-assessment-prompt"><p>' +
+                utilityRenderMarkdownInline(promptOut) +
+                "</p></div>"
+            );
           }
           var resolvedOptions = extractRenderableMcqOptions(row);
           if (resolvedOptions.length) {
@@ -29195,10 +29371,24 @@
     return "";
   }
 
+  function utilityIsWorkedExampleMaterialHint(hint) {
+    var k = String(hint || "").toLowerCase().replace(/[\s-]+/g, "_");
+    return k === "examples" || k === "example" || k === "worked_example" || /\bworked_examples?\b/.test(k);
+  }
+
+  function utilityTagMaterialBlockHtml(html, hint) {
+    var body = String(html || "").trim();
+    if (!body) return "";
+    if (utilityIsWorkedExampleMaterialHint(hint) && body.indexOf("util-worked-example") === -1) {
+      return '<div class="util-worked-example util-material-block">' + body + "</div>";
+    }
+    return body;
+  }
+
   function utilityWrapExportTableHtml(tableHtml) {
     var html = String(tableHtml || "").trim();
     if (!html || html.indexOf("<table") !== 0) return html;
-    return '<div class="util-table-scroll">' + html + "</div>";
+    return '<div class="util-table-scroll util-material-table">' + html + "</div>";
   }
 
   function getUtilityPagePresentationCssV26_2() {
@@ -29305,6 +29495,8 @@
       "section>h4:not(.util-material-heading){font-size:.875rem;font-weight:600;color:#64748b;margin:12px 0 6px}",
       ".util-activity-header h3{font-size:1.0625rem;font-weight:600;color:#0f172a;margin:0}",
       ".util-activity-task{padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #f1f5f9}",
+      ".util-activity-task--primary{padding:14px 14px 16px;margin:12px 0 16px;border:1px solid #e2e8f0;border-left:3px solid #0f172a;border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04)}",
+      ".util-activity-task--primary h4.util-material-heading,.util-activity-task--primary h4.util-icon-heading{font-size:.95rem;font-weight:700;color:#0f172a;margin:0 0 10px}",
       ".util-activity-materials{margin-top:6px;padding-top:14px;border-top:1px solid #f1f5f9}",
       ".util-badge-row{gap:8px;align-items:center;margin-top:2px}",
       ".util-badge{padding:4px 11px;font-size:.75rem;line-height:1.3;letter-spacing:.01em}",
@@ -29340,11 +29532,11 @@
 
   function getUtilityCognitionPresentationCss() {
     return [
-      ".util-cognition{margin:14px 0 16px;padding:12px 14px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}",
+      ".util-cognition{margin:12px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}",
       ".util-cognition__item{margin:0 0 10px}",
       ".util-cognition__item:last-child{margin-bottom:0}",
-      ".util-cognition__label{font-size:.8rem;font-weight:600;letter-spacing:.02em;color:#475569;margin:0 0 4px}",
-      ".util-cognition__body{font-size:.92rem;line-height:1.55;color:#1e293b}",
+      ".util-cognition__label{font-size:.75rem;font-weight:600;letter-spacing:.02em;color:#64748b;margin:0 0 4px}",
+      ".util-cognition__body{font-size:.875rem;line-height:1.5;color:#475569}",
       ".util-cognition__body p:last-child,.util-cognition__body ul:last-child{margin-bottom:0}",
       ".util-cognition--revision{border-left:3px solid #6366f1}",
       ".util-cognition--repair{border-left:3px solid #d97706}",
@@ -29353,15 +29545,51 @@
       ".util-cognition--explain{border-left:3px solid #8b5cf6}",
       ".util-cognition--transfer{border-left:3px solid #0d9488}",
       ".util-cognition--scaffold{border-left:3px solid #64748b}",
-      ".util-activity-preamble{margin:0 0 14px;padding:12px 14px;border-left:3px solid #6366f1;background:#f8fafc;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.55;color:#1e293b}",
+      ".util-activity-preamble{margin:0 0 10px;padding:8px 10px;border-left:2px solid #c7d2fe;background:#f8fafc;border-radius:0 6px 6px 0;font-size:.875rem;line-height:1.5;color:#475569}",
       ".util-activity-preamble p:last-child{margin-bottom:0}",
-      ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 6px;font-size:.82rem;font-weight:600;letter-spacing:.02em;color:#475569}",
-      ".util-activity-preamble-cue{margin:0 0 12px;font-size:.92rem;line-height:1.5;color:#334155}",
-      ".util-pel-orientation-cue strong,.util-pel-reasoning-cue strong{color:#475569}",
-      ".util-activity-header+.util-activity-preamble{margin-top:6px}",
-      ".util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:4px}",
+      ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 4px;font-size:.75rem;font-weight:600;letter-spacing:.02em;color:#64748b}",
+      ".util-activity-preamble-cue{margin:0 0 8px;font-size:.8125rem;line-height:1.45;color:#64748b}",
+      ".util-pel-orientation-cue{padding-left:8px;border-left:2px solid #e2e8f0}",
+      ".util-pel-reasoning-cue{padding-left:8px;border-left:2px solid #cbd5e1}",
+      ".util-pel-orientation-cue strong{font-size:.75rem;font-weight:600;color:#64748b}",
+      ".util-pel-reasoning-cue strong{font-size:.75rem;font-weight:600;color:#475569}",
+      ".util-activity-header+.util-activity-framing,.util-activity-header+.util-activity-preamble{margin-top:6px}",
+      ".util-activity-framing+.util-activity-task,.util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:0}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
       "@media print{.util-cognition{background:#fff;break-inside:avoid-page;page-break-inside:avoid}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_3() {
+    return [
+      ".util-knowledge-summary{margin:0 0 20px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#fafbfc}",
+      ".util-knowledge-summary--prose{padding:12px 14px;font-size:.92rem;line-height:1.55;color:#334155}",
+      ".util-concept-group{margin:0 0 12px}",
+      ".util-knowledge-subheading{margin:0 0 10px;font-size:.8125rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:#64748b}",
+      ".util-definition-list{margin:0;padding:0}",
+      ".util-definition-list.util-concept-item{margin:0 0 10px;padding:0 0 10px;border-bottom:1px solid #e2e8f0}",
+      ".util-definition-list.util-concept-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}",
+      ".util-definition-term{margin:0 0 4px;font-size:.875rem;font-weight:600;color:#0f172a;line-height:1.35}",
+      ".util-definition-desc{margin:0;font-size:.875rem;line-height:1.5;color:#475569}",
+      ".util-definition-desc p{margin:0}",
+      ".util-concept-group .util-structured-block.util-concept-item{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}",
+      ".util-concept-group .util-structured-block.util-concept-item:last-child{margin-bottom:0}",
+      ".util-concept-relationships{margin-top:12px;padding-top:12px;border-top:1px dashed #e2e8f0}",
+      ".util-concept-relationships p{margin:0;font-size:.875rem;line-height:1.5;color:#475569}",
+      "@media print{.util-knowledge-summary{background:#fff;break-inside:avoid-page}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_2() {
+    return [
+      ".util-activity-framing{margin:6px 0 12px;padding:8px 10px 4px;border-left:2px solid #e2e8f0;background:#fafbfc;border-radius:0 6px 6px 0}",
+      ".util-activity-framing>.util-activity-preamble-cue:last-child,.util-activity-framing>.util-activity-preamble:last-child{margin-bottom:4px}",
+      ".util-activity-framing .util-activity-preamble{margin-bottom:8px;background:#f8fafc;border-left-color:#ddd6fe}",
+      ".util-activity-framing .util-pel-orientation-cue{margin-bottom:6px}",
+      ".util-activity-framing .util-pel-reasoning-cue{margin-bottom:8px}",
+      ".util-activity-framing+.util-activity-task--primary{margin-top:4px}",
+      ".util-support-note{font-size:.8125rem;color:#64748b;padding:8px 10px}",
+      ".util-support-note .util-support-note-label{font-size:.75rem;font-weight:600;color:#64748b}"
     ].join("");
   }
 
@@ -29370,8 +29598,65 @@
       getUtilityPagePresentationCssV26_2() +
       getUtilityPagePresentationCssV26_4() +
       getUtilityPagePresentationCssV26_5() +
-      getUtilityCognitionPresentationCss()
+      getUtilityCognitionPresentationCss() +
+      getUtilityPagePresentationCssV31_2() +
+      getUtilityPagePresentationCssV31_3() +
+      getUtilityPagePresentationCssV31_4() +
+      getUtilityPagePresentationCssV31_5() +
+      getUtilityPagePresentationCssV31_6()
     );
+  }
+
+  function getUtilityPagePresentationCssV31_6() {
+    return [
+      ".util-assessment-section{margin-bottom:24px}",
+      ".util-assessment-list{gap:16px;margin-top:10px}",
+      "article.util-assessment-item.util-assessment-item--formative{padding:14px 16px;border:1px solid #e0f2fe;background:#f8fafc;box-shadow:0 1px 2px rgba(8,145,178,.04)}",
+      ".util-assessment-item-header{margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e0f2fe}",
+      ".util-assessment-title{font-size:.9rem}",
+      ".util-assessment-item-body{font-size:.875rem;line-height:1.5;color:#334155}",
+      ".util-assessment-prompt{margin:0 0 12px;font-size:.9375rem;font-weight:500;color:#0f172a;line-height:1.5}",
+      ".util-assessment-prompt p,.util-assessment-prompt .util-assessment-statement{margin:0}",
+      ".util-assessment-choices{margin:2px 0 0}",
+      ".util-assessment-options{margin:0 0 0 0;padding:0;list-style:none}",
+      ".util-assessment-options li{margin:0 0 8px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:.875rem;line-height:1.45;color:#334155}",
+      ".util-assessment-options li:last-child{margin-bottom:0}",
+      ".util-true-false-options{max-width:14rem}",
+      ".util-assessment-explanation,.util-assessment-answer{margin-top:10px;margin-bottom:0;font-size:.8125rem;line-height:1.5}",
+      ".util-assessment-key{margin-top:20px;padding-top:16px}",
+      ".util-assessment-key-title{font-size:.875rem}",
+      "@media print{article.util-assessment-item.util-assessment-item--formative{break-inside:avoid-page;box-shadow:none!important}.util-assessment-options li{border-color:#ccc;background:#fff}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_5() {
+    return [
+      ".util-activity-framing>.util-activity-preamble-cue{margin-bottom:4px}",
+      ".util-activity-framing>.util-activity-preamble-cue+.util-activity-preamble-cue{margin-top:2px}",
+      ".util-activity-framing>.util-activity-preamble:last-child{margin-bottom:6px}",
+      ".util-activity-framing+.util-activity-task--primary{margin-top:10px}",
+      ".util-activity-task--primary+.util-cognition{margin-top:12px}",
+      ".util-cognition+.util-activity-materials{margin-top:12px}",
+      ".util-activity-task--primary+.util-activity-materials{margin-top:14px}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_4() {
+    return [
+      ".util-materials-stack{display:flex;flex-direction:column;gap:12px;margin:2px 0 0}",
+      ".util-materials-stack>h4.util-material-heading{margin:14px 0 4px}",
+      ".util-material-block{max-width:100%}",
+      ".util-table-scroll.util-material-table{margin:8px 0 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}",
+      ".util-table-scroll.util-material-table table{font-size:.875rem}",
+      ".util-table-scroll.util-material-table th{font-size:.8125rem;font-weight:600;color:#475569;background:#f8fafc}",
+      ".util-table-scroll.util-material-table td{color:#334155;line-height:1.45;vertical-align:top}",
+      ".util-template-block.util-material-template{margin:8px 0 12px;padding:10px 12px;border-style:dashed;border-color:#e2e8f0;background:#fafafa}",
+      ".util-prompt-set.util-material-prompt{margin:8px 0 12px;padding:12px 14px;border-color:#e0e7ff;background:#f8fafc}",
+      ".util-worked-example{margin:8px 0 12px;padding:10px 12px;border-left:2px solid #cbd5e1;border-radius:0 6px 6px 0;background:#fafbfc;font-size:.875rem;line-height:1.5;color:#475569}",
+      ".util-material-prose{font-size:.875rem;line-height:1.55;color:#475569}",
+      ".util-material-card.util-material-block{margin:8px 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}",
+      "@media print{.util-materials-stack .util-table-scroll.util-material-table{overflow:visible;border:1px solid #ccc}.util-template-block.util-material-template,.util-prompt-set.util-material-prompt,.util-worked-example{break-inside:avoid-page}}"
+    ].join("");
   }
 
   function buildUtilityLearningObjectHtml(title, audience, sectionHtmlBlocks, metadataHtmlBlocks) {
@@ -30158,8 +30443,10 @@
     var title = String((parsed && (parsed.title || parsed.name)) || utilityLabelFromKey(plan.artefactType || "Artefact"));
     htmlParts.push("<h1>" + utilityEscapeHtml(title) + "</h1>");
 
-    if (parsed && !utilityIsEmptyValue(parsed.audience)) {
-      htmlParts.push("<p><strong>Audience:</strong> " + utilityEscapeHtml(parsed.audience) + "</p>");
+    if (utilityShouldShowPageAudienceLine(parsed)) {
+      htmlParts.push(
+        "<p><strong>Audience:</strong> " + utilityEscapeHtml(String(parsed.audience)) + "</p>"
+      );
     }
 
     var itemKeyMap = cfg.itemKeyMap && typeof cfg.itemKeyMap === "object" ? cfg.itemKeyMap : {};
@@ -30369,7 +30656,8 @@
     if (isPageArtefact && presentationMode === "learning_object") {
       var loBlocks = buildLearningObjectSectionBlocksFromPageSections();
       if (!loBlocks.length) loBlocks = primaryBlocks.slice();
-      return buildUtilityLearningObjectHtml(title, parsed && parsed.audience, loBlocks, metadataBlocks);
+      var loAudience = utilityShouldShowPageAudienceLine(parsed) ? String(parsed.audience) : "";
+      return buildUtilityLearningObjectHtml(title, loAudience, loBlocks, metadataBlocks);
     }
     if (metadataBlocks.length) {
       htmlParts.push(

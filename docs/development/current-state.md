@@ -41,6 +41,32 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
+### Sprint 30 — Pedagogic Enrichment Layer (PEL) (**initialised**, 2026-05-21)
+
+**Portable pack:** [`sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/)
+
+| Entry | Path |
+|-------|------|
+| **Handover (new chat)** | [`HANDOVER.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/HANDOVER.md) |
+| **Charter** | [`sprint-30-charter.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/sprint-30-charter.md) |
+| **Current state** | [`CURRENT-STATE.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/CURRENT-STATE.md) |
+| **PEC registry** | [`pec-registry.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/pec-registry.md) |
+| **Slice 30-1** | [`slice-30-1-charter.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/slice-30-1-charter.md) |
+| **Context files** | [`context-files/`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/context-files/) |
+| **Probe catalogue** | [`workflow-probe-catalogue.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/workflow-probe-catalogue.md) |
+| **Evidence matrix** | [`enrichment-evidence-matrix.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/enrichment-evidence-matrix.md) |
+| Short pointer | [`sprint-30-pedagogic-enrichment-layer.md`](sprint-30-pedagogic-enrichment-layer.md) |
+
+**Intent:** Deepen **pedagogic richness** of **self-directed learner-page** outputs via **Pedagogic Enrichment Contracts (PECs)** on DLA / GAM / Design Page — not new workflow steps.
+
+**Architectural constraints:** **No new workflow steps.** **No** adaptive tutoring. **No** orchestration redesign. **No** Sprint 29 renderer reopen. Renderer **passive**. Preserve self-directed / learner-resource brief direction.
+
+**Status:** **30-0 complete** (full handover pack + context files). **30-1** not started.
+
+**Test baseline:** **430** passing — [`context-files/baseline-test-floor.md`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/context-files/baseline-test-floor.md)
+
+---
+
 ### Marx self-study design-quality hotfix (**applied**, 2026-05-21)
 
 **Investigation:** [`hotfix-marx-self-study-design-quality-investigation.md`](hotfix-marx-self-study-design-quality-investigation.md)

@@ -10,11 +10,14 @@
 | Undersized mapping/timeline tables | **Generation (GAM)** | Table row adequacy prompt block on self-directed learner-page GAM step |
 | Ultra-short source readings | **Generation (GAM)** | Reading sufficiency prompt block; heuristic `evaluateSelfDirectedSourceReadingSufficiency` for tests |
 | Generic headings (`Text`, `Support Text`, …) | **Renderer** (+ generation guidance) | Extended `utilityMaterialHeadingRedundantWithInner` generic set; GAM prompt asks for specific titles |
+| Timeline source already chronological while task asks learners to sequence | **Generation (DLA + GAM)** | **Timeline sequencing alignment** prompt block; `required_materials.specification` should say unordered event list; interpretation tasks may keep chronological reference text |
 
 ## Tests
 
-- `tests/workflow-self-directed-learner-page-formatting.test.js`
+- `tests/workflow-self-directed-learner-page-formatting.test.js` (includes `evaluateTimelineSequencingMaterialAlignment` Marx-style cases)
 - Existing `tests/utility-marx-page-render.test.js` (generic heading suppression fixture)
+
+**Related:** [`hotfix-marx-self-study-design-quality-investigation.md`](hotfix-marx-self-study-design-quality-investigation.md) (Activity A1 ordering issue)
 
 ## Remaining risks
 

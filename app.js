@@ -4480,15 +4480,35 @@
           });
         } catch (_e) {}
       } else {
-      setInitialPromptFieldValue(overrideBody);
-      if (els.finalPrompt) {
-        var current = String(els.finalPrompt.value || "");
-        if (!current || current === String(state.workflowStepGeneratedDraft || "")) {
-          els.finalPrompt.value = overrideBody;
-          state.workflowStepGeneratedDraft = overrideBody;
+        var overrideWf = ctx.workflowId ? findWorkflowById(ctx.workflowId) : null;
+        var overrideStep = null;
+        if (overrideWf && Array.isArray(overrideWf.steps) && ctx.stepId) {
+          overrideStep = overrideWf.steps.find(function (row) {
+            return String(row && row.id ? row.id : "") === String(ctx.stepId || "");
+          });
         }
-      }
-      return;
+        if (!overrideStep) {
+          overrideStep = {
+            title: ctx.stepCanonicalTitle || ctx.stepTitle || "",
+            canonical_step_id: ctx.stepCanonicalStepId || "",
+            outputName: ctx.stepOutputName || ""
+          };
+        }
+        overrideBody = applyWorkflowStepRuntimePromptAugmentations(
+          overrideBody,
+          overrideStep,
+          overrideWf,
+          {}
+        );
+        setInitialPromptFieldValue(overrideBody);
+        if (els.finalPrompt) {
+          var current = String(els.finalPrompt.value || "");
+          if (!current || current === String(state.workflowStepGeneratedDraft || "")) {
+            els.finalPrompt.value = overrideBody;
+            state.workflowStepGeneratedDraft = overrideBody;
+          }
+        }
+        return;
       }
     }
     var optionMap = buildWorkflowStepPromptOptionMap(effectiveSelectedOptions);
@@ -5092,8 +5112,17 @@
     }
     draft = withMcqDefaultFeedbackScaffold(draft, ctx, optionMap);
     draft = withPageTaskModeScaffold(draft, ctx, optionMap);
-    draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
-    draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
+    draft = applyWorkflowStepRuntimePromptAugmentations(
+      draft,
+      {
+        title: ctx.stepCanonicalTitle || ctx.stepTitle || "",
+        canonical_step_id: ctx.stepCanonicalStepId || "",
+        outputName: ctx.stepOutputName || "",
+        notes: ctx.stepNotes || ""
+      },
+      ctx.workflowId ? findWorkflowById(ctx.workflowId) : null,
+      optionMap
+    );
 
     setInitialPromptFieldValue(draft);
 
@@ -6939,16 +6968,46 @@
     };
   }
 
-  function isSelfDirectedDeliveryForMaterialShapeScaffold(resolved) {
+  function textMentionsSelfDirectedStudy(blob) {
+    return /\b(self[-\s]?directed|independent study|self study|study independently|work through on their own)\b/i.test(
+      String(blob || "")
+    );
+  }
+
+  function isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base) {
     var r = resolved && typeof resolved === "object" ? resolved : {};
     var delivery = String(r.delivery_context || r.delivery_mode || "")
       .toLowerCase()
       .trim();
-    return (
+    if (
+      delivery === "in_person" ||
+      delivery === "online_sync" ||
+      delivery === "blended"
+    ) {
+      return false;
+    }
+    if (
       delivery === "self_directed" ||
       delivery === "async" ||
       delivery === "online_async"
-    );
+    ) {
+      return true;
+    }
+    if (delivery) return false;
+    var ctx = context && typeof context === "object" ? context : {};
+    var b = base && typeof base === "object" ? base : {};
+    var blob = [
+      ctx.workflowGoal,
+      ctx.desiredOutputs,
+      b.goal,
+      b.inputs,
+      b.desiredOutputs
+    ]
+      .map(function (x) {
+        return String(x || "");
+      })
+      .join(" ");
+    return textMentionsSelfDirectedStudy(blob);
   }
 
   function isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base) {
@@ -6978,7 +7037,7 @@
   }
 
   function shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) {
-    if (!isSelfDirectedDeliveryForMaterialShapeScaffold(resolved)) return false;
+    if (!isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base)) return false;
     return isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base);
   }
 
@@ -7057,10 +7116,102 @@
     };
   }
 
+  function learnerTaskRequiresChronologicalOrdering(learnerTask) {
+    var t = String(learnerTask == null ? "" : learnerTask).toLowerCase();
+    if (!t) return false;
+    var orderingCue =
+      /\b(arrange|order|sequence|sequencing|chronolog|time\s*order|put\b[^.]{0,100}\bin\s+(?:time\s+)?order|rank\b[^.]{0,80}\bchronolog|earliest\s+to\s+latest|latest\s+to\s+earliest|chronological\s+order|in\s+date\s+order)\b/.test(
+        t
+      );
+    if (!orderingCue) return false;
+    var interpretationOnly =
+      /\b(significance|interpret|annotate|explain\s+why|explain\s+which|importance\s+of|most\s+influential|what\s+each\s+phase\s+(?:shows|means)|reflect\s+on)\b/.test(
+        t
+      ) &&
+      !/\b(arrange|order|sequence|chronolog|put\b[^.]{0,100}\bin\s+order)\b/.test(t);
+    return !interpretationOnly;
+  }
+
+  function extractOrderedYearsFromText(text) {
+    var years = [];
+    var re = /\b(1[0-9]{3}|20[0-9]{2})\b/g;
+    var raw = String(text == null ? "" : text);
+    var m;
+    while ((m = re.exec(raw)) !== null) {
+      var y = parseInt(m[1], 10);
+      if (!isNaN(y)) years.push(y);
+    }
+    return years;
+  }
+
+  function yearSequenceIsMostlyAscending(years) {
+    var list = Array.isArray(years) ? years : [];
+    if (list.length < 3) return false;
+    var nonDecreasing = 0;
+    for (var i = 1; i < list.length; i += 1) {
+      if (list[i] >= list[i - 1]) nonDecreasing += 1;
+    }
+    return nonDecreasing >= list.length - 1 && list[list.length - 1] > list[0];
+  }
+
+  function timelineSequencingSourceTextFromMaterials(materials) {
+    if (!materials || typeof materials !== "object" || Array.isArray(materials)) return "";
+    var textBlock = materials.text;
+    if (textBlock && typeof textBlock === "object" && !Array.isArray(textBlock)) {
+      return utilityFirstScalar([
+        textBlock.content,
+        textBlock.body,
+        textBlock.text,
+        textBlock.value
+      ]);
+    }
+    return utilityFirstScalar([
+      materials.text,
+      materials.reading_text,
+      materials.support_text && materials.support_text.body,
+      materials.support_text && materials.support_text.content,
+      materials.content
+    ]);
+  }
+
+  function evaluateTimelineSequencingMaterialAlignment(activity) {
+    var row = activity && typeof activity === "object" && !Array.isArray(activity) ? activity : {};
+    var task = utilityFirstScalar([
+      row.learner_task,
+      row.task,
+      row.instructions,
+      row.instruction
+    ]);
+    var requiresOrdering = learnerTaskRequiresChronologicalOrdering(task);
+    var sourceText = timelineSequencingSourceTextFromMaterials(row.materials);
+    var years = extractOrderedYearsFromText(sourceText);
+    var chronologicallyOrdered = yearSequenceIsMostlyAscending(years);
+    return {
+      requiresOrdering: requiresOrdering,
+      chronologicallyOrdered: chronologicallyOrdered,
+      aligned: !requiresOrdering || !chronologicallyOrdered,
+      sourceText: sourceText,
+      yearCount: years.length
+    };
+  }
+
+  function buildSelfDirectedTimelineSequencingAlignmentPromptBlock() {
+    return [
+      "",
+      "Self-directed timeline sequencing alignment (auto-applied):",
+      "- When learner_task asks learners to arrange, order, sequence, or place events in chronological/time order, source event lists and generated text materials must NOT already be in chronological order.",
+      "- Provide events in deliberately mixed or non-chronological order (shuffle years/dates in the list); the cognitive task is the ordering, not reading a pre-sorted list.",
+      "- In required_materials.specification for sequencing tasks, state explicitly: unordered event list for learner sequencing or events in non-chronological order.",
+      "- If a chronological source list is intentional reference reading (overview/narrative with no ordering task), change learner_task to interpretation or significance (do not ask learners to re-order an already chronological list).",
+      "- Knowledge-summary or orienting materials without an ordering task may remain chronological."
+    ].join("\n");
+  }
+
   function buildSelfDirectedLearnerPageMaterialShapePromptBlock() {
     return [
       "",
       "Self-directed learner-page material shape (auto-applied):",
+      "- For timeline/sequencing activities, align source event lists with the cognitive task (see timeline sequencing alignment guidance).",
       "- For cause–effect, comparison, or table-completion scaffolds on one activity, prefer a single integrated template or analysis_table (prompts in row labels) rather than parallel task_cards plus a separate table for the same scaffold.",
       "- Only add task_cards when each card maps to a distinct sub-activity, not duplicate prompts already in the table.",
       "- For comparison activities, include a short orienting text or sample_output material introducing each entity before any comparison prompt_set or comparison table.",
@@ -7108,8 +7259,47 @@
       "- reasoning_orientation: on compare/analyse/application activities.",
       "- transfer_or_application_task: at least one application-focused activity when relevant.",
       "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 short strings).",
+      "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
+      "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief.",
       "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above."
     ].join("\n");
+  }
+
+  function buildSelfDirectedLearnerPageDlaOutputContractExampleBlock() {
+    return [
+      "",
+      "Self-directed activity JSON example (authoritative shape — topic-specific strings required):",
+      "{",
+      '  "activity_id": "A2",',
+      '  "title": "Compare major works",',
+      '  "activity_preamble": "Before you read the extracts, note what each author assumes about workers and the state.",',
+      '  "self_explanation_prompt": "After comparing, state in one sentence which text you find more convincing and why.",',
+      '  "learner_task": "Complete the comparison table with purpose and one key difference per work.",',
+      '  "expected_output": "Filled comparison table with brief notes.",',
+      '  "required_materials": [{ "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." }]',
+      "}"
+    ].join("\n");
+  }
+
+  function augmentSelfDirectedDlaDraftOutputSection(draftBody) {
+    var body = String(draftBody || "");
+    var pointer =
+      "- For self-directed learner-page workflows, each activity MUST also include activity_preamble and may include cognition-orientation fields per OUTPUT CONTRACT below.\n";
+    if (/activity_preamble and may include cognition-orientation fields per output contract/i.test(body)) {
+      return body;
+    }
+    var outputMatch = body.match(/\nOutput:\s*\n/i);
+    if (outputMatch) {
+      var idx = outputMatch.index + outputMatch[0].length;
+      return body.slice(0, idx) + pointer + body.slice(idx);
+    }
+    if (/output contract \(self-directed learner page/i.test(body)) {
+      return body.replace(
+        /(OUTPUT CONTRACT \(self-directed learner page[^\n]*\n)/i,
+        "$1" + pointer
+      );
+    }
+    return body;
   }
 
   function buildSelfDirectedGamTableRowAdequacyPromptBlock() {
@@ -7118,7 +7308,7 @@
       "Self-directed learner-page table row adequacy (auto-applied):",
       "- Tables, analysis_table, timeline templates, and mapping templates must include enough blank or prompt-labelled rows for the stated learner_task — never a single blank row when multiple learner responses are required.",
       "- Matching or mapping tasks: include one row per expected match when the activity lists events, stages, works, or prompts (e.g. four life events → at least four data rows).",
-      "- Timeline tasks: include one row per listed stage or phase in learner_task or required_materials.",
+      "- Timeline table templates: include one blank/prompt-labelled row per listed stage or phase in learner_task or required_materials (row order in the template is not the answer key).",
       "- Comparison tables: include enough rows for each entity or dimension the learner must compare.",
       "- Label prompt rows in the first column when useful; leave response cells empty for learner completion."
     ].join("\n");
@@ -7142,6 +7332,7 @@
       "- When composing learning_activities.content from upstream learning_activities, copy these fields verbatim onto each matching activity_id when present upstream:",
       "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt",
       "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
+      "- learner_task (or learner_instructions when that is the upstream key) remains the actionable instruction block — preserve both when present.",
       "- Do not strip or summarise away cognition-orientation fields."
     ].join("\n");
   }
@@ -7156,6 +7347,56 @@
       title === "design page" ||
       title.indexOf("design page") !== -1
     );
+  }
+
+  function buildWorkflowStepPromptAugmentContextFromStep(step, wf) {
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    if (!wfRec && state.selectedWorkflowId) {
+      wfRec = findWorkflowById(state.selectedWorkflowId);
+    }
+    var stepRow = step && typeof step === "object" ? step : {};
+    var outputSpec = wfRec
+      ? normalizeWorkflowOutputSpec(wfRec.workflowOutputSpec)
+      : normalizeWorkflowOutputSpec({});
+    var ctx = {
+      workflowId: wfRec ? String(wfRec.id || "") : "",
+      workflowGoal: String(outputSpec.goal || (wfRec && wfRec.goal) || "").trim(),
+      desiredOutputs: Array.isArray(wfRec && wfRec.workflowOutputs)
+        ? wfRec.workflowOutputs.join(", ")
+        : String((wfRec && wfRec.desiredOutputs) || "").trim(),
+      workflowOutputs: Array.isArray(wfRec && wfRec.workflowOutputs)
+        ? wfRec.workflowOutputs.slice()
+        : [],
+      workflowOutputSpec: outputSpec,
+      stepTitle: String(stepRow.title || "").trim(),
+      stepCanonicalTitle: String(
+        stepRow.canonical_title || stepRow.title || ""
+      ).trim(),
+      stepCanonicalStepId: String(stepRow.canonical_step_id || "").trim(),
+      stepOutputName: String(stepRow.outputName || "").trim(),
+      stepNotes: String(stepRow.notes || "").trim()
+    };
+    if (
+      wfRec &&
+      wfRec.workflowBriefResolution &&
+      wfRec.workflowBriefResolution.resolvedFactors &&
+      typeof wfRec.workflowBriefResolution.resolvedFactors === "object"
+    ) {
+      ctx.workflowBriefResolution = {
+        resolvedFactors: wfRec.workflowBriefResolution.resolvedFactors
+      };
+    }
+    return ctx;
+  }
+
+  function applyWorkflowStepRuntimePromptAugmentations(draftText, step, wf, optionMap) {
+    var draft = String(draftText || "").trim();
+    if (!draft) return "";
+    var ctx = buildWorkflowStepPromptAugmentContextFromStep(step, wf);
+    var map = optionMap && typeof optionMap === "object" ? optionMap : {};
+    draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
+    draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
+    return String(draft || "").trim();
   }
 
   function applySelfDirectedLearnerPageStepScaffoldsToDraft(draftText, context) {
@@ -7213,8 +7454,18 @@
       }
       if (!/output contract \(self-directed learner page/i.test(draftBody)) {
         draftBody = (
-          draftBody + buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock()
+          draftBody +
+          buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock() +
+          buildSelfDirectedLearnerPageDlaOutputContractExampleBlock()
         ).trim();
+      } else if (!/self-directed activity json example \(authoritative shape/i.test(draftBody)) {
+        draftBody = (
+          draftBody + buildSelfDirectedLearnerPageDlaOutputContractExampleBlock()
+        ).trim();
+      }
+      draftBody = augmentSelfDirectedDlaDraftOutputSection(draftBody);
+      if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
     }
     if (
@@ -7232,6 +7483,9 @@
       }
       if (!/self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedGamReadingSufficiencyPromptBlock()).trim();
+      }
+      if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
     }
     return draftBody;
@@ -8747,6 +9001,189 @@
     );
   }
 
+  function isWorkflowBriefFacilitatedDeliveryIntent(blob, factors) {
+    var text = String(blob || "").toLowerCase();
+    if (!text) return false;
+    var f = factors && typeof factors === "object" ? factors : {};
+    if (f.delivery_mode === "live_workshop" || f.delivery_mode === "seminar") {
+      if (!/\b(self[- ]?(?:directed|study)|independent study|solo learning|learner[- ]facing page|revision resource)\b/.test(text)) {
+        return true;
+      }
+    }
+    if (f.delivery_context === "in_person" || f.delivery_context === "online_sync") return true;
+    return (
+      /\b(workshop|seminar|live session|peer instruction|think[- ]pair[- ]share|pair discussion|facilitator[- ]?led|teacher[- ]?led|classroom teaching|classroom session|in[- ]?person delivery|synchronous(?:\s+session)?|whole[- ]?class|small[- ]?group (?:work|discussion|activity)|group activity|pair work|report back|tutor[- ]?led|facilitation plan)\b/.test(
+        text
+      ) ||
+      (/\b(session|class)\b/.test(text) &&
+        /\b(discuss|discussion|pairs?|small groups?|facilitat|workshop|seminar|peer instruction)\b/.test(
+          text
+        )) ||
+      (/\b(teaching session|facilitator guide|runbook)\b/.test(text) &&
+        !/\b(self[- ]?(?:directed|study)|independent study|learner[- ]facing page|revision resource)\b/.test(
+          text
+        ))
+    );
+  }
+
+  function isWorkflowBriefLearnerResourceSelfDirectedIntent(blob, factors, base) {
+    if (isWorkflowBriefFacilitatedDeliveryIntent(blob, factors)) return false;
+    var f = factors && typeof factors === "object" ? factors : {};
+    var b = base && typeof base === "object" ? base : {};
+    var text = String(blob || "").toLowerCase();
+    var desiredOutputsLower = String(b.desiredOutputs || "").toLowerCase();
+    if (
+      /\b(self[- ]?(?:directed|study)|independent study|solo learning|self[- ]paced|individual completion|work through (?:on their own|independently)|revision (?:page|resource)|preparation resource|study pack|cpd resource)\b/.test(
+        text
+      )
+    ) {
+      return true;
+    }
+    if (
+      f.input_strategy === "provided_source_content" &&
+      (hasStrongSourceContentEvidence(text) ||
+        hasStrongSourceContentEvidence(String(b.inputs || "").toLowerCase())) &&
+      /\b(learner[- ]facing|student[- ]facing|learner page|student page|learner resource|learning resource|self[- ]study|revision)\b/.test(
+        text + "\n" + desiredOutputsLower
+      )
+    ) {
+      return true;
+    }
+    if (
+      f.page_profile === "learner" &&
+      Array.isArray(f.session_materials) &&
+      f.session_materials.indexOf("page") !== -1 &&
+      !/\b(facilitator guide|teaching guide|runbook|facilitator[- ]facing)\b/.test(text)
+    ) {
+      return true;
+    }
+    if (
+      /\b(learner[- ]facing page|learner page|student page|learner resource|learning resource|learner pack)\b/.test(
+        text + "\n" + desiredOutputsLower
+      ) &&
+      !/\b(workshop|seminar|facilitator[- ]?led|classroom teaching)\b/.test(text)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function applyLearnerResourceBriefDeliveryAlignment(factors, base) {
+    var out = factors && typeof factors === "object" ? factors : {};
+    var b = base && typeof base === "object" ? base : {};
+    var blob = workflowBriefPedagogicTextBlob(b);
+    if (!isWorkflowBriefLearnerResourceSelfDirectedIntent(blob, out, b)) return out;
+    out.delivery_context = "self_directed";
+    if (!out.delivery_mode || out.delivery_mode === "live_workshop" || out.delivery_mode === "seminar") {
+      out.delivery_mode = "async";
+    }
+    if (!out.delivery_pattern || out.delivery_pattern === "face_to_face") {
+      out.delivery_pattern = "mostly_online";
+    }
+    var envs = Array.isArray(out.learning_environments) ? out.learning_environments.slice() : [];
+    if (!envs.length || envs.indexOf("classroom") !== -1) {
+      envs = envs.filter(function (e) {
+        return String(e || "").toLowerCase() !== "classroom";
+      });
+      if (!envs.length) {
+        if (/\b(vle|moodle|lms|course site)\b/.test(blob)) envs = ["vle"];
+        else envs = ["vle"];
+      }
+    }
+    out.learning_environments = envs;
+    return out;
+  }
+
+  function reconcileFacilitatedBriefDeliveryOverrides(factors, base) {
+    var out = factors && typeof factors === "object" ? factors : {};
+    var b = base && typeof base === "object" ? base : {};
+    var blob = workflowBriefPedagogicTextBlob(b);
+    if (!isWorkflowBriefFacilitatedDeliveryIntent(blob, out)) return out;
+    if (out.delivery_context === "self_directed" || out.delivery_context === "online_async") {
+      out.delivery_context = "in_person";
+    }
+    if (!out.delivery_mode || out.delivery_mode === "async") {
+      out.delivery_mode = /\bseminar\b/.test(blob) ? "seminar" : "live_workshop";
+    }
+    if (!out.delivery_pattern || out.delivery_pattern === "mostly_online") {
+      out.delivery_pattern = "face_to_face";
+    }
+    var envs = Array.isArray(out.learning_environments) ? out.learning_environments.slice() : [];
+    if (!envs.length) {
+      out.learning_environments = ["classroom"];
+    } else if (envs.indexOf("classroom") === -1) {
+      out.learning_environments = mergeUniqueStringList(["classroom"], envs);
+    }
+    return out;
+  }
+
+  function isWorkflowBriefPlaceholderTopic(topic) {
+    var t = String(topic == null ? "" : topic).toLowerCase().replace(/\s+/g, " ").trim();
+    if (!t) return true;
+    return (
+      t === "the uploaded transcript" ||
+      t === "uploaded transcript" ||
+      t === "the uploaded material" ||
+      t === "uploaded material" ||
+      t === "the uploaded file" ||
+      t === "the uploaded document" ||
+      t === "the uploaded content" ||
+      t === "the uploaded source" ||
+      /^the uploaded (?:transcript|material|file|document|content|source|reading|lecture)$/.test(t) ||
+      /^uploaded (?:transcript|material|file|document|content|source|reading|lecture)$/.test(t) ||
+      /^based on (?:the )?uploaded (?:transcript|material|file|document)$/.test(t)
+    );
+  }
+
+  function extractSemanticTopicFromUploadMaterialText(text) {
+    var src = String(text == null ? "" : text).replace(/\r\n/g, "\n").trim();
+    if (!src) return "";
+    var patterns = [
+      /\b(?:lecture|reading|article|document|pdf|slides?|transcript|material)\s+on\s+([^.,;\n]{8,160})/i,
+      /\bbased\s+on\s+(?:the\s+)?(?:uploaded\s+)?(?:lecture|reading|article|document|transcript|material)\s+on\s+([^.,;\n]{8,160})/i,
+      /\b(?:help|understand|learn(?:ers?)?\s+(?:to\s+)?(?:understand|learn))\s+([^.,;\n]{8,120})/i
+    ];
+    var i;
+    for (i = 0; i < patterns.length; i += 1) {
+      var m = src.match(patterns[i]);
+      if (m && m[1]) {
+        var candidate = sanitizeWorkflowBriefTopicCandidate(String(m[1] || "").trim());
+        if (candidate && !isWorkflowBriefPlaceholderTopic(candidate)) return candidate;
+      }
+    }
+    return "";
+  }
+
+  function reconcileWorkflowBriefTopicFromSource(factors, base) {
+    var out = factors && typeof factors === "object" ? factors : {};
+    var b = base && typeof base === "object" ? base : {};
+    var blob = workflowBriefPedagogicTextBlob(b);
+    var current = sanitizeWorkflowBriefTopicCandidate(out.topic || out.workshop_subject || "");
+    if (current && !isWorkflowBriefPlaceholderTopic(current)) {
+      out.topic = current;
+      out.workshop_subject = current;
+      return out;
+    }
+    var fromInputs = extractSemanticTopicFromUploadMaterialText(b.inputs);
+    var fromGoal = extractSemanticTopicFromUploadMaterialText(blob);
+    var replacement = fromInputs || fromGoal || "";
+    if (replacement) {
+      out.topic = replacement;
+      out.workshop_subject = replacement;
+      return out;
+    }
+    if (
+      isWorkflowBriefPlaceholderTopic(current) ||
+      (out.input_strategy === "provided_source_content" && !current)
+    ) {
+      if (isWorkflowBriefPlaceholderTopic(current)) {
+        delete out.topic;
+        delete out.workshop_subject;
+      }
+    }
+    return out;
+  }
+
   function reconcileWorkflowBriefPedagogicFactors(factors, base) {
     var out = factors && typeof factors === "object" ? factors : {};
     var b = base && typeof base === "object" ? base : {};
@@ -8810,6 +9247,9 @@
       }
     }
 
+    out = reconcileFacilitatedBriefDeliveryOverrides(out, b);
+    out = applyLearnerResourceBriefDeliveryAlignment(out, b);
+    out = reconcileWorkflowBriefTopicFromSource(out, b);
     return out;
   }
 
@@ -8878,7 +9318,18 @@
 
     if (/\b(async|asynchronous)\b/.test(blob)) out.delivery_mode = "async";
     else if (/\b(seminar)\b/.test(blob)) out.delivery_mode = "seminar";
-    else if (/\b(workshop|live session|classroom|class)\b/.test(blob)) out.delivery_mode = "live_workshop";
+    else if (
+      /\b(workshop|live session|classroom(?:\s+(?:session|teaching))?|teaching session)\b/.test(blob)
+    ) {
+      out.delivery_mode = "live_workshop";
+    }
+    if (
+      /\b(self[- ]?(?:directed|study)|independent study|online_async|online async|revision resource|preparation resource)\b/.test(
+        blob
+      )
+    ) {
+      out.delivery_context = "self_directed";
+    }
 
     var mcqTypeCueRe = /\b(mcq|mcqs|multiple[ -]?choice(?:\s+questions?)?)\b/;
     function assessmentTermIsNegated(text, matchIndex) {
@@ -9152,9 +9603,18 @@
       goalLower.match(/\babout\s+([^.,;\n]+)/i);
     if (subjectMatch && subjectMatch[1]) {
       var subject = sanitizeWorkflowBriefTopicCandidate(String(subjectMatch[1] || "").trim());
-      if (subject) {
+      if (subject && !isWorkflowBriefPlaceholderTopic(subject)) {
         out.topic = subject;
         out.workshop_subject = subject; // Backward-compatible alias for older domain configs.
+      }
+    }
+    if (!out.topic || isWorkflowBriefPlaceholderTopic(out.topic)) {
+      var uploadTopic =
+        extractSemanticTopicFromUploadMaterialText(inputs) ||
+        extractSemanticTopicFromUploadMaterialText(goal);
+      if (uploadTopic) {
+        out.topic = uploadTopic;
+        out.workshop_subject = uploadTopic;
       }
     }
     if (!out.topic) {
@@ -17918,8 +18378,17 @@
     return p && typeof p.body === "string" ? String(p.body || "").trim() : "";
   }
 
-  function resolveStepPromptText(step) {
+  function resolveStepPromptText(step, wf) {
     var sourceType = getStepPromptSourceType(step);
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    if (!wfRec && state.selectedWorkflowId) {
+      wfRec = findWorkflowById(state.selectedWorkflowId);
+    }
+    function finalizePromptBody(body) {
+      var raw = String(body || "").trim();
+      if (!raw) return "";
+      return applyWorkflowStepRuntimePromptAugmentations(raw, step, wfRec, {});
+    }
     if (sourceType === "local_override") {
       var body = String(
         (step && (step.override_prompt_body || step.overridePromptBody)) || ""
@@ -17931,7 +18400,7 @@
           error: "Local override selected, but prompt body is empty."
         };
       }
-      return { sourceType: sourceType, text: body, error: "" };
+      return { sourceType: sourceType, text: finalizePromptBody(body), error: "" };
     }
     if (sourceType === "library_prompt") {
       var libraryBody = resolveLibraryPromptBody(step && step.promptId);
@@ -17942,7 +18411,11 @@
           error: "Library prompt selected, but prompt body could not be resolved."
         };
       }
-      return { sourceType: sourceType, text: libraryBody, error: "" };
+      return {
+        sourceType: sourceType,
+        text: finalizePromptBody(libraryBody),
+        error: ""
+      };
     }
     return {
       sourceType: "none",
@@ -19433,7 +19906,9 @@
       lines.push(visibleNotes);
     }
 
-    var resolvedPrompt = resolveStepPromptText(step);
+    var wfForPrompt =
+      state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var resolvedPrompt = resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
     if (!promptBody && !step.notes) {
       // Not enough information to be useful.
@@ -29851,6 +30326,11 @@
       applyPedagogicCognitionContractScaffoldToDraft;
     prismTestApi.applySelfDirectedLearnerPageStepScaffoldsToDraft =
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
+    prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
+      applyWorkflowStepRuntimePromptAugmentations;
+    prismTestApi.buildWorkflowStepPromptAugmentContextFromStep =
+      buildWorkflowStepPromptAugmentContextFromStep;
+    prismTestApi.resolveStepPromptText = resolveStepPromptText;
     prismTestApi.utilityNormalizeEmbeddedListItemText = utilityNormalizeEmbeddedListItemText;
     prismTestApi.evaluateTableRowAdequacyForLearnerTask = evaluateTableRowAdequacyForLearnerTask;
     prismTestApi.evaluateSelfDirectedSourceReadingSufficiency =
@@ -29858,6 +30338,10 @@
     prismTestApi.utilityMaterialHeadingRedundantWithInner = utilityMaterialHeadingRedundantWithInner;
     prismTestApi.evaluateSelfDirectedDlaActivityFramingCoverage =
       evaluateSelfDirectedDlaActivityFramingCoverage;
+    prismTestApi.learnerTaskRequiresChronologicalOrdering =
+      learnerTaskRequiresChronologicalOrdering;
+    prismTestApi.evaluateTimelineSequencingMaterialAlignment =
+      evaluateTimelineSequencingMaterialAlignment;
     prismTestApi.mergeSelfDirectedActivityFramingFieldsIntoPageActivities =
       mergeSelfDirectedActivityFramingFieldsIntoPageActivities;
     prismTestApi.isWorkflowStepDesignPage = isWorkflowStepDesignPage;

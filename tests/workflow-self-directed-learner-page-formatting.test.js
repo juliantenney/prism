@@ -192,6 +192,114 @@ test("renderer: generic Text heading suppressed when inner util-card-subheading 
   );
 });
 
+const MARX_ORDERING_TASK =
+  "Arrange the key life events in chronological order in the timeline table.";
+
+const MARX_CHRONO_EVENT_LIST = [
+  "1818 — Born in Trier",
+  "1835–1841 — University years in Bonn and Berlin",
+  "1842–1843 — Journalism in Cologne",
+  "1843–1845 — Paris exile begins",
+  "1848 — Communist Manifesto published",
+  "1849 — Continued political exile",
+  "1867 — Das Kapital Vol. 1 published",
+  "1883 — Death in London"
+].join("\n");
+
+const MARX_MIXED_EVENT_LIST = [
+  "1848 — Communist Manifesto published",
+  "1818 — Born in Trier",
+  "1883 — Death in London",
+  "1835–1841 — University years in Bonn and Berlin",
+  "1867 — Das Kapital Vol. 1 published",
+  "1842–1843 — Journalism in Cologne",
+  "1849 — Continued political exile"
+].join("\n");
+
+test("learnerTaskRequiresChronologicalOrdering: Marx arrange task requires ordering", () => {
+  assert.equal(api.learnerTaskRequiresChronologicalOrdering(MARX_ORDERING_TASK), true);
+  assert.equal(
+    api.learnerTaskRequiresChronologicalOrdering(
+      "Read the key life events and explain which phase most shaped Marx's critique of capitalism."
+    ),
+    false
+  );
+});
+
+test("evaluateTimelineSequencingMaterialAlignment: chronological source fails ordering task", () => {
+  const bad = api.evaluateTimelineSequencingMaterialAlignment({
+    activity_id: "A1",
+    learner_task: MARX_ORDERING_TASK,
+    materials: {
+      text: { heading: "Key Life Events", content: MARX_CHRONO_EVENT_LIST }
+    }
+  });
+  assert.equal(bad.requiresOrdering, true);
+  assert.equal(bad.chronologicallyOrdered, true);
+  assert.equal(bad.aligned, false);
+});
+
+test("evaluateTimelineSequencingMaterialAlignment: mixed-order source passes ordering task", () => {
+  const good = api.evaluateTimelineSequencingMaterialAlignment({
+    activity_id: "A1",
+    learner_task: MARX_ORDERING_TASK,
+    materials: {
+      text: { heading: "Key Life Events", content: MARX_MIXED_EVENT_LIST }
+    }
+  });
+  assert.equal(good.requiresOrdering, true);
+  assert.equal(good.chronologicallyOrdered, false);
+  assert.equal(good.aligned, true);
+});
+
+test("evaluateTimelineSequencingMaterialAlignment: chronological source allowed for interpretation task", () => {
+  const ok = api.evaluateTimelineSequencingMaterialAlignment({
+    activity_id: "A1",
+    learner_task:
+      "Read the key life events below and explain which phase most influenced Marx's later economic analysis.",
+    materials: {
+      text: { heading: "Key Life Events", content: MARX_CHRONO_EVENT_LIST }
+    }
+  });
+  assert.equal(ok.requiresOrdering, false);
+  assert.equal(ok.aligned, true);
+});
+
+test("DLA prompt: timeline sequencing alignment scaffold for self-directed learner page", () => {
+  const resolved = marxResolvedFactors();
+  const ctx = {
+    workflowGoal: MARX_BRIEF.goal,
+    desiredOutputs: MARX_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities",
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+    "Design executable learning activities.\n",
+    ctx
+  );
+  assert.match(prompt, /timeline sequencing alignment \(auto-applied\)/i);
+  assert.match(prompt, /must not already be in chronological order/i);
+  assert.match(prompt, /unordered event list for learner sequencing/i);
+});
+
+test("GAM prompt: timeline sequencing alignment scaffold for self-directed learner page", () => {
+  const resolved = marxResolvedFactors();
+  const ctx = {
+    workflowGoal: MARX_BRIEF.goal,
+    desiredOutputs: MARX_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Generate Activity Materials",
+    stepCanonicalStepId: "step_generate_activity_materials",
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+    "Generate activity materials.\n",
+    ctx
+  );
+  assert.match(prompt, /timeline sequencing alignment \(auto-applied\)/i);
+  assert.match(prompt, /deliberately mixed or non-chronological order/i);
+});
+
 test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {
   const resolved = marxResolvedFactors();
   resolved.delivery_context = "in_person";
@@ -209,4 +317,5 @@ test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {
   );
   assert.doesNotMatch(prompt, /table row adequacy \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /reading sufficiency \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /timeline sequencing alignment \(auto-applied\)/i);
 });

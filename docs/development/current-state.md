@@ -71,9 +71,21 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Tests:** `tests/utility-self-directed-activity-framing.test.js`, `tests/workflow-self-directed-activity-framing-adoption.test.js`
 
-**Adoption fix:** DLA OUTPUT CONTRACT override + Design Page field preservation + upstream framing merge on compose (`hotfix-self-directed-activity-framing-adoption.md`).
+**Adoption fix (2026-05-21, strengthened):** Domain DLA/Design Page Output bullets aligned with runtime OUTPUT CONTRACT + JSON example; Output-section pointer; goal-text gate fallback when `delivery_context` unset; merge on compose without cognition pack. **Runtime fix:** `resolveStepPromptText` / `buildWorkflowStepInstructions` now apply the same augmentations as Prompt Factory prefill (library/local prompts were previously un-augmented at run time). See `hotfix-self-directed-activity-framing-adoption.md`.
 
 **Test floor:** **389** passing (after adoption tests).
+
+---
+
+### Brief learner-resource defaults hotfix (**complete**, 2026-05-21)
+
+**Doc:** [`hotfix-brief-learner-resource-defaults.md`](hotfix-brief-learner-resource-defaults.md)
+
+**Outcome:** Self-study / transcript / learner-page briefs resolve to `self_directed` + `async` + `mostly_online` (not `face_to_face` / `classroom`); facilitated workshop briefs keep in-person/classroom defaults; placeholder topics like “the uploaded transcript” yield source-derived subjects when available.
+
+**Tests:** `tests/workflow-brief-learner-resource-defaults.test.js`
+
+**Test floor:** **430** passing.
 
 ---
 
@@ -83,9 +95,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Outcome:** Learning Purpose list items no longer show literal `- ` prefixes (renderer normalisation); GAM prompts require adequate table rows and substantial readings for self-directed pages; generic material headings (`Text`, `Support Text`, …) suppress when a clearer inner title exists.
 
+**Timeline ordering (2026-05-21):** DLA/GAM **timeline sequencing alignment** scaffold — when `learner_task` requires chronological ordering, source event lists must be mixed/non-chronological; interpretation tasks may use chronological reference text. See [`hotfix-marx-self-study-design-quality-investigation.md`](hotfix-marx-self-study-design-quality-investigation.md).
+
 **Tests:** `tests/workflow-self-directed-learner-page-formatting.test.js`
 
-**Test floor:** **397** passing.
+**Test floor:** **430** passing.
 
 ---
 
@@ -109,7 +123,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Tests:** `tests/utility-renderer-kitchen-sink.test.js` (32 tests)
 
-**Test floor:** **415** passing.
+**Test floor:** **430** passing.
 
 ---
 

@@ -59,6 +59,6 @@
     "assessment_required": true,
     "assessment_type": "mcq",
     "page_profile": "learner",
-    "learning_environments": ["vle"]
+    "learning_environments": ["classroom", "vle"]
   }
 }

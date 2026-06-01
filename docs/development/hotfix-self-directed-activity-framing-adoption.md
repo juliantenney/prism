@@ -1,57 +1,63 @@
-# Self-directed activity framing — weak adoption investigation
+# Self-directed activity framing — adoption investigation (Sprint 28 stabilisation)
 
 **Date:** 2026-05-21  
-**Symptom:** Marx self-study pages improved structurally but activities still lack `activity_preamble`, cognition cues, and smooth orientation despite renderer + DLA scaffold existing.
+**Symptom:** Kitchen-sink and renderer tests prove cognition/framing fields render when present, but ordinary Marx-style self-directed learner-page workflows still omit `activity_preamble`, `self_explanation_prompt`, `transfer_or_application_task`, and `scaffold_hint_sequence` in generated JSON.
 
 ---
 
-## Root cause (where adoption fails)
+## Investigation summary
 
-| Layer | Finding |
-|-------|---------|
-| **1. DLA prompt reaches scaffold?** | **Yes** — `applySelfDirectedLearnerPageStepScaffoldsToDraft` runs after pack template assembly for Design Learning Activities. |
-| **2. Scaffold too weak?** | **Yes — primary cause.** Append-only guidance at the **end** of a long prompt loses to the pack **Output** section, which lists a **closed activity schema** (`activity_id`, `learner_task`, `facilitator_moves`, …) with **no** `activity_preamble` or cognition fields. Models treat Output as authoritative. |
-| **3. Downstream stripping?** | **No code strip** in GAM. **Design Page** predictable-keys guidance omits framing fields → LLM composition often drops them even when DLA emitted them. |
-| **4. Schema/examples bias?** | **Yes** — domain `promptTemplate` Output bullets overpower optional appendices. `defaultPromptNotes` mention self-directed tasks but not preamble/cognition JSON keys. |
-| **5. Few-shot / canonical shapes?** | **Implicit** — closed Output list acts as a few-shot schema. |
-| **6. GAM** | **Preserves** activity objects; does not remove unknown fields if present in `learning_activities` input. |
-| **7. Design Page** | **Weak preservation** — composition prompt lists `purpose`, `learner_instructions` but not `activity_preamble` / cognition fields. |
-| **8. Field name mismatch?** | **No** — names align (`activity_preamble`, `self_explanation_prompt`, etc.). Issue is **non-emission**, not aliasing. |
-| **9. Sprint 28 cognition pack** | **Inactive** on ordinary Marx briefs → `Pedagogic cognition contract` block never appends; cognition fields not required by pack contract. |
+| # | Question | Finding |
+|---|----------|---------|
+| 1 | Is the framing output contract in the live DLA prompt? | **Yes, when gates fire** — `applySelfDirectedLearnerPageStepScaffoldsToDraft` runs at the end of `buildWorkflowStepPrompt` (line ~5096). |
+| 2 | Overridden by pack schemas/examples? | **Yes — primary emission failure.** Domain DLA `promptTemplate` Output listed a **closed** activity schema (`activity_id` … `facilitator_moves`) with no preamble/cognition keys. Models treat Output as authoritative over append-only notes. |
+| 3 | Emitted by DLA but dropped before Design Page? | **Sometimes.** No code strip in GAM. Design Page composition often omits fields not named in its predictable-keys list. |
+| 4 | Does Design Page preserve when present? | **Weak without scaffold** — pack `defaultPromptNotes` listed `purpose` / `learner_instructions` but not framing fields. Runtime preservation block + merge pass address this. |
+| 5 | Field name mismatch? | **No** — DLA, page JSON, and renderer share the same keys. |
+| 6 | Cognition packs inactive? | **Yes on ordinary Marx briefs** — `Pedagogic cognition contract` does not append; framing must apply **independently** via self-directed learner-page scaffolds and merge, not pack contract. |
+| 7 | Examples too procedural? | **Yes** — closed Output bullets + facilitator_moves emphasis steer models toward `learner_task` / `required_materials` only. |
 
-**Adoption failure occurs primarily at DLA generation** (schema override), secondarily at **Design Page composition** (field omission).
+**Adoption failure location:** primarily **DLA generation** (schema conflict), secondarily **Design Page composition** (field omission). Renderer and page assembly merge are not the bottleneck once fields exist upstream.
 
----
+### Second pass (live Marx runs still procedural)
 
-## Bounded fix applied
+**Symptom:** Latest Marx `learning_activities` JSON still has `facilitator_moves`, `failure_mode`, and `learner_task` only — no `activity_preamble` or cognition cues.
 
-1. **`OUTPUT CONTRACT (self-directed learner page — overrides…)`** appended to DLA prompts — explicitly requires `activity_preamble` and selective cognition fields with minimum coverage.
-2. **Stronger activity framing block** — minimum preamble on all activities; cognition cues on ≥50% of activities.
-3. **`applySelfDirectedLearnerPageStepScaffoldsToDraft`** — consolidates material-shape + framing + output override (DLA) + Design Page field preservation.
-4. **Design Page gate fix** — field-preservation scaffold was incorrectly gated only on the DLA step (`shouldApplySelfDirectedLearnerPageMaterialShapeScaffold`); Design Page now uses `shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold` with the same self-directed + learner-page signals.
-4. **`mergeSelfDirectedActivityFramingFieldsIntoPageActivities`** — copies framing/cognition fields from upstream `learning_activities` onto composed page rows when Design Page drops them (no invented prose).
-5. **Framing merge runs even when cognition packs are inactive** — ordinary self-directed workflows benefit without `cognitive_engagement_required`.
+**Real root cause:** Runtime workflow execution uses `resolveStepPromptText(step)` → `buildWorkflowStepInstructions`, which returned **library/local override prompt bodies verbatim**. Self-directed OUTPUT CONTRACT blocks were only appended in **Prompt Factory prefill** (`applyWorkflowStepPromptDefaults`), not on the prompt actually sent to the model during **Run**. Saved library prompts therefore never received the adoption fix.
+
+**Why the first fix was insufficient:** It strengthened domain templates and Prompt Factory draft assembly but did not wire the same augmentations into the **run-time prompt resolution path**. Local override early-return in prefill also skipped scaffolds entirely.
 
 ---
 
-## Why this fix is sufficient
+## Changes (stabilisation, not new features)
 
-- Targets the **authoritative Output schema** conflict (main generator failure).
-- Adds **downstream safety net** without redesigning architecture or renderer invention.
-- Keeps cognition surfacing **lightweight** (selective fields, concise strings) per product constraints.
+1. **Domain pack alignment** — DLA Output bullets and `defaultPromptNotes` now name `activity_preamble` and optional cognition fields; Design Page predictable-keys list updated likewise.
+2. **Stronger runtime DLA contract** — `OUTPUT CONTRACT` block + **concrete JSON example**; pointer injected immediately under `Output:` so it precedes model attention on the closed schema list.
+3. **Gate robustness** — self-directed detection also matches goal/inputs text when `delivery_context` is not yet resolved on the workflow record.
+4. **Design Page preservation** — explicit copy-verbatim scaffold (unchanged intent, clarified `learner_task` / `learner_instructions`).
+5. **Downstream merge** — `mergeSelfDirectedActivityFramingFieldsIntoPageActivities` inside `applyPedagogicCognitionSemanticsToComposedPage` runs even when cognition packs are inactive.
+
+6. **Runtime prompt augmentations (2026-05-21)** — `applyWorkflowStepRuntimePromptAugmentations` applied in `resolveStepPromptText` (library + local override) and `buildWorkflowStepInstructions`; local override prefill also augmented before save. OUTPUT CONTRACT + example + `facilitator_moves`/`failure_mode` omit guidance for self-directed learner pages.
 
 ---
 
-## Remaining limits / risks
+## Why this is stabilisation
 
-- **LLM compliance** — override reduces but does not eliminate model drift; regeneration may still occasionally omit fields.
-- **Pack template edits** — runtime append overrides domain JSON; long-term alignment may still need domain-pack Output bullet updates (out of scope here).
-- **GAM** — does not add preamble; still depends on DLA emitting fields first.
-- **Heuristic validation** — `evaluateSelfDirectedDlaActivityFramingCoverage` is for tests/monitoring, not runtime blocking of step output.
+- Uses **existing** Sprint 28 field names and renderer blocks only.
+- No new workflow steps, cognition packs, or renderer-invented prose.
+- Fixes **prompt authority** and **preservation** so the pipeline emits what the renderer already supports.
+
+---
+
+## Remaining limits
+
+- LLM compliance is improved, not guaranteed; occasional omission may still require regeneration.
+- Long-term: domain pack templates and few-shot examples should stay aligned with runtime contracts (bounded pack edits started here).
+- GAM does not author preambles; DLA must emit them first.
 
 ---
 
 ## Tests
 
 - `tests/workflow-self-directed-activity-framing-adoption.test.js`
-- `tests/utility-self-directed-activity-framing.test.js` (updated for full DLA pipeline)
+- `tests/utility-self-directed-activity-framing.test.js`

@@ -16,6 +16,19 @@ const ldPatternsPath = path.join(
   "learning-design",
   "domain-learning-design-step-patterns.md"
 );
+const marxProceduralDlaPath = path.join(
+  repoRoot,
+  "tests",
+  "fixtures",
+  "workflow-brief",
+  "marx-dla-procedural-output.json"
+);
+const LEGACY_DLA_LIBRARY_PROMPT =
+  "Context:\nDesign executable learning_activities.\n\nInstructions:\n" +
+  "- Every activity must include learner_task and expected_output\n" +
+  "- Every activity must include facilitator_moves\n\nOutput:\n" +
+  "- Return JSON with activities array\n" +
+  "- Each activity includes activity_id, title, learner_task, expected_output, facilitator_moves\n";
 
 const MARX_SELF_STUDY_BRIEF = {
   goal:
@@ -76,9 +89,14 @@ function marxResolvedFactors() {
   ).resolved;
 }
 
-test("DLA prompt pipeline: output contract override reaches final prompt", () => {
+test("Marx self-study brief: inferred factors trigger DLA framing without manual overrides", () => {
   const resolved = marxResolvedFactors();
-  resolved.session_materials = ["page"];
+  assert.equal(resolved.delivery_context, "self_directed");
+  const sessionMats = resolved.session_materials;
+  const hasPage = Array.isArray(sessionMats)
+    ? sessionMats.map((x) => String(x).toLowerCase()).includes("page")
+    : String(sessionMats || "").toLowerCase().includes("page");
+  assert.ok(hasPage, "expected session_materials to include page from brief inference");
   const prompt = applyDlaPromptPipeline("Design executable learning activities.\n", {
     workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
     desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
@@ -89,6 +107,55 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
   assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.match(
+    prompt,
+    /For self-directed learner-page workflows, each activity MUST also include activity_preamble/i
+  );
+  assert.match(prompt, /self-directed activity json example \(authoritative shape/i);
+});
+
+test("DLA prompt pipeline: output contract override reaches final prompt", () => {
+  const resolved = marxResolvedFactors();
+  const prompt = applyDlaPromptPipeline("Design executable learning activities.\n", {
+    workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
+    desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities"
+  }, resolved);
+  assert.match(prompt, /output contract \(self-directed learner page/i);
+  assert.match(prompt, /each activity object must include activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt: at least two activities/i);
+  assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+});
+
+test("facilitated workshop brief: DLA prompt does not include self-directed output contract", () => {
+  const brief = {
+    goal: "Design a 90-minute facilitated workshop on team communication for nursing students.",
+    inputs: "Face-to-face classroom with tutor facilitation",
+    desiredOutputs: "Facilitator guide and slide deck",
+    selectedDomains: ["learning-design"]
+  };
+  const explicit = api.extractWorkflowBriefExplicitFactors(brief);
+  const inferred = api.applyWorkflowBriefInferenceRules(
+    ldBriefConfig,
+    brief.goal,
+    brief.inputs
+  );
+  const { resolved } = api.resolveWorkflowBriefFactors(
+    ldBriefConfig,
+    explicit,
+    {},
+    inferred,
+    brief
+  );
+  const prompt = applyDlaPromptPipeline("Design executable learning activities.\n", {
+    workflowGoal: brief.goal,
+    desiredOutputs: brief.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities"
+  }, resolved);
+  assert.doesNotMatch(prompt, /output contract \(self-directed learner page/i);
+  assert.doesNotMatch(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
 });
 
 test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
@@ -212,6 +279,72 @@ test("downstream: applyPedagogicCognitionSemanticsToComposedPage merges framing 
     String(out.sections[0].content[0].activity_preamble || ""),
     /Orienting preamble from DLA/
   );
+});
+
+test("runtime resolveStepPromptText: legacy library prompt receives self-directed output contract", () => {
+  const resolved = marxResolvedFactors();
+  const wf = {
+    id: "wf-marx-self-study",
+    name: "Marx self-study page",
+    workflowOutputSpec: {
+      goal: MARX_SELF_STUDY_BRIEF.goal,
+      desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs
+    },
+    workflowOutputs: ["Learner-facing page"],
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  api.setPromptsForTest([
+    { id: "legacy-dla", title: "Legacy DLA", body: LEGACY_DLA_LIBRARY_PROMPT }
+  ]);
+  const step = {
+    title: "Design Learning Activities",
+    canonical_step_id: "step_design_learning_activities",
+    outputName: "learning_activities",
+    prompt_source_type: "library_prompt",
+    promptId: "legacy-dla"
+  };
+  const resolvedPrompt = api.resolveStepPromptText(step, wf);
+  assert.equal(resolvedPrompt.error, "");
+  assert.match(resolvedPrompt.text, /output contract \(self-directed learner page/i);
+  assert.match(resolvedPrompt.text, /activity_preamble/i);
+  assert.match(resolvedPrompt.text, /facilitator_moves: omit for self-directed/i);
+});
+
+test("runtime buildWorkflowStepInstructions: Marx DLA run prompt includes framing contract", () => {
+  const resolved = marxResolvedFactors();
+  const wf = {
+    id: "wf-marx-runtime",
+    workflowOutputSpec: {
+      goal: MARX_SELF_STUDY_BRIEF.goal,
+      desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs
+    },
+    workflowOutputs: ["Learner-facing page"],
+    workflowBriefResolution: { resolvedFactors: resolved },
+    steps: []
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setPromptsForTest([
+    { id: "legacy-dla", title: "Legacy DLA", body: LEGACY_DLA_LIBRARY_PROMPT }
+  ]);
+  api.setSelectedWorkflowIdForTest("wf-marx-runtime");
+  const step = {
+    title: "Design Learning Activities",
+    canonical_step_id: "step_design_learning_activities",
+    outputName: "learning_activities",
+    prompt_source_type: "library_prompt",
+    promptId: "legacy-dla"
+  };
+  const instructions = api.buildWorkflowStepInstructions(step, 0, null);
+  assert.match(instructions, /output contract \(self-directed learner page/i);
+  assert.match(instructions, /self-directed activity json example/i);
+});
+
+test("Marx procedural DLA fixture: missing framing fails coverage heuristic", () => {
+  const procedural = JSON.parse(fs.readFileSync(marxProceduralDlaPath, "utf8"));
+  const cov = api.evaluateSelfDirectedDlaActivityFramingCoverage(procedural.activities);
+  assert.equal(cov.meetsPreambleCoverage, false);
+  assert.equal(cov.meetsSelectiveCognitionCoverage, false);
+  assert.ok(cov.preambleCount === 0);
 });
 
 test("renderer: merged framing fields surface in HTML before What to do", () => {

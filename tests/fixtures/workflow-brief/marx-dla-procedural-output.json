@@ -1,0 +1,46 @@
+{
+  "artifact_type": "learning_activities",
+  "title": "Marx self-study activities (procedural — missing framing)",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Key life events timeline",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": ["LO1"],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "template",
+          "purpose": "Timeline scaffold",
+          "specification": "Table with life phases and blank response cells."
+        }
+      ],
+      "learner_task": "Complete the timeline table with four life phases and one idea per phase.",
+      "expected_output": "Completed timeline table.",
+      "failure_mode": "If the learner stalls, offer a worked example for the first row.",
+      "facilitator_moves": "Circulate during minutes 5–15 and prompt learners who leave cells blank."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Compare major works",
+      "grouping": "individual",
+      "duration_minutes": 25,
+      "mapped_learning_outcomes": ["LO2"],
+      "required_materials": [
+        {
+          "material_id": "M2",
+          "type": "text",
+          "purpose": "Orienting extracts",
+          "specification": "Short paired excerpts from the Manifesto and Capital."
+        }
+      ],
+      "learner_task": "Fill the comparison table with purpose and key difference for each work.",
+      "expected_output": "Filled comparison table.",
+      "failure_mode": "If comparison is superficial, ask for one concrete audience difference.",
+      "facilitator_moves": "Debrief in pairs then whole-group share."
+    }
+  ],
+  "outcome_alignment": [],
+  "delivery_notes": "Self-directed page workflow run without activity_preamble or cognition cues."
+}

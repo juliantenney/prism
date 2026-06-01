@@ -17,6 +17,14 @@
 
 **Smallest test-backed fix (applied 2026-05-21):** `applyPedagogicCognitionContractScaffoldToDraft` in `app.js` appends **Self-directed learner-page material shape (auto-applied)** when DLA runs with `delivery_context` `self_directed` / `async` / `online_async` and learner-page output signals. Does **not** add workflow steps, change renderer/Design Page/GAM, or reopen Sprint 29.
 
+### Timeline ordering hotfix (2026-05-21)
+
+**Observed:** Activity A1 asks learners to arrange key life events chronologically, but **Key Life Events** source text lists years already ascending (1818 → … → 1883), so the ordering task is hollow.
+
+**Fix:** **Self-directed timeline sequencing alignment (auto-applied)** on DLA and GAM prompts — mixed-order event lists when `learner_task` requires sequencing; interpretation tasks may keep chronological reference text. Heuristic: `evaluateTimelineSequencingMaterialAlignment` in tests.
+
+**Tests:** `tests/workflow-self-directed-learner-page-formatting.test.js`
+
 ---
 
 ## Evidence map (rendered page)

@@ -67,7 +67,7 @@
     "topic": "climate policy create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
     "workshop_subject": "climate policy create an assessment page with 8 multiple choice questions and model answers with brief feedback for intermediate learners in a classroom workshop lasting 45 minutes",
     "output_depth": "concise",
-    "learning_environments": ["vle"]
+    "learning_environments": ["classroom", "vle"]
   },
   "implementationNote": "Sprint 11 pinning: this intentionally pins current extraction over-capture behaviour for topic/workshop_subject, and intentionally pins current compressed-constraint prefix behaviour including 'critical:'."
 }

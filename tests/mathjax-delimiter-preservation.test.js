@@ -325,3 +325,104 @@ test("export enhancement: non-math export behavior remains stable", () => {
   const enhanced = api.utilityEnhanceExportHtmlWithMathJaxForTest(html);
   assert.equal(enhanced, html);
 });
+
+test("markdown block parser: block math with minus signs is not turned into list items", () => {
+  const { api } = loadPrismTestApi();
+  const md = "\\[ x^2 - 4x - 5 = 0 \\]";
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.match(html, /\\\[ x\^2 - 4x - 5 = 0 \\\]/);
+  assert.doesNotMatch(html, /<li>\s*4x\s*<\/li>/i);
+  assert.doesNotMatch(html, /<li>\s*5 = 0\s*<\/li>/i);
+});
+
+test("markdown block parser: multiline block math with minus signs remains intact", () => {
+  const { api } = loadPrismTestApi();
+  const md = ["\\[", "x^2 - 4x - 5 = 0", "\\]"].join("\n");
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.match(html, /\\\[[\s\S]*x\^2 - 4x - 5 = 0[\s\S]*\\\]/);
+  assert.doesNotMatch(html, /<li>\s*4x\s*<\/li>/i);
+  assert.doesNotMatch(html, /<li>\s*5 = 0\s*<\/li>/i);
+});
+
+test("markdown block parser: quadratic formula block remains preserved", () => {
+  const { api } = loadPrismTestApi();
+  const md = "\\[ x = \\\\frac{-b \\pm \\\\sqrt{b^2 - 4ac}}{2a} \\]";
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.match(html, /\\\[ x = \\\\frac\{-b \\pm \\\\sqrt\{b\^2 - 4ac\}\}\{2a\} \\\]/);
+});
+
+test("markdown block parser: normal bullet lists still work outside math blocks", () => {
+  const { api } = loadPrismTestApi();
+  const md = "- One\n- Two\n- Three";
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.equal((html.match(/<li>/g) || []).length, 3);
+  assert.match(html, /<li>One<\/li>/);
+  assert.match(html, /<li>Two<\/li>/);
+  assert.match(html, /<li>Three<\/li>/);
+});
+
+test("export html: multiline math block does not emit broken list fragments from minus terms", () => {
+  const { api } = loadPrismTestApi();
+  const parsed = {
+    artifact_type: "page",
+    title: "Math export check",
+    page_profile: "learner",
+    sections: [
+      {
+        section_id: "math_check",
+        heading: "Math",
+        content: ["\\[", "x^2 - 4x - 5 = 0", "\\]"].join("\n")
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.doesNotMatch(html, /<ul>[\s\S]*<li>\s*4x\s*<\/li>/i);
+});
+
+test("activity materials regression fixture: M1/M2 strings preserve block math and avoid broken list fragments", () => {
+  const { api } = loadPrismTestApi();
+  const parsed = loadFixture("mathjax-materials-regression-page.json");
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.match(html, /\\\[[\s\S]*x\^2 - 4x - 5 = 0[\s\S]*\\\]/);
+  assert.doesNotMatch(html, /<p>\s*\\\[\s*x\^2\s*<\/p>\s*<ul>/i);
+  assert.doesNotMatch(html, /<li>\s*4x\s*<\/li>/i);
+  assert.doesNotMatch(html, /<li>\s*5\s*=\s*0\s*\\\]\s*<\/li>/i);
+});
+
+test("activity materials regression: markdown heading and inline math underscores are preserved", () => {
+  const { api } = loadPrismTestApi();
+  const parsed = {
+    artifact_type: "page",
+    title: "Math heading/inline regression",
+    page_profile: "learner",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Solutions block",
+            learner_task: "Complete the solutions.",
+            materials: {
+              M1_text: ["#### 5. Solutions", "\\(x_1 =\\) _________", "\\(x_2 =\\) _________"].join("\n")
+            }
+          }
+        ]
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.doesNotMatch(html, /<p>####/i);
+  assert.doesNotMatch(html, /<em>1/i);
+  assert.doesNotMatch(html, /x<em>/i);
+  assert.doesNotMatch(html, /x<\/em>2/i);
+  assert.match(html, /\\\(x_1 =\\\)/);
+  assert.match(html, /\\\(x_2 =\\\)/);
+});

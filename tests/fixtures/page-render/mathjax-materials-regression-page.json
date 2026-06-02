@@ -1,0 +1,22 @@
+{
+  "artifact_type": "page",
+  "title": "MathJax materials regression",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Quadratic practice",
+          "learner_task": "Solve the equation using the worked material.",
+          "materials": {
+            "M1_text": "## Problem\n\\[\nx^2 - 4x - 5 = 0\n\\]",
+            "M2_sample_output": "1. Identify:\n  - \\(a\\)\n  - \\(b\\)\n  - \\(c\\)\n2. Substitute values in the quadratic formula."
+          }
+        }
+      ]
+    }
+  ]
+}

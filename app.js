@@ -23499,6 +23499,11 @@
       blankTokens.push(m);
       return token;
     });
+    var protectedInlineMath = utilityProtectSupportedMathDelimiters(raw, {
+      includeInline: true,
+      includeBlock: false
+    });
+    raw = protectedInlineMath.text;
     var escaped = utilityEscapeHtml(raw);
     escaped = escaped.replace(/`([^`\n]+)`/g, "<code>$1</code>");
     escaped = escaped.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
@@ -23512,7 +23517,7 @@
       var tokenEsc = utilityEscapeHtml("@@PRISMBLANK" + idx + "@@");
       escaped = escaped.replace(new RegExp(tokenEsc, "g"), utilityEscapeHtml(m));
     });
-    return escaped;
+    return utilityRestoreProtectedMathDelimiters(escaped, protectedInlineMath.tokens);
   }
 
   function utilityIsMarkdownTableDivider(line) {
@@ -23559,9 +23564,65 @@
     };
   }
 
+  function utilityProtectSupportedMathDelimiters(text, options) {
+    var raw = String(text == null ? "" : text);
+    if (!raw) return { text: "", tokens: [] };
+    var cfg = options && typeof options === "object" ? options : {};
+    var includeInline = cfg.includeInline !== false;
+    var includeBlock = cfg.includeBlock !== false;
+    var tokens = [];
+    var out = raw;
+    if (includeBlock) {
+      out = out.replace(/\\\[[\s\S]*?\\\]/g, function (m) {
+        var token = "@@PRISMMATHBLOCK" + tokens.length + "@@";
+        tokens.push(String(m == null ? "" : m));
+        return token;
+      });
+    }
+    if (includeInline) {
+      out = out.replace(/\\\([\s\S]*?\\\)/g, function (m) {
+        var token = "@@PRISMMATHINLINE" + tokens.length + "@@";
+        tokens.push(String(m == null ? "" : m));
+        return token;
+      });
+    }
+    return { text: out, tokens: tokens };
+  }
+
+  function utilityRestoreProtectedMathDelimiters(htmlText, tokens) {
+    var htmlOut = String(htmlText == null ? "" : htmlText);
+    var saved = Array.isArray(tokens) ? tokens : [];
+    saved.forEach(function (mathText, idx) {
+      var blockToken = "@@PRISMMATHBLOCK" + idx + "@@";
+      var inlineToken = "@@PRISMMATHINLINE" + idx + "@@";
+      var blockTokenEsc = utilityEscapeHtml(blockToken);
+      var inlineTokenEsc = utilityEscapeHtml(inlineToken);
+      var mathEsc = utilityEscapeHtml(String(mathText == null ? "" : mathText));
+      htmlOut = htmlOut.replace(new RegExp(blockTokenEsc, "g"), mathEsc);
+      htmlOut = htmlOut.replace(new RegExp(inlineTokenEsc, "g"), mathEsc);
+      htmlOut = htmlOut.replace(new RegExp(blockToken, "g"), mathEsc);
+      htmlOut = htmlOut.replace(new RegExp(inlineToken, "g"), mathEsc);
+    });
+    return htmlOut;
+  }
+
+  function utilityProtectSupportedMathBlocks(text) {
+    var result = utilityProtectSupportedMathDelimiters(text, {
+      includeInline: false,
+      includeBlock: true
+    });
+    return { text: result.text, blocks: result.tokens };
+  }
+
+  function utilityRestoreProtectedMathBlocks(htmlText, blocks) {
+    return utilityRestoreProtectedMathDelimiters(htmlText, blocks);
+  }
+
   function utilityRenderMarkdownBlock(text) {
     var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n").trim();
     if (!raw) return "";
+    var protectedMath = utilityProtectSupportedMathBlocks(raw);
+    raw = protectedMath.text;
     var bulletLineRe = /^[-*•]\s+(.+)$/;
     function renderParagraphWithInlineBullets(joined) {
       var rawJoin = String(joined == null ? "" : joined);
@@ -23703,14 +23764,34 @@
       if (orderedMatch) {
         var olItems = [];
         while (i < lines.length) {
-          var ol = String(lines[i] || "").trim().match(/^\d+[\)\.]\s+(.+)$/);
+          var orderedRawLine = String(lines[i] || "");
+          var ol = orderedRawLine.trim().match(/^\d+[\)\.]\s+(.+)$/);
           if (!ol) break;
-          olItems.push(
-            "<li>" +
-              utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(ol[1])) +
-              "</li>"
-          );
+          var itemBodyHtml =
+            utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(ol[1]));
           i += 1;
+          var nestedUlItems = [];
+          while (i < lines.length) {
+            var nestedRaw = String(lines[i] || "");
+            var nestedTrimmed = nestedRaw.trim();
+            if (!nestedTrimmed) {
+              i += 1;
+              break;
+            }
+            if (/^\d+[\)\.]\s+/.test(nestedTrimmed)) break;
+            var nestedBullet = nestedRaw.match(/^\s{2,}[-*•]\s+(.+)$/);
+            if (!nestedBullet) break;
+            nestedUlItems.push(
+              "<li>" +
+                utilityRenderMarkdownInline(
+                  utilityNormalizeEmbeddedListItemText(String(nestedBullet[1] || "").trim())
+                ) +
+                "</li>"
+            );
+            i += 1;
+          }
+          if (nestedUlItems.length) itemBodyHtml += "<ul>" + nestedUlItems.join("") + "</ul>";
+          olItems.push("<li>" + itemBodyHtml + "</li>");
         }
         parts.push("<ol>" + olItems.join("") + "</ol>");
         continue;
@@ -23730,7 +23811,7 @@
       }
       parts.push(renderParagraphWithInlineBullets(paraLines.join(" ")));
     }
-    return parts.join("");
+    return utilityRestoreProtectedMathBlocks(parts.join(""), protectedMath.blocks);
   }
 
   function utilityIsPrimitiveOnlyArray(values) {
@@ -26476,6 +26557,11 @@
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
             var text = utilityNormalizeTemplateSeparatorArtefacts(rawText).replace(/\r\n?/g, "\n").trim();
             if (!text) return "";
+            var protectedMath = utilityProtectSupportedMathBlocks(text);
+            text = protectedMath.text;
+            function finalizeRenderedHtml(htmlFragment) {
+              return utilityRestoreProtectedMathBlocks(htmlFragment, protectedMath.blocks);
+            }
             text = text.replace(/:\s+-\s+/g, ":\n- ");
             function splitMarkdownTableRow(line) {
               var raw = String(line == null ? "" : line).trim();
@@ -26521,6 +26607,7 @@
             function renderInlineBulletRun(blockText) {
               var raw = String(blockText == null ? "" : blockText).trim();
               if (!raw || raw.indexOf(" - ") === -1) return "";
+              if (/@@PRISMMATHBLOCK\d+@@/.test(raw)) return "";
               function isPlaceholderOnly(textLine) {
                 var t = String(textLine == null ? "" : textLine).trim();
                 if (!t) return true;
@@ -26595,8 +26682,8 @@
             }
             function cleanResidualHeadingMarkers(s) {
               return String(s == null ? "" : s)
-                .replace(/^\s*#{1,3}\s+/gm, "")
-                .replace(/\s+#{1,3}\s+/g, " ")
+                .replace(/^\s*#{1,4}\s+/gm, "")
+                .replace(/\s+#{1,4}\s+/g, " ")
                 .trim();
             }
             function splitInlineDashPromptItems(lineText) {
@@ -26680,6 +26767,12 @@
                     if (heading3.tail) wsParts.push("<p>" + utilityRenderMarkdownInline(heading3.tail) + "</p>");
                     return;
                   }
+                  var heading4 = parseHeadingWithTail(lnNoBullet, "####");
+                  if (heading4 && heading4.heading) {
+                    wsParts.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(heading4.heading) + "</h5>");
+                    if (heading4.tail) wsParts.push("<p>" + utilityRenderMarkdownInline(heading4.tail) + "</p>");
+                    return;
+                  }
                   var heading2 = parseHeadingWithTail(lnNoBullet, "##");
                   if (heading2 && heading2.heading) {
                     wsParts.push('<h4 class="util-card-subheading">' + utilityRenderMarkdownInline(heading2.heading) + "</h4>");
@@ -26717,15 +26810,17 @@
                   return;
                 }
               }
-              if (trimmedLines.length >= 1 && /^(###|##)\s+/.test(trimmedLines[0])) {
-                var firstHeading = /^###\s+/.test(trimmedLines[0])
+              if (trimmedLines.length >= 1 && /^(####|###|##)\s+/.test(trimmedLines[0])) {
+                var firstHeading = /^####\s+/.test(trimmedLines[0])
+                  ? parseHeadingWithTail(trimmedLines[0], "####")
+                  : /^###\s+/.test(trimmedLines[0])
                   ? parseHeadingWithTail(trimmedLines[0], "###")
                   : parseHeadingWithTail(trimmedLines[0], "##");
                 if (firstHeading && firstHeading.heading) {
                   html.push(
-                    (/^###\s+/.test(trimmedLines[0]) ? '<h5 class="util-card-subheading">' : '<h4 class="util-card-subheading">') +
+                    (/^(####|###)\s+/.test(trimmedLines[0]) ? '<h5 class="util-card-subheading">' : '<h4 class="util-card-subheading">') +
                     utilityRenderMarkdownInline(firstHeading.heading) +
-                    (/^###\s+/.test(trimmedLines[0]) ? "</h5>" : "</h4>")
+                    (/^(####|###)\s+/.test(trimmedLines[0]) ? "</h5>" : "</h4>")
                   );
                   if (firstHeading.tail) html.push("<p>" + utilityRenderMarkdownInline(firstHeading.tail) + "</p>");
                 }
@@ -26741,6 +26836,22 @@
                 var listOpen = false;
                 var checkboxOpen = false;
                 bulletLines.forEach(function (b) {
+                  var headingBullet4 = String(b || "").match(/^####\s+(.+)$/);
+                  if (headingBullet4) {
+                    if (checkboxOpen) {
+                      grouped.push("</ul>");
+                      checkboxOpen = false;
+                    }
+                    if (listOpen) {
+                      grouped.push("</ul>");
+                      listOpen = false;
+                    }
+                    var hb4 = cleanResidualHeadingMarkers(String(headingBullet4[1] || "").trim());
+                    var hb4Split = hb4.match(/^(.{1,120}?)\s+((?:Consider|Use|Then|Next|Now|After|Before|Review|Discuss|Complete|Answer|Write|Reflect|Identify|Apply)\b.*)$/);
+                    grouped.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(hb4Split ? hb4Split[1] : hb4) + "</h5>");
+                    if (hb4Split && hb4Split[2]) grouped.push("<p>" + utilityRenderMarkdownInline(hb4Split[2]) + "</p>");
+                    return;
+                  }
                   var headingBullet3 = String(b || "").match(/^###\s+(.+)$/);
                   if (headingBullet3) {
                     if (checkboxOpen) {
@@ -26837,6 +26948,12 @@
                 if (listOpen) grouped.push("</ul>");
                 if (checkboxOpen) grouped.push("</ul>");
                 html.push(grouped.join(""));
+              } else if (trimmedLines.length === 1 && /^####\s+/.test(trimmedLines[0])) {
+                var h4Split = parseHeadingWithTail(trimmedLines[0], "####");
+                if (h4Split && h4Split.heading) {
+                  html.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(h4Split.heading) + "</h5>");
+                  if (h4Split.tail) html.push("<p>" + utilityRenderMarkdownInline(h4Split.tail) + "</p>");
+                }
               } else if (trimmedLines.length === 1 && /^###\s+/.test(trimmedLines[0])) {
                 var h3Split = parseHeadingWithTail(trimmedLines[0], "###");
                 if (h3Split && h3Split.heading) {
@@ -26885,7 +27002,7 @@
               var headingPattern = new RegExp("^\\s*<h[45][^>]*>\\s*" + headingTextEscaped + "\\s*<\\/h[45]>\\s*", "i");
               built = built.replace(headingPattern, "");
             }
-            return built;
+            return finalizeRenderedHtml(built);
           }
           function renderColumnRowsTable(tableObj) {
             if (!tableObj || typeof tableObj !== "object" || Array.isArray(tableObj)) return "";

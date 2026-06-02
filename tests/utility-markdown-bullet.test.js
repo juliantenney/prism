@@ -148,6 +148,23 @@ test("utilityRenderMarkdownBlock: CR-only newlines still produce ul/li for bulle
   assert.equal((html.match(/<li>/g) || []).length, 3);
 });
 
+test("utilityRenderMarkdownBlock: ordered item keeps indented bullets nested", () => {
+  const { api } = loadPrismTestApi();
+  const md = [
+    "1. Identify:",
+    "  - \\(a\\)",
+    "  - \\(b\\)",
+    "  - \\(c\\)",
+    "2. Substitute values in the quadratic formula."
+  ].join("\n");
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.match(
+    html,
+    /<ol><li>Identify:<ul><li>\\\(a\\\)<\/li><li>\\\(b\\\)<\/li><li>\\\(c\\\)<\/li><\/ul><\/li><li>Substitute values in the quadratic formula\.<\/li><\/ol>/
+  );
+  assert.doesNotMatch(html, /<\/ol>\s*<ul>/);
+});
+
 test("buildUtilityStructuredHtml: materials content with newline • bullets yields ul/li (Research-style Key Findings text)", () => {
   const { api } = loadPrismTestApi();
   const keyFindingsBody =

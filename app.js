@@ -6814,6 +6814,24 @@
     );
   }
 
+  function isWorkflowStepAssessmentProducer(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_generate_assessment_items" ||
+      canonicalId === "step_design_feedback" ||
+      canonicalId === "step_design_marking_rubric" ||
+      title === "generate assessment items" ||
+      title === "design feedback" ||
+      title === "design marking rubric" ||
+      title.indexOf("generate assessment item") !== -1 ||
+      title.indexOf("design feedback") !== -1 ||
+      title.indexOf("marking rubric") !== -1
+    );
+  }
+
   function resolvePedagogicCognitionContractRequirements(activePacks, resolved, explicit, config, base) {
     var packs = Array.isArray(activePacks) ? activePacks.slice() : [];
     if (!packs.length) {
@@ -7193,6 +7211,32 @@
       sourceText: sourceText,
       yearCount: years.length
     };
+  }
+
+  function buildMathSafeOutputContractPromptBlock() {
+    return [
+      "",
+      "Math notation output contract (auto-applied):",
+      "- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options, worked examples, or composed page content, emit renderer-supported TeX delimiters only.",
+      "- Inline maths: use \\(...\\) (for example \\(x^2 + y^2\\)).",
+      "- Display/block equations: use \\[...\\] on their own line where block layout is intended.",
+      "- Do NOT use $...$ or $$...$$ delimiters.",
+      "- Do NOT wrap equations in code spans, code fences, or backtick markdown.",
+      "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
+      "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
+      "- Preserve existing limited Markdown subset rules; math delimiters are additive to those rules."
+    ].join("\n");
+  }
+
+  function applyMathSafeOutputContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isDesignPage = isWorkflowStepDesignPage(context);
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    var isAssessmentProducer = isWorkflowStepAssessmentProducer(context);
+    if (!isDla && !isDesignPage && !isGam && !isAssessmentProducer) return draftBody;
+    if (/math notation output contract \(auto-applied\)/i.test(draftBody)) return draftBody;
+    return (draftBody + buildMathSafeOutputContractPromptBlock()).trim();
   }
 
   function buildSelfDirectedTimelineSequencingAlignmentPromptBlock() {
@@ -7953,6 +7997,7 @@
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
+    draft = applyMathSafeOutputContractToDraft(draft, ctx);
     return String(draft || "").trim();
   }
 
@@ -31397,7 +31442,132 @@
     }
   }
 
+  var utilityPreviewMathRenderToken = 0;
+  var UTILITY_MATHJAX_EXPORT_BOOTSTRAP_MARKER = "prism-mathjax-export-bootstrap";
+  var UTILITY_MATHJAX_EXPORT_LOADER_ID = "prism-mathjax-export-loader";
+  // Pinned CDN URL (Phase E): local/vendor bundling remains a separate CSP decision.
+  var UTILITY_MATHJAX_EXPORT_LOADER_SRC =
+    "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js";
+
+  function utilityContainsSupportedMathDelimiters(htmlOrText) {
+    var text = String(htmlOrText == null ? "" : htmlOrText);
+    if (!text) return false;
+    return /\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/.test(text);
+  }
+
+  function utilityBuildMathJaxExportBootstrap() {
+    return [
+      "<!-- " + UTILITY_MATHJAX_EXPORT_BOOTSTRAP_MARKER + " -->",
+      "<script>",
+      "(function(){",
+      "  var cfg = window.MathJax && typeof window.MathJax === 'object' ? window.MathJax : {};",
+      "  cfg.tex = Object.assign({}, cfg.tex || {}, {",
+      "    inlineMath: [['\\\\(','\\\\)']],",
+      "    displayMath: [['\\\\[','\\\\]']]",
+      "  });",
+      "  window.MathJax = cfg;",
+      "})();",
+      "</script>",
+      "<script id=\"" + UTILITY_MATHJAX_EXPORT_LOADER_ID + "\" async src=\"" + UTILITY_MATHJAX_EXPORT_LOADER_SRC + "\"></script>"
+    ].join("");
+  }
+
+  function utilityHasMathJaxExportBootstrap(htmlText) {
+    var text = String(htmlText == null ? "" : htmlText);
+    if (!text) return false;
+    if (text.indexOf(UTILITY_MATHJAX_EXPORT_BOOTSTRAP_MARKER) !== -1) return true;
+    return new RegExp("id=[\"']" + UTILITY_MATHJAX_EXPORT_LOADER_ID + "[\"']", "i").test(text);
+  }
+
+  function utilityEnhanceExportHtmlWithMathJax(htmlText) {
+    var html = String(htmlText == null ? "" : htmlText);
+    if (!html) return "";
+    if (!utilityContainsSupportedMathDelimiters(html)) return html;
+    if (utilityHasMathJaxExportBootstrap(html)) return html;
+    var bootstrap = utilityBuildMathJaxExportBootstrap();
+    if (/<\/head>/i.test(html)) {
+      return html.replace(/<\/head>/i, bootstrap + "</head>");
+    }
+    if (/<body[^>]*>/i.test(html)) {
+      return html.replace(/<body[^>]*>/i, function (m) {
+        return bootstrap + m;
+      });
+    }
+    return bootstrap + html;
+  }
+
+  function utilityGetPreviewDocument() {
+    if (!els.utilitiesPreviewFrame) return null;
+    return (
+      els.utilitiesPreviewFrame.contentDocument ||
+      (els.utilitiesPreviewFrame.contentWindow && els.utilitiesPreviewFrame.contentWindow.document) ||
+      null
+    );
+  }
+
+  function utilityGetPreviewMathScopeNode() {
+    var previewDoc = utilityGetPreviewDocument();
+    if (!previewDoc) return null;
+    return previewDoc.body || previewDoc.documentElement || null;
+  }
+
+  function utilityTypesetPreviewMathIfNeeded(htmlOrText) {
+    if (!utilityContainsSupportedMathDelimiters(htmlOrText)) {
+      return Promise.resolve(false);
+    }
+    var mathJax = window.MathJax;
+    if (!mathJax || typeof mathJax.typesetPromise !== "function") {
+      return Promise.resolve(false);
+    }
+    var scopeNode = utilityGetPreviewMathScopeNode();
+    if (!scopeNode) {
+      return Promise.resolve(false);
+    }
+    try {
+      if (typeof mathJax.typesetClear === "function") {
+        mathJax.typesetClear([scopeNode]);
+      } else if (
+        mathJax.startup &&
+        mathJax.startup.document &&
+        typeof mathJax.startup.document.clear === "function"
+      ) {
+        mathJax.startup.document.clear();
+      }
+    } catch (_) {}
+    return Promise.resolve(mathJax.typesetPromise([scopeNode]))
+      .then(function () {
+        return true;
+      })
+      .catch(function () {
+        return false;
+      });
+  }
+
+  function utilitySchedulePreviewMathTypeset(htmlOrText) {
+    var html = String(htmlOrText == null ? "" : htmlOrText);
+    if (!utilityContainsSupportedMathDelimiters(html)) return;
+    var token = (utilityPreviewMathRenderToken += 1);
+    function attempt(attemptIndex) {
+      if (token !== utilityPreviewMathRenderToken) return;
+      utilityTypesetPreviewMathIfNeeded(html).then(function (ok) {
+        if (ok || token !== utilityPreviewMathRenderToken) return;
+        if (attemptIndex >= 1) return;
+        var mathJax = window.MathJax;
+        if (!mathJax || typeof mathJax.typesetPromise !== "function") return;
+        setTimeout(function () {
+          attempt(attemptIndex + 1);
+        }, 40);
+      });
+    }
+    setTimeout(function () {
+      attempt(0);
+    }, 0);
+  }
+
   function applyUtilityPreviewHtml(html) {
+    var htmlText = String(html || "");
+    // Invalidate any in-flight preview math attempts from older renders.
+    utilityPreviewMathRenderToken += 1;
     if (els.utilitiesPreviewPanel) {
       els.utilitiesPreviewPanel.classList.remove("hidden");
     }
@@ -31406,14 +31576,15 @@
       els.utilitiesPreviewError.textContent = "";
     }
     if (els.utilitiesPreviewFrame) {
-      els.utilitiesPreviewFrame.srcdoc = String(html || "");
+      els.utilitiesPreviewFrame.srcdoc = htmlText;
     }
     if (els.utilitiesDownloadBtn) {
-      els.utilitiesDownloadBtn.disabled = !String(html || "").trim();
+      els.utilitiesDownloadBtn.disabled = !htmlText.trim();
     }
     if (els.utilitiesOpenTabBtn) {
-      els.utilitiesOpenTabBtn.disabled = !String(html || "").trim();
+      els.utilitiesOpenTabBtn.disabled = !htmlText.trim();
     }
+    utilitySchedulePreviewMathTypeset(htmlText);
   }
 
   // Render architecture:
@@ -31570,7 +31741,8 @@
   }
 
   function triggerHtmlDownload(htmlText, fileName) {
-    var blob = new Blob([String(htmlText || "")], { type: "text/html;charset=utf-8" });
+    var exportHtml = utilityEnhanceExportHtmlWithMathJax(String(htmlText || ""));
+    var blob = new Blob([exportHtml], { type: "text/html;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
@@ -31586,6 +31758,39 @@
     return slugify(safeBase) + ".html";
   }
 
+  function utilityNormalizeUtilitiesJsonInput(rawInput) {
+    var raw = String(rawInput == null ? "" : rawInput);
+    if (!raw) return "";
+    var out = "";
+    for (var i = 0; i < raw.length; i += 1) {
+      var ch = raw.charAt(i);
+      if (ch !== "\\") {
+        out += ch;
+        continue;
+      }
+      var next = raw.charAt(i + 1);
+      if (next !== "_" && next !== "[" && next !== "]") {
+        out += ch;
+        continue;
+      }
+      // Unescape markdown-escaped JSON wrappers (\[...\], \_) only when the
+      // current backslash is not itself escaped (preserves \\[ and \\]).
+      var backslashRun = 0;
+      var j = i - 1;
+      while (j >= 0 && raw.charAt(j) === "\\") {
+        backslashRun += 1;
+        j -= 1;
+      }
+      if (backslashRun % 2 === 1) {
+        out += ch;
+        continue;
+      }
+      out += next;
+      i += 1;
+    }
+    return out;
+  }
+
   function handleUtilitiesGenerate() {
     var raw = String(els.utilitiesJsonInput ? els.utilitiesJsonInput.value : "").trim();
     if (!raw) {
@@ -31593,7 +31798,7 @@
       return;
     }
     // Be tolerant of markdown-escaped JSON snippets (e.g. \_, \[, \]).
-    var normalizedRaw = raw.replace(/\\([_\[\]])/g, "$1");
+    var normalizedRaw = utilityNormalizeUtilitiesJsonInput(raw);
     var parsed;
     try {
       parsed = JSON.parse(normalizedRaw);
@@ -31700,7 +31905,7 @@
       return;
     }
     newTab.document.open();
-    newTab.document.write(htmlText);
+    newTab.document.write(utilityEnhanceExportHtmlWithMathJax(htmlText));
     newTab.document.close();
     showToast("Opened HTML in a new tab.", "success");
   }
@@ -32265,6 +32470,9 @@
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
       applyWorkflowStepRuntimePromptAugmentations;
+    prismTestApi.buildMathSafeOutputContractPromptBlock =
+      buildMathSafeOutputContractPromptBlock;
+    prismTestApi.applyMathSafeOutputContractToDraft = applyMathSafeOutputContractToDraft;
     prismTestApi.SPRINT_30_PEC_IDS = SPRINT_30_PEC_IDS;
     prismTestApi.PEL_ORIENTATION_FIELD_IDS = PEL_ORIENTATION_FIELD_IDS;
     prismTestApi.PEL_REASONING_FIELD_IDS = PEL_REASONING_FIELD_IDS;
@@ -32405,6 +32613,37 @@
       return utilityRenderPageSections(sectionsValue, {}, [], renderOptions || {});
     };
     prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
+    prismTestApi.utilityNormalizeUtilitiesJsonInputForTest = utilityNormalizeUtilitiesJsonInput;
+    prismTestApi.utilityContainsSupportedMathDelimitersForTest =
+      utilityContainsSupportedMathDelimiters;
+    prismTestApi.utilityTypesetPreviewMathIfNeededForTest = utilityTypesetPreviewMathIfNeeded;
+    prismTestApi.utilityBuildMathJaxExportBootstrapForTest =
+      utilityBuildMathJaxExportBootstrap;
+    prismTestApi.utilityEnhanceExportHtmlWithMathJaxForTest =
+      utilityEnhanceExportHtmlWithMathJax;
+    prismTestApi.utilityHasMathJaxExportBootstrapForTest =
+      utilityHasMathJaxExportBootstrap;
+    prismTestApi.getUtilityMathJaxExportLoaderSrcForTest = function () {
+      return UTILITY_MATHJAX_EXPORT_LOADER_SRC;
+    };
+    prismTestApi.applyUtilityPreviewHtmlForTest = applyUtilityPreviewHtml;
+    prismTestApi.getUtilitiesPreviewSrcdocForTest = function () {
+      return els.utilitiesPreviewFrame ? String(els.utilitiesPreviewFrame.srcdoc || "") : "";
+    };
+    prismTestApi.setUtilitiesPreviewFrameContentDocumentForTest = function (doc) {
+      if (!els.utilitiesPreviewFrame) return;
+      els.utilitiesPreviewFrame.contentDocument = doc || null;
+      if (!els.utilitiesPreviewFrame.contentWindow || typeof els.utilitiesPreviewFrame.contentWindow !== "object") {
+        els.utilitiesPreviewFrame.contentWindow = {};
+      }
+      els.utilitiesPreviewFrame.contentWindow.document = doc || null;
+    };
+    prismTestApi.setUtilitiesLastHtmlForTest = function (value) {
+      state.utilitiesLastHtml = String(value || "");
+    };
+    prismTestApi.getUtilitiesLastHtmlForTest = function () {
+      return String(state.utilitiesLastHtml || "");
+    };
     prismTestApi.setSelectedWorkflowIdForTest = function (id) {
       state.selectedWorkflowId = id ? String(id) : null;
     };

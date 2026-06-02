@@ -1,0 +1,37 @@
+{
+  "artifact_type": "page",
+  "title": "Math delimiter preservation baseline",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "section_inline_math",
+      "heading": "Inline maths",
+      "content": "Use \\(x^2 + y^2 = z^2\\) in explanatory prose."
+    },
+    {
+      "section_id": "section_block_math",
+      "heading": "Block maths",
+      "content": "\\[x^2 + y^2 = z^2\\]"
+    },
+    {
+      "section_id": "section_mixed_markdown_math",
+      "heading": "Mixed markdown and maths",
+      "content": "## Notes\n- Recall \\(a^2 - b^2 = (a-b)(a+b)\\)\n- Then compare to \\[a^2 + b^2\\]"
+    },
+    {
+      "section_id": "section_malformed_math",
+      "heading": "Malformed delimiter cases",
+      "content": "Malformed inline: \\(x^2 + y^2 = z^2\nMalformed block: \\[x^2 + y^2"
+    },
+    {
+      "section_id": "section_code_literals",
+      "heading": "Code literal delimiters",
+      "content": "Literal inline code: `\\(x+y\\)`.\n\n```text\n\\[x^2 + y^2\\]\n```"
+    },
+    {
+      "section_id": "section_non_math_control",
+      "heading": "Non-math markdown control",
+      "content": "Plain markdown should still behave.\n\n- First bullet\n- Second bullet\n\nFinal control line."
+    }
+  ]
+}

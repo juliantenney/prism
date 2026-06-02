@@ -141,6 +141,17 @@ A set of designed tasks that require learner engagement.
   - Canonical correctness must remain preserved separately from learner-facing presentation order.
   - Render hints are advisory metadata for renderer policy consumption and should not alter core activity membership.
 
+### Mathematical notation (learner-facing text)
+- Supported renderer delimiters:
+  - Inline maths: `\(...\)`
+  - Display/block equations: `\[...\]`
+- Prohibited in producer outputs:
+  - `$...$` and `$$...$$`
+  - Equations inside code spans, code fences, or backtick markdown
+  - HTML-escaped delimiters/backslashes
+- Maths is presentational only; do not imply symbolic solving, automated checking, or CAS capabilities.
+- Downstream renderers preserve these delimiters in HTML transport; typesetting is a separate presentation layer.
+
 ---
 
 ## 6. activity_materials
@@ -155,6 +166,7 @@ Facilitator-ready materials generated from activity material specifications.
 ### Requirements
 - Must map materials to activity_ids from learning_activities
 - Must preserve material_id from required_materials
+- Learner-facing material text that includes maths must use supported delimiters (`\(...\)`, `\[...\]`) and must not use dollar delimiters, code wrappers, or HTML-escaped delimiter forms
 - For `design_scope = single_activity`, default output should include only activity-level materials required for the selected activity design
 - Each material should include:
   - material_id
@@ -310,6 +322,11 @@ A set of multiple-choice questions.
 - One correct answer
 - Plausible distractors
 - Alignment with concepts or outcomes
+- When mathematical notation appears in stems/options/explanations/model guidance, use renderer-supported delimiters only:
+  - inline: `\(...\)`
+  - block: `\[...\]`
+- Do not use `$...$` or `$$...$$`, code spans/fences for equations, or HTML-escaped delimiter forms
+- Maths is presentational notation only (no symbolic solving/checking implications)
 
 ---
 
@@ -322,6 +339,11 @@ A structured set of feedback linked to assessment items.
 - Explain correct answers
 - Address misconceptions
 - Support learning improvement
+
+### Requirements
+- Feedback text that includes maths must preserve renderer-supported delimiters (`\(...\)`, `\[...\]`)
+- Do not rewrite maths into `$...$`/`$$...$$`, code wrappers, or HTML-escaped delimiters
+- Keep maths guidance presentational (do not imply automatic solving/checking)
 
 ---
 
@@ -495,6 +517,7 @@ A structured readable composite artefact assembled from existing learning design
 - If `page_profile` is `assessment`, include at minimum a structured questions/items section and optionally `answer_key`, `marking_guidance`, and `feedback_guidance` when supported and requested
 - If formative MCQs/questions are included, each item must be structurally valid (at least `stem` and `options`)
 - If exclusions such as "do not include answers" are requested, question items must omit answer-bearing fields while preserving question structure
+- When copying upstream maths notation into page sections, preserve supported delimiters (`\(...\)`, `\[...\]`) verbatim; do not rewrite to dollar delimiters, code wrappers, or HTML-escaped forms
 
 ### Render Hints
 ```json
@@ -551,6 +574,8 @@ A tutor-facing marking rubric for assessing submitted responses consistently.
 - Criterion weights must sum to 100
 - Descriptors must be actionable for tutors/markers
 - Must include moderation guidance for consistency across markers
+- Rubric text that includes maths must preserve renderer-supported delimiters (`\(...\)`, `\[...\]`)
+- Do not use dollar-delimiter forms, code wrappers, or HTML-escaped delimiter forms
 
 ---
 

@@ -7201,7 +7201,11 @@
       "Self-directed timeline sequencing alignment (auto-applied):",
       "- When learner_task asks learners to arrange, order, sequence, or place events in chronological/time order, source event lists and generated text materials must NOT already be in chronological order.",
       "- Provide events in deliberately mixed or non-chronological order (shuffle years/dates in the list); the cognitive task is the ordering, not reading a pre-sorted list.",
+      "- For sequencing/ranking activity rows, set activity_interaction_type to sequencing or ranking.",
+      "- For sequencing/ranking outputs, include ordering.canonical_order as the internal correct order, and include a separate learner_display_order list for learner-facing presentation.",
+      "- Use stable per-item identifiers in both ordering lists (for example event_id/item_id values), and keep item IDs consistent across learner_instructions and task_cards.",
       "- In required_materials.specification for sequencing tasks, state explicitly: unordered event list for learner sequencing or events in non-chronological order.",
+      "- In Generate Activity Materials outputs, represent ordering items as structured entries (prefer item_id/title/instruction fields) rather than prose-only paragraphs.",
       "- If a chronological source list is intentional reference reading (overview/narrative with no ordering task), change learner_task to interpretation or significance (do not ask learners to re-order an already chronological list).",
       "- Knowledge-summary or orienting materials without an ordering task may remain chronological."
     ].join("\n");
@@ -15946,9 +15950,9 @@
       if (runOutWrap) {
         runOutWrap.classList.toggle("hidden", !isRun);
       }
-      var notesLabelEl = li.querySelector('[data-role="notes-label"]');
-      if (notesLabelEl) {
-        notesLabelEl.textContent = "Notes";
+      var instructionsLabelEl = li.querySelector('[data-role="notes-label"]');
+      if (instructionsLabelEl) {
+        instructionsLabelEl.textContent = "Instructions";
       }
 
       // Inputs and selects are read-only/disabled in run mode.
@@ -20229,18 +20233,17 @@
     fields.appendChild(inputBindingsGroup);
     fields.appendChild(outputGroup);
 
-    var notesGroup = document.createElement("div");
-    notesGroup.className = "form-group workflow-step-notes";
-    var notesLabel = document.createElement("label");
-    notesLabel.setAttribute("data-role", "notes-label");
-    notesLabel.textContent = "Notes";
-    var notesArea = document.createElement("textarea");
-    notesArea.rows = 2;
-    notesArea.setAttribute("data-field", "notes");
-    notesArea.placeholder =
-      "Optional: add runner-specific notes, such as external resources to paste in or checks before running this step.";
-    notesArea.autocomplete = "off";
-    notesArea.value = step.notes || "";
+    var instructionsGroup = document.createElement("div");
+    instructionsGroup.className = "form-group workflow-step-notes";
+    var instructionsLabel = document.createElement("label");
+    instructionsLabel.setAttribute("data-role", "notes-label");
+    instructionsLabel.textContent = "Instructions";
+    var instructionsArea = document.createElement("textarea");
+    instructionsArea.rows = 6;
+    instructionsArea.setAttribute("data-field", "notes");
+    instructionsArea.placeholder = "Guidance for running this step";
+    instructionsArea.autocomplete = "off";
+    instructionsArea.value = step.notes || "";
     var runSummary = document.createElement("div");
     runSummary.className = "workflow-step-run-summary hidden";
     runSummary.setAttribute("data-role", "runner-summary");
@@ -20248,43 +20251,43 @@
     runSummaryBody.className = "small muted";
     runSummaryBody.setAttribute("data-role", "runner-summary-body");
     runSummary.appendChild(runSummaryBody);
-    notesGroup.appendChild(runSummary);
-    notesGroup.appendChild(notesLabel);
-    notesGroup.appendChild(notesArea);
+    instructionsGroup.appendChild(runSummary);
+    instructionsGroup.appendChild(instructionsLabel);
+    instructionsGroup.appendChild(instructionsArea);
 
-    var runOutputWrap = document.createElement("div");
-    runOutputWrap.className = "workflow-step-run-output-wrap hidden";
-    runOutputWrap.setAttribute("data-role", "run-step-output-wrap");
-    var runOutputLabel = document.createElement("label");
-    runOutputLabel.textContent = "Step output (paste model response)";
-    var runOutputArea = document.createElement("textarea");
-    runOutputArea.rows = 6;
-    runOutputArea.className = "workflow-step-run-output";
-    runOutputArea.setAttribute("data-field", "runStepOutput");
-    runOutputArea.setAttribute("autocomplete", "off");
-    runOutputArea.placeholder =
-      "Paste this step's model output here for your records. This text is not saved with the workflow JSON.";
+    var userNotesWrap = document.createElement("div");
+    userNotesWrap.className = "workflow-step-run-output-wrap hidden";
+    userNotesWrap.setAttribute("data-role", "run-step-output-wrap");
+    var userNotesLabel = document.createElement("label");
+    userNotesLabel.textContent = "Your notes (optional)";
+    var userNotesTextarea = document.createElement("textarea");
+    userNotesTextarea.rows = 2;
+    userNotesTextarea.className = "workflow-step-run-output";
+    userNotesTextarea.setAttribute("data-field", "runStepOutput");
+    userNotesTextarea.setAttribute("autocomplete", "off");
+    userNotesTextarea.placeholder =
+      "Save anything useful from this step here for later reference.";
     var stepIdForRun = String(step.id != null ? step.id : "").trim();
     var rawStored =
       (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[stepIdForRun]) || "";
     var sanStored =
       (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[stepIdForRun]) || "";
-    runOutputArea.value = String(rawStored || sanStored || "");
-    runOutputArea.addEventListener("input", function () {
+    userNotesTextarea.value = String(rawStored || sanStored || "");
+    userNotesTextarea.addEventListener("input", function () {
       syncWorkflowRunCapturedOutputToState(li);
       updateRunStepOutputStatus(li);
     });
-    var runOutputStatus = document.createElement("div");
-    runOutputStatus.setAttribute("data-role", "run-step-output-status");
-    runOutputStatus.className = "workflow-step-run-output-status helper-text hidden";
-    runOutputWrap.appendChild(runOutputLabel);
-    runOutputWrap.appendChild(runOutputArea);
-    runOutputWrap.appendChild(runOutputStatus);
+    var userNotesStatus = document.createElement("div");
+    userNotesStatus.setAttribute("data-role", "run-step-output-status");
+    userNotesStatus.className = "workflow-step-run-output-status helper-text hidden";
+    userNotesWrap.appendChild(userNotesLabel);
+    userNotesWrap.appendChild(userNotesTextarea);
+    userNotesWrap.appendChild(userNotesStatus);
 
     li.appendChild(header);
     li.appendChild(fields);
-    li.appendChild(notesGroup);
-    li.appendChild(runOutputWrap);
+    li.appendChild(instructionsGroup);
+    li.appendChild(userNotesWrap);
     renderInputBindings();
     updateRunStepOutputStatus(li);
     decorateWorkflowStepSettingsDiscoverability(li, step, { context: "library" });
@@ -23101,6 +23104,309 @@
     return opts && typeof opts === "object" ? opts : {};
   }
 
+  function computeStableSeed(parts) {
+    var rows = Array.isArray(parts) ? parts : [parts];
+    var text = rows
+      .map(function (part) {
+        if (part == null) return "";
+        if (typeof part === "string") return part;
+        if (typeof part === "number" || typeof part === "boolean") return String(part);
+        if (Array.isArray(part)) return JSON.stringify(part);
+        if (typeof part === "object") {
+          var scalar = utilityFirstScalar([
+            part.id,
+            part.item_id,
+            part.activity_id,
+            part.key,
+            part.name,
+            part.title
+          ]);
+          if (scalar) return String(scalar);
+          try {
+            return JSON.stringify(part);
+          } catch (_err) {
+            return String(part);
+          }
+        }
+        return String(part);
+      })
+      .join("|");
+    var hash = 2166136261;
+    for (var i = 0; i < text.length; i += 1) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0);
+  }
+
+  function deterministicShuffle(items, seed) {
+    var list = Array.isArray(items) ? items.slice() : [];
+    if (list.length <= 1) return list;
+    var startSeed;
+    if (typeof seed === "number" && Number.isFinite(seed)) {
+      startSeed = seed >>> 0;
+    } else {
+      startSeed = computeStableSeed([seed]);
+    }
+    var state = startSeed || 1;
+    function nextRand() {
+      // LCG parameters from Numerical Recipes; deterministic and lightweight.
+      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+      return state / 4294967296;
+    }
+    for (var i = list.length - 1; i > 0; i -= 1) {
+      var j = Math.floor(nextRand() * (i + 1));
+      var tmp = list[i];
+      list[i] = list[j];
+      list[j] = tmp;
+    }
+    return list;
+  }
+
+  function resolveSequencingPolicy(renderOpts, pageProfile) {
+    var opts = renderOpts && typeof renderOpts === "object" ? renderOpts : {};
+    var profile = String(
+      !utilityIsEmptyValue(pageProfile) ? pageProfile : utilityFirstScalar([opts.pageProfile, opts.page_profile])
+    )
+      .toLowerCase()
+      .trim();
+    var policyInput =
+      opts.sequencingPolicy && typeof opts.sequencingPolicy === "object"
+        ? opts.sequencingPolicy
+        : {};
+    var enabledExplicit =
+      opts.enableSequencingInteractionPolicy === true ||
+      policyInput.enabled === true;
+    var strictLearnerExplicit = Object.prototype.hasOwnProperty.call(policyInput, "strictLearnerMode")
+      ? policyInput.strictLearnerMode === true
+      : (Object.prototype.hasOwnProperty.call(opts, "sequencingStrictLearnerMode")
+          ? opts.sequencingStrictLearnerMode === true
+          : true);
+    var allowLegacyInferenceExplicit = Object.prototype.hasOwnProperty.call(policyInput, "allowLegacyInference")
+      ? policyInput.allowLegacyInference === true
+      : (Object.prototype.hasOwnProperty.call(opts, "sequencingAllowLegacyInference")
+          ? opts.sequencingAllowLegacyInference === true
+          : true);
+    return {
+      enabled: !!enabledExplicit,
+      strictLearnerMode: !!strictLearnerExplicit,
+      allowLegacyInference: !!allowLegacyInferenceExplicit,
+      pageProfile: profile
+    };
+  }
+
+  function shouldApplySequencingPolicy(renderOpts, pageProfile) {
+    var policy = resolveSequencingPolicy(renderOpts, pageProfile);
+    if (!policy.enabled) return false;
+    if (policy.strictLearnerMode && policy.pageProfile && policy.pageProfile !== "learner") return false;
+    return true;
+  }
+
+  function getCanonicalItemOrder(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return [];
+    var ordering =
+      row.ordering && typeof row.ordering === "object" && !Array.isArray(row.ordering)
+        ? row.ordering
+        : null;
+    if (!ordering || !Array.isArray(ordering.canonical_order)) return [];
+    return ordering.canonical_order.slice();
+  }
+
+  function getLearnerItemOrderForRender(row, renderOpts, pageProfile) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return [];
+    var ordering =
+      row.ordering && typeof row.ordering === "object" && !Array.isArray(row.ordering)
+        ? row.ordering
+        : null;
+    if (!ordering) return [];
+    var policyActive = shouldApplySequencingPolicy(renderOpts, pageProfile);
+    if (policyActive && Array.isArray(ordering.learner_display_order) && ordering.learner_display_order.length) {
+      return ordering.learner_display_order.slice();
+    }
+    if (Array.isArray(ordering.canonical_order)) return ordering.canonical_order.slice();
+    return [];
+  }
+
+  function sequencingNormalizeComparableToken(value) {
+    return String(value == null ? "" : value)
+      .replace(/<[^>]+>/g, " ")
+      .replace(/[`*_#>|[\]\(\)]/g, " ")
+      .replace(/^\s*(?:[-*•]|\d+[\)\.])\s+/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function sequencingExtractComparableItems(value) {
+    var out = [];
+    function pushToken(v) {
+      var t = sequencingNormalizeComparableToken(v);
+      if (t) out.push(t);
+    }
+    function pushFromObject(obj) {
+      if (!obj || typeof obj !== "object" || Array.isArray(obj)) return;
+      var scalar = utilityFirstScalar([
+        obj.item_id,
+        obj.itemId,
+        obj.id,
+        obj.label,
+        obj.title,
+        obj.name,
+        obj.text,
+        obj.content,
+        obj.prompt,
+        obj.instruction,
+        obj.value
+      ]);
+      if (scalar) pushToken(scalar);
+    }
+    if (utilityIsEmptyValue(value)) return out;
+    if (typeof value === "string") {
+      var lines = String(value).replace(/\r\n/g, "\n").split("\n");
+      lines.forEach(function (line) {
+        var m = String(line || "").match(/^\s*(?:[-*•]|\d+[\)\.])\s+(.+)$/);
+        if (m) pushToken(m[1]);
+      });
+      if (!out.length) pushToken(value);
+      return out;
+    }
+    if (Array.isArray(value)) {
+      value.forEach(function (entry) {
+        if (utilityIsEmptyValue(entry)) return;
+        if (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean") {
+          pushToken(entry);
+          return;
+        }
+        pushFromObject(entry);
+      });
+      return out;
+    }
+    if (value && typeof value === "object") {
+      var taskCards = null;
+      if (!utilityIsEmptyValue(value.task_cards)) taskCards = value.task_cards;
+      else if (!utilityIsEmptyValue(value.cards)) taskCards = value.cards;
+      else if (!utilityIsEmptyValue(value.taskCards)) taskCards = value.taskCards;
+      if (Array.isArray(taskCards)) {
+        taskCards.forEach(function (entry) {
+          if (typeof entry === "string") pushToken(entry);
+          else pushFromObject(entry);
+        });
+      }
+      var prompts = null;
+      if (!utilityIsEmptyValue(value.prompts)) prompts = value.prompts;
+      else if (!utilityIsEmptyValue(value.items)) prompts = value.items;
+      else if (!utilityIsEmptyValue(value.lines)) prompts = value.lines;
+      if (Array.isArray(prompts)) {
+        prompts.forEach(function (entry) {
+          if (typeof entry === "string") pushToken(entry);
+          else pushFromObject(entry);
+        });
+      }
+      if (!out.length) pushFromObject(value);
+    }
+    return out;
+  }
+
+  function sequencingSetOverlapRatio(itemsA, itemsB) {
+    var a = {};
+    var b = {};
+    (Array.isArray(itemsA) ? itemsA : []).forEach(function (x) {
+      var t = sequencingNormalizeComparableToken(x);
+      if (t) a[t] = true;
+    });
+    (Array.isArray(itemsB) ? itemsB : []).forEach(function (x) {
+      var t = sequencingNormalizeComparableToken(x);
+      if (t) b[t] = true;
+    });
+    var aKeys = Object.keys(a);
+    var bKeys = Object.keys(b);
+    if (!aKeys.length || !bKeys.length) return 0;
+    var intersection = 0;
+    aKeys.forEach(function (k) {
+      if (b[k]) intersection += 1;
+    });
+    return intersection / Math.max(aKeys.length, bKeys.length);
+  }
+
+  function shouldSuppressInstructionList(activityRow, cardsValue, instructionsValue, renderOpts, pageProfile) {
+    if (!activityRow || typeof activityRow !== "object" || Array.isArray(activityRow)) return false;
+    if (!shouldApplySequencingPolicy(renderOpts, pageProfile)) return false;
+    var interaction = String(activityRow.activity_interaction_type || "").toLowerCase().trim();
+    if (interaction !== "sequencing" && interaction !== "ranking") return false;
+    var cardItems = sequencingExtractComparableItems(cardsValue);
+    var instructionItems = sequencingExtractComparableItems(instructionsValue);
+    if (!cardItems.length || !instructionItems.length) return false;
+
+    var explicitHint =
+      activityRow.render_hints &&
+      typeof activityRow.render_hints === "object" &&
+      activityRow.render_hints.suppress_instruction_list_when_task_cards_present === true;
+    if (explicitHint) return true;
+
+    var canonicalItems = getCanonicalItemOrder(activityRow).map(sequencingNormalizeComparableToken).filter(Boolean);
+    var learnerItems = getLearnerItemOrderForRender(activityRow, renderOpts, pageProfile)
+      .map(sequencingNormalizeComparableToken)
+      .filter(Boolean);
+    var referencePool = learnerItems.length ? learnerItems : canonicalItems;
+    if (referencePool.length >= 2) {
+      var cardsCoverReference = sequencingSetOverlapRatio(cardItems, referencePool) >= 0.9;
+      var instructionsCoverReference = sequencingSetOverlapRatio(instructionItems, referencePool) >= 0.9;
+      if (cardsCoverReference && instructionsCoverReference) return true;
+    }
+
+    // Legacy fallback: strict textual overlap to avoid accidental suppression.
+    return sequencingSetOverlapRatio(cardItems, instructionItems) >= 0.9;
+  }
+
+  function orderTaskCardItemsForRender(items, activityRow, renderOpts, pageProfile) {
+    var arr = Array.isArray(items) ? items.slice() : [];
+    if (!arr.length) return arr;
+    if (!activityRow || typeof activityRow !== "object" || Array.isArray(activityRow)) return arr;
+    var interactionType = String(activityRow.activity_interaction_type || "").toLowerCase().trim();
+    if (interactionType !== "sequencing" && interactionType !== "ranking") return arr;
+    if (!shouldApplySequencingPolicy(renderOpts, pageProfile)) return arr;
+    var learnerOrderTokens = getLearnerItemOrderForRender(activityRow, renderOpts, pageProfile)
+      .map(sequencingNormalizeComparableToken)
+      .filter(Boolean);
+    if (learnerOrderTokens.length <= 1) return arr;
+    var orderIndex = {};
+    learnerOrderTokens.forEach(function (token, idx) {
+      if (!Object.prototype.hasOwnProperty.call(orderIndex, token)) orderIndex[token] = idx;
+    });
+    function cardComparableToken(entry) {
+      if (utilityIsEmptyValue(entry)) return "";
+      if (typeof entry === "string") return sequencingNormalizeComparableToken(entry);
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return "";
+      return sequencingNormalizeComparableToken(
+        utilityFirstScalar([
+          entry.item_id,
+          entry.itemId,
+          entry.id,
+          entry.title,
+          entry.card_title,
+          entry.label,
+          entry.name,
+          entry.instruction,
+          entry.prompt,
+          entry.content,
+          entry.text,
+          entry.body
+        ])
+      );
+    }
+    return arr
+      .map(function (entry, idx) {
+        var token = cardComparableToken(entry);
+        var key = Object.prototype.hasOwnProperty.call(orderIndex, token) ? orderIndex[token] : 1000 + idx;
+        return { entry: entry, idx: idx, key: key };
+      })
+      .sort(function (a, b) {
+        if (a.key !== b.key) return a.key - b.key;
+        return a.idx - b.idx;
+      })
+      .map(function (row) { return row.entry; });
+  }
+
   function utilityCleanupInlineMarkdownMarkers(text) {
     var input = String(text == null ? "" : text);
     if (!input) return "";
@@ -24275,7 +24581,14 @@
   }
 
   function utilityRenderPageSections(sectionsValue, labels, sectionOrder, opts) {
-    var renderOpts = utilityNormalizeRenderOpts(opts);
+    var renderOptsBase = utilityNormalizeRenderOpts(opts);
+    var sequencingPolicy = resolveSequencingPolicy(
+      renderOptsBase,
+      firstNonEmpty([renderOptsBase.pageProfile, renderOptsBase.page_profile])
+    );
+    var renderOpts = Object.assign({}, renderOptsBase, {
+      sequencingPolicy: sequencingPolicy
+    });
     var labelsMap = labels && typeof labels === "object" ? labels : {};
     var orderedKeys = Array.isArray(sectionOrder) ? sectionOrder.slice() : [];
     function firstNonEmpty(values) {
@@ -25813,6 +26126,7 @@
         function renderTaskCardBlocks(items) {
           var expanded = expandTaskCardMaterialEntries(items);
           var arr = expanded.filter(function (x) { return !utilityIsEmptyValue(x); });
+          arr = orderTaskCardItemsForRender(arr, activityRow, renderOpts, renderOpts.pageProfile || "");
           if (!arr.length) return "";
           var cards = arr.map(function (entry, idx) {
             if (utilityIsEmptyValue(entry)) return "";
@@ -27444,7 +27758,11 @@
     }
     function getLearningActivitiesRows(value) {
       function normalizeRows(arr) {
-        return (Array.isArray(arr) ? arr : []).filter(isPresentActivityRow);
+        return (Array.isArray(arr) ? arr : [])
+          .map(function (row) {
+            return normalizeActivityInteractionMetadata(row);
+          })
+          .filter(isPresentActivityRow);
       }
       if (Array.isArray(value)) return normalizeRows(value);
       if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -28241,9 +28559,16 @@
         if (learnerTask && normalizeComparableText(learnerTask) !== normalizeComparableText(intro)) {
           parts.push("<p><strong>Learner task:</strong> " + utilityRenderMarkdownInline(String(learnerTask)) + "</p>");
         }
-        var learnerInstructionsHtml = renderInstructionList(learnerInstructions);
-        if (learnerInstructionsHtml) parts.push("<h4>Learner Instructions</h4>" + learnerInstructionsHtml);
         var inlineMaterialsHtml = renderRichMaterials(materialsInline);
+        var suppressInstructionList = shouldSuppressInstructionList(
+          row,
+          materialsInline,
+          learnerInstructions,
+          renderOpts,
+          renderOpts.pageProfile || ""
+        );
+        var learnerInstructionsHtml = suppressInstructionList ? "" : renderInstructionList(learnerInstructions);
+        if (learnerInstructionsHtml) parts.push("<h4>Learner Instructions</h4>" + learnerInstructionsHtml);
         if (inlineMaterialsHtml) parts.push(inlineMaterialsHtml);
         var linkedResources = pickLinkedResourcesForIds(resourcesValue, ids, usedResourceKeys);
         if (!utilityIsEmptyValue(linkedResources)) {
@@ -29847,12 +30172,72 @@
     });
   }
 
+  function normalizeActivityInteractionMetadata(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return row;
+    var hasInteractionType = Object.prototype.hasOwnProperty.call(row, "activity_interaction_type");
+    var hasOrdering = Object.prototype.hasOwnProperty.call(row, "ordering");
+    var hasRenderHints = Object.prototype.hasOwnProperty.call(row, "render_hints");
+    if (!hasInteractionType && !hasOrdering && !hasRenderHints) return row;
+    var normalized = Object.assign({}, row);
+
+    if (hasInteractionType) {
+      normalized.activity_interaction_type = utilityIsEmptyValue(row.activity_interaction_type)
+        ? ""
+        : String(row.activity_interaction_type).trim();
+    }
+
+    if (hasOrdering) {
+      var ordering =
+        row.ordering && typeof row.ordering === "object" && !Array.isArray(row.ordering)
+          ? row.ordering
+          : {};
+      normalized.ordering = {
+        canonical_order: Array.isArray(ordering.canonical_order)
+          ? ordering.canonical_order.slice()
+          : [],
+        learner_display_order: Array.isArray(ordering.learner_display_order)
+          ? ordering.learner_display_order.slice()
+          : [],
+        learner_display_order_strategy: utilityIsEmptyValue(ordering.learner_display_order_strategy)
+          ? ""
+          : String(ordering.learner_display_order_strategy).trim(),
+        shuffle_seed_key: utilityIsEmptyValue(ordering.shuffle_seed_key)
+          ? ""
+          : String(ordering.shuffle_seed_key).trim()
+      };
+    }
+
+    if (hasRenderHints) {
+      var hints =
+        row.render_hints && typeof row.render_hints === "object" && !Array.isArray(row.render_hints)
+          ? row.render_hints
+          : {};
+      normalized.render_hints = {
+        suppress_instruction_list_when_task_cards_present:
+          hints.suppress_instruction_list_when_task_cards_present === true,
+        keep_instruction_summary_above_cards: hints.keep_instruction_summary_above_cards === true
+      };
+    }
+
+    return normalized;
+  }
+
   function normalizeUpstreamActivitiesContentForPage(upstream) {
     if (!upstream) return null;
-    if (Array.isArray(upstream.activities)) return upstream.activities.slice();
-    if (Array.isArray(upstream)) return upstream.slice();
+    if (Array.isArray(upstream.activities)) {
+      return upstream.activities.map(function (row) {
+        return normalizeActivityInteractionMetadata(row);
+      });
+    }
+    if (Array.isArray(upstream)) {
+      return upstream.map(function (row) {
+        return normalizeActivityInteractionMetadata(row);
+      });
+    }
     if (upstream && typeof upstream === "object" && Array.isArray(upstream.content)) {
-      return upstream.content.slice();
+      return upstream.content.map(function (row) {
+        return normalizeActivityInteractionMetadata(row);
+      });
     }
     return null;
   }
@@ -29960,6 +30345,177 @@
       else section.content = rows;
     });
     return mergedCount;
+  }
+
+  function sequencingNormalizeOrderItems(value) {
+    var out = [];
+    function pushScalar(v) {
+      var t = String(v == null ? "" : v).trim();
+      if (t) out.push(t);
+    }
+    (Array.isArray(value) ? value : []).forEach(function (entry) {
+      if (utilityIsEmptyValue(entry)) return;
+      if (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean") {
+        pushScalar(entry);
+        return;
+      }
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return;
+      pushScalar(
+        firstNonEmpty([
+          entry.item_id,
+          entry.itemId,
+          entry.id,
+          entry.label,
+          entry.title,
+          entry.text,
+          entry.name,
+          entry.value
+        ])
+      );
+    });
+    return out;
+  }
+
+  function inferSequencingInteractionType(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+    var explicit = String(row.activity_interaction_type || "").trim().toLowerCase();
+    if (explicit) return explicit;
+    var blob = [
+      row.title,
+      row.activity_title,
+      row.name,
+      row.learner_task,
+      row.learner_instructions,
+      row.instructions,
+      row.purpose
+    ]
+      .map(function (x) { return String(x == null ? "" : x); })
+      .join(" ")
+      .toLowerCase();
+    if (
+      /\b(rank|ranking|prioriti[sz]e|highest to lowest|lowest to highest)\b/.test(blob)
+    ) {
+      return "ranking";
+    }
+    if (
+      /\b(sequence|sequencing|chronolog|time order|order events|arrange.*order)\b/.test(blob)
+    ) {
+      return "sequencing";
+    }
+    return "";
+  }
+
+  function extractCanonicalOrderFromActivityRow(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return [];
+    if (
+      row.ordering &&
+      typeof row.ordering === "object" &&
+      !Array.isArray(row.ordering) &&
+      Array.isArray(row.ordering.canonical_order)
+    ) {
+      return sequencingNormalizeOrderItems(row.ordering.canonical_order);
+    }
+    var candidates = [
+      row.canonical_order,
+      row.correct_order,
+      row.sequence_items,
+      row.ranking_items,
+      row.order_items
+    ];
+    for (var i = 0; i < candidates.length; i += 1) {
+      if (Array.isArray(candidates[i]) && candidates[i].length) {
+        return sequencingNormalizeOrderItems(candidates[i]);
+      }
+    }
+    return [];
+  }
+
+  function applySequencingInteractionMetadataToPageActivities(page, upstream) {
+    if (!page || !Array.isArray(page.sections)) return 0;
+    var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
+    var upstreamById = {};
+    upstreamRows.forEach(function (row) {
+      if (!row || typeof row !== "object" || Array.isArray(row)) return;
+      var key = pageActivityIdKey(
+        row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+      );
+      if (key) upstreamById[key] = row;
+    });
+    var touched = 0;
+    page.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      var rows = [];
+      var wrapObject = false;
+      if (Array.isArray(content)) rows = content;
+      else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        rows = content.activities;
+        wrapObject = true;
+      } else return;
+
+      rows = rows.map(function (row) {
+        if (!row || typeof row !== "object" || Array.isArray(row)) return row;
+        var key = pageActivityIdKey(
+          row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id
+        );
+        var upstreamRow = key ? upstreamById[key] : null;
+        var interactionType = inferSequencingInteractionType(row) || inferSequencingInteractionType(upstreamRow);
+        if (interactionType !== "sequencing" && interactionType !== "ranking") {
+          return row;
+        }
+        var canonicalOrder = extractCanonicalOrderFromActivityRow(row);
+        if (!canonicalOrder.length && upstreamRow) {
+          canonicalOrder = extractCanonicalOrderFromActivityRow(upstreamRow);
+        }
+        var normalizedRow = normalizeActivityInteractionMetadata(row);
+        var next = normalizedRow === row ? Object.assign({}, row) : normalizedRow;
+        if (!next.activity_interaction_type) {
+          next.activity_interaction_type = interactionType;
+        }
+        if (!next.ordering || typeof next.ordering !== "object" || Array.isArray(next.ordering)) {
+          next.ordering = {};
+        }
+        if (!Array.isArray(next.ordering.canonical_order) || !next.ordering.canonical_order.length) {
+          next.ordering.canonical_order = canonicalOrder.slice();
+        }
+        var learnerOrder = Array.isArray(next.ordering.learner_display_order)
+          ? sequencingNormalizeOrderItems(next.ordering.learner_display_order)
+          : [];
+        if (!learnerOrder.length && canonicalOrder.length > 1) {
+          var seedKey = [
+            String(page && page.metadata && page.metadata.workflow_id ? page.metadata.workflow_id : ""),
+            String(page && page.title ? page.title : ""),
+            String(key || ""),
+            interactionType
+          ]
+            .filter(function (x) { return !!String(x || "").trim(); })
+            .join("::");
+          learnerOrder = deterministicShuffle(canonicalOrder, computeStableSeed(seedKey));
+          next.ordering.learner_display_order = learnerOrder.slice();
+          next.ordering.learner_display_order_strategy =
+            String(next.ordering.learner_display_order_strategy || "").trim() || "deterministic_shuffle";
+          next.ordering.shuffle_seed_key =
+            String(next.ordering.shuffle_seed_key || "").trim() || seedKey;
+        } else if (!Array.isArray(next.ordering.learner_display_order)) {
+          next.ordering.learner_display_order = learnerOrder.slice();
+        }
+        if (!next.render_hints || typeof next.render_hints !== "object" || Array.isArray(next.render_hints)) {
+          next.render_hints = {};
+        }
+        if (!Object.prototype.hasOwnProperty.call(next.render_hints, "suppress_instruction_list_when_task_cards_present")) {
+          next.render_hints.suppress_instruction_list_when_task_cards_present = false;
+        }
+        if (!Object.prototype.hasOwnProperty.call(next.render_hints, "keep_instruction_summary_above_cards")) {
+          next.render_hints.keep_instruction_summary_above_cards = true;
+        }
+        touched += 1;
+        return next;
+      });
+
+      if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
+      else section.content = rows;
+    });
+    return touched;
   }
 
   function pageRowAssessmentSignature(row) {
@@ -30136,9 +30692,14 @@
       briefCtx.config
     );
     if (!semantics.cognitionCompositionActive) {
+      var sequencingTouchedNoCognition = applySequencingInteractionMetadataToPageActivities(next, upstream);
       if (framingFieldsMerged > 0) {
         if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
         next.metadata.self_directed_framing_fields_merged = framingFieldsMerged;
+      }
+      if (sequencingTouchedNoCognition > 0) {
+        if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
+        next.metadata.sequencing_interaction_metadata_rows = sequencingTouchedNoCognition;
       }
       return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
     }
@@ -30149,7 +30710,8 @@
       cognitionActivitySuppressed: false,
       cognitionAssessmentDominancePrevented: false,
       cognitionFieldsMerged: 0,
-      duplicateAssessmentRowsRemoved: 0
+      duplicateAssessmentRowsRemoved: 0,
+      sequencingInteractionRowsTouched: 0
     };
     next.sections = normalizePageSectionIdsForCognition(next.sections);
     next.sections.forEach(function (section) {
@@ -30172,6 +30734,10 @@
       trace.cognitionFieldsMerged = (trace.cognitionFieldsMerged || 0) + framingFieldsMerged;
     }
     trace.duplicateAssessmentRowsRemoved = stripDuplicateAssessmentRowsFromLearningActivities(next);
+    trace.sequencingInteractionRowsTouched = applySequencingInteractionMetadataToPageActivities(
+      next,
+      upstream
+    );
     if (trace.duplicateAssessmentRowsRemoved > 0) trace.cognitionActivitySuppressed = true;
     next.sections = reorderPageSectionsForCognitionParity(next.sections, semantics);
     if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
@@ -30466,12 +31032,25 @@
         Array.isArray(options.pageSections) && options.pageSections.length
           ? options.pageSections
           : pageSectionsArray;
-      return {
+      var pageProfile =
+        parsed && parsed.page_profile ? String(parsed.page_profile) : "";
+      var strictLearnerExportAutoEnable =
+        !!pageBodyFromSectionsArray &&
+        String(pageProfile || "").toLowerCase().trim() === "learner";
+      var explicitSequencingPolicyToggle = Object.prototype.hasOwnProperty.call(
+        options,
+        "enableSequencingInteractionPolicy"
+      );
+      var enableSequencingInteractionPolicy = explicitSequencingPolicyToggle
+        ? options.enableSequencingInteractionPolicy === true
+        : strictLearnerExportAutoEnable;
+      var baseRenderOpts = {
         cleanupInlineMarkdown: true,
         suppressInternalMetadata: true,
         pageSections: pageSectionsForRender,
         strictCompositionClosure: !!pageBodyFromSectionsArray,
-        pageProfile: parsed && parsed.page_profile ? String(parsed.page_profile) : "",
+        pageProfile: pageProfile,
+        enableSequencingInteractionPolicy: enableSequencingInteractionPolicy,
         cognitionProfile:
           parsed && parsed.metadata && parsed.metadata.cognition_profile && typeof parsed.metadata.cognition_profile === "object"
             ? parsed.metadata.cognition_profile
@@ -30485,6 +31064,9 @@
                     ? String(parsed.assessment_blueprint.feedback_display)
                     : ""))
       };
+      return Object.assign({}, baseRenderOpts, {
+        sequencingPolicy: resolveSequencingPolicy(baseRenderOpts, pageProfile)
+      });
     }
     function shouldSkipPageBodySectionKey(sectionKey) {
       if (!pageBodyFromSectionsArray) return false;
@@ -31760,6 +32342,17 @@
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
+    prismTestApi.normalizeActivityInteractionMetadata = normalizeActivityInteractionMetadata;
+    prismTestApi.computeStableSeed = computeStableSeed;
+    prismTestApi.deterministicShuffle = deterministicShuffle;
+    prismTestApi.resolveSequencingPolicy = resolveSequencingPolicy;
+    prismTestApi.shouldApplySequencingPolicy = shouldApplySequencingPolicy;
+    prismTestApi.getCanonicalItemOrder = getCanonicalItemOrder;
+    prismTestApi.getLearnerItemOrderForRender = getLearnerItemOrderForRender;
+    prismTestApi.shouldSuppressInstructionList = shouldSuppressInstructionList;
+    prismTestApi.orderTaskCardItemsForRender = orderTaskCardItemsForRender;
+    prismTestApi.applySequencingInteractionMetadataToPageActivities =
+      applySequencingInteractionMetadataToPageActivities;
     prismTestApi.buildWorkflowBundle = buildWorkflowBundle;
     prismTestApi.importWorkflowsAndPrompts = importWorkflowsAndPrompts;
     prismTestApi.setWorkflowsForTest = function (workflows) {

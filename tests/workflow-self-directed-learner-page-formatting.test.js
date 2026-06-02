@@ -281,6 +281,9 @@ test("DLA prompt: timeline sequencing alignment scaffold for self-directed learn
   assert.match(prompt, /timeline sequencing alignment \(auto-applied\)/i);
   assert.match(prompt, /must not already be in chronological order/i);
   assert.match(prompt, /unordered event list for learner sequencing/i);
+  assert.match(prompt, /activity_interaction_type to sequencing or ranking/i);
+  assert.match(prompt, /ordering\.canonical_order/i);
+  assert.match(prompt, /learner_display_order/i);
 });
 
 test("GAM prompt: timeline sequencing alignment scaffold for self-directed learner page", () => {
@@ -298,6 +301,7 @@ test("GAM prompt: timeline sequencing alignment scaffold for self-directed learn
   );
   assert.match(prompt, /timeline sequencing alignment \(auto-applied\)/i);
   assert.match(prompt, /deliberately mixed or non-chronological order/i);
+  assert.match(prompt, /structured entries \(prefer item_id\/title\/instruction fields\)/i);
 });
 
 test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {

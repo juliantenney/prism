@@ -1,0 +1,58 @@
+{
+  "artifact_type": "page",
+  "title": "Chronology Practice Page",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Put these in order",
+          "activity_interaction_type": "sequencing",
+          "ordering": {
+            "canonical_order": ["Event A", "Event B", "Event C"],
+            "learner_display_order": ["Event C", "Event A", "Event B"],
+            "learner_display_order_strategy": "deterministic_shuffle",
+            "shuffle_seed_key": "fixture-seq-a1"
+          },
+          "learner_task": "Put these in order from earliest to latest.",
+          "learner_instructions": ["Event A", "Event B", "Event C"],
+          "materials": {
+            "task_cards": [
+              { "title": "Event A", "instruction": "A detail" },
+              { "title": "Event B", "instruction": "B detail" },
+              { "title": "Event C", "instruction": "C detail" }
+            ]
+          },
+          "render_hints": {
+            "suppress_instruction_list_when_task_cards_present": true,
+            "keep_instruction_summary_above_cards": true
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "Discuss implications",
+          "activity_interaction_type": "discussion",
+          "learner_task": "Discuss one implication with a partner.",
+          "learner_instructions": ["Share one key point", "Give one example"],
+          "materials": {
+            "task_cards": [
+              { "title": "Prompt 1", "instruction": "Pick your strongest evidence." },
+              { "title": "Prompt 2", "instruction": "Explain why it matters." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "learning_sequence",
+      "heading": "Session timeline",
+      "content": [
+        { "activity_id": "A1", "start_minute": 0, "duration_minutes": 12, "learner_actions": "Sequence events." },
+        { "activity_id": "A2", "start_minute": 12, "duration_minutes": 8, "learner_actions": "Discuss implications." }
+      ]
+    }
+  ]
+}

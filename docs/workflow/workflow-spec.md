@@ -210,3 +210,47 @@ When workflows include page-oriented learning design steps:
 Renderer-specific behavior is documented in:
 
 - `docs/architecture/renderer-export-behavior.md`
+
+## Sequencing Interaction Policy Rollout (V1)
+
+The sequencing/ranking learner-order policy is rollout-gated.
+
+- Policy key:
+  - `enableSequencingInteractionPolicy` (boolean render option), or
+  - `sequencingPolicy.enabled` (equivalent object form)
+- Current rollout stage:
+  - **enabled for strict learner exports only**
+  - disabled elsewhere by default (facilitator/instructor/default render paths)
+
+Expected behavior when enabled:
+- Applies only to activity rows marked as `activity_interaction_type: sequencing|ranking`
+- Learner-facing task-card order follows `ordering.learner_display_order` when present
+- `ordering.canonical_order` remains internal correctness metadata and is not used as learner display order
+- Duplicate learner item enumeration may be suppressed when task cards represent the same sequencing set
+- Short learner task/instruction framing text should remain visible above activity cards
+
+Guardrails:
+- No policy effect when disabled
+- No suppression for non-sequencing/non-ranking activity rows
+- Legacy rows use conservative fallback matching; no suppression unless confidence is high
+- Renderer consumes metadata only and must not mutate activity metadata
+
+Activation path and rollback:
+- Activation path:
+  - strict learner exports (page sections-array export path with `page_profile = learner`) auto-set `enableSequencingInteractionPolicy: true`
+  - explicit render option still takes precedence for manual control
+- Rollback:
+  - pass `enableSequencingInteractionPolicy: false` in export/render options to disable immediately
+  - no schema rollback required; metadata fields remain backward-compatible when policy is off
+
+Rationale:
+- Fixes learner-facing sequencing leakage and duplicate list/card enumeration where metadata supports it
+- Limits risk by keeping facilitator/default rendering unchanged
+
+Known limitations:
+- Legacy rows without stable item IDs may fall back to strict text-overlap checks
+- Policy currently targets sequencing/ranking only (not classification/discussion)
+
+Future expansion path:
+- After additional fixture validation, consider default enablement for broader learner export surfaces
+- Keep non-learner profiles opt-in unless pedagogy requirements change

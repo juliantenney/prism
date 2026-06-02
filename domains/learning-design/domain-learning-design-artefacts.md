@@ -124,6 +124,23 @@ A set of designed tasks that require learner engagement.
   - template
   - sample_output
 
+### Sequencing/Ranking Interaction Metadata (optional)
+- Purpose: separate internal canonical correctness from learner-facing display order for sequencing/ranking interactions.
+- `activity_interaction_type`:
+  - Controlled values include: `sequencing`, `ranking`, `classification`, `discussion`, `analysis`, `practice`, `reflection`.
+  - Use when an activity requires a specific interaction pattern.
+- `ordering` object (optional):
+  - `canonical_order`: canonical correct order kept for internal correctness and answer-preservation logic.
+  - `learner_display_order`: learner-facing order projection (for example, shuffled list) used for display only.
+  - `learner_display_order_strategy`: descriptor of how learner order was derived (for example, `deterministic_shuffle` or `canonical`).
+  - `shuffle_seed_key`: optional stable key used to reproduce deterministic learner-facing order.
+- `render_hints` object (optional):
+  - `suppress_instruction_list_when_task_cards_present`: if true, list-style instruction item repetition may be suppressed when equivalent task cards are rendered.
+  - `keep_instruction_summary_above_cards`: if true, short instructional framing remains visible above task cards even when duplicate lists are suppressed.
+- Contract boundary:
+  - Canonical correctness must remain preserved separately from learner-facing presentation order.
+  - Render hints are advisory metadata for renderer policy consumption and should not alter core activity membership.
+
 ---
 
 ## 6. activity_materials

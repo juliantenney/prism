@@ -337,6 +337,19 @@ They provide a consistent way to structure workflows and ensure that learning de
 }
 ```
 
+### Sequencing/Ranking Metadata Semantics
+- `Design Learning Activities` may emit `activity_interaction_type` and optional `ordering`/`render_hints` metadata on activity rows.
+- `Generate Activity Materials` may reference the same interaction metadata and should avoid collapsing canonical order into learner-facing item order.
+- `Construct Learning Sequence` remains the source of timing/order flow across activities; sequencing metadata on activity rows is for interaction-level correctness and learner display projection.
+- `Design Page` should preserve these metadata fields when present so downstream rendering policy can distinguish:
+  - canonical correctness (`ordering.canonical_order`)
+  - learner-facing order (`ordering.learner_display_order`)
+  - presentation hints (`render_hints.*`)
+- Producer contract for sequencing/ranking rows:
+  - Prefer stable item identifiers (`item_id`/`event_id`) in both `ordering.canonical_order` and `ordering.learner_display_order`.
+  - Keep identifier sets aligned across `learner_instructions`, `task_cards`, and ordering metadata.
+  - Keep `ordering.canonical_order` internal correctness-focused; `ordering.learner_display_order` is the learner-visible sequence only.
+
 ### Workflow Brief Config
 ```json
 {

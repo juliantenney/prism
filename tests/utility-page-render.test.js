@@ -401,6 +401,16 @@ test("slice 31-6: assessment presentation CSS markers in export", () => {
   assert.match(html, /\.util-assessment-item--formative\{/);
 });
 
+test("v1.1.1: pedagogic figure accommodation after activity header", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "ld-climate-misconception-discussion-page.json");
+  assert.match(html, /\.util-figure\.util-figure--pedagogic\{/);
+  assert.match(
+    html,
+    /\.util-activity-header\+\.util-figure--pedagogic[^}]*margin-top:12px/
+  );
+});
+
 test("page shape: plain bullets then checkbox list → separate list kinds preserved", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-bullets-then-checkbox.json");
@@ -444,23 +454,55 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   const tableCount = (body.match(/<table>/gi) || []).length;
   assert.ok(tableCount >= 3, "expected template + scenario tables, got " + tableCount);
 
+  assert.match(body, /util-worked-example/);
+  assert.match(body, /Modelled interval judgement/);
+  assert.match(body, /Move to reuse/);
+  assert.match(body, /Step → meaning/i);
+  assert.match(body, /Use this when/i);
+  assert.match(body, /In activities:/i);
+  assert.match(body, /util-purpose-task-cue/);
+  assert.match(body, /util-session-phase-cue/);
+  assert.match(body, /util-material-role-action/);
+  assert.match(body, /util-material-role-model/);
+  assert.match(body, /util-material-role-practice/);
+  assert.match(body, /util-material-role-thinking/);
+  assert.match(body, /util-material-role-deliverable/);
+  assert.match(body, /util-material-role-checkpoint/);
+
   const a2 = sectionScope(body, "Confidence interval template");
   assert.match(a2, /Confidence Interval Template/);
   assert.match(a2, /Confidence Levels/);
+  assert.match(a2, /Method captures mean 95% of time/);
   assert.match(a2, /Both tables completed/);
-  assert.match(a2, /frequentist interpretation/);
+  assert.match(a2, /Check your thinking:/i);
+  assert.match(a2, /both interpretations sound plausible/i);
+  assert.match(a2, /interval gets wider when n increases/i);
+  assert.match(a2, /util-material-role-close[\s\S]*Closure/i);
 
   const a4 = sectionScope(body, "Interval comparison scenario");
+  assert.match(a4, /util-material-role-scenario/);
   assert.match(a4, /util-scenario-card/);
   assert.match(a4, /Interval Comparison/);
   assert.match(a4, /\(66\.08, 73\.92\)/);
-  assert.match(a4, /Quote intervals from the table/);
+  assert.match(a4, /Check your thinking:/i);
+  assert.match(a4, /interprets what overlap implies/i);
 
   const assess = sectionScope(body, "Formative assessment check");
   assert.match(assess, /util-assessment-prompt/);
   assert.match(assess, /util-assessment-choices/);
   assert.match(assess, /<ol>/);
-  assert.match(assess, /<li>Decision\?<\/li>/);
+  assert.match(assess, /<li>What is your decision about H0\?<\/li>/);
+  assert.match(assess, /appropriate procedure here/i);
   assert.doesNotMatch(assess, /<p>[^<]*1\.\s*Decision\?[^<]*2\.\s*What does p-value/i);
   assert.match(assess, /Reject H0/);
+  assert.match(assess, /util-assessment-explanation/);
+  assert.match(assess, /practical significance/i);
+  assert.match(assess, /harder to defend/i);
+
+  const tips = sectionScope(body, "Study tips");
+  assert.match(tips, /what changed in your understanding/i);
+  assert.match(tips, /hardest to justify/i);
+  assert.match(a4, /Debrief/i);
+  assert.match(a4, /Which evidence is stronger/i);
+  assert.match(a2, /Closure/i);
 });

@@ -128,7 +128,7 @@ test("climate misconception page: typed materials and output block", () => {
   assert.match(activities, /util-prompt-set/);
   assert.match(activities, /util-checklist-block/);
   assert.match(activities, /util-checkbox-list/);
-  const outputMatch = activities.match(/<div class="util-output-block">([\s\S]*?)<\/div>/i);
+  const outputMatch = activities.match(/<div class="util-output-block util-material-role-deliverable">([\s\S]*?)<\/div>/i);
   assert.ok(outputMatch, "expected util-output-block div");
   const outputHtml = outputMatch[1];
   assert.match(outputHtml, /<ul\b/);

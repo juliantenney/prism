@@ -163,7 +163,7 @@ test("29-2: peer-instruction cognition fields render as labelled util-cognition 
   assert.ok(r && !r.error, r && r.error);
   const html = String(r.html || "");
   const activities = sectionScope(html, "Learning Activities");
-  assert.match(activities, /class="util-cognition util-cognition--revision"/);
+  assert.match(activities, /util-cognition util-material-role-thinking util-cognition--revision/);
   assert.match(activities, /util-cognition__label/);
   assert.match(activities, /util-cognition__body/);
   assert.match(activities, /data-cognition-field="initial_position_prompt"/);

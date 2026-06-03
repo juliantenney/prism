@@ -119,7 +119,7 @@ function activityIdsFromFixture(fixturePath) {
 
 function countElementsWithClass(html, className, tagPattern) {
   const tags = tagPattern || "article|div";
-  const re = new RegExp("<(?:" + tags + ')\\s+class="' + className + '"', "gi");
+  const re = new RegExp("<(?:" + tags + ')\\s+class="[^"]*\\b' + className + '\\b', "gi");
   return (html.match(re) || []).length;
 }
 

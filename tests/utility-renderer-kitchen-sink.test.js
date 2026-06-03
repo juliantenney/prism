@@ -232,7 +232,7 @@ test("kitchen sink fixture (26-4): material headings use icon-heading alignment"
 test("kitchen sink fixture (26-5): typographic polish and assessment identity", () => {
   const { html } = renderKitchenSink(api);
   assert.match(html, /\.util-assessment-section\{/);
-  assert.match(html, /<section class="util-assessment-section">/);
+  assert.match(html, /<section class="util-assessment-section util-material-role-checkpoint">/);
   assert.match(html, /util-assessment-item/);
   assert.match(html, /util-assessment-number/);
   assert.match(html, /util-assessment-options/);
@@ -300,6 +300,8 @@ test("slice 31-4: activity materials use util-materials-stack and material-table
   assert.match(html, /util-activity-materials[\s\S]{0,400}util-materials-stack/);
   assert.match(html, /util-table-scroll util-material-table/);
   assert.match(html, /util-template-block util-material-template/);
+  assert.match(html, /util-material-role-practice/);
+  assert.match(html, /util-material-role-checkpoint/);
   assert.match(html, /util-prompt-set util-material-prompt/);
   assert.match(html, /\.util-materials-stack\{/);
   assert.match(html, /\.util-table-scroll\.util-material-table\{/);

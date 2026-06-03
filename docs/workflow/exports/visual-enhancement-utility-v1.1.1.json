@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "prompts": [
+    {
+      "id": "prompt-veu-01-analyse-opportunities-v111",
+      "title": "Analyse pedagogic visual opportunities",
+      "body": "Context:\nYou receive complete Utilities-rendered learner HTML (or a stable HTML export from the Design Page / Utilities path).\n\nTask:\nAnalyse the DOM and instructional flow. Emit a JSON artefact listing tiered visual opportunities (essential / valuable / optional / decorative-rejected) aligned to Sprint 32 charter tiers.\n\nInstructions:\n- Do not rewrite instructional prose or change pedagogy.\n- Reference existing activity titles, materials, tables, and tasks by DOM anchor (class names, section headings).\n- For each opportunity include: anchor_description, suggested_figure_type, tier, pedagogic_justification, placement_hint (which preferred slot from the embed-step contract applies).\n- Placement hints must respect Sprint 31 order: header → framing → task → materials → assessment.\n- Never recommend inserting figures inside .util-activity-header, .util-badge-row, headings, .util-icon-heading, or .util-section-heading.\n- Prefer slots: after .util-activity-header; after .util-activity-framing; inside .util-activity-materials when tied to a worksheet/table; between util-table-scroll blocks when comparing data.\n- Reject decorative stock imagery and hero banners.\n- Output JSON only, no commentary outside the JSON object.",
+      "model": "",
+      "temperature": null,
+      "maxTokens": null,
+      "tags": ["visual-enhancement", "utility", "v1.1.1"],
+      "createdAt": 1748908800000,
+      "updatedAt": 1748908800000,
+      "usageCount": 0,
+      "source": "manual",
+      "versions": [],
+      "notes": "Sprint 32 analysis step; placement hints align with embed prompt v1.1.1."
+    },
+    {
+      "id": "prompt-veu-02-generate-images-v111",
+      "title": "Generate pedagogic figure images",
+      "body": "Context:\nYou receive the visual opportunity JSON from the prior analysis step and any author constraints.\n\nTask:\nProduce image generation briefs (and invoke the configured image output path) for opportunities at essential or valuable tier only.\n\nInstructions:\n- One brief per approved figure; include alt-text draft and caption draft.\n- Educational diagram style: labelled, calm, high contrast, no stock photography.\n- Do not pass image bytes or base64 through this prompt — file artefacts only.\n- Skip decorative-rejected and optional tier unless the author explicitly requests optional figures.\n- Map each image artefact to the opportunity anchor_id for the embed step.",
+      "model": "",
+      "temperature": null,
+      "maxTokens": null,
+      "tags": ["visual-enhancement", "utility", "v1.1.1"],
+      "createdAt": 1748908800000,
+      "updatedAt": 1748908800000,
+      "usageCount": 0,
+      "source": "manual",
+      "versions": [],
+      "notes": "Generation step; artefact handoff to embed step."
+    },
+    {
+      "id": "prompt-veu-03-embed-html-v111",
+      "title": "Embed pedagogic figures into learner HTML",
+      "body": "Context:\nYou receive Utilities-rendered learner HTML (complete document or stable body fragment) and one or more pedagogic image artefacts (files or refs with alt text and caption metadata). You may also receive the visual opportunity JSON and generation briefs from upstream steps.\n\nTask:\nInsert accessible <figure class=\"util-figure util-figure--pedagogic\"> elements with embedded images into the HTML. Preserve all existing markup, classes, text, and Sprint 31 activity order. Output the complete enhanced HTML document only — no commentary.\n\nFigure placement — HARD RULES (DOM contract):\n- NEVER insert a figure inside: .util-activity-header, .util-badge-row, any h1–h4, .util-icon-heading, .util-section-heading, or inline heading/icon wrappers.\n- Figures MUST be block-level siblings after the relevant header/framing block — NEVER children of .util-activity-header (.util-activity-header is a flex container; figures inside it break heading/badge layout).\n- WRONG: <div class=\"util-activity-header\"><h3>…</h3><figure …>…</figure><div class=\"util-badge-row\">…</div></div>\n- CORRECT: <div class=\"util-activity-header\"><h3>…</h3><div class=\"util-badge-row\">…</div></div><figure class=\"util-figure util-figure--pedagogic\">…</figure>\n\nPreferred placement for activity-level visuals (choose the first applicable slot):\n1. Immediately AFTER the closing tag of .util-activity-header and BEFORE .util-activity-framing (when the figure orients the activity).\n2. AFTER .util-activity-framing and BEFORE .util-activity-task--primary (when the figure supports framing content).\n3. INSIDE .util-activity-materials only when the figure directly supports a worksheet, table, util-table-scroll block, or named material — not as a generic filler.\n\nDo NOT place figures:\n- Between h3 and .util-badge-row (inside the header).\n- Between the primary task instruction (.util-activity-task--primary / What to do) and the worksheet or table that task references — keep task and material adjacent.\n- Inside flex header containers, .util-icon-heading, or .util-section-heading.\n- Inside .util-assessment-section unless the figure is essential to the assessment stem and placement is approved in upstream analysis.\n\nMarkup and accessibility:\n- Wrap each image: <figure class=\"util-figure util-figure--pedagogic\"><img src=\"…\" alt=\"…\" /><figcaption>…</figcaption></figure>\n- Alt text describes pedagogic content; caption adds context without duplicating alt verbatim.\n- Embed image bytes only at this assembly step (data URLs or inline src as required for self-contained HTML). Do not invent new instructional text.\n\nDensity:\n- Prefer fewer, higher-value figures. Do not add figures to every activity by default.\n- When multiple figures target one activity, stack them in the preferred slot order above; do not split header and badges with a figure.\n\nValidation before output:\n- Scan the result: no <figure> element may be a descendant of .util-activity-header or .util-badge-row.\n- Each activity h3 must remain visually above its activity-level figure (figure as following sibling block, not flex child of header).",
+      "model": "",
+      "temperature": null,
+      "maxTokens": null,
+      "tags": ["visual-enhancement", "utility", "v1.1.1"],
+      "createdAt": 1748908800000,
+      "updatedAt": 1748908801000,
+      "usageCount": 0,
+      "source": "manual",
+      "versions": [],
+      "notes": "v1.1.1: fixes header-insertion bug (climate enhanced page)."
+    }
+  ],
+  "workflows": [
+    {
+      "id": "workflow-visual-enhancement-utility-v111",
+      "name": "Visual Enhancement Utility v1.1.1",
+      "description": "Augments Utilities-exported learner HTML with tiered pedagogic figures for offline self-study. v1.1.1 enforces DOM placement so figures never sit inside activity headers.",
+      "artifacts": "Rendered learner HTML (Utilities export), image file artefacts, optional visual opportunity JSON",
+      "scopeAndConstraints": "Presentation augmentation only — no LD redesign, no renderer changes, no base64 in analysis/generation prompts. Respect Sprint 31 activity order and Sprint 36 figure accommodation CSS.",
+      "workflowInputs": [
+        "learner_html",
+        "figure_artefacts"
+      ],
+      "workflowOutputs": [
+        "enhanced_learner_html"
+      ],
+      "selectedDomains": ["general"],
+      "steps": [
+        {
+          "id": "step-veu-01-analyse",
+          "title": "Analyse pedagogic visual opportunities",
+          "roleLabel": "Analysis",
+          "promptId": "prompt-veu-01-analyse-opportunities-v111",
+          "inputKind": "text",
+          "inputFromStepId": "",
+          "outputName": "visual_opportunities",
+          "notes": "Tiered JSON opportunities; placement hints must align with Step 3 embed HARD RULES."
+        },
+        {
+          "id": "step-veu-02-generate",
+          "title": "Generate pedagogic figure images",
+          "roleLabel": "Generation",
+          "promptId": "prompt-veu-02-generate-images-v111",
+          "inputKind": "text",
+          "inputFromStepId": "step-veu-01-analyse",
+          "outputName": "figure_artefacts",
+          "notes": "File artefacts only; link each image to opportunity anchor for Step 3 embed."
+        },
+        {
+          "id": "step-veu-03-embed-html",
+          "title": "Embed pedagogic figures into learner HTML",
+          "roleLabel": "HTML assembly",
+          "promptId": "prompt-veu-03-embed-html-v111",
+          "inputKind": "text",
+          "inputFromStepId": "step-veu-02-generate",
+          "outputName": "enhanced_learner_html",
+          "notes": "v1.1.1 placement contract — figures as block siblings after .util-activity-header, never inside flex header."
+        }
+      ],
+      "createdAt": 1748908800000,
+      "updatedAt": 1748908801000
+    },
+    {
+      "id": "workflow-visual-enhancement-utility-embed-only-v111",
+      "name": "Visual Enhancement Utility (embed only) v1.1.1",
+      "description": "Single-step augment: embed pedagogic figures into Utilities HTML. Same v1.1.1 placement contract as the 3-step utility Step 3 / author Step 1 embed pass.",
+      "artifacts": "Rendered learner HTML, figure image artefacts with alt/caption",
+      "scopeAndConstraints": "Embed step only. Figures must not be placed inside .util-activity-header or .util-badge-row.",
+      "workflowInputs": ["learner_html", "figure_artefacts"],
+      "workflowOutputs": ["enhanced_learner_html"],
+      "selectedDomains": ["general"],
+      "steps": [
+        {
+          "id": "step-veu-embed-only-01",
+          "title": "Embed pedagogic figures into learner HTML",
+          "roleLabel": "HTML assembly",
+          "promptId": "prompt-veu-03-embed-html-v111",
+          "inputKind": "text",
+          "inputFromStepId": "",
+          "outputName": "enhanced_learner_html",
+          "notes": "Step 1 in run UI. v1.1.1 header placement fix."
+        }
+      ],
+      "createdAt": 1748908800000,
+      "updatedAt": 1748908801000
+    }
+  ]
+}

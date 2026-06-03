@@ -7359,6 +7359,96 @@
     "intellectual_coherence_bridge"
   ];
 
+  function buildSelfDirectedLearnerActionRhetoricPromptBlock() {
+    return [
+      "",
+      "Learner-action rhetoric (auto-applied):",
+      "- learner_task: start with an observable learner verb (complete, compare, decide, justify, sketch, record, classify) — not passive coverage (\"learn about\", \"understand\", \"explore the topic\").",
+      "- learner_task: state what the learner does with materials (fill, mark, quote, rank, write) — materials supply data/scaffolds; the task states the action on them.",
+      "- expected_output: describe evidence of completion the learner could show (filled table, labelled diagram, short written judgement with quoted values) — not topic summaries or \"understanding of X\".",
+      "- support_note: one concise misconception guard or evidence rule (1–2 sentences) — not step-by-step tutoring, hints that answer the task, or facilitator choreography.",
+      "- activity_preamble and cognition fields orient thinking; they must not duplicate the full learner_task or replace expected_output.",
+      "- purpose: one sentence on the learning move (compare, interpret, apply) — not a restatement of the activity title.",
+      "- Materials must not embed the full task answer or pre-filled judgement cells unless the activity is an explicit worked example with faded rows.",
+      "- Assessment stems (question / stem / prompt): require a decision, justification, or interpretation — avoid label-only recall (\"What is X called?\") when a judgement is possible.",
+      "- Formative MCQ sets: pair stems with numbered sub-questions when multiple reasoning steps are needed; options test decisions, not vocabulary labels alone.",
+      "- Preserve support_note and expected_output on each activity when composing pages — do not drop or merge them into materials prose."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedWorkedExampleFadingPromptBlock() {
+    return [
+      "",
+      "Worked-example and faded-support (auto-applied):",
+      "- On multi-activity self-study pages, sequence support when the brief allows: (1) modelled reasoning — (2) faded partial completion — (3) independent transfer in a new context.",
+      "- required_materials: specify which material is modelled (type sample_output, worked_example, or template with one worked row), which is faded (template/table with some cells filled, rationale or judgement left blank), and which is independent (scenario, new data, fewer cues).",
+      "- Modelled example (materials.worked_example, sample_output, or one labelled template row): show expert reasoning moves step-by-step — why each judgement or calculation step matters; link procedure to meaning (e.g. frequentist method vs single-interval probability).",
+      "- Faded example (materials.template, prompt_set, or table): pre-fill only the minimum needed to demonstrate the move (one row, one column, or one worked judgement); leave remaining cells empty for the learner_task.",
+      "- Independent transfer: later activity uses similar task shape with less scaffolding (scenario, new numbers, or checklist without model row) — learner_task must say what is new, not repeat the modelled row verbatim.",
+      "- Do not pre-fill entire tables or answer keys in faded/independent activities; never dump full solutions except in the dedicated modelled material.",
+      "- Label modelled sections clearly (### Worked example, ### Model row, or column headers like \"Example (filled)\" / \"Your turn (empty)\").",
+      "- For single-row modelled examples in materials.worked_example, prefer labelled prose (**Statement:** / **Reason:**) or one short multiline table in materials.template — avoid cramming full pipe tables into worked_example strings that bypass table normalisation.",
+      "- Keep worked examples concise (typically one row or one short chain of reasoning); prefer one reasoning move over long answer keys.",
+      "- Generate Activity Materials: realise DLA specifications — if specification asks for worked_example or sample_output, emit full reasoning prose; if specification asks for faded template, include partial rows only as specified.",
+      "- Design Page: preserve upstream worked_example, sample_output, and partially filled template strings verbatim; do not flatten modelled rows into learner_task.",
+      "- support_note on faded/independent activities: cue the reasoning move to reuse from the model (1 sentence), not a second worked solution.",
+      "- intellectual_coherence_bridge may reference the prior modelled/faded activity when sequencing 2+ activities."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedEmbeddedFeedbackMisconceptionPromptBlock() {
+    return [
+      "",
+      "Embedded feedback and misconception interruption (auto-applied):",
+      "- Anticipate one likely misconception per activity (topic-specific); interrupt it before learners consolidate the error.",
+      "- support_note: prefer a concise \"Check your thinking:\" cue — state what a problematic answer would indicate and point back to the concept/procedure link (1–2 sentences). Not step-by-step tutoring or full solutions.",
+      "- materials.prompt_set: include 1–3 short self-check bullets (e.g. \"If both interpretations sound plausible, ask whether the claim is about this one interval or the long-run method\") — not answer keys.",
+      "- materials.checklist: optional inline guard on one item (\"If you cannot name X from the case, revisit Y\") — keep items actionable, not essay prompts.",
+      "- expected_output: name quality signals that expose weak reasoning (mentions evidence and practical significance; quotes endpoints) without giving the completed answer.",
+      "- Formative assessment items: explanation / explanation_or_rationale — one sentence on the error pattern and how to correct the thinking; link procedure to meaning; not a worked solution or long answer key.",
+      "- study_tips: brief misconception interrupts where useful (one line each); not remediation pathways or adaptive branching language.",
+      "- Avoid: adaptive feedback, tutoring loops, hidden remediation branches, \"if wrong go to…\" pathways, and pre-filled judgement cells that answer the task (except explicit modelled/faded rows).",
+      "- Design Page: preserve support_note, prompt_set self-check bullets, checklist guards, and assessment explanations verbatim — do not merge them into materials prose.",
+      "- Generate Activity Materials: when required_materials.specification requests misconception checks or self-check prompts, realise them in prompt_set or checklist text as specified."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedConceptProcedureIntegrationPromptBlock() {
+    return [
+      "",
+      "Concept/procedure integration (auto-applied):",
+      "- Procedural tasks must feel meaningful: pair each procedural move with a short conceptual purpose (step → meaning), not mechanical steps alone.",
+      "- knowledge_summary / key ideas: one line per major idea on how it will be used in activities (preview the procedure link) — not a long theory chapter; do not paste the whole summary into each activity.",
+      "- materials.worked_example, template, checklist, prompt_set: include concise step → meaning lines (e.g. \"Judge Correct? → separates procedure claims from single-interval probability\"; \"Quote endpoints → overlap depends on bounds, not midpoints only\").",
+      "- Add \"Use this when…\" cues where learners must choose a procedure or interpretation (1 short bullet per choice point).",
+      "- learner_task: state the procedure and the conceptual question it answers (what the move means), not only \"fill the table\".",
+      "- expected_output: require both observable result and brief interpretation (judgement, meaning, or when the procedure applies) — not completion-only checklists.",
+      "- required_materials.specification: when a material is procedural, name the conceptual purpose the material must make visible (step → meaning row, column header, or labelled bullet list).",
+      "- Formative assessment: at least one item should ask why a method or interpretation is appropriate, not only what answer it yields; explanation links procedure to concept in one sentence.",
+      "- intellectual_coherence_bridge may link an activity procedure back to a key idea named in knowledge_summary (one sentence).",
+      "- Avoid: long theory dumps, duplicating entire knowledge_summary inside activity materials, concept labels without learner action, procedural checklists with no purpose line.",
+      "- Design Page: preserve step → meaning bullets, Use this when cues, and knowledge_summary preview lines verbatim.",
+      "- Generate Activity Materials: realise step → meaning and Use this when sections when required_materials.specification requests concept/procedure integration."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedMetacognitiveJudgementPromptBlock() {
+    return [
+      "",
+      "Metacognitive closure and evaluative judgement (auto-applied):",
+      "- Close multi-activity self-study pages with concise consolidation — not diary reflection, therapeutic prompts, or tutoring dialogue.",
+      "- study_tips (page end): 2–4 short bullets mixing closure (\"What changed in your understanding?\", \"Which interpretation was hardest to justify?\", \"What would make your conclusion more reliable?\") and transfer (\"Where else would this approach apply?\", \"What assumptions would fail in another context?\").",
+      "- Final or transfer activities: add 2–3 closure bullets in materials (### Closure or ### Debrief under template/scenario/prompt_set) OR use transfer_or_application_task / self_explanation_prompt (one sentence each) — not long reflective essays.",
+      "- expected_output on culminating activities: require evaluative judgement (compare explanations, justify method choice, identify stronger evidence, critique weak reasoning, distinguish statistical vs practical significance) in addition to completed artefacts.",
+      "- support_note: may cue what evidence would strengthen a conclusion (1 sentence) — not generic \"reflect on your learning\".",
+      "- Formative assessment: include at least one judgement-oriented sub-question (compare interpretations, defend a method, rate evidence strength, separate statistical vs practical significance); explanation may ask learners to evaluate a weak peer-style answer in one sentence.",
+      "- materials.checklist / prompt_set: optional final items for closure (\"Name the weakest step in your reasoning\", \"State one assumption your conclusion depends on\").",
+      "- Avoid: generic reflect-on-learning filler, adaptive coaching, conversational tutoring, new reflection artefact types, and closure sections longer than 4 bullets.",
+      "- Design Page: preserve study_tips, closure/debrief bullets, transfer_or_application_task, and judgement-oriented assessment stems verbatim.",
+      "- Generate Activity Materials: realise closure/debrief sections when required_materials.specification requests metacognitive closure or evaluative judgement."
+    ].join("\n");
+  }
+
   function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
     return [
       "",
@@ -7409,8 +7499,9 @@
       '  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",',
       '  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",',
       '  "self_explanation_prompt": "Before checking the model row, write one sentence on which text you find more convincing and why.",',
-      '  "learner_task": "Complete the comparison table with purpose and one key difference per work.",',
-      '  "expected_output": "Filled comparison table with brief notes.",',
+      '  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",',
+      '  "expected_output": "A filled comparison table a peer could review — each row has purpose text and one cited difference.",',
+      '  "support_note": "Purpose is the author\'s aim, not a plot summary; difference must compare the two works, not repeat the same sentence twice.",',
       '  "required_materials": [{ "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." }]',
       "}"
     ].join("\n");
@@ -7482,6 +7573,7 @@
       "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
       "- Preserve study_orientation, intellectual_frame, intellectual_coherence_bridge, and PEL reasoning fields when present upstream — do not summarise them away.",
       "- learner_task (or learner_instructions when that is the upstream key) remains the actionable instruction block — preserve both when present.",
+      "- expected_output and support_note (or support_notes) must copy verbatim when present upstream — do not merge into materials or drop.",
       "- Do not strip or summarise away cognition-orientation fields."
     ].join("\n");
   }
@@ -7535,11 +7627,16 @@
       "",
       "Self-directed learner-page reasoning materials (auto-applied):",
       "- Materials must support the DLA reasoning fields — learner-facing only (see material voice guard).",
+      "- When required_materials specifies worked_example, sample_output, or a modelled template row, realise it with visible reasoning (why each step) — not answer-only cells.",
+      "- When required_materials specifies a faded template/table, pre-fill only the rows/cells named in the specification; leave all other response cells empty.",
       "- Include one short worked micro-example where a task uses tables, mapping, or multi-step analysis (labelled sample row or worked cause→effect pair) — topic-specific, not generic.",
       "- For source-based activities: provide quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
       "- Optional static generative retrieval in material body: \"Before you re-read…\" or \"Without looking back, write…\" — not adaptive or branching.",
       "- Do not repeat learner_task, activity_preamble, study_orientation, reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, or disciplinary_lens sentences in material bodies — those appear on the activity card; realise them as tables, spans, and short worked examples only.",
-      "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in a narrative block and a table."
+      "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in a narrative block and a table.",
+      "- When required_materials specifies prompt_set self-check or misconception-interrupt bullets, realise them as learner-facing bullets — concise \"if X, revisit Y\" cues, not full tutoring.",
+      "- When required_materials specifies step → meaning pairs, Use this when cues, or concept/procedure integration, realise them as labelled bullets or table column hints in template/checklist/worked_example — one short meaning line per procedural move.",
+      "- When required_materials specifies closure, debrief, or evaluative-judgement prompts, realise them as ### Closure or ### Debrief bullet lists (2–3 items) — concise judgement/transfer questions, not diary prompts."
     ].join("\n");
   }
 
@@ -8052,7 +8149,7 @@
     var isDla = isWorkflowStepDesignLearningActivities(context);
     var isDesignPage = isWorkflowStepDesignPage(context);
     var isGam = isWorkflowStepGenerateActivityMaterials(context);
-    if (!isDla && !isDesignPage && !isGam) return draftBody;
+    var isAssessmentProducer = isWorkflowStepAssessmentProducer(context);
     var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
     var resolved =
       briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
@@ -8086,7 +8183,15 @@
       resolved,
       base
     );
-    if (!applyDlaScaffolds && !applyDesignPagePreservation && !applyGamScaffolds) {
+    var applyLearnerActionRhetoric =
+      shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) &&
+      (isDla || isDesignPage || isGam || isAssessmentProducer);
+    if (
+      !applyDlaScaffolds &&
+      !applyDesignPagePreservation &&
+      !applyGamScaffolds &&
+      !applyLearnerActionRhetoric
+    ) {
       return draftBody;
     }
     if (isDla && applyDlaScaffolds) {
@@ -8138,6 +8243,30 @@
       if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
+    }
+    if (applyLearnerActionRhetoric && !/learner-action rhetoric \(auto-applied\)/i.test(draftBody)) {
+      draftBody = (draftBody + buildSelfDirectedLearnerActionRhetoricPromptBlock()).trim();
+    }
+    if (applyLearnerActionRhetoric && !/worked-example and faded-support \(auto-applied\)/i.test(draftBody)) {
+      draftBody = (draftBody + buildSelfDirectedWorkedExampleFadingPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/embedded feedback and misconception interruption \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedEmbeddedFeedbackMisconceptionPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/concept\/procedure integration \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedConceptProcedureIntegrationPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/metacognitive closure and evaluative judgement \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedMetacognitiveJudgementPromptBlock()).trim();
     }
     return draftBody;
   }
@@ -23275,6 +23404,18 @@
       });
   }
 
+  /** Sprint 36-2/36-3: pacing + role cue classes for in-material phase subheads. */
+  function utilityMaterialSessionPhaseCueClass(title) {
+    var t = String(title || "").trim().replace(/\s+/g, " ");
+    var base = " util-session-phase-cue util-material-role-phase";
+    if (!t) return "";
+    if (/^step\s*→\s*meaning$/i.test(t)) return base + " util-material-role-orient";
+    if (/^self-check/i.test(t)) return base + " util-material-role-selfcheck";
+    if (/^use this when/i.test(t)) return base + " util-material-role-orient";
+    if (/^closure$/i.test(t) || /^debrief$/i.test(t)) return base + " util-material-role-close";
+    return "";
+  }
+
   function utilityIsEmptyValue(value) {
     if (value == null) return true;
     if (typeof value === "string") return !String(value).trim();
@@ -24654,8 +24795,9 @@
     var body = String(assessmentBodyHtml || "").trim();
     if (!body) return "";
     return (
-      '<section class="util-assessment-section">' +
+      '<section class="util-assessment-section util-material-role-checkpoint">' +
       String(sectionHeadingHtml || "") +
+      utilityRenderVisualAffordanceHook("assessment-before-checkpoint", {}) +
       '<div class="util-assessment-list">' +
       body +
       "</div></section>"
@@ -24663,13 +24805,204 @@
   }
   function utilityRenderSupportNoteParagraph(inlineHtml) {
     return (
-      '<aside class="util-support-note" role="note">' +
+      '<aside class="util-support-note util-material-role-guidance" role="note">' +
       utilityRenderMaterialIcon("support_note") +
       '<div class="util-support-note-body"><span class="util-support-note-label">Support note:</span> ' +
       inlineHtml +
       "</div></aside>"
     );
   }
+
+  /** Sprint 36: hidden DOM anchors for downstream visual augmentation (not decorative figures). */
+  function utilityRenderVisualAffordanceHook(slot, options) {
+    var slotId = String(slot || "").trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+    if (!slotId) return "";
+    var opts = options && typeof options === "object" ? options : {};
+    var subject = utilityFirstScalar([opts.subject, opts.activityTitle, opts.title]);
+    var activityId = utilityFirstScalar([opts.activityId, opts.activity_id]);
+    var attrs =
+      ' class="util-visual-affordance util-visual-affordance--' +
+      utilityEscapeHtml(slotId) +
+      '" data-visual-slot="' +
+      utilityEscapeHtml(slotId) +
+      '" hidden aria-hidden="true"';
+    if (subject) {
+      attrs += ' data-visual-subject="' + utilityEscapeHtmlAttribute(String(subject)) + '"';
+    }
+    if (activityId) {
+      attrs += ' data-visual-activity-id="' + utilityEscapeHtmlAttribute(String(activityId)) + '"';
+    }
+    return "<div" + attrs + "></div>";
+  }
+
+  function utilityMaterialsWarrantVisualAffordances(materials) {
+    if (utilityIsEmptyValue(materials)) return false;
+    if (typeof materials !== "object" || Array.isArray(materials)) return false;
+    var keys = Object.keys(materials);
+    for (var i = 0; i < keys.length; i += 1) {
+      var k = String(keys[i] || "").toLowerCase();
+      if (!k || utilityIsEmptyValue(materials[keys[i]])) continue;
+      if (
+        k === "task_cards" ||
+        k === "cards" ||
+        k === "scenarios" ||
+        k === "study_scenarios" ||
+        k === "scenario" ||
+        k === "scenario_set" ||
+        k === "template" ||
+        k === "templates" ||
+        k === "analysis_template" ||
+        k === "worksheet_template" ||
+        k === "worked_example" ||
+        k === "analysis_table" ||
+        k === "impact_table" ||
+        k === "table"
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function utilityActivityWarrantsAfterHeaderAffordance(row, materials) {
+    if (!utilityMaterialsWarrantVisualAffordances(materials)) return false;
+    if (row && typeof row === "object" && !Array.isArray(row)) {
+      if (
+        !utilityIsEmptyValue(row.transfer_or_application_task) ||
+        !utilityIsEmptyValue(row.reasoning_orientation) ||
+        !utilityIsEmptyValue(row.intellectual_coherence_bridge)
+      ) {
+        return true;
+      }
+    }
+    return utilityMaterialsWarrantVisualAffordances(materials);
+  }
+
+  function utilityFramingWarrantsVisualAffordance(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    return (
+      !utilityIsEmptyValue(row.study_orientation) ||
+      !utilityIsEmptyValue(row.reasoning_orientation) ||
+      !utilityIsEmptyValue(row.reasoning_orientation_prompt) ||
+      !utilityIsEmptyValue(row.intellectual_coherence_bridge) ||
+      !utilityIsEmptyValue(row.evidence_use_prompt) ||
+      !utilityIsEmptyValue(row.conceptual_contrast_prompt)
+    );
+  }
+
+  function utilityEndIndexOfBalancedDiv(html, startIndex) {
+    var source = String(html || "");
+    var idx = Number(startIndex);
+    if (!Number.isFinite(idx) || idx < 0 || idx >= source.length) return -1;
+    if (!/^<div\b/i.test(source.slice(idx))) return -1;
+    var depth = 0;
+    var divRe = /<(\/?)div\b[^>]*>/gi;
+    divRe.lastIndex = idx;
+    var tagMatch;
+    while ((tagMatch = divRe.exec(source))) {
+      depth += tagMatch[1] ? -1 : 1;
+      if (depth === 0) return divRe.lastIndex;
+    }
+    return -1;
+  }
+
+  function utilityMaterialsTailWarrantsNextBlockAffordance(tail) {
+    return /^\s*(?=<h4[^>]*class="[^"]*util-material-heading|<article class="util-template-block|<div class="util-template-block|<div class="util-prompt-set|<div class="util-checklist-block)/i.test(
+      String(tail || "")
+    );
+  }
+
+  function utilityAugmentMaterialsHtmlWithVisualAffordances(html, affordanceContext) {
+    var out = String(html || "");
+    if (!String(out).trim()) return out;
+    var ctx = affordanceContext && typeof affordanceContext === "object" ? affordanceContext : {};
+
+    if (out.indexOf("util-materials-stack") !== -1) {
+      out = out.replace(
+        /(<div class="util-materials-stack">)/i,
+        "$1" + utilityRenderVisualAffordanceHook("materials-entry", ctx)
+      );
+    } else {
+      out = utilityRenderVisualAffordanceHook("materials-entry", ctx) + out;
+    }
+
+    var cardGridOpenRe = /<div class="util-card-grid"/gi;
+    var cardGridEnds = [];
+    var cardGridMatch;
+    while ((cardGridMatch = cardGridOpenRe.exec(out))) {
+      var cardGridEnd = utilityEndIndexOfBalancedDiv(out, cardGridMatch.index);
+      if (cardGridEnd < 0) continue;
+      if (!utilityMaterialsTailWarrantsNextBlockAffordance(out.slice(cardGridEnd))) continue;
+      cardGridEnds.push(cardGridEnd);
+    }
+    for (var cg = cardGridEnds.length - 1; cg >= 0; cg -= 1) {
+      out =
+        out.slice(0, cardGridEnds[cg]) +
+        utilityRenderVisualAffordanceHook("materials-card-grid-after", ctx) +
+        out.slice(cardGridEnds[cg]);
+    }
+
+    var tableOpenRe = /<div class="util-table-scroll util-material-table"/gi;
+    var tableSpans = [];
+    var tableOpenMatch;
+    while ((tableOpenMatch = tableOpenRe.exec(out))) {
+      var tableEnd = utilityEndIndexOfBalancedDiv(out, tableOpenMatch.index);
+      if (tableEnd < 0) continue;
+      tableSpans.push({ end: tableEnd });
+    }
+    for (var ti = tableSpans.length - 2; ti >= 0; ti -= 1) {
+      var insertAt = tableSpans[ti].end;
+      out =
+        out.slice(0, insertAt) +
+        utilityRenderVisualAffordanceHook("materials-table-pair-between", ctx) +
+        out.slice(insertAt);
+    }
+
+    out = out.replace(
+      /(<article class="util-template-block[^>]*util-material-role-practice[^>]*>)/i,
+      function (match, openTag) {
+        return openTag + utilityRenderVisualAffordanceHook("materials-practice", ctx);
+      }
+    );
+    out = out.replace(
+      /(<div class="util-template-block[^>]*util-material-role-practice[^>]*>)/i,
+      function (match, openTag) {
+        return openTag + utilityRenderVisualAffordanceHook("materials-practice", ctx);
+      }
+    );
+
+    out = out.replace(
+      /(<div class="util-worked-example util-material-role-model[^>]*>)/i,
+      function (match, openTag) {
+        return openTag + utilityRenderVisualAffordanceHook("materials-model", ctx);
+      }
+    );
+
+    var scenarioOpenRe = /<div class="util-scenario-list"/gi;
+    var scenarioEnds = [];
+    var scenarioMatch;
+    while ((scenarioMatch = scenarioOpenRe.exec(out))) {
+      var scenarioEnd = utilityEndIndexOfBalancedDiv(out, scenarioMatch.index);
+      if (scenarioEnd < 0) continue;
+      var scenarioTail = out.slice(scenarioEnd);
+      if (
+        !utilityMaterialsTailWarrantsNextBlockAffordance(scenarioTail) &&
+        !/^\s*$/i.test(scenarioTail)
+      ) {
+        continue;
+      }
+      scenarioEnds.push(scenarioEnd);
+    }
+    for (var si = scenarioEnds.length - 1; si >= 0; si -= 1) {
+      out =
+        out.slice(0, scenarioEnds[si]) +
+        utilityRenderVisualAffordanceHook("materials-scenario", ctx) +
+        out.slice(scenarioEnds[si]);
+    }
+
+    return out;
+  }
+
   function utilityMaterialTypeFromKeyHint(key) {
     var k = String(key || "").toLowerCase().trim();
     if (k === "task_cards" || k === "cards") return "task_card";
@@ -26059,10 +26392,11 @@
         });
         if (!items.length) return;
         blocks.push(
-          '<div class="util-cognition ' +
+          '<div class="util-cognition util-material-role-thinking ' +
             group.modifier +
             '" role="region" aria-label="Cognition prompts">' +
             items.join("") +
+            utilityRenderVisualAffordanceHook("materials-thinking", {}) +
             "</div>"
         );
       });
@@ -26213,10 +26547,17 @@
       pushPelOrientationCue("Structuring your response", argumentStructureHint);
       pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
       if (!blocks.length) return "";
+      var framingHook = utilityFramingWarrantsVisualAffordance(row)
+        ? utilityRenderVisualAffordanceHook("activity-framing-after", {
+            subject: utilityFirstScalar([row.title, row.activity_title, row.name]),
+            activityId: utilityFirstScalar([row.activity_id, row.activityId, row.id])
+          })
+        : "";
       return (
         '<div class="util-activity-framing" role="complementary" aria-label="Study support">' +
         blocks.join("") +
-        "</div>"
+        "</div>" +
+        framingHook
       );
     }
     function renderLearningActivitiesBlocks(activityRows, renderContext) {
@@ -26451,7 +26792,7 @@
               var suppressAuto = bodyStartsWithScenarioHeading(bodyClean);
               var block = utilityRenderMarkdownBlock(bodyClean);
               return block
-                ? ('<div class="util-scenario-card">' + (suppressAuto ? "" : utilityRenderScenarioTitleHtml(label)) + block + "</div>")
+                ? ('<div class="util-scenario-card util-material-role-scenario">' + (suppressAuto ? "" : utilityRenderScenarioTitleHtml(label)) + block + "</div>")
                 : "";
             }
             if (entry && typeof entry === "object") {
@@ -26511,7 +26852,7 @@
               }
               var body = stageHtml || (bodyRaw ? utilityRenderMarkdownBlock(String(bodyRaw)) : utilityRenderObject(entry, 0, renderOpts));
               return body
-                ? ('<div class="util-scenario-card">' + (suppressAutoObj ? "" : utilityRenderScenarioTitleHtml(labelText)) + body + "</div>")
+                ? ('<div class="util-scenario-card util-material-role-scenario">' + (suppressAutoObj ? "" : utilityRenderScenarioTitleHtml(labelText)) + body + "</div>")
                 : "";
             }
             return "";
@@ -26594,7 +26935,7 @@
             } else {
               var promptBlock = utilityRenderMarkdownBlock(rawPrompt);
               return promptBlock
-                ? ('<div class="util-prompt-set util-material-prompt">' + promptBlock + "</div>")
+                ? ('<div class="util-prompt-set util-material-prompt util-material-role-inquiry">' + promptBlock + "</div>")
                 : "";
             }
           } else if (Array.isArray(value)) {
@@ -26614,7 +26955,7 @@
           var listHtml = renderBulletArray(prompts, { plainLabels: true, stripStandaloneBold: true });
           if (!listHtml) return "";
           return (
-            '<div class="util-prompt-set util-material-prompt">' +
+            '<div class="util-prompt-set util-material-prompt util-material-role-inquiry">' +
             (heading ? ("<h5>" + utilityEscapeHtml(String(heading)) + "</h5>") : "") +
             listHtml +
             "</div>"
@@ -27053,7 +27394,11 @@
                 .map(function (chunk) {
                   if (!chunk.title && !chunk.body) return "";
                   var titleHtml = chunk.title
-                    ? '<h5 class="util-card-subheading">' + utilityEscapeHtml(chunk.title) + "</h5>"
+                    ? '<h5 class="util-card-subheading' +
+                      utilityMaterialSessionPhaseCueClass(chunk.title) +
+                      '">' +
+                      utilityEscapeHtml(chunk.title) +
+                      "</h5>"
                     : "";
                   var bodyHtml = chunk.body
                     ? renderPlainStructuredText(chunk.body, {
@@ -27318,7 +27663,13 @@
                     }
                     var hb4 = cleanResidualHeadingMarkers(String(headingBullet4[1] || "").trim());
                     var hb4Split = hb4.match(/^(.{1,120}?)\s+((?:Consider|Use|Then|Next|Now|After|Before|Review|Discuss|Complete|Answer|Write|Reflect|Identify|Apply)\b.*)$/);
-                    grouped.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(hb4Split ? hb4Split[1] : hb4) + "</h5>");
+                    grouped.push(
+                      '<h5 class="util-card-subheading' +
+                        utilityMaterialSessionPhaseCueClass(hb4Split ? hb4Split[1] : hb4) +
+                        '">' +
+                        utilityRenderMarkdownInline(hb4Split ? hb4Split[1] : hb4) +
+                        "</h5>"
+                    );
                     if (hb4Split && hb4Split[2]) grouped.push("<p>" + utilityRenderMarkdownInline(hb4Split[2]) + "</p>");
                     return;
                   }
@@ -27334,7 +27685,13 @@
                     }
                     var hb3 = cleanResidualHeadingMarkers(String(headingBullet3[1] || "").trim());
                     var hb3Split = hb3.match(/^(.{1,120}?)\s+((?:Consider|Use|Then|Next|Now|After|Before|Review|Discuss|Complete|Answer|Write|Reflect|Identify|Apply)\b.*)$/);
-                    grouped.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(hb3Split ? hb3Split[1] : hb3) + "</h5>");
+                    grouped.push(
+                      '<h5 class="util-card-subheading' +
+                        utilityMaterialSessionPhaseCueClass(hb3Split ? hb3Split[1] : hb3) +
+                        '">' +
+                        utilityRenderMarkdownInline(hb3Split ? hb3Split[1] : hb3) +
+                        "</h5>"
+                    );
                     if (hb3Split && hb3Split[2]) grouped.push("<p>" + utilityRenderMarkdownInline(hb3Split[2]) + "</p>");
                     return;
                   }
@@ -27421,13 +27778,25 @@
               } else if (trimmedLines.length === 1 && /^####\s+/.test(trimmedLines[0])) {
                 var h4Split = parseHeadingWithTail(trimmedLines[0], "####");
                 if (h4Split && h4Split.heading) {
-                  html.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(h4Split.heading) + "</h5>");
+                  html.push(
+                    '<h5 class="util-card-subheading' +
+                      utilityMaterialSessionPhaseCueClass(h4Split.heading) +
+                      '">' +
+                      utilityRenderMarkdownInline(h4Split.heading) +
+                      "</h5>"
+                  );
                   if (h4Split.tail) html.push("<p>" + utilityRenderMarkdownInline(h4Split.tail) + "</p>");
                 }
               } else if (trimmedLines.length === 1 && /^###\s+/.test(trimmedLines[0])) {
                 var h3Split = parseHeadingWithTail(trimmedLines[0], "###");
                 if (h3Split && h3Split.heading) {
-                  html.push('<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(h3Split.heading) + "</h5>");
+                  html.push(
+                    '<h5 class="util-card-subheading' +
+                      utilityMaterialSessionPhaseCueClass(h3Split.heading) +
+                      '">' +
+                      utilityRenderMarkdownInline(h3Split.heading) +
+                      "</h5>"
+                  );
                   if (h3Split.tail) html.push("<p>" + utilityRenderMarkdownInline(h3Split.tail) + "</p>");
                 }
               } else if (trimmedLines.length === 1 && /^##\s+/.test(trimmedLines[0])) {
@@ -27635,7 +28004,7 @@
                   .map(function (entry) { return checklistRowFromPlainLine(entry); })
                   .filter(function (x) { return !!x; });
                 if (checklistRows.length) {
-                  return '<div class="util-checklist-block">' + renderCheckboxList(checklistRows) + "</div>";
+                  return '<div class="util-checklist-block util-material-role-checklist">' + renderCheckboxList(checklistRows) + "</div>";
                 }
               }
               var asBlocks = value
@@ -27679,7 +28048,7 @@
                 .filter(function (x) { return !!x; });
               if (topChecklistRows.length) {
                 var topChecklistHtml =
-                  '<div class="util-checklist-block">' + renderCheckboxList(topChecklistRows) + "</div>";
+                  '<div class="util-checklist-block util-material-role-checklist">' + renderCheckboxList(topChecklistRows) + "</div>";
                 if (valueHeading && !cfg.suppressOwnHeading) {
                   return "<h5>" + utilityEscapeHtml(String(valueHeading)) + "</h5>" + topChecklistHtml;
                 }
@@ -27718,7 +28087,7 @@
                 .filter(function (x) { return !!String(x || "").trim(); })
                 .join("");
               if (checklistSections) {
-                return '<div class="util-checklist-block">' + checklistSections + "</div>";
+                return '<div class="util-checklist-block util-material-role-checklist">' + checklistSections + "</div>";
               }
             }
             if (Array.isArray(value.sections) && (hint === "template" || hint === "templates" || hint === "escalation_template")) {
@@ -27740,7 +28109,7 @@
                         renderCardScopedMarkdown(secBodyRaw);
                       if (!String(secBodyHtml || "").trim() && !secTitle) return "";
                       return (
-                        '<article class="util-template-block util-material-template">' +
+                        '<article class="util-template-block util-material-template util-material-role-practice">' +
                         (secTitle ? "<h5>" + utilityEscapeHtml(secTitle) + "</h5>" : "") +
                         (secBodyHtml || "") +
                         '<div class="util-template-note-line" aria-hidden="true"></div></article>'
@@ -27750,13 +28119,13 @@
                       var singleLineTableHtml = renderPlainStructuredText(secRaw, { materialHint: "table" });
                       if (singleLineTableHtml && /<table>/i.test(singleLineTableHtml)) {
                         return (
-                          '<article class="util-template-block util-material-template">' +
+                          '<article class="util-template-block util-material-template util-material-role-practice">' +
                           singleLineTableHtml +
                           '<div class="util-template-note-line" aria-hidden="true"></div></article>'
                         );
                       }
                       return (
-                        '<article class="util-template-block util-material-template"><h5>' +
+                        '<article class="util-template-block util-material-template util-material-role-practice"><h5>' +
                         utilityEscapeHtml(secRaw) +
                         '</h5><div class="util-template-note-line" aria-hidden="true"></div></article>'
                       );
@@ -27766,7 +28135,7 @@
                       renderCardScopedMarkdown(secRaw);
                     if (!String(secMultilineBody || "").trim()) return "";
                     return (
-                      '<article class="util-template-block util-material-template">' +
+                      '<article class="util-template-block util-material-template util-material-role-practice">' +
                       secMultilineBody +
                       '<div class="util-template-note-line" aria-hidden="true"></div></article>'
                     );
@@ -27789,7 +28158,7 @@
                   }
                   if (!secBody) secBody = renderMaterialValue(firstNonEmptyRaw([sec.content, sec.text, sec.body]), "content");
                   if (!secBody) return "";
-                  return '<article class="util-template-block util-material-template">' +
+                  return '<article class="util-template-block util-material-template util-material-role-practice">' +
                     (secTitle ? ("<h5>" + utilityEscapeHtml(String(secTitle)) + "</h5>") : "") +
                     secBody +
                     '<div class="util-template-note-line" aria-hidden="true"></div>' +
@@ -27812,7 +28181,7 @@
                   if (utilityIsEmptyValue(rawVal)) return "";
                   var sectionBody = renderMaterialValue(rawVal, pair[0]);
                   if (!sectionBody) return "";
-                  return '<article class="util-template-block util-material-template"><h5>' +
+                  return '<article class="util-template-block util-material-template util-material-role-practice"><h5>' +
                     utilityEscapeHtml(pair[1]) +
                     "</h5>" +
                     sectionBody +
@@ -28013,7 +28382,7 @@
           var analysisTemplateHtml = renderMaterialValue(analysisTemplateValue, "template", { materialHint: "template" });
           if (analysisTemplateHtml && analysisTemplateHtml.indexOf("util-template-block") === -1) {
             analysisTemplateHtml =
-              '<article class="util-template-block util-material-template">' + analysisTemplateHtml + "</article>";
+              '<article class="util-template-block util-material-template util-material-role-practice">' + analysisTemplateHtml + "</article>";
           }
           if (analysisTemplateHtml) {
             parts.push(
@@ -28029,7 +28398,7 @@
           var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
           if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistValue);
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
-            checklistHtml = '<div class="util-checklist-block">' + checklistHtml + "</div>";
+            checklistHtml = '<div class="util-checklist-block util-material-role-checklist">' + checklistHtml + "</div>";
           }
           if (checklistHtml && utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)) {
             checklistHtml = checklistHtml.replace(
@@ -28050,7 +28419,7 @@
           var evaluationChecklistHtml = renderMaterialValue(evaluationChecklistValue, "checklist", { materialHint: "checklist" });
           if (!evaluationChecklistHtml) evaluationChecklistHtml = renderPromptSetBlocks(evaluationChecklistValue);
           if (evaluationChecklistHtml && evaluationChecklistHtml.indexOf("util-checklist-block") === -1) {
-            evaluationChecklistHtml = '<div class="util-checklist-block">' + evaluationChecklistHtml + "</div>";
+            evaluationChecklistHtml = '<div class="util-checklist-block util-material-role-checklist">' + evaluationChecklistHtml + "</div>";
           }
           if (evaluationChecklistHtml) {
             parts.push(
@@ -28316,20 +28685,31 @@
             headerBadges.push('<span class="util-badge util-badge-group">' + utilityEscapeHtml("Grouping: " + prettyGroupingValue(grouping)) + "</span>");
           }
           parts.push('<div class="util-activity-header"><h3>' + utilityEscapeHtml(title) + "</h3>" + (headerBadges.length ? ('<div class="util-badge-row">' + headerBadges.join("") + "</div>") : "") + "</div>");
+          var affordanceCtx = {
+            subject: title,
+            activityId: activityIdLabel
+          };
+          if (utilityActivityWarrantsAfterHeaderAffordance(row, materials)) {
+            parts.push(utilityRenderVisualAffordanceHook("activity-after-header", affordanceCtx));
+          }
           var activityComparable = createActivityComparableRegistry();
           var framingHtml = renderActivityFramingForActivity(row, activityComparable);
           if (framingHtml) {
             parts.push(framingHtml);
           }
           if (purposeTask && !activityComparable.isDuplicate(purposeTask)) {
-            parts.push("<p><strong>Task:</strong> " + utilityRenderMarkdownInline(summarizeOneSentence(String(purposeTask))) + "</p>");
+            parts.push(
+              '<p class="util-purpose-task-cue"><strong>Task:</strong> ' +
+                utilityRenderMarkdownInline(summarizeOneSentence(String(purposeTask))) +
+                "</p>"
+            );
             activityComparable.markSeen(purposeTask);
           }
           var learnerTaskSource = activityComparableSourceText(learnerTaskRaw);
           var learnerTaskHtml = renderListFromInstructions(learnerTaskRaw);
           if (learnerTaskHtml) {
             parts.push(
-              '<div class="util-activity-task util-activity-task--primary">' +
+              '<div class="util-activity-task util-activity-task--primary util-material-role-action">' +
               utilityRenderIconHeading("h4", "What to do", "what_to_do", "util-material-heading") +
               learnerTaskHtml +
               "</div>"
@@ -28355,6 +28735,7 @@
           }
           var materialsHtml = renderMaterialsForActivity(materials, row);
           if (materialsHtml) {
+            materialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(materialsHtml, affordanceCtx);
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
           if (expectedOutput) {
@@ -28362,7 +28743,7 @@
               utilityRenderMarkdownBlock(String(expectedOutput)) ||
               "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
             parts.push(
-              '<div class="util-output-block">' +
+              '<div class="util-output-block util-material-role-deliverable">' +
               utilityRenderIconHeading("h4", "Output", "output", "util-output-heading util-icon-heading") +
               expectedOutputBody +
               "</div>"
@@ -30398,7 +30779,9 @@
     var body = String(html || "").trim();
     if (!body) return "";
     if (utilityIsWorkedExampleMaterialHint(hint) && body.indexOf("util-worked-example") === -1) {
-      return '<div class="util-worked-example util-material-block">' + body + "</div>";
+      return (
+        '<div class="util-worked-example util-material-role-model util-material-block">' + body + "</div>"
+      );
     }
     return body;
   }
@@ -30625,8 +31008,103 @@
       getUtilityPagePresentationCssV31_4() +
       getUtilityPagePresentationCssV31_5() +
       getUtilityPagePresentationCssV31_6() +
-      getUtilityPagePresentationCssV31_7()
+      getUtilityPagePresentationCssV31_7() +
+      getUtilityPagePresentationCssV31_8() +
+      getUtilityPagePresentationCssV31_9() +
+      getUtilityPagePresentationCssV31_10() +
+      getUtilityPagePresentationCssV31_11()
     );
+  }
+
+  function getUtilityPagePresentationCssV31_11() {
+    return [
+      "@media print{.util-activity-materials .util-card-grid{break-inside:auto;page-break-inside:auto}.util-activity-materials .util-card-grid .util-task-card{break-inside:avoid-page;page-break-inside:avoid}}",
+      "@media print{.util-activity-header{break-after:avoid-page;page-break-after:avoid}.util-activity-header+.util-purpose-task-cue,.util-activity-header+.util-activity-framing{break-before:avoid-page}}",
+      "@media print{.util-assessment-section.util-material-role-checkpoint{break-inside:avoid-page}.h2.util-section-heading:has(.util-section-icon--study-tips){margin-top:28px;padding-top:16px;border-top:2px solid #cbd5e1}}",
+      "@media print{article.util-task-block:has(.util-table-scroll){break-inside:auto;page-break-inside:auto}}",
+      "@media (max-width:720px){article.util-task-block{padding:16px 14px}.util-activity-header{flex-wrap:wrap;gap:8px}.util-badge-row{flex:1 1 100%;justify-content:flex-start}.util-material-role-thinking.util-cognition{padding:10px 12px}.util-support-note.util-material-role-guidance{padding:8px 10px;font-size:.875rem}.util-assessment-section.util-material-role-checkpoint{padding-top:12px}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_10() {
+    return [
+      ".util-visual-affordance{display:none!important}",
+      ".util-figure.util-figure--pedagogic{max-width:100%;margin:16px 0 20px}",
+      ".util-figure.util-figure--pedagogic img{max-width:100%;height:auto;display:block;margin:0 auto 8px;border-radius:4px}",
+      ".util-activity-header+.util-figure--pedagogic,.util-activity-header+.util-figure.util-figure--pedagogic{margin-top:12px}",
+      ".util-activity-framing+.util-figure--pedagogic,.util-activity-framing+.util-figure.util-figure--pedagogic{margin-top:10px}",
+      ".util-knowledge-summary img,.util-activity-materials img,.util-scenario-card img,.util-worked-example img{max-width:100%;height:auto;display:block;margin:14px auto 18px;border-radius:4px}",
+      ".util-knowledge-summary figure,.util-activity-materials figure,.util-scenario-card figure{margin:16px 0 20px}",
+      ".util-knowledge-summary figure img,.util-activity-materials figure img,.util-scenario-card figure img{margin:0 auto 8px}",
+      ".util-knowledge-summary figcaption,.util-activity-materials figcaption,.util-scenario-card figcaption{font-size:.8125rem;line-height:1.45;color:#64748b;text-align:center;margin:0 0 4px}",
+      ".util-activity-materials .util-table-scroll+img,.util-activity-materials .util-table-scroll+figure{margin-top:18px}",
+      ".util-activity-materials .util-card-grid+img,.util-activity-materials .util-card-grid+figure,.util-activity-materials .util-card-grid+.util-template-block{margin-top:20px}",
+      ".util-activity-materials .util-cognition+img,.util-activity-materials .util-cognition+figure{margin-top:16px}",
+      "@media print{.util-knowledge-summary img,.util-activity-materials img,.util-scenario-card img{max-width:100%;page-break-inside:avoid}.util-knowledge-summary figure,.util-activity-materials figure,.util-scenario-card figure{break-inside:avoid-page}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_9() {
+    return [
+      ".util-material-role-action.util-activity-task--primary{border-left:3px solid #0f172a;background:#fff}",
+      ".util-material-role-action .util-material-heading,.util-material-role-action h4.util-icon-heading{color:#0f172a}",
+      ".util-material-role-thinking.util-cognition{border-color:#e5e7eb;background:#f9fafb;box-shadow:none}",
+      ".util-material-role-thinking.util-cognition--explain{border-left:2px solid #8b5cf6}",
+      ".util-material-role-thinking.util-cognition--transfer{border-left:2px solid #0d9488}",
+      ".util-material-role-thinking.util-cognition--uncertainty{border-left:2px solid #0891b2}",
+      ".util-material-role-thinking.util-cognition--scaffold{border-left:2px solid #64748b}",
+      ".util-material-role-thinking.util-cognition--revision{border-left:2px solid #6366f1}",
+      ".util-material-role-thinking .util-cognition__label{color:#475569;font-size:.68rem}",
+      ".util-material-role-model.util-worked-example{border-left:3px solid #94a3b8;background:#f8fafc;padding:12px 14px;border-radius:0 8px 8px 0}",
+      ".util-material-role-practice.util-template-block,.util-template-block.util-material-role-practice{border-style:dashed;border-left:3px solid #cbd5e1;background:#fefefe}",
+      ".util-material-role-practice .util-template-note-line{border-bottom-color:#cbd5e1}",
+      ".util-material-role-scenario.util-scenario-card{border-left:3px solid #14b8a6;background:#f9fdfc}",
+      ".util-scenario-card.util-material-role-scenario .util-scenario-title{color:#134e4a}",
+      ".util-material-role-inquiry.util-prompt-set,.util-prompt-set.util-material-role-inquiry{border-left:3px solid #93c5fd;background:#f8fafc}",
+      ".util-material-role-checklist.util-checklist-block{border-left:3px solid #64748b;background:#fafafa}",
+      ".util-material-role-phase.util-session-phase-cue{font-style:normal;letter-spacing:.05em}",
+      ".util-material-role-close.util-session-phase-cue{border-top-color:#d1d5db}",
+      ".util-material-role-selfcheck.util-session-phase-cue+ul{font-size:.875rem}",
+      ".util-material-role-orient.util-session-phase-cue{border-top-style:dotted}",
+      "h4.util-material-heading:not(.util-session-phase-cue){letter-spacing:.04em}",
+      ".util-card-subheading:not(.util-session-phase-cue){font-weight:600;color:#334155}",
+      ".util-material-role-deliverable.util-output-block{border-left:3px solid #4ade80;background:#fafefb;padding:12px 14px 14px}",
+      ".util-material-role-deliverable .util-output-heading,.util-output-block.util-material-role-deliverable h4{color:#166534}",
+      ".util-material-role-deliverable .util-output-icon{color:#22c55e}",
+      ".util-material-role-guidance.util-support-note{border-left:2px solid #cbd5e1;background:#f9fafb;color:#64748b}",
+      ".util-support-note.util-material-role-guidance .util-support-note-label{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase}",
+      ".util-assessment-section.util-material-role-checkpoint{padding-top:14px;margin-top:12px;border-top:2px solid #e0f2fe}",
+      ".util-material-role-checkpoint .util-assessment-list{margin-top:12px}",
+      ".util-material-role-checkpoint article.util-assessment-item{background:#f8fafc}",
+      ".util-activity-materials .util-material-role-model+.util-material-role-practice,.util-activity-materials .util-worked-example+.util-template-block{margin-top:14px}",
+      "@media print{.util-material-role-thinking,.util-material-role-model,.util-material-role-practice,.util-material-role-scenario,.util-material-role-deliverable,.util-material-role-guidance{background:#fff!important}.util-assessment-section.util-material-role-checkpoint{border-top-color:#ccc}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssV31_8() {
+    return [
+      "article.util-task-block+article.util-task-block{margin-top:28px}",
+      ".util-purpose-task-cue{font-size:.8125rem;line-height:1.45;color:#64748b;margin:4px 0 10px}",
+      ".util-purpose-task-cue strong{font-weight:600;color:#94a3b8}",
+      ".util-activity-framing+.util-purpose-task-cue,.util-activity-header+.util-purpose-task-cue{margin-top:2px}",
+      "article.util-task-block>.util-cognition{margin:14px 0 18px;padding:12px 14px;background:#f8fafc;border-color:#dbe4f0}",
+      "article.util-task-block>.util-cognition .util-cognition__label{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#475569}",
+      "article.util-task-block>.util-activity-materials{padding-top:18px;margin-top:8px}",
+      ".util-materials-stack .util-table-scroll.util-material-table+.util-table-scroll.util-material-table{margin-top:20px}",
+      ".util-card-subheading.util-session-phase-cue,.util-material-template .util-session-phase-cue{margin-top:20px;margin-bottom:6px;padding-top:12px;border-top:1px dashed #e2e8f0;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#475569}",
+      ".util-material-template>.util-card-subheading.util-session-phase-cue:first-of-type,.util-template-block>.util-card-subheading.util-session-phase-cue:first-child{margin-top:4px;padding-top:0;border-top:none}",
+      ".util-card-subheading.util-session-phase-cue+ul,.util-session-phase-cue+ul{margin-top:4px;margin-bottom:12px}",
+      "article.util-task-block>.util-activity-materials+.util-output-block,article.util-task-block>.util-cognition+.util-activity-materials+.util-output-block{margin-top:22px;padding-top:14px;border-top:1px solid #eef2f6}",
+      "article.util-task-block>.util-output-block+.util-support-note{margin-top:12px;padding-top:10px;border-top:1px dashed #f1f5f9}",
+      ".util-assessment-section{margin-bottom:28px}",
+      "h2.util-section-heading:has(.util-section-icon--study-tips){margin-top:38px;padding-top:18px;border-top:2px solid #e2e8f0}",
+      "h2.util-section-heading:has(.util-section-icon--study-tips)+ul,h2.util-section-heading:has(.util-section-icon--study-tips)+p{margin-top:6px}",
+      ".util-activity-materials .util-card-grid{margin-bottom:18px}",
+      ".util-scenario-card h3{margin-top:18px;padding-top:12px;border-top:1px dashed #e2e8f0;font-size:.8125rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#475569}",
+      ".util-scenario-card h3:first-child{margin-top:0;padding-top:0;border-top:none}",
+      "@media (max-width:720px){article.util-task-block+article.util-task-block{margin-top:22px}}",
+      "@media print{article.util-task-block+article.util-task-block{margin-top:20px}h2.util-section-heading:has(.util-section-icon--study-tips){break-before:auto}.util-card-subheading.util-session-phase-cue{break-before:auto;page-break-before:auto}}"
+    ].join("");
   }
 
   function getUtilityPagePresentationCssV31_7() {
@@ -33419,6 +33897,9 @@
       applyPageCompositionValidationForUtilitiesPage;
     prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
       applyPedagogicCognitionSemanticsToComposedPage;
+    prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
+    prismTestApi.utilityAugmentMaterialsHtmlWithVisualAffordancesForTest =
+      utilityAugmentMaterialsHtmlWithVisualAffordances;
     prismTestApi.resolvePedagogicCognitionCompositionSemantics =
       resolvePedagogicCognitionCompositionSemantics;
     prismTestApi.resolveWorkflowBriefContextForPageComposition =

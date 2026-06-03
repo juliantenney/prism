@@ -14,7 +14,8 @@
           { "name": "Historical Materialism", "definition": "The idea that economic conditions shape historical development and social structures." },
           { "name": "Alienation", "definition": "The disconnection workers experience from their labour, its products, and their own potential." }
         ],
-        "relationships": "Capitalism produces class divisions (bourgeoisie vs proletariat). Class divisions lead to class struggle."
+        "relationships": "Capitalism produces class divisions (bourgeoisie vs proletariat). Class divisions lead to class struggle.",
+        "use_in_activities": "Compare texts using purpose-and-difference moves; apply class struggle and alienation to the factory scenario."
       }
     },
     {
@@ -22,39 +23,69 @@
       "heading": "Learning Activities",
       "content": [
         {
+          "activity_id": "A2",
+          "title": "Modelled comparison row",
+          "duration_minutes": 10,
+          "purpose": "See how to fill one comparison row with purpose and difference.",
+          "activity_preamble": "Study the model row before completing the full comparison table.",
+          "learner_task": "Read the worked example, then write one sentence stating what makes the difference column defensible (not a plot summary).",
+          "materials": {
+            "worked_example": "### Model row: Manifesto vs Kapital\n| Work | Purpose (one line) | One difference |\n| Communist Manifesto | Mobilise workers for immediate political change | Short programme aimed at revolution now |\n\n### Step → meaning\n- Fill Purpose → states the author's aim (what the text tries to do), not plot events.\n- Fill One difference → contrasts the two works on a defensible dimension.\n\n**Move:** Purpose = author aim; difference = contrast between the two works."
+          },
+          "expected_output": "One sentence naming the comparison move.",
+          "support_note": "Check your thinking: if your difference reads like a plot summary, revisit purpose (author aim) vs narrative events."
+        },
+        {
           "activity_id": "A3",
           "title": "Comparing Marx's Major Works",
           "duration_minutes": 20,
-          "purpose": "Distinguish between Marx's key texts.",
-          "learner_task": "Complete the comparison table using prompts and identify differences and similarities.",
+          "purpose": "Complete the comparison using the modelled move.",
+          "activity_preamble": "The Manifesto row is modelled; add Das Kapital and refine the second row yourself.",
+          "intellectual_coherence_bridge": "Reuse the purpose-and-difference move from the model row for the remaining table entries.",
+          "learner_task": "Complete the comparison table: write purpose and one defensible difference per work using the prompts below.",
+          "expected_output": "A filled comparison table a peer could review — each row has purpose text, one cited difference, and a brief note on why that difference is defensible (not plot summary alone).",
+          "support_note": "Check your thinking: if the Kapital row copies the Manifesto difference, revisit how purpose and audience differ between the two works.",
           "materials": {
-            "comparison_prompts": "### Prompts\n\n- What is the purpose of each work?\n- Who is the audience?\n\n---\n\n- Key Difference: shorter political manifesto\n- Second Difference: longer economic analysis\n- Similarity: both critique capitalism"
-          }
+            "template": "### Step → meaning\n- Identify purpose per work → separates author aim from plot summary.\n- Name one difference → tests whether the same evidence supports different conclusions about each text.\n\n### Use this when…\n- Your difference could describe only one book → you have not yet compared the two works.\n\n### Comparison table\n| Work | Purpose | One difference |\n|------|---------|----------------|\n| Communist Manifesto | Mobilise workers for immediate political change | Short programme aimed at revolution now |\n| Das Kapital | | |\n\n### Prompts\n- What is the purpose of each work?\n- Who is the audience?\n- Key Difference: shorter political manifesto vs longer economic analysis\n- Second Difference: immediate programme vs systematic critique of capitalism\n- Similarity: both argue that capitalism shapes class relations\n\n### Self-check\n- If your purpose cell could fit either work, ask which author aim is specific to that text.\n- Check your thinking: a difference that only describes one book is not a comparison — name the contrast.\n\n### Closure\n- Which work was harder to compare fairly, and why?\n- What would make your purpose cells more reliable to a peer?"
+          },
+          "self_explanation_prompt": "After filling a row, say in one sentence why your difference is a comparison, not a summary of one book."
         },
         {
           "activity_id": "A4",
           "title": "Explaining Marx's Core Concepts",
           "duration_minutes": 15,
-          "purpose": "Apply Marx's ideas to a real-world scenario.",
-          "learner_task": "Read the scenario and write a short explanation using the checklist.",
+          "purpose": "Apply concepts independently to a factory scenario.",
+          "activity_preamble": "No model row — apply checklist terms directly to the case.",
+          "intellectual_coherence_bridge": "Move from comparing texts to applying concepts to a new scenario.",
+          "transfer_or_application_task": "Name one assumption in your factory explanation that might fail in a different workplace (one sentence).",
+          "learner_task": "Read the factory scenario and write a short explanation: work through each checklist item and end with one judgement about class struggle in the case.",
+          "expected_output": "A brief explanation (about 150–250 words) that uses checklist terms, cites one scenario detail, and ends with a defensible judgement — not generic definitions only.",
+          "support_note": "Check your thinking: if bourgeoisie and proletariat are named without a factory detail, revisit the scenario before writing your judgement.",
           "materials": {
             "checklist": [
               "## Checklist",
-              "Identify capitalism",
-              "Describe bourgeoisie",
-              "Describe proletariat",
-              "Explain class struggle",
-              "Explain alienation",
-              "Link to Industrial Revolution",
-              "Provide final judgement"
+              "Identify capitalism → names the economic system in the case",
+              "Describe bourgeoisie → who controls production in this factory",
+              "Describe proletariat → who sells labour under supervision",
+              "Explain class struggle → links the two groups' interests in the scenario",
+              "Explain alienation → connects disconnection from labour to a factory detail",
+              "Link to Industrial Revolution → situates the case historically (one sentence)",
+              "Provide final judgement — if you cannot cite one factory detail, revisit the scenario",
+              "Closure: what changed in your understanding of class struggle after applying the checklist?",
+              "Closure: which checklist step had the weakest evidence — and what would strengthen it?"
             ],
             "summary_text": {
               "heading": "Factory Scenario",
-              "content": "Workers in a London factory work long hours under strict supervision."
+              "content": "Workers in a London factory work long hours under strict supervision.\n\n**Debrief:** Compare two explanations of alienation in this case — which uses stronger evidence from the scenario?"
             }
           }
         }
       ]
+    },
+    {
+      "section_id": "study_tips",
+      "heading": "Study tips",
+      "content": "- After comparing texts, ask which difference would persuade a sceptical peer — not only which is true for you.\n- Before submitting your factory explanation: what changed in your understanding of bourgeoisie vs proletariat?\n- Where else would the purpose-and-difference table apply (one example)?"
     }
   ]
 }

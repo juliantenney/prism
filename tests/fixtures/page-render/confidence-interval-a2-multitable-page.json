@@ -16,38 +16,57 @@
     {
       "section_id": "knowledge_summary",
       "heading": "Key ideas",
-      "content": "A confidence interval estimates a population parameter. For a mean:\n\\[ \\bar{x} \\pm z_{\\alpha/2} \\frac{s}{\\sqrt{n}} \\]\nlinks sample spread to interval width. Sample size \\(n = 10\\) affects precision."
+      "content": "A confidence interval estimates a population parameter. For a mean:\n\\[ \\bar{x} \\pm z_{\\alpha/2} \\frac{s}{\\sqrt{n}} \\]\nlinks sample spread to interval width (compute standard error → estimates uncertainty from sampling variation). Sample size \\(n = 10\\) affects precision.\n\n**In activities:** judge statements (procedure vs one-interval probability); compare interval endpoints (overlap depends on bounds, not midpoints only)."
     },
     {
       "section_id": "learning_activities",
       "heading": "Learning activities",
       "content": [
         {
+          "activity_id": "A1",
+          "title": "Modelled interval judgement",
+          "duration_minutes": 10,
+          "purpose": "See how to judge one interval statement with explicit reasoning.",
+          "activity_preamble": "Before you fill tables on your own, study how an expert labels one row and explains the move.",
+          "learner_task": "Read the worked example, then write one sentence naming the reasoning move used (procedure vs single-interval probability).",
+          "materials": {
+            "worked_example": "### Worked example: one row\n\n**Statement:** Method captures mean 95% of time\n\n**Correct?** Yes\n\n**Reason:** Describes the **sampling method** over many repeats, not a one-off probability for this interval.\n\n### Step → meaning\n- Judge Correct? → separates claims about the **long-run method** from claims about **this one interval**.\n- Write Reason → links your label to the concept the sentence is actually about.\n\n**Move to reuse:** Decide whether the sentence describes the procedure or a probability claim about one interval."
+          },
+          "expected_output": "One sentence that states the reasoning move in your own words.",
+          "support_note": "Check your thinking: if your sentence treats the interval like a one-off probability for this sample, revisit whether you are describing the long-run method instead."
+        },
+        {
           "activity_id": "A2",
           "title": "Confidence interval template",
           "duration_minutes": 20,
-          "purpose": "Check statements about interval interpretation and record reasons.",
-          "learner_task": "Complete both template tables using the confidence interval \\( (66.08, 73.92) \\) where needed.",
+          "purpose": "Practise judging interval statements using the modelled move.",
+          "activity_preamble": "The first row is modelled; complete the remaining cells using the same reasoning move.",
+          "intellectual_coherence_bridge": "Apply the procedure-vs-probability move from the worked example to new statements.",
+          "learner_task": "Complete the remaining empty cells in both tables. Use \\( (66.08, 73.92) \\) when a row refers to that estimate.",
           "materials": {
-            "template": "### Confidence Interval Template\n| Statement | Correct? | Reason |\n|----------|----------|--------|\n| 95% probability true mean lies in interval | | |\n| Method captures mean 95% of time | | |\n\n### Confidence Levels\n| Level | Width | Explanation |\n|------|-------|-------------|\n| 90% | | |\n| 95% | | |\n| 99% | | |"
+            "template": "### Step → meaning\n- Fill Correct? → labels whether the sentence describes the procedure or a one-interval probability.\n- Fill Reason → states what the sentence is about (method vs this interval).\n- Compare level widths → higher confidence level → wider interval (more uncertainty admitted).\n\n### Use this when…\n- The sentence mentions \"95%\" but you are unsure **which** interpretation applies → use the procedure-vs-interval move before filling Correct?.\n\n### Confidence Interval Template\n| Statement | Correct? | Reason |\n|----------|----------|--------|\n| 95% probability true mean lies in interval | | |\n| Method captures mean 95% of time | Yes | Describes the method over repeated samples, not a one-off probability. |\n\n### Confidence Levels\n| Level | Width | Explanation |\n|------|-------|-------------|\n| 90% | | |\n| 95% | | |\n| 99% | | |\n\n### Self-check prompts\n- If both interpretations sound plausible, ask whether the claim is about this one interval or the long-run method.\n- Check your thinking: if your interval gets wider when n increases, revisit how standard error changes with sample size.\n\n### Closure\n- Which interpretation was hardest to justify in your table?\n- What would make your Yes/No labels more reliable to a peer reviewer?"
           },
-          "expected_output": "Both tables completed with defensible Yes/No judgements and brief reasons.",
-          "support_note": "Focus on frequentist interpretation, not single-interval probability claims."
+          "expected_output": "Both tables completed with defensible Yes/No judgements and brief reasons a peer could review — each reason links procedure to meaning, not only Yes/No labels. End with one sentence: which row was hardest to justify and why.",
+          "support_note": "Check your thinking: a Yes/No without a reason that distinguishes procedure from single-interval probability is incomplete; reuse the modelled move.",
+          "self_explanation_prompt": "Before checking a row, state in one sentence which interpretation you are testing (procedure vs this interval)."
         },
         {
           "activity_id": "A4",
           "title": "Interval comparison scenario",
           "duration_minutes": 15,
-          "purpose": "Compare intervals from two study arms.",
-          "learner_task": "Use the scenario table to decide which arm has the narrower interval and whether intervals overlap.",
+          "purpose": "Transfer interval comparison to a new context with minimal scaffolding.",
+          "activity_preamble": "No model row is provided — use the table values only.",
+          "intellectual_coherence_bridge": "You now compare two intervals without a worked row; still quote endpoints and state overlap.",
+          "transfer_or_application_task": "Where else would comparing interval endpoints (not midpoints) matter — name one context in one sentence.",
+          "learner_task": "Using the scenario table, decide which arm has the narrower interval and whether the intervals overlap; explain what overlap would mean for comparing the groups. Quote both endpoints in your answer.",
           "materials": {
             "scenario": {
               "heading": "Interval Comparison",
-              "content": "| Group | Interval | |------|----------| | Control | (66.08, 73.92) | | Treatment | (70.01, 78.44) |"
+              "content": "| Group | Interval | |------|----------| | Control | (66.08, 73.92) | | Treatment | (70.01, 78.44) |\n\n### Debrief\n- What changed in your understanding after judging interval statements?\n- If two groups overlap, what would you need before claiming a clear difference?\n- Which evidence is stronger: overlap alone or overlap plus a stated effect size?"
             }
           },
-          "expected_output": "A short comparison noting overlap and relative width using the table values.",
-          "support_note": "Quote intervals from the table; do not invent new endpoints."
+          "expected_output": "A short comparison (3–5 sentences) that quotes both intervals, states narrow/wider and overlap, interprets what overlap implies, and judges whether the evidence supports a strong conclusion — not endpoint listing alone.",
+          "support_note": "Check your thinking: if you compare only the midpoint, revisit the quoted endpoints — overlap depends on both bounds."
         }
       ]
     },
@@ -58,9 +77,10 @@
         "items": [
           {
             "item_id": "Q1",
-            "question": "p-value = 0.03 at \\( \\alpha = 0.05 \\):\n1. Decision?\n2. What does p-value represent?\n3. Is it practically significant?",
+            "question": "Given p-value = 0.03 at \\( \\alpha = 0.05 \\), work through:\n1. What is your decision about H0?\n2. What does the p-value represent in this test (one sentence)?\n3. Why is comparing the p-value to \\( \\alpha \\) the appropriate procedure here (one sentence)?\n4. Would you call the result practically significant without extra context — yes or no, and why?\n5. Which is harder to defend from this information alone — statistical significance or practical significance — and why (one sentence)?",
             "options": ["Reject H0", "Fail to reject H0"],
-            "item_type": "mcq"
+            "item_type": "mcq",
+            "explanation": "If you rejected H0 because the p-value \"proves\" the effect is large, revisit practical significance — p-value addresses evidence against H0, not effect size."
           }
         ]
       }
@@ -68,7 +88,7 @@
     {
       "section_id": "study_tips",
       "heading": "Study tips",
-      "content": "- Sketch intervals on a number line before writing long explanations.\n- Check whether overlap answers the comparison question before calculating extra tests."
+      "content": "- Sketch intervals on a number line before writing long explanations.\n- After a modelled row, name the move aloud before filling faded tables.\n- Check your thinking: confusing one-interval probability with the long-run method is the most common slip — name which claim type you are judging before filling each row.\n- Before you finish: what changed in your understanding of interval interpretation?\n- Which row or comparison was hardest to justify, and what evidence would make your conclusion more reliable?\n- Where else would the procedure-vs-interval move apply (one example)?"
     }
   ],
   "source_artefacts": {
@@ -76,6 +96,6 @@
     "assessment_items": true
   },
   "generation_notes": {
-    "limitations": ["Golden composed-page fixture for post-Sprint-33/34 renderer contract."]
+    "limitations": ["Golden page: renderer contract + Sprint 35-1–35-5 (full pedagogical refinement slice set)."]
   }
 }

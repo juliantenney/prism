@@ -126,6 +126,16 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
   assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /learner-action rhetoric \(auto-applied\)/i);
+  assert.match(prompt, /worked-example and faded-support \(auto-applied\)/i);
+  assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
+  assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
+  assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
+  assert.match(prompt, /What changed in your understanding/i);
+  assert.match(prompt, /step → meaning/i);
+  assert.match(prompt, /Check your thinking:/i);
+  assert.match(prompt, /modelled reasoning/i);
+  assert.match(prompt, /expected_output: describe evidence of completion/i);
 });
 
 test("facilitated workshop brief: DLA prompt does not include self-directed output contract", () => {
@@ -156,6 +166,11 @@ test("facilitated workshop brief: DLA prompt does not include self-directed outp
   }, resolved);
   assert.doesNotMatch(prompt, /output contract \(self-directed learner page/i);
   assert.doesNotMatch(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /worked-example and faded-support \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /concept\/procedure integration \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
 });
 
 test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
@@ -174,6 +189,12 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
     ctx
   );
   assert.match(prompt, /self-directed page activity field preservation \(auto-applied\)/i);
+  assert.match(prompt, /expected_output and support_note/i);
+  assert.match(prompt, /learner-action rhetoric \(auto-applied\)/i);
+  assert.match(prompt, /worked-example and faded-support \(auto-applied\)/i);
+  assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
+  assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
+  assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
   assert.match(prompt, /activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt/i);
 });

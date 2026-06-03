@@ -1,7 +1,7 @@
 # Sprint 37 — Session framing and intellectual coherence
 
 **Pack path:** `docs/development/sprints/2026-06-03-sprint-37-session-framing-intellectual-coherence/`  
-**Status:** **CHARTERED** — setup complete; slices 37-1–37-5 not yet started  
+**Status:** **COMPLETE** — slices 37-1–37-5 delivered (observations + domain §6g–6k + auto-applied blocks)  
 **Date:** 2026-06-03  
 **Test floor (entry):** **593 pass / 0 fail**  
 **Predecessor:** [Sprint 36 — session design and visual pedagogy](../2026-06-03-sprint-36-session-design-visual-pedagogy/) (**COMPLETE**)

@@ -13,6 +13,10 @@ const appJsPath = path.join(repoRoot, "app.js");
 const fixtureDir = path.join(repoRoot, "tests", "fixtures", "page-render");
 const reducedFixturePath = path.join(fixtureDir, "ld-inflation-workshop-page.json");
 const fullFixturePath = path.join(fixtureDir, "ld-inflation-workshop-page-full.json");
+const visibilityFixturePath = path.join(
+  fixtureDir,
+  "ld-inflation-workshop-learner-visibility-page.json"
+);
 
 function createElementStub() {
   return {
@@ -138,6 +142,13 @@ function activityTitlesFromFixture(fixturePath) {
 }
 
 const api = loadPrismTestApi();
+
+test("inflation workshop (learner visibility probe): no PRISMBLANK tokens or sample answers", () => {
+  const html = renderPageFixture(api, visibilityFixturePath);
+  assert.doesNotMatch(html, /@@PRISMBLANK/i);
+  assert.doesNotMatch(html, /Sample Answer/i);
+  assert.match(html, /util-worked-example/i);
+});
 
 test("inflation workshop (reduced): activities and material patterns", () => {
   const html = renderPageFixture(api, reducedFixturePath);

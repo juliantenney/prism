@@ -1,0 +1,41 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation workshop — learner handout visibility probe",
+  "audience": "First-year undergraduate economics students",
+  "page_profile": "learner",
+  "constraints_applied": {
+    "delivery_mode": "live_workshop",
+    "learning_environments": ["classroom"],
+    "learner_answer_visibility": "hidden_until_reveal"
+  },
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Inflation calculation worksheet",
+          "duration_minutes": 15,
+          "grouping": "small_group",
+          "learner_task": "Complete the worksheet using the worked example, then fill the blank row.",
+          "materials": {
+            "worked_example": "**Step 1:** Identify the base-year price level.\n**Step 2:** Compute the percentage change.",
+            "template": "| Year | CPI | Your calculation |\n| --- | --- | --- |\n| 2020 | 100 | _____ |\n| 2021 | 105 | _____ |",
+            "sample_output": "### Sample Answer\n\nInflation rate = 5% using (105-100)/100.",
+            "M2_sample_output": "Facilitator checking: verify learners quote both years before revealing the rate.",
+            "answer_key": "2021 inflation = 5%"
+          },
+          "expected_output": "Completed worksheet with reasoning for one row."
+        }
+      ]
+    }
+  ],
+  "source_artefacts": {
+    "learning_activities": true,
+    "activity_materials": true
+  },
+  "generation_notes": {
+    "limitations": ["Probe fixture for learner workshop material visibility."]
+  }
+}

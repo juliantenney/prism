@@ -7392,7 +7392,7 @@
       "- Generate Activity Materials: realise DLA specifications — if specification asks for worked_example or sample_output, emit full reasoning prose; if specification asks for faded template, include partial rows only as specified.",
       "- Design Page: preserve upstream worked_example, sample_output, and partially filled template strings verbatim; do not flatten modelled rows into learner_task.",
       "- support_note on faded/independent activities: cue the reasoning move to reuse from the model (1 sentence), not a second worked solution.",
-      "- intellectual_coherence_bridge may reference the prior modelled/faded activity when sequencing 2+ activities."
+      "- intellectual_coherence_bridge must reference the prior modelled/faded activity when sequencing 2+ activities — name the move carried forward and the phase shift (test, integrate, judge, transfer)."
     ].join("\n");
   }
 
@@ -7407,6 +7407,7 @@
       "- expected_output: name quality signals that expose weak reasoning (mentions evidence and practical significance; quotes endpoints) without giving the completed answer.",
       "- Formative assessment items: explanation / explanation_or_rationale — one sentence on the error pattern and how to correct the thinking; link procedure to meaning; not a worked solution or long answer key.",
       "- study_tips: brief misconception interrupts where useful (one line each); not remediation pathways or adaptive branching language.",
+      "- Proactive tension framing (overview, uncertainty_tension_prompt, conceptual_contrast_prompt) names the distinction early; this block's Check your thinking cues are reactive mid-task guards — do not paste the same tension sentence into both.",
       "- Avoid: adaptive feedback, tutoring loops, hidden remediation branches, \"if wrong go to…\" pathways, and pre-filled judgement cells that answer the task (except explicit modelled/faded rows).",
       "- Design Page: preserve support_note, prompt_set self-check bullets, checklist guards, and assessment explanations verbatim — do not merge them into materials prose.",
       "- Generate Activity Materials: when required_materials.specification requests misconception checks or self-check prompts, realise them in prompt_set or checklist text as specified."
@@ -7432,11 +7433,131 @@
     ].join("\n");
   }
 
+  function buildSelfDirectedConceptualTensionDifficultyPromptBlock() {
+    return [
+      "",
+      "Conceptual tension and difficulty framing (auto-applied):",
+      "- Name why this reasoning is hard with discipline-specific precision — not motivational hype, faux drama, patronising reassurance, or generic \"students often struggle\" / \"this topic is challenging\" filler.",
+      "- Difficulty types (use the right label; do not conflate):",
+      "  • Conceptual difficulty — two ideas learners merge (genome polarity vs replication strategy; author purpose vs plot summary; weather vs climate trend).",
+      "  • Procedural difficulty — correct method but wrong guard or order (quote interval endpoints not midpoints; compare p-value to α before interpreting).",
+      "  • Interpretive ambiguity — two readings sound plausible until a stated move (procedure vs single-interval probability for the same \"95%\").",
+      "  • Disciplinary uncertainty — evidence or model scope limits; uncertainty is part of reasoning, not failure to understand.",
+      "  • Competing explanations — rival mechanisms or policies; judgement needs evidence rules, not rhetorical plausibility alone.",
+      "  • Plausible misconception — intuitive claim that fails a discriminating test; pair with repair/classification moves, not myth lists alone.",
+      "- Placement:",
+      "  • overview and/or learning_purpose: one primary tension sentence (37-1 element 3) — name the distinction learners must learn to judge and why misjudging matters.",
+      "  • uncertainty_tension_prompt: on at most 1–2 activities when ambiguity or evidence limits are central — one sentence: what is unstable + which discriminating move resolves it; NOT diary reflection (avoid \"reflect on uncertainties\", \"how do you feel\", \"what remains unclear\" without a task-linked move).",
+      "  • conceptual_contrast_prompt: name the concept pair + one plausible merge error (complements reasoning_orientation).",
+      "  • support_note / prompt_set self-check (35-3): reactive slip guard when the learner might misapply — do not repeat the overview tension verbatim.",
+      "- Misconception-focused pages: frame intellectual work as classify / repair / justify under evidence — not theatric myth-busting inventories without template or table repair columns.",
+      "- Connect named tension to the session progression (37-1 element 5) — e.g. label interpretation → judge tables → transfer scenario; cards → evidence template → discussion.",
+      "- knowledge_summary may preview the primary tension in one line (procedure–meaning link) — not a substitute for overview tension.",
+      "- Explicitly avoid: reflective journaling tone, adaptive tutoring language, long unrelated myth anthologies, and uncertainty prompts that only ask learners to reflect without a discriminating task."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedIntellectualProgressionPromptBlock() {
+    return [
+      "",
+      "Intellectual progression signalling (auto-applied):",
+      "- Multi-activity self-study pages must read as cumulative reasoning journeys — not adjacent task islands or unordered material bundles.",
+      "- Page-level arc (37-1 element 5): overview and/or learning_purpose include one sentence naming how activities build (e.g. modelled move → faded practice → transfer judgement; orient → distinguish → test → integrate → judge).",
+      "- knowledge_summary: when present, include use_in_activities or equivalent preview mapping each key idea to its role in the arc (one short phrase per idea) — not a substitute for the overview arc sentence.",
+      "- Session phase vocabulary (compress phases across fewer activities when appropriate): orienting → distinguishing → testing → integrating → judging → transferring. Signal phase shifts in bridges and preambles — never facilitator narration (\"now you will\", \"in this session we will\", \"next you will\").",
+      "- intellectual_coherence_bridge: on EVERY activity after the first when the page has 2+ activities — one sentence stating (a) what reasoning move or distinction carries forward from the prior step and (b) what escalates (less scaffolding, harder judgement standard, new context, or combined ideas).",
+      "  • Good bridge shape: \"Apply the [move] from [prior artefact] to [new task].\" / \"You now [harder task] without [removed scaffold]; still [discipline rule].\"",
+      "  • Bad bridge shape: \"Building on the previous activity.\" / \"In this activity you will…\" / repeating only the prior activity title.",
+      "- activity_preamble: one sentence on this activity's contribution to the arc — do not duplicate the bridge sentence verbatim.",
+      "- purpose: name the stage move (model, practise, integrate, judge, transfer, repair misconception) — not a restatement of learner_task.",
+      "- Tie bridges to 37-2 tensions: later activities should use earlier distinctions as tools (e.g. procedure-vs-interval labels before overlap judgement; purpose-vs-plot move before factory application).",
+      "- Single-activity pages with rich materials (cards, template, prompts, checklist): overview names within-activity progression; learner_task lists steps in that intellectual order (e.g. encounter claims → classify with evidence → discuss judgement); materials order should match.",
+      "- assessment_check: when present, align item difficulty with the arc terminus (recognition → discrimination → judgement); overview may foreshadow in one clause.",
+      "- study_tips / materials Closure (35-5): may reference progression in one line; page-end epistemic synthesis — see Epistemic synthesis and closure block.",
+      "- Design Page: preserve upstream intellectual_coherence_bridge, activity_preamble arc cues, and knowledge_summary use_in_activities verbatim.",
+      "- Explicitly avoid: structural transitions without intellectual content, verbose inter-activity paragraphs, and bridges that only announce location without naming moves or escalation."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedSessionOrientationRhetoricPromptBlock() {
+    return [
+      "",
+      "Session orientation rhetoric (auto-applied):",
+      "- Frame the learner page as a coherent intellectual journey at entry — not a topic coverage summary, syllabus list, or component inventory (cards, template, check) without sequence.",
+      "- Page-level entry (sections overview and/or learning_purpose; distribute prose — do not cram all elements into one sentence each in duplicate fields):",
+      "  (1) Topic and disciplinary focus — what reasoning domain this session addresses.",
+      "  (2) Intellectual stakes — why misjudging this topic matters (one concrete consequence in discipline terms).",
+      "  (3) Why-this-is-hard — one honest tension sentence naming the primary difficulty type and discriminating move (see Conceptual tension and difficulty framing when present; not motivational hype).",
+      "  (4) What the learner will do intellectually — name modes tied to activities (compare, judge, trace mechanism, repair misconception, apply concept, interpret evidence).",
+      "  (5) How activities build — one sentence naming progression (see Intellectual progression signalling when present; e.g. modelled row → faded table → transfer scenario; or misconception → evidence → classification → discussion).",
+      "- Optional: total self-study time when upstream duration_minutes or learning_sequence timing is available.",
+      "- intellectual_frame (once per page): mode of inquiry in 1–2 sentences — may sit in overview, learning_purpose, or first activity; not a duplicate of reasoning_orientation.",
+      "- study_orientation (first activity when 2+ activities): 2–4 sentences on how to work through the page (order, effort, brief notes) — must NOT repeat the full overview/learning_purpose paragraph; add working guidance only.",
+      "- knowledge_summary: one-line preview per key idea linking to an activity move — not a substitute for overview/learning_purpose journey framing.",
+      "- Design Page: when upstream activities or learning_content include orientation prose, compose overview and learning_purpose from that substance — do not replace with thinner coverage summaries.",
+      "- Explicitly avoid: \"Welcome to this module\", \"This page covers\", \"In this session we will\", \"explore the topic\", generic reflect-on-learning openings, and facilitator/timing choreography."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedEpistemicSynthesisClosurePromptBlock() {
+    return [
+      "",
+      "Epistemic synthesis and closure (auto-applied):",
+      "- End the session with epistemic clarity — what should now be clearer — not procedural completion (\"you have finished the tasks\"), topic recap, or reflective diary tone.",
+      "- Tie closure to 37-2 primary tension (name the distinction that should now be stable) and 37-3 arc (name the final reasoning phase reached: judge, transfer, integrate evidence).",
+      "- Closure principles (use at least one per page-level or culminating-activity close; one sentence each):",
+      "  • What should now be clearer — which concept pair or interpretation rule is now stable.",
+      "  • What distinction can now be sustained — which plausible misconception or merge should feel less persuasive and why (one clause).",
+      "  • What kind of judgement is now possible — what verdict or classification the learner can defend with stated evidence rules.",
+      "  • What explanatory move matters differently — which carried move from the session now governs later reasoning.",
+      "- study_tips (preferred page-level close for self-directed learner pages): 2–4 short bullets — at least ONE must be epistemic synthesis (not generic reflection); at most ONE optional study-technique bullet; optional ONE brief transfer bullet (see Transfer and durable understanding for disciplined transfer and limit-of-transfer bullets).",
+      "  • Quantitative sessions: procedure vs interpretation; interval vs certainty; misuse boundaries (e.g. overlap claims, practical vs statistical significance).",
+      "  • Humanities comparison: purpose vs plot; defensible difference vs summary; evaluative positioning with evidence.",
+      "  • Misconception / evidence sessions: persuasion vs data-supported classification; mechanism vs policy judgement under uncertainty.",
+      "  • Diagnostic / assessment-shaped pages: what discrimination across cases or items should now be reliable — if study_tips omitted, put 2 epistemic bullets in support_notes instead of procedural-only revision tips.",
+      "- Culminating activity materials: include ### Closure or ### Debrief with 2–3 bullets using the principles above (hardest justify, evidence strength, what changed) — not long essays.",
+      "- expected_output on the final or transfer activity: include at least one criterion that requires epistemic synthesis (e.g. states which distinction was applied and what conclusion is defensible).",
+      "- Formative assessment explanations: one sentence reinforcing the distinction corrected — aligns with closure tension.",
+      "- knowledge_summary: preview at session start only — do not add a post-session recap paragraph or key-takeaways dump.",
+      "- Explicitly avoid: \"reflect on your learning\", \"well done\", motivational praise, \"this topic is difficult\", detached \"re-read the summary\" without epistemic link, and closure longer than 4 bullets in study_tips.",
+      "- Design Page: preserve upstream study_tips, ### Closure / ### Debrief bullets, and epistemic expected_output criteria verbatim.",
+      "- Generate Activity Materials: realise closure/debrief when required_materials requests synthesis or evaluative judgement — epistemic bullets, not diary prompts.",
+      "- Complements Metacognitive closure (35-5) for in-activity judgement; this block owns page-end synthesis."
+    ].join("\n");
+  }
+
+  function buildSelfDirectedTransferDurableUnderstandingPromptBlock() {
+    return [
+      "",
+      "Transfer and durable understanding (auto-applied):",
+      "- Extend reusable judgement beyond this session without reopening the full arc or duplicating epistemic synthesis (see Epistemic synthesis and closure).",
+      "- Durable understanding = the learner can reuse a named distinction or evidence rule in a later task — not motivational future-use or employability claims.",
+      "- Transfer vs extension vs comparison:",
+      "  • Transfer: apply the session's named move in a changed context (one sentence).",
+      "  • Extension: adjacent setting with the same discriminating rule (scenario, new numbers, new excerpt).",
+      "  • Comparison: judge two explanations or interpretations using criteria established in the session (debrief, contrast table).",
+      "- transfer_or_application_task: on the final or transfer-phase activity when the page has 2+ activities or a rich single activity with phased materials — one sentence naming the move + changed context; optional second clause on where the move fails or an assumption breaks (limit of transfer).",
+      "  • Quantitative (CI-shaped): where comparing interval endpoints (not midpoints) matters in an unfamiliar setting; when overlap rules fail if only summary statistics are quoted.",
+      "  • Humanities comparison (Marx-shaped): purpose-and-difference criteria on another text or political claim; one assumption in the prior explanation that fails in a different workplace or audience.",
+      "  • Misconception / evidence (climate-shaped): classify a new focal claim with the same evidence-strength columns; state when mechanism evidence does not transfer to policy judgement.",
+      "  • Diagnostic / assessment (RNA-shaped): which case feature or reasoning rule should generalise to novel items; when label recall would mislead without re-reading evidence.",
+      "- study_tips: within the 2–4 bullet cap, at most ONE transfer bullet naming the move + one context; optional at most ONE limit-of-transfer bullet (where similar reasoning fails) — do not add a third recap block after epistemic synthesis bullets.",
+      "- expected_output on transfer activity: require applying the named move in the new context OR stating why a tempting over-generalisation fails.",
+      "- materials ### Debrief / ### Closure: may include one comparison prompt tied to session criteria (which explanation uses stronger evidence; which row was hardest to justify using the interval move).",
+      "- use_in_activities / knowledge_summary: map key ideas to transferable roles in the arc when present — not a post-session extension essay.",
+      "- Explicitly avoid: generic real-world application paragraphs, continue exploring filler, employability rhetoric, over-broad transfer (always use this), motivational will-help-you-in-life claims, and repeating epistemic synthesis bullets verbatim as transfer.",
+      "- Design Page: preserve transfer_or_application_task, durable study_tips bullets, and comparison debrief bullets verbatim.",
+      "- Generate Activity Materials: realise scenarios and debrief comparison when required_materials requests transfer or evaluative comparison — concise, discipline-specific.",
+      "- Complements Epistemic synthesis and closure (37-4) for page-end clarity; this block owns reusable judgement beyond the session."
+    ].join("\n");
+  }
+
   function buildSelfDirectedMetacognitiveJudgementPromptBlock() {
     return [
       "",
       "Metacognitive closure and evaluative judgement (auto-applied):",
       "- Close multi-activity self-study pages with concise consolidation — not diary reflection, therapeutic prompts, or tutoring dialogue.",
+      "- Page-end epistemic synthesis (what should now be clearer) — see Epistemic synthesis and closure block; study_tips bullets below supplement in-activity judgement.",
       "- study_tips (page end): 2–4 short bullets mixing closure (\"What changed in your understanding?\", \"Which interpretation was hardest to justify?\", \"What would make your conclusion more reliable?\") and transfer (\"Where else would this approach apply?\", \"What assumptions would fail in another context?\").",
       "- Final or transfer activities: add 2–3 closure bullets in materials (### Closure or ### Debrief under template/scenario/prompt_set) OR use transfer_or_application_task / self_explanation_prompt (one sentence each) — not long reflective essays.",
       "- expected_output on culminating activities: require evaluative judgement (compare explanations, justify method choice, identify stronger evidence, critique weak reasoning, distinguish statistical vs practical significance) in addition to completed artefacts.",
@@ -7468,18 +7589,19 @@
       "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
       "- Each activity object MUST include activity_preamble (non-empty string, 1–3 sentences).",
       "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
-      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page independently (not generic module welcome text).",
+      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
       "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).",
-      "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence linking to the prior activity's ideas (do not repeat the activity title).",
+      "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence: carried reasoning move or distinction from the prior step + what escalates (see Intellectual progression signalling); do not repeat the activity title or use location-only transitions.",
       "- self_explanation_prompt: at least two activities; one short generative-retrieval sentence each (e.g. explain in your own words before checking) — not a full essay.",
       "- prior_knowledge_activation: at least one activity when prior context helps.",
       "- reasoning_orientation: on compare/analyse/application/cause-effect activities — 1–2 sentences on WHAT KIND OF THINKING (not a restatement of learner_task).",
       "- evidence_use_prompt: on activities that use transcript/extract/reading — how to quote, paraphrase, or map claims to the source (not a bibliography).",
       "- argument_structure_hint: on compare/evaluate/argument activities — short claim → evidence → implication scaffold.",
-      "- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one common error to avoid.",
+      "- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one plausible merge error (conceptual difficulty type).",
+      "- uncertainty_tension_prompt: optional on 1–2 activities when interpretive ambiguity or disciplinary uncertainty is central — one sentence: what is unstable + discriminating move; not reflective diary prose (see Conceptual tension and difficulty framing).",
       "- disciplinary_lens: optional once per page — short tag-like lens (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
       "- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.",
-      "- transfer_or_application_task: at least one application-focused activity when relevant.",
+      "- transfer_or_application_task: on the culminating or transfer-phase activity when the page supports application (2+ activities or phased single activity) — one sentence: named move + changed context; may add one clause on where the move fails or an assumption breaks — not generic real-world application.",
       "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 short strings).",
       "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
       "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief.",
@@ -7596,10 +7718,11 @@
       "Pedagogic enrichment — orientation contract (auto-applied):",
       "- This is independent self-study: write for a learner working alone with notebook and pencil, not for a live class or tutor-led session.",
       "- Use topic-specific orientation tied to the brief subject — never generic module welcomes.",
-      "- On the first activity when the page has multiple activities, include study_orientation (2–4 sentences): what this study page is for, how activities build on each other, and how long the work may take.",
+      "- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression (see Session orientation rhetoric block when present).",
+      "- On the first activity when the page has multiple activities, include study_orientation (2–4 sentences): how to work through activities in order and how long the work may take — not a second copy of the overview journey paragraph.",
       "- Optional intellectual_frame once per page (first activity is fine): name the mode of inquiry in 1–2 sentences (e.g. thinking as a historian about evidence and change).",
-      "- On activities after the first, include intellectual_coherence_bridge: one sentence linking this activity to the previous activity's ideas (not a repeat of titles).",
-      "- Keep activity_preamble on every activity for task-level orientation; study_orientation is page-level entry — do not duplicate the same prose in both.",
+      "- On activities after the first, include intellectual_coherence_bridge on each follow-on activity: one sentence naming the carried move and escalation (not a repeat of titles or \"building on the previous activity\" alone).",
+      "- Keep activity_preamble on every activity for task-level orientation; overview/learning_purpose carry session journey; study_orientation carries working plan — do not paste the same prose in all three.",
       "- Do not use facilitator choreography, session timing, or classroom framing.",
       "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
     ].join("\n");
@@ -8267,6 +8390,36 @@
       !/metacognitive closure and evaluative judgement \(auto-applied\)/i.test(draftBody)
     ) {
       draftBody = (draftBody + buildSelfDirectedMetacognitiveJudgementPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/session orientation rhetoric \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedSessionOrientationRhetoricPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/conceptual tension and difficulty framing \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedConceptualTensionDifficultyPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/intellectual progression signalling \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedIntellectualProgressionPromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/epistemic synthesis and closure \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedEpistemicSynthesisClosurePromptBlock()).trim();
+    }
+    if (
+      applyLearnerActionRhetoric &&
+      !/transfer and durable understanding \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedTransferDurableUnderstandingPromptBlock()).trim();
     }
     return draftBody;
   }
@@ -23775,6 +23928,162 @@
     return !!utilityFirstScalar([source.title, source.heading, source.name, source.label]);
   }
 
+  function utilityRenderWorksheetBlankHtml(blankMark) {
+    var mark = String(blankMark == null ? "" : blankMark);
+    if (!mark) return "";
+    return (
+      '<span class="util-worksheet-blank" aria-hidden="true">' + utilityEscapeHtml(mark) + "</span>"
+    );
+  }
+
+  function utilitySanitizeLeakedInternalRenderTokens(htmlText) {
+    var out = String(htmlText == null ? "" : htmlText);
+    if (!out || out.indexOf("@@PRISM") === -1) return out;
+    out = out.replace(/@@PRISMBLANK(\d+)@@/g, function (_m, idx) {
+      var blanks = ["___", "____", "_____", "______"];
+      return utilityRenderWorksheetBlankHtml(blanks[Number(idx) % blanks.length] || "_____");
+    });
+    out = out.replace(/@@PRISMSLOT(\d+)@@/g, function () {
+      return utilityRenderWorksheetBlankHtml("_____");
+    });
+    return out;
+  }
+
+  function resolveLearnerWorkshopMaterialVisibilityPolicy(pageArtifact, renderOpts) {
+    var opts = utilityNormalizeRenderOpts(renderOpts);
+    var page = pageArtifact && typeof pageArtifact === "object" ? pageArtifact : {};
+    var profile = String(
+      opts.pageProfile || opts.page_profile || page.page_profile || ""
+    )
+      .toLowerCase()
+      .trim();
+    if (profile !== "learner") {
+      return { suppressFacilitatorMaterials: false, isLearnerWorkshopPage: false };
+    }
+    var constraints =
+      page.constraints_applied && typeof page.constraints_applied === "object"
+        ? page.constraints_applied
+        : {};
+    var meta = page.metadata && typeof page.metadata === "object" ? page.metadata : {};
+    var delivery = String(
+      opts.deliveryMode ||
+        opts.delivery_mode ||
+        constraints.delivery_mode ||
+        meta.delivery_mode ||
+        ""
+    )
+      .toLowerCase()
+      .trim();
+    var envSources = [
+      opts.learningEnvironments,
+      opts.learning_environments,
+      constraints.learning_environments,
+      meta.learning_environments,
+      page.learning_environments
+    ];
+    var envBlob = "";
+    envSources.forEach(function (src) {
+      if (!Array.isArray(src)) return;
+      envBlob += " " + src.join(" ");
+    });
+    envBlob = envBlob.toLowerCase();
+    var isWorkshop =
+      delivery === "live_workshop" ||
+      delivery === "seminar" ||
+      /\bclassroom\b/.test(envBlob);
+    return {
+      suppressFacilitatorMaterials: isWorkshop,
+      isLearnerWorkshopPage: isWorkshop
+    };
+  }
+
+  function utilityMaterialAudienceIsLearnerVisible(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    var audience = String(
+      utilityFirstScalar([
+        value.audience,
+        value.visibility,
+        value.learner_visibility,
+        value.material_visibility,
+        value.reveal_stage
+      ]) || ""
+    )
+      .toLowerCase()
+      .trim();
+    if (!audience) return false;
+    if (/\b(facilitator|tutor|instructor|teacher|checking|marking|hidden)\b/.test(audience)) {
+      return false;
+    }
+    return /\b(learner|student|worked[_\s-]?example|modelled|modeled|during[_\s-]?activity|reveal)\b/.test(
+      audience
+    );
+  }
+
+  function utilityMaterialHeadingIndicatesFacilitatorOnly(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    var title = utilityFirstScalar([
+      value.title,
+      value.heading,
+      value.name,
+      value.label,
+      value.purpose
+    ]);
+    var t = String(title || "").toLowerCase();
+    if (!t) return false;
+    if (/worked\s+example|modelled|modeled|faded\s+example|your\s+turn|try\s+first|model\s+row/i.test(t)) {
+      return false;
+    }
+    return /\b(sample\s+answer|model\s+answer|answer\s+key|facilitator|checking\s+notes?|mark(?:ing)?\s+scheme|tutor\s+notes?)\b/.test(
+      t
+    );
+  }
+
+  function utilityMaterialIsLearnerVisibleException(keyHint, value) {
+    if (utilityIsWorkedExampleMaterialHint(keyHint)) return true;
+    var k = String(keyHint || "").toLowerCase().replace(/[\s-]+/g, "_");
+    if (k === "worked_example" || k === "worked_examples" || /\bworked_example\b/.test(k)) return true;
+    if (utilityMaterialAudienceIsLearnerVisible(value)) return true;
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      var matType = String(utilityFirstScalar([value.type, value.material_type]) || "")
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+      if (matType === "worked_example" || matType === "worked_example_row") return true;
+    }
+    return false;
+  }
+
+  function utilityShouldSuppressLearnerWorkshopMaterial(keyHint, value, renderOpts) {
+    var opts = utilityNormalizeRenderOpts(renderOpts);
+    if (!opts.suppressFacilitatorMaterials) return false;
+    if (utilityMaterialIsLearnerVisibleException(keyHint, value)) return false;
+    var k = String(keyHint || "").toLowerCase().replace(/[\s-]+/g, "_");
+    if (
+      k === "sample_output" ||
+      k === "sample_answer" ||
+      k === "sample_answers" ||
+      k === "answer_key" ||
+      k === "answer_keys" ||
+      k === "model_answer" ||
+      k === "model_answers" ||
+      k === "facilitator_notes" ||
+      k === "facilitator_note" ||
+      k === "facilitator_moves" ||
+      k === "facilitator_use" ||
+      k === "facilitator_guide" ||
+      k === "checking_notes" ||
+      k === "checking_note" ||
+      k === "tutor_notes" ||
+      k === "tutor_note" ||
+      k === "marking_guide" ||
+      k === "mark_scheme" ||
+      /sample_output|sample_answer|answer_key|facilitator|checking_note|tutor_note|marking_guide|mark_scheme/.test(k)
+    ) {
+      return true;
+    }
+    if (utilityMaterialHeadingIndicatesFacilitatorOnly(value)) return true;
+    return false;
+  }
+
   function utilityRenderMarkdownInline(text) {
     var raw = String(text == null ? "" : text);
     if (!raw) return "";
@@ -23785,7 +24094,7 @@
       return token;
     });
     var prismPlaceholderTokens = [];
-    raw = raw.replace(/@@PRISM[A-Z]+\d+@@/g, function (m) {
+    raw = raw.replace(/@@PRISM(?!BLANK)[A-Z]+\d+@@/g, function (m) {
       var slot = "@@PRISMSLOT" + prismPlaceholderTokens.length + "@@";
       prismPlaceholderTokens.push(m);
       return slot;
@@ -23806,7 +24115,8 @@
     });
     blankTokens.forEach(function (m, idx) {
       var tokenEsc = utilityEscapeHtml("@@PRISMBLANK" + idx + "@@");
-      escaped = escaped.replace(new RegExp(tokenEsc, "g"), utilityEscapeHtml(m));
+      var blankHtml = utilityRenderWorksheetBlankHtml(m);
+      escaped = escaped.replace(new RegExp(tokenEsc, "g"), blankHtml);
     });
     prismPlaceholderTokens.forEach(function (orig, idx) {
       var slot = "@@PRISMSLOT" + idx + "@@";
@@ -23814,7 +24124,9 @@
       escaped = escaped.replace(new RegExp(slotEsc, "g"), utilityEscapeHtml(orig));
       escaped = escaped.replace(new RegExp(slot, "g"), utilityEscapeHtml(orig));
     });
-    return utilityRestoreProtectedMathDelimiters(escaped, protectedInlineMath.tokens, { kind: "inline" });
+    return utilitySanitizeLeakedInternalRenderTokens(
+      utilityRestoreProtectedMathDelimiters(escaped, protectedInlineMath.tokens, { kind: "inline" })
+    );
   }
 
   function utilityIsMarkdownTableDivider(line) {
@@ -27129,6 +27441,13 @@
               if (!headingBody) return true;
               if (/^(?:checklist|evaluation checklist)$/i.test(headingBody)) return true;
               if (
+                /^(?:sample\s+answer|model\s+answer|worked\s+example|model\s+row|debrief|closure|facilitator\s+notes?)$/i.test(
+                  headingBody
+                )
+              ) {
+                return false;
+              }
+              if (
                 headingBody.length <= 72 &&
                 !/[.!?]/.test(headingBody) &&
                 !/\b(identify|describe|explain|complete|write|read|use|link|provide|apply|compare|discuss|note|list)\b/i.test(
@@ -28491,6 +28810,9 @@
         }
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
+          if (utilityShouldSuppressLearnerWorkshopMaterial(k, materials[k], renderOpts)) {
+            return;
+          }
           if (cognitionKeysOnRow[k] || cognitionKeysOnRow[lowerK]) {
             try {
               console.log("[PRISM TRACE] cognition field skipped in materials remainder:", k);
@@ -30823,6 +31145,7 @@
       ".util-meta-section h3{font-size:.95rem;margin:0 0 8px;color:#374151}",
       ".util-table-scroll{margin:10px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}",
       ".util-table-scroll table{margin:0}",
+      ".util-worksheet-blank{display:inline-block;min-width:3.5em;border-bottom:1px solid #cbd5e1;line-height:1.2;vertical-align:baseline}",
       ".util-activity-materials>p:only-child{margin-bottom:8px}",
       ".util-output-block{margin:16px 0 10px}",
       ".util-support-note{margin-top:14px}",
@@ -32252,12 +32575,16 @@
       var enableSequencingInteractionPolicy = explicitSequencingPolicyToggle
         ? options.enableSequencingInteractionPolicy === true
         : strictLearnerExportAutoEnable;
+      var workshopVisibility = resolveLearnerWorkshopMaterialVisibilityPolicy(parsed, {
+        pageProfile: pageProfile
+      });
       var baseRenderOpts = {
         cleanupInlineMarkdown: true,
         suppressInternalMetadata: true,
         pageSections: pageSectionsForRender,
         strictCompositionClosure: !!pageBodyFromSectionsArray,
         pageProfile: pageProfile,
+        suppressFacilitatorMaterials: workshopVisibility.suppressFacilitatorMaterials,
         enableSequencingInteractionPolicy: enableSequencingInteractionPolicy,
         cognitionProfile:
           parsed && parsed.metadata && parsed.metadata.cognition_profile && typeof parsed.metadata.cognition_profile === "object"
@@ -32559,6 +32886,7 @@
         if (!textOnly) return "";
         return full;
       });
+      out = utilitySanitizeLeakedInternalRenderTokens(out);
       return utilityStripObjectObjectLeaks(out);
     }
     htmlParts.unshift(
@@ -33848,6 +34176,11 @@
       return utilityRenderPageSections(sectionsValue, {}, [], renderOptions || {});
     };
     prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
+    prismTestApi.utilityRenderMarkdownInlineForTest = utilityRenderMarkdownInline;
+    prismTestApi.utilitySanitizeLeakedInternalRenderTokensForTest =
+      utilitySanitizeLeakedInternalRenderTokens;
+    prismTestApi.resolveLearnerWorkshopMaterialVisibilityPolicyForTest =
+      resolveLearnerWorkshopMaterialVisibilityPolicy;
     prismTestApi.utilityNormalizeUtilitiesJsonInputForTest = utilityNormalizeUtilitiesJsonInput;
     prismTestApi.utilityContainsSupportedMathDelimitersForTest =
       utilityContainsSupportedMathDelimiters;

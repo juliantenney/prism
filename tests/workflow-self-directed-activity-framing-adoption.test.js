@@ -131,6 +131,22 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
   assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
   assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
+  assert.match(prompt, /session orientation rhetoric \(auto-applied\)/i);
+  assert.match(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
+  assert.match(prompt, /intellectual progression signalling \(auto-applied\)/i);
+  assert.match(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
+  assert.match(prompt, /transfer and durable understanding \(auto-applied\)/i);
+  assert.match(prompt, /named move \+ changed context/i);
+  assert.match(prompt, /limit of transfer/i);
+  assert.match(prompt, /what should now be clearer/i);
+  assert.match(prompt, /Explicitly avoid:.*reflect on your learning/i);
+  assert.match(prompt, /intellectual_coherence_bridge: on every activity after the first/i);
+  assert.match(prompt, /Bad bridge shape.*Building on the previous activity/i);
+  assert.match(prompt, /interpretive ambiguity/i);
+  assert.match(prompt, /do not repeat the overview tension verbatim/i);
+  assert.doesNotMatch(prompt, /reflect on uncertainties you encountered/i);
+  assert.match(prompt, /coherent intellectual journey/i);
+  assert.match(prompt, /do not repeat the full overview/i);
   assert.match(prompt, /What changed in your understanding/i);
   assert.match(prompt, /step → meaning/i);
   assert.match(prompt, /Check your thinking:/i);
@@ -171,6 +187,11 @@ test("facilitated workshop brief: DLA prompt does not include self-directed outp
   assert.doesNotMatch(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /concept\/procedure integration \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /session orientation rhetoric \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /intellectual progression signalling \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /transfer and durable understanding \(auto-applied\)/i);
 });
 
 test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
@@ -195,6 +216,16 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
   assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
   assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
   assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
+  assert.match(prompt, /session orientation rhetoric \(auto-applied\)/i);
+  assert.match(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
+  assert.match(prompt, /intellectual progression signalling \(auto-applied\)/i);
+  assert.match(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
+  assert.match(prompt, /transfer and durable understanding \(auto-applied\)/i);
+  assert.match(prompt, /mechanism evidence does not transfer to policy/i);
+  assert.match(prompt, /what distinction can now be sustained/i);
+  assert.match(prompt, /cumulative reasoning journeys/i);
+  assert.match(prompt, /plausible misconception/i);
+  assert.match(prompt, /overview and\/or learning_purpose/i);
   assert.match(prompt, /activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt/i);
 });

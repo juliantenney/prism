@@ -111,14 +111,15 @@ test("utilityRenderMarkdownInline: worksheet blanks never leak @@PRISMBLANK toke
   const html = api.utilityRenderMarkdownInlineForTest("Your answer: _____");
   assert.doesNotMatch(html, /@@PRISMBLANK/i);
   assert.match(html, /util-worksheet-blank/);
-  assert.match(html, /_____/);
+  assert.doesNotMatch(html, /util-worksheet-blank[^>]*>_{3,}/);
 });
 
 test("utilityRenderMarkdownBlock: table cells with blanks render safe blanks", () => {
   const md = "| Year | CPI |\n| --- | --- |\n| 2021 | _____ |";
   const html = api.utilityRenderMarkdownBlockForTest(md);
   assert.doesNotMatch(html, /@@PRISMBLANK/i);
-  assert.match(html, /util-worksheet-blank|_____/);
+  assert.match(html, /util-worksheet-blank/);
+  assert.doesNotMatch(html, /<td>[\s\S]*util-worksheet-blank[\s\S]*_{4,}/i);
 });
 
 test("utilitySanitizeLeakedInternalRenderTokens: strips leaked internal placeholders", () => {
@@ -142,6 +143,30 @@ test("resolveLearnerWorkshopMaterialVisibilityPolicy: learner classroom workshop
   );
   assert.equal(policy.suppressFacilitatorMaterials, true);
   assert.equal(policy.isLearnerWorkshopPage, true);
+  assert.equal(policy.allowLearnerIntellectualSupports, true);
+});
+
+test("utilityClassifyLearnerWorkshopMaterialRole: learner-supportive vs facilitator-only", () => {
+  const classify = api.utilityClassifyLearnerWorkshopMaterialRoleForTest;
+  assert.equal(classify("template", "| Year | CPI |"), "learner_supportive");
+  assert.equal(classify("task_cards", []), "learner_supportive");
+  assert.equal(classify("worked_example", "**Step 1:**"), "learner_supportive");
+  assert.equal(classify("sample_output", "Rate = 5%"), "answer_revealing");
+  assert.equal(classify("M2_sample_output", "checking"), "answer_revealing");
+  assert.equal(classify("facilitator_notes", "Circulate"), "facilitator_only");
+  assert.equal(
+    classify("content", "### Sample Answer\n\nInflation = 5%"),
+    "answer_revealing"
+  );
+});
+
+test("utilityShouldSuppressLearnerWorkshopMaterial: templates allowed, answers blocked", () => {
+  const shouldSuppress = api.utilityShouldSuppressLearnerWorkshopMaterialForTest;
+  const workshopOpts = { suppressFacilitatorMaterials: true };
+  assert.equal(shouldSuppress("template", "Fill the row.", workshopOpts), false);
+  assert.equal(shouldSuppress("analysis_template", "## Table", workshopOpts), false);
+  assert.equal(shouldSuppress("sample_output", "5%", workshopOpts), true);
+  assert.equal(shouldSuppress("answer_key", "A1: B", workshopOpts), true);
 });
 
 test("resolveLearnerWorkshopMaterialVisibilityPolicy: facilitator profile does not suppress", () => {
@@ -200,4 +225,102 @@ test("self-directed learner page: worked examples still render (CI golden)", () 
   const { html } = renderPageFixture(api, marxWorkedExampleFixturePath);
   assert.doesNotMatch(html, /@@PRISMBLANK/i);
   assert.match(html, /util-worked-example|Worked example|worked example/i);
+});
+
+test("learner workshop page: Sprint 37 intellectual supports render, spoilers hidden", () => {
+  const page = {
+    artifact_type: "page",
+    title: "Inflation workshop — intellectual supports",
+    page_profile: "learner",
+    constraints_applied: {
+      delivery_mode: "live_workshop",
+      learning_environments: ["classroom"]
+    },
+    sections: [
+      {
+        section_id: "overview",
+        heading: "Overview",
+        content:
+          "You will distinguish price level changes from one-off shocks, then compare measures."
+      },
+      {
+        section_id: "learning_activities",
+        heading: "Learning activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Define inflation",
+            activity_preamble:
+              "This step establishes a working definition you will reuse when comparing measures.",
+            intellectual_coherence_bridge:
+              "You carry forward the definition move; the next step tests it against CPI and GDP deflator.",
+            uncertainty_tension_prompt:
+              "It is easy to treat any price rise as inflation — decide what counts as a general rise.",
+            reasoning_orientation:
+              "Compare measures by what each includes, not by which headline number sounds larger.",
+            learner_task: "Write a one-sentence definition of inflation.",
+            support_note: "Check your thinking: a single sale is not inflation.",
+            materials: {
+              template:
+                "Write a one-sentence definition of inflation.\n\n- ________\n- ________",
+              sample_output: "### Sample Answer\n\nInflation is a general rise in prices.",
+              worked_example: "**Step 1:** Identify the base-year price level."
+            }
+          }
+        ]
+      },
+      {
+        section_id: "study_tips",
+        heading: "Study tips",
+        content:
+          "- Name the distinction you can now judge reliably.\n- Where else would comparing price indexes matter?"
+      }
+    ]
+  };
+  const r = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /util-activity-preamble/);
+  assert.match(html, /Connection to previous activity/i);
+  assert.match(html, /How to think/i);
+  assert.match(html, /util-cognition--uncertainty/);
+  assert.match(html, /util-response-lines/);
+  assert.match(html, /util-worked-example/i);
+  assert.match(html, /Study tips/i);
+  assert.match(html, /distinction you can now judge/i);
+  assert.doesNotMatch(html, /Sample Answer/i);
+  assert.doesNotMatch(html, /Facilitator checking/i);
+});
+
+test("sanitizeSelfDirectedLearnerPageActivityRows: preserves framing on learner workshop pages", () => {
+  const page = {
+    page_profile: "learner",
+    constraints_applied: {
+      delivery_mode: "live_workshop",
+      learning_environments: ["classroom"]
+    },
+    sections: [
+      {
+        section_id: "learning_activities",
+        content: [
+          {
+            activity_id: "A1",
+            activity_preamble: "Orienting preamble for the workshop step.",
+            facilitator_moves: "Ask pairs to report back.",
+            reasoning_orientation: "Compare by coverage, not headline size."
+          }
+        ]
+      }
+    ]
+  };
+  const result = api.sanitizeSelfDirectedLearnerPageActivityRowsForTest(page, {
+    pageProfile: "learner"
+  });
+  assert.equal(result.sanitized, false);
+  assert.equal(result.page.sections[0].content[0].activity_preamble, "Orienting preamble for the workshop step.");
+  assert.equal(
+    result.page.sections[0].content[0].reasoning_orientation,
+    "Compare by coverage, not headline size."
+  );
+  assert.equal(result.page.sections[0].content[0].facilitator_moves, "Ask pairs to report back.");
 });

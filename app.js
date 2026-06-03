@@ -7990,6 +7990,7 @@
 
   function shouldSanitizeSelfDirectedLearnerPageActivityRows(page, context) {
     if (!page || typeof page !== "object" || !Array.isArray(page.sections)) return false;
+    if (pageIsLearnerWorkshopDelivery(page, context)) return false;
     var profile = String(
       page.page_profile || (context && context.pageProfile) || ""
     )
@@ -23928,11 +23929,45 @@
     return !!utilityFirstScalar([source.title, source.heading, source.name, source.label]);
   }
 
+  function utilityWorksheetBlankWidthEm(blankMark) {
+    var mark = String(blankMark == null ? "" : blankMark);
+    var underscoreCount = (mark.match(/_/g) || []).length;
+    var basis = underscoreCount || mark.length || 5;
+    return Math.min(18, Math.max(3.5, basis * 0.45));
+  }
+
   function utilityRenderWorksheetBlankHtml(blankMark) {
     var mark = String(blankMark == null ? "" : blankMark);
     if (!mark) return "";
+    var widthEm = utilityWorksheetBlankWidthEm(mark);
     return (
-      '<span class="util-worksheet-blank" aria-hidden="true">' + utilityEscapeHtml(mark) + "</span>"
+      '<span class="util-worksheet-blank" style="min-width:' +
+      widthEm.toFixed(2) +
+      'em" aria-hidden="true">\u00a0</span>'
+    );
+  }
+
+  function utilityIsWorksheetResponseLineBody(text) {
+    var body = String(text == null ? "" : text).trim();
+    if (!body) return true;
+    var compact = body.replace(/\s+/g, "");
+    if (!compact) return true;
+    return /^[_\-–—.]+$/.test(compact);
+  }
+
+  function utilityRenderWorksheetResponseLinesHtml(lineBodies) {
+    var bodies = Array.isArray(lineBodies) ? lineBodies : [];
+    if (!bodies.length) return "";
+    var lines = bodies
+      .map(function (body) {
+        var mark = String(body == null ? "" : body).trim() || "_____";
+        return '<div class="util-response-line">' + utilityRenderWorksheetBlankHtml(mark) + "</div>";
+      })
+      .join("");
+    return (
+      '<div class="util-response-lines" role="group" aria-label="Space for your response">' +
+      lines +
+      "</div>"
     );
   }
 
@@ -23949,17 +23984,9 @@
     return out;
   }
 
-  function resolveLearnerWorkshopMaterialVisibilityPolicy(pageArtifact, renderOpts) {
+  function resolveLearnerWorkshopDeliveryContext(pageArtifact, renderOpts) {
     var opts = utilityNormalizeRenderOpts(renderOpts);
     var page = pageArtifact && typeof pageArtifact === "object" ? pageArtifact : {};
-    var profile = String(
-      opts.pageProfile || opts.page_profile || page.page_profile || ""
-    )
-      .toLowerCase()
-      .trim();
-    if (profile !== "learner") {
-      return { suppressFacilitatorMaterials: false, isLearnerWorkshopPage: false };
-    }
     var constraints =
       page.constraints_applied && typeof page.constraints_applied === "object"
         ? page.constraints_applied
@@ -23991,10 +24018,174 @@
       delivery === "live_workshop" ||
       delivery === "seminar" ||
       /\bclassroom\b/.test(envBlob);
+    return { delivery: delivery, envBlob: envBlob, isWorkshop: isWorkshop };
+  }
+
+  function pageIsLearnerWorkshopDelivery(pageArtifact, renderOpts) {
+    var page = pageArtifact && typeof pageArtifact === "object" ? pageArtifact : {};
+    var opts = utilityNormalizeRenderOpts(renderOpts);
+    var profile = String(
+      opts.pageProfile || opts.page_profile || page.page_profile || ""
+    )
+      .toLowerCase()
+      .trim();
+    if (profile !== "learner") return false;
+    return resolveLearnerWorkshopDeliveryContext(page, opts).isWorkshop;
+  }
+
+  function resolveLearnerWorkshopMaterialVisibilityPolicy(pageArtifact, renderOpts) {
+    var page = pageArtifact && typeof pageArtifact === "object" ? pageArtifact : {};
+    var opts = utilityNormalizeRenderOpts(renderOpts);
+    var profile = String(
+      opts.pageProfile || opts.page_profile || page.page_profile || ""
+    )
+      .toLowerCase()
+      .trim();
+    if (profile !== "learner") {
+      return {
+        suppressFacilitatorMaterials: false,
+        isLearnerWorkshopPage: false,
+        allowLearnerIntellectualSupports: false
+      };
+    }
+    var workshopCtx = resolveLearnerWorkshopDeliveryContext(page, opts);
+    var isWorkshop = workshopCtx.isWorkshop;
     return {
       suppressFacilitatorMaterials: isWorkshop,
-      isLearnerWorkshopPage: isWorkshop
+      isLearnerWorkshopPage: isWorkshop,
+      allowLearnerIntellectualSupports: isWorkshop
     };
+  }
+
+  var LEARNER_WORKSHOP_LEARNER_SUPPORTIVE_MATERIAL_KEYS = {
+    template: true,
+    templates: true,
+    worksheet_template: true,
+    analysis_template: true,
+    worksheet: true,
+    task_cards: true,
+    cards: true,
+    scenarios: true,
+    study_scenarios: true,
+    scenario_set: true,
+    prompt_set: true,
+    prompts: true,
+    discussion_prompts: true,
+    checklist: true,
+    checklists: true,
+    evaluation_checklist: true,
+    impact_table: true,
+    comparison_table: true,
+    table: true,
+    strategy_options: true,
+    study_tips: true
+  };
+
+  function learnerWorkshopMaterialKeySegmentRe(segments) {
+    return new RegExp("(?:^|_)(?:" + segments.join("|") + ")(?:$|_)");
+  }
+
+  var LEARNER_WORKSHOP_FACILITATOR_ONLY_MATERIAL_KEY_RE =
+    learnerWorkshopMaterialKeySegmentRe([
+      "sample_output",
+      "sample_answer",
+      "sample_answers",
+      "answer_key",
+      "answer_keys",
+      "model_answer",
+      "model_answers",
+      "facilitator_note",
+      "facilitator_notes",
+      "facilitator_move",
+      "facilitator_moves",
+      "facilitator_guide",
+      "facilitator_script",
+      "facilitation_plan",
+      "facilitation_script",
+      "checking_note",
+      "checking_notes",
+      "tutor_note",
+      "tutor_notes",
+      "marking_guide",
+      "mark_scheme",
+      "marking_scheme",
+      "instructor_note",
+      "instructor_notes",
+      "teacher_note",
+      "teacher_notes",
+      "debrief_script",
+      "reveal_answer",
+      "post_activity_reveal",
+      "completed_worked_example",
+      "worked_solution",
+      "full_solution",
+      "solution_key"
+    ]);
+
+  var LEARNER_WORKSHOP_ANSWER_REVEALING_MATERIAL_KEY_RE =
+    learnerWorkshopMaterialKeySegmentRe([
+      "sample_output",
+      "sample_answer",
+      "answer_key",
+      "model_answer",
+      "solution_key",
+      "completed_example",
+      "full_worked",
+      "answer_reveal"
+    ]);
+
+  function utilityClassifyLearnerWorkshopMaterialRole(keyHint, value) {
+    var k = String(keyHint || "")
+      .toLowerCase()
+      .replace(/[\s-]+/g, "_");
+    if (utilityMaterialIsLearnerVisibleException(keyHint, value)) {
+      return "learner_supportive";
+    }
+    if (LEARNER_WORKSHOP_LEARNER_SUPPORTIVE_MATERIAL_KEYS[k]) {
+      return "learner_supportive";
+    }
+    if (LEARNER_WORKSHOP_ANSWER_REVEALING_MATERIAL_KEY_RE.test(k)) {
+      return "answer_revealing";
+    }
+    if (LEARNER_WORKSHOP_FACILITATOR_ONLY_MATERIAL_KEY_RE.test(k)) {
+      return "facilitator_only";
+    }
+    if (utilityMaterialHeadingIndicatesFacilitatorOnly(value)) {
+      return "facilitator_only";
+    }
+    if (utilityMaterialStringIsAnswerRevealing(value)) {
+      return "answer_revealing";
+    }
+    return "neutral";
+  }
+
+  function utilityMaterialStringIsAnswerRevealing(value) {
+    if (utilityIsEmptyValue(value)) return false;
+    var text = "";
+    if (typeof value === "string") {
+      text = value;
+    } else if (value && typeof value === "object" && !Array.isArray(value)) {
+      text = utilityFirstScalar([
+        value.content,
+        value.text,
+        value.body,
+        value.instruction,
+        value.prompt
+      ]);
+    }
+    text = String(text || "").replace(/\r\n/g, "\n");
+    if (!text.trim()) return false;
+    if (/^#{1,6}\s*(sample\s+answer|model\s+answer|answer\s+key|facilitator)\b/im.test(text)) {
+      return true;
+    }
+    if (
+      /\b(?:sample\s+answer|model\s+answer|answer\s+key|facilitator\s+checking|mark(?:ing)?\s+scheme)\s*:/i.test(
+        text
+      )
+    ) {
+      return true;
+    }
+    return false;
   }
 
   function utilityMaterialAudienceIsLearnerVisible(value) {
@@ -24055,33 +24246,14 @@
   function utilityShouldSuppressLearnerWorkshopMaterial(keyHint, value, renderOpts) {
     var opts = utilityNormalizeRenderOpts(renderOpts);
     if (!opts.suppressFacilitatorMaterials) return false;
-    if (utilityMaterialIsLearnerVisibleException(keyHint, value)) return false;
-    var k = String(keyHint || "").toLowerCase().replace(/[\s-]+/g, "_");
-    if (
-      k === "sample_output" ||
-      k === "sample_answer" ||
-      k === "sample_answers" ||
-      k === "answer_key" ||
-      k === "answer_keys" ||
-      k === "model_answer" ||
-      k === "model_answers" ||
-      k === "facilitator_notes" ||
-      k === "facilitator_note" ||
-      k === "facilitator_moves" ||
-      k === "facilitator_use" ||
-      k === "facilitator_guide" ||
-      k === "checking_notes" ||
-      k === "checking_note" ||
-      k === "tutor_notes" ||
-      k === "tutor_note" ||
-      k === "marking_guide" ||
-      k === "mark_scheme" ||
-      /sample_output|sample_answer|answer_key|facilitator|checking_note|tutor_note|marking_guide|mark_scheme/.test(k)
-    ) {
-      return true;
-    }
-    if (utilityMaterialHeadingIndicatesFacilitatorOnly(value)) return true;
-    return false;
+    var role = utilityClassifyLearnerWorkshopMaterialRole(keyHint, value);
+    return role === "facilitator_only" || role === "answer_revealing";
+  }
+
+  function utilityShouldSuppressLearnerWorkshopSupportNote(text, renderOpts) {
+    var opts = utilityNormalizeRenderOpts(renderOpts);
+    if (!opts.suppressFacilitatorMaterials) return false;
+    return pelPageSupportNoteLooksFacilitatorChoreography(text);
   }
 
   function utilityRenderMarkdownInline(text) {
@@ -24405,6 +24577,16 @@
         i = table.nextIdx;
         continue;
       }
+      if (/^_{2,}$/.test(trimmed)) {
+        var underscoreBodies = [trimmed];
+        i += 1;
+        while (i < lines.length && /^_{2,}$/.test(String(lines[i] || "").trim())) {
+          underscoreBodies.push(String(lines[i] || "").trim());
+          i += 1;
+        }
+        parts.push(utilityRenderWorksheetResponseLinesHtml(underscoreBodies));
+        continue;
+      }
       if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
         parts.push("<hr />");
         i += 1;
@@ -24419,7 +24601,7 @@
       }
       var bulletMatch = trimmed.match(bulletLineRe);
       if (bulletMatch) {
-        var ulItems = [];
+        var bulletBodies = [];
         while (i < lines.length) {
           var bl = String(lines[i] || "").trim().match(bulletLineRe);
           if (!bl) break;
@@ -24434,33 +24616,50 @@
                 return !!piece;
               })
               .forEach(function (piece) {
-                ulItems.push(
-                  "<li>" +
-                    utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(piece)) +
-                    "</li>"
-                );
+                bulletBodies.push(piece);
               });
           } else {
-            ulItems.push(
-              "<li>" +
-                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(bodyText)) +
-                "</li>"
-            );
+            bulletBodies.push(bodyText);
           }
           i += 1;
         }
-        parts.push("<ul>" + ulItems.join("") + "</ul>");
+        if (bulletBodies.length && bulletBodies.every(utilityIsWorksheetResponseLineBody)) {
+          parts.push(utilityRenderWorksheetResponseLinesHtml(bulletBodies));
+        } else {
+          var ulItems = bulletBodies.map(function (bodyText) {
+            return (
+              "<li>" +
+              utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(bodyText)) +
+              "</li>"
+            );
+          });
+          parts.push("<ul>" + ulItems.join("") + "</ul>");
+        }
         continue;
       }
       var orderedMatch = trimmed.match(/^\d+[\)\.]\s+(.+)$/);
       if (orderedMatch) {
-        var olItems = [];
+        var orderedBodies = [];
+        var orderedStart = i;
         while (i < lines.length) {
           var orderedRawLine = String(lines[i] || "");
           var ol = orderedRawLine.trim().match(/^\d+[\)\.]\s+(.+)$/);
           if (!ol) break;
+          orderedBodies.push(String(ol[1] || "").trim());
+          i += 1;
+        }
+        if (orderedBodies.length && orderedBodies.every(utilityIsWorksheetResponseLineBody)) {
+          parts.push(utilityRenderWorksheetResponseLinesHtml(orderedBodies));
+          continue;
+        }
+        i = orderedStart;
+        var olItems = [];
+        while (i < lines.length) {
+          var orderedRawLine2 = String(lines[i] || "");
+          var ol2 = orderedRawLine2.trim().match(/^\d+[\)\.]\s+(.+)$/);
+          if (!ol2) break;
           var itemBodyHtml =
-            utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(ol[1]));
+            utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(ol2[1]));
           i += 1;
           var nestedUlItems = [];
           while (i < lines.length) {
@@ -26355,6 +26554,7 @@
       if (!raw) return null;
       if (/#{2,3}\s+Card\s+\d+/i.test(raw)) return null;
       var claims = [];
+      var hasNonBulletProse = false;
       raw.split("\n").forEach(function (line) {
         var ln = String(line || "").trim();
         if (!ln) return;
@@ -26368,9 +26568,11 @@
         if (numbered) {
           var numberedClaim = String(numbered[1] || "").trim();
           if (numberedClaim) claims.push(numberedClaim);
+          return;
         }
+        if (!/^#{1,6}\s+/.test(ln)) hasNonBulletProse = true;
       });
-      if (claims.length < 2) {
+      if (claims.length < 2 && !hasNonBulletProse) {
         var inlineParts = raw
           .split(/\s+[-*•]\s+/)
           .map(function (part) { return String(part || "").trim(); })
@@ -26378,6 +26580,8 @@
         if (inlineParts.length >= 2) claims = inlineParts;
       }
       if (claims.length < 2) return null;
+      if (hasNonBulletProse) return null;
+      if (claims.every(utilityIsWorksheetResponseLineBody)) return null;
       return claims.map(function (claim, idx) {
         return {
           title: "Card " + (idx + 1),
@@ -27310,6 +27514,13 @@
                 })
                 .filter(function (x) { return !!x; });
               if (bulletLines.length >= 1) {
+                if (bulletLines.every(utilityIsWorksheetResponseLineBody)) {
+                  var responseLinesHtml = utilityRenderWorksheetResponseLinesHtml(bulletLines);
+                  if (responseLinesHtml) {
+                    rows.push(responseLinesHtml);
+                    return;
+                  }
+                }
                 // Split inline prompt runs like "- one - Two" into multiple list entries.
                 var splitBullets = [];
                 bulletLines.forEach(function (b) {
@@ -27836,6 +28047,28 @@
               if (tableHtml) {
                 html.push(tableHtml);
                 return;
+              }
+              var blockText = String(block || "").trim();
+              if (blockText) {
+                var worksheetBulletBodies = [];
+                blockText.split("\n").forEach(function (ln) {
+                  var trimmedLn = String(ln || "").trim();
+                  if (!trimmedLn) return;
+                  var bulletMatch = trimmedLn.match(/^\s*[-*•]\s+(.+)$/);
+                  if (bulletMatch) {
+                    worksheetBulletBodies.push(String(bulletMatch[1] || "").trim());
+                  }
+                });
+                if (
+                  worksheetBulletBodies.length >= 1 &&
+                  worksheetBulletBodies.every(utilityIsWorksheetResponseLineBody)
+                ) {
+                  var worksheetBlockHtml = utilityRenderMarkdownBlock(blockText);
+                  if (worksheetBlockHtml) {
+                    html.push(worksheetBlockHtml);
+                    return;
+                  }
+                }
               }
               var lines = String(block || "").split("\n");
               var expandedLines = [];
@@ -29071,7 +29304,11 @@
               "</div>"
             );
           }
-          if (supportNote && !activityComparable.isDuplicate(supportNote)) {
+          if (
+            supportNote &&
+            !activityComparable.isDuplicate(supportNote) &&
+            !utilityShouldSuppressLearnerWorkshopSupportNote(supportNote, renderOpts)
+          ) {
             parts.push(utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(supportNote))));
             activityComparable.markSeen(supportNote);
           }
@@ -31146,6 +31383,9 @@
       ".util-table-scroll{margin:10px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}",
       ".util-table-scroll table{margin:0}",
       ".util-worksheet-blank{display:inline-block;min-width:3.5em;border-bottom:1px solid #cbd5e1;line-height:1.2;vertical-align:baseline}",
+      ".util-response-lines{margin:10px 0 14px;display:flex;flex-direction:column;gap:10px}",
+      ".util-response-line{margin:0;padding:0;min-height:1.35rem}",
+      ".util-response-line .util-worksheet-blank{display:block;width:100%;max-width:100%;min-width:12em}",
       ".util-activity-materials>p:only-child{margin-bottom:8px}",
       ".util-output-block{margin:16px 0 10px}",
       ".util-support-note{margin-top:14px}",
@@ -34177,10 +34417,18 @@
     };
     prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
     prismTestApi.utilityRenderMarkdownInlineForTest = utilityRenderMarkdownInline;
+    prismTestApi.utilityIsWorksheetResponseLineBodyForTest = utilityIsWorksheetResponseLineBody;
     prismTestApi.utilitySanitizeLeakedInternalRenderTokensForTest =
       utilitySanitizeLeakedInternalRenderTokens;
     prismTestApi.resolveLearnerWorkshopMaterialVisibilityPolicyForTest =
       resolveLearnerWorkshopMaterialVisibilityPolicy;
+    prismTestApi.utilityClassifyLearnerWorkshopMaterialRoleForTest =
+      utilityClassifyLearnerWorkshopMaterialRole;
+    prismTestApi.utilityShouldSuppressLearnerWorkshopMaterialForTest =
+      utilityShouldSuppressLearnerWorkshopMaterial;
+    prismTestApi.pageIsLearnerWorkshopDeliveryForTest = pageIsLearnerWorkshopDelivery;
+    prismTestApi.sanitizeSelfDirectedLearnerPageActivityRowsForTest =
+      sanitizeSelfDirectedLearnerPageActivityRows;
     prismTestApi.utilityNormalizeUtilitiesJsonInputForTest = utilityNormalizeUtilitiesJsonInput;
     prismTestApi.utilityContainsSupportedMathDelimitersForTest =
       utilityContainsSupportedMathDelimiters;

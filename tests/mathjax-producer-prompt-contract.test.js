@@ -89,6 +89,13 @@ function assertMathSafeContractText(text) {
   assert.match(body, /Inline maths: use \\\(\.\.\.\\\)/);
   assert.match(body, /Display\/block equations: use \\\[\.\.\.\\\]/);
   assert.match(body, /Do NOT use \$?\.\.\.\$ or \$\$?\.\.\.\$\$/);
+  assert.match(body, /task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback/i);
+  assert.match(body, /escape math-delimiter backslashes/i);
+  assert.equal(body.includes("\\\\(...\\\\)"), true);
+  assert.equal(body.includes("\\\\[...\\\\]"), true);
+  assert.match(body, /in raw JSON text/i);
+  assert.match(body, /Prefer supported TeX notation/i);
+  assert.match(body, /formulae, symbolic variables, fractions, subscripts, Greek symbols, or statistical notation/i);
   assert.match(body, /Do NOT wrap equations in code spans/i);
   assert.match(body, /Do NOT HTML-escape math delimiters/i);
   assert.match(body, /presentational notation only/i);
@@ -242,4 +249,100 @@ test("applyWorkflowStepRuntimePromptAugmentations: includes math contract for as
     {}
   );
   assertMathSafeContractText(prompt);
+});
+
+test("applyWorkflowStepRuntimePromptAugmentations: GAM contract explicitly forbids dollar delimiters and covers materials outputs", () => {
+  const { api } = loadPrismTestApi();
+  const prompt = api.applyWorkflowStepRuntimePromptAugmentations(
+    "Generate activity materials.\n",
+    {
+      title: "Generate Activity Materials",
+      canonical_title: "Generate Activity Materials",
+      canonical_step_id: "step_generate_activity_materials",
+      outputName: "activity_materials",
+      notes: ""
+    },
+    null,
+    {}
+  );
+  assert.match(prompt, /Do NOT use \$\.\.\.\$ or \$\$\.\.\.\$\$/);
+  assert.match(prompt, /generated materials, task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback/i);
+  assert.match(prompt, /Prefer supported TeX notation/i);
+  assert.match(prompt, /use structural markdown blocks/i);
+  assert.match(prompt, /keep numbered steps and bullet points on separate lines/i);
+});
+
+test("visible runner text strips internal math contract wording while hidden prompt augmentation keeps it", () => {
+  const { api } = loadPrismTestApi();
+  const leakedNotes = [
+    "When mathematical notation is needed in learner-facing text, use only \\(...\\).",
+    "Do NOT use $...$ or $$...$$.",
+    "Do NOT HTML-escape math delimiters.",
+    "Actual visible guidance sentence."
+  ].join("\n");
+  api.setWorkflowStepPatternCatalogForTest([
+    {
+      canonical_step_id: "step_generate_assessment_items",
+      title: "Generate Assessment Items",
+      promptFactory: { defaultPromptNotes: leakedNotes }
+    }
+  ]);
+  const visible = api.getRunnerInstructionsForStepForTest({
+    title: "Generate Assessment Items",
+    canonical_step_id: "step_generate_assessment_items"
+  });
+  assert.ok(visible);
+  assert.equal(typeof visible.what_this_step_does, "string");
+  assert.doesNotMatch(visible.what_this_step_does, /When mathematical notation is needed/i);
+  assert.doesNotMatch(visible.what_this_step_does, /never \$|Do NOT use \$\.\.\.\$|\$\$\.\.\.\$\$/i);
+  assert.doesNotMatch(visible.what_this_step_does, /HTML-escaped delimiters/i);
+  assert.match(visible.what_this_step_does, /Actual visible guidance sentence/);
+
+  const hidden = api.applyWorkflowStepRuntimePromptAugmentations(
+    "Generate assessment items.\n",
+    {
+      title: "Generate Assessment Items",
+      canonical_title: "Generate Assessment Items",
+      canonical_step_id: "step_generate_assessment_items",
+      outputName: "assessment_items",
+      notes: ""
+    },
+    null,
+    {}
+  );
+  assert.match(hidden, /When mathematical notation is needed/i);
+  assert.match(hidden, /Do NOT use \$\.\.\.\$ or \$\$\.\.\.\$\$/);
+});
+
+test("visible runner text no-leak guard applies across DLA/GAM/Design Page/Feedback/Rubric", () => {
+  const { api } = loadPrismTestApi();
+  const leakedNotes = [
+    "When mathematical notation is needed in learner-facing text, use only \\(...\\).",
+    "Never $...$ / $$...$$.",
+    "Do NOT HTML-escape math delimiters."
+  ].join("\n");
+  const steps = [
+    ["step_design_learning_activities", "Design Learning Activities"],
+    ["step_generate_activity_materials", "Generate Activity Materials"],
+    ["step_design_page", "Design Page"],
+    ["step_design_feedback", "Design Feedback"],
+    ["step_design_marking_rubric", "Design Marking Rubric"]
+  ];
+  api.setWorkflowStepPatternCatalogForTest(
+    steps.map(([canonicalId, title]) => ({
+      canonical_step_id: canonicalId,
+      title: title,
+      promptFactory: { defaultPromptNotes: leakedNotes }
+    }))
+  );
+  steps.forEach(([canonicalId, title]) => {
+    const visible = api.getRunnerInstructionsForStepForTest({
+      title: title,
+      canonical_step_id: canonicalId
+    });
+    assert.ok(visible);
+    assert.doesNotMatch(visible.what_this_step_does, /When mathematical notation is needed/i);
+    assert.doesNotMatch(visible.what_this_step_does, /never \$|\$\$\.\.\.\$\$/i);
+    assert.doesNotMatch(visible.what_this_step_does, /HTML-escaped delimiters|HTML-escape/i);
+  });
 });

@@ -117,6 +117,52 @@ test("utilities normalization: preserves escaped MathJax delimiters inside JSON 
   assert.match(content, /\\\[x\^2\\\]/);
 });
 
+test("utilities normalization: tolerates invalid TeX spacing escape before JSON.parse", () => {
+  const { api } = loadPrismTestApi();
+  const raw =
+    '{"artifact_type":"page","title":"Math spacing","sections":[{"section_id":"s1","heading":"H","content":"Point (66.08,\\ 73.92) with inline \\\\(x+y\\\\)"}]}';
+  const normalized = api.utilityNormalizeUtilitiesJsonInputForTest(raw);
+  const parsed = JSON.parse(normalized);
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.match(html, /\(66\.08,\s+73\.92\)/);
+  assert.match(html, /\\\(x\+y\\\)/);
+});
+
+test("utilities normalization: nested Design Page materials tolerate raw MathJax delimiters", () => {
+  const { api } = loadPrismTestApi();
+  const raw = JSON.stringify({
+    artifact_type: "page",
+    title: "Nested Materials",
+    sections: [
+      {
+        section_id: "s1",
+        heading: "Learning Activities",
+        learning_activities: {
+          content: [
+            {
+              activity_id: "A1",
+              title: "Sampling",
+              required_materials: {
+                text: "Sample Size \\(n = 10\\)"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }).replace(/\\\\\(/g, "\\(").replace(/\\\\\)/g, "\\)");
+  const normalized = api.utilityNormalizeUtilitiesJsonInputForTest(raw);
+  const parsed = JSON.parse(normalized);
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const nestedText = String(
+    parsed.sections[0].learning_activities.content[0].required_materials.text || ""
+  );
+  assert.equal(nestedText, "Sample Size \\(n = 10\\)");
+});
+
 test("math delimiter fixture: delimiters survive structured HTML construction", () => {
   const { api } = loadPrismTestApi();
   const parsed = loadFixture("mathjax-delimiter-preservation-page.json");
@@ -425,4 +471,35 @@ test("activity materials regression: markdown heading and inline math underscore
   assert.doesNotMatch(html, /x<\/em>2/i);
   assert.match(html, /\\\(x_1 =\\\)/);
   assert.match(html, /\\\(x_2 =\\\)/);
+});
+
+test("json validity: escaped inline/block MathJax delimiters parse and render successfully", () => {
+  const { api } = loadPrismTestApi();
+  const rawJson =
+    '{"artifact_type":"page","title":"Escaped math page","sections":[{"section_id":"s1","heading":"Math","content":"Compute \\\\(z = \\\\frac{x-\\\\mu}{\\\\sigma}\\\\)."},{"section_id":"s2","heading":"Block","content":"\\\\[x^2 - 4x - 5 = 0\\\\]"}]}';
+  assert.doesNotMatch(rawJson, /(^|[^\\])\\\(/);
+  assert.doesNotMatch(rawJson, /(^|[^\\])\\\[/);
+  const parsed = JSON.parse(rawJson);
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.match(html, /\\\(z = [\s\S]*\\\)/);
+  assert.match(html, /\\\[[\s\S]*x\^2 - 4x - 5 = 0[\s\S]*\\\]/);
+});
+
+test("json validity: escaped maths in assessment stem/options/explanation parse and preserve delimiters", () => {
+  const { api } = loadPrismTestApi();
+  const rawJson =
+    '{"artifact_type":"page","title":"Assessment escaped maths","sections":[{"section_id":"assessment","heading":"Assessment","content":{"items":[{"item_type":"mcq","stem":"Compute \\\\(x_1 + x_2\\\\).","options":["\\\\(x_1\\\\)","\\\\(x_2\\\\)"],"explanation":"Use \\\\[x_1 + x_2 = s\\\\]."}]}},{"section_id":"worked","heading":"Worked equation","content":"\\\\[x_1 + x_2 = s\\\\]"}]}';
+  assert.doesNotMatch(rawJson, /(^|[^\\])\\\(/);
+  assert.doesNotMatch(rawJson, /(^|[^\\])\\\[/);
+  const parsed = JSON.parse(rawJson);
+  assert.match(String(parsed.sections[0].content.items[0].explanation || ""), /\\\[x_1 \+ x_2 = s\\\]/);
+  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.match(html, /\\\(x_1 \+ x_2\\\)/);
+  assert.match(html, /\\\(x_1\\\)/);
+  assert.match(html, /\\\(x_2\\\)/);
+  assert.match(html, /\\\[[\s\S]*x_1 \+ x_2 = s[\s\S]*\\\]/);
 });

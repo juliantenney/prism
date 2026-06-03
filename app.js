@@ -1008,9 +1008,15 @@
           what_to_expect: "",
           what_to_check: ""
         };
-    if (!out.what_this_step_does && pf && pf.defaultPromptNotes) {
-      out.what_this_step_does = String(pf.defaultPromptNotes || "").trim();
+    function sanitizeVisibleRunnerText(text) {
+      return stripInternalPromptContractsFromVisibleText(text);
     }
+    if (!out.what_this_step_does && pf && pf.defaultPromptNotes) {
+      out.what_this_step_does = sanitizeVisibleRunnerText(String(pf.defaultPromptNotes || "").trim());
+    }
+    out.what_this_step_does = sanitizeVisibleRunnerText(out.what_this_step_does);
+    out.what_to_expect = sanitizeVisibleRunnerText(out.what_to_expect);
+    out.what_to_check = sanitizeVisibleRunnerText(out.what_to_check);
     if (!out.what_this_step_does) {
       var roleText = String((s && s.roleLabel) || "").trim();
       var titleText = String((s && s.title) || "this step").trim();
@@ -1024,6 +1030,38 @@
     }
     if (!out.what_this_step_does && !out.what_to_expect && !out.what_to_check) return null;
     return out;
+  }
+
+  function stripInternalPromptContractsFromVisibleText(text) {
+    var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n");
+    if (!raw.trim()) return "";
+    var leakPatterns = [
+      /math notation output contract/i,
+      /when mathematical notation is needed/i,
+      /inline maths:\s*use\s*\\\(\.\.\.\\\)/i,
+      /display\/block equations:\s*use\s*\\\[\.\.\.\\\]/i,
+      /do not use\s*\$\.\.\.\$\s*or\s*\$\$\.\.\.\$\$/i,
+      /never\s*\$\.\.\.\$\s*\/\s*\$\$\.\.\.\$\$/i,
+      /do not wrap equations in code/i,
+      /do not html-escape math delimiters/i,
+      /html-escaped delimiters/i,
+      /presentational notation only/i
+    ];
+    var kept = raw
+      .split("\n")
+      .map(function (line) { return String(line || ""); })
+      .filter(function (line) {
+        var trimmed = line.trim();
+        if (!trimmed) return true;
+        for (var i = 0; i < leakPatterns.length; i += 1) {
+          if (leakPatterns[i].test(trimmed)) return false;
+        }
+        return true;
+      })
+      .join("\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+    return kept;
   }
 
   function formatRunnerInstructionsText(step) {
@@ -7217,12 +7255,15 @@
     return [
       "",
       "Math notation output contract (auto-applied):",
-      "- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options, worked examples, or composed page content, emit renderer-supported TeX delimiters only.",
+      "- When mathematical notation is needed in learner-facing text, activities, generated materials, task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback, marking guidance, assessment stems/options/explanations, or composed page content, emit renderer-supported TeX delimiters only.",
       "- Inline maths: use \\(...\\) (for example \\(x^2 + y^2\\)).",
       "- Display/block equations: use \\[...\\] on their own line where block layout is intended.",
       "- Do NOT use $...$ or $$...$$ delimiters.",
       "- Do NOT wrap equations in code spans, code fences, or backtick markdown.",
+      "- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\\\(...\\\\) and \\\\[...\\\\] in raw JSON text).",
+      "- For generated materials prose, use structural markdown blocks (steps/lists/tables/worked examples) rather than compressed single-line runs; keep numbered steps and bullet points on separate lines.",
       "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
+      "- Prefer supported TeX notation when formulae, symbolic variables, fractions, subscripts, Greek symbols, or statistical notation are pedagogically appropriate; do not force notation into plain prose when maths clarity benefits learners.",
       "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
       "- Preserve existing limited Markdown subset rules; math delimiters are additive to those rules."
     ].join("\n");
@@ -7259,6 +7300,11 @@
     return [
       "",
       "Self-directed learner-page material shape (auto-applied):",
+      "- Emit structurally valid markdown for learner materials: headings, numbered steps, bullet lists, and tables should use real markdown line breaks (not single-line compressed prose).",
+      "- Put each numbered step on its own line (for example `1. ...` then newline `2. ...`).",
+      "- Put each bullet/list item on its own line (for example `- ...` per line), not inline `- item - item` runs unless explicitly intended.",
+      "- Keep markdown tables in multiline form (header row, divider row, body rows), not compressed into one line.",
+      "- Keep display maths `\\[...\\]` on its own lines, with explanatory prose or bullet lists before/after on separate lines.",
       "- For timeline/sequencing activities, align source event lists with the cognitive task (see timeline sequencing alignment guidance).",
       "- For cause–effect, comparison, or table-completion scaffolds on one activity, prefer a single integrated template or analysis_table (prompts in row labels) rather than parallel task_cards plus a separate table for the same scaffold.",
       "- Only add task_cards when each card maps to a distinct sub-activity, not duplicate prompts already in the table.",
@@ -13870,6 +13916,37 @@
     var generateFromTopic =
       inputStrategyHint === "generate_from_topic" ||
       selectedStartingArtefact === "generate_from_topic";
+    var designScopeHint = String(
+      resolvedBriefFactors.design_scope || explicitBriefFactors.design_scope || ""
+    ).toLowerCase().trim();
+    var explicitVleStructureRequest = hasIntent(
+      /\b(vle structure|moodle structure|lms structure|course shell|module structure|course structure|multi-page shell|deployment plan|weekly blocks?|topic blocks?|navigation structure|vle navigation|lms navigation|course navigation)\b/
+    );
+    var shellNavigationCue = hasIntent(
+      /\b(shell|navigation|nav structure|site map|weekly blocks?|topic blocks?|module structure|course structure|deployment plan|multi-page)\b/
+    );
+    var vlePlatformCue = hasIntent(
+      /\b(vle|moodle|lms|course site|online course space)\b/
+    );
+    var largeScopeVleDesignIntent =
+      designScopeHint === "sequence" ||
+      designScopeHint === "module" ||
+      hasIntent(/\b(module|course|programme|program|multi-session|weekly schedule)\b/);
+    function shouldIncludeVleStructureStep(options) {
+      var o = options && typeof options === "object" ? options : {};
+      var explicitMats = Array.isArray(o.explicitSessionMaterials)
+        ? o.explicitSessionMaterials
+        : [];
+      var resolvedMats = Array.isArray(o.sessionMaterialsForInclusion)
+        ? o.sessionMaterialsForInclusion
+        : [];
+      var explicitRequested = explicitMats.indexOf("vle_structure") !== -1;
+      var requested = resolvedMats.indexOf("vle_structure") !== -1;
+      if (explicitRequested || requested) return true;
+      if (explicitVleStructureRequest) return true;
+      if (largeScopeVleDesignIntent && vlePlatformCue && shellNavigationCue) return true;
+      return false;
+    }
     var allowGenerateLearningContent =
       explicitGenerationOnly ||
       generateFromTopic ||
@@ -13878,11 +13955,34 @@
           explicitSessionOrActivityRequested ||
           String(resolvedBriefFactors.delivery_context || "").toLowerCase().trim() ===
             "self_directed"));
-    var hasIngestionInput =
-      inputs.indexOf("pdf") !== -1 ||
-      inputs.indexOf("file") !== -1 ||
-      inputs.indexOf("url") !== -1 ||
-      inputs.indexOf("document") !== -1;
+    function hasNegatedSourceCue() {
+      var blob = [goalText, inputs, desiredOutputsText].join("\n");
+      return (
+        /\b(no|without|not using|excluding)\s+(?:any\s+)?(?:uploaded|provided|imported|pasted|source)\s+(?:content|material|materials|document|documents|file|files|pdf|pdfs|transcript|transcripts|url|urls)\b/.test(
+          blob
+        ) ||
+        /\bno\s+(?:uploaded|provided|imported|pasted)\b/.test(blob)
+      );
+    }
+    function hasIngestionInputCue() {
+      var blob = [goalText, inputs, desiredOutputsText].join("\n");
+      if (hasNegatedSourceCue()) return false;
+      return /\b(upload(?:ed)?|attach(?:ed)?|import(?:ed)?|paste(?:d)?|transcript|ocr|media extraction|source material|source content|document|documents|file|files|pdf|pdfs|url|urls)\b/.test(
+        blob
+      );
+    }
+    function shouldIncludeNormalizeForSourcePosture() {
+      if (generateFromTopic) return false;
+      if (selectedStartingArtefact === "provided_source_content") return true;
+      if (inputStrategyHint === "provided_source_content") return true;
+      if (
+        (selectedStartingArtefact === "mixed" || inputStrategyHint === "mixed") &&
+        hasSourceContentSignal()
+      ) {
+        return true;
+      }
+      return hasAuthoritativeProvidedSource() && hasIngestionInputCue();
+    }
     out.steps = out.steps.map(function (step, idx) {
       var s = Object.assign({}, step || {});
       // step.id remains workflow-local durable instance identity.
@@ -14012,7 +14112,7 @@
       }
 
       var normalizeCanonical = canonicalizeFromPolicy("Normalize Content");
-      if (hasIngestionInput && normalizeCanonical) {
+      if (shouldIncludeNormalizeForSourcePosture() && normalizeCanonical) {
         var hasNormalize = out.steps.some(function (s) {
           return canonicalizeFromPolicy(s && s.title) === normalizeCanonical;
         });
@@ -14022,6 +14122,11 @@
             role: "Normalize and structure source content"
           });
         }
+      }
+      if (generateFromTopic && normalizeCanonical) {
+        out.steps = out.steps.filter(function (s) {
+          return canonicalizeFromPolicy(s && s.title) !== normalizeCanonical;
+        });
       }
 
       out.steps = out.steps
@@ -14073,6 +14178,16 @@
       var sessionMaterialsForInclusion = explicitSessionMaterials.length
         ? explicitSessionMaterials
         : resolvedSessionMaterials;
+      var pageDeliveryRequested = sessionMaterialsForInclusion.indexOf("page") !== -1;
+      var singlePageTopicWorkflow =
+        generateFromTopic &&
+        pageDeliveryRequested &&
+        (designScopeHint === "session" || designScopeHint === "single_activity") &&
+        !explicitVleStructureRequest;
+      var includeVleStructure = shouldIncludeVleStructureStep({
+        explicitSessionMaterials: explicitSessionMaterials,
+        sessionMaterialsForInclusion: sessionMaterialsForInclusion
+      });
       var requestedDeliverySteps = buildRequestedDeliverySteps(sessionMaterialsForInclusion);
       var explicitDeliveryOverride = explicitSessionMaterials.length > 0;
       var selfDirectedPageNeedsSequence =
@@ -14474,6 +14589,20 @@
           }
         });
       }
+      var vleStructureCanonical = String(canonicalizeFromPolicy("Generate VLE Structure") || "");
+      if (vleStructureCanonical && includeVleStructure) {
+        var hasVleStructureStep = out.steps.some(function (s) {
+          return String((s && s.title) || "").toLowerCase().trim() === vleStructureCanonical.toLowerCase();
+        });
+        if (!hasVleStructureStep) {
+          out.steps.push({ title: vleStructureCanonical, role: "" });
+        }
+      }
+      if (vleStructureCanonical && (!includeVleStructure || singlePageTopicWorkflow)) {
+        out.steps = out.steps.filter(function (s) {
+          return String((s && s.title) || "").toLowerCase().trim() !== vleStructureCanonical.toLowerCase();
+        });
+      }
       if (explicitDeliveryOverride) {
         var allowed = {};
         requestedDeliverySteps.forEach(function (t) {
@@ -14651,6 +14780,7 @@
               anyOf.some(function (art) {
                 var artKey = normalizeWorkflowDesignArtefactKey(art);
                 if (!artKey) return false;
+                if (generateFromTopic && artKey === "normalized_content") return false;
                 var producer = producerByArtefact[artKey];
                 if (!producer) return false;
                 chosenProducer = producer;
@@ -14687,7 +14817,15 @@
           var dep = getStepDependency(title);
           var required = Array.isArray(dep.requires) ? dep.requires.slice() : [];
           if (Array.isArray(dep.requiresAnyOf) && dep.requiresAnyOf.length) {
-            var hasAny = dep.requiresAnyOf.some(function (art) {
+            var anyOfRequirements = dep.requiresAnyOf.filter(function (art) {
+              var artKey = normalizeWorkflowDesignArtefactKey(art);
+              if (generateFromTopic && artKey === "normalized_content") return false;
+              return true;
+            });
+            if (!anyOfRequirements.length) {
+              anyOfRequirements = dep.requiresAnyOf.slice();
+            }
+            var hasAny = anyOfRequirements.some(function (art) {
               var artKey = normalizeWorkflowDesignArtefactKey(art);
               if (providedArtefacts[artKey]) return true;
               var producer = producerByArtefact[artKey];
@@ -14696,7 +14834,7 @@
             if (!hasAny) {
               var bestArt = "";
               var bestScore = -1;
-              dep.requiresAnyOf.forEach(function (art) {
+              anyOfRequirements.forEach(function (art) {
                 var artKey = normalizeWorkflowDesignArtefactKey(art);
                 if (providedArtefacts[artKey]) {
                   bestArt = "";
@@ -14711,7 +14849,7 @@
                   bestArt = String(art || "");
                 }
               });
-              if (!bestArt) bestArt = String(dep.requiresAnyOf[0] || "");
+              if (!bestArt) bestArt = String(anyOfRequirements[0] || dep.requiresAnyOf[0] || "");
               if (bestArt) required.push(bestArt);
             }
           }
@@ -14777,6 +14915,12 @@
         }
       }
       var explicitlyRequiredStepSet = collectRequiredStepsClosure(requestedDeliverySteps);
+      if (includeVleStructure) {
+        var vleRequiredSet = collectRequiredStepsClosure(["Generate VLE Structure"]);
+        Object.keys(vleRequiredSet).forEach(function (k) {
+          explicitlyRequiredStepSet[k] = true;
+        });
+      }
       // Protect the assessment prerequisite chain from optional-pruning when the
       // resolved brief (or goal text) requires assessment items.
       if (assessmentItemsRequested) {
@@ -23619,7 +23763,85 @@
   }
 
   function utilityRenderMarkdownBlock(text) {
-    var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n").trim();
+    function normalizeSingleLinePipeTable(lineText) {
+      var original = String(lineText == null ? "" : lineText);
+      var src = original.trim();
+      if (!src || src.indexOf("\n") !== -1) return original;
+      if (!/\|\s*:?-{3,}:?\s*\|/.test(src)) return original;
+      var trimmed = src;
+      if (trimmed.charAt(0) === "|") trimmed = trimmed.slice(1);
+      if (trimmed.charAt(trimmed.length - 1) === "|") trimmed = trimmed.slice(0, -1);
+      var tokens = trimmed.split("|").map(function (cell) {
+        return String(cell == null ? "" : cell).trim();
+      });
+      var firstDividerIdx = -1;
+      for (var i = 0; i < tokens.length; i += 1) {
+        if (/^:?-{3,}:?$/.test(tokens[i])) {
+          firstDividerIdx = i;
+          break;
+        }
+      }
+      if (firstDividerIdx <= 0) return original;
+      var header = tokens.slice(0, firstDividerIdx).filter(function (cell) { return !!cell; });
+      var colCount = header.length;
+      if (colCount < 2) return original;
+      var cursor = firstDividerIdx;
+      var divider = [];
+      while (cursor < tokens.length && divider.length < colCount) {
+        var d = tokens[cursor];
+        if (/^:?-{3,}:?$/.test(d)) divider.push(d);
+        cursor += 1;
+      }
+      if (divider.length !== colCount) return original;
+      var rows = [];
+      var row = [];
+      for (; cursor < tokens.length; cursor += 1) {
+        var cell = String(tokens[cursor] == null ? "" : tokens[cursor]).trim();
+        if (!cell) {
+          if (row.length === colCount) {
+            rows.push(row.slice());
+            row = [];
+          }
+          continue;
+        }
+        row.push(cell);
+        if (row.length === colCount) {
+          rows.push(row.slice());
+          row = [];
+        }
+      }
+      if (!rows.length) return original;
+      var lines = [];
+      lines.push("| " + header.join(" | ") + " |");
+      lines.push("| " + divider.join(" | ") + " |");
+      rows.forEach(function (r) {
+        lines.push("| " + r.join(" | ") + " |");
+      });
+      return lines.join("\n");
+    }
+    function normalizeMarkdownTableText(inputText) {
+      var textNorm = String(inputText == null ? "" : inputText).replace(/\r\n?/g, "\n");
+      if (!textNorm) return "";
+      var lines = textNorm.split("\n").map(function (ln) {
+        return normalizeSingleLinePipeTable(ln);
+      });
+      function isPipeTableRow(ln) {
+        var t = String(ln == null ? "" : ln).trim();
+        return /^\|.+\|$/.test(t) || (/^\|/.test(t) && t.indexOf("|") !== -1);
+      }
+      var compact = [];
+      for (var li = 0; li < lines.length; li += 1) {
+        var cur = String(lines[li] == null ? "" : lines[li]);
+        if (!String(cur).trim()) {
+          var prev = li > 0 ? String(lines[li - 1] == null ? "" : lines[li - 1]) : "";
+          var next = li + 1 < lines.length ? String(lines[li + 1] == null ? "" : lines[li + 1]) : "";
+          if (isPipeTableRow(prev) && isPipeTableRow(next)) continue;
+        }
+        compact.push(cur);
+      }
+      return compact.join("\n");
+    }
+    var raw = normalizeMarkdownTableText(text).trim();
     if (!raw) return "";
     var protectedMath = utilityProtectSupportedMathBlocks(raw);
     raw = protectedMath.text;
@@ -25176,6 +25398,14 @@
       return lookup;
     }
     function renderActivityResourcesSection(sectionValue) {
+      function renderResourceMarkdownBlock(value) {
+        if (utilityIsEmptyValue(value)) return "";
+        var raw = String(value == null ? "" : value).trim();
+        if (!raw) return "";
+        var block = utilityRenderMarkdownBlock(raw);
+        if (String(block || "").trim()) return block;
+        return "<p>" + utilityRenderMarkdownInline(raw) + "</p>";
+      }
       function renderResourceObject(obj) {
         if (!obj || typeof obj !== "object" || Array.isArray(obj)) return "";
         var title = firstNonEmpty([obj.title, obj.card_title, obj.name, obj.label]);
@@ -25183,7 +25413,7 @@
         var html = [];
         if (title) html.push("<h3>" + utilityEscapeHtml(String(title)) + "</h3>");
         if (bodyPrimary) {
-          html.push("<p>" + utilityRenderMarkdownInline(String(bodyPrimary)) + "</p>");
+          html.push(renderResourceMarkdownBlock(bodyPrimary));
         }
         var listCandidates = [];
         if (Array.isArray(obj.cards)) listCandidates = listCandidates.concat(obj.cards);
@@ -25193,14 +25423,14 @@
           var items = listCandidates.map(function (entry) {
             if (utilityIsEmptyValue(entry)) return "";
             if (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean") {
-              return "<li>" + utilityRenderMarkdownInline(String(entry)) + "</li>";
+              return "<li>" + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(entry))) + "</li>";
             }
             if (entry && typeof entry === "object" && !Array.isArray(entry)) {
               var lineTitle = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]);
               var lineBody = firstNonEmpty([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
               var line = "";
-              if (lineTitle && lineBody) line = "<strong>" + utilityEscapeHtml(String(lineTitle)) + ":</strong> " + utilityRenderMarkdownInline(String(lineBody));
-              else if (lineBody) line = utilityRenderMarkdownInline(String(lineBody));
+              if (lineTitle && lineBody) line = "<strong>" + utilityEscapeHtml(String(lineTitle)) + ":</strong> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(lineBody)));
+              else if (lineBody) line = utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(lineBody)));
               else if (lineTitle) line = utilityEscapeHtml(String(lineTitle));
               return line ? ("<li>" + line + "</li>") : "";
             }
@@ -25214,7 +25444,7 @@
         var blocks = sectionValue.map(function (item) {
           if (utilityIsEmptyValue(item)) return "";
           if (item && typeof item === "object" && !Array.isArray(item)) return renderResourceObject(item);
-          return "<p>" + utilityRenderMarkdownInline(String(item)) + "</p>";
+          return renderResourceMarkdownBlock(item);
         }).filter(function (x) { return !!String(x || "").trim(); });
         return blocks.join("");
       }
@@ -25230,12 +25460,12 @@
                 if (entry && typeof entry === "object" && !Array.isArray(entry)) {
                   var t = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]);
                   var c = firstNonEmpty([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
-                  if (t && c) return "<li><strong>" + utilityEscapeHtml(String(t)) + ":</strong> " + utilityRenderMarkdownInline(String(c)) + "</li>";
-                  if (c) return "<li>" + utilityRenderMarkdownInline(String(c)) + "</li>";
+                  if (t && c) return "<li><strong>" + utilityEscapeHtml(String(t)) + ":</strong> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(c))) + "</li>";
+                  if (c) return "<li>" + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(c))) + "</li>";
                   if (t) return "<li>" + utilityEscapeHtml(String(t)) + "</li>";
                   return "";
                 }
-                return "<li>" + utilityRenderMarkdownInline(String(entry)) + "</li>";
+                return "<li>" + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(entry))) + "</li>";
               })
               .filter(function (x) { return !!x; })
               .join("");
@@ -25254,7 +25484,7 @@
             return;
           }
           top.push("<h3>" + utilityEscapeHtml(utilityLabelFromKey(key)) + "</h3>");
-          top.push("<p>" + utilityRenderMarkdownInline(String(value)) + "</p>");
+          top.push(renderResourceMarkdownBlock(value));
         });
         return top.join("");
       }
@@ -26557,6 +26787,137 @@
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
             var text = utilityNormalizeTemplateSeparatorArtefacts(rawText).replace(/\r\n?/g, "\n").trim();
             if (!text) return "";
+            function normalizeCompactMaterialText(inputText) {
+              var value = String(inputText == null ? "" : inputText);
+              if (!value) return "";
+              function expandCompactStepsLine(line) {
+                var src = String(line == null ? "" : line).trim();
+                if (!src) return src;
+                var header = src.match(/^(Steps?|Procedure|Method)\s*:\s*(.+)$/i);
+                if (!header) return src;
+                var body = String(header[2] || "").trim();
+                var markerRe = /\b\d+[\.\)]\s+/g;
+                var markers = [];
+                var m;
+                while ((m = markerRe.exec(body))) {
+                  markers.push({ index: m.index, token: String(m[0] || "").trim() });
+                }
+                if (markers.length < 2) return src;
+                var items = [];
+                for (var mi = 0; mi < markers.length; mi += 1) {
+                  var start = markers[mi].index + markers[mi].token.length;
+                  var end = mi + 1 < markers.length ? markers[mi + 1].index : body.length;
+                  var itemText = body.slice(start, end).trim();
+                  if (!itemText) continue;
+                  var normalizedToken = markers[mi].token.replace(/\)\s*$/, ".").replace(/\s+$/, "");
+                  items.push(normalizedToken + " " + itemText);
+                }
+                if (items.length < 2) return src;
+                return String(header[1] || "Steps").replace(/\s*:\s*$/, "") + ":\n\n" + items.join("\n");
+              }
+              function splitMathThenBullets(line) {
+                var src = String(line == null ? "" : line).trim();
+                if (!src) return src;
+                var m = src.match(/^(\\\[[\s\S]*?\\\])\s+-\s+(.+)$/);
+                if (!m) return src;
+                var math = String(m[1] || "").trim();
+                var tail = String(m[2] || "").trim();
+                var bulletItems = tail
+                  .split(/\s+-\s+/)
+                  .map(function (row) { return String(row || "").trim(); })
+                  .filter(function (row) { return !!row; });
+                if (bulletItems.length < 2) return src;
+                return math + "\n\n" + bulletItems.map(function (row) { return "- " + row; }).join("\n");
+              }
+              function splitCompactWorkedExample(line) {
+                var src = String(line == null ? "" : line).trim();
+                if (!src) return src;
+                var labelRe = /\b(?:Dataset:|Mean\s*=|Mean:|Deviations:|Squared:|Z-scores?:|Z-score:|Variance:|Std\.?\s*dev:|Standard deviation:)\b/g;
+                var matches = [];
+                var m;
+                while ((m = labelRe.exec(src))) {
+                  matches.push({ index: m.index, label: String(m[0] || "") });
+                }
+                if (matches.length < 2) return src;
+                var pieces = [];
+                for (var i = 0; i < matches.length; i += 1) {
+                  var start = matches[i].index;
+                  var end = i + 1 < matches.length ? matches[i + 1].index : src.length;
+                  var seg = src.slice(start, end).trim();
+                  if (seg) pieces.push(seg);
+                }
+                if (pieces.length < 2) return src;
+                return pieces.join("\n\n");
+              }
+              function expandSingleLineMarkdownTable(raw) {
+                var src = String(raw == null ? "" : raw).trim();
+                if (!src || src.indexOf("\n") !== -1) return src;
+                if (!/\|\s*:?-{3,}:?\s*\|/.test(src)) return src;
+                var trimmed = src;
+                if (trimmed.charAt(0) === "|") trimmed = trimmed.slice(1);
+                if (trimmed.charAt(trimmed.length - 1) === "|") trimmed = trimmed.slice(0, -1);
+                var tokens = trimmed.split("|").map(function (cell) {
+                  return String(cell == null ? "" : cell).trim();
+                });
+                var firstDividerIdx = -1;
+                for (var ti = 0; ti < tokens.length; ti += 1) {
+                  if (/^:?-{3,}:?$/.test(tokens[ti])) {
+                    firstDividerIdx = ti;
+                    break;
+                  }
+                }
+                if (firstDividerIdx <= 0) return src;
+                var header = tokens.slice(0, firstDividerIdx).filter(function (cell) {
+                  return !!cell;
+                });
+                var colCount = header.length;
+                if (colCount < 2) return src;
+                var cursor = firstDividerIdx;
+                var divider = [];
+                while (cursor < tokens.length && divider.length < colCount) {
+                  var d = tokens[cursor];
+                  if (/^:?-{3,}:?$/.test(d)) divider.push(d);
+                  cursor += 1;
+                }
+                if (divider.length !== colCount) return src;
+                var rows = [];
+                var row = [];
+                for (; cursor < tokens.length; cursor += 1) {
+                  var cell = String(tokens[cursor] == null ? "" : tokens[cursor]).trim();
+                  if (!cell) {
+                    if (row.length === colCount) {
+                      rows.push(row.slice());
+                      row = [];
+                    }
+                    continue;
+                  }
+                  row.push(cell);
+                  if (row.length === colCount) {
+                    rows.push(row.slice());
+                    row = [];
+                  }
+                }
+                if (!rows.length) return src;
+                var lines = [];
+                lines.push("| " + header.join(" | ") + " |");
+                lines.push("| " + divider.join(" | ") + " |");
+                rows.forEach(function (r) {
+                  lines.push("| " + r.join(" | ") + " |");
+                });
+                return lines.join("\n");
+              }
+              var out = value
+                .split("\n")
+                .map(function (line) {
+                  var next = expandCompactStepsLine(line);
+                  next = splitMathThenBullets(next);
+                  next = splitCompactWorkedExample(next);
+                  return next;
+                })
+                .join("\n");
+              return expandSingleLineMarkdownTable(out);
+            }
+            text = normalizeCompactMaterialText(text);
             var protectedMath = utilityProtectSupportedMathBlocks(text);
             text = protectedMath.text;
             function finalizeRenderedHtml(htmlFragment) {
@@ -26603,6 +26964,59 @@
                 }).join("") + "</tr>";
               }).join("");
               return utilityWrapExportTableHtml("<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>");
+            }
+            function renderTableHintHeadingSections(sourceText) {
+              if (ro.materialHint !== "table" || ro.skipHeadingSections) return "";
+              var src = String(sourceText == null ? "" : sourceText);
+              if (!/^#{1,6}\s+/m.test(src)) return "";
+              var sectionLines = src.split("\n");
+              var chunks = [];
+              var sectionTitle = "";
+              var sectionBody = [];
+              function flushSection() {
+                var body = sectionBody.join("\n").trim();
+                if (sectionTitle || body) chunks.push({ title: sectionTitle, body: body });
+                sectionTitle = "";
+                sectionBody = [];
+              }
+              sectionLines.forEach(function (ln) {
+                var headingMatch = String(ln || "").trim().match(/^(#{1,6})\s+(.+)$/);
+                if (headingMatch) {
+                  flushSection();
+                  sectionTitle = String(headingMatch[2] || "").trim();
+                  return;
+                }
+                sectionBody.push(ln);
+              });
+              flushSection();
+              if (!chunks.length) return "";
+              var hasMultipleSections = chunks.length > 1;
+              var hasTitledSection = chunks.some(function (chunk) { return !!chunk.title; });
+              if (!hasMultipleSections && !hasTitledSection) return "";
+              var sectionHtml = chunks
+                .map(function (chunk) {
+                  if (!chunk.title && !chunk.body) return "";
+                  var titleHtml = chunk.title
+                    ? '<h5 class="util-card-subheading">' + utilityEscapeHtml(chunk.title) + "</h5>"
+                    : "";
+                  var bodyHtml = chunk.body
+                    ? renderPlainStructuredText(chunk.body, {
+                        materialHint: "table",
+                        skipHeadingSections: true
+                      })
+                    : "";
+                  if (!bodyHtml && chunk.body) {
+                    bodyHtml = utilityRenderMarkdownBlock(chunk.body);
+                  }
+                  return titleHtml + (bodyHtml || "");
+                })
+                .filter(function (x) { return !!String(x || "").trim(); })
+                .join("");
+              return sectionHtml;
+            }
+            var tableHeadingSectionsHtml = renderTableHintHeadingSections(text);
+            if (tableHeadingSectionsHtml) {
+              return finalizeRenderedHtml(tableHeadingSectionsHtml);
             }
             function renderInlineBulletRun(blockText) {
               var raw = String(blockText == null ? "" : blockText).trim();
@@ -27069,6 +27483,26 @@
             }
           }
           if (typeof value === "string") {
+            function stringValueHasMarkdownTable(raw) {
+              var s = String(raw == null ? "" : raw);
+              return /\|/.test(s) && (/\r?\n/.test(s) || /\|\s*:?-{3,}:?\s*\|/.test(s));
+            }
+            if (
+              (hint === "template" || hint === "templates" || hint === "worksheet_template") &&
+              stringValueHasMarkdownTable(value)
+            ) {
+              var templateRaw = String(value).replace(/\r\n?/g, "\n").trim();
+              var templateBodyHtml =
+                renderPlainStructuredText(templateRaw, { materialHint: "table" }) ||
+                utilityRenderMarkdownBlock(templateRaw);
+              if (templateBodyHtml) return templateBodyHtml;
+            }
+            if (hint === "scenario" && stringValueHasMarkdownTable(value)) {
+              var scenarioTableHtml =
+                utilityRenderMarkdownBlock(String(value)) ||
+                renderPlainStructuredText(String(value), { materialHint: "table" });
+              if (scenarioTableHtml) return scenarioTableHtml;
+            }
             var structured = renderPlainStructuredText(value, { materialHint: hint });
             return structured || renderCardScopedMarkdown(String(value));
           }
@@ -27168,12 +27602,14 @@
               var titledLabel = firstNonEmpty([value.heading, value.title]);
               var titledBody = firstNonEmpty([value.content, value.body, value.text]);
               if (titledLabel && titledBody) {
+                var titledBodyHtml =
+                  renderPlainStructuredText(titledBody, { materialHint: hint }) ||
+                  ("<p>" + utilityRenderMarkdownInline(String(titledBody)) + "</p>");
                 return (
                   '<h5 class="util-card-subheading">' +
                   utilityEscapeHtml(String(titledLabel)) +
-                  "</h5><p>" +
-                  utilityRenderMarkdownInline(String(titledBody)) +
-                  "</p>"
+                  "</h5>" +
+                  titledBodyHtml
                 );
               }
             }
@@ -27252,6 +27688,14 @@
                       );
                     }
                     if (!/\r?\n/.test(secRaw)) {
+                      var singleLineTableHtml = renderPlainStructuredText(secRaw, { materialHint: "table" });
+                      if (singleLineTableHtml && /<table>/i.test(singleLineTableHtml)) {
+                        return (
+                          '<article class="util-template-block util-material-template">' +
+                          singleLineTableHtml +
+                          '<div class="util-template-note-line" aria-hidden="true"></div></article>'
+                        );
+                      }
                       return (
                         '<article class="util-template-block util-material-template"><h5>' +
                         utilityEscapeHtml(secRaw) +
@@ -27271,7 +27715,19 @@
                   if (!sec || typeof sec !== "object" || Array.isArray(sec)) return "";
                   var secTitle = firstNonEmpty([sec.heading, sec.title, sec.name, sec.label, sec.section]);
                   var secLines = firstNonEmptyRaw([sec.lines, sec.items, sec.fields, sec.prompts, sec.entries]);
-                  var secBody = renderBulletArray(secLines, { plainLabels: true, stripStandaloneBold: true });
+                  var secBody = "";
+                  if (Array.isArray(secLines)) {
+                    var secJoined = secLines
+                      .map(function (entry) { return String(entry == null ? "" : entry).trim(); })
+                      .filter(function (entry) { return !!entry; })
+                      .join("\n");
+                    if (secJoined && /\|/.test(secJoined) && /\n/.test(secJoined)) {
+                      secBody = renderPlainStructuredText(secJoined, { materialHint: "table" });
+                    }
+                  }
+                  if (!secBody) {
+                    secBody = renderBulletArray(secLines, { plainLabels: true, stripStandaloneBold: true });
+                  }
                   if (!secBody) secBody = renderMaterialValue(firstNonEmptyRaw([sec.content, sec.text, sec.body]), "content");
                   if (!secBody) return "";
                   return '<article class="util-template-block util-material-template">' +
@@ -27460,6 +27916,20 @@
             scenariosRendered = true;
           }
         }
+        var scenarioSingular = materials.scenario;
+        if (!scenariosRendered && !utilityIsEmptyValue(scenarioSingular)) {
+          var scenarioSingularEntries = Array.isArray(scenarioSingular)
+            ? scenarioSingular
+            : [scenarioSingular];
+          var scenarioSingularHtml = renderScenarioBlocks(scenarioSingularEntries);
+          if (scenarioSingularHtml) {
+            parts.push(
+              utilityRenderIconHeading("h4", "Scenario", "scenarios", "util-material-heading") +
+                scenarioSingularHtml
+            );
+            scenariosRendered = true;
+          }
+        }
         var promptSetValue = firstNonEmptyRaw([materials.prompt_set, materials.prompts]);
         if (!utilityIsEmptyValue(promptSetValue)) {
           var promptSetHtml = renderPromptSetBlocks(promptSetValue);
@@ -27627,7 +28097,8 @@
               console.log("[PRISM TRACE] scenarios not yet rendered; allowing generic remainder render:", k);
             } catch (_) {}
           } else if (
-            ["study_scenarios", "scenario_set", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+            (lowerK === "scenario" && scenariosRendered) ||
             (lowerK === "scenario_section_title") ||
             (lowerK === "scenario_heading") ||
             (lowerK === "scenario_title") ||
@@ -29040,10 +29511,13 @@
             var promptOut = renderOpts.cleanupInlineMarkdown
               ? utilityCleanupInlineMarkdownMarkers(promptText)
               : promptText;
+              var promptHtml =
+                utilityRenderMarkdownBlock(promptOut) ||
+                ("<p>" + utilityRenderMarkdownInline(promptOut) + "</p>");
             parts.push(
-              '<div class="util-assessment-prompt"><p>' +
-                utilityRenderMarkdownInline(promptOut) +
-                "</p></div>"
+                '<div class="util-assessment-prompt">' +
+                  promptHtml +
+                  "</div>"
             );
           }
           var resolvedOptions = extractRenderableMcqOptions(row);
@@ -30032,14 +30506,15 @@
       ".util-cognition--explain{border-left:3px solid #8b5cf6}",
       ".util-cognition--transfer{border-left:3px solid #0d9488}",
       ".util-cognition--scaffold{border-left:3px solid #64748b}",
-      ".util-activity-preamble{margin:0 0 10px;padding:8px 10px;border-left:2px solid #c7d2fe;background:#f8fafc;border-radius:0 6px 6px 0;font-size:.875rem;line-height:1.5;color:#475569}",
+      ".util-activity-preamble{margin:0 0 10px;padding:10px 12px;border-left:2px solid #c7d2fe;background:#f8fafc;border-radius:0 8px 8px 0;font-size:.875rem;line-height:1.5;color:#475569}",
       ".util-activity-preamble p:last-child{margin-bottom:0}",
-      ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 4px;font-size:.75rem;font-weight:600;letter-spacing:.02em;color:#64748b}",
-      ".util-activity-preamble-cue{margin:0 0 8px;font-size:.8125rem;line-height:1.45;color:#64748b}",
-      ".util-pel-orientation-cue{padding-left:8px;border-left:2px solid #e2e8f0}",
-      ".util-pel-reasoning-cue{padding-left:8px;border-left:2px solid #cbd5e1}",
-      ".util-pel-orientation-cue strong{font-size:.75rem;font-weight:600;color:#64748b}",
-      ".util-pel-reasoning-cue strong{font-size:.75rem;font-weight:600;color:#475569}",
+      ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 6px;font-size:.75rem;font-weight:600;letter-spacing:.02em;color:#64748b}",
+      ".util-activity-preamble-cue{margin:0 0 8px;padding:9px 11px;border:1px solid #e6edf5;border-left:2px solid #d9e4f2;border-radius:8px;background:#fff;font-size:.8125rem;line-height:1.5;color:#64748b}",
+      ".util-activity-preamble-cue strong{display:block;margin:0 0 4px;font-size:.75rem;font-weight:600;letter-spacing:.02em;line-height:1.3;color:#475569}",
+      ".util-pel-orientation-cue{border-left-color:#d7dde7;background:#fbfcfe}",
+      ".util-pel-reasoning-cue{border-left-color:#cfd9e8;background:#f8fafd}",
+      ".util-pel-orientation-cue strong{color:#64748b}",
+      ".util-pel-reasoning-cue strong{color:#475569}",
       ".util-activity-header+.util-activity-framing,.util-activity-header+.util-activity-preamble{margin-top:6px}",
       ".util-activity-framing+.util-activity-task,.util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:0}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
@@ -30069,12 +30544,14 @@
 
   function getUtilityPagePresentationCssV31_2() {
     return [
-      ".util-activity-framing{margin:6px 0 12px;padding:8px 10px 4px;border-left:2px solid #e2e8f0;background:#fafbfc;border-radius:0 6px 6px 0}",
-      ".util-activity-framing>.util-activity-preamble-cue:last-child,.util-activity-framing>.util-activity-preamble:last-child{margin-bottom:4px}",
-      ".util-activity-framing .util-activity-preamble{margin-bottom:8px;background:#f8fafc;border-left-color:#ddd6fe}",
-      ".util-activity-framing .util-pel-orientation-cue{margin-bottom:6px}",
-      ".util-activity-framing .util-pel-reasoning-cue{margin-bottom:8px}",
-      ".util-activity-framing+.util-activity-task--primary{margin-top:4px}",
+      ".util-activity-framing{margin:8px 0 14px;padding:10px 12px;border:1px solid #e7edf4;border-radius:10px;background:#fafbfd;display:grid;gap:8px}",
+      ".util-activity-framing>.util-activity-preamble-cue:last-child,.util-activity-framing>.util-activity-preamble:last-child{margin-bottom:0}",
+      ".util-activity-framing .util-activity-preamble{margin-bottom:0;background:#f8fafc;border-left-color:#d8def8}",
+      ".util-activity-framing .util-pel-orientation-cue{margin-bottom:0}",
+      ".util-activity-framing .util-pel-reasoning-cue{margin-bottom:0}",
+      ".util-activity-framing+.util-activity-task--primary{margin-top:8px}",
+      "@media (max-width:720px){.util-activity-framing{padding:9px 10px;gap:7px}.util-activity-preamble,.util-activity-preamble-cue{padding:8px 10px}}",
+      "@media print{.util-activity-framing{background:#fff;border-color:#dbe2ea;break-inside:avoid-page;page-break-inside:avoid}.util-activity-preamble,.util-activity-preamble-cue{background:#fff}}",
       ".util-support-note{font-size:.8125rem;color:#64748b;padding:8px 10px}",
       ".util-support-note .util-support-note-label{font-size:.75rem;font-weight:600;color:#64748b}"
     ].join("");
@@ -30118,9 +30595,9 @@
 
   function getUtilityPagePresentationCssV31_5() {
     return [
-      ".util-activity-framing>.util-activity-preamble-cue{margin-bottom:4px}",
-      ".util-activity-framing>.util-activity-preamble-cue+.util-activity-preamble-cue{margin-top:2px}",
-      ".util-activity-framing>.util-activity-preamble:last-child{margin-bottom:6px}",
+      ".util-activity-framing>.util-activity-preamble-cue{margin-bottom:0}",
+      ".util-activity-framing>.util-activity-preamble-cue+.util-activity-preamble-cue{margin-top:0}",
+      ".util-activity-framing>.util-activity-preamble:last-child{margin-bottom:0}",
       ".util-activity-framing+.util-activity-task--primary{margin-top:10px}",
       ".util-activity-task--primary+.util-cognition{margin-top:12px}",
       ".util-cognition+.util-activity-materials{margin-top:12px}",
@@ -31038,7 +31515,9 @@
   }
 
   function tryParseWorkflowArtefactJson(raw) {
-    var s = sanitizePrismRunCapturedOutput(String(raw || "").trim());
+    var s = utilityNormalizeUtilitiesJsonInput(
+      sanitizePrismRunCapturedOutput(String(raw || "").trim())
+    );
     if (!s) return null;
     try {
       var parsed = JSON.parse(s);
@@ -31878,26 +32357,92 @@
   function utilityNormalizeUtilitiesJsonInput(rawInput) {
     var raw = String(rawInput == null ? "" : rawInput);
     if (!raw) return "";
+    function normalizeJsonMathDelimiterEscapes(input) {
+      var src = String(input == null ? "" : input);
+      if (!src) return src;
+      var text = "";
+      var inString = false;
+      for (var p = 0; p < src.length; p += 1) {
+        var c = src.charAt(p);
+        if (c === '"') {
+          var quoteBackslashes = 0;
+          var q = p - 1;
+          while (q >= 0 && src.charAt(q) === "\\") {
+            quoteBackslashes += 1;
+            q -= 1;
+          }
+          if (quoteBackslashes % 2 === 0) inString = !inString;
+          text += c;
+          continue;
+        }
+        if (!inString || c !== "\\") {
+          text += c;
+          continue;
+        }
+        var nextMath = src.charAt(p + 1);
+        if (
+          nextMath !== "(" &&
+          nextMath !== ")" &&
+          nextMath !== "[" &&
+          nextMath !== "]"
+        ) {
+          text += c;
+          continue;
+        }
+        var bsRun = 0;
+        var b = p - 1;
+        while (b >= 0 && src.charAt(b) === "\\") {
+          bsRun += 1;
+          b -= 1;
+        }
+        if (bsRun % 2 === 1) {
+          text += c;
+          continue;
+        }
+        // Raw TeX delimiters like "\(x\)" are invalid JSON escapes.
+        // Upgrade to JSON-safe backslash escaping.
+        text += "\\\\";
+        continue;
+      }
+      return text;
+    }
+    raw = normalizeJsonMathDelimiterEscapes(raw);
     var out = "";
+    function isWhitespaceChar(ch) {
+      return ch === " " || ch === "\t" || ch === "\n" || ch === "\r";
+    }
     for (var i = 0; i < raw.length; i += 1) {
       var ch = raw.charAt(i);
       if (ch !== "\\") {
         out += ch;
         continue;
       }
-      var next = raw.charAt(i + 1);
-      if (next !== "_" && next !== "[" && next !== "]") {
-        out += ch;
-        continue;
-      }
-      // Unescape markdown-escaped JSON wrappers (\[...\], \_) only when the
-      // current backslash is not itself escaped (preserves \\[ and \\]).
       var backslashRun = 0;
       var j = i - 1;
       while (j >= 0 && raw.charAt(j) === "\\") {
         backslashRun += 1;
         j -= 1;
       }
+      // Tolerate invalid TeX spacing escapes in raw JSON strings, e.g. "\ ",
+      // "\<tab>", and line-continuation style "\<newline>".
+      // Only normalize when this backslash is not itself escaped.
+      var next = raw.charAt(i + 1);
+      if (isWhitespaceChar(next) && backslashRun % 2 === 0) {
+        out += " ";
+        // Collapse CRLF to one normalized space.
+        if (next === "\r" && raw.charAt(i + 2) === "\n") {
+          i += 2;
+        } else {
+          i += 1;
+        }
+        continue;
+      }
+      if (next !== "_" && next !== "[" && next !== "]") {
+        out += ch;
+        continue;
+      }
+      // Unescape markdown-escaped JSON wrappers (\[...\], \_) only when the
+      // current backslash is not itself escaped (preserves \\[ and \\]).
       if (backslashRun % 2 === 1) {
         out += ch;
         continue;
@@ -32700,6 +33245,12 @@
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
     prismTestApi.buildPromptFactoryWorkflowContextText = buildPromptFactoryWorkflowContextText;
     prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
+    prismTestApi.getRunnerInstructionsForStepForTest = getRunnerInstructionsForStep;
+    prismTestApi.stripInternalPromptContractsFromVisibleTextForTest =
+      stripInternalPromptContractsFromVisibleText;
+    prismTestApi.setWorkflowStepPatternCatalogForTest = function (catalog) {
+      state.workflowStepPatternCatalog = Array.isArray(catalog) ? catalog.slice() : [];
+    };
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
     prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride, renderOptions) {

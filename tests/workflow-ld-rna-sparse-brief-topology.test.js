@@ -177,6 +177,32 @@ test("LD formative assessment only: lean path omits activity chain", () => {
   assert.equal(indexOfTitle(titles, "Design Learning Activities"), -1);
   assert.equal(indexOfTitle(titles, "Generate Activity Materials"), -1);
   assert.ok(indexOfTitle(titles, "Generate Assessment Items") !== -1);
+  assert.equal(indexOfTitle(titles, "Normalize Content"), -1);
+});
+
+test("LD sparse topic generation: prefers GLC -> MK -> DLO without Normalize", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, THIN_MODEL_CHAIN, {
+    goal: "Design a topic-led workshop on RNA viruses with activities for undergraduate learners.",
+    inputs: "",
+    desiredOutputs: "learner-facing page",
+    startingArtefact: "generate_from_topic",
+    resolvedBriefFactors: {
+      topic: "rna viruses",
+      design_scope: "session",
+      delivery_context: "self_directed",
+      session_materials: ["page"],
+      input_strategy: "generate_from_topic"
+    }
+  });
+  const titles = stepTitles(out);
+  const glcIdx = indexOfTitle(titles, "Generate Learning Content");
+  const mkIdx = indexOfTitle(titles, "Model Knowledge");
+  const dloIdx = indexOfTitle(titles, "Define Learning Outcomes");
+  assert.equal(indexOfTitle(titles, "Normalize Content"), -1);
+  assert.equal(indexOfTitle(titles, "Generate VLE Structure"), -1);
+  assert.ok(glcIdx !== -1 && mkIdx !== -1 && dloIdx !== -1, "expected GLC, MK and DLO");
+  assert.ok(glcIdx < mkIdx, "Generate Learning Content should precede Model Knowledge");
+  assert.ok(mkIdx < dloIdx, "Model Knowledge should precede Define Learning Outcomes");
 });
 
 test("LD self-study with activities: keeps activity chain (style not existence)", () => {

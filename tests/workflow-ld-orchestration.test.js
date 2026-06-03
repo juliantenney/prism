@@ -118,6 +118,11 @@ test("LD workshop heuristics: Generate Learning Content before Model Knowledge",
   const dpIdx = indexOfTitle(titles, "Design Page");
   assert.ok(glcIdx < gamIdx, "instructional content should precede activity materials");
   assert.ok(gamIdx < dpIdx, "activity materials should precede Design Page");
+  assert.equal(
+    titles.some((t) => t.toLowerCase() === "normalize content"),
+    false,
+    "generate_from_topic workshop should not include Normalize Content"
+  );
 });
 
 test("LD self-study page heuristics: includes Generate Learning Content in coherent order", () => {
@@ -147,6 +152,18 @@ test("LD self-study page heuristics: includes Generate Learning Content in coher
   assert.ok(glcIdx !== -1, "self-study workflow should include Generate Learning Content");
   assert.ok(mkIdx === -1 || glcIdx < mkIdx, "GLC should precede Model Knowledge when both present");
   assert.ok(glcIdx < dpIdx, "GLC should precede Design Page");
+  assert.equal(
+    titles.some((t) => t.toLowerCase() === "normalize content"),
+    false,
+    "topic-only self-study wording should not trigger Normalize Content"
+  );
+  const dloIdx = indexOfTitle(titles, "Define Learning Outcomes");
+  assert.ok(dloIdx === -1 || mkIdx === -1 || mkIdx < dloIdx, "Model Knowledge should precede Define Learning Outcomes");
+  assert.equal(
+    titles.some((t) => t.toLowerCase() === "generate vle structure"),
+    false,
+    "self-directed page/session flow should not include Generate VLE Structure"
+  );
 });
 
 test("LD provided-source ingest: omits Generate Learning Content", () => {
@@ -173,6 +190,13 @@ test("LD provided-source ingest: omits Generate Learning Content", () => {
     false,
     "ingest workflows should not keep Generate Learning Content"
   );
+  assert.ok(
+    titles.some((t) => t.toLowerCase() === "normalize content"),
+    "provided-source ingest should include Normalize Content"
+  );
+  const normIdx = indexOfTitle(titles, "Normalize Content");
+  const mkIdx = indexOfTitle(titles, "Model Knowledge");
+  assert.ok(normIdx !== -1 && mkIdx !== -1 && normIdx < mkIdx, "Normalize Content should precede Model Knowledge");
 });
 
 test("LD lean assessment pack: excludes Generate Learning Content", () => {
@@ -195,4 +219,136 @@ test("LD lean assessment pack: excludes Generate Learning Content", () => {
     false,
     "lean assessment-pack workflows should not include Generate Learning Content"
   );
+  assert.equal(
+    titles.some((t) => t.toLowerCase() === "normalize content"),
+    false,
+    "topic-only assessment-pack workflows should not include Normalize Content"
+  );
+});
+
+test("LD generate_from_topic with negated source wording excludes Normalize Content", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Design Learning Activities", role: "" }
+    ]
+  }, {
+    goal: "Design a workshop from topic only with no uploaded documents.",
+    inputs: "No uploaded files or source transcripts; generate from topic.",
+    resolvedBriefFactors: {
+      topic: "inflation",
+      design_scope: "session",
+      input_strategy: "generate_from_topic"
+    },
+    startingArtefact: "generate_from_topic"
+  });
+  const titles = stepTitles(out);
+  const glcIdx = indexOfTitle(titles, "Generate Learning Content");
+  const mkIdx = indexOfTitle(titles, "Model Knowledge");
+  const dloIdx = indexOfTitle(titles, "Define Learning Outcomes");
+  assert.equal(
+    titles.some((t) => t.toLowerCase() === "normalize content"),
+    false,
+    "negated source wording must not trigger Normalize Content"
+  );
+  assert.ok(glcIdx !== -1, "topic-only flow should include Generate Learning Content");
+  assert.ok(mkIdx !== -1, "topic-only flow should include Model Knowledge");
+  assert.ok(dloIdx !== -1, "topic-only flow should include Define Learning Outcomes");
+  assert.ok(glcIdx < mkIdx, "Generate Learning Content should precede Model Knowledge");
+  assert.ok(mkIdx < dloIdx, "Model Knowledge should precede Define Learning Outcomes");
+});
+
+test("LD VLE environment alone does not trigger Generate VLE Structure", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Generate Learning Content", role: "" },
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Design Learning Activities", role: "" },
+      { title: "Generate Activity Materials", role: "" },
+      { title: "Construct Learning Sequence", role: "" },
+      { title: "Generate VLE Structure", role: "" },
+      { title: "Design Page", role: "" }
+    ]
+  }, {
+    goal: "Create a self-directed learner-facing page for a VLE.",
+    inputs: "Topic-led resource only.",
+    desiredOutputs: "Learner-facing page",
+    resolvedBriefFactors: {
+      topic: "photosynthesis",
+      design_scope: "session",
+      delivery_context: "self_directed",
+      delivery_mode: "async",
+      delivery_pattern: "mostly_online",
+      learning_environments: ["vle"],
+      session_materials: ["page"],
+      input_strategy: "generate_from_topic"
+    },
+    startingArtefact: "generate_from_topic"
+  });
+  const titles = stepTitles(out);
+  assert.equal(indexOfTitle(titles, "Generate VLE Structure"), -1);
+  assert.ok(indexOfTitle(titles, "Design Page") !== -1, "Design Page should remain included");
+});
+
+test("LD explicit Moodle course shell request keeps Generate VLE Structure", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Generate Learning Content", role: "" },
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Design Learning Activities", role: "" },
+      { title: "Generate Activity Materials", role: "" },
+      { title: "Construct Learning Sequence", role: "" },
+      { title: "Design Page", role: "" }
+    ]
+  }, {
+    goal: "Build a Moodle course shell with weekly blocks for a module.",
+    inputs: "Generate from topic and include course navigation structure.",
+    desiredOutputs: "VLE structure and learner page",
+    resolvedBriefFactors: {
+      topic: "cell biology",
+      design_scope: "module",
+      learning_environments: ["vle"],
+      session_materials: ["page"],
+      input_strategy: "generate_from_topic"
+    },
+    startingArtefact: "generate_from_topic"
+  });
+  const titles = stepTitles(out);
+  assert.ok(indexOfTitle(titles, "Generate VLE Structure") !== -1);
+  const clsIdx = indexOfTitle(titles, "Construct Learning Sequence");
+  const dpIdx = indexOfTitle(titles, "Design Page");
+  assert.ok(clsIdx !== -1 && dpIdx !== -1 && clsIdx < dpIdx, "Construct Learning Sequence should precede Design Page");
+});
+
+test("LD explicit session_materials vle_structure keeps Generate VLE Structure", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Generate Learning Content", role: "" },
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Design Learning Activities", role: "" },
+      { title: "Generate Activity Materials", role: "" },
+      { title: "Construct Learning Sequence", role: "" },
+      { title: "Design Page", role: "" }
+    ]
+  }, {
+    goal: "Create structured outputs for VLE deployment.",
+    inputs: "",
+    desiredOutputs: "vle structure",
+    explicitBriefFactors: {
+      session_materials: ["vle_structure"]
+    },
+    resolvedBriefFactors: {
+      topic: "immunology",
+      design_scope: "module",
+      session_materials: ["vle_structure"],
+      input_strategy: "generate_from_topic"
+    }
+  });
+  const titles = stepTitles(out);
+  assert.ok(indexOfTitle(titles, "Generate VLE Structure") !== -1);
+  assert.equal(indexOfTitle(titles, "Design Page"), -1, "explicit delivery override should not require Design Page");
 });

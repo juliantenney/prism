@@ -414,3 +414,53 @@ test("page shape: plain bullets then checkbox list → separate list kinds prese
   assertAdjacentCompatibleUlMerged(html);
   assertNoOrphanListItems(html);
 });
+
+test("golden composed page: confidence-interval multi-table, scenario, MathJax, assessment", () => {
+  const { api } = loadPrismTestApi();
+  const html = renderPageFixture(api, "confidence-interval-a2-multitable-page.json", PAGE_METADATA_ORDER);
+  const body = mainBodyHtml(html);
+
+  assert.match(body, /util-task-block/);
+  assert.match(body, /util-activity-task--primary/);
+  assert.match(body, /util-materials-stack/);
+  assert.match(body, /util-output-block/);
+  assert.match(body, /util-support-note/);
+
+  assert.match(body, /\\\(\s*\\alpha\s*=\s*0\.05\s*\\\)/);
+  assert.match(
+    body,
+    /<div class="util-knowledge-summary util-knowledge-summary--prose">[\s\S]*?\\\[[\s\S]*?\\bar\{x\}/
+  );
+  assert.match(body, /\\\(n = 10\\\)/);
+  assert.doesNotMatch(body, /\\\$|\\\$\\\$/);
+
+  assert.doesNotMatch(body, /<p>\s*\|\s*Statement\s*\|/i);
+  assert.doesNotMatch(body, /<p>\s*\|\s*Level\s*\|/i);
+  assert.doesNotMatch(body, /<p>\s*\|\s*Group\s*\|\s*Interval\s*\|/i);
+  assert.match(body, /<table>/);
+  assert.match(body, /<th>Statement<\/th>/);
+  assert.match(body, /<th>Level<\/th>/);
+  assert.match(body, /<th>Group<\/th>/);
+  const tableCount = (body.match(/<table>/gi) || []).length;
+  assert.ok(tableCount >= 3, "expected template + scenario tables, got " + tableCount);
+
+  const a2 = sectionScope(body, "Confidence interval template");
+  assert.match(a2, /Confidence Interval Template/);
+  assert.match(a2, /Confidence Levels/);
+  assert.match(a2, /Both tables completed/);
+  assert.match(a2, /frequentist interpretation/);
+
+  const a4 = sectionScope(body, "Interval comparison scenario");
+  assert.match(a4, /util-scenario-card/);
+  assert.match(a4, /Interval Comparison/);
+  assert.match(a4, /\(66\.08, 73\.92\)/);
+  assert.match(a4, /Quote intervals from the table/);
+
+  const assess = sectionScope(body, "Formative assessment check");
+  assert.match(assess, /util-assessment-prompt/);
+  assert.match(assess, /util-assessment-choices/);
+  assert.match(assess, /<ol>/);
+  assert.match(assess, /<li>Decision\?<\/li>/);
+  assert.doesNotMatch(assess, /<p>[^<]*1\.\s*Decision\?[^<]*2\.\s*What does p-value/i);
+  assert.match(assess, /Reject H0/);
+});

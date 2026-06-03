@@ -163,7 +163,9 @@ test("Marx design-quality fixture: renderer shows upstream materials (not hidden
   assert.ok(a4, "activity A4 scope");
   assert.match(a4[0], /util-checkbox-list|util-checklist-block/);
   assert.match(a4[0], /Identify capitalism/);
+  assert.match(a4[0], /util-scenario-card/);
   assert.match(a4[0], /Factory Scenario/i);
+  assert.match(a4[0], /Workers in a London factory/i);
 });
 
 test("Marx design-quality fixture: no cognition blocks when upstream omits cognition fields", () => {

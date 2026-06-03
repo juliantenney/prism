@@ -307,7 +307,9 @@ test("slice 31-4: activity materials use util-materials-stack and material-table
 
 test("slice 31-5: density pacing CSS markers in export", () => {
   const { html } = renderKitchenSink(api);
-  assert.match(html, /\.util-activity-framing>\.util-activity-preamble-cue\{margin-bottom:4px\}/);
+  // V31_5: direct-child cues use margin-bottom:0; rhythm from .util-activity-framing { gap:8px } (V31_2)
+  assert.match(html, /\.util-activity-framing>\.util-activity-preamble-cue\{margin-bottom:0\}/);
+  assert.match(html, /\.util-activity-framing>\.util-activity-preamble-cue\+\.util-activity-preamble-cue\{margin-top:0\}/);
   assert.match(html, /\.util-activity-framing\+\.util-activity-task--primary\{margin-top:10px\}/);
 });
 

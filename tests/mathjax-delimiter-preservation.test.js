@@ -397,6 +397,19 @@ test("markdown block parser: quadratic formula block remains preserved", () => {
   assert.match(html, /\\\[ x = \\\\frac\{-b \\pm \\\\sqrt\{b\^2 - 4ac\}\}\{2a\} \\\]/);
 });
 
+test("markdown block parser: block math in prose paragraph preserves block and inline delimiters", () => {
+  const { api } = loadPrismTestApi();
+  const md = [
+    "A confidence interval estimates a population parameter. For a mean:",
+    "\\[ \\bar{x} \\pm z_{\\alpha/2} \\frac{s}{\\sqrt{n}} \\]",
+    "links sample spread to interval width. Sample size \\(n = 10\\) affects precision."
+  ].join("\n");
+  const html = String(api.utilityRenderMarkdownBlockForTest(md) || "");
+  assert.match(html, /\\\[ \\bar\{x\}/);
+  assert.match(html, /\\\(n = 10\\\)/);
+  assert.doesNotMatch(html, /For a mean:\s*\\\(n = 10\\\)\s*links/i);
+});
+
 test("markdown block parser: normal bullet lists still work outside math blocks", () => {
   const { api } = loadPrismTestApi();
   const md = "- One\n- Two\n- Three";

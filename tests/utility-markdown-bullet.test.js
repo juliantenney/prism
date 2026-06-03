@@ -474,3 +474,69 @@ test("buildUtilityStructuredHtml: A2 template string with multiple heading+table
   const tableCount = (html.match(/<table>/gi) || []).length;
   assert.ok(tableCount >= 2, "expected at least two rendered tables, got " + tableCount);
 });
+
+test("buildUtilityStructuredHtml: singular materials.scenario preserves custom entry.heading", () => {
+  const { api } = loadPrismTestApi();
+  const r = api.buildUtilityStructuredHtmlForTest({
+    artifact_type: "page",
+    title: "Scenario heading",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Apply the scenario",
+            learner_task: "Read the scenario and respond.",
+            materials: {
+              scenario: {
+                heading: "Factory Scenario",
+                content: "Workers in a London factory work long hours under strict supervision."
+              }
+            }
+          }
+        ]
+      }
+    ]
+  });
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /util-scenario-card/);
+  assert.match(html, /util-scenario-title[\s\S]*Factory Scenario/i);
+  assert.match(html, /Workers in a London factory/i);
+  assert.doesNotMatch(html, /util-scenario-title[\s\S]*Scenario 1/i);
+});
+
+test("buildUtilityStructuredHtml: scenarios[] without heading falls back to Scenario 1", () => {
+  const { api } = loadPrismTestApi();
+  const r = api.buildUtilityStructuredHtmlForTest({
+    artifact_type: "page",
+    title: "Scenario fallback",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Read and compare",
+            learner_task: "Use both scenario descriptions.",
+            materials: {
+              scenarios: [
+                { content: "First scenario body without a custom heading." },
+                { content: "Second scenario body without a custom heading." }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  });
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /util-scenario-title[\s\S]*Scenario 1/i);
+  assert.match(html, /util-scenario-title[\s\S]*Scenario 2/i);
+  assert.match(html, /First scenario body/);
+  assert.match(html, /Second scenario body/);
+});

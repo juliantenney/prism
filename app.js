@@ -23643,6 +23643,12 @@
       blankTokens.push(m);
       return token;
     });
+    var prismPlaceholderTokens = [];
+    raw = raw.replace(/@@PRISM[A-Z]+\d+@@/g, function (m) {
+      var slot = "@@PRISMSLOT" + prismPlaceholderTokens.length + "@@";
+      prismPlaceholderTokens.push(m);
+      return slot;
+    });
     var protectedInlineMath = utilityProtectSupportedMathDelimiters(raw, {
       includeInline: true,
       includeBlock: false
@@ -23661,7 +23667,13 @@
       var tokenEsc = utilityEscapeHtml("@@PRISMBLANK" + idx + "@@");
       escaped = escaped.replace(new RegExp(tokenEsc, "g"), utilityEscapeHtml(m));
     });
-    return utilityRestoreProtectedMathDelimiters(escaped, protectedInlineMath.tokens);
+    prismPlaceholderTokens.forEach(function (orig, idx) {
+      var slot = "@@PRISMSLOT" + idx + "@@";
+      var slotEsc = utilityEscapeHtml(slot);
+      escaped = escaped.replace(new RegExp(slotEsc, "g"), utilityEscapeHtml(orig));
+      escaped = escaped.replace(new RegExp(slot, "g"), utilityEscapeHtml(orig));
+    });
+    return utilityRestoreProtectedMathDelimiters(escaped, protectedInlineMath.tokens, { kind: "inline" });
   }
 
   function utilityIsMarkdownTableDivider(line) {
@@ -23733,19 +23745,24 @@
     return { text: out, tokens: tokens };
   }
 
-  function utilityRestoreProtectedMathDelimiters(htmlText, tokens) {
+  function utilityRestoreProtectedMathDelimiters(htmlText, tokens, options) {
     var htmlOut = String(htmlText == null ? "" : htmlText);
     var saved = Array.isArray(tokens) ? tokens : [];
+    var cfg = options && typeof options === "object" ? options : {};
+    var kind = String(cfg.kind || "both").toLowerCase();
     saved.forEach(function (mathText, idx) {
-      var blockToken = "@@PRISMMATHBLOCK" + idx + "@@";
-      var inlineToken = "@@PRISMMATHINLINE" + idx + "@@";
-      var blockTokenEsc = utilityEscapeHtml(blockToken);
-      var inlineTokenEsc = utilityEscapeHtml(inlineToken);
       var mathEsc = utilityEscapeHtml(String(mathText == null ? "" : mathText));
-      htmlOut = htmlOut.replace(new RegExp(blockTokenEsc, "g"), mathEsc);
-      htmlOut = htmlOut.replace(new RegExp(inlineTokenEsc, "g"), mathEsc);
-      htmlOut = htmlOut.replace(new RegExp(blockToken, "g"), mathEsc);
-      htmlOut = htmlOut.replace(new RegExp(inlineToken, "g"), mathEsc);
+      function replaceToken(token) {
+        var tokenEsc = utilityEscapeHtml(token);
+        htmlOut = htmlOut.replace(new RegExp(tokenEsc, "g"), mathEsc);
+        htmlOut = htmlOut.replace(new RegExp(token, "g"), mathEsc);
+      }
+      if (kind === "inline" || kind === "both") {
+        replaceToken("@@PRISMMATHINLINE" + idx + "@@");
+      }
+      if (kind === "block" || kind === "both") {
+        replaceToken("@@PRISMMATHBLOCK" + idx + "@@");
+      }
     });
     return htmlOut;
   }
@@ -23759,7 +23776,7 @@
   }
 
   function utilityRestoreProtectedMathBlocks(htmlText, blocks) {
-    return utilityRestoreProtectedMathDelimiters(htmlText, blocks);
+    return utilityRestoreProtectedMathDelimiters(htmlText, blocks, { kind: "block" });
   }
 
   function utilityRenderMarkdownBlock(text) {
@@ -24034,6 +24051,39 @@
       parts.push(renderParagraphWithInlineBullets(paraLines.join(" ")));
     }
     return utilityRestoreProtectedMathBlocks(parts.join(""), protectedMath.blocks);
+  }
+
+  /**
+   * Shared material markdown: optional structured render (e.g. renderPlainStructuredText),
+   * then utilityRenderMarkdownBlock, then inline <p> fallback.
+   * opts.structuredRender / structuredOpts — worksheet, table-hint, heading sections
+   * opts.blockBeforeStructured — try block markdown before structured (compressed tables)
+   * opts.inlineFallback — false to omit <p> fallback (caller supplies card-scoped path)
+   */
+  function renderMaterialMarkdownBlock(rawText, opts) {
+    var cfg = opts && typeof opts === "object" ? opts : {};
+    var raw = String(rawText == null ? "" : rawText).replace(/\r\n?/g, "\n").trim();
+    if (!raw) return "";
+    function structuredHtml() {
+      if (typeof cfg.structuredRender !== "function") return "";
+      return String(cfg.structuredRender(raw, cfg.structuredOpts || {}) || "").trim();
+    }
+    function blockHtml() {
+      return String(utilityRenderMarkdownBlock(raw) || "").trim();
+    }
+    if (cfg.blockBeforeStructured) {
+      var blockFirst = blockHtml();
+      if (blockFirst) return blockFirst;
+      var structuredAfter = structuredHtml();
+      if (structuredAfter) return structuredAfter;
+    } else {
+      var structuredFirst = structuredHtml();
+      if (structuredFirst) return structuredFirst;
+      var blockSecond = blockHtml();
+      if (blockSecond) return blockSecond;
+    }
+    if (cfg.inlineFallback === false) return "";
+    return "<p>" + utilityRenderMarkdownInline(raw) + "</p>";
   }
 
   function utilityIsPrimitiveOnlyArray(values) {
@@ -25400,11 +25450,7 @@
     function renderActivityResourcesSection(sectionValue) {
       function renderResourceMarkdownBlock(value) {
         if (utilityIsEmptyValue(value)) return "";
-        var raw = String(value == null ? "" : value).trim();
-        if (!raw) return "";
-        var block = utilityRenderMarkdownBlock(raw);
-        if (String(block || "").trim()) return block;
-        return "<p>" + utilityRenderMarkdownInline(raw) + "</p>";
+        return renderMaterialMarkdownBlock(value);
       }
       function renderResourceObject(obj) {
         if (!obj || typeof obj !== "object" || Array.isArray(obj)) return "";
@@ -25986,9 +26032,7 @@
           .filter(function (x) { return !!x; });
         return listItems.length ? "<ul>" + listItems.join("") + "</ul>" : "";
       }
-      var raw = String(value == null ? "" : value).replace(/\r\n/g, "\n").trim();
-      if (!raw) return "";
-      return utilityRenderMarkdownBlock(raw) || "<p>" + utilityRenderMarkdownInline(raw) + "</p>";
+      return renderMaterialMarkdownBlock(value);
     }
     function renderCognitionFieldsForActivity(row, cognitionProfile) {
       if (!row || typeof row !== "object" || Array.isArray(row)) return "";
@@ -26325,7 +26369,13 @@
         function renderScenarioBlocks(items) {
           var arr = Array.isArray(items) ? items : [];
           function resolveScenarioCardLabel(entry, idx) {
-            var fromEntry = firstNonEmpty([entry && entry.label, entry && entry.title, entry && entry.name]);
+            var fromEntry = firstNonEmpty([
+              entry && entry.heading,
+              entry && entry.label,
+              entry && entry.title,
+              entry && entry.name,
+              entry && entry.scenario_title
+            ]);
             if (fromEntry) {
               var raw = String(fromEntry).replace(/^\s*#{1,6}\s+/, "").trim();
               var m = raw.match(/^((?:Scenario|Case)\s+[A-D0-9]+)(?:\s*[:\-–]\s*(.+))?$/i);
@@ -26406,7 +26456,13 @@
             }
             if (entry && typeof entry === "object") {
               var labelText = resolveScenarioCardLabel(entry, idx);
-              var rawTitle = firstNonEmpty([entry.title, entry.name, entry.label, entry.scenario_title]);
+              var rawTitle = firstNonEmpty([
+                entry.heading,
+                entry.title,
+                entry.name,
+                entry.label,
+                entry.scenario_title
+              ]);
               var bodyRaw = firstNonEmpty([entry.content, entry.text, entry.body, entry.description, entry.prompt]);
               bodyRaw = stripLeadingScenarioHeading(bodyRaw, labelText);
               var suppressAutoObj = bodyStartsWithScenarioHeading(bodyRaw);
@@ -27492,15 +27548,18 @@
               stringValueHasMarkdownTable(value)
             ) {
               var templateRaw = String(value).replace(/\r\n?/g, "\n").trim();
-              var templateBodyHtml =
-                renderPlainStructuredText(templateRaw, { materialHint: "table" }) ||
-                utilityRenderMarkdownBlock(templateRaw);
+              var templateBodyHtml = renderMaterialMarkdownBlock(templateRaw, {
+                structuredRender: renderPlainStructuredText,
+                structuredOpts: { materialHint: "table" }
+              });
               if (templateBodyHtml) return templateBodyHtml;
             }
             if (hint === "scenario" && stringValueHasMarkdownTable(value)) {
-              var scenarioTableHtml =
-                utilityRenderMarkdownBlock(String(value)) ||
-                renderPlainStructuredText(String(value), { materialHint: "table" });
+              var scenarioTableHtml = renderMaterialMarkdownBlock(String(value), {
+                structuredRender: renderPlainStructuredText,
+                structuredOpts: { materialHint: "table" },
+                blockBeforeStructured: true
+              });
               if (scenarioTableHtml) return scenarioTableHtml;
             }
             var structured = renderPlainStructuredText(value, { materialHint: hint });
@@ -29511,9 +29570,7 @@
             var promptOut = renderOpts.cleanupInlineMarkdown
               ? utilityCleanupInlineMarkdownMarkers(promptText)
               : promptText;
-              var promptHtml =
-                utilityRenderMarkdownBlock(promptOut) ||
-                ("<p>" + utilityRenderMarkdownInline(promptOut) + "</p>");
+              var promptHtml = renderMaterialMarkdownBlock(promptOut);
             parts.push(
                 '<div class="util-assessment-prompt">' +
                   promptHtml +
@@ -30567,8 +30624,40 @@
       getUtilityPagePresentationCssV31_3() +
       getUtilityPagePresentationCssV31_4() +
       getUtilityPagePresentationCssV31_5() +
-      getUtilityPagePresentationCssV31_6()
+      getUtilityPagePresentationCssV31_6() +
+      getUtilityPagePresentationCssV31_7()
     );
+  }
+
+  function getUtilityPagePresentationCssV31_7() {
+    return [
+      "h1{font-size:1.8125rem;line-height:1.2;margin-bottom:14px}",
+      "h2.util-section-heading{font-size:1.1875rem;margin-top:36px;margin-bottom:14px;padding-bottom:8px;border-bottom-width:2px;border-bottom-color:#e2e8f0}",
+      "article.util-task-block .util-activity-header h3{font-size:1.075rem;font-weight:700;letter-spacing:-.01em;line-height:1.3}",
+      "h4.util-material-heading,.h4.util-icon-heading.util-material-heading{font-size:.8125rem;letter-spacing:.04em;text-transform:uppercase;color:#64748b;margin:18px 0 6px}",
+      "h4.util-material-heading>.util-material-icon,.h4.util-icon-heading>.util-material-icon{color:#94a3b8}",
+      ".util-card-subheading{font-size:.9375rem;font-weight:600;color:#334155;margin:14px 0 8px;letter-spacing:normal;text-transform:none}",
+      ".util-template-block .util-card-subheading:first-child,.util-material-template>.util-card-subheading:first-of-type{margin-top:0}",
+      ".util-card-subheading+.util-table-scroll,.util-template-block .util-card-subheading+.util-table-scroll{margin-top:4px;margin-bottom:16px}",
+      ".util-table-scroll+.util-card-subheading,.util-template-block .util-table-scroll+.util-card-subheading{margin-top:20px}",
+      "article.util-task-block{padding:20px 22px}",
+      "article.util-task-block .util-activity-materials{margin-top:6px;padding-top:16px;border-top-color:#eef2f6}",
+      "article.util-task-block>.util-activity-task--primary{margin-bottom:16px}",
+      "article.util-task-block>.util-output-block{margin-top:18px;margin-bottom:0}",
+      "article.util-task-block>.util-support-note{margin-top:10px}",
+      ".util-output-block+.util-support-note{margin-top:10px}",
+      ".util-materials-stack{gap:16px}",
+      ".util-materials-stack>h4.util-material-heading{margin-top:4px;margin-bottom:2px}",
+      ".util-activity-materials .util-materials-stack .util-template-block.util-material-template,.util-activity-materials .util-materials-stack .util-scenario-card,.util-activity-materials .util-materials-stack .util-prompt-set.util-material-prompt{box-shadow:none}",
+      ".util-activity-materials .util-table-scroll.util-material-table{border:none;background:transparent;padding:0;box-shadow:none;margin:6px 0 14px}",
+      ".util-activity-materials .util-template-block.util-material-template{border-style:dashed;border-color:#e2e8f0;background:#fcfcfd}",
+      ".util-activity-materials .util-scenario-card{border-color:#e2e8f0;background:#fcfcfd}",
+      ".util-activity-materials .util-prompt-set.util-material-prompt{border-color:#dbeafe;background:#f8fafc}",
+      "article.util-assessment-item.util-assessment-item--formative .util-assessment-prompt{margin-bottom:10px}",
+      ".util-assessment-prompt>p+ol,.util-assessment-prompt p+ol{margin-top:8px;margin-bottom:0}",
+      ".util-knowledge-summary--prose{font-size:.9375rem;line-height:1.6}",
+      "@media print{article.util-task-block .util-activity-materials .util-table-scroll.util-material-table,.util-activity-materials .util-table-scroll{break-inside:auto;page-break-inside:auto}.util-materials-stack .util-template-block,.util-materials-stack .util-scenario-card{box-shadow:none!important}}"
+    ].join("");
   }
 
   function getUtilityPagePresentationCssV31_6() {

@@ -1,0 +1,81 @@
+{
+  "artifact_type": "page",
+  "title": "Confidence Intervals — Self-Study (RNA/Statistics Style)",
+  "audience": "Undergraduate statistics (self-directed)",
+  "page_profile": "learner",
+  "constraints_applied": {
+    "delivery_mode": "self-directed",
+    "profile": "learner"
+  },
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Apply confidence interval ideas to interpretation tasks. Use \\( \\alpha = 0.05 \\) as the default significance level unless stated otherwise."
+    },
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Key ideas",
+      "content": "A confidence interval estimates a population parameter. For a mean:\n\\[ \\bar{x} \\pm z_{\\alpha/2} \\frac{s}{\\sqrt{n}} \\]\nlinks sample spread to interval width. Sample size \\(n = 10\\) affects precision."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A2",
+          "title": "Confidence interval template",
+          "duration_minutes": 20,
+          "purpose": "Check statements about interval interpretation and record reasons.",
+          "learner_task": "Complete both template tables using the confidence interval \\( (66.08, 73.92) \\) where needed.",
+          "materials": {
+            "template": "### Confidence Interval Template\n| Statement | Correct? | Reason |\n|----------|----------|--------|\n| 95% probability true mean lies in interval | | |\n| Method captures mean 95% of time | | |\n\n### Confidence Levels\n| Level | Width | Explanation |\n|------|-------|-------------|\n| 90% | | |\n| 95% | | |\n| 99% | | |"
+          },
+          "expected_output": "Both tables completed with defensible Yes/No judgements and brief reasons.",
+          "support_note": "Focus on frequentist interpretation, not single-interval probability claims."
+        },
+        {
+          "activity_id": "A4",
+          "title": "Interval comparison scenario",
+          "duration_minutes": 15,
+          "purpose": "Compare intervals from two study arms.",
+          "learner_task": "Use the scenario table to decide which arm has the narrower interval and whether intervals overlap.",
+          "materials": {
+            "scenario": {
+              "heading": "Interval Comparison",
+              "content": "| Group | Interval | |------|----------| | Control | (66.08, 73.92) | | Treatment | (70.01, 78.44) |"
+            }
+          },
+          "expected_output": "A short comparison noting overlap and relative width using the table values.",
+          "support_note": "Quote intervals from the table; do not invent new endpoints."
+        }
+      ]
+    },
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative assessment check",
+      "content": {
+        "items": [
+          {
+            "item_id": "Q1",
+            "question": "p-value = 0.03 at \\( \\alpha = 0.05 \\):\n1. Decision?\n2. What does p-value represent?\n3. Is it practically significant?",
+            "options": ["Reject H0", "Fail to reject H0"],
+            "item_type": "mcq"
+          }
+        ]
+      }
+    },
+    {
+      "section_id": "study_tips",
+      "heading": "Study tips",
+      "content": "- Sketch intervals on a number line before writing long explanations.\n- Check whether overlap answers the comparison question before calculating extra tests."
+    }
+  ],
+  "source_artefacts": {
+    "learning_activities": true,
+    "assessment_items": true
+  },
+  "generation_notes": {
+    "limitations": ["Golden composed-page fixture for post-Sprint-33/34 renderer contract."]
+  }
+}

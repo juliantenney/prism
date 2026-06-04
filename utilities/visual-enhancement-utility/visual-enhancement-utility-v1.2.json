@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "workflows": [
+    {
+      "id": "4315bb60-5169-4854-a5b3-eee1bf92734c",
+      "name": "Visual Enhancement Utility v1.2",
+      "tags": [
+        "utility",
+        "learning design",
+        "visual"
+      ],
+      "notes": "v1.2 uses PRISM visual affordance hooks as candidate slots, selects visuals by pedagogical significance, and prevents visuals from pre-empting learner activity answers.",
+      "selectedDomains": [
+        "general",
+        "learning-design"
+      ],
+      "artefacts": "Enhanced HTML package with pedagogically placed visuals",
+      "workflowInputs": [
+        "HTML learner page"
+      ],
+      "workflowOutputs": [
+        "enhanced_html_package",
+        "image_generation_manifest"
+      ],
+      "workflowOutputSpec": {
+        "audience": "Learning designers and academics",
+        "goal": "Generate an enhanced learner-page HTML package by selecting pedagogically significant visuals from PRISM visual affordance hooks.",
+        "constraints": "traditional_html_image_refs: true; downloadable_html_required: true; manifest_derived_from_inserted_figures_only: true; no_base64: true; no_inline_svg: true; one_image_per_step2_run: true; use_prism_visual_affordance_hooks: true; hooks_are_candidates_not_obligations: true; no_visual_preemption_of_tasks: true"
+      },
+      "steps": [
+        {
+          "id": "26785d3e-8426-4e72-9983-40dbb98b6ff7",
+          "title": "Create Enhanced HTML Package",
+          "roleLabel": "Hook-based HTML enhancement and manifest generation",
+          "promptId": "",
+          "prompt_source_type": "local_override",
+          "prompt_source": "local_override",
+          "canonical_step_id": "step_create_html_package",
+          "domain_version": "7",
+          "prompt_instance": "",
+          "prompt_bindings": {
+            "selectedOptions": {},
+            "outputName": "enhanced_html_package"
+          },
+          "override_prompt_body": "TASK\n\nAnalyse the uploaded HTML file and create an enhanced HTML package with pedagogically useful figures.\n\nIMPORTANT ARCHITECTURE\n\nPRISM owns safe visual placement opportunities. The page may contain hidden hooks such as:\n\n<div class=\"util-visual-affordance\"\n     data-visual-slot=\"activity-after-header\"\n     data-visual-subject=\"...\"\n     data-visual-activity-id=\"A2\"\n     hidden></div>\n\nTreat these hooks as the candidate opportunity set.\n\nDo NOT independently invent new placement locations by heading proximity or general page scanning unless there are no hooks at all. If no hooks exist, use conservative placement and say so in the JSON response.\n\nOUTPUT REQUIREMENTS\n\nCreate a downloadable HTML file named:\n\nenhanced-learner-page.html\n\nThen return a compact image generation queue.\n\nDo not paste the HTML into chat.\n\nHTML REQUIREMENTS\n\n- Preserve the original HTML structure and content as far as possible.\n- Insert only pedagogically useful figures.\n- Use normal HTML image references:\n  <img src=\"images/VO1-example.png\">\n- Use PNG filenames beginning with VO ids.\n- Do not use base64.\n- Do not use inline SVG.\n- Generated images must be responsive and must not overflow the page or viewport.\n- Leave unused .util-visual-affordance hooks in place unless removing them is necessary for clean output.\n\nPLACEMENT CONTRACT\n\nUse PRISM hooks as candidate slots.\n\nHooks are candidates, not obligations.\n\nFor each hook:\n- inspect its data-visual-slot, data-visual-subject, and data-visual-activity-id\n- inspect nearby activity/material content\n- decide whether a figure would materially improve learning\n- insert a figure only when the pedagogical case is strong\n\nDo not add a figure merely because a hook exists.\n\nPEDAGOGICAL SIGNIFICANCE RULES\n\nInsert visuals where they materially improve:\n- reasoning\n- interpretation\n- comparison\n- sequencing\n- mechanism understanding\n- spatial/system relationships\n- misconception repair\n- transfer to related cases\n\nPrefer high-value visual roles:\n- causal mechanism diagrams\n- comparison structures\n- process or sequence models\n- system maps\n- classification frameworks\n- evidence-to-interpretation models\n- misconception contrast diagrams\n- transfer/limit diagrams\n\nAvoid low-value visuals:\n- decorative illustrations\n- generic topic images\n- visual restatements of headings\n- diagrams that merely repeat nearby prose\n- diagrams that duplicate an existing table without adding interpretation\n- one figure per activity by default\n\nThere is no fixed image count. Many visuals are acceptable when each has strong pedagogical significance. Few or none are acceptable when figures would add little.\n\nINCREMENTAL VALUE RULE\n\nEach inserted figure must add something the surrounding text/materials do not already provide clearly.\n\nReject a candidate when the figure would:\n- restate a simple definition\n- duplicate a table\n- repeat a list visually\n- add visual noise without helping the learner reason\n- overlap substantially with another selected figure\n\nANTI-SPOILER / ANTI-PREEMPTION RULES\n\nBefore inserting a figure, identify the intellectual work the learner is being asked to do.\n\nDo not insert visuals that reveal, complete, classify, order, solve, or evaluate the core learner task before the learner attempts it.\n\nAvoid pre-task visuals that give away:\n- the correct order in a sequencing activity\n- the correct categories in a classification activity\n- the completed causal chain in a construction activity\n- the correct matching pairs in a matching activity\n- the conclusion in an evaluation/judgement task\n- the corrected form in an error-spotting task\n- the interpretation in a graph/data interpretation activity\n\nA visual should support the reasoning process, not replace it.\n\nIf a complete model answer would be useful, place it only after the relevant learner attempt and label it as a comparison/checking figure where appropriate.\n\nSAFE PRE-TASK VISUALS\n\nBefore a task, prefer visuals that:\n- orient without solving\n- show an abstract framework rather than the specific answer\n- show the kind of relation learners will reason about\n- clarify terms needed to attempt the task\n- provide a partial scaffold without completing the work\n\nFIGURE STRUCTURE\n\nFor every inserted figure:\n- create exactly one image queue entry\n- ensure the HTML reference and queue entry match exactly\n\nUse this figure structure:\n\n<figure class=\"util-figure util-figure--pedagogic\" data-visual-opportunity=\"VO1\">\n  <img src=\"images/VO1-example.png\" alt=\"[meaningful alt text]\">\n  <figcaption>[short visible caption]</figcaption>\n</figure>\n\nRESPONSIVE FIGURE CSS\n\nAdd this CSS once if equivalent rules are not already present:\n\n.util-figure--pedagogic{\n  margin:1.25rem 0;\n  padding:1rem;\n  border:1px solid #e5e7eb;\n  border-radius:1rem;\n  background:#fff;\n  box-shadow:0 1px 3px rgba(0,0,0,.08);\n  max-width:100%;\n  overflow:hidden;\n}\n.util-figure--pedagogic img{\n  display:block;\n  width:100%;\n  max-width:100%;\n  height:auto;\n  object-fit:contain;\n  border-radius:.75rem;\n}\n.util-figure--pedagogic figcaption{\n  margin-top:.75rem;\n  font-size:.95rem;\n  color:#374151;\n}\n@media (max-width:720px){\n  .util-figure--pedagogic{padding:.75rem}\n}\n\nIMAGE QUEUE FORMAT\n\nEach queue entry must contain only:\n- id\n- filename\n- prompt\n\nThe prompt must describe a polished educational PNG image and must not request SVG.\n\nReturn concise JSON only:\n\n{\n  \"html_file\": \"enhanced-learner-page.html\",\n  \"file_status\": \"downloadable file created\",\n  \"hooks_found\": 0,\n  \"figures_inserted\": 0,\n  \"images_required\": 0,\n  \"image_queue\": [\n    {\n      \"id\": \"VO1\",\n      \"filename\": \"VO1-example.png\",\n      \"prompt\": \"Create a polished educational PNG diagram...\"\n    }\n  ],\n  \"rename_checklist\": [\n    \"VO1-example.png\"\n  ],\n  \"selection_notes\": [\n    \"Briefly explain why each selected figure has pedagogical value and does not pre-empt the learner task.\"\n  ]\n}\n\nFAILURE HANDLING\n\nIf the downloadable file link is missing or unavailable, return:\n\n{\n  \"file_status\": \"blocked_no_downloadable_file\",\n  \"what_to_do\": \"Ask the chat to create a downloadable link for the generated html file.\"\n}\n\n\nVISUAL STYLE GUIDANCE\n\nPrefer polished instructional diagrams over abstract placeholder frameworks.\n\nEducational figures should:\n- use clear semantic colour coding\n- label important transitions and relationships\n- show movement or change explicitly with arrows where appropriate\n- include equilibrium or comparison markers when pedagogically useful\n- use clean textbook-style composition\n- combine diagram plus concise explanatory framing\n- feel suitable for a university teaching handout or textbook\n\nPrefer:\n- publication-quality educational graphics\n- explanatory composition\n- canonical disciplinary visual conventions\n- diagrams that clarify difficult relationships\n\nAvoid:\n- skeletal placeholder diagrams\n- unlabeled conceptual shells\n- decorative infographic clutter\n- stock-art aesthetics\n- excessive text density\n- presentation-slide clip-art style visuals\n\nDISCIPLINE CONVENTIONS\n\nWhere a discipline has canonical diagram conventions, follow them accurately.\n\nExamples:\n- Economics: AD/AS diagrams should show correct demand and supply shifts\n- Science: process diagrams should preserve correct causal flow\n- Statistics: graphs should use appropriate axes and scales\n- Geography: maps and spatial diagrams should preserve meaningful relationships\n\nVisual accuracy matters as much as visual polish.",
+          "inputKind": "any",
+          "outputName": "enhanced_html_package",
+          "notes": "1. Upload a PRISM-generated HTML learner page.\n2. Run this step to select from .util-visual-affordance hooks and create enhanced-learner-page.html.\n3. Save the HTML file into a project folder.\n4. Create an images folder in the same project folder.\n5. Use Step 2 to generate each queued image manually.",
+          "inputBindings": []
+        },
+        {
+          "id": "891b9d82-aff6-4f02-b705-b99b74744586",
+          "title": "Generate One Image",
+          "roleLabel": "Single image generation",
+          "promptId": "",
+          "prompt_source_type": "local_override",
+          "prompt_source": "local_override",
+          "canonical_step_id": "step_generate_image",
+          "domain_version": "7",
+          "prompt_instance": "",
+          "prompt_bindings": {
+            "selectedOptions": {},
+            "outputName": "generated_image"
+          },
+          "override_prompt_body": "TASK\n\nGenerate the next image from the Step 1 image queue.\n\nIMAGE REQUIREMENTS\n\n- Generate one image only.\n- Create a polished educational PNG image.\n- Use the next queue entry that has not yet been generated in this chat.\n- Use the queue entry prompt and filename.\n- Do not use SVG.\n- Do not output base64.\n- Do not include extra images.\n\nOUTPUT FORMAT\n\nReturn concise JSON only:\n\n{\n  \"generated_image\": \"VO1\",\n  \"filename_to_use\": \"VO1-example.png\",\n  \"rename_instruction\": \"Rename the downloaded image exactly to: VO1-example.png\"\n}\n\nCOMPLETION RULE\n\nIf all queued images have already been generated, say so clearly and stop.",
+          "inputKind": "any",
+          "outputName": "generated_image",
+          "notes": "1. Copy the Step 2 prompt and run it.\n2. Download the generated image.\n3. Rename it exactly to the filename shown.\n4. Place it inside the images folder.\n5. Repeat until all queued images are generated.",
+          "inputBindings": []
+        }
+      ],
+      "createdAt": 1780496876442,
+      "updatedAt": 1780496876442,
+      "workflowBriefResolution": {
+        "mappedBindings": {
+          "workflowOutputSpecPatch": {},
+          "workflowConstraintPatch": {},
+          "stepParamPatch": {},
+          "mapped": [],
+          "warnings": []
+        },
+        "missing": [],
+        "briefConfig": {
+          "version": "1",
+          "requiredFactors": [],
+          "optionalFactors": [],
+          "refinementFactors": [],
+          "extraFields": [],
+          "uiHints": {},
+          "inferenceRules": [],
+          "mappingRules": [],
+          "stepParameterControls": [],
+          "workflowParameterControls": []
+        }
+      }
+    }
+  ],
+  "prompts": []
+}

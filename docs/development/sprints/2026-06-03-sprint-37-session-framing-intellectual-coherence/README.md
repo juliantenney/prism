@@ -106,6 +106,14 @@ Full handover text: [HANDOVER-AND-FORWARD-PLAN.md](HANDOVER-AND-FORWARD-PLAN.md)
 
 ---
 
+## Successor — Sprint 38 (chartered)
+
+**Sprint 38 — Pedagogical Visual Affordance Enrichment** addresses shallow upstream visual briefs (Inflation validation). Not image-model work.
+
+Pack: [../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md](../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md)
+
+---
+
 ## Pack contents
 
 | File / folder | Purpose |

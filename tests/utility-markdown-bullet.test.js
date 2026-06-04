@@ -172,14 +172,16 @@ test("buildUtilityStructuredHtml: materials content with newline • bullets yie
     "• Efficiency vs impact: speed gains do not always improve outcomes.\n" +
     "• AI adoption pattern: pilots cluster in low-risk workflows first.";
   const r = api.buildUtilityStructuredHtmlForTest({
-    artifact_type: "document",
+    artifact_type: "page",
     title: "Research briefing page",
     audience: "Stakeholders",
     sections: [
       {
+        section_id: "learning_activities",
         title: "Learning activities",
         content: [
           {
+            activity_id: "A1",
             title: "Synthesis block",
             materials: {
               heading: "Key Findings",

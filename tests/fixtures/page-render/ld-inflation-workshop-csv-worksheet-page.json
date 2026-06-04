@@ -1,0 +1,57 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation workshop — CSV worksheet tables",
+  "audience": "First-year undergraduate economics students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A2",
+          "title": "Measuring Inflation: Indicator Comparison",
+          "duration_minutes": 20,
+          "grouping": "small_group",
+          "learner_task": "Complete the worksheet table.",
+          "materials": {
+            "comparison_table": [
+              "Year,Index",
+              "2022,100",
+              "2023,105"
+            ]
+          },
+          "expected_output": "Completed index table."
+        },
+        {
+          "activity_id": "A3",
+          "title": "Inflation types comparison",
+          "duration_minutes": 15,
+          "grouping": "pair",
+          "learner_task": "Complete the comparison grid.",
+          "materials": {
+            "comparison_table": [
+              "Aspect,Demand-pull,Cost-push,Built-in",
+              "Cause,,,",
+              "Mechanism,,,",
+              "Example,,,",
+              "Difference,,,"
+            ]
+          },
+          "expected_output": "Completed comparison table."
+        }
+      ]
+    },
+    {
+      "section_id": "metadata",
+      "heading": "Production Metadata",
+      "content": {
+        "workflow_id": "ld-workshop-inflation-csv",
+        "page_profile": "learner"
+      }
+    }
+  ],
+  "source_artefacts": {
+    "learning_activities": true
+  }
+}

@@ -170,7 +170,7 @@ test("29-2: peer-instruction cognition fields render as labelled util-cognition 
   assert.match(activities, /Record your first choice before discussion/);
   assert.match(activities, /Explain how your reasoning changed/);
   const cognitionIdx = activities.indexOf('class="util-cognition');
-  const materialsDivIdx = activities.indexOf('<div class="util-activity-materials">');
+  const materialsDivIdx = activities.search(/<div class="util-activity-materials"/);
   if (materialsDivIdx !== -1) {
     assert.ok(cognitionIdx !== -1 && cognitionIdx < materialsDivIdx, "cognition block should precede materials");
   }

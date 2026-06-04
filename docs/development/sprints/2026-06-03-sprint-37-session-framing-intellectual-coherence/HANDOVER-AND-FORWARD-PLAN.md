@@ -123,11 +123,36 @@ Copy into the first implementation session:
 
 ---
 
-## 8. Related documentation
+## 8. Forward work (Sprint 38 — chartered)
+
+Sprint 37 is **complete**. The next chartered programme addresses **pedagogical visual affordance enrichment** — not image generation quality.
+
+| Finding (Inflation + enhancement validation) | Sprint 38 response |
+|---------------------------------------------|-------------------|
+| Visual Enhancement places figures correctly (VEU v1.1.1) | Keep DOM contract frozen |
+| Affordances are often topic-shallow (`subject` / title inference) | Emit `purpose`, `concepts`, `preferred_representation`, `anti_spoiler` |
+| Figures duplicate tables or assert weak relationships | `representation_avoid`, `reasoning_supported`, tier discipline |
+
+**Sprint 38 pack:** [../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md](../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md)
+
+| Slice | Focus |
+|-------|--------|
+| 38-1 | Visual affordance audit (inflation anchor) |
+| 38-2 | Purpose taxonomy |
+| 38-3 | Representation guidance |
+| 38-4 | Enriched affordance structure |
+| 38-5 | VEU / LD handover (no image-model tuning) |
+
+**Test floor (Sprint 38 entry):** **642 pass / 0 fail**.
+
+---
+
+## 9. Related documentation
 
 | Doc | Path |
 |-----|------|
 | Sprint 37 charter | [SPRINT-37-CHARTER.md](SPRINT-37-CHARTER.md) |
 | Sprint 37 README | [README.md](README.md) |
+| Sprint 38 handover (next) | [../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/HANDOVER-AND-FORWARD-PLAN.md](../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/HANDOVER-AND-FORWARD-PLAN.md) |
 | Sprint 36 handover (closed) | [../2026-06-03-sprint-36-session-design-visual-pedagogy/HANDOVER-AND-FORWARD-PLAN.md](../2026-06-03-sprint-36-session-design-visual-pedagogy/HANDOVER-AND-FORWARD-PLAN.md) |
 | Visual affordance patch note | [../../workflow/exports/visual-enhancement-utility-v1.1.1-patch-note.md](../../workflow/exports/visual-enhancement-utility-v1.1.1-patch-note.md) |

@@ -1,0 +1,232 @@
+# Probe 38-4 — Schema acceptance examples (minimum viable)
+# Schema version: 38.4 — encodes 38-1/38-2/38-3 only
+# Not enforced in production until implementation.
+
+# --- Page fragment (storage pattern) ---
+# visual_affordance_schema_version: "38.4"
+# activities_visual_review: [...]
+# visual_affordances: [...]
+
+---
+# 1. GENERATE — Inflation A2 distinction (38-1, 38-2, 38-3)
+affordance_id: va-A2-cpi-deflator-distinction
+activity_id: A2
+visual_decision: generate
+rationale: >
+  Learners conflate CPI, PPI, and GDP deflator; a labelled comparison framework
+  supports the comparison_table without completing it or answering prompts.
+
+purpose: distinction
+preferred_representation: comparison_framework
+reasoning_supported: >
+  Discriminate price indices by coverage and typical misinterpretation — figure
+  supports the table; does not replace row completion or newspaper prompt answer.
+
+representation_avoid:
+  - summary_table
+  - stock_photography
+  - generic_infographic
+  - numeric_claim_without_source
+
+anti_spoiler: true
+spoiler_boundary:
+  hide_answers: true
+  hide_classification_keys: true
+  hide_model_solution: true
+  allow_structural_hint: true
+
+canonical_discipline_note: >
+  Introductory economics: label coverage (consumer basket vs domestic output)
+  and what each index tracks — no currency or rising-arrow motifs.
+
+source_basis: >
+  sections[].activity_materials comparison_table for activity_id A2
+  (Measure, What it tracks, Limitation); overview/key ideas on CPI and deflator.
+
+must_show:
+  - CPI, PPI, and GDP deflator as distinct constructs
+  - coverage dimension (basket vs domestically produced output)
+must_not_show:
+  - filled comparison table cells
+  - universal "correct" index for all contexts
+  - currency clipart or rising-arrow decoration
+
+allowed_claims:
+  - CPI tracks consumer basket prices
+  - GDP deflator relates to domestically produced goods and services
+  - PPI concerns producer prices, not direct cost-of-living
+disallowed_claims:
+  - numeric index levels not stated in materials
+  - policy causal claims
+
+caption_intent: >
+  Name what each index tracks; do not answer which measure to report to a
+  student newspaper.
+
+requires_exact_data_match: false
+discipline_risk_level: medium
+tier: valuable
+learner_stage: pre_classification
+
+visual_slot: materials-entry
+material_anchor: comparison_table
+
+---
+# 2. GENERATE — Climate mechanism (38-1 CC-MIS-1)
+affordance_id: va-CC-MIS-1-radiative-mechanism
+activity_id: CC-MIS-1
+visual_decision: generate
+rationale: >
+  Mechanism diagram reduces weather-vs-climate slogan confusion after cards,
+  before learners complete evidence lines in the analysis template.
+
+purpose: mechanism
+preferred_representation: causal_model
+reasoning_supported: >
+  Trace radiative balance / greenhouse mechanism before evidence weighing;
+  do not label misconception cards true or false.
+
+representation_avoid:
+  - stock_photography
+  - generic_infographic
+  - unsupported_causal_arrow
+  - duplicate_mechanism_and_evidence
+
+anti_spoiler: true
+spoiler_boundary:
+  hide_answers: true
+  hide_classification_keys: true
+  hide_model_solution: true
+  allow_structural_hint: true
+
+canonical_discipline_note: >
+  Radiative balance schematic with explicit energy arrows; no political
+  or disaster photography.
+
+source_basis: >
+  materials.task_cards; activity purpose on misconception discussion;
+  analysis_template structure (claims only, not resolutions).
+
+must_show:
+  - energy inputs and outputs in balance framing
+  - weather vs climate as different temporal scale (structural hint only)
+must_not_show:
+  - true/false verdicts on card claims
+  - named stakeholder cartoons
+
+allowed_claims:
+  - greenhouse/radiative balance framing consistent with course materials
+disallowed_claims:
+  - specific future temperature values
+  - attribution percentages not in source
+
+caption_intent: >
+  Orient mechanism before for/against lines; no claim adjudication.
+
+requires_exact_data_match: false
+discipline_risk_level: medium
+tier: essential
+learner_stage: pre_classification
+
+visual_slot: materials-card-grid-after
+material_anchor: task_cards
+
+---
+# 3. GENERATE — CI A4 interval overlap (38-1, 38-3 quantitative)
+affordance_id: va-A4-interval-overlap
+activity_id: A4
+visual_decision: generate
+rationale: >
+  Number-line segments reduce mental sketching of Control vs Treatment interval
+  endpoints after learners work from the scenario table.
+
+purpose: data_pattern_reading
+preferred_representation: number_line_segments
+reasoning_supported: >
+  Show overlap geometry for the two intervals using exact table endpoints;
+  learner interprets importance in debrief — figure does not state verdict.
+
+representation_avoid:
+  - generic_infographic
+  - numeric_claim_without_source
+  - unsupported_causal_arrow
+
+anti_spoiler: false
+spoiler_boundary:
+  hide_answers: false
+  hide_classification_keys: true
+  hide_model_solution: true
+  allow_structural_hint: true
+
+canonical_discipline_note: >
+  Single shared axis; same units as scenario table; two labelled segments only.
+
+source_basis: >
+  materials.scenario.content — Control (66.08, 73.92), Treatment (70.01, 78.44).
+
+must_show:
+  - shared axis with consistent units
+  - segment from 66.08 to 73.92 (Control)
+  - segment from 70.01 to 78.44 (Treatment)
+must_not_show:
+  - p-values or sample sizes
+  - textual conclusion about practical significance
+
+allowed_claims:
+  - interval endpoints as listed in scenario table
+disallowed_claims:
+  - statistical significance declarations
+  - invented midpoint labels
+
+caption_intent: >
+  Depict endpoint positions and overlap only; learner judges strength of evidence.
+
+requires_exact_data_match: true
+discipline_risk_level: high
+tier: valuable
+learner_stage: post_reasoning
+
+visual_slot: materials-entry
+material_anchor: scenario
+
+---
+# 4. DEFER — CI A1 worked-example-first (38-1, 38-2)
+affordance_id: va-A1-procedure-defer
+activity_id: A1
+visual_decision: defer
+defer_reason: worked_example_sufficient_first
+rationale: >
+  Worked example markdown already demonstrates procedure vs single-interval
+  probability move; figure deferred until after learner reads model row.
+
+---
+# 5. REJECT — Inflation A5 debrief (38-1, 38-2)
+affordance_id: va-A5-debrief-reject
+activity_id: A5
+visual_decision: reject
+rejection_reason: debrief_without_new_reasoning
+rationale: >
+  Whole-group debrief uses discussion prompts only; a figure would summarize
+  rather than support new reasoning — intentional no-visual.
+
+---
+# Activity gate examples (store under activities_visual_review, not below)
+
+# activities_visual_review:
+#   - activity_id: A2
+#     activity_visual_value:
+#       decision: high
+#       rationale: Index confusion; framework supports comparison_table.
+#   - activity_id: A5
+#     activity_visual_value:
+#       decision: none
+#       rationale: Debrief-only; no figure job.
+
+---
+# INVALID — compose QA must fail (38-1 topic-only defect)
+# affordance_id: va-INVALID-topic
+# activity_id: A2
+# visual_decision: generate
+# topic: inflation
+# rationale: illustrate inflation
+# (missing purpose, preferred_representation, must_show, etc.)

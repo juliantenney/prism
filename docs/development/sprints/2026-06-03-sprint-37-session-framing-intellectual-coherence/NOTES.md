@@ -45,6 +45,14 @@ PRISM should frame each learner page as a **coherent intellectual journey**, not
 
 ---
 
+## Successor programme
+
+**Sprint 38 — Pedagogical Visual Affordance Enrichment** (chartered): [../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md](../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md)
+
+Triggered by Economics Inflation validation: enhancement utility is adequate; upstream affordance briefs are too shallow.
+
+---
+
 ## Programme constraints (repeat)
 
 - **No workflow expansion**

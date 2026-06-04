@@ -205,7 +205,7 @@ test("visual affordance: CI multi-table — paired table hook between scroll wra
   assert.ok(a2, "expected A2 activity block");
   const materialsRegion = firstCapture(
     a2,
-    /<div class="util-activity-materials">([\s\S]*?)<\/div>\s*<div class="util-output-block/
+    /<div class="util-activity-materials"[^>]*>([\s\S]*?)<\/div>\s*<div class="util-output-block/
   );
   assert.match(
     materialsRegion,

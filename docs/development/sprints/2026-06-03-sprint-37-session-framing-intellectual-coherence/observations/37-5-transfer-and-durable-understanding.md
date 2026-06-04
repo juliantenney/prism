@@ -211,4 +211,4 @@ node --test tests/*.test.js
 
 ## Sprint 37 programme complete
 
-Chartered slices **37-1–37-5** delivered via observation notes + domain §6g–6k + auto-applied prompt blocks. Next work outside this pack: live page re-generation against anchors, optional fixture promotion when generated JSON stabilises, Sprint 38+ only if re-chartered.
+Chartered slices **37-1–37-5** delivered via observation notes + domain §6g–6k + auto-applied prompt blocks. Next work: [Sprint 38 — Pedagogical Visual Affordance Enrichment](../../2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/README.md) (chartered 2026-06-03). Optional: live page re-generation against anchors; fixture promotion when generated JSON stabilises.

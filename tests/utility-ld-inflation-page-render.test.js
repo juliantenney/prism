@@ -17,6 +17,10 @@ const visibilityFixturePath = path.join(
   fixtureDir,
   "ld-inflation-workshop-learner-visibility-page.json"
 );
+const csvWorksheetFixturePath = path.join(
+  fixtureDir,
+  "ld-inflation-workshop-csv-worksheet-page.json"
+);
 
 function createElementStub() {
   return {
@@ -263,6 +267,29 @@ test("inflation workshop (full): A1 six task cards, classification table, split 
   assert.match(a1, /Scenario A/i);
   assert.match(a1, /Inflation Scenarios/i);
   assert.doesNotMatch(a1, /Scenario Section Title/i);
+});
+
+test("inflation workshop (csv worksheet): A2/A3 comparison_table arrays render semantic tables", () => {
+  const html = renderPageFixture(api, csvWorksheetFixturePath);
+  const a2Scope = html.match(/Measuring Inflation: Indicator Comparison[\s\S]*?(?=Inflation types comparison)/i);
+  const a3Scope = html.match(/Inflation types comparison[\s\S]*?(?=<h2|Production Metadata|$)/i);
+  assert.ok(a2Scope && a3Scope, "A2 and A3 activity blocks should render");
+  assert.doesNotMatch(a2Scope[0], /<li>Year,Index<\/li>/i);
+  assert.doesNotMatch(a3Scope[0], /<li>Aspect,Demand-pull,Cost-push,Built-in<\/li>/i);
+  assert.match(a2Scope[0], /Worksheet[\s\S]*<table[\s\S]*<th[^>]*>[\s\S]*Year[\s\S]*<\/th>/i);
+  assert.match(a3Scope[0], /Worksheet[\s\S]*<table[\s\S]*<th[^>]*>[\s\S]*Built-in[\s\S]*<\/th>/i);
+  assert.match(a3Scope[0], /util-worksheet-blank/);
+});
+
+test("inflation workshop (csv worksheet): UI export pipeline matches structured HTML path", () => {
+  const page = JSON.parse(fs.readFileSync(csvWorksheetFixturePath, "utf8"));
+  const r = api.runUtilityPageExportPipelineForTest(page, {
+    applyCompositionValidation: true
+  });
+  assert.ok(r && !r.error, r && r.error);
+  const html = String(r.html || "");
+  assert.match(html, /util-table-scroll util-material-table/);
+  assert.doesNotMatch(html, /<li>Year,Index<\/li>/i);
 });
 
 test("inflation workshop (full): A2 table, prompt set, and checklist", () => {

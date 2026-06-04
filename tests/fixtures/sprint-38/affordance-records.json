@@ -1,0 +1,158 @@
+{
+  "inflation_a2_generate": {
+    "affordance_id": "va-A2-cpi-deflator-distinction",
+    "activity_id": "A2",
+    "visual_decision": "generate",
+    "rationale": "Learners conflate CPI, PPI, and GDP deflator; a labelled comparison framework supports the comparison_table without completing it or answering prompts.",
+    "purpose": "distinction",
+    "preferred_representation": "comparison_framework",
+    "reasoning_supported": "Discriminate price indices by coverage and typical misinterpretation — figure supports the table; does not replace row completion or newspaper prompt answer.",
+    "representation_avoid": ["summary_table", "stock_photography", "generic_infographic"],
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "canonical_discipline_note": "Introductory economics: label coverage (consumer basket vs domestic output) and what each index tracks — no currency or rising-arrow motifs.",
+    "source_basis": "sections[].activity_materials comparison_table for activity_id A2",
+    "must_show": ["CPI, PPI, and GDP deflator as distinct constructs", "coverage dimension"],
+    "must_not_show": ["filled comparison table cells", "currency clipart"],
+    "allowed_claims": ["CPI tracks consumer basket prices", "GDP deflator relates to domestically produced goods and services"],
+    "disallowed_claims": ["numeric index levels not stated in materials"],
+    "caption_intent": "Name what each index tracks; do not answer which measure to report to a student newspaper.",
+    "requires_exact_data_match": false,
+    "discipline_risk_level": "medium",
+    "tier": "valuable",
+    "learner_stage": "pre_classification",
+    "visual_slot": "materials-entry",
+    "material_anchor": "comparison_table"
+  },
+  "climate_mechanism_generate": {
+    "affordance_id": "va-CC-MIS-1-radiative-mechanism",
+    "activity_id": "CC-MIS-1",
+    "visual_decision": "generate",
+    "rationale": "Mechanism diagram reduces weather-vs-climate slogan confusion after cards, before learners complete evidence lines in the analysis template.",
+    "purpose": "mechanism",
+    "preferred_representation": "causal_model",
+    "reasoning_supported": "Trace radiative balance / greenhouse mechanism before evidence weighing; do not label misconception cards true or false.",
+    "representation_avoid": ["stock_photography", "generic_infographic", "unsupported_causal_arrow"],
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "canonical_discipline_note": "Radiative balance schematic with explicit energy arrows; no political or disaster photography.",
+    "source_basis": "materials.task_cards; activity purpose on misconception discussion",
+    "must_show": ["energy inputs and outputs in balance framing"],
+    "must_not_show": ["true/false verdicts on card claims"],
+    "allowed_claims": ["greenhouse/radiative balance framing consistent with course materials"],
+    "disallowed_claims": ["specific future temperature values"],
+    "caption_intent": "Orient mechanism before for/against lines; no claim adjudication.",
+    "requires_exact_data_match": false,
+    "discipline_risk_level": "medium",
+    "tier": "essential",
+    "learner_stage": "pre_classification",
+    "visual_slot": "materials-card-grid-after",
+    "material_anchor": "task_cards"
+  },
+  "ci_a4_generate": {
+    "affordance_id": "va-A4-interval-overlap",
+    "activity_id": "A4",
+    "visual_decision": "generate",
+    "rationale": "Number-line segments reduce mental sketching of Control vs Treatment interval endpoints after learners work from the scenario table.",
+    "purpose": "data_pattern_reading",
+    "preferred_representation": "number_line_segments",
+    "reasoning_supported": "Show overlap geometry for the two intervals using exact table endpoints; learner interprets importance in debrief — figure does not state verdict.",
+    "representation_avoid": ["generic_infographic", "numeric_claim_without_source"],
+    "anti_spoiler": false,
+    "spoiler_boundary": {
+      "hide_answers": false,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "canonical_discipline_note": "Single shared axis; same units as scenario table; two labelled segments only.",
+    "source_basis": "materials.scenario.content — Control (66.08, 73.92), Treatment (70.01, 78.44).",
+    "must_show": [
+      "shared axis with consistent units",
+      "segment from 66.08 to 73.92 (Control)",
+      "segment from 70.01 to 78.44 (Treatment)"
+    ],
+    "must_not_show": ["p-values or sample sizes", "textual conclusion about practical significance"],
+    "allowed_claims": ["interval endpoints as listed in scenario table"],
+    "disallowed_claims": ["statistical significance declarations"],
+    "caption_intent": "Depict endpoint positions and overlap only; learner judges strength of evidence.",
+    "requires_exact_data_match": true,
+    "discipline_risk_level": "high",
+    "tier": "valuable",
+    "learner_stage": "post_reasoning",
+    "visual_slot": "materials-entry",
+    "material_anchor": "scenario"
+  },
+  "inflation_a5_reject": {
+    "affordance_id": "va-A5-debrief-reject",
+    "activity_id": "A5",
+    "visual_decision": "reject",
+    "rejection_reason": "debrief_without_new_reasoning",
+    "rationale": "Whole-group debrief uses discussion prompts only; a figure would summarize rather than support new reasoning — intentional no-visual."
+  },
+  "topic_only_invalid": {
+    "affordance_id": "va-INVALID-topic",
+    "activity_id": "A2",
+    "visual_decision": "generate",
+    "topic": "inflation",
+    "rationale": "illustrate inflation"
+  },
+  "inflation_invalid_model_shape": {
+    "activity_id": "A3",
+    "visual_decision": "generate",
+    "tier": "core",
+    "anti_spoiler": "Do not show answers",
+    "representation_avoid": ["simple list"],
+    "purpose": "classification",
+    "preferred_representation": "classification_matrix",
+    "rationale": "Show inflation causes."
+  },
+  "inflation_a3_generate": {
+    "affordance_id": "va-A3-classification-01",
+    "activity_id": "A3",
+    "visual_decision": "generate",
+    "rationale": "Learners classify inflation scenarios by causal mechanism before completing the analysis table.",
+    "visual_slot": "materials-entry",
+    "tier": "valuable",
+    "purpose": "classification",
+    "preferred_representation": "classification_matrix",
+    "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.",
+    "reasoning_supported": "Learners classify inflation scenarios by causal mechanism without being given the completed classifications.",
+    "learner_stage": "pre_classification",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"],
+    "canonical_discipline_note": "Use economics cause categories as empty labelled structures; do not imply all inflation has a single cause.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "demand-pull inflation",
+      "cost-push inflation",
+      "wage-price spiral",
+      "evidence or cause cues"
+    ],
+    "must_not_show": ["scenario answer key", "completed classification cells", "blank worksheet grid duplicating analysis_table"],
+    "allowed_claims": [
+      "Different causal mechanisms can produce inflation.",
+      "Classification depends on the driver of the price increase."
+    ],
+    "disallowed_claims": ["All inflation has one cause.", "All price rises are inflation."],
+    "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table",
+    "caption_intent": "Support classification by showing the structure of inflation causes without completing the learner table.",
+    "discipline_risk_level": "medium"
+  }
+}

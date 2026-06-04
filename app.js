@@ -7686,6 +7686,95 @@
     ].join("\n");
   }
 
+  function buildSprint38PedagogicalAddedValuePromptLines() {
+    var pv =
+      typeof PRISM_SPRINT38_REPRESENTATION_PEDAGOGICAL_VALUE !== "undefined"
+        ? PRISM_SPRINT38_REPRESENTATION_PEDAGOGICAL_VALUE
+        : null;
+    var lines = [
+      "",
+      "Sprint 38 pedagogical added-value contract (auto-applied):",
+      "- preferred_representation names layout family only; it does not specify what new reasoning support the figure must add.",
+      "- On every generate row, include pedagogical_added_value: one or two sentences stating cognitive support materials do not already provide (beyond purpose + token).",
+      "- Generic QA: a generated visual must contribute reasoning support not already adequately provided by activity materials.",
+      "- Fail affordance authoring (use reject or revise must_show) when the figure would be: duplicate worksheet, duplicate table, duplicate answer structure, topic poster, illustrated summary, or generic infographic.",
+      "- Align must_show with discriminating cues the materials lack; must_not_show must block worksheet/table duplication and answer keys.",
+      "- Human-designer test: reviewer must be able to explain what cognitive support the figure provides — not only draw an empty structure."
+    ];
+    if (pv && pv.GENERIC_QA_RULE) {
+      lines.push("- QA rule: " + pv.GENERIC_QA_RULE);
+    }
+    var catalog = pv && pv.REPRESENTATION_PEDAGOGICAL_VALUE ? pv.REPRESENTATION_PEDAGOGICAL_VALUE : null;
+    if (catalog) {
+      lines.push("- Per-token must_add / must_not_duplicate (use when authoring generate rows):");
+      Object.keys(catalog).forEach(function (token) {
+        var row = catalog[token];
+        if (!row) return;
+        lines.push(
+          "  " +
+            token +
+            " — must_add: " +
+            (row.must_add || []).join(", ") +
+            " | must_not_duplicate: " +
+            (row.must_not_duplicate || []).join(", ")
+        );
+      });
+    }
+    return lines;
+  }
+
+  function buildSprint38VisualAffordanceDesignPagePromptBlock() {
+    var exampleGenerate =
+      '{\n  "affordance_id": "va-A3-classification-01",\n  "activity_id": "A3",\n  "visual_decision": "generate",\n  "rationale": "Learners classify inflation scenarios by causal mechanism before completing the analysis table.",\n  "visual_slot": "materials-entry",\n  "tier": "valuable",\n  "purpose": "classification",\n  "preferred_representation": "classification_matrix",\n  "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.",\n  "reasoning_supported": "Learners classify inflation scenarios by causal mechanism without being given the completed classifications.",\n  "learner_stage": "pre_classification",\n  "anti_spoiler": true,\n  "spoiler_boundary": {\n    "hide_answers": true,\n    "hide_classification_keys": true,\n    "hide_model_solution": true,\n    "allow_structural_hint": true\n  },\n  "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"],\n  "canonical_discipline_note": "Use economics cause categories as empty labelled structures; do not imply all inflation has a single cause.",\n  "requires_exact_data_match": false,\n  "must_show": ["demand-pull inflation", "cost-push inflation", "wage-price spiral", "evidence or cause cues for typing"],\n  "must_not_show": ["scenario answer key", "completed classification cells", "blank worksheet grid duplicating analysis_table"],\n  "allowed_claims": ["Different causal mechanisms can produce inflation.", "Classification depends on the driver of the price increase."],\n  "disallowed_claims": ["All inflation has one cause.", "All price rises are inflation."],\n  "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table",\n  "caption_intent": "Orient classification with cause-type discriminating cues — do not complete the learner table.",\n  "discipline_risk_level": "medium"\n}';
+    var exampleReject =
+      '{\n  "affordance_id": "va-A1-reject-01",\n  "activity_id": "A1",\n  "visual_decision": "reject",\n  "rejection_reason": "assessment_text_sufficient",\n  "rationale": "The scenario cards and checklist already provide the classification structure; an added visual would duplicate the learner task."\n}';
+    var exampleDefer =
+      '{\n  "affordance_id": "va-A2-defer-01",\n  "activity_id": "A2",\n  "visual_decision": "defer",\n  "defer_reason": "worked_example_sufficient_first",\n  "rationale": "The worked example and calculation table should be attempted before any visual summary is introduced."\n}';
+    return [
+      "",
+      "Sprint 38 visual affordance authoring contract (auto-applied):",
+      "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
+      "- Every visual_affordances[] row requires affordance_id (unique string) and activity_id.",
+      "- visual_decision must be exactly: generate, defer, or reject.",
+      "- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; source_basis is a non-empty string citing upstream paths; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.",
+      "- tier (generate only): essential or valuable only — never core, primary, optional, or descriptive labels.",
+      "- purpose (generate only): distinction | comparison | classification | mechanism | evidence_structure | data_pattern_reading.",
+      "- preferred_representation (generate only): comparison_framework | classification_matrix | causal_model | evidence_t_chart | number_line_segments | ordered_bar_strip | labelled_contrast_panel.",
+      "- representation_avoid (generate only): use only allow-listed tokens: summary_table, filled_worksheet, stock_photography, generic_infographic, unsupported_causal_arrow, numeric_claim_without_source, topic_hero_image, assessment_answer_visual, author_portrait_collage, duplicate_mechanism_and_evidence — never prose labels such as \"simple list\" or \"chart\".",
+      "- defer_reason (defer only): worked_example_sufficient_first | model_row_sufficient_first.",
+      "- rejection_reason (reject only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.",
+      "- generate rows must include: affordance_id, activity_id, visual_decision, rationale, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (≥1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
+      "- defer rows: affordance_id, activity_id, visual_decision, defer_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- reject rows: affordance_id, activity_id, visual_decision, rejection_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- For inflation-style workshops: prefer at least one valid generate for A3 (classification) and/or A4 (data_pattern_reading with number_line_segments when numeric materials exist); use defer for worked-example-first activities and reject for debrief-only or duplicate-structure activities.",
+      "- activities_visual_review[]: one row per upstream activity_id with activity_visual_value.decision high|medium|low|none and rationale.",
+      "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (use [] if empty), visual_affordances (use [] if empty).",
+      "",
+      "Example generate record (copy shape and types; adapt ids and content to upstream materials):",
+      exampleGenerate,
+      "",
+      "Example reject record:",
+      exampleReject,
+      "",
+      "Example defer record:",
+      exampleDefer
+    ]
+      .concat(buildSprint38PedagogicalAddedValuePromptLines())
+      .join("\n");
+  }
+
+  function applySprint38VisualAffordanceContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context)) return draftBody;
+    if (/sprint 38 pedagogical added-value contract \(auto-applied\)/i.test(draftBody)) {
+      return draftBody;
+    }
+    if (/sprint 38 visual affordance authoring contract \(auto-applied\)/i.test(draftBody)) {
+      return (draftBody + buildSprint38PedagogicalAddedValuePromptLines().join("\n")).trim();
+    }
+    return (draftBody + buildSprint38VisualAffordanceDesignPagePromptBlock()).trim();
+  }
+
   function buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock() {
     return [
       "",
@@ -8264,6 +8353,7 @@
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
+    draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     return String(draft || "").trim();
   }
@@ -23955,6 +24045,341 @@
     return /^[_\-–—.]+$/.test(compact);
   }
 
+  function utilityParseCsvLikeRow(line) {
+    var raw = String(line == null ? "" : line).trim();
+    if (!raw || raw.indexOf(",") === -1) return null;
+    return raw.split(",").map(function (cell) {
+      return String(cell == null ? "" : cell).trim();
+    });
+  }
+
+  function utilityCsvRawCommaCount(line) {
+    return (String(line == null ? "" : line).match(/,/g) || []).length;
+  }
+
+  function utilityCsvCellsLookLikeProse(cells) {
+    return (Array.isArray(cells) ? cells : []).some(function (cell) {
+      var t = String(cell == null ? "" : cell).trim();
+      if (!t) return false;
+      if (t.length > 96) return true;
+      if (/\.\s+[A-Za-z]/.test(t)) return true;
+      if (/\b(?:because|although|however|therefore|which means)\b/i.test(t)) return true;
+      if (/\b(?:the|and|or|but)\b/i.test(t) && t.split(/\s+/).length >= 10) return true;
+      return false;
+    });
+  }
+
+  function utilityCsvRowLooksLikeHeader(cells) {
+    if (!Array.isArray(cells) || cells.length < 2) return false;
+    return cells.every(function (cell) {
+      var t = String(cell == null ? "" : cell).trim();
+      if (!t) return false;
+      if (t.length > 56) return false;
+      if (/[.!?]\s/.test(t)) return false;
+      return true;
+    });
+  }
+
+  function utilityPadCsvLikeRow(cells, colCount) {
+    var row = Array.isArray(cells) ? cells.slice() : [];
+    while (row.length < colCount) row.push("");
+    return row.slice(0, colCount);
+  }
+
+  function utilityLooksLikeCsvTableRows(rowTexts) {
+    var rows = Array.isArray(rowTexts) ? rowTexts : [];
+    if (rows.length < 2) return false;
+    var parsed = [];
+    var rawLines = [];
+    for (var i = 0; i < rows.length; i += 1) {
+      var raw = String(rows[i] == null ? "" : rows[i]).trim();
+      if (!raw) return false;
+      var cells = utilityParseCsvLikeRow(raw);
+      if (!cells || cells.length < 2) return false;
+      parsed.push(cells);
+      rawLines.push(raw);
+    }
+    if (!utilityCsvRowLooksLikeHeader(parsed[0]) || utilityCsvCellsLookLikeProse(parsed[0])) {
+      return false;
+    }
+    var colCount = parsed[0].length;
+    var headerCommas = utilityCsvRawCommaCount(rawLines[0]);
+    for (var r = 1; r < parsed.length; r += 1) {
+      if (utilityCsvCellsLookLikeProse(parsed[r])) return false;
+      var commas = utilityCsvRawCommaCount(rawLines[r]);
+      if (commas < headerCommas - 1 || commas > headerCommas) return false;
+      var padded = utilityPadCsvLikeRow(parsed[r], colCount);
+      if (padded.length !== colCount) return false;
+    }
+    var bodyRows = parsed.slice(1);
+    if (!bodyRows.length) return false;
+    var labelLike = bodyRows.filter(function (row) {
+      var first = String(row[0] == null ? "" : row[0]).trim();
+      return !!first && first.length <= 40 && !/\s{2,}/.test(first);
+    }).length;
+    if (labelLike < Math.max(1, Math.ceil(bodyRows.length * 0.5))) return false;
+    return true;
+  }
+
+  function utilityNormalizeCsvLikeTableRows(rowTexts) {
+    var rows = Array.isArray(rowTexts) ? rowTexts : [];
+    var parsed = rows.map(function (line) {
+      return utilityParseCsvLikeRow(String(line == null ? "" : line).trim());
+    });
+    var colCount = parsed[0] ? parsed[0].length : 0;
+    return parsed.map(function (cells) {
+      return utilityPadCsvLikeRow(cells, colCount);
+    });
+  }
+
+  function utilityRenderCsvLikeRowsTable(rowTexts) {
+    if (!utilityLooksLikeCsvTableRows(rowTexts)) return "";
+    var table = utilityNormalizeCsvLikeTableRows(rowTexts);
+    if (!table.length) return "";
+    function renderCell(cell, isHeader) {
+      var t = String(cell == null ? "" : cell).trim();
+      if (!t && !isHeader) {
+        return "<td>" + utilityRenderWorksheetBlankHtml("_____") + "</td>";
+      }
+      var tag = isHeader ? "th" : "td";
+      return "<" + tag + ">" + utilityRenderMarkdownInline(t) + "</" + tag + ">";
+    }
+    var header = table[0];
+    var body = table.slice(1);
+    var headHtml =
+      "<tr>" + header.map(function (c) { return renderCell(c, true); }).join("") + "</tr>";
+    var bodyHtml = body
+      .map(function (row) {
+        return (
+          "<tr>" + row.map(function (c) { return renderCell(c, false); }).join("") + "</tr>"
+        );
+      })
+      .join("");
+    return utilityWrapExportTableHtml(
+      "<table><thead>" + headHtml + "</thead><tbody>" + bodyHtml + "</tbody></table>"
+    );
+  }
+
+  function utilityTryRenderCsvLikeRowsTable(rowTexts) {
+    var html = utilityRenderCsvLikeRowsTable(rowTexts);
+    return html ? html : null;
+  }
+
+  function utilityMaterialHintIsWorksheetTable(hint) {
+    var h = String(hint || "")
+      .toLowerCase()
+      .trim()
+      .replace(/[\s-]+/g, "_");
+    return (
+      h === "table" ||
+      h === "worksheet" ||
+      h === "analysis_table" ||
+      h === "impact_table" ||
+      h === "comparison_table" ||
+      h === "classification_table" ||
+      h === "observation_table" ||
+      h === "observations_table" ||
+      h === "data_table"
+    );
+  }
+
+  function utilityObjectEntryToCsvLine(entry) {
+    if (utilityIsEmptyValue(entry)) return "";
+    if (typeof entry === "string" || typeof entry === "number" || typeof entry === "boolean") {
+      return String(entry).trim().replace(/^\s*[-*•]\s+/, "");
+    }
+    if (Array.isArray(entry)) {
+      if (
+        entry.length &&
+        entry.every(function (cell) {
+          return (
+            cell == null ||
+            typeof cell === "string" ||
+            typeof cell === "number" ||
+            typeof cell === "boolean"
+          );
+        })
+      ) {
+        return entry
+          .map(function (cell) {
+            return String(cell == null ? "" : cell).trim();
+          })
+          .join(",");
+      }
+      return "";
+    }
+    if (entry && typeof entry === "object") {
+      var scalarLine = utilityFirstPresent([
+        entry.row,
+        entry.line,
+        entry.text,
+        entry.content,
+        entry.value,
+        entry.label
+      ]);
+      if (
+        typeof scalarLine === "string" ||
+        typeof scalarLine === "number" ||
+        typeof scalarLine === "boolean"
+      ) {
+        return String(scalarLine).trim().replace(/^\s*[-*•]\s+/, "");
+      }
+      if (Array.isArray(entry.cells)) {
+        return utilityObjectEntryToCsvLine(entry.cells);
+      }
+      if (Array.isArray(entry.values)) {
+        return utilityObjectEntryToCsvLine(entry.values);
+      }
+      if (Array.isArray(entry.columns)) {
+        return utilityObjectEntryToCsvLine(entry.columns);
+      }
+    }
+    return "";
+  }
+
+  function utilityStripHtmlListItemsToCsvRowTexts(text) {
+    var raw = String(text == null ? "" : text);
+    if (!/<li[\s>]/i.test(raw)) return null;
+    var items = [];
+    raw.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, function (_m, inner) {
+      var t = String(inner || "")
+        .replace(/<[^>]+>/g, "")
+        .trim();
+      if (t) items.push(t);
+      return _m;
+    });
+    return items.length >= 2 ? items : null;
+  }
+
+  function utilityParseJsonStringArrayRowTexts(text) {
+    var raw = String(text == null ? "" : text).trim();
+    if (!raw || (raw.charAt(0) !== "[" && raw.charAt(0) !== "{")) return null;
+    try {
+      var parsed = JSON.parse(raw);
+      return utilityMaterialValueToCsvRowTexts(parsed);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function utilityUnwrapWorksheetTablePayload(value) {
+    if (utilityIsEmptyValue(value)) return null;
+    if (typeof value === "string" || Array.isArray(value)) return value;
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return utilityFirstPresent([
+        value.content,
+        value.body,
+        value.text,
+        value.rows,
+        value.items,
+        value.lines,
+        value.values,
+        value.data,
+        value.table
+      ]);
+    }
+    return null;
+  }
+
+  function utilityMaterialValueToCsvRowTexts(value) {
+    if (utilityIsEmptyValue(value)) return null;
+    var unwrapped = utilityUnwrapWorksheetTablePayload(value);
+    if (unwrapped !== value && !utilityIsEmptyValue(unwrapped)) {
+      return utilityMaterialValueToCsvRowTexts(unwrapped);
+    }
+    if (Array.isArray(value)) {
+      if (
+        value.length &&
+        value.every(function (entry) {
+          return Array.isArray(entry);
+        })
+      ) {
+        var nestedLines = value
+          .map(function (entry) {
+            return utilityObjectEntryToCsvLine(entry);
+          })
+          .filter(function (r) {
+            return !!r;
+          });
+        if (nestedLines.length >= 2) return nestedLines;
+      }
+      var rows = value
+        .map(function (entry) {
+          return utilityObjectEntryToCsvLine(entry);
+        })
+        .filter(function (r) {
+          return !!r;
+        });
+      return rows.length >= 2 ? rows : null;
+    }
+    if (typeof value === "string") {
+      var text = String(value).replace(/\r\n?/g, "\n").trim();
+      if (!text) return null;
+      var htmlRows = utilityStripHtmlListItemsToCsvRowTexts(text);
+      if (htmlRows) return htmlRows;
+      var jsonRows = utilityParseJsonStringArrayRowTexts(text);
+      if (jsonRows) return jsonRows;
+      var lines = text
+        .split("\n")
+        .map(function (ln) {
+          return String(ln || "").trim();
+        })
+        .filter(function (ln) {
+          return !!ln;
+        });
+      if (lines.length < 2) return null;
+      var bulletBodies = [];
+      var plainRows = [];
+      lines.forEach(function (ln) {
+        var bulletMatch = ln.match(/^\s*[-*•]\s+(.+)$/);
+        if (bulletMatch) bulletBodies.push(String(bulletMatch[1] || "").trim());
+        else plainRows.push(ln);
+      });
+      if (
+        bulletBodies.length >= 2 &&
+        bulletBodies.every(function (ln) {
+          return ln.indexOf(",") !== -1;
+        })
+      ) {
+        return bulletBodies;
+      }
+      if (plainRows.length >= 2 && plainRows.every(function (ln) { return ln.indexOf(",") !== -1; })) {
+        return plainRows;
+      }
+      if (lines.every(function (ln) { return ln.indexOf(",") !== -1; })) return lines;
+      return null;
+    }
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      var rowKeys = Object.keys(value).filter(function (k) {
+        return !utilityIsEmptyValue(value[k]);
+      });
+      if (rowKeys.length >= 2) {
+        var numericKeys = rowKeys.every(function (k) {
+          return /^\d+$/.test(String(k));
+        });
+        var orderedKeys = rowKeys.slice().sort(function (a, b) {
+          if (numericKeys) return Number(a) - Number(b);
+          return String(a).localeCompare(String(b));
+        });
+        var mappedRows = orderedKeys
+          .map(function (k) {
+            return utilityObjectEntryToCsvLine(value[k]);
+          })
+          .filter(function (r) {
+            return !!r;
+          });
+        if (mappedRows.length >= 2) return mappedRows;
+      }
+    }
+    return null;
+  }
+
+  function utilityTryRenderCsvLikeMaterialTable(value) {
+    var rows = utilityMaterialValueToCsvRowTexts(value);
+    if (!rows) return null;
+    return utilityTryRenderCsvLikeRowsTable(rows);
+  }
+
   function utilityRenderWorksheetResponseLinesHtml(lineBodies) {
     var bodies = Array.isArray(lineBodies) ? lineBodies : [];
     if (!bodies.length) return "";
@@ -24626,14 +25051,19 @@
         if (bulletBodies.length && bulletBodies.every(utilityIsWorksheetResponseLineBody)) {
           parts.push(utilityRenderWorksheetResponseLinesHtml(bulletBodies));
         } else {
-          var ulItems = bulletBodies.map(function (bodyText) {
-            return (
-              "<li>" +
-              utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(bodyText)) +
-              "</li>"
-            );
-          });
-          parts.push("<ul>" + ulItems.join("") + "</ul>");
+          var csvTableFromBullets = utilityTryRenderCsvLikeRowsTable(bulletBodies);
+          if (csvTableFromBullets) {
+            parts.push(csvTableFromBullets);
+          } else {
+            var ulItems = bulletBodies.map(function (bodyText) {
+              return (
+                "<li>" +
+                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(bodyText)) +
+                "</li>"
+              );
+            });
+            parts.push("<ul>" + ulItems.join("") + "</ul>");
+          }
         }
         continue;
       }
@@ -25053,6 +25483,10 @@
     var arr = Array.isArray(values) ? values : [];
     var filtered = arr.filter(function (row) { return !utilityIsEmptyValue(row); });
     if (!filtered.length) return "";
+    if (utilityIsPrimitiveOnlyArray(filtered)) {
+      var csvFromPrimitiveArray = utilityTryRenderCsvLikeMaterialTable(filtered);
+      if (csvFromPrimitiveArray) return csvFromPrimitiveArray;
+    }
     if (renderOpts.cleanupInlineMarkdown && utilityIsPrimitiveOnlyArray(filtered)) {
       var joinedPrimitive = utilityJoinPrimitiveArrayLines(filtered);
       if (joinedPrimitive) {
@@ -25302,13 +25736,21 @@
       "<span>About this page</span></summary>"
     );
   }
-  function utilityWrapAssessmentSectionHtml(sectionHeadingHtml, assessmentBodyHtml) {
+  function utilityWrapAssessmentSectionHtml(sectionHeadingHtml, assessmentBodyHtml, renderOpts) {
     var body = String(assessmentBodyHtml || "").trim();
     if (!body) return "";
+    var assessmentHook = utilityMaybeRenderVisualAffordanceHook(
+      "assessment-before-checkpoint",
+      {},
+      renderOpts,
+      function () {
+        return true;
+      }
+    );
     return (
       '<section class="util-assessment-section util-material-role-checkpoint">' +
       String(sectionHeadingHtml || "") +
-      utilityRenderVisualAffordanceHook("assessment-before-checkpoint", {}) +
+      assessmentHook +
       '<div class="util-assessment-list">' +
       body +
       "</div></section>"
@@ -25331,6 +25773,7 @@
     var opts = options && typeof options === "object" ? options : {};
     var subject = utilityFirstScalar([opts.subject, opts.activityTitle, opts.title]);
     var activityId = utilityFirstScalar([opts.activityId, opts.activity_id]);
+    var affordanceId = utilityFirstScalar([opts.affordanceId, opts.affordance_id]);
     var attrs =
       ' class="util-visual-affordance util-visual-affordance--' +
       utilityEscapeHtml(slotId) +
@@ -25342,8 +25785,57 @@
     }
     if (activityId) {
       attrs += ' data-visual-activity-id="' + utilityEscapeHtmlAttribute(String(activityId)) + '"';
+      attrs += ' data-activity-id="' + utilityEscapeHtmlAttribute(String(activityId)) + '"';
+    }
+    if (affordanceId) {
+      attrs += ' data-affordance-id="' + utilityEscapeHtmlAttribute(String(affordanceId)) + '"';
     }
     return "<div" + attrs + "></div>";
+  }
+
+  function utilityBuildVisualAffordanceRenderPlan(page) {
+    var mod =
+      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
+        ? PRISM_SPRINT38_VISUAL_AFFORDANCES
+        : null;
+    if (mod && typeof mod.buildVisualAffordanceRenderPlan === "function") {
+      return mod.buildVisualAffordanceRenderPlan(page);
+    }
+    return { legacy: true, slotGenerate: {} };
+  }
+
+  function utilityResolveSprint38SlotGenerate(plan, activityId, slot) {
+    var mod =
+      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
+        ? PRISM_SPRINT38_VISUAL_AFFORDANCES
+        : null;
+    if (mod && typeof mod.resolveSlotGenerate === "function") {
+      return mod.resolveSlotGenerate(plan, activityId, slot);
+    }
+    return null;
+  }
+
+  /** Sprint 38: legacy uses Sprint 36 warrants; authoritative emits only generate+visual_slot matches. */
+  function utilityMaybeRenderVisualAffordanceHook(slot, ctx, renderOpts, legacyWarrant) {
+    var plan =
+      renderOpts && renderOpts.visualAffordanceRenderPlan
+        ? renderOpts.visualAffordanceRenderPlan
+        : null;
+    var activityId = utilityFirstScalar([
+      ctx && ctx.activityId,
+      ctx && ctx.activity_id
+    ]);
+    if (!plan || plan.legacy) {
+      if (typeof legacyWarrant === "function" && !legacyWarrant()) return "";
+      return utilityRenderVisualAffordanceHook(slot, ctx);
+    }
+    var gen = utilityResolveSprint38SlotGenerate(plan, activityId, slot);
+    if (!gen) return "";
+    var hookCtx = Object.assign({}, ctx || {}, {
+      affordanceId: gen.affordance_id,
+      activityId: gen.activity_id || activityId
+    });
+    return utilityRenderVisualAffordanceHook(slot, hookCtx);
   }
 
   function utilityMaterialsWarrantVisualAffordances(materials) {
@@ -25423,18 +25915,23 @@
     );
   }
 
-  function utilityAugmentMaterialsHtmlWithVisualAffordances(html, affordanceContext) {
+  function utilityAugmentMaterialsHtmlWithVisualAffordances(html, affordanceContext, renderOpts) {
     var out = String(html || "");
     if (!String(out).trim()) return out;
     var ctx = affordanceContext && typeof affordanceContext === "object" ? affordanceContext : {};
+    function maybeHook(slot, legacyWarrant) {
+      return utilityMaybeRenderVisualAffordanceHook(slot, ctx, renderOpts, legacyWarrant);
+    }
 
-    if (out.indexOf("util-materials-stack") !== -1) {
-      out = out.replace(
-        /(<div class="util-materials-stack">)/i,
-        "$1" + utilityRenderVisualAffordanceHook("materials-entry", ctx)
-      );
-    } else {
-      out = utilityRenderVisualAffordanceHook("materials-entry", ctx) + out;
+    var entryHook = maybeHook("materials-entry", function () {
+      return true;
+    });
+    if (entryHook) {
+      if (out.indexOf("util-materials-stack") !== -1) {
+        out = out.replace(/(<div class="util-materials-stack">)/i, "$1" + entryHook);
+      } else {
+        out = entryHook + out;
+      }
     }
 
     var cardGridOpenRe = /<div class="util-card-grid"/gi;
@@ -25447,10 +25944,11 @@
       cardGridEnds.push(cardGridEnd);
     }
     for (var cg = cardGridEnds.length - 1; cg >= 0; cg -= 1) {
-      out =
-        out.slice(0, cardGridEnds[cg]) +
-        utilityRenderVisualAffordanceHook("materials-card-grid-after", ctx) +
-        out.slice(cardGridEnds[cg]);
+      var cardHook = maybeHook("materials-card-grid-after", function () {
+        return utilityMaterialsTailWarrantsNextBlockAffordance(out.slice(cardGridEnds[cg]));
+      });
+      if (!cardHook) continue;
+      out = out.slice(0, cardGridEnds[cg]) + cardHook + out.slice(cardGridEnds[cg]);
     }
 
     var tableOpenRe = /<div class="util-table-scroll util-material-table"/gi;
@@ -25463,29 +25961,39 @@
     }
     for (var ti = tableSpans.length - 2; ti >= 0; ti -= 1) {
       var insertAt = tableSpans[ti].end;
-      out =
-        out.slice(0, insertAt) +
-        utilityRenderVisualAffordanceHook("materials-table-pair-between", ctx) +
-        out.slice(insertAt);
+      var tableHook = maybeHook("materials-table-pair-between", function () {
+        return tableSpans.length >= 2;
+      });
+      if (!tableHook) continue;
+      out = out.slice(0, insertAt) + tableHook + out.slice(insertAt);
     }
 
     out = out.replace(
       /(<article class="util-template-block[^>]*util-material-role-practice[^>]*>)/i,
       function (match, openTag) {
-        return openTag + utilityRenderVisualAffordanceHook("materials-practice", ctx);
+        var practiceHook = maybeHook("materials-practice", function () {
+          return true;
+        });
+        return practiceHook ? openTag + practiceHook : openTag;
       }
     );
     out = out.replace(
       /(<div class="util-template-block[^>]*util-material-role-practice[^>]*>)/i,
       function (match, openTag) {
-        return openTag + utilityRenderVisualAffordanceHook("materials-practice", ctx);
+        var practiceHook = maybeHook("materials-practice", function () {
+          return true;
+        });
+        return practiceHook ? openTag + practiceHook : openTag;
       }
     );
 
     out = out.replace(
       /(<div class="util-worked-example util-material-role-model[^>]*>)/i,
       function (match, openTag) {
-        return openTag + utilityRenderVisualAffordanceHook("materials-model", ctx);
+        var modelHook = maybeHook("materials-model", function () {
+          return true;
+        });
+        return modelHook ? openTag + modelHook : openTag;
       }
     );
 
@@ -25505,10 +26013,14 @@
       scenarioEnds.push(scenarioEnd);
     }
     for (var si = scenarioEnds.length - 1; si >= 0; si -= 1) {
-      out =
-        out.slice(0, scenarioEnds[si]) +
-        utilityRenderVisualAffordanceHook("materials-scenario", ctx) +
-        out.slice(scenarioEnds[si]);
+      var scenarioTailAt = out.slice(scenarioEnds[si]);
+      var scenarioHook = maybeHook("materials-scenario", function () {
+        return (
+          utilityMaterialsTailWarrantsNextBlockAffordance(scenarioTailAt) || /^\s*$/i.test(scenarioTailAt)
+        );
+      });
+      if (!scenarioHook) continue;
+      out = out.slice(0, scenarioEnds[si]) + scenarioHook + out.slice(scenarioEnds[si]);
     }
 
     return out;
@@ -25820,6 +26332,35 @@
     if (!parsed || typeof parsed !== "object") return [];
     if (Array.isArray(parsed.sections)) return parsed.sections;
     return [];
+  }
+
+  /** Sections for render/merge: prefer sections[], else synthesize from top-level page body keys. */
+  function getPageSectionsForRender(parsed) {
+    var fromArray = getPageSectionsArray(parsed);
+    if (fromArray.length) return fromArray;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return [];
+    var synthetic = [];
+    var canonicalOrder = [
+      "overview",
+      "learning_purpose",
+      "knowledge_summary",
+      "learning_activities",
+      "learning_sequence",
+      "activity_materials",
+      "assessment_check",
+      "support_notes",
+      "study_tips"
+    ];
+    canonicalOrder.forEach(function (sid) {
+      if (!PAGE_BODY_SECTION_IDS[sid]) return;
+      if (utilityIsEmptyValue(parsed[sid])) return;
+      synthetic.push({
+        section_id: sid,
+        heading: utilityLabelFromKey(sid),
+        content: parsed[sid]
+      });
+    });
+    return synthetic;
   }
 
   function utilityRenderPageSections(sectionsValue, labels, sectionOrder, opts) {
@@ -26344,6 +26885,11 @@
           var value = sectionValue[key];
           if (utilityIsEmptyValue(value)) return;
           if (Array.isArray(value)) {
+            var liveCsvList = utilityRenderLiveExportCsvTableBlock(value, key);
+            if (liveCsvList) {
+              top.push(liveCsvList);
+              return;
+            }
             var listHtml = value
               .map(function (entry) {
                 if (utilityIsEmptyValue(entry)) return "";
@@ -26912,7 +27458,9 @@
             group.modifier +
             '" role="region" aria-label="Cognition prompts">' +
             items.join("") +
-            utilityRenderVisualAffordanceHook("materials-thinking", {}) +
+            utilityMaybeRenderVisualAffordanceHook("materials-thinking", {}, renderOpts, function () {
+              return true;
+            }) +
             "</div>"
         );
       });
@@ -27063,12 +27611,17 @@
       pushPelOrientationCue("Structuring your response", argumentStructureHint);
       pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
       if (!blocks.length) return "";
-      var framingHook = utilityFramingWarrantsVisualAffordance(row)
-        ? utilityRenderVisualAffordanceHook("activity-framing-after", {
-            subject: utilityFirstScalar([row.title, row.activity_title, row.name]),
-            activityId: utilityFirstScalar([row.activity_id, row.activityId, row.id])
-          })
-        : "";
+      var framingHook = utilityMaybeRenderVisualAffordanceHook(
+        "activity-framing-after",
+        {
+          subject: utilityFirstScalar([row.title, row.activity_title, row.name]),
+          activityId: utilityFirstScalar([row.activity_id, row.activityId, row.id])
+        },
+        renderOpts,
+        function () {
+          return utilityFramingWarrantsVisualAffordance(row);
+        }
+      );
       return (
         '<div class="util-activity-framing" role="complementary" aria-label="Study support">' +
         blocks.join("") +
@@ -27481,6 +28034,24 @@
           var cfg = opts && typeof opts === "object" ? opts : {};
           var plainLabels = cfg.plainLabels === true;
           var stripStandaloneBold = cfg.stripStandaloneBold === true;
+          var arrInput = Array.isArray(arr) ? arr : [];
+          if (arrInput.length >= 2) {
+            var csvRowCandidates = [];
+            var allCsvCandidateStrings = true;
+            arrInput.forEach(function (entry) {
+              if (typeof entry !== "string") {
+                allCsvCandidateStrings = false;
+                return;
+              }
+              var raw = String(entry || "").trim().replace(/^\s*[-*•]\s+/, "");
+              if (!raw || raw.indexOf(",") === -1) allCsvCandidateStrings = false;
+              else csvRowCandidates.push(raw);
+            });
+            if (allCsvCandidateStrings && csvRowCandidates.length === arrInput.length) {
+              var csvFromArray = utilityTryRenderCsvLikeRowsTable(csvRowCandidates);
+              if (csvFromArray) return csvFromArray;
+            }
+          }
           var rows = [];
           function stripHeadingMarkersLocal(s) {
             return String(s == null ? "" : s)
@@ -27518,6 +28089,13 @@
                   var responseLinesHtml = utilityRenderWorksheetResponseLinesHtml(bulletLines);
                   if (responseLinesHtml) {
                     rows.push(responseLinesHtml);
+                    return;
+                  }
+                }
+                if (bulletLines.length >= 2) {
+                  var csvFromBulletLines = utilityTryRenderCsvLikeRowsTable(bulletLines);
+                  if (csvFromBulletLines) {
+                    rows.push(csvFromBulletLines);
                     return;
                   }
                 }
@@ -28199,6 +28777,11 @@
                 return;
               }
               if (bulletLines.length >= 1 && bulletLines.length === trimmedLines.length) {
+                var csvTableFromStructuredBullets = utilityTryRenderCsvLikeRowsTable(bulletLines);
+                if (csvTableFromStructuredBullets) {
+                  html.push(csvTableFromStructuredBullets);
+                  return;
+                }
                 var grouped = [];
                 var listOpen = false;
                 var checkboxOpen = false;
@@ -28439,20 +29022,11 @@
             var head = "<tr>" + headers.map(function (h) { return "<th>" + utilityEscapeHtml(h) + "</th>"; }).join("") + "</tr>";
             return utilityWrapExportTableHtml("<table><thead>" + head + "</thead><tbody>" + bodyRows + "</tbody></table>");
           }
-          try {
-            console.log("[PRISM TRACE] renderMaterialValue:", {
-              hint: hint || "(none)",
-              valueType: Array.isArray(value) ? "array" : typeof value,
-              objectKeys: value && typeof value === "object" && !Array.isArray(value) ? Object.keys(value) : null
-            });
-          } catch (_) {}
-          var tableLikeKey =
-            hint === "table" ||
-            hint === "analysis_table" ||
-            hint === "impact_table" ||
-            hint === "observation_table" ||
-            hint === "observations_table" ||
-            hint === "data_table";
+          var tableLikeKey = utilityMaterialHintIsWorksheetTable(hint);
+          if (tableLikeKey) {
+            var csvMaterialTableHtml = utilityTryRenderCsvLikeMaterialTable(value);
+            if (csvMaterialTableHtml) return csvMaterialTableHtml;
+          }
           if (value && typeof value === "object" && !Array.isArray(value)) {
             var tableHtml = renderColumnRowsTable(value);
             if (tableHtml && (tableLikeKey || (Array.isArray(value.columns) && Array.isArray(value.rows)))) {
@@ -28558,6 +29132,10 @@
                 if (checklistRows.length) {
                   return '<div class="util-checklist-block util-material-role-checklist">' + renderCheckboxList(checklistRows) + "</div>";
                 }
+              }
+              if (tableLikeKey) {
+                var csvRowsTableHtml = utilityTryRenderCsvLikeMaterialTable(value);
+                if (csvRowsTableHtml) return csvRowsTableHtml;
               }
               var asBlocks = value
                 .map(function (entry) {
@@ -28990,50 +29568,57 @@
             templateRendered = true;
           }
         }
-        var analysisTable = firstNonEmptyRaw([materials.analysis_table, materials.impact_table, materials.table]);
-        if (!utilityIsEmptyValue(analysisTable)) {
-          var tableSource = analysisTable;
-          if (typeof tableSource === "string") {
-            var lines = String(tableSource || "").split(/\r?\n/);
-            var headerIdx = -1;
-            var dividerIdx = -1;
-            for (var li = 0; li < lines.length; li += 1) {
-              if (lines[li].indexOf("|") !== -1) {
-                headerIdx = li;
-                if (li + 1 < lines.length && utilityIsMarkdownTableDivider(lines[li + 1])) dividerIdx = li + 1;
-                break;
-              }
-            }
-            var scenarioCount = Array.isArray(scenarios) ? scenarios.length : 0;
-            if (headerIdx !== -1 && dividerIdx !== -1 && scenarioCount > 1) {
-              var existingRows = 0;
-              for (var ri = dividerIdx + 1; ri < lines.length; ri += 1) {
-                var rowLine = String(lines[ri] || "").trim();
-                if (!rowLine || rowLine.indexOf("|") === -1) break;
-                existingRows += 1;
-              }
-              var headerCells = utilityParseMarkdownTableRow(lines[headerIdx]);
-              if (headerCells.length >= 2 && existingRows < scenarioCount) {
-                var blanksNeeded = scenarioCount - existingRows;
-                var blankRow = "| " + headerCells.map(function () { return " "; }).join(" | ") + " |";
-                var insertion = [];
-                for (var bi = 0; bi < blanksNeeded; bi += 1) insertion.push(blankRow);
-                Array.prototype.splice.apply(lines, [dividerIdx + 1 + existingRows, 0].concat(insertion));
-                tableSource = lines.join("\n");
-              }
-            }
-          }
-          var tableHtml = "";
-          if (typeof tableSource === "string") {
-            tableHtml = utilityRenderMarkdownBlock(String(tableSource));
-          } else {
-            tableHtml = renderMaterialValue(tableSource, "analysis_table");
-          }
-          if (tableHtml) {
+        var tableSource = resolveWorksheetTableSource(materials);
+        if (!utilityIsEmptyValue(tableSource)) {
+          var csvWorksheetTable = utilityTryRenderCsvLikeMaterialTable(tableSource);
+          if (csvWorksheetTable) {
             parts.push(
               utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
-              tableHtml
+              csvWorksheetTable
             );
+          } else {
+            if (typeof tableSource === "string") {
+              var lines = String(tableSource || "").split(/\r?\n/);
+              var headerIdx = -1;
+              var dividerIdx = -1;
+              for (var li = 0; li < lines.length; li += 1) {
+                if (lines[li].indexOf("|") !== -1) {
+                  headerIdx = li;
+                  if (li + 1 < lines.length && utilityIsMarkdownTableDivider(lines[li + 1])) dividerIdx = li + 1;
+                  break;
+                }
+              }
+              var scenarioCount = Array.isArray(scenarios) ? scenarios.length : 0;
+              if (headerIdx !== -1 && dividerIdx !== -1 && scenarioCount > 1) {
+                var existingRows = 0;
+                for (var ri = dividerIdx + 1; ri < lines.length; ri += 1) {
+                  var rowLine = String(lines[ri] || "").trim();
+                  if (!rowLine || rowLine.indexOf("|") === -1) break;
+                  existingRows += 1;
+                }
+                var headerCells = utilityParseMarkdownTableRow(lines[headerIdx]);
+                if (headerCells.length >= 2 && existingRows < scenarioCount) {
+                  var blanksNeeded = scenarioCount - existingRows;
+                  var blankRow = "| " + headerCells.map(function () { return " "; }).join(" | ") + " |";
+                  var insertion = [];
+                  for (var bi = 0; bi < blanksNeeded; bi += 1) insertion.push(blankRow);
+                  Array.prototype.splice.apply(lines, [dividerIdx + 1 + existingRows, 0].concat(insertion));
+                  tableSource = lines.join("\n");
+                }
+              }
+            }
+            var tableHtml = "";
+            if (typeof tableSource === "string") {
+              tableHtml = utilityRenderMarkdownBlock(String(tableSource));
+            } else {
+              tableHtml = renderMaterialValue(tableSource, "analysis_table");
+            }
+            if (tableHtml) {
+              parts.push(
+                utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
+                tableHtml
+              );
+            }
           }
         }
         var strategyOptions = firstNonEmptyRaw([materials.strategy_options, materials.options, materials.strategies]);
@@ -29047,9 +29632,6 @@
             return;
           }
           if (cognitionKeysOnRow[k] || cognitionKeysOnRow[lowerK]) {
-            try {
-              console.log("[PRISM TRACE] cognition field skipped in materials remainder:", k);
-            } catch (_) {}
             return;
           }
           if (lowerK === "scenarios" && !scenariosRendered) {
@@ -29059,28 +29641,14 @@
               if (scenariosFallback) {
                 parts.push(utilityRenderIconHeading("h4", "Scenarios", "scenarios", "util-material-heading") + scenariosFallback);
                 scenariosRendered = true;
-                try {
-                  console.log("[PRISM TRACE] scenarios rendered via renderMaterialValue fallback (object path)");
-                } catch (_) {}
-              } else {
-                try {
-                  console.log("[PRISM TRACE] scenarios object fallback attempted but produced empty HTML");
-                } catch (_) {}
               }
             }
             if (scenariosRendered) {
-              try {
-                console.log("[PRISM TRACE] material key skipped in remainder loop after render:", k);
-              } catch (_) {}
               return;
             }
           }
-          if (lowerK === "scenarios" && !scenariosRendered) {
-            try {
-              console.log("[PRISM TRACE] scenarios not yet rendered; allowing generic remainder render:", k);
-            } catch (_) {}
-          } else if (
-            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+          if (
+            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "comparison_table", "classification_table", "worksheet", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
             (lowerK === "scenario" && scenariosRendered) ||
             (lowerK === "scenario_section_title") ||
             (lowerK === "scenario_heading") ||
@@ -29099,9 +29667,6 @@
             (lowerK === "analysis_template" && analysisTemplateRendered) ||
             (lowerK === "evaluation_checklist" && evaluationChecklistRendered)
           ) {
-            try {
-              console.log("[PRISM TRACE] material key skipped in remainder loop:", k);
-            } catch (_) {}
             return;
           }
           var val = materials[k];
@@ -29244,8 +29809,16 @@
             subject: title,
             activityId: activityIdLabel
           };
-          if (utilityActivityWarrantsAfterHeaderAffordance(row, materials)) {
-            parts.push(utilityRenderVisualAffordanceHook("activity-after-header", affordanceCtx));
+          var afterHeaderHook = utilityMaybeRenderVisualAffordanceHook(
+            "activity-after-header",
+            affordanceCtx,
+            renderOpts,
+            function () {
+              return utilityActivityWarrantsAfterHeaderAffordance(row, materials);
+            }
+          );
+          if (afterHeaderHook) {
+            parts.push(afterHeaderHook);
           }
           var activityComparable = createActivityComparableRegistry();
           var framingHtml = renderActivityFramingForActivity(row, activityComparable);
@@ -29290,7 +29863,11 @@
           }
           var materialsHtml = renderMaterialsForActivity(materials, row);
           if (materialsHtml) {
-            materialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(materialsHtml, affordanceCtx);
+            materialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(
+              materialsHtml,
+              affordanceCtx,
+              renderOpts
+            );
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
           if (expectedOutput) {
@@ -30109,8 +30686,15 @@
             return;
           }
           if (Array.isArray(val)) {
+            var richCsv = utilityRenderLiveExportCsvTableBlock(val, k);
+            if (richCsv) {
+              chunks.push(richCsv);
+              return;
+            }
             var arrHtml = renderStrategyBullets(val) || utilityRenderArray(val, renderOpts);
-            if (arrHtml) chunks.push("<h4>" + utilityEscapeHtml(utilityLabelFromKey(k)) + "</h4>" + arrHtml);
+            if (arrHtml) {
+              chunks.push("<h4>" + utilityEscapeHtml(utilityLabelFromKey(k)) + "</h4>" + arrHtml);
+            }
             return;
           }
           if (val && typeof val === "object") {
@@ -30710,10 +31294,11 @@
         }
         return utilityWrapAssessmentSectionHtml(
           assessmentHeadingHtml,
-          "<p>Self-check questions will appear here.</p>"
+          "<p>Self-check questions will appear here.</p>",
+          renderOpts
         );
       }
-      return utilityWrapAssessmentSectionHtml(assessmentHeadingHtml, assessmentHtml);
+      return utilityWrapAssessmentSectionHtml(assessmentHeadingHtml, assessmentHtml, renderOpts);
     }
     function resolveSectionFeedbackDisplay(sectionValue) {
       if (!sectionValue || typeof sectionValue !== "object" || Array.isArray(sectionValue)) return "";
@@ -31348,7 +31933,59 @@
   function utilityWrapExportTableHtml(tableHtml) {
     var html = String(tableHtml || "").trim();
     if (!html || html.indexOf("<table") !== 0) return html;
-    return '<div class="util-table-scroll util-material-table">' + html + "</div>";
+    return (
+      '<div class="util-table-scroll util-material-table">' + html + "</div>"
+    );
+  }
+
+  function utilityRenderLiveExportCsvTableBlock(value, keyHint) {
+    var csvHtml = utilityTryRenderCsvLikeMaterialTable(value);
+    if (!csvHtml) return "";
+    var key = String(keyHint || "").toLowerCase().trim();
+    var useWorksheetHeading =
+      utilityMaterialHintIsWorksheetTable(key) ||
+      /\b(comparison|classification|analysis|impact)_table\b/.test(key) ||
+      key === "table";
+    var heading = useWorksheetHeading
+      ? utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading")
+      : "<h3>" + utilityEscapeHtml(utilityLabelFromKey(keyHint)) + "</h3>";
+    return heading + csvHtml;
+  }
+
+  function resolveWorksheetTableSourceWithMeta(materials) {
+    if (!materials || typeof materials !== "object" || Array.isArray(materials)) {
+      return { sourceKey: "", payload: null };
+    }
+    var keyOrder = [
+      "analysis_table",
+      "impact_table",
+      "comparison_table",
+      "classification_table",
+      "worksheet",
+      "table"
+    ];
+    for (var i = 0; i < keyOrder.length; i += 1) {
+      var key = keyOrder[i];
+      var payload = utilityUnwrapWorksheetTablePayload(materials[key]);
+      if (!utilityIsEmptyValue(payload)) {
+        return { sourceKey: key, payload: payload };
+      }
+    }
+    var fallbackKeys = ["content", "items"];
+    for (var j = 0; j < fallbackKeys.length; j += 1) {
+      var fbKey = fallbackKeys[j];
+      var fbPayload = utilityUnwrapWorksheetTablePayload(materials[fbKey]);
+      if (utilityIsEmptyValue(fbPayload)) continue;
+      var fbRows = utilityMaterialValueToCsvRowTexts(fbPayload);
+      if (fbRows && utilityLooksLikeCsvTableRows(fbRows)) {
+        return { sourceKey: fbKey, payload: fbPayload };
+      }
+    }
+    return { sourceKey: "", payload: null };
+  }
+
+  function resolveWorksheetTableSource(materials) {
+    return resolveWorksheetTableSourceWithMeta(materials).payload;
   }
 
   function getUtilityPagePresentationCssV26_2() {
@@ -32470,6 +33107,7 @@
         if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
         next.metadata.sequencing_interaction_metadata_rows = sequencingTouchedNoCognition;
       }
+      next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
       return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
     }
     if (!Array.isArray(next.sections)) next.sections = [];
@@ -32519,7 +33157,17 @@
       next.generation_notes = {};
     }
     next.generation_notes.cognition_composition = trace;
+    next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
     return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
+  }
+
+  function applySprint38VisualAffordancesToComposedPage(page, options) {
+    var mod =
+      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
+        ? PRISM_SPRINT38_VISUAL_AFFORDANCES
+        : null;
+    if (!mod || typeof mod.applyToComposedPage !== "function") return page;
+    return mod.applyToComposedPage(page, options);
   }
 
   function collectComposedActivityIdsFromPage(page) {
@@ -32796,13 +33444,14 @@
     };
     var pageMetadataKeyOrder = ["source_artefacts", "constraints_applied", "generation_notes"];
     var pageSectionsArray = getPageSectionsArray(parsed);
+    var pageSectionsForRender = getPageSectionsForRender(parsed);
     var pageBodyFromSectionsArray =
-      isPageArtefact && Array.isArray(pageSectionsArray) && pageSectionsArray.length > 0;
+      isPageArtefact && Array.isArray(pageSectionsForRender) && pageSectionsForRender.length > 0;
     function buildPageSectionRenderOpts() {
-      var pageSectionsForRender =
+      var pageSectionsForOpts =
         Array.isArray(options.pageSections) && options.pageSections.length
           ? options.pageSections
-          : pageSectionsArray;
+          : pageSectionsForRender;
       var pageProfile =
         parsed && parsed.page_profile ? String(parsed.page_profile) : "";
       var strictLearnerExportAutoEnable =
@@ -32821,7 +33470,7 @@
       var baseRenderOpts = {
         cleanupInlineMarkdown: true,
         suppressInternalMetadata: true,
-        pageSections: pageSectionsForRender,
+        pageSections: pageSectionsForOpts,
         strictCompositionClosure: !!pageBodyFromSectionsArray,
         pageProfile: pageProfile,
         suppressFacilitatorMaterials: workshopVisibility.suppressFacilitatorMaterials,
@@ -32840,7 +33489,8 @@
                     : ""))
       };
       return Object.assign({}, baseRenderOpts, {
-        sequencingPolicy: resolveSequencingPolicy(baseRenderOpts, pageProfile)
+        sequencingPolicy: resolveSequencingPolicy(baseRenderOpts, pageProfile),
+        visualAffordanceRenderPlan: utilityBuildVisualAffordanceRenderPlan(parsed)
       });
     }
     function shouldSkipPageBodySectionKey(sectionKey) {
@@ -32967,13 +33617,13 @@
 
     if (pageBodyFromSectionsArray) {
       var pageBodyHtml = utilityRenderPageSections(
-        pageSectionsArray,
+        pageSectionsForRender,
         labels,
         sectionOrder,
         buildPageSectionRenderOpts()
       );
       if (String(pageBodyHtml || "").trim()) primaryBlocks.push(pageBodyHtml);
-      pageSectionsArray.forEach(function (metaEntry) {
+      pageSectionsForRender.forEach(function (metaEntry) {
         if (!utilityIsPageMetadataSectionEntry(metaEntry)) return;
         var metaSectionHtml = utilityRenderPageMetadataSectionHtml(metaEntry, buildPageSectionRenderOpts());
         if (String(metaSectionHtml || "").trim()) metadataBlocks.push(metaSectionHtml);
@@ -33588,6 +34238,122 @@
     return out;
   }
 
+  function buildDefaultUtilityPageRenderPlan(sectionOrderOverride) {
+    var sectionOrder =
+      Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
+        ? sectionOrderOverride.slice()
+        : [
+            "overview",
+            "learning_purpose",
+            "knowledge_summary",
+            "learning_activities",
+            "learning_sequence",
+            "activity_materials",
+            "assessment_check",
+            "support_notes",
+            "study_tips"
+          ];
+    return {
+      artefactType: "page",
+      rendererType: "document",
+      rendererVariant: "page",
+      renderHints: {
+        renderConfig: {
+          labels: {},
+          omitIfMissing: [],
+          sectionOrder: sectionOrder,
+          grouping: "document_sections",
+          itemKeyMap: {}
+        }
+      }
+    };
+  }
+
+  /**
+   * Mirrors handleUtilitiesGenerate → runUtilityRendererByPlan → buildUtilityStructuredHtml
+   * (including sanitizeUtilityHtmlOutput), without DOM preview side effects.
+   */
+  function runUtilityPageExportPipeline(parsed, pipelineOpts) {
+    var opts = pipelineOpts && typeof pipelineOpts === "object" ? pipelineOpts : {};
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { error: "JSON root must be an object." };
+    }
+    if (String(parsed.artifact_type || "").toLowerCase() !== "page") {
+      return { error: 'Include top-level "artifact_type": "page".' };
+    }
+    if (opts.applyCompositionValidation !== false) {
+      applyPageCompositionValidationForUtilitiesPage(parsed, opts.compositionOptions || {});
+    }
+    var plan = opts.renderPlan || buildDefaultUtilityPageRenderPlan(opts.sectionOrder);
+    var rendered = runUtilityRendererByPlan(plan, parsed, opts.baseName || "", {
+      presentationMode:
+        String(opts.presentationMode || "single_page").toLowerCase() === "learning_object"
+          ? "learning_object"
+          : "single_page",
+      pageSections: getPageSectionsForRender(parsed),
+      enableSequencingInteractionPolicy: opts.enableSequencingInteractionPolicy
+    });
+    if (!rendered || rendered.error) {
+      return { error: (rendered && rendered.error) || "Could not render HTML output." };
+    }
+    var html = String(rendered.html || "").trim();
+    if (!html) return { error: "Rendered output is empty." };
+    return { html: html, error: null };
+  }
+
+  /**
+   * Same async path as Utilities Preview HTML (handleUtilitiesGenerate): resolve catalog plan, then render.
+   */
+  function renderUtilitiesArtefactHtmlAsync(parsed, asyncOpts) {
+    var opts = asyncOpts && typeof asyncOpts === "object" ? asyncOpts : {};
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return Promise.resolve({ error: "JSON root must be an object." });
+    }
+    if (opts.renderPlan) {
+      return Promise.resolve(renderUtilitiesArtefactHtmlWithResolvedPlan(parsed, opts));
+    }
+    return resolveUtilityRenderPlan(parsed, opts.format || opts.selectedFormat || "html").then(function (plan) {
+      if (!plan || plan.error) {
+        return { error: (plan && plan.error) || "Could not resolve renderer." };
+      }
+      return renderUtilitiesArtefactHtmlWithResolvedPlan(parsed, Object.assign({}, opts, { renderPlan: plan }));
+    });
+  }
+
+  function renderUtilitiesArtefactHtmlWithResolvedPlan(parsed, opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    var artefactType = String(parsed.artifact_type || "").toLowerCase();
+    if (artefactType === "page") {
+      if (options.applyCompositionValidation !== false) {
+        applyPageCompositionValidationForUtilitiesPage(parsed, options.compositionOptions || {});
+      }
+      var pageRendered = runUtilityPageExportPipeline(parsed, {
+        renderPlan: options.renderPlan,
+        sectionOrder: options.sectionOrder,
+        presentationMode: options.presentationMode,
+        applyCompositionValidation: false,
+        compositionOptions: options.compositionOptions,
+        baseName: options.baseName,
+        enableSequencingInteractionPolicy: options.enableSequencingInteractionPolicy
+      });
+      return pageRendered;
+    }
+    var plan = options.renderPlan;
+    if (!plan || plan.error) {
+      return { error: (plan && plan.error) || "Could not resolve renderer." };
+    }
+    var rendered = runUtilityRendererByPlan(plan, parsed, options.baseName || "", {
+      presentationMode: options.presentationMode,
+      pageSections: getPageSectionsForRender(parsed)
+    });
+    if (!rendered || rendered.error) {
+      return { error: (rendered && rendered.error) || "Could not render HTML output." };
+    }
+    var html = String(rendered.html || "").trim();
+    if (!html) return { error: "Rendered output is empty." };
+    return { html: html, error: null };
+  }
+
   function handleUtilitiesGenerate() {
     var raw = String(els.utilitiesJsonInput ? els.utilitiesJsonInput.value : "").trim();
     if (!raw) {
@@ -33632,19 +34398,13 @@
       parsed,
       els.utilitiesFileName ? els.utilitiesFileName.value : ""
     );
-    resolveUtilityRenderPlan(
-      parsed,
-      els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html"
-    )
-      .then(function (plan) {
-        if (!plan || plan.error) {
-          applyUtilityPreviewError((plan && plan.error) || "Could not resolve renderer.");
-          return null;
-        }
-        var rendered = runUtilityRendererByPlan(plan, parsed, baseName, {
-          presentationMode: state.utilitiesPresentationMode,
-          pageSections: Array.isArray(parsed.sections) ? parsed.sections : null
-        });
+    renderUtilitiesArtefactHtmlAsync(parsed, {
+      selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
+      presentationMode: state.utilitiesPresentationMode,
+      baseName: baseName,
+      applyCompositionValidation: false
+    })
+      .then(function (rendered) {
         if (!rendered || rendered.error) {
           applyUtilityPreviewError((rendered && rendered.error) || "Could not render HTML output.");
           return null;
@@ -34267,6 +35027,13 @@
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
       applyWorkflowStepRuntimePromptAugmentations;
+    prismTestApi.buildSeededStepPromptForWorkflowStep = buildSeededStepPromptForWorkflowStep;
+    prismTestApi.buildSprint38VisualAffordanceDesignPagePromptBlock =
+      buildSprint38VisualAffordanceDesignPagePromptBlock;
+    prismTestApi.buildSprint38PedagogicalAddedValuePromptLines =
+      buildSprint38PedagogicalAddedValuePromptLines;
+    prismTestApi.applySprint38VisualAffordanceContractToDraft =
+      applySprint38VisualAffordanceContractToDraft;
     prismTestApi.buildMathSafeOutputContractPromptBlock =
       buildMathSafeOutputContractPromptBlock;
     prismTestApi.applyMathSafeOutputContractToDraft = applyMathSafeOutputContractToDraft;
@@ -34388,29 +35155,24 @@
     };
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
+    prismTestApi.buildDefaultUtilityPageRenderPlanForTest = buildDefaultUtilityPageRenderPlan;
+    prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
+    prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
+    prismTestApi.renderUtilitiesArtefactHtmlAsyncForTest = renderUtilitiesArtefactHtmlAsync;
+    prismTestApi.getPageSectionsForRenderForTest = getPageSectionsForRender;
+    prismTestApi.utilityRenderLiveExportCsvTableBlockForTest = utilityRenderLiveExportCsvTableBlock;
     prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride, renderOptions) {
-      var sectionOrder =
-        Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
-          ? sectionOrderOverride.slice()
-          : ["sections"];
       var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
-      return buildUtilityStructuredHtml(
-        parsed,
-        {
-          artefactType: "page",
-          renderHints: {
-            renderConfig: {
-              labels: {},
-              omitIfMissing: [],
-              sectionOrder: sectionOrder,
-              grouping: "document_sections",
-              itemKeyMap: {}
-            }
-          }
-        },
-        "",
-        options
-      );
+      return runUtilityPageExportPipeline(parsed, {
+        sectionOrder:
+          Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
+            ? sectionOrderOverride
+            : ["sections"],
+        presentationMode: options.presentationMode,
+        applyCompositionValidation: options.applyCompositionValidation,
+        compositionOptions: options.compositionOptions,
+        baseName: options.baseName
+      });
     };
     prismTestApi.utilityRenderPageSectionsForTest = function (sectionsValue, renderOptions) {
       return utilityRenderPageSections(sectionsValue, {}, [], renderOptions || {});
@@ -34418,6 +35180,13 @@
     prismTestApi.utilityRenderMarkdownBlockForTest = utilityRenderMarkdownBlock;
     prismTestApi.utilityRenderMarkdownInlineForTest = utilityRenderMarkdownInline;
     prismTestApi.utilityIsWorksheetResponseLineBodyForTest = utilityIsWorksheetResponseLineBody;
+    prismTestApi.utilityLooksLikeCsvTableRowsForTest = utilityLooksLikeCsvTableRows;
+    prismTestApi.utilityRenderCsvLikeRowsTableForTest = utilityRenderCsvLikeRowsTable;
+    prismTestApi.utilityTryRenderCsvLikeRowsTableForTest = utilityTryRenderCsvLikeRowsTable;
+    prismTestApi.utilityTryRenderCsvLikeMaterialTableForTest = utilityTryRenderCsvLikeMaterialTable;
+    prismTestApi.utilityMaterialValueToCsvRowTextsForTest = utilityMaterialValueToCsvRowTexts;
+    prismTestApi.resolveWorksheetTableSourceForTest = resolveWorksheetTableSource;
+    prismTestApi.resolveWorksheetTableSourceWithMetaForTest = resolveWorksheetTableSourceWithMeta;
     prismTestApi.utilitySanitizeLeakedInternalRenderTokensForTest =
       utilitySanitizeLeakedInternalRenderTokens;
     prismTestApi.resolveLearnerWorkshopMaterialVisibilityPolicyForTest =
@@ -34478,7 +35247,22 @@
       applyPageCompositionValidationForUtilitiesPage;
     prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
       applyPedagogicCognitionSemanticsToComposedPage;
+    prismTestApi.applySprint38VisualAffordancesToComposedPage =
+      applySprint38VisualAffordancesToComposedPage;
+    prismTestApi.validatePageVisualAffordancesForTest = function (page) {
+      var mod =
+        typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
+          ? PRISM_SPRINT38_VISUAL_AFFORDANCES
+          : null;
+      return mod && typeof mod.validatePageVisualAffordances === "function"
+        ? mod.validatePageVisualAffordances(page)
+        : { valid: false, errors: ["PRISM_SPRINT38_VISUAL_AFFORDANCES unavailable"] };
+    };
     prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
+    prismTestApi.utilityMaybeRenderVisualAffordanceHookForTest =
+      utilityMaybeRenderVisualAffordanceHook;
+    prismTestApi.utilityBuildVisualAffordanceRenderPlanForTest =
+      utilityBuildVisualAffordanceRenderPlan;
     prismTestApi.utilityAugmentMaterialsHtmlWithVisualAffordancesForTest =
       utilityAugmentMaterialsHtmlWithVisualAffordances;
     prismTestApi.resolvePedagogicCognitionCompositionSemantics =

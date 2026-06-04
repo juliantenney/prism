@@ -1,0 +1,185 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation Self-Directed Learner Workbook",
+  "audience": "learner",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Session Overview and Learning Purpose",
+      "content": "This self-directed workbook session is designed to deepen your understanding of inflation and its effects on household finances. You will explore how inflation is measured using the Consumer Price Index (CPI), analyze its impact on purchasing power and living costs, and evaluate strategies to manage inflation's effects. The session includes four activities, each building on the previous, culminating in a consolidation summary and reflection to connect the concepts to your personal financial context.\n\nThe session is designed for approximately 60 minutes of self-study and includes detailed worked examples, real-life household scenarios, guided evaluation prompts, and reflection templates to support your learning journey."
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation.",
+        "Analyze the impact of inflation on household purchasing power and living costs.",
+        "Evaluate strategies households can use to manage the effects of inflation on their finances."
+      ]
+    },
+    {
+      "heading": "Study Tips",
+      "content": "Focus on understanding the relationship between CPI changes and inflation rates to avoid confusing nominal price changes with inflation. When analyzing household scenarios, consider both income and expenditure changes to fully assess purchasing power. In evaluating strategies, apply critical thinking to consider suitability, feasibility, and risks for different household types. Use the reflection prompts to connect concepts to your personal or hypothetical financial situation."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Study Worked Example: Understanding Inflation and CPI",
+          "duration_minutes": 15,
+          "activity_preamble": "This activity introduces the fundamental concepts of inflation and the Consumer Price Index (CPI). You will study a detailed worked example and a sample output to build a solid foundation before applying these concepts.",
+          "learner_task": "## Study the worked example and sample output carefully.\n\n- Understand how inflation is calculated using CPI data.\n- Note the economic implications explained in the sample output.\n\nThen, answer the following:\n\n1. Define inflation in your own words.\n2. Explain the role of CPI in measuring inflation.",
+          "expected_output": "Written definitions and explanations demonstrating understanding of inflation and CPI, referencing the worked example and sample output.",
+          "support_note": "Focus on the relationship between CPI changes and inflation rates to avoid confusing nominal price changes with inflation.",
+          "prior_knowledge_activation": "Recall any previous knowledge about price changes or economic indicators you have encountered.",
+          "materials": {
+            "worked_example": "### Worked Example: Calculating Inflation Rate Using CPI Data\n\n**Step 1: Understand the CPI values**  \nSuppose the Consumer Price Index (CPI) was 240 in Year 1 and increased to 252 in Year 2. The CPI measures the average price level of a basket of goods and services in the economy.\n\n**Step 2: Calculate the inflation rate**  \nThe inflation rate is the percentage change in CPI from one year to the next. Use the formula:\n\n\\[\n\\text{Inflation Rate} = \\frac{\\text{CPI in Year 2} - \\text{CPI in Year 1}}{\\text{CPI in Year 1}} \\times 100\n\\]\n\nSubstitute the values:\n\n\\[\n\\frac{252 - 240}{240} \\times 100 = \\frac{12}{240} \\times 100 = 5\\%\n\\]\n\nSo, the inflation rate from Year 1 to Year 2 is 5%.\n\n**Step 3: Interpret the result**  \nA 5% inflation rate means that, on average, prices for goods and services increased by 5% over the year. This affects the purchasing power of money — consumers need more money to buy the same goods as before.",
+            "sample_output": "### Sample Output: Inflation Calculation and Economic Impact Summary\n\n**Inflation Calculation:**  \nUsing the CPI values provided (240 in Year 1 and 252 in Year 2), the inflation rate was calculated as 5%. This means prices increased by 5% over the year.\n\n**Economic Implications:**  \n- **Purchasing Power:** A 5% inflation rate reduces the purchasing power of consumers, meaning their money buys less than before.  \n- **Cost of Living:** Households may face higher costs for essentials such as food, housing, and transportation.  \n- **Wage Adjustments:** Workers may seek higher wages to keep up with rising prices, potentially leading to wage-price spirals.  \n- **Monetary Policy:** Central banks monitor inflation to adjust interest rates and maintain price stability.  \n\nUnderstanding how inflation is calculated using CPI helps explain these economic effects and informs policy decisions.",
+            "explanatory_text": "### Understanding Inflation and the Consumer Price Index (CPI)\n\nInflation is the general increase in prices of goods and services over time, which leads to a decrease in the purchasing power of money. When inflation occurs, each unit of currency buys fewer goods and services than before.\n\nThe Consumer Price Index (CPI) is a key economic indicator used to measure inflation. It tracks the price changes of a fixed basket of goods and services commonly purchased by households. The CPI is calculated by comparing the cost of this basket in the current period to the cost in a base period.\n\nCPI is important because it provides a standardized way to quantify inflation, helping governments, businesses, and consumers understand how prices are changing. It influences decisions such as wage negotiations, pension adjustments, and monetary policy.\n\nBy monitoring CPI changes, we can distinguish between nominal price changes (which may be due to individual product factors) and broad inflation affecting the entire economy."
+          }
+        },
+        {
+          "title": "Practice: Analyze Inflation Impact on Household Purchasing Power",
+          "duration_minutes": 20,
+          "activity_preamble": "This activity helps you apply your understanding of inflation to real-life household scenarios. You will analyze how inflation changes affect different aspects of household finances.",
+          "learner_task": "## For each household scenario:\n\n- Use the provided data to analyze how inflation affects their purchasing power.\n- Identify which expenses are most impacted by inflation.\n- Complete the checklist to ensure thorough analysis.\n\nSummarize your findings for each scenario.",
+          "expected_output": "Completed analysis notes and checklist for each scenario, with clear identification of inflation impacts on household purchasing power and living costs.",
+          "support_note": "Consider both income and expenditure changes when analyzing purchasing power to avoid partial conclusions.",
+          "reasoning_orientation": "Focus on cause-effect relationships between inflation and household economic conditions.",
+          "materials": {
+            "task_cards": "### Task Cards: Household Inflation Scenarios\n\n**Card 1: The Smith Family**  \n- Annual income: $50,000  \n- Inflation rate: 4%  \n- Major expenses: Food (+5%), Rent (+3%), Utilities (+2%)  \n- Question: How does inflation affect the Smith family’s purchasing power? Which expenses impact them most?\n\n---\n\n**Card 2: The Lee Household**  \n- Annual income: $75,000 (fixed)  \n- Inflation rate: 6%  \n- Major expenses: Transportation (+8%), Healthcare (+4%), Education (+3%)  \n- Question: Analyze the effect of inflation on the Lee household’s living costs and identify vulnerable expense areas.\n\n---\n\n**Card 3: The Patel Household**  \n- Annual income: $40,000 (increased by 2%)  \n- Inflation rate: 5%  \n- Major expenses: Food (+6%), Rent (+7%), Entertainment (+3%)  \n- Question: Considering income growth, evaluate the net impact of inflation on the Patel household’s purchasing power.",
+            "checklist": "### Checklist: Analyzing Inflation Impact on Household Purchasing Power\n\n- [ ] Have you identified the inflation rate affecting the household?  \n- [ ] Did you compare income changes against inflation rate?  \n- [ ] Have you listed major expenses and their inflation rates?  \n- [ ] Did you determine which expenses increased the most?  \n- [ ] Have you assessed whether income growth offsets rising costs?  \n- [ ] Did you summarize the overall impact on purchasing power?  \n- [ ] Have you considered how inflation affects discretionary vs. essential spending?"
+          }
+        },
+        {
+          "title": "Evaluate Strategies to Manage Inflation Effects on Household Finances",
+          "duration_minutes": 15,
+          "activity_preamble": "This activity develops your ability to critically evaluate financial strategies to mitigate inflation impacts using expert reasoning and guided prompts.",
+          "learner_task": "## Review the modelling note on managing inflation effects.\n\n- Use the prompt set to evaluate at least three different strategies households might use.\n- Consider pros, cons, and suitability for different household types.\n\nWrite a short evaluation report summarizing your judgments.",
+          "expected_output": "A written evaluation report that critically assesses multiple strategies with justifications based on the provided prompts and modelling note.",
+          "support_note": "Avoid one-size-fits-all conclusions; consider household diversity and context in your evaluation.",
+          "reasoning_orientation": "Apply critical thinking and decision-making criteria to assess strategy effectiveness.",
+          "materials": {
+            "prompt_set": "### Prompt Set: Evaluating Inflation Management Strategies\n\n1. What are the main advantages of this strategy in protecting household finances against inflation?  \n2. What potential risks or downsides could reduce the strategy’s effectiveness?  \n3. How feasible is this strategy for households with limited income or savings?  \n4. Does this strategy require active management or financial knowledge?  \n5. How might this strategy affect short-term versus long-term financial stability?  \n6. Is this strategy suitable for different household types (e.g., retirees, families with children, single earners)?",
+            "modelling_note": "### Modelling Note: Expert Reasoning on Inflation Management Strategies\n\nWhen evaluating strategies to manage inflation’s effects on household finances, consider the following expert reasoning steps:\n\n- **Effectiveness:** Does the strategy directly address inflation risks, such as by increasing income, reducing exposure to rising prices, or protecting savings? For example, investing in assets that typically outpace inflation can preserve wealth.\n\n- **Feasibility:** Assess whether the household has the resources and knowledge to implement the strategy. For instance, refinancing a mortgage may reduce fixed costs but requires good credit and timing.\n\n- **Risks:** Every strategy carries potential downsides. For example, investing in stocks may offer inflation protection but exposes households to market volatility.\n\n- **Suitability:** Different households have different needs. Retirees may prioritize preserving capital, while working families might focus on budgeting and income growth.\n\n- **Trade-offs:** Some strategies may improve inflation resilience but reduce liquidity or increase complexity. Balancing these trade-offs is crucial.\n\nBy systematically applying these criteria, households can make informed decisions tailored to their circumstances."
+          }
+        },
+        {
+          "title": "Consolidation: Summarize and Reflect on Inflation and Household Finance",
+          "duration_minutes": 10,
+          "activity_preamble": "This final activity helps you consolidate your learning by summarizing key concepts and reflecting on their relevance to your own financial context.",
+          "learner_task": "## Write a consolidation summary of this session.\n\n- Summarize at least three key ideas you have learned about inflation and its effects.\n- Reflect on how this knowledge might affect your personal or household financial decisions.\n\nUse the provided template and reflection prompts to guide your writing.",
+          "expected_output": "A written consolidation summary of at least 80 words covering key session ideas and personal reflection on inflation and household finance.",
+          "support_note": "Ensure your summary captures both conceptual understanding and personal application insights.",
+          "self_explanation_prompt": "How do the concepts of inflation and CPI influence your view of household financial planning?",
+          "transfer_or_application_task": "Consider your own or a hypothetical household’s situation when reflecting.",
+          "materials": {
+            "consolidation_summary": "### Consolidation Summary Template: Inflation and Household Finance\n\nIn this session, I learned three key ideas about inflation and its effects:\n\n1. **Inflation is the general rise in prices over time, which reduces the purchasing power of money.** Understanding this helps me see why prices for everyday goods and services increase.\n\n2. **The Consumer Price Index (CPI) is a tool used to measure inflation by tracking changes in the cost of a typical basket of goods.** This index helps explain how inflation rates are calculated and monitored.\n\n3. **Inflation impacts households by increasing living costs, which can reduce their ability to buy goods and services unless incomes keep pace.** Different expenses are affected differently, and some households are more vulnerable than others.\n\nReflecting on this, I realize that knowing how inflation works will help me make better financial decisions, such as budgeting more carefully, considering inflation when planning savings or investments, and evaluating strategies to protect my household’s finances against rising costs.",
+            "reflection_prompts": "### Reflection Prompts: Connecting Concepts and Personal Context\n\n1. How do the concepts of inflation and CPI influence your understanding of price changes in your daily life?  \n2. In what ways might inflation affect your household’s budget or financial goals?  \n3. What strategies discussed could you consider applying to manage inflation’s impact on your finances?  \n4. How might your personal or household situation affect which inflation management strategies are most suitable?  \n5. What new questions do you have about inflation and its effects after completing this session?"
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved all upstream activities and materials verbatim per LD-MATERIALS-COPY",
+    "Included substantive pre-activity context and learner framing per LD-SELF-DIRECTED-RHETORIC",
+    "Kept all numeric and text details intact, including mathematical notation with \\[...\\] delimiters",
+    "No activities omitted",
+    "No external content introduced",
+    "Visual affordances and activities_visual_review provided per Sprint 38 contract"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "The worked example and sample output provide clear stepwise inflation calculation and interpretation, supporting understanding but with limited visual complexity."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Scenario cards and checklist support analysis but lack a visual classification or comparison matrix to enhance reasoning."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Prompt sets and modelling notes support critical evaluation but no visual aids classify or compare strategies."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "low",
+        "rationale": "Consolidation activity is text-based reflection and summary; visual affordance value is limited."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A3-classification-01",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "rationale": "Classify scenarios by mechanism before the analysis table.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.",
+      "reasoning_supported": "Learners classify without completed classifications.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Empty labelled cause structures only.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "demand-pull inflation",
+        "cost-push inflation",
+        "wage-price spiral"
+      ],
+      "must_not_show": [
+        "scenario answer key",
+        "completed classification cells"
+      ],
+      "allowed_claims": [
+        "Different causal mechanisms can produce inflation."
+      ],
+      "disallowed_claims": [
+        "All inflation has one cause."
+      ],
+      "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium"
+    }
+  ],
+  "generation_notes": {
+    "activities_omitted": [],
+    "limitations": [],
+    "visual_affordance_validation": {
+      "valid": true,
+      "kept_count": 1,
+      "dropped_count": 0,
+      "errors": []
+    }
+  }
+}

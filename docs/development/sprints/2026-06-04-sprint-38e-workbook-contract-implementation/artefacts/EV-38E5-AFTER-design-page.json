@@ -1,0 +1,232 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation Self-Directed Learner Workbook",
+  "audience": "learner",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Overview and Learning Purpose",
+      "content": "This workbook is designed for self-directed learning about inflation and its impact on household finances. You will explore fundamental concepts such as inflation and the Consumer Price Index (CPI), analyze how inflation affects household budgeting, evaluate strategies to manage inflation-related financial challenges, and synthesize your learning into a personal inflation management plan. The activities are structured to build your understanding step-by-step and encourage reflection on practical applications."
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation.",
+        "Analyze the impact of inflation on household purchasing power and budgeting.",
+        "Evaluate strategies households can use to manage financial challenges during periods of inflation."
+      ]
+    },
+    {
+      "heading": "Study Tips for This Workbook",
+      "content": "Work through each activity in sequence to build your understanding progressively. Take your time to read the explanatory materials carefully, complete the tables and templates thoughtfully, and reflect deeply on the prompts provided. Use the reflection questions to connect concepts to your own financial context for meaningful learning. The final activity will help you consolidate your knowledge by creating a personalized plan."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Activity 1: Understanding Inflation and CPI Basics",
+          "duration_minutes": 15,
+          "learner_task": "Read the explanatory text on inflation and CPI. Use the classification table to identify and classify the types of inflation described. Summarize in your own words how CPI measures inflation and why it matters to the economy.",
+          "expected_output": "Completed classification table with correct inflation type assignments and a written summary explaining CPI's role and inflation's economic impact.",
+          "activity_preamble": "This activity introduces you to the fundamental concepts of inflation and the Consumer Price Index (CPI). You will classify inflation types and articulate CPI’s importance in measuring inflation.",
+          "reasoning_orientation": "Focus on understanding definitions and relationships between inflation types and CPI measurement.",
+          "materials": {
+            "explanatory_text": "## Understanding Inflation and the Consumer Price Index (CPI)\n\nInflation is the rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money. When inflation occurs, each unit of currency buys fewer goods and services than before, which affects consumers, businesses, and the overall economy. Inflation can result from various economic factors, including increased demand for products, rising production costs, or expectations of future price increases.\n\nThe Consumer Price Index (CPI) is a key economic indicator used to measure inflation. It tracks the average change over time in the prices paid by consumers for a basket of goods and services. This basket represents typical consumer purchases such as food, housing, clothing, transportation, and medical care. The CPI is calculated by comparing the current cost of this basket to the cost during a base period, producing an index number that reflects price changes.\n\nCPI plays a crucial role in economic policy and personal finance. Governments and central banks use CPI data to adjust interest rates, set inflation targets, and index social benefits like pensions. For households, understanding CPI helps in assessing how inflation affects their cost of living and purchasing power. By monitoring CPI, individuals and policymakers can make informed decisions to manage inflation’s impact on the economy and personal budgets.",
+            "classification_table": "| Inflation Type   | Definition                                                                 | Example                                                                                      | Learner Classification (Your Notes) |\n|------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------|\n| Demand-Pull      | Inflation caused by increased demand for goods and services exceeding supply.| When consumer spending rises rapidly, causing prices to increase due to high demand.         |                                     |\n| Cost-Push        | Inflation resulting from rising production costs, such as wages or raw materials.| An increase in oil prices raises transportation costs, leading to higher prices for many goods.|                                     |\n| Built-In         | Inflation that results from adaptive expectations, where workers demand higher wages to keep up with past inflation.| Businesses raise prices to cover higher wage costs, creating a wage-price spiral.             |                                     |"
+          }
+        },
+        {
+          "title": "Activity 2: Analyzing Inflation Impact on Household Budgeting",
+          "duration_minutes": 20,
+          "learner_task": "Study the provided household budget scenario. Use the analysis table to record how inflation affects each budget category and overall purchasing power. Respond to the reflection prompts considering how inflation pressures household financial decisions.",
+          "expected_output": "Completed analysis table showing inflation effects on budget categories and a written reflection addressing the prompts on financial impact and decision-making.",
+          "activity_preamble": "In this activity, you will apply your understanding of inflation to a realistic household budget scenario, analyzing how inflation changes purchasing power and affects budgeting decisions.",
+          "reasoning_orientation": "Apply conceptual knowledge to a practical scenario, interpreting quantitative changes and reflecting on financial implications.",
+          "self_explanation_prompt": "Explain how inflation changes the affordability of different budget items and what this means for household spending.",
+          "materials": {
+            "scenario": "## Household Budget Scenario: The Johnson Family\n\nThe Johnson family consists of two adults and two children living in a suburban area. Their monthly income is $5,000 after taxes. Their typical monthly expenses before inflation include:\n- Housing (rent/mortgage): $1,500\n- Food and groceries: $800\n- Transportation: $400\n- Utilities (electricity, water, internet): $300\n- Healthcare and insurance: $400\n- Entertainment and leisure: $300\n- Savings and miscellaneous: $300\n\nOver the past year, inflation has caused prices to rise by approximately 6% across most categories. For example, food prices have increased sharply due to supply chain disruptions, while housing costs have risen moderately. The Johnsons have noticed their expenses increasing, but their income has remained the same.\n\nThis scenario presents the Johnson family’s budget before and after inflation, highlighting the challenges they face in maintaining their standard of living.",
+            "analysis_table": "| Budget Category     | Pre-Inflation Cost ($) | Inflation Rate (%) | Post-Inflation Cost ($) | Change in Purchasing Power (Notes)             |\n|---------------------|-----------------------|--------------------|------------------------|------------------------------------------------|\n| Housing             | 1,500                 | 4                  |                        |                                                |\n| Food and groceries  | 800                   | 8                  |                        |                                                |\n| Transportation      | 400                   | 5                  |                        |                                                |\n| Utilities           | 300                   | 6                  |                        |                                                |\n| Healthcare/Insurance| 400                   | 7                  |                        |                                                |\n| Entertainment       | 300                   | 3                  |                        |                                                |\n| Savings/Miscellaneous| 300                  | 6                  |                        |                                                |",
+            "prompt_set": [
+              "How has inflation affected the affordability of each budget category for the Johnson family? Provide specific examples from the analysis table.",
+              "Considering the changes in costs, which budget categories might require the Johnsons to reduce spending or find alternatives? Explain your reasoning.",
+              "Reflect on how inflation pressures might influence the Johnson family’s financial decisions regarding savings and discretionary spending.",
+              "What strategies could the Johnson family consider to maintain their purchasing power in the face of rising prices?"
+            ]
+          }
+        },
+        {
+          "title": "Activity 3: Evaluating Household Strategies to Manage Inflation",
+          "duration_minutes": 20,
+          "learner_task": "Review the task cards describing different financial strategies. Use the provided template to rank these strategies in order of effectiveness for managing inflation impacts. Justify your rankings using the quality criteria and rubric prompts.",
+          "expected_output": "Completed ranking template with strategies ordered by effectiveness and written justifications for each ranking based on provided criteria.",
+          "activity_preamble": "This activity asks you to critically evaluate and rank various household strategies for managing financial challenges during inflation, justifying your decisions with clear criteria.",
+          "activity_interaction_type": "ranking",
+          "reasoning_orientation": "Engage in evaluative reasoning by comparing strategies and applying decision criteria to justify rankings.",
+          "transfer_or_application_task": "Consider your own or a hypothetical household context when ranking and justifying strategies.",
+          "materials": {
+            "task_cards": "**Task Card 1: Budget Adjustment**\n- Review and reduce discretionary spending such as entertainment and dining out.\n- Prioritize essential expenses and look for cheaper alternatives.\n- Pros: Immediate savings, easy to implement.\n- Cons: May reduce quality of life and leisure activities.\n\n**Task Card 2: Income Diversification**\n- Seek additional sources of income such as part-time jobs or freelance work.\n- Pros: Increases total household income, offsets inflation impact.\n- Cons: Requires time and effort, may increase stress or reduce leisure time.\n\n**Task Card 3: Bulk Buying and Stockpiling**\n- Purchase non-perishable goods in bulk to avoid frequent price increases.\n- Pros: Saves money on unit costs, reduces shopping frequency.\n- Cons: Requires upfront cash, storage space, risk of waste if not used timely.\n\n**Task Card 4: Energy and Utility Savings**\n- Implement energy-saving measures to reduce utility bills (e.g., LED bulbs, thermostat adjustments).\n- Pros: Lowers recurring expenses, environmentally friendly.\n- Cons: Initial investment may be needed, savings accumulate over time.",
+            "template": "| Strategy                 | Effectiveness Ranking (1 = Most Effective) | Justification for Ranking                                                   |\n|--------------------------|--------------------------------------------|---------------------------------------------------------------------------|\n| Budget Adjustment        |                                            |                                                                           |\n| Income Diversification   |                                            |                                                                           |\n| Bulk Buying and Stockpiling |                                         |                                                                           |\n| Energy and Utility Savings|                                            |                                                                           |",
+            "prompt_set": [
+              "Consider the **feasibility** of each strategy for a typical household. Is it easy or difficult to implement?",
+              "Evaluate the **financial impact**: How much can the strategy realistically save or earn?",
+              "Assess the **long-term sustainability**: Can the strategy be maintained over time without causing undue stress or hardship?",
+              "Reflect on the **trade-offs** involved: Does the strategy require sacrifices in lifestyle, time, or comfort?",
+              "Use these criteria to justify your rankings in the evaluation template."
+            ]
+          },
+          "ordering": {
+            "canonical_order": [],
+            "learner_display_order": [],
+            "learner_display_order_strategy": "",
+            "shuffle_seed_key": ""
+          },
+          "render_hints": {
+            "suppress_instruction_list_when_task_cards_present": false,
+            "keep_instruction_summary_above_cards": true
+          }
+        },
+        {
+          "title": "Activity 4: Capstone: Personal Inflation Management Plan",
+          "duration_minutes": 10,
+          "learner_task": "Using the provided template, create a plan that explains inflation, describes its impact on your household budget, and outlines strategies you will use to manage inflation-related financial challenges. Reflect on your learning journey and summarize key insights using the reflection prompts.",
+          "expected_output": "Completed personal inflation management plan document integrating conceptual understanding, budget impact analysis, and strategy evaluation, plus a reflective summary of learning.",
+          "activity_preamble": "This capstone activity asks you to synthesize your learning into a practical, personalized plan for managing inflation’s effects on your household finances, concluding with a reflection on your learning.",
+          "transfer_or_application_task": "Apply concepts and strategies to your own financial context to create a meaningful, actionable plan.",
+          "reasoning_orientation": "Synthesize knowledge across multiple outcomes to produce an integrative and personalized artefact.",
+          "materials": {
+            "template": "## Personal Inflation Management Plan Template\n\n**1. Explanation of Inflation:**\nWrite a brief description of what inflation is and how it affects the economy and your household finances.\n\n**2. Impact on Your Household Budget:**\nDescribe how inflation has affected or could affect your income, expenses, and purchasing power. Include specific budget categories if possible.\n\n**3. Strategies to Manage Inflation:**\nList and explain at least three strategies you plan to use to manage inflation’s impact on your household budget. Consider effectiveness, feasibility, and sustainability.\n\n| Strategy                  | Reason for Choice                              | Expected Benefit                              |\n|---------------------------|-----------------------------------------------|-----------------------------------------------|\n|                           |                                               |                                               |\n|                           |                                               |                                               |\n|                           |                                               |                                               |\n\n**4. Reflection on Learning:**\nSummarize the key insights you have gained from this learning session about inflation and household financial management.",
+            "prompt_set": [
+              "What is the most important thing you learned about how inflation affects your household budget?",
+              "Which strategy do you feel most confident about using, and why?",
+              "How will your personal inflation management plan help you make better financial decisions in the future?",
+              "Reflect on any challenges you anticipate in implementing your plan and how you might overcome them."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "heading": "Consolidation and Reflection",
+      "content": "The final activity requires you to synthesize your understanding into a personal inflation management plan and reflect on your key takeaways. This consolidation step helps you integrate the concepts, analysis, and strategies you have explored, making your learning practical and actionable."
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "page_profile=learner",
+    "apply pack DLA-WB and GAM-WB contracts",
+    "include all upstream activities with full materials",
+    "preserve tables verbatim in materials",
+    "include self-directed rhetoric (overview, purpose, study tips)",
+    "no redesign of pedagogy",
+    "no omission of activities",
+    "include reflection prompts where provided",
+    "preserve activity order and timing"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "The classification table with inflation types supports learners in categorizing causes of inflation, aiding conceptual understanding.",
+        "value": "high"
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "defer",
+        "rationale": "The detailed household budget scenario and analysis table are best engaged with directly before any visual summary is introduced.",
+        "value": "medium"
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "A classification matrix or ranking visual would support evaluative reasoning by clarifying strategy comparisons and criteria.",
+        "value": "high"
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "reject",
+        "rationale": "The capstone activity is integrative and reflective; a visual summary would duplicate the detailed template and reflection prompts.",
+        "value": "low"
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A1-classification-01",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "rationale": "Classify inflation types by cause to support conceptual clarity and decision criteria before completing the classification table.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing inflation scenarios, supporting learner classification without revealing answers.",
+      "reasoning_supported": "Learners classify inflation types based on cause-effect relationships.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Empty labelled cause structures only.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "demand-pull inflation",
+        "cost-push inflation",
+        "wage-price spiral"
+      ],
+      "must_not_show": [
+        "scenario answer key",
+        "completed classification cells"
+      ],
+      "allowed_claims": [
+        "Different causal mechanisms can produce inflation."
+      ],
+      "disallowed_claims": [
+        "All inflation has one cause."
+      ],
+      "source_basis": "A1 learner_task; A1 materials.classification_table",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium"
+    }
+  ],
+  "generation_notes": {
+    "activities_omitted": [],
+    "limitations": [
+      "[PRISM visual affordance] Dropped invalid affordance va-A3-ranking-01: visual_affordances[1]: learner_stage must be pre_classification | post_reasoning"
+    ],
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 1,
+      "dropped_count": 0,
+      "errors": [
+        "activities_visual_review[0]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[1]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[2]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[3]: activity_visual_value.decision must be high | medium | low | none"
+      ]
+    }
+  },
+  "metadata": {
+    "sequencing_interaction_metadata_rows": 1
+  }
+}

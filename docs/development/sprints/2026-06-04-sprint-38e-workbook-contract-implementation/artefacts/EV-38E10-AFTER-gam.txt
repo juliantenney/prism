@@ -1,0 +1,183 @@
+Activity: Study Worked Example: Understanding Inflation and CPI  
+Activity ID: A1  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy., Explain the Consumer Price Index (CPI) and its role in measuring inflation.
+
+Material: M1 (worked_example)  
+Purpose: Demonstrate calculation and interpretation of inflation using CPI data  
+Content:  
+### Worked Example: Calculating Inflation Rate Using CPI Data
+
+**Step 1: Understand the CPI values**  
+Suppose the Consumer Price Index (CPI) was 240 in Year 1 and increased to 252 in Year 2. The CPI measures the average price level of a basket of goods and services in the economy.
+
+**Step 2: Calculate the inflation rate**  
+The inflation rate is the percentage change in CPI from one year to the next. Use the formula:
+
+\[
+\text{Inflation Rate} = \frac{\text{CPI in Year 2} - \text{CPI in Year 1}}{\text{CPI in Year 1}} \times 100
+\]
+
+Substitute the values:
+
+\[
+\frac{252 - 240}{240} \times 100 = \frac{12}{240} \times 100 = 5\%
+\]
+
+So, the inflation rate from Year 1 to Year 2 is 5%.
+
+**Step 3: Interpret the result**  
+A 5% inflation rate means that, on average, prices for goods and services increased by 5% over the year. This affects the purchasing power of money — consumers need more money to buy the same goods as before.
+
+---
+
+Material: M2 (sample_output)  
+Purpose: Show completed example of inflation calculation and economic impact summary  
+Content:  
+### Sample Output: Inflation Calculation and Economic Impact Summary
+
+**Inflation Calculation:**  
+Using the CPI values provided (240 in Year 1 and 252 in Year 2), the inflation rate was calculated as 5%. This means prices increased by 5% over the year.
+
+**Economic Implications:**  
+- **Purchasing Power:** A 5% inflation rate reduces the purchasing power of consumers, meaning their money buys less than before.  
+- **Cost of Living:** Households may face higher costs for essentials such as food, housing, and transportation.  
+- **Wage Adjustments:** Workers may seek higher wages to keep up with rising prices, potentially leading to wage-price spirals.  
+- **Monetary Policy:** Central banks monitor inflation to adjust interest rates and maintain price stability.  
+
+Understanding how inflation is calculated using CPI helps explain these economic effects and informs policy decisions.
+
+---
+
+Material: M3 (text)  
+Purpose: Explanatory teaching on inflation and CPI concepts  
+Content:  
+### Understanding Inflation and the Consumer Price Index (CPI)
+
+Inflation is the general increase in prices of goods and services over time, which leads to a decrease in the purchasing power of money. When inflation occurs, each unit of currency buys fewer goods and services than before.
+
+The Consumer Price Index (CPI) is a key economic indicator used to measure inflation. It tracks the price changes of a fixed basket of goods and services commonly purchased by households. The CPI is calculated by comparing the cost of this basket in the current period to the cost in a base period.
+
+CPI is important because it provides a standardized way to quantify inflation, helping governments, businesses, and consumers understand how prices are changing. It influences decisions such as wage negotiations, pension adjustments, and monetary policy.
+
+By monitoring CPI changes, we can distinguish between nominal price changes (which may be due to individual product factors) and broad inflation affecting the entire economy.
+
+---
+
+Activity: Practice: Analyze Inflation Impact on Household Purchasing Power  
+Activity ID: A2  
+Mapped outcomes: Analyze the impact of inflation on household purchasing power and living costs.
+
+Material: M4 (task_cards)  
+Purpose: Provide scenarios of households facing different inflation rates and living cost changes  
+Content:  
+### Task Cards: Household Inflation Scenarios
+
+**Card 1: The Smith Family**  
+- Annual income: $50,000  
+- Inflation rate: 4%  
+- Major expenses: Food (+5%), Rent (+3%), Utilities (+2%)  
+- Question: How does inflation affect the Smith family’s purchasing power? Which expenses impact them most?
+
+---
+
+**Card 2: The Lee Household**  
+- Annual income: $75,000 (fixed)  
+- Inflation rate: 6%  
+- Major expenses: Transportation (+8%), Healthcare (+4%), Education (+3%)  
+- Question: Analyze the effect of inflation on the Lee household’s living costs and identify vulnerable expense areas.
+
+---
+
+**Card 3: The Patel Household**  
+- Annual income: $40,000 (increased by 2%)  
+- Inflation rate: 5%  
+- Major expenses: Food (+6%), Rent (+7%), Entertainment (+3%)  
+- Question: Considering income growth, evaluate the net impact of inflation on the Patel household’s purchasing power.
+
+---
+
+Material: M5 (checklist)  
+Purpose: Guide analysis of inflation impact on purchasing power  
+Content:  
+### Checklist: Analyzing Inflation Impact on Household Purchasing Power
+
+- [ ] Have you identified the inflation rate affecting the household?  
+- [ ] Did you compare income changes against inflation rate?  
+- [ ] Have you listed major expenses and their inflation rates?  
+- [ ] Did you determine which expenses increased the most?  
+- [ ] Have you assessed whether income growth offsets rising costs?  
+- [ ] Did you summarize the overall impact on purchasing power?  
+- [ ] Have you considered how inflation affects discretionary vs. essential spending?
+
+---
+
+Activity: Evaluate Strategies to Manage Inflation Effects on Household Finances  
+Activity ID: A3  
+Mapped outcomes: Evaluate strategies households can use to manage the effects of inflation on their finances.
+
+Material: M6 (prompt_set)  
+Purpose: Provide prompts to guide evaluation of different financial strategies  
+Content:  
+### Prompt Set: Evaluating Inflation Management Strategies
+
+1. What are the main advantages of this strategy in protecting household finances against inflation?  
+2. What potential risks or downsides could reduce the strategy’s effectiveness?  
+3. How feasible is this strategy for households with limited income or savings?  
+4. Does this strategy require active management or financial knowledge?  
+5. How might this strategy affect short-term versus long-term financial stability?  
+6. Is this strategy suitable for different household types (e.g., retirees, families with children, single earners)?  
+
+---
+
+Material: M7 (modelling_note)  
+Purpose: Think-aloud expert reasoning on selecting and evaluating inflation management strategies  
+Content:  
+### Modelling Note: Expert Reasoning on Inflation Management Strategies
+
+When evaluating strategies to manage inflation’s effects on household finances, consider the following expert reasoning steps:
+
+- **Effectiveness:** Does the strategy directly address inflation risks, such as by increasing income, reducing exposure to rising prices, or protecting savings? For example, investing in assets that typically outpace inflation can preserve wealth.
+
+- **Feasibility:** Assess whether the household has the resources and knowledge to implement the strategy. For instance, refinancing a mortgage may reduce fixed costs but requires good credit and timing.
+
+- **Risks:** Every strategy carries potential downsides. For example, investing in stocks may offer inflation protection but exposes households to market volatility.
+
+- **Suitability:** Different households have different needs. Retirees may prioritize preserving capital, while working families might focus on budgeting and income growth.
+
+- **Trade-offs:** Some strategies may improve inflation resilience but reduce liquidity or increase complexity. Balancing these trade-offs is crucial.
+
+By systematically applying these criteria, households can make informed decisions tailored to their circumstances.
+
+---
+
+Activity: Consolidation: Summarize and Reflect on Inflation and Household Finance  
+Activity ID: A4  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy., Explain the Consumer Price Index (CPI) and its role in measuring inflation., Analyze the impact of inflation on household purchasing power and living costs., Evaluate strategies households can use to manage the effects of inflation on their finances.
+
+Material: M8 (consolidation_summary)  
+Purpose: Guide learner to produce a session closure summary and reflection  
+Content:  
+### Consolidation Summary Template: Inflation and Household Finance
+
+In this session, I learned three key ideas about inflation and its effects:
+
+1. **Inflation is the general rise in prices over time, which reduces the purchasing power of money.** Understanding this helps me see why prices for everyday goods and services increase.
+
+2. **The Consumer Price Index (CPI) is a tool used to measure inflation by tracking changes in the cost of a typical basket of goods.** This index helps explain how inflation rates are calculated and monitored.
+
+3. **Inflation impacts households by increasing living costs, which can reduce their ability to buy goods and services unless incomes keep pace.** Different expenses are affected differently, and some households are more vulnerable than others.
+
+Reflecting on this, I realize that knowing how inflation works will help me make better financial decisions, such as budgeting more carefully, considering inflation when planning savings or investments, and evaluating strategies to protect my household’s finances against rising costs.
+
+---
+
+Material: M9 (prompt_set)  
+Purpose: Reflection prompts to support consolidation  
+Content:  
+### Reflection Prompts: Connecting Concepts and Personal Context
+
+1. How do the concepts of inflation and CPI influence your understanding of price changes in your daily life?  
+2. In what ways might inflation affect your household’s budget or financial goals?  
+3. What strategies discussed could you consider applying to manage inflation’s impact on your finances?  
+4. How might your personal or household situation affect which inflation management strategies are most suitable?  
+5. What new questions do you have about inflation and its effects after completing this session?

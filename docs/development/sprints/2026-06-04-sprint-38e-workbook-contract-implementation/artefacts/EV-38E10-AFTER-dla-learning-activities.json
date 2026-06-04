@@ -1,0 +1,151 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Study Worked Example: Understanding Inflation and CPI",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Demonstrate calculation and interpretation of inflation using CPI data",
+          "specification": "Step-by-step calculation of inflation rate from CPI values over two years with explanations"
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Show completed example of inflation calculation and economic impact summary",
+          "specification": "Completed inflation calculation with commentary on economic implications"
+        },
+        {
+          "material_id": "M3",
+          "type": "text",
+          "purpose": "Explanatory teaching on inflation and CPI concepts",
+          "specification": "Clear exposition on what inflation is, how CPI is constructed, and why it matters"
+        }
+      ],
+      "learner_task": "## Study the worked example and sample output carefully.\n\n- Understand how inflation is calculated using CPI data.\n- Note the economic implications explained in the sample output.\n\nThen, answer the following:\n\n1. Define inflation in your own words.\n2. Explain the role of CPI in measuring inflation.",
+      "expected_output": "Written definitions and explanations demonstrating understanding of inflation and CPI, referencing the worked example and sample output.",
+      "activity_preamble": "This activity introduces the fundamental concepts of inflation and the Consumer Price Index (CPI). You will study a detailed worked example and a sample output to build a solid foundation before applying these concepts.",
+      "support_note": "Focus on the relationship between CPI changes and inflation rates to avoid confusing nominal price changes with inflation.",
+      "prior_knowledge_activation": "Recall any previous knowledge about price changes or economic indicators you have encountered."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Practice: Analyze Inflation Impact on Household Purchasing Power",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the impact of inflation on household purchasing power and living costs."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "task_cards",
+          "purpose": "Provide scenarios of households facing different inflation rates and living cost changes",
+          "specification": "Multiple household scenarios with income, expenditure, and inflation data"
+        },
+        {
+          "material_id": "M5",
+          "type": "checklist",
+          "purpose": "Guide analysis of inflation impact on purchasing power",
+          "specification": "Checklist of factors to consider such as income changes, price increases, and cost of living"
+        }
+      ],
+      "learner_task": "## For each household scenario:\n\n- Use the provided data to analyze how inflation affects their purchasing power.\n- Identify which expenses are most impacted by inflation.\n- Complete the checklist to ensure thorough analysis.\n\nSummarize your findings for each scenario.",
+      "expected_output": "Completed analysis notes and checklist for each scenario, with clear identification of inflation impacts on household purchasing power and living costs.",
+      "activity_preamble": "This activity helps you apply your understanding of inflation to real-life household scenarios. You will analyze how inflation changes affect different aspects of household finances.",
+      "support_note": "Consider both income and expenditure changes when analyzing purchasing power to avoid partial conclusions.",
+      "reasoning_orientation": "Focus on cause-effect relationships between inflation and household economic conditions."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Evaluate Strategies to Manage Inflation Effects on Household Finances",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Evaluate strategies households can use to manage the effects of inflation on their finances."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M6",
+          "type": "prompt_set",
+          "purpose": "Provide prompts to guide evaluation of different financial strategies",
+          "specification": "Questions and criteria for assessing effectiveness, feasibility, and risks of strategies"
+        },
+        {
+          "material_id": "M7",
+          "type": "modelling_note",
+          "purpose": "Think-aloud expert reasoning on selecting and evaluating inflation management strategies",
+          "specification": "Expert commentary on decision criteria and trade-offs"
+        }
+      ],
+      "learner_task": "## Review the modelling note on managing inflation effects.\n\n- Use the prompt set to evaluate at least three different strategies households might use.\n- Consider pros, cons, and suitability for different household types.\n\nWrite a short evaluation report summarizing your judgments.",
+      "expected_output": "A written evaluation report that critically assesses multiple strategies with justifications based on the provided prompts and modelling note.",
+      "activity_preamble": "This activity develops your ability to critically evaluate financial strategies to mitigate inflation impacts using expert reasoning and guided prompts.",
+      "support_note": "Avoid one-size-fits-all conclusions; consider household diversity and context in your evaluation.",
+      "reasoning_orientation": "Apply critical thinking and decision-making criteria to assess strategy effectiveness."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Consolidation: Summarize and Reflect on Inflation and Household Finance",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation.",
+        "Analyze the impact of inflation on household purchasing power and living costs.",
+        "Evaluate strategies households can use to manage the effects of inflation on their finances."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M8",
+          "type": "consolidation_summary",
+          "purpose": "Guide learner to produce a session closure summary and reflection",
+          "specification": "Template requiring ≥80 words summarizing ≥3 key ideas learned, with reflection prompts"
+        },
+        {
+          "material_id": "M9",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts to support consolidation",
+          "specification": "Questions encouraging learner to connect concepts and personal context"
+        }
+      ],
+      "learner_task": "## Write a consolidation summary of this session.\n\n- Summarize at least three key ideas you have learned about inflation and its effects.\n- Reflect on how this knowledge might affect your personal or household financial decisions.\n\nUse the provided template and reflection prompts to guide your writing.",
+      "expected_output": "A written consolidation summary of at least 80 words covering key session ideas and personal reflection on inflation and household finance.",
+      "activity_preamble": "This final activity helps you consolidate your learning by summarizing key concepts and reflecting on their relevance to your own financial context.",
+      "support_note": "Ensure your summary captures both conceptual understanding and personal application insights.",
+      "self_explanation_prompt": "How do the concepts of inflation and CPI influence your view of household financial planning?",
+      "transfer_or_application_task": "Consider your own or a hypothetical household’s situation when reflecting."
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "Understand the concept of inflation and how it affects the overall economy.",
+      "Explain the Consumer Price Index (CPI) and its role in measuring inflation."
+    ],
+    "A2": [
+      "Analyze the impact of inflation on household purchasing power and living costs."
+    ],
+    "A3": [
+      "Evaluate strategies households can use to manage the effects of inflation on their finances."
+    ],
+    "A4": [
+      "Understand the concept of inflation and how it affects the overall economy.",
+      "Explain the Consumer Price Index (CPI) and its role in measuring inflation.",
+      "Analyze the impact of inflation on household purchasing power and living costs.",
+      "Evaluate strategies households can use to manage the effects of inflation on their finances."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "The final activity includes a consolidation summary requiring the learner to write at least 80 words summarizing three key ideas and reflecting on their personal context.",
+    "workbook_contract_applied": true
+  }
+}

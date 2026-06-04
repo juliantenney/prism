@@ -1,0 +1,108 @@
+{
+  "activities": [
+    {
+      "activity_id": "inflation_wb_01",
+      "title": "Studying Inflation Concepts with Worked Example",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and its causes in the economy.",
+        "Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_we1",
+          "type": "worked_example",
+          "purpose": "Demonstrate calculation of inflation rate using CPI data",
+          "specification": "Step-by-step inflation rate calculation with CPI values for two consecutive years"
+        },
+        {
+          "material_id": "inflation_wb_so1",
+          "type": "sample_output",
+          "purpose": "Show completed worked example with inflation rate and interpretation",
+          "specification": "Completed inflation calculation and explanation of CPI meaning"
+        },
+        {
+          "material_id": "inflation_wb_text1",
+          "type": "text",
+          "purpose": "Explanatory teaching on inflation concepts and CPI",
+          "specification": "Clear explanation of inflation causes and CPI as cost of living measure"
+        }
+      ],
+      "learner_task": "## Study the worked example and sample output carefully.\n\n- Understand how inflation is calculated using CPI data.\n- Note the causes of inflation explained in the text.\n\nThen, answer questions about how inflation affects the economy and how CPI measures cost of living changes.",
+      "expected_output": "Written answers demonstrating understanding of inflation concept, causes, and CPI measurement based on the worked example and explanatory text.",
+      "activity_preamble": "This activity introduces you to the concept of inflation and the Consumer Price Index (CPI). You will study a worked example that shows how inflation is calculated and review explanatory text to build foundational knowledge."
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "title": "Analyzing Inflation Impact with Household Scenarios and Analysis Table",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the impact of inflation on household budgets and purchasing power."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_scen1",
+          "type": "scenario",
+          "purpose": "Present two household cases with different income levels and expenditure patterns",
+          "specification": "≥2 cases named households with income, spending categories, and inflation effects"
+        },
+        {
+          "material_id": "inflation_wb_analysis_table1",
+          "type": "analysis_table",
+          "purpose": "Table for learners to analyze inflation impact on household budgets",
+          "specification": "Columns for expenditure categories, inflation rate, budget impact, and notes for learner analysis"
+        }
+      ],
+      "learner_task": "### Using the provided household scenarios and analysis table:\n\n1. Review the two household cases and their spending patterns.\n2. Complete the analysis table by estimating how inflation affects each expenditure category for both households.\n3. Write notes explaining the differences in inflation impact between the households.",
+      "expected_output": "Completed analysis table with inflation impact estimates and written notes comparing effects on the two households.",
+      "activity_preamble": "This activity helps you apply your understanding of inflation by analyzing its effects on different household budgets using realistic scenarios and a structured analysis table.",
+      "activity_interaction_type": "practice"
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "title": "Consolidation Summary and Reflection on Inflation Management",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and its causes in the economy.",
+        "Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living.",
+        "Analyze the impact of inflation on household budgets and purchasing power.",
+        "Evaluate strategies households can use to manage the effects of inflation."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_consolidation1",
+          "type": "consolidation_summary",
+          "purpose": "Template and guidance for summarizing key learning points and reflections",
+          "specification": "Includes prompts to summarize 3+ key ideas and reflect on managing inflation effects"
+        }
+      ],
+      "learner_task": "### Write a consolidation summary of your learning session.\n\n- Summarize at least three key ideas you have learned about inflation, CPI, and its impact on households.\n- Reflect on strategies households can use to manage inflation effects.\n- Your summary should be at least 80 words.",
+      "expected_output": "A written consolidation summary of ≥80 words that synthesizes key concepts and personal reflections on managing inflation.",
+      "activity_preamble": "To complete your workbook, consolidate your learning by summarizing the main ideas and reflecting on practical strategies households can use to cope with inflation."
+    }
+  ],
+  "outcome_alignment": {
+    "inflation_wb_01": [
+      "Understand the concept of inflation and its causes in the economy.",
+      "Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living."
+    ],
+    "inflation_wb_02": [
+      "Analyze the impact of inflation on household budgets and purchasing power."
+    ],
+    "inflation_wb_03": [
+      "Understand the concept of inflation and its causes in the economy.",
+      "Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living.",
+      "Analyze the impact of inflation on household budgets and purchasing power.",
+      "Evaluate strategies households can use to manage the effects of inflation."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity must include a consolidation summary with at least 80 words and 3 key ideas about inflation and household strategies.",
+    "workbook_contract_applied": true
+  }
+}

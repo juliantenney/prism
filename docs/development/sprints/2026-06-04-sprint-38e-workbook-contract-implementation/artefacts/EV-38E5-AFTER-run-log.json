@@ -1,0 +1,147 @@
+{
+  "capturedAt": "2026-06-04T14:47:19.532Z",
+  "sprint": "38-E",
+  "runId": "EV-38E5-AFTER",
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household scenarios, and policy communication for first-year economics.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "promptChars": {
+    "dla": 10145,
+    "gam": 10090,
+    "design_page": 20555
+  },
+  "dlaScore": {
+    "activityCount": 4,
+    "durationSum": 65,
+    "uniqueTypes": [
+      "text",
+      "classification_table",
+      "scenario",
+      "analysis_table",
+      "prompt_set",
+      "task_cards",
+      "template"
+    ],
+    "tableOnlySpec": false,
+    "hasNonTable": true,
+    "delivery_notes": {
+      "resource_intent": "self_study_workbook",
+      "session_duration_target_minutes": 65,
+      "consolidation_requirement": "The final activity requires learners to synthesize their understanding into a personal inflation management plan and reflect on key takeaways from the session.",
+      "workbook_contract_applied": true
+    }
+  },
+  "gam": {
+    "materialCount": 10,
+    "uniqueTypes": [
+      "text",
+      "classification_table",
+      "scenario",
+      "analysis_table",
+      "prompt_set",
+      "task_cards",
+      "template"
+    ],
+    "typeFamilies": [
+      "narrative",
+      "table",
+      "structured_practice"
+    ],
+    "tableOnly": false,
+    "hasConsolidation": false,
+    "hasScenario": true,
+    "hasSampleOutput": false,
+    "hasTaskCards": true,
+    "hasChecklist": false,
+    "hasPromptSet": true,
+    "hasText": true,
+    "hasTransfer": false
+  },
+  "preservation": {
+    "B4_01": false,
+    "B4_02": false,
+    "tablePipeOkCount": 0
+  },
+  "renderFlags": {
+    "hasSemanticTable": false,
+    "hasCsvTable": false
+  },
+  "materials": [
+    {
+      "activity_id": "A1",
+      "material_id": "M1",
+      "type": "text",
+      "contentLen": 1447,
+      "contentPreview": "## Understanding Inflation and the Consumer Price Index (CPI) Inflation is the rate at which the general level of pri"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M2",
+      "type": "classification_table",
+      "contentLen": 1207,
+      "contentPreview": "| Inflation Type | Definition | Example "
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M3",
+      "type": "scenario",
+      "contentLen": 965,
+      "contentPreview": "## Household Budget Scenario: The Johnson Family The Johnson family consists of two adults and two children living in"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M4",
+      "type": "analysis_table",
+      "contentLen": 1288,
+      "contentPreview": "| Budget Category | Pre-Inflation Cost ($) | Inflation Rate (%) | Post-Inflation Cost ($) | Change in Purchasing Pow"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M5",
+      "type": "prompt_set",
+      "contentLen": 564,
+      "contentPreview": "1. How has inflation affected the affordability of each budget category for the Johnson family? Provide specific example"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M6",
+      "type": "task_cards",
+      "contentLen": 1122,
+      "contentPreview": "**Task Card 1: Budget Adjustment** - Review and reduce discretionary spending such as entertainment and dining out. "
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M7",
+      "type": "template",
+      "contentLen": 902,
+      "contentPreview": "| Strategy | Effectiveness Ranking (1 = Most Effective) | Justification for Ranking "
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M8",
+      "type": "prompt_set",
+      "contentLen": 522,
+      "contentPreview": "1. Consider the **feasibility** of each strategy for a typical household. Is it easy or difficult to implement? 2. Eva"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M9",
+      "type": "template",
+      "contentLen": 1386,
+      "contentPreview": "## Personal Inflation Management Plan Template **1. Explanation of Inflation:** Write a brief description of what i"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M10",
+      "type": "prompt_set",
+      "contentLen": 389,
+      "contentPreview": "1. What is the most important thing you learned about how inflation affects your household budget? 2. Which strategy d"
+    }
+  ]
+}

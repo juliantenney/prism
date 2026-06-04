@@ -1,0 +1,199 @@
+{
+  "artifact_type": "page",
+  "title": "Inflation Self-Directed Learner Workbook",
+  "audience": "learner",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Welcome to Your Inflation Workbook",
+      "content": "This workbook is designed for your self-directed study on inflation, its causes, measurement, and impact on households. You will engage with worked examples, real-life household scenarios, and reflective activities to build a solid understanding of inflation and how to manage its effects."
+    },
+    {
+      "heading": "Learning Purpose and Outcomes",
+      "content": "By completing this workbook, you will be able to:\n\n- Understand the concept of inflation and its causes in the economy.\n- Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living.\n- Analyze the impact of inflation on household budgets and purchasing power.\n- Evaluate strategies households can use to manage the effects of inflation."
+    },
+    {
+      "heading": "Study Tips",
+      "content": "Take your time to carefully study the worked examples and scenarios. Use the analysis table to organize your thoughts and calculations. Reflect thoughtfully in the consolidation summary to deepen your understanding and connect concepts to real-life decisions."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Studying Inflation Concepts with Worked Example",
+          "duration_minutes": 15,
+          "learner_task": "## Study the worked example and sample output carefully.\n\n- Understand how inflation is calculated using CPI data.\n- Note the causes of inflation explained in the text.\n\nThen, answer questions about how inflation affects the economy and how CPI measures cost of living changes.",
+          "expected_output": "Written answers demonstrating understanding of inflation concept, causes, and CPI measurement based on the worked example and explanatory text.",
+          "materials": {
+            "worked_example": "### Worked Example: Calculating Inflation Rate Using CPI Data\n\n**Step 1: Understand the Consumer Price Index (CPI)**\nThe CPI measures the average change over time in the prices paid by consumers for a market basket of goods and services. It is used to track changes in the cost of living.\n\n**Step 2: Identify CPI values for two consecutive years**\nSuppose the CPI was 240 in Year 1 and 252 in Year 2.\n\n**Step 3: Calculate the inflation rate**\nThe inflation rate is the percentage change in CPI from one year to the next. Use the formula:  \n\\[\n\\text{Inflation Rate} = \\frac{\\text{CPI}_{\\text{Year 2}} - \\text{CPI}_{\\text{Year 1}}}{\\text{CPI}_{\\text{Year 1}}} \\times 100\n\\]\n\nSubstitute the values:  \n\\[\n\\frac{252 - 240}{240} \\times 100 = \\frac{12}{240} \\times 100 = 5\\%\n\\]\n\n**Step 4: Interpret the result**\nAn inflation rate of 5% means that, on average, prices increased by 5% from Year 1 to Year 2. This indicates a rise in the cost of living.",
+            "sample_output": "### Sample Output: Inflation Rate Calculation and Interpretation\n\n- **Given:** CPI in Year 1 = 240, CPI in Year 2 = 252  \n- **Calculation:**  \n\\[\n\\frac{252 - 240}{240} \\times 100 = 5\\%\n\\]\n\n- **Interpretation:**  \nThe inflation rate of 5% indicates that prices for consumer goods and services increased by 5% over the year. This rise in prices means that the purchasing power of money has decreased, and consumers need more money to buy the same goods and services as before.\n\n- **Causes of Inflation (from explanatory text):**  \n  - Demand-pull inflation: When demand for goods and services exceeds supply.  \n  - Cost-push inflation: When production costs increase, causing producers to raise prices.  \n  - Built-in inflation: When workers demand higher wages, leading to higher costs and prices.",
+            "explanatory_text": "### Understanding Inflation and the Consumer Price Index (CPI)\n\nInflation is the general increase in prices of goods and services in an economy over time. It reduces the purchasing power of money, meaning consumers need more money to buy the same items. Inflation can be caused by several factors:\n\n- **Demand-pull inflation:** Occurs when consumer demand outpaces the economy’s ability to supply goods and services, pushing prices up.  \n- **Cost-push inflation:** Happens when the costs of production, such as wages or raw materials, increase, leading businesses to raise prices to maintain profits.  \n- **Built-in inflation:** Results from adaptive expectations where workers demand higher wages to keep up with rising living costs, which in turn increases production costs.\n\nThe Consumer Price Index (CPI) is a key economic indicator that measures inflation by tracking the average price changes of a fixed basket of goods and services over time. By comparing CPI values from different years, we can calculate the inflation rate, which shows how much prices have increased or decreased.\n\nUnderstanding inflation and CPI helps individuals and policymakers make informed decisions about spending, saving, and managing the economy."
+          }
+        },
+        {
+          "title": "Analyzing Inflation Impact with Household Scenarios and Analysis Table",
+          "duration_minutes": 20,
+          "learner_task": "### Using the provided household scenarios and analysis table:\n\n1. Review the two household cases and their spending patterns.\n2. Complete the analysis table by estimating how inflation affects each expenditure category for both households.\n3. Write notes explaining the differences in inflation impact between the households.",
+          "expected_output": "Completed analysis table with inflation impact estimates and written notes comparing effects on the two households.",
+          "materials": {
+            "scenarios": "### Household Scenarios: Inflation Impact Analysis\n\n**Household A: The Smith Family**  \n- Income: $50,000 per year  \n- Spending Categories:  \n  - Food: $8,000  \n  - Housing (rent/mortgage): $15,000  \n  - Transportation: $5,000  \n  - Utilities: $3,000  \n  - Healthcare: $2,000  \n  - Entertainment and others: $2,000  \n\n**Inflation Effects:** Food prices increased by 6%, housing costs rose by 3%, transportation costs increased by 4%, utilities by 5%, healthcare by 2%, and entertainment by 7%.\n\n---\n\n**Household B: The Lee Family**  \n- Income: $80,000 per year  \n- Spending Categories:  \n  - Food: $12,000  \n  - Housing (rent/mortgage): $20,000  \n  - Transportation: $8,000  \n  - Utilities: $4,000  \n  - Healthcare: $3,000  \n  - Entertainment and others: $5,000  \n\n**Inflation Effects:** Food prices increased by 6%, housing costs rose by 3%, transportation costs increased by 4%, utilities by 5%, healthcare by 2%, and entertainment by 7%.",
+            "analysis_table": "| Expenditure Category | Inflation Rate (%) | Household A Budget Impact ($) | Household B Budget Impact ($) | Notes (Learner Analysis)          |\n|---------------------|--------------------|------------------------------|------------------------------|----------------------------------|\n| Food                | 6                  |                              |                              |                                  |\n| Housing             | 3                  |                              |                              |                                  |\n| Transportation      | 4                  |                              |                              |                                  |\n| Utilities           | 5                  |                              |                              |                                  |\n| Healthcare          | 2                  |                              |                              |                                  |\n| Entertainment       | 7                  |                              |                              |                                  |"
+          },
+          "activity_interaction_type": "practice"
+        },
+        {
+          "title": "Consolidation Summary and Reflection on Inflation Management",
+          "duration_minutes": 20,
+          "learner_task": "### Write a consolidation summary of your learning session.\n\n- Summarize at least three key ideas you have learned about inflation, CPI, and its impact on households.\n- Reflect on strategies households can use to manage inflation effects.\n- Your summary should be at least 80 words.",
+          "expected_output": "A written consolidation summary of ≥80 words that synthesizes key concepts and personal reflections on managing inflation.",
+          "materials": {
+            "consolidation_summary": "### Consolidation Summary: Key Learning and Reflection on Inflation\n\nIn this session, you have learned several important ideas about inflation and its effects. First, inflation is the general rise in prices that reduces the purchasing power of money. It can be caused by demand-pull factors, cost-push pressures, and built-in wage-price spirals. Second, the Consumer Price Index (CPI) is a useful tool that measures changes in the cost of living by tracking the prices of a fixed basket of goods and services. Calculating inflation rates using CPI data helps us understand how much prices have increased over time. Third, inflation affects households differently depending on their income and spending patterns. For example, rising food and housing costs can have a larger impact on lower-income families who spend a greater proportion of their income on essentials.\n\nTo manage the effects of inflation, households can adopt strategies such as budgeting carefully, prioritizing essential expenses, seeking ways to increase income, and investing in assets that may keep pace with inflation. Understanding inflation empowers you to make better financial decisions and adapt to changing economic conditions."
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved all upstream learning activities and materials as provided",
+    "Included all required learner-facing content and instructions",
+    "Maintained full fidelity of tables and math notation",
+    "Complied with page_profile=learner and pack DLA-WB and GAM-WB requirements",
+    "No fabricated or unsupported content added"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "inflation_wb_01",
+      "activity_visual_value": {
+        "decision": "defer",
+        "rationale": "Worked example and explanatory text provide sufficient detailed stepwise instruction; defer additional visuals until after learner engagement."
+      }
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Classification matrix visual aids learners in comparing inflation impact across expenditure categories and households, supporting analysis and note-taking.",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing inflation impact by household and category, enhancing learner reasoning.",
+        "reasoning_supported": "Learners classify and compare inflation effects by category and household income.",
+        "learner_stage": "pre_classification",
+        "anti_spoiler": true,
+        "spoiler_boundary": {
+          "hide_answers": true,
+          "hide_classification_keys": true,
+          "hide_model_solution": true,
+          "allow_structural_hint": true
+        },
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Empty labelled cause structures only.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "Food",
+          "Housing",
+          "Transportation",
+          "Utilities",
+          "Healthcare",
+          "Entertainment"
+        ],
+        "must_not_show": [
+          "scenario answer key",
+          "completed classification cells"
+        ],
+        "allowed_claims": [
+          "Different inflation rates affect household budgets differently."
+        ],
+        "disallowed_claims": [
+          "All households are affected equally by inflation."
+        ],
+        "source_basis": "inflation_wb_02 learner_task; inflation_wb_02 materials.scenarios; inflation_wb_02 materials.analysis_table",
+        "caption_intent": "Cause-type cues only — not the learner table.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "activity_visual_value": {
+        "decision": "reject",
+        "rejection_reason": "debrief_without_new_reasoning",
+        "rationale": "Consolidation summary is a reflective writing task; no additional visual affordance needed."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-inflation_wb_02-classification-01",
+      "activity_id": "inflation_wb_02",
+      "visual_decision": "generate",
+      "rationale": "Classification matrix visual aids learners in comparing inflation impact across expenditure categories and households, supporting analysis and note-taking.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing inflation impact by household and category, enhancing learner reasoning.",
+      "reasoning_supported": "Learners classify and compare inflation effects by category and household income.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Empty labelled cause structures only.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "Food",
+        "Housing",
+        "Transportation",
+        "Utilities",
+        "Healthcare",
+        "Entertainment"
+      ],
+      "must_not_show": [
+        "scenario answer key",
+        "completed classification cells"
+      ],
+      "allowed_claims": [
+        "Different inflation rates affect household budgets differently."
+      ],
+      "disallowed_claims": [
+        "All households are affected equally by inflation."
+      ],
+      "source_basis": "inflation_wb_02 learner_task; inflation_wb_02 materials.scenarios; inflation_wb_02 materials.analysis_table",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium"
+    }
+  ],
+  "generation_notes": {
+    "activities_omitted": [],
+    "limitations": [],
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 1,
+      "dropped_count": 0,
+      "errors": [
+        "activities_visual_review[0]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[1]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[2]: activity_visual_value.decision must be high | medium | low | none"
+      ]
+    }
+  }
+}

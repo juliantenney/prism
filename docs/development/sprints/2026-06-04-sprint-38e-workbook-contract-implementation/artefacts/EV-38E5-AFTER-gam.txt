@@ -1,0 +1,161 @@
+Activity: Understanding Inflation and CPI Basics  
+Activity ID: A1  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy., Explain the Consumer Price Index (CPI) and its role in measuring inflation.
+
+Material: M1 (text)  
+Purpose: explanatory teaching / concept exposition  
+Content:  
+## Understanding Inflation and the Consumer Price Index (CPI)  
+
+Inflation is the rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money. When inflation occurs, each unit of currency buys fewer goods and services than before, which affects consumers, businesses, and the overall economy. Inflation can result from various economic factors, including increased demand for products, rising production costs, or expectations of future price increases.
+
+The Consumer Price Index (CPI) is a key economic indicator used to measure inflation. It tracks the average change over time in the prices paid by consumers for a basket of goods and services. This basket represents typical consumer purchases such as food, housing, clothing, transportation, and medical care. The CPI is calculated by comparing the current cost of this basket to the cost during a base period, producing an index number that reflects price changes.
+
+CPI plays a crucial role in economic policy and personal finance. Governments and central banks use CPI data to adjust interest rates, set inflation targets, and index social benefits like pensions. For households, understanding CPI helps in assessing how inflation affects their cost of living and purchasing power. By monitoring CPI, individuals and policymakers can make informed decisions to manage inflation’s impact on the economy and personal budgets.
+
+Material: M2 (classification_table)  
+Purpose: practice-oriented classification of inflation types  
+Content:  
+
+| Inflation Type   | Definition                                                                 | Example                                                                                      | Learner Classification (Your Notes) |
+|------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------|
+| Demand-Pull      | Inflation caused by increased demand for goods and services exceeding supply.| When consumer spending rises rapidly, causing prices to increase due to high demand.         |                                     |
+| Cost-Push        | Inflation resulting from rising production costs, such as wages or raw materials.| An increase in oil prices raises transportation costs, leading to higher prices for many goods.|                                     |
+| Built-In         | Inflation that results from adaptive expectations, where workers demand higher wages to keep up with past inflation.| Businesses raise prices to cover higher wage costs, creating a wage-price spiral.             |                                     |
+
+---
+
+Activity: Analyzing Inflation Impact on Household Budgeting  
+Activity ID: A2  
+Mapped outcomes: Analyze the impact of inflation on household purchasing power and budgeting.
+
+Material: M3 (scenario)  
+Purpose: practice-oriented household budgeting scenario  
+Content:  
+## Household Budget Scenario: The Johnson Family  
+
+The Johnson family consists of two adults and two children living in a suburban area. Their monthly income is $5,000 after taxes. Their typical monthly expenses before inflation include:  
+- Housing (rent/mortgage): $1,500  
+- Food and groceries: $800  
+- Transportation: $400  
+- Utilities (electricity, water, internet): $300  
+- Healthcare and insurance: $400  
+- Entertainment and leisure: $300  
+- Savings and miscellaneous: $300  
+
+Over the past year, inflation has caused prices to rise by approximately 6% across most categories. For example, food prices have increased sharply due to supply chain disruptions, while housing costs have risen moderately. The Johnsons have noticed their expenses increasing, but their income has remained the same.
+
+This scenario presents the Johnson family’s budget before and after inflation, highlighting the challenges they face in maintaining their standard of living.
+
+Material: M4 (analysis_table)  
+Purpose: practice-oriented analysis of inflation impact on budget categories  
+Content:  
+
+| Budget Category     | Pre-Inflation Cost ($) | Inflation Rate (%) | Post-Inflation Cost ($) | Change in Purchasing Power (Notes)             |
+|---------------------|-----------------------|--------------------|------------------------|------------------------------------------------|
+| Housing             | 1,500                 | 4                  |                        |                                                |
+| Food and groceries  | 800                   | 8                  |                        |                                                |
+| Transportation      | 400                   | 5                  |                        |                                                |
+| Utilities           | 300                   | 6                  |                        |                                                |
+| Healthcare/Insurance| 400                   | 7                  |                        |                                                |
+| Entertainment       | 300                   | 3                  |                        |                                                |
+| Savings/Miscellaneous| 300                  | 6                  |                        |                                                |
+
+Material: M5 (prompt_set)  
+Purpose: decision criteria and reflection prompts  
+Content:  
+1. How has inflation affected the affordability of each budget category for the Johnson family? Provide specific examples from the analysis table.  
+2. Considering the changes in costs, which budget categories might require the Johnsons to reduce spending or find alternatives? Explain your reasoning.  
+3. Reflect on how inflation pressures might influence the Johnson family’s financial decisions regarding savings and discretionary spending.  
+4. What strategies could the Johnson family consider to maintain their purchasing power in the face of rising prices?  
+
+---
+
+Activity: Evaluating Household Strategies to Manage Inflation  
+Activity ID: A3  
+Mapped outcomes: Evaluate strategies households can use to manage financial challenges during periods of inflation.
+
+Material: M6 (task_cards)  
+Purpose: practice-oriented evaluation of household financial strategies  
+Content:  
+
+**Task Card 1: Budget Adjustment**  
+- Review and reduce discretionary spending such as entertainment and dining out.  
+- Prioritize essential expenses and look for cheaper alternatives.  
+- Pros: Immediate savings, easy to implement.  
+- Cons: May reduce quality of life and leisure activities.
+
+**Task Card 2: Income Diversification**  
+- Seek additional sources of income such as part-time jobs or freelance work.  
+- Pros: Increases total household income, offsets inflation impact.  
+- Cons: Requires time and effort, may increase stress or reduce leisure time.
+
+**Task Card 3: Bulk Buying and Stockpiling**  
+- Purchase non-perishable goods in bulk to avoid frequent price increases.  
+- Pros: Saves money on unit costs, reduces shopping frequency.  
+- Cons: Requires upfront cash, storage space, risk of waste if not used timely.
+
+**Task Card 4: Energy and Utility Savings**  
+- Implement energy-saving measures to reduce utility bills (e.g., LED bulbs, thermostat adjustments).  
+- Pros: Lowers recurring expenses, environmentally friendly.  
+- Cons: Initial investment may be needed, savings accumulate over time.
+
+Material: M7 (template)  
+Purpose: strategy evaluation and ranking template  
+Content:  
+
+| Strategy                 | Effectiveness Ranking (1 = Most Effective) | Justification for Ranking                                                   |
+|--------------------------|--------------------------------------------|---------------------------------------------------------------------------|
+| Budget Adjustment        |                                            |                                                                           |
+| Income Diversification   |                                            |                                                                           |
+| Bulk Buying and Stockpiling |                                         |                                                                           |
+| Energy and Utility Savings|                                            |                                                                           |
+
+Material: M8 (prompt_set)  
+Purpose: quality criteria and justification rubric  
+Content:  
+1. Consider the **feasibility** of each strategy for a typical household. Is it easy or difficult to implement?  
+2. Evaluate the **financial impact**: How much can the strategy realistically save or earn?  
+3. Assess the **long-term sustainability**: Can the strategy be maintained over time without causing undue stress or hardship?  
+4. Reflect on the **trade-offs** involved: Does the strategy require sacrifices in lifestyle, time, or comfort?  
+Use these criteria to justify your rankings in the evaluation template.
+
+---
+
+Activity: Capstone: Personal Inflation Management Plan  
+Activity ID: A4  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy., Analyze the impact of inflation on household purchasing power and budgeting., Evaluate strategies households can use to manage financial challenges during periods of inflation.
+
+Material: M9 (template)  
+Purpose: integrative personal inflation management plan  
+Content:  
+
+## Personal Inflation Management Plan Template  
+
+**1. Explanation of Inflation:**  
+Write a brief description of what inflation is and how it affects the economy and your household finances.  
+
+**2. Impact on Your Household Budget:**  
+Describe how inflation has affected or could affect your income, expenses, and purchasing power. Include specific budget categories if possible.  
+
+**3. Strategies to Manage Inflation:**  
+List and explain at least three strategies you plan to use to manage inflation’s impact on your household budget. Consider effectiveness, feasibility, and sustainability.  
+
+| Strategy                  | Reason for Choice                              | Expected Benefit                              |
+|---------------------------|-----------------------------------------------|-----------------------------------------------|
+|                           |                                               |                                               |
+|                           |                                               |                                               |
+|                           |                                               |                                               |
+
+**4. Reflection on Learning:**  
+Summarize the key insights you have gained from this learning session about inflation and household financial management.  
+
+Material: M10 (prompt_set)  
+Purpose: reflection and consolidation prompts  
+Content:  
+1. What is the most important thing you learned about how inflation affects your household budget?  
+2. Which strategy do you feel most confident about using, and why?  
+3. How will your personal inflation management plan help you make better financial decisions in the future?  
+4. Reflect on any challenges you anticipate in implementing your plan and how you might overcome them.  
+
+---

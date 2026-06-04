@@ -1,0 +1,128 @@
+{
+  "capturedAt": "2026-06-04T15:30:18.760Z",
+  "sprint": "38-F",
+  "runId": "EV-38F-AFTER",
+  "phase": "38F-4",
+  "priorRuns": [
+    "NEG-EV-01",
+    "EV-38E5-AFTER",
+    "EV-38E10-AFTER"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household scenarios, and policy communication for first-year economics.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "promptChars": {
+    "dla": 13676,
+    "gam": 13966,
+    "design_page": 20555
+  },
+  "dlaScore": {
+    "activityCount": 3,
+    "durationSum": 55,
+    "uniqueTypes": [
+      "worked_example",
+      "sample_output",
+      "text",
+      "scenario",
+      "analysis_table",
+      "consolidation_summary"
+    ],
+    "tableOnlySpec": false,
+    "hasTableSpec": true,
+    "hasScenarioSpec": true,
+    "hasWorkedExampleSpec": true,
+    "hasConsolidationSummarySpec": true,
+    "delivery_notes": {
+      "resource_intent": "self_study_workbook",
+      "session_duration_target_minutes": 60,
+      "consolidation_requirement": "Final activity must include a consolidation summary with at least 80 words and 3 key ideas about inflation and household strategies.",
+      "workbook_contract_applied": true
+    }
+  },
+  "gam": {
+    "materialCount": 6,
+    "uniqueTypes": [
+      "worked_example",
+      "sample_output",
+      "text",
+      "scenario",
+      "analysis_table",
+      "consolidation_summary"
+    ],
+    "typeFamilies": [
+      "structured_practice",
+      "narrative",
+      "table",
+      "closure"
+    ],
+    "tableOnly": false,
+    "hasTable": true,
+    "hasConsolidation": true,
+    "hasScenario": true,
+    "hasSampleOutput": true,
+    "hasTaskCards": false,
+    "hasChecklist": false,
+    "hasPromptSet": false,
+    "hasText": true,
+    "hasTransfer": false
+  },
+  "preservation": {
+    "B4_01": false,
+    "B4_02": false,
+    "tablePipeOkCount": 0
+  },
+  "renderFlags": {
+    "hasSemanticTable": false,
+    "hasCsvTable": false
+  },
+  "materials": [
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_we1",
+      "type": "worked_example",
+      "contentLen": 951,
+      "contentPreview": "### Worked Example: Calculating Inflation Rate Using CPI Data **Step 1: Understand the Consumer Price Index (CPI)** T"
+    },
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_so1",
+      "type": "sample_output",
+      "contentLen": 796,
+      "contentPreview": "### Sample Output: Inflation Rate Calculation and Interpretation - **Given:** CPI in Year 1 = 240, CPI in Year 2 = 252 "
+    },
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_text1",
+      "type": "text",
+      "contentLen": 1231,
+      "contentPreview": "### Understanding Inflation and the Consumer Price Index (CPI) Inflation is the general increase in prices of goods and"
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "material_id": "inflation_wb_scen1",
+      "type": "scenario",
+      "contentLen": 493,
+      "contentPreview": "### Household Scenarios: Inflation Impact Analysis **Household A: The Smith Family** - Income: $50,000 per year - S"
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "material_id": "inflation_wb_analysis_table1",
+      "type": "analysis_table",
+      "contentLen": 1139,
+      "contentPreview": "| Expenditure Category | Inflation Rate (%) | Household A Budget Impact ($) | Household B Budget Impact ($) | Notes (Lea"
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "material_id": "inflation_wb_consolidation1",
+      "type": "consolidation_summary",
+      "contentLen": 1204,
+      "contentPreview": "### Consolidation Summary: Key Learning and Reflection on Inflation In this session, you have learned several important"
+    }
+  ]
+}

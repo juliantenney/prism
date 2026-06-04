@@ -1,0 +1,154 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Inflation and CPI Basics",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanatory teaching / concept exposition",
+          "specification": "Clear explanation of inflation, its economic effects, and the Consumer Price Index (CPI) including how CPI is calculated and used."
+        },
+        {
+          "material_id": "M2",
+          "type": "classification_table",
+          "purpose": "practice-oriented classification of inflation types",
+          "specification": "Table listing different types of inflation (demand-pull, cost-push, built-in) with definitions and examples for learner classification."
+        }
+      ],
+      "learner_task": "## Activity 1: Learn and classify inflation types\n\n- Read the explanatory text on inflation and CPI.\n- Use the classification table to identify and classify the types of inflation described.\n- Summarize in your own words how CPI measures inflation and why it matters to the economy.",
+      "expected_output": "Completed classification table with correct inflation type assignments and a written summary explaining CPI's role and inflation's economic impact.",
+      "activity_preamble": "This activity introduces you to the fundamental concepts of inflation and the Consumer Price Index (CPI). You will classify inflation types and articulate CPI’s importance in measuring inflation.",
+      "reasoning_orientation": "Focus on understanding definitions and relationships between inflation types and CPI measurement."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Analyzing Inflation Impact on Household Budgeting",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the impact of inflation on household purchasing power and budgeting."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M3",
+          "type": "scenario",
+          "purpose": "practice-oriented household budgeting scenario",
+          "specification": "A detailed household budget scenario showing income, expenses, and inflation effects on prices over a year."
+        },
+        {
+          "material_id": "M4",
+          "type": "analysis_table",
+          "purpose": "practice-oriented analysis of inflation impact on budget categories",
+          "specification": "Table template for learners to record changes in purchasing power and expense adjustments due to inflation."
+        },
+        {
+          "material_id": "M5",
+          "type": "prompt_set",
+          "purpose": "decision criteria and reflection prompts",
+          "specification": "Prompts guiding learners to analyze budget changes and reflect on inflation’s impact on household finances."
+        }
+      ],
+      "learner_task": "## Activity 2: Analyze inflation impact on a household budget\n\n- Study the provided household budget scenario.\n- Use the analysis table to record how inflation affects each budget category and overall purchasing power.\n- Respond to the reflection prompts considering how inflation pressures household financial decisions.",
+      "expected_output": "Completed analysis table showing inflation effects on budget categories and a written reflection addressing the prompts on financial impact and decision-making.",
+      "activity_preamble": "In this activity, you will apply your understanding of inflation to a realistic household budget scenario, analyzing how inflation changes purchasing power and affects budgeting decisions.",
+      "reasoning_orientation": "Apply conceptual knowledge to a practical scenario, interpreting quantitative changes and reflecting on financial implications.",
+      "self_explanation_prompt": "Explain how inflation changes the affordability of different budget items and what this means for household spending."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Evaluating Household Strategies to Manage Inflation",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Evaluate strategies households can use to manage financial challenges during periods of inflation."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M6",
+          "type": "task_cards",
+          "purpose": "practice-oriented evaluation of household financial strategies",
+          "specification": "Set of task cards describing various household strategies to cope with inflation, including pros and cons."
+        },
+        {
+          "material_id": "M7",
+          "type": "template",
+          "purpose": "strategy evaluation and ranking template",
+          "specification": "Template for learners to rank strategies by effectiveness and justify their rankings based on criteria."
+        },
+        {
+          "material_id": "M8",
+          "type": "prompt_set",
+          "purpose": "quality criteria and justification rubric",
+          "specification": "Rubric and prompts to guide learners in justifying their rankings and evaluating strategy suitability."
+        }
+      ],
+      "learner_task": "## Activity 3: Evaluate and rank household strategies for managing inflation\n\n- Review the task cards describing different financial strategies.\n- Use the provided template to rank these strategies in order of effectiveness for managing inflation impacts.\n- Justify your rankings using the quality criteria and rubric prompts.",
+      "expected_output": "Completed ranking template with strategies ordered by effectiveness and written justifications for each ranking based on provided criteria.",
+      "activity_preamble": "This activity asks you to critically evaluate and rank various household strategies for managing financial challenges during inflation, justifying your decisions with clear criteria.",
+      "activity_interaction_type": "ranking",
+      "reasoning_orientation": "Engage in evaluative reasoning by comparing strategies and applying decision criteria to justify rankings.",
+      "transfer_or_application_task": "Consider your own or a hypothetical household context when ranking and justifying strategies."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Capstone: Personal Inflation Management Plan",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Analyze the impact of inflation on household purchasing power and budgeting.",
+        "Evaluate strategies households can use to manage financial challenges during periods of inflation."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M9",
+          "type": "template",
+          "purpose": "integrative personal inflation management plan",
+          "specification": "Template guiding learners to synthesize knowledge and create a personalized plan addressing inflation impact and management strategies."
+        },
+        {
+          "material_id": "M10",
+          "type": "prompt_set",
+          "purpose": "reflection and consolidation prompts",
+          "specification": "Prompts to support learners in summarizing key takeaways and reflecting on their learning and plan applicability."
+        }
+      ],
+      "learner_task": "## Activity 4: Develop your personal inflation management plan\n\n- Using the provided template, create a plan that explains inflation, describes its impact on your household budget, and outlines strategies you will use to manage inflation-related financial challenges.\n- Reflect on your learning journey and summarize key insights using the reflection prompts.",
+      "expected_output": "Completed personal inflation management plan document integrating conceptual understanding, budget impact analysis, and strategy evaluation, plus a reflective summary of learning.",
+      "activity_preamble": "This capstone activity asks you to synthesize your learning into a practical, personalized plan for managing inflation’s effects on your household finances, concluding with a reflection on your learning.",
+      "transfer_or_application_task": "Apply concepts and strategies to your own financial context to create a meaningful, actionable plan.",
+      "reasoning_orientation": "Synthesize knowledge across multiple outcomes to produce an integrative and personalized artefact."
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "Understand the concept of inflation and how it affects the overall economy.",
+      "Explain the Consumer Price Index (CPI) and its role in measuring inflation."
+    ],
+    "A2": [
+      "Analyze the impact of inflation on household purchasing power and budgeting."
+    ],
+    "A3": [
+      "Evaluate strategies households can use to manage financial challenges during periods of inflation."
+    ],
+    "A4": [
+      "Understand the concept of inflation and how it affects the overall economy.",
+      "Analyze the impact of inflation on household purchasing power and budgeting.",
+      "Evaluate strategies households can use to manage financial challenges during periods of inflation."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 65,
+    "consolidation_requirement": "The final activity requires learners to synthesize their understanding into a personal inflation management plan and reflect on key takeaways from the session.",
+    "workbook_contract_applied": true
+  }
+}

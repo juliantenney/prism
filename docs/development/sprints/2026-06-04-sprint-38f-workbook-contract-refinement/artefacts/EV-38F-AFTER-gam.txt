@@ -1,0 +1,137 @@
+Activity: Studying Inflation Concepts with Worked Example  
+Activity ID: inflation_wb_01  
+Mapped outcomes: Understand the concept of inflation and its causes in the economy., Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living.
+
+Material: inflation_wb_we1 (worked_example)  
+Purpose: Demonstrate calculation of inflation rate using CPI data  
+Content:  
+### Worked Example: Calculating Inflation Rate Using CPI Data
+
+**Step 1: Understand the Consumer Price Index (CPI)**  
+The CPI measures the average change over time in the prices paid by consumers for a market basket of goods and services. It is used to track changes in the cost of living.
+
+**Step 2: Identify CPI values for two consecutive years**  
+Suppose the CPI was 240 in Year 1 and 252 in Year 2.
+
+**Step 3: Calculate the inflation rate**  
+The inflation rate is the percentage change in CPI from one year to the next. Use the formula:  
+\[
+\text{Inflation Rate} = \frac{\text{CPI}_{\text{Year 2}} - \text{CPI}_{\text{Year 1}}}{\text{CPI}_{\text{Year 1}}} \times 100
+\]
+
+Substitute the values:  
+\[
+\frac{252 - 240}{240} \times 100 = \frac{12}{240} \times 100 = 5\%
+\]
+
+**Step 4: Interpret the result**  
+An inflation rate of 5% means that, on average, prices increased by 5% from Year 1 to Year 2. This indicates a rise in the cost of living.
+
+---
+
+Material: inflation_wb_so1 (sample_output)  
+Purpose: Show completed worked example with inflation rate and interpretation  
+Content:  
+### Sample Output: Inflation Rate Calculation and Interpretation
+
+- **Given:** CPI in Year 1 = 240, CPI in Year 2 = 252  
+- **Calculation:**  
+\[
+\frac{252 - 240}{240} \times 100 = 5\%
+\]
+
+- **Interpretation:**  
+The inflation rate of 5% indicates that prices for consumer goods and services increased by 5% over the year. This rise in prices means that the purchasing power of money has decreased, and consumers need more money to buy the same goods and services as before.
+
+- **Causes of Inflation (from explanatory text):**  
+  - Demand-pull inflation: When demand for goods and services exceeds supply.  
+  - Cost-push inflation: When production costs increase, causing producers to raise prices.  
+  - Built-in inflation: When workers demand higher wages, leading to higher costs and prices.
+
+---
+
+Material: inflation_wb_text1 (text)  
+Purpose: Explanatory teaching on inflation concepts and CPI  
+Content:  
+### Understanding Inflation and the Consumer Price Index (CPI)
+
+Inflation is the general increase in prices of goods and services in an economy over time. It reduces the purchasing power of money, meaning consumers need more money to buy the same items. Inflation can be caused by several factors:
+
+- **Demand-pull inflation:** Occurs when consumer demand outpaces the economy’s ability to supply goods and services, pushing prices up.  
+- **Cost-push inflation:** Happens when the costs of production, such as wages or raw materials, increase, leading businesses to raise prices to maintain profits.  
+- **Built-in inflation:** Results from adaptive expectations where workers demand higher wages to keep up with rising living costs, which in turn increases production costs.
+
+The Consumer Price Index (CPI) is a key economic indicator that measures inflation by tracking the average price changes of a fixed basket of goods and services over time. By comparing CPI values from different years, we can calculate the inflation rate, which shows how much prices have increased or decreased.
+
+Understanding inflation and CPI helps individuals and policymakers make informed decisions about spending, saving, and managing the economy.
+
+---
+
+Activity: Analyzing Inflation Impact with Household Scenarios and Analysis Table  
+Activity ID: inflation_wb_02  
+Mapped outcomes: Analyze the impact of inflation on household budgets and purchasing power.
+
+Material: inflation_wb_scen1 (scenario)  
+Purpose: Present two household cases with different income levels and expenditure patterns  
+Content:  
+### Household Scenarios: Inflation Impact Analysis
+
+**Household A: The Smith Family**  
+- Income: $50,000 per year  
+- Spending Categories:  
+  - Food: $8,000  
+  - Housing (rent/mortgage): $15,000  
+  - Transportation: $5,000  
+  - Utilities: $3,000  
+  - Healthcare: $2,000  
+  - Entertainment and others: $2,000  
+
+**Inflation Effects:** Food prices increased by 6%, housing costs rose by 3%, transportation costs increased by 4%, utilities by 5%, healthcare by 2%, and entertainment by 7%.
+
+---
+
+**Household B: The Lee Family**  
+- Income: $80,000 per year  
+- Spending Categories:  
+  - Food: $12,000  
+  - Housing (rent/mortgage): $20,000  
+  - Transportation: $8,000  
+  - Utilities: $4,000  
+  - Healthcare: $3,000  
+  - Entertainment and others: $5,000  
+
+**Inflation Effects:** Food prices increased by 6%, housing costs rose by 3%, transportation costs increased by 4%, utilities by 5%, healthcare by 2%, and entertainment by 7%.
+
+---
+
+Material: inflation_wb_analysis_table1 (analysis_table)  
+Purpose: Table for learners to analyze inflation impact on household budgets  
+Content:  
+
+| Expenditure Category | Inflation Rate (%) | Household A Budget Impact ($) | Household B Budget Impact ($) | Notes (Learner Analysis)          |
+|---------------------|--------------------|------------------------------|------------------------------|----------------------------------|
+| Food                | 6                  |                              |                              |                                  |
+| Housing             | 3                  |                              |                              |                                  |
+| Transportation      | 4                  |                              |                              |                                  |
+| Utilities           | 5                  |                              |                              |                                  |
+| Healthcare          | 2                  |                              |                              |                                  |
+| Entertainment       | 7                  |                              |                              |                                  |
+
+---
+
+Activity: Consolidation Summary and Reflection on Inflation Management  
+Activity ID: inflation_wb_03  
+Mapped outcomes: Understand the concept of inflation and its causes in the economy., Explain the Consumer Price Index (CPI) and how it measures changes in the cost of living., Analyze the impact of inflation on household budgets and purchasing power., Evaluate strategies households can use to manage the effects of inflation.
+
+Material: inflation_wb_consolidation1 (consolidation_summary)  
+Purpose: Template and guidance for summarizing key learning points and reflections  
+Content:  
+### Consolidation Summary: Key Learning and Reflection on Inflation
+
+In this session, you have learned several important ideas about inflation and its effects. First, inflation is the general rise in prices that reduces the purchasing power of money. It can be caused by demand-pull factors, cost-push pressures, and built-in wage-price spirals. Second, the Consumer Price Index (CPI) is a useful tool that measures changes in the cost of living by tracking the prices of a fixed basket of goods and services. Calculating inflation rates using CPI data helps us understand how much prices have increased over time. Third, inflation affects households differently depending on their income and spending patterns. For example, rising food and housing costs can have a larger impact on lower-income families who spend a greater proportion of their income on essentials.
+
+To manage the effects of inflation, households can adopt strategies such as budgeting carefully, prioritizing essential expenses, seeking ways to increase income, and investing in assets that may keep pace with inflation. Understanding inflation empowers you to make better financial decisions and adapt to changing economic conditions.
+
+---
+
+End of materials.

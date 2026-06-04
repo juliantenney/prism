@@ -1,0 +1,149 @@
+{
+  "capturedAt": "2026-06-04T15:05:14.850Z",
+  "sprint": "38-E",
+  "runId": "EV-38E10-AFTER",
+  "phase": "38E-10",
+  "priorRuns": [
+    "NEG-EV-01",
+    "EV-38E5-AFTER"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household scenarios, and policy communication for first-year economics.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "promptChars": {
+    "dla": 11816,
+    "gam": 12511,
+    "design_page": 20555
+  },
+  "dlaScore": {
+    "activityCount": 4,
+    "durationSum": 60,
+    "uniqueTypes": [
+      "worked_example",
+      "sample_output",
+      "text",
+      "task_cards",
+      "checklist",
+      "prompt_set",
+      "modelling_note",
+      "consolidation_summary"
+    ],
+    "tableOnlySpec": false,
+    "hasNonTable": true,
+    "hasWorkedExampleSpec": true,
+    "hasConsolidationSummarySpec": true,
+    "delivery_notes": {
+      "resource_intent": "self_study_workbook",
+      "session_duration_target_minutes": 60,
+      "consolidation_requirement": "The final activity includes a consolidation summary requiring the learner to write at least 80 words summarizing three key ideas and reflecting on their personal context.",
+      "workbook_contract_applied": true
+    }
+  },
+  "gam": {
+    "materialCount": 9,
+    "uniqueTypes": [
+      "worked_example",
+      "sample_output",
+      "text",
+      "task_cards",
+      "checklist",
+      "prompt_set",
+      "modelling_note",
+      "consolidation_summary"
+    ],
+    "typeFamilies": [
+      "structured_practice",
+      "narrative",
+      "closure"
+    ],
+    "tableOnly": false,
+    "hasConsolidation": true,
+    "hasScenario": false,
+    "hasSampleOutput": true,
+    "hasTaskCards": true,
+    "hasChecklist": true,
+    "hasPromptSet": true,
+    "hasText": true,
+    "hasTransfer": false
+  },
+  "preservation": {
+    "B4_01": false,
+    "B4_02": false,
+    "tablePipeOkCount": 0
+  },
+  "renderFlags": {
+    "hasSemanticTable": false,
+    "hasCsvTable": false
+  },
+  "materials": [
+    {
+      "activity_id": "A1",
+      "material_id": "M1",
+      "type": "worked_example",
+      "contentLen": 932,
+      "contentPreview": "### Worked Example: Calculating Inflation Rate Using CPI Data **Step 1: Understand the CPI values** Suppose the Consu"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M2",
+      "type": "sample_output",
+      "contentLen": 892,
+      "contentPreview": "### Sample Output: Inflation Calculation and Economic Impact Summary **Inflation Calculation:** Using the CPI values "
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M3",
+      "type": "text",
+      "contentLen": 1020,
+      "contentPreview": "### Understanding Inflation and the Consumer Price Index (CPI) Inflation is the general increase in prices of goods and"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M4",
+      "type": "task_cards",
+      "contentLen": 295,
+      "contentPreview": "### Task Cards: Household Inflation Scenarios **Card 1: The Smith Family** - Annual income: $50,000 - Inflation rat"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M5",
+      "type": "checklist",
+      "contentLen": 556,
+      "contentPreview": "### Checklist: Analyzing Inflation Impact on Household Purchasing Power - [ ] Have you identified the inflation rate af"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M6",
+      "type": "prompt_set",
+      "contentLen": 602,
+      "contentPreview": "### Prompt Set: Evaluating Inflation Management Strategies 1. What are the main advantages of this strategy in protecti"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M7",
+      "type": "modelling_note",
+      "contentLen": 1263,
+      "contentPreview": "### Modelling Note: Expert Reasoning on Inflation Management Strategies When evaluating strategies to manage inflation’"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M8",
+      "type": "consolidation_summary",
+      "contentLen": 1078,
+      "contentPreview": "### Consolidation Summary Template: Inflation and Household Finance In this session, I learned three key ideas about in"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M9",
+      "type": "prompt_set",
+      "contentLen": 581,
+      "contentPreview": "### Reflection Prompts: Connecting Concepts and Personal Context 1. How do the concepts of inflation and CPI influence "
+    }
+  ]
+}

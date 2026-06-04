@@ -63,7 +63,7 @@ Detail: [PLANNING-CHARTER.md](PLANNING-CHARTER.md)
 | Pack / prompt / runtime implementation | **Not started** — see [38D-5 §10–11](observations/38D-5-inflation-before-after-evaluation.md) |
 | Inflation AFTER rerun | **Pending** implementation |
 
-**Planning complete.** **Next programme step:** implementation sprint (pack/DLA/GAM contract enactment) + Inflation AFTER run per [38D-5](observations/38D-5-inflation-before-after-evaluation.md).
+**Planning complete.** **Next programme step:** [Sprint 38-E — Workbook Contract Implementation](../2026-06-04-sprint-38e-workbook-contract-implementation/) — pack/DLA/GAM enactment + Inflation AFTER per [38D-5](observations/38D-5-inflation-before-after-evaluation.md).
 
 ---
 

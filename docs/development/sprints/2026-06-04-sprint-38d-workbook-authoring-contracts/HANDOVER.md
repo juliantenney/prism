@@ -64,7 +64,9 @@
 
 ## Suggested next chat
 
-1. Charter **implementation sprint** — enact [38D-1](observations/38D-1-dla-workbook-contract.md) + [38D-2](observations/38D-2-gam-workbook-genre-contract.md) in packs for `self_study_workbook` briefs.  
+**Successor pack:** [Sprint 38-E — Workbook Contract Implementation](../2026-06-04-sprint-38e-workbook-contract-implementation/) (**CHARTERED / IMPLEMENTATION**).
+
+1. Start **38E-1** — implementation target audit (no code); then enact [38D-1](observations/38D-1-dla-workbook-contract.md) + [38D-2](observations/38D-2-gam-workbook-genre-contract.md) in packs for `self_study_workbook` briefs.  
 2. Run Inflation pipeline; capture artefacts to [artefacts/](artefacts/) per [38D-5 §10](observations/38D-5-inflation-before-after-evaluation.md).  
 3. Complete [38D-5 §6](observations/38D-5-inflation-before-after-evaluation.md) AFTER column; apply §7 success tiers and §9 case (A/B/C/D).  
 4. Report **Workbook** and **Preservation** separately ([38D-4 §3](observations/38D-4-workbook-validation-criteria.md)).

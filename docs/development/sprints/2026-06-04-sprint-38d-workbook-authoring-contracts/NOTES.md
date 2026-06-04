@@ -58,4 +58,4 @@
 
 **Sprint 38-D planning:** **CLOSED**. **Implementation:** recommended, not started.
 
-**Next programme:** Implementation sprint → Inflation AFTER → fill scorecard.
+**Next programme:** [Sprint 38-E](../2026-06-04-sprint-38e-workbook-contract-implementation/) — implementation → Inflation AFTER → fill scorecard.

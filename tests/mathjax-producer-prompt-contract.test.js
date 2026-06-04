@@ -83,22 +83,23 @@ function loadPrismTestApi() {
   return { api };
 }
 
-function assertMathSafeContractText(text) {
+function assertLdMathRenderContractText(text) {
   const body = String(text || "");
-  assert.match(body, /Math notation output contract/i);
+  assert.match(body, /LD-MATH-RENDER \(auto-applied\)/i);
+  assert.match(body, /LD-MATH-RENDER \| Layer: L7/i);
   assert.match(body, /Inline maths: use \\\(\.\.\.\\\)/);
   assert.match(body, /Display\/block equations: use \\\[\.\.\.\\\]/);
   assert.match(body, /Do NOT use \$?\.\.\.\$ or \$\$?\.\.\.\$\$/);
-  assert.match(body, /task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback/i);
+  assert.match(body, /activities, materials, assessment stems/i);
   assert.match(body, /escape math-delimiter backslashes/i);
   assert.equal(body.includes("\\\\(...\\\\)"), true);
   assert.equal(body.includes("\\\\[...\\\\]"), true);
   assert.match(body, /in raw JSON text/i);
-  assert.match(body, /Prefer supported TeX notation/i);
-  assert.match(body, /formulae, symbolic variables, fractions, subscripts, Greek symbols, or statistical notation/i);
+  assert.match(body, /Prefer supported TeX/i);
   assert.match(body, /Do NOT wrap equations in code spans/i);
   assert.match(body, /Do NOT HTML-escape math delimiters/i);
   assert.match(body, /presentational notation only/i);
+  assert.match(body, /LD-TABLE-FIDELITY/i);
 }
 
 function stepContext(canonicalStepId, title) {
@@ -111,9 +112,14 @@ function stepContext(canonicalStepId, title) {
   };
 }
 
-test("buildMathSafeOutputContractPromptBlock: includes supported and prohibited rules", () => {
+test("buildLdMathRenderPromptBlock: includes supported and prohibited rules", () => {
   const { api } = loadPrismTestApi();
-  assertMathSafeContractText(api.buildMathSafeOutputContractPromptBlock());
+  assertLdMathRenderContractText(api.buildLdMathRenderPromptBlock());
+});
+
+test("buildMathSafeOutputContractPromptBlock: alias returns canonical LD-MATH-RENDER block", () => {
+  const { api } = loadPrismTestApi();
+  assertLdMathRenderContractText(api.buildMathSafeOutputContractPromptBlock());
 });
 
 test("applyMathSafeOutputContractToDraft: appends once for DLA, GAM, Design Page, and assessment producer steps", () => {
@@ -143,17 +149,21 @@ test("applyMathSafeOutputContractToDraft: appends once for DLA, GAM, Design Page
     base,
     stepContext("step_design_marking_rubric", "Design Marking Rubric")
   );
-  assertMathSafeContractText(dla);
-  assertMathSafeContractText(gam);
-  assertMathSafeContractText(page);
-  assertMathSafeContractText(assessmentItems);
-  assertMathSafeContractText(feedback);
-  assertMathSafeContractText(rubric);
+  assertLdMathRenderContractText(dla);
+  assertLdMathRenderContractText(gam);
+  assertLdMathRenderContractText(page);
+  assertLdMathRenderContractText(assessmentItems);
+  assertLdMathRenderContractText(feedback);
+  assertLdMathRenderContractText(rubric);
   const twice = api.applyMathSafeOutputContractToDraft(
     dla,
     stepContext("step_design_learning_activities", "Design Learning Activities")
   );
-  assert.equal((twice.match(/Math notation output contract/gi) || []).length, 1);
+  assert.equal(
+    (twice.match(/LD-MATH-RENDER \(auto-applied\)|Math notation output contract \(auto-applied\)/gi) || [])
+      .length,
+    1
+  );
 });
 
 test("applyMathSafeOutputContractToDraft: does not append for unrelated steps", () => {
@@ -164,7 +174,7 @@ test("applyMathSafeOutputContractToDraft: does not append for unrelated steps", 
     stepContext("step_construct_learning_sequence", "Construct Learning Sequence")
   );
   assert.equal(out.trim(), base.trim());
-  assert.doesNotMatch(out, /Math notation output contract/i);
+  assert.doesNotMatch(out, /LD-MATH-RENDER \(auto-applied\)/i);
 });
 
 test("domain step patterns: shared math notation contract section present", () => {
@@ -231,7 +241,7 @@ test("applyWorkflowStepRuntimePromptAugmentations: includes math contract for DL
     null,
     {}
   );
-  assertMathSafeContractText(prompt);
+  assertLdMathRenderContractText(prompt);
 });
 
 test("applyWorkflowStepRuntimePromptAugmentations: includes math contract for assessment items step", () => {
@@ -248,7 +258,7 @@ test("applyWorkflowStepRuntimePromptAugmentations: includes math contract for as
     null,
     {}
   );
-  assertMathSafeContractText(prompt);
+  assertLdMathRenderContractText(prompt);
 });
 
 test("applyWorkflowStepRuntimePromptAugmentations: GAM contract explicitly forbids dollar delimiters and covers materials outputs", () => {
@@ -266,10 +276,10 @@ test("applyWorkflowStepRuntimePromptAugmentations: GAM contract explicitly forbi
     {}
   );
   assert.match(prompt, /Do NOT use \$\.\.\.\$ or \$\$\.\.\.\$\$/);
-  assert.match(prompt, /generated materials, task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback/i);
-  assert.match(prompt, /Prefer supported TeX notation/i);
-  assert.match(prompt, /use structural markdown blocks/i);
-  assert.match(prompt, /keep numbered steps and bullet points on separate lines/i);
+  assert.match(prompt, /activities, materials, assessment stems/i);
+  assert.match(prompt, /LD-MATH-RENDER \(auto-applied\)/i);
+  assert.match(prompt, /Prefer supported TeX/i);
+  assert.match(prompt, /LD-TABLE-FIDELITY/i);
 });
 
 test("visible runner text strips internal math contract wording while hidden prompt augmentation keeps it", () => {

@@ -1,0 +1,45 @@
+{
+  "measuredAt": "2026-06-04T13:13:25.395Z",
+  "programme": "PR-W3-4 Inflation gate",
+  "gatePass": true,
+  "probeDesignPage": {
+    "seededChars": 7745,
+    "augmentedChars": 24771,
+    "blockCount": 5,
+    "blockTitles": [
+      "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+      "Sprint 38 visual affordance authoring contract (auto-applied)",
+      "Sprint 38 pedagogical added-value contract (auto-applied)",
+      "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
+      "LD-MATH-RENDER (auto-applied)"
+    ],
+    "hasCompose": true,
+    "hasS38": true
+  },
+  "validations": [
+    {
+      "label": "golden-full-merged",
+      "pass": true,
+      "expectPass": true,
+      "gateOk": true
+    },
+    {
+      "label": "ev-38b4-01-live",
+      "pass": true,
+      "expectPass": true,
+      "gateOk": true
+    },
+    {
+      "label": "csv-worksheet-negative",
+      "pass": false,
+      "expectPass": false,
+      "gateOk": true
+    }
+  ],
+  "wave3PromptBaseline": {
+    "postW3_1_seeded": 7745,
+    "postW3_3_augmented": 24771,
+    "ev38b4_01_capture_augmented": 22560
+  },
+  "script": "scripts/probe-38b4-w3-inflation-gate.js"
+}

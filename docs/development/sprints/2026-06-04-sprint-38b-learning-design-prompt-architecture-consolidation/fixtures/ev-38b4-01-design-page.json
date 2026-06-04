@@ -1,0 +1,244 @@
+{
+  "artifact_type": "page",
+  "title": "Understanding and Managing Inflation: A Self-Directed Learning Journey",
+  "audience": "Self-directed learners interested in personal finance and economic concepts",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Introduction to Inflation and Learning Purpose",
+      "content": "Inflation is a key economic concept that affects the purchasing power of money and the overall economy. This learning journey is designed to help you understand inflation, how it is measured, its impact on household budgeting, and practical strategies to manage its effects. Through a series of activities, you will build foundational knowledge, analyze real-world data, and synthesize your understanding into a personal finance plan that addresses inflation risks."
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": [
+        "Understand the concept of inflation and how it affects the overall economy.",
+        "Explain the Consumer Price Index (CPI) and its role in measuring inflation.",
+        "Analyze the impact of inflation on household purchasing power and budgeting.",
+        "Evaluate strategies households can use to manage the effects of inflation on their finances."
+      ]
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Classify Key Inflation Concepts",
+          "duration_minutes": 15,
+          "activity_preamble": "This activity helps you build foundational understanding by sorting key inflation concepts into meaningful categories.",
+          "learner_task": "### Task\nClassify the following terms into categories: 'Types of Inflation', 'Economic Effects', or 'Other'. Use the provided classification table to guide your decisions.",
+          "expected_output": "A completed classification table with terms correctly assigned to the categories: Types of Inflation, Economic Effects, or Other.",
+          "failure_mode": "Misclassification of terms due to misunderstanding definitions or categories.",
+          "materials": {
+            "classification_table": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       |\n|----------------|----------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------|\n| Inflation      | A general increase in prices and fall in the purchasing value of money over time.            | Prices of groceries rising year over year.   |                              |\n| Deflation      | A general decrease in prices and increase in the purchasing power of money.                  | Falling prices during a recession.            |                              |\n| Hyperinflation | Extremely rapid or out-of-control inflation, often exceeding 50% per month.                   | Zimbabwe’s inflation in the late 2000s.      |                              |\n| Stagflation    | A situation where inflation is high but economic growth is stagnant and unemployment is high.| 1970s US economy with rising prices and unemployment.|                              |"
+          },
+          "facilitator_moves": null
+        },
+        {
+          "activity_id": "A2",
+          "title": "Compare Inflation Measurement Methods",
+          "duration_minutes": 20,
+          "activity_preamble": "This activity deepens your understanding of how inflation is measured and why CPI is widely used.",
+          "learner_task": "### Task\nWork with your partner to complete the comparison table by identifying key similarities and differences between CPI and other inflation measurement methods.",
+          "expected_output": "A filled comparison table highlighting the role of CPI relative to other inflation measures, including at least three points of comparison.",
+          "failure_mode": "Incomplete or inaccurate comparisons due to insufficient analysis of the provided materials.",
+          "materials": {
+            "comparison_table": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                                  |\n|-----------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|-----------------------------------------------|\n| Consumer Price Index (CPI)  | Measures average change over time in prices paid by consumers for a market basket of goods and services. | Tracks prices of a fixed basket of consumer goods and services monthly or quarterly. | Used to track cost of living changes and inflation targeting by governments. |\n| Producer Price Index (PPI)  | Measures average change over time in selling prices received by domestic producers for their output. | Tracks prices at the wholesale or producer level before goods reach consumers. | Used to predict future consumer inflation and analyze inflation at production stage. |\n| GDP Deflator           | Measures price changes for all goods and services included in GDP, reflecting inflation across the economy. | Calculated as (Nominal GDP / Real GDP) × 100.      | Used to measure overall inflation in the economy including investment and government spending. |"
+          },
+          "facilitator_moves": null
+        },
+        {
+          "activity_id": "A3",
+          "title": "Analyze Inflation Impact on Household Budgeting",
+          "duration_minutes": 25,
+          "activity_preamble": "This activity allows you to apply inflation concepts to real-life household budgeting scenarios.",
+          "learner_task": "### Task\nAnalyze how inflation has affected the purchasing power of the household by completing the analysis table and calculating the percentage change in expenses.",
+          "expected_output": "A completed analysis table with percentage changes for each budget category and a brief summary explaining the impact on overall household budgeting.",
+          "failure_mode": "Errors in percentage calculations or failure to connect inflation effects to budgeting decisions.",
+          "materials": {
+            "analysis_table": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  |\n|----------------------|----------------------------|--------------------------|----------------------|-------------------------------------------------|\n| Groceries            | 400                        | 440                      | 10                   | Increased food costs reduce discretionary income. |\n| Utilities            | 150                        | 165                      | 10                   | Higher bills may require budget adjustments.     |\n| Transportation       | 100                        | 110                      | 10                   | Rising fuel costs impact commuting expenses.     |\n| Entertainment        | 80                         | 88                       | 10                   | May lead to reduced spending on leisure activities. |\n| Rent/Mortgage        | 1000                       | 1000                     | 0                    | Fixed housing costs remain stable in short term. |\n| Total Monthly Budget | 1730                       | 1803                     | 4.15                 | Overall budget pressure increases due to inflation.|"
+          },
+          "facilitator_moves": null
+        },
+        {
+          "activity_id": "A4",
+          "title": "Evaluate Strategies to Manage Inflation Effects",
+          "duration_minutes": 30,
+          "activity_preamble": "This activity helps you critically assess practical ways households can adapt to inflation challenges.",
+          "learner_task": "### Task\nIn your group, evaluate each strategy in the impact table for managing inflation effects. Rank the strategies from most to least effective and justify your ranking.",
+          "expected_output": "A ranked list of strategies with clear justifications based on the impact table analysis.",
+          "failure_mode": "Superficial evaluation without justification or failure to consider inflation impact in reasoning.",
+          "materials": {
+            "impact_table": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                                                      | Effectiveness Rating (1=Low, 5=High) |\n|----------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-------------------------------------|\n| Budgeting Adjustments      | Revising household budgets to prioritize essential expenses and reduce discretionary spending. | Helps control spending, immediate impact on finances.     | May reduce quality of life, requires discipline.          | 4                                   |\n| Investment Diversification | Spreading investments across assets like stocks, bonds, and real estate to hedge against inflation. | Potential to grow wealth and offset inflation losses.     | Risk of market volatility, requires financial knowledge.  | 5                                   |\n| Price Comparison Shopping  | Actively comparing prices and seeking discounts to reduce costs on goods and services.          | Saves money on everyday purchases, easy to implement.     | Time-consuming, savings may be limited.                    | 3                                   |\n| Fixed-Rate Borrowing       | Taking loans with fixed interest rates to avoid rising borrowing costs during inflation.         | Protects against rising interest rates, predictable costs.| Not always accessible, increases debt burden.             | 4                                   |"
+          },
+          "facilitator_moves": null,
+          "activity_interaction_type": "ranking",
+          "ordering": {
+            "canonical_order": [],
+            "learner_display_order": [],
+            "learner_display_order_strategy": "",
+            "shuffle_seed_key": ""
+          },
+          "render_hints": {
+            "suppress_instruction_list_when_task_cards_present": false,
+            "keep_instruction_summary_above_cards": true
+          }
+        },
+        {
+          "activity_id": "A5",
+          "title": "Synthesize Inflation Knowledge in a Personal Finance Plan",
+          "duration_minutes": 35,
+          "activity_preamble": "This culminating activity integrates your learning to develop a practical plan for managing inflation in your personal finances.",
+          "prior_knowledge_activation": "Review key inflation concepts and measurement methods.",
+          "reasoning_orientation": "Apply and synthesize knowledge from previous activities.",
+          "self_explanation_prompt": "Explain why each strategy you propose is effective against inflation.",
+          "transfer_or_application_task": "Apply theoretical knowledge to your personal financial context.",
+          "scaffold_hint_sequence": [
+            "Recall definitions and examples of inflation.",
+            "Identify how inflation affects typical household expenses.",
+            "Consider the pros and cons of different financial strategies."
+          ],
+          "uncertainty_tension_prompt": "Consider uncertainties in inflation trends and how flexible your plan is to adapt.",
+          "learner_task": "### Task\nCreate a personal finance plan that addresses inflation risks. Use insights from previous activities to:\n\n1. Summarize inflation and CPI concepts.\n2. Describe how inflation affects your household budget.\n3. Propose at least three strategies to manage inflation's impact on your finances.\n\nPresent your plan in a structured format.",
+          "expected_output": "A written personal finance plan document that synthesizes inflation understanding, its impact on budgeting, and practical management strategies.",
+          "failure_mode": "Plan lacks integration of inflation concepts or practical strategies, or is incomplete.",
+          "materials": {
+            "classification_table": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       |\n|----------------|----------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------|\n| Inflation      | A general increase in prices and fall in the purchasing value of money over time.            | Prices of groceries rising year over year.   |                              |\n| Deflation      | A general decrease in prices and increase in the purchasing power of money.                  | Falling prices during a recession.            |                              |\n| Hyperinflation | Extremely rapid or out-of-control inflation, often exceeding 50% per month.                   | Zimbabwe’s inflation in the late 2000s.      |                              |\n| Stagflation    | A situation where inflation is high but economic growth is stagnant and unemployment is high.| 1970s US economy with rising prices and unemployment.|                              |",
+            "comparison_table": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                                  |\n|-----------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|-----------------------------------------------|\n| Consumer Price Index (CPI)  | Measures average change over time in prices paid by consumers for a market basket of goods and services. | Tracks prices of a fixed basket of consumer goods and services monthly or quarterly. | Used to track cost of living changes and inflation targeting by governments. |\n| Producer Price Index (PPI)  | Measures average change over time in selling prices received by domestic producers for their output. | Tracks prices at the wholesale or producer level before goods reach consumers. | Used to predict future consumer inflation and analyze inflation at production stage. |\n| GDP Deflator           | Measures price changes for all goods and services included in GDP, reflecting inflation across the economy. | Calculated as (Nominal GDP / Real GDP) × 100.      | Used to measure overall inflation in the economy including investment and government spending. |",
+            "analysis_table": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  |\n|----------------------|----------------------------|--------------------------|----------------------|-------------------------------------------------|\n| Groceries            | 400                        | 440                      | 10                   | Increased food costs reduce discretionary income. |\n| Utilities            | 150                        | 165                      | 10                   | Higher bills may require budget adjustments.     |\n| Transportation       | 100                        | 110                      | 10                   | Rising fuel costs impact commuting expenses.     |\n| Entertainment        | 80                         | 88                       | 10                   | May lead to reduced spending on leisure activities. |\n| Rent/Mortgage        | 1000                       | 1000                     | 0                    | Fixed housing costs remain stable in short term. |\n| Total Monthly Budget | 1730                       | 1803                     | 4.15                 | Overall budget pressure increases due to inflation.|",
+            "impact_table": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                                                      | Effectiveness Rating (1=Low, 5=High) |\n|----------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-------------------------------------|\n| Budgeting Adjustments      | Revising household budgets to prioritize essential expenses and reduce discretionary spending. | Helps control spending, immediate impact on finances.     | May reduce quality of life, requires discipline.          | 4                                   |\n| Investment Diversification | Spreading investments across assets like stocks, bonds, and real estate to hedge against inflation. | Potential to grow wealth and offset inflation losses.     | Risk of market volatility, requires financial knowledge.  | 5                                   |\n| Price Comparison Shopping  | Actively comparing prices and seeking discounts to reduce costs on goods and services.          | Saves money on everyday purchases, easy to implement.     | Time-consuming, savings may be limited.                    | 3                                   |\n| Fixed-Rate Borrowing       | Taking loans with fixed interest rates to avoid rising borrowing costs during inflation.         | Protects against rising interest rates, predictable costs.| Not always accessible, increases debt burden.             | 4                                   |"
+          },
+          "facilitator_moves": null
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved upstream activity_materials table syntax",
+    "Included all upstream learning activities in full",
+    "Included full learner-facing materials content for each activity",
+    "Excluded any fabricated or unsupported content",
+    "Maintained page_profile as learner",
+    "Structured materials as objects with named table fields",
+    "Kept all upstream explicit learner tasks, expected outputs, failure modes, and preambles"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "The classification table supports foundational understanding but the task is straightforward; visual aids could help but are not critical."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Comparison tables are useful for visual distinction of inflation measures; visual summaries could enhance understanding."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "The analysis table with numeric changes benefits from visual classification or number line segments to support reasoning about inflation impact."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Evaluating and ranking strategies with pros and cons is enhanced by visual data pattern reading and ordered bar strips."
+      }
+    },
+    {
+      "activity_id": "A5",
+      "activity_visual_value": {
+        "decision": "defer",
+        "rationale": "Synthesis activity should be attempted first before visual summaries are introduced."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A3-classification-01",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "rationale": "Learners classify inflation scenarios by causal mechanism before completing the analysis table.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.",
+      "reasoning_supported": "Learners classify inflation scenarios by causal mechanism without being given the completed classifications.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Use economics cause categories as empty labelled structures; do not imply all inflation has a single cause.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "demand-pull inflation",
+        "cost-push inflation",
+        "wage-price spiral",
+        "evidence or cause cues for typing"
+      ],
+      "must_not_show": [
+        "scenario answer key",
+        "completed classification cells",
+        "blank worksheet grid duplicating analysis_table"
+      ],
+      "allowed_claims": [
+        "Different causal mechanisms can produce inflation.",
+        "Classification depends on the driver of the price increase."
+      ],
+      "disallowed_claims": [
+        "All inflation has one cause.",
+        "All price rises are inflation."
+      ],
+      "source_basis": "A3 learner_task; A3 materials.analysis_table",
+      "caption_intent": "Orient classification with cause-type discriminating cues — do not complete the learner table.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-A5-defer-01",
+      "activity_id": "A5",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "rationale": "The synthesis personal finance plan activity should be attempted before introducing visual summaries to avoid premature conclusions."
+    }
+  ],
+  "generation_notes": {
+    "activities_omitted": [],
+    "limitations": [
+      "[PRISM visual affordance] Dropped invalid affordance va-A4-data_pattern-01: visual_affordances[1]: learner_stage must be pre_classification | post_reasoning"
+    ],
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 2,
+      "dropped_count": 0,
+      "errors": [
+        "activities_visual_review[2]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[3]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[4]: activity_visual_value.decision must be high | medium | low | none"
+      ]
+    }
+  },
+  "metadata": {
+    "sequencing_interaction_metadata_rows": 1
+  }
+}

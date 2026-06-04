@@ -1,9 +1,12 @@
 # Sprint 38 — Pedagogical Visual Affordance Enrichment
 
 **Pack path:** `docs/development/sprints/2026-06-03-sprint-38-pedagogical-visual-affordance-enrichment/`  
-**Status:** **IN PROGRESS** — 38-1–38-8 **complete**; **Sprint 38 Validation** (E2E + 38-1 baseline comparison) is next  
+**Status:** **COMPLETE** — architecture implemented and validated E2E (Design Page → Compose → Renderer → VEU → images)  
 **Date:** 2026-06-03  
-**Test floor (entry):** **642 pass / 0 fail**  
+**Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md)  
+**Test floor:** **706 pass / 0 fail** (after materials-fidelity patch)  
+**Successor (active):** [Sprint 38-B — LD Prompt Architecture & Materials Fidelity](../2026-06-04-sprint-38b-learning-design-prompt-architecture-consolidation/README.md) (planning)  
+**Successor (gated):** [Sprint 39 — Reasoning Cue Specification](../../../sprints/sprint-39/README.md) (deferred until 38-B audit)  
 **Predecessor:** [Sprint 37 — session framing and intellectual coherence](../2026-06-03-sprint-37-session-framing-intellectual-coherence/) (**COMPLETE**)
 
 ---
@@ -139,7 +142,7 @@ Charter detail: [SPRINT-38-CHARTER.md](SPRINT-38-CHARTER.md).
 
 **Cross-references:**
 
-- **VEU (authoritative repo copy):** [`utilities/visual-enhancement-utility/`](../../../../utilities/visual-enhancement-utility/) — **v1.2** (`visual-enhancement-utility-v1.2.json`); 38-5 alignment **not started**
+- **VEU (authoritative repo copy):** [`utilities/visual-enhancement-utility/`](../../../../utilities/visual-enhancement-utility/) — **v1.2** frozen; **v1.2.1** Sprint 38 handover (`visual-enhancement-utility-v1.2.1.json`)
 - Sprint 36 placement inventory: [36-4-imaging-placement-affordances.md](../2026-06-03-sprint-36-session-design-visual-pedagogy/observations/36-4-imaging-placement-affordances.md)
 - VEU v1.1.1 (historical three-step + embed patch): [visual-enhancement-utility-v1.1.1-patch-note.md](../../workflow/exports/visual-enhancement-utility-v1.1.1-patch-note.md)
 - Sprint 37 inflation workshop policy: [37-6-workshop-pedagogical-support-recalibration.md](../2026-06-03-sprint-37-session-framing-intellectual-coherence/observations/37-6-workshop-pedagogical-support-recalibration.md)
@@ -167,6 +170,7 @@ Full handover: [HANDOVER-AND-FORWARD-PLAN.md](HANDOVER-AND-FORWARD-PLAN.md).
 | [README.md](README.md) | Overview (this file) |
 | [SPRINT-38-CHARTER.md](SPRINT-38-CHARTER.md) | Governance, principles, success criteria |
 | [HANDOVER-AND-FORWARD-PLAN.md](HANDOVER-AND-FORWARD-PLAN.md) | Post–Sprint 37 state → Sprint 38 programme |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | End-to-end architecture and code map |
 | [NOTES.md](NOTES.md) | Programme notes and slice log |
 | [observations/](observations/) | Slice templates and audit/taxonomy/design notes |
 | [fixtures/](fixtures/) | Probes and enriched-affordance examples |
@@ -181,4 +185,4 @@ When any code or test fixture changes:
 node --test tests/*.test.js
 ```
 
-**Entry floor:** 642 pass / 0 fail.
+**Current floor:** 697 pass / 0 fail.

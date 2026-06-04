@@ -1037,6 +1037,8 @@
     if (!raw.trim()) return "";
     var leakPatterns = [
       /math notation output contract/i,
+      /LD-MATH-RENDER \(auto-applied\)/i,
+      /LD-MATH-RENDER \| Layer: L7/i,
       /when mathematical notation is needed/i,
       /inline maths:\s*use\s*\\\(\.\.\.\\\)/i,
       /display\/block equations:\s*use\s*\\\[\.\.\.\\\]/i,
@@ -1045,7 +1047,12 @@
       /do not wrap equations in code/i,
       /do not html-escape math delimiters/i,
       /html-escaped delimiters/i,
-      /presentational notation only/i
+      /presentational notation only/i,
+      /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i,
+      /LD-SELF-DIRECTED-RHETORIC \| Layers: L5/i,
+      /learner-action rhetoric \(auto-applied\)/i,
+      /worked-example and faded-support \(auto-applied\)/i,
+      /epistemic synthesis and closure \(auto-applied\)/i
     ];
     var kept = raw
       .split("\n")
@@ -7251,22 +7258,15 @@
     };
   }
 
+  function buildLdMathRenderPromptBlock(options) {
+    bootstrapLdMathRenderInlineIfMissing();
+    var lib = resolveLdMathRenderLib();
+    return lib.buildLdMathRenderPromptBlock(options || {});
+  }
+
+  /** @deprecated Use buildLdMathRenderPromptBlock — PR-W1-3 */
   function buildMathSafeOutputContractPromptBlock() {
-    return [
-      "",
-      "Math notation output contract (auto-applied):",
-      "- When mathematical notation is needed in learner-facing text, activities, generated materials, task cards, templates, sample outputs, worked examples, tables, self-check prompts, feedback, marking guidance, assessment stems/options/explanations, or composed page content, emit renderer-supported TeX delimiters only.",
-      "- Inline maths: use \\(...\\) (for example \\(x^2 + y^2\\)).",
-      "- Display/block equations: use \\[...\\] on their own line where block layout is intended.",
-      "- Do NOT use $...$ or $$...$$ delimiters.",
-      "- Do NOT wrap equations in code spans, code fences, or backtick markdown.",
-      "- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\\\(...\\\\) and \\\\[...\\\\] in raw JSON text).",
-      "- For generated materials prose, use structural markdown blocks (steps/lists/tables/worked examples) rather than compressed single-line runs; keep numbered steps and bullet points on separate lines.",
-      "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
-      "- Prefer supported TeX notation when formulae, symbolic variables, fractions, subscripts, Greek symbols, or statistical notation are pedagogically appropriate; do not force notation into plain prose when maths clarity benefits learners.",
-      "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
-      "- Preserve existing limited Markdown subset rules; math delimiters are additive to those rules."
-    ].join("\n");
+    return buildLdMathRenderPromptBlock();
   }
 
   function applyMathSafeOutputContractToDraft(draftText, context) {
@@ -7276,8 +7276,18 @@
     var isGam = isWorkflowStepGenerateActivityMaterials(context);
     var isAssessmentProducer = isWorkflowStepAssessmentProducer(context);
     if (!isDla && !isDesignPage && !isGam && !isAssessmentProducer) return draftBody;
-    if (/math notation output contract \(auto-applied\)/i.test(draftBody)) return draftBody;
-    return (draftBody + buildMathSafeOutputContractPromptBlock()).trim();
+    bootstrapLdMathRenderInlineIfMissing();
+    var lib = resolveLdMathRenderLib();
+    var markerRe =
+      lib && typeof lib.markerRegex === "function"
+        ? lib.markerRegex()
+        : /LD-MATH-RENDER \(auto-applied\)|Math notation output contract \(auto-applied\)/i;
+    var moduleRe =
+      lib && typeof lib.moduleIdInTextRegex === "function"
+        ? lib.moduleIdInTextRegex()
+        : /LD-MATH-RENDER \| Layer: L7/i;
+    if (markerRe.test(draftBody) || moduleRe.test(draftBody)) return draftBody;
+    return (draftBody + buildLdMathRenderPromptBlock()).trim();
   }
 
   function buildSelfDirectedTimelineSequencingAlignmentPromptBlock() {
@@ -7309,6 +7319,7 @@
       "- For cause–effect, comparison, or table-completion scaffolds on one activity, prefer a single integrated template or analysis_table (prompts in row labels) rather than parallel task_cards plus a separate table for the same scaffold.",
       "- Only add task_cards when each card maps to a distinct sub-activity, not duplicate prompts already in the table.",
       "- For comparison activities, include a short orienting text or sample_output material introducing each entity before any comparison prompt_set or comparison table.",
+      "- required_materials table types (template, analysis_table, comparison_table, …): specify pipe-table realisation in Generate Activity Materials per LD-TABLE-FIDELITY (spec role).",
       "- For dense concept-application activities, stage application in numbered learner_task sub-steps (e.g. Step 1 identify, Step 2 apply) instead of one overloaded writing task.",
       "- Cap checklist scope to roughly four meaningful items per short writing task unless the brief explicitly requires more; do not list every learning-outcome concept in one checklist for a single brief response.",
       "- Keep required_materials self-contained for independent study; do not assume live tutor clarification."
@@ -7359,218 +7370,57 @@
     "intellectual_coherence_bridge"
   ];
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedLearnerActionRhetoricPromptBlock() {
-    return [
-      "",
-      "Learner-action rhetoric (auto-applied):",
-      "- learner_task: start with an observable learner verb (complete, compare, decide, justify, sketch, record, classify) — not passive coverage (\"learn about\", \"understand\", \"explore the topic\").",
-      "- learner_task: state what the learner does with materials (fill, mark, quote, rank, write) — materials supply data/scaffolds; the task states the action on them.",
-      "- expected_output: describe evidence of completion the learner could show (filled table, labelled diagram, short written judgement with quoted values) — not topic summaries or \"understanding of X\".",
-      "- support_note: one concise misconception guard or evidence rule (1–2 sentences) — not step-by-step tutoring, hints that answer the task, or facilitator choreography.",
-      "- activity_preamble and cognition fields orient thinking; they must not duplicate the full learner_task or replace expected_output.",
-      "- purpose: one sentence on the learning move (compare, interpret, apply) — not a restatement of the activity title.",
-      "- Materials must not embed the full task answer or pre-filled judgement cells unless the activity is an explicit worked example with faded rows.",
-      "- Assessment stems (question / stem / prompt): require a decision, justification, or interpretation — avoid label-only recall (\"What is X called?\") when a judgement is possible.",
-      "- Formative MCQ sets: pair stems with numbered sub-questions when multiple reasoning steps are needed; options test decisions, not vocabulary labels alone.",
-      "- Preserve support_note and expected_output on each activity when composing pages — do not drop or merge them into materials prose."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedWorkedExampleFadingPromptBlock() {
-    return [
-      "",
-      "Worked-example and faded-support (auto-applied):",
-      "- On multi-activity self-study pages, sequence support when the brief allows: (1) modelled reasoning — (2) faded partial completion — (3) independent transfer in a new context.",
-      "- required_materials: specify which material is modelled (type sample_output, worked_example, or template with one worked row), which is faded (template/table with some cells filled, rationale or judgement left blank), and which is independent (scenario, new data, fewer cues).",
-      "- Modelled example (materials.worked_example, sample_output, or one labelled template row): show expert reasoning moves step-by-step — why each judgement or calculation step matters; link procedure to meaning (e.g. frequentist method vs single-interval probability).",
-      "- Faded example (materials.template, prompt_set, or table): pre-fill only the minimum needed to demonstrate the move (one row, one column, or one worked judgement); leave remaining cells empty for the learner_task.",
-      "- Independent transfer: later activity uses similar task shape with less scaffolding (scenario, new numbers, or checklist without model row) — learner_task must say what is new, not repeat the modelled row verbatim.",
-      "- Do not pre-fill entire tables or answer keys in faded/independent activities; never dump full solutions except in the dedicated modelled material.",
-      "- Label modelled sections clearly (### Worked example, ### Model row, or column headers like \"Example (filled)\" / \"Your turn (empty)\").",
-      "- For single-row modelled examples in materials.worked_example, prefer labelled prose (**Statement:** / **Reason:**) or one short multiline table in materials.template — avoid cramming full pipe tables into worked_example strings that bypass table normalisation.",
-      "- Keep worked examples concise (typically one row or one short chain of reasoning); prefer one reasoning move over long answer keys.",
-      "- Generate Activity Materials: realise DLA specifications — if specification asks for worked_example or sample_output, emit full reasoning prose; if specification asks for faded template, include partial rows only as specified.",
-      "- Design Page: preserve upstream worked_example, sample_output, and partially filled template strings verbatim; do not flatten modelled rows into learner_task.",
-      "- support_note on faded/independent activities: cue the reasoning move to reuse from the model (1 sentence), not a second worked solution.",
-      "- intellectual_coherence_bridge must reference the prior modelled/faded activity when sequencing 2+ activities — name the move carried forward and the phase shift (test, integrate, judge, transfer)."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedEmbeddedFeedbackMisconceptionPromptBlock() {
-    return [
-      "",
-      "Embedded feedback and misconception interruption (auto-applied):",
-      "- Anticipate one likely misconception per activity (topic-specific); interrupt it before learners consolidate the error.",
-      "- support_note: prefer a concise \"Check your thinking:\" cue — state what a problematic answer would indicate and point back to the concept/procedure link (1–2 sentences). Not step-by-step tutoring or full solutions.",
-      "- materials.prompt_set: include 1–3 short self-check bullets (e.g. \"If both interpretations sound plausible, ask whether the claim is about this one interval or the long-run method\") — not answer keys.",
-      "- materials.checklist: optional inline guard on one item (\"If you cannot name X from the case, revisit Y\") — keep items actionable, not essay prompts.",
-      "- expected_output: name quality signals that expose weak reasoning (mentions evidence and practical significance; quotes endpoints) without giving the completed answer.",
-      "- Formative assessment items: explanation / explanation_or_rationale — one sentence on the error pattern and how to correct the thinking; link procedure to meaning; not a worked solution or long answer key.",
-      "- study_tips: brief misconception interrupts where useful (one line each); not remediation pathways or adaptive branching language.",
-      "- Proactive tension framing (overview, uncertainty_tension_prompt, conceptual_contrast_prompt) names the distinction early; this block's Check your thinking cues are reactive mid-task guards — do not paste the same tension sentence into both.",
-      "- Avoid: adaptive feedback, tutoring loops, hidden remediation branches, \"if wrong go to…\" pathways, and pre-filled judgement cells that answer the task (except explicit modelled/faded rows).",
-      "- Design Page: preserve support_note, prompt_set self-check bullets, checklist guards, and assessment explanations verbatim — do not merge them into materials prose.",
-      "- Generate Activity Materials: when required_materials.specification requests misconception checks or self-check prompts, realise them in prompt_set or checklist text as specified."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedConceptProcedureIntegrationPromptBlock() {
-    return [
-      "",
-      "Concept/procedure integration (auto-applied):",
-      "- Procedural tasks must feel meaningful: pair each procedural move with a short conceptual purpose (step → meaning), not mechanical steps alone.",
-      "- knowledge_summary / key ideas: one line per major idea on how it will be used in activities (preview the procedure link) — not a long theory chapter; do not paste the whole summary into each activity.",
-      "- materials.worked_example, template, checklist, prompt_set: include concise step → meaning lines (e.g. \"Judge Correct? → separates procedure claims from single-interval probability\"; \"Quote endpoints → overlap depends on bounds, not midpoints only\").",
-      "- Add \"Use this when…\" cues where learners must choose a procedure or interpretation (1 short bullet per choice point).",
-      "- learner_task: state the procedure and the conceptual question it answers (what the move means), not only \"fill the table\".",
-      "- expected_output: require both observable result and brief interpretation (judgement, meaning, or when the procedure applies) — not completion-only checklists.",
-      "- required_materials.specification: when a material is procedural, name the conceptual purpose the material must make visible (step → meaning row, column header, or labelled bullet list).",
-      "- Formative assessment: at least one item should ask why a method or interpretation is appropriate, not only what answer it yields; explanation links procedure to concept in one sentence.",
-      "- intellectual_coherence_bridge may link an activity procedure back to a key idea named in knowledge_summary (one sentence).",
-      "- Avoid: long theory dumps, duplicating entire knowledge_summary inside activity materials, concept labels without learner action, procedural checklists with no purpose line.",
-      "- Design Page: preserve step → meaning bullets, Use this when cues, and knowledge_summary preview lines verbatim.",
-      "- Generate Activity Materials: realise step → meaning and Use this when sections when required_materials.specification requests concept/procedure integration."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedConceptualTensionDifficultyPromptBlock() {
-    return [
-      "",
-      "Conceptual tension and difficulty framing (auto-applied):",
-      "- Name why this reasoning is hard with discipline-specific precision — not motivational hype, faux drama, patronising reassurance, or generic \"students often struggle\" / \"this topic is challenging\" filler.",
-      "- Difficulty types (use the right label; do not conflate):",
-      "  • Conceptual difficulty — two ideas learners merge (genome polarity vs replication strategy; author purpose vs plot summary; weather vs climate trend).",
-      "  • Procedural difficulty — correct method but wrong guard or order (quote interval endpoints not midpoints; compare p-value to α before interpreting).",
-      "  • Interpretive ambiguity — two readings sound plausible until a stated move (procedure vs single-interval probability for the same \"95%\").",
-      "  • Disciplinary uncertainty — evidence or model scope limits; uncertainty is part of reasoning, not failure to understand.",
-      "  • Competing explanations — rival mechanisms or policies; judgement needs evidence rules, not rhetorical plausibility alone.",
-      "  • Plausible misconception — intuitive claim that fails a discriminating test; pair with repair/classification moves, not myth lists alone.",
-      "- Placement:",
-      "  • overview and/or learning_purpose: one primary tension sentence (37-1 element 3) — name the distinction learners must learn to judge and why misjudging matters.",
-      "  • uncertainty_tension_prompt: on at most 1–2 activities when ambiguity or evidence limits are central — one sentence: what is unstable + which discriminating move resolves it; NOT diary reflection (avoid \"reflect on uncertainties\", \"how do you feel\", \"what remains unclear\" without a task-linked move).",
-      "  • conceptual_contrast_prompt: name the concept pair + one plausible merge error (complements reasoning_orientation).",
-      "  • support_note / prompt_set self-check (35-3): reactive slip guard when the learner might misapply — do not repeat the overview tension verbatim.",
-      "- Misconception-focused pages: frame intellectual work as classify / repair / justify under evidence — not theatric myth-busting inventories without template or table repair columns.",
-      "- Connect named tension to the session progression (37-1 element 5) — e.g. label interpretation → judge tables → transfer scenario; cards → evidence template → discussion.",
-      "- knowledge_summary may preview the primary tension in one line (procedure–meaning link) — not a substitute for overview tension.",
-      "- Explicitly avoid: reflective journaling tone, adaptive tutoring language, long unrelated myth anthologies, and uncertainty prompts that only ask learners to reflect without a discriminating task."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedIntellectualProgressionPromptBlock() {
-    return [
-      "",
-      "Intellectual progression signalling (auto-applied):",
-      "- Multi-activity self-study pages must read as cumulative reasoning journeys — not adjacent task islands or unordered material bundles.",
-      "- Page-level arc (37-1 element 5): overview and/or learning_purpose include one sentence naming how activities build (e.g. modelled move → faded practice → transfer judgement; orient → distinguish → test → integrate → judge).",
-      "- knowledge_summary: when present, include use_in_activities or equivalent preview mapping each key idea to its role in the arc (one short phrase per idea) — not a substitute for the overview arc sentence.",
-      "- Session phase vocabulary (compress phases across fewer activities when appropriate): orienting → distinguishing → testing → integrating → judging → transferring. Signal phase shifts in bridges and preambles — never facilitator narration (\"now you will\", \"in this session we will\", \"next you will\").",
-      "- intellectual_coherence_bridge: on EVERY activity after the first when the page has 2+ activities — one sentence stating (a) what reasoning move or distinction carries forward from the prior step and (b) what escalates (less scaffolding, harder judgement standard, new context, or combined ideas).",
-      "  • Good bridge shape: \"Apply the [move] from [prior artefact] to [new task].\" / \"You now [harder task] without [removed scaffold]; still [discipline rule].\"",
-      "  • Bad bridge shape: \"Building on the previous activity.\" / \"In this activity you will…\" / repeating only the prior activity title.",
-      "- activity_preamble: one sentence on this activity's contribution to the arc — do not duplicate the bridge sentence verbatim.",
-      "- purpose: name the stage move (model, practise, integrate, judge, transfer, repair misconception) — not a restatement of learner_task.",
-      "- Tie bridges to 37-2 tensions: later activities should use earlier distinctions as tools (e.g. procedure-vs-interval labels before overlap judgement; purpose-vs-plot move before factory application).",
-      "- Single-activity pages with rich materials (cards, template, prompts, checklist): overview names within-activity progression; learner_task lists steps in that intellectual order (e.g. encounter claims → classify with evidence → discuss judgement); materials order should match.",
-      "- assessment_check: when present, align item difficulty with the arc terminus (recognition → discrimination → judgement); overview may foreshadow in one clause.",
-      "- study_tips / materials Closure (35-5): may reference progression in one line; page-end epistemic synthesis — see Epistemic synthesis and closure block.",
-      "- Design Page: preserve upstream intellectual_coherence_bridge, activity_preamble arc cues, and knowledge_summary use_in_activities verbatim.",
-      "- Explicitly avoid: structural transitions without intellectual content, verbose inter-activity paragraphs, and bridges that only announce location without naming moves or escalation."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedSessionOrientationRhetoricPromptBlock() {
-    return [
-      "",
-      "Session orientation rhetoric (auto-applied):",
-      "- Frame the learner page as a coherent intellectual journey at entry — not a topic coverage summary, syllabus list, or component inventory (cards, template, check) without sequence.",
-      "- Page-level entry (sections overview and/or learning_purpose; distribute prose — do not cram all elements into one sentence each in duplicate fields):",
-      "  (1) Topic and disciplinary focus — what reasoning domain this session addresses.",
-      "  (2) Intellectual stakes — why misjudging this topic matters (one concrete consequence in discipline terms).",
-      "  (3) Why-this-is-hard — one honest tension sentence naming the primary difficulty type and discriminating move (see Conceptual tension and difficulty framing when present; not motivational hype).",
-      "  (4) What the learner will do intellectually — name modes tied to activities (compare, judge, trace mechanism, repair misconception, apply concept, interpret evidence).",
-      "  (5) How activities build — one sentence naming progression (see Intellectual progression signalling when present; e.g. modelled row → faded table → transfer scenario; or misconception → evidence → classification → discussion).",
-      "- Optional: total self-study time when upstream duration_minutes or learning_sequence timing is available.",
-      "- intellectual_frame (once per page): mode of inquiry in 1–2 sentences — may sit in overview, learning_purpose, or first activity; not a duplicate of reasoning_orientation.",
-      "- study_orientation (first activity when 2+ activities): 2–4 sentences on how to work through the page (order, effort, brief notes) — must NOT repeat the full overview/learning_purpose paragraph; add working guidance only.",
-      "- knowledge_summary: one-line preview per key idea linking to an activity move — not a substitute for overview/learning_purpose journey framing.",
-      "- Design Page: when upstream activities or learning_content include orientation prose, compose overview and learning_purpose from that substance — do not replace with thinner coverage summaries.",
-      "- Explicitly avoid: \"Welcome to this module\", \"This page covers\", \"In this session we will\", \"explore the topic\", generic reflect-on-learning openings, and facilitator/timing choreography."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedEpistemicSynthesisClosurePromptBlock() {
-    return [
-      "",
-      "Epistemic synthesis and closure (auto-applied):",
-      "- End the session with epistemic clarity — what should now be clearer — not procedural completion (\"you have finished the tasks\"), topic recap, or reflective diary tone.",
-      "- Tie closure to 37-2 primary tension (name the distinction that should now be stable) and 37-3 arc (name the final reasoning phase reached: judge, transfer, integrate evidence).",
-      "- Closure principles (use at least one per page-level or culminating-activity close; one sentence each):",
-      "  • What should now be clearer — which concept pair or interpretation rule is now stable.",
-      "  • What distinction can now be sustained — which plausible misconception or merge should feel less persuasive and why (one clause).",
-      "  • What kind of judgement is now possible — what verdict or classification the learner can defend with stated evidence rules.",
-      "  • What explanatory move matters differently — which carried move from the session now governs later reasoning.",
-      "- study_tips (preferred page-level close for self-directed learner pages): 2–4 short bullets — at least ONE must be epistemic synthesis (not generic reflection); at most ONE optional study-technique bullet; optional ONE brief transfer bullet (see Transfer and durable understanding for disciplined transfer and limit-of-transfer bullets).",
-      "  • Quantitative sessions: procedure vs interpretation; interval vs certainty; misuse boundaries (e.g. overlap claims, practical vs statistical significance).",
-      "  • Humanities comparison: purpose vs plot; defensible difference vs summary; evaluative positioning with evidence.",
-      "  • Misconception / evidence sessions: persuasion vs data-supported classification; mechanism vs policy judgement under uncertainty.",
-      "  • Diagnostic / assessment-shaped pages: what discrimination across cases or items should now be reliable — if study_tips omitted, put 2 epistemic bullets in support_notes instead of procedural-only revision tips.",
-      "- Culminating activity materials: include ### Closure or ### Debrief with 2–3 bullets using the principles above (hardest justify, evidence strength, what changed) — not long essays.",
-      "- expected_output on the final or transfer activity: include at least one criterion that requires epistemic synthesis (e.g. states which distinction was applied and what conclusion is defensible).",
-      "- Formative assessment explanations: one sentence reinforcing the distinction corrected — aligns with closure tension.",
-      "- knowledge_summary: preview at session start only — do not add a post-session recap paragraph or key-takeaways dump.",
-      "- Explicitly avoid: \"reflect on your learning\", \"well done\", motivational praise, \"this topic is difficult\", detached \"re-read the summary\" without epistemic link, and closure longer than 4 bullets in study_tips.",
-      "- Design Page: preserve upstream study_tips, ### Closure / ### Debrief bullets, and epistemic expected_output criteria verbatim.",
-      "- Generate Activity Materials: realise closure/debrief when required_materials requests synthesis or evaluative judgement — epistemic bullets, not diary prompts.",
-      "- Complements Metacognitive closure (35-5) for in-activity judgement; this block owns page-end synthesis."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedTransferDurableUnderstandingPromptBlock() {
-    return [
-      "",
-      "Transfer and durable understanding (auto-applied):",
-      "- Extend reusable judgement beyond this session without reopening the full arc or duplicating epistemic synthesis (see Epistemic synthesis and closure).",
-      "- Durable understanding = the learner can reuse a named distinction or evidence rule in a later task — not motivational future-use or employability claims.",
-      "- Transfer vs extension vs comparison:",
-      "  • Transfer: apply the session's named move in a changed context (one sentence).",
-      "  • Extension: adjacent setting with the same discriminating rule (scenario, new numbers, new excerpt).",
-      "  • Comparison: judge two explanations or interpretations using criteria established in the session (debrief, contrast table).",
-      "- transfer_or_application_task: on the final or transfer-phase activity when the page has 2+ activities or a rich single activity with phased materials — one sentence naming the move + changed context; optional second clause on where the move fails or an assumption breaks (limit of transfer).",
-      "  • Quantitative (CI-shaped): where comparing interval endpoints (not midpoints) matters in an unfamiliar setting; when overlap rules fail if only summary statistics are quoted.",
-      "  • Humanities comparison (Marx-shaped): purpose-and-difference criteria on another text or political claim; one assumption in the prior explanation that fails in a different workplace or audience.",
-      "  • Misconception / evidence (climate-shaped): classify a new focal claim with the same evidence-strength columns; state when mechanism evidence does not transfer to policy judgement.",
-      "  • Diagnostic / assessment (RNA-shaped): which case feature or reasoning rule should generalise to novel items; when label recall would mislead without re-reading evidence.",
-      "- study_tips: within the 2–4 bullet cap, at most ONE transfer bullet naming the move + one context; optional at most ONE limit-of-transfer bullet (where similar reasoning fails) — do not add a third recap block after epistemic synthesis bullets.",
-      "- expected_output on transfer activity: require applying the named move in the new context OR stating why a tempting over-generalisation fails.",
-      "- materials ### Debrief / ### Closure: may include one comparison prompt tied to session criteria (which explanation uses stronger evidence; which row was hardest to justify using the interval move).",
-      "- use_in_activities / knowledge_summary: map key ideas to transferable roles in the arc when present — not a post-session extension essay.",
-      "- Explicitly avoid: generic real-world application paragraphs, continue exploring filler, employability rhetoric, over-broad transfer (always use this), motivational will-help-you-in-life claims, and repeating epistemic synthesis bullets verbatim as transfer.",
-      "- Design Page: preserve transfer_or_application_task, durable study_tips bullets, and comparison debrief bullets verbatim.",
-      "- Generate Activity Materials: realise scenarios and debrief comparison when required_materials requests transfer or evaluative comparison — concise, discipline-specific.",
-      "- Complements Epistemic synthesis and closure (37-4) for page-end clarity; this block owns reusable judgement beyond the session."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
+  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedMetacognitiveJudgementPromptBlock() {
-    return [
-      "",
-      "Metacognitive closure and evaluative judgement (auto-applied):",
-      "- Close multi-activity self-study pages with concise consolidation — not diary reflection, therapeutic prompts, or tutoring dialogue.",
-      "- Page-end epistemic synthesis (what should now be clearer) — see Epistemic synthesis and closure block; study_tips bullets below supplement in-activity judgement.",
-      "- study_tips (page end): 2–4 short bullets mixing closure (\"What changed in your understanding?\", \"Which interpretation was hardest to justify?\", \"What would make your conclusion more reliable?\") and transfer (\"Where else would this approach apply?\", \"What assumptions would fail in another context?\").",
-      "- Final or transfer activities: add 2–3 closure bullets in materials (### Closure or ### Debrief under template/scenario/prompt_set) OR use transfer_or_application_task / self_explanation_prompt (one sentence each) — not long reflective essays.",
-      "- expected_output on culminating activities: require evaluative judgement (compare explanations, justify method choice, identify stronger evidence, critique weak reasoning, distinguish statistical vs practical significance) in addition to completed artefacts.",
-      "- support_note: may cue what evidence would strengthen a conclusion (1 sentence) — not generic \"reflect on your learning\".",
-      "- Formative assessment: include at least one judgement-oriented sub-question (compare interpretations, defend a method, rate evidence strength, separate statistical vs practical significance); explanation may ask learners to evaluate a weak peer-style answer in one sentence.",
-      "- materials.checklist / prompt_set: optional final items for closure (\"Name the weakest step in your reasoning\", \"State one assumption your conclusion depends on\").",
-      "- Avoid: generic reflect-on-learning filler, adaptive coaching, conversational tutoring, new reflection artefact types, and closure sections longer than 4 bullets.",
-      "- Design Page: preserve study_tips, closure/debrief bullets, transfer_or_application_task, and judgement-oriented assessment stems verbatim.",
-      "- Generate Activity Materials: realise closure/debrief sections when required_materials.specification requests metacognitive closure or evaluative judgement."
-    ].join("\n");
+    return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
-  function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
+    function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
     return [
       "",
       "Self-directed learner-page activity framing (auto-applied):",
@@ -7650,16 +7500,629 @@
     return body;
   }
 
+  function ldTableFidelityGlobalRoot() {
+    if (typeof window !== "undefined") return window;
+    if (typeof globalThis !== "undefined") return globalThis;
+    return null;
+  }
+
+  function resolveLdTableFidelityLib() {
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_TABLE_FIDELITY ? root.PRISM_LD_TABLE_FIDELITY : null;
+  }
+
+  function bootstrapLdTableFidelityInlineIfMissing() {
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    if (root.PRISM_LD_TABLE_FIDELITY) return;
+    root.PRISM_LD_TABLE_FIDELITY = {
+      MODULE_ID: "LD-TABLE-FIDELITY",
+      MARKER: "LD-TABLE-FIDELITY (auto-applied)",
+      buildLdTableFidelityPromptBlock: function (options) {
+        var opts = options && typeof options === "object" ? options : {};
+        var role = String(opts.role || "core").toLowerCase();
+        var includeMarker = opts.includeMarker !== false;
+        var lines = includeMarker
+          ? [
+          "",
+          "LD-TABLE-FIDELITY (auto-applied):",
+          "- Module: LD-TABLE-FIDELITY | Layer: L4 | Scope: materials.<table_key> | Cluster: 5 (table fidelity)",
+          "- Precedence (normative): source fidelity (L2) > activity membership (L3) > materials + table fidelity (L4) > pedagogical enrichment (L5) > visual affordance metadata (L6) > style/rhetoric (L7). Table fidelity overrides brevity, summarisation, and shorten-non-essential-prose for table-shaped content.",
+          "- PREC-01: pipe tables and structured rows must survive compression — never substitute comma-row shorthand for markdown pipes.",
+          "- Figure duplicate/avoid tokens (representation_avoid, must_not_duplicate) apply to generated figures only — never to page activity.materials or worksheet tables.",
+          "- Table location: every table lives in materials.<named_table_field> as a markdown pipe-table string OR a structured rows array with explicit column keys — never CSV comma rows in prose, never bullet lists of comma-separated cells.",
+          "- If a table is needed, produce a complete pipe table with header row, divider row (| --- |), and body rows — multiline, not one-line compressed.",
+          "- GOOD example (copy shape; adapt columns and rows):",
+          "  | Scenario | Who is affected? | Main price pressure |",
+          "  | --- | --- | --- |",
+          "  |  |  |  |",
+          "- FORBIDDEN in materials table fields:",
+          "  • Lines matching comma-row pseudo-tables (e.g. Scenario 1,,, or trailing ,,, rows)",
+          "  • Prose sections titled Headers and Rows instead of a single named pipe field",
+          "  • Label-only table strings without header row and body cells",
+          "- Do not place raw markdown pipe tables inside bullet-list strings; keep tables in named material field values.",
+          "- TeX in prose: see LD-MATH-RENDER; this module governs pipe-table shape in materials.* only."
+        ]
+          : [
+          "- Module: LD-TABLE-FIDELITY | Layer: L4 | Scope: materials.<table_key> | Cluster: 5 (table fidelity)",
+          "- Precedence (normative): source fidelity (L2) > activity membership (L3) > materials + table fidelity (L4) > pedagogical enrichment (L5) > visual affordance metadata (L6) > style/rhetoric (L7). Table fidelity overrides brevity, summarisation, and shorten-non-essential-prose for table-shaped content.",
+          "- PREC-01: pipe tables and structured rows must survive compression — never substitute comma-row shorthand for markdown pipes.",
+          "- Figure duplicate/avoid tokens (representation_avoid, must_not_duplicate) apply to generated figures only — never to page activity.materials or worksheet tables.",
+          "- Table location: every table lives in materials.<named_table_field> as a markdown pipe-table string OR a structured rows array with explicit column keys — never CSV comma rows in prose, never bullet lists of comma-separated cells.",
+          "- If a table is needed, produce a complete pipe table with header row, divider row (| --- |), and body rows — multiline, not one-line compressed.",
+          "- GOOD example (copy shape; adapt columns and rows):",
+          "  | Scenario | Who is affected? | Main price pressure |",
+          "  | --- | --- | --- |",
+          "  |  |  |  |",
+          "- FORBIDDEN in materials table fields:",
+          "  • Lines matching comma-row pseudo-tables (e.g. Scenario 1,,, or trailing ,,, rows)",
+          "  • Prose sections titled Headers and Rows instead of a single named pipe field",
+          "  • Label-only table strings without header row and body cells",
+          "- Do not place raw markdown pipe tables inside bullet-list strings; keep tables in named material field values.",
+          "- TeX in prose: see LD-MATH-RENDER; this module governs pipe-table shape in materials.* only."
+        ];
+        if (role === "author" || role === "gam") {
+          lines = lines.concat([
+            "- Author role (Generate Activity Materials): realise required_materials table/template/analysis_table/comparison_table specs as full pipe tables in activity_materials content strings.",
+            "- Row adequacy: tables, analysis_table, timeline templates, and mapping templates must include enough blank or prompt-labelled rows for the stated learner_task — never a single blank row when multiple learner responses are required.",
+            "- Matching or mapping tasks: include one row per expected match when the activity lists events, stages, works, or prompts (e.g. four life events → at least four data rows).",
+            "- Timeline table templates: include one blank/prompt-labelled row per listed stage or phase in learner_task or required_materials (row order in the template is not the answer key).",
+            "- Comparison tables: include enough rows for each entity or dimension the learner must compare.",
+            "- Label prompt rows in the first column when useful; leave response cells empty for learner completion."
+          ]);
+        } else if (role === "preserve" || role === "design_page" || role === "preserve_merge") {
+          lines = lines.concat([
+            "- Preserve role (Design Page): when upstream activity_materials contains pipe tables, copy each pipe block verbatim into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, etc.).",
+            "- Do not flatten tables to comma-separated rows, Headers/Rows prose blocks, or catalogue labels when upstream already has pipe syntax.",
+            "- Table fidelity overrides session overview synthesis and non-essential prose shortening for materials bodies."
+          ]);
+        } else if (role === "spec" || role === "dla") {
+          lines = lines.concat([
+            "- Spec role (Design Learning Activities): required_materials types template, analysis_table, comparison_table, and integrated table scaffolds must be realised as pipe markdown tables in Generate Activity Materials — not table descriptions only."
+          ]);
+        }
+        return lines.join("\n");
+      },
+      markerRegex: function () {
+        return /LD-TABLE-FIDELITY \(auto-applied\)/i;
+      },
+      legacyGamTableRowAdequacyRegex: function () {
+        return /self-directed learner-page table row adequacy \(auto-applied\)/i;
+      }
+    };
+    if (typeof window !== "undefined" && root === window) {
+      window.PRISM_LD_TABLE_FIDELITY = root.PRISM_LD_TABLE_FIDELITY;
+    }
+  }
+
+  function buildLdTableFidelityPromptBlock(options) {
+    bootstrapLdTableFidelityInlineIfMissing();
+    var lib = resolveLdTableFidelityLib();
+    return lib.buildLdTableFidelityPromptBlock(options || {});
+  }
+
+  function ldTableFidelityMarkerRegex() {
+    var lib = resolveLdTableFidelityLib();
+    if (lib && typeof lib.markerRegex === "function") {
+      return lib.markerRegex();
+    }
+    return /LD-TABLE-FIDELITY \(auto-applied\)/i;
+  }
+
+  function ldTableFidelityLegacyGamRowAdequacyRegex() {
+    var lib = resolveLdTableFidelityLib();
+    if (lib && typeof lib.legacyGamTableRowAdequacyRegex === "function") {
+      return lib.legacyGamTableRowAdequacyRegex();
+    }
+    return /self-directed learner-page table row adequacy \(auto-applied\)/i;
+  }
+
+  /** @deprecated Use buildLdTableFidelityPromptBlock({ role: "author" }) — PR-W1-1 */
   function buildSelfDirectedGamTableRowAdequacyPromptBlock() {
-    return [
+    return buildLdTableFidelityPromptBlock({ role: "author" });
+  }
+
+  function resolveLdMaterialsCopyLib() {
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_MATERIALS_COPY ? root.PRISM_LD_MATERIALS_COPY : null;
+  }
+
+  function bootstrapLdMaterialsCopyInlineIfMissing() {
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    if (root.PRISM_LD_MATERIALS_COPY) return;
+    root.PRISM_LD_MATERIALS_COPY = {
+      MODULE_ID: "LD-MATERIALS-COPY",
+      MARKER: "LD-MATERIALS-COPY (auto-applied)",
+      buildLdMaterialsCopyPromptBlock: function (options) {
+        var opts = options && typeof options === "object" ? options : {};
+        var role = String(opts.role || "core").toLowerCase();
+        var includeMarker = opts.includeMarker !== false;
+        var lines = includeMarker
+          ? [
+              "",
+              "LD-MATERIALS-COPY (auto-applied):",
+              "- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)",
+              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (scoped to overview, learning_purpose, study_tips only) and non-essential shortening — PREC-02.",
+              "- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.",
+              "- Do not summarise, thin, or replace materials bodies to make the page shorter or to write session narrative.",
+              "- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here."
+            ]
+          : [
+              "- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)",
+              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (scoped to overview, learning_purpose, study_tips only) and non-essential shortening — PREC-02.",
+              "- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.",
+              "- Do not summarise, thin, or replace materials bodies to make the page shorter or to write session narrative.",
+              "- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here."
+            ];
+        if (role === "preserve" || role === "design_page" || role === "preserve_merge") {
+          lines = lines.concat([
+            "- Preserve role (Design Page): when upstream activity_materials exist, each learning_activities.content[] row must carry the full materials object (merge every upstream block for that activity_id).",
+            "- Copy concrete delivery content verbatim or near-verbatim: scenario narratives, worked examples, checklists, prompt sets, assessment stems in materials, and support content tied to activities.",
+            "- Forbidden placeholder-only phrasing unless the full content appears in the same field:",
+            '  "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking",',
+            '  "See provided scenarios", "Scenario set describing", "Table with basket items".',
+            "- Require per activity when upstream provides them: concrete scenarios (named cases with context/numbers), worked examples with visible steps, learner-completion templates with blank cells, assessment items with stems/options, and prompts/support_note content in materials when upstream supplied.",
+            "- page_profile learner: substantive session overview in overview/learning_purpose — not summary-only activity.materials.",
+            "- If activity_materials live in a separate upstream section, embed them into each activity.materials; do not leave materials empty while describing resources elsewhere.",
+            "- source_basis paths in visual_affordances cite upstream evidence; citing a path does not satisfy the materials requirement."
+          ]);
+        } else if (role === "author" || role === "gam") {
+          lines = lines.concat([
+            "- Author role (Generate Activity Materials): realise full, directly usable content for every required_materials entry — not outlines, descriptions of what could be provided, or label-only strings.",
+            "- Each generated material must support the activity learner_task and expected_output; do not substitute a shorter catalogue label for the body.",
+            "- Do not emit describe-only or outline-only material sections when the specification requires learner-facing content.",
+            "- Table-shaped materials follow LD-TABLE-FIDELITY (author role) for pipe tables and row adequacy."
+          ]);
+        }
+        return lines.join("\n");
+      },
+      markerRegex: function () {
+        return /LD-MATERIALS-COPY \(auto-applied\)/i;
+      },
+      moduleIdInTextRegex: function () {
+        return /LD-MATERIALS-COPY \| Layer: L4/i;
+      }
+    };
+    if (typeof window !== "undefined" && root === window) {
+      window.PRISM_LD_MATERIALS_COPY = root.PRISM_LD_MATERIALS_COPY;
+    }
+  }
+
+  function buildLdMaterialsCopyPromptBlock(options) {
+    bootstrapLdMaterialsCopyInlineIfMissing();
+    var lib = resolveLdMaterialsCopyLib();
+    return lib.buildLdMaterialsCopyPromptBlock(options || {});
+  }
+
+  function ldMaterialsCopyMarkerRegex() {
+    var lib = resolveLdMaterialsCopyLib();
+    if (lib && typeof lib.markerRegex === "function") {
+      return lib.markerRegex();
+    }
+    return /LD-MATERIALS-COPY \(auto-applied\)/i;
+  }
+
+  function ldMaterialsCopyModuleIdInTextRegex() {
+    var lib = resolveLdMaterialsCopyLib();
+    if (lib && typeof lib.moduleIdInTextRegex === "function") {
+      return lib.moduleIdInTextRegex();
+    }
+    return /LD-MATERIALS-COPY \| Layer: L4/i;
+  }
+
+  function resolveLdMathRenderLib() {
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_MATH_RENDER ? root.PRISM_LD_MATH_RENDER : null;
+  }
+
+  function bootstrapLdMathRenderInlineIfMissing() {
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    if (root.PRISM_LD_MATH_RENDER) return;
+    root.PRISM_LD_MATH_RENDER = {
+      MODULE_ID: "LD-MATH-RENDER",
+      MARKER: "LD-MATH-RENDER (auto-applied)",
+      buildLdMathRenderPromptBlock: function (options) {
+        var opts = options && typeof options === "object" ? options : {};
+        var includeMarker = opts.includeMarker !== false;
+        var lines = includeMarker
+          ? [
+              "",
+              "LD-MATH-RENDER (auto-applied):",
+              "- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)",
+              "- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.",
+              "- Inline maths: use \\(...\\) (for example \\(x^2 + y^2\\)).",
+              "- Display/block equations: use \\[...\\] on their own lines where block layout is intended.",
+              "- Do NOT use $...$ or $$...$$ delimiters.",
+              "- Do NOT wrap equations in code spans, code fences, or backtick markdown.",
+              "- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\\\(...\\\\) and \\\\[...\\\\] in raw JSON text).",
+              "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
+              "- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.",
+              "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
+              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters."
+            ]
+          : [
+              "- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)",
+              "- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.",
+              "- Inline maths: use \\(...\\) (for example \\(x^2 + y^2\\)).",
+              "- Display/block equations: use \\[...\\] on their own lines where block layout is intended.",
+              "- Do NOT use $...$ or $$...$$ delimiters.",
+              "- Do NOT wrap equations in code spans, code fences, or backtick markdown.",
+              "- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\\\(...\\\\) and \\\\[...\\\\] in raw JSON text).",
+              "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
+              "- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.",
+              "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
+              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters."
+            ];
+        return lines.join("\n");
+      },
+      markerRegex: function () {
+        return /LD-MATH-RENDER \(auto-applied\)|Math notation output contract \(auto-applied\)/i;
+      },
+      moduleIdInTextRegex: function () {
+        return /LD-MATH-RENDER \| Layer: L7/i;
+      }
+    };
+    if (typeof window !== "undefined" && root === window) {
+      window.PRISM_LD_MATH_RENDER = root.PRISM_LD_MATH_RENDER;
+    }
+  }
+
+  function resolveLdSelfDirectedRhetoricLib() {
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_SELF_DIRECTED_RHETORIC
+      ? root.PRISM_LD_SELF_DIRECTED_RHETORIC
+      : null;
+  }
+
+  function bootstrapLdSelfDirectedRhetoricInlineIfMissing() {
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    if (root.PRISM_LD_SELF_DIRECTED_RHETORIC) return;
+    root.PRISM_LD_SELF_DIRECTED_RHETORIC = {
+      MODULE_ID: "LD-SELF-DIRECTED-RHETORIC",
+      MARKER: "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+      buildLdSelfDirectedRhetoricPromptBlock: function (options) {
+        var opts = options && typeof options === "object" ? options : {};
+        var includeMarker = opts.includeMarker !== false;
+        var role = String(opts.role || "core").toLowerCase();
+        var lines = includeMarker
+          ? [
+              "",
+              "LD-SELF-DIRECTED-RHETORIC (auto-applied):",
+              "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
+              "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
+              "- Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note, assessment stems — not materials bodies.",
+              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields.",
+              "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
+              "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
+              "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
+              "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
+              "- intellectual_coherence_bridge on every activity after the first (2+ activities): name prior move + escalation — Bad bridge shape: Building on the previous activity. only.",
+              "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
+              "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
+              "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
+              "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
+              "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
+              "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
+              "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
+              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief with 2–3 epistemic bullets; knowledge_summary previews at start only."
+            ]
+          : [
+              "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
+              "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
+              "- Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note, assessment stems — not materials bodies.",
+              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields.",
+              "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
+              "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
+              "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
+              "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
+              "- intellectual_coherence_bridge on every activity after the first (2+ activities): name prior move + escalation — Bad bridge shape: Building on the previous activity. only.",
+              "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
+              "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
+              "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
+              "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
+              "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
+              "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
+              "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
+              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief with 2–3 epistemic bullets; knowledge_summary previews at start only."
+            ];
+        if (role === "design_page") {
+          lines = lines.concat([
+            "- Design Page rider: compose overview/learning_purpose from upstream orientation substance; preserve bridges, study_tips, closure/debrief, transfer_or_application_task, support_note verbatim."
+          ]);
+        } else if (role === "gam") {
+          lines = lines.concat([
+            "- GAM rider: realise closure, debrief, misconception checks, and concept/procedure integration when required_materials.specification requests them — full learner-facing prose, not outline labels."
+          ]);
+        } else if (role === "assessment") {
+          lines = lines.concat([
+            "- Assessment rider: judgement-oriented stems and one-sentence explanations linking procedure to concept on items and feedback."
+          ]);
+        }
+        return lines.join("\n");
+      },
+      markerRegex: function () {
+        return /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i;
+      },
+      legacyRhetoricMarkerRegex: function () {
+        return /learner-action rhetoric \(auto-applied\)|worked-example and faded-support \(auto-applied\)|embedded feedback and misconception interruption \(auto-applied\)|concept\/procedure integration \(auto-applied\)|metacognitive closure and evaluative judgement \(auto-applied\)|session orientation rhetoric \(auto-applied\)|conceptual tension and difficulty framing \(auto-applied\)|intellectual progression signalling \(auto-applied\)|epistemic synthesis and closure \(auto-applied\)|transfer and durable understanding \(auto-applied\)/i;
+      },
+      moduleIdInTextRegex: function () {
+        return /LD-SELF-DIRECTED-RHETORIC \| Layers: L5/i;
+      },
+      rhetoricAlreadyPresent: function (text) {
+        var body = String(text || "");
+        if (
+          /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i.test(body) ||
+          /LD-SELF-DIRECTED-RHETORIC \| Layers: L5/i.test(body)
+        ) {
+          return true;
+        }
+        return /learner-action rhetoric \(auto-applied\)|worked-example and faded-support \(auto-applied\)|embedded feedback and misconception interruption \(auto-applied\)|concept\/procedure integration \(auto-applied\)|metacognitive closure and evaluative judgement \(auto-applied\)|session orientation rhetoric \(auto-applied\)|conceptual tension and difficulty framing \(auto-applied\)|intellectual progression signalling \(auto-applied\)|epistemic synthesis and closure \(auto-applied\)|transfer and durable understanding \(auto-applied\)/i.test(
+          body
+        );
+      }
+    };
+    if (typeof window !== "undefined" && root === window) {
+      window.PRISM_LD_SELF_DIRECTED_RHETORIC = root.PRISM_LD_SELF_DIRECTED_RHETORIC;
+    }
+  }
+
+  function buildLdSelfDirectedRhetoricPromptBlock(options) {
+    bootstrapLdSelfDirectedRhetoricInlineIfMissing();
+    var lib = resolveLdSelfDirectedRhetoricLib();
+    return lib.buildLdSelfDirectedRhetoricPromptBlock(options || {});
+  }
+
+  function resolveLdDesignPageComposeLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE &&
+      typeof globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE.buildLdDesignPageComposePromptBlock ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_DESIGN_PAGE_COMPOSE ? root.PRISM_LD_DESIGN_PAGE_COMPOSE : null;
+  }
+
+  function bootstrapLdDesignPageComposeInlineIfMissing() {
+    if (resolveLdDesignPageComposeLib()) return;
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    root.PRISM_LD_DESIGN_PAGE_COMPOSE = {
+      MODULE_ID: "LD-DESIGN-PAGE-COMPOSE-CONTRACT",
+      MARKER: "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
+      markerRegex: function () {
+        return /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i;
+      },
+      moduleIdInTextRegex: function () {
+        return /LD-DESIGN-PAGE-COMPOSE-CONTRACT \| Layers: L0/i;
+      },
+      legacyComposePresentRegex: function () {
+        return /design page activity materials fidelity \(auto-applied\)/i;
+      },
+      composeAlreadyPresent: function (text) {
+        var body = String(text || "");
+        if (
+          /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i.test(body) ||
+          /LD-DESIGN-PAGE-COMPOSE-CONTRACT \| Layers: L0/i.test(body)
+        ) {
+          return true;
+        }
+        return /design page activity materials fidelity \(auto-applied\)/i.test(body);
+      }
+    };
+    if (typeof window !== "undefined" && root === window) {
+      window.PRISM_LD_DESIGN_PAGE_COMPOSE = root.PRISM_LD_DESIGN_PAGE_COMPOSE;
+    }
+  }
+
+  function buildLdDesignPageComposePromptBlock(options) {
+    bootstrapLdDesignPageComposeInlineIfMissing();
+    bootstrapLdMaterialsCopyInlineIfMissing();
+    bootstrapLdTableFidelityInlineIfMissing();
+    var lib = resolveLdDesignPageComposeLib();
+    var opts = options && typeof options === "object" ? options : {};
+    if (!opts.materialsCopyBlock) {
+      opts.materialsCopyBlock = buildLdMaterialsCopyPromptBlock({
+        role: "preserve",
+        includeMarker: false
+      });
+    }
+    if (!opts.tableFidelityBlock) {
+      opts.tableFidelityBlock = buildLdTableFidelityPromptBlock({
+        role: "preserve",
+        includeMarker: false
+      });
+    }
+    if (lib && typeof lib.buildLdDesignPageComposePromptBlock === "function") {
+      return lib.buildLdDesignPageComposePromptBlock(opts);
+    }
+    var includeFieldPreservation = opts.includeFieldPreservation !== false;
+    var lines = [
       "",
-      "Self-directed learner-page table row adequacy (auto-applied):",
-      "- Tables, analysis_table, timeline templates, and mapping templates must include enough blank or prompt-labelled rows for the stated learner_task — never a single blank row when multiple learner responses are required.",
-      "- Matching or mapping tasks: include one row per expected match when the activity lists events, stages, works, or prompts (e.g. four life events → at least four data rows).",
-      "- Timeline table templates: include one blank/prompt-labelled row per listed stage or phase in learner_task or required_materials (row order in the template is not the answer key).",
-      "- Comparison tables: include enough rows for each entity or dimension the learner must compare.",
-      "- Label prompt rows in the first column when useful; leave response cells empty for learner completion."
-    ].join("\n");
+      "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):",
+      "- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | Layers: L0–L3 page compose, L5 field preservation | Read-only assembly — do not redesign pedagogy.",
+      "- MATERIALS FIDELITY (compose): visual_affordances[] are additive page-root metadata only.",
+      "- L4 preserve (embedded):"
+    ];
+    if (includeFieldPreservation) {
+      lines.push(
+        "- Activity field preservation: copy activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge, expected_output, support_note verbatim when present upstream."
+      );
+    }
+    if (opts.materialsCopyBlock) lines.push(opts.materialsCopyBlock);
+    if (opts.tableFidelityBlock) lines.push(opts.tableFidelityBlock);
+    return lines.join("\n");
+  }
+
+  function ldDesignPageComposeAlreadyPresent(draftBody) {
+    bootstrapLdDesignPageComposeInlineIfMissing();
+    var lib = resolveLdDesignPageComposeLib();
+    if (lib && typeof lib.composeAlreadyPresent === "function") {
+      return lib.composeAlreadyPresent(draftBody);
+    }
+    return (
+      /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i.test(draftBody) ||
+      /design page activity materials fidelity \(auto-applied\)/i.test(draftBody)
+    );
+  }
+
+  function applyLdDesignPageComposeContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context)) return draftBody;
+    if (ldDesignPageComposeAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var includeFieldPreservation =
+      shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold(
+        context,
+        resolved,
+        base
+      );
+    return (
+      draftBody +
+      buildLdDesignPageComposePromptBlock({ includeFieldPreservation: includeFieldPreservation })
+    ).trim();
+  }
+
+  function ldSelfDirectedRhetoricRoleForContext(context) {
+    if (isWorkflowStepDesignPage(context)) return "design_page";
+    if (isWorkflowStepGenerateActivityMaterials(context)) return "gam";
+    if (isWorkflowStepAssessmentProducer(context)) return "assessment";
+    if (isWorkflowStepDesignLearningActivities(context)) return "dla";
+    return "core";
+  }
+
+  function applyLdSelfDirectedRhetoricContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    bootstrapLdSelfDirectedRhetoricInlineIfMissing();
+    var lib = resolveLdSelfDirectedRhetoricLib();
+    if (lib && typeof lib.rhetoricAlreadyPresent === "function" && lib.rhetoricAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    return (
+      draftBody +
+      buildLdSelfDirectedRhetoricPromptBlock({
+        role: ldSelfDirectedRhetoricRoleForContext(context)
+      })
+    ).trim();
+  }
+
+  function applyLdMaterialsCopyContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    if (!isGam) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (
+      !shouldApplySelfDirectedLearnerPageGamMaterialScaffold(context, resolved, base)
+    ) {
+      return draftBody;
+    }
+    if (
+      ldMaterialsCopyMarkerRegex().test(draftBody) ||
+      ldMaterialsCopyModuleIdInTextRegex().test(draftBody)
+    ) {
+      return draftBody;
+    }
+    return (
+      draftBody + buildLdMaterialsCopyPromptBlock({ role: "author", includeMarker: false })
+    ).trim();
+  }
+
+  function applyLdTableFidelityContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isDesignPage = isWorkflowStepDesignPage(context);
+    var isGam = isWorkflowStepGenerateActivityMaterials(context);
+    if (!isDla && !isDesignPage && !isGam) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (isGam) {
+      if (
+        !shouldApplySelfDirectedLearnerPageGamMaterialScaffold(context, resolved, base)
+      ) {
+        return draftBody;
+      }
+      if (
+        ldTableFidelityMarkerRegex().test(draftBody) ||
+        ldTableFidelityLegacyGamRowAdequacyRegex().test(draftBody)
+      ) {
+        return draftBody;
+      }
+      return (draftBody + buildLdTableFidelityPromptBlock({ role: "author" })).trim();
+    }
+    if (isDla) {
+      if (
+        !shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base)
+      ) {
+        return draftBody;
+      }
+      if (
+        ldTableFidelityMarkerRegex().test(draftBody) ||
+        ldTableFidelityLegacyGamRowAdequacyRegex().test(draftBody)
+      ) {
+        return draftBody;
+      }
+      return (draftBody + buildLdTableFidelityPromptBlock({ role: "dla" })).trim();
+    }
+    return draftBody;
   }
 
   function buildSelfDirectedGamReadingSufficiencyPromptBlock() {
@@ -7694,45 +8157,29 @@
     var lines = [
       "",
       "Sprint 38 pedagogical added-value contract (auto-applied):",
-      "- preferred_representation names layout family only; it does not specify what new reasoning support the figure must add.",
-      "- On every generate row, include pedagogical_added_value: one or two sentences stating cognitive support materials do not already provide (beyond purpose + token).",
-      "- Generic QA: a generated visual must contribute reasoning support not already adequately provided by activity materials.",
-      "- Fail affordance authoring (use reject or revise must_show) when the figure would be: duplicate worksheet, duplicate table, duplicate answer structure, topic poster, illustrated summary, or generic infographic.",
-      "- Align must_show with discriminating cues the materials lack; must_not_show must block worksheet/table duplication and answer keys.",
-      "- Human-designer test: reviewer must be able to explain what cognitive support the figure provides — not only draw an empty structure."
+      "- preferred_representation names layout family only; every generate row requires pedagogical_added_value (1–2 sentences: cognitive support materials lack, beyond purpose + token).",
+      "- QA: generated figure must add reasoning support not already in activity.materials; reject/revise when duplicate worksheet, duplicate table, duplicate answer structure, topic poster, illustrated summary, or generic infographic — figures only, never omit or shorten page materials.",
+      "- must_show / must_not_show: discriminating cues materials lack; block worksheet/table duplication and answer keys in figures.",
+      "- Human-designer test: reviewer must be able to explain what cognitive support the figure provides — not structure alone.",
+      "- Per-token must_add / must_not_duplicate (REPRESENTATION_PEDAGOGICAL_VALUE at runtime): classification_matrix — must_add: discriminating cues, decision criteria, category distinctions | must_not_duplicate: blank worksheet duplication, filled answer key, completed classification cells; apply other representation tokens from the catalog when authoring."
     ];
     if (pv && pv.GENERIC_QA_RULE) {
       lines.push("- QA rule: " + pv.GENERIC_QA_RULE);
-    }
-    var catalog = pv && pv.REPRESENTATION_PEDAGOGICAL_VALUE ? pv.REPRESENTATION_PEDAGOGICAL_VALUE : null;
-    if (catalog) {
-      lines.push("- Per-token must_add / must_not_duplicate (use when authoring generate rows):");
-      Object.keys(catalog).forEach(function (token) {
-        var row = catalog[token];
-        if (!row) return;
-        lines.push(
-          "  " +
-            token +
-            " — must_add: " +
-            (row.must_add || []).join(", ") +
-            " | must_not_duplicate: " +
-            (row.must_not_duplicate || []).join(", ")
-        );
-      });
     }
     return lines;
   }
 
   function buildSprint38VisualAffordanceDesignPagePromptBlock() {
     var exampleGenerate =
-      '{\n  "affordance_id": "va-A3-classification-01",\n  "activity_id": "A3",\n  "visual_decision": "generate",\n  "rationale": "Learners classify inflation scenarios by causal mechanism before completing the analysis table.",\n  "visual_slot": "materials-entry",\n  "tier": "valuable",\n  "purpose": "classification",\n  "preferred_representation": "classification_matrix",\n  "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.",\n  "reasoning_supported": "Learners classify inflation scenarios by causal mechanism without being given the completed classifications.",\n  "learner_stage": "pre_classification",\n  "anti_spoiler": true,\n  "spoiler_boundary": {\n    "hide_answers": true,\n    "hide_classification_keys": true,\n    "hide_model_solution": true,\n    "allow_structural_hint": true\n  },\n  "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"],\n  "canonical_discipline_note": "Use economics cause categories as empty labelled structures; do not imply all inflation has a single cause.",\n  "requires_exact_data_match": false,\n  "must_show": ["demand-pull inflation", "cost-push inflation", "wage-price spiral", "evidence or cause cues for typing"],\n  "must_not_show": ["scenario answer key", "completed classification cells", "blank worksheet grid duplicating analysis_table"],\n  "allowed_claims": ["Different causal mechanisms can produce inflation.", "Classification depends on the driver of the price increase."],\n  "disallowed_claims": ["All inflation has one cause.", "All price rises are inflation."],\n  "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table",\n  "caption_intent": "Orient classification with cause-type discriminating cues — do not complete the learner table.",\n  "discipline_risk_level": "medium"\n}';
+      '{"affordance_id": "va-A3-classification-01", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull inflation", "cost-push inflation", "wage-price spiral"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."], "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
     var exampleReject =
-      '{\n  "affordance_id": "va-A1-reject-01",\n  "activity_id": "A1",\n  "visual_decision": "reject",\n  "rejection_reason": "assessment_text_sufficient",\n  "rationale": "The scenario cards and checklist already provide the classification structure; an added visual would duplicate the learner task."\n}';
+      '{"affordance_id": "va-A1-reject-01", "activity_id": "A1", "visual_decision": "reject", "rejection_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task."}';
     var exampleDefer =
-      '{\n  "affordance_id": "va-A2-defer-01",\n  "activity_id": "A2",\n  "visual_decision": "defer",\n  "defer_reason": "worked_example_sufficient_first",\n  "rationale": "The worked example and calculation table should be attempted before any visual summary is introduced."\n}';
+      '{"affordance_id": "va-A2-defer-01", "activity_id": "A2", "visual_decision": "defer", "defer_reason": "worked_example_sufficient_first", "rationale": "Attempt the worked example and calculation table before any visual summary."}';
     return [
       "",
       "Sprint 38 visual affordance authoring contract (auto-applied):",
+      "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (see LD-DESIGN-PAGE-COMPOSE-CONTRACT).",
       "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
       "- Every visual_affordances[] row requires affordance_id (unique string) and activity_id.",
       "- visual_decision must be exactly: generate, defer, or reject.",
@@ -7746,7 +8193,7 @@
       "- generate rows must include: affordance_id, activity_id, visual_decision, rationale, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (≥1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
       "- defer rows: affordance_id, activity_id, visual_decision, defer_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
       "- reject rows: affordance_id, activity_id, visual_decision, rejection_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
-      "- For inflation-style workshops: prefer at least one valid generate for A3 (classification) and/or A4 (data_pattern_reading with number_line_segments when numeric materials exist); use defer for worked-example-first activities and reject for debrief-only or duplicate-structure activities.",
+      "- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; reject debrief-only or duplicate-structure activities.",
       "- activities_visual_review[]: one row per upstream activity_id with activity_visual_value.decision high|medium|low|none and rationale.",
       "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (use [] if empty), visual_affordances (use [] if empty).",
       "",
@@ -7761,6 +8208,16 @@
     ]
       .concat(buildSprint38PedagogicalAddedValuePromptLines())
       .join("\n");
+  }
+
+  /** @deprecated PR-W3-2 — use buildLdDesignPageComposePromptBlock */
+  function buildDesignPageActivityMaterialsFidelityPromptBlock(options) {
+    return buildLdDesignPageComposePromptBlock(options || {});
+  }
+
+  /** @deprecated PR-W3-2 — use applyLdDesignPageComposeContractToDraft */
+  function applyDesignPageActivityMaterialsFidelityContractToDraft(draftText, context) {
+    return applyLdDesignPageComposeContractToDraft(draftText, context);
   }
 
   function applySprint38VisualAffordanceContractToDraft(draftText, context) {
@@ -8352,8 +8809,11 @@
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
+    draft = applyLdTableFidelityContractToDraft(draft, ctx);
+    draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
+    draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     return String(draft || "").trim();
   }
@@ -8435,19 +8895,9 @@
         draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
     }
-    if (
-      isDesignPage &&
-      applyDesignPagePreservation &&
-      !/self-directed page activity field preservation \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (
-        draftBody + buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock()
-      ).trim();
-    }
     if (isGam && applyGamScaffolds) {
-      if (!/self-directed learner-page table row adequacy \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (draftBody + buildSelfDirectedGamTableRowAdequacyPromptBlock()).trim();
-      }
+      draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
+      draftBody = applyLdMaterialsCopyContractToDraft(draftBody, context);
       if (!/self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedGamReadingSufficiencyPromptBlock()).trim();
       }
@@ -8458,59 +8908,8 @@
         draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
       }
     }
-    if (applyLearnerActionRhetoric && !/learner-action rhetoric \(auto-applied\)/i.test(draftBody)) {
-      draftBody = (draftBody + buildSelfDirectedLearnerActionRhetoricPromptBlock()).trim();
-    }
-    if (applyLearnerActionRhetoric && !/worked-example and faded-support \(auto-applied\)/i.test(draftBody)) {
-      draftBody = (draftBody + buildSelfDirectedWorkedExampleFadingPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/embedded feedback and misconception interruption \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedEmbeddedFeedbackMisconceptionPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/concept\/procedure integration \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedConceptProcedureIntegrationPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/metacognitive closure and evaluative judgement \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedMetacognitiveJudgementPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/session orientation rhetoric \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedSessionOrientationRhetoricPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/conceptual tension and difficulty framing \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedConceptualTensionDifficultyPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/intellectual progression signalling \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedIntellectualProgressionPromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/epistemic synthesis and closure \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedEpistemicSynthesisClosurePromptBlock()).trim();
-    }
-    if (
-      applyLearnerActionRhetoric &&
-      !/transfer and durable understanding \(auto-applied\)/i.test(draftBody)
-    ) {
-      draftBody = (draftBody + buildSelfDirectedTransferDurableUnderstandingPromptBlock()).trim();
+    if (applyLearnerActionRhetoric) {
+      draftBody = applyLdSelfDirectedRhetoricContractToDraft(draftBody, context);
     }
     return draftBody;
   }
@@ -35034,9 +35433,25 @@
       buildSprint38PedagogicalAddedValuePromptLines;
     prismTestApi.applySprint38VisualAffordanceContractToDraft =
       applySprint38VisualAffordanceContractToDraft;
+    prismTestApi.buildLdTableFidelityPromptBlock = buildLdTableFidelityPromptBlock;
+    prismTestApi.applyLdTableFidelityContractToDraft = applyLdTableFidelityContractToDraft;
+    prismTestApi.buildLdMaterialsCopyPromptBlock = buildLdMaterialsCopyPromptBlock;
+    prismTestApi.applyLdMaterialsCopyContractToDraft = applyLdMaterialsCopyContractToDraft;
+    prismTestApi.buildDesignPageActivityMaterialsFidelityPromptBlock =
+      buildDesignPageActivityMaterialsFidelityPromptBlock;
+    prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =
+      applyDesignPageActivityMaterialsFidelityContractToDraft;
+    prismTestApi.buildLdDesignPageComposePromptBlock = buildLdDesignPageComposePromptBlock;
+    prismTestApi.applyLdDesignPageComposeContractToDraft =
+      applyLdDesignPageComposeContractToDraft;
+    prismTestApi.buildLdMathRenderPromptBlock = buildLdMathRenderPromptBlock;
     prismTestApi.buildMathSafeOutputContractPromptBlock =
       buildMathSafeOutputContractPromptBlock;
     prismTestApi.applyMathSafeOutputContractToDraft = applyMathSafeOutputContractToDraft;
+    prismTestApi.buildLdSelfDirectedRhetoricPromptBlock =
+      buildLdSelfDirectedRhetoricPromptBlock;
+    prismTestApi.applyLdSelfDirectedRhetoricContractToDraft =
+      applyLdSelfDirectedRhetoricContractToDraft;
     prismTestApi.SPRINT_30_PEC_IDS = SPRINT_30_PEC_IDS;
     prismTestApi.PEL_ORIENTATION_FIELD_IDS = PEL_ORIENTATION_FIELD_IDS;
     prismTestApi.PEL_REASONING_FIELD_IDS = PEL_REASONING_FIELD_IDS;

@@ -41,6 +41,26 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  vm.runInContext(
+    fs.readFileSync(path.join(repoRoot, "lib", "ld-table-fidelity.js"), "utf8"),
+    sandbox,
+    { filename: "ld-table-fidelity.js" }
+  );
+  vm.runInContext(
+    fs.readFileSync(path.join(repoRoot, "lib", "ld-materials-copy.js"), "utf8"),
+    sandbox,
+    { filename: "ld-materials-copy.js" }
+  );
+  vm.runInContext(
+    fs.readFileSync(path.join(repoRoot, "lib", "ld-math-render.js"), "utf8"),
+    sandbox,
+    { filename: "ld-math-render.js" }
+  );
+  vm.runInContext(
+    fs.readFileSync(path.join(repoRoot, "lib", "ld-self-directed-rhetoric.js"), "utf8"),
+    sandbox,
+    { filename: "ld-self-directed-rhetoric.js" }
+  );
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -105,9 +125,53 @@ test("GAM prompt: table row adequacy scaffold for self-directed learner page", (
     "Generate activity materials.\n",
     ctx
   );
-  assert.match(prompt, /table row adequacy \(auto-applied\)/i);
+  assert.match(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+  assert.match(prompt, /LD-MATERIALS-COPY \| Layer: L4/i);
+  assert.match(prompt, /Author role \(Generate Activity Materials\)/i);
+  assert.doesNotMatch(prompt, /LD-MATERIALS-COPY \(auto-applied\)/i);
   assert.match(prompt, /never a single blank row when multiple learner responses/i);
   assert.match(prompt, /one row per expected match/i);
+  assert.match(prompt, /complete pipe table with header row, divider row/i);
+});
+
+test("DLA prompt: LD-TABLE-FIDELITY spec role for self-directed learner page", () => {
+  const resolved = marxResolvedFactors();
+  resolved.delivery_context = "self_directed";
+  resolved.session_materials = ["page"];
+  const ctx = {
+    workflowGoal: MARX_BRIEF.goal,
+    desiredOutputs: MARX_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities",
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applyLdTableFidelityContractToDraft(
+    "Design learning activities.\n",
+    ctx
+  );
+  assert.match(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+  assert.match(prompt, /Spec role \(Design Learning Activities\)/i);
+  assert.match(prompt, /pipe markdown tables in Generate Activity Materials/i);
+  assert.doesNotMatch(prompt, /Author role \(Generate Activity Materials\)/i);
+  assert.doesNotMatch(prompt, /Preserve role \(Design Page\)/i);
+});
+
+test("DLA prompt: table fidelity omitted for facilitated delivery", () => {
+  const resolved = marxResolvedFactors();
+  resolved.delivery_context = "in_person";
+  resolved.session_materials = ["page"];
+  const ctx = {
+    workflowGoal: MARX_BRIEF.goal,
+    desiredOutputs: MARX_BRIEF.desiredOutputs,
+    stepCanonicalTitle: "Design Learning Activities",
+    stepCanonicalStepId: "step_design_learning_activities",
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applyLdTableFidelityContractToDraft(
+    "Design learning activities.\n",
+    ctx
+  );
+  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
 });
 
 test("evaluateTableRowAdequacyForLearnerTask: mapping table with four events needs four rows", () => {
@@ -319,7 +383,7 @@ test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {
     "Generate activity materials.\n",
     ctx
   );
-  assert.doesNotMatch(prompt, /table row adequacy \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /reading sufficiency \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /timeline sequencing alignment \(auto-applied\)/i);
 });

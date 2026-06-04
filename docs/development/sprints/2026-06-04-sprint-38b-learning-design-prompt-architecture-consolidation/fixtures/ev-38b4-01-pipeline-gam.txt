@@ -1,0 +1,109 @@
+Activity: Classify Key Inflation Concepts  
+Activity ID: A1  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy.
+
+Material: M1 (classification_table)  
+Purpose: Provide terms and definitions related to inflation for classification  
+Content:  
+| Term           | Definition                                                                                   | Example                                      | Category (to classify)       |
+|----------------|----------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------|
+| Inflation      | A general increase in prices and fall in the purchasing value of money over time.            | Prices of groceries rising year over year.   |                              |
+| Deflation      | A general decrease in prices and increase in the purchasing power of money.                  | Falling prices during a recession.            |                              |
+| Hyperinflation | Extremely rapid or out-of-control inflation, often exceeding 50% per month.                   | Zimbabwe’s inflation in the late 2000s.      |                              |
+| Stagflation    | A situation where inflation is high but economic growth is stagnant and unemployment is high.| 1970s US economy with rising prices and unemployment.|                              |
+
+---
+
+Activity: Compare Inflation Measurement Methods  
+Activity ID: A2  
+Mapped outcomes: Explain the Consumer Price Index (CPI) and its role in measuring inflation.
+
+Material: M2 (comparison_table)  
+Purpose: Provide data and descriptions of CPI and alternative inflation measurement methods  
+Content:  
+| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                                  |
+|-----------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|-----------------------------------------------|
+| Consumer Price Index (CPI)  | Measures average change over time in prices paid by consumers for a market basket of goods and services. | Tracks prices of a fixed basket of consumer goods and services monthly or quarterly. | Used to track cost of living changes and inflation targeting by governments. |
+| Producer Price Index (PPI)  | Measures average change over time in selling prices received by domestic producers for their output. | Tracks prices at the wholesale or producer level before goods reach consumers. | Used to predict future consumer inflation and analyze inflation at production stage. |
+| GDP Deflator           | Measures price changes for all goods and services included in GDP, reflecting inflation across the economy. | Calculated as (Nominal GDP / Real GDP) × 100.      | Used to measure overall inflation in the economy including investment and government spending. |
+
+---
+
+Activity: Analyze Inflation Impact on Household Budgeting  
+Activity ID: A3  
+Mapped outcomes: Analyze the impact of inflation on household purchasing power and budgeting.
+
+Material: M3 (analysis_table)  
+Purpose: Provide household budget data before and after inflation adjustments  
+Content:  
+| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  |
+|----------------------|----------------------------|--------------------------|----------------------|-------------------------------------------------|
+| Groceries            | 400                        | 440                      | 10                   | Increased food costs reduce discretionary income. |
+| Utilities            | 150                        | 165                      | 10                   | Higher bills may require budget adjustments.     |
+| Transportation       | 100                        | 110                      | 10                   | Rising fuel costs impact commuting expenses.     |
+| Entertainment        | 80                         | 88                       | 10                   | May lead to reduced spending on leisure activities. |
+| Rent/Mortgage        | 1000                       | 1000                     | 0                    | Fixed housing costs remain stable in short term. |
+| Total Monthly Budget | 1730                       | 1803                     | 4.15                 | Overall budget pressure increases due to inflation.|
+
+---
+
+Activity: Evaluate Strategies to Manage Inflation Effects  
+Activity ID: A4  
+Mapped outcomes: Evaluate strategies households can use to manage the effects of inflation on their finances.
+
+Material: M4 (impact_table)  
+Purpose: List common household financial strategies and their effectiveness against inflation  
+Content:  
+| Strategy                   | Description                                                                                      | Pros                                                      | Cons                                                      | Effectiveness Rating (1=Low, 5=High) |
+|----------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-------------------------------------|
+| Budgeting Adjustments      | Revising household budgets to prioritize essential expenses and reduce discretionary spending. | Helps control spending, immediate impact on finances.     | May reduce quality of life, requires discipline.          | 4                                   |
+| Investment Diversification | Spreading investments across assets like stocks, bonds, and real estate to hedge against inflation. | Potential to grow wealth and offset inflation losses.     | Risk of market volatility, requires financial knowledge.  | 5                                   |
+| Price Comparison Shopping  | Actively comparing prices and seeking discounts to reduce costs on goods and services.          | Saves money on everyday purchases, easy to implement.     | Time-consuming, savings may be limited.                    | 3                                   |
+| Fixed-Rate Borrowing       | Taking loans with fixed interest rates to avoid rising borrowing costs during inflation.         | Protects against rising interest rates, predictable costs.| Not always accessible, increases debt burden.             | 4                                   |
+
+---
+
+Activity: Synthesize Inflation Knowledge in a Personal Finance Plan  
+Activity ID: A5  
+Mapped outcomes: Understand the concept of inflation and how it affects the overall economy., Explain the Consumer Price Index (CPI) and its role in measuring inflation., Analyze the impact of inflation on household purchasing power and budgeting., Evaluate strategies households can use to manage the effects of inflation on their finances.
+
+Material: M1 (classification_table)  
+Purpose: Reference key inflation concepts  
+Content:  
+| Term           | Definition                                                                                   | Example                                      | Category (to classify)       |
+|----------------|----------------------------------------------------------------------------------------------|----------------------------------------------|------------------------------|
+| Inflation      | A general increase in prices and fall in the purchasing value of money over time.            | Prices of groceries rising year over year.   |                              |
+| Deflation      | A general decrease in prices and increase in the purchasing power of money.                  | Falling prices during a recession.            |                              |
+| Hyperinflation | Extremely rapid or out-of-control inflation, often exceeding 50% per month.                   | Zimbabwe’s inflation in the late 2000s.      |                              |
+| Stagflation    | A situation where inflation is high but economic growth is stagnant and unemployment is high.| 1970s US economy with rising prices and unemployment.|                              |
+
+Material: M2 (comparison_table)  
+Purpose: Reference inflation measurement methods  
+Content:  
+| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                                  |
+|-----------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|-----------------------------------------------|
+| Consumer Price Index (CPI)  | Measures average change over time in prices paid by consumers for a market basket of goods and services. | Tracks prices of a fixed basket of consumer goods and services monthly or quarterly. | Used to track cost of living changes and inflation targeting by governments. |
+| Producer Price Index (PPI)  | Measures average change over time in selling prices received by domestic producers for their output. | Tracks prices at the wholesale or producer level before goods reach consumers. | Used to predict future consumer inflation and analyze inflation at production stage. |
+| GDP Deflator           | Measures price changes for all goods and services included in GDP, reflecting inflation across the economy. | Calculated as (Nominal GDP / Real GDP) × 100.      | Used to measure overall inflation in the economy including investment and government spending. |
+
+Material: M3 (analysis_table)  
+Purpose: Reference household budget impact  
+Content:  
+| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  |
+|----------------------|----------------------------|--------------------------|----------------------|-------------------------------------------------|
+| Groceries            | 400                        | 440                      | 10                   | Increased food costs reduce discretionary income. |
+| Utilities            | 150                        | 165                      | 10                   | Higher bills may require budget adjustments.     |
+| Transportation       | 100                        | 110                      | 10                   | Rising fuel costs impact commuting expenses.     |
+| Entertainment        | 80                         | 88                       | 10                   | May lead to reduced spending on leisure activities. |
+| Rent/Mortgage        | 1000                       | 1000                     | 0                    | Fixed housing costs remain stable in short term. |
+| Total Monthly Budget | 1730                       | 1803                     | 4.15                 | Overall budget pressure increases due to inflation.|
+
+Material: M4 (impact_table)  
+Purpose: Reference financial strategies  
+Content:  
+| Strategy                   | Description                                                                                      | Pros                                                      | Cons                                                      | Effectiveness Rating (1=Low, 5=High) |
+|----------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-------------------------------------|
+| Budgeting Adjustments      | Revising household budgets to prioritize essential expenses and reduce discretionary spending. | Helps control spending, immediate impact on finances.     | May reduce quality of life, requires discipline.          | 4                                   |
+| Investment Diversification | Spreading investments across assets like stocks, bonds, and real estate to hedge against inflation. | Potential to grow wealth and offset inflation losses.     | Risk of market volatility, requires financial knowledge.  | 5                                   |
+| Price Comparison Shopping  | Actively comparing prices and seeking discounts to reduce costs on goods and services.          | Saves money on everyday purchases, easy to implement.     | Time-consuming, savings may be limited.                    | 3                                   |
+| Fixed-Rate Borrowing       | Taking loans with fixed interest rates to avoid rising borrowing costs during inflation.         | Protects against rising interest rates, predictable costs.| Not always accessible, increases debt burden.             | 4                                   |

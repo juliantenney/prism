@@ -1,0 +1,224 @@
+{
+  "capturedAt": "2026-06-04T12:19:57.765Z",
+  "model": "gpt-4.1-mini",
+  "promptChars": {
+    "dla": 4690,
+    "gam": 5033,
+    "design_page": 22560
+  },
+  "gamTables": [
+    {
+      "activity_id": "A1",
+      "material_id": "M1",
+      "type": "classification_table",
+      "analysis": {
+        "path": "GAM.A1.classification_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       | |----------------|----------"
+      }
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M2",
+      "type": "comparison_table",
+      "analysis": {
+        "path": "GAM.A2.comparison_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                               "
+      }
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M3",
+      "type": "analysis_table",
+      "analysis": {
+        "path": "GAM.A3.analysis_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  | |----------------------|----------------------------|----------"
+      }
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M4",
+      "type": "impact_table",
+      "analysis": {
+        "path": "GAM.A4.impact_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                          "
+      }
+    },
+    {
+      "activity_id": "A5",
+      "material_id": "M1",
+      "type": "classification_table",
+      "analysis": {
+        "path": "GAM.A5.classification_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       | |----------------|----------"
+      }
+    },
+    {
+      "activity_id": "A5",
+      "material_id": "M2",
+      "type": "comparison_table",
+      "analysis": {
+        "path": "GAM.A5.comparison_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                               "
+      }
+    },
+    {
+      "activity_id": "A5",
+      "material_id": "M3",
+      "type": "analysis_table",
+      "analysis": {
+        "path": "GAM.A5.analysis_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  | |----------------------|----------------------------|----------"
+      }
+    },
+    {
+      "activity_id": "A5",
+      "material_id": "M4",
+      "type": "impact_table",
+      "analysis": {
+        "path": "GAM.A5.impact_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                          "
+      }
+    }
+  ],
+  "pageMaterialRows": [],
+  "pageMergedRows": [],
+  "comparisons": [
+    {
+      "activity_id": "A1",
+      "table_type": "classification_table",
+      "gam": {
+        "path": "GAM.A1.classification_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       | |----------------|----------"
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A2",
+      "table_type": "comparison_table",
+      "gam": {
+        "path": "GAM.A2.comparison_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                               "
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A3",
+      "table_type": "analysis_table",
+      "gam": {
+        "path": "GAM.A3.analysis_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  | |----------------------|----------------------------|----------"
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A4",
+      "table_type": "impact_table",
+      "gam": {
+        "path": "GAM.A4.impact_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                          "
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A5",
+      "table_type": "classification_table",
+      "gam": {
+        "path": "GAM.A5.classification_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Term           | Definition                                                                                   | Example                                      | Category (to classify)       | |----------------|----------"
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A5",
+      "table_type": "comparison_table",
+      "gam": {
+        "path": "GAM.A5.comparison_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Measure               | Definition                                                                                     | Calculation Method                                  | Typical Uses                               "
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A5",
+      "table_type": "analysis_table",
+      "gam": {
+        "path": "GAM.A5.analysis_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Expense Category     | Price Before Inflation ($) | Price After Inflation ($) | Percentage Change (%) | Notes on Impact                                  | |----------------------|----------------------------|----------"
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    },
+    {
+      "activity_id": "A5",
+      "table_type": "impact_table",
+      "gam": {
+        "path": "GAM.A5.impact_table",
+        "kind": "string",
+        "issues": [],
+        "pipeOk": true,
+        "excerpt": "| Strategy                   | Description                                                                                      | Pros                                                      | Cons                          "
+      },
+      "page": null,
+      "degradation": "membership-loss"
+    }
+  ],
+  "renderFlags": {
+    "hasSemanticTable": false,
+    "hasCsvTable": false
+  },
+  "b4": {
+    "B4_01": false,
+    "B4_02": false,
+    "B4_03": false
+  }
+}

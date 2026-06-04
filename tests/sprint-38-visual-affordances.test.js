@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const s38LibPath = path.join(repoRoot, "lib", "sprint38-visual-affordances.js");
@@ -101,6 +102,7 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   vm.runInContext(s38Source, sandbox, { filename: "sprint38-visual-affordances.js" });
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -344,6 +346,8 @@ function designPageAugmentedPrompt(api) {
 test("Design Page runtime augmentation includes Sprint 38 authoring contract and examples", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
+  assert.match(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(augmented, /additive page-root metadata only/i);
   assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
   assert.match(augmented, /Sprint 38 pedagogical added-value contract \(auto-applied\)/i);
   assert.match(augmented, /pedagogical_added_value/i);

@@ -1,0 +1,50 @@
+# Probe 39-3 — Cue authoring example (planning only)
+# Schema 38.4 — illustrates Option A (enriched must_show) vs Option B (reasoning_cues)
+# Not enforced in production until post-39 implementation approval.
+
+---
+# OPTION A — enrich existing fields (preferred pending 39-3 audit)
+affordance_id: va-A3-classification-01-cue-rich
+activity_id: A3
+visual_decision: generate
+rationale: Learners classify inflation scenarios by causal mechanism before completing the analysis table.
+
+purpose: classification
+preferred_representation: classification_matrix
+pedagogical_added_value: >
+  Makes perceptible how demand-pull, cost-push, and wage-price spiral differ in scenario symptoms
+  before learners fill the analysis_table — not a blank copy of that table.
+
+reasoning_supported: >
+  Learners map each scenario symptom to a cause category using discriminating visual signals only.
+
+# Sprint 39 target: must_show as PERCEPTIBLE CUE LIST
+must_show:
+  - empty cause-type row and column headers (no scenario classification keys)
+  - icon or label pair contrasting demand shock vs cost-push symptom in scenario strip
+  - wage-price spiral shown as feedback loop graphic separate from one-off supply shock
+  - decision prompt visible in figure margin "which driver best explains scenario 2?" without answer
+must_not_show:
+  - completed analysis_table cells
+  - scenario answer key
+  - filled classification matrix matching learner worksheet layout 1:1
+
+allowed_claims:
+  - Different mechanisms can produce inflation.
+  - Classification depends on observable scenario symptoms.
+disallowed_claims:
+  - All inflation has one cause.
+  - Pre-assigned cause labels per scenario row
+
+# ... remaining 38.4 generate fields unchanged (anti_spoiler, representation_avoid, etc.)
+
+---
+# OPTION B — dedicated reasoning_cues (illustrative — requires 39-3 justification)
+# affordance_id: va-A3-classification-01-cue-field
+# reasoning_cues:
+#   - cue_type: discriminating_cue
+#     cue_text: Demand-pull vs cost-push symptoms use different iconography in the scenario strip.
+#     perceptual_target: scenario strip left of matrix
+#   - cue_type: evaluation_cue
+#     cue_text: Learner must judge best driver for scenario 2 without seeing the table key.
+#     perceptual_target: marginal decision callout

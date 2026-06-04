@@ -1,0 +1,169 @@
+{
+  "capturedAt": "2026-06-04T12:10:25.755Z",
+  "model": "gpt-4.1-mini",
+  "promptAugmentedChars": 5033,
+  "gamOutputChars": 6923,
+  "sanitizeChanged": true,
+  "analysis": {
+    "globalCommaRow": false,
+    "globalHeadersRows": false,
+    "globalFacilitator": false,
+    "tableBlocks": [
+      {
+        "activity_id": "A1",
+        "material_id": "M3",
+        "type": "classification_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 392,
+        "excerpt": "| Item           | Rising price? | Affects students? |   |----------------|--------------|-------------------|   | Loaf of bread  | Yes          | Yes               |   | Electricity bill| Yes        "
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M1",
+        "type": "comparison_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 1137,
+        "excerpt": "| Indicator     | What it measures                      | Main use                         | Example items included          | Frequency of update | Limitations                     |   |--------------"
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M2",
+        "type": "analysis_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 672,
+        "excerpt": "| Scenario | Who is affected?                     | Main price pressure        | Policy angle                  |   |----------|------------------------------------|----------------------------|-------"
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M2",
+        "type": "impact_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 493,
+        "excerpt": "| Scenario  | Cost pressure         | Revenue pressure       | Short-run response                |   |-----------|-----------------------|-----------------------|---------------------------------|   |"
+      }
+    ],
+    "badBlocks": [],
+    "blocks": [
+      {
+        "activity_id": "A1",
+        "material_id": "M1",
+        "type": "scenario",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 465,
+        "excerpt": "**Scenario 1: Household A**   - Last year, the price of a loaf of bread was $2. This year, it costs $2.20.   - The monthly electricity bill was $50 last year and is now $55.   - The family’s income ha"
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M2",
+        "type": "task_cards",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 600,
+        "excerpt": "**Task Card 1:** What do you think the word \"inflation\" means? Write your own definition in one sentence.   **Task Card 2:** Look at the price changes in the scenarios. Which items have increased in p"
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M3",
+        "type": "classification_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 392,
+        "excerpt": "| Item           | Rising price? | Affects students? |   |----------------|--------------|-------------------|   | Loaf of bread  | Yes          | Yes               |   | Electricity bill| Yes        "
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M1",
+        "type": "comparison_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 1137,
+        "excerpt": "| Indicator     | What it measures                      | Main use                         | Example items included          | Frequency of update | Limitations                     |   |--------------"
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M2",
+        "type": "prompt_set",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 216,
+        "excerpt": "1. How do the CPI, PPI, and GDP deflator differ in what they measure?   2. Why might policymakers prefer one indicator over the others?   3. What are some challenges in using these indicators to under"
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M3",
+        "type": "checklist",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 216,
+        "excerpt": "- Have you completed all rows of the comparison table?   - Did you answer all three discussion prompts clearly?   - Have you checked your answers for accuracy and completeness?   - Is your work neat a"
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M1",
+        "type": "scenario",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 602,
+        "excerpt": "**Scenario A:** Retired couple living on a fixed pension. Prices for food and utilities have increased by 10% this year. Their income is fixed and does not adjust with inflation.   **Scenario B:** Sin"
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M2",
+        "type": "analysis_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 672,
+        "excerpt": "| Scenario | Who is affected?                     | Main price pressure        | Policy angle                  |   |----------|------------------------------------|----------------------------|-------"
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M1",
+        "type": "scenario",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 335,
+        "excerpt": "**Scenario 1:** Small business owner facing a 15% increase in raw material costs but stable sales revenue.   **Scenario 2:** Freelancer experiencing a 10% rise in software subscription fees and a 5% i"
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M2",
+        "type": "impact_table",
+        "isTable": true,
+        "pipeOk": true,
+        "issues": [],
+        "contentChars": 493,
+        "excerpt": "| Scenario  | Cost pressure         | Revenue pressure       | Short-run response                |   |-----------|-----------------------|-----------------------|---------------------------------|   |"
+      },
+      {
+        "activity_id": "A5",
+        "material_id": "M1",
+        "type": "prompt_set",
+        "isTable": false,
+        "pipeOk": false,
+        "issues": [],
+        "contentChars": 238,
+        "excerpt": "1. What are the main challenges policymakers face when addressing inflation?   2. How can communication about inflation impact public perception and behaviour?   3. What strategies can help households"
+      }
+    ]
+  },
+  "l4_07Pass": true,
+  "b4AtGam": "PASS"
+}

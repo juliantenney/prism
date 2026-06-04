@@ -22,7 +22,7 @@ The Visual Enhancement Utility is not the primary bottleneck; **upstream pedagog
 | Activity + session pedagogy | Sprint 35 fields; Sprint 37 §6g–6k framing |
 | Visual placement | Sprint 36 `.util-visual-affordance` + `data-visual-slot`; VEU v1.1.1 embed rules |
 | Workshop policy | Sprint 37-6 learner-supportive vs facilitator-only materials |
-| **Test floor** | **642 pass / 0 fail** (`node --test tests/*.test.js`) |
+| **Test floor** | **697 pass / 0 fail** (`node --test tests/*.test.js`) |
 
 ---
 
@@ -65,6 +65,25 @@ Qualitative findings from live/regenerated inflation workshop + enhancement pass
 | 38-6 LD affordance emission | **Complete** | §38-6 below |
 | 38-7 Renderer alignment | **Complete** | §38-7 below |
 | 38-8 VEU v1.2.1 patch | **Complete** | §38-8 below |
+| 38-6 Pedagogical added value | **Complete** | [observations/38-6-pedagogical-added-value-contract.md](observations/38-6-pedagogical-added-value-contract.md) + §38-6b below |
+
+**E2E validated:** Design Page → Compose → Renderer → VEU authoritative → image generation. See [ARCHITECTURE.md](ARCHITECTURE.md).
+
+---
+
+## 38-6b implementation (pedagogical added value)
+
+**Date:** 2026-06-03
+
+| Area | Path |
+|------|------|
+| Catalog | `lib/sprint38-representation-pedagogical-value.js` |
+| Design | `observations/38-6-pedagogical-added-value-contract.md` |
+| 38-3 token tables | `must_add` / `must_not_duplicate` per representation |
+| LD + VEU prompts | `buildSprint38PedagogicalAddedValuePromptLines()`; VEU 38-6 block in `build-veu-v121-json.js` |
+| Tests | `tests/sprint-38-pedagogical-added-value.test.js` |
+
+**Field:** `pedagogical_added_value` (recommended on generate; not a validator required field).
 
 ---
 

@@ -1,0 +1,140 @@
+Activity: Inflation concepts warm-up  
+Activity ID: A1  
+Mapped outcomes: Activate prior knowledge, Agree working definition of inflation  
+
+Material: M1 (scenario)  
+Purpose: Price change scenarios  
+Content:  
+**Scenario 1: Household A**  
+- Last year, the price of a loaf of bread was $2. This year, it costs $2.20.  
+- The monthly electricity bill was $50 last year and is now $55.  
+- The family’s income has remained the same over the year.  
+
+**Scenario 2: Household B**  
+- Last year, a movie ticket cost $10. This year, it costs $11.  
+- The price of gasoline was $3 per litre last year and is now $3.30 per litre.  
+- The household’s income increased by 5% this year.  
+
+---
+
+Material: M2 (task_cards)  
+Purpose: Warm-up cards  
+Content:  
+**Task Card 1:** What do you think the word "inflation" means? Write your own definition in one sentence.  
+**Task Card 2:** Look at the price changes in the scenarios. Which items have increased in price? List them.  
+**Task Card 3:** How might inflation affect a household’s spending? Discuss and note your ideas.  
+**Task Card 4:** Can inflation be good or bad? Give one reason for each.  
+**Task Card 5:** Using the scenarios, explain if the families are experiencing inflation. Why or why not?  
+**Task Card 6:** Agree on one shared definition of inflation for your group. Write it down clearly.  
+
+---
+
+Material: M3 (classification_table)  
+Purpose: Item classification  
+Content:  
+| Item           | Rising price? | Affects students? |  
+|----------------|--------------|-------------------|  
+| Loaf of bread  | Yes          | Yes               |  
+| Electricity bill| Yes          | Yes               |  
+| Movie ticket   | Yes          | Yes               |  
+| Gasoline       | Yes          | Yes               |  
+| Household income| No           | Yes               |  
+
+---
+
+Activity: Measuring Inflation: Indicator Comparison  
+Activity ID: A2  
+Mapped outcomes: Compare inflation indicators, Understand measurement differences  
+
+Material: M1 (comparison_table)  
+Purpose: Indicator comparison  
+Content:  
+| Indicator     | What it measures                      | Main use                         | Example items included          | Frequency of update | Limitations                     |  
+|---------------|-------------------------------------|---------------------------------|--------------------------------|---------------------|--------------------------------|  
+| CPI (Consumer Price Index) | Average price change of goods and services bought by households | Measures cost of living changes for consumers | Food, clothing, housing, transport | Monthly             | May not reflect all spending patterns |  
+| PPI (Producer Price Index) | Average price change received by producers for goods and services | Measures inflation at the wholesale or production level | Raw materials, intermediate goods | Monthly             | Does not reflect consumer prices directly |  
+| GDP Deflator  | Price change of all goods and services produced domestically | Measures overall inflation in the economy | All domestically produced goods and services | Quarterly           | Includes investment and government spending, not just consumer prices |  
+
+---
+
+Material: M2 (prompt_set)  
+Purpose: Discussion prompts  
+Content:  
+1. How do the CPI, PPI, and GDP deflator differ in what they measure?  
+2. Why might policymakers prefer one indicator over the others?  
+3. What are some challenges in using these indicators to understand inflation?  
+
+---
+
+Material: M3 (checklist)  
+Purpose: Submission check  
+Content:  
+- Have you completed all rows of the comparison table?  
+- Did you answer all three discussion prompts clearly?  
+- Have you checked your answers for accuracy and completeness?  
+- Is your work neat and easy to read?  
+
+---
+
+Activity: Household scenario — fixed income  
+Activity ID: A3  
+Mapped outcomes: Analyse inflation impact on fixed income households  
+
+Material: M1 (scenario)  
+Purpose: Household scenarios  
+Content:  
+**Scenario A:** Retired couple living on a fixed pension. Prices for food and utilities have increased by 10% this year. Their income is fixed and does not adjust with inflation.  
+**Scenario B:** Single parent on a fixed salary contract. Rent and childcare costs have risen by 8%. Salary remains unchanged.  
+**Scenario C:** Elderly individual receiving fixed social benefits. Medicine and healthcare prices have increased by 12%. Benefits are not inflation-indexed.  
+**Scenario D:** Disabled person on fixed disability payments. Transportation and food costs have risen by 9%. Payments remain fixed.  
+
+---
+
+Material: M2 (analysis_table)  
+Purpose: Worksheet table  
+Content:  
+| Scenario | Who is affected?                     | Main price pressure        | Policy angle                  |  
+|----------|------------------------------------|----------------------------|------------------------------|  
+| A        | Retired couple                     | Food, utilities            | Consider pension indexation  |  
+| B        | Single parent                      | Rent, childcare            | Rent control, wage support   |  
+| C        | Elderly individual                 | Medicine, healthcare       | Healthcare subsidies         |  
+| D        | Disabled person                   | Transportation, food       | Disability payment adjustments|  
+
+---
+
+Activity: Household scenario — variable costs  
+Activity ID: A4  
+Mapped outcomes: Compare inflation effects on variable cost households  
+
+Material: M1 (scenario)  
+Purpose: Cost scenarios  
+Content:  
+**Scenario 1:** Small business owner facing a 15% increase in raw material costs but stable sales revenue.  
+**Scenario 2:** Freelancer experiencing a 10% rise in software subscription fees and a 5% increase in client payments.  
+**Scenario 3:** Retail worker whose transportation costs have risen by 12%, but wages have not increased.  
+
+---
+
+Material: M2 (impact_table)  
+Purpose: Impact grid  
+Content:  
+| Scenario  | Cost pressure         | Revenue pressure       | Short-run response                |  
+|-----------|-----------------------|-----------------------|---------------------------------|  
+| 1         | Raw materials +15%    | Revenue stable        | Reduce production or raise prices|  
+| 2         | Software fees +10%    | Client payments +5%   | Negotiate fees or cut expenses   |  
+| 3         | Transport +12%        | Wages unchanged       | Reduce discretionary spending    |  
+
+---
+
+Activity: Policy and communication wrap-up  
+Activity ID: A5  
+Mapped outcomes: Reflect on policy and communication about inflation  
+
+Material: M1 (prompt_set)  
+Purpose: Wrap-up prompts  
+Content:  
+1. What are the main challenges policymakers face when addressing inflation?  
+2. How can communication about inflation impact public perception and behaviour?  
+3. What strategies can help households cope with inflation pressures?  
+
+---

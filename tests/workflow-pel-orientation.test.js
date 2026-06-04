@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -94,6 +95,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -257,12 +259,10 @@ test("30-1: Design Page runtime prompt includes PEL orientation and field preser
     "Design Page"
   );
   assert.match(prompt, PEL_ORIENTATION_MARKER);
-  assert.match(prompt, /self-directed page activity field preservation \(auto-applied\)/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /Activity field preservation/i);
   assert.match(prompt, /study_orientation, intellectual_frame, intellectual_coherence_bridge/);
-  assert.match(
-    prompt,
-    /preserve study_orientation, intellectual_frame, intellectual_coherence_bridge, and PEL reasoning fields/i
-  );
+  assert.match(prompt, /intellectual_coherence_bridge/i);
 });
 
 test("30-1: facilitated workshop DLA runtime prompt excludes PEL orientation marker", () => {

@@ -1,6 +1,6 @@
 # Sprint 38 — observations
 
-Store **pedagogical visual affordance** review notes here: audit findings, taxonomy, representation mapping, enrichment schema, and enhancement handover.
+Store **pedagogical visual affordance** review notes here: audit findings, taxonomy, representation mapping, enrichment schema, and enhancement handover. **Architecture (implemented):** [../ARCHITECTURE.md](../ARCHITECTURE.md).
 
 Prefer short markdown with fixture IDs, prompt/domain paths, and date. Do not commit large HTML dumps unless needed for diff review; reference `buildUtilityStructuredHtmlForTest` or VEU analyse JSON instead.
 

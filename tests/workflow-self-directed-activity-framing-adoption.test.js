@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -54,6 +55,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -126,21 +128,15 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
   assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
-  assert.match(prompt, /learner-action rhetoric \(auto-applied\)/i);
-  assert.match(prompt, /worked-example and faded-support \(auto-applied\)/i);
-  assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
-  assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
-  assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
-  assert.match(prompt, /session orientation rhetoric \(auto-applied\)/i);
-  assert.match(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
-  assert.match(prompt, /intellectual progression signalling \(auto-applied\)/i);
-  assert.match(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
-  assert.match(prompt, /transfer and durable understanding \(auto-applied\)/i);
+  assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /worked-example and faded-support \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
   assert.match(prompt, /named move \+ changed context/i);
   assert.match(prompt, /limit of transfer/i);
   assert.match(prompt, /what should now be clearer/i);
   assert.match(prompt, /Explicitly avoid:.*reflect on your learning/i);
-  assert.match(prompt, /intellectual_coherence_bridge: on every activity after the first/i);
+  assert.match(prompt, /intellectual_coherence_bridge on every activity after the first/i);
   assert.match(prompt, /Bad bridge shape.*Building on the previous activity/i);
   assert.match(prompt, /interpretive ambiguity/i);
   assert.match(prompt, /do not repeat the overview tension verbatim/i);
@@ -151,7 +147,7 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /step → meaning/i);
   assert.match(prompt, /Check your thinking:/i);
   assert.match(prompt, /modelled reasoning/i);
-  assert.match(prompt, /expected_output: describe evidence of completion/i);
+  assert.match(prompt, /expected_output describes evidence of completion/i);
 });
 
 test("facilitated workshop brief: DLA prompt does not include self-directed output contract", () => {
@@ -182,16 +178,8 @@ test("facilitated workshop brief: DLA prompt does not include self-directed outp
   }, resolved);
   assert.doesNotMatch(prompt, /output contract \(self-directed learner page/i);
   assert.doesNotMatch(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /worked-example and faded-support \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /concept\/procedure integration \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /session orientation rhetoric \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /intellectual progression signalling \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /transfer and durable understanding \(auto-applied\)/i);
 });
 
 test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
@@ -205,22 +193,16 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
     stepCanonicalStepId: "step_design_page",
     workflowBriefResolution: { resolvedFactors: resolved }
   };
-  const prompt = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+  const scaffolded = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
     "Assemble learner page.\n",
     ctx
   );
-  assert.match(prompt, /self-directed page activity field preservation \(auto-applied\)/i);
+  const prompt = api.applyLdDesignPageComposeContractToDraft(scaffolded, ctx);
+  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /Activity field preservation/i);
   assert.match(prompt, /expected_output and support_note/i);
-  assert.match(prompt, /learner-action rhetoric \(auto-applied\)/i);
-  assert.match(prompt, /worked-example and faded-support \(auto-applied\)/i);
-  assert.match(prompt, /embedded feedback and misconception interruption \(auto-applied\)/i);
-  assert.match(prompt, /concept\/procedure integration \(auto-applied\)/i);
-  assert.match(prompt, /metacognitive closure and evaluative judgement \(auto-applied\)/i);
-  assert.match(prompt, /session orientation rhetoric \(auto-applied\)/i);
-  assert.match(prompt, /conceptual tension and difficulty framing \(auto-applied\)/i);
-  assert.match(prompt, /intellectual progression signalling \(auto-applied\)/i);
-  assert.match(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
-  assert.match(prompt, /transfer and durable understanding \(auto-applied\)/i);
+  assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
+  assert.match(prompt, /Design Page rider/i);
   assert.match(prompt, /mechanism evidence does not transfer to policy/i);
   assert.match(prompt, /what distinction can now be sustained/i);
   assert.match(prompt, /cumulative reasoning journeys/i);

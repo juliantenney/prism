@@ -45,6 +45,13 @@ Templates: [../fixtures/](../fixtures/). **Planning closure:** [../PLANNING-CLOS
 | W3-3 Sprint 38 slim | [38B-W3-3-sprint38-prompt-slimming.md](38B-W3-3-sprint38-prompt-slimming.md) | **DONE** |
 | W3-4 Inflation gate | [38B-W3-4-inflation-gate-evidence.md](38B-W3-4-inflation-gate-evidence.md) | **PASS** |
 
+### Sprint 38-C candidate (observation)
+
+| Slice | Observation | Status |
+|-------|-------------|--------|
+| Design Page richness (Inflation) | [38C-design-page-richness-review.md](38C-design-page-richness-review.md) | **COMPLETE** (evidence only) |
+| Self-study resource quality (Inflation) | [38C-self-study-resource-quality-review.md](38C-self-study-resource-quality-review.md) | **COMPLETE** (evidence only) |
+
 **Wave 3 probe:** Design Page augmented **24,771** (seeded **7,745**, **5** markers); four-step sum **71,960**. Tests: **730/730**. Gate script: `scripts/probe-38b4-w3-inflation-gate.js`.
 
 ---

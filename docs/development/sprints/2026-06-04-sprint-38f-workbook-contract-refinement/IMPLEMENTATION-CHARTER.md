@@ -248,7 +248,8 @@
 | **Workbook overall** | **FAIL** (V-10 / R3) |
 | Hypothesis | **Partially supported** |
 | `app.js` changed | **No** |
-| **Successor** | **Sprint 38-G** — Retrieval Density Refinement (proposed) |
+| Post-closure review | [38F-8](observations/38F-8-inflation-page-quality-review.md) — professional workbook **FAIL** |
+| **Successor (proposed, not chartered)** | **Sprint 38-G** — **Activity Component Quality** per [38F-8 §10](observations/38F-8-inflation-page-quality-review.md) |
 
 ---
 

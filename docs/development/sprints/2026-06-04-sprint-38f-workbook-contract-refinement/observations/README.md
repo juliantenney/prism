@@ -7,5 +7,8 @@
 | 38F-3 Regression prompt-surface check | [38F-3-regression-prompt-surface-check.md](38F-3-regression-prompt-surface-check.md) | **COMPLETE** |
 | 38F-4 Inflation re-run and scorecard | [38F-4-inflation-after-scorecard.md](38F-4-inflation-after-scorecard.md) | **COMPLETE** |
 | 38F-5 Final evaluation and sprint closure | [38F-5-final-evaluation-and-sprint-closure.md](38F-5-final-evaluation-and-sprint-closure.md) | **COMPLETE** |
+| 38F-6 Retrieval validation calibration | [38F-6-retrieval-validation-calibration.md](38F-6-retrieval-validation-calibration.md) | **COMPLETE** |
+| 38F-7 Retrieval definition and page-review setup | [38F-7-retrieval-definition-and-page-review-setup.md](38F-7-retrieval-definition-and-page-review-setup.md) | **COMPLETE** |
+| 38F-8 Inflation page quality review | [38F-8-inflation-page-quality-review.md](38F-8-inflation-page-quality-review.md) | **COMPLETE** |
 
-**Sprint 38-F:** **CLOSED** (2026-06-04). **Next programme:** Sprint **38-G** — Retrieval Density Refinement per [38F-5 §9–§10](38F-5-final-evaluation-and-sprint-closure.md).
+**Sprint 38-F:** **CLOSED** (2026-06-04). **Programme handoff:** [38F-8 §10](38F-8-inflation-page-quality-review.md) — proposed **38-G Activity Component Quality**; **hold charter** until approved.

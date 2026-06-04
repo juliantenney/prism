@@ -68,6 +68,9 @@
 | **38F-3** | Regression prompt-surface check | [observations/38F-3-regression-prompt-surface-check.md](observations/38F-3-regression-prompt-surface-check.md) | **COMPLETE** |
 | **38F-4** | Inflation re-run and scorecard | [observations/38F-4-inflation-after-scorecard.md](observations/38F-4-inflation-after-scorecard.md) + `artefacts/EV-38F-AFTER-*` | **COMPLETE** |
 | **38F-5** | Final evaluation and sprint closure | [observations/38F-5-final-evaluation-and-sprint-closure.md](observations/38F-5-final-evaluation-and-sprint-closure.md) | **COMPLETE** |
+| **38F-6** | Retrieval validation calibration (pre–38-G) | [observations/38F-6-retrieval-validation-calibration.md](observations/38F-6-retrieval-validation-calibration.md) | **COMPLETE** |
+| **38F-7** | Retrieval definition and page-review setup | [observations/38F-7-retrieval-definition-and-page-review-setup.md](observations/38F-7-retrieval-definition-and-page-review-setup.md) | **COMPLETE** |
+| **38F-8** | Inflation page quality review | [observations/38F-8-inflation-page-quality-review.md](observations/38F-8-inflation-page-quality-review.md) | **COMPLETE** |
 
 Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
@@ -82,13 +85,15 @@ Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 | 38F-2 | **COMPLETE** (2026-06-04) — [contract refinement](observations/38F-2-contract-refinement.md); §5 DLA-WB-06a/18 · §6 GAM-WB-38F-01/10 |
 | 38F-3 | **COMPLETE** — 12/12 tests pass |
 | 38F-4 | **COMPLETE** — `EV-38F-AFTER`; Workbook **FAIL** (V-10); **V-01/V-05 Pass**; Preservation **PASS** |
-| 38F-5 | **COMPLETE** — [final closure](observations/38F-5-final-evaluation-and-sprint-closure.md); hypothesis **partially supported**; recommend **38-G** |
+| 38F-5 | **COMPLETE** — sprint **CLOSED** |
+| 38F-6 … 38F-8 | **COMPLETE** — calibration + [page quality review](observations/38F-8-inflation-page-quality-review.md) |
+| Proposed 38-G | **Activity Component Quality** — **not chartered** |
 | Pack edits | **§5 + §6** (`domain-learning-design-step-patterns.md`) |
 | Tests | `tests/workbook-contract-prompt-surface.test.js` (12 pass) |
 
 **Exit verdicts:** Workbook **FAIL** (V-10) · Preservation **PASS** · V-01/V-05 **Pass** · 38E-8/9 **retained**
 
-**Recommended next programme:** **Sprint 38-G** — Retrieval Density Refinement ([38F-5 §10](observations/38F-5-final-evaluation-and-sprint-closure.md)).
+**Post-closure review:** [38F-6](observations/38F-6-retrieval-validation-calibration.md) · [38F-7](observations/38F-7-retrieval-definition-and-page-review-setup.md) · [38F-8](observations/38F-8-inflation-page-quality-review.md) — professional workbook **FAIL**; structural V-01/V-05 **PASS**; proposed successor **38-G Activity Component Quality** (charter on hold).
 
 ---
 

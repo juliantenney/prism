@@ -47,3 +47,21 @@
 ## 2026-06-04 — 38F-5 Final evaluation and sprint closure — SPRINT CLOSED
 
 [38F-5](observations/38F-5-final-evaluation-and-sprint-closure.md): Hypothesis **partially supported** (V-01/V-05 + preservation + 38E-8/9 yes; full Workbook PASS no). **Workbook FAIL** · **Preservation PASS**. Recommend **B** → **Sprint 38-G** (retrieval density). Programme conclusions: authoring-contract primary; Design Page/renderer not primary; preservation sound. **Sprint 38-F: COMPLETE / CLOSED.**
+
+---
+
+## 2026-06-04 — 38F-6 Retrieval validation calibration (analysis only)
+
+[38F-6](observations/38F-6-retrieval-validation-calibration.md): Frozen `EV-38F-AFTER-design-page.json` has **no** `assessment_check` (0 formative items); 38F-4 harness = DLA→GAM→Page only. **Strict** and **learner-visible** scoring both → **Workbook FAIL** on this artefact. Validation **partially narrower** than pedagogy for hypothetical page-level MCQ ([38C-3 Q5]). Recommend **C**: calibrate 38D-4 V-10 for `assessment_check` when present **and** keep WB-11 for contract path; **hold 38-G charter** until policy + artefact alignment.
+
+---
+
+## 2026-06-04 — 38F-7 Retrieval definition and page-review setup
+
+[38F-7](observations/38F-7-retrieval-definition-and-page-review-setup.md): [38C-1](../../2026-06-04-sprint-38c-self-study-workbook-pedagogy/observations/38C-1-workbook-pedagogy-model.md) R3 = **required function** (≥2 verification episodes); material types are evidence hints. **V-10** spec is function-based; **38F-4** scorer over-constrained. Active tasks can satisfy R3 only with explicit check episodes. **38-G:** defer (**D**); next **C** page review on `EV-38F-AFTER-design-page.json`; parallel **B** validation calibration.
+
+---
+
+## 2026-06-04 — 38F-8 Inflation page quality review complete
+
+[38F-8](observations/38F-8-inflation-page-quality-review.md): First-glance professional workbook **FAIL**; contract structure **PASS**. Issues: missing preambles, terse tasks, thin scenarios, inflated timings, consolidation spoiler, dropped strategy activity (vs 38E10). Retrieval fails on **missing verification beats**, not types alone. Proposed **38-G — Activity Component Quality** (not chartered). **38-F remains CLOSED** with refined handoff.

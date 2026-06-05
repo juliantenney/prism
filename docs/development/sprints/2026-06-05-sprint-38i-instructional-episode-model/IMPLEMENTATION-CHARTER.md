@@ -1,7 +1,7 @@
 # Sprint 38-I — Implementation charter (Instructional Episode Model)
 
 **Date:** 2026-06-05  
-**Status:** **CHARTERED**  
+**Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
 **Predecessor:** [Sprint 38-H](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED** — [38H-5](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md))
 
 ---
@@ -92,7 +92,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | Review Sprints 28–31; extract journey stages, instructional functions, learner support patterns, activity types, self-study flow concepts |
 | **Deliverable** | `observations/38I-1-prior-pedagogical-journey-review.md` |
 | **Rule** | **Do not invent a new model** until earlier journey work is reviewed |
-| **Status** | **Not started** — **START HERE** |
+| **Status** | **COMPLETE** — [38I-1](observations/38I-1-prior-pedagogical-journey-review.md) |
 
 ---
 
@@ -103,7 +103,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | Define episode patterns by cognitive demand (Understand / Apply / Analyse / Evaluate; others if justified) |
 | **Deliverable** | `observations/38I-2-instructional-episode-model.md` |
 | **Depends on** | 38I-1 |
-| **Status** | Not started |
+| **Status** | **COMPLETE** — [38I-2](observations/38I-2-instructional-episode-model.md) |
 
 ---
 
@@ -114,7 +114,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | Map KM affordances and LO properties to episode components |
 | **Deliverable** | `observations/38I-3-km-lo-episode-mapping.md` |
 | **Depends on** | 38I-2 |
-| **Status** | Not started |
+| **Status** | **COMPLETE** — [38I-3](observations/38I-3-km-lo-episode-mapping.md) |
 
 ---
 
@@ -125,7 +125,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | Rich target-state examples using Inflation anchor |
 | **Deliverable** | `observations/38I-4-target-state-workbook-mockups.md` (+ optional artefacts) |
 | **Depends on** | 38I-2, 38I-3 |
-| **Status** | Not started |
+| **Status** | **COMPLETE** — [38I-4](observations/38I-4-target-state-workbook-mockups.md) |
 
 ---
 
@@ -136,7 +136,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | What future DLA/GAM/page changes would realise the episode model |
 | **Deliverable** | `observations/38I-5-implementation-implications.md` |
 | **Depends on** | 38I-4 |
-| **Status** | Not started |
+| **Status** | **COMPLETE** — [38I-5](observations/38I-5-implementation-implications.md) |
 
 ---
 
@@ -147,7 +147,7 @@ The **pedagogical** question is not yet explicit or rigorous enough.
 | **Purpose** | Close 38-I; programme recommendation |
 | **Deliverable** | `observations/38I-6-sprint-closure.md` |
 | **Depends on** | 38I-5 |
-| **Status** | Not started |
+| **Status** | **COMPLETE** — [38I-6](observations/38I-6-sprint-closure.md) |
 
 ---
 

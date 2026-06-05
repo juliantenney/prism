@@ -1,100 +1,51 @@
-# Context for next chat — Sprint 38-I
+# Context for next chat — Sprint 38-I (CLOSED)
 
-**Pack:** `docs/development/sprints/2026-06-05-sprint-38i-instructional-episode-model/`
-
-**Status:** **CHARTERED** — start **38I-1**
-
----
-
-## Programme arc
-
-| Sprint | Role |
-|--------|------|
-| **38-C … 38-F** | Workbook definition, contracts, structural refinement |
-| **38-G** | Activity component quality (ACM) — **CLOSED** · SIGNIFICANT SUCCESS |
-| **38-H** | Workbook realisation fidelity — **CLOSED** · SUCCESS |
-| **38-I** | **Instructional Episode Model** — pedagogical target state |
+**Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
+**Successor:** **Sprint 38-J** — Instructional Function Planning Implementation (**charter not yet created**)
 
 ---
 
-## The shift
+## What 38-I established
 
-We are now finally doing the **instructional design work** the architecture was built to support.
+Sprint 38-I converted pedagogical ambition into an **explicit instructional episode model** with Inflation target-state proof and an eight-item implementation path. **No pack/code/schema changes** were made.
 
-- **38G** proved the pipeline can **generate** richer instructional material (KM/LO → ACM → DLA/GAM).
-- **38H** proved the pipeline can **preserve** that material through to the learner-facing page.
-- **38I** defines the **pedagogical target state**: what excellent self-directed instructional episodes should look like.
-
-The question is no longer primarily:
-
-> *Can Prism generate and preserve workbook structures?*
-
-It is:
-
-> *What should an excellent self-directed instructional episode look like?*
+**Core finding:** Rich episodes are feasible in the existing architecture. The missing layer is **Instructional Function Planning** between LO and DLA — not schema, ACM, or renderer.
 
 ---
 
-## Architectural position (frozen)
+## Deliverables (complete)
+
+| Phase | Document |
+|-------|----------|
+| 38I-1 | [38I-1-prior-pedagogical-journey-review.md](observations/38I-1-prior-pedagogical-journey-review.md) |
+| 38I-2 | [38I-2-instructional-episode-model.md](observations/38I-2-instructional-episode-model.md) |
+| 38I-3 | [38I-3-km-lo-episode-mapping.md](observations/38I-3-km-lo-episode-mapping.md) |
+| 38I-4 | [38I-4-target-state-workbook-mockups.md](observations/38I-4-target-state-workbook-mockups.md) · [A4 episode](observations/artefacts/38I-4-a4-evaluate-learner-episode.md) |
+| 38I-5 | [38I-5-implementation-implications.md](observations/38I-5-implementation-implications.md) |
+| 38I-6 | [38I-6-sprint-closure.md](observations/38I-6-sprint-closure.md) |
+
+---
+
+## Next programme action (not started)
+
+**Charter Sprint 38-J** — Instructional Function Planning Implementation.
+
+**Target chain:**
 
 ```text
-KM → LO → ACM → DLA → GAM → Workbook Page
+KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA → GAM → Page
 ```
 
-**Do not redesign** this chain in 38-I. **Relate** episode patterns to it.
+**Scope (from 38I-6):** archetype selection, function-plan templates, KM triggers, inference contracts, anti-shell/anti-spoiler, function-ordered GAM, Inflation proof run.
+
+**Out of scope:** schema expansion, ACM redesign, renderer changes, new page components.
+
+**Do not** implement 38-J inside 38-I files. Create new sprint folder when ready.
 
 ---
 
-## Next action: 38I-1
+## Hold conditions (unchanged)
 
-| Phase | Task | Permission |
-|-------|------|------------|
-| **38I-1** | Review Sprints 28–31; extract pedagogical journey concepts | **Analysis only** |
-
-**Deliverable:** `observations/38I-1-prior-pedagogical-journey-review.md`
-
-**Rules:**
-
-- Do **not** invent a new episode model until prior journey work is reviewed.
-- Do **not** modify packs, code, or schemas.
-
----
-
-## Draft episode patterns (hypothesis — refine in 38I-2)
-
-| Level | Illustrative components |
-|-------|-------------------------|
-| **Understand** | orientation · activation · explanation · example · non-example · misconception challenge · self-check · transition |
-| **Apply** | context · process · worked example · guided practice · independent practice · verification · reflection |
-| **Analyse** | framing · criteria · worked analysis · guided reasoning · independent analysis · justification · transfer |
-| **Evaluate** | perspectives · criteria · trade-offs · judgement · justification · reflection · transfer |
-
----
-
-## Inherited gaps (for 38-I, not 38-H)
-
-| Gap | Notes |
-|-----|-------|
-| **H-04 Evaluate practice** | Pedagogy gap — deferred from 38-H |
-| **Uneven activation / transitions** | DLA authoring variance |
-| **38C-1 professional PASS** | Composite — episode model may clarify bar |
-
----
-
-## Do not reopen
-
-- 38G ACM redesign · 38H fidelity fixes  
-- V-01 / V-05 · 38E/38F structural contracts  
-- KM/LO schema · `app.js` · renderer · pipeline  
-
----
-
-## Frozen comparators
-
-Do not overwrite: EV-01 · `EV-38E5-AFTER-*` · `EV-38E10-AFTER-*` · `EV-38F-AFTER-*` · `EV-38G-AFTER-*`
-
----
-
-## Quick links
-
-[IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md) · [HANDOVER.md](HANDOVER.md) · [README.md](README.md) · [38H-5 closure](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md)
+- 38H fixes (anti-spoiler, table adjunct, KM harness)
+- 38G ACM ([38G-2](../2026-06-04-sprint-38g-activity-component-quality/observations/38G-2-activity-component-model.md))
+- V-01, V-05, 38E/38F material types

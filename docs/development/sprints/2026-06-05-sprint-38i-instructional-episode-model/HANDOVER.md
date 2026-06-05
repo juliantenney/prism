@@ -1,82 +1,66 @@
-# Handover — Sprint 38-H → Sprint 38-I
+# Handover — Sprint 38-I (CLOSED)
 
-**Pack:** [README.md](README.md) · **Status:** **CHARTERED**
-
-**Predecessor:** [Sprint 38-H](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED** — [38H-5](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md))
-
----
-
-## Why 38-I exists
-
-38-G and 38-H closed the **engineering** arc:
-
-| Sprint | Proved |
-|--------|--------|
-| **38-G** | Pipeline can **generate** richer instructional design (ACM) |
-| **38-H** | Pipeline can **preserve** that design through GAM and Design Page |
-
-The programme has crossed from **content assembly and preservation engineering** into **instructional design**.
-
-The remaining limitation is **not** architectural. It is **pedagogical**: the target model for what an excellent self-directed episode should contain is not yet explicit.
+**Sprint:** 38-I — Instructional Episode Model  
+**Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
+**Date closed:** 2026-06-05
 
 ---
 
-## What 38-I must achieve
+## Outcome
 
-Define **what good looks like** for self-directed workbook instructional episodes:
+Sprint 38-I succeeded. The programme now has:
 
-- Episode patterns by cognitive demand (Understand / Apply / Analyse / Evaluate)
-- Relationship to ACM components
-- Relationship to KM affordances and LO metadata
-- Evaluation criteria for rich self-study activities
-- Target-state examples (Inflation anchor)
-- Future implementation implications (docs only — no pack edits in 38-I)
+- Recovered instructional functions (38I-1)
+- Episode archetypes by cognitive demand (38I-2)
+- KM/LO → function mapping (38I-3)
+- Inflation target-state mock-ups + A4 learner episode (38I-4)
+- Implementation implications — Instructional Function Plan layer (38I-5)
+- Closure and 38-J recommendation (38I-6)
 
----
-
-## Do not reopen
-
-| Boundary | Rule |
-|----------|------|
-| **38G ACM model** | Frozen — relate to it, do not redesign |
-| **38H fidelity fixes** | GAM-WB-06b, DP-TABLE-ADJ-01, harness KM — hold |
-| **V-01 / V-05** | Hold 38F-2 |
-| **38E-8/9 types** | Do not strip |
-| **KM/LO schema** | No expansion in 38-I |
-| **`app.js` / renderer** | Out of charter |
-| **Frozen artefacts** | Do not overwrite EV-01 … EV-38G |
+**Core finding:** Missing layer is **instructional planning / DLA choreography**, not schema or renderer.
 
 ---
 
-## Start here — 38I-1
+## Successor sprint (recommended — not chartered)
 
-### Prior Pedagogical Journey Review
+### Sprint 38-J — Instructional Function Planning Implementation
 
-1. Read [Sprint 28 index](../../2026-05-21-sprint-28-pedagogic-richness-dialogic-learning/sprint-28-index.md) and related Sprints 29–31 materials.  
-2. **Do not invent a new model** until earlier journey work is reviewed.  
-3. Extract: journey stages, instructional functions, learner support patterns, activity types, self-study flow concepts, ACM alignment, concepts lost or diluted in later architecture work.  
-4. Write `observations/38I-1-prior-pedagogical-journey-review.md`.  
-5. **No** pack edits, **no** code, **no** schema changes in 38I-1.
+**Purpose:** Make rich instructional episodes **normal pipeline output**.
+
+**Target chain:**
+
+```text
+KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA → GAM → Page
+```
+
+**Start 38-J by:** Creating charter pack at `docs/development/sprints/2026-06-05-sprint-38j-instructional-function-planning/` (path TBD). Cite [38I-6](observations/38I-6-sprint-closure.md) §5–7.
+
+**Do not** reopen 38-I for implementation work.
 
 ---
 
-## Phase roadmap
+## Phase index (all complete)
 
-| Phase | Output |
+| Phase | Status |
 |-------|--------|
-| **38I-1** | Prior journey review — **START HERE** |
-| **38I-2** | Instructional episode model |
-| **38I-3** | KM/LO → episode mapping |
-| **38I-4** | Target-state mock-ups |
-| **38I-5** | Implementation implications |
-| **38I-6** | Closure |
-
-[IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
+| **38I-1** | Prior journey review — **COMPLETE** |
+| **38I-2** | Episode model — **COMPLETE** |
+| **38I-3** | KM/LO mapping — **COMPLETE** |
+| **38I-4** | Target-state mock-ups — **COMPLETE** |
+| **38I-5** | Implementation implications — **COMPLETE** |
+| **38I-6** | Closure — **COMPLETE** |
 
 ---
 
-## Suggested next chat
+## Key references for 38-J
 
-Open with **38I-1** only. Cite [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md).
+- [38I-5 implementation implications](observations/38I-5-implementation-implications.md) — minimum change set
+- [38I-4 target-state mock-ups](observations/38I-4-target-state-workbook-mockups.md) — success comparator
+- [38I-4 A4 learner episode](observations/artefacts/38I-4-a4-evaluate-learner-episode.md) — Evaluate exemplar
+- [38G-2 ACM](../2026-06-04-sprint-38g-activity-component-quality/observations/38G-2-activity-component-model.md) — frozen
+- [38H-5 closure](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md) — preservation hold
+- [EV-38G-AFTER DLA](../2026-06-04-sprint-38g-activity-component-quality/artefacts/EV-38G-AFTER-dla-learning-activities.json) — baseline
 
-**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md)
+---
+
+Open a **new chat for 38-J chartering**. Cite [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md).

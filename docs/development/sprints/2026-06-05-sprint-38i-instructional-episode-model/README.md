@@ -2,8 +2,9 @@
 
 **Pack path:** `docs/development/sprints/2026-06-05-sprint-38i-instructional-episode-model/`  
 **Date:** 2026-06-05  
-**Status:** **CHARTERED** — start **38I-1**  
-**Predecessor:** [Sprint 38-H — Workbook Realisation Fidelity](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED** — [38H-5](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md) · **SUCCESS**)
+**Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
+**Predecessor:** [Sprint 38-H](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED**)  
+**Successor:** **Sprint 38-J** — Instructional Function Planning Implementation (charter pending)
 
 **Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
@@ -44,12 +45,12 @@ Different **cognitive demands** require different **instructional episode patter
 
 | Phase | Focus | Deliverable | Status |
 |-------|--------|-------------|--------|
-| **38I-1** | Prior pedagogical journey review (Sprints 28–31) | `observations/38I-1-prior-pedagogical-journey-review.md` | **START HERE** |
-| **38I-2** | Instructional episode model | `observations/38I-2-instructional-episode-model.md` | Not started |
-| **38I-3** | KM/LO → episode mapping | `observations/38I-3-km-lo-episode-mapping.md` | Not started |
-| **38I-4** | Target-state workbook mock-ups (Inflation) | `observations/38I-4-target-state-workbook-mockups.md` | Not started |
-| **38I-5** | Implementation implications | `observations/38I-5-implementation-implications.md` | Not started |
-| **38I-6** | Sprint closure | `observations/38I-6-sprint-closure.md` | Not started |
+| **38I-1** | Prior pedagogical journey review (Sprints 28–31) | [38I-1](observations/38I-1-prior-pedagogical-journey-review.md) | **COMPLETE** |
+| **38I-2** | Instructional episode model | [38I-2](observations/38I-2-instructional-episode-model.md) | **COMPLETE** |
+| **38I-3** | KM/LO → episode mapping | [38I-3](observations/38I-3-km-lo-episode-mapping.md) | **COMPLETE** |
+| **38I-4** | Target-state workbook mock-ups (Inflation) | [38I-4](observations/38I-4-target-state-workbook-mockups.md) | **COMPLETE** |
+| **38I-5** | Implementation implications | [38I-5](observations/38I-5-implementation-implications.md) | **COMPLETE** |
+| **38I-6** | Sprint closure | [38I-6](observations/38I-6-sprint-closure.md) | **COMPLETE** |
 
 Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 

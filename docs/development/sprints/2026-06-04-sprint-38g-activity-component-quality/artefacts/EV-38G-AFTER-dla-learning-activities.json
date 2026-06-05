@@ -1,0 +1,163 @@
+{
+  "activities": [
+    {
+      "activity_id": "inflation_wb_01",
+      "title": "Understanding Inflation: Worked Example and Sample Output",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Explain the concept of inflation and its causes within an economic context."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_01_we",
+          "type": "worked_example",
+          "purpose": "Concept elucidation of inflation and its causes with stepwise expert reasoning",
+          "specification": "Stepwise explanation of inflation concept, causes, and economic context using definitions and relationships from the knowledge model"
+        },
+        {
+          "material_id": "inflation_wb_01_so",
+          "type": "sample_output",
+          "purpose": "Example learner response demonstrating correct explanation of inflation and causes",
+          "specification": "Completed learner task showing clear explanation referencing key concepts and causes"
+        },
+        {
+          "material_id": "inflation_wb_01_tc",
+          "type": "task_cards",
+          "purpose": "Guided steps and checklist for learner to study worked example and then produce own explanation",
+          "specification": "Checklist includes key points to verify understanding and common misconceptions to avoid"
+        }
+      ],
+      "learner_task": "## Understanding Inflation\n\nStudy the worked example carefully, noting how inflation and its causes are explained step-by-step. Then, write your own explanation of inflation and its main causes within an economic context, using the checklist to verify your reasoning.",
+      "expected_output": "A written explanation that correctly defines inflation, identifies at least two main causes, and links these causes to economic context, demonstrating understanding of the concept.",
+      "activity_preamble": "This activity introduces you to the concept of inflation and its causes through a detailed worked example. Use it to build a solid foundation before applying your knowledge in later tasks.",
+      "prior_knowledge_activation": "Recall any previous knowledge you have about price changes, money value, or economic conditions that affect everyday costs.",
+      "reasoning_orientation": "Focus on understanding the relationships between inflation, causes, and economic context as explained in the worked example.",
+      "self_explanation_prompt": "Can you explain why inflation happens and what factors cause it in your own words?",
+      "scaffold_hint_sequence": "Step 1: Identify the definition of inflation. Step 2: List causes mentioned. Step 3: Connect causes to economic context.",
+      "uncertainty_tension_prompt": "Consider why some causes might be more influential than others in different economic situations.",
+      "support_note": "Watch for common misconceptions such as confusing inflation with price increases of single items rather than general price level rise."
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "title": "Analyzing Inflation Trends Using Consumer Price Index (CPI) Table",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_02_ct",
+          "type": "analysis_table",
+          "purpose": "Practice-oriented CPI data table for learner to analyze inflation trends",
+          "specification": "Table includes CPI values over multiple years with columns for rate of change, trend classification, and interpretation notes to be completed by learner"
+        },
+        {
+          "material_id": "inflation_wb_02_ps",
+          "type": "prompt_set",
+          "purpose": "Checklist and guiding questions to support analysis and interpretation of CPI trends",
+          "specification": "Prompts include verifying calculations, identifying trend patterns, and reflecting on economic implications"
+        }
+      ],
+      "learner_task": "## Analyzing CPI Data\n\nUsing the provided CPI table, calculate the annual inflation rates, classify each year’s trend (e.g., rising, stable, falling), and interpret what these trends indicate about inflation over time. Use the prompt set to guide your analysis and verify your reasoning.",
+      "expected_output": "A completed CPI analysis table with calculated inflation rates, classified trends, and written interpretations explaining the inflation patterns and their economic significance.",
+      "activity_preamble": "This activity develops your ability to analyze inflation trends using the Consumer Price Index data. You will practice calculating rates and interpreting what these mean for the economy.",
+      "reasoning_orientation": "Apply quantitative analysis and reasoning to interpret CPI data and inflation trends accurately.",
+      "self_explanation_prompt": "What does a rising CPI indicate about inflation? How do stable or falling CPI trends affect economic understanding?",
+      "scaffold_hint_sequence": "Step 1: Calculate year-on-year CPI changes. Step 2: Classify trend direction. Step 3: Write interpretation linking to inflation concept.",
+      "support_note": "Ensure correct calculation of percentage changes and avoid mistaking short-term fluctuations for long-term trends."
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "title": "Household Scenarios: Impact of Inflation on Finances",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Assess the impacts of inflation on household finances and daily living expenses."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_03_scenario",
+          "type": "scenario",
+          "purpose": "Two household cases illustrating different inflation impact situations",
+          "specification": "Scenario includes detailed income, expense, and inflation rate data for two distinct households with specific names and contexts"
+        },
+        {
+          "material_id": "inflation_wb_03_at",
+          "type": "analysis_table",
+          "purpose": "Table for learner to analyze and compare inflation impacts on the two households",
+          "specification": "Table columns for recording impact on income, expenses, savings, and financial stress indicators for each household"
+        },
+        {
+          "material_id": "inflation_wb_03_checklist",
+          "type": "checklist",
+          "purpose": "Verification checklist to ensure learner considers all relevant financial aspects and inflation effects",
+          "specification": "Checklist includes prompts on income erosion, expense increases, coping strategies, and household differences"
+        }
+      ],
+      "learner_task": "## Evaluating Inflation Impact on Households\n\nReview the two household scenarios provided. Complete the analysis table by assessing how inflation affects each household’s finances, including income, expenses, and savings. Use the checklist to verify you have considered all key aspects.",
+      "expected_output": "A fully completed analysis table comparing inflation impacts on both households, with notes on financial stress and coping challenges, verified against the checklist.",
+      "activity_preamble": "This practice activity helps you apply your understanding of inflation’s effects on real household finances through detailed scenarios and structured analysis.",
+      "reasoning_orientation": "Use comparative reasoning to identify differential impacts of inflation on households with varying income and expense profiles.",
+      "self_explanation_prompt": "How does inflation affect each household differently? What financial pressures arise from inflation in these cases?",
+      "scaffold_hint_sequence": "Step 1: Identify income and expense changes due to inflation. Step 2: Compare impacts across households. Step 3: Reflect on financial stress and coping.",
+      "support_note": "Avoid assuming inflation affects all households equally; consider income sources and expense types carefully."
+    },
+    {
+      "activity_id": "inflation_wb_04",
+      "title": "Consolidation Summary: Managing Inflation Effects on Personal Budgets",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Explain the concept of inflation and its causes within an economic context.",
+        "Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends.",
+        "Assess the impacts of inflation on household finances and daily living expenses.",
+        "Evaluate various strategies to manage and mitigate the effects of inflation on personal budgets."
+      ],
+      "required_materials": [
+        {
+          "material_id": "inflation_wb_04_cs",
+          "type": "consolidation_summary",
+          "purpose": "Learner-facing template and guidance for session closure summary and reflection",
+          "specification": "Template requires summarizing ≥3 key ideas learned, reflection on personal budgeting strategies, and synthesis of inflation understanding"
+        },
+        {
+          "material_id": "inflation_wb_04_prompt_set",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts to support synthesis and evaluation of inflation management strategies",
+          "specification": "Prompts include questions on key takeaways, personal budget adjustments, and future planning"
+        }
+      ],
+      "learner_task": "## Consolidation and Reflection\n\nWrite a summary of what you have learned about inflation, its measurement, and its impact on households. Reflect on at least two strategies you could use to manage inflation’s effects on your personal budget. Use the prompt set to guide your reflection and ensure a thorough synthesis.",
+      "expected_output": "A written consolidation summary of at least 80 words that synthesizes key concepts, analyzes inflation impacts, and evaluates personal strategies to manage inflation, demonstrating integration of session learning.",
+      "activity_preamble": "This final activity helps you consolidate your learning and reflect on practical ways to manage inflation in your personal finances.",
+      "transfer_or_application_task": "Apply your learning to your own context by considering how inflation affects your budget and what strategies you might adopt.",
+      "self_explanation_prompt": "What are the most important things to remember about inflation and managing its effects? How will you apply this knowledge?",
+      "support_note": "Ensure your summary integrates multiple learning outcomes and moves beyond description to evaluation and personal application."
+    }
+  ],
+  "outcome_alignment": {
+    "inflation_wb_01": [
+      "Explain the concept of inflation and its causes within an economic context."
+    ],
+    "inflation_wb_02": [
+      "Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends."
+    ],
+    "inflation_wb_03": [
+      "Assess the impacts of inflation on household finances and daily living expenses."
+    ],
+    "inflation_wb_04": [
+      "Explain the concept of inflation and its causes within an economic context.",
+      "Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends.",
+      "Assess the impacts of inflation on household finances and daily living expenses.",
+      "Evaluate various strategies to manage and mitigate the effects of inflation on personal budgets."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes a consolidation summary with synthesis of key ideas and reflection on personal budgeting strategies to manage inflation.",
+    "workbook_contract_applied": true
+  }
+}

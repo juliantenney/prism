@@ -261,6 +261,16 @@ test("Design Page pack: materials fidelity in defaultPromptNotes and promptTempl
   assert.match(factory.promptTemplate, /generated figures only/i);
 });
 
+test("Design Page pack §13 38H-3: table-adjunct fidelity in prompt and notes", () => {
+  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
+  assert.match(factory.promptTemplate, /38H-3/i);
+  assert.match(factory.promptTemplate, /DP-TABLE-ADJ-01/i);
+  assert.match(factory.promptTemplate, /table-adjunct instructional prose/i);
+  assert.match(factory.promptTemplate, /do not reduce to pipe-only/i);
+  assert.match(factory.defaultPromptNotes, /38H-3 table-adjunct fidelity/i);
+  assert.match(factory.defaultPromptNotes, /DP-TABLE-ADJ-01/i);
+});
+
 test("Design Page learner page_profile does not bias materials summarisation", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const learner = factory.userOptions.find((o) => o.id === "page_profile").choices.find(
@@ -280,6 +290,8 @@ test("Design Page runtime augmentation includes compose contract with L4 preserv
   assert.match(augmented, /LD-TABLE-FIDELITY \| Layer: L4/i);
   assert.match(augmented, /Scenario 1,,,/i);
   assert.match(augmented, /Preserve role \(Design Page\)/i);
+  assert.match(augmented, /38H-3/i);
+  assert.match(augmented, /table-adjunct/i);
   assert.doesNotMatch(augmented, /LD-MATERIALS-COPY \(auto-applied\)/i);
   assert.match(augmented, /additive page-root metadata only/i);
   assert.match(augmented, /Set of scenarios/i);

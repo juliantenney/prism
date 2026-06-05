@@ -11,4 +11,4 @@
 | 38F-7 Retrieval definition and page-review setup | [38F-7-retrieval-definition-and-page-review-setup.md](38F-7-retrieval-definition-and-page-review-setup.md) | **COMPLETE** |
 | 38F-8 Inflation page quality review | [38F-8-inflation-page-quality-review.md](38F-8-inflation-page-quality-review.md) | **COMPLETE** |
 
-**Sprint 38-F:** **CLOSED** (2026-06-04). **Programme handoff:** [38F-8 §10](38F-8-inflation-page-quality-review.md) — proposed **38-G Activity Component Quality**; **hold charter** until approved.
+**Sprint 38-F:** **CLOSED** (2026-06-04). **Successor:** [Sprint 38-G — Activity Component Quality](../../2026-06-04-sprint-38g-activity-component-quality/) (**CHARTERED**)

@@ -4,7 +4,7 @@
 
 **Status:** **CLOSED** — [38F-5](observations/38F-5-final-evaluation-and-sprint-closure.md) · learner review [38F-8](observations/38F-8-inflation-page-quality-review.md)
 
-**Hold:** **Do not charter 38-G** until explicitly approved.
+**Successor:** [Sprint 38-G](../2026-06-04-sprint-38g-activity-component-quality/) (**CHARTERED** — start 38G-1 there)
 
 ---
 

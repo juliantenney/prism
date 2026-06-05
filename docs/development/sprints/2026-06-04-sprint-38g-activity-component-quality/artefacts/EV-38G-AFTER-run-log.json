@@ -1,0 +1,108 @@
+{
+  "capturedAt": "2026-06-05T08:15:42.813Z",
+  "sprint": "38-G",
+  "runId": "EV-38G-AFTER",
+  "phase": "38G-5",
+  "priorRuns": [
+    "EV-38F-AFTER",
+    "EV-38E10-AFTER"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household scenarios, and policy communication for first-year economics.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "promptChars": {
+    "dla": 15755,
+    "gam": 14796,
+    "design_page": 20555
+  },
+  "activityCount": 4,
+  "gamMaterialCount": 10,
+  "gamTypes": [
+    "worked_example",
+    "sample_output",
+    "task_cards",
+    "analysis_table",
+    "prompt_set",
+    "scenario",
+    "checklist",
+    "consolidation_summary"
+  ],
+  "materials": [
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_01_we",
+      "type": "worked_example",
+      "contentLen": 1244,
+      "contentPreview": "### Worked Example: Understanding Inflation and Its Causes **Step 1: Define Inflation** Inflation is the sustained increase in the general price level of goo"
+    },
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_01_so",
+      "type": "sample_output",
+      "contentLen": 576,
+      "contentPreview": "### Sample Learner Explanation of Inflation and Its Causes Inflation is when the overall prices of goods and services increase over time, which means money doe"
+    },
+    {
+      "activity_id": "inflation_wb_01",
+      "material_id": "inflation_wb_01_tc",
+      "type": "task_cards",
+      "contentLen": 745,
+      "contentPreview": "### Task Cards: Explaining Inflation and Its Causes - **Card 1:** Read the worked example carefully. Identify the definition of inflation and write it in your "
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "material_id": "inflation_wb_02_ct",
+      "type": "analysis_table",
+      "contentLen": 1056,
+      "contentPreview": "| Year | CPI Value | Annual Inflation Rate (%) | Trend Classification | Interpretation Notes | |-------|-----------|--------------------------"
+    },
+    {
+      "activity_id": "inflation_wb_02",
+      "material_id": "inflation_wb_02_ps",
+      "type": "prompt_set",
+      "contentLen": 645,
+      "contentPreview": "### Prompt Set: Analyzing CPI Trends 1. Have you correctly calculated the year-on-year inflation rates using the formula: \\[ \\text{Inflation Rate} = \\frac{\\t"
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "material_id": "inflation_wb_03_scenario",
+      "type": "scenario",
+      "contentLen": 776,
+      "contentPreview": "### Household Inflation Impact Scenarios **Household A: The Smith Family** - Income: $50,000 per year (fixed salary) - Monthly Expenses: $3,000 (including "
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "material_id": "inflation_wb_03_at",
+      "type": "analysis_table",
+      "contentLen": 978,
+      "contentPreview": "| Financial Aspect | Household A: Smith Family Impact | Household B: Lee Family Impact | Notes / Comments | |-----------------------"
+    },
+    {
+      "activity_id": "inflation_wb_03",
+      "material_id": "inflation_wb_03_checklist",
+      "type": "checklist",
+      "contentLen": 499,
+      "contentPreview": "### Inflation Impact Analysis Checklist - [ ] Have you considered how inflation reduces real income for fixed salary households? - [ ] Did you analyze how ri"
+    },
+    {
+      "activity_id": "inflation_wb_04",
+      "material_id": "inflation_wb_04_cs",
+      "type": "consolidation_summary",
+      "contentLen": 899,
+      "contentPreview": "### Consolidation Summary: Managing Inflation Effects on Personal Budgets In this session, you have learned that inflation is a general rise in prices that red"
+    },
+    {
+      "activity_id": "inflation_wb_04",
+      "material_id": "inflation_wb_04_prompt_set",
+      "type": "prompt_set",
+      "contentLen": 482,
+      "contentPreview": "### Reflection Prompts: Managing Inflation 1. What are the three most important ideas you learned about inflation and its causes? 2. How does understanding C"
+    }
+  ]
+}

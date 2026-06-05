@@ -249,7 +249,7 @@
 | Hypothesis | **Partially supported** |
 | `app.js` changed | **No** |
 | Post-closure review | [38F-8](observations/38F-8-inflation-page-quality-review.md) — professional workbook **FAIL** |
-| **Successor (proposed, not chartered)** | **Sprint 38-G** — **Activity Component Quality** per [38F-8 §10](observations/38F-8-inflation-page-quality-review.md) |
+| **Successor** | [Sprint 38-G — Activity Component Quality](../2026-06-04-sprint-38g-activity-component-quality/) (**CHARTERED**) |
 
 ---
 

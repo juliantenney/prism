@@ -1,0 +1,162 @@
+Activity: Understanding Inflation: Worked Example and Sample Output  
+Activity ID: inflation_wb_01  
+Mapped outcomes: Explain the concept of inflation and its causes within an economic context.
+
+Material: inflation_wb_01_we (worked_example)  
+Purpose: Concept elucidation of inflation and its causes with stepwise expert reasoning  
+Content:  
+### Worked Example: Understanding Inflation and Its Causes
+
+**Step 1: Define Inflation**  
+Inflation is the sustained increase in the general price level of goods and services in an economy over a period of time. It means that, on average, prices rise, and the purchasing power of money decreases.
+
+**Step 2: Identify the Main Causes of Inflation**  
+There are two primary causes of inflation:  
+- **Demand-pull inflation:** This occurs when aggregate demand in the economy exceeds aggregate supply, causing prices to rise. For example, increased consumer spending or government expenditure can push demand beyond supply capacity.  
+- **Cost-push inflation:** This happens when the costs of production increase, such as higher wages or raw material prices, leading producers to raise prices to maintain profit margins.
+
+**Step 3: Connect Causes to Economic Context**  
+Inflation affects the economy by reducing the real value of money, which impacts consumers’ purchasing power and can influence interest rates and wage negotiations. For instance, if inflation is caused by demand-pull factors during economic growth, it may signal an overheating economy. Conversely, cost-push inflation might be linked to supply shocks like rising oil prices.
+
+---
+
+Material: inflation_wb_01_so (sample_output)  
+Purpose: Example learner response demonstrating correct explanation of inflation and causes  
+Content:  
+### Sample Learner Explanation of Inflation and Its Causes
+
+Inflation is when the overall prices of goods and services increase over time, which means money doesn’t buy as much as before. One main cause is demand-pull inflation, which happens when people want to buy more than what is available, pushing prices up. Another cause is cost-push inflation, where the costs for businesses, like wages or materials, rise and they increase prices to cover these costs. Inflation affects the economy by lowering money’s value and can lead to higher interest rates or changes in wages.
+
+---
+
+Material: inflation_wb_01_tc (task_cards)  
+Purpose: Guided steps and checklist for learner to study worked example and then produce own explanation  
+Content:  
+### Task Cards: Explaining Inflation and Its Causes
+
+- **Card 1:** Read the worked example carefully. Identify the definition of inflation and write it in your own words.  
+- **Card 2:** List the two main causes of inflation described. For each, write a brief explanation and an example.  
+- **Card 3:** Explain how these causes relate to the wider economy. Why do demand-pull and cost-push factors lead to rising prices?  
+- **Card 4:** Use the checklist below to verify your explanation:  
+  - Have you defined inflation as a general increase in prices?  
+  - Did you include at least two causes with clear reasoning?  
+  - Did you connect causes to economic effects?  
+  - Did you avoid confusing inflation with price changes of single items?  
+
+---
+
+Activity: Analyzing Inflation Trends Using Consumer Price Index (CPI) Table  
+Activity ID: inflation_wb_02  
+Mapped outcomes: Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends.
+
+Material: inflation_wb_02_ct (analysis_table)  
+Purpose: Practice-oriented CPI data table for learner to analyze inflation trends  
+Content:  
+| Year | CPI Value | Annual Inflation Rate (%) | Trend Classification | Interpretation Notes                 |  
+|-------|-----------|---------------------------|----------------------|------------------------------------|  
+| 2018  | 100       |                           |                      | Base year                         |  
+| 2019  | 103       |                           |                      |                                    |  
+| 2020  | 105       |                           |                      |                                    |  
+| 2021  | 108       |                           |                      |                                    |  
+| 2022  | 110       |                           |                      |                                    |  
+
+*Instructions:* Calculate the annual inflation rate as the percentage change in CPI from the previous year. Classify each year’s trend as Rising, Stable, or Falling based on the inflation rate. Write notes interpreting what these trends suggest about inflation over time.
+
+---
+
+Material: inflation_wb_02_ps (prompt_set)  
+Purpose: Checklist and guiding questions to support analysis and interpretation of CPI trends  
+Content:  
+### Prompt Set: Analyzing CPI Trends
+
+1. Have you correctly calculated the year-on-year inflation rates using the formula:  
+\[
+\text{Inflation Rate} = \frac{\text{CPI}_{\text{current year}} - \text{CPI}_{\text{previous year}}}{\text{CPI}_{\text{previous year}}} \times 100\%
+\]  
+2. Can you identify whether the inflation trend is rising, stable, or falling each year?  
+3. What does a rising CPI indicate about the inflation rate and purchasing power?  
+4. How do stable or falling CPI trends affect economic decisions such as spending or saving?  
+5. Are there any short-term fluctuations that might not reflect the long-term inflation trend?  
+
+---
+
+Activity: Household Scenarios: Impact of Inflation on Finances  
+Activity ID: inflation_wb_03  
+Mapped outcomes: Assess the impacts of inflation on household finances and daily living expenses.
+
+Material: inflation_wb_03_scenario (scenario)  
+Purpose: Two household cases illustrating different inflation impact situations  
+Content:  
+### Household Inflation Impact Scenarios
+
+**Household A: The Smith Family**  
+- Income: $50,000 per year (fixed salary)  
+- Monthly Expenses: $3,000 (including $500 for groceries, $1,000 for rent, $300 for utilities, $1,200 for other expenses)  
+- Inflation Rate: 5% annually  
+- Context: The Smiths have a fixed income with limited ability to increase earnings. Prices for groceries and utilities have risen sharply.
+
+**Household B: The Lee Family**  
+- Income: $70,000 per year (includes variable bonuses)  
+- Monthly Expenses: $4,000 (including $600 for groceries, $1,200 for rent, $400 for utilities, $1,800 for other expenses)  
+- Inflation Rate: 5% annually  
+- Context: The Lees have some flexibility in income due to bonuses and have recently negotiated a rent freeze.
+
+---
+
+Material: inflation_wb_03_at (analysis_table)  
+Purpose: Table for learner to analyze and compare inflation impacts on the two households  
+Content:  
+| Financial Aspect       | Household A: Smith Family Impact | Household B: Lee Family Impact | Notes / Comments                     |  
+|-----------------------|---------------------------------|-------------------------------|------------------------------------|  
+| Income                |                                 |                               |                                    |  
+| Expenses              |                                 |                               |                                    |  
+| Savings               |                                 |                               |                                    |  
+| Financial Stress      |                                 |                               |                                    |  
+
+*Instructions:* Complete the table by assessing how inflation affects each household’s income, expenses, savings, and financial stress. Use the scenario details to support your analysis.
+
+---
+
+Material: inflation_wb_03_checklist (checklist)  
+Purpose: Verification checklist to ensure learner considers all relevant financial aspects and inflation effects  
+Content:  
+### Inflation Impact Analysis Checklist
+
+- [ ] Have you considered how inflation reduces real income for fixed salary households?  
+- [ ] Did you analyze how rising prices increase monthly expenses?  
+- [ ] Have you assessed the effect on savings and whether they lose value?  
+- [ ] Did you compare differences in financial stress between households?  
+- [ ] Have you thought about coping strategies each household might use?  
+- [ ] Did you avoid assuming inflation affects all households equally?  
+
+---
+
+Activity: Consolidation Summary: Managing Inflation Effects on Personal Budgets  
+Activity ID: inflation_wb_04  
+Mapped outcomes: Explain the concept of inflation and its causes within an economic context., Analyze the Consumer Price Index (CPI) as a measure of inflation and interpret its trends., Assess the impacts of inflation on household finances and daily living expenses., Evaluate various strategies to manage and mitigate the effects of inflation on personal budgets.
+
+Material: inflation_wb_04_cs (consolidation_summary)  
+Purpose: Learner-facing template and guidance for session closure summary and reflection  
+Content:  
+### Consolidation Summary: Managing Inflation Effects on Personal Budgets
+
+In this session, you have learned that inflation is a general rise in prices that reduces the purchasing power of money. You explored how inflation is measured using the Consumer Price Index (CPI) and practiced calculating inflation rates to identify trends over time. Through household scenarios, you assessed how inflation impacts income, expenses, and savings differently depending on financial circumstances. You also reflected on strategies to manage inflation’s effects, such as budgeting carefully, seeking income adjustments, and controlling expenses.
+
+Remember, inflation affects everyone but not equally. Understanding its causes and measurement helps you make informed decisions about your personal finances. Managing inflation requires proactive planning and adapting your budget to maintain financial stability.
+
+---
+
+Material: inflation_wb_04_prompt_set (prompt_set)  
+Purpose: Reflection prompts to support synthesis and evaluation of inflation management strategies  
+Content:  
+### Reflection Prompts: Managing Inflation
+
+1. What are the three most important ideas you learned about inflation and its causes?  
+2. How does understanding CPI trends help you interpret economic conditions?  
+3. What strategies can you use to protect your personal budget from inflation’s effects?  
+4. How will you apply what you learned about inflation to your own financial planning?  
+5. What challenges might you face in managing inflation, and how can you prepare for them?  
+
+---
+
+End of materials.

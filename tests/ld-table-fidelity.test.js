@@ -27,6 +27,15 @@ test("LD-TABLE-FIDELITY: preserve role without marker when embedded", () => {
   assert.match(text, /comma-separated rows/i);
 });
 
+test("LD-TABLE-FIDELITY: preserve role retains table-adjunct prose (38H-3)", () => {
+  const text = ldTable.buildLdTableFidelityPromptBlock({ role: "preserve" });
+  assert.match(text, /38H-3/i);
+  assert.match(text, /table-adjunct/i);
+  assert.match(text, /\*Instructions:\*/i);
+  assert.match(text, /pipe rows alone are insufficient/i);
+  assert.match(text, /do not strip non-pipe prose/i);
+});
+
 test("LD-TABLE-FIDELITY: spec role for DLA cross-reference", () => {
   const text = ldTable.buildLdTableFidelityPromptBlock({ role: "spec" });
   assert.match(text, /Spec role \(Design Learning Activities\)/i);

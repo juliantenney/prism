@@ -170,10 +170,22 @@ test("pack §6 38E-8/9: GAM worked/consolidation enforcement and fail rules pres
   assert.match(t, /worked_example.*sample_output.*modelling_note/i);
 });
 
+test("pack §6 38H-2: GAM-WB-06b anti-spoiler consolidation discipline", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-06b/i);
+  assert.match(t, /38H-2/i);
+  assert.match(t, /scaffold/i);
+  assert.match(t, /\(F7\)/i);
+  assert.match(t, /AP-05/i);
+  assert.match(t, /you have learned|model essay/i);
+  assert.match(t, /learner-production/i);
+  assert.match(gam.defaultPromptNotes, /38H-2|GAM-WB-06b/i);
+});
+
 test("pack §6 38F-2: defaultPromptNotes cite 38F-2 and preservation modules", () => {
   assert.match(gam.defaultPromptNotes, /38F-2/i);
   assert.match(gam.defaultPromptNotes, /GAM-WB-38F-01/i);
-  assert.match(gam.defaultPromptNotes, /F1–F6|F1-F6/i);
+  assert.match(gam.defaultPromptNotes, /F1–F7|F1-F7/i);
   assert.match(gam.defaultPromptNotes, /LD-MATERIALS-COPY/i);
   assert.match(gam.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
   assert.match(dla.defaultPromptNotes, /38F-2/i);

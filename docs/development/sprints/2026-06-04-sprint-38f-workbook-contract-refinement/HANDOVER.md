@@ -38,20 +38,8 @@
 
 ---
 
-## Proposed successor (not chartered)
+## Successor
 
-**Sprint 38-G — Activity Component Quality**
+**[Sprint 38-G — Activity Component Quality](../2026-06-04-sprint-38g-activity-component-quality/)** (**CHARTERED** — start **38G-1**)
 
-- Explicit teaching preambles · richer learner_task · scenario depth · realistic durations · self-check beats · anti-spoiler consolidation · optional restore 4-activity arc (strategy evaluation)
-- **Keep** 38F-2 table + scenario contract rows
-- **Parallel:** 38D validation calibration (docs only)
-
----
-
-## Do not
-
-- Charter 38-G without approval
-- Conflate structural PASS with professional workbook PASS
-- Reopen preservation or V-01/V-05 without evidence
-
-**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [38F-8](observations/38F-8-inflation-page-quality-review.md)
+**Quick resume (38-G):** [38G CONTEXT-FOR-NEXT-CHAT.md](../2026-06-04-sprint-38g-activity-component-quality/CONTEXT-FOR-NEXT-CHAT.md)

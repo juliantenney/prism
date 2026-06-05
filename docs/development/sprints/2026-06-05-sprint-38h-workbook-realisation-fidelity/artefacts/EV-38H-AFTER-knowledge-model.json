@@ -1,0 +1,113 @@
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "The general increase in prices of goods and services over time, which reduces the purchasing power of money."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "A measure of inflation that tracks price changes of a fixed basket of goods and services typically purchased by households, reflecting the cost of living for consumers."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "A measure of inflation reflecting price changes for all goods and services produced domestically, using a changing basket that reflects the current production mix."
+    },
+    {
+      "name": "Household Budgets",
+      "definition": "The allocation of income by households to goods and services, which is affected by inflation through changes in purchasing power."
+    },
+    {
+      "name": "Fixed Income",
+      "definition": "Household income that does not adjust with inflation, such as pensions, making purchasing power vulnerable to inflation."
+    },
+    {
+      "name": "Variable Income",
+      "definition": "Household income that adjusts with inflation, allowing maintenance of purchasing power despite rising prices."
+    },
+    {
+      "name": "Policy Communication",
+      "definition": "The process by which policymakers explain inflation causes, impacts, and control measures to the public to foster understanding and trust."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "GDP Deflator",
+      "type": "contrasts_with"
+    },
+    {
+      "source": "Fixed Income",
+      "target": "Household Budgets",
+      "type": "affects"
+    },
+    {
+      "source": "Variable Income",
+      "target": "Household Budgets",
+      "type": "affects"
+    },
+    {
+      "source": "Policy Communication",
+      "target": "Household Budgets",
+      "type": "influences"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement Methods",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    },
+    {
+      "name": "Household Income Types",
+      "members": [
+        "Fixed Income",
+        "Variable Income"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Calculating CPI Inflation",
+      "steps": [
+        "Determine the cost of a fixed basket of goods in the base year.",
+        "Determine the cost of the same basket in the current year.",
+        "Calculate the inflation rate as ((current cost - base cost) / base cost) × 100."
+      ]
+    },
+    {
+      "name": "Calculating GDP Deflator",
+      "steps": [
+        "Obtain nominal GDP for the current period.",
+        "Obtain real GDP for the current period.",
+        "Calculate the GDP deflator as (nominal GDP / real GDP) × 100."
+      ]
+    },
+    {
+      "name": "Policy Communication on Inflation",
+      "steps": [
+        "Explain causes of inflation to the public.",
+        "Describe impacts of inflation on households and the economy.",
+        "Announce measures taken to control inflation, such as interest rate adjustments.",
+        "Provide transparency to help households and businesses plan."
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "CPI and GDP Deflator Measure the Same Inflation",
+      "description": "A common misconception is that CPI and GDP deflator measure inflation identically, whereas CPI uses a fixed basket of consumer goods and GDP deflator uses a variable basket of all domestically produced goods and services."
+    }
+  ]
+}

@@ -93,7 +93,9 @@ Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
 **Exit verdicts:** Workbook **FAIL** (V-10) · Preservation **PASS** · V-01/V-05 **Pass** · 38E-8/9 **retained**
 
-**Post-closure review:** [38F-6](observations/38F-6-retrieval-validation-calibration.md) · [38F-7](observations/38F-7-retrieval-definition-and-page-review-setup.md) · [38F-8](observations/38F-8-inflation-page-quality-review.md) — professional workbook **FAIL**; structural V-01/V-05 **PASS**; proposed successor **38-G Activity Component Quality** (charter on hold).
+**Post-closure review:** [38F-6](observations/38F-6-retrieval-validation-calibration.md) · [38F-7](observations/38F-7-retrieval-definition-and-page-review-setup.md) · [38F-8](observations/38F-8-inflation-page-quality-review.md)
+
+**Successor:** [Sprint 38-G — Activity Component Quality](../2026-06-04-sprint-38g-activity-component-quality/) (**CHARTERED**)
 
 ---
 

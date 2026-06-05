@@ -9,7 +9,7 @@
 | 38K-5 Implementation implications | `38K-5-implementation-implications.md` | **COMPLETE** |
 | 38K-6 Sprint closure | `38K-6-sprint-closure.md` | **COMPLETE** |
 
-**Sprint 38-K:** **CLOSED** — **SUCCESS**. **Successor:** **Sprint 38-L — Instructional Function Depth Implementation** (**RECOMMENDED**).
+**Sprint 38-K:** **CLOSED** — **SUCCESS**. **Successor:** **[Sprint 38-L — Instructional Function Depth Implementation](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** (**CHARTERED** — **38L-1 START HERE**).
 
 **Predecessor:** [38J-6 closure](../../2026-06-05-sprint-38j-instructional-function-planning/observations/38J-6-sprint-closure.md)
 
@@ -17,4 +17,4 @@
 
 **Baselines:** `../../2026-06-05-sprint-38j-instructional-function-planning/artefacts/EV-38J-AFTER-*`
 
-**Proof artefacts (recommended 38-L):** `EV-38L-AFTER-*` (see [38K-6](38K-6-sprint-closure.md) §7)
+**Proof artefacts (38-L):** `../../2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/EV-38L-AFTER-*`

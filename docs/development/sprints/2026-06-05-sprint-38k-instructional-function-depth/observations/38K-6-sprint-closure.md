@@ -6,7 +6,7 @@
 **Type:** Retrospective and forward plan only — no implementation  
 **Charter:** [IMPLEMENTATION-CHARTER.md](../IMPLEMENTATION-CHARTER.md)  
 **Predecessor:** [Sprint 38-J](../2026-06-05-sprint-38j-instructional-function-planning/) (**CLOSED** — [38J-6](../2026-06-05-sprint-38j-instructional-function-planning/observations/38J-6-sprint-closure.md) · **SUCCESS**)  
-**Successor:** **Sprint 38-L — Instructional Function Depth Implementation** (**RECOMMENDED** — not chartered)
+**Successor:** **[Sprint 38-L — Instructional Function Depth Implementation](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** (**CHARTERED** — **38L-1 START HERE**)
 
 ---
 
@@ -131,11 +131,11 @@ KM → LO → ACM → DLA (IFP + depth floors) → GAM (GAM-PRES + depth bodies)
 
 ---
 
-## §7 Successor sprint recommendation
+## §7 Successor sprint
 
-### **Sprint 38-L — Instructional Function Depth Implementation** (**RECOMMENDED**)
+### **[Sprint 38-L — Instructional Function Depth Implementation](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** (**CHARTERED**)
 
-**Not chartered in this closure.** Charter pack to be created when requested.
+Charter pack created 2026-06-05. **Next:** **38L-1** implementation planning review — **not started**.
 
 | Field | Content |
 |-------|---------|
@@ -146,16 +146,18 @@ KM → LO → ACM → DLA (IFP + depth floors) → GAM (GAM-PRES + depth bodies)
 | **Out of scope** | Schema, ACM, renderer, workflow, new archetypes, new material types, weakening 38J IFP/GAM-PRES |
 | **Success criterion** | All four activities meet 38K-3 minimum L3 profile on Required functions; verification on all; A4 household Evaluate anchor; measurable improvement vs `EV-38J-AFTER` |
 
-**Expected phases (draft):**
+**Chartered phases:**
 
 ```text
-38L-1 Pack §5 depth-floor + emission gates
-38L-2 Pack §6 depth-shaped GAM bodies
-38L-3 Harness/LO Evaluate contract (if needed)
-38L-4 Inflation proof run → EV-38L-AFTER-*
-38L-5 Comparator report vs EV-38J + 38I-4
+38L-1 Implementation planning review
+38L-2 DLA depth-floor implementation
+38L-3 GAM depth-floor implementation
+38L-4 Closure-function implementation
+38L-5 Inflation proof run → EV-38L-AFTER-*
 38L-6 Closure
 ```
+
+**Pack:** [38-L README](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/README.md) · [IMPLEMENTATION-CHARTER](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/IMPLEMENTATION-CHARTER.md)
 
 ---
 
@@ -237,4 +239,4 @@ KM → LO → ACM → DLA (IFP + depth floors) → GAM (GAM-PRES + depth bodies)
 
 ---
 
-**Parent:** [38K observations index](README.md) · **Sprint:** **38-K CLOSED** · **Successor:** **38-L RECOMMENDED**
+**Parent:** [38K observations index](README.md) · **Sprint:** **38-K CLOSED** · **Successor:** **[38-L CHARTERED](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/)**

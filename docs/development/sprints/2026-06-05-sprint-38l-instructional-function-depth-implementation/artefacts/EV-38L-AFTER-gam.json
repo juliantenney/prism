@@ -1,0 +1,336 @@
+{
+  "runId": "EV-38L-AFTER",
+  "capturedAt": "2026-06-05T12:14:01.955Z",
+  "activities": [
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "title": "Understanding CPI and GDP Deflator Differences",
+      "materials": [
+        {
+          "activity_id": "A1_Understand_CPI_GDP",
+          "material_id": "M1_Concept_Exposition_CPI_GDP",
+          "type": "text",
+          "purpose": "concept elucidation",
+          "content": "The Consumer Price Index (CPI) and the GDP Deflator are two important measures used to track inflation, but they differ significantly in how they measure price changes over time.\n\nThe **Consumer Price Index (CPI)** measures the average change in prices paid by urban consumers for a fixed basket of goods and services. This basket represents typical household consumption patterns and remains constant over time, allowing CPI to reflect how the cost of this specific set of consumer goods changes. Because the basket is fixed, CPI captures price changes for goods and services that households commonly buy, such as food, housing, transportation, and medical care.\n\nIn contrast, the **GDP Deflator** measures the change in prices of all domestically produced goods and services in an economy. Unlike CPI, the GDP Deflator uses a **variable basket** that changes each period to reflect the current mix of goods and services produced. This means the GDP Deflator includes prices of investment goods, government services, and exports, as well as consumer goods, but excludes imports. The GDP Deflator is calculated as the ratio of nominal GDP to real GDP, capturing price changes across the entire economy.\n\nKey contrasts include:  \n- **Basket composition:** CPI uses a fixed basket of consumer goods; GDP Deflator uses a changing basket of all domestically produced goods and services.  \n- **Scope:** CPI focuses on consumer purchases; GDP Deflator covers the whole economy’s output.  \n- **Inclusion of imports:** CPI includes imported consumer goods; GDP Deflator excludes imports.  \n- **Purpose:** CPI is often used to adjust incomes and benefits for cost of living changes; GDP Deflator is used to convert nominal GDP into real GDP.\n\nUnderstanding these differences is essential to interpreting inflation data accurately and recognizing which measure is most appropriate for different economic analyses.",
+          "contentLen": 1903
+        },
+        {
+          "activity_id": "A1_Understand_CPI_GDP",
+          "material_id": "M2_Worked_Example_CPI_GDP",
+          "type": "worked_example",
+          "purpose": "worked thinking",
+          "content": "**Stepwise Explanation Contrasting CPI and GDP Deflator**\n\n1. **Identify the baskets:**  \n   - CPI basket: Fixed set of consumer goods like bread, gasoline, rent, and healthcare.  \n   - GDP Deflator basket: All goods and services produced domestically, including consumer goods, machinery, government services, and exports.\n\n2. **Observe basket changes over time:**  \n   - CPI basket remains fixed to reflect typical household consumption patterns from a base period.  \n   - GDP Deflator basket changes each year to reflect current production quantities and types.\n\n3. **Calculate price changes:**  \n   - CPI calculates inflation by comparing the total cost of the fixed basket in the current period to its cost in the base period.  \n   - GDP Deflator calculates inflation by comparing nominal GDP (current prices) to real GDP (constant prices).\n\n4. **Example:**  \n   Suppose in year 1, the CPI basket costs $100, and in year 2, the same basket costs $110. The CPI inflation rate is:  \n   \\[\n   \\frac{110 - 100}{100} \\times 100\\% = 10\\%\n   \\]\n\n   Meanwhile, if nominal GDP in year 2 is $1,100 billion and real GDP is $1,000 billion, the GDP Deflator inflation rate is:  \n   \\[\n   \\frac{1,100 - 1,000}{1,000} \\times 100\\% = 10\\%\n   \\]\n\n   However, if the production mix changes significantly (e.g., more machinery and less consumer goods), the GDP Deflator inflation rate may differ from CPI.\n\n5. **Interpretation:**  \n   - CPI inflation reflects changes in prices affecting consumers directly.  \n   - GDP Deflator inflation reflects overall price changes in the economy, including investment and government spending.\n\nThis example illustrates how the fixed basket of CPI and the variable basket of GDP Deflator lead to different inflation measures.",
+          "contentLen": 1748
+        },
+        {
+          "activity_id": "A1_Understand_CPI_GDP",
+          "material_id": "M3_Sample_Output_CPI_GDP",
+          "type": "sample_output",
+          "purpose": "model learner explanation output",
+          "content": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ mainly in their basket composition and scope. The CPI uses a fixed basket of consumer goods and services that typical households buy, such as food, housing, and transportation. This basket does not change over time, so CPI tracks how the prices of these specific items change. On the other hand, the GDP Deflator uses a variable basket that includes all goods and services produced domestically, such as consumer goods, investment goods, government services, and exports. This basket changes every year to reflect current production. Therefore, CPI focuses on consumer price changes, while the GDP Deflator captures price changes across the entire economy. Additionally, CPI includes imported goods, but the GDP Deflator does not. These differences mean CPI is more relevant for understanding cost of living changes, while GDP Deflator is useful for measuring overall economic inflation.",
+          "contentLen": 973
+        },
+        {
+          "activity_id": "A1_Understand_CPI_GDP",
+          "material_id": "M4_Checklist_Understand",
+          "type": "checklist",
+          "purpose": "verification and self-check",
+          "content": "**Self-Check: Understanding CPI and GDP Deflator Differences**\n\nVerify your explanation meets the following criteria:  \n\n1. **Basket Composition:**  \n   - Does your explanation correctly identify that CPI uses a fixed basket of consumer goods?  \n   - Does it correctly state that the GDP Deflator uses a variable basket of all domestically produced goods and services?\n\n2. **Scope of Measurement:**  \n   - Have you explained that CPI focuses on consumer purchases only?  \n   - Have you noted that GDP Deflator covers the entire economy’s output, including investment and government services?\n\n3. **Inclusion of Imports:**  \n   - Does your explanation mention that CPI includes imported goods while GDP Deflator excludes them?\n\n4. **Purpose and Use:**  \n   - Have you clarified why CPI is important for cost of living adjustments?  \n   - Have you explained that GDP Deflator is used to convert nominal GDP to real GDP?\n\n**If you answer \"No\" to any of the above, revise your explanation to include the missing or incorrect information.**",
+          "contentLen": 1035
+        }
+      ]
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "title": "Applying CPI to Calculate Inflation Rate",
+      "materials": [
+        {
+          "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+          "material_id": "M5_Worked_Example_CPI_Calculation",
+          "type": "worked_example",
+          "purpose": "worked thinking",
+          "content": "**Stepwise CPI Inflation Rate Calculation**\n\n1. **Identify basket items, prices, and weights:**  \n   Suppose the fixed basket includes:  \n   - Bread: Price year 1 = $2, Price year 2 = $2.20, Weight = 30%  \n   - Milk: Price year 1 = $3, Price year 2 = $3.30, Weight = 20%  \n   - Gasoline: Price year 1 = $4, Price year 2 = $4.80, Weight = 50%\n\n2. **Calculate price relatives for each item:**  \n   \\[\n   \\text{Price relative} = \\frac{\\text{Price in year 2}}{\\text{Price in year 1}}\n   \\]  \n   - Bread: \\(2.20 / 2 = 1.10\\)  \n   - Milk: \\(3.30 / 3 = 1.10\\)  \n   - Gasoline: \\(4.80 / 4 = 1.20\\)\n\n3. **Calculate weighted price relatives:**  \n   Multiply each price relative by its weight:  \n   - Bread: \\(1.10 \\times 0.30 = 0.33\\)  \n   - Milk: \\(1.10 \\times 0.20 = 0.22\\)  \n   - Gasoline: \\(1.20 \\times 0.50 = 0.60\\)\n\n4. **Sum weighted price relatives:**  \n   \\[\n   0.33 + 0.22 + 0.60 = 1.15\n   \\]\n\n5. **Calculate inflation rate:**  \n   \\[\n   \\text{Inflation rate} = (1.15 - 1) \\times 100\\% = 15\\%\n   \\]\n\nThis means the overall price level for the fixed basket increased by 15% from year 1 to year 2.",
+          "contentLen": 1094
+        },
+        {
+          "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+          "material_id": "M6_Practice_Classification_Table_CPI",
+          "type": "classification_table",
+          "purpose": "practice table for CPI inflation calculation",
+          "content": "| Basket Item | Price Year 1 | Price Year 2 | Weight (%) | Price Relative (Year 2 / Year 1) | Weighted Price Relative | Calculation Steps (show work) |  \n|-------------|--------------|--------------|------------|---------------------------------|------------------------|-------------------------------|  \n| Bread       | $1.50        | $1.65        | 25         |                                 |                        |                               |  \n| Milk        | $2.00        | $2.20        | 15         |                                 |                        |                               |  \n| Eggs        | $3.00        | $3.30        | 10         |                                 |                        |                               |  \n| Gasoline    | $4.00        | $4.40        | 30         |                                 |                        |                               |  \n| Electricity | $0.10/kWh    | $0.12/kWh    | 20         |                                 |                        |                               |  \n| **Total**   |              |              | 100        |                                 |                        |                               |  \n\n**Instructions:**  \n- Calculate the price relative for each item by dividing Price Year 2 by Price Year 1.  \n- Multiply each price relative by the weight (percentage as a decimal).  \n- Sum all weighted price relatives.  \n- Calculate the inflation rate as \\((\\text{Sum} - 1) \\times 100\\%\\).  \n- Show your calculations clearly in the last column.",
+          "contentLen": 1563
+        },
+        {
+          "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+          "material_id": "M7_Checklist_Apply",
+          "type": "checklist",
+          "purpose": "verification and self-check",
+          "content": "**Verification Checklist: CPI Inflation Calculation**\n\n1. **Price Relatives Correctness:**  \n   - Are all price relatives calculated accurately by dividing Year 2 prices by Year 1 prices?\n\n2. **Weight Application:**  \n   - Are weights correctly converted to decimals (e.g., 25% as 0.25) and applied to price relatives?\n\n3. **Summation Accuracy:**  \n   - Is the sum of weighted price relatives correctly calculated?\n\n4. **Inflation Rate Computation:**  \n   - Is the inflation rate computed as \\((\\text{Sum of weighted price relatives} - 1) \\times 100\\%\\)?\n\n**If any step is incorrect, revisit your calculations and correct errors before proceeding.**",
+          "contentLen": 649
+        }
+      ]
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "title": "Analysing Inflation Effects on Household Budgets",
+      "materials": [
+        {
+          "activity_id": "A3_Analyse_Inflation_Household_Impact",
+          "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+          "type": "worked_example",
+          "purpose": "worked analytic pass",
+          "content": "**Stepwise Analysis of Inflation Impact on Households**\n\n1. **Household Types:**  \n   - Fixed-Income Household: Income remains constant despite inflation (e.g., pensioners).  \n   - Variable-Income Household: Income adjusts with inflation (e.g., wage earners with cost-of-living adjustments).\n\n2. **Lenses for Analysis:**  \n   - **Distribution:** How inflation redistributes purchasing power between households.  \n   - **Adaptation:** How households adjust spending or income to cope with inflation.  \n   - **Time Horizon:** Short-term vs long-term effects on household budgets.\n\n3. **Distribution Lens:**  \n   - Fixed-income households lose purchasing power as prices rise but income stays the same.  \n   - Variable-income households may maintain or increase purchasing power if income rises with inflation.\n\n4. **Adaptation Lens:**  \n   - Fixed-income households may cut discretionary spending or seek additional income sources.  \n   - Variable-income households might negotiate wage increases or adjust investment strategies.\n\n5. **Time Horizon Lens:**  \n   - Short-term: Fixed-income households feel immediate pressure; variable-income households may lag in income adjustment.  \n   - Long-term: Variable-income households may fully adjust income; fixed-income households remain vulnerable unless benefits are indexed.\n\n6. **Conclusion:**  \n   Inflation impacts households differently depending on income type and their ability to adapt. Fixed-income households are generally more vulnerable to inflation’s negative effects, while variable-income households have more flexibility but may face delays in adjustment.",
+          "contentLen": 1616
+        },
+        {
+          "activity_id": "A3_Analyse_Inflation_Household_Impact",
+          "material_id": "M9_Scenario_Maya_Households",
+          "type": "scenario",
+          "purpose": "practice scenario with multiple household types",
+          "content": "**Maya Household Inflation Scenarios**\n\n1. **Household A: Fixed-Income Household**  \n   Maya is retired and receives a fixed pension of $2,000 per month. Her monthly expenses include rent, food, utilities, and healthcare. Inflation has caused prices to increase by 8% over the past year, but her pension remains unchanged.\n\n2. **Household B: Variable-Income Household**  \n   Maya’s friend, Carlos, works as a technician whose salary is adjusted annually based on inflation. His income rose by 7% this year. His expenses include mortgage payments, groceries, transportation, and education for his children.\n\nThese scenarios provide a basis to analyse how inflation affects households with different income types and spending patterns.",
+          "contentLen": 733
+        },
+        {
+          "activity_id": "A3_Analyse_Inflation_Household_Impact",
+          "material_id": "M10_Analysis_Table_Household_Comparison",
+          "type": "analysis_table",
+          "purpose": "learner completes analysis of inflation effects",
+          "content": "| Household Type          | Distribution Impact (Purchasing Power)                 | Adaptation Strategies (Spending/Income)                   | Time Horizon Effects (Short vs Long Term)                  | Notes / Reasoning (Learner to complete)                    |  \n|------------------------|--------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|  \n| Fixed-Income Household  | Purchasing power decreases as income is fixed.         | May reduce discretionary spending; limited income growth. | Short-term pressure high; long-term vulnerability remains. | Example: Maya’s pension does not increase with inflation.   |  \n| Variable-Income Household | Income may increase with inflation, maintaining power. | Can negotiate wages; adjust investments or spending.       | Short-term lag possible; long-term income adjustment likely. | Example: Carlos’s salary increased by 7%, close to inflation.|  \n| **Learner Entry 1**     |                                                        |                                                           |                                                            |                                                            |  \n| **Learner Entry 2**     |                                                        |                                                           |                                                            |                                                            |  \n\n**Instructions:**  \n- Complete the two empty rows with your own assessments of inflation impact on other household types or variations.  \n- Use the lenses of distribution, adaptation, and time horizon to guide your analysis.  \n- Provide reasoning or examples in the Notes column.",
+          "contentLen": 1901
+        },
+        {
+          "activity_id": "A3_Analyse_Inflation_Household_Impact",
+          "material_id": "M11_Checklist_Analyse",
+          "type": "checklist",
+          "purpose": "verification and self-check",
+          "content": "**Verification Checklist: Inflation Impact Analysis**\n\n1. **Completeness:**  \n   - Have you completed all rows and columns in the analysis table?\n\n2. **Accuracy of Distribution Lens:**  \n   - Does your analysis correctly describe how inflation affects purchasing power for each household?\n\n3. **Adaptation Strategies:**  \n   - Have you identified realistic ways households can adapt their spending or income?\n\n4. **Time Horizon Considerations:**  \n   - Does your analysis distinguish between short-term and long-term effects?\n\n**If any criteria are not met, review your analysis and revise accordingly.**",
+          "contentLen": 604
+        }
+      ]
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "title": "Evaluating Household Strategies for Inflation Management",
+      "materials": [
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M12_Scenario_Maya_Strategy_Menu",
+          "type": "scenario",
+          "purpose": "Maya household scenario with neutral strategy menu A–E",
+          "content": "**Maya Household and Inflation Management Strategies**\n\nMaya’s household faces rising inflation that affects her fixed pension income. To manage this, five neutral strategies are proposed:\n\n- **Strategy A: Budget Tightening**  \n  Reduce discretionary spending and prioritize essentials.\n\n- **Strategy B: Income Diversification**  \n  Seek part-time work or passive income sources.\n\n- **Strategy C: Inflation-Indexed Investments**  \n  Invest savings in assets that tend to keep pace with inflation.\n\n- **Strategy D: Debt Management**  \n  Pay down fixed-rate debts to reduce interest burden.\n\n- **Strategy E: Government Benefits Optimization**  \n  Apply for inflation-related government support programs.\n\nThese strategies are neutral and do not assume any is best. Your task is to evaluate them using explicit criteria.",
+          "contentLen": 817
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M13_Criteria_Exposition_Evaluate",
+          "type": "text",
+          "purpose": "criteria exposition",
+          "content": "**Evaluation Criteria for Household Inflation Strategies**\n\nWhen evaluating household strategies to manage inflation, consider the following criteria:\n\n1. **Depth of Strategy:**  \n   How thoroughly does the strategy address inflation effects? Does it include detailed planning and realistic adjustments?\n\n2. **Adaptability:**  \n   Can the strategy adjust to changing inflation rates or unexpected economic conditions? Is it flexible to different scenarios?\n\n3. **Transferability:**  \n   Is the strategy applicable to other households or contexts? Can lessons learned be applied beyond the current situation?\n\nUsing these criteria helps ensure that evaluations are comprehensive, reasoned, and useful for decision-making.",
+          "contentLen": 720
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M14_Worked_Judgement_Weak_Strong",
+          "type": "modelling_note",
+          "purpose": "worked judgement contrasting weak and strong strategy evaluations",
+          "content": "**Contrasting Weak and Strong Evaluations of Household Strategies**\n\n- **Weak Evaluation Example:**  \n  \"Strategy A is best because it saves money.\"  \n  This is a slogan-based judgement with no explanation of how or why it works, no criteria applied, and no consideration of trade-offs or adaptability.\n\n- **Strong Evaluation Example:**  \n  \"Strategy A offers immediate cost savings by prioritizing essential expenses, which is crucial for Maya’s fixed income. However, it may limit quality of life and lacks adaptability if inflation rises sharply. While effective short-term, combining it with Strategy C’s inflation-indexed investments could improve long-term resilience. This shows depth, adaptability, and transferability in evaluation.\"\n\n**Key features of strong evaluation:**  \n- Explicit use of criteria (depth, adaptability, transferability)  \n- Justification with reasoning and examples  \n- Discussion of trade-offs and limitations  \n- Consideration of combining strategies for better outcomes\n\nUse this model to guide your own evaluations.",
+          "contentLen": 1050
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M15_Guided_Judgement_Table",
+          "type": "decision_table",
+          "purpose": "guided judgement with partial exemplar rows",
+          "content": "| Strategy | Depth of Strategy (Detailed Planning) | Adaptability (Flexibility to Change) | Transferability (Applicability to Other Contexts) | Justification / Notes (Learner completes) |  \n|----------|--------------------------------------|-------------------------------------|-------------------------------------------------|------------------------------------------|  \n| A: Budget Tightening | Moderate: Focuses on spending cuts but limited long-term planning | Low: Fixed cuts may not adapt well if inflation changes | Moderate: Applicable to many households | Example: Saves money but may reduce living standards |  \n| B: Income Diversification | High: Adds new income sources, requires planning | High: Can adjust income streams as needed | High: Many households can apply this approach |                                          |  \n| C: Inflation-Indexed Investments | High: Requires financial knowledge and planning | Moderate: Investment returns vary with markets | Moderate: Depends on access to investment options |                                          |  \n| D: Debt Management | Moderate: Focuses on reducing interest costs | Low: Fixed debts may limit flexibility | High: Many households have debt |                                          |  \n| E: Government Benefits Optimization | Low: Depends on external programs | Low: Benefits may change or be limited | Low: Varies by location and eligibility |                                          |  \n\n**Instructions:**  \n- Review the exemplar justifications for Strategy A.  \n- Complete the Justification / Notes column for Strategies B to E using the criteria.  \n- Provide reasoning that explains strengths and weaknesses for each strategy.",
+          "contentLen": 1711
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M16_Independent_Judgement_Template",
+          "type": "template",
+          "purpose": "independent judgement memo scaffold",
+          "content": "**Memo: Evaluation of Household Inflation Management Strategy**\n\n**To:** [Recipient Name or Self]  \n**From:** [Your Name]  \n**Date:** [Date]  \n**Subject:** Evaluation and Recommendation of Inflation Management Strategy",
+          "contentLen": 218
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M17_Checklist_Evaluate",
+          "type": "checklist",
+          "purpose": "verification rubric for evaluation quality",
+          "content": "**Evaluation Quality Verification Checklist**\n\n1. **Use of Criteria:**  \n   - Does your evaluation explicitly apply the depth, adaptability, and transferability criteria?\n\n2. **Justification Depth:**  \n   - Are your reasons detailed and supported with examples or reasoning?\n\n3. **Verification of Reasoning:**  \n   - Have you checked your arguments for logical consistency and addressed potential counterpoints?\n\n4. **Transfer Consideration:**  \n   - Does your evaluation consider how the strategy applies beyond the immediate scenario?\n\n**If you answer \"No\" to any item, revise your evaluation memo to improve quality.**",
+          "contentLen": 621
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M18_Transfer_Prompt_Evaluate",
+          "type": "transfer_prompt",
+          "purpose": "transfer task to learner's own context",
+          "content": "**Applying Evaluation Criteria to Your Own Household or Context**\n\nWrite at least 80 words applying the evaluation criteria of depth, adaptability, and transferability to a household inflation management strategy relevant to your own situation or one you are familiar with. Consider:  \n\n- What strategy or approach is used to manage inflation effects?  \n- How thoroughly is the strategy planned and implemented?  \n- How flexible is the strategy to changing economic conditions?  \n- Can this strategy be applied or adapted to other households or contexts?\n\nThis exercise helps you connect learning to your own experience and deepen your understanding of effective inflation management.",
+          "contentLen": 684
+        },
+        {
+          "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+          "material_id": "M19_Consolidation_Summary",
+          "type": "consolidation_summary",
+          "purpose": "session closure with summary and reflection",
+          "content": "**Session Reflection and Summary**\n\nReflect on the key ideas covered in this session:  \n\n- How inflation is measured differently by the Consumer Price Index (CPI) and the GDP Deflator, focusing on basket composition and scope.  \n- The step-by-step process of calculating inflation rates using CPI and weighted price changes in a fixed basket.  \n- How inflation affects households differently depending on income type, and how adaptation and time horizon lenses help analyse these effects.  \n- The importance of evaluating household inflation management strategies using explicit criteria such as depth, adaptability, and transferability.  \n- How to justify strategy choices with reasoned trade-offs and apply evaluation criteria to your own context.\n\nUse these reflections to consolidate your understanding and prepare for applying inflation concepts in real-life household budgeting and financial planning. Consider how you might continue to develop your skills in analysing and evaluating economic impacts on personal finances.",
+          "contentLen": 1029
+        }
+      ]
+    }
+  ],
+  "all_materials": [
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M1_Concept_Exposition_CPI_GDP",
+      "type": "text",
+      "purpose": "concept elucidation",
+      "content": "The Consumer Price Index (CPI) and the GDP Deflator are two important measures used to track inflation, but they differ significantly in how they measure price changes over time.\n\nThe **Consumer Price Index (CPI)** measures the average change in prices paid by urban consumers for a fixed basket of goods and services. This basket represents typical household consumption patterns and remains constant over time, allowing CPI to reflect how the cost of this specific set of consumer goods changes. Because the basket is fixed, CPI captures price changes for goods and services that households commonly buy, such as food, housing, transportation, and medical care.\n\nIn contrast, the **GDP Deflator** measures the change in prices of all domestically produced goods and services in an economy. Unlike CPI, the GDP Deflator uses a **variable basket** that changes each period to reflect the current mix of goods and services produced. This means the GDP Deflator includes prices of investment goods, government services, and exports, as well as consumer goods, but excludes imports. The GDP Deflator is calculated as the ratio of nominal GDP to real GDP, capturing price changes across the entire economy.\n\nKey contrasts include:  \n- **Basket composition:** CPI uses a fixed basket of consumer goods; GDP Deflator uses a changing basket of all domestically produced goods and services.  \n- **Scope:** CPI focuses on consumer purchases; GDP Deflator covers the whole economy’s output.  \n- **Inclusion of imports:** CPI includes imported consumer goods; GDP Deflator excludes imports.  \n- **Purpose:** CPI is often used to adjust incomes and benefits for cost of living changes; GDP Deflator is used to convert nominal GDP into real GDP.\n\nUnderstanding these differences is essential to interpreting inflation data accurately and recognizing which measure is most appropriate for different economic analyses.",
+      "contentLen": 1903
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M2_Worked_Example_CPI_GDP",
+      "type": "worked_example",
+      "purpose": "worked thinking",
+      "content": "**Stepwise Explanation Contrasting CPI and GDP Deflator**\n\n1. **Identify the baskets:**  \n   - CPI basket: Fixed set of consumer goods like bread, gasoline, rent, and healthcare.  \n   - GDP Deflator basket: All goods and services produced domestically, including consumer goods, machinery, government services, and exports.\n\n2. **Observe basket changes over time:**  \n   - CPI basket remains fixed to reflect typical household consumption patterns from a base period.  \n   - GDP Deflator basket changes each year to reflect current production quantities and types.\n\n3. **Calculate price changes:**  \n   - CPI calculates inflation by comparing the total cost of the fixed basket in the current period to its cost in the base period.  \n   - GDP Deflator calculates inflation by comparing nominal GDP (current prices) to real GDP (constant prices).\n\n4. **Example:**  \n   Suppose in year 1, the CPI basket costs $100, and in year 2, the same basket costs $110. The CPI inflation rate is:  \n   \\[\n   \\frac{110 - 100}{100} \\times 100\\% = 10\\%\n   \\]\n\n   Meanwhile, if nominal GDP in year 2 is $1,100 billion and real GDP is $1,000 billion, the GDP Deflator inflation rate is:  \n   \\[\n   \\frac{1,100 - 1,000}{1,000} \\times 100\\% = 10\\%\n   \\]\n\n   However, if the production mix changes significantly (e.g., more machinery and less consumer goods), the GDP Deflator inflation rate may differ from CPI.\n\n5. **Interpretation:**  \n   - CPI inflation reflects changes in prices affecting consumers directly.  \n   - GDP Deflator inflation reflects overall price changes in the economy, including investment and government spending.\n\nThis example illustrates how the fixed basket of CPI and the variable basket of GDP Deflator lead to different inflation measures.",
+      "contentLen": 1748
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M3_Sample_Output_CPI_GDP",
+      "type": "sample_output",
+      "purpose": "model learner explanation output",
+      "content": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ mainly in their basket composition and scope. The CPI uses a fixed basket of consumer goods and services that typical households buy, such as food, housing, and transportation. This basket does not change over time, so CPI tracks how the prices of these specific items change. On the other hand, the GDP Deflator uses a variable basket that includes all goods and services produced domestically, such as consumer goods, investment goods, government services, and exports. This basket changes every year to reflect current production. Therefore, CPI focuses on consumer price changes, while the GDP Deflator captures price changes across the entire economy. Additionally, CPI includes imported goods, but the GDP Deflator does not. These differences mean CPI is more relevant for understanding cost of living changes, while GDP Deflator is useful for measuring overall economic inflation.",
+      "contentLen": 973
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M4_Checklist_Understand",
+      "type": "checklist",
+      "purpose": "verification and self-check",
+      "content": "**Self-Check: Understanding CPI and GDP Deflator Differences**\n\nVerify your explanation meets the following criteria:  \n\n1. **Basket Composition:**  \n   - Does your explanation correctly identify that CPI uses a fixed basket of consumer goods?  \n   - Does it correctly state that the GDP Deflator uses a variable basket of all domestically produced goods and services?\n\n2. **Scope of Measurement:**  \n   - Have you explained that CPI focuses on consumer purchases only?  \n   - Have you noted that GDP Deflator covers the entire economy’s output, including investment and government services?\n\n3. **Inclusion of Imports:**  \n   - Does your explanation mention that CPI includes imported goods while GDP Deflator excludes them?\n\n4. **Purpose and Use:**  \n   - Have you clarified why CPI is important for cost of living adjustments?  \n   - Have you explained that GDP Deflator is used to convert nominal GDP to real GDP?\n\n**If you answer \"No\" to any of the above, revise your explanation to include the missing or incorrect information.**",
+      "contentLen": 1035
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M5_Worked_Example_CPI_Calculation",
+      "type": "worked_example",
+      "purpose": "worked thinking",
+      "content": "**Stepwise CPI Inflation Rate Calculation**\n\n1. **Identify basket items, prices, and weights:**  \n   Suppose the fixed basket includes:  \n   - Bread: Price year 1 = $2, Price year 2 = $2.20, Weight = 30%  \n   - Milk: Price year 1 = $3, Price year 2 = $3.30, Weight = 20%  \n   - Gasoline: Price year 1 = $4, Price year 2 = $4.80, Weight = 50%\n\n2. **Calculate price relatives for each item:**  \n   \\[\n   \\text{Price relative} = \\frac{\\text{Price in year 2}}{\\text{Price in year 1}}\n   \\]  \n   - Bread: \\(2.20 / 2 = 1.10\\)  \n   - Milk: \\(3.30 / 3 = 1.10\\)  \n   - Gasoline: \\(4.80 / 4 = 1.20\\)\n\n3. **Calculate weighted price relatives:**  \n   Multiply each price relative by its weight:  \n   - Bread: \\(1.10 \\times 0.30 = 0.33\\)  \n   - Milk: \\(1.10 \\times 0.20 = 0.22\\)  \n   - Gasoline: \\(1.20 \\times 0.50 = 0.60\\)\n\n4. **Sum weighted price relatives:**  \n   \\[\n   0.33 + 0.22 + 0.60 = 1.15\n   \\]\n\n5. **Calculate inflation rate:**  \n   \\[\n   \\text{Inflation rate} = (1.15 - 1) \\times 100\\% = 15\\%\n   \\]\n\nThis means the overall price level for the fixed basket increased by 15% from year 1 to year 2.",
+      "contentLen": 1094
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M6_Practice_Classification_Table_CPI",
+      "type": "classification_table",
+      "purpose": "practice table for CPI inflation calculation",
+      "content": "| Basket Item | Price Year 1 | Price Year 2 | Weight (%) | Price Relative (Year 2 / Year 1) | Weighted Price Relative | Calculation Steps (show work) |  \n|-------------|--------------|--------------|------------|---------------------------------|------------------------|-------------------------------|  \n| Bread       | $1.50        | $1.65        | 25         |                                 |                        |                               |  \n| Milk        | $2.00        | $2.20        | 15         |                                 |                        |                               |  \n| Eggs        | $3.00        | $3.30        | 10         |                                 |                        |                               |  \n| Gasoline    | $4.00        | $4.40        | 30         |                                 |                        |                               |  \n| Electricity | $0.10/kWh    | $0.12/kWh    | 20         |                                 |                        |                               |  \n| **Total**   |              |              | 100        |                                 |                        |                               |  \n\n**Instructions:**  \n- Calculate the price relative for each item by dividing Price Year 2 by Price Year 1.  \n- Multiply each price relative by the weight (percentage as a decimal).  \n- Sum all weighted price relatives.  \n- Calculate the inflation rate as \\((\\text{Sum} - 1) \\times 100\\%\\).  \n- Show your calculations clearly in the last column.",
+      "contentLen": 1563
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M7_Checklist_Apply",
+      "type": "checklist",
+      "purpose": "verification and self-check",
+      "content": "**Verification Checklist: CPI Inflation Calculation**\n\n1. **Price Relatives Correctness:**  \n   - Are all price relatives calculated accurately by dividing Year 2 prices by Year 1 prices?\n\n2. **Weight Application:**  \n   - Are weights correctly converted to decimals (e.g., 25% as 0.25) and applied to price relatives?\n\n3. **Summation Accuracy:**  \n   - Is the sum of weighted price relatives correctly calculated?\n\n4. **Inflation Rate Computation:**  \n   - Is the inflation rate computed as \\((\\text{Sum of weighted price relatives} - 1) \\times 100\\%\\)?\n\n**If any step is incorrect, revisit your calculations and correct errors before proceeding.**",
+      "contentLen": 649
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+      "type": "worked_example",
+      "purpose": "worked analytic pass",
+      "content": "**Stepwise Analysis of Inflation Impact on Households**\n\n1. **Household Types:**  \n   - Fixed-Income Household: Income remains constant despite inflation (e.g., pensioners).  \n   - Variable-Income Household: Income adjusts with inflation (e.g., wage earners with cost-of-living adjustments).\n\n2. **Lenses for Analysis:**  \n   - **Distribution:** How inflation redistributes purchasing power between households.  \n   - **Adaptation:** How households adjust spending or income to cope with inflation.  \n   - **Time Horizon:** Short-term vs long-term effects on household budgets.\n\n3. **Distribution Lens:**  \n   - Fixed-income households lose purchasing power as prices rise but income stays the same.  \n   - Variable-income households may maintain or increase purchasing power if income rises with inflation.\n\n4. **Adaptation Lens:**  \n   - Fixed-income households may cut discretionary spending or seek additional income sources.  \n   - Variable-income households might negotiate wage increases or adjust investment strategies.\n\n5. **Time Horizon Lens:**  \n   - Short-term: Fixed-income households feel immediate pressure; variable-income households may lag in income adjustment.  \n   - Long-term: Variable-income households may fully adjust income; fixed-income households remain vulnerable unless benefits are indexed.\n\n6. **Conclusion:**  \n   Inflation impacts households differently depending on income type and their ability to adapt. Fixed-income households are generally more vulnerable to inflation’s negative effects, while variable-income households have more flexibility but may face delays in adjustment.",
+      "contentLen": 1616
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M9_Scenario_Maya_Households",
+      "type": "scenario",
+      "purpose": "practice scenario with multiple household types",
+      "content": "**Maya Household Inflation Scenarios**\n\n1. **Household A: Fixed-Income Household**  \n   Maya is retired and receives a fixed pension of $2,000 per month. Her monthly expenses include rent, food, utilities, and healthcare. Inflation has caused prices to increase by 8% over the past year, but her pension remains unchanged.\n\n2. **Household B: Variable-Income Household**  \n   Maya’s friend, Carlos, works as a technician whose salary is adjusted annually based on inflation. His income rose by 7% this year. His expenses include mortgage payments, groceries, transportation, and education for his children.\n\nThese scenarios provide a basis to analyse how inflation affects households with different income types and spending patterns.",
+      "contentLen": 733
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M10_Analysis_Table_Household_Comparison",
+      "type": "analysis_table",
+      "purpose": "learner completes analysis of inflation effects",
+      "content": "| Household Type          | Distribution Impact (Purchasing Power)                 | Adaptation Strategies (Spending/Income)                   | Time Horizon Effects (Short vs Long Term)                  | Notes / Reasoning (Learner to complete)                    |  \n|------------------------|--------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|  \n| Fixed-Income Household  | Purchasing power decreases as income is fixed.         | May reduce discretionary spending; limited income growth. | Short-term pressure high; long-term vulnerability remains. | Example: Maya’s pension does not increase with inflation.   |  \n| Variable-Income Household | Income may increase with inflation, maintaining power. | Can negotiate wages; adjust investments or spending.       | Short-term lag possible; long-term income adjustment likely. | Example: Carlos’s salary increased by 7%, close to inflation.|  \n| **Learner Entry 1**     |                                                        |                                                           |                                                            |                                                            |  \n| **Learner Entry 2**     |                                                        |                                                           |                                                            |                                                            |  \n\n**Instructions:**  \n- Complete the two empty rows with your own assessments of inflation impact on other household types or variations.  \n- Use the lenses of distribution, adaptation, and time horizon to guide your analysis.  \n- Provide reasoning or examples in the Notes column.",
+      "contentLen": 1901
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M11_Checklist_Analyse",
+      "type": "checklist",
+      "purpose": "verification and self-check",
+      "content": "**Verification Checklist: Inflation Impact Analysis**\n\n1. **Completeness:**  \n   - Have you completed all rows and columns in the analysis table?\n\n2. **Accuracy of Distribution Lens:**  \n   - Does your analysis correctly describe how inflation affects purchasing power for each household?\n\n3. **Adaptation Strategies:**  \n   - Have you identified realistic ways households can adapt their spending or income?\n\n4. **Time Horizon Considerations:**  \n   - Does your analysis distinguish between short-term and long-term effects?\n\n**If any criteria are not met, review your analysis and revise accordingly.**",
+      "contentLen": 604
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M12_Scenario_Maya_Strategy_Menu",
+      "type": "scenario",
+      "purpose": "Maya household scenario with neutral strategy menu A–E",
+      "content": "**Maya Household and Inflation Management Strategies**\n\nMaya’s household faces rising inflation that affects her fixed pension income. To manage this, five neutral strategies are proposed:\n\n- **Strategy A: Budget Tightening**  \n  Reduce discretionary spending and prioritize essentials.\n\n- **Strategy B: Income Diversification**  \n  Seek part-time work or passive income sources.\n\n- **Strategy C: Inflation-Indexed Investments**  \n  Invest savings in assets that tend to keep pace with inflation.\n\n- **Strategy D: Debt Management**  \n  Pay down fixed-rate debts to reduce interest burden.\n\n- **Strategy E: Government Benefits Optimization**  \n  Apply for inflation-related government support programs.\n\nThese strategies are neutral and do not assume any is best. Your task is to evaluate them using explicit criteria.",
+      "contentLen": 817
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M13_Criteria_Exposition_Evaluate",
+      "type": "text",
+      "purpose": "criteria exposition",
+      "content": "**Evaluation Criteria for Household Inflation Strategies**\n\nWhen evaluating household strategies to manage inflation, consider the following criteria:\n\n1. **Depth of Strategy:**  \n   How thoroughly does the strategy address inflation effects? Does it include detailed planning and realistic adjustments?\n\n2. **Adaptability:**  \n   Can the strategy adjust to changing inflation rates or unexpected economic conditions? Is it flexible to different scenarios?\n\n3. **Transferability:**  \n   Is the strategy applicable to other households or contexts? Can lessons learned be applied beyond the current situation?\n\nUsing these criteria helps ensure that evaluations are comprehensive, reasoned, and useful for decision-making.",
+      "contentLen": 720
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M14_Worked_Judgement_Weak_Strong",
+      "type": "modelling_note",
+      "purpose": "worked judgement contrasting weak and strong strategy evaluations",
+      "content": "**Contrasting Weak and Strong Evaluations of Household Strategies**\n\n- **Weak Evaluation Example:**  \n  \"Strategy A is best because it saves money.\"  \n  This is a slogan-based judgement with no explanation of how or why it works, no criteria applied, and no consideration of trade-offs or adaptability.\n\n- **Strong Evaluation Example:**  \n  \"Strategy A offers immediate cost savings by prioritizing essential expenses, which is crucial for Maya’s fixed income. However, it may limit quality of life and lacks adaptability if inflation rises sharply. While effective short-term, combining it with Strategy C’s inflation-indexed investments could improve long-term resilience. This shows depth, adaptability, and transferability in evaluation.\"\n\n**Key features of strong evaluation:**  \n- Explicit use of criteria (depth, adaptability, transferability)  \n- Justification with reasoning and examples  \n- Discussion of trade-offs and limitations  \n- Consideration of combining strategies for better outcomes\n\nUse this model to guide your own evaluations.",
+      "contentLen": 1050
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M15_Guided_Judgement_Table",
+      "type": "decision_table",
+      "purpose": "guided judgement with partial exemplar rows",
+      "content": "| Strategy | Depth of Strategy (Detailed Planning) | Adaptability (Flexibility to Change) | Transferability (Applicability to Other Contexts) | Justification / Notes (Learner completes) |  \n|----------|--------------------------------------|-------------------------------------|-------------------------------------------------|------------------------------------------|  \n| A: Budget Tightening | Moderate: Focuses on spending cuts but limited long-term planning | Low: Fixed cuts may not adapt well if inflation changes | Moderate: Applicable to many households | Example: Saves money but may reduce living standards |  \n| B: Income Diversification | High: Adds new income sources, requires planning | High: Can adjust income streams as needed | High: Many households can apply this approach |                                          |  \n| C: Inflation-Indexed Investments | High: Requires financial knowledge and planning | Moderate: Investment returns vary with markets | Moderate: Depends on access to investment options |                                          |  \n| D: Debt Management | Moderate: Focuses on reducing interest costs | Low: Fixed debts may limit flexibility | High: Many households have debt |                                          |  \n| E: Government Benefits Optimization | Low: Depends on external programs | Low: Benefits may change or be limited | Low: Varies by location and eligibility |                                          |  \n\n**Instructions:**  \n- Review the exemplar justifications for Strategy A.  \n- Complete the Justification / Notes column for Strategies B to E using the criteria.  \n- Provide reasoning that explains strengths and weaknesses for each strategy.",
+      "contentLen": 1711
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M16_Independent_Judgement_Template",
+      "type": "template",
+      "purpose": "independent judgement memo scaffold",
+      "content": "**Memo: Evaluation of Household Inflation Management Strategy**\n\n**To:** [Recipient Name or Self]  \n**From:** [Your Name]  \n**Date:** [Date]  \n**Subject:** Evaluation and Recommendation of Inflation Management Strategy",
+      "contentLen": 218
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M17_Checklist_Evaluate",
+      "type": "checklist",
+      "purpose": "verification rubric for evaluation quality",
+      "content": "**Evaluation Quality Verification Checklist**\n\n1. **Use of Criteria:**  \n   - Does your evaluation explicitly apply the depth, adaptability, and transferability criteria?\n\n2. **Justification Depth:**  \n   - Are your reasons detailed and supported with examples or reasoning?\n\n3. **Verification of Reasoning:**  \n   - Have you checked your arguments for logical consistency and addressed potential counterpoints?\n\n4. **Transfer Consideration:**  \n   - Does your evaluation consider how the strategy applies beyond the immediate scenario?\n\n**If you answer \"No\" to any item, revise your evaluation memo to improve quality.**",
+      "contentLen": 621
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M18_Transfer_Prompt_Evaluate",
+      "type": "transfer_prompt",
+      "purpose": "transfer task to learner's own context",
+      "content": "**Applying Evaluation Criteria to Your Own Household or Context**\n\nWrite at least 80 words applying the evaluation criteria of depth, adaptability, and transferability to a household inflation management strategy relevant to your own situation or one you are familiar with. Consider:  \n\n- What strategy or approach is used to manage inflation effects?  \n- How thoroughly is the strategy planned and implemented?  \n- How flexible is the strategy to changing economic conditions?  \n- Can this strategy be applied or adapted to other households or contexts?\n\nThis exercise helps you connect learning to your own experience and deepen your understanding of effective inflation management.",
+      "contentLen": 684
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M19_Consolidation_Summary",
+      "type": "consolidation_summary",
+      "purpose": "session closure with summary and reflection",
+      "content": "**Session Reflection and Summary**\n\nReflect on the key ideas covered in this session:  \n\n- How inflation is measured differently by the Consumer Price Index (CPI) and the GDP Deflator, focusing on basket composition and scope.  \n- The step-by-step process of calculating inflation rates using CPI and weighted price changes in a fixed basket.  \n- How inflation affects households differently depending on income type, and how adaptation and time horizon lenses help analyse these effects.  \n- The importance of evaluating household inflation management strategies using explicit criteria such as depth, adaptability, and transferability.  \n- How to justify strategy choices with reasoned trade-offs and apply evaluation criteria to your own context.\n\nUse these reflections to consolidate your understanding and prepare for applying inflation concepts in real-life household budgeting and financial planning. Consider how you might continue to develop your skills in analysing and evaluating economic impacts on personal finances.",
+      "contentLen": 1029
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 **Pack:** [README.md](README.md) · **Status:** **CLOSED** — **SUCCESS** (2026-06-05)
 
 **Closure:** [38K-6-sprint-closure.md](observations/38K-6-sprint-closure.md)  
-**Successor:** **Sprint 38-L — Instructional Function Depth Implementation** (**RECOMMENDED** — not chartered)
+**Successor:** **[Sprint 38-L — Instructional Function Depth Implementation](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** (**CHARTERED** — **38L-1 START HERE**)
 
 ---
 

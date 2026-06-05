@@ -1,0 +1,171 @@
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "The general increase in prices of goods and services over time, which reduces the purchasing power of money."
+    },
+    {
+      "name": "Purchasing Power",
+      "definition": "The value of money expressed in terms of the amount of goods and services that one unit of money can buy."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "A measure of the average change over time in the prices paid by urban consumers for a fixed basket of goods and services reflecting typical household consumption patterns."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "A measure of the change in prices of all domestically produced goods and services in an economy, calculated as the ratio of nominal GDP to real GDP, using a changing basket based on current production."
+    },
+    {
+      "name": "Fixed-Income Household",
+      "definition": "A household that receives a constant income, such as pensions or fixed salaries, which does not adjust with inflation."
+    },
+    {
+      "name": "Variable-Income Household",
+      "definition": "A household with income that can adjust with inflation, such as wages increasing with cost of living or business revenues rising with prices."
+    },
+    {
+      "name": "Household Budget Strategy",
+      "definition": "A plan or approach adopted by households to manage the impact of inflation on their budgets, including adjustments to spending, income, savings, and investments."
+    },
+    {
+      "name": "Macro Policy Tools",
+      "definition": "Monetary and fiscal policies used by central banks and governments to manage inflation and economic activity."
+    },
+    {
+      "name": "Depth of Strategy",
+      "definition": "The thoroughness with which a household plans for inflation effects, including detailed adjustments and scenario analysis."
+    },
+    {
+      "name": "Scenario Analysis",
+      "definition": "The use of realistic examples or hypothetical situations to evaluate the effectiveness of household strategies under inflation."
+    },
+    {
+      "name": "Judgement Criteria",
+      "definition": "Rubrics or standards applied to assess the quality and effectiveness of household strategies, including whether they are guided, independently reasoned, verified, and transferable."
+    },
+    {
+      "name": "Transferability",
+      "definition": "The ability of a household to apply their inflation management strategy to different inflation scenarios or economic conditions."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Inflation",
+      "target": "Purchasing Power",
+      "type": "causes_decrease_in"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "GDP Deflator",
+      "type": "contrasts_with"
+    },
+    {
+      "source": "Fixed-Income Household",
+      "target": "Purchasing Power",
+      "type": "is_more_vulnerable_to_decrease_due_to",
+      "note": "Because income does not adjust with inflation"
+    },
+    {
+      "source": "Variable-Income Household",
+      "target": "Purchasing Power",
+      "type": "may_maintain_or_increase_due_to",
+      "note": "Because income can adjust with inflation"
+    },
+    {
+      "source": "Household Budget Strategy",
+      "target": "Inflation",
+      "type": "manages_impact_of"
+    },
+    {
+      "source": "Depth of Strategy",
+      "target": "Household Budget Strategy",
+      "type": "is_aspect_of"
+    },
+    {
+      "source": "Scenario Analysis",
+      "target": "Household Budget Strategy",
+      "type": "supports_evaluation_of"
+    },
+    {
+      "source": "Judgement Criteria",
+      "target": "Household Budget Strategy",
+      "type": "assesses_quality_of"
+    },
+    {
+      "source": "Transferability",
+      "target": "Household Budget Strategy",
+      "type": "is_desired_property_of"
+    },
+    {
+      "source": "Macro Policy Tools",
+      "target": "Inflation",
+      "type": "influences"
+    },
+    {
+      "source": "Macro Policy Tools",
+      "target": "Household Budget Strategy",
+      "type": "has_indirect_effect_on"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement Methods",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    },
+    {
+      "name": "Household Income Types",
+      "members": [
+        "Fixed-Income Household",
+        "Variable-Income Household"
+      ]
+    },
+    {
+      "name": "Household Strategy Evaluation Components",
+      "members": [
+        "Depth of Strategy",
+        "Scenario Analysis",
+        "Judgement Criteria",
+        "Transferability"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Evaluating Household Strategies Under Inflation",
+      "steps": [
+        "Assess the depth of the household's strategy for managing inflation effects.",
+        "Apply scenario analysis using realistic examples such as the Maya scenario.",
+        "Use judgement criteria to evaluate whether the strategy is worked through with guidance, independently reasoned, verified, and transferable.",
+        "Determine the effectiveness and adaptability of the strategy for different inflation scenarios."
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "CPI and GDP Deflator Measure the Same Inflation",
+      "description": "Confusing CPI and GDP deflator as identical measures of inflation, whereas CPI uses a fixed basket of consumer goods and GDP deflator uses a changing basket of all domestically produced goods and services."
+    },
+    {
+      "name": "Inflation Affects All Households Equally",
+      "description": "Assuming inflation impacts fixed-income and variable-income households in the same way, ignoring that fixed-income households are more vulnerable due to lack of income adjustment."
+    },
+    {
+      "name": "Macro Policy Tools Directly Manage Household Budgets",
+      "description": "Believing that macroeconomic policies directly control household budgeting strategies, whereas their effects on households are indirect."
+    }
+  ]
+}

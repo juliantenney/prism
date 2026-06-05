@@ -1,0 +1,45 @@
+{
+  "learner_level": "self-directed learner",
+  "scope": "standard session (30-120 minutes)",
+  "learning_outcomes": [
+    {
+      "statement": "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator",
+        "Inflation Measurement Methods"
+      ],
+      "cognitive_level": "Explain",
+      "notes": "Focus on contrasting fixed vs variable basket and consumer goods vs all domestic goods."
+    },
+    {
+      "statement": "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "Inflation"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Use weighted average price changes to determine CPI inflation rate."
+    },
+    {
+      "statement": "Analyse how inflation affects different household budgets, including fixed-income and variable-income scenarios.",
+      "related_concepts": [
+        "Household Budget Impact",
+        "Inflation",
+        "Purchasing Power"
+      ],
+      "cognitive_level": "Analyse",
+      "notes": "Compare Maya-style fixed income vs variable income exposure; distribution, adaptation, and time-horizon lenses."
+    },
+    {
+      "statement": "Evaluate strategies households can use to manage the effects of inflation on their finances, defending a justified choice using explicit criteria and trade-offs.",
+      "related_concepts": [
+        "Household Budget Impact",
+        "Inflation",
+        "Purchasing Power"
+      ],
+      "cognitive_level": "Evaluate",
+      "notes": "38I-4 A4 benchmark: Maya household scenario; neutral strategy menu A–E; independent memo + verification rubric + transfer. Policy communication is macro context only — not the Evaluate driver."
+    }
+  ]
+}

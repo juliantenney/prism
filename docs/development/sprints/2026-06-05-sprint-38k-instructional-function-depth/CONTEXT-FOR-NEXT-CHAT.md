@@ -2,7 +2,7 @@
 
 **Pack:** `docs/development/sprints/2026-06-05-sprint-38k-instructional-function-depth/`
 
-**Status:** **38-K CLOSED** · **38-L RECOMMENDED** (not chartered)
+**Status:** **38-K CLOSED** · **Successor [38-L CHARTERED](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)**
 
 ---
 
@@ -35,13 +35,11 @@
 
 ---
 
-## Recommended successor
+## Successor (chartered)
 
-**Sprint 38-L — Instructional Function Depth Implementation**
+**[Sprint 38-L — Instructional Function Depth Implementation](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** — **CHARTERED**
 
-Implement R1–R7; `EV-38L-AFTER` inflation proof run. See [38K-6 §7](observations/38K-6-sprint-closure.md).
-
-**Do not begin 38-L until chartered.**
+Implement R1–R7; `EV-38L-AFTER` inflation proof run. **Next:** **38L-1** ([38-L CONTEXT](../2026-06-05-sprint-38l-instructional-function-depth-implementation/CONTEXT-FOR-NEXT-CHAT.md)).
 
 ---
 

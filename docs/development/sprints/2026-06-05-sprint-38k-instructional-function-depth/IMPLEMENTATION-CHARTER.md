@@ -1,7 +1,7 @@
 # Sprint 38-K — Implementation charter (Instructional Function Depth and Episode Richness)
 
 **Date:** 2026-06-05  
-**Status:** **CLOSED** — **SUCCESS** ([38K-6](observations/38K-6-sprint-closure.md)) · **38-L RECOMMENDED**  
+**Status:** **CLOSED** — **SUCCESS** ([38K-6](observations/38K-6-sprint-closure.md)) · **Successor [38-L CHARTERED](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)**  
 **Predecessor:** [Sprint 38-J](../2026-06-05-sprint-38j-instructional-function-planning/) (**CLOSED** — [38J-6](../2026-06-05-sprint-38j-instructional-function-planning/observations/38J-6-sprint-closure.md) · **SUCCESS**)
 
 ---

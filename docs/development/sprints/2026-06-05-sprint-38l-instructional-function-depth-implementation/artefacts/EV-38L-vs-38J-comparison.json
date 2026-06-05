@@ -1,0 +1,186 @@
+{
+  "generatedAt": "2026-06-05T11:50:32.231Z",
+  "sprint": "38-L",
+  "phase": "38L-5",
+  "primaryQuestion": "Did 38L implementation move the Inflation workbook materially closer to 38I-4 target-state episodes?",
+  "runs": {
+    "EV-38G-AFTER": {
+      "sprint": "38-G",
+      "gamMaterialCount": 10,
+      "activityCount": 4,
+      "evaluateSubstance": "consolidation_summary_capstone_only",
+      "a4MaterialCount": 2
+    },
+    "EV-38J-AFTER": {
+      "sprint": "38-J",
+      "gamMaterialCount": 14,
+      "activityCount": 4,
+      "lo4CognitiveLevel": "Summarize",
+      "lo4Driver": "policy_communication",
+      "a4MaterialCount": 5,
+      "a4MissingFunctions": [
+        "independent_judgement",
+        "verification_checklist",
+        "transfer_prompt"
+      ]
+    },
+    "EV-38L-AFTER": {
+      "sprint": "38-L",
+      "gamMaterialCount": 19,
+      "activityCount": 4,
+      "harnessVersion": "38L-4",
+      "frozenLo": true,
+      "lo4CognitiveLevel": "Evaluate",
+      "lo4Driver": "household_strategy",
+      "a4MaterialCount": 8,
+      "a4FunctionsPresent": [
+        "perspectives_scenario",
+        "criteria_exposition",
+        "worked_judgement",
+        "guided_judgement",
+        "independent_judgement_template",
+        "verification_checklist",
+        "transfer_prompt",
+        "consolidation_summary"
+      ]
+    }
+  },
+  "dlaComparison": {
+    "materialRowsPerActivity": {
+      "A1": { "38J": 3, "38L": 4 },
+      "A2": { "38J": 3, "38L": 3 },
+      "A3": { "38J": 3, "38L": 4 },
+      "A4": { "38J": 5, "38L": 8 }
+    },
+    "newIn38L": [
+      "verification checklist every activity (DLA-WB-26)",
+      "A3 worked analytic pass Material before analysis_table (DLA-WB-27)",
+      "A4 independent judgement template (DLA-WB-28)",
+      "A4 verification checklist (DLA-WB-28)",
+      "A4 transfer_prompt (DLA-WB-28)",
+      "A4 household strategy LO mapping (INF-EVAL-01)"
+    ],
+    "removedOrChangedIn38L": [
+      "A4 policy communication LO and criteria",
+      "A3 prompt_set replaced by worked analytic pass + checklist",
+      "A2 sample_output row omitted (38J retained sample_output)"
+    ]
+  },
+  "gamComparison": {
+    "materialCountDelta": 5,
+    "newMaterialTypesIn38L": ["checklist", "transfer_prompt", "template"],
+    "a4ContentAnchor": {
+      "38J": "central_bank_vs_government_policy_communication",
+      "38L": "maya_household_strategy_menu_A-E"
+    }
+  },
+  "pageArtefactComparison": {
+    "a4MaterialKeys": {
+      "38J": [
+        "evaluation_criteria",
+        "policy_scenarios",
+        "modelling_note",
+        "decision_table"
+      ],
+      "38L": [
+        "scenario_maya_strategy_menu",
+        "criteria_exposition_evaluate",
+        "worked_judgement_weak_vs_strong",
+        "guided_judgement_table",
+        "independent_judgement_template",
+        "verification_checklist_evaluate",
+        "transfer_prompt_evaluate",
+        "consolidation_summary_evaluate"
+      ]
+    },
+    "a4ExpectedOutput": {
+      "38J": "decision_table + consolidation_summary only",
+      "38L": "independent_judgement_memo + verified_checklist + transfer_response + consolidation_summary"
+    },
+    "newInstructionalFunctionsOnPage": [
+      "independent_judgement_template",
+      "verification_checklist_evaluate",
+      "transfer_prompt_evaluate",
+      "worked_analytic_pass (A3)",
+      "verification_checklist per activity A1-A3"
+    ]
+  },
+  "activityFunctionMatrices": {
+    "A1_Understand": {
+      "functions": {
+        "exposition": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "worked_example": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "sample_output": { "38J": "substantial", "38L": "substantial", "38I4": "partial" },
+        "verification": { "38J": "absent", "38L": "substantial", "38I4": "partial" },
+        "non_example_discrimination": { "38J": "partial", "38L": "partial", "38I4": "substantial" }
+      }
+    },
+    "A2_Apply": {
+      "functions": {
+        "worked_example_L4": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "process_exposition": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "practice_table": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "sample_output": { "38J": "substantial", "38L": "absent", "38I4": "partial" },
+        "verification": { "38J": "absent", "38L": "substantial", "38I4": "partial" },
+        "transfer": { "38J": "absent", "38L": "absent", "38I4": "partial" }
+      }
+    },
+    "A3_Analyse": {
+      "functions": {
+        "worked_analytic_pass": { "38J": "absent", "38L": "substantial", "38I4": "substantial" },
+        "scenario": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "criteria_lenses": { "38J": "partial", "38L": "substantial", "38I4": "substantial" },
+        "guided_analysis_table": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "verification": { "38J": "partial", "38L": "substantial", "38I4": "substantial" }
+      }
+    },
+    "A4_Evaluate": {
+      "functions": {
+        "perspectives": { "38J": "substantial_policy", "38L": "partial_household", "38I4": "substantial" },
+        "criteria": { "38J": "substantial_policy", "38L": "substantial_generic", "38I4": "substantial_household_rubric" },
+        "worked_judgement": { "38J": "substantial", "38L": "substantial", "38I4": "substantial" },
+        "guided_judgement": { "38J": "substantial", "38L": "partial_prefilled", "38I4": "substantial" },
+        "independent_judgement": { "38J": "absent", "38L": "substantial", "38I4": "substantial" },
+        "verification": { "38J": "absent", "38L": "substantial", "38I4": "substantial" },
+        "transfer": { "38J": "absent", "38L": "substantial", "38I4": "substantial" },
+        "substance_anchor": { "38J": "policy_communication", "38L": "household_strategy", "38I4": "household_strategy_maya" }
+      }
+    }
+  },
+  "a4BenchmarkAssessment": {
+    "benchmark": "38I-4 A4 household strategy Evaluate",
+    "classifications": {
+      "perspectives": { "38J": "substantial_wrong_domain", "38L": "partial", "38I4": "near_target" },
+      "criteria": { "38J": "substantial_wrong_domain", "38L": "partial", "38I4": "near_target" },
+      "worked_judgement": { "38J": "substantial", "38L": "substantial", "38I4": "near_target" },
+      "guided_judgement": { "38J": "substantial", "38L": "partial", "38I4": "near_target" },
+      "independent_judgement": { "38J": "absent", "38L": "substantial", "38I4": "near_target" },
+      "verification": { "38J": "absent", "38L": "substantial", "38I4": "near_target" },
+      "transfer": { "38J": "absent", "38L": "substantial", "38I4": "near_target" }
+    }
+  },
+  "successCriteriaReview": {
+    "verification_all_activities": { "38J": "fail", "38L": "pass", "evidence": "38L: M4,M7,M11,M17 checklists; 38J: no checklist Materials" },
+    "analyse_worked_pass_present": { "38J": "fail", "38L": "pass", "evidence": "38L M8 worked analytic pass before M10 matrix" },
+    "evaluate_memo_present": { "38J": "fail", "38L": "pass", "evidence": "38L M16 independent judgement template" },
+    "evaluate_verification_present": { "38J": "fail", "38L": "pass", "evidence": "38L M17 verification checklist" },
+    "evaluate_transfer_present": { "38J": "fail", "38L": "pass", "evidence": "38L M18 transfer_prompt Material" }
+  },
+  "remainingGapEstimate": {
+    "overallDistanceFrom38I4": "moderate",
+    "primaryGaps": [
+      "A4 criteria rubric uses generic depth/adaptability/transferability not 38I-4 household dimensions (purchasing-power, essential resilience, feasibility, downside risk)",
+      "Maya scenario lacks 38I-4 numeric constants and named competing perspectives section",
+      "Strategy menu A-E differs from 38I-4 budget-action options",
+      "Guided judgement table pre-fills strategy scores (learner ranking partially supplied)",
+      "A1 lacks dedicated non-example/discrimination ladder",
+      "A2 missing sample_output row"
+    ],
+    "qualitativeMaterialCount": { "38J": 14, "38L": 19, "38I4_estimated": "~20-22" }
+  },
+  "verdict": {
+    "choice": "C",
+    "label": "Substantial improvement",
+    "summary": "38L moved the inflation workbook from policy-summary Evaluate form (38J) to household-strategy Evaluate with full closure trio on page and GAM. Not yet near-target vs 38I-4 A4 on rubric specificity, scenario fidelity, and guided-table anti-spoiler discipline."
+  }
+}

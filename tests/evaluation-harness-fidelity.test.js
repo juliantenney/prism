@@ -97,6 +97,15 @@ test("38H-4b harness: strict KM artefact parse and output contract", () => {
   assert.match(harnessSrc, /buildKmHarnessOutputContract/);
   assert.match(harnessSrc, /sanitizePrismRunCapturedOutput/);
   assert.match(harnessSrc, /buildKmHarnessOutputContract\(KM_PIPELINE_STEP_NUM\)/);
-  assert.match(harnessSrc, /OUTPUT: knowledge_model/);
+  const { buildKmHarnessOutputContract } = require(path.join(
+    repoRoot,
+    "docs",
+    "development",
+    "sprints",
+    "2026-06-05-sprint-38h-workbook-realisation-fidelity",
+    "artefacts",
+    "ev-harness-artefact-parse.js"
+  ));
+  assert.match(buildKmHarnessOutputContract(2), /No markdown code fences/i);
   assert.doesNotMatch(harnessSrc, /if \(!knowledge_model\) \{\s*knowledge_model = \{ concepts: \[\]/s);
 });

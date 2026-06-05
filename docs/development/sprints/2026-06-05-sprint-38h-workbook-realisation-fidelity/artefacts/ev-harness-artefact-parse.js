@@ -58,16 +58,17 @@ function parseKnowledgeModelCapture(raw, sanitizeFn) {
 }
 
 function buildKmHarnessOutputContract(stepNumber) {
-  const n = typeof stepNumber === "number" && stepNumber > 0 ? stepNumber : 2;
+  void stepNumber;
   return [
-    "Output contract (strict — harness capture):",
-    "- Emit exactly one fenced ```json block containing the knowledge_model object.",
-    "- No prose before the opening fence.",
-    "- No prose after the closing fence except the runner footer line on its own line.",
-    `- Runner footer (outside the fence, not inside JSON): STEP ${n} OUTPUT: knowledge_model`,
+    "Output contract (strict — parseable JSON only):",
+    "- Return exactly one valid JSON object: the knowledge_model root object.",
+    "- No markdown code fences (no triple-backtick json blocks).",
+    "- No prose, headings, or commentary before or after the JSON object.",
+    "- No JSON comments.",
+    "- No STEP N OUTPUT footer lines.",
     "- JSON top-level keys (use empty arrays when none apply): concepts, relationships, groupings, processes, misconceptions.",
     "- concepts: each entry includes name and definition.",
-    "- Return only the fenced JSON and the footer line."
+    "- Return only the raw JSON object."
   ].join("\n");
 }
 

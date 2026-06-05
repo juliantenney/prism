@@ -1,0 +1,210 @@
+{
+  "capturedAt": "2026-06-05T12:14:01.960Z",
+  "sprint": "38-L",
+  "runId": "EV-38L-AFTER",
+  "phase": "38L-4",
+  "harnessVersion": "38L-4b",
+  "frozenLearningOutcomes": "C:\\xampp\\htdocs\\prism\\docs\\development\\sprints\\2026-06-05-sprint-38l-instructional-function-depth-implementation\\artefacts\\ev-38l-frozen-learning-outcomes.json",
+  "evaluateBenchmark": "38I-4 A4 household strategy Evaluate",
+  "priorRuns": [
+    "EV-38G-AFTER",
+    "EV-38J-AFTER",
+    "EV-38H-AFTER-knowledge-model"
+  ],
+  "comparators": [
+    "EV-38G-AFTER",
+    "EV-38J-AFTER",
+    "38I-4-target-state",
+    "38I-4-A4-episode"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household budget scenarios (fixed- and variable-income), and household strategy evaluation under inflation. Policy communication may appear as macro context only — the capstone evaluates household budget strategies, not policy summaries.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "pipelinePath": [
+    "brief",
+    "generate_learning_content",
+    "model_knowledge",
+    "frozen_learning_outcomes",
+    "design_learning_activities",
+    "generate_activity_materials",
+    "design_page"
+  ],
+  "artefactsWritten": [
+    "EV-38L-AFTER-learning-content.json",
+    "EV-38L-AFTER-knowledge-model.json",
+    "EV-38L-AFTER-learning-outcomes.json",
+    "EV-38L-AFTER-learning-objectives.json",
+    "EV-38L-AFTER-dla-learning-activities.json",
+    "EV-38L-AFTER-gam.json",
+    "EV-38L-AFTER-gam.txt",
+    "EV-38L-AFTER-workbook.md",
+    "EV-38L-AFTER-design-page.json",
+    "EV-38L-AFTER-run-log.json"
+  ],
+  "knowledgeModelConceptCount": 12,
+  "promptChars": {
+    "learning_content": 1366,
+    "knowledge_model": 1699,
+    "learning_outcomes": 0,
+    "dla": 31336,
+    "gam": 27668,
+    "design_page": 21100
+  },
+  "activityCount": 4,
+  "gamMaterialCount": 19,
+  "gamTypes": [
+    "text",
+    "worked_example",
+    "sample_output",
+    "checklist",
+    "classification_table",
+    "scenario",
+    "analysis_table",
+    "modelling_note",
+    "decision_table",
+    "template",
+    "transfer_prompt",
+    "consolidation_summary"
+  ],
+  "materials": [
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M1_Concept_Exposition_CPI_GDP",
+      "type": "text",
+      "contentLen": 1903,
+      "contentPreview": "The Consumer Price Index (CPI) and the GDP Deflator are two important measures used to track inflation, but they differ significantly in how they measure price "
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M2_Worked_Example_CPI_GDP",
+      "type": "worked_example",
+      "contentLen": 1748,
+      "contentPreview": "**Stepwise Explanation Contrasting CPI and GDP Deflator** 1. **Identify the baskets:** - CPI basket: Fixed set of consumer goods like bread, gasoline, ren"
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M3_Sample_Output_CPI_GDP",
+      "type": "sample_output",
+      "contentLen": 973,
+      "contentPreview": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ mainly in their basket composition and scope. The CPI uses a fixed basket "
+    },
+    {
+      "activity_id": "A1_Understand_CPI_GDP",
+      "material_id": "M4_Checklist_Understand",
+      "type": "checklist",
+      "contentLen": 1035,
+      "contentPreview": "**Self-Check: Understanding CPI and GDP Deflator Differences** Verify your explanation meets the following criteria: 1. **Basket Composition:** - Does "
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M5_Worked_Example_CPI_Calculation",
+      "type": "worked_example",
+      "contentLen": 1094,
+      "contentPreview": "**Stepwise CPI Inflation Rate Calculation** 1. **Identify basket items, prices, and weights:** Suppose the fixed basket includes: - Bread: Price year"
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M6_Practice_Classification_Table_CPI",
+      "type": "classification_table",
+      "contentLen": 1563,
+      "contentPreview": "| Basket Item | Price Year 1 | Price Year 2 | Weight (%) | Price Relative (Year 2 / Year 1) | Weighted Price Relative | Calculation Steps (show work) | |-----"
+    },
+    {
+      "activity_id": "A2_Apply_CPI_Inflation_Calculation",
+      "material_id": "M7_Checklist_Apply",
+      "type": "checklist",
+      "contentLen": 649,
+      "contentPreview": "**Verification Checklist: CPI Inflation Calculation** 1. **Price Relatives Correctness:** - Are all price relatives calculated accurately by dividing Year"
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+      "type": "worked_example",
+      "contentLen": 1616,
+      "contentPreview": "**Stepwise Analysis of Inflation Impact on Households** 1. **Household Types:** - Fixed-Income Household: Income remains constant despite inflation (e.g.,"
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M9_Scenario_Maya_Households",
+      "type": "scenario",
+      "contentLen": 733,
+      "contentPreview": "**Maya Household Inflation Scenarios** 1. **Household A: Fixed-Income Household** Maya is retired and receives a fixed pension of $2,000 per month. Her mo"
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M10_Analysis_Table_Household_Comparison",
+      "type": "analysis_table",
+      "contentLen": 1901,
+      "contentPreview": "| Household Type | Distribution Impact (Purchasing Power) | Adaptation Strategies (Spending/Income) | Time Horizon Ef"
+    },
+    {
+      "activity_id": "A3_Analyse_Inflation_Household_Impact",
+      "material_id": "M11_Checklist_Analyse",
+      "type": "checklist",
+      "contentLen": 604,
+      "contentPreview": "**Verification Checklist: Inflation Impact Analysis** 1. **Completeness:** - Have you completed all rows and columns in the analysis table? 2. **Accuracy"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M12_Scenario_Maya_Strategy_Menu",
+      "type": "scenario",
+      "contentLen": 817,
+      "contentPreview": "**Maya Household and Inflation Management Strategies** Maya’s household faces rising inflation that affects her fixed pension income. To manage this, five neut"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M13_Criteria_Exposition_Evaluate",
+      "type": "text",
+      "contentLen": 720,
+      "contentPreview": "**Evaluation Criteria for Household Inflation Strategies** When evaluating household strategies to manage inflation, consider the following criteria: 1. **Dep"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M14_Worked_Judgement_Weak_Strong",
+      "type": "modelling_note",
+      "contentLen": 1050,
+      "contentPreview": "**Contrasting Weak and Strong Evaluations of Household Strategies** - **Weak Evaluation Example:** \"Strategy A is best because it saves money.\" This is"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M15_Guided_Judgement_Table",
+      "type": "decision_table",
+      "contentLen": 1711,
+      "contentPreview": "| Strategy | Depth of Strategy (Detailed Planning) | Adaptability (Flexibility to Change) | Transferability (Applicability to Other Contexts) | Justification / "
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M16_Independent_Judgement_Template",
+      "type": "template",
+      "contentLen": 218,
+      "contentPreview": "**Memo: Evaluation of Household Inflation Management Strategy** **To:** [Recipient Name or Self] **From:** [Your Name] **Date:** [Date] **Subject:** Eval"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M17_Checklist_Evaluate",
+      "type": "checklist",
+      "contentLen": 621,
+      "contentPreview": "**Evaluation Quality Verification Checklist** 1. **Use of Criteria:** - Does your evaluation explicitly apply the depth, adaptability, and transferability"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M18_Transfer_Prompt_Evaluate",
+      "type": "transfer_prompt",
+      "contentLen": 684,
+      "contentPreview": "**Applying Evaluation Criteria to Your Own Household or Context** Write at least 80 words applying the evaluation criteria of depth, adaptability, and transfer"
+    },
+    {
+      "activity_id": "A4_Evaluate_Household_Inflation_Strategy",
+      "material_id": "M19_Consolidation_Summary",
+      "type": "consolidation_summary",
+      "contentLen": 1029,
+      "contentPreview": "**Session Reflection and Summary** Reflect on the key ideas covered in this session: - How inflation is measured differently by the Consumer Price Index (CP"
+    }
+  ]
+}

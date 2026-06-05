@@ -7474,8 +7474,13 @@
       '  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",',
       '  "expected_output": "A filled comparison table a peer could review — each row has purpose text and one cited difference.",',
       '  "support_note": "Purpose is the author\'s aim, not a plot summary; difference must compare the two works, not repeat the same sentence twice.",',
-      '  "required_materials": [{ "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." }]',
-      "}"
+      '  "required_materials": [',
+      '    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." },',
+      '    { "material_id": "M2", "type": "checklist", "purpose": "verification", "specification": "depth_floor: L3; ≥4 criteria-linked check items + repair path if any fail." }',
+      "  ]",
+      "}",
+      "",
+      "38L mandatory rows not shown in miniature example above — when IFP-10/DLA-WB-26..31 apply, ALSO emit: checklist on EVERY activity; Analyse worked analytic pass before analysis_table; Evaluate independent judgement template + verification checklist + transfer_prompt (not cognition field only). See pack IFP-10 and DLA-WB-26..31 above — do not copy the thin single-material shape."
     ].join("\n");
   }
 
@@ -7874,6 +7879,75 @@
     bootstrapLdSelfDirectedRhetoricInlineIfMissing();
     var lib = resolveLdSelfDirectedRhetoricLib();
     return lib.buildLdSelfDirectedRhetoricPromptBlock(options || {});
+  }
+
+  function resolvePageGamMaterialsPreserveLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_GAM_MATERIALS_PRESERVE) {
+        return roots[i].PRISM_PAGE_GAM_MATERIALS_PRESERVE;
+      }
+    }
+    return null;
+  }
+
+  function resolveUpstreamActivityMaterialsFromWorkflowCaptures(learningActivitiesUpstream) {
+    var preserveMod = resolvePageGamMaterialsPreserveLib();
+    if (!preserveMod || typeof preserveMod.parseGamMaterialsFromText !== "function") {
+      return null;
+    }
+    var captures = state.workflowRunCapturedOutputs || {};
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !Array.isArray(wf.steps)) return null;
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      var step = wf.steps[i];
+      if (!step) continue;
+      var oname = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
+      if (oname !== "activity_materials") continue;
+      var sid = String(step.id || "").trim();
+      var raw = sid && captures[sid] ? captures[sid] : "";
+      if (!raw) continue;
+      var parsedJson = tryParseWorkflowArtefactJson(raw);
+      if (parsedJson && Array.isArray(parsedJson.activities)) {
+        return parsedJson.activities;
+      }
+      var flat = preserveMod.parseGamMaterialsFromText(raw);
+      if (!flat.length) continue;
+      var dlaUpstream =
+        learningActivitiesUpstream != null
+          ? learningActivitiesUpstream
+          : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+      if (
+        preserveMod.buildUpstreamGamActivitiesFromMaterials &&
+        typeof preserveMod.buildUpstreamGamActivitiesFromMaterials === "function"
+      ) {
+        return preserveMod.buildUpstreamGamActivitiesFromMaterials(flat, dlaUpstream);
+      }
+      return flat;
+    }
+    return null;
+  }
+
+  function applyComposedPageGamMaterialsPreserve(page, options) {
+    if (!page || typeof page !== "object") return page;
+    var opts = options && typeof options === "object" ? options : {};
+    var preserveMod = resolvePageGamMaterialsPreserveLib();
+    if (!preserveMod || typeof preserveMod.applyGamMaterialsToComposedPage !== "function") {
+      return page;
+    }
+    var gamUpstream = opts.upstreamActivityMaterials;
+    if (!gamUpstream) {
+      gamUpstream = resolveUpstreamActivityMaterialsFromWorkflowCaptures(
+        opts.upstreamLearningActivities
+      );
+    }
+    if (!gamUpstream) return page;
+    return preserveMod.applyGamMaterialsToComposedPage(page, gamUpstream, opts);
   }
 
   function resolveLdDesignPageComposeLib() {
@@ -33507,7 +33581,8 @@
         next.metadata.sequencing_interaction_metadata_rows = sequencingTouchedNoCognition;
       }
       next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
-      return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
+      next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
+      return applyComposedPageGamMaterialsPreserve(next, opts);
     }
     if (!Array.isArray(next.sections)) next.sections = [];
     var trace = {
@@ -33557,7 +33632,8 @@
     }
     next.generation_notes.cognition_composition = trace;
     next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
-    return applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
+    next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
+    return applyComposedPageGamMaterialsPreserve(next, opts);
   }
 
   function applySprint38VisualAffordancesToComposedPage(page, options) {
@@ -35662,6 +35738,14 @@
       applyPageCompositionValidationForUtilitiesPage;
     prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
       applyPedagogicCognitionSemanticsToComposedPage;
+    prismTestApi.applyComposedPageGamMaterialsPreserve = applyComposedPageGamMaterialsPreserve;
+    prismTestApi.validate38LPageGamPreservationForTest = function (page, options) {
+      var mod = resolvePageGamMaterialsPreserveLib();
+      if (!mod || typeof mod.validate38LPageGamPreservation !== "function") {
+        return { ok: false, errors: ["page-gam-materials-preserve module unavailable"] };
+      }
+      return mod.validate38LPageGamPreservation(page, options);
+    };
     prismTestApi.applySprint38VisualAffordancesToComposedPage =
       applySprint38VisualAffordancesToComposedPage;
     prismTestApi.validatePageVisualAffordancesForTest = function (page) {

@@ -2,7 +2,7 @@
 
 **Pack path:** `docs/development/sprints/2026-06-05-sprint-38k-instructional-function-depth/`  
 **Date:** 2026-06-05  
-**Status:** **CLOSED** — **SUCCESS** ([38K-6](observations/38K-6-sprint-closure.md)) · **38-L RECOMMENDED**  
+**Status:** **CLOSED** — **SUCCESS** ([38K-6](observations/38K-6-sprint-closure.md)) · **Successor [38-L CHARTERED](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)**  
 **Predecessor:** [Sprint 38-J — Instructional Function Planning](../2026-06-05-sprint-38j-instructional-function-planning/) (**CLOSED** — [38J-6](../2026-06-05-sprint-38j-instructional-function-planning/observations/38J-6-sprint-closure.md) · **SUCCESS**)
 
 **Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
@@ -93,6 +93,6 @@ Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
 **Baselines (frozen):** `EV-38G-AFTER-*` · `EV-38J-AFTER-*` ([38J artefacts](../2026-06-05-sprint-38j-instructional-function-planning/artefacts/))
 
-**Successor:** **Sprint 38-L — Instructional Function Depth Implementation** ([38K-6](observations/38K-6-sprint-closure.md) §7)
+**Successor:** **[Sprint 38-L — Instructional Function Depth Implementation](../2026-06-05-sprint-38l-instructional-function-depth-implementation/)** (**CHARTERED** — [38L-1 START HERE](../2026-06-05-sprint-38l-instructional-function-depth-implementation/observations/README.md))
 
-**Recommended proof prefix (38-L):** `EV-38L-AFTER-*`
+**Proof prefix (38-L):** `EV-38L-AFTER-*`

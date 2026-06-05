@@ -3,6 +3,8 @@
  * 38E: V-02 (AP-01), V-08, V-09, V-03/V-04/V-05/V-06/V-07, preservation unchanged.
  * 38F: V-01 (DLA-WB-06a, GAM-WB-38F-01), V-05 (DLA-WB-18, GAM-WB-10 F5), 38E-8/9 co-presence, V-13.
  * 38J: IFP-00..08, DLA-WB-22..25 (38J-3 §5); GAM-PRES, GAM-WB-22..25, F8 (38J-4 §6).
+ * 38L: IFP-09..10, DLA-WB-26..30 (38L-2 §5); GAM-PRES-08/09, GAM-WB-26..30, F9 (38L-3 §6);
+ * 38L-4: INF-EVAL-01, EV-CAP-04, DLA-WB-31 (§5); GAM-PRES-10, GAM-WB-31 (§6); harness alignment.
  */
 
 const test = require("node:test");
@@ -186,7 +188,7 @@ test("pack §6 38H-2: GAM-WB-06b anti-spoiler consolidation discipline", () => {
 test("pack §6 38F-2: defaultPromptNotes cite 38F-2 and preservation modules", () => {
   assert.match(gam.defaultPromptNotes, /38F-2/i);
   assert.match(gam.defaultPromptNotes, /GAM-WB-38F-01/i);
-  assert.match(gam.defaultPromptNotes, /F1–F[78]|F1-F[78]/i);
+  assert.match(gam.defaultPromptNotes, /F1–F9|F1-F9/i);
   assert.match(gam.defaultPromptNotes, /LD-MATERIALS-COPY/i);
   assert.match(gam.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
   assert.match(dla.defaultPromptNotes, /38F-2/i);
@@ -270,7 +272,7 @@ test("pack §6 38J-4: function-order and no-collapse (GAM-WB-22/23, F8)", () => 
   assert.match(t, /GAM-WB-23.*no-collapse|NO COLLAPSE/i);
   assert.match(t, /criteria exposition.*worked judgement.*guided judgement/i);
   assert.match(t, /\(F8\)/i);
-  assert.match(t, /F1–F8|F1-F8/i);
+  assert.match(t, /F1–F9|F1-F9/i);
 });
 
 test("pack §6 38J-4: Evaluate A4 preservation and anti-spoiler", () => {
@@ -286,7 +288,7 @@ test("pack §6 38J-4: Evaluate A4 preservation and anti-spoiler", () => {
 test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanning", () => {
   assert.match(gam.defaultPromptNotes, /38J-4/i);
   assert.match(gam.defaultPromptNotes, /DLA decides, GAM realises/i);
-  assert.match(gam.defaultPromptNotes, /F1–F8|F1-F8/i);
+  assert.match(gam.defaultPromptNotes, /F1–F9|F1-F9/i);
   assert.match(gam.defaultPromptNotes, /GAM-WB-24/i);
   assert.doesNotMatch(gam.defaultPromptNotes, /IFP-00/i);
 });
@@ -294,4 +296,184 @@ test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanni
 test("pack §5 unchanged after 38J-4: IFP block still present", () => {
   assert.match(dla.promptTemplate, /IFP-00 SEQUENCE/i);
   assert.match(dla.promptTemplate, /DLA-WB-22/i);
+});
+
+// --- Sprint 38-L (38L-2 depth floors + emission gates in pack §5) ---
+
+test("pack §5 38L-2: IFP-09 depth floors and IFP-10 emission gates", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /IFP-09 DEPTH FLOORS/i);
+  assert.match(t, /38L-2 R2/i);
+  assert.match(t, /depth_floor L3/i);
+  assert.match(t, /IFP-10 CLOSURE EMISSION GATES/i);
+  assert.match(t, /38L-2 R4/i);
+  assert.match(t, /EMIT-FAIL-01/i);
+  assert.match(t, /EMIT-FAIL-04/i);
+  assert.match(t, /IFP-00 A–K|IFP-00 A-K/i);
+});
+
+test("pack §5 38L-2: universal verification and closure material rows", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /DLA-WB-26.*38L-2/i);
+  assert.match(t, /EVERY activity MUST include.*checklist/i);
+  assert.match(t, /DLA-WB-28.*38L-2/i);
+  assert.match(t, /transfer_prompt/i);
+  assert.match(t, /independent judgement/i);
+  assert.match(t, /EV-CAP-03/i);
+});
+
+test("pack §5 38L-2: Analyse worked analytic pass obligation", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /DLA-WB-27.*38L-2/i);
+  assert.match(t, /worked analytic pass/i);
+  assert.match(t, /BEFORE analysis_table/i);
+  assert.match(t, /≥1 exemplar row/i);
+});
+
+test("pack §5 38L-2: anti-emission and depth spec discipline", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /DLA-WB-29.*38L-2/i);
+  assert.match(t, /DLA-WB-30.*38L-2/i);
+  assert.match(t, /transfer_or_application_task.*without.*transfer_prompt/i);
+  assert.match(t, /type-only specifications are depth FAIL/i);
+});
+
+test("pack §5 38L-DLA diagnosis: output PRE-EMIT rows (5)–(8) for mandatory 38L materials", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /\(5\) DLA-WB-26/i);
+  assert.match(t, /\(6\) DLA-WB-27/i);
+  assert.match(t, /\(7\) DLA-WB-28\/31/i);
+  assert.match(t, /PRE-EMIT GATE/i);
+});
+
+test("pack §5 38L-2: defaultPromptNotes reinforce depth + emission gates", () => {
+  assert.match(dla.defaultPromptNotes, /38L-2/i);
+  assert.match(dla.defaultPromptNotes, /IFP-09/i);
+  assert.match(dla.defaultPromptNotes, /IFP-10/i);
+  assert.match(dla.defaultPromptNotes, /DLA-WB-26/i);
+});
+
+test("pack §6 unchanged after 38L-2: no IFP-09/10 in GAM template", () => {
+  assert.doesNotMatch(gam.promptTemplate, /IFP-09 DEPTH FLOORS/i);
+  assert.doesNotMatch(gam.promptTemplate, /DLA-WB-26.*38L-2/i);
+  assert.match(gam.promptTemplate, /GAM-PRES-00/i);
+});
+
+// --- Sprint 38-L (38L-3 depth-shaped bodies in pack §6) ---
+
+test("pack §6 38L-3: GAM-PRES-08 depth-shaped bodies and GAM-PRES-09 anti-collapse", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-PRES-08 DEPTH-SHAPED BODIES/i);
+  assert.match(t, /38L-3 R2\/R3/i);
+  assert.match(t, /depth_floor L3/i);
+  assert.match(t, /GAM-PRES-09 ANTI-DEPTH-COLLAPSE/i);
+  assert.match(t, /DEPTH-COLLAPSE-01/i);
+  assert.match(t, /contract FAIL \(F9\)/i);
+  assert.doesNotMatch(t, /IFP-09 DEPTH FLOORS/i);
+});
+
+test("pack §6 38L-3: verification realisation (R1)", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-26.*38L-3/i);
+  assert.match(t, /38L-3 verification R1/i);
+  assert.match(t, /repair.*fail|repair-if-fail|repair path/i);
+  assert.match(t, /NOT reflective question only/i);
+});
+
+test("pack §6 38L-3: Analyse worked analytic pass (R6)", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-27.*38L-3/i);
+  assert.match(t, /worked analytic pass/i);
+  assert.match(t, /analytical lens/i);
+  assert.match(t, /DEPTH-COLLAPSE-03/i);
+});
+
+test("pack §6 38L-3: Evaluate completion realisation (R5)", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-28.*38L-3/i);
+  assert.match(t, /38L-3 R5 transfer/i);
+  assert.match(t, /independent judgement/i);
+  assert.match(t, /consolidation_summary must NOT absorb/i);
+});
+
+test("pack §6 38L-3: GAM-WB-29/30 and F9 fail rule", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-29.*38L-3/i);
+  assert.match(t, /GAM-WB-30.*38L-3/i);
+  assert.match(t, /\(F9\)/i);
+  assert.match(t, /F1–F9|F1-F9/i);
+});
+
+test("pack §6 38L-3: defaultPromptNotes reinforce depth-shaped bodies", () => {
+  assert.match(gam.defaultPromptNotes, /38L-3/i);
+  assert.match(gam.defaultPromptNotes, /GAM-PRES-08/i);
+  assert.match(gam.defaultPromptNotes, /GAM-WB-26/i);
+  assert.match(gam.defaultPromptNotes, /DEPTH-COLLAPSE/i);
+});
+
+test("pack §5 unchanged after 38L-3: IFP-09 and DLA-WB-26..30 still present", () => {
+  assert.match(dla.promptTemplate, /IFP-09 DEPTH FLOORS/i);
+  assert.match(dla.promptTemplate, /DLA-WB-26.*38L-2/i);
+  assert.doesNotMatch(gam.promptTemplate, /IFP-10 CLOSURE EMISSION/i);
+});
+
+// --- Sprint 38-L (38L-4 closure integration + Evaluate benchmark alignment) ---
+
+test("pack §5 38L-4: INF-EVAL-01 household Evaluate anchor and EV-CAP-04 termination", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /INF-EVAL-01.*38L-4/i);
+  assert.match(t, /38I-4 A4/i);
+  assert.match(t, /EV-CAP-04.*38L-4/i);
+  assert.match(t, /guided comparison alone CANNOT terminate/i);
+  assert.match(t, /AS-FAIL-06.*38L-4/i);
+});
+
+test("pack §5 38L-4: KM-T05/T08 and DLA-WB-31 completion pack", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /KM-T05.*primary Evaluate anchor household/i);
+  assert.match(t, /KM-T08.*NOT Evaluate capstone/i);
+  assert.match(t, /DLA-WB-31.*38L-4/i);
+  assert.match(t, /independent judgement \+ verification \+ transfer/i);
+});
+
+test("pack §5 38L-4: defaultPromptNotes reinforce closure integration", () => {
+  assert.match(dla.defaultPromptNotes, /38L-4/i);
+  assert.match(dla.defaultPromptNotes, /INF-EVAL-01/i);
+  assert.match(dla.defaultPromptNotes, /DLA-WB-31/i);
+});
+
+test("pack §6 38L-4: GAM-PRES-10 and GAM-WB-31 Evaluate completion termination", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-PRES-10.*38L-4/i);
+  assert.match(t, /EV-GAM-FAIL-07/i);
+  assert.match(t, /GAM-WB-31.*38L-4/i);
+  assert.match(t, /guided judgement table alone is insufficient/i);
+});
+
+test("pack §6 38L-4: defaultPromptNotes reinforce completion termination", () => {
+  assert.match(gam.defaultPromptNotes, /38L-4/i);
+  assert.match(gam.defaultPromptNotes, /GAM-PRES-10/i);
+  assert.match(gam.defaultPromptNotes, /EV-GAM-FAIL-07/i);
+});
+
+test("38L-4 harness: frozen LO contract and benchmark-aligned capture script", () => {
+  const harnessPath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/ev-38l-inflation-pipeline-capture-once.mjs"
+  );
+  const frozenPath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/ev-38l-frozen-learning-outcomes.json"
+  );
+  const harness = fs.readFileSync(harnessPath, "utf8");
+  const frozen = JSON.parse(fs.readFileSync(frozenPath, "utf8"));
+  assert.match(harness, /EV-38L-AFTER/);
+  assert.match(harness, /loadFrozenLearningOutcomes/);
+  assert.match(harness, /INF-EVAL-01/i);
+  assert.match(harness, /GAM-PRES-10/i);
+  assert.match(harness, /38I-4 A4/i);
+  assert.match(harness, /NOT policy communication summary/i);
+  assert.equal(frozen.learning_outcomes[3].cognitive_level, "Evaluate");
+  assert.match(frozen.learning_outcomes[3].statement, /household/i);
+  assert.doesNotMatch(frozen.learning_outcomes[3].statement, /Summarize.*policy communication/i);
 });

@@ -1,7 +1,7 @@
 # Sprint 38-L — Implementation charter (Instructional Function Depth Implementation)
 
 **Date:** 2026-06-05  
-**Status:** **CHARTERED**  
+**Status:** **CLOSED** — [38L-6](observations/38L-6-sprint-closure.md) · **SUCCESS**  
 **Predecessor:** [Sprint 38-K](../2026-06-05-sprint-38k-instructional-function-depth/) (**CLOSED** — [38K-6](../2026-06-05-sprint-38k-instructional-function-depth/observations/38K-6-sprint-closure.md) · **SUCCESS**)
 
 ---
@@ -152,14 +152,14 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 
 ---
 
-### 38L-4 — Closure-function implementation
+### 38L-4 — Closure integration and Evaluate alignment
 
 | Field | Content |
 |-------|---------|
 | **Purpose** | Complete closure packs; R7 Evaluate LO/harness alignment; anti-patterns (consolidation ≠ judgement) |
-| **Deliverable** | `observations/38L-4-closure-function-implementation.md` |
+| **Deliverable** | `observations/38L-4-closure-integration-and-evaluate-alignment.md` |
 | **Depends on** | 38L-3 |
-| **Status** | **NEXT** |
+| **Status** | **COMPLETE** |
 
 ---
 
@@ -171,6 +171,7 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 | **Deliverable** | `observations/38L-5-inflation-proof-run.md` · `artefacts/EV-38L-AFTER-*` |
 | **Depends on** | 38L-4 |
 | **Success checks** | Verification all activities; A4 judgement artefacts; A3 worked pass; transfer on Evaluate |
+| **Status** | **COMPLETE** |
 
 ---
 
@@ -181,6 +182,7 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 | **Purpose** | Evidence-backed closure; residual gaps; forward plan |
 | **Deliverable** | `observations/38L-6-sprint-closure.md` |
 | **Depends on** | 38L-5 |
+| **Status** | **COMPLETE** |
 
 ---
 

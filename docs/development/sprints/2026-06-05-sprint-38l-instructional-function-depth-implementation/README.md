@@ -2,10 +2,10 @@
 
 **Pack path:** `docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/`  
 **Date:** 2026-06-05  
-**Status:** **CHARTERED** — **38L-6 NEXT**  
+**Status:** **CLOSED** — [38L-6](observations/38L-6-sprint-closure.md) · **SUCCESS**  
 **Predecessor:** [Sprint 38-K — Instructional Function Depth](../2026-06-05-sprint-38k-instructional-function-depth/) (**CLOSED** — [38K-6](../2026-06-05-sprint-38k-instructional-function-depth/observations/38K-6-sprint-closure.md) · **SUCCESS**)
 
-**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
+**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md) · [38L-6 closure](observations/38L-6-sprint-closure.md)
 
 ---
 
@@ -18,17 +18,16 @@ Implement **instructional sufficiency obligations** within the existing 38-J arc
 | **38-I** | Episode archetypes, KM/LO mapping, 38I-4 target-state mock-ups |
 | **38-J** | IFP in §5 DLA; GAM-PRES in §6; `EV-38J-AFTER` — episode **structure** |
 | **38-K** | Depth model, archetype floors, E1–E4 examples, R1–R7 implementation roadmap |
+| **38-L** | R1–R7 in §5/§6; `EV-38L-AFTER`; DLA obligations; GAM→Page preserve; loss trace |
 
 **Core shift:**
 
 ```text
 38-K defined episode sufficiency.
-38-L implements depth and closure obligations.
+38-L implemented depth and closure obligations.
 ```
 
-**Programme question:**
-
-> How can the existing 38J architecture generate **instructionally sufficient** episodes that approach the 38I-4 benchmark without architectural change?
+**Closure conclusion:** Architecture **PASS**; depth implementation **PASS**; 38I benchmark **PARTIAL** — remaining gap is **page composition fidelity + function richness calibration** ([38L-6 §5](observations/38L-6-sprint-closure.md)).
 
 ---
 
@@ -50,7 +49,7 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 
 ---
 
-## Core implementation goals (R1–R7)
+## Core implementation goals (R1–R7) — delivered
 
 | ID | Goal | Source |
 |----|------|--------|
@@ -73,13 +72,13 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 | **38L-3** | GAM depth-shaped body implementation | `observations/38L-3-gam-depth-shaped-body-implementation.md` | **COMPLETE** |
 | **38L-4** | Closure integration + Evaluate alignment | `observations/38L-4-closure-integration-and-evaluate-alignment.md` | **COMPLETE** |
 | **38L-5** | Inflation proof run | `observations/38L-5-inflation-proof-run.md` · `artefacts/EV-38L-AFTER-*` | **COMPLETE** |
-| **38L-6** | Closure | `observations/38L-6-sprint-closure.md` | Not started |
+| **38L-6** | Closure | `observations/38L-6-sprint-closure.md` | **COMPLETE** |
 
 Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
 ---
 
-## In scope
+## In scope (delivered)
 
 - DLA depth obligations (§5)  
 - GAM depth obligations (§6)  
@@ -87,21 +86,21 @@ Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 - Evaluate completion obligations  
 - Analyse worked-pass obligations  
 - Inflation proof rerun · `EV-38L-AFTER` comparison  
+- DLA obligation validation · GAM→Page preservation · forensic loss trace  
 
 ---
 
-## Out of scope
+## Out of scope (held)
 
 | Item | Notes |
 |------|--------|
 | Schema changes | KM/LO keys frozen |
 | ACM redesign | [38G-2](../2026-06-04-sprint-38g-activity-component-quality/observations/38G-2-activity-component-model.md) frozen |
-| Renderer / `app.js` | Hold 38-H preservation |
+| Renderer styling | Hold 38-H preservation |
 | Workflow changes | No new pipeline steps |
 | New material types | Existing GAM catalogue only |
 | New episode archetypes | Four from 38-I |
-| Visual redesign | Not in scope |
-| Weakening 38-J IFP/GAM-PRES | Extend only |
+| Full 38I-4 benchmark in one sprint | Minimum sufficiency floor first |
 
 ---
 

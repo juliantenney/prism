@@ -6,7 +6,7 @@
 **Type:** Retrospective and forward plan only — no implementation in this sprint  
 **Charter:** [IMPLEMENTATION-CHARTER.md](../IMPLEMENTATION-CHARTER.md)  
 **Predecessor:** [Sprint 38-H](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED** — [38H-5](../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md))  
-**Recommended successor:** **Sprint 38-J — Instructional Function Planning Implementation** (charter not started in this file)
+**Successor:** [Sprint 38-J — Instructional Function Planning](../../2026-06-05-sprint-38j-instructional-function-planning/) (**CHARTERED**)
 
 ---
 
@@ -202,7 +202,7 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
         → Optional: second topic + affordance review if inference contracts fail
 ```
 
-**Do not start 38-J in this document.** Next action: create `docs/development/sprints/2026-06-05-sprint-38j-instructional-function-planning/` charter pack when the programme is ready to implement.
+**Successor pack:** [38-J HANDOVER](../../2026-06-05-sprint-38j-instructional-function-planning/HANDOVER.md) — start **38J-1**.
 
 ---
 

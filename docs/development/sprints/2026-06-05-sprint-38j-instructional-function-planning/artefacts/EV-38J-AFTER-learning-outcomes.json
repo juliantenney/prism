@@ -1,0 +1,44 @@
+{
+  "learner_level": "self-directed learner",
+  "scope": "standard session (30-120 minutes)",
+  "learning_outcomes": [
+    {
+      "statement": "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator",
+        "Inflation Measurement Methods"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focus on contrasting fixed vs variable basket and consumer goods vs all domestic goods."
+    },
+    {
+      "statement": "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "Inflation"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Use weighted average price changes to determine CPI inflation rate."
+    },
+    {
+      "statement": "Describe how inflation impacts household budgets, including effects on real income, savings, and borrowing costs.",
+      "related_concepts": [
+        "Household Budget Impact",
+        "Inflation"
+      ],
+      "cognitive_level": "Explain",
+      "notes": "Include examples of increased expenses and erosion of purchasing power."
+    },
+    {
+      "statement": "Summarize the role of policy communication by central banks and governments in managing inflation expectations and influencing household and business economic decisions.",
+      "related_concepts": [
+        "Policy Communication",
+        "Inflation",
+        "Household Budget Impact"
+      ],
+      "cognitive_level": "Summarize",
+      "notes": "Highlight communication effects on spending, borrowing, and economic stability."
+    }
+  ]
+}

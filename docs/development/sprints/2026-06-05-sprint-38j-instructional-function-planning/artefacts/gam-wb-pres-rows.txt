@@ -1,0 +1,5 @@
+
+- GAM-WB-22 (38J-4 function-order): Emit Material blocks in DLA required_materials list order; preserve teaching-before-practice sequence implied by DLA order and purpose/specification function names — criteria exposition → worked judgement → guided judgement → independent judgement → verification must not collapse to prompt_set → reflection_prompt
+- GAM-WB-23 (38J-4 no-collapse): Every DLA required_materials row → exactly one Material: <id> (<type>) with full Content; merging multiple DLA rows into one Material = contract FAIL (F8)
+- GAM-WB-24 (38J-4 Evaluate A4 depth): When DLA lists Evaluate function materials (scenario perspectives, criteria rubric/modelling_note, worked judgement contrast, guided judgement table, independent memo scaffold, verification checklist, transfer_prompt) — realise each with GAM-PRES-06 minimum depths; consolidation_summary alone does NOT satisfy Evaluate realisation
+- GAM-WB-25 (38J-4 anti-shell realisation): If DLA required_materials include teaching-depth types, realise all listed types substantively — AS-GAM-FAIL triggers = FAIL; do not substitute thinner genres

@@ -82,4 +82,4 @@
 
 **Verdict:** **SUCCESS**
 
-**Successor:** Sprint **38-J** — Instructional Function Planning Implementation (charter pending).
+**Successor:** [Sprint 38-J](../2026-06-05-sprint-38j-instructional-function-planning/) — **CHARTERED**.

@@ -1,0 +1,200 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understand Inflation Measurement Methods and Differences",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.",
+        "Describe how inflation impacts household budgets, including effects on real income, savings, and borrowing costs."
+      ],
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "explanatory teaching",
+          "specification": "Concept elucidation of Inflation, Consumer Price Index (CPI), GDP Deflator, and Household Budget Impact with definitions and key distinctions from the knowledge model; includes explanation of fixed vs variable basket and scope differences."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "worked reasoning",
+          "specification": "Stepwise explanation illustrating how CPI and GDP Deflator measure inflation differently, highlighting basket composition and scope; includes common misconceptions about fixed vs variable baskets and scope of goods."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "model answer",
+          "specification": "Example learner explanation contrasting CPI and GDP Deflator differences and describing inflation's impact on household budgets, demonstrating expected depth and clarity."
+        }
+      ],
+      "learner_task": "### Understand key inflation measurement methods and their differences\n- Read the explanatory text on inflation, CPI, GDP Deflator, and household budget impacts.\n- Study the worked example illustrating the differences in basket composition and scope.\n- Review the sample output to understand the expected explanation style.\n- Then, write your own explanation contrasting CPI and GDP Deflator in terms of basket composition and scope, and describe how inflation affects household budgets including real income, savings, and borrowing costs.",
+      "expected_output": "A written explanation that clearly contrasts CPI and GDP Deflator focusing on fixed vs variable basket and scope of goods, and describes inflation's impact on household budgets with examples of effects on real income, savings, and borrowing costs.",
+      "activity_preamble": "This activity introduces you to the main inflation measurement methods and how inflation affects household finances. Understanding these foundational concepts is essential before applying calculations or analysis.",
+      "prior_knowledge_activation": "Recall your prior knowledge of inflation basics and household economic impacts to connect with new distinctions between CPI and GDP Deflator.",
+      "reasoning_orientation": "Focus on understanding the conceptual differences and real-world implications before moving to calculations.",
+      "self_explanation_prompt": "How do the basket composition and scope differences between CPI and GDP Deflator influence their measurement of inflation? How does inflation impact household budgets?",
+      "transfer_or_application_task": "Consider how understanding these differences might affect your interpretation of inflation reports or economic news.",
+      "scaffold_hint_sequence": [
+        "Focus first on basket composition differences: fixed vs variable.",
+        "Then consider the scope of goods and services each measure covers.",
+        "Finally, link inflation measurement to household budget impacts."
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Apply CPI Inflation Rate Calculation",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI."
+      ],
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "worked_example",
+          "purpose": "stepped think-aloud calculation",
+          "specification": "Detailed stepwise worked example calculating CPI inflation rate using weighted average price changes from a fixed basket; includes intermediate calculations and reasoning."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "sample_output",
+          "purpose": "model calculation",
+          "specification": "Completed CPI inflation rate calculation showing final inflation percentage with clear working steps."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "classification_table",
+          "purpose": "practice table",
+          "specification": "Table listing basket items with columns for item name, price in base period, price in current period, weight, price change, weighted price change; learner completes price change and weighted price change columns and calculates total CPI inflation rate."
+        }
+      ],
+      "learner_task": "### Calculate the CPI inflation rate from a fixed basket\n- Study the worked example showing the step-by-step calculation of CPI inflation rate.\n- Review the sample output to understand the expected format and detail.\n- Using the provided practice table with basket items, prices, and weights, calculate the price changes and weighted price changes.\n- Compute the overall CPI inflation rate based on your calculations.",
+      "expected_output": "Completed practice table with correct price change and weighted price change calculations, and a final CPI inflation rate value calculated and clearly presented.",
+      "activity_preamble": "This activity guides you through calculating the inflation rate using the Consumer Price Index method, applying weighted averages to price changes in a fixed basket of goods.",
+      "prior_knowledge_activation": "Recall the definition of CPI and the concept of weighted averages from previous study or experience.",
+      "reasoning_orientation": "Follow the stepwise calculation process carefully, verifying each intermediate step before proceeding.",
+      "self_explanation_prompt": "Why is it important to use a weighted average of price changes when calculating the CPI inflation rate? How does the fixed basket affect this calculation?",
+      "scaffold_hint_sequence": [
+        "Calculate individual item price changes first.",
+        "Multiply each price change by its weight to get weighted price changes.",
+        "Sum weighted price changes to find overall inflation rate."
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analyse Inflation Impact on Household Budgets Using Household Comparison",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Describe how inflation impacts household budgets, including effects on real income, savings, and borrowing costs."
+      ],
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "scenario",
+          "purpose": "household comparison",
+          "specification": "Two detailed household profiles with income, spending patterns, savings, and borrowing conditions; includes inflation rate context and price changes affecting key expense categories."
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "analysis_table",
+          "purpose": "practice analysis table",
+          "specification": "Table for learner to classify and analyse inflation impacts on each household's real income, savings erosion, and borrowing costs; columns include impact category, household A effect, household B effect, and justification."
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "prompt_set",
+          "purpose": "guided inquiry prompts",
+          "specification": "Questions to guide learner analysis of how inflation affects different household types, focusing on income, savings, and borrowing."
+        }
+      ],
+      "learner_task": "### Analyse how inflation affects different households\n- Read the two household profiles and understand their economic situations.\n- Using the analysis table, classify and analyse the impact of inflation on each household's real income, savings, and borrowing costs.\n- Use the guided inquiry prompts to support your analysis.\n- Provide justifications for each impact assessment in the table.",
+      "expected_output": "Completed analysis table with clear classification and justification of inflation impacts on real income, savings, and borrowing costs for both households.",
+      "activity_preamble": "This activity helps you analyse the practical effects of inflation on different household budgets by comparing two realistic household scenarios.",
+      "prior_knowledge_activation": "Recall concepts of real income, savings erosion, and borrowing costs from previous activities and definitions.",
+      "reasoning_orientation": "Apply your understanding of inflation impacts to specific household contexts, considering differences in income and financial conditions.",
+      "self_explanation_prompt": "How does inflation differently affect households with varying income and borrowing profiles? What factors influence the severity of impact?",
+      "scaffold_hint_sequence": [
+        "Identify key expense categories affected by inflation for each household.",
+        "Consider how inflation changes purchasing power and savings value.",
+        "Assess borrowing cost changes in the context of inflation."
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluate Inflation Management Strategies Using Policy Communication Criteria",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Summarize the role of policy communication by central banks and governments in managing inflation expectations and influencing household and business economic decisions."
+      ],
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "criteria exposition",
+          "specification": "Exposition of ≥3 evaluation criteria for inflation management strategies focusing on policy communication effectiveness, impact on expectations, and economic stability."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "scenario",
+          "purpose": "competing perspectives",
+          "specification": "Two policy communication scenarios from central bank and government with differing approaches and impacts on households and businesses."
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "modelling_note",
+          "purpose": "worked judgement contrast",
+          "specification": "Think-aloud contrasting weak vs strong judgements on the effectiveness of the two policy communication strategies based on criteria."
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "decision_table",
+          "purpose": "guided judgement table",
+          "specification": "Partial decision table where learner rates and ranks the two strategies against evaluation criteria with space for justification."
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "Template requiring learner to write a summary of key learning points about inflation measurement, calculation, impacts, and policy communication."
+        }
+      ],
+      "learner_task": "### Evaluate inflation management strategies based on policy communication\n- Read the evaluation criteria for effective inflation management communication.\n- Study the two policy communication scenarios presenting different approaches.\n- Review the modelling note contrasting weak and strong judgements.\n- Complete the guided judgement table by rating and ranking the strategies against each criterion with justification.\n- Finally, write a consolidation summary synthesizing your key learnings from the session about inflation measurement, calculation, impacts, and policy communication.",
+      "expected_output": "Completed decision table with justified ratings and rankings of the two strategies, and a written consolidation summary of ≥80 words covering at least three key ideas from the session.",
+      "activity_preamble": "This final activity asks you to evaluate real-world inflation management strategies using clear criteria and to consolidate your learning from the workbook.",
+      "prior_knowledge_activation": "Recall previous activities on inflation measurement, calculation, and household impact to inform your evaluation.",
+      "reasoning_orientation": "Apply critical thinking to weigh trade-offs and justify your evaluation based on criteria and scenarios.",
+      "self_explanation_prompt": "What makes a policy communication strategy effective in managing inflation expectations? How do different approaches impact households and businesses?",
+      "transfer_or_application_task": "Consider how you might apply these evaluation criteria to assess inflation communication in your own country or context.",
+      "scaffold_hint_sequence": [
+        "Focus on each criterion separately before comparing strategies.",
+        "Use the modelling note to understand judgement quality differences.",
+        "Ensure your consolidation summary integrates key session concepts."
+      ]
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.",
+      "Describe how inflation impacts household budgets, including effects on real income, savings, and borrowing costs."
+    ],
+    "A2": [
+      "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI."
+    ],
+    "A3": [
+      "Describe how inflation impacts household budgets, including effects on real income, savings, and borrowing costs."
+    ],
+    "A4": [
+      "Summarize the role of policy communication by central banks and governments in managing inflation expectations and influencing household and business economic decisions."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes a consolidation summary requiring learner synthesis of key session concepts in writing.",
+    "workbook_contract_applied": true
+  }
+}

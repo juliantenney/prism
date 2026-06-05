@@ -1,0 +1,101 @@
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "The rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "A measure of inflation that tracks the price changes of a fixed basket of goods and services typically purchased by households."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "A measure of inflation reflecting the price changes of all goods and services produced domestically, using a changing basket that adjusts for consumption patterns."
+    },
+    {
+      "name": "Household Budget Impact",
+      "definition": "The effect of inflation on household expenses, real income, savings, and borrowing costs."
+    },
+    {
+      "name": "Policy Communication",
+      "definition": "The communication by central banks and governments about inflation to manage expectations and guide economic decisions."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "GDP Deflator",
+      "type": "contrasts_with"
+    },
+    {
+      "source": "Household Budget Impact",
+      "target": "Inflation",
+      "type": "caused_by"
+    },
+    {
+      "source": "Policy Communication",
+      "target": "Inflation",
+      "type": "addresses"
+    },
+    {
+      "source": "Policy Communication",
+      "target": "Household Budget Impact",
+      "type": "influences"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement Methods",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Measuring Inflation with CPI",
+      "steps": [
+        "Select a fixed basket of consumer goods and services.",
+        "Track price changes of items in the basket over time.",
+        "Calculate weighted average price changes to determine CPI inflation rate."
+      ]
+    },
+    {
+      "name": "Measuring Inflation with GDP Deflator",
+      "steps": [
+        "Consider all domestically produced goods and services.",
+        "Adjust basket composition to reflect current production and consumption patterns.",
+        "Calculate price changes to determine GDP deflator inflation rate."
+      ]
+    },
+    {
+      "name": "Policy Communication to Manage Inflation Expectations",
+      "steps": [
+        "Central bank or government communicates inflation outlook and policy plans.",
+        "Households and businesses adjust spending, borrowing, and investment decisions accordingly.",
+        "Economic activity responds, influencing inflation dynamics."
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "CPI Basket Fixed vs GDP Deflator Variable Basket",
+      "description": "A common confusion is that both CPI and GDP deflator measure inflation in the same way; however, CPI uses a fixed basket of goods and services, while GDP deflator uses a variable basket that changes with consumption and production patterns."
+    },
+    {
+      "name": "Scope of Inflation Measurement",
+      "description": "Misunderstanding that CPI and GDP deflator cover the same goods and services; CPI focuses on consumer goods and services, whereas GDP deflator includes all domestically produced goods and services including investment and government spending."
+    }
+  ]
+}

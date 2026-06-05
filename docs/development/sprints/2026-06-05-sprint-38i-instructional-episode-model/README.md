@@ -4,7 +4,7 @@
 **Date:** 2026-06-05  
 **Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
 **Predecessor:** [Sprint 38-H](../2026-06-05-sprint-38h-workbook-realisation-fidelity/) (**CLOSED**)  
-**Successor:** **Sprint 38-J** — Instructional Function Planning Implementation (charter pending)
+**Successor:** [Sprint 38-J — Instructional Function Planning](../2026-06-05-sprint-38j-instructional-function-planning/) (**CHARTERED**)
 
 **Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 

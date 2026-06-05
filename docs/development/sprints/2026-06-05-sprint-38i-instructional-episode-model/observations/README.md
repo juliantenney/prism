@@ -10,7 +10,7 @@
 | 38I-5 Implementation implications | `38I-5-implementation-implications.md` | **COMPLETE** |
 | 38I-6 Sprint closure | `38I-6-sprint-closure.md` | **COMPLETE** |
 
-**Sprint 38-I:** **CLOSED** (SUCCESS). **Successor:** **Sprint 38-J** — Instructional Function Planning Implementation (charter pending).
+**Sprint 38-I:** **CLOSED** (SUCCESS). **Successor:** [Sprint 38-J](../../2026-06-05-sprint-38j-instructional-function-planning/) (**CHARTERED** — start 38J-1).
 
 **Predecessor:** [38H-5 closure](../../2026-06-05-sprint-38h-workbook-realisation-fidelity/observations/38H-5-sprint-closure.md)
 

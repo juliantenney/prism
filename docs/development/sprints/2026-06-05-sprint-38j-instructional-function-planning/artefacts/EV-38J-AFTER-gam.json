@@ -1,0 +1,256 @@
+{
+  "runId": "EV-38J-AFTER",
+  "capturedAt": "2026-06-05T10:22:30.919Z",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understand Inflation Measurement Methods and Differences",
+      "materials": [
+        {
+          "activity_id": "A1",
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "explanatory teaching",
+          "content": "Inflation is the rate at which the general level of prices for goods and services rises, which reduces the purchasing power of money. To measure inflation, economists use several methods, two of the most important being the Consumer Price Index (CPI) and the GDP Deflator.  \n\nThe **Consumer Price Index (CPI)** measures inflation by tracking the price changes of a fixed basket of goods and services that households typically purchase. This basket remains constant over time, allowing comparison of price changes for the same set of items. Because the basket is fixed, CPI reflects how prices have changed for consumers based on their usual spending patterns.  \n\nIn contrast, the **GDP Deflator** measures inflation by considering the prices of all goods and services produced domestically. Unlike CPI, the GDP Deflator uses a variable basket that changes over time to reflect current production and consumption patterns. This means it adjusts for shifts in what is produced and consumed, providing a broader measure of inflation across the entire economy, including investment and government spending, not just consumer goods.  \n\nThe key difference lies in **basket composition and scope**: CPI uses a fixed basket focused on consumer goods and services, while the GDP Deflator uses a variable basket covering all domestically produced goods and services.  \n\nInflation impacts household budgets in several ways:  \n- **Real income** decreases because as prices rise, the same amount of money buys fewer goods and services.  \n- **Savings** lose value in real terms if interest rates do not keep up with inflation, eroding purchasing power.  \n- **Borrowing costs** may increase if lenders raise interest rates to compensate for inflation, making loans more expensive.  \n\nUnderstanding these differences helps households and policymakers interpret inflation data correctly and manage economic decisions effectively.",
+          "contentLen": 1912
+        },
+        {
+          "activity_id": "A1",
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "worked reasoning",
+          "content": "Let's explore how CPI and GDP Deflator measure inflation differently through a stepwise example:\n\n1. **Basket Composition**  \n   - CPI: Imagine a household's fixed basket includes bread, milk, and electricity. Prices for these items are tracked over time. For example, if bread costs $2 last year and $2.20 this year, the CPI will reflect this price increase for bread within the fixed basket.  \n   - GDP Deflator: Instead of a fixed basket, the GDP Deflator considers all goods produced domestically. If consumers buy less bread and more electronics this year, the basket changes to reflect that shift. Price changes for all these goods influence the GDP Deflator.\n\n2. **Scope of Goods and Services**  \n   - CPI focuses only on consumer goods and services purchased by households. It excludes investment goods and government services.  \n   - GDP Deflator includes all goods and services produced domestically, such as machinery, government services, and exports.\n\n3. **Common Misconceptions**  \n   - Some think CPI and GDP Deflator measure inflation the same way. However, CPI's fixed basket means it may not reflect changes in consumption patterns, while GDP Deflator adapts the basket to current production.  \n   - Another misconception is that both cover the same goods. CPI excludes investment and government spending, which GDP Deflator includes.\n\nBy understanding these differences, you can better interpret inflation reports and their implications.",
+          "contentLen": 1456
+        },
+        {
+          "activity_id": "A1",
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "model answer",
+          "content": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ in basket composition and scope. The CPI uses a fixed basket of goods and services that households typically buy, meaning it tracks price changes for the same items over time. This fixed basket approach allows for consistent comparison but does not account for changes in consumption patterns. On the other hand, the GDP Deflator uses a variable basket that reflects all goods and services produced domestically, adjusting for shifts in what is produced and consumed. This broader scope includes consumer goods, investment, and government spending.\n\nInflation affects household budgets by reducing real income, as rising prices mean households can buy less with the same money. Savings lose value if interest rates do not keep pace with inflation, eroding purchasing power. Additionally, borrowing costs may rise because lenders increase interest rates to offset inflation risks, making loans more expensive. Understanding these differences in inflation measurement helps households interpret economic news and manage their finances more effectively.",
+          "contentLen": 1136
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Apply CPI Inflation Rate Calculation",
+      "materials": [
+        {
+          "activity_id": "A2",
+          "material_id": "A2-M1",
+          "type": "worked_example",
+          "purpose": "stepped think-aloud calculation",
+          "content": "Let's work through calculating the CPI inflation rate step-by-step using a fixed basket of goods:\n\n1. **Identify Basket Items and Prices**  \n   Suppose the basket contains three items: bread, milk, and eggs. Their prices in the base period and current period are:  \n   - Bread: Base price = $2.00, Current price = $2.20  \n   - Milk: Base price = $1.50, Current price = $1.65  \n   - Eggs: Base price = $3.00, Current price = $3.30  \n\n2. **Calculate Price Changes**  \n   For each item, calculate the price change as a percentage:  \n   - Bread: \\(\\frac{2.20 - 2.00}{2.00} \\times 100 = 10\\%\\)  \n   - Milk: \\(\\frac{1.65 - 1.50}{1.50} \\times 100 = 10\\%\\)  \n   - Eggs: \\(\\frac{3.30 - 3.00}{3.00} \\times 100 = 10\\%\\)  \n\n3. **Apply Weights to Price Changes**  \n   Each item has a weight representing its importance in the basket:  \n   - Bread: 40%  \n   - Milk: 30%  \n   - Eggs: 30%  \n\n   Multiply each price change by its weight:  \n   - Bread: 10% × 0.40 = 4.0%  \n   - Milk: 10% × 0.30 = 3.0%  \n   - Eggs: 10% × 0.30 = 3.0%  \n\n4. **Calculate Overall CPI Inflation Rate**  \n   Sum the weighted price changes:  \n   \\(4.0\\% + 3.0\\% + 3.0\\% = 10.0\\%\\)  \n\nThe CPI inflation rate is 10.0%, indicating that overall prices in the fixed basket have increased by 10% from the base period to the current period.",
+          "contentLen": 1291
+        },
+        {
+          "activity_id": "A2",
+          "material_id": "A2-M2",
+          "type": "sample_output",
+          "purpose": "model calculation",
+          "content": "Completed CPI Inflation Rate Calculation:\n\n| Item  | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) |\n|-------|------------|---------------|--------|------------------|---------------------------|\n| Bread | $2.00      | $2.20         | 0.40   | 10               | 4.0                       |\n| Milk  | $1.50      | $1.65         | 0.30   | 10               | 3.0                       |\n| Eggs  | $3.00      | $3.30         | 0.30   | 10               | 3.0                       |\n| **Total** |            |               |        |                  | **10.0**                  |\n\nFinal CPI Inflation Rate: **10.0%**\n\nThis shows that the average price level of the fixed basket of goods has risen by 10% from the base period to the current period.",
+          "contentLen": 784
+        },
+        {
+          "activity_id": "A2",
+          "material_id": "A2-M3",
+          "type": "classification_table",
+          "purpose": "practice table",
+          "content": "| Item  | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) |\n|-------|------------|---------------|--------|------------------|---------------------------|\n| Bread | $2.50      | $2.75         | 0.35   |                  |                           |\n| Milk  | $1.20      | $1.32         | 0.25   |                  |                           |\n| Eggs  | $2.00      | $2.20         | 0.40   |                  |                           |\n| **Total** |            |               |        |                  |                           |\n\nInstructions:  \n- Calculate the price change percentage for each item using the formula:  \n  \\(\\frac{\\text{Current Price} - \\text{Base Price}}{\\text{Base Price}} \\times 100\\)  \n- Multiply each price change by the item's weight to find the weighted price change.  \n- Sum all weighted price changes to find the overall CPI inflation rate.",
+          "contentLen": 911
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analyse Inflation Impact on Household Budgets Using Household Comparison",
+      "materials": [
+        {
+          "activity_id": "A3",
+          "material_id": "A3-M1",
+          "type": "scenario",
+          "purpose": "household comparison",
+          "content": "Consider the following two household profiles and the inflation context they face:\n\n**Household A: The Smith Family**  \n- Monthly income: $4,000  \n- Spending pattern: High proportion on groceries, utilities, and transportation  \n- Savings: Moderate savings account with 2% interest rate  \n- Borrowing: Fixed-rate mortgage with 4% interest  \n\n**Household B: The Lee Family**  \n- Monthly income: $7,000  \n- Spending pattern: Larger spending on dining out, entertainment, and luxury goods  \n- Savings: Significant savings in a fixed deposit with 1.5% interest rate  \n- Borrowing: Variable-rate loan currently at 3.5%, subject to increase  \n\n**Inflation Context**  \n- Overall inflation rate: 6%  \n- Price increases: Groceries +8%, Utilities +5%, Transportation +7%, Dining out +4%, Entertainment +3%, Luxury goods +2%  \n\nThis context sets the stage to analyse how inflation affects each household’s real income, savings erosion, and borrowing costs.",
+          "contentLen": 945
+        },
+        {
+          "activity_id": "A3",
+          "material_id": "A3-M2",
+          "type": "analysis_table",
+          "purpose": "practice analysis table",
+          "content": "| Impact Category | Household A Effect | Household B Effect | Justification / Explanation                         |\n|-----------------|--------------------|--------------------|---------------------------------------------------|\n| Real Income     |                    |                    |                                                   |\n| Savings Erosion |                    |                    |                                                   |\n| Borrowing Costs |                    |                    |                                                   |\n\nInstructions:  \n- For each impact category, describe how inflation affects Household A and Household B.  \n- Provide clear justification explaining the reasons behind each effect, considering income, spending patterns, interest rates, and inflation rates.",
+          "contentLen": 827
+        },
+        {
+          "activity_id": "A3",
+          "material_id": "A3-M3",
+          "type": "prompt_set",
+          "purpose": "guided inquiry prompts",
+          "content": "1. How does the higher inflation in groceries and transportation affect Household A’s real income compared to Household B?  \n2. Considering the interest rates on savings, how does inflation erode the value of savings differently for each household?  \n3. How might the fixed-rate mortgage for Household A and the variable-rate loan for Household B influence their borrowing costs as inflation rises?  \n4. What factors in each household’s spending and borrowing profile make them more or less vulnerable to inflation impacts?  \n5. How could each household adjust their budget or financial plans to mitigate the effects of inflation?",
+          "contentLen": 630
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluate Inflation Management Strategies Using Policy Communication Criteria",
+      "materials": [
+        {
+          "activity_id": "A4",
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "criteria exposition",
+          "content": "Effective inflation management strategies rely heavily on clear and credible policy communication by central banks and governments. When evaluating such strategies, consider the following key criteria:\n\n1. **Clarity of Communication**  \n   How clearly does the policy message explain inflation targets, policy intentions, and expected outcomes? Clear communication reduces uncertainty and helps households and businesses make informed decisions.\n\n2. **Credibility and Consistency**  \n   Does the policy communication maintain trust by being consistent over time and backed by credible actions? Credibility influences how seriously economic agents take inflation forecasts and policy signals.\n\n3. **Impact on Inflation Expectations**  \n   How effectively does the communication shape public expectations about future inflation? Managing expectations is crucial because they influence wage demands, price-setting, and spending behavior, affecting actual inflation.\n\n4. **Economic Stability Support**  \n   Does the communication contribute to overall economic stability by guiding households and businesses to adjust spending, saving, and investment in ways that moderate inflationary pressures?\n\nThese criteria provide a framework to assess the strengths and weaknesses of different inflation management communication strategies.",
+          "contentLen": 1327
+        },
+        {
+          "activity_id": "A4",
+          "material_id": "A4-M2",
+          "type": "scenario",
+          "purpose": "competing perspectives",
+          "content": "Two policy communication strategies are presented below:\n\n**Scenario 1: Central Bank Transparent Approach**  \nThe central bank issues detailed monthly reports explaining inflation trends, policy decisions, and future outlooks. It holds regular press conferences and engages with media to clarify its inflation target of 2%. This approach emphasizes transparency and aims to build public trust and anchor inflation expectations firmly.\n\n**Scenario 2: Government Reassurance Campaign**  \nThe government launches a public campaign reassuring households and businesses that inflation will be controlled through fiscal measures. Communication is less frequent and focuses on positive economic growth messages, avoiding detailed inflation forecasts. The approach seeks to maintain confidence without overwhelming the public with technical information.\n\nEach strategy impacts households and businesses differently in terms of understanding, trust, and economic decision-making.",
+          "contentLen": 970
+        },
+        {
+          "activity_id": "A4",
+          "material_id": "A4-M3",
+          "type": "modelling_note",
+          "purpose": "worked judgement contrast",
+          "content": "When evaluating these two strategies, consider the following contrasting judgements:\n\n- **Weak Judgement (Scenario 2)**: The government’s reassurance campaign may appear comforting but lacks detailed information, which can lead to uncertainty among households and businesses. Without clear guidance, inflation expectations may become unanchored, increasing the risk of wage-price spirals and economic instability. The lack of transparency may reduce credibility and limit the strategy’s effectiveness in managing inflation expectations.\n\n- **Strong Judgement (Scenario 1)**: The central bank’s transparent approach provides clear, consistent, and credible communication. By regularly updating the public and explaining policy rationale, it helps anchor inflation expectations, enabling households and businesses to make informed decisions. This transparency supports economic stability by reducing uncertainty and aligning expectations with policy goals.\n\nIn summary, effective policy communication requires clarity, credibility, and a focus on shaping expectations to stabilize inflation and guide economic behavior.",
+          "contentLen": 1117
+        },
+        {
+          "activity_id": "A4",
+          "material_id": "A4-M4",
+          "type": "decision_table",
+          "purpose": "guided judgement table",
+          "content": "| Evaluation Criteria          | Scenario 1: Central Bank Transparent Approach | Scenario 2: Government Reassurance Campaign | Justification / Notes                         |\n|-----------------------------|-----------------------------------------------|---------------------------------------------|----------------------------------------------|\n| Clarity of Communication    |                                               |                                             |                                              |\n| Credibility and Consistency |                                               |                                             |                                              |\n| Impact on Inflation Expectations |                                         |                                             |                                              |\n| Economic Stability Support  |                                               |                                             |                                              |\n\nInstructions:  \n- Rate each scenario against the criteria (e.g., High, Medium, Low).  \n- Rank the two strategies overall based on your ratings.  \n- Provide justification for each rating and your overall ranking, referring to the criteria exposition and scenario details.",
+          "contentLen": 1310
+        },
+        {
+          "activity_id": "A4",
+          "material_id": "A4-M5",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "content": "To consolidate your learning from this session, reflect on the following prompts as you write your summary:  \n\n- How do the differences between CPI and GDP Deflator affect the measurement and interpretation of inflation?  \n- What are the key steps and considerations when calculating the CPI inflation rate using a fixed basket?  \n- How does inflation impact household budgets, particularly real income, savings, and borrowing costs, and how can these effects vary across different households?  \n- Why is effective policy communication crucial in managing inflation expectations, and what criteria determine the strength of communication strategies?  \n- How do the contrasting policy communication approaches influence households and businesses, and what lessons can you draw for evaluating real-world inflation management?\n\nUse these prompts to write a clear and concise summary of at least 80 words that synthesizes your understanding of inflation measurement, calculation, impacts, and policy communication. This reflection will help you integrate the session’s key concepts and prepare you to apply them in practical contexts.",
+          "contentLen": 1130
+        }
+      ]
+    }
+  ],
+  "all_materials": [
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M1",
+      "type": "text",
+      "purpose": "explanatory teaching",
+      "content": "Inflation is the rate at which the general level of prices for goods and services rises, which reduces the purchasing power of money. To measure inflation, economists use several methods, two of the most important being the Consumer Price Index (CPI) and the GDP Deflator.  \n\nThe **Consumer Price Index (CPI)** measures inflation by tracking the price changes of a fixed basket of goods and services that households typically purchase. This basket remains constant over time, allowing comparison of price changes for the same set of items. Because the basket is fixed, CPI reflects how prices have changed for consumers based on their usual spending patterns.  \n\nIn contrast, the **GDP Deflator** measures inflation by considering the prices of all goods and services produced domestically. Unlike CPI, the GDP Deflator uses a variable basket that changes over time to reflect current production and consumption patterns. This means it adjusts for shifts in what is produced and consumed, providing a broader measure of inflation across the entire economy, including investment and government spending, not just consumer goods.  \n\nThe key difference lies in **basket composition and scope**: CPI uses a fixed basket focused on consumer goods and services, while the GDP Deflator uses a variable basket covering all domestically produced goods and services.  \n\nInflation impacts household budgets in several ways:  \n- **Real income** decreases because as prices rise, the same amount of money buys fewer goods and services.  \n- **Savings** lose value in real terms if interest rates do not keep up with inflation, eroding purchasing power.  \n- **Borrowing costs** may increase if lenders raise interest rates to compensate for inflation, making loans more expensive.  \n\nUnderstanding these differences helps households and policymakers interpret inflation data correctly and manage economic decisions effectively.",
+      "contentLen": 1912
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M2",
+      "type": "worked_example",
+      "purpose": "worked reasoning",
+      "content": "Let's explore how CPI and GDP Deflator measure inflation differently through a stepwise example:\n\n1. **Basket Composition**  \n   - CPI: Imagine a household's fixed basket includes bread, milk, and electricity. Prices for these items are tracked over time. For example, if bread costs $2 last year and $2.20 this year, the CPI will reflect this price increase for bread within the fixed basket.  \n   - GDP Deflator: Instead of a fixed basket, the GDP Deflator considers all goods produced domestically. If consumers buy less bread and more electronics this year, the basket changes to reflect that shift. Price changes for all these goods influence the GDP Deflator.\n\n2. **Scope of Goods and Services**  \n   - CPI focuses only on consumer goods and services purchased by households. It excludes investment goods and government services.  \n   - GDP Deflator includes all goods and services produced domestically, such as machinery, government services, and exports.\n\n3. **Common Misconceptions**  \n   - Some think CPI and GDP Deflator measure inflation the same way. However, CPI's fixed basket means it may not reflect changes in consumption patterns, while GDP Deflator adapts the basket to current production.  \n   - Another misconception is that both cover the same goods. CPI excludes investment and government spending, which GDP Deflator includes.\n\nBy understanding these differences, you can better interpret inflation reports and their implications.",
+      "contentLen": 1456
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M3",
+      "type": "sample_output",
+      "purpose": "model answer",
+      "content": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ in basket composition and scope. The CPI uses a fixed basket of goods and services that households typically buy, meaning it tracks price changes for the same items over time. This fixed basket approach allows for consistent comparison but does not account for changes in consumption patterns. On the other hand, the GDP Deflator uses a variable basket that reflects all goods and services produced domestically, adjusting for shifts in what is produced and consumed. This broader scope includes consumer goods, investment, and government spending.\n\nInflation affects household budgets by reducing real income, as rising prices mean households can buy less with the same money. Savings lose value if interest rates do not keep pace with inflation, eroding purchasing power. Additionally, borrowing costs may rise because lenders increase interest rates to offset inflation risks, making loans more expensive. Understanding these differences in inflation measurement helps households interpret economic news and manage their finances more effectively.",
+      "contentLen": 1136
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M1",
+      "type": "worked_example",
+      "purpose": "stepped think-aloud calculation",
+      "content": "Let's work through calculating the CPI inflation rate step-by-step using a fixed basket of goods:\n\n1. **Identify Basket Items and Prices**  \n   Suppose the basket contains three items: bread, milk, and eggs. Their prices in the base period and current period are:  \n   - Bread: Base price = $2.00, Current price = $2.20  \n   - Milk: Base price = $1.50, Current price = $1.65  \n   - Eggs: Base price = $3.00, Current price = $3.30  \n\n2. **Calculate Price Changes**  \n   For each item, calculate the price change as a percentage:  \n   - Bread: \\(\\frac{2.20 - 2.00}{2.00} \\times 100 = 10\\%\\)  \n   - Milk: \\(\\frac{1.65 - 1.50}{1.50} \\times 100 = 10\\%\\)  \n   - Eggs: \\(\\frac{3.30 - 3.00}{3.00} \\times 100 = 10\\%\\)  \n\n3. **Apply Weights to Price Changes**  \n   Each item has a weight representing its importance in the basket:  \n   - Bread: 40%  \n   - Milk: 30%  \n   - Eggs: 30%  \n\n   Multiply each price change by its weight:  \n   - Bread: 10% × 0.40 = 4.0%  \n   - Milk: 10% × 0.30 = 3.0%  \n   - Eggs: 10% × 0.30 = 3.0%  \n\n4. **Calculate Overall CPI Inflation Rate**  \n   Sum the weighted price changes:  \n   \\(4.0\\% + 3.0\\% + 3.0\\% = 10.0\\%\\)  \n\nThe CPI inflation rate is 10.0%, indicating that overall prices in the fixed basket have increased by 10% from the base period to the current period.",
+      "contentLen": 1291
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M2",
+      "type": "sample_output",
+      "purpose": "model calculation",
+      "content": "Completed CPI Inflation Rate Calculation:\n\n| Item  | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) |\n|-------|------------|---------------|--------|------------------|---------------------------|\n| Bread | $2.00      | $2.20         | 0.40   | 10               | 4.0                       |\n| Milk  | $1.50      | $1.65         | 0.30   | 10               | 3.0                       |\n| Eggs  | $3.00      | $3.30         | 0.30   | 10               | 3.0                       |\n| **Total** |            |               |        |                  | **10.0**                  |\n\nFinal CPI Inflation Rate: **10.0%**\n\nThis shows that the average price level of the fixed basket of goods has risen by 10% from the base period to the current period.",
+      "contentLen": 784
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M3",
+      "type": "classification_table",
+      "purpose": "practice table",
+      "content": "| Item  | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) |\n|-------|------------|---------------|--------|------------------|---------------------------|\n| Bread | $2.50      | $2.75         | 0.35   |                  |                           |\n| Milk  | $1.20      | $1.32         | 0.25   |                  |                           |\n| Eggs  | $2.00      | $2.20         | 0.40   |                  |                           |\n| **Total** |            |               |        |                  |                           |\n\nInstructions:  \n- Calculate the price change percentage for each item using the formula:  \n  \\(\\frac{\\text{Current Price} - \\text{Base Price}}{\\text{Base Price}} \\times 100\\)  \n- Multiply each price change by the item's weight to find the weighted price change.  \n- Sum all weighted price changes to find the overall CPI inflation rate.",
+      "contentLen": 911
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M1",
+      "type": "scenario",
+      "purpose": "household comparison",
+      "content": "Consider the following two household profiles and the inflation context they face:\n\n**Household A: The Smith Family**  \n- Monthly income: $4,000  \n- Spending pattern: High proportion on groceries, utilities, and transportation  \n- Savings: Moderate savings account with 2% interest rate  \n- Borrowing: Fixed-rate mortgage with 4% interest  \n\n**Household B: The Lee Family**  \n- Monthly income: $7,000  \n- Spending pattern: Larger spending on dining out, entertainment, and luxury goods  \n- Savings: Significant savings in a fixed deposit with 1.5% interest rate  \n- Borrowing: Variable-rate loan currently at 3.5%, subject to increase  \n\n**Inflation Context**  \n- Overall inflation rate: 6%  \n- Price increases: Groceries +8%, Utilities +5%, Transportation +7%, Dining out +4%, Entertainment +3%, Luxury goods +2%  \n\nThis context sets the stage to analyse how inflation affects each household’s real income, savings erosion, and borrowing costs.",
+      "contentLen": 945
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M2",
+      "type": "analysis_table",
+      "purpose": "practice analysis table",
+      "content": "| Impact Category | Household A Effect | Household B Effect | Justification / Explanation                         |\n|-----------------|--------------------|--------------------|---------------------------------------------------|\n| Real Income     |                    |                    |                                                   |\n| Savings Erosion |                    |                    |                                                   |\n| Borrowing Costs |                    |                    |                                                   |\n\nInstructions:  \n- For each impact category, describe how inflation affects Household A and Household B.  \n- Provide clear justification explaining the reasons behind each effect, considering income, spending patterns, interest rates, and inflation rates.",
+      "contentLen": 827
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M3",
+      "type": "prompt_set",
+      "purpose": "guided inquiry prompts",
+      "content": "1. How does the higher inflation in groceries and transportation affect Household A’s real income compared to Household B?  \n2. Considering the interest rates on savings, how does inflation erode the value of savings differently for each household?  \n3. How might the fixed-rate mortgage for Household A and the variable-rate loan for Household B influence their borrowing costs as inflation rises?  \n4. What factors in each household’s spending and borrowing profile make them more or less vulnerable to inflation impacts?  \n5. How could each household adjust their budget or financial plans to mitigate the effects of inflation?",
+      "contentLen": 630
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M1",
+      "type": "text",
+      "purpose": "criteria exposition",
+      "content": "Effective inflation management strategies rely heavily on clear and credible policy communication by central banks and governments. When evaluating such strategies, consider the following key criteria:\n\n1. **Clarity of Communication**  \n   How clearly does the policy message explain inflation targets, policy intentions, and expected outcomes? Clear communication reduces uncertainty and helps households and businesses make informed decisions.\n\n2. **Credibility and Consistency**  \n   Does the policy communication maintain trust by being consistent over time and backed by credible actions? Credibility influences how seriously economic agents take inflation forecasts and policy signals.\n\n3. **Impact on Inflation Expectations**  \n   How effectively does the communication shape public expectations about future inflation? Managing expectations is crucial because they influence wage demands, price-setting, and spending behavior, affecting actual inflation.\n\n4. **Economic Stability Support**  \n   Does the communication contribute to overall economic stability by guiding households and businesses to adjust spending, saving, and investment in ways that moderate inflationary pressures?\n\nThese criteria provide a framework to assess the strengths and weaknesses of different inflation management communication strategies.",
+      "contentLen": 1327
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M2",
+      "type": "scenario",
+      "purpose": "competing perspectives",
+      "content": "Two policy communication strategies are presented below:\n\n**Scenario 1: Central Bank Transparent Approach**  \nThe central bank issues detailed monthly reports explaining inflation trends, policy decisions, and future outlooks. It holds regular press conferences and engages with media to clarify its inflation target of 2%. This approach emphasizes transparency and aims to build public trust and anchor inflation expectations firmly.\n\n**Scenario 2: Government Reassurance Campaign**  \nThe government launches a public campaign reassuring households and businesses that inflation will be controlled through fiscal measures. Communication is less frequent and focuses on positive economic growth messages, avoiding detailed inflation forecasts. The approach seeks to maintain confidence without overwhelming the public with technical information.\n\nEach strategy impacts households and businesses differently in terms of understanding, trust, and economic decision-making.",
+      "contentLen": 970
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M3",
+      "type": "modelling_note",
+      "purpose": "worked judgement contrast",
+      "content": "When evaluating these two strategies, consider the following contrasting judgements:\n\n- **Weak Judgement (Scenario 2)**: The government’s reassurance campaign may appear comforting but lacks detailed information, which can lead to uncertainty among households and businesses. Without clear guidance, inflation expectations may become unanchored, increasing the risk of wage-price spirals and economic instability. The lack of transparency may reduce credibility and limit the strategy’s effectiveness in managing inflation expectations.\n\n- **Strong Judgement (Scenario 1)**: The central bank’s transparent approach provides clear, consistent, and credible communication. By regularly updating the public and explaining policy rationale, it helps anchor inflation expectations, enabling households and businesses to make informed decisions. This transparency supports economic stability by reducing uncertainty and aligning expectations with policy goals.\n\nIn summary, effective policy communication requires clarity, credibility, and a focus on shaping expectations to stabilize inflation and guide economic behavior.",
+      "contentLen": 1117
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M4",
+      "type": "decision_table",
+      "purpose": "guided judgement table",
+      "content": "| Evaluation Criteria          | Scenario 1: Central Bank Transparent Approach | Scenario 2: Government Reassurance Campaign | Justification / Notes                         |\n|-----------------------------|-----------------------------------------------|---------------------------------------------|----------------------------------------------|\n| Clarity of Communication    |                                               |                                             |                                              |\n| Credibility and Consistency |                                               |                                             |                                              |\n| Impact on Inflation Expectations |                                         |                                             |                                              |\n| Economic Stability Support  |                                               |                                             |                                              |\n\nInstructions:  \n- Rate each scenario against the criteria (e.g., High, Medium, Low).  \n- Rank the two strategies overall based on your ratings.  \n- Provide justification for each rating and your overall ranking, referring to the criteria exposition and scenario details.",
+      "contentLen": 1310
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M5",
+      "type": "consolidation_summary",
+      "purpose": "session closure",
+      "content": "To consolidate your learning from this session, reflect on the following prompts as you write your summary:  \n\n- How do the differences between CPI and GDP Deflator affect the measurement and interpretation of inflation?  \n- What are the key steps and considerations when calculating the CPI inflation rate using a fixed basket?  \n- How does inflation impact household budgets, particularly real income, savings, and borrowing costs, and how can these effects vary across different households?  \n- Why is effective policy communication crucial in managing inflation expectations, and what criteria determine the strength of communication strategies?  \n- How do the contrasting policy communication approaches influence households and businesses, and what lessons can you draw for evaluating real-world inflation management?\n\nUse these prompts to write a clear and concise summary of at least 80 words that synthesizes your understanding of inflation measurement, calculation, impacts, and policy communication. This reflection will help you integrate the session’s key concepts and prepare you to apply them in practical contexts.",
+      "contentLen": 1130
+    }
+  ]
+}

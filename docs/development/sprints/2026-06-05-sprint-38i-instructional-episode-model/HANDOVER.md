@@ -21,21 +21,11 @@ Sprint 38-I succeeded. The programme now has:
 
 ---
 
-## Successor sprint (recommended — not chartered)
+## Successor sprint
 
-### Sprint 38-J — Instructional Function Planning Implementation
+**[Sprint 38-J — Instructional Function Planning](../2026-06-05-sprint-38j-instructional-function-planning/)** — **CHARTERED** (2026-06-05). Start **38J-1**.
 
-**Purpose:** Make rich instructional episodes **normal pipeline output**.
-
-**Target chain:**
-
-```text
-KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA → GAM → Page
-```
-
-**Start 38-J by:** Creating charter pack at `docs/development/sprints/2026-06-05-sprint-38j-instructional-function-planning/` (path TBD). Cite [38I-6](observations/38I-6-sprint-closure.md) §5–7.
-
-**Do not** reopen 38-I for implementation work.
+[38-J HANDOVER](../2026-06-05-sprint-38j-instructional-function-planning/HANDOVER.md) · [38-J CONTEXT](../2026-06-05-sprint-38j-instructional-function-planning/CONTEXT-FOR-NEXT-CHAT.md)
 
 ---
 
@@ -63,4 +53,4 @@ KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA 
 
 ---
 
-Open a **new chat for 38-J chartering**. Cite [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md).
+38-I is closed. Continue in the **38-J pack**.

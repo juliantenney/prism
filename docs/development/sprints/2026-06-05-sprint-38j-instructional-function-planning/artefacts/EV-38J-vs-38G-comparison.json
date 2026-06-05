@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-06-05",
+  "comparator": "EV-38G-AFTER",
+  "subject": "EV-38J-AFTER",
+  "runLog": {
+    "38G": { "activityCount": 4, "gamMaterialCount": 10, "dlaPromptChars": 15755, "gamPromptChars": 14796 },
+    "38J": { "activityCount": 4, "gamMaterialCount": 14, "dlaPromptChars": 23718, "gamPromptChars": 23040 }
+  },
+  "activityMap": {
+    "A1": { "38G": "inflation_wb_01", "38J": "A1", "archetype": "Understand" },
+    "A2": { "38G": "inflation_wb_02", "38J": "A2", "archetype": "Apply" },
+    "A3": { "38G": "inflation_wb_03", "38J": "A3", "archetype": "Analyse" },
+    "A4": { "38G": "inflation_wb_04", "38J": "A4", "archetype": "Evaluate" }
+  },
+  "functionPresence": {
+    "A1": {
+      "38G": ["worked_example", "sample_output", "task_cards"],
+      "38J": ["text_exposition", "worked_example", "sample_output", "misconception_in_worked", "segmented_learner_task"],
+      "38I_target": ["non_example", "misconception_challenge", "guided_classification", "verification"]
+    },
+    "A2": {
+      "38G": ["analysis_table", "prompt_set"],
+      "38J": ["worked_example", "sample_output", "classification_table", "segmented_learner_task"],
+      "38I_target": ["criteria_exposition", "worked_thinking", "guided_practice", "verification"]
+    },
+    "A3": {
+      "38G": ["scenario", "analysis_table", "checklist"],
+      "38J": ["scenario", "analysis_table", "prompt_set_guided_inquiry"],
+      "38I_target": ["criteria_lenses", "worked_thinking", "justification_matrix"]
+    },
+    "A4": {
+      "38G": ["consolidation_summary_spoiler", "prompt_set"],
+      "38J": ["criteria_text", "scenario_perspectives", "worked_judgement_contrast", "guided_decision_table", "consolidation_scaffold"],
+      "38I_target": ["household_perspectives", "criteria_rubric", "worked_judgement", "guided_judgement", "independent_memo", "verification", "transfer"]
+    }
+  },
+  "antiShell": {
+    "38G": "FAIL all four — task-first shells; A2 no worked thinking; A4 summary-only Evaluate",
+    "38J": "PASS A1-A3 — teaching materials precede performance; A4 PARTIAL — Evaluate-shaped but wrong LO domain and missing independent/transfer/verification"
+  },
+  "verdict": "C_substantial_improvement"
+}

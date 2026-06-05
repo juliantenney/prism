@@ -1,0 +1,167 @@
+{
+  "capturedAt": "2026-06-05T10:22:30.927Z",
+  "sprint": "38-J",
+  "runId": "EV-38J-AFTER",
+  "phase": "38J-5",
+  "harnessVersion": "38J-5",
+  "priorRuns": [
+    "EV-38G-AFTER",
+    "EV-38H-AFTER-knowledge-model"
+  ],
+  "comparators": [
+    "EV-38G-AFTER",
+    "38I-4-target-state",
+    "38I-4-A4-episode"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household scenarios, and policy communication for first-year economics.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "pipelinePath": [
+    "brief",
+    "generate_learning_content",
+    "model_knowledge",
+    "define_learning_outcomes",
+    "design_learning_activities",
+    "generate_activity_materials",
+    "design_page"
+  ],
+  "artefactsWritten": [
+    "EV-38J-AFTER-knowledge-model.json",
+    "EV-38J-AFTER-learning-objectives.json",
+    "EV-38J-AFTER-dla-learning-activities.json",
+    "EV-38J-AFTER-gam.json",
+    "EV-38J-AFTER-gam.txt",
+    "EV-38J-AFTER-workbook.md",
+    "EV-38J-AFTER-design-page.json",
+    "EV-38J-AFTER-run-log.json"
+  ],
+  "knowledgeModelConceptCount": 5,
+  "promptChars": {
+    "learning_content": 1366,
+    "knowledge_model": 1592,
+    "learning_outcomes": 1569,
+    "dla": 23718,
+    "gam": 23040,
+    "design_page": 21100
+  },
+  "activityCount": 4,
+  "gamMaterialCount": 14,
+  "gamTypes": [
+    "text",
+    "worked_example",
+    "sample_output",
+    "classification_table",
+    "scenario",
+    "analysis_table",
+    "prompt_set",
+    "modelling_note",
+    "decision_table",
+    "consolidation_summary"
+  ],
+  "materials": [
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M1",
+      "type": "text",
+      "contentLen": 1912,
+      "contentPreview": "Inflation is the rate at which the general level of prices for goods and services rises, which reduces the purchasing power of money. To measure inflation, econ"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M2",
+      "type": "worked_example",
+      "contentLen": 1456,
+      "contentPreview": "Let's explore how CPI and GDP Deflator measure inflation differently through a stepwise example: 1. **Basket Composition** - CPI: Imagine a household's fi"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "A1-M3",
+      "type": "sample_output",
+      "contentLen": 1136,
+      "contentPreview": "The Consumer Price Index (CPI) and the GDP Deflator both measure inflation but differ in basket composition and scope. The CPI uses a fixed basket of goods and "
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M1",
+      "type": "worked_example",
+      "contentLen": 1291,
+      "contentPreview": "Let's work through calculating the CPI inflation rate step-by-step using a fixed basket of goods: 1. **Identify Basket Items and Prices** Suppose the bask"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M2",
+      "type": "sample_output",
+      "contentLen": 784,
+      "contentPreview": "Completed CPI Inflation Rate Calculation: | Item | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) | |-------|------------|"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "A2-M3",
+      "type": "classification_table",
+      "contentLen": 911,
+      "contentPreview": "| Item | Base Price | Current Price | Weight | Price Change (%) | Weighted Price Change (%) | |-------|------------|---------------|--------|------------------"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M1",
+      "type": "scenario",
+      "contentLen": 945,
+      "contentPreview": "Consider the following two household profiles and the inflation context they face: **Household A: The Smith Family** - Monthly income: $4,000 - Spending pa"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M2",
+      "type": "analysis_table",
+      "contentLen": 827,
+      "contentPreview": "| Impact Category | Household A Effect | Household B Effect | Justification / Explanation | |-----------------|--------------------|----"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-M3",
+      "type": "prompt_set",
+      "contentLen": 630,
+      "contentPreview": "1. How does the higher inflation in groceries and transportation affect Household A’s real income compared to Household B? 2. Considering the interest rates o"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M1",
+      "type": "text",
+      "contentLen": 1327,
+      "contentPreview": "Effective inflation management strategies rely heavily on clear and credible policy communication by central banks and governments. When evaluating such strateg"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M2",
+      "type": "scenario",
+      "contentLen": 970,
+      "contentPreview": "Two policy communication strategies are presented below: **Scenario 1: Central Bank Transparent Approach** The central bank issues detailed monthly reports e"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M3",
+      "type": "modelling_note",
+      "contentLen": 1117,
+      "contentPreview": "When evaluating these two strategies, consider the following contrasting judgements: - **Weak Judgement (Scenario 2)**: The government’s reassurance campaign m"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M4",
+      "type": "decision_table",
+      "contentLen": 1310,
+      "contentPreview": "| Evaluation Criteria | Scenario 1: Central Bank Transparent Approach | Scenario 2: Government Reassurance Campaign | Justification / Notes "
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-M5",
+      "type": "consolidation_summary",
+      "contentLen": 1130,
+      "contentPreview": "To consolidate your learning from this session, reflect on the following prompts as you write your summary: - How do the differences between CPI and GDP Defl"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
  * Sprint 38-E / 38-F — Workbook contract prompt surface (pack §5 DLA / §6 GAM).
  * 38E: V-02 (AP-01), V-08, V-09, V-03/V-04/V-05/V-06/V-07, preservation unchanged.
  * 38F: V-01 (DLA-WB-06a, GAM-WB-38F-01), V-05 (DLA-WB-18, GAM-WB-10 F5), 38E-8/9 co-presence, V-13.
+ * 38J: IFP-00..08, DLA-WB-22..25 (38J-3 §5); GAM-PRES, GAM-WB-22..25, F8 (38J-4 §6).
  */
 
 const test = require("node:test");
@@ -185,9 +186,112 @@ test("pack §6 38H-2: GAM-WB-06b anti-spoiler consolidation discipline", () => {
 test("pack §6 38F-2: defaultPromptNotes cite 38F-2 and preservation modules", () => {
   assert.match(gam.defaultPromptNotes, /38F-2/i);
   assert.match(gam.defaultPromptNotes, /GAM-WB-38F-01/i);
-  assert.match(gam.defaultPromptNotes, /F1–F7|F1-F7/i);
+  assert.match(gam.defaultPromptNotes, /F1–F[78]|F1-F[78]/i);
   assert.match(gam.defaultPromptNotes, /LD-MATERIALS-COPY/i);
   assert.match(gam.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
   assert.match(dla.defaultPromptNotes, /38F-2/i);
   assert.match(dla.defaultPromptNotes, /DLA-WB-06a/i);
+});
+
+// --- Sprint 38-J (38J-3 IFP in pack §5) ---
+
+test("pack §5 38J-3: IFP mandatory internal planning block present", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /IFP-00 SEQUENCE/i);
+  assert.match(t, /IFP-01 ARCHETYPE SELECTION/i);
+  assert.match(t, /IFP-02 ARCHETYPE TEMPLATES/i);
+  assert.match(t, /IFP-03 KM TRIGGERS/i);
+  assert.match(t, /IFP-04 INFERENCE CONTRACTS/i);
+  assert.match(t, /IFP-05 ANTI-SHELL/i);
+  assert.match(t, /IFP-06 ANTI-SPOILER/i);
+  assert.match(t, /IFP-07 SESSION ARC/i);
+  assert.match(t, /IFP-08/i);
+  assert.match(t, /not a stored artefact/i);
+  assert.doesNotMatch(t, /Apply LO cognitive-demand component bundles/i);
+});
+
+test("pack §5 38J-3: archetype selection and 38I-3 authority", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /LO-ARC-03/i);
+  assert.match(t, /AP-OVERRIDE-01/i);
+  assert.match(t, /AN-ASSESS-01/i);
+  assert.match(t, /primary_archetype/i);
+  assert.match(t, /Evaluate > Analyse > Apply > Understand/i);
+});
+
+test("pack §5 38J-3: KM triggers, inference, anti-shell, anti-spoiler, session arc", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /KM-T01/i);
+  assert.match(t, /KM-T03/i);
+  assert.match(t, /INF-01/i);
+  assert.match(t, /worked judgement weak/i);
+  assert.match(t, /AS-FAIL-01/i);
+  assert.match(t, /SP-01/i);
+  assert.match(t, /ARC-01/i);
+  assert.match(t, /ARC-LO-02/i);
+});
+
+test("pack §5 38J-3: DLA-WB-22..25 archetype and gate rows", () => {
+  const t = dla.promptTemplate;
+  assert.match(t, /DLA-WB-22.*38J-3/i);
+  assert.match(t, /DLA-WB-23.*worked_example/i);
+  assert.match(t, /DLA-WB-24.*AS-FAIL/i);
+  assert.match(t, /DLA-WB-25.*session arc|ARC-01/i);
+  assert.match(t, /EV-CAP-01/i);
+});
+
+test("pack §5 38J-3: defaultPromptNotes reinforce IFP mandatory planning", () => {
+  assert.match(dla.defaultPromptNotes, /38J-3/i);
+  assert.match(dla.defaultPromptNotes, /IFP mandatory/i);
+  assert.match(dla.defaultPromptNotes, /anti-shell/i);
+  assert.match(dla.defaultPromptNotes, /DLA-WB-22/i);
+});
+
+// --- Sprint 38-J (38J-4 GAM preservation in pack §6) ---
+
+test("pack §6 38J-4: GAM-PRES preservation block — DLA decides, GAM realises", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-PRES-00/i);
+  assert.match(t, /DLA decides, GAM realises/i);
+  assert.match(t, /GAM-PRES-01 FUNCTION ORDER/i);
+  assert.match(t, /GAM-PRES-02 NO COLLAPSE/i);
+  assert.match(t, /GAM-PRES-03 FUNCTION REALISATION/i);
+  assert.match(t, /GAM-PRES-04 ANTI-SHELL/i);
+  assert.match(t, /GAM-PRES-05 ANTI-SPOILER/i);
+  assert.match(t, /GAM-PRES-06 EVALUATE PRESERVATION/i);
+  assert.doesNotMatch(t, /IFP-01 ARCHETYPE/i);
+  assert.doesNotMatch(t, /primary_archetype/i);
+  assert.doesNotMatch(t, /DLA-WB-/i);
+});
+
+test("pack §6 38J-4: function-order and no-collapse (GAM-WB-22/23, F8)", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-22.*38J-4/i);
+  assert.match(t, /GAM-WB-23.*no-collapse|NO COLLAPSE/i);
+  assert.match(t, /criteria exposition.*worked judgement.*guided judgement/i);
+  assert.match(t, /\(F8\)/i);
+  assert.match(t, /F1–F8|F1-F8/i);
+});
+
+test("pack §6 38J-4: Evaluate A4 preservation and anti-spoiler", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /GAM-WB-24.*38J-4|38I-4 A4/i);
+  assert.match(t, /weak vs strong/i);
+  assert.match(t, /EV-GAM-FAIL/i);
+  assert.match(t, /AS-GAM-FAIL/i);
+  assert.match(t, /GAM-WB-06b/i);
+  assert.match(t, /scaffold-only/i);
+});
+
+test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanning", () => {
+  assert.match(gam.defaultPromptNotes, /38J-4/i);
+  assert.match(gam.defaultPromptNotes, /DLA decides, GAM realises/i);
+  assert.match(gam.defaultPromptNotes, /F1–F8|F1-F8/i);
+  assert.match(gam.defaultPromptNotes, /GAM-WB-24/i);
+  assert.doesNotMatch(gam.defaultPromptNotes, /IFP-00/i);
+});
+
+test("pack §5 unchanged after 38J-4: IFP block still present", () => {
+  assert.match(dla.promptTemplate, /IFP-00 SEQUENCE/i);
+  assert.match(dla.promptTemplate, /DLA-WB-22/i);
 });

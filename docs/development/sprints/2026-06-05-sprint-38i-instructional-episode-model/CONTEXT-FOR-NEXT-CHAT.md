@@ -1,7 +1,7 @@
 # Context for next chat — Sprint 38-I (CLOSED)
 
 **Status:** **CLOSED** (**SUCCESS**) — [38I-6](observations/38I-6-sprint-closure.md)  
-**Successor:** **Sprint 38-J** — Instructional Function Planning Implementation (**charter not yet created**)
+**Successor:** [Sprint 38-J](../2026-06-05-sprint-38j-instructional-function-planning/) (**CHARTERED** — start 38J-1)
 
 ---
 
@@ -26,21 +26,11 @@ Sprint 38-I converted pedagogical ambition into an **explicit instructional epis
 
 ---
 
-## Next programme action (not started)
+## Successor sprint
 
-**Charter Sprint 38-J** — Instructional Function Planning Implementation.
+**[Sprint 38-J](../2026-06-05-sprint-38j-instructional-function-planning/)** — **CHARTERED**. Start **38J-1** in the 38-J pack.
 
-**Target chain:**
-
-```text
-KM → LO → Episode Archetype → Instructional Function Plan → ACM → DLA → GAM → Page
-```
-
-**Scope (from 38I-6):** archetype selection, function-plan templates, KM triggers, inference contracts, anti-shell/anti-spoiler, function-ordered GAM, Inflation proof run.
-
-**Out of scope:** schema expansion, ACM redesign, renderer changes, new page components.
-
-**Do not** implement 38-J inside 38-I files. Create new sprint folder when ready.
+See [38-J HANDOVER](../2026-06-05-sprint-38j-instructional-function-planning/HANDOVER.md) · [38-J CONTEXT](../2026-06-05-sprint-38j-instructional-function-planning/CONTEXT-FOR-NEXT-CHAT.md).
 
 ---
 

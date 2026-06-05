@@ -7895,6 +7895,20 @@
     return null;
   }
 
+  function resolvePageA3MaterialsSequencingLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_A3_MATERIALS_SEQUENCING) {
+        return roots[i].PRISM_PAGE_A3_MATERIALS_SEQUENCING;
+      }
+    }
+    return null;
+  }
+
   function resolveUpstreamActivityMaterialsFromWorkflowCaptures(learningActivitiesUpstream) {
     var preserveMod = resolvePageGamMaterialsPreserveLib();
     if (!preserveMod || typeof preserveMod.parseGamMaterialsFromText !== "function") {
@@ -7947,7 +7961,12 @@
       );
     }
     if (!gamUpstream) return page;
-    return preserveMod.applyGamMaterialsToComposedPage(page, gamUpstream, opts);
+    var next = preserveMod.applyGamMaterialsToComposedPage(page, gamUpstream, opts);
+    var seqMod = resolvePageA3MaterialsSequencingLib();
+    if (seqMod && typeof seqMod.applyA3MaterialsSequencingToComposedPage === "function") {
+      next = seqMod.applyA3MaterialsSequencingToComposedPage(next, opts);
+    }
+    return next;
   }
 
   function resolveLdDesignPageComposeLib() {
@@ -28244,6 +28263,8 @@
           var k = String(key || "").toLowerCase().trim();
           if (k === "scenarios" || k === "study_scenarios") return "Scenarios";
           if (k === "analysis_table") return "Analysis table";
+          if (k === "worked_analytic_pass") return "Worked analytic pass";
+          if (k === "scenario_maya_households") return "Scenario Maya households";
           if (k === "strategy_options") return "Strategy options";
           if (k === "reflection_prompt") return "Reflection";
           if (k === "instructions" || k === "instruction" || k === "learner_instructions") return "What to do";
@@ -29911,6 +29932,121 @@
         var analysisTemplateRendered = false;
         var checklistRendered = false;
         var evaluationChecklistRendered = false;
+        var declaredMaterialOrder =
+          activityRow &&
+          Array.isArray(activityRow.materials_order) &&
+          activityRow.materials_order.length
+            ? activityRow.materials_order.map(function (k) {
+                return String(k);
+              })
+            : null;
+        var orderedMaterialKeysRendered = {};
+        var orderedWorksheetRendered = false;
+        function markOrderedMaterialRendered(key) {
+          orderedMaterialKeysRendered[String(key || "").toLowerCase()] = true;
+        }
+        function wasOrderedMaterialRendered(key) {
+          return !!orderedMaterialKeysRendered[String(key || "").toLowerCase()];
+        }
+        function renderOrderedChecklistBlock(checklistKey, headingLabel) {
+          var checklistVal = materials[checklistKey];
+          if (utilityIsEmptyValue(checklistVal)) return "";
+          var checklistHtml = renderMaterialValue(checklistVal, "checklist", { materialHint: "checklist" });
+          if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistVal);
+          if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
+            checklistHtml =
+              '<div class="util-checklist-block util-material-role-checklist">' + checklistHtml + "</div>";
+          }
+          if (checklistHtml && utilityMaterialHeadingRedundantWithInner(headingLabel, checklistHtml)) {
+            checklistHtml = checklistHtml.replace(
+              /<h[45][^>]*class="util-card-subheading"[^>]*>[\s\S]*?<\/h[45]>\s*/i,
+              ""
+            );
+          }
+          if (!checklistHtml) return "";
+          var checklistHeading = utilityMaterialHeadingRedundantWithInner(headingLabel, checklistHtml)
+            ? ""
+            : utilityRenderIconHeading("h4", headingLabel, "checklist", "util-material-heading");
+          return checklistHeading + checklistHtml;
+        }
+        function renderOrderedWorksheetBlock(tableKey) {
+          var tablePayload = utilityUnwrapWorksheetTablePayload(materials[tableKey]);
+          if (utilityIsEmptyValue(tablePayload)) return "";
+          var csvWorksheetTable = utilityTryRenderCsvLikeMaterialTable(tablePayload);
+          if (csvWorksheetTable) {
+            return (
+              utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
+              csvWorksheetTable
+            );
+          }
+          var tableHtml = "";
+          if (typeof tablePayload === "string") {
+            tableHtml = utilityRenderMarkdownBlock(String(tablePayload));
+          } else {
+            tableHtml = renderMaterialValue(tablePayload, tableKey);
+          }
+          if (!tableHtml) return "";
+          return (
+            utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") + tableHtml
+          );
+        }
+        function renderOrderedMaterialKeyBlock(orderKey) {
+          var key = String(orderKey || "");
+          var lowerK = key.toLowerCase();
+          if (utilityIsEmptyValue(materials[key])) return "";
+          if (lowerK === "checklist") {
+            checklistRendered = true;
+            return renderOrderedChecklistBlock(key, "Checklist");
+          }
+          if (lowerK === "checklist_evaluate") {
+            checklistRendered = true;
+            evaluationChecklistRendered = true;
+            return renderOrderedChecklistBlock(key, "Evaluation checklist");
+          }
+          if (
+            lowerK === "analysis_table" ||
+            lowerK === "impact_table" ||
+            lowerK === "comparison_table" ||
+            lowerK === "classification_table" ||
+            lowerK === "worksheet" ||
+            lowerK === "table"
+          ) {
+            orderedWorksheetRendered = true;
+            return renderOrderedWorksheetBlock(key);
+          }
+          if (lowerK === "scenario_maya_households" || lowerK === "scenario") {
+            var scenarioHtml = renderMaterialValue(materials[key], key);
+            if (!scenarioHtml) return "";
+            scenariosRendered = true;
+            markOrderedMaterialRendered("scenarios");
+            markOrderedMaterialRendered("scenario");
+            return (
+              utilityRenderIconHeading("h4", prettyMaterialHeading(key), "scenarios", "util-material-heading") +
+              utilityTagMaterialBlockHtml(scenarioHtml, key)
+            );
+          }
+          var genericRendered = renderMaterialValue(materials[key], key);
+          if (!genericRendered) return "";
+          var genericLabel = prettyMaterialHeading(key);
+          var genericTitle = utilityMaterialHeadingRedundantWithInner(genericLabel, genericRendered)
+            ? ""
+            : utilityRenderIconHeading(
+                "h4",
+                genericLabel,
+                utilityMaterialTypeFromKeyHint(key),
+                "util-material-heading"
+              );
+          return genericTitle + utilityTagMaterialBlockHtml(genericRendered, key);
+        }
+        if (declaredMaterialOrder) {
+          declaredMaterialOrder.forEach(function (orderKey) {
+            var orderedBlock = renderOrderedMaterialKeyBlock(orderKey);
+            if (orderedBlock) {
+              parts.push(orderedBlock);
+              markOrderedMaterialRendered(orderKey);
+            }
+          });
+        }
         var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
         if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
           taskCards = expandTaskCardMaterialEntries(taskCards);
@@ -29997,7 +30133,7 @@
           }
         }
         var checklistValue = materials.checklist;
-        if (!utilityIsEmptyValue(checklistValue)) {
+        if (!wasOrderedMaterialRendered("checklist") && !utilityIsEmptyValue(checklistValue)) {
           var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
           if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistValue);
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
@@ -30018,7 +30154,7 @@
           }
         }
         var evaluationChecklistValue = materials.evaluation_checklist;
-        if (!utilityIsEmptyValue(evaluationChecklistValue)) {
+        if (!wasOrderedMaterialRendered("evaluation_checklist") && !utilityIsEmptyValue(evaluationChecklistValue)) {
           var evaluationChecklistHtml = renderMaterialValue(evaluationChecklistValue, "checklist", { materialHint: "checklist" });
           if (!evaluationChecklistHtml) evaluationChecklistHtml = renderPromptSetBlocks(evaluationChecklistValue);
           if (evaluationChecklistHtml && evaluationChecklistHtml.indexOf("util-checklist-block") === -1) {
@@ -30041,7 +30177,7 @@
             templateRendered = true;
           }
         }
-        var tableSource = resolveWorksheetTableSource(materials);
+        var tableSource = orderedWorksheetRendered ? null : resolveWorksheetTableSource(materials);
         if (!utilityIsEmptyValue(tableSource)) {
           var csvWorksheetTable = utilityTryRenderCsvLikeMaterialTable(tableSource);
           if (csvWorksheetTable) {
@@ -30101,6 +30237,9 @@
         }
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
+          if (wasOrderedMaterialRendered(k)) {
+            return;
+          }
           if (utilityShouldSuppressLearnerWorkshopMaterial(k, materials[k], renderOpts)) {
             return;
           }
@@ -35745,6 +35884,41 @@
         return { ok: false, errors: ["page-gam-materials-preserve module unavailable"] };
       }
       return mod.validate38LPageGamPreservation(page, options);
+    };
+    prismTestApi.validate38MPageFidelityForTest = function (page, options) {
+      var mod = resolvePageGamMaterialsPreserveLib();
+      if (!mod || typeof mod.validate38MPageFidelity !== "function") {
+        return { ok: false, errors: ["page-gam-materials-preserve validate38M unavailable"], warnings: [], metrics: [] };
+      }
+      return mod.validate38MPageFidelity(page, options);
+    };
+    prismTestApi.measurePageGamFidelityForTest = function (page, options) {
+      var mod = resolvePageGamMaterialsPreserveLib();
+      if (!mod || typeof mod.measurePageGamFidelity !== "function") {
+        return [];
+      }
+      return mod.measurePageGamFidelity(page, options);
+    };
+    prismTestApi.applyA3MaterialsSequencingToComposedPageForTest = function (page, options) {
+      var mod = resolvePageA3MaterialsSequencingLib();
+      if (!mod || typeof mod.applyA3MaterialsSequencingToComposedPage !== "function") {
+        return page;
+      }
+      return mod.applyA3MaterialsSequencingToComposedPage(page, options);
+    };
+    prismTestApi.validateA3MaterialsSequencingForTest = function (page, options) {
+      var mod = resolvePageA3MaterialsSequencingLib();
+      if (!mod || typeof mod.validateA3MaterialsSequencing !== "function") {
+        return { ok: false, errors: ["page-a3-materials-sequencing unavailable"] };
+      }
+      return mod.validateA3MaterialsSequencing(page, options);
+    };
+    prismTestApi.validateA3RenderMaterialOrderForTest = function (html, options) {
+      var mod = resolvePageA3MaterialsSequencingLib();
+      if (!mod || typeof mod.validateA3RenderMaterialOrder !== "function") {
+        return { ok: false, errors: ["page-a3-materials-sequencing unavailable"] };
+      }
+      return mod.validateA3RenderMaterialOrder(html, options);
     };
     prismTestApi.applySprint38VisualAffordancesToComposedPage =
       applySprint38VisualAffordancesToComposedPage;

@@ -6,7 +6,7 @@
 **Type:** Retrospective and forward plan only — no implementation  
 **Charter:** [IMPLEMENTATION-CHARTER.md](../IMPLEMENTATION-CHARTER.md)  
 **Predecessor:** [Sprint 38-I](../2026-06-05-sprint-38i-instructional-episode-model/) (**CLOSED** — [38I-6](../2026-06-05-sprint-38i-instructional-episode-model/observations/38I-6-sprint-closure.md))  
-**Successor:** **Sprint 38-K — Instructional Function Depth and Episode Richness** (**RECOMMENDED**)
+**Successor:** [Sprint 38-K — Instructional Function Depth and Episode Richness](../../2026-06-05-sprint-38k-instructional-function-depth/) (**CHARTERED**)
 
 ---
 

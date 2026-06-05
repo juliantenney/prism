@@ -2,7 +2,7 @@
 
 **Pack:** `docs/development/sprints/2026-06-05-sprint-38j-instructional-function-planning/`
 
-**Status:** **38-J CLOSED** — **SUCCESS** · **38-K RECOMMENDED** (not chartered)
+**Status:** **38-J CLOSED** · **38-K CHARTERED** — see [38-K pack](../2026-06-05-sprint-38k-instructional-function-depth/)
 
 ---
 

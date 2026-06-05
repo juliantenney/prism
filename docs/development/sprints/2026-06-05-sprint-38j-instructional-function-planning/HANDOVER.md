@@ -3,7 +3,7 @@
 **Pack:** [README.md](README.md) · **Status:** **CLOSED** — **SUCCESS** (2026-06-05)
 
 **Closure:** [38J-6-sprint-closure.md](observations/38J-6-sprint-closure.md)  
-**Successor:** **Sprint 38-K — Instructional Function Depth and Episode Richness** (**RECOMMENDED** — not yet chartered)
+**Successor:** [Sprint 38-K — Instructional Function Depth and Episode Richness](../2026-06-05-sprint-38k-instructional-function-depth/) (**CHARTERED**)
 
 ---
 

@@ -108,4 +108,4 @@ Detail: [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
 **Frozen proof prefix:** `EV-38J-AFTER-*` ([38J-5](observations/38J-5-inflation-proof-run.md))
 
-**Successor:** **Sprint 38-K — Instructional Function Depth and Episode Richness** (recommended in [38J-6](observations/38J-6-sprint-closure.md))
+**Successor:** [Sprint 38-K — Instructional Function Depth and Episode Richness](../2026-06-05-sprint-38k-instructional-function-depth/) (**CHARTERED** — [38J-6](observations/38J-6-sprint-closure.md))

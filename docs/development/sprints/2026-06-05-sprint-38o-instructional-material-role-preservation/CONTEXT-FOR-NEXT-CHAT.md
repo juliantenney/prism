@@ -30,7 +30,7 @@ Discovery sprint — instructional material **role preservation** distinct from 
 
 ## If continuing role fidelity work
 
-Start from 38O-4 recommendation (F1) and 38O-5 disposition. Charter a **new implementation sprint** — do not reopen 38O, 38M, or 38N.
+Start from 38O-4 recommendation (F1) and 38O-5 disposition. Implementation sprint: [Sprint 38-P](../2026-06-05-sprint-38p-instructional-role-fidelity/) — do not reopen 38O, 38M, or 38N.
 
 **Key artefacts:**
 

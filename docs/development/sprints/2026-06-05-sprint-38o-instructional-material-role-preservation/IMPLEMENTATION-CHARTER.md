@@ -145,7 +145,7 @@ Sprint 38-M closed the L4 **body fidelity** cliff. Sprint 38-N hardened proof ma
 |-------|---------|
 | **Verdict** | **SUCCESS** |
 | **Closure record** | [38O-5-sprint-closure.md](observations/38O-5-sprint-closure.md) |
-| **Future disposition** | Charter implementation sprint for role fidelity (F1 preferred) |
+| **Future disposition** | Charter implementation sprint for role fidelity (F1 preferred) → [Sprint 38-P](../../2026-06-05-sprint-38p-instructional-role-fidelity/) |
 
 ---
 

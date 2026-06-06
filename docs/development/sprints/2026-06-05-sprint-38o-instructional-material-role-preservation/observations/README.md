@@ -41,3 +41,5 @@
 ## Closure verdict
 
 **SUCCESS** — Instructional role fidelity established as a distinct architectural concern. Future implementation sprint recommended (F1 registry-led hybrid). See [38O-5-sprint-closure.md](38O-5-sprint-closure.md).
+
+**Successor:** [Sprint 38-P — Instructional Role Fidelity](../../2026-06-05-sprint-38p-instructional-role-fidelity/) (**CHARTERED** — 38P-1 next)

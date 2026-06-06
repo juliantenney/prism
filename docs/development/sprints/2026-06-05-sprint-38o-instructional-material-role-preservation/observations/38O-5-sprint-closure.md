@@ -294,7 +294,7 @@ The sprint did not implement fixes — by design. Discovery mission complete.
 
 | Item | Type | Notes |
 |------|------|-------|
-| **Role fidelity implementation sprint** | Implementation (separately chartered) | F1 registry-led hybrid; RF-1..RF-8 proof gates; additive to `proofOk` |
+| **Role fidelity implementation sprint** | Implementation | [Sprint 38-P](../../2026-06-05-sprint-38p-instructional-role-fidelity/) — F1 registry-led hybrid; RF-1..RF-8 proof gates; additive to `proofOk` |
 | **Multi-run proof replay** | Implementation-phase validation | Extend beyond single `EV-38M-AFTER` run before declaring roleOk stable |
 | **Compose-stage role policy** | Implementation-phase investigation | A4 raw CP/RI may require compose prompt or post-compose role tagging — not fully characterised in 38O |
 | **38I episode alignment** | Proof criterion | RF-6 episode sequence alignment against 38I-4 A4 reference |

@@ -20,7 +20,7 @@ Instructional **role fidelity** is a distinct architectural concern from **body 
 
 ## Recommended future direction
 
-Charter a **future implementation sprint** for role fidelity using **F1 — Registry-led hybrid** (38O-4):
+**Chartered as [Sprint 38-P](../2026-06-05-sprint-38p-instructional-role-fidelity/)** — Instructional Role Fidelity Implementation (F1 registry-led hybrid):
 
 1. Role registry  
 2. Explicit `role_family` + `authority` on page materials  
@@ -28,7 +28,7 @@ Charter a **future implementation sprint** for role fidelity using **F1 — Regi
 4. Render role precedence  
 5. Additive `roleOk` proof gates (RF-1..RF-8)
 
-**Not in 38O scope:** implementation, prompts, code changes.
+**Start:** [38P-1](../2026-06-05-sprint-38p-instructional-role-fidelity/observations/38P-1-role-authority-architecture.md) role authority architecture.
 
 ---
 

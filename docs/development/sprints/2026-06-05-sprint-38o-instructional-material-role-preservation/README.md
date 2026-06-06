@@ -19,6 +19,8 @@ Determine whether **pedagogically important instructional material roles** gener
 | **38-N** | Semantic markers; render alias hardening; validator/schema alignment; `proofOk: true` |
 | **38-O** | **Role fidelity is a distinct architectural concern** — orthogonal to body fidelity |
 
+**Successor:** [Sprint 38-P — Instructional Role Fidelity](../2026-06-05-sprint-38p-instructional-role-fidelity/) (**CHARTERED** — [38P-1](../2026-06-05-sprint-38p-instructional-role-fidelity/observations/38P-1-role-authority-architecture.md) next)
+
 **Closure answer:**
 
 > Instructional role fidelity **is** a distinct architectural concern worthy of separate treatment from body fidelity.

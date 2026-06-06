@@ -12,6 +12,6 @@
 
 **Predecessor:** [38M-6 closure](../2026-06-05-sprint-38m-page-composition-fidelity/observations/38M-6-sprint-closure.md)
 
-**Successor:** [Sprint 38-O — Instructional Material Role Preservation](../2026-06-05-sprint-38o-instructional-material-role-preservation/) (**CHARTERED** — [38O-1](../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-1-baseline-role-survival-trace.md) complete)
+**Successor:** [Sprint 38-O — Instructional Material Role Preservation](../2026-06-05-sprint-38o-instructional-material-role-preservation/) (**CLOSED** — [38O-5](../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-5-sprint-closure.md)) · [Sprint 38-P — Instructional Role Fidelity](../2026-06-05-sprint-38p-instructional-role-fidelity/) (**CHARTERED** — 38P-1 next)
 
 **Proof artefacts:** `../artefacts/EV-38N-AFTER-*`

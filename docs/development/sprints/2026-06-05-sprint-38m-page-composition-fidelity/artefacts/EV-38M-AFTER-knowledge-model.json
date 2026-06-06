@@ -1,0 +1,97 @@
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "General rise in prices reducing money's purchasing power."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "Measures price changes of a fixed basket of consumer goods."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "Measures price changes of all domestically produced goods and services."
+    },
+    {
+      "name": "Fixed Income",
+      "definition": "Income that does not adjust with inflation, risking loss of real value."
+    },
+    {
+      "name": "Variable Income",
+      "definition": "Income that may adjust with inflation, offering potential protection."
+    },
+    {
+      "name": "Household Budget Strategy",
+      "definition": "Planning income and expenses to maintain financial stability."
+    },
+    {
+      "name": "Macroeconomic Policy",
+      "definition": "Government and central bank actions influencing inflation."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Fixed Income",
+      "target": "Household Budget Strategy",
+      "type": "affects"
+    },
+    {
+      "source": "Variable Income",
+      "target": "Household Budget Strategy",
+      "type": "affects"
+    },
+    {
+      "source": "Macroeconomic Policy",
+      "target": "Inflation",
+      "type": "influences"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "GDP Deflator",
+      "type": "contrasts"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    },
+    {
+      "name": "Income Types",
+      "members": [
+        "Fixed Income",
+        "Variable Income"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Evaluating Household Budget Strategy Under Inflation",
+      "steps": [
+        "Assess income stability",
+        "Assess expenditure flexibility",
+        "Consider saving or investment options",
+        "Prioritize essential spending",
+        "Adjust discretionary expenses",
+        "Seek income sources that keep pace with inflation",
+        "Build emergency funds",
+        "Understand trade-offs and risks",
+        "Maintain financial stability and purchasing power"
+      ]
+    }
+  ],
+  "misconceptions": []
+}

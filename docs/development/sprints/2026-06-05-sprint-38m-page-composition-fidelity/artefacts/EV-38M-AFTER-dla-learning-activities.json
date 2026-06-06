@@ -1,0 +1,241 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Inflation Measurement Methods",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "concept elucidation",
+          "specification": "Explain definitions and distinctions of Consumer Price Index (CPI) and GDP Deflator including fixed vs variable basket and consumer goods vs all domestic goods."
+        },
+        {
+          "material_id": "M2",
+          "type": "worked_example",
+          "purpose": "worked thinking",
+          "specification": "Stepwise explanation contrasting CPI and GDP Deflator with examples of basket composition and scope differences."
+        },
+        {
+          "material_id": "M3",
+          "type": "sample_output",
+          "purpose": "model answer reference",
+          "specification": "Sample explanation text contrasting CPI and GDP Deflator highlighting key differences and implications."
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "At least 4 check items verifying understanding of basket composition, scope, fixed vs variable basket, and consumer vs domestic goods distinctions with repair instructions."
+        }
+      ],
+      "learner_task": "## Understand Inflation Measurement\n- Study the concept explanations and worked example contrasting CPI and GDP Deflator.\n- Explain in your own words the key differences between CPI and GDP Deflator focusing on basket composition and scope.\n- Use the sample output as a guide but write your own explanation.\n- Complete the verification checklist to self-assess your understanding.",
+      "expected_output": "A written explanation clearly describing the differences between CPI and GDP Deflator with reference to basket composition and scope, verified by checklist completion.",
+      "activity_preamble": "This activity introduces the foundational concepts of inflation measurement. You will learn how CPI and GDP Deflator differ in what they measure and why that matters for understanding inflation.",
+      "prior_knowledge_activation": "Recall your prior knowledge of inflation and price indices to connect with new distinctions.",
+      "reasoning_orientation": "Focus on conceptual contrasts and implications for inflation measurement.",
+      "self_explanation_prompt": "How does the basket composition affect the inflation rate measured by CPI compared to GDP Deflator?",
+      "scaffold_hint_sequence": [
+        "Review the definitions of CPI and GDP Deflator.",
+        "Identify the types of goods and services included in each index.",
+        "Consider how fixed vs variable baskets affect measurement.",
+        "Summarize the key differences in your own words."
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Applying CPI Inflation Rate Calculation",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "worked_example",
+          "purpose": "worked thinking",
+          "specification": "Stepwise calculation of CPI inflation rate using weighted average price changes with intermediate steps and explanations."
+        },
+        {
+          "material_id": "M6",
+          "type": "sample_output",
+          "purpose": "model calculation reference",
+          "specification": "Completed CPI inflation rate calculation with clear steps and final inflation rate."
+        },
+        {
+          "material_id": "M7",
+          "type": "classification_table",
+          "purpose": "practice table",
+          "specification": "Table listing goods and services, their weights, price changes, and calculation columns for CPI inflation rate; learner completes calculations and final inflation rate."
+        },
+        {
+          "material_id": "M8",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with at least 4 items verifying correct use of weights, price changes, calculation steps, and final inflation rate with revision instructions."
+        }
+      ],
+      "learner_task": "## Calculate CPI Inflation Rate\n- Study the worked example showing how to calculate inflation rate from a fixed basket.\n- Use the practice table to calculate the CPI inflation rate for a new set of goods and prices.\n- Compare your calculation with the sample output for accuracy.\n- Complete the verification checklist to confirm your calculation correctness.",
+      "expected_output": "Completed CPI inflation rate calculation table with correct weighted price changes and final inflation rate, verified by checklist completion.",
+      "activity_preamble": "This activity develops your ability to apply the CPI inflation calculation method using weighted price changes from a fixed basket.",
+      "prior_knowledge_activation": "Recall the concept of weighted averages and fixed basket price indices.",
+      "reasoning_orientation": "Follow stepwise calculation logic to ensure accuracy and understanding.",
+      "self_explanation_prompt": "Why do we use weighted averages in calculating the CPI inflation rate?",
+      "scaffold_hint_sequence": [
+        "Review the weights assigned to each good or service.",
+        "Calculate the price change for each item.",
+        "Multiply price changes by weights to get weighted changes.",
+        "Sum weighted changes to find the overall inflation rate."
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Inflation Impact on Household Budgets",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Analyse how inflation affects different household budgets, including fixed-income and variable-income scenarios."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M9",
+          "type": "worked_example",
+          "purpose": "worked analytic pass",
+          "specification": "Stepwise analysis of inflation impact on a fixed-income vs variable-income household using lenses of distribution, adaptation, and time horizon."
+        },
+        {
+          "material_id": "M10",
+          "type": "analysis_table",
+          "purpose": "practice analysis",
+          "specification": "Table comparing two household types across impact lenses; learner completes classification, rates impact severity, and justifies analysis."
+        },
+        {
+          "material_id": "M11",
+          "type": "scenario",
+          "purpose": "case study",
+          "specification": "Two Maya-style household scenarios illustrating fixed and variable income situations with income, expenses, and inflation exposure details."
+        },
+        {
+          "material_id": "M12",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with ≥4 items verifying completeness and accuracy of analysis, correct application of lenses, and justification quality."
+        }
+      ],
+      "learner_task": "## Analyse Inflation Effects on Households\n- Study the worked analytic pass illustrating inflation impact on fixed and variable income households.\n- Review the Maya-style household scenarios.\n- Complete the analysis table comparing the two households using distribution, adaptation, and time horizon lenses.\n- Justify your ratings and classifications.\n- Verify your analysis using the checklist.",
+      "expected_output": "Completed analysis table with classifications, ratings, and justifications for inflation impact on two household types, verified by checklist completion.",
+      "activity_preamble": "This activity guides you through analysing how inflation differently affects households with fixed and variable incomes using multiple analytical lenses.",
+      "prior_knowledge_activation": "Recall concepts of fixed and variable income and inflation effects on purchasing power.",
+      "reasoning_orientation": "Apply analytical lenses systematically to compare household impacts.",
+      "self_explanation_prompt": "How do fixed and variable income types influence household vulnerability to inflation?",
+      "scaffold_hint_sequence": [
+        "Identify income type and inflation exposure for each household.",
+        "Apply distribution lens: who gains or loses purchasing power?",
+        "Apply adaptation lens: how can households adjust spending?",
+        "Apply time horizon lens: short-term vs long-term effects.",
+        "Synthesize findings in the analysis table."
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluating Household Inflation Management Strategies",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Evaluate strategies households can use to manage the effects of inflation on their finances, defending a justified choice using explicit criteria and trade-offs."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M13",
+          "type": "scenario",
+          "purpose": "decision context",
+          "specification": "Maya-style household scenario with income, expenses, and inflation exposure details; includes neutral strategy menu A–E with no pre-ranked effectiveness."
+        },
+        {
+          "material_id": "M14",
+          "type": "text",
+          "purpose": "criteria exposition",
+          "specification": "Exposition of ≥3 evaluation criteria for household inflation strategies including financial stability, purchasing power preservation, and risk trade-offs."
+        },
+        {
+          "material_id": "M15",
+          "type": "modelling_note",
+          "purpose": "worked judgement",
+          "specification": "Contrast of a weak slogan-style judgement vs a strong criteria-led evaluation of household inflation strategies."
+        },
+        {
+          "material_id": "M16",
+          "type": "decision_table",
+          "purpose": "guided judgement",
+          "specification": "Table listing strategies A–E with partial exemplar ratings on criteria; learner completes rankings, trade-off notes, and justification hints."
+        },
+        {
+          "material_id": "M17",
+          "type": "template",
+          "purpose": "independent judgement",
+          "specification": "Memo scaffold with structured prompts and word band guiding independent evaluation and justified strategy recommendation."
+        },
+        {
+          "material_id": "M18",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Rubric with ≥4 criteria-linked self-audit items verifying completeness, justification quality, criteria use, and trade-off consideration."
+        },
+        {
+          "material_id": "M19",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt requiring learner to apply evaluation criteria and strategy reasoning to their own household or context in ≥80 words."
+        },
+        {
+          "material_id": "M20",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "Summary requiring ≥80 words synthesizing key ideas about inflation management strategies, criteria, and evaluation trade-offs."
+        }
+      ],
+      "learner_task": "## Evaluate Household Inflation Strategies\n- Review the Maya-style household scenario and neutral strategy menu.\n- Study the evaluation criteria and modelling note contrasting weak and strong judgements.\n- Complete the guided judgement decision table ranking strategies and noting trade-offs.\n- Use the independent judgement template to write a memo recommending a strategy with justification.\n- Verify your memo using the checklist.\n- Complete the transfer prompt applying your evaluation to your own household or context.\n- Finish by reading and reflecting on the consolidation summary.",
+      "expected_output": "Completed decision table with rankings and trade-offs; an independent judgement memo recommending a household inflation strategy with explicit criteria-based justification; completed verification checklist; transfer response applying evaluation to own context.",
+      "activity_preamble": "This capstone activity requires you to evaluate and justify household strategies for managing inflation effects using explicit criteria and trade-offs, anchored in a realistic scenario.",
+      "prior_knowledge_activation": "Recall household budget concepts, inflation impacts, and evaluation criteria from previous activities.",
+      "reasoning_orientation": "Integrate multiple perspectives and criteria to form a justified evaluative judgement.",
+      "self_explanation_prompt": "What trade-offs must households consider when choosing an inflation management strategy?",
+      "transfer_or_application_task": "Apply the evaluation criteria and reasoning to your own household or personal financial context in writing.",
+      "scaffold_hint_sequence": [
+        "Review the evaluation criteria carefully.",
+        "Consider how each strategy meets or fails each criterion.",
+        "Use the modelling note to distinguish weak from strong judgements.",
+        "Complete the guided judgement table with partial exemplars.",
+        "Write your independent judgement memo using the template.",
+        "Use the checklist to verify your work.",
+        "Reflect on and complete the transfer prompt."
+      ]
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured."
+    ],
+    "A2": [
+      "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI."
+    ],
+    "A3": [
+      "Analyse how inflation affects different household budgets, including fixed-income and variable-income scenarios."
+    ],
+    "A4": [
+      "Evaluate strategies households can use to manage the effects of inflation on their finances, defending a justified choice using explicit criteria and trade-offs."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes a consolidation summary requiring learner synthesis of key ideas about inflation management strategies, criteria, and evaluation trade-offs.",
+    "workbook_contract_applied": true
+  }
+}

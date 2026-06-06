@@ -176,6 +176,8 @@
     workflowRunCapturedOutputsRaw: {},
     /** Run-mode: user advanced past this step (Next); drives UI-only completion line. */
     workflowRunStepCompleted: {},
+    /** Run-mode: strict JSON validation errors per step id (Model Knowledge / Learning Sequence). */
+    workflowRunStrictJsonValidation: {},
     workflowDesignResult: null,
     workflowDesignVersions: null,
     workflowSelectedVersion: "refined",
@@ -7909,6 +7911,109 @@
     return null;
   }
 
+  function resolveWorkflowArtefactJsonStrictLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_WORKFLOW_ARTEFACT_JSON_STRICT) {
+        return roots[i].PRISM_WORKFLOW_ARTEFACT_JSON_STRICT;
+      }
+    }
+    return null;
+  }
+
+  function normalizeWorkflowStepOutputNameKey(step) {
+    return String((step && step.outputName) || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+  }
+
+  function resolveStrictJsonWorkflowStepKind(step) {
+    if (!step || typeof step !== "object") return "";
+    var oname = normalizeWorkflowStepOutputNameKey(step);
+    var canonicalId = normalizeCanonicalStepId(
+      step.canonical_step_id || step.canonicalStepId || ""
+    );
+    if (
+      oname === "knowledge_model" ||
+      canonicalId === "step_model_knowledge" ||
+      canonicalId === "model_knowledge"
+    ) {
+      return "knowledge_model";
+    }
+    if (
+      oname === "learning_sequence" ||
+      canonicalId === "step_construct_learning_sequence" ||
+      canonicalId === "construct_learning_sequence"
+    ) {
+      return "learning_sequence";
+    }
+    var title = String(step.title || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+    if (title === "model knowledge") return "knowledge_model";
+    if (title === "construct learning sequence") return "learning_sequence";
+    return "";
+  }
+
+  function validateStrictJsonWorkflowRunStepCapture(raw, step) {
+    var kind = resolveStrictJsonWorkflowStepKind(step);
+    if (!kind) return { ok: true, skipped: true, errors: [] };
+    var strictMod = resolveWorkflowArtefactJsonStrictLib();
+    if (
+      !strictMod ||
+      typeof strictMod.validateWorkflowStepStrictJsonCapture !== "function"
+    ) {
+      return {
+        ok: false,
+        errors: ["strict_json_module_unavailable"],
+        message: "Strict JSON validation module unavailable"
+      };
+    }
+    return strictMod.validateWorkflowStepStrictJsonCapture(
+      raw,
+      kind,
+      sanitizePrismRunCapturedOutput
+    );
+  }
+
+  function applyStrictJsonArtefactContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    var strictMod = resolveWorkflowArtefactJsonStrictLib();
+    if (!strictMod || !context) return draftBody;
+    var kind = resolveStrictJsonWorkflowStepKind({
+      outputName: context.stepOutputName,
+      canonical_step_id: context.stepCanonicalStepId,
+      title: context.stepCanonicalTitle || context.stepTitle
+    });
+    if (kind === "knowledge_model") {
+      if (
+        typeof strictMod.buildStrictKnowledgeModelOutputContractBlock === "function" &&
+        !/fenced JSON block only/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictKnowledgeModelOutputContractBlock()
+        ).trim();
+      }
+    } else if (kind === "learning_sequence") {
+      if (
+        typeof strictMod.buildStrictLearningSequenceOutputContractBlock === "function" &&
+        !/fenced JSON block only/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictLearningSequenceOutputContractBlock()
+        ).trim();
+      }
+    }
+    return draftBody;
+  }
+
   function resolveUpstreamActivityMaterialsFromWorkflowCaptures(learningActivitiesUpstream) {
     var preserveMod = resolvePageGamMaterialsPreserveLib();
     if (!preserveMod || typeof preserveMod.parseGamMaterialsFromText !== "function") {
@@ -8908,6 +9013,7 @@
     draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
+    draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
     return String(draft || "").trim();
   }
 
@@ -17140,6 +17246,25 @@
     var raw = String(ta.value || "");
     state.workflowRunCapturedOutputsRaw[sid] = raw;
     var gamCtx = buildGamSanitizeContextFromRunStepLi(li);
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var stepRow = null;
+    if (wf && Array.isArray(wf.steps)) {
+      stepRow =
+        wf.steps.find(function (row) {
+          return String(row && row.id ? row.id : "") === sid;
+        }) || null;
+    }
+    var strictCheck = validateStrictJsonWorkflowRunStepCapture(raw, stepRow || {});
+    if (!strictCheck.ok && !strictCheck.skipped) {
+      state.workflowRunStrictJsonValidation[sid] = String(
+        strictCheck.message || strictCheck.errors.join(", ")
+      );
+      if (state.workflowRunStepCompleted[sid]) {
+        delete state.workflowRunStepCompleted[sid];
+      }
+    } else {
+      delete state.workflowRunStrictJsonValidation[sid];
+    }
     state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
     var outputNameInput = li.querySelector('[data-field="outputName"]');
     var outputName =
@@ -17154,6 +17279,7 @@
         applyPageCompositionValidationForCapturedPage(li, raw);
       }
     }
+    updateRunStepOutputStatus(li);
   }
 
   function updateRunStepOutputStatus(li) {
@@ -17168,10 +17294,18 @@
       outputNameInput && typeof outputNameInput.value === "string"
         ? outputNameInput.value.trim()
         : "";
+    var strictErr =
+      sid && state.workflowRunStrictJsonValidation
+        ? state.workflowRunStrictJsonValidation[sid]
+        : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
+    if (strictErr) {
+      text = (text ? text + " · " : "") + "Invalid JSON: " + strictErr;
+    }
     statusEl.textContent = text;
     statusEl.classList.toggle("hidden", !text);
+    statusEl.classList.toggle("workflow-run-step-output-status--error", !!strictErr);
   }
 
   function refreshWorkflowRunStepOutputStatusDisplays() {
@@ -17284,6 +17418,7 @@
       state.workflowRunCapturedOutputs = {};
       state.workflowRunCapturedOutputsRaw = {};
       state.workflowRunStepCompleted = {};
+      state.workflowRunStrictJsonValidation = {};
     }
 
     if (els.workflowModeRunBtn) {
@@ -19958,6 +20093,7 @@
     state.workflowRunCapturedOutputs = {};
     state.workflowRunCapturedOutputsRaw = {};
     state.workflowRunStepCompleted = {};
+    state.workflowRunStrictJsonValidation = {};
     if (els.workflowName) els.workflowName.value = "";
     if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
     if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
@@ -20005,6 +20141,7 @@
       state.workflowRunCapturedOutputs = {};
       state.workflowRunCapturedOutputsRaw = {};
       state.workflowRunStepCompleted = {};
+      state.workflowRunStrictJsonValidation = {};
     }
     state.selectedWorkflowId = wf.id;
     populateWorkflowDetail(wf);
@@ -30039,11 +30176,18 @@
           return genericTitle + utilityTagMaterialBlockHtml(genericRendered, key);
         }
         if (declaredMaterialOrder) {
+          var a3SeqMod = resolvePageA3MaterialsSequencingLib();
           declaredMaterialOrder.forEach(function (orderKey) {
             var orderedBlock = renderOrderedMaterialKeyBlock(orderKey);
             if (orderedBlock) {
               parts.push(orderedBlock);
               markOrderedMaterialRendered(orderKey);
+              if (
+                a3SeqMod &&
+                typeof a3SeqMod.markMaterialAliasGroupRendered === "function"
+              ) {
+                a3SeqMod.markMaterialAliasGroupRendered(markOrderedMaterialRendered, orderKey);
+              }
             }
           });
         }
@@ -30058,7 +30202,7 @@
             taskCardsRendered = true;
           }
         }
-        if (Array.isArray(scenarios) && scenarios.length) {
+        if (!scenariosRendered && Array.isArray(scenarios) && scenarios.length) {
           var scenarioHtml = renderScenarioBlocks(scenarios);
           if (scenarioHtml) {
             var scenariosHeading = scenarioSectionTitle
@@ -30071,7 +30215,7 @@
             );
             scenariosRendered = true;
           }
-        } else if (!utilityIsEmptyValue(scenarios)) {
+        } else if (!scenariosRendered && !utilityIsEmptyValue(scenarios)) {
           var scenarioFallbackHtml = renderScenarioBlocks(expandScenarioMaterialEntries(scenarios));
           if (scenarioFallbackHtml) {
             parts.push(
@@ -30133,7 +30277,11 @@
           }
         }
         var checklistValue = materials.checklist;
-        if (!wasOrderedMaterialRendered("checklist") && !utilityIsEmptyValue(checklistValue)) {
+        if (
+          !checklistRendered &&
+          !wasOrderedMaterialRendered("checklist") &&
+          !utilityIsEmptyValue(checklistValue)
+        ) {
           var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
           if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistValue);
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
@@ -30154,7 +30302,11 @@
           }
         }
         var evaluationChecklistValue = materials.evaluation_checklist;
-        if (!wasOrderedMaterialRendered("evaluation_checklist") && !utilityIsEmptyValue(evaluationChecklistValue)) {
+        if (
+          !checklistRendered &&
+          !wasOrderedMaterialRendered("evaluation_checklist") &&
+          !utilityIsEmptyValue(evaluationChecklistValue)
+        ) {
           var evaluationChecklistHtml = renderMaterialValue(evaluationChecklistValue, "checklist", { materialHint: "checklist" });
           if (!evaluationChecklistHtml) evaluationChecklistHtml = renderPromptSetBlocks(evaluationChecklistValue);
           if (evaluationChecklistHtml && evaluationChecklistHtml.indexOf("util-checklist-block") === -1) {
@@ -30238,6 +30390,32 @@
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
           if (wasOrderedMaterialRendered(k)) {
+            return;
+          }
+          if (declaredMaterialOrder && checklistRendered && /checklist/i.test(lowerK)) {
+            return;
+          }
+          if (
+            declaredMaterialOrder &&
+            scenariosRendered &&
+            (lowerK === "scenarios" || lowerK === "scenario" || lowerK === "scenario_maya_households")
+          ) {
+            return;
+          }
+          if (
+            declaredMaterialOrder &&
+            orderedWorksheetRendered &&
+            /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
+              lowerK
+            )
+          ) {
+            return;
+          }
+          if (
+            declaredMaterialOrder &&
+            wasOrderedMaterialRendered("worked_analytic_pass") &&
+            lowerK === "worked_example"
+          ) {
             return;
           }
           if (utilityShouldSuppressLearnerWorkshopMaterial(k, materials[k], renderOpts)) {
@@ -35407,6 +35585,36 @@
         if (currentLi) {
           syncWorkflowRunCapturedOutputToState(currentLi);
           var sid = String(currentLi.getAttribute("data-step-id") || "").trim();
+          var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+          var stepRow = null;
+          if (wf && Array.isArray(wf.steps) && sid) {
+            stepRow =
+              wf.steps.find(function (row) {
+                return String(row && row.id ? row.id : "") === sid;
+              }) || null;
+          }
+          var outArea = currentLi.querySelector('[data-field="runStepOutput"]');
+          var body = outArea ? String(outArea.value || "").trim() : "";
+          var strictKind = resolveStrictJsonWorkflowStepKind(stepRow || {});
+          if (strictKind && body) {
+            var strictCheck = validateStrictJsonWorkflowRunStepCapture(body, stepRow || {});
+            if (!strictCheck.ok) {
+              if (sid) {
+                state.workflowRunStrictJsonValidation[sid] = String(
+                  strictCheck.message || strictCheck.errors.join(", ")
+                );
+                delete state.workflowRunStepCompleted[sid];
+              }
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                (strictKind === "knowledge_model" ? "Model Knowledge" : "Learning Sequence") +
+                  " must be exactly one ```json fenced block. " +
+                  String(strictCheck.message || strictCheck.errors.join(", ")),
+                "error"
+              );
+              return;
+            }
+          }
           if (sid) {
             state.workflowRunStepCompleted[sid] = true;
           }
@@ -35785,6 +35993,11 @@
     };
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
+    prismTestApi.validateStrictJsonWorkflowRunStepCaptureForTest =
+      validateStrictJsonWorkflowRunStepCapture;
+    prismTestApi.resolveStrictJsonWorkflowStepKindForTest = resolveStrictJsonWorkflowStepKind;
+    prismTestApi.applyStrictJsonArtefactContractToDraftForTest =
+      applyStrictJsonArtefactContractToDraft;
     prismTestApi.buildDefaultUtilityPageRenderPlanForTest = buildDefaultUtilityPageRenderPlan;
     prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;

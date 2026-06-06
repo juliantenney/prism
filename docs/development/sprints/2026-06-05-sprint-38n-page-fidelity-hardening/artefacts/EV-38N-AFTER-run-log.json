@@ -1,0 +1,203 @@
+{
+  "capturedAt": "2026-06-06T09:50:51.747Z",
+  "sprint": "38-N",
+  "runId": "EV-38N-AFTER",
+  "phase": "38N-4",
+  "harnessVersion": "38N-4",
+  "sourceRun": "EV-38M-AFTER",
+  "replayMode": "artefact-replay",
+  "proofOk": true,
+  "validation38M": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "validation38LRegression": {
+    "ok": true,
+    "errors": []
+  },
+  "a3Sequencing": {
+    "pageJson": {
+      "ok": true,
+      "errors": []
+    },
+    "render": {
+      "ok": true,
+      "errors": [],
+      "positions": [
+        {
+          "key": "worked_analytic_pass",
+          "pos": 2726
+        },
+        {
+          "key": "analysis_table",
+          "pos": 4597
+        },
+        {
+          "key": "scenario_maya_households",
+          "pos": 5553
+        },
+        {
+          "key": "checklist",
+          "pos": 6530
+        }
+      ]
+    }
+  },
+  "residualsResolved": {
+    "R1_marker_generalisation": true,
+    "R2_render_alias_sequencing": true,
+    "R3_validator_schema_alignment": true
+  },
+  "fidelityMetricsSummary": [
+    {
+      "activity_id": "A1",
+      "material_id": "M1",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M2",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M3",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M4",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M5",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M6",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M7",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M8",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+      "ratio": 100,
+      "markersMissing": [
+        "Stepwise Analysis"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M10_Analysis_Table_Household_Comparison",
+      "ratio": 100,
+      "markersMissing": [
+        "Learner Entry"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M9_Scenario_Maya_Households",
+      "ratio": 100,
+      "markersMissing": [
+        "Fixed-Income Household"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M12",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M9_Scenario_Maya_Households",
+      "ratio": 100,
+      "markersMissing": [
+        "Fixed-Income Household"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M14",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M14_Worked_Judgement_Weak_Strong",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M15_Guided_Judgement_Table",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M16_Independent_Judgement_Template",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M18",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M18_Transfer_Prompt_Evaluate",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M19_Consolidation_Summary",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    }
+  ],
+  "regressionTests": "21/21 pass (page-38n + 38m + 38l suites)"
+}

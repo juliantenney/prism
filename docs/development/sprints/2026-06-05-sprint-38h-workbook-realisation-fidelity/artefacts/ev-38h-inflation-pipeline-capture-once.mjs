@@ -325,8 +325,9 @@ if (!learning_content) {
 
 const kmSystemPrompt = [
   "You execute the Model Knowledge workflow step.",
-  "Return exactly one valid JSON object: the knowledge_model root object.",
-  "No markdown fences. No prose before or after. No JSON comments. No STEP OUTPUT footer."
+  "Return exactly one fenced ```json block containing the knowledge_model object.",
+  "No conversational prose before the opening fence or after the closing fence.",
+  "No raw JSON outside a fence. No JSON comments."
 ].join(" ");
 
 const kmText = await callOpenAI(

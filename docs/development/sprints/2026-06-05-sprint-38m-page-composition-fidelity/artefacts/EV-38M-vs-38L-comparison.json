@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-06-05T14:10:09.244Z",
+  "sprint": "38-M",
+  "run38M": "EV-38M-AFTER",
+  "run38L": "EV-38L-AFTER",
+  "model": "gpt-4.1-mini",
+  "summary": {
+    "composeMergeApplied38M": true,
+    "a3SequencingPageJson38M": true,
+    "a3SequencingRender38M": false,
+    "proofOk38M": false,
+    "regressionTestsPass": "17/17"
+  },
+  "aggregateGamToPageRatio": {
+    "EV-38L-AFTER": {
+      "A1": 100,
+      "A2": 99,
+      "A3": 100,
+      "A4": 45
+    },
+    "EV-38M-AFTER-preMerge": {
+      "A1": 56,
+      "A2": 54,
+      "A3": 30,
+      "A4": 7
+    },
+    "EV-38M-AFTER-postMerge": {
+      "A1": 100,
+      "A2": 100,
+      "A3": 100,
+      "A4": 100
+    }
+  },
+  "charterGapClosed": {
+    "synopsisReplacementA4": true,
+    "tableShellCollapseA4": true,
+    "tierAParityPostMerge": true,
+    "tierBParityPostMerge": true,
+    "a3BodyFidelityPostMerge": true
+  },
+  "residualGaps": [
+    "validate38M marker gates G4/G5 use EV-38L literal strings; fresh GAM phrasing passes ratio but fails markers",
+    "validate38LPageGamPreservation false negative on fresh page key schema (worked_example vs worked_judgement_weak_strong)",
+    "A3 render order inverted when compose emits duplicate alias keys (checklist_evaluate, worked_example, scenarios)"
+  ],
+  "comparator38LValidate38M": {
+    "ok": false,
+    "errorCount": 13,
+    "note": "EV-38L-AFTER raw page without 38M merge — baseline cliff from 38M-1"
+  }
+}

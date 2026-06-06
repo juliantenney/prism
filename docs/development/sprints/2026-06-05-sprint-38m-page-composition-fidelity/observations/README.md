@@ -2,14 +2,14 @@
 
 | Slice | File | Status |
 |-------|------|--------|
-| 38M-1 Baseline page fidelity analysis | `38M-1-baseline-page-fidelity-analysis.md` | Not started |
-| 38M-2 Page composition preservation model | `38M-2-page-composition-preservation-model.md` | Not started |
-| 38M-3 A4 Evaluate fidelity implementation | `38M-3-a4-evaluate-fidelity-implementation.md` | Not started |
-| 38M-4 A3 Analyse sequencing fidelity | `38M-4-a3-analyse-sequencing-fidelity.md` | Not started |
-| 38M-5 Inflation proof run | `38M-5-inflation-proof-run.md` | Not started |
-| 38M-6 Sprint closure | `38M-6-sprint-closure.md` | Not started |
+| 38M-1 Baseline page fidelity analysis | `38M-1-baseline-page-fidelity-analysis.md` | **Complete** |
+| 38M-2 Page composition preservation model | `38M-2-page-composition-preservation-model.md` | **Complete** |
+| 38M-3 A4 Evaluate fidelity implementation | `38M-3-a4-evaluate-fidelity-implementation.md` | **Complete** |
+| 38M-4 A3 Analyse sequencing fidelity | `38M-4-a3-analyse-sequencing-fidelity.md` | **Complete** |
+| 38M-5 Inflation proof run | `38M-5-inflation-proof-run.md` | **Complete** |
+| 38M-6 Sprint closure | `38M-6-sprint-closure.md` | **Complete** |
 
-**Sprint 38-M:** **CHARTERED**. **Next:** **38M-1** Baseline page fidelity analysis.
+**Sprint 38-M:** **CLOSED — SUCCESS (mission), residuals documented.** See [38M-6-sprint-closure.md](38M-6-sprint-closure.md).
 
 **Predecessor:** [38L-6 closure](../../2026-06-05-sprint-38l-instructional-function-depth-implementation/observations/38L-6-sprint-closure.md)
 
@@ -17,4 +17,4 @@
 
 **Baselines (frozen):** `../../2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/EV-38L-AFTER-*` · `EV-38J-AFTER-*`
 
-**Proof artefacts (this sprint):** `../artefacts/EV-38M-AFTER-*` (after 38M-5)
+**Proof artefacts (this sprint):** `../artefacts/EV-38M-AFTER-*` · `../artefacts/EV-38M-vs-38L-comparison.json`

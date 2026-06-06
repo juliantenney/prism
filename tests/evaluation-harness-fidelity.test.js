@@ -106,6 +106,7 @@ test("38H-4b harness: strict KM artefact parse and output contract", () => {
     "artefacts",
     "ev-harness-artefact-parse.js"
   ));
-  assert.match(buildKmHarnessOutputContract(2), /No markdown code fences/i);
+  assert.match(buildKmHarnessOutputContract(2), /fenced JSON block only/i);
+  assert.match(buildKmHarnessOutputContract(2), /```json/i);
   assert.doesNotMatch(harnessSrc, /if \(!knowledge_model\) \{\s*knowledge_model = \{ concepts: \[\]/s);
 });

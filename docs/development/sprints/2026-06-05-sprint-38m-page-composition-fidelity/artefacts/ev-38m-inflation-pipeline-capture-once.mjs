@@ -1,14 +1,13 @@
 /**
- * Sprint 38-L — Inflation evaluation capture (38L-5 proof run harness; aligned in 38L-4).
- * Run: node docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/ev-38l-inflation-pipeline-capture-once.mjs
+ * Sprint 38-M — Inflation evaluation capture (38M-5 proof run harness).
+ * Run: node docs/development/sprints/2026-06-05-sprint-38m-page-composition-fidelity/artefacts/ev-38m-inflation-pipeline-capture-once.mjs
  *
- * Pipeline: Brief → Learning Content → Knowledge Model → frozen LO → DLA (IFP §5 + 38L) → GAM (GAM-PRES §6 + 38L) → Design Page → workbook.md
- * Writes EV-38L-AFTER-* to this artefacts folder. Does not overwrite EV-38G-AFTER, EV-38J-AFTER, or EV-38H-AFTER comparators.
+ * Pipeline: Brief → Learning Content → Knowledge Model → frozen LO → DLA (IFP §5 + 38L) → GAM (GAM-PRES §6 + 38L) → Design Page (+ 38M compose merge) → workbook.md
+ * Writes EV-38M-AFTER-* to this artefacts folder. Comparator baseline: EV-38L-AFTER (38L sprint artefacts).
  *
- * Partial rerun (after KM fix):
- *   PRISM_HARNESS_KM_ONLY=1 node .../ev-38l-inflation-pipeline-capture-once.mjs
- *   PRISM_HARNESS_RESUME_FROM=km node .../ev-38l-inflation-pipeline-capture-once.mjs
- * Use 38L harness only — not ev-38h-inflation-pipeline-capture-once.mjs for DLA (38H user ctx contradicts DLA-WB-26..31).
+ * Partial rerun:
+ *   PRISM_HARNESS_KM_ONLY=1 node .../ev-38m-inflation-pipeline-capture-once.mjs
+ *   PRISM_HARNESS_RESUME_FROM=km node .../ev-38m-inflation-pipeline-capture-once.mjs
  */
 import fs from "fs";
 import path from "path";
@@ -22,8 +21,13 @@ const require = createRequire(import.meta.url);
 const { validateDla38LObligations } = require(
   path.join(repoRoot, "lib", "dla-38l-obligation-check.js")
 );
-const { validate38LPageGamPreservation } = require(
-  path.join(repoRoot, "lib", "page-gam-materials-preserve.js")
+const {
+  validate38LPageGamPreservation,
+  validate38MPageFidelity,
+  measurePageGamFidelity
+} = require(path.join(repoRoot, "lib", "page-gam-materials-preserve.js"));
+const { validateA3MaterialsSequencing, validateA3RenderMaterialOrder } = require(
+  path.join(repoRoot, "lib", "page-a3-materials-sequencing.js")
 );
 const { parseKnowledgeModelCapture, buildKmHarnessOutputContract } = require(
   path.join(
@@ -37,13 +41,17 @@ const { parseKnowledgeModelCapture, buildKmHarnessOutputContract } = require(
   )
 );
 const outDir = __dirname;
-const RUN_PREFIX = process.env.PRISM_RUN_PREFIX || "EV-38L-AFTER";
+const sprint38lDir = path.resolve(
+  __dirname,
+  "../../2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts"
+);
+const RUN_PREFIX = process.env.PRISM_RUN_PREFIX || "EV-38M-AFTER";
 const model = process.env.PRISM_PROBE_MODEL || "gpt-4.1-mini";
-const HARNESS_VERSION = "38L-4b";
+const HARNESS_VERSION = "38M-5";
 const KM_PIPELINE_STEP_NUM = 2;
 const KM_ONLY = process.env.PRISM_HARNESS_KM_ONLY === "1";
 const RESUME_FROM = String(process.env.PRISM_HARNESS_RESUME_FROM || "").trim().toLowerCase();
-const FROZEN_LO_PATH = path.join(__dirname, "ev-38l-frozen-learning-outcomes.json");
+const FROZEN_LO_PATH = path.join(sprint38lDir, "ev-38l-frozen-learning-outcomes.json");
 
 const BRIEF = {
   goal:
@@ -135,7 +143,8 @@ function loadApi() {
     "ld-self-directed-rhetoric.js",
     "ld-design-page-compose-contract.js",
     "design-page-materials-fidelity.js",
-    "page-gam-materials-preserve.js"
+    "page-gam-materials-preserve.js",
+    "page-a3-materials-sequencing.js"
   ]) {
     vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", f), "utf8"), sandbox, { filename: f });
   }
@@ -263,8 +272,78 @@ function parseGamMaterials(text) {
   return materials;
 }
 
+function findActivityTitles(page) {
+  const titles = { a3: "", a4: "" };
+  const section = (page?.sections || []).find((s) =>
+    /learning.?activit/i.test(String(s.section_id || s.heading || ""))
+  );
+  const content = section?.content;
+  const list = Array.isArray(content) ? content : page?.learning_activities || [];
+  list.forEach((row) => {
+    const id = String(row.activity_id || "");
+    const title = String(row.title || row.activity_title || "");
+    if (/A3|analyse/i.test(id)) titles.a3 = title;
+    if (/A4|evaluate/i.test(id)) titles.a4 = title;
+  });
+  return titles;
+}
+
+function extractA3HtmlBlock(html, page) {
+  const text = String(html || "");
+  const { a3, a4 } = findActivityTitles(page);
+  if (!a3) return text;
+  const a3Start = text.indexOf(a3);
+  if (a3Start < 0) return text;
+  const a4Start = a4 ? text.indexOf(a4, a3Start + a3.length) : text.length;
+  return text.substring(a3Start, a4Start > a3Start ? a4Start : text.length);
+}
+
+function aggregateFidelityByActivity(metrics) {
+  const byAct = new Map();
+  metrics.forEach((m) => {
+    const aid = m.activity_id || "unknown";
+    if (!byAct.has(aid)) byAct.set(aid, { gamLen: 0, pageLen: 0, count: 0, substantive: 0 });
+    const row = byAct.get(aid);
+    row.gamLen += m.gamLen || 0;
+    row.pageLen += m.pageLen || 0;
+    row.count += 1;
+    if (m.substantive) row.substantive += 1;
+  });
+  const out = {};
+  byAct.forEach((row, aid) => {
+    out[aid] = {
+      materialCount: row.count,
+      aggregateRatio: row.gamLen ? Math.round((row.pageLen / row.gamLen) * 100) : 100,
+      substantiveCount: row.substantive
+    };
+  });
+  return out;
+}
+
+function load38LComparator() {
+  const gamPath = path.join(sprint38lDir, "EV-38L-AFTER-gam.json");
+  const pagePath = path.join(sprint38lDir, "EV-38L-AFTER-design-page.json");
+  if (!fs.existsSync(gamPath) || !fs.existsSync(pagePath)) {
+    return { available: false };
+  }
+  const gam38l = JSON.parse(fs.readFileSync(gamPath, "utf8"));
+  const page38l = JSON.parse(fs.readFileSync(pagePath, "utf8"));
+  const gamSource = { activities: gam38l.activities || gam38l };
+  const metrics38l = measurePageGamFidelity(page38l, { gamSource });
+  const validate38l = validate38MPageFidelity(page38l, { gamSource });
+  const a3Seq38l = validateA3MaterialsSequencing(page38l, { requireMetadata: false });
+  return {
+    available: true,
+    runId: "EV-38L-AFTER",
+    fidelityMetrics: metrics38l,
+    aggregateByActivity: aggregateFidelityByActivity(metrics38l),
+    validate38M: { ok: validate38l.ok, errors: validate38l.errors, warnings: validate38l.warnings },
+    a3Sequencing: { ok: a3Seq38l.ok, errors: a3Seq38l.errors }
+  };
+}
+
 function buildWorkbookMd(page, gamText, learning_activities) {
-  const lines = ["# Inflation Self-Study Workbook", "", `*Captured: ${RUN_PREFIX} · Sprint 38-L proof run*`, ""];
+  const lines = ["# Inflation Self-Study Workbook", "", `*Captured: ${RUN_PREFIX} · Sprint 38-M proof run*`, ""];
   const acts = learning_activities.activities || [];
   const byAct = new Map();
   for (const mat of parseGamMaterials(gamText)) {
@@ -322,7 +401,7 @@ const md = fs.readFileSync(
 const wf = buildWorkflow(md, api);
 const apiKey = readEnvKey();
 const ctxHeader =
-  "Workflow: Inflation self-directed learner workbook (Sprint 38-L — same topic domain as EV-38G-AFTER / EV-38J-AFTER; Evaluate benchmark aligned to 38I-4 A4 household strategy judgement).\n" +
+  "Workflow: Inflation self-directed learner workbook (Sprint 38-M proof — same topic domain as EV-38L-AFTER; Evaluate benchmark aligned to 38I-4 A4 household strategy judgement).\n" +
   "page_profile=learner; apply pack IFP (38J-3 + 38L-2/38L-4 §5): IFP-09 depth floors, IFP-10 emission gates, INF-EVAL-01 household Evaluate anchor, EV-CAP-04 termination gate, DLA-WB-26..31.\n" +
   "GAM-PRES (38J-4 + 38L-3/38L-4 §6): preserve function order; GAM-PRES-08/09 depth-shaped bodies; GAM-PRES-10 Evaluate completion termination; GAM-WB-26..31.\n" +
   "Also apply DLA-WB (38E-8 + 38F-2 + 38G-3 + 38J-3) and GAM-WB (38E-9 + 38F-2 + 38G-3 + 38H-2 + 38J-4).\n" +
@@ -514,6 +593,12 @@ const gamJsonForPage = {
 };
 
 let page = parseJsonFromText(dpText);
+if (!page) {
+  fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page-raw.txt`), dpText, "utf8");
+  throw new Error(`Design Page JSON parse failed (raw: ${RUN_PREFIX}-design-page-raw.txt)`);
+}
+fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page-raw.txt`), dpText, "utf8");
+const pageRaw = JSON.parse(JSON.stringify(page));
 
 if (page && page.sections && api.applyPedagogicCognitionSemanticsToComposedPage) {
   page = api.applyPedagogicCognitionSemanticsToComposedPage(page, {
@@ -530,13 +615,25 @@ if (page && page.sections && api.applyPedagogicCognitionSemanticsToComposedPage)
   });
 }
 
+const fidelityMetricsRaw = measurePageGamFidelity(pageRaw, { gamSource: gamJsonForPage });
+const fidelityCheck = validate38MPageFidelity(page, { gamSource: gamJsonForPage });
 const pagePreserveCheck = validate38LPageGamPreservation(page, { gamSource: gamJsonForPage });
-if (!pagePreserveCheck.ok) {
-  fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page-raw.txt`), dpText, "utf8");
-  throw new Error(
-    `Design Page missing mandatory GAM material preservation: ${pagePreserveCheck.errors.join("; ")} (raw: ${RUN_PREFIX}-design-page-raw.txt)`
-  );
+const a3SeqCheck = validateA3MaterialsSequencing(page);
+
+let renderHtml = "";
+let a3RenderCheck = { ok: false, errors: ["render not built"] };
+if (api.buildUtilityStructuredHtmlForTest) {
+  const render = api.buildUtilityStructuredHtmlForTest(page, ["sections"]);
+  renderHtml = String(render?.html || "");
+  const a3Block = extractA3HtmlBlock(renderHtml, page);
+  a3RenderCheck = validateA3RenderMaterialOrder(a3Block);
 }
+
+const proofOk =
+  fidelityCheck.ok && pagePreserveCheck.ok && a3SeqCheck.ok && a3RenderCheck.ok;
+
+const fidelityMetrics = measurePageGamFidelity(page, { gamSource: gamJsonForPage });
+const comparator38l = load38LComparator();
 const workbookMd = buildWorkbookMd(page, gamText, learning_activities);
 
 const gamJson = {
@@ -548,14 +645,14 @@ const gamJson = {
 
 const report = {
   capturedAt: new Date().toISOString(),
-  sprint: "38-L",
+  sprint: "38-M",
   runId: RUN_PREFIX,
-  phase: "38L-4",
+  phase: "38M-5",
   harnessVersion: HARNESS_VERSION,
   frozenLearningOutcomes: FROZEN_LO_PATH,
   evaluateBenchmark: "38I-4 A4 household strategy Evaluate",
-  priorRuns: ["EV-38G-AFTER", "EV-38J-AFTER", "EV-38H-AFTER-knowledge-model"],
-  comparators: ["EV-38G-AFTER", "EV-38J-AFTER", "38I-4-target-state", "38I-4-A4-episode"],
+  priorRuns: ["EV-38L-AFTER"],
+  comparators: ["EV-38L-AFTER", "38I-4-target-state", "38I-4-A4-episode"],
   model,
   brief: BRIEF,
   pipelinePath: [
@@ -565,7 +662,11 @@ const report = {
     "frozen_learning_outcomes",
     "design_learning_activities",
     "generate_activity_materials",
-    "design_page"
+    "design_page",
+    "applyPedagogicCognitionSemanticsToComposedPage",
+    "validate38MPageFidelity",
+    "validateA3MaterialsSequencing",
+    "validateA3RenderMaterialOrder"
   ],
   artefactsWritten: [
     `${RUN_PREFIX}-learning-content.json`,
@@ -576,7 +677,9 @@ const report = {
     `${RUN_PREFIX}-gam.json`,
     `${RUN_PREFIX}-gam.txt`,
     `${RUN_PREFIX}-workbook.md`,
+    `${RUN_PREFIX}-design-page-raw.txt`,
     `${RUN_PREFIX}-design-page.json`,
+    `${RUN_PREFIX}-render.html`,
     `${RUN_PREFIX}-run-log.json`
   ],
   knowledgeModelConceptCount: kmConceptCount(knowledge_model),
@@ -597,7 +700,32 @@ const report = {
     type: m.type,
     contentLen: m.contentLen,
     contentPreview: m.content.slice(0, 160).replace(/\s+/g, " ")
-  }))
+  })),
+  proofOk,
+  validation38M: {
+    ok: fidelityCheck.ok,
+    errors: fidelityCheck.errors,
+    warnings: fidelityCheck.warnings,
+    gatesPassed: fidelityCheck.ok ? "G1-G10" : []
+  },
+  validation38LRegression: {
+    ok: pagePreserveCheck.ok,
+    errors: pagePreserveCheck.errors
+  },
+  a3Sequencing: {
+    pageJson: { ok: a3SeqCheck.ok, errors: a3SeqCheck.errors },
+    render: { ok: a3RenderCheck.ok, errors: a3RenderCheck.errors, positions: a3RenderCheck.positions }
+  },
+  pageMetadata: {
+    gam_materials_preserve_applied: page?.metadata?.gam_materials_preserve_applied === true,
+    gam_materials_preserve_schema: page?.metadata?.gam_materials_preserve_schema || null,
+    a3_materials_sequencing_applied: page?.metadata?.a3_materials_sequencing_applied === true
+  },
+  fidelityMetrics,
+  fidelityAggregateByActivity: aggregateFidelityByActivity(fidelityMetrics),
+  fidelityMetricsPreMerge: fidelityMetricsRaw,
+  fidelityAggregatePreMerge: aggregateFidelityByActivity(fidelityMetricsRaw),
+  comparator38L: comparator38l
 };
 
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-learning-content.json`), JSON.stringify(learning_content, null, 2), "utf8");
@@ -609,6 +737,19 @@ fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.txt`), gamText, "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.json`), JSON.stringify(gamJson, null, 2), "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-workbook.md`), workbookMd, "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page.json`), JSON.stringify(page, null, 2), "utf8");
+if (renderHtml) {
+  fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-render.html`), renderHtml, "utf8");
+}
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-run-log.json`), JSON.stringify(report, null, 2), "utf8");
 
 console.log(JSON.stringify(report, null, 2));
+
+if (!proofOk) {
+  const parts = [];
+  if (!fidelityCheck.ok) parts.push(`38M fidelity: ${fidelityCheck.errors.join("; ")}`);
+  if (!pagePreserveCheck.ok) parts.push(`38L regression: ${pagePreserveCheck.errors.join("; ")}`);
+  if (!a3SeqCheck.ok) parts.push(`A3 sequencing: ${a3SeqCheck.errors.join("; ")}`);
+  if (!a3RenderCheck.ok) parts.push(`A3 render: ${a3RenderCheck.errors.join("; ")}`);
+  process.exitCode = 1;
+  console.error("EV-38M proof validation failed:", parts.join(" | "));
+}

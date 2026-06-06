@@ -1,7 +1,7 @@
 # Sprint 38-M — Implementation charter (Page Composition Fidelity)
 
 **Date:** 2026-06-05  
-**Status:** **CHARTERED**  
+**Status:** **CLOSED** — [38M-6](observations/38M-6-sprint-closure.md) · **SUCCESS (mission)**  
 **Predecessor:** [Sprint 38-L](../2026-06-05-sprint-38l-instructional-function-depth-implementation/) (**CLOSED** — [38L-6](../2026-06-05-sprint-38l-instructional-function-depth-implementation/observations/38L-6-sprint-closure.md) · **SUCCESS**)
 
 ---

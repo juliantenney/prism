@@ -70,6 +70,8 @@ function loadPrismTestApi() {
     "sprint38-visual-affordances.js",
     "design-page-materials-fidelity.js",
     "page-gam-materials-preserve.js",
+    "page-role-registry.js",
+    "page-role-render-sequencing.js",
     "page-a3-materials-sequencing.js"
   ];
   const sandbox = {

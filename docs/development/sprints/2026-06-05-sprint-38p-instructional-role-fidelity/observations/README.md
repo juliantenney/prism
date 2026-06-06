@@ -1,52 +1,61 @@
-# Observations — Sprint 38-P
-
-**Sprint:** Instructional Role Fidelity  
-**Status:** **CHARTERED** — 38P-1 next  
-**Authority:** [IMPLEMENTATION-CHARTER.md](../IMPLEMENTATION-CHARTER.md)
-
----
-
-## Phase index
-
-| Phase | Title | Deliverable | Status |
-|-------|-------|-------------|--------|
-| **38P-1** | Role authority architecture | `38P-1-role-authority-architecture.md` | **NEXT** |
-| **38P-2** | Role registry implementation | Code + observation | Not started |
-| **38P-3** | Merge supersession implementation | Code + observation | Not started |
-| **38P-4** | Render role-precedence implementation | Code + observation | Not started |
-| **38P-5** | roleOk validation and proof harness | Code + tests + observation | Not started |
-| **38P-6** | Proof run | `38P-6-proof-run.md` · `EV-38P-AFTER-*` | Not started |
-| **38P-7** | Sprint closure | `38P-7-sprint-closure.md` | Not started |
-
----
-
-## Predecessor
-
-[Sprint 38-O — Instructional Material Role Preservation](../../2026-06-05-sprint-38o-instructional-material-role-preservation/) (**CLOSED** — [38O-5](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-5-sprint-closure.md) · **SUCCESS**)
-
-Discovery artefacts (read-only reference):
-
-- [38O-1](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-1-baseline-role-survival-trace.md) — evidence base  
-- [38O-2](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-2-role-taxonomy-page-mapping-analysis.md) — taxonomy  
-- [38O-3](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-3-failure-mode-classification.md) — failure modes  
-- [38O-4](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-4-preservation-options-recommendation.md) — F1 strategy  
-
----
-
-## Proof baselines
-
-| Run | Location | Role |
-|-----|----------|------|
-| `EV-38M-AFTER-*` | [38M artefacts](../../2026-06-05-sprint-38m-page-composition-fidelity/artefacts/) | Pre-38P body baseline |
-| `EV-38N-AFTER-*` | [38N artefacts](../../2026-06-05-sprint-38n-page-fidelity-hardening/artefacts/) | Pre-38P render baseline |
-| `EV-38P-AFTER-*` | `../artefacts/` (38P-6) | Post-38P proof target |
-
----
-
-## Reading order
-
-1. [38O-4 F1 recommendation](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-4-preservation-options-recommendation.md) — strategy input  
-2. `38P-1-role-authority-architecture.md` — architecture design (when complete)  
-3. Phase implementation observations (38P-2 through 38P-5)  
-4. `38P-6-proof-run.md` — proof evidence  
-5. `38P-7-sprint-closure.md` — closure  
+# Observations — Sprint 38-P
+
+**Sprint:** Instructional Role Fidelity  
+**Status:** **CLOSED — SUCCESS**  
+**Closure:** [38P-7-sprint-closure.md](38P-7-sprint-closure.md)  
+**Authority:** [IMPLEMENTATION-CHARTER.md](../IMPLEMENTATION-CHARTER.md)
+
+---
+
+## Phase index
+
+| Phase | Title | Deliverable | Status |
+|-------|-------|-------------|--------|
+| **38P-1** | Role authority architecture | [38P-1-role-authority-architecture.md](38P-1-role-authority-architecture.md) | **Complete** |
+| **38P-2** | Role registry implementation | [38P-2-role-registry-implementation.md](38P-2-role-registry-implementation.md) | **Complete** |
+| **38P-3** | Merge supersession implementation | [38P-3-merge-supersession-implementation.md](38P-3-merge-supersession-implementation.md) | **Complete** |
+| **38P-4** | Render role-precedence implementation | [38P-4-render-role-precedence-implementation.md](38P-4-render-role-precedence-implementation.md) | **Complete** |
+| **38P-5** | roleOk validation and proof harness | [38P-5-role-fidelity-validation.md](38P-5-role-fidelity-validation.md) | **Complete** |
+| **38P-6A** | GAM→Page instructional fidelity investigation | [38P-6A-gam-page-instructional-fidelity-investigation.md](38P-6A-gam-page-instructional-fidelity-investigation.md) | **Complete** |
+| **38P-6** | Proof run | [38P-6-proof-run.md](38P-6-proof-run.md) · `EV-38P-AFTER-*` | **Complete** |
+| **38P-7** | Sprint closure | [38P-7-sprint-closure.md](38P-7-sprint-closure.md) | **Complete** |
+
+---
+
+## Code artefacts
+
+| File | Phase |
+|------|-------|
+| `lib/page-role-registry.js` | 38P-2 |
+| `lib/page-gam-materials-preserve.js` (supersession) | 38P-3 |
+| `lib/page-role-render-sequencing.js` | 38P-4 |
+| `lib/page-role-fidelity.js` | 38P-5 |
+| `artefacts/ev-38p-proof-replay.mjs` | 38P-6 |
+| `tests/page-38p-role-registry.test.js` | 38P-2 |
+| `tests/page-38p-role-supersession.test.js` | 38P-3 |
+| `tests/page-38p-render-role-precedence.test.js` | 38P-4 |
+| `tests/page-38p-role-fidelity.test.js` | 38P-5 |
+
+---
+
+## Reading order
+
+1. [38P-1](38P-1-role-authority-architecture.md)  
+2. [38P-2](38P-2-role-registry-implementation.md)  
+3. [38P-3](38P-3-merge-supersession-implementation.md)  
+4. [38P-4](38P-4-render-role-precedence-implementation.md)  
+5. [38P-5](38P-5-role-fidelity-validation.md)  
+6. [38P-6A](38P-6A-gam-page-instructional-fidelity-investigation.md)  
+7. [38P-6](38P-6-proof-run.md)  
+8. [38P-7](38P-7-sprint-closure.md) — **start here for sprint summary**
+
+---
+
+## Proof evidence
+
+| Run | proofOk | roleOk |
+|-----|---------|--------|
+| EV-38M-AFTER (stored render) | true | false |
+| EV-38N-AFTER | true | n/a |
+| **EV-38P-AFTER** | **true** | **true** |
+

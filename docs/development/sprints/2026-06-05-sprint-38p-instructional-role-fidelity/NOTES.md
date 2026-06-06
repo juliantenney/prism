@@ -13,6 +13,16 @@
 
 ---
 
+## 2026-06-05 — 38P-3 merge supersession complete
+
+- material_role_index on activity rows after merge.
+- Authority tagging: canonical, compose, superseded, alias, unresolved.
+- measureRoleSupersession() diagnostics.
+- 44/44 tests pass; render unchanged.
+- 38P-4 render precedence next.
+
+---
+
 ## Pre-38P baseline (frozen)
 
 | Run | proofOk | roleOk (conceptual) | Notes |

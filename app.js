@@ -7911,6 +7911,34 @@
     return null;
   }
 
+  function resolvePageRoleRenderSequencingLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_ROLE_RENDER_SEQUENCING) {
+        return roots[i].PRISM_PAGE_ROLE_RENDER_SEQUENCING;
+      }
+    }
+    return null;
+  }
+
+  function resolvePageRoleFidelityLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_ROLE_FIDELITY) {
+        return roots[i].PRISM_PAGE_ROLE_FIDELITY;
+      }
+    }
+    return null;
+  }
+
   function resolveWorkflowArtefactJsonStrictLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -7952,6 +7980,13 @@
     ) {
       return "learning_sequence";
     }
+    if (
+      oname === "learning_outcomes" ||
+      canonicalId === "step_define_learning_outcomes" ||
+      canonicalId === "define_learning_outcomes"
+    ) {
+      return "learning_outcomes";
+    }
     var title = String(step.title || "")
       .trim()
       .toLowerCase()
@@ -7959,7 +7994,15 @@
       .trim();
     if (title === "model knowledge") return "knowledge_model";
     if (title === "construct learning sequence") return "learning_sequence";
+    if (title === "define learning outcomes") return "learning_outcomes";
     return "";
+  }
+
+  function resolveStrictJsonWorkflowStepLabel(kind) {
+    if (kind === "knowledge_model") return "Model Knowledge";
+    if (kind === "learning_sequence") return "Learning Sequence";
+    if (kind === "learning_outcomes") return "Learning Outcomes";
+    return "Step";
   }
 
   function validateStrictJsonWorkflowRunStepCapture(raw, step) {
@@ -8008,6 +8051,15 @@
       ) {
         draftBody = (
           draftBody + strictMod.buildStrictLearningSequenceOutputContractBlock()
+        ).trim();
+      }
+    } else if (kind === "learning_outcomes") {
+      if (
+        typeof strictMod.buildStrictLearningOutcomesOutputContractBlock === "function" &&
+        !/fenced JSON block only/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictLearningOutcomesOutputContractBlock()
         ).trim();
       }
     }
@@ -30077,6 +30129,11 @@
                 return String(k);
               })
             : null;
+        var roleRenderMod = resolvePageRoleRenderSequencingLib();
+        var rolePrecedenceActive =
+          roleRenderMod &&
+          typeof roleRenderMod.isRolePrecedenceActive === "function" &&
+          roleRenderMod.isRolePrecedenceActive(activityRow);
         var orderedMaterialKeysRendered = {};
         var orderedWorksheetRendered = false;
         function markOrderedMaterialRendered(key) {
@@ -30084,6 +30141,73 @@
         }
         function wasOrderedMaterialRendered(key) {
           return !!orderedMaterialKeysRendered[String(key || "").toLowerCase()];
+        }
+        function syncMaterialRenderFlagsForKey(key) {
+          var lowerK = String(key || "").toLowerCase();
+          if (/checklist/i.test(lowerK)) {
+            checklistRendered = true;
+            if (lowerK === "checklist_evaluate" || lowerK === "evaluation_checklist") {
+              evaluationChecklistRendered = true;
+            }
+          }
+          if (
+            lowerK === "scenario_maya_households" ||
+            lowerK === "scenario_maya_strategy_menu" ||
+            lowerK === "scenario"
+          ) {
+            scenariosRendered = true;
+            markOrderedMaterialRendered("scenarios");
+            markOrderedMaterialRendered("scenario");
+          }
+          if (
+            /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
+              lowerK
+            )
+          ) {
+            orderedWorksheetRendered = true;
+          }
+          if (
+            lowerK === "template" ||
+            lowerK === "independent_judgement_template" ||
+            lowerK === "templates" ||
+            lowerK === "worksheet_template"
+          ) {
+            templateRendered = true;
+          }
+          if (lowerK === "analysis_template") {
+            analysisTemplateRendered = true;
+            templateRendered = true;
+          }
+        }
+        function shouldSkipKeyForRolePrecedence(k) {
+          return (
+            rolePrecedenceActive &&
+            roleRenderMod &&
+            typeof roleRenderMod.shouldSkipMaterialKeyForRolePrecedence === "function" &&
+            roleRenderMod.shouldSkipMaterialKeyForRolePrecedence(k, activityRow, wasOrderedMaterialRendered)
+          );
+        }
+        function usesDeclaredMaterialOrdering() {
+          return !!(declaredMaterialOrder && !rolePrecedenceActive);
+        }
+        function resolveRolePrecedenceHeading(planItem) {
+          var key = String((planItem && planItem.key) || "");
+          var lowerK = key.toLowerCase();
+          var roleFamily = planItem && planItem.role_family;
+          if (declaredMaterialOrder) {
+            if (roleFamily === "verification_checklist") {
+              if (declaredMaterialOrder.indexOf("checklist") !== -1) return "Checklist";
+              if (declaredMaterialOrder.indexOf("checklist_evaluate") !== -1) {
+                return "Evaluation checklist";
+              }
+            }
+            if (declaredMaterialOrder.indexOf(key) !== -1) {
+              if (lowerK === "checklist") return "Checklist";
+              if (lowerK === "checklist_evaluate") return "Evaluation checklist";
+              return prettyMaterialHeading(key) || planItem.heading;
+            }
+          }
+          return planItem.heading || prettyMaterialHeading(key);
         }
         function renderOrderedChecklistBlock(checklistKey, headingLabel) {
           var checklistVal = materials[checklistKey];
@@ -30127,18 +30251,18 @@
             utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") + tableHtml
           );
         }
-        function renderOrderedMaterialKeyBlock(orderKey) {
+        function renderOrderedMaterialKeyBlock(orderKey, headingOverride) {
           var key = String(orderKey || "");
           var lowerK = key.toLowerCase();
           if (utilityIsEmptyValue(materials[key])) return "";
           if (lowerK === "checklist") {
             checklistRendered = true;
-            return renderOrderedChecklistBlock(key, "Checklist");
+            return renderOrderedChecklistBlock(key, headingOverride || "Checklist");
           }
           if (lowerK === "checklist_evaluate") {
             checklistRendered = true;
             evaluationChecklistRendered = true;
-            return renderOrderedChecklistBlock(key, "Evaluation checklist");
+            return renderOrderedChecklistBlock(key, headingOverride || "Evaluation checklist");
           }
           if (
             lowerK === "analysis_table" ||
@@ -30151,20 +30275,29 @@
             orderedWorksheetRendered = true;
             return renderOrderedWorksheetBlock(key);
           }
-          if (lowerK === "scenario_maya_households" || lowerK === "scenario") {
+          if (
+            lowerK === "scenario_maya_households" ||
+            lowerK === "scenario_maya_strategy_menu" ||
+            lowerK === "scenario"
+          ) {
             var scenarioHtml = renderMaterialValue(materials[key], key);
             if (!scenarioHtml) return "";
             scenariosRendered = true;
             markOrderedMaterialRendered("scenarios");
             markOrderedMaterialRendered("scenario");
             return (
-              utilityRenderIconHeading("h4", prettyMaterialHeading(key), "scenarios", "util-material-heading") +
+              utilityRenderIconHeading(
+                "h4",
+                headingOverride || prettyMaterialHeading(key),
+                "scenarios",
+                "util-material-heading"
+              ) +
               utilityTagMaterialBlockHtml(scenarioHtml, key)
             );
           }
           var genericRendered = renderMaterialValue(materials[key], key);
           if (!genericRendered) return "";
-          var genericLabel = prettyMaterialHeading(key);
+          var genericLabel = headingOverride || prettyMaterialHeading(key);
           var genericTitle = utilityMaterialHeadingRedundantWithInner(genericLabel, genericRendered)
             ? ""
             : utilityRenderIconHeading(
@@ -30175,7 +30308,24 @@
               );
           return genericTitle + utilityTagMaterialBlockHtml(genericRendered, key);
         }
-        if (declaredMaterialOrder) {
+        if (rolePrecedenceActive) {
+          var rolePlan =
+            typeof roleRenderMod.buildRolePrecedenceRenderPlan === "function"
+              ? roleRenderMod.buildRolePrecedenceRenderPlan(activityRow, materials)
+              : [];
+          rolePlan.forEach(function (planItem) {
+            var roleHeading = resolveRolePrecedenceHeading(planItem);
+            var roleBlock = renderOrderedMaterialKeyBlock(planItem.key, roleHeading);
+            if (roleBlock) {
+              parts.push(roleBlock);
+              markOrderedMaterialRendered(planItem.key);
+              syncMaterialRenderFlagsForKey(planItem.key);
+              if (typeof roleRenderMod.markRoleAliasGroupRendered === "function") {
+                roleRenderMod.markRoleAliasGroupRendered(markOrderedMaterialRendered, planItem.role_family);
+              }
+            }
+          });
+        } else if (declaredMaterialOrder) {
           var a3SeqMod = resolvePageA3MaterialsSequencingLib();
           declaredMaterialOrder.forEach(function (orderKey) {
             var orderedBlock = renderOrderedMaterialKeyBlock(orderKey);
@@ -30228,7 +30378,11 @@
           }
         }
         var scenarioSingular = materials.scenario;
-        if (!scenariosRendered && !utilityIsEmptyValue(scenarioSingular)) {
+        if (
+          !scenariosRendered &&
+          !shouldSkipKeyForRolePrecedence("scenario") &&
+          !utilityIsEmptyValue(scenarioSingular)
+        ) {
           var scenarioSingularEntries = Array.isArray(scenarioSingular)
             ? scenarioSingular
             : [scenarioSingular];
@@ -30280,6 +30434,7 @@
         if (
           !checklistRendered &&
           !wasOrderedMaterialRendered("checklist") &&
+          !shouldSkipKeyForRolePrecedence("checklist") &&
           !utilityIsEmptyValue(checklistValue)
         ) {
           var checklistHtml = renderMaterialValue(checklistValue, "checklist", { materialHint: "checklist" });
@@ -30305,6 +30460,7 @@
         if (
           !checklistRendered &&
           !wasOrderedMaterialRendered("evaluation_checklist") &&
+          !shouldSkipKeyForRolePrecedence("evaluation_checklist") &&
           !utilityIsEmptyValue(evaluationChecklistValue)
         ) {
           var evaluationChecklistHtml = renderMaterialValue(evaluationChecklistValue, "checklist", { materialHint: "checklist" });
@@ -30322,7 +30478,12 @@
           }
         }
         var templateValue = firstNonEmptyRaw([materials.template, materials.templates, materials.worksheet_template]);
-        if (!utilityIsEmptyValue(templateValue)) {
+        if (
+          !shouldSkipKeyForRolePrecedence("template") &&
+          !wasOrderedMaterialRendered("template") &&
+          !wasOrderedMaterialRendered("independent_judgement_template") &&
+          !utilityIsEmptyValue(templateValue)
+        ) {
           var templateHtml = renderMaterialValue(templateValue, "template", { materialHint: "template" });
           if (templateHtml) {
             parts.push(utilityRenderIconHeading("h4", "Template", "template", "util-material-heading") + templateHtml);
@@ -30392,18 +30553,21 @@
           if (wasOrderedMaterialRendered(k)) {
             return;
           }
-          if (declaredMaterialOrder && checklistRendered && /checklist/i.test(lowerK)) {
+          if (shouldSkipKeyForRolePrecedence(k)) {
+            return;
+          }
+          if ((usesDeclaredMaterialOrdering() || rolePrecedenceActive) && checklistRendered && /checklist/i.test(lowerK)) {
             return;
           }
           if (
-            declaredMaterialOrder &&
+            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
             scenariosRendered &&
-            (lowerK === "scenarios" || lowerK === "scenario" || lowerK === "scenario_maya_households")
+            (lowerK === "scenarios" || lowerK === "scenario" || lowerK === "scenario_maya_households" || lowerK === "scenario_maya_strategy_menu")
           ) {
             return;
           }
           if (
-            declaredMaterialOrder &&
+            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
             orderedWorksheetRendered &&
             /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
               lowerK
@@ -30412,9 +30576,30 @@
             return;
           }
           if (
-            declaredMaterialOrder &&
+            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
             wasOrderedMaterialRendered("worked_analytic_pass") &&
             lowerK === "worked_example"
+          ) {
+            return;
+          }
+          if (
+            rolePrecedenceActive &&
+            wasOrderedMaterialRendered("worked_judgement_weak_strong") &&
+            (lowerK === "modelling_note" || lowerK === "worked_example")
+          ) {
+            return;
+          }
+          if (
+            rolePrecedenceActive &&
+            wasOrderedMaterialRendered("guided_judgement_table") &&
+            lowerK === "decision_table"
+          ) {
+            return;
+          }
+          if (
+            rolePrecedenceActive &&
+            wasOrderedMaterialRendered("transfer_prompt_evaluate") &&
+            lowerK === "transfer_prompt"
           ) {
             return;
           }
@@ -35607,7 +35792,7 @@
               }
               updateRunStepOutputStatus(currentLi);
               showToast(
-                (strictKind === "knowledge_model" ? "Model Knowledge" : "Learning Sequence") +
+                resolveStrictJsonWorkflowStepLabel(strictKind) +
                   " must be exactly one ```json fenced block. " +
                   String(strictCheck.message || strictCheck.errors.join(", ")),
                 "error"
@@ -36132,6 +36317,37 @@
         return { ok: false, errors: ["page-a3-materials-sequencing unavailable"] };
       }
       return mod.validateA3RenderMaterialOrder(html, options);
+    };
+    prismTestApi.validate38PRoleFidelityForTest = function (page, options) {
+      var mod = resolvePageRoleFidelityLib();
+      if (!mod || typeof mod.validate38PRoleFidelity !== "function") {
+        return { ok: false, roleOk: false, errors: ["page-role-fidelity unavailable"], warnings: [], gates: {} };
+      }
+      return mod.validate38PRoleFidelity(page, options);
+    };
+    prismTestApi.computeRoleOkForTest = function (page, options) {
+      var mod = resolvePageRoleFidelityLib();
+      if (!mod || typeof mod.computeRoleOk !== "function") return false;
+      return mod.computeRoleOk(page, options);
+    };
+    prismTestApi.computeProofDimensionsForTest = function (page, options) {
+      var mod = resolvePageRoleFidelityLib();
+      if (!mod || typeof mod.computeProofDimensions !== "function") {
+        return {
+          proofOk: false,
+          roleOk: false,
+          fullOk: false,
+          validation38P: { ok: false, errors: ["page-role-fidelity unavailable"] }
+        };
+      }
+      return mod.computeProofDimensions(page, options);
+    };
+    prismTestApi.measureRoleFidelityForTest = function (page, options) {
+      var mod = resolvePageRoleFidelityLib();
+      if (!mod || typeof mod.measureRoleFidelity !== "function") {
+        return { roleOk: false, validation: { ok: false, errors: ["page-role-fidelity unavailable"] } };
+      }
+      return mod.measureRoleFidelity(page, options);
     };
     prismTestApi.applySprint38VisualAffordancesToComposedPage =
       applySprint38VisualAffordancesToComposedPage;

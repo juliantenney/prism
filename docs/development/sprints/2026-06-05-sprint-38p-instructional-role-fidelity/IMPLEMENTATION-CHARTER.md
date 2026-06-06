@@ -1,7 +1,9 @@
 # Sprint 38-P — Implementation charter (Instructional Role Fidelity)
 
 **Date:** 2026-06-05  
-**Status:** **CHARTERED** — **38P-1 START HERE**  
+**Closed:** 2026-06-06  
+**Status:** **CLOSED — SUCCESS**  
+**Closure:** [38P-7-sprint-closure.md](observations/38P-7-sprint-closure.md)  
 **Predecessor:** [Sprint 38-O](../2026-06-05-sprint-38o-instructional-material-role-preservation/) (**CLOSED** — [38O-5](../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-5-sprint-closure.md) · **SUCCESS**)
 
 ---
@@ -259,7 +261,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | `observations/38P-1-role-authority-architecture.md` |
 | **Depends on** | 38O-4 F1 recommendation |
 | **Permissions** | Design doc only — no production code |
-| **Status** | **NEXT** |
+| **Status** | **Complete** |
 
 ---
 
@@ -271,7 +273,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | Code in registry module; observation doc |
 | **Depends on** | 38P-1 |
 | **Permissions** | Code + tests |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 ---
 
@@ -283,7 +285,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | Code in merge layer; observation doc |
 | **Depends on** | 38P-2 |
 | **Permissions** | Code + tests |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 ---
 
@@ -295,7 +297,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | Code in render/sequencing layer; observation doc |
 | **Depends on** | 38P-2, 38P-3 |
 | **Permissions** | Code + tests |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 ---
 
@@ -307,7 +309,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | Validator module; `tests/page-38p-role-fidelity.test.js`; observation doc |
 | **Depends on** | 38P-2, 38P-3, 38P-4 |
 | **Permissions** | Code + tests |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 ---
 
@@ -319,7 +321,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | `observations/38P-6-proof-run.md` · `artefacts/EV-38P-AFTER-*` |
 | **Depends on** | 38P-5 |
 | **Permissions** | Harness run + artefacts |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 ---
 
@@ -331,7 +333,7 @@ Pre-38P failure cases that must pass post-38P:
 | **Deliverable** | `observations/38P-7-sprint-closure.md` |
 | **Depends on** | 38P-6 |
 | **Permissions** | Docs only |
-| **Status** | Not started |
+| **Status** | **Complete** |
 
 **Dependency chain:**
 
@@ -375,8 +377,21 @@ Pre-38P failure cases that must pass post-38P:
 ## Programme lineage
 
 ```text
-38M — Body fidelity (merge contract, proofOk)
-38N — Body-fidelity hardening (markers, render order, schema)
-38O — Role-fidelity discovery (taxonomy, failure modes, F1 recommendation)
-38P — Role-fidelity implementation (registry, supersession, roleOk)  ← THIS SPRINT
+38M — Body fidelity (merge contract, proofOk)                    CLOSED SUCCESS
+38N — Body-fidelity hardening (markers, render order, schema)  CLOSED SUCCESS
+38O — Role-fidelity discovery (taxonomy, failure modes, F1)    CLOSED SUCCESS
+38P — Role-fidelity implementation (registry, supersession, roleOk)  CLOSED SUCCESS
+Next — Instructional episode depth / 38I alignment (recommended)
 ```
+
+---
+
+## Sprint closure (38P-7)
+
+| Field | Value |
+|-------|-------|
+| **Verdict** | **CLOSED — SUCCESS** |
+| **Proof run** | EV-38P-AFTER — `proofOk: true`, `roleOk: true`, `fullOk: true` |
+| **Regression** | 58/58 pass |
+| **Closure doc** | [observations/38P-7-sprint-closure.md](observations/38P-7-sprint-closure.md) |
+| **Next recommended** | Instructional episode depth (DLA/GAM); 38I-4 alignment — not fidelity preservation |

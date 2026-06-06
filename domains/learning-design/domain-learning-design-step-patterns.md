@@ -2514,14 +2514,18 @@ learning_outcomes
   "configurationMode": "simple",
   "askForCustomSchema": false,
   "defaultPromptStrategy": "default_template",
-  "promptTemplate": "You are designing learning outcomes from a structured knowledge model.\n\nTask:\nGenerate clear, observable, and assessable learning outcomes derived from the provided knowledge model.\n\nInstructions:\n- Use measurable language and avoid vague verbs such as \"understand\", \"know\", or \"appreciate\"\n- Ensure each outcome aligns with concepts in the knowledge model\n- Set cognitive demand in line with the specified learner level, scope, and cognitive emphasis\n- Produce balanced coverage without redundancy\n- Keep all outcomes grounded in the knowledge model and source content\n- Keep wording precise so outcomes can be reused directly for assessment and activity design\n- Outcomes must be realistically achievable within the stated time and structure\n- Avoid attempting to cover all concepts in short designs\n- Prefer tightly focused, demonstrable outcomes\n\nScope-aware outcome guidance:\n- If the design is a short session (<= 30 minutes) or explicitly single_activity: generate 2-4 outcomes maximum, focus on depth over coverage, and select only the most essential and achievable goals\n- If the design is a standard session (30-120 minutes): generate 3-6 outcomes with moderate breadth and progression\n- If the design is extended (multi-session, module, or longer duration): generate a broader set of outcomes reflecting wider coverage\n\nConstraints:\n- Learner level: {{option:learnerLevel}}\n- Number of outcomes: {{option:numberOfOutcomes}}\n- Cognitive emphasis: {{option:cognitiveEmphasis}}\n- Scope: {{option:scope}}\n- Step notes: {{stepNotes}}\n\nOutput requirements:\n- Return the learning outcomes as {{preferredOutputFormat}}\n- Include context for learner level and scope\n- For each outcome include statement, related concepts, cognitive level, and notes where needed\n\nReturn only the JSON.",
+  "structureStyle": "schema_structured",
+  "promptTemplate": "You are designing learning outcomes from a structured knowledge model.\n\nTask:\nGenerate clear, observable, and assessable learning outcomes derived from the provided knowledge model.\n\nInstructions:\n- Use measurable language and avoid vague verbs such as \"understand\", \"know\", or \"appreciate\"\n- Ensure each outcome aligns with concepts in the knowledge model\n- Set cognitive demand in line with the specified learner level, scope, and cognitive emphasis\n- Produce balanced coverage without redundancy\n- Keep all outcomes grounded in the knowledge model and source content\n- Keep wording precise so outcomes can be reused directly for assessment and activity design\n- Outcomes must be realistically achievable within the stated time and structure\n- Avoid attempting to cover all concepts in short designs\n- Prefer tightly focused, demonstrable outcomes\n\nScope-aware outcome guidance:\n- If the design is a short session (<= 30 minutes) or explicitly single_activity: generate 2-4 outcomes maximum, focus on depth over coverage, and select only the most essential and achievable goals\n- If the design is a standard session (30-120 minutes): generate 3-6 outcomes with moderate breadth and progression\n- If the design is extended (multi-session, module, or longer duration): generate a broader set of outcomes reflecting wider coverage\n\nConstraints:\n- Learner level: {{option:learnerLevel}}\n- Number of outcomes: {{option:numberOfOutcomes}}\n- Cognitive emphasis: {{option:cognitiveEmphasis}}\n- Scope: {{option:scope}}\n- Step notes: {{stepNotes}}\n\nOutput requirements (strict — fenced JSON block only):\n- Return exactly one markdown fenced JSON block opened with \u0060\u0060\u0060json and closed with \u0060\u0060\u0060\n- The fenced block body must be the learning_outcomes root object as valid JSON\n- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block\n- Do NOT return raw JSON without the \u0060\u0060\u0060json fence (unfenced JSON text is invalid)\n- Do NOT include JSON comments (no // or block comments)\n- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)\n- JSON top-level keys: learning_outcomes (required array), plus optional learner_level, scope, alignment_notes\n- Each learning_outcomes entry must include statement, related_concepts, cognitive_level, and notes where needed\n- Return only the single fenced block.",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Generate observable and assessable outcomes aligned with the knowledge model, suitable for downstream assessment and activity design.",
+  "defaultPromptNotes": "Return exactly one \u0060\u0060\u0060json fenced block containing the learning_outcomes object. No prose before or after the block. Generate observable and assessable outcomes aligned with the knowledge model, suitable for downstream assessment and activity design.",
   "runnerInstructions": {
     "what_this_step_does": "This step defines measurable learning outcomes aligned to the modelled knowledge."
   },
   "defaultOutputStructure": {
-    "keys": ["outcomes", "alignment_notes"]
+    "keys": [
+      "learning_outcomes",
+      "alignment_notes"
+    ]
   },
   "userOptions": [
     {
@@ -2530,11 +2534,31 @@ learning_outcomes
       "type": "select",
       "default": "general_adult",
       "choices": [
-        { "value": "school", "label": "School", "promptInstruction": "Write outcomes suitable for school-level learners." },
-        { "value": "undergraduate", "label": "Undergraduate", "promptInstruction": "Write outcomes suitable for undergraduate learners." },
-        { "value": "postgraduate", "label": "Postgraduate", "promptInstruction": "Write outcomes suitable for postgraduate learners." },
-        { "value": "professional", "label": "Professional", "promptInstruction": "Write outcomes suitable for professional learners." },
-        { "value": "general_adult", "label": "General adult", "promptInstruction": "Write outcomes suitable for a general adult audience." }
+        {
+          "value": "school",
+          "label": "School",
+          "promptInstruction": "Write outcomes suitable for school-level learners."
+        },
+        {
+          "value": "undergraduate",
+          "label": "Undergraduate",
+          "promptInstruction": "Write outcomes suitable for undergraduate learners."
+        },
+        {
+          "value": "postgraduate",
+          "label": "Postgraduate",
+          "promptInstruction": "Write outcomes suitable for postgraduate learners."
+        },
+        {
+          "value": "professional",
+          "label": "Professional",
+          "promptInstruction": "Write outcomes suitable for professional learners."
+        },
+        {
+          "value": "general_adult",
+          "label": "General adult",
+          "promptInstruction": "Write outcomes suitable for a general adult audience."
+        }
       ]
     },
     {
@@ -2552,10 +2576,26 @@ learning_outcomes
       "type": "select",
       "default": "mixed",
       "choices": [
-        { "value": "mixed", "label": "Mixed", "promptInstruction": "Use a mixed cognitive emphasis across outcomes." },
-        { "value": "foundational", "label": "Foundational understanding", "promptInstruction": "Emphasize foundational understanding in the outcomes." },
-        { "value": "application", "label": "Application and transfer", "promptInstruction": "Emphasize application and transfer in the outcomes." },
-        { "value": "analysis", "label": "Analysis and evaluation", "promptInstruction": "Emphasize analysis and evaluation in the outcomes." }
+        {
+          "value": "mixed",
+          "label": "Mixed",
+          "promptInstruction": "Use a mixed cognitive emphasis across outcomes."
+        },
+        {
+          "value": "foundational",
+          "label": "Foundational understanding",
+          "promptInstruction": "Emphasize foundational understanding in the outcomes."
+        },
+        {
+          "value": "application",
+          "label": "Application and transfer",
+          "promptInstruction": "Emphasize application and transfer in the outcomes."
+        },
+        {
+          "value": "analysis",
+          "label": "Analysis and evaluation",
+          "promptInstruction": "Emphasize analysis and evaluation in the outcomes."
+        }
       ]
     },
     {
@@ -2564,13 +2604,27 @@ learning_outcomes
       "type": "select",
       "default": "module",
       "choices": [
-        { "value": "lesson", "label": "Lesson", "promptInstruction": "Keep outcome scope appropriate for a lesson." },
-        { "value": "module", "label": "Module", "promptInstruction": "Keep outcome scope appropriate for a module." },
-        { "value": "course", "label": "Course", "promptInstruction": "Keep outcome scope appropriate for a course." }
+        {
+          "value": "lesson",
+          "label": "Lesson",
+          "promptInstruction": "Keep outcome scope appropriate for a lesson."
+        },
+        {
+          "value": "module",
+          "label": "Module",
+          "promptInstruction": "Keep outcome scope appropriate for a module."
+        },
+        {
+          "value": "course",
+          "label": "Course",
+          "promptInstruction": "Keep outcome scope appropriate for a course."
+        }
       ]
     }
-  ]
+  ],
+  "structureStyle": "schema_structured"
 }
+
 ```
 
 ---

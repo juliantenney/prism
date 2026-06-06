@@ -1,0 +1,675 @@
+{
+  "capturedAt": "2026-06-06T11:24:28.876Z",
+  "sprint": "38-P",
+  "runId": "EV-38P-AFTER",
+  "phase": "38P-6",
+  "harnessVersion": "38P-6",
+  "sourceRun": "EV-38M-AFTER",
+  "replayMode": "artefact-replay-merge-render-dual-validation",
+  "proofOk": true,
+  "roleOk": true,
+  "fullOk": true,
+  "validation38M": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "validation38LRegression": {
+    "ok": true,
+    "errors": []
+  },
+  "validation38P": {
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "A4:RF4:superseded scenario carries full marker set — audit only",
+      "A4:RF4:superseded modelling_note carries full marker set — audit only",
+      "A4:RF4:superseded decision_table carries full marker set — audit only",
+      "A4:RF4:superseded transfer_prompt carries full marker set — audit only",
+      "A4:RF4:superseded worked_example carries full marker set — audit only",
+      "A4:RF4:superseded scenarios carries full marker set — audit only"
+    ],
+    "passed": [
+      "RF1_role_uniqueness",
+      "RF2_no_weak_first_render",
+      "RF3_stable_role_identity",
+      "RF4_pedagogical_function",
+      "RF5_no_role_inversion",
+      "RF6_episode_sequence",
+      "RF7_body_role_coherence",
+      "RF8_compose_transparency"
+    ],
+    "failed": []
+  },
+  "rfGates": [
+    {
+      "gate": "RF1_role_uniqueness",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF2_no_weak_first_render",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF3_stable_role_identity",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF4_pedagogical_function",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "A4:RF4:superseded scenario carries full marker set — audit only",
+        "A4:RF4:superseded modelling_note carries full marker set — audit only",
+        "A4:RF4:superseded decision_table carries full marker set — audit only",
+        "A4:RF4:superseded transfer_prompt carries full marker set — audit only",
+        "A4:RF4:superseded worked_example carries full marker set — audit only",
+        "A4:RF4:superseded scenarios carries full marker set — audit only"
+      ]
+    },
+    {
+      "gate": "RF5_no_role_inversion",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF6_episode_sequence",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF7_body_role_coherence",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF8_compose_transparency",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "a3Sequencing": {
+    "pageJson": {
+      "ok": true,
+      "errors": []
+    },
+    "render": {
+      "ok": true,
+      "errors": [],
+      "positions": [
+        {
+          "key": "worked_analytic_pass",
+          "pos": 2726
+        },
+        {
+          "key": "analysis_table",
+          "pos": 4597
+        },
+        {
+          "key": "scenario_maya_households",
+          "pos": 5553
+        },
+        {
+          "key": "checklist",
+          "pos": 6530
+        }
+      ]
+    }
+  },
+  "a4RoleSequencing": {
+    "renderHtmlLength": 18691,
+    "headingsSample": [
+      "<h4 class=\"util-card-subheading\">Evaluate Household Inflation Strategies</h4>",
+      "<h4>Decision</h4>",
+      "<h4>Rationale</h4>",
+      "<h4>Decision</h4>",
+      "<h4>Rationale</h4>",
+      "<h4>Decision</h4>",
+      "<h4>Rationale</h4>",
+      "<h4>Decision</h4>",
+      "<h4>Rationale</h4>",
+      "<h4>Hide Answers</h4>",
+      "<h4>Hide Classification Keys</h4>",
+      "<h4>Hide Model Solution</h4>"
+    ]
+  },
+  "proofDimensions38M38N": {
+    "bodyFidelity38M": true,
+    "a3Sequencing38N": true,
+    "antiSynopsis": true,
+    "antiTableShell": true,
+    "renderOrderA3": true
+  },
+  "fidelityMetricsSummary": [
+    {
+      "activity_id": "A1",
+      "material_id": "M1",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M2",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M3",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M4",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M5",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M6",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M7",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M8",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+      "ratio": 100,
+      "markersMissing": [
+        "Stepwise Analysis"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M10_Analysis_Table_Household_Comparison",
+      "ratio": 100,
+      "markersMissing": [
+        "Learner Entry"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M9_Scenario_Maya_Households",
+      "ratio": 100,
+      "markersMissing": [
+        "Fixed-Income Household"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M12",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M9_Scenario_Maya_Households",
+      "ratio": 100,
+      "markersMissing": [
+        "Fixed-Income Household"
+      ],
+      "substantive": false
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M14",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M14_Worked_Judgement_Weak_Strong",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M15_Guided_Judgement_Table",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M16_Independent_Judgement_Template",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M18",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M18_Transfer_Prompt_Evaluate",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M19_Consolidation_Summary",
+      "ratio": 100,
+      "markersMissing": [],
+      "substantive": true
+    }
+  ],
+  "aggregateGamToPageRatio": [
+    {
+      "activity_id": "A1",
+      "material_count": 4,
+      "aggregate_ratio_pct": 100
+    },
+    {
+      "activity_id": "A2",
+      "material_count": 4,
+      "aggregate_ratio_pct": 100
+    },
+    {
+      "activity_id": "A3",
+      "material_count": 4,
+      "aggregate_ratio_pct": 100
+    },
+    {
+      "activity_id": "A4",
+      "material_count": 8,
+      "aggregate_ratio_pct": 100
+    }
+  ],
+  "roleCoverage": {
+    "activities": [
+      {
+        "activity_id": "A1",
+        "index": 0,
+        "archetype": "understand",
+        "role_families": [
+          "explanatory_guidance",
+          "worked_example",
+          "model_answer",
+          "verification_checklist"
+        ],
+        "canonical": [
+          {
+            "key": "worked_example",
+            "role_family": "worked_example"
+          },
+          {
+            "key": "sample_output",
+            "role_family": "model_answer"
+          },
+          {
+            "key": "concept_exposition",
+            "role_family": "explanatory_guidance"
+          },
+          {
+            "key": "checklist_evaluate",
+            "role_family": "verification_checklist"
+          }
+        ],
+        "superseded": [
+          {
+            "key": "concept_text",
+            "role_family": "explanatory_guidance",
+            "superseded_by": "concept_exposition"
+          },
+          {
+            "key": "verification_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "evaluation_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          }
+        ],
+        "unresolved": [],
+        "expected_sequence": [
+          "learner_task",
+          "reasoning_orientation",
+          "explanatory_guidance",
+          "worked_example",
+          "model_answer",
+          "sample_output",
+          "scenario",
+          "scaffold_hint",
+          "verification_checklist"
+        ]
+      },
+      {
+        "activity_id": "A2",
+        "index": 1,
+        "archetype": "apply",
+        "role_families": [
+          "worked_example",
+          "model_calculation",
+          "practice_table",
+          "verification_checklist"
+        ],
+        "canonical": [
+          {
+            "key": "worked_example",
+            "role_family": "worked_example"
+          },
+          {
+            "key": "sample_output",
+            "role_family": "model_calculation"
+          },
+          {
+            "key": "classification_table",
+            "role_family": "practice_table"
+          },
+          {
+            "key": "checklist_evaluate",
+            "role_family": "verification_checklist"
+          }
+        ],
+        "superseded": [
+          {
+            "key": "practice_table",
+            "role_family": "practice_table",
+            "superseded_by": "classification_table"
+          },
+          {
+            "key": "verification_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "evaluation_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "worksheet",
+            "role_family": "practice_table",
+            "superseded_by": "classification_table"
+          }
+        ],
+        "unresolved": [],
+        "expected_sequence": [
+          "learner_task",
+          "reasoning_orientation",
+          "model_calculation",
+          "sample_output",
+          "worked_calculation",
+          "scenario",
+          "practice_table",
+          "scaffold_hint",
+          "verification_checklist"
+        ]
+      },
+      {
+        "activity_id": "A3",
+        "index": 2,
+        "archetype": "analyse",
+        "role_families": [
+          "worked_analytic_pass",
+          "practice_table",
+          "scenario",
+          "verification_checklist"
+        ],
+        "canonical": [
+          {
+            "key": "worked_analytic_pass",
+            "role_family": "worked_analytic_pass"
+          },
+          {
+            "key": "analysis_table",
+            "role_family": "practice_table"
+          },
+          {
+            "key": "scenario_maya_households",
+            "role_family": "scenario"
+          },
+          {
+            "key": "checklist_evaluate",
+            "role_family": "verification_checklist"
+          }
+        ],
+        "superseded": [
+          {
+            "key": "checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "worked_example",
+            "role_family": "worked_analytic_pass",
+            "superseded_by": "worked_analytic_pass"
+          },
+          {
+            "key": "scenario",
+            "role_family": "scenario",
+            "superseded_by": "scenario_maya_households"
+          },
+          {
+            "key": "verification_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "evaluation_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "scenarios",
+            "role_family": "scenario",
+            "superseded_by": "scenario_maya_households"
+          }
+        ],
+        "unresolved": [],
+        "expected_sequence": [
+          "learner_task",
+          "reasoning_orientation",
+          "worked_analytic_pass",
+          "practice_table",
+          "scenario",
+          "scaffold_hint",
+          "verification_checklist"
+        ]
+      },
+      {
+        "activity_id": "A4",
+        "index": 3,
+        "archetype": "evaluate",
+        "role_families": [
+          "scenario",
+          "explanatory_guidance",
+          "worked_judgement_support",
+          "guided_judgement_table",
+          "independent_template",
+          "verification_checklist",
+          "transfer_prompt",
+          "consolidation_summary"
+        ],
+        "canonical": [
+          {
+            "key": "independent_judgement_template",
+            "role_family": "independent_template"
+          },
+          {
+            "key": "consolidation_summary",
+            "role_family": "consolidation_summary"
+          },
+          {
+            "key": "scenario_maya_households",
+            "role_family": "scenario"
+          },
+          {
+            "key": "worked_judgement_weak_strong",
+            "role_family": "worked_judgement_support"
+          },
+          {
+            "key": "guided_judgement_table",
+            "role_family": "guided_judgement_table"
+          },
+          {
+            "key": "checklist_evaluate",
+            "role_family": "verification_checklist"
+          },
+          {
+            "key": "transfer_prompt_evaluate",
+            "role_family": "transfer_prompt"
+          },
+          {
+            "key": "criteria_exposition_evaluate",
+            "role_family": "explanatory_guidance"
+          }
+        ],
+        "superseded": [
+          {
+            "key": "scenario",
+            "role_family": "scenario",
+            "superseded_by": "scenario_maya_households"
+          },
+          {
+            "key": "criteria_text",
+            "role_family": "explanatory_guidance",
+            "superseded_by": "criteria_exposition_evaluate"
+          },
+          {
+            "key": "modelling_note",
+            "role_family": "worked_judgement_support",
+            "superseded_by": "worked_judgement_weak_strong"
+          },
+          {
+            "key": "decision_table",
+            "role_family": "guided_judgement_table",
+            "superseded_by": "guided_judgement_table"
+          },
+          {
+            "key": "verification_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "transfer_prompt",
+            "role_family": "transfer_prompt",
+            "superseded_by": "transfer_prompt_evaluate"
+          },
+          {
+            "key": "concept_exposition",
+            "role_family": "explanatory_guidance",
+            "superseded_by": "criteria_exposition_evaluate"
+          },
+          {
+            "key": "checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "evaluation_checklist",
+            "role_family": "verification_checklist",
+            "superseded_by": "checklist_evaluate"
+          },
+          {
+            "key": "worked_example",
+            "role_family": "worked_judgement_support",
+            "superseded_by": "worked_judgement_weak_strong"
+          },
+          {
+            "key": "scenarios",
+            "role_family": "scenario",
+            "superseded_by": "scenario_maya_households"
+          },
+          {
+            "key": "template",
+            "role_family": "independent_template",
+            "superseded_by": "independent_judgement_template"
+          }
+        ],
+        "unresolved": [],
+        "expected_sequence": [
+          "learner_task",
+          "reasoning_orientation",
+          "scenario",
+          "explanatory_guidance",
+          "worked_judgement_support",
+          "guided_judgement_table",
+          "independent_template",
+          "scaffold_hint",
+          "verification_checklist",
+          "self_explanation_prompt",
+          "consolidation_summary",
+          "transfer_prompt"
+        ]
+      }
+    ],
+    "totals": {
+      "role_families": 20,
+      "canonical": 20,
+      "superseded": 27,
+      "unresolved": 0
+    }
+  },
+  "roleSupersession": null,
+  "baselineComparison": {
+    "source38N": "EV-38N-AFTER",
+    "proofOkUnchanged": true,
+    "prior38NProofOk": true,
+    "prior38NRoleOk": null
+  },
+  "comparators": [
+    "EV-38M-AFTER",
+    "EV-38N-AFTER",
+    "38I-4-A4-episode"
+  ]
+}

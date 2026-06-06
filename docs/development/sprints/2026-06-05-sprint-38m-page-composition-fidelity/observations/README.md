@@ -18,3 +18,5 @@
 **Baselines (frozen):** `../../2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/EV-38L-AFTER-*` · `EV-38J-AFTER-*`
 
 **Proof artefacts (this sprint):** `../artefacts/EV-38M-AFTER-*` · `../artefacts/EV-38M-vs-38L-comparison.json`
+
+**Successor:** [Sprint 38-N — Page Fidelity Hardening](../../2026-06-05-sprint-38n-page-fidelity-hardening/) (**CLOSED** — [38N-5](../../2026-06-05-sprint-38n-page-fidelity-hardening/observations/38N-5-sprint-closure.md)) · [Sprint 38-O — Instructional Material Role Preservation](../../2026-06-05-sprint-38o-instructional-material-role-preservation/) (**CHARTERED** — [38O-1](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-1-baseline-role-survival-trace.md) complete, 38O-2 next)

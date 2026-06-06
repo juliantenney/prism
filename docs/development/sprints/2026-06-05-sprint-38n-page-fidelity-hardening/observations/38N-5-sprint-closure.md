@@ -278,3 +278,5 @@ Manual inflation testing after 38N completion identified a possible **instructio
 | **Success shape** | Role-level fidelity matrix; identified loss stage(s); preservation model if gap confirmed |
 
 Charter and scope to be defined when 38-O is initiated. **38-N is closed.**
+
+**Update (2026-06-05):** [Sprint 38-O — Instructional Material Role Preservation](../../2026-06-05-sprint-38o-instructional-material-role-preservation/) is **CHARTERED**. [38O-1 baseline role-survival trace](../../2026-06-05-sprint-38o-instructional-material-role-preservation/observations/38O-1-baseline-role-survival-trace.md) **complete** — 38O-2 next.

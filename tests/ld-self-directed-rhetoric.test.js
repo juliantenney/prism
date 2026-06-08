@@ -17,8 +17,8 @@ test("LD-SELF-DIRECTED-RHETORIC: core block preserves behavioural anchors", () =
   assert.match(text, /Check your thinking:/i);
   assert.match(text, /step → meaning/i);
   assert.match(text, /coherent intellectual journey/i);
-  assert.match(text, /intellectual_coherence_bridge on every activity after the first/i);
-  assert.match(text, /Bad bridge shape: Building on the previous activity/i);
+  assert.match(text, /OUTPUT CONTRACT on Design Learning Activities/i);
+  assert.match(text, /GAM-PRES-08 transfer\/closure minima/i);
   assert.match(text, /interpretive ambiguity/i);
   assert.match(text, /do not repeat the overview tension verbatim/i);
   assert.match(text, /what should now be clearer/i);

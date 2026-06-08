@@ -1,0 +1,98 @@
+
+===== GAM-PRES-10 (first 1200 chars) =====
+
+GAM-PRES-10 EVALUATE COMPLETION TERMINATION (38L-4 R5): When DLA lists Evaluate closure trio (template|task_cards independent judgement + checklist verification + transfer_prompt) — all three MUST be realised as separate Materials with full GAM-PRES-08 bodies; guided judgement table alone is insufficient for Evaluate activity completion; consolidation_summary must NOT substitute any trio member; EV-GAM-FAIL-07 guided-only Evaluate (guided table present but independent memo scaffold OR verification checklist OR transfer_prompt missing or absorbed) = contract FAIL
+
+Usability requirements:
+- Materials must be complete enough to use without major rewriting
+- Materials must be clearly labelled and easy to read
+- Use learner-facing wording unless the brief is facilitated
+- Do not return plans about materials; return the materials themselves
+- Outputs must not include phrases like "should include", "describe", or "specification". These indicate incomplete material generation.
+- If some details are unspecified, make only the assumptions necessary to produce a complete and usable output
+
+Self-study workbook genre contract (GAM-WB — apply when delivery_context is self_directed AND upstream l
+
+===== GAM-WB-11 (first 1200 chars) =====
+
+GAM-WB-11 template: learner blanks; GAM-WB-12 sample_output: annotated exemplar; GAM-WB-13 checklist; GAM-WB-14 rubric; GAM-WB-15 misconception_note when requested; GAM-WB-16 tables as companion/support only; GAM-WB-17 task_cards; GAM-WB-18 prompt_set; GAM-WB-19 reflection_prompt optional with consolidation
+- GAM-WB-MIX-01: tables alone insufficient — fail contract if only *_table Material types session-wide
+- GAM-WB-MIX-02: ≥2 distinct type families when any table used
+- GAM-WB-MIX-03: consolidation ≠ table-only closure; prompt_set-only capstone closure = FAIL (must add consolidation_summary Material)
+- GAM-WB-MIX-04: worked example must include worked content, not blank template only; template-only capstone or ranking table = FAIL for worked-example obligation
+- GAM-WB-MIX-05: retrieval must include learner-check (cards/checklist/prompt_set), not reflection-only
+- GAM-WB-MIX-06: capstone material weight ≤ mid-session practice activity (no inverse fade / four-table capstone dump)
+- GAM-WB-38E-9 contract FAIL (explicit): (F1) delivery_notes.consolidation_requirement true but no Material: consolidation_summary with ≥80 words addressing ≥3 key-idea angles per GAM-WB-06 (scaffold prom
+
+===== Usability requirements (first 1200 chars) =====
+
+Usability requirements:
+- Materials must be complete enough to use without major rewriting
+- Materials must be clearly labelled and easy to read
+- Use learner-facing wording unless the brief is facilitated
+- Do not return plans about materials; return the materials themselves
+- Outputs must not include phrases like "should include", "describe", or "specification". These indicate incomplete material generation.
+- If some details are unspecified, make only the assumptions necessary to produce a complete and usable output
+
+Self-study workbook genre contract (GAM-WB — apply when delivery_context is self_directed AND upstream learning_activities or delivery_notes indicate a self-study workbook, e.g. delivery_notes.workbook_contract_applied, resource_intent self_study_workbook, or multi-activity learner workbook arc). GAM-WB function enforcement (38E-9): realise every DLA worked_example, sample_output, modelling_note, and consolidation_summary row as labelled Material bodies — delivery_notes.consolidation_requirement alone still requires Material: consolidation_summary. Realise DLA required_materials only — do not redesign activities. Obey LD-MATERIALS-COPY and LD-TABLE-FIDELITY — do not
+
+===== Anti-pattern (first 1200 chars) =====
+
+Anti-patterns (workbook FAIL): AP-01 table-only workbook; AP-02 reference-dump capstone; AP-03 pre-filled judgement ratings; AP-04 scenario named in task but no scenario Material body; AP-05 spoiler consolidation_summary — completed session essay or model answer when learner_task requires learner-written closure (38H-2 / GAM-WB-06b); plus GAM-WB-38E-9 F1–F9 above
+
+Scope boundaries:
+- Generate activity materials (and session-level materials only when clearly required by the brief/context)
+- Do not perform final platform/export packaging in this step
+
+Output organisation:
+- Organise content with clear sections using this exact structure for every generated material:
+
+Activity: <activity title>
+Activity ID: <activity_id>
+Mapped outcomes: <comma-separated outcomes>
+
+Material: <material_id> (<type>)
+Purpose: <instructional purpose>
+Content:
+<full usable material content>
+
+Material type labelling (38E-9): use exact DLA types in the Material line — e.g. Material: M2 (worked_example), Material: M3 (sample_output), Material: M4 (modelling_note), Material: M10 (consolidation_summary) — do not relabel consolidation_summary as prompt_set or worked genres as template
+
+When delivery_context is s
+
+===== AP-01 (first 1200 chars) =====
+
+AP-01 / GAM-WB-MIX-01): session MUST include ≥1 non-table Material type (scenario, text, task_cards, prompt_set, checklist, template, sample_output, worked_example, consolidation_summary, transfer_prompt, rubric, etc.)
+- GAM-WB-01 exposition: when DLA lists text/exposition — ≥120 words linking ≥2 ideas outside table cells
+- GAM-WB-02 (38E-9 mandatory): when DLA required_materials lists type worked_example, sample_output, and/or modelling_note — emit Material: <material_id> (<exact type>) with full Content for each; worked_example = expert steps + reasoning + visible answer; sample_output = concrete expected learner product; modelling_note = expert decision process; blank template, ranking table, or capstone scaffold does NOT satisfy GAM-WB-02; missing Material body when DLA requested = contract FAIL
+- GAM-WB-03 modelling: modelling_note or reasoning_walkthrough when DLA specifies modelling without sample_output — same body rules as GAM-WB-02 modelling_note
+- GAM-WB-04 guided practice: every practice material supports learner_task with usable bodies, not reference-only table dumps
+- GAM-WB-05 retrieval: task_cards, prompt_set, and/or checklist on ≥2 activities with learner-check wor
+
+===== AP-05 (first 1200 chars) =====
+
+AP-05 spoiler consolidation_summary — completed session essay or model answer when learner_task requires learner-written closure (38H-2 / GAM-WB-06b); plus GAM-WB-38E-9 F1–F9 above
+
+Scope boundaries:
+- Generate activity materials (and session-level materials only when clearly required by the brief/context)
+- Do not perform final platform/export packaging in this step
+
+Output organisation:
+- Organise content with clear sections using this exact structure for every generated material:
+
+Activity: <activity title>
+Activity ID: <activity_id>
+Mapped outcomes: <comma-separated outcomes>
+
+Material: <material_id> (<type>)
+Purpose: <instructional purpose>
+Content:
+<full usable material content>
+
+Material type labelling (38E-9): use exact DLA types in the Material line — e.g. Material: M2 (worked_example), Material: M3 (sample_output), Material: M4 (modelling_note), Material: M10 (consolidation_summary) — do not relabel consolidation_summary as prompt_set or worked genres as template
+
+When delivery_context is self_directed: omit Facilitator use (LD-SELF-DIRECTED-RHETORIC). When facilitated: after Content add Facilitator use: <facilitation note>
+
+---
+
+- Repeat for all required materials across

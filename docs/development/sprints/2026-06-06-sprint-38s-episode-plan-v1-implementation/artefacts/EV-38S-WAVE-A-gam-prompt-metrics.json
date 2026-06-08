@@ -1,0 +1,29 @@
+{
+  "phase": "38S-WAVE-A",
+  "timestamp": "2026-06-08T16:33:20.566Z",
+  "promptTemplateBefore": 20274,
+  "notesBefore": 1810,
+  "packCombinedBefore": 22084,
+  "promptTemplateAfter": 15241,
+  "notesAfter": 471,
+  "packCombinedAfter": 15712,
+  "promptTemplateDelta": 5033,
+  "notesDelta": 1339,
+  "packCombinedDelta": 6372,
+  "promptTemplateReductionPct": 25.6,
+  "packCombinedReductionPct": 29.5,
+  "checks": {
+    "hasGamPres07": true,
+    "hasGamPres08": true,
+    "hasGamPres09": true,
+    "hasGamPres10": true,
+    "hasGamWb11Line": false,
+    "hasGamWb38e9Long": false,
+    "hasMinimalAssumptions": false,
+    "hasBriefPurpose": false,
+    "hasF1F9": true,
+    "hasMix03": true,
+    "outputOrgCount": 1,
+    "scopeCount": 1
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "phase": "38S-2B",
+  "timestamp": "2026-06-08T12:31:14.779Z",
+  "promptTemplateBefore": 26544,
+  "notesBefore": 1810,
+  "packCombinedBefore": 28354,
+  "materialTypeRemoved": 4005,
+  "gamWb2231Removed": 2428,
+  "outputOrgDuplicatesRemoved": 0,
+  "outputOrgCharsRemoved": 0,
+  "promptTemplateAfter": 20109,
+  "notesAfter": 1810,
+  "packCombinedAfter": 21919,
+  "promptTemplateDelta": 6435,
+  "packCombinedDelta": 6435,
+  "promptTemplateReductionPct": 24.2,
+  "checks": {
+    "hasMaterialTypeStandalone": false,
+    "hasGamWb22": false,
+    "hasGamWb31": false,
+    "hasGamPres00": true,
+    "hasGamPres10": true,
+    "hasOutputOrg": true,
+    "hasScope": true,
+    "outputOrgCount": 1,
+    "scopeCount": 1
+  }
+}

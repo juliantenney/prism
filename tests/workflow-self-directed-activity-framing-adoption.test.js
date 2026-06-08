@@ -136,8 +136,8 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
   assert.match(prompt, /limit of transfer/i);
   assert.match(prompt, /what should now be clearer/i);
   assert.match(prompt, /Explicitly avoid:.*reflect on your learning/i);
-  assert.match(prompt, /intellectual_coherence_bridge on every activity after the first/i);
-  assert.match(prompt, /Bad bridge shape.*Building on the previous activity/i);
+  assert.match(prompt, /intellectual_coherence_bridge: on each activity after the first/i);
+  assert.match(prompt, /OUTPUT CONTRACT on Design Learning Activities/i);
   assert.match(prompt, /interpretive ambiguity/i);
   assert.match(prompt, /do not repeat the overview tension verbatim/i);
   assert.doesNotMatch(prompt, /reflect on uncertainties you encountered/i);

@@ -1,5 +1,5 @@
 /**
- * Model Knowledge (pack §3) — strict fenced JSON output contract regression guard.
+ * Model Knowledge (pack ?3) ��� strict fenced JSON output contract regression guard.
  */
 
 const test = require("node:test");
@@ -41,7 +41,7 @@ const { buildKmHarnessOutputContract } = require(path.join(
   "ev-harness-artefact-parse.js"
 ));
 
-test("pack §3 KM: requires exactly one fenced json block", () => {
+test("pack ?3 KM: requires exactly one fenced json block", () => {
   const t = km.promptTemplate;
   assert.match(t, /fenced JSON block only/i);
   assert.match(t, /exactly one markdown fenced JSON block/i);
@@ -50,20 +50,20 @@ test("pack §3 KM: requires exactly one fenced json block", () => {
   assert.equal(km.preferredOutputFormat, "json");
 });
 
-test("pack §3 KM: rejects raw JSON without fence", () => {
+test("pack ?3 KM: rejects raw JSON without fence", () => {
   const t = km.promptTemplate;
   assert.match(t, /Do NOT return raw JSON without the ```json fence/i);
   assert.match(t, /Do NOT include any prose/i);
 });
 
-test("pack §3 KM: forbids STEP footer and JSON comments", () => {
+test("pack ?3 KM: forbids STEP footer and JSON comments", () => {
   const t = km.promptTemplate;
   assert.match(t, /Do NOT prefix or suffix workflow metadata/i);
   assert.match(t, /no STEP N OUTPUT/i);
   assert.match(t, /Do NOT include JSON comments/i);
 });
 
-test("pack §3 KM: preserves required top-level structure keys", () => {
+test("pack ?3 KM: preserves required top-level structure keys", () => {
   const t = km.promptTemplate;
   for (const key of [
     "concepts",
@@ -83,12 +83,12 @@ test("pack §3 KM: preserves required top-level structure keys", () => {
   ]);
 });
 
-test("pack §3 KM: defaultPromptNotes reinforce fenced JSON block", () => {
+test("pack ?3 KM: defaultPromptNotes reinforce fenced JSON block", () => {
   assert.match(km.defaultPromptNotes, /```json fenced block/i);
   assert.match(km.defaultPromptNotes, /No prose before or after/i);
 });
 
-test("pack §10 Learning Sequence: requires exactly one fenced json block", () => {
+test("pack ?10 Learning Sequence: requires exactly one fenced json block", () => {
   const t = ls.promptTemplate;
   assert.match(t, /fenced JSON block only/i);
   assert.match(t, /exactly one markdown fenced JSON block/i);
@@ -97,13 +97,13 @@ test("pack §10 Learning Sequence: requires exactly one fenced json block", () =
   assert.equal(ls.structureStyle, "schema_structured");
 });
 
-test("pack §10 Learning Sequence: rejects raw JSON without fence", () => {
+test("pack ?10 Learning Sequence: rejects raw JSON without fence", () => {
   const t = ls.promptTemplate;
   assert.match(t, /Do NOT return raw JSON without the ```json fence/i);
   assert.match(t, /Do NOT include any prose/i);
 });
 
-test("pack §10 Learning Sequence: preserves required top-level structure keys", () => {
+test("pack ?10 Learning Sequence: preserves required top-level structure keys", () => {
   const t = ls.promptTemplate;
   for (const key of [
     "sequence_title",
@@ -125,7 +125,7 @@ test("pack §10 Learning Sequence: preserves required top-level structure keys",
   ]);
 });
 
-test("pack §10 Learning Sequence: defaultPromptNotes reinforce fenced JSON block", () => {
+test("pack ?10 Learning Sequence: defaultPromptNotes reinforce fenced JSON block", () => {
   assert.match(ls.defaultPromptNotes, /fenced block/i);
   assert.match(ls.defaultPromptNotes, /No prose before or after/i);
 });
@@ -174,9 +174,8 @@ test("harness LS contract: aligned to fenced JSON block", () => {
   assert.match(contract, /learning_sequence root object/i);
 });
 
-test("pack §5/§6 38L depth rules unchanged after KM contract fix", () => {
-  assert.match(dla.promptTemplate, /IFP-09 DEPTH FLOORS/i);
-  assert.match(dla.promptTemplate, /DLA-WB-31.*38L-4/i);
+test("pack ?5/?6 38L depth rules unchanged after KM contract fix", () => {
+  assert.match(dla.promptTemplate, /OBLIGATION POPULATION \(38S/i);
+  assert.match(dla.promptTemplate, /DLA-WB-31.*38L-4|Evaluate completion pack \(DLA-WB-31/i);
   assert.match(gam.promptTemplate, /GAM-PRES-10.*38L-4/i);
-  assert.match(gam.promptTemplate, /GAM-WB-31.*38L-4/i);
 });

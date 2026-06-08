@@ -1,0 +1,105 @@
+{
+  "clauseSizes": [
+    {
+      "id": "GAM-PRES-00",
+      "chars": 203
+    },
+    {
+      "id": "GAM-PRES-01",
+      "chars": 565
+    },
+    {
+      "id": "GAM-PRES-02",
+      "chars": 714
+    },
+    {
+      "id": "GAM-PRES-03",
+      "chars": 843
+    },
+    {
+      "id": "GAM-PRES-04",
+      "chars": 585
+    },
+    {
+      "id": "GAM-PRES-05",
+      "chars": 606
+    },
+    {
+      "id": "GAM-PRES-06",
+      "chars": 1087
+    },
+    {
+      "id": "GAM-PRES-07",
+      "chars": 325
+    },
+    {
+      "id": "GAM-PRES-08",
+      "chars": 1541
+    },
+    {
+      "id": "GAM-PRES-09",
+      "chars": 570
+    },
+    {
+      "id": "GAM-PRES-10",
+      "chars": 1942
+    },
+    {
+      "id": "GAM-WB-00",
+      "chars": 453
+    },
+    {
+      "id": "GAM-WB-01",
+      "chars": 105
+    },
+    {
+      "id": "GAM-WB-02",
+      "chars": 487
+    },
+    {
+      "id": "GAM-WB-03",
+      "chars": 160
+    },
+    {
+      "id": "GAM-WB-04",
+      "chars": 126
+    },
+    {
+      "id": "GAM-WB-05",
+      "chars": 108
+    },
+    {
+      "id": "GAM-WB-06",
+      "chars": 1532
+    },
+    {
+      "id": "GAM-WB-07",
+      "chars": 218
+    },
+    {
+      "id": "GAM-WB-08",
+      "chars": 98
+    },
+    {
+      "id": "GAM-WB-09",
+      "chars": 177
+    },
+    {
+      "id": "GAM-WB-38",
+      "chars": 600
+    },
+    {
+      "id": "GAM-WB-10",
+      "chars": 447
+    },
+    {
+      "id": "GAM-WB-11",
+      "chars": 2302
+    },
+    {
+      "id": "GAM-WB-21",
+      "chars": 2080
+    }
+  ],
+  "notesChars": 1810
+}

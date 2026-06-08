@@ -1,6 +1,8 @@
 # Handover — Sprint 38-S
 
-**Pack:** [README.md](README.md) · **Status:** **OPEN** — production workflow step integrated
+**Pack:** [README.md](README.md) · **Status:** **OPEN** — Phase 2 prompt sanitisation + manual workflow hardening
+
+**Full handover (new chat):** [phase-2/38S-handover-pack.md](phase-2/38S-handover-pack.md) · **Phase 2 index:** [phase-2/README.md](phase-2/README.md)
 
 ---
 

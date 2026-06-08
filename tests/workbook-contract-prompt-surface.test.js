@@ -3,9 +3,10 @@
  * 38E: V-02 (AP-01), V-08, V-09, V-03/V-04/V-05/V-06/V-07, preservation unchanged.
  * 38F: V-01 (DLA-WB-06a, GAM-WB-38F-01), V-05 (DLA-WB-18, GAM-WB-10 F5), 38E-8/9 co-presence, V-13.
  * 38J: IFP-04..10 (38J-3 §5; 38S-2A removed IFP-00..03/07/08), DLA-WB-22..25; GAM-PRES (38J-4 §6; 38S-2B removed GAM-WB-22..31).
- * 38L: IFP-09..10, DLA-WB-26..30 (38L-2 §5); GAM-PRES-08/09/10 (38L-3/4 §6; 38S-2B removed GAM-WB-26..31).
+ * 38S final: OBLIGATION POPULATION (38S) consolidates IFP-09/10 + DLA-WB-26..31; DLA-WB-22..24; GAM-PRES (38J-4 §6; 38S-2B removed GAM-WB-22..31).
  * 38L-4: INF-EVAL-01, EV-CAP-04, DLA-WB-31 (§5); GAM-PRES-10 (§6); harness alignment.
  * 38S-2B: GAM pack dedupe — removed Material-type duplicate, GAM-WB-22..31; retained GAM-PRES + output org.
+ * 38S-WAVE-A: GAM pack cleanup — WB↔PRES merge, notes trim, canonical preamble compression (≥4500 combined Δ).
  */
 
 const test = require("node:test");
@@ -198,7 +199,7 @@ test("pack §6 38F-2: defaultPromptNotes cite 38F-2 and preservation modules", (
 
 // --- Sprint 38-J (38J-3 IFP in pack §5) ---
 
-test("pack §5 38J-3 / 38S-2A: superseded IFP planning blocks removed; obligation gates retained", () => {
+test("pack §5 38J-3 / 38S-2A / 38S-final: superseded IFP planning blocks removed; population gates retained", () => {
   const t = dla.promptTemplate;
   assert.doesNotMatch(t, /IFP-00 SEQUENCE/i);
   assert.doesNotMatch(t, /IFP-01 ARCHETYPE SELECTION/i);
@@ -206,12 +207,15 @@ test("pack §5 38J-3 / 38S-2A: superseded IFP planning blocks removed; obligatio
   assert.doesNotMatch(t, /IFP-03 KM TRIGGERS/i);
   assert.doesNotMatch(t, /IFP-07 SESSION ARC/i);
   assert.doesNotMatch(t, /- IFP-08:/i);
-  assert.match(t, /IFP-04 INFERENCE CONTRACTS/i);
+  assert.match(t, /IFP-04 POPULATION INFERENCE/i);
   assert.match(t, /IFP-05 ANTI-SHELL/i);
   assert.match(t, /IFP-06 ANTI-SPOILER/i);
-  assert.match(t, /IFP-09 DEPTH FLOORS/i);
-  assert.match(t, /IFP-10 CLOSURE EMISSION GATES/i);
+  assert.match(t, /OBLIGATION POPULATION \(38S/i);
   assert.match(t, /upstream episode_plans owns archetype and beat order/i);
+  assert.match(t, /obligation population step/i);
+  assert.doesNotMatch(t, /IFP-09 DEPTH FLOORS/i);
+  assert.doesNotMatch(t, /IFP-10 CLOSURE EMISSION/i);
+  assert.doesNotMatch(t, /replan function_sequence/i);
   assert.doesNotMatch(t, /Apply LO cognitive-demand component bundles/i);
 });
 
@@ -226,21 +230,21 @@ test("pack §5 38J-3: inference, anti-shell, anti-spoiler retained (planning mov
   assert.doesNotMatch(t, /IFP-07 SESSION ARC/i);
 });
 
-test("pack §5 38J-3: DLA-WB-22..25 archetype and gate rows", () => {
+test("pack §5 38J-3: DLA-WB-22..24 archetype and gate rows (38S-final: no DLA-WB-25 session arc)", () => {
   const t = dla.promptTemplate;
   assert.match(t, /DLA-WB-22.*38J-3/i);
   assert.match(t, /DLA-WB-23.*worked_example/i);
-  assert.match(t, /DLA-WB-24.*AS-FAIL/i);
-  assert.match(t, /DLA-WB-25.*session arc|ARC-01/i);
+  assert.doesNotMatch(t, /DLA-WB-25.*session arc|ARC-01/i);
   assert.match(t, /EV-CAP-01/i);
 });
 
-test("pack §5 38J-3: defaultPromptNotes reinforce IFP obligation gates (38S-2A)", () => {
-  assert.match(dla.defaultPromptNotes, /38J-3|38S-2A/i);
-  assert.match(dla.defaultPromptNotes, /IFP-04/i);
-  assert.match(dla.defaultPromptNotes, /IFP-05|AS-FAIL/i);
-  assert.match(dla.defaultPromptNotes, /DLA-WB-22/i);
+test("pack §5 38J-3: defaultPromptNotes reinforce population-only framing (38S-final)", () => {
+  assert.match(dla.defaultPromptNotes, /38S final|obligation population/i);
+  assert.match(dla.defaultPromptNotes, /episode_plans/i);
+  assert.match(dla.defaultPromptNotes, /IFP-06/i);
+  assert.match(dla.defaultPromptNotes, /DLA-WB-08|DLA-WB block/i);
   assert.doesNotMatch(dla.defaultPromptNotes, /LO→archetype/i);
+  assert.doesNotMatch(dla.defaultPromptNotes, /IFP-09/i);
 });
 
 // --- Sprint 38-J (38J-4 GAM preservation in pack §6) ---
@@ -287,65 +291,64 @@ test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanni
   assert.doesNotMatch(gam.defaultPromptNotes, /IFP-00/i);
 });
 
-test("pack §5 after 38J-4 / 38S-2A: IFP obligation gates and DLA-WB-22 still present", () => {
-  assert.match(dla.promptTemplate, /IFP-04 INFERENCE/i);
+test("pack §5 after 38J-4 / 38S-final: population gates and DLA-WB-22 still present", () => {
+  assert.match(dla.promptTemplate, /IFP-04 POPULATION INFERENCE/i);
   assert.match(dla.promptTemplate, /DLA-WB-22/i);
   assert.doesNotMatch(dla.promptTemplate, /IFP-00 SEQUENCE/i);
 });
 
 // --- Sprint 38-L (38L-2 depth floors + emission gates in pack §5) ---
 
-test("pack §5 38L-2: IFP-09 depth floors and IFP-10 emission gates", () => {
+test("pack §5 38L-2 / 38S-final: OBLIGATION POPULATION consolidates depth + emission gates", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /IFP-09 DEPTH FLOORS/i);
-  assert.match(t, /38L-2 R2/i);
-  assert.match(t, /depth_floor L3/i);
-  assert.match(t, /IFP-10 CLOSURE EMISSION GATES/i);
-  assert.match(t, /38L-2 R4/i);
+  assert.match(t, /OBLIGATION POPULATION \(38S/i);
+  assert.match(t, /depth_floor: L3|depth_floor L3/i);
+  assert.match(t, /DLA-WB-26.*38L-2|G1 Verification \(DLA-WB-26/i);
   assert.match(t, /EMIT-FAIL-01/i);
   assert.match(t, /EMIT-FAIL-04/i);
-  assert.match(t, /IFP-04–10|IFP-04-10/i);
+  assert.doesNotMatch(t, /IFP-09 DEPTH FLOORS/i);
+  assert.doesNotMatch(t, /IFP-10 CLOSURE EMISSION/i);
 });
 
-test("pack §5 38L-2: universal verification and closure material rows", () => {
+test("pack §5 38L-2 / 38S-final: universal verification and closure material rows in OBLIGATION POPULATION", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /DLA-WB-26.*38L-2/i);
-  assert.match(t, /EVERY activity MUST include.*checklist/i);
-  assert.match(t, /DLA-WB-28.*38L-2/i);
+  assert.match(t, /DLA-WB-26.*38L-2|G1 Verification \(DLA-WB-26/i);
+  assert.match(t, /EVERY activity MUST include.*checklist|every activity MUST list type checklist/i);
+  assert.match(t, /DLA-WB-28.*38L-2|G3 Independent judgement \(Evaluate \/ DLA-WB-28/i);
   assert.match(t, /transfer_prompt/i);
   assert.match(t, /independent judgement/i);
   assert.match(t, /EV-CAP-03/i);
 });
 
-test("pack §5 38L-2: Analyse worked analytic pass obligation", () => {
+test("pack §5 38L-2 / 38S-final: Analyse worked analytic pass obligation", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /DLA-WB-27.*38L-2/i);
+  assert.match(t, /DLA-WB-27.*38L-2|G4 Worked analytic pass \(Analyse \/ DLA-WB-27/i);
   assert.match(t, /worked analytic pass/i);
   assert.match(t, /BEFORE analysis_table/i);
   assert.match(t, /≥1 exemplar row/i);
 });
 
-test("pack §5 38L-2: anti-emission and depth spec discipline", () => {
+test("pack §5 38L-2 / 38S-final: anti-emission and depth spec discipline in OBLIGATION POPULATION", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /DLA-WB-29.*38L-2/i);
-  assert.match(t, /DLA-WB-30.*38L-2/i);
+  assert.match(t, /DLA-WB-29.*EMIT-FAIL|Anti-emission \(DLA-WB-29/i);
+  assert.match(t, /DLA-WB-30.*38L-2|Depth discipline \(DLA-WB-30/i);
   assert.match(t, /transfer_or_application_task.*without.*transfer_prompt/i);
-  assert.match(t, /type-only specifications are depth FAIL/i);
+  assert.match(t, /type-only specifications are depth FAIL|thin type-only specs are depth FAIL/i);
 });
 
-test("pack §5 38L-DLA diagnosis: output PRE-EMIT rows (5)–(8) for mandatory 38L materials", () => {
+test("pack §5 38L-DLA diagnosis / 38S-final: output PRE-EMIT rows (5)–(8) point to OBLIGATION POPULATION", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /\(5\) DLA-WB-26/i);
-  assert.match(t, /\(6\) DLA-WB-27/i);
-  assert.match(t, /\(7\) DLA-WB-28\/31/i);
+  assert.match(t, /\(5\)–\(8\) OBLIGATION POPULATION|\(5\).*\(8\).*OBLIGATION POPULATION/i);
+  assert.match(t, /DLA-WB-26\.\.31|G1–G5/i);
   assert.match(t, /PRE-EMIT GATE/i);
 });
 
-test("pack §5 38L-2: defaultPromptNotes reinforce depth + emission gates", () => {
-  assert.match(dla.defaultPromptNotes, /38L-2/i);
-  assert.match(dla.defaultPromptNotes, /IFP-09/i);
-  assert.match(dla.defaultPromptNotes, /IFP-10/i);
-  assert.match(dla.defaultPromptNotes, /DLA-WB-26/i);
+test("pack §5 38L-2 / 38S-final: defaultPromptNotes reinforce population contract", () => {
+  assert.match(dla.defaultPromptNotes, /OBLIGATION POPULATION|obligation population/i);
+  assert.match(dla.defaultPromptNotes, /episode_plans/i);
+  assert.match(dla.defaultPromptNotes, /IFP-06/i);
+  assert.doesNotMatch(dla.defaultPromptNotes, /IFP-09/i);
+  assert.doesNotMatch(dla.defaultPromptNotes, /DLA-WB-26/i);
 });
 
 test("pack §6 unchanged after 38L-2: no IFP-09/10 in GAM template", () => {
@@ -409,9 +412,9 @@ test("pack §6 38L-3: defaultPromptNotes reinforce depth-shaped bodies", () => {
   assert.match(gam.defaultPromptNotes, /GAM-WB-26|DEPTH-COLLAPSE/i);
 });
 
-test("pack §5 unchanged after 38L-3: IFP-09 and DLA-WB-26..30 still present", () => {
-  assert.match(dla.promptTemplate, /IFP-09 DEPTH FLOORS/i);
-  assert.match(dla.promptTemplate, /DLA-WB-26.*38L-2/i);
+test("pack §5 unchanged after 38L-3 / 38S-final: OBLIGATION POPULATION still present", () => {
+  assert.match(dla.promptTemplate, /OBLIGATION POPULATION \(38S/i);
+  assert.match(dla.promptTemplate, /DLA-WB-26.*38L-2|G1 Verification \(DLA-WB-26/i);
   assert.doesNotMatch(gam.promptTemplate, /IFP-10 CLOSURE EMISSION/i);
 });
 
@@ -426,19 +429,19 @@ test("pack §5 38L-4: INF-EVAL-01 household Evaluate anchor and EV-CAP-04 termin
   assert.match(t, /AS-FAIL-06.*38L-4/i);
 });
 
-test("pack §5 38L-4: KM-T05/T08 and DLA-WB-31 completion pack", () => {
+test("pack §5 38L-4 / 38S-final: KM-T05/T08 and DLA-WB-31 completion pack in OBLIGATION POPULATION", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /INF-EVAL-01.*38L-4/i);
+  assert.match(t, /INF-EVAL-01.*38L-4|INF-EVAL-01 \(38L-4/i);
   assert.match(t, /KM-T05|household budget impacts/i);
   assert.match(t, /KM-T08.*MUST NOT be primary Evaluate|KM-T08.*macro context only/i);
-  assert.match(t, /DLA-WB-31.*38L-4/i);
+  assert.match(t, /DLA-WB-31.*38L-4|Evaluate completion pack \(DLA-WB-31/i);
   assert.match(t, /independent judgement \+ verification \+ transfer/i);
 });
 
-test("pack §5 38L-4: defaultPromptNotes reinforce closure integration", () => {
-  assert.match(dla.defaultPromptNotes, /38L-4/i);
-  assert.match(dla.defaultPromptNotes, /INF-EVAL-01/i);
-  assert.match(dla.defaultPromptNotes, /DLA-WB-31/i);
+test("pack §5 38L-4 / 38S-final: defaultPromptNotes reinforce population reminders", () => {
+  assert.match(dla.defaultPromptNotes, /obligation population|OBLIGATION POPULATION/i);
+  assert.match(dla.defaultPromptNotes, /episode_plans/i);
+  assert.doesNotMatch(dla.defaultPromptNotes, /DLA-WB-31/i);
 });
 
 test("pack §6 38L-4: GAM-PRES-10 Evaluate completion termination", () => {
@@ -504,5 +507,33 @@ test("pack §6 38S-2B: GAM prompt size reduced vs Phase 2B baseline", () => {
   assert.ok(metrics.promptTemplateBefore >= 26000);
   assert.ok(metrics.promptTemplateAfter <= 21000);
   assert.ok(metrics.promptTemplateDelta >= 6000);
-  assert.equal(gam.promptTemplate.length, metrics.promptTemplateAfter);
+  const len = gam.promptTemplate.length;
+  assert.ok(len < metrics.promptTemplateBefore, "pack must remain below pre-2B size");
+});
+
+test("pack §6 38S-WAVE-A: GAM pack dedupe achieves ≥4500 combined char reduction", () => {
+  const wavePath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-06-06-sprint-38s-episode-plan-v1-implementation/artefacts/EV-38S-WAVE-A-gam-prompt-metrics.json"
+  );
+  const wave = JSON.parse(fs.readFileSync(wavePath, "utf8"));
+  assert.ok(wave.packCombinedDelta >= 4500);
+  assert.equal(gam.promptTemplate.length, wave.promptTemplateAfter);
+  assert.equal((gam.defaultPromptNotes || "").length, wave.notesAfter);
+  assert.doesNotMatch(gam.promptTemplate, /GAM-WB-11 template:/i);
+  assert.doesNotMatch(gam.promptTemplate, /GAM-WB-38E-9 contract FAIL/i);
+});
+
+test("pack §6 38S-2B-b.2-a: GAM depth — neutral purpose line, verification quality, no brevity reward", () => {
+  const t = gam.promptTemplate;
+  assert.match(t, /Purpose: <instructional purpose>/i);
+  assert.doesNotMatch(t, /Purpose: <brief purpose>/i);
+  assert.doesNotMatch(t, /minimal, reasonable assumptions/i);
+  assert.doesNotMatch(t, /not brief task shells/i);
+  assert.match(
+    t,
+    /verification materials should confirm understanding, reasoning quality, interpretation, or judgement quality/i
+  );
+  assert.match(t, /GAM-PRES-08 DEPTH-SHAPED BODIES/i);
+  assert.match(t, /GAM-PRES-09 ANTI-DEPTH-COLLAPSE/i);
 });

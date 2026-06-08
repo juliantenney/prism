@@ -7459,9 +7459,9 @@
     return [
       "",
       "Self-directed learner-page activity framing (auto-applied):",
-      "- Before each substantial activity, include activity_preamble: 1–3 concise sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise).",
+      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise) — depth_floor L3 orientation with explanatory reasoning, not minimal filler.",
       "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
-      "- Use cognition-oriented orientation fields selectively (not on every activity): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, uncertainty_tension_prompt, transfer_or_application_task, scaffold_hint_sequence (2–3 short hints).",
+      "- Use cognition-oriented orientation fields selectively (not on every activity): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, uncertainty_tension_prompt, transfer_or_application_task, scaffold_hint_sequence (2–3 substantive hints with reasoning cues).",
       "- Coverage minimum for a multi-activity page: every activity MUST have activity_preamble; at least half of activities should include one cognition-orientation field beyond the preamble.",
       "- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; do not add facilitator_moves prose or tutoring narration.",
       "- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble."
@@ -7472,22 +7472,22 @@
     return [
       "",
       "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
-      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 sentences).",
+      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences with explanatory reasoning).",
       "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
       "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
       "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).",
       "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence: carried reasoning move or distinction from the prior step + what escalates (see Intellectual progression signalling); do not repeat the activity title or use location-only transitions.",
-      "- self_explanation_prompt: at least two activities; one short generative-retrieval sentence each (e.g. explain in your own words before checking) — not a full essay.",
+      "- self_explanation_prompt: at least two activities; one generative-retrieval prompt each requiring explanatory reasoning in the learner's own words (depth_floor L3 — e.g. explain and justify before checking; not a label or single token).",
       "- prior_knowledge_activation: at least one activity when prior context helps.",
       "- reasoning_orientation: on compare/analyse/application/cause-effect activities — 1–2 sentences on WHAT KIND OF THINKING (not a restatement of learner_task).",
       "- evidence_use_prompt: on activities that use transcript/extract/reading — how to quote, paraphrase, or map claims to the source (not a bibliography).",
-      "- argument_structure_hint: on compare/evaluate/argument activities — short claim → evidence → implication scaffold.",
+      "- argument_structure_hint: on compare/evaluate/argument activities — claim → evidence → implication scaffold with meaningful reasoning steps.",
       "- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one plausible merge error (conceptual difficulty type).",
       "- uncertainty_tension_prompt: optional on 1–2 activities when interpretive ambiguity or disciplinary uncertainty is central — one sentence: what is unstable + discriminating move; not reflective diary prose (see Conceptual tension and difficulty framing).",
-      "- disciplinary_lens: optional once per page — short tag-like lens (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
+      "- disciplinary_lens: optional once per page — tag-like lens label naming the discipline mode (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
       "- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.",
       "- transfer_or_application_task: on the culminating or transfer-phase activity when the page supports application (2+ activities or phased single activity) — one sentence: named move + changed context; may add one clause on where the move fails or an assumption breaks — not generic real-world application.",
-      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 short strings).",
+      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 substantive hint strings with procedural or reasoning guidance).",
       "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
       "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief.",
       "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above."
@@ -7505,12 +7505,12 @@
       '  "reasoning_orientation": "Compare texts as historical arguments: trace claim, evidence, and implied audience — not plot summary.",',
       '  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",',
       '  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",',
-      '  "self_explanation_prompt": "Before checking the model row, write one sentence on which text you find more convincing and why.",',
+      '  "self_explanation_prompt": "Before checking the model row, explain which text you find more convincing, why that matters for the argument, and cite one passage as evidence.",',
       '  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",',
       '  "expected_output": "A filled comparison table a peer could review — each row has purpose text and one cited difference.",',
       '  "support_note": "Purpose is the author\'s aim, not a plot summary; difference must compare the two works, not repeat the same sentence twice.",',
       '  "required_materials": [',
-      '    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "Short paired excerpts with titles." },',
+      '    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "depth_floor: L3; paired excerpt blocks ≥150 words each with titled sections, quotable spans, and context for independent study." },',
       '    { "material_id": "M2", "type": "checklist", "purpose": "verification", "specification": "depth_floor: L3; ≥4 criteria-linked check items + repair path if any fail." }',
       "  ]",
       "}",
@@ -7614,7 +7614,7 @@
           lines = lines.concat([
             "- Preserve role (Design Page): when upstream activity_materials contains pipe tables, copy each pipe block verbatim into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, etc.).",
             "- Do not flatten tables to comma-separated rows, Headers/Rows prose blocks, or catalogue labels when upstream already has pipe syntax.",
-            "- Table fidelity overrides session overview synthesis and non-essential prose shortening for materials bodies."
+            "- Table fidelity overrides session overview synthesis and any shortening of materials.<table_key> bodies — adjunct guidance is L4-faithful instructional content, not overview prose."
           ]);
         } else if (role === "spec" || role === "dla") {
           lines = lines.concat([
@@ -7683,22 +7683,32 @@
               "",
               "LD-MATERIALS-COPY (auto-applied):",
               "- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)",
-              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (scoped to overview, learning_purpose, study_tips only) and non-essential shortening — PREC-02.",
+              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (overview, learning_purpose, study_tips only) — PREC-02. activity.materials.* must never be shortened for readability.",
               "- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.",
-              "- Do not summarise, thin, or replace materials bodies to make the page shorter or to write session narrative.",
+              "- Do not summarise, thin, paraphrase, shorten, simplify, compress, or replace materials bodies to make the page shorter or to write session narrative.",
               "- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here."
             ]
           : [
               "- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)",
-              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (scoped to overview, learning_purpose, study_tips only) and non-essential shortening — PREC-02.",
+              "- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (overview, learning_purpose, study_tips only) — PREC-02. activity.materials.* must never be shortened for readability.",
               "- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.",
-              "- Do not summarise, thin, or replace materials bodies to make the page shorter or to write session narrative.",
+              "- Do not summarise, thin, paraphrase, shorten, simplify, compress, or replace materials bodies to make the page shorter or to write session narrative.",
               "- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here."
             ];
         if (role === "preserve" || role === "design_page" || role === "preserve_merge") {
           lines = lines.concat([
             "- Preserve role (Design Page): when upstream activity_materials exist, each learning_activities.content[] row must carry the full materials object (merge every upstream block for that activity_id).",
-            "- Copy concrete delivery content verbatim or near-verbatim: scenario narratives, worked examples, checklists, prompt sets, assessment stems in materials, and support content tied to activities.",
+            "- Copy learner-facing delivery content verbatim into activity.materials.*. Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies.",
+            "- Do not shorten activity.materials.* content. If a hard output limit prevents full preservation, keep the full upstream material body where possible and record the limitation in generation_notes.limitations rather than silently compressing it.",
+            "- Readable page assembly applies to section structure, headings, ordering, and wrapper prose only — not to rewriting activity.materials.* bodies.",
+            "- FORBIDDEN inflation-collapse substitutes (activity.materials.* must never look like revision notes):",
+            "  • Full exposition → one key-point line (e.g. \"Inflation is a sustained increase in the general price level…\")",
+            "  • Worked example with steps → outcome only (e.g. \"Year 1 basket = £100; Year 2 basket = £105; same money buys less\")",
+            "  • Classification reasoning chain → arrow label (e.g. \"Demand exceeds supply → demand-pull inflation\")",
+            "  • Calculation worked example → formula plus final result only (process prose omitted)",
+            "  • Analytic worked example → one-sentence effect summary",
+            "  • Recommendation/judgement template → section-label chain only (e.g. \"Context → Evaluation → Decision → Justification\")",
+            "  • Transfer prompt → label-only instruction (e.g. \"Apply to real-world inflation\")",
             "- Forbidden placeholder-only phrasing unless the full content appears in the same field:",
             '  "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking",',
             '  "See provided scenarios", "Scenario set describing", "Table with basket items".',
@@ -7839,7 +7849,7 @@
               "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
               "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
               "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
-              "- intellectual_coherence_bridge on every activity after the first (2+ activities): name prior move + escalation — Bad bridge shape: Building on the previous activity. only.",
+              "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
               "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
               "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
               "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
@@ -7847,7 +7857,7 @@
               "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
               "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
               "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
-              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief with 2–3 epistemic bullets; knowledge_summary previews at start only."
+              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs; knowledge_summary previews at start only."
             ]
           : [
               "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
@@ -7858,7 +7868,7 @@
               "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
               "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
               "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
-              "- intellectual_coherence_bridge on every activity after the first (2+ activities): name prior move + escalation — Bad bridge shape: Building on the previous activity. only.",
+              "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
               "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
               "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
               "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
@@ -7866,7 +7876,7 @@
               "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
               "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
               "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
-              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief with 2–3 epistemic bullets; knowledge_summary previews at start only."
+              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs; knowledge_summary previews at start only."
             ];
         if (role === "design_page") {
           lines = lines.concat([
@@ -8111,6 +8121,25 @@
     return mod.buildDlaPopulationOnlyPromptBlock();
   }
 
+  function draftHasAuthoritativeEpisodePlansUpstreamSection(draftBody) {
+    return /### Upstream episode_plans \(authoritative/i.test(String(draftBody || ""));
+  }
+
+  function formatEpisodePlansCaptureForPromptEmbed(raw) {
+    var trimmed = String(raw || "").trim();
+    if (!trimmed) return "";
+    var parsed = tryParseWorkflowArtefactJson(trimmed);
+    if (parsed) {
+      var check = validateEpisodePlansCaptureV1(parsed);
+      if (check.ok) {
+        try {
+          return JSON.stringify(parsed, null, 2);
+        } catch (_) {}
+      }
+    }
+    return trimmed;
+  }
+
   function buildEpisodePlanUpstreamPromptSection(episodePlans, opts) {
     var options = opts && typeof opts === "object" ? opts : {};
     if (!episodePlans || !Array.isArray(episodePlans.episode_plans) || !episodePlans.episode_plans.length) {
@@ -8142,10 +8171,12 @@
     return lines.join("\n");
   }
 
-  function deriveDesignEpisodePlanCaptureJson() {
+  function deriveDesignEpisodePlanCaptureJson(wf) {
     var mod = resolveEpisodePlanDlaIntegrationLib();
     if (!mod || typeof mod.deriveEpisodePlansFromLearningOutcomes !== "function") return "";
-    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes");
+    var wfOpts =
+      wf && typeof wf === "object" && Array.isArray(wf.steps) ? { workflow: wf } : {};
+    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", wfOpts);
     if (!learningOutcomes) return "";
     var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(learningOutcomes);
     var gate =
@@ -8199,7 +8230,7 @@
     if (block && !/episode plan population contract \(38s-3/i.test(draftBody)) {
       appendParts.push(block);
     }
-    if (upstreamSection && !/upstream episode_plans/i.test(draftBody)) {
+    if (upstreamSection && !draftHasAuthoritativeEpisodePlansUpstreamSection(draftBody)) {
       appendParts.push(upstreamSection);
     }
     if (!appendParts.length) return draftBody;
@@ -8552,6 +8583,19 @@
     return null;
   }
 
+  function tryResolveCanonicalEpisodePlansDeriveFallback(wf) {
+    if (!workflowHasDesignEpisodePlanStep(wf)) return null;
+    var derivedJson = deriveDesignEpisodePlanCaptureJson(wf);
+    if (!derivedJson) return null;
+    var parsed = tryParseWorkflowArtefactJson(derivedJson);
+    if (!parsed || !Array.isArray(parsed.episode_plans) || !parsed.episode_plans.length) {
+      return null;
+    }
+    var check = validateEpisodePlansCaptureV1(parsed);
+    if (!check.ok) return null;
+    return parsed;
+  }
+
   function resolveEpisodePlansForDlaPopulation(opts) {
     var options = opts && typeof opts === "object" ? opts : {};
     var diagnostic = !!options.diagnostic;
@@ -8569,6 +8613,7 @@
     });
     var episodePlans = diagnostic ? upstreamHit && upstreamHit.parsed : upstreamHit;
     var validation = null;
+    var primaryFailReason = "";
     if (episodePlans && Array.isArray(episodePlans.episode_plans) && episodePlans.episode_plans.length) {
       validation = validateEpisodePlansCaptureV1(episodePlans);
       if (validation.ok) {
@@ -8581,36 +8626,46 @@
             }
           : episodePlans;
       }
+      primaryFailReason = "v1_validation_failed";
       episodePlans = null;
-      if (diagnostic) {
-        return {
-          episodePlans: null,
-          reason: "v1_validation_failed",
-          validation: validation,
-          upstream: upstreamHit
-        };
-      }
     } else if (
-      diagnostic &&
       upstreamHit &&
       upstreamHit.matched_step_id &&
       upstreamHit.parse_ok === false
     ) {
-      return {
-        episodePlans: null,
-        reason: "capture_parse_failed",
-        validation: validation,
-        upstream: upstreamHit
-      };
+      primaryFailReason = "capture_parse_failed";
+    } else if (workflowHasDesignEpisodePlanStep(wf)) {
+      primaryFailReason =
+        upstreamHit && upstreamHit.matched_step_id ? "invalid_or_empty_capture" : "missing_capture";
+    }
+    var derivedFallback = tryResolveCanonicalEpisodePlansDeriveFallback(wf);
+    if (derivedFallback) {
+      var derivedValidation = validateEpisodePlansCaptureV1(derivedFallback);
+      return diagnostic
+        ? {
+            episodePlans: derivedFallback,
+            reason: "canonical_derive_fallback",
+            primary_fail_reason: primaryFailReason || "none",
+            validation: derivedValidation,
+            upstream: upstreamHit
+          }
+        : derivedFallback;
+    }
+    if (primaryFailReason === "capture_parse_failed") {
+      return diagnostic
+        ? {
+            episodePlans: null,
+            reason: "capture_parse_failed",
+            validation: validation,
+            upstream: upstreamHit
+          }
+        : null;
     }
     if (workflowHasDesignEpisodePlanStep(wf)) {
       return diagnostic
         ? {
             episodePlans: null,
-            reason:
-              upstreamHit && upstreamHit.matched_step_id
-                ? "invalid_or_empty_capture"
-                : "missing_capture",
+            reason: primaryFailReason || "missing_capture",
             validation: validation,
             upstream: upstreamHit
           }
@@ -8802,6 +8857,12 @@
     ) {
       return "learning_outcomes";
     }
+    if (
+      oname === "episode_plans" ||
+      canonicalId === "step_design_episode_plan"
+    ) {
+      return "episode_plans";
+    }
     var title = String(step.title || "")
       .trim()
       .toLowerCase()
@@ -8810,6 +8871,9 @@
     if (title === "model knowledge") return "knowledge_model";
     if (title === "construct learning sequence") return "learning_sequence";
     if (title === "define learning outcomes") return "learning_outcomes";
+    if (title === "design episode plan" || title.indexOf("episode plan") !== -1) {
+      return "episode_plans";
+    }
     return "";
   }
 
@@ -8817,6 +8881,7 @@
     if (kind === "knowledge_model") return "Model Knowledge";
     if (kind === "learning_sequence") return "Learning Sequence";
     if (kind === "learning_outcomes") return "Learning Outcomes";
+    if (kind === "episode_plans") return "Design Episode Plan";
     return "Step";
   }
 
@@ -8875,6 +8940,15 @@
       ) {
         draftBody = (
           draftBody + strictMod.buildStrictLearningOutcomesOutputContractBlock()
+        ).trim();
+      }
+    } else if (kind === "episode_plans") {
+      if (
+        typeof strictMod.buildStrictEpisodePlansOutputContractBlock === "function" &&
+        !/Output contract \(strict — fenced JSON block only\)/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictEpisodePlansOutputContractBlock()
         ).trim();
       }
     }
@@ -9212,7 +9286,8 @@
       "- Do not include live classroom timing or choreography (e.g. \"minutes 5–15\", \"at minute 20\", \"circulate during discussion\", \"encourage them to\", \"help learners\").",
       "- Use learner-facing guidance instead, for example: \"Use this to…\", \"Check your notes against…\", \"Before moving on…\", \"If you get stuck…\", \"How to use this resource:\".",
       "- Material purpose lines should describe what the learner does with the resource — not how a teacher should run the activity.",
-      "- Do not restate learner_task, activity_preamble, study_orientation, or reasoning_orientation in material prose — the activity row already shows those; add artefacts (tables, excerpts, worked rows) only."
+      "- Do not duplicate content unnecessarily. However, anti-redundancy must never reduce a material below the minimum instructional richness required by GAM-PRES-08. When explanatory context, reasoning steps, interpretation, modelling, judgement rationale, misconception handling, or learner guidance improve instructional quality, include them even if related information exists elsewhere.",
+      "- Prefer instructional completeness over brevity. Avoid unnecessary repetition, but do not shorten, compress, or omit reasoning that supports learning."
     ].join("\n");
   }
 
@@ -9331,11 +9406,8 @@
       "Pedagogic enrichment — orientation contract (auto-applied):",
       "- This is independent self-study: write for a learner working alone with notebook and pencil, not for a live class or tutor-led session.",
       "- Use topic-specific orientation tied to the brief subject — never generic module welcomes.",
-      "- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression (see Session orientation rhetoric block when present).",
-      "- On the first activity when the page has multiple activities, include study_orientation (2–4 sentences): how to work through activities in order and how long the work may take — not a second copy of the overview journey paragraph.",
-      "- Optional intellectual_frame once per page (first activity is fine): name the mode of inquiry in 1–2 sentences (e.g. thinking as a historian about evidence and change).",
-      "- On activities after the first, include intellectual_coherence_bridge on each follow-on activity: one sentence naming the carried move and escalation (not a repeat of titles or \"building on the previous activity\" alone).",
-      "- Keep activity_preamble on every activity for task-level orientation; overview/learning_purpose carry session journey; study_orientation carries working plan — do not paste the same prose in all three.",
+      "- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression.",
+      "- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (self-directed learner page) on Design Learning Activities; preserve verbatim on Design Page compose.",
       "- Do not use facilitator choreography, session timing, or classroom framing.",
       "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
     ].join("\n");
@@ -9345,15 +9417,8 @@
     return [
       "",
       "Pedagogic enrichment — reasoning contract (auto-applied):",
-      "- Make disciplinary thinking visible: reasoning fields state HOW TO THINK — never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
-      "- reasoning_orientation (1–2 sentences): name the thinking mode required (e.g. chronological causation, mechanism tracing, text comparison, misconception repair) — topic-specific, not \"think critically\".",
-      "- evidence_use_prompt: when an activity uses transcript, extract, or reading — tell the learner how to quote, paraphrase, or tie claims to the source (line/paragraph reference).",
-      "- argument_structure_hint: on compare/evaluate/argument tasks — short claim → evidence → implication scaffold in learner-facing prose.",
-      "- conceptual_contrast_prompt: on compare/distinguish/misconception tasks — name the two (or more) concepts and one common confusion to avoid.",
-      "- self_explanation_prompt: at least two activities — include static generative retrieval (e.g. predict or explain in your own words before re-reading or checking answers).",
-      "- disciplinary_lens: optional once per page — short tag-like label (e.g. \"Thinking as a virologist\") — not a paragraph duplicating intellectual_frame.",
-      "- Multi-activity pages: at least two activities with non-empty reasoning_orientation; source-based briefs require evidence_use_prompt on source-dependent activities.",
-      "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one concise reasoning cue set per activity).",
+      "- Make disciplinary thinking visible: cognition field semantics and coverage rules are in OUTPUT CONTRACT (self-directed learner page) when present — reasoning fields state HOW TO THINK, never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
+      "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one reasoning cue set per activity aligned to depth_floor L3).",
       "- Explicitly avoid: \"think critically\", \"discuss in groups\", \"share with a partner\", hollow \"analyse the topic carefully\"."
     ].join("\n");
   }
@@ -21733,6 +21798,92 @@
     return p && typeof p.body === "string" ? String(p.body || "").trim() : "";
   }
 
+  function isStaleCatalogSeededStepOverride(overrideBody, catalogPromptTemplate) {
+    var body = String(overrideBody || "");
+    var template = String(catalogPromptTemplate || "");
+    if (!body.trim() || !template.trim()) return false;
+    if (/IFP-00 SEQUENCE/i.test(body)) return true;
+    if (/IFP-01 ARCHETYPE SELECTION/i.test(body)) return true;
+    if (/DLA-WB-25/i.test(body)) return true;
+    if (/Design executable learning_activities that are directly runnable/i.test(body)) {
+      return true;
+    }
+    if (/replan IFP-00 A[\u2013-]K/i.test(body)) return true;
+    if (
+      /OBLIGATION POPULATION \(38S/i.test(template) &&
+      !/OBLIGATION POPULATION \(38S/i.test(body)
+    ) {
+      return true;
+    }
+    if (
+      /Populate executable learning_activities from upstream episode_plans/i.test(template) &&
+      !/Populate executable learning_activities from upstream episode_plans/i.test(body)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function resolveMatchedWorkflowStepPatternFromCatalog(step, catalog) {
+    var row = step && typeof step === "object" ? step : null;
+    var pool = Array.isArray(catalog) ? catalog : [];
+    if (!row || !pool.length) return null;
+    var canonicalId = String(row.canonical_step_id || row.canonicalStepId || "").trim();
+    var matchedPattern = canonicalId ? getPatternByCanonicalStepId(canonicalId, pool) : null;
+    if (!matchedPattern) {
+      var canonicalTitle = pickCanonicalWorkflowStepTitle(row.title || "", pool);
+      matchedPattern = getPatternByCanonicalWorkflowTitle(canonicalTitle, pool);
+    }
+    return matchedPattern;
+  }
+
+  function resolveLiveCatalogStepPromptBody(step, wf) {
+    var row = step && typeof step === "object" ? step : null;
+    if (!row || getStepPromptSourceType(row) !== "local_override") return "";
+    var overrideBody = String(
+      row.override_prompt_body != null ? row.override_prompt_body : row.overridePromptBody || ""
+    ).trim();
+    if (!overrideBody) return "";
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    if (!catalog.length) return "";
+    var matchedPattern = resolveMatchedWorkflowStepPatternFromCatalog(row, catalog);
+    if (!matchedPattern || !matchedPattern.promptFactory) return "";
+    var cfg = normalizeWorkflowStepPromptConfig(matchedPattern.promptFactory);
+    var template = resolveWorkflowStepPromptTemplate(cfg);
+    if (!isStaleCatalogSeededStepOverride(overrideBody, template)) return "";
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    if (!wfRec && state.selectedWorkflowId) {
+      wfRec = findWorkflowById(state.selectedWorkflowId);
+    }
+    var outputSpec = normalizeWorkflowOutputSpec(
+      wfRec && wfRec.workflowOutputSpec ? wfRec.workflowOutputSpec : {}
+    );
+    var rebuilt = buildSeededStepPromptForWorkflowStep({
+      workflowName: wfRec && wfRec.name ? wfRec.name : "",
+      workflowGoal: outputSpec.goal || (wfRec && wfRec.goal) || "",
+      workflowInputs:
+        wfRec && Array.isArray(wfRec.workflowInputs) ? wfRec.workflowInputs.slice() : [],
+      workflowOutputs:
+        wfRec && Array.isArray(wfRec.workflowOutputs) ? wfRec.workflowOutputs.slice() : [],
+      workflowOutputSpec: outputSpec,
+      step: row,
+      matchedPattern: matchedPattern
+    });
+    rebuilt = String(rebuilt || "").trim();
+    if (!rebuilt) return "";
+    try {
+      console.warn("[PRISM] Refreshed stale catalog-seeded step prompt from live domain pack.", {
+        step: row.title || "",
+        canonical_step_id: String(row.canonical_step_id || row.canonicalStepId || ""),
+        previousLength: overrideBody.length,
+        refreshedLength: rebuilt.length
+      });
+    } catch (_) {}
+    return rebuilt;
+  }
+
   function resolveStepPromptText(step, wf) {
     var sourceType = getStepPromptSourceType(step);
     var wfRec = wf && typeof wf === "object" ? wf : null;
@@ -21748,6 +21899,8 @@
       var body = String(
         (step && (step.override_prompt_body || step.overridePromptBody)) || ""
       ).trim();
+      var liveCatalogBody = resolveLiveCatalogStepPromptBody(step, wfRec);
+      if (liveCatalogBody) body = liveCatalogBody;
       if (!body) {
         return {
           sourceType: sourceType,
@@ -22188,6 +22341,71 @@
         zeroBasedIndex,
         li
       );
+      if (
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: effectiveStep.canonical_step_id || "",
+          stepCanonicalTitle: effectiveStep.title || "",
+          stepTitle: effectiveStep.title || ""
+        })
+      ) {
+        var dlaCopyDiagWf = resolveWorkflowForUpstreamArtefacts({ workflow: liveWf });
+        var dlaCopyDiagResolved = resolveEpisodePlansForDlaPopulation({
+          workflow: dlaCopyDiagWf,
+          diagnostic: true,
+          skipSync: true
+        });
+        var dlaCopyDiagUpstream =
+          dlaCopyDiagResolved && dlaCopyDiagResolved.upstream
+            ? dlaCopyDiagResolved.upstream
+            : null;
+        var dlaCopyDiagnostic = {
+          has_upstream_artefact_embed: /Upstream artefact "episode_plans"/i.test(textToCopy),
+          has_upstream_binding_declared: /"episode_plans" from step/i.test(textToCopy),
+          has_authoritative_upstream_section: draftHasAuthoritativeEpisodePlansUpstreamSection(
+            textToCopy
+          ),
+          has_episode_plans_json: /"episode_plans"\s*:\s*\[/i.test(textToCopy),
+          has_pf11_guard: /PF-11:/i.test(textToCopy),
+          resolver_episode_plans_ok: !!(
+            dlaCopyDiagResolved && dlaCopyDiagResolved.episodePlans
+          ),
+          resolver_reason:
+            dlaCopyDiagResolved && dlaCopyDiagResolved.reason
+              ? dlaCopyDiagResolved.reason
+              : "unknown",
+          resolver_primary_fail_reason:
+            dlaCopyDiagResolved && dlaCopyDiagResolved.primary_fail_reason
+              ? dlaCopyDiagResolved.primary_fail_reason
+              : "",
+          resolver_validation_errors:
+            dlaCopyDiagResolved &&
+            dlaCopyDiagResolved.validation &&
+            Array.isArray(dlaCopyDiagResolved.validation.errors)
+              ? dlaCopyDiagResolved.validation.errors.slice(0, 5)
+              : [],
+          upstream_matched_step_id: dlaCopyDiagUpstream
+            ? String(dlaCopyDiagUpstream.matched_step_id || "")
+            : "",
+          upstream_parse_ok: dlaCopyDiagUpstream ? !!dlaCopyDiagUpstream.parse_ok : false,
+          upstream_capture_length: dlaCopyDiagUpstream
+            ? Number(dlaCopyDiagUpstream.raw_length || 0)
+            : 0
+        };
+        state.workflowRunDlaCopyDiagnostic = dlaCopyDiagnostic;
+        emitPf11DlaUpstreamDiagnosticTrace(
+          {
+            stepId: effectiveStep.id || "",
+            stepCanonicalStepId: effectiveStep.canonical_step_id || "",
+            stepCanonicalTitle: effectiveStep.title || "",
+            stepOutputName: effectiveStep.outputName || ""
+          },
+          dlaCopyDiagWf,
+          { reason: "dla_copy_prompt" }
+        );
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[PRISM DLA copy diagnostic]", dlaCopyDiagnostic);
+        }
+      }
 
       // In Run mode, prepend compact global workflow context to the FIRST step only.
       if (inRunMode && zeroBasedIndex === 0) {
@@ -23211,6 +23429,9 @@
       lines.push(
         "Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes()."
       );
+      lines.push(
+        "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence, emit the runner completion line as plain text outside the JSON block (see STEP N OUTPUT below). No minified single-line JSON."
+      );
     }
     if (step.roleLabel) {
       lines.push("Role / purpose of this step: " + step.roleLabel + ".");
@@ -23270,6 +23491,9 @@
         if (!prod || !bindingArtifactMatchesProducer(prod, art)) return;
         var cap = resolveCaptureTextForWorkflowStep(prod, wfForChain);
         if (!String(cap || "").trim()) return;
+        if (normalizeWorkflowArtefactBindingKey(art) === "episode_plans") {
+          cap = formatEpisodePlansCaptureForPromptEmbed(cap);
+        }
         var sourceTitleCap = getStepTitleById(sid) || "an earlier step";
         lines.push("");
         lines.push(
@@ -26079,7 +26303,7 @@
     if (utilityIsEmptyValue(value)) return null;
     if (typeof value === "string" || Array.isArray(value)) return value;
     if (value && typeof value === "object" && !Array.isArray(value)) {
-      return utilityFirstPresent([
+      var direct = utilityFirstPresent([
         value.content,
         value.body,
         value.text,
@@ -26090,6 +26314,19 @@
         value.data,
         value.table
       ]);
+      if (!utilityIsEmptyValue(direct)) return direct;
+      var wrapperKeys = Object.keys(value);
+      if (
+        wrapperKeys.length &&
+        wrapperKeys.every(function (k) {
+          return /^M\d+(_\d+)*$/i.test(String(k || "").trim());
+        })
+      ) {
+        for (var wi = 0; wi < wrapperKeys.length; wi += 1) {
+          var nestedPayload = utilityUnwrapWorksheetTablePayload(value[wrapperKeys[wi]]);
+          if (!utilityIsEmptyValue(nestedPayload)) return nestedPayload;
+        }
+      }
     }
     return null;
   }
@@ -26509,6 +26746,8 @@
       prismPlaceholderTokens.push(m);
       return slot;
     });
+    raw = raw.replace(/<strong\b[^>]*>([\s\S]*?)<\/strong>/gi, "**$1**");
+    raw = raw.replace(/<em\b[^>]*>([\s\S]*?)<\/em>/gi, "_$1_");
     var protectedInlineMath = utilityProtectSupportedMathDelimiters(raw, {
       includeInline: true,
       includeBlock: false
@@ -27208,8 +27447,18 @@
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
     var sid = String(entry.section_id || entry.id || "").toLowerCase().replace(/[\s-]+/g, "_");
     if (sid === "metadata" || sid === "production_metadata") return true;
+    if (
+      sid === "visual_affordance_schema_version" ||
+      sid === "activities_visual_review" ||
+      sid === "visual_affordances"
+    ) {
+      return true;
+    }
     var heading = String(entry.heading || entry.title || entry.name || "").toLowerCase();
-    return /\b(production\s+metadata|page\s+metadata)\b/.test(heading);
+    if (/\b(production\s+metadata|page\s+metadata)\b/.test(heading)) return true;
+    return /\bvisual\s+affordance\s+schema\s+version\b|\bactivities\s+visual\s+review\b|\bvisual\s+affordances\b/.test(
+      heading
+    );
   }
 
   function utilityRenderPageMetadataSectionHtml(entry, renderOpts) {
@@ -31188,6 +31437,9 @@
                   }
                   return inner;
                 }
+                if (/^M\d+(_\d+)*$/i.test(String(k || "").trim())) {
+                  return inner;
+                }
                 var headingText = nestedHeading || prettyMaterialHeading(k);
                 if (nestedHeading && utilityIsGenericMaterialBodyKey(lowerNestedKey)) {
                   return inner;
@@ -31266,6 +31518,16 @@
           roleRenderMod &&
           typeof roleRenderMod.isRolePrecedenceActive === "function" &&
           roleRenderMod.isRolePrecedenceActive(activityRow);
+        var typeBucketFallbackPlan =
+          !rolePrecedenceActive &&
+          !declaredMaterialOrder &&
+          roleRenderMod &&
+          typeof roleRenderMod.buildTypeBucketRoleFallbackRenderPlan === "function"
+            ? roleRenderMod.buildTypeBucketRoleFallbackRenderPlan(activityRow, materials)
+            : [];
+        var typeBucketFallbackActive = !!(typeBucketFallbackPlan && typeBucketFallbackPlan.length);
+        var authoritativeMaterialOrderActive =
+          rolePrecedenceActive || !!(declaredMaterialOrder && declaredMaterialOrder.length) || typeBucketFallbackActive;
         var orderedMaterialKeysRendered = {};
         var orderedWorksheetRendered = false;
         function markOrderedMaterialRendered(key) {
@@ -31320,7 +31582,10 @@
           );
         }
         function usesDeclaredMaterialOrdering() {
-          return !!(declaredMaterialOrder && !rolePrecedenceActive);
+          return !!(declaredMaterialOrder && !rolePrecedenceActive && !typeBucketFallbackActive);
+        }
+        function usesAuthoritativeMaterialOrdering() {
+          return authoritativeMaterialOrderActive;
         }
         function resolveRolePrecedenceHeading(planItem) {
           var key = String((planItem && planItem.key) || "");
@@ -31472,6 +31737,22 @@
               }
             }
           });
+        } else if (typeBucketFallbackActive) {
+          typeBucketFallbackPlan.forEach(function (planItem) {
+            var fallbackHeading = resolveRolePrecedenceHeading(planItem);
+            var fallbackBlock = renderOrderedMaterialKeyBlock(planItem.key, fallbackHeading);
+            if (fallbackBlock) {
+              parts.push(fallbackBlock);
+              markOrderedMaterialRendered(planItem.key);
+              syncMaterialRenderFlagsForKey(planItem.key);
+              if (
+                roleRenderMod &&
+                typeof roleRenderMod.markRoleAliasGroupRendered === "function"
+              ) {
+                roleRenderMod.markRoleAliasGroupRendered(markOrderedMaterialRendered, planItem.role_family);
+              }
+            }
+          });
         }
         var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
         if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
@@ -31564,6 +31845,7 @@
         }
         var checklistValue = materials.checklist;
         if (
+          !authoritativeMaterialOrderActive &&
           !checklistRendered &&
           !wasOrderedMaterialRendered("checklist") &&
           !shouldSkipKeyForRolePrecedence("checklist") &&
@@ -31590,6 +31872,7 @@
         }
         var evaluationChecklistValue = materials.evaluation_checklist;
         if (
+          !authoritativeMaterialOrderActive &&
           !checklistRendered &&
           !wasOrderedMaterialRendered("evaluation_checklist") &&
           !shouldSkipKeyForRolePrecedence("evaluation_checklist") &&
@@ -31611,6 +31894,7 @@
         }
         var templateValue = firstNonEmptyRaw([materials.template, materials.templates, materials.worksheet_template]);
         if (
+          !authoritativeMaterialOrderActive &&
           !shouldSkipKeyForRolePrecedence("template") &&
           !wasOrderedMaterialRendered("template") &&
           !wasOrderedMaterialRendered("independent_judgement_template") &&
@@ -31622,7 +31906,10 @@
             templateRendered = true;
           }
         }
-        var tableSource = orderedWorksheetRendered ? null : resolveWorksheetTableSource(materials);
+        var tableSource =
+          authoritativeMaterialOrderActive || orderedWorksheetRendered
+            ? null
+            : resolveWorksheetTableSource(materials);
         if (!utilityIsEmptyValue(tableSource)) {
           var csvWorksheetTable = utilityTryRenderCsvLikeMaterialTable(tableSource);
           if (csvWorksheetTable) {
@@ -31688,18 +31975,18 @@
           if (shouldSkipKeyForRolePrecedence(k)) {
             return;
           }
-          if ((usesDeclaredMaterialOrdering() || rolePrecedenceActive) && checklistRendered && /checklist/i.test(lowerK)) {
+          if (usesAuthoritativeMaterialOrdering() && checklistRendered && /checklist/i.test(lowerK)) {
             return;
           }
           if (
-            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
+            usesAuthoritativeMaterialOrdering() &&
             scenariosRendered &&
             (lowerK === "scenarios" || lowerK === "scenario" || lowerK === "scenario_maya_households" || lowerK === "scenario_maya_strategy_menu")
           ) {
             return;
           }
           if (
-            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
+            usesAuthoritativeMaterialOrdering() &&
             orderedWorksheetRendered &&
             /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
               lowerK
@@ -31708,7 +31995,7 @@
             return;
           }
           if (
-            (usesDeclaredMaterialOrdering() || rolePrecedenceActive) &&
+            usesAuthoritativeMaterialOrdering() &&
             wasOrderedMaterialRendered("worked_analytic_pass") &&
             lowerK === "worked_example"
           ) {
@@ -35554,9 +35841,19 @@
     var metadataKeys = {
       source_artefacts: true,
       constraints_applied: true,
-      generation_notes: true
+      generation_notes: true,
+      visual_affordance_schema_version: true,
+      activities_visual_review: true,
+      visual_affordances: true
     };
-    var pageMetadataKeyOrder = ["source_artefacts", "constraints_applied", "generation_notes"];
+    var pageMetadataKeyOrder = [
+      "source_artefacts",
+      "constraints_applied",
+      "generation_notes",
+      "visual_affordance_schema_version",
+      "activities_visual_review",
+      "visual_affordances"
+    ];
     var pageSectionsArray = getPageSectionsArray(parsed);
     var pageSectionsForRender = getPageSectionsForRender(parsed);
     var pageBodyFromSectionsArray =
@@ -37271,6 +37568,8 @@
     prismTestApi.buildWorkflowStepPromptAugmentContextFromStep =
       buildWorkflowStepPromptAugmentContextFromStep;
     prismTestApi.resolveStepPromptText = resolveStepPromptText;
+    prismTestApi.isStaleCatalogSeededStepOverride = isStaleCatalogSeededStepOverride;
+    prismTestApi.resolveLiveCatalogStepPromptBody = resolveLiveCatalogStepPromptBody;
     prismTestApi.utilityNormalizeEmbeddedListItemText = utilityNormalizeEmbeddedListItemText;
     prismTestApi.evaluateTableRowAdequacyForLearnerTask = evaluateTableRowAdequacyForLearnerTask;
     prismTestApi.evaluateSelfDirectedSourceReadingSufficiency =
@@ -37400,6 +37699,7 @@
     prismTestApi.utilityMaterialValueToCsvRowTextsForTest = utilityMaterialValueToCsvRowTexts;
     prismTestApi.resolveWorksheetTableSourceForTest = resolveWorksheetTableSource;
     prismTestApi.resolveWorksheetTableSourceWithMetaForTest = resolveWorksheetTableSourceWithMeta;
+    prismTestApi.utilityUnwrapWorksheetTablePayloadForTest = utilityUnwrapWorksheetTablePayload;
     prismTestApi.utilitySanitizeLeakedInternalRenderTokensForTest =
       utilitySanitizeLeakedInternalRenderTokens;
     prismTestApi.resolveLearnerWorkshopMaterialVisibilityPolicyForTest =
@@ -37559,6 +37859,8 @@
     prismTestApi.applyEpisodePlanPopulationEnforcementToDlaCapture =
       applyEpisodePlanPopulationEnforcementToDlaCapture;
     prismTestApi.resolveEpisodePlansForDlaPopulation = resolveEpisodePlansForDlaPopulation;
+    prismTestApi.tryResolveCanonicalEpisodePlansDeriveFallback =
+      tryResolveCanonicalEpisodePlansDeriveFallback;
     prismTestApi.buildEpisodePlanDlaPopulationPromptBlock = buildEpisodePlanDlaPopulationPromptBlock;
     prismTestApi.applyEpisodePlanDlaPopulationPromptBlockToDraft =
       applyEpisodePlanDlaPopulationPromptBlockToDraft;

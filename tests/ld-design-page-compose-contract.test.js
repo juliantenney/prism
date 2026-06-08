@@ -29,6 +29,7 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module
     })
   });
   assert.match(text, /additive page-root metadata only/i);
+  assert.match(text, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(text, /LD-MATERIALS-COPY \| Layer: L4/i);
   assert.match(text, /Preserve role \(Design Page\)/i);
   assert.match(text, /LD-TABLE-FIDELITY \| Layer: L4/i);

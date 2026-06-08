@@ -15,16 +15,15 @@ const { validateDla38LObligations } = require(path.join(
 ));
 
 const DLA_MARKERS = [
-  "IFP-09",
-  "IFP-10",
+  "OBLIGATION POPULATION (38S",
   "DLA-WB-26",
   "DLA-WB-27",
   "DLA-WB-28",
   "DLA-WB-29",
   "DLA-WB-30",
   "DLA-WB-31",
-  "transfer_prompt",
-  "depth_floor"
+  "depth_floor",
+  "transfer_prompt"
 ];
 
 function loadAugmentedDlaPrompt() {
@@ -153,7 +152,7 @@ function loadAugmentedDlaPrompt() {
 
 test("38L DLA augmented prompt surface includes mandatory pack markers", () => {
   const augmented = loadAugmentedDlaPrompt();
-  assert.ok(augmented.length > 25000, "expected full pack §5 + runtime augmentations");
+  assert.ok(augmented.length > 12000, "expected pack §5 + runtime augmentations");
   for (const marker of DLA_MARKERS) {
     assert.match(augmented, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
@@ -166,13 +165,13 @@ test("app.js: self-directed DLA example block anti-thin 38L pointer when scaffol
   assert.match(appSrc, /"type": "checklist"/);
 });
 
-test("38L harness DLA user envelope cites IFP-10 and DLA-WB-26..31", () => {
+test("38L harness DLA user envelope cites obligation population gates (38S-final)", () => {
   const harnessPath = path.join(
     repoRoot,
     "docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts/ev-38l-inflation-pipeline-capture-once.mjs"
   );
   const harness = fs.readFileSync(harnessPath, "utf8");
-  assert.match(harness, /IFP-10 emission gates/i);
+  assert.match(harness, /IFP-10 emission gates|OBLIGATION POPULATION/i);
   assert.match(harness, /DLA-WB-26/i);
   assert.match(harness, /DLA-WB-27/i);
   assert.match(harness, /DLA-WB-28\/31/i);

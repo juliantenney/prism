@@ -1,6 +1,8 @@
 # Context for next chat — Sprint 38-S
 
-**Status:** **OPEN** — first-class workflow step wired; manual UI verification pending
+**Status:** **OPEN** — Phase 2 prompt sanitisation + manual workflow hardening
+
+**Start here:** [phase-2/38S-handover-pack.md](phase-2/38S-handover-pack.md) · [phase-2/README.md](phase-2/README.md)
 
 ---
 
@@ -29,5 +31,9 @@ KM → LO → Design Episode Plan → DLA → GAM → Page
 
 ## Remaining 38S work
 
-1. Manual production UI workflow verification (step visible; `episode_plans` persisted).
-2. Construct Learning Sequence classification (delivery vs instructional — not started).
+See [phase-2/38S-handover-pack.md](phase-2/38S-handover-pack.md) §12. Summary:
+
+1. Manual Inflation UI re-run (LO → EP → DLA → GAM → Page)
+2. Phase 2B-b.2 GAM PEL reasoning materials alignment
+3. Phase 2B-c GAM notes + further dedupe
+4. PF-11 round 2 observation doc

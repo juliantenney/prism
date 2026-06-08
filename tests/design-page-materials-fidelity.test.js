@@ -271,6 +271,40 @@ test("Design Page pack §13 38H-3: table-adjunct fidelity in prompt and notes", 
   assert.match(factory.defaultPromptNotes, /DP-TABLE-ADJ-01/i);
 });
 
+test("38S Phase 2C-a: Design Page pack forbids materials shortening and inflation collapse", () => {
+  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
+  const surfaces = [
+    factory.promptTemplate,
+    factory.defaultPromptNotes,
+    factory.runnerInstructions.what_to_check
+  ];
+  for (const text of surfaces) {
+    assert.doesNotMatch(text, /near-verbatim/i, "must not license near-verbatim materials copy");
+    assert.doesNotMatch(text, /shorten only clearly non-essential/i, "must not permit materials shortening");
+  }
+  assert.match(factory.promptTemplate, /Readable page assembly applies to section structure/i);
+  assert.match(factory.promptTemplate, /copy learner-facing delivery content verbatim into activity\.materials\.\*/i);
+  assert.match(factory.promptTemplate, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
+  assert.match(factory.promptTemplate, /generation_notes\.limitations rather than silently compressing/i);
+  assert.match(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
+  assert.match(factory.promptTemplate, /Inflation is a sustained increase/i);
+  assert.match(factory.promptTemplate, /Year 1 basket = £100; Year 2 basket = £105/i);
+  assert.match(factory.promptTemplate, /Demand exceeds supply → demand-pull inflation/i);
+  assert.match(factory.promptTemplate, /Context → Evaluation → Decision → Justification/i);
+  assert.match(factory.promptTemplate, /Apply to real-world inflation/i);
+});
+
+test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbidden collapse patterns", () => {
+  const api = loadPrismTestApi();
+  const augmented = designPageAugmentedPrompt(api);
+  assert.doesNotMatch(augmented, /near-verbatim/i);
+  assert.doesNotMatch(augmented, /shorten only clearly non-essential/i);
+  assert.match(augmented, /FORBIDDEN inflation-collapse substitutes/i);
+  assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
+  assert.match(augmented, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
+  assert.match(augmented, /generation_notes\.limitations rather than silently compressing/i);
+});
+
 test("Design Page learner page_profile does not bias materials summarisation", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const learner = factory.userOptions.find((o) => o.id === "page_profile").choices.find(

@@ -19,6 +19,7 @@ const ldPatternsPath = path.join(
 const templates = require(path.join(repoRoot, "lib", "episode-plan-v1-templates.js"));
 const integration = require(path.join(repoRoot, "lib", "episode-plan-dla-integration.js"));
 const validation = require(path.join(repoRoot, "lib", "episode-plan-v1-validation.js"));
+const strictJson = require(path.join(repoRoot, "lib", "workflow-artefact-json-strict.js"));
 
 function extractLdWorkflowPolicy(md) {
   const idx = md.indexOf("### Workflow Policy");
@@ -42,6 +43,7 @@ function loadPrismTestApi() {
   windowStub.PRISM_EPISODE_PLAN_V1_TEMPLATES = templates;
   windowStub.PRISM_EPISODE_PLAN_DLA_INTEGRATION = integration;
   windowStub.PRISM_EPISODE_PLAN_V1_VALIDATION = validation;
+  windowStub.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT = strictJson;
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -540,4 +542,316 @@ test("legacy workflow without Episode Plan step may use non-canonical LO fallbac
   const plans = api.resolveEpisodePlansForDlaPopulation({ workflow: wf });
   assert.ok(plans && Array.isArray(plans.episode_plans));
   assert.equal(plans.source, "learning_outcomes_fallback_non_canonical");
+});
+
+function extractEpisodePlanPromptFactory() {
+  const md = fs.readFileSync(ldPatternsPath, "utf8");
+  const re =
+    /## 11\. Design Episode Plan[\s\S]*?### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/;
+  const m = md.match(re);
+  assert.ok(m, "Design Episode Plan Prompt Factory");
+  return JSON.parse(m[1].trim());
+}
+
+function extractDlaPromptFactory() {
+  const md = fs.readFileSync(ldPatternsPath, "utf8");
+  const idx = md.indexOf("## 5. Design Learning Activities");
+  assert.ok(idx !== -1, "Design Learning Activities section");
+  const rest = md.slice(idx);
+  const pfIdx = rest.indexOf("### Prompt Factory");
+  const jstart = rest.indexOf("```json", pfIdx);
+  const jend = rest.indexOf("```", jstart + 7);
+  return JSON.parse(rest.slice(jstart + 7, jend).trim());
+}
+
+test("Design Episode Plan pack requires pretty-printed fenced JSON output", () => {
+  const factory = extractEpisodePlanPromptFactory();
+  assert.match(factory.promptTemplate, /Pretty-print JSON with 2-space indentation/i);
+  assert.match(factory.promptTemplate, /never minified single-line JSON/i);
+  assert.match(factory.promptTemplate, /Return ONLY one markdown fenced JSON block/i);
+  assert.match(factory.promptTemplate, /complete valid JSON only/i);
+});
+
+test("Design Episode Plan runtime prompt appends strict output contract", () => {
+  const factory = extractEpisodePlanPromptFactory();
+  const step = {
+    canonical_step_id: "step_design_episode_plan",
+    title: "Design Episode Plan",
+    outputName: "episode_plans",
+    override_prompt_body: factory.promptTemplate,
+    prompt_source_type: "local_override"
+  };
+  const resolved = api.resolveStepPromptText(step, { id: "wf-ep-fmt" });
+  assert.match(resolved.text, /Output contract \(strict — fenced JSON block only\)/i);
+  assert.match(resolved.text, /Pretty-print JSON with 2-space indentation/i);
+  assert.match(resolved.text, /Do NOT emit minified single-line JSON/i);
+  assert.match(resolved.text, /"activity_id": "LO1"/);
+});
+
+test("final-sanitised DLA pack (38S) injects authoritative upstream episode_plans on copy", () => {
+  const factory = extractDlaPromptFactory();
+  assert.match(factory.promptTemplate, /upstream episode_plans/i);
+  assert.doesNotMatch(factory.promptTemplate, /### Upstream episode_plans/i);
+
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const seeded = api.buildSeededStepPromptForWorkflowStep({
+    workflowName: "Inflation",
+    step: {
+      id: "dla_step",
+      title: "Design Learning Activities",
+      canonical_step_id: "step_design_learning_activities",
+      outputName: "learning_activities"
+    },
+    matchedPattern: { promptFactory: factory }
+  });
+  assert.match(seeded, /upstream episode_plans/i);
+  assert.doesNotMatch(
+    seeded,
+    /### Upstream episode_plans/i,
+    "pack prose must not false-trigger upstream-section dedup"
+  );
+
+  const wf = {
+    id: "wf-38s-final-dla-copy",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities",
+        override_prompt_body: seeded,
+        prompt_source_type: "local_override"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-38s-final-dla-copy");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const instr = api.buildWorkflowStepInstructions(wf.steps[2], 2, null);
+  assert.match(instr, /Upstream artefact "episode_plans"/);
+  assert.match(instr, /### Upstream episode_plans \(authoritative/i);
+  assert.match(instr, /"episode_plans"\s*:\s*\[/);
+  assert.doesNotMatch(instr, /PF-11: missing episode_plans upstream/i);
+  assert.doesNotMatch(instr, /PF-11: upstream `episode_plans` capture is missing/i);
+});
+
+test("DLA resolver uses canonical derive when EP capture fails V1 but LO exists", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const invalidEp = JSON.stringify(
+    {
+      episode_plans: [
+        {
+          activity_id: "A1",
+          archetype: "concept_explanation",
+          beats: [{ function: "introduce_concept" }]
+        }
+      ]
+    },
+    null,
+    2
+  );
+  const wf = {
+    id: "wf-ep-v1-fail",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities",
+        override_prompt_body: "Populate learning activities.",
+        prompt_source_type: "local_override"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-v1-fail");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: invalidEp
+  });
+
+  const diag = api.resolveEpisodePlansForDlaPopulation({ workflow: wf, diagnostic: true });
+  assert.equal(diag.reason, "canonical_derive_fallback");
+  assert.equal(diag.primary_fail_reason, "v1_validation_failed");
+  assert.ok(diag.episodePlans && Array.isArray(diag.episodePlans.episode_plans));
+  assert.match(diag.episodePlans.episode_plans[0].episode_plan.archetype, /understand/);
+
+  const instr = api.buildWorkflowStepInstructions(wf.steps[2], 2, null);
+  assert.match(instr, /"episode_plans" from step "Design Episode Plan"/);
+  assert.match(instr, /### Upstream episode_plans \(authoritative/i);
+  assert.doesNotMatch(instr, /PF-11: missing episode_plans upstream/i);
+  assert.doesNotMatch(instr, /### Upstream episode_plans \(required — missing\)/i);
+});
+
+test("manual DLA copy refreshes stale persisted override from live catalog pack", () => {
+  const factory = extractDlaPromptFactory();
+  const staleOverride = [
+    "Context:",
+    "You are provided with learning_outcomes (and optionally knowledge_model or learning_content).",
+    "",
+    "Task:",
+    "Design executable learning_activities that are directly runnable in teaching delivery.",
+    "",
+    "Instructional function planning (IFP — internal reasoning only):",
+    "- IFP-00 SEQUENCE: collect mapped_learning_outcomes; replan IFP-00 A–K before JSON",
+    "- IFP-01 ARCHETYPE SELECTION (38I-3 LO-ARC): primary_archetype = max cognitive demand",
+    "- DLA-WB-25 (38J-3 session arc): document activity_index fade in delivery_notes — ARC-01..06"
+  ].join("\n");
+
+  api.setWorkflowStepPatternCatalogForTest([
+    {
+      title: "Design Learning Activities",
+      canonicalStepId: "step_design_learning_activities",
+      promptFactory: factory
+    }
+  ]);
+  assert.ok(
+    api.isStaleCatalogSeededStepOverride(staleOverride, factory.promptTemplate),
+    "pre-38S-final override must be detected as stale"
+  );
+
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const wf = {
+    id: "wf-stale-dla-copy",
+    name: "Inflation",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities",
+        override_prompt_body: staleOverride,
+        prompt_source_type: "local_override"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-stale-dla-copy");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const refreshed = api.resolveLiveCatalogStepPromptBody(wf.steps[2], wf);
+  assert.ok(refreshed.length > staleOverride.length);
+  assert.match(refreshed, /OBLIGATION POPULATION \(38S/i);
+  assert.doesNotMatch(refreshed, /IFP-00 SEQUENCE/i);
+  assert.doesNotMatch(refreshed, /IFP-01 ARCHETYPE SELECTION/i);
+  assert.doesNotMatch(refreshed, /DLA-WB-25/i);
+
+  const instr = api.buildWorkflowStepInstructions(wf.steps[2], 2, null);
+  assert.match(instr, /OBLIGATION POPULATION \(38S/i);
+  assert.doesNotMatch(instr, /IFP-00 SEQUENCE/i);
+  assert.doesNotMatch(instr, /IFP-01 ARCHETYPE SELECTION/i);
+  assert.doesNotMatch(instr, /DLA-WB-25/i);
+  assert.doesNotMatch(instr, /Design executable learning_activities that are directly runnable/i);
+  assert.match(instr, /### Upstream episode_plans \(authoritative/i);
+  assert.doesNotMatch(instr, /PF-11: missing episode_plans upstream/i);
+  assert.ok(
+    instr.length < 28000,
+    "manual copy must not balloon to pre-sanitisation ~33k; got " + instr.length
+  );
+});
+
+test("DLA prompt injects authoritative upstream section when pack mentions upstream episode_plans", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const wf = {
+    id: "wf-ep-pack-mention",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-pack-mention");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const packDraft =
+    "Instructional function planning: upstream episode_plans owns archetype and beat order.";
+  const draft = api.applyEpisodePlanDlaPopulationPromptBlockToDraft(
+    packDraft,
+    {
+      stepCanonicalStepId: "step_design_learning_activities",
+      stepCanonicalTitle: "Design Learning Activities"
+    },
+    wf
+  );
+  assert.match(draft, /### Upstream episode_plans/i);
+  assert.match(draft, /"episode_plans"/);
+  assert.doesNotMatch(draft, /PF-11: upstream `episode_plans` capture is missing/i);
+});
+
+test("Design Episode Plan copy instructions include STEP N OUTPUT footer outside fenced JSON", () => {
+  const factory = extractEpisodePlanPromptFactory();
+  const step = {
+    id: "ep_copy",
+    canonical_step_id: "step_design_episode_plan",
+    title: "Design Episode Plan",
+    outputName: "episode_plans",
+    override_prompt_body: factory.promptTemplate,
+    prompt_source_type: "local_override"
+  };
+  const instr = api.buildWorkflowStepInstructions(step, 2);
+  assert.match(instr, /Copilot output contract: return one pretty-printed fenced JSON block/i);
+  assert.match(instr, /runner completion line as plain text outside the JSON block/i);
+  assert.match(instr, /STEP\s+3\s+OUTPUT:\s+episode_plans/i);
+  assert.match(instr, /outside the artefact block/i);
 });

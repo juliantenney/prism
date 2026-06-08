@@ -1,0 +1,29 @@
+{
+  "phase": "38S-final-DLA",
+  "timestamp": "2026-06-08T14:52:36.606Z",
+  "dlaPromptBefore": 13189,
+  "dlaNotesBefore": 793,
+  "dlaPromptBaseline38S": 24826,
+  "dlaNotesBaseline38S": 2293,
+  "dlaPromptAfter": 13189,
+  "dlaNotesAfter": 794,
+  "dlaPromptDeltaFromBaseline": -11637,
+  "dlaNotesDeltaFromBaseline": -1499,
+  "targetPackChars": "14000-17000",
+  "checks": {
+    "populationFirstContext": true,
+    "populationFirstTask": true,
+    "noReplanFunctionSequence": true,
+    "noIFP09DepthFloors": true,
+    "noIFP10Closure": true,
+    "hasObligationPopulation": true,
+    "noDlaWb25": true,
+    "noDlaWb26Standalone": true,
+    "hasIFP04": true,
+    "hasIFP05": true,
+    "hasIFP06": true,
+    "hasPreEmitGate": true,
+    "noReplanBeforeJson": true,
+    "targetSize14to16k": false
+  }
+}

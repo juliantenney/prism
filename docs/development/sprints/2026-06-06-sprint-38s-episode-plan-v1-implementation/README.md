@@ -7,7 +7,7 @@
 **Harness closure:** [observations/38S-6-sprint-closure.md](observations/38S-6-sprint-closure.md) (superseded for workflow/UI gate)  
 **Predecessor:** [Sprint 38-R — Instructional Episode Plan Design Proof](../2026-06-06-sprint-38r-instructional-episode-plan-design-proof/) (**CLOSED** — [38R-6](../2026-06-06-sprint-38r-instructional-episode-plan-design-proof/observations/38R-6-sprint-closure.md) · **SUCCESS**)
 
-**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
+**Quick resume:** [CONTEXT-FOR-NEXT-CHAT.md](CONTEXT-FOR-NEXT-CHAT.md) · [phase-2/38S-handover-pack.md](phase-2/38S-handover-pack.md) · [HANDOVER.md](HANDOVER.md) · [IMPLEMENTATION-CHARTER.md](IMPLEMENTATION-CHARTER.md)
 
 ---
 
@@ -68,7 +68,8 @@ episode_plan:
 | **38S-3** | DLA obligation tagging | [38S-3](observations/38S-3-dla-obligation-tagging.md) | **COMPLETE** |
 | **38S-4** | Proof execution | [38S-4](observations/38S-4-proof-execution.md) | **COMPLETE** — **Partial success (B)** |
 | **38S-5** | Evaluation and recommendation | [38S-5](observations/38S-5-evaluation-and-recommendation.md) | **COMPLETE** |
-| **38S-6** | Closure | [38S-6](observations/38S-6-sprint-closure.md) | **NEXT** |
+| **38S-6** | Closure | [38S-6](observations/38S-6-sprint-closure.md) | **COMPLETE** (harness) |
+| **Phase 2** | Prompt sanitisation + manual workflow | [phase-2/](phase-2/README.md) | **IN PROGRESS** |
 
 ---
 

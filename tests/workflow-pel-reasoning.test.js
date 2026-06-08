@@ -230,12 +230,14 @@ test("30-2: GAM runtime prompt includes reasoning contract and material support"
   assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
 });
 
-test("30-2b: GAM prompts forbid facilitator labels and restating activity fields", () => {
+test("30-2b: GAM prompts forbid facilitator labels; material voice preserves GAM-PRES-08 depth", () => {
   const prompt = gamScaffoldPrompt(MARX_SELF_STUDY_BRIEF);
   assert.match(prompt, /Tutor guidance/i);
   assert.match(prompt, /Never emit facilitator-facing headings/i);
-  assert.match(prompt, /Do not restate learner_task/i);
-  assert.match(prompt, /evidence_use_prompt/i);
+  assert.match(prompt, /GAM-PRES-08/i);
+  assert.match(prompt, /anti-redundancy must never reduce a material below the minimum instructional richness/i);
+  assert.match(prompt, /Prefer instructional completeness over brevity/i);
+  assert.doesNotMatch(prompt, /add artefacts \(tables, excerpts, worked rows\) only/i);
   assert.match(prompt, /comparison scaffolds and evidence tables/i);
 });
 

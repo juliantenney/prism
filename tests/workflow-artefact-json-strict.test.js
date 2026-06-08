@@ -256,6 +256,54 @@ test("strict contract blocks include KM, LS, and LO fenced keys", () => {
   assert.match(loBlock, /fenced JSON block only/i);
   assert.match(loBlock, /learning_outcomes root object/i);
   assert.match(loBlock, /learning_outcomes \(required array\)/);
+  const epBlock = strict.buildStrictEpisodePlansOutputContractBlock();
+  assert.match(epBlock, /fenced JSON block only/i);
+  assert.match(epBlock, /episode_plans root object/i);
+  assert.match(epBlock, /Pretty-print JSON with 2-space indentation/i);
+  assert.match(epBlock, /Do NOT emit minified single-line JSON/i);
+  assert.match(epBlock, /"activity_id": "LO1"/);
+});
+
+const sampleEpisodePlans = {
+  episode_plans: [
+    {
+      activity_id: "LO1",
+      episode_plan: {
+        archetype: "understand",
+        beats: [{ function: "explanation" }, { function: "verification" }]
+      }
+    }
+  ]
+};
+
+test("workflow run validator rejects minified episode_plans capture", () => {
+  const check = strict.validateWorkflowStepStrictJsonCapture(
+    "```json\n" + JSON.stringify(sampleEpisodePlans) + "\n```",
+    "episode_plans",
+    sanitizePrismRunCapturedOutput
+  );
+  assert.equal(check.ok, false);
+  assert.ok(check.errors.includes("minified_single_line_json"));
+});
+
+test("workflow run validator accepts pretty-printed fenced episode_plans capture with STEP footer", () => {
+  const check = strict.validateWorkflowStepStrictJsonCapture(
+    fencedJson(sampleEpisodePlans) + "\nSTEP 3 OUTPUT: episode_plans",
+    "episode_plans",
+    sanitizePrismRunCapturedOutput
+  );
+  assert.equal(check.ok, true);
+  assert.ok(Array.isArray(check.parsed.episode_plans));
+});
+
+test("workflow run validator accepts pretty-printed fenced episode_plans capture", () => {
+  const check = strict.validateWorkflowStepStrictJsonCapture(
+    fencedJson(sampleEpisodePlans),
+    "episode_plans",
+    sanitizePrismRunCapturedOutput
+  );
+  assert.equal(check.ok, true);
+  assert.ok(Array.isArray(check.parsed.episode_plans));
 });
 
 test("workflow run validator rejects raw JSON KM capture", () => {
@@ -283,6 +331,8 @@ test("app.js wires strict JSON workflow validation and prompt augmentation", () 
   assert.match(src, /validateStrictJsonWorkflowRunStepCapture/);
   assert.match(src, /applyStrictJsonArtefactContractToDraft/);
   assert.match(src, /buildStrictLearningOutcomesOutputContractBlock/);
+  assert.match(src, /buildStrictEpisodePlansOutputContractBlock/);
+  assert.match(src, /episode_plans/);
   assert.match(src, /workflowRunStrictJsonValidation/);
   assert.match(src, /resolveWorkflowArtefactJsonStrictLib/);
 });

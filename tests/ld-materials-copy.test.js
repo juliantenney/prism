@@ -18,6 +18,11 @@ test("LD-MATERIALS-COPY: preserve role without marker when embedded", () => {
   assert.match(text, /Set of scenarios/i);
   assert.match(text, /PREC-02/i);
   assert.match(text, /LD-TABLE-FIDELITY/i);
+  assert.doesNotMatch(text, /near-verbatim/i);
+  assert.doesNotMatch(text, /shorten only clearly non-essential/i);
+  assert.match(text, /verbatim into activity\.materials\.\*/i);
+  assert.match(text, /FORBIDDEN inflation-collapse substitutes/i);
+  assert.match(text, /Demand exceeds supply → demand-pull inflation/i);
 });
 
 test("LD-MATERIALS-COPY: author role without marker for GAM embed", () => {

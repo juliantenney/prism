@@ -34,8 +34,22 @@
 | **38S-RF1** | Role supersession remediation | [38S-role-supersession-remediation.md](38S-role-supersession-remediation.md) | **COMPLETE (SC-7)** |
 | **38S-6** | Closure | [38S-6-sprint-closure.md](38S-6-sprint-closure.md) | **Superseded** (harness-only) |
 | **38S-WF** | First-class workflow step + V1 enforcement | [38S-first-class-episode-plan-step.md](38S-first-class-episode-plan-step.md) | **COMPLETE** |
+| **Phase 2** | Prompt sanitisation + manual workflow | [../phase-2/README.md](../phase-2/README.md) | **IN PROGRESS** |
 
 ---
+
+## Phase 2 (prompt sanitisation)
+
+All Phase 2 documents live in **[../phase-2/](../phase-2/)**. Start with [38S-handover-pack.md](../phase-2/38S-handover-pack.md) for a new chat.
+
+| Phase | Doc |
+|-------|-----|
+| Handover | [phase-2/38S-handover-pack.md](../phase-2/38S-handover-pack.md) |
+| 2A DLA | [phase-2/38S-prompt-sanitisation-phase-2a-dla-only.md](../phase-2/38S-prompt-sanitisation-phase-2a-dla-only.md) |
+| 2B GAM | [phase-2/38S-prompt-sanitisation-phase-2b-gam-audit.md](../phase-2/38S-prompt-sanitisation-phase-2b-gam-audit.md) |
+| 2B-b PEL | [phase-2/38S-prompt-sanitisation-phase-2b-b-pel-audit.md](../phase-2/38S-prompt-sanitisation-phase-2b-b-pel-audit.md) |
+
+Stub redirects remain under `observations/` for old links.
 
 ## Reading order
 

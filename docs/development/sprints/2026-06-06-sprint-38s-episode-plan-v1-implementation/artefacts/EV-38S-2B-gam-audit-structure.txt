@@ -1,0 +1,6 @@
+GAM PACK STRUCTURE AUDIT
+template chars: 20274
+
+   737 |  9274 chars | Canonical contracts
+ 10011 |  9229 chars | Usability requirements
+ 19240 |  1034 chars | Output organisation

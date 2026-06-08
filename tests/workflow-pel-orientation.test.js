@@ -287,6 +287,9 @@ test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-fac
   assert.match(prompt, /Use this to/i);
   assert.match(prompt, /Check your notes against/i);
   assert.match(prompt, /Before moving on/i);
+  assert.match(prompt, /GAM-PRES-08/i);
+  assert.match(prompt, /Prefer instructional completeness over brevity/i);
+  assert.doesNotMatch(prompt, /add artefacts \(tables, excerpts, worked rows\) only/i);
 });
 
 test("30-1c: facilitated workshop GAM scaffold is not constrained as self-directed learner voice", () => {

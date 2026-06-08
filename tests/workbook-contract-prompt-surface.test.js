@@ -2,9 +2,10 @@
  * Sprint 38-E / 38-F — Workbook contract prompt surface (pack §5 DLA / §6 GAM).
  * 38E: V-02 (AP-01), V-08, V-09, V-03/V-04/V-05/V-06/V-07, preservation unchanged.
  * 38F: V-01 (DLA-WB-06a, GAM-WB-38F-01), V-05 (DLA-WB-18, GAM-WB-10 F5), 38E-8/9 co-presence, V-13.
- * 38J: IFP-04..10 (38J-3 §5; 38S-2A removed IFP-00..03/07/08), DLA-WB-22..25; GAM-PRES, GAM-WB-22..25, F8 (38J-4 §6).
- * 38L: IFP-09..10, DLA-WB-26..30 (38L-2 §5); GAM-PRES-08/09, GAM-WB-26..30, F9 (38L-3 §6);
- * 38L-4: INF-EVAL-01, EV-CAP-04, DLA-WB-31 (§5); GAM-PRES-10, GAM-WB-31 (§6); harness alignment.
+ * 38J: IFP-04..10 (38J-3 §5; 38S-2A removed IFP-00..03/07/08), DLA-WB-22..25; GAM-PRES (38J-4 §6; 38S-2B removed GAM-WB-22..31).
+ * 38L: IFP-09..10, DLA-WB-26..30 (38L-2 §5); GAM-PRES-08/09/10 (38L-3/4 §6; 38S-2B removed GAM-WB-26..31).
+ * 38L-4: INF-EVAL-01, EV-CAP-04, DLA-WB-31 (§5); GAM-PRES-10 (§6); harness alignment.
+ * 38S-2B: GAM pack dedupe — removed Material-type duplicate, GAM-WB-22..31; retained GAM-PRES + output org.
  */
 
 const test = require("node:test");
@@ -65,9 +66,9 @@ test("pack §6: self-study workbook GAM-WB block and AP-01 invalid", () => {
 
 test("pack §6: genre material guidance covers CW-REF minimum tokens", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /scenario:/i);
+  assert.match(t, /GAM-PRES-03.*scenario|scenario → case narratives/i);
   assert.match(t, /sample_output|worked_example/i);
-  assert.match(t, /task_cards:/i);
+  assert.match(t, /task_cards|prompt_set/i);
   assert.match(t, /checklist|retrieval_check/i);
   assert.match(t, /transfer_prompt/i);
   assert.match(t, /rubric|quality_criteria/i);
@@ -259,18 +260,18 @@ test("pack §6 38J-4: GAM-PRES preservation block — DLA decides, GAM realises"
   assert.doesNotMatch(t, /DLA-WB-/i);
 });
 
-test("pack §6 38J-4: function-order and no-collapse (GAM-WB-22/23, F8)", () => {
+test("pack §6 38J-4: function-order and no-collapse (GAM-PRES-01/02)", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-22.*38J-4/i);
-  assert.match(t, /GAM-WB-23.*no-collapse|NO COLLAPSE/i);
+  assert.match(t, /GAM-PRES-01.*FUNCTION ORDER/i);
+  assert.match(t, /GAM-PRES-02.*NO COLLAPSE/i);
   assert.match(t, /criteria exposition.*worked judgement.*guided judgement/i);
-  assert.match(t, /\(F8\)/i);
   assert.match(t, /F1–F9|F1-F9/i);
+  assert.doesNotMatch(t, /GAM-WB-22/i);
 });
 
 test("pack §6 38J-4: Evaluate A4 preservation and anti-spoiler", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-24.*38J-4|38I-4 A4/i);
+  assert.match(t, /GAM-PRES-06.*EVALUATE PRESERVATION|GAM-PRES-08.*independent judgement/i);
   assert.match(t, /weak vs strong/i);
   assert.match(t, /EV-GAM-FAIL/i);
   assert.match(t, /AS-GAM-FAIL/i);
@@ -282,7 +283,7 @@ test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanni
   assert.match(gam.defaultPromptNotes, /38J-4/i);
   assert.match(gam.defaultPromptNotes, /DLA decides, GAM realises/i);
   assert.match(gam.defaultPromptNotes, /F1–F9|F1-F9/i);
-  assert.match(gam.defaultPromptNotes, /GAM-WB-24/i);
+  assert.match(gam.defaultPromptNotes, /GAM-PRES-08|GAM-WB-24/i);
   assert.doesNotMatch(gam.defaultPromptNotes, /IFP-00/i);
 });
 
@@ -368,41 +369,44 @@ test("pack §6 38L-3: GAM-PRES-08 depth-shaped bodies and GAM-PRES-09 anti-colla
 
 test("pack §6 38L-3: verification realisation (R1)", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-26.*38L-3/i);
-  assert.match(t, /38L-3 verification R1/i);
+  assert.match(t, /GAM-PRES-08.*verification|verification checklist/i);
+  assert.match(t, /38L-3 verification R1|38L-3 R2\/R3/i);
   assert.match(t, /repair.*fail|repair-if-fail|repair path/i);
-  assert.match(t, /NOT reflective question only/i);
+  assert.match(t, /NOT (?:a single )?reflective question only|NOT a single reflective question/i);
+  assert.doesNotMatch(t, /GAM-WB-26 \(38L-3/i);
 });
 
 test("pack §6 38L-3: Analyse worked analytic pass (R6)", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-27.*38L-3/i);
-  assert.match(t, /worked analytic pass/i);
+  assert.match(t, /GAM-PRES-08.*worked analytic pass|worked analytic pass/i);
   assert.match(t, /analytical lens/i);
   assert.match(t, /DEPTH-COLLAPSE-03/i);
+  assert.doesNotMatch(t, /GAM-WB-27 \(38L-3/i);
 });
 
 test("pack §6 38L-3: Evaluate completion realisation (R5)", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-28.*38L-3/i);
-  assert.match(t, /38L-3 R5 transfer/i);
+  assert.match(t, /GAM-PRES-10.*38L-4|GAM-PRES-10 EVALUATE COMPLETION/i);
+  assert.match(t, /38L-3 R5 transfer|transfer_prompt/i);
   assert.match(t, /independent judgement/i);
-  assert.match(t, /consolidation_summary must NOT absorb/i);
+  assert.match(t, /consolidation_summary must NOT (?:absorb|substitute)/i);
+  assert.doesNotMatch(t, /GAM-WB-28 \(38L-3/i);
 });
 
-test("pack §6 38L-3: GAM-WB-29/30 and F9 fail rule", () => {
+test("pack §6 38L-3: GAM-PRES-09 anti-collapse and F9 fail rule", () => {
   const t = gam.promptTemplate;
-  assert.match(t, /GAM-WB-29.*38L-3/i);
-  assert.match(t, /GAM-WB-30.*38L-3/i);
-  assert.match(t, /\(F9\)/i);
+  assert.match(t, /GAM-PRES-09 ANTI-DEPTH-COLLAPSE/i);
+  assert.match(t, /DEPTH-COLLAPSE-01/i);
+  assert.match(t, /contract FAIL \(F9\)/i);
   assert.match(t, /F1–F9|F1-F9/i);
+  assert.doesNotMatch(t, /GAM-WB-29 \(38L-3/i);
+  assert.doesNotMatch(t, /GAM-WB-30 \(38L-3/i);
 });
 
 test("pack §6 38L-3: defaultPromptNotes reinforce depth-shaped bodies", () => {
   assert.match(gam.defaultPromptNotes, /38L-3/i);
   assert.match(gam.defaultPromptNotes, /GAM-PRES-08/i);
-  assert.match(gam.defaultPromptNotes, /GAM-WB-26/i);
-  assert.match(gam.defaultPromptNotes, /DEPTH-COLLAPSE/i);
+  assert.match(gam.defaultPromptNotes, /GAM-WB-26|DEPTH-COLLAPSE/i);
 });
 
 test("pack §5 unchanged after 38L-3: IFP-09 and DLA-WB-26..30 still present", () => {
@@ -437,12 +441,12 @@ test("pack §5 38L-4: defaultPromptNotes reinforce closure integration", () => {
   assert.match(dla.defaultPromptNotes, /DLA-WB-31/i);
 });
 
-test("pack §6 38L-4: GAM-PRES-10 and GAM-WB-31 Evaluate completion termination", () => {
+test("pack §6 38L-4: GAM-PRES-10 Evaluate completion termination", () => {
   const t = gam.promptTemplate;
   assert.match(t, /GAM-PRES-10.*38L-4/i);
   assert.match(t, /EV-GAM-FAIL-07/i);
-  assert.match(t, /GAM-WB-31.*38L-4/i);
   assert.match(t, /guided judgement table alone is insufficient/i);
+  assert.doesNotMatch(t, /GAM-WB-31/i);
 });
 
 test("pack §6 38L-4: defaultPromptNotes reinforce completion termination", () => {
@@ -471,4 +475,34 @@ test("38L-4 harness: frozen LO contract and benchmark-aligned capture script", (
   assert.equal(frozen.learning_outcomes[3].cognitive_level, "Evaluate");
   assert.match(frozen.learning_outcomes[3].statement, /household/i);
   assert.doesNotMatch(frozen.learning_outcomes[3].statement, /Summarize.*policy communication/i);
+});
+
+// --- Sprint 38-S Phase 2B (GAM pack dedupe) ---
+
+test("pack §6 38S-2B: duplicate Material-type section and GAM-WB-22..31 removed", () => {
+  const t = gam.promptTemplate;
+  assert.doesNotMatch(t, /Material-type realisation guidance:/i);
+  assert.doesNotMatch(t, /GAM-WB-22/i);
+  assert.doesNotMatch(t, /GAM-WB-31/i);
+  assert.match(t, /GAM-PRES-00/i);
+  assert.match(t, /GAM-PRES-10/i);
+});
+
+test("pack §6 38S-2B: single canonical Output organisation and Scope", () => {
+  const t = gam.promptTemplate;
+  assert.equal((t.match(/Output organisation:/g) || []).length, 1);
+  assert.equal((t.match(/Scope boundaries:/g) || []).length, 1);
+  assert.match(t, /Return only the final organised materials content/i);
+});
+
+test("pack §6 38S-2B: GAM prompt size reduced vs Phase 2B baseline", () => {
+  const metricsPath = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-06-06-sprint-38s-episode-plan-v1-implementation/artefacts/EV-38S-2B-gam-prompt-metrics.json"
+  );
+  const metrics = JSON.parse(fs.readFileSync(metricsPath, "utf8"));
+  assert.ok(metrics.promptTemplateBefore >= 26000);
+  assert.ok(metrics.promptTemplateAfter <= 21000);
+  assert.ok(metrics.promptTemplateDelta >= 6000);
+  assert.equal(gam.promptTemplate.length, metrics.promptTemplateAfter);
 });

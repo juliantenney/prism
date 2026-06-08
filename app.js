@@ -172,6 +172,7 @@
     workflowRunCopiedStepId: "",
     /** Ephemeral run-mode captured step output per step id, sanitized (not persisted on workflow). */
     workflowRunCapturedOutputs: {},
+    workflowRunPf11DiagnosticTrace: null,
     /** Ephemeral: raw pasted Copilot output per step id (textarea rehydrate; not persisted). */
     workflowRunCapturedOutputsRaw: {},
     /** Run-mode: user advanced past this step (Next); drives UI-only completion line. */
@@ -8181,11 +8182,18 @@
   function applyEpisodePlanDlaPopulationPromptBlockToDraft(draftText, context, wf) {
     var draftBody = String(draftText || "").trim();
     if (!isWorkflowStepDesignLearningActivities(context)) return draftBody;
+    syncAllWorkflowRunCapturesFromDomToState();
     var block = buildEpisodePlanDlaPopulationPromptBlock();
-    var workflow = wf || (state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null);
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
     var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: workflow });
+    var requireUpstream = workflowHasDesignEpisodePlanStep(workflow);
+    if (requireUpstream && !episodePlans) {
+      emitPf11DlaUpstreamDiagnosticTrace(context, workflow, {
+        reason: "applyEpisodePlanDlaPopulationPromptBlockToDraft"
+      });
+    }
     var upstreamSection = buildEpisodePlanUpstreamPromptSection(episodePlans, {
-      requireUpstream: workflowHasDesignEpisodePlanStep(workflow)
+      requireUpstream: requireUpstream
     });
     var appendParts = [];
     if (block && !/episode plan population contract \(38s-3/i.test(draftBody)) {
@@ -8198,50 +8206,419 @@
     return (draftBody + "\n" + appendParts.join("\n")).trim();
   }
 
-  function resolveUpstreamWorkflowArtefactFromCaptures(outputName) {
-    var captures = state.workflowRunCapturedOutputs || {};
+  function readRunStepCaptureRawFromLi(li) {
+    if (!li) return "";
+    var ta = li.querySelector('[data-field="runStepOutput"]');
+    return ta ? String(ta.value || "") : "";
+  }
+
+  function buildWorkflowStepRowFromRunLi(li, wf) {
+    if (!li) return null;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    if (!wfRec && state.selectedWorkflowId) {
+      wfRec = findWorkflowById(state.selectedWorkflowId);
+    }
+    var persisted = null;
+    if (wfRec && Array.isArray(wfRec.steps) && sid) {
+      persisted =
+        wfRec.steps.find(function (row) {
+          return String(row && row.id ? row.id : "") === sid;
+        }) || null;
+    }
+    var titleInput = li.querySelector('[data-field="title"]');
+    var outputInput = li.querySelector('[data-field="outputName"]');
+    var roleInput = li.querySelector('[data-field="roleLabel"]');
+    var row = Object.assign({}, persisted || {}, {
+      id: sid || (persisted && persisted.id ? persisted.id : ""),
+      title:
+        titleInput && typeof titleInput.value === "string"
+          ? titleInput.value
+          : persisted && persisted.title
+          ? persisted.title
+          : "",
+      roleLabel:
+        roleInput && typeof roleInput.value === "string"
+          ? roleInput.value
+          : persisted && persisted.roleLabel
+          ? persisted.roleLabel
+          : "",
+      outputName:
+        outputInput && typeof outputInput.value === "string"
+          ? outputInput.value
+          : persisted && persisted.outputName
+          ? persisted.outputName
+          : "",
+      canonical_step_id:
+        String(li.getAttribute("data-canonical-step-id") || "").trim() ||
+        (persisted && persisted.canonical_step_id ? persisted.canonical_step_id : "")
+    });
+    return backfillWorkflowStepCatalogMetadata(
+      row,
+      state.workflowStepPatternCatalog || [],
+      null
+    );
+  }
+
+  function syncAllWorkflowRunCapturesFromDomToState() {
+    getWorkflowStepElements().forEach(function (li) {
+      syncWorkflowRunCapturedOutputToState(li);
+    });
+  }
+
+  function resolveWorkflowForUpstreamArtefacts(opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    function mapBackfill(steps) {
+      return (Array.isArray(steps) ? steps : []).map(function (step) {
+        return backfillWorkflowStepCatalogMetadata(step, catalog, null);
+      });
+    }
+    if (options.workflow && Array.isArray(options.workflow.steps)) {
+      var explicit = Object.assign({}, options.workflow);
+      explicit.steps = mapBackfill(explicit.steps);
+      return explicit;
+    }
+    var inRun =
+      !!(
+        els.workflowDetail &&
+        els.workflowDetail.classList &&
+        els.workflowDetail.classList.contains("run-mode")
+      );
+    if (inRun) {
+      var gathered = gatherWorkflowDetailFormData();
+      if (gathered && Array.isArray(gathered.steps) && gathered.steps.length) {
+        return {
+          id: gathered.id || state.selectedWorkflowId || "",
+          steps: mapBackfill(gathered.steps)
+        };
+      }
+    }
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
-    if (!wf || !Array.isArray(wf.steps)) return null;
+    if (!wf) return null;
+    var next = Object.assign({}, wf);
+    next.steps = mapBackfill(wf.steps || []);
+    return next;
+  }
+
+  function resolveWorkflowStepDependencyProduces(stepTitle, wf) {
+    var title = String(stepTitle || "").trim();
+    if (!title) return [];
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var canonical = pickCanonicalWorkflowStepTitle(title, catalog) || title;
+    var produces = suggestWorkflowOutputNameForStepTitle(canonical, catalog, null);
+    return produces ? [produces] : [];
+  }
+
+  function buildPf11DlaUpstreamDiagnosticTrace(context, wf, opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    var ctx = context && typeof context === "object" ? context : {};
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var captures = state.workflowRunCapturedOutputs || {};
+    var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var persistedWf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var resolvedWf = resolveWorkflowForUpstreamArtefacts(
+      Object.assign({}, options, { workflow: wf || options.workflow || null })
+    );
+    var dlaStep = {
+      id: String(ctx.stepId || "").trim(),
+      title: String(ctx.stepTitle || ctx.stepCanonicalTitle || "").trim(),
+      outputName: String(ctx.stepOutputName || "").trim(),
+      canonical_step_id: String(ctx.stepCanonicalStepId || "").trim(),
+      source: "prompt_context"
+    };
+    var liSteps = getWorkflowStepElements();
+    var domDlaLi = null;
+    liSteps.forEach(function (li) {
+      if (domDlaLi) return;
+      var row = buildWorkflowStepRowFromRunLi(li, resolvedWf);
+      if (
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: row && row.canonical_step_id ? row.canonical_step_id : "",
+          stepCanonicalTitle: row && row.title ? row.title : "",
+          stepTitle: row && row.title ? row.title : ""
+        })
+      ) {
+        domDlaLi = li;
+        if (!dlaStep.id) dlaStep.id = String(row.id || "").trim();
+        if (!dlaStep.title) dlaStep.title = String(row.title || "").trim();
+        if (!dlaStep.outputName) dlaStep.outputName = String(row.outputName || "").trim();
+        if (!dlaStep.canonical_step_id) {
+          dlaStep.canonical_step_id = String(row.canonical_step_id || "").trim();
+        }
+        dlaStep.source = "dom_run_li";
+      }
+    });
+    var priorSteps = [];
+    var captureKeyIndex = {};
+    Object.keys(captures).forEach(function (key) {
+      captureKeyIndex[key] = true;
+    });
+    Object.keys(capturesRaw).forEach(function (key) {
+      captureKeyIndex[key] = true;
+    });
+    liSteps.forEach(function (li) {
+      var sid = String(li.getAttribute("data-step-id") || "").trim();
+      if (sid) captureKeyIndex[sid] = true;
+    });
+    var orderedSteps = resolvedWf && Array.isArray(resolvedWf.steps) ? resolvedWf.steps : [];
+    orderedSteps.forEach(function (step, index) {
+      var sid = String(step && step.id ? step.id : "").trim();
+      var persisted =
+        persistedWf && Array.isArray(persistedWf.steps)
+          ? persistedWf.steps.find(function (row) {
+              return String(row && row.id ? row.id : "") === sid;
+            }) || null
+          : null;
+      var backfilled = backfillWorkflowStepCatalogMetadata(step, catalog, null);
+      var li =
+        sid && liSteps.length
+          ? liSteps.find(function (node) {
+              return String(node.getAttribute("data-step-id") || "").trim() === sid;
+            }) || null
+          : null;
+      var stateCap = sid && captures[sid] ? String(captures[sid]) : "";
+      var domCap = li ? readRunStepCaptureRawFromLi(li) : "";
+      var previewSource = stateCap || domCap || "";
+      priorSteps.push({
+        order: index + 1,
+        id: sid,
+        title: String(step && step.title ? step.title : "").trim(),
+        outputName: String(step && step.outputName ? step.outputName : "").trim(),
+        canonical_step_id: String(step && step.canonical_step_id ? step.canonical_step_id : "").trim(),
+        produces_metadata: resolveWorkflowStepDependencyProduces(step && step.title, resolvedWf),
+        backfill_changed_outputName:
+          String((step && step.outputName) || "").trim() !==
+          String((backfilled && backfilled.outputName) || "").trim(),
+        backfill_changed_canonical_step_id:
+          String((step && step.canonical_step_id) || "").trim() !==
+          String((backfilled && backfilled.canonical_step_id) || "").trim(),
+        persisted_outputName: persisted ? String(persisted.outputName || "").trim() : "",
+        persisted_canonical_step_id: persisted
+          ? String(persisted.canonical_step_id || "").trim()
+          : "",
+        dom_outputName: li ? getStepOutputNameFromElement(li) : "",
+        workflowStepProducesArtefact_episode_plans: workflowStepProducesArtefact(
+          backfilled,
+          "episode_plans"
+        ),
+        capture_state_exists: !!(sid && captures[sid]),
+        capture_raw_exists: !!(sid && capturesRaw[sid]),
+        capture_dom_exists: !!String(domCap || "").trim(),
+        capture_state_length: stateCap ? stateCap.length : 0,
+        capture_dom_length: domCap ? domCap.length : 0,
+        capture_preview: String(previewSource || "").slice(0, 200)
+      });
+    });
+    var resolvedUpstream = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {
+      workflow: resolvedWf,
+      diagnostic: true
+    });
+    var resolvedPlans = resolveEpisodePlansForDlaPopulation({
+      workflow: resolvedWf,
+      diagnostic: true,
+      skipSync: true
+    });
+    return {
+      timestamp: new Date().toISOString(),
+      selectedWorkflowId: String(state.selectedWorkflowId || "").trim(),
+      pf11_emit_reason: options.reason || "",
+      dla_step: dlaStep,
+      workflow_sources: {
+        persisted_step_count: persistedWf && Array.isArray(persistedWf.steps) ? persistedWf.steps.length : 0,
+        resolved_step_count: orderedSteps.length,
+        in_run_mode: !!(
+          els.workflowDetail &&
+          els.workflowDetail.classList &&
+          els.workflowDetail.classList.contains("run-mode")
+        ),
+        uses_gathered_dom_workflow: !!(
+          els.workflowDetail &&
+          els.workflowDetail.classList &&
+          els.workflowDetail.classList.contains("run-mode")
+        )
+      },
+      prior_steps_in_run_order: priorSteps,
+      capture_key_index: Object.keys(captureKeyIndex).sort(),
+      resolver: {
+        resolveUpstreamWorkflowArtefactFromCaptures: resolvedUpstream,
+        resolveEpisodePlansForDlaPopulation: resolvedPlans
+      },
+      workflow_has_design_episode_plan_step: workflowHasDesignEpisodePlanStep(resolvedWf)
+    };
+  }
+
+  function emitPf11DlaUpstreamDiagnosticTrace(context, wf, opts) {
+    var trace = buildPf11DlaUpstreamDiagnosticTrace(context, wf, opts);
+    state.workflowRunPf11DiagnosticTrace = trace;
+    if (typeof console !== "undefined" && console.warn) {
+      console.warn("[PRISM PF-11 DLA upstream trace]", trace);
+    }
+    return trace;
+  }
+
+  function resolveUpstreamWorkflowArtefactFromCaptures(outputName, opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    var diagnostic = !!options.diagnostic;
+    var wf = resolveWorkflowForUpstreamArtefacts(options);
+    var captures = state.workflowRunCapturedOutputs || {};
+    if (!wf || !Array.isArray(wf.steps)) {
+      return diagnostic
+        ? { parsed: null, matched_step_id: "", source: "none", parse_ok: false, validation: null }
+        : null;
+    }
     var target = String(outputName || "")
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "_");
     var i;
+    var liSteps = getWorkflowStepElements();
+    function tryRawCapture(step, sid, raw, sourceLabel) {
+      if (!String(raw || "").trim()) return null;
+      var parsed = tryParseWorkflowArtefactJson(raw);
+      if (parsed) {
+        return diagnostic
+          ? {
+              parsed: parsed,
+              matched_step_id: sid,
+              source: sourceLabel,
+              parse_ok: true,
+              raw_length: String(raw || "").length,
+              preview: String(raw || "").slice(0, 200)
+            }
+          : parsed;
+      }
+      if (diagnostic) {
+        return {
+          parsed: null,
+          matched_step_id: sid,
+          source: sourceLabel,
+          parse_ok: false,
+          raw_length: String(raw || "").length,
+          preview: String(raw || "").slice(0, 200),
+          parse_error: "tryParseWorkflowArtefactJson returned null"
+        };
+      }
+      return null;
+    }
+    var lastDiagnosticMiss = null;
     for (i = 0; i < wf.steps.length; i += 1) {
       var step = wf.steps[i];
       if (!step) continue;
-      var oname = String(step.outputName || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "_");
-      if (oname !== target) continue;
+      if (!workflowStepProducesArtefact(step, target)) continue;
       var sid = String(step.id || "").trim();
-      var raw = sid && captures[sid] ? captures[sid] : "";
-      var parsed = tryParseWorkflowArtefactJson(raw);
-      if (parsed) return parsed;
+      var stateRaw = sid && captures[sid] ? captures[sid] : "";
+      var stateHit = tryRawCapture(step, sid, stateRaw, "state.workflowRunCapturedOutputs");
+      if (diagnostic) {
+        if (stateHit && stateHit.parse_ok) return stateHit;
+        if (stateHit && !stateHit.parse_ok) lastDiagnosticMiss = stateHit;
+      } else if (stateHit) {
+        return stateHit;
+      }
+      if (sid && liSteps.length) {
+        var li =
+          liSteps.find(function (node) {
+            return String(node.getAttribute("data-step-id") || "").trim() === sid;
+          }) || null;
+        if (li) {
+          var domRaw = readRunStepCaptureRawFromLi(li);
+          var domHit = tryRawCapture(step, sid, domRaw, "dom.runStepOutput");
+          if (diagnostic) {
+            if (domHit && domHit.parse_ok) return domHit;
+            if (domHit && !domHit.parse_ok) lastDiagnosticMiss = domHit;
+          } else if (domHit) {
+            return domHit;
+          }
+        }
+      }
+    }
+    if (diagnostic) {
+      return (
+        lastDiagnosticMiss || {
+          parsed: null,
+          matched_step_id: "",
+          source: "none",
+          parse_ok: false,
+          validation: null
+        }
+      );
     }
     return null;
   }
 
   function resolveEpisodePlansForDlaPopulation(opts) {
     var options = opts && typeof opts === "object" ? opts : {};
+    var diagnostic = !!options.diagnostic;
+    if (!options.skipSync) {
+      syncAllWorkflowRunCapturesFromDomToState();
+    }
     var mod = resolveEpisodePlanDlaIntegrationLib();
-    if (!mod) return null;
-    var episodePlans = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans");
+    if (!mod) {
+      return diagnostic ? { episodePlans: null, reason: "integration_module_missing" } : null;
+    }
+    var wf = resolveWorkflowForUpstreamArtefacts(options);
+    var upstreamHit = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {
+      workflow: wf,
+      diagnostic: diagnostic
+    });
+    var episodePlans = diagnostic ? upstreamHit && upstreamHit.parsed : upstreamHit;
+    var validation = null;
     if (episodePlans && Array.isArray(episodePlans.episode_plans) && episodePlans.episode_plans.length) {
-      var captureCheck = validateEpisodePlansCaptureV1(episodePlans);
-      if (captureCheck.ok) {
-        return episodePlans;
+      validation = validateEpisodePlansCaptureV1(episodePlans);
+      if (validation.ok) {
+        return diagnostic
+          ? {
+              episodePlans: episodePlans,
+              reason: "ok",
+              validation: validation,
+              upstream: upstreamHit
+            }
+          : episodePlans;
       }
       episodePlans = null;
+      if (diagnostic) {
+        return {
+          episodePlans: null,
+          reason: "v1_validation_failed",
+          validation: validation,
+          upstream: upstreamHit
+        };
+      }
+    } else if (
+      diagnostic &&
+      upstreamHit &&
+      upstreamHit.matched_step_id &&
+      upstreamHit.parse_ok === false
+    ) {
+      return {
+        episodePlans: null,
+        reason: "capture_parse_failed",
+        validation: validation,
+        upstream: upstreamHit
+      };
     }
-    var wf =
-      options.workflow ||
-      (state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null);
     if (workflowHasDesignEpisodePlanStep(wf)) {
-      return null;
+      return diagnostic
+        ? {
+            episodePlans: null,
+            reason:
+              upstreamHit && upstreamHit.matched_step_id
+                ? "invalid_or_empty_capture"
+                : "missing_capture",
+            validation: validation,
+            upstream: upstreamHit
+          }
+        : null;
     }
-    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes");
+    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", {
+      workflow: wf
+    });
     if (
       learningOutcomes &&
       typeof mod.deriveEpisodePlansFromLearningOutcomes === "function"
@@ -8250,9 +8627,11 @@
       if (derived && typeof derived === "object") {
         derived.source = "learning_outcomes_fallback_non_canonical";
       }
-      return derived;
+      return diagnostic
+        ? { episodePlans: derived, reason: "learning_outcomes_fallback_non_canonical" }
+        : derived;
     }
-    return null;
+    return diagnostic ? { episodePlans: null, reason: "no_plan_no_fallback" } : null;
   }
 
   function applyEpisodePlanPopulationEnforcementToDlaCapture(raw, stepContext, stepId) {
@@ -8265,7 +8644,7 @@
     }
     var parsed = tryParseWorkflowArtefactJson(raw);
     if (!parsed) return raw;
-    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var wf = resolveWorkflowForUpstreamArtefacts({});
     var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: wf });
     if (!episodePlans) {
       if (stepId) {
@@ -8521,8 +8900,12 @@
     for (i = 0; i < wf.steps.length; i += 1) {
       var step = wf.steps[i];
       if (!step) continue;
-      var oname = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
-      if (oname !== "activity_materials" && oname !== "session_materials") continue;
+      if (
+        !workflowStepProducesArtefact(step, "activity_materials") &&
+        !workflowStepProducesArtefact(step, "session_materials")
+      ) {
+        continue;
+      }
       var sid = String(step.id || "").trim();
       var raw = sid && captures[sid] ? captures[sid] : "";
       if (!raw) continue;
@@ -14901,10 +15284,208 @@
     return "";
   }
 
-  function suggestWorkflowOutputNameForStepTitle(stepTitle, stepPatternCatalog) {
+  function suggestWorkflowOutputNameForStepTitle(stepTitle, stepPatternCatalog, workflowPolicy) {
     var canonical = pickCanonicalWorkflowStepTitle(stepTitle, stepPatternCatalog);
     var pattern = getPatternByCanonicalWorkflowTitle(canonical, stepPatternCatalog);
-    return pickSuggestedOutputNameFromPattern(pattern);
+    var fromPattern = pickSuggestedOutputNameFromPattern(pattern);
+    if (fromPattern) return fromPattern;
+    var policy =
+      workflowPolicy && typeof workflowPolicy === "object" ? workflowPolicy : null;
+    if (!policy || !policy.dependencies || typeof policy.dependencies !== "object") {
+      return "";
+    }
+    var dep =
+      policy.dependencies[canonical] ||
+      policy.dependencies[stepTitle] ||
+      policy.dependencies[String(canonical || "").trim()] ||
+      null;
+    if (!dep) {
+      var depKeys = Object.keys(policy.dependencies);
+      var titleLower = String(canonical || stepTitle || "").toLowerCase().trim();
+      for (var di = 0; di < depKeys.length; di += 1) {
+        if (String(depKeys[di] || "").toLowerCase().trim() === titleLower) {
+          dep = policy.dependencies[depKeys[di]];
+          break;
+        }
+      }
+    }
+    var produces = dep && Array.isArray(dep.produces) ? dep.produces : [];
+    return produces.length ? String(produces[0] || "").trim() : "";
+  }
+
+  function backfillWorkflowStepCatalogMetadata(step, stepPatternCatalog, workflowPolicy) {
+    var next = step && typeof step === "object" ? Object.assign({}, step) : {};
+    var catalog = Array.isArray(stepPatternCatalog) ? stepPatternCatalog : [];
+    var canonicalTitle = pickCanonicalWorkflowStepTitle(next.title || "", catalog);
+    var matchedPattern = getPatternByCanonicalWorkflowTitle(canonicalTitle, catalog);
+    if (matchedPattern && !String(next.canonical_step_id || "").trim()) {
+      next.canonical_step_id = String(
+        matchedPattern.canonicalStepId ||
+          matchedPattern.canonical_step_id ||
+          (matchedPattern.promptFactory &&
+            (matchedPattern.promptFactory.canonical_step_id ||
+              matchedPattern.promptFactory.canonicalStepId)) ||
+          ""
+      ).trim();
+    }
+    if (!String(next.outputName || "").trim()) {
+      var suggested = suggestWorkflowOutputNameForStepTitle(
+        next.title || "",
+        catalog,
+        workflowPolicy
+      );
+      if (suggested) next.outputName = suggested;
+    }
+    if (!String(next.canonical_step_id || "").trim()) {
+      if (isWorkflowStepDesignEpisodePlanRow(next)) {
+        next.canonical_step_id = "step_design_episode_plan";
+      }
+    }
+    return next;
+  }
+
+  function workflowStepProducesArtefact(step, artefactKey) {
+    if (!step || typeof step !== "object") return false;
+    var target = String(artefactKey || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+    if (!target) return false;
+    var oname = normalizeWorkflowStepOutputNameKey(step);
+    if (oname === target) return true;
+    if (target === "episode_plans" && isWorkflowStepDesignEpisodePlanRow(step)) {
+      return true;
+    }
+    if (target === "learning_outcomes" && resolveStrictJsonWorkflowStepKind(step) === "learning_outcomes") {
+      return true;
+    }
+    if (
+      target === "learning_activities" &&
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      return true;
+    }
+    if (
+      (target === "activity_materials" || target === "session_materials") &&
+      isWorkflowStepGenerateActivityMaterials({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function normalizeWorkflowArtefactBindingKey(name) {
+    return String(name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+  }
+
+  function findWorkflowStepRowByIdentity(steps, matcher) {
+    if (!Array.isArray(steps)) return null;
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      if (matcher(steps[i], i)) return steps[i];
+    }
+    return null;
+  }
+
+  function ensureDlaEpisodePlanInputBindingsForSteps(steps) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var normalized = steps.map(function (row) {
+      return backfillWorkflowStepCatalogMetadata(row, catalog, null);
+    });
+    var epStep = findWorkflowStepRowByIdentity(normalized, function (row) {
+      return isWorkflowStepDesignEpisodePlanRow(row);
+    });
+    var dlaStep = findWorkflowStepRowByIdentity(normalized, function (row) {
+      return isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+        stepCanonicalTitle: row.title || "",
+        stepTitle: row.title || ""
+      });
+    });
+    if (!epStep || !dlaStep) return normalized;
+    var epId = String(epStep.id || "").trim();
+    if (!epId) return normalized;
+    return normalized.map(function (row) {
+      if (row !== dlaStep) return row;
+      var next = Object.assign({}, row);
+      var bindings = normalizeStepInputBindings(next.inputBindings || []);
+      var hasEpBinding = bindings.some(function (b) {
+        if (!b || b.kind !== "internal") return false;
+        return (
+          String(b.sourceStepId || "").trim() === epId &&
+          normalizeWorkflowArtefactBindingKey(b.artifactName) === "episode_plans"
+        );
+      });
+      if (!hasEpBinding) {
+        bindings.push({
+          kind: "internal",
+          sourceStepId: epId,
+          artifactName: "episode_plans"
+        });
+      }
+      next.inputBindings = normalizeStepInputBindings(bindings);
+      return next;
+    });
+  }
+
+  function resolveCaptureTextForWorkflowStep(prod, wf) {
+    if (!prod || typeof prod !== "object") return "";
+    syncAllWorkflowRunCapturesFromDomToState();
+    var sid = String(prod.id || "").trim();
+    if (!sid) return "";
+    var captures = state.workflowRunCapturedOutputs || {};
+    var raw =
+      captures[sid] && typeof captures[sid] === "string" ? String(captures[sid]) : "";
+    if (!String(raw || "").trim()) {
+      var liSteps = getWorkflowStepElements();
+      var li =
+        liSteps.find(function (node) {
+          return String(node.getAttribute("data-step-id") || "").trim() === sid;
+        }) || null;
+      if (li) raw = readRunStepCaptureRawFromLi(li);
+    }
+    return String(raw || "");
+  }
+
+  function resolveEffectiveInputBindingsForPromptStep(step, domElement, wf) {
+    var wfResolved = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var steps = ensureDlaEpisodePlanInputBindingsForSteps(
+      wfResolved && Array.isArray(wfResolved.steps) ? wfResolved.steps : []
+    );
+    var stepRow = step && typeof step === "object" ? step : {};
+    var sid = String(stepRow.id || "").trim();
+    var matched =
+      sid && steps.length
+        ? steps.find(function (row) {
+            return String(row && row.id ? row.id : "") === sid;
+          }) || null
+        : null;
+    if (matched && Array.isArray(matched.inputBindings) && matched.inputBindings.length) {
+      return normalizeStepInputBindings(matched.inputBindings);
+    }
+    if (domElement) {
+      return normalizeStepInputBindings(readStepInputBindings(domElement));
+    }
+    return normalizeStepInputBindings(stepRow.inputBindings || []);
+  }
+
+  function bindingArtifactMatchesProducer(prod, artifactName) {
+    if (!prod) return false;
+    return workflowStepProducesArtefact(prod, normalizeWorkflowArtefactBindingKey(artifactName));
   }
 
   function deriveWorkflowStepRoleFromMetadata(step, stepPatternCatalog, stepRoleAnchors) {
@@ -16702,7 +17283,7 @@
             next.role = String(backfilledRole).trim();
           }
         }
-        return next;
+        return backfillWorkflowStepCatalogMetadata(next, stepPatternCatalog, policy);
       });
 
       // Build explicit depends_on links from artefact dependencies so saved
@@ -16913,6 +17494,8 @@
       }
       return row;
     });
+
+    out.steps = ensureDlaEpisodePlanInputBindingsForSteps(out.steps);
 
     return out;
   }
@@ -17742,6 +18325,9 @@
           return String(row && row.id ? row.id : "") === sid;
         }) || null;
     }
+    if (!stepRow) {
+      stepRow = buildWorkflowStepRowFromRunLi(li, wf);
+    }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid);
       if (enforcedRaw !== raw) {
@@ -17970,8 +18556,6 @@
     state.workflowDetailMode = normalized;
 
     if (!isRun) {
-      state.workflowRunCapturedOutputs = {};
-      state.workflowRunCapturedOutputsRaw = {};
       state.workflowRunStepCompleted = {};
       state.workflowRunStrictJsonValidation = {};
       state.workflowRunEpisodePlanValidation = {};
@@ -21530,7 +22114,13 @@
         outputEl && typeof outputEl.value === "string" ? outputEl.value : "";
       effectiveStep.notes =
         notesEl && typeof notesEl.value === "string" ? notesEl.value : "";
-      var liveWf = findWorkflowById(state.selectedWorkflowId || "");
+      effectiveStep = backfillWorkflowStepCatalogMetadata(
+        effectiveStep,
+        state.workflowStepPatternCatalog || [],
+        null
+      );
+      syncAllWorkflowRunCapturesFromDomToState();
+      var liveWf = resolveWorkflowForUpstreamArtefacts({});
       if (liveWf && Array.isArray(liveWf.steps)) {
         var liveStep = liveWf.steps.find(function (row) {
           return String(row && row.id ? row.id : "") === String(effectiveStep.id || "");
@@ -21540,8 +22130,18 @@
           if (!effectiveStep.prompt_source_type) {
             effectiveStep.prompt_source_type = getStepPromptSourceType(liveStep);
           }
+          if (!effectiveStep.inputBindings || !effectiveStep.inputBindings.length) {
+            effectiveStep.inputBindings = Array.isArray(liveStep.inputBindings)
+              ? liveStep.inputBindings.slice()
+              : [];
+          }
         }
       }
+      effectiveStep.inputBindings = resolveEffectiveInputBindingsForPromptStep(
+        effectiveStep,
+        li,
+        liveWf
+      );
 
       var inRunMode =
         !!(
@@ -21552,6 +22152,7 @@
 
       // In Run mode, explicitly check for a prompt and give feedback when none is set.
       if (inRunMode) {
+        syncAllWorkflowRunCapturesFromDomToState();
         var resolved = resolveStepPromptText(effectiveStep);
         if (!resolved.text) {
           showToast(
@@ -21959,7 +22560,14 @@
     outputLabel.textContent = "Output name";
     var outputInput = document.createElement("input");
     outputInput.type = "text";
-    outputInput.value = step.outputName || "";
+    outputInput.value =
+      step.outputName ||
+      suggestWorkflowOutputNameForStepTitle(
+        step.title || "",
+        state.workflowStepPatternCatalog || [],
+        null
+      ) ||
+      "";
     outputInput.setAttribute("data-field", "outputName");
     outputInput.placeholder = "e.g. summary, quizQuestions";
     outputInput.autocomplete = "off";
@@ -22583,6 +23191,12 @@
 
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
+    syncAllWorkflowRunCapturesFromDomToState();
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    step = backfillWorkflowStepCatalogMetadata(step, catalog, null);
+    var wfForChain = resolveWorkflowForUpstreamArtefacts({});
     var lines = [];
 
     lines.push(
@@ -22624,12 +23238,7 @@
         ? "None"
         : "Paste text";
     lines.push("Optional additional input for this step: " + kindLabel + ".");
-    var bindings = [];
-    if (domElement) {
-      bindings = readStepInputBindings(domElement);
-    } else if (Array.isArray(step.inputBindings)) {
-      bindings = normalizeStepInputBindings(step.inputBindings);
-    }
+    var bindings = resolveEffectiveInputBindingsForPromptStep(step, domElement, wfForChain);
 
     if (bindings.length) {
       lines.push("");
@@ -22645,22 +23254,21 @@
         }
       });
 
-      var wfSelected = findWorkflowById(state.selectedWorkflowId || "");
+      var chainSteps =
+        wfForChain && Array.isArray(wfForChain.steps)
+          ? ensureDlaEpisodePlanInputBindingsForSteps(wfForChain.steps)
+          : [];
       bindings.forEach(function (b) {
         if (b.kind !== "internal") return;
         var sid = String(b.sourceStepId || "").trim();
         var art = String(b.artifactName || "").trim();
-        if (!sid || !art || !wfSelected || !Array.isArray(wfSelected.steps)) return;
-        var prod = wfSelected.steps.find(function (r) {
-          return String(r && r.id ? r.id : "").trim() === sid;
-        });
-        if (!prod) return;
-        if (String(prod.outputName || "").trim() !== art) return;
-        var cap =
-          state.workflowRunCapturedOutputs &&
-          typeof state.workflowRunCapturedOutputs[sid] === "string"
-            ? state.workflowRunCapturedOutputs[sid]
-            : "";
+        if (!sid || !art || !chainSteps.length) return;
+        var prod =
+          chainSteps.find(function (r) {
+            return String(r && r.id ? r.id : "").trim() === sid;
+          }) || null;
+        if (!prod || !bindingArtifactMatchesProducer(prod, art)) return;
+        var cap = resolveCaptureTextForWorkflowStep(prod, wfForChain);
         if (!String(cap || "").trim()) return;
         var sourceTitleCap = getStepTitleById(sid) || "an earlier step";
         lines.push("");
@@ -22669,7 +23277,7 @@
             art +
             '" from step "' +
             sourceTitleCap +
-            '" (runtime capture; use this text verbatim as the artefact body):'
+            '" (workflow capture; use this text verbatim as the artefact body):'
         );
         lines.push(String(cap));
       });
@@ -22682,8 +23290,7 @@
       lines.push(visibleNotes);
     }
 
-    var wfForPrompt =
-      state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var wfForPrompt = resolveWorkflowForUpstreamArtefacts({});
     var resolvedPrompt = resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
     if (!promptBody && !step.notes) {
@@ -22963,6 +23570,17 @@
       normalizedSteps.push(s);
     });
 
+    normalizedSteps.forEach(function (s) {
+      var backfilled = backfillWorkflowStepCatalogMetadata(
+        s,
+        state.workflowStepPatternCatalog || [],
+        null
+      );
+      s.outputName = backfilled.outputName || s.outputName || "";
+      s.canonical_step_id = backfilled.canonical_step_id || s.canonical_step_id || "";
+      outputNameByStepId[s.id] = s.outputName || "";
+    });
+
     normalizedSteps.forEach(function (s, index) {
       var rawDependsOn = Array.isArray(s.depends_on) ? s.depends_on.slice() : [];
       var explicitNorm = normalizeStepInputBindings(s.inputBindings || []);
@@ -23050,6 +23668,8 @@
       delete s.depends_on;
       normalizedSteps[index] = s;
     });
+
+    normalizedSteps = ensureDlaEpisodePlanInputBindingsForSteps(normalizedSteps);
 
     wf.workflowInputs = Array.isArray(wf.workflowInputs)
       ? wf.workflowInputs
@@ -23634,7 +24254,8 @@
         : "";
       var suggestedOutputName = suggestWorkflowOutputNameForStepTitle(
         s.title || "",
-        stepPatternCatalog
+        stepPatternCatalog,
+        null
       );
       var step = {
         id: stepId,
@@ -34808,8 +35429,7 @@
     for (i = 0; i < wf.steps.length; i += 1) {
       var step = wf.steps[i];
       if (!step) continue;
-      var oname = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
-      if (oname !== "learning_activities") continue;
+      if (!workflowStepProducesArtefact(step, "learning_activities")) continue;
       var sid = String(step.id || "").trim();
       var raw = sid && captures[sid] ? captures[sid] : "";
       var parsed = tryParseWorkflowArtefactJson(raw);
@@ -36946,6 +37566,18 @@
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
     prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
     prismTestApi.buildEpisodePlanUpstreamPromptSection = buildEpisodePlanUpstreamPromptSection;
+    prismTestApi.buildPf11DlaUpstreamDiagnosticTrace = buildPf11DlaUpstreamDiagnosticTrace;
+    prismTestApi.emitPf11DlaUpstreamDiagnosticTrace = emitPf11DlaUpstreamDiagnosticTrace;
+    prismTestApi.syncAllWorkflowRunCapturesFromDomToState = syncAllWorkflowRunCapturesFromDomToState;
+    prismTestApi.resolveWorkflowForUpstreamArtefacts = resolveWorkflowForUpstreamArtefacts;
+    prismTestApi.resolveUpstreamWorkflowArtefactFromCaptures = resolveUpstreamWorkflowArtefactFromCaptures;
+    prismTestApi.ensureDlaEpisodePlanInputBindingsForSteps = ensureDlaEpisodePlanInputBindingsForSteps;
+    prismTestApi.resolveEffectiveInputBindingsForPromptStep = resolveEffectiveInputBindingsForPromptStep;
+    prismTestApi.bindingArtifactMatchesProducer = bindingArtifactMatchesProducer;
+    prismTestApi.resolveCaptureTextForWorkflowStep = resolveCaptureTextForWorkflowStep;
+    prismTestApi.getWorkflowRunPf11DiagnosticTraceForTest = function () {
+      return state.workflowRunPf11DiagnosticTrace || null;
+    };
     prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;
   }

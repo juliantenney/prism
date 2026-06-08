@@ -112,6 +112,17 @@ test("LD heuristics: activity workflow inserts Design Episode Plan before DLA", 
   const dlaIdx = indexOfTitle(titles, "Design Learning Activities");
   assert.ok(epIdx !== -1, "generated workflow includes Design Episode Plan");
   assert.ok(loIdx < epIdx && epIdx < dlaIdx, "LO → Episode Plan → DLA ordering");
+  const epStep = out.steps[epIdx];
+  assert.equal(
+    String(epStep.outputName || "").trim(),
+    "episode_plans",
+    "Design Episode Plan step must produce episode_plans outputName"
+  );
+  assert.equal(
+    String(epStep.canonical_step_id || "").trim(),
+    "step_design_episode_plan",
+    "Design Episode Plan step must carry canonical_step_id from pack"
+  );
 });
 
 test("DLA prompt receives upstream episode_plans when capture exists", () => {
@@ -337,6 +348,172 @@ test("canonical enforcement replaces LLM invented taxonomy with frozen V1 derive
   const check = validation.validateEpisodePlansContainerV1(parsed);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(parsed.episode_plans[0].episode_plan.archetype, "understand");
+});
+
+test("DLA resolves episode_plans when Design Episode Plan capture exists but outputName unset", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const wf = {
+    id: "wf-ep-no-oname",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "",
+        canonical_step_id: ""
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-no-oname");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const resolved = api.resolveEpisodePlansForDlaPopulation({ workflow: wf });
+  assert.ok(resolved && Array.isArray(resolved.episode_plans));
+  assert.equal(resolved.episode_plans[0].episode_plan.archetype, "understand");
+
+  const draft = api.applyEpisodePlanDlaPopulationPromptBlockToDraft(
+    "Design learning activities.",
+    {
+      stepCanonicalStepId: "step_design_learning_activities",
+      stepCanonicalTitle: "Design Learning Activities"
+    },
+    wf
+  );
+  assert.doesNotMatch(draft, /PF-11: upstream `episode_plans` capture is missing/i);
+  assert.match(draft, /Upstream episode_plans/i);
+});
+
+test("suggestWorkflowOutputNameForStepTitle uses policy produces when pattern missing", () => {
+  const name = api.suggestWorkflowOutputNameForStepTitle(
+    "Design Episode Plan",
+    [],
+    ldWorkflowPolicy
+  );
+  assert.equal(name, "episode_plans");
+});
+
+test("PF-11 diagnostic trace records missing capture when Episode Plan step has no sync", () => {
+  const wf = {
+    id: "wf-pf11-trace",
+    steps: [
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "",
+        canonical_step_id: ""
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-pf11-trace");
+  api.setWorkflowRunCapturedOutputsForTest({});
+  const trace = api.emitPf11DlaUpstreamDiagnosticTrace(
+    {
+      stepCanonicalStepId: "step_design_learning_activities",
+      stepCanonicalTitle: "Design Learning Activities",
+      stepOutputName: "learning_activities"
+    },
+    wf,
+    { reason: "test_missing_capture" }
+  );
+  assert.ok(trace);
+  assert.equal(trace.pf11_emit_reason, "test_missing_capture");
+  assert.equal(trace.resolver.resolveEpisodePlansForDlaPopulation.reason, "missing_capture");
+  assert.equal(trace.workflow_has_design_episode_plan_step, true);
+  const epRow = trace.prior_steps_in_run_order.find(function (row) {
+    return row.title === "Design Episode Plan";
+  });
+  assert.ok(epRow);
+  assert.equal(epRow.workflowStepProducesArtefact_episode_plans, true);
+  assert.equal(epRow.capture_state_exists, false);
+});
+
+test("buildWorkflowStepInstructions chains episode_plans capture into DLA copy text", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = {
+    episode_plans: [
+      {
+        activity_id: "LO1",
+        episode_plan: {
+          archetype: "understand",
+          beats: [
+            { function: "explanation" },
+            { function: "worked_thinking" },
+            { function: "verification" }
+          ]
+        }
+      }
+    ]
+  };
+  const wf = {
+    id: "wf-chain-dla",
+    steps: [
+      { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "",
+        canonical_step_id: ""
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities",
+        notes: "Populate learning activities from upstream episode plans.",
+        override_prompt_body: "Design learning activities from the episode plan.",
+        prompt_source_type: "local_override"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-chain-dla");
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(lo, null, 2),
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const bindings = api.ensureDlaEpisodePlanInputBindingsForSteps(wf.steps);
+  const dlaBindings = bindings.find((s) => s.id === "dla_step").inputBindings || [];
+  assert.ok(
+    dlaBindings.some(
+      (b) => b.kind === "internal" && b.sourceStepId === "ep_step" && b.artifactName === "episode_plans"
+    ),
+    "DLA step must bind episode_plans from Design Episode Plan"
+  );
+
+  const instr = api.buildWorkflowStepInstructions(wf.steps[2], 2, null);
+  assert.match(instr, /Upstream artefact "episode_plans"/);
+  assert.match(instr, /workflow capture; use this text verbatim/);
+  assert.match(instr, /"activity_id":\s*"LO1"/);
+  assert.match(instr, /Upstream episode_plans/i);
+  assert.doesNotMatch(instr, /PF-11: missing episode_plans upstream/i);
+  assert.doesNotMatch(instr, /PF-11: upstream `episode_plans` capture is missing/i);
 });
 
 test("legacy workflow without Episode Plan step may use non-canonical LO fallback", () => {

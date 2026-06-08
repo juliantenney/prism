@@ -1,0 +1,24 @@
+{
+  "phase": "38S-2A",
+  "timestamp": "2026-06-08T10:41:26.541Z",
+  "dlaPromptBefore": 30550,
+  "dlaNotesBefore": 2671,
+  "dlaPromptAfter": 24826,
+  "dlaNotesAfter": 2293,
+  "dlaPromptRemoved": 5724,
+  "dlaNotesRemoved": 378,
+  "checks": {
+    "hasIFP00": false,
+    "hasIFP01": false,
+    "hasIFP02": false,
+    "hasIFP03": false,
+    "hasIFP07": false,
+    "hasIFP08": false,
+    "hasIFP04": true,
+    "hasIFP05": true,
+    "hasIFP06": true,
+    "hasIFP09": true,
+    "hasIFP10": true,
+    "hasDlaWb": true
+  }
+}

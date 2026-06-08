@@ -1,0 +1,1342 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Inflation Measurement Methods",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "This activity introduces the key concepts of inflation measurement, focusing on the differences between the Consumer Price Index (CPI) and the GDP Deflator. You will explore how the basket composition and scope of goods and services differ between these measures.",
+      "learner_task": "### Your tasks:\n1. Read the explanatory text on inflation measurement methods, focusing on the CPI and GDP Deflator.\n2. Study the worked example illustrating the difference in basket composition and scope.\n3. Review the non-example to understand common confusions.\n4. Reflect on the misconception that CPI and GDP Deflator measure the same inflation.\n5. Complete the guided practice by classifying statements about CPI and GDP Deflator.\n6. Perform an independent classification task to demonstrate your understanding.\n7. Verify your answers using the provided checklist.\n8. Reflect on what you have learned before transitioning to the next activity.",
+      "expected_output": "Completed classification tables distinguishing CPI and GDP Deflator features, verified using the checklist, and a brief reflection note summarizing key differences.",
+      "required_materials": [
+        {
+          "material_id": "M_plan_4",
+          "instructional_function": "explanation",
+          "plan_beat_index": 3,
+          "obligation_class": "material",
+          "specification": "Concept elucidation of Consumer Price Index (CPI) and GDP Deflator definitions and differences; depth_floor: L3",
+          "anti_substitution": [
+            "synopsis_only"
+          ],
+          "purpose": "explanation",
+          "population_contract_version": "38S-2",
+          "type": "text"
+        },
+        {
+          "material_id": "M_plan_5_2",
+          "instructional_function": "example",
+          "plan_beat_index": 4,
+          "obligation_class": "material",
+          "specification": "Positive instance illustrating the concept.",
+          "anti_substitution": [],
+          "purpose": "example",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_6_3",
+          "instructional_function": "non_example",
+          "plan_beat_index": 5,
+          "obligation_class": "material",
+          "specification": "Contrasting case; boundary discrimination.",
+          "anti_substitution": [
+            "merged_into_example"
+          ],
+          "purpose": "non example",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_7_4",
+          "instructional_function": "misconception_confrontation",
+          "plan_beat_index": 6,
+          "obligation_class": "material",
+          "specification": "Named confusion + reconciliation move from KM misconceptions.",
+          "anti_substitution": [
+            "single_support_note_line"
+          ],
+          "purpose": "misconception confrontation",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_8_5",
+          "instructional_function": "guided_practice",
+          "plan_beat_index": 7,
+          "obligation_class": "material",
+          "specification": "Table with statements to classify as CPI or GDP Deflator related; includes exemplar rows and hint columns; depth_floor: L3",
+          "anti_substitution": [
+            "merged_with_independent",
+            "merged_with_worked"
+          ],
+          "purpose": "guided practice",
+          "population_contract_version": "38S-2",
+          "type": "classification_table"
+        },
+        {
+          "material_id": "M_plan_9_6",
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 8,
+          "obligation_class": "material",
+          "specification": "Blank classification table for learner to complete independently; depth_floor: L3",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ],
+          "purpose": "independent performance",
+          "population_contract_version": "38S-2",
+          "type": "classification_table"
+        },
+        {
+          "material_id": "M_plan_10_7",
+          "instructional_function": "verification",
+          "plan_beat_index": 9,
+          "obligation_class": "material",
+          "specification": "≥4 criteria-linked self-check items verifying correct classification and understanding; repair instructions if any check fails; depth_floor: L3",
+          "anti_substitution": [
+            "checklist_only_tick"
+          ],
+          "purpose": "verification",
+          "population_contract_version": "38S-2",
+          "type": "checklist"
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "worked thinking",
+          "specification": "Stepwise reasoning contrasting fixed basket CPI vs variable basket GDP Deflator; depth_floor: L3",
+          "supplementary": true
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "modelling_note",
+          "purpose": "misconception challenge",
+          "specification": "Explanation and evidence addressing misconception that CPI and GDP Deflator measure the same inflation; depth_floor: L3",
+          "supplementary": true
+        }
+      ],
+      "episode_plan_ref": {
+        "archetype": "understand",
+        "beat_count": 12,
+        "population_contract_version": "38S-2"
+      },
+      "_population_trace": [
+        {
+          "beat_index": 0,
+          "instructional_function": "orientation",
+          "surfaces": [
+            "activity_preamble"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 1,
+          "instructional_function": "framing",
+          "surfaces": [
+            "reasoning_orientation",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 2,
+          "instructional_function": "activation",
+          "surfaces": [
+            "prior_knowledge_activation"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 3,
+          "instructional_function": "explanation",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 4,
+          "instructional_function": "example",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 5,
+          "instructional_function": "non_example",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 6,
+          "instructional_function": "misconception_confrontation",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 7,
+          "instructional_function": "guided_practice",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 8,
+          "instructional_function": "independent_performance",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 9,
+          "instructional_function": "verification",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 10,
+          "instructional_function": "reflection",
+          "surfaces": [
+            "self_explanation_prompt",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 11,
+          "instructional_function": "transition",
+          "surfaces": [
+            "learner_task_segment"
+          ],
+          "obligation_count": 1
+        }
+      ],
+      "_learner_task_segments": [
+        {
+          "instructional_function": "framing",
+          "plan_beat_index": 1,
+          "obligation_class": "task_segment",
+          "segment_order": 1,
+          "specification": "Bounded problem statement for this episode.",
+          "anti_substitution": []
+        },
+        {
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 8,
+          "obligation_class": "task_segment",
+          "segment_order": 8,
+          "specification": "Full learner attempt without model-answer copy path.",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ]
+        },
+        {
+          "instructional_function": "reflection",
+          "plan_beat_index": 10,
+          "obligation_class": "task_segment",
+          "segment_order": 10,
+          "specification": "Learner-generated metacognitive response.",
+          "anti_substitution": [
+            "consolidation_summary",
+            "designer_prose_only"
+          ]
+        },
+        {
+          "instructional_function": "transition",
+          "plan_beat_index": 11,
+          "obligation_class": "task_segment",
+          "segment_order": 11,
+          "specification": "Bridge to next episode or session close.",
+          "anti_substitution": []
+        }
+      ],
+      "materials_order": [
+        "M_plan_4",
+        "M_plan_5_2",
+        "M_plan_6_3",
+        "M_plan_7_4",
+        "M_plan_8_5",
+        "M_plan_9_6",
+        "M_plan_10_7",
+        "A1-M2",
+        "A1-M3"
+      ],
+      "_population_contract_version": "38S-R1",
+      "_plan_activity_preamble": {
+        "instructional_function": "orientation",
+        "plan_beat_index": 0
+      },
+      "reasoning_orientation": "[population:framing] Bounded problem statement for this episode.",
+      "_plan_reasoning_orientation": {
+        "instructional_function": "framing",
+        "plan_beat_index": 1
+      },
+      "prior_knowledge_activation": "[population:activation] Prior-knowledge recall prompt tied to mapped LO concepts.",
+      "_plan_prior_knowledge_activation": {
+        "instructional_function": "activation",
+        "plan_beat_index": 2
+      },
+      "self_explanation_prompt": "[population:reflection] Learner-generated metacognitive response.",
+      "_plan_self_explanation_prompt": {
+        "instructional_function": "reflection",
+        "plan_beat_index": 10
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Applying CPI Inflation Rate Calculation",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "In this activity, you will learn how to calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI. You will work through a detailed example and then practice calculating inflation rates yourself.",
+      "learner_task": "### Your tasks:\n1. Read the criteria exposition on CPI inflation rate calculation rules and process.\n2. Study the worked thinking example showing stepwise calculation of CPI inflation rate using weighted average price changes.\n3. Complete the guided practice exercises calculating inflation rates for given data.\n4. Perform independent practice calculating CPI inflation rates from new data sets.\n5. Verify your calculations using the provided checklist.\n6. Reflect on your calculation process and results.\n7. Transfer your understanding by considering how CPI inflation calculation applies to your own context.",
+      "expected_output": "Completed CPI inflation rate calculations in practice tables with correct intermediate steps, verified by checklist, and a brief reflection note.",
+      "required_materials": [
+        {
+          "material_id": "M_plan_4",
+          "instructional_function": "criteria_exposition",
+          "plan_beat_index": 3,
+          "obligation_class": "material",
+          "specification": "Explicit operational rules and process for CPI inflation rate calculation using weighted averages; depth_floor: L3",
+          "anti_substitution": [],
+          "purpose": "criteria exposition",
+          "population_contract_version": "38S-2",
+          "type": "text"
+        },
+        {
+          "material_id": "M_plan_5_2",
+          "instructional_function": "worked_thinking",
+          "plan_beat_index": 4,
+          "obligation_class": "material",
+          "specification": "Stepwise CPI inflation rate calculation with visible intermediate results and decisions; depth_floor: L3",
+          "anti_substitution": [
+            "merged_with_guided_or_independent"
+          ],
+          "purpose": "worked thinking",
+          "population_contract_version": "38S-2",
+          "type": "worked_example"
+        },
+        {
+          "material_id": "M_plan_6_3",
+          "instructional_function": "guided_practice",
+          "plan_beat_index": 5,
+          "obligation_class": "material",
+          "specification": "Practice table with price data for CPI inflation calculation; includes exemplar rows and hints; depth_floor: L3",
+          "anti_substitution": [
+            "merged_with_independent",
+            "merged_with_worked"
+          ],
+          "purpose": "guided practice",
+          "population_contract_version": "38S-2",
+          "type": "classification_table"
+        },
+        {
+          "material_id": "M_plan_7_4",
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 6,
+          "obligation_class": "material",
+          "specification": "Blank practice table for independent CPI inflation rate calculation; depth_floor: L3",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ],
+          "purpose": "independent performance",
+          "population_contract_version": "38S-2",
+          "type": "classification_table"
+        },
+        {
+          "material_id": "M_plan_8_5",
+          "instructional_function": "verification",
+          "plan_beat_index": 7,
+          "obligation_class": "material",
+          "specification": "≥4 criteria-linked self-check items verifying correct calculation steps and results; repair instructions if any check fails; depth_floor: L3",
+          "anti_substitution": [
+            "checklist_only_tick"
+          ],
+          "purpose": "verification",
+          "population_contract_version": "38S-2",
+          "type": "checklist"
+        },
+        {
+          "material_id": "M_plan_9_6",
+          "instructional_function": "revision",
+          "plan_beat_index": 8,
+          "obligation_class": "material",
+          "specification": "Rework after audit failure.",
+          "anti_substitution": [],
+          "purpose": "revision",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_11_7",
+          "instructional_function": "transfer",
+          "plan_beat_index": 10,
+          "obligation_class": "material",
+          "specification": "Prompts for learner to apply CPI inflation calculation to own household or context with ≥80 words target; depth_floor: L3",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ],
+          "purpose": "transfer",
+          "population_contract_version": "38S-2",
+          "type": "transfer_prompt"
+        }
+      ],
+      "episode_plan_ref": {
+        "archetype": "apply",
+        "beat_count": 12,
+        "population_contract_version": "38S-2"
+      },
+      "_population_trace": [
+        {
+          "beat_index": 0,
+          "instructional_function": "orientation",
+          "surfaces": [
+            "activity_preamble"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 1,
+          "instructional_function": "framing",
+          "surfaces": [
+            "reasoning_orientation",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 2,
+          "instructional_function": "activation",
+          "surfaces": [
+            "prior_knowledge_activation"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 3,
+          "instructional_function": "criteria_exposition",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 4,
+          "instructional_function": "worked_thinking",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 5,
+          "instructional_function": "guided_practice",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 6,
+          "instructional_function": "independent_performance",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 7,
+          "instructional_function": "verification",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 8,
+          "instructional_function": "revision",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 9,
+          "instructional_function": "reflection",
+          "surfaces": [
+            "self_explanation_prompt",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 10,
+          "instructional_function": "transfer",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 11,
+          "instructional_function": "transition",
+          "surfaces": [
+            "learner_task_segment"
+          ],
+          "obligation_count": 1
+        }
+      ],
+      "_learner_task_segments": [
+        {
+          "instructional_function": "framing",
+          "plan_beat_index": 1,
+          "obligation_class": "task_segment",
+          "segment_order": 1,
+          "specification": "Bounded problem statement for this episode.",
+          "anti_substitution": []
+        },
+        {
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 6,
+          "obligation_class": "task_segment",
+          "segment_order": 6,
+          "specification": "Full learner attempt without model-answer copy path.",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ]
+        },
+        {
+          "instructional_function": "revision",
+          "plan_beat_index": 8,
+          "obligation_class": "task_segment",
+          "segment_order": 8,
+          "specification": "Rework after audit failure.",
+          "anti_substitution": []
+        },
+        {
+          "instructional_function": "reflection",
+          "plan_beat_index": 9,
+          "obligation_class": "task_segment",
+          "segment_order": 9,
+          "specification": "Learner-generated metacognitive response.",
+          "anti_substitution": [
+            "consolidation_summary",
+            "designer_prose_only"
+          ]
+        },
+        {
+          "instructional_function": "transfer",
+          "plan_beat_index": 10,
+          "obligation_class": "task_segment",
+          "segment_order": 10,
+          "specification": "Personal-context reapplication linked to criteria.",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ]
+        },
+        {
+          "instructional_function": "transition",
+          "plan_beat_index": 11,
+          "obligation_class": "task_segment",
+          "segment_order": 11,
+          "specification": "Bridge to next episode or session close.",
+          "anti_substitution": []
+        }
+      ],
+      "materials_order": [
+        "M_plan_4",
+        "M_plan_5_2",
+        "M_plan_6_3",
+        "M_plan_7_4",
+        "M_plan_8_5",
+        "M_plan_9_6",
+        "M_plan_11_7"
+      ],
+      "_population_contract_version": "38S-R1",
+      "_plan_activity_preamble": {
+        "instructional_function": "orientation",
+        "plan_beat_index": 0
+      },
+      "reasoning_orientation": "[population:framing] Bounded problem statement for this episode.",
+      "_plan_reasoning_orientation": {
+        "instructional_function": "framing",
+        "plan_beat_index": 1
+      },
+      "prior_knowledge_activation": "[population:activation] Prior-knowledge recall prompt tied to mapped LO concepts.",
+      "_plan_prior_knowledge_activation": {
+        "instructional_function": "activation",
+        "plan_beat_index": 2
+      },
+      "self_explanation_prompt": "[population:reflection] Learner-generated metacognitive response.",
+      "_plan_self_explanation_prompt": {
+        "instructional_function": "reflection",
+        "plan_beat_index": 9
+      }
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Inflation Impact on Household Budgets",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "This activity focuses on analysing how inflation affects different household budgets, including fixed-income and variable-income scenarios. You will explore lenses such as distribution, adaptation, and time-horizon to understand the varied impacts.",
+      "learner_task": "### Your tasks:\n1. Read the criteria exposition describing analytical lenses for household budget impact.\n2. Study the explanation of relationships between household income types and purchasing power.\n3. Follow the worked analytic pass applying lenses to one household case.\n4. Engage in guided inquiry using the analysis table to compare household impacts.\n5. Complete guided practice filling analysis table cells with partial exemplar rows.\n6. Perform independent practice analysing a new household scenario and justifying your analysis.\n7. Verify your analysis using the checklist.\n8. Reflect on the implications of inflation for different households.\n9. Transfer your analysis skills to your own or a hypothetical household context.",
+      "expected_output": "Completed analysis table comparing household inflation impacts with justified entries, verified by checklist, and a reflective note on findings.",
+      "required_materials": [
+        {
+          "material_id": "M_plan_4",
+          "instructional_function": "criteria_exposition",
+          "plan_beat_index": 3,
+          "obligation_class": "material",
+          "specification": "Operational definitions of distribution, adaptation, and time-horizon lenses for analysing inflation impact; depth_floor: L3",
+          "anti_substitution": [],
+          "purpose": "criteria exposition",
+          "population_contract_version": "38S-2",
+          "type": "text"
+        },
+        {
+          "material_id": "M_plan_5_2",
+          "instructional_function": "explanation",
+          "plan_beat_index": 4,
+          "obligation_class": "material",
+          "specification": "Explanation of relationships between fixed-income/variable-income households and purchasing power under inflation; depth_floor: L3",
+          "anti_substitution": [
+            "synopsis_only"
+          ],
+          "purpose": "explanation",
+          "population_contract_version": "38S-2",
+          "type": "text"
+        },
+        {
+          "material_id": "M_plan_6_3",
+          "instructional_function": "worked_thinking",
+          "plan_beat_index": 5,
+          "obligation_class": "material",
+          "specification": "Stepwise model of intellectual or procedural move.",
+          "anti_substitution": [
+            "merged_with_guided_or_independent"
+          ],
+          "purpose": "worked thinking",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "worked_example",
+          "purpose": "worked analytic pass",
+          "specification": "Stepwise analytic walkthrough applying lenses to a fixed-income household scenario; depth_floor: L3",
+          "supplementary": true
+        },
+        {
+          "material_id": "M_plan_7_4",
+          "instructional_function": "guided_inquiry",
+          "plan_beat_index": 6,
+          "obligation_class": "material",
+          "specification": "Table with partial exemplar rows for comparing inflation impact on households; includes hint columns and scoring guide; depth_floor: L3",
+          "anti_substitution": [],
+          "purpose": "guided inquiry and guided practice",
+          "population_contract_version": "38S-2",
+          "type": "analysis_table"
+        },
+        {
+          "material_id": "M_plan_8_5",
+          "instructional_function": "guided_practice",
+          "plan_beat_index": 7,
+          "obligation_class": "material",
+          "specification": "Partial attempt with fading support — distinct from independent.",
+          "anti_substitution": [
+            "merged_with_independent",
+            "merged_with_worked"
+          ],
+          "purpose": "guided practice",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_9_6",
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 8,
+          "obligation_class": "material",
+          "specification": "Blank analysis table for independent household inflation impact analysis; depth_floor: L3",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ],
+          "purpose": "independent performance",
+          "population_contract_version": "38S-2",
+          "type": "analysis_table"
+        },
+        {
+          "material_id": "M_plan_10_7",
+          "instructional_function": "verification",
+          "plan_beat_index": 9,
+          "obligation_class": "material",
+          "specification": "≥4 criteria-linked self-check items verifying completeness, justification, and analytical reasoning; repair instructions if any check fails; depth_floor: L3",
+          "anti_substitution": [
+            "checklist_only_tick"
+          ],
+          "purpose": "verification",
+          "population_contract_version": "38S-2",
+          "type": "checklist"
+        },
+        {
+          "material_id": "M_plan_12_8",
+          "instructional_function": "transfer",
+          "plan_beat_index": 11,
+          "obligation_class": "material",
+          "specification": "Prompts for applying analysis lenses to learner's own or hypothetical household with ≥80 words target; depth_floor: L3",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ],
+          "purpose": "transfer",
+          "population_contract_version": "38S-2",
+          "type": "transfer_prompt"
+        }
+      ],
+      "episode_plan_ref": {
+        "archetype": "analyse",
+        "beat_count": 13,
+        "population_contract_version": "38S-2"
+      },
+      "_population_trace": [
+        {
+          "beat_index": 0,
+          "instructional_function": "orientation",
+          "surfaces": [
+            "activity_preamble"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 1,
+          "instructional_function": "framing",
+          "surfaces": [
+            "reasoning_orientation",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 2,
+          "instructional_function": "activation",
+          "surfaces": [
+            "prior_knowledge_activation"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 3,
+          "instructional_function": "criteria_exposition",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 4,
+          "instructional_function": "explanation",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 5,
+          "instructional_function": "worked_thinking",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 6,
+          "instructional_function": "guided_inquiry",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 7,
+          "instructional_function": "guided_practice",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 8,
+          "instructional_function": "independent_performance",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 9,
+          "instructional_function": "verification",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 10,
+          "instructional_function": "reflection",
+          "surfaces": [
+            "self_explanation_prompt",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 11,
+          "instructional_function": "transfer",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 12,
+          "instructional_function": "transition",
+          "surfaces": [
+            "learner_task_segment"
+          ],
+          "obligation_count": 1
+        }
+      ],
+      "_learner_task_segments": [
+        {
+          "instructional_function": "framing",
+          "plan_beat_index": 1,
+          "obligation_class": "task_segment",
+          "segment_order": 1,
+          "specification": "Bounded problem statement for this episode.",
+          "anti_substitution": []
+        },
+        {
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 8,
+          "obligation_class": "task_segment",
+          "segment_order": 8,
+          "specification": "Full learner attempt without model-answer copy path.",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ]
+        },
+        {
+          "instructional_function": "reflection",
+          "plan_beat_index": 10,
+          "obligation_class": "task_segment",
+          "segment_order": 10,
+          "specification": "Learner-generated metacognitive response.",
+          "anti_substitution": [
+            "consolidation_summary",
+            "designer_prose_only"
+          ]
+        },
+        {
+          "instructional_function": "transfer",
+          "plan_beat_index": 11,
+          "obligation_class": "task_segment",
+          "segment_order": 11,
+          "specification": "Personal-context reapplication linked to criteria.",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ]
+        },
+        {
+          "instructional_function": "transition",
+          "plan_beat_index": 12,
+          "obligation_class": "task_segment",
+          "segment_order": 12,
+          "specification": "Bridge to next episode or session close.",
+          "anti_substitution": []
+        }
+      ],
+      "materials_order": [
+        "M_plan_4",
+        "M_plan_5_2",
+        "M_plan_6_3",
+        "A3-M3",
+        "M_plan_7_4",
+        "M_plan_8_5",
+        "M_plan_9_6",
+        "M_plan_10_7",
+        "M_plan_12_8"
+      ],
+      "_population_contract_version": "38S-R1",
+      "_plan_activity_preamble": {
+        "instructional_function": "orientation",
+        "plan_beat_index": 0
+      },
+      "reasoning_orientation": "[population:framing] Bounded problem statement for this episode.",
+      "_plan_reasoning_orientation": {
+        "instructional_function": "framing",
+        "plan_beat_index": 1
+      },
+      "prior_knowledge_activation": "[population:activation] Prior-knowledge recall prompt tied to mapped LO concepts.",
+      "_plan_prior_knowledge_activation": {
+        "instructional_function": "activation",
+        "plan_beat_index": 2
+      },
+      "self_explanation_prompt": "[population:reflection] Learner-generated metacognitive response.",
+      "_plan_self_explanation_prompt": {
+        "instructional_function": "reflection",
+        "plan_beat_index": 10
+      }
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluating Household Inflation Management Strategies",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "In this capstone activity, you will evaluate strategies households can use to manage the effects of inflation on their finances. Using the Maya household scenario and a neutral strategy menu, you will apply explicit criteria and trade-offs to defend a justified choice.",
+      "learner_task": "### Your tasks:\n1. Read the orientation and framing materials setting the decision context.\n2. Construct perspectives on who gains and loses under different strategies.\n3. Study the criteria exposition presenting ≥3 operational dimensions for evaluation.\n4. Review the worked judgement modelling note contrasting weak versus strong strategy evaluations.\n5. Engage in guided inquiry and guided judgement using the provided comparison table with partial exemplar rows.\n6. Complete an independent judgement memo using the scaffolded template/task cards.\n7. Verify your evaluation using the detailed checklist rubric.\n8. Reflect on your evaluative judgement process.\n9. Transfer your evaluation skills by applying criteria to your own or a hypothetical household strategy with a detailed transfer prompt.\n10. Conclude with a consolidation summary capturing key insights and lessons learned.",
+      "expected_output": "Completed independent judgement memo evaluating household inflation strategies with justified choice, verified by checklist, transfer response applying evaluation to own context, and consolidation summary of key evaluation insights.",
+      "required_materials": [
+        {
+          "material_id": "M_plan_4",
+          "instructional_function": "perspective_construction",
+          "plan_beat_index": 3,
+          "obligation_class": "material",
+          "specification": "Learner constructs viewpoints; pause-and-write required.",
+          "anti_substitution": [
+            "scenario_menu_only"
+          ],
+          "purpose": "perspective construction",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_5_2",
+          "instructional_function": "criteria_exposition",
+          "plan_beat_index": 4,
+          "obligation_class": "material",
+          "specification": "Text or modelling note presenting ≥3 explicit evaluation criteria dimensions for household strategies; depth_floor: L3",
+          "anti_substitution": [],
+          "purpose": "criteria exposition",
+          "population_contract_version": "38S-2",
+          "type": "text"
+        },
+        {
+          "material_id": "M_plan_6_3",
+          "instructional_function": "criteria_construction",
+          "plan_beat_index": 5,
+          "obligation_class": "material",
+          "specification": "Learner weights or prioritises criteria for the case.",
+          "anti_substitution": [
+            "read_only_rubric_prose",
+            "exposition_only"
+          ],
+          "purpose": "criteria construction",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_7_4",
+          "instructional_function": "worked_judgement",
+          "plan_beat_index": 6,
+          "obligation_class": "material",
+          "specification": "Contrast of weak versus strong household strategy evaluation reasoning; depth_floor: L3",
+          "anti_substitution": [
+            "slogan_contrast_only"
+          ],
+          "purpose": "worked judgement",
+          "population_contract_version": "38S-2",
+          "type": "modelling_note"
+        },
+        {
+          "material_id": "M_plan_8_5",
+          "instructional_function": "guided_inquiry",
+          "plan_beat_index": 7,
+          "obligation_class": "material",
+          "specification": "Productive uncertainty or trade-off tension prompts.",
+          "anti_substitution": [],
+          "purpose": "guided inquiry",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_9_6",
+          "instructional_function": "guided_reasoning",
+          "plan_beat_index": 8,
+          "obligation_class": "material",
+          "specification": "Partial completion with hint scaffolding; learner supplies justifications.",
+          "anti_substitution": [
+            "pre_filled_decision_table"
+          ],
+          "purpose": "guided reasoning",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_10_7",
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 9,
+          "obligation_class": "material",
+          "specification": "Full learner attempt without model-answer copy path.",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ],
+          "purpose": "independent performance",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_11_8",
+          "instructional_function": "evaluative_judgement",
+          "plan_beat_index": 10,
+          "obligation_class": "material",
+          "specification": "Defended recommendation or comparative judgement.",
+          "anti_substitution": [
+            "template_only_memo"
+          ],
+          "purpose": "evaluative judgement",
+          "population_contract_version": "38S-2"
+        },
+        {
+          "material_id": "M_plan_12_9",
+          "instructional_function": "verification",
+          "plan_beat_index": 11,
+          "obligation_class": "material",
+          "specification": "≥4 criteria-linked self-audit items for evaluation completeness, justification, verification, and transfer readiness; repair instructions if any check fails; depth_floor: L3",
+          "anti_substitution": [
+            "checklist_only_tick"
+          ],
+          "purpose": "verification",
+          "population_contract_version": "38S-2",
+          "type": "checklist"
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "template",
+          "purpose": "independent judgement",
+          "specification": "Memo scaffold with structured prompts and word band for independent evaluation writing; depth_floor: L3",
+          "supplementary": true
+        },
+        {
+          "material_id": "M_plan_14_10",
+          "instructional_function": "transfer",
+          "plan_beat_index": 13,
+          "obligation_class": "material",
+          "specification": "Prompts for applying evaluation criteria and judgement to learner's own or hypothetical household strategy with ≥80 words target; depth_floor: L3",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ],
+          "purpose": "transfer",
+          "population_contract_version": "38S-2",
+          "type": "transfer_prompt"
+        },
+        {
+          "material_id": "A4-M1",
+          "type": "scenario",
+          "purpose": "scenario",
+          "specification": "Maya household scenario with ≥2 perspectives and neutral strategy menu A–E; depth_floor: L3",
+          "supplementary": true
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "comparison_table",
+          "purpose": "guided judgement",
+          "specification": "Table with partial exemplar rows for guided ranking and trade-off analysis of household strategies; depth_floor: L3",
+          "supplementary": true
+        },
+        {
+          "material_id": "A4-M8",
+          "type": "consolidation_summary",
+          "purpose": "consolidation_summary",
+          "specification": "Learner-facing session closure body summarizing ≥3 key evaluation insights and lessons learned; ≥80 words; depth_floor: L3",
+          "supplementary": true
+        }
+      ],
+      "episode_plan_ref": {
+        "archetype": "evaluate",
+        "beat_count": 15,
+        "population_contract_version": "38S-2"
+      },
+      "_population_trace": [
+        {
+          "beat_index": 0,
+          "instructional_function": "orientation",
+          "surfaces": [
+            "activity_preamble"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 1,
+          "instructional_function": "framing",
+          "surfaces": [
+            "reasoning_orientation",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 2,
+          "instructional_function": "activation",
+          "surfaces": [
+            "prior_knowledge_activation"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 3,
+          "instructional_function": "perspective_construction",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 4,
+          "instructional_function": "criteria_exposition",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 5,
+          "instructional_function": "criteria_construction",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 6,
+          "instructional_function": "worked_judgement",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 7,
+          "instructional_function": "guided_inquiry",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 8,
+          "instructional_function": "guided_reasoning",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 9,
+          "instructional_function": "independent_performance",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 10,
+          "instructional_function": "evaluative_judgement",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 11,
+          "instructional_function": "verification",
+          "surfaces": [
+            "required_materials[]"
+          ],
+          "obligation_count": 1
+        },
+        {
+          "beat_index": 12,
+          "instructional_function": "reflection",
+          "surfaces": [
+            "self_explanation_prompt",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 13,
+          "instructional_function": "transfer",
+          "surfaces": [
+            "required_materials[]",
+            "learner_task_segment"
+          ],
+          "obligation_count": 2
+        },
+        {
+          "beat_index": 14,
+          "instructional_function": "transition",
+          "surfaces": [
+            "learner_task_segment"
+          ],
+          "obligation_count": 1
+        }
+      ],
+      "_learner_task_segments": [
+        {
+          "instructional_function": "framing",
+          "plan_beat_index": 1,
+          "obligation_class": "task_segment",
+          "segment_order": 1,
+          "specification": "Bounded problem statement for this episode.",
+          "anti_substitution": []
+        },
+        {
+          "instructional_function": "perspective_construction",
+          "plan_beat_index": 3,
+          "obligation_class": "task_segment",
+          "segment_order": 3,
+          "specification": "Learner constructs viewpoints; pause-and-write required.",
+          "anti_substitution": [
+            "scenario_menu_only"
+          ]
+        },
+        {
+          "instructional_function": "criteria_construction",
+          "plan_beat_index": 5,
+          "obligation_class": "task_segment",
+          "segment_order": 5,
+          "specification": "Learner weights or prioritises criteria for the case.",
+          "anti_substitution": [
+            "read_only_rubric_prose",
+            "exposition_only"
+          ]
+        },
+        {
+          "instructional_function": "independent_performance",
+          "plan_beat_index": 9,
+          "obligation_class": "task_segment",
+          "segment_order": 9,
+          "specification": "Full learner attempt without model-answer copy path.",
+          "anti_substitution": [
+            "sample_output_as_copy_source"
+          ]
+        },
+        {
+          "instructional_function": "evaluative_judgement",
+          "plan_beat_index": 10,
+          "obligation_class": "task_segment",
+          "segment_order": 10,
+          "specification": "Defended recommendation or comparative judgement.",
+          "anti_substitution": [
+            "template_only_memo"
+          ]
+        },
+        {
+          "instructional_function": "reflection",
+          "plan_beat_index": 12,
+          "obligation_class": "task_segment",
+          "segment_order": 12,
+          "specification": "Learner-generated metacognitive response.",
+          "anti_substitution": [
+            "consolidation_summary",
+            "designer_prose_only"
+          ]
+        },
+        {
+          "instructional_function": "transfer",
+          "plan_beat_index": 13,
+          "obligation_class": "task_segment",
+          "segment_order": 13,
+          "specification": "Personal-context reapplication linked to criteria.",
+          "anti_substitution": [
+            "single_optional_sentence"
+          ]
+        },
+        {
+          "instructional_function": "transition",
+          "plan_beat_index": 14,
+          "obligation_class": "task_segment",
+          "segment_order": 14,
+          "specification": "Bridge to next episode or session close.",
+          "anti_substitution": []
+        }
+      ],
+      "materials_order": [
+        "M_plan_4",
+        "M_plan_5_2",
+        "M_plan_6_3",
+        "M_plan_7_4",
+        "M_plan_8_5",
+        "M_plan_9_6",
+        "M_plan_10_7",
+        "M_plan_11_8",
+        "M_plan_12_9",
+        "A4-M5",
+        "M_plan_14_10",
+        "A4-M1",
+        "A4-M4",
+        "A4-M8"
+      ],
+      "_population_contract_version": "38S-R1",
+      "_plan_activity_preamble": {
+        "instructional_function": "orientation",
+        "plan_beat_index": 0
+      },
+      "reasoning_orientation": "[population:framing] Bounded problem statement for this episode.",
+      "_plan_reasoning_orientation": {
+        "instructional_function": "framing",
+        "plan_beat_index": 1
+      },
+      "prior_knowledge_activation": "[population:activation] Prior-knowledge recall prompt tied to mapped LO concepts.",
+      "_plan_prior_knowledge_activation": {
+        "instructional_function": "activation",
+        "plan_beat_index": 2
+      },
+      "self_explanation_prompt": "[population:reflection] Learner-generated metacognitive response.",
+      "_plan_self_explanation_prompt": {
+        "instructional_function": "reflection",
+        "plan_beat_index": 12
+      }
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "LO1"
+    ],
+    "A2": [
+      "LO2"
+    ],
+    "A3": [
+      "LO3"
+    ],
+    "A4": [
+      "LO4"
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes consolidation_summary with ≥3 key ideas summarised; reflection prompts optional but not a substitute.",
+    "workbook_contract_applied": true
+  },
+  "_episode_plans_ref": {
+    "count": 4,
+    "integration_version": "38S-R1"
+  }
+}

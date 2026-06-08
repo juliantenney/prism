@@ -6760,6 +6760,7 @@
       preserveLearningActivityChain = true;
       cognitionAwareAssessmentFlow = true;
       pushStage("Define Learning Outcomes");
+      pushStage("Design Episode Plan");
       pushStage("Design Learning Activities");
       pushStage("Generate Activity Materials");
     }
@@ -6767,6 +6768,7 @@
       preserveLearningActivityChain = true;
       cognitionAwareAssessmentFlow = true;
       pushStage("Define Learning Outcomes");
+      pushStage("Design Episode Plan");
       pushStage("Design Learning Activities");
       pushStage("Generate Activity Materials");
       pushStage("Construct Learning Sequence");
@@ -6777,6 +6779,7 @@
       pushStage("Normalize Content");
       pushStage("Model Knowledge");
       pushStage("Define Learning Outcomes");
+      pushStage("Design Episode Plan");
       pushStage("Design Learning Activities");
       pushStage("Generate Activity Materials");
     }
@@ -6836,6 +6839,35 @@
       fields: [{ id: "uncertainty_tension_prompt", gamLabel: "Uncertainty tension" }]
     }
   };
+
+  function isWorkflowStepDesignEpisodePlan(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_design_episode_plan" ||
+      title === "design episode plan" ||
+      title.indexOf("design episode plan") !== -1 ||
+      title.indexOf("episode plan") !== -1
+    );
+  }
+
+  function isWorkflowStepDesignEpisodePlanRow(step) {
+    if (!step || typeof step !== "object") return false;
+    return isWorkflowStepDesignEpisodePlan({
+      stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+      stepCanonicalTitle: step.title || "",
+      stepTitle: step.title || ""
+    });
+  }
+
+  function workflowHasDesignEpisodePlanStep(wf) {
+    if (!wf || !Array.isArray(wf.steps)) return false;
+    return wf.steps.some(function (row) {
+      return isWorkflowStepDesignEpisodePlanRow(row);
+    });
+  }
 
   function isWorkflowStepDesignLearningActivities(context) {
     var title = String(
@@ -7897,6 +7929,410 @@
     return null;
   }
 
+  function resolveEpisodePlanDlaIntegrationLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_EPISODE_PLAN_DLA_INTEGRATION) {
+        return roots[i].PRISM_EPISODE_PLAN_DLA_INTEGRATION;
+      }
+    }
+    return null;
+  }
+
+  function resolveEpisodePlanV1ValidationLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_EPISODE_PLAN_V1_VALIDATION) {
+        return roots[i].PRISM_EPISODE_PLAN_V1_VALIDATION;
+      }
+    }
+    return null;
+  }
+
+  function resolveWorkflowPageCaptureNormalizeLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_WORKFLOW_PAGE_CAPTURE_NORMALIZE) {
+        return roots[i].PRISM_WORKFLOW_PAGE_CAPTURE_NORMALIZE;
+      }
+    }
+    return null;
+  }
+
+  function isWorkflowStepDesignPageRow(step) {
+    if (!step) return false;
+    if (normalizeWorkflowStepOutputNameKey(step) === "page") return true;
+    return isWorkflowStepDesignPage({
+      stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+      stepCanonicalTitle: step.title || "",
+      stepTitle: step.title || ""
+    });
+  }
+
+  function normalizePageWorkflowRunCapture(raw, stepId) {
+    var mod = resolveWorkflowPageCaptureNormalizeLib();
+    if (!mod || typeof mod.normalizePageWorkflowCapture !== "function") {
+      return { ok: true, skipped: true, json: String(raw || "") };
+    }
+    var result = mod.normalizePageWorkflowCapture(raw, {
+      sanitizeFn: sanitizePrismRunCapturedOutput,
+      normalizeFn: utilityNormalizeUtilitiesJsonInput
+    });
+    if (result.ok && result.json) {
+      if (result.repaired && stepId) {
+        state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+        state.workflowRunPageValidation[stepId] =
+          "Page capture normalized to one valid page JSON object (removed duplicate/fenced content)";
+      } else if (stepId && state.workflowRunPageValidation) {
+        delete state.workflowRunPageValidation[stepId];
+      }
+      return result;
+    }
+    if (String(raw || "").trim() && stepId) {
+      state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+      state.workflowRunPageValidation[stepId] = String(
+        result.message || (result.errors || []).join(", ") || "Invalid page JSON"
+      );
+      if (state.workflowRunStepCompleted[stepId]) {
+        delete state.workflowRunStepCompleted[stepId];
+      }
+    }
+    return result;
+  }
+
+  function validateEpisodePlansCaptureV1(parsed) {
+    var mod = resolveEpisodePlanV1ValidationLib();
+    if (!mod || typeof mod.validateEpisodePlansContainerV1 !== "function") {
+      return { ok: true, errors: [], skipped: true };
+    }
+    return mod.validateEpisodePlansContainerV1(parsed);
+  }
+
+  function isEpisodePlanCaptureV1Valid(rawOrParsed) {
+    var parsed =
+      rawOrParsed && typeof rawOrParsed === "object"
+        ? rawOrParsed
+        : tryParseWorkflowArtefactJson(rawOrParsed);
+    if (!parsed) return false;
+    var check = validateEpisodePlansCaptureV1(parsed);
+    return !!check.ok;
+  }
+
+  function episodePlanCaptureJsonEquivalent(a, b) {
+    var parsedA = tryParseWorkflowArtefactJson(a);
+    var parsedB = tryParseWorkflowArtefactJson(b);
+    if (!parsedA || !parsedB) return String(a || "").trim() === String(b || "").trim();
+    try {
+      return JSON.stringify(parsedA) === JSON.stringify(parsedB);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, stepId) {
+    if (!stepRow || !isWorkflowStepDesignEpisodePlanRow(stepRow)) {
+      return raw;
+    }
+    var rawTrim = String(raw || "").trim();
+    var derived = deriveDesignEpisodePlanCaptureJson();
+    if (derived) {
+      var derivedParsed = tryParseWorkflowArtefactJson(derived);
+      var derivedCheck = derivedParsed
+        ? validateEpisodePlansCaptureV1(derivedParsed)
+        : { ok: false, errors: [] };
+      if (derivedCheck.ok) {
+        var changed = rawTrim && !episodePlanCaptureJsonEquivalent(rawTrim, derived);
+        if (changed) {
+          state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+          if (stepId) {
+            var parsedRaw = tryParseWorkflowArtefactJson(rawTrim);
+            if (!parsedRaw) {
+              state.workflowRunEpisodePlanValidation[stepId] =
+                "EP-V1: replaced non-JSON capture with deterministic derive from learning_outcomes";
+            } else {
+              var rawCheck = validateEpisodePlansCaptureV1(parsedRaw);
+              if (!rawCheck.ok) {
+                state.workflowRunEpisodePlanValidation[stepId] =
+                  "EP-V1: replaced invalid capture with canonical deriveEpisodePlansFromLearningOutcomes() — " +
+                  (rawCheck.errors || []).slice(0, 3).join("; ");
+              } else {
+                state.workflowRunEpisodePlanValidation[stepId] =
+                  "EP-V1: deterministic derive refreshed episode_plans from learning_outcomes (manual paste ignored)";
+              }
+            }
+          }
+          if (state.workflowRunStepCompleted[stepId]) {
+            delete state.workflowRunStepCompleted[stepId];
+          }
+        } else if (stepId && state.workflowRunEpisodePlanValidation) {
+          delete state.workflowRunEpisodePlanValidation[stepId];
+        }
+        return derived;
+      }
+    }
+    var parsed = tryParseWorkflowArtefactJson(rawTrim);
+    var check = parsed ? validateEpisodePlansCaptureV1(parsed) : { ok: false, errors: ["EP-V1: invalid JSON"] };
+    if (check.ok) {
+      if (stepId && state.workflowRunEpisodePlanValidation) {
+        delete state.workflowRunEpisodePlanValidation[stepId];
+      }
+      try {
+        return JSON.stringify(parsed, null, 2);
+      } catch (_) {
+        return raw;
+      }
+    }
+    if (stepId) {
+      state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+      state.workflowRunEpisodePlanValidation[stepId] = (check.errors || []).join("; ");
+      if (state.workflowRunStepCompleted[stepId]) {
+        delete state.workflowRunStepCompleted[stepId];
+      }
+    }
+    return raw;
+  }
+
+  function buildEpisodePlanDlaPopulationPromptBlock() {
+    var mod = resolveEpisodePlanDlaIntegrationLib();
+    if (!mod || typeof mod.buildDlaPopulationOnlyPromptBlock !== "function") return "";
+    return mod.buildDlaPopulationOnlyPromptBlock();
+  }
+
+  function buildEpisodePlanUpstreamPromptSection(episodePlans, opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    if (!episodePlans || !Array.isArray(episodePlans.episode_plans) || !episodePlans.episode_plans.length) {
+      if (options.requireUpstream) {
+        return [
+          "",
+          "### Upstream episode_plans (required — missing)",
+          "",
+          "PF-11: upstream `episode_plans` capture is missing. Do **not** emit `learning_activities`.",
+          "Return JSON only: `{ \"error\": \"PF-11: missing episode_plans upstream\" }`."
+        ].join("\n");
+      }
+      return "";
+    }
+    var lines = [
+      "",
+      "### Upstream episode_plans (authoritative — populate only; do not replan beats)",
+      "",
+      "```json",
+      JSON.stringify(episodePlans, null, 2),
+      "```"
+    ];
+    if (episodePlans.source === "learning_outcomes_fallback_non_canonical") {
+      lines.push("");
+      lines.push(
+        "_Non-canonical dev fallback: episode_plans were derived from learning_outcomes because this workflow has no Design Episode Plan step capture._"
+      );
+    }
+    return lines.join("\n");
+  }
+
+  function deriveDesignEpisodePlanCaptureJson() {
+    var mod = resolveEpisodePlanDlaIntegrationLib();
+    if (!mod || typeof mod.deriveEpisodePlansFromLearningOutcomes !== "function") return "";
+    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes");
+    if (!learningOutcomes) return "";
+    var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(learningOutcomes);
+    var gate =
+      typeof mod.assertEpisodePlansContainerGate === "function"
+        ? mod.assertEpisodePlansContainerGate(episodePlans)
+        : { ok: true, errors: [] };
+    if (!gate.ok) return "";
+    try {
+      return JSON.stringify(episodePlans, null, 2);
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function maybeAutoPopulateDesignEpisodePlanRunCapture(li, wf, stepRow) {
+    if (!li || !stepRow || !isWorkflowStepDesignEpisodePlanRow(stepRow)) return;
+    var isRun =
+      els.workflowModeRunBtn &&
+      els.workflowModeRunBtn.classList.contains("active") &&
+      els.workflowDetail &&
+      els.workflowDetail.classList.contains("run-mode");
+    if (!isRun) return;
+    var outArea = li.querySelector('[data-field="runStepOutput"]');
+    if (!outArea) return;
+    var derived = deriveDesignEpisodePlanCaptureJson();
+    if (!derived) return;
+    var existing = String(outArea.value || "").trim();
+    if (existing && episodePlanCaptureJsonEquivalent(existing, derived)) return;
+    outArea.value = derived;
+    syncWorkflowRunCapturedOutputToState(li);
+    updateRunStepOutputStatus(li);
+  }
+
+  function applyEpisodePlanDlaPopulationPromptBlockToDraft(draftText, context, wf) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignLearningActivities(context)) return draftBody;
+    var block = buildEpisodePlanDlaPopulationPromptBlock();
+    var workflow = wf || (state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null);
+    var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: workflow });
+    var upstreamSection = buildEpisodePlanUpstreamPromptSection(episodePlans, {
+      requireUpstream: workflowHasDesignEpisodePlanStep(workflow)
+    });
+    var appendParts = [];
+    if (block && !/episode plan population contract \(38s-3/i.test(draftBody)) {
+      appendParts.push(block);
+    }
+    if (upstreamSection && !/upstream episode_plans/i.test(draftBody)) {
+      appendParts.push(upstreamSection);
+    }
+    if (!appendParts.length) return draftBody;
+    return (draftBody + "\n" + appendParts.join("\n")).trim();
+  }
+
+  function resolveUpstreamWorkflowArtefactFromCaptures(outputName) {
+    var captures = state.workflowRunCapturedOutputs || {};
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !Array.isArray(wf.steps)) return null;
+    var target = String(outputName || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      var step = wf.steps[i];
+      if (!step) continue;
+      var oname = String(step.outputName || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+      if (oname !== target) continue;
+      var sid = String(step.id || "").trim();
+      var raw = sid && captures[sid] ? captures[sid] : "";
+      var parsed = tryParseWorkflowArtefactJson(raw);
+      if (parsed) return parsed;
+    }
+    return null;
+  }
+
+  function resolveEpisodePlansForDlaPopulation(opts) {
+    var options = opts && typeof opts === "object" ? opts : {};
+    var mod = resolveEpisodePlanDlaIntegrationLib();
+    if (!mod) return null;
+    var episodePlans = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans");
+    if (episodePlans && Array.isArray(episodePlans.episode_plans) && episodePlans.episode_plans.length) {
+      var captureCheck = validateEpisodePlansCaptureV1(episodePlans);
+      if (captureCheck.ok) {
+        return episodePlans;
+      }
+      episodePlans = null;
+    }
+    var wf =
+      options.workflow ||
+      (state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null);
+    if (workflowHasDesignEpisodePlanStep(wf)) {
+      return null;
+    }
+    var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes");
+    if (
+      learningOutcomes &&
+      typeof mod.deriveEpisodePlansFromLearningOutcomes === "function"
+    ) {
+      var derived = mod.deriveEpisodePlansFromLearningOutcomes(learningOutcomes);
+      if (derived && typeof derived === "object") {
+        derived.source = "learning_outcomes_fallback_non_canonical";
+      }
+      return derived;
+    }
+    return null;
+  }
+
+  function applyEpisodePlanPopulationEnforcementToDlaCapture(raw, stepContext, stepId) {
+    if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
+      return raw;
+    }
+    var mod = resolveEpisodePlanDlaIntegrationLib();
+    if (!mod || typeof mod.applyPopulationContractToLearningActivities !== "function") {
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return raw;
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: wf });
+    if (!episodePlans) {
+      if (stepId) {
+        state.workflowRunPopulationContractValidation =
+          state.workflowRunPopulationContractValidation || {};
+        state.workflowRunPopulationContractValidation[stepId] = workflowHasDesignEpisodePlanStep(wf)
+          ? "PF-11: missing episode_plans upstream (complete Design Episode Plan step first)"
+          : "PF-11: missing episode_plans and learning_outcomes upstream";
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      }
+      return raw;
+    }
+    var gate =
+      typeof mod.assertEpisodePlansContainerGate === "function"
+        ? mod.assertEpisodePlansContainerGate(episodePlans)
+        : { ok: true, errors: [] };
+    if (!gate.ok) {
+      if (stepId) {
+        state.workflowRunPopulationContractValidation =
+          state.workflowRunPopulationContractValidation || {};
+        state.workflowRunPopulationContractValidation[stepId] = gate.errors.join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      }
+      return raw;
+    }
+    var applied = mod.applyPopulationContractToLearningActivities(parsed, episodePlans);
+    if (!applied.ok) {
+      if (stepId) {
+        state.workflowRunPopulationContractValidation =
+          state.workflowRunPopulationContractValidation || {};
+        state.workflowRunPopulationContractValidation[stepId] = applied.errors.join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      }
+      return raw;
+    }
+    var validation =
+      typeof mod.validateLearningActivitiesPopulationContract === "function"
+        ? mod.validateLearningActivitiesPopulationContract(
+            applied.learning_activities,
+            episodePlans
+          )
+        : { ok: true, errors: [] };
+    if (stepId) {
+      state.workflowRunPopulationContractValidation =
+        state.workflowRunPopulationContractValidation || {};
+      if (!validation.ok) {
+        state.workflowRunPopulationContractValidation[stepId] = validation.errors.join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      } else {
+        delete state.workflowRunPopulationContractValidation[stepId];
+      }
+    }
+    try {
+      return JSON.stringify(applied.learning_activities, null, 2);
+    } catch (_) {
+      return raw;
+    }
+  }
+
   function resolvePageA3MaterialsSequencingLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -8068,38 +8504,36 @@
 
   function resolveUpstreamActivityMaterialsFromWorkflowCaptures(learningActivitiesUpstream) {
     var preserveMod = resolvePageGamMaterialsPreserveLib();
-    if (!preserveMod || typeof preserveMod.parseGamMaterialsFromText !== "function") {
+    if (
+      !preserveMod ||
+      typeof preserveMod.parseUpstreamActivityMaterialsCapture !== "function"
+    ) {
       return null;
     }
     var captures = state.workflowRunCapturedOutputs || {};
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     if (!wf || !Array.isArray(wf.steps)) return null;
+    var dlaUpstream =
+      learningActivitiesUpstream != null
+        ? learningActivitiesUpstream
+        : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
     var i;
     for (i = 0; i < wf.steps.length; i += 1) {
       var step = wf.steps[i];
       if (!step) continue;
       var oname = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
-      if (oname !== "activity_materials") continue;
+      if (oname !== "activity_materials" && oname !== "session_materials") continue;
       var sid = String(step.id || "").trim();
       var raw = sid && captures[sid] ? captures[sid] : "";
       if (!raw) continue;
       var parsedJson = tryParseWorkflowArtefactJson(raw);
-      if (parsedJson && Array.isArray(parsedJson.activities)) {
-        return parsedJson.activities;
+      var upstream = preserveMod.parseUpstreamActivityMaterialsCapture(
+        parsedJson || raw,
+        dlaUpstream
+      );
+      if (upstream && upstream.length) {
+        return upstream;
       }
-      var flat = preserveMod.parseGamMaterialsFromText(raw);
-      if (!flat.length) continue;
-      var dlaUpstream =
-        learningActivitiesUpstream != null
-          ? learningActivitiesUpstream
-          : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
-      if (
-        preserveMod.buildUpstreamGamActivitiesFromMaterials &&
-        typeof preserveMod.buildUpstreamGamActivitiesFromMaterials === "function"
-      ) {
-        return preserveMod.buildUpstreamGamActivitiesFromMaterials(flat, dlaUpstream);
-      }
-      return flat;
     }
     return null;
   }
@@ -9066,6 +9500,7 @@
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
+    draft = applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
     return String(draft || "").trim();
   }
 
@@ -15953,7 +16388,7 @@
         });
       }
       if (activitiesRequired) {
-        var activityChainTargets = ["Design Learning Activities"];
+        var activityChainTargets = ["Design Episode Plan", "Design Learning Activities"];
         if (learnerFacingMaterialsRequested) {
           activityChainTargets.push("Generate Activity Materials");
         }
@@ -16039,6 +16474,7 @@
           !pedagogicCognitionIntent &&
           (
             title === "define learning outcomes" ||
+            title === "design episode plan" ||
             title === "design learning activities" ||
             title === "generate activity materials" ||
             title === "generate learning content" ||
@@ -16054,6 +16490,7 @@
           !activitiesRequired &&
           !pedagogicCognitionIntent &&
           (
+            title === "design episode plan" ||
             title === "design learning activities" ||
             title === "generate activity materials" ||
             title === "construct learning sequence"
@@ -17296,7 +17733,6 @@
     var ta = li.querySelector('[data-field="runStepOutput"]');
     if (!sid || !ta) return;
     var raw = String(ta.value || "");
-    state.workflowRunCapturedOutputsRaw[sid] = raw;
     var gamCtx = buildGamSanitizeContextFromRunStepLi(li);
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     var stepRow = null;
@@ -17306,6 +17742,30 @@
           return String(row && row.id ? row.id : "") === sid;
         }) || null;
     }
+    if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
+      var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid);
+      if (enforcedRaw !== raw) {
+        ta.value = enforcedRaw;
+        raw = enforcedRaw;
+      } else if (raw) {
+        var epCheck = validateEpisodePlansCaptureV1(tryParseWorkflowArtefactJson(raw));
+        if (!epCheck.ok) {
+          state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+          state.workflowRunEpisodePlanValidation[sid] = (epCheck.errors || []).join("; ");
+          if (state.workflowRunStepCompleted[sid]) {
+            delete state.workflowRunStepCompleted[sid];
+          }
+        }
+      }
+    }
+    if (stepRow && isWorkflowStepDesignPageRow(stepRow) && String(raw || "").trim()) {
+      var pageNorm = normalizePageWorkflowRunCapture(raw, sid);
+      if (pageNorm.ok && pageNorm.json && pageNorm.json !== raw) {
+        ta.value = pageNorm.json;
+        raw = pageNorm.json;
+      }
+    }
+    state.workflowRunCapturedOutputsRaw[sid] = raw;
     var strictCheck = validateStrictJsonWorkflowRunStepCapture(raw, stepRow || {});
     if (!strictCheck.ok && !strictCheck.skipped) {
       state.workflowRunStrictJsonValidation[sid] = String(
@@ -17317,18 +17777,34 @@
     } else {
       delete state.workflowRunStrictJsonValidation[sid];
     }
-    state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+    state.workflowRunCapturedOutputs[sid] = applyEpisodePlanPopulationEnforcementToDlaCapture(
+      sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx),
+      stepRow ? buildWorkflowStepPromptAugmentContextFromStep(stepRow, wf) : gamCtx,
+      sid
+    );
     var outputNameInput = li.querySelector('[data-field="outputName"]');
     var outputName =
       outputNameInput && typeof outputNameInput.value === "string"
         ? outputNameInput.value.trim().toLowerCase().replace(/\s+/g, "_")
         : "";
-    if (outputName === "page") {
-      applyPageCompositionValidationForCapturedPage(li, raw);
+    if (outputName === "page" || (stepRow && isWorkflowStepDesignPageRow(stepRow))) {
+      var pageComposeResult = applyPageCompositionValidationForCapturedPage(li, raw);
+      if (pageComposeResult && pageComposeResult.json && pageComposeResult.json !== raw) {
+        ta.value = pageComposeResult.json;
+        raw = pageComposeResult.json;
+        state.workflowRunCapturedOutputsRaw[sid] = raw;
+        state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+      }
     } else {
       var parsedPage = tryParseWorkflowArtefactJson(raw);
       if (parsedPage && String(parsedPage.artifact_type || "").toLowerCase() === "page") {
-        applyPageCompositionValidationForCapturedPage(li, raw);
+        var pageComposeFallback = applyPageCompositionValidationForCapturedPage(li, raw);
+        if (pageComposeFallback && pageComposeFallback.json && pageComposeFallback.json !== raw) {
+          ta.value = pageComposeFallback.json;
+          raw = pageComposeFallback.json;
+          state.workflowRunCapturedOutputsRaw[sid] = raw;
+          state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+        }
       }
     }
     updateRunStepOutputStatus(li);
@@ -17350,14 +17826,29 @@
       sid && state.workflowRunStrictJsonValidation
         ? state.workflowRunStrictJsonValidation[sid]
         : "";
+    var episodePlanErr =
+      sid && state.workflowRunEpisodePlanValidation
+        ? state.workflowRunEpisodePlanValidation[sid]
+        : "";
+    var pageErr =
+      sid && state.workflowRunPageValidation ? state.workflowRunPageValidation[sid] : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
     if (strictErr) {
       text = (text ? text + " · " : "") + "Invalid JSON: " + strictErr;
     }
+    if (episodePlanErr) {
+      text = (text ? text + " · " : "") + episodePlanErr;
+    }
+    if (pageErr) {
+      text = (text ? text + " · " : "") + pageErr;
+    }
     statusEl.textContent = text;
     statusEl.classList.toggle("hidden", !text);
-    statusEl.classList.toggle("workflow-run-step-output-status--error", !!strictErr);
+    statusEl.classList.toggle(
+      "workflow-run-step-output-status--error",
+      !!(strictErr || episodePlanErr || pageErr)
+    );
   }
 
   function refreshWorkflowRunStepOutputStatusDisplays() {
@@ -17454,6 +17945,18 @@
     if (els.workflowNextStepBtn) {
       els.workflowNextStepBtn.disabled = idx === total - 1;
     }
+    if (currentStepLi) {
+      var wfRun = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+      var stepIdRun = String(currentStepLi.getAttribute("data-step-id") || "").trim();
+      var stepRowRun = null;
+      if (wfRun && Array.isArray(wfRun.steps) && stepIdRun) {
+        stepRowRun =
+          wfRun.steps.find(function (row) {
+            return String(row && row.id ? row.id : "") === stepIdRun;
+          }) || null;
+      }
+      maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
+    }
     refreshWorkflowRunStepOutputStatusDisplays();
   }
 
@@ -17471,6 +17974,8 @@
       state.workflowRunCapturedOutputsRaw = {};
       state.workflowRunStepCompleted = {};
       state.workflowRunStrictJsonValidation = {};
+      state.workflowRunEpisodePlanValidation = {};
+      state.workflowRunPageValidation = {};
     }
 
     if (els.workflowModeRunBtn) {
@@ -22087,6 +22592,12 @@
     lines.push(
       "This step is titled: " + (step.title || "Untitled step") + "."
     );
+    if (isWorkflowStepDesignEpisodePlanRow(step)) {
+      lines.push("");
+      lines.push(
+        "Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes()."
+      );
+    }
     if (step.roleLabel) {
       lines.push("Role / purpose of this step: " + step.roleLabel + ".");
     }
@@ -34335,7 +34846,9 @@
 
   function applyPageCompositionValidationForCapturedPage(stepLi, rawCapture) {
     var parsed = tryParseWorkflowArtefactJson(rawCapture);
-    if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") return null;
+    if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") {
+      return { validation: null, json: null };
+    }
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
     var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
       upstreamLearningActivities: upstream
@@ -34348,7 +34861,11 @@
         console.warn("[PRISM page composition]", validation);
       }
     }
-    return validation;
+    var json = null;
+    try {
+      json = JSON.stringify(parsed, null, 2);
+    } catch (_) {}
+    return { validation: validation, json: json };
   }
 
   function applyPageCompositionValidationForUtilitiesPage(parsed, options) {
@@ -35800,6 +36317,38 @@
               return;
             }
           }
+          if (stepRow && isWorkflowStepDesignPageRow(stepRow) && body) {
+            var pageGate = normalizePageWorkflowRunCapture(body, sid);
+            if (!pageGate.ok || !pageGate.json) {
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                "Design Page output must be valid JSON with a single page object. " +
+                  String(
+                    (state.workflowRunPageValidation && state.workflowRunPageValidation[sid]) ||
+                      pageGate.message ||
+                      "Invalid page JSON"
+                  ),
+                "error"
+              );
+              return;
+            }
+            try {
+              JSON.parse(pageGate.json);
+            } catch (pageParseErr) {
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                "Design Page output must be valid JSON. " +
+                  String((pageParseErr && pageParseErr.message) || pageParseErr),
+                "error"
+              );
+              return;
+            }
+            if (pageGate.json !== body && currentLi) {
+              var pageOut = currentLi.querySelector('[data-field="runStepOutput"]');
+              if (pageOut) pageOut.value = pageGate.json;
+              syncWorkflowRunCapturedOutputToState(currentLi);
+            }
+          }
           if (sid) {
             state.workflowRunStepCompleted[sid] = true;
           }
@@ -36156,6 +36705,22 @@
     prismTestApi.getWorkflowsForTest = function () {
       return Array.isArray(state.workflows) ? state.workflows.slice() : [];
     };
+    prismTestApi.setSelectedWorkflowIdForTest = function (workflowId) {
+      state.selectedWorkflowId = String(workflowId || "").trim();
+    };
+    prismTestApi.setWorkflowRunCapturedOutputsForTest = function (captures) {
+      state.workflowRunCapturedOutputs =
+        captures && typeof captures === "object" ? Object.assign({}, captures) : {};
+      state.workflowRunPopulationContractValidation = {};
+      state.workflowRunEpisodePlanValidation = {};
+      state.workflowRunPageValidation = {};
+    };
+    prismTestApi.applyEpisodePlanCaptureCanonicalEnforcement =
+      applyEpisodePlanCaptureCanonicalEnforcement;
+    prismTestApi.normalizePageWorkflowRunCapture = normalizePageWorkflowRunCapture;
+    prismTestApi.isWorkflowStepDesignPageRow = isWorkflowStepDesignPageRow;
+    prismTestApi.validateEpisodePlansCaptureV1 = validateEpisodePlansCaptureV1;
+    prismTestApi.isEpisodePlanCaptureV1Valid = isEpisodePlanCaptureV1Valid;
     prismTestApi.setPromptsForTest = function (prompts) {
       state.prompts = Array.isArray(prompts) ? prompts.slice() : [];
     };
@@ -36371,6 +36936,17 @@
       resolvePedagogicCognitionCompositionSemantics;
     prismTestApi.resolveWorkflowBriefContextForPageComposition =
       resolveWorkflowBriefContextForPageComposition;
+    prismTestApi.applyEpisodePlanPopulationEnforcementToDlaCapture =
+      applyEpisodePlanPopulationEnforcementToDlaCapture;
+    prismTestApi.resolveEpisodePlansForDlaPopulation = resolveEpisodePlansForDlaPopulation;
+    prismTestApi.buildEpisodePlanDlaPopulationPromptBlock = buildEpisodePlanDlaPopulationPromptBlock;
+    prismTestApi.applyEpisodePlanDlaPopulationPromptBlockToDraft =
+      applyEpisodePlanDlaPopulationPromptBlockToDraft;
+    prismTestApi.isWorkflowStepDesignEpisodePlan = isWorkflowStepDesignEpisodePlan;
+    prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
+    prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
+    prismTestApi.buildEpisodePlanUpstreamPromptSection = buildEpisodePlanUpstreamPromptSection;
+    prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;
   }
 

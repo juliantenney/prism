@@ -1,0 +1,27 @@
+{
+  "runId": "EV-38S-AFTER",
+  "capturedAt": "2026-06-08T06:57:39.046Z",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Inflation Measurement Methods",
+      "materials": []
+    },
+    {
+      "activity_id": "A2",
+      "title": "Applying CPI Inflation Rate Calculation",
+      "materials": []
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Inflation Impact on Household Budgets",
+      "materials": []
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluating Household Inflation Management Strategies",
+      "materials": []
+    }
+  ],
+  "all_materials": []
+}

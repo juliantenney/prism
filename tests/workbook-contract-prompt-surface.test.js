@@ -2,7 +2,7 @@
  * Sprint 38-E / 38-F — Workbook contract prompt surface (pack §5 DLA / §6 GAM).
  * 38E: V-02 (AP-01), V-08, V-09, V-03/V-04/V-05/V-06/V-07, preservation unchanged.
  * 38F: V-01 (DLA-WB-06a, GAM-WB-38F-01), V-05 (DLA-WB-18, GAM-WB-10 F5), 38E-8/9 co-presence, V-13.
- * 38J: IFP-00..08, DLA-WB-22..25 (38J-3 §5); GAM-PRES, GAM-WB-22..25, F8 (38J-4 §6).
+ * 38J: IFP-04..10 (38J-3 §5; 38S-2A removed IFP-00..03/07/08), DLA-WB-22..25; GAM-PRES, GAM-WB-22..25, F8 (38J-4 §6).
  * 38L: IFP-09..10, DLA-WB-26..30 (38L-2 §5); GAM-PRES-08/09, GAM-WB-26..30, F9 (38L-3 §6);
  * 38L-4: INF-EVAL-01, EV-CAP-04, DLA-WB-31 (§5); GAM-PRES-10, GAM-WB-31 (§6); harness alignment.
  */
@@ -197,40 +197,32 @@ test("pack §6 38F-2: defaultPromptNotes cite 38F-2 and preservation modules", (
 
 // --- Sprint 38-J (38J-3 IFP in pack §5) ---
 
-test("pack §5 38J-3: IFP mandatory internal planning block present", () => {
+test("pack §5 38J-3 / 38S-2A: superseded IFP planning blocks removed; obligation gates retained", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /IFP-00 SEQUENCE/i);
-  assert.match(t, /IFP-01 ARCHETYPE SELECTION/i);
-  assert.match(t, /IFP-02 ARCHETYPE TEMPLATES/i);
-  assert.match(t, /IFP-03 KM TRIGGERS/i);
+  assert.doesNotMatch(t, /IFP-00 SEQUENCE/i);
+  assert.doesNotMatch(t, /IFP-01 ARCHETYPE SELECTION/i);
+  assert.doesNotMatch(t, /IFP-02 ARCHETYPE TEMPLATES/i);
+  assert.doesNotMatch(t, /IFP-03 KM TRIGGERS/i);
+  assert.doesNotMatch(t, /IFP-07 SESSION ARC/i);
+  assert.doesNotMatch(t, /- IFP-08:/i);
   assert.match(t, /IFP-04 INFERENCE CONTRACTS/i);
   assert.match(t, /IFP-05 ANTI-SHELL/i);
   assert.match(t, /IFP-06 ANTI-SPOILER/i);
-  assert.match(t, /IFP-07 SESSION ARC/i);
-  assert.match(t, /IFP-08/i);
-  assert.match(t, /not a stored artefact/i);
+  assert.match(t, /IFP-09 DEPTH FLOORS/i);
+  assert.match(t, /IFP-10 CLOSURE EMISSION GATES/i);
+  assert.match(t, /upstream episode_plans owns archetype and beat order/i);
   assert.doesNotMatch(t, /Apply LO cognitive-demand component bundles/i);
 });
 
-test("pack §5 38J-3: archetype selection and 38I-3 authority", () => {
+test("pack §5 38J-3: inference, anti-shell, anti-spoiler retained (planning moved to Episode Plan)", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /LO-ARC-03/i);
-  assert.match(t, /AP-OVERRIDE-01/i);
-  assert.match(t, /AN-ASSESS-01/i);
-  assert.match(t, /primary_archetype/i);
-  assert.match(t, /Evaluate > Analyse > Apply > Understand/i);
-});
-
-test("pack §5 38J-3: KM triggers, inference, anti-shell, anti-spoiler, session arc", () => {
-  const t = dla.promptTemplate;
-  assert.match(t, /KM-T01/i);
-  assert.match(t, /KM-T03/i);
+  assert.doesNotMatch(t, /LO-ARC-03/i);
+  assert.doesNotMatch(t, /AP-OVERRIDE-01/i);
   assert.match(t, /INF-01/i);
   assert.match(t, /worked judgement weak/i);
   assert.match(t, /AS-FAIL-01/i);
   assert.match(t, /SP-01/i);
-  assert.match(t, /ARC-01/i);
-  assert.match(t, /ARC-LO-02/i);
+  assert.doesNotMatch(t, /IFP-07 SESSION ARC/i);
 });
 
 test("pack §5 38J-3: DLA-WB-22..25 archetype and gate rows", () => {
@@ -242,11 +234,12 @@ test("pack §5 38J-3: DLA-WB-22..25 archetype and gate rows", () => {
   assert.match(t, /EV-CAP-01/i);
 });
 
-test("pack §5 38J-3: defaultPromptNotes reinforce IFP mandatory planning", () => {
-  assert.match(dla.defaultPromptNotes, /38J-3/i);
-  assert.match(dla.defaultPromptNotes, /IFP mandatory/i);
-  assert.match(dla.defaultPromptNotes, /anti-shell/i);
+test("pack §5 38J-3: defaultPromptNotes reinforce IFP obligation gates (38S-2A)", () => {
+  assert.match(dla.defaultPromptNotes, /38J-3|38S-2A/i);
+  assert.match(dla.defaultPromptNotes, /IFP-04/i);
+  assert.match(dla.defaultPromptNotes, /IFP-05|AS-FAIL/i);
   assert.match(dla.defaultPromptNotes, /DLA-WB-22/i);
+  assert.doesNotMatch(dla.defaultPromptNotes, /LO→archetype/i);
 });
 
 // --- Sprint 38-J (38J-4 GAM preservation in pack §6) ---
@@ -293,9 +286,10 @@ test("pack §6 38J-4: defaultPromptNotes reinforce preservation without replanni
   assert.doesNotMatch(gam.defaultPromptNotes, /IFP-00/i);
 });
 
-test("pack §5 unchanged after 38J-4: IFP block still present", () => {
-  assert.match(dla.promptTemplate, /IFP-00 SEQUENCE/i);
+test("pack §5 after 38J-4 / 38S-2A: IFP obligation gates and DLA-WB-22 still present", () => {
+  assert.match(dla.promptTemplate, /IFP-04 INFERENCE/i);
   assert.match(dla.promptTemplate, /DLA-WB-22/i);
+  assert.doesNotMatch(dla.promptTemplate, /IFP-00 SEQUENCE/i);
 });
 
 // --- Sprint 38-L (38L-2 depth floors + emission gates in pack §5) ---
@@ -309,7 +303,7 @@ test("pack §5 38L-2: IFP-09 depth floors and IFP-10 emission gates", () => {
   assert.match(t, /38L-2 R4/i);
   assert.match(t, /EMIT-FAIL-01/i);
   assert.match(t, /EMIT-FAIL-04/i);
-  assert.match(t, /IFP-00 A–K|IFP-00 A-K/i);
+  assert.match(t, /IFP-04–10|IFP-04-10/i);
 });
 
 test("pack §5 38L-2: universal verification and closure material rows", () => {
@@ -421,17 +415,18 @@ test("pack §5 unchanged after 38L-3: IFP-09 and DLA-WB-26..30 still present", (
 
 test("pack §5 38L-4: INF-EVAL-01 household Evaluate anchor and EV-CAP-04 termination", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /INF-EVAL-01.*38L-4/i);
+  assert.match(t, /INF-EVAL-01/i);
   assert.match(t, /38I-4 A4/i);
-  assert.match(t, /EV-CAP-04.*38L-4/i);
-  assert.match(t, /guided comparison alone CANNOT terminate/i);
+  assert.match(t, /EV-CAP-04/i);
+  assert.match(t, /guided judgement alone CANNOT terminate|cannot end at guided comparison/i);
   assert.match(t, /AS-FAIL-06.*38L-4/i);
 });
 
 test("pack §5 38L-4: KM-T05/T08 and DLA-WB-31 completion pack", () => {
   const t = dla.promptTemplate;
-  assert.match(t, /KM-T05.*primary Evaluate anchor household/i);
-  assert.match(t, /KM-T08.*NOT Evaluate capstone/i);
+  assert.match(t, /INF-EVAL-01.*38L-4/i);
+  assert.match(t, /KM-T05|household budget impacts/i);
+  assert.match(t, /KM-T08.*MUST NOT be primary Evaluate|KM-T08.*macro context only/i);
   assert.match(t, /DLA-WB-31.*38L-4/i);
   assert.match(t, /independent judgement \+ verification \+ transfer/i);
 });

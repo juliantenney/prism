@@ -1,0 +1,931 @@
+{
+  "capturedAt": "2026-06-08T07:47:43.510Z",
+  "sprint": "38-L",
+  "runId": "EV-38S-AFTER-3",
+  "phase": "38L-4",
+  "harnessVersion": "38S-GAM1",
+  "frozenLearningOutcomes": "c:\\xampp\\htdocs\\prism\\docs\\development\\sprints\\2026-06-05-sprint-38l-instructional-function-depth-implementation\\artefacts\\ev-38l-frozen-learning-outcomes.json",
+  "evaluateBenchmark": "38I-4 A4 household strategy Evaluate",
+  "priorRuns": [
+    "EV-38G-AFTER",
+    "EV-38J-AFTER",
+    "EV-38H-AFTER-knowledge-model"
+  ],
+  "comparators": [
+    "EV-38G-AFTER",
+    "EV-38J-AFTER",
+    "38I-4-target-state",
+    "38I-4-A4-episode"
+  ],
+  "model": "gpt-4.1-mini",
+  "brief": {
+    "goal": "Learner self-study inflation workshop: CPI, GDP deflator, household budget scenarios (fixed- and variable-income), and household strategy evaluation under inflation. Policy communication may appear as macro context only — the capstone evaluates household budget strategies, not policy summaries.",
+    "inputs": "First-year undergraduate economics (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "pipelinePath": [
+    "brief",
+    "generate_learning_content",
+    "model_knowledge",
+    "frozen_learning_outcomes",
+    "derive_episode_plans",
+    "design_learning_activities",
+    "population_contract_enforcement",
+    "dla_38l_obligation_gate",
+    "generate_activity_materials",
+    "design_page",
+    "apply_gam_materials_compose",
+    "a3_materials_sequencing",
+    "fidelity_replay"
+  ],
+  "episodePlanIntegration": "38S-GAM1",
+  "singleLane": true,
+  "gamOutputValidation": {
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "metrics": {
+      "material_count": 37,
+      "activity_blocks": 4,
+      "thin_count": 0,
+      "json_stub": false
+    }
+  },
+  "gamCaptureAttempts": 2,
+  "populationContractValidation": true,
+  "dla38lValidation": true,
+  "proofReplay": {
+    "proofOk": false,
+    "roleOk": false,
+    "fullOk": false,
+    "validation38M": {
+      "ok": false,
+      "errors": [
+        "A4:M18_Transfer_Prompt_Evaluate:G6:missing transfer word-band marker"
+      ]
+    },
+    "validation38L": {
+      "ok": true,
+      "errors": []
+    },
+    "validation38P": {
+      "ok": false,
+      "errors": [
+        "A3:RF1:explanatory_guidance has 2 authoritative entries: criteria_exposition_evaluate, text",
+        "A3:RF1:explanatory_guidance has 2 canonical entries",
+        "A4:RF4:canonical transfer_prompt_evaluate missing markers: transfer_word_band"
+      ]
+    },
+    "a3Sequencing": {
+      "ok": false
+    },
+    "fidelityMetrics": [
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_4",
+        "page_key": "text",
+        "tier": "D",
+        "gamLen": 1535,
+        "pageLen": 1535,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_5_2",
+        "page_key": "worked_example",
+        "tier": "D",
+        "gamLen": 1628,
+        "pageLen": 1628,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_6_3",
+        "page_key": "modelling_note",
+        "tier": "D",
+        "gamLen": 1128,
+        "pageLen": 1128,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_7_4",
+        "page_key": "m_plan_7_4",
+        "tier": "D",
+        "gamLen": 1039,
+        "pageLen": 1039,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_8_5",
+        "page_key": "classification_table",
+        "tier": "D",
+        "gamLen": 2032,
+        "pageLen": 2032,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_9_6",
+        "page_key": "classification_table",
+        "tier": "D",
+        "gamLen": 1140,
+        "pageLen": 2032,
+        "ratio": 178,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "minor_whitespace",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "M_plan_10_7",
+        "page_key": "checklist_evaluate",
+        "tier": "E",
+        "gamLen": 1585,
+        "pageLen": 1585,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A1",
+        "material_id": "A1-reflection-prompt",
+        "page_key": "a1_reflection_prompt",
+        "tier": "D",
+        "gamLen": 769,
+        "pageLen": 769,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_4",
+        "page_key": "concept_exposition",
+        "tier": "D",
+        "gamLen": 1100,
+        "pageLen": 1100,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_5_2",
+        "page_key": "worked_example",
+        "tier": "D",
+        "gamLen": 1048,
+        "pageLen": 1048,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_6_3",
+        "page_key": "m_plan_6_3",
+        "tier": "D",
+        "gamLen": 793,
+        "pageLen": 793,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_7_4",
+        "page_key": "m_plan_7_4",
+        "tier": "D",
+        "gamLen": 609,
+        "pageLen": 609,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_8_5",
+        "page_key": "checklist_evaluate",
+        "tier": "E",
+        "gamLen": 1497,
+        "pageLen": 1497,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M_plan_9_6",
+        "page_key": "m_plan_9_6",
+        "tier": "D",
+        "gamLen": 641,
+        "pageLen": 641,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A2",
+        "material_id": "M18_Transfer_Prompt_Evaluate",
+        "page_key": "transfer_prompt_evaluate",
+        "tier": "B",
+        "gamLen": 739,
+        "pageLen": 739,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [
+          "transfer_word_band"
+        ],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": false
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_4",
+        "page_key": "concept_exposition",
+        "tier": "D",
+        "gamLen": 1202,
+        "pageLen": 1202,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_5_2",
+        "page_key": "text",
+        "tier": "D",
+        "gamLen": 1029,
+        "pageLen": 1029,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_6_3",
+        "page_key": "worked_example",
+        "tier": "D",
+        "gamLen": 967,
+        "pageLen": 967,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_7_4",
+        "page_key": "m_plan_7_4",
+        "tier": "D",
+        "gamLen": 622,
+        "pageLen": 622,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M8_Worked_Analytic_Pass_Household_Inflation",
+        "page_key": "worked_analytic_pass",
+        "tier": "D",
+        "gamLen": 1041,
+        "pageLen": 1041,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [
+          "Distribution Lens",
+          "Stepwise Analysis"
+        ],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": false
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M10_Analysis_Table_Household_Comparison",
+        "page_key": "analysis_table",
+        "tier": "D",
+        "gamLen": 1634,
+        "pageLen": 1634,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [
+          "Learner Entry"
+        ],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": false
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_9_6",
+        "page_key": "m_plan_9_6",
+        "tier": "D",
+        "gamLen": 558,
+        "pageLen": 558,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M_plan_10_7",
+        "page_key": "checklist_evaluate",
+        "tier": "E",
+        "gamLen": 1509,
+        "pageLen": 1509,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "M18_Transfer_Prompt_Evaluate",
+        "page_key": "transfer_prompt_evaluate",
+        "tier": "B",
+        "gamLen": 660,
+        "pageLen": 660,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [
+          "transfer_word_band"
+        ],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": false
+      },
+      {
+        "activity_id": "A3",
+        "material_id": "A3-reflection-prompt",
+        "page_key": "a3_reflection_prompt",
+        "tier": "D",
+        "gamLen": 575,
+        "pageLen": 575,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M12_Scenario_Maya_Strategy_Menu",
+        "page_key": "scenario_maya_strategy_menu",
+        "tier": "A",
+        "gamLen": 1145,
+        "pageLen": 1145,
+        "ratio": 100,
+        "markersFound": [
+          "strategy_a",
+          "strategy_e"
+        ],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_4",
+        "page_key": "text",
+        "tier": "D",
+        "gamLen": 885,
+        "pageLen": 885,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_5_2",
+        "page_key": "concept_exposition",
+        "tier": "D",
+        "gamLen": 896,
+        "pageLen": 896,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M14_Worked_Judgement_Weak_Strong",
+        "page_key": "worked_judgement_weak_strong",
+        "tier": "A",
+        "gamLen": 1342,
+        "pageLen": 1342,
+        "ratio": 100,
+        "markersFound": [
+          "weak_worked_judgement",
+          "strong_worked_judgement"
+        ],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M15_Guided_Judgement_Table",
+        "page_key": "guided_judgement_table",
+        "tier": "A",
+        "gamLen": 2041,
+        "pageLen": 2041,
+        "ratio": 100,
+        "markersFound": [
+          "guided_table_exemplar"
+        ],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_9_6",
+        "page_key": "m_plan_9_6",
+        "tier": "D",
+        "gamLen": 603,
+        "pageLen": 603,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_10_7",
+        "page_key": "m_plan_10_7",
+        "tier": "D",
+        "gamLen": 565,
+        "pageLen": 565,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_11_8",
+        "page_key": "checklist_evaluate",
+        "tier": "E",
+        "gamLen": 1492,
+        "pageLen": 1492,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M16_Independent_Judgement_Template",
+        "page_key": "independent_judgement_template",
+        "tier": "C",
+        "gamLen": 167,
+        "pageLen": 167,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M18_Transfer_Prompt_Evaluate",
+        "page_key": "transfer_prompt_evaluate",
+        "tier": "B",
+        "gamLen": 642,
+        "pageLen": 642,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [
+          "transfer_word_band"
+        ],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": false
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M_plan_14_10",
+        "page_key": "m_plan_14_10",
+        "tier": "D",
+        "gamLen": 625,
+        "pageLen": 625,
+        "ratio": 100,
+        "markersFound": [],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      },
+      {
+        "activity_id": "A4",
+        "material_id": "M19_Consolidation_Summary",
+        "page_key": "consolidation_summary",
+        "tier": "B2",
+        "gamLen": 998,
+        "pageLen": 998,
+        "ratio": 100,
+        "markersFound": [
+          "consolidation_reflect"
+        ],
+        "markersMissing": [],
+        "lossType": "none",
+        "mergeApplied": true,
+        "substantive": true
+      }
+    ]
+  },
+  "artefactsWritten": [
+    "EV-38S-AFTER-3-learning-content.json",
+    "EV-38S-AFTER-3-knowledge-model.json",
+    "EV-38S-AFTER-3-learning-outcomes.json",
+    "EV-38S-AFTER-3-learning-objectives.json",
+    "EV-38S-AFTER-3-episode-plans.json",
+    "EV-38S-AFTER-3-dla-learning-activities.json",
+    "EV-38S-AFTER-3-gam.json",
+    "EV-38S-AFTER-3-gam.txt",
+    "EV-38S-AFTER-3-workbook.md",
+    "EV-38S-AFTER-3-design-page.json",
+    "EV-38S-AFTER-3-design-page-raw-compose.json",
+    "EV-38S-AFTER-3-proof-replay.json",
+    "EV-38S-AFTER-3-run-log.json"
+  ],
+  "knowledgeModelConceptCount": 12,
+  "promptChars": {
+    "learning_content": 1366,
+    "knowledge_model": 1786,
+    "learning_outcomes": 0,
+    "dla": 32125,
+    "gam": 27668,
+    "design_page": 21100
+  },
+  "activityCount": 4,
+  "gamMaterialCount": 37,
+  "gamTypes": [
+    "text",
+    "worked_example",
+    "modelling_note",
+    "misconception_confrontation",
+    "classification_table",
+    "checklist",
+    "prompt_set",
+    "task_cards",
+    "transfer_prompt",
+    "analysis_table",
+    "scenario",
+    "decision_table",
+    "template",
+    "transfer",
+    "consolidation_summary"
+  ],
+  "materials": [
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_4",
+      "type": "text",
+      "contentLen": 1535,
+      "contentPreview": "Inflation is the general increase in prices of goods and services over time, which reduces the purchasing power of money. To measure inflation, economists use s"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_5_2",
+      "type": "worked_example",
+      "contentLen": 1628,
+      "contentPreview": "Let's illustrate how the CPI and GDP Deflator calculations differ step-by-step with a simple example. **Step 1: Define the baskets** - CPI uses a fixed bas"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_6_3",
+      "type": "modelling_note",
+      "contentLen": 1128,
+      "contentPreview": "A common misconception is that the CPI and GDP Deflator measure the same inflation rate. However, they differ fundamentally in scope and basket composition. "
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_7_4",
+      "type": "misconception_confrontation",
+      "contentLen": 1039,
+      "contentPreview": "Let's confront the confusion that CPI and GDP Deflator measure the same inflation. This confusion arises because both indices relate to price changes, but they "
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_8_5",
+      "type": "classification_table",
+      "contentLen": 2032,
+      "contentPreview": "Classify each statement below as describing CPI, GDP Deflator, Both, or Neither. Use the hints to help you. | Statement "
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_9_6",
+      "type": "classification_table",
+      "contentLen": 1140,
+      "contentPreview": "Classify each statement below as CPI, GDP Deflator, Both, or Neither without hints. | Statement "
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "M_plan_10_7",
+      "type": "checklist",
+      "contentLen": 1585,
+      "contentPreview": "Use this checklist to verify your understanding of CPI and GDP Deflator differences. For each criterion, mark Pass or Fail. If you fail any, follow the repair i"
+    },
+    {
+      "activity_id": "A1",
+      "material_id": "A1-reflection-prompt",
+      "type": "prompt_set",
+      "contentLen": 769,
+      "contentPreview": "Reflect on the following questions to deepen your understanding of inflation measurement: 1. How does the fixed basket in the CPI affect the way inflation is"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_4",
+      "type": "text",
+      "contentLen": 1100,
+      "contentPreview": "Calculating the CPI inflation rate involves understanding key criteria: the fixed basket concept, weighted averages, and price comparisons over time. The CPI"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_5_2",
+      "type": "worked_example",
+      "contentLen": 1048,
+      "contentPreview": "Let's walk through a detailed example of calculating the CPI inflation rate step-by-step. **Step 1: Define the fixed basket and weights** Suppose the baske"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_6_3",
+      "type": "task_cards",
+      "contentLen": 793,
+      "contentPreview": "Practice calculating CPI inflation rates with these tasks: 1. Given a fixed basket of 8 units of food (weight 0.7) and 4 units of clothing (weight 0.3), with"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_7_4",
+      "type": "task_cards",
+      "contentLen": 609,
+      "contentPreview": "Try these CPI inflation calculation tasks independently, without hints: 1. A fixed basket contains 5 units of food and 10 units of clothing. Base year prices"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_8_5",
+      "type": "checklist",
+      "contentLen": 1497,
+      "contentPreview": "Use this checklist to verify your CPI inflation rate calculation skills. Mark Pass or Fail for each criterion and follow repair instructions if needed. | Cri"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_9_6",
+      "type": "prompt_set",
+      "contentLen": 641,
+      "contentPreview": "Reflect on these questions to deepen your understanding of CPI inflation rate calculations: 1. How does using a fixed basket help capture changes in the cost"
+    },
+    {
+      "activity_id": "A2",
+      "material_id": "M_plan_11_7",
+      "type": "transfer_prompt",
+      "contentLen": 739,
+      "contentPreview": "Apply your CPI inflation calculation skills to your own context or current inflation data: - Identify a few key items or services you regularly purchase and "
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_4",
+      "type": "text",
+      "contentLen": 1202,
+      "contentPreview": "Inflation affects household budgets differently depending on income type, spending patterns, and time horizons. To analyse these impacts, we use several analyti"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_5_2",
+      "type": "text",
+      "contentLen": 1029,
+      "contentPreview": "To analyse inflation's impact on household budgets, we apply core concepts from economic theory and practical budgeting rules. First, purchasing power is key"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_6_3",
+      "type": "worked_example",
+      "contentLen": 967,
+      "contentPreview": "Consider a fixed-income household with a monthly income of $2,000, spending $1,200 on essentials (food, utilities, rent) and $800 on discretionary items. **S"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_7_4",
+      "type": "task_cards",
+      "contentLen": 622,
+      "contentPreview": "Analyse the impact of inflation on household budgets with these questions: 1. How does inflation affect fixed-income households differently from variable-inc"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-worked-analytic-pass",
+      "type": "worked_example",
+      "contentLen": 1041,
+      "contentPreview": "Let's analyse inflation's impact on the Maya household, a fixed-income family living on a $3,000 monthly pension. **Distributional lens:** Maya's income is f"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_8_5",
+      "type": "analysis_table",
+      "contentLen": 1634,
+      "contentPreview": "Compare inflation effects on fixed-income versus variable-income households using the table below. Fill in the empty learner columns with your analysis. | As"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_9_6",
+      "type": "task_cards",
+      "contentLen": 558,
+      "contentPreview": "Analyse inflation impacts on these household scenarios: 1. A single-parent household with variable income from freelance work faces 6% inflation. How might t"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_10_7",
+      "type": "checklist",
+      "contentLen": 1509,
+      "contentPreview": "Use this checklist to verify the quality and completeness of your inflation impact analysis. Mark Pass or Fail and follow repair instructions if needed. | Cr"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "M_plan_12_8",
+      "type": "transfer_prompt",
+      "contentLen": 660,
+      "contentPreview": "Apply your analytical lenses to your own or a hypothetical household scenario: - Describe your household's income type (fixed or variable) and typical spendi"
+    },
+    {
+      "activity_id": "A3",
+      "material_id": "A3-reflection-prompt",
+      "type": "prompt_set",
+      "contentLen": 575,
+      "contentPreview": "Reflect on these questions to consolidate your understanding of inflation impacts on households: 1. How does inflation affect households differently dependin"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-scenario",
+      "type": "scenario",
+      "contentLen": 1145,
+      "contentPreview": "Meet Maya, a retired household living on a fixed monthly income of $3,000 from her pension. Maya faces rising inflation of 7% annually, affecting her ability to"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_4",
+      "type": "text",
+      "contentLen": 885,
+      "contentPreview": "Evaluating household inflation management strategies requires understanding the gains and losses from different perspectives. From a **Financial Security Foc"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_5_2",
+      "type": "text",
+      "contentLen": 896,
+      "contentPreview": "To evaluate household inflation management strategies effectively, apply these operational criteria dimensions: 1. **Depth of Strategy:** How thoroughly has "
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_6_3",
+      "type": "modelling_note",
+      "contentLen": 1342,
+      "contentPreview": "Consider two contrasting evaluations of Strategy B (investing savings in inflation-protected securities): **Weak Evaluation Example:** \"This strategy is go"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_8_5",
+      "type": "decision_table",
+      "contentLen": 2041,
+      "contentPreview": "Evaluate Maya’s strategies using the table below. For each strategy, consider the criteria dimensions and provide justifications. Complete the learner columns w"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_9_6",
+      "type": "task_cards",
+      "contentLen": 603,
+      "contentPreview": "Complete the partial evaluation of Strategy C (seek part-time income): - Depth of Strategy: Consider whether Maya has planned how much income is needed, hour"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_10_7",
+      "type": "task_cards",
+      "contentLen": 565,
+      "contentPreview": "Independently evaluate all five strategies for Maya using the criteria dimensions: depth, independent reasoning, verification, and transferability. For each "
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_11_8",
+      "type": "checklist",
+      "contentLen": 1492,
+      "contentPreview": "Use this rubric checklist to audit the quality and completeness of your household strategy evaluation. Mark Pass or Fail and follow repair instructions if neede"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-independent-judgement-template",
+      "type": "template",
+      "contentLen": 167,
+      "contentPreview": "Use this memo scaffold to write your independent evaluative judgement on Maya’s household inflation management strategies. Fill in each section with your own an"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_12_9",
+      "type": "transfer_prompt",
+      "contentLen": 642,
+      "contentPreview": "Apply the evaluation criteria and reasoning skills you used for Maya’s strategies to your own or another household scenario: - Describe a household facing in"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "M_plan_14_10",
+      "type": "transfer",
+      "contentLen": 625,
+      "contentPreview": "Reflect on your personal or household context in relation to inflation management: - How do the evaluation criteria (depth, reasoning, verification, transfer"
+    },
+    {
+      "activity_id": "A4",
+      "material_id": "A4-consolidation-summary",
+      "type": "consolidation_summary",
+      "contentLen": 998,
+      "contentPreview": "As you conclude this evaluation activity, consider these key ideas to consolidate your learning: - Effective household inflation management strategies requir"
+    }
+  ]
+}

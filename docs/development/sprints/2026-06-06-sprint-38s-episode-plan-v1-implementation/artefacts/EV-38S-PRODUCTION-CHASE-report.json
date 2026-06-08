@@ -1,0 +1,34 @@
+{
+  "runPrefix": "EV-38S-AFTER-4",
+  "steps": [
+    {
+      "name": "Episode Plan artefact V1 taxonomy",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DLA population contract",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "GAM pack text bodies",
+      "ok": true,
+      "detail": "len=44158"
+    },
+    {
+      "name": "EV-38S proof replay",
+      "ok": true,
+      "detail": "exit=0"
+    }
+  ],
+  "proofOk": true,
+  "roleOk": true,
+  "fullOk": true,
+  "episodePlanArchetypes": [
+    "understand",
+    "apply",
+    "analyse",
+    "evaluate"
+  ]
+}

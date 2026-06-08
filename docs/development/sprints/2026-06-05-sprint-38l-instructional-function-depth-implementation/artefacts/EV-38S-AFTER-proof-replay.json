@@ -1,0 +1,28 @@
+{
+  "harnessVersion": "38S-R1",
+  "singleLane": true,
+  "populationContract": true,
+  "dla38l": true,
+  "proofOk": false,
+  "roleOk": false,
+  "fullOk": false,
+  "validation38M": {
+    "ok": true,
+    "errors": []
+  },
+  "validation38L": {
+    "ok": false,
+    "errors": [
+      "expected at least 4 learning activities on page"
+    ]
+  },
+  "validation38P": {
+    "ok": false,
+    "errors": [
+      "page:RF8:no material_role_index on any activity"
+    ]
+  },
+  "a3Sequencing": {
+    "ok": false
+  }
+}

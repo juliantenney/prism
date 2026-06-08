@@ -1,0 +1,143 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "The rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money."
+    },
+    {
+      "name": "Purchasing Power",
+      "definition": "The amount of goods and services that can be bought with a unit of money, which decreases as inflation rises."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "A measure of the average price change over time of a fixed basket of goods and services typically purchased by households, reflecting the cost of living for consumers."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "A measure of the price change of all domestically produced goods and services in an economy, including investment and government spending, using a changing basket that reflects current production."
+    },
+    {
+      "name": "Fixed Income Household",
+      "definition": "Households receiving a fixed amount of income, such as pensions or fixed salaries, which do not automatically adjust to rising prices, reducing real purchasing power during inflation."
+    },
+    {
+      "name": "Variable Income Household",
+      "definition": "Households with income that can adjust, such as wages linked to inflation or business income, which may better maintain purchasing power but still face uncertainty."
+    },
+    {
+      "name": "Household Budget Adjustments",
+      "definition": "Changes households make in spending, saving, or borrowing to cope with inflation, such as prioritizing essential expenses, substituting cheaper goods, or building emergency savings."
+    },
+    {
+      "name": "Household Strategy Evaluation",
+      "definition": "Assessment of household strategies to cope with inflation based on depth, adaptability, sustainability, and the ability to apply guided, worked, and independent judgement."
+    },
+    {
+      "name": "Macroeconomic Policy Context",
+      "definition": "The broader economic environment influenced by policies such as central bank interest rate adjustments and government fiscal measures that affect inflation but are not the primary focus of household strategy evaluation."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Inflation",
+      "target": "Purchasing Power",
+      "type": "causes_decrease_in"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "GDP Deflator",
+      "type": "contrasts_with"
+    },
+    {
+      "source": "Fixed Income Household",
+      "target": "Purchasing Power",
+      "type": "affected_by"
+    },
+    {
+      "source": "Variable Income Household",
+      "target": "Purchasing Power",
+      "type": "affected_by"
+    },
+    {
+      "source": "Household Budget Adjustments",
+      "target": "Fixed Income Household",
+      "type": "applied_by"
+    },
+    {
+      "source": "Household Budget Adjustments",
+      "target": "Variable Income Household",
+      "type": "applied_by"
+    },
+    {
+      "source": "Household Strategy Evaluation",
+      "target": "Household Budget Adjustments",
+      "type": "assesses"
+    },
+    {
+      "source": "Macroeconomic Policy Context",
+      "target": "Inflation",
+      "type": "influences"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement Methods",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    },
+    {
+      "name": "Household Income Types",
+      "members": [
+        "Fixed Income Household",
+        "Variable Income Household"
+      ]
+    },
+    {
+      "name": "Household Strategy Components",
+      "members": [
+        "Household Budget Adjustments",
+        "Household Strategy Evaluation"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Evaluating Household Strategies Under Inflation",
+      "steps": [
+        "Budget with updated price information to prioritize essential expenses",
+        "Diversify income sources or seek inflation-indexed income",
+        "Adjust consumption habits by substituting cheaper goods or delaying non-essential purchases",
+        "Build emergency savings to buffer against unexpected price increases",
+        "Assess strategy depth, adaptability, and sustainability using a rubric considering guided, worked, and independent judgement"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "CPI and GDP Deflator measure the same inflation",
+      "clarification": "CPI measures inflation based on a fixed basket of consumer goods and services, reflecting household cost of living, while GDP deflator measures inflation for all domestically produced goods and services with a changing basket."
+    },
+    {
+      "name": "Fixed income households are unaffected by inflation",
+      "clarification": "Fixed income households face reduced real purchasing power during inflation because their income does not automatically adjust to rising prices."
+    },
+    {
+      "name": "Macroeconomic policies are the primary focus for household inflation strategies",
+      "clarification": "Macroeconomic policies influence inflation contextually but are not the primary focus when evaluating household budget strategies under inflation."
+    }
+  ]
+}
+```

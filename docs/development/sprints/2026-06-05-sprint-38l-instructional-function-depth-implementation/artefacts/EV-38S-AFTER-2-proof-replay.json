@@ -1,0 +1,44 @@
+{
+  "harnessVersion": "38S-R1",
+  "singleLane": true,
+  "populationContract": true,
+  "dla38l": true,
+  "proofOk": false,
+  "roleOk": false,
+  "fullOk": false,
+  "validation38M": {
+    "ok": false,
+    "errors": [
+      "A1:checklist:G8:missing checklist >= 80 chars",
+      "A2:checklist:G8:missing checklist >= 80 chars",
+      "A3:checklist:G8:missing checklist >= 80 chars",
+      "A4:checklist:G8:missing checklist >= 80 chars"
+    ]
+  },
+  "validation38L": {
+    "ok": false,
+    "errors": [
+      "A1: missing checklist material",
+      "A2: missing checklist material",
+      "A3: missing checklist material",
+      "A4: missing checklist material",
+      "A3: missing worked analytic pass material",
+      "A4: missing substantive worked example / worked judgement material",
+      "A4: missing substantive scenario / strategy menu material",
+      "A4: missing checklist / debrief material"
+    ]
+  },
+  "validation38P": {
+    "ok": false,
+    "errors": [
+      "page:RF8:no material_role_index on any activity",
+      "A1:RF8:missing material_role_index",
+      "A2:RF8:missing material_role_index",
+      "A3:RF8:missing material_role_index",
+      "A4:RF8:missing material_role_index"
+    ]
+  },
+  "a3Sequencing": {
+    "ok": false
+  }
+}

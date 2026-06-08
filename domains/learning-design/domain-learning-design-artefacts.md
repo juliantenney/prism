@@ -76,6 +76,21 @@ A set of measurable statements describing what learners should be able to do.
 
 ---
 
+## 3a. episode_plans
+
+### Description
+Frozen Episode Plan V1 container — one plan per activity derived from learning outcomes.
+
+### Purpose
+- Authoritative instructional choreography (archetype + ordered beats) before DLA population
+- Inspectable workflow artefact between Define Learning Outcomes and Design Learning Activities
+
+### Typical Structure
+- `episode_plans[]` with `activity_id`, `mapped_learning_outcome_ids`, and `episode_plan: { archetype, beats: [{ function }] }`
+- V1 remains archetype + ordered `beats[].function` only (no transitions, learner_state, branching, or material obligations)
+
+---
+
 ## 4. assessment_blueprint
 
 ### Description

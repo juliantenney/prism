@@ -1,0 +1,110 @@
+{
+  "capturedAt": "2026-06-06T15:29:56.017Z",
+  "sprint": "38-S",
+  "runId": "EV-38S-AFTER",
+  "phase": "38S-4",
+  "harnessVersion": "38S-4",
+  "sourceRun": "EV-38S-AFTER",
+  "replayMode": "38S-full-pipeline-artefact-replay",
+  "proofOk": false,
+  "roleOk": false,
+  "fullOk": false,
+  "validation38M": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "validation38LRegression": {
+    "ok": false,
+    "errors": [
+      "expected at least 4 learning activities on page"
+    ]
+  },
+  "validation38P": {
+    "ok": false,
+    "errors": [
+      "page:RF8:no material_role_index on any activity"
+    ],
+    "warnings": []
+  },
+  "rfGates": [
+    {
+      "gate": "RF1_role_uniqueness",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF2_no_weak_first_render",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF3_stable_role_identity",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF4_pedagogical_function",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF5_no_role_inversion",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF6_episode_sequence",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF7_body_role_coherence",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF8_compose_transparency",
+      "pass": false,
+      "errors": [
+        "page:RF8:no material_role_index on any activity"
+      ],
+      "warnings": []
+    }
+  ],
+  "a3Sequencing": {
+    "pageJson": {
+      "ok": false,
+      "errors": [
+        "A3:analyse:missing:A3 Analyse activity row not found"
+      ]
+    },
+    "render": {
+      "ok": false,
+      "errors": [
+        "A3:render:G15:missing h4 material heading for worked_analytic_pass",
+        "A3:render:G15:missing h4 material heading for analysis_table",
+        "A3:render:G15:missing h4 material heading for scenario_maya_households",
+        "A3:render:G15:missing h4 material heading for checklist"
+      ]
+    }
+  },
+  "proofDimensions38M38N": {
+    "bodyFidelity38M": false,
+    "a3Sequencing38N": false
+  },
+  "baselineComparison": {
+    "source38P": "EV-38P-AFTER",
+    "priorFullOk": true,
+    "priorProofOk": true,
+    "priorRoleOk": true,
+    "fullOkUnchanged": false
+  }
+}

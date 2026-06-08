@@ -1,0 +1,397 @@
+```json
+{
+  "artifact_type": "page",
+  "title": "Inflation Self-Directed Learner Workbook",
+  "audience": "self-directed learner",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Introduction and Learning Purpose",
+      "content": "This workbook guides you through understanding, applying, analysing, and evaluating key concepts related to inflation measurement and its impact on household finances. You will explore the differences between the Consumer Price Index (CPI) and the GDP Deflator, calculate inflation rates using CPI data, analyse how inflation affects different household budgets, and evaluate household strategies for managing inflation effects. The activities are designed for a standard session lasting approximately 60 minutes and include worked examples, guided practice, independent tasks, verification checklists, and reflection prompts to support your self-directed learning journey."
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": "By completing this workbook, you will be able to:\n\n1. Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.\n2. Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI.\n3. Analyse how inflation affects different household budgets, including fixed-income and variable-income scenarios.\n4. Evaluate strategies households can use to manage the effects of inflation on their finances, defending a justified choice using explicit criteria and trade-offs.\n\nThese outcomes build your conceptual understanding, calculation skills, analytical thinking, and evaluative judgement related to inflation and household financial strategies."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Understanding Inflation Measurement Methods",
+          "duration_minutes": 15,
+          "learner_task": "### Task\n- Read the explanatory text on CPI and GDP Deflator.\n- Study the worked example illustrating how each index is constructed.\n- Examine the non-example contrasting CPI and GDP Deflator to clarify common confusions.\n- Complete the guided practice by classifying statements as true for CPI, GDP Deflator, both, or neither.\n- Perform the independent classification task to reinforce your understanding.\n- Verify your answers using the verification checklist.\n- Reflect on how these measures differ and why this matters for inflation measurement.",
+          "expected_output": "Completed classification table with correct identification of CPI and GDP Deflator characteristics; verified checklist showing self-assessment; reflection notes summarizing key differences.",
+          "materials": {
+            "explanation_text": "## Understanding Consumer Price Index (CPI) and GDP Deflator\n\nInflation is commonly measured using indices that track changes in prices over time. Two important measures are the Consumer Price Index (CPI) and the GDP Deflator. Although both relate to inflation, they differ fundamentally in what they measure and how they are constructed.\n\nThe **Consumer Price Index (CPI)** measures the average change in prices paid by urban consumers for a fixed basket of goods and services. This basket reflects typical household consumption patterns and remains constant over the period being measured. The CPI focuses on goods and services purchased by consumers, such as food, clothing, housing, and transportation. Because the basket is fixed, the CPI captures price changes for a consistent set of items, making it useful for understanding how inflation affects household purchasing power.\n\nIn contrast, the **GDP Deflator** measures the change in prices of all domestically produced goods and services in the economy. It is calculated as the ratio of nominal GDP to real GDP, reflecting a changing basket based on current production. This means the GDP Deflator captures price changes for a broader range of goods and services, including investment goods and exports, and accounts for changes in the composition of output over time.\n\nUnderstanding these differences is key to interpreting inflation statistics accurately. The CPI is more focused on the consumer experience, while the GDP Deflator provides a comprehensive measure of price changes across the entire economy.",
+            "worked_example": "### Worked Example: Calculating CPI and GDP Deflator\n\nConsider an economy with the following simplified data for two years:\n\n| Item            | Quantity (Year 1) | Price (Year 1) | Price (Year 2) | Quantity (Year 2) |\n|-----------------|-------------------|----------------|----------------|-------------------|\n| Food            | 100 units         | $2             | $3             | 110 units         |\n| Electronics     | 50 units          | $100           | $90            | 60 units          |\n\n**Step 1: Calculate CPI Inflation Rate**\n- The CPI uses a fixed basket from Year 1 quantities: 100 units of Food and 50 units of Electronics.\n- Calculate the cost of the basket in Year 1:\n  \\[ (100 \\times 2) + (50 \\times 100) = 200 + 5000 = 5200 \\]\n- Calculate the cost of the same basket in Year 2:\n  \\[ (100 \\times 3) + (50 \\times 90) = 300 + 4500 = 4800 \\]\n- CPI inflation rate:\n  \\[ \\frac{4800 - 5200}{5200} \\times 100 = -7.69\\% \\] (deflation)\n\n**Step 2: Calculate GDP Deflator Inflation Rate**\n- GDP Deflator uses current year quantities and prices.\n- Nominal GDP in Year 2:\n  \\[ (110 \\times 3) + (60 \\times 90) = 330 + 5400 = 5730 \\]\n- Real GDP in Year 2 (using Year 1 prices):\n  \\[ (110 \\times 2) + (60 \\times 100) = 220 + 6000 = 6220 \\]\n- GDP Deflator in Year 2:\n  \\[ \\frac{Nominal\\ GDP}{Real\\ GDP} = \\frac{5730}{6220} = 0.921 \\]\n- GDP Deflator inflation rate:\n  \\[ (0.921 - 1) \\times 100 = -7.9\\% \\] (deflation)\n\n**Step 3: Interpretation**\n- Both indices show deflation, but the GDP Deflator accounts for changes in quantities, reflecting production shifts.\n- The CPI fixes quantities, focusing on consumer experience.",
+            "non_example": "### Common Misconception: CPI and GDP Deflator Measure the Same Inflation\n\nA frequent misunderstanding is that the Consumer Price Index (CPI) and the GDP Deflator measure the exact same inflation rate. This is incorrect because:\n\n- The **CPI** uses a fixed basket of consumer goods and services, reflecting what households typically buy. It does not change the basket quantities over time, so it isolates price changes for a consistent set of items.\n- The **GDP Deflator** uses a changing basket that reflects the current production mix, including goods and services beyond consumer purchases, such as investment and government spending.\n\nBecause of these differences, the CPI and GDP Deflator can show different inflation rates, especially when the composition of goods and services changes significantly or when prices of non-consumer goods change differently than consumer goods.\n\nUnderstanding this distinction helps avoid confusion and supports accurate interpretation of inflation data.",
+            "misconception_confrontation": "### Addressing the Confusion Between CPI and GDP Deflator\n\nThe confusion arises because both CPI and GDP Deflator are measures of inflation but serve different purposes. To reconcile this:\n\n- Remember that **CPI focuses on the consumer's perspective**, tracking the cost of a fixed basket of goods and services that households buy. This makes it a practical measure for understanding how inflation affects household budgets and purchasing power.\n- The **GDP Deflator captures the economy-wide price changes**, reflecting all goods and services produced domestically, including those not directly purchased by consumers. It adapts to changes in the economy's production structure.\n\nBy recognizing these distinct roles, you can better interpret inflation figures and choose the appropriate measure depending on the context—whether analyzing household cost of living or overall economic price changes.",
+            "classification_table": "| Statement                                                                                 | CPI | GDP Deflator | Both | Neither | Hint/Explanation                                   |\n|-------------------------------------------------------------------------------------------|-----|--------------|------|---------|---------------------------------------------------|\n| Measures price changes using a fixed basket of goods and services                         |  X  |              |      |         | CPI uses fixed basket; GDP Deflator uses changing basket |\n| Includes prices of investment goods and government services                              |     |      X       |      |         | GDP Deflator includes all domestically produced goods and services |\n| Reflects changes in prices paid by urban consumers                                       |  X  |              |      |         | CPI focuses on consumer prices                      |\n| Calculated as the ratio of nominal GDP to real GDP                                       |     |      X       |      |         | This is the GDP Deflator formula                     |\n| Basket composition changes every year                                                    |     |      X       |      |         | GDP Deflator basket changes with production          |\n| Used to measure inflation affecting household purchasing power                          |  X  |              |      |         | CPI is designed for household inflation measurement |\n| Only includes goods and services produced domestically                                   |     |      X       |      |         | GDP Deflator covers all domestic production          |\n| Measures the cost of living for a fixed set of consumer goods                            |  X  |              |      |         | CPI measures cost of living with fixed basket       |\n| Ignores changes in consumption patterns over time                                       |  X  |              |      |         | CPI basket fixed; GDP Deflator reflects changes      |",
+            "independent_classification_table": "| Statement                                                                                 | CPI | GDP Deflator | Both | Neither |\n|-------------------------------------------------------------------------------------------|-----|--------------|------|---------|\n| Measures inflation using a fixed basket of consumer goods                                |     |              |      |         |\n| Includes price changes for exported goods                                               |     |              |      |         |\n| Reflects price changes for all goods and services produced domestically                 |     |              |      |         |\n| Uses a basket that changes composition annually                                         |     |              |      |         |\n| Focuses on urban consumer expenditures                                                 |     |              |      |         |\n| Calculated as nominal GDP divided by real GDP                                          |     |              |      |         |\n| Useful for adjusting wages and pensions                                                |     |              |      |         |\n| Captures price changes in investment goods                                            |     |              |      |         |",
+            "verification_checklist": "### Self-Check: Understanding CPI and GDP Deflator\n\nPlease review each statement and tick **Yes** if you agree or **No** if you disagree. If you answer No to any, revisit the relevant materials.\n\n| Criterion                                                                                       | Yes | No  |\n|------------------------------------------------------------------------------------------------|-----|-----|\n| I can explain that CPI uses a fixed basket of consumer goods and services.                      |     |     |\n| I understand that the GDP Deflator uses a changing basket reflecting current production.       |     |     |\n| I can distinguish that CPI focuses on consumer prices while GDP Deflator covers all domestic goods and services. |     |     |\n| I know that CPI is useful for measuring inflation's effect on household purchasing power.      |     |     |\n| I can describe why CPI and GDP Deflator may show different inflation rates.                     |     |     |\n| I understand the formula for GDP Deflator as nominal GDP divided by real GDP.                   |     |     |\n| I can identify common misconceptions about CPI and GDP Deflator and explain the differences.   |     |     |\n\n**If you answered No to any item, please revisit the relevant explanations, examples, or misconceptions sections before proceeding.**",
+            "reflection_prompts": "### Reflection Prompts: Understanding Inflation Measures\n\n1. In your own words, explain the key difference between the Consumer Price Index (CPI) and the GDP Deflator. What does each measure emphasize?\n2. Why is it important to understand the difference between these two inflation measures when interpreting economic data?\n3. Reflect on how the fixed basket in CPI might affect its usefulness for measuring inflation over time compared to the GDP Deflator’s changing basket.\n4. How might the differences between CPI and GDP Deflator impact decisions made by households, businesses, or policymakers?\n\nPlease write brief answers to these prompts to deepen your understanding before moving on to the next activity."
+          }
+        },
+        {
+          "title": "Applying CPI Inflation Rate Calculation",
+          "duration_minutes": 15,
+          "learner_task": "### Task\n- Review the criteria exposition explaining CPI inflation calculation rules.\n- Study the worked thinking example showing stepwise CPI inflation rate calculation using weighted average price changes.\n- Complete the guided practice exercises calculating CPI inflation for given data.\n- Perform independent practice to calculate inflation rate for a new basket.\n- Verify your calculations using the provided checklist.\n- Reflect on the calculation process and its significance.",
+          "expected_output": "Completed CPI inflation calculation worksheets with correct inflation rates; verified checklist confirming accuracy; reflection notes on calculation steps.",
+          "materials": {
+            "criteria_exposition": "## Criteria for Calculating CPI Inflation Rate\n\nThe Consumer Price Index (CPI) inflation rate measures the percentage change in the cost of a fixed basket of goods and services over time. The key criteria for calculating CPI inflation are:\n\n- **Fixed Basket Concept:** Use quantities of goods and services from a base period (fixed basket) to ensure consistency in measuring price changes.\n- **Price Changes Only:** Calculate inflation based on changes in prices, not quantities, to isolate the effect of price variation.\n- **Weighted Average:** Account for the relative importance of each item in the basket by weighting price changes according to their share in total expenditure.\n- **Base Period Reference:** Compare the cost of the fixed basket in the current period to the base period to determine the inflation rate.\n\nThese criteria ensure that the CPI inflation rate reflects how much more or less it costs households to purchase their typical consumption bundle over time.",
+            "worked_thinking_example": "### Worked Thinking: Calculating CPI Inflation Rate\n\nConsider a basket with the following items and base-period quantities and prices:\n\n| Item    | Quantity (Base Year) | Price (Base Year) | Price (Current Year) |\n|---------|----------------------|-------------------|----------------------|\n| Bread   | 10 loaves            | $2                | $2.50                |\n| Milk    | 5 liters             | $1.50             | $1.80                |\n| Eggs    | 12 eggs              | $0.10             | $0.12                |\n\n**Step 1: Calculate base year basket cost:**\n\\[(10 \\times 2) + (5 \\times 1.5) + (12 \\times 0.10) = 20 + 7.5 + 1.2 = 28.7\\]\n\n**Step 2: Calculate current year basket cost using base year quantities:**\n\\[(10 \\times 2.5) + (5 \\times 1.8) + (12 \\times 0.12) = 25 + 9 + 1.44 = 35.44\\]\n\n**Step 3: Calculate CPI inflation rate:**\n\\[\\frac{35.44 - 28.7}{28.7} \\times 100 = \\frac{6.74}{28.7} \\times 100 \\approx 23.49\\%\\]\n\n**Interpretation:** The CPI inflation rate is approximately 23.5%, indicating that the cost of the fixed basket increased by this percentage from the base year to the current year.",
+            "guided_practice_task_cards": "### Guided Practice: Calculate CPI Inflation Rate\n\n**Task Card 1:**\nGiven the following data, calculate the CPI inflation rate:\n\n| Item    | Quantity (Base Year) | Price (Base Year) | Price (Current Year) |\n|---------|----------------------|-------------------|----------------------|\n| Coffee  | 8 pounds             | $4                | $5                   |\n| Sugar   | 10 pounds            | $2                | $2.50                |\n| Tea     | 6 pounds             | $3                | $3.30                |\n\n**Instructions:**\n1. Calculate the total cost of the basket in the base year.\n2. Calculate the total cost of the basket in the current year using base year quantities.\n3. Compute the CPI inflation rate as a percentage.\n\n**Task Card 2:**\nRepeat the calculation for the following data:\n\n| Item    | Quantity (Base Year) | Price (Base Year) | Price (Current Year) |\n|---------|----------------------|-------------------|----------------------|\n| Rice    | 15 kg                | $1                | $1.20                |\n| Beans   | 12 kg                | $2                | $2.10                |\n| Oil     | 5 liters             | $3                | $3.50                |",
+            "independent_practice_task_cards": "### Independent Practice: Calculate CPI Inflation Rate\n\n**Task Card 1:**\nUsing the data below, calculate the CPI inflation rate:\n\n| Item     | Quantity (Base Year) | Price (Base Year) | Price (Current Year) |\n|----------|----------------------|-------------------|----------------------|\n| Butter   | 4 kg                 | $5                | $6                   |\n| Cheese   | 3 kg                 | $8                | $9                   |\n| Yogurt   | 6 liters             | $2                | $2.50                |",
+            "verification_checklist": "### Verification Checklist: CPI Inflation Calculation\n\nPlease tick **Yes** if you have completed each step correctly, or **No** if you need to review.\n\n| Criterion                                                                 | Yes | No  |\n|---------------------------------------------------------------------------|-----|-----|\n| I used the base year quantities to calculate basket costs for both periods.|     |     |\n| I calculated the total cost of the basket correctly for the base year.    |     |     |\n| I calculated the total cost of the basket correctly for the current year. |     |     |\n| I computed the inflation rate using the correct formula.                  |     |     |\n| I interpreted the inflation rate correctly in context.                    |     |     |\n\n**If you answered No to any item, please revisit the relevant materials and recalculate before proceeding.**",
+            "reflection_prompts": "### Reflection Prompts: CPI Inflation Calculation\n\n1. What does the CPI inflation rate tell you about the change in cost of living?\n2. Why is it important to use a fixed basket of goods when calculating CPI inflation?\n3. How might changes in consumption patterns affect the accuracy of CPI over time?\n4. Reflect on how this calculation might help households plan their budgets during inflationary periods."
+          }
+        },
+        {
+          "title": "Analysing Inflation Impact on Household Budgets",
+          "duration_minutes": 15,
+          "learner_task": "### Task\n- Read the criteria exposition describing analytical lenses for household budget impact: distribution, adaptation, and time-horizon.\n- Study the worked analytic pass walking through one household's inflation impact analysis.\n- Complete the guided inquiry by answering analytical questions about household scenarios.\n- Fill in the analysis table comparing fixed-income and variable-income household impacts.\n- Perform independent practice analysing a new household scenario.\n- Verify your analysis using the verification checklist.\n- Reflect on differences in inflation effects across household types and why.",
+          "expected_output": "Completed analysis table with comparative assessments; answers to guided inquiry questions; verified checklist; reflection notes on household inflation impact.",
+          "materials": {
+            "criteria_exposition": "Explanation of analytical lenses for inflation impact on household budgets; concept elucidation for Household Budget Impact, Inflation, Purchasing Power.",
+            "explanation_text": "Inflation impacts households differently depending on income type and spending patterns. Analytical lenses to consider include:\n\n- **Distribution:** How inflation affects different income groups or household types.\n- **Adaptation:** The ability of households to adjust income or spending in response to inflation.\n- **Time-Horizon:** Short-term versus long-term effects of inflation on household finances.\n\nUnderstanding these lenses helps analyse the vulnerability and resilience of fixed-income versus variable-income households under inflationary pressures.",
+            "worked_analytic_pass": "Stepwise analysis of inflation impact on a fixed-income household using distribution, adaptation, and time-horizon lenses; depth_floor L3.",
+            "guided_inquiry_task_cards": "Questions prompting analysis of household inflation impacts; depth_floor L3.",
+            "analysis_table": "| Aspect                          | Fixed-Income Household Impact                                    | Variable-Income Household Impact                                 | Notes / Hints                                             |\n|--------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------|\n| Distribution                   | Income does not adjust; purchasing power declines                | Income may adjust; purchasing power may be maintained or improved| Fixed incomes vulnerable; variable incomes more adaptable |\n| Adaptation                    | Limited ability to increase income; may cut discretionary spending| Income may increase with inflation; spending patterns may shift| Adaptation capacity differs                                   |\n| Time-Horizon                  | Long-term erosion of savings and fixed payments                 | Potential for income to keep pace with inflation over time      | Time scale affects impact severity                         |",
+            "independent_performance_task_cards": "New household inflation impact analysis tasks; depth_floor L3.",
+            "verification_checklist": "Checklist with ≥4 criteria to verify quality and completeness of analysis; includes repair guidance; depth_floor L3.",
+            "transfer_prompts": "Prompts to apply analytical lenses to learner's own or hypothetical household scenarios; depth_floor L3.",
+            "reflection_prompts": "Prompts for reflecting on analytical findings and implications for household budgeting."
+          }
+        },
+        {
+          "title": "Evaluating Household Inflation Management Strategies",
+          "duration_minutes": 15,
+          "learner_task": "### Task\n- Review the perspectives construction material outlining who gains and loses under different strategies.\n- Study the criteria exposition detailing ≥3 dimensions for evaluating household strategies.\n- Examine the worked judgement modelling note contrasting weak versus strong strategy evaluations.\n- Complete the guided judgement table by partially ranking strategies with justification.\n- Use the independent judgement template to write a memo defending your chosen strategy with explicit criteria and trade-offs.\n- Verify your evaluation using the provided checklist.\n- Reflect on your evaluative judgement and consider how to transfer this reasoning to other inflation scenarios.",
+          "expected_output": "Completed guided judgement table with partial rankings and justifications; independent judgement memo artifact with structured evaluation; verified checklist confirming evaluation quality; reflection notes on evaluation and transfer.",
+          "materials": {
+            "perspective_construction_text": "Exposition on perspectives of gains and losses in household inflation strategy evaluation; concept elucidation for Household Budget Strategy and related concepts.",
+            "criteria_exposition": "Detailed explanation of ≥3 operational criteria dimensions for evaluating household strategies; depth_floor L3.",
+            "criteria_construction": "Learner weights or prioritises criteria for the case.",
+            "worked_judgement_modelling_note": "Modelling note contrasting weak versus strong strategy evaluations with explicit reasoning; depth_floor L3.",
+            "guided_inquiry_decision_table": "Partial ranking table of household strategies with exemplar rows and justification hints; depth_floor L3.",
+            "guided_reasoning_support": "Partial completion with hint scaffolding; learner supplies justifications.",
+            "independent_performance_template": "Memo scaffold with structure prompts and word band to support independent evaluative judgement writing; depth_floor L3.",
+            "verification_checklist": "Rubric with ≥4 criteria to audit evaluation quality and completeness; includes repair instructions; depth_floor L3.",
+            "transfer_prompts": "Prompts encouraging application of evaluation criteria and reasoning to learner's own or alternative inflation scenarios; depth_floor L3.",
+            "consolidation_summary": "Learner-facing session closure summarizing ≥3 key ideas from the evaluation activity; scaffold-only; depth_floor L3.",
+            "scenario": "Maya household scenario with neutral strategy menu A–E, providing ≥2 perspectives for evaluation; depth_floor L3."
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "learning_outcomes",
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved activity_preamble, learner_task, cognition fields, and full materials verbatim including table-adjunct prose (38H-3).",
+    "Applied pack IFP (38J-3 + 38L-2/38L-4 §5), GAM-PRES (38J-4 + 38L-3/38L-4 §6), DLA-WB, GAM-WB as per workflow.",
+    "Preserved learning activities content and materials fidelity per LD-MATERIALS-COPY and LD-TABLE-FIDELITY.",
+    "Included all four upstream activities with full materials and learner tasks.",
+    "No policy communication summary included as per instructions.",
+    "Kept all tables in pipe format with adjunct instructional prose.",
+    "Included reflection prompts and verification checklists for self-assessment.",
+    "Did not summarize or shorten essential worked examples or tables.",
+    "No activities omitted.",
+    "Page profile set to learner."
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Classification tables and worked examples support conceptual distinction between CPI and GDP Deflator.",
+        "visual_slot": "materials-entry",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing inflation measures, supporting learner differentiation.",
+        "reasoning_supported": "Learners classify without completed classifications.",
+        "learner_stage": "pre_classification",
+        "anti_spoiler": true,
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Empty labelled cause structures only.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "CPI",
+          "GDP Deflator",
+          "fixed basket",
+          "changing basket"
+        ],
+        "must_not_show": [
+          "completed classification cells",
+          "answer keys"
+        ],
+        "allowed_claims": [
+          "CPI and GDP Deflator differ in basket composition and scope."
+        ],
+        "disallowed_claims": [
+          "CPI and GDP Deflator measure identical inflation."
+        ],
+        "source_basis": "A1 learner_task; A1 materials.classification_table; A1 materials.independent_classification_table",
+        "caption_intent": "Cause-type cues only — not the learner table.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "defer",
+        "defer_reason": "worked_example_sufficient_first",
+        "rationale": "Learners should attempt the stepwise worked example and calculation tables before any visual summary."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Analysis table comparing fixed and variable income household impacts supports reasoning about inflation effects.",
+        "visual_slot": "materials-entry",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Provides structured comparison of inflation impacts across household types, aiding analytical clarity.",
+        "reasoning_supported": "Learners compare and contrast household inflation impacts.",
+        "learner_stage": "analysis",
+        "anti_spoiler": true,
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Structured comparison of inflation impact dimensions.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "fixed income",
+          "variable income",
+          "distribution",
+          "adaptation",
+          "time horizon"
+        ],
+        "must_not_show": [
+          "completed analysis cells",
+          "answer keys"
+        ],
+        "allowed_claims": [
+          "Inflation affects fixed and variable income households differently."
+        ],
+        "disallowed_claims": [
+          "All households experience inflation impact identically."
+        ],
+        "source_basis": "A3 learner_task; A3 materials.analysis_table",
+        "caption_intent": "Comparative analysis of household inflation impacts.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Guided judgement table and scenario materials support evaluative reasoning about household inflation strategies.",
+        "visual_slot": "materials-entry",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Facilitates structured evaluation and ranking of household strategies with explicit criteria and trade-offs.",
+        "reasoning_supported": "Learners apply evaluative criteria to strategy options.",
+        "learner_stage": "evaluation",
+        "anti_spoiler": true,
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Decision-making framework for household strategy evaluation.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "household strategy",
+          "evaluation criteria",
+          "strategy ranking"
+        ],
+        "must_not_show": [
+          "completed rankings",
+          "model answers"
+        ],
+        "allowed_claims": [
+          "Household strategies can be evaluated on multiple criteria."
+        ],
+        "disallowed_claims": [
+          "One strategy is always best regardless of context."
+        ],
+        "source_basis": "A4 learner_task; A4 materials.guided_inquiry_decision_table; A4 materials.scenario",
+        "caption_intent": "Framework for evaluating household inflation management strategies.",
+        "discipline_risk_level": "medium"
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A1-classification-01",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "rationale": "Classification tables and worked examples support conceptual distinction between CPI and GDP Deflator.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing inflation measures, supporting learner differentiation.",
+      "reasoning_supported": "Learners classify without completed classifications.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Empty labelled cause structures only.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "CPI",
+        "GDP Deflator",
+        "fixed basket",
+        "changing basket"
+      ],
+      "must_not_show": [
+        "completed classification cells",
+        "answer keys"
+      ],
+      "allowed_claims": [
+        "CPI and GDP Deflator differ in basket composition and scope."
+      ],
+      "disallowed_claims": [
+        "CPI and GDP Deflator measure identical inflation."
+      ],
+      "source_basis": "A1 learner_task; A1 materials.classification_table; A1 materials.independent_classification_table",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-A2-defer-01",
+      "activity_id": "A2",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "rationale": "Learners should attempt the stepwise worked example and calculation tables before any visual summary."
+    },
+    {
+      "affordance_id": "va-A3-classification-01",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "rationale": "Analysis table comparing fixed and variable income household impacts supports reasoning about inflation effects.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Provides structured comparison of inflation impacts across household types, aiding analytical clarity.",
+      "reasoning_supported": "Learners compare and contrast household inflation impacts.",
+      "learner_stage": "analysis",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Structured comparison of inflation impact dimensions.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "fixed income",
+        "variable income",
+        "distribution",
+        "adaptation",
+        "time horizon"
+      ],
+      "must_not_show": [
+        "completed analysis cells",
+        "answer keys"
+      ],
+      "allowed_claims": [
+        "Inflation affects fixed and variable income households differently."
+      ],
+      "disallowed_claims": [
+        "All households experience inflation impact identically."
+      ],
+      "source_basis": "A3 learner_task; A3 materials.analysis_table",
+      "caption_intent": "Comparative analysis of household inflation impacts.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-A4-classification-01",
+      "activity_id": "A4",
+      "visual_decision": "generate",
+      "rationale": "Guided judgement table and scenario materials support evaluative reasoning about household inflation strategies.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Facilitates structured evaluation and ranking of household strategies with explicit criteria and trade-offs.",
+      "reasoning_supported": "Learners apply evaluative criteria to strategy options.",
+      "learner_stage": "evaluation",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Decision-making framework for household strategy evaluation.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "household strategy",
+        "evaluation criteria",
+        "strategy ranking"
+      ],
+      "must_not_show": [
+        "completed rankings",
+        "model answers"
+      ],
+      "allowed_claims": [
+        "Household strategies can be evaluated on multiple criteria."
+      ],
+      "disallowed_claims": [
+        "One strategy is always best regardless of context."
+      ],
+      "source_basis": "A4 learner_task; A4 materials.guided_inquiry_decision_table; A4 materials.scenario",
+      "caption_intent": "Framework for evaluating household inflation management strategies.",
+      "discipline_risk_level": "medium"
+    }
+  ],
+  "generation_notes": {
+    "activities_omitted": [],
+    "limitations": []
+  }
+}
+```

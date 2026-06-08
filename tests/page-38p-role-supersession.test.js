@@ -237,3 +237,46 @@ test("38P-3 mergeMaterialsFromGamList alone does not attach role index", () => {
   const mergedOnly = mergeMaterialsFromGamList(a4pre.materials, gamMaterials(3, gam));
   assert.equal(mergedOnly.material_role_index, undefined);
 });
+
+test("38S-RF1 A3 criteria exposition + explanation — single explanatory_guidance canonical", () => {
+  const sprint38lArtefacts = path.join(
+    repoRoot,
+    "docs/development/sprints/2026-06-05-sprint-38l-instructional-function-depth-implementation/artefacts"
+  );
+  const gamPath38s = path.join(sprint38lArtefacts, "EV-38S-AFTER-3-gam.json");
+  const pagePath38s = path.join(sprint38lArtefacts, "EV-38S-AFTER-3-design-page.json");
+  if (!fs.existsSync(gamPath38s) || !fs.existsSync(pagePath38s)) {
+    return;
+  }
+  const gam = JSON.parse(fs.readFileSync(gamPath38s, "utf8"));
+  const page = JSON.parse(fs.readFileSync(pagePath38s, "utf8"));
+  const merged = applyGamMaterialsToComposedPage(page, gam);
+  const a3 = activityRow(merged, 2);
+  assert.ok(a3 && a3.material_role_index, "A3 missing material_role_index");
+
+  const explanatory = Object.entries(a3.material_role_index).filter(
+    ([, entry]) => entry.role_family === "explanatory_guidance"
+  );
+  const canonical = explanatory.filter(([, entry]) => entry.authority === ROLE_AUTHORITY.CANONICAL);
+  const authoritative = explanatory.filter(
+    ([, entry]) =>
+      entry.renderable !== false &&
+      (entry.authority === ROLE_AUTHORITY.CANONICAL ||
+        entry.authority === ROLE_AUTHORITY.COMPOSE ||
+        entry.authority === ROLE_AUTHORITY.UNRESOLVED)
+  );
+
+  assert.equal(canonical.length, 1, "expected one canonical explanatory_guidance entry");
+  assert.equal(authoritative.length, 1, "expected one authoritative explanatory_guidance entry");
+  assert.equal(canonical[0][0], "criteria_exposition_evaluate");
+  assert.ok(String(a3.materials.criteria_exposition_evaluate || "").length > 200);
+  assert.ok(String(a3.materials.text || "").length > 200);
+
+  const textEntry = a3.material_role_index.text;
+  assert.ok(
+    textEntry?.authority === ROLE_AUTHORITY.ALIAS ||
+      textEntry?.authority === ROLE_AUTHORITY.SUPERSEDED,
+    "text should be non-canonical explanatory_guidance alias"
+  );
+  assert.equal(textEntry?.superseded_by, "criteria_exposition_evaluate");
+});

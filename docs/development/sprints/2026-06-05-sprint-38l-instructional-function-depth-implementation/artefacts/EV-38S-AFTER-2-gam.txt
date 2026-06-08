@@ -1,0 +1,605 @@
+{
+  "pack": {
+    "title": "EV-38S Proof Run (Single Lane) - Learner Profile",
+    "activities": [
+      {
+        "activity_id": "A1",
+        "title": "Understanding Inflation Measurement Methods",
+        "grouping": "individual",
+        "duration_minutes": 15,
+        "mapped_learning_outcomes": ["LO1"],
+        "activity_preamble": "In this activity, you will explore the key differences between the Consumer Price Index (CPI) and the GDP Deflator, focusing on their basket composition and the scope of goods and services measured. This foundational understanding will prepare you for later application and evaluation tasks.",
+        "learner_task": "### Task\n- Read the explanatory text on CPI and GDP Deflator.\n- Study the worked example illustrating how each index is constructed.\n- Examine the non-example contrasting CPI and GDP Deflator to clarify common confusions.\n- Complete the guided practice by classifying statements as true for CPI, GDP Deflator, both, or neither.\n- Perform the independent classification task to reinforce your understanding.\n- Verify your answers using the verification checklist.\n- Reflect on how these measures differ and why this matters for inflation measurement.",
+        "expected_output": "Completed classification table with correct identification of CPI and GDP Deflator characteristics; verified checklist showing self-assessment; reflection notes summarizing key differences.",
+        "required_materials": [
+          {
+            "material_id": "M_plan_4",
+            "instructional_function": "explanation",
+            "specification": "Clear exposition of CPI and GDP Deflator concepts, including basket composition and scope differences; concept elucidation for CPI, GDP Deflator, and Inflation Measurement Methods.",
+            "anti_substitution": ["synopsis_only"],
+            "purpose": "explanation",
+            "type": "text",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_5_2",
+            "instructional_function": "example",
+            "specification": "Stepwise illustration of CPI and GDP Deflator calculation differences with intermediate reasoning steps; depth_floor L3.",
+            "anti_substitution": [],
+            "purpose": "worked thinking",
+            "type": "worked_example",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_6_3",
+            "instructional_function": "non_example",
+            "specification": "Contrast CPI and GDP Deflator with common misconception that they measure the same inflation; depth_floor L3.",
+            "anti_substitution": ["merged_into_example"],
+            "purpose": "misconception challenge",
+            "type": "modelling_note",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_7_4",
+            "instructional_function": "misconception_confrontation",
+            "specification": "Named confusion + reconciliation move from KM misconceptions.",
+            "anti_substitution": ["single_support_note_line"],
+            "purpose": "misconception confrontation",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_8_5",
+            "instructional_function": "guided_practice",
+            "specification": "Table with statements to classify as CPI, GDP Deflator, both, or neither; includes exemplar rows and hint columns; depth_floor L3.",
+            "anti_substitution": ["merged_with_independent", "merged_with_worked"],
+            "purpose": "guided practice",
+            "type": "classification_table",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_9_6",
+            "instructional_function": "independent_performance",
+            "specification": "Similar table for independent classification without hints; depth_floor L3.",
+            "anti_substitution": ["sample_output_as_copy_source"],
+            "purpose": "independent performance",
+            "type": "classification_table",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_10_7",
+            "instructional_function": "verification",
+            "specification": "Checklist with ≥4 criteria to self-audit understanding of CPI and GDP Deflator differences; includes repair instructions if any criteria not met; depth_floor L3.",
+            "anti_substitution": ["checklist_only_tick"],
+            "purpose": "verification",
+            "type": "checklist",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "A1-reflection-prompt",
+            "instructional_function": "reflection",
+            "specification": "Prompts to guide learner reflection on key differences and implications for inflation measurement.",
+            "purpose": "reflection",
+            "type": "prompt_set",
+            "supplementary": true
+          }
+        ],
+        "episode_plan_ref": {
+          "archetype": "understand",
+          "beat_count": 12,
+          "population_contract_version": "38S-2"
+        },
+        "learner_task_segments": [
+          {
+            "instructional_function": "framing",
+            "plan_beat_index": 1,
+            "specification": "Bounded problem statement for this episode."
+          },
+          {
+            "instructional_function": "independent_performance",
+            "plan_beat_index": 8,
+            "specification": "Full learner attempt without model-answer copy path.",
+            "anti_substitution": ["sample_output_as_copy_source"]
+          },
+          {
+            "instructional_function": "reflection",
+            "plan_beat_index": 10,
+            "specification": "Learner-generated metacognitive response.",
+            "anti_substitution": ["consolidation_summary", "designer_prose_only"]
+          },
+          {
+            "instructional_function": "transition",
+            "plan_beat_index": 11,
+            "specification": "Bridge to next episode or session close."
+          }
+        ],
+        "materials_order": [
+          "M_plan_4",
+          "M_plan_5_2",
+          "M_plan_6_3",
+          "M_plan_7_4",
+          "M_plan_8_5",
+          "M_plan_9_6",
+          "M_plan_10_7",
+          "A1-reflection-prompt"
+        ]
+      },
+      {
+        "activity_id": "A2",
+        "title": "Applying CPI Inflation Rate Calculation",
+        "grouping": "individual",
+        "duration_minutes": 15,
+        "mapped_learning_outcomes": ["LO2"],
+        "activity_preamble": "This activity guides you through calculating the inflation rate using price changes from a fixed basket of goods and services as measured by the Consumer Price Index (CPI). You will study a worked example before practicing calculations independently.",
+        "learner_task": "### Task\n- Review the criteria exposition explaining CPI inflation calculation rules.\n- Study the worked thinking example showing stepwise CPI inflation rate calculation using weighted average price changes.\n- Complete the guided practice exercises calculating CPI inflation for given data.\n- Perform independent practice to calculate inflation rate for a new basket.\n- Verify your calculations using the provided checklist.\n- Reflect on the calculation process and its significance.",
+        "expected_output": "Completed CPI inflation calculation worksheets with correct inflation rates; verified checklist confirming accuracy; reflection notes on calculation steps.",
+        "required_materials": [
+          {
+            "material_id": "M_plan_4",
+            "instructional_function": "criteria_exposition",
+            "specification": "Detailed explanation of CPI inflation calculation criteria including weighted averages and fixed basket concept; concept elucidation for CPI and Inflation.",
+            "anti_substitution": [],
+            "purpose": "criteria exposition",
+            "type": "text",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_5_2",
+            "instructional_function": "worked_thinking",
+            "specification": "Stepwise CPI inflation rate calculation with intermediate reasoning and formula application; depth_floor L3.",
+            "anti_substitution": ["merged_with_guided_or_independent"],
+            "purpose": "worked thinking",
+            "type": "worked_example",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_6_3",
+            "instructional_function": "guided_practice",
+            "specification": "Exercises with partial data and hints to practice CPI inflation rate calculation; depth_floor L3.",
+            "anti_substitution": ["merged_with_independent", "merged_with_worked"],
+            "purpose": "guided practice",
+            "type": "task_cards",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_7_4",
+            "instructional_function": "independent_performance",
+            "specification": "New CPI inflation calculation tasks without hints; depth_floor L3.",
+            "anti_substitution": ["sample_output_as_copy_source"],
+            "purpose": "independent performance",
+            "type": "task_cards",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_8_5",
+            "instructional_function": "verification",
+            "specification": "Checklist with ≥4 criteria to verify correct CPI inflation calculations; includes repair instructions; depth_floor L3.",
+            "anti_substitution": ["checklist_only_tick"],
+            "purpose": "verification",
+            "type": "checklist",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_9_6",
+            "instructional_function": "revision",
+            "specification": "Prompts encouraging reflection on calculation methods and real-world relevance.",
+            "anti_substitution": [],
+            "purpose": "reflection",
+            "type": "prompt_set",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_11_7",
+            "instructional_function": "transfer",
+            "specification": "Prompts to apply CPI inflation calculation to learner's own context or current inflation data; depth_floor L3.",
+            "anti_substitution": ["single_optional_sentence"],
+            "purpose": "transfer",
+            "type": "transfer_prompt",
+            "population_contract_version": "38S-2"
+          }
+        ],
+        "episode_plan_ref": {
+          "archetype": "apply",
+          "beat_count": 12,
+          "population_contract_version": "38S-2"
+        },
+        "learner_task_segments": [
+          {
+            "instructional_function": "framing",
+            "plan_beat_index": 1,
+            "specification": "Bounded problem statement for this episode."
+          },
+          {
+            "instructional_function": "independent_performance",
+            "plan_beat_index": 6,
+            "specification": "Full learner attempt without model-answer copy path.",
+            "anti_substitution": ["sample_output_as_copy_source"]
+          },
+          {
+            "instructional_function": "revision",
+            "plan_beat_index": 8,
+            "specification": "Rework after audit failure."
+          },
+          {
+            "instructional_function": "reflection",
+            "plan_beat_index": 9,
+            "specification": "Learner-generated metacognitive response.",
+            "anti_substitution": ["consolidation_summary", "designer_prose_only"]
+          },
+          {
+            "instructional_function": "transfer",
+            "plan_beat_index": 10,
+            "specification": "Personal-context reapplication linked to criteria.",
+            "anti_substitution": ["single_optional_sentence"]
+          },
+          {
+            "instructional_function": "transition",
+            "plan_beat_index": 11,
+            "specification": "Bridge to next episode or session close."
+          }
+        ],
+        "materials_order": [
+          "M_plan_4",
+          "M_plan_5_2",
+          "M_plan_6_3",
+          "M_plan_7_4",
+          "M_plan_8_5",
+          "M_plan_9_6",
+          "M_plan_11_7"
+        ]
+      },
+      {
+        "activity_id": "A3",
+        "title": "Analysing Inflation Impact on Household Budgets",
+        "grouping": "individual",
+        "duration_minutes": 15,
+        "mapped_learning_outcomes": ["LO3"],
+        "activity_preamble": "In this activity, you will analyse how inflation affects different household budgets, focusing on fixed-income and variable-income scenarios. You will use a worked analytic pass and complete a structured analysis table to compare impacts.",
+        "learner_task": "### Task\n- Read the criteria exposition describing analytical lenses for household budget impact: distribution, adaptation, and time-horizon.\n- Study the worked analytic pass walking through one household's inflation impact analysis.\n- Complete the guided inquiry by answering analytical questions about household scenarios.\n- Fill in the analysis table comparing fixed-income and variable-income household impacts.\n- Perform independent practice analysing a new household scenario.\n- Verify your analysis using the verification checklist.\n- Reflect on differences in inflation effects across household types and why.",
+        "expected_output": "Completed analysis table with comparative assessments; answers to guided inquiry questions; verified checklist; reflection notes on household inflation impact.",
+        "required_materials": [
+          {
+            "material_id": "M_plan_4",
+            "instructional_function": "criteria_exposition",
+            "specification": "Explanation of analytical lenses for inflation impact on household budgets; concept elucidation for Household Budget Impact, Inflation, Purchasing Power.",
+            "anti_substitution": [],
+            "purpose": "criteria exposition",
+            "type": "text",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_5_2",
+            "instructional_function": "explanation",
+            "specification": "Teach core concept or procedure rules from KM — not synopsis-only.",
+            "anti_substitution": ["synopsis_only"],
+            "purpose": "explanation",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_6_3",
+            "instructional_function": "worked_thinking",
+            "specification": "Stepwise model of intellectual or procedural move.",
+            "anti_substitution": ["merged_with_guided_or_independent"],
+            "purpose": "worked thinking",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_7_4",
+            "instructional_function": "guided_inquiry",
+            "specification": "Questions prompting analysis of household inflation impacts; depth_floor L3.",
+            "anti_substitution": [],
+            "purpose": "guided inquiry",
+            "type": "task_cards",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "A3-worked-analytic-pass",
+            "instructional_function": "worked_thinking",
+            "specification": "Stepwise analysis of inflation impact on a fixed-income household using distribution, adaptation, and time-horizon lenses; depth_floor L3.",
+            "purpose": "worked analytic pass",
+            "type": "worked_example",
+            "supplementary": true,
+            "plan_beat_index": 5
+          },
+          {
+            "material_id": "M_plan_8_5",
+            "instructional_function": "guided_practice",
+            "specification": "Table comparing inflation effects on fixed-income vs variable-income households; includes exemplar rows and hint columns; depth_floor L3.",
+            "anti_substitution": ["merged_with_independent", "merged_with_worked"],
+            "purpose": "guided practice",
+            "type": "analysis_table",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_9_6",
+            "instructional_function": "independent_performance",
+            "specification": "New household inflation impact analysis tasks; depth_floor L3.",
+            "anti_substitution": ["sample_output_as_copy_source"],
+            "purpose": "independent performance",
+            "type": "task_cards",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_10_7",
+            "instructional_function": "verification",
+            "specification": "Checklist with ≥4 criteria to verify quality and completeness of analysis; includes repair guidance; depth_floor L3.",
+            "anti_substitution": ["checklist_only_tick"],
+            "purpose": "verification",
+            "type": "checklist",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_12_8",
+            "instructional_function": "transfer",
+            "specification": "Prompts to apply analytical lenses to learner's own or hypothetical household scenarios; depth_floor L3.",
+            "anti_substitution": ["single_optional_sentence"],
+            "purpose": "transfer",
+            "type": "transfer_prompt",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "A3-reflection-prompt",
+            "instructional_function": "reflection",
+            "specification": "Prompts for reflecting on analytical findings and implications for household budgeting.",
+            "purpose": "reflection",
+            "type": "prompt_set",
+            "supplementary": true,
+            "plan_beat_index": 10
+          }
+        ],
+        "episode_plan_ref": {
+          "archetype": "analyse",
+          "beat_count": 13,
+          "population_contract_version": "38S-2"
+        },
+        "learner_task_segments": [
+          {
+            "instructional_function": "framing",
+            "plan_beat_index": 1,
+            "specification": "Bounded problem statement for this episode."
+          },
+          {
+            "instructional_function": "independent_performance",
+            "plan_beat_index": 8,
+            "specification": "Full learner attempt without model-answer copy path.",
+            "anti_substitution": ["sample_output_as_copy_source"]
+          },
+          {
+            "instructional_function": "reflection",
+            "plan_beat_index": 10,
+            "specification": "Learner-generated metacognitive response.",
+            "anti_substitution": ["consolidation_summary", "designer_prose_only"]
+          },
+          {
+            "instructional_function": "transfer",
+            "plan_beat_index": 11,
+            "specification": "Personal-context reapplication linked to criteria.",
+            "anti_substitution": ["single_optional_sentence"]
+          },
+          {
+            "instructional_function": "transition",
+            "plan_beat_index": 12,
+            "specification": "Bridge to next episode or session close."
+          }
+        ],
+        "materials_order": [
+          "M_plan_4",
+          "M_plan_5_2",
+          "M_plan_6_3",
+          "M_plan_7_4",
+          "A3-worked-analytic-pass",
+          "M_plan_8_5",
+          "M_plan_9_6",
+          "M_plan_10_7",
+          "M_plan_12_8",
+          "A3-reflection-prompt"
+        ]
+      },
+      {
+        "activity_id": "A4",
+        "title": "Evaluating Household Inflation Management Strategies",
+        "grouping": "individual",
+        "duration_minutes": 15,
+        "mapped_learning_outcomes": ["LO4"],
+        "activity_preamble": "This capstone activity requires you to evaluate strategies households can use to manage the effects of inflation on their finances. Using the Maya household scenario and a neutral strategy menu, you will apply explicit criteria and trade-offs to defend a justified choice.",
+        "learner_task": "### Task\n- Review the perspectives construction material outlining who gains and loses under different strategies.\n- Study the criteria exposition detailing ≥3 dimensions for evaluating household strategies.\n- Examine the worked judgement modelling note contrasting weak versus strong strategy evaluations.\n- Complete the guided judgement table by partially ranking strategies with justification.\n- Use the independent judgement template to write a memo defending your chosen strategy with explicit criteria and trade-offs.\n- Verify your evaluation using the provided checklist.\n- Reflect on your evaluative judgement and consider how to transfer this reasoning to other inflation scenarios.",
+        "expected_output": "Completed guided judgement table with partial rankings and justifications; independent judgement memo artifact with structured evaluation; verified checklist confirming evaluation quality; reflection notes on evaluation and transfer.",
+        "required_materials": [
+          {
+            "material_id": "M_plan_4",
+            "instructional_function": "perspective_construction",
+            "specification": "Exposition on perspectives of gains and losses in household inflation strategy evaluation; concept elucidation for Household Budget Strategy and related concepts.",
+            "anti_substitution": ["scenario_menu_only"],
+            "purpose": "perspective construction",
+            "type": "text",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_5_2",
+            "instructional_function": "criteria_exposition",
+            "specification": "Detailed explanation of ≥3 operational criteria dimensions for evaluating household strategies; depth_floor L3.",
+            "anti_substitution": [],
+            "purpose": "criteria exposition",
+            "type": "text",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_6_3",
+            "instructional_function": "criteria_construction",
+            "specification": "Learner weights or prioritises criteria for the case.",
+            "anti_substitution": ["read_only_rubric_prose", "exposition_only"],
+            "purpose": "criteria construction",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_7_4",
+            "instructional_function": "worked_judgement",
+            "specification": "Modelling note contrasting weak versus strong strategy evaluations with explicit reasoning; depth_floor L3.",
+            "anti_substitution": ["slogan_contrast_only"],
+            "purpose": "worked judgement",
+            "type": "modelling_note",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_8_5",
+            "instructional_function": "guided_inquiry",
+            "specification": "Partial ranking table of household strategies with exemplar rows and justification hints; depth_floor L3.",
+            "anti_substitution": [],
+            "purpose": "guided judgement",
+            "type": "decision_table",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_9_6",
+            "instructional_function": "guided_reasoning",
+            "specification": "Partial completion with hint scaffolding; learner supplies justifications.",
+            "anti_substitution": ["pre_filled_decision_table"],
+            "purpose": "guided reasoning",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_10_7",
+            "instructional_function": "independent_performance",
+            "specification": "Full learner attempt without model-answer copy path.",
+            "anti_substitution": ["sample_output_as_copy_source"],
+            "purpose": "independent performance",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_11_8",
+            "instructional_function": "evaluative_judgement",
+            "specification": "Rubric with ≥4 criteria to audit evaluation quality and completeness; includes repair instructions; depth_floor L3.",
+            "anti_substitution": ["template_only_memo"],
+            "purpose": "verification",
+            "type": "checklist",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "A4-independent-judgement-template",
+            "instructional_function": "independent_performance",
+            "specification": "Memo scaffold with structure prompts and word band to support independent evaluative judgement writing; depth_floor L3.",
+            "purpose": "independent judgement",
+            "type": "template",
+            "supplementary": true,
+            "plan_beat_index": 9
+          },
+          {
+            "material_id": "M_plan_12_9",
+            "instructional_function": "verification",
+            "specification": "Prompts encouraging application of evaluation criteria and reasoning to learner's own or alternative inflation scenarios; depth_floor L3.",
+            "anti_substitution": ["checklist_only_tick"],
+            "purpose": "transfer",
+            "type": "transfer_prompt",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "M_plan_14_10",
+            "instructional_function": "transfer",
+            "specification": "Personal-context reapplication linked to criteria.",
+            "anti_substitution": ["single_optional_sentence"],
+            "purpose": "transfer",
+            "population_contract_version": "38S-2"
+          },
+          {
+            "material_id": "A4-consolidation-summary",
+            "instructional_function": "reflection",
+            "specification": "Learner-facing session closure summarizing ≥3 key ideas from the evaluation activity; scaffold-only; depth_floor L3.",
+            "purpose": "consolidation summary",
+            "type": "consolidation_summary",
+            "supplementary": true,
+            "plan_beat_index": 13
+          },
+          {
+            "material_id": "A4-scenario",
+            "instructional_function": "activation",
+            "specification": "Maya household scenario with neutral strategy menu A–E, providing ≥2 perspectives for evaluation; depth_floor L3.",
+            "purpose": "scenario",
+            "type": "scenario",
+            "supplementary": true,
+            "plan_beat_index": 2
+          }
+        ],
+        "episode_plan_ref": {
+          "archetype": "evaluate",
+          "beat_count": 15,
+          "population_contract_version": "38S-2"
+        },
+        "learner_task_segments": [
+          {
+            "instructional_function": "framing",
+            "plan_beat_index": 1,
+            "specification": "Bounded problem statement for this episode."
+          },
+          {
+            "instructional_function": "perspective_construction",
+            "plan_beat_index": 3,
+            "specification": "Learner constructs viewpoints; pause-and-write required.",
+            "anti_substitution": ["scenario_menu_only"]
+          },
+          {
+            "instructional_function": "criteria_construction",
+            "plan_beat_index": 5,
+            "specification": "Learner weights or prioritises criteria for the case.",
+            "anti_substitution": ["read_only_rubric_prose", "exposition_only"]
+          },
+          {
+            "instructional_function": "independent_performance",
+            "plan_beat_index": 9,
+            "specification": "Full learner attempt without model-answer copy path.",
+            "anti_substitution": ["sample_output_as_copy_source"]
+          },
+          {
+            "instructional_function": "evaluative_judgement",
+            "plan_beat_index": 10,
+            "specification": "Defended recommendation or comparative judgement.",
+            "anti_substitution": ["template_only_memo"]
+          },
+          {
+            "instructional_function": "reflection",
+            "plan_beat_index": 12,
+            "specification": "Learner-generated metacognitive response.",
+            "anti_substitution": ["consolidation_summary", "designer_prose_only"]
+          },
+          {
+            "instructional_function": "transfer",
+            "plan_beat_index": 13,
+            "specification": "Personal-context reapplication linked to criteria.",
+            "anti_substitution": ["single_optional_sentence"]
+          },
+          {
+            "instructional_function": "transition",
+            "plan_beat_index": 14,
+            "specification": "Bridge to next episode or session close."
+          }
+        ],
+        "materials_order": [
+          "M_plan_4",
+          "M_plan_5_2",
+          "M_plan_6_3",
+          "M_plan_7_4",
+          "M_plan_8_5",
+          "M_plan_9_6",
+          "M_plan_10_7",
+          "M_plan_11_8",
+          "A4-independent-judgement-template",
+          "M_plan_12_9",
+          "M_plan_14_10",
+          "A4-consolidation-summary",
+          "A4-scenario"
+        ]
+      }
+    ],
+    "outcome_alignment": {
+      "A1": ["LO1"],
+      "A2": ["LO2"],
+      "A3": ["LO3"],
+      "A4": ["LO4"]
+    },
+    "delivery_notes": {
+      "resource_intent": "self_study_workbook",
+      "session_duration_target_minutes": 60,
+      "consolidation_requirement": "Final activity includes a consolidation summary with learner reflection and session closure.",
+      "workbook_contract_applied": true
+    },
+    "integration_version": "38S-R1"
+  }
+}

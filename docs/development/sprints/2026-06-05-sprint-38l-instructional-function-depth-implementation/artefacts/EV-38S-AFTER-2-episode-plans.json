@@ -1,0 +1,206 @@
+{
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "mapped_learning_outcome_ids": [
+        "LO1"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "mapped_learning_outcome_ids": [
+        "LO2"
+      ],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "revision"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A3",
+      "mapped_learning_outcome_ids": [
+        "LO3"
+      ],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A4",
+      "mapped_learning_outcome_ids": [
+        "LO4"
+      ],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      }
+    }
+  ],
+  "derivation_version": "38S-3",
+  "source": "learning_outcomes"
+}

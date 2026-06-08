@@ -1,0 +1,284 @@
+{
+  "page_profile": "learner",
+  "workflow_id": "EV-38S proof run",
+  "session_duration_target_minutes": 60,
+  "resource_intent": "self_study_workbook",
+  "consolidation_requirement": "Final activity includes consolidation_summary with ≥3 key ideas summarised; reflection prompts optional but not a substitute.",
+  "workbook_contract_applied": true,
+  "learning_outcomes": [
+    {
+      "id": "LO1",
+      "statement": "Explain the difference between the Consumer Price Index (CPI) and the GDP Deflator in terms of basket composition and scope of goods and services measured.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator",
+        "Inflation Measurement Methods"
+      ],
+      "cognitive_level": "Explain",
+      "notes": "Focus on contrasting fixed vs variable basket and consumer goods vs all domestic goods."
+    },
+    {
+      "id": "LO2",
+      "statement": "Calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI.",
+      "related_concepts": [
+        "Consumer Price Index (CPI)",
+        "Inflation"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Use weighted average price changes to determine CPI inflation rate."
+    },
+    {
+      "id": "LO3",
+      "statement": "Analyse how inflation affects different household budgets, including fixed-income and variable-income scenarios.",
+      "related_concepts": [
+        "Household Budget Impact",
+        "Inflation",
+        "Purchasing Power"
+      ],
+      "cognitive_level": "Analyse",
+      "notes": "Compare Maya-style fixed income vs variable income exposure; distribution, adaptation, and time-horizon lenses."
+    },
+    {
+      "id": "LO4",
+      "statement": "Evaluate strategies households can use to manage the effects of inflation on their finances, defending a justified choice using explicit criteria and trade-offs.",
+      "related_concepts": [
+        "Household Budget Impact",
+        "Inflation",
+        "Purchasing Power"
+      ],
+      "cognitive_level": "Evaluate",
+      "notes": "38I-4 A4 benchmark: Maya household scenario; neutral strategy menu A–E; independent memo + verification rubric + transfer. Policy communication is macro context only — not the Evaluate driver."
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Inflation Measurement Methods",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "This activity introduces the key concepts of inflation measurement, focusing on the differences between the Consumer Price Index (CPI) and the GDP Deflator. You will explore how the basket composition and scope of goods and services differ between these measures.",
+      "learner_task": "### Your tasks:\n1. Read the explanatory text on inflation measurement methods, focusing on the CPI and GDP Deflator.\n2. Study the worked example illustrating the difference in basket composition and scope.\n3. Review the non-example to understand common confusions.\n4. Reflect on the misconception that CPI and GDP Deflator measure the same inflation.\n5. Complete the guided practice by classifying statements about CPI and GDP Deflator.\n6. Perform an independent classification task to demonstrate your understanding.\n7. Verify your answers using the provided checklist.\n8. Reflect on what you have learned before transitioning to the next activity.",
+      "expected_output": "Completed classification tables distinguishing CPI and GDP Deflator features, verified using the checklist, and a brief reflection note summarizing key differences.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "instructional_function": "explanation",
+          "specification": "Concept elucidation of Consumer Price Index (CPI) and GDP Deflator definitions and differences; depth_floor: L3"
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "instructional_function": "worked thinking",
+          "specification": "Stepwise reasoning contrasting fixed basket CPI vs variable basket GDP Deflator; depth_floor: L3"
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "modelling_note",
+          "instructional_function": "misconception challenge",
+          "specification": "Explanation and evidence addressing misconception that CPI and GDP Deflator measure the same inflation; depth_floor: L3"
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "classification_table",
+          "instructional_function": "guided practice",
+          "specification": "Table with statements to classify as CPI or GDP Deflator related; includes exemplar rows and hint columns; depth_floor: L3"
+        },
+        {
+          "material_id": "A1-M5",
+          "type": "classification_table",
+          "instructional_function": "independent performance",
+          "specification": "Blank classification table for learner to complete independently; depth_floor: L3"
+        },
+        {
+          "material_id": "A1-M6",
+          "type": "checklist",
+          "instructional_function": "verification",
+          "specification": "≥4 criteria-linked self-check items verifying correct classification and understanding; repair instructions if any check fails; depth_floor: L3"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Applying CPI Inflation Rate Calculation",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "In this activity, you will learn how to calculate the inflation rate using price changes from a fixed basket of goods and services as measured by the CPI. You will work through a detailed example and then practice calculating inflation rates yourself.",
+      "learner_task": "### Your tasks:\n1. Read the criteria exposition on CPI inflation rate calculation rules and process.\n2. Study the worked thinking example showing stepwise calculation of CPI inflation rate using weighted average price changes.\n3. Complete the guided practice exercises calculating inflation rates for given data.\n4. Perform independent practice calculating CPI inflation rates from new data sets.\n5. Verify your calculations using the provided checklist.\n6. Reflect on your calculation process and results.\n7. Transfer your understanding by considering how CPI inflation calculation applies to your own context.",
+      "expected_output": "Completed CPI inflation rate calculations in practice tables with correct intermediate steps, verified by checklist, and a brief reflection note.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "text",
+          "instructional_function": "criteria exposition",
+          "specification": "Explicit operational rules and process for CPI inflation rate calculation using weighted averages; depth_floor: L3"
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "worked_example",
+          "instructional_function": "worked thinking",
+          "specification": "Stepwise CPI inflation rate calculation with visible intermediate results and decisions; depth_floor: L3"
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "classification_table",
+          "instructional_function": "guided practice",
+          "specification": "Practice table with price data for CPI inflation calculation; includes exemplar rows and hints; depth_floor: L3"
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "classification_table",
+          "instructional_function": "independent performance",
+          "specification": "Blank practice table for independent CPI inflation rate calculation; depth_floor: L3"
+        },
+        {
+          "material_id": "A2-M5",
+          "type": "checklist",
+          "instructional_function": "verification",
+          "specification": "≥4 criteria-linked self-check items verifying correct calculation steps and results; repair instructions if any check fails; depth_floor: L3"
+        },
+        {
+          "material_id": "A2-M6",
+          "type": "transfer_prompt",
+          "instructional_function": "transfer",
+          "specification": "Prompts for learner to apply CPI inflation calculation to own household or context with ≥80 words target; depth_floor: L3"
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Inflation Impact on Household Budgets",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "This activity focuses on analysing how inflation affects different household budgets, including fixed-income and variable-income scenarios. You will explore lenses such as distribution, adaptation, and time-horizon to understand the varied impacts.",
+      "learner_task": "### Your tasks:\n1. Read the criteria exposition describing analytical lenses for household budget impact.\n2. Study the explanation of relationships between household income types and purchasing power.\n3. Follow the worked analytic pass applying lenses to one household case.\n4. Engage in guided inquiry using the analysis table to compare household impacts.\n5. Complete guided practice filling analysis table cells with partial exemplar rows.\n6. Perform independent practice analysing a new household scenario and justifying your analysis.\n7. Verify your analysis using the checklist.\n8. Reflect on the implications of inflation for different households.\n9. Transfer your analysis skills to your own or a hypothetical household context.",
+      "expected_output": "Completed analysis table comparing household inflation impacts with justified entries, verified by checklist, and a reflective note on findings.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "text",
+          "instructional_function": "criteria exposition",
+          "specification": "Operational definitions of distribution, adaptation, and time-horizon lenses for analysing inflation impact; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "text",
+          "instructional_function": "explanation",
+          "specification": "Explanation of relationships between fixed-income/variable-income households and purchasing power under inflation; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "worked_example",
+          "instructional_function": "worked analytic pass",
+          "specification": "Stepwise analytic walkthrough applying lenses to a fixed-income household scenario; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M4",
+          "type": "analysis_table",
+          "instructional_function": "guided inquiry and guided practice",
+          "specification": "Table with partial exemplar rows for comparing inflation impact on households; includes hint columns and scoring guide; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M5",
+          "type": "analysis_table",
+          "instructional_function": "independent performance",
+          "specification": "Blank analysis table for independent household inflation impact analysis; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M6",
+          "type": "checklist",
+          "instructional_function": "verification",
+          "specification": "≥4 criteria-linked self-check items verifying completeness, justification, and analytical reasoning; repair instructions if any check fails; depth_floor: L3"
+        },
+        {
+          "material_id": "A3-M7",
+          "type": "transfer_prompt",
+          "instructional_function": "transfer",
+          "specification": "Prompts for applying analysis lenses to learner's own or hypothetical household with ≥80 words target; depth_floor: L3"
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluating Household Inflation Management Strategies",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "In this capstone activity, you will evaluate strategies households can use to manage the effects of inflation on their finances. Using the Maya household scenario and a neutral strategy menu, you will apply explicit criteria and trade-offs to defend a justified choice.",
+      "learner_task": "### Your tasks:\n1. Read the orientation and framing materials setting the decision context.\n2. Construct perspectives on who gains and loses under different strategies.\n3. Study the criteria exposition presenting ≥3 operational dimensions for evaluation.\n4. Review the worked judgement modelling note contrasting weak versus strong strategy evaluations.\n5. Engage in guided inquiry and guided judgement using the provided comparison table with partial exemplar rows.\n6. Complete an independent judgement memo using the scaffolded template/task cards.\n7. Verify your evaluation using the detailed checklist rubric.\n8. Reflect on your evaluative judgement process.\n9. Transfer your evaluation skills by applying criteria to your own or a hypothetical household strategy with a detailed transfer prompt.\n10. Conclude with a consolidation summary capturing key insights and lessons learned.",
+      "expected_output": "Completed independent judgement memo evaluating household inflation strategies with justified choice, verified by checklist, transfer response applying evaluation to own context, and consolidation summary of key evaluation insights.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "scenario",
+          "instructional_function": "scenario",
+          "specification": "Maya household scenario with ≥2 perspectives and neutral strategy menu A–E; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "text",
+          "instructional_function": "criteria exposition",
+          "specification": "Text or modelling note presenting ≥3 explicit evaluation criteria dimensions for household strategies; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "modelling_note",
+          "instructional_function": "worked judgement",
+          "specification": "Contrast of weak versus strong household strategy evaluation reasoning; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "comparison_table",
+          "instructional_function": "guided judgement",
+          "specification": "Table with partial exemplar rows for guided ranking and trade-off analysis of household strategies; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "template",
+          "instructional_function": "independent judgement",
+          "specification": "Memo scaffold with structured prompts and word band for independent evaluation writing; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M6",
+          "type": "checklist",
+          "instructional_function": "verification",
+          "specification": "≥4 criteria-linked self-audit items for evaluation completeness, justification, verification, and transfer readiness; repair instructions if any check fails; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M7",
+          "type": "transfer_prompt",
+          "instructional_function": "transfer",
+          "specification": "Prompts for applying evaluation criteria and judgement to learner's own or hypothetical household strategy with ≥80 words target; depth_floor: L3"
+        },
+        {
+          "material_id": "A4-M8",
+          "type": "consolidation_summary",
+          "instructional_function": "consolidation_summary",
+          "specification": "Learner-facing session closure body summarizing ≥3 key evaluation insights and lessons learned; ≥80 words; depth_floor: L3"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "gam_materials_preserve_applied": true,
+    "gam_materials_preserve_schema": "38M-2",
+    "gam_materials_preserve_rows": 0,
+    "role_supersession_applied": true,
+    "role_supersession_schema": "38P-3",
+    "role_registry_version": "38P-2"
+  },
+  "constraints_applied": [
+    "GAM materials L4 preserve merge applied (page-gam-materials-preserve)"
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "capturedAt": "2026-06-08T10:44:20.545Z",
+  "sprint": "38-S",
+  "runId": "EV-38S-AFTER-4",
+  "phase": "38S-4",
+  "harnessVersion": "38S-GAM1",
+  "sourceRun": "EV-38S-AFTER-4",
+  "replayMode": "38S-full-pipeline-artefact-replay",
+  "proofOk": true,
+  "roleOk": true,
+  "fullOk": true,
+  "validation38M": {
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "A4:M16_Independent_Judgement_Template:G13:independent template depth gap"
+    ]
+  },
+  "validation38LRegression": {
+    "ok": true,
+    "errors": []
+  },
+  "validation38P": {
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "A1:RF2:no render HTML supplied — render order not verified",
+      "A2:RF2:no render HTML supplied — render order not verified",
+      "A3:RF2:no render HTML supplied — render order not verified",
+      "A4:RF2:no render HTML supplied — render order not verified",
+      "A1:RF3:no render HTML supplied",
+      "A2:RF3:no render HTML supplied",
+      "A3:RF3:no render HTML supplied",
+      "A4:RF3:no render HTML supplied",
+      "A4:RF4:superseded worked_example carries full marker set — audit only",
+      "A4:RF4:superseded scenario carries full marker set — audit only",
+      "A4:RF4:superseded decision_table carries full marker set — audit only",
+      "A1:RF6:no render HTML supplied",
+      "A2:RF6:no render HTML supplied",
+      "A3:RF6:no render HTML supplied",
+      "A4:RF6:no render HTML supplied"
+    ]
+  },
+  "rfGates": [
+    {
+      "gate": "RF1_role_uniqueness",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF2_no_weak_first_render",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "A1:RF2:no render HTML supplied — render order not verified",
+        "A2:RF2:no render HTML supplied — render order not verified",
+        "A3:RF2:no render HTML supplied — render order not verified",
+        "A4:RF2:no render HTML supplied — render order not verified"
+      ]
+    },
+    {
+      "gate": "RF3_stable_role_identity",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "A1:RF3:no render HTML supplied",
+        "A2:RF3:no render HTML supplied",
+        "A3:RF3:no render HTML supplied",
+        "A4:RF3:no render HTML supplied"
+      ]
+    },
+    {
+      "gate": "RF4_pedagogical_function",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "A4:RF4:superseded worked_example carries full marker set — audit only",
+        "A4:RF4:superseded scenario carries full marker set — audit only",
+        "A4:RF4:superseded decision_table carries full marker set — audit only"
+      ]
+    },
+    {
+      "gate": "RF5_no_role_inversion",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF6_episode_sequence",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "A1:RF6:no render HTML supplied",
+        "A2:RF6:no render HTML supplied",
+        "A3:RF6:no render HTML supplied",
+        "A4:RF6:no render HTML supplied"
+      ]
+    },
+    {
+      "gate": "RF7_body_role_coherence",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "gate": "RF8_compose_transparency",
+      "pass": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "a3Sequencing": {
+    "pageJson": {
+      "ok": false,
+      "errors": [
+        "A3:materials:G16:materials object key order does not match materials_order"
+      ]
+    },
+    "render": {
+      "ok": false,
+      "errors": [
+        "A3:render:G15:missing h4 material heading for worked_analytic_pass",
+        "A3:render:G15:missing h4 material heading for analysis_table",
+        "A3:render:G15:missing h4 material heading for scenario_maya_households",
+        "A3:render:G15:missing h4 material heading for checklist"
+      ]
+    }
+  },
+  "proofDimensions38M38N": {
+    "bodyFidelity38M": true,
+    "a3Sequencing38N": false
+  },
+  "baselineComparison": {
+    "source38P": "EV-38P-AFTER",
+    "priorFullOk": true,
+    "priorProofOk": true,
+    "priorRoleOk": true,
+    "fullOkUnchanged": true
+  }
+}

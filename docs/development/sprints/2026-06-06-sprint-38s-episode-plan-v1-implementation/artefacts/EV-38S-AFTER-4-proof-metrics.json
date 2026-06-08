@@ -1,0 +1,2373 @@
+{
+  "capturedAt": "2026-06-08T08:00:18.902Z",
+  "sprint": "38-S",
+  "runId": "EV-38S-AFTER-4",
+  "phase": "38S-4",
+  "sources": {
+    "dla": "c:\\xampp\\htdocs\\prism\\docs\\development\\sprints\\2026-06-05-sprint-38l-instructional-function-depth-implementation\\artefacts\\EV-38S-AFTER-4-dla-learning-activities.json",
+    "episode_plans": "c:\\xampp\\htdocs\\prism\\docs\\development\\sprints\\2026-06-05-sprint-38l-instructional-function-depth-implementation\\artefacts\\EV-38S-AFTER-4-episode-plans.json",
+    "ev38m_baseline": "c:\\xampp\\htdocs\\prism\\docs\\development\\sprints\\2026-06-05-sprint-38m-page-composition-fidelity\\artefacts\\EV-38M-AFTER-dla-learning-activities.json"
+  },
+  "evaluation": {
+    "perActivity": {
+      "A1": {
+        "activity_id": "A1",
+        "M02": {
+          "metric": "M-02",
+          "total_beats": 12,
+          "survived_beats": 12,
+          "percent": 100,
+          "pass": true,
+          "matrix": [
+            {
+              "beat_index": 0,
+              "function": "orientation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "orientation",
+                  "plan_beat_index": 0,
+                  "surface": "activity_preamble",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 1,
+              "function": "framing",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "surface": "reasoning_orientation",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 2,
+              "function": "activation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "activation",
+                  "plan_beat_index": 2,
+                  "surface": "prior_knowledge_activation",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 3,
+              "function": "explanation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "explanation",
+                  "plan_beat_index": 3,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 4,
+              "function": "example",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "example",
+                  "plan_beat_index": 4,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 5,
+              "function": "non_example",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "non_example",
+                  "plan_beat_index": 5,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 6,
+              "function": "misconception_confrontation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "misconception_confrontation",
+                  "plan_beat_index": 6,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 7,
+              "function": "guided_practice",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_practice",
+                  "plan_beat_index": 7,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 8,
+              "function": "independent_performance",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 8,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 8,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 9,
+              "function": "verification",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "verification",
+                  "plan_beat_index": 9,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 10,
+              "function": "reflection",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 10,
+                  "surface": "self_explanation_prompt",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 10,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 11,
+              "function": "transition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transition",
+                  "plan_beat_index": 11,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            }
+          ]
+        },
+        "M03": {
+          "metric": "M-03",
+          "obl_m_count": 7,
+          "order_violations": 0,
+          "percent": 100,
+          "pass": true,
+          "materials": [
+            {
+              "index": 0,
+              "instructional_function": "explanation",
+              "plan_beat_index": 3,
+              "type": "text",
+              "specification": "Clear exposition of CPI and GDP Deflator concepts, including basket composition and scope differences; concept elucidation for CPI, GDP Deflator, and Inflation Measurement Methods.",
+              "material_id": "M_plan_4"
+            },
+            {
+              "index": 1,
+              "instructional_function": "example",
+              "plan_beat_index": 4,
+              "type": "worked_example",
+              "specification": "Stepwise illustration of CPI and GDP Deflator calculation differences with intermediate reasoning steps; depth_floor L3.",
+              "material_id": "M_plan_5_2"
+            },
+            {
+              "index": 2,
+              "instructional_function": "non_example",
+              "plan_beat_index": 5,
+              "type": "modelling_note",
+              "specification": "Contrast CPI and GDP Deflator with common misconception that they measure the same inflation; depth_floor L3.",
+              "material_id": "M_plan_6_3"
+            },
+            {
+              "index": 3,
+              "instructional_function": "misconception_confrontation",
+              "plan_beat_index": 6,
+              "type": "",
+              "specification": "Named confusion + reconciliation move from KM misconceptions.",
+              "material_id": "M_plan_7_4"
+            },
+            {
+              "index": 4,
+              "instructional_function": "guided_practice",
+              "plan_beat_index": 7,
+              "type": "classification_table",
+              "specification": "Table with statements to classify as CPI, GDP Deflator, both, or neither; includes exemplar rows and hint columns; depth_floor L3.",
+              "material_id": "M_plan_8_5"
+            },
+            {
+              "index": 5,
+              "instructional_function": "independent_performance",
+              "plan_beat_index": 8,
+              "type": "classification_table",
+              "specification": "Similar table for independent classification without hints; depth_floor L3.",
+              "material_id": "M_plan_9_6"
+            },
+            {
+              "index": 6,
+              "instructional_function": "verification",
+              "plan_beat_index": 9,
+              "type": "checklist",
+              "specification": "Checklist with ≥4 criteria to self-audit understanding of CPI and GDP Deflator differences; includes repair instructions if any criteria not met; depth_floor L3.",
+              "material_id": "M_plan_10_7"
+            }
+          ]
+        },
+        "M04": {
+          "metric": "M-04",
+          "percent": 100,
+          "pass": true,
+          "pairs": 11,
+          "ordered": 11
+        },
+        "M05": {
+          "metric": "M-05",
+          "count": 0,
+          "pass": true,
+          "violations": []
+        },
+        "M06": {
+          "metric": "M-06",
+          "ratio": 2,
+          "pass": true,
+          "obl_m": 8,
+          "baseline": 4
+        },
+        "M07": {
+          "metric": "M-07",
+          "count": 0,
+          "pass": true
+        },
+        "M08_gaps": {
+          "GAP_01": false,
+          "GAP_02": false,
+          "GAP_06": true,
+          "GAP_13": true
+        },
+        "M08_closed": 2,
+        "transition_chains": [
+          {
+            "chain": "T1",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T2",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T3",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T4",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T5",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 8→9→10",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          }
+        ],
+        "trace": [
+          {
+            "beat_index": 0,
+            "function": "orientation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "orientation",
+                "plan_beat_index": 0,
+                "surface": "activity_preamble",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 1,
+            "function": "framing",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "surface": "reasoning_orientation",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 2,
+            "function": "activation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "activation",
+                "plan_beat_index": 2,
+                "surface": "prior_knowledge_activation",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 3,
+            "function": "explanation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "explanation",
+                "plan_beat_index": 3,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 4,
+            "function": "example",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "example",
+                "plan_beat_index": 4,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 5,
+            "function": "non_example",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "non_example",
+                "plan_beat_index": 5,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 6,
+            "function": "misconception_confrontation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "misconception_confrontation",
+                "plan_beat_index": 6,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 7,
+            "function": "guided_practice",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_practice",
+                "plan_beat_index": 7,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 8,
+            "function": "independent_performance",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 8,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 8,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 9,
+            "function": "verification",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "verification",
+                "plan_beat_index": 9,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 10,
+            "function": "reflection",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 10,
+                "surface": "self_explanation_prompt",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 10,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 11,
+            "function": "transition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transition",
+                "plan_beat_index": 11,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          }
+        ]
+      },
+      "A2": {
+        "activity_id": "A2",
+        "M02": {
+          "metric": "M-02",
+          "total_beats": 12,
+          "survived_beats": 12,
+          "percent": 100,
+          "pass": true,
+          "matrix": [
+            {
+              "beat_index": 0,
+              "function": "orientation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "orientation",
+                  "plan_beat_index": 0,
+                  "surface": "activity_preamble",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 1,
+              "function": "framing",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "surface": "reasoning_orientation",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 2,
+              "function": "activation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "activation",
+                  "plan_beat_index": 2,
+                  "surface": "prior_knowledge_activation",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 3,
+              "function": "criteria_exposition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "criteria_exposition",
+                  "plan_beat_index": 3,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 4,
+              "function": "worked_thinking",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "worked_thinking",
+                  "plan_beat_index": 4,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 5,
+              "function": "guided_practice",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_practice",
+                  "plan_beat_index": 5,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 6,
+              "function": "independent_performance",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 6,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 6,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 7,
+              "function": "verification",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "verification",
+                  "plan_beat_index": 7,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 8,
+              "function": "revision",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "revision",
+                  "plan_beat_index": 8,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "revision",
+                  "plan_beat_index": 8,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 9,
+              "function": "reflection",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 9,
+                  "surface": "self_explanation_prompt",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 9,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 10,
+              "function": "transfer",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 10,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 10,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 11,
+              "function": "transition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transition",
+                  "plan_beat_index": 11,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            }
+          ]
+        },
+        "M03": {
+          "metric": "M-03",
+          "obl_m_count": 7,
+          "order_violations": 0,
+          "percent": 100,
+          "pass": true,
+          "materials": [
+            {
+              "index": 0,
+              "instructional_function": "criteria_exposition",
+              "plan_beat_index": 3,
+              "type": "text",
+              "specification": "Detailed explanation of CPI inflation calculation criteria including weighted averages and fixed basket concept; concept elucidation for CPI and Inflation.",
+              "material_id": "M_plan_4"
+            },
+            {
+              "index": 1,
+              "instructional_function": "worked_thinking",
+              "plan_beat_index": 4,
+              "type": "worked_example",
+              "specification": "Stepwise CPI inflation rate calculation with intermediate reasoning and formula application; depth_floor L3.",
+              "material_id": "M_plan_5_2"
+            },
+            {
+              "index": 2,
+              "instructional_function": "guided_practice",
+              "plan_beat_index": 5,
+              "type": "task_cards",
+              "specification": "Exercises with partial data and hints to practice CPI inflation rate calculation; depth_floor L3.",
+              "material_id": "M_plan_6_3"
+            },
+            {
+              "index": 3,
+              "instructional_function": "independent_performance",
+              "plan_beat_index": 6,
+              "type": "task_cards",
+              "specification": "New CPI inflation calculation tasks without hints; depth_floor L3.",
+              "material_id": "M_plan_7_4"
+            },
+            {
+              "index": 4,
+              "instructional_function": "verification",
+              "plan_beat_index": 7,
+              "type": "checklist",
+              "specification": "Checklist with ≥4 criteria to verify correct CPI inflation calculations; includes repair instructions; depth_floor L3.",
+              "material_id": "M_plan_8_5"
+            },
+            {
+              "index": 5,
+              "instructional_function": "revision",
+              "plan_beat_index": 8,
+              "type": "prompt_set",
+              "specification": "Prompts encouraging reflection on calculation methods and real-world relevance.",
+              "material_id": "M_plan_9_6"
+            },
+            {
+              "index": 6,
+              "instructional_function": "transfer",
+              "plan_beat_index": 10,
+              "type": "transfer_prompt",
+              "specification": "Prompts to apply CPI inflation calculation to learner's own context or current inflation data; depth_floor L3.",
+              "material_id": "M_plan_11_7"
+            }
+          ]
+        },
+        "M04": {
+          "metric": "M-04",
+          "percent": 100,
+          "pass": true,
+          "pairs": 11,
+          "ordered": 11
+        },
+        "M05": {
+          "metric": "M-05",
+          "count": 0,
+          "pass": true,
+          "violations": []
+        },
+        "M06": {
+          "metric": "M-06",
+          "ratio": 1.75,
+          "pass": true,
+          "obl_m": 7,
+          "baseline": 4
+        },
+        "M07": {
+          "metric": "M-07",
+          "count": 0,
+          "pass": true
+        },
+        "M08_gaps": {
+          "GAP_01": true,
+          "GAP_02": false,
+          "GAP_06": true,
+          "GAP_13": true
+        },
+        "M08_closed": 3,
+        "transition_chains": [
+          {
+            "chain": "T1",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 4→5→6",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          },
+          {
+            "chain": "T2",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T3",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T4",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T5",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 6→7→9",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          }
+        ],
+        "trace": [
+          {
+            "beat_index": 0,
+            "function": "orientation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "orientation",
+                "plan_beat_index": 0,
+                "surface": "activity_preamble",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 1,
+            "function": "framing",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "surface": "reasoning_orientation",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 2,
+            "function": "activation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "activation",
+                "plan_beat_index": 2,
+                "surface": "prior_knowledge_activation",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 3,
+            "function": "criteria_exposition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "criteria_exposition",
+                "plan_beat_index": 3,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 4,
+            "function": "worked_thinking",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "worked_thinking",
+                "plan_beat_index": 4,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 5,
+            "function": "guided_practice",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_practice",
+                "plan_beat_index": 5,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 6,
+            "function": "independent_performance",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 6,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 6,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 7,
+            "function": "verification",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "verification",
+                "plan_beat_index": 7,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 8,
+            "function": "revision",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "revision",
+                "plan_beat_index": 8,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "revision",
+                "plan_beat_index": 8,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 9,
+            "function": "reflection",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 9,
+                "surface": "self_explanation_prompt",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 9,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 10,
+            "function": "transfer",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 10,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 10,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 11,
+            "function": "transition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transition",
+                "plan_beat_index": 11,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          }
+        ]
+      },
+      "A3": {
+        "activity_id": "A3",
+        "M02": {
+          "metric": "M-02",
+          "total_beats": 13,
+          "survived_beats": 13,
+          "percent": 100,
+          "pass": true,
+          "matrix": [
+            {
+              "beat_index": 0,
+              "function": "orientation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "orientation",
+                  "plan_beat_index": 0,
+                  "surface": "activity_preamble",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 1,
+              "function": "framing",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "surface": "reasoning_orientation",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 2,
+              "function": "activation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "activation",
+                  "plan_beat_index": 2,
+                  "surface": "prior_knowledge_activation",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 3,
+              "function": "criteria_exposition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "criteria_exposition",
+                  "plan_beat_index": 3,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 4,
+              "function": "explanation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "explanation",
+                  "plan_beat_index": 4,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 5,
+              "function": "worked_thinking",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "worked_thinking",
+                  "plan_beat_index": 5,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 6,
+              "function": "guided_inquiry",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_inquiry",
+                  "plan_beat_index": 6,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 7,
+              "function": "guided_practice",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_practice",
+                  "plan_beat_index": 7,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 8,
+              "function": "independent_performance",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 8,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 8,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 9,
+              "function": "verification",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "verification",
+                  "plan_beat_index": 9,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 10,
+              "function": "reflection",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 10,
+                  "surface": "self_explanation_prompt",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 10,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 11,
+              "function": "transfer",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 11,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 11,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 12,
+              "function": "transition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transition",
+                  "plan_beat_index": 12,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            }
+          ]
+        },
+        "M03": {
+          "metric": "M-03",
+          "obl_m_count": 8,
+          "order_violations": 0,
+          "percent": 100,
+          "pass": true,
+          "materials": [
+            {
+              "index": 0,
+              "instructional_function": "criteria_exposition",
+              "plan_beat_index": 3,
+              "type": "text",
+              "specification": "Explanation of analytical lenses for inflation impact on household budgets; concept elucidation for Household Budget Impact, Inflation, Purchasing Power.",
+              "material_id": "M_plan_4"
+            },
+            {
+              "index": 1,
+              "instructional_function": "explanation",
+              "plan_beat_index": 4,
+              "type": "",
+              "specification": "Teach core concept or procedure rules from KM — not synopsis-only.",
+              "material_id": "M_plan_5_2"
+            },
+            {
+              "index": 2,
+              "instructional_function": "worked_thinking",
+              "plan_beat_index": 5,
+              "type": "",
+              "specification": "Stepwise model of intellectual or procedural move.",
+              "material_id": "M_plan_6_3"
+            },
+            {
+              "index": 3,
+              "instructional_function": "guided_inquiry",
+              "plan_beat_index": 6,
+              "type": "task_cards",
+              "specification": "Questions prompting analysis of household inflation impacts; depth_floor L3.",
+              "material_id": "M_plan_7_4"
+            },
+            {
+              "index": 4,
+              "instructional_function": "guided_practice",
+              "plan_beat_index": 7,
+              "type": "analysis_table",
+              "specification": "Table comparing inflation effects on fixed-income vs variable-income households; includes exemplar rows and hint columns; depth_floor L3.",
+              "material_id": "M_plan_8_5"
+            },
+            {
+              "index": 5,
+              "instructional_function": "independent_performance",
+              "plan_beat_index": 8,
+              "type": "task_cards",
+              "specification": "New household inflation impact analysis tasks; depth_floor L3.",
+              "material_id": "M_plan_9_6"
+            },
+            {
+              "index": 6,
+              "instructional_function": "verification",
+              "plan_beat_index": 9,
+              "type": "checklist",
+              "specification": "Checklist with ≥4 criteria to verify quality and completeness of analysis; includes repair guidance; depth_floor L3.",
+              "material_id": "M_plan_10_7"
+            },
+            {
+              "index": 7,
+              "instructional_function": "transfer",
+              "plan_beat_index": 11,
+              "type": "transfer_prompt",
+              "specification": "Prompts to apply analytical lenses to learner's own or hypothetical household scenarios; depth_floor L3.",
+              "material_id": "M_plan_12_8"
+            }
+          ]
+        },
+        "M04": {
+          "metric": "M-04",
+          "percent": 100,
+          "pass": true,
+          "pairs": 12,
+          "ordered": 12
+        },
+        "M05": {
+          "metric": "M-05",
+          "count": 0,
+          "pass": true,
+          "violations": []
+        },
+        "M06": {
+          "metric": "M-06",
+          "ratio": 2.5,
+          "pass": true,
+          "obl_m": 10,
+          "baseline": 4
+        },
+        "M07": {
+          "metric": "M-07",
+          "count": 0,
+          "pass": true
+        },
+        "M08_gaps": {
+          "GAP_01": true,
+          "GAP_02": false,
+          "GAP_06": true,
+          "GAP_13": true
+        },
+        "M08_closed": 3,
+        "transition_chains": [
+          {
+            "chain": "T1",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 5→7→8",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          },
+          {
+            "chain": "T2",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T3",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T4",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T5",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 8→9→10",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          }
+        ],
+        "trace": [
+          {
+            "beat_index": 0,
+            "function": "orientation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "orientation",
+                "plan_beat_index": 0,
+                "surface": "activity_preamble",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 1,
+            "function": "framing",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "surface": "reasoning_orientation",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 2,
+            "function": "activation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "activation",
+                "plan_beat_index": 2,
+                "surface": "prior_knowledge_activation",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 3,
+            "function": "criteria_exposition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "criteria_exposition",
+                "plan_beat_index": 3,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 4,
+            "function": "explanation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "explanation",
+                "plan_beat_index": 4,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 5,
+            "function": "worked_thinking",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "worked_thinking",
+                "plan_beat_index": 5,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 6,
+            "function": "guided_inquiry",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_inquiry",
+                "plan_beat_index": 6,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 7,
+            "function": "guided_practice",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_practice",
+                "plan_beat_index": 7,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 8,
+            "function": "independent_performance",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 8,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 8,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 9,
+            "function": "verification",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "verification",
+                "plan_beat_index": 9,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 10,
+            "function": "reflection",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 10,
+                "surface": "self_explanation_prompt",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 10,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 11,
+            "function": "transfer",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 11,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 11,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 12,
+            "function": "transition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transition",
+                "plan_beat_index": 12,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          }
+        ]
+      },
+      "A4": {
+        "activity_id": "A4",
+        "M02": {
+          "metric": "M-02",
+          "total_beats": 15,
+          "survived_beats": 15,
+          "percent": 100,
+          "pass": true,
+          "matrix": [
+            {
+              "beat_index": 0,
+              "function": "orientation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "orientation",
+                  "plan_beat_index": 0,
+                  "surface": "activity_preamble",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 1,
+              "function": "framing",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "surface": "reasoning_orientation",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "framing",
+                  "plan_beat_index": 1,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 2,
+              "function": "activation",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "activation",
+                  "plan_beat_index": 2,
+                  "surface": "prior_knowledge_activation",
+                  "obligation_class": "cognition"
+                }
+              ]
+            },
+            {
+              "beat_index": 3,
+              "function": "perspective_construction",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "perspective_construction",
+                  "plan_beat_index": 3,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "perspective_construction",
+                  "plan_beat_index": 3,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 4,
+              "function": "criteria_exposition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "criteria_exposition",
+                  "plan_beat_index": 4,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 5,
+              "function": "criteria_construction",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "criteria_construction",
+                  "plan_beat_index": 5,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "criteria_construction",
+                  "plan_beat_index": 5,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 6,
+              "function": "worked_judgement",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "worked_judgement",
+                  "plan_beat_index": 6,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 7,
+              "function": "guided_inquiry",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_inquiry",
+                  "plan_beat_index": 7,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 8,
+              "function": "guided_reasoning",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "guided_reasoning",
+                  "plan_beat_index": 8,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 9,
+              "function": "independent_performance",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 9,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "independent_performance",
+                  "plan_beat_index": 9,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 10,
+              "function": "evaluative_judgement",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "evaluative_judgement",
+                  "plan_beat_index": 10,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "evaluative_judgement",
+                  "plan_beat_index": 10,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 11,
+              "function": "verification",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "verification",
+                  "plan_beat_index": 11,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                }
+              ]
+            },
+            {
+              "beat_index": 12,
+              "function": "reflection",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 12,
+                  "surface": "self_explanation_prompt",
+                  "obligation_class": "cognition"
+                },
+                {
+                  "instructional_function": "reflection",
+                  "plan_beat_index": 12,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 13,
+              "function": "transfer",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 13,
+                  "obligation_class": "material",
+                  "surface": "required_materials[]"
+                },
+                {
+                  "instructional_function": "transfer",
+                  "plan_beat_index": 13,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            },
+            {
+              "beat_index": 14,
+              "function": "transition",
+              "traceable": true,
+              "obligations": [
+                {
+                  "instructional_function": "transition",
+                  "plan_beat_index": 14,
+                  "obligation_class": "task_segment",
+                  "surface": "learner_task_segment"
+                }
+              ]
+            }
+          ]
+        },
+        "M03": {
+          "metric": "M-03",
+          "obl_m_count": 10,
+          "order_violations": 0,
+          "percent": 100,
+          "pass": true,
+          "materials": [
+            {
+              "index": 0,
+              "instructional_function": "perspective_construction",
+              "plan_beat_index": 3,
+              "type": "text",
+              "specification": "Exposition on perspectives of gains and losses in household inflation strategy evaluation; concept elucidation for Household Budget Strategy and related concepts.",
+              "material_id": "M_plan_4"
+            },
+            {
+              "index": 1,
+              "instructional_function": "criteria_exposition",
+              "plan_beat_index": 4,
+              "type": "text",
+              "specification": "Detailed explanation of ≥3 operational criteria dimensions for evaluating household strategies; depth_floor L3.",
+              "material_id": "M_plan_5_2"
+            },
+            {
+              "index": 2,
+              "instructional_function": "criteria_construction",
+              "plan_beat_index": 5,
+              "type": "",
+              "specification": "Learner weights or prioritises criteria for the case.",
+              "material_id": "M_plan_6_3"
+            },
+            {
+              "index": 3,
+              "instructional_function": "worked_judgement",
+              "plan_beat_index": 6,
+              "type": "modelling_note",
+              "specification": "Modelling note contrasting weak versus strong strategy evaluations with explicit reasoning; depth_floor L3.",
+              "material_id": "M_plan_7_4"
+            },
+            {
+              "index": 4,
+              "instructional_function": "guided_inquiry",
+              "plan_beat_index": 7,
+              "type": "decision_table",
+              "specification": "Partial ranking table of household strategies with exemplar rows and justification hints; depth_floor L3.",
+              "material_id": "M_plan_8_5"
+            },
+            {
+              "index": 5,
+              "instructional_function": "guided_reasoning",
+              "plan_beat_index": 8,
+              "type": "",
+              "specification": "Partial completion with hint scaffolding; learner supplies justifications.",
+              "material_id": "M_plan_9_6"
+            },
+            {
+              "index": 6,
+              "instructional_function": "independent_performance",
+              "plan_beat_index": 9,
+              "type": "",
+              "specification": "Full learner attempt without model-answer copy path.",
+              "material_id": "M_plan_10_7"
+            },
+            {
+              "index": 7,
+              "instructional_function": "evaluative_judgement",
+              "plan_beat_index": 10,
+              "type": "checklist",
+              "specification": "Rubric with ≥4 criteria to audit evaluation quality and completeness; includes repair instructions; depth_floor L3.",
+              "material_id": "M_plan_11_8"
+            },
+            {
+              "index": 8,
+              "instructional_function": "verification",
+              "plan_beat_index": 11,
+              "type": "transfer_prompt",
+              "specification": "Prompts encouraging application of evaluation criteria and reasoning to learner's own or alternative inflation scenarios; depth_floor L3.",
+              "material_id": "M_plan_12_9"
+            },
+            {
+              "index": 9,
+              "instructional_function": "transfer",
+              "plan_beat_index": 13,
+              "type": "",
+              "specification": "Personal-context reapplication linked to criteria.",
+              "material_id": "M_plan_14_10"
+            }
+          ]
+        },
+        "M04": {
+          "metric": "M-04",
+          "percent": 100,
+          "pass": true,
+          "pairs": 14,
+          "ordered": 14
+        },
+        "M05": {
+          "metric": "M-05",
+          "count": 0,
+          "pass": true,
+          "violations": []
+        },
+        "M06": {
+          "metric": "M-06",
+          "ratio": 1.63,
+          "pass": true,
+          "obl_m": 13,
+          "baseline": 8
+        },
+        "M07": {
+          "metric": "M-07",
+          "count": 0,
+          "pass": true
+        },
+        "M08_gaps": {
+          "GAP_01": false,
+          "GAP_02": true,
+          "GAP_06": true,
+          "GAP_13": true
+        },
+        "M08_closed": 3,
+        "transition_chains": [
+          {
+            "chain": "T1",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T2",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 3→5→10",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          },
+          {
+            "chain": "T3",
+            "applicable": false,
+            "pass": true,
+            "mechanism": "n/a — subchain not in plan"
+          },
+          {
+            "chain": "T4",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; T4: judgement precedes transfer and reflection (38I order may interleave verification)",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          },
+          {
+            "chain": "T5",
+            "applicable": true,
+            "pass": true,
+            "mechanism": "≥1 obligation (OBL-M/C/T) per chain function; no merge; plan indices 9→11→12",
+            "distinct_count": 3,
+            "required_count": 3,
+            "merged": false
+          }
+        ],
+        "trace": [
+          {
+            "beat_index": 0,
+            "function": "orientation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "orientation",
+                "plan_beat_index": 0,
+                "surface": "activity_preamble",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 1,
+            "function": "framing",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "surface": "reasoning_orientation",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "framing",
+                "plan_beat_index": 1,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 2,
+            "function": "activation",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "activation",
+                "plan_beat_index": 2,
+                "surface": "prior_knowledge_activation",
+                "obligation_class": "cognition"
+              }
+            ]
+          },
+          {
+            "beat_index": 3,
+            "function": "perspective_construction",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "perspective_construction",
+                "plan_beat_index": 3,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "perspective_construction",
+                "plan_beat_index": 3,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 4,
+            "function": "criteria_exposition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "criteria_exposition",
+                "plan_beat_index": 4,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 5,
+            "function": "criteria_construction",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "criteria_construction",
+                "plan_beat_index": 5,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "criteria_construction",
+                "plan_beat_index": 5,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 6,
+            "function": "worked_judgement",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "worked_judgement",
+                "plan_beat_index": 6,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 7,
+            "function": "guided_inquiry",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_inquiry",
+                "plan_beat_index": 7,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 8,
+            "function": "guided_reasoning",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "guided_reasoning",
+                "plan_beat_index": 8,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 9,
+            "function": "independent_performance",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 9,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "independent_performance",
+                "plan_beat_index": 9,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 10,
+            "function": "evaluative_judgement",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "evaluative_judgement",
+                "plan_beat_index": 10,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "evaluative_judgement",
+                "plan_beat_index": 10,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 11,
+            "function": "verification",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "verification",
+                "plan_beat_index": 11,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              }
+            ]
+          },
+          {
+            "beat_index": 12,
+            "function": "reflection",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 12,
+                "surface": "self_explanation_prompt",
+                "obligation_class": "cognition"
+              },
+              {
+                "instructional_function": "reflection",
+                "plan_beat_index": 12,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 13,
+            "function": "transfer",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 13,
+                "obligation_class": "material",
+                "surface": "required_materials[]"
+              },
+              {
+                "instructional_function": "transfer",
+                "plan_beat_index": 13,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          },
+          {
+            "beat_index": 14,
+            "function": "transition",
+            "traceable": true,
+            "obligations": [
+              {
+                "instructional_function": "transition",
+                "plan_beat_index": 14,
+                "obligation_class": "task_segment",
+                "surface": "learner_task_segment"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "M01": {
+      "metric": "M-01",
+      "percent": 100,
+      "pass": true,
+      "tested": 5,
+      "passed": 5,
+      "families": {
+        "T1": {
+          "status": "Pass",
+          "applicable": true,
+          "pass": true
+        },
+        "T2": {
+          "status": "Pass",
+          "applicable": true,
+          "pass": true
+        },
+        "T4": {
+          "status": "Pass",
+          "applicable": true,
+          "pass": true
+        },
+        "T5": {
+          "status": "Pass",
+          "applicable": true,
+          "pass": true
+        },
+        "T3": {
+          "status": "Pass",
+          "applicable": true,
+          "pass": true
+        }
+      }
+    },
+    "M02_all_pass": true,
+    "M03_all_pass": true,
+    "M05_total": 0,
+    "M05_pass": true,
+    "M07_total": 0,
+    "M07_pass": true,
+    "acAudit": [],
+    "transitionFamilies": {
+      "T1": {
+        "status": "Pass",
+        "applicable": true,
+        "pass": true
+      },
+      "T2": {
+        "status": "Pass",
+        "applicable": true,
+        "pass": true
+      },
+      "T4": {
+        "status": "Pass",
+        "applicable": true,
+        "pass": true
+      },
+      "T5": {
+        "status": "Pass",
+        "applicable": true,
+        "pass": true
+      },
+      "T3": {
+        "status": "Pass",
+        "applicable": true,
+        "pass": true
+      }
+    },
+    "PLAN_OBL_M_TARGETS": {
+      "A1": 7,
+      "A2": 7,
+      "A3": 8,
+      "A4": 10
+    },
+    "EV38M_MATERIAL_COUNTS": {
+      "A1": 4,
+      "A2": 4,
+      "A3": 4,
+      "A4": 8
+    }
+  },
+  "comparative": {
+    "ev38m": {
+      "A1": {
+        "material_count": 4,
+        "tagged": 0
+      },
+      "A2": {
+        "material_count": 4,
+        "tagged": 0
+      },
+      "A3": {
+        "material_count": 4,
+        "tagged": 0
+      },
+      "A4": {
+        "material_count": 8,
+        "tagged": 0
+      }
+    },
+    "ev38s": {
+      "A1": {
+        "material_count": 8,
+        "tagged": 8,
+        "episode_plan_ref": true
+      },
+      "A2": {
+        "material_count": 7,
+        "tagged": 7,
+        "episode_plan_ref": true
+      },
+      "A3": {
+        "material_count": 10,
+        "tagged": 10,
+        "episode_plan_ref": true
+      },
+      "A4": {
+        "material_count": 13,
+        "tagged": 13,
+        "episode_plan_ref": true
+      }
+    }
+  },
+  "t3Micro": {
+    "plan": {
+      "archetype": "understand",
+      "beats": [
+        {
+          "function": "framing"
+        },
+        {
+          "function": "prediction"
+        },
+        {
+          "function": "observation"
+        },
+        {
+          "function": "revision"
+        },
+        {
+          "function": "reflection"
+        }
+      ]
+    },
+    "scaffold_obl_m": 3,
+    "transition": {
+      "status": "Pass",
+      "applicable": true,
+      "pass": true
+    }
+  }
+}

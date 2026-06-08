@@ -10,6 +10,7 @@
  *   PRISM_HARNESS_RESUME_FROM=km node .../ev-38l-inflation-pipeline-capture-once.mjs
  * Use 38L harness only — not ev-38h-inflation-pipeline-capture-once.mjs for DLA (38H user ctx contradicts DLA-WB-26..31).
  */
+import { captureGamPackText, gamFormat } from "../../2026-06-06-sprint-38s-episode-plan-v1-implementation/artefacts/ev-38s-gam-capture-helper.mjs";
 import fs from "fs";
 import path from "path";
 import vm from "vm";
@@ -22,9 +23,19 @@ const require = createRequire(import.meta.url);
 const { validateDla38LObligations } = require(
   path.join(repoRoot, "lib", "dla-38l-obligation-check.js")
 );
-const { validate38LPageGamPreservation } = require(
-  path.join(repoRoot, "lib", "page-gam-materials-preserve.js")
-);
+const {
+  applyGamMaterialsToComposedPage,
+  validate38MPageFidelity,
+  validate38LPageGamPreservation,
+  measurePageGamFidelity,
+  findLearningActivitiesRows
+} = require(path.join(repoRoot, "lib", "page-gam-materials-preserve.js"));
+const {
+  applyA3MaterialsSequencingToComposedPage,
+  validateA3MaterialsSequencing,
+  validateA3RenderMaterialOrder
+} = require(path.join(repoRoot, "lib", "page-a3-materials-sequencing.js"));
+const episodePlanDla = require(path.join(repoRoot, "lib", "episode-plan-dla-integration.js"));
 const { parseKnowledgeModelCapture, buildKmHarnessOutputContract } = require(
   path.join(
     repoRoot,
@@ -39,7 +50,7 @@ const { parseKnowledgeModelCapture, buildKmHarnessOutputContract } = require(
 const outDir = __dirname;
 const RUN_PREFIX = process.env.PRISM_RUN_PREFIX || "EV-38L-AFTER";
 const model = process.env.PRISM_PROBE_MODEL || "gpt-4.1-mini";
-const HARNESS_VERSION = "38L-4b";
+const HARNESS_VERSION = "38S-GAM1";
 const KM_PIPELINE_STEP_NUM = 2;
 const KM_ONLY = process.env.PRISM_HARNESS_KM_ONLY === "1";
 const RESUME_FROM = String(process.env.PRISM_HARNESS_RESUME_FROM || "").trim().toLowerCase();
@@ -135,7 +146,14 @@ function loadApi() {
     "ld-self-directed-rhetoric.js",
     "ld-design-page-compose-contract.js",
     "design-page-materials-fidelity.js",
-    "page-gam-materials-preserve.js"
+    "page-gam-materials-preserve.js",
+    "page-role-registry.js",
+    "page-role-render-sequencing.js",
+    "page-role-fidelity.js",
+    "page-a3-materials-sequencing.js",
+    "episode-plan-population-contract.js",
+    "episode-plan-v1-templates.js",
+    "episode-plan-dla-integration.js"
   ]) {
     vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", f), "utf8"), sandbox, { filename: f });
   }
@@ -199,6 +217,38 @@ async function callOpenAI(apiKey, system, user, maxTokens) {
   return text.trim();
 }
 
+function normalizePageForGamCompose(page, learningActivities) {
+  if (!page || typeof page !== "object") page = {};
+  if (findLearningActivitiesRows(page).length >= 4) return page;
+  const acts =
+    (Array.isArray(page.activities) && page.activities.length ? page.activities : null) ||
+    learningActivities.activities ||
+    learningActivities.learning_activities ||
+    [];
+  const content = acts.map((act) => ({
+    activity_id: act.activity_id,
+    title: act.title,
+    duration_minutes: act.duration_minutes,
+    learner_task: act.learner_task,
+    expected_output: act.expected_output,
+    activity_preamble: act.activity_preamble,
+    materials: act.materials && typeof act.materials === "object" ? act.materials : {}
+  }));
+  const sections = Array.isArray(page.sections) ? page.sections.slice() : [];
+  const withoutLa = sections.filter(
+    (s) => !/learning.?activit/i.test(String(s.section_id || s.heading || ""))
+  );
+  return Object.assign({}, page, {
+    sections: withoutLa.concat([
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content
+      }
+    ])
+  });
+}
+
 function buildWorkflow(md, api) {
   const cfgIdx = md.indexOf("### Workflow Brief Config");
   const cfgFence = md.indexOf("```json", cfgIdx);
@@ -232,42 +282,15 @@ function augment(api, md, wf, sectionHeading, stepId, title, outputName) {
   return { factory, step, seeded, augmented };
 }
 
-function parseGamMaterials(text) {
-  const head = String(text);
-  const materials = [];
-  const aidSpans = [];
-  let aidMatch;
-  const aidRe = /Activity ID:\s*(\S+)/gi;
-  while ((aidMatch = aidRe.exec(head)) !== null) aidSpans.push({ aid: aidMatch[1], index: aidMatch.index });
-  const matRe =
-    /Material:\s*(\S+)\s*\(([^)]+)\)[\s\S]*?Purpose:\s*([^\n]*)\nContent:\s*([\s\S]*?)(?=\n---\n|\nMaterial:|\nActivity:|$)/gi;
-  let m;
-  while ((m = matRe.exec(head)) !== null) {
-    let activity_id = "?";
-    for (let i = aidSpans.length - 1; i >= 0; i--) {
-      if (aidSpans[i].index <= m.index) {
-        activity_id = aidSpans[i].aid;
-        break;
-      }
-    }
-    const content = m[4].trim();
-    materials.push({
-      activity_id,
-      material_id: m[1],
-      type: m[2].trim(),
-      purpose: m[3].trim(),
-      content,
-      contentLen: content.length
-    });
-  }
-  return materials;
+function parseGamMaterialsExtended(gamText) {
+  return gamFormat.parseGamMaterialsExtended(gamText);
 }
 
 function buildWorkbookMd(page, gamText, learning_activities) {
   const lines = ["# Inflation Self-Study Workbook", "", `*Captured: ${RUN_PREFIX} · Sprint 38-L proof run*`, ""];
   const acts = learning_activities.activities || [];
   const byAct = new Map();
-  for (const mat of parseGamMaterials(gamText)) {
+  for (const mat of gamFormat.parseGamMaterialsFromText(gamText)) {
     if (!byAct.has(mat.activity_id)) byAct.set(mat.activity_id, []);
     byAct.get(mat.activity_id).push(mat);
   }
@@ -364,6 +387,23 @@ if (RESUME_FROM === "km") {
       2
     )
   );
+} else if (RESUME_FROM === "dla") {
+  learning_content = loadJsonArtefact(`${RUN_PREFIX}-learning-content.json`);
+  knowledge_model = loadJsonArtefact(`${RUN_PREFIX}-knowledge-model.json`);
+  learning_outcomes = loadFrozenLearningOutcomes();
+  console.log(
+    JSON.stringify(
+      {
+        phase: HARNESS_VERSION,
+        resumeFrom: "dla",
+        runPrefix: RUN_PREFIX,
+        skipped: ["generate_learning_content", "model_knowledge", "design_learning_activities_llm"],
+        knowledgeModelConceptCount: kmConceptCount(knowledge_model)
+      },
+      null,
+      2
+    )
+  );
 } else {
 const lcText = await callOpenAI(
   apiKey,
@@ -438,11 +478,69 @@ if (KM_ONLY) {
 learning_outcomes = loadFrozenLearningOutcomes();
 }
 
+const episode_plans = episodePlanDla.deriveEpisodePlansFromLearningOutcomes(learning_outcomes, {
+  activity_ids: ["A1", "A2", "A3", "A4"]
+});
+const episodePlansGate = episodePlanDla.assertEpisodePlansContainerGate(episode_plans);
+if (!episodePlansGate.ok) {
+  throw new Error(
+    "Episode Plan gate failed (M-13 / PF-11): " + episodePlansGate.errors.join("; ")
+  );
+}
+fs.writeFileSync(
+  path.join(outDir, `${RUN_PREFIX}-episode-plans.json`),
+  JSON.stringify(episode_plans, null, 2),
+  "utf8"
+);
+
+let learning_activities;
+let populationValidation;
+let dlaObligationCheck;
+
+if (RESUME_FROM === "dla") {
+  const rawPath = path.join(outDir, `${RUN_PREFIX}-dla-learning-activities-raw.txt`);
+  if (!fs.existsSync(rawPath)) {
+    throw new Error(`Missing raw DLA for resume: ${RUN_PREFIX}-dla-learning-activities-raw.txt`);
+  }
+  const rawLlm = parseJsonFromText(fs.readFileSync(rawPath, "utf8"));
+  const populationApplied = episodePlanDla.applyPopulationContractToLearningActivities(
+    rawLlm,
+    episode_plans
+  );
+  if (!populationApplied.ok) {
+    throw new Error(
+      "38S-R1 population contract apply failed: " + populationApplied.errors.join("; ")
+    );
+  }
+  learning_activities = populationApplied.learning_activities;
+  populationValidation = episodePlanDla.validateLearningActivitiesPopulationContract(
+    learning_activities,
+    episode_plans
+  );
+  if (!populationValidation.ok) {
+    throw new Error(
+      "38S-R1 population contract validation failed: " + populationValidation.errors.join("; ")
+    );
+  }
+  dlaObligationCheck = validateDla38LObligations(learning_activities);
+  if (!dlaObligationCheck.ok) {
+    throw new Error(
+      `DLA missing mandatory 38L obligations: ${dlaObligationCheck.errors.join("; ")}`
+    );
+  }
+  fs.writeFileSync(
+    path.join(outDir, `${RUN_PREFIX}-dla-learning-activities.json`),
+    JSON.stringify(learning_activities, null, 2),
+    "utf8"
+  );
+} else {
 const dlaText = await callOpenAI(
   apiKey,
   "Return JSON only for learning_activities with delivery_notes object.",
   ctxHeader +
-    "\n\nMandatory: 60-minute self_study_workbook. delivery_notes: resource_intent self_study_workbook, session_duration_target_minutes 60, consolidation_requirement, workbook_contract_applied true.\n\nExecute IFP per activity (38J-3 + 38L-2/38L-4): archetype selection, function sequence, KM triggers (KM-T05 household Evaluate anchor; KM-T08 policy context only), INF-EVAL-01, inference, anti-shell, anti-spoiler, IFP-09 depth floors, IFP-10 emission gates before learner_task/required_materials.\n\nFour activities A1 Understand, A2 Apply (CPI calculation worked thinking), A3 Analyse (household comparison + worked analytic pass per DLA-WB-27), A4 Evaluate (household strategy judgement — Maya-style scenario, strategy menu A–E, 38I-4 A4 benchmark; NOT policy communication summary).\n\nA4 Evaluate completion pack (DLA-WB-28/31, EV-CAP-04): perspectives + criteria + worked judgement + guided judgement + independent judgement template + verification checklist + transfer_prompt — guided comparison alone CANNOT terminate; consolidation_summary is closure only.\n\n38E-8 + 38F-2 + 38G-3 + 38J-3 + 38L mandatory rows (all coexist): early worked_example+sample_output; practice table (DLA-WB-06a); scenario (DLA-WB-18); verification checklist every activity (DLA-WB-26); final consolidation_summary.\n\nUpstream learning_outcomes (frozen — authoritative fourth LO is household Evaluate):\n" +
+    "\n\nMandatory: 60-minute self_study_workbook. delivery_notes: resource_intent self_study_workbook, session_duration_target_minutes 60, consolidation_requirement, workbook_contract_applied true.\n\n38S-3 POPULATION-ONLY: Episode Plan V1 is authoritative. Do NOT replan archetype, beat order, or instructional functions. Populate obligation specifications from upstream episode_plans.\n\nExecute IFP per activity (38J-3 + 38L-2/38L-4): KM triggers (KM-T05 household Evaluate anchor; KM-T08 policy context only), INF-EVAL-01, inference, anti-shell, anti-spoiler, IFP-09 depth floors, IFP-10 emission gates before learner_task/required_materials.\n\nFour activities A1 Understand, A2 Apply (CPI calculation worked thinking), A3 Analyse (household comparison + worked analytic pass per DLA-WB-27), A4 Evaluate (household strategy judgement — Maya-style scenario, strategy menu A–E, 38I-4 A4 benchmark; NOT policy communication summary).\n\nA4 Evaluate completion pack (DLA-WB-28/31, EV-CAP-04): perspectives + criteria + worked judgement + guided judgement + independent judgement template + verification checklist + transfer_prompt — guided comparison alone CANNOT terminate; consolidation_summary is closure only.\n\n38E-8 + 38F-2 + 38G-3 + 38J-3 + 38L mandatory rows (all coexist): early worked_example+sample_output; practice table (DLA-WB-06a); scenario (DLA-WB-18); verification checklist every activity (DLA-WB-26); final consolidation_summary.\n\nUpstream episode_plans (authoritative beat order — populate only):\n" +
+    JSON.stringify(episode_plans, null, 2) +
+    "\n\nUpstream learning_outcomes (frozen — authoritative fourth LO is household Evaluate):\n" +
     JSON.stringify(learning_outcomes, null, 2) +
     "\n\nUpstream knowledge_model:\n" +
     JSON.stringify(knowledge_model, null, 2) +
@@ -451,7 +549,36 @@ const dlaText = await callOpenAI(
   12000
 );
 let learning_activities = parseJsonFromText(dlaText) || { activities: [] };
-const dlaObligationCheck = validateDla38LObligations(learning_activities);
+const populationApplied = episodePlanDla.applyPopulationContractToLearningActivities(
+  learning_activities,
+  episode_plans
+);
+if (!populationApplied.ok) {
+  fs.writeFileSync(
+    path.join(outDir, `${RUN_PREFIX}-dla-learning-activities-raw.txt`),
+    dlaText,
+    "utf8"
+  );
+  throw new Error(
+    "38S-R1 population contract apply failed: " + populationApplied.errors.join("; ")
+  );
+}
+learning_activities = populationApplied.learning_activities;
+populationValidation = episodePlanDla.validateLearningActivitiesPopulationContract(
+  learning_activities,
+  episode_plans
+);
+if (!populationValidation.ok) {
+  fs.writeFileSync(
+    path.join(outDir, `${RUN_PREFIX}-dla-learning-activities-raw.txt`),
+    dlaText,
+    "utf8"
+  );
+  throw new Error(
+    "38S-R1 population contract validation failed: " + populationValidation.errors.join("; ")
+  );
+}
+dlaObligationCheck = validateDla38LObligations(learning_activities);
 if (!dlaObligationCheck.ok) {
   fs.writeFileSync(
     path.join(outDir, `${RUN_PREFIX}-dla-learning-activities-raw.txt`),
@@ -462,19 +589,8 @@ if (!dlaObligationCheck.ok) {
     `DLA missing mandatory 38L obligations (pack §5 IFP-10 / DLA-WB-26..31): ${dlaObligationCheck.errors.join("; ")} (raw: ${RUN_PREFIX}-dla-learning-activities-raw.txt)`
   );
 }
+}
 
-const gamTextRaw = await callOpenAI(
-  apiKey,
-  "Return organised materials text per pack structure.",
-  ctxHeader +
-    "\n\nMandatory GAM-PRES (38J-4 + 38L-3/38L-4): preserve DLA required_materials order; one Material per row; no function collapse; GAM-PRES-10 Evaluate completion — guided judgement insufficient without independent memo scaffold + verification checklist + transfer_prompt realised separately.\n\nEvaluate A4 household benchmark (38I-4): Maya/fixed-income perspectives, operational criteria rubric, weak/strong worked judgement, guided partial table, independent memo scaffold, verification rubric, transfer to learner household; policy communication at most one perspective lens — not capstone substance.\n\nGAM-WB-06b scaffold when learner-write; GAM-PRES-08/09 depth-shaped bodies; EV-GAM-FAIL-07 if guided-only Evaluate.\n\nUpstream learning_activities:\n" +
-    JSON.stringify(learning_activities, null, 2) +
-    "\n\nUpstream knowledge_model:\n" +
-    JSON.stringify(knowledge_model, null, 2) +
-    "\n\n---\n\n" +
-    gamAug.augmented,
-  16000
-);
 const sanitizeCtx = {
   workflowGoal: wf.goal,
   desiredOutputs: BRIEF.desiredOutputs,
@@ -484,8 +600,31 @@ const sanitizeCtx = {
   workflowBriefResolution: wf.workflowBriefResolution,
   upstreamActivities: learning_activities.activities || learning_activities
 };
-const sanitized = api.sanitizeSelfDirectedGamMaterialsOutput(gamTextRaw, sanitizeCtx);
-const gamText = String(sanitized.text != null ? sanitized.text : gamTextRaw);
+
+let gamCapture;
+try {
+  gamCapture = await captureGamPackText({
+    callOpenAI,
+    apiKey,
+    api,
+    ctxHeader,
+    gamAugmented: gamAug.augmented,
+    learningActivities: learning_activities,
+    knowledgeModel: knowledge_model,
+    sanitizeCtx,
+    maxAttempts: Number(process.env.PRISM_GAM_MAX_ATTEMPTS || 3),
+    minMaterials: 12
+  });
+} catch (err) {
+  if (err.gamTextRaw) {
+    fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam-raw-rejected.txt`), err.gamTextRaw, "utf8");
+  }
+  throw err;
+}
+
+const gamTextRaw = gamCapture.gamTextRaw;
+const gamText = gamCapture.gamText;
+const gamValidation = gamCapture.validation;
 
 const dpText = await callOpenAI(
   apiKey,
@@ -503,7 +642,7 @@ const dpText = await callOpenAI(
     dpAug.augmented,
   12000
 );
-const gamMaterials = parseGamMaterials(gamText);
+const gamMaterials = parseGamMaterialsExtended(gamText);
 const acts = learning_activities.activities || learning_activities.learning_activities || [];
 const gamJsonForPage = {
   activities: acts.map((act) => ({
@@ -530,7 +669,20 @@ if (page && page.sections && api.applyPedagogicCognitionSemanticsToComposedPage)
   });
 }
 
+const pageRawForReplay = page ? JSON.parse(JSON.stringify(page)) : page;
+page = normalizePageForGamCompose(page, learning_activities);
+const gamJson = {
+  runId: RUN_PREFIX,
+  capturedAt: new Date().toISOString(),
+  activities: gamJsonForPage.activities,
+  all_materials: gamMaterials
+};
+page = applyGamMaterialsToComposedPage(page, gamJson);
+page = applyA3MaterialsSequencingToComposedPage(page);
+
 const pagePreserveCheck = validate38LPageGamPreservation(page, { gamSource: gamJsonForPage });
+fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.txt`), gamText, "utf8");
+fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.json`), JSON.stringify(gamJson, null, 2), "utf8");
 if (!pagePreserveCheck.ok) {
   fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page-raw.txt`), dpText, "utf8");
   throw new Error(
@@ -539,11 +691,44 @@ if (!pagePreserveCheck.ok) {
 }
 const workbookMd = buildWorkbookMd(page, gamText, learning_activities);
 
-const gamJson = {
-  runId: RUN_PREFIX,
-  capturedAt: new Date().toISOString(),
-  activities: gamJsonForPage.activities,
-  all_materials: gamMaterials
+function extractActivityHtmlBlock(html, pageObj, activityIndex) {
+  const text = String(html || "");
+  const section = (pageObj?.sections || []).find((s) =>
+    /learning.?activit/i.test(String(s.section_id || s.heading || ""))
+  );
+  const rows = Array.isArray(section?.content) ? section.content : [];
+  const row = rows[activityIndex];
+  if (!row) return text;
+  const title = String(row.title || row.activity_title || "");
+  if (!title) return text;
+  const start = text.indexOf(title);
+  if (start < 0) return text;
+  const nextRow = rows[activityIndex + 1];
+  const nextTitle = nextRow ? String(nextRow.title || nextRow.activity_title || "") : "";
+  const end = nextTitle ? text.indexOf(nextTitle, start + title.length) : text.length;
+  return text.substring(start, end > start ? end : text.length);
+}
+
+const render = api.buildUtilityStructuredHtmlForTest(page, ["sections"]);
+const renderHtml = String(render?.html || "");
+const a3Block = extractActivityHtmlBlock(renderHtml, page, 2);
+const fidelityCheck = validate38MPageFidelity(page, { gamSource: gamJson });
+const a3SeqCheck = validateA3MaterialsSequencing(page);
+const a3RenderCheck = validateA3RenderMaterialOrder(a3Block);
+const fidelityMetrics = measurePageGamFidelity(page, { gamSource: gamJson });
+const proofDims = api.computeProofDimensionsForTest(page, { gamSource: gamJson, renderHtml });
+const proofReplay = {
+  proofOk: proofDims.proofOk,
+  roleOk: proofDims.roleOk,
+  fullOk: proofDims.fullOk,
+  validation38M: { ok: fidelityCheck.ok, errors: fidelityCheck.errors },
+  validation38L: { ok: pagePreserveCheck.ok, errors: pagePreserveCheck.errors },
+  validation38P: {
+    ok: proofDims.validation38P?.ok,
+    errors: proofDims.validation38P?.errors || []
+  },
+  a3Sequencing: { ok: a3SeqCheck.ok && a3RenderCheck.ok },
+  fidelityMetrics
 };
 
 const report = {
@@ -563,20 +748,36 @@ const report = {
     "generate_learning_content",
     "model_knowledge",
     "frozen_learning_outcomes",
+    "derive_episode_plans",
     "design_learning_activities",
+    "population_contract_enforcement",
+    "dla_38l_obligation_gate",
     "generate_activity_materials",
-    "design_page"
+    "design_page",
+    "apply_gam_materials_compose",
+    "a3_materials_sequencing",
+    "fidelity_replay"
   ],
+  episodePlanIntegration: "38S-GAM1",
+  singleLane: true,
+  gamOutputValidation: gamValidation,
+  gamCaptureAttempts: gamCapture.attempts,
+  populationContractValidation: populationValidation.ok,
+  dla38lValidation: dlaObligationCheck.ok,
+  proofReplay,
   artefactsWritten: [
     `${RUN_PREFIX}-learning-content.json`,
     `${RUN_PREFIX}-knowledge-model.json`,
     `${RUN_PREFIX}-learning-outcomes.json`,
     `${RUN_PREFIX}-learning-objectives.json`,
+    `${RUN_PREFIX}-episode-plans.json`,
     `${RUN_PREFIX}-dla-learning-activities.json`,
     `${RUN_PREFIX}-gam.json`,
     `${RUN_PREFIX}-gam.txt`,
     `${RUN_PREFIX}-workbook.md`,
     `${RUN_PREFIX}-design-page.json`,
+    `${RUN_PREFIX}-design-page-raw-compose.json`,
+    `${RUN_PREFIX}-proof-replay.json`,
     `${RUN_PREFIX}-run-log.json`
   ],
   knowledgeModelConceptCount: kmConceptCount(knowledge_model),
@@ -608,7 +809,15 @@ fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-dla-learning-activities.json`)
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.txt`), gamText, "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-gam.json`), JSON.stringify(gamJson, null, 2), "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-workbook.md`), workbookMd, "utf8");
+if (pageRawForReplay) {
+  fs.writeFileSync(
+    path.join(outDir, `${RUN_PREFIX}-design-page-raw-compose.json`),
+    JSON.stringify(pageRawForReplay, null, 2),
+    "utf8"
+  );
+}
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-design-page.json`), JSON.stringify(page, null, 2), "utf8");
+fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-proof-replay.json`), JSON.stringify(proofReplay, null, 2), "utf8");
 fs.writeFileSync(path.join(outDir, `${RUN_PREFIX}-run-log.json`), JSON.stringify(report, null, 2), "utf8");
 
-console.log(JSON.stringify(report, null, 2));
+console.log(JSON.stringify({ ...report, proofOk: proofReplay.proofOk, fullOk: proofReplay.fullOk }, null, 2));

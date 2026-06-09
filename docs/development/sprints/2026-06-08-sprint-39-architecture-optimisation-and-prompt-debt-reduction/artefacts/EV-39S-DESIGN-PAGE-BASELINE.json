@@ -1,0 +1,91 @@
+{
+  "phase": "39S-STEP-1",
+  "measuredAt": "2026-06-09T08:07:20.885Z",
+  "sprint": "39",
+  "authority": "sprint-39-handover-pack.md",
+  "scenario": "inflation_self_directed",
+  "pack": {
+    "promptTemplateChars": 9140,
+    "defaultPromptNotesChars": 830,
+    "packCombinedChars": 9970
+  },
+  "workflow": {
+    "seededChars": 8970,
+    "augmentedChars": 27528,
+    "runtimeDeltaChars": 18558,
+    "runtimeDeltaPctOfAugmented": 67.4
+  },
+  "augmentationLayers": [
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 3726,
+      "cumulativeChars": 12696
+    },
+    {
+      "id": "sprint38_visual_affordance",
+      "deltaChars": 6601,
+      "cumulativeChars": 19297
+    },
+    {
+      "id": "design_page_compose",
+      "deltaChars": 7011,
+      "cumulativeChars": 26308
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 27528
+    }
+  ],
+  "topRuntimeContributors": [
+    {
+      "id": "design_page_compose",
+      "deltaChars": 7011,
+      "cumulativeChars": 26308
+    },
+    {
+      "id": "sprint38_visual_affordance",
+      "deltaChars": 6601,
+      "cumulativeChars": 19297
+    },
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 3726,
+      "cumulativeChars": 12696
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 27528
+    }
+  ],
+  "autoAppliedBlockTitles": [
+    "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+    "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
+    "Sprint 38 visual affordance authoring contract (auto-applied)",
+    "Sprint 38 pedagogical added-value contract (auto-applied)",
+    "LD-MATH-RENDER (auto-applied)"
+  ],
+  "standaloneBlockSizes": {
+    "ld_table_fidelity_author": 2693,
+    "ld_table_fidelity_spec": 1967,
+    "ld_materials_copy_author": 1259,
+    "ld_materials_copy_preserve": 3238,
+    "ld_self_directed_rhetoric_design_page": 3534,
+    "gam_self_study_materials": 3530,
+    "pel_orientation": 965,
+    "pel_reasoning": 618,
+    "sprint38_va_design_page": 6601,
+    "design_page_materials_fidelity": 7011,
+    "ld_design_page_compose": 7011,
+    "ld_math_render": 1220
+  },
+  "pecContractIds": [],
+  "comparison38S": {
+    "packCombinedProbe38S": 11302,
+    "packTemplateProbe38S": 9519,
+    "packNotesProbe38S": 1783,
+    "augmentedProbe38S": 27092,
+    "runtimeDeltaProbe38S": 17743
+  }
+}

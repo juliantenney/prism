@@ -216,7 +216,8 @@ test("GAM prompt: reading sufficiency scaffold for self-directed learner page", 
     "Generate activity materials.\n",
     ctx
   );
-  assert.match(prompt, /reading sufficiency \(auto-applied\)/i);
+  assert.match(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
+  assert.match(prompt, /substantial enough for independent study/i);
   assert.match(prompt, /substantial enough for independent study/i);
 });
 
@@ -363,7 +364,7 @@ test("GAM prompt: timeline sequencing alignment scaffold for self-directed learn
     "Generate activity materials.\n",
     ctx
   );
-  assert.match(prompt, /timeline sequencing alignment \(auto-applied\)/i);
+  assert.match(prompt, /deliberately mixed or non-chronological order/i);
   assert.match(prompt, /deliberately mixed or non-chronological order/i);
   assert.match(prompt, /structured entries \(prefer item_id\/title\/instruction fields\)/i);
 });
@@ -384,6 +385,5 @@ test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {
     ctx
   );
   assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /reading sufficiency \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /timeline sequencing alignment \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
 });

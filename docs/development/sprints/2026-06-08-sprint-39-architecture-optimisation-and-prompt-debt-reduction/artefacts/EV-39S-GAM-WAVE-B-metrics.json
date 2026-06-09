@@ -1,0 +1,138 @@
+{
+  "phase": "39S-GAM-WAVE-B",
+  "measuredAt": "2026-06-09T07:43:17.568Z",
+  "sprint": "39",
+  "authority": "sprint-39-work-packages.md Package 1",
+  "baseline": {
+    "measuredAt": "2026-06-09T07:28:27.546Z",
+    "packCombinedChars": 15712,
+    "seededChars": 15145,
+    "augmentedChars": 27659,
+    "runtimeDeltaChars": 12514,
+    "selfDirectedScaffoldsDelta": 11294,
+    "autoAppliedBlockTitles": [
+      "LD-TABLE-FIDELITY (auto-applied)",
+      "Self-directed learner-page reading sufficiency (auto-applied)",
+      "Self-directed learner-page material voice (auto-applied)",
+      "Self-directed timeline sequencing alignment (auto-applied)",
+      "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+      "LD-MATH-RENDER (auto-applied)"
+    ],
+    "standaloneBlockSizes": {
+      "gam_reading_voice_timeline_sum": 3644,
+      "gam_pel_reasoning_materials": 2039,
+      "pel_reasoning": 618
+    }
+  },
+  "afterWaveB": {
+    "inflation_self_directed": {
+      "scenario": "inflation_self_directed",
+      "seededChars": 15145,
+      "augmentedChars": 27542,
+      "runtimeDeltaChars": 12397,
+      "autoAppliedBlockTitles": [
+        "LD-TABLE-FIDELITY (auto-applied)",
+        "Self-directed learner-page self-study materials (auto-applied)",
+        "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+        "LD-MATH-RENDER (auto-applied)"
+      ],
+      "pecContractIds": [],
+      "checks": {
+        "mergedSelfStudyMarker": true,
+        "noLegacyReadingMarker": true,
+        "noLegacyVoiceMarker": true,
+        "noLegacyTimelineMarker": true,
+        "noPelReasoningOnGam": true,
+        "gamPres08InSelfStudy": true,
+        "noShortWorkedMicroExample": true,
+        "reasoningMaterialsWhenPec": true
+      },
+      "standaloneBlockSizes": {
+        "gam_self_study_materials": 3530,
+        "gam_pel_reasoning_materials": 2261,
+        "pel_reasoning": 618
+      }
+    },
+    "marx_self_study_pec": {
+      "scenario": "marx_self_study_pec",
+      "seededChars": 15145,
+      "augmentedChars": 29803,
+      "runtimeDeltaChars": 14658,
+      "autoAppliedBlockTitles": [
+        "LD-TABLE-FIDELITY (auto-applied)",
+        "Self-directed learner-page self-study materials (auto-applied)",
+        "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+        "Self-directed learner-page reasoning materials (auto-applied)",
+        "LD-MATH-RENDER (auto-applied)"
+      ],
+      "pecContractIds": [
+        "orientation_contract",
+        "reasoning_contract"
+      ],
+      "checks": {
+        "mergedSelfStudyMarker": true,
+        "noLegacyReadingMarker": true,
+        "noLegacyVoiceMarker": true,
+        "noLegacyTimelineMarker": true,
+        "noPelReasoningOnGam": true,
+        "gamPres08InSelfStudy": true,
+        "noShortWorkedMicroExample": true,
+        "reasoningMaterialsWhenPec": true
+      },
+      "standaloneBlockSizes": {
+        "gam_self_study_materials": 3530,
+        "gam_pel_reasoning_materials": 2261,
+        "pel_reasoning": 618
+      }
+    }
+  },
+  "delta": {
+    "inflation_self_directed": {
+      "augmentedChars": -117,
+      "runtimeDeltaChars": -117,
+      "selfStudyBlocksMerged": 3,
+      "legacyMarkersRemoved": 3
+    }
+  },
+  "blockLevel": {
+    "before": {
+      "reading_voice_timeline_separate": 3644,
+      "pel_reasoning_on_gam_when_pec": 618,
+      "gam_pel_reasoning_materials": 2039
+    },
+    "after": {
+      "gam_self_study_materials_merged": 3530,
+      "gam_pel_reasoning_materials": 2261,
+      "pel_reasoning_removed_from_gam_path": true
+    },
+    "mergeNetChars": 114,
+    "pelReasoningRemovedFromGamWhenPec": 618
+  },
+  "deltaMarxSelfStudyPecEstimated": {
+    "beforeAugmentedCharsEstimated": 30316,
+    "beforeComponents": {
+      "inflationSelfDirectedBaseline": 27659,
+      "pelReasoningOnGam": 618,
+      "gamPelReasoningMaterialsPreRewrite": 2039
+    },
+    "afterAugmentedChars": 29803,
+    "augmentedChars": -513,
+    "meetsMinimum500": true
+  },
+  "validationTarget": {
+    "minimumAugmentedReductionChars": 500,
+    "inflationScenarioMeetsMinimum": false,
+    "marxPecActiveMeetsMinimum": true,
+    "justification": "Primary production-chase scenario (inflation_self_directed) has PEC inactive — merge-only saving is −117 augmented chars. Marx self-study PEC-active path (estimated pre-Wave-B 30,316 chars) nets −513 augmented via merge (−117) + PEL reasoning removal from GAM (−618) offset by rewritten reasoning-materials block (+222 standalone)."
+  },
+  "marxPecActive": {
+    "afterAugmentedChars": 29803,
+    "runtimeDeltaChars": 14658,
+    "pecContractIds": [
+      "orientation_contract",
+      "reasoning_contract"
+    ],
+    "pelReasoningOnGam": false,
+    "reasoningMaterialsPresent": true
+  }
+}

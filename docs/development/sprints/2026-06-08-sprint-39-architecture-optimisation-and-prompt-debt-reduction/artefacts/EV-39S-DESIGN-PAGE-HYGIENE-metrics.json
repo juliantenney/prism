@@ -1,0 +1,73 @@
+{
+  "phase": "39S-DESIGN-PAGE-HYGIENE",
+  "measuredAt": "2026-06-09T07:50:23.501Z",
+  "sprint": "39",
+  "authority": "sprint-39-work-packages.md Package 2",
+  "baseline": {
+    "measuredAt": "2026-06-09T07:38:56.199Z",
+    "pack": {
+      "promptTemplateChars": 9519,
+      "defaultPromptNotesChars": 1783,
+      "packCombinedChars": 11302
+    },
+    "whatToCheckChars": null,
+    "workflow": {
+      "seededChars": 9349,
+      "augmentedChars": 27907,
+      "runtimeDeltaChars": 18558,
+      "runtimeDeltaPctOfAugmented": 66.5
+    },
+    "autoAppliedBlockTitles": [
+      "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+      "Sprint 38 visual affordance authoring contract (auto-applied)",
+      "Sprint 38 pedagogical added-value contract (auto-applied)",
+      "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
+      "LD-MATH-RENDER (auto-applied)"
+    ]
+  },
+  "afterHygiene": {
+    "scenario": "inflation_self_directed",
+    "pack": {
+      "promptTemplateChars": 9140,
+      "defaultPromptNotesChars": 830,
+      "whatToCheckChars": 636,
+      "packCombinedChars": 9970
+    },
+    "workflow": {
+      "seededChars": 8970,
+      "augmentedChars": 27528,
+      "runtimeDeltaChars": 18558
+    },
+    "autoAppliedBlockTitles": [
+      "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+      "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
+      "Sprint 38 visual affordance authoring contract (auto-applied)",
+      "Sprint 38 pedagogical added-value contract (auto-applied)",
+      "LD-MATH-RENDER (auto-applied)"
+    ],
+    "ordering": {
+      "composeBeforeVisualAffordance": true,
+      "composeIndex": 12697,
+      "visualAffordanceIndex": 19708
+    },
+    "checks": {
+      "composeContractPresent": true,
+      "visualAffordancePresent": true,
+      "noPelOrientation": true,
+      "noPelReasoning": true,
+      "noInlineVaProseInPack": true,
+      "notesReferenceComposeContract": true,
+      "forbiddenCollapseInTemplate": true
+    }
+  },
+  "delta": {
+    "packCombinedChars": -1332,
+    "packTemplateChars": -379,
+    "packNotesChars": -953,
+    "augmentedChars": -379,
+    "runtimeDeltaChars": 0
+  },
+  "decisions": {
+    "fieldPreservationBlock": "deleted — buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock removed; LD-DESIGN-PAGE-COMPOSE-CONTRACT Activity field preservation is authoritative"
+  }
+}

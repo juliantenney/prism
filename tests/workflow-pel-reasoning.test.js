@@ -220,13 +220,15 @@ test("30-2: DLA runtime prompt includes reasoning contract and field policy", ()
   assert.match(prompt, PEL_ORIENTATION_MARKER);
 });
 
-test("30-2: GAM runtime prompt includes reasoning contract and material support", () => {
+test("30-2: GAM runtime prompt includes reasoning materials without duplicate PEL reasoning contract", () => {
   const prompt = gamScaffoldPrompt(MARX_SELF_STUDY_BRIEF);
-  assert.match(prompt, PEL_REASONING_MARKER);
+  assert.doesNotMatch(prompt, PEL_REASONING_MARKER);
   assert.match(prompt, /self-directed learner-page reasoning materials \(auto-applied\)/i);
-  assert.match(prompt, /worked micro-example/i);
+  assert.match(prompt, /GAM-PRES-08 \(A1\)/i);
+  assert.doesNotMatch(prompt, /short worked micro-example/i);
   assert.match(prompt, /before you re-read/i);
-  assert.match(prompt, /self-directed learner-page material voice \(auto-applied\)/i);
+  assert.match(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
+  assert.match(prompt, /anti-redundancy must never reduce a material below the minimum instructional richness required by GAM-PRES-08/i);
   assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
 });
 

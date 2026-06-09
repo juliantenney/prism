@@ -249,7 +249,7 @@ test("30-1: DLA runtime prompt includes PEL orientation block and field names", 
   assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
 });
 
-test("30-1: Design Page runtime prompt includes PEL orientation and field preservation", () => {
+test("30-1: Design Page runtime prompt uses compose contract for field preservation without duplicate PEL orientation", () => {
   const resolved = resolveBrief(MARX_SELF_STUDY_BRIEF);
   const prompt = applyRuntimePrompt(
     "Assemble learner page.\n",
@@ -258,7 +258,7 @@ test("30-1: Design Page runtime prompt includes PEL orientation and field preser
     "step_design_page",
     "Design Page"
   );
-  assert.match(prompt, PEL_ORIENTATION_MARKER);
+  assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
   assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
   assert.match(prompt, /Activity field preservation/i);
   assert.match(prompt, /study_orientation, intellectual_frame, intellectual_coherence_bridge/);
@@ -280,7 +280,8 @@ test("30-1: facilitated workshop DLA runtime prompt excludes PEL orientation mar
 
 test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-facing material voice", () => {
   const prompt = gamScaffoldPrompt(MARX_SELF_STUDY_BRIEF);
-  assert.match(prompt, /self-directed learner-page material voice \(auto-applied\)/i);
+  assert.match(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
+  assert.match(prompt, /minimum instructional richness required by GAM-PRES-08/i);
   assert.match(prompt, /Facilitator use:/i);
   assert.match(prompt, /Teacher notes/i);
   assert.match(prompt, /Instructor guidance/i);
@@ -294,7 +295,7 @@ test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-fac
 
 test("30-1c: facilitated workshop GAM scaffold is not constrained as self-directed learner voice", () => {
   const prompt = gamScaffoldPrompt(WORKSHOP_BRIEF);
-  assert.doesNotMatch(prompt, /self-directed learner-page material voice \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /self-directed learner-page table row adequacy \(auto-applied\)/i);
 });
 

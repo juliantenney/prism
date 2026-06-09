@@ -284,25 +284,21 @@ test("Design Page pack lists visual affordance output keys", () => {
   assert.match(pack, /visual_affordance_schema_version/);
   assert.match(pack, /activities_visual_review/);
   assert.match(pack, /visual_affordances/);
-  assert.match(pack, /VISUAL AFFORDANCES \(Sprint 38/);
+  assert.match(pack, /VISUAL AFFORDANCES:/i);
 });
 
-test("Design Page promptTemplate: Sprint 38 contract and mandatory root keys", () => {
+test("Design Page promptTemplate: Sprint 38 runtime reference and mandatory root keys", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const template = String(factory.promptTemplate || "");
-  assert.match(template, /VISUAL AFFORDANCES \(Sprint 38 — mandatory page root\)/i);
-  assert.match(template, /pedagogical opportunities/i);
-  assert.match(template, /hooks are not opportunities/i);
-  assert.match(template, /every visual_affordances\[\] row requires affordance_id/i);
-  assert.match(template, /generate requires visual_slot/i);
-  assert.match(template, /generate\/defer\/reject per Sprint 38/i);
-  assert.match(template, /forbid tier core\/optional labels, prose anti_spoiler/i);
+  assert.match(template, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
+  assert.match(template, /runtime Sprint 38 visual affordance contract/i);
+  assert.doesNotMatch(template, /hooks are not opportunities/i);
   assert.match(template, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
   assert.match(template, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
   assert.match(template, /visual_affordances \(required array; emit \[\] when no decisions/i);
 });
 
-test("Design Page seeded prompt includes Sprint 38 contract", () => {
+test("Design Page seeded prompt includes Sprint 38 runtime reference and output keys", () => {
   const api = loadPrismTestApi();
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const prompt = api.buildSeededStepPromptForWorkflowStep({
@@ -320,7 +316,7 @@ test("Design Page seeded prompt includes Sprint 38 contract", () => {
     },
     matchedPattern: { promptFactory: factory }
   });
-  assert.match(prompt, /VISUAL AFFORDANCES \(Sprint 38 — mandatory page root\)/i);
+  assert.match(prompt, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
   assert.match(prompt, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
   assert.match(prompt, /visual_affordances \(required array; emit \[\] when no decisions/i);
 });

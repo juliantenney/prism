@@ -1,0 +1,77 @@
+{
+  "phase": "39S-STEP-1",
+  "measuredAt": "2026-06-09T08:07:20.885Z",
+  "sprint": "39",
+  "authority": "sprint-39-handover-pack.md",
+  "scenario": "inflation_self_directed",
+  "pack": {
+    "promptTemplateChars": 13189,
+    "defaultPromptNotesChars": 794,
+    "packCombinedChars": 13983
+  },
+  "workflow": {
+    "seededChars": 12914,
+    "augmentedChars": 30613,
+    "runtimeDeltaChars": 17699,
+    "runtimeDeltaPctOfAugmented": 57.8
+  },
+  "augmentationLayers": [
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 14512,
+      "cumulativeChars": 27426
+    },
+    {
+      "id": "ld_table_fidelity",
+      "deltaChars": 1967,
+      "cumulativeChars": 29393
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 30613
+    }
+  ],
+  "topRuntimeContributors": [
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 14512,
+      "cumulativeChars": 27426
+    },
+    {
+      "id": "ld_table_fidelity",
+      "deltaChars": 1967,
+      "cumulativeChars": 29393
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 30613
+    }
+  ],
+  "autoAppliedBlockTitles": [
+    "Self-directed learner-page material shape (auto-applied)",
+    "Self-directed learner-page activity framing (auto-applied)",
+    "Self-directed timeline sequencing alignment (auto-applied)",
+    "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+    "LD-TABLE-FIDELITY (auto-applied)",
+    "LD-MATH-RENDER (auto-applied)"
+  ],
+  "standaloneBlockSizes": {
+    "ld_table_fidelity_author": 2693,
+    "ld_table_fidelity_spec": 1967,
+    "ld_materials_copy_author": 1259,
+    "ld_materials_copy_preserve": 3238,
+    "ld_self_directed_rhetoric_dla": 3534,
+    "gam_self_study_materials": 3530,
+    "pel_orientation": 965,
+    "pel_reasoning": 618,
+    "ld_math_render": 1220
+  },
+  "pecContractIds": [],
+  "comparison38S": {
+    "packCombinedAfterFinalSanitisation": 13983,
+    "augmentedProbe38S": 42190,
+    "runtimeDeltaProbe38S": 17699
+  }
+}

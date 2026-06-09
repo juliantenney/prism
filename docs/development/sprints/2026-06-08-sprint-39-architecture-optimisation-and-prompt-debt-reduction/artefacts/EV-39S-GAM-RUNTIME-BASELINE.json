@@ -1,0 +1,67 @@
+{
+  "phase": "39S-STEP-1",
+  "measuredAt": "2026-06-09T08:07:20.885Z",
+  "sprint": "39",
+  "authority": "sprint-39-handover-pack.md",
+  "scenario": "inflation_self_directed",
+  "pack": {
+    "promptTemplateChars": 15241,
+    "defaultPromptNotesChars": 471,
+    "packCombinedChars": 15712
+  },
+  "workflow": {
+    "seededChars": 15145,
+    "augmentedChars": 27542,
+    "runtimeDeltaChars": 12397,
+    "runtimeDeltaPctOfAugmented": 45
+  },
+  "augmentationLayers": [
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 11177,
+      "cumulativeChars": 26322
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 27542
+    }
+  ],
+  "topRuntimeContributors": [
+    {
+      "id": "self_directed_scaffolds",
+      "deltaChars": 11177,
+      "cumulativeChars": 26322
+    },
+    {
+      "id": "math_render",
+      "deltaChars": 1220,
+      "cumulativeChars": 27542
+    }
+  ],
+  "autoAppliedBlockTitles": [
+    "LD-TABLE-FIDELITY (auto-applied)",
+    "Self-directed learner-page self-study materials (auto-applied)",
+    "LD-SELF-DIRECTED-RHETORIC (auto-applied)",
+    "LD-MATH-RENDER (auto-applied)"
+  ],
+  "standaloneBlockSizes": {
+    "ld_table_fidelity_author": 2693,
+    "ld_table_fidelity_spec": 1967,
+    "ld_materials_copy_author": 1259,
+    "ld_materials_copy_preserve": 3238,
+    "ld_self_directed_rhetoric_gam": 3534,
+    "gam_self_study_materials": 3530,
+    "gam_learner_voice": 1406,
+    "gam_pel_reasoning_materials": 2261,
+    "pel_orientation": 965,
+    "pel_reasoning": 618,
+    "ld_math_render": 1220
+  },
+  "pecContractIds": [],
+  "comparison38S": {
+    "packCombinedAfterWaveA": 15712,
+    "augmentedRange38S": "32692-35349",
+    "runtimeDeltaRange38S": "12514-15171"
+  }
+}

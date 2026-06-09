@@ -9291,6 +9291,34 @@
     ].join("\n");
   }
 
+  /** Sprint 39 GAM Wave B — merged reading sufficiency + material voice + timeline (GAM path only). */
+  function buildSelfDirectedGamSelfStudyMaterialsPromptBlock() {
+    var readingBullets = buildSelfDirectedGamReadingSufficiencyPromptBlock()
+      .split("\n")
+      .slice(2);
+    var voiceBullets = buildSelfDirectedGamLearnerVoicePromptBlock().split("\n").slice(2);
+    var timelineBullets = buildSelfDirectedTimelineSequencingAlignmentPromptBlock()
+      .split("\n")
+      .slice(2);
+    return [
+      "",
+      "Self-directed learner-page self-study materials (auto-applied):"
+    ]
+      .concat(readingBullets)
+      .concat(voiceBullets)
+      .concat(timelineBullets)
+      .join("\n");
+  }
+
+  function gamSelfStudyMaterialsMarkerPresent(draftBody) {
+    return (
+      /self-directed learner-page self-study materials \(auto-applied\)/i.test(draftBody) ||
+      /self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody) ||
+      /self-directed learner-page material voice \(auto-applied\)/i.test(draftBody) ||
+      /self-directed timeline sequencing alignment \(auto-applied\)/i.test(draftBody)
+    );
+  }
+
   function buildSprint38PedagogicalAddedValuePromptLines() {
     var pv =
       typeof PRISM_SPRINT38_REPRESENTATION_PEDAGOGICAL_VALUE !== "undefined"
@@ -9374,20 +9402,6 @@
     return (draftBody + buildSprint38VisualAffordanceDesignPagePromptBlock()).trim();
   }
 
-  function buildSelfDirectedLearnerPageDesignPageFieldPreservationBlock() {
-    return [
-      "",
-      "Self-directed page activity field preservation (auto-applied):",
-      "- When composing learning_activities.content from upstream learning_activities, copy these fields verbatim onto each matching activity_id when present upstream:",
-      "  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge",
-      "- Do not rely on purpose alone for orientation; activity_preamble is the orienting preamble shown before learner_task.",
-      "- Preserve study_orientation, intellectual_frame, intellectual_coherence_bridge, and PEL reasoning fields when present upstream — do not summarise them away.",
-      "- learner_task (or learner_instructions when that is the upstream key) remains the actionable instruction block — preserve both when present.",
-      "- expected_output and support_note (or support_notes) must copy verbatim when present upstream — do not merge into materials or drop.",
-      "- Do not strip or summarise away cognition-orientation fields."
-    ].join("\n");
-  }
-
   function isWorkflowStepDesignPage(context) {
     var title = String(
       (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
@@ -9427,17 +9441,18 @@
     return [
       "",
       "Self-directed learner-page reasoning materials (auto-applied):",
-      "- Materials must support the DLA reasoning fields — learner-facing only (see material voice guard).",
-      "- When required_materials specifies worked_example, sample_output, or a modelled template row, realise it with visible reasoning (why each step) — not answer-only cells.",
+      "- Materials must support DLA reasoning fields — learner-facing only (see self-study material voice in self-study materials block).",
+      "- When required_materials specifies worked_example, sample_output, or a modelled template row, realise with visible reasoning (why each step) — not answer-only cells.",
       "- When required_materials specifies a faded template/table, pre-fill only the rows/cells named in the specification; leave all other response cells empty.",
-      "- Include one short worked micro-example where a task uses tables, mapping, or multi-step analysis (labelled sample row or worked cause→effect pair) — topic-specific, not generic.",
+      "- When DLA lists worked_thinking or a worked analytic pass, model one full GAM-PRES-08 (A1) walkthrough (≥120 words) with visible expert reasoning — not a labelled sample row only.",
       "- For source-based activities: provide quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
       "- Optional static generative retrieval in material body: \"Before you re-read…\" or \"Without looking back, write…\" — not adaptive or branching.",
-      "- Do not repeat learner_task, activity_preamble, study_orientation, reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, or disciplinary_lens sentences in material bodies — those appear on the activity card; realise them as tables, spans, and short worked examples only.",
+      "- Do not repeat learner_task, activity_preamble, study_orientation, reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, or disciplinary_lens sentences in material bodies — those appear on the activity card; realise them as tables, spans, and GAM-PRES-08-depth bodies.",
       "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in a narrative block and a table.",
-      "- When required_materials specifies prompt_set self-check or misconception-interrupt bullets, realise them as learner-facing bullets — concise \"if X, revisit Y\" cues, not full tutoring.",
-      "- When required_materials specifies step → meaning pairs, Use this when cues, or concept/procedure integration, realise them as labelled bullets or table column hints in template/checklist/worked_example — one short meaning line per procedural move.",
-      "- When required_materials specifies closure, debrief, or evaluative-judgement prompts, realise them as ### Closure or ### Debrief bullet lists (2–3 items) — concise judgement/transfer questions, not diary prompts."
+      "- When required_materials specifies prompt_set self-check or misconception-interrupt bullets, realise as learner-facing bullets with explicit repair-if-fail cues per GAM-PRES-08 (V1) — verification checklist ≥4 criteria-linked items when DLA lists verification.",
+      "- When required_materials specifies step → meaning pairs, Use this when cues, or concept/procedure integration, realise them as labelled bullets or table column hints in template/checklist/worked_example.",
+      "- When required_materials specifies closure, debrief, or evaluative-judgement prompts, realise per GAM-PRES-08 (T1)/(E1): transfer_prompt and closure materials ≥80 words substantive judgement — not minimal bullet stubs.",
+      "- Anti-redundancy must never reduce material bodies below GAM-PRES-08 minima; activity-row cognition fields orient — materials must still carry usable depth."
     ].join("\n");
   }
 
@@ -9873,23 +9888,24 @@
     if (!isDla && !isDesignPage && !isGam) return draftBody;
     if (
       contractIds.indexOf(SPRINT_30_PEC_ORIENTATION_CONTRACT_ID) !== -1 &&
-      (isDla || isDesignPage) &&
+      isDla &&
       !/pedagogic enrichment — orientation contract \(auto-applied\)/i.test(draftBody)
     ) {
       draftBody = (draftBody + buildPelOrientationContractPromptBlock()).trim();
     }
     if (
       contractIds.indexOf(SPRINT_30_PEC_REASONING_CONTRACT_ID) !== -1 &&
-      (isDla || isGam) &&
+      isDla &&
       !/pedagogic enrichment — reasoning contract \(auto-applied\)/i.test(draftBody)
     ) {
       draftBody = (draftBody + buildPelReasoningContractPromptBlock()).trim();
-      if (
-        isGam &&
-        !/self-directed learner-page reasoning materials \(auto-applied\)/i.test(draftBody)
-      ) {
-        draftBody = (draftBody + buildSelfDirectedGamPelReasoningMaterialPromptBlock()).trim();
-      }
+    }
+    if (
+      contractIds.indexOf(SPRINT_30_PEC_REASONING_CONTRACT_ID) !== -1 &&
+      isGam &&
+      !/self-directed learner-page reasoning materials \(auto-applied\)/i.test(draftBody)
+    ) {
+      draftBody = (draftBody + buildSelfDirectedGamPelReasoningMaterialPromptBlock()).trim();
     }
     return draftBody;
   }
@@ -9944,8 +9960,8 @@
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
-    draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
+    draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
     draft = applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
@@ -10032,14 +10048,8 @@
     if (isGam && applyGamScaffolds) {
       draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
       draftBody = applyLdMaterialsCopyContractToDraft(draftBody, context);
-      if (!/self-directed learner-page reading sufficiency \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (draftBody + buildSelfDirectedGamReadingSufficiencyPromptBlock()).trim();
-      }
-      if (!/self-directed learner-page material voice \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (draftBody + buildSelfDirectedGamLearnerVoicePromptBlock()).trim();
-      }
-      if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
+      if (!gamSelfStudyMaterialsMarkerPresent(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedGamSelfStudyMaterialsPromptBlock()).trim();
       }
     }
     if (applyLearnerActionRhetoric) {
@@ -37545,6 +37555,10 @@
       applyPedagogicEnrichmentContractScaffoldToDraft;
     prismTestApi.buildSelfDirectedGamLearnerVoicePromptBlock =
       buildSelfDirectedGamLearnerVoicePromptBlock;
+    prismTestApi.buildSelfDirectedGamSelfStudyMaterialsPromptBlock =
+      buildSelfDirectedGamSelfStudyMaterialsPromptBlock;
+    prismTestApi.buildSelfDirectedGamReadingSufficiencyPromptBlock =
+      buildSelfDirectedGamReadingSufficiencyPromptBlock;
     prismTestApi.shouldSanitizeSelfDirectedGamMaterialsOutput =
       shouldSanitizeSelfDirectedGamMaterialsOutput;
     prismTestApi.sanitizeSelfDirectedGamMaterialsOutput =

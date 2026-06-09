@@ -314,6 +314,16 @@ test("Design Page learner page_profile does not bias materials summarisation", (
   assert.match(learner.promptInstruction, /never summary-only or placeholder-only materials/i);
 });
 
+test("Design Page runtime augmentation orders compose contract before Sprint 38 visual affordance", () => {
+  const api = loadPrismTestApi();
+  const augmented = designPageAugmentedPrompt(api);
+  const composeIdx = augmented.search(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  const vaIdx = augmented.search(/sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.ok(composeIdx >= 0, "compose contract must be present");
+  assert.ok(vaIdx >= 0, "Sprint 38 VA contract must be present");
+  assert.ok(composeIdx < vaIdx, "compose contract must precede visual affordance block");
+});
+
 test("Design Page runtime augmentation includes compose contract with L4 preserve embed", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);

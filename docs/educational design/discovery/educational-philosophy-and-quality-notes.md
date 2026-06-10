@@ -550,6 +550,299 @@ Practice should expose learners to sufficient variation for capabilities to beco
 
 \---
 
+# Key Insight 13: Understanding Develops Through Conceptual Networks
+
+Understanding is not simply the accumulation of information.
+
+Learners develop increasingly rich conceptual networks that connect ideas, experiences, explanations and perspectives.
+
+New learning does not exist in isolation. It becomes integrated into existing understanding.
+
+Learning therefore involves:
+
+* Building connections
+* Refining relationships
+* Extending explanatory power
+* Increasing predictive power
+* Integrating new ideas with existing understanding
+
+Different learners may construct different understandings because they begin with different experiences and conceptual networks.
+
+Understanding is therefore personal but not arbitrary.
+
+---
+
+# Key Insight 14: Learning Requires Visible Thinking
+
+Learning is strengthened when thinking becomes visible.
+
+Visible thinking allows learners to:
+
+* Inspect understanding
+* Identify assumptions
+* Compare perspectives
+* Refine reasoning
+* Validate conclusions
+
+Activities that promote visible thinking include:
+
+* Explanation
+* Comparison
+* Critique
+* Evaluation
+* Reflection
+* Creation
+* Application
+
+This insight provides a useful explanation for why content exposure alone often produces limited educational value.
+
+Learning occurs through cognitive activity rather than content consumption.
+
+---
+
+# Key Insight 15: Articulation Supports Learning
+
+Learners often develop understanding by expressing it.
+
+The act of articulation makes implicit thinking visible and available for inspection and refinement.
+
+Articulation may occur through:
+
+* Writing
+* Speaking
+* Explaining
+* Diagramming
+* Teaching
+* Argumentation
+
+Importantly, articulation may be educationally valuable even when no external feedback is provided.
+
+Learners frequently discover gaps, contradictions and uncertainties through the act of expression itself.
+
+---
+
+# Key Insight 16: Reflection Develops Self-Regulation
+
+Reflection is more than thinking about a topic.
+
+Reflection involves deliberate evaluation of understanding, assumptions, decisions or performance.
+
+Effective reflection often requires prompts that encourage learners to:
+
+* Examine assumptions
+* Consider alternatives
+* Evaluate reasoning
+* Revisit decisions
+* Identify changes in understanding
+
+Reflection appears to develop from:
+
+Guided Reflection
+
+↓
+
+Independent Reflection
+
+As capability develops.
+
+Reflection therefore contributes to:
+
+* Metacognition
+* Self-regulation
+* Independence
+* Evaluative judgement
+
+---
+
+# Key Insight 17: Learning Internalises Cognitive Processes
+
+Many important educational processes begin as external supports.
+
+Examples include:
+
+* Reflection prompts
+* Evaluation criteria
+* Feedback structures
+* Comparison frameworks
+* Challenge mechanisms
+
+High-quality learning journeys progressively help learners internalise these processes.
+
+The desired outcome is not simply task completion but increasing ownership of:
+
+* Judgement
+* Evaluation
+* Reflection
+* Learning
+
+A useful pattern is:
+
+External Process
+
+↓
+
+Guided Process
+
+↓
+
+Internal Process
+
+This provides one explanation for the development of learner independence.
+
+---
+
+# Key Insight 18: Challenge Reveals Limits of Current Understanding
+
+Challenge is not synonymous with difficulty.
+
+Educationally productive challenge helps learners recognise limitations in current understanding.
+
+Challenge may emerge through:
+
+* Contradictions
+* Alternative perspectives
+* Comparison
+* Evaluation
+* Application
+* Articulation
+
+The purpose of challenge is not to expose failure but to create opportunities for refinement and development.
+
+A useful formulation emerging from the discussion was:
+
+> Uncertainty is the explicit acknowledgement of the opportunity to learn.
+
+Challenge activates learning when it helps learners recognise that current understanding may be incomplete, challengeable or extendable.
+
+---
+
+# Key Insight 19: Learning May Involve Refinement or Reconstruction
+
+Two distinct forms of learning emerged from the discussion.
+
+## Refinement
+
+Existing understanding becomes:
+
+* Richer
+* More connected
+* More nuanced
+* More precise
+
+The underlying conceptual model remains broadly intact.
+
+## Reconstruction
+
+Existing understanding is reorganised.
+
+Learners may:
+
+* Change assumptions
+* Reinterpret concepts
+* Adopt new perspectives
+* Reconstruct mental models
+
+Both refinement and reconstruction are valuable educational outcomes.
+
+---
+
+# Key Insight 20: Transformative Learning May Be Emergent
+
+Transformative changes in understanding may not be attributable to individual activities.
+
+Instead, transformation may emerge through the accumulated effect of multiple refinements across a learning journey.
+
+For example:
+
+Refinement of A
+
++
+
+Refinement of B
+
++
+
+Refinement of C
+
+↓
+
+Transformation of X
+
+This observation reinforces the importance of the learning journey as the primary design unit.
+
+Transformative learning may therefore be an emergent property of coherent learning journeys rather than a direct outcome of individual activities.
+
+---
+
+# Key Insight 21: PRISM Operates Within a Wider Educational Context
+
+PRISM typically generates bounded learning resources and learning journeys.
+
+It does not possess complete visibility of:
+
+* Programme context
+* Prior educational experiences
+* Wider disciplinary development
+* Learner conceptual networks
+
+Consequently, PRISM should be understood as contributing to capability development rather than controlling it.
+
+The educational designer remains important.
+
+A key role of the designer is reviewing outputs, identifying inappropriate assumptions and refining the framing of the generation process.
+
+Educational expertise is often easier to recognise than to specify.
+
+A practical workflow is therefore:
+
+Generate
+
+↓
+
+Evaluate
+
+↓
+
+Refine Brief
+
+↓
+
+Regenerate
+
+This reinforces the principle that:
+
+> PRISM amplifies instructional design expertise rather than replacing it.
+
+---
+
+# Key Insight 22: Learners Can Recognise Conceptual Change
+
+While instructional systems cannot directly observe conceptual change, learners can often identify shifts in their own understanding.
+
+Useful prompts include:
+
+* What surprised you?
+* What challenged your assumptions?
+* What changed your mind?
+* What do you see differently now?
+
+These questions help learners identify:
+
+* Conceptual refinement
+* Conceptual reconstruction
+* Emerging uncertainty
+* New questions
+
+Such prompts support:
+
+* Reflection
+* Metacognition
+* Evaluative judgement
+* Self-regulation
+
+Surprise is therefore not necessarily a learning objective, but may be a useful indicator that understanding is changing.
+
+---
 
 
 \# Emerging View of Educational Quality
@@ -638,33 +931,23 @@ PRISM is reasoning about capability development across an entire learning journe
 
 
 
-\# Open Questions for Future Sessions
+# Open Questions for Future Sessions
 
+1. What role does authenticity play in educational quality?
 
+2. How should educational quality be evaluated at journey level?
 
-1\. What role does reflection play in capability development?
+3. What are the formal North Star principles that emerge from these discoveries?
 
+4. How should these principles be operationalised within PRISM?
 
+5. What is the relationship between authenticity, transfer and future learning?
 
-2\. What role does authenticity play in educational quality?
+6. How should challenge be sequenced across a learning journey?
 
+7. How should PRISM reason about educational quality when wider programme context is unknown?
 
-
-3\. How should educational quality be evaluated at journey level?
-
-
-
-4\. What are the formal North Star principles that emerge from these discoveries?
-
-
-
-5\. How should these principles be operationalised within PRISM?
-
-
-
-\---
-
-
+---
 
 \# Working Conclusion
 
@@ -679,6 +962,9 @@ The most significant conclusion from this session is:
 
 
 PRISM should therefore optimise for coherent capability-building journeys in which activities, scaffolding, feedback, practice and reflection all contribute to progressive learner transformation.
+
+
+---
 
 
 

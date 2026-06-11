@@ -211,20 +211,9 @@ test("30-1: RNA transcript self-study resolves orientation_contract (source cont
   assert.deepEqual(ids, ["orientation_contract", "reasoning_contract"]);
 });
 
-test("41-5: workshop with learner handout resolves PEC contracts", () => {
-  const resolved = resolveBrief(WORKSHOP_BRIEF);
-  const ctx = buildStepContext(
-    WORKSHOP_BRIEF,
-    resolved,
-    "step_design_learning_activities",
-    "Design Learning Activities"
-  );
-  const ids = [...api.resolvePedagogicEnrichmentContractIds(ctx)];
-  assert.deepEqual(ids, ["orientation_contract", "reasoning_contract"]);
-});
-
-test("30-1: facilitator-only workshop, seminar, and peer briefs resolve no PEC contracts", () => {
+test("30-1: facilitated workshop, seminar, and peer briefs resolve no PEC contracts", () => {
   const cases = [
+    { label: "workshop with small group discussion", brief: WORKSHOP_BRIEF },
     { label: "facilitated F2F workshop", brief: FACILITATED_WORKSHOP_BRIEF },
     { label: "peer instruction seminar", brief: PEER_SEMINAR_BRIEF }
   ];
@@ -254,10 +243,10 @@ test("30-1: DLA runtime prompt includes PEL orientation block and field names", 
   assert.match(prompt, /\bstudy_orientation\b/);
   assert.match(prompt, /\bintellectual_frame\b/);
   assert.match(prompt, /\bintellectual_coherence_bridge\b/);
-  assert.match(prompt, /output contract \(learner-facing page/i);
+  assert.match(prompt, /output contract \(self-directed learner page/i);
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
 });
 
 test("30-1: Design Page runtime prompt uses compose contract for field preservation without duplicate PEL orientation", () => {
@@ -276,7 +265,7 @@ test("30-1: Design Page runtime prompt uses compose contract for field preservat
   assert.match(prompt, /intellectual_coherence_bridge/i);
 });
 
-test("41-5: workshop learner handout DLA runtime prompt includes PEL orientation and learner-facing output contract", () => {
+test("30-1: facilitated workshop DLA runtime prompt excludes PEL orientation marker", () => {
   const resolved = resolveBrief(WORKSHOP_BRIEF);
   const prompt = applyRuntimePrompt(
     "Design executable learning activities.\n",
@@ -285,24 +274,8 @@ test("41-5: workshop learner handout DLA runtime prompt includes PEL orientation
     "step_design_learning_activities",
     "Design Learning Activities"
   );
-  assert.match(prompt, PEL_ORIENTATION_MARKER);
-  assert.match(prompt, /output contract \(learner-facing page/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
-  assert.match(prompt, /facilitator_moves: optional when the brief requires facilitated choreography/i);
-  assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
-});
-
-test("30-1: facilitator-only workshop DLA runtime prompt excludes PEL orientation marker", () => {
-  const resolved = resolveBrief(FACILITATED_WORKSHOP_BRIEF);
-  const prompt = applyRuntimePrompt(
-    "Design executable learning activities.\n",
-    FACILITATED_WORKSHOP_BRIEF,
-    resolved,
-    "step_design_learning_activities",
-    "Design Learning Activities"
-  );
   assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
-  assert.doesNotMatch(prompt, /output contract \(learner-facing page/i);
+  assert.doesNotMatch(prompt, /output contract \(self-directed learner page/i);
 });
 
 test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-facing material voice", () => {

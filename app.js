@@ -7129,9 +7129,53 @@
       bits.push(String(sessionMats));
     }
     var blob = bits.join(" ").toLowerCase();
-    return /\b(page|learner page|student page|content page|readable page|learner-facing page)\b/.test(
+    return /\b(page|learner page|student page|content page|readable page|learner-facing page|learner handout|participant handout|handout page|learner pack|learner-facing handout)\b/.test(
       blob
     );
+  }
+
+  var LEARNER_FACING_PAGE_OUTPUT_RE =
+    /\b(page|learner page|student page|content page|readable page|learner-facing page|learner handout|participant handout|handout page|learner pack|learner-facing handout)\b/i;
+
+  function learnerFacingPagePrimaryOutputBlob(context, base) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var b = base && typeof base === "object" ? base : {};
+    return [
+      ctx.workflowGoal,
+      ctx.desiredOutputs,
+      b.goal,
+      b.desiredOutputs
+    ]
+      .map(function (x) {
+        return String(x || "");
+      })
+      .join(" ")
+      .toLowerCase();
+  }
+
+  function hasExplicitLearnerFacingPageOutputIntent(context, base) {
+    return LEARNER_FACING_PAGE_OUTPUT_RE.test(learnerFacingPagePrimaryOutputBlob(context, base));
+  }
+
+  function isFacilitatorPrimaryOutputWorkflow(context, base) {
+    var blob = learnerFacingPagePrimaryOutputBlob(context, base);
+    if (hasExplicitLearnerFacingPageOutputIntent(context, base)) return false;
+    return (
+      /\b(facilitator guide|teaching guide|tutor guide|instructor guide|runbook|slide deck|slides)\b/.test(
+        blob
+      ) || /\b(facilitator[- ]facing only|facilitator only)\b/.test(blob)
+    );
+  }
+
+  function shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base) {
+    if (!hasExplicitLearnerFacingPageOutputIntent(context, base)) return false;
+    if (isFacilitatorPrimaryOutputWorkflow(context, base)) return false;
+    return isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base);
+  }
+
+  function isFacilitatedLearnerPageFramingContext(context, resolved, base) {
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) return false;
+    return !isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base);
   }
 
   function shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) {
@@ -7405,6 +7449,23 @@
     "intellectual_coherence_bridge"
   ];
 
+  var LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS =
+    SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS.concat([
+      "support_note",
+      "support_notes",
+      "expected_output"
+    ]);
+
+  var LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS = [
+    "reasoning_orientation",
+    "reasoning_orientation_prompt",
+    "self_explanation_prompt",
+    "conceptual_contrast_prompt",
+    "uncertainty_tension_prompt",
+    "argument_structure_hint",
+    "transfer_or_application_task"
+  ];
+
   /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
   function buildSelfDirectedLearnerActionRhetoricPromptBlock() {
     return buildLdSelfDirectedRhetoricPromptBlock();
@@ -7455,26 +7516,44 @@
     return buildLdSelfDirectedRhetoricPromptBlock();
   }
 
-    function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
+  function buildLearnerPageActivityFramingArchetypePromptBlock() {
     return [
       "",
-      "Self-directed learner-page activity framing (auto-applied):",
-      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise) — depth_floor L3 orientation with explanatory reasoning, not minimal filler.",
-      "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
-      "- Use cognition-oriented orientation fields selectively (not on every activity): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, uncertainty_tension_prompt, transfer_or_application_task, scaffold_hint_sequence (2–3 substantive hints with reasoning cues).",
-      "- Coverage minimum for a multi-activity page: every activity MUST have activity_preamble; at least half of activities should include one cognition-orientation field beyond the preamble.",
-      "- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; do not add facilitator_moves prose or tutoring narration.",
-      "- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble."
+      "Learner-page activity framing by archetype (mandatory minimum — every activity):",
+      "- Every activity MUST include activity_preamble (why it matters, capability developed, link to the wider learning journey) AND at least one cognition-orientation field from OUTPUT CONTRACT.",
+      "- Understanding activities: activity_preamble + self_explanation_prompt and/or reasoning_orientation.",
+      "- Application activities: activity_preamble + reasoning_orientation + transfer_or_application_task when the beat is application.",
+      "- Analysis activities: activity_preamble + conceptual_contrast_prompt and/or reasoning_orientation.",
+      "- Evaluation activities: activity_preamble + uncertainty_tension_prompt and/or argument_structure_hint.",
+      "- Final synthesis/judgement activities: activity_preamble + transfer_or_application_task + consolidation or learning-success framing where the beat requires closure.",
+      "- Choose the cognition field(s) that match the episode_plan beat / primary_archetype — do not emit procedural-only rows (title, learner_task, expected_output, required_materials only)."
     ].join("\n");
   }
 
-  function buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock() {
+  function buildSelfDirectedLearnerPageActivityFramingPromptBlock() {
     return [
       "",
-      "OUTPUT CONTRACT (self-directed learner page — overrides the activity field list above):",
-      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences with explanatory reasoning).",
+      "Learner-page activity framing (auto-applied):",
+      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise) — depth_floor L3 orientation with explanatory reasoning, not minimal filler.",
+      "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
+      "- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).",
+      "- Page-level additive fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, prior_knowledge_activation, scaffold_hint_sequence) follow OUTPUT CONTRACT — they do not replace the per-activity minimum.",
+      "- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; put facilitator timing, group choreography, and session orchestration in facilitator_moves or facilitator-only materials — not in activity_preamble, study_orientation, intellectual_frame, or reasoning_orientation.",
+      "- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble.",
+      buildLearnerPageActivityFramingArchetypePromptBlock()
+    ].join("\n");
+  }
+
+  function buildLearnerPageDlaOutputContractOverrideBlock(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var facilitated = !!opts.facilitated;
+    var lines = [
+      "",
+      "OUTPUT CONTRACT (learner-facing page — overrides the activity field list above):",
+      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences: why the activity matters, what capability is developed, how it connects to the wider learning journey).",
+      "- Each activity object MUST include at least one cognition-orientation field (non-empty): reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task — match the beat archetype (see Learner-page activity framing by archetype).",
       "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
-      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this self-study page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
+      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
       "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).",
       "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence: carried reasoning move or distinction from the prior step + what escalates (see Intellectual progression signalling); do not repeat the activity title or use location-only transitions.",
       "- self_explanation_prompt: at least two activities; one generative-retrieval prompt each requiring explanatory reasoning in the learner's own words (depth_floor L3 — e.g. explain and justify before checking; not a label or single token).",
@@ -7487,11 +7566,28 @@
       "- disciplinary_lens: optional once per page — tag-like lens label naming the discipline mode (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
       "- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.",
       "- transfer_or_application_task: on the culminating or transfer-phase activity when the page supports application (2+ activities or phased single activity) — one sentence: named move + changed context; may add one clause on where the move fails or an assumption breaks — not generic real-world application.",
-      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 substantive hint strings with procedural or reasoning guidance).",
-      "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
-      "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief.",
-      "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above."
-    ].join("\n");
+      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 substantive hint strings with procedural or reasoning guidance)."
+    ];
+    if (facilitated) {
+      lines.push(
+        "- facilitator_moves: optional when the brief requires facilitated choreography — keep timing, group structure, and orchestration here, not in learner-facing orientation fields.",
+        "- failure_mode: optional when debrief or facilitator reveal timing is specified."
+      );
+    } else {
+      lines.push(
+        "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
+        "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief."
+      );
+    }
+    lines.push(
+      "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above.",
+      "- Do not emit learner-page activities with only title, learner_task, expected_output, and required_materials — every activity needs activity_preamble and at least one cognition-orientation field."
+    );
+    return lines.join("\n");
+  }
+
+  function buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock() {
+    return buildLearnerPageDlaOutputContractOverrideBlock({ facilitated: false });
   }
 
   function buildSelfDirectedLearnerPageDlaOutputContractExampleBlock() {
@@ -7522,8 +7618,11 @@
   function augmentSelfDirectedDlaDraftOutputSection(draftBody) {
     var body = String(draftBody || "");
     var pointer =
-      "- For self-directed learner-page workflows, each activity MUST also include activity_preamble and may include cognition-orientation fields per OUTPUT CONTRACT below.\n";
-    if (/activity_preamble and may include cognition-orientation fields per output contract/i.test(body)) {
+      "- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT below.\n";
+    if (
+      /activity_preamble and at least one cognition-orientation field per output contract/i.test(body) ||
+      /activity_preamble and may include cognition-orientation fields per output contract/i.test(body)
+    ) {
       return body;
     }
     var outputMatch = body.match(/\nOutput:\s*\n/i);
@@ -7531,9 +7630,9 @@
       var idx = outputMatch.index + outputMatch[0].length;
       return body.slice(0, idx) + pointer + body.slice(idx);
     }
-    if (/output contract \(self-directed learner page/i.test(body)) {
+    if (/output contract \(learner-facing page/i.test(body)) {
       return body.replace(
-        /(OUTPUT CONTRACT \(self-directed learner page[^\n]*\n)/i,
+        /(OUTPUT CONTRACT \(learner-facing page[^\n]*\n)/i,
         "$1" + pointer
       );
     }
@@ -9030,6 +9129,83 @@
     return root && root.PRISM_LD_DESIGN_PAGE_COMPOSE ? root.PRISM_LD_DESIGN_PAGE_COMPOSE : null;
   }
 
+  function resolveEducationalQualityFrameworkLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK &&
+      typeof globalThis.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK
+        .applyEducationalQualityFrameworkPromptBlockToDraft === "function"
+    ) {
+      return globalThis.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK
+      ? root.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK
+      : null;
+  }
+
+  function bootstrapEducationalQualityFrameworkInlineIfMissing() {
+    if (resolveEducationalQualityFrameworkLib()) return;
+    var root = ldTableFidelityGlobalRoot();
+    if (!root) return;
+    var MARKER = "EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied)";
+    var TARGET = {
+      step_construct_learning_sequence: true,
+      step_design_learning_activities: true,
+      step_generate_activity_materials: true,
+      step_design_page: true,
+      step_design_assessment: true,
+      step_generate_assessment_items: true,
+      step_design_feedback: true
+    };
+    function isTarget(context) {
+      var canonicalId = String((context && context.stepCanonicalStepId) || "")
+        .toLowerCase()
+        .trim();
+      return !!TARGET[canonicalId];
+    }
+    root.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK = {
+      MODULE_ID: "EDUCATIONAL-QUALITY-FRAMEWORK",
+      MARKER: MARKER,
+      buildEducationalQualityFrameworkPromptBlock: function () {
+        return [
+          "",
+          MARKER + ":",
+          "- Learner journey: the learner journey is the primary design unit.",
+          "- Learner transformations: understanding, capability, judgement and independence.",
+          "- Judgement: compare, evaluate, justify, critique and defend.",
+          "- Progressive independence: observe / modelled support → guided practice → supported decision making → independent decision making → transfer.",
+          "- Metacognition: lightweight confidence, uncertainty, progress, decision and next-step checks.",
+          "- Learning success: visible progress — what learners understand, can do, can judge, and can manage independently.",
+          "- Cognitive over interface activity: optimise for cognitive activity, not more interface activity."
+        ].join("\n");
+      },
+      applyEducationalQualityFrameworkPromptBlockToDraft: function (draft, context) {
+        var body = String(draft || "").trim();
+        if (!body || !isTarget(context)) return body;
+        if (/EDUCATIONAL-QUALITY-FRAMEWORK \(auto-applied\)/i.test(body)) return body;
+        return (
+          body + root.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK.buildEducationalQualityFrameworkPromptBlock()
+        ).trim();
+      }
+    };
+    if (typeof window !== "undefined") {
+      window.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK = root.PRISM_EDUCATIONAL_QUALITY_FRAMEWORK;
+    }
+  }
+
+  function applyEducationalQualityFrameworkPromptBlockToDraft(draftText, context) {
+    bootstrapEducationalQualityFrameworkInlineIfMissing();
+    var lib = resolveEducationalQualityFrameworkLib();
+    if (
+      lib &&
+      typeof lib.applyEducationalQualityFrameworkPromptBlockToDraft === "function"
+    ) {
+      return lib.applyEducationalQualityFrameworkPromptBlockToDraft(draftText, context);
+    }
+    return String(draftText || "").trim();
+  }
+
   function bootstrapLdDesignPageComposeInlineIfMissing() {
     if (resolveLdDesignPageComposeLib()) return;
     var root = ldTableFidelityGlobalRoot();
@@ -9136,12 +9312,11 @@
           ""
       ).trim()
     };
-    var includeFieldPreservation =
-      shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold(
-        context,
-        resolved,
-        base
-      );
+    var includeFieldPreservation = shouldApplyLearnerPagePedagogicFramingScaffold(
+      context,
+      resolved,
+      base
+    );
     return (
       draftBody +
       buildLdDesignPageComposePromptBlock({ includeFieldPreservation: includeFieldPreservation })
@@ -9414,26 +9589,39 @@
     );
   }
 
-  function buildPelOrientationContractPromptBlock() {
-    return [
+  function buildPelOrientationContractPromptBlock(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var facilitated = !!opts.facilitated;
+    var lines = [
       "",
       "Pedagogic enrichment — orientation contract (auto-applied):",
-      "- This is independent self-study: write for a learner working alone with notebook and pencil, not for a live class or tutor-led session.",
       "- Use topic-specific orientation tied to the brief subject — never generic module welcomes.",
       "- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression.",
-      "- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (self-directed learner page) on Design Learning Activities; preserve verbatim on Design Page compose.",
-      "- Do not use facilitator choreography, session timing, or classroom framing.",
-      "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
-    ].join("\n");
+      "- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (learner-facing page) on Design Learning Activities; preserve verbatim on Design Page compose."
+    ];
+    if (facilitated) {
+      lines.push(
+        "- Learner-facing workshop handout: the resource carries pedagogy so facilitators can support learners without re-explaining the resource — write orientation learners read on the page.",
+        "- Facilitator timing, group choreography, and session orchestration belong in facilitator_moves or facilitator-only materials — not in activity_preamble, study_orientation, intellectual_frame, or reasoning_orientation.",
+        "- Explicitly avoid timing cues in learner-facing orientation fields: \"minutes 5–15\", \"circulate during\", \"by minute 20\"."
+      );
+    } else {
+      lines.push(
+        "- This is independent self-study: write for a learner working alone with notebook and pencil, not for a live class or tutor-led session.",
+        "- Do not use facilitator choreography, session timing, or classroom framing in learner-facing orientation fields.",
+        "- Explicitly avoid: \"Welcome to this module\", \"In this session\", \"In this session we will\", and timing cues such as \"minutes 5–15\" or \"by minute 20\"."
+      );
+    }
+    return lines.join("\n");
   }
 
   function buildPelReasoningContractPromptBlock() {
     return [
       "",
       "Pedagogic enrichment — reasoning contract (auto-applied):",
-      "- Make disciplinary thinking visible: cognition field semantics and coverage rules are in OUTPUT CONTRACT (self-directed learner page) when present — reasoning fields state HOW TO THINK, never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
+      "- Make disciplinary thinking visible: cognition field semantics and coverage rules are in OUTPUT CONTRACT (learner-facing page) when present — reasoning fields state HOW TO THINK, never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
       "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one reasoning cue set per activity aligned to depth_floor L3).",
-      "- Explicitly avoid: \"think critically\", \"discuss in groups\", \"share with a partner\", hollow \"analyse the topic carefully\"."
+      "- Explicitly avoid hollow filler: \"think critically\", \"discuss in groups\", \"share with a partner\", \"analyse the topic carefully\" without a concrete thinking move."
     ].join("\n");
   }
 
@@ -9868,11 +10056,7 @@
           ""
       ).trim()
     };
-    var blob = workflowBriefPedagogicTextBlob(base);
-    if (isWorkflowBriefFacilitatedDeliveryIntent(blob, resolved)) {
-      return [];
-    }
-    if (!shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base)) {
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
       return [];
     }
     return SPRINT_30_PEC_IDS.slice();
@@ -9882,6 +10066,24 @@
     var draftBody = String(draftText || "").trim();
     var contractIds = resolvePedagogicEnrichmentContractIds(context);
     if (!contractIds.length) return draftBody;
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var facilitated = isFacilitatedLearnerPageFramingContext(context, resolved, base);
     var isDla = isWorkflowStepDesignLearningActivities(context);
     var isDesignPage = isWorkflowStepDesignPage(context);
     var isGam = isWorkflowStepGenerateActivityMaterials(context);
@@ -9891,7 +10093,9 @@
       isDla &&
       !/pedagogic enrichment — orientation contract \(auto-applied\)/i.test(draftBody)
     ) {
-      draftBody = (draftBody + buildPelOrientationContractPromptBlock()).trim();
+      draftBody = (
+        draftBody + buildPelOrientationContractPromptBlock({ facilitated: facilitated })
+      ).trim();
     }
     if (
       contractIds.indexOf(SPRINT_30_PEC_REASONING_CONTRACT_ID) !== -1 &&
@@ -9956,6 +10160,7 @@
     var ctx = buildWorkflowStepPromptAugmentContextFromStep(step, wf);
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
+    draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
@@ -9991,17 +10196,19 @@
           ""
       ).trim()
     };
-    var applyDlaScaffolds = shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(
+    var applySelfDirectedDlaMaterialShape =
+      shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base);
+    var applyLearnerPageActivityFraming = shouldApplyLearnerPagePedagogicFramingScaffold(
       context,
       resolved,
       base
     );
-    var applyDesignPagePreservation =
-      shouldApplySelfDirectedLearnerPageDesignPagePreservationScaffold(
-        context,
-        resolved,
-        base
-      );
+    var facilitatedLearnerPage = isFacilitatedLearnerPageFramingContext(
+      context,
+      resolved,
+      base
+    );
+    var applyDesignPagePreservation = applyLearnerPageActivityFraming;
     var applyGamScaffolds = shouldApplySelfDirectedLearnerPageGamMaterialScaffold(
       context,
       resolved,
@@ -10011,28 +10218,36 @@
       shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) &&
       (isDla || isDesignPage || isGam || isAssessmentProducer);
     if (
-      !applyDlaScaffolds &&
+      !applySelfDirectedDlaMaterialShape &&
+      !applyLearnerPageActivityFraming &&
       !applyDesignPagePreservation &&
       !applyGamScaffolds &&
       !applyLearnerActionRhetoric
     ) {
       return draftBody;
     }
-    if (isDla && applyDlaScaffolds) {
+    if (isDla && applySelfDirectedDlaMaterialShape) {
       if (!/self-directed learner-page material shape \(auto-applied\)/i.test(draftBody)) {
         draftBody = (
           draftBody + buildSelfDirectedLearnerPageMaterialShapePromptBlock()
         ).trim();
       }
-      if (!/self-directed learner-page activity framing \(auto-applied\)/i.test(draftBody)) {
+      if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
+        draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
+      }
+    }
+    if (isDla && applyLearnerPageActivityFraming) {
+      if (!/learner-page activity framing \(auto-applied\)/i.test(draftBody)) {
         draftBody = (
           draftBody + buildSelfDirectedLearnerPageActivityFramingPromptBlock()
         ).trim();
       }
-      if (!/output contract \(self-directed learner page/i.test(draftBody)) {
+      if (!/output contract \(learner-facing page/i.test(draftBody)) {
         draftBody = (
           draftBody +
-          buildSelfDirectedLearnerPageDlaOutputContractOverrideBlock() +
+          buildLearnerPageDlaOutputContractOverrideBlock({
+            facilitated: facilitatedLearnerPage
+          }) +
           buildSelfDirectedLearnerPageDlaOutputContractExampleBlock()
         ).trim();
       } else if (!/self-directed activity json example \(authoritative shape/i.test(draftBody)) {
@@ -10041,9 +10256,6 @@
         ).trim();
       }
       draftBody = augmentSelfDirectedDlaDraftOutputSection(draftBody);
-      if (!/timeline sequencing alignment \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (draftBody + buildSelfDirectedTimelineSequencingAlignmentPromptBlock()).trim();
-      }
     }
     if (isGam && applyGamScaffolds) {
       draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
@@ -10501,7 +10713,53 @@
     };
   }
 
-  function evaluateSelfDirectedDlaActivityFramingCoverage(activities) {
+  function learnerPageActivityRowHasPreamble(row) {
+    if (!row || typeof row !== "object") return false;
+    if (pedagogicCognitionFieldHasValue(row.activity_preamble, false)) return true;
+    return (
+      pedagogicCognitionFieldHasValue(row.orienting_preamble, false) ||
+      pedagogicCognitionFieldHasValue(row.activity_framing, false)
+    );
+  }
+
+  function learnerPageActivityRowHasMandatoryCognitionField(row) {
+    if (!row || typeof row !== "object") return false;
+    var i;
+    for (i = 0; i < LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS.length; i += 1) {
+      if (
+        pedagogicCognitionFieldHasValue(
+          row[LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS[i]],
+          false
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function extractActivityRowsFromDlaCapture(parsed) {
+    if (!parsed || typeof parsed !== "object") return [];
+    if (Array.isArray(parsed.activities)) return parsed.activities.slice();
+    if (Array.isArray(parsed.content)) return parsed.content.slice();
+    if (
+      parsed.learning_activities &&
+      typeof parsed.learning_activities === "object" &&
+      Array.isArray(parsed.learning_activities.activities)
+    ) {
+      return parsed.learning_activities.activities.slice();
+    }
+    if (
+      parsed.learning_activities &&
+      typeof parsed.learning_activities === "object" &&
+      Array.isArray(parsed.learning_activities.content)
+    ) {
+      return parsed.learning_activities.content.slice();
+    }
+    return [];
+  }
+
+  function evaluateLearnerPageDlaActivityFramingCoverage(activities) {
     var rows = Array.isArray(activities) ? activities : [];
     var substantial = rows.filter(function (row) {
       return row && typeof row === "object" && !Array.isArray(row);
@@ -10511,45 +10769,115 @@
       return {
         activityCount: 0,
         preambleCount: 0,
-        cognitionCueCount: 0,
+        cognitionFieldCount: 0,
         meetsPreambleCoverage: false,
-        meetsSelectiveCognitionCoverage: false
+        meetsMandatoryCognitionCoverage: false,
+        meetsSelectiveCognitionCoverage: false,
+        meetsMandatoryFraming: false,
+        activityFailures: []
       };
     }
     var preambleCount = 0;
-    var cognitionCueCount = 0;
+    var cognitionFieldCount = 0;
+    var activityFailures = [];
     substantial.forEach(function (row) {
-      if (pedagogicCognitionFieldHasValue(row.activity_preamble, false)) preambleCount += 1;
-      else if (
-        pedagogicCognitionFieldHasValue(row.orienting_preamble, false) ||
-        pedagogicCognitionFieldHasValue(row.activity_framing, false)
-      ) {
-        preambleCount += 1;
+      var activityId =
+        row.activity_id != null
+          ? row.activity_id
+          : row.activityId != null
+          ? row.activityId
+          : row.id != null
+          ? row.id
+          : "?";
+      var hasPreamble = learnerPageActivityRowHasPreamble(row);
+      var hasCognition = learnerPageActivityRowHasMandatoryCognitionField(row);
+      if (hasPreamble) preambleCount += 1;
+      if (hasCognition) cognitionFieldCount += 1;
+      var missing = [];
+      if (!hasPreamble) missing.push("activity_preamble");
+      if (!hasCognition) missing.push("cognition_orientation_field");
+      if (missing.length) {
+        activityFailures.push({ activity_id: activityId, missing: missing });
       }
-      var hasCue = false;
-      [
-        "prior_knowledge_activation",
-        "prior_knowledge_prompt",
-        "reasoning_orientation",
-        "reasoning_orientation_prompt",
-        "self_explanation_prompt",
-        "transfer_or_application_task",
-        "uncertainty_tension_prompt"
-      ].forEach(function (fieldId) {
-        if (pedagogicCognitionFieldHasValue(row[fieldId], false)) hasCue = true;
-      });
-      if (pedagogicCognitionFieldHasValue(row.scaffold_hint_sequence, true)) hasCue = true;
-      if (hasCue) cognitionCueCount += 1;
     });
-    var minPreamble = count;
-    var minCognition = count >= 4 ? 2 : count >= 2 ? 1 : 0;
+    var meetsPreambleCoverage = preambleCount >= count;
+    var meetsMandatoryCognitionCoverage = cognitionFieldCount >= count;
+    var meetsMandatoryFraming =
+      meetsPreambleCoverage && meetsMandatoryCognitionCoverage && !activityFailures.length;
     return {
       activityCount: count,
       preambleCount: preambleCount,
-      cognitionCueCount: cognitionCueCount,
-      meetsPreambleCoverage: preambleCount >= minPreamble,
-      meetsSelectiveCognitionCoverage: cognitionCueCount >= minCognition
+      cognitionFieldCount: cognitionFieldCount,
+      cognitionCueCount: cognitionFieldCount,
+      meetsPreambleCoverage: meetsPreambleCoverage,
+      meetsMandatoryCognitionCoverage: meetsMandatoryCognitionCoverage,
+      meetsSelectiveCognitionCoverage: meetsMandatoryCognitionCoverage,
+      meetsMandatoryFraming: meetsMandatoryFraming,
+      activityFailures: activityFailures
     };
+  }
+
+  function evaluateSelfDirectedDlaActivityFramingCoverage(activities) {
+    return evaluateLearnerPageDlaActivityFramingCoverage(activities);
+  }
+
+  function shouldValidateLearnerPageDlaFramingOnCapture(stepContext, resolved, base) {
+    return shouldApplyLearnerPagePedagogicFramingScaffold(stepContext, resolved, base);
+  }
+
+  function applyLearnerPageDlaFramingValidationToCapture(raw, stepContext, stepId) {
+    if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
+      return raw;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(stepContext);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (stepContext && stepContext.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (stepContext && stepContext.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldValidateLearnerPageDlaFramingOnCapture(stepContext, resolved, base)) {
+      if (stepId && state.workflowRunLearnerPageFramingValidation) {
+        delete state.workflowRunLearnerPageFramingValidation[stepId];
+      }
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return raw;
+    var activities = extractActivityRowsFromDlaCapture(parsed);
+    if (!activities.length) return raw;
+    var coverage = evaluateLearnerPageDlaActivityFramingCoverage(activities);
+    if (stepId) {
+      state.workflowRunLearnerPageFramingValidation =
+        state.workflowRunLearnerPageFramingValidation || {};
+      if (!coverage.meetsMandatoryFraming) {
+        var lines = (coverage.activityFailures || []).map(function (failure) {
+          return (
+            String(failure.activity_id || "?") +
+            " missing " +
+            (failure.missing || []).join(", ")
+          );
+        });
+        state.workflowRunLearnerPageFramingValidation[stepId] =
+          "Learner-page framing required on every activity: " + lines.join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      } else {
+        delete state.workflowRunLearnerPageFramingValidation[stepId];
+      }
+    }
+    return raw;
   }
 
   function applyPedagogicCognitionContractScaffoldToDraft(draftText, context) {
@@ -18438,9 +18766,17 @@
     } else {
       delete state.workflowRunStrictJsonValidation[sid];
     }
-    state.workflowRunCapturedOutputs[sid] = applyEpisodePlanPopulationEnforcementToDlaCapture(
-      sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx),
-      stepRow ? buildWorkflowStepPromptAugmentContextFromStep(stepRow, wf) : gamCtx,
+    var dlaCaptureCtx = stepRow
+      ? buildWorkflowStepPromptAugmentContextFromStep(stepRow, wf)
+      : gamCtx;
+    var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+    state.workflowRunCapturedOutputs[sid] = applyLearnerPageDlaFramingValidationToCapture(
+      applyEpisodePlanPopulationEnforcementToDlaCapture(
+        sanitizedDlaCapture,
+        dlaCaptureCtx,
+        sid
+      ),
+      dlaCaptureCtx,
       sid
     );
     var outputNameInput = li.querySelector('[data-field="outputName"]');
@@ -18493,6 +18829,10 @@
         : "";
     var pageErr =
       sid && state.workflowRunPageValidation ? state.workflowRunPageValidation[sid] : "";
+    var learnerFramingErr =
+      sid && state.workflowRunLearnerPageFramingValidation
+        ? state.workflowRunLearnerPageFramingValidation[sid]
+        : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
     if (strictErr) {
@@ -18504,11 +18844,14 @@
     if (pageErr) {
       text = (text ? text + " · " : "") + pageErr;
     }
+    if (learnerFramingErr) {
+      text = (text ? text + " · " : "") + learnerFramingErr;
+    }
     statusEl.textContent = text;
     statusEl.classList.toggle("hidden", !text);
     statusEl.classList.toggle(
       "workflow-run-step-output-status--error",
-      !!(strictErr || episodePlanErr || pageErr)
+      !!(strictErr || episodePlanErr || pageErr || learnerFramingErr)
     );
   }
 
@@ -35068,7 +35411,171 @@
     return true;
   }
 
-  function mergeSelfDirectedActivityFramingFieldsIntoPageActivities(page, upstream) {
+  var UNAUTHORIZED_PAGE_OMISSION_AUTHORITY_RE =
+    /^(output_size|output_size_constraint|token_limit|model_limit)$/;
+  var UNAUTHORIZED_PAGE_OMISSION_REASON_RE =
+    /output\s*size|token\s*limit|length\s*limit|too\s*large|size\s*constraint|context\s*window/i;
+
+  function isUnauthorizedOutputSizeActivityOmission(entry) {
+    if (!entry || typeof entry !== "object") return false;
+    var authority = String(entry.authority || "")
+      .toLowerCase()
+      .trim();
+    if (UNAUTHORIZED_PAGE_OMISSION_AUTHORITY_RE.test(authority)) return true;
+    return UNAUTHORIZED_PAGE_OMISSION_REASON_RE.test(String(entry.reason || ""));
+  }
+
+  function isLearnerFacingComposedPage(page, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var profile = String(
+      opts.pageProfile || opts.page_profile || (page && page.page_profile) || "learner"
+    )
+      .toLowerCase()
+      .trim();
+    if (profile === "facilitator") return false;
+    return profile === "learner" || !profile;
+  }
+
+  function shouldRepairLearnerPageCompositionFromUpstream(page, upstream, options) {
+    if (!isLearnerFacingComposedPage(page, options)) return false;
+    var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
+    return upstreamRows.length > 0;
+  }
+
+  function stripUnauthorizedOutputSizeActivityOmissions(page) {
+    if (!page || typeof page !== "object") return 0;
+    var gn = page.generation_notes;
+    if (!gn || typeof gn !== "object" || !Array.isArray(gn.activities_omitted)) return 0;
+    var removed = 0;
+    gn.activities_omitted = gn.activities_omitted.filter(function (entry) {
+      if (!isUnauthorizedOutputSizeActivityOmission(entry)) return true;
+      removed += 1;
+      return false;
+    });
+    if (removed > 0) {
+      if (!Array.isArray(gn.limitations)) {
+        gn.limitations =
+          gn.limitations != null && String(gn.limitations).trim()
+            ? [String(gn.limitations)]
+            : [];
+      }
+      var line =
+        "[PRISM page composition] Removed " +
+        removed +
+        " unauthorized activities_omitted entries (output-size omission is not permitted on Design Page; retain activity shells instead).";
+      if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
+    }
+    return removed;
+  }
+
+  function buildLearnerPageActivityShellFromUpstreamRow(upstreamRow) {
+    if (!upstreamRow || typeof upstreamRow !== "object" || Array.isArray(upstreamRow)) return null;
+    var id =
+      upstreamRow.activity_id != null
+        ? upstreamRow.activity_id
+        : upstreamRow.activityId != null
+        ? upstreamRow.activityId
+        : upstreamRow.id;
+    if (!pageActivityIdKey(id)) return null;
+    var shell = {
+      activity_id: id,
+      title: String(
+        upstreamRow.title ||
+          upstreamRow.activity_title ||
+          upstreamRow.name ||
+          id ||
+          ""
+      ).trim()
+    };
+    LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS.forEach(function (fieldId) {
+      var arrayOrString = fieldId === "scaffold_hint_sequence";
+      if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString)) return;
+      shell[fieldId] = upstreamRow[fieldId];
+    });
+    ["learner_task", "learner_instructions", "instructions", "purpose"].forEach(function (fieldId) {
+      if (pedagogicCognitionFieldHasValue(shell[fieldId], false)) return;
+      if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], false)) return;
+      shell[fieldId] = upstreamRow[fieldId];
+    });
+    ["duration_minutes", "grouping", "facilitator_moves"].forEach(function (fieldId) {
+      if (upstreamRow[fieldId] == null || upstreamRow[fieldId] === "") return;
+      shell[fieldId] = upstreamRow[fieldId];
+    });
+    return shell;
+  }
+
+  function appendRowsToPageLearningActivitiesSection(page, newRows) {
+    if (!page || !Array.isArray(page.sections) || !newRows.length) return false;
+    var section = null;
+    page.sections.forEach(function (sec) {
+      if (pageSectionCanonicalKind(sec) === "learning_activities") section = sec;
+    });
+    if (!section) {
+      page.sections.push({
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: newRows.slice()
+      });
+      return true;
+    }
+    var content = section.content;
+    var rows = [];
+    var wrapObject = false;
+    if (Array.isArray(content)) rows = content;
+    else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+      rows = content.activities;
+      wrapObject = true;
+    } else {
+      section.content = newRows.slice();
+      return true;
+    }
+    newRows.forEach(function (row) {
+      rows.push(row);
+    });
+    if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
+    else section.content = rows;
+    return true;
+  }
+
+  function restoreMissingLearnerPageActivitiesFromUpstream(page, upstream, options) {
+    var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
+    if (!upstreamRows.length) return 0;
+    var composedSet = {};
+    collectComposedActivityIdsFromPage(page).forEach(function (id) {
+      composedSet[id] = true;
+    });
+    var tracedSet = {};
+    collectTracedOmissionIdsFromPage(page).forEach(function (id) {
+      tracedSet[id] = true;
+    });
+    var explicitExclude = {};
+    (Array.isArray(options && options.explicitExcludeIds) ? options.explicitExcludeIds : []).forEach(
+      function (id) {
+        var k = pageActivityIdKey(id);
+        if (k) explicitExclude[k] = true;
+      }
+    );
+    var restored = [];
+    upstreamRows.forEach(function (upRow) {
+      var key = pageActivityIdKey(
+        upRow.activity_id != null
+          ? upRow.activity_id
+          : upRow.activityId != null
+          ? upRow.activityId
+          : upRow.id
+      );
+      if (!key || composedSet[key] || tracedSet[key] || explicitExclude[key]) return;
+      var shell = buildLearnerPageActivityShellFromUpstreamRow(upRow);
+      if (!shell) return;
+      restored.push(shell);
+      composedSet[key] = true;
+    });
+    if (!restored.length) return 0;
+    appendRowsToPageLearningActivitiesSection(page, restored);
+    return restored.length;
+  }
+
+  function mergeLearnerPageActivityFramingFieldsIntoPageActivities(page, upstream) {
     if (!page || !Array.isArray(page.sections)) return 0;
     var upstreamRows = normalizeUpstreamActivitiesContentForPage(upstream) || [];
     if (!upstreamRows.length) return 0;
@@ -35098,7 +35605,7 @@
         );
         var upstreamRow = key ? upstreamById[key] : null;
         if (!upstreamRow) return;
-        SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS.forEach(function (fieldId) {
+        LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS.forEach(function (fieldId) {
           var arrayOrString = fieldId === "scaffold_hint_sequence";
           if (pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString)) return;
           if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString)) return;
@@ -35110,6 +35617,42 @@
       else section.content = rows;
     });
     return mergedCount;
+  }
+
+  function mergeSelfDirectedActivityFramingFieldsIntoPageActivities(page, upstream) {
+    return mergeLearnerPageActivityFramingFieldsIntoPageActivities(page, upstream);
+  }
+
+  function repairLearnerPageCompositionFromUpstream(page, upstream, options) {
+    if (!shouldRepairLearnerPageCompositionFromUpstream(page, upstream, options)) {
+      return {
+        repaired: false,
+        omissionsStripped: 0,
+        activitiesRestored: 0,
+        framingFieldsMerged: 0
+      };
+    }
+    var omissionsStripped = stripUnauthorizedOutputSizeActivityOmissions(page);
+    var activitiesRestored = restoreMissingLearnerPageActivitiesFromUpstream(page, upstream, options);
+    var framingFieldsMerged = mergeLearnerPageActivityFramingFieldsIntoPageActivities(
+      page,
+      upstream
+    );
+    var repaired = omissionsStripped > 0 || activitiesRestored > 0 || framingFieldsMerged > 0;
+    if (repaired) {
+      if (!page.metadata || typeof page.metadata !== "object") page.metadata = {};
+      page.metadata.learner_page_composition_repair = {
+        omissions_stripped: omissionsStripped,
+        activities_restored: activitiesRestored,
+        framing_fields_merged: framingFieldsMerged
+      };
+    }
+    return {
+      repaired: repaired,
+      omissionsStripped: omissionsStripped,
+      activitiesRestored: activitiesRestored,
+      framingFieldsMerged: framingFieldsMerged
+    };
   }
 
   function mergeUpstreamCognitionFieldsIntoPageActivities(page, upstream, contract) {
@@ -35487,11 +36030,14 @@
     if (!page || typeof page !== "object") return page;
     var opts = options && typeof options === "object" ? options : {};
     var upstream = opts.upstreamLearningActivities;
+    var hadLearningActivities =
+      Array.isArray(page.sections) &&
+      page.sections.some(function (section) {
+        return pageSectionCanonicalKind(section) === "learning_activities";
+      });
     var next = JSON.parse(JSON.stringify(page));
-    var framingFieldsMerged = mergeSelfDirectedActivityFramingFieldsIntoPageActivities(
-      next,
-      upstream
-    );
+    var repairResult = repairLearnerPageCompositionFromUpstream(next, upstream, opts);
+    var framingFieldsMerged = repairResult.framingFieldsMerged;
     var briefCtx = resolveWorkflowBriefContextForPageComposition(opts);
     var semantics = resolvePedagogicCognitionCompositionSemantics(
       briefCtx.packs,
@@ -35533,9 +36079,16 @@
       }
     });
     var injected = ensureCognitionLearningActivitiesSection(next, upstream);
-    if (injected) {
+    var hasLearningActivitiesNow =
+      Array.isArray(next.sections) &&
+      next.sections.some(function (section) {
+        return pageSectionCanonicalKind(section) === "learning_activities";
+      });
+    if (injected || (!hadLearningActivities && hasLearningActivitiesNow)) {
       trace.cognitionAssessmentDominancePrevented = true;
-      trace.cognitionSectionsPreserved.push("learning_activities");
+      if (trace.cognitionSectionsPreserved.indexOf("learning_activities") === -1) {
+        trace.cognitionSectionsPreserved.push("learning_activities");
+      }
     }
     trace.cognitionFieldsMerged = mergeUpstreamCognitionFieldsIntoPageActivities(
       next,
@@ -37506,6 +38059,8 @@
       buildPedagogicCognitionContractPromptBlock;
     prismTestApi.applyPedagogicCognitionContractScaffoldToDraft =
       applyPedagogicCognitionContractScaffoldToDraft;
+    prismTestApi.applyEducationalQualityFrameworkPromptBlockToDraft =
+      applyEducationalQualityFrameworkPromptBlockToDraft;
     prismTestApi.applySelfDirectedLearnerPageStepScaffoldsToDraft =
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
@@ -37573,6 +38128,10 @@
       evaluatePelGamMaterialStabilisation;
     prismTestApi.shouldApplySelfDirectedLearnerPageGamMaterialScaffold =
       shouldApplySelfDirectedLearnerPageGamMaterialScaffold;
+    prismTestApi.shouldApplyLearnerPagePedagogicFramingScaffold =
+      shouldApplyLearnerPagePedagogicFramingScaffold;
+    prismTestApi.isFacilitatedLearnerPageFramingContext =
+      isFacilitatedLearnerPageFramingContext;
     prismTestApi.evaluatePelOrientationContractSatisfaction =
       evaluatePelOrientationContractSatisfaction;
     prismTestApi.evaluatePelReasoningContractSatisfaction =
@@ -37591,12 +38150,29 @@
     prismTestApi.utilityMaterialHeadingRedundantWithInner = utilityMaterialHeadingRedundantWithInner;
     prismTestApi.evaluateSelfDirectedDlaActivityFramingCoverage =
       evaluateSelfDirectedDlaActivityFramingCoverage;
+    prismTestApi.evaluateLearnerPageDlaActivityFramingCoverage =
+      evaluateLearnerPageDlaActivityFramingCoverage;
+    prismTestApi.applyLearnerPageDlaFramingValidationToCapture =
+      applyLearnerPageDlaFramingValidationToCapture;
+    prismTestApi.extractActivityRowsFromDlaCapture = extractActivityRowsFromDlaCapture;
+    prismTestApi.LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS =
+      LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS.slice();
     prismTestApi.learnerTaskRequiresChronologicalOrdering =
       learnerTaskRequiresChronologicalOrdering;
     prismTestApi.evaluateTimelineSequencingMaterialAlignment =
       evaluateTimelineSequencingMaterialAlignment;
     prismTestApi.mergeSelfDirectedActivityFramingFieldsIntoPageActivities =
       mergeSelfDirectedActivityFramingFieldsIntoPageActivities;
+    prismTestApi.mergeLearnerPageActivityFramingFieldsIntoPageActivities =
+      mergeLearnerPageActivityFramingFieldsIntoPageActivities;
+    prismTestApi.repairLearnerPageCompositionFromUpstream =
+      repairLearnerPageCompositionFromUpstream;
+    prismTestApi.stripUnauthorizedOutputSizeActivityOmissions =
+      stripUnauthorizedOutputSizeActivityOmissions;
+    prismTestApi.restoreMissingLearnerPageActivitiesFromUpstream =
+      restoreMissingLearnerPageActivitiesFromUpstream;
+    prismTestApi.LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS =
+      LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS.slice();
     prismTestApi.isWorkflowStepDesignPage = isWorkflowStepDesignPage;
     prismTestApi.evaluatePedagogicCognitionContractSatisfaction =
       evaluatePedagogicCognitionContractSatisfaction;
@@ -37647,6 +38223,7 @@
       state.workflowRunPopulationContractValidation = {};
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
+      state.workflowRunLearnerPageFramingValidation = {};
     };
     prismTestApi.applyEpisodePlanCaptureCanonicalEnforcement =
       applyEpisodePlanCaptureCanonicalEnforcement;
@@ -37893,6 +38470,11 @@
     prismTestApi.resolveCaptureTextForWorkflowStep = resolveCaptureTextForWorkflowStep;
     prismTestApi.getWorkflowRunPf11DiagnosticTraceForTest = function () {
       return state.workflowRunPf11DiagnosticTrace || null;
+    };
+    prismTestApi.getWorkflowRunLearnerPageFramingValidationForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunLearnerPageFramingValidation) return "";
+      return state.workflowRunLearnerPageFramingValidation[sid] || "";
     };
     prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;

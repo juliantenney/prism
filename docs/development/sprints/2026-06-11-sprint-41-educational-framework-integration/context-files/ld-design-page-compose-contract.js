@@ -31,7 +31,7 @@
   ];
 
   var MEMBERSHIP_LINES = [
-    "- ACTIVITY MEMBERSHIP (hard): every upstream activity_id in learning_activities.content unless generation_notes.activities_omitted[] with explicit user-authorised authority (subset request or workflow constraint) — never omit for output size, token limit, or model length; if material copy is constrained, record generation_notes.limitations and retain the activity shell with available fields and material references; learning_sequence order/timing only; validate (U \\ X) ⊆ C; assessment_check.content object with items[] when assessment_items provided."
+    "- ACTIVITY MEMBERSHIP (hard): every upstream activity_id in learning_activities.content unless generation_notes.activities_omitted[] with authority; learning_sequence order/timing only; validate (U \\ X) ⊆ C; assessment_check.content object with items[] when assessment_items provided."
   ];
 
   var MATERIALS_BRIDGE_LINES = [
@@ -39,7 +39,7 @@
   ];
 
   var FIELD_PRESERVATION_LINES = [
-    "- Activity field preservation (learner-facing page): copy verbatim onto each matching activity_id when present upstream learning_activities (not only activity_materials):",
+    "- Activity field preservation (self-directed learner page): copy verbatim onto each matching activity_id when present upstream:",
     "  " + FIELD_PRESERVATION_FIELD_IDS,
     "- expected_output and support_note (or support_notes) must copy verbatim — do not merge into materials; activity_preamble before learner_task."
   ];

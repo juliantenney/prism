@@ -1,98 +1,113 @@
 # Sprint 41 Implementation Start Points
 
-## Implementation Goal
+**Status: Sprint closed — this document records completed implementation and Sprint 42 pointers.**
 
-Apply the Educational Quality Framework to PRISM generation so that outputs more consistently manifest:
+---
 
-- Understanding
-- Capability
-- Judgement
-- Independence
-- Metacognition
-- Learning success
-- Progressive independence
+## What was implemented
 
-## Likely Implementation Strategy
+Sprint 41 applied the Educational Quality Framework through **prompt architecture**, **diagnostic tooling**, and **learner-framing contracts** — not major system redesign.
 
-Implementation is expected to be primarily prompt-architecture work.
+### Slices 1–4 — EQF integration
 
-Major architecture changes are not expected unless investigation proves otherwise.
+| Component | Path |
+| --------- | ---- |
+| EQF prompt contract | `lib/educational-quality-framework-prompt.js` |
+| Runtime injection | `app.js` → `applyEducationalQualityFrameworkPromptBlockToDraft` |
+| Step manifestation | `educational-quality-framework-prompt.js` (`TARGET_CANONICAL_STEP_IDS`) |
+| Evaluator | `lib/educational-quality-framework-evaluator.js` |
+| CLI diagnostic | `tools/evaluate-educational-quality-framework.js` |
+| Benchmark helper | `tools/evaluate-sprint41-benchmarks.js` |
 
-## Initial Tasks
+### Slices 5 — Learner framing pipeline
 
-### 1. Locate Prompt Entry Points
+| Component | Path / symbol |
+| --------- | ------------- |
+| Learner-page framing gate | `shouldApplyLearnerPagePedagogicFramingScaffold` (`app.js`) |
+| DLA OUTPUT CONTRACT | `buildLearnerPageDlaOutputContractOverrideBlock` |
+| Mandatory framing | `evaluateLearnerPageDlaActivityFramingCoverage`, `applyLearnerPageDlaFramingValidationToCapture` |
+| Design Page repair | `repairLearnerPageCompositionFromUpstream` |
+| Compose contract | `lib/ld-design-page-compose-contract.js` |
 
-Identify where PRISM currently defines or assembles prompts for:
+### Augmentation entry point
 
-- page generation
-- learning activities
-- learning sequences
-- assessment
-- feedback
-- PEL / metacognitive guidance
+All resolved LD step prompts flow through:
 
-### 2. Map Framework Concepts to Prompt Locations
+`applyWorkflowStepRuntimePromptAugmentations` → `buildWorkflowStepInstructions` / `resolveStepPromptText`
 
-For each framework element, identify where it should enter the generation process.
+---
 
-Example:
+## Prompt entry points (unchanged architecture)
 
-| Framework Element | Likely Prompt Location |
-|---|---|
-| North Star | System / workflow level |
-| Learner transformations | Workflow / sequence / activity prompts |
-| Developmental pathways | Sequence and activity prompts |
-| Judgement development | Activity and assessment prompts |
-| Metacognition | PEL / guidance layer prompts |
-| Learning success | Activity framing and reflection prompts |
-| Progressive independence | Sequence and activity progression prompts |
+| Concern | Location |
+| ------- | -------- |
+| Workflow prompt assembly | `app.js` — `buildSeededStepPromptForWorkflowStep`, `resolveStepPromptText` |
+| Domain step templates | `domains/learning-design/domain-learning-design-step-patterns.md` |
+| PEL | `applyPedagogicEnrichmentContractScaffoldToDraft` |
+| Self-directed rhetoric | `lib/ld-self-directed-rhetoric.js` |
+| Episode plan population | `lib/episode-plan-dla-integration.js` |
+| Page compose | `lib/ld-design-page-compose-contract.js` |
 
-### 3. Preserve Existing Architecture
+---
 
-Do not redesign architecture unless required.
+## Validation and diagnostics
 
-The expected work is to adapt existing prompt structures and generation guidance.
+```bash
+# Single artefact
+node tools/evaluate-educational-quality-framework.js tests/fixtures/page-render/marx-self-study-page.json
 
-### 4. Add Manifestation Guidance
+# Compare before/after
+node tools/evaluate-educational-quality-framework.js baseline.json --compare candidate.json
 
-Ensure prompts specify what framework concepts should look like in outputs.
+# Inflation benchmark pair
+node tools/evaluate-sprint41-benchmarks.js
+```
 
-Examples:
+**Constraint:** PRISM does not see external LLM outputs during run mode. Evaluator operates on saved JSON/HTML only.
 
-- Judgement should manifest as comparison, evaluation, justification, critique and defence.
-- Independence should manifest as reduced scaffolding, learner decision making and transfer.
-- Metacognition should manifest as lightweight guidance, reflection, confidence checks and progress checks.
-- Learning success should manifest as visible learner progress and confidence development.
+**Recommended capture path for impact validation:** `captures/sprint-41-impact/`
 
-### 5. Review Output Structure
+---
 
-Investigate how to support the conceptual two-column model:
+## Benchmark workflows (validation reference)
 
-- Learning Guidance
-- Learning Activities
+| Workflow | Fixture | Typical EQF score |
+| -------- | ------- | ----------------- |
+| Inflation workshop | `tests/fixtures/page-render/ld-inflation-workshop-page.json` | 5/8 |
+| Marx workshop | `tests/fixtures/page-render/ld-climate-misconception-discussion-page.json` | 5/8 |
+| Marx self-study | `tests/fixtures/page-render/marx-self-study-page.json` | 7/8 |
 
-Accessibility must be considered.
+---
 
-The two-column model should not require inaccessible layout.
+## Sprint 42 starting point — Authorial Quality / Educational Exposition
 
-It may be implemented structurally or semantically rather than literally as visual columns.
+**Do not extend EQF or framework architecture unless explicitly rescoped.**
 
-### 6. Test Against Existing Output
+### Likely focus
 
-Use the inflation self-study output as a comparison case.
+1. **Exposition prompts** — richer learner-facing prose without new schema fields
+2. **Narrative flow** — inter-section and inter-activity readability on composed pages
+3. **Framing readability** — preserve mandatory `activity_preamble` and cognition fields while improving natural language
+4. **Publication quality** — redundancy reduction, professional instructional voice
 
-Ask:
+### Files to read first
 
-- Does the revised generation improve understanding development?
-- Does it strengthen judgement?
-- Does it make learning success visible?
-- Does it support progressive independence?
-- Does it include metacognitive guidance without overwhelming the content?
+- `lib/ld-self-directed-rhetoric.js`
+- `app.js` — `buildLearnerPageDlaOutputContractOverrideBlock`, `buildSelfDirectedLearnerPageActivityFramingPromptBlock`
+- `tests/fixtures/page-render/marx-self-study-page.json` — structural exemplar
+- `sprint-41-closure-report.md` — principal conclusion and limitations
 
-## Key Implementation Principle
+### Regression suites to keep green
 
-Do not optimise for more visible activity.
+- `tests/workflow-learner-page-mandatory-framing.test.js`
+- `tests/workflow-learner-page-design-page-preservation.test.js`
+- `tests/workflow-learner-page-framing-delivery-mode.test.js`
+- `tests/workflow-self-directed-activity-framing-adoption.test.js`
 
-Optimise for better cognitive activity.
+---
 
-The learner should be asked to think, compare, evaluate, justify, reflect, decide and transfer.
+## Key principle (retained from Sprint 41)
+
+Optimise for **cognitive activity**, not interface activity. The learner should think, compare, evaluate, justify, reflect, decide, and transfer.
+
+Sprint 42 adds: optimise for **readable exposition** that carries that cognitive demand clearly.

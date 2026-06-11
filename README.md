@@ -500,3 +500,25 @@ Important behavior:
 For detailed renderer behavior and regression checks, see:
 
 - `docs/architecture/renderer-export-behavior.md`
+
+---
+
+## Development status (Sprint 41 closed)
+
+**Sprint 41 — Educational Framework Integration** is implementation-complete.
+
+- EQF prompt integration, evaluator, and diagnostics tooling are in place
+- PEL/learner framing applies to all learner-facing pages (workshop handouts and self-study)
+- Design Page composition preserves and repairs learner-framing fields
+
+**Closure report:** [`docs/development/sprints/2026-06-11-sprint-41-educational-framework-integration/sprint-41-closure-report.md`](docs/development/sprints/2026-06-11-sprint-41-educational-framework-integration/sprint-41-closure-report.md)
+
+**Sprint 42 handover:** [`handover-from-sprint-41.md`](docs/development/sprints/2026-06-11-sprint-41-educational-framework-integration/handover-from-sprint-41.md)
+
+**Recommended next focus:** Authorial quality / educational exposition (richer learner-facing prose, narrative flow, publication-ready instructional writing) — not further framework architecture work.
+
+**EQF diagnostic (manual):**
+
+```bash
+node tools/evaluate-educational-quality-framework.js tests/fixtures/page-render/marx-self-study-page.json
+```

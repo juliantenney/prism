@@ -188,32 +188,10 @@ test("30-2: RNA transcript self-study resolves reasoning_contract", () => {
   assert.ok(ids.includes("reasoning_contract"));
 });
 
-test("41-5: workshop learner handout resolves reasoning_contract", () => {
+test("30-2: facilitated workshop resolves no reasoning_contract", () => {
   const resolved = resolveBrief(WORKSHOP_BRIEF);
   const ctx = buildStepContext(
     WORKSHOP_BRIEF,
-    resolved,
-    "step_design_learning_activities",
-    "Design Learning Activities"
-  );
-  const ids = [...api.resolvePedagogicEnrichmentContractIds(ctx)];
-  assert.ok(ids.includes("reasoning_contract"));
-});
-
-test("30-2: facilitator-only workshop resolves no reasoning_contract", () => {
-  const resolved = resolveBrief({
-    goal: "Design a 90-minute facilitated workshop on team communication for nursing students.",
-    inputs: "Face-to-face classroom with tutor facilitation",
-    desiredOutputs: "Facilitator guide and slide deck",
-    selectedDomains: ["learning-design"]
-  });
-  const ctx = buildStepContext(
-    {
-      goal: "Design a 90-minute facilitated workshop on team communication for nursing students.",
-      inputs: "Face-to-face classroom with tutor facilitation",
-      desiredOutputs: "Facilitator guide and slide deck",
-      selectedDomains: ["learning-design"]
-    },
     resolved,
     "step_design_learning_activities",
     "Design Learning Activities"
@@ -349,7 +327,7 @@ test("30-2: Design Page prompt preserves reasoning fields but omits reasoning PE
     "step_design_page",
     "Design Page"
   );
-  assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
+  assert.match(prompt, PEL_ORIENTATION_MARKER);
   assert.doesNotMatch(prompt, PEL_REASONING_MARKER);
   assert.match(prompt, /\bevidence_use_prompt\b/);
   assert.match(prompt, /\bconceptual_contrast_prompt\b/);

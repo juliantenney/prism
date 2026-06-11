@@ -1,49 +1,58 @@
 # Sprint 41: Educational Framework Integration
 
+**Status: Closed (implementation complete)**
+
 ## Purpose
 
-Sprint 41 focuses on integrating the PRISM Educational Quality Framework into the generation system.
+Sprint 41 integrated the Sprint 40 Educational Quality Framework into PRISM generation workflows and completed learner-framing integration for all learner-facing pages.
 
-Sprint 40 established the educational framework. Sprint 41 is about implementation.
+## Sprint objective
 
-## Sprint Objective
+Integrate the Educational Quality Framework so generated resources more consistently support understanding, capability, judgement, independence, metacognition, learning success, and progressive independence.
 
-Integrate the Educational Quality Framework into PRISM generation workflows so that generated resources more consistently support:
+## Slices delivered
 
-- Understanding
-- Capability
-- Judgement
-- Independence
-- Metacognition
-- Learning success
-- Progressive independence
+| Slice | Deliverable |
+| ----- | ----------- |
+| 1 | EQF prompt foundation (`lib/educational-quality-framework-prompt.js`) |
+| 2 | Step-specific manifestation guidance |
+| 3 | EQF evaluator (`lib/educational-quality-framework-evaluator.js`) |
+| 4 | Diagnostics tooling (`tools/evaluate-educational-quality-framework.js`) |
+| 5 | Delivery-mode-independent learner framing |
+| 5 follow-up | Design Page preservation repair |
+| 5 finalisation | Mandatory learner framing at DLA |
 
-## Working Assumption
+## Closure and handover
 
-Current evidence suggests implementation should primarily involve prompt architecture, generation strategy and output-pattern changes rather than major system architecture changes.
+| Document | Role |
+| -------- | ---- |
+| [`sprint-41-closure-report.md`](sprint-41-closure-report.md) | **Authoritative closure report** |
+| [`handover-from-sprint-41.md`](handover-from-sprint-41.md) | Sprint 42 entry point |
+| [`sprint-41-validation-report.md`](sprint-41-validation-report.md) | Validation phase evidence |
+| [`sprint-41-framework-impact-report.md`](sprint-41-framework-impact-report.md) | Impact validation (captures pending) |
+| [`educational-quality-diagnostics.md`](educational-quality-diagnostics.md) | CLI usage |
 
-## Out of Scope
+## Principal conclusion
 
-- New educational framework discovery
-- Major architecture redesign
-- Adaptive learning systems
-- Learner analytics
-- Full interactive exercise processing
+The educational architecture is functioning well. The primary remaining weakness is **learner-facing exposition** (narrative flow, explanatory depth, publication-quality prose), not workflow structure, alignment, sequencing, judgement, transfer, or metacognitive support.
 
-## Key Principle
+**EQF and PEL/learner framing integration are complete.** No further framework architecture work is currently recommended.
 
-PRISM should optimise for cognitive activity rather than interface activity.
+## Recommended next sprint
 
-Interactivity should only be introduced where it meaningfully contributes to understanding, capability, judgement or independence.
+**Sprint 42 — Authorial Quality / Educational Exposition**
 
-## Sprint 41 Starting Point
+See [`handover-from-sprint-41.md`](handover-from-sprint-41.md).
 
-Begin by reviewing:
+## Framework source documents
 
-- `/docs/framework/north-star.md`
-- `/docs/framework/educational-quality-framework.md`
-- `/docs/framework/educational-prompting-guide.md`
-- `/docs/framework/framework-overview.md`
-- `/docs/framework/sprint-40-validation-report.md`
+- `docs/educational design/framework/north-star.md`
+- `docs/educational design/framework/educational-quality-framework.md`
+- `docs/educational design/framework/educational-prompting-guide.md`
+- `docs/educational design/framework/framework-overview.md`
 
-Then review the implementation start points in this folder.
+## Implementation reference
+
+- [`implementation-start-points.md`](implementation-start-points.md) — post-closure file map
+- [`source-documents.md`](source-documents.md) — authoritative paths and modules
+- [`context-files/`](context-files/) — Sprint working extracts

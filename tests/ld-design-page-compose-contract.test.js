@@ -15,6 +15,8 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: membership and validation anchors", () =>
   assert.match(text, /\(U \\ X\) ⊆ C/);
   assert.match(text, /activities_omitted\[\]/i);
   assert.match(text, /assessment_check\.content object with items\[\]/i);
+  assert.match(text, /never omit for output size/i);
+  assert.match(text, /upstream learning_activities \(not only activity_materials\)/i);
 });
 
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module markers", () => {

@@ -105,14 +105,16 @@ test("Marx self-study brief: inferred factors trigger DLA framing without manual
     stepCanonicalTitle: "Design Learning Activities",
     stepCanonicalStepId: "step_design_learning_activities"
   }, resolved);
-  assert.match(prompt, /output contract \(self-directed learner page/i);
+  assert.match(prompt, /output contract \(learner-facing page/i);
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
   assert.match(
     prompt,
-    /For self-directed learner-page workflows, each activity MUST also include activity_preamble/i
+    /each activity MUST include activity_preamble and at least one cognition-orientation field/i
   );
+  assert.match(prompt, /Mandatory per activity/i);
+  assert.match(prompt, /do not emit learner-page activities with only title, learner_task/i);
   assert.match(prompt, /self-directed activity json example \(authoritative shape/i);
 });
 
@@ -124,10 +126,10 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
     stepCanonicalTitle: "Design Learning Activities",
     stepCanonicalStepId: "step_design_learning_activities"
   }, resolved);
-  assert.match(prompt, /output contract \(self-directed learner page/i);
+  assert.match(prompt, /output contract \(learner-facing page/i);
   assert.match(prompt, /each activity object must include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
   assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /worked-example and faded-support \(auto-applied\)/i);
@@ -176,8 +178,8 @@ test("facilitated workshop brief: DLA prompt does not include self-directed outp
     stepCanonicalTitle: "Design Learning Activities",
     stepCanonicalStepId: "step_design_learning_activities"
   }, resolved);
-  assert.doesNotMatch(prompt, /output contract \(self-directed learner page/i);
-  assert.doesNotMatch(prompt, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /output contract \(learner-facing page/i);
+  assert.doesNotMatch(prompt, /learner-page activity framing \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
 });
@@ -217,6 +219,7 @@ test("evaluateSelfDirectedDlaActivityFramingCoverage: well-formed self-directed 
     {
       activity_id: "A1",
       activity_preamble: "Before analysing Marx's exile, consider how displacement shapes ideas.",
+      reasoning_orientation: "Trace how biography might shape theoretical claims, not just list dates.",
       prior_knowledge_activation: "Recall one historical example of exile.",
       learner_task: "Complete the table."
     },
@@ -234,7 +237,9 @@ test("evaluateSelfDirectedDlaActivityFramingCoverage: well-formed self-directed 
     }
   ]);
   assert.equal(cov.meetsPreambleCoverage, true);
-  assert.equal(cov.meetsSelectiveCognitionCoverage, true);
+  assert.equal(cov.meetsMandatoryCognitionCoverage, true);
+  assert.equal(cov.meetsMandatoryFraming, true);
+  assert.equal(cov.activityFailures.length, 0);
 });
 
 test("evaluateSelfDirectedDlaActivityFramingCoverage: procedural-only activities fail", () => {
@@ -243,6 +248,9 @@ test("evaluateSelfDirectedDlaActivityFramingCoverage: procedural-only activities
     { activity_id: "A2", learner_task: "Compare works.", expected_output: "Notes" }
   ]);
   assert.equal(cov.meetsPreambleCoverage, false);
+  assert.equal(cov.meetsMandatoryCognitionCoverage, false);
+  assert.equal(cov.meetsMandatoryFraming, false);
+  assert.equal(cov.activityFailures.length, 2);
 });
 
 test("downstream: mergeSelfDirectedActivityFramingFieldsIntoPageActivities preserves DLA fields", () => {
@@ -339,7 +347,7 @@ test("runtime resolveStepPromptText: legacy library prompt receives self-directe
   };
   const resolvedPrompt = api.resolveStepPromptText(step, wf);
   assert.equal(resolvedPrompt.error, "");
-  assert.match(resolvedPrompt.text, /output contract \(self-directed learner page/i);
+  assert.match(resolvedPrompt.text, /output contract \(learner-facing page/i);
   assert.match(resolvedPrompt.text, /activity_preamble/i);
   assert.match(resolvedPrompt.text, /facilitator_moves: omit for self-directed/i);
 });
@@ -369,7 +377,7 @@ test("runtime buildWorkflowStepInstructions: Marx DLA run prompt includes framin
     promptId: "legacy-dla"
   };
   const instructions = api.buildWorkflowStepInstructions(step, 0, null);
-  assert.match(instructions, /output contract \(self-directed learner page/i);
+  assert.match(instructions, /output contract \(learner-facing page/i);
   assert.match(instructions, /self-directed activity json example/i);
 });
 
@@ -377,7 +385,8 @@ test("Marx procedural DLA fixture: missing framing fails coverage heuristic", ()
   const procedural = JSON.parse(fs.readFileSync(marxProceduralDlaPath, "utf8"));
   const cov = api.evaluateSelfDirectedDlaActivityFramingCoverage(procedural.activities);
   assert.equal(cov.meetsPreambleCoverage, false);
-  assert.equal(cov.meetsSelectiveCognitionCoverage, false);
+  assert.equal(cov.meetsMandatoryCognitionCoverage, false);
+  assert.equal(cov.meetsMandatoryFraming, false);
   assert.ok(cov.preambleCount === 0);
 });
 

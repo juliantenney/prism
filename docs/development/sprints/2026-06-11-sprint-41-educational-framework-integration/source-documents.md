@@ -1,5 +1,18 @@
 # Source Documents for Sprint 41
 
+**Sprint status: Closed.** For Sprint 42 entry, see [`handover-from-sprint-41.md`](handover-from-sprint-41.md) and [`sprint-41-closure-report.md`](sprint-41-closure-report.md).
+
+## Sprint 41 deliverables (implementation)
+
+| Slice | Module / artefact |
+| ----- | ----------------- |
+| 1–2 | `lib/educational-quality-framework-prompt.js` |
+| 3 | `lib/educational-quality-framework-evaluator.js` |
+| 4 | `tools/evaluate-educational-quality-framework.js`, `tools/evaluate-sprint41-benchmarks.js` |
+| 5 | `app.js` — learner-page framing gates, DLA OUTPUT CONTRACT |
+| 5 follow-up | `app.js` — `repairLearnerPageCompositionFromUpstream`; `lib/ld-design-page-compose-contract.js` |
+| 5 finalisation | `app.js` — mandatory framing validation on DLA capture |
+
 ## Framework Documents
 
 Review these first:
@@ -109,13 +122,26 @@ Supporting platform workflow docs (injected via manifest):
 - `docs/workflow/workflow-authoring.md`
 - `docs/workflow/pattern-library.md`
 
+### Educational Quality Framework (Sprint 41)
+
+| Module | Role |
+| ------ | ---- |
+| `lib/educational-quality-framework-prompt.js` | EQF runtime prompt contract (Slices 1–2) |
+| `lib/educational-quality-framework-evaluator.js` | 8-dimension heuristic evaluator (Slice 3) |
+| `tools/evaluate-educational-quality-framework.js` | CLI diagnostic (Slice 4) |
+| `app.js` → `applyEducationalQualityFrameworkPromptBlockToDraft` | Injection into augmentation chain |
+
+Documentation: `educational-quality-diagnostics.md`, `sprint-41-validation-report.md`
+
 ### Step-specific prompt augmentation (runtime contracts)
 
 Injected by `applyWorkflowStepRuntimePromptAugmentations` in `app.js`:
 
 | Step / concern | Contract module | Role |
 |---|---|---|
+| All LD generation steps (scoped) | `lib/educational-quality-framework-prompt.js` | EQF dimensions and manifestation |
 | Design Learning Activities | `lib/ld-self-directed-rhetoric.js` | Learner-facing rhetoric, judgement stems, progression vocabulary |
+| Design Learning Activities (learner pages) | `app.js` — learner-page OUTPUT CONTRACT | Mandatory `activity_preamble` + cognition fields (Slice 5 finalisation) |
 | Generate Activity Materials (GAM) | `lib/ld-materials-copy.js`, `lib/ld-table-fidelity.js`, `lib/gam-output-format.js` | Materials fidelity, table realisation, GAM body validation |
 | Design Learning Activities (PF-11) | `lib/episode-plan-dla-integration.js`, `lib/episode-plan-population-contract.js`, `lib/episode-plan-v1-templates.js` | Episode-plan obligation population; beat order authority |
 | Design Page | `lib/ld-design-page-compose-contract.js`, `lib/page-gam-materials-preserve.js`, `lib/design-page-materials-fidelity.js` | Read-only compose, materials preservation, fidelity checks |
@@ -182,11 +208,22 @@ Renderer documentation:
 
 - `docs/architecture/renderer-export-behavior.md`
 
-### Inflation comparison case (Sprint 40 benchmark)
+### Validation benchmark workflows
 
-Use for before/after framework integration testing:
+| Workflow | Key fixtures |
+| -------- | ------------ |
+| Inflation workshop | `tests/fixtures/page-render/ld-inflation-workshop-page.json`, `ld-inflation-workshop-page-full.json` |
+| Marx workshop | `tests/fixtures/page-render/ld-climate-misconception-discussion-page.json` |
+| Marx self-study | `tests/fixtures/page-render/marx-self-study-page.json`, `marx-self-study-design-quality-page.json` |
 
-- `tests/fixtures/page-render/ld-inflation-workshop-page.json`
-- `tests/fixtures/page-render/ld-inflation-workshop-page-full.json`
-- `tests/utility-ld-inflation-page-render.test.js`
-- `docs/development/sprints/2026-06-06-sprint-38s-episode-plan-v1-implementation/artefacts/EV-38S-AFTER-4-render.html` — primary inflation proof render
+Tests: `tests/utility-ld-inflation-page-render.test.js`, `tests/workflow-learner-page-*.test.js`, `tests/workflow-self-directed-activity-framing-adoption.test.js`
+
+### Sprint 41 learner-framing regression tests
+
+- `tests/workflow-learner-page-mandatory-framing.test.js`
+- `tests/workflow-learner-page-design-page-preservation.test.js`
+- `tests/workflow-learner-page-framing-delivery-mode.test.js`
+
+### Recommended Sprint 41 impact captures (optional)
+
+Store post–Sprint 41 generations under `captures/sprint-41-impact/` with `EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied)` marker confirmed in copied prompt. See `sprint-41-framework-impact-report.md`.

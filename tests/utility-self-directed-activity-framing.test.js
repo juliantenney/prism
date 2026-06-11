@@ -178,12 +178,12 @@ test("investigation doc exists for self-directed activity framing", () => {
 
 test("DLA scaffold: self-directed learner-page activity framing rules present", () => {
   const augmented = dlaDraftWithMarxBrief();
-  assert.match(augmented, /self-directed learner-page activity framing \(auto-applied\)/i);
+  assert.match(augmented, /learner-page activity framing \(auto-applied\)/i);
   assert.match(augmented, /activity_preamble/i);
   assert.match(augmented, /prior_knowledge_activation|reasoning_orientation/i);
   assert.match(augmented, /self_explanation_prompt/i);
   assert.match(augmented, /do not repeat the activity title/i);
-  assert.match(augmented, /output contract \(self-directed learner page/i);
+  assert.match(augmented, /output contract \(learner-facing page/i);
 });
 
 test("renderer: activity_preamble appears before What to do", () => {
@@ -300,7 +300,7 @@ test("slice 31-2: reasoning cues remain before primary task on A3", () => {
   assert.ok(thinkIdx < taskIdx);
 });
 
-test("DLA scaffold: activity framing omitted for facilitated delivery", () => {
+test("41-5: DLA scaffold applies learner-page framing for in-person learner page delivery", () => {
   const explicit = api.extractWorkflowBriefExplicitFactors(MARX_SELF_STUDY_BRIEF);
   const inferred = api.applyWorkflowBriefInferenceRules(
     ldBriefConfig,
@@ -330,6 +330,7 @@ test("DLA scaffold: activity framing omitted for facilitated delivery", () => {
     ),
     ctx
   );
-  assert.doesNotMatch(augmented, /self-directed learner-page activity framing/i);
-  assert.doesNotMatch(augmented, /output contract \(self-directed learner page/i);
+  assert.match(augmented, /learner-page activity framing \(auto-applied\)/i);
+  assert.match(augmented, /output contract \(learner-facing page/i);
+  assert.doesNotMatch(augmented, /self-directed learner-page material shape \(auto-applied\)/i);
 });

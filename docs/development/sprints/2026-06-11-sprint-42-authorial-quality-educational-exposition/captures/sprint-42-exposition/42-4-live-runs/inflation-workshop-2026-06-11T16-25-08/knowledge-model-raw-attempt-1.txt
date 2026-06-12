@@ -1,0 +1,129 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "Inflation is the rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money."
+    },
+    {
+      "name": "Price Level",
+      "definition": "The price level represents the average of current prices across the entire spectrum of goods and services produced in the economy."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "The Consumer Price Index (CPI) measures the average change over time in the prices paid by urban consumers for a market basket of consumer goods and services."
+    },
+    {
+      "name": "GDP Deflator",
+      "definition": "The GDP deflator is a broader measure of inflation that reflects the prices of all domestically produced goods and services in the economy, calculated by dividing nominal GDP by real GDP and multiplying by 100."
+    },
+    {
+      "name": "Purchasing Power",
+      "definition": "Purchasing power refers to the amount of goods and services that can be bought with a unit of currency."
+    },
+    {
+      "name": "Fixed Basket",
+      "definition": "A fixed basket is a set collection of consumer goods and services used in the CPI to measure price changes over time."
+    },
+    {
+      "name": "Variable Basket",
+      "definition": "A variable basket reflects the current production of all domestically produced goods and services and is used in the GDP deflator."
+    },
+    {
+      "name": "Cost of Living Adjustments",
+      "definition": "Adjustments made to wages, pensions, and contracts based on changes in the CPI to maintain purchasing power."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Inflation",
+      "target": "Purchasing Power",
+      "type": "causes decrease in"
+    },
+    {
+      "source": "Price Level",
+      "target": "Inflation",
+      "type": "measures changes in"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Inflation",
+      "type": "measures"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Fixed Basket",
+      "type": "uses"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Variable Basket",
+      "type": "uses"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Cost of Living Adjustments",
+      "type": "enables"
+    },
+    {
+      "source": "GDP Deflator",
+      "target": "Consumer Price Index (CPI)",
+      "type": "contrasts with"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inflation Measurement Methods",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP Deflator"
+      ]
+    },
+    {
+      "name": "Baskets of Goods",
+      "members": [
+        "Fixed Basket",
+        "Variable Basket"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Calculating GDP Deflator",
+      "steps": [
+        "Calculate nominal GDP",
+        "Calculate real GDP",
+        "Divide nominal GDP by real GDP",
+        "Multiply the result by 100"
+      ]
+    },
+    {
+      "name": "Using CPI for Cost of Living Adjustments",
+      "steps": [
+        "Measure average price changes of consumer goods and services",
+        "Calculate percentage change in CPI",
+        "Adjust wages, pensions, and contracts accordingly"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "CPI and GDP Deflator measure the same inflation rate",
+      "clarification": "CPI and GDP deflator measure inflation differently due to differences in scope and basket composition, leading to variations in reported inflation rates."
+    },
+    {
+      "name": "GDP Deflator includes imports",
+      "clarification": "The GDP deflator excludes imports and only includes domestically produced goods and services."
+    },
+    {
+      "name": "Inflation always affects all prices equally",
+      "clarification": "Inflation affects prices differently; some prices may rise faster than others, impacting household budgets unevenly."
+    }
+  ]
+}
+```

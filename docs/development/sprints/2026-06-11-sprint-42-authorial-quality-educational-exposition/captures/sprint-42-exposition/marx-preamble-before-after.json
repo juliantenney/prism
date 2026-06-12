@@ -1,0 +1,37 @@
+{
+  "slice": "42-3",
+  "artefact": "marx-self-study-page.json learning_activities",
+  "note": "Before strings from pre-42-3 benchmark fixture; after strings from Slice 42-3 validation artefact.",
+  "activities": [
+    {
+      "activity_id": "A2",
+      "before": {
+        "activity_preamble": "Study the model row before completing the full comparison table."
+      },
+      "after": {
+        "activity_preamble": "Comparing two major works is not the same as summarising them: each text was written for a different purpose and audience. Before you complete the full table, notice how a modelled row names the author's aim and a defensible contrast — that move is what makes comparison evidence-based rather than descriptive.",
+        "reasoning_orientation": "Compare texts as intellectual projects: trace what each author is trying to accomplish and which evidence would convince a sceptical reader — not plot events."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "before": {
+        "activity_preamble": "The Manifesto row is modelled; add Das Kapital and refine the second row yourself."
+      },
+      "after": {
+        "activity_preamble": "The Communist Manifesto and Das Kapital address capitalism from different angles — one as urgent political programme, one as systematic economic critique. Your next step is to complete the comparison by applying the purpose-and-difference move from the model row, not by restating plot or theme labels.",
+        "reasoning_orientation": "When filling each row, ask whether your purpose states author aim and your difference names a contrast between the two works — not a summary of one book alone."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "before": {
+        "activity_preamble": "No model row — apply checklist terms directly to the case."
+      },
+      "after": {
+        "activity_preamble": "After comparing Marx's writings, the harder test is whether his concepts explain a concrete workplace. A factory scenario forces you to move from abstract terms — class, alienation, struggle — to evidence-backed judgement about how capitalism structures real labour relations.",
+        "reasoning_orientation": "Apply each checklist concept by citing a factory detail that would convince a sceptical reader the term fits the case — not by defining terms in isolation."
+      }
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+```json
+{
+  "artifact_type": "page",
+  "title": "Self-Directed Undergraduate Learner Guide",
+  "audience": "undergraduate self-directed learners",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Overview",
+      "content": "Developing effective self-directed learning skills is essential for academic success and lifelong learning. This guide supports you in evaluating diverse learning strategies, designing a personalized plan, monitoring your progress, and synthesizing these skills into a coherent autonomous learning approach. You will engage in activities that build your capability to choose appropriate strategies, plan your learning with clear goals and resources, assess your progress honestly, and integrate these elements for sustained independent study."
+    },
+    {
+      "heading": "Learning Purpose and Outcomes",
+      "content": "Mastering self-directed learning empowers you to take control of your academic journey by selecting fitting strategies, planning effectively, and adapting through self-assessment. This capability enhances your independence and academic performance.\n\nBy completing the activities, you will be able to:\n- Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts.\n- Design a personalized learning plan that incorporates goal setting, resource identification, and time management.\n- Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Explore and Compare Self-Directed Learning Strategies",
+          "duration_minutes": 20,
+          "activity_preamble": "Understanding the variety of self-directed learning strategies is crucial for choosing the most effective approach in different academic contexts. This activity invites you to examine multiple strategies and their characteristics to develop a nuanced perspective on autonomous learning.",
+          "reasoning_orientation": "Focus on comparing and contrasting strategies by identifying their strengths, weaknesses, and suitable contexts of application.",
+          "self_explanation_prompt": "Explain in your own words how two different strategies vary and why one might be more effective than the other in a specific academic context.",
+          "learner_task": "Study the worked example comparing three self-directed learning strategies. Then, complete the comparison table by evaluating each strategy against criteria such as applicability, ease of use, and effectiveness in different academic contexts.",
+          "expected_output": "A completed comparison table with at least three strategies evaluated and justified differences noted for each criterion.",
+          "support_note": "Remember that effectiveness depends on context; avoid assuming one strategy is universally best.",
+          "materials": {
+            "worked_example": "### Worked Example: Comparing Three Self-Directed Learning Strategies\n\nThis example compares three common self-directed learning strategies: **Goal-Oriented Learning**, **Reflective Learning**, and **Resource-Based Learning**. The comparison focuses on applicability, ease of use, and effectiveness in different academic contexts.\n\n| Strategy              | Applicability                                         | Ease of Use                                      | Effectiveness in Academic Contexts                  |\n|-----------------------|-----------------------------------------------------|-------------------------------------------------|-----------------------------------------------------|\n| Goal-Oriented Learning | Best for structured courses with clear objectives. | Moderate; requires setting and tracking goals.  | Highly effective when goals are specific and measurable. |\n| Reflective Learning    | Suitable for courses emphasizing critical thinking.| Moderate; needs regular reflection time.        | Effective for developing deeper understanding and self-awareness. |\n| Resource-Based Learning| Works well in research-heavy or exploratory subjects.| Easy; focuses on gathering and using resources. | Effective when diverse materials are available and learner is motivated. |\n\n**Reasoning Steps:**  \n- **Applicability:** Goal-Oriented Learning fits well where course outcomes are defined, while Reflective Learning suits courses that encourage critical thinking. Resource-Based Learning thrives in open-ended research contexts.  \n- **Ease of Use:** Resource-Based Learning is easiest because it involves collecting materials without strict schedules. Goal-Oriented and Reflective Learning require more planning and discipline.  \n- **Effectiveness:** Goal-Oriented Learning is effective when goals are clear; Reflective Learning deepens understanding but needs commitment; Resource-Based Learning effectiveness depends on learner motivation and resource quality.\n\nThis example demonstrates how different strategies suit different contexts and learner preferences.",
+            "comparison_table": "| Strategy                  | Applicability (contexts where useful) | Ease of Use (how easy to implement) | Effectiveness (impact on learning outcomes) | Justification (your reasoning)             |\n|---------------------------|--------------------------------------|------------------------------------|---------------------------------------------|--------------------------------------------|\n| Goal-Oriented Learning    |                                      |                                    |                                             |                                            |\n| Reflective Learning       |                                      |                                    |                                             |                                            |\n| Resource-Based Learning   |                                      |                                    |                                             |                                            |\n\n**Instructions:**  \n- Fill in the table by evaluating each strategy against the three criteria: applicability, ease of use, and effectiveness.  \n- Provide your justification for each rating in the last column, explaining why you rated the strategy as you did.  \n- Use the worked example (M1) as a guide but develop your own evaluations and reasoning.",
+            "sample_output": "| Strategy                  | Applicability (contexts where useful)                   | Ease of Use (how easy to implement)           | Effectiveness (impact on learning outcomes)          | Justification (your reasoning)                                         |\n|---------------------------|--------------------------------------------------------|-----------------------------------------------|------------------------------------------------------|------------------------------------------------------------------------|\n| Goal-Oriented Learning    | Structured courses with clear objectives                | Moderate; requires goal setting and tracking | High when goals are specific and measurable          | Clear goals help focus effort, but requires discipline to track progress. |\n| Reflective Learning       | Courses emphasizing critical thinking and analysis     | Moderate; needs scheduled reflection time    | Effective for deep understanding and self-awareness | Reflection deepens learning but needs time commitment.                 |\n| Resource-Based Learning   | Research or exploratory subjects with abundant materials| Easy; mainly involves gathering resources    | Effective if learner is motivated and resources rich | Easy to start but depends on learner initiative and resource quality.  |",
+            "checklist": "### Self-Directed Learning Strategies Evaluation Checklist\n\nUse this checklist to verify the completeness and quality of your comparison table.\n\n- [ ] Have you evaluated all three strategies for applicability, ease of use, and effectiveness?  \n- [ ] Does your justification explain the differences clearly for each criterion?  \n- [ ] Have you considered the context-dependence of each strategy’s effectiveness?  \n- [ ] Is your comparison free from assumptions that one strategy is always the best?\n\n**If you answered no to any item, revisit your comparison table and improve your evaluation and justifications.**"
+          }
+        },
+        {
+          "title": "Design Your Personalized Learning Plan",
+          "duration_minutes": 25,
+          "activity_preamble": "Creating a personalized learning plan helps you set clear goals, identify resources, and manage your time effectively. This foundational skill supports sustained independent study and academic success.",
+          "reasoning_orientation": "Engage in practical planning by integrating goal setting, resource identification, and time management into a coherent plan.",
+          "transfer_or_application_task": "Apply planning skills to your own academic context by designing a plan tailored to your goals and available resources.",
+          "learner_task": "Review the model personalized learning plan and then develop your own plan incorporating specific goals, identified resources, and a time management schedule.",
+          "expected_output": "A personalized learning plan document that clearly states goals, lists resources, and includes a time management schedule.",
+          "support_note": "Ensure your goals are specific and measurable; resources should be realistic and accessible; time management should balance study with other commitments.",
+          "intellectual_coherence_bridge": "Building on your understanding of learning strategies, this activity focuses on applying that knowledge to create a concrete plan tailored to your needs.",
+          "materials": {
+            "worked_example": "### Worked Example: Personalized Learning Plan\n\n**Goals:**  \n- Complete all weekly readings before Friday each week.  \n- Improve academic writing skills by practicing one essay per month.  \n- Participate actively in online discussion forums twice a week.\n\n**Resources:**  \n- Course textbooks and articles available in the library and online.  \n- Writing center workshops and online tutorials.  \n- Peer study group and discussion forums on the learning platform.\n\n**Time Management Schedule:**  \n| Day       | Time Slot       | Activity                                   |\n|-----------|-----------------|--------------------------------------------|\n| Monday    | 6:00–7:00 pm    | Reading assigned chapters                   |\n| Wednesday | 6:00–7:00 pm    | Writing practice and peer feedback          |\n| Friday    | 5:00–6:00 pm    | Participate in discussion forums            |\n| Sunday    | 3:00–4:00 pm    | Review and plan for next week                |\n\nThis plan balances specific goals with realistic resource use and a manageable schedule, supporting steady progress.",
+            "template": "### Personalized Learning Plan Template\n\n**1. Learning Goals**  \n- Goal 1: ___________________________________________  \n- Goal 2: ___________________________________________  \n- Goal 3: ___________________________________________\n\n**3. Time Management Schedule**  \n| Day       | Time Slot       | Planned Activity                             |\n|-----------|-----------------|----------------------------------------------|\n|           |                 |                                              |\n|           |                 |                                              |\n|           |                 |                                              |\n|           |                 |                                              |\n\n**Instructions:**  \n- Write specific and measurable goals.  \n- List realistic and accessible resources.  \n- Fill in a weekly schedule balancing study and other commitments.",
+            "checklist": "### Personalized Learning Plan Verification Checklist\n\nUse this checklist to ensure your learning plan is well-constructed.\n\n- [ ] Are your goals specific, measurable, and achievable?  \n- [ ] Are the resources you listed relevant and accessible?  \n- [ ] Does your time management schedule realistically balance study with other commitments?  \n- [ ] Is your plan coherent, with goals, resources, and schedule aligned?\n\n**If any item is unchecked, revise your plan accordingly.**"
+          }
+        },
+        {
+          "title": "Apply Self-Assessment Techniques to Monitor and Adjust Your Learning",
+          "duration_minutes": 15,
+          "activity_preamble": "Self-assessment is key to effective autonomous learning, enabling you to monitor progress and adapt your approaches. This activity develops reflective practice skills essential for continuous improvement.",
+          "reasoning_orientation": "Analyze your learning progress and identify adjustments needed by applying self-assessment techniques.",
+          "transfer_or_application_task": "Use self-assessment methods to evaluate your current learning plan and propose actionable adjustments.",
+          "learner_task": "Study the modelling note illustrating self-assessment steps and then complete the self-assessment checklist for your personalized learning plan. Based on your evaluation, draft a brief reflection proposing adjustments to your learning approach.",
+          "expected_output": "A completed self-assessment checklist and a reflective memo outlining proposed learning adjustments with justifications.",
+          "support_note": "Focus on honest evaluation; adjustments should be practical and aligned with your goals.",
+          "intellectual_coherence_bridge": "This activity leverages your personalized plan to develop adaptive learning skills through reflective self-assessment.",
+          "materials": {
+            "modelling_note": "### Modelling Note: Using Self-Assessment to Monitor and Adjust Learning\n\nSelf-assessment involves reflecting on your progress and identifying areas for improvement. Here is a stepwise approach:\n\n1. **Review Your Goals:** Check if your current activities align with your stated goals.  \n2. **Evaluate Progress:** Assess how much you have accomplished toward each goal.  \n3. **Identify Challenges:** Note any difficulties or barriers you have encountered.  \n4. **Consider Resource Use:** Reflect on whether your resources are sufficient and effectively used.  \n5. **Assess Time Management:** Determine if your schedule supports your learning or needs adjustment.  \n6. **Plan Adjustments:** Based on your evaluation, decide what changes to make to improve your learning outcomes.\n\nFor example, if you find you are not meeting writing practice goals due to lack of time, you might adjust your schedule or seek additional support.",
+            "checklist": "Use this checklist to evaluate your learning plan and progress.\n\n- [ ] Are your current activities aligned with your learning goals?  \n- [ ] Have you made measurable progress toward each goal?  \n- [ ] Are you effectively using your identified resources?  \n- [ ] Is your time management schedule supporting your learning needs?\n\n**If you find gaps or challenges, consider what adjustments are needed to improve your plan.**",
+            "template": "### Reflection Memo Template: Proposing Learning Adjustments\n\n**1. Summary of Current Learning Approach:**  \nDescribe briefly your current learning plan and activities.\n\n**3. Proposed Adjustments:**  \n- Adjustment 1: ___________________________________________  \n- Adjustment 2: ___________________________________________  \n- Adjustment 3: ___________________________________________\n\n**4. Justification for Adjustments:**  \nExplain why these changes will help you better achieve your learning goals."
+          }
+        },
+        {
+          "title": "Synthesize Your Autonomous Learning Skills",
+          "duration_minutes": 10,
+          "activity_preamble": "Integrating evaluation, planning, and self-assessment skills empowers you to manage your learning independently and effectively. This synthesis activity consolidates your understanding and prepares you for ongoing autonomous learning.",
+          "transfer_or_application_task": "Combine your insights from strategy evaluation, personalized planning, and self-assessment to create a comprehensive self-directed learning memo.",
+          "learner_task": "Compose a reflective memo summarizing your chosen learning strategies, your personalized learning plan, and your approach to self-assessment and adjustment. Justify your choices and explain how these elements work together to support your academic success.",
+          "expected_output": "A reflective memo of at least 80 words that synthesizes your autonomous learning approach with clear justification and integration of key concepts.",
+          "support_note": "Focus on coherence and justification rather than mere description; highlight how your approach supports sustained learning.",
+          "intellectual_coherence_bridge": "This final activity integrates all prior learning moves into a coherent autonomous learning framework for your academic journey.",
+          "materials": {
+            "consolidation_summary": "### Reflective Synthesis Memo Guidance\n\nTo consolidate your autonomous learning skills, compose a reflective memo that integrates your learning journey. Use the following guidance:\n\n- Begin by summarizing the self-directed learning strategies you have evaluated and chosen, highlighting why these strategies fit your academic context.  \n- Describe your personalized learning plan, emphasizing how your goals, resources, and time management align to support your learning.  \n- Explain your approach to self-assessment and adjustment, showing how you monitor progress and make informed changes.  \n- Focus on coherence: how these elements work together to empower your autonomous learning and academic success.  \n- Provide clear justifications for your choices, demonstrating your understanding of the principles behind effective self-directed learning.\n\nUse this guidance to structure your memo, aiming for clarity, integration, and justification rather than simple description.",
+            "prompt_set": "### Reflection Prompts for Your Autonomous Learning Memo\n\nUse these prompts to help you synthesize and justify your autonomous learning approach:\n\n- What are the key differences between the learning strategies you considered, and why did you select the ones you did?  \n- How do your learning goals reflect your academic needs and personal motivations?  \n- In what ways does your resource selection support your goals and learning style?  \n- How does your time management schedule help balance your study and other commitments?  \n- How do you use self-assessment to identify when and how to adjust your learning plan?  \n- How do these elements together create a sustainable and effective autonomous learning process?\n\nReflect on these questions as you compose your memo to ensure a thorough and well-justified synthesis."
+          }
+        }
+      ]
+    },
+    {
+      "heading": "Study Tips for Effective Self-Directed Learning",
+      "content": "- Approach each activity with an open and reflective mindset, focusing on understanding how different strategies fit your context.\n- Take notes as you complete tables and checklists to deepen your reasoning and support your self-explanations.\n- Use the checklists as guides to verify the quality and completeness of your work before moving on.\n- Balance your time realistically, allowing for reflection and adjustment as you progress through the activities.\n- Keep your goals specific and measurable to track progress effectively and make meaningful adjustments.\n- Integrate insights from each activity to build a coherent and sustainable autonomous learning approach."
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved all activity_preamble, cognition fields, bridges, and materials verbatim",
+    "Included all upstream activities with full materials",
+    "Structured page for learner audience with clear headings and readable prose",
+    "Maintained LD-MATERIALS-COPY and LD-TABLE-FIDELITY for materials",
+    "No paraphrasing or summarizing of materials content",
+    "Included study tips distinct from activity descriptions",
+    "No omission of activities"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Contains a detailed comparison table and worked example supporting classification and evaluation reasoning."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Includes a worked example and planning template; visual summary deferred until after example engagement."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Modelling note and checklist support reflective classification; visual generation deferred pending worked example use."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "low",
+        "rationale": "Reflective memo guidance and prompts are text-based synthesis; visual aids add limited pedagogical value."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A1-comparison-01",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "rationale": "Classify and compare self-directed learning strategies using the detailed table and worked example to scaffold reasoning.",
+      "visual_slot": "materials-entry",
+      "tier": "essential",
+      "purpose": "comparison",
+      "preferred_representation": "comparison_framework",
+      "pedagogical_added_value": "Supports learners in distinguishing strategy features and contextual suitability through structured comparison.",
+      "reasoning_supported": "Enables evaluation and justification of strategy differences.",
+      "learner_stage": "comparison and evaluation",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Strategy comparison with contextual criteria.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "Goal-Oriented Learning",
+        "Reflective Learning",
+        "Resource-Based Learning"
+      ],
+      "must_not_show": [
+        "completed justification cells"
+      ],
+      "allowed_claims": [
+        "Different strategies suit different academic contexts."
+      ],
+      "disallowed_claims": [
+        "One strategy is best for all contexts."
+      ],
+      "source_basis": "A1 learner_task; A1 materials.worked_example; A1 materials.comparison_table",
+      "caption_intent": "Support discriminating evaluation of self-directed learning strategies.",
+      "discipline_risk_level": "low"
+    },
+    {
+      "affordance_id": "va-A2-planning-01",
+      "activity_id": "A2",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "rationale": "Learners should engage with the worked example and template before any visual summary to build planning skills."
+    },
+    {
+      "affordance_id": "va-A3-selfassessment-01",
+      "activity_id": "A3",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "rationale": "Modelling note and checklist provide sufficient scaffolding; visual classification deferred until after learner engagement."
+    },
+    {
+      "affordance_id": "va-A4-synthesis-01",
+      "activity_id": "A4",
+      "visual_decision": "reject",
+      "rejection_reason": "debrief_without_new_reasoning",
+      "rationale": "Reflective synthesis is text-based; visual aids would duplicate prompts without adding pedagogical value."
+    }
+  ],
+  "generation_notes": {
+    "limitations": [],
+    "activities_omitted": []
+  }
+}
+```

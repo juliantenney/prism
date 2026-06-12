@@ -1,0 +1,221 @@
+Activity: Foundations of Supply and Demand  
+Activity ID: A1  
+Mapped outcomes: Explain the basic principles of supply and demand and how they determine market equilibrium.
+
+Material: M1 (worked_example)  
+Purpose: explanatory teaching  
+Content:  
+### Worked Example: Understanding Supply and Demand Curves and Market Equilibrium
+
+This example illustrates how supply and demand curves interact to determine the market equilibrium price and quantity.
+
+- **Supply Curve:** Shows the relationship between price and quantity supplied. As price increases, suppliers are willing to offer more goods.
+- **Demand Curve:** Shows the relationship between price and quantity demanded. As price decreases, consumers want to buy more.
+
+**Graphical Illustration:**  
+- The supply curve slopes upward from left to right.  
+- The demand curve slopes downward from left to right.  
+- The point where these two curves intersect is the **market equilibrium**.
+
+**Stepwise Explanation:**  
+1. At prices above equilibrium, quantity supplied exceeds quantity demanded, causing a surplus. Sellers lower prices to clear excess stock.  
+2. At prices below equilibrium, quantity demanded exceeds quantity supplied, causing a shortage. Buyers compete, pushing prices up.  
+3. The equilibrium price is where quantity demanded equals quantity supplied, and the market clears with no surplus or shortage.  
+4. Changes in supply or demand shift the curves, moving the equilibrium point accordingly.
+
+This example helps you visualize how buyers and sellers interact in a market to set prices and quantities.
+
+---
+
+Material: M2 (task_cards)  
+Purpose: practice and reflection  
+Content:  
+### Task Cards: Supply, Demand, and Market Equilibrium
+
+1. **Identify the supply curve:** Describe how the supply curve behaves as price changes.  
+2. **Identify the demand curve:** Describe how the demand curve behaves as price changes.  
+3. **Explain equilibrium:** In your own words, explain what market equilibrium means.  
+4. **Effect of a price above equilibrium:** What happens to quantity supplied and demanded?  
+5. **Effect of a price below equilibrium:** What happens to quantity supplied and demanded?  
+6. **Curve shifts:** How does an increase in demand affect the equilibrium price and quantity?  
+7. **Curve shifts:** How does a decrease in supply affect the equilibrium price and quantity?
+
+Complete these cards by writing your explanations based on the worked example.
+
+---
+
+Material: M3 (checklist)  
+Purpose: verification  
+Content:  
+### Understanding Supply and Demand Principles Checklist
+
+- [ ] Can you explain how the supply curve shows the relationship between price and quantity supplied?  
+- [ ] Can you explain how the demand curve shows the relationship between price and quantity demanded?  
+- [ ] Can you identify the market equilibrium point on a graph?  
+- [ ] Can you describe what happens when the price is above the equilibrium?  
+- [ ] Can you describe what happens when the price is below the equilibrium?  
+- [ ] Can you explain how shifts in supply or demand curves affect the equilibrium price and quantity?  
+
+If you find any item difficult, review the worked example and task cards again.
+
+---
+
+Activity: Analyzing Shifts in Supply and Demand  
+Activity ID: A2  
+Mapped outcomes: Analyze the effects of shifts in supply and demand curves on price and quantity in a market.
+
+Material: M4 (modelling_note)  
+Purpose: worked analytic pass  
+Content:  
+### Modelling Note: Supply and Demand Curve Shifts and Market Effects
+
+This note explains how shifts in supply and demand curves affect market price and quantity.
+
+- **Shift in Demand Curve:**  
+  - **Increase in demand:** The demand curve shifts rightward. At every price, consumers want more.  
+  - **Effect:** Equilibrium price and quantity both increase.  
+  - **Decrease in demand:** The demand curve shifts leftward. Consumers want less at every price.  
+  - **Effect:** Equilibrium price and quantity both decrease.
+
+- **Shift in Supply Curve:**  
+  - **Increase in supply:** The supply curve shifts rightward. Suppliers offer more at every price.  
+  - **Effect:** Equilibrium price decreases, quantity increases.  
+  - **Decrease in supply:** The supply curve shifts leftward. Suppliers offer less at every price.  
+  - **Effect:** Equilibrium price increases, quantity decreases.
+
+**Important Distinction:**  
+- **Shift of a curve** means the entire curve moves left or right due to external factors (e.g., income changes, production costs).  
+- **Movement along a curve** means a change in quantity demanded or supplied due to a price change, not a shift.
+
+Understanding these differences helps correctly analyze market changes.
+
+---
+
+Material: M5 (analysis_table)  
+Purpose: practice and guided judgement  
+Content:  
+### Analysis Table: Identifying Shifts in Supply and Demand
+
+| Scenario Description                              | Type of Shift       | Cause                         | Effect on Price           | Effect on Quantity        | Justification/Notes                        |
+|-------------------------------------------------|---------------------|-------------------------------|---------------------------|---------------------------|--------------------------------------------|
+| Example: A new technology reduces production cost | Supply curve shifts right | Lower production costs          | Price decreases           | Quantity increases        | Lower costs increase supply, shifting curve right |
+|                                                 |                     |                               |                           |                           |                                            |
+|                                                 |                     |                               |                           |                           |                                            |
+|                                                 |                     |                               |                           |                           |                                            |
+
+Complete the empty rows by describing the scenario, identifying the type of shift, cause, and effects on price and quantity. Use the modelling note to guide your answers.
+
+---
+
+Material: M6 (checklist)  
+Purpose: verification  
+Content:  
+### Verification Checklist: Identifying Shifts and Market Effects
+
+- [ ] Can you distinguish between a shift of a curve and a movement along a curve?  
+- [ ] Can you correctly identify whether a scenario involves a supply or demand curve shift?  
+- [ ] Can you explain the cause of the shift in each scenario?  
+- [ ] Can you predict the effect of the shift on equilibrium price?  
+- [ ] Can you predict the effect of the shift on equilibrium quantity?  
+
+Review your analysis table answers if you are unsure about any of these points.
+
+---
+
+Activity: Calculating Market Equilibrium  
+Activity ID: A3  
+Mapped outcomes: Calculate equilibrium price and quantity given supply and demand equations or data.
+
+Material: M7 (worked_example)  
+Purpose: explanatory teaching  
+Content:  
+### Worked Example: Calculating Market Equilibrium from Equations
+
+Given the supply and demand equations:  
+- Demand: \( Q_d = 100 - 2P \)  
+- Supply: \( Q_s = 20 + 3P \)
+
+**Step 1: Set quantity demanded equal to quantity supplied to find equilibrium:**  
+\[
+100 - 2P = 20 + 3P
+\]
+
+**Step 2: Solve for \(P\):**  
+\[
+100 - 20 = 3P + 2P \\
+80 = 5P \\
+P = \frac{80}{5} = 16
+\]
+
+**Step 3: Substitute \(P=16\) into either equation to find equilibrium quantity:**  
+\[
+Q_d = 100 - 2(16) = 100 - 32 = 68
+\]
+
+**Step 4: Interpretation:**  
+- The equilibrium price is 16.  
+- The equilibrium quantity is 68 units.
+
+**Why this works:**  
+Equilibrium occurs where the quantity consumers want to buy equals the quantity producers want to sell. Setting the equations equal finds that price and quantity.
+
+---
+
+Material: M8 (task_cards)  
+Purpose: practice  
+Content:  
+### Task Cards: Calculating Equilibrium Price and Quantity
+
+1. Given demand \( Q_d = 150 - 3P \) and supply \( Q_s = 30 + 2P \), calculate the equilibrium price and quantity. Show all steps.  
+2. For demand \( Q_d = 200 - 4P \) and supply \( Q_s = 50 + P \), find the equilibrium price and quantity. Explain your reasoning.  
+3. Given demand \( Q_d = 120 - P \) and supply \( Q_s = 40 + 4P \), calculate equilibrium and describe what the result means.  
+
+Write your stepwise calculations and explanations clearly.
+
+---
+
+Material: M9 (checklist)  
+Purpose: verification  
+Content:  
+### Verification Checklist: Calculating Market Equilibrium
+
+- [ ] Did you correctly set the demand and supply equations equal to each other?  
+- [ ] Did you solve the resulting equation accurately for price?  
+- [ ] Did you substitute the equilibrium price back into one of the equations to find quantity?  
+- [ ] Did you explain why setting supply equal to demand finds the equilibrium?  
+- [ ] Are your calculations clearly shown step-by-step?  
+
+If you missed any step, revisit the worked example and redo the calculations.
+
+---
+
+Activity: Workshop Consolidation and Reflection  
+Activity ID: A4  
+Mapped outcomes: Explain the basic principles of supply and demand and how they determine market equilibrium., Analyze the effects of shifts in supply and demand curves on price and quantity in a market., Calculate equilibrium price and quantity given supply and demand equations or data.
+
+Material: M10 (consolidation_summary)  
+Purpose: session closure  
+Content:  
+### Consolidation Summary Template
+
+Write a summary of at least 80 words that captures three key ideas you have learned in this workshop. Use the prompts below to guide your writing:
+
+- **Key Idea 1:** What is one important principle about supply and demand or market equilibrium? Why does it matter?  
+- **Key Idea 2:** How do shifts in supply or demand curves affect prices and quantities? Why is understanding this important?  
+- **Key Idea 3:** What have you learned about calculating equilibrium price and quantity? How does this skill help you understand markets better?  
+
+Focus on explaining why these ideas matter and how they connect to your overall understanding of market behavior. Avoid just repeating definitions.
+
+---
+
+Material: M11 (prompt_set)  
+Purpose: reflection support  
+Content:  
+### Reflection Support Questions
+
+- What connections can you draw between the principles of supply and demand and the calculation of equilibrium?  
+- How might understanding shifts in supply and demand help you interpret real-world market changes?  
+- Which part of the workshop did you find most challenging, and how did you overcome it?  
+- How can you apply what you learned about market equilibrium to everyday economic decisions?  
+
+Use these questions to deepen your reflection as you write your consolidation summary.

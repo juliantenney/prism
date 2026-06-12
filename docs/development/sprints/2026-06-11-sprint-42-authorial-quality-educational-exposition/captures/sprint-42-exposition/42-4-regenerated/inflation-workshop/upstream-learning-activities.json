@@ -1,0 +1,54 @@
+{
+  "artifact_type": "learning_activities",
+  "title": "Inflation workshop activities",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Inflation concepts warm-up",
+      "duration_minutes": 15,
+      "grouping": "small_group",
+      "purpose": "Activate prior knowledge and agree a working definition of inflation.",
+      "learner_task": "Discuss in your group and complete the task cards.",
+      "materials": [],
+      "expected_output": "A shared definition plus evidence from scenarios.",
+      "support_note": "Circulate during minutes 5–12."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Measuring Inflation: Indicator Comparison",
+      "duration_minutes": 20,
+      "grouping": "small_group",
+      "learner_task": "Complete the comparison table and answer the discussion prompts.",
+      "materials": [],
+      "expected_output": "Completed table rows plus short answers to two prompts.",
+      "support_note": "Offer a worked example for CPI if groups stall in the first five minutes."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Household scenario — fixed income",
+      "duration_minutes": 10,
+      "grouping": "pair",
+      "learner_task": "Read all scenarios and complete the worksheet table.",
+      "materials": [],
+      "expected_output": "Completed worksheet rows for each scenario."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Household scenario — variable costs",
+      "duration_minutes": 10,
+      "grouping": "pair",
+      "learner_task": "Compare impacts across scenarios using the worksheet.",
+      "materials": [],
+      "expected_output": "A short comparison statement supported by table evidence."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Policy and communication wrap-up",
+      "duration_minutes": 5,
+      "grouping": "whole_group",
+      "learner_task": "Use the discussion prompts to debrief as a class.",
+      "materials": [],
+      "expected_output": "Two contributions per group to the whole-class discussion."
+    }
+  ]
+}

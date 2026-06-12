@@ -1,0 +1,174 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Foundations of Supply and Demand",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Explain the basic principles of supply and demand and how they determine market equilibrium."
+      ],
+      "activity_preamble": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources. This activity explores the core concepts that explain how buyers and sellers interact to establish prices and quantities in a market.",
+      "reasoning_orientation": "Focus on grasping how supply and demand curves represent market behavior and how their intersection defines equilibrium.",
+      "self_explanation_prompt": "Explain in your own words how supply and demand curves interact to determine the market equilibrium price and quantity.",
+      "learner_task": "Study the worked example illustrating supply and demand curves and their intersection. Then, complete the accompanying task cards that ask you to identify and explain key features of supply, demand, and equilibrium.",
+      "expected_output": "Completed task cards with explanations of supply, demand, and market equilibrium concepts, demonstrating understanding of how these principles interact.",
+      "support_note": "Pay attention to how changes in supply or demand affect the equilibrium point and use the example as a guide to your explanations.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "explanatory teaching",
+          "specification": "depth_floor: L3; graphical illustration of supply and demand curves intersecting at equilibrium with stepwise explanation."
+        },
+        {
+          "material_id": "M2",
+          "type": "task_cards",
+          "purpose": "practice and reflection",
+          "specification": "depth_floor: L3; questions prompting explanation of supply, demand, and equilibrium concepts based on the worked example."
+        },
+        {
+          "material_id": "M3",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "depth_floor: L3; criteria to verify understanding of supply and demand principles and equilibrium definition."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Analyzing Shifts in Supply and Demand",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the effects of shifts in supply and demand curves on price and quantity in a market."
+      ],
+      "activity_preamble": "Markets are dynamic, and shifts in supply or demand can change prices and quantities. This activity investigates how such shifts affect market outcomes and the underlying reasons for these changes.",
+      "conceptual_contrast_prompt": "Contrast the effects of a supply curve shift with those of a demand curve shift, noting common misconceptions such as confusing movement along a curve with a shift of the curve itself.",
+      "reasoning_orientation": "Analyze cause-effect relationships between curve shifts and market price and quantity changes using graphical reasoning.",
+      "self_explanation_prompt": "Describe how a shift in supply or demand affects equilibrium price and quantity, and justify your reasoning with reference to the curves.",
+      "learner_task": "Examine the modelling note showing examples of supply and demand shifts with their market impacts. Then, complete the analysis table by identifying the type of shift, its cause, and its effects on price and quantity for each scenario.",
+      "expected_output": "A completed analysis table correctly categorizing shifts, causes, and effects, demonstrating ability to interpret graphical market changes.",
+      "support_note": "Focus on distinguishing shifts from movements along curves and carefully link causes to effects in your explanations.",
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "modelling_note",
+          "purpose": "worked analytic pass",
+          "specification": "depth_floor: L3; annotated graphs illustrating supply and demand shifts with detailed explanations of resulting price and quantity changes."
+        },
+        {
+          "material_id": "M5",
+          "type": "analysis_table",
+          "purpose": "practice and guided judgement",
+          "specification": "depth_floor: L3; columns for scenario description, type of shift, cause, effect on price, effect on quantity, with one exemplar row."
+        },
+        {
+          "material_id": "M6",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "depth_floor: L3; criteria for correctly identifying shifts and their market effects."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Calculating Market Equilibrium",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Calculate equilibrium price and quantity given supply and demand equations or data."
+      ],
+      "activity_preamble": "Quantitative skills are essential for applying economic concepts. This activity develops your ability to calculate equilibrium price and quantity using supply and demand equations, a key tool for market analysis.",
+      "reasoning_orientation": "Follow stepwise algebraic reasoning to solve for equilibrium by setting supply equal to demand and solving for price and quantity.",
+      "self_explanation_prompt": "Explain each step of your calculation process and why setting supply equal to demand finds the equilibrium.",
+      "learner_task": "Study the worked example solving equilibrium from given linear supply and demand equations. Then, apply the method to calculate equilibrium price and quantity for provided practice problems.",
+      "expected_output": "Written calculations showing stepwise solution of equilibrium price and quantity for each practice problem, with explanations.",
+      "support_note": "Ensure you understand the rationale for equating supply and demand functions and carefully check your algebraic steps.",
+      "required_materials": [
+        {
+          "material_id": "M7",
+          "type": "worked_example",
+          "purpose": "explanatory teaching",
+          "specification": "depth_floor: L3; step-by-step algebraic solution of equilibrium price and quantity from supply and demand equations."
+        },
+        {
+          "material_id": "M8",
+          "type": "task_cards",
+          "purpose": "practice",
+          "specification": "depth_floor: L3; supply and demand equations for calculation practice with space for stepwise solutions."
+        },
+        {
+          "material_id": "M9",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "depth_floor: L3; criteria for correct algebraic steps, solution accuracy, and explanation clarity."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Workshop Consolidation and Reflection",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Explain the basic principles of supply and demand and how they determine market equilibrium.",
+        "Analyze the effects of shifts in supply and demand curves on price and quantity in a market.",
+        "Calculate equilibrium price and quantity given supply and demand equations or data."
+      ],
+      "activity_preamble": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently. Reflection deepens learning and highlights key takeaways.",
+      "transfer_or_application_task": "Synthesize your learning by summarizing the core principles, analysis skills, and calculation methods you have developed, and consider how these apply to real-world market situations.",
+      "learner_task": "Write a consolidation summary of at least 80 words that captures three key ideas from the workshop, explaining why they matter and how they connect to your understanding of markets.",
+      "expected_output": "A written consolidation summary that clearly articulates key concepts and skills learned, demonstrating integrated understanding.",
+      "support_note": "Focus on what you now understand about market equilibrium, shifts in supply and demand, and quantitative calculation, rather than repeating definitions.",
+      "required_materials": [
+        {
+          "material_id": "M10",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "depth_floor: L3; template or guide prompting synthesis of key ideas and reflection on learning."
+        },
+        {
+          "material_id": "M11",
+          "type": "prompt_set",
+          "purpose": "reflection support",
+          "specification": "depth_floor: L3; questions encouraging identification of important concepts, connections, and applications."
+        }
+      ]
+    }
+  ],
+  "outcome_alignment": [
+    {
+      "activity_id": "A1",
+      "learning_outcomes": [
+        "Explain the basic principles of supply and demand and how they determine market equilibrium."
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learning_outcomes": [
+        "Analyze the effects of shifts in supply and demand curves on price and quantity in a market."
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learning_outcomes": [
+        "Calculate equilibrium price and quantity given supply and demand equations or data."
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "learning_outcomes": [
+        "Explain the basic principles of supply and demand and how they determine market equilibrium.",
+        "Analyze the effects of shifts in supply and demand curves on price and quantity in a market.",
+        "Calculate equilibrium price and quantity given supply and demand equations or data."
+      ]
+    }
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 65,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

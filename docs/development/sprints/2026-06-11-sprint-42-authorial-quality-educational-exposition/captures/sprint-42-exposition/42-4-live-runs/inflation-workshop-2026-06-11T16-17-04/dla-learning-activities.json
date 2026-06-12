@@ -1,0 +1,176 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Analyze Sprint 42-4 Live Capture Documentation",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the structure and key elements of Sprint 42-4 live capture documentation to identify relevant data points for delivery context resolution."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Demonstrate analysis of live capture documentation",
+          "specification": "depth_floor: L3; stepwise annotated example highlighting key elements and data points relevant to delivery context resolution."
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Model completed analysis output",
+          "specification": "depth_floor: L3; exemplar analysis table showing extracted data points and their relevance to delivery context."
+        },
+        {
+          "material_id": "M3",
+          "type": "checklist",
+          "purpose": "Verification of analysis completeness and accuracy",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items including identification of key elements, correct data extraction, relevance to delivery context, and completeness."
+        }
+      ],
+      "learner_task": "Study the worked example and sample output carefully to understand how to extract and interpret key data points from Sprint 42-4 live capture documentation. Then, analyze the provided documentation to identify relevant data points that inform delivery context resolution.",
+      "expected_output": "A completed analysis table listing key elements and data points extracted from the live capture documentation, with notes on their relevance to delivery context resolution.",
+      "activity_preamble": "Understanding the structure and key elements of Sprint 42-4 live capture documentation is essential for accurately resolving delivery context scenarios. This activity explores how to identify and interpret critical data points that influence delivery decisions, building a foundation for applying contractual terms effectively.",
+      "reasoning_orientation": "Focus on analytical thinking to discern which parts of the documentation provide meaningful information for delivery context, distinguishing relevant details from peripheral data.",
+      "self_explanation_prompt": "Explain in your own words why each identified data point is important for resolving the delivery context and how it contributes to understanding the scenario.",
+      "checklist": {
+        "material_id": "M3"
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Apply Sprint 42 Contract Terms to Delivery Context Scenarios",
+      "grouping": "individual",
+      "duration_minutes": 25,
+      "mapped_learning_outcomes": [
+        "Apply Sprint 42 contract terms to evaluate and resolve delivery_context scenarios within the workshop framework."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "modelling_note",
+          "purpose": "Stepwise application of Sprint 42 contract terms",
+          "specification": "depth_floor: L3; detailed think-aloud modelling of applying contract clauses to a delivery context scenario, highlighting decision criteria and trade-offs."
+        },
+        {
+          "material_id": "M5",
+          "type": "task_cards",
+          "purpose": "Practice scenarios for contract application",
+          "specification": "depth_floor: L3; multiple delivery context scenarios requiring contract term evaluation and resolution, with space for learner notes."
+        },
+        {
+          "material_id": "M6",
+          "type": "checklist",
+          "purpose": "Verification of contract application accuracy",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items including correct identification of contract terms, appropriate application, justified decisions, and scenario alignment."
+        }
+      ],
+      "learner_task": "Review the modelling note demonstrating how Sprint 42 contract terms are applied to delivery context scenarios. Then, use the task cards to evaluate and resolve each scenario by applying the relevant contract clauses, justifying your decisions.",
+      "expected_output": "Completed scenario evaluations with clear application of Sprint 42 contract terms and justified resolutions for each delivery context scenario.",
+      "activity_preamble": "Applying contract terms to real delivery context scenarios ensures practical understanding of how contractual knowledge guides decision-making in workshops. This activity deepens your capability to interpret and use Sprint 42 contracts effectively in varied situations.",
+      "reasoning_orientation": "Engage in evaluative reasoning by linking contract clauses to scenario specifics and weighing options to reach justified resolutions.",
+      "transfer_or_application_task": "Apply contract evaluation moves to new delivery context scenarios, noting where contract assumptions may not fully hold or require adaptation.",
+      "checklist": {
+        "material_id": "M6"
+      }
+    },
+    {
+      "activity_id": "A3",
+      "title": "Design Learner Handout Content Aligned with Page_Profile Learner Model",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Design learner handout content that aligns with the page_profile learner model without including facilitator choreography in learner-visible fields."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M7",
+          "type": "text",
+          "purpose": "Explanatory guidance on page_profile learner model and handout design principles",
+          "specification": "depth_floor: L3; detailed exposition on learner model characteristics, separation of facilitator and learner content, and best practices for handout design."
+        },
+        {
+          "material_id": "M8",
+          "type": "template",
+          "purpose": "Learner handout design template",
+          "specification": "depth_floor: L3; structured template for creating learner handouts that exclude facilitator choreography and align with the page_profile learner model."
+        },
+        {
+          "material_id": "M9",
+          "type": "checklist",
+          "purpose": "Verification of handout design alignment",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items including alignment with learner model, exclusion of facilitator choreography, clarity, and learner accessibility."
+        }
+      ],
+      "learner_task": "Study the explanatory text on the page_profile learner model and handout design principles. Use the provided template to design a learner handout that aligns with the learner model and excludes any facilitator choreography from learner-visible fields. Verify your design using the checklist.",
+      "expected_output": "A learner handout draft that clearly aligns with the page_profile learner model, contains no facilitator choreography in learner-visible fields, and meets design best practices.",
+      "activity_preamble": "Designing learner handouts that respect the page_profile learner model while excluding facilitator choreography is crucial for clear, learner-focused materials. This activity cultivates your ability to create effective handouts that support independent learner engagement.",
+      "reasoning_orientation": "Apply design reasoning to differentiate learner-facing content from facilitator-only information, ensuring clarity and alignment with learner needs.",
+      "self_explanation_prompt": "Explain how your handout design decisions support learner understanding and why excluding facilitator choreography from learner-visible fields matters.",
+      "checklist": {
+        "material_id": "M9"
+      }
+    },
+    {
+      "activity_id": "A4",
+      "title": "Consolidation and Reflection on Delivery Context Resolution",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Analyze the structure and key elements of Sprint 42-4 live capture documentation to identify relevant data points for delivery context resolution.",
+        "Apply Sprint 42 contract terms to evaluate and resolve delivery_context scenarios within the workshop framework.",
+        "Design learner handout content that aligns with the page_profile learner model without including facilitator choreography in learner-visible fields."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M10",
+          "type": "consolidation_summary",
+          "purpose": "Session closure and reflection",
+          "specification": "depth_floor: L3; learner-facing summary requiring synthesis of key ideas, reflection on learning progress, and articulation of what to remember about delivery context resolution."
+        },
+        {
+          "material_id": "M11",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts",
+          "specification": "depth_floor: L3; prompts encouraging learners to articulate insights gained, remaining uncertainties, and next steps for applying knowledge independently."
+        }
+      ],
+      "learner_task": "Synthesize your learning from the previous activities by completing the consolidation summary. Reflect on the key concepts of delivery context resolution, contract application, and learner handout design. Use the reflection prompts to deepen your understanding and plan future learning steps.",
+      "expected_output": "A written consolidation summary of at least 80 words that integrates the main ideas from the session and a reflective response to the prompts.",
+      "activity_preamble": "Bringing together your analysis, application, and design work helps solidify your understanding of delivery context resolution within the Sprint 42-4 framework. Reflection fosters metacognitive awareness and prepares you for independent application.",
+      "transfer_or_application_task": "Integrate insights from analysis, contract application, and design to plan how you would approach delivery context resolution in a new workshop setting.",
+      "checklist": {
+        "material_id": "M10"
+      }
+    }
+  ],
+  "outcome_alignment": [
+    {
+      "learning_outcome_id": "LO1",
+      "mapped_activities": [
+        "A1",
+        "A4"
+      ]
+    },
+    {
+      "learning_outcome_id": "LO2",
+      "mapped_activities": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "learning_outcome_id": "LO3",
+      "mapped_activities": [
+        "A3",
+        "A4"
+      ]
+    }
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 75,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

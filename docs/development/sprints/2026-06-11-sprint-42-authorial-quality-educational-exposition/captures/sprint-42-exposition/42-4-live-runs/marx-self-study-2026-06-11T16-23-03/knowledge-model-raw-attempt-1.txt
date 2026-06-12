@@ -1,0 +1,122 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Historical Materialism",
+      "definition": "The idea that material conditions and economic activities drive historical change."
+    },
+    {
+      "name": "Class Struggle",
+      "definition": "The conflict between different social classes, particularly between the proletariat (workers) and bourgeoisie (capitalist owners), over control of resources and power."
+    },
+    {
+      "name": "Surplus Value",
+      "definition": "The value produced by workers in excess of their wages, which is appropriated by capitalists as profit."
+    },
+    {
+      "name": "Alienation",
+      "definition": "The condition in which workers feel disconnected from the products they make, the production process, and their own human potential."
+    },
+    {
+      "name": "Commodity Fetishism",
+      "definition": "The perception of social relationships involved in production as economic relationships among the money and commodities exchanged in market trade."
+    },
+    {
+      "name": "Capital Accumulation",
+      "definition": "The process of generating and reinvesting surplus value to increase capital wealth."
+    },
+    {
+      "name": "Proletariat and Bourgeoisie",
+      "definition": "The two main social classes in capitalist society: the proletariat are the working class who sell their labor, and the bourgeoisie are the capitalist owners who control the means of production."
+    }
+  ],
+  "relationships": [
+    {
+      "type": "causes",
+      "from": "Historical Materialism",
+      "to": "Class Struggle"
+    },
+    {
+      "type": "part-of",
+      "from": "Surplus Value",
+      "to": "Capital Accumulation"
+    },
+    {
+      "type": "contrasts",
+      "from": "The Communist Manifesto",
+      "to": "Das Kapital"
+    },
+    {
+      "type": "enables",
+      "from": "Marx's Exile and Development of Historical Materialism",
+      "to": "Historical Materialism"
+    },
+    {
+      "type": "illustrates",
+      "from": "Factory Scenario Illustrating Surplus Value and Alienation",
+      "to": "Surplus Value"
+    },
+    {
+      "type": "illustrates",
+      "from": "Factory Scenario Illustrating Surplus Value and Alienation",
+      "to": "Alienation"
+    },
+    {
+      "type": "illustrates",
+      "from": "Factory Scenario Illustrating Surplus Value and Alienation",
+      "to": "Class Struggle"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Marx's Key Concepts",
+      "members": [
+        "Historical Materialism",
+        "Class Struggle",
+        "Surplus Value",
+        "Alienation",
+        "Commodity Fetishism",
+        "Capital Accumulation",
+        "Proletariat and Bourgeoisie"
+      ]
+    },
+    {
+      "name": "Major Works",
+      "members": [
+        "The Communist Manifesto",
+        "Das Kapital"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Development of Marx's Theories",
+      "steps": [
+        "Early academic years in Trier and Berlin focusing on philosophy",
+        "Journalistic work in Paris and Brussels exposing him to working-class struggles",
+        "Later years in London writing major works on political economy and revolutionary activism"
+      ]
+    },
+    {
+      "name": "Application of Marx's Core Concepts in a Factory Scenario",
+      "steps": [
+        "Workers sell their labor power but receive wages less than the value they produce",
+        "Surplus value is created and appropriated by capitalists",
+        "Workers experience alienation from the products and production process",
+        "Class struggle arises between capitalist owners and proletariat workers",
+        "Potential for worker resistance or reform is highlighted"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "description": "The Communist Manifesto and Das Kapital serve the same purpose and audience.",
+      "clarification": "The Communist Manifesto is a concise political pamphlet aimed at a broad audience calling for revolution, while Das Kapital is a detailed economic critique intended for scholars and activists."
+    },
+    {
+      "description": "Marx's theories emerged independently of his life experiences.",
+      "clarification": "Marx's theories were responses to the social and economic conditions he witnessed, shaped by his life phases and political involvement."
+    }
+  ]
+}
+```

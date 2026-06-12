@@ -1,0 +1,44 @@
+{
+  "title": "Self-Directed Study on Karl Marx: Life, Theory, and Application",
+  "sections": [
+    {
+      "title": "1. Introduction to Karl Marx and His Life Phases",
+      "content": "Karl Marx (1818–1883) was a German philosopher, economist, and social theorist whose ideas have profoundly influenced political thought and social sciences. Understanding Marx’s theories requires exploring his life in phases, as his experiences shaped his thinking. Key phases include his early academic years in Trier and Berlin, his journalistic work in Paris and Brussels, and his later years in London where he wrote his major works. Each phase reflects shifts in his focus from philosophy to political economy and revolutionary activism."
+    },
+    {
+      "title": "2. Linking Life Experiences to Marx’s Theories",
+      "content": "Marx’s theories did not emerge in isolation but were responses to the social and economic conditions he witnessed. For example, his experience with industrial capitalism in 19th-century Europe led him to analyze class struggle and exploitation. His involvement with socialist movements influenced his critique of capitalism’s inequalities. This section examines cause-effect links such as how his exile in Paris exposed him to working-class struggles, fueling his development of historical materialism—the idea that material conditions and economic activities drive historical change."
+    },
+    {
+      "title": "3. Comparing The Communist Manifesto and Das Kapital",
+      "content": "The Communist Manifesto (1848), co-authored with Friedrich Engels, is a concise political pamphlet calling for proletarian revolution and the overthrow of capitalist societies. It outlines the theory of class struggle and the historical inevitability of communism. Das Kapital (first volume published in 1867) is a detailed economic analysis of capitalism’s mechanisms, focusing on concepts like surplus value, commodity fetishism, and capital accumulation. This section compares their purposes, audiences, and depth: the Manifesto is a rallying call accessible to a broad audience, while Das Kapital is a rigorous critique aimed at scholars and activists."
+    },
+    {
+      "title": "4. Applying Marx’s Core Concepts to a Factory Scenario",
+      "content": "To understand Marx’s relevance today, apply his core concepts to a factory setting: - **Labor and Exploitation:** Workers sell their labor power but receive wages less than the value they produce, creating surplus value for capitalists. - **Alienation:** Factory workers may feel disconnected from the products they make, the production process, and their own human potential. - **Class Struggle:** The factory represents the conflict between the capitalist owners and the proletariat workers. This section includes a practical example of how a factory’s operation illustrates Marx’s critique of capitalism and highlights potential areas for worker resistance or reform."
+    }
+  ],
+  "key_concepts": [
+    "Historical Materialism",
+    "Class Struggle",
+    "Surplus Value",
+    "Alienation",
+    "Commodity Fetishism",
+    "Capital Accumulation",
+    "Proletariat and Bourgeoisie"
+  ],
+  "examples": [
+    {
+      "title": "Marx’s Exile and Development of Historical Materialism",
+      "description": "Marx’s forced exile from Germany and Paris exposed him to different political environments and working-class struggles, which helped him formulate the idea that economic conditions shape society’s structure and history."
+    },
+    {
+      "title": "Comparison of The Communist Manifesto and Das Kapital",
+      "description": "The Manifesto’s call for revolution contrasts with Das Kapital’s detailed economic critique, illustrating different approaches to understanding and challenging capitalism."
+    },
+    {
+      "title": "Factory Scenario Illustrating Surplus Value and Alienation",
+      "description": "In a factory, workers produce goods worth more than their wages, generating profit for owners. Workers may feel alienated because they have no control over production or ownership of the products."
+    }
+  ]
+}

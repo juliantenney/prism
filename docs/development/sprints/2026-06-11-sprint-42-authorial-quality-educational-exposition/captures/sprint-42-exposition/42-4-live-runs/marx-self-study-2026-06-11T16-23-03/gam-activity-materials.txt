@@ -1,0 +1,228 @@
+Activity: Explore and Compare Self-Directed Learning Strategies  
+Activity ID: A1  
+Mapped outcomes: Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts.
+
+Material: M1 (worked_example)  
+Purpose: model reasoning  
+Content:  
+### Worked Example: Comparing Three Self-Directed Learning Strategies
+
+This example compares three common self-directed learning strategies: **Goal-Oriented Learning**, **Reflective Learning**, and **Resource-Based Learning**. The comparison focuses on applicability, ease of use, and effectiveness in different academic contexts.
+
+| Strategy              | Applicability                                         | Ease of Use                                      | Effectiveness in Academic Contexts                  |
+|-----------------------|-----------------------------------------------------|-------------------------------------------------|-----------------------------------------------------|
+| Goal-Oriented Learning | Best for structured courses with clear objectives. | Moderate; requires setting and tracking goals.  | Highly effective when goals are specific and measurable. |
+| Reflective Learning    | Suitable for courses emphasizing critical thinking.| Moderate; needs regular reflection time.        | Effective for developing deeper understanding and self-awareness. |
+| Resource-Based Learning| Works well in research-heavy or exploratory subjects.| Easy; focuses on gathering and using resources. | Effective when diverse materials are available and learner is motivated. |
+
+**Reasoning Steps:**  
+- **Applicability:** Goal-Oriented Learning fits well where course outcomes are defined, while Reflective Learning suits courses that encourage critical thinking. Resource-Based Learning thrives in open-ended research contexts.  
+- **Ease of Use:** Resource-Based Learning is easiest because it involves collecting materials without strict schedules. Goal-Oriented and Reflective Learning require more planning and discipline.  
+- **Effectiveness:** Goal-Oriented Learning is effective when goals are clear; Reflective Learning deepens understanding but needs commitment; Resource-Based Learning effectiveness depends on learner motivation and resource quality.
+
+This example demonstrates how different strategies suit different contexts and learner preferences.
+
+---
+
+Material: M2 (comparison_table)  
+Purpose: practice evaluation  
+Content:  
+| Strategy                  | Applicability (contexts where useful) | Ease of Use (how easy to implement) | Effectiveness (impact on learning outcomes) | Justification (your reasoning)             |
+|---------------------------|--------------------------------------|------------------------------------|---------------------------------------------|--------------------------------------------|
+| Goal-Oriented Learning    |                                      |                                    |                                             |                                            |
+| Reflective Learning       |                                      |                                    |                                             |                                            |
+| Resource-Based Learning   |                                      |                                    |                                             |                                            |
+
+**Instructions:**  
+- Fill in the table by evaluating each strategy against the three criteria: applicability, ease of use, and effectiveness.  
+- Provide your justification for each rating in the last column, explaining why you rated the strategy as you did.  
+- Use the worked example (M1) as a guide but develop your own evaluations and reasoning.
+
+---
+
+Material: M3 (sample_output)  
+Purpose: example completion  
+Content:  
+| Strategy                  | Applicability (contexts where useful)                   | Ease of Use (how easy to implement)           | Effectiveness (impact on learning outcomes)          | Justification (your reasoning)                                         |
+|---------------------------|--------------------------------------------------------|-----------------------------------------------|------------------------------------------------------|------------------------------------------------------------------------|
+| Goal-Oriented Learning    | Structured courses with clear objectives                | Moderate; requires goal setting and tracking | High when goals are specific and measurable          | Clear goals help focus effort, but requires discipline to track progress. |
+| Reflective Learning       | Courses emphasizing critical thinking and analysis     | Moderate; needs scheduled reflection time    | Effective for deep understanding and self-awareness | Reflection deepens learning but needs time commitment.                 |
+| Resource-Based Learning   | Research or exploratory subjects with abundant materials| Easy; mainly involves gathering resources    | Effective if learner is motivated and resources rich | Easy to start but depends on learner initiative and resource quality.  |
+
+---
+
+Material: M4 (checklist)  
+Purpose: verification  
+Content:  
+### Self-Directed Learning Strategies Evaluation Checklist
+
+Use this checklist to verify the completeness and quality of your comparison table.
+
+- [ ] Have you evaluated all three strategies for applicability, ease of use, and effectiveness?  
+- [ ] Does your justification explain the differences clearly for each criterion?  
+- [ ] Have you considered the context-dependence of each strategy’s effectiveness?  
+- [ ] Is your comparison free from assumptions that one strategy is always the best?
+
+**If you answered no to any item, revisit your comparison table and improve your evaluation and justifications.**
+
+---
+
+Activity: Design Your Personalized Learning Plan  
+Activity ID: A2  
+Mapped outcomes: Design a personalized learning plan that incorporates goal setting, resource identification, and time management.
+
+Material: M5 (worked_example)  
+Purpose: model planning  
+Content:  
+### Worked Example: Personalized Learning Plan
+
+**Goals:**  
+- Complete all weekly readings before Friday each week.  
+- Improve academic writing skills by practicing one essay per month.  
+- Participate actively in online discussion forums twice a week.
+
+**Resources:**  
+- Course textbooks and articles available in the library and online.  
+- Writing center workshops and online tutorials.  
+- Peer study group and discussion forums on the learning platform.
+
+**Time Management Schedule:**  
+| Day       | Time Slot       | Activity                                   |
+|-----------|-----------------|--------------------------------------------|
+| Monday    | 6:00–7:00 pm    | Reading assigned chapters                   |
+| Wednesday | 6:00–7:00 pm    | Writing practice and peer feedback          |
+| Friday    | 5:00–6:00 pm    | Participate in discussion forums            |
+| Sunday    | 3:00–4:00 pm    | Review and plan for next week                |
+
+This plan balances specific goals with realistic resource use and a manageable schedule, supporting steady progress.
+
+---
+
+Material: M6 (template)  
+Purpose: practice planning  
+Content:  
+### Personalized Learning Plan Template
+
+**1. Learning Goals**  
+- Goal 1: ___________________________________________  
+- Goal 2: ___________________________________________  
+- Goal 3: ___________________________________________
+
+**3. Time Management Schedule**  
+| Day       | Time Slot       | Planned Activity                             |
+|-----------|-----------------|----------------------------------------------|
+|           |                 |                                              |
+|           |                 |                                              |
+|           |                 |                                              |
+|           |                 |                                              |
+
+**Instructions:**  
+- Write specific and measurable goals.  
+- List realistic and accessible resources.  
+- Fill in a weekly schedule balancing study and other commitments.
+
+---
+
+Material: M7 (checklist)  
+Purpose: verification  
+Content:  
+### Personalized Learning Plan Verification Checklist
+
+Use this checklist to ensure your learning plan is well-constructed.
+
+- [ ] Are your goals specific, measurable, and achievable?  
+- [ ] Are the resources you listed relevant and accessible?  
+- [ ] Does your time management schedule realistically balance study with other commitments?  
+- [ ] Is your plan coherent, with goals, resources, and schedule aligned?
+
+**If any item is unchecked, revise your plan accordingly.**
+
+---
+
+Activity: Apply Self-Assessment Techniques to Monitor and Adjust Your Learning  
+Activity ID: A3  
+Mapped outcomes: Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly.
+
+Material: M8 (modelling_note)  
+Purpose: model self-assessment  
+Content:  
+### Modelling Note: Using Self-Assessment to Monitor and Adjust Learning
+
+Self-assessment involves reflecting on your progress and identifying areas for improvement. Here is a stepwise approach:
+
+1. **Review Your Goals:** Check if your current activities align with your stated goals.  
+2. **Evaluate Progress:** Assess how much you have accomplished toward each goal.  
+3. **Identify Challenges:** Note any difficulties or barriers you have encountered.  
+4. **Consider Resource Use:** Reflect on whether your resources are sufficient and effectively used.  
+5. **Assess Time Management:** Determine if your schedule supports your learning or needs adjustment.  
+6. **Plan Adjustments:** Based on your evaluation, decide what changes to make to improve your learning outcomes.
+
+For example, if you find you are not meeting writing practice goals due to lack of time, you might adjust your schedule or seek additional support.
+
+---
+
+Use this checklist to evaluate your learning plan and progress.
+
+- [ ] Are your current activities aligned with your learning goals?  
+- [ ] Have you made measurable progress toward each goal?  
+- [ ] Are you effectively using your identified resources?  
+- [ ] Is your time management schedule supporting your learning needs?
+
+**If you find gaps or challenges, consider what adjustments are needed to improve your plan.**
+
+---
+
+Material: M10 (template)  
+Purpose: reflection memo  
+Content:  
+### Reflection Memo Template: Proposing Learning Adjustments
+
+**1. Summary of Current Learning Approach:**  
+Describe briefly your current learning plan and activities.
+
+**3. Proposed Adjustments:**  
+- Adjustment 1: ___________________________________________  
+- Adjustment 2: ___________________________________________  
+- Adjustment 3: ___________________________________________
+
+**4. Justification for Adjustments:**  
+Explain why these changes will help you better achieve your learning goals.
+
+---
+
+Activity: Synthesize Your Autonomous Learning Skills  
+Activity ID: A4  
+Mapped outcomes: Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts., Design a personalized learning plan that incorporates goal setting, resource identification, and time management., Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly.
+
+Material: M11 (consolidation_summary)  
+Purpose: session closure  
+Content:  
+### Reflective Synthesis Memo Guidance
+
+To consolidate your autonomous learning skills, compose a reflective memo that integrates your learning journey. Use the following guidance:
+
+- Begin by summarizing the self-directed learning strategies you have evaluated and chosen, highlighting why these strategies fit your academic context.  
+- Describe your personalized learning plan, emphasizing how your goals, resources, and time management align to support your learning.  
+- Explain your approach to self-assessment and adjustment, showing how you monitor progress and make informed changes.  
+- Focus on coherence: how these elements work together to empower your autonomous learning and academic success.  
+- Provide clear justifications for your choices, demonstrating your understanding of the principles behind effective self-directed learning.
+
+Use this guidance to structure your memo, aiming for clarity, integration, and justification rather than simple description.
+
+---
+
+Material: M12 (prompt_set)  
+Purpose: reflection prompts  
+Content:  
+### Reflection Prompts for Your Autonomous Learning Memo
+
+Use these prompts to help you synthesize and justify your autonomous learning approach:
+
+- What are the key differences between the learning strategies you considered, and why did you select the ones you did?  
+- How do your learning goals reflect your academic needs and personal motivations?  
+- In what ways does your resource selection support your goals and learning style?  
+- How does your time management schedule help balance your study and other commitments?  
+- How do you use self-assessment to identify when and how to adjust your learning plan?  
+- How do these elements together create a sustainable and effective autonomous learning process?
+
+Reflect on these questions as you compose your memo to ensure a thorough and well-justified synthesis.

@@ -1,0 +1,38 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Analyze the structure and purpose of authorial exposition on the Design Page to identify key elements that support self-directed learning.",
+      "related_concepts": [
+        "authorial exposition",
+        "Design Page",
+        "self-directed learning"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focus on how exposition guides learners in a self-directed context."
+    },
+    {
+      "statement": "Evaluate the role of activity_preamble exposition on the DLA in framing learner engagement and guiding activity initiation.",
+      "related_concepts": [
+        "activity_preamble exposition",
+        "DLA",
+        "learner engagement"
+      ],
+      "cognitive_level": "Evaluate",
+      "notes": "Emphasize assessment of exposition effectiveness in motivating learners."
+    },
+    {
+      "statement": "Construct a coherent delivery_context for self-directed learning that integrates authorial and activity_preamble expositions to enhance learner autonomy.",
+      "related_concepts": [
+        "delivery_context",
+        "self-directed learning",
+        "authorial exposition",
+        "activity_preamble exposition"
+      ],
+      "cognitive_level": "Create",
+      "notes": "Outcome targets synthesis of exposition types into a unified learning context."
+    }
+  ],
+  "learner_level": "Intermediate",
+  "scope": "Standard session",
+  "alignment_notes": "Outcomes align with the design focus on self-directed learning and exposition roles in Sprint 42-2 and 42-3."
+}

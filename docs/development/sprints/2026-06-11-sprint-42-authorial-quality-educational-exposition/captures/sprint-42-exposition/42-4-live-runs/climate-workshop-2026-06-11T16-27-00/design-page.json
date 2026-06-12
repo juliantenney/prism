@@ -1,0 +1,396 @@
+{
+  "artifact_type": "page",
+  "title": "Climate Misconceptions Discussion Workshop Learner Handout",
+  "audience": "learner",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Overview",
+      "content": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action. This workshop guides you through identifying, explaining, and analyzing climate change misconceptions to build a deeper, critical understanding of climate science and its societal impacts.",
+      "section_id": "overview"
+    },
+    {
+      "heading": "Learning Purpose and Outcomes",
+      "content": "This workshop aims to develop your ability to:\n\n- Identify common misconceptions about climate change presented in the workshop materials.\n- Explain why each identified misconception about climate change is scientifically inaccurate.\n- Analyze the impact of climate misconceptions on public perception and climate action.\n\nBy engaging with these activities, you will enhance your critical thinking skills and prepare to address misinformation effectively.",
+      "section_id": "learning_purpose"
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Explore Common Climate Change Misconceptions",
+          "duration_minutes": 15,
+          "activity_preamble": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action. This activity focuses on recognizing inaccurate statements about climate change as a foundation for deeper analysis later.",
+          "learner_task": "Review the worked example and sample output carefully to understand how common climate change misconceptions are identified. Then, using the provided materials, list at least five statements from the workshop materials that represent misconceptions about climate change.",
+          "expected_output": "A list of at least five climate change misconceptions identified from the materials, phrased clearly and showing understanding of their inaccurate nature.",
+          "reasoning_orientation": "Focus on recognizing inaccurate or misleading claims about climate change by comparing statements against scientific consensus and common myths.",
+          "self_explanation_prompt": "Explain in your own words why each statement you identified is considered a misconception without providing the correct scientific explanation yet.",
+          "misconception_claim": "Some widely held beliefs about climate change are incorrect or misleading and can distort public understanding.",
+          "reconciliation_prompt": "How do these misconceptions differ from scientifically supported facts, and why might they be commonly believed?",
+          "evidence_contrast": "Compare the misconceptions to what you know from scientific sources about climate change causes and effects.",
+          "transformation_activity": "Transform vague or inaccurate statements into clear misconceptions that can be analyzed scientifically later.",
+          "source_to_application_prompt": "Consider how identifying misconceptions accurately helps in addressing misinformation in real-world climate discussions.",
+          "materials": {
+            "worked_example": "### Worked Example: Identifying Climate Change Misconceptions\n\nBelow are several statements commonly heard about climate change. Each is annotated to highlight why it represents a misconception. Notice how the annotations focus on identifying inaccuracies or misleading elements without providing the correct scientific facts.\n\n1. **\"Climate change is caused only by natural cycles, not human activities.\"**  \n   *Annotation:* This statement overlooks the significant role of human-generated greenhouse gases. It simplifies a complex cause-effect relationship by excluding human influence.\n\n2. **\"Global warming stopped in the last decade because temperatures have not risen.\"**  \n   *Annotation:* This claim misinterprets short-term temperature fluctuations as a halt in a long-term trend. It ignores the difference between weather variability and climate trends.\n\n3. **\"Carbon dioxide is not a pollutant because it is naturally present in the atmosphere.\"**  \n   *Annotation:* The statement confuses natural presence with impact. It neglects how increased concentrations from human sources affect the climate system.\n\n4. **\"Scientists disagree about whether climate change is happening.\"**  \n   *Annotation:* This reflects a misunderstanding of the scientific consensus. While debate exists on details, the fundamental reality of climate change is widely supported.\n\n5. **\"Reducing emissions won’t help because climate change is irreversible.\"**  \n   *Annotation:* This is a defeatist view that ignores evidence about mitigation and adaptation potential. It misrepresents the dynamic nature of climate systems and human influence.\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Some widely held beliefs about climate change are incorrect or misleading and can distort public understanding.  \n- Reconciliation prompt: How do these misconceptions differ from scientifically supported facts, and why might they be commonly believed?  \n- Evidence contrast: Compare the misconceptions to what you know from scientific sources about climate change causes and effects.  \n- Transformation activity: Transform vague or inaccurate statements into clear misconceptions that can be analyzed scientifically later.  \n- Source to application: Consider how identifying misconceptions accurately helps in addressing misinformation in real-world climate discussions.",
+            "sample_output": "### Sample Learner Identification of Climate Change Misconceptions\n\nHere is an example list of five statements identified as misconceptions, phrased as a learner might write them after reviewing the workshop materials:\n\n1. \"Some people say climate change is just natural and humans don’t cause it, but this isn’t true because humans add gases that trap heat.\"  \n2. \"There’s a claim that global warming stopped recently because temperatures didn’t rise every year, but this confuses short-term changes with long-term trends.\"  \n3. \"I read that carbon dioxide can’t be harmful since it’s natural, but that ignores how extra CO2 from factories changes the climate.\"  \n4. \"It’s often said that scientists don’t agree if climate change is real, but most experts actually agree it is happening.\"  \n5. \"Some believe that trying to cut emissions won’t make a difference because climate change can’t be stopped, but this overlooks how actions can slow or reduce impacts.\"  \n\n---\n\n**Cognition cues:**  \n- Misconception claim: Some widely held beliefs about climate change are incorrect or misleading and can distort public understanding.  \n- Reconciliation prompt: How do these misconceptions differ from scientifically supported facts, and why might they be commonly believed?  \n- Evidence contrast: Compare the misconceptions to what you know from scientific sources about climate change causes and effects.  \n- Transformation activity: Transform vague or inaccurate statements into clear misconceptions that can be analyzed scientifically later.  \n- Source to application: Consider how identifying misconceptions accurately helps in addressing misinformation in real-world climate discussions.",
+            "checklist": "### Checklist: Verifying Your Identification of Climate Change Misconceptions\n\nUse this checklist to confirm that your identified misconceptions meet key criteria:\n\n- [ ] **Clarity:** Is the misconception clearly stated in a way that shows what the inaccurate claim is?  \n- [ ] **Relevance:** Does the statement relate directly to climate change causes, effects, or scientific understanding?  \n- [ ] **Completeness:** Have you included enough detail to show why it is misleading or incorrect (without giving the correct answer)?  \n- [ ] **Accuracy of identification:** Does the statement reflect a common misunderstanding rather than a scientifically supported fact?  \n\n**If any box is unchecked, revisit your list and revise the statements to better meet these criteria.**\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Some widely held beliefs about climate change are incorrect or misleading and can distort public understanding.  \n- Reconciliation prompt: How do these misconceptions differ from scientifically supported facts, and why might they be commonly believed?  \n- Evidence contrast: Compare the misconceptions to what you know from scientific sources about climate change causes and effects.  \n- Transformation activity: Transform vague or inaccurate statements into clear misconceptions that can be analyzed scientifically later.  \n- Source to application: Consider how identifying misconceptions accurately helps in addressing misinformation in real-world climate discussions."
+          }
+        },
+        {
+          "title": "Explain Why Climate Misconceptions Are Scientifically Inaccurate",
+          "duration_minutes": 20,
+          "activity_preamble": "Explaining why misconceptions are scientifically inaccurate deepens your understanding of climate science principles and prepares you to critically evaluate misinformation. This activity challenges you to articulate the reasoning behind each misconception's flaws.",
+          "learner_task": "Using the task cards and modelling notes, write explanations for why each of your identified misconceptions is scientifically inaccurate. Focus on articulating the scientific principles involved without stating the correct facts explicitly.",
+          "expected_output": "A set of written explanations for each misconception that clearly justify why it is inaccurate based on scientific reasoning and evidence.",
+          "reasoning_orientation": "Apply scientific principles and evidence-based reasoning to explain inaccuracies in common climate change misconceptions.",
+          "self_explanation_prompt": "In your own words, describe the scientific reasoning that shows why each misconception does not align with established climate science.",
+          "misconception_claim": "Misconceptions about climate change often arise from misunderstandings or misinterpretations of scientific evidence.",
+          "reconciliation_prompt": "How can scientific principles be used to identify the flaws in each misconception without directly stating the correct facts?",
+          "evidence_contrast": "Contrast the reasoning behind misconceptions with the logic and evidence that underpin climate science explanations.",
+          "transformation_activity": "Convert identified misconceptions into scientifically reasoned critiques that reveal their inaccuracies.",
+          "source_to_application_prompt": "Reflect on how explaining misconceptions scientifically can improve communication and education about climate change.",
+          "materials": {
+            "modelling_note": "### Modelling Notes: Explaining Scientific Inaccuracies in Climate Misconceptions\n\nWhen explaining why a misconception is scientifically inaccurate, focus on the reasoning process rather than stating the correct fact outright. Use these guiding principles:\n\n- **Identify the flawed logic:** Point out where the misconception misunderstands cause-effect relationships or misinterprets data.  \n- **Reference scientific principles:** Mention relevant scientific concepts (e.g., greenhouse effect, energy balance, consensus processes) without giving full corrections.  \n- **Use evidence-based reasoning:** Show how the misconception conflicts with established evidence or accepted scientific methods.  \n- **Maintain logical coherence:** Ensure your explanation follows a clear chain of reasoning that reveals the misconception’s weaknesses.  \n- **Avoid simply stating the correct answer:** Instead, highlight why the misconception’s claim cannot be supported scientifically.\n\n**Example:**  \nFor the misconception \"Climate change is only natural,\" you might explain:  \n\"This claim overlooks the role of additional greenhouse gases produced by human activities, which alter the natural balance of atmospheric components. Scientific methods measure these changes and their effects, showing that natural cycles alone cannot account for recent trends.\"\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Misconceptions about climate change often arise from misunderstandings or misinterpretations of scientific evidence.  \n- Reconciliation prompt: How can scientific principles be used to identify the flaws in each misconception without directly stating the correct facts?  \n- Evidence contrast: Contrast the reasoning behind misconceptions with the logic and evidence that underpin climate science explanations.  \n- Transformation activity: Convert identified misconceptions into scientifically reasoned critiques that reveal their inaccuracies.  \n- Source to application: Reflect on how explaining misconceptions scientifically can improve communication and education about climate change.",
+            "task_cards": "### Task Cards: Guiding Your Scientific Explanation of Misconceptions\n\nUse these questions to help structure your explanations for why each misconception is scientifically inaccurate:\n\n1. **What assumption does this misconception make about climate processes?**  \n2. **Which scientific principle or evidence contradicts this assumption?**  \n3. **How does this misconception misinterpret or omit key scientific data?**  \n4. **Why does this misunderstanding lead to an incorrect conclusion about climate change?**  \n5. **What reasoning steps reveal the flaw in the misconception’s logic?**\n\nWrite your explanation by answering these questions in your own words, focusing on the reasoning rather than the correct facts.\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Misconceptions about climate change often arise from misunderstandings or misinterpretations of scientific evidence.  \n- Reconciliation prompt: How can scientific principles be used to identify the flaws in each misconception without directly stating the correct facts?  \n- Evidence contrast: Contrast the reasoning behind misconceptions with the logic and evidence that underpin climate science explanations.  \n- Transformation activity: Convert identified misconceptions into scientifically reasoned critiques that reveal their inaccuracies.  \n- Source to application: Reflect on how explaining misconceptions scientifically can improve communication and education about climate change.",
+            "checklist": "### Checklist: Verifying Quality of Your Scientific Explanation\n\nCheck your explanations against these criteria to ensure they effectively explain why misconceptions are inaccurate:\n\n- [ ] **Clarity of scientific reasoning:** Does your explanation clearly outline the reasoning without confusion?  \n- [ ] **Use of evidence-based principles:** Do you reference scientific concepts or evidence logically?  \n- [ ] **Avoidance of simply stating correct answers:** Have you focused on explaining flaws rather than giving full corrections?  \n- [ ] **Logical coherence:** Is your explanation structured with a clear and valid argument?  \n\n**If any criterion is not met, revise your explanation to improve clarity, reasoning, and scientific grounding.**\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Misconceptions about climate change often arise from misunderstandings or misinterpretations of scientific evidence.  \n- Reconciliation prompt: How can scientific principles be used to identify the flaws in each misconception without directly stating the correct facts?  \n- Evidence contrast: Contrast the reasoning behind misconceptions with the logic and evidence that underpin climate science explanations.  \n- Transformation activity: Convert identified misconceptions into scientifically reasoned critiques that reveal their inaccuracies.  \n- Source to application: Reflect on how explaining misconceptions scientifically can improve communication and education about climate change."
+          }
+        },
+        {
+          "title": "Analyze the Impact of Climate Misconceptions on Public Perception and Action",
+          "duration_minutes": 20,
+          "activity_preamble": "Misconceptions about climate change can shape how societies perceive risks and respond to environmental challenges. Analyzing these impacts helps reveal the broader consequences of misinformation beyond scientific inaccuracies.",
+          "learner_task": "Complete the analysis table by examining each misconception's potential effects on public perception and climate action, using the provided scenarios to support your reasoning.",
+          "expected_output": "A completed analysis table with thoughtful, evidence-based entries describing how misconceptions influence public attitudes and behaviors towards climate change.",
+          "reasoning_orientation": "Analyze cause-effect relationships between misconceptions, public perception, and climate-related behaviors using evidence from scenarios.",
+          "conceptual_contrast_prompt": "Distinguish between the scientific inaccuracy of misconceptions and their social or behavioral consequences in different contexts.",
+          "misconception_claim": "Climate misconceptions not only misinform but also affect societal willingness to act on climate change.",
+          "reconciliation_prompt": "How do different misconceptions lead to varied impacts on public understanding and climate policy support?",
+          "evidence_contrast": "Use scenario evidence to contrast possible outcomes when misconceptions are believed versus when they are corrected.",
+          "transformation_activity": "Transform abstract misconceptions into concrete social impacts that can be critically assessed and addressed.",
+          "source_to_application_prompt": "Consider how understanding these impacts can guide more effective climate communication and policy design.",
+          "materials": {
+            "analysis_table": "### Analysis Table: Impact of Climate Misconceptions on Public Perception and Climate Action\n\n| Misconception                                         | Potential Public Perception Effect                          | Impact on Climate Action                                  | Notes (Your Analysis)                                  |\n|------------------------------------------------------|------------------------------------------------------------|-----------------------------------------------------------|-------------------------------------------------------|\n| Example: \"Climate change is caused only by natural cycles.\" | May lead people to underestimate human responsibility.     | Reduces support for emission reduction policies.          |                                                       |\n|                                                      |                                                            |                                                           |                                                       |\n|                                                      |                                                            |                                                           |                                                       |\n|                                                      |                                                            |                                                           |                                                       |\n|                                                      |                                                            |                                                           |                                                       |\n\n*Complete the table by filling in each column for at least five misconceptions you have identified. Use the scenarios provided to support your reasoning.*\n\n---\n\n**Cognition cues:**  \n- Misconception claim: Climate misconceptions not only misinform but also affect societal willingness to act on climate change.  \n- Reconciliation prompt: How do different misconceptions lead to varied impacts on public understanding and"
+          }
+        },
+        {
+          "title": "Consolidate Understanding of Climate Misconceptions and Their Impacts",
+          "duration_minutes": 5,
+          "activity_preamble": "Bringing together your identification, explanation, and analysis of climate misconceptions consolidates your understanding and prepares you to apply this knowledge critically in future contexts.",
+          "learner_task": "Write a reflective summary synthesizing what you have learned about climate misconceptions, why they are scientifically inaccurate, and their impacts on public perception and climate action. Use the reflection prompts to guide your thinking.",
+          "expected_output": "A reflective written summary of at least 80 words that integrates the session’s key ideas and personal insights.",
+          "transfer_or_application_task": "Synthesize your learning to form a coherent understanding that can be applied to real-world climate communication challenges.",
+          "misconception_claim": "A comprehensive grasp of misconceptions and their impacts enables more effective climate literacy and action.",
+          "reconciliation_prompt": "How do the different aspects of misconceptions connect to influence both knowledge and behavior?",
+          "evidence_contrast": "Reflect on how scientific reasoning and social analysis combine to provide a fuller picture of climate misinformation.",
+          "transformation_activity": "Integrate separate insights into a coherent narrative that supports informed climate engagement.",
+          "source_to_application_prompt": "Consider how this synthesis can inform your future discussions, education, or advocacy on climate change.",
+          "materials": {
+            "consolidation_summary": "### Consolidation Summary Template\n\nUse this template to write your reflective summary. Aim for at least 80 words.\n\n- What are the main misconceptions about climate change you identified?\n- Why are these misconceptions scientifically inaccurate (focus on reasoning, not facts)?\n- How do these misconceptions affect public perception and climate action?\n- What personal insights or new understandings have you gained from this workshop?\n\n\n---\n\n**Cognition cues:**  \n- Misconception claim: A comprehensive grasp of misconceptions and their impacts enables more effective climate literacy and action.  \n- Reconciliation prompt: How do the different aspects of misconceptions connect to influence both knowledge and behavior?  \n- Evidence contrast: Reflect on how scientific reasoning and social analysis combine to provide a fuller picture of climate misinformation.  \n- Transformation activity: Integrate separate insights into a coherent narrative that supports informed climate engagement.  \n- Source to application: Consider how this synthesis can inform your future discussions, education, or advocacy on climate change.",
+            "prompt_set": "### Reflection Prompts\n\nUse these questions to guide your summary:\n\n- What did you learn about the nature and causes of climate misconceptions?\n- How did explaining the scientific inaccuracies deepen your understanding?\n- In what ways do misconceptions influence public attitudes and actions?\n- What challenges remain for you in addressing climate misinformation?\n- How might you apply this knowledge in your own communication or learning about climate change?\n\n---\n\n**Cognition cues:**  \n- Misconception claim: A comprehensive grasp of misconceptions and their impacts enables more effective climate literacy and action.  \n- Reconciliation prompt: How do the different aspects of misconceptions connect to influence both knowledge and behavior?  \n- Evidence contrast: Reflect on how scientific reasoning and social analysis combine to provide a fuller picture of climate misinformation.  \n- Transformation activity: Integrate separate insights into a coherent narrative that supports informed climate engagement.  \n- Source to application: Consider how this synthesis can inform your future discussions, education, or advocacy on climate change."
+          }
+        },
+        {
+          "activity_id": "A1",
+          "title": "Explore Common Climate Change Misconceptions",
+          "activity_preamble": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action. This activity focuses on recognizing inaccurate statements about climate change as a foundation for deeper analysis later.",
+          "reasoning_orientation": "Focus on recognizing inaccurate or misleading claims about climate change by comparing statements against scientific consensus and common myths.",
+          "self_explanation_prompt": "Explain in your own words why each statement you identified is considered a misconception without providing the correct scientific explanation yet.",
+          "expected_output": "A list of at least five climate change misconceptions identified from the materials, phrased clearly and showing understanding of their inaccurate nature.",
+          "learner_task": "Review the worked example and sample output carefully to understand how common climate change misconceptions are identified. Then, using the provided materials, list at least five statements from the workshop materials that represent misconceptions about climate change.",
+          "duration_minutes": 15,
+          "grouping": "individual",
+          "misconception_claim": "Some widely held beliefs about climate change are incorrect or misleading and can distort public understanding.",
+          "reconciliation_prompt": "How do these misconceptions differ from scientifically supported facts, and why might they be commonly believed?",
+          "evidence_contrast": "Compare the misconceptions to what you know from scientific sources about climate change causes and effects."
+        },
+        {
+          "activity_id": "A2",
+          "title": "Explain Why Climate Misconceptions Are Scientifically Inaccurate",
+          "activity_preamble": "Explaining why misconceptions are scientifically inaccurate deepens your understanding of climate science principles and prepares you to critically evaluate misinformation. This activity challenges you to articulate the reasoning behind each misconception's flaws.",
+          "reasoning_orientation": "Apply scientific principles and evidence-based reasoning to explain inaccuracies in common climate change misconceptions.",
+          "self_explanation_prompt": "In your own words, describe the scientific reasoning that shows why each misconception does not align with established climate science.",
+          "expected_output": "A set of written explanations for each misconception that clearly justify why it is inaccurate based on scientific reasoning and evidence.",
+          "learner_task": "Using the task cards and modelling notes, write explanations for why each of your identified misconceptions is scientifically inaccurate. Focus on articulating the scientific principles involved without stating the correct facts explicitly.",
+          "duration_minutes": 20,
+          "grouping": "individual",
+          "misconception_claim": "Misconceptions about climate change often arise from misunderstandings or misinterpretations of scientific evidence.",
+          "reconciliation_prompt": "How can scientific principles be used to identify the flaws in each misconception without directly stating the correct facts?",
+          "evidence_contrast": "Contrast the reasoning behind misconceptions with the logic and evidence that underpin climate science explanations."
+        },
+        {
+          "activity_id": "A3",
+          "title": "Analyze the Impact of Climate Misconceptions on Public Perception and Action",
+          "activity_preamble": "Misconceptions about climate change can shape how societies perceive risks and respond to environmental challenges. Analyzing these impacts helps reveal the broader consequences of misinformation beyond scientific inaccuracies.",
+          "reasoning_orientation": "Analyze cause-effect relationships between misconceptions, public perception, and climate-related behaviors using evidence from scenarios.",
+          "conceptual_contrast_prompt": "Distinguish between the scientific inaccuracy of misconceptions and their social or behavioral consequences in different contexts.",
+          "expected_output": "A completed analysis table with thoughtful, evidence-based entries describing how misconceptions influence public attitudes and behaviors towards climate change.",
+          "learner_task": "Complete the analysis table by examining each misconception's potential effects on public perception and climate action, using the provided scenarios to support your reasoning.",
+          "duration_minutes": 20,
+          "grouping": "individual",
+          "misconception_claim": "Climate misconceptions not only misinform but also affect societal willingness to act on climate change.",
+          "reconciliation_prompt": "How do different misconceptions lead to varied impacts on public understanding and climate policy support?",
+          "evidence_contrast": "Use scenario evidence to contrast possible outcomes when misconceptions are believed versus when they are corrected."
+        },
+        {
+          "activity_id": "A4",
+          "title": "Consolidate Understanding of Climate Misconceptions and Their Impacts",
+          "activity_preamble": "Bringing together your identification, explanation, and analysis of climate misconceptions consolidates your understanding and prepares you to apply this knowledge critically in future contexts.",
+          "transfer_or_application_task": "Synthesize your learning to form a coherent understanding that can be applied to real-world climate communication challenges.",
+          "expected_output": "A reflective written summary of at least 80 words that integrates the session’s key ideas and personal insights.",
+          "learner_task": "Write a reflective summary synthesizing what you have learned about climate misconceptions, why they are scientifically inaccurate, and their impacts on public perception and climate action. Use the reflection prompts to guide your thinking.",
+          "duration_minutes": 5,
+          "grouping": "individual",
+          "misconception_claim": "A comprehensive grasp of misconceptions and their impacts enables more effective climate literacy and action.",
+          "reconciliation_prompt": "How do the different aspects of misconceptions connect to influence both knowledge and behavior?",
+          "evidence_contrast": "Reflect on how scientific reasoning and social analysis combine to provide a fuller picture of climate misinformation."
+        }
+      ],
+      "section_id": "learning_activities"
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "Preserved activity_preamble, cognition fields, bridges, materials verbatim.",
+    "Excluded correct answers on handout as per user instruction.",
+    "Included all upstream learning activities with full materials.",
+    "Page profile set to learner with full learning activities content.",
+    "Maintained readable section structure and meaningful headings.",
+    "No paraphrasing or summarizing of activity materials content.",
+    "No omission of activities or materials.",
+    "No external content or fabricated information added."
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Worked example and checklist provide clear identification scaffolds; sample output models learner phrasing.",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Supports learners in recognizing and articulating misconceptions clearly.",
+        "reasoning_supported": "Learners classify misconceptions by identifying inaccuracies.",
+        "learner_stage": "early",
+        "anti_spoiler": true,
+        "spoiler_boundary": {
+          "hide_answers": true,
+          "hide_classification_keys": true,
+          "hide_model_solution": true,
+          "allow_structural_hint": true
+        },
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Focus on misconception identification only, not correction.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "misconception identification",
+          "climate change",
+          "common myths"
+        ],
+        "must_not_show": [
+          "correct answers",
+          "full scientific corrections"
+        ],
+        "allowed_claims": [
+          "Some widely held beliefs about climate change are incorrect or misleading."
+        ],
+        "disallowed_claims": [
+          "All statements are scientifically correct."
+        ],
+        "source_basis": "A1 learner_task; A1 materials.worked_example; A1 materials.sample_output; A1 materials.checklist",
+        "caption_intent": "Highlight classification and identification of misconceptions without revealing answers.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Modelling notes and task cards scaffold scientific explanation without giving direct answers.",
+        "tier": "valuable",
+        "purpose": "mechanism",
+        "preferred_representation": "causal_model",
+        "pedagogical_added_value": "Promotes reasoning about scientific inaccuracies behind misconceptions.",
+        "reasoning_supported": "Learners develop logical chains explaining flaws in misconceptions.",
+        "learner_stage": "developing",
+        "anti_spoiler": true,
+        "spoiler_boundary": {
+          "hide_answers": true,
+          "hide_model_solution": true,
+          "allow_structural_hint": true
+        },
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Focus on reasoning, not stating correct facts.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "scientific explanation",
+          "reasoning about misconceptions"
+        ],
+        "must_not_show": [
+          "correct scientific facts",
+          "full corrections"
+        ],
+        "allowed_claims": [
+          "Misconceptions arise from misunderstandings or misinterpretations."
+        ],
+        "disallowed_claims": [
+          "Misconceptions are scientifically accurate."
+        ],
+        "source_basis": "A2 learner_task; A2 materials.modelling_note; A2 materials.task_cards; A2 materials.checklist",
+        "caption_intent": "Support articulation of scientific reasoning without revealing answers.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Analysis table and scenarios enable learners to link misconceptions with social impacts.",
+        "tier": "valuable",
+        "purpose": "classification",
+        "preferred_representation": "classification_matrix",
+        "pedagogical_added_value": "Helps learners analyze societal consequences of misconceptions.",
+        "reasoning_supported": "Learners connect cause-effect between misconceptions and public perception.",
+        "learner_stage": "developing",
+        "anti_spoiler": true,
+        "spoiler_boundary": {
+          "hide_answers": true,
+          "hide_model_solution": true,
+          "allow_structural_hint": true
+        },
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Focus on social impact analysis, not scientific correction.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "impact analysis",
+          "public perception",
+          "climate action"
+        ],
+        "must_not_show": [
+          "correct scientific facts",
+          "full corrections"
+        ],
+        "allowed_claims": [
+          "Misconceptions affect societal willingness to act."
+        ],
+        "disallowed_claims": [
+          "Misconceptions have no social impact."
+        ],
+        "source_basis": "A3 learner_task; A3 materials.analysis_table; A3 materials.scenario; A3 materials.checklist",
+        "caption_intent": "Link misconceptions to social and behavioral impacts.",
+        "discipline_risk_level": "medium"
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "Consolidation summary and reflection prompts support synthesis and metacognitive reflection.",
+        "tier": "valuable",
+        "purpose": "evidence_structure",
+        "preferred_representation": "comparison_framework",
+        "pedagogical_added_value": "Encourages integration of scientific and social insights into a coherent narrative.",
+        "reasoning_supported": "Learners synthesize knowledge and reflect on implications.",
+        "learner_stage": "independent",
+        "anti_spoiler": true,
+        "spoiler_boundary": {
+          "hide_answers": true,
+          "allow_structural_hint": true
+        },
+        "representation_avoid": [
+          "filled_worksheet",
+          "summary_table",
+          "generic_infographic",
+          "topic_hero_image"
+        ],
+        "canonical_discipline_note": "Focus on synthesis and reflection, not new content.",
+        "requires_exact_data_match": false,
+        "must_show": [
+          "reflection",
+          "synthesis",
+          "climate misconceptions"
+        ],
+        "must_not_show": [
+          "correct scientific facts",
+          "full corrections"
+        ],
+        "allowed_claims": [
+          "Synthesis improves climate literacy and action."
+        ],
+        "disallowed_claims": [
+          "Reflection is unnecessary."
+        ],
+        "source_basis": "A4 learner_task; A4 materials.consolidation_summary; A4 materials.prompt_set",
+        "caption_intent": "Support reflective synthesis of workshop learning.",
+        "discipline_risk_level": "medium"
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "generation_notes": {
+    "limitations": [],
+    "activities_omitted": [],
+    "cognition_composition": {
+      "cognitionSectionsPreserved": [
+        "overview",
+        "learning_purpose",
+        "learning_activities"
+      ],
+      "cognitionCompositionParity": true,
+      "cognitionActivitySuppressed": false,
+      "cognitionAssessmentDominancePrevented": false,
+      "cognitionFieldsMerged": 12,
+      "duplicateAssessmentRowsRemoved": 0,
+      "sequencingInteractionRowsTouched": 0
+    },
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 0,
+      "dropped_count": 0,
+      "errors": [
+        "activities_visual_review[0]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[1]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[2]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[3]: activity_visual_value.decision must be high | medium | low | none"
+      ]
+    }
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 4,
+      "framing_fields_merged": 0
+    },
+    "cognition_profile": {
+      "active": true,
+      "pack_ids": [
+        "misconception_repair_pack"
+      ],
+      "cognition_fields": [
+        "misconception_claim",
+        "reconciliation_prompt",
+        "evidence_contrast"
+      ],
+      "cognition_activity_priority": true,
+      "cognition_section_required": true
+    }
+  }
+}

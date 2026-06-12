@@ -373,10 +373,12 @@ function buildChecks(scenario, ctx) {
   }
 
   if (id === "transcript-source") {
-    const sourcePathOk =
+    const sourceIngestChainOk =
       resolved.input_strategy === "provided_source_content" &&
-      !hasTitle(titles, "Generate Learning Content");
-    const normalizeOk = hasTitle(titles, "Normalize Content");
+      hasTitle(titles, "Normalize Content") &&
+      hasTitle(titles, "Generate Learning Content") &&
+      beforeTitle(titles, "Normalize Content", "Generate Learning Content") &&
+      beforeTitle(titles, "Generate Learning Content", "Model Knowledge");
 
     out.push(
       check(
@@ -384,13 +386,8 @@ function buildChecks(scenario, ctx) {
         resolved.input_strategy === "provided_source_content"
       ),
       check(
-        "does not force Generate Learning Content (authoritative source)",
-        !hasTitle(titles, "Generate Learning Content"),
-        titles.join(" → ")
-      ),
-      check(
-        "Normalize Content or provided-source path valid",
-        sourcePathOk || normalizeOk,
+        "source ingest: Normalize → Generate Learning Content → Model Knowledge",
+        sourceIngestChainOk,
         titles.join(" → ")
       ),
       check("assessment_required true", resolved.assessment_required === true)

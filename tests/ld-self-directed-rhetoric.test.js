@@ -28,6 +28,12 @@ test("LD-SELF-DIRECTED-RHETORIC: core block preserves behavioural anchors", () =
   assert.doesNotMatch(text, /complete pipe table with header row/i);
 });
 
+test("LD-SELF-DIRECTED-RHETORIC: design_page role rider includes journey assimilation", () => {
+  const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
+  assert.match(text, /Journey assimilation/i);
+  assert.match(text, /LD-JOURNEY-ASSIMILATION/i);
+});
+
 test("LD-SELF-DIRECTED-RHETORIC: design_page role rider", () => {
   const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
   assert.match(text, /Design Page rider/i);

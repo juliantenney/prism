@@ -11,6 +11,9 @@ const DEFAULT_LIBS = [
   "lib/ld-materials-copy.js",
   "lib/ld-math-render.js",
   "lib/ld-self-directed-rhetoric.js",
+  "lib/ld-authorial-exposition.js",
+  "lib/ld-journey-assimilation.js",
+  "lib/ld-activity-preamble-exposition.js",
   "lib/ld-design-page-compose-contract.js",
   "lib/educational-quality-framework-prompt.js"
 ];

@@ -186,15 +186,21 @@ test("transcript/upload brief still resolves provided_source_content", () => {
   assert.equal(resolved.input_strategy, "provided_source_content");
 });
 
-test("provided_source_content with real upload may omit Generate Learning Content", () => {
+test("provided_source_content with real upload includes GLC after Normalize before Model Knowledge", () => {
   const brief = P27_04;
   const explicit = extractBrief(brief);
   const resolved = resolveBrief(brief, explicit);
   const topo = applyTopology(brief, explicit, resolved);
   const titles = stepTitles(topo);
   assert.equal(explicit.input_strategy, "provided_source_content");
-  assert.equal(indexOfTitle(titles, "Generate Learning Content"), -1);
-  assert.ok(indexOfTitle(titles, "Model Knowledge") !== -1);
+  const normIdx = indexOfTitle(titles, "Normalize Content");
+  const glcIdx = indexOfTitle(titles, "Generate Learning Content");
+  const mkIdx = indexOfTitle(titles, "Model Knowledge");
+  assert.ok(glcIdx !== -1, "expected Generate Learning Content in: " + titles.join(" -> "));
+  assert.ok(normIdx !== -1, "expected Normalize Content in: " + titles.join(" -> "));
+  assert.ok(mkIdx !== -1, "expected Model Knowledge in: " + titles.join(" -> "));
+  assert.ok(normIdx < glcIdx, "Normalize should precede Generate Learning Content");
+  assert.ok(glcIdx < mkIdx, "Generate Learning Content should precede Model Knowledge");
 });
 
 test("generate_from_topic starting artefact wins over notes in inputs inference", () => {

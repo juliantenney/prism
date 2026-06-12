@@ -1,0 +1,38 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Explain the basic principles of supply and demand and how they determine market equilibrium.",
+      "related_concepts": [
+        "supply",
+        "demand",
+        "market equilibrium"
+      ],
+      "cognitive_level": "Understand",
+      "notes": "Focus on foundational concepts suitable for first-year learners."
+    },
+    {
+      "statement": "Analyze the effects of shifts in supply and demand curves on price and quantity in a market.",
+      "related_concepts": [
+        "supply shifts",
+        "demand shifts",
+        "price",
+        "quantity"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Requires interpretation of graphical shifts and their market impact."
+    },
+    {
+      "statement": "Calculate equilibrium price and quantity given supply and demand equations or data.",
+      "related_concepts": [
+        "equilibrium price",
+        "equilibrium quantity",
+        "supply and demand equations"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Emphasizes quantitative skills appropriate for workshop exercises."
+    }
+  ],
+  "learner_level": "First-year undergraduate",
+  "scope": "Standard session (30-120 minutes)",
+  "alignment_notes": "Outcomes focus on core introductory economics concepts aligned with workshop content."
+}

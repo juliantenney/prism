@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const compose = require("../lib/ld-design-page-compose-contract.js");
+const exposition = require("../lib/ld-authorial-exposition.js");
 const materialsCopy = require("../lib/ld-materials-copy.js");
 const tableFidelity = require("../lib/ld-table-fidelity.js");
 
@@ -44,6 +45,16 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: field preservation optional", () => {
   const withoutFields = compose.buildLdDesignPageComposePromptBlock({ includeFieldPreservation: false });
   assert.match(withFields, /activity_preamble/i);
   assert.doesNotMatch(withoutFields, /Activity field preservation/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references LD-AUTHORIAL-EXPOSITION sibling", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /LD-AUTHORIAL-EXPOSITION/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references LD-JOURNEY-ASSIMILATION sibling", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /LD-JOURNEY-ASSIMILATION/i);
 });
 
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references sibling modules without inlining bodies", () => {

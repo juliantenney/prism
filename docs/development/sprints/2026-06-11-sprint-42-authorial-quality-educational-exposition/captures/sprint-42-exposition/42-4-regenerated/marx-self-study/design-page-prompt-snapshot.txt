@@ -1,0 +1,100 @@
+Design step output.
+LD-SELF-DIRECTED-RHETORIC (auto-applied):
+- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11
+- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.
+- Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note, assessment stems — not materials bodies.
+- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields.
+- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.
+- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.
+- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.
+- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.
+- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.
+- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.
+- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.
+- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.
+- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.
+- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).
+- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.
+- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.
+- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs; knowledge_summary previews at start only.
+- Design Page rider: compose overview/learning_purpose from upstream orientation substance; preserve bridges, study_tips, closure/debrief, transfer_or_application_task, support_note verbatim.
+LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):
+- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | L0–L3 read-only page compose + L5 field preservation. Obey appended LD-AUTHORIAL-EXPOSITION, LD-MATERIALS-COPY, LD-TABLE-FIDELITY, LD-SELF-DIRECTED-RHETORIC, LD-MATH-RENDER, and Sprint 38 visual/pedagogical contracts — bodies not repeated here.
+- ACTIVITY MEMBERSHIP (hard): every upstream activity_id in learning_activities.content unless generation_notes.activities_omitted[] with explicit user-authorised authority (subset request or workflow constraint) — never omit for output size, token limit, or model length; if material copy is constrained, record generation_notes.limitations and retain the activity shell with available fields and material references; learning_sequence order/timing only; validate (U \ X) ⊆ C; assessment_check.content object with items[] when assessment_items provided.
+- Activity field preservation (learner-facing page): copy verbatim onto each matching activity_id when present upstream learning_activities (not only activity_materials):
+  activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge
+- expected_output and support_note (or support_notes) must copy verbatim — do not merge into materials; activity_preamble before learner_task.
+- MATERIALS FIDELITY (compose): visual_affordances[] are additive page-root metadata only — must not replace learning_activities.content[].materials; representation_avoid / duplicate rules on generated figures only; copy activity.materials.* verbatim from upstream activity_materials (no paraphrase, shorten, summarise, or rewrite); L4 preserve embed:
+- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)
+- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (overview, learning_purpose, study_tips only) — PREC-02. activity.materials.* must never be shortened for readability.
+- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.
+- Do not summarise, thin, paraphrase, shorten, simplify, compress, or replace materials bodies to make the page shorter or to write session narrative.
+- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here.
+- Preserve role (Design Page): when upstream activity_materials exist, each learning_activities.content[] row must carry the full materials object (merge every upstream block for that activity_id).
+- Copy learner-facing delivery content verbatim into activity.materials.*. Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies.
+- Do not shorten activity.materials.* content. If a hard output limit prevents full preservation, keep the full upstream material body where possible and record the limitation in generation_notes.limitations rather than silently compressing it.
+- Readable page assembly applies to section structure, headings, ordering, and wrapper prose only — not to rewriting activity.materials.* bodies.
+- FORBIDDEN inflation-collapse substitutes (activity.materials.* must never look like revision notes):
+  • Full exposition → one key-point line (e.g. "Inflation is a sustained increase in the general price level…")
+  • Worked example with steps → outcome only (e.g. "Year 1 basket = £100; Year 2 basket = £105; same money buys less")
+  • Classification reasoning chain → arrow label (e.g. "Demand exceeds supply → demand-pull inflation")
+  • Calculation worked example → formula plus final result only (process prose omitted)
+  • Analytic worked example → one-sentence effect summary
+  • Recommendation/judgement template → section-label chain only (e.g. "Context → Evaluation → Decision → Justification")
+  • Transfer prompt → label-only instruction (e.g. "Apply to real-world inflation")
+- Forbidden placeholder-only phrasing unless the full content appears in the same field:
+  "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking",
+  "See provided scenarios", "Scenario set describing", "Table with basket items".
+- Require per activity when upstream provides them: concrete scenarios (named cases with context/numbers), worked examples with visible steps, learner-completion templates with blank cells, assessment items with stems/options, and prompts/support_note content in materials when upstream supplied.
+- page_profile learner: substantive session overview in overview/learning_purpose — not summary-only activity.materials.
+- If activity_materials live in a separate upstream section, embed them into each activity.materials; do not leave materials empty while describing resources elsewhere.
+- source_basis paths in visual_affordances cite upstream evidence; citing a path does not satisfy the materials requirement.
+- Module: LD-TABLE-FIDELITY | Layer: L4 | Scope: materials.<table_key> | Cluster: 5 (table fidelity)
+- Precedence (normative): source fidelity (L2) > activity membership (L3) > materials + table fidelity (L4) > pedagogical enrichment (L5) > visual affordance metadata (L6) > style/rhetoric (L7). Table fidelity overrides brevity, summarisation, and shorten-non-essential-prose for table-shaped content.
+- PREC-01: pipe tables and structured rows must survive compression — never substitute comma-row shorthand for markdown pipes.
+- Figure duplicate/avoid tokens (representation_avoid, must_not_duplicate) apply to generated figures only — never to page activity.materials or worksheet tables.
+- Table location: every table lives in materials.<named_table_field> as a markdown pipe-table string OR a structured rows array with explicit column keys — never CSV comma rows in prose, never bullet lists of comma-separated cells.
+- If a table is needed, produce a complete pipe table with header row, divider row (| --- |), and body rows — multiline, not one-line compressed.
+- GOOD example (copy shape; adapt columns and rows):
+  | Scenario | Who is affected? | Main price pressure |
+  | --- | --- | --- |
+  |  |  |  |
+- FORBIDDEN in materials table fields:
+  • Lines matching comma-row pseudo-tables (e.g. Scenario 1,,, or trailing ,,, rows)
+  • Prose sections titled Headers and Rows instead of a single named pipe field
+  • Label-only table strings without header row and body cells
+- Do not place raw markdown pipe tables inside bullet-list strings; keep tables in named material field values.
+- TeX in prose: see LD-MATH-RENDER; this module governs pipe-table shape in materials.* only.
+- Preserve role (Design Page): when upstream activity_materials contains pipe tables, copy each pipe block verbatim into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, etc.).
+- Do not flatten tables to comma-separated rows, Headers/Rows prose blocks, or catalogue labels when upstream already has pipe syntax.
+- Table fidelity overrides session overview synthesis and any shortening of materials.<table_key> bodies — adjunct guidance is L4-faithful instructional content, not overview prose.
+LD-AUTHORIAL-EXPOSITION-CONTRACT (auto-applied):
+- Module: LD-AUTHORIAL-EXPOSITION | Design Page compose only — authorial exposition on wrapper prose (overview, learning_purpose, study_tips, activity_preamble, intellectual_coherence_bridge, cognition-orientation fields, support_note, expected_output).
+- Goal: compose a coherent authored learning experience — not a stack of educational components. Preserve all upstream framing fields verbatim; improve how they read when composed.
+- Learner arc target: Explanation → Exploration → Reasoning → Reflection → Synthesis — not Orientation → Task → Activity → Checklist.
+- Do not add schema fields, workflow steps, or verbosity for its own sake. Educational authorship, not longer text.
+- RHETORICAL ROLE SEPARATION (each section one job — do not repeat the same idea):
+  • overview — establish intellectual journey, stakes, and inquiry arc; not an activity summary or session run-sheet.
+  • learning_purpose — explain why this learning matters and what capability develops; not a duplicate overview; outcome bullets allowed only after one connective paragraph.
+  • activity_preamble — prepare learner thinking (why this activity now, what move is practised); not procedural first-step instructions (those belong in learner_task).
+  • intellectual_coherence_bridge — connect prior reasoning to the next challenge; name the carried distinction and what escalates; not "reuse the move" imperatives alone.
+  • study_tips / closure — synthesise meaning (what is clearer, what can be sustained, what transfers); not a recap of tasks completed.
+  • learner_task — observable actions only; teach before instruct in preamble, not in the task line.
+  • support_note — one misconception or evidence guard for the learner; not facilitator choreography.
+- TRANSITION QUALITY:
+  • Build intellectual momentum — explain why the next activity follows from what the learner just practised.
+  • Connect ideas, not only sequence steps or session blocks.
+  • Avoid formulaic bridges ("In this activity you will…", "Now complete the table", "Reuse the move" without naming the distinction).
+  • Each activity after the first: preamble or bridge must reference prior reasoning in topic-specific prose.
+- FRAMING ASSIMILATION:
+  • Write activity_preamble, reasoning_orientation, self_explanation_prompt, and related cognition fields as teachable instructional prose — not label stubs or stage directions ("Study the model row", "No model row").
+  • Field values must read naturally when rendered in sequence; do not write meta-labels in content ("Study orientation:", "Metacognitive prompt:", "Cognition focus:").
+  • Preamble teaches why + capability + journey link; cognition field adds how to think without repeating preamble or learner_task sentences.
+- ANTI-REDUNDANCY:
+  • Do not repeat the same orientation sentence across overview, learning_purpose, study_orientation, and activity_preamble.
+  • knowledge_summary previews concepts; activities apply them — do not restate the full glossary in each preamble.
+  • expected_output states evidence of completion; preamble must not duplicate expected_output wording.
+- VOICE (self-directed / self-study learner page):
+  • Explanation before task — teach before instruct.
+  • Reflective but authoritative — guide inquiry, not facilitator narration.
+  • study_orientation may address sequence, effort, and note-taking — not a second overview.

@@ -166,7 +166,7 @@ test("LD self-study page heuristics: includes Generate Learning Content in coher
   );
 });
 
-test("LD provided-source ingest: omits Generate Learning Content", () => {
+test("LD provided-source ingest: Normalize then Generate Learning Content before Model Knowledge", () => {
   const out = applyLdHeuristics(api, ldWorkflowPolicy, {
     steps: [
       { title: "Normalize Content", role: "" },
@@ -185,18 +185,17 @@ test("LD provided-source ingest: omits Generate Learning Content", () => {
     }
   });
   const titles = stepTitles(out);
-  assert.equal(
-    titles.some((t) => t.toLowerCase() === "generate learning content"),
-    false,
-    "ingest workflows should not keep Generate Learning Content"
-  );
+  const normIdx = indexOfTitle(titles, "Normalize Content");
+  const glcIdx = indexOfTitle(titles, "Generate Learning Content");
+  const mkIdx = indexOfTitle(titles, "Model Knowledge");
   assert.ok(
     titles.some((t) => t.toLowerCase() === "normalize content"),
     "provided-source ingest should include Normalize Content"
   );
-  const normIdx = indexOfTitle(titles, "Normalize Content");
-  const mkIdx = indexOfTitle(titles, "Model Knowledge");
-  assert.ok(normIdx !== -1 && mkIdx !== -1 && normIdx < mkIdx, "Normalize Content should precede Model Knowledge");
+  assert.ok(glcIdx !== -1, "ingest workflows should include Generate Learning Content");
+  assert.ok(normIdx !== -1 && glcIdx !== -1 && mkIdx !== -1, "expected Normalize, GLC, and Model Knowledge");
+  assert.ok(normIdx < glcIdx, "Normalize Content should precede Generate Learning Content");
+  assert.ok(glcIdx < mkIdx, "Generate Learning Content should precede Model Knowledge");
 });
 
 test("LD lean assessment pack: excludes Generate Learning Content", () => {

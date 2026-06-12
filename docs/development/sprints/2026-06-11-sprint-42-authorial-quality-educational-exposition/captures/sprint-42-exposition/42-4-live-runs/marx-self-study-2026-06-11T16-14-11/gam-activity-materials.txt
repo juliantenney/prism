@@ -1,0 +1,240 @@
+Material: M1 (worked_example)  
+Purpose: Modelled analysis of authorial exposition  
+Content:  
+### Worked Example: Analyzing Authorial Exposition on the Design Page
+
+This worked example guides you through identifying key structural elements of authorial exposition and explaining their roles in supporting self-directed learning.
+
+**Step 1: Identify an exposition element**  
+Example: *Introduction Section* — This part provides an overview of the learning environment and sets expectations.
+
+**Step 2: Determine its purpose**  
+The Introduction orients learners by explaining what the Design Page covers and how it relates to their learning goals.
+
+**Step 3: Explain how it supports self-directed learning**  
+By clarifying the scope and purpose upfront, the Introduction helps learners understand what they will engage with, enabling them to plan their learning path independently.
+
+---
+
+**Step 1: Identify another element**  
+Example: *Navigation Guidance* — Instructions or cues on how to use the page’s features.
+
+**Step 2: Purpose**  
+To help learners navigate resources and activities effectively.
+
+**Step 3: Support for self-directed learning**  
+Clear navigation guidance reduces confusion and empowers learners to find and select learning materials without external help.
+
+---
+
+**Step 1: Identify a third element**  
+Example: *Learning Outcomes Statement* — A list of skills or knowledge learners will develop.
+
+**Step 2: Purpose**  
+To set clear goals and benchmarks for learning.
+
+**Step 3: Support for self-directed learning**  
+Learners can self-assess progress and focus efforts on achieving these outcomes, fostering autonomy.
+
+---
+
+**Step 1: Identify a fourth element**  
+Example: *Motivational Framing* — Language that encourages engagement and highlights relevance.
+
+**Step 2: Purpose**  
+To motivate learners by connecting content to their interests or goals.
+
+**Step 3: Support for self-directed learning**  
+Motivation enhances learner initiative and persistence, key for directing one’s own learning journey.
+
+---
+
+**Summary:**  
+This stepwise walkthrough shows how each exposition element is not only present but functions strategically to scaffold learner autonomy, motivation, and navigation. When analyzing your own examples, apply this reasoning to reveal the deeper role of authorial exposition in supporting self-directed learning.
+
+---
+
+Material: M2 (sample_output)  
+Purpose: Example completed analysis table  
+Content:
+
+| Exposition Element      | Purpose                                            | Support for Self-Directed Learning                                  |
+|------------------------|----------------------------------------------------|--------------------------------------------------------------------|
+| Introduction Section    | Provides overview and sets expectations            | Helps learners understand scope and plan their learning path      |
+| Navigation Guidance     | Explains how to use page features                   | Empowers learners to find materials independently                  |
+| Learning Outcomes       | Lists skills and knowledge to be developed         | Enables self-assessment and goal-setting                           |
+| Motivational Framing    | Encourages engagement and highlights relevance     | Increases learner initiative and persistence                       |
+
+---
+
+Material: M3 (analysis_table)  
+Purpose: Learner analysis scaffold  
+Content:
+
+| Exposition Element           | Purpose                                            | Support for Self-Directed Learning                                  |
+|-----------------------------|----------------------------------------------------|--------------------------------------------------------------------|
+|                             |                                                    |                                                                    |
+|                             |                                                    |                                                                    |
+|                             |                                                    |                                                                    |
+|                             |                                                    |                                                                    |
+
+---
+
+Material: M4 (checklist)  
+Purpose: Verification of analysis completeness and depth  
+Content:
+
+### Checklist: Ensuring Complete and Deep Analysis of Authorial Exposition
+
+- [ ] Have you identified at least four distinct exposition elements from the Design Page?  
+- [ ] For each element, did you clearly state its purpose within the learning environment?  
+- [ ] Did you explain how each element supports self-directed learning, not just describe it?  
+- [ ] Have you linked the function of each element to learner autonomy, motivation, or navigation?
+
+**If any item is unchecked, revisit your analysis to deepen your explanations or identify additional elements.**
+
+---
+
+Activity: Evaluate Activity Preamble Exposition on the DLA  
+Activity ID: A2  
+Mapped outcomes: Evaluate the role of activity_preamble exposition on the DLA in framing learner engagement and guiding activity initiation.
+
+Material: M5 (worked_example)  
+Purpose: Model evaluation of activity_preamble exposition  
+Content:
+
+This example illustrates how to evaluate the activity_preamble exposition by making claims, citing evidence, and discussing implications for learner engagement.
+
+**Criterion 1: Clarity**  
+- **Claim:** The preamble clearly explains the activity’s purpose and steps.  
+- **Evidence:** Phrases such as “sets the tone for learner engagement” and “frames how learners approach the activity” explicitly orient learners.  
+- **Implication:** Clear exposition reduces learner uncertainty, enabling confident initiation of the activity.
+
+**Criterion 2: Motivational Impact**  
+- **Claim:** The preamble motivates learners by highlighting the activity’s relevance.  
+- **Evidence:** The phrase “reveals how well it motivates learners” suggests the preamble includes language that connects to learner interests.  
+- **Implication:** Motivation increases learner willingness to engage actively, enhancing persistence.
+
+**Criterion 3: Guidance Quality**  
+- **Claim:** The preamble provides useful guidance for starting the activity.  
+- **Evidence:** The mention of “guides activity initiation” indicates instructions or cues are present.  
+- **Implication:** Effective guidance helps learners avoid confusion and proceed independently.
+
+**Criterion 4: Ambiguity and Readiness**  
+- **Claim:** Some aspects may create ambiguity, affecting readiness.  
+- **Evidence:** The prompt to “consider which aspects create clarity or ambiguity” implies potential areas of confusion.  
+- **Implication:** Identifying ambiguous elements can inform improvements to better support learner readiness.
+
+---
+
+Material: M6 (sample_output)  
+Purpose: Example completed evaluation template  
+Content:
+
+| Criterion           | Claim                                                      | Evidence                                                   | Implication                                                  |
+|---------------------|------------------------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------|
+| Clarity             | The preamble clearly explains the activity’s purpose       | Uses phrases like “sets the tone for learner engagement”   | Learners can start confidently without confusion             |
+| Motivational Impact  | The preamble motivates learners by connecting to interests | Highlights how the activity “motivates learners”           | Increases learner engagement and persistence                  |
+| Guidance Quality    | Provides clear instructions for activity initiation         | Mentions “guides activity initiation”                      | Helps learners proceed independently and efficiently          |
+| Ambiguity and Readiness | Some wording may cause uncertainty for learners          | Prompt to “consider clarity or ambiguity”                   | Points to areas for refinement to improve learner readiness   |
+
+---
+
+Material: M7 (analysis_table)  
+Purpose: Evaluation scaffold template  
+Content:
+
+| Criterion           | Claim                                                      | Evidence                                                   | Implication                                                  |
+|---------------------|------------------------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------|
+|                     |                                                            |                                                            |                                                              |
+|                     |                                                            |                                                            |                                                              |
+|                     |                                                            |                                                            |                                                              |
+|                     |                                                            |                                                            |                                                              |
+
+---
+
+Material: M8 (checklist)  
+Purpose: Verification of evaluation completeness and reasoning  
+Content:
+
+### Checklist: Confirming Completeness and Reasoning in Your Evaluation
+
+- [ ] Have you evaluated at least four criteria related to exposition effectiveness?  
+- [ ] For each criterion, did you state a clear claim about the preamble’s role?  
+- [ ] Did you support each claim with specific evidence from the activity_preamble texts?  
+- [ ] Have you reasoned through the implications of each claim for learner engagement and readiness?
+
+**Review your evaluation to ensure all parts are well supported and logically connected.**
+
+---
+
+Material: M9 (modelling_note)  
+Purpose: Expert synthesis example  
+Content:
+
+This annotated narrative demonstrates how to combine key elements from authorial exposition and activity_preamble exposition to create a unified delivery context that fosters learner autonomy.
+
+---
+
+**Integration of Exposition Elements:**  
+- The **authorial exposition** introduces the learning environment, clarifying scope and outcomes, which sets the foundation for learner autonomy by orienting and motivating learners.  
+- The **activity_preamble exposition** builds on this by framing specific activities with motivational language and clear guidance, helping learners initiate tasks confidently.
+
+**Justification for Integration:**  
+- Combining broad orientation (authorial) with focused activity framing (preamble) ensures learners understand both the overall learning journey and immediate steps.  
+- This synergy reduces uncertainty and supports learner initiative, critical for self-directed learning.
+
+**Anticipated Learner Benefits:**  
+- Learners gain a clear roadmap and actionable cues, enabling them to plan, monitor, and adjust their learning independently.  
+- Motivation is sustained through relevance framing at both macro (course) and micro (activity) levels.  
+- Guidance minimizes barriers to starting and persisting in activities, enhancing learner confidence.
+
+---
+
+**Example Narrative Excerpt:**  
+*"This learning environment is designed to empower you to take control of your learning journey. The Design Page outlines key goals and resources, helping you understand what to expect and how to progress. Each activity begins with a preamble that motivates and guides you, ensuring you know why the task matters and how to approach it effectively. Together, these elements create a supportive framework that encourages your independence and success."*
+
+---
+
+Material: M10 (template)  
+Purpose: Delivery context synthesis scaffold  
+Content:
+
+| Section                          | Your Response                                                                                      |
+|---------------------------------|--------------------------------------------------------------------------------------------------|
+| Exposition Integration           | Describe how you combine authorial and activity_preamble exposition elements in your delivery context. |
+| Rationale for Design Choices     | Explain why you selected these elements and how they work together to support self-directed learning. |
+| Impact on Learner Autonomy       | Anticipate how your integrated delivery context will enhance learner independence and motivation. |
+
+---
+
+Material: M11 (checklist)  
+Purpose: Verification of synthesis coherence and justification  
+Content:
+
+### Checklist: Ensuring Coherence and Justification in Your Delivery Context Synthesis
+
+- [ ] Does your synthesis clearly integrate elements from both authorial and activity_preamble expositions?  
+- [ ] Have you provided a rationale explaining how these elements complement each other?  
+- [ ] Is your explanation focused on supporting learner autonomy and motivation?  
+- [ ] Have you anticipated specific learner benefits resulting from your integrated design?
+
+**Use this checklist to confirm your synthesis is clear, coherent, and learner-centered.**
+
+---
+
+Material: M12 (transfer_prompt)  
+Purpose: Prompt for applying synthesis to new contexts  
+Content:
+
+### Transfer Prompt: Adapting Your Delivery Context for Different Learner Profiles or Settings
+
+Consider how your integrated delivery context might need to change to support learners with different backgrounds, preferences, or learning environments. Reflect on questions such as:
+
+- How would you modify the authorial exposition to better suit learners who prefer more structured guidance versus those who thrive on open-ended exploration?  
+- What changes to the activity_preamble exposition might help learners with limited prior knowledge or motivation?  
+- How could your delivery context adapt for online versus face-to-face settings, or for learners with accessibility needs?
+
+Write at least 80 words discussing these adaptations, focusing on maintaining coherence and learner autonomy while addressing diverse learner needs.
+
+---

@@ -7534,7 +7534,8 @@
     return [
       "",
       "Learner-page activity framing (auto-applied):",
-      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences that situate the activity, activate prior knowledge where useful, explain why it matters, and cue the intended mode of thinking (compare, connect, apply, revise) — depth_floor L3 orientation with explanatory reasoning, not minimal filler.",
+      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences of explanatory educational prose — why the idea matters, the intellectual question explored, connection to prior learning, and momentum into the task (see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
+      "- activity_preamble must not open with procedural verbs (Identify, Analyse, Examine, Establish, Complete, Study the model row) or restate learner_task instructions.",
       "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
       "- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).",
       "- Page-level additive fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, prior_knowledge_activation, scaffold_hint_sequence) follow OUTPUT CONTRACT — they do not replace the per-activity minimum.",
@@ -7550,7 +7551,7 @@
     var lines = [
       "",
       "OUTPUT CONTRACT (learner-facing page — overrides the activity field list above):",
-      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences: why the activity matters, what capability is developed, how it connects to the wider learning journey).",
+      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences: explanatory/narrative prose on significance, conceptual question, prior-learning link, and intellectual momentum — not procedural task openers; see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
       "- Each activity object MUST include at least one cognition-orientation field (non-empty): reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task — match the beat archetype (see Learner-page activity framing by archetype).",
       "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
       "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
@@ -7597,7 +7598,7 @@
       "{",
       '  "activity_id": "A2",',
       '  "title": "Compare major works",',
-      '  "activity_preamble": "Before you read the extracts, note what each author assumes about workers and the state.",',
+      '  "activity_preamble": "Marx\'s major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative.",',
       '  "reasoning_orientation": "Compare texts as historical arguments: trace claim, evidence, and implied audience — not plot summary.",',
       '  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",',
       '  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",',
@@ -9129,6 +9130,209 @@
     return root && root.PRISM_LD_DESIGN_PAGE_COMPOSE ? root.PRISM_LD_DESIGN_PAGE_COMPOSE : null;
   }
 
+  function resolveLdAuthorialExpositionLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_AUTHORIAL_EXPOSITION &&
+      typeof globalThis.PRISM_LD_AUTHORIAL_EXPOSITION.buildLdAuthorialExpositionPromptBlock ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_AUTHORIAL_EXPOSITION;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_AUTHORIAL_EXPOSITION ? root.PRISM_LD_AUTHORIAL_EXPOSITION : null;
+  }
+
+  function buildLdAuthorialExpositionPromptBlock(options) {
+    var lib = resolveLdAuthorialExpositionLib();
+    if (lib && typeof lib.buildLdAuthorialExpositionPromptBlock === "function") {
+      return lib.buildLdAuthorialExpositionPromptBlock(options);
+    }
+    return "";
+  }
+
+  function resolveLdActivityPreambleExpositionLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION &&
+      typeof globalThis.PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION
+        .buildLdActivityPreambleExpositionPromptBlock === "function"
+    ) {
+      return globalThis.PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION
+      ? root.PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION
+      : null;
+  }
+
+  function buildLdActivityPreambleExpositionPromptBlock(options) {
+    var lib = resolveLdActivityPreambleExpositionLib();
+    if (lib && typeof lib.buildLdActivityPreambleExpositionPromptBlock === "function") {
+      return lib.buildLdActivityPreambleExpositionPromptBlock(options);
+    }
+    return "";
+  }
+
+  function ldActivityPreambleExpositionAlreadyPresent(draftBody) {
+    var lib = resolveLdActivityPreambleExpositionLib();
+    if (lib && typeof lib.expositionAlreadyPresent === "function") {
+      return lib.expositionAlreadyPresent(draftBody);
+    }
+    return /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i.test(
+      String(draftBody || "")
+    );
+  }
+
+  function applyLdActivityPreambleExpositionContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignLearningActivities(context)) {
+      return draftBody;
+    }
+    if (ldActivityPreambleExpositionAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var block = buildLdActivityPreambleExpositionPromptBlock();
+    if (!block) return draftBody;
+    return (draftBody + "\n" + block).trim();
+  }
+
+  function evaluateActivityPreambleExpositionEvidence(input, options) {
+    var lib = resolveLdActivityPreambleExpositionLib();
+    if (lib && typeof lib.evaluateActivityPreambleExpositionEvidence === "function") {
+      return lib.evaluateActivityPreambleExpositionEvidence(input, options);
+    }
+    return {
+      activityCount: 0,
+      preambleCount: 0,
+      proceduralOpeningCount: 0,
+      meetsPreambleCoverage: false,
+      meetsAuthorialExposition: false,
+      rows: []
+    };
+  }
+
+  function ldAuthorialExpositionAlreadyPresent(draftBody) {
+    var lib = resolveLdAuthorialExpositionLib();
+    if (lib && typeof lib.expositionAlreadyPresent === "function") {
+      return lib.expositionAlreadyPresent(draftBody);
+    }
+    return /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i.test(String(draftBody || ""));
+  }
+
+  function resolveLdJourneyAssimilationLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_JOURNEY_ASSIMILATION &&
+      typeof globalThis.PRISM_LD_JOURNEY_ASSIMILATION.buildLdJourneyAssimilationPromptBlock ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_JOURNEY_ASSIMILATION;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_JOURNEY_ASSIMILATION ? root.PRISM_LD_JOURNEY_ASSIMILATION : null;
+  }
+
+  function buildLdJourneyAssimilationPromptBlock(options) {
+    var lib = resolveLdJourneyAssimilationLib();
+    if (lib && typeof lib.buildLdJourneyAssimilationPromptBlock === "function") {
+      return lib.buildLdJourneyAssimilationPromptBlock(options);
+    }
+    return "";
+  }
+
+  function ldJourneyAssimilationAlreadyPresent(draftBody) {
+    var lib = resolveLdJourneyAssimilationLib();
+    if (lib && typeof lib.assimilationAlreadyPresent === "function") {
+      return lib.assimilationAlreadyPresent(draftBody);
+    }
+    return /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i.test(String(draftBody || ""));
+  }
+
+  function applyLdJourneyAssimilationContractToDraft(draftText, context, facilitatedHint) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context) || ldJourneyAssimilationAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var block = buildLdJourneyAssimilationPromptBlock();
+    if (!block) return draftBody;
+    return (draftBody + "\n" + block).trim();
+  }
+
+  function applyLdAuthorialExpositionContractToDraft(draftText, context, facilitatedHint) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context) || ldAuthorialExpositionAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var facilitated =
+      facilitatedHint != null
+        ? !!facilitatedHint
+        : isFacilitatedLearnerPageFramingContext(context, resolved, base);
+    var block = buildLdAuthorialExpositionPromptBlock({ facilitated: facilitated });
+    if (!block) return draftBody;
+    return (draftBody + "\n" + block).trim();
+  }
+
   function resolveEducationalQualityFrameworkLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -9312,15 +9516,32 @@
           ""
       ).trim()
     };
-    var includeFieldPreservation = shouldApplyLearnerPagePedagogicFramingScaffold(
+    var includeLearnerPageFraming = shouldApplyLearnerPagePedagogicFramingScaffold(
       context,
       resolved,
       base
     );
-    return (
-      draftBody +
-      buildLdDesignPageComposePromptBlock({ includeFieldPreservation: includeFieldPreservation })
-    ).trim();
+    var facilitated = isFacilitatedLearnerPageFramingContext(context, resolved, base);
+    var next = draftBody;
+    if (!ldDesignPageComposeAlreadyPresent(draftBody)) {
+      var composeOpts = {
+        includeFieldPreservation: includeLearnerPageFraming,
+        includeAuthorialExposition: false
+      };
+      if (includeLearnerPageFraming) {
+        composeOpts.includeAuthorialExposition = true;
+        composeOpts.authorialExpositionBlock = buildLdAuthorialExpositionPromptBlock({
+          facilitated: facilitated
+        });
+      }
+      next = (draftBody + buildLdDesignPageComposePromptBlock(composeOpts)).trim();
+    } else if (includeLearnerPageFraming) {
+      next = applyLdAuthorialExpositionContractToDraft(next, context, facilitated);
+    }
+    if (includeLearnerPageFraming) {
+      next = applyLdJourneyAssimilationContractToDraft(next, context, facilitated);
+    }
+    return next;
   }
 
   function ldSelfDirectedRhetoricRoleForContext(context) {
@@ -10256,6 +10477,7 @@
         ).trim();
       }
       draftBody = augmentSelfDirectedDlaDraftOutputSection(draftBody);
+      draftBody = applyLdActivityPreambleExpositionContractToDraft(draftBody, context);
     }
     if (isGam && applyGamScaffolds) {
       draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
@@ -16392,6 +16614,7 @@
     var allowGenerateLearningContent =
       explicitGenerationOnly ||
       generateFromTopic ||
+      shouldIncludeNormalizeForSourcePosture() ||
       (!hasAuthoritativeProvidedSource() &&
         (/\b(create|generate|design)\b/.test(goalText) ||
           explicitSessionOrActivityRequested ||
@@ -17064,22 +17287,6 @@
         });
       }
 
-      // Strong fail-safe: when authoritative source content is provided, do not keep
-      // Generate Learning Content unless user explicitly asked for generation-only behavior.
-      if (hasAuthoritativeProvidedSource() && !explicitGenerationOnly) {
-        out.steps = out.steps.filter(function (s) {
-          return String((s && s.title) || "").toLowerCase() !== "generate learning content";
-        });
-      }
-
-      // Structural safety for ingest workflows:
-      // never place Generate Learning Content into Normalize->Model transformation flows.
-      if (hasAuthoritativeProvidedSource() && isIngestTransformationIntent()) {
-        out.steps = out.steps.filter(function (s) {
-          return String((s && s.title) || "").toLowerCase() !== "generate learning content";
-        });
-      }
-
       // Max occurrence / merge duplicates by canonical title.
       var grouped = {};
       out.steps.forEach(function (s) {
@@ -17149,11 +17356,9 @@
       ) {
         providedArtefacts.learning_outcomes = true;
       }
-      // Input-strategy starting points are not artefacts, so map them to the
-      // nearest provided artefact baseline for dependency closure.
-      if (selectedStartingArtefact === "provided_source_content") {
-        providedArtefacts.learning_content = true;
-      }
+      // provided_source_content is an input strategy, not a produced artefact.
+      // Do not mark learning_content as provided — source ingest runs
+      // Normalize → Generate Learning Content → learning_content before Model Knowledge.
       Object.keys(policy.dependencies || {}).forEach(function (stepTitle) {
         var canonicalStep = canonicalizeFromPolicy(stepTitle);
         if (!canonicalStep) return;
@@ -17822,13 +18027,36 @@
       });
     }
 
-    // Final fail-safe (applies with or without policy):
-    // if authoritative source content is provided, do not include Generate Learning
-    // Content unless user explicitly asked for generation-only behavior.
-    if (hasAuthoritativeProvidedSource() && !explicitGenerationOnly) {
-      out.steps = out.steps.filter(function (s) {
-        return String((s && s.title) || "").toLowerCase() !== "generate learning content";
-      });
+    // Source ingest: Normalize → Generate Learning Content → Model Knowledge (Sprint 42-10).
+    if (hasAuthoritativeProvidedSource()) {
+      (function ensureSourceIngestLearningContentAfterNormalize() {
+        var normKey = "normalize content";
+        var glcKey = "generate learning content";
+        var mkKey = "model knowledge";
+        var normIdx = -1;
+        var glcIdx = -1;
+        var mkIdx = -1;
+        var normTitle = "Normalize Content";
+        var glcTitle = "Generate Learning Content";
+        if (policy && Array.isArray(policy.canonicalSteps)) {
+          policy.canonicalSteps.forEach(function (c) {
+            var k = String(c || "").toLowerCase().trim();
+            if (k === normKey) normTitle = c;
+            if (k === glcKey) glcTitle = c;
+          });
+        }
+        out.steps.forEach(function (s, idx) {
+          var t = String((s && s.title) || "").toLowerCase().trim();
+          if (t === normKey) normIdx = idx;
+          if (t === glcKey) glcIdx = idx;
+          if (t === mkKey) mkIdx = idx;
+        });
+        if (normIdx === -1) return;
+        if (glcIdx !== -1) return;
+        var insertAt = normIdx + 1;
+        if (mkIdx !== -1 && mkIdx > normIdx) insertAt = mkIdx;
+        out.steps.splice(insertAt, 0, { title: glcTitle, role: "" });
+      })();
     }
 
     // Epistemic grounding: topic-only paths must not run Model Knowledge without a content producer.
@@ -38081,6 +38309,18 @@
     prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =
       applyDesignPageActivityMaterialsFidelityContractToDraft;
     prismTestApi.buildLdDesignPageComposePromptBlock = buildLdDesignPageComposePromptBlock;
+    prismTestApi.buildLdAuthorialExpositionPromptBlock = buildLdAuthorialExpositionPromptBlock;
+    prismTestApi.applyLdAuthorialExpositionContractToDraft =
+      applyLdAuthorialExpositionContractToDraft;
+    prismTestApi.buildLdJourneyAssimilationPromptBlock = buildLdJourneyAssimilationPromptBlock;
+    prismTestApi.applyLdJourneyAssimilationContractToDraft =
+      applyLdJourneyAssimilationContractToDraft;
+    prismTestApi.buildLdActivityPreambleExpositionPromptBlock =
+      buildLdActivityPreambleExpositionPromptBlock;
+    prismTestApi.applyLdActivityPreambleExpositionContractToDraft =
+      applyLdActivityPreambleExpositionContractToDraft;
+    prismTestApi.evaluateActivityPreambleExpositionEvidence =
+      evaluateActivityPreambleExpositionEvidence;
     prismTestApi.applyLdDesignPageComposeContractToDraft =
       applyLdDesignPageComposeContractToDraft;
     prismTestApi.buildLdMathRenderPromptBlock = buildLdMathRenderPromptBlock;

@@ -1,0 +1,156 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Exploring Common Misconceptions in Sprint 42 Contracts",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Analyze common misconceptions related to Sprint 42 contracts and identify their impact on contract application."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Demonstrate typical misconceptions and their consequences",
+          "specification": "depth_floor: L3; stepwise explanation of common errors in Sprint 42 contract application with annotated reasoning"
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Model identification and analysis of misconceptions",
+          "specification": "depth_floor: L3; annotated learner response highlighting misconception identification and impact analysis"
+        },
+        {
+          "material_id": "M3",
+          "type": "checklist",
+          "purpose": "Verification of misconception identification and impact analysis",
+          "specification": "depth_floor: L3; ≥4 criteria including accuracy of misconception identification, clarity of impact explanation, use of contract terms, and completeness"
+        }
+      ],
+      "learner_task": "Study the worked example illustrating common misconceptions in Sprint 42 contracts, then analyze a new case to identify misconceptions and explain their impact on contract application.",
+      "expected_output": "A written analysis identifying at least three misconceptions in the provided case and explaining their potential impact on contract application.",
+      "failure_mode": "Misidentifying misconceptions, incomplete impact explanations, or failure to link misconceptions to contract application.",
+      "facilitator_moves": "",
+      "activity_preamble": "Understanding misconceptions in Sprint 42 contracts is crucial because these errors can undermine correct contract application and lead to ineffective outcomes. This activity investigates typical misunderstandings and their consequences, building a foundation for accurate contract use.",
+      "misconception_claim": "Learners often confuse contract terms or overlook key application conditions, leading to flawed contract use.",
+      "reconciliation_prompt": "How do the identified misconceptions distort the intended contract application, and what clarifications resolve these errors?",
+      "evidence_contrast": "Compare the incorrect interpretations in the misconceptions with the correct contract clauses and application rules.",
+      "transformation_activity": "Analyze the worked example to transform misconceptions into accurate contract understanding.",
+      "source_to_application_prompt": "Use the contract clauses and definitions to support your identification and explanation of misconceptions.",
+      "reasoning_orientation": "Focus on tracing the logical errors in contract interpretation and their practical consequences."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Applying Sprint 42 Contracts in In-Person Delivery Scenarios",
+      "grouping": "individual",
+      "duration_minutes": 25,
+      "mapped_learning_outcomes": [
+        "Demonstrate correct application of Sprint 42 contracts in an in-person delivery context through scenario-based exercises."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "scenario",
+          "purpose": "Provide in-person delivery context scenarios for contract application",
+          "specification": "depth_floor: L3; two detailed cases with context, roles, and contract application challenges"
+        },
+        {
+          "material_id": "M5",
+          "type": "modelling_note",
+          "purpose": "Stepwise demonstration of correct contract application in scenarios",
+          "specification": "depth_floor: L3; think-aloud modelling of applying Sprint 42 contracts to scenario 1 with rationale"
+        },
+        {
+          "material_id": "M6",
+          "type": "checklist",
+          "purpose": "Verification of correct contract application steps",
+          "specification": "depth_floor: L3; ≥4 criteria including correct identification of contract clauses, context adaptation, procedural accuracy, and outcome alignment"
+        }
+      ],
+      "learner_task": "Review the modelling note demonstrating contract application in one scenario, then apply Sprint 42 contracts correctly to the second in-person delivery scenario, documenting your reasoning.",
+      "expected_output": "A documented application of Sprint 42 contracts to the second scenario, showing correct clause use, context adaptation, and justified decisions.",
+      "failure_mode": "Incorrect clause selection, failure to adapt to in-person context, or incomplete reasoning.",
+      "facilitator_moves": "",
+      "activity_preamble": "Applying Sprint 42 contracts accurately in real-world in-person delivery contexts ensures effective and compliant outcomes. This activity builds practical skills by working through realistic scenarios that highlight contextual nuances.",
+      "misconception_claim": "Learners may misapply contract clauses when transitioning from theory to in-person scenarios, missing context-specific adaptations.",
+      "reconciliation_prompt": "How does understanding the delivery context influence the correct application of Sprint 42 contracts in these scenarios?",
+      "evidence_contrast": "Contrast the modelling note's approach with common misapplications in similar contexts.",
+      "transformation_activity": "Translate theoretical contract knowledge into practical application within the scenario context.",
+      "source_to_application_prompt": "Refer to Sprint 42 contract clauses and delivery context details to guide your application decisions.",
+      "reasoning_orientation": "Engage in procedural and contextual reasoning to adapt contract clauses appropriately."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Evaluating and Correcting Learner Misconceptions in Sprint 42 Contract Workshops",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Evaluate learner misconceptions during the workshop and provide constructive feedback to correct misunderstandings."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M7",
+          "type": "analysis_table",
+          "purpose": "Structured evaluation of learner misconceptions with criteria and feedback prompts",
+          "specification": "depth_floor: L3; table with columns for misconception claim, evidence, impact, feedback suggestion, and learner response space; includes partial exemplar rows"
+        },
+        {
+          "material_id": "M8",
+          "type": "worked_example",
+          "purpose": "Demonstrate evaluation and feedback process on sample misconceptions",
+          "specification": "depth_floor: L3; stepwise expert evaluation and feedback on a sample learner misconception"
+        },
+        {
+          "material_id": "M9",
+          "type": "checklist",
+          "purpose": "Verification of evaluation and feedback quality",
+          "specification": "depth_floor: L3; ≥4 criteria including accuracy of misconception identification, quality of feedback, clarity of communication, and constructive tone"
+        },
+        {
+          "material_id": "M10",
+          "type": "transfer_prompt",
+          "purpose": "Encourage transfer of evaluation skills to new contexts",
+          "specification": "depth_floor: L3; prompt to apply evaluation and feedback skills to a novel learner misconception scenario"
+        }
+      ],
+      "learner_task": "Study the worked example of evaluating a learner misconception and providing feedback, then use the analysis table to evaluate a new misconception and draft constructive feedback.",
+      "expected_output": "A completed analysis table with a clear evaluation of the misconception and a well-justified, constructive feedback draft.",
+      "failure_mode": "Superficial evaluation, unclear or unconstructive feedback, or failure to link feedback to misconception evidence.",
+      "facilitator_moves": "",
+      "activity_preamble": "Evaluating misconceptions and offering constructive feedback is essential for effective learning and correction in workshops. This activity develops your ability to critically assess misunderstandings and guide learners toward accurate contract application.",
+      "misconception_claim": "Learners often struggle to provide feedback that is both accurate and supportive, limiting correction effectiveness.",
+      "reconciliation_prompt": "What elements make feedback constructive and how does evaluation inform these elements?",
+      "evidence_contrast": "Compare feedback that addresses root misconceptions with feedback that misses key evidence or is vague.",
+      "transformation_activity": "Transform evaluation insights into clear, actionable feedback that supports learner improvement.",
+      "source_to_application_prompt": "Use evidence from learner misconceptions and contract principles to ground your feedback.",
+      "uncertainty_tension_prompt": "Consider the balance between direct correction and encouraging learner reflection when providing feedback."
+    }
+  ],
+  "outcome_alignment": [
+    {
+      "activity_id": "A1",
+      "learning_outcome_ids": [
+        "Analyze common misconceptions related to Sprint 42 contracts and identify their impact on contract application."
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learning_outcome_ids": [
+        "Demonstrate correct application of Sprint 42 contracts in an in-person delivery context through scenario-based exercises."
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learning_outcome_ids": [
+        "Evaluate learner misconceptions during the workshop and provide constructive feedback to correct misunderstandings."
+      ]
+    }
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

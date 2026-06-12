@@ -1,0 +1,82 @@
+Design step output.
+Learner-page activity framing (auto-applied):
+- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences of explanatory educational prose — why the idea matters, the intellectual question explored, connection to prior learning, and momentum into the task (see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).
+- activity_preamble must not open with procedural verbs (Identify, Analyse, Examine, Establish, Complete, Study the model row) or restate learner_task instructions.
+- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with "In this activity you will…").
+- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).
+- Page-level additive fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, prior_knowledge_activation, scaffold_hint_sequence) follow OUTPUT CONTRACT — they do not replace the per-activity minimum.
+- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; put facilitator timing, group choreography, and session orchestration in facilitator_moves or facilitator-only materials — not in activity_preamble, study_orientation, intellectual_frame, or reasoning_orientation.
+- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble.
+
+Learner-page activity framing by archetype (mandatory minimum — every activity):
+- Every activity MUST include activity_preamble (why it matters, capability developed, link to the wider learning journey) AND at least one cognition-orientation field from OUTPUT CONTRACT.
+- Understanding activities: activity_preamble + self_explanation_prompt and/or reasoning_orientation.
+- Application activities: activity_preamble + reasoning_orientation + transfer_or_application_task when the beat is application.
+- Analysis activities: activity_preamble + conceptual_contrast_prompt and/or reasoning_orientation.
+- Evaluation activities: activity_preamble + uncertainty_tension_prompt and/or argument_structure_hint.
+- Final synthesis/judgement activities: activity_preamble + transfer_or_application_task + consolidation or learning-success framing where the beat requires closure.
+- Choose the cognition field(s) that match the episode_plan beat / primary_archetype — do not emit procedural-only rows (title, learner_task, expected_output, required_materials only).
+OUTPUT CONTRACT (learner-facing page — overrides the activity field list above):
+- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT below.
+- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences: explanatory/narrative prose on significance, conceptual question, prior-learning link, and intellectual momentum — not procedural task openers; see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).
+- Each activity object MUST include at least one cognition-orientation field (non-empty): reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task — match the beat archetype (see Learner-page activity framing by archetype).
+- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.
+- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).
+- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).
+- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence: carried reasoning move or distinction from the prior step + what escalates (see Intellectual progression signalling); do not repeat the activity title or use location-only transitions.
+- self_explanation_prompt: at least two activities; one generative-retrieval prompt each requiring explanatory reasoning in the learner's own words (depth_floor L3 — e.g. explain and justify before checking; not a label or single token).
+- prior_knowledge_activation: at least one activity when prior context helps.
+- reasoning_orientation: on compare/analyse/application/cause-effect activities — 1–2 sentences on WHAT KIND OF THINKING (not a restatement of learner_task).
+- evidence_use_prompt: on activities that use transcript/extract/reading — how to quote, paraphrase, or map claims to the source (not a bibliography).
+- argument_structure_hint: on compare/evaluate/argument activities — claim → evidence → implication scaffold with meaningful reasoning steps.
+- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one plausible merge error (conceptual difficulty type).
+- uncertainty_tension_prompt: optional on 1–2 activities when interpretive ambiguity or disciplinary uncertainty is central — one sentence: what is unstable + discriminating move; not reflective diary prose (see Conceptual tension and difficulty framing).
+- disciplinary_lens: optional once per page — tag-like lens label naming the discipline mode (e.g. "Thinking as a historian") — do not duplicate intellectual_frame prose.
+- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.
+- transfer_or_application_task: on the culminating or transfer-phase activity when the page supports application (2+ activities or phased single activity) — one sentence: named move + changed context; may add one clause on where the move fails or an assumption breaks — not generic real-world application.
+- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 substantive hint strings with procedural or reasoning guidance).
+- facilitator_moves: optional when the brief requires facilitated choreography — keep timing, group structure, and orchestration here, not in learner-facing orientation fields.
+- failure_mode: optional when debrief or facilitator reveal timing is specified.
+- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above.
+- Do not emit learner-page activities with only title, learner_task, expected_output, and required_materials — every activity needs activity_preamble and at least one cognition-orientation field.
+Self-directed activity JSON example (authoritative shape — topic-specific strings required):
+{
+  "activity_id": "A2",
+  "title": "Compare major works",
+  "activity_preamble": "Marx's major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative.",
+  "reasoning_orientation": "Compare texts as historical arguments: trace claim, evidence, and implied audience — not plot summary.",
+  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",
+  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",
+  "self_explanation_prompt": "Before checking the model row, explain which text you find more convincing, why that matters for the argument, and cite one passage as evidence.",
+  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",
+  "expected_output": "A filled comparison table a peer could review — each row has purpose text and one cited difference.",
+  "support_note": "Purpose is the author's aim, not a plot summary; difference must compare the two works, not repeat the same sentence twice.",
+  "required_materials": [
+    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "depth_floor: L3; paired excerpt blocks ≥150 words each with titled sections, quotable spans, and context for independent study." },
+    { "material_id": "M2", "type": "checklist", "purpose": "verification", "specification": "depth_floor: L3; ≥4 criteria-linked check items + repair path if any fail." }
+  ]
+}
+
+38L mandatory rows not shown in miniature example above — when IFP-10/DLA-WB-26..31 apply, ALSO emit: checklist on EVERY activity; Analyse worked analytic pass before analysis_table; Evaluate independent judgement template + verification checklist + transfer_prompt (not cognition field only). See pack IFP-10 and DLA-WB-26..31 above — do not copy the thin single-material shape.
+
+LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT (auto-applied):
+- Module: LD-ACTIVITY-PREAMBLE-EXPOSITION | Design Learning Activities only — upgrade activity_preamble from procedural cues to explanatory educational prose.
+- Scope: activity_preamble strings on each activity object. Do not add fields, schema, workflow steps, or EQF dimensions.
+- learner_task holds executable instructions; activity_preamble teaches before the task — never duplicate learner_task sentences or step lists.
+- ACTIVITY_PREAMBLE AUTHORIAL PURPOSE (1–3 sentences, topic-specific):
+  1. Explain why the idea or move matters — significance, stakes, or conceptual tension.
+  2. Introduce the intellectual question being explored (not the first action step).
+  3. Connect to prior learning where appropriate — build on the previous activity's reasoning.
+  4. Create intellectual momentum — why this step follows from what came before.
+  5. Prepare thinking before task execution — orient inquiry, not workflow.
+- PREFER: significance, explanation, inquiry, conceptual tension, intellectual curiosity, narrative progression.
+- AVOID as standalone opening sentences: Identify…, Analyse…, Analyze…, Examine…, Establish…, Complete…, Bring together…, Study the model row…, No model row…, In this activity you will….
+- AVOID: task summaries, scaffolding state labels, workflow instructions, and stage directions that belong in learner_task or materials.
+- AVOID: repeating purpose, learner_task, or intellectual_coherence_bridge wording — preamble teaches; bridge carries the prior move; task instructs.
+- EXEMPLAR CONTRAST (topic-specific strings required — do not copy verbatim):
+  • Weak: "Identify and organise Marx's key predictions about how capitalism develops over time."
+  • Strong: "Marx believed that capitalism contains pressures that push societies in particular directions. Before evaluating whether those predictions were accurate, it is important to understand what he expected to happen and why he believed those developments were built into the system itself."
+  • Weak: "Analyse how Marx's predictions align or conflict with contemporary economic developments."
+  • Strong: "Many of Marx's claims remain controversial because some appear strikingly relevant while others seem less convincing in light of modern evidence. This activity explores where contemporary capitalism supports, challenges, or complicates Marx's predictions."
+  • Weak: "Study the model row before completing the full comparison table."
+  • Strong: "Comparing two major works is not the same as summarising them: each text was written for a different purpose and audience. Before you complete the table, notice how a modelled row names author aim and a defensible contrast — that move is what makes comparison evidence-based rather than descriptive."

@@ -1,0 +1,37 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Analyze the structure and key elements of Sprint 42-4 live capture documentation to identify relevant data points for delivery context resolution.",
+      "related_concepts": [
+        "Sprint 42-4 live capture",
+        "delivery_context",
+        "documentation analysis"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focuses on extracting and interpreting information from the live capture to inform delivery context."
+    },
+    {
+      "statement": "Apply Sprint 42 contract terms to evaluate and resolve delivery_context scenarios within the workshop framework.",
+      "related_concepts": [
+        "Sprint 42 contracts",
+        "delivery_context",
+        "workshop facilitation"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Ensures practical use of contractual knowledge in resolving delivery context issues."
+    },
+    {
+      "statement": "Design learner handout content that aligns with the page_profile learner model without including facilitator choreography in learner-visible fields.",
+      "related_concepts": [
+        "page_profile learner",
+        "learner handout design",
+        "facilitator choreography"
+      ],
+      "cognitive_level": "Create",
+      "notes": "Emphasizes clear separation of facilitator and learner content in handout design."
+    }
+  ],
+  "learner_level": "Intermediate",
+  "scope": "Standard session",
+  "alignment_notes": "Outcomes focus on analysis, application, and creation aligned with Sprint 42-4 live capture and contract context within a workshop setting."
+}

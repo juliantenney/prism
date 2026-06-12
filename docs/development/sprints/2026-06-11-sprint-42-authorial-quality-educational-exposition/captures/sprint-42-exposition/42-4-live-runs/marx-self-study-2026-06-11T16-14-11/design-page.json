@@ -1,0 +1,167 @@
+{
+  "artifact_type": "page",
+  "title": "Self-Directed Learning: Analyzing and Integrating Expositions for Learner Autonomy",
+  "audience": "self-directed learners",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Overview",
+      "content": "This page guides you through a focused exploration of how authorial exposition on the Design Page and activity_preamble exposition on the DLA work together to support self-directed learning. You will analyze the structure and purpose of these expositions, evaluate their effectiveness in framing learner engagement, and synthesize them into a coherent delivery context that enhances learner autonomy. This journey develops your ability to recognize and construct learning environments that empower independent learning."
+    },
+    {
+      "heading": "Learning Purpose",
+      "content": "Understanding how exposition shapes the learning environment is crucial for directing your own learning journey effectively. By analyzing authorial exposition, you learn to identify key elements that scaffold your autonomy and motivation. Evaluating activity preambles helps you appreciate how initial engagement is framed and guided. Finally, constructing an integrated delivery context synthesizes these insights to enhance your capacity for self-directed learning.\n\nThis page supports the following learning outcomes:\n- Analyze the structure and purpose of authorial exposition on the Design Page to identify key elements that support self-directed learning.\n- Evaluate the role of activity_preamble exposition on the DLA in framing learner engagement and guiding activity initiation.\n- Construct a coherent delivery_context for self-directed learning that integrates authorial and activity_preamble expositions to enhance learner autonomy."
+    },
+    {
+      "heading": "Study Tips",
+      "content": "- Approach each activity by first understanding the why and how of exposition roles before engaging in tasks.\n- Use the provided worked examples to model your reasoning and deepen your analysis or evaluation.\n- Pay attention to how exposition elements connect to learner autonomy, motivation, and navigation rather than only describing features.\n- When synthesizing, focus on coherence and synergy between exposition types to build a learner-centered delivery context.\n- Keep notes on your reasoning process to support reflection and transfer to new learning situations."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Analyze Authorial Exposition on the Design Page",
+          "duration_minutes": 20,
+          "activity_preamble": "Authorial exposition on the Design Page plays a crucial role in shaping how learners engage with self-directed learning. Understanding its structure and purpose helps reveal how the author guides learners to navigate and make sense of the learning environment independently.",
+          "reasoning_orientation": "Focus on identifying how the exposition organizes information and signals key elements that scaffold learner autonomy and motivation.",
+          "self_explanation_prompt": "Explain in your own words how the authorial exposition supports a learner's ability to direct their own learning journey and why these elements are important.",
+          "learner_task": "Study the provided authorial exposition examples on the Design Page. Then, complete an analysis table identifying key structural elements, their purposes, and how each supports self-directed learning.",
+          "expected_output": "A completed analysis table with at least four key elements identified, each explained with respect to their role in supporting self-directed learning.",
+          "support_note": "Focus on the function of exposition elements rather than just their presence; consider how they help learners understand and navigate the learning context.",
+          "materials": {
+            "worked_example": "### Worked Example: Analyzing Authorial Exposition on the Design Page\n\nThis worked example guides you through identifying key structural elements of authorial exposition and explaining their roles in supporting self-directed learning.\n\n**Step 1: Identify an exposition element**  \nExample: *Introduction Section* — This part provides an overview of the learning environment and sets expectations.\n\n**Step 2: Determine its purpose**  \nThe Introduction orients learners by explaining what the Design Page covers and how it relates to their learning goals.\n\n**Step 3: Explain how it supports self-directed learning**  \nBy clarifying the scope and purpose upfront, the Introduction helps learners understand what they will engage with, enabling them to plan their learning path independently.\n\n---\n\n**Step 1: Identify another element**  \nExample: *Navigation Guidance* — Instructions or cues on how to use the page’s features.\n\n**Step 2: Purpose**  \nTo help learners navigate resources and activities effectively.\n\n**Step 3: Support for self-directed learning**  \nClear navigation guidance reduces confusion and empowers learners to find and select learning materials without external help.\n\n---\n\n**Step 1: Identify a third element**  \nExample: *Learning Outcomes Statement* — A list of skills or knowledge learners will develop.\n\n**Step 2: Purpose**  \nTo set clear goals and benchmarks for learning.\n\n**Step 3: Support for self-directed learning**  \nLearners can self-assess progress and focus efforts on achieving these outcomes, fostering autonomy.\n\n---\n\n**Step 1: Identify a fourth element**  \nExample: *Motivational Framing* — Language that encourages engagement and highlights relevance.\n\n**Step 2: Purpose**  \nTo motivate learners by connecting content to their interests or goals.\n\n**Step 3: Support for self-directed learning**  \nMotivation enhances learner initiative and persistence, key for directing one’s own learning journey.\n\n---\n\n**Summary:**  \nThis stepwise walkthrough shows how each exposition element is not only present but functions strategically to scaffold learner autonomy, motivation, and navigation. When analyzing your own examples, apply this reasoning to reveal the deeper role of authorial exposition in supporting self-directed learning.\n\n---",
+            "sample_output": "| Exposition Element      | Purpose                                            | Support for Self-Directed Learning                                  |\n|------------------------|----------------------------------------------------|--------------------------------------------------------------------|\n| Introduction Section    | Provides overview and sets expectations            | Helps learners understand scope and plan their learning path      |\n| Navigation Guidance     | Explains how to use page features                   | Empowers learners to find materials independently                  |\n| Learning Outcomes       | Lists skills and knowledge to be developed         | Enables self-assessment and goal-setting                           |\n| Motivational Framing    | Encourages engagement and highlights relevance     | Increases learner initiative and persistence                       |\n\n---",
+            "analysis_table": "| Exposition Element           | Purpose                                            | Support for Self-Directed Learning                                  |\n|-----------------------------|----------------------------------------------------|--------------------------------------------------------------------|\n|                             |                                                    |                                                                    |\n|                             |                                                    |                                                                    |\n|                             |                                                    |                                                                    |\n|                             |                                                    |                                                                    |\n\n---",
+            "checklist": "### Checklist: Ensuring Complete and Deep Analysis of Authorial Exposition\n\n- [ ] Have you identified at least four distinct exposition elements from the Design Page?  \n- [ ] For each element, did you clearly state its purpose within the learning environment?  \n- [ ] Did you explain how each element supports self-directed learning, not just describe it?  \n- [ ] Have you linked the function of each element to learner autonomy, motivation, or navigation?\n\n**If any item is unchecked, revisit your analysis to deepen your explanations or identify additional elements.**\n\n---"
+          }
+        },
+        {
+          "title": "Evaluate Activity Preamble Exposition on the DLA",
+          "duration_minutes": 20,
+          "activity_preamble": "The activity_preamble exposition on the DLA sets the tone for learner engagement and frames how learners approach the activity. Evaluating its effectiveness reveals how well it motivates learners and guides their initial steps.",
+          "uncertainty_tension_prompt": "Consider which aspects of the preamble create clarity or ambiguity for learners, and how this affects their motivation and readiness to engage.",
+          "argument_structure_hint": "Structure your evaluation by stating claims about the exposition's effectiveness, citing specific examples, and discussing implications for learner engagement.",
+          "learner_task": "Review the activity_preamble exposition samples from the DLA. Then, complete an evaluation template assessing clarity, motivational impact, and guidance quality, supported by evidence from the texts.",
+          "expected_output": "A filled evaluation template with claims, supporting evidence, and reasoned implications for each criterion of exposition effectiveness.",
+          "support_note": "Focus on how the exposition influences learner mindset and readiness rather than just summarizing content.",
+          "intellectual_coherence_bridge": "Building on analysis of authorial exposition, this activity shifts to evaluating how activity preambles engage and guide learners in practice.",
+          "materials": {
+            "worked_example": "This example illustrates how to evaluate the activity_preamble exposition by making claims, citing evidence, and discussing implications for learner engagement.\n\n**Criterion 1: Clarity**  \n- **Claim:** The preamble clearly explains the activity’s purpose and steps.  \n- **Evidence:** Phrases such as “sets the tone for learner engagement” and “frames how learners approach the activity” explicitly orient learners.  \n- **Implication:** Clear exposition reduces learner uncertainty, enabling confident initiation of the activity.\n\n**Criterion 2: Motivational Impact**  \n- **Claim:** The preamble motivates learners by highlighting the activity’s relevance.  \n- **Evidence:** The phrase “reveals how well it motivates learners” suggests the preamble includes language that connects to learner interests.  \n- **Implication:** Motivation increases learner willingness to engage actively, enhancing persistence.\n\n**Criterion 3: Guidance Quality**  \n- **Claim:** The preamble provides useful guidance for starting the activity.  \n- **Evidence:** The mention of “guides activity initiation” indicates instructions or cues are present.  \n- **Implication:** Effective guidance helps learners avoid confusion and proceed independently.\n\n**Criterion 4: Ambiguity and Readiness**  \n- **Claim:** Some aspects may create ambiguity, affecting readiness.  \n- **Evidence:** The prompt to “consider which aspects create clarity or ambiguity” implies potential areas of confusion.  \n- **Implication:** Identifying ambiguous elements can inform improvements to better support learner readiness.\n\n---",
+            "sample_output": "| Criterion           | Claim                                                      | Evidence                                                   | Implication                                                  |\n|---------------------|------------------------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------|\n| Clarity             | The preamble clearly explains the activity’s purpose       | Uses phrases like “sets the tone for learner engagement”   | Learners can start confidently without confusion             |\n| Motivational Impact  | The preamble motivates learners by connecting to interests | Highlights how the activity “motivates learners”           | Increases learner engagement and persistence                  |\n| Guidance Quality    | Provides clear instructions for activity initiation         | Mentions “guides activity initiation”                      | Helps learners proceed independently and efficiently          |\n| Ambiguity and Readiness | Some wording may cause uncertainty for learners          | Prompt to “consider clarity or ambiguity”                   | Points to areas for refinement to improve learner readiness   |\n\n---",
+            "analysis_table": "| Criterion           | Claim                                                      | Evidence                                                   | Implication                                                  |\n|---------------------|------------------------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------|\n|                     |                                                            |                                                            |                                                              |\n|                     |                                                            |                                                            |                                                              |\n|                     |                                                            |                                                            |                                                              |\n|                     |                                                            |                                                            |                                                              |\n\n---",
+            "checklist": "### Checklist: Confirming Completeness and Reasoning in Your Evaluation\n\n- [ ] Have you evaluated at least four criteria related to exposition effectiveness?  \n- [ ] For each criterion, did you state a clear claim about the preamble’s role?  \n- [ ] Did you support each claim with specific evidence from the activity_preamble texts?  \n- [ ] Have you reasoned through the implications of each claim for learner engagement and readiness?\n\n**Review your evaluation to ensure all parts are well supported and logically connected.**\n\n---"
+          }
+        },
+        {
+          "title": "Construct a Coherent Self-Directed Delivery Context",
+          "duration_minutes": 20,
+          "activity_preamble": "Integrating authorial and activity_preamble expositions into a unified delivery context is essential for fostering learner autonomy. This construction synthesizes previous analysis and evaluation to create a coherent framework that supports self-directed learning effectively.",
+          "transfer_or_application_task": "Apply your understanding of exposition roles to design a delivery context that combines key elements from both authorial and activity_preamble expositions, anticipating how they work together to support learner independence.",
+          "learner_task": "Using insights from prior activities, draft a delivery_context narrative that integrates authorial and activity_preamble exposition elements. Then, complete a synthesis template that justifies your design choices and anticipates learner benefits.",
+          "expected_output": "A coherent delivery_context document and a completed synthesis template demonstrating integration of exposition types and rationale for supporting self-directed learning.",
+          "support_note": "Focus on coherence and synergy between exposition types rather than listing elements separately.",
+          "intellectual_coherence_bridge": "This final activity synthesizes prior analysis and evaluation into a creative construction, advancing learner independence through integrated exposition design.",
+          "materials": {
+            "modelling_note": "This annotated narrative demonstrates how to combine key elements from authorial exposition and activity_preamble exposition to create a unified delivery context that fosters learner autonomy.\n\n---\n\n**Integration of Exposition Elements:**  \n- The **authorial exposition** introduces the learning environment, clarifying scope and outcomes, which sets the foundation for learner autonomy by orienting and motivating learners.  \n- The **activity_preamble exposition** builds on this by framing specific activities with motivational language and clear guidance, helping learners initiate tasks confidently.\n\n**Justification for Integration:**  \n- Combining broad orientation (authorial) with focused activity framing (preamble) ensures learners understand both the overall learning journey and immediate steps.  \n- This synergy reduces uncertainty and supports learner initiative, critical for self-directed learning.\n\n**Anticipated Learner Benefits:**  \n- Learners gain a clear roadmap and actionable cues, enabling them to plan, monitor, and adjust their learning independently.  \n- Motivation is sustained through relevance framing at both macro (course) and micro (activity) levels.  \n- Guidance minimizes barriers to starting and persisting in activities, enhancing learner confidence.\n\n---\n\n**Example Narrative Excerpt:**  \n*\"This learning environment is designed to empower you to take control of your learning journey. The Design Page outlines key goals and resources, helping you understand what to expect and how to progress. Each activity begins with a preamble that motivates and guides you, ensuring you know why the task matters and how to approach it effectively. Together, these elements create a supportive framework that encourages your independence and success.\"*\n\n---",
+            "template": "| Section                          | Your Response                                                                                      |\n|---------------------------------|--------------------------------------------------------------------------------------------------|\n| Exposition Integration           | Describe how you combine authorial and activity_preamble exposition elements in your delivery context. |\n| Rationale for Design Choices     | Explain why you selected these elements and how they work together to support self-directed learning. |\n| Impact on Learner Autonomy       | Anticipate how your integrated delivery context will enhance learner independence and motivation. |\n\n---",
+            "checklist": "### Checklist: Ensuring Coherence and Justification in Your Delivery Context Synthesis\n\n- [ ] Does your synthesis clearly integrate elements from both authorial and activity_preamble expositions?  \n- [ ] Have you provided a rationale explaining how these elements complement each other?  \n- [ ] Is your explanation focused on supporting learner autonomy and motivation?  \n- [ ] Have you anticipated specific learner benefits resulting from your integrated design?\n\n**Use this checklist to confirm your synthesis is clear, coherent, and learner-centered.**\n\n---",
+            "transfer_prompt": "### Transfer Prompt: Adapting Your Delivery Context for Different Learner Profiles or Settings\n\nConsider how your integrated delivery context might need to change to support learners with different backgrounds, preferences, or learning environments. Reflect on questions such as:\n\n- How would you modify"
+          }
+        },
+        {
+          "activity_id": "A1",
+          "title": "Analyze Authorial Exposition on the Design Page",
+          "activity_preamble": "Authorial exposition on the Design Page plays a crucial role in shaping how learners engage with self-directed learning. Understanding its structure and purpose helps reveal how the author guides learners to navigate and make sense of the learning environment independently.",
+          "reasoning_orientation": "Focus on identifying how the exposition organizes information and signals key elements that scaffold learner autonomy and motivation.",
+          "self_explanation_prompt": "Explain in your own words how the authorial exposition supports a learner's ability to direct their own learning journey and why these elements are important.",
+          "support_note": "Focus on the function of exposition elements rather than just their presence; consider how they help learners understand and navigate the learning context.",
+          "expected_output": "A completed analysis table with at least four key elements identified, each explained with respect to their role in supporting self-directed learning.",
+          "learner_task": "Study the provided authorial exposition examples on the Design Page. Then, complete an analysis table identifying key structural elements, their purposes, and how each supports self-directed learning.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A2",
+          "title": "Evaluate Activity Preamble Exposition on the DLA",
+          "activity_preamble": "The activity_preamble exposition on the DLA sets the tone for learner engagement and frames how learners approach the activity. Evaluating its effectiveness reveals how well it motivates learners and guides their initial steps.",
+          "argument_structure_hint": "Structure your evaluation by stating claims about the exposition's effectiveness, citing specific examples, and discussing implications for learner engagement.",
+          "uncertainty_tension_prompt": "Consider which aspects of the preamble create clarity or ambiguity for learners, and how this affects their motivation and readiness to engage.",
+          "intellectual_coherence_bridge": "Building on analysis of authorial exposition, this activity shifts to evaluating how activity preambles engage and guide learners in practice.",
+          "support_note": "Focus on how the exposition influences learner mindset and readiness rather than just summarizing content.",
+          "expected_output": "A filled evaluation template with claims, supporting evidence, and reasoned implications for each criterion of exposition effectiveness.",
+          "learner_task": "Review the activity_preamble exposition samples from the DLA. Then, complete an evaluation template assessing clarity, motivational impact, and guidance quality, supported by evidence from the texts.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A3",
+          "title": "Construct a Coherent Self-Directed Delivery Context",
+          "activity_preamble": "Integrating authorial and activity_preamble expositions into a unified delivery context is essential for fostering learner autonomy. This construction synthesizes previous analysis and evaluation to create a coherent framework that supports self-directed learning effectively.",
+          "transfer_or_application_task": "Apply your understanding of exposition roles to design a delivery context that combines key elements from both authorial and activity_preamble expositions, anticipating how they work together to support learner independence.",
+          "intellectual_coherence_bridge": "This final activity synthesizes prior analysis and evaluation into a creative construction, advancing learner independence through integrated exposition design.",
+          "support_note": "Focus on coherence and synergy between exposition types rather than listing elements separately.",
+          "expected_output": "A coherent delivery_context document and a completed synthesis template demonstrating integration of exposition types and rationale for supporting self-directed learning.",
+          "learner_task": "Using insights from prior activities, draft a delivery_context narrative that integrates authorial and activity_preamble exposition elements. Then, complete a synthesis template that justifies your design choices and anticipates learner benefits.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "Sprint 42-2 authorial exposition on Design Page",
+    "Sprint 42-3 activity_preamble exposition on DLA",
+    "Sprint 42-4 live capture self-directed learner page"
+  ],
+  "constraints_applied": [
+    "Preserved activity_preamble, cognition fields, bridges, materials verbatim",
+    "Included all upstream learning activities with full materials",
+    "Maintained learning outcomes and intellectual coherence bridges",
+    "Composed readable page structure with overview, purpose, study tips, activities",
+    "No pedagogical redesign or material summarization",
+    "Page profile: learner; audience: self-directed learners",
+    "Included visual affordance schema version and empty visual arrays as required"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Materials provide detailed worked example and table scaffolds; visual summary could add classification support but worked example suffices first."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "defer",
+        "rationale": "Worked example and evaluation table provide sufficient reasoning support; visual summary deferred pending learner engagement."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Synthesis narrative and template scaffold well; a visual classification or integration matrix might add value but is not critical."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "generation_notes": {
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 0,
+      "dropped_count": 0,
+      "errors": [
+        "activities_visual_review[1]: activity_visual_value.decision must be high | medium | low | none"
+      ]
+    }
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 3,
+      "framing_fields_merged": 0
+    }
+  }
+}

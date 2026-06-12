@@ -1,0 +1,171 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Karl Marx",
+      "definition": "A German philosopher, economist, and social theorist (1818–1883) whose ideas have profoundly influenced political thought and social sciences."
+    },
+    {
+      "name": "Historical materialism",
+      "definition": "A theory developed by Marx arguing that material conditions and economic activities drive societal change."
+    },
+    {
+      "name": "Class struggle",
+      "definition": "The conflict between different classes in society, especially between the proletariat (working class) and bourgeoisie (capitalist class), central to Marx's theory."
+    },
+    {
+      "name": "Labor power",
+      "definition": "The capacity of workers to work, which they sell to factory owners in a capitalist system."
+    },
+    {
+      "name": "Surplus value",
+      "definition": "The difference between the value produced by workers and the wages they are paid, which is appropriated by capitalists as profit."
+    },
+    {
+      "name": "Alienation",
+      "definition": "The condition in which workers become disconnected from the products they make, the production process, their own human potential, and fellow workers."
+    },
+    {
+      "name": "Capital accumulation",
+      "definition": "The process by which capitalists invest money to buy machinery and labor power to generate profit."
+    },
+    {
+      "name": "Proletariat",
+      "definition": "The working class who sell their labor power to the bourgeoisie."
+    },
+    {
+      "name": "Bourgeoisie",
+      "definition": "The capitalist class who own the means of production and appropriate surplus value from workers."
+    },
+    {
+      "name": "The Communist Manifesto",
+      "definition": "A concise political pamphlet by Marx and Engels aimed at rallying the working class to revolution, outlining class struggles and calling for proletarian uprising."
+    },
+    {
+      "name": "Das Kapital",
+      "definition": "A detailed, scholarly critique of capitalist economics by Marx analyzing capital accumulation, labor exploitation, and commodity production."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Karl Marx",
+      "target": "Historical materialism",
+      "type": "developed"
+    },
+    {
+      "source": "Karl Marx",
+      "target": "Class struggle",
+      "type": "emphasized"
+    },
+    {
+      "source": "Class struggle",
+      "target": "Proletariat",
+      "type": "involves"
+    },
+    {
+      "source": "Class struggle",
+      "target": "Bourgeoisie",
+      "type": "involves"
+    },
+    {
+      "source": "Labor power",
+      "target": "Proletariat",
+      "type": "possessed by"
+    },
+    {
+      "source": "Surplus value",
+      "target": "Labor power",
+      "type": "derived from"
+    },
+    {
+      "source": "Surplus value",
+      "target": "Bourgeoisie",
+      "type": "appropriated by"
+    },
+    {
+      "source": "Alienation",
+      "target": "Proletariat",
+      "type": "experienced by"
+    },
+    {
+      "source": "Capital accumulation",
+      "target": "Bourgeoisie",
+      "type": "performed by"
+    },
+    {
+      "source": "The Communist Manifesto",
+      "target": "Class struggle",
+      "type": "describes"
+    },
+    {
+      "source": "The Communist Manifesto",
+      "target": "Proletariat",
+      "type": "calls to action"
+    },
+    {
+      "source": "Das Kapital",
+      "target": "Capital accumulation",
+      "type": "analyzes"
+    },
+    {
+      "source": "Das Kapital",
+      "target": "Surplus value",
+      "type": "explains"
+    },
+    {
+      "source": "Das Kapital",
+      "target": "Commodity production",
+      "type": "analyzes"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Marx's Key Texts",
+      "members": ["The Communist Manifesto", "Das Kapital"]
+    },
+    {
+      "name": "Social Classes",
+      "members": ["Proletariat", "Bourgeoisie"]
+    },
+    {
+      "name": "Core Marxist Concepts",
+      "members": ["Historical materialism", "Class struggle", "Labor power", "Surplus value", "Alienation", "Capital accumulation"]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Development of Marx's Theories",
+      "steps": [
+        "Early life influenced by German philosophy and radical politics",
+        "Middle years engaged with economic theory and political activism",
+        "Publication of The Communist Manifesto (1848)",
+        "Later detailed critique of capitalism in Das Kapital (1867)"
+      ]
+    },
+    {
+      "name": "Capitalist Production and Exploitation in a Factory Scenario",
+      "steps": [
+        "Factory owners invest capital to buy machinery and labor power",
+        "Workers sell their labor power and operate machines under strict conditions",
+        "Workers produce goods whose value exceeds their wages",
+        "Surplus value is appropriated by factory owners as profit",
+        "Workers experience alienation and class conflict arises between owners and workers"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "Misunderstanding Surplus Value",
+      "description": "Confusing surplus value with wages rather than understanding it as the excess value produced by workers beyond their wages, appropriated by capitalists as profit."
+    },
+    {
+      "name": "Equating The Communist Manifesto and Das Kapital",
+      "description": "Assuming both texts serve the same purpose; in fact, the Manifesto is a political call to action, while Das Kapital is a detailed economic critique."
+    },
+    {
+      "name": "Alienation as Physical Separation",
+      "description": "Misconstruing alienation as only physical separation from products, ignoring its broader meaning including disconnection from the production process, human potential, and fellow workers."
+    }
+  ]
+}
+```

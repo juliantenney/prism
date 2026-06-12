@@ -1,0 +1,38 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts.",
+      "related_concepts": [
+        "self-directed learning",
+        "learning strategies",
+        "academic contexts"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focus on comparing and contrasting strategies to promote effective autonomous learning."
+    },
+    {
+      "statement": "Design a personalized learning plan that incorporates goal setting, resource identification, and time management.",
+      "related_concepts": [
+        "personalized learning plan",
+        "goal setting",
+        "resource identification",
+        "time management"
+      ],
+      "cognitive_level": "Create",
+      "notes": "Emphasize practical application of planning skills to support independent study."
+    },
+    {
+      "statement": "Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly.",
+      "related_concepts": [
+        "self-assessment",
+        "progress monitoring",
+        "learning adjustment"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Encourage reflective practice and adaptive learning behaviors."
+    }
+  ],
+  "learner_level": "undergraduate",
+  "scope": "standard session",
+  "alignment_notes": "Outcomes focus on core skills for autonomous learning appropriate for undergraduate students within a typical session length."
+}

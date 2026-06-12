@@ -1,0 +1,139 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Analyze Authorial Exposition on the Design Page",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the structure and purpose of authorial exposition on the Design Page to identify key elements that support self-directed learning."
+      ],
+      "activity_preamble": "Authorial exposition on the Design Page plays a crucial role in shaping how learners engage with self-directed learning. Understanding its structure and purpose helps reveal how the author guides learners to navigate and make sense of the learning environment independently.",
+      "reasoning_orientation": "Focus on identifying how the exposition organizes information and signals key elements that scaffold learner autonomy and motivation.",
+      "self_explanation_prompt": "Explain in your own words how the authorial exposition supports a learner's ability to direct their own learning journey and why these elements are important.",
+      "learner_task": "Study the provided authorial exposition examples on the Design Page. Then, complete an analysis table identifying key structural elements, their purposes, and how each supports self-directed learning.",
+      "expected_output": "A completed analysis table with at least four key elements identified, each explained with respect to their role in supporting self-directed learning.",
+      "support_note": "Focus on the function of exposition elements rather than just their presence; consider how they help learners understand and navigate the learning context.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Modelled analysis of authorial exposition",
+          "specification": "depth_floor: L3; stepwise walkthrough of key exposition elements with rationale for their role in self-directed learning."
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Example completed analysis table",
+          "specification": "depth_floor: L3; table showing identified elements, purposes, and learner support functions."
+        },
+        {
+          "material_id": "M3",
+          "type": "analysis_table",
+          "purpose": "Learner analysis scaffold",
+          "specification": "depth_floor: L3; columns for 'Exposition Element', 'Purpose', and 'Support for Self-Directed Learning' with blank rows for learner completion."
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "Verification of analysis completeness and depth",
+          "specification": "depth_floor: L3; at least four criteria-linked check items ensuring identification, explanation, and linkage to self-directed learning."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Evaluate Activity Preamble Exposition on the DLA",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Evaluate the role of activity_preamble exposition on the DLA in framing learner engagement and guiding activity initiation."
+      ],
+      "activity_preamble": "The activity_preamble exposition on the DLA sets the tone for learner engagement and frames how learners approach the activity. Evaluating its effectiveness reveals how well it motivates learners and guides their initial steps.",
+      "uncertainty_tension_prompt": "Consider which aspects of the preamble create clarity or ambiguity for learners, and how this affects their motivation and readiness to engage.",
+      "argument_structure_hint": "Structure your evaluation by stating claims about the exposition's effectiveness, citing specific examples, and discussing implications for learner engagement.",
+      "learner_task": "Review the activity_preamble exposition samples from the DLA. Then, complete an evaluation template assessing clarity, motivational impact, and guidance quality, supported by evidence from the texts.",
+      "expected_output": "A filled evaluation template with claims, supporting evidence, and reasoned implications for each criterion of exposition effectiveness.",
+      "support_note": "Focus on how the exposition influences learner mindset and readiness rather than just summarizing content.",
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "worked_example",
+          "purpose": "Model evaluation of activity_preamble exposition",
+          "specification": "depth_floor: L3; stepwise reasoning with examples illustrating claims, evidence, and implications."
+        },
+        {
+          "material_id": "M6",
+          "type": "sample_output",
+          "purpose": "Example completed evaluation template",
+          "specification": "depth_floor: L3; template filled with clear claims and justified evaluations."
+        },
+        {
+          "material_id": "M7",
+          "type": "analysis_table",
+          "purpose": "Evaluation scaffold template",
+          "specification": "depth_floor: L3; columns for 'Criterion', 'Claim', 'Evidence', and 'Implication' with blank rows for learner input."
+        },
+        {
+          "material_id": "M8",
+          "type": "checklist",
+          "purpose": "Verification of evaluation completeness and reasoning",
+          "specification": "depth_floor: L3; four criteria-linked check items ensuring claims are supported and implications are reasoned."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building on analysis of authorial exposition, this activity shifts to evaluating how activity preambles engage and guide learners in practice."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Construct a Coherent Self-Directed Delivery Context",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Construct a coherent delivery_context for self-directed learning that integrates authorial and activity_preamble expositions to enhance learner autonomy."
+      ],
+      "activity_preamble": "Integrating authorial and activity_preamble expositions into a unified delivery context is essential for fostering learner autonomy. This construction synthesizes previous analysis and evaluation to create a coherent framework that supports self-directed learning effectively.",
+      "transfer_or_application_task": "Apply your understanding of exposition roles to design a delivery context that combines key elements from both authorial and activity_preamble expositions, anticipating how they work together to support learner independence.",
+      "learner_task": "Using insights from prior activities, draft a delivery_context narrative that integrates authorial and activity_preamble exposition elements. Then, complete a synthesis template that justifies your design choices and anticipates learner benefits.",
+      "expected_output": "A coherent delivery_context document and a completed synthesis template demonstrating integration of exposition types and rationale for supporting self-directed learning.",
+      "support_note": "Focus on coherence and synergy between exposition types rather than listing elements separately.",
+      "required_materials": [
+        {
+          "material_id": "M9",
+          "type": "modelling_note",
+          "purpose": "Expert synthesis example",
+          "specification": "depth_floor: L3; annotated narrative showing integration of exposition elements with justification."
+        },
+        {
+          "material_id": "M10",
+          "type": "template",
+          "purpose": "Delivery context synthesis scaffold",
+          "specification": "depth_floor: L3; sections for exposition integration, rationale, and learner autonomy impact."
+        },
+        {
+          "material_id": "M11",
+          "type": "checklist",
+          "purpose": "Verification of synthesis coherence and justification",
+          "specification": "depth_floor: L3; criteria ensuring integration, clarity, and learner-centered rationale."
+        },
+        {
+          "material_id": "M12",
+          "type": "transfer_prompt",
+          "purpose": "Prompt for applying synthesis to new contexts",
+          "specification": "depth_floor: L3; scenario asking how the delivery context might adapt for different learner profiles or settings."
+        }
+      ],
+      "intellectual_coherence_bridge": "This final activity synthesizes prior analysis and evaluation into a creative construction, advancing learner independence through integrated exposition design."
+    }
+  ],
+  "outcome_alignment": [
+    "Analyze the structure and purpose of authorial exposition on the Design Page to identify key elements that support self-directed learning.",
+    "Evaluate the role of activity_preamble exposition on the DLA in framing learner engagement and guiding activity initiation.",
+    "Construct a coherent delivery_context for self-directed learning that integrates authorial and activity_preamble expositions to enhance learner autonomy."
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Introduction to Inflation and Price Level Measures",
+  "sections": [
+    {
+      "title": "What is Inflation?",
+      "content": "Inflation is the rate at which the general level of prices for goods and services rises, leading to a decrease in the purchasing power of money. When inflation occurs, each unit of currency buys fewer goods and services than before. Understanding inflation helps us grasp how the economy changes over time and affects everyday life."
+    },
+    {
+      "title": "Measuring Price Level Changes",
+      "content": "To track inflation, economists use price indices that summarize how prices change over time. The two main price indices we will focus on are the Consumer Price Index (CPI) and the GDP Deflator. Both measure price changes but differ in scope and calculation methods."
+    },
+    {
+      "title": "Consumer Price Index (CPI)",
+      "content": "The CPI measures the average change over time in the prices paid by urban consumers for a fixed basket of goods and services. This basket represents typical household consumption, including items like food, clothing, housing, and transportation. The CPI is widely used to adjust incomes, pensions, and contracts for inflation."
+    },
+    {
+      "title": "GDP Deflator",
+      "content": "The GDP Deflator measures the price change of all domestically produced final goods and services in an economy. Unlike the CPI, it includes investment goods, government services, and exports, and excludes imports. The GDP Deflator reflects changes in the prices of the entire economy’s output and is updated each period to reflect current production patterns."
+    },
+    {
+      "title": "Comparing CPI and GDP Deflator",
+      "content": "While both indices measure inflation, their differences can lead to different inflation rates. The CPI focuses on consumer goods and uses a fixed basket, so it may not capture changes in consumption patterns. The GDP Deflator covers all goods and services produced domestically and uses a changing basket reflecting current production. Understanding these differences helps interpret inflation data accurately."
+    },
+    {
+      "title": "How Inflation Affects Households",
+      "content": "Inflation impacts households by changing the cost of living. When prices rise, households need more money to buy the same goods and services, which can reduce their real income if wages do not keep up. Inflation can also affect savings, borrowing, and spending decisions. Small-group discussions will explore how different types of households might experience inflation differently."
+    },
+    {
+      "title": "Workshop Activity: Small-Group Discussion",
+      "content": "In your groups, discuss how inflation might affect various households differently. Consider factors such as income levels, spending habits, and debt. Use the CPI and GDP Deflator concepts to think about which price changes matter most to different groups. After 20 minutes, we will share insights with the whole class."
+    }
+  ],
+  "key_concepts": [
+    "Inflation: general increase in prices and decrease in purchasing power",
+    "Consumer Price Index (CPI): price index based on a fixed basket of consumer goods",
+    "GDP Deflator: price index based on all domestically produced goods and services",
+    "Differences between CPI and GDP Deflator in coverage and calculation",
+    "Impact of inflation on household purchasing power and economic decisions"
+  ],
+  "examples": [
+    {
+      "title": "Example 1: CPI Basket",
+      "content": "Imagine a household spends 30% of its budget on food, 20% on housing, and 10% on transportation. If food prices rise by 5%, housing by 2%, and transportation by 3%, the CPI reflects a weighted average of these changes to estimate overall inflation experienced by consumers."
+    },
+    {
+      "title": "Example 2: GDP Deflator vs CPI",
+      "content": "If the price of imported electronics rises sharply, the CPI may increase because consumers pay more. However, the GDP Deflator might not change much because imports are excluded from GDP. Conversely, if the price of machinery used in factories rises, the GDP Deflator will capture this, but the CPI may not."
+    },
+    {
+      "title": "Example 3: Household Impact",
+      "content": "A retired household living on a fixed income may struggle when inflation rises because their income does not increase. In contrast, a household with a variable income that adjusts with inflation might maintain their purchasing power better."
+    }
+  ]
+}

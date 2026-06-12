@@ -1,0 +1,762 @@
+{
+  "capturedAt": "2026-06-11T16:29:30.890Z",
+  "command": "node tools/sprint-42-4-live-capture.mjs all",
+  "git": {
+    "head": "f646552d3030729d8eb1df0a86d96ba6a3f68264",
+    "workingTreeDirty": true,
+    "dirtyFiles": [
+      "M app.js",
+      " M index.html",
+      " M lib/ld-design-page-compose-contract.js",
+      " M tests/fixtures/page-render/marx-self-study-page.json",
+      " M tests/ld-design-page-compose-contract.test.js",
+      " M tests/prism-vm-lib-bootstrap.js",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/",
+      "?? lib/ld-activity-preamble-exposition.js",
+      "?? lib/ld-authorial-exposition.js",
+      "?? tests/ld-activity-preamble-exposition.test.js",
+      "?? tests/ld-authorial-exposition.test.js",
+      "?? tests/workflow-learner-page-authorial-exposition.test.js",
+      "?? tests/workflow-learner-page-preamble-exposition.test.js",
+      "?? tools/capture-sprint-42-4-provenance.js",
+      "?? tools/sprint-42-4-live-capture.mjs"
+    ]
+  },
+  "model": "gpt-4.1-mini",
+  "runs": [
+    {
+      "capturedAt": "2026-06-11T16:25:07.556Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs marx-self-study",
+      "model": "gpt-4.1-mini",
+      "git": {
+        "head": "f646552d3030729d8eb1df0a86d96ba6a3f68264",
+        "workingTreeDirty": true,
+        "dirtyFiles": [
+          "M app.js",
+          " M index.html",
+          " M lib/ld-design-page-compose-contract.js",
+          " M tests/fixtures/page-render/marx-self-study-page.json",
+          " M tests/ld-design-page-compose-contract.test.js",
+          " M tests/prism-vm-lib-bootstrap.js",
+          "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/",
+          "?? lib/ld-activity-preamble-exposition.js",
+          "?? lib/ld-authorial-exposition.js",
+          "?? tests/ld-activity-preamble-exposition.test.js",
+          "?? tests/ld-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-preamble-exposition.test.js",
+          "?? tools/capture-sprint-42-4-provenance.js",
+          "?? tools/sprint-42-4-live-capture.mjs"
+        ]
+      },
+      "sprint42ContractsInPrompts": {
+        "dlaHasPreambleExposition": true,
+        "dlaHasAuthorialExposition": false,
+        "dpHasAuthorialExposition": true,
+        "dlaHasLearnerFraming": true
+      },
+      "brief": {
+        "goal": "Create a self-directed learning page on Karl Marx covering life phases, cause-effect links between experience and theory, comparison of The Communist Manifesto and Das Kapital, and application of core concepts to a factory scenario.",
+        "inputs": "Undergraduate (self-directed study)",
+        "desiredOutputs": "Learner-facing page",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "topic": "karl marx covering life phases",
+        "learner_level": "undergraduate",
+        "design_scope": "session",
+        "delivery_pattern": "mostly_online",
+        "delivery_mode": "async",
+        "delivery_context": "self_directed",
+        "session_materials": [
+          "page"
+        ],
+        "page_profile": "learner",
+        "learning_environments": [
+          "vle"
+        ],
+        "assessment_strategy": "none",
+        "cognitive_engagement_required": false,
+        "reasoning_revision_required": false,
+        "misconception_reconciliation_required": false,
+        "adaptive_scaffolding_required": false,
+        "productive_uncertainty_required": false,
+        "activity_pattern_mix": "balanced",
+        "tone_style": "academic",
+        "depth_level": "mixed",
+        "include_examples": true,
+        "include_practice_tasks": false,
+        "compact_vs_detailed": "standard",
+        "workshop_subject": "karl marx covering life phases"
+      },
+      "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\marx-self-study-2026-06-11T16-23-03",
+      "artefacts": [
+        "learning-content.json",
+        "knowledge-model.json",
+        "learning-outcomes.json",
+        "dla-learning-activities.json",
+        "gam-activity-materials.txt",
+        "design-page.json",
+        "page-rendered.html",
+        "dla-prompt-snapshot.txt",
+        "design-page-prompt-snapshot.txt",
+        "prompt-contract-check.json"
+      ],
+      "dlaPreambleAudit": {
+        "activityCount": 4,
+        "preambleCount": 4,
+        "proceduralOpeningCount": 0,
+        "meetsPreambleCoverage": true,
+        "meetsAuthorialExposition": true,
+        "rows": [
+          {
+            "activity_id": "A1",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Understanding the variety of self-directed learning strategies is crucial for choosing the most effective approach in different academic contexts."
+          },
+          {
+            "activity_id": "A2",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Creating a personalized learning plan helps you set clear goals, identify resources, and manage your time effectively."
+          },
+          {
+            "activity_id": "A3",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Self-assessment is key to effective autonomous learning, enabling you to monitor progress and adapt your approaches."
+          },
+          {
+            "activity_id": "A4",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Integrating evaluation, planning, and self-assessment skills empowers you to manage your learning independently and effectively."
+          }
+        ]
+      },
+      "pageAudit": {
+        "label": "marx-self-study",
+        "centralInquiry": "partial",
+        "activityCount": 8,
+        "preambleCount": 8,
+        "bridgeCount": 6,
+        "hasStudyTips": false,
+        "facilitatorLeak": false,
+        "preambleExposition": {
+          "activityCount": 8,
+          "preambleCount": 8,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": true,
+          "meetsAuthorialExposition": true,
+          "rows": [
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding the variety of self-directed learning strategies is crucial for choosing the most effective approach in different academic contexts."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Creating a personalized learning plan helps you set clear goals, identify resources, and manage your time effectively."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Self-assessment is key to effective autonomous learning, enabling you to monitor progress and adapt your approaches."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Integrating evaluation, planning, and self-assessment skills empowers you to manage your learning independently and effectively."
+            },
+            {
+              "activity_id": "A1",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding the variety of self-directed learning strategies is crucial for choosing the most effective approach in different academic contexts."
+            },
+            {
+              "activity_id": "A2",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Creating a personalized learning plan helps you set clear goals, identify resources, and manage your time effectively."
+            },
+            {
+              "activity_id": "A3",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Self-assessment is key to effective autonomous learning, enabling you to monitor progress and adapt your approaches."
+            },
+            {
+              "activity_id": "A4",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Integrating evaluation, planning, and self-assessment skills empowers you to manage your learning independently and effectively."
+            }
+          ]
+        },
+        "eqfScore": 7,
+        "eqfDimensions": {
+          "learner_journey": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[3].materials: pattern p1"
+            ]
+          },
+          "understanding": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[0].activity_preamble: pattern p2"
+            ]
+          },
+          "capability": {
+            "present": true,
+            "evidence": [
+              "Learning Purpose and Outcomes: pattern p1"
+            ]
+          },
+          "judgement": {
+            "present": true,
+            "evidence": [
+              "Learning Purpose and Outcomes: pattern p1"
+            ]
+          },
+          "independence": {
+            "present": true,
+            "evidence": [
+              "Overview: pattern p1"
+            ]
+          },
+          "metacognition": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[2].materials: pattern p1"
+            ]
+          },
+          "learning_success": {
+            "present": false,
+            "evidence": []
+          },
+          "cognitive_activity": {
+            "present": true,
+            "evidence": [
+              "Learning Purpose and Outcomes: pattern p1"
+            ]
+          }
+        }
+      },
+      "renderError": null,
+      "validPost423Evidence": true
+    },
+    {
+      "capturedAt": "2026-06-11T16:26:59.811Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs inflation-workshop",
+      "model": "gpt-4.1-mini",
+      "git": {
+        "head": "f646552d3030729d8eb1df0a86d96ba6a3f68264",
+        "workingTreeDirty": true,
+        "dirtyFiles": [
+          "M app.js",
+          " M index.html",
+          " M lib/ld-design-page-compose-contract.js",
+          " M tests/fixtures/page-render/marx-self-study-page.json",
+          " M tests/ld-design-page-compose-contract.test.js",
+          " M tests/prism-vm-lib-bootstrap.js",
+          "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/",
+          "?? lib/ld-activity-preamble-exposition.js",
+          "?? lib/ld-authorial-exposition.js",
+          "?? tests/ld-activity-preamble-exposition.test.js",
+          "?? tests/ld-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-preamble-exposition.test.js",
+          "?? tools/capture-sprint-42-4-provenance.js",
+          "?? tools/sprint-42-4-live-capture.mjs"
+        ]
+      },
+      "sprint42ContractsInPrompts": {
+        "dlaHasPreambleExposition": true,
+        "dlaHasAuthorialExposition": false,
+        "dpHasAuthorialExposition": true,
+        "dlaHasLearnerFraming": true
+      },
+      "brief": {
+        "goal": "Design a 60-minute first-year economics workshop introducing inflation, price level changes, CPI and GDP deflator comparison, and household impacts. Small-group discussion and tables.",
+        "inputs": "First-year undergraduate economics students",
+        "desiredOutputs": "Learner-facing page",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "learner_level": "undergraduate",
+        "design_scope": "session",
+        "delivery_pattern": "face_to_face",
+        "delivery_mode": "live_workshop",
+        "session_materials": [
+          "page"
+        ],
+        "page_profile": "learner",
+        "learning_environments": [
+          "classroom"
+        ],
+        "assessment_strategy": "none",
+        "assessment_interaction_mode": "discussion_oriented",
+        "cognitive_engagement_required": false,
+        "reasoning_revision_required": false,
+        "misconception_reconciliation_required": false,
+        "adaptive_scaffolding_required": false,
+        "productive_uncertainty_required": false,
+        "activity_pattern_mix": "balanced",
+        "sequencing_granularity": "standard",
+        "tone_style": "academic",
+        "depth_level": "mixed",
+        "include_examples": true,
+        "include_practice_tasks": false,
+        "compact_vs_detailed": "standard"
+      },
+      "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\inflation-workshop-2026-06-11T16-25-08",
+      "artefacts": [
+        "learning-content.json",
+        "knowledge-model.json",
+        "learning-outcomes.json",
+        "dla-learning-activities.json",
+        "gam-activity-materials.txt",
+        "design-page.json",
+        "page-rendered.html",
+        "dla-prompt-snapshot.txt",
+        "design-page-prompt-snapshot.txt",
+        "prompt-contract-check.json"
+      ],
+      "dlaPreambleAudit": {
+        "activityCount": 4,
+        "preambleCount": 4,
+        "proceduralOpeningCount": 0,
+        "meetsPreambleCoverage": true,
+        "meetsAuthorialExposition": true,
+        "rows": [
+          {
+            "activity_id": "A1",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources."
+          },
+          {
+            "activity_id": "A2",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Markets are dynamic, and shifts in supply or demand can change prices and quantities."
+          },
+          {
+            "activity_id": "A3",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Quantitative skills are essential for applying economic concepts."
+          },
+          {
+            "activity_id": "A4",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently."
+          }
+        ]
+      },
+      "pageAudit": {
+        "label": "inflation-workshop",
+        "centralInquiry": "partial",
+        "activityCount": 8,
+        "preambleCount": 8,
+        "bridgeCount": 0,
+        "hasStudyTips": false,
+        "facilitatorLeak": false,
+        "preambleExposition": {
+          "activityCount": 8,
+          "preambleCount": 8,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": true,
+          "meetsAuthorialExposition": true,
+          "rows": [
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Markets are dynamic, and shifts in supply or demand can change prices and quantities."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Quantitative skills are essential for applying economic concepts."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently."
+            },
+            {
+              "activity_id": "A1",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources."
+            },
+            {
+              "activity_id": "A2",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Markets are dynamic, and shifts in supply or demand can change prices and quantities."
+            },
+            {
+              "activity_id": "A3",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Quantitative skills are essential for applying economic concepts."
+            },
+            {
+              "activity_id": "A4",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently."
+            }
+          ]
+        },
+        "eqfScore": 7,
+        "eqfDimensions": {
+          "learner_journey": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[0].materials: pattern p5"
+            ]
+          },
+          "understanding": {
+            "present": true,
+            "evidence": [
+              "Workshop Overview: pattern p2"
+            ]
+          },
+          "capability": {
+            "present": true,
+            "evidence": [
+              "Learning Purpose: pattern p1"
+            ]
+          },
+          "judgement": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[1].self_explanation_prompt: pattern p1"
+            ]
+          },
+          "independence": {
+            "present": true,
+            "evidence": [
+              "progression-heuristic: \"worked/modelled → guided → independent → transfer language\""
+            ]
+          },
+          "metacognition": {
+            "present": false,
+            "evidence": []
+          },
+          "learning_success": {
+            "present": true,
+            "evidence": [
+              "Learning Activities.content[3].support_note: pattern p1"
+            ]
+          },
+          "cognitive_activity": {
+            "present": true,
+            "evidence": [
+              "Learning Purpose: pattern p2"
+            ]
+          }
+        }
+      },
+      "renderError": null,
+      "validPost423Evidence": true
+    },
+    {
+      "capturedAt": "2026-06-11T16:29:30.273Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs climate-workshop",
+      "model": "gpt-4.1-mini",
+      "git": {
+        "head": "f646552d3030729d8eb1df0a86d96ba6a3f68264",
+        "workingTreeDirty": true,
+        "dirtyFiles": [
+          "M app.js",
+          " M index.html",
+          " M lib/ld-design-page-compose-contract.js",
+          " M tests/fixtures/page-render/marx-self-study-page.json",
+          " M tests/ld-design-page-compose-contract.test.js",
+          " M tests/prism-vm-lib-bootstrap.js",
+          "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/",
+          "?? lib/ld-activity-preamble-exposition.js",
+          "?? lib/ld-authorial-exposition.js",
+          "?? tests/ld-activity-preamble-exposition.test.js",
+          "?? tests/ld-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-authorial-exposition.test.js",
+          "?? tests/workflow-learner-page-preamble-exposition.test.js",
+          "?? tools/capture-sprint-42-4-provenance.js",
+          "?? tools/sprint-42-4-live-capture.mjs"
+        ]
+      },
+      "sprint42ContractsInPrompts": {
+        "dlaHasPreambleExposition": true,
+        "dlaHasAuthorialExposition": false,
+        "dpHasAuthorialExposition": true,
+        "dlaHasLearnerFraming": true
+      },
+      "brief": {
+        "goal": "Using the uploaded lecture on climate change, create a misconception discussion workshop. Provide task cards of common false claims, an analysis worksheet, and discussion prompts. End with true/false diagnostic statements — learners should not see correct answers on the handout.",
+        "inputs": "Uploaded lecture transcript excerpt:\n\nGlobal mean temperature has risen since pre-industrial times, driven largely by greenhouse gases from human activity. Climate models project further warming depending on emissions pathways. Weather describes short-term atmospheric conditions; climate is long-term statistical patterns. Skeptical arguments often confuse cold snaps with disproof of warming, or treat natural variability as ruling out human influence.",
+        "desiredOutputs": "Learner handout page",
+        "startingArtefact": "provided_source_content",
+        "selectedDomains": [
+          "learning-design"
+        ]
+      },
+      "resolvedFactors": {
+        "topic": "climate change",
+        "design_scope": "session",
+        "delivery_pattern": "face_to_face",
+        "input_strategy": "provided_source_content",
+        "delivery_mode": "live_workshop",
+        "delivery_context": "in_person",
+        "session_materials": [
+          "page"
+        ],
+        "page_profile": "learner",
+        "learning_environments": [
+          "classroom"
+        ],
+        "assessment_strategy": "formative",
+        "assessment_interaction_mode": "diagnostic_misconception",
+        "learner_answer_visibility": "hidden_until_reveal",
+        "misconception_assessment_link": true,
+        "cognitive_engagement_required": true,
+        "reasoning_revision_required": false,
+        "misconception_reconciliation_required": true,
+        "adaptive_scaffolding_required": false,
+        "productive_uncertainty_required": false,
+        "feedback_required": "none",
+        "activity_pattern_mix": "balanced",
+        "sequencing_granularity": "standard",
+        "tone_style": "academic",
+        "depth_level": "mixed",
+        "include_examples": true,
+        "include_practice_tasks": false,
+        "compact_vs_detailed": "standard",
+        "include_answers": false,
+        "include_feedback_guidance": false,
+        "workshop_subject": "climate change"
+      },
+      "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\climate-workshop-2026-06-11T16-27-00",
+      "artefacts": [
+        "learning-content.json",
+        "knowledge-model.json",
+        "learning-outcomes.json",
+        "dla-learning-activities.json",
+        "gam-activity-materials.txt",
+        "design-page.json",
+        "page-rendered.html",
+        "dla-prompt-snapshot.txt",
+        "design-page-prompt-snapshot.txt",
+        "prompt-contract-check.json"
+      ],
+      "dlaPreambleAudit": {
+        "activityCount": 4,
+        "preambleCount": 4,
+        "proceduralOpeningCount": 0,
+        "meetsPreambleCoverage": true,
+        "meetsAuthorialExposition": true,
+        "rows": [
+          {
+            "activity_id": "A1",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action."
+          },
+          {
+            "activity_id": "A2",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Explaining why misconceptions are scientifically inaccurate deepens your understanding of climate science principles and prepares you to critically evaluate misinformation."
+          },
+          {
+            "activity_id": "A3",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Misconceptions about climate change can shape how societies perceive risks and respond to environmental challenges."
+          },
+          {
+            "activity_id": "A4",
+            "has_preamble": true,
+            "procedural_opening": false,
+            "duplicates_learner_task": false,
+            "opening": "Bringing together your identification, explanation, and analysis of climate misconceptions consolidates your understanding and prepares you to apply this knowledge critically in future contexts."
+          }
+        ]
+      },
+      "pageAudit": {
+        "label": "climate-workshop",
+        "centralInquiry": "partial",
+        "activityCount": 8,
+        "preambleCount": 8,
+        "bridgeCount": 0,
+        "hasStudyTips": false,
+        "facilitatorLeak": false,
+        "preambleExposition": {
+          "activityCount": 8,
+          "preambleCount": 8,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": true,
+          "meetsAuthorialExposition": true,
+          "rows": [
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Explaining why misconceptions are scientifically inaccurate deepens your understanding of climate science principles and prepares you to critically evaluate misinformation."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Misconceptions about climate change can shape how societies perceive risks and respond to environmental challenges."
+            },
+            {
+              "activity_id": "activity",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Bringing together your identification, explanation, and analysis of climate misconceptions consolidates your understanding and prepares you to apply this knowledge critically in future contexts."
+            },
+            {
+              "activity_id": "A1",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Understanding common misconceptions about climate change is essential because these misunderstandings can influence public opinion and hinder effective climate action."
+            },
+            {
+              "activity_id": "A2",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Explaining why misconceptions are scientifically inaccurate deepens your understanding of climate science principles and prepares you to critically evaluate misinformation."
+            },
+            {
+              "activity_id": "A3",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Misconceptions about climate change can shape how societies perceive risks and respond to environmental challenges."
+            },
+            {
+              "activity_id": "A4",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Bringing together your identification, explanation, and analysis of climate misconceptions consolidates your understanding and prepares you to apply this knowledge critically in future contexts."
+            }
+          ]
+        },
+        "eqfScore": 6,
+        "eqfDimensions": {
+          "learner_journey": {
+            "present": false,
+            "evidence": []
+          },
+          "understanding": {
+            "present": true,
+            "evidence": [
+              "overview: pattern p2"
+            ]
+          },
+          "capability": {
+            "present": true,
+            "evidence": [
+              "learning_activities.content[0].learner_task: pattern p1"
+            ]
+          },
+          "judgement": {
+            "present": true,
+            "evidence": [
+              "learning_activities.content[0].materials: pattern p1"
+            ]
+          },
+          "independence": {
+            "present": true,
+            "evidence": [
+              "learning_activities.content[2].materials: pattern p2"
+            ]
+          },
+          "metacognition": {
+            "present": true,
+            "evidence": [
+              "learning_activities.content[0].materials: pattern p1"
+            ]
+          },
+          "learning_success": {
+            "present": false,
+            "evidence": []
+          },
+          "cognitive_activity": {
+            "present": true,
+            "evidence": [
+              "learning_purpose: pattern p2"
+            ]
+          }
+        }
+      },
+      "renderError": null,
+      "validPost423Evidence": true
+    }
+  ]
+}

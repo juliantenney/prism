@@ -1,0 +1,120 @@
+{
+  "capturedAt": "2026-06-11T16:19:30.559Z",
+  "command": "node tools/sprint-42-4-live-capture.mjs inflation-workshop",
+  "model": "gpt-4.1-mini",
+  "git": {
+    "head": "f646552d3030729d8eb1df0a86d96ba6a3f68264",
+    "workingTreeDirty": true,
+    "dirtyFiles": [
+      "M app.js",
+      " M index.html",
+      " M lib/ld-design-page-compose-contract.js",
+      " M tests/fixtures/page-render/marx-self-study-page.json",
+      " M tests/ld-design-page-compose-contract.test.js",
+      " M tests/prism-vm-lib-bootstrap.js",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/",
+      "?? lib/ld-activity-preamble-exposition.js",
+      "?? lib/ld-authorial-exposition.js",
+      "?? tests/ld-activity-preamble-exposition.test.js",
+      "?? tests/ld-authorial-exposition.test.js",
+      "?? tests/workflow-learner-page-authorial-exposition.test.js",
+      "?? tests/workflow-learner-page-preamble-exposition.test.js",
+      "?? tools/capture-sprint-42-4-provenance.js",
+      "?? tools/sprint-42-4-live-capture.mjs"
+    ]
+  },
+  "sprint42ContractsInPrompts": {
+    "dlaHasPreambleExposition": true,
+    "dlaHasAuthorialExposition": false,
+    "dpHasAuthorialExposition": true,
+    "dlaHasLearnerFraming": true
+  },
+  "brief": {
+    "goal": "Design a 60-minute first-year economics workshop introducing inflation, price level changes, CPI and GDP deflator comparison, and household impacts. Small-group discussion and tables.",
+    "inputs": "First-year undergraduate economics students",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "resolvedFactors": {
+    "learner_level": "undergraduate",
+    "design_scope": "session",
+    "delivery_pattern": "face_to_face",
+    "delivery_mode": "live_workshop",
+    "session_materials": [
+      "page"
+    ],
+    "page_profile": "learner",
+    "learning_environments": [
+      "classroom"
+    ],
+    "assessment_strategy": "none",
+    "assessment_interaction_mode": "discussion_oriented",
+    "cognitive_engagement_required": false,
+    "reasoning_revision_required": false,
+    "misconception_reconciliation_required": false,
+    "adaptive_scaffolding_required": false,
+    "productive_uncertainty_required": false,
+    "activity_pattern_mix": "balanced",
+    "sequencing_granularity": "standard",
+    "tone_style": "academic",
+    "depth_level": "mixed",
+    "include_examples": true,
+    "include_practice_tasks": false,
+    "compact_vs_detailed": "standard"
+  },
+  "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\inflation-workshop-2026-06-11T16-17-04",
+  "artefacts": [
+    "learning-content.json",
+    "knowledge-model.json",
+    "learning-outcomes.json",
+    "dla-learning-activities.json",
+    "gam-activity-materials.txt",
+    "design-page.json",
+    "page-rendered.html",
+    "dla-prompt-snapshot.txt",
+    "design-page-prompt-snapshot.txt",
+    "prompt-contract-check.json"
+  ],
+  "dlaPreambleAudit": {
+    "activityCount": 4,
+    "preambleCount": 4,
+    "proceduralOpeningCount": 0,
+    "meetsPreambleCoverage": true,
+    "meetsAuthorialExposition": true,
+    "rows": [
+      {
+        "activity_id": "A1",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Understanding the structure and key elements of Sprint 42-4 live capture documentation is essential for accurately resolving delivery context scenarios."
+      },
+      {
+        "activity_id": "A2",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Applying contract terms to real delivery context scenarios ensures practical understanding of how contractual knowledge guides decision-making in workshops."
+      },
+      {
+        "activity_id": "A3",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Designing learner handouts that respect the page_profile learner model while excluding facilitator choreography is crucial for clear, learner-focused materials."
+      },
+      {
+        "activity_id": "A4",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Bringing together your analysis, application, and design work helps solidify your understanding of delivery context resolution within the Sprint 42-4 framework."
+      }
+    ]
+  },
+  "pageAudit": null,
+  "renderError": null,
+  "validPost423Evidence": true
+}

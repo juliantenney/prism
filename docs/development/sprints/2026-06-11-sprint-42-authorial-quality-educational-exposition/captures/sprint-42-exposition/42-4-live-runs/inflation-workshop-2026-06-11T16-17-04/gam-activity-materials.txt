@@ -1,0 +1,321 @@
+Activity: Analyze Sprint 42-4 Live Capture Documentation  
+Activity ID: A1  
+Mapped outcomes: LO1  
+
+Material: M1 (worked_example)  
+Purpose: Demonstrate analysis of live capture documentation  
+Content:  
+### Worked Example: Analyzing Sprint 42-4 Live Capture Documentation  
+
+This worked example demonstrates how to analyze the Sprint 42-4 live capture documentation to identify key data points relevant for resolving delivery context. The process involves carefully reading the documentation, extracting meaningful elements, and interpreting their significance for delivery decisions.
+
+---
+
+**Step 1: Identify Key Sections**  
+- Locate headers and sections that describe delivery events, timing, and contractual references.  
+- Example: The "Sprint 42-4 live capture" title indicates the session and version. The mention of "Sprint 42 contracts apply" signals contractual context.
+
+**Step 2: Extract Data Points**  
+- Delivery context clues such as "Facilitated workshop learner handout" specify the material type.  
+- The note "No facilitator choreography in learner-visible fields" highlights a constraint affecting delivery.  
+- "Resolved delivery_context: ?" indicates the need to determine the delivery context based on available data.
+
+**Step 3: Interpret Relevance**  
+- The contract reference implies that contract terms must guide delivery decisions.  
+- The absence of facilitator choreography in learner fields suggests materials must be learner-focused and independent.  
+- The unresolved delivery context is the problem to solve using these data points.
+
+---
+
+**Step 4: Document Findings in Analysis Table**
+
+| Key Element                         | Extracted Data Point                                  | Relevance to Delivery Context Resolution                                     | Notes                                           |
+|-----------------------------------|-----------------------------------------------------|------------------------------------------------------------------------------|-------------------------------------------------|
+| Session Identifier                | Sprint 42-4                                         | Defines the scope and version of contracts to apply                          | Ensures correct contract clauses are used       |
+| Material Type                    | Facilitated workshop learner handout (page_profile learner) | Indicates learner-facing materials without facilitator choreography          | Affects how delivery context is interpreted      |
+| Facilitator Choreography Constraint | No facilitator choreography in learner-visible fields | Ensures learner materials exclude facilitator instructions                   | Impacts material design and delivery approach    |
+| Contract Reference               | Sprint 42 contracts apply                           | Contractual framework for delivery decisions                                 | Guides resolution criteria                       |
+| Delivery Context Status          | Resolved delivery_context: ?                        | Indicates unresolved delivery context requiring analysis                     | Focus of the activity                            |
+
+---
+
+**Step 5: Summary Reasoning**  
+By identifying these elements, we understand that the delivery context resolution requires applying Sprint 42 contract terms to learner materials designed without facilitator choreography. This analysis sets the foundation for applying contract clauses and designing appropriate learner handouts.
+
+---
+
+Material: M2 (sample_output)  
+Purpose: Model completed analysis output  
+Content:  
+### Sample Output: Completed Analysis Table of Sprint 42-4 Live Capture Documentation  
+
+| Key Element                         | Extracted Data Point                                  | Relevance to Delivery Context Resolution                                     | Notes                                           |
+|-----------------------------------|-----------------------------------------------------|------------------------------------------------------------------------------|-------------------------------------------------|
+| Session Identifier                | Sprint 42-4                                         | Defines the exact sprint and version; ensures correct contract application   | Critical for aligning contract terms             |
+| Material Type                    | Facilitated workshop learner handout (page_profile learner) | Specifies the learner-facing document type; excludes facilitator choreography | Impacts delivery method and learner engagement  |
+| Facilitator Choreography Constraint | No facilitator choreography in learner-visible fields | Ensures learner materials are independent and clear                         | Influences design and delivery context           |
+| Contract Reference               | Sprint 42 contracts apply                           | Provides the legal and procedural framework for delivery decisions           | Central to resolving delivery context            |
+| Delivery Context Status          | Resolved delivery_context: ?                        | Indicates delivery context is unresolved and needs to be determined          | Drives the analysis and contract application     |
+
+**Notes:**  
+- Each data point is linked to how it informs delivery context resolution.  
+- The table is complete and ready to guide contract application and material design decisions.
+
+---
+
+Material: M3 (checklist)  
+Purpose: Verification of analysis completeness and accuracy  
+Content:  
+### Checklist: Verifying Analysis of Sprint 42-4 Live Capture Documentation  
+
+Use this checklist to confirm your analysis is complete and accurate. Review each item carefully and address any gaps before proceeding.
+
+- [ ] **Identification of Key Elements:** Have you identified all critical elements such as session identifiers, material types, facilitator choreography constraints, contract references, and delivery context status?  
+- [ ] **Correct Data Extraction:** Are the data points accurately extracted from the documentation without misinterpretation or omission?  
+- [ ] **Relevance to Delivery Context:** Have you clearly explained why each data point matters for resolving the delivery context?  
+- [ ] **Completeness:** Does your analysis cover all sections of the documentation that impact delivery decisions?  
+- [ ] **Clarity and Organization:** Is your analysis table well-organized, easy to read, and logically structured?  
+
+**If any item is unchecked, revisit your analysis to improve accuracy and completeness before moving forward.**
+
+---
+
+Activity: Apply Sprint 42 Contract Terms to Delivery Context Scenarios  
+Activity ID: A2  
+Mapped outcomes: LO2  
+
+Material: M4 (modelling_note)  
+Purpose: Stepwise application of Sprint 42 contract terms  
+Content:  
+### Modelling Note: Applying Sprint 42 Contract Terms to Delivery Context Scenarios  
+
+This note models the detailed reasoning process of applying Sprint 42 contract clauses to a delivery context scenario. It demonstrates how to interpret contract terms, evaluate scenario specifics, and justify decisions.
+
+---
+
+**Scenario:** A learner handout is provided without facilitator choreography, but the delivery context is ambiguous regarding timing and responsibilities.
+
+**Step 1: Identify Relevant Contract Clauses**  
+- Clause 3.2: "Materials must exclude facilitator choreography in learner-visible fields."  
+- Clause 5.1: "Delivery timing must align with agreed sprint schedules."  
+- Clause 7.4: "Responsibilities for material updates are assigned to the workshop facilitator unless otherwise stated."
+
+**Step 2: Evaluate Scenario Details Against Clauses**  
+- The handout complies with Clause 3.2 by excluding facilitator choreography.  
+- Delivery timing is unclear; Clause 5.1 requires confirmation of schedule adherence.  
+- Responsibility for updates is not explicitly assigned; Clause 7.4 defaults responsibility to the facilitator.
+
+**Step 3: Reasoning and Decision Making**  
+- Since the handout meets choreography requirements, it is compliant in content.  
+- The delivery timing ambiguity requires clarification with the facilitator or project manager to ensure schedule alignment.  
+- Responsibility for updates should be clarified; if no changes are needed, no action is required; otherwise, the facilitator must be notified.
+
+**Step 4: Justify Resolution**  
+- Applying Clause 3.2 ensures learner materials remain independent and clear.  
+- Clause 5.1 protects the integrity of sprint schedules, avoiding delivery conflicts.  
+- Clause 7.4 clarifies accountability, preventing confusion over material maintenance.
+
+---
+
+**Summary:** This stepwise application shows how to interpret contract clauses, evaluate scenario specifics, and justify decisions to resolve delivery context issues effectively.
+
+---
+
+Material: M5 (task_cards)  
+Purpose: Practice scenarios for contract application  
+Content:  
+### Task Cards: Practice Applying Sprint 42 Contract Terms to Delivery Context Scenarios  
+
+Use these scenarios to practice evaluating and resolving delivery context issues by applying Sprint 42 contract terms. For each scenario:  
+- Identify relevant contract clauses.  
+- Evaluate scenario details against these clauses.  
+- Justify your decisions clearly in the notes section.
+
+---
+
+**Scenario 1:**  
+A learner handout includes facilitator choreography accidentally visible to learners. The delivery date is approaching, but no corrections have been made.
+
+**Notes:**  
+- Which contract clauses apply?  
+- What actions should be taken?  
+- How do you justify your decisions?
+
+---
+
+**Scenario 2:**  
+Delivery timing for a workshop handout is delayed beyond the agreed sprint schedule due to unforeseen technical issues.
+
+**Notes:**  
+- Identify contract terms related to timing.  
+- Evaluate the impact of the delay.  
+- Decide on resolution steps and justify them.
+
+---
+
+**Scenario 3:**  
+Responsibility for updating a learner handout is unclear between the facilitator and the content team, causing confusion.
+
+**Notes:**  
+- Which contract clauses clarify responsibility?  
+- How should this confusion be resolved?  
+- Provide your justification.
+
+---
+
+**Scenario 4:**  
+A learner handout complies with all contract terms, but learners report difficulty understanding some sections.
+
+**Notes:**  
+- Are there contract clauses related to learner accessibility or clarity?  
+- How should this feedback be addressed within the contract framework?  
+- Justify your approach.
+
+---
+
+Material: M6 (checklist)  
+Purpose: Verification of contract application accuracy  
+Content:  
+### Checklist: Verifying Accurate Application of Sprint 42 Contract Terms  
+
+Use this checklist to ensure your contract application in delivery context scenarios is accurate and justified.
+
+- [ ] **Correct Identification of Contract Terms:** Have you identified all relevant Sprint 42 contract clauses for each scenario?  
+- [ ] **Appropriate Application:** Are the contract terms applied correctly to the specific details of each scenario?  
+- [ ] **Justified Decisions:** Have you provided clear, logical justifications for your resolutions?  
+- [ ] **Scenario Alignment:** Do your decisions align with the scenario context and contractual requirements?  
+- [ ] **Consideration of Trade-offs:** Have you acknowledged any trade-offs or uncertainties in your decisions?  
+
+**If any item is unchecked, review your scenario evaluations and refine your reasoning accordingly.**
+
+---
+
+Activity: Design Learner Handout Content Aligned with Page_Profile Learner Model  
+Activity ID: A3  
+Mapped outcomes: LO3  
+
+Material: M7 (text)  
+Purpose: Explanatory guidance on page_profile learner model and handout design principles  
+Content:  
+### Understanding the Page_Profile Learner Model and Handout Design Principles  
+
+The page_profile learner model defines characteristics and expectations for learner-facing materials, emphasizing clarity, accessibility, and independence. When designing learner handouts aligned with this model, consider the following principles:
+
+- **Learner-Centered Content:** Materials should focus exclusively on what learners need to know and do, avoiding any facilitator instructions or choreography visible to learners.  
+- **Separation of Roles:** Facilitator choreography and guidance belong in separate documents or fields not visible to learners, ensuring learners engage independently without confusion.  
+- **Clarity and Accessibility:** Use clear language, logical structure, and visual cues that support learner comprehension and navigation. Avoid jargon or ambiguous instructions.  
+- **Consistency with Learner Model:** Align content with learner profiles, including their prior knowledge, learning goals, and preferred engagement modes.  
+- **Design Best Practices:** Use headings, bullet points, and concise explanations. Ensure materials are visually clean and free of distractions.
+
+---
+
+**Why Exclude Facilitator Choreography from Learner Fields?**  
+Including facilitator choreography in learner-visible fields can confuse learners, distract from learning objectives, and blur the roles of facilitator and learner. Clear separation supports learner autonomy and focused engagement.
+
+---
+
+**Summary:** Designing learner handouts aligned with the page_profile learner model enhances learner experience by providing targeted, accessible, and independent learning resources.
+
+---
+
+Material: M8 (template)  
+Purpose: Learner handout design template  
+Content:  
+### Learner Handout Design Template Aligned with Page_Profile Learner Model  
+
+Use this template to create learner handouts that exclude facilitator choreography and align with the page_profile learner model.
+
+---
+
+**Title:**  
+[Insert clear, descriptive title of the handout]
+
+**Introduction:**  
+- Brief overview of the learning objectives and what the learner will achieve.
+
+**Content Sections:**  
+1. **Section Heading 1**  
+   - Key concepts explained clearly.  
+   - Bullet points or numbered steps for clarity.  
+   - Examples or illustrations relevant to learners.
+
+2. **Section Heading 2**  
+   - Further explanations or activities.  
+   - Questions or prompts for learner reflection (without facilitator instructions).  
+
+3. **Section Heading 3**  
+   - Summary or key takeaways.  
+   - Space for learner notes or self-assessment.
+
+**Additional Resources:**  
+- List of references, links, or suggested readings for learners.
+
+---
+
+**Design Notes:**  
+- Do not include any facilitator notes, instructions, or choreography in any section.  
+- Use learner-friendly language and formatting.  
+- Ensure all content is directly relevant to learner understanding and engagement.
+
+---
+
+Material: M9 (checklist)  
+Purpose: Verification of handout design alignment  
+Content:  
+### Checklist: Verifying Learner Handout Design Alignment with Page_Profile Learner Model  
+
+Use this checklist to confirm your learner handout design meets the required standards.
+
+- [ ] **Alignment with Learner Model:** Does the handout content reflect the needs and characteristics of the page_profile learner model?  
+- [ ] **Exclusion of Facilitator Choreography:** Are all facilitator instructions and choreography completely excluded from learner-visible fields?  
+- [ ] **Clarity and Accessibility:** Is the language clear, concise, and accessible to the target learners?  
+- [ ] **Logical Structure:** Is the handout organized with clear headings, sections, and flow?  
+- [ ] **Learner Engagement:** Does the handout encourage learner reflection and active engagement without facilitator prompts?  
+- [ ] **Visual Cleanliness:** Is the layout free from distractions and easy to navigate?
+
+**If any item is unchecked, revise your handout to improve alignment and learner focus.**
+
+---
+
+Activity: Consolidation and Reflection on Delivery Context Resolution  
+Activity ID: A4  
+Mapped outcomes: LO1, LO2, LO3  
+
+Material: M10 (consolidation_summary)  
+Purpose: Session closure and reflection  
+Content:  
+### Consolidation Summary: Reflecting on Delivery Context Resolution  
+
+Use the space below to synthesize your learning from this session. Integrate key ideas about analyzing Sprint 42-4 live capture documentation, applying contract terms, and designing learner handouts aligned with the page_profile learner model.
+
+---
+
+**Write at least 80 words reflecting on:**  
+- How identifying key data points in live capture documentation supports delivery context resolution.  
+- The role of Sprint 42 contract terms in guiding delivery decisions and resolving scenarios.  
+- The importance of designing learner handouts that exclude facilitator choreography and align with learner needs.  
+- What you consider most important to remember about delivery context resolution for future workshops.  
+
+---
+
+**Reflection Prompts:**  
+- What new insights have you gained about delivery context and contract application?  
+- Are there any areas where you still feel uncertain or want to learn more?  
+- How will you apply this knowledge independently in your next workshop or project?  
+
+---
+
+Material: M11 (prompt_set)  
+Purpose: Reflection prompts  
+Content:  
+### Reflection Prompts to Deepen Understanding and Plan Next Steps  
+
+Consider these prompts to guide your reflection and prepare for applying your learning independently:
+
+- Describe a specific example from the session where contract terms clarified a delivery context issue. How did this change your understanding?  
+- Identify any challenges you faced in analyzing the live capture documentation. How might you overcome these in future analyses?  
+- Reflect on the separation of facilitator choreography from learner materials. Why is this distinction critical, and how will you ensure it in your own designs?  
+- What strategies will you use to verify your contract application decisions in new delivery contexts?  
+- Outline your next steps for practicing delivery context resolution beyond this session. What resources or supports will you seek?  
+
+Use these prompts to write thoughtful responses that support your ongoing development and confidence in delivery context resolution.

@@ -1,0 +1,37 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Analyze common misconceptions related to Sprint 42 contracts and identify their impact on contract application.",
+      "related_concepts": [
+        "Sprint 42 contracts",
+        "misconceptions",
+        "contract application"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focus on identifying errors or misunderstandings in contract use."
+    },
+    {
+      "statement": "Demonstrate correct application of Sprint 42 contracts in an in-person delivery context through scenario-based exercises.",
+      "related_concepts": [
+        "Sprint 42 contracts",
+        "in_person delivery_context",
+        "contract application"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Use live capture scenarios to practice accurate contract application."
+    },
+    {
+      "statement": "Evaluate learner misconceptions during the workshop and provide constructive feedback to correct misunderstandings.",
+      "related_concepts": [
+        "misconceptions",
+        "learner feedback",
+        "contract application"
+      ],
+      "cognitive_level": "Evaluate",
+      "notes": "Emphasize formative assessment and feedback skills."
+    }
+  ],
+  "learner_level": "intermediate",
+  "scope": "standard session",
+  "alignment_notes": "Outcomes focus on misconception identification, practical application, and feedback within the Sprint 42 contract context and in-person delivery."
+}

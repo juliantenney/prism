@@ -1,0 +1,177 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Explore and Compare Self-Directed Learning Strategies",
+      "activity_preamble": "Understanding the variety of self-directed learning strategies is crucial for choosing the most effective approach in different academic contexts. This activity invites you to examine multiple strategies and their characteristics to develop a nuanced perspective on autonomous learning.",
+      "reasoning_orientation": "Focus on comparing and contrasting strategies by identifying their strengths, weaknesses, and suitable contexts of application.",
+      "self_explanation_prompt": "Explain in your own words how two different strategies vary and why one might be more effective than the other in a specific academic context.",
+      "learner_task": "Study the worked example comparing three self-directed learning strategies. Then, complete the comparison table by evaluating each strategy against criteria such as applicability, ease of use, and effectiveness in different academic contexts.",
+      "expected_output": "A completed comparison table with at least three strategies evaluated and justified differences noted for each criterion.",
+      "support_note": "Remember that effectiveness depends on context; avoid assuming one strategy is universally best.",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "model reasoning",
+          "specification": "depth_floor: L3; a detailed comparison of three self-directed learning strategies including context, benefits, and limitations."
+        },
+        {
+          "material_id": "M2",
+          "type": "comparison_table",
+          "purpose": "practice evaluation",
+          "specification": "depth_floor: L3; table with rows for strategies and columns for criteria such as applicability, ease of use, and effectiveness; includes space for learner justification."
+        },
+        {
+          "material_id": "M3",
+          "type": "sample_output",
+          "purpose": "example completion",
+          "specification": "depth_floor: L3; partially completed comparison table illustrating evaluation and justification."
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items including completeness, justification quality, and context relevance."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Design Your Personalized Learning Plan",
+      "activity_preamble": "Creating a personalized learning plan helps you set clear goals, identify resources, and manage your time effectively. This foundational skill supports sustained independent study and academic success.",
+      "reasoning_orientation": "Engage in practical planning by integrating goal setting, resource identification, and time management into a coherent plan.",
+      "transfer_or_application_task": "Apply planning skills to your own academic context by designing a plan tailored to your goals and available resources.",
+      "learner_task": "Review the model personalized learning plan and then develop your own plan incorporating specific goals, identified resources, and a time management schedule.",
+      "expected_output": "A personalized learning plan document that clearly states goals, lists resources, and includes a time management schedule.",
+      "support_note": "Ensure your goals are specific and measurable; resources should be realistic and accessible; time management should balance study with other commitments.",
+      "grouping": "individual",
+      "duration_minutes": 25,
+      "mapped_learning_outcomes": [
+        "Design a personalized learning plan that incorporates goal setting, resource identification, and time management."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "worked_example",
+          "purpose": "model planning",
+          "specification": "depth_floor: L3; example personalized learning plan with detailed goals, resource list, and time management schedule."
+        },
+        {
+          "material_id": "M6",
+          "type": "template",
+          "purpose": "practice planning",
+          "specification": "depth_floor: L3; structured template guiding goal setting, resource identification, and time management entries."
+        },
+        {
+          "material_id": "M7",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items including goal clarity, resource relevance, schedule feasibility, and plan coherence."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building on your understanding of learning strategies, this activity focuses on applying that knowledge to create a concrete plan tailored to your needs."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Apply Self-Assessment Techniques to Monitor and Adjust Your Learning",
+      "activity_preamble": "Self-assessment is key to effective autonomous learning, enabling you to monitor progress and adapt your approaches. This activity develops reflective practice skills essential for continuous improvement.",
+      "reasoning_orientation": "Analyze your learning progress and identify adjustments needed by applying self-assessment techniques.",
+      "transfer_or_application_task": "Use self-assessment methods to evaluate your current learning plan and propose actionable adjustments.",
+      "learner_task": "Study the modelling note illustrating self-assessment steps and then complete the self-assessment checklist for your personalized learning plan. Based on your evaluation, draft a brief reflection proposing adjustments to your learning approach.",
+      "expected_output": "A completed self-assessment checklist and a reflective memo outlining proposed learning adjustments with justifications.",
+      "support_note": "Focus on honest evaluation; adjustments should be practical and aligned with your goals.",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M8",
+          "type": "modelling_note",
+          "purpose": "model self-assessment",
+          "specification": "depth_floor: L3; stepwise think-aloud showing how to use self-assessment to identify progress and necessary adjustments."
+        },
+        {
+          "material_id": "M9",
+          "type": "checklist",
+          "purpose": "self-assessment",
+          "specification": "depth_floor: L3; ≥4 criteria-linked check items focusing on progress indicators, goal alignment, resource use, and time management effectiveness."
+        },
+        {
+          "material_id": "M10",
+          "type": "template",
+          "purpose": "reflection memo",
+          "specification": "depth_floor: L3; structured reflection template prompting justification for proposed learning adjustments."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity leverages your personalized plan to develop adaptive learning skills through reflective self-assessment."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Synthesize Your Autonomous Learning Skills",
+      "activity_preamble": "Integrating evaluation, planning, and self-assessment skills empowers you to manage your learning independently and effectively. This synthesis activity consolidates your understanding and prepares you for ongoing autonomous learning.",
+      "transfer_or_application_task": "Combine your insights from strategy evaluation, personalized planning, and self-assessment to create a comprehensive self-directed learning memo.",
+      "learner_task": "Compose a reflective memo summarizing your chosen learning strategies, your personalized learning plan, and your approach to self-assessment and adjustment. Justify your choices and explain how these elements work together to support your academic success.",
+      "expected_output": "A reflective memo of at least 80 words that synthesizes your autonomous learning approach with clear justification and integration of key concepts.",
+      "support_note": "Focus on coherence and justification rather than mere description; highlight how your approach supports sustained learning.",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts.",
+        "Design a personalized learning plan that incorporates goal setting, resource identification, and time management.",
+        "Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly."
+      ],
+      "required_materials": [
+        {
+          "material_id": "M11",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "depth_floor: L3; guidance for writing a reflective synthesis memo integrating session learning outcomes."
+        },
+        {
+          "material_id": "M12",
+          "type": "prompt_set",
+          "purpose": "reflection prompts",
+          "specification": "depth_floor: L3; prompts to guide synthesis and justification of autonomous learning elements."
+        }
+      ],
+      "intellectual_coherence_bridge": "This final activity integrates all prior learning moves into a coherent autonomous learning framework for your academic journey."
+    }
+  ],
+  "outcome_alignment": [
+    {
+      "learning_outcome": "Evaluate various strategies for self-directed learning and select appropriate methods for different academic contexts.",
+      "mapped_activities": [
+        "A1",
+        "A4"
+      ]
+    },
+    {
+      "learning_outcome": "Design a personalized learning plan that incorporates goal setting, resource identification, and time management.",
+      "mapped_activities": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "learning_outcome": "Apply self-assessment techniques to monitor progress and adjust learning approaches accordingly.",
+      "mapped_activities": [
+        "A3",
+        "A4"
+      ]
+    }
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 70,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

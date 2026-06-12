@@ -1,0 +1,180 @@
+{
+  "captured_at": "2026-06-11T16:09:06.245Z",
+  "regeneration_method": "fixture_snapshot_plus_deterministic_html_render_and_prompt_snapshots",
+  "llm_workflow_regeneration_performed": false,
+  "reason_no_llm": "PRISM has no automated workflow runner in tools/; workflows execute via browser + external AI. No API credentials in repo.",
+  "sprint_42_code_committed_to_git": false,
+  "artefacts": [
+    {
+      "id": "marx-self-study",
+      "page_fixture": {
+        "path": "tests/fixtures/page-render/marx-self-study-page.json",
+        "lastWriteTime": "2026-06-11T15:35:06.714Z",
+        "lastGitCommit": "2026-06-03 13:46:13 +0100\t1820e08\tSprint 34–36: renderer consolidation, pedagogical refinement, and visual pedagogy integration",
+        "committedA2PreambleSample": "Study the model row before completing the full comparison table."
+      },
+      "json_analysis": {
+        "activityCount": 3,
+        "activityPreambleCount": 3,
+        "intellectualCoherenceBridgeCount": 2,
+        "cognitionFieldActivityCount": 3,
+        "facilitatorChoreographyInSupportNote": false,
+        "preambleExposition": {
+          "activityCount": 3,
+          "preambleCount": 3,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": true,
+          "meetsAuthorialExposition": true,
+          "rows": [
+            {
+              "activity_id": "A2",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "Comparing two major works is not the same as summarising them: each text was written for a different purpose and audience."
+            },
+            {
+              "activity_id": "A3",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "The Communist Manifesto and Das Kapital address capitalism from different angles — one as urgent political programme, one as systematic economic critique."
+            },
+            {
+              "activity_id": "A4",
+              "has_preamble": true,
+              "procedural_opening": false,
+              "duplicates_learner_task": false,
+              "opening": "After comparing Marx's writings, the harder test is whether his concepts explain a concrete workplace."
+            }
+          ]
+        }
+      },
+      "dla_prompt": {
+        "delivery_context": "self_directed",
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": false,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": true,
+        "has_learner_page_framing": true
+      },
+      "design_page_prompt": {
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": true,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": false
+      },
+      "regenerated_after_42_2": false,
+      "regenerated_after_42_3": "partial_hand_edit_only",
+      "evidence_notes": [
+        "Working-tree page.json has 42-3-style narrative preambles; git HEAD has procedural preambles. Not LLM workflow output.",
+        "Working copy passes evaluateActivityPreambleExpositionEvidence.",
+        "LD-AUTHORIAL-EXPOSITION affects Design Page prompts only — not stored in page JSON.",
+        "LD-ACTIVITY-PREAMBLE-EXPOSITION affects DLA prompts only — artefact reflects generation that did not run."
+      ]
+    },
+    {
+      "id": "inflation-workshop",
+      "page_fixture": {
+        "path": "tests/fixtures/page-render/ld-inflation-workshop-page.json",
+        "lastWriteTime": "2026-05-19T09:38:12.911Z",
+        "lastGitCommit": "2026-05-19 11:53:14 +0100\t4a58897\tSprint 25: implement Design Page composition closure and export contracts",
+        "committedA2PreambleSample": null
+      },
+      "json_analysis": {
+        "activityCount": 2,
+        "activityPreambleCount": 0,
+        "intellectualCoherenceBridgeCount": 0,
+        "cognitionFieldActivityCount": 0,
+        "facilitatorChoreographyInSupportNote": true,
+        "preambleExposition": {
+          "activityCount": 2,
+          "preambleCount": 0,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": false,
+          "meetsAuthorialExposition": false,
+          "rows": [
+            {
+              "activity_id": "A1",
+              "has_preamble": false,
+              "procedural_opening": false,
+              "duplicates_learner_task": false
+            },
+            {
+              "activity_id": "A2",
+              "has_preamble": false,
+              "procedural_opening": false,
+              "duplicates_learner_task": false
+            }
+          ]
+        }
+      },
+      "dla_prompt": {
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": false,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": true,
+        "has_learner_page_framing": true
+      },
+      "design_page_prompt": {
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": true,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": false
+      },
+      "regenerated_after_42_2": false,
+      "regenerated_after_42_3": false,
+      "evidence_notes": [
+        "Static renderer regression fixture; generation_notes or git history predate Sprint 42.",
+        "No activity_preamble fields in page JSON.",
+        "LD-AUTHORIAL-EXPOSITION affects Design Page prompts only — not stored in page JSON.",
+        "LD-ACTIVITY-PREAMBLE-EXPOSITION affects DLA prompts only — artefact reflects generation that did not run."
+      ]
+    },
+    {
+      "id": "climate-workshop",
+      "page_fixture": {
+        "path": "tests/fixtures/page-render/ld-climate-misconception-discussion-page.json",
+        "lastWriteTime": "2026-05-21T07:53:37.594Z",
+        "lastGitCommit": "2026-05-21 11:12:37 +0100\tf4b4a43\tSprint 27: stabilise assessment semantics and epistemic grounding",
+        "committedA2PreambleSample": null
+      },
+      "json_analysis": {
+        "activityCount": 1,
+        "activityPreambleCount": 0,
+        "intellectualCoherenceBridgeCount": 0,
+        "cognitionFieldActivityCount": 0,
+        "facilitatorChoreographyInSupportNote": false,
+        "preambleExposition": {
+          "activityCount": 1,
+          "preambleCount": 0,
+          "proceduralOpeningCount": 0,
+          "meetsPreambleCoverage": false,
+          "meetsAuthorialExposition": false,
+          "rows": [
+            {
+              "activity_id": "CC-MIS-1",
+              "has_preamble": false,
+              "procedural_opening": false,
+              "duplicates_learner_task": false
+            }
+          ]
+        }
+      },
+      "dla_prompt": {
+        "delivery_context": "in_person",
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": false,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": true,
+        "has_learner_page_framing": true
+      },
+      "design_page_prompt": {
+        "has_LD_AUTHORIAL_EXPOSITION_CONTRACT": true,
+        "has_LD_ACTIVITY_PREAMBLE_EXPOSITION_CONTRACT": false
+      },
+      "regenerated_after_42_2": false,
+      "regenerated_after_42_3": false,
+      "evidence_notes": [
+        "Static renderer regression fixture; generation_notes or git history predate Sprint 42.",
+        "No activity_preamble fields in page JSON.",
+        "LD-AUTHORIAL-EXPOSITION affects Design Page prompts only — not stored in page JSON.",
+        "LD-ACTIVITY-PREAMBLE-EXPOSITION affects DLA prompts only — artefact reflects generation that did not run."
+      ]
+    }
+  ],
+  "prompt_modules_at_capture": {
+    "authorial_marker": "LD-AUTHORIAL-EXPOSITION-CONTRACT (auto-applied)",
+    "preamble_marker": "LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT (auto-applied)"
+  }
+}

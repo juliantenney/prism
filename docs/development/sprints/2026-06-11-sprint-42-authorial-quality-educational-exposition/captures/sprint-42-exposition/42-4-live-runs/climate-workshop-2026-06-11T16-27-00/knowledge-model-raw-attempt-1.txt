@@ -1,0 +1,118 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Climate Change",
+      "definition": "Long-term changes in the Earth's average weather patterns, primarily caused by human activities that release greenhouse gases."
+    },
+    {
+      "name": "Weather",
+      "definition": "Short-term atmospheric conditions."
+    },
+    {
+      "name": "Climate",
+      "definition": "Long-term statistical patterns of atmospheric conditions."
+    },
+    {
+      "name": "Greenhouse Gases",
+      "definition": "Gases that trap heat in the atmosphere, leading to a rise in global mean temperatures."
+    },
+    {
+      "name": "Human-driven Greenhouse Gas Emissions",
+      "definition": "Greenhouse gases released by human activities that cause recent warming."
+    },
+    {
+      "name": "Natural Variability",
+      "definition": "Natural fluctuations in climate that occur without human influence."
+    },
+    {
+      "name": "Climate Models",
+      "definition": "Simulations using physics and data to project future climate scenarios based on emissions."
+    },
+    {
+      "name": "Global Mean Temperature",
+      "definition": "The average temperature of the Earth's surface over time."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Climate Change",
+      "target": "Greenhouse Gases",
+      "type": "caused by"
+    },
+    {
+      "source": "Human-driven Greenhouse Gas Emissions",
+      "target": "Greenhouse Gases",
+      "type": "is a source of"
+    },
+    {
+      "source": "Weather",
+      "target": "Climate",
+      "type": "contrasts with"
+    },
+    {
+      "source": "Climate Models",
+      "target": "Climate Change",
+      "type": "project"
+    },
+    {
+      "source": "Natural Variability",
+      "target": "Climate Change",
+      "type": "contributes to but does not exclude human influence"
+    },
+    {
+      "source": "Global Mean Temperature",
+      "target": "Climate Change",
+      "type": "indicator of"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Key Concepts in Climate Science",
+      "members": [
+        "Climate Change",
+        "Weather",
+        "Climate",
+        "Greenhouse Gases",
+        "Human-driven Greenhouse Gas Emissions",
+        "Natural Variability",
+        "Climate Models",
+        "Global Mean Temperature"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Climate Change Process",
+      "steps": [
+        "Human activities release greenhouse gases",
+        "Greenhouse gases trap heat in the atmosphere",
+        "Global mean temperature rises over time",
+        "Climate models simulate and project future warming based on emissions"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "claim": "A cold winter means global warming isn’t happening.",
+      "explanation": "Confuses short-term local weather with long-term global climate trends."
+    },
+    {
+      "claim": "Climate change is just natural variability; humans aren’t responsible.",
+      "explanation": "Ignores the significant role of human-driven greenhouse gas emissions in recent warming."
+    },
+    {
+      "claim": "Climate models are unreliable because they can't predict the weather accurately.",
+      "explanation": "Mistakes weather prediction for climate projection; climate models simulate long-term trends, not daily weather."
+    },
+    {
+      "claim": "If greenhouse gases are natural, human emissions can’t cause harm.",
+      "explanation": "Overlooks that additional human emissions increase greenhouse gas concentrations beyond natural levels, causing harm."
+    },
+    {
+      "claim": "Since climate has changed in the past, current changes aren’t unusual.",
+      "explanation": "Fails to recognize the unprecedented rate and human influence on current climate change."
+    }
+  ]
+}
+```

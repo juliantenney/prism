@@ -1,0 +1,346 @@
+Activity: Core Marxist Concepts in Action  
+Activity ID: A1  
+Mapped outcomes: LO1
+
+Material: M1 (text)  
+Purpose: explanation  
+Content:
+
+## Key Marxist Concepts Explained
+
+**Capitalism**  
+Capitalism is an economic system based on private ownership of production (factories, tools, platforms) and the use of wage labour to produce goods for profit. The central aim is accumulation of profit rather than meeting social needs.
+
+**Surplus Value**  
+Workers produce value through their labour. However, they are paid less than the value they produce. The difference between what workers produce and what they are paid is called **surplus value**, and it becomes profit for the employer.
+
+**Class Struggle**  
+Society is divided into classes with opposing interests: the **bourgeoisie** (owners) and the **proletariat** (workers). Class struggle refers to the ongoing conflict over wages, working conditions, and control.
+
+**Alienation**  
+Workers may feel disconnected because they do not control their work, do not own what they produce, and may not see meaning in repetitive labour. This leads to alienation from the product, the process, and themselves.
+
+**Example**  
+A delivery worker for an app platform receives a small payment per job. The company earns much more from each delivery. This illustrates surplus value and a class relationship between platform owners and workers.
+
+***
+
+Material: M2 (worked\_example)  
+Purpose: worked\_thinking  
+Content:
+
+## Worked Example: Analysing a Workplace Scenario
+
+**Scenario**  
+A factory worker produces £200 worth of goods per day but is paid £80 in wages.
+
+### Step-by-step reasoning
+
+**Step 1: Identify the classes**  
+The factory owner = bourgeoisie (owns means of production).  
+The worker = proletariat (sells labour).
+
+**Step 2: Identify surplus value**  
+Value produced (£200) − wages (£80) = £120 surplus value.  
+This surplus is kept as profit.
+
+**Step 3: Explain exploitation**  
+The worker is exploited because they produce more value than they receive. This difference sustains the capitalist system.
+
+**Step 4: Consider alienation**  
+If the worker has no control over production and has no connection to the final product, they may feel alienated.
+
+**Conclusion**  
+This scenario illustrates how capitalism depends on wage labour, generates surplus value, and creates structured class relationships.
+
+***
+
+Material: M3 (sample\_output)  
+Purpose: worked\_thinking  
+Content:
+
+## Sample Output (Model Paragraph)
+
+In this scenario, the worker represents the proletariat, while the factory owner represents the bourgeoisie. The worker produces goods worth significantly more than their wage, generating surplus value that becomes profit for the owner. This demonstrates exploitation, as the worker receives only a portion of the value they create. If the worker has little control over their work or connection to the final product, this may also lead to alienation. Together, these concepts illustrate how Marx argued that capitalism systematically benefits owners at the expense of workers.
+
+***
+
+Material: M4 (checklist)  
+Purpose: verification  
+Content:
+
+## Self-Check Checklist
+
+Use this to evaluate your explanation:
+
+* Have you **used at least three correct terms** (e.g. surplus value, class struggle)?
+* Have you **defined each term accurately**, not just named it?
+* Have you **applied the concepts to the specific scenario**, not described them in general?
+* Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?
+
+### If any check is not met:
+
+Revise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific.
+
+***
+
+Activity: How Capitalism Generates Inequality and Crisis  
+Activity ID: A2  
+Mapped outcomes: LO2
+
+Material: M5 (text)  
+Purpose: explanation  
+Content:
+
+## Mechanisms of Capitalism
+
+Three core mechanisms explain how capitalism produces inequality and instability:
+
+**Exploitation**  
+Workers create value but receive limited wages. This creates a persistent gap between labour and reward.
+
+**Capital Accumulation**  
+Profits are reinvested, allowing owners to expand production. Over time, wealth becomes concentrated among fewer individuals.
+
+**Overproduction**  
+As firms compete and expand, they may produce more goods than consumers can afford to buy. This leads to unsold stock and falling profits.
+
+### Linking Mechanisms to Outcomes
+
+* Exploitation → inequality (workers earn less than they produce)
+* Accumulation → concentration of wealth
+* Overproduction → economic crises (recessions, layoffs)
+
+These processes show how outcomes emerge from internal dynamics of the system.
+
+***
+
+Material: M6 (worked\_example)  
+Purpose: worked\_thinking  
+Content:
+
+## Worked Analytic Pass: From Mechanism to Outcome
+
+**Scenario**  
+A growing firm increases production while keeping wages low.
+
+### Step-by-step analysis
+
+**Step 1: Identify mechanism**  
+Low wages = exploitation.
+
+**Step 2: Apply analytical lens**  
+Workers have limited purchasing power due to low wages.
+
+**Step 3: Trace consequences**  
+Goods are produced in large quantities, but workers cannot afford to buy them.
+
+**Step 4: Identify outcome**  
+Unsold goods accumulate → overproduction.
+
+**Step 5: Final link**  
+Overproduction reduces profits and can trigger layoffs → economic crisis.
+
+**Conclusion**  
+Exploitation contributes to overproduction, showing how mechanisms connect to broader outcomes like instability.
+
+***
+
+Material: M7 (analysis\_table)  
+Purpose: guided\_practice  
+Content:
+
+| Mechanism            | What happens                                  | Resulting outcome |
+| -------------------- | --------------------------------------------- | ----------------- |
+| Exploitation         | Workers produce more value than they are paid | Inequality        |
+| Capital accumulation |                                               |                   |
+| Overproduction       |                                               |                   |
+
+***
+
+Material: M8 (checklist)  
+Purpose: verification  
+Content:
+
+## Self-Check Checklist
+
+* Have you clearly **described each mechanism** in your own words?
+* Have you **linked each mechanism to a specific outcome**?
+* Does your explanation show a **cause → effect relationship**?
+* Is your reasoning **logically consistent across steps**?
+
+### If something is unclear:
+
+Revisit your table and ensure each step connects directly to the outcome.
+
+***
+
+Activity: Comparing Marx’s Predictions with Reality  
+Activity ID: A3  
+Mapped outcomes: LO3
+
+Material: M9 (scenario)  
+Purpose: guided\_practice  
+Content:
+
+## Case Scenarios
+
+**Case 1: Post-war Europe (1945–1975)**  
+Many Western European countries introduced strong welfare states, labour protections, and public services. Workers experienced rising wages, improved working conditions, and increased social mobility. While inequality persisted, it was reduced compared to earlier periods. This suggests capitalism adapted through reform rather than collapse.
+
+**Case 2: Global Financial Crisis (2008)**  
+A major financial crisis led to bank failures, unemployment, and recession across multiple economies. Governments intervened to stabilise the system. Inequality increased in the aftermath, and many workers faced unstable employment conditions. This reflects instability within the system.
+
+***
+
+Material: M10 (comparison\_table)  
+Purpose: guided\_practice  
+Content:
+
+| Marx prediction     | Actual outcome | Matches? (Yes/No/Partial) |
+| ------------------- | -------------- | ------------------------- |
+| Rising inequality   |                |                           |
+| Increasing crises   |                |                           |
+| Worker immiseration |                |                           |
+
+***
+
+Material: M11 (checklist)  
+Purpose: verification  
+Content:
+
+## Self-Check Checklist
+
+* Have you used **evidence from the cases**, not general statements?
+* Have you **clearly judged alignment** (yes, no, partial)?
+* Have you **justified your judgement with reasoning**?
+* Does your paragraph **compare prediction and outcome directly**?
+
+### If needed:
+
+Add evidence or clarify your reasoning.
+
+***
+
+Activity: Was Marx Right? Final Evaluation  
+Activity ID: A4  
+Mapped outcomes: LO3, LO4, LO5
+
+Material: M12 (text)  
+Purpose: explanation  
+Content:
+
+## Criteria for Evaluating Marx
+
+Use these criteria to form your judgement:
+
+**1. Explanatory Power**  
+Does Marx’s theory help explain real-world patterns (e.g. inequality, crises)?
+
+**2. Predictive Accuracy**  
+Did Marx correctly anticipate how capitalism would develop?
+
+**3. Contemporary Relevance**  
+Do his ideas still help make sense of modern issues like digital platforms or global supply chains?
+
+### How to use criteria
+
+A strong evaluation uses all three criteria and recognises both strengths and limitations.
+
+***
+
+Material: M13 (decision\_table)  
+Purpose: guided\_practice  
+Content:
+
+| Criterion              | Evidence for Marx          | Evidence against Marx              | Judgement |
+| ---------------------- | -------------------------- | ---------------------------------- | --------- |
+| Explanatory power      | Explains inequality trends | Does not explain all social change |           |
+| Predictive accuracy    |                            |                                    |           |
+| Contemporary relevance |                            |                                    |           |
+
+***
+
+Material: M14 (template)  
+Purpose: independent\_judgement  
+Content:
+
+## Judgement Template
+
+Use this structure to write your response (150–200 words):
+
+**Claim**  
+Overall, Marx was (right / partly right / not right) because…
+
+**Evidence (for)**  
+One reason supporting this view is…
+
+**Counterpoint (against)**  
+However, Marx underestimated…
+
+**Final judgement**  
+Taking both sides into account, a balanced conclusion is…
+
+***
+
+Material: M15 (checklist)  
+Purpose: verification  
+Content:
+
+## Evaluation Checklist
+
+* Does your answer include a **clear overall judgement**?
+* Have you used **evidence on both sides**?
+* Have you applied **at least two criteria** explicitly?
+* Is your argument **logically structured and coherent**?
+
+### If not:
+
+Revise your answer to improve balance and clarity.
+
+***
+
+Material: M16 (transfer\_prompt)  
+Purpose: transfer  
+Content:
+
+## Transfer Task: Applying Marx to the Digital Economy
+
+Consider a modern digital platform (e.g. ride-sharing, food delivery, or online marketplaces).
+
+Write a short response (100–150 words) addressing:
+
+* How might **surplus value** operate in this context?
+* Who represents the **bourgeoisie and proletariat**?
+* Does Marx’s framework still explain the relationship between workers and platform owners?
+* Which of the evaluation criteria (explanatory power, predictive accuracy, relevance) is most useful here, and why?
+
+Your response should apply the same analytical framework but in a new context.
+
+***
+
+Material: M17 (consolidation\_summary)  
+Purpose: closure  
+Content:
+
+## Consolidation Summary
+
+Bring together your learning from this session.
+
+Write at least 80–120 words addressing:
+
+* What does Marx explain **most effectively** about capitalism?
+* Where does his theory appear **limited or inaccurate**?
+* What key distinction can you now clearly make (e.g. between explanation and prediction)?
+
+You might begin with:
+
+* “One idea that now seems clearer is…”
+* “A limitation I can now explain is…”
+* “When evaluating theories, I now focus on…”
+
+Aim to summarise your understanding, not introduce new ideas.
+
+***
+
+STEP 6 OUTPUT: activity\_materials

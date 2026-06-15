@@ -1,0 +1,407 @@
+Activity: Modelling the Core Process of Photosynthesis  
+Activity ID: A1  
+Mapped outcomes: LO1
+
+Material: M1 (text)  
+Purpose: explanation  
+Content:
+
+## The Core Idea of Photosynthesis
+
+Photosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy. This chemical energy is stored in the molecule glucose, which can later be used to fuel cellular processes.
+
+The overall process can be summarised by this equation:
+
+$$
+6CO_2 + 6H_2O + \text{light energy} \rightarrow C_6H_{12}O_6 + 6O_2
+$$
+
+### What each part means
+
+* **Carbon dioxide (CO₂)**: comes from the atmosphere and provides carbon atoms
+* **Water (H₂O)**: absorbed through roots and provides hydrogen and electrons
+* **Light energy**: captured by chlorophyll and drives the process
+* **Glucose (C₆H₁₂O₆)**: stores chemical energy in bonds
+* **Oxygen (O₂)**: released as a by-product
+
+### Key insight
+
+Photosynthesis is both:
+
+* an **energy transformation** (light → chemical energy)
+* a **matter transformation** (CO₂ and H₂O → glucose and O₂)
+
+It does not create matter or energy — it rearranges and converts what already exists.
+
+***
+
+Cognition cues:
+
+* Self-explanation: Why is light energy necessary for producing glucose?
+* Transfer or application: Apply this explanation to phytoplankton in oceans.
+* Reasoning revision: Improve clarity of energy transformation.
+* Initial position: Where does plant mass come from?
+* Revision trigger: If CO₂ is missing from your explanation, revise.
+* Misconception claim: Plants get mass from soil.
+* Reconciliation prompt: Explain how carbon from air contributes to growth.
+* Evidence contrast: Compare your explanation to the worked example.
+
+***
+
+Material: M2 (worked\_example)  
+Purpose: worked\_thinking  
+Content:
+
+## Worked Example: Interpreting the Equation
+
+### Step 1: Start with inputs
+
+We begin with carbon dioxide and water:
+
+* 6 CO₂ molecules
+* 6 H₂O molecules
+
+These supply carbon, hydrogen, and oxygen atoms.
+
+### Step 2: Add energy
+
+Light energy is absorbed by chlorophyll, exciting electrons and making reactions possible.
+
+### Step 3: Rearranging matter
+
+Atoms are not created or destroyed:
+
+* Carbon atoms from CO₂ become part of glucose
+* Hydrogen atoms from water combine in glucose
+* Oxygen atoms are released as O₂
+
+### Step 4: Energy storage
+
+Light energy is converted into chemical energy stored in glucose bonds.
+
+### Conclusion
+
+The process transforms:
+
+* energy form (light → chemical)
+* matter arrangement (simple molecules → complex organic molecule)
+
+***
+
+Cognition cues:
+
+* Self-explanation: Why must energy be added to drive this rearrangement?
+* Transfer or application: Apply reasoning to another energy transformation system.
+* Reasoning revision: Clarify link between energy and bond formation.
+* Initial position: Can matter be created in photosynthesis?
+* Revision trigger: If you describe creation, revise.
+* Misconception claim: Photosynthesis creates new matter.
+* Reconciliation prompt: Explain conservation of matter.
+* Evidence contrast: Compare your steps to the sample output.
+
+***
+
+Material: M3 (sample\_output)  
+Purpose: worked\_thinking  
+Content:
+
+## Model Explanation (Annotated)
+
+Photosynthesis is a process where plants convert light energy into chemical energy. Carbon dioxide from the air and water from the soil are transformed into glucose and oxygen. The glucose stores energy in chemical bonds, which organisms can use later. Oxygen is released as a by-product. This shows that photosynthesis converts energy from light into chemical form and rearranges matter into new molecules.
+
+**Why this works**
+
+* Includes all inputs/outputs
+* Explains energy change
+* Links process to outcome
+
+***
+
+Cognition cues: *(same structure as above, aligned with A1)*
+
+***
+
+Material: M4 (checklist)  
+Purpose: verification  
+Content:
+
+## Self-Check: Photosynthesis Explanation
+
+Check your explanation against these criteria:
+
+* Have you correctly named all inputs and outputs?
+* Have you explained what happens to energy?
+* Have you explained what happens to matter?
+* Have you used correct biological terms?
+
+### If any answer is NO:
+
+* Revisit the worked example
+* Rewrite your explanation focusing on the missing element
+
+***
+
+Cognition cues: *(aligned with A1 prompts)*
+
+***
+
+Activity: Linking the Stages of Photosynthesis  
+Activity ID: A2  
+Mapped outcomes: LO2
+
+Material: M5 (text)  
+Purpose: explanation  
+Content:
+
+## The Two Stages of Photosynthesis
+
+Photosynthesis occurs in two linked stages:
+
+### 1. Light-dependent reactions
+
+* Occur in thylakoid membranes
+* Require light
+* Produce ATP and NADPH
+* Release oxygen
+
+### 2. Calvin cycle
+
+* Occurs in the stroma
+* Uses ATP and NADPH
+* Fixes CO₂ into glucose
+
+### Key link
+
+The first stage captures and stores energy. The second stage uses that energy to build organic molecules.
+
+***
+
+Cognition cues: *(aligned with A2 prompts)*
+
+***
+
+Material: M6 (comparison\_table)  
+Purpose: guided\_practice  
+Content:
+
+## Complete the Comparison Table
+
+| Stage           | Location | Inputs | Outputs | Function |
+| --------------- | -------- | ------ | ------- | -------- |
+| Light-dependent |          |        |         |          |
+| Calvin cycle    |          |        |         |          |
+
+***
+
+Cognition cues: *(aligned with A2 prompts)*
+
+***
+
+Material: M7 (checklist)  
+Purpose: verification  
+Content:
+
+## Self-Check: Stage Connections
+
+* Did you correctly identify which stage produces ATP and NADPH?
+* Did you assign glucose production to the correct stage?
+* Did you describe how stages are linked?
+* Are your explanations precise and accurate?
+
+If not, revisit the explanation and revise your table.
+
+***
+
+Cognition cues: *(aligned with A2 prompts)*
+
+***
+
+Activity: Analysing Energy and Matter Transformation  
+Activity ID: A3  
+Mapped outcomes: LO3
+
+Material: M8 (worked\_example)  
+Purpose: worked\_thinking  
+Content:
+
+## Worked Analysis: Energy vs Matter
+
+### Energy pathway
+
+* Light energy absorbed
+* Converted into ATP/NADPH
+* Stored in glucose
+
+### Matter pathway
+
+* CO₂ provides carbon
+* H₂O provides hydrogen
+* Rearranged into glucose
+
+### Key distinction
+
+Energy changes **form**  
+Matter changes **structure**
+
+***
+
+Cognition cues included.
+
+***
+
+Material: M9 (analysis\_table)  
+Purpose: guided\_practice  
+Content:
+
+| Aspect | Input form   | Output form     | Explanation     |
+| ------ | ------------ | --------------- | --------------- |
+| Energy | Light energy | Chemical energy | (example given) |
+| Matter |              |                 |                 |
+
+***
+
+Material: M10 (checklist)  
+Purpose: verification  
+Content:
+
+* Did you distinguish clearly between energy and matter?
+* Did you explain changes correctly?
+* Did you use examples?
+* Is each row complete?
+
+***
+
+Activity: Evaluating Misconceptions  
+Activity ID: A4
+
+Material: M11 (scenario)  
+Content:
+
+## Student Claims
+
+**Student A**: Plants get their food from soil minerals.  
+**Student B**: Oxygen is the main product plants make.
+
+***
+
+Material: M12 (decision\_table)  
+Content:
+
+| Claim     | Correct/Incorrect | Reason |
+| --------- | ----------------- | ------ |
+| Student A |                   |        |
+| Student B |                   |        |
+
+***
+
+Material: M13 (checklist) — as above  
+Material: M14 (transfer\_prompt)  
+Content:  
+Write a short response correcting this claim:  
+“Plants only photosynthesise during daylight hours.”  
+Explain your reasoning using correct biological principles.
+
+***
+
+Activity: Photosynthesis in Ecosystems  
+Activity ID: A5
+
+Material: M15 (text)  
+Content:
+
+## Photosynthesis and Ecosystems
+
+Photosynthesis forms the base of most ecosystems. Organisms that perform photosynthesis (producers) convert light energy into chemical energy stored in biomass. This energy is then transferred through food chains. Without photosynthesis, ecosystems would lack a primary energy source.
+
+***
+
+Material: M16 (classification\_table)  
+Content:
+
+| Organism | Role | Energy source |
+| -------- | ---- | ------------- |
+| Grass    |      |               |
+| Rabbit   |      |               |
+| Fox      |      |               |
+
+***
+
+Material: M17 (checklist) — as above
+
+***
+
+Activity: Capstone  
+Activity ID: A6
+
+Material: M18 (scenario)  
+Content:
+
+## Global Scenarios
+
+**Case 1: Deforestation**  
+Large areas of forest are removed, reducing photosynthetic capacity. This increases atmospheric CO₂ and disrupts ecosystems.
+
+**Case 2: Ocean decline**  
+Phytoplankton populations decrease due to warming, reducing oxygen production and marine food supply.
+
+***
+
+Material: M19 (decision\_table)  
+Content:
+
+| Factor        | Impact | Evidence |
+| ------------- | ------ | -------- |
+| Carbon cycle  |        |          |
+| Oxygen levels |        |          |
+| Food webs     |        |          |
+
+***
+
+Material: M20 (template)  
+Content:
+
+## Reasoned Explanation Template
+
+* **Claim:** Photosynthesis is important because…
+* **Evidence:** (use scenarios)
+* **Analysis:** explain links
+* **Conclusion:** final judgement
+
+***
+
+Material: M21 (checklist)  
+Content:
+
+* Is your argument clear?
+* Did you use evidence from both scenarios?
+* Did you connect processes to global impact?
+* Is your reasoning logical?
+
+***
+
+Material: M22 (transfer\_prompt)  
+Content:  
+Apply your reasoning to a new situation:  
+Explain how a major reduction in photosynthesis might affect human food systems, climate systems, and biodiversity.  
+Write at least 80 words and include at least two different impacts.
+
+***
+
+Material: M23 (consolidation\_summary)  
+Purpose: closure  
+Content:
+
+## Consolidation Summary
+
+Use these prompts to write your final summary (minimum 80 words):
+
+* One key idea about energy transformation
+* One key idea about matter transformation
+* One key reason photosynthesis is globally important
+* One misconception you can now confidently reject
+
+Bring these together into a short explanation of why photosynthesis is one of the most important biological processes on Earth.
+
+***
+
+STEP 6 OUTPUT: activity\_materials

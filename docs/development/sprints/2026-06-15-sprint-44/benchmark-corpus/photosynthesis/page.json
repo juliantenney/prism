@@ -1,0 +1,149 @@
+{
+  "artifact_type": "page",
+  "title": "Why is Photosynthesis One of the Most Important Biological Processes on Earth?",
+  "audience": "Undergraduate learners",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "Photosynthesis is a foundational biological process that links energy flow, matter transformation, and ecosystem stability. This session guides you from understanding the core process, through analysing how energy and matter are transformed, to evaluating misconceptions and ultimately judging why photosynthesis is globally significant. The intellectual challenge lies in connecting microscopic biochemical processes with large-scale ecological consequences."
+    },
+    {
+      "section_id": "learning_outcomes",
+      "heading": "Learning Outcomes",
+      "content": "- Describe how photosynthesis transforms inputs into outputs\n- Explain the roles of the light-dependent reactions and the Calvin cycle\n- Analyse energy and matter transformation in the process\n- Evaluate common misconceptions using scientific reasoning\n- Explain how photosynthesis supports ecosystems\n- Construct a reasoned explanation of its global significance"
+    },
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Knowledge Summary",
+      "content": "Photosynthesis converts light energy into chemical energy stored in glucose. It reorganises matter by combining carbon dioxide and water into organic molecules while releasing oxygen. The process occurs in two stages: light-dependent reactions generate energy carriers, and the Calvin cycle uses these carriers to fix carbon. This process underpins ecosystems and drives global cycles such as the carbon cycle."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Modelling the Core Process of Photosynthesis",
+          "duration": 10,
+          "learner_task": "Study the explanation and worked example, then write your own explanation and check it.",
+          "expected_output": "A clear explanation of photosynthesis",
+          "materials": {
+            "text": "## The Core Idea of Photosynthesis\n\nPhotosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy. This chemical energy is stored in the molecule glucose, which can later be used to fuel cellular processes.\n\nThe overall process can be summarised by this equation:\n\n\\[\n6CO_2 + 6H_2O + \\text{light energy} \\rightarrow C_6H_{12}O_6 + 6O_2\n\\]\n\n### What each part means\n\n- **Carbon dioxide (CO₂)**: comes from the atmosphere and provides carbon atoms  \n- **Water (H₂O)**: absorbed through roots and provides hydrogen and electrons  \n- **Light energy**: captured by chlorophyll and drives the process  \n- **Glucose (C₆H₁₂O₆)**: stores chemical energy in bonds  \n- **Oxygen (O₂)**: released as a by-product\n\n### Key insight  \nPhotosynthesis is both:\n- an **energy transformation** (light → chemical energy)\n- a **matter transformation** (CO₂ and H₂O → glucose and O₂)\n\nIt does not create matter or energy — it rearranges and converts what already exists."
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "Linking the Stages of Photosynthesis",
+          "duration": 12,
+          "learner_task": "Read the explanation and complete the comparison table.",
+          "expected_output": "Completed table and explanation",
+          "materials": {
+            "comparison_table": "## Complete the Comparison Table\n\n| Stage | Location | Inputs | Outputs | Function |\n| --- | --- | --- | --- | --- |\n| Light-dependent |  |  |  |  |\n| Calvin cycle |  |  |  |  |"
+          }
+        },
+        {
+          "activity_id": "A3",
+          "title": "Analysing Energy and Matter Transformation",
+          "duration": 10,
+          "learner_task": "Compare energy and matter changes using the table.",
+          "expected_output": "Completed analysis table",
+          "materials": {
+            "analysis_table": "| Aspect | Input form | Output form | Explanation |\n| --- | --- | --- | --- |\n| Energy | Light energy | Chemical energy | (example given) |\n| Matter |  |  |  |"
+          }
+        },
+        {
+          "activity_id": "A4",
+          "title": "Evaluating Misconceptions",
+          "duration": 8,
+          "learner_task": "Evaluate claims and justify your reasoning.",
+          "expected_output": "Completed evaluation table",
+          "materials": {
+            "scenario": "## Student Claims\n\nStudent A: Plants get their food from soil minerals.\nStudent B: Oxygen is the main product plants make.",
+            "decision_table": "| Claim | Correct/Incorrect | Reason |\n| --- | --- | --- |\n| Student A |  |  |\n| Student B |  |  |"
+          }
+        },
+        {
+          "activity_id": "A5",
+          "title": "Photosynthesis in Ecosystems",
+          "duration": 8,
+          "learner_task": "Identify roles and energy flow.",
+          "expected_output": "Completed classification and explanation",
+          "materials": {
+            "classification_table": "| Organism | Role | Energy source |\n| --- | --- | --- |\n| Grass |  |  |\n| Rabbit |  |  |\n| Fox |  |  |"
+          }
+        },
+        {
+          "activity_id": "A6",
+          "title": "Capstone: Judging Global Importance",
+          "duration": 12,
+          "learner_task": "Analyse scenarios and write a reasoned explanation.",
+          "expected_output": "Structured argument",
+          "materials": {
+            "scenario": "## Global Scenarios\n\nCase 1: Deforestation reduces photosynthesis.\nCase 2: Ocean decline reduces phytoplankton activity.",
+            "decision_table": "| Factor | Impact | Evidence |\n| --- | --- | --- |\n| Carbon cycle |  |  |\n| Oxygen levels |  |  |\n| Food webs |  |  |",
+            "template": "## Reasoned Explanation Template\n\n- Claim\n- Evidence\n- Analysis\n- Conclusion",
+            "consolidation_summary": "## Consolidation Summary\n\nWrite a short explanation covering:\n- Energy transformation\n- Matter transformation\n- Global significance\n- One misconception corrected"
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "study_tips",
+      "heading": "Study Tips",
+      "content": "- Focus on how energy changes form rather than just memorising the equation\n- Distinguish clearly between matter transformation and energy transformation\n- When evaluating claims, always use evidence from the process\n- Check that you can connect small-scale processes to global impacts"
+    }
+  ],
+  "source_artefacts": [
+    "knowledge_model",
+    "learning_outcomes",
+    "learning_activities",
+    "activity_materials",
+    "learning_sequence"
+  ],
+  "constraints_applied": [
+    "self-directed",
+    "60-minute session",
+    "undergraduate level"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Energy vs matter comparison benefits from visual distinction"
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A3-01",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "rationale": "Distinguishes energy and matter transformation categories",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Supports conceptual differentiation beyond text",
+      "reasoning_supported": "Classification of transformations",
+      "learner_stage": "analysis",
+      "anti_spoiler": true,
+      "representation_avoid": ["filled_worksheet"],
+      "canonical_discipline_note": "Energy vs matter distinction",
+      "requires_exact_data_match": false,
+      "must_show": ["energy transformation", "matter transformation"],
+      "must_not_show": ["completed answers"],
+      "allowed_claims": ["Energy and matter behave differently"],
+      "disallowed_claims": ["They are identical processes"],
+      "source_basis": "A3 materials",
+      "caption_intent": "Highlight contrast between energy and matter",
+      "discipline_risk_level": "medium"
+    }
+  ],
+  "generation_notes": {
+    "limitations": "Full verbatim material expansion truncated for brevity due to output constraints"
+  }
+}

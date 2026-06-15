@@ -1,0 +1,259 @@
+{
+  "concepts": [
+    {
+      "name": "Photosynthesis",
+      "definition": "The biological process by which green plants, algae, and some bacteria convert light energy into chemical energy, producing glucose from carbon dioxide and water."
+    },
+    {
+      "name": "Light energy",
+      "definition": "Energy from the sun that is captured during photosynthesis and converted into chemical energy."
+    },
+    {
+      "name": "Chemical energy",
+      "definition": "Energy stored in the bonds of molecules such as glucose, produced during photosynthesis."
+    },
+    {
+      "name": "Glucose",
+      "definition": "An organic molecule produced during photosynthesis that stores chemical energy and serves as a fuel for living organisms."
+    },
+    {
+      "name": "Carbon dioxide",
+      "definition": "A gas from the atmosphere used as a carbon source in photosynthesis."
+    },
+    {
+      "name": "Water",
+      "definition": "A molecule used in photosynthesis that provides electrons and hydrogen, and contributes to oxygen production."
+    },
+    {
+      "name": "Oxygen",
+      "definition": "A by-product of photosynthesis released into the atmosphere."
+    },
+    {
+      "name": "Chloroplast",
+      "definition": "The organelle in which photosynthesis occurs."
+    },
+    {
+      "name": "Light-dependent reactions",
+      "definition": "The stage of photosynthesis that requires light and produces ATP and NADPH while releasing oxygen."
+    },
+    {
+      "name": "Calvin cycle",
+      "definition": "The stage of photosynthesis that uses ATP and NADPH to fix carbon dioxide into glucose."
+    },
+    {
+      "name": "ATP",
+      "definition": "A molecule that temporarily stores energy produced in the light-dependent reactions."
+    },
+    {
+      "name": "NADPH",
+      "definition": "An energy carrier molecule produced in the light-dependent reactions used in the Calvin cycle."
+    },
+    {
+      "name": "Carbon fixation",
+      "definition": "The process of incorporating carbon dioxide into organic molecules during the Calvin cycle."
+    },
+    {
+      "name": "Energy transformation",
+      "definition": "The conversion of light energy into chemical energy during photosynthesis."
+    },
+    {
+      "name": "Matter transformation",
+      "definition": "The rearrangement of atoms from carbon dioxide and water into glucose and oxygen."
+    },
+    {
+      "name": "Primary production",
+      "definition": "The generation of organic compounds from inorganic substances through photosynthesis, forming the base of food chains."
+    },
+    {
+      "name": "Ecosystem energy flow",
+      "definition": "The movement of energy through an ecosystem, starting with photosynthesis."
+    },
+    {
+      "name": "Carbon cycle",
+      "definition": "The global cycle in which carbon is exchanged between the atmosphere, organisms, and the environment."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Photosynthesis",
+      "to": "Energy transformation",
+      "type": "is an example of"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Matter transformation",
+      "type": "is an example of"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Glucose",
+      "type": "produces"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Oxygen",
+      "type": "produces"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Carbon dioxide",
+      "type": "uses"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Water",
+      "type": "uses"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Light energy",
+      "type": "requires"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Chloroplast",
+      "type": "occurs in"
+    },
+    {
+      "from": "Light-dependent reactions",
+      "to": "Photosynthesis",
+      "type": "part of"
+    },
+    {
+      "from": "Calvin cycle",
+      "to": "Photosynthesis",
+      "type": "part of"
+    },
+    {
+      "from": "Light-dependent reactions",
+      "to": "ATP",
+      "type": "produces"
+    },
+    {
+      "from": "Light-dependent reactions",
+      "to": "NADPH",
+      "type": "produces"
+    },
+    {
+      "from": "Light-dependent reactions",
+      "to": "Oxygen",
+      "type": "releases"
+    },
+    {
+      "from": "Calvin cycle",
+      "to": "ATP",
+      "type": "uses"
+    },
+    {
+      "from": "Calvin cycle",
+      "to": "NADPH",
+      "type": "uses"
+    },
+    {
+      "from": "Calvin cycle",
+      "to": "Carbon fixation",
+      "type": "includes"
+    },
+    {
+      "from": "Carbon fixation",
+      "to": "Glucose",
+      "type": "produces"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Primary production",
+      "type": "enables"
+    },
+    {
+      "from": "Primary production",
+      "to": "Ecosystem energy flow",
+      "type": "supports"
+    },
+    {
+      "from": "Photosynthesis",
+      "to": "Carbon cycle",
+      "type": "drives"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Inputs and Outputs of Photosynthesis",
+      "members": [
+        "Carbon dioxide",
+        "Water",
+        "Light energy",
+        "Glucose",
+        "Oxygen"
+      ]
+    },
+    {
+      "name": "Stages of Photosynthesis",
+      "members": [
+        "Light-dependent reactions",
+        "Calvin cycle"
+      ]
+    },
+    {
+      "name": "Energy Components",
+      "members": [
+        "Light energy",
+        "Chemical energy",
+        "ATP",
+        "NADPH"
+      ]
+    },
+    {
+      "name": "Ecological Roles",
+      "members": [
+        "Primary production",
+        "Ecosystem energy flow",
+        "Carbon cycle"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Overall Photosynthesis Process",
+      "steps": [
+        "Light energy is absorbed by chlorophyll in chloroplasts",
+        "Light-dependent reactions produce ATP, NADPH, and release oxygen",
+        "Calvin cycle uses ATP and NADPH to fix carbon dioxide",
+        "Glucose is synthesised as a stored form of chemical energy"
+      ]
+    },
+    {
+      "name": "Energy Transformation Process",
+      "steps": [
+        "Light energy excites electrons in chlorophyll",
+        "Energy is transferred through electron transport chains",
+        "ATP and NADPH store energy temporarily",
+        "Energy is used to form glucose in the Calvin cycle"
+      ]
+    },
+    {
+      "name": "Carbon Fixation Process",
+      "steps": [
+        "Carbon dioxide enters the Calvin cycle",
+        "Carbon atoms are incorporated into organic molecules",
+        "Molecules are converted into glucose"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "concept": "Plant nutrition",
+      "misconception": "Plants obtain most of their mass from soil",
+      "clarification": "Most plant mass comes from carbon dioxide fixed during photosynthesis"
+    },
+    {
+      "concept": "Purpose of photosynthesis",
+      "misconception": "Oxygen production is the main goal",
+      "clarification": "Glucose production is the primary purpose; oxygen is a by-product"
+    },
+    {
+      "concept": "Timing of photosynthesis",
+      "misconception": "Photosynthesis only occurs during daylight",
+      "clarification": "Light-dependent reactions require light, but the Calvin cycle can proceed without direct light if energy carriers are available"
+    }
+  ]
+}

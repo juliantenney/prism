@@ -1,0 +1,125 @@
+{
+  "artifact_type": "page",
+  "title": "Was Marx Right? A Self-Study Learning Page",
+  "audience": "Undergraduate political economy students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "This self-study session explores whether Karl Marx’s analysis of capitalism remains convincing when applied to historical and contemporary contexts. The challenge is not simply to decide whether Marx was right or wrong, but to evaluate how his concepts explain real-world phenomena and where their limits lie. You will move from understanding key ideas, to analysing how capitalism works, to comparing theory with evidence, and finally to constructing your own reasoned judgement."
+    },
+    {
+      "section_id": "learning_outcomes",
+      "heading": "Learning Outcomes",
+      "content": "- Use key Marxist concepts accurately in explanation\n- Explain how capitalist mechanisms produce inequality and crisis\n- Compare Marx’s predictions with historical and contemporary outcomes\n- Evaluate capitalism’s adaptability in relation to Marx’s theory\n- Construct a justified judgement about Marx’s relevance today"
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Core Marxist Concepts in Action",
+          "duration_minutes": 15,
+          "learner_task": "1. Read the concept explanations.\n2. Study the worked example and sample output.\n3. Apply the same structure to a new short scenario (provided in the text).\n4. Write a 120-word explanation using at least three concepts.\n5. Use the checklist to review and revise.",
+          "expected_output": "A short written explanation correctly applying at least three Marxist concepts to the scenario, revised using checklist feedback.",
+          "materials": {
+            "text": "## Key Marxist Concepts Explained\n\n**Capitalism**  \nCapitalism is an economic system based on private ownership of production (factories, tools, platforms) and the use of wage labour to produce goods for profit. The central aim is accumulation of profit rather than meeting social needs.\n\n**Surplus Value**  \nWorkers produce value through their labour. However, they are paid less than the value they produce. The difference between what workers produce and what they are paid is called **surplus value**, and it becomes profit for the employer.\n\n**Class Struggle**  \nSociety is divided into classes with opposing interests: the **bourgeoisie** (owners) and the **proletariat** (workers). Class struggle refers to the ongoing conflict over wages, working conditions, and control.\n\n**Alienation**  \nWorkers may feel disconnected because they do not control their work, do not own what they produce, and may not see meaning in repetitive labour. This leads to alienation from the product, the process, and themselves.\n\n**Example**  \nA delivery worker for an app platform receives a small payment per job. The company earns much more from each delivery. This illustrates surplus value and a class relationship between platform owners and workers.",
+            "worked_example": "## Worked Example: Analysing a Workplace Scenario\n\n**Scenario**  \nA factory worker produces £200 worth of goods per day but is paid £80 in wages.\n\n### Step-by-step reasoning\n\n**Step 1: Identify the classes**  \nThe factory owner = bourgeoisie (owns means of production).  \nThe worker = proletariat (sells labour).\n\n**Step 2: Identify surplus value**  \nValue produced (£200) − wages (£80) = £120 surplus value.  \nThis surplus is kept as profit.\n\n**Step 3: Explain exploitation**  \nThe worker is exploited because they produce more value than they receive. This difference sustains the capitalist system.\n\n**Step 4: Consider alienation**  \nIf the worker has no control over production and has no connection to the final product, they may feel alienated.\n\n**Conclusion**  \nThis scenario illustrates how capitalism depends on wage labour, generates surplus value, and creates structured class relationships.",
+            "sample_output": "## Sample Output (Model Paragraph)\n\nIn this scenario, the worker represents the proletariat, while the factory owner represents the bourgeoisie. The worker produces goods worth significantly more than their wage, generating surplus value that becomes profit for the owner. This demonstrates exploitation, as the worker receives only a portion of the value they create. If the worker has little control over their work or connection to the final product, this may also lead to alienation. Together, these concepts illustrate how Marx argued that capitalism systematically benefits owners at the expense of workers.",
+            "checklist": "## Self-Check Checklist\n\nUse this to evaluate your explanation:\n\n- Have you **used at least three correct terms** (e.g. surplus value, class struggle)?  \n- Have you **defined each term accurately**, not just named it?  \n- Have you **applied the concepts to the specific scenario**, not described them in general?  \n- Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?  \n\n### If any check is not met:\nRevise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific."
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "How Capitalism Generates Inequality and Crisis",
+          "duration_minutes": 15,
+          "learner_task": "1. Read explanation and study worked example.\n2. Complete the analysis table linking mechanisms to outcomes.\n3. Write a short explanation (100 words) explaining one full causal chain.\n4. Check your work using the checklist.",
+          "expected_output": "Completed analysis table and a short causal explanation showing how one mechanism produces inequality or crisis.",
+          "materials": {
+            "text": "## Mechanisms of Capitalism\n\nThree core mechanisms explain how capitalism produces inequality and instability:\n\n**Exploitation**  \nWorkers create value but receive limited wages. This creates a persistent gap between labour and reward.\n\n**Capital Accumulation**  \nProfits are reinvested, allowing owners to expand production. Over time, wealth becomes concentrated among fewer individuals.\n\n**Overproduction**  \nAs firms compete and expand, they may produce more goods than consumers can afford to buy. This leads to unsold stock and falling profits.\n\n### Linking Mechanisms to Outcomes\n\n- Exploitation → inequality (workers earn less than they produce)  \n- Accumulation → concentration of wealth  \n- Overproduction → economic crises (recessions, layoffs)\n\nThese processes show how outcomes emerge from internal dynamics of the system.",
+            "worked_example": "## Worked Analytic Pass: From Mechanism to Outcome\n\n**Scenario**  \nA growing firm increases production while keeping wages low.\n\n### Step-by-step analysis\n\n**Step 1: Identify mechanism**  \nLow wages = exploitation.\n\n**Step 2: Apply analytical lens**  \nWorkers have limited purchasing power due to low wages.\n\n**Step 3: Trace consequences**  \nGoods are produced in large quantities, but workers cannot afford to buy them.\n\n**Step 4: Identify outcome**  \nUnsold goods accumulate → overproduction.\n\n**Step 5: Final link**  \nOverproduction reduces profits and can trigger layoffs → economic crisis.\n\n**Conclusion**  \nExploitation contributes to overproduction, showing how mechanisms connect to broader outcomes like instability.",
+            "analysis_table": "| Mechanism | What happens | Resulting outcome |\n| --- | --- | --- |\n| Exploitation | Workers produce more value than they are paid | Inequality |\n| Capital accumulation |  |  |\n| Overproduction |  |  |",
+            "checklist": "## Self-Check Checklist\n\n- Have you clearly **described each mechanism** in your own words?  \n- Have you **linked each mechanism to a specific outcome**?  \n- Does your explanation show a **cause → effect relationship**?  \n- Is your reasoning **logically consistent across steps**?  \n\n### If something is unclear:\nRevisit your table and ensure each step connects directly to the outcome."
+          }
+        },
+        {
+          "activity_id": "A3",
+          "title": "Comparing Marx’s Predictions with Reality",
+          "duration_minutes": 15,
+          "learner_task": "1. Read the two scenarios.\n2. Complete the comparison table.\n3. Write a paragraph explaining one example where Marx was correct or incorrect.\n4. Use the checklist to refine your answer.",
+          "expected_output": "Completed comparison table and a short paragraph evaluating alignment between prediction and outcome.",
+          "materials": {
+            "scenario": "## Case Scenarios\n\n**Case 1: Post-war Europe (1945–1975)**  \nMany Western European countries introduced strong welfare states, labour protections, and public services. Workers experienced rising wages, improved working conditions, and increased social mobility. While inequality persisted, it was reduced compared to earlier periods. This suggests capitalism adapted through reform rather than collapse.\n\n**Case 2: Global Financial Crisis (2008)**  \nA major financial crisis led to bank failures, unemployment, and recession across multiple economies. Governments intervened to stabilise the system. Inequality increased in the aftermath, and many workers faced unstable employment conditions. This reflects instability within the system.",
+            "comparison_table": "| Marx prediction | Actual outcome | Matches? (Yes/No/Partial) |\n| --- | --- | --- |\n| Rising inequality |  |  |\n| Increasing crises |  |  |\n| Worker immiseration |  |  |",
+            "checklist": "## Self-Check Checklist\n\n- Have you used **evidence from the cases**, not general statements?  \n- Have you **clearly judged alignment** (yes, no, partial)?  \n- Have you **justified your judgement with reasoning**?  \n- Does your paragraph **compare prediction and outcome directly**?  \n\n### If needed:\nAdd evidence or clarify your reasoning."
+          }
+        },
+        {
+          "activity_id": "A4",
+          "title": "Was Marx Right? Final Evaluation",
+          "duration_minutes": 15,
+          "learner_task": "1. Review evaluation criteria.\n2. Complete the decision table.\n3. Write your final judgement using the template.\n4. Use the checklist to improve your answer.\n5. Respond to the transfer prompt.\n6. Write a short consolidation summary.",
+          "expected_output": "A structured evaluative judgement (150–200 words), completed decision table, transfer response, and consolidation summary.",
+          "materials": {
+            "text": "## Criteria for Evaluating Marx\n\nUse these criteria to form your judgement:\n\n**1. Explanatory Power**  \nDoes Marx’s theory help explain real-world patterns (e.g. inequality, crises)?\n\n**2. Predictive Accuracy**  \nDid Marx correctly anticipate how capitalism would develop?\n\n**3. Contemporary Relevance**  \nDo his ideas still help make sense of modern issues like digital platforms or global supply chains?\n\n### How to use criteria  \nA strong evaluation uses all three criteria and recognises both strengths and limitations.",
+            "decision_table": "| Criterion | Evidence for Marx | Evidence against Marx | Judgement |\n| --- | --- | --- | --- |\n| Explanatory power | Explains inequality trends | Does not explain all social change |  |\n| Predictive accuracy |  |  |  |\n| Contemporary relevance |  |  |  |",
+            "template": "## Judgement Template\n\nUse this structure to write your response (150–200 words):\n\n**Claim**  \nOverall, Marx was (right / partly right / not right) because…\n\n**Evidence (for)**  \nOne reason supporting this view is…\n\n**Counterpoint (against)**  \nHowever, Marx underestimated…\n\n**Final judgement**  \nTaking both sides into account, a balanced conclusion is…",
+            "checklist": "## Evaluation Checklist\n\n- Does your answer include a **clear overall judgement**?  \n- Have you used **evidence on both sides**?  \n- Have you applied **at least two criteria** explicitly?  \n- Is your argument **logically structured and coherent**?  \n\n### If not:\nRevise your answer to improve balance and clarity.",
+            "transfer_prompt": "## Transfer Task: Applying Marx to the Digital Economy\n\nConsider a modern digital platform (e.g. ride-sharing, food delivery, or online marketplaces).\n\nWrite a short response (100–150 words) addressing:\n\n- How might **surplus value** operate in this context?  \n- Who represents the **bourgeoisie and proletariat**?  \n- Does Marx’s framework still explain the relationship between workers and platform owners?  \n- Which of the evaluation criteria (explanatory power, predictive accuracy, relevance) is most useful here, and why?\n\nYour response should apply the same analytical framework but in a new context.",
+            "consolidation_summary": "## Consolidation Summary\n\nBring together your learning from this session.\n\nWrite at least 80–120 words addressing:\n\n- What does Marx explain **most effectively** about capitalism?  \n- Where does his theory appear **limited or inaccurate**?  \n- What key distinction can you now clearly make (e.g. between explanation and prediction)?  \n\nYou might begin with:\n\n- “One idea that now seems clearer is…”  \n- “A limitation I can now explain is…”  \n- “When evaluating theories, I now focus on…”  \n\nAim to summarise your understanding, not introduce new ideas."
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "knowledge_model",
+    "learning_outcomes",
+    "learning_activities",
+    "activity_materials",
+    "learning_sequence"
+  ],
+  "constraints_applied": [
+    "60 minute duration",
+    "self-directed learner page",
+    "no assessment items included",
+    "materials preserved verbatim"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Concept explanation and worked example may support optional visual but not essential."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Causal mechanisms could benefit from structured visualisation."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Comparison between prediction and outcomes supports visual comparison."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Evaluation criteria could be visualised but table already provides structure."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "generation_notes": {
+    "limitations": []
+  }
+}

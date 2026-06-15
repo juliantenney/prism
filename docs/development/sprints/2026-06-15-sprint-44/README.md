@@ -1,6 +1,6 @@
 # Sprint 44 — Instructional Depth and GAM Validation
 
-**Status:** Open — implementation phase  
+**Status:** Closed — see [`sprint-44-outcomes.md`](sprint-44-outcomes.md)  
 **Folder:** `docs/development/sprints/2026-06-15-sprint-44/` (all Sprint 44 documents live here)  
 **Entry point for fresh chats:** [`context-pack/06-fresh-chat-bootstrap.md`](context-pack/06-fresh-chat-bootstrap.md) (+ full [`context-pack/`](context-pack/))  
 **Short handover:** [`sprint-44-chat-handover-pack.md`](sprint-44-chat-handover-pack.md)  
@@ -18,6 +18,12 @@
 | [`sprint-44-slice-index.md`](sprint-44-slice-index.md) | Slice index |
 | [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md) | **44-1** design spec |
 | [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md) | **44-2** contracts (Draft 1) |
+| [`sprint-44-3-instructional-pattern-library.md`](sprint-44-3-instructional-pattern-library.md) | **44-3** pattern library architecture |
+| [`patterns/`](patterns/) | **44-3** pattern entries SP-01–SP-06 |
+| [`benchmark-corpus/`](benchmark-corpus/) | Frozen Marx and Photosynthesis evaluation corpus |
+| [`sprint-44-review.md`](sprint-44-review.md) | Sprint closure review |
+| [`sprint-44-outcomes.md`](sprint-44-outcomes.md) | Deliverables and definition of done |
+| [`sprint-45-proposal.md`](sprint-45-proposal.md) | Proposed next sprint (not approved) |
 
 ---
 
@@ -50,7 +56,7 @@ Sprint 44 work centres on:
 | ----- | -------- | -------- |
 | **44-1** Tiered GAM capture validation gate | Design spec | [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md) |
 | **44-2** Instructional depth contracts | Educational design spec (Draft 1) | [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md) |
-| **44-3** Instructional pattern library | Not yet designed | — |
+| **44-3** Instructional pattern library | Draft 1 complete (architecture + SP-01–SP-06) | [`sprint-44-3-instructional-pattern-library.md`](sprint-44-3-instructional-pattern-library.md), [`patterns/`](patterns/) |
 
 ---
 
@@ -67,8 +73,10 @@ See handover pack for full list. In short:
 
 ---
 
-## Recommended next task
+## After Sprint 44
 
-1. Implement or review implementation plan for **44-1**.
-2. Use **44-2** contracts to evaluate Marx and Photosynthesis material realisation.
-3. Design **44-3** Instructional Pattern Library if contracts discriminate effectively.
+Sprint 44 educational-design work is complete. See [`sprint-44-review.md`](sprint-44-review.md) and [`sprint-44-outcomes.md`](sprint-44-outcomes.md).
+
+**Proposed next sprint (not approved):** [`sprint-45-proposal.md`](sprint-45-proposal.md) — Pattern-Guided Generation.
+
+**May continue in parallel:** **44-1** runtime capture gate implementation per [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md).

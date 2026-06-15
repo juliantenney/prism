@@ -1,0 +1,40 @@
+{
+  "benchmark_id": "photosynthesis-v1",
+  "title": "Why is Photosynthesis One of the Most Important Biological Processes on Earth?",
+  "domain": "biology",
+  "benchmark_role": "Sprint 44 canonical evaluation corpus",
+  "capture_date": "2026-06-15",
+  "workflow_lineage": [
+    "learning-content",
+    "knowledge-model",
+    "learning-outcomes",
+    "episode-plans",
+    "design-learning-activities",
+    "generate-activity-materials",
+    "learning-sequence",
+    "design-page",
+    "render-page"
+  ],
+  "artifacts": {
+    "learning_content": "learning-content.json",
+    "knowledge_model": "knowledge-model.json",
+    "learning_outcomes": "learning-outcomes.json",
+    "episode_plans": "episode-plans.json",
+    "design_learning_activities": "design-learning-activities.json",
+    "learning_materials": "learning-materials.txt",
+    "learning_sequence": "learning-sequence.json",
+    "page": "page.json",
+    "rendered_page": "rendered-page.html"
+  },
+  "learner_level": "undergraduate",
+  "session_duration_minutes": 60,
+  "evaluation_status": {
+    "contract_44_2_evaluated": false,
+    "pattern_library_evaluated": false
+  },
+  "notes": [
+    "Created as canonical Sprint 44 benchmark corpus candidate.",
+    "Represents a complete workflow lineage from Learning Content through Render Page.",
+    "Intended for 44-2 instructional depth contract evaluation."
+  ]
+}

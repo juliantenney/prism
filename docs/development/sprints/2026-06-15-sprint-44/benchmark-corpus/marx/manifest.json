@@ -1,0 +1,59 @@
+{
+  "benchmark_id": "marx-capitalism-v1",
+  "title": "Was Marx Right? A 60-Minute Self-Study on Marx’s Analysis of Capitalism",
+  "domain": "political_economy",
+  "benchmark_role": "Sprint 44 canonical evaluation corpus",
+  "capture_date": "2026-06-15",
+  "workflow_lineage": [
+    "learning-content",
+    "knowledge-model",
+    "learning-outcomes",
+    "episode-plans",
+    "design-learning-activities",
+    "generate-activity-materials",
+    "learning-sequence",
+    "design-page",
+    "render-page"
+  ],
+  "artifacts": {
+    "learning_content": "learning-content.json",
+    "knowledge_model": "knowledge-model.json",
+    "learning_outcomes": "learning-outcomes.json",
+    "episode_plans": "episode-plans.json",
+    "design_learning_activities": "design-learning-activities.json",
+    "learning_materials": "activity-materials.txt",
+    "learning_sequence": "learning-sequence.json",
+    "page": "page.json",
+    "rendered_page": "rendered-page.html"
+  },
+  "topic": {
+    "title": "Was Marx Right?",
+    "focus": "Evaluating Marx's analysis of capitalism using historical and contemporary evidence",
+    "learner_level": "Undergraduate",
+    "duration_minutes": 60
+  },
+  "learning_outcome_count": 5,
+  "activity_count": 4,
+  "material_count": 17,
+  "evaluation_status": {
+    "contract_44_2_evaluated": false,
+    "pattern_library_evaluated": false,
+    "benchmark_ready": true
+  },
+  "traceability": {
+    "learning_content_to_knowledge_model": true,
+    "knowledge_model_to_outcomes": true,
+    "outcomes_to_episode_plans": true,
+    "episode_plans_to_dla": true,
+    "dla_to_materials": true,
+    "materials_to_sequence": true,
+    "sequence_to_page": true,
+    "page_to_rendered_page": true
+  },
+  "notes": [
+    "Complete end-to-end Sprint 44 workflow.",
+    "Progresses from conceptual understanding to evaluation and judgement.",
+    "Centred on Marxist analysis of capitalism, inequality, crisis, and capitalist adaptability.",
+    "Suitable for Contract 44-2 depth and pedagogical pattern evaluation."
+  ]
+}

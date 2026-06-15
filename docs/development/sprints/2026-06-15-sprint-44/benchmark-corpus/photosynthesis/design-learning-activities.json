@@ -1,0 +1,282 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Modelling the Core Process of Photosynthesis",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1"],
+      "activity_preamble": "Build a clear mental model of photosynthesis by examining how inputs and outputs are connected through energy transformation.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Clear exposition of photosynthesis equation and meaning of each component; explain inputs, outputs, and light energy role; depth_floor: L3"
+        },
+        {
+          "material_id": "M2",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Step-by-step breakdown of the photosynthesis equation showing how atoms are rearranged and energy is stored; includes reasoning commentary; depth_floor: L3"
+        },
+        {
+          "material_id": "M3",
+          "type": "sample_output",
+          "purpose": "worked_thinking",
+          "specification": "Model answer demonstrating a clear explanation of photosynthesis with correct terminology and causal links; depth_floor: L3"
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with at least 4 criteria: correct equation elements, energy explanation, matter transformation, clarity; includes revise guidance; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Study the worked example and sample explanation.\n2. Identify how inputs are transformed into outputs.\n3. Write your own explanation of photosynthesis using the equation.\n4. Use the checklist to review and improve your explanation.",
+      "expected_output": "A short written explanation (100–150 words) accurately describing photosynthesis inputs, outputs, and energy role.",
+      "support_note": "Focus on transformation: energy changes form, matter changes structure.",
+      "self_explanation_prompt": "Why is light energy necessary for producing glucose?",
+      "transfer_or_application_task": "Apply your explanation to describe how phytoplankton perform the same process in oceans.",
+      "reasoning_revision_prompt": "Revise your explanation to improve how clearly energy transformation is described.",
+      "initial_position_prompt": "State what you think plants use as their primary source of mass.",
+      "revision_trigger": "If your explanation does not clearly account for carbon dioxide, revise it.",
+      "misconception_claim": "Plants get most of their mass from soil.",
+      "reconciliation_prompt": "Explain how carbon from the air contributes to plant growth.",
+      "evidence_contrast": "Compare your explanation to the worked example and identify one difference."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Linking the Stages of Photosynthesis",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": ["LO2"],
+      "activity_preamble": "Examine how the two stages of photosynthesis connect and depend on one another.",
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Explanation of light-dependent reactions and Calvin cycle roles and sequence; depth_floor: L3"
+        },
+        {
+          "material_id": "M6",
+          "type": "comparison_table",
+          "purpose": "guided_practice",
+          "specification": "| Stage | Location | Inputs | Outputs | Function |\n| --- | --- | --- | --- | --- |\n| Light-dependent |  |  |  |  |\n| Calvin cycle |  |  |  |  | ; learners complete missing cells; depth_floor: L3"
+        },
+        {
+          "material_id": "M7",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4 criteria): correct sequencing, roles of ATP/NADPH, accuracy of outputs, clarity of links; revise guidance included; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Read the explanation of both stages.\n2. Complete the comparison table.\n3. Explain how energy moves between stages.\n4. Check and revise using the checklist.",
+      "expected_output": "Completed table and a 2–3 sentence explanation of stage connections.",
+      "support_note": "Focus on flow: ATP and NADPH connect the stages.",
+      "self_explanation_prompt": "How does the first stage enable the second?",
+      "transfer_or_application_task": "Explain how disruption to light-dependent reactions affects glucose production.",
+      "reasoning_revision_prompt": "Improve your explanation by clarifying energy transfer.",
+      "initial_position_prompt": "Which stage do you think produces glucose?",
+      "revision_trigger": "If you assigned glucose production incorrectly, revise your table.",
+      "misconception_claim": "Both stages produce glucose directly.",
+      "reconciliation_prompt": "Explain why only the Calvin cycle synthesises glucose.",
+      "evidence_contrast": "Compare your table with the explanation text."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Energy and Matter Transformation",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO3"],
+      "activity_preamble": "Analyse how both energy and matter change form during photosynthesis.",
+      "required_materials": [
+        {
+          "material_id": "M8",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Analytical walkthrough: identify energy vs matter changes step-by-step; depth_floor: L3"
+        },
+        {
+          "material_id": "M9",
+          "type": "analysis_table",
+          "purpose": "guided_practice",
+          "specification": "| Aspect | Input form | Output form | Explanation |\n| --- | --- | --- | --- |\n| Energy |  |  |  |\n| Matter |  |  |  | ; includes one exemplar row; depth_floor: L3"
+        },
+        {
+          "material_id": "M10",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): correct distinction, clear explanation, use of examples, completeness; revise if incorrect; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Study the worked analysis.\n2. Complete the analysis table.\n3. Distinguish energy vs matter changes.\n4. Verify and revise.",
+      "expected_output": "Completed analysis table with clear distinctions.",
+      "support_note": "Energy changes form; matter rearranges atoms.",
+      "self_explanation_prompt": "Why is energy not created in photosynthesis?",
+      "transfer_or_application_task": "Apply the same analysis to cellular respiration.",
+      "reasoning_revision_prompt": "Clarify differences between matter and energy transformations.",
+      "initial_position_prompt": "Do energy and matter behave the same in photosynthesis?",
+      "revision_trigger": "If your explanations overlap, revise distinctions.",
+      "misconception_claim": "Energy is created during photosynthesis.",
+      "reconciliation_prompt": "Explain conservation of energy in this context.",
+      "evidence_contrast": "Compare your table to the worked example."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Evaluating Misconceptions",
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "mapped_learning_outcomes": ["LO4"],
+      "activity_preamble": "Test and correct common misunderstandings about photosynthesis.",
+      "required_materials": [
+        {
+          "material_id": "M11",
+          "type": "scenario",
+          "purpose": "guided_practice",
+          "specification": "Two student statements containing misconceptions about plant mass and oxygen; depth_floor: L3"
+        },
+        {
+          "material_id": "M12",
+          "type": "decision_table",
+          "purpose": "guided_practice",
+          "specification": "| Claim | Correct/Incorrect | Reason |\n| --- | --- | --- |\n|  |  |  | ; includes one model row; depth_floor: L3"
+        },
+        {
+          "material_id": "M13",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): accurate correction, evidence used, clarity, completeness; revise guidance; depth_floor: L3"
+        },
+        {
+          "material_id": "M14",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking learner to correct a new unseen misconception; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Evaluate the claims in the scenario.\n2. Complete the decision table.\n3. Justify your reasoning.\n4. Verify and extend using the transfer task.",
+      "expected_output": "Completed table with justified evaluations.",
+      "support_note": "Use evidence from process understanding.",
+      "self_explanation_prompt": "What evidence disproves each misconception?",
+      "transfer_or_application_task": "Apply your reasoning to a new misconception.",
+      "reasoning_revision_prompt": "Strengthen your justification.",
+      "initial_position_prompt": "Which claim seems most plausible at first?",
+      "revision_trigger": "If reasoning lacks evidence, revise.",
+      "misconception_claim": "Oxygen is the main goal of photosynthesis.",
+      "reconciliation_prompt": "Explain the actual purpose.",
+      "evidence_contrast": "Compare your reasoning to the model row."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Photosynthesis in Ecosystems",
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "mapped_learning_outcomes": ["LO5"],
+      "activity_preamble": "Connect photosynthesis to energy flow in real ecosystems.",
+      "required_materials": [
+        {
+          "material_id": "M15",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Explanation of primary production and energy flow; depth_floor: L3"
+        },
+        {
+          "material_id": "M16",
+          "type": "classification_table",
+          "purpose": "guided_practice",
+          "specification": "| Organism | Role | Energy source |\n| --- | --- | --- |\n|  |  |  | ; learner completes; depth_floor: L3"
+        },
+        {
+          "material_id": "M17",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): accurate roles, energy flow, clarity, correctness; revise guidance; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Study explanation.\n2. Complete classification table.\n3. Describe energy flow.\n4. Verify.",
+      "expected_output": "Completed table and explanation of energy flow.",
+      "support_note": "Focus on producers as energy entry point.",
+      "self_explanation_prompt": "Why are producers essential?",
+      "transfer_or_application_task": "Apply to a marine ecosystem.",
+      "reasoning_revision_prompt": "Improve clarity of energy flow explanation.",
+      "initial_position_prompt": "Where does ecosystem energy begin?",
+      "revision_trigger": "If unclear, revise explanation.",
+      "misconception_claim": "Energy begins with consumers.",
+      "reconciliation_prompt": "Explain role of producers.",
+      "evidence_contrast": "Compare with explanation text."
+    },
+    {
+      "activity_id": "A6",
+      "title": "Capstone: Judging Global Importance of Photosynthesis",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": ["LO3", "LO5", "LO6"],
+      "activity_preamble": "Integrate your understanding to judge why photosynthesis is globally significant.",
+      "required_materials": [
+        {
+          "material_id": "M18",
+          "type": "scenario",
+          "purpose": "guided_practice",
+          "specification": "Two global contexts (deforestation, ocean decline) with data; depth_floor: L3"
+        },
+        {
+          "material_id": "M19",
+          "type": "decision_table",
+          "purpose": "guided_practice",
+          "specification": "| Factor | Impact | Evidence |\n| --- | --- | --- |\n|  |  |  | ; depth_floor: L3"
+        },
+        {
+          "material_id": "M20",
+          "type": "template",
+          "purpose": "independent judgement",
+          "specification": "Structured template for a written justification (argument, evidence, conclusion); depth_floor: L3"
+        },
+        {
+          "material_id": "M21",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): argument strength, use of evidence, integration, clarity; revise guidance; depth_floor: L3"
+        },
+        {
+          "material_id": "M22",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking learner to apply judgement to a new environmental issue; depth_floor: L3"
+        },
+        {
+          "material_id": "M23",
+          "type": "consolidation_summary",
+          "purpose": "closure",
+          "specification": "Learner writes ≥80-word summary covering key ideas and significance; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Analyse the scenarios.\n2. Complete the table.\n3. Write a reasoned explanation using template.\n4. Verify.\n5. Apply transfer task.\n6. Write summary.",
+      "expected_output": "A structured written explanation (150–200 words) justifying photosynthesis importance.",
+      "support_note": "Focus on integrating processes and ecological impacts.",
+      "self_explanation_prompt": "What makes photosynthesis essential globally?",
+      "transfer_or_application_task": "Apply your judgement to a different environmental process.",
+      "reasoning_revision_prompt": "Strengthen your justification with clearer links.",
+      "initial_position_prompt": "Is photosynthesis the most important biological process? Why?",
+      "revision_trigger": "If lacking evidence, revise argument.",
+      "misconception_claim": "Photosynthesis only affects plants.",
+      "reconciliation_prompt": "Explain its global role.",
+      "evidence_contrast": "Compare weak vs strong reasoning."
+    }
+  ],
+  "outcome_alignment": {
+    "LO1": ["A1"],
+    "LO2": ["A2"],
+    "LO3": ["A3", "A6"],
+    "LO4": ["A4"],
+    "LO5": ["A5", "A6"],
+    "LO6": ["A6"]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

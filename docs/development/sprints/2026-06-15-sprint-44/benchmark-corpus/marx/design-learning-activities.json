@@ -1,0 +1,167 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Core Marxist Concepts in Action",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO1"],
+      "activity_preamble": "This activity builds your ability to use key Marxist concepts accurately by observing how an expert applies them before trying yourself.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Concise exposition defining capitalism, surplus value, class struggle and alienation with one short applied example for each; depth_floor: L3"
+        },
+        {
+          "material_id": "M2",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Step-by-step explanation of analysing a short workplace scenario using Marxist concepts (identify class, identify surplus value, explain exploitation); depth_floor: L3"
+        },
+        {
+          "material_id": "M3",
+          "type": "sample_output",
+          "purpose": "worked_thinking",
+          "specification": "Model paragraph showing correct use of at least three concepts applied to a scenario; depth_floor: L3"
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with at least 4 items: correct use of terms, accurate definitions, appropriate application to example, clarity of explanation; include revise guidance if not met; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Read the concept explanations.\n2. Study the worked example and sample output.\n3. Apply the same structure to a new short scenario (provided in the text).\n4. Write a 120-word explanation using at least three concepts.\n5. Use the checklist to review and revise.",
+      "expected_output": "A short written explanation correctly applying at least three Marxist concepts to the scenario, revised using checklist feedback."
+    },
+    {
+      "activity_id": "A2",
+      "title": "How Capitalism Generates Inequality and Crisis",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO2"],
+      "activity_preamble": "You will analyse how key mechanisms produce outcomes by moving from guided reasoning to your own structured analysis.",
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Explanation of exploitation, capital accumulation, and overproduction with causal links to inequality and crisis; depth_floor: L3"
+        },
+        {
+          "material_id": "M6",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Modelled analysis showing cause-effect chain from exploitation to inequality in one scenario; includes intermediate reasoning steps; depth_floor: L3"
+        },
+        {
+          "material_id": "M7",
+          "type": "analysis_table",
+          "purpose": "guided_practice",
+          "specification": "| Mechanism | What happens | Resulting outcome |\n| --- | --- | --- |\n| Exploitation | Example partially filled | Inequality |\n| Capital accumulation |  |  |\n| Overproduction |  |  |\nLearner completes missing cells; includes one exemplar row; depth_floor: L3"
+        },
+        {
+          "material_id": "M8",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4 items): clear causal links, accurate mechanism description, correct outcome, logical chain; includes revision instruction; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Read explanation and study worked example.\n2. Complete the analysis table linking mechanisms to outcomes.\n3. Write a short explanation (100 words) explaining one full causal chain.\n4. Check your work using the checklist.",
+      "expected_output": "Completed analysis table and a short causal explanation showing how one mechanism produces inequality or crisis."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Comparing Marx’s Predictions with Reality",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO3"],
+      "activity_preamble": "This activity develops your ability to compare theory with real-world outcomes using structured evidence.",
+      "required_materials": [
+        {
+          "material_id": "M9",
+          "type": "scenario",
+          "purpose": "guided_practice",
+          "specification": "Two short cases: (1) Post-war welfare state in Europe; (2) 2008 financial crisis; each includes brief factual context; depth_floor: L3"
+        },
+        {
+          "material_id": "M10",
+          "type": "comparison_table",
+          "purpose": "guided_practice",
+          "specification": "| Marx prediction | Actual outcome | Matches? (Yes/No/Partial) |\n| --- | --- | --- |\n| Rising inequality |  |  |\n| Increasing crises |  |  |\n| Worker immiseration |  |  |\nIncludes prompt hint column for first row; depth_floor: L3"
+        },
+        {
+          "material_id": "M11",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): accurate comparison, use of evidence, clear judgement, correct identification of mismatch or alignment; include revise instruction; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Read the two scenarios.\n2. Complete the comparison table.\n3. Write a short paragraph explaining one example where Marx was correct or incorrect.\n4. Use the checklist to refine your answer.",
+      "expected_output": "Completed comparison table and a short paragraph evaluating alignment between prediction and outcome."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Was Marx Right? Final Evaluation",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO3", "LO4", "LO5"],
+      "activity_preamble": "You will bring together your analysis to make and justify your own judgement about Marx’s relevance today.",
+      "required_materials": [
+        {
+          "material_id": "M12",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Criteria for evaluation: explanatory power, predictive accuracy, contemporary relevance; depth_floor: L3"
+        },
+        {
+          "material_id": "M13",
+          "type": "decision_table",
+          "purpose": "guided_practice",
+          "specification": "| Criterion | Evidence for Marx | Evidence against Marx | Judgement |\n| --- | --- | --- | --- |\n| Explanatory power | partial example |  |  |\n| Predictive accuracy |  |  |  |\n| Contemporary relevance |  |  |  |\nIncludes one partial exemplar; depth_floor: L3"
+        },
+        {
+          "material_id": "M14",
+          "type": "template",
+          "purpose": "independent_judgement",
+          "specification": "Short essay template (150–200 words) with structure: claim, evidence, counterpoint, final judgement; scaffold only; depth_floor: L3"
+        },
+        {
+          "material_id": "M15",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist (≥4): clear judgement, balanced evidence, use of criteria, coherent argument; revise guidance included; depth_floor: L3"
+        },
+        {
+          "material_id": "M16",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking learner to apply Marxist evaluation lens to a modern digital economy example; requires brief justification using same criteria; depth_floor: L3"
+        },
+        {
+          "material_id": "M17",
+          "type": "consolidation_summary",
+          "purpose": "closure",
+          "specification": "Learner writes ≥80 words summarising key insights: what Marx explains well, where he is limited, and how to evaluate theories; depth_floor: L3"
+        }
+      ],
+      "learner_task": "1. Review evaluation criteria.\n2. Complete the decision table.\n3. Write your final judgement using the template.\n4. Use the checklist to improve your answer.\n5. Respond to the transfer prompt.\n6. Write a short consolidation summary.",
+      "expected_output": "A structured evaluative judgement (150–200 words), completed decision table, transfer response, and consolidation summary."
+    }
+  ],
+  "outcome_alignment": {
+    "LO1": ["A1"],
+    "LO2": ["A2"],
+    "LO3": ["A3", "A4"],
+    "LO4": ["A4"],
+    "LO5": ["A4"]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes learner-written consolidation summary",
+    "workbook_contract_applied": true
+  }
+}

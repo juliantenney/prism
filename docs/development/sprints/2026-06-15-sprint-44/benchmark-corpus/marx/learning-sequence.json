@@ -1,0 +1,61 @@
+{
+  "sequence_title": "Was Marx Right? – 60-Minute Self-Directed Learning Sequence",
+  "total_duration_minutes": 60,
+  "timeline": [
+    {
+      "block_id": "B1",
+      "start_minute": 0,
+      "duration_minutes": 15,
+      "phase_type": "understand",
+      "activity_id": "A1",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to begin Activity A1. Materials used: M1 (Key Marxist Concepts Explained), M2 (Worked Example: Analysing a Workplace Scenario), M3 (Sample Output - Model Paragraph), M4 (Self-Check Checklist).",
+      "learner_actions": "Read M1 carefully, then study the reasoning process in M2. Review M3 to see how concepts are applied in writing. Complete the task by applying concepts to a new scenario and evaluate work using M4.",
+      "transition_to_next": "Once key concepts are understood and applied, move to analysing how these concepts create broader outcomes in capitalism."
+    },
+    {
+      "block_id": "B2",
+      "start_minute": 15,
+      "duration_minutes": 15,
+      "phase_type": "analyse",
+      "activity_id": "A2",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to continue with Activity A2. Materials used: M5 (Mechanisms of Capitalism), M6 (Worked Analytic Pass: From Mechanism to Outcome), M7 (Analysis Table), M8 (Self-Check Checklist).",
+      "learner_actions": "Read M5 to understand mechanisms, then follow the reasoning in M6 step-by-step. Complete M7 by linking mechanisms to outcomes. Write a short causal explanation and verify using M8.",
+      "transition_to_next": "Having analysed mechanisms, move to comparing Marx’s predictions with real-world evidence."
+    },
+    {
+      "block_id": "B3",
+      "start_minute": 30,
+      "duration_minutes": 15,
+      "phase_type": "analyse",
+      "activity_id": "A3",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to complete Activity A3. Materials used: M9 (Case Scenarios), M10 (Comparison Table), M11 (Self-Check Checklist).",
+      "learner_actions": "Read both cases in M9. Complete M10 by comparing predictions and outcomes. Write a paragraph evaluating one prediction. Use M11 to validate reasoning.",
+      "transition_to_next": "Use your comparisons to prepare for forming an overall judgement about Marx’s accuracy and relevance."
+    },
+    {
+      "block_id": "B4",
+      "start_minute": 45,
+      "duration_minutes": 15,
+      "phase_type": "evaluate",
+      "activity_id": "A4",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to complete Activity A4. Materials used: M12 (Criteria for Evaluating Marx), M13 (Decision Table), M14 (Judgement Template), M15 (Checklist), M16 (Transfer Task), M17 (Consolidation Summary).",
+      "learner_actions": "Review evaluation criteria in M12. Complete the decision table M13. Write a structured judgement using M14. Refine using M15. Extend thinking by completing M16. Finish by writing a consolidation summary using M17.",
+      "transition_to_next": "Session ends with completed evaluation and synthesis of learning."
+    }
+  ],
+  "activities_used": ["A1", "A2", "A3", "A4"],
+  "activities_omitted": [],
+  "checks": {
+    "all_activity_ids_valid": true,
+    "no_new_activities_introduced": true,
+    "all_materials_traceable_to_activity_materials": true,
+    "cognitive_timing_feasible": true,
+    "closure_integrated": true,
+    "no_zero_minute_blocks": true,
+    "omissions_justified": true
+  }
+}

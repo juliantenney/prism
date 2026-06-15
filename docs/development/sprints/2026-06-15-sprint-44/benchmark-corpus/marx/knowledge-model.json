@@ -1,0 +1,220 @@
+{
+  "concepts": [
+    {
+      "name": "Capitalism",
+      "definition": "An economic system characterised by private ownership of the means of production, wage labour, and production for profit."
+    },
+    {
+      "name": "Historical Materialism",
+      "definition": "The idea that economic structures and material conditions shape society and drive social change."
+    },
+    {
+      "name": "Class Struggle",
+      "definition": "The conflict between social classes, particularly between the bourgeoisie (owners) and proletariat (workers), which drives historical development."
+    },
+    {
+      "name": "Bourgeoisie",
+      "definition": "The class that owns the means of production in a capitalist system."
+    },
+    {
+      "name": "Proletariat",
+      "definition": "The working class that sells its labour for wages under capitalism."
+    },
+    {
+      "name": "Exploitation",
+      "definition": "The process by which workers produce more value than they receive in wages."
+    },
+    {
+      "name": "Surplus Value",
+      "definition": "The difference between the value produced by workers and the wages they are paid, which is appropriated as profit."
+    },
+    {
+      "name": "Alienation",
+      "definition": "The disconnection workers experience from their work, the products they create, and their own human potential."
+    },
+    {
+      "name": "Capital Accumulation",
+      "definition": "The process by which capital is accumulated and concentrated in fewer hands over time."
+    },
+    {
+      "name": "Economic Crises",
+      "definition": "Periodic disruptions in capitalism, such as overproduction, where goods cannot be sold profitably."
+    },
+    {
+      "name": "Inequality",
+      "definition": "The uneven distribution of wealth and resources within a society."
+    },
+    {
+      "name": "Capitalist Adaptability",
+      "definition": "The capacity of capitalism to adjust through reforms such as welfare policies, labour rights, and regulation."
+    },
+    {
+      "name": "Overproduction",
+      "definition": "A situation in which more goods are produced than can be sold profitably within the market."
+    },
+    {
+      "name": "Self-Directed Evaluation of Theory",
+      "definition": "The process of critically examining a theoretical framework by comparing its claims with historical and contemporary evidence."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Historical Materialism",
+      "to": "Class Struggle",
+      "type": "explains"
+    },
+    {
+      "from": "Class Struggle",
+      "to": "Social Change",
+      "type": "drives"
+    },
+    {
+      "from": "Capitalism",
+      "to": "Bourgeoisie",
+      "type": "includes"
+    },
+    {
+      "from": "Capitalism",
+      "to": "Proletariat",
+      "type": "includes"
+    },
+    {
+      "from": "Bourgeoisie",
+      "to": "Proletariat",
+      "type": "opposes"
+    },
+    {
+      "from": "Exploitation",
+      "to": "Surplus Value",
+      "type": "produces"
+    },
+    {
+      "from": "Capitalism",
+      "to": "Exploitation",
+      "type": "enables"
+    },
+    {
+      "from": "Capitalism",
+      "to": "Alienation",
+      "type": "causes"
+    },
+    {
+      "from": "Capital Accumulation",
+      "to": "Inequality",
+      "type": "leads_to"
+    },
+    {
+      "from": "Overproduction",
+      "to": "Economic Crises",
+      "type": "causes"
+    },
+    {
+      "from": "Economic Crises",
+      "to": "Capitalism",
+      "type": "challenges"
+    },
+    {
+      "from": "Capitalist Adaptability",
+      "to": "Capitalism",
+      "type": "stabilises"
+    },
+    {
+      "from": "Capitalist Adaptability",
+      "to": "Class Struggle",
+      "type": "mitigates"
+    },
+    {
+      "from": "Capitalism",
+      "to": "Inequality",
+      "type": "tends_to_increase"
+    },
+    {
+      "from": "Self-Directed Evaluation of Theory",
+      "to": "Capitalism",
+      "type": "evaluates"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Core Theoretical Framework",
+      "members": [
+        "Capitalism",
+        "Historical Materialism",
+        "Class Struggle"
+      ]
+    },
+    {
+      "name": "Class Structure",
+      "members": [
+        "Bourgeoisie",
+        "Proletariat"
+      ]
+    },
+    {
+      "name": "Mechanisms of Capitalism",
+      "members": [
+        "Exploitation",
+        "Surplus Value",
+        "Alienation",
+        "Capital Accumulation",
+        "Overproduction",
+        "Economic Crises"
+      ]
+    },
+    {
+      "name": "Outcomes and Dynamics",
+      "members": [
+        "Inequality",
+        "Capitalist Adaptability"
+      ]
+    },
+    {
+      "name": "Analytical Practice",
+      "members": [
+        "Self-Directed Evaluation of Theory"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Cycle of Capitalist Production and Crisis",
+      "steps": [
+        "Workers sell labour for wages",
+        "Workers produce goods generating surplus value",
+        "Surplus value is accumulated as capital",
+        "Production expands leading to overproduction",
+        "Goods cannot be sold profitably",
+        "Economic crisis emerges",
+        "System adapts through reforms or restructuring"
+      ]
+    },
+    {
+      "name": "Evaluation of Marx’s Claims",
+      "steps": [
+        "Identify Marx’s key predictions about capitalism",
+        "Compare predictions with historical outcomes",
+        "Assess contemporary relevance using current examples",
+        "Weigh strengths and limitations of the theory",
+        "Form a balanced judgement"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "name": "Marx Predicted Immediate Collapse",
+      "description": "The content suggests that Marx expected eventual systemic collapse, but capitalism has shown adaptability and persistence."
+    },
+    {
+      "name": "Capitalism Only Produces Negative Outcomes",
+      "description": "While Marx emphasised inequality and instability, the content notes improvements in living standards and reforms, indicating mixed outcomes."
+    },
+    {
+      "name": "Marx’s Theory Is Either Entirely Right or Wrong",
+      "description": "The content emphasises that Marx’s work can be partially valid as an analytical framework without fully accurate predictions."
+    },
+    {
+      "name": "Economic Factors Are the Only Influences",
+      "description": "The content highlights criticism that Marx underestimated cultural and political factors in shaping society."
+    }
+  ]
+}

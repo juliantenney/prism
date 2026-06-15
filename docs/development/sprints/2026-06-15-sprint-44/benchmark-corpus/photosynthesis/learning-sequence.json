@@ -1,0 +1,83 @@
+{
+  "sequence_title": "Photosynthesis: From Process Understanding to Global Judgement",
+  "total_duration_minutes": 60,
+  "timeline": [
+    {
+      "block_id": "B1",
+      "start_minute": 0,
+      "duration_minutes": 10,
+      "phase_type": "conceptual grounding",
+      "activity_id": "A1",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M1 (text), Material M2 (worked_example), Material M3 (sample_output), and Material M4 (checklist).",
+      "learner_actions": "Study Material M1 and M2 to understand the photosynthesis process. Review Material M3 to see a model explanation. Write an independent explanation and self-check using Material M4.",
+      "transition_to_next": "Carry forward your explanation to support deeper analysis of how stages connect."
+    },
+    {
+      "block_id": "B2",
+      "start_minute": 10,
+      "duration_minutes": 12,
+      "phase_type": "guided understanding",
+      "activity_id": "A2",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M5 (text), Material M6 (comparison_table), and Material M7 (checklist).",
+      "learner_actions": "Read Material M5 to understand both stages. Complete Material M6 by filling in missing details. Use Material M7 to verify accuracy and revise.",
+      "transition_to_next": "Use your completed table to analyse how energy and matter behave across the process."
+    },
+    {
+      "block_id": "B3",
+      "start_minute": 22,
+      "duration_minutes": 10,
+      "phase_type": "analysis",
+      "activity_id": "A3",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M8 (worked_example), Material M9 (analysis_table), and Material M10 (checklist).",
+      "learner_actions": "Study Material M8 to see how analysis is structured. Complete Material M9 by distinguishing energy and matter transformations. Verify using Material M10.",
+      "transition_to_next": "Apply your analytical understanding to evaluate misconceptions."
+    },
+    {
+      "block_id": "B4",
+      "start_minute": 32,
+      "duration_minutes": 8,
+      "phase_type": "evaluation",
+      "activity_id": "A4",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M11 (scenario), Material M12 (decision_table), Material M13 (checklist), and Material M14 (transfer_prompt).",
+      "learner_actions": "Evaluate claims in Material M11. Complete Material M12 with reasoning. Check responses using Material M13. Extend thinking using Material M14.",
+      "transition_to_next": "Shift focus from misconceptions to ecosystem-level implications."
+    },
+    {
+      "block_id": "B5",
+      "start_minute": 40,
+      "duration_minutes": 8,
+      "phase_type": "application",
+      "activity_id": "A5",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M15 (text), Material M16 (classification_table), and Material M17 (checklist).",
+      "learner_actions": "Read Material M15 to understand ecosystem roles. Complete Material M16. Verify using Material M17 and refine explanation of energy flow.",
+      "transition_to_next": "Integrate process knowledge and ecosystem understanding for global judgement."
+    },
+    {
+      "block_id": "B6",
+      "start_minute": 48,
+      "duration_minutes": 12,
+      "phase_type": "synthesis_and_judgement",
+      "activity_id": "A6",
+      "grouping": "individual",
+      "facilitator_actions": "Direct learner to Material M18 (scenario), Material M19 (decision_table), Material M20 (template), Material M21 (checklist), Material M22 (transfer_prompt), and Material M23 (consolidation_summary).",
+      "learner_actions": "Analyse both scenarios using Material M18. Complete Material M19. Construct a reasoned explanation using Material M20. Verify using Material M21. Extend judgement with Material M22. Complete consolidation summary in Material M23.",
+      "transition_to_next": "Session closure is integrated through the consolidation summary, consolidating learning and final judgement."
+    }
+  ],
+  "activities_used": ["A1", "A2", "A3", "A4", "A5", "A6"],
+  "activities_omitted": [],
+  "checks": {
+    "all_activity_ids_valid": true,
+    "no_new_activities_introduced": true,
+    "all_materials_traceable_to_activity_materials": true,
+    "cognitive_timing_feasible": true,
+    "closure_integrated": true,
+    "no_zero_minute_blocks": true,
+    "omissions_justified": true
+  }
+}

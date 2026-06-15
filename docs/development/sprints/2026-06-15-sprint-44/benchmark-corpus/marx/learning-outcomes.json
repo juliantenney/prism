@@ -1,0 +1,64 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Define and accurately use key Marxist concepts including capitalism, class struggle, surplus value, and alienation in written explanations.",
+      "related_concepts": [
+        "Capitalism",
+        "Class Struggle",
+        "Surplus Value",
+        "Alienation",
+        "Bourgeoisie",
+        "Proletariat"
+      ],
+      "cognitive_level": "understand/apply",
+      "notes": "Focus on correct terminology and clear explanation rather than exhaustive coverage."
+    },
+    {
+      "statement": "Explain how core mechanisms of capitalism (exploitation, capital accumulation, and overproduction) are theorised to generate inequality and economic crises.",
+      "related_concepts": [
+        "Exploitation",
+        "Capital Accumulation",
+        "Overproduction",
+        "Economic Crises",
+        "Inequality"
+      ],
+      "cognitive_level": "understand/analyse",
+      "notes": "Learners should demonstrate causal reasoning between mechanisms and outcomes."
+    },
+    {
+      "statement": "Compare Marx’s predictions about capitalism with observed historical and contemporary outcomes using at least one relevant example.",
+      "related_concepts": [
+        "Economic Crises",
+        "Inequality",
+        "Capitalist Adaptability"
+      ],
+      "cognitive_level": "analyse",
+      "notes": "Examples may include financial crises, welfare reforms, or labour market changes."
+    },
+    {
+      "statement": "Evaluate the extent to which capitalism’s adaptability challenges or supports Marx’s critique.",
+      "related_concepts": [
+        "Capitalist Adaptability",
+        "Capitalism",
+        "Class Struggle",
+        "Inequality"
+      ],
+      "cognitive_level": "evaluate",
+      "notes": "Encourage balanced judgement drawing on both strengths and limitations of Marx’s theory."
+    },
+    {
+      "statement": "Construct a reasoned judgement on whether Marx’s analysis remains useful as a framework for understanding modern capitalism.",
+      "related_concepts": [
+        "Self-Directed Evaluation of Theory",
+        "Capitalism",
+        "Economic Crises",
+        "Inequality"
+      ],
+      "cognitive_level": "evaluate/create",
+      "notes": "Judgement should be supported by reference to concepts and examples from the session."
+    }
+  ],
+  "learner_level": "Undergraduate",
+  "scope": "60-minute self-directed session",
+  "alignment_notes": "Outcomes progress from conceptual definition to causal explanation, then to comparison and critical evaluation, aligning with the knowledge model’s concepts, relationships, and evaluation process."
+}

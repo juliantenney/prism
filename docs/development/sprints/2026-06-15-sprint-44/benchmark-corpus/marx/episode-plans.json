@@ -1,0 +1,62 @@
+{
+  "episode_plans": [
+    {
+      "activity_id": "LO1",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "verification" }
+        ]
+      }
+    },
+    {
+      "activity_id": "LO2",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "guided_practice" },
+          { "function": "verification" }
+        ]
+      }
+    },
+    {
+      "activity_id": "LO3",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "guided_practice" },
+          { "function": "verification" }
+        ]
+      }
+    },
+    {
+      "activity_id": "LO4",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "guided_practice" },
+          { "function": "transfer" }
+        ]
+      }
+    },
+    {
+      "activity_id": "LO5",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "transfer" }
+        ]
+      }
+    }
+  ]
+}

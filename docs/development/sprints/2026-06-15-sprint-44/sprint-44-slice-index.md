@@ -11,7 +11,7 @@
 | ----- | ----- | ------ | ---- |
 | **44-1** | Tiered GAM capture validation gate | Designed — ready for implementation | Runtime capture gate |
 | **44-2** | Instructional depth contracts | Draft 1 accepted as reference | Educational design spec |
-| **44-3** | Instructional pattern library | Planned | Educational design (TBD) |
+| **44-3** | Instructional pattern library | Draft 1 complete | Educational design |
 
 ---
 
@@ -77,21 +77,23 @@ Educational purpose · Learner effect · Existing implicit contract · Minimum r
 
 | Field | Value |
 | ----- | ----- |
-| **Status** | Planned — not yet designed |
-| **Document** | — |
+| **Status** | Draft 1 complete |
+| **Document** | [`sprint-44-3-instructional-pattern-library.md`](sprint-44-3-instructional-pattern-library.md) |
+| **Patterns** | [`patterns/`](patterns/) — SP-01 through SP-06 |
 | **Purpose** | Reusable strong-realisation patterns per material type |
-| **Trigger** | 44-2 evaluation on Marx and Photosynthesis shows contracts discriminate weak vs strong examples |
+| **Trigger** | Met — 44-2 evaluation discriminated; Readiness Assessment authorised Draft 1 |
 
-### Likely scope (TBD)
+### Delivered
 
-- Pattern catalogue keyed to 44-2 material types
-- Minimum and strong realisation examples from benchmark domains
-- Educational design only — not prompt or validator implementation
+- Hybrid index architecture (material-type primary, failure-mode secondary)
+- Six pattern entries for evaluated core material types
+- Meta-principles MP-1–MP-8
+- Failure-mode registry FM-02–FM-11 (+ capture artefacts FM-01, FM-12 in conventions)
 
 ### Depends on
 
 - 44-2 accepted contracts
-- Cross-domain evaluation complete
+- Cross-domain evaluation complete (Pass 1, Pass 2, Inter-Rater)
 
 ---
 
@@ -110,5 +112,9 @@ Educational purpose · Learner effect · Existing implicit contract · Minimum r
 | Document / folder | Contents |
 | ----------------- | -------- |
 | [`README.md`](README.md) | Sprint 44 entry point and folder index |
+| [`sprint-44-review.md`](sprint-44-review.md) | Sprint closure narrative review |
+| [`sprint-44-outcomes.md`](sprint-44-outcomes.md) | Deliverables, evidence chain, definition of done |
+| [`sprint-45-proposal.md`](sprint-45-proposal.md) | Proposed next sprint (not approved) |
+| [`benchmark-corpus/`](benchmark-corpus/) | Frozen Marx and Photosynthesis evaluation corpus |
 | [`context-pack/`](context-pack/) | Fresh ChatGPT continuation package |
 | [`../2026-06-12-sprint-43-educational-salience/`](../2026-06-12-sprint-43-educational-salience/) | Closed Sprint 43 — reference only |

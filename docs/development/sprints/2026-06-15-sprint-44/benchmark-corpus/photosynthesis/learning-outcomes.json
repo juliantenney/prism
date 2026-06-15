@@ -1,0 +1,75 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Describe the overall process of photosynthesis by identifying inputs, outputs, and the role of light energy",
+      "related_concepts": [
+        "Photosynthesis",
+        "Light energy",
+        "Carbon dioxide",
+        "Water",
+        "Glucose",
+        "Oxygen"
+      ],
+      "cognitive_level": "understanding",
+      "notes": "Focus on the overall equation and purpose without requiring detailed biochemical mechanisms"
+    },
+    {
+      "statement": "Explain the sequence and functional roles of the light-dependent reactions and the Calvin cycle",
+      "related_concepts": [
+        "Light-dependent reactions",
+        "Calvin cycle",
+        "ATP",
+        "NADPH",
+        "Carbon fixation"
+      ],
+      "cognitive_level": "understanding",
+      "notes": "Emphasise how the two stages are connected through energy transfer"
+    },
+    {
+      "statement": "Analyse how energy and matter are transformed during photosynthesis",
+      "related_concepts": [
+        "Energy transformation",
+        "Matter transformation",
+        "Chemical energy",
+        "Carbon fixation"
+      ],
+      "cognitive_level": "analysis",
+      "notes": "Learners should distinguish between energy conversion and matter rearrangement"
+    },
+    {
+      "statement": "Evaluate common misconceptions about photosynthesis using correct scientific reasoning",
+      "related_concepts": [
+        "Photosynthesis",
+        "Carbon fixation",
+        "Oxygen",
+        "Plant nutrition"
+      ],
+      "cognitive_level": "evaluation",
+      "notes": "Include misconceptions about plant mass, oxygen production, and timing of processes"
+    },
+    {
+      "statement": "Explain the role of photosynthesis in supporting ecosystem energy flow and primary production",
+      "related_concepts": [
+        "Primary production",
+        "Ecosystem energy flow",
+        "Photosynthesis"
+      ],
+      "cognitive_level": "understanding",
+      "notes": "Connect biological processes to ecological systems"
+    },
+    {
+      "statement": "Construct a reasoned explanation of why photosynthesis is essential for global carbon cycling and atmospheric balance",
+      "related_concepts": [
+        "Carbon cycle",
+        "Photosynthesis",
+        "Oxygen",
+        "Glucose"
+      ],
+      "cognitive_level": "analysis",
+      "notes": "Culminating outcome integrating biochemical and ecological perspectives"
+    }
+  ],
+  "learner_level": "undergraduate",
+  "scope": "single session (60 minutes)",
+  "alignment_notes": "Outcomes progress from foundational description to integrated analysis and evaluation, aligned with the knowledge model's concepts, processes, and misconceptions. Emphasis is placed on energy/matter transformation and ecological significance to support the governing inquiry."
+}

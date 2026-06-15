@@ -27,7 +27,7 @@ Sprint 44 moves from diagnosis to **material quality work** — capture safety f
 
 **Out of scope for 44-1:** Prompt changes, renderer changes, LLM repair, inflation-specific semantic gates.
 
-**Spec:** [`../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md`](../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md)
+**Spec:** [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md)
 
 ---
 
@@ -52,7 +52,7 @@ Sprint 44 moves from diagnosis to **material quality work** — capture safety f
 | `consolidation_summary` | Session closure scaffold |
 | `rubric` / `quality_criteria` | Judgement standards |
 
-**Spec:** [`../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md`](../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md)
+**Spec:** [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md)
 
 **Note:** Contracts are normative educational standards. They do not imply current generators already satisfy them.
 

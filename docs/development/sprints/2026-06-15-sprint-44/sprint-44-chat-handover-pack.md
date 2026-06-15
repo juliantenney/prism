@@ -7,8 +7,8 @@
 
 **Authoritative slice docs:**
 
-- 44-1: [`../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md`](../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md)
-- 44-2: [`../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md`](../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md)
+- 44-1: [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md)
+- 44-2: [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md)
 
 **Sprint 43 reference (closed):** [`../2026-06-12-sprint-43-educational-salience/`](../2026-06-12-sprint-43-educational-salience/)
 
@@ -76,7 +76,7 @@ This is **implementation-oriented** work on capture gates, evaluation rubrics, a
 ### 44-1 — Tiered GAM Capture Validation Gate
 
 **Status:** Designed — ready for implementation  
-**Spec:** [`sprint-44-slice-1-tiered-gam-capture-gate.md`](../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md)
+**Spec:** [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md)
 
 **Purpose:** Prevent structurally bad GAM captures from silently entering learner-page composition.
 
@@ -94,7 +94,7 @@ This is **implementation-oriented** work on capture gates, evaluation rubrics, a
 ### 44-2 — Instructional Depth Contracts
 
 **Status:** Draft 1 accepted as reference  
-**Spec:** [`sprint-44-2-instructional-depth-contracts.md`](../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md)
+**Spec:** [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md)
 
 **Purpose:** Make implicit instructional contracts explicit as educational design standards.
 

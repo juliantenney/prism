@@ -20,7 +20,7 @@
 | Field | Value |
 | ----- | ----- |
 | **Status** | Designed — ready for implementation |
-| **Document** | [`../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md`](../2026-06-13-sprint-44-gam-capture-validation-gate/sprint-44-slice-1-tiered-gam-capture-gate.md) |
+| **Document** | [`sprint-44-slice-1-tiered-gam-capture-gate.md`](sprint-44-slice-1-tiered-gam-capture-gate.md) |
 | **Purpose** | Prevent structurally bad GAM captures from silently entering learner-page composition |
 | **Scope** | Self-directed learner-page Generate Activity Materials capture only |
 
@@ -49,7 +49,7 @@
 | Field | Value |
 | ----- | ----- |
 | **Status** | Draft 1 accepted as reference |
-| **Document** | [`../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md`](../2026-06-15-sprint-44-instructional-depth-contracts/sprint-44-2-instructional-depth-contracts.md) |
+| **Document** | [`sprint-44-2-instructional-depth-contracts.md`](sprint-44-2-instructional-depth-contracts.md) |
 | **Purpose** | Make implicit instructional contracts explicit as educational design standards |
 | **Type** | Educational design artefact — **not** implementation spec |
 
@@ -105,11 +105,10 @@ Educational purpose · Learner effect · Existing implicit contract · Minimum r
 
 ---
 
-## Related folders
+## Related
 
-| Folder | Contents |
-| ------ | -------- |
-| [`2026-06-13-sprint-44-gam-capture-validation-gate/`](../2026-06-13-sprint-44-gam-capture-validation-gate/) | 44-1 design spec |
-| [`2026-06-15-sprint-44-instructional-depth-contracts/`](../2026-06-15-sprint-44-instructional-depth-contracts/) | 44-2 contracts document |
-| [`2026-06-15-sprint-44-instructional-depth-and-gam-validation/`](../2026-06-15-sprint-44-instructional-depth-and-gam-validation/) | Sprint 44 handover and index (this folder) |
-| [`2026-06-12-sprint-43-educational-salience/`](../2026-06-12-sprint-43-educational-salience/) | Closed Sprint 43 — reference only |
+| Document / folder | Contents |
+| ----------------- | -------- |
+| [`README.md`](README.md) | Sprint 44 entry point and folder index |
+| [`context-pack/`](context-pack/) | Fresh ChatGPT continuation package |
+| [`../2026-06-12-sprint-43-educational-salience/`](../2026-06-12-sprint-43-educational-salience/) | Closed Sprint 43 — reference only |

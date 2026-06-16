@@ -1,0 +1,5 @@
+| Factor        | Impact | Evidence |
+| ------------- | ------ | -------- |
+| Carbon cycle  |        | Reduced photosynthesis lowers carbon fixation, so atmospheric CO2 accumulates and less carbon is stored in biomass (see Case 1 deforestation). |
+| Oxygen levels |        |          |
+| Food webs     |        |          |

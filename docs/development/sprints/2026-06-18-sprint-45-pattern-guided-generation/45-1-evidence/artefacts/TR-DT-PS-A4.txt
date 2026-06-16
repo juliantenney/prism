@@ -1,0 +1,4 @@
+| Claim     | Correct/Incorrect | Reason |
+| --------- | ----------------- | ------ |
+| Student A |                   | Misconception: treats soil minerals as the plant's food source; compare the claim to carbon from CO₂ fixed in photosynthesis (see scenario). |
+| Student B |                   |        |

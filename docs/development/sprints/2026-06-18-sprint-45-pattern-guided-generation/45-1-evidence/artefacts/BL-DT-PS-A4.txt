@@ -1,0 +1,4 @@
+| Claim     | Correct/Incorrect | Reason |
+| --------- | ----------------- | ------ |
+| Student A |                   |        |
+| Student B |                   |        |

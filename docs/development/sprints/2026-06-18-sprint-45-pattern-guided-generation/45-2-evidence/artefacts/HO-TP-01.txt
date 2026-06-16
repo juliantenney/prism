@@ -1,0 +1,12 @@
+---
+artefact_id: HO-TP-01
+material_type: transfer_prompt
+source_material_id: M22
+source_file: docs/development/sprints/2026-06-15-sprint-44/benchmark-corpus/photosynthesis/learning-materials.txt
+source_locator: "Material: M22 (transfer_prompt) / Content block"
+extraction_scope: verbatim body text only
+---
+
+Apply your reasoning to a new situation:
+Explain how a major reduction in photosynthesis might affect human food systems, climate systems, and biodiversity.
+Write at least 80 words and include at least two different impacts.

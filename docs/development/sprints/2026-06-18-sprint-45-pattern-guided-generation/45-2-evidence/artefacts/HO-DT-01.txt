@@ -1,0 +1,13 @@
+---
+artefact_id: HO-DT-01
+material_type: decision_table
+source_material_id: M12
+source_file: docs/development/sprints/2026-06-15-sprint-44/benchmark-corpus/photosynthesis/learning-materials.txt
+source_locator: "Material: M12 (decision_table) / Content block"
+extraction_scope: verbatim body text only
+---
+
+| Claim     | Correct/Incorrect | Reason |
+| --------- | ----------------- | ------ |
+| Student A |                   |        |
+| Student B |                   |        |

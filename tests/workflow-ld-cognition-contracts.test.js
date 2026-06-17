@@ -227,6 +227,20 @@ test("28-5c: GAM text contract detects cognition cue sections", () => {
   assert.equal(evalResult.satisfied, true);
 });
 
+test("49-2: GAM cognition contract excludes Material: ... (text) from cognition-cue requirement", () => {
+  const { contract } = resolveContext({
+    goal: PEER_GOAL,
+    selectedDomains: ["learning-design"]
+  });
+  assert.ok(contract);
+  const block = api.buildPedagogicCognitionContractPromptBlock("gam", contract);
+  assert.match(block, /non-text activity material block/i);
+  assert.match(block, /except Material: \.\.\. \(text\)/i);
+  assert.match(block, /exposition-only/i);
+  assert.match(block, /do NOT append Cognition cues sections or orientation metadata inside text Content/i);
+  assert.doesNotMatch(block, /For each activity material block, add a learner-facing Cognition cues/i);
+});
+
 test("28-5c: DLA prompt scaffold appends contract block when packs active", () => {
   const ctx = {
     stepCanonicalStepId: "step_design_learning_activities",

@@ -19,6 +19,7 @@ const ldPatternsPath = path.join(
 );
 const patternLib = require("../lib/instructional-pattern-prompt.js");
 
+const SP01_MARKER = /INSTRUCTIONAL-PATTERN-SP-01 \(auto-applied\)/i;
 const SP02_MARKER = /INSTRUCTIONAL-PATTERN-SP-02 \(auto-applied\)/i;
 const SP03_MARKER = /INSTRUCTIONAL-PATTERN-SP-03 \(auto-applied\)/i;
 const SP06_MARKER = /INSTRUCTIONAL-PATTERN-SP-06 \(auto-applied\)/i;
@@ -140,18 +141,51 @@ function assertSp06Content(prompt) {
   assert.match(prompt, /MP-3/i);
 }
 
+function assertSp01Content(prompt) {
+  assert.match(prompt, SP01_MARKER);
+  assert.match(prompt, /SP-01 \/ TEXT-SP-01 connective exposition prose/i);
+  assert.match(prompt, /substantive connective exposition/i);
+  assert.match(prompt, /at least two distinct ideas/i);
+  assert.match(prompt, /instructional FAIL \(FM-07\)/i);
+  assert.match(prompt, /FORBIDDEN: appended Cognition cues: block or orientation metadata inside text Content — FM-07/i);
+}
+
+const PEER_GOAL =
+  "Peer instruction session: individual answer, pair discussion, then revise answers after discussion.";
+
+function resolveCognitionContract(brief) {
+  const explicit = api.extractWorkflowBriefExplicitFactors({
+    goal: brief.goal,
+    inputs: brief.inputs || "",
+    desiredOutputs: brief.desiredOutputs || "",
+    startingArtefact: brief.startingArtefact || "",
+    selectedDomains: ["learning-design"]
+  });
+  const { resolved } = api.resolveWorkflowBriefFactors(ldBriefConfig, explicit, {}, {}, brief);
+  const packs = api.resolvePedagogicCognitionPackIds(ldBriefConfig, resolved, explicit, brief);
+  return api.resolvePedagogicCognitionContractRequirements(
+    packs,
+    resolved,
+    explicit,
+    ldBriefConfig,
+    brief
+  );
+}
+
 test("48-2: lib exports SP-02, SP-03, and SP-06 markers and apply helper", () => {
   assert.equal(patternLib.MODULE_ID, "INSTRUCTIONAL-PATTERN-PROMPT");
   assert.match(patternLib.MARKER_SP02, SP02_MARKER);
   assert.match(patternLib.MARKER_SP03, SP03_MARKER);
   assert.match(patternLib.MARKER_SP06, SP06_MARKER);
+  assert.match(patternLib.MARKER_SP01, SP01_MARKER);
   const block = patternLib.buildInstructionalPatternPromptBlock();
   assertSp02Content(block);
   assertSp03Content(block);
   assertSp06Content(block);
+  assertSp01Content(block);
 });
 
-test("48-2: self-directed learner-page GAM receives SP-02, SP-03, and SP-06 markers", () => {
+test("48-2: self-directed learner-page GAM receives SP-02, SP-03, SP-06, and SP-01 markers", () => {
   const base = "Realise activity materials from upstream DLA.\n";
   const prompt = applyRuntimePrompt(
     base,
@@ -162,6 +196,7 @@ test("48-2: self-directed learner-page GAM receives SP-02, SP-03, and SP-06 mark
   assertSp02Content(prompt);
   assertSp03Content(prompt);
   assertSp06Content(prompt);
+  assertSp01Content(prompt);
   assert.ok(prompt.length > base.length);
 });
 
@@ -175,6 +210,7 @@ test("48-2: scope gate — facilitator brief excludes pattern markers on GAM", (
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
 test("48-2: non-GAM step Design Learning Activities excludes pattern markers", () => {
@@ -187,6 +223,7 @@ test("48-2: non-GAM step Design Learning Activities excludes pattern markers", (
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
 test("48-2: non-GAM step Design Page excludes pattern markers", () => {
@@ -199,6 +236,7 @@ test("48-2: non-GAM step Design Page excludes pattern markers", () => {
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
 test("48-2: pattern markers are not duplicated on second apply", () => {
@@ -219,6 +257,7 @@ test("48-2: pattern markers are not duplicated on second apply", () => {
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
   assert.equal((twice.match(SP06_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP01_MARKER) || []).length, 1);
 });
 
 test("48-2: lib apply helper does not duplicate markers", () => {
@@ -227,6 +266,7 @@ test("48-2: lib apply helper does not duplicate markers", () => {
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
   assert.equal((twice.match(SP06_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP01_MARKER) || []).length, 1);
 });
 
 test("48-2: resolveInstructionalPatternPromptLib exposes apply helper", () => {
@@ -512,4 +552,66 @@ test("48-7: lib apply helper appends SP-05 without duplicating marker", () => {
   assert.match(once, /INSTRUCTIONAL-PATTERN-SP-05 \(auto-applied\)/i);
   const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
   assert.equal((twice.match(/INSTRUCTIONAL-PATTERN-SP-05 \(auto-applied\)/gi) || []).length, 1);
+});
+
+test("49-2: GAM cognition contract excludes text materials (D-49-01)", () => {
+  const contract = resolveCognitionContract({ goal: PEER_GOAL, selectedDomains: ["learning-design"] });
+  assert.ok(contract);
+  const block = api.buildPedagogicCognitionContractPromptBlock("gam", contract);
+  assert.match(block, /non-text activity material block/i);
+  assert.match(block, /Material: \.\.\. \(text\) bodies are exposition-only/i);
+  assert.match(block, /do NOT append Cognition cues sections or orientation metadata inside text Content/i);
+});
+
+test("49-2: SP-01 block requires connective exposition MUST bundle", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /every text body MUST provide substantive connective exposition/i);
+  assert.match(block, /at least two distinct ideas/i);
+  assert.match(block, /clearly distinct from assigning the learner deliverable/i);
+  assert.match(block, /teach and explain for the learner/i);
+});
+
+test("49-2: SP-01 forbids cognition-cue appendages (FM-07)", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /MUST NOT append Cognition cues sections, orientation metadata/i);
+  assert.match(block, /instructional FAIL \(FM-07\)/i);
+  assert.match(block, /FORBIDDEN: appended Cognition cues: block or orientation metadata inside text Content — FM-07/i);
+  assert.doesNotMatch(block, /FM-08/i);
+});
+
+test("49-2: SP-01 GOOD shape example shows Marx M1-style progression and example", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /relational language/i);
+  assert.match(block, /intellectual progression/i);
+  assert.match(block, /\*\*Example:\*\* Brief applied illustration/i);
+  assert.match(block, /do not pre-answer the learner's independent task/i);
+});
+
+test("49-2: SP-01 retains MP-1 ownership constraint", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /Do not supply a completed learner response or pre-written deliverable/i);
+  assert.match(block, /teach and frame only \(MP-1\)/i);
+});
+
+test("49-2: SP-02 through SP-06 blocks unchanged by Slice 49-2 refinement", () => {
+  const sp02 = patternLib.buildSp02PromptBlock();
+  const sp03 = patternLib.buildSp03PromptBlock();
+  const sp04 = patternLib.buildSp04PromptBlock();
+  const sp05 = patternLib.buildSp05PromptBlock();
+  const sp06 = patternLib.buildSp06PromptBlock();
+  assert.match(sp02, /instructional FAIL \(FM-04\)/i);
+  assert.match(sp03, /instructional FAIL \(FM-02\)/i);
+  assert.match(sp04, /instructional FAIL \(FM-10\)/i);
+  assert.match(sp05, /instructional FAIL \(FM-09\)/i);
+  assert.match(sp06, /instructional FAIL \(FM-05\)/i);
+  assert.doesNotMatch(sp02, /FM-07/i);
+  assert.doesNotMatch(sp03, /TEXT-SP-01/i);
+});
+
+test("49-2: lib apply helper appends SP-01 without duplicating marker", () => {
+  const once = patternLib.applyInstructionalPatternPromptBlockToDraft("Draft.\n", {});
+  assert.match(once, SP01_MARKER);
+  const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
+  assert.equal((twice.match(SP01_MARKER) || []).length, 1);
 });

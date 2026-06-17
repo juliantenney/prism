@@ -6996,13 +6996,16 @@
       );
     } else if (stageKey === "gam") {
       lines.push(
-        "- For each activity material block, add a learner-facing Cognition cues section (never use Facilitator use, Teacher notes, or similar headings):"
+        "- For each non-text activity material block (all Material types except Material: ... (text)), add a learner-facing Cognition cues section (never use Facilitator use, Teacher notes, or similar headings):"
       );
       (requirements.gamSections || []).forEach(function (label) {
         lines.push("  - " + label + ": <usable learner-facing text>");
       });
       lines.push(
         "- Ground each subsection in matching cognition fields from learning_activities when present."
+      );
+      lines.push(
+        "- Material: ... (text) bodies are exposition-only — do NOT append Cognition cues sections or orientation metadata inside text Content."
       );
     }
     return lines.join("\n");

@@ -114,10 +114,15 @@ function assertSp03Content(prompt) {
   assert.match(prompt, SP03_MARKER);
   assert.match(prompt, /SP-03 \/ TP-SP-01 capstone transfer prompt/i);
   assert.match(prompt, /transfer_prompt/i);
-  assert.match(prompt, /learner-context selection/i);
-  assert.match(prompt, /operational completion criterion/i);
-  assert.match(prompt, /FM-02/i);
-  assert.match(prompt, /FM-03/i);
+  assert.match(prompt, /MUST include learner-context selection/i);
+  assert.match(prompt, /MUST include an operational completion criterion/i);
+  assert.match(prompt, /at least three distinct application cues/i);
+  assert.match(prompt, /MUST explicitly name or link to session criteria/i);
+  assert.match(prompt, /instructional FAIL \(FM-02\)/i);
+  assert.match(prompt, /instructional FAIL \(FM-03\)/i);
+  assert.match(prompt, /GOOD shape example/i);
+  assert.match(prompt, /FORBIDDEN: one-sentence transfer prompt/i);
+  assert.match(prompt, /MP-1/i);
 }
 
 function assertSp06Content(prompt) {
@@ -283,12 +288,10 @@ test("48-3: SP-02 retains MP-1 ownership constraints", () => {
   assert.match(block, /learner owns evaluative conclusions \(MP-1\)/i);
 });
 
-test("48-3: SP-03 block unchanged by Slice 3 refinement", () => {
+test("48-3: SP-02 block unchanged by Slice 3 scope — SP-03 not mixed with SP-02 markers", () => {
   const sp03 = patternLib.buildSp03PromptBlock();
   assert.match(sp03, /SP-03 \/ TP-SP-01 capstone transfer prompt/i);
-  assert.match(sp03, /learner-context selection/i);
   assert.doesNotMatch(sp03, /exactly one partial exemplar row/i);
-  assert.doesNotMatch(sp03, /GOOD shape example/i);
   assert.doesNotMatch(sp03, /all-empty decision_table/i);
 });
 
@@ -322,13 +325,62 @@ test("48-4: SP-06 retains MP-1 and MP-2 ownership constraints", () => {
   assert.match(block, /scaffolding only \(MP-1\)/i);
 });
 
-test("48-4: SP-02 and SP-03 blocks unchanged by Slice 4 refinement", () => {
+test("48-4: SP-02 and SP-06 blocks unchanged by Slice 4 refinement", () => {
   const sp02 = patternLib.buildSp02PromptBlock();
-  const sp03 = patternLib.buildSp03PromptBlock();
+  const sp06 = patternLib.buildSp06PromptBlock();
   assert.match(sp02, /exactly one partial exemplar row/i);
   assert.match(sp02, /instructional FAIL \(FM-04\)/i);
-  assert.match(sp03, /learner-context selection/i);
+  assert.match(sp06, /parallel-task bridge/i);
   assert.doesNotMatch(sp02, /FM-05/i);
-  assert.doesNotMatch(sp03, /parallel-task bridge/i);
-  assert.doesNotMatch(sp03, /WE-SP-01/i);
+  assert.doesNotMatch(sp06, /FM-04/i);
+});
+
+test("48-5: SP-03 block requires MUST bundle for transfer_prompt", () => {
+  const block = patternLib.buildSp03PromptBlock();
+  assert.match(block, /every transfer_prompt body MUST provide substantive learner-owned transfer scaffolding/i);
+  assert.match(block, /MUST include learner-context selection/i);
+  assert.match(block, /MUST include an operational completion criterion/i);
+  assert.match(block, /at least three distinct application cues/i);
+  assert.match(block, /MUST explicitly name or link to session criteria/i);
+});
+
+test("48-5: SP-03 defines FM-02 and FM-03 instructional fails", () => {
+  const block = patternLib.buildSp03PromptBlock();
+  assert.match(block, /too thin to guide production.*instructional FAIL \(FM-02\).*do not emit/i);
+  assert.match(
+    block,
+    /generic third-person application or claim correction without learner-owned context choice.*instructional FAIL \(FM-03\).*do not emit/i
+  );
+});
+
+test("48-5: SP-03 GOOD shape example shows context, cues, and criteria linkage", () => {
+  const block = patternLib.buildSp03PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /Choose a \[context you know\]/i);
+  assert.match(block, /Apply \[core concept\] to your chosen context/i);
+  assert.match(block, /named session criterion/i);
+  assert.match(block, /State what transfers and what does not/i);
+});
+
+test("48-5: SP-03 FORBIDDEN floors name thin and third-person shapes", () => {
+  const block = patternLib.buildSp03PromptBlock();
+  assert.match(block, /FORBIDDEN: one-sentence transfer prompt — FM-02/i);
+  assert.match(block, /FORBIDDEN: generic "apply this to a real-world case"/i);
+  assert.match(block, /FORBIDDEN: third-person claim correction with no own-context choice — FM-03/i);
+});
+
+test("48-5: SP-03 retains MP-1 ownership constraint", () => {
+  const block = patternLib.buildSp03PromptBlock();
+  assert.match(block, /Do not supply a pre-written learner transfer response/i);
+  assert.match(block, /assign production to the learner \(MP-1\)/i);
+});
+
+test("48-5: SP-02 and SP-06 blocks unchanged by Slice 5 refinement", () => {
+  const sp02 = patternLib.buildSp02PromptBlock();
+  const sp06 = patternLib.buildSp06PromptBlock();
+  assert.match(sp02, /instructional FAIL \(FM-04\)/i);
+  assert.match(sp06, /instructional FAIL \(FM-05\)/i);
+  assert.doesNotMatch(sp02, /FM-02/i);
+  assert.doesNotMatch(sp06, /transfer_prompt/i);
+  assert.doesNotMatch(sp06, /FM-03/i);
 });

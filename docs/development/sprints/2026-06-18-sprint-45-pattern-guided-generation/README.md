@@ -1,6 +1,6 @@
 # Sprint 45 — Pattern-Guided Generation
 
-**Status:** Proposed — **not yet started** (not approved)  
+**Status:** Closed historical sprint  
 **Folder:** `docs/development/sprints/2026-06-18-sprint-45-pattern-guided-generation/`  
 **Entry point for fresh chats:** [`context-pack/06-fresh-chat-bootstrap.md`](context-pack/06-fresh-chat-bootstrap.md) (+ full [`context-pack/`](context-pack/))  
 **Short handover:** [`sprint-45-chat-handover-pack.md`](sprint-45-chat-handover-pack.md)  
@@ -10,11 +10,11 @@
 
 ## Sprint purpose
 
-Sprint 45 would test whether **evidence-backed instructional patterns** from Sprint 44 can **influence GAM generation quality** — measured by 44-2 contracts and pattern detection signals — **without** reopening educational architecture, redesigning contracts, or treating patterns as unvalidated prompt dumps.
+Sprint 45 tested whether **evidence-backed instructional patterns** from Sprint 44 can **influence GAM generation quality** — measured by 44-2 contracts and pattern detection signals — **without** reopening educational architecture, redesigning contracts, or treating patterns as unvalidated prompt dumps.
 
-Sprint 44 made instructional quality observable, measurable, and reusable. Sprint 45 would ask whether that reusability changes what the pipeline produces.
+Sprint 44 made instructional quality observable, measurable, and reusable. Sprint 45 executed that next-step question in bounded scope and is now closed.
 
-**This sprint is a proposal.** See [`../2026-06-15-sprint-44/sprint-45-proposal.md`](../2026-06-15-sprint-44/sprint-45-proposal.md). Work should not begin until explicitly approved.
+Historical proposal source: [`../2026-06-15-sprint-44/sprint-45-proposal.md`](../2026-06-15-sprint-44/sprint-45-proposal.md).
 
 ---
 
@@ -45,18 +45,18 @@ Sprint 45 does not duplicate Sprint 44 artefacts. Patterns, contracts, and bench
 
 ---
 
-## Proposed slices
+## Slice outcomes
 
 | Slice | Title | Status |
 | ----- | ----- | ------ |
-| **45-1** | Pattern Injection Experiment | Proposed |
-| **45-2** | Pattern-Aware Evaluation | Proposed |
-| **45-3** | Regression Against Benchmark Corpus | Proposed |
-| **45-4** | Material-Level Repair Strategy | Proposed |
+| **45-1** | Pattern Injection Experiment | Complete |
+| **45-2** | Pattern-Aware Evaluation | Complete (I5 closed) |
+| **45-3** | Regression Against Benchmark Corpus | Complete (NTX blocker closure; effective standing Proceed) |
+| **45-4** | Material-Level Repair Strategy | Deferred / Not Executed |
 
 Details: [`sprint-45-slice-index.md`](sprint-45-slice-index.md)
 
-**Recommended first slice (if approved):** 45-1 using SP-02 (`decision_table`) and SP-03 (`transfer_prompt`).
+Closure summary: [`SPRINT-45-CLOSURE-SUMMARY.md`](SPRINT-45-CLOSURE-SUMMARY.md)
 
 ---
 
@@ -72,6 +72,9 @@ Details: [`sprint-45-slice-index.md`](sprint-45-slice-index.md)
 
 ---
 
-## Approval
+## Closure Governance References
 
-Sprint 45 requires **explicit approval** before implementation or experimentation begins. Until then, treat all slices as proposed and all workstreams as design-phase only.
+- `45-2-recommendation-i5-closure-addendum.md`
+- `45-3-recommendation-ntx-addendum.md`
+- `SPRINT-45-2-EXECUTION-STATUS.md`
+- `SPRINT-45-3-EXECUTION-STATUS.md`

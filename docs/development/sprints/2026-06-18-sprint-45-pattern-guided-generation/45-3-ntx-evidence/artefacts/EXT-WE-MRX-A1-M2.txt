@@ -1,0 +1,19 @@
+Worked example: analysing a workplace scenario with Marxist concepts
+
+Scenario:
+A delivery company introduces route-tracking software that increases the number of deliveries each worker completes per shift, but wages remain unchanged.
+
+Step 1 - Identify class position
+Workers sell labor for wages and do not own the delivery platform or logistics infrastructure. The company owners control production resources and strategic decisions.
+
+Step 2 - Trace value creation and surplus
+Because each worker now completes more deliveries per shift, total value created per worker rises. If wages stay the same, the gap between produced value and paid wage increases.
+
+Step 3 - Interpret exploitation in this case
+In Marxist terms, exploitation appears in the enlarged surplus retained by owners. Productivity gains are captured as profit unless redistributed through higher pay or reduced labor intensity.
+
+Step 4 - Connect to broader dynamics
+This process can intensify class tension: workers may demand compensation for higher output, while owners may prioritize accumulation and competitive advantage.
+
+Conclusion:
+The scenario shows how technological efficiency can increase surplus extraction under capitalism, reinforcing class conflict around wages, control, and distribution.

@@ -1,13 +1,13 @@
-# 45.2 Recommendation Template
+# 45.2 Recommendation
 
 **Experiment:** 45-2 Pattern-Aware Evaluation Repeatability Study  
-**Document type:** Sprint recommendation — template only  
-**Status:** Not populated — awaiting Phase 5 completion  
+**Document type:** Sprint recommendation (Phase 5)  
+**Status:** Final — route selected  
 **Authority:** [SPRINT-45-2-REPEATABILITY-EVALUATION-DESIGN.md](SPRINT-45-2-REPEATABILITY-EVALUATION-DESIGN.md) · [SPRINT-45-2-EXECUTION-PLAN.md](SPRINT-45-2-EXECUTION-PLAN.md) · [45-2-pattern-aware-evaluation-protocol.md](45-2-pattern-aware-evaluation-protocol.md) · [45-2-evidence-workbook.md](45-2-evidence-workbook.md) · [45-2-repeatability-agreement-report.md](45-2-repeatability-agreement-report.md)
 
-**Non-goals:** Findings · analysis · recommendation selection · design changes · protocol changes · scope changes
+**Non-goals:** Redesign of protocol/design/scope.
 
-**Prerequisite:** Phase 4 agreement analysis complete; [`45-2-repeatability-agreement-report.md`](45-2-repeatability-agreement-report.md) populated.
+**Prerequisite:** Phase 4 complete and agreement report populated.
 
 ---
 
@@ -16,50 +16,50 @@
 | Field | Value |
 | ----- | ----- |
 | **Experiment ID** | 45-2 |
-| **Protocol version** | |
+| **Protocol version** | 1.0 (frozen) |
 | **Protocol file** | `45-2-pattern-aware-evaluation-protocol.md` |
 | **Workbook file** | `45-2-evidence-workbook.md` |
 | **Agreement report file** | `45-2-repeatability-agreement-report.md` |
 | **E0 reference** | `45-1-evidence-workbook.md` |
 | **E0 evaluator code** | E0 |
-| **E1 evaluator code** | |
-| **E2 adjudicator code** | |
-| **E1b evaluator code** | |
-| **Evaluation completed** | |
-| **Recommendation drafted** | |
+| **E1 evaluator code** | E1-45-2-01 |
+| **E2 adjudicator code** | n/a |
+| **E1b evaluator code** | n/a |
+| **Evaluation completed** | yes |
+| **Recommendation drafted** | 2026-06-16 |
 
 ### Artefact counts
 
 | Metric | Target | Actual |
 | ------ | ------ | ------ |
-| **Bodies evaluated (E1)** | 14 | |
-| **45.1 paired bodies** | 12 | |
-| **Holdout bodies** | 2 | |
-| **Pairs classified (E1)** | 6 | |
-| **Boundary exercises** | 2 (B1, B2) | |
+| **Bodies evaluated (E1)** | 14 | 14 |
+| **45.1 paired bodies** | 12 | 12 |
+| **Holdout bodies** | 2 | 2 |
+| **Pairs classified (E1)** | 6 | 6 |
+| **Boundary exercises** | 2 (B1, B2) | 2 |
 
 ### Completion status
 
 | Component | Complete |
 | --------- | -------- |
-| Protocol frozen (S1) | [ ] |
-| E1 workbook — 14/14 bodies | [ ] |
-| E1 workbook — 6/6 pairs | [ ] |
-| Holdouts HO-DT-01, HO-TP-01 | [ ] |
-| Boundary annex B1 + B2 | [ ] |
-| Blind gate observed | [ ] |
-| Agreement report complete | [ ] |
-| Sprint 45.2 execution complete | [ ] |
+| Protocol frozen (S1) | [x] |
+| E1 workbook — 14/14 bodies | [x] |
+| E1 workbook — 6/6 pairs | [x] |
+| Holdouts HO-DT-01, HO-TP-01 | [x] |
+| Boundary annex B1 + B2 | [x] |
+| Blind gate observed | [x] |
+| Agreement report complete | [x] |
+| Sprint 45.2 execution complete | [x] |
 
 ### Aggregate outcomes (placeholder)
 
 | Metric | Value |
 | ------ | ----- |
-| **Pair concordance (E0 vs E1)** | /6 |
-| **Verdict concordance (paired bodies)** | /12 |
-| **Classification inversions (Improvement ↔ No Change)** | |
-| **Holdout evaluation status** | [ ] complete  [ ] partial  [ ] not done |
-| **Boundary exercise status** | [ ] B1 complete  [ ] B2 complete |
+| **Pair concordance (E0 vs E1)** | 5/6 |
+| **Verdict concordance (paired bodies)** | 10/12 |
+| **Classification inversions (Improvement ↔ No Change)** | 1 |
+| **Holdout evaluation status** | [x] complete  [ ] partial  [ ] not done |
+| **Boundary exercise status** | [x] B1 complete  [x] B2 complete |
 
 ---
 
@@ -68,15 +68,17 @@
 *Summary of whether the Sprint 45.1 pattern-aware evaluation method demonstrated repeatability under independent application.*
 
 ```text
-
+Independent E1 re-application reproduced high concordance with E0 (pair 5/6; verdict 10/12),
+passed verdict-first and disqualifier-path integrity checks, and met S1-S9 with no F-trigger.
+However, inconclusive criterion I5 is triggered due to lack of an explicit superficial-match-positive case.
 ```
 
 ### Research hypothesis disposition
 
 | Hypothesis | Disposition |
 | ---------- | ----------- |
-| **H₁ (repeatability supported)** | [ ] supported  [ ] not supported  [ ] inconclusive |
-| **H₀ (repeatability rejected)** | [ ] rejected  [ ] accepted  [ ] inconclusive |
+| **H₁ (repeatability supported)** | [x] supported  [ ] not supported  [ ] inconclusive |
+| **H₀ (repeatability rejected)** | [x] rejected  [ ] accepted  [ ] inconclusive |
 
 ---
 
@@ -84,22 +86,24 @@
 
 | Metric | Value | Threshold |
 | ------ | ----- | --------- |
-| **Exact verdict matches** | /12 | S4: ≥10/12 |
-| **Verdict mismatches** | | |
-| **Incompatible verdicts without resolvable boundary** | | F2: ≥3 |
+| **Exact verdict matches** | 10/12 | S4: ≥10/12 |
+| **Verdict mismatches** | 2/12 | |
+| **Incompatible verdicts without resolvable boundary** | 1/12 | F2: ≥3 |
 
 ### Summary
 
 ```text
-
+Verdict concordance meets threshold (10/12). Two mismatches are recorded:
+one unresolved non-boundary interpretation split (BL-TP-MRX-A4) and one boundary-driven split (BL-TP-PS-A6).
+F2 is not triggered because incompatible unresolved mismatch count remains below threshold.
 ```
 
 ### Notable verdict disagreements
 
 | Artefact ID | E0 verdict | E1 verdict | Resolved | Notes |
 | ----------- | ---------- | ---------- | -------- | ----- |
-| | | | [ ] yes  [ ] no | |
-| | | | [ ] yes  [ ] no | |
+| BL-TP-MRX-A4 | Strong | Minimum | [ ] yes  [x] no | Primary non-boundary L1 interpretation disagreement |
+| BL-TP-PS-A6 | Failed | Minimum | [x] yes  [ ] no | Boundary-driven structural split under B1 interpretation difference |
 
 ---
 
@@ -107,25 +111,26 @@
 
 | Metric | Value | Threshold |
 | ------ | ----- | --------- |
-| **Pair classification matches** | /6 | S3: ≥5/6 |
-| **Pair classification mismatches** | | F1: ≤3/6 |
-| **Classification inversions** | | F7: ≥2 with ≤3/6 |
+| **Pair classification matches** | 5/6 | S3: ≥5/6 |
+| **Pair classification mismatches** | 1/6 | F1: ≤3/6 |
+| **Classification inversions** | 1 | F7: ≥2 with ≤3/6 |
 
 ### Per-pair summary
 
 | Pair ID | E0 classification | E1 classification | Agreement | Notes |
 | ------- | ------------------ | ----------------- | ----------- | ----- |
-| DT-MRX-A4 | | | [ ] match  [ ] mismatch | |
-| DT-PS-A4 | | | [ ] match  [ ] mismatch | |
-| DT-PS-A6 | | | [ ] match  [ ] mismatch | |
-| TP-MRX-A4 | | | [ ] match  [ ] mismatch | |
-| TP-PS-A4 | | | [ ] match  [ ] mismatch | |
-| TP-PS-A6 | | | [ ] match  [ ] mismatch | |
+| DT-MRX-A4 | No Change | No Change | [x] match  [ ] mismatch | |
+| DT-PS-A4 | Improvement | Improvement | [x] match  [ ] mismatch | |
+| DT-PS-A6 | Improvement | Improvement | [x] match  [ ] mismatch | |
+| TP-MRX-A4 | No Change | Improvement | [ ] match  [x] mismatch | Derivative from BL-TP-MRX-A4 baseline verdict split |
+| TP-PS-A4 | Improvement | Improvement | [x] match  [ ] mismatch | |
+| TP-PS-A6 | Improvement | Improvement | [x] match  [ ] mismatch | |
 
 ### Summary
 
 ```text
-
+Pair concordance meets threshold at 5/6.
+Single discordant pair (TP-MRX-A4) is attributed to upstream BL-TP-MRX-A4 L1 disagreement.
 ```
 
 ---
@@ -136,11 +141,12 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Agreement count** | /12 |
-| **Material mismatches** | |
+| **Agreement count** | 10/12 |
+| **Material mismatches** | BL-TP-MRX-A4; BL-TP-PS-A6 |
 
 ```text
-
+L1 remains the primary source of substantive disagreement.
+One mismatch is unresolved non-boundary (BL-TP-MRX-A4); one is boundary-driven (BL-TP-PS-A6).
 ```
 
 ---
@@ -149,13 +155,14 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Signal profile compatible** | /12 |
-| **Superficial-match flag agreement** | /12 |
-| **S5 verdict-first check** | [ ] pass  [ ] fail |
-| **Signal-only Improvement pairs (E1)** | |
+| **Signal profile compatible** | 10/12 |
+| **Superficial-match flag agreement** | 12/12 |
+| **S5 verdict-first check** | [x] pass  [ ] fail |
+| **Signal-only Improvement pairs (E1)** | 0 |
 
 ```text
-
+Signal-level mismatches are derivative and do not override contract verdict authority.
+No signal-only Improvement classification detected.
 ```
 
 ---
@@ -164,11 +171,12 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Target FM agreement** | /12 |
-| **Capture channel separation maintained** | [ ] yes  [ ] no |
+| **Target FM agreement** | 11/12 |
+| **Capture channel separation maintained** | [x] yes  [ ] no |
 
 ```text
-
+Single FM mismatch (BL-TP-MRX-A4 FM-03) is derivative from baseline interpretation divergence.
+No evidence of FM-driven verdict override.
 ```
 
 ---
@@ -177,12 +185,13 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Ownership pass agreement** | /12 |
-| **Ownership regression agreement** | /12 |
-| **Operationalisable from protocol** | [ ] yes  [ ] no |
+| **Ownership pass agreement** | 12/12 |
+| **Ownership regression agreement** | 12/12 |
+| **Operationalisable from protocol** | [x] yes  [ ] no |
 
 ```text
-
+Ownership checks are complete and concordant across all paired bodies.
+No ownership failure/regression disqualified any Improvement outcome.
 ```
 
 ---
@@ -191,11 +200,12 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Mimicry suspect agreement** | /12 |
-| **Operationalisable from protocol** | [ ] yes  [ ] no |
+| **Mimicry suspect agreement** | 12/12 |
+| **Operationalisable from protocol** | [x] yes  [ ] no |
 
 ```text
-
+Mimicry suspect remains no across paired bodies for both evaluators.
+No anti-mimicry disqualifier triggered.
 ```
 
 ---
@@ -204,12 +214,13 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **B1 + B2 complete** | [ ] yes  [ ] no |
-| **Declaration compatibility** | [ ] compatible  [ ] incompatible |
-| **global_calibration_reopened** | [ ] no  [ ] yes |
+| **B1 + B2 complete** | [x] yes  [ ] no |
+| **Declaration compatibility** | [ ] compatible  [x] incompatible |
+| **global_calibration_reopened** | [x] no  [ ] yes |
 
 ```text
-
+Boundary process integrity is preserved despite B1 interpretation incompatibility.
+B1 incompatibility yields structurally expected tier divergence on BL-TP-PS-A6.
 ```
 
 ---
@@ -218,11 +229,11 @@
 
 | Metric | Value |
 | ------ | ----- |
-| **Pair classification agreement** | /6 |
-| **Convergent evidence reproducible** | [ ] yes  [ ] no  [ ] partial |
+| **Pair classification agreement** | 5/6 |
+| **Convergent evidence reproducible** | [ ] yes  [ ] no  [x] partial |
 
 ```text
-
+Convergent pair logic is largely reproducible with one derivative inversion (TP-MRX-A4).
 ```
 
 ---
@@ -233,15 +244,16 @@
 
 | Field | Value |
 | ----- | ----- |
-| **E0 declared interpretation** | |
-| **E1 declared interpretation** | |
-| **Agreement status** | [ ] compatible  [ ] incompatible |
-| **Declaration before verdict (E1)** | [ ] yes  [ ] no |
-| **Global calibration reopened** | [ ] no  [ ] yes |
-| **Impact on pair classification** | |
+| **E0 declared interpretation** | Inter-Rater conjunctive §5.8 minimum |
+| **E1 declared interpretation** | Pass 2 conjunctive §5.8 minimum |
+| **Agreement status** | [ ] compatible  [x] incompatible |
+| **Declaration before verdict (E1)** | [x] yes  [ ] no |
+| **Global calibration reopened** | [x] no  [ ] yes |
+| **Impact on pair classification** | No pair split; both classify TP-PS-A6 as Improvement |
 
 ```text
-
+Boundary incompatibility is explicit and structurally bounded.
+It changes BL tier interpretation but does not collapse pair-level convergence.
 ```
 
 ---
@@ -250,15 +262,16 @@
 
 | Field | Value |
 | ----- | ----- |
-| **E1 declared interpretation** | |
-| **Declaration before verdict** | [ ] yes  [ ] no |
-| **Global calibration reopened** | [ ] no  [ ] yes |
-| **E1 verdict under declaration** | |
-| **Frozen M22 records altered** | [ ] no  [ ] yes |
-| **Procedure compliant** | [ ] yes  [ ] no |
+| **E1 declared interpretation** | Pass 2 conjunctive §5.8 minimum |
+| **Declaration before verdict** | [x] yes  [ ] no |
+| **Global calibration reopened** | [x] no  [ ] yes |
+| **E1 verdict under declaration** | Minimum |
+| **Frozen M22 records altered** | [x] no  [ ] yes |
+| **Procedure compliant** | [x] yes  [ ] no |
 
 ```text
-
+B2 procedure executed as required before verdict on holdout.
+No procedural contamination or calibration reopening detected.
 ```
 
 ---
@@ -269,17 +282,17 @@
 
 | ID | Criterion | Threshold | Assessment | Evidence |
 | -- | --------- | --------- | ---------- | -------- |
-| **S1** | Protocol exists covering L1–L7 without 44-2/44-3 modification | Protocol file | [ ] met  [ ] not_met | |
-| **S2** | Independent application complete — 12 + 2 holdouts full stack | 14/14 | [ ] met  [ ] not_met | |
-| **S3** | Pair classification concordance | ≥5/6 | [ ] met  [ ] not_met | |
-| **S4** | Verdict concordance (paired bodies) | ≥10/12 | [ ] met  [ ] not_met | |
-| **S5** | No systematic signal override | 0 signal-only Improvement | [ ] met  [ ] not_met | |
-| **S6** | Ownership and anti-mimicry traceable on all 14 bodies | Complete fields | [ ] met  [ ] not_met | |
-| **S7** | Boundary exercise complete B1 + B2; no global reopening | Both touchpoints | [ ] met  [ ] not_met | |
-| **S8** | Holdouts evaluated | HO-DT-01 + HO-TP-01 | [ ] met  [ ] not_met | |
-| **S9** | Disagreements documented and resolvable | Utility sufficient | [ ] met  [ ] not_met | |
+| **S1** | Protocol exists covering L1–L7 without 44-2/44-3 modification | Protocol file | [x] met  [ ] not_met | Protocol file + traceability |
+| **S2** | Independent application complete — 12 + 2 holdouts full stack | 14/14 | [x] met  [ ] not_met | Coverage 14/14 |
+| **S3** | Pair classification concordance | ≥5/6 | [x] met  [ ] not_met | 5/6 |
+| **S4** | Verdict concordance (paired bodies) | ≥10/12 | [x] met  [ ] not_met | 10/12 |
+| **S5** | No systematic signal override | 0 signal-only Improvement | [x] met  [ ] not_met | S5 Pass; count 0 |
+| **S6** | Ownership and anti-mimicry traceable on all 14 bodies | Complete fields | [x] met  [ ] not_met | L4/L5 + disqualifier review pass |
+| **S7** | Boundary exercise complete B1 + B2; no global reopening | Both touchpoints | [x] met  [ ] not_met | B1/B2 complete; no global reopen |
+| **S8** | Holdouts evaluated | HO-DT-01 + HO-TP-01 | [x] met  [ ] not_met | Holdout sections complete |
+| **S9** | Disagreements documented and resolvable | Utility sufficient | [x] met  [ ] not_met | Phase 4.8 attribution finalised |
 
-**All mandatory success criteria met:** [ ] yes  [ ] no
+**All mandatory success criteria met:** [x] yes  [ ] no
 
 ---
 
@@ -289,20 +302,20 @@
 
 | ID | Condition | Threshold | Triggered | Evidence |
 | -- | --------- | --------- | --------- | -------- |
-| **F1** | Pair concordance ≤3/6 | ≤3/6 | [ ] yes  [ ] no | |
-| **F2** | ≥3 incompatible verdicts without resolvable boundary | ≥3 bodies | [ ] yes  [ ] no | |
-| **F3** | Systematic signal/verdict divergence | Per design | [ ] yes  [ ] no | |
-| **F4** | E1 Improvement where superficial-match should block | Per protocol | [ ] yes  [ ] no | |
-| **F5** | Ownership/anti-mimicry not operationalisable | Irreducible intuition | [ ] yes  [ ] no | |
-| **F6** | Disagreement exceeds utility | No resolution path | [ ] yes  [ ] no | |
-| **F7** | ≤3/6 concordance AND ≥2 Improvement ↔ No Change inversions | Combined | [ ] yes  [ ] no | |
+| **F1** | Pair concordance ≤3/6 | ≤3/6 | [ ] yes  [x] no | Pair concordance 5/6 |
+| **F2** | ≥3 incompatible verdicts without resolvable boundary | ≥3 bodies | [ ] yes  [x] no | Incompatible unresolved = 1 |
+| **F3** | Systematic signal/verdict divergence | Per design | [ ] yes  [x] no | S5 Pass, 0 signal-only Improvement |
+| **F4** | E1 Improvement where superficial-match should block | Per protocol | [ ] yes  [x] no | Phase 4.6 disqualifier pass |
+| **F5** | Ownership/anti-mimicry not operationalisable | Irreducible intuition | [ ] yes  [x] no | L4/L5 operationalisable |
+| **F6** | Disagreement exceeds utility | No resolution path | [ ] yes  [x] no | Phase 4.8 attribution complete |
+| **F7** | ≤3/6 concordance AND ≥2 Improvement ↔ No Change inversions | Combined | [ ] yes  [x] no | 5/6 and inversions=1 |
 
-**Any failure criterion triggered:** [ ] yes  [ ] no
+**Any failure criterion triggered:** [ ] yes  [x] no
 
 **Triggered failure IDs (if any):**
 
 ```text
-
+None.
 ```
 
 ---
@@ -311,20 +324,20 @@
 
 | ID | Condition | Applicable | Triggered | Notes |
 | -- | --------- | ---------- | --------- | ----- |
-| **I1** | Pair concordance 4/6 | | [ ] yes  [ ] no | |
-| **I2** | Verdict concordance 9/12 with S3 met | | [ ] yes  [ ] no | |
-| **I3** | Single pair discordance solely on boundary declaration | | [ ] yes  [ ] no | |
-| **I4** | Holdout evaluation incomplete | | [ ] yes  [ ] no | |
-| **I5** | No superficial-match case; all else met | | [ ] yes  [ ] no | |
-| **I6** | E1b disagrees with E1 on ≥3 bodies | | [ ] yes  [ ] no  [ ] n/a | |
-| **I7** | Procedural flaw — blind broken or protocol incomplete | | [ ] yes  [ ] no | |
+| **I1** | Pair concordance 4/6 | yes | [ ] yes  [x] no | Pair concordance is 5/6 |
+| **I2** | Verdict concordance 9/12 with S3 met | yes | [ ] yes  [x] no | Verdict concordance is 10/12 |
+| **I3** | Single pair discordance solely on boundary declaration | yes | [ ] yes  [x] no | Discordant pair is TP-MRX-A4 (non-boundary chain) |
+| **I4** | Holdout evaluation incomplete | yes | [ ] yes  [x] no | Holdouts complete |
+| **I5** | No superficial-match case; all else met | yes | [x] yes  [ ] no | Triggered per frozen definition |
+| **I6** | E1b disagrees with E1 on ≥3 bodies | no | [ ] yes  [ ] no  [x] n/a | E1b not used |
+| **I7** | Procedural flaw — blind broken or protocol incomplete | yes | [ ] yes  [x] no | Blind integrity maintained |
 
-**Inconclusive outcome:** [ ] yes  [ ] no
+**Inconclusive outcome:** [x] yes  [ ] no
 
 **Triggered inconclusive IDs (if any):**
 
 ```text
-
+I5
 ```
 
 ---
@@ -334,18 +347,23 @@
 *Findings that increase confidence the method is repeatable.*
 
 ```text
-
+Evidence supporting repeatability is strong within chartered scope:
+- S1-S9 are met
+- F1-F7 are not triggered
+- Concordance reaches threshold floors (pair 5/6, verdict 10/12)
+- S5 and disqualifier reviews pass
+- Disagreements are attributed and structurally bounded.
 ```
 
 | Finding | Present | Reference |
 | ------- | ------- | --------- |
-| Independent reviewers reach compatible verdicts on same bodies | [ ] yes  [ ] no | |
-| Re-scoring twelve bodies reproduces pair classifications | [ ] yes  [ ] no | |
-| Protocol application on holdout bodies yields consistent layer outcomes | [ ] yes  [ ] no | |
-| Boundary declaration precedent applied consistently | [ ] yes  [ ] no | |
-| Verdict-first ordering preserved under E1 use | [ ] yes  [ ] no | |
-| Convergent evidence threshold reproducible | [ ] yes  [ ] no | |
-| Evaluation utility sufficient for research gate | [ ] yes  [ ] no | |
+| Independent reviewers reach compatible verdicts on same bodies | [x] yes  [ ] no | Verdict concordance 10/12 |
+| Re-scoring twelve bodies reproduces pair classifications | [x] yes  [ ] no | Pair concordance 5/6 |
+| Protocol application on holdout bodies yields consistent layer outcomes | [x] yes  [ ] no | HO-DT-01 + HO-TP-01 complete |
+| Boundary declaration precedent applied consistently | [x] yes  [ ] no | B1/B2 declarations pre-verdict; no global reopen |
+| Verdict-first ordering preserved under E1 use | [x] yes  [ ] no | S5 Pass |
+| Convergent evidence threshold reproducible | [x] yes  [ ] no | S3/S4 met |
+| Evaluation utility sufficient for research gate | [x] yes  [ ] no | S9 met; F6 not triggered |
 
 ---
 
@@ -354,18 +372,21 @@
 *Findings that weaken confidence.*
 
 ```text
-
+Evidence against full closure is limited but material:
+- one unresolved non-boundary primary L1 disagreement (BL-TP-MRX-A4),
+- one derivative pair inversion (TP-MRX-A4),
+- and an inconclusive-band trigger (I5) due to missing explicit superficial-match-positive case.
 ```
 
 | Finding | Present | Reference |
 | ------- | ------- | --------- |
-| Incompatible primary verdicts on same bodies | [ ] yes  [ ] no | |
-| Materially different pair classifications on re-score | [ ] yes  [ ] no | |
-| Systematic signal/verdict divergence | [ ] yes  [ ] no | |
-| Cosmetic shape passes as Improvement | [ ] yes  [ ] no | |
-| Ownership/mimicry not operationalisable | [ ] yes  [ ] no | |
-| Evaluator disagreement exceeds utility | [ ] yes  [ ] no | |
-| Boundary declarations multiply without convergence | [ ] yes  [ ] no | |
+| Incompatible primary verdicts on same bodies | [x] yes  [ ] no | BL-TP-MRX-A4 |
+| Materially different pair classifications on re-score | [x] yes  [ ] no | TP-MRX-A4 |
+| Systematic signal/verdict divergence | [ ] yes  [x] no | S5 pass |
+| Cosmetic shape passes as Improvement | [ ] yes  [x] no | Phase 4.6 pass |
+| Ownership/mimicry not operationalisable | [ ] yes  [x] no | L4/L5 consistent |
+| Evaluator disagreement exceeds utility | [ ] yes  [x] no | F6 not triggered |
+| Boundary declarations multiply without convergence | [ ] yes  [x] no | Single B1 incompatibility, bounded |
 
 ---
 
@@ -374,15 +395,17 @@
 *Known limitations explicitly recorded — required for proceed gate.*
 
 ```text
-
+Limitations are known and bounded.
+The key unresolved limitation is I5: no explicit superficial-match-positive case in paired comparison,
+so disqualifier-path stress coverage remains incomplete despite passing checks on available cases.
 ```
 
 | Limitation | Applies | Acceptable for proceed |
 | ---------- | ------- | ---------------------- |
-| Disqualifier paths unstress-tested (I5) | [ ] yes  [ ] no | [ ] yes  [ ] no |
-| Frozen corpus holdout vs newly generated bodies | [ ] yes  [ ] no | [ ] yes  [ ] no |
-| Single independent evaluator (E0 vs E1 only) | [ ] yes  [ ] no | [ ] yes  [ ] no |
-| Perfect concordance not achieved | [ ] yes  [ ] no | [ ] yes  [ ] no |
+| Disqualifier paths unstress-tested (I5) | [x] yes  [ ] no | [ ] yes  [x] no |
+| Frozen corpus holdout vs newly generated bodies | [x] yes  [ ] no | [x] yes  [ ] no |
+| Single independent evaluator (E0 vs E1 only) | [x] yes  [ ] no | [x] yes  [ ] no |
+| Perfect concordance not achieved | [x] yes  [ ] no | [x] yes  [ ] no |
 | Other | | |
 
 ---
@@ -394,7 +417,7 @@
 | Route | Selected |
 | ----- | -------- |
 | **Proceed to 45.3** | [ ] |
-| **Repeat 45.2** | [ ] |
+| **Repeat 45.2** | [x] |
 | **Stop and document negative result** | [ ] |
 
 ### Repeat scope (if Repeat selected)
@@ -406,20 +429,23 @@
 | Holdout component only (I4) | [ ] |
 | Boundary / Layer 6 refinement (I3) | [ ] |
 | Adjudication / additional rater (I6) | [ ] |
-| Other — specify | [ ] |
+| Other — specify | [x] |
 
 ```text
-
+Targeted repeatability extension focused on I5 closure:
+introduce one explicit superficial-match-positive challenge case within SP-02/SP-03 scope,
+run blind E1 scoring against frozen protocol,
+and verify disqualifier-path behavior under positive superficial-match conditions.
 ```
 
 ### Gate statement
 
 | Question | Answer |
 | -------- | ------ |
-| **Evaluation standing achieved for SP-02/SP-03 scope?** | [ ] yes  [ ] no  [ ] partial |
-| **Pattern-aware evaluation repeatable enough to gate further research?** | [ ] yes  [ ] no  [ ] inconclusive |
-| **45.3 corpus regression authorised by this outcome?** | [ ] yes  [ ] no  [ ] conditional |
-| **Pattern injection expansion beyond SP-02/SP-03 authorised?** | [ ] no — not by 45.2  [ ] n/a |
+| **Evaluation standing achieved for SP-02/SP-03 scope?** | [ ] yes  [ ] no  [x] partial |
+| **Pattern-aware evaluation repeatable enough to gate further research?** | [ ] yes  [ ] no  [x] inconclusive |
+| **45.3 corpus regression authorised by this outcome?** | [ ] yes  [x] no  [ ] conditional |
+| **Pattern injection expansion beyond SP-02/SP-03 authorised?** | [x] no — not by 45.2  [ ] n/a |
 
 ---
 
@@ -428,7 +454,11 @@
 *Justification for selected route — cite S/F/I assessments and agreement report.*
 
 ```text
-
+Routing is Repeat 45.2 because the approved routing logic treats any triggered inconclusive criterion (I1-I7) as repeat input.
+Although S1-S9 are met and no failure criteria are triggered, I5 remains active and is directly tied to coverage completeness of superficial-match stress behavior.
+Given disagreement topology is bounded (one unresolved non-boundary primary split and one derivative pair inversion) and not failure-level,
+the narrowest compliant action is a targeted repeat component for I5 closure rather than full stop.
+Proceed is therefore not selected at this phase gate.
 ```
 
 ### Routing logic reference
@@ -448,7 +478,7 @@
 ### If Proceed to 45.3
 
 ```text
-
+Not selected.
 ```
 
 | Impact | Notes |
@@ -460,18 +490,19 @@
 ### If Repeat 45.2
 
 ```text
-
+Selected route.
+Run a scoped repeatability extension to close I5 uncertainty with an explicit superficial-match-positive case and re-check disqualifier behavior.
 ```
 
 | Impact | Notes |
 | ------ | ----- |
-| **Repeatability question** | Remains open |
-| **Blocked work** | 45.3; injection expansion pending |
+| **Repeatability question** | Remains partially open (I5-specific) |
+| **Blocked work** | 45.3 and expansion remain gated pending I5 closure |
 
 ### If Stop
 
 ```text
-
+Not selected.
 ```
 
 | Impact | Notes |
@@ -492,7 +523,9 @@
 ## Reviewer Notes
 
 ```text
-
+Phase 5 recommendation completed using frozen routing framework.
+Route selected: Repeat 45.2 (targeted scope) due to I5 trigger.
+No protocol/design/scope modifications proposed.
 ```
 
 ---
@@ -503,47 +536,47 @@
 
 ### Input artefacts
 
-- [ ] `45-2-pattern-aware-evaluation-protocol.md` — frozen version recorded
-- [ ] `45-2-evidence-workbook.md` — 14/14 bodies, 6/6 pairs complete
-- [ ] `45-2-boundary-declaration-annex.md` — B1 + B2 complete
-- [ ] `45-2-repeatability-agreement-report.md` — fully populated
-- [ ] `45-2-evidence/experiment-metadata.md` — independence and blind attestation
-- [ ] `45-2-evidence/artefact-register.md` — holdout sources recorded
+- [x] `45-2-pattern-aware-evaluation-protocol.md` — frozen version recorded
+- [x] `45-2-evidence-workbook.md` — 14/14 bodies, 6/6 pairs complete
+- [x] `45-2-boundary-declaration-annex.md` — B1 + B2 complete
+- [x] `45-2-repeatability-agreement-report.md` — fully populated
+- [x] `45-2-evidence/experiment-metadata.md` — independence and blind attestation
+- [x] `45-2-evidence/artefact-register.md` — holdout sources recorded
 
 ### Review completeness
 
-- [ ] § Experiment Summary — counts verified
-- [ ] § Repeatability Findings — drafted
-- [ ] § Verdict Agreement Review — complete
-- [ ] § Pair Classification Review — complete
-- [ ] § Layer Agreement Review — L1–L7 complete
-- [ ] § Boundary Review — B1 + B2 complete
-- [ ] § Success Criteria Review — S1–S9 each assessed
-- [ ] § Failure Criteria Review — F1–F7 each assessed
-- [ ] § Inconclusive Criteria Review — I1–I7 each assessed
-- [ ] § Evidence For / Against Repeatability — recorded
-- [ ] § Limitations — documented
+- [x] § Experiment Summary — counts verified
+- [x] § Repeatability Findings — drafted
+- [x] § Verdict Agreement Review — complete
+- [x] § Pair Classification Review — complete
+- [x] § Layer Agreement Review — L1–L7 complete
+- [x] § Boundary Review — B1 + B2 complete
+- [x] § Success Criteria Review — S1–S9 each assessed
+- [x] § Failure Criteria Review — F1–F7 each assessed
+- [x] § Inconclusive Criteria Review — I1–I7 each assessed
+- [x] § Evidence For / Against Repeatability — recorded
+- [x] § Limitations — documented
 
 ### Decision integrity
 
-- [ ] Exactly one recommendation route selected
-- [ ] Rationale cites agreement report and S/F/I assessments
-- [ ] Repeat scope specified if Repeat selected
-- [ ] Gate statement completed
-- [ ] Stop outcome does not claim invalidation of 45.1 in scope
-- [ ] No Sprint 44 or 45.1 authority reopened
+- [x] Exactly one recommendation route selected
+- [x] Rationale cites agreement report and S/F/I assessments
+- [x] Repeat scope specified if Repeat selected
+- [x] Gate statement completed
+- [x] Stop outcome does not claim invalidation of 45.1 in scope
+- [x] No Sprint 44 or 45.1 authority reopened
 
 ### Cross-document consistency
 
-- [ ] Recommendation consistent with agreement report
-- [ ] Recommendation consistent with workbook agreement summary
-- [ ] Threshold counts match agreement report aggregates
+- [x] Recommendation consistent with agreement report
+- [x] Recommendation consistent with workbook agreement summary
+- [x] Threshold counts match agreement report aggregates
 
 ### Sprint closure
 
-- [ ] Recommendation finalised
-- [ ] Sprint 45.2 marked complete
-- [ ] Next action identified (45.3 planning / 45.2 repeat / frontier review)
+- [x] Recommendation finalised
+- [x] Sprint 45.2 marked complete
+- [x] Next action identified (45.2 targeted repeat for I5 closure)
 
 ---
 

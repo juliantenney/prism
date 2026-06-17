@@ -2,7 +2,7 @@
 
 **Experiment:** 45-2 Pattern-Aware Evaluation Repeatability Study  
 **Type:** Annex template — Phase 4/Component D artefact  
-**Status:** B1 populated — B2 pending Phase 3  
+**Status:** B1 and B2 boundary declarations recorded — Phase 4.1–4.2 compile verified  
 **Authority:** `SPRINT-45-2-EXECUTION-PLAN.md` · `45-2-pattern-aware-evaluation-protocol.md` · `45-2-evidence-workbook.md`
 
 ---
@@ -42,14 +42,14 @@
 | **Touchpoint** | B2 |
 | **Artefact ID** | HO-TP-01 |
 | **Corpus reference** | M22 |
-| **Ambiguity flag** | [ ] yes  [ ] no |
-| **Calibration reference** | |
-| **Declared interpretation** | |
-| **Declaration before verdict** | [ ] yes  [ ] no |
-| **Global calibration reopened** | [ ] no  [ ] yes |
-| **Verdict under declaration (E1)** | [ ] Failed  [ ] Minimum  [ ] Strong |
-| **Impact on verdict** | |
+| **Ambiguity flag** | [x] yes  [ ] no |
+| **Calibration reference** | M22 (Photosynthesis benchmark corpus `learning-materials.txt`) — Pass 2 Minimum vs Inter-Rater Failed calibration split |
+| **Declared interpretation** | Pass 2 conjunctive §5.8 minimum: Minimum when explicit operational completion criterion (word band and/or required elements) and substantive multi-area application cues are present; Strong requires explicit learner-context selection, criteria/method linkage, and calibrated multi-cue structure. |
+| **Declaration before verdict** | [x] yes  [ ] no |
+| **Global calibration reopened** | [x] no  [ ] yes |
+| **Verdict under declaration (E1)** | [ ] Failed  [x] Minimum  [ ] Strong |
+| **Impact on verdict** | Minimum assigned under declared Pass 2 §5.8 reading; FM-03 recorded diagnostically without tier override. |
 | **Impact on classification** | n/a — holdout single body |
-| **Frozen M22 records altered** | [ ] no  [ ] yes |
-| **Notes** | |
+| **Frozen M22 records altered** | [x] no  [ ] yes |
+| **Notes** | Phase 3.2 B2 declaration and Phase 3.3 body scoring complete. Frozen M22 historical records not altered. |
 

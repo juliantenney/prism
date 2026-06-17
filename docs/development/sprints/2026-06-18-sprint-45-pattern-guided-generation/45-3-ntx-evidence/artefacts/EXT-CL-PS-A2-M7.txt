@@ -1,0 +1,8 @@
+Checklist: linking light-dependent reactions and the Calvin cycle
+
+- [ ] I correctly identified where each stage occurs (thylakoid membranes vs stroma).
+- [ ] I explained how ATP and NADPH from the light-dependent stage support the Calvin cycle.
+- [ ] I distinguished stage outputs clearly (oxygen release vs carbon fixation products).
+- [ ] I showed the sequence connection between stages instead of describing them as isolated processes.
+- [ ] I used accurate scientific terms (chlorophyll, ATP, NADPH, carbon fixation) in context.
+- [ ] I revised at least one sentence to improve clarity of the energy-flow explanation.

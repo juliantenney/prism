@@ -1,0 +1,7 @@
+Photosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored in glucose. The overall equation links carbon dioxide and water as inputs to glucose and oxygen as outputs.
+
+Light energy powers this transformation. In the light-dependent stage, chlorophyll absorbs light and uses that energy to produce ATP and NADPH. These energy carriers are then used in the Calvin cycle, where carbon dioxide is fixed into carbon compounds that are assembled into glucose.
+
+Matter and energy change in different ways during this process. Matter is conserved: atoms from carbon dioxide and water are rearranged into new molecules. Energy is transformed: light energy is captured and stored in chemical bonds rather than being created from nothing.
+
+This helps explain plant growth. Much of a plant's mass comes from carbon that entered the plant from carbon dioxide in the air, not from soil mass. Soil provides minerals, but photosynthesis is the mechanism that builds most organic material.

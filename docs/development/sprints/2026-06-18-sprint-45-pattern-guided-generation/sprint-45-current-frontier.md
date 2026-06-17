@@ -1,79 +1,69 @@
 # Sprint 45 Current Frontier
 
 **Date:** 2026-06-18  
-**Status:** Proposed — not yet started  
-**Type:** Frontier definition for a proposed sprint
+**Status:** Sprint 45 closed — frontier transitioned  
+**Type:** Post-close frontier transition record
 
 ---
 
-## Where We Are
+## Sprint 45 Closeout State
 
-Sprint 44 closed with a complete educational-design layer:
+Sprint 45 is now complete as a historical sprint. Bounded objectives were executed and closed through extension governance:
 
-- Instructional depth **contracts** validated on Marx and Photosynthesis
-- **Benchmark corpus** frozen for reproducible evaluation
-- **Pattern Library Draft 1** — six evidence-backed patterns + failure-mode registry + meta-principles
-- **44-1 capture gate** designed (runtime implementation may continue in parallel)
+- 45-1 complete: pattern-guided generation experiment on SP-02/SP-03 target types.
+- 45-2 complete: repeatability evaluation complete; I5 closure extension complete.
+- 45-3 complete: benchmark regression execution complete; targeted closure completed.
+- 45-3-NTX complete: non-target comparator extension closed remaining blocker.
+- 45-4 deferred/not executed within Sprint 45.
 
-The active question is no longer whether materials can be **evaluated** — Sprint 44 answered that. The proposed question is whether validated patterns can **influence generation**.
-
-Sprint 45 is **not approved**. This document describes the proposed frontier only.
-
----
-
-## What Is Open (Proposed Sprint 45)
-
-| Question | Proposed slice |
-| -------- | -------------- |
-| Can patterns be deliberately induced in GAM output? | **45-1** Pattern Injection Experiment |
-| Can we measure pattern signals and failure-mode absence on generated bodies? | **45-2** Pattern-Aware Evaluation |
-| Does new generation improve vs frozen benchmark corpus? | **45-3** Regression Against Benchmark Corpus |
-| Can weak bodies be repaired at material level? | **45-4** Material-Level Repair Strategy |
-
-### Supporting open questions
-
-- What injection mechanism carries pattern specs into GAM without treating them as unvalidated prompts?
-- Does pattern guidance generalise across domains or overfit Marx?
-- Does 44-1 runtime capture gate change experiment baselines?
-- Do calibration-sensitive patterns (SP-01, SP-04, SP-05, SP-06) need deferred injection until 45-1 succeeds on SP-02/SP-03?
+Closure-governance artefacts:
+- `45-2-recommendation-i5-closure-addendum.md`
+- `45-3-recommendation-ntx-addendum.md`
 
 ---
 
-## What Is Not Open
+## Questions Resolved in Sprint 45 (Bounded Scope)
 
-| Topic | Status |
-| ----- | ------ |
-| Ownership model | Settled Sprint 43 |
-| Missing workflow stage / missing pedagogy | Disproved |
-| 44-2 contract redesign | Closed Sprint 44 |
-| Pattern Library architecture redesign | Closed Sprint 44 |
-| Full autonomous repair pipeline | Out of first slice |
-| Unevaluated material types (`rubric`, `modelling_note`, etc.) | No SP entries — defer |
-| Renderer / page layout redesign | Out of scope |
-| Universal Strong enforcement gates | 44-1 excludes semantic depth blocking |
-| Resolving all Strong/Minimum calibration disputes | Document only — do not legislate via generation |
+| Question | Resolution status |
+| -------- | ----------------- |
+| Can patterns be deliberately induced in GAM output? | Resolved in bounded SP-02/SP-03 scope (45-1 complete) |
+| Can pattern-aware scoring reproduce across independent re-application? | Resolved for chartered 45-2 scope; I5 closed |
+| Does generation improve vs frozen benchmark on target types? | Resolved in 45-3 evidence package |
+| Is non-target regression still a blocker for 45-3 standing? | Resolved via NTX (overall non-target status none, blocker closed) |
+| Can weak bodies be repaired at material level? | Deferred/not executed (45-4) |
+
+### Residual (non-blocking) programme questions
+
+- Replication variance across additional runs.
+- Broader pattern-family expansion beyond SP-02/SP-03.
+- Deferred repair strategy design/execution (former 45-4 lane).
 
 ---
 
-## Proposed Frontier Order
+## Sprint 45 Governance End-State
+
+| Topic | Final state in Sprint 45 |
+| ----- | ------------------------ |
+| Sprint 45.1 | Complete |
+| Sprint 45.2 | Complete (I5 closed) |
+| Sprint 45.3 | Complete (NTX addendum resolved blocker; effective standing Proceed) |
+| Sprint 45.4 | Deferred / Not Executed |
+| Active blocker | None |
+
+---
+
+## Frontier Transition
 
 ```text
-1. 45-1 Pattern Injection Experiment     (SP-02 + SP-03 first)
-2. 45-2 Pattern-Aware Evaluation         (44-2 + Detection Signals)
-3. 45-3 Regression Against Benchmark Corpus
-4. 45-4 Material-Level Repair Strategy   (exploratory; after 45-1 results)
+Sprint 45 frontier is closed.
+Successor frontier is programme-level continuation outside this sprint file:
+- broaden replication/generalisation evidence if authorised,
+- decide whether/when to activate deferred material-repair work (former 45-4),
+- carry forward under new sprint/programme authority.
 ```
 
-**Parallel (optional):** 44-1 capture gate runtime implementation — complementary to quality experiments, not a substitute for 45-1.
-
----
-
-## Recommended Entry Point
-
-If the user asks to continue PRISM after Sprint 44:
-
-1. Confirm whether Sprint 45 is **approved**
-2. If approved, begin **45-1** design for `decision_table` and `transfer_prompt` only
-3. If not approved, remain in proposal/design discussion — no code changes
-
-Source proposal: [`../2026-06-15-sprint-44/sprint-45-proposal.md`](../2026-06-15-sprint-44/sprint-45-proposal.md)
+Closure references:
+- `SPRINT-45-CLOSURE-SUMMARY.md`
+- `sprint-45-slice-index.md`
+- `45-2-recommendation-i5-closure-addendum.md`
+- `45-3-recommendation-ntx-addendum.md`

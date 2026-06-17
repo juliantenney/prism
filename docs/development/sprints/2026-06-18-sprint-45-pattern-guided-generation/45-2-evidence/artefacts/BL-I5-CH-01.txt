@@ -1,0 +1,15 @@
+---
+artefact_id: BL-I5-CH-01
+pair_id: I5-CH-01
+condition: baseline
+material_type: decision_table
+pattern_lens: SP-02
+domain: Photosynthesis
+design_authority: 45-2-evidence/i5-challenge-design-note.md
+extraction_scope: verbatim body text only
+---
+
+| Claim     | Correct/Incorrect | Reason |
+| --------- | ----------------- | ------ |
+| Student C |                   |        |
+| Student D |                   |        |

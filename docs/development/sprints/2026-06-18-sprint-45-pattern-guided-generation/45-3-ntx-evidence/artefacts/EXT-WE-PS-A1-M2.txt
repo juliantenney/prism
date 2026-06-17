@@ -1,0 +1,19 @@
+Worked example: unpacking the photosynthesis equation
+
+Equation:
+6 CO2 + 6 H2O + light energy -> C6H12O6 + 6 O2
+
+Step 1 - Identify inputs and outputs
+Inputs are carbon dioxide, water, and light energy. Outputs are glucose and oxygen.
+
+Step 2 - Explain what happens to matter
+Atoms are rearranged, not created or destroyed. Carbon atoms from CO2 and hydrogen/oxygen atoms from H2O are reorganized into glucose and oxygen molecules.
+
+Step 3 - Explain what happens to energy
+Light energy absorbed by chlorophyll is converted into chemical energy carriers, then stored in the bonds of glucose.
+
+Step 4 - State the biological significance
+Glucose provides stored chemical energy and building material for growth. Oxygen is released as a by-product.
+
+Conclusion:
+Photosynthesis transforms energy form while conserving matter, linking sunlight to biomass production in ecosystems.

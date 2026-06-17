@@ -7757,6 +7757,20 @@
     return /self-directed learner-page table row adequacy \(auto-applied\)/i;
   }
 
+  function gamOutputFormatGlobalRoot() {
+    if (typeof window !== "undefined" && window) return window;
+    if (typeof globalThis !== "undefined") return globalThis;
+    return null;
+  }
+
+  function resolveGamOutputFormatLib() {
+    if (typeof globalThis !== "undefined" && globalThis.PRISM_GAM_OUTPUT_FORMAT) {
+      return globalThis.PRISM_GAM_OUTPUT_FORMAT;
+    }
+    var root = gamOutputFormatGlobalRoot();
+    return root && root.PRISM_GAM_OUTPUT_FORMAT ? root.PRISM_GAM_OUTPUT_FORMAT : null;
+  }
+
   /** @deprecated Use buildLdTableFidelityPromptBlock({ role: "author" }) — PR-W1-1 */
   function buildSelfDirectedGamTableRowAdequacyPromptBlock() {
     return buildLdTableFidelityPromptBlock({ role: "author" });
@@ -11100,6 +11114,61 @@
       }
     }
     return raw;
+  }
+
+  function applyGamPackTextValidationToCapture(sanitizedText, stepContext, stepId, rawCapture) {
+    function clearGamGateSlots(sid) {
+      if (!sid) return;
+      if (state.workflowRunGamFormatValidation) {
+        delete state.workflowRunGamFormatValidation[sid];
+      }
+      if (state.workflowRunGamFormatWarnings) {
+        delete state.workflowRunGamFormatWarnings[sid];
+      }
+    }
+    if (!stepContext || !isWorkflowStepGenerateActivityMaterials(stepContext)) {
+      clearGamGateSlots(stepId);
+      return sanitizedText;
+    }
+    if (!shouldSanitizeSelfDirectedGamMaterialsOutput(stepContext)) {
+      clearGamGateSlots(stepId);
+      return sanitizedText;
+    }
+    var raw = rawCapture != null ? String(rawCapture) : String(sanitizedText || "");
+    if (!raw.trim()) {
+      clearGamGateSlots(stepId);
+      return sanitizedText;
+    }
+    var lib = resolveGamOutputFormatLib();
+    if (!lib || typeof lib.validateGamPackTextCaptureGate !== "function") {
+      return sanitizedText;
+    }
+    var upstream = resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+    var validation = lib.validateGamPackTextCaptureGate(String(sanitizedText || ""), {
+      learningActivities: upstream,
+      upstreamAvailable: !!upstream
+    });
+    if (stepId) {
+      if (!validation.ok) {
+        state.workflowRunGamFormatValidation = state.workflowRunGamFormatValidation || {};
+        state.workflowRunGamFormatValidation[stepId] = (validation.blockingErrors || []).join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+        if (state.workflowRunGamFormatWarnings) {
+          delete state.workflowRunGamFormatWarnings[stepId];
+        }
+      } else if ((validation.warnings || []).length) {
+        state.workflowRunGamFormatWarnings = state.workflowRunGamFormatWarnings || {};
+        state.workflowRunGamFormatWarnings[stepId] = (validation.warnings || []).join("; ");
+        if (state.workflowRunGamFormatValidation) {
+          delete state.workflowRunGamFormatValidation[stepId];
+        }
+      } else {
+        clearGamGateSlots(stepId);
+      }
+    }
+    return sanitizedText;
   }
 
   function applyPedagogicCognitionContractScaffoldToDraft(draftText, context) {
@@ -19032,6 +19101,12 @@
         }
       }
     }
+    applyGamPackTextValidationToCapture(
+      state.workflowRunCapturedOutputs[sid],
+      gamCtx || dlaCaptureCtx,
+      sid,
+      raw
+    );
     updateRunStepOutputStatus(li);
   }
 
@@ -19061,6 +19136,12 @@
       sid && state.workflowRunLearnerPageFramingValidation
         ? state.workflowRunLearnerPageFramingValidation[sid]
         : "";
+    var gamFormatErr =
+      sid && state.workflowRunGamFormatValidation
+        ? state.workflowRunGamFormatValidation[sid]
+        : "";
+    var gamFormatWarn =
+      sid && state.workflowRunGamFormatWarnings ? state.workflowRunGamFormatWarnings[sid] : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
     if (strictErr) {
@@ -19075,11 +19156,19 @@
     if (learnerFramingErr) {
       text = (text ? text + " · " : "") + learnerFramingErr;
     }
+    if (gamFormatErr) {
+      text = (text ? text + " · " : "") + "GAM format: " + gamFormatErr;
+    }
+    if (gamFormatWarn) {
+      text = (text ? text + " · " : "") + "GAM depth: " + gamFormatWarn;
+    }
     statusEl.textContent = text;
     statusEl.classList.toggle("hidden", !text);
+    var hasBlockingErr = !!(strictErr || episodePlanErr || pageErr || learnerFramingErr || gamFormatErr);
+    statusEl.classList.toggle("workflow-run-step-output-status--error", hasBlockingErr);
     statusEl.classList.toggle(
-      "workflow-run-step-output-status--error",
-      !!(strictErr || episodePlanErr || pageErr || learnerFramingErr)
+      "workflow-run-step-output-status--warning",
+      !hasBlockingErr && !!gamFormatWarn
     );
   }
 
@@ -19206,6 +19295,8 @@
       state.workflowRunStrictJsonValidation = {};
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
+      state.workflowRunGamFormatValidation = {};
+      state.workflowRunGamFormatWarnings = {};
     }
 
     if (els.workflowModeRunBtn) {
@@ -21881,6 +21972,8 @@
     state.workflowRunCapturedOutputsRaw = {};
     state.workflowRunStepCompleted = {};
     state.workflowRunStrictJsonValidation = {};
+    state.workflowRunGamFormatValidation = {};
+    state.workflowRunGamFormatWarnings = {};
     if (els.workflowName) els.workflowName.value = "";
     if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
     if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
@@ -21929,6 +22022,8 @@
       state.workflowRunCapturedOutputsRaw = {};
       state.workflowRunStepCompleted = {};
       state.workflowRunStrictJsonValidation = {};
+      state.workflowRunGamFormatValidation = {};
+      state.workflowRunGamFormatWarnings = {};
     }
     state.selectedWorkflowId = wf.id;
     populateWorkflowDetail(wf);
@@ -38057,6 +38152,19 @@
               syncWorkflowRunCapturedOutputToState(currentLi);
             }
           }
+          if (
+            sid &&
+            state.workflowRunGamFormatValidation &&
+            state.workflowRunGamFormatValidation[sid]
+          ) {
+            updateRunStepOutputStatus(currentLi);
+            showToast(
+              "GAM capture must be pack text with full upstream coverage. " +
+                state.workflowRunGamFormatValidation[sid],
+              "error"
+            );
+            return;
+          }
           if (sid) {
             state.workflowRunStepCompleted[sid] = true;
           }
@@ -38394,6 +38502,8 @@
       evaluateLearnerPageDlaActivityFramingCoverage;
     prismTestApi.applyLearnerPageDlaFramingValidationToCapture =
       applyLearnerPageDlaFramingValidationToCapture;
+    prismTestApi.applyGamPackTextValidationToCapture = applyGamPackTextValidationToCapture;
+    prismTestApi.resolveGamOutputFormatLib = resolveGamOutputFormatLib;
     prismTestApi.extractActivityRowsFromDlaCapture = extractActivityRowsFromDlaCapture;
     prismTestApi.LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS =
       LEARNER_PAGE_MANDATORY_COGNITION_FIELD_IDS.slice();
@@ -38464,6 +38574,8 @@
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
       state.workflowRunLearnerPageFramingValidation = {};
+      state.workflowRunGamFormatValidation = {};
+      state.workflowRunGamFormatWarnings = {};
     };
     prismTestApi.applyEpisodePlanCaptureCanonicalEnforcement =
       applyEpisodePlanCaptureCanonicalEnforcement;
@@ -38715,6 +38827,24 @@
       var sid = String(stepId || "").trim();
       if (!sid || !state.workflowRunLearnerPageFramingValidation) return "";
       return state.workflowRunLearnerPageFramingValidation[sid] || "";
+    };
+    prismTestApi.getWorkflowRunGamFormatValidationForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunGamFormatValidation) return "";
+      return state.workflowRunGamFormatValidation[sid] || "";
+    };
+    prismTestApi.getWorkflowRunGamFormatWarningsForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunGamFormatWarnings) return "";
+      return state.workflowRunGamFormatWarnings[sid] || "";
+    };
+    prismTestApi.setWorkflowRunStepCompletedForTest = function (completedMap) {
+      state.workflowRunStepCompleted =
+        completedMap && typeof completedMap === "object" ? Object.assign({}, completedMap) : {};
+    };
+    prismTestApi.isWorkflowRunStepCompletedForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      return !!(sid && state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]);
     };
     prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;

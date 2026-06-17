@@ -1503,6 +1503,14 @@ textarea:focus {
   margin-top: 6px;
 }
 
+.workflow-run-step-output-status--error {
+  color: #b91c1c;
+}
+
+.workflow-run-step-output-status--warning {
+  color: #b45309;
+}
+
 .workflow-validation-panel {
   border: 1px solid #f59e0b;
   background: #fffbeb;

@@ -7,6 +7,7 @@ const vm = require("node:vm");
 
 const DEFAULT_LIBS = [
   "lib/sprint38-visual-affordances.js",
+  "lib/gam-output-format.js",
   "lib/ld-table-fidelity.js",
   "lib/ld-materials-copy.js",
   "lib/ld-math-render.js",
@@ -25,6 +26,14 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
     const filePath = path.join(root, rel);
     vm.runInContext(fs.readFileSync(filePath, "utf8"), sandbox, { filename: rel });
   });
+  if (sandbox.window) {
+    if (sandbox.PRISM_GAM_OUTPUT_FORMAT) {
+      sandbox.window.PRISM_GAM_OUTPUT_FORMAT = sandbox.PRISM_GAM_OUTPUT_FORMAT;
+    }
+    if (sandbox.PRISM_LD_TABLE_FIDELITY) {
+      sandbox.window.PRISM_LD_TABLE_FIDELITY = sandbox.PRISM_LD_TABLE_FIDELITY;
+    }
+  }
 }
 
 module.exports = {

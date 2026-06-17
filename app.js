@@ -9424,6 +9424,47 @@
     return String(draftText || "").trim();
   }
 
+  function resolveInstructionalPatternPromptLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_INSTRUCTIONAL_PATTERN_PROMPT &&
+      typeof globalThis.PRISM_INSTRUCTIONAL_PATTERN_PROMPT
+        .applyInstructionalPatternPromptBlockToDraft === "function"
+    ) {
+      return globalThis.PRISM_INSTRUCTIONAL_PATTERN_PROMPT;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_INSTRUCTIONAL_PATTERN_PROMPT
+      ? root.PRISM_INSTRUCTIONAL_PATTERN_PROMPT
+      : null;
+  }
+
+  function applyInstructionalPatternPromptBlockToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (!draftBody) return "";
+    if (!isWorkflowStepGenerateActivityMaterials(context)) return draftBody;
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String((context && context.workflowGoal) || "").trim(),
+      desiredOutputs: String((context && context.desiredOutputs) || "").trim()
+    };
+    if (!shouldApplySelfDirectedLearnerPageGamMaterialScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var lib = resolveInstructionalPatternPromptLib();
+    if (
+      lib &&
+      typeof lib.applyInstructionalPatternPromptBlockToDraft === "function"
+    ) {
+      return lib.applyInstructionalPatternPromptBlockToDraft(draftBody, context);
+    }
+    return draftBody;
+  }
+
   function bootstrapLdDesignPageComposeInlineIfMissing() {
     if (resolveLdDesignPageComposeLib()) return;
     var root = ldTableFidelityGlobalRoot();
@@ -10396,6 +10437,7 @@
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
+    draft = applyInstructionalPatternPromptBlockToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
@@ -38397,6 +38439,9 @@
       applyPedagogicCognitionContractScaffoldToDraft;
     prismTestApi.applyEducationalQualityFrameworkPromptBlockToDraft =
       applyEducationalQualityFrameworkPromptBlockToDraft;
+    prismTestApi.applyInstructionalPatternPromptBlockToDraft =
+      applyInstructionalPatternPromptBlockToDraft;
+    prismTestApi.resolveInstructionalPatternPromptLib = resolveInstructionalPatternPromptLib;
     prismTestApi.applySelfDirectedLearnerPageStepScaffoldsToDraft =
       applySelfDirectedLearnerPageStepScaffoldsToDraft;
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =

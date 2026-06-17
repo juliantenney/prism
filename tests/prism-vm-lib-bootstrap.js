@@ -16,7 +16,8 @@ const DEFAULT_LIBS = [
   "lib/ld-journey-assimilation.js",
   "lib/ld-activity-preamble-exposition.js",
   "lib/ld-design-page-compose-contract.js",
-  "lib/educational-quality-framework-prompt.js"
+  "lib/educational-quality-framework-prompt.js",
+  "lib/instructional-pattern-prompt.js"
 ];
 
 function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
@@ -32,6 +33,10 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
     }
     if (sandbox.PRISM_LD_TABLE_FIDELITY) {
       sandbox.window.PRISM_LD_TABLE_FIDELITY = sandbox.PRISM_LD_TABLE_FIDELITY;
+    }
+    if (sandbox.PRISM_INSTRUCTIONAL_PATTERN_PROMPT) {
+      sandbox.window.PRISM_INSTRUCTIONAL_PATTERN_PROMPT =
+        sandbox.PRISM_INSTRUCTIONAL_PATTERN_PROMPT;
     }
   }
 }

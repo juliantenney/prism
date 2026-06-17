@@ -21,6 +21,7 @@ const patternLib = require("../lib/instructional-pattern-prompt.js");
 
 const SP02_MARKER = /INSTRUCTIONAL-PATTERN-SP-02 \(auto-applied\)/i;
 const SP03_MARKER = /INSTRUCTIONAL-PATTERN-SP-03 \(auto-applied\)/i;
+const SP06_MARKER = /INSTRUCTIONAL-PATTERN-SP-06 \(auto-applied\)/i;
 
 const MARX_SELF_STUDY_BRIEF = {
   goal:
@@ -119,16 +120,33 @@ function assertSp03Content(prompt) {
   assert.match(prompt, /FM-03/i);
 }
 
-test("48-2: lib exports SP-02 and SP-03 markers and apply helper", () => {
+function assertSp06Content(prompt) {
+  assert.match(prompt, SP06_MARKER);
+  assert.match(prompt, /SP-06 \/ WE-SP-01 visible-reasoning worked example/i);
+  assert.match(prompt, /worked_example/i);
+  assert.match(prompt, /parallel-task bridge/i);
+  assert.match(prompt, /MUST include an explicit parallel-task bridge/i);
+  assert.match(prompt, /instructional FAIL \(FM-05\)/i);
+  assert.match(prompt, /GOOD shape example/i);
+  assert.match(prompt, /\*\*Bridge:\*\*/i);
+  assert.match(prompt, /FORBIDDEN:.*FM-05/i);
+  assert.match(prompt, /MP-1/i);
+  assert.match(prompt, /MP-2/i);
+  assert.match(prompt, /MP-3/i);
+}
+
+test("48-2: lib exports SP-02, SP-03, and SP-06 markers and apply helper", () => {
   assert.equal(patternLib.MODULE_ID, "INSTRUCTIONAL-PATTERN-PROMPT");
   assert.match(patternLib.MARKER_SP02, SP02_MARKER);
   assert.match(patternLib.MARKER_SP03, SP03_MARKER);
+  assert.match(patternLib.MARKER_SP06, SP06_MARKER);
   const block = patternLib.buildInstructionalPatternPromptBlock();
   assertSp02Content(block);
   assertSp03Content(block);
+  assertSp06Content(block);
 });
 
-test("48-2: self-directed learner-page GAM receives SP-02 and SP-03 markers", () => {
+test("48-2: self-directed learner-page GAM receives SP-02, SP-03, and SP-06 markers", () => {
   const base = "Realise activity materials from upstream DLA.\n";
   const prompt = applyRuntimePrompt(
     base,
@@ -138,6 +156,7 @@ test("48-2: self-directed learner-page GAM receives SP-02 and SP-03 markers", ()
   );
   assertSp02Content(prompt);
   assertSp03Content(prompt);
+  assertSp06Content(prompt);
   assert.ok(prompt.length > base.length);
 });
 
@@ -150,6 +169,7 @@ test("48-2: scope gate — facilitator brief excludes pattern markers on GAM", (
   );
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
+  assert.doesNotMatch(prompt, SP06_MARKER);
 });
 
 test("48-2: non-GAM step Design Learning Activities excludes pattern markers", () => {
@@ -161,6 +181,7 @@ test("48-2: non-GAM step Design Learning Activities excludes pattern markers", (
   );
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
+  assert.doesNotMatch(prompt, SP06_MARKER);
 });
 
 test("48-2: non-GAM step Design Page excludes pattern markers", () => {
@@ -172,6 +193,7 @@ test("48-2: non-GAM step Design Page excludes pattern markers", () => {
   );
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
+  assert.doesNotMatch(prompt, SP06_MARKER);
 });
 
 test("48-2: pattern markers are not duplicated on second apply", () => {
@@ -191,6 +213,7 @@ test("48-2: pattern markers are not duplicated on second apply", () => {
   const twice = api.applyInstructionalPatternPromptBlockToDraft(once, ctx);
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP06_MARKER) || []).length, 1);
 });
 
 test("48-2: lib apply helper does not duplicate markers", () => {
@@ -198,6 +221,7 @@ test("48-2: lib apply helper does not duplicate markers", () => {
   const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP06_MARKER) || []).length, 1);
 });
 
 test("48-2: resolveInstructionalPatternPromptLib exposes apply helper", () => {
@@ -205,6 +229,7 @@ test("48-2: resolveInstructionalPatternPromptLib exposes apply helper", () => {
   assert.ok(lib);
   assert.equal(typeof lib.applyInstructionalPatternPromptBlockToDraft, "function");
   assert.equal(typeof lib.buildInstructionalPatternPromptBlock, "function");
+  assert.equal(typeof lib.buildSp06PromptBlock, "function");
 });
 
 test("48-2: GAM prompt delta is additive — DLA prompt unchanged for pattern markers", () => {
@@ -224,8 +249,10 @@ test("48-2: GAM prompt delta is additive — DLA prompt unchanged for pattern ma
   );
   assert.doesNotMatch(dlaPrompt, SP02_MARKER);
   assert.doesNotMatch(dlaPrompt, SP03_MARKER);
+  assert.doesNotMatch(dlaPrompt, SP06_MARKER);
   assert.match(gamPrompt, SP02_MARKER);
   assert.match(gamPrompt, SP03_MARKER);
+  assert.match(gamPrompt, SP06_MARKER);
 });
 
 test("48-3: SP-02 block requires exactly one partial exemplar row (MUST)", () => {
@@ -263,4 +290,45 @@ test("48-3: SP-03 block unchanged by Slice 3 refinement", () => {
   assert.doesNotMatch(sp03, /exactly one partial exemplar row/i);
   assert.doesNotMatch(sp03, /GOOD shape example/i);
   assert.doesNotMatch(sp03, /all-empty decision_table/i);
+});
+
+test("48-4: SP-06 block requires explicit parallel-task bridge (MUST)", () => {
+  const block = patternLib.buildSp06PromptBlock();
+  assert.match(block, /every worked_example body MUST include an explicit parallel-task bridge/i);
+  assert.match(block, /transfer the method, not the answer/i);
+});
+
+test("48-4: SP-06 defines model-only worked_example as FM-05 instructional fail", () => {
+  const block = patternLib.buildSp06PromptBlock();
+  assert.match(
+    block,
+    /ends at the model conclusion with no learner application guidance.*instructional FAIL \(FM-05\).*do not emit/i
+  );
+  assert.match(block, /FORBIDDEN: step chain \+ model conclusion only.*FM-05/i);
+});
+
+test("48-4: SP-06 GOOD shape example shows bridge without learner answer", () => {
+  const block = patternLib.buildSp06PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /visible because\/reasoning between steps/i);
+  assert.match(block, /\*\*Bridge:\*\* Now use the same method on your/i);
+  assert.match(block, /do not copy the model outcome/i);
+});
+
+test("48-4: SP-06 retains MP-1 and MP-2 ownership constraints", () => {
+  const block = patternLib.buildSp06PromptBlock();
+  assert.match(block, /model the move before independent production \(MP-2\)/i);
+  assert.match(block, /Do not supply the learner's independent deliverable/i);
+  assert.match(block, /scaffolding only \(MP-1\)/i);
+});
+
+test("48-4: SP-02 and SP-03 blocks unchanged by Slice 4 refinement", () => {
+  const sp02 = patternLib.buildSp02PromptBlock();
+  const sp03 = patternLib.buildSp03PromptBlock();
+  assert.match(sp02, /exactly one partial exemplar row/i);
+  assert.match(sp02, /instructional FAIL \(FM-04\)/i);
+  assert.match(sp03, /learner-context selection/i);
+  assert.doesNotMatch(sp02, /FM-05/i);
+  assert.doesNotMatch(sp03, /parallel-task bridge/i);
+  assert.doesNotMatch(sp03, /WE-SP-01/i);
 });

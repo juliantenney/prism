@@ -444,3 +444,72 @@ test("48-6: lib apply helper appends SP-04 without duplicating marker", () => {
   const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
   assert.equal((twice.match(/INSTRUCTIONAL-PATTERN-SP-04 \(auto-applied\)/gi) || []).length, 1);
 });
+
+test("48-7: SP-05 block requires MUST bundle for checklist", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /every checklist body MUST provide criteria-linked learner self-check verification/i);
+  assert.match(block, /at least four checkable items tied to expected_output/i);
+  assert.match(block, /learner-check imperatives \(Have you \/ Did you \/ Does your\)/i);
+  assert.match(block, /MUST include explicit revise guidance/i);
+});
+
+test("48-7: SP-05 defines FM-09 instructional fail", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(
+    block,
+    /verifies row, table, or task completion only without reasoning-quality or criteria-evidence checks.*instructional FAIL \(FM-09\).*do not emit/i
+  );
+});
+
+test("48-7: SP-05 defines stub and thin checklist instructional fails", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /fewer than four checkable items.*pointer-only body.*instructional FAIL/i);
+  assert.match(block, /FORBIDDEN: pointer or stub checklist/i);
+});
+
+test("48-7: SP-05 GOOD shape example shows M4-style checklist with revise block", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /Have you \[criterion tied to expected_output\]/i);
+  assert.match(block, /not just named it/i);
+  assert.match(block, /not described in general/i);
+  assert.match(block, /### If any check is not met:/i);
+  assert.match(block, /Revise your \[deliverable\] by/i);
+});
+
+test("48-7: SP-05 FORBIDDEN floors name completion and reflection-only shapes", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /FORBIDDEN: Did you finish\?/i);
+  assert.match(block, /FORBIDDEN: reflection-only verification/i);
+  assert.match(block, /FORBIDDEN: completion-dominant structures.*Is each row complete\?.*FM-09/i);
+});
+
+test("48-7: SP-05 retains MP-1 ownership constraint", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /Do not supply completed learner work or model answers/i);
+  assert.doesNotMatch(block, /FM-11/i);
+  assert.doesNotMatch(block, /grouped sections/i);
+  assert.doesNotMatch(block, /misconception guard/i);
+});
+
+test("48-7: SP-02, SP-03, SP-04, and SP-06 blocks unchanged by Slice 7 refinement", () => {
+  const sp02 = patternLib.buildSp02PromptBlock();
+  const sp03 = patternLib.buildSp03PromptBlock();
+  const sp04 = patternLib.buildSp04PromptBlock();
+  const sp06 = patternLib.buildSp06PromptBlock();
+  assert.match(sp02, /instructional FAIL \(FM-04\)/i);
+  assert.match(sp03, /instructional FAIL \(FM-02\)/i);
+  assert.match(sp04, /instructional FAIL \(FM-10\)/i);
+  assert.match(sp06, /instructional FAIL \(FM-05\)/i);
+  assert.doesNotMatch(sp02, /FM-09/i);
+  assert.doesNotMatch(sp03, /checklist/i);
+  assert.doesNotMatch(sp04, /CL-SP-01/i);
+  assert.doesNotMatch(sp06, /FM-09/i);
+});
+
+test("48-7: lib apply helper appends SP-05 without duplicating marker", () => {
+  const once = patternLib.applyInstructionalPatternPromptBlockToDraft("Draft.\n", {});
+  assert.match(once, /INSTRUCTIONAL-PATTERN-SP-05 \(auto-applied\)/i);
+  const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
+  assert.equal((twice.match(/INSTRUCTIONAL-PATTERN-SP-05 \(auto-applied\)/gi) || []).length, 1);
+});

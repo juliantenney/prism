@@ -99,9 +99,14 @@ function assertSp02Content(prompt) {
   assert.match(prompt, SP02_MARKER);
   assert.match(prompt, /SP-02 \/ DT-SP-01 partial-exemplar decision table/i);
   assert.match(prompt, /decision_table/i);
-  assert.match(prompt, /partial exemplar row/i);
+  assert.match(prompt, /exactly one partial exemplar row/i);
+  assert.match(prompt, /MUST include exactly one/i);
   assert.match(prompt, /Judgement.*empty on every row/i);
-  assert.match(prompt, /FM-04/i);
+  assert.match(prompt, /MP-1/i);
+  assert.match(prompt, /all-empty decision_table.*FM-04/i);
+  assert.match(prompt, /GOOD shape example/i);
+  assert.match(prompt, /Judgement \(leave blank\)/i);
+  assert.match(prompt, /FORBIDDEN.*FM-04/i);
 }
 
 function assertSp03Content(prompt) {
@@ -221,4 +226,41 @@ test("48-2: GAM prompt delta is additive — DLA prompt unchanged for pattern ma
   assert.doesNotMatch(dlaPrompt, SP03_MARKER);
   assert.match(gamPrompt, SP02_MARKER);
   assert.match(gamPrompt, SP03_MARKER);
+});
+
+test("48-3: SP-02 block requires exactly one partial exemplar row (MUST)", () => {
+  const block = patternLib.buildSp02PromptBlock();
+  assert.match(block, /every decision_table body MUST include exactly one partial exemplar row/i);
+  assert.match(block, /On the exemplar row only/i);
+});
+
+test("48-3: SP-02 defines all-empty decision_table as FM-04 instructional fail", () => {
+  const block = patternLib.buildSp02PromptBlock();
+  assert.match(block, /all-empty decision_table.*instructional FAIL \(FM-04\).*do not emit/i);
+  assert.match(block, /FORBIDDEN:.*every cell empty and no exemplar row.*FM-04/i);
+});
+
+test("48-3: SP-02 GOOD shape example shows exemplar row and empty judgement column", () => {
+  const block = patternLib.buildSp02PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /Judgement \(leave blank\)/i);
+  assert.match(block, /Brief evidence citing the case/i);
+  assert.match(block, /Brief reasoning linking evidence/i);
+  assert.match(block, /\| Second item \|  \|  \|  \|/);
+});
+
+test("48-3: SP-02 retains MP-1 ownership constraints", () => {
+  const block = patternLib.buildSp02PromptBlock();
+  assert.match(block, /MUST stay empty on every row, including the exemplar row/i);
+  assert.match(block, /Do not pre-fill Correct\/Incorrect/i);
+  assert.match(block, /learner owns evaluative conclusions \(MP-1\)/i);
+});
+
+test("48-3: SP-03 block unchanged by Slice 3 refinement", () => {
+  const sp03 = patternLib.buildSp03PromptBlock();
+  assert.match(sp03, /SP-03 \/ TP-SP-01 capstone transfer prompt/i);
+  assert.match(sp03, /learner-context selection/i);
+  assert.doesNotMatch(sp03, /exactly one partial exemplar row/i);
+  assert.doesNotMatch(sp03, /GOOD shape example/i);
+  assert.doesNotMatch(sp03, /all-empty decision_table/i);
 });

@@ -384,3 +384,63 @@ test("48-5: SP-02 and SP-06 blocks unchanged by Slice 5 refinement", () => {
   assert.doesNotMatch(sp06, /transfer_prompt/i);
   assert.doesNotMatch(sp06, /FM-03/i);
 });
+
+test("48-6: SP-04 block requires MUST bundle for consolidation_summary", () => {
+  const block = patternLib.buildSp04PromptBlock();
+  assert.match(block, /every consolidation_summary body MUST scaffold learner-produced synthesis/i);
+  assert.match(block, /MUST require learner-produced synthesis/i);
+  assert.match(block, /MUST include an operational completion criterion/i);
+  assert.match(block, /at least three synthesis angles/i);
+  assert.match(block, /reflection, distinction, judgement, uncertainty/i);
+});
+
+test("48-6: SP-04 defines FM-10 instructional fail", () => {
+  const block = patternLib.buildSp04PromptBlock();
+  assert.match(
+    block,
+    /too thin to guide learner synthesis.*bullet prompts only with no synthesis expectation.*no learner-write requirement.*instructional FAIL \(FM-10\).*do not emit/i
+  );
+});
+
+test("48-6: SP-04 GOOD shape example shows synthesis prompts without completed answer", () => {
+  const block = patternLib.buildSp04PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /Write \[word band\] synthesising your understanding/i);
+  assert.match(block, /What key distinction can you now make/i);
+  assert.match(block, /What uncertainty or open question remains/i);
+  assert.match(block, /You might begin with:/i);
+  assert.match(block, /One idea that now seems clearer is/i);
+});
+
+test("48-6: SP-04 FORBIDDEN floors name spoiler and replay shapes", () => {
+  const block = patternLib.buildSp04PromptBlock();
+  assert.match(block, /FORBIDDEN: past-tense session summary.*In this session you learned/i);
+  assert.match(block, /FORBIDDEN: completed consolidation summary or model essay/i);
+  assert.match(block, /FORBIDDEN: learning-outcomes replay or capstone judgement written for the learner/i);
+});
+
+test("48-6: SP-04 retains MP-1 ownership constraint", () => {
+  const block = patternLib.buildSp04PromptBlock();
+  assert.match(block, /Do not supply a completed consolidation essay/i);
+  assert.match(block, /scaffolding only \(MP-1\)/i);
+});
+
+test("48-6: SP-02, SP-03, and SP-06 blocks unchanged by Slice 6 refinement", () => {
+  const sp02 = patternLib.buildSp02PromptBlock();
+  const sp03 = patternLib.buildSp03PromptBlock();
+  const sp06 = patternLib.buildSp06PromptBlock();
+  assert.match(sp02, /instructional FAIL \(FM-04\)/i);
+  assert.match(sp03, /instructional FAIL \(FM-02\)/i);
+  assert.match(sp06, /instructional FAIL \(FM-05\)/i);
+  assert.doesNotMatch(sp02, /FM-10/i);
+  assert.doesNotMatch(sp03, /consolidation_summary/i);
+  assert.doesNotMatch(sp06, /FM-10/i);
+  assert.doesNotMatch(sp06, /CS-SP-01/i);
+});
+
+test("48-6: lib apply helper appends SP-04 without duplicating marker", () => {
+  const once = patternLib.applyInstructionalPatternPromptBlockToDraft("Draft.\n", {});
+  assert.match(once, /INSTRUCTIONAL-PATTERN-SP-04 \(auto-applied\)/i);
+  const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
+  assert.equal((twice.match(/INSTRUCTIONAL-PATTERN-SP-04 \(auto-applied\)/gi) || []).length, 1);
+});

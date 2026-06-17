@@ -33005,7 +33005,24 @@
             activityComparable.markSeen(supportNote);
           }
           if (!parts.length) return "";
-          return '<article class="util-task-block">' + parts.join("") + "</article>";
+          var articleHtml = '<article class="util-task-block">' + parts.join("") + "</article>";
+          if (renderOpts.journeyCompassEnabled) {
+            var compassStep = findJourneyCompassStepForActivity(renderOpts, activityIdLabel);
+            if (compassStep) {
+              var activityCompassHtml = renderActivityJourneyCompassHtml(
+                compassStep,
+                compassStep.step_index || idx + 1,
+                renderOpts.journeyCompassStepCount
+              );
+              return (
+                '<div class="util-activity-row util-page-columns">' +
+                activityCompassHtml +
+                articleHtml +
+                "</div>"
+              );
+            }
+          }
+          return articleHtml;
         })
         .filter(function (x) { return !!String(x || "").trim(); })
         .join("");
@@ -35334,10 +35351,13 @@
 
   function getUtilityJourneyCompassPresentationCss() {
     return [
-      "body.util-page-export--with-compass{max-width:1140px}",
-      ".util-page-columns{display:grid;grid-template-columns:minmax(200px,28%) minmax(0,1fr);gap:24px;align-items:start;margin:8px 0 24px}",
+      "body.util-page-export--with-compass{max-width:920px}",
+      ".util-journey-compass-header{margin:8px 0 20px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
+      ".util-activity-row.util-page-columns{display:grid;grid-template-columns:minmax(180px,26%) minmax(0,1fr);gap:20px;align-items:start;margin:0 0 28px}",
+      ".util-activity-row.util-page-columns>.util-task-block{margin:0}",
       ".util-page-resource{min-width:0}",
       ".util-journey-compass{padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
+      ".util-journey-compass--activity{align-self:start}",
       ".util-journey-compass__title{margin:0 0 12px;font-size:.875rem;font-weight:700;letter-spacing:.02em;color:#0f172a;line-height:1.35}",
       ".util-journey-compass__section{margin:0 0 14px}",
       ".util-journey-compass__section:last-child{margin-bottom:0}",
@@ -35351,8 +35371,8 @@
       ".util-journey-compass__signal:last-child{margin-bottom:0}",
       ".util-journey-compass__signal-label{font-weight:600;color:#64748b}",
       ".util-journey-compass__signal--transition{font-style:italic;color:#64748b}",
-      "@media (max-width:720px){.util-page-columns{grid-template-columns:1fr;gap:16px}}",
-      "@media print{.util-journey-compass{break-inside:avoid-page;background:#fff;border-color:#cbd5e1}.util-page-columns{grid-template-columns:1fr}}"
+      "@media (max-width:720px){.util-activity-row.util-page-columns{grid-template-columns:1fr;gap:12px}}",
+      "@media print{.util-journey-compass,.util-journey-compass-header{break-inside:avoid-page;background:#fff;border-color:#cbd5e1}.util-activity-row.util-page-columns{grid-template-columns:1fr}}"
     ].join("");
   }
 
@@ -36713,8 +36733,10 @@
       return { validation: null, json: null };
     }
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
+    var gamUpstream = resolveUpstreamActivityMaterialsFromWorkflowCaptures(upstream);
     var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
-      upstreamLearningActivities: upstream
+      upstreamLearningActivities: upstream,
+      upstreamActivityMaterials: gamUpstream
     });
     assignComposedPageMutations(parsed, nextPage);
     var validation = validatePageActivityClosure(parsed, upstream, {});
@@ -36738,8 +36760,13 @@
       opts.upstreamLearningActivities != null
         ? opts.upstreamLearningActivities
         : resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+    var gamUpstream =
+      opts.upstreamActivityMaterials != null
+        ? opts.upstreamActivityMaterials
+        : resolveUpstreamActivityMaterialsFromWorkflowCaptures(upstream);
     var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
       upstreamLearningActivities: upstream,
+      upstreamActivityMaterials: gamUpstream,
       resolvedFactors: opts.resolvedFactors,
       explicitBriefFactors: opts.explicitBriefFactors,
       workflowBriefConfig: opts.workflowBriefConfig,
@@ -36961,6 +36988,117 @@
     );
   }
 
+  function buildJourneyCompassStepLookup(compass) {
+    var map = {};
+    if (!compass || !Array.isArray(compass.steps)) return map;
+    compass.steps.forEach(function (step) {
+      if (!step || typeof step !== "object") return;
+      var id = String(step.activity_id || "")
+        .trim()
+        .toUpperCase();
+      if (id) map[id] = step;
+    });
+    return map;
+  }
+
+  function findJourneyCompassStepForActivity(renderOpts, activityId) {
+    if (!renderOpts || !renderOpts.journeyCompassStepLookup) return null;
+    var key = String(activityId || "")
+      .trim()
+      .toUpperCase();
+    if (!key) return null;
+    return renderOpts.journeyCompassStepLookup[key] || null;
+  }
+
+  function renderJourneyCompassPageHeaderHtml(compass) {
+    if (!compass || typeof compass !== "object") return "";
+    var hasInquiry = !!String(compass.governing_inquiry || "").trim();
+    var hasSession = !!String(compass.session_frame || "").trim();
+    if (!hasInquiry && !hasSession) return "";
+    var parts = [
+      '<section class="util-journey-compass-header" aria-labelledby="util-journey-compass-heading">',
+      '<h2 id="util-journey-compass-heading" class="util-journey-compass__title">Journey compass</h2>'
+    ];
+    if (hasInquiry) {
+      parts.push('<div class="util-journey-compass__section">');
+      parts.push('<h3 class="util-journey-compass__section-heading">Inquiry</h3>');
+      parts.push(
+        '<p class="util-journey-compass__signal">' +
+          utilityEscapeHtml(String(compass.governing_inquiry)) +
+          "</p>"
+      );
+      parts.push("</div>");
+    }
+    if (hasSession) {
+      parts.push('<div class="util-journey-compass__section">');
+      parts.push('<h3 class="util-journey-compass__section-heading">Session</h3>');
+      parts.push(
+        '<p class="util-journey-compass__signal">' +
+          utilityEscapeHtml(String(compass.session_frame)) +
+          "</p>"
+      );
+      parts.push("</div>");
+    }
+    parts.push("</section>");
+    return parts.join("");
+  }
+
+  function renderActivityJourneyCompassHtml(step, stepIndex, totalSteps) {
+    if (!step || typeof step !== "object") return "";
+    var headingId =
+      "util-journey-compass-activity-" +
+      String(step.activity_id || stepIndex || "step")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-");
+    var label =
+      String(step.activity_id || "").trim() +
+      (step.title ? " — " + String(step.title).trim() : "");
+    var parts = [
+      '<aside class="util-journey-compass util-journey-compass--activity" role="complementary" aria-labelledby="' +
+        headingId +
+        '">',
+      '<h3 id="' +
+        headingId +
+        '" class="util-journey-compass__title">Step ' +
+        String(stepIndex || step.step_index || 1) +
+        (totalSteps ? " of " + String(totalSteps) : "") +
+        "</h3>",
+      '<div class="util-journey-compass__step-label">' + utilityEscapeHtml(label) + "</div>"
+    ];
+    var metaParts = [];
+    if (step.duration_minutes) metaParts.push(String(step.duration_minutes) + " min");
+    if (step.phase_type) metaParts.push(String(step.phase_type));
+    if (metaParts.length) {
+      parts.push(
+        '<div class="util-journey-compass__step-meta">' +
+          utilityEscapeHtml(metaParts.join(" · ")) +
+          "</div>"
+      );
+    }
+    if (step.transition) {
+      parts.push(
+        '<p class="util-journey-compass__signal util-journey-compass__signal--transition">' +
+          utilityEscapeHtml(String(step.transition)) +
+          "</p>"
+      );
+    }
+    (step.signals || []).forEach(function (signal) {
+      if (!signal || !String(signal.text || "").trim()) return;
+      parts.push(
+        '<p class="util-journey-compass__signal" data-compass-signal="' +
+          utilityEscapeHtml(String(signal.kind || signal.label || "signal")) +
+          '"><span class="util-journey-compass__signal-label">' +
+          utilityEscapeHtml(String(signal.label || "Note")) +
+          ":</span> " +
+          utilityEscapeHtml(String(signal.text)) +
+          "</p>"
+      );
+    });
+    parts.push("</aside>");
+    return parts.join("");
+  }
+
   function renderJourneyCompassHtml(compass) {
     if (!compass || typeof compass !== "object") return "";
     var parts = [
@@ -37063,12 +37201,16 @@
     var journeyCompassWillRender =
       isPageArtefact &&
       shouldRenderJourneyCompassForPage(parsed, presentationMode);
+    var journeyCompassData = journeyCompassWillRender ? buildJourneyCompassFromPage(parsed) : null;
 
     var htmlParts = [];
     var title = String((parsed && (parsed.title || parsed.name)) || utilityLabelFromKey(plan.artefactType || "Artefact"));
     htmlParts.push("<h1>" + utilityEscapeHtml(title) + "</h1>");
 
-    if (utilityShouldShowPageAudienceLine(parsed) && !journeyCompassWillRender) {
+    if (journeyCompassData) {
+      var pageCompassHeaderHtml = renderJourneyCompassPageHeaderHtml(journeyCompassData);
+      if (pageCompassHeaderHtml) htmlParts.push(pageCompassHeaderHtml);
+    } else if (utilityShouldShowPageAudienceLine(parsed)) {
       htmlParts.push(
         "<p><strong>Audience:</strong> " + utilityEscapeHtml(String(parsed.audience)) + "</p>"
       );
@@ -37125,6 +37267,13 @@
         pageProfile: pageProfile,
         suppressFacilitatorMaterials: workshopVisibility.suppressFacilitatorMaterials,
         enableSequencingInteractionPolicy: enableSequencingInteractionPolicy,
+        journeyCompassEnabled: !!journeyCompassData,
+        journeyCompassStepLookup: journeyCompassData
+          ? buildJourneyCompassStepLookup(journeyCompassData)
+          : null,
+        journeyCompassStepCount: journeyCompassData
+          ? (Array.isArray(journeyCompassData.steps) ? journeyCompassData.steps.length : 0)
+          : 0,
         cognitionProfile:
           parsed && parsed.metadata && parsed.metadata.cognition_profile && typeof parsed.metadata.cognition_profile === "object"
             ? parsed.metadata.cognition_profile
@@ -37325,18 +37474,7 @@
           "</details>"
       );
     }
-    if (journeyCompassEnabled) {
-      var journeyCompassHtml = renderJourneyCompassHtml(buildJourneyCompassFromPage(parsed));
-      htmlParts.push(
-        '<div class="util-page-columns">' +
-          journeyCompassHtml +
-          '<main class="util-page-resource" id="util-page-resource-main">' +
-            resourceBodyParts.join("") +
-          "</main></div>"
-      );
-    } else {
-      htmlParts = htmlParts.concat(resourceBodyParts);
-    }
+    htmlParts = htmlParts.concat(resourceBodyParts);
     function sanitizeUtilityHtmlOutput(html) {
       var out = String(html || "");
       function splitDashPromptItems(text) {
@@ -38987,6 +39125,9 @@
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
     prismTestApi.buildJourneyCompassFromPageForTest = buildJourneyCompassFromPage;
     prismTestApi.renderJourneyCompassHtmlForTest = renderJourneyCompassHtml;
+    prismTestApi.renderJourneyCompassPageHeaderHtmlForTest = renderJourneyCompassPageHeaderHtml;
+    prismTestApi.renderActivityJourneyCompassHtmlForTest = renderActivityJourneyCompassHtml;
+    prismTestApi.buildJourneyCompassStepLookupForTest = buildJourneyCompassStepLookup;
     prismTestApi.shouldRenderJourneyCompassForPageForTest = shouldRenderJourneyCompassForPage;
     prismTestApi.extractLearningActivityRowsFromPageForTest = extractLearningActivityRowsFromPage;
     prismTestApi.renderUtilitiesArtefactHtmlAsyncForTest = renderUtilitiesArtefactHtmlAsync;

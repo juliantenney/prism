@@ -98,12 +98,7 @@ function renderPageFixture(api, fixtureName, sectionOrder) {
 }
 
 function mainBodyHtml(html) {
-  const doc = String(html || "");
-  const open = doc.indexOf('<main class="util-page-resource"');
-  if (open < 0) return doc.split('<details class="util-meta"')[0];
-  const close = doc.indexOf("</main>", open);
-  if (close < 0) return doc.slice(open);
-  return doc.slice(open, close + "</main>".length);
+  return String(html || "").split('<details class="util-meta"')[0];
 }
 
 function markupBodyHtml(html) {
@@ -312,7 +307,7 @@ test("slice 31-4: markdown table shape uses scroll wrapper when table is exporte
 test("slice 31-5: activity echo dedupe suppresses exact framing and cross-block repeats", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-activity-echo-dedupe.json");
-  const scope = sectionScope(html, "Echo dedupe showcase");
+  const scope = activityArticleScope(html, "Echo dedupe showcase");
   const preamblePhrase = "Read the scenario carefully before you write";
   const evidencePhrase = "Use evidence from the passage when you answer";
   const taskPhrase = "Write a short paragraph comparing the two sources";
@@ -341,7 +336,7 @@ test("slice 31-5: activity echo dedupe suppresses exact framing and cross-block 
 test("slice 31-5: activity echo dedupe retains distinct orientation and reasoning labels", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-activity-echo-dedupe.json");
-  const scope = sectionScope(html, "Echo dedupe showcase");
+  const scope = activityArticleScope(html, "Echo dedupe showcase");
   assert.match(scope, /Intellectual frame:/i);
   assert.match(scope, /How to think:/i);
   assert.doesNotMatch(

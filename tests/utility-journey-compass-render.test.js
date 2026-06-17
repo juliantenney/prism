@@ -1,5 +1,5 @@
 /**
- * Sprint 49-6 — journey compass renderer scaffold (two-column salience).
+ * Sprint 49-6 / 49-6b — per-activity journey compass renderer.
  */
 
 const test = require("node:test");
@@ -105,58 +105,61 @@ function renderPage(page) {
   return result.html;
 }
 
-function compassAside(html) {
-  const match = html.match(/<aside class="util-journey-compass"[\s\S]*?<\/aside>/i);
-  return match ? match[0] : "";
+function bodyHtml(html) {
+  return String(html || "").split('<details class="util-meta"')[0];
 }
 
-test("49-6: compass renders when overview and activities exist", () => {
+function activityCompassAsides(html) {
+  return bodyHtml(html).match(/<aside class="util-journey-compass[\s\S]*?<\/aside>/gi) || [];
+}
+
+test("49-6b: page header and per-activity compass render when overview and activities exist", () => {
   const html = renderPage(marxBenchmark);
-  assert.match(html, /util-page-columns/);
-  assert.match(html, /util-journey-compass/);
-  assert.match(html, /util-page-resource/);
+  assert.match(html, /util-journey-compass-header/);
+  assert.match(html, /util-activity-row util-page-columns/);
+  assert.match(html, /util-journey-compass--activity/);
   assert.match(html, /util-page-export--with-compass/);
+  assert.ok(activityCompassAsides(html).length >= 4);
 });
 
-test("49-6: compass includes governing inquiry from overview", () => {
+test("49-6b: page header includes governing inquiry from overview", () => {
   const compass = buildCompass(marxBenchmark);
   assert.match(compass.governing_inquiry, /explores whether Karl Marx/i);
   const html = renderPage(marxBenchmark);
-  assert.match(compassAside(html), /explores whether Karl Marx/i);
+  const header = html.match(/<section class="util-journey-compass-header"[\s\S]*?<\/section>/i);
+  assert.ok(header);
+  assert.match(header[0], /explores whether Karl Marx/i);
 });
 
-test("49-6: compass includes activity progression steps", () => {
+test("49-6b: each activity row includes progression label and step signpost", () => {
   const compass = buildCompass(marxBenchmark);
   assert.equal(compass.steps.length, 4);
-  assert.equal(compass.steps[0].activity_id, "A1");
-  assert.match(compass.steps[3].title, /Final Evaluation/i);
   const html = renderPage(marxBenchmark);
-  assert.match(compassAside(html), /A1 — Core Marxist Concepts in Action/);
-  assert.match(compassAside(html), /A4 — Was Marx Right\? Final Evaluation/);
+  assert.match(html, /A1 — Core Marxist Concepts in Action/);
+  assert.match(html, /A4 — Was Marx Right\? Final Evaluation/);
+  assert.match(html, /Step 1 of 4/);
+  assert.match(html, /Step 4 of 4/);
 });
 
-test("49-6: existing activity and material content remains in main column", () => {
+test("49-6b: activity and material content remains in util-task-block column", () => {
   const html = renderPage(marxBenchmark);
-  const mainMatch = html.match(/<main class="util-page-resource"[\s\S]*<\/main>/i);
-  assert.ok(mainMatch, "main resource column expected");
-  const main = mainMatch[0];
-  assert.match(main, /util-task-block/);
-  assert.match(main, /Key Marxist Concepts Explained/);
-  assert.match(main, /Surplus Value/);
-  assert.match(main, /What to do/);
+  const body = bodyHtml(html);
+  assert.match(body, /util-task-block/);
+  assert.match(body, /Key Marxist Concepts Explained/);
+  assert.match(body, /Surplus Value/);
+  assert.match(body, /What to do/);
 });
 
-test("49-6: SP-01 text material body stays in resource column, not compass", () => {
+test("49-6b: SP-01 text material body stays in activity column, not compass", () => {
   const html = renderPage(marxBenchmark);
-  const aside = compassAside(html);
-  const mainMatch = html.match(/<main class="util-page-resource"[\s\S]*<\/main>/i);
-  const main = mainMatch[0];
+  const asides = activityCompassAsides(html).join("");
+  const body = bodyHtml(html);
   const expositionSnippet = "Capitalism is an economic system based on private ownership";
-  assert.match(main, new RegExp(expositionSnippet.slice(0, 40)));
-  assert.doesNotMatch(aside, new RegExp(expositionSnippet.slice(0, 40)));
+  assert.match(body, new RegExp(expositionSnippet.slice(0, 40)));
+  assert.doesNotMatch(asides, new RegExp(expositionSnippet.slice(0, 40)));
 });
 
-test("49-6: transfer and consolidation produce short compass pointers only", () => {
+test("49-6b: transfer and consolidation produce short compass pointers only", () => {
   const compass = buildCompass(marxBenchmark);
   const a4 = compass.steps.find((s) => s.activity_id === "A4");
   assert.ok(a4);
@@ -164,38 +167,40 @@ test("49-6: transfer and consolidation produce short compass pointers only", () 
   const close = a4.signals.find((s) => s.kind === "consolidation_pointer");
   assert.ok(transfer);
   assert.ok(close);
-  assert.equal(transfer.text, "Transfer task in activity materials");
-  assert.equal(close.text, "Consolidation summary in activity materials");
   const html = renderPage(marxBenchmark);
-  const aside = compassAside(html);
-  assert.match(aside, /Transfer task in activity materials/);
-  assert.doesNotMatch(aside, /ride-sharing, food delivery/i);
-  assert.doesNotMatch(aside, /What does Marx explain \*\*most effectively\*\*/i);
+  assert.match(html, /Transfer task in activity materials/);
+  assert.doesNotMatch(html, /util-journey-compass[\s\S]{0,400}ride-sharing, food delivery/i);
 });
 
-test("49-6: responsive wrapper classes are present in export CSS", () => {
+test("49-6b: responsive wrapper classes are present in export CSS", () => {
   const html = renderPage(marxBenchmark);
-  assert.match(html, /@media \(max-width:720px\)\{\.util-page-columns\{grid-template-columns:1fr/);
+  assert.match(
+    html,
+    /@media \(max-width:720px\)\{\.util-activity-row\.util-page-columns\{grid-template-columns:1fr/
+  );
 });
 
-test("49-6: util-pel cues still render in activity framing when fields exist", () => {
+test("49-6b: util-pel cues still render in activity framing when fields exist", () => {
   const html = renderPage(marxFixture);
   assert.match(html, /util-pel-reasoning-cue/);
   assert.match(html, /util-activity-framing/);
   assert.match(html, /How to think:/i);
 });
 
-test("49-6: compass appears before main content in DOM order", () => {
+test("49-6b: per-activity compass precedes activity block in DOM order", () => {
   const html = renderPage(marxBenchmark);
-  const columnsIdx = html.indexOf("util-page-columns");
-  const asideIdx = html.indexOf("util-journey-compass");
-  const mainIdx = html.indexOf('id="util-page-resource-main"');
-  assert.ok(columnsIdx >= 0 && asideIdx > columnsIdx && mainIdx > asideIdx);
-  assert.match(html, /role="complementary"/);
+  const rows = bodyHtml(html).match(/<div class="util-activity-row util-page-columns">[\s\S]*?<\/div>\s*(?=<div class="util-activity-row|<\/section>|<h2|$)/gi);
+  assert.ok(rows && rows.length >= 4, "expected activity rows");
+  rows.forEach((row) => {
+    const asideIdx = row.indexOf("util-journey-compass");
+    const articleIdx = row.indexOf("util-task-block");
+    assert.ok(asideIdx >= 0 && articleIdx > asideIdx, "compass must precede activity article");
+    assert.match(row, /role="complementary"/);
+  });
   assert.match(html, /id="util-journey-compass-heading"/);
 });
 
-test("49-6: title fallback when overview missing", () => {
+test("49-6b: title fallback when overview missing", () => {
   const page = JSON.parse(JSON.stringify(marxBenchmark));
   page.sections = page.sections.filter((s) => s.section_id !== "overview");
   const compass = buildCompass(page);

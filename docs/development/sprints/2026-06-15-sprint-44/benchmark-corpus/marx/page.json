@@ -25,11 +25,74 @@
           "learner_task": "1. Read the concept explanations.\n2. Study the worked example and sample output.\n3. Apply the same structure to a new short scenario (provided in the text).\n4. Write a 120-word explanation using at least three concepts.\n5. Use the checklist to review and revise.",
           "expected_output": "A short written explanation correctly applying at least three Marxist concepts to the scenario, revised using checklist feedback.",
           "materials": {
-            "text": "## Key Marxist Concepts Explained\n\n**Capitalism**  \nCapitalism is an economic system based on private ownership of production (factories, tools, platforms) and the use of wage labour to produce goods for profit. The central aim is accumulation of profit rather than meeting social needs.\n\n**Surplus Value**  \nWorkers produce value through their labour. However, they are paid less than the value they produce. The difference between what workers produce and what they are paid is called **surplus value**, and it becomes profit for the employer.\n\n**Class Struggle**  \nSociety is divided into classes with opposing interests: the **bourgeoisie** (owners) and the **proletariat** (workers). Class struggle refers to the ongoing conflict over wages, working conditions, and control.\n\n**Alienation**  \nWorkers may feel disconnected because they do not control their work, do not own what they produce, and may not see meaning in repetitive labour. This leads to alienation from the product, the process, and themselves.\n\n**Example**  \nA delivery worker for an app platform receives a small payment per job. The company earns much more from each delivery. This illustrates surplus value and a class relationship between platform owners and workers.",
-            "worked_example": "## Worked Example: Analysing a Workplace Scenario\n\n**Scenario**  \nA factory worker produces £200 worth of goods per day but is paid £80 in wages.\n\n### Step-by-step reasoning\n\n**Step 1: Identify the classes**  \nThe factory owner = bourgeoisie (owns means of production).  \nThe worker = proletariat (sells labour).\n\n**Step 2: Identify surplus value**  \nValue produced (£200) − wages (£80) = £120 surplus value.  \nThis surplus is kept as profit.\n\n**Step 3: Explain exploitation**  \nThe worker is exploited because they produce more value than they receive. This difference sustains the capitalist system.\n\n**Step 4: Consider alienation**  \nIf the worker has no control over production and has no connection to the final product, they may feel alienated.\n\n**Conclusion**  \nThis scenario illustrates how capitalism depends on wage labour, generates surplus value, and creates structured class relationships.",
-            "sample_output": "## Sample Output (Model Paragraph)\n\nIn this scenario, the worker represents the proletariat, while the factory owner represents the bourgeoisie. The worker produces goods worth significantly more than their wage, generating surplus value that becomes profit for the owner. This demonstrates exploitation, as the worker receives only a portion of the value they create. If the worker has little control over their work or connection to the final product, this may also lead to alienation. Together, these concepts illustrate how Marx argued that capitalism systematically benefits owners at the expense of workers.",
-            "checklist": "## Self-Check Checklist\n\nUse this to evaluate your explanation:\n\n- Have you **used at least three correct terms** (e.g. surplus value, class struggle)?  \n- Have you **defined each term accurately**, not just named it?  \n- Have you **applied the concepts to the specific scenario**, not described them in general?  \n- Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?  \n\n### If any check is not met:\nRevise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific."
-          }
+            "text": "## Key Marxist Concepts Explained\r\n\r\n**Capitalism**  \r\nCapitalism is an economic system based on private ownership of production (factories, tools, platforms) and the use of wage labour to produce goods for profit. The central aim is accumulation of profit rather than meeting social needs.\r\n\r\n**Surplus Value**  \r\nWorkers produce value through their labour. However, they are paid less than the value they produce. The difference between what workers produce and what they are paid is called **surplus value**, and it becomes profit for the employer.\r\n\r\n**Class Struggle**  \r\nSociety is divided into classes with opposing interests: the **bourgeoisie** (owners) and the **proletariat** (workers). Class struggle refers to the ongoing conflict over wages, working conditions, and control.\r\n\r\n**Alienation**  \r\nWorkers may feel disconnected because they do not control their work, do not own what they produce, and may not see meaning in repetitive labour. This leads to alienation from the product, the process, and themselves.\r\n\r\n**Example**  \r\nA delivery worker for an app platform receives a small payment per job. The company earns much more from each delivery. This illustrates surplus value and a class relationship between platform owners and workers.\r\n\r\n***",
+            "worked_example": "## Worked Example: Analysing a Workplace Scenario\r\n\r\n**Scenario**  \r\nA factory worker produces £200 worth of goods per day but is paid £80 in wages.\r\n\r\n### Step-by-step reasoning\r\n\r\n**Step 1: Identify the classes**  \r\nThe factory owner = bourgeoisie (owns means of production).  \r\nThe worker = proletariat (sells labour).\r\n\r\n**Step 2: Identify surplus value**  \r\nValue produced (£200) − wages (£80) = £120 surplus value.  \r\nThis surplus is kept as profit.\r\n\r\n**Step 3: Explain exploitation**  \r\nThe worker is exploited because they produce more value than they receive. This difference sustains the capitalist system.\r\n\r\n**Step 4: Consider alienation**  \r\nIf the worker has no control over production and has no connection to the final product, they may feel alienated.\r\n\r\n**Conclusion**  \r\nThis scenario illustrates how capitalism depends on wage labour, generates surplus value, and creates structured class relationships.\r\n\r\n***",
+            "sample_output": "## Sample Output (Model Paragraph)\r\n\r\nIn this scenario, the worker represents the proletariat, while the factory owner represents the bourgeoisie. The worker produces goods worth significantly more than their wage, generating surplus value that becomes profit for the owner. This demonstrates exploitation, as the worker receives only a portion of the value they create. If the worker has little control over their work or connection to the final product, this may also lead to alienation. Together, these concepts illustrate how Marx argued that capitalism systematically benefits owners at the expense of workers.\r\n\r\n***",
+            "checklist": "## Self-Check Checklist\r\n\r\nUse this to evaluate your explanation:\r\n\r\n* Have you **used at least three correct terms** (e.g. surplus value, class struggle)?\r\n* Have you **defined each term accurately**, not just named it?\r\n* Have you **applied the concepts to the specific scenario**, not described them in general?\r\n* Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?\r\n\r\n### If any check is not met:\r\n\r\nRevise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific.\r\n\r\n***",
+            "checklist_evaluate": "## Self-Check Checklist\r\n\r\nUse this to evaluate your explanation:\r\n\r\n* Have you **used at least three correct terms** (e.g. surplus value, class struggle)?\r\n* Have you **defined each term accurately**, not just named it?\r\n* Have you **applied the concepts to the specific scenario**, not described them in general?\r\n* Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?\r\n\r\n### If any check is not met:\r\n\r\nRevise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific.\r\n\r\n***",
+            "evaluation_checklist": "## Self-Check Checklist\r\n\r\nUse this to evaluate your explanation:\r\n\r\n* Have you **used at least three correct terms** (e.g. surplus value, class struggle)?\r\n* Have you **defined each term accurately**, not just named it?\r\n* Have you **applied the concepts to the specific scenario**, not described them in general?\r\n* Have you **explained relationships clearly** (e.g. how surplus value shows exploitation)?\r\n\r\n### If any check is not met:\r\n\r\nRevise your explanation by correcting definitions, adding missing links, or making your application to the scenario more specific.\r\n\r\n***"
+          },
+          "material_role_index": {
+            "text": {
+              "role_family": "explanatory_guidance",
+              "canonical_key": "text",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M1"
+            },
+            "worked_example": {
+              "role_family": "worked_example",
+              "canonical_key": "worked_example",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "sample_output": {
+              "role_family": "sample_output",
+              "canonical_key": "sample_output",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            },
+            "checklist_evaluate": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M4"
+            },
+            "evaluation_checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            }
+          },
+          "activity_archetype": "understand"
         },
         {
           "activity_id": "A2",
@@ -38,11 +101,74 @@
           "learner_task": "1. Read explanation and study worked example.\n2. Complete the analysis table linking mechanisms to outcomes.\n3. Write a short explanation (100 words) explaining one full causal chain.\n4. Check your work using the checklist.",
           "expected_output": "Completed analysis table and a short causal explanation showing how one mechanism produces inequality or crisis.",
           "materials": {
-            "text": "## Mechanisms of Capitalism\n\nThree core mechanisms explain how capitalism produces inequality and instability:\n\n**Exploitation**  \nWorkers create value but receive limited wages. This creates a persistent gap between labour and reward.\n\n**Capital Accumulation**  \nProfits are reinvested, allowing owners to expand production. Over time, wealth becomes concentrated among fewer individuals.\n\n**Overproduction**  \nAs firms compete and expand, they may produce more goods than consumers can afford to buy. This leads to unsold stock and falling profits.\n\n### Linking Mechanisms to Outcomes\n\n- Exploitation → inequality (workers earn less than they produce)  \n- Accumulation → concentration of wealth  \n- Overproduction → economic crises (recessions, layoffs)\n\nThese processes show how outcomes emerge from internal dynamics of the system.",
-            "worked_example": "## Worked Analytic Pass: From Mechanism to Outcome\n\n**Scenario**  \nA growing firm increases production while keeping wages low.\n\n### Step-by-step analysis\n\n**Step 1: Identify mechanism**  \nLow wages = exploitation.\n\n**Step 2: Apply analytical lens**  \nWorkers have limited purchasing power due to low wages.\n\n**Step 3: Trace consequences**  \nGoods are produced in large quantities, but workers cannot afford to buy them.\n\n**Step 4: Identify outcome**  \nUnsold goods accumulate → overproduction.\n\n**Step 5: Final link**  \nOverproduction reduces profits and can trigger layoffs → economic crisis.\n\n**Conclusion**  \nExploitation contributes to overproduction, showing how mechanisms connect to broader outcomes like instability.",
-            "analysis_table": "| Mechanism | What happens | Resulting outcome |\n| --- | --- | --- |\n| Exploitation | Workers produce more value than they are paid | Inequality |\n| Capital accumulation |  |  |\n| Overproduction |  |  |",
-            "checklist": "## Self-Check Checklist\n\n- Have you clearly **described each mechanism** in your own words?  \n- Have you **linked each mechanism to a specific outcome**?  \n- Does your explanation show a **cause → effect relationship**?  \n- Is your reasoning **logically consistent across steps**?  \n\n### If something is unclear:\nRevisit your table and ensure each step connects directly to the outcome."
-          }
+            "text": "## Mechanisms of Capitalism\r\n\r\nThree core mechanisms explain how capitalism produces inequality and instability:\r\n\r\n**Exploitation**  \r\nWorkers create value but receive limited wages. This creates a persistent gap between labour and reward.\r\n\r\n**Capital Accumulation**  \r\nProfits are reinvested, allowing owners to expand production. Over time, wealth becomes concentrated among fewer individuals.\r\n\r\n**Overproduction**  \r\nAs firms compete and expand, they may produce more goods than consumers can afford to buy. This leads to unsold stock and falling profits.\r\n\r\n### Linking Mechanisms to Outcomes\r\n\r\n* Exploitation → inequality (workers earn less than they produce)\r\n* Accumulation → concentration of wealth\r\n* Overproduction → economic crises (recessions, layoffs)\r\n\r\nThese processes show how outcomes emerge from internal dynamics of the system.\r\n\r\n***",
+            "worked_example": "## Worked Analytic Pass: From Mechanism to Outcome\r\n\r\n**Scenario**  \r\nA growing firm increases production while keeping wages low.\r\n\r\n### Step-by-step analysis\r\n\r\n**Step 1: Identify mechanism**  \r\nLow wages = exploitation.\r\n\r\n**Step 2: Apply analytical lens**  \r\nWorkers have limited purchasing power due to low wages.\r\n\r\n**Step 3: Trace consequences**  \r\nGoods are produced in large quantities, but workers cannot afford to buy them.\r\n\r\n**Step 4: Identify outcome**  \r\nUnsold goods accumulate → overproduction.\r\n\r\n**Step 5: Final link**  \r\nOverproduction reduces profits and can trigger layoffs → economic crisis.\r\n\r\n**Conclusion**  \r\nExploitation contributes to overproduction, showing how mechanisms connect to broader outcomes like instability.\r\n\r\n***",
+            "analysis_table": "| Mechanism            | What happens                                  | Resulting outcome |\r\n| -------------------- | --------------------------------------------- | ----------------- |\r\n| Exploitation         | Workers produce more value than they are paid | Inequality        |\r\n| Capital accumulation |                                               |                   |\r\n| Overproduction       |                                               |                   |\r\n\r\n***",
+            "checklist": "## Self-Check Checklist\r\n\r\n* Have you clearly **described each mechanism** in your own words?\r\n* Have you **linked each mechanism to a specific outcome**?\r\n* Does your explanation show a **cause → effect relationship**?\r\n* Is your reasoning **logically consistent across steps**?\r\n\r\n### If something is unclear:\r\n\r\nRevisit your table and ensure each step connects directly to the outcome.\r\n\r\n***",
+            "checklist_evaluate": "## Self-Check Checklist\r\n\r\n* Have you clearly **described each mechanism** in your own words?\r\n* Have you **linked each mechanism to a specific outcome**?\r\n* Does your explanation show a **cause → effect relationship**?\r\n* Is your reasoning **logically consistent across steps**?\r\n\r\n### If something is unclear:\r\n\r\nRevisit your table and ensure each step connects directly to the outcome.\r\n\r\n***",
+            "evaluation_checklist": "## Self-Check Checklist\r\n\r\n* Have you clearly **described each mechanism** in your own words?\r\n* Have you **linked each mechanism to a specific outcome**?\r\n* Does your explanation show a **cause → effect relationship**?\r\n* Is your reasoning **logically consistent across steps**?\r\n\r\n### If something is unclear:\r\n\r\nRevisit your table and ensure each step connects directly to the outcome.\r\n\r\n***"
+          },
+          "material_role_index": {
+            "text": {
+              "role_family": "explanatory_guidance",
+              "canonical_key": "text",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M5"
+            },
+            "worked_example": {
+              "role_family": "worked_example",
+              "canonical_key": "worked_example",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "analysis_table": {
+              "role_family": "practice_table",
+              "canonical_key": "classification_table",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            },
+            "checklist_evaluate": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M8"
+            },
+            "evaluation_checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            }
+          },
+          "activity_archetype": "apply"
         },
         {
           "activity_id": "A3",
@@ -52,9 +178,87 @@
           "expected_output": "Completed comparison table and a short paragraph evaluating alignment between prediction and outcome.",
           "materials": {
             "scenario": "## Case Scenarios\n\n**Case 1: Post-war Europe (1945–1975)**  \nMany Western European countries introduced strong welfare states, labour protections, and public services. Workers experienced rising wages, improved working conditions, and increased social mobility. While inequality persisted, it was reduced compared to earlier periods. This suggests capitalism adapted through reform rather than collapse.\n\n**Case 2: Global Financial Crisis (2008)**  \nA major financial crisis led to bank failures, unemployment, and recession across multiple economies. Governments intervened to stabilise the system. Inequality increased in the aftermath, and many workers faced unstable employment conditions. This reflects instability within the system.",
-            "comparison_table": "| Marx prediction | Actual outcome | Matches? (Yes/No/Partial) |\n| --- | --- | --- |\n| Rising inequality |  |  |\n| Increasing crises |  |  |\n| Worker immiseration |  |  |",
-            "checklist": "## Self-Check Checklist\n\n- Have you used **evidence from the cases**, not general statements?  \n- Have you **clearly judged alignment** (yes, no, partial)?  \n- Have you **justified your judgement with reasoning**?  \n- Does your paragraph **compare prediction and outcome directly**?  \n\n### If needed:\nAdd evidence or clarify your reasoning."
-          }
+            "comparison_table": "| Marx prediction     | Actual outcome | Matches? (Yes/No/Partial) |\r\n| ------------------- | -------------- | ------------------------- |\r\n| Rising inequality   |                |                           |\r\n| Increasing crises   |                |                           |\r\n| Worker immiseration |                |                           |\r\n\r\n***",
+            "checklist": "## Self-Check Checklist\r\n\r\n* Have you used **evidence from the cases**, not general statements?\r\n* Have you **clearly judged alignment** (yes, no, partial)?\r\n* Have you **justified your judgement with reasoning**?\r\n* Does your paragraph **compare prediction and outcome directly**?\r\n\r\n### If needed:\r\n\r\nAdd evidence or clarify your reasoning.\r\n\r\n***",
+            "scenario_maya_households": "## Case Scenarios\r\n\r\n**Case 1: Post-war Europe (1945–1975)**  \r\nMany Western European countries introduced strong welfare states, labour protections, and public services. Workers experienced rising wages, improved working conditions, and increased social mobility. While inequality persisted, it was reduced compared to earlier periods. This suggests capitalism adapted through reform rather than collapse.\r\n\r\n**Case 2: Global Financial Crisis (2008)**  \r\nA major financial crisis led to bank failures, unemployment, and recession across multiple economies. Governments intervened to stabilise the system. Inequality increased in the aftermath, and many workers faced unstable employment conditions. This reflects instability within the system.\r\n\r\n***",
+            "checklist_evaluate": "## Self-Check Checklist\r\n\r\n* Have you used **evidence from the cases**, not general statements?\r\n* Have you **clearly judged alignment** (yes, no, partial)?\r\n* Have you **justified your judgement with reasoning**?\r\n* Does your paragraph **compare prediction and outcome directly**?\r\n\r\n### If needed:\r\n\r\nAdd evidence or clarify your reasoning.\r\n\r\n***",
+            "evaluation_checklist": "## Self-Check Checklist\r\n\r\n* Have you used **evidence from the cases**, not general statements?\r\n* Have you **clearly judged alignment** (yes, no, partial)?\r\n* Have you **justified your judgement with reasoning**?\r\n* Does your paragraph **compare prediction and outcome directly**?\r\n\r\n### If needed:\r\n\r\nAdd evidence or clarify your reasoning.\r\n\r\n***",
+            "scenarios": [
+              "## Case Scenarios\r\n\r\n**Case 1: Post-war Europe (1945–1975)**  \r\nMany Western European countries introduced strong welfare states, labour protections, and public services. Workers experienced rising wages, improved working conditions, and increased social mobility. While inequality persisted, it was reduced compared to earlier periods. This suggests capitalism adapted through reform rather than collapse.\r\n\r\n**Case 2: Global Financial Crisis (2008)**  \r\nA major financial crisis led to bank failures, unemployment, and recession across multiple economies. Governments intervened to stabilise the system. Inequality increased in the aftermath, and many workers faced unstable employment conditions. This reflects instability within the system.\r\n\r\n***"
+            ]
+          },
+          "material_role_index": {
+            "scenario": {
+              "role_family": "scenario",
+              "canonical_key": "scenario_maya_households",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "scenario_maya_households",
+              "material_id": null
+            },
+            "comparison_table": {
+              "role_family": "practice_table",
+              "canonical_key": "classification_table",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            },
+            "scenario_maya_households": {
+              "role_family": "scenario",
+              "canonical_key": "scenario_maya_households",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M9"
+            },
+            "checklist_evaluate": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M11"
+            },
+            "evaluation_checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            },
+            "scenarios": {
+              "role_family": "scenario",
+              "canonical_key": "scenario_maya_households",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "scenario_maya_households",
+              "material_id": null
+            }
+          },
+          "activity_archetype": "analyse"
         },
         {
           "activity_id": "A4",
@@ -63,13 +267,126 @@
           "learner_task": "1. Review evaluation criteria.\n2. Complete the decision table.\n3. Write your final judgement using the template.\n4. Use the checklist to improve your answer.\n5. Respond to the transfer prompt.\n6. Write a short consolidation summary.",
           "expected_output": "A structured evaluative judgement (150–200 words), completed decision table, transfer response, and consolidation summary.",
           "materials": {
-            "text": "## Criteria for Evaluating Marx\n\nUse these criteria to form your judgement:\n\n**1. Explanatory Power**  \nDoes Marx’s theory help explain real-world patterns (e.g. inequality, crises)?\n\n**2. Predictive Accuracy**  \nDid Marx correctly anticipate how capitalism would develop?\n\n**3. Contemporary Relevance**  \nDo his ideas still help make sense of modern issues like digital platforms or global supply chains?\n\n### How to use criteria  \nA strong evaluation uses all three criteria and recognises both strengths and limitations.",
-            "decision_table": "| Criterion | Evidence for Marx | Evidence against Marx | Judgement |\n| --- | --- | --- | --- |\n| Explanatory power | Explains inequality trends | Does not explain all social change |  |\n| Predictive accuracy |  |  |  |\n| Contemporary relevance |  |  |  |",
-            "template": "## Judgement Template\n\nUse this structure to write your response (150–200 words):\n\n**Claim**  \nOverall, Marx was (right / partly right / not right) because…\n\n**Evidence (for)**  \nOne reason supporting this view is…\n\n**Counterpoint (against)**  \nHowever, Marx underestimated…\n\n**Final judgement**  \nTaking both sides into account, a balanced conclusion is…",
-            "checklist": "## Evaluation Checklist\n\n- Does your answer include a **clear overall judgement**?  \n- Have you used **evidence on both sides**?  \n- Have you applied **at least two criteria** explicitly?  \n- Is your argument **logically structured and coherent**?  \n\n### If not:\nRevise your answer to improve balance and clarity.",
-            "transfer_prompt": "## Transfer Task: Applying Marx to the Digital Economy\n\nConsider a modern digital platform (e.g. ride-sharing, food delivery, or online marketplaces).\n\nWrite a short response (100–150 words) addressing:\n\n- How might **surplus value** operate in this context?  \n- Who represents the **bourgeoisie and proletariat**?  \n- Does Marx’s framework still explain the relationship between workers and platform owners?  \n- Which of the evaluation criteria (explanatory power, predictive accuracy, relevance) is most useful here, and why?\n\nYour response should apply the same analytical framework but in a new context.",
-            "consolidation_summary": "## Consolidation Summary\n\nBring together your learning from this session.\n\nWrite at least 80–120 words addressing:\n\n- What does Marx explain **most effectively** about capitalism?  \n- Where does his theory appear **limited or inaccurate**?  \n- What key distinction can you now clearly make (e.g. between explanation and prediction)?  \n\nYou might begin with:\n\n- “One idea that now seems clearer is…”  \n- “A limitation I can now explain is…”  \n- “When evaluating theories, I now focus on…”  \n\nAim to summarise your understanding, not introduce new ideas."
-          }
+            "text": "## Criteria for Evaluating Marx\r\n\r\nUse these criteria to form your judgement:\r\n\r\n**1. Explanatory Power**  \r\nDoes Marx’s theory help explain real-world patterns (e.g. inequality, crises)?\r\n\r\n**2. Predictive Accuracy**  \r\nDid Marx correctly anticipate how capitalism would develop?\r\n\r\n**3. Contemporary Relevance**  \r\nDo his ideas still help make sense of modern issues like digital platforms or global supply chains?\r\n\r\n### How to use criteria\r\n\r\nA strong evaluation uses all three criteria and recognises both strengths and limitations.\r\n\r\n***",
+            "decision_table": "| Criterion              | Evidence for Marx          | Evidence against Marx              | Judgement |\r\n| ---------------------- | -------------------------- | ---------------------------------- | --------- |\r\n| Explanatory power      | Explains inequality trends | Does not explain all social change |           |\r\n| Predictive accuracy    |                            |                                    |           |\r\n| Contemporary relevance |                            |                                    |           |\r\n\r\n***",
+            "template": "## Judgement Template\r\n\r\nUse this structure to write your response (150–200 words):\r\n\r\n**Claim**  \r\nOverall, Marx was (right / partly right / not right) because…\r\n\r\n**Evidence (for)**  \r\nOne reason supporting this view is…\r\n\r\n**Counterpoint (against)**  \r\nHowever, Marx underestimated…\r\n\r\n**Final judgement**  \r\nTaking both sides into account, a balanced conclusion is…\r\n\r\n***",
+            "checklist": "## Evaluation Checklist\r\n\r\n* Does your answer include a **clear overall judgement**?\r\n* Have you used **evidence on both sides**?\r\n* Have you applied **at least two criteria** explicitly?\r\n* Is your argument **logically structured and coherent**?\r\n\r\n### If not:\r\n\r\nRevise your answer to improve balance and clarity.\r\n\r\n***",
+            "transfer_prompt": "## Transfer Task: Applying Marx to the Digital Economy\r\n\r\nConsider a modern digital platform (e.g. ride-sharing, food delivery, or online marketplaces).\r\n\r\nWrite a short response (100–150 words) addressing:\r\n\r\n* How might **surplus value** operate in this context?\r\n* Who represents the **bourgeoisie and proletariat**?\r\n* Does Marx’s framework still explain the relationship between workers and platform owners?\r\n* Which of the evaluation criteria (explanatory power, predictive accuracy, relevance) is most useful here, and why?\r\n\r\nYour response should apply the same analytical framework but in a new context.\r\n\r\n***",
+            "consolidation_summary": "## Consolidation Summary\r\n\r\nBring together your learning from this session.\r\n\r\nWrite at least 80–120 words addressing:\r\n\r\n* What does Marx explain **most effectively** about capitalism?\r\n* Where does his theory appear **limited or inaccurate**?\r\n* What key distinction can you now clearly make (e.g. between explanation and prediction)?\r\n\r\nYou might begin with:\r\n\r\n* “One idea that now seems clearer is…”\r\n* “A limitation I can now explain is…”\r\n* “When evaluating theories, I now focus on…”\r\n\r\nAim to summarise your understanding, not introduce new ideas.\r\n\r\n***\r\n\r\nSTEP 6 OUTPUT: activity\\_materials",
+            "guided_judgement_table": "| Criterion              | Evidence for Marx          | Evidence against Marx              | Judgement |\r\n| ---------------------- | -------------------------- | ---------------------------------- | --------- |\r\n| Explanatory power      | Explains inequality trends | Does not explain all social change |           |\r\n| Predictive accuracy    |                            |                                    |           |\r\n| Contemporary relevance |                            |                                    |           |\r\n\r\n***",
+            "independent_judgement_template": "## Judgement Template\r\n\r\nUse this structure to write your response (150–200 words):\r\n\r\n**Claim**  \r\nOverall, Marx was (right / partly right / not right) because…\r\n\r\n**Evidence (for)**  \r\nOne reason supporting this view is…\r\n\r\n**Counterpoint (against)**  \r\nHowever, Marx underestimated…\r\n\r\n**Final judgement**  \r\nTaking both sides into account, a balanced conclusion is…\r\n\r\n***",
+            "checklist_evaluate": "## Evaluation Checklist\r\n\r\n* Does your answer include a **clear overall judgement**?\r\n* Have you used **evidence on both sides**?\r\n* Have you applied **at least two criteria** explicitly?\r\n* Is your argument **logically structured and coherent**?\r\n\r\n### If not:\r\n\r\nRevise your answer to improve balance and clarity.\r\n\r\n***",
+            "transfer_prompt_evaluate": "## Transfer Task: Applying Marx to the Digital Economy\r\n\r\nConsider a modern digital platform (e.g. ride-sharing, food delivery, or online marketplaces).\r\n\r\nWrite a short response (100–150 words) addressing:\r\n\r\n* How might **surplus value** operate in this context?\r\n* Who represents the **bourgeoisie and proletariat**?\r\n* Does Marx’s framework still explain the relationship between workers and platform owners?\r\n* Which of the evaluation criteria (explanatory power, predictive accuracy, relevance) is most useful here, and why?\r\n\r\nYour response should apply the same analytical framework but in a new context.\r\n\r\n***",
+            "evaluation_checklist": "## Evaluation Checklist\r\n\r\n* Does your answer include a **clear overall judgement**?\r\n* Have you used **evidence on both sides**?\r\n* Have you applied **at least two criteria** explicitly?\r\n* Is your argument **logically structured and coherent**?\r\n\r\n### If not:\r\n\r\nRevise your answer to improve balance and clarity.\r\n\r\n***"
+          },
+          "material_role_index": {
+            "text": {
+              "role_family": "explanatory_guidance",
+              "canonical_key": "text",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M12"
+            },
+            "decision_table": {
+              "role_family": "guided_judgement_table",
+              "canonical_key": "guided_judgement_table",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "template": {
+              "role_family": "independent_template",
+              "canonical_key": "independent_judgement_template",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "independent_judgement_template",
+              "material_id": null
+            },
+            "checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            },
+            "transfer_prompt": {
+              "role_family": "transfer_prompt",
+              "canonical_key": "transfer_prompt_evaluate",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "consolidation_summary": {
+              "role_family": "consolidation_summary",
+              "canonical_key": "consolidation_summary",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "guided_judgement_table": {
+              "role_family": "guided_judgement_table",
+              "canonical_key": "guided_judgement_table",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "independent_judgement_template": {
+              "role_family": "independent_template",
+              "canonical_key": "independent_judgement_template",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M14"
+            },
+            "checklist_evaluate": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "canonical",
+              "source": "gam",
+              "canonical": true,
+              "renderable": true,
+              "superseded_by": null,
+              "material_id": "M15"
+            },
+            "transfer_prompt_evaluate": {
+              "role_family": "transfer_prompt",
+              "canonical_key": "transfer_prompt_evaluate",
+              "authority": "compose",
+              "source": "compose",
+              "canonical": false,
+              "renderable": true,
+              "superseded_by": null
+            },
+            "evaluation_checklist": {
+              "role_family": "verification_checklist",
+              "canonical_key": "checklist_evaluate",
+              "authority": "superseded",
+              "source": "compose",
+              "canonical": false,
+              "renderable": false,
+              "superseded_by": "checklist_evaluate",
+              "material_id": null
+            }
+          },
+          "activity_archetype": "evaluate"
         }
       ]
     }
@@ -85,7 +402,8 @@
     "60 minute duration",
     "self-directed learner page",
     "no assessment items included",
-    "materials preserved verbatim"
+    "materials preserved verbatim",
+    "GAM materials L4 preserve merge applied (page-gam-materials-preserve)"
   ],
   "visual_affordance_schema_version": "38.4",
   "activities_visual_review": [
@@ -121,5 +439,13 @@
   "visual_affordances": [],
   "generation_notes": {
     "limitations": []
+  },
+  "metadata": {
+    "gam_materials_preserve_applied": true,
+    "gam_materials_preserve_schema": "38M-2",
+    "gam_materials_preserve_rows": 4,
+    "role_supersession_applied": true,
+    "role_supersession_schema": "38P-3",
+    "role_registry_version": "38P-2"
   }
 }

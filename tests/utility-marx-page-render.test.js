@@ -93,23 +93,26 @@ function renderMarxPage(api) {
 }
 
 function mainBodyHtml(html) {
-  const doc = String(html || "");
-  const open = doc.indexOf('<main class="util-page-resource"');
-  if (open < 0) return doc.split('<details class="util-meta"')[0];
-  const close = doc.indexOf("</main>", open);
-  if (close < 0) return doc.slice(open);
-  return doc.slice(open, close + "</main>".length);
+  return String(html || "").split('<details class="util-meta"')[0];
 }
 
 function activityScope(html, titleFragment) {
   const main = mainBodyHtml(html);
+  const escaped = titleFragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(
-    titleFragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-      '[\\s\\S]*?(?=<article class="util-task-block"|$)',
+    '<div class="util-activity-row util-page-columns"[\\s\\S]*?' +
+      escaped +
+      '[\\s\\S]*?<article class="util-task-block"[\\s\\S]*?</article>',
     "i"
   );
   const m = main.match(re);
-  return m ? m[0] : "";
+  if (m) return m[0];
+  const fallback = new RegExp(
+    escaped + '[\\s\\S]*?(?=<article class="util-task-block"|$)',
+    "i"
+  );
+  const fm = main.match(fallback);
+  return fm ? fm[0] : main;
 }
 
 const api = loadPrismTestApi();

@@ -35327,8 +35327,33 @@
       getUtilityPagePresentationCssV31_8() +
       getUtilityPagePresentationCssV31_9() +
       getUtilityPagePresentationCssV31_10() +
-      getUtilityPagePresentationCssV31_11()
+      getUtilityPagePresentationCssV31_11() +
+      getUtilityJourneyCompassPresentationCss()
     );
+  }
+
+  function getUtilityJourneyCompassPresentationCss() {
+    return [
+      "body.util-page-export--with-compass{max-width:1140px}",
+      ".util-page-columns{display:grid;grid-template-columns:minmax(200px,28%) minmax(0,1fr);gap:24px;align-items:start;margin:8px 0 24px}",
+      ".util-page-resource{min-width:0}",
+      ".util-journey-compass{padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
+      ".util-journey-compass__title{margin:0 0 12px;font-size:.875rem;font-weight:700;letter-spacing:.02em;color:#0f172a;line-height:1.35}",
+      ".util-journey-compass__section{margin:0 0 14px}",
+      ".util-journey-compass__section:last-child{margin-bottom:0}",
+      ".util-journey-compass__section-heading{margin:0 0 6px;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#64748b}",
+      ".util-journey-compass__steps{margin:0;padding:0 0 0 1.1rem;list-style:decimal}",
+      ".util-journey-compass__step{margin:0 0 12px;padding:0}",
+      ".util-journey-compass__step:last-child{margin-bottom:0}",
+      ".util-journey-compass__step-label{font-weight:600;color:#334155;line-height:1.4}",
+      ".util-journey-compass__step-meta{margin:2px 0 6px;font-size:.75rem;color:#64748b}",
+      ".util-journey-compass__signal{margin:0 0 6px;font-size:.8125rem;color:#475569}",
+      ".util-journey-compass__signal:last-child{margin-bottom:0}",
+      ".util-journey-compass__signal-label{font-weight:600;color:#64748b}",
+      ".util-journey-compass__signal--transition{font-style:italic;color:#64748b}",
+      "@media (max-width:720px){.util-page-columns{grid-template-columns:1fr;gap:16px}}",
+      "@media print{.util-journey-compass{break-inside:avoid-page;background:#fff;border-color:#cbd5e1}.util-page-columns{grid-template-columns:1fr}}"
+    ].join("");
   }
 
   function getUtilityPagePresentationCssV31_11() {
@@ -36733,6 +36758,286 @@
     return validation;
   }
 
+  var JOURNEY_COMPASS_MAX_INQUIRY_LEN = 220;
+  var JOURNEY_COMPASS_MAX_SIGNPOST_LEN = 160;
+
+  function utilityPlainTextFromRenderable(value) {
+    var text = String(value == null ? "" : value);
+    if (!String(text).trim()) return "";
+    text = text.replace(/```[\s\S]*?```/g, " ");
+    text = text.replace(/\*\*([^*]+)\*\*/g, "$1");
+    text = text.replace(/__([^_]+)__/g, "$1");
+    text = text.replace(/`([^`]+)`/g, "$1");
+    text = text.replace(/#{1,6}\s*/g, "");
+    text = text.replace(/<[^>]+>/g, " ");
+    text = text.replace(/\s+/g, " ").trim();
+    return text;
+  }
+
+  function utilityTruncateCompassSignpost(text, maxLen) {
+    var s = String(text || "").trim();
+    if (!s) return "";
+    var max = typeof maxLen === "number" && maxLen > 0 ? maxLen : JOURNEY_COMPASS_MAX_SIGNPOST_LEN;
+    if (s.length <= max) return s;
+    var cut = s.slice(0, max - 1);
+    var lastSpace = cut.lastIndexOf(" ");
+    if (lastSpace > Math.floor(max * 0.5)) cut = cut.slice(0, lastSpace);
+    return cut.trim() + "\u2026";
+  }
+
+  function utilityFirstSentencePlain(text) {
+    var plain = utilityPlainTextFromRenderable(text);
+    if (!plain) return "";
+    var match = plain.match(/^[\s\S]+?[.!?](?:\s+|$)/);
+    if (match && String(match[0] || "").trim()) return String(match[0]).trim();
+    return utilityTruncateCompassSignpost(plain, JOURNEY_COMPASS_MAX_INQUIRY_LEN);
+  }
+
+  function utilityFindPageSectionContent(parsed, sectionId) {
+    var sid = String(sectionId || "")
+      .trim()
+      .toLowerCase();
+    if (!sid || !parsed || typeof parsed !== "object") return null;
+    var sections = getPageSectionsForRender(parsed);
+    var i;
+    for (i = 0; i < sections.length; i += 1) {
+      var sec = sections[i];
+      if (!sec || typeof sec !== "object" || Array.isArray(sec)) continue;
+      var kind = pageSectionCanonicalKind(sec);
+      if (kind === sid || String(sec.section_id || sec.id || "").trim().toLowerCase() === sid) {
+        return sec.content;
+      }
+    }
+    if (!utilityIsEmptyValue(parsed[sid])) return parsed[sid];
+    return null;
+  }
+
+  function extractLearningActivityRowsFromPage(parsed) {
+    var content = utilityFindPageSectionContent(parsed, "learning_activities");
+    if (Array.isArray(content)) {
+      return content.filter(function (row) {
+        return row && typeof row === "object" && !Array.isArray(row);
+      });
+    }
+    if (content && typeof content === "object" && Array.isArray(content.activities)) {
+      return content.activities.slice();
+    }
+    return extractActivityRowsFromDlaCapture(parsed);
+  }
+
+  function utilityBuildLearningSequencePhaseMap(parsed) {
+    var ls = utilityFindPageSectionContent(parsed, "learning_sequence");
+    var map = {};
+    if (!ls || typeof ls !== "object" || Array.isArray(ls)) return map;
+    var timeline = Array.isArray(ls.timeline)
+      ? ls.timeline
+      : Array.isArray(ls.blocks)
+      ? ls.blocks
+      : [];
+    timeline.forEach(function (block) {
+      if (!block || typeof block !== "object") return;
+      var aid = String(block.activity_id || block.activityId || "").trim();
+      if (!aid) return;
+      map[aid.toUpperCase()] = block;
+    });
+    return map;
+  }
+
+  function utilityActivityMaterialsHasKey(materials, key) {
+    if (!materials || typeof materials !== "object" || Array.isArray(materials)) return false;
+    var value = materials[key];
+    if (utilityIsEmptyValue(value)) return false;
+    if (typeof value === "string") return !!String(value).trim();
+    return true;
+  }
+
+  function buildJourneyCompassFromPage(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+    var activities = extractLearningActivityRowsFromPage(parsed);
+    if (!activities.length) return null;
+
+    var overviewContent = utilityFindPageSectionContent(parsed, "overview");
+    var overviewText =
+      typeof overviewContent === "string"
+        ? overviewContent
+        : overviewContent && typeof overviewContent === "object"
+        ? utilityFirstPresent([overviewContent.text, overviewContent.content, overviewContent.body])
+        : "";
+    var governingInquiry = utilityTruncateCompassSignpost(
+      utilityFirstSentencePlain(overviewText) ||
+        utilityPlainTextFromRenderable(parsed.title || parsed.name || ""),
+      JOURNEY_COMPASS_MAX_INQUIRY_LEN
+    );
+
+    var sessionFrameParts = [];
+    if (utilityShouldShowPageAudienceLine(parsed)) {
+      sessionFrameParts.push(String(parsed.audience).trim());
+    }
+    var totalMinutes = 0;
+    activities.forEach(function (row) {
+      var mins = Number(row.duration_minutes || row.durationMinutes || 0);
+      if (!isNaN(mins) && mins > 0) totalMinutes += mins;
+    });
+    if (totalMinutes > 0) {
+      sessionFrameParts.push(String(totalMinutes) + " min session");
+    }
+
+    var phaseMap = utilityBuildLearningSequencePhaseMap(parsed);
+    var steps = activities.map(function (row, idx) {
+      var activityId = String(row.activity_id || row.activityId || row.id || "A" + (idx + 1)).trim();
+      var phaseBlock = phaseMap[activityId.toUpperCase()] || null;
+      var phaseType = utilityFirstPresent([
+        row.phase_type,
+        row.phase,
+        phaseBlock && phaseBlock.phase_type,
+        phaseBlock && phaseBlock.phase
+      ]);
+      var transition = utilityFirstPresent([
+        row.transition_to_next,
+        phaseBlock && phaseBlock.transition_to_next
+      ]);
+      var signals = [];
+      function pushFieldSignal(fieldId, label) {
+        if (utilityIsEmptyValue(row[fieldId])) return;
+        var text = utilityTruncateCompassSignpost(
+          utilityPlainTextFromRenderable(row[fieldId]),
+          JOURNEY_COMPASS_MAX_SIGNPOST_LEN
+        );
+        if (!text) return;
+        signals.push({ kind: fieldId, label: label, text: text });
+      }
+      pushFieldSignal("study_orientation", "Study orientation");
+      pushFieldSignal("intellectual_frame", "Intellectual frame");
+      pushFieldSignal("intellectual_coherence_bridge", "Connection");
+      pushFieldSignal("reasoning_orientation", "How to think");
+      pushFieldSignal("self_explanation_prompt", "Reflect");
+      pushFieldSignal("uncertainty_tension_prompt", "Uncertainty");
+      pushFieldSignal("transfer_or_application_task", "Apply");
+      var materials = row.materials && typeof row.materials === "object" ? row.materials : {};
+      if (utilityActivityMaterialsHasKey(materials, "transfer_prompt")) {
+        signals.push({
+          kind: "transfer_prompt_pointer",
+          label: "Transfer",
+          text: "Transfer task in activity materials"
+        });
+      }
+      if (utilityActivityMaterialsHasKey(materials, "consolidation_summary")) {
+        signals.push({
+          kind: "consolidation_pointer",
+          label: "Close",
+          text: "Consolidation summary in activity materials"
+        });
+      }
+      return {
+        activity_id: activityId,
+        title: String(row.title || row.activity_title || row.name || activityId).trim(),
+        duration_minutes: row.duration_minutes || row.durationMinutes || null,
+        phase_type: phaseType ? String(phaseType).trim() : "",
+        transition: transition ? utilityTruncateCompassSignpost(transition, JOURNEY_COMPASS_MAX_SIGNPOST_LEN) : "",
+        signals: signals,
+        step_index: idx + 1
+      };
+    });
+
+    return {
+      governing_inquiry: governingInquiry,
+      session_frame: sessionFrameParts.join(" · "),
+      steps: steps
+    };
+  }
+
+  function shouldRenderJourneyCompassForPage(parsed, presentationMode) {
+    if (String(presentationMode || "").toLowerCase() === "learning_object") return false;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return false;
+    var profile = String(parsed.page_profile || "learner")
+      .trim()
+      .toLowerCase();
+    if (profile === "facilitator" || profile === "assessment") return false;
+    var compass = buildJourneyCompassFromPage(parsed);
+    return !!(
+      compass &&
+      (String(compass.governing_inquiry || "").trim() ||
+        (Array.isArray(compass.steps) && compass.steps.length))
+    );
+  }
+
+  function renderJourneyCompassHtml(compass) {
+    if (!compass || typeof compass !== "object") return "";
+    var parts = [
+      '<aside class="util-journey-compass" role="complementary" aria-labelledby="util-journey-compass-heading">',
+      '<h2 id="util-journey-compass-heading" class="util-journey-compass__title">Journey compass</h2>'
+    ];
+    if (String(compass.governing_inquiry || "").trim()) {
+      parts.push('<div class="util-journey-compass__section">');
+      parts.push('<h3 class="util-journey-compass__section-heading">Inquiry</h3>');
+      parts.push(
+        '<p class="util-journey-compass__signal">' +
+          utilityEscapeHtml(String(compass.governing_inquiry)) +
+          "</p>"
+      );
+      parts.push("</div>");
+    }
+    if (String(compass.session_frame || "").trim()) {
+      parts.push('<div class="util-journey-compass__section">');
+      parts.push('<h3 class="util-journey-compass__section-heading">Session</h3>');
+      parts.push(
+        '<p class="util-journey-compass__signal">' +
+          utilityEscapeHtml(String(compass.session_frame)) +
+          "</p>"
+      );
+      parts.push("</div>");
+    }
+    var steps = Array.isArray(compass.steps) ? compass.steps : [];
+    if (steps.length) {
+      parts.push('<div class="util-journey-compass__section">');
+      parts.push('<h3 class="util-journey-compass__section-heading">Progression</h3>');
+      parts.push('<ol class="util-journey-compass__steps" aria-label="Activity progression">');
+      steps.forEach(function (step) {
+        if (!step || typeof step !== "object") return;
+        var label =
+          String(step.activity_id || "").trim() +
+          (step.title ? " — " + String(step.title).trim() : "");
+        parts.push('<li class="util-journey-compass__step">');
+        parts.push(
+          '<div class="util-journey-compass__step-label">' + utilityEscapeHtml(label) + "</div>"
+        );
+        var metaParts = [];
+        if (step.duration_minutes) metaParts.push(String(step.duration_minutes) + " min");
+        if (step.phase_type) metaParts.push(String(step.phase_type));
+        if (metaParts.length) {
+          parts.push(
+            '<div class="util-journey-compass__step-meta">' +
+              utilityEscapeHtml(metaParts.join(" · ")) +
+              "</div>"
+          );
+        }
+        if (step.transition) {
+          parts.push(
+            '<p class="util-journey-compass__signal util-journey-compass__signal--transition">' +
+              utilityEscapeHtml(String(step.transition)) +
+              "</p>"
+          );
+        }
+        (step.signals || []).forEach(function (signal) {
+          if (!signal || !String(signal.text || "").trim()) return;
+          parts.push(
+            '<p class="util-journey-compass__signal" data-compass-signal="' +
+              utilityEscapeHtml(String(signal.kind || signal.label || "signal")) +
+              '"><span class="util-journey-compass__signal-label">' +
+              utilityEscapeHtml(String(signal.label || "Note")) +
+              ":</span> " +
+              utilityEscapeHtml(String(signal.text)) +
+              "</p>"
+          );
+        });
+        parts.push("</li>");
+      });
+      parts.push("</ol></div>");
+    }
+    parts.push("</aside>");
+    return parts.join("");
+  }
+
   function buildUtilityStructuredHtml(parsed, plan, _baseName, renderOptions) {
     var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
     var presentationMode = String(options.presentationMode || "single_page").toLowerCase();
@@ -36755,12 +37060,15 @@
       : [];
     var artefactType = String((plan && plan.artefactType) || "").toLowerCase();
     var isPageArtefact = artefactType === "page";
+    var journeyCompassWillRender =
+      isPageArtefact &&
+      shouldRenderJourneyCompassForPage(parsed, presentationMode);
 
     var htmlParts = [];
     var title = String((parsed && (parsed.title || parsed.name)) || utilityLabelFromKey(plan.artefactType || "Artefact"));
     htmlParts.push("<h1>" + utilityEscapeHtml(title) + "</h1>");
 
-    if (utilityShouldShowPageAudienceLine(parsed)) {
+    if (utilityShouldShowPageAudienceLine(parsed) && !journeyCompassWillRender) {
       htmlParts.push(
         "<p><strong>Audience:</strong> " + utilityEscapeHtml(String(parsed.audience)) + "</p>"
       );
@@ -37001,19 +37309,33 @@
       });
     }
 
-    htmlParts = htmlParts.concat(primaryBlocks);
     if (isPageArtefact && presentationMode === "learning_object") {
       var loBlocks = buildLearningObjectSectionBlocksFromPageSections();
       if (!loBlocks.length) loBlocks = primaryBlocks.slice();
       var loAudience = utilityShouldShowPageAudienceLine(parsed) ? String(parsed.audience) : "";
       return buildUtilityLearningObjectHtml(title, loAudience, loBlocks, metadataBlocks);
     }
+
+    var journeyCompassEnabled = journeyCompassWillRender;
+    var resourceBodyParts = primaryBlocks.slice();
     if (metadataBlocks.length) {
-      htmlParts.push(
+      resourceBodyParts.push(
         "<details class=\"util-meta\">" + utilityRenderMetaSummaryHtml() +
           metadataBlocks.join("") +
           "</details>"
       );
+    }
+    if (journeyCompassEnabled) {
+      var journeyCompassHtml = renderJourneyCompassHtml(buildJourneyCompassFromPage(parsed));
+      htmlParts.push(
+        '<div class="util-page-columns">' +
+          journeyCompassHtml +
+          '<main class="util-page-resource" id="util-page-resource-main">' +
+            resourceBodyParts.join("") +
+          "</main></div>"
+      );
+    } else {
+      htmlParts = htmlParts.concat(resourceBodyParts);
     }
     function sanitizeUtilityHtmlOutput(html) {
       var out = String(html || "");
@@ -37137,7 +37459,9 @@
         getUtilityPagePresentationCss() +
         "</style>",
       "</head>",
-      "<body>",
+      '<body class="util-page-export' +
+        (journeyCompassEnabled ? " util-page-export--with-compass" : "") +
+        '">',
       htmlParts.join(""),
       "</body>",
       "</html>"
@@ -38661,6 +38985,10 @@
     prismTestApi.buildDefaultUtilityPageRenderPlanForTest = buildDefaultUtilityPageRenderPlan;
     prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
+    prismTestApi.buildJourneyCompassFromPageForTest = buildJourneyCompassFromPage;
+    prismTestApi.renderJourneyCompassHtmlForTest = renderJourneyCompassHtml;
+    prismTestApi.shouldRenderJourneyCompassForPageForTest = shouldRenderJourneyCompassForPage;
+    prismTestApi.extractLearningActivityRowsFromPageForTest = extractLearningActivityRowsFromPage;
     prismTestApi.renderUtilitiesArtefactHtmlAsyncForTest = renderUtilitiesArtefactHtmlAsync;
     prismTestApi.getPageSectionsForRenderForTest = getPageSectionsForRender;
     prismTestApi.utilityRenderLiveExportCsvTableBlockForTest = utilityRenderLiveExportCsvTableBlock;

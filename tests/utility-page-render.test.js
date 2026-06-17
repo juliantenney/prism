@@ -98,16 +98,38 @@ function renderPageFixture(api, fixtureName, sectionOrder) {
 }
 
 function mainBodyHtml(html) {
-  return html.split('<details class="util-meta"')[0];
+  const doc = String(html || "");
+  const open = doc.indexOf('<main class="util-page-resource"');
+  if (open < 0) return doc.split('<details class="util-meta"')[0];
+  const close = doc.indexOf("</main>", open);
+  if (close < 0) return doc.slice(open);
+  return doc.slice(open, close + "</main>".length);
+}
+
+function markupBodyHtml(html) {
+  return mainBodyHtml(html).replace(/<style[\s\S]*?<\/style>/gi, "");
 }
 
 function sectionScope(html, headingText) {
+  const scopeHtml = mainBodyHtml(html);
+  const escaped = headingText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(
-    headingText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\\s\\S]*?(?=<h2|<details class=\"util-meta\"|$)",
+    "<h2[^>]*>[\\s\\S]*?<span>" + escaped + "</span>[\\s\\S]*?(?=<h2\\b|<details class=\"util-meta\"|$)",
     "i"
   );
-  const m = html.match(re);
-  return m ? m[0] : html;
+  const m = scopeHtml.match(re);
+  return m ? m[0] : scopeHtml;
+}
+
+function activityArticleScope(html, headingText) {
+  const scopeHtml = mainBodyHtml(html);
+  const escaped = headingText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(
+    '<article class="util-task-block"[\\s\\S]*?<h3>[^<]*' + escaped + "[\\s\\S]*?</article>",
+    "i"
+  );
+  const m = scopeHtml.match(re);
+  return m ? m[0] : "";
 }
 
 /** Shared HTML shape semantics (domain-agnostic). */
@@ -464,12 +486,12 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(body, /util-session-phase-cue/);
   assert.match(body, /util-material-role-action/);
   assert.match(body, /util-material-role-model/);
-  assert.match(body, /util-material-role-practice/);
   assert.match(body, /util-material-role-thinking/);
   assert.match(body, /util-material-role-deliverable/);
   assert.match(body, /util-material-role-checkpoint/);
 
-  const a2 = sectionScope(body, "Confidence interval template");
+  const a2 = activityArticleScope(html, "Confidence interval template");
+  assert.match(a2, /util-template-icon|util-material-role-practice/);
   assert.match(a2, /Confidence Interval Template/);
   assert.match(a2, /Confidence Levels/);
   assert.match(a2, /Method captures mean 95% of time/);
@@ -479,7 +501,7 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(a2, /interval gets wider when n increases/i);
   assert.match(a2, /util-material-role-close[\s\S]*Closure/i);
 
-  const a4 = sectionScope(body, "Interval comparison scenario");
+  const a4 = activityArticleScope(html, "Interval comparison scenario");
   assert.match(a4, /util-material-role-scenario/);
   assert.match(a4, /util-scenario-card/);
   assert.match(a4, /Interval Comparison/);
@@ -487,7 +509,7 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(a4, /Check your thinking:/i);
   assert.match(a4, /interprets what overlap implies/i);
 
-  const assess = sectionScope(body, "Formative assessment check");
+  const assess = sectionScope(html, "Formative assessment check");
   assert.match(assess, /util-assessment-prompt/);
   assert.match(assess, /util-assessment-choices/);
   assert.match(assess, /<ol>/);
@@ -499,7 +521,7 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(assess, /practical significance/i);
   assert.match(assess, /harder to defend/i);
 
-  const tips = sectionScope(body, "Study tips");
+  const tips = sectionScope(html, "Study tips");
   assert.match(tips, /what changed in your understanding/i);
   assert.match(tips, /hardest to justify/i);
   assert.match(a4, /Debrief/i);

@@ -92,6 +92,26 @@ function renderMarxPage(api) {
   return String(r.html || "");
 }
 
+function mainBodyHtml(html) {
+  const doc = String(html || "");
+  const open = doc.indexOf('<main class="util-page-resource"');
+  if (open < 0) return doc.split('<details class="util-meta"')[0];
+  const close = doc.indexOf("</main>", open);
+  if (close < 0) return doc.slice(open);
+  return doc.slice(open, close + "</main>".length);
+}
+
+function activityScope(html, titleFragment) {
+  const main = mainBodyHtml(html);
+  const re = new RegExp(
+    titleFragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+      '[\\s\\S]*?(?=<article class="util-task-block"|$)',
+    "i"
+  );
+  const m = main.match(re);
+  return m ? m[0] : "";
+}
+
 const api = loadPrismTestApi();
 
 test("Marx knowledge summary: concept blocks without nested heading stacks in list items", () => {
@@ -120,13 +140,13 @@ test("slice 31-3: Marx knowledge summary preserves concept order", () => {
 
 test("Marx checklist material: renders util-checkbox-list, not loose paragraphs only", () => {
   const html = renderMarxPage(api);
-  const activity = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  const activity = activityScope(html, "Explaining Marx");
   assert.ok(activity, "expected core concepts activity");
-  assert.match(activity[0], /util-checklist-block/);
-  assert.match(activity[0], /util-checkbox-list/);
-  assert.match(activity[0], /Identify capitalism/);
+  assert.match(activity, /util-checklist-block/);
+  assert.match(activity, /util-checkbox-list/);
+  assert.match(activity, /Identify capitalism/);
   assert.doesNotMatch(
-    activity[0],
+    activity,
     /<div class="util-checklist-block">[\s\S]*<p>Identify capitalism<\/p>/i,
     "checklist items should not be plain paragraphs inside checklist block"
   );
@@ -134,9 +154,9 @@ test("Marx checklist material: renders util-checkbox-list, not loose paragraphs 
 
 test("Marx checklist: markdown heading lines are not checkbox items", () => {
   const html = renderMarxPage(api);
-  const activity = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  const activity = activityScope(html, "Explaining Marx");
   assert.ok(activity, "expected core concepts activity");
-  const checklist = activity[0].match(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/i);
+  const checklist = activity.match(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/i);
   assert.ok(checklist, "expected util-checkbox-list ul element");
   assert.doesNotMatch(checklist[0], /##\s*Checklist/i, "heading line must not appear inside checkbox list");
   assert.doesNotMatch(checklist[0], />#+\s*Checklist</i);
@@ -157,17 +177,17 @@ test("slice 31-5: Marx page preserves primary task and knowledge summary wrapper
   assert.match(html, /util-activity-task--primary/);
   assert.match(html, /util-knowledge-summary/);
   assert.match(html, /util-materials-stack/);
-  const core = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  const core = activityScope(html, "Explaining Marx");
   assert.ok(core);
-  assert.match(core[0], /What to do/);
-  assert.match(core[0], /Identify capitalism/);
+  assert.match(core, /What to do/);
+  assert.match(core, /Identify capitalism/);
 });
 
 test("slice 31-4: Marx materials stack and prompt/table presentation tiers", () => {
   const html = renderMarxPage(api);
-  const core = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  const core = activityScope(html, "Explaining Marx");
   assert.ok(core, "expected core concepts activity");
-  assert.match(core[0], /util-materials-stack/);
+  assert.match(core, /util-materials-stack/);
   assert.match(html, /What is the purpose of each work/);
   assert.match(html, /util-table-scroll/);
   assert.doesNotMatch(html, /---\s*-\s*Key Difference:/i);
@@ -195,12 +215,12 @@ test("slice 31-2: Marx learner page — framing rail and primary task without fa
   assert.match(html, /util-activity-task--primary/);
   assert.doesNotMatch(html, /Facilitator use:/i);
   assert.doesNotMatch(html, /Teacher notes:/i);
-  const activity = html.match(/Explaining Marx[\s\S]*?(?=<article class="util-task-block"|$)/i);
+  const activity = activityScope(html, "Explaining Marx");
   assert.ok(activity, "expected core concepts activity");
-  if (/util-activity-framing/.test(activity[0])) {
-    assert.match(activity[0], /util-activity-framing/);
+  if (/util-activity-framing/.test(activity)) {
+    assert.match(activity, /util-activity-framing/);
   }
-  assert.match(activity[0], /What to do/i);
+  assert.match(activity, /What to do/i);
 });
 
 test("slice 31-1: Marx live JSON — production keys only in util-meta when present", () => {

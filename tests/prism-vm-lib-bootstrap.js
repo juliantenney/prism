@@ -15,6 +15,7 @@ const DEFAULT_LIBS = [
   "lib/ld-authorial-exposition.js",
   "lib/ld-journey-assimilation.js",
   "lib/ld-activity-preamble-exposition.js",
+  "lib/ld-cognition-orientation.js",
   "lib/ld-design-page-compose-contract.js",
   "lib/educational-quality-framework-prompt.js",
   "lib/instructional-pattern-prompt.js"
@@ -37,6 +38,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_LD_AUTHORIAL_EXPOSITION",
       "PRISM_LD_JOURNEY_ASSIMILATION",
       "PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION",
+      "PRISM_LD_COGNITION_ORIENTATION",
       "PRISM_LD_DESIGN_PAGE_COMPOSE_CONTRACT",
       "PRISM_INSTRUCTIONAL_PATTERN_PROMPT"
     ].forEach(function (key) {

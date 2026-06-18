@@ -9241,6 +9241,70 @@
     return (draftBody + "\n" + block).trim();
   }
 
+  function resolveLdCognitionOrientationLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_COGNITION_ORIENTATION &&
+      typeof globalThis.PRISM_LD_COGNITION_ORIENTATION.buildLdCognitionOrientationPromptBlock ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_COGNITION_ORIENTATION;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_COGNITION_ORIENTATION
+      ? root.PRISM_LD_COGNITION_ORIENTATION
+      : null;
+  }
+
+  function buildLdCognitionOrientationPromptBlock(options) {
+    var lib = resolveLdCognitionOrientationLib();
+    if (lib && typeof lib.buildLdCognitionOrientationPromptBlock === "function") {
+      return lib.buildLdCognitionOrientationPromptBlock(options);
+    }
+    return "";
+  }
+
+  function ldCognitionOrientationAlreadyPresent(draftBody) {
+    var lib = resolveLdCognitionOrientationLib();
+    if (lib && typeof lib.cognitionOrientationAlreadyPresent === "function") {
+      return lib.cognitionOrientationAlreadyPresent(draftBody);
+    }
+    return /LD-COGNITION-ORIENTATION-CONTRACT \(auto-applied\)/i.test(String(draftBody || ""));
+  }
+
+  function applyLdCognitionOrientationContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignLearningActivities(context)) {
+      return draftBody;
+    }
+    if (ldCognitionOrientationAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var block = buildLdCognitionOrientationPromptBlock();
+    if (!block) return draftBody;
+    return (draftBody + "\n" + block).trim();
+  }
+
   function evaluateActivityPreambleExpositionEvidence(input, options) {
     var lib = resolveLdActivityPreambleExpositionLib();
     if (lib && typeof lib.evaluateActivityPreambleExpositionEvidence === "function") {
@@ -10544,6 +10608,7 @@
       }
       draftBody = augmentSelfDirectedDlaDraftOutputSection(draftBody);
       draftBody = applyLdActivityPreambleExpositionContractToDraft(draftBody, context);
+      draftBody = applyLdCognitionOrientationContractToDraft(draftBody, context);
     }
     if (isGam && applyGamScaffolds) {
       draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
@@ -38995,6 +39060,9 @@
       buildLdActivityPreambleExpositionPromptBlock;
     prismTestApi.applyLdActivityPreambleExpositionContractToDraft =
       applyLdActivityPreambleExpositionContractToDraft;
+    prismTestApi.applyLdCognitionOrientationContractToDraft =
+      applyLdCognitionOrientationContractToDraft;
+    prismTestApi.buildLdCognitionOrientationPromptBlock = buildLdCognitionOrientationPromptBlock;
     prismTestApi.evaluateActivityPreambleExpositionEvidence =
       evaluateActivityPreambleExpositionEvidence;
     prismTestApi.applyLdDesignPageComposeContractToDraft =

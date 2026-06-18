@@ -125,6 +125,18 @@ test("41-5 final: workshop learner-page DLA prompt requires cognition field on e
   assert.match(prompt, /Evaluation activities:/i);
 });
 
+test("49: learner-page DLA prompt includes cognition-orientation authoring contract", () => {
+  const prompt = dlaPromptForBrief(MARX_SELF_STUDY_BRIEF);
+  assert.match(prompt, /LD-COGNITION-ORIENTATION-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /MANDATORY PER ACTIVITY/i);
+  assert.match(prompt, /PRE-EMIT CHECKLIST/i);
+  assert.match(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i);
+  const cognitionIdx = prompt.indexOf("LD-COGNITION-ORIENTATION-CONTRACT");
+  const preambleIdx = prompt.indexOf("LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT");
+  assert.ok(preambleIdx !== -1 && cognitionIdx !== -1);
+  assert.ok(preambleIdx < cognitionIdx, "preamble exposition block precedes cognition-orientation block");
+});
+
 test("41-5 final: self-study learner page receives same mandatory framing guarantees", () => {
   const workshopPrompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   const selfStudyPrompt = dlaPromptForBrief(MARX_SELF_STUDY_BRIEF);

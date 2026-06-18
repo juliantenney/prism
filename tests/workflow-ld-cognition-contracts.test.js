@@ -241,6 +241,65 @@ test("49-2: GAM cognition contract excludes Material: ... (text) from cognition-
   assert.doesNotMatch(block, /For each activity material block, add a learner-facing Cognition cues/i);
 });
 
+test("49 C3: cognition labels inside Material: ... (text) do not satisfy GAM cognition coverage", () => {
+  const { contract } = resolveContext({
+    goal: PEER_GOAL,
+    selectedDomains: ["learning-design"]
+  });
+  const gamText = [
+    "Activity: Peer predict",
+    "Activity ID: A1",
+    "",
+    "Material: M1 (text)",
+    "Purpose: exposition",
+    "Content:",
+    "Cognition cues",
+    "Initial position: Write your first prediction inside exposition.",
+    "Reasoning revision: Update your explanation after discussion.",
+    "Revision trigger: After pair discussion.",
+    "---"
+  ].join("\n");
+  const evalResult = api.evaluatePedagogicCognitionContractSatisfaction(
+    gamText,
+    contract,
+    "gam"
+  );
+  assert.equal(evalResult.satisfied, false);
+  assert.ok(evalResult.missingFields.includes("Initial position"));
+  assert.ok(evalResult.missingFields.includes("Reasoning revision"));
+});
+
+test("49 C3: cognition cues on non-text materials satisfy GAM cognition coverage", () => {
+  const { contract } = resolveContext({
+    goal: PEER_GOAL,
+    selectedDomains: ["learning-design"]
+  });
+  const gamText = [
+    "Activity: Peer predict",
+    "Activity ID: A1",
+    "",
+    "Material: M1 (text)",
+    "Purpose: exposition",
+    "Content:",
+    "Substantive connective exposition only — no cognition cue appendages.",
+    "---",
+    "Material: M2 (checklist)",
+    "Purpose: verification",
+    "Content:",
+    "Cognition cues",
+    "Initial position: Write your first prediction.",
+    "Reasoning revision: Update your explanation.",
+    "Revision trigger: After pair discussion.",
+    "---"
+  ].join("\n");
+  const evalResult = api.evaluatePedagogicCognitionContractSatisfaction(
+    gamText,
+    contract,
+    "gam"
+  );
+  assert.equal(evalResult.satisfied, true);
+});
+
 test("28-5c: DLA prompt scaffold appends contract block when packs active", () => {
   const ctx = {
     stepCanonicalStepId: "step_design_learning_activities",

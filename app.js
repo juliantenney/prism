@@ -11344,10 +11344,25 @@
     return Object.keys(found);
   }
 
+  function gamPackTextHasMaterialBlocks(text) {
+    var head = String(text || "");
+    return /Material:\s*\S+\s*\([^)]+\)/i.test(head) && /Content:/i.test(head);
+  }
+
+  function scrubTextMaterialContentFromGamPackText(text) {
+    if (!gamPackTextHasMaterialBlocks(text)) return String(text || "");
+    return String(text || "").replace(
+      /(Material:\s*\S+\s*\(\s*text\s*\)[\s\S]*?Purpose:\s*[^\n]*\nContent:\s*)([\s\S]*?)(?=\n---\n|\nMaterial:|\nActivity:|$)/gi,
+      function (_match, prefix) {
+        return prefix;
+      }
+    );
+  }
+
   function listPedagogicCognitionFieldsFromGamText(text, requirements) {
     var req = requirements && requirements.active ? requirements : null;
     if (!req) return [];
-    var blob = String(text || "");
+    var blob = scrubTextMaterialContentFromGamPackText(text);
     var found = [];
     (req.gamSections || []).forEach(function (label) {
       var escaped = String(label || "")

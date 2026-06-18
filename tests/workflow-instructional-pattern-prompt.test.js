@@ -584,17 +584,29 @@ test("49-2: SP-01 GOOD shape example shows Marx M1-style progression and example
   assert.match(block, /GOOD shape example/i);
   assert.match(block, /relational language/i);
   assert.match(block, /intellectual progression/i);
-  assert.match(block, /\*\*Example:\*\* Brief applied illustration/i);
+  assert.match(block, /\*\*Example:\*\* Substantive applied illustration/i);
   assert.match(block, /do not pre-answer the learner's independent task/i);
 });
 
-test("49-2: SP-01 retains MP-1 ownership constraint", () => {
+test("49 C4: SP-01 examples no longer describe exposition as brief, concise, or lightweight", () => {
   const block = patternLib.buildSp01PromptBlock();
-  assert.match(block, /Do not supply a completed learner response or pre-written deliverable/i);
-  assert.match(block, /teach and frame only \(MP-1\)/i);
+  assert.doesNotMatch(block, /\bbrief exposition\b/i);
+  assert.doesNotMatch(block, /\bconcise exposition\b/i);
+  assert.doesNotMatch(block, /\blightweight exposition\b/i);
+  assert.doesNotMatch(block, /brief definitional prose/i);
+  assert.match(block, /substantive connective exposition/i);
+  assert.match(block, /explanatory definitional prose/i);
 });
 
-test("49-2: SP-02 through SP-06 blocks unchanged by Slice 49-2 refinement", () => {
+test("49 C4: SP-01 still requires connective exposition and retains FM-07", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /every text body MUST provide substantive connective exposition/i);
+  assert.match(block, /MUST NOT append Cognition cues sections, orientation metadata/i);
+  assert.match(block, /instructional FAIL \(FM-07\)/i);
+  assert.match(block, /FORBIDDEN: appended Cognition cues: block or orientation metadata inside text Content — FM-07/i);
+});
+
+test("49 C4: SP-02 through SP-06 blocks unaffected by SP-01 wording cleanup", () => {
   const sp02 = patternLib.buildSp02PromptBlock();
   const sp03 = patternLib.buildSp03PromptBlock();
   const sp04 = patternLib.buildSp04PromptBlock();
@@ -607,6 +619,12 @@ test("49-2: SP-02 through SP-06 blocks unchanged by Slice 49-2 refinement", () =
   assert.match(sp06, /instructional FAIL \(FM-05\)/i);
   assert.doesNotMatch(sp02, /FM-07/i);
   assert.doesNotMatch(sp03, /TEXT-SP-01/i);
+});
+
+test("49-2: SP-01 retains MP-1 ownership constraint", () => {
+  const block = patternLib.buildSp01PromptBlock();
+  assert.match(block, /Do not supply a completed learner response or pre-written deliverable/i);
+  assert.match(block, /teach and frame only \(MP-1\)/i);
 });
 
 test("49-2: lib apply helper appends SP-01 without duplicating marker", () => {

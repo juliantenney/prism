@@ -109,7 +109,7 @@ function dlaPromptForBrief(brief) {
 test("41-5 final: workshop learner-page DLA prompt requires activity_preamble on every activity", () => {
   const prompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   assert.match(prompt, /each activity object must include activity_preamble/i);
-  assert.match(prompt, /why the activity matters/i);
+  assert.match(prompt, /why the idea matters/i);
   assert.match(prompt, /Mandatory per activity/i);
 });
 

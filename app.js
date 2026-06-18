@@ -11113,6 +11113,26 @@
     return shouldApplyLearnerPagePedagogicFramingScaffold(stepContext, resolved, base);
   }
 
+  function workflowRunLearnerPageFramingGateMessage(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid || !state.workflowRunLearnerPageFramingValidation) return "";
+    return state.workflowRunLearnerPageFramingValidation[sid] || "";
+  }
+
+  function workflowRunCaptureGatesBlockWorkflowAdvance(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return "";
+    var dlaMsg = workflowRunLearnerPageFramingGateMessage(sid);
+    if (dlaMsg) return dlaMsg;
+    if (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) {
+      return (
+        "GAM capture must be pack text with full upstream coverage. " +
+        state.workflowRunGamFormatValidation[sid]
+      );
+    }
+    return "";
+  }
+
   function applyLearnerPageDlaFramingValidationToCapture(raw, stepContext, stepId) {
     if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
       return raw;
@@ -11140,10 +11160,21 @@
       }
       return raw;
     }
+    if (!String(raw || "").trim()) {
+      if (stepId && state.workflowRunLearnerPageFramingValidation) {
+        delete state.workflowRunLearnerPageFramingValidation[stepId];
+      }
+      return raw;
+    }
     var parsed = tryParseWorkflowArtefactJson(raw);
     if (!parsed) return raw;
     var activities = extractActivityRowsFromDlaCapture(parsed);
-    if (!activities.length) return raw;
+    if (!activities.length) {
+      if (stepId && state.workflowRunLearnerPageFramingValidation) {
+        delete state.workflowRunLearnerPageFramingValidation[stepId];
+      }
+      return raw;
+    }
     var coverage = evaluateLearnerPageDlaActivityFramingCoverage(activities);
     if (stepId) {
       state.workflowRunLearnerPageFramingValidation =
@@ -38666,6 +38697,11 @@
               syncWorkflowRunCapturedOutputToState(currentLi);
             }
           }
+          if (workflowRunLearnerPageFramingGateMessage(sid)) {
+            updateRunStepOutputStatus(currentLi);
+            showToast(workflowRunLearnerPageFramingGateMessage(sid), "error");
+            return;
+          }
           if (
             sid &&
             state.workflowRunGamFormatValidation &&
@@ -39369,6 +39405,16 @@
     prismTestApi.isWorkflowRunStepCompletedForTest = function (stepId) {
       var sid = String(stepId || "").trim();
       return !!(sid && state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]);
+    };
+    prismTestApi.getWorkflowRunLearnerPageFramingGateBlockForTest =
+      workflowRunLearnerPageFramingGateMessage;
+    prismTestApi.getWorkflowRunCaptureGatesBlockReasonForTest =
+      workflowRunCaptureGatesBlockWorkflowAdvance;
+    prismTestApi.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || workflowRunCaptureGatesBlockWorkflowAdvance(sid)) return false;
+      state.workflowRunStepCompleted[sid] = true;
+      return true;
     };
     prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;

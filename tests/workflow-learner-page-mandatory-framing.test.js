@@ -189,4 +189,9 @@ test("applyLearnerPageDlaFramingValidationToCapture: procedural DLA fails for le
     String(api.getWorkflowRunLearnerPageFramingValidationForTest("step-dla-test")),
     /Learner-page framing required on every activity/i
   );
+  assert.equal(
+    api.getWorkflowRunLearnerPageFramingGateBlockForTest("step-dla-test"),
+    api.getWorkflowRunLearnerPageFramingValidationForTest("step-dla-test")
+  );
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest("step-dla-test"), false);
 });

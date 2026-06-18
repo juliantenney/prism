@@ -1,0 +1,180 @@
+{
+  "concepts": [
+    {
+      "name": "Evaluating Marx",
+      "definition": "The process of assessing Marx’s ideas by considering their explanatory power, historical accuracy, predictive claims, and contemporary relevance rather than treating Marxism as a fixed doctrine."
+    },
+    {
+      "name": "Political Economy",
+      "definition": "The study of how economic systems are shaped by and interact with social, political, and historical forces."
+    },
+    {
+      "name": "Capitalism",
+      "definition": "An economic system analyzed by Marx as dynamic and profit-driven, characterized by private ownership of capital, wage labor, competition, and accumulation."
+    },
+    {
+      "name": "Historical Materialism",
+      "definition": "Marx’s method that links economic structures and material conditions to social, political, and ideological life."
+    },
+    {
+      "name": "Labor Theory of Value",
+      "definition": "The idea that the value of commodities is rooted in the socially necessary labor time required to produce them."
+    },
+    {
+      "name": "Surplus Value",
+      "definition": "The difference between the value produced by workers and the wages they are paid, identified by Marx as the source of profit."
+    },
+    {
+      "name": "Exploitation",
+      "definition": "The structural condition in which capital extracts surplus value from labor within capitalist production."
+    },
+    {
+      "name": "Class Relations",
+      "definition": "The social relationship between classes, particularly between capital owners and workers, defined by their roles in production."
+    },
+    {
+      "name": "Capital Accumulation",
+      "definition": "The process by which profits are reinvested to generate more capital, driving growth and competition within capitalism."
+    },
+    {
+      "name": "Concentration and Centralization of Capital",
+      "definition": "The tendency for capital to become controlled by fewer and larger firms over time through competition and accumulation."
+    },
+    {
+      "name": "Economic Crises",
+      "definition": "Recurring disruptions within capitalism that Marx linked to its internal contradictions and dynamics."
+    },
+    {
+      "name": "Immiseration Thesis",
+      "definition": "The claim that the working class would experience worsening conditions relative to capital over time."
+    },
+    {
+      "name": "Tendency of the Rate of Profit to Fall",
+      "definition": "Marx’s argument that competitive pressures and technological change could reduce profitability over time."
+    },
+    {
+      "name": "Adaptability of Capitalism",
+      "definition": "The capacity of capitalist systems to change through reforms such as welfare states, regulation, and globalization."
+    },
+    {
+      "name": "Critiques of Marxism",
+      "definition": "Challenges to Marx’s political economy from alternative approaches, including criticisms of value theory, determinism, and underestimation of politics and culture."
+    },
+    {
+      "name": "Contemporary Marxian Analysis",
+      "definition": "The use of Marx’s concepts by later scholars to analyze modern phenomena such as globalization, financialization, and platform economies."
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Historical Materialism",
+      "to": "Political Economy",
+      "type": "method-for",
+      "description": "Historical materialism provides the analytical method Marx uses within political economy."
+    },
+    {
+      "from": "Labor Theory of Value",
+      "to": "Surplus Value",
+      "type": "enables",
+      "description": "The labor theory of value underpins Marx’s explanation of how surplus value is generated."
+    },
+    {
+      "from": "Surplus Value",
+      "to": "Exploitation",
+      "type": "explains",
+      "description": "Exploitation is defined through the extraction of surplus value from labor."
+    },
+    {
+      "from": "Capital Accumulation",
+      "to": "Concentration and Centralization of Capital",
+      "type": "leads-to",
+      "description": "Ongoing accumulation contributes to the growth and dominance of larger firms."
+    },
+    {
+      "from": "Capital Accumulation",
+      "to": "Economic Crises",
+      "type": "contributes-to",
+      "description": "Accumulation and competition generate tensions that can result in crises."
+    },
+    {
+      "from": "Capitalism",
+      "to": "Class Relations",
+      "type": "structured-by",
+      "description": "Capitalism is structured around class relations between capital and labor."
+    },
+    {
+      "from": "Capitalism",
+      "to": "Adaptability of Capitalism",
+      "type": "contrasts-with",
+      "description": "The observed adaptability of capitalism complicates some of Marx’s expectations."
+    },
+    {
+      "from": "Critiques of Marxism",
+      "to": "Evaluating Marx",
+      "type": "informs",
+      "description": "Critiques are necessary inputs for assessing the strengths and limits of Marx’s ideas."
+    },
+    {
+      "from": "Contemporary Marxian Analysis",
+      "to": "Evaluating Marx",
+      "type": "extends",
+      "description": "Modern uses of Marx’s ideas contribute to evaluating his relevance today."
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Core Marxian Concepts",
+      "members": [
+        "Historical Materialism",
+        "Labor Theory of Value",
+        "Surplus Value",
+        "Exploitation",
+        "Class Relations"
+      ]
+    },
+    {
+      "name": "Dynamics of Capitalism",
+      "members": [
+        "Capital Accumulation",
+        "Concentration and Centralization of Capital",
+        "Economic Crises"
+      ]
+    },
+    {
+      "name": "Debates and Evaluation",
+      "members": [
+        "Immiseration Thesis",
+        "Tendency of the Rate of Profit to Fall",
+        "Adaptability of Capitalism",
+        "Critiques of Marxism",
+        "Contemporary Marxian Analysis"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Evaluating Whether Marx Was Right",
+      "steps": [
+        "Identify Marx’s core analytical concepts",
+        "Examine Marx’s claims about capitalist dynamics",
+        "Assess historical developments since Marx",
+        "Engage with major critiques of Marxism",
+        "Consider contemporary applications of Marx’s ideas"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "concept": "Evaluating Marx",
+      "description": "Assuming that being ‘right’ means Marx made precise predictions rather than offering analytical tendencies and frameworks."
+    },
+    {
+      "concept": "Historical Materialism",
+      "description": "Interpreting it as strict economic determinism rather than a method linking material conditions to social life."
+    },
+    {
+      "concept": "Immiseration Thesis",
+      "description": "Assuming Marx predicted uniform and absolute poverty without considering relative or conditional interpretations."
+    }
+  ]
+}

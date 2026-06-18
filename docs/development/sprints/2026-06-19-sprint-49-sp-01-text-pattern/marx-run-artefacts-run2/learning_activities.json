@@ -1,0 +1,221 @@
+{
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity must include a learner-written consolidation summary of at least 80 words synthesising key ideas and judgements from the session.",
+    "workbook_contract_applied": true
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Historical Materialism and Capitalism",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1"],
+      "activity_preamble": "This activity builds a foundation for the session by clarifying how Marx analyses capitalism as a historical and social system.",
+      "required_materials": [
+        {
+          "material_id": "A1-TEXT-1",
+          "type": "text",
+          "purpose": "explanatory teaching",
+          "specification": "Clear exposition of historical materialism as a method; explains links between material conditions, social relations, and political economy; includes contrast with viewing capitalism as a timeless market system. Depth floor L3."
+        },
+        {
+          "material_id": "A1-WE-1",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Step-by-step model showing how historical materialism is applied to capitalism: identify material conditions → identify class relations → link to political outcomes. Includes visible intermediate reasoning. Depth floor L3."
+        },
+        {
+          "material_id": "A1-SO-1",
+          "type": "sample_output",
+          "purpose": "worked_thinking",
+          "specification": "Short example paragraph explaining capitalism using historical materialism, with annotations highlighting effective reasoning. Depth floor L3."
+        },
+        {
+          "material_id": "A1-CHK-1",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Self-check checklist with at least four items: identifies material conditions; links economy to social relations; avoids economic determinism; uses correct terminology. Includes instruction to revise notes if any item fails. Depth floor L3."
+        }
+      ],
+      "learner_task": "1. Read the explanatory text on historical materialism.\n2. Study the worked example carefully, noting each reasoning step.\n3. Compare the sample output to the worked example and identify how the method is applied.\n4. Write a brief explanation (100–120 words) of how historical materialism analyses capitalism.\n5. Use the checklist to verify your explanation and revise if needed.",
+      "expected_output": "A short written explanation applying historical materialism to capitalism, revised using the checklist.",
+      "support_note": "Avoid treating historical materialism as a claim that economics alone mechanically determines politics and culture.",
+      "prior_knowledge_activation": "Recall prior ideas about capitalism from introductory political economy.",
+      "reasoning_orientation": "Conceptual explanation using a structured analytical method.",
+      "self_explanation_prompt": "Which step in the worked example clarified the method most for you?"
+    },
+    {
+      "activity_id": "A2",
+      "title": "Surplus Value and Exploitation",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO2"],
+      "activity_preamble": "This activity focuses on how Marx explains profit and exploitation within capitalist production.",
+      "required_materials": [
+        {
+          "material_id": "A2-TEXT-1",
+          "type": "text",
+          "purpose": "explanatory teaching",
+          "specification": "Explanation of labour theory of value, surplus value, and exploitation, using plain language and a simple production example. Depth floor L3."
+        },
+        {
+          "material_id": "A2-WE-1",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Worked example calculating surplus value conceptually (no maths required): labour time → wages → value produced → surplus. Shows reasoning chain explicitly. Depth floor L3."
+        },
+        {
+          "material_id": "A2-AT-1",
+          "type": "analysis_table",
+          "purpose": "guided_practice",
+          "specification": "Pipe table with columns: Stage of production | What the worker contributes | What the worker is paid | Where surplus arises. One partially completed exemplar row included; remaining rows blank for learner. Depth floor L3."
+        },
+        {
+          "material_id": "A2-CHK-1",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with four items checking correct identification of surplus value, distinction between wages and value produced, link to exploitation, and clarity of explanation. Revision required if any item fails. Depth floor L3."
+        }
+      ],
+      "learner_task": "1. Read the explanatory text on surplus value and exploitation.\n2. Study the worked example and note how surplus value is identified.\n3. Complete the analysis table using the production stages provided.\n4. Write a short explanation (80–100 words) describing how surplus value leads to exploitation.\n5. Use the checklist to verify and revise your work.",
+      "expected_output": "A completed analysis table and a short written explanation verified against the checklist.",
+      "support_note": "Do not confuse exploitation with unfair behaviour by individuals; focus on the structural explanation.",
+      "reasoning_orientation": "Linking abstract concepts to a structured example."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Capital Accumulation and Crisis",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO3"],
+      "activity_preamble": "This activity analyses how Marx connects accumulation, concentration of capital, and economic crises.",
+      "required_materials": [
+        {
+          "material_id": "A3-WE-1",
+          "type": "worked_example",
+          "purpose": "worked_thinking",
+          "specification": "Modelled analytical walkthrough linking accumulation → competition → concentration → crisis, explicitly identifying mechanisms at each step. Depth floor L3."
+        },
+        {
+          "material_id": "A3-SCN-1",
+          "type": "scenario",
+          "purpose": "application context",
+          "specification": "Two contrasting cases of capitalist development (e.g. small competitive firms vs. concentrated industries), with descriptive details but no analysis. Depth floor L3."
+        },
+        {
+          "material_id": "A3-AT-1",
+          "type": "analysis_table",
+          "purpose": "guided_practice",
+          "specification": "Pipe table with columns: Scenario | Evidence of accumulation | Evidence of concentration | Crisis tendency explained. Includes one hint column guiding causal reasoning. Depth floor L3."
+        },
+        {
+          "material_id": "A3-CHK-1",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with at least four items checking causal links, correct use of Marxian terms, distinction between tendency and prediction, and clarity. Revision required if any fail. Depth floor L3."
+        }
+      ],
+      "learner_task": "1. Study the worked analytical example carefully.\n2. Read both scenarios without attempting analysis yet.\n3. Complete the analysis table for each scenario, following the causal chain modelled earlier.\n4. Review your analysis using the checklist and revise where needed.",
+      "expected_output": "A completed analysis table demonstrating causal reasoning from accumulation to crisis.",
+      "support_note": "Avoid treating crises as one-off accidents; focus on systemic tendencies.",
+      "reasoning_orientation": "Causal analysis using a modelled framework."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Was Marx Right Historically?",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO4"],
+      "activity_preamble": "This evaluative activity compares Marx’s expectations with historical developments since his time.",
+      "required_materials": [
+        {
+          "material_id": "A4-CRIT-1",
+          "type": "reference_table",
+          "purpose": "criteria exposition",
+          "specification": "Pipe table defining evaluation criteria (e.g. inequality trends, worker conditions, system stability, adaptability) with brief explanations. Depth floor L3."
+        },
+        {
+          "material_id": "A4-SCN-1",
+          "type": "scenario",
+          "purpose": "evaluation context",
+          "specification": "Two historical trajectories (e.g. welfare-state capitalism and globalised financial capitalism) described neutrally. Depth floor L3."
+        },
+        {
+          "material_id": "A4-DT-1",
+          "type": "decision_table",
+          "purpose": "guided_judgement",
+          "specification": "Pipe table with criteria rows and scenario columns; includes one worked weak vs. strong judgement example in a separate row. Depth floor L3."
+        },
+        {
+          "material_id": "A4-CHK-1",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with four items checking use of criteria, engagement with evidence, acknowledgement of trade-offs, and justified judgement. Depth floor L3."
+        },
+        {
+          "material_id": "A4-TP-1",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking how the same criteria could be used to evaluate a different economic system or period. Depth floor L3."
+        }
+      ],
+      "learner_task": "1. Review the evaluation criteria table.\n2. Read both historical scenarios carefully.\n3. Complete the decision table for each scenario.\n4. Write a brief evaluative judgement (120–150 words) answering whether Marx was right in these cases.\n5. Verify your judgement using the checklist.\n6. Respond briefly to the transfer prompt.",
+      "expected_output": "A completed decision table and a short evaluative judgement applying explicit criteria.",
+      "support_note": "A balanced judgement can recognise both confirmation and limits of Marx’s claims.",
+      "reasoning_orientation": "Criteria-based evaluation and justification."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Is Marx Still Relevant Today?",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO3", "LO4", "LO5"],
+      "activity_preamble": "This final activity integrates the session by judging Marx’s contemporary relevance and consolidating learning.",
+      "required_materials": [
+        {
+          "material_id": "A5-CRIT-1",
+          "type": "reference_table",
+          "purpose": "criteria reminder",
+          "specification": "Concise table restating evaluative criteria used earlier, without examples. Depth floor L3."
+        },
+        {
+          "material_id": "A5-TPL-1",
+          "type": "template",
+          "purpose": "independent_judgement",
+          "specification": "Structured memo template with sections: Claim, Reasons, Limits, Overall judgement. No pre-filled content. Depth floor L3."
+        },
+        {
+          "material_id": "A5-CHK-1",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with four items checking synthesis across concepts, justified judgement, clarity, and acknowledgement of uncertainty. Depth floor L3."
+        },
+        {
+          "material_id": "A5-CS-1",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "Learner-written consolidation summary requirement: minimum 80 words summarising at least three key ideas from the session and one remaining question. Depth floor L3."
+        },
+        {
+          "material_id": "A5-TP-1",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking how Marxian analysis might be applied to a contemporary economic issue not discussed in the session. Depth floor L3."
+        }
+      ],
+      "learner_task": "1. Review the criteria reminder table.\n2. Complete the judgement memo template independently.\n3. Check your memo against the checklist and revise.\n4. Write the consolidation summary reflecting on what you will take forward.\n5. Respond briefly to the transfer prompt.",
+      "expected_output": "A completed judgement memo, a written consolidation summary, and a short transfer response.",
+      "support_note": "Avoid simply restating Marx; focus on justified judgement about relevance.",
+      "reasoning_orientation": "Independent synthesis, judgement, and transfer."
+    }
+  ],
+  "outcome_alignment": {
+    "LO1": ["A1"],
+    "LO2": ["A2"],
+    "LO3": ["A3", "A5"],
+    "LO4": ["A4", "A5"],
+    "LO5": ["A5"]
+  }
+}

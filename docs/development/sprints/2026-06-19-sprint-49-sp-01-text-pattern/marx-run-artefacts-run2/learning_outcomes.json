@@ -1,0 +1,52 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Explain how Marx’s method of historical materialism is used to analyze capitalism within political economy.",
+      "related_concepts": [
+        "Historical Materialism",
+        "Political Economy",
+        "Capitalism"
+      ],
+      "cognitive_level": "explain"
+    },
+    {
+      "statement": "Describe how surplus value is generated in capitalist production using the labor theory of value.",
+      "related_concepts": [
+        "Labor Theory of Value",
+        "Surplus Value",
+        "Exploitation"
+      ],
+      "cognitive_level": "describe"
+    },
+    {
+      "statement": "Analyze how capital accumulation contributes to concentration of capital and recurring economic crises in Marx’s account of capitalism.",
+      "related_concepts": [
+        "Capital Accumulation",
+        "Concentration and Centralization of Capital",
+        "Economic Crises"
+      ],
+      "cognitive_level": "analyze"
+    },
+    {
+      "statement": "Evaluate selected Marxian claims about capitalism’s development by comparing them with historical developments since Marx’s time.",
+      "related_concepts": [
+        "Immiseration Thesis",
+        "Tendency of the Rate of Profit to Fall",
+        "Adaptability of Capitalism"
+      ],
+      "cognitive_level": "evaluate"
+    },
+    {
+      "statement": "Assess the contemporary relevance of Marx’s political economy by engaging with critiques of Marxism and modern Marxian analyses.",
+      "related_concepts": [
+        "Critiques of Marxism",
+        "Contemporary Marxian Analysis",
+        "Evaluating Marx"
+      ],
+      "cognitive_level": "assess"
+    }
+  ],
+  "learner_level": "Undergraduate",
+  "scope": "Single 60-minute self-directed session",
+  "alignment_notes": "Outcomes are aligned to the core concepts and evaluative process identified in the knowledge model and are achievable within an asynchronous one-hour study session."
+}

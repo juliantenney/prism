@@ -1,6 +1,6 @@
 # Sprint 49 — SP-01 Text Pattern & Presentation Investigation
 
-**Status:** Initialised  
+**Status:** Closed (with follow-on work — see [`SPRINT-49-CLOSURE-REPORT.md`](SPRINT-49-CLOSURE-REPORT.md))  
 **Primary objective:** Resolve and implement SP-01 / TEXT-SP-01 by reconciling text exposition requirements with the existing cognition-cue contract.  
 **Secondary objective:** After SP-01 is stable, begin scoped investigation of the two-column presentation pattern.  
 **Folder:** `docs/development/sprints/2026-06-19-sprint-49-sp-01-text-pattern/`  
@@ -10,6 +10,7 @@
 
 ## Startup artefacts
 
+- [`SPRINT-49-CLOSURE-REPORT.md`](SPRINT-49-CLOSURE-REPORT.md)
 - [`SPRINT-49-HANDOVER.md`](SPRINT-49-HANDOVER.md)
 - [`SPRINT-49-CONTEXT.md`](SPRINT-49-CONTEXT.md)
 - [`SPRINT-49-STARTUP-CHECKLIST.md`](SPRINT-49-STARTUP-CHECKLIST.md)

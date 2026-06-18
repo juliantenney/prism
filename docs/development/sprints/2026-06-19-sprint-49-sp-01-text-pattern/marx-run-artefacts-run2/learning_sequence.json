@@ -1,0 +1,72 @@
+{
+  "sequence_title": "Was Marx Right? Evaluating Marxist Political Economy (Self‑Study Sequence)",
+  "total_duration_minutes": 60,
+  "timeline": [
+    {
+      "block_id": "B1",
+      "start_minute": 0,
+      "duration_minutes": 10,
+      "phase_type": "conceptual_foundation",
+      "activity_id": "A1",
+      "grouping": "individual",
+      "facilitator_actions": "Learner accesses Material A1-TEXT-1 - Historical Materialism as a Method, then studies Material A1-WE-1 - Worked Example: Applying Historical Materialism to Capitalism and Material A1-SO-1 - Annotated Sample Explanation.",
+      "learner_actions": "Read Material A1-TEXT-1, work through the reasoning in Material A1-WE-1, compare with Material A1-SO-1, and produce a short explanation checked against Material A1-CHK-1.",
+      "transition_to_next": "Move from conceptual explanation to analysing how profit and exploitation are explained in capitalism."
+    },
+    {
+      "block_id": "B2",
+      "start_minute": 10,
+      "duration_minutes": 10,
+      "phase_type": "concept_application",
+      "activity_id": "A2",
+      "grouping": "individual",
+      "facilitator_actions": "Learner uses Material A2-TEXT-1 - Surplus Value, Profit, and Exploitation, followed by Material A2-WE-1 - Worked Example: Identifying Surplus Value.",
+      "learner_actions": "Complete Material A2-AT-1 - Surplus Value Analysis Table, then write a short explanation and verify it using Material A2-CHK-1.",
+      "transition_to_next": "Shift from static concepts to dynamic analysis of capitalism over time."
+    },
+    {
+      "block_id": "B3",
+      "start_minute": 20,
+      "duration_minutes": 15,
+      "phase_type": "causal_analysis",
+      "activity_id": "A3",
+      "grouping": "individual",
+      "facilitator_actions": "Learner studies Material A3-WE-1 - Worked Analysis: From Accumulation to Crisis and reviews Material A3-SCN-1 - Capitalist Development Scenarios.",
+      "learner_actions": "Analyse both scenarios using Material A3-AT-1 - Accumulation and Crisis Analysis Table and self-check reasoning with Material A3-CHK-1.",
+      "transition_to_next": "Move from analysing mechanisms to evaluating Marx’s historical claims."
+    },
+    {
+      "block_id": "B4",
+      "start_minute": 35,
+      "duration_minutes": 15,
+      "phase_type": "evaluation",
+      "activity_id": "A4",
+      "grouping": "individual",
+      "facilitator_actions": "Learner reviews Material A4-CRIT-1 - Historical Evaluation Criteria and reads Material A4-SCN-1 - Historical Capitalist Trajectories.",
+      "learner_actions": "Complete Material A4-DT-1 - Historical Evaluation Decision Table, write an evaluative judgement, verify using Material A4-CHK-1, and respond to Material A4-TP-1.",
+      "transition_to_next": "Integrate historical evaluation into a contemporary judgement."
+    },
+    {
+      "block_id": "B5",
+      "start_minute": 50,
+      "duration_minutes": 10,
+      "phase_type": "synthesis_and_transfer",
+      "activity_id": "A5",
+      "grouping": "individual",
+      "facilitator_actions": "Learner revisits criteria using Material A5-CRIT-1 - Contemporary Evaluation Criteria.",
+      "learner_actions": "Complete the independent judgement using Material A5-TPL-1, verify with Material A5-CHK-1, write the consolidation using Material A5-CS-1, and complete transfer using Material A5-TP-1.",
+      "transition_to_next": "Session ends with consolidation and transfer completed."
+    }
+  ],
+  "activities_used": ["A1", "A2", "A3", "A4", "A5"],
+  "activities_omitted": [],
+  "checks": {
+    "all_activity_ids_valid": true,
+    "no_new_activities_introduced": true,
+    "all_materials_traceable_to_activity_materials": true,
+    "cognitive_timing_feasible": true,
+    "closure_integrated": true,
+    "no_zero_minute_blocks": true,
+    "omissions_justified": true
+  }
+}

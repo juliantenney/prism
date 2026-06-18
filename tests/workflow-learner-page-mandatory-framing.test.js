@@ -56,6 +56,16 @@ function extractWorkflowBriefConfig(md) {
   return JSON.parse(md.slice(fence + 7, close).trim()).workflowBriefConfig;
 }
 
+function extractDlaPromptFactory(md) {
+  const sectionIdx = md.indexOf("## 5. Design Learning Activities");
+  const fence = md.indexOf("```json", md.indexOf("### Prompt Factory", sectionIdx));
+  const close = md.indexOf("```", fence + 7);
+  return JSON.parse(md.slice(fence + 7, close).trim());
+}
+
+const ldPatternsMd = fs.readFileSync(ldPatternsPath, "utf8");
+const dlaPromptFactory = extractDlaPromptFactory(ldPatternsMd);
+
 function loadPrismTestApi() {
   const source = fs.readFileSync(appJsPath, "utf8");
   const sandbox = { console, setTimeout, clearTimeout, Promise };
@@ -72,7 +82,7 @@ function loadPrismTestApi() {
 
 const api = loadPrismTestApi();
 const ldBriefConfig = api.normalizeWorkflowBriefConfig(
-  extractWorkflowBriefConfig(fs.readFileSync(ldPatternsPath, "utf8"))
+  extractWorkflowBriefConfig(ldPatternsMd)
 );
 
 function resolveBrief(brief) {
@@ -106,6 +116,29 @@ function dlaPromptForBrief(brief) {
   );
 }
 
+function fullyAssembledLearnerPageDlaPrompt(brief) {
+  const resolved = resolveBrief(brief);
+  const wf = {
+    id: "wf-dla-salience-" + brief.goal.slice(0, 12),
+    workflowOutputSpec: { goal: brief.goal, desiredOutputs: brief.desiredOutputs },
+    workflowOutputs: brief.desiredOutputs.split(",").map((s) => s.trim()),
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const step = {
+    title: "Design Learning Activities",
+    canonical_step_id: "step_design_learning_activities",
+    outputName: "learning_activities"
+  };
+  const seeded = api.buildSeededStepPromptForWorkflowStep({
+    workflowGoal: brief.goal,
+    workflowOutputs: wf.workflowOutputs,
+    workflowOutputSpec: wf.workflowOutputSpec,
+    step,
+    matchedPattern: { promptFactory: dlaPromptFactory }
+  });
+  return api.applyWorkflowStepRuntimePromptAugmentations(seeded, step, wf, {});
+}
+
 test("41-5 final: workshop learner-page DLA prompt requires activity_preamble on every activity", () => {
   const prompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   assert.match(prompt, /each activity object must include activity_preamble/i);
@@ -135,6 +168,37 @@ test("49: learner-page DLA prompt includes cognition-orientation authoring contr
   const preambleIdx = prompt.indexOf("LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT");
   assert.ok(preambleIdx !== -1 && cognitionIdx !== -1);
   assert.ok(preambleIdx < cognitionIdx, "preamble exposition block precedes cognition-orientation block");
+});
+
+test("49 salience: fully assembled learner-page DLA prompt has no optional cognition-orientation schema wording", () => {
+  const prompt = fullyAssembledLearnerPageDlaPrompt(MARX_SELF_STUDY_BRIEF);
+  assert.doesNotMatch(prompt, /optional[^\n]*cognition-orientation/i);
+  assert.doesNotMatch(prompt, /additional cognition-orientation fields when applicable/i);
+  assert.doesNotMatch(prompt, /support_note, cognition-orientation fields/i);
+  assert.match(
+    prompt,
+    /≥1 cognition-orientation field REQUIRED per activity when self_directed\/learner page/i
+  );
+  const actLine = prompt.match(/- activities\[\]:[^\n]*/i);
+  assert.ok(actLine, "activities[] schema line present");
+  assert.match(actLine[0], /activity_preamble \(REQUIRED per activity/i);
+  assert.match(actLine[0], /optional activity_interaction_type, optional support_note/i);
+});
+
+test("49 salience: fully assembled prompt keeps cognition modules after preamble exposition", () => {
+  const prompt = fullyAssembledLearnerPageDlaPrompt(MARX_SELF_STUDY_BRIEF);
+  const preambleIdx = prompt.indexOf("LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT");
+  const cognitionIdx = prompt.indexOf("LD-COGNITION-ORIENTATION-CONTRACT");
+  assert.ok(preambleIdx !== -1 && cognitionIdx !== -1);
+  assert.ok(preambleIdx < cognitionIdx);
+});
+
+test("49 salience: facilitator-only DLA prompt excludes learner-page framing runtime augmentations", () => {
+  const prompt = fullyAssembledLearnerPageDlaPrompt(FACILITATOR_ONLY_BRIEF);
+  assert.doesNotMatch(prompt, /LD-COGNITION-ORIENTATION-CONTRACT/i);
+  assert.doesNotMatch(prompt, /OUTPUT CONTRACT \(learner-facing page/i);
+  assert.doesNotMatch(prompt, /Learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT/i);
 });
 
 test("41-5 final: self-study learner page receives same mandatory framing guarantees", () => {

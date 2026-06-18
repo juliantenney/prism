@@ -7627,18 +7627,59 @@
       /activity_preamble and at least one cognition-orientation field per output contract/i.test(body) ||
       /activity_preamble and may include cognition-orientation fields per output contract/i.test(body)
     ) {
-      return body;
+      return reinforceLearnerPageDlaActivitiesOutputSchema(body);
     }
     var outputMatch = body.match(/\nOutput:\s*\n/i);
     if (outputMatch) {
       var idx = outputMatch.index + outputMatch[0].length;
-      return body.slice(0, idx) + pointer + body.slice(idx);
+      return reinforceLearnerPageDlaActivitiesOutputSchema(
+        body.slice(0, idx) + pointer + body.slice(idx)
+      );
     }
     if (/output contract \(learner-facing page/i.test(body)) {
-      return body.replace(
-        /(OUTPUT CONTRACT \(learner-facing page[^\n]*\n)/i,
-        "$1" + pointer
+      return reinforceLearnerPageDlaActivitiesOutputSchema(
+        body.replace(
+          /(OUTPUT CONTRACT \(learner-facing page[^\n]*\n)/i,
+          "$1" + pointer
+        )
       );
+    }
+    return reinforceLearnerPageDlaActivitiesOutputSchema(body);
+  }
+
+  var LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
+    "- activities[]: activity_id, title, grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED per activity when self_directed/learner page), ≥1 cognition-orientation field REQUIRED per activity when self_directed/learner page (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task), optional activity_interaction_type, optional support_note, optional additive fields when applicable (prior_knowledge_activation, evidence_use_prompt, scaffold_hint_sequence, disciplinary_lens, study_orientation, intellectual_frame, intellectual_coherence_bridge), failure_mode, facilitator_moves";
+
+  function reinforceLearnerPageDlaActivitiesOutputSchema(draftBody) {
+    var body = String(draftBody || "");
+    if (
+      /≥1 cognition-orientation field REQUIRED per activity when self_directed\/learner page/i.test(
+        body
+      )
+    ) {
+      return body;
+    }
+    if (/- activities\[\]:/i.test(body)) {
+      return body.replace(
+        /- activities\[\]:[^\n]*/i,
+        LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE
+      );
+    }
+    var insertLine = LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE + "\n";
+    if (
+      /activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT/i.test(
+        body
+      )
+    ) {
+      return body.replace(
+        /(- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT below\.\n)/i,
+        "$1" + insertLine
+      );
+    }
+    var outputMatch = body.match(/\nOutput:\s*\n/i);
+    if (outputMatch) {
+      var idx = outputMatch.index + outputMatch[0].length;
+      return body.slice(0, idx) + insertLine + body.slice(idx);
     }
     return body;
   }
@@ -39063,6 +39104,10 @@
     prismTestApi.applyLdCognitionOrientationContractToDraft =
       applyLdCognitionOrientationContractToDraft;
     prismTestApi.buildLdCognitionOrientationPromptBlock = buildLdCognitionOrientationPromptBlock;
+    prismTestApi.reinforceLearnerPageDlaActivitiesOutputSchema =
+      reinforceLearnerPageDlaActivitiesOutputSchema;
+    prismTestApi.LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
+      LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE;
     prismTestApi.evaluateActivityPreambleExpositionEvidence =
       evaluateActivityPreambleExpositionEvidence;
     prismTestApi.applyLdDesignPageComposeContractToDraft =

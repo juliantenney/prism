@@ -7960,52 +7960,59 @@
               "LD-SELF-DIRECTED-RHETORIC (auto-applied):",
               "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
               "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
-              "- Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note, assessment stems — not materials bodies.",
-              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields.",
-              "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
-              "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
-              "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
-              "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
-              "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
-              "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
-              "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
-              "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
-              "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
-              "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
-              "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
-              "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
-              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs; knowledge_summary previews at start only."
+              "- PRESERVATION BOUNDARY (Design Page compose): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-COMPOSE and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
+              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields."
             ]
           : [
               "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
               "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
-              "- Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note, assessment stems — not materials bodies.",
-              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields.",
-              "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
-              "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
-              "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
-              "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
-              "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
-              "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
-              "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
-              "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build); study_orientation adds working guidance only — do not repeat the full overview.",
-              "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
-              "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
-              "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
-              "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
-              "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs; knowledge_summary previews at start only."
+              "- PRESERVATION BOUNDARY (Design Page compose): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-COMPOSE and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
+              "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields."
             ];
         if (role === "design_page") {
           lines = lines.concat([
-            "- Design Page rider: compose overview/learning_purpose from upstream orientation substance; preserve bridges, study_tips, closure/debrief, transfer_or_application_task, support_note verbatim."
+            "- Scope (wrapper/page-level prose): overview, learning_purpose, knowledge_summary, study_tips, high-level inquiry framing, and optional learning_sequence wrapper prose — not materials bodies or preserved activity-row fields.",
+            "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build).",
+            "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
+            "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
+            "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
+            "- knowledge_summary previews at start only.",
+            "- Design Page rider: shape overview/learning_purpose/knowledge_summary/study_tips from upstream journey and orientation substance — wrapper/page-level prose only.",
+            "- Journey assimilation: when LD-JOURNEY-ASSIMILATION is appended, follow it for inquiry arc, knowledge_summary orientation, learning_sequence transitions, and closure synthesis — wrapper prose only; materials bodies stay L4-preserved."
           ]);
         } else if (role === "gam") {
           lines = lines.concat([
+            "- Scope (GAM authoring): realise closure, debrief, misconception checks, and concept/procedure integration in material bodies — full learner-facing prose, not outline labels.",
+            "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
+            "- Misconception: Check your thinking: in support_note (reactive); prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
+            "- Concept/procedure: step → meaning lines and Use this when… cues in materials.",
+            "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs.",
             "- GAM rider: realise closure, debrief, misconception checks, and concept/procedure integration when required_materials.specification requests them — full learner-facing prose, not outline labels."
           ]);
         } else if (role === "assessment") {
           lines = lines.concat([
+            "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
             "- Assessment rider: judgement-oriented stems and one-sentence explanations linking procedure to concept on items and feedback."
+          ]);
+        } else {
+          lines = lines.concat([
+            "- Scope (wrapper/page-level prose): overview, learning_purpose, knowledge_summary, study_tips, high-level inquiry framing, and optional learning_sequence wrapper prose — not materials bodies or preserved activity-row fields.",
+            "- Session journey: overview and/or learning_purpose frame a coherent intellectual journey (stakes, one why-this-is-hard tension, intellectual modes, how activities build).",
+            "- Difficulty types: conceptual difficulty, procedural difficulty, interpretive ambiguity, disciplinary uncertainty, competing explanations, plausible misconception — not generic challenging-topic filler.",
+            "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
+            "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
+            "- knowledge_summary previews at start only.",
+            "- Scope (DLA authoring): learner_task, expected_output, support_note, activity_preamble, and cognition-orientation fields on learning_activities — field semantics at generation; preserve verbatim on Design Page compose.",
+            "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
+            "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
+            "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
+            "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
+            "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
+            "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
+            "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
+            "- study_orientation adds working guidance only — do not repeat the full overview.",
+            "- Transfer: transfer_or_application_task names named move + changed context; optional limit of transfer (e.g. mechanism evidence does not transfer to policy judgement); What changed in your understanding? / hardest to justify? acceptable closure cues.",
+            "- Final activity expected_output requires evaluative judgement; ### Closure or ### Debrief sections must meet GAM-PRES-08 transfer/closure minima (substantive epistemic judgement and transfer_prompt ≥80 words when specified) — not minimal bullet stubs."
           ]);
         }
         return lines.join("\n");

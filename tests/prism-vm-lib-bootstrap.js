@@ -28,16 +28,22 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
     vm.runInContext(fs.readFileSync(filePath, "utf8"), sandbox, { filename: rel });
   });
   if (sandbox.window) {
-    if (sandbox.PRISM_GAM_OUTPUT_FORMAT) {
-      sandbox.window.PRISM_GAM_OUTPUT_FORMAT = sandbox.PRISM_GAM_OUTPUT_FORMAT;
-    }
-    if (sandbox.PRISM_LD_TABLE_FIDELITY) {
-      sandbox.window.PRISM_LD_TABLE_FIDELITY = sandbox.PRISM_LD_TABLE_FIDELITY;
-    }
-    if (sandbox.PRISM_INSTRUCTIONAL_PATTERN_PROMPT) {
-      sandbox.window.PRISM_INSTRUCTIONAL_PATTERN_PROMPT =
-        sandbox.PRISM_INSTRUCTIONAL_PATTERN_PROMPT;
-    }
+    [
+      "PRISM_GAM_OUTPUT_FORMAT",
+      "PRISM_LD_TABLE_FIDELITY",
+      "PRISM_LD_MATERIALS_COPY",
+      "PRISM_LD_MATH_RENDER",
+      "PRISM_LD_SELF_DIRECTED_RHETORIC",
+      "PRISM_LD_AUTHORIAL_EXPOSITION",
+      "PRISM_LD_JOURNEY_ASSIMILATION",
+      "PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION",
+      "PRISM_LD_DESIGN_PAGE_COMPOSE_CONTRACT",
+      "PRISM_INSTRUCTIONAL_PATTERN_PROMPT"
+    ].forEach(function (key) {
+      if (sandbox[key]) {
+        sandbox.window[key] = sandbox[key];
+      }
+    });
   }
 }
 

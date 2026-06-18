@@ -20,6 +20,16 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: membership and validation anchors", () =>
   assert.match(text, /upstream learning_activities \(not only activity_materials\)/i);
 });
 
+test("49-C2: membership forbids material shell and synopsis substitution", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /copy the full materials object onto the matching row/i);
+  assert.match(text, /no synopsis, reference-only, placeholder, or catalogue substitution/i);
+  assert.match(text, /generation_notes\.limitations with explicit reason/i);
+  assert.match(text, /do not thin materials to references/i);
+  assert.doesNotMatch(text, /activity shell with available fields and material references/i);
+  assert.doesNotMatch(text, /retain the activity shell/i);
+});
+
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module markers", () => {
   const text = compose.buildLdDesignPageComposePromptBlock({
     materialsCopyBlock: materialsCopy.buildLdMaterialsCopyPromptBlock({
@@ -38,6 +48,17 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module
   assert.match(text, /LD-TABLE-FIDELITY \| Layer: L4/i);
   assert.doesNotMatch(text, /LD-MATERIALS-COPY \(auto-applied\)/i);
   assert.doesNotMatch(text, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+});
+
+test("49-C2: field preservation list unchanged", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /activity_preamble, prior_knowledge_activation, reasoning_orientation/i);
+  assert.match(text, /intellectual_frame, intellectual_coherence_bridge/i);
+  assert.match(text, /expected_output and support_note/i);
+  assert.equal(
+    compose.FIELD_PRESERVATION_FIELD_IDS,
+    "activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge"
+  );
 });
 
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: field preservation optional", () => {

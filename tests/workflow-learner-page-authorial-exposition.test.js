@@ -100,7 +100,7 @@ test("42-2: self-study Design Page includes authorial exposition contract", () =
   const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
   assert.match(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
   assert.match(prompt, /RHETORICAL ROLE SEPARATION/i);
-  assert.match(prompt, /FRAMING ASSIMILATION/i);
+  assert.match(prompt, /PRESERVATION BOUNDARY/i);
   assert.match(prompt, /Explanation before task/i);
   assert.match(prompt, /Activity field preservation/i);
 });

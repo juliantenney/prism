@@ -205,12 +205,17 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
   assert.match(prompt, /expected_output and support_note/i);
   assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.match(prompt, /Design Page rider/i);
-  assert.match(prompt, /mechanism evidence does not transfer to policy/i);
+  assert.match(prompt, /PRESERVATION BOUNDARY/i);
+  assert.match(prompt, /wrapper\/page-level prose/i);
+  assert.match(prompt, /does not rewrite, restyle, assimilate, or improve preserved fields/i);
   assert.match(prompt, /what distinction can now be sustained/i);
   assert.match(prompt, /cumulative reasoning journeys/i);
   assert.match(prompt, /plausible misconception/i);
   assert.match(prompt, /overview and\/or learning_purpose/i);
-  assert.match(prompt, /activity_preamble/i);
+  const rhetoricBlock = prompt.slice(prompt.indexOf("LD-SELF-DIRECTED-RHETORIC"));
+  assert.doesNotMatch(rhetoricBlock, /activity_preamble orients without duplicating learner_task/i);
+  assert.doesNotMatch(rhetoricBlock, /mechanism evidence does not transfer to policy/i);
+  assert.match(prompt, /Activity field preservation[\s\S]*activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt/i);
 });
 

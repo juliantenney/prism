@@ -12,7 +12,7 @@ test("LD-SELF-DIRECTED-RHETORIC: core block preserves behavioural anchors", () =
   const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock();
   assert.match(text, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.match(text, /LD-MATERIALS-COPY \/ LD-TABLE-FIDELITY/i);
-  assert.match(text, /LD-MATH-RENDER/i);
+  assert.match(text, /PRESERVATION BOUNDARY/i);
   assert.match(text, /expected_output describes evidence of completion/i);
   assert.match(text, /Check your thinking:/i);
   assert.match(text, /step → meaning/i);
@@ -26,6 +26,29 @@ test("LD-SELF-DIRECTED-RHETORIC: core block preserves behavioural anchors", () =
   assert.match(text, /mechanism evidence does not transfer to policy/i);
   assert.match(text, /Explicitly avoid: reflect on your learning/i);
   assert.doesNotMatch(text, /complete pipe table with header row/i);
+});
+
+test("49-C3b: design_page rhetoric is wrapper-only and respects preservation boundary", () => {
+  const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
+  assert.match(text, /wrapper\/page-level prose/i);
+  assert.match(text, /LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY/i);
+  assert.match(text, /does not rewrite, restyle, assimilate, or improve preserved fields/i);
+  assert.match(text, /coherent intellectual journey/i);
+  assert.doesNotMatch(
+    text,
+    /Scope: overview, learning_purpose, study_tips, activity_preamble, learner_task, expected_output, support_note/i
+  );
+  assert.doesNotMatch(text, /activity_preamble orients without duplicating learner_task/i);
+  assert.doesNotMatch(text, /preserve bridges, study_tips, closure\/debrief, transfer_or_application_task, support_note verbatim/i);
+  assert.doesNotMatch(text, /mechanism evidence does not transfer to policy/i);
+  assert.doesNotMatch(text, /do not repeat the overview tension verbatim/i);
+});
+
+test("49-C3b: DLA rhetoric retains field authoring guidance", () => {
+  const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "dla" });
+  assert.match(text, /Scope \(DLA authoring\)/i);
+  assert.match(text, /activity_preamble orients without duplicating learner_task/i);
+  assert.match(text, /intellectual_coherence_bridge and cognition-orientation field definitions/i);
 });
 
 test("LD-SELF-DIRECTED-RHETORIC: design_page role rider includes journey assimilation", () => {

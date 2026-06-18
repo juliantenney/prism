@@ -1,0 +1,174 @@
+{
+  "concepts": [
+    {
+      "name": "Photosynthesis",
+      "definition": "The process by which green plants, algae, and some bacteria make their own food using sunlight, converting light energy into chemical energy stored in glucose."
+    },
+    {
+      "name": "Chloroplasts",
+      "definition": "Tiny structures inside plant leaves where photosynthesis mainly takes place."
+    },
+    {
+      "name": "Chlorophyll",
+      "definition": "A green pigment found in chloroplasts that captures sunlight and gives plants their green color."
+    },
+    {
+      "name": "Sunlight",
+      "definition": "The light energy from the sun that powers the photosynthesis process."
+    },
+    {
+      "name": "Water",
+      "definition": "A necessary ingredient for photosynthesis absorbed by plant roots."
+    },
+    {
+      "name": "Carbon dioxide",
+      "definition": "A gas absorbed from the air through stomata in leaves, used as a raw material in photosynthesis."
+    },
+    {
+      "name": "Glucose",
+      "definition": "A type of sugar produced by photosynthesis that stores chemical energy for plants."
+    },
+    {
+      "name": "Oxygen",
+      "definition": "A gas released as a byproduct of photosynthesis, essential for most living organisms to breathe."
+    },
+    {
+      "name": "Stomata",
+      "definition": "Tiny openings in plant leaves that allow carbon dioxide to enter and oxygen to exit."
+    },
+    {
+      "name": "Light-dependent reactions",
+      "definition": "The first stage of photosynthesis where sunlight is absorbed by chlorophyll to split water molecules, releasing oxygen and producing energy carriers."
+    },
+    {
+      "name": "Light-independent reactions (Calvin Cycle)",
+      "definition": "The second stage of photosynthesis where energy from the first stage is used to convert carbon dioxide into glucose; this stage does not require light directly."
+    },
+    {
+      "name": "Photosynthesis Equation",
+      "definition": "The chemical equation summarizing photosynthesis: 6 CO2 + 6 H2O + light energy → C6H12O6 + 6 O2."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Chlorophyll",
+      "relationship": "is contained in",
+      "target": "Chloroplasts"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "requires",
+      "target": "Sunlight"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "requires",
+      "target": "Water"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "requires",
+      "target": "Carbon dioxide"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "produces",
+      "target": "Glucose"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "produces",
+      "target": "Oxygen"
+    },
+    {
+      "source": "Stomata",
+      "relationship": "allow entry of",
+      "target": "Carbon dioxide"
+    },
+    {
+      "source": "Stomata",
+      "relationship": "allow exit of",
+      "target": "Oxygen"
+    },
+    {
+      "source": "Light-dependent reactions",
+      "relationship": "occur in",
+      "target": "Chloroplasts"
+    },
+    {
+      "source": "Light-independent reactions (Calvin Cycle)",
+      "relationship": "occur in",
+      "target": "Stroma of chloroplast"
+    },
+    {
+      "source": "Light-dependent reactions",
+      "relationship": "produce energy for",
+      "target": "Light-independent reactions (Calvin Cycle)"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "is essential for",
+      "target": "Oxygen production"
+    },
+    {
+      "source": "Photosynthesis",
+      "relationship": "is essential for",
+      "target": "Food chain"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Ingredients of Photosynthesis",
+      "members": [
+        "Sunlight",
+        "Water",
+        "Carbon dioxide"
+      ]
+    },
+    {
+      "name": "Products of Photosynthesis",
+      "members": [
+        "Glucose",
+        "Oxygen"
+      ]
+    },
+    {
+      "name": "Stages of Photosynthesis",
+      "members": [
+        "Light-dependent reactions",
+        "Light-independent reactions (Calvin Cycle)"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Photosynthesis",
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Light-dependent reactions",
+          "description": "Sunlight is absorbed by chlorophyll in chloroplasts, splitting water molecules into oxygen, protons, and electrons. Oxygen is released."
+        },
+        {
+          "step_number": 2,
+          "name": "Light-independent reactions (Calvin Cycle)",
+          "description": "Energy from the first stage is used to convert carbon dioxide into glucose in the stroma of the chloroplast; this stage does not require light directly."
+        }
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "misconception": "Photosynthesis happens everywhere in the plant",
+      "correction": "Photosynthesis mainly happens in the leaves, specifically inside chloroplasts."
+    },
+    {
+      "misconception": "Photosynthesis produces only glucose",
+      "correction": "Photosynthesis produces both glucose and oxygen."
+    },
+    {
+      "misconception": "Light-independent reactions require light",
+      "correction": "Light-independent reactions (Calvin Cycle) do not require light directly."
+    }
+  ]
+}

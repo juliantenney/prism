@@ -1,0 +1,181 @@
+```json
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Introduction to Household Budget Inflation",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1"],
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanatory teaching",
+          "specification": "Clear, detailed exposition of household budget inflation concepts including definitions, causes, and key terminology. Depth floor: L3 with examples of inflation impact on household budgets."
+        },
+        {
+          "material_id": "M2",
+          "type": "worked_example",
+          "purpose": "worked analytic pass",
+          "specification": "Step-by-step worked example demonstrating calculation of inflation impact on a sample household budget, including intermediate calculations and reasoning."
+        },
+        {
+          "material_id": "M3",
+          "type": "sample_output",
+          "purpose": "model solution reference",
+          "specification": "Completed worked example output showing final inflation impact figures and budget adjustments for learner comparison."
+        }
+      ],
+      "learner_task": "## Study the introductory text and worked example carefully.\n\n- Understand key concepts and terminology related to household budget inflation.\n- Follow the worked example to see how inflation impacts a household budget step-by-step.\n\nPrepare to apply this understanding in the next activities.",
+      "expected_output": "Demonstrate comprehension by summarizing key concepts and explaining the worked example steps in own words.",
+      "activity_preamble": "This activity introduces you to the fundamental concepts of household budget inflation with detailed teaching and a worked example.",
+      "prior_knowledge_activation": true,
+      "reasoning_orientation": "conceptual understanding and procedural reasoning",
+      "self_explanation_prompt": "Explain why each step in the worked example is necessary and how it contributes to understanding inflation impact.",
+      "transfer_or_application_task": false,
+      "scaffold_hint_sequence": false,
+      "uncertainty_tension_prompt": "Identify any parts of the worked example or concepts that are unclear or challenging."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Classification and Analysis of Inflation Drivers",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": ["LO2"],
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "classification_table",
+          "purpose": "practice classification and analysis",
+          "specification": "Table listing various inflation drivers with columns for classification by type, impact level, and affected household categories. Learners complete classification and add notes on reasoning."
+        },
+        {
+          "material_id": "M5",
+          "type": "modelling_note",
+          "purpose": "modelling note with think-aloud",
+          "specification": "Expert modelling note demonstrating classification of inflation drivers with reasoning and trade-offs considered."
+        },
+        {
+          "material_id": "M6",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with ≥4 criteria to verify correct classification and thorough analysis of inflation drivers."
+        }
+      ],
+      "learner_task": "## Classify and analyze the given inflation drivers.\n\n- Use the classification table to categorize each driver.\n- Consider multiple perspectives and trade-offs.\n- Refer to the modelling note to understand expert reasoning.\n- Verify your classifications using the checklist.",
+      "expected_output": "Completed classification table with justified categories and notes; self-verified using checklist.",
+      "activity_preamble": "This activity develops your ability to classify and analyze different drivers of household budget inflation using a structured table and expert modelling.",
+      "prior_knowledge_activation": true,
+      "reasoning_orientation": "analytical classification and trade-off evaluation",
+      "self_explanation_prompt": "Explain why each inflation driver was classified as you did, referencing criteria.",
+      "transfer_or_application_task": false,
+      "scaffold_hint_sequence": true,
+      "uncertainty_tension_prompt": "Note any drivers that were difficult to classify or analyze and why."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Evaluating Household Inflation Strategies",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": ["LO3", "LO4"],
+      "required_materials": [
+        {
+          "material_id": "M7",
+          "type": "scenario",
+          "purpose": "scenario analysis",
+          "specification": "Two detailed household scenarios with specific income, expenses, and inflation challenges named and numerically described."
+        },
+        {
+          "material_id": "M8",
+          "type": "criteria",
+          "purpose": "criteria exposition",
+          "specification": "Exposition of ≥3 evaluation criteria including cost-effectiveness, feasibility, and long-term impact."
+        },
+        {
+          "material_id": "M9",
+          "type": "worked_example",
+          "purpose": "worked judgement",
+          "specification": "Worked example evaluating one household's inflation strategy with weak vs strong judgement explained."
+        },
+        {
+          "material_id": "M10",
+          "type": "decision_table",
+          "purpose": "guided judgement",
+          "specification": "Decision table with partial exemplar rows for rating strategies against criteria, with scoring guide."
+        },
+        {
+          "material_id": "M11",
+          "type": "template",
+          "purpose": "independent judgement",
+          "specification": "Template for learners to independently evaluate and rate household strategies using criteria and provide justification."
+        },
+        {
+          "material_id": "M12",
+          "type": "checklist",
+          "purpose": "verification",
+          "specification": "Checklist with ≥4 items to verify completeness and quality of evaluation and justification."
+        },
+        {
+          "material_id": "M13",
+          "type": "transfer_prompt",
+          "purpose": "transfer",
+          "specification": "Prompt asking learners to apply evaluation criteria to a new household scenario with different inflation challenges."
+        }
+      ],
+      "learner_task": "## Evaluate the inflation strategies of two households.\n\n- Study the scenarios and evaluation criteria.\n- Review the worked example of judgement.\n- Use the decision table to guide your ratings.\n- Complete the evaluation template independently, providing justifications.\n- Verify your evaluation using the checklist.\n- Finally, respond to the transfer prompt by applying criteria to a new scenario.",
+      "expected_output": "Completed evaluation template with justified ratings and a reasoned transfer response applying criteria to a new scenario.",
+      "activity_preamble": "This activity guides you through evaluating household inflation strategies using multiple criteria, worked judgement, and independent decision-making.",
+      "prior_knowledge_activation": true,
+      "reasoning_orientation": "criteria-based evaluation and independent judgement",
+      "self_explanation_prompt": "Justify your ratings and decisions referencing the criteria and scenario details.",
+      "transfer_or_application_task": true,
+      "scaffold_hint_sequence": true,
+      "uncertainty_tension_prompt": "Identify any uncertainties or trade-offs encountered during evaluation."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Consolidation and Reflection on Household Budget Inflation",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1", "LO2", "LO3", "LO4"],
+      "required_materials": [
+        {
+          "material_id": "M14",
+          "type": "consolidation_summary",
+          "purpose": "session closure",
+          "specification": "Learner-facing summary template requiring ≥80 words synthesizing key ideas about household budget inflation, classification, evaluation, and strategy judgement."
+        },
+        {
+          "material_id": "M15",
+          "type": "prompt_set",
+          "purpose": "reflection",
+          "specification": "Set of reflection prompts encouraging learners to consider what they have learned, remaining uncertainties, and next steps."
+        }
+      ],
+      "learner_task": "## Write a consolidation summary.\n\n- Synthesize the key concepts, classifications, and evaluation skills developed.\n- Reflect on your learning progress and any remaining questions.\n- Use the reflection prompts to guide your writing.",
+      "expected_output": "A coherent written summary of ≥80 words covering key session ideas and personal reflection.",
+      "activity_preamble": "This final activity helps you consolidate and reflect on your learning about household budget inflation and strategy evaluation.",
+      "prior_knowledge_activation": false,
+      "reasoning_orientation": "synthesis and metacognitive reflection",
+      "self_explanation_prompt": "Consider how your understanding has deepened and what you can apply independently.",
+      "transfer_or_application_task": false,
+      "scaffold_hint_sequence": false,
+      "uncertainty_tension_prompt": "Note any remaining uncertainties or areas for further study."
+    }
+  ],
+  "outcome_alignment": {
+    "A1": ["LO1"],
+    "A2": ["LO2"],
+    "A3": ["LO3", "LO4"],
+    "A4": ["LO1", "LO2", "LO3", "LO4"]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 55,
+    "consolidation_requirement": "Final activity includes a consolidation summary requiring learner synthesis and reflection.",
+    "workbook_contract_applied": true
+  }
+}
+```
+STEP 5 OUTPUT: learning_activities.

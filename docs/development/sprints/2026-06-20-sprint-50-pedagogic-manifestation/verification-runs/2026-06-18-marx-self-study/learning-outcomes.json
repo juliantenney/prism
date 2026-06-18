@@ -1,0 +1,27 @@
+```json
+{
+  "learner_level": "intermediate",
+  "scope": "standard_session",
+  "learning_outcomes": [
+    {
+      "statement": "Analyze the key components and structure of the provided knowledge model to identify its main concepts and relationships.",
+      "related_concepts": ["knowledge model", "concepts", "relationships", "structure"],
+      "cognitive_level": "analyze",
+      "notes": "Focus on understanding the organization and hierarchy within the knowledge model."
+    },
+    {
+      "statement": "Construct clear and measurable learning outcomes that align directly with the core concepts and cognitive demands specified in the knowledge model.",
+      "related_concepts": ["learning outcomes", "alignment", "measurable objectives", "cognitive demand"],
+      "cognitive_level": "create",
+      "notes": "Ensure outcomes use precise, observable verbs and reflect the learner level and scope."
+    },
+    {
+      "statement": "Evaluate the completeness and internal consistency of learning outcomes to ensure balanced coverage without redundancy or ambiguity.",
+      "related_concepts": ["learning outcomes", "completeness", "consistency", "coverage", "redundancy"],
+      "cognitive_level": "evaluate",
+      "notes": "Check that outcomes are realistically achievable within the session constraints."
+    }
+  ]
+}
+```
+STEP 3 OUTPUT: learning_outcomes

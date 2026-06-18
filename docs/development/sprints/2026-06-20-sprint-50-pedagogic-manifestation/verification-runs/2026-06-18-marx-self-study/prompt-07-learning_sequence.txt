@@ -1,0 +1,100 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Construct Learning Sequence.
+Role / purpose of this step: Sequence design.
+
+Runner guidance:
+- What this step does: Sequence design
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "learning_activities" from step "an earlier step".
+- "activity_materials" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+Context:
+You are provided with learning_activities, activity_materials, and relevant assessment artefacts.
+
+Task:
+Construct learning_sequence as a timed facilitation plan that can be delivered directly.
+
+Instructions:
+- Build a concrete session plan, not pedagogical commentary
+- Enforce total duration compliance with configured duration
+- You may only reference activities provided in input learning_activities
+- Do not invent new activities
+- Do not rename activities
+- Do not extend the activity set
+- Only include an activity if there is enough time to run it properly
+- Do not include activities just to tick a coverage box
+- Prefer fewer well-run activities over squeezing all activities into insufficient time
+- If time is too short, omit an activity or merge it with another activity
+- If provided activities are insufficient, reuse, combine, or reschedule existing activities
+- You may only reference materials explicitly defined in activity_materials
+
+Material usage rules:
+- When referring to materials, always use the exact material_id and material title as defined in the input artefact (for example: "Material A1.1 - Concept Map Template")
+- Do not paraphrase or generalise material names (for example, avoid "the worksheet", "the template", "the handout" unless that is the exact title)
+- All materials referenced must correspond exactly to those defined in the input artefact; do not introduce new materials or rename existing ones
+- When instructing facilitators to distribute or use materials, explicitly reference them using their identifiers
+- Where helpful, include a "Materials used:" line at the start of each activity block listing referenced material_id + title pairs
+
+- All materials referenced in facilitator actions must correspond exactly to required_materials defined in learning_activities
+- Do not invent new materials or rename existing ones; use the exact identifiers from activity definitions
+- When referring to materials, always include both material_id and material title (for example: "Material A1.1 - Concept Map Template")
+- Do not use vague references such as "the template" or "the worksheet"
+- Do not introduce new handouts, excerpts, scenarios, slides, checklists, templates, or examples unless already present in activity_materials
+- If design_scope is single_activity, do not generate a broad multi-step session timeline
+- For single_activity scope, produce a minimal one-step structure around the target activity, or state via checks/omissions that no broader sequence is required
+- For single_activity scope, avoid session/module framing unless explicitly requested
+- Include facilitator_actions and learner_actions for each timeline block
+- Include grouping and explicit transition_to_next for each block
+- Use sensible alternation between explanation, activity, and discussion
+- Ensure increasing complexity across the session
+- Include at least two plenary/synthesis moments where appropriate to session length
+- For cognitively demanding tasks (creation, evaluation, iteration, comparison), allocate sufficient time
+- Avoid placing high-complexity tasks into very short final blocks
+- If total time is constrained, reduce, merge, or simplify activities rather than compressing them unrealistically
+- Do not create zero-minute blocks
+- Do not create bookkeeping-only wrap-up steps
+- Closure must have real allocated time, or be explicitly integrated into the final meaningful block
+- Prefer one fewer activity plus a real ending over superficial full coverage
+- If closure is integrated into the final activity, state closure integration explicitly in checks
+- Optimize for learnability and depth, not just coverage
+- Keep sequence grounded in upstream artefacts and constraints
+- Do not output rationale-only prose
+
+Output requirements (strict — fenced JSON block only):
+- Return exactly one markdown fenced JSON block opened with ```json and closed with ```
+- The fenced block body must be the learning_sequence root object as valid JSON
+- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block
+- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)
+- Do NOT include JSON comments (no // or block comments)
+- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)
+- The JSON object MUST include these top-level keys: sequence_title, total_duration_minutes, timeline, activities_used, activities_omitted, checks
+- Each timeline block must include: block_id, start_minute, duration_minutes, phase_type, activity_id (where relevant), grouping, facilitator_actions, learner_actions, transition_to_next
+- activities_used must list activity_ids used in timeline
+- activities_omitted must be an array of objects: { activity_id, reason }
+- checks must include: all_activity_ids_valid, no_new_activities_introduced, all_materials_traceable_to_activity_materials, cognitive_timing_feasible, closure_integrated, no_zero_minute_blocks, omissions_justified
+- Return only the single fenced block.
+EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied):
+- Module: EDUCATIONAL-QUALITY-FRAMEWORK | Sprint 40 Educational Quality Framework (runtime prompt contract)
+- Learner journey: the learner journey is the primary design unit — generate a coherent learner-development journey, not disconnected content pages or activity collections.
+- Learner transformations: outputs should develop understanding, capability, judgement and independence.
+- Judgement: create opportunities to compare, evaluate, justify, critique and defend — not recall-only or completion-only tasks.
+- Progressive independence: move from observe / modelled support → guided practice → supported decision making → independent decision making → transfer; reduce scaffolding across the journey.
+- Metacognition (lightweight): include brief confidence, uncertainty, progress, decision and next-step checks — without overwhelming the content.
+- Learning success: make progress visible so learners can recognise what they now understand, can do, can judge, and can manage independently.
+- Cognitive over interface activity: optimise for cognitive activity, not more interface activity — depth of thinking beats visible interactivity.
+- Step manifestation (targeted guidance):
+- Sequence: show a coherent learner-development journey — not just a list of pages or activities.
+- Progression: orient / modelled support → guided practice → supported decision making → independent decision making → transfer where appropriate.
+- Make explicit how learners move from understanding → capability → judgement → independence across the timeline.
+- Do not add visible activity unless it improves cognitive activity.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 7 OUTPUT: learning_sequence.

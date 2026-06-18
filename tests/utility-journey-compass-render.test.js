@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -89,6 +90,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -113,13 +115,12 @@ function activityCompassAsides(html) {
   return bodyHtml(html).match(/<aside class="util-journey-compass[\s\S]*?<\/aside>/gi) || [];
 }
 
-test("49-6b: page header and per-activity compass render when overview and activities exist", () => {
+test("49-6b: page header and activity progress render when overview and activities exist", () => {
   const html = renderPage(marxBenchmark);
   assert.match(html, /util-journey-compass-header/);
-  assert.match(html, /util-activity-row util-page-columns/);
-  assert.match(html, /util-journey-compass--activity/);
+  assert.match(html, /util-instructional-activity/);
+  assert.match(html, /util-activity-progress/);
   assert.match(html, /util-page-export--with-compass/);
-  assert.ok(activityCompassAsides(html).length >= 4);
 });
 
 test("49-6b: page header includes governing inquiry from overview", () => {
@@ -131,7 +132,7 @@ test("49-6b: page header includes governing inquiry from overview", () => {
   assert.match(header[0], /explores whether Karl Marx/i);
 });
 
-test("49-6b: each activity row includes progression label and step signpost", () => {
+test("49-6b: each activity row includes progression label", () => {
   const compass = buildCompass(marxBenchmark);
   assert.equal(compass.steps.length, 4);
   const html = renderPage(marxBenchmark);
@@ -159,17 +160,14 @@ test("49-6b: SP-01 text material body stays in activity column, not compass", ()
   assert.doesNotMatch(asides, new RegExp(expositionSnippet.slice(0, 40)));
 });
 
-test("49-6b: transfer and consolidation produce short compass pointers only", () => {
+test("49-6b: transfer and consolidation render in instructional sections not compass", () => {
   const compass = buildCompass(marxBenchmark);
   const a4 = compass.steps.find((s) => s.activity_id === "A4");
   assert.ok(a4);
-  const transfer = a4.signals.find((s) => s.kind === "transfer_prompt_pointer");
-  const close = a4.signals.find((s) => s.kind === "consolidation_pointer");
-  assert.ok(transfer);
-  assert.ok(close);
+  assert.equal((a4.signals || []).length, 0, "Sprint 50: compass signals stripped");
   const html = renderPage(marxBenchmark);
-  assert.match(html, /Transfer task in activity materials/);
-  assert.doesNotMatch(html, /util-journey-compass[\s\S]{0,400}ride-sharing, food delivery/i);
+  assert.doesNotMatch(html, /Transfer task in activity materials/);
+  assert.doesNotMatch(html, /data-compass-signal="transfer_prompt_pointer"/i);
 });
 
 test("49-6b: responsive wrapper classes are present in export CSS", () => {
@@ -180,22 +178,25 @@ test("49-6b: responsive wrapper classes are present in export CSS", () => {
   );
 });
 
-test("49-6b: util-pel cues still render in activity framing when fields exist", () => {
+test("49-6b: instructional grammar renders Orient and Think on self-study fixture", () => {
   const html = renderPage(marxFixture);
-  assert.match(html, /util-pel-reasoning-cue/);
-  assert.match(html, /util-activity-framing/);
-  assert.match(html, /How to think:/i);
+  const body = bodyHtml(html);
+  assert.match(body, /Why this activity/);
+  assert.match(body, /How to approach this/);
+  assert.doesNotMatch(body, /util-pel-reasoning-cue"><strong>How to think:/);
 });
 
-test("49-6b: per-activity compass precedes activity block in DOM order", () => {
+test("49-6b: activity progress precedes instructional sections in each article", () => {
   const html = renderPage(marxBenchmark);
-  const rows = bodyHtml(html).match(/<div class="util-activity-row util-page-columns">[\s\S]*?<\/div>\s*(?=<div class="util-activity-row|<\/section>|<h2|$)/gi);
-  assert.ok(rows && rows.length >= 4, "expected activity rows");
-  rows.forEach((row) => {
-    const asideIdx = row.indexOf("util-journey-compass");
-    const articleIdx = row.indexOf("util-task-block");
-    assert.ok(asideIdx >= 0 && articleIdx > asideIdx, "compass must precede activity article");
-    assert.match(row, /role="complementary"/);
+  const articles = bodyHtml(html).match(/<article class="util-task-block[^"]*">[\s\S]*?<\/article>/gi);
+  assert.ok(articles && articles.length >= 4, "expected activity articles");
+  articles.forEach((article) => {
+    const progressIdx = article.indexOf("util-activity-progress");
+    const orientIdx = article.indexOf("util-instructional-orient");
+    if (progressIdx >= 0 && orientIdx >= 0) {
+      assert.ok(progressIdx < orientIdx, "progress before first instructional section");
+    }
+    assert.match(article, /util-instructional-heading/);
   });
   assert.match(html, /id="util-journey-compass-heading"/);
 });

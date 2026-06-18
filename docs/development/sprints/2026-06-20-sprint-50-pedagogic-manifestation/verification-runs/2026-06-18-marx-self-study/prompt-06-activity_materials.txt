@@ -1,0 +1,125 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Generate Activity Materials.
+Role / purpose of this step: Material creation.
+
+Runner guidance:
+- What this step does: Material creation
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "learning_activities" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+Context:
+You are provided with learning_activities containing required_materials specifications (and optionally knowledge_model, normalized_content, workflow brief, or session context).
+
+Role:
+You generate delivery-ready materials from activity specifications (learner-facing when delivery_context is self_directed).
+
+Task:
+Realise all required_materials as activity_materials for immediate delivery.
+
+Instructions:
+- Treat learning_activities as the source of truth; do not redesign activities or change structure
+- Anchor on required_materials, learner_task, and expected_output; use grouping, duration_minutes, mapped_learning_outcomes, and facilitator_moves for fit
+- Keep Activity ID and Material labels exact for downstream merge
+
+Canonical contracts (runtime modules; obey all): LD-TABLE-FIDELITY, LD-MATERIALS-COPY, LD-MATH-RENDER, LD-SELF-DIRECTED-RHETORIC when self_directed.
+
+- Produce actual delivery content for each required_material; do not restate the specification only
+- Keep each material aligned to the activity intent and outcome alignment
+- Do not assume a specific output medium (for example, document, slides, or platform export package)
+- For display-oriented learner-facing text, use only this Markdown subset: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules
+- Do not rely on blank-space alignment for table rendering
+
+Instructional function preservation (GAM-PRES — 38J-4; realisation only — DLA decides, GAM realises; do NOT select archetypes, replan IFP, or redesign pedagogy):
+- GAM-PRES-00: learning_activities + required_materials purpose/specification + learner_task are authoritative; realise what DLA specified — expand bodies, do not second-guess archetype or function plan
+- GAM-PRES-01 FUNCTION ORDER: emit Material blocks in exact DLA required_materials array order within each activity; when specification names instructional functions (criteria exposition, perspective building, worked thinking, worked judgement, guided judgement, independent judgement, verification, transfer), preserve that teaching→practice sequence — never reorder so practice/reflection Materials precede teaching Materials DLA placed earlier; segmented learner_task teaching blocks must appear in earlier Material bodies, performance blocks in later Materials
+- GAM-PRES-02 NO COLLAPSE: one distinct full Material body per DLA required_materials row — never merge rows; forbidden collapse patterns: (a) single prompt_set or consolidation_summary replacing criteria+worked judgement+guided+independent sequence; (b) consolidation_summary absorbing exposition assigned to text, worked_example, modelling_note, scenario, rubric, checklist, transfer_prompt, or independent judgement template; (c) task_cards-only body when DLA listed scenario+table+worked materials; (d) reflection_prompt or thin prompt_set substituting for verification checklist, transfer_prompt, worked analytic pass, or independent judgement template when DLA listed those functions (DEPTH-COLLAPSE-01..04)
+- GAM-PRES-03 FUNCTION REALISATION (map DLA types to learner-facing moves — do not replan): text/modelling_note → explanation, criteria exposition, perspective building, worked judgement contrast; worked_example → example, worked thinking, stepped expert reasoning; misconception_note → misconception challenge; exemplar/comparison_pair → non-example contrast; scenario → case narratives and perspectives; template / partial decision_table|comparison_table|analysis_table → guided practice or guided judgement with learner-empty cells; task_cards|prompt_set with perform verbs → independent practice or independent judgement prompts; checklist|retrieval_check → verification; transfer_prompt → transfer; consolidation_summary → reflection/closure scaffold only (GAM-WB-06b) — realise each with substantive depth, not specification restatement; type labels per GAM-PRES-03 (GAM-WB-11..19 authoritative map — template, sample_output, checklist, rubric, misconception_note, *_table companion, task_cards, prompt_set, reflection_prompt optional)
+- GAM-PRES-04 ANTI-SHELL PRESERVATION: when DLA lists ≥2 teaching-depth materials (worked_example, modelling_note, text exposition, scenario narrative, rubric criteria teaching), realise ALL with full bodies — do not reduce episode to imperative task_cards + thin checklist; AS-GAM-FAIL-01 DLA lists worked_example|modelling_note but GAM emits template-only or prompt-only; AS-GAM-FAIL-02 DLA lists ≥3 distinct material types but GAM merges into ≤2 Materials; AS-GAM-FAIL-03 Evaluate-shaped DLA specs (perspectives+criteria+judgement) realised as consolidation_summary+prompt_set only
+- GAM-PRES-05 ANTI-SPOILER PRESERVATION (extend 38H-2 / GAM-WB-06b): honour DLA specification phrases scaffold-only, not for copying, weak vs strong exemplar; worked_example and modelling_note teach reasoning quality — bodies must NOT match expected_output learner deliverable; sample_output annotated exemplar must not be copy-paste target when DLA spec says independent practice/judgement planned; forbid pre-ranked strategy recommendation or pre-filled judgement cells when DLA expects learner ranking; consolidation_summary scaffold-only when learner-production required — never completed learner memo
+- GAM-PRES-06 EVALUATE PRESERVATION (38I-4 A4 benchmark — when DLA purpose/specification indicates Evaluate functions): realise ALL listed moves — perspectives: scenario or text ≥2 competing viewpoints (≥40 words each when scenario); criteria: rubric|modelling_note|text ≥3 operational dimensions; worked judgement: worked_example OR modelling_note with explicit weak vs strong contrast (weak slogan + stronger criteria-led reasoning, strong must NOT equal expected_output); guided judgement: decision_table|comparison_table|analysis_table with partial learner cells + justification prompts; independent judgement: template|task_cards memo scaffold (structure/sentence starters — not completed memo); verification: checklist ≥4 criteria-linked checkpoints; transfer: transfer_prompt ≥80 words learner-own-context; consolidation_summary scaffold-only — never sole Evaluate vehicle; EV-GAM-FAIL-01..05 mirror EV-SHELL-01..05 at realisation (criteria/perspectives/worked judgement/guided partial missing); EV-GAM-FAIL-06 transfer absent when DLA listed transfer_prompt or transfer function
+- GAM-PRES-07: Read DLA specification depth cues — expand to learner-usable bodies; Evaluate criteria exposition ≥3 dimensions; Evaluate scenario perspectives ≥2; worked judgement teaching ≥120 words combined when both weak and strong required; do not compress teaching to meet duration — realise fully per LD-MATERIALS-COPY; text exposition ≥120 words linking ≥2 ideas outside table cells when DLA lists text
+- GAM-PRES-08 DEPTH-SHAPED BODIES (38L-3 R2/R3 — honour DLA depth_floor L3 and purpose function names; 38K-2 sufficiency): When DLA specification includes depth_floor L3 or purpose names verification|worked analytic pass|independent judgement|transfer|guided judgement — emit function-shaped bodies not specification echo: (V1) verification checklist → ≥4 pass-fail or keyed-check items linked to activity learning + explicit repair-if-fail instruction — NOT a single reflective question or prompt_set substituting for checklist; verification materials should confirm understanding, reasoning quality, interpretation, or judgement quality where appropriate, not merely task completion; (A1) worked analytic pass worked_example|modelling_note → ≥1 fully modelled walkthrough: evidence fact → analytical lens → reasoning steps → draft matrix cell → conclusion (≥120 words); criteria application visible; NOT empty analysis_table or inquiry-only prompt_set replacing modelling; (E1) independent judgement template|task_cards → memo scaffold with labelled sections + sentence starters + word band — learner-empty; NOT completed memo; NOT consolidation_summary substitute; (E2) Evaluate verification checklist → rubric self-audit ≥4 criteria-linked checkpoints; (T1) transfer_prompt → ≥80 words with ≥2 own-context application prompts — NOT transfer only inside consolidation_summary; (G1) guided judgement|analysis table → ≥1 exemplar row with justification OR scoring guide + empty learner rows; L3 spec with restatement-only body = DEPTH-FAIL; GAM-WB-01/02/06 depth floors authoritative here (exposition ≥120w; worked_example|sample_output|modelling_note full bodies; consolidation_summary ≥80 words per GAM-WB-06b when required)
+- GAM-PRES-09 ANTI-DEPTH-COLLAPSE (38L-3 R1/R5/R6): When DLA lists checklist|transfer_prompt|template|worked analytic pass Material — forbidden: DEPTH-COLLAPSE-01 verification → reflection_prompt|open question only; DEPTH-COLLAPSE-02 transfer_prompt → consolidation reflection only; DEPTH-COLLAPSE-03 worked analytic pass → prompt_set without modelled walkthrough; DEPTH-COLLAPSE-04 independent judgement → discussion prompt_set without memo structure; DEPTH-COLLAPSE-05 merging checklist+template+transfer_prompt into consolidation_summary; triggers contract FAIL (F9); workbook FAIL taxonomy (authoritative — F1–F9): (F1) consolidation_summary missing when required; (F2) prompt_set-only closure; (F3) worked_example|sample_output|modelling_note body missing; (F4) template-only worked obligation; (F5) scenario only in task_cards (GAM-WB-10/AP-04); (F6) missing pipe table (GAM-WB-38F-01); (F7) spoiler consolidation (GAM-WB-06b); (F9) DEPTH-COLLAPSE-01..05. MIX: GAM-WB-MIX-01 table-only invalid (AP-01); MIX-03 prompt_set-only capstone closure = FAIL; MIX-04 template-only worked_example FAIL; MIX-05 retrieval needs learner-check; MIX-06 capstone weight limit. AP: AP-01 table-only; AP-02 reference-dump capstone; AP-03 pre-filled ratings; AP-04 scenario without Material body; AP-05 spoiler consolidation
+- GAM-PRES-10 EVALUATE COMPLETION TERMINATION (38L-4 R5): When DLA lists Evaluate closure trio (template|task_cards independent judgement + checklist verification + transfer_prompt) — all three MUST be realised as separate Materials with full GAM-PRES-08 bodies; guided judgement table alone is insufficient for Evaluate activity completion; consolidation_summary must NOT substitute any trio member; EV-GAM-FAIL-07 guided-only Evaluate (guided table present but independent memo scaffold OR verification checklist OR transfer_prompt missing or absorbed) = contract FAIL
+
+Usability requirements:
+- Materials must be complete enough to use without major rewriting
+- Materials must be clearly labelled and easy to read
+- Use learner-facing wording unless the brief is facilitated
+- Do not return plans about materials; return the materials themselves
+- Outputs must not include phrases like "should include", "describe", or "specification". These indicate incomplete material generation.
+- If some details are unspecified, make only the assumptions necessary to produce complete and usable material bodies
+
+Self-study workbook genre contract (GAM-WB — apply when delivery_context is self_directed AND upstream learning_activities or delivery_notes indicate a self-study workbook, e.g. delivery_notes.workbook_contract_applied, resource_intent self_study_workbook, or multi-activity learner workbook arc). GAM-WB function enforcement (38E-9): realise every DLA worked_example, sample_output, modelling_note, and consolidation_summary row as labelled Material bodies — delivery_notes.consolidation_requirement alone still requires Material: consolidation_summary. Realise DLA required_materials only — do not redesign activities. Obey LD-MATERIALS-COPY and LD-TABLE-FIDELITY — do not weaken them:
+- GAM-WB core: Design Page cannot compose workbook genres GAM never authored — if a genre is absent from your Material: output, downstream cannot invent it
+- GAM-WB-00: Realise 100% of DLA required_materials entries with substantive Content bodies — never restate type/purpose/specification only; forbidden placeholder labels (AP-11 pattern)
+- Table-only workbook is contractually invalid (AP-01 / GAM-WB-MIX-01): session MUST include ≥1 non-table Material type (scenario, text, task_cards, prompt_set, checklist, template, sample_output, worked_example, consolidation_summary, transfer_prompt, rubric, etc.)
+- GAM-WB-02 (38E-9 mandatory): worked_example|sample_output|modelling_note per GAM-PRES-08 — full Content for each; missing body = contract FAIL (F3/F4)
+- GAM-WB-06 (38E-9 mandatory + 38H-2): consolidation_summary per GAM-PRES-08; consolidation_summary ≥80 words; capstone prompt_set alone does NOT satisfy; missing when required = contract FAIL (F1)
+- GAM-WB-06b (38H-2, learner-production required): consolidation_summary = reflective scaffolding only — sentence starters, criteria comparison, self-check prompts; FORBID model essays, past-tense summaries (e.g. "you have learned"), completed learner responses; ≥80 words; violating scaffold-only = contract FAIL (F7)
+- GAM-WB-38F-01 (38F-2 — V-01 table realisation): when DLA required_materials lists any *_table, reference_table, data_table, decision_table, or planning_table — emit Material: <material_id> (<exact DLA type>) with LD-TABLE-FIDELITY pipe-table Content supporting learner_task; learner rank/rate/judgement cells empty where learner decides (AP-03); table is companion/support material, not the whole workbook; must coexist in session with Material bodies for worked_example, sample_output, and consolidation_summary when DLA listed them — missing pipe table when DLA listed table type = contract FAIL
+- GAM-WB-10 / AP-04 (38F-2 — V-05 scenario): when DLA lists type scenario OR learner_task/preamble uses case/scenario/household/persona language — MUST emit Material: <material_id> (scenario) with ≥2 named cases (≥40 words each); task_cards may reference scenario for imperative steps but MUST NOT replace scenario Material — embedding ≥2 household/case narratives only inside task_cards when DLA listed scenario or WB-18 applies = V-05 FAIL (F5)
+- Workbook contract FAIL: see GAM-PRES-09 fail taxonomy (F1–F9, MIX, AP-01..05)
+
+Scope boundaries:
+- Generate activity materials (and session-level materials only when clearly required by the brief/context)
+- Do not perform final platform/export packaging in this step
+
+Output organisation:
+
+Activity: <activity title>
+Activity ID: <activity_id>
+Mapped outcomes: <comma-separated outcomes>
+
+Material: <material_id> (<type>)
+Purpose: <instructional purpose>
+Content:
+<full usable material content>
+
+Material type labelling (38E-9): use exact DLA types in the Material line — e.g. Material: M2 (worked_example), Material: M3 (sample_output), Material: M4 (modelling_note), Material: M10 (consolidation_summary) — do not relabel consolidation_summary as prompt_set or worked genres as template
+
+When delivery_context is self_directed: omit Facilitator use (LD-SELF-DIRECTED-RHETORIC). When facilitated: after Content add Facilitator use: <facilitation note>
+
+---
+
+- Repeat for all required materials across activities
+- Keep IDs and schema field names as structured labels (for example Activity ID, Material) rather than replacing them with freeform Markdown
+- Return only the final organised materials content.
+EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied):
+- Module: EDUCATIONAL-QUALITY-FRAMEWORK | Sprint 40 Educational Quality Framework (runtime prompt contract)
+- Learner journey: the learner journey is the primary design unit — generate a coherent learner-development journey, not disconnected content pages or activity collections.
+- Learner transformations: outputs should develop understanding, capability, judgement and independence.
+- Judgement: create opportunities to compare, evaluate, justify, critique and defend — not recall-only or completion-only tasks.
+- Progressive independence: move from observe / modelled support → guided practice → supported decision making → independent decision making → transfer; reduce scaffolding across the journey.
+- Metacognition (lightweight): include brief confidence, uncertainty, progress, decision and next-step checks — without overwhelming the content.
+- Learning success: make progress visible so learners can recognise what they now understand, can do, can judge, and can manage independently.
+- Cognitive over interface activity: optimise for cognitive activity, not more interface activity — depth of thinking beats visible interactivity.
+- Step manifestation (targeted guidance):
+- Materials: realise the cognitive purpose already specified by DLA — do not redesign pedagogy.
+- Preserve learner judgement opportunities; do not pre-answer comparisons, rankings, evaluations or independent decisions.
+- Support worked → faded → independent movement where upstream specifications require it.
+- Where appropriate, include lightweight prompts that help learners notice uncertainty, confidence, progress or next steps.
+- Do not add interaction or visible activity for its own sake.
+LD-MATH-RENDER (auto-applied):
+- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)
+- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.
+- Inline maths: use \(...\) (for example \(x^2 + y^2\)).
+- Display/block equations: use \[...\] on their own lines where block layout is intended.
+- Do NOT use $...$ or $$...$$ delimiters.
+- Do NOT wrap equations in code spans, code fences, or backtick markdown.
+- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\(...\\) and \\[...\\] in raw JSON text).
+- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).
+- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.
+- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.
+- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 6 OUTPUT: activity_materials.

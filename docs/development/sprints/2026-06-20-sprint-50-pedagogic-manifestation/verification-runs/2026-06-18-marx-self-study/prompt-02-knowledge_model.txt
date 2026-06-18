@@ -1,0 +1,46 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Model Knowledge.
+Role / purpose of this step: Concept extraction.
+
+Runner guidance:
+- What this step does: Concept extraction
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "learning_content" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+You are given structured content representing source material.
+
+Your task is to model the conceptual knowledge contained in this content as a structured artefact called "knowledge_model".
+
+Instructions:
+- Identify key concepts from the source and include a clear definition for each concept
+- Make important relationships between concepts explicit (e.g. prerequisite, part-of, causes, enables, contrasts)
+- Identify meaningful groupings or hierarchies of concepts where relevant
+- Identify processes, sequences, or workflows when present in the source
+- Identify likely misconceptions or confusion points when supported by the source
+- Keep all output faithful to the provided content only
+- Do not introduce external knowledge, assumptions, or unsupported interpretation
+- Write with clarity and precision so the output can be reused directly downstream
+
+
+Output requirements (strict — fenced JSON block only):
+- Return exactly one markdown fenced JSON block opened with ```json and closed with ```
+- The fenced block body must be the knowledge_model root object as valid JSON
+- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block
+- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)
+- Do NOT include JSON comments (no // or block comments)
+- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)
+- The JSON object MUST include these top-level keys (use empty arrays when none apply): concepts, relationships, groupings, processes, misconceptions
+- concepts: each entry with name and definition when supported by the source
+- Include relationships, groupings, processes, and misconceptions when supported by the source
+- Keep output faithful to source for downstream reuse without reinterpretation
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 2 OUTPUT: knowledge_model.

@@ -1,0 +1,66 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Design Episode Plan.
+
+Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes().
+Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence, emit the runner completion line as plain text outside the JSON block (see STEP N OUTPUT below). No minified single-line JSON.
+Role / purpose of this step: Episode planning — derive frozen Episode Plan V1 (archetype + ordered instructional-function beats) from learning outcomes for downstream population..
+
+Runner guidance:
+- What this step does: Episode planning — derive frozen Episode Plan V1 (archetype + ordered instructional-function beats) from learning outcomes for downstream population.
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "learning_outcomes" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+Deterministic step (38S V1): PRISM derives episode_plans from upstream learning_outcomes in Run mode. Do NOT invent episode plans with an LLM.
+
+Archetypes (frozen): understand | apply | analyse | evaluate only.
+Beat functions: approved FunctionEnum (explanation, worked_thinking, guided_practice, verification, transfer, etc.).
+
+Non-V1 taxonomy is rejected and replaced with deriveEpisodePlansFromLearningOutcomes().
+
+Output requirements:
+- Return ONLY one markdown fenced JSON block (triple-backtick json fence) — no prose, headings, or commentary before or after the fence.
+- Pretty-print JSON with 2-space indentation and line breaks (never minified single-line JSON).
+- Top-level key: episode_plans (array).
+- Each entry: activity_id, episode_plan { archetype, beats[] { function } }.
+- Emit complete valid JSON only — do not truncate mid-object.
+Output contract (strict — fenced JSON block only):
+- Return exactly one markdown fenced JSON block opened with ```json and closed with ```.
+- The fenced block body must be the episode_plans root object as valid, complete JSON.
+- Pretty-print JSON with 2-space indentation and line breaks after `{`, `[`, and each property.
+- Do NOT emit minified single-line JSON (unbroken `{...}` on one line is invalid).
+- Do NOT include any prose, headings, commentary, or explanations before the fenced block.
+- After the closing ``` fence, emit the runner completion line as plain text outside the JSON block (STEP N OUTPUT: episode_plans). That line is a workflow footer only — not part of the fenced JSON body.
+- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid).
+- Do NOT include JSON comments (no // or block comments).
+- JSON top-level key: episode_plans (required array).
+- Each episode_plans entry: activity_id (string), episode_plan { archetype, beats[] { function } }.
+- Archetypes (frozen V1): understand | apply | analyse | evaluate only.
+- Beat functions: approved FunctionEnum only (e.g. explanation, worked_thinking, guided_practice, verification, transfer).
+- Example shape (pretty-printed; adapt to upstream learning_outcomes):
+  {
+    "episode_plans": [
+      {
+        "activity_id": "LO1",
+        "episode_plan": {
+          "archetype": "understand",
+          "beats": [
+            { "function": "explanation" },
+            { "function": "worked_thinking" },
+            { "function": "verification" }
+          ]
+        }
+      }
+    ]
+  }
+- Return the fenced block first; the STEP N OUTPUT footer follows outside the fence.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 4 OUTPUT: episode_plans.

@@ -1,0 +1,289 @@
+{
+  "timestamp": "2026-06-18T12:47:40.546Z",
+  "command": "node tools/sprint-50-marx-verification-run.mjs",
+  "workflowFile": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/marx_export/workflow-marxeduqselfstudy.json",
+  "workflowName": "MarxEduQSelfStudy",
+  "workflowId": "deb7e613-175d-4901-a4ad-80cca0d3a4a8",
+  "git": {
+    "commit": "340c2f16357431d33c10eac8e610b7c2728af879",
+    "dirty": true,
+    "dirtyFiles": [
+      "M app.js",
+      " M docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/README.md",
+      " M index.html",
+      " M tests/prism-vm-lib-bootstrap.js",
+      " M tests/utility-journey-compass-render.test.js",
+      "?? docs/development/sprints/2026-06-19-sprint-49-sp-01-text-pattern/marx-run-artefacts-run2/_audit-a1-article.html",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-CURRENT-STATE.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-INSTRUCTIONAL-FUNCTION-CLASSIFICATION.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-INSTRUCTIONAL-MANIFESTATION-HYPOTHESIS.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-INSTRUCTIONAL-MANIFESTATION-IMPLEMENTATION-SPEC.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-MINIMAL-INSTRUCTIONAL-MANIFESTATION-MODEL.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-PEDAGOGIC-MANIFESTATION-INVENTORY.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-PEDAGOGIC-VISIBILITY-GAP-ANALYSIS.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-PHASE-1-COMPOSE-FIDELITY-REPORT.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-PHASE-1B-PERSISTENCE-PATH-FIX-REPORT.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-PHASE-2-RENDERER-INSTRUCTIONAL-GRAMMAR-REPORT.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/SPRINT-50-SCOPE-CONFIRMATION-DESIGN-PAGE-RENDERER.md",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/marx_export/",
+      "?? docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/",
+      "?? lib/ld-instructional-manifestation-render.js",
+      "?? tests/sprint-50-phase-1-compose-fidelity.test.js",
+      "?? tests/sprint-50-phase-1b-persistence-path.test.js",
+      "?? tests/sprint-50-phase-2-renderer-instructional-grammar.test.js",
+      "?? tools/sprint-50-marx-verification-run.mjs"
+    ]
+  },
+  "code": {
+    "appJs": "app.js",
+    "runner": "tools/sprint-50-marx-verification-run.mjs"
+  },
+  "provider": "openai",
+  "apiEndpoint": "https://api.openai.com/v1/responses",
+  "model": "gpt-4.1-mini",
+  "outputDir": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study",
+  "steps": [
+    {
+      "index": 1,
+      "stepId": "b3935def-423b-429b-a61c-65981b385419",
+      "title": "Generate Learning Content",
+      "canonicalStepId": "step_generate_learning_content",
+      "artifactKey": "learning_content",
+      "outputFile": "learning-content.json",
+      "processing": "live_api"
+    },
+    {
+      "index": 2,
+      "stepId": "76abb7a5-99ca-4d62-a90f-6fa07b211011",
+      "title": "Model Knowledge",
+      "canonicalStepId": "step_model_knowledge",
+      "artifactKey": "knowledge_model",
+      "outputFile": "knowledge-model.json",
+      "processing": "live_api_km_retry"
+    },
+    {
+      "index": 3,
+      "stepId": "aa46474d-f82e-46c7-adfe-fffff71b72c8",
+      "title": "Define Learning Outcomes",
+      "canonicalStepId": "step_define_learning_outcomes",
+      "artifactKey": "learning_outcomes",
+      "outputFile": "learning-outcomes.json",
+      "processing": "live_api"
+    },
+    {
+      "index": 4,
+      "stepId": "896723ed-5795-404f-9f42-45f6da0db3a8",
+      "title": "Design Episode Plan",
+      "canonicalStepId": "step_design_episode_plan",
+      "artifactKey": "episode_plans",
+      "outputFile": "episode-plans.json",
+      "processing": "deterministic_derive"
+    },
+    {
+      "index": 5,
+      "stepId": "fd35df11-bc23-4335-baaa-3f21e281ac08",
+      "title": "Design Learning Activities",
+      "canonicalStepId": "step_design_learning_activities",
+      "artifactKey": "learning_activities",
+      "outputFile": "learning_activities.json",
+      "processing": "live_api"
+    },
+    {
+      "index": 6,
+      "stepId": "f91d9a24-b7e3-41c1-9859-4616d9b38597",
+      "title": "Generate Activity Materials",
+      "canonicalStepId": "step_generate_activity_materials",
+      "artifactKey": "activity_materials",
+      "outputFile": "activity_materials.md",
+      "processing": "live_api"
+    },
+    {
+      "index": 7,
+      "stepId": "c81309e8-e935-42d8-bdff-71dabb4a9e17",
+      "title": "Construct Learning Sequence",
+      "canonicalStepId": "step_construct_learning_sequence",
+      "artifactKey": "learning_sequence",
+      "outputFile": "learning_sequence.json",
+      "processing": "live_api"
+    },
+    {
+      "index": 8,
+      "stepId": "10694324-f66b-4a5c-a9f6-2027429dc826",
+      "title": "Design Page",
+      "canonicalStepId": "step_design_page",
+      "artifactKey": "page",
+      "outputFile": "page.json",
+      "processing": "live_api"
+    }
+  ],
+  "outputFiles": {
+    "learning-content.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/learning-content.json",
+    "knowledge-model.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/knowledge-model.json",
+    "learning-outcomes.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/learning-outcomes.json",
+    "episode-plans.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/episode-plans.json",
+    "learning_activities.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/learning_activities.json",
+    "activity_materials.md": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/activity_materials.md",
+    "learning_sequence.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/learning_sequence.json",
+    "page.json": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/page.json",
+    "page.html": "docs/development/sprints/2026-06-20-sprint-50-pedagogic-manifestation/verification-runs/2026-06-18-marx-self-study/page.html"
+  },
+  "status": "completed",
+  "apiKeySource": ".env.local",
+  "stepLog": [
+    {
+      "index": 1,
+      "stepId": "b3935def-423b-429b-a61c-65981b385419",
+      "title": "Generate Learning Content",
+      "artifactKey": "learning_content",
+      "outputFile": "learning-content.json",
+      "promptFile": "prompt-01-learning_content.txt",
+      "processing": "live_api",
+      "rawBytes": 3890
+    },
+    {
+      "index": 2,
+      "stepId": "76abb7a5-99ca-4d62-a90f-6fa07b211011",
+      "title": "Model Knowledge",
+      "artifactKey": "knowledge_model",
+      "outputFile": "knowledge-model.json",
+      "promptFile": "prompt-02-knowledge_model.txt",
+      "processing": "live_api_km_retry",
+      "rawBytes": 5292
+    },
+    {
+      "index": 3,
+      "stepId": "aa46474d-f82e-46c7-adfe-fffff71b72c8",
+      "title": "Define Learning Outcomes",
+      "artifactKey": "learning_outcomes",
+      "outputFile": "learning-outcomes.json",
+      "promptFile": "prompt-03-learning_outcomes.txt",
+      "processing": "live_api",
+      "rawBytes": 1361
+    },
+    {
+      "index": 4,
+      "stepId": "896723ed-5795-404f-9f42-45f6da0db3a8",
+      "title": "Design Episode Plan",
+      "artifactKey": "episode_plans",
+      "outputFile": "episode-plans.json",
+      "promptFile": "prompt-04-episode_plans.txt",
+      "processing": "deterministic_derive",
+      "rawBytes": 3288
+    },
+    {
+      "index": 5,
+      "stepId": "fd35df11-bc23-4335-baaa-3f21e281ac08",
+      "title": "Design Learning Activities",
+      "artifactKey": "learning_activities",
+      "outputFile": "learning_activities.json",
+      "promptFile": "prompt-05-learning_activities.txt",
+      "processing": "live_api",
+      "rawBytes": 10139
+    },
+    {
+      "index": 6,
+      "stepId": "f91d9a24-b7e3-41c1-9859-4616d9b38597",
+      "title": "Generate Activity Materials",
+      "artifactKey": "activity_materials",
+      "outputFile": "activity_materials.md",
+      "promptFile": "prompt-06-activity_materials.txt",
+      "processing": "live_api",
+      "rawBytes": 6264
+    },
+    {
+      "index": 7,
+      "stepId": "c81309e8-e935-42d8-bdff-71dabb4a9e17",
+      "title": "Construct Learning Sequence",
+      "artifactKey": "learning_sequence",
+      "outputFile": "learning_sequence.json",
+      "promptFile": "prompt-07-learning_sequence.txt",
+      "processing": "live_api",
+      "rawBytes": 4090
+    },
+    {
+      "index": 8,
+      "stepId": "10694324-f66b-4a5c-a9f6-2027429dc826",
+      "title": "Design Page",
+      "artifactKey": "page",
+      "outputFile": "page.json",
+      "promptFile": "prompt-08-page.txt",
+      "processing": "live_api",
+      "rawBytes": 16634
+    },
+    {
+      "index": 9,
+      "title": "Render page.html",
+      "processing": "local_render",
+      "rawBytes": 71892
+    }
+  ],
+  "artefacts": {
+    "learning_content": "learning-content.json",
+    "knowledge_model": "knowledge-model.json",
+    "learning_outcomes": "learning-outcomes.json",
+    "episode_plans": "episode-plans.json",
+    "learning_activities": "learning_activities.json",
+    "activity_materials": "activity_materials.md",
+    "learning_sequence": "learning_sequence.json",
+    "page": "page.json",
+    "page_html": "page.html"
+  },
+  "verificationChecks": {
+    "learning_activities_generated": {
+      "result": "Yes",
+      "evidence": "learning_activities.json present"
+    },
+    "activity_materials_generated": {
+      "result": "Yes",
+      "evidence": "activity_materials.md present"
+    },
+    "page_json_generated": {
+      "result": "Yes",
+      "evidence": "page.json present"
+    },
+    "page_html_generated": {
+      "result": "Yes",
+      "evidence": "page.html present"
+    },
+    "activity_preamble_in_dla": {
+      "result": "No",
+      "evidence": "0/0 activities with activity_preamble"
+    },
+    "activity_preamble_in_page_json": {
+      "result": "No",
+      "evidence": "0/0 page rows with activity_preamble"
+    },
+    "reasoning_orientation_in_dla": {
+      "result": "No",
+      "evidence": "0/0 activities with reasoning_orientation"
+    },
+    "reasoning_orientation_in_page_json": {
+      "result": "No",
+      "evidence": "0/0 page rows with reasoning_orientation"
+    },
+    "why_this_activity_in_html": {
+      "result": "Yes",
+      "evidence": "util-instructional-heading text found"
+    },
+    "how_to_approach_in_html": {
+      "result": "Yes",
+      "evidence": "util-instructional-heading text found"
+    },
+    "study_before_do": {
+      "result": "Yes",
+      "evidence": "study index 40071 < do index 40119"
+    },
+    "check_unified": {
+      "result": "Partial",
+      "evidence": "Check section present but separate util-output-block also present"
+    },
+    "expected_output_in_check": {
+      "result": "Partial",
+      "evidence": "content inside Check section"
+    },
+    "compass_progress_only": {
+      "result": "No",
+      "evidence": "progress=true, signalLabels=1"
+    }
+  }
+}

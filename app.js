@@ -8408,6 +8408,54 @@
     return ta ? String(ta.value || "") : "";
   }
 
+  function readWorkflowRunCaptureTextForStepId(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return "";
+    var captures = state.workflowRunCapturedOutputs || {};
+    var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var fromSanitized = sid && captures[sid] ? String(captures[sid]) : "";
+    if (String(fromSanitized || "").trim()) return fromSanitized;
+    var fromRaw = sid && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
+    if (String(fromRaw || "").trim()) return fromRaw;
+    var liSteps = getWorkflowStepElements();
+    if (!liSteps.length) return "";
+    var li =
+      liSteps.find(function (node) {
+        return String(node.getAttribute("data-step-id") || "").trim() === sid;
+      }) || null;
+    return readRunStepCaptureRawFromLi(li);
+  }
+
+  /** Compose upstream reads: prefer authoritative raw capture, then sanitized, then DOM. */
+  function readWorkflowRunUpstreamCaptureTextForStepId(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return "";
+    var captures = state.workflowRunCapturedOutputs || {};
+    var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var fromRaw = sid && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
+    if (String(fromRaw || "").trim()) return fromRaw;
+    var fromSanitized = sid && captures[sid] ? String(captures[sid]) : "";
+    if (String(fromSanitized || "").trim()) return fromSanitized;
+    var liSteps = getWorkflowStepElements();
+    if (!liSteps.length) return "";
+    var li =
+      liSteps.find(function (node) {
+        return String(node.getAttribute("data-step-id") || "").trim() === sid;
+      }) || null;
+    return readRunStepCaptureRawFromLi(li);
+  }
+
+  function workflowRunCaptureJsonSemanticallyEquivalent(a, b) {
+    var parsedA = tryParseWorkflowArtefactJson(a);
+    var parsedB = tryParseWorkflowArtefactJson(b);
+    if (!parsedA || !parsedB) return String(a || "").trim() === String(b || "").trim();
+    try {
+      return JSON.stringify(parsedA) === JSON.stringify(parsedB);
+    } catch (_) {
+      return false;
+    }
+  }
+
   function buildWorkflowStepRowFromRunLi(li, wf) {
     if (!li) return null;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
@@ -8709,8 +8757,8 @@
       if (!step) continue;
       if (!workflowStepProducesArtefact(step, target)) continue;
       var sid = String(step.id || "").trim();
-      var stateRaw = sid && captures[sid] ? captures[sid] : "";
-      var stateHit = tryRawCapture(step, sid, stateRaw, "state.workflowRunCapturedOutputs");
+      var stateRaw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
+      var stateHit = tryRawCapture(step, sid, stateRaw, "state.workflowRunCapture");
       if (diagnostic) {
         if (stateHit && stateHit.parse_ok) return stateHit;
         if (stateHit && !stateHit.parse_ok) lastDiagnosticMiss = stateHit;
@@ -9146,7 +9194,7 @@
         continue;
       }
       var sid = String(step.id || "").trim();
-      var raw = sid && captures[sid] ? captures[sid] : "";
+      var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
       if (!raw) continue;
       var parsedJson = tryParseWorkflowArtefactJson(raw);
       var upstream = preserveMod.parseUpstreamActivityMaterialsCapture(
@@ -9180,6 +9228,21 @@
       next = seqMod.applyA3MaterialsSequencingToComposedPage(next, opts);
     }
     return next;
+  }
+
+  function resolveLdInstructionalManifestationRenderLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER &&
+      typeof globalThis.PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER
+        .shouldApplyInstructionalManifestationGrammar === "function"
+    ) {
+      return globalThis.PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER
+      ? root.PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER
+      : null;
   }
 
   function resolveLdDesignPageComposeLib() {
@@ -16345,18 +16408,7 @@
     syncAllWorkflowRunCapturesFromDomToState();
     var sid = String(prod.id || "").trim();
     if (!sid) return "";
-    var captures = state.workflowRunCapturedOutputs || {};
-    var raw =
-      captures[sid] && typeof captures[sid] === "string" ? String(captures[sid]) : "";
-    if (!String(raw || "").trim()) {
-      var liSteps = getWorkflowStepElements();
-      var li =
-        liSteps.find(function (node) {
-          return String(node.getAttribute("data-step-id") || "").trim() === sid;
-        }) || null;
-      if (li) raw = readRunStepCaptureRawFromLi(li);
-    }
-    return String(raw || "");
+    return String(readWorkflowRunCaptureTextForStepId(sid) || "");
   }
 
   function resolveEffectiveInputBindingsForPromptStep(step, domElement, wf) {
@@ -19287,21 +19339,39 @@
         : "";
     if (outputName === "page" || (stepRow && isWorkflowStepDesignPageRow(stepRow))) {
       var pageComposeResult = applyPageCompositionValidationForCapturedPage(li, raw);
-      if (pageComposeResult && pageComposeResult.json && pageComposeResult.json !== raw) {
-        ta.value = pageComposeResult.json;
-        raw = pageComposeResult.json;
-        state.workflowRunCapturedOutputsRaw[sid] = raw;
-        state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+      if (pageComposeResult && pageComposeResult.json) {
+        var composedPageJson = pageComposeResult.json;
+        if (
+          composedPageJson !== raw &&
+          !workflowRunCaptureJsonSemanticallyEquivalent(composedPageJson, raw)
+        ) {
+          ta.value = composedPageJson;
+        }
+        raw = composedPageJson;
+        state.workflowRunCapturedOutputsRaw[sid] = composedPageJson;
+        state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(
+          composedPageJson,
+          gamCtx
+        );
       }
     } else {
       var parsedPage = tryParseWorkflowArtefactJson(raw);
       if (parsedPage && String(parsedPage.artifact_type || "").toLowerCase() === "page") {
         var pageComposeFallback = applyPageCompositionValidationForCapturedPage(li, raw);
-        if (pageComposeFallback && pageComposeFallback.json && pageComposeFallback.json !== raw) {
-          ta.value = pageComposeFallback.json;
-          raw = pageComposeFallback.json;
-          state.workflowRunCapturedOutputsRaw[sid] = raw;
-          state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+        if (pageComposeFallback && pageComposeFallback.json) {
+          var composedFallbackJson = pageComposeFallback.json;
+          if (
+            composedFallbackJson !== raw &&
+            !workflowRunCaptureJsonSemanticallyEquivalent(composedFallbackJson, raw)
+          ) {
+            ta.value = composedFallbackJson;
+          }
+          raw = composedFallbackJson;
+          state.workflowRunCapturedOutputsRaw[sid] = composedFallbackJson;
+          state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(
+            composedFallbackJson,
+            gamCtx
+          );
         }
       }
     }
@@ -19311,6 +19381,16 @@
       sid,
       raw
     );
+    if (
+      stepRow &&
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: stepRow.canonical_step_id || stepRow.canonicalStepId || "",
+        stepCanonicalTitle: stepRow.title || "",
+        stepTitle: stepRow.title || ""
+      })
+    ) {
+      recomposeWorkflowPageCapturesFromUpstream();
+    }
     updateRunStepOutputStatus(li);
   }
 
@@ -30372,6 +30452,7 @@
       return renderMaterialMarkdownBlock(value);
     }
     function renderCognitionFieldsForActivity(row, cognitionProfile) {
+      if (renderOpts.instructionalManifestationGrammar) return "";
       if (!row || typeof row !== "object" || Array.isArray(row)) return "";
       var blocks = [];
       COGNITION_ACTIVITY_FIELD_RENDER_GROUPS.forEach(function (group) {
@@ -32981,12 +33062,369 @@
         if (!String(materialsBody || "").trim()) return "";
         return '<div class="util-materials-stack">' + materialsBody + "</div>";
       }
+      function renderInstructionalManifestationSection(heading, bodyHtml, sectionClass) {
+        if (!String(bodyHtml || "").trim()) return "";
+        return (
+          '<section class="util-instructional-section' +
+          (sectionClass ? " " + sectionClass : "") +
+          '">' +
+          '<h4 class="util-instructional-heading">' +
+          utilityEscapeHtml(String(heading || "")) +
+          "</h4>" +
+          '<div class="util-instructional-body">' +
+          bodyHtml +
+          "</div></section>"
+        );
+      }
+      function renderInstructionalOrientSection(row, grammarApi) {
+        if (!grammarApi || typeof grammarApi.collectOrientTexts !== "function") return "";
+        var orientTexts = grammarApi.collectOrientTexts(row);
+        if (!orientTexts.length) return "";
+        var blocks = orientTexts.map(function (entry) {
+          var body =
+            utilityRenderMarkdownBlock(String(entry.text)) ||
+            "<p>" + utilityRenderMarkdownInline(String(entry.text)) + "</p>";
+          return '<div class="util-instructional-orient-block" data-orient-field="' + utilityEscapeHtml(entry.fieldId) + '">' + body + "</div>";
+        });
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.orient,
+          blocks.join(""),
+          "util-instructional-orient"
+        );
+      }
+      function renderInstructionalThinkSection(row, grammarApi, orientSeen) {
+        if (!grammarApi || typeof grammarApi.collectThinkTexts !== "function") return "";
+        var seen = {};
+        (orientSeen || []).forEach(function (entry) {
+          var key = String(entry.text || "")
+            .toLowerCase()
+            .replace(/\s+/g, " ")
+            .trim();
+          if (key) seen[key] = true;
+        });
+        var thinkTexts = grammarApi.collectThinkTexts(row, seen);
+        if (!thinkTexts.length) return "";
+        var blocks = thinkTexts.map(function (entry) {
+          var body =
+            utilityRenderMarkdownBlock(String(entry.text)) ||
+            "<p>" + utilityRenderMarkdownInline(String(entry.text)) + "</p>";
+          if (entry.label) {
+            return (
+              '<div class="util-instructional-think-block" data-think-field="' +
+              utilityEscapeHtml(entry.fieldId) +
+              '"><p class="util-instructional-think-label"><strong>' +
+              utilityEscapeHtml(entry.label) +
+              ":</strong></p>" +
+              body +
+              "</div>"
+            );
+          }
+          return (
+            '<div class="util-instructional-think-block" data-think-field="' +
+            utilityEscapeHtml(entry.fieldId) +
+            '">' +
+            body +
+            "</div>"
+          );
+        });
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.think,
+          blocks.join(""),
+          "util-instructional-think"
+        );
+      }
+      function renderInstructionalReflectPreCheckSection(row, grammarApi) {
+        var prompt = grammarApi.firstNonEmptyScalar([row && row.self_explanation_prompt]);
+        if (!prompt) return "";
+        var body =
+          utilityRenderMarkdownBlock(String(prompt)) ||
+          "<p>" + utilityRenderMarkdownInline(String(prompt)) + "</p>";
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.reflectPreCheck,
+          body,
+          "util-instructional-reflect-precheck"
+        );
+      }
+      function renderInstructionalDoSection(row, doMaterials, renderListFromInstructionsFn) {
+        var grammarApi = resolveLdInstructionalManifestationRenderLib();
+        var headings = grammarApi ? grammarApi.HEADINGS : { do: "What to do" };
+        var parts = [];
+        var learnerTaskRaw = firstNonEmptyRaw([row.learner_task, row.task, row.instructions]);
+        var learnerTaskHtml = renderListFromInstructionsFn(learnerTaskRaw);
+        if (learnerTaskHtml) {
+          parts.push('<div class="util-activity-task util-activity-task--primary util-material-role-action">' + learnerTaskHtml + "</div>");
+        }
+        var instructions = firstNonEmptyRaw([
+          row.learner_instructions,
+          row.instructions,
+          row.instruction,
+          row.steps,
+          row.concise_instructions
+        ]);
+        var instructionHtml = renderListFromInstructionsFn(instructions);
+        if (
+          instructionHtml &&
+          normalizeComparableText(activityComparableSourceText(instructions)) !==
+            normalizeComparableText(activityComparableSourceText(learnerTaskRaw))
+        ) {
+          parts.push('<div class="util-instructional-guidance">' + instructionHtml + "</div>");
+        }
+        if (doMaterials && Object.keys(doMaterials).length) {
+          var doMaterialsHtml = renderMaterialsForActivity(doMaterials, row);
+          if (doMaterialsHtml) {
+            parts.push('<div class="util-activity-materials util-instructional-do-materials">' + doMaterialsHtml + "</div>");
+          }
+        }
+        if (!parts.length) return "";
+        return renderInstructionalManifestationSection(headings.do, parts.join(""), "util-instructional-do");
+      }
+      function renderInstructionalCheckSection(row, checkMaterials) {
+        var grammarApi = resolveLdInstructionalManifestationRenderLib();
+        var headings = grammarApi ? grammarApi.HEADINGS : { check: "Check your work" };
+        var parts = [];
+        if (checkMaterials && Object.keys(checkMaterials).length) {
+          var checkMaterialsHtml = renderMaterialsForActivity(checkMaterials, row);
+          if (checkMaterialsHtml) parts.push(checkMaterialsHtml);
+        }
+        var expectedOutput = firstNonEmpty([
+          row.expected_output,
+          row.output,
+          row.deliverable,
+          row.artefact
+        ]);
+        if (expectedOutput) {
+          var expectedOutputBody =
+            utilityRenderMarkdownBlock(String(expectedOutput)) ||
+            "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
+          parts.push('<div class="util-check-expected-output">' + expectedOutputBody + "</div>");
+        }
+        if (!parts.length) return "";
+        return renderInstructionalManifestationSection(
+          headings.check,
+          parts.join(""),
+          "util-instructional-check"
+        );
+      }
+      function renderInstructionalReflectPostCheckSection(row, reflectMaterials, grammarApi) {
+        var parts = [];
+        if (reflectMaterials && Object.keys(reflectMaterials).length) {
+          var reflectHtml = renderMaterialsForActivity(reflectMaterials, row);
+          if (reflectHtml) parts.push(reflectHtml);
+        }
+        (grammarApi.REFLECT_POST_ROW_FIELDS || []).forEach(function (fieldId) {
+          var text = grammarApi.firstNonEmptyScalar([row && row[fieldId]]);
+          if (!text) return;
+          var body =
+            utilityRenderMarkdownBlock(String(text)) ||
+            "<p>" + utilityRenderMarkdownInline(String(text)) + "</p>";
+          parts.push(
+            '<div class="util-instructional-reflect-row-field" data-reflect-field="' +
+              utilityEscapeHtml(fieldId) +
+              '">' +
+              body +
+              "</div>"
+          );
+        });
+        if (!parts.length) return "";
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.reflectPostCheck,
+          parts.join(""),
+          "util-instructional-reflect-postcheck"
+        );
+      }
+      function renderInstructionalTransferSection(row, transferMaterials, grammarApi) {
+        var parts = [];
+        if (transferMaterials && Object.keys(transferMaterials).length) {
+          var transferHtml = renderMaterialsForActivity(transferMaterials, row);
+          if (transferHtml) parts.push(transferHtml);
+        } else if (
+          grammarApi.fieldHasValue(row && row.transfer_or_application_task) &&
+          !grammarApi.hasTransferMaterial(transferMaterials)
+        ) {
+          var transferBody =
+            utilityRenderMarkdownBlock(String(row.transfer_or_application_task)) ||
+            "<p>" + utilityRenderMarkdownInline(String(row.transfer_or_application_task)) + "</p>";
+          parts.push('<div class="util-instructional-transfer-row-field">' + transferBody + "</div>");
+        }
+        if (!parts.length) return "";
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.transfer,
+          parts.join(""),
+          "util-instructional-transfer"
+        );
+      }
+      function renderInstructionalSupportSection(row, grammarApi, activityComparable) {
+        var supportNote = firstNonEmpty([
+          row.support_note,
+          row.support_notes,
+          row.facilitator_note,
+          row.facilitator_notes
+        ]);
+        if (
+          !supportNote ||
+          (activityComparable && activityComparable.isDuplicate(supportNote)) ||
+          utilityShouldSuppressLearnerWorkshopSupportNote(supportNote, renderOpts)
+        ) {
+          return "";
+        }
+        if (activityComparable) activityComparable.markSeen(supportNote);
+        var body = utilityRenderSupportNoteParagraph(utilityRenderMarkdownInline(String(supportNote)));
+        return renderInstructionalManifestationSection(
+          grammarApi.HEADINGS.support,
+          body,
+          "util-instructional-support"
+        );
+      }
+      function renderLightweightActivityProgress(stepIndex, totalSteps) {
+        if (!totalSteps || totalSteps < 2) return "";
+        return (
+          '<p class="util-activity-progress" aria-label="Activity progress">Step ' +
+          String(stepIndex) +
+          " of " +
+          String(totalSteps) +
+          "</p>"
+        );
+      }
+      function renderInstructionalManifestationActivityCard(row, idx, cardCtx) {
+        var grammarApi = cardCtx.grammarApi;
+        var activityIdLabel = firstNonEmpty([row.activity_id, row.activityId, row.id]);
+        var title = firstNonEmpty([
+          row.title,
+          row.activity_title,
+          row.name,
+          row.activity_name,
+          row.activity
+        ]);
+        if (title && activityIdLabel && normalizeActivityLookupKey(title) === normalizeActivityLookupKey(activityIdLabel)) {
+          title = "";
+        }
+        title = title || activityIdLabel || ("Activity " + (idx + 1));
+        var displayTitle = title;
+        if (
+          activityIdLabel &&
+          title &&
+          normalizeActivityLookupKey(title) !== normalizeActivityLookupKey(activityIdLabel)
+        ) {
+          displayTitle = String(activityIdLabel).trim() + " — " + String(title).trim();
+        }
+        var duration = firstNonEmpty([row.duration_minutes, row.duration, row.minutes]);
+        var grouping = firstNonEmpty([
+          row.grouping,
+          row.group_size,
+          row.grouping_mode,
+          row.pairing,
+          row.team_structure
+        ]);
+        function prettyGroupingValue(v) {
+          var raw = String(v == null ? "" : v).trim().toLowerCase();
+          if (!raw) return "";
+          if (raw === "small_group") return "Small group";
+          if (raw === "whole_group") return "Whole group";
+          if (raw === "pair") return "Pair";
+          if (raw === "individual") return "Individual";
+          return utilityLabelFromKey(raw);
+        }
+        var parts = [];
+        var headerBadges = [];
+        if (duration) {
+          headerBadges.push(
+            '<span class="util-badge">' +
+              utilityEscapeHtml("Duration: " + String(duration) + (/\bmin\b/i.test(String(duration)) ? "" : " mins")) +
+              "</span>"
+          );
+        }
+        if (grouping) {
+          headerBadges.push(
+            '<span class="util-badge util-badge-group">' +
+              utilityEscapeHtml("Grouping: " + prettyGroupingValue(grouping)) +
+              "</span>"
+          );
+        }
+        parts.push(
+          '<div class="util-activity-header"><h3>' +
+            utilityEscapeHtml(displayTitle) +
+            "</h3>" +
+            (headerBadges.length ? '<div class="util-badge-row">' + headerBadges.join("") + "</div>" : "") +
+            "</div>"
+        );
+        var progressHtml = renderLightweightActivityProgress(
+          idx + 1,
+          cardCtx.journeyCompassStepCount || 0
+        );
+        if (progressHtml) parts.push(progressHtml);
+        var affordanceCtx = { subject: title, activityId: activityIdLabel };
+        var afterHeaderHook = utilityMaybeRenderVisualAffordanceHook(
+          "activity-after-header",
+          affordanceCtx,
+          renderOpts,
+          function () {
+            return utilityActivityWarrantsAfterHeaderAffordance(row, cardCtx.materials);
+          }
+        );
+        if (afterHeaderHook) parts.push(afterHeaderHook);
+        var activityComparable = createActivityComparableRegistry();
+        var orientTexts = grammarApi.collectOrientTexts(row);
+        var orientHtml = renderInstructionalOrientSection(row, grammarApi);
+        if (orientHtml) parts.push(orientHtml);
+        var thinkHtml = renderInstructionalThinkSection(row, grammarApi, orientTexts);
+        if (thinkHtml) parts.push(thinkHtml);
+        var partition = grammarApi.partitionActivityMaterialsForGrammar(row, cardCtx.materials);
+        if (grammarApi.hasStudyMaterials(partition)) {
+          var studyHtml = renderMaterialsForActivity(partition.study, row);
+          if (studyHtml) {
+            studyHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(studyHtml, affordanceCtx, renderOpts);
+            parts.push(
+              renderInstructionalManifestationSection(
+                grammarApi.HEADINGS.study,
+                '<div class="util-activity-materials util-instructional-study-materials">' + studyHtml + "</div>",
+                "util-instructional-study"
+              )
+            );
+          }
+        }
+        if (partition.preCheckReflect) {
+          var preReflectHtml = renderInstructionalReflectPreCheckSection(row, grammarApi);
+          if (preReflectHtml) parts.push(preReflectHtml);
+        }
+        if (grammarApi.hasDoContent(row, partition)) {
+          parts.push(renderInstructionalDoSection(row, partition.do, renderListFromInstructions));
+        }
+        if (grammarApi.hasCheckContent(row, partition)) {
+          parts.push(renderInstructionalCheckSection(row, partition.check));
+        }
+        if (grammarApi.activityHasPostCheckSources(row, partition.reflect)) {
+          parts.push(
+            renderInstructionalReflectPostCheckSection(row, partition.reflect, grammarApi)
+          );
+        }
+        if (
+          (partition.transfer && Object.keys(partition.transfer).length) ||
+          grammarApi.fieldHasValue(row.transfer_or_application_task)
+        ) {
+          parts.push(renderInstructionalTransferSection(row, partition.transfer, grammarApi));
+        }
+        parts.push(renderInstructionalSupportSection(row, grammarApi, activityComparable));
+        if (!parts.length) return "";
+        return '<article class="util-task-block util-instructional-activity">' + parts.join("") + "</article>";
+      }
       return rows
         .map(function (row, idx) {
           if (!row || typeof row !== "object" || Array.isArray(row)) {
             var primitive = utilityRenderPrimitive(row, renderOpts);
             if (!String(primitive || "").trim()) return "";
             return '<article class="util-task-block"><h3>' + utilityEscapeHtml("Activity " + (idx + 1)) + "</h3>" + primitive + "</article>";
+          }
+          if (renderOpts.instructionalManifestationGrammar) {
+            var grammarApi = resolveLdInstructionalManifestationRenderLib();
+            if (grammarApi) {
+              var grammarMaterials = resolveRowMaterials(row);
+              var grammarCard = renderInstructionalManifestationActivityCard(row, idx, {
+                grammarApi: grammarApi,
+                materials: grammarMaterials,
+                journeyCompassStepCount: renderOpts.journeyCompassStepCount || 0
+              });
+              if (grammarCard) return grammarCard;
+            }
           }
           var activityIdLabel = firstNonEmpty([row.activity_id, row.activityId, row.id]);
           var title = firstNonEmpty([
@@ -35513,6 +35951,14 @@
       "body.util-page-export--with-compass{max-width:920px}",
       ".util-journey-compass-header{margin:8px 0 20px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
       ".util-activity-row.util-page-columns{display:grid;grid-template-columns:minmax(180px,26%) minmax(0,1fr);gap:20px;align-items:start;margin:0 0 28px}",
+      ".util-instructional-activity .util-instructional-section{margin:0 0 16px;padding:0}",
+      ".util-instructional-heading{font-size:.95rem;font-weight:700;color:#0f172a;margin:0 0 10px;line-height:1.35}",
+      ".util-instructional-body>:last-child{margin-bottom:0}",
+      ".util-instructional-study .util-materials-stack,.util-instructional-do .util-materials-stack{margin-top:0}",
+      ".util-instructional-check .util-check-expected-output{margin-top:12px}",
+      ".util-activity-progress{font-size:.85rem;color:#64748b;margin:0 0 12px}",
+      ".util-instructional-orient .util-instructional-orient-block+.util-instructional-orient-block{margin-top:10px}",
+      ".util-instructional-think .util-instructional-think-block+.util-instructional-think-block{margin-top:10px}",
       ".util-activity-row.util-page-columns>.util-task-block{margin:0}",
       ".util-page-resource{min-width:0}",
       ".util-journey-compass{padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
@@ -36844,8 +37290,7 @@
   }
 
   function resolveUpstreamLearningActivitiesFromWorkflowCaptures() {
-    var captures = state.workflowRunCapturedOutputs || {};
-    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var wf = resolveWorkflowForUpstreamArtefacts({});
     if (!wf || !Array.isArray(wf.steps)) return null;
     var i;
     for (i = 0; i < wf.steps.length; i += 1) {
@@ -36853,7 +37298,7 @@
       if (!step) continue;
       if (!workflowStepProducesArtefact(step, "learning_activities")) continue;
       var sid = String(step.id || "").trim();
-      var raw = sid && captures[sid] ? captures[sid] : "";
+      var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
       var parsed = tryParseWorkflowArtefactJson(raw);
       if (parsed) return parsed;
     }
@@ -36861,9 +37306,29 @@
   }
 
   function resolveUpstreamLearningActivitiesForPageStep(stepLi) {
-    if (!stepLi) return null;
-    var bindings = readStepInputBindings(stepLi);
-    var captures = state.workflowRunCapturedOutputs || {};
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    var stepRow = null;
+    if (stepLi && wf && Array.isArray(wf.steps)) {
+      var pageSid =
+        stepLi && typeof stepLi.getAttribute === "function"
+          ? String(stepLi.getAttribute("data-step-id") || "").trim()
+          : "";
+      if (pageSid) {
+        stepRow =
+          wf.steps.find(function (row) {
+            return String(row && row.id ? row.id : "") === pageSid;
+          }) || null;
+      }
+      if (
+        !stepRow &&
+        stepLi &&
+        typeof stepLi.querySelector === "function" &&
+        typeof buildWorkflowStepRowFromRunLi === "function"
+      ) {
+        stepRow = buildWorkflowStepRowFromRunLi(stepLi, wf);
+      }
+    }
+    var bindings = resolveEffectiveInputBindingsForPromptStep(stepRow || {}, stepLi, wf);
     var i;
     for (i = 0; i < bindings.length; i += 1) {
       var b = bindings[i];
@@ -36871,11 +37336,54 @@
       var art = String(b.artifactName || "").trim().toLowerCase().replace(/\s+/g, "_");
       if (art !== "learning_activities") continue;
       var sid = String(b.sourceStepId || "").trim();
-      var raw = sid && captures[sid] ? captures[sid] : "";
+      var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
       var parsed = tryParseWorkflowArtefactJson(raw);
       if (parsed) return parsed;
     }
     return resolveUpstreamLearningActivitiesFromWorkflowCaptures();
+  }
+
+  function recomposeWorkflowPageCapturesFromUpstream() {
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) return 0;
+    if (!resolveUpstreamLearningActivitiesFromWorkflowCaptures()) return 0;
+    var liSteps = getWorkflowStepElements();
+    var recomposed = 0;
+    wf.steps.forEach(function (step) {
+      if (!step || !isWorkflowStepDesignPageRow(step)) return;
+      var sid = String(step.id || "").trim();
+      if (!sid) return;
+      var li =
+        liSteps.find(function (node) {
+          return String(node.getAttribute("data-step-id") || "").trim() === sid;
+        }) || null;
+      var captureText = readWorkflowRunUpstreamCaptureTextForStepId(sid);
+      if (!String(captureText || "").trim() && li) {
+        captureText = readRunStepCaptureRawFromLi(li);
+      }
+      if (!String(captureText || "").trim()) return;
+      var pageComposeResult = applyPageCompositionValidationForCapturedPage(li, captureText);
+      if (!pageComposeResult || !pageComposeResult.json) return;
+      var composedPageJson = pageComposeResult.json;
+      var gamCtx = li ? buildGamSanitizeContextFromRunStepLi(li) : null;
+      if (li) {
+        var ta = li.querySelector('[data-field="runStepOutput"]');
+        if (
+          ta &&
+          composedPageJson !== String(ta.value || "") &&
+          !workflowRunCaptureJsonSemanticallyEquivalent(composedPageJson, ta.value)
+        ) {
+          ta.value = composedPageJson;
+        }
+      }
+      state.workflowRunCapturedOutputsRaw[sid] = composedPageJson;
+      state.workflowRunCapturedOutputs[sid] = sanitizeWorkflowRunCapturedOutputForStep(
+        composedPageJson,
+        gamCtx
+      );
+      recomposed += 1;
+    });
+    return recomposed;
   }
 
   function assignComposedPageMutations(target, source) {
@@ -37084,13 +37592,9 @@
       ]);
       var signals = [];
       function pushFieldSignal(fieldId, label) {
-        if (utilityIsEmptyValue(row[fieldId])) return;
-        var text = utilityTruncateCompassSignpost(
-          utilityPlainTextFromRenderable(row[fieldId]),
-          JOURNEY_COMPASS_MAX_SIGNPOST_LEN
-        );
-        if (!text) return;
-        signals.push({ kind: fieldId, label: label, text: text });
+        /* Sprint 50: compass is progress-only — instructional prose renders in activity sections. */
+        void fieldId;
+        void label;
       }
       pushFieldSignal("study_orientation", "Study orientation");
       pushFieldSignal("intellectual_frame", "Intellectual frame");
@@ -37101,18 +37605,10 @@
       pushFieldSignal("transfer_or_application_task", "Apply");
       var materials = row.materials && typeof row.materials === "object" ? row.materials : {};
       if (utilityActivityMaterialsHasKey(materials, "transfer_prompt")) {
-        signals.push({
-          kind: "transfer_prompt_pointer",
-          label: "Transfer",
-          text: "Transfer task in activity materials"
-        });
+        /* transfer prose owned by Apply elsewhere section */
       }
       if (utilityActivityMaterialsHasKey(materials, "consolidation_summary")) {
-        signals.push({
-          kind: "consolidation_pointer",
-          label: "Close",
-          text: "Consolidation summary in activity materials"
-        });
+        /* consolidation owned by What to take away section */
       }
       return {
         activity_id: activityId,
@@ -37235,25 +37731,7 @@
           "</div>"
       );
     }
-    if (step.transition) {
-      parts.push(
-        '<p class="util-journey-compass__signal util-journey-compass__signal--transition">' +
-          utilityEscapeHtml(String(step.transition)) +
-          "</p>"
-      );
-    }
-    (step.signals || []).forEach(function (signal) {
-      if (!signal || !String(signal.text || "").trim()) return;
-      parts.push(
-        '<p class="util-journey-compass__signal" data-compass-signal="' +
-          utilityEscapeHtml(String(signal.kind || signal.label || "signal")) +
-          '"><span class="util-journey-compass__signal-label">' +
-          utilityEscapeHtml(String(signal.label || "Note")) +
-          ":</span> " +
-          utilityEscapeHtml(String(signal.text)) +
-          "</p>"
-      );
-    });
+    /* Sprint 50: per-activity compass is progress-only — no duplicate Orient/Think/Transfer signals. */
     parts.push("</aside>");
     return parts.join("");
   }
@@ -37418,6 +37896,17 @@
       var workshopVisibility = resolveLearnerWorkshopMaterialVisibilityPolicy(parsed, {
         pageProfile: pageProfile
       });
+      var grammarMod = resolveLdInstructionalManifestationRenderLib();
+      var instructionalManifestationGrammar =
+        grammarMod &&
+        typeof grammarMod.shouldApplyInstructionalManifestationGrammar === "function" &&
+        grammarMod.shouldApplyInstructionalManifestationGrammar(
+          {
+            pageProfile: pageProfile,
+            isLearnerWorkshopPage: workshopVisibility.isLearnerWorkshopPage
+          },
+          parsed
+        );
       var baseRenderOpts = {
         cleanupInlineMarkdown: true,
         suppressInternalMetadata: true,
@@ -37426,6 +37915,7 @@
         pageProfile: pageProfile,
         suppressFacilitatorMaterials: workshopVisibility.suppressFacilitatorMaterials,
         enableSequencingInteractionPolicy: enableSequencingInteractionPolicy,
+        instructionalManifestationGrammar: !!instructionalManifestationGrammar,
         journeyCompassEnabled: !!journeyCompassData,
         journeyCompassStepLookup: journeyCompassData
           ? buildJourneyCompassStepLookup(journeyCompassData)
@@ -38343,13 +38833,11 @@
     var pageClosureValidation = null;
     if (String(parsed.artifact_type || "").toLowerCase() === "page") {
       pageClosureValidation = applyPageCompositionValidationForUtilitiesPage(parsed, {});
-      if (pageClosureValidation && pageClosureValidation.outcome === "fail") {
-        try {
-          if (els.utilitiesJsonInput) {
-            els.utilitiesJsonInput.value = JSON.stringify(parsed, null, 2);
-          }
-        } catch (_) {}
-      }
+      try {
+        if (els.utilitiesJsonInput) {
+          els.utilitiesJsonInput.value = JSON.stringify(parsed, null, 2);
+        }
+      } catch (_) {}
     }
     var presentationMode = String(
       (els.utilitiesPresentationMode && els.utilitiesPresentationMode.value) ||
@@ -39295,6 +39783,8 @@
     prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
     prismTestApi.buildJourneyCompassFromPageForTest = buildJourneyCompassFromPage;
+    prismTestApi.resolveLdInstructionalManifestationRenderLibForTest =
+      resolveLdInstructionalManifestationRenderLib;
     prismTestApi.renderJourneyCompassHtmlForTest = renderJourneyCompassHtml;
     prismTestApi.renderJourneyCompassPageHeaderHtmlForTest = renderJourneyCompassPageHeaderHtml;
     prismTestApi.renderActivityJourneyCompassHtmlForTest = renderActivityJourneyCompassHtml;
@@ -39389,6 +39879,19 @@
       collectActivityIdsFromLearningActivitiesValue;
     prismTestApi.applyPageCompositionValidationForUtilitiesPage =
       applyPageCompositionValidationForUtilitiesPage;
+    prismTestApi.applyPageCompositionValidationForCapturedPage =
+      applyPageCompositionValidationForCapturedPage;
+    prismTestApi.readWorkflowRunCaptureTextForStepId = readWorkflowRunCaptureTextForStepId;
+    prismTestApi.readWorkflowRunUpstreamCaptureTextForStepId =
+      readWorkflowRunUpstreamCaptureTextForStepId;
+    prismTestApi.recomposeWorkflowPageCapturesFromUpstream =
+      recomposeWorkflowPageCapturesFromUpstream;
+    prismTestApi.resolveUpstreamLearningActivitiesForPageStep =
+      resolveUpstreamLearningActivitiesForPageStep;
+    prismTestApi.resolveUpstreamLearningActivitiesFromWorkflowCaptures =
+      resolveUpstreamLearningActivitiesFromWorkflowCaptures;
+    prismTestApi.workflowRunCaptureJsonSemanticallyEquivalent =
+      workflowRunCaptureJsonSemanticallyEquivalent;
     prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
       applyPedagogicCognitionSemanticsToComposedPage;
     prismTestApi.applyComposedPageGamMaterialsPreserve = applyComposedPageGamMaterialsPreserve;

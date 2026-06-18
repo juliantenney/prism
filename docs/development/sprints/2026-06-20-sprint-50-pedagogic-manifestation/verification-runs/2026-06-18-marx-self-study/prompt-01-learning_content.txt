@@ -1,0 +1,41 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Generate Learning Content.
+Role / purpose of this step: Content generation.
+
+Runner guidance:
+- What this step does: Content generation
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Here is the core prompt for this step:
+
+Context:
+You may be provided with topic, audience, level, and optional source_material.
+
+Task:
+Generate or extend teaching-ready learning_content that is pedagogically structured and suitable for downstream learning design.
+
+Instructions:
+- If source_material is provided, extend and improve it by clarifying explanations, adding suitable examples, and improving structure
+- Do not discard or contradict valid source material when extending it
+- If source_material is not provided, generate content from topic, audience, and level
+- Use clear explanations, logical sectioning, key concepts, and illustrative examples
+- Organise progression from simpler ideas to more complex ideas
+- Adapt depth, terminology, and explanation style to the specified audience and level
+- Avoid unnecessary technicality unless required by audience/level
+- Avoid generic summaries; produce purposeful teaching content
+- Keep content grounded in provided topic and/or source material
+- Do not hallucinate unnecessary detail
+- Ensure output can be consumed by downstream steps such as knowledge modelling, learning-outcome generation, and activity design
+
+Output:
+- Return output as json
+- Return a JSON object containing: title, sections, key_concepts, examples
+- sections should be an ordered array with section title and section content suitable for teaching use
+- Return only the JSON.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 1 OUTPUT: learning_content.

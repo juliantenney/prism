@@ -1,0 +1,196 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Design Page.
+Role / purpose of this step: Page assembly.
+
+Runner guidance:
+- What this step does: Page assembly
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "knowledge_model" from step "an earlier step".
+- "learning_outcomes" from step "an earlier step".
+- "learning_activities" from step "an earlier step".
+- "activity_materials" from step "an earlier step".
+- "learning_sequence" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+Context:
+You are provided with learning_outcomes, learning_activities, activity_materials, and may also receive learning_sequence, assessment_items, feedback_pack, marking_rubric, and assessment_blueprint.
+
+Task:
+Assemble one readable, self-contained page artefact with artifact_type = page.
+
+Instructions:
+- This is a read-only composition step; do not redesign pedagogy
+- Readable page assembly applies to section structure, headings, ordering, and wrapper prose only — not to rewriting activity.materials.* bodies
+- Treat explicit user requirements from workflow goal, desired outputs, and step notes as hard constraints
+- Hard constraints include requested component types, requested quantities, and explicit exclusions
+- Include audience as provided or infer a coherent audience from context
+- Preserve explicit numeric requests for components unless impossible from available artefacts
+- Ground all sections in provided upstream artefacts only
+- Exclude unsupported/fabricated content
+- The final page JSON must be self-contained for downstream rendering; do not rely on external chat context at render time
+- Canonical contracts (runtime modules; obey all): LD-MATERIALS-COPY (preserve — merge activity_materials per activity_id into activity.materials; no placeholder-only catalogue; PREC-02 overrides overview thinning); LD-TABLE-FIDELITY (preserve — copy full upstream table material bodies into materials.<table_key>: pipe block AND table-adjunct instructional prose in the same field per 38H-3; no comma-row or Headers/Rows flattening; do not reduce to pipe-only); LD-MATH-RENDER / Math notation output contract (renderer-supported TeX delimiters only — inline \(...\), block \[...\]; not $...$, $$...$$, code spans/fences for equations); LD-SELF-DIRECTED-RHETORIC when page_profile is learner (overview/learning_purpose/study_tips and verbatim activity orientation fields — not materials bodies)
+- Do not output labels-only references to upstream artefacts where usable content is available
+- Use meaningful section headings; avoid schema-style labels in learner-facing content (for example: Heading, Materials, Material Id)
+- Keep section ordering coherent: pre-activity context, learning purpose/outcomes, learning activities, assessment/check, support notes as applicable
+- For page_profile = assessment, preserve structured assessment item schema integrity; do not flatten items into prose
+- If learning_activities are present, include a Learning Activities section with one entry per upstream activity_id (full membership unless user requests subset or generation_notes.activities_omitted[] records intentional omission)
+- learning_activities.content MUST be an array of activity objects (not alternate wrappers)
+- Each activity: title, timing/duration, learner_task/instructions, expected_output, activity-linked materials as structured objects, cognition fields when present upstream
+- materials MUST use named fields (e.g. materials.analysis_table, materials.scenarios); do not flatten into bullet strings or markdown blobs; do not place raw markdown tables inside bullet-list strings
+- When activity_materials are provided, merge all blocks per activity_id per LD-MATERIALS-COPY preserve — copy learner-facing delivery content verbatim into activity.materials.*. Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies. Do not shorten activity.materials.* content. If a hard output limit prevents full preservation, keep the full upstream material body where possible and record the limitation in generation_notes.limitations rather than silently compressing it. materials.<table_key> values: LD-TABLE-FIDELITY preserve requires the full field verbatim including table-adjunct prose (38H-3 / DP-TABLE-ADJ-01)
+- ACTIVITY MEMBERSHIP: every upstream activity_id must appear unless listed in generation_notes.activities_omitted[] with activity_id, title, reason, authority; learning_sequence order/timing only; activity_materials enrich only
+- If learning_sequence is present, use for order/timing only; do not drop activities absent from sequence rows
+- If assessment_items are present, include a clearly named Formative Assessment Check section containing actual questions/items from assessment_items (not summary-only prose)
+- For MCQ items include stem and options; include correct answer only when include_answers is true; include feedback/explanation only when include_feedback_guidance is true
+- If answers/feedback are not enabled, render questions only
+- assessment_check.content MUST be an object with an items array
+- Include answer-bearing fields only when include_answers is true
+- Include marking guidance only when include_marking_guidance is true and upstream artefacts support it
+- Include feedback guidance only when include_feedback_guidance is true and upstream artefacts support it
+- Do not dump raw JSON structures
+- MATERIALS FIDELITY: visual_affordances[] are additive page-root metadata only; Sprint 38 must not replace or summarise learning_activities.content[].materials; merge upstream materials with concrete scenarios, tables, and worked content verbatim — do not collapse material bodies to revision-note summaries; FORBIDDEN inflation-collapse substitutes: full exposition → one key-point line (e.g. "Inflation is a sustained increase…"); worked example with steps → outcome only (e.g. "Year 1 basket = £100; Year 2 basket = £105; same money buys less"); classification reasoning → arrow label (e.g. "Demand exceeds supply → demand-pull inflation"); calculation worked example → formula plus final result only; analytic worked example → one-sentence effect summary; recommendation template → section-label chain only (e.g. "Context → Evaluation → Decision → Justification"); transfer prompt → label-only instruction (e.g. "Apply to real-world inflation"); DP-TABLE-ADJ-01 (38H-3): when upstream table Material Content includes pipe rows plus instructional prose (*Instructions:*, completion guidance, interpretation prompts), emit both in activity.materials.<table_key> — table and guidance are one learner-facing instructional unit; forbidden placeholder-only labels without full content in the same field: "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking", "See provided scenarios", "Scenario set describing", "Table with basket items"; representation_avoid and duplicate worksheet/table rules apply to generated figures only — not to page materials
+- VISUAL AFFORDANCES: mandatory page-root metadata only — full Sprint 38 generate/defer/reject rules, schema 38.4 field set, and examples in runtime Sprint 38 visual affordance contract
+- If any hard constraint cannot be fully met, record it explicitly in generation_notes.limitations
+
+Output:
+- Return output as json
+- Return JSON only
+  - artifact_type (must be page)
+  - title
+  - audience
+  - page_profile (must be one of: learner, facilitator, assessment)
+  - sections (must be an array of section objects with meaningful headings and self-contained content)
+  - source_artefacts
+  - constraints_applied
+  - visual_affordance_schema_version (required; must be "38.4")
+  - activities_visual_review (required array; emit [] when no rows)
+  - visual_affordances (required array; emit [] when no decisions; generate/defer/reject per Sprint 38)
+  - generation_notes
+- For learner profile, include at minimum substantive pre-activity context/content, learner-purpose/outcome framing, rich learning activities, and learner tasks/instructions
+- For learner profile with learning_activities present, include a Learning Activities section carrying usable activity-linked content, not labels-only references
+- For learner profile with learning_sequence present, preserve sequence order/timing within the activity flow
+- For learner profile with assessment_items present, include a Formative Assessment Check section with actual item content
+- For facilitator profile, include at minimum run/session guidance and sequencing/logistics/facilitation notes
+- For assessment profile, include at minimum a structured questions/items section; do not flatten questions into narrative prose
+- Record each intentional activity omission in generation_notes.activities_omitted[] as {activity_id, title, reason, authority} where authority is user_constraint | duration_constraint | explicit_exclusion; mirror each omission in generation_notes.limitations
+- Include generation_notes.limitations when hard constraints cannot be fully satisfied or when any activity is omitted
+- Before returning JSON, validate: learning_activities.content is an array containing every upstream activity_id unless listed in generation_notes.activities_omitted[]; (U \ X) ⊆ C for composed section activity ids; each activity.materials is an object; assessment_check.content is an object with items array; learner-facing text does not leak internal enum values (for example selected_response_only)
+- Return only the JSON.
+EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied):
+- Module: EDUCATIONAL-QUALITY-FRAMEWORK | Sprint 40 Educational Quality Framework (runtime prompt contract)
+- Learner journey: the learner journey is the primary design unit — generate a coherent learner-development journey, not disconnected content pages or activity collections.
+- Learner transformations: outputs should develop understanding, capability, judgement and independence.
+- Judgement: create opportunities to compare, evaluate, justify, critique and defend — not recall-only or completion-only tasks.
+- Progressive independence: move from observe / modelled support → guided practice → supported decision making → independent decision making → transfer; reduce scaffolding across the journey.
+- Metacognition (lightweight): include brief confidence, uncertainty, progress, decision and next-step checks — without overwhelming the content.
+- Learning success: make progress visible so learners can recognise what they now understand, can do, can judge, and can manage independently.
+- Cognitive over interface activity: optimise for cognitive activity, not more interface activity — depth of thinking beats visible interactivity.
+- Step manifestation (targeted guidance):
+- Compose: preserve the learner journey across overview, activity preambles, learner tasks, materials and study tips.
+- Keep learning guidance and learning activities semantically distinct — not a literal two-column layout requirement.
+- Surface learning success through clear expected outputs, completion evidence and reflective closure.
+- Keep metacognition lightweight — do not turn it into heavy extra tasks.
+LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):
+- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | L0–L3 read-only page compose + L5 field preservation. Obey appended LD-JOURNEY-ASSIMILATION, LD-AUTHORIAL-EXPOSITION, LD-MATERIALS-COPY, LD-TABLE-FIDELITY, LD-SELF-DIRECTED-RHETORIC, LD-MATH-RENDER, and Sprint 38 visual/pedagogical contracts — bodies not repeated here.
+- ACTIVITY MEMBERSHIP (hard): every upstream activity_id in learning_activities.content unless generation_notes.activities_omitted[] with explicit user-authorised authority (subset request or workflow constraint) — never omit for output size, token limit, or model length; when upstream activity_materials provides bodies, copy the full materials object onto the matching row (no synopsis, reference-only, placeholder, or catalogue substitution); if full material bodies cannot be preserved, record generation_notes.limitations with explicit reason and retain all other available fields — do not thin materials to references; learning_sequence order/timing only; validate (U \ X) ⊆ C; assessment_check.content object with items[] when assessment_items provided.
+- MATERIALS FIDELITY (compose): visual_affordances[] are additive page-root metadata only — must not replace learning_activities.content[].materials; representation_avoid / duplicate rules on generated figures only; copy activity.materials.* verbatim from upstream activity_materials (no paraphrase, shorten, summarise, or rewrite); L4 preserve embed:
+- Module: LD-MATERIALS-COPY | Layer: L4 | Scope: activity.materials | Cluster: 4 (materials fidelity)
+- Precedence (normative): materials fidelity (L4) overrides overview/synthesis prose (overview, learning_purpose, study_tips only) — PREC-02. activity.materials.* must never be shortened for readability.
+- activity.materials must contain learner-ready artefacts, not catalogue descriptions of what could be provided.
+- Do not summarise, thin, paraphrase, shorten, simplify, compress, or replace materials bodies to make the page shorter or to write session narrative.
+- Table-shaped fields follow LD-TABLE-FIDELITY (pipe tables, anti-CSV rules) — not repeated here.
+- Preserve role (Design Page): when upstream activity_materials exist, each learning_activities.content[] row must carry the full materials object (merge every upstream block for that activity_id).
+- Copy learner-facing delivery content verbatim into activity.materials.*. Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies.
+- Do not shorten activity.materials.* content. If a hard output limit prevents full preservation, keep the full upstream material body where possible and record the limitation in generation_notes.limitations rather than silently compressing it.
+- Readable page assembly applies to section structure, headings, ordering, and wrapper prose only — not to rewriting activity.materials.* bodies.
+- FORBIDDEN inflation-collapse substitutes (activity.materials.* must never look like revision notes):
+  • Full exposition → one key-point line (e.g. "Inflation is a sustained increase in the general price level…")
+  • Worked example with steps → outcome only (e.g. "Year 1 basket = £100; Year 2 basket = £105; same money buys less")
+  • Classification reasoning chain → arrow label (e.g. "Demand exceeds supply → demand-pull inflation")
+  • Calculation worked example → formula plus final result only (process prose omitted)
+  • Analytic worked example → one-sentence effect summary
+  • Recommendation/judgement template → section-label chain only (e.g. "Context → Evaluation → Decision → Justification")
+  • Transfer prompt → label-only instruction (e.g. "Apply to real-world inflation")
+- Forbidden placeholder-only phrasing unless the full content appears in the same field:
+  "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking",
+  "See provided scenarios", "Scenario set describing", "Table with basket items".
+- Require per activity when upstream provides them: concrete scenarios (named cases with context/numbers), worked examples with visible steps, learner-completion templates with blank cells, assessment items with stems/options, and prompts/support_note content in materials when upstream supplied.
+- page_profile learner: substantive session overview in overview/learning_purpose — not summary-only activity.materials.
+- If activity_materials live in a separate upstream section, embed them into each activity.materials; do not leave materials empty while describing resources elsewhere.
+- source_basis paths in visual_affordances cite upstream evidence; citing a path does not satisfy the materials requirement.
+- Module: LD-TABLE-FIDELITY | Layer: L4 | Scope: materials.<table_key> | Cluster: 5 (table fidelity)
+- Precedence (normative): source fidelity (L2) > activity membership (L3) > materials + table fidelity (L4) > pedagogical enrichment (L5) > visual affordance metadata (L6) > style/rhetoric (L7). Table fidelity overrides brevity, summarisation, and shorten-non-essential-prose for table-shaped content.
+- PREC-01: pipe tables and structured rows must survive compression — never substitute comma-row shorthand for markdown pipes.
+- Figure duplicate/avoid tokens (representation_avoid, must_not_duplicate) apply to generated figures only — never to page activity.materials or worksheet tables.
+- Table location: every table lives in materials.<named_table_field> as a markdown pipe-table string OR a structured rows array with explicit column keys — never CSV comma rows in prose, never bullet lists of comma-separated cells.
+- If a table is needed, produce a complete pipe table with header row, divider row (| --- |), and body rows — multiline, not one-line compressed.
+- GOOD example (copy shape; adapt columns and rows):
+  | Scenario | Who is affected? | Main price pressure |
+  | --- | --- | --- |
+  |  |  |  |
+- FORBIDDEN in materials table fields:
+  • Lines matching comma-row pseudo-tables (e.g. Scenario 1,,, or trailing ,,, rows)
+  • Prose sections titled Headers and Rows instead of a single named pipe field
+  • Label-only table strings without header row and body cells
+- Do not place raw markdown pipe tables inside bullet-list strings; keep tables in named material field values.
+- TeX in prose: see LD-MATH-RENDER; this module governs pipe-table shape in materials.* only.
+- Preserve role (Design Page): when upstream activity_materials contains table materials, copy the full upstream Content string into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, reference_table, data_table, decision_table, planning_table, template, etc.) — pipe markdown block AND any table-adjunct instructional prose in the same field.
+- Table-adjunct prose (38H-3): preserve instructional context in the same materials.<table_key> body after or around the pipe table — e.g. *Instructions:*, completion guidance, interpretation prompts, worked/completion cues; do not strip non-pipe prose; pipe rows alone are insufficient when upstream includes adjunct guidance.
+- Do not flatten tables to comma-separated rows, Headers/Rows prose blocks, or catalogue labels when upstream already has pipe syntax.
+- Table fidelity overrides session overview synthesis and any shortening of materials.<table_key> bodies — adjunct guidance is L4-faithful instructional content, not overview prose.
+Sprint 38 visual affordance authoring contract (auto-applied):
+- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (see LD-DESIGN-PAGE-COMPOSE-CONTRACT).
+- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.
+- Every visual_affordances[] row requires affordance_id (unique string) and activity_id.
+- visual_decision must be exactly: generate, defer, or reject.
+- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; source_basis is a non-empty string citing upstream paths; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.
+- tier (generate only): essential or valuable only — never core, primary, optional, or descriptive labels.
+- purpose (generate only): distinction | comparison | classification | mechanism | evidence_structure | data_pattern_reading.
+- preferred_representation (generate only): comparison_framework | classification_matrix | causal_model | evidence_t_chart | number_line_segments | ordered_bar_strip | labelled_contrast_panel.
+- representation_avoid (generate only): use only allow-listed tokens: summary_table, filled_worksheet, stock_photography, generic_infographic, unsupported_causal_arrow, numeric_claim_without_source, topic_hero_image, assessment_answer_visual, author_portrait_collage, duplicate_mechanism_and_evidence — never prose labels such as "simple list" or "chart".
+- defer_reason (defer only): worked_example_sufficient_first | model_row_sufficient_first.
+- rejection_reason (reject only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.
+- generate rows must include: affordance_id, activity_id, visual_decision, rationale, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (≥1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.
+- defer rows: affordance_id, activity_id, visual_decision, defer_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.
+- reject rows: affordance_id, activity_id, visual_decision, rejection_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.
+- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; reject debrief-only or duplicate-structure activities.
+- activities_visual_review[]: one row per upstream activity_id with activity_visual_value.decision high|medium|low|none and rationale.
+- Page root (mandatory): visual_affordance_schema_version "38.4", activities_visual_review (use [] if empty), visual_affordances (use [] if empty).
+
+Example generate record (copy shape and types; adapt ids and content to upstream materials):
+{"affordance_id": "va-A3-classification-01", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull inflation", "cost-push inflation", "wage-price spiral"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."], "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}
+
+Example reject record:
+{"affordance_id": "va-A1-reject-01", "activity_id": "A1", "visual_decision": "reject", "rejection_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task."}
+
+Example defer record:
+{"affordance_id": "va-A2-defer-01", "activity_id": "A2", "visual_decision": "defer", "defer_reason": "worked_example_sufficient_first", "rationale": "Attempt the worked example and calculation table before any visual summary."}
+
+Sprint 38 pedagogical added-value contract (auto-applied):
+- preferred_representation names layout family only; every generate row requires pedagogical_added_value (1–2 sentences: cognitive support materials lack, beyond purpose + token).
+- QA: generated figure must add reasoning support not already in activity.materials; reject/revise when duplicate worksheet, duplicate table, duplicate answer structure, topic poster, illustrated summary, or generic infographic — figures only, never omit or shorten page materials.
+- must_show / must_not_show: discriminating cues materials lack; block worksheet/table duplication and answer keys in figures.
+- Human-designer test: reviewer must be able to explain what cognitive support the figure provides — not structure alone.
+- Per-token must_add / must_not_duplicate (REPRESENTATION_PEDAGOGICAL_VALUE at runtime): classification_matrix — must_add: discriminating cues, decision criteria, category distinctions | must_not_duplicate: blank worksheet duplication, filled answer key, completed classification cells; apply other representation tokens from the catalog when authoring.
+LD-MATH-RENDER (auto-applied):
+- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)
+- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.
+- Inline maths: use \(...\) (for example \(x^2 + y^2\)).
+- Display/block equations: use \[...\] on their own lines where block layout is intended.
+- Do NOT use $...$ or $$...$$ delimiters.
+- Do NOT wrap equations in code spans, code fences, or backtick markdown.
+- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\(...\\) and \\[...\\] in raw JSON text).
+- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).
+- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.
+- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.
+- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 8 OUTPUT: page.

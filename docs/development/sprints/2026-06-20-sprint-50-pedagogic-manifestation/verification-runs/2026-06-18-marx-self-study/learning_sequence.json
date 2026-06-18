@@ -1,0 +1,100 @@
+```json
+{
+  "sequence_title": "Effective Communication Skills Development",
+  "total_duration_minutes": 90,
+  "timeline": [
+    {
+      "block_id": "block_1",
+      "start_minute": 0,
+      "duration_minutes": 15,
+      "phase_type": "introduction",
+      "activity_id": "A1",
+      "grouping": "whole group",
+      "facilitator_actions": [
+        "Welcome learners and introduce the session objectives.",
+        "Explain the importance of effective communication in professional and personal contexts.",
+        "Distribute Material A1.1 - Concept Map Template to learners.",
+        "Guide learners to individually complete a concept map on communication basics."
+      ],
+      "learner_actions": [
+        "Listen to the introduction and objectives.",
+        "Use Material A1.1 - Concept Map Template to create an initial concept map about communication."
+      ],
+      "transition_to_next": "Facilitator summarizes key points from concept maps and introduces the next activity on communication styles."
+    },
+    {
+      "block_id": "block_2",
+      "start_minute": 15,
+      "duration_minutes": 25,
+      "phase_type": "guided practice",
+      "activity_id": "A2",
+      "grouping": "small groups",
+      "facilitator_actions": [
+        "Divide learners into small groups.",
+        "Distribute Material A2.1 - Communication Styles Worksheet to each group.",
+        "Explain the task: identify and discuss different communication styles using the worksheet.",
+        "Circulate to support groups and prompt deeper analysis."
+      ],
+      "learner_actions": [
+        "Collaborate in small groups to complete Material A2.1 - Communication Styles Worksheet.",
+        "Discuss examples and implications of various communication styles."
+      ],
+      "transition_to_next": "Groups share insights in a brief plenary to consolidate understanding before moving to role-play."
+    },
+    {
+      "block_id": "block_3",
+      "start_minute": 40,
+      "duration_minutes": 30,
+      "phase_type": "supported decision making",
+      "activity_id": "A3",
+      "grouping": "pairs",
+      "facilitator_actions": [
+        "Explain the role-play activity and distribute Material A3.1 - Role-Play Scenarios.",
+        "Assign pairs and clarify expectations for practicing communication techniques.",
+        "Monitor pairs, providing feedback and guidance as needed."
+      ],
+      "learner_actions": [
+        "In pairs, enact scenarios from Material A3.1 - Role-Play Scenarios focusing on effective communication.",
+        "Practice applying communication techniques and receive peer feedback."
+      ],
+      "transition_to_next": "Facilitator leads a plenary discussion to reflect on role-play experiences and lessons learned."
+    },
+    {
+      "block_id": "block_4",
+      "start_minute": 70,
+      "duration_minutes": 20,
+      "phase_type": "plenary/synthesis",
+      "activity_id": "A4",
+      "grouping": "whole group",
+      "facilitator_actions": [
+        "Facilitate a group discussion synthesizing key takeaways from the session.",
+        "Encourage learners to share personal insights and how they plan to apply skills.",
+        "Distribute Material A4.1 - Reflection and Action Plan Template.",
+        "Guide learners to complete the reflection and action plan."
+      ],
+      "learner_actions": [
+        "Participate in group discussion reflecting on learning.",
+        "Complete Material A4.1 - Reflection and Action Plan Template to consolidate learning and plan next steps."
+      ],
+      "transition_to_next": "Session closure integrated into this block with final summary and encouragement for continued practice."
+    }
+  ],
+  "activities_used": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "activities_omitted": [],
+  "checks": {
+    "all_activity_ids_valid": true,
+    "no_new_activities_introduced": true,
+    "all_materials_traceable_to_activity_materials": true,
+    "cognitive_timing_feasible": true,
+    "closure_integrated": true,
+    "no_zero_minute_blocks": true,
+    "omissions_justified": true
+  }
+}
+```
+STEP 7 OUTPUT: learning_sequence.

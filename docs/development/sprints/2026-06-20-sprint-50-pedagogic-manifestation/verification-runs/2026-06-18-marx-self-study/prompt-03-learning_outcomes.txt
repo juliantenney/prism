@@ -1,0 +1,53 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Define Learning Outcomes.
+Role / purpose of this step: Outcomes design.
+
+Runner guidance:
+- What this step does: Outcomes design
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "knowledge_model" from step "an earlier step".
+
+Here is the core prompt for this step:
+
+You are designing learning outcomes from a structured knowledge model.
+
+Task:
+Generate clear, observable, and assessable learning outcomes derived from the provided knowledge model.
+
+Instructions:
+- Use measurable language and avoid vague verbs such as "understand", "know", or "appreciate"
+- Ensure each outcome aligns with concepts in the knowledge model
+- Set cognitive demand in line with the specified learner level, scope, and cognitive emphasis
+- Produce balanced coverage without redundancy
+- Keep all outcomes grounded in the knowledge model and source content
+- Keep wording precise so outcomes can be reused directly for assessment and activity design
+- Outcomes must be realistically achievable within the stated time and structure
+- Avoid attempting to cover all concepts in short designs
+- Prefer tightly focused, demonstrable outcomes
+
+Scope-aware outcome guidance:
+- If the design is a short session (<= 30 minutes) or explicitly single_activity: generate 2-4 outcomes maximum, focus on depth over coverage, and select only the most essential and achievable goals
+- If the design is a standard session (30-120 minutes): generate 3-6 outcomes with moderate breadth and progression
+- If the design is extended (multi-session, module, or longer duration): generate a broader set of outcomes reflecting wider coverage
+
+Constraints:
+
+Output requirements (strict — fenced JSON block only):
+- Return exactly one markdown fenced JSON block opened with ```json and closed with ```
+- The fenced block body must be the learning_outcomes root object as valid JSON
+- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block
+- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)
+- Do NOT include JSON comments (no // or block comments)
+- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)
+- JSON top-level keys: learning_outcomes (required array), plus optional learner_level, scope, alignment_notes
+- Each learning_outcomes entry must include statement, related_concepts, cognitive_level, and notes where needed
+- Return only the single fenced block.
+
+Finish the artefact in your main answer; do not include the machine artefact name inside that body.
+At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'.
+After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body.
+For this step, that line is: STEP 3 OUTPUT: learning_outcomes.

@@ -1,0 +1,282 @@
+{
+  "artifact_type": "page",
+  "title": "Understanding Inflation: Causes, Effects, and Analysis",
+  "audience": "Learners studying economics with a focus on inflation mechanisms",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Introduction and Learning Purpose",
+      "content": "This session explores the concept of inflation, focusing on its causes and effects within an economy. You will develop your understanding of different inflationary mechanisms, learn to classify inflation scenarios, and analyze their impacts. By engaging with real-world examples and structured activities, you will enhance your ability to evaluate inflation causes critically and independently."
+    },
+    {
+      "heading": "Learning Outcomes",
+      "content": [
+        "Explain the main causes of inflation including demand-pull and cost-push factors.",
+        "Classify inflation scenarios based on their underlying mechanisms.",
+        "Analyze the impact of inflation on different economic agents.",
+        "Develop reasoned judgments about inflation causes using evidence.",
+        "Apply economic concepts to real-world inflation cases."
+      ]
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Activity 1: Classifying Inflation Scenarios",
+          "timing": "45 minutes",
+          "learner_task": "You will review a set of inflation scenarios and classify each according to its primary causal mechanism: demand-pull inflation, cost-push inflation, or wage-price spiral. Use the provided classification criteria to guide your decisions.",
+          "expected_output": "A completed classification matrix categorizing each scenario by inflation cause.",
+          "materials": {
+            "scenarios": "Scenario 1: A sudden increase in consumer spending leads to higher demand for goods.\nScenario 2: Rising oil prices increase production costs for many industries.\nScenario 3: Workers negotiate higher wages, leading to increased production costs and prices.",
+            "classification_table": "| Scenario | Who is affected? | Main price pressure |\n| --- | --- | --- |\n| 1 | Consumers and producers | Demand-pull inflation |\n| 2 | Producers and consumers | Cost-push inflation |\n| 3 | Workers and producers | Wage-price spiral |\n\n*Instructions:* Review each scenario carefully. Identify the main economic agents affected and the primary source of price pressure. Complete the classification table accordingly."
+          },
+          "cognition": {
+            "type": "classification",
+            "level": "guided practice"
+          }
+        },
+        {
+          "title": "Activity 2: Analyzing Inflation Impact",
+          "timing": "60 minutes",
+          "learner_task": "Analyze the effects of inflation on various economic agents using the provided impact table. Consider how different causes of inflation affect consumers, producers, and workers differently. Provide reasoned explanations for each impact.",
+          "expected_output": "A written analysis describing the differentiated impacts of inflation causes on economic agents.",
+          "materials": {
+            "impact_table": "| Inflation Cause | Consumers | Producers | Workers |\n| --- | --- | --- | --- |\n| Demand-pull | Higher prices reduce purchasing power | Increased sales but potential cost pressures | May benefit from higher demand |\n| Cost-push | Reduced real income | Higher costs may reduce profits | May face job insecurity |\n| Wage-price spiral | Prices and wages both rise | Costs increase, may pass on prices | Wage increases may lag inflation |\n\n*Instructions:* Use this table to support your analysis. Reflect on how each agent is affected differently depending on the inflation cause."
+          },
+          "cognition": {
+            "type": "analysis",
+            "level": "supported decision making"
+          }
+        },
+        {
+          "title": "Activity 3: Evaluating Inflation Causes with Evidence",
+          "timing": "30 minutes",
+          "learner_task": "Use the provided worked example and checklist to evaluate a complex inflation scenario. Identify key evidence and justify your classification of the inflation cause. Reflect on any uncertainties or alternative explanations.",
+          "expected_output": "A justified evaluation report of the inflation scenario with evidence-based reasoning.",
+          "materials": {
+            "worked_example": "In 2023, rising global commodity prices combined with strong consumer demand led to inflation. The example shows how cost-push and demand-pull factors interacted.\n\n*Step 1:* Identify price pressures.\n*Step 2:* Examine affected agents.\n*Step 3:* Classify inflation cause(s).\n\nChecklist:\n- Have you identified all relevant price pressures?\n- Have you considered the role of wages?\n- Have you justified your classification with evidence?",
+            "evaluation_checklist": "- Identify price pressures\n- Assess economic agents affected\n- Provide evidence-based classification\n- Reflect on uncertainties"
+          },
+          "cognition": {
+            "type": "evaluation",
+            "level": "independent decision making"
+          }
+        },
+        {
+          "activity_id": "A1",
+          "title": "Introduction to Household Budget Inflation",
+          "activity_preamble": "This activity introduces you to the fundamental concepts of household budget inflation with detailed teaching and a worked example.",
+          "prior_knowledge_activation": true,
+          "reasoning_orientation": "conceptual understanding and procedural reasoning",
+          "self_explanation_prompt": "Explain why each step in the worked example is necessary and how it contributes to understanding inflation impact.",
+          "transfer_or_application_task": false,
+          "uncertainty_tension_prompt": "Identify any parts of the worked example or concepts that are unclear or challenging.",
+          "expected_output": "Demonstrate comprehension by summarizing key concepts and explaining the worked example steps in own words.",
+          "learner_task": "## Study the introductory text and worked example carefully.\n\n- Understand key concepts and terminology related to household budget inflation.\n- Follow the worked example to see how inflation impacts a household budget step-by-step.\n\nPrepare to apply this understanding in the next activities.",
+          "duration_minutes": 10,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A2",
+          "title": "Classification and Analysis of Inflation Drivers",
+          "activity_preamble": "This activity develops your ability to classify and analyze different drivers of household budget inflation using a structured table and expert modelling.",
+          "prior_knowledge_activation": true,
+          "reasoning_orientation": "analytical classification and trade-off evaluation",
+          "self_explanation_prompt": "Explain why each inflation driver was classified as you did, referencing criteria.",
+          "transfer_or_application_task": false,
+          "uncertainty_tension_prompt": "Note any drivers that were difficult to classify or analyze and why.",
+          "expected_output": "Completed classification table with justified categories and notes; self-verified using checklist.",
+          "learner_task": "## Classify and analyze the given inflation drivers.\n\n- Use the classification table to categorize each driver.\n- Consider multiple perspectives and trade-offs.\n- Refer to the modelling note to understand expert reasoning.\n- Verify your classifications using the checklist.",
+          "duration_minutes": 15,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A3",
+          "title": "Evaluating Household Inflation Strategies",
+          "activity_preamble": "This activity guides you through evaluating household inflation strategies using multiple criteria, worked judgement, and independent decision-making.",
+          "prior_knowledge_activation": true,
+          "reasoning_orientation": "criteria-based evaluation and independent judgement",
+          "self_explanation_prompt": "Justify your ratings and decisions referencing the criteria and scenario details.",
+          "transfer_or_application_task": true,
+          "uncertainty_tension_prompt": "Identify any uncertainties or trade-offs encountered during evaluation.",
+          "expected_output": "Completed evaluation template with justified ratings and a reasoned transfer response applying criteria to a new scenario.",
+          "learner_task": "## Evaluate the inflation strategies of two households.\n\n- Study the scenarios and evaluation criteria.\n- Review the worked example of judgement.\n- Use the decision table to guide your ratings.\n- Complete the evaluation template independently, providing justifications.\n- Verify your evaluation using the checklist.\n- Finally, respond to the transfer prompt by applying criteria to a new scenario.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A4",
+          "title": "Consolidation and Reflection on Household Budget Inflation",
+          "activity_preamble": "This final activity helps you consolidate and reflect on your learning about household budget inflation and strategy evaluation.",
+          "prior_knowledge_activation": false,
+          "reasoning_orientation": "synthesis and metacognitive reflection",
+          "self_explanation_prompt": "Consider how your understanding has deepened and what you can apply independently.",
+          "transfer_or_application_task": false,
+          "uncertainty_tension_prompt": "Note any remaining uncertainties or areas for further study.",
+          "expected_output": "A coherent written summary of ≥80 words covering key session ideas and personal reflection.",
+          "learner_task": "## Write a consolidation summary.\n\n- Synthesize the key concepts, classifications, and evaluation skills developed.\n- Reflect on your learning progress and any remaining questions.\n- Use the reflection prompts to guide your writing.",
+          "duration_minutes": 10,
+          "grouping": "individual"
+        }
+      ]
+    },
+    {
+      "heading": "Formative Assessment Check",
+      "content": {
+        "items": [
+          {
+            "item_id": "Q1",
+            "stem": "Which of the following best describes demand-pull inflation?",
+            "options": [
+              "A sudden increase in production costs.",
+              "An increase in consumer demand leading to higher prices.",
+              "A wage-price spiral causing rising wages and prices.",
+              "A decrease in aggregate demand."
+            ]
+          },
+          {
+            "item_id": "Q2",
+            "stem": "What is a typical effect of cost-push inflation on producers?",
+            "options": [
+              "Increased profits due to higher sales volume.",
+              "Reduced costs leading to higher output.",
+              "Higher production costs that may reduce profits.",
+              "No impact on production costs."
+            ]
+          },
+          {
+            "item_id": "Q3",
+            "stem": "In a wage-price spiral, what is the relationship between wages and prices?",
+            "options": [
+              "Wages rise first, causing prices to fall.",
+              "Prices rise first, causing wages to fall.",
+              "Wages and prices rise in a reinforcing cycle.",
+              "Wages and prices remain stable."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "heading": "Study Tips",
+      "content": "To maximize your learning, actively engage with each activity by applying the classification criteria and impact analysis tables carefully. Reflect on your reasoning at each step and consider alternative explanations for inflation scenarios. Use the checklist in Activity 3 to guide your evaluations and build confidence in your judgments."
+    }
+  ],
+  "source_artefacts": [
+    "knowledge_model",
+    "learning_outcomes",
+    "learning_activities",
+    "activity_materials",
+    "learning_sequence"
+  ],
+  "constraints_applied": [
+    "Preserved all learning activities with full materials verbatim.",
+    "Used learning_sequence for activity ordering and timing.",
+    "Included formative assessment items as provided without answers or feedback.",
+    "Excluded any omitted activities as none were indicated.",
+    "Maintained learner page profile with substantive overview and study tips."
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "Activity 1",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "The classification matrix and scenario cards provide clear visual cues to support learners in distinguishing inflation causes."
+      }
+    },
+    {
+      "activity_id": "Activity 2",
+      "activity_visual_value": {
+        "decision": "generate",
+        "rationale": "The impact table visually organizes differentiated effects of inflation on economic agents, aiding analysis."
+      }
+    },
+    {
+      "activity_id": "Activity 3",
+      "activity_visual_value": {
+        "decision": "defer",
+        "rationale": "The worked example sufficiently supports reasoning; additional visuals may be redundant at this stage."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-Activity1-classification-01",
+      "activity_id": "Activity 1",
+      "visual_decision": "generate",
+      "rationale": "Classify scenarios by inflation cause using the classification table before analysis.",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Provides discriminating cues and decision criteria for typing inflation scenarios, supporting learner classification.",
+      "reasoning_supported": "Learners form initial classifications without completed analysis.",
+      "learner_stage": "pre_classification",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": [
+        "filled_worksheet",
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Empty labelled cause structures only.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "demand-pull inflation",
+        "cost-push inflation",
+        "wage-price spiral"
+      ],
+      "must_not_show": [
+        "scenario answer key",
+        "completed classification cells"
+      ],
+      "allowed_claims": [
+        "Different causal mechanisms can produce inflation."
+      ],
+      "disallowed_claims": [
+        "All inflation has one cause."
+      ],
+      "source_basis": "Activity 1 learner_task; Activity 1 materials.scenarios; Activity 1 materials.classification_table",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-Activity3-evaluation-01",
+      "activity_id": "Activity 3",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "rationale": "The worked example and checklist provide adequate scaffolding; additional visuals may overwhelm learners at this stage."
+    }
+  ],
+  "generation_notes": {
+    "limitations": [
+      "[PRISM visual affordance] Dropped invalid affordance va-Activity2-impact-01: visual_affordances[1]: learner_stage must be pre_classification | post_reasoning"
+    ],
+    "activities_omitted": [],
+    "visual_affordance_validation": {
+      "valid": false,
+      "kept_count": 2,
+      "dropped_count": 1,
+      "errors": [
+        "activities_visual_review[0]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[1]: activity_visual_value.decision must be high | medium | low | none",
+        "activities_visual_review[2]: activity_visual_value.decision must be high | medium | low | none",
+        "visual_affordances[1]: learner_stage must be pre_classification | post_reasoning"
+      ]
+    }
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 4,
+      "framing_fields_merged": 0
+    }
+  }
+}

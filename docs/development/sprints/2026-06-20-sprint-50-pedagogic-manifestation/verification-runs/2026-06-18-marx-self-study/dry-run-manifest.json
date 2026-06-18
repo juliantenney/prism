@@ -1,0 +1,37 @@
+{
+  "workflow": "MarxEduQSelfStudy",
+  "steps": [
+    {
+      "title": "Generate Learning Content",
+      "artifact": "learning_content"
+    },
+    {
+      "title": "Model Knowledge",
+      "artifact": "knowledge_model"
+    },
+    {
+      "title": "Define Learning Outcomes",
+      "artifact": "learning_outcomes"
+    },
+    {
+      "title": "Design Episode Plan",
+      "artifact": "episode_plans"
+    },
+    {
+      "title": "Design Learning Activities",
+      "artifact": "learning_activities"
+    },
+    {
+      "title": "Generate Activity Materials",
+      "artifact": "activity_materials"
+    },
+    {
+      "title": "Construct Learning Sequence",
+      "artifact": "learning_sequence"
+    },
+    {
+      "title": "Design Page",
+      "artifact": "page"
+    }
+  ]
+}

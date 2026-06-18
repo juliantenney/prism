@@ -23,6 +23,7 @@ const SP01_MARKER = /INSTRUCTIONAL-PATTERN-SP-01 \(auto-applied\)/i;
 const SP02_MARKER = /INSTRUCTIONAL-PATTERN-SP-02 \(auto-applied\)/i;
 const SP03_MARKER = /INSTRUCTIONAL-PATTERN-SP-03 \(auto-applied\)/i;
 const SP06_MARKER = /INSTRUCTIONAL-PATTERN-SP-06 \(auto-applied\)/i;
+const SP07_MARKER = /INSTRUCTIONAL-PATTERN-SP-07 \(auto-applied\)/i;
 
 const MARX_SELF_STUDY_BRIEF = {
   goal:
@@ -132,6 +133,8 @@ function assertSp06Content(prompt) {
   assert.match(prompt, /worked_example/i);
   assert.match(prompt, /parallel-task bridge/i);
   assert.match(prompt, /MUST include an explicit parallel-task bridge/i);
+  assert.match(prompt, /## What experts notice/i);
+  assert.match(prompt, /instructional FAIL \(FM-12\)/i);
   assert.match(prompt, /instructional FAIL \(FM-05\)/i);
   assert.match(prompt, /GOOD shape example/i);
   assert.match(prompt, /\*\*Bridge:\*\*/i);
@@ -139,6 +142,15 @@ function assertSp06Content(prompt) {
   assert.match(prompt, /MP-1/i);
   assert.match(prompt, /MP-2/i);
   assert.match(prompt, /MP-3/i);
+}
+
+function assertSp07Content(prompt) {
+  assert.match(prompt, SP07_MARKER);
+  assert.match(prompt, /SP-07 \/ SO-SP-01 annotated sample output/i);
+  assert.match(prompt, /sample_output/i);
+  assert.match(prompt, /## Why this works/i);
+  assert.match(prompt, /instructional FAIL \(FM-11\)/i);
+  assert.match(prompt, /Use this as a quality guide, not as text to copy/i);
 }
 
 function assertSp01Content(prompt) {
@@ -172,20 +184,22 @@ function resolveCognitionContract(brief) {
   );
 }
 
-test("48-2: lib exports SP-02, SP-03, and SP-06 markers and apply helper", () => {
+test("48-2: lib exports SP-02, SP-03, SP-06, SP-07, and apply helper", () => {
   assert.equal(patternLib.MODULE_ID, "INSTRUCTIONAL-PATTERN-PROMPT");
   assert.match(patternLib.MARKER_SP02, SP02_MARKER);
   assert.match(patternLib.MARKER_SP03, SP03_MARKER);
   assert.match(patternLib.MARKER_SP06, SP06_MARKER);
+  assert.match(patternLib.MARKER_SP07, SP07_MARKER);
   assert.match(patternLib.MARKER_SP01, SP01_MARKER);
   const block = patternLib.buildInstructionalPatternPromptBlock();
   assertSp02Content(block);
   assertSp03Content(block);
   assertSp06Content(block);
+  assertSp07Content(block);
   assertSp01Content(block);
 });
 
-test("48-2: self-directed learner-page GAM receives SP-02, SP-03, SP-06, and SP-01 markers", () => {
+test("48-2: self-directed learner-page GAM receives SP-02, SP-03, SP-06, SP-07, and SP-01 markers", () => {
   const base = "Realise activity materials from upstream DLA.\n";
   const prompt = applyRuntimePrompt(
     base,
@@ -196,6 +210,7 @@ test("48-2: self-directed learner-page GAM receives SP-02, SP-03, SP-06, and SP-
   assertSp02Content(prompt);
   assertSp03Content(prompt);
   assertSp06Content(prompt);
+  assertSp07Content(prompt);
   assertSp01Content(prompt);
   assert.ok(prompt.length > base.length);
 });
@@ -210,6 +225,7 @@ test("48-2: scope gate — facilitator brief excludes pattern markers on GAM", (
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP07_MARKER);
   assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
@@ -223,6 +239,7 @@ test("48-2: non-GAM step Design Learning Activities excludes pattern markers", (
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP07_MARKER);
   assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
@@ -236,6 +253,7 @@ test("48-2: non-GAM step Design Page excludes pattern markers", () => {
   assert.doesNotMatch(prompt, SP02_MARKER);
   assert.doesNotMatch(prompt, SP03_MARKER);
   assert.doesNotMatch(prompt, SP06_MARKER);
+  assert.doesNotMatch(prompt, SP07_MARKER);
   assert.doesNotMatch(prompt, SP01_MARKER);
 });
 
@@ -257,6 +275,7 @@ test("48-2: pattern markers are not duplicated on second apply", () => {
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
   assert.equal((twice.match(SP06_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP07_MARKER) || []).length, 1);
   assert.equal((twice.match(SP01_MARKER) || []).length, 1);
 });
 
@@ -266,6 +285,7 @@ test("48-2: lib apply helper does not duplicate markers", () => {
   assert.equal((twice.match(SP02_MARKER) || []).length, 1);
   assert.equal((twice.match(SP03_MARKER) || []).length, 1);
   assert.equal((twice.match(SP06_MARKER) || []).length, 1);
+  assert.equal((twice.match(SP07_MARKER) || []).length, 1);
   assert.equal((twice.match(SP01_MARKER) || []).length, 1);
 });
 
@@ -295,9 +315,11 @@ test("48-2: GAM prompt delta is additive — DLA prompt unchanged for pattern ma
   assert.doesNotMatch(dlaPrompt, SP02_MARKER);
   assert.doesNotMatch(dlaPrompt, SP03_MARKER);
   assert.doesNotMatch(dlaPrompt, SP06_MARKER);
+  assert.doesNotMatch(dlaPrompt, SP07_MARKER);
   assert.match(gamPrompt, SP02_MARKER);
   assert.match(gamPrompt, SP03_MARKER);
   assert.match(gamPrompt, SP06_MARKER);
+  assert.match(gamPrompt, SP07_MARKER);
 });
 
 test("48-3: SP-02 block requires exactly one partial exemplar row (MUST)", () => {
@@ -350,10 +372,12 @@ test("48-4: SP-06 defines model-only worked_example as FM-05 instructional fail"
   assert.match(block, /FORBIDDEN: step chain \+ model conclusion only.*FM-05/i);
 });
 
-test("48-4: SP-06 GOOD shape example shows bridge without learner answer", () => {
+test("48-4: SP-06 GOOD shape example shows What experts notice then bridge without learner answer", () => {
   const block = patternLib.buildSp06PromptBlock();
   assert.match(block, /GOOD shape example/i);
   assert.match(block, /visible because\/reasoning between steps/i);
+  assert.match(block, /## What experts notice/i);
+  assert.match(block, /GOOD shape example[\s\S]*## What experts notice[\s\S]*\*\*Bridge:\*\*/i);
   assert.match(block, /\*\*Bridge:\*\* Now use the same method on your/i);
   assert.match(block, /do not copy the model outcome/i);
 });
@@ -490,7 +514,8 @@ test("48-7: SP-05 block requires MUST bundle for checklist", () => {
   assert.match(block, /every checklist body MUST provide criteria-linked learner self-check verification/i);
   assert.match(block, /at least four checkable items tied to expected_output/i);
   assert.match(block, /learner-check imperatives \(Have you \/ Did you \/ Does your\)/i);
-  assert.match(block, /MUST include explicit revise guidance/i);
+  assert.match(block, /## Common mistakes/i);
+  assert.match(block, /### If any check is not met:/i);
 });
 
 test("48-7: SP-05 defines FM-09 instructional fail", () => {
@@ -507,14 +532,15 @@ test("48-7: SP-05 defines stub and thin checklist instructional fails", () => {
   assert.match(block, /FORBIDDEN: pointer or stub checklist/i);
 });
 
-test("48-7: SP-05 GOOD shape example shows M4-style checklist with revise block", () => {
+test("48-7: SP-05 GOOD shape example shows Common mistakes and revise block", () => {
   const block = patternLib.buildSp05PromptBlock();
   assert.match(block, /GOOD shape example/i);
   assert.match(block, /Have you \[criterion tied to expected_output\]/i);
   assert.match(block, /not just named it/i);
   assert.match(block, /not described in general/i);
-  assert.match(block, /### If any check is not met:/i);
-  assert.match(block, /Revise your \[deliverable\] by/i);
+  assert.match(block, /GOOD shape example[\s\S]*## Common mistakes[\s\S]*### If any check is not met:/i);
+  assert.match(block, /mechanism linking them/i);
+  assert.match(block, /Revise your \[deliverable\] by \(1\)/i);
 });
 
 test("48-7: SP-05 FORBIDDEN floors name completion and reflection-only shapes", () => {
@@ -522,6 +548,8 @@ test("48-7: SP-05 FORBIDDEN floors name completion and reflection-only shapes", 
   assert.match(block, /FORBIDDEN: Did you finish\?/i);
   assert.match(block, /FORBIDDEN: reflection-only verification/i);
   assert.match(block, /FORBIDDEN: completion-dominant structures.*Is each row complete\?.*FM-09/i);
+  assert.match(block, /FORBIDDEN in checklist.*Reflect on/i);
+  assert.match(block, /FORBIDDEN: generic revise guidance/i);
 });
 
 test("48-7: SP-05 retains MP-1 ownership constraint", () => {
@@ -632,4 +660,30 @@ test("49-2: lib apply helper appends SP-01 without duplicating marker", () => {
   assert.match(once, SP01_MARKER);
   const twice = patternLib.applyInstructionalPatternPromptBlockToDraft(once, {});
   assert.equal((twice.match(SP01_MARKER) || []).length, 1);
+});
+
+test("51-1: SP-07 GOOD shape example shows Why this works after sample body", () => {
+  const block = patternLib.buildSp07PromptBlock();
+  assert.match(block, /GOOD shape example/i);
+  assert.match(block, /GOOD shape example[\s\S]*## Why this works/i);
+  assert.match(block, /Links concepts through a causal mechanism rather than listing definitions/i);
+  assert.match(block, /Use this as a quality guide, not as text to copy/i);
+});
+
+test("51-1: SP-07 defines FM-11 instructional fail for missing Why this works", () => {
+  const block = patternLib.buildSp07PromptBlock();
+  assert.match(block, /instructional FAIL \(FM-11\)/i);
+  assert.match(block, /no `## Why this works` section/i);
+});
+
+test("51-2: SP-05 defines FM-13 for missing Common mistakes or revise block", () => {
+  const block = patternLib.buildSp05PromptBlock();
+  assert.match(block, /instructional FAIL \(FM-13\)/i);
+  assert.match(block, /without `## Common mistakes`/i);
+});
+
+test("51-2: SP-06 forbids embedded checklist in worked_example (FM-14)", () => {
+  const block = patternLib.buildSp06PromptBlock();
+  assert.match(block, /instructional FAIL \(FM-14\)/i);
+  assert.match(block, /MUST NOT embed checklist bodies/i);
 });

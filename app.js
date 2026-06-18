@@ -9245,6 +9245,21 @@
       : null;
   }
 
+  function resolveLdPedagogicSalienceRenderLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER &&
+      typeof globalThis.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER.wrapPedagogicSalienceSectionsInHtml ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER
+      ? root.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER
+      : null;
+  }
+
   function resolveLdDesignPageComposeLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -10085,6 +10100,12 @@
       "Self-directed learner-page reasoning materials (auto-applied):",
       "- Materials must support DLA reasoning fields — learner-facing only (see self-study material voice in self-study materials block).",
       "- When required_materials specifies worked_example, sample_output, or a modelled template row, realise with visible reasoning (why each step) — not answer-only cells.",
+      "- When required_materials specifies worked_example, after labelled steps and before Bridge, include `## What experts notice` (≥2 bullets on disciplinary reasoning moves — not generic clear/detailed praise) per INSTRUCTIONAL-PATTERN-SP-06.",
+      "- When required_materials specifies worked_example, model thinking only — do NOT embed checklist items, `## Common mistakes`, or `Have you` / `Did you` verification inside worked_example; emit a separate checklist material per INSTRUCTIONAL-PATTERN-SP-05.",
+      "- When required_materials specifies sample_output, after the exemplar body include `## Why this works` (3–5 bullets on reasoning quality, connections, analytical/evaluative moves) plus: Use this as a quality guide, not as text to copy — per INSTRUCTIONAL-PATTERN-SP-07.",
+      "- When required_materials purpose matches worked judgement or modelling_note specifies weak vs strong contrast, include `## A weaker response would` and `## A stronger response would` with comparative disciplinary judgement — slogan-style weak vs criteria-led strong, not generic advice.",
+      "- When required_materials specifies checklist, include `## Common mistakes` (2–4 diagnostic novice traps) and `### If any check is not met:` with actionable revision moves per INSTRUCTIONAL-PATTERN-SP-05 — diagnostic coaching, not motivational (`Reflect on`, `Think about`, `Consider whether`).",
+      "- Evaluative coaching prompts (diagnostic only): e.g. Which part of your answer provides explanation rather than description? Which claim is least well supported? Where might a reader need more evidence or reasoning? — use in checklist or prompt_set, not as filler.",
       "- When required_materials specifies a faded template/table, pre-fill only the rows/cells named in the specification; leave all other response cells empty.",
       "- When DLA lists worked_thinking or a worked analytic pass, model one full GAM-PRES-08 (A1) walkthrough (≥120 words) with visible expert reasoning — not a labelled sample row only.",
       "- For source-based activities: provide quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
@@ -32082,6 +32103,42 @@
               });
               if (scenarioTableHtml) return scenarioTableHtml;
             }
+            if (hint === "checklist" || hint === "checklists") {
+              var salienceLib = resolveLdPedagogicSalienceRenderLib();
+              if (salienceLib && typeof salienceLib.splitChecklistPedagogicSections === "function") {
+                var checklistSplit = salienceLib.splitChecklistPedagogicSections(value);
+                if (checklistSplit.hasPedagogicSections) {
+                  var checklistParts = [];
+                  if (checklistSplit.verification) {
+                    var verificationHtml = renderPlainStructuredText(checklistSplit.verification, {
+                      materialHint: "checklist"
+                    });
+                    if (verificationHtml) {
+                      checklistParts.push(
+                        '<div class="util-checklist-block util-material-role-checklist">' +
+                          verificationHtml +
+                          "</div>"
+                      );
+                    }
+                  }
+                  if (checklistSplit.diagnostic) {
+                    var diagnosticHtml = renderPlainStructuredText(checklistSplit.diagnostic, {});
+                    if (diagnosticHtml) checklistParts.push(diagnosticHtml);
+                  }
+                  if (checklistSplit.revision) {
+                    var revisionHtml = renderPlainStructuredText(checklistSplit.revision, {});
+                    if (revisionHtml) checklistParts.push(revisionHtml);
+                  }
+                  var splitChecklistHtml = checklistParts.join("");
+                  if (splitChecklistHtml) {
+                    if (typeof salienceLib.wrapPedagogicSalienceSectionsInHtml === "function") {
+                      splitChecklistHtml = utilityApplyPedagogicSalienceHtml(splitChecklistHtml, "checklist");
+                    }
+                    return splitChecklistHtml;
+                  }
+                }
+              }
+            }
             var structured = renderPlainStructuredText(value, { materialHint: hint });
             return structured || renderCardScopedMarkdown(String(value));
           }
@@ -32576,13 +32633,18 @@
             checklistHtml =
               '<div class="util-checklist-block util-material-role-checklist">' + checklistHtml + "</div>";
           }
-          if (checklistHtml && utilityMaterialHeadingRedundantWithInner(headingLabel, checklistHtml)) {
+          if (
+            checklistHtml &&
+            checklistHtml.indexOf("util-pedagogic-callout") === -1 &&
+            utilityMaterialHeadingRedundantWithInner(headingLabel, checklistHtml)
+          ) {
             checklistHtml = checklistHtml.replace(
               /<h[45][^>]*class="util-card-subheading"[^>]*>[\s\S]*?<\/h[45]>\s*/i,
               ""
             );
           }
           if (!checklistHtml) return "";
+          checklistHtml = utilityApplyPedagogicSalienceHtml(checklistHtml, "checklist");
           var checklistHeading = utilityMaterialHeadingRedundantWithInner(headingLabel, checklistHtml)
             ? ""
             : utilityRenderIconHeading("h4", headingLabel, "checklist", "util-material-heading");
@@ -32817,13 +32879,18 @@
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
             checklistHtml = '<div class="util-checklist-block util-material-role-checklist">' + checklistHtml + "</div>";
           }
-          if (checklistHtml && utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)) {
+          if (
+            checklistHtml &&
+            checklistHtml.indexOf("util-pedagogic-callout") === -1 &&
+            utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)
+          ) {
             checklistHtml = checklistHtml.replace(
               /<h[45][^>]*class="util-card-subheading"[^>]*>[\s\S]*?<\/h[45]>\s*/i,
               ""
             );
           }
           if (checklistHtml) {
+            checklistHtml = utilityApplyPedagogicSalienceHtml(checklistHtml, "checklist");
             var checklistHeading = utilityMaterialHeadingRedundantWithInner("Checklist", checklistHtml)
               ? ""
               : utilityRenderIconHeading("h4", "Checklist", "checklist", "util-material-heading");
@@ -35648,15 +35715,42 @@
     return k === "examples" || k === "example" || k === "worked_example" || /\bworked_examples?\b/.test(k);
   }
 
+  function utilityShouldApplyPedagogicSalience(hint) {
+    var k = String(hint || "").toLowerCase().replace(/[\s-]+/g, "_");
+    return (
+      utilityIsWorkedExampleMaterialHint(hint) ||
+      k === "sample_output" ||
+      k === "checklist" ||
+      k === "checklists" ||
+      k === "evaluation_checklist"
+    );
+  }
+
+  function utilityApplyPedagogicSalienceHtml(html, hint) {
+    if (!utilityShouldApplyPedagogicSalience(hint)) return html;
+    var lib = resolveLdPedagogicSalienceRenderLib();
+    if (!lib || typeof lib.wrapPedagogicSalienceSectionsInHtml !== "function") return html;
+    var out = lib.wrapPedagogicSalienceSectionsInHtml(html);
+    return out.replace(
+      /(<aside class="util-pedagogic-callout util-pedagogic-callout--diagnostic[\s\S]*?<\/aside>)/gi,
+      function (block) {
+        if (block.indexOf("util-diagnostic-list") !== -1) return block;
+        return block
+          .replace(/<ul class="util-checkbox-list"/gi, '<ul class="util-diagnostic-list"')
+          .replace(/<span class="util-checkbox"[^>]*>[\s\S]*?<\/span>/gi, "")
+          .replace(/<ul>/gi, '<ul class="util-diagnostic-list">');
+      }
+    );
+  }
+
   function utilityTagMaterialBlockHtml(html, hint) {
     var body = String(html || "").trim();
     if (!body) return "";
     if (utilityIsWorkedExampleMaterialHint(hint) && body.indexOf("util-worked-example") === -1) {
-      return (
-        '<div class="util-worked-example util-material-role-model util-material-block">' + body + "</div>"
-      );
+      body =
+        '<div class="util-worked-example util-material-role-model util-material-block">' + body + "</div>";
     }
-    return body;
+    return utilityApplyPedagogicSalienceHtml(body, hint);
   }
 
   function utilityWrapExportTableHtml(tableHtml) {
@@ -35942,8 +36036,27 @@
       getUtilityPagePresentationCssV31_9() +
       getUtilityPagePresentationCssV31_10() +
       getUtilityPagePresentationCssV31_11() +
+      getUtilityPagePresentationCssV31_12() +
       getUtilityJourneyCompassPresentationCss()
     );
+  }
+
+  function getUtilityPagePresentationCssV31_12() {
+    return [
+      ".util-pedagogic-callout{margin:14px 0 16px;padding:10px 12px 12px;border-left:3px solid #cbd5e1;border-radius:0 8px 8px 0;background:#f9fafb;color:#334155;font-size:.9rem;line-height:1.5}",
+      ".util-pedagogic-callout__label{margin:0 0 4px;font-size:.68rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#475569}",
+      ".util-pedagogic-callout__cue{margin:0 0 8px;font-size:.8125rem;font-weight:600;color:#64748b}",
+      ".util-pedagogic-callout>:last-child{margin-bottom:0}",
+      ".util-pedagogic-callout--expert-insight{border-left-color:#8b5cf6;background:#faf8ff}",
+      ".util-pedagogic-callout--quality-commentary{border-left-color:#94a3b8;background:#f8fafc}",
+      ".util-pedagogic-callout--diagnostic{border-left-color:#d97706;background:#fffbeb}",
+      ".util-pedagogic-callout--revision{border-left-color:#6366f1;background:#f5f3ff}",
+      ".util-pedagogic-callout--diagnostic ul:not(.util-checkbox-list){margin:8px 0 0;padding-left:1.25rem;list-style:disc}",
+      ".util-diagnostic-list>li{margin:4px 0}",
+      ".util-worked-example .util-pedagogic-callout{margin:12px 0}",
+      ".util-checklist-block+.util-pedagogic-callout{margin-top:12px}",
+      "@media print{.util-pedagogic-callout{background:#fff!important;break-inside:avoid-page}}"
+    ].join("");
   }
 
   function getUtilityJourneyCompassPresentationCss() {

@@ -179,6 +179,8 @@
     workflowRunStepCompleted: {},
     /** Run-mode: strict JSON validation errors per step id (Model Knowledge / Learning Sequence). */
     workflowRunStrictJsonValidation: {},
+    /** Run-mode: Design Page material closure validation errors per step id. */
+    workflowRunPageMaterialsClosureValidation: {},
     workflowDesignResult: null,
     workflowDesignVersions: null,
     workflowSelectedVersion: "refined",
@@ -7857,7 +7859,7 @@
           lines = lines.concat([
             "- Preserve role (Design Page): when upstream activity_materials exist, each learning_activities.content[] row must carry the full materials object (merge every upstream block for that activity_id).",
             "- Copy learner-facing delivery content verbatim into activity.materials.*. Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies.",
-            "- Do not shorten activity.materials.* content. If a hard output limit prevents full preservation, keep the full upstream material body where possible and record the limitation in generation_notes.limitations rather than silently compressing it.",
+            "- Do not shorten activity.materials.* content. Material bodies are hard constraints: do not truncate, summarise, paraphrase, or omit sections of activity.materials.* for any reason including output limits. Do not use generation_notes.limitations to excuse material-body loss.",
             "- Readable page assembly applies to section structure, headings, ordering, and wrapper prose only — not to rewriting activity.materials.* bodies.",
             "- FORBIDDEN inflation-collapse substitutes (activity.materials.* must never look like revision notes):",
             "  • Full exposition → one key-point line (e.g. \"Inflation is a sustained increase in the general price level…\")",
@@ -19437,6 +19439,10 @@
         : "";
     var pageErr =
       sid && state.workflowRunPageValidation ? state.workflowRunPageValidation[sid] : "";
+    var materialsClosureErr =
+      sid && state.workflowRunPageMaterialsClosureValidation
+        ? state.workflowRunPageMaterialsClosureValidation[sid]
+        : "";
     var learnerFramingErr =
       sid && state.workflowRunLearnerPageFramingValidation
         ? state.workflowRunLearnerPageFramingValidation[sid]
@@ -19458,6 +19464,9 @@
     if (pageErr) {
       text = (text ? text + " · " : "") + pageErr;
     }
+    if (materialsClosureErr) {
+      text = (text ? text + " · " : "") + "Materials closure: " + materialsClosureErr;
+    }
     if (learnerFramingErr) {
       text = (text ? text + " · " : "") + learnerFramingErr;
     }
@@ -19469,7 +19478,14 @@
     }
     statusEl.textContent = text;
     statusEl.classList.toggle("hidden", !text);
-    var hasBlockingErr = !!(strictErr || episodePlanErr || pageErr || learnerFramingErr || gamFormatErr);
+    var hasBlockingErr = !!(
+      strictErr ||
+      episodePlanErr ||
+      pageErr ||
+      materialsClosureErr ||
+      learnerFramingErr ||
+      gamFormatErr
+    );
     statusEl.classList.toggle("workflow-run-step-output-status--error", hasBlockingErr);
     statusEl.classList.toggle(
       "workflow-run-step-output-status--warning",
@@ -19600,6 +19616,7 @@
       state.workflowRunStrictJsonValidation = {};
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
+      state.workflowRunPageMaterialsClosureValidation = {};
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamFormatWarnings = {};
     }
@@ -37382,6 +37399,83 @@
     return page;
   }
 
+  function appendPageCompositionMaterialsClosureWarnings(page, validationResult) {
+    if (!page || typeof page !== "object" || !validationResult) return page;
+    if (validationResult.outcome === "pass" || validationResult.outcome === "skip") return page;
+    if (!Array.isArray(validationResult.messages) || !validationResult.messages.length) return page;
+    if (!page.generation_notes || typeof page.generation_notes !== "object") {
+      page.generation_notes = {};
+    }
+    var gn = page.generation_notes;
+    if (!Array.isArray(gn.limitations)) {
+      gn.limitations = gn.limitations != null && String(gn.limitations).trim() ? [String(gn.limitations)] : [];
+    }
+    validationResult.messages.forEach(function (msg) {
+      var line = "[PRISM page materials closure] " + String(msg);
+      if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
+    });
+    return page;
+  }
+
+  function validatePageMaterialsClosureFromLib(page, upstreamActivityMaterials, options) {
+    var mod = resolvePageGamMaterialsPreserveLib();
+    if (!mod || typeof mod.validatePageMaterialsClosure !== "function") {
+      return {
+        validation: "page_materials_closure",
+        outcome: "skip",
+        issues: [],
+        messages: ["validatePageMaterialsClosure module unavailable"]
+      };
+    }
+    return mod.validatePageMaterialsClosure(page, upstreamActivityMaterials, options);
+  }
+
+  function applyPageCompositionMaterialsClosureCaptureState(stepId, materialsValidation) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    state.workflowRunPageMaterialsClosureValidation =
+      state.workflowRunPageMaterialsClosureValidation || {};
+    if (materialsValidation && materialsValidation.outcome === "fail") {
+      var msg = (materialsValidation.messages || []).slice(0, 5).join("; ");
+      if (!msg && Array.isArray(materialsValidation.issues) && materialsValidation.issues.length) {
+        msg = materialsValidation.issues
+          .slice(0, 5)
+          .map(function (issue) {
+            return issue.message || issue.code || "material closure failed";
+          })
+          .join("; ");
+      }
+      state.workflowRunPageMaterialsClosureValidation[sid] =
+        msg || "Design Page material closure validation failed.";
+      if (state.workflowRunStepCompleted[sid]) {
+        delete state.workflowRunStepCompleted[sid];
+      }
+      return;
+    }
+    delete state.workflowRunPageMaterialsClosureValidation[sid];
+  }
+
+  function pageMaterialsClosureBlocksExport(materialsValidation) {
+    return !!(
+      materialsValidation &&
+      materialsValidation.outcome === "fail"
+    );
+  }
+
+  function formatPageMaterialsClosureExportError(materialsValidation) {
+    if (!materialsValidation) return "Design Page material closure validation failed.";
+    var msg = (materialsValidation.messages || []).slice(0, 5).join("; ");
+    if (!msg && Array.isArray(materialsValidation.issues) && materialsValidation.issues.length) {
+      msg = materialsValidation.issues
+        .slice(0, 5)
+        .map(function (issue) {
+          return issue.message || issue.code || "material closure failed";
+        })
+        .join("; ");
+    }
+    return "Material closure failed: " + (msg || "upstream GAM materials not preserved on page.");
+  }
+
   function tryParseWorkflowArtefactJson(raw) {
     var s = utilityNormalizeUtilitiesJsonInput(
       sanitizePrismRunCapturedOutput(String(raw || "").trim())
@@ -37510,7 +37604,7 @@
   function applyPageCompositionValidationForCapturedPage(stepLi, rawCapture) {
     var parsed = tryParseWorkflowArtefactJson(rawCapture);
     if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") {
-      return { validation: null, json: null };
+      return { validation: null, materialsValidation: null, json: null };
     }
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
     var gamUpstream = resolveUpstreamActivityMaterialsFromWorkflowCaptures(upstream);
@@ -37526,11 +37620,23 @@
         console.warn("[PRISM page composition]", validation);
       }
     }
+    var materialsValidation = validatePageMaterialsClosureFromLib(parsed, gamUpstream, {
+      upstreamLearningActivities: upstream
+    });
+    validation.materialsValidation = materialsValidation;
+    if (materialsValidation.outcome === "fail") {
+      appendPageCompositionMaterialsClosureWarnings(parsed, materialsValidation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page materials closure]", materialsValidation);
+      }
+    }
+    var stepId = stepLi ? String(stepLi.getAttribute("data-step-id") || "").trim() : "";
+    applyPageCompositionMaterialsClosureCaptureState(stepId, materialsValidation);
     var json = null;
     try {
       json = JSON.stringify(parsed, null, 2);
     } catch (_) {}
-    return { validation: validation, json: json };
+    return { validation: validation, materialsValidation: materialsValidation, json: json };
   }
 
   function applyPageCompositionValidationForUtilitiesPage(parsed, options) {
@@ -37560,6 +37666,16 @@
       appendPageCompositionClosureWarnings(parsed, validation);
       if (typeof console !== "undefined" && console.warn) {
         console.warn("[PRISM page composition]", validation);
+      }
+    }
+    var materialsValidation = validatePageMaterialsClosureFromLib(parsed, gamUpstream, {
+      upstreamLearningActivities: upstream
+    });
+    validation.materialsValidation = materialsValidation;
+    if (materialsValidation.outcome === "fail") {
+      appendPageCompositionMaterialsClosureWarnings(parsed, materialsValidation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page materials closure]", materialsValidation);
       }
     }
     return validation;
@@ -38848,7 +38964,17 @@
       return { error: 'Include top-level "artifact_type": "page".' };
     }
     if (opts.applyCompositionValidation !== false) {
-      applyPageCompositionValidationForUtilitiesPage(parsed, opts.compositionOptions || {});
+      var compositionValidation = applyPageCompositionValidationForUtilitiesPage(
+        parsed,
+        opts.compositionOptions || {}
+      );
+      if (pageMaterialsClosureBlocksExport(compositionValidation && compositionValidation.materialsValidation)) {
+        return {
+          error: formatPageMaterialsClosureExportError(
+            compositionValidation && compositionValidation.materialsValidation
+          )
+        };
+      }
     }
     var plan = opts.renderPlan || buildDefaultUtilityPageRenderPlan(opts.sectionOrder);
     var rendered = runUtilityRendererByPlan(plan, parsed, opts.baseName || "", {
@@ -38891,7 +39017,21 @@
     var artefactType = String(parsed.artifact_type || "").toLowerCase();
     if (artefactType === "page") {
       if (options.applyCompositionValidation !== false) {
-        applyPageCompositionValidationForUtilitiesPage(parsed, options.compositionOptions || {});
+        var compositionValidation = applyPageCompositionValidationForUtilitiesPage(
+          parsed,
+          options.compositionOptions || {}
+        );
+        if (
+          pageMaterialsClosureBlocksExport(
+            compositionValidation && compositionValidation.materialsValidation
+          )
+        ) {
+          return {
+            error: formatPageMaterialsClosureExportError(
+              compositionValidation && compositionValidation.materialsValidation
+            )
+          };
+        }
       }
       var pageRendered = runUtilityPageExportPipeline(parsed, {
         renderPlan: options.renderPlan,
@@ -38951,6 +39091,19 @@
           els.utilitiesJsonInput.value = JSON.stringify(parsed, null, 2);
         }
       } catch (_) {}
+      if (
+        pageMaterialsClosureBlocksExport(
+          pageClosureValidation && pageClosureValidation.materialsValidation
+        )
+      ) {
+        showToast(
+          formatPageMaterialsClosureExportError(
+            pageClosureValidation && pageClosureValidation.materialsValidation
+          ),
+          "error"
+        );
+        return;
+      }
     }
     var presentationMode = String(
       (els.utilitiesPresentationMode && els.utilitiesPresentationMode.value) ||
@@ -39855,6 +40008,7 @@
       state.workflowRunPopulationContractValidation = {};
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
+      state.workflowRunPageMaterialsClosureValidation = {};
       state.workflowRunLearnerPageFramingValidation = {};
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamFormatWarnings = {};
@@ -39986,7 +40140,10 @@
         raw && typeof raw === "object" ? Object.assign({}, raw) : {};
     };
     prismTestApi.validatePageActivityClosure = validatePageActivityClosure;
+    prismTestApi.validatePageMaterialsClosureFromLib = validatePageMaterialsClosureFromLib;
     prismTestApi.appendPageCompositionClosureWarnings = appendPageCompositionClosureWarnings;
+    prismTestApi.appendPageCompositionMaterialsClosureWarnings =
+      appendPageCompositionMaterialsClosureWarnings;
     prismTestApi.collectComposedActivityIdsFromPage = collectComposedActivityIdsFromPage;
     prismTestApi.collectActivityIdsFromLearningActivitiesValue =
       collectActivityIdsFromLearningActivitiesValue;

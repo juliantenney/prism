@@ -153,14 +153,14 @@ test("closure validator: silent omission appends generation_notes warnings", () 
   );
 });
 
-test("applyPageCompositionValidationForUtilitiesPage: silent omission mutates generation_notes only", () => {
+test("applyPageCompositionValidationForUtilitiesPage: upstream-aware compose restores omitted activity rows", () => {
   const page = JSON.parse(fs.readFileSync(missingA2FixturePath, "utf8"));
-  const beforeIds = api.collectComposedActivityIdsFromPage(page);
   const validation = api.applyPageCompositionValidationForUtilitiesPage(page, {
     upstreamLearningActivities: upstreamLa
   });
-  assert.equal(validation.outcome, "fail");
-  assert.deepEqual(api.collectComposedActivityIdsFromPage(page), beforeIds);
+  assert.equal(validation.outcome, "pass");
+  assert.ok(api.collectComposedActivityIdsFromPage(page).includes("a2"));
+  assert.ok(validation.materialsValidation);
 });
 
 test("strict render: sequence omission does not fabricate A2 in HTML", () => {

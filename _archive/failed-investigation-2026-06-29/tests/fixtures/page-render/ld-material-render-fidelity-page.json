@@ -1,0 +1,85 @@
+{
+  "artifact_type": "page",
+  "title": "LD material render fidelity fixture",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "RF-A1",
+          "title": "Mxx-keyed materials fidelity",
+          "duration_minutes": 30,
+          "learner_task": "Work through every material in order.",
+          "materials_order": ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"],
+          "materials": {
+            "M1": {
+              "material_id": "M1",
+              "type": "text",
+              "content": "RF-M1-LONGFORM: inflation measurement distinguishes CPI basket scope from GDP deflator coverage.\n\n| Lens | Household A | Household B |\n|------|-------------|-------------|\n| Distribution | fixed income | variable income |\n| Adaptation | limited | flexible |"
+            },
+            "M2": {
+              "material_id": "M2",
+              "type": "worked_example",
+              "content": "RF-M2-WORKED: Stepwise CPI contrast.\n\n1. Define the baskets for CPI and GDP deflator.\n2. Compare scope: consumer goods versus all domestic output.\n3. Conclude why fixed baskets change interpretation."
+            },
+            "M3": {
+              "material_id": "M3",
+              "type": "checklist",
+              "content": "RF-M3-CHECKLIST heading\n\n- [ ] RF-M3-check-alpha: I compared basket composition.\n- [ ] RF-M3-check-beta: I explained scope differences."
+            },
+            "M4": {
+              "material_id": "M4",
+              "type": "prompt_set",
+              "content": "RF-M4-PROMPT-SET lead-in\n\n- RF-M4-prompt-one: How does basket rigidity affect CPI?\n- RF-M4-prompt-two: When is GDP deflator more informative?"
+            },
+            "M5": {
+              "material_id": "M5",
+              "type": "template",
+              "content": "RF-M5-TEMPLATE: Independent judgement memo scaffold.\n\n**To:** [Recipient]\n**From:** [Your Name]\nWrite your recommendation using explicit criteria."
+            },
+            "M6": {
+              "material_id": "M6",
+              "type": "scenario",
+              "content": "RF-M6-SCENARIO: Maya household faces 5% inflation with fixed monthly income and rising utility costs."
+            },
+            "M7": {
+              "material_id": "M7",
+              "type": "consolidation_summary",
+              "content": "RF-M7-CONSOLIDATION: Key ideas include measurement choice, household vulnerability, and criteria-led evaluation."
+            },
+            "M8": {
+              "material_id": "M8",
+              "type": "experimental_unknown_type",
+              "content": "RF-M8-UNKNOWN-FALLBACK: unsupported type must still render this sentence verbatim."
+            }
+          }
+        },
+        {
+          "activity_id": "RF-A2",
+          "title": "Array materials fidelity",
+          "duration_minutes": 20,
+          "learner_task": "Complete both text materials and the checklist.",
+          "materials": [
+            {
+              "material_id": "M9",
+              "type": "text",
+              "content": "RF-M9-ARRAY-TEXT-ONE: first long-form exposition block must survive normalization."
+            },
+            {
+              "material_id": "M10",
+              "type": "text",
+              "content": "RF-M10-ARRAY-TEXT-TWO: second long-form exposition block must not be dropped by type bucketing."
+            },
+            {
+              "material_id": "M11",
+              "type": "checklist",
+              "content": "- [ ] RF-M11-array-check: I verified both exposition blocks appear in the export."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

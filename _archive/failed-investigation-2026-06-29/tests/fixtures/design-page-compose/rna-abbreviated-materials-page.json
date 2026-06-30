@@ -1,0 +1,47 @@
+{
+  "artifact_type": "page",
+  "title": "RNA viruses — abbreviated materials defect fixture",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Complete activity",
+          "learner_task": "Study all materials.",
+          "materials": {
+            "M1": {
+              "material_id": "M1",
+              "type": "text",
+              "content": "## RNA virus overview\n\nRNA viruses carry ribonucleic acid genomes. Positive-sense genomes function directly as mRNA, while negative-sense genomes require transcription before translation. Hepatitis C virus is a positive-sense flavivirus with a single open reading frame translated into a polyprotein that is cleaved into structural and non-structural proteins."
+            }
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "Abbreviated materials activity",
+          "learner_task": "Complete the table and checklist.",
+          "materials": {
+            "M4": {
+              "material_id": "M4",
+              "type": "text",
+              "content": "### Key RNA Genome Types\n\nRNA viruses differ fundamentally in how their genomes relate to protein production..."
+            },
+            "M6": {
+              "material_id": "M6",
+              "type": "checklist",
+              "content": "Use this to evaluate your table: ..."
+            },
+            "M7": {
+              "material_id": "M7",
+              "type": "worked_example",
+              "content": "### Worked Example: Applying the Replication Cycle..."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

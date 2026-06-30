@@ -1,0 +1,16 @@
+{
+  "episode_plans": [
+    {
+      "activity_id": "LO1",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          { "function": "explanation" },
+          { "function": "worked_thinking" },
+          { "function": "guided_practice" },
+          { "function": "verification" }
+        ]
+      }
+    }
+  ]
+}

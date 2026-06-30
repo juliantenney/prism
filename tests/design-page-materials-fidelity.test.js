@@ -285,7 +285,8 @@ test("38S Phase 2C-a: Design Page pack forbids materials shortening and inflatio
   assert.match(factory.promptTemplate, /Readable page assembly applies to section structure/i);
   assert.match(factory.promptTemplate, /copy learner-facing delivery content verbatim into activity\.materials\.\*/i);
   assert.match(factory.promptTemplate, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
-  assert.match(factory.promptTemplate, /generation_notes\.limitations rather than silently compressing/i);
+  assert.match(factory.promptTemplate, /Material bodies are hard constraints/i);
+  assert.match(factory.promptTemplate, /Do not use generation_notes\.limitations to excuse material-body loss/i);
   assert.match(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
   assert.match(factory.promptTemplate, /Inflation is a sustained increase/i);
   assert.match(factory.promptTemplate, /Year 1 basket = £100; Year 2 basket = £105/i);
@@ -302,7 +303,8 @@ test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbi
   assert.match(augmented, /FORBIDDEN inflation-collapse substitutes/i);
   assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(augmented, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
-  assert.match(augmented, /generation_notes\.limitations rather than silently compressing/i);
+  assert.match(augmented, /Material bodies are hard constraints/i);
+  assert.match(augmented, /Do not use generation_notes\.limitations to excuse material-body loss/i);
 });
 
 test("Design Page learner page_profile does not bias materials summarisation", () => {

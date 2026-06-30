@@ -522,7 +522,7 @@ A structured readable composite artefact assembled from existing learning design
 - Must treat explicitly requested component types, quantities, and exclusions as hard constraints
 - Must preserve requested counts for learner-facing components (for example MCQs, tasks, reflection prompts) unless impossible
 - Sections must use meaningful headings/titles derived from intent/content; generic placeholders like "Section 1" are fallback-only when no better heading is available
-- If explicit hard constraints cannot be met from available upstream artefacts, must record the gap in `generation_notes.limitations` instead of silently reducing scope
+- If explicit hard constraints cannot be met from available upstream artefacts, must record the gap in `generation_notes.limitations` instead of silently reducing scope — **except** material-body truncation: `activity.materials.*` bodies must never be shortened; limitations must not excuse missing or truncated material bodies
 - When upstream `learning_activities` is provided, every upstream `activity_id` must appear in `sections[]` learning_activities content unless traceably omitted in `generation_notes.activities_omitted[]`
 - `learning_sequence` controls order and timing only; it must not reduce activity membership below upstream `learning_activities`
 - `activity_materials` enrich activities only; they must not define which activities exist on the page

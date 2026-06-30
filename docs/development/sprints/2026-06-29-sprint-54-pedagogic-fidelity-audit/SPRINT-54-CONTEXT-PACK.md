@@ -2,7 +2,7 @@
 
 **Sprint:** 54 — Pedagogic Fidelity Audit  
 **Pack date:** 2026-06-29  
-**Status:** Open — audit execution not started  
+**Status:** Closed — see [SPRINT-54-CLOSURE-REPORT.md](./SPRINT-54-CLOSURE-REPORT.md)  
 **Predecessor:** [Sprint 53 closure](../2026-06-29-sprint-53-learner-page-output-fixes/SPRINT-53-CLOSURE-REPORT.md)  
 **Companion docs:** [CHARTER](SPRINT-54-CHARTER.md) · [DECISION-LOG](SPRINT-54-DECISION-LOG.md) · [Audit matrix](../2026-06-29-sprint-53-learner-page-output-fixes/SPRINT-53-PEDAGOGIC-FIDELITY-AUDIT-MATRIX.md)
 

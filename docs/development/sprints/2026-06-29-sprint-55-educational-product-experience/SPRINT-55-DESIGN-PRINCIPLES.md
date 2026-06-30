@@ -45,6 +45,33 @@ Product experience improvements **must not** weaken:
 
 Enhance **how** the architecture reads — do not replace **what** it teaches.
 
+### 7. Behave like a document product, not an LMS
+
+Sprint 55 improves the learner experience of **exported resources**.
+
+It does **not** change the underlying product model.
+
+**Enhance:**
+
+* navigation  
+* orientation  
+* progress visibility  
+* revision support  
+* affordances  
+
+**Do not introduce:**
+
+* learner accounts  
+* analytics  
+* grading systems  
+* submission systems  
+* server-side learner state  
+* LMS-style platform features  
+
+PRISM exports learning resources.
+
+Sprint 55 improves **how those resources are experienced**.
+
 ---
 
 ## Anti-patterns

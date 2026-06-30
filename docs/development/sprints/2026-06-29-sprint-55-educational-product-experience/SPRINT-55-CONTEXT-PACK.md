@@ -45,6 +45,84 @@ Transform PRISM’s exported learner page from a **well-designed educational doc
 
 ---
 
+## Current Product Hypothesis
+
+Sprint 54 established that PRISM can generate and preserve high-quality instructional experiences.
+
+Sprint 55 operates on the hypothesis that the largest remaining gains will come from **product-layer improvements** rather than pedagogic, workflow, or rendering changes.
+
+Specifically:
+
+* The instructional architecture is **stronger** than the current learner experience layer makes visible.  
+* Learners **can already learn successfully** from PRISM resources.  
+* The next opportunity is to make the learning journey, actions, progress, and revision pathways **easier to perceive and use**.
+
+Therefore Sprint 55 focuses on:
+
+* Orientation  
+* Navigation  
+* Progress visibility  
+* Affordances  
+* Cognitive accessibility  
+
+rather than instructional redesign.
+
+---
+
+## Sprint Theme: Document → Product
+
+Sprint 55 is the transition from:
+
+**Educational Document**
+
+to
+
+**Educational Product**
+
+The objective is **not** to improve pedagogy.
+
+The objective is to make existing pedagogy easier to:
+
+* perceive  
+* navigate  
+* revisit  
+* complete  
+* use efficiently  
+
+The educational architecture is considered **proven**.
+
+The learner experience layer is now the **primary focus**.
+
+---
+
+## North Star User Story
+
+As a learner opening a PRISM resource for the first time,
+
+I can immediately see:
+
+* where I am  
+* where I am going  
+* what I should do next  
+* how much remains  
+
+without needing to infer structure from the document.
+
+When I return later,
+
+I can quickly:
+
+* re-orient myself  
+* resume work  
+* revisit previous activities  
+* revise key learning points  
+
+with minimal effort.
+
+This user story acts as the **primary learner-centred evaluation lens** for Sprint 55.
+
+---
+
 # A. Sprint brief
 
 ## Primary goal

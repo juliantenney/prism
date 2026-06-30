@@ -44,6 +44,11 @@ function loadPrismTestApi() {
   windowStub.PRISM_EPISODE_PLAN_DLA_INTEGRATION = integration;
   windowStub.PRISM_EPISODE_PLAN_V1_VALIDATION = validation;
   windowStub.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT = strictJson;
+  vm.runInContext(
+    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
+    sandbox,
+    { filename: "ld-design-page-compose-contract.js" }
+  );
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -516,6 +521,62 @@ test("buildWorkflowStepInstructions chains episode_plans capture into DLA copy t
   assert.match(instr, /Upstream episode_plans/i);
   assert.doesNotMatch(instr, /PF-11: missing episode_plans upstream/i);
   assert.doesNotMatch(instr, /PF-11: upstream `episode_plans` capture is missing/i);
+});
+
+test("ensureEpisodePlanInputBindingsForSteps binds episode_plans into Design Page step", () => {
+  const plans = {
+    episode_plans: [
+      {
+        activity_id: "A1",
+        episode_plan: {
+          archetype: "analyse",
+          beats: [
+            { function: "explanation" },
+            { function: "worked_thinking" },
+            { function: "verification" }
+          ]
+        }
+      }
+    ]
+  };
+  const wf = {
+    id: "wf-chain-page",
+    steps: [
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "page_step",
+        title: "Design Page",
+        outputName: "page",
+        canonical_step_id: "step_design_page",
+        override_prompt_body: "Assemble the learner page from upstream artefacts.",
+        prompt_source_type: "local_override"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-chain-page");
+  api.setWorkflowRunCapturedOutputsForTest({
+    ep_step: JSON.stringify(plans, null, 2)
+  });
+
+  const bindings = api.ensureEpisodePlanInputBindingsForSteps(wf.steps);
+  const pageBindings = bindings.find((s) => s.id === "page_step").inputBindings || [];
+  assert.ok(
+    pageBindings.some(
+      (b) => b.kind === "internal" && b.sourceStepId === "ep_step" && b.artifactName === "episode_plans"
+    ),
+    "Design Page step must bind episode_plans from Design Episode Plan"
+  );
+
+  const instr = api.buildWorkflowStepInstructions(wf.steps[1], 1, null);
+  assert.match(instr, /Upstream artefact "episode_plans"/);
+  assert.match(instr, /"archetype":\s*"analyse"/);
+  assert.match(instr, /EPISODE PLANS \(portable page schema/i);
 });
 
 test("legacy workflow without Episode Plan step may use non-canonical LO fallback", () => {

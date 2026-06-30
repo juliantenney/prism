@@ -504,7 +504,12 @@ A structured readable composite artefact assembled from existing learning design
     - learning_activities
     - assessment_check
     - support_notes
-- source_artefacts (optional)
+- episode_plans[] (required when upstream episode_plans were provided; portable instructional choreography):
+  - activity_id (aligned to learning_activities.content[] row)
+  - optional mapped_learning_outcome_ids
+  - episode_plan: { archetype, beats: [{ function }] }
+- learning_activities.content[] rows may also carry per-activity episode_plan (and optional episode_plan_source_activity_id when mapped from a different upstream plan id)
+- source_artefacts (optional; must include episode_plans when upstream episode_plans were consumed)
 - constraints_applied (optional)
 - generation_notes (optional):
   - limitations[] (required when any explicit hard requirement cannot be fully satisfied or when any activity is omitted)
@@ -512,6 +517,8 @@ A structured readable composite artefact assembled from existing learning design
 
 ### Requirements
 - Must be assembled from `learning_outcomes`, `learning_activities`, and `activity_materials`
+- When upstream `episode_plans` are provided, must carry portable instructional choreography on the page itself: top-level `episode_plans[]` plus per-activity `episode_plan` on each composed activity row, with `activity_id` alignment and verbatim beat order (no replanning)
+- Must list `episode_plans` in `source_artefacts` when upstream episode plans were consumed
 - May incorporate `learning_sequence`, `assessment_items`, `feedback_pack`, `marking_rubric`, and `assessment_blueprint` when present
 - Must remain grounded in provided upstream artefacts only
 - Must not invent unsupported pedagogy, activities, resources, questions, or feedback
@@ -552,7 +559,7 @@ A structured readable composite artefact assembled from existing learning design
         "assessment_check": "Formative Assessment Check",
         "support_notes": "Support Notes"
       },
-      "omitIfMissing": ["assessment_check", "support_notes", "source_artefacts", "constraints_applied", "generation_notes"],
+      "omitIfMissing": ["assessment_check", "support_notes", "episode_plans", "source_artefacts", "constraints_applied", "generation_notes"],
       "grouping": "document_sections",
       "itemKeyMap": {}
     }

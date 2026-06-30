@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -79,6 +80,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -129,7 +131,8 @@ function activityArticleScope(html, headingText) {
 
 /** Shared HTML shape semantics (domain-agnostic). */
 function assertNoParagraphListNesting(html) {
-  const chunks = String(html || "").split(/<\/p>/i);
+  const block = markupBodyHtml(html);
+  const chunks = block.split(/<\/p>(?![a-z])/i);
   for (const chunk of chunks) {
     if (!/<p\b/i.test(chunk)) continue;
     const insideP = chunk.replace(/^[\s\S]*?<p[^>]*>/i, "");
@@ -140,7 +143,7 @@ function assertNoParagraphListNesting(html) {
     );
   }
   assert.equal(
-    /<ul\b[\s\S]*?<\/ul>\s*<\/p>/i.test(html),
+    /<ul\b[\s\S]*?<\/ul>\s*<\/p>/i.test(block),
     false,
     "expected no </ul> immediately before </p>"
   );
@@ -148,6 +151,7 @@ function assertNoParagraphListNesting(html) {
 
 function assertNoOrphanListItems(html) {
   let stripped = String(html || "");
+  stripped = stripped.replace(/<ul class="util-checklist"[^>]*>[\s\S]*?<\/ul>/gi, "");
   stripped = stripped.replace(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/gi, "");
   stripped = stripped.replace(/<ul[^>]*>[\s\S]*?<\/ul>/gi, "");
   stripped = stripped.replace(/<ol[^>]*>[\s\S]*?<\/ol>/gi, "");
@@ -155,23 +159,24 @@ function assertNoOrphanListItems(html) {
 }
 
 function assertAdjacentCompatibleUlMerged(html) {
-  const plainOnly = String(html || "").replace(
-    /<ul\b[^>]*\butil-checkbox-list\b[^>]*>[\s\S]*?<\/ul>/gi,
-    ""
-  );
+  const plainOnly = String(html || "")
+    .replace(/<ul\b[^>]*\butil-checklist\b[^>]*>[\s\S]*?<\/ul>/gi, "")
+    .replace(/<ul\b[^>]*\butil-checkbox-list\b[^>]*>[\s\S]*?<\/ul>/gi, "");
   assert.equal(
     /<\/ul>\s*<ul\b/i.test(plainOnly),
     false,
-    "expected adjacent plain <ul> blocks merged (checkbox boundaries may remain)"
+    "expected adjacent plain <ul> blocks merged (checklist boundaries may remain)"
   );
 }
 
-function assertCheckboxListsPreserved(html) {
-  const blocks = html.match(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/gi) || [];
+function assertPlainChecklistsPreserved(html) {
+  const blocks = html.match(/<ul class="util-checklist"[^>]*>[\s\S]*?<\/ul>/gi) || [];
+  assert.ok(blocks.length > 0, "expected at least one util-checklist block");
   for (const block of blocks) {
-    assert.match(block, /util-checkbox/);
-    assert.equal(/<p>\s*<ul/i.test(block), false, "checkbox list must not be inside <p>");
-    assert.equal(/<ul\b/i.test(block.replace(/^<ul[^>]*>/i, "")), false, "no nested <ul> in checkbox list");
+    assert.doesNotMatch(block, /util-checkbox/);
+    assert.doesNotMatch(block, /☐/);
+    assert.equal(/<p>\s*<ul/i.test(block), false, "checklist must not be inside <p>");
+    assert.equal(/<ul\b/i.test(block.replace(/^<ul[^>]*>/i, "")), false, "no nested <ul> in checklist");
   }
 }
 
@@ -235,7 +240,7 @@ function assertSanitizedPageSemantics(html, opts) {
   assertNoParagraphListNesting(html);
   assertNoOrphanListItems(html);
   assertAdjacentCompatibleUlMerged(html);
-  if (opts.expectCheckbox) assertCheckboxListsPreserved(html);
+  if (opts.expectCheckbox) assertPlainChecklistsPreserved(html);
   if (opts.expectTable) assertTablesPreserved(html);
   if (opts.expectMcq) assertMcqOptionsNotCheckboxLists(html);
 }
@@ -278,12 +283,12 @@ test("page shape: prose + bullets + prose → p, ul, p without list nesting", ()
   assertSanitizedPageSemantics(html);
 });
 
-test("page shape: checkbox list → util-checkbox-list preserved", () => {
+test("page shape: checkbox list → util-checklist preserved", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-checkbox-list.json");
-  assert.match(html, /util-checkbox-list/);
-  assert.match(html, /☐/);
-  assertCheckboxListsPreserved(html);
+  assert.match(html, /util-checklist/);
+  assert.doesNotMatch(markupBodyHtml(html), /☐|<span class="util-checkbox"/);
+  assertPlainChecklistsPreserved(html);
   assertSanitizedPageSemantics(html, { expectCheckbox: true });
 });
 
@@ -428,16 +433,16 @@ test("v1.1.1: pedagogic figure accommodation after activity header", () => {
   );
 });
 
-test("page shape: plain bullets then checkbox list → separate list kinds preserved", () => {
+test("page shape: plain bullets then checklist → separate list kinds preserved", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-bullets-then-checkbox.json");
   const scope = sectionScope(html, "Section A");
   assert.match(scope, /Plain bullet one/);
   assert.match(scope, /Checkbox task one/);
-  assert.match(html, /util-checkbox-list/);
-  const plainUlOpens = scope.match(/<ul(?![^>]*util-checkbox-list)[^>]*>/gi) || [];
+  assert.match(html, /util-checklist/);
+  const plainUlOpens = scope.match(/<ul(?![^>]*util-checklist)[^>]*>/gi) || [];
   assert.ok(plainUlOpens.length >= 1, "expected at least one plain <ul>");
-  assertCheckboxListsPreserved(html);
+  assertPlainChecklistsPreserved(html);
   assertAdjacentCompatibleUlMerged(html);
   assertNoOrphanListItems(html);
 });
@@ -486,7 +491,7 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(body, /util-material-role-checkpoint/);
 
   const a2 = activityArticleScope(html, "Confidence interval template");
-  assert.match(a2, /util-template-icon|util-material-role-practice/);
+  assert.match(a2, /util-template-icon|util-lucide-icon/);
   assert.match(a2, /Confidence Interval Template/);
   assert.match(a2, /Confidence Levels/);
   assert.match(a2, /Method captures mean 95% of time/);

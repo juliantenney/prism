@@ -39,6 +39,22 @@ Unless explicitly required by user rescope:
 
 ---
 
+## P1 Definition of Done
+
+A first-time learner can:
+
+* See the overall learning journey  
+* Identify their current position  
+* Navigate directly to major sections  
+* Understand the next required action  
+* Understand expected outputs  
+
+…without needing to scroll-search or infer structure from prose.
+
+This definition acts as the **evaluation lens** for all P1 implementation decisions.
+
+---
+
 ## Success criteria
 
 | # | Criterion | Measure |

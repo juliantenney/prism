@@ -14,6 +14,21 @@
 | P1-03 | **Progress visibility** | Resource % or step N of M **plus** activity compass alignment | Learner states position without scrolling search |
 | P1-04 | **Output affordances** | Print stylesheet; explicit next-step cue; optional “mark complete” local state (no LMS) | Print hides nav chrome appropriately; next action visible at activity end |
 
+### P1-04 — Output affordances
+
+#### Example affordances
+
+* Writing task → answer lines  
+* Reflection task → reflection box  
+* Comparison task → comparison table  
+* Checklist task → tickable checklist  
+* Revision task → revision marker  
+* Output task → clearly separated response area  
+
+**Purpose:** The page should visually embody the action expected of the learner.
+
+Affordances should reduce interpretation effort **without changing pedagogy**.
+
 ---
 
 ## P2 — Should ship (one slice minimum for closure)
@@ -56,6 +71,22 @@ P1-03 Progress (extends existing compass)
   → P1-04 Output affordances
   → P2 (pick one based on fresh-run audit)
 ```
+
+## Recommended First Slice
+
+### P1-03 Progress Visibility
+
+**Reason:**
+
+* Extends the existing activity compass rather than creating a new system  
+* Lowest architectural risk  
+* Creates foundations for Learning Journey Navigator  
+* Directly addresses orientation findings from Sprint 54  
+* Provides visible learner value quickly  
+
+**Acceptance focus:**
+
+A learner should be able to identify their position within the resource and activity sequence without scroll-searching.
 
 ---
 

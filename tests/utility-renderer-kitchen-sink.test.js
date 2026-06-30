@@ -8,6 +8,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -80,6 +81,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -120,7 +122,7 @@ test("kitchen sink fixture: parses and declares synthetic renderer stress", () =
 test("kitchen sink fixture: renders HTML without error", () => {
   const { html } = renderKitchenSink(api);
   assert.match(html, /PRISM renderer kitchen sink/i);
-  assert.match(html, /<h1>/);
+  assert.match(html, /<header class="util-learning-header">/);
 });
 
 test("kitchen sink fixture: all activity titles present (KS-A1–KS-A6)", () => {
@@ -139,7 +141,7 @@ test("kitchen sink fixture: core material patterns present", () => {
   assert.match(html, /util-task-card/);
   assert.match(html, /util-scenario-card/);
   assert.match(html, /util-prompt-set/);
-  assert.match(html, /util-checkbox-list/);
+  assert.match(html, /util-checklist/);
   assert.match(html, /util-template-block/);
   assert.match(html, /<table>/);
   assert.match(html, /util-output-block/);
@@ -359,11 +361,12 @@ test("slice 31-4: kitchen sink preserves comparison prompt wording and table str
 test("kitchen sink stabilisation: checklist string and array avoid heading-only checkbox rows", () => {
   const { html } = renderKitchenSink(api);
   const edge = sectionScope(html, "Renderer stabilisation edge cases");
-  const lists = edge.match(/<ul class="util-checkbox-list"[^>]*>[\s\S]*?<\/ul>/gi) || [];
+  const lists = edge.match(/<ul class="util-checklist"[^>]*>[\s\S]*?<\/ul>/gi) || [];
   assert.ok(lists.length >= 1);
   lists.forEach((listHtml) => {
     assert.doesNotMatch(listHtml, /##\s*Checklist/i);
     assert.doesNotMatch(listHtml, />Checklist</i);
+    assert.doesNotMatch(listHtml, /☐/);
   });
   assert.match(edge, /Complete plain-string table/i);
 });

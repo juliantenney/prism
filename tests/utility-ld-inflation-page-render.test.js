@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -89,6 +90,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -232,8 +234,9 @@ test("inflation workshop: Study Tips heading wins over assessment section_id", (
   const r = api.buildUtilityStructuredHtmlForTest(parsed);
   assert.ok(r && !r.error, r && r.error);
   const html = String(r.html || "");
-  assert.match(html, /util-section-icon--study-tips[\s\S]{0,160}<span>Study Tips<\/span>/);
-  assert.match(html, /fa-graduation-cap/);
+  assert.match(html, /util-section-icon--study-tips[\s\S]*?<span>Study Tips<\/span>/);
+  assert.match(html, /util-lucide-icon/);
+  assert.doesNotMatch(html, /fa-graduation-cap/);
   assert.doesNotMatch(html, /<span>Study Tips<\/span>[\s\S]{0,120}util-section-icon--assessment/);
 });
 
@@ -300,7 +303,9 @@ test("inflation workshop (full): A2 table, prompt set, and checklist", () => {
   assert.match(a2, /<table>[\s\S]*CPI/i);
   assert.match(a2, /util-prompt-set/);
   assert.match(a2, /student newspaper/i);
-  assert.match(a2, /util-checkbox-list|☐/);
+  assert.match(a2, /util-checklist-block/);
+  assert.match(a2, /<ul class="util-checklist">/);
+  assert.doesNotMatch(a2, /util-checkbox-list|☐|<span class="util-checkbox"/);
 });
 
 test("inflation workshop (full): A3 four scenario cards; A4 three scenario cards", () => {
@@ -335,17 +340,20 @@ test("inflation workshop (full): learning purpose list and collapsed metadata", 
   assert.match(html, /Production Metadata/);
   assert.match(html, /<details class="util-meta"/);
   assert.match(html, /util-meta-summary/);
-  assert.match(html, /fa-gears/);
+  assert.match(html, /util-lucide-icon/);
+  assert.doesNotMatch(html, /fa-gears/);
 });
 
 test("inflation workshop (full): semantic material icons in HTML", () => {
   const html = renderPageFixture(api, fullFixturePath);
   const activitiesScope = sectionAfterHeading(html, "Learning activities");
-  assert.match(html, /fa-puzzle-piece/);
-  assert.match(activitiesScope, /fa-layer-group/);
-  assert.match(activitiesScope, /fa-map-location-dot/);
+  assert.match(html, /util-section-icon--learning-activities/);
+  assert.doesNotMatch(html, /fa-puzzle-piece/);
+  assert.match(activitiesScope, /util-lucide-icon/);
+  assert.doesNotMatch(activitiesScope, /fa-layer-group/);
+  assert.doesNotMatch(activitiesScope, /fa-map-location-dot/);
   assert.match(html, /Measuring Inflation: Indicator Comparison/i);
-  assert.match(activitiesScope, /fa-comments/);
+  assert.doesNotMatch(activitiesScope, /fa-comments/);
   assert.match(activitiesScope, /util-material-icon/);
   assert.match(activitiesScope, /aria-hidden="true"/);
   assert.match(activitiesScope, /util-icon-heading/);

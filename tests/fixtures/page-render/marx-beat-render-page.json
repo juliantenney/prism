@@ -1,0 +1,212 @@
+{
+  "artifact_type": "page",
+  "title": "Was Marx Right? Evaluating Marxist Political Economy",
+  "audience": "Undergraduate political economy students",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "This self‑study page guides you through a structured examination of Karl Marx’s political economy. Rather than asking whether Marx was simply ‘right’ or ‘wrong’, the session develops your ability to explain his core analytical framework, analyse capitalism’s dynamics, and make justified evaluative judgements about Marx’s historical accuracy and contemporary relevance. You will move from conceptual foundations, through worked and guided analysis, to independent judgement and transfer."
+    },
+    {
+      "section_id": "learning_purpose_outcomes",
+      "heading": "Learning Purpose and Outcomes",
+      "content": "By the end of this 60‑minute self‑directed session, you will be able to:\n- Explain how historical materialism is used to analyse capitalism.\n- Describe how surplus value and exploitation are generated in capitalist production.\n- Analyse how capital accumulation contributes to concentration and crisis.\n- Evaluate Marx’s claims by comparing them with historical developments.\n- Assess the contemporary relevance of Marx’s political economy using explicit criteria."
+    },
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Historical Materialism and Capitalism",
+          "duration_minutes": 10,
+          "grouping": "individual",
+          "learner_task": "1. Read the explanatory text on historical materialism.\n2. Study the worked example carefully, noting each reasoning step.\n3. Compare the sample output to the worked example and identify how the method is applied.\n4. Write a brief explanation (100–120 words) of how historical materialism analyses capitalism.\n5. Use the checklist to verify your explanation and revise if needed.",
+          "expected_output": "A short written explanation applying historical materialism to capitalism, revised using the checklist.",
+          "support_note": "Avoid treating historical materialism as a claim that economics alone mechanically determines politics and culture.",
+          "materials": {
+            "text": "### Historical Materialism as a Method\n\nHistorical materialism is Marx’s way of analysing societies by starting from how people produce their material means of life. Rather than treating ideas, politics, or culture as independent forces, Marx argues that these are shaped by underlying economic structures and social relations. This does **not** mean that economics mechanically determines everything else. Instead, it means that material conditions set limits and pressures within which politics, law, and culture develop.\n\nApplied to capitalism, historical materialism asks questions such as: Who owns the means of production? Who must sell their labour to survive? How do these relationships shape political power, institutions, and social conflict? Capitalism is therefore understood as a **historically specific system**, not a natural or timeless one. It emerged under particular conditions and may change or be replaced under others.\n\nA key implication is that capitalism should be analysed dynamically. Wages, profits, class relations, and state policies are not fixed; they evolve as productive forces, technology, and social struggles change. Historical materialism provides a framework for linking economic organisation to broader patterns of inequality, power, and social change.\n\n**Example:**  \nRather than explaining modern labour law as simply the result of moral progress, a historical materialist analysis would link it to industrialisation, worker organisation, and the need to stabilise capitalist production.",
+            "worked_example": "### Worked Example: Applying Historical Materialism to Capitalism\n\n**Step 1: Identify material conditions**  \nIn industrial capitalism, production is organised in factories using machinery owned by a small group of capitalists. Most people do not own productive assets and must work for wages.\n\n**Step 2: Identify class relations**  \nThese material conditions create two main classes: capitalists (owners of capital) and workers (sellers of labour power). Their interests differ: capitalists seek profit, while workers seek wages and security.\n\n**Step 3: Link to social and political outcomes**  \nBecause capitalists control investment and employment, they have structural power in society. This influences state policies, labour laws, and political priorities. Workers respond through trade unions, political movements, and demands for reform.\n\n**Step 4: Draw an analytical conclusion**  \nCapitalism is not just a market system but a social order shaped by class relations rooted in material production.\n\n**Bridge:**  \nNow apply the same four‑step method to capitalism today. Do not copy the example; use it as a model for structuring your own explanation.",
+            "sample_output": "### Annotated Sample Explanation\n\n> Capitalism can be analysed using historical materialism by starting with how production is organised. Because factories and firms are privately owned, most people must sell their labour for wages. This creates a class relationship between owners and workers, where profit depends on controlling labour. These economic relations influence politics, for example through labour law and welfare policy, which often reflect struggles between these groups.\n\n**Why this works:**  \n- Begins with material conditions  \n- Clearly identifies class relations  \n- Links economy to politics  \n- Avoids claiming economics determines everything automatically\n\nUse this as a quality guide, not as text to copy.",
+            "checklist": "### Self‑Check: Historical Materialism Explanation\n\nUse this checklist to review your explanation.\n\n- Have you clearly identified the material conditions of capitalism (ownership, production, labour)?\n- Have you explained class relations rather than just naming classes?\n- Have you linked economic structures to social or political outcomes?\n- Have you avoided presenting historical materialism as strict economic determinism?\n\n**If any check is not met:**  \nRevise your explanation by adding a missing link or clarifying how economic structures shape (but do not mechanically control) society."
+          },
+          "episode_plan": {
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "worked_thinking"
+              },
+              {
+                "function": "verification"
+              }
+            ]
+          }
+        },
+        {
+          "activity_id": "A2",
+          "title": "Surplus Value and Exploitation",
+          "duration_minutes": 10,
+          "grouping": "individual",
+          "learner_task": "1. Read the explanatory text on surplus value and exploitation.\n2. Study the worked example and note how surplus value is identified.\n3. Complete the analysis table using the production stages provided.\n4. Write a short explanation (80–100 words) describing how surplus value leads to exploitation.\n5. Use the checklist to verify and revise your work.",
+          "expected_output": "A completed analysis table and a short written explanation verified against the checklist.",
+          "support_note": "Do not confuse exploitation with unfair behaviour by individuals; focus on the structural explanation.",
+          "materials": {
+            "text": "### Surplus Value, Profit, and Exploitation\n\nMarx’s labour theory of value claims that the value of goods comes from human labour. Workers sell their **labour power** for a wage, but during the working day they typically produce more value than the value of their wages. The difference between what workers are paid and the value they create is called **surplus value**.\n\nSurplus value is the source of profit in capitalism. Importantly, Marx does not define exploitation as cheating or immoral behaviour by individual employers. Exploitation is **structural**: it arises because workers must sell their labour to survive, while capitalists own the means of production and appropriate surplus value.\n\nThis explains how profit can exist even when wages appear fair or contracts are voluntary. The issue is not exchange in the market, but the organisation of production itself.\n\n**Example:**  \nIf a worker produces goods worth £200 in a day but is paid £100 in wages, the remaining £100 is surplus value captured by the firm.",
+            "worked_example": "### Worked Example: Identifying Surplus Value\n\n**Step 1: Labour input**  \nA worker spends a full day producing commodities.\n\n**Step 2: Wage payment**  \nThe worker is paid a wage sufficient to cover basic living costs.\n\n**Step 3: Value produced**  \nDuring the working day, the worker produces value exceeding the wage paid.\n\n**Step 4: Surplus identified**  \nThe excess value is surplus value, which becomes profit once goods are sold.\n\n**Bridge:**  \nUse this reasoning sequence when completing the analysis table. Focus on the logic, not numbers.",
+            "analysis_table": "| Stage of production | What the worker contributes | What the worker is paid | Where surplus arises |\n| --- | --- | --- | --- |\n| Production process (example) | Labour creates value beyond subsistence needs | Wage covers living costs | Difference between value created and wage |\n| Stage 1 |  |  |  |\n| Stage 2 |  |  |  |",
+            "checklist": "### Self‑Check: Surplus Value and Exploitation\n\n- Have you clearly distinguished wages from value produced?\n- Have you explained exploitation as a structural feature, not unfair behaviour?\n- Have you correctly identified where surplus value comes from?\n- Have you linked surplus value to profit?\n\n**If any check is not met:**  \nRevisit the worked example and revise your explanation or table entries."
+          },
+          "episode_plan": {
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "worked_thinking"
+              },
+              {
+                "function": "guided_practice"
+              },
+              {
+                "function": "verification"
+              }
+            ]
+          }
+        },
+        {
+          "activity_id": "A3",
+          "title": "Capital Accumulation and Crisis",
+          "duration_minutes": 15,
+          "grouping": "individual",
+          "learner_task": "1. Study the worked analytical example carefully.\n2. Read both scenarios without attempting analysis yet.\n3. Complete the analysis table for each scenario, following the causal chain modelled earlier.\n4. Review your analysis using the checklist and revise where needed.",
+          "expected_output": "A completed analysis table demonstrating causal reasoning from accumulation to crisis.",
+          "support_note": "Avoid treating crises as one‑off accidents; focus on systemic tendencies.",
+          "materials": {
+            "worked_example": "### Worked Analysis: From Accumulation to Crisis\n\n**Step 1: Accumulation**  \nFirms reinvest profits to expand production and reduce costs.\n\n**Step 2: Competition**  \nFirms compete by introducing new technologies and lowering prices.\n\n**Step 3: Concentration of capital**  \nLarger firms outcompete smaller ones, leading to fewer, more powerful firms.\n\n**Step 4: Crisis tendency**  \nOverproduction, falling profits, or financial instability can emerge from these dynamics.\n\n**Bridge:**  \nApply this causal chain to each scenario without assuming crisis is inevitable.",
+            "scenario": "### Scenario A: Competitive Manufacturing Sector\nA national manufacturing industry consists of many small firms competing on price. Firms continually reinvest profits to automate production, reducing labour costs but increasing output.\n\n### Scenario B: Highly Concentrated Industry\nA small number of multinational corporations dominate an industry. Entry barriers are high, profits are large, and investment increasingly flows into financial assets rather than production.",
+            "analysis_table": "| Scenario | Evidence of accumulation | Evidence of concentration | Crisis tendency explained |\n| --- | --- | --- | --- |\n| Scenario A | Investment in automation | Smaller firms exit market | Hint: consider overproduction |\n| Scenario B |  |  |  |",
+            "checklist": "### Self‑Check: Accumulation and Crisis\n\n- Have you identified accumulation clearly in each scenario?\n- Have you explained mechanisms, not just outcomes?\n- Have you avoided treating crisis as automatic or guaranteed?\n- Have you used Marxian concepts accurately?\n\n**If any check is not met:**  \nRevise your analysis by strengthening causal explanations."
+          },
+          "episode_plan": {
+            "archetype": "analyse",
+            "beats": [
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "worked_thinking"
+              },
+              {
+                "function": "guided_practice"
+              },
+              {
+                "function": "verification"
+              }
+            ]
+          }
+        },
+        {
+          "activity_id": "A4",
+          "title": "Was Marx Right Historically?",
+          "duration_minutes": 15,
+          "grouping": "individual",
+          "learner_task": "1. Review the evaluation criteria table.\n2. Read both historical scenarios carefully.\n3. Complete the decision table for each scenario.\n4. Write a brief evaluative judgement (120–150 words) answering whether Marx was right in these cases.\n5. Verify your judgement using the checklist.\n6. Respond briefly to the transfer prompt.",
+          "expected_output": "A completed decision table and a short evaluative judgement applying explicit criteria.",
+          "support_note": "A balanced judgement can recognise both confirmation and limits of Marx’s claims.",
+          "materials": {
+            "reference_table": "| Criterion | What to look for |\n| --- | --- |\n| Inequality trends | Changes in income and wealth distribution |\n| Worker conditions | Security, wages, and protections |\n| System stability | Frequency and severity of crises |\n| Adaptability | Reforms such as welfare states or regulation |",
+            "scenario": "### Trajectory 1: Welfare‑State Capitalism\nPost‑war economies combined capitalist markets with welfare provision, labour rights, and state intervention to stabilise growth and reduce inequality.\n\n### Trajectory 2: Globalised Financial Capitalism\nLate‑20th‑century capitalism emphasised deregulation, global finance, and flexible labour markets, alongside rising inequality and periodic crises.",
+            "decision_table": "| Criterion | Judgement (leave blank) | Evidence | Explanation |\n| --- | --- | --- | --- |\n| Inequality trends |  | Welfare states reduced inequality | Suggests limits to immiseration thesis |\n| Worker conditions |  |  |  |\n| System stability |  |  |  |",
+            "checklist": "### Self‑Check: Historical Evaluation\n\n- Have you applied each criterion explicitly?\n- Have you used evidence from the scenarios?\n- Have you acknowledged trade‑offs or mixed outcomes?\n- Have you justified your judgement clearly?\n\n**If any check is not met:**  \nRevise by linking evidence more directly to criteria.",
+            "transfer_prompt": "Choose a different historical period or economic system you are familiar with. In 80–120 words:\n- Apply at least two criteria from this activity\n- Explain where Marx’s analysis fits or fails\n- Justify your judgement with reasoning"
+          },
+          "episode_plan": {
+            "archetype": "evaluate",
+            "beats": [
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "worked_thinking"
+              },
+              {
+                "function": "guided_practice"
+              },
+              {
+                "function": "transfer"
+              },
+              {
+                "function": "verification"
+              }
+            ]
+          }
+        },
+        {
+          "activity_id": "A5",
+          "title": "Is Marx Still Relevant Today?",
+          "duration_minutes": 10,
+          "grouping": "individual",
+          "learner_task": "1. Review the criteria reminder table.\n2. Complete the judgement memo template independently.\n3. Check your memo against the checklist and revise.\n4. Write the consolidation summary reflecting on what you will take forward.\n5. Respond briefly to the transfer prompt.",
+          "expected_output": "A completed judgement memo, a written consolidation summary, and a short transfer response.",
+          "support_note": "Avoid simply restating Marx; focus on justified judgement about relevance.",
+          "materials": {
+            "reference_table": "| Criterion | Reminder question |\n| --- | --- |\n| Explanatory power | Does Marx help explain current capitalism? |\n| Historical accuracy | Which claims hold up? |\n| Limits | Where does the analysis fall short? |",
+            "worked_example": "### Worked example\nStep 1: model the judgement.",
+            "decision_table": "| Criterion | Judgement |",
+            "template": "### Judgement Memo Template\n\n**Claim:**  \nState your overall judgement on Marx’s contemporary relevance.\n\n**Reasons:**  \nProvide two or three reasons supporting your judgement.\n\n**Limits:**  \nExplain at least one limitation or counter‑argument.\n\n**Overall judgement:**  \nWeigh strengths and limits to reach a balanced conclusion.\n\n(150–200 words)",
+            "transfer_prompt": "Choose a contemporary economic issue you know (for example platform work, housing markets, or climate policy). In 100–150 words:\n- Apply one Marxian concept from the session\n- Test where it explains the issue well and where it does not\n- State what transfers and what does not",
+            "consolidation_summary": "Write **at least 80 words** synthesising what you will take forward from this session. Do not introduce new topics.\n\n- What key distinction about Marx’s analysis is now clearer?\n- Where does Marx’s framework still help you think?\n- What limitation or open question remains?\n\nYou might begin with:  \n“One idea that now seems clearer is…” or “A limitation I can now explain is…”",
+            "checklist": "### Self‑Check: Judgement Memo\n\n- Have you made a clear, defensible claim?\n- Have you justified it using concepts from the session?\n- Have you acknowledged uncertainty or limits?\n- Is your reasoning explicit rather than asserted?\n\n**If any check is not met:**  \nRevise your memo to strengthen justification."
+          },
+          "episode_plan": {
+            "archetype": "evaluate",
+            "beats": [
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "worked_thinking"
+              },
+              {
+                "function": "guided_practice"
+              },
+              {
+                "function": "transfer"
+              },
+              {
+                "function": "verification"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "knowledge_model",
+    "learning_outcomes",
+    "learning_activities",
+    "activity_materials",
+    "learning_sequence"
+  ],
+  "constraints_applied": {
+    "duration_minutes": 60,
+    "delivery_mode": "async",
+    "delivery_context": "self_directed",
+    "design_scope": "single session",
+    "assessment_strategy": "none"
+  },
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [],
+  "visual_affordances": [],
+  "generation_notes": {
+    "limitations": [],
+    "activities_omitted": []
+  }
+}

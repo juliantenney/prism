@@ -24,4 +24,16 @@ Transform PRISM’s exported learner page from a **well-designed educational doc
 
 ---
 
+## Sprint focus
+
+This sprint is intentionally focused on **learner experience** and **product behaviour**.
+
+It is **not** a pedagogy sprint.
+
+It is **not** a workflow redesign sprint.
+
+It is the transition from **educational document** to **educational product**.
+
+---
+
 *Sprint 55 bootstrap — 2026-06-29.*

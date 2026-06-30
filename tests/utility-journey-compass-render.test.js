@@ -1,5 +1,5 @@
 /**
- * Sprint 49-6 / 49-6b — per-activity journey compass renderer.
+ * Sprint 49-6 / 55 — sticky learning header (replaces Journey Compass card).
  */
 
 const test = require("node:test");
@@ -111,56 +111,60 @@ function bodyHtml(html) {
   return String(html || "").split('<details class="util-meta"')[0];
 }
 
-function activityCompassAsides(html) {
-  return bodyHtml(html).match(/<aside class="util-journey-compass[\s\S]*?<\/aside>/gi) || [];
-}
-
-test("49-6b: page header and activity progress render when overview and activities exist", () => {
+test("49-6b: sticky learning header renders title, inquiry, duration, and journey nav", () => {
   const html = renderPage(marxBenchmark);
-  assert.match(html, /util-journey-compass-header/);
+  assert.match(html, /<header class="util-learning-header">/);
+  assert.match(html, /util-learning-header__title/);
+  assert.match(html, /util-learning-header__meta/);
+  assert.match(html, /util-journey-nav/);
   assert.match(html, /util-instructional-activity/);
   assert.match(html, /util-activity-progress/);
-  assert.match(html, /util-page-export--with-compass/);
+  assert.match(html, /util-page-export--with-learning-header/);
+  assert.doesNotMatch(bodyHtml(html), /<section class="util-journey-compass-header"/);
+  const bodyWithoutHeader = bodyHtml(html).replace(
+    /<header class="util-learning-header"[\s\S]*?<\/header>/i,
+    ""
+  );
+  assert.doesNotMatch(bodyWithoutHeader, /<h1[^>]*>/);
 });
 
-test("49-6b: page header includes governing inquiry from overview", () => {
+test("49-6b: header includes governing inquiry and inline duration without labels", () => {
   const compass = buildCompass(marxBenchmark);
   assert.match(compass.governing_inquiry, /explores whether Karl Marx/i);
   const html = renderPage(marxBenchmark);
-  const header = html.match(/<section class="util-journey-compass-header"[\s\S]*?<\/section>/i);
+  const header = html.match(/<header class="util-learning-header"[\s\S]*?<\/header>/i);
   assert.ok(header);
   assert.match(header[0], /explores whether Karl Marx/i);
+  assert.match(header[0], /\d+\s*min/);
+  assert.doesNotMatch(header[0], /Journey compass/i);
+  assert.doesNotMatch(header[0], /util-journey-compass__section-heading/);
+  assert.doesNotMatch(header[0], />Inquiry</);
+  assert.doesNotMatch(header[0], />Session</);
+  assert.doesNotMatch(header[0], /min session/i);
 });
 
-test("49-6b: each activity row includes progression label", () => {
-  const compass = buildCompass(marxBenchmark);
-  assert.equal(compass.steps.length, 4);
-  const html = renderPage(marxBenchmark);
-  assert.match(html, /A1 — Core Marxist Concepts in Action/);
-  assert.match(html, /A4 — Was Marx Right\? Final Evaluation/);
-  assert.match(html, /Step 1 of 4/);
-  assert.match(html, /Step 4 of 4/);
-});
-
-test("49-6b: activity and material content remains in util-task-block column", () => {
+test("49-6b: activity content remains in util-task-block without side compass column", () => {
   const html = renderPage(marxBenchmark);
   const body = bodyHtml(html);
   assert.match(body, /util-task-block/);
   assert.match(body, /Key Marxist Concepts Explained/);
   assert.match(body, /Surplus Value/);
   assert.match(body, /What to do/);
+  assert.doesNotMatch(body, /<aside class="util-journey-compass util-journey-compass--activity"/);
+  assert.doesNotMatch(body, /util-activity-row util-page-columns/);
 });
 
-test("49-6b: SP-01 text material body stays in activity column, not compass", () => {
+test("49-6b: SP-01 text material body stays in activity column, not header", () => {
   const html = renderPage(marxBenchmark);
-  const asides = activityCompassAsides(html).join("");
   const body = bodyHtml(html);
   const expositionSnippet = "Capitalism is an economic system based on private ownership";
   assert.match(body, new RegExp(expositionSnippet.slice(0, 40)));
-  assert.doesNotMatch(asides, new RegExp(expositionSnippet.slice(0, 40)));
+  const header = body.match(/<header class="util-learning-header"[\s\S]*?<\/header>/i);
+  assert.ok(header);
+  assert.doesNotMatch(header[0], new RegExp(expositionSnippet.slice(0, 40)));
 });
 
-test("49-6b: transfer and consolidation render in instructional sections not compass", () => {
+test("49-6b: transfer and consolidation render in instructional sections not header", () => {
   const compass = buildCompass(marxBenchmark);
   const a4 = compass.steps.find((s) => s.activity_id === "A4");
   assert.ok(a4);
@@ -170,12 +174,9 @@ test("49-6b: transfer and consolidation render in instructional sections not com
   assert.doesNotMatch(html, /data-compass-signal="transfer_prompt_pointer"/i);
 });
 
-test("49-6b: responsive wrapper classes are present in export CSS", () => {
+test("49-6b: sticky header CSS is present in export", () => {
   const html = renderPage(marxBenchmark);
-  assert.match(
-    html,
-    /@media \(max-width:720px\)\{\.util-activity-row\.util-page-columns\{grid-template-columns:1fr/
-  );
+  assert.match(html, /\.util-learning-header\{position:sticky;top:0/);
 });
 
 test("49-6b: instructional grammar renders Orient and Think on self-study fixture", () => {
@@ -198,7 +199,6 @@ test("49-6b: activity progress precedes instructional sections in each article",
     }
     assert.match(article, /util-instructional-heading/);
   });
-  assert.match(html, /id="util-journey-compass-heading"/);
 });
 
 test("49-6b: title fallback when overview missing", () => {

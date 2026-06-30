@@ -19,6 +19,9 @@ const DEFAULT_LIBS = [
   "lib/ld-design-page-compose-contract.js",
   "lib/ld-instructional-manifestation-render.js",
   "lib/ld-pedagogic-salience-render.js",
+  "lib/beat-material-registry.js",
+  "lib/utility-pedagogical-icons.js",
+  "lib/utility-pedagogical-beats.js",
   "lib/educational-quality-framework-prompt.js",
   "lib/instructional-pattern-prompt.js"
 ];
@@ -44,6 +47,9 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_LD_DESIGN_PAGE_COMPOSE_CONTRACT",
       "PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER",
       "PRISM_LD_PEDAGOGIC_SALIENCE_RENDER",
+      "PRISM_UTILITY_PEDAGOGICAL_ICONS",
+      "PRISM_UTILITY_PEDAGOGICAL_BEATS",
+      "PRISM_BEAT_MATERIAL_REGISTRY",
       "PRISM_INSTRUCTIONAL_PATTERN_PROMPT"
     ].forEach(function (key) {
       if (sandbox[key]) {
@@ -53,7 +59,14 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
   }
 }
 
+const PEDAGOGICAL_ICON_LIBS = [
+  "lib/beat-material-registry.js",
+  "lib/utility-pedagogical-icons.js",
+  "lib/utility-pedagogical-beats.js"
+];
+
 module.exports = {
   DEFAULT_LIBS,
+  PEDAGOGICAL_ICON_LIBS,
   runPrismLibScriptsInSandbox
 };

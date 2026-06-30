@@ -210,12 +210,14 @@ test("51-salience: If any check is not met renders as revision callout", () => {
   assert.doesNotMatch(revisionAside[0], /util-checkbox-list/);
 });
 
-test("51-salience: verification checklist items still render as checkboxes", () => {
+test("51-salience: verification checklist items render as plain checklist", () => {
   const html = renderPage(minimalSaliencePage());
   const scope = activityArticleScope(html, "Pedagogic salience fixture");
   const checkSection = scope.slice(scope.indexOf("Check your work"));
-  assert.match(checkSection, /util-checkbox-list/);
+  assert.match(checkSection, /util-checklist-block/);
+  assert.match(checkSection, /<ul class="util-checklist">/);
   assert.match(checkSection, /Have you named at least one transmission channel/i);
+  assert.doesNotMatch(checkSection, /util-checkbox-list|☐/);
 });
 
 test("51-salience: Sprint 50 instructional grammar order unchanged", () => {

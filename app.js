@@ -8107,6 +8107,20 @@
     return null;
   }
 
+  function resolvePageEpisodePlansPreserveLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_EPISODE_PLANS_PRESERVE) {
+        return roots[i].PRISM_PAGE_EPISODE_PLANS_PRESERVE;
+      }
+    }
+    return null;
+  }
+
   function resolveEpisodePlanDlaIntegrationLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -9232,6 +9246,57 @@
     return next;
   }
 
+  function resolveUpstreamEpisodePlansFromWorkflowCaptures(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var hit = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", opts);
+    if (hit && Array.isArray(hit.episode_plans) && hit.episode_plans.length) {
+      return hit;
+    }
+    var wf = resolveWorkflowForUpstreamArtefacts(opts);
+    return tryResolveCanonicalEpisodePlansDeriveFallback(wf);
+  }
+
+  function pageArtefactHasPortableEpisodePlans(page) {
+    if (!page || typeof page !== "object") return false;
+    if (Array.isArray(page.episode_plans) && page.episode_plans.length) return true;
+    if (!Array.isArray(page.sections)) return false;
+    var mod = resolvePageEpisodePlansPreserveLib();
+    if (!mod || typeof mod.findLearningActivitiesRows !== "function") return false;
+    var rows = mod.findLearningActivitiesRows(page);
+    return rows.some(function (row) {
+      return !!(row && row.episode_plan && typeof row.episode_plan === "object");
+    });
+  }
+
+  /** Back-compat fallback: inject episode_plans when legacy page JSON omitted them. */
+  function applyComposedPageEpisodePlansPreserve(page, options) {
+    if (!page || typeof page !== "object") return page;
+    if (pageArtefactHasPortableEpisodePlans(page)) return page;
+    var opts = options && typeof options === "object" ? options : {};
+    var preserveMod = resolvePageEpisodePlansPreserveLib();
+    if (!preserveMod || typeof preserveMod.applyEpisodePlansToComposedPage !== "function") {
+      return page;
+    }
+    var episodePlans = opts.upstreamEpisodePlans;
+    if (!episodePlans) {
+      episodePlans = resolveUpstreamEpisodePlansFromWorkflowCaptures(opts);
+    }
+    if (
+      !episodePlans ||
+      !Array.isArray(episodePlans.episode_plans) ||
+      !episodePlans.episode_plans.length
+    ) {
+      return page;
+    }
+    return preserveMod.applyEpisodePlansToComposedPage(
+      page,
+      episodePlans,
+      opts.upstreamLearningActivities ||
+        resolveUpstreamLearningActivitiesFromWorkflowCaptures(),
+      opts
+    );
+  }
+
   function resolveLdInstructionalManifestationRenderLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -9260,6 +9325,70 @@
     return root && root.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER
       ? root.PRISM_LD_PEDAGOGIC_SALIENCE_RENDER
       : null;
+  }
+
+  var utilityPedagogicalIconRenderer = null;
+
+  function resolvePedagogicalIconsLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_UTILITY_PEDAGOGICAL_ICONS &&
+      typeof globalThis.PRISM_UTILITY_PEDAGOGICAL_ICONS.createRenderer === "function"
+    ) {
+      return globalThis.PRISM_UTILITY_PEDAGOGICAL_ICONS;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_UTILITY_PEDAGOGICAL_ICONS ? root.PRISM_UTILITY_PEDAGOGICAL_ICONS : null;
+  }
+
+  function resolvePedagogicalBeatsLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_UTILITY_PEDAGOGICAL_BEATS &&
+      typeof globalThis.PRISM_UTILITY_PEDAGOGICAL_BEATS.classifyPedagogicalBeat === "function"
+    ) {
+      return globalThis.PRISM_UTILITY_PEDAGOGICAL_BEATS;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_UTILITY_PEDAGOGICAL_BEATS ? root.PRISM_UTILITY_PEDAGOGICAL_BEATS : null;
+  }
+
+  function getUtilityPedagogicalIconRenderer() {
+    if (utilityPedagogicalIconRenderer) return utilityPedagogicalIconRenderer;
+    var lib = resolvePedagogicalIconsLib();
+    if (!lib || typeof lib.createRenderer !== "function") return null;
+    utilityPedagogicalIconRenderer = lib.createRenderer(utilityEscapeHtml);
+    return utilityPedagogicalIconRenderer;
+  }
+
+  function resolveBeatMaterialRegistryLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_BEAT_MATERIAL_REGISTRY &&
+      typeof globalThis.PRISM_BEAT_MATERIAL_REGISTRY.validatePageBeatMaterialClosure === "function"
+    ) {
+      return globalThis.PRISM_BEAT_MATERIAL_REGISTRY;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_BEAT_MATERIAL_REGISTRY ? root.PRISM_BEAT_MATERIAL_REGISTRY : null;
+  }
+
+  function utilityClassifyPedagogicalBeat(text, materialType) {
+    var lib = resolvePedagogicalBeatsLib();
+    if (!lib || typeof lib.classifyPedagogicalBeat !== "function") return null;
+    return lib.classifyPedagogicalBeat(text, materialType);
+  }
+
+  function utilityRenderPedagogicalBeatHtml(beatType, options) {
+    var icons = getUtilityPedagogicalIconRenderer();
+    if (!icons || typeof icons.renderBeat !== "function") return "";
+    return icons.renderBeat(beatType, options);
+  }
+
+  function getUtilityPedagogicalIconPresentationCss() {
+    var icons = getUtilityPedagogicalIconRenderer();
+    if (!icons || typeof icons.getIconPresentationCss !== "function") return "";
+    return icons.getIconPresentationCss();
   }
 
   function resolveLdDesignPageComposeLib() {
@@ -9726,6 +9855,12 @@
         "- Activity field preservation: copy activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge, expected_output, support_note verbatim when present upstream."
       );
     }
+    lines.push(
+      "- EPISODE PLANS (portable page schema — hard when upstream episode_plans exist): the page artefact MUST be self-describing; carry authoritative instructional choreography on the page itself without requiring workflow captures or session state.",
+      "- Top-level episode_plans[] (required when upstream episode_plans were provided): copy each row with activity_id aligned to learning_activities.content[]; each row: activity_id, optional mapped_learning_outcome_ids, episode_plan { archetype, beats: [{ function }] } — copy beats verbatim; do not replan, reorder, or invent beats.",
+      "- Per-activity episode_plan (required when upstream episode_plans were provided): attach episode_plan { archetype, beats[] } on each matching learning_activities.content[] row; when upstream plan activity_id differs from the page activity_id, record episode_plan_source_activity_id on the page activity.",
+      "- source_artefacts MUST list episode_plans when upstream episode_plans were consumed."
+    );
     if (opts.materialsCopyBlock) lines.push(opts.materialsCopyBlock);
     if (opts.tableFidelityBlock) lines.push(opts.tableFidelityBlock);
     return lines.join("\n");
@@ -16382,7 +16517,7 @@
     return null;
   }
 
-  function ensureDlaEpisodePlanInputBindingsForSteps(steps) {
+  function ensureEpisodePlanInputBindingsForSteps(steps) {
     if (!Array.isArray(steps) || !steps.length) return steps;
     var catalog = Array.isArray(state.workflowStepPatternCatalog)
       ? state.workflowStepPatternCatalog
@@ -16393,18 +16528,17 @@
     var epStep = findWorkflowStepRowByIdentity(normalized, function (row) {
       return isWorkflowStepDesignEpisodePlanRow(row);
     });
-    var dlaStep = findWorkflowStepRowByIdentity(normalized, function (row) {
-      return isWorkflowStepDesignLearningActivities({
-        stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
-        stepCanonicalTitle: row.title || "",
-        stepTitle: row.title || ""
-      });
-    });
-    if (!epStep || !dlaStep) return normalized;
+    if (!epStep) return normalized;
     var epId = String(epStep.id || "").trim();
     if (!epId) return normalized;
     return normalized.map(function (row) {
-      if (row !== dlaStep) return row;
+      var needsBinding =
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        }) || isWorkflowStepDesignPageRow(row);
+      if (!needsBinding) return row;
       var next = Object.assign({}, row);
       var bindings = normalizeStepInputBindings(next.inputBindings || []);
       var hasEpBinding = bindings.some(function (b) {
@@ -16426,6 +16560,10 @@
     });
   }
 
+  function ensureDlaEpisodePlanInputBindingsForSteps(steps) {
+    return ensureEpisodePlanInputBindingsForSteps(steps);
+  }
+
   function resolveCaptureTextForWorkflowStep(prod, wf) {
     if (!prod || typeof prod !== "object") return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -16436,7 +16574,7 @@
 
   function resolveEffectiveInputBindingsForPromptStep(step, domElement, wf) {
     var wfResolved = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
-    var steps = ensureDlaEpisodePlanInputBindingsForSteps(
+    var steps = ensureEpisodePlanInputBindingsForSteps(
       wfResolved && Array.isArray(wfResolved.steps) ? wfResolved.steps : []
     );
     var stepRow = step && typeof step === "object" ? step : {};
@@ -18474,7 +18612,7 @@
       return row;
     });
 
-    out.steps = ensureDlaEpisodePlanInputBindingsForSteps(out.steps);
+    out.steps = ensureEpisodePlanInputBindingsForSteps(out.steps);
 
     return out;
   }
@@ -24475,7 +24613,7 @@
 
       var chainSteps =
         wfForChain && Array.isArray(wfForChain.steps)
-          ? ensureDlaEpisodePlanInputBindingsForSteps(wfForChain.steps)
+          ? ensureEpisodePlanInputBindingsForSteps(wfForChain.steps)
           : [];
       bindings.forEach(function (b) {
         if (b.kind !== "internal") return;
@@ -24891,7 +25029,7 @@
       normalizedSteps[index] = s;
     });
 
-    normalizedSteps = ensureDlaEpisodePlanInputBindingsForSteps(normalizedSteps);
+    normalizedSteps = ensureEpisodePlanInputBindingsForSteps(normalizedSteps);
 
     wf.workflowInputs = Array.isArray(wf.workflowInputs)
       ? wf.workflowInputs
@@ -28590,47 +28728,40 @@
     return text;
   }
 
-  function utilityMaterialTypeIconClass(materialType) {
-    var t = String(materialType || "").toLowerCase().trim();
-    if (t === "task_card" || t === "task_cards") return "fa-layer-group";
-    if (t === "scenario" || t === "scenarios") return "fa-map-location-dot";
-    if (t === "checklist" || t === "checklists") return "fa-list-check";
-    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "discussion") return "fa-comments";
-    if (t === "template" || t === "templates" || t === "worksheet_template") return "fa-file-lines";
-    if (t === "table" || t === "worksheet" || t === "analysis_table") return "fa-table";
-    if (t === "output" || t === "expected_output") return "fa-circle-check";
-    if (t === "support_note" || t === "support" || t === "support_notes") return "fa-life-ring";
-    if (t === "materials") return "fa-box-open";
-    if (t === "what_to_do" || t === "guidance" || t === "instructions") return "fa-list-check";
-    if (t === "metadata" || t === "production") return "fa-gears";
-    if (t === "strategy" || t === "strategy_options") return "fa-shuffle";
-    return "fa-file-lines";
+  function utilityMaterialTypeSemanticIcon(materialType) {
+    var registry = resolveBeatMaterialRegistryLib();
+    if (registry && typeof registry.semanticIconForMaterialType === "function") {
+      return registry.semanticIconForMaterialType(materialType);
+    }
+    var icons = getUtilityPedagogicalIconRenderer();
+    if (icons && typeof icons.semanticIconForMaterialType === "function") {
+      return icons.semanticIconForMaterialType(materialType);
+    }
+    return "GENERIC";
   }
   function utilityMaterialIconModifierClass(materialType) {
-    var t = String(materialType || "").toLowerCase().trim();
-    if (t === "task_card" || t === "task_cards") return "util-task-card-icon";
-    if (t === "scenario" || t === "scenarios") return "util-scenario-card-icon";
-    if (t === "checklist" || t === "checklists") return "util-checklist-icon";
-    if (t === "prompt_set" || t === "prompt" || t === "prompts" || t === "discussion") return "util-prompt-set-icon";
-    if (t === "template" || t === "templates" || t === "worksheet_template") return "util-template-icon";
-    if (t === "table" || t === "worksheet" || t === "analysis_table") return "util-table-icon";
-    if (t === "output" || t === "expected_output") return "util-output-icon";
-    if (t === "support_note" || t === "support" || t === "support_notes") return "util-support-note-icon";
-    if (t === "materials") return "util-materials-icon";
-    if (t === "what_to_do" || t === "guidance" || t === "instructions") return "util-activity-task-icon";
-    if (t === "metadata" || t === "production") return "util-meta-icon";
-    if (t === "strategy" || t === "strategy_options") return "util-strategy-icon";
+    var registry = resolveBeatMaterialRegistryLib();
+    if (registry && typeof registry.modifierClassForMaterialType === "function") {
+      return registry.modifierClassForMaterialType(materialType);
+    }
     return "util-generic-material-icon";
   }
-  function utilityRenderMaterialIcon(materialType) {
-    var icon = utilityMaterialTypeIconClass(materialType);
-    var mod = utilityMaterialIconModifierClass(materialType);
+  function utilityRenderPlainChecklistItemHtml(text) {
+    var body = String(text == null ? "" : text).trim();
+    if (!body) return "";
     return (
-      '<i class="fa-solid ' +
-      utilityEscapeHtml(icon) +
-      " util-material-icon " +
-      utilityEscapeHtml(mod) +
-      '" aria-hidden="true"></i>'
+      "<li>" +
+      utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(body)) +
+      "</li>"
+    );
+  }
+  function utilityRenderMaterialIcon(materialType) {
+    var icons = getUtilityPedagogicalIconRenderer();
+    if (!icons) return "";
+    return icons.renderMaterialIconHtml(
+      materialType,
+      utilityMaterialIconModifierClass(materialType),
+      "md"
     );
   }
   function utilityMarkKnowledgeSummaryConceptHtml(html) {
@@ -28743,9 +28874,23 @@
     if (cls.indexOf("util-icon-heading") === -1) {
       cls = (cls + " util-icon-heading").trim();
     }
+    var beat = utilityClassifyPedagogicalBeat(text, materialType);
+    var beatAttr = beat
+      ? (' data-pedagogic-beat="' + utilityEscapeHtml(String(beat)) + '"')
+      : "";
     var classAttr = cls ? (' class="' + utilityEscapeHtml(cls) + '"') : "";
     return (
-      "<" + tn + classAttr + ">" + utilityRenderMaterialIcon(materialType) + "<span>" + utilityEscapeHtml(String(text || "")) + "</span></" + tn + ">"
+      "<" +
+      tn +
+      classAttr +
+      beatAttr +
+      ">" +
+      utilityRenderMaterialIcon(materialType) +
+      "<span>" +
+      utilityEscapeHtml(String(text || "")) +
+      "</span></" +
+      tn +
+      ">"
     );
   }
   function utilityRenderPlainMaterialHeading(tag, text, extraClasses) {
@@ -29597,16 +29742,13 @@
       }
       return sid;
     }
-    function sectionIconClass(sectionId, headingText) {
+    function sectionSemanticIcon(sectionId, headingText) {
       var sid = resolveSectionKind(sectionId, headingText);
-      if (sid === "overview") return "fa-circle-info";
-      if (sid === "learning_purpose") return "fa-bullseye";
-      if (sid === "knowledge_summary") return "fa-lightbulb";
-      if (sid === "learning_activities") return "fa-puzzle-piece";
-      if (sid === "assessment_check") return "fa-clipboard-check";
-      if (sid === "study_tips") return "fa-graduation-cap";
-      if (sid === "support_notes") return "fa-life-ring";
-      return "fa-file-lines";
+      var icons = getUtilityPedagogicalIconRenderer();
+      if (icons && typeof icons.semanticIconForSectionKind === "function") {
+        return icons.semanticIconForSectionKind(sid);
+      }
+      return "GENERIC";
     }
     function sectionIconModifierClass(sectionId, headingText) {
       var sid = resolveSectionKind(sectionId, headingText);
@@ -29620,15 +29762,16 @@
     }
     function renderSectionHeadingH2(headingText, sectionId) {
       var heading = utilityEscapeHtml(String(headingText || ""));
-      var iconClass = sectionIconClass(sectionId, headingText);
+      var sectionKind = resolveSectionKind(sectionId, headingText);
       var iconMod = sectionIconModifierClass(sectionId, headingText);
+      var icons = getUtilityPedagogicalIconRenderer();
+      var iconHtml = icons
+        ? icons.renderSectionIconHtml(sectionKind, iconMod, "md")
+        : "";
       return (
         '<h2 class="util-section-heading">' +
-        '<i class="fa-solid ' +
-        utilityEscapeHtml(iconClass) +
-        " util-section-icon util-material-icon " +
-        utilityEscapeHtml(iconMod) +
-        '" aria-hidden="true"></i><span>' +
+        iconHtml +
+        "<span>" +
         heading +
         "</span></h2>"
       );
@@ -31257,11 +31400,12 @@
                 out.push("</ul>");
                 normalOpen = false;
               }
+              if (!String(checkbox.text || "").trim()) return;
               if (!checkboxOpen) {
-                out.push('<ul class="util-checkbox-list">');
+                out.push('<ul class="util-checklist">');
                 checkboxOpen = true;
               }
-              out.push('<li><span class="util-checkbox" aria-hidden="true">' + utilityEscapeHtml(checkbox.token) + '</span><span>' + utilityRenderMarkdownInline(checkbox.text) + "</span></li>");
+              out.push(utilityRenderPlainChecklistItemHtml(checkbox.text));
             } else {
               if (checkboxOpen) {
                 out.push("</ul>");
@@ -31341,15 +31485,11 @@
           function renderCheckboxList(items) {
             var rows = (Array.isArray(items) ? items : [])
               .map(function (entry) {
-                if (!entry || !entry.text) return "";
-                return '<li><span class="util-checkbox" aria-hidden="true">' +
-                  utilityEscapeHtml(String(entry.token || "☐")) +
-                  '</span><span>' +
-                  utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(entry.text))) +
-                  "</span></li>";
+                if (!entry || !String(entry.text || "").trim()) return "";
+                return utilityRenderPlainChecklistItemHtml(entry.text);
               })
               .filter(function (x) { return !!x; });
-            return rows.length ? ('<ul class="util-checkbox-list">' + rows.join("") + "</ul>") : "";
+            return rows.length ? ('<ul class="util-checklist">' + rows.join("") + "</ul>") : "";
           }
           function renderPlainStructuredText(rawText, textOpts) {
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
@@ -31928,11 +32068,12 @@
                       grouped.push("</ul>");
                       listOpen = false;
                     }
+                    if (!String(checkbox.text || "").trim()) return;
                     if (!checkboxOpen) {
-                      grouped.push('<ul class="util-checkbox-list">');
+                      grouped.push('<ul class="util-checklist">');
                       checkboxOpen = true;
                     }
-                    grouped.push('<li><span class="util-checkbox" aria-hidden="true">' + utilityEscapeHtml(checkbox.token) + '</span><span>' + utilityRenderMarkdownInline(checkbox.text) + "</span></li>");
+                    grouped.push(utilityRenderPlainChecklistItemHtml(checkbox.text));
                     return;
                   }
                   if (/^-\s*$/.test(String(b || "").trim())) {
@@ -32596,6 +32737,15 @@
             orderedWorksheetRendered = true;
           }
           if (
+            lowerK === "task_cards" ||
+            lowerK === "cards"
+          ) {
+            taskCardsRendered = true;
+          }
+          if (lowerK === "prompt_set" || lowerK === "prompts") {
+            promptSetRendered = true;
+          }
+          if (
             lowerK === "template" ||
             lowerK === "independent_judgement_template" ||
             lowerK === "templates" ||
@@ -32745,7 +32895,75 @@
               );
           return genericTitle + utilityTagMaterialBlockHtml(genericRendered, key);
         }
-        if (rolePrecedenceActive) {
+        var beatFirstEpisodePlanActive = false;
+        var beatRegistryMod = resolveBeatMaterialRegistryLib();
+        var beatFirstPlan =
+          beatRegistryMod &&
+          typeof beatRegistryMod.resolveBeatMaterialPlan === "function" &&
+          activityRow &&
+          activityRow.episode_plan &&
+          Array.isArray(activityRow.episode_plan.beats) &&
+          activityRow.episode_plan.beats.length
+            ? beatRegistryMod.resolveBeatMaterialPlan(activityRow)
+            : null;
+        if (beatFirstPlan && Array.isArray(beatFirstPlan.beats) && beatFirstPlan.beats.length) {
+          beatFirstEpisodePlanActive = true;
+          if (
+            typeof beatRegistryMod.buildBeatRenderDiagnostic === "function" &&
+            !renderOpts._beatRenderDiagnosticSuppressed
+          ) {
+            var beatRenderDiagnostic = beatRegistryMod.buildBeatRenderDiagnostic(activityRow);
+            if (typeof console !== "undefined" && console.log) {
+              console.log("[PRISM beat-render]", beatRenderDiagnostic);
+            }
+          }
+          beatFirstPlan.beats.forEach(function (beatGroup) {
+            var matKeys = beatGroup.materials || [];
+            if (!matKeys.length) return;
+            var beatParts = [];
+            matKeys.forEach(function (matKey) {
+              var matBlock = renderOrderedMaterialKeyBlock(matKey, "");
+              if (!matBlock) {
+                matBlock = renderMaterialValue(materials[matKey], matKey);
+                if (matBlock) {
+                  var matLabel = prettyMaterialHeading(matKey);
+                  var matTitle = utilityMaterialHeadingRedundantWithInner(matLabel, matBlock)
+                    ? ""
+                    : utilityRenderIconHeading(
+                        "h4",
+                        matLabel,
+                        utilityMaterialTypeFromKeyHint(matKey),
+                        "util-material-heading"
+                      );
+                  matBlock = matTitle + utilityTagMaterialBlockHtml(matBlock, matKey);
+                }
+              }
+              if (matBlock) {
+                beatParts.push(matBlock);
+                markOrderedMaterialRendered(matKey);
+                syncMaterialRenderFlagsForKey(matKey);
+              }
+            });
+            if (!beatParts.length) return;
+            var beatLabel =
+              beatGroup.label ||
+              (typeof beatRegistryMod.episodeFunctionLabel === "function"
+                ? beatRegistryMod.episodeFunctionLabel(beatGroup.beat)
+                : beatGroup.beat);
+            parts.push(
+              '<section class="util-beat-section" data-episode-function="' +
+                utilityEscapeHtml(beatGroup.beat) +
+                '">' +
+                '<h4 class="util-beat-heading">' +
+                utilityEscapeHtml(beatLabel) +
+                "</h4>" +
+                '<div class="util-beat-materials">' +
+                beatParts.join("") +
+                "</div></section>"
+            );
+          });
+        }
+        if (!beatFirstEpisodePlanActive && rolePrecedenceActive) {
           var rolePlan =
             typeof roleRenderMod.buildRolePrecedenceRenderPlan === "function"
               ? roleRenderMod.buildRolePrecedenceRenderPlan(activityRow, materials)
@@ -32762,7 +32980,7 @@
               }
             }
           });
-        } else if (declaredMaterialOrder) {
+        } else if (!beatFirstEpisodePlanActive && declaredMaterialOrder) {
           var a3SeqMod = resolvePageA3MaterialsSequencingLib();
           declaredMaterialOrder.forEach(function (orderKey) {
             var orderedBlock = renderOrderedMaterialKeyBlock(orderKey);
@@ -32777,7 +32995,7 @@
               }
             }
           });
-        } else if (typeBucketFallbackActive) {
+        } else if (!beatFirstEpisodePlanActive && typeBucketFallbackActive) {
           typeBucketFallbackPlan.forEach(function (planItem) {
             var fallbackHeading = resolveRolePrecedenceHeading(planItem);
             var fallbackBlock = renderOrderedMaterialKeyBlock(planItem.key, fallbackHeading);
@@ -32794,18 +33012,20 @@
             }
           });
         }
-        var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
-        if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
-          taskCards = expandTaskCardMaterialEntries(taskCards);
-        }
-        if (Array.isArray(taskCards) && taskCards.length) {
-          var taskCardsHtml = renderTaskCardBlocks(taskCards);
-          if (taskCardsHtml) {
-            parts.push(utilityRenderIconHeading("h4", "Task cards", "task_cards", "util-material-heading") + taskCardsHtml);
-            taskCardsRendered = true;
+        if (!beatFirstEpisodePlanActive) {
+          var taskCards = firstNonEmptyRaw([materials.task_cards, materials.cards]);
+          if (!utilityIsEmptyValue(taskCards) && !Array.isArray(taskCards)) {
+            taskCards = expandTaskCardMaterialEntries(taskCards);
+          }
+          if (Array.isArray(taskCards) && taskCards.length) {
+            var taskCardsHtml = renderTaskCardBlocks(taskCards);
+            if (taskCardsHtml) {
+              parts.push(utilityRenderIconHeading("h4", "Task cards", "task_cards", "util-material-heading") + taskCardsHtml);
+              taskCardsRendered = true;
+            }
           }
         }
-        if (!scenariosRendered && Array.isArray(scenarios) && scenarios.length) {
+        if (!beatFirstEpisodePlanActive && !scenariosRendered && Array.isArray(scenarios) && scenarios.length) {
           var scenarioHtml = renderScenarioBlocks(scenarios);
           if (scenarioHtml) {
             var scenariosHeading = scenarioSectionTitle
@@ -32818,7 +33038,7 @@
             );
             scenariosRendered = true;
           }
-        } else if (!scenariosRendered && !utilityIsEmptyValue(scenarios)) {
+        } else if (!beatFirstEpisodePlanActive && !scenariosRendered && !utilityIsEmptyValue(scenarios)) {
           var scenarioFallbackHtml = renderScenarioBlocks(expandScenarioMaterialEntries(scenarios));
           if (scenarioFallbackHtml) {
             parts.push(
@@ -33144,7 +33364,13 @@
         }
         var materialsBody = parts.join("");
         if (!String(materialsBody || "").trim()) return "";
-        return '<div class="util-materials-stack">' + materialsBody + "</div>";
+        return (
+          '<div class="util-materials-stack' +
+          (beatFirstEpisodePlanActive ? " util-beat-ordered-materials" : "") +
+          '">' +
+          materialsBody +
+          "</div>"
+        );
       }
       function renderInstructionalManifestationSection(heading, bodyHtml, sectionClass) {
         if (!String(bodyHtml || "").trim()) return "";
@@ -33453,7 +33679,25 @@
         var thinkHtml = renderInstructionalThinkSection(row, grammarApi, orientTexts);
         if (thinkHtml) parts.push(thinkHtml);
         var partition = grammarApi.partitionActivityMaterialsForGrammar(row, cardCtx.materials);
-        if (grammarApi.hasStudyMaterials(partition)) {
+        var hasEpisodePlanBeats =
+          row.episode_plan &&
+          Array.isArray(row.episode_plan.beats) &&
+          row.episode_plan.beats.length;
+        if (hasEpisodePlanBeats) {
+          var episodeBeatMaterialsHtml = renderMaterialsForActivity(cardCtx.materials, row);
+          if (episodeBeatMaterialsHtml) {
+            episodeBeatMaterialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(
+              episodeBeatMaterialsHtml,
+              affordanceCtx,
+              renderOpts
+            );
+            parts.push(
+              '<div class="util-activity-materials util-beat-ordered-activity-materials">' +
+                episodeBeatMaterialsHtml +
+                "</div>"
+            );
+          }
+        } else if (grammarApi.hasStudyMaterials(partition)) {
           var studyHtml = renderMaterialsForActivity(partition.study, row);
           if (studyHtml) {
             studyHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(studyHtml, affordanceCtx, renderOpts);
@@ -33470,20 +33714,23 @@
           var preReflectHtml = renderInstructionalReflectPreCheckSection(row, grammarApi);
           if (preReflectHtml) parts.push(preReflectHtml);
         }
-        if (grammarApi.hasDoContent(row, partition)) {
+        if (!hasEpisodePlanBeats && grammarApi.hasDoContent(row, partition)) {
           parts.push(renderInstructionalDoSection(row, partition.do, renderListFromInstructions));
+        } else if (hasEpisodePlanBeats && grammarApi.hasDoContent(row, partition)) {
+          parts.push(renderInstructionalDoSection(row, {}, renderListFromInstructions));
         }
-        if (grammarApi.hasCheckContent(row, partition)) {
+        if (!hasEpisodePlanBeats && grammarApi.hasCheckContent(row, partition)) {
           parts.push(renderInstructionalCheckSection(row, partition.check));
         }
-        if (grammarApi.activityHasPostCheckSources(row, partition.reflect)) {
+        if (!hasEpisodePlanBeats && grammarApi.activityHasPostCheckSources(row, partition.reflect)) {
           parts.push(
             renderInstructionalReflectPostCheckSection(row, partition.reflect, grammarApi)
           );
         }
         if (
-          (partition.transfer && Object.keys(partition.transfer).length) ||
-          grammarApi.fieldHasValue(row.transfer_or_application_task)
+          !hasEpisodePlanBeats &&
+          ((partition.transfer && Object.keys(partition.transfer).length) ||
+            grammarApi.fieldHasValue(row.transfer_or_application_task))
         ) {
           parts.push(renderInstructionalTransferSection(row, partition.transfer, grammarApi));
         }
@@ -33687,22 +33934,6 @@
           }
           if (!parts.length) return "";
           var articleHtml = '<article class="util-task-block">' + parts.join("") + "</article>";
-          if (renderOpts.journeyCompassEnabled) {
-            var compassStep = findJourneyCompassStepForActivity(renderOpts, activityIdLabel);
-            if (compassStep) {
-              var activityCompassHtml = renderActivityJourneyCompassHtml(
-                compassStep,
-                compassStep.step_index || idx + 1,
-                renderOpts.journeyCompassStepCount
-              );
-              return (
-                '<div class="util-activity-row util-page-columns">' +
-                activityCompassHtml +
-                articleHtml +
-                "</div>"
-              );
-            }
-          }
           return articleHtml;
         })
         .filter(function (x) { return !!String(x || "").trim(); })
@@ -35753,7 +35984,7 @@
       function (block) {
         if (block.indexOf("util-diagnostic-list") !== -1) return block;
         return block
-          .replace(/<ul class="util-checkbox-list"/gi, '<ul class="util-diagnostic-list"')
+          .replace(/<ul class="util-checkbox-list"/gi, '<ul class="util-checklist"')
           .replace(/<span class="util-checkbox"[^>]*>[\s\S]*?<\/span>/gi, "")
           .replace(/<ul>/gi, '<ul class="util-diagnostic-list">');
       }
@@ -36054,7 +36285,10 @@
       getUtilityPagePresentationCssV31_10() +
       getUtilityPagePresentationCssV31_11() +
       getUtilityPagePresentationCssV31_12() +
-      getUtilityJourneyCompassPresentationCss()
+      getUtilityJourneyCompassPresentationCss() +
+      getUtilityLearningHeaderPresentationCss() +
+      getUtilityLearningJourneyNavPresentationCss() +
+      getUtilityPedagogicalIconPresentationCss()
     );
   }
 
@@ -36068,12 +36302,530 @@
       ".util-pedagogic-callout--quality-commentary{border-left-color:#94a3b8;background:#f8fafc}",
       ".util-pedagogic-callout--diagnostic{border-left-color:#d97706;background:#fffbeb}",
       ".util-pedagogic-callout--revision{border-left-color:#6366f1;background:#f5f3ff}",
-      ".util-pedagogic-callout--diagnostic ul:not(.util-checkbox-list){margin:8px 0 0;padding-left:1.25rem;list-style:disc}",
+      ".util-pedagogic-callout--diagnostic ul:not(.util-checklist){margin:8px 0 0;padding-left:1.25rem;list-style:disc}",
       ".util-diagnostic-list>li{margin:4px 0}",
       ".util-worked-example .util-pedagogic-callout{margin:12px 0}",
       ".util-checklist-block+.util-pedagogic-callout{margin-top:12px}",
       "@media print{.util-pedagogic-callout{background:#fff!important;break-inside:avoid-page}}"
     ].join("");
+  }
+
+  function getUtilityLearningHeaderPresentationCss() {
+    return [
+      "body.util-page-export--with-learning-header{overflow-x:clip;max-width:920px}",
+      "body.util-page-export--with-learning-header [data-journey-section]{scroll-margin-top:168px}",
+      ".util-learning-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-bottom:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(17,24,39,.06);padding:12px 16px 14px;margin:0 0 16px}",
+      ".util-learning-header__title{margin:0 0 6px;font-size:1.35rem;font-weight:700;line-height:1.3;color:#0f172a}",
+      ".util-learning-header__meta{margin:0 0 10px;font-size:.875rem;line-height:1.45;color:#6b7280}",
+      ".util-learning-header .util-journey-nav{margin:0;padding:0;border:0;background:transparent;backdrop-filter:none;box-shadow:none}",
+      ".util-journey-compass-header,.util-journey-compass.util-journey-compass--activity{display:none!important}",
+      "@media (max-width:720px){.util-learning-header{padding:10px 12px 12px}.util-learning-header__title{font-size:1.2rem}}",
+      "@media print{.util-learning-header{display:none!important}body.util-page-export--with-learning-header [data-journey-section]{scroll-margin-top:0}}"
+    ].join("");
+  }
+
+  function getUtilityLearningJourneyNavPresentationCss() {
+    return [
+      "body.util-page-export--with-journey-nav{overflow-x:clip}",
+      ".util-journey-nav{--journey-accent:#16a34a}",
+      ".util-journey-links{display:flex;align-items:center;font-size:.875rem}",
+      ".util-journey-nav--compact .util-journey-links{justify-content:space-between;overflow-x:visible}",
+      ".util-journey-nav--scroll .util-journey-links{justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;gap:8px}",
+      ".util-journey-nav--scroll .util-journey-links::-webkit-scrollbar{display:none}",
+      ".util-journey-link{color:#111827;text-decoration:none;font-weight:400;min-width:0;display:block;text-align:center}",
+      ".util-journey-nav--compact .util-journey-link{flex:1 1 0}",
+      ".util-journey-nav--scroll .util-journey-link{flex:0 0 auto;min-width:72px;padding:0 4px}",
+      ".util-journey-link:hover{text-decoration:underline}",
+      ".util-journey-link[aria-current=true]{color:#166534;font-weight:400}",
+      ".util-journey-link-text{display:block;line-height:1.25;text-align:center;overflow:hidden;max-height:2.5em}",
+      ".util-journey-arrow{flex:0 0 auto;color:#6b7280;font-size:1.4rem;line-height:1;pointer-events:none;align-self:center;padding:0 2px}",
+      ".util-journey-nav--scroll .util-journey-arrow{display:none}",
+      ".util-journey-track{position:relative;height:3px;margin-top:12px;background:#d1d5db;border-radius:999px;overflow:visible}",
+      ".util-journey-fill{height:100%;width:var(--journey-progress,0%);background:var(--journey-accent);border-radius:999px;transition:width .12s ease-out}",
+      ".util-journey-dot{position:absolute;top:50%;left:var(--journey-progress,0%);width:12px;height:12px;border-radius:50%;background:var(--journey-accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--journey-accent);transform:translate(-50%,-50%);transition:left .12s ease-out;pointer-events:none}",
+      "@media (max-width:720px){.util-journey-links{gap:6px;font-size:.8125rem}}",
+      "@media print{.util-journey-nav{display:none!important}}"
+    ].join("");
+  }
+
+  function utilityStripHtmlToPlainText(html) {
+    return String(html == null ? "" : html)
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function utilityStripJourneyNavPrefixes(text) {
+    var s = String(text == null ? "" : text).replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    s = s.replace(/^(?:LO|A)\s*\d+\s*[-–—:]\s*/i, "");
+    s = s.replace(/^(?:Activity|Step)\s*\d+\s*[-–—:.]\s*/i, "");
+    s = s.replace(/^[A-Z]\d+\s*[-–—]\s*/i, "");
+    var dashParts = s.split(/\s*[-–—]\s+/);
+    if (dashParts.length > 1) {
+      var lead = dashParts[0].trim();
+      if (/^(?:LO|A)\s*\d+$/i.test(lead) || /^[A-Z]\d+$/i.test(lead)) {
+        s = dashParts.slice(1).join(" ").trim();
+      }
+    }
+    return s.replace(/\s+/g, " ").trim();
+  }
+
+  function utilityCompactJourneyNavLabel(text) {
+    var s = utilityStripJourneyNavPrefixes(text);
+    if (!s) return "";
+    if (/\bPOUR\b/i.test(s)) return "POUR Evaluation";
+    s = s.replace(/\s+in\s+practice\s*$/i, "");
+    s = s.replace(/\s+for\s+accessibility\s*$/i, "");
+    s = s.replace(/\s+to\s+evaluate\s+(?:a\s+)?resource\s*$/i, "");
+    s = s.replace(/\s+and\s+/gi, " & ");
+    s = s.replace(/\bUser\s+/i, "");
+    if (/^(Analysing|Exploring|Examining|Investigating)\s+/i.test(s)) {
+      s = s.replace(/^(Analysing|Exploring|Examining|Investigating)\s+/i, "");
+    }
+    var improvMatch = s.match(/^Improving\s+an?\s+Accessible\s+(.+)$/i);
+    if (improvMatch) return "Improve " + improvMatch[1].trim();
+    if (/^Adapting\s+Teaching\b/i.test(s)) return "Teaching Accessibly";
+    s = s.replace(/\bDigital\s+/i, "");
+    s = s.replace(/\b(an|the)\s+/gi, "");
+    var words = s.split(/\s+/).filter(Boolean);
+    if (words.length <= 4) return words.join(" ");
+    var dropTail = /^(in|on|to|for|of|a|an|the|and|or|with)$/i;
+    while (words.length > 4 && dropTail.test(words[words.length - 1])) {
+      words.pop();
+    }
+    var dropMid = /^(digital|user|major|minor|full|complete|specific|general|basic|simple|accessible)$/i;
+    while (words.length > 4) {
+      var removed = false;
+      for (var i = 1; i < words.length - 1; i += 1) {
+        if (dropMid.test(words[i])) {
+          words.splice(i, 1);
+          removed = true;
+          break;
+        }
+      }
+      if (!removed) words.pop();
+    }
+    return words.slice(0, 4).join(" ");
+  }
+
+  function utilityNormalizeJourneyNavLabel(text) {
+    return utilityCompactJourneyNavLabel(text);
+  }
+
+  function utilityFormatJourneyNavLabelDisplay(label) {
+    var s = String(label == null ? "" : label).replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    if (/\s&\s/.test(s)) {
+      var ampAt = s.indexOf(" & ");
+      return (
+        utilityEscapeHtml(s.slice(0, ampAt + 3).trim()) +
+        "<br>" +
+        utilityEscapeHtml(s.slice(ampAt + 3).trim())
+      );
+    }
+    var words = s.split(/\s+/).filter(Boolean);
+    if (words.length <= 1) return utilityEscapeHtml(s);
+    if (words.length === 2) {
+      return utilityEscapeHtml(words[0]) + "<br>" + utilityEscapeHtml(words[1]);
+    }
+    var mid = Math.ceil(words.length / 2);
+    return (
+      utilityEscapeHtml(words.slice(0, mid).join(" ")) +
+      "<br>" +
+      utilityEscapeHtml(words.slice(mid).join(" "))
+    );
+  }
+
+  function utilityLearningJourneyNavLayoutClass(navItemCount) {
+    var count = typeof navItemCount === "number" ? navItemCount : 0;
+    return count <= 7 ? " util-journey-nav--compact" : " util-journey-nav--scroll";
+  }
+
+  function utilityComputeJourneyStructuralProgress(currentIndex, localProgress, sectionCount) {
+    var count = typeof sectionCount === "number" ? sectionCount : 0;
+    var index = typeof currentIndex === "number" ? currentIndex : 0;
+    var local = typeof localProgress === "number" ? localProgress : 0;
+    if (count < 2) return 0;
+    if (index >= count - 1) return 100;
+    var progress = ((index + local) / (count - 1)) * 100;
+    return Math.min(100, Math.max(0, progress));
+  }
+
+  function utilityIsJourneyLearningActivityArticle(attrs, articleInner) {
+    var cls = String(attrs || "");
+    var classMatch = cls.match(/\bclass=(["'])([\s\S]*?)\1/i);
+    var className = classMatch ? classMatch[2] : cls;
+    if (!/\butil-task-block\b/i.test(className)) return false;
+    if (/\butil-session-step\b/i.test(className)) return false;
+    if (/\butil-assessment-item\b/i.test(className)) return false;
+    if (/\butil-timeline-step\b/i.test(className)) return false;
+    if (/\butil-instructional-activity\b/i.test(className)) return true;
+    if (/<div class="util-activity-header"/i.test(String(articleInner || ""))) return true;
+    return false;
+  }
+
+  function utilityExtractJourneyActivityTitle(articleInner) {
+    var inner = String(articleInner || "");
+    var headerMatch = inner.match(
+      /<div class="util-activity-header"[^>]*>\s*<h3[^>]*>([\s\S]*?)<\/h3>/i
+    );
+    if (headerMatch) return utilityStripHtmlToPlainText(headerMatch[1]);
+    var h3Match = inner.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i);
+    if (h3Match) return utilityStripHtmlToPlainText(h3Match[1]);
+    return "";
+  }
+
+  function utilityWrapJourneyOrientSection(html, beforeIndex) {
+    var source = String(html || "");
+    var scanEnd = typeof beforeIndex === "number" && beforeIndex > 0 ? beforeIndex : source.length;
+    var head = source.slice(0, scanEnd);
+    var orientIcons = [
+      "util-section-icon--overview",
+      "util-section-icon--learning-purpose",
+      "util-section-icon--knowledge-summary"
+    ];
+    var i;
+    for (i = 0; i < orientIcons.length; i += 1) {
+      var icon = orientIcons[i];
+      var re = new RegExp("<section>[\\s\\S]*?" + icon + "[\\s\\S]*?</section>", "i");
+      var m = head.match(re);
+      if (!m) continue;
+      var full = m[0];
+      var idx = head.indexOf(full);
+      if (idx === -1) continue;
+      if (/<div id="journey-orient"/i.test(full)) return source;
+      var wrapped =
+        '<div id="journey-orient" data-journey-section="true">' + full + "</div>";
+      return source.slice(0, idx) + wrapped + source.slice(idx + full.length);
+    }
+    return null;
+  }
+
+  function utilityInsertJourneyOrientFallback(html, startIdx, endIdx) {
+    if (typeof startIdx !== "number" || typeof endIdx !== "number" || endIdx <= startIdx) {
+      return html;
+    }
+    var source = String(html || "");
+    if (/<div id="journey-orient"/i.test(source)) return source;
+    var block = source.slice(startIdx, endIdx);
+    if (!String(block || "").trim()) return source;
+    return (
+      source.slice(0, startIdx) +
+      '<div id="journey-orient" data-journey-section="true">' +
+      block +
+      "</div>" +
+      source.slice(endIdx)
+    );
+  }
+
+  function utilityBuildJourneyNavItems(activities) {
+    var rows = Array.isArray(activities) ? activities : [];
+    var items = [{ id: "journey-orient", label: "Orient" }];
+    rows.forEach(function (act) {
+      items.push({ id: act.id, label: act.label });
+    });
+    return items;
+  }
+
+  function utilityWrapJourneyActivityBlock(attrs, inner, id) {
+    return (
+      '<div id="' +
+      utilityEscapeHtml(String(id || "")) +
+      '" data-journey-section="true">' +
+      "<article" +
+      String(attrs || "") +
+      ">" +
+      String(inner || "") +
+      "</article></div>"
+    );
+  }
+
+  function utilityRenderLearningJourneyNavLinksHtml(navItems, includeArrows) {
+    var rows = Array.isArray(navItems) ? navItems : [];
+    var parts = [];
+    var withArrows = includeArrows === true;
+    rows.forEach(function (act, idx) {
+      if (idx > 0 && withArrows) {
+        parts.push('<span class="util-journey-arrow" aria-hidden="true">→</span>');
+      }
+      parts.push(
+        '<a class="util-journey-link" href="#' +
+          utilityEscapeHtml(act.id) +
+          '"><span class="util-journey-link-text">' +
+          utilityFormatJourneyNavLabelDisplay(act.label) +
+          "</span></a>"
+      );
+    });
+    return parts.join("");
+  }
+
+  function utilityRenderLearningJourneyNavHtml(navItems) {
+    var rows = Array.isArray(navItems) ? navItems : [];
+    if (rows.length < 2) return "";
+    var layoutClass = utilityLearningJourneyNavLayoutClass(rows.length);
+    var includeArrows = rows.length <= 7;
+    var links = utilityRenderLearningJourneyNavLinksHtml(rows, includeArrows);
+    var linksStyle =
+      rows.length <= 7 ? ' style="--journey-count:' + rows.length + '"' : "";
+    return (
+      '<nav class="util-journey-nav' +
+      layoutClass +
+      '" aria-label="Learning journey">' +
+      '<div class="util-journey-links"' +
+      linksStyle +
+      ">" +
+      links +
+      "</div>" +
+      '<div class="util-journey-track" aria-hidden="true">' +
+      '<div class="util-journey-fill"></div>' +
+      '<div class="util-journey-dot"></div>' +
+      "</div>" +
+      "</nav>"
+    );
+  }
+
+  function utilityExtractPageTitleFromExportHtml(html) {
+    var source = String(html || "");
+    var h1Match = source.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+    if (!h1Match) return "";
+    return utilityStripHtmlToPlainText(h1Match[1]);
+  }
+
+  function utilityExtractJourneyHeaderDurationFromCompass(compass) {
+    if (!compass || typeof compass !== "object") return "";
+    var steps = Array.isArray(compass.steps) ? compass.steps : [];
+    var totalMinutes = 0;
+    steps.forEach(function (step) {
+      var mins = Number(step && step.duration_minutes);
+      if (!isNaN(mins) && mins > 0) totalMinutes += mins;
+    });
+    if (totalMinutes > 0) return String(totalMinutes) + " min";
+    var frame = String(compass.session_frame || "").trim();
+    var durMatch = frame.match(/(\d+)\s*min(?:\s+session)?/i);
+    return durMatch ? durMatch[1] + " min" : "";
+  }
+
+  function utilityBuildLearningHeaderMetaLine(subtitle, duration) {
+    var parts = [];
+    if (String(subtitle || "").trim()) parts.push(String(subtitle).trim());
+    if (String(duration || "").trim()) parts.push(String(duration).trim());
+    return parts.join(" \u00b7 ");
+  }
+
+  function utilityStripLegacyPageHeaderFromExportHtml(html) {
+    var updated = String(html || "");
+    updated = updated.replace(/<section class="util-journey-compass-header"[\s\S]*?<\/section>/gi, "");
+    updated = updated.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, "");
+    updated = updated.replace(/<p><strong>Audience:<\/strong>[\s\S]*?<\/p>/i, "");
+    return updated;
+  }
+
+  function utilityFindLearningHeaderInjectionPoint(html) {
+    var source = String(html || "");
+    var bodyMatch = source.match(/<body[^>]*>/i);
+    if (bodyMatch) return bodyMatch.index + bodyMatch[0].length;
+    return -1;
+  }
+
+  function utilityRenderLearningStickyHeaderHtml(headerOpts) {
+    var opts = headerOpts && typeof headerOpts === "object" ? headerOpts : {};
+    var title = String(opts.title || "").trim();
+    var metaLine = utilityBuildLearningHeaderMetaLine(opts.subtitle, opts.duration);
+    var navHtml = String(opts.navHtml || "").trim();
+    if (!title && !metaLine && !navHtml) return "";
+    var parts = ['<header class="util-learning-header">'];
+    if (title) {
+      parts.push(
+        '<h1 class="util-learning-header__title">' + utilityEscapeHtml(title) + "</h1>"
+      );
+    }
+    if (metaLine) {
+      parts.push(
+        '<p class="util-learning-header__meta">' + utilityEscapeHtml(metaLine) + "</p>"
+      );
+    }
+    if (navHtml) parts.push(navHtml);
+    parts.push("</header>");
+    return parts.join("");
+  }
+
+  function utilityFindLearningJourneyNavInjectionPoint(html) {
+    var source = String(html || "");
+    var compassMatch = source.match(
+      /<section class="util-journey-compass-header"[\s\S]*?<\/section>/i
+    );
+    if (compassMatch) return compassMatch.index + compassMatch[0].length;
+    var h1Match = source.match(/<h1[^>]*>[\s\S]*?<\/h1>/i);
+    if (h1Match) return h1Match.index + h1Match[0].length;
+    var audienceMatch = source.match(/<p><strong>Audience:<\/strong>[\s\S]*?<\/p>/i);
+    if (audienceMatch) return audienceMatch.index + audienceMatch[0].length;
+    return -1;
+  }
+
+  function utilityBuildLearningJourneyNavScript() {
+    return (
+      "<script>" +
+      "(function(){var header=document.querySelector('.util-learning-header');" +
+      "var nav=header?header.querySelector('.util-journey-nav'):document.querySelector('.util-journey-nav');" +
+      "var sections=[].slice.call(document.querySelectorAll('[data-journey-section]'));" +
+      "var links=[].slice.call(document.querySelectorAll('.util-journey-link'));" +
+      "var track=nav?nav.querySelector('.util-journey-track'):null;" +
+      "if(!nav||!track||sections.length<2||links.length<2)return;var ticking=false;" +
+      "function linkCenterPct(link){var tr=track.getBoundingClientRect();" +
+      "var lr=link.getBoundingClientRect();var c=lr.left+lr.width/2-tr.left;" +
+      "return tr.width>0?(c/tr.width)*100:0;}" +
+      "function journeyToTrackPct(jp){var a=linkCenterPct(links[0]);" +
+      "var b=linkCenterPct(links[links.length-1]);var t=Math.min(100,Math.max(0,jp))/100;" +
+      "return a+t*(b-a);}" +
+      "function updateJourney(){var doc=document.documentElement;" +
+      "var scrollTop=window.scrollY||doc.scrollTop||0;" +
+      "var offset=(header||nav).offsetHeight+24;var line=scrollTop+offset;var count=sections.length;var currentIndex=0;" +
+      "for(var i=0;i<count;i+=1){var sec=sections[i];" +
+      "var top=sec.getBoundingClientRect().top+scrollTop;if(top<=line)currentIndex=i;}" +
+      "var journeyProgress=0;if(currentIndex>=count-1){journeyProgress=100;}else{" +
+      "var curTop=sections[currentIndex].getBoundingClientRect().top+scrollTop;" +
+      "var nxtTop=sections[currentIndex+1].getBoundingClientRect().top+scrollTop;" +
+      "var span=Math.max(1,nxtTop-curTop);" +
+      "var local=Math.min(1,Math.max(0,(line-curTop)/span));" +
+      "journeyProgress=((currentIndex+local)/(count-1))*100;}" +
+      "journeyProgress=Math.min(100,Math.max(0,journeyProgress));" +
+      "nav.style.setProperty('--journey-progress',journeyToTrackPct(journeyProgress)+'%');" +
+      "var current=sections[currentIndex];" +
+      "links.forEach(function(link){var isCurrent=link.getAttribute('href')==='#'+current.id;" +
+      "if(isCurrent)link.setAttribute('aria-current','true');else link.removeAttribute('aria-current');});" +
+      "ticking=false;}" +
+      "function requestUpdate(){if(!ticking){window.requestAnimationFrame(updateJourney);ticking=true;}}" +
+      "window.addEventListener('scroll',requestUpdate,{passive:true});" +
+      "window.addEventListener('resize',requestUpdate);" +
+      "updateJourney();})();" +
+      "</script>"
+    );
+  }
+
+  function utilityCollectLearningJourneyActivitiesFromExportHtml(html) {
+    var source = String(html || "");
+    var articleRe = /<article\b([^>]*)>([\s\S]*?)<\/article>/gi;
+    var matches = [];
+    var m;
+    while ((m = articleRe.exec(source)) !== null) {
+      if (!utilityIsJourneyLearningActivityArticle(m[1], m[2])) continue;
+      matches.push({
+        full: m[0],
+        attrs: m[1],
+        inner: m[2],
+        index: m.index
+      });
+    }
+    return matches;
+  }
+
+  function utilityApplyLearningJourneyHeaderToExportHtml(html, headerOpts) {
+    var source = String(html || "");
+    if (!source) return source;
+    var opts = headerOpts && typeof headerOpts === "object" ? headerOpts : {};
+    var compass = opts.journeyCompass;
+    var compassEnabled = opts.journeyCompassEnabled === true;
+    var title = utilityExtractPageTitleFromExportHtml(source);
+    var subtitle =
+      compass && String(compass.governing_inquiry || "").trim()
+        ? String(compass.governing_inquiry).trim()
+        : "";
+    var duration = utilityExtractJourneyHeaderDurationFromCompass(compass);
+
+    var matches = utilityCollectLearningJourneyActivitiesFromExportHtml(source);
+    var hasJourneyNav = matches.length >= 2;
+    if (!compassEnabled && !hasJourneyNav) return source;
+
+    var activities = matches.map(function (match, idx) {
+      var id = "activity-" + (idx + 1);
+      var rawTitle = utilityExtractJourneyActivityTitle(match.inner) || "Activity " + (idx + 1);
+      return {
+        id: id,
+        label: utilityNormalizeJourneyNavLabel(rawTitle),
+        full: match.full,
+        attrs: match.attrs,
+        inner: match.inner,
+        index: match.index
+      };
+    });
+
+    var updated = source;
+    for (var i = activities.length - 1; i >= 0; i -= 1) {
+      var act = activities[i];
+      var newBlock = utilityWrapJourneyActivityBlock(act.attrs, act.inner, act.id);
+      updated = updated.slice(0, act.index) + newBlock + updated.slice(act.index + act.full.length);
+    }
+
+    updated = utilityStripLegacyPageHeaderFromExportHtml(updated);
+
+    var navHtml = "";
+    var navLen = 0;
+    if (hasJourneyNav) {
+      var navItems = utilityBuildJourneyNavItems(activities);
+      navHtml = utilityRenderLearningJourneyNavHtml(navItems);
+      navLen = navHtml.length;
+    }
+
+    var headerHtml = utilityRenderLearningStickyHeaderHtml({
+      title: title,
+      subtitle: subtitle,
+      duration: duration,
+      navHtml: navHtml
+    });
+    if (!headerHtml) return source;
+
+    var injectAt = utilityFindLearningHeaderInjectionPoint(updated);
+    if (injectAt < 0) return source;
+
+    updated = updated.slice(0, injectAt) + headerHtml + updated.slice(injectAt);
+
+    if (hasJourneyNav) {
+      var firstActivityIdx = updated.search(/\bid="activity-1"/i);
+      var headerEnd = injectAt + headerHtml.length;
+      var orientWrapped = utilityWrapJourneyOrientSection(
+        updated,
+        firstActivityIdx > -1 ? firstActivityIdx : updated.length
+      );
+      if (orientWrapped) {
+        updated = orientWrapped;
+      } else if (firstActivityIdx > headerEnd) {
+        updated = utilityInsertJourneyOrientFallback(updated, headerEnd, firstActivityIdx);
+      }
+    }
+
+    if (/<body class="/i.test(updated)) {
+      updated = updated.replace(/<body class="([^"]*)"/i, function (_, cls) {
+        var next = cls;
+        if (!/\butil-page-export--with-learning-header\b/i.test(next)) {
+          next += " util-page-export--with-learning-header";
+        }
+        if (hasJourneyNav && !/\butil-page-export--with-journey-nav\b/i.test(next)) {
+          next += " util-page-export--with-journey-nav";
+        }
+        return '<body class="' + next + '"';
+      });
+    } else {
+      var bodyClass = "util-page-export util-page-export--with-learning-header";
+      if (hasJourneyNav) bodyClass += " util-page-export--with-journey-nav";
+      updated = updated.replace(/<body>/i, '<body class="' + bodyClass + '">');
+    }
+
+    if (hasJourneyNav) {
+      var scriptHtml = utilityBuildLearningJourneyNavScript();
+      updated = updated.replace(/<\/body>/i, scriptHtml + "</body>");
+    }
+    return updated;
+  }
+
+  function utilityApplyLearningJourneyRibbonToExportHtml(html, headerOpts) {
+    return utilityApplyLearningJourneyHeaderToExportHtml(html, headerOpts);
   }
 
   function getUtilityJourneyCompassPresentationCss() {
@@ -36220,6 +36972,12 @@
       "article.util-task-block>.util-support-note{margin-top:10px}",
       ".util-output-block+.util-support-note{margin-top:10px}",
       ".util-materials-stack{gap:16px}",
+      ".util-beat-ordered-materials{gap:20px}",
+      ".util-beat-section{margin:0 0 18px;padding:0}",
+      ".util-beat-section:last-child{margin-bottom:0}",
+      ".util-beat-heading{font-size:.95rem;font-weight:700;color:#0f172a;margin:0 0 10px;line-height:1.35;letter-spacing:.01em}",
+      ".util-beat-materials{display:flex;flex-direction:column;gap:12px}",
+      ".util-beat-materials>.util-material-heading:first-child{margin-top:0}",
       ".util-materials-stack>h4.util-material-heading{margin-top:4px;margin-bottom:2px}",
       ".util-activity-materials .util-materials-stack .util-template-block.util-material-template,.util-activity-materials .util-materials-stack .util-scenario-card,.util-activity-materials .util-materials-stack .util-prompt-set.util-material-prompt{box-shadow:none}",
       ".util-activity-materials .util-table-scroll.util-material-table{border:none;background:transparent;padding:0;box-shadow:none;margin:6px 0 14px}",
@@ -36311,7 +37069,6 @@
       "<head>",
       "<meta charset=\"utf-8\" />",
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
-      "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
       "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}" +
         getUtilityPagePresentationCss() +
@@ -37207,7 +37964,8 @@
       }
       next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
       next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
-      return applyComposedPageGamMaterialsPreserve(next, opts);
+      next = applyComposedPageGamMaterialsPreserve(next, opts);
+      return applyComposedPageEpisodePlansPreserve(next, opts);
     }
     if (!Array.isArray(next.sections)) next.sections = [];
     var trace = {
@@ -37265,7 +38023,8 @@
     next.generation_notes.cognition_composition = trace;
     next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
     next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
-    return applyComposedPageGamMaterialsPreserve(next, opts);
+    next = applyComposedPageGamMaterialsPreserve(next, opts);
+    return applyComposedPageEpisodePlansPreserve(next, opts);
   }
 
   function applySprint38VisualAffordancesToComposedPage(page, options) {
@@ -37417,6 +38176,169 @@
     return page;
   }
 
+  function pageActivityRowHasPortableEpisodePlan(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    var ep = row.episode_plan;
+    if (!ep || typeof ep !== "object" || Array.isArray(ep)) return false;
+    if (!String(ep.archetype || "").trim()) return false;
+    if (!Array.isArray(ep.beats) || !ep.beats.length) return false;
+    return ep.beats.some(function (beat) {
+      return !!(beat && String(beat.function || "").trim());
+    });
+  }
+
+  function pageHasTopLevelEpisodePlans(page) {
+    if (!page || typeof page !== "object") return false;
+    if (!Array.isArray(page.episode_plans) || !page.episode_plans.length) return false;
+    return page.episode_plans.some(function (row) {
+      return !!(
+        row &&
+        typeof row === "object" &&
+        row.episode_plan &&
+        typeof row.episode_plan === "object" &&
+        !Array.isArray(row.episode_plan)
+      );
+    });
+  }
+
+  function collectLearningActivityRowsFromPage(page) {
+    var preserveMod = resolvePageEpisodePlansPreserveLib();
+    if (preserveMod && typeof preserveMod.findLearningActivitiesRows === "function") {
+      return preserveMod.findLearningActivitiesRows(page);
+    }
+    if (!page || !Array.isArray(page.sections)) return [];
+    var rows = [];
+    page.sections.forEach(function (section) {
+      if (pageSectionCanonicalKind(section) !== "learning_activities") return;
+      var content = section.content;
+      if (Array.isArray(content)) rows = rows.concat(content);
+      else if (content && typeof content === "object" && Array.isArray(content.activities)) {
+        rows = rows.concat(content.activities);
+      }
+    });
+    return rows;
+  }
+
+  function validatePageEpisodePlansClosure(page, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var upstreamEpisodePlans = opts.upstreamEpisodePlans;
+    if (!upstreamEpisodePlans) {
+      upstreamEpisodePlans = resolveUpstreamEpisodePlansFromWorkflowCaptures(opts);
+    }
+    var upstreamRows =
+      upstreamEpisodePlans &&
+      Array.isArray(upstreamEpisodePlans.episode_plans) &&
+      upstreamEpisodePlans.episode_plans.length
+        ? upstreamEpisodePlans.episode_plans
+        : [];
+    if (!upstreamRows.length) {
+      return {
+        validation: "page_episode_plans_closure",
+        outcome: "skip",
+        messages: [],
+        missing_top_level_episode_plans: false,
+        activities_missing_episode_plan: [],
+        upstream_episode_plan_count: 0,
+        composed_activity_count: 0
+      };
+    }
+    var messages = [];
+    var missingTopLevel = !pageHasTopLevelEpisodePlans(page);
+    if (missingTopLevel) {
+      messages.push(
+        "Upstream episode_plans exist (" +
+          upstreamRows.length +
+          " plan row(s)) but page.episode_plans is missing or empty."
+      );
+    }
+    var activityRows = collectLearningActivityRowsFromPage(page);
+    var activitiesMissing = [];
+    activityRows.forEach(function (row, index) {
+      if (pageActivityRowHasPortableEpisodePlan(row)) return;
+      var aid = String((row && row.activity_id) || "").trim() || "activity_" + (index + 1);
+      activitiesMissing.push(aid);
+      messages.push(
+        "Activity " +
+          aid +
+          " is missing episode_plan { archetype, beats: [{ function }] } on learning_activities.content[]."
+      );
+    });
+    if (activityRows.length && activitiesMissing.length === activityRows.length) {
+      messages.push(
+        "All " +
+          activityRows.length +
+          " composed learning activity row(s) are missing per-activity episode_plan."
+      );
+    }
+    var outcome = missingTopLevel || activitiesMissing.length ? "fail" : "pass";
+    return {
+      validation: "page_episode_plans_closure",
+      outcome: outcome,
+      messages: messages,
+      missing_top_level_episode_plans: missingTopLevel,
+      activities_missing_episode_plan: activitiesMissing,
+      upstream_episode_plan_count: upstreamRows.length,
+      composed_activity_count: activityRows.length
+    };
+  }
+
+  function appendPageCompositionEpisodePlansClosureWarnings(page, validationResult) {
+    if (!page || typeof page !== "object" || !validationResult) return page;
+    if (validationResult.outcome === "pass" || validationResult.outcome === "skip") return page;
+    if (!Array.isArray(validationResult.messages) || !validationResult.messages.length) return page;
+    if (!page.generation_notes || typeof page.generation_notes !== "object") {
+      page.generation_notes = {};
+    }
+    var gn = page.generation_notes;
+    if (!Array.isArray(gn.limitations)) {
+      gn.limitations = gn.limitations != null && String(gn.limitations).trim() ? [String(gn.limitations)] : [];
+    }
+    validationResult.messages.forEach(function (msg) {
+      var line = "[PRISM page episode plans closure] " + String(msg);
+      if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
+    });
+    return page;
+  }
+
+  function buildPageEpisodePlansClosureDiagnostic(page, upstreamEpisodePlans) {
+    if (!page || typeof page !== "object") {
+      return {
+        raw_has_top_level_episode_plans: false,
+        raw_activity_rows_with_episode_plan: 0,
+        raw_activity_row_count: 0,
+        source_artefacts_lists_episode_plans: false
+      };
+    }
+    var rows = collectLearningActivityRowsFromPage(page);
+    var withPlan = 0;
+    rows.forEach(function (row) {
+      if (pageActivityRowHasPortableEpisodePlan(row)) withPlan += 1;
+    });
+    var sa = page.source_artefacts;
+    var listsEpisodePlans = false;
+    if (Array.isArray(sa)) {
+      listsEpisodePlans = sa.indexOf("episode_plans") !== -1;
+    } else if (sa && typeof sa === "object") {
+      listsEpisodePlans = sa.episode_plans === true;
+    }
+    return {
+      raw_has_top_level_episode_plans: pageHasTopLevelEpisodePlans(page),
+      raw_activity_rows_with_episode_plan: withPlan,
+      raw_activity_row_count: rows.length,
+      source_artefacts_lists_episode_plans: listsEpisodePlans
+    };
+  }
+
+  function designPageComposeContractIncludesEpisodePlans(text) {
+    return /EPISODE PLANS \(portable page schema/i.test(String(text || ""));
+  }
+
+  function designPageComposeContractStaleWithoutEpisodePlans(text) {
+    var body = String(text || "");
+    if (!ldDesignPageComposeAlreadyPresent(body)) return false;
+    return !designPageComposeContractIncludesEpisodePlans(body);
+  }
+
   function validatePageMaterialsClosureFromLib(page, upstreamActivityMaterials, options) {
     var mod = resolvePageGamMaterialsPreserveLib();
     if (!mod || typeof mod.validatePageMaterialsClosure !== "function") {
@@ -37428,6 +38350,43 @@
       };
     }
     return mod.validatePageMaterialsClosure(page, upstreamActivityMaterials, options);
+  }
+
+  function validatePageBeatMaterialClosureFromLib(page, options) {
+    var mod = resolveBeatMaterialRegistryLib();
+    if (!mod || typeof mod.validatePageBeatMaterialClosure !== "function") {
+      return {
+        validation: "page_beat_material_closure",
+        outcome: "skip",
+        messages: ["validatePageBeatMaterialClosure module unavailable"],
+        diagnostics: {
+          activities: [],
+          beat_coverage: {},
+          unassigned_materials: [],
+          empty_beats: [],
+          conflicts: []
+        }
+      };
+    }
+    return mod.validatePageBeatMaterialClosure(page, options);
+  }
+
+  function appendPageCompositionBeatMaterialClosureWarnings(page, validationResult) {
+    if (!page || typeof page !== "object" || !validationResult) return page;
+    if (validationResult.outcome === "pass" || validationResult.outcome === "skip") return page;
+    if (!Array.isArray(validationResult.messages) || !validationResult.messages.length) return page;
+    if (!page.generation_notes || typeof page.generation_notes !== "object") {
+      page.generation_notes = {};
+    }
+    var gn = page.generation_notes;
+    if (!Array.isArray(gn.limitations)) {
+      gn.limitations = gn.limitations != null && String(gn.limitations).trim() ? [String(gn.limitations)] : [];
+    }
+    validationResult.messages.forEach(function (msg) {
+      var line = "[PRISM page beat-material closure] " + String(msg);
+      if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
+    });
+    return page;
   }
 
   function applyPageCompositionMaterialsClosureCaptureState(stepId, materialsValidation) {
@@ -37604,13 +38563,29 @@
   function applyPageCompositionValidationForCapturedPage(stepLi, rawCapture) {
     var parsed = tryParseWorkflowArtefactJson(rawCapture);
     if (!parsed || String(parsed.artifact_type || "").toLowerCase() !== "page") {
-      return { validation: null, materialsValidation: null, json: null };
+      return {
+        validation: null,
+        materialsValidation: null,
+        episodePlansValidation: null,
+        beatMaterialValidation: null,
+        json: null
+      };
     }
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
     var gamUpstream = resolveUpstreamActivityMaterialsFromWorkflowCaptures(upstream);
+    var upstreamEpisodePlans = resolveUpstreamEpisodePlansFromWorkflowCaptures({});
+    var rawEpisodePlansDiagnostic = buildPageEpisodePlansClosureDiagnostic(
+      parsed,
+      upstreamEpisodePlans
+    );
+    var episodePlansValidationBefore = validatePageEpisodePlansClosure(parsed, {
+      upstreamEpisodePlans: upstreamEpisodePlans,
+      upstreamLearningActivities: upstream
+    });
     var nextPage = applyPedagogicCognitionSemanticsToComposedPage(parsed, {
       upstreamLearningActivities: upstream,
-      upstreamActivityMaterials: gamUpstream
+      upstreamActivityMaterials: gamUpstream,
+      upstreamEpisodePlans: upstreamEpisodePlans
     });
     assignComposedPageMutations(parsed, nextPage);
     var validation = validatePageActivityClosure(parsed, upstream, {});
@@ -37620,6 +38595,19 @@
         console.warn("[PRISM page composition]", validation);
       }
     }
+    var episodePlansValidation = validatePageEpisodePlansClosure(parsed, {
+      upstreamEpisodePlans: upstreamEpisodePlans,
+      upstreamLearningActivities: upstream
+    });
+    if (episodePlansValidation.outcome === "fail") {
+      appendPageCompositionEpisodePlansClosureWarnings(parsed, episodePlansValidation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page episode plans closure]", episodePlansValidation);
+      }
+    }
+    validation.episodePlansValidation = episodePlansValidation;
+    validation.episodePlansValidationBefore = episodePlansValidationBefore;
+    validation.rawEpisodePlansDiagnostic = rawEpisodePlansDiagnostic;
     var materialsValidation = validatePageMaterialsClosureFromLib(parsed, gamUpstream, {
       upstreamLearningActivities: upstream
     });
@@ -37632,11 +38620,29 @@
     }
     var stepId = stepLi ? String(stepLi.getAttribute("data-step-id") || "").trim() : "";
     applyPageCompositionMaterialsClosureCaptureState(stepId, materialsValidation);
+    var beatMaterialValidation = validatePageBeatMaterialClosureFromLib(parsed, {
+      classifyFromText: utilityClassifyPedagogicalBeat
+    });
+    validation.beatMaterialValidation = beatMaterialValidation;
+    if (beatMaterialValidation.outcome === "fail" || beatMaterialValidation.outcome === "warn") {
+      appendPageCompositionBeatMaterialClosureWarnings(parsed, beatMaterialValidation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page beat-material closure]", beatMaterialValidation);
+      }
+    }
     var json = null;
     try {
       json = JSON.stringify(parsed, null, 2);
     } catch (_) {}
-    return { validation: validation, materialsValidation: materialsValidation, json: json };
+    return {
+      validation: validation,
+      materialsValidation: materialsValidation,
+      episodePlansValidation: episodePlansValidation,
+      episodePlansValidationBefore: episodePlansValidationBefore,
+      beatMaterialValidation: beatMaterialValidation,
+      rawEpisodePlansDiagnostic: rawEpisodePlansDiagnostic,
+      json: json
+    };
   }
 
   function applyPageCompositionValidationForUtilitiesPage(parsed, options) {
@@ -37676,6 +38682,16 @@
       appendPageCompositionMaterialsClosureWarnings(parsed, materialsValidation);
       if (typeof console !== "undefined" && console.warn) {
         console.warn("[PRISM page materials closure]", materialsValidation);
+      }
+    }
+    var beatMaterialValidation = validatePageBeatMaterialClosureFromLib(parsed, {
+      classifyFromText: utilityClassifyPedagogicalBeat
+    });
+    validation.beatMaterialValidation = beatMaterialValidation;
+    if (beatMaterialValidation.outcome === "fail" || beatMaterialValidation.outcome === "warn") {
+      appendPageCompositionBeatMaterialClosureWarnings(parsed, beatMaterialValidation);
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page beat-material closure]", beatMaterialValidation);
       }
     }
     return validation;
@@ -38073,10 +39089,7 @@
     var title = String((parsed && (parsed.title || parsed.name)) || utilityLabelFromKey(plan.artefactType || "Artefact"));
     htmlParts.push("<h1>" + utilityEscapeHtml(title) + "</h1>");
 
-    if (journeyCompassData) {
-      var pageCompassHeaderHtml = renderJourneyCompassPageHeaderHtml(journeyCompassData);
-      if (pageCompassHeaderHtml) htmlParts.push(pageCompassHeaderHtml);
-    } else if (utilityShouldShowPageAudienceLine(parsed)) {
+    if (!journeyCompassData && utilityShouldShowPageAudienceLine(parsed)) {
       htmlParts.push(
         "<p><strong>Audience:</strong> " + utilityEscapeHtml(String(parsed.audience)) + "</p>"
       );
@@ -38091,7 +39104,8 @@
       generation_notes: true,
       visual_affordance_schema_version: true,
       activities_visual_review: true,
-      visual_affordances: true
+      visual_affordances: true,
+      episode_plans: true
     };
     var pageMetadataKeyOrder = [
       "source_artefacts",
@@ -38343,7 +39357,6 @@
       return buildUtilityLearningObjectHtml(title, loAudience, loBlocks, metadataBlocks);
     }
 
-    var journeyCompassEnabled = journeyCompassWillRender;
     var resourceBodyParts = primaryBlocks.slice();
     if (metadataBlocks.length) {
       resourceBodyParts.push(
@@ -38414,27 +39427,30 @@
         if (!liMatches.length) return full;
         var parsed = liMatches.map(parseCheckboxInner);
         if (!parsed.every(function (x) { return !!x; })) return full;
-        var rows = parsed.map(function (entry) {
-          return '<li><span class="util-checkbox" aria-hidden="true">' +
-            utilityEscapeHtml(entry.token) +
-            '</span><span>' + entry.textHtml + "</span></li>";
-        }).join("");
-        return '<ul class="util-checkbox-list">' + rows + "</ul>";
+        var rows = parsed
+          .map(function (entry) {
+            if (!entry || !String(entry.textHtml || "").trim()) return "";
+            return "<li>" + entry.textHtml + "</li>";
+          })
+          .filter(function (x) { return !!x; })
+          .join("");
+        if (!rows) return full;
+        return '<ul class="util-checklist">' + rows + "</ul>";
       });
       out = out.replace(/<li>\s*#{2,3}\s*([^<]+?)\s*<\/li>/gi, function (_, heading) {
         return '<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(String(heading || "").trim()) + "</h5>";
       });
       out = out.replace(/(<(?:p|li|h4|h5)[^>]*>\s*)#{2,3}\s+/gi, "$1");
-      // Merge adjacent plain bullet lists only (never merge with util-checkbox-list).
+      // Merge adjacent plain bullet lists only (never merge with util-checklist).
       for (var mergeIdx = 0; mergeIdx < 4; mergeIdx += 1) {
         var mergeSource = out;
         var merged = mergeSource.replace(/<\/ul>\s*<ul\b([^>]*)>/gi, function (whole, attrs, offset) {
-          if (/\butil-checkbox-list\b/i.test(String(attrs || ""))) return whole;
+          if (/\butil-checklist\b/i.test(String(attrs || ""))) return whole;
           var before = mergeSource.slice(0, offset);
           var lastUl = before.lastIndexOf("<ul");
           if (lastUl === -1) return whole;
           var openTag = before.slice(lastUl).match(/^<ul\b[^>]*>/i);
-          if (openTag && /\butil-checkbox-list\b/i.test(openTag[0])) return whole;
+          if (openTag && /\butil-checklist\b/i.test(openTag[0])) return whole;
           return "";
         });
         if (merged === out) break;
@@ -38456,11 +39472,13 @@
         if (!textOnly) return "";
         return full;
       });
+      out = out.replace(/<ul class="util-checkbox-list"/gi, '<ul class="util-checklist"');
+      out = out.replace(/<span class="util-checkbox"[^>]*>[\s\S]*?<\/span>/gi, "");
       out = utilitySanitizeLeakedInternalRenderTokens(out);
       return utilityStripObjectObjectLeaks(out);
     }
     htmlParts.unshift(
-      "<style>.util-checkbox-list{list-style:none;margin-left:0;padding-left:0}.util-checkbox-list li{display:flex;gap:.5rem;align-items:flex-start}.util-checkbox{flex:0 0 auto}</style>"
+      "<style>.util-checklist{list-style:disc;margin:8px 0 14px 1.1rem;padding:0}.util-checklist li{margin:0 0 6px;line-height:1.45}</style>"
     );
 
     var htmlDoc = [
@@ -38469,20 +39487,23 @@
       "<head>",
       "<meta charset=\"utf-8\" />",
       "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
-      "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />",
       "<title>" + utilityEscapeHtml(title) + "</title>",
       "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:920px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:28px 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}" +
         getUtilityPagePresentationCss() +
         "</style>",
       "</head>",
-      '<body class="util-page-export' +
-        (journeyCompassEnabled ? " util-page-export--with-compass" : "") +
-        '">',
+      '<body class="util-page-export">',
       htmlParts.join(""),
       "</body>",
       "</html>"
     ].join("");
     htmlDoc = sanitizeUtilityHtmlOutput(htmlDoc);
+    if (isPageArtefact) {
+      htmlDoc = utilityApplyLearningJourneyHeaderToExportHtml(htmlDoc, {
+        journeyCompass: journeyCompassData,
+        journeyCompassEnabled: journeyCompassWillRender
+      });
+    }
     return { html: htmlDoc };
   }
 
@@ -40061,6 +41082,20 @@
     prismTestApi.renderUtilitiesArtefactHtmlAsyncForTest = renderUtilitiesArtefactHtmlAsync;
     prismTestApi.getPageSectionsForRenderForTest = getPageSectionsForRender;
     prismTestApi.utilityRenderLiveExportCsvTableBlockForTest = utilityRenderLiveExportCsvTableBlock;
+    prismTestApi.utilityClassifyPedagogicalBeatForTest = utilityClassifyPedagogicalBeat;
+    prismTestApi.utilityRenderPedagogicalBeatHtmlForTest = utilityRenderPedagogicalBeatHtml;
+    prismTestApi.getUtilityPedagogicalIconRendererForTest = getUtilityPedagogicalIconRenderer;
+    prismTestApi.utilityRenderLearningJourneyNavHtmlForTest = utilityRenderLearningJourneyNavHtml;
+    prismTestApi.utilityNormalizeJourneyNavLabelForTest = utilityNormalizeJourneyNavLabel;
+    prismTestApi.utilityFormatJourneyNavLabelDisplayForTest = utilityFormatJourneyNavLabelDisplay;
+    prismTestApi.utilityLearningJourneyNavLayoutClassForTest = utilityLearningJourneyNavLayoutClass;
+    prismTestApi.utilityComputeJourneyStructuralProgressForTest = utilityComputeJourneyStructuralProgress;
+    prismTestApi.utilityApplyLearningJourneyHeaderToExportHtmlForTest =
+      utilityApplyLearningJourneyHeaderToExportHtml;
+    prismTestApi.utilityApplyLearningJourneyRibbonToExportHtmlForTest =
+      utilityApplyLearningJourneyRibbonToExportHtml;
+    prismTestApi.utilityCollectLearningJourneyActivitiesFromExportHtmlForTest =
+      utilityCollectLearningJourneyActivitiesFromExportHtml;
     prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride, renderOptions) {
       var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
       return runUtilityPageExportPipeline(parsed, {
@@ -40140,7 +41175,30 @@
         raw && typeof raw === "object" ? Object.assign({}, raw) : {};
     };
     prismTestApi.validatePageActivityClosure = validatePageActivityClosure;
+    prismTestApi.validatePageEpisodePlansClosure = validatePageEpisodePlansClosure;
+    prismTestApi.appendPageCompositionEpisodePlansClosureWarnings =
+      appendPageCompositionEpisodePlansClosureWarnings;
+    prismTestApi.buildPageEpisodePlansClosureDiagnostic = buildPageEpisodePlansClosureDiagnostic;
+    prismTestApi.designPageComposeContractIncludesEpisodePlans =
+      designPageComposeContractIncludesEpisodePlans;
+    prismTestApi.designPageComposeContractStaleWithoutEpisodePlans =
+      designPageComposeContractStaleWithoutEpisodePlans;
+    prismTestApi.ldDesignPageComposeAlreadyPresent = ldDesignPageComposeAlreadyPresent;
     prismTestApi.validatePageMaterialsClosureFromLib = validatePageMaterialsClosureFromLib;
+    prismTestApi.validatePageBeatMaterialClosureFromLib = validatePageBeatMaterialClosureFromLib;
+    prismTestApi.resolveBeatMaterialRegistryLib = resolveBeatMaterialRegistryLib;
+    prismTestApi.buildBeatRenderDiagnosticForTest = function (activity) {
+      var mod = resolveBeatMaterialRegistryLib();
+      if (!mod || typeof mod.buildBeatRenderDiagnostic !== "function") return null;
+      return mod.buildBeatRenderDiagnostic(activity);
+    };
+    prismTestApi.resolveBeatMaterialsForTest = function (activity) {
+      var mod = resolveBeatMaterialRegistryLib();
+      if (!mod || typeof mod.resolveBeatMaterials !== "function") return [];
+      return mod.resolveBeatMaterials(activity);
+    };
+    prismTestApi.appendPageCompositionBeatMaterialClosureWarnings =
+      appendPageCompositionBeatMaterialClosureWarnings;
     prismTestApi.appendPageCompositionClosureWarnings = appendPageCompositionClosureWarnings;
     prismTestApi.appendPageCompositionMaterialsClosureWarnings =
       appendPageCompositionMaterialsClosureWarnings;
@@ -40165,6 +41223,12 @@
     prismTestApi.applyPedagogicCognitionSemanticsToComposedPage =
       applyPedagogicCognitionSemanticsToComposedPage;
     prismTestApi.applyComposedPageGamMaterialsPreserve = applyComposedPageGamMaterialsPreserve;
+    prismTestApi.applyComposedPageEpisodePlansPreserve = applyComposedPageEpisodePlansPreserve;
+    prismTestApi.resolveUpstreamEpisodePlansFromWorkflowCaptures =
+      resolveUpstreamEpisodePlansFromWorkflowCaptures;
+    prismTestApi.pageArtefactHasPortableEpisodePlans = pageArtefactHasPortableEpisodePlans;
+    prismTestApi.ensureEpisodePlanInputBindingsForSteps = ensureEpisodePlanInputBindingsForSteps;
+    prismTestApi.ensureDlaEpisodePlanInputBindingsForSteps = ensureDlaEpisodePlanInputBindingsForSteps;
     prismTestApi.validate38LPageGamPreservationForTest = function (page, options) {
       var mod = resolvePageGamMaterialsPreserveLib();
       if (!mod || typeof mod.validate38LPageGamPreservation !== "function") {
@@ -40277,7 +41341,6 @@
     prismTestApi.syncAllWorkflowRunCapturesFromDomToState = syncAllWorkflowRunCapturesFromDomToState;
     prismTestApi.resolveWorkflowForUpstreamArtefacts = resolveWorkflowForUpstreamArtefacts;
     prismTestApi.resolveUpstreamWorkflowArtefactFromCaptures = resolveUpstreamWorkflowArtefactFromCaptures;
-    prismTestApi.ensureDlaEpisodePlanInputBindingsForSteps = ensureDlaEpisodePlanInputBindingsForSteps;
     prismTestApi.resolveEffectiveInputBindingsForPromptStep = resolveEffectiveInputBindingsForPromptStep;
     prismTestApi.bindingArtifactMatchesProducer = bindingArtifactMatchesProducer;
     prismTestApi.resolveCaptureTextForWorkflowStep = resolveCaptureTextForWorkflowStep;

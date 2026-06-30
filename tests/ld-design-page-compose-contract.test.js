@@ -25,7 +25,7 @@ test("49-C2: membership forbids material shell and synopsis substitution", () =>
   assert.match(text, /copy the full materials object onto the matching row/i);
   assert.match(text, /no synopsis, reference-only, placeholder, or catalogue substitution/i);
   assert.match(text, /generation_notes\.limitations with explicit reason/i);
-  assert.match(text, /do not thin materials to references/i);
+  assert.match(text, /never truncate, summarise, or thin materials to references/i);
   assert.doesNotMatch(text, /activity shell with available fields and material references/i);
   assert.doesNotMatch(text, /retain the activity shell/i);
 });
@@ -85,6 +85,19 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references sibling modules without inlini
   assert.match(text, /Sprint 38 visual/i);
   assert.match(text, /additive page-root metadata only/i);
   assert.doesNotMatch(text, /Example generate record/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: portable episode_plans schema in compose block", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.ok(Array.isArray(compose.EPISODE_PLAN_LINES));
+  assert.ok(compose.EPISODE_PLAN_LINES.length >= 4);
+  assert.match(text, /EPISODE PLANS \(portable page schema/i);
+  assert.match(text, /top-level episode_plans\[\]/i);
+  assert.match(text, /per-activity episode_plan/i);
+  assert.match(text, /episode_plan_source_activity_id/i);
+  assert.match(text, /source_artefacts MUST list episode_plans/i);
+  assert.match(text, /self-describing/i);
+  assert.match(text, /without requiring workflow captures or session state/i);
 });
 
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: composeAlreadyPresent", () => {

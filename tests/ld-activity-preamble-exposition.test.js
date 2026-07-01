@@ -20,7 +20,7 @@ test("LD-ACTIVITY-PREAMBLE-EXPOSITION: module metadata", () => {
 test("LD-ACTIVITY-PREAMBLE-EXPOSITION: prompt block covers authorial purpose and anti-procedural rules", () => {
   const text = preambleExposition.buildLdActivityPreambleExpositionPromptBlock();
   assert.match(text, /ACTIVITY_PREAMBLE AUTHORIAL PURPOSE/i);
-  assert.match(text, /intellectual momentum/i);
+  assert.match(text, /narrative progression/i);
   assert.match(text, /AVOID as standalone opening sentences/i);
   assert.match(text, /Identify/);
   assert.match(text, /Study the model row/);

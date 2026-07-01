@@ -1,10 +1,10 @@
 # Sprint 55 Context Pack — Educational Product Experience
 
 **Sprint:** 55 — Educational Product Experience  
-**Pack date:** 2026-06-29  
-**Status:** Open  
+**Pack date:** 2026-06-29 (structural rendering update)  
+**Status:** In progress — beat-first rendering operational  
 **Predecessor:** [Sprint 54 closure](../2026-06-29-sprint-54-pedagogic-fidelity-audit/SPRINT-54-CLOSURE-REPORT.md)  
-**Companion docs:** [CHARTER](SPRINT-55-CHARTER.md) · [DECISION-LOG](SPRINT-55-DECISION-LOG.md) · [DESIGN-PRINCIPLES](SPRINT-55-DESIGN-PRINCIPLES.md) · [PRODUCT-BACKLOG](SPRINT-55-PRODUCT-BACKLOG.md)
+**Companion docs:** [CURRENT-STATE](SPRINT-55-CURRENT-STATE.md) · [CHARTER](SPRINT-55-CHARTER.md) · [DECISION-LOG](SPRINT-55-DECISION-LOG.md) · [DESIGN-PRINCIPLES](SPRINT-55-DESIGN-PRINCIPLES.md) · [PRODUCT-BACKLOG](SPRINT-55-PRODUCT-BACKLOG.md)
 
 ---
 
@@ -16,11 +16,27 @@ You are continuing **Sprint 55 — Educational Product Experience** on PRISM.
 
 **Read this pack before responding.**
 
+**Read [SPRINT-55-CURRENT-STATE.md](SPRINT-55-CURRENT-STATE.md) for the completed beat-first milestone and remaining presentation focus.**
+
 **Begin with a fresh learner export** — walk the page as a learner before proposing code.
 
 ---
 
 ## Executive summary — state of the world
+
+### Completed in Sprint 55 (structural — 2026-06-29)
+
+**Beat-first rendering is implemented and operational.**
+
+| Fact | Detail |
+| ---- | ------ |
+| **Canonical structure** | Journey → Activity → **Beat** → Material |
+| **Progression source** | `activity.episode_plan.beats` — not material key order |
+| **Assignment** | `lib/beat-material-registry.js` — one material type → one beat |
+| **Renderer** | Beat sections in episode-plan order; empty beats skipped; legacy material renderers preserved |
+| **Next focus** | Presentation quality — typography, hierarchy, spacing, clutter reduction |
+
+Full detail: [SPRINT-55-CURRENT-STATE.md](SPRINT-55-CURRENT-STATE.md)
 
 ### Known (from Sprint 54 — do not re-prove)
 
@@ -39,9 +55,36 @@ Transform PRISM’s exported learner page from a **well-designed educational doc
 
 * Workflow redesign  
 * Prompt / validator changes  
-* Learning architecture changes  
-* Theme system  
 * Re-proving educational quality or rendering fidelity  
+* Re-opening beat-first / registry / episode-plan render architecture (see [CURRENT-STATE](SPRINT-55-CURRENT-STATE.md))  
+
+### Do start with (current phase)
+
+* Fresh learner export walk — assess **visual noise** and hierarchy on beat-structured activities  
+* Presentation slices: typography, spacing, beat heading discipline, material heading suppression  
+* P1 product chrome (navigator, TOC, progress) where it complements explicit beat structure  
+
+---
+
+## Instructional structure — operational model
+
+Activities remain the **main learner-visible unit**.
+
+When `activity.episode_plan.beats` is present on a page activity:
+
+```
+Activity
+  → Episode Plan Beats (render order)
+      → Registry-assigned Materials
+```
+
+**Replaced model:**
+
+```
+Activity → Materials → inferred progression
+```
+
+Episode plans are **operational instructional structure**, not passive metadata.
 
 ---
 
@@ -49,23 +92,25 @@ Transform PRISM’s exported learner page from a **well-designed educational doc
 
 Sprint 54 established that PRISM can generate and preserve high-quality instructional experiences.
 
-Sprint 55 operates on the hypothesis that the largest remaining gains will come from **product-layer improvements** rather than pedagogic, workflow, or rendering changes.
+Sprint 55 operates on the hypothesis that the largest remaining gains will come from **product-layer improvements** — especially **presentation quality** now that activity-internal progression is explicit.
 
 Specifically:
 
 * The instructional architecture is **stronger** than the current learner experience layer makes visible.  
+* **Beat-first rendering** now exposes episode-plan choreography inside activities.  
 * Learners **can already learn successfully** from PRISM resources.  
-* The next opportunity is to make the learning journey, actions, progress, and revision pathways **easier to perceive and use**.
+* The next opportunity is to make the learning journey, beat sequence, actions, progress, and revision pathways **easier to perceive and use** — with **less visual clutter**.
 
-Therefore Sprint 55 focuses on:
+Therefore Sprint 55 now emphasises:
 
+* **Presentation quality** (typography, hierarchy, spacing, beat/material heading discipline)  
 * Orientation  
 * Navigation  
 * Progress visibility  
 * Affordances  
 * Cognitive accessibility  
 
-rather than instructional redesign.
+rather than instructional redesign or activity-internal structural discovery.
 
 ---
 
@@ -237,9 +282,10 @@ From [SPRINT-55-CHARTER.md](./SPRINT-55-CHARTER.md):
 | 2 | TOC + anchor navigation |
 | 3 | Progress visibility (resource + activity) |
 | 4 | Output affordances (print, next-step) |
-| 5 | One P2 slice (revision **or** hierarchy **or** cognitive a11y) |
-| 6 | Sprint 50/51 regression suites green |
+| 5 | One P2 slice (revision **or** hierarchy **or** cognitive a11y **or** beat presentation) |
+| 6 | Sprint 50/51 + beat-first regression suites green |
 | 7 | Fresh-run learner walkthrough documented |
+| 8 | Beat-first structure operational when episode plans on activities ([CURRENT-STATE](SPRINT-55-CURRENT-STATE.md)) |
 
 ---
 
@@ -275,13 +321,15 @@ Full table: [Sprint 54 closure § Questions we no longer need to re-prove](../20
 
 | Concern | Likely location |
 | ------- | --------------- |
+| **Beat–material registry** | `lib/beat-material-registry.js` |
+| **Beat-first activity render** | `app.js` `renderMaterialsForActivity()` / `renderLearningActivitiesBlocks()` |
 | Learner HTML export | `app.js` `buildUtilityStructuredHtml`, export pipeline |
-| Instructional grammar | `lib/ld-instructional-manifestation-render.js` |
+| Instructional grammar | `lib/ld-instructional-manifestation-render.js` — beat path when episode plan on row |
 | Activity compass (progress) | Existing compass — extend, do not duplicate Orient prose |
-| Pedagogic salience | `lib/ld-pedagogic-salience-render.js` — preserve callouts |
-| Export CSS | Utilities page styles — print + nav chrome |
+| Pedagogic salience | `lib/ld-pedagogic-salience-render.js` — preserve callouts; placement TBD in support layer |
+| Export CSS | Utilities page styles — beat section + print + nav chrome |
 
-*Exact slice boundaries to be decided per backlog item — one narrow slice at a time.*
+*Structural rendering: see [CURRENT-STATE](SPRINT-55-CURRENT-STATE.md). Presentation slices: one narrow change at a time.*
 
 ---
 
@@ -289,24 +337,31 @@ Full table: [Sprint 54 closure § Questions we no longer need to re-prove](../20
 
 ## J.1 Start here
 
-1. Read this pack and [SPRINT-55-PRODUCT-BACKLOG.md](./SPRINT-55-PRODUCT-BACKLOG.md).  
-2. Generate or open a **fresh** learner `page.html` (Marx or inflation).  
-3. Walk the resource as a first-time learner — note journey, navigation, progress gaps.  
-4. Propose **one P1 slice** with acceptance criteria before implementation.  
+1. Read [SPRINT-55-CURRENT-STATE.md](SPRINT-55-CURRENT-STATE.md) and [SPRINT-55-PRODUCT-BACKLOG.md](./SPRINT-55-PRODUCT-BACKLOG.md).  
+2. Generate or open a **fresh** learner `page.html` (Marx beat fixture or inflation export with episode plans on activities).  
+3. Walk the resource as a first-time learner — note **beat hierarchy**, visual noise, and navigation gaps.  
+4. Propose **one presentation or P1 slice** with acceptance criteria before implementation.  
 
 ## J.2 Regression anchors
 
 ```bash
+node --test tests/beat-first-activity-render.test.js
+node --test tests/beat-material-registry.test.js
 node --test tests/sprint-50-phase-2-renderer-instructional-grammar.test.js
 node --test tests/sprint-51-pedagogic-salience-render.test.js
 node --test tests/sprint-51-gam-material-preservation.test.js
 node --test tests/page-materials-closure.test.js
 ```
 
-## J.3 Common failure mode
+## J.3 Common failure modes
 
-Jumping to **theme polish** or **content generation** changes before **journey visibility** and **navigation** exist. Sprint 55 P1 exists to prevent that.
+| Failure mode | Why it hurts |
+| ------------ | ------------ |
+| Theme polish before hierarchy works | P3 deferral |
+| Content generation changes before journey visibility | P1 exists to prevent this |
+| Re-implementing material-order heuristics | Beat-first + registry is settled |
+| Stacking headings under every beat | Violates “beat heading survives” principle |
 
 ---
 
-*End of Sprint 55 context pack.*
+*End of Sprint 55 context pack. Structural update — 2026-06-29.*

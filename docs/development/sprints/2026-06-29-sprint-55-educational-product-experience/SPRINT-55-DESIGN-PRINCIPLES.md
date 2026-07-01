@@ -72,6 +72,14 @@ PRISM exports learning resources.
 
 Sprint 55 improves **how those resources are experienced**.
 
+### 8. Beat heading survives
+
+Inside activities with episode plans, the **beat heading** is the learner’s progression anchor.
+
+Secondary material headings, icons, callouts, and wrapper chrome must **justify their presence** — default stacking from the pre-beat-first renderer is an anti-pattern.
+
+See [SPRINT-55-CURRENT-STATE.md § Guiding principle](SPRINT-55-CURRENT-STATE.md#remaining-sprint-55-focus).
+
 ---
 
 ## Anti-patterns
@@ -82,7 +90,9 @@ Sprint 55 improves **how those resources are experienced**.
 | LMS features (login, analytics, submission) | PRISM exports documents |
 | Theme systems before hierarchy works | P3 deferral |
 | Architecture changes to fix UX gaps | Product layer first |
+| Material-order heuristics overriding episode plans | Beat-first + registry is settled |
+| Redundant headings under every beat | Beat heading survives |
 
 ---
 
-*Sprint 55 design principles — 2026-06-29.*
+*Sprint 55 design principles — 2026-06-29. Principle 8 added — 2026-06-29.*

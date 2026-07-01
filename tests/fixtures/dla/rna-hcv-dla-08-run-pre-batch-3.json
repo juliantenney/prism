@@ -1,0 +1,366 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Core Concepts for LO1",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "This activity introduces the foundational concepts essential for mastering LO1. You will explore key ideas through explanations, examples, and contrasting non-examples to build a robust understanding. Addressing common misconceptions will deepen your grasp and prepare you for guided and independent practice.",
+      "reasoning_orientation": "Focus on how each concept functions within the broader topic and why it matters. As you study examples and non-examples, consider the defining features that distinguish correct from incorrect applications. This approach will help you internalize the principles and avoid common pitfalls.",
+      "self_explanation_prompt": "After reviewing each example and non-example, articulate why the example fits the concept and why the non-example does not. Connect your explanation to the core ideas and anticipate how these distinctions affect practical use.",
+      "learner_task": "Study the provided explanations, examples, and non-examples carefully. Complete the guided practice exercises to apply your understanding, then perform the independent tasks to demonstrate mastery. Finally, verify your answers using the checklist and reflect on your learning progress.",
+      "expected_output": "Your work should demonstrate clear differentiation between correct and incorrect applications of the concepts, with well-reasoned explanations addressing misconceptions. The independent performance should reflect confident and accurate use of the concepts, supported by verification and thoughtful reflection.",
+      "required_materials": [
+        {
+          "material_id": "M_A1_OrientationText",
+          "type": "text",
+          "purpose": "Orientation and framing explanation",
+          "specification": "depth_floor: L3; comprehensive introduction to key concepts and context."
+        },
+        {
+          "material_id": "M_A1_Examples",
+          "type": "worked_example",
+          "purpose": "Illustrative examples",
+          "specification": "depth_floor: L3; stepwise reasoning with annotations highlighting key features."
+        },
+        {
+          "material_id": "M_A1_NonExamples",
+          "type": "worked_example",
+          "purpose": "Contrasting non-examples",
+          "specification": "depth_floor: L3; annotated to show why these do not meet criteria."
+        },
+        {
+          "material_id": "M_A1_Misconceptions",
+          "type": "text",
+          "purpose": "Common misconceptions exposition",
+          "specification": "depth_floor: L3; detailed explanations addressing typical misunderstandings."
+        },
+        {
+          "material_id": "M_A1_GuidedPracticeCards",
+          "type": "task_cards",
+          "purpose": "Guided practice exercises",
+          "specification": "depth_floor: L3; scaffolded tasks with hints and partial solutions."
+        },
+        {
+          "material_id": "M_A1_IndependentTasks",
+          "type": "task_cards",
+          "purpose": "Independent performance tasks",
+          "specification": "depth_floor: L3; tasks requiring autonomous application of concepts."
+        },
+        {
+          "material_id": "M_A1_VerificationChecklist",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria linked to learning outcomes."
+        },
+        {
+          "material_id": "M_A1_ReflectionPromptSet",
+          "type": "prompt_set",
+          "purpose": "Reflection and metacognitive prompts",
+          "specification": "depth_floor: L3; prompts encouraging synthesis and self-evaluation."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Developing Understanding for LO2 with Comparative Analysis",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "This activity deepens your understanding of LO2 by engaging you in comparative analysis of key concepts. You will examine examples and non-examples, confront misconceptions, and apply your knowledge through guided and independent practice. The structured approach supports critical thinking and conceptual clarity.",
+      "reasoning_orientation": "Analyze how each concept operates in different contexts and why certain features are essential. Comparing examples with non-examples sharpens your ability to discern subtle distinctions and strengthens your conceptual framework.",
+      "self_explanation_prompt": "Explain the reasons why each example meets the criteria and why each non-example fails. Support your explanations with evidence from the materials and relate them to the core concepts to reinforce your understanding.",
+      "intellectual_coherence_bridge": "Building on the foundational concepts from the previous activity, this session advances your reasoning by focusing on comparative contrasts and misconception resolution. This progression ensures a coherent development of understanding, preparing you for more complex analysis and application in subsequent activities.",
+      "learner_task": "Engage thoroughly with the explanations and examples, then complete guided practice tasks designed to reinforce your understanding. Proceed to independent tasks that require applying your knowledge autonomously. Use the verification checklist to assess your accuracy and reflect on your learning journey.",
+      "expected_output": "Your completed tasks should clearly differentiate examples from non-examples with well-supported explanations. Independent work should demonstrate confident application of concepts, and reflections should reveal insight into your learning process and conceptual growth.",
+      "required_materials": [
+        {
+          "material_id": "M_A2_OrientationText",
+          "type": "text",
+          "purpose": "Orientation and framing explanation",
+          "specification": "depth_floor: L3; detailed context and conceptual framing."
+        },
+        {
+          "material_id": "M_A2_Examples",
+          "type": "worked_example",
+          "purpose": "Illustrative examples",
+          "specification": "depth_floor: L3; annotated stepwise reasoning."
+        },
+        {
+          "material_id": "M_A2_NonExamples",
+          "type": "worked_example",
+          "purpose": "Contrasting non-examples",
+          "specification": "depth_floor: L3; clear annotations on why criteria are not met."
+        },
+        {
+          "material_id": "M_A2_Misconceptions",
+          "type": "text",
+          "purpose": "Misconception confrontation",
+          "specification": "depth_floor: L3; explanations addressing common errors."
+        },
+        {
+          "material_id": "M_A2_GuidedPracticeCards",
+          "type": "task_cards",
+          "purpose": "Guided practice exercises",
+          "specification": "depth_floor: L3; scaffolded exercises with hints."
+        },
+        {
+          "material_id": "M_A2_IndependentTasks",
+          "type": "task_cards",
+          "purpose": "Independent performance tasks",
+          "specification": "depth_floor: L3; tasks requiring autonomous reasoning."
+        },
+        {
+          "material_id": "M_A2_VerificationChecklist",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria for self-check."
+        },
+        {
+          "material_id": "M_A2_ReflectionPromptSet",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts",
+          "specification": "depth_floor: L3; prompts to encourage metacognitive reflection."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Concepts for LO3 with Criteria and Inquiry",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "This activity focuses on analysing concepts related to LO3 by introducing clear criteria and engaging you in guided inquiry. You will study worked examples of analytic thinking, practice applying criteria, and perform independent analysis. The activity culminates in transferring your skills to novel contexts.",
+      "conceptual_contrast_prompt": "As you analyse, distinguish between different criteria and how they apply to various cases. Contrast alternative interpretations and consider the implications of each analytic choice to deepen your understanding.",
+      "self_explanation_prompt": "Explain the rationale behind each analytic step in the worked example. Reflect on how the criteria guide your thinking and how applying them affects your conclusions.",
+      "intellectual_coherence_bridge": "Following foundational understanding activities, this analysis session builds on prior knowledge by introducing explicit criteria and modelling analytic thinking. This progression supports your development from comprehension to critical analysis and independent inquiry.",
+      "learner_task": "Review the criteria exposition and worked analytic thinking examples carefully. Engage in guided inquiry exercises to apply these criteria, then complete guided practice tasks. Finally, perform independent analysis and verify your work using the detailed checklist. Transfer your skills by applying the criteria to new scenarios.",
+      "expected_output": "Your analysis should demonstrate clear application of criteria with reasoned explanations. Independent work must show autonomous analytic capability, and transfer tasks should reflect flexible use of analytic frameworks. Verification should confirm accuracy and depth of understanding.",
+      "required_materials": [
+        {
+          "material_id": "M_A3_OrientationText",
+          "type": "text",
+          "purpose": "Orientation and framing explanation",
+          "specification": "depth_floor: L3; clear introduction to analytic approach."
+        },
+        {
+          "material_id": "M_A3_CriteriaExposition",
+          "type": "text",
+          "purpose": "Criteria exposition",
+          "specification": "depth_floor: L3; detailed explanation of analytic criteria."
+        },
+        {
+          "material_id": "M_A3_WorkedThinking",
+          "type": "modelling_note",
+          "purpose": "Worked analytic thinking example",
+          "specification": "depth_floor: L3; stepwise analytic reasoning with annotations."
+        },
+        {
+          "material_id": "M_A3_GuidedInquiryTable",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry analysis table",
+          "specification": "depth_floor: L3; table with prompts and partial exemplar rows."
+        },
+        {
+          "material_id": "M_A3_GuidedPracticeCards",
+          "type": "task_cards",
+          "purpose": "Guided practice exercises",
+          "specification": "depth_floor: L3; scaffolded analytic tasks."
+        },
+        {
+          "material_id": "M_A3_IndependentTasks",
+          "type": "task_cards",
+          "purpose": "Independent analytic performance",
+          "specification": "depth_floor: L3; tasks requiring autonomous application of criteria."
+        },
+        {
+          "material_id": "M_A3_VerificationChecklist",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 analytic criteria."
+        },
+        {
+          "material_id": "M_A3_ReflectionPromptSet",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts",
+          "specification": "depth_floor: L3; prompts encouraging analytic self-evaluation."
+        },
+        {
+          "material_id": "M_A3_TransferPrompt",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task prompt",
+          "specification": "depth_floor: L3; prompt guiding application of analytic criteria to new contexts."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Advanced Analysis for LO4 with Criteria and Inquiry",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "This activity advances your analytic skills for LO4 by focusing on detailed criteria exposition and guided inquiry. You will examine worked analytic thinking, engage in scaffolded practice, and perform independent analysis. The session concludes with transfer tasks to consolidate your analytic capability.",
+      "conceptual_contrast_prompt": "Consider how different analytic criteria highlight various aspects of the subject. Contrast these perspectives to understand their implications and limitations, enhancing your analytic depth.",
+      "self_explanation_prompt": "Articulate the reasoning behind applying each analytic criterion. Reflect on how these criteria shape your conclusions and how alternative criteria might lead to different interpretations.",
+      "intellectual_coherence_bridge": "Building on previous analytic activities, this session deepens your understanding by expanding criteria and inquiry techniques. This progression strengthens your ability to perform nuanced analysis and prepares you for evaluative judgement.",
+      "learner_task": "Study the criteria exposition and worked thinking materials thoroughly. Participate in guided inquiry and practice exercises to apply analytic criteria. Complete independent analytic tasks and verify your results with the checklist. Finally, transfer your analytic skills to novel scenarios.",
+      "expected_output": "Your analyses should apply multiple criteria with clear reasoning and justification. Independent work must demonstrate confident, autonomous analytic skill, and transfer tasks should show flexible application of analytic frameworks. Verification should confirm thoroughness and accuracy.",
+      "required_materials": [
+        {
+          "material_id": "M_A4_OrientationText",
+          "type": "text",
+          "purpose": "Orientation and framing explanation",
+          "specification": "depth_floor: L3; introduction to advanced analytic concepts."
+        },
+        {
+          "material_id": "M_A4_CriteriaExposition",
+          "type": "text",
+          "purpose": "Detailed criteria exposition",
+          "specification": "depth_floor: L3; comprehensive explanation of analytic criteria."
+        },
+        {
+          "material_id": "M_A4_WorkedThinking",
+          "type": "modelling_note",
+          "purpose": "Worked analytic thinking example",
+          "specification": "depth_floor: L3; stepwise reasoning with annotations."
+        },
+        {
+          "material_id": "M_A4_GuidedInquiryTable",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry analysis table",
+          "specification": "depth_floor: L3; table with prompts and partial exemplar rows."
+        },
+        {
+          "material_id": "M_A4_GuidedPracticeCards",
+          "type": "task_cards",
+          "purpose": "Guided practice exercises",
+          "specification": "depth_floor: L3; scaffolded analytic tasks."
+        },
+        {
+          "material_id": "M_A4_IndependentTasks",
+          "type": "task_cards",
+          "purpose": "Independent analytic performance",
+          "specification": "depth_floor: L3; autonomous application of criteria."
+        },
+        {
+          "material_id": "M_A4_VerificationChecklist",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 analytic criteria."
+        },
+        {
+          "material_id": "M_A4_ReflectionPromptSet",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts",
+          "specification": "depth_floor: L3; prompts for analytic self-evaluation."
+        },
+        {
+          "material_id": "M_A4_TransferPrompt",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task prompt",
+          "specification": "depth_floor: L3; prompt guiding application of analytic criteria to new contexts."
+        }
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluative Judgement for LO5 with Criteria and Reasoning",
+      "grouping": "individual",
+      "duration_minutes": 70,
+      "mapped_learning_outcomes": [
+        "LO5"
+      ],
+      "activity_preamble": "This activity develops your evaluative judgement skills for LO5 by constructing perspectives, establishing criteria, and practicing reasoned judgement. You will study worked judgements, engage in guided inquiry and reasoning, perform independent evaluations, and verify your conclusions. Transfer tasks will consolidate your evaluative capabilities.",
+      "uncertainty_tension_prompt": "Recognize the inherent uncertainty in evaluative judgements and the tensions between competing criteria. Consider how different perspectives influence the weighting of criteria and the resulting conclusions.",
+      "argument_structure_hint": "Identify multiple defensible criteria and explain their importance. Compare options against these criteria with evidence, then justify your evaluative judgement by weighing trade-offs and acknowledging uncertainties.",
+      "self_explanation_prompt": "Explain the reasoning behind your criteria selection and how they shape your judgement. Reflect on alternative perspectives and justify why your evaluation is well-supported despite uncertainties.",
+      "transfer_or_application_task": "Apply your evaluative judgement skills to a new scenario, constructing criteria, assessing options, and justifying your conclusions in a structured manner.",
+      "intellectual_coherence_bridge": "This culminating activity integrates prior understanding and analytic skills into evaluative judgement. It guides you through constructing reasoned perspectives and criteria, applying them in inquiry and reasoning, and independently making evaluative decisions. This progression fosters sophisticated judgement and prepares you for real-world decision-making.",
+      "learner_task": "Review the perspective construction and criteria exposition materials. Study the worked judgement example carefully. Engage in guided inquiry and reasoning exercises to apply criteria and perspectives. Complete independent evaluative tasks using provided templates. Verify your judgements with the checklist and reflect on your reasoning. Finally, transfer your evaluative skills to a novel case.",
+      "expected_output": "Your evaluative judgements should be well-reasoned, supported by multiple criteria and perspectives, and acknowledge trade-offs and uncertainties. Independent work must show autonomous evaluative capability, and transfer tasks should demonstrate flexible application of evaluative reasoning. Verification should confirm thoroughness and soundness.",
+      "required_materials": [
+        {
+          "material_id": "M_A5_OrientationText",
+          "type": "text",
+          "purpose": "Orientation and framing explanation",
+          "specification": "depth_floor: L3; introduction to evaluative judgement concepts."
+        },
+        {
+          "material_id": "M_A5_PerspectiveConstruction",
+          "type": "text",
+          "purpose": "Perspective construction exposition",
+          "specification": "depth_floor: L3; detailed explanation of constructing evaluative perspectives."
+        },
+        {
+          "material_id": "M_A5_CriteriaExposition",
+          "type": "text",
+          "purpose": "Criteria exposition",
+          "specification": "depth_floor: L3; comprehensive explanation of evaluative criteria."
+        },
+        {
+          "material_id": "M_A5_CriteriaConstruction",
+          "type": "template",
+          "purpose": "Criteria construction template",
+          "specification": "depth_floor: L3; scaffolded template for developing evaluative criteria."
+        },
+        {
+          "material_id": "M_A5_WorkedJudgement",
+          "type": "modelling_note",
+          "purpose": "Worked evaluative judgement example",
+          "specification": "depth_floor: L3; stepwise reasoning with annotations."
+        },
+        {
+          "material_id": "M_A5_GuidedInquiryTable",
+          "type": "decision_table",
+          "purpose": "Guided inquiry decision table",
+          "specification": "depth_floor: L3; table with partial exemplars for guided evaluative reasoning."
+        },
+        {
+          "material_id": "M_A5_GuidedReasoningCards",
+          "type": "task_cards",
+          "purpose": "Guided reasoning exercises",
+          "specification": "depth_floor: L3; scaffolded reasoning tasks."
+        },
+        {
+          "material_id": "M_A5_IndependentJudgementTemplate",
+          "type": "template",
+          "purpose": "Independent evaluative judgement template",
+          "specification": "depth_floor: L3; template for autonomous evaluative decision-making."
+        },
+        {
+          "material_id": "M_A5_EvaluativeJudgementChecklist",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 evaluative criteria."
+        },
+        {
+          "material_id": "M_A5_ReflectionPromptSet",
+          "type": "prompt_set",
+          "purpose": "Reflection prompts",
+          "specification": "depth_floor: L3; prompts for evaluative reasoning reflection."
+        },
+        {
+          "material_id": "M_A5_TransferPrompt",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task prompt",
+          "specification": "depth_floor: L3; prompt for applying evaluative judgement to new scenarios."
+        },
+        {
+          "material_id": "M_A5_ConsolidationSummary",
+          "type": "consolidation_summary",
+          "purpose": "Session consolidation and synthesis",
+          "specification": "depth_floor: L3; learner-facing summary of key ideas and learning takeaways (≥80 words)."
+        }
+      ]
+    }
+  ]
+}

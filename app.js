@@ -6884,6 +6884,26 @@
     );
   }
 
+  function contextLooksLikeLearningActivitiesCapture(context) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var outputName = String(ctx.stepOutputName || ctx.outputName || "").trim().toLowerCase();
+    if (outputName) {
+      outputName = outputName.replace(/\s+/g, "_");
+      if (outputName === "learning_activities") return true;
+    }
+    var artefact = String(ctx.artifact_type || ctx.artifactType || "").trim().toLowerCase();
+    if (artefact === "learning_activities") return true;
+    if (Array.isArray(ctx.activities)) return true;
+    if (
+      ctx.learning_activities &&
+      typeof ctx.learning_activities === "object" &&
+      (Array.isArray(ctx.learning_activities.activities) || Array.isArray(ctx.learning_activities.content))
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   function isWorkflowStepGenerateActivityMaterials(context) {
     var title = String(
       (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
@@ -7456,6 +7476,7 @@
 
   var LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS =
     SELF_DIRECTED_ACTIVITY_FRAMING_FIELD_IDS.concat([
+      "learner_task",
       "support_note",
       "support_notes",
       "expected_output"
@@ -7539,7 +7560,7 @@
     return [
       "",
       "Learner-page activity framing (auto-applied):",
-      "- Before each substantial activity, include activity_preamble: 1–3 topic-specific sentences of explanatory educational prose — why the idea matters, the intellectual question explored, connection to prior learning, and momentum into the task (see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
+      "- Before each substantial activity, include activity_preamble: approximately 50–120 words (2–4 sentences) of topic-specific explanatory educational prose — why the idea matters, the intellectual question explored, the key distinction or mechanism to attend to, connection to prior learning, and the kind of reasoning required (see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
       "- activity_preamble must not open with procedural verbs (Identify, Analyse, Examine, Establish, Complete, Study the model row) or restate learner_task instructions.",
       "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
       "- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).",
@@ -7555,40 +7576,29 @@
     var facilitated = !!opts.facilitated;
     var lines = [
       "",
-      "OUTPUT CONTRACT (learner-facing page — overrides the activity field list above):",
-      "- Each activity object MUST include activity_preamble (non-empty string, 1–3 topic-specific sentences: explanatory/narrative prose on significance, conceptual question, prior-learning link, and intellectual momentum — not procedural task openers; see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
-      "- Each activity object MUST include at least one cognition-orientation field (non-empty): reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task — match the beat archetype (see Learner-page activity framing by archetype).",
-      "- Additive learner-facing fields (use exact JSON keys): prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
-      "- study_orientation: on the first activity when the page has multiple activities — 2–4 topic-specific sentences on how to work through this page (sequence, effort, note-taking) — not generic module welcome text; do not repeat the full overview/learning_purpose journey paragraph (assume page entry already established topic, stakes, and arc).",
-      "- intellectual_frame: optional once — on the first activity or a single page-level cue — name the mode of inquiry in 1–2 sentences (orientation — not a reasoning scaffold).",
-      "- intellectual_coherence_bridge: on each activity after the first when there are 2+ activities — one sentence: carried reasoning move or distinction from the prior step + what escalates (see Intellectual progression signalling); do not repeat the activity title or use location-only transitions.",
-      "- self_explanation_prompt: at least two activities; one generative-retrieval prompt each requiring explanatory reasoning in the learner's own words (depth_floor L3 — e.g. explain and justify before checking; not a label or single token).",
-      "- prior_knowledge_activation: at least one activity when prior context helps.",
-      "- reasoning_orientation: on compare/analyse/application/cause-effect activities — 1–2 sentences on WHAT KIND OF THINKING (not a restatement of learner_task).",
-      "- evidence_use_prompt: on activities that use transcript/extract/reading — how to quote, paraphrase, or map claims to the source (not a bibliography).",
-      "- argument_structure_hint: on compare/evaluate/argument activities — claim → evidence → implication scaffold with meaningful reasoning steps.",
-      "- conceptual_contrast_prompt: on compare/distinguish/misconception activities — name concepts to contrast and one plausible merge error (conceptual difficulty type).",
-      "- uncertainty_tension_prompt: optional on 1–2 activities when interpretive ambiguity or disciplinary uncertainty is central — one sentence: what is unstable + discriminating move; not reflective diary prose (see Conceptual tension and difficulty framing).",
-      "- disciplinary_lens: optional once per page — tag-like lens label naming the discipline mode (e.g. \"Thinking as a historian\") — do not duplicate intellectual_frame prose.",
-      "- Reasoning fields (reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt) explain HOW TO THINK — do not repeat activity_preamble, study_orientation, learner_task, or intellectual_frame.",
-      "- transfer_or_application_task: on the culminating or transfer-phase activity when the page supports application (2+ activities or phased single activity) — one sentence: named move + changed context; may add one clause on where the move fails or an assumption breaks — not generic real-world application.",
-      "- scaffold_hint_sequence: optional on at most one challenging activity (JSON array of 2–3 substantive hint strings with procedural or reasoning guidance)."
+      "OUTPUT CONTRACT (learner-facing copy fields — author to the learner; scaffold: LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT):",
+      "- Each activity MUST include activity_preamble, expected_output, and ≥1 cognition scaffold field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, transfer_or_application_task); intellectual_coherence_bridge mandatory on A2+ per SSOT.",
+      "- Additive fields: prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.",
+      "- Optional: intellectual_frame; uncertainty_tension_prompt; study_orientation (first activity when used); learner_task may stay concise without shortening other scaffold fields.",
+      "- Distribution: self_explanation_prompt on ≥2 activities; prior_knowledge_activation on ≥1 when prior context helps.",
+      buildLearnerPageActivityFramingArchetypePromptBlock().replace(
+        "Learner-page activity framing by archetype (mandatory minimum — every activity):",
+        "Learner-page activity framing by archetype (match episode_plan beat / primary_archetype):"
+      ).replace(
+        "- Every activity MUST include activity_preamble (why it matters, capability developed, link to the wider learning journey) AND at least one cognition-orientation field from OUTPUT CONTRACT.\n",
+        ""
+      )
     ];
-    if (facilitated) {
-      lines.push(
-        "- facilitator_moves: optional when the brief requires facilitated choreography — keep timing, group structure, and orchestration here, not in learner-facing orientation fields.",
-        "- failure_mode: optional when debrief or facilitator reveal timing is specified."
-      );
-    } else {
-      lines.push(
-        "- facilitator_moves: omit for self-directed learner-page activities (do not add facilitator choreography prose).",
-        "- failure_mode: omit for self-directed learner-page activities unless the brief explicitly requires facilitated debrief."
-      );
-    }
     lines.push(
-      "- These fields are required in addition to learner_task, expected_output, required_materials, and other schema fields — do not drop them because they are absent from the shorter list above.",
-      "- Do not emit learner-page activities with only title, learner_task, expected_output, and required_materials — every activity needs activity_preamble and at least one cognition-orientation field."
+      "- facilitator_moves / failure_mode: see facilitated vs self-directed rules above when applicable."
     );
+    if (facilitated) {
+      lines[lines.length - 1] =
+        "- facilitator_moves: optional for facilitated choreography; failure_mode: optional when debrief timing is specified.";
+    } else {
+      lines[lines.length - 1] =
+        "- facilitator_moves and failure_mode: omit for self-directed learner-page activities unless brief requires facilitated debrief.";
+    }
     return lines.join("\n");
   }
 
@@ -7603,31 +7613,32 @@
       "{",
       '  "activity_id": "A2",',
       '  "title": "Compare major works",',
-      '  "activity_preamble": "Marx\'s major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative.",',
-      '  "reasoning_orientation": "Compare texts as historical arguments: trace claim, evidence, and implied audience — not plot summary.",',
-      '  "argument_structure_hint": "For each work: state one claim, cite one passage, then note one implication.",',
-      '  "conceptual_contrast_prompt": "Contrast revolutionary programme (Manifesto) with systematic critique of capitalism (Kapital) — avoid treating them as identical calls to action.",',
-      '  "self_explanation_prompt": "Before checking the model row, explain which text you find more convincing, why that matters for the argument, and cite one passage as evidence.",',
+      '  "activity_preamble": "Marx\'s major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative. Notice how authorial purpose changes which evidence counts as decisive.",',
+      '  "reasoning_orientation": "Compare texts as historical arguments rather than plot summaries. For each work, trace the central claim, the evidence Marx selects, and the audience he appears to address. Strong answers explain why a difference in purpose changes how you read the same historical event.",',
+      '  "argument_structure_hint": "Name one defensible claim per work and say why that criterion matters. Cite a passage as evidence, then explain what follows for your judgement. Compare both works on the same criteria before you conclude, including what trade-off you weighed.",',
+      '  "conceptual_contrast_prompt": "When you contrast the Manifesto with Kapital, focus on whether each text is primarily a revolutionary programme or a systematic critique. The distinction changes which evidence and conclusions are appropriate for each work.",',
+      '  "self_explanation_prompt": "Before checking the model row, explain which contrast you find more defensible and cite one passage. State why it supports your judgement and connect it to the distinction being tested — expand until a peer could follow your reasoning.",',
       '  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",',
-      '  "expected_output": "A filled comparison table a peer could review — each row has purpose text and one cited difference.",',
-      '  "support_note": "Purpose is the author\'s aim, not a plot summary; difference must compare the two works, not repeat the same sentence twice.",',
+      '  "expected_output": "Your completed table should give a purpose statement and one cited, defensible difference per row. Strong entries explain why the difference follows from evidence in the texts, not from a generic summary of content.",',
       '  "required_materials": [',
-      '    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "depth_floor: L3; paired excerpt blocks ≥150 words each with titled sections, quotable spans, and context for independent study." },',
-      '    { "material_id": "M2", "type": "checklist", "purpose": "verification", "specification": "depth_floor: L3; ≥4 criteria-linked check items + repair path if any fail." }',
+      '    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "depth_floor: L3; paired excerpt blocks ≥150 words each with quotable spans." }',
       "  ]",
       "}",
       "",
-      "38L mandatory rows not shown in miniature example above — when IFP-10/DLA-WB-26..31 apply, ALSO emit: checklist on EVERY activity; Analyse worked analytic pass before analysis_table; Evaluate independent judgement template + verification checklist + transfer_prompt (not cognition field only). See pack IFP-10 and DLA-WB-26..31 above — do not copy the thin single-material shape."
+      "Scaffold strings = SSOT page copy (see LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT); 38L rows omitted in miniature example — IFP-10/DLA-WB-26..31 when applicable."
     ].join("\n");
   }
 
   function augmentSelfDirectedDlaDraftOutputSection(draftBody) {
     var body = String(draftBody || "");
     var pointer =
-      "- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT below.\n";
+      "- Learner-page activities: activity_preamble + ≥1 cognition scaffold field + bridge on A2+; SSOT SCAFFOLD GENRE applies — learner_task may stay concise; do not shorten scaffold prose for JSON brevity.\n";
     if (
       /activity_preamble and at least one cognition-orientation field per output contract/i.test(body) ||
-      /activity_preamble and may include cognition-orientation fields per output contract/i.test(body)
+      /activity_preamble and may include cognition-orientation fields per output contract/i.test(body) ||
+      /scaffold prose quality \(word ranges, PRE-EMIT\): see LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i.test(
+        body
+      )
     ) {
       return reinforceLearnerPageDlaActivitiesOutputSchema(body);
     }
@@ -7650,18 +7661,18 @@
   }
 
   var LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
-    "- activities[]: activity_id, title, grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED per activity when self_directed/learner page), ≥1 cognition-orientation field REQUIRED per activity when self_directed/learner page (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task), optional activity_interaction_type, optional support_note, optional additive fields when applicable (prior_knowledge_activation, evidence_use_prompt, scaffold_hint_sequence, disciplinary_lens, study_orientation, intellectual_frame, intellectual_coherence_bridge), failure_mode, facilitator_moves";
+    "- activities[]: activity_id, title, grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
 
   function reinforceLearnerPageDlaActivitiesOutputSchema(draftBody) {
     var body = String(draftBody || "");
-    if (
-      /≥1 cognition-orientation field REQUIRED per activity when self_directed\/learner page/i.test(
-        body
-      )
-    ) {
-      return body;
-    }
     if (/- activities\[\]:/i.test(body)) {
+      var currentLine = body.match(/- activities\[\]:[^\n]*/i);
+      if (
+        currentLine &&
+        currentLine[0] === LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE
+      ) {
+        return body;
+      }
       return body.replace(
         /- activities\[\]:[^\n]*/i,
         LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE
@@ -7671,10 +7682,13 @@
     if (
       /activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT/i.test(
         body
+      ) ||
+      /scaffold prose quality \(word ranges, PRE-EMIT\): see LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i.test(
+        body
       )
     ) {
       return body.replace(
-        /(- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field per OUTPUT CONTRACT below\.\n)/i,
+        /(- For learner-facing page workflows, each activity MUST include activity_preamble and at least one cognition-orientation field[^\n]*\n)/i,
         "$1" + insertLine
       );
     }
@@ -7758,7 +7772,8 @@
           ]);
         } else if (role === "preserve" || role === "design_page" || role === "preserve_merge") {
           lines = lines.concat([
-            "- Preserve role (Design Page): when upstream activity_materials contains pipe tables, copy each pipe block verbatim into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, etc.).",
+            "- Preserve role (Design Page): when upstream activity_materials contains table materials, copy the full upstream Content string into the matching activity.materials field key (analysis_table, comparison_table, impact_table, classification_table, reference_table, data_table, decision_table, planning_table, template, etc.) — pipe markdown block AND any table-adjunct instructional prose in the same field.",
+            "- Table-adjunct prose (38H-3): preserve instructional context in the same materials.<table_key> body after or around the pipe table — e.g. *Instructions:*, completion guidance, interpretation prompts, worked/completion cues; do not strip non-pipe prose; pipe rows alone are insufficient when upstream includes adjunct guidance.",
             "- Do not flatten tables to comma-separated rows, Headers/Rows prose blocks, or catalogue labels when upstream already has pipe syntax.",
             "- Table fidelity overrides session overview synthesis and any shortening of materials.<table_key> bodies — adjunct guidance is L4-faithful instructional content, not overview prose."
           ]);
@@ -8107,6 +8122,20 @@
     return null;
   }
 
+  function resolvePageActivityFieldPreserveLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_ACTIVITY_FIELD_PRESERVE) {
+        return roots[i].PRISM_PAGE_ACTIVITY_FIELD_PRESERVE;
+      }
+    }
+    return null;
+  }
+
   function resolvePageEpisodePlansPreserveLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -8442,16 +8471,48 @@
     return readRunStepCaptureRawFromLi(li);
   }
 
-  /** Compose upstream reads: prefer authoritative raw capture, then sanitized, then DOM. */
+  /** Compose upstream reads: prefer repaired sanitized capture for DLA; otherwise raw paste. */
   function readWorkflowRunUpstreamCaptureTextForStepId(stepId) {
     var sid = String(stepId || "").trim();
     if (!sid) return "";
     var captures = state.workflowRunCapturedOutputs || {};
     var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    var stepRow = null;
+    if (wf && Array.isArray(wf.steps)) {
+      stepRow =
+        wf.steps.find(function (row) {
+          return String(row && row.id ? row.id : "") === sid;
+        }) || null;
+    }
+    var dlaProducer =
+      (stepRow && workflowStepProducesArtefact(stepRow, "learning_activities")) ||
+      contextLooksLikeLearningActivitiesCapture(stepRow || {});
+    if (!dlaProducer) {
+      var sanitizedProbe = sid && captures[sid] ? tryParseWorkflowArtefactJson(captures[sid]) : null;
+      if (
+        sanitizedProbe &&
+        (Array.isArray(sanitizedProbe.activities) ||
+          String(sanitizedProbe.artifact_type || "").toLowerCase() === "learning_activities" ||
+          (sanitizedProbe.learning_activities &&
+            typeof sanitizedProbe.learning_activities === "object" &&
+            (Array.isArray(sanitizedProbe.learning_activities.activities) ||
+              Array.isArray(sanitizedProbe.learning_activities.content))))
+      ) {
+        dlaProducer = true;
+      }
+    }
+    if (dlaProducer) {
+      var fromSanitizedDla = captures[sid] ? String(captures[sid]) : "";
+      if (String(fromSanitizedDla || "").trim()) return fromSanitizedDla;
+    }
     var fromRaw = sid && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
     if (String(fromRaw || "").trim()) return fromRaw;
     var fromSanitized = sid && captures[sid] ? String(captures[sid]) : "";
     if (String(fromSanitized || "").trim()) return fromSanitized;
+    if (dlaProducer) {
+      return "";
+    }
     var liSteps = getWorkflowStepElements();
     if (!liSteps.length) return "";
     var li =
@@ -8787,7 +8848,26 @@
             return String(node.getAttribute("data-step-id") || "").trim() === sid;
           }) || null;
         if (li) {
+          if (target === "learning_activities") {
+            syncWorkflowRunCapturedOutputToState(li);
+            var normalizedRaw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
+            var normalizedHit = tryRawCapture(
+              step,
+              sid,
+              normalizedRaw,
+              "dom.runStepOutput.normalized"
+            );
+            if (diagnostic) {
+              if (normalizedHit && normalizedHit.parse_ok) return normalizedHit;
+              if (normalizedHit && !normalizedHit.parse_ok) lastDiagnosticMiss = normalizedHit;
+            } else if (normalizedHit) {
+              return normalizedHit;
+            }
+          }
           var domRaw = readRunStepCaptureRawFromLi(li);
+          if (target === "learning_activities") {
+            continue;
+          }
           var domHit = tryRawCapture(step, sid, domRaw, "dom.runStepOutput");
           if (diagnostic) {
             if (domHit && domHit.parse_ok) return domHit;
@@ -9555,6 +9635,106 @@
     return (draftBody + "\n" + block).trim();
   }
 
+  function resolveLdGuidedLearningScaffoldLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_GUIDED_LEARNING_SCAFFOLD &&
+      typeof globalThis.PRISM_LD_GUIDED_LEARNING_SCAFFOLD.buildLdGuidedLearningScaffoldPromptBlock ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_GUIDED_LEARNING_SCAFFOLD;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_GUIDED_LEARNING_SCAFFOLD
+      ? root.PRISM_LD_GUIDED_LEARNING_SCAFFOLD
+      : null;
+  }
+
+  function buildLdGuidedLearningScaffoldPromptBlock(options) {
+    var lib = resolveLdGuidedLearningScaffoldLib();
+    if (lib && typeof lib.buildLdGuidedLearningScaffoldPromptBlock === "function") {
+      return lib.buildLdGuidedLearningScaffoldPromptBlock(options || {});
+    }
+    return "";
+  }
+
+  function ldGuidedLearningScaffoldAlreadyPresent(draftBody) {
+    var lib = resolveLdGuidedLearningScaffoldLib();
+    if (lib && typeof lib.scaffoldAlreadyPresent === "function") {
+      return lib.scaffoldAlreadyPresent(draftBody);
+    }
+    return /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT \(auto-applied\)/i.test(String(draftBody || ""));
+  }
+
+  function applyLdGuidedLearningScaffoldContractToDraft(draftText, context) {
+    var draftBody = String(draftText || "").trim();
+    if (ldGuidedLearningScaffoldAlreadyPresent(draftBody)) {
+      return draftBody;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var isDla = isWorkflowStepDesignLearningActivities(context);
+    var isDesignPage = isWorkflowStepDesignPage(context);
+    if (!isDla && !isDesignPage) {
+      return draftBody;
+    }
+    if (isDla && !shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    if (isDesignPage && !shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      return draftBody;
+    }
+    var block = buildLdGuidedLearningScaffoldPromptBlock({
+      includeCompose: isDesignPage,
+      includeDlaPreEmit: isDla,
+      composeOnly: isDesignPage
+    });
+    if (!block) return draftBody;
+    return (draftBody + "\n" + block).trim();
+  }
+
+  function evaluateGuidedLearningScaffoldEvidence(input, options) {
+    var lib = resolveLdGuidedLearningScaffoldLib();
+    if (lib && typeof lib.evaluateGuidedLearningScaffoldEvidence === "function") {
+      return lib.evaluateGuidedLearningScaffoldEvidence(input, options);
+    }
+    return {
+      activityCount: 0,
+      issueCount: 0,
+      meetsGuidedLearningScaffoldQuality: false,
+      issues: [],
+      rows: []
+    };
+  }
+
+  function repairGuidedLearningScaffoldOnDlaCapture(parsed, options) {
+    var lib = resolveLdGuidedLearningScaffoldLib();
+    if (lib && typeof lib.repairGuidedLearningScaffoldOnDlaCapture === "function") {
+      return lib.repairGuidedLearningScaffoldOnDlaCapture(parsed, options);
+    }
+    return {
+      parsed: parsed,
+      repairApplied: false,
+      evidence: evaluateGuidedLearningScaffoldEvidence([]),
+      repaired: []
+    };
+  }
+
   function evaluateActivityPreambleExpositionEvidence(input, options) {
     var lib = resolveLdActivityPreambleExpositionLib();
     if (lib && typeof lib.evaluateActivityPreambleExpositionEvidence === "function") {
@@ -9829,13 +10009,13 @@
     var opts = options && typeof options === "object" ? options : {};
     if (!opts.materialsCopyBlock) {
       opts.materialsCopyBlock = buildLdMaterialsCopyPromptBlock({
-        role: "preserve",
+        role: "design_page",
         includeMarker: false
       });
     }
     if (!opts.tableFidelityBlock) {
       opts.tableFidelityBlock = buildLdTableFidelityPromptBlock({
-        role: "preserve",
+        role: "design_page",
         includeMarker: false
       });
     }
@@ -9925,6 +10105,7 @@
     }
     if (includeLearnerPageFraming) {
       next = applyLdJourneyAssimilationContractToDraft(next, context, facilitated);
+      next = applyLdGuidedLearningScaffoldContractToDraft(next, context);
     }
     return next;
   }
@@ -10044,6 +10225,7 @@
       }
       return (draftBody + buildLdTableFidelityPromptBlock({ role: "dla" })).trim();
     }
+    // Design Page: L4 table fidelity is embedded in LD-DESIGN-PAGE-COMPOSE (design_page role, no marker).
     return draftBody;
   }
 
@@ -10221,38 +10403,42 @@
     return lines.join("\n");
   }
 
-  function buildPelReasoningContractPromptBlock() {
-    return [
+  function buildPelReasoningContractPromptBlock(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var dlaLearnerPage = !!opts.dlaLearnerPage;
+    var lines = [
       "",
       "Pedagogic enrichment — reasoning contract (auto-applied):",
-      "- Make disciplinary thinking visible: cognition field semantics and coverage rules are in OUTPUT CONTRACT (learner-facing page) when present — reasoning fields state HOW TO THINK, never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.",
-      "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one reasoning cue set per activity aligned to depth_floor L3).",
-      "- Explicitly avoid hollow filler: \"think critically\", \"discuss in groups\", \"share with a partner\", \"analyse the topic carefully\" without a concrete thinking move."
-    ].join("\n");
+      "- Make disciplinary thinking visible: populated cognition and bridge fields follow SSOT SCAFFOLD GENRE and word floors — never restate learner_task, activity_preamble, study_orientation, or intellectual_frame."
+    ];
+    if (dlaLearnerPage) {
+      lines.push(
+        "- Populated cognition and bridge fields: SSOT SCAFFOLD GENRE and word floors — not one-line hints or single cues.",
+        "- Explicitly avoid hollow filler: \"think critically\", \"discuss in groups\", \"share with a partner\", \"analyse the topic carefully\" without a concrete thinking move."
+      );
+    } else {
+      lines.push(
+        "- No tutoring dialogue, Socratic loops, adaptive hints, facilitator voice, or scaffold explosion (one reasoning cue set per activity aligned to depth_floor L3).",
+        "- Explicitly avoid hollow filler: \"think critically\", \"discuss in groups\", \"share with a partner\", \"analyse the topic carefully\" without a concrete thinking move."
+      );
+    }
+    return lines.join("\n");
   }
 
   function buildSelfDirectedGamPelReasoningMaterialPromptBlock() {
     return [
       "",
       "Self-directed learner-page reasoning materials (auto-applied):",
-      "- Materials must support DLA reasoning fields — learner-facing only (see self-study material voice in self-study materials block).",
-      "- When required_materials specifies worked_example, sample_output, or a modelled template row, realise with visible reasoning (why each step) — not answer-only cells.",
-      "- When required_materials specifies worked_example, after labelled steps and before Bridge, include `## What experts notice` (≥2 bullets on disciplinary reasoning moves — not generic clear/detailed praise) per INSTRUCTIONAL-PATTERN-SP-06.",
-      "- When required_materials specifies worked_example, model thinking only — do NOT embed checklist items, `## Common mistakes`, or `Have you` / `Did you` verification inside worked_example; emit a separate checklist material per INSTRUCTIONAL-PATTERN-SP-05.",
-      "- When required_materials specifies sample_output, after the exemplar body include `## Why this works` (3–5 bullets on reasoning quality, connections, analytical/evaluative moves) plus: Use this as a quality guide, not as text to copy — per INSTRUCTIONAL-PATTERN-SP-07.",
-      "- When required_materials purpose matches worked judgement or modelling_note specifies weak vs strong contrast, include `## A weaker response would` and `## A stronger response would` with comparative disciplinary judgement — slogan-style weak vs criteria-led strong, not generic advice.",
-      "- When required_materials specifies checklist, include `## Common mistakes` (2–4 diagnostic novice traps) and `### If any check is not met:` with actionable revision moves per INSTRUCTIONAL-PATTERN-SP-05 — diagnostic coaching, not motivational (`Reflect on`, `Think about`, `Consider whether`).",
-      "- Evaluative coaching prompts (diagnostic only): e.g. Which part of your answer provides explanation rather than description? Which claim is least well supported? Where might a reader need more evidence or reasoning? — use in checklist or prompt_set, not as filler.",
-      "- When required_materials specifies a faded template/table, pre-fill only the rows/cells named in the specification; leave all other response cells empty.",
-      "- When DLA lists worked_thinking or a worked analytic pass, model one full GAM-PRES-08 (A1) walkthrough (≥120 words) with visible expert reasoning — not a labelled sample row only.",
-      "- For source-based activities: provide quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
-      "- Optional static generative retrieval in material body: \"Before you re-read…\" or \"Without looking back, write…\" — not adaptive or branching.",
-      "- Do not repeat learner_task, activity_preamble, study_orientation, reasoning_orientation, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, or disciplinary_lens sentences in material bodies — those appear on the activity card; realise them as tables, spans, and GAM-PRES-08-depth bodies.",
-      "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in a narrative block and a table.",
-      "- When required_materials specifies prompt_set self-check or misconception-interrupt bullets, realise as learner-facing bullets with explicit repair-if-fail cues per GAM-PRES-08 (V1) — verification checklist ≥4 criteria-linked items when DLA lists verification.",
-      "- When required_materials specifies step → meaning pairs, Use this when cues, or concept/procedure integration, realise them as labelled bullets or table column hints in template/checklist/worked_example.",
-      "- When required_materials specifies closure, debrief, or evaluative-judgement prompts, realise per GAM-PRES-08 (T1)/(E1): transfer_prompt and closure materials ≥80 words substantive judgement — not minimal bullet stubs.",
-      "- Anti-redundancy must never reduce material bodies below GAM-PRES-08 minima; activity-row cognition fields orient — materials must still carry usable depth."
+      "- Learner-facing material bodies only — voice and facilitator-ban: Self-directed learner-page self-study materials (material voice).",
+      "- Material bodies: pattern shape per INSTRUCTIONAL-PATTERN-SP blocks when types apply; depth/completeness per pack GAM-PRES-08/09 only — do not thin below pack minima.",
+      "- Do not repeat activity-row fields (learner_task, cognition cues, orientation) in material bodies — realise as tables, spans, and GAM-depth bodies.",
+      "- Faded templates: pre-fill only rows/cells named in the specification.",
+      "- worked_thinking / analytic pass: one GAM-PRES-08 (A1) walkthrough with visible expert reasoning when upstream requires it.",
+      "- Source-based activities: quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
+      "- Optional static retrieval: \"Before you re-read…\" / \"Without looking back, write…\" — not adaptive.",
+      "- Weak vs strong judgement when upstream specifies worked judgement: `## A weaker response would` / `## A stronger response would` (slogan-style weak vs criteria-led strong).",
+      "- Evaluative coaching (diagnostic only) in checklist or prompt_set — e.g. Which part of your answer provides explanation rather than description? Which claim is least well supported? — not motivational filler.",
+      "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in narrative and table."
     ].join("\n");
   }
 
@@ -10714,7 +10900,13 @@
       isDla &&
       !/pedagogic enrichment — reasoning contract \(auto-applied\)/i.test(draftBody)
     ) {
-      draftBody = (draftBody + buildPelReasoningContractPromptBlock()).trim();
+      draftBody = (draftBody + buildPelReasoningContractPromptBlock({
+        dlaLearnerPage: shouldApplyLearnerPagePedagogicFramingScaffold(
+          context,
+          resolved,
+          base
+        )
+      })).trim();
     }
     if (
       contractIds.indexOf(SPRINT_30_PEC_REASONING_CONTRACT_ID) !== -1 &&
@@ -10766,15 +10958,52 @@
     return ctx;
   }
 
+  function enrichDlaLearnerPageAugmentContext(context) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(ctx);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (ctx && ctx.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (ctx && ctx.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (
+      isWorkflowStepDesignLearningActivities(ctx) &&
+      shouldApplyLearnerPagePedagogicFramingScaffold(ctx, resolved, base)
+    ) {
+      return Object.assign({}, ctx, {
+        dlaLearnerPageScaffoldSsot: true,
+        eqfDlaLearnerPageScaffoldQualify: true
+      });
+    }
+    return ctx;
+  }
+
   function applyWorkflowStepRuntimePromptAugmentations(draftText, step, wf, optionMap) {
     var draft = String(draftText || "").trim();
     if (!draft) return "";
-    var ctx = buildWorkflowStepPromptAugmentContextFromStep(step, wf);
+    var ctx = enrichDlaLearnerPageAugmentContext(
+      buildWorkflowStepPromptAugmentContextFromStep(step, wf)
+    );
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
+    if (ctx.dlaLearnerPageScaffoldSsot) {
+      draft = applyLdGuidedLearningScaffoldContractToDraft(draft, ctx);
+    }
     draft = applyPedagogicCognitionContractScaffoldToDraft(draft, ctx);
     draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
     draft = applyInstructionalPatternPromptBlockToDraft(draft, ctx);
     draft = applySelfDirectedLearnerPageStepScaffoldsToDraft(draft, ctx);
+    // GAM L4 table/materials: single injection here (not duplicated in self-directed sub-chain).
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
@@ -10850,11 +11079,6 @@
       }
     }
     if (isDla && applyLearnerPageActivityFraming) {
-      if (!/learner-page activity framing \(auto-applied\)/i.test(draftBody)) {
-        draftBody = (
-          draftBody + buildSelfDirectedLearnerPageActivityFramingPromptBlock()
-        ).trim();
-      }
       if (!/output contract \(learner-facing page/i.test(draftBody)) {
         draftBody = (
           draftBody +
@@ -10869,17 +11093,13 @@
         ).trim();
       }
       draftBody = augmentSelfDirectedDlaDraftOutputSection(draftBody);
-      draftBody = applyLdActivityPreambleExpositionContractToDraft(draftBody, context);
-      draftBody = applyLdCognitionOrientationContractToDraft(draftBody, context);
     }
     if (isGam && applyGamScaffolds) {
-      draftBody = applyLdTableFidelityContractToDraft(draftBody, context);
-      draftBody = applyLdMaterialsCopyContractToDraft(draftBody, context);
       if (!gamSelfStudyMaterialsMarkerPresent(draftBody)) {
         draftBody = (draftBody + buildSelfDirectedGamSelfStudyMaterialsPromptBlock()).trim();
       }
     }
-    if (applyLearnerActionRhetoric) {
+    if (applyLearnerActionRhetoric && !isDla) {
       draftBody = applyLdSelfDirectedRhetoricContractToDraft(draftBody, context);
     }
     return draftBody;
@@ -11440,9 +11660,24 @@
     return shouldApplyLearnerPagePedagogicFramingScaffold(stepContext, resolved, base);
   }
 
+  function shouldEnforceGuidedLearningScaffoldOnDlaCapture(stepContext) {
+    return !!(
+      stepContext &&
+      (isWorkflowStepDesignLearningActivities(stepContext) ||
+        contextLooksLikeLearningActivitiesCapture(stepContext))
+    );
+  }
+
   function workflowRunLearnerPageFramingGateMessage(stepId) {
     var sid = String(stepId || "").trim();
-    if (!sid || !state.workflowRunLearnerPageFramingValidation) return "";
+    if (!sid) return "";
+    var scaffoldMsg =
+      state.workflowRunGuidedLearningScaffoldValidation &&
+      state.workflowRunGuidedLearningScaffoldValidation[sid]
+        ? state.workflowRunGuidedLearningScaffoldValidation[sid]
+        : "";
+    if (scaffoldMsg) return scaffoldMsg;
+    if (!state.workflowRunLearnerPageFramingValidation) return "";
     return state.workflowRunLearnerPageFramingValidation[sid] || "";
   }
 
@@ -11524,6 +11759,94 @@
       }
     }
     return raw;
+  }
+
+  function applyGuidedLearningScaffoldRepairToDlaCapture(raw, stepContext, stepId) {
+    if (!stepContext || !shouldEnforceGuidedLearningScaffoldOnDlaCapture(stepContext)) {
+      if (stepId && state.workflowRunGuidedLearningScaffoldValidation) {
+        delete state.workflowRunGuidedLearningScaffoldValidation[stepId];
+      }
+      return raw;
+    }
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(stepContext);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (stepContext && stepContext.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (stepContext && stepContext.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (!shouldEnforceGuidedLearningScaffoldOnDlaCapture(stepContext)) {
+      if (stepId && state.workflowRunGuidedLearningScaffoldValidation) {
+        delete state.workflowRunGuidedLearningScaffoldValidation[stepId];
+      }
+      return raw;
+    }
+    if (!String(raw || "").trim()) {
+      if (stepId && state.workflowRunGuidedLearningScaffoldValidation) {
+        delete state.workflowRunGuidedLearningScaffoldValidation[stepId];
+      }
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return raw;
+    var activities = extractActivityRowsFromDlaCapture(parsed);
+    if (!activities.length) {
+      if (stepId && state.workflowRunGuidedLearningScaffoldValidation) {
+        delete state.workflowRunGuidedLearningScaffoldValidation[stepId];
+      }
+      return raw;
+    }
+    var repairOptions = {
+      workflowGoal: base.goal,
+      learningOutcomes: resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", {}),
+      episodePlans: resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {})
+    };
+    var repairResult = repairGuidedLearningScaffoldOnDlaCapture(parsed, repairOptions);
+    var nextRaw = raw;
+    if (repairResult && repairResult.parsed) {
+      try {
+        nextRaw = JSON.stringify(repairResult.parsed, null, 2);
+      } catch (_) {
+        nextRaw = raw;
+      }
+    }
+    var evidence = evaluateGuidedLearningScaffoldEvidence(
+      extractActivityRowsFromDlaCapture(
+        tryParseWorkflowArtefactJson(nextRaw) || repairResult.parsed || parsed
+      ),
+      { repairOptions: repairOptions }
+    );
+    if (stepId) {
+      state.workflowRunGuidedLearningScaffoldValidation =
+        state.workflowRunGuidedLearningScaffoldValidation || {};
+      if (!evidence.meetsGuidedLearningScaffoldQuality) {
+        var lines = (evidence.issues || []).map(function (issue) {
+          return (
+            String(issue.activity_id || "?") +
+            " scaffold quality: " +
+            (issue.fields || []).join(", ")
+          );
+        });
+        state.workflowRunGuidedLearningScaffoldValidation[stepId] =
+          "DLA guided-learning scaffold prose required before capture: " + lines.join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      } else {
+        delete state.workflowRunGuidedLearningScaffoldValidation[stepId];
+      }
+    }
+    return nextRaw;
   }
 
   function applyGamPackTextValidationToCapture(sanitizedText, stepContext, stepId, rawCapture) {
@@ -19468,6 +19791,42 @@
         raw = pageNorm.json;
       }
     }
+    var dlaCaptureCtx = stepRow
+      ? buildWorkflowStepPromptAugmentContextFromStep(stepRow, wf)
+      : gamCtx;
+    var isDlaStep = !!(
+      (stepRow &&
+        (workflowStepProducesArtefact(stepRow, "learning_activities") ||
+          isWorkflowStepDesignLearningActivities({
+            stepCanonicalStepId: stepRow.canonical_step_id || stepRow.canonicalStepId || "",
+            stepCanonicalTitle: stepRow.title || "",
+            stepTitle: stepRow.title || "",
+            stepOutputName: stepRow.outputName || ""
+          }))) ||
+      contextLooksLikeLearningActivitiesCapture(tryParseWorkflowArtefactJson(raw) || {})
+    );
+    var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+    var finalizedCapture = applyGuidedLearningScaffoldRepairToDlaCapture(
+      applyLearnerPageDlaFramingValidationToCapture(
+        applyEpisodePlanPopulationEnforcementToDlaCapture(
+          sanitizedDlaCapture,
+          dlaCaptureCtx,
+          sid
+        ),
+        dlaCaptureCtx,
+        sid
+      ),
+      dlaCaptureCtx,
+      sid
+    );
+    if (
+      isDlaStep &&
+      String(finalizedCapture || "").trim() &&
+      finalizedCapture !== raw
+    ) {
+      ta.value = finalizedCapture;
+      raw = finalizedCapture;
+    }
     state.workflowRunCapturedOutputsRaw[sid] = raw;
     var strictCheck = validateStrictJsonWorkflowRunStepCapture(raw, stepRow || {});
     if (!strictCheck.ok && !strictCheck.skipped) {
@@ -19480,19 +19839,7 @@
     } else {
       delete state.workflowRunStrictJsonValidation[sid];
     }
-    var dlaCaptureCtx = stepRow
-      ? buildWorkflowStepPromptAugmentContextFromStep(stepRow, wf)
-      : gamCtx;
-    var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
-    state.workflowRunCapturedOutputs[sid] = applyLearnerPageDlaFramingValidationToCapture(
-      applyEpisodePlanPopulationEnforcementToDlaCapture(
-        sanitizedDlaCapture,
-        dlaCaptureCtx,
-        sid
-      ),
-      dlaCaptureCtx,
-      sid
-    );
+    state.workflowRunCapturedOutputs[sid] = finalizedCapture;
     var outputNameInput = li.querySelector('[data-field="outputName"]');
     var outputName =
       outputNameInput && typeof outputNameInput.value === "string"
@@ -23982,7 +24329,7 @@
       (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[stepIdForRun]) || "";
     var sanStored =
       (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[stepIdForRun]) || "";
-    userNotesTextarea.value = String(rawStored || sanStored || "");
+    userNotesTextarea.value = String(sanStored || rawStored || "");
     userNotesTextarea.addEventListener("input", function () {
       syncWorkflowRunCapturedOutputToState(li);
       updateRunStepOutputStatus(li);
@@ -33710,7 +34057,7 @@
             );
           }
         }
-        if (partition.preCheckReflect) {
+        if (grammarApi.fieldHasValue(row && row.self_explanation_prompt)) {
           var preReflectHtml = renderInstructionalReflectPreCheckSection(row, grammarApi);
           if (preReflectHtml) parts.push(preReflectHtml);
         }
@@ -33719,7 +34066,7 @@
         } else if (hasEpisodePlanBeats && grammarApi.hasDoContent(row, partition)) {
           parts.push(renderInstructionalDoSection(row, {}, renderListFromInstructions));
         }
-        if (!hasEpisodePlanBeats && grammarApi.hasCheckContent(row, partition)) {
+        if (grammarApi.hasCheckContent(row, partition)) {
           parts.push(renderInstructionalCheckSection(row, partition.check));
         }
         if (!hasEpisodePlanBeats && grammarApi.activityHasPostCheckSources(row, partition.reflect)) {
@@ -36268,6 +36615,67 @@
     ].join("");
   }
 
+  function getUtilityPagePresentationCssSprint55Typography() {
+    return [
+      ":root{--space-1:.375rem;--space-2:.75rem;--space-3:1.125rem;--space-4:1.75rem;--space-5:2.5rem}",
+      "body,body.util-page-export{font-size:1rem;line-height:1.65;color:#1f2937}",
+      "body.util-page-export:not(.util-page-export--with-learning-header):not(.util-page-export--with-journey-nav):not(.util-page-export--with-compass){max-width:68ch;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}",
+      "body.util-page-export>section,body.util-page-export>div[data-journey-section],body.util-page-export>details.util-meta{max-width:68ch;margin-left:auto;margin-right:auto}",
+      "body.util-page-export--with-learning-header,body.util-page-export--with-journey-nav,body.util-page-export--with-compass{max-width:920px;margin-left:auto;margin-right:auto;padding-left:8px;padding-right:8px}",
+      ".util-learning-header,.util-learning-header .util-journey-nav{max-width:none;width:auto}",
+      "p{margin:0 0 var(--space-3)}",
+      "ul,ol{margin:0 0 var(--space-3) 1.25rem;padding:0}",
+      "li{margin:0 0 var(--space-1);line-height:1.65}",
+      "h1{font-size:1.75rem;line-height:1.25;font-weight:700;color:#111827;margin:0 0 var(--space-4);letter-spacing:-.015em}",
+      "h2.util-section-heading{font-size:1.125rem;font-weight:700;color:#111827;margin:var(--space-5) 0 var(--space-3);padding-bottom:var(--space-2);border-bottom:1px solid #e5e7eb;letter-spacing:normal;text-transform:none}",
+      "h2.util-section-heading .util-section-icon,.h2.util-section-heading .util-material-icon{color:#6b7280}",
+      "article.util-task-block,article.util-task-block.util-instructional-activity{border:0;box-shadow:none;background:transparent;padding:0;margin:var(--space-5) 0;border-radius:0}",
+      "article.util-task-block+article.util-task-block{margin-top:var(--space-5)}",
+      ".util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-2);flex-wrap:wrap;margin:0 0 var(--space-3);padding:0;border:0}",
+      ".util-activity-header h3,article.util-task-block .util-activity-header h3{font-size:1.125rem;line-height:1.35;font-weight:700;color:#111827;margin:0;letter-spacing:normal}",
+      ".util-badge-row{gap:var(--space-2);margin-top:var(--space-1)}",
+      ".util-badge,.util-badge-time,.util-badge-group{border:0;background:transparent;padding:0;font-size:.8125rem;font-weight:500;color:#6b7280;line-height:1.4}",
+      ".util-activity-materials{margin:0;padding:0;border:0;max-width:100%}",
+      ".util-activity-task,.util-activity-task--primary{margin:0 0 var(--space-3);padding:0;border:0;background:transparent;box-shadow:none;border-radius:0}",
+      ".util-activity-task--primary h4.util-material-heading,.util-activity-task--primary h4.util-icon-heading{font-size:.95rem;font-weight:600;color:#374151;margin:0 0 var(--space-2)}",
+      ".util-beat-section{margin:0 0 var(--space-4);padding:0}",
+      ".util-beat-section:last-child{margin-bottom:0}",
+      ".util-beat-heading{font-size:1.05rem;line-height:1.35;font-weight:700;margin:var(--space-4) 0 var(--space-2);color:#111827;letter-spacing:normal;text-transform:none}",
+      ".util-beat-section:first-child .util-beat-heading{margin-top:var(--space-2)}",
+      ".util-beat-materials{display:flex;flex-direction:column;gap:var(--space-2)}",
+      ".util-beat-ordered-materials,.util-materials-stack{gap:var(--space-4)}",
+      "h4.util-material-heading,.h4.util-icon-heading.util-material-heading,.util-task-block h4.util-material-heading,.util-beat-materials h4.util-material-heading{font-size:.95rem;line-height:1.45;font-weight:600;color:#374151;margin:var(--space-2) 0 var(--space-1);letter-spacing:normal;text-transform:none}",
+      "h4.util-material-heading>.util-material-icon,.h4.util-icon-heading>.util-material-icon,.h4.util-icon-heading>.util-lucide-icon{color:#9ca3af;width:16px;height:16px}",
+      ".util-card-subheading,h5.util-card-subheading{font-size:.95rem;line-height:1.45;font-weight:600;color:#374151;margin:var(--space-2) 0 var(--space-1);letter-spacing:normal;text-transform:none}",
+      ".util-worked-example,.util-pedagogic-callout,.util-cognition,.util-support-note{box-shadow:none;background:transparent;border-top:0;border-right:0;border-bottom:0;border-radius:0;padding:.25rem 0 .25rem 1rem;margin:var(--space-2) 0}",
+      ".util-cognition{border-left:2px solid #d1d5db}",
+      ".util-cognition__label{font-size:.8125rem;font-weight:600;letter-spacing:normal;text-transform:none;color:#6b7280;margin:0 0 var(--space-1)}",
+      ".util-cognition__body{font-size:1rem;line-height:1.65;color:#1f2937}",
+      ".util-pedagogic-callout{border-left-width:2px}",
+      ".util-pedagogic-callout__label{font-size:.75rem;letter-spacing:.03em}",
+      ".util-support-note{font-size:.9375rem;line-height:1.6;color:#4b5563;border-left:2px solid #d1d5db}",
+      ".util-support-note-label{font-weight:600;color:#6b7280}",
+      "article.util-task-block .util-beat-materials .util-scenario-card,article.util-task-block .util-beat-materials .util-template-block,article.util-task-block .util-beat-materials .util-checklist-block,article.util-task-block .util-beat-materials .util-prompt-set,article.util-task-block .util-beat-materials .util-task-card,article.util-task-block .util-beat-materials .util-material-card,article.util-task-block .util-beat-materials .util-material-fallback,article.util-task-block .util-beat-materials .util-worked-example{border:0;border-left:2px solid #e5e7eb;border-radius:0;box-shadow:none;background:transparent;padding:var(--space-1) 0 var(--space-1) var(--space-2);margin:0}",
+      ".util-material-card.util-material-block{border:0;box-shadow:none;background:transparent;padding:0}",
+      ".util-checklist-block{border-left:2px solid #d1d5db}",
+      ".util-output-block{border:0;border-left:2px solid #d1d5db;border-radius:0;box-shadow:none;background:transparent;padding:var(--space-1) 0 var(--space-1) var(--space-2);margin:var(--space-4) 0}",
+      ".util-table-scroll{margin:var(--space-3) 0;max-width:100%;border:0;border-radius:0;background:transparent;padding:0;box-shadow:none;overflow-x:auto}",
+      ".util-table-scroll table{font-size:.9375rem;line-height:1.5;margin:0}",
+      ".util-table-scroll th,.util-table-scroll td{padding:var(--space-2) var(--space-2);vertical-align:top}",
+      ".util-table-scroll th{font-size:.875rem;font-weight:600;color:#374151;background:transparent;border:1px solid #e5e7eb}",
+      ".util-table-scroll td{color:#1f2937;border:1px solid #e5e7eb}",
+      ".util-table-scroll tbody tr:nth-child(even){background:transparent}",
+      ".util-activity-materials .util-table-scroll.util-material-table{border:0;background:transparent}",
+      ".util-knowledge-summary{border:0;border-top:1px solid #e5e7eb;border-radius:0;background:transparent;padding:var(--space-3) 0;margin:0 0 var(--space-5)}",
+      ".util-knowledge-summary--prose{font-size:1rem;line-height:1.65;color:#1f2937}",
+      ".util-activity-framing,.util-activity-preamble,.util-activity-preamble-cue{border:0;border-left:2px solid #e5e7eb;border-radius:0;background:transparent;padding:var(--space-1) 0 var(--space-1) var(--space-2);font-size:.9375rem;line-height:1.6;color:#4b5563}",
+      ".util-instructional-section{border:0;padding:0;margin:0 0 var(--space-4)}",
+      ".util-instructional-heading{font-size:1.05rem;font-weight:700;color:#111827;margin:0 0 var(--space-2)}",
+      "body>section{margin-bottom:var(--space-5)}",
+      "@media print{article.util-task-block{break-inside:avoid-page;page-break-inside:avoid}body{max-width:none;color:#111}.util-worked-example,.util-pedagogic-callout,.util-cognition,.util-support-note{background:transparent!important}}"
+    ].join("");
+  }
+
   function getUtilityPagePresentationCss() {
     return (
       getUtilityPagePresentationCssV26_2() +
@@ -36288,7 +36696,8 @@
       getUtilityJourneyCompassPresentationCss() +
       getUtilityLearningHeaderPresentationCss() +
       getUtilityLearningJourneyNavPresentationCss() +
-      getUtilityPedagogicalIconPresentationCss()
+      getUtilityPedagogicalIconPresentationCss() +
+      getUtilityPagePresentationCssSprint55Typography()
     );
   }
 
@@ -37512,10 +37921,20 @@
         if (!upstreamRow) return;
         LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS.forEach(function (fieldId) {
           var arrayOrString = fieldId === "scaffold_hint_sequence";
-          if (pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString)) return;
-          if (!pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString)) return;
-          row[fieldId] = upstreamRow[fieldId];
-          mergedCount += 1;
+          var upstreamHas = pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString);
+          if (!upstreamHas) return;
+          var pageHas = pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString);
+          var fieldPreserve = resolvePageActivityFieldPreserveLib();
+          var preferUpstream =
+            !arrayOrString &&
+            fieldPreserve &&
+            typeof fieldPreserve.shouldPreferUpstreamFieldContent === "function" &&
+            pageHas &&
+            fieldPreserve.shouldPreferUpstreamFieldContent(row[fieldId], upstreamRow[fieldId]);
+          if (!pageHas || preferUpstream) {
+            row[fieldId] = upstreamRow[fieldId];
+            mergedCount += 1;
+          }
         });
       });
       if (wrapObject) section.content = Object.assign({}, content, { activities: rows });
@@ -38352,6 +38771,18 @@
     return mod.validatePageMaterialsClosure(page, upstreamActivityMaterials, options);
   }
 
+  function validatePageActivityFieldClosureFromLib(page, upstreamLearningActivities, options) {
+    var mod = resolvePageActivityFieldPreserveLib();
+    if (!mod || typeof mod.validatePageActivityFieldClosure !== "function") {
+      return {
+        validation: "page_activity_field_closure",
+        outcome: "skip",
+        messages: ["validatePageActivityFieldClosure module unavailable"]
+      };
+    }
+    return mod.validatePageActivityFieldClosure(page, upstreamLearningActivities, options);
+  }
+
   function validatePageBeatMaterialClosureFromLib(page, options) {
     var mod = resolveBeatMaterialRegistryLib();
     if (!mod || typeof mod.validatePageBeatMaterialClosure !== "function") {
@@ -38618,6 +39049,22 @@
         console.warn("[PRISM page materials closure]", materialsValidation);
       }
     }
+    var fieldValidation = validatePageActivityFieldClosureFromLib(parsed, upstream, {});
+    validation.fieldValidation = fieldValidation;
+    if (fieldValidation.outcome === "fail") {
+      if (!parsed.generation_notes || typeof parsed.generation_notes !== "object") {
+        parsed.generation_notes = {};
+      }
+      if (!Array.isArray(parsed.generation_notes.composition_warnings)) {
+        parsed.generation_notes.composition_warnings = [];
+      }
+      (fieldValidation.messages || []).forEach(function (msg) {
+        parsed.generation_notes.composition_warnings.push(String(msg || ""));
+      });
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page activity field closure]", fieldValidation);
+      }
+    }
     var stepId = stepLi ? String(stepLi.getAttribute("data-step-id") || "").trim() : "";
     applyPageCompositionMaterialsClosureCaptureState(stepId, materialsValidation);
     var beatMaterialValidation = validatePageBeatMaterialClosureFromLib(parsed, {
@@ -38637,6 +39084,7 @@
     return {
       validation: validation,
       materialsValidation: materialsValidation,
+      fieldValidation: fieldValidation,
       episodePlansValidation: episodePlansValidation,
       episodePlansValidationBefore: episodePlansValidationBefore,
       beatMaterialValidation: beatMaterialValidation,
@@ -38682,6 +39130,22 @@
       appendPageCompositionMaterialsClosureWarnings(parsed, materialsValidation);
       if (typeof console !== "undefined" && console.warn) {
         console.warn("[PRISM page materials closure]", materialsValidation);
+      }
+    }
+    var fieldValidation = validatePageActivityFieldClosureFromLib(parsed, upstream, {});
+    validation.fieldValidation = fieldValidation;
+    if (fieldValidation.outcome === "fail") {
+      if (!parsed.generation_notes || typeof parsed.generation_notes !== "object") {
+        parsed.generation_notes = {};
+      }
+      if (!Array.isArray(parsed.generation_notes.composition_warnings)) {
+        parsed.generation_notes.composition_warnings = [];
+      }
+      (fieldValidation.messages || []).forEach(function (msg) {
+        parsed.generation_notes.composition_warnings.push(String(msg || ""));
+      });
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[PRISM page activity field closure]", fieldValidation);
       }
     }
     var beatMaterialValidation = validatePageBeatMaterialClosureFromLib(parsed, {
@@ -40878,6 +41342,12 @@
       applyLdActivityPreambleExpositionContractToDraft;
     prismTestApi.applyLdCognitionOrientationContractToDraft =
       applyLdCognitionOrientationContractToDraft;
+    prismTestApi.applyLdGuidedLearningScaffoldContractToDraft =
+      applyLdGuidedLearningScaffoldContractToDraft;
+    prismTestApi.evaluateGuidedLearningScaffoldEvidence = evaluateGuidedLearningScaffoldEvidence;
+    prismTestApi.repairGuidedLearningScaffoldOnDlaCapture = repairGuidedLearningScaffoldOnDlaCapture;
+    prismTestApi.applyGuidedLearningScaffoldRepairToDlaCapture =
+      applyGuidedLearningScaffoldRepairToDlaCapture;
     prismTestApi.buildLdCognitionOrientationPromptBlock = buildLdCognitionOrientationPromptBlock;
     prismTestApi.reinforceLearnerPageDlaActivitiesOutputSchema =
       reinforceLearnerPageDlaActivitiesOutputSchema;
@@ -41031,8 +41501,19 @@
       state.workflowRunPageValidation = {};
       state.workflowRunPageMaterialsClosureValidation = {};
       state.workflowRunLearnerPageFramingValidation = {};
+      state.workflowRunGuidedLearningScaffoldValidation = {};
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamFormatWarnings = {};
+    };
+    prismTestApi.setWorkflowStepElementsForTest = function (stepElements) {
+      var rows = Array.isArray(stepElements) ? stepElements.slice() : [];
+      els.workflowSteps = { children: rows };
+    };
+    prismTestApi.getWorkflowRunCapturedOutputsForTest = function () {
+      return Object.assign({}, state.workflowRunCapturedOutputs || {});
+    };
+    prismTestApi.getWorkflowRunCapturedOutputsRawForTest = function () {
+      return Object.assign({}, state.workflowRunCapturedOutputsRaw || {});
     };
     prismTestApi.applyEpisodePlanCaptureCanonicalEnforcement =
       applyEpisodePlanCaptureCanonicalEnforcement;
@@ -41185,6 +41666,7 @@
       designPageComposeContractStaleWithoutEpisodePlans;
     prismTestApi.ldDesignPageComposeAlreadyPresent = ldDesignPageComposeAlreadyPresent;
     prismTestApi.validatePageMaterialsClosureFromLib = validatePageMaterialsClosureFromLib;
+    prismTestApi.validatePageActivityFieldClosureFromLib = validatePageActivityFieldClosureFromLib;
     prismTestApi.validatePageBeatMaterialClosureFromLib = validatePageBeatMaterialClosureFromLib;
     prismTestApi.resolveBeatMaterialRegistryLib = resolveBeatMaterialRegistryLib;
     prismTestApi.buildBeatRenderDiagnosticForTest = function (activity) {
@@ -41339,6 +41821,7 @@
     prismTestApi.buildPf11DlaUpstreamDiagnosticTrace = buildPf11DlaUpstreamDiagnosticTrace;
     prismTestApi.emitPf11DlaUpstreamDiagnosticTrace = emitPf11DlaUpstreamDiagnosticTrace;
     prismTestApi.syncAllWorkflowRunCapturesFromDomToState = syncAllWorkflowRunCapturesFromDomToState;
+    prismTestApi.syncWorkflowRunCapturedOutputToState = syncWorkflowRunCapturedOutputToState;
     prismTestApi.resolveWorkflowForUpstreamArtefacts = resolveWorkflowForUpstreamArtefacts;
     prismTestApi.resolveUpstreamWorkflowArtefactFromCaptures = resolveUpstreamWorkflowArtefactFromCaptures;
     prismTestApi.resolveEffectiveInputBindingsForPromptStep = resolveEffectiveInputBindingsForPromptStep;
@@ -41351,6 +41834,11 @@
       var sid = String(stepId || "").trim();
       if (!sid || !state.workflowRunLearnerPageFramingValidation) return "";
       return state.workflowRunLearnerPageFramingValidation[sid] || "";
+    };
+    prismTestApi.getWorkflowRunGuidedLearningScaffoldValidationForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunGuidedLearningScaffoldValidation) return "";
+      return state.workflowRunGuidedLearningScaffoldValidation[sid] || "";
     };
     prismTestApi.getWorkflowRunGamFormatValidationForTest = function (stepId) {
       var sid = String(stepId || "").trim();

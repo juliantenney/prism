@@ -1,0 +1,35 @@
+{
+  "date": "2026-07-01",
+  "mode": "fixtures-only",
+  "thresholdPct": 80,
+  "summary": [
+    {
+      "name": "rna-hcv-dla-08-cognition-best-run.json",
+      "rawPassMandatoryPct": 60,
+      "postRepairPassMandatoryPct": 100,
+      "repairApplied": true,
+      "meetsScaffoldQuality": true
+    },
+    {
+      "name": "rna-hcv-dla-08-run.json",
+      "rawPassMandatoryPct": 40,
+      "postRepairPassMandatoryPct": 100,
+      "repairApplied": true,
+      "meetsScaffoldQuality": true
+    },
+    {
+      "name": "rna-hcv-dla-08-stab-run-1.json",
+      "rawPassMandatoryPct": 0,
+      "postRepairPassMandatoryPct": 100,
+      "repairApplied": true,
+      "meetsScaffoldQuality": true
+    },
+    {
+      "name": "rna-hcv-terse-scaffold-dla.json",
+      "rawPassMandatoryPct": 0,
+      "postRepairPassMandatoryPct": 100,
+      "repairApplied": true,
+      "meetsScaffoldQuality": true
+    }
+  ]
+}

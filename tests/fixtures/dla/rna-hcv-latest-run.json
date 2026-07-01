@@ -1,0 +1,69 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Distinguishing RNA Genome Strategies",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": ["LO1"],
+      "activity_preamble": "RNA viruses use different genome strategies that determine how they make mRNA. This activity helps you clarify these distinctions before applying them.",
+      "reasoning_orientation": "Focus on comparing mechanisms rather than memorising labels. Ask what must happen before protein synthesis can begin for each type.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Clear exposition explaining positive-sense, negative-sense, and ambisense RNA with emphasis on mRNA production pathways; include contrast statements for each type; depth_floor:L3"
+        }
+      ],
+      "learner_task": "1. Study the explanation and worked example carefully.\n2. Complete the classification table by identifying how each genome type produces mRNA.\n3. Add one sentence comparing any two genome types.\n4. Use the checklist to review and improve your answers.",
+      "expected_output": "A completed classification table with correctly filled cells and a short comparison statement demonstrating accurate distinction between RNA genome strategies.",
+      "activity_interaction_type": "table_completion"
+    },
+    {
+      "activity_id": "A2",
+      "title": "Understanding Polymerase Function and Mutation",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO2"],
+      "activity_preamble": "Replication enzymes are central to RNA virus behaviour. This activity builds your understanding of how RdRP works and why it leads to variation.",
+      "self_explanation_prompt": "Explain to yourself why errors occur in RNA replication and what consequence that has for virus populations.",
+      "learner_task": "1. Read the explanation and modelling example.\n2. Answer the prompt questions in full sentences.\n3. Check your responses using the checklist and refine them.",
+      "expected_output": "A short written explanation (4–6 sentences) correctly linking RdRP function to mutation and quasispecies formation using accurate terminology."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Tracing the RNA Virus Replication Cycle",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": ["LO3"],
+      "activity_preamble": "Replication follows a structured sequence. This activity builds your ability to track and explain the process step by step.",
+      "conceptual_contrast_prompt": "Consider where translation happens relative to replication and why the order matters.",
+      "learner_task": "1. Study the worked example.\n2. Arrange the task cards into the correct sequence.\n3. Write a brief explanation for each step.\n4. Check and refine using the checklist.",
+      "expected_output": "An ordered list of replication steps with concise explanations demonstrating correct sequencing and functional understanding.",
+      "activity_interaction_type": "sequencing"
+    },
+    {
+      "activity_id": "A4",
+      "title": "Analysing Hepatitis C Replication Mechanisms",
+      "grouping": "individual",
+      "duration_minutes": 13,
+      "mapped_learning_outcomes": ["LO4"],
+      "activity_preamble": "Hepatitis C virus provides a detailed case study. This activity focuses on analysing how its components work together.",
+      "argument_structure_hint": "Structure your reasoning as: protein ? function ? contribution to replication.",
+      "learner_task": "1. Review the explanation and worked example.\n2. Complete the analysis table linking proteins to their roles.\n3. Apply your understanding to the scenario cases.\n4. Use the checklist to refine your analysis.",
+      "expected_output": "A completed analysis table and short applied explanation demonstrating how key HCV proteins contribute to replication."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluating Immune Evasion in Hepatitis C",
+      "grouping": "individual",
+      "duration_minutes": 13,
+      "mapped_learning_outcomes": ["LO1", "LO2", "LO5"],
+      "activity_preamble": "This final activity brings together your knowledge to evaluate how Hepatitis C avoids immune detection.",
+      "transfer_or_application_task": "Apply the same evaluation criteria to a hypothetical RNA virus with one missing evasion strategy.",
+      "learner_task": "1. Study the explanation and worked evaluation.\n2. Complete the decision table.\n3. Write a judgement paragraph using the template.\n4. Check your work using the checklist.\n5. Complete the transfer prompt.\n6. Write the consolidation summary.",
+      "expected_output": "A completed evaluation table and justified written judgement comparing HCV immune evasion strategies, followed by a concise summary of key learning."
+    }
+  ]
+}

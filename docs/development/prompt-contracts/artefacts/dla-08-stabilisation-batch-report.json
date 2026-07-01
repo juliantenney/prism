@@ -1,0 +1,214 @@
+{
+  "date": "2026-07-01",
+  "runs": 3,
+  "results": [
+    {
+      "run": 1,
+      "passMandatory": 0,
+      "activityCount": 5,
+      "passMandatoryPct": 0,
+      "emittedCoreChars": 38253,
+      "histogram": [
+        {
+          "field": "activity_preamble",
+          "count": 5
+        },
+        {
+          "field": "activity_preamble_floor",
+          "count": 5
+        },
+        {
+          "field": "self_explanation_prompt",
+          "count": 4
+        },
+        {
+          "field": "cognition_field",
+          "count": 3
+        },
+        {
+          "field": "conceptual_contrast_prompt",
+          "count": 2
+        },
+        {
+          "field": "expected_output",
+          "count": 1
+        },
+        {
+          "field": "expected_output_floor",
+          "count": 1
+        },
+        {
+          "field": "argument_structure_hint",
+          "count": 1
+        },
+        {
+          "field": "transfer_or_application_task",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "passMandatory": 0,
+      "activityCount": 5,
+      "passMandatoryPct": 0,
+      "emittedCoreChars": 38253,
+      "histogram": [
+        {
+          "field": "activity_preamble",
+          "count": 5
+        },
+        {
+          "field": "self_explanation_prompt",
+          "count": 5
+        },
+        {
+          "field": "activity_preamble_floor",
+          "count": 5
+        },
+        {
+          "field": "cognition_field",
+          "count": 4
+        },
+        {
+          "field": "conceptual_contrast_prompt",
+          "count": 2
+        },
+        {
+          "field": "reasoning_orientation",
+          "count": 1
+        },
+        {
+          "field": "argument_structure_hint",
+          "count": 1
+        },
+        {
+          "field": "transfer_or_application_task",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "passMandatory": 2,
+      "activityCount": 5,
+      "passMandatoryPct": 40,
+      "emittedCoreChars": 38253,
+      "histogram": [
+        {
+          "field": "self_explanation_prompt",
+          "count": 5
+        },
+        {
+          "field": "expected_output",
+          "count": 3
+        },
+        {
+          "field": "expected_output_floor",
+          "count": 3
+        },
+        {
+          "field": "cognition_field",
+          "count": 3
+        },
+        {
+          "field": "conceptual_contrast_prompt",
+          "count": 2
+        },
+        {
+          "field": "argument_structure_hint",
+          "count": 1
+        },
+        {
+          "field": "transfer_or_application_task",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "meanPassMandatoryPct": 13.3,
+  "best": {
+    "run": 3,
+    "passMandatory": 2,
+    "activityCount": 5,
+    "passMandatoryPct": 40,
+    "emittedCoreChars": 38253,
+    "histogram": [
+      {
+        "field": "self_explanation_prompt",
+        "count": 5
+      },
+      {
+        "field": "expected_output",
+        "count": 3
+      },
+      {
+        "field": "expected_output_floor",
+        "count": 3
+      },
+      {
+        "field": "cognition_field",
+        "count": 3
+      },
+      {
+        "field": "conceptual_contrast_prompt",
+        "count": 2
+      },
+      {
+        "field": "argument_structure_hint",
+        "count": 1
+      },
+      {
+        "field": "transfer_or_application_task",
+        "count": 1
+      }
+    ]
+  },
+  "worst": {
+    "run": 1,
+    "passMandatory": 0,
+    "activityCount": 5,
+    "passMandatoryPct": 0,
+    "emittedCoreChars": 38253,
+    "histogram": [
+      {
+        "field": "activity_preamble",
+        "count": 5
+      },
+      {
+        "field": "activity_preamble_floor",
+        "count": 5
+      },
+      {
+        "field": "self_explanation_prompt",
+        "count": 4
+      },
+      {
+        "field": "cognition_field",
+        "count": 3
+      },
+      {
+        "field": "conceptual_contrast_prompt",
+        "count": 2
+      },
+      {
+        "field": "expected_output",
+        "count": 1
+      },
+      {
+        "field": "expected_output_floor",
+        "count": 1
+      },
+      {
+        "field": "argument_structure_hint",
+        "count": 1
+      },
+      {
+        "field": "transfer_or_application_task",
+        "count": 1
+      }
+    ]
+  },
+  "threshold80MetRuns": 0,
+  "reliable80": false
+}

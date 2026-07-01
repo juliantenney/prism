@@ -1,7 +1,21 @@
 # Sprint 55 — Product Backlog
 
 **Source:** [Sprint 54 closure — Product experience findings](../2026-06-29-sprint-54-pedagogic-fidelity-audit/SPRINT-54-CLOSURE-REPORT.md#product-experience-findings)  
-**Principles:** [SPRINT-55-DESIGN-PRINCIPLES.md](./SPRINT-55-DESIGN-PRINCIPLES.md)
+**Principles:** [SPRINT-55-DESIGN-PRINCIPLES.md](./SPRINT-55-DESIGN-PRINCIPLES.md)  
+**Current state:** [SPRINT-55-CURRENT-STATE.md](./SPRINT-55-CURRENT-STATE.md)
+
+---
+
+## Completed — structural rendering (2026-06-29)
+
+| ID | Item | Outcome |
+| -- | ---- | ------- |
+| **S55-STRUCT-01** | Beat-first activity rendering | `activity.episode_plan.beats` drives render order |
+| **S55-STRUCT-02** | Material–beat registry | `lib/beat-material-registry.js` — single source of truth |
+| **S55-STRUCT-03** | Beat section markup + diagnostics | `.util-beat-section`; `[PRISM beat-render]` logging |
+| **S55-STRUCT-04** | Acceptance tests | `tests/beat-first-activity-render.test.js`, `tests/beat-material-registry.test.js` |
+
+Do not re-implement material-order progression heuristics for activities with episode plans.
 
 ---
 
@@ -10,7 +24,7 @@
 | ID | Item | Description | Acceptance sketch |
 | -- | ---- | ----------- | ----------------- |
 | P1-01 | **Learning Journey Navigator** | Persistent or top-level control listing activities in sequence with current position | Jump to activity; shows LO/activity title; works on mobile width |
-| P1-02 | **TOC + anchor navigation** | Page TOC + per-activity anchors for major sections (Orient, Study, Do, Check, …) | Click/jump lands correct section; URL hash or export-stable ids |
+| P1-02 | **TOC + anchor navigation** | Page TOC + per-activity anchors for major sections (Orient, beats, Check, …) | Click/jump lands correct section; URL hash or export-stable ids |
 | P1-03 | **Progress visibility** | Resource % or step N of M **plus** activity compass alignment | Learner states position without scrolling search |
 | P1-04 | **Output affordances** | Print stylesheet; explicit next-step cue; optional “mark complete” local state (no LMS) | Print hides nav chrome appropriately; next action visible at activity end |
 
@@ -38,6 +52,20 @@ Affordances should reduce interpretation effort **without changing pedagogy**.
 | P2-01 | **Revision support** | “Return to model”, “Jump to check”, activity summary strip for returning learners |
 | P2-02 | **Visual hierarchy** | Section spacing, heading scale, materials stack scanability — without theme system |
 | P2-03 | **Cognitive accessibility** | Landmarks (`main`, `nav`), skip link, focus order, heading level discipline |
+| P2-04 | **Beat presentation quality** | Beat heading discipline; suppress redundant material headings; spacing rhythm inside `.util-beat-section` |
+
+### P2 — Primary focus after structural milestone
+
+Sprint 55 should prioritise **presentation quality** on the explicit Journey → Activity → Beat → Material structure:
+
+* Typography (body, beat, activity, tables)  
+* Line length and line height  
+* Spacing rhythm between beats and materials  
+* Visual hierarchy and clutter reduction  
+
+**Guiding principle:** *Beat heading survives. Everything else must justify itself.*
+
+The export is structurally correct but still visually noisy — simplify the presentation layer before adding more chrome.
 
 ---
 
@@ -62,32 +90,33 @@ Affordances should reduce interpretation effort **without changing pedagogy**.
 
 ---
 
-## Suggested implementation order
+## Suggested implementation order (updated 2026-06-29)
 
 ```
-P1-03 Progress (extends existing compass)
-  → P1-02 TOC / anchors
+[COMPLETE] Beat-first rendering + registry
+  → P2-04 Beat presentation / hierarchy slice
+  → P1-03 Progress (extends existing compass)
+  → P1-02 TOC / anchors (include beat-level targets)
   → P1-01 Journey Navigator
   → P1-04 Output affordances
-  → P2 (pick one based on fresh-run audit)
+  → P2-01 / P2-03 (pick based on fresh-run audit)
 ```
 
-## Recommended First Slice
+## Recommended next slice
 
-### P1-03 Progress Visibility
+### P2-04 Beat presentation quality
 
 **Reason:**
 
-* Extends the existing activity compass rather than creating a new system  
-* Lowest architectural risk  
-* Creates foundations for Learning Journey Navigator  
-* Directly addresses orientation findings from Sprint 54  
-* Provides visible learner value quickly  
+* Structural progression is now explicit — visual noise is the main learner-facing gap  
+* Low risk to pedagogy — presentation-only changes inside existing beat sections  
+* Directly implements “beat heading survives” design principle  
+* Improves Marx / inflation exports without new architecture  
 
 **Acceptance focus:**
 
-A learner should be able to identify their position within the resource and activity sequence without scroll-searching.
+A learner scanning an activity with episode plan sees a **clear beat ladder** with minimal redundant headings, icons, and wrapper chrome under each beat heading.
 
 ---
 
-*Sprint 55 product backlog — 2026-06-29.*
+*Sprint 55 product backlog — 2026-06-29. Structural milestone update — 2026-06-29.*

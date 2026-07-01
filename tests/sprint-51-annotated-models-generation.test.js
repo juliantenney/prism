@@ -69,11 +69,11 @@ test("51-1: full pattern block includes SP-06 and SP-07", () => {
 
 test("51-1: PEL material block reinforces weak/strong judgement sections", () => {
   const block = loadPelMaterialBlock();
-  assert.match(block, /## What experts notice/i);
-  assert.match(block, /## Why this works/i);
+  assert.match(block, /INSTRUCTIONAL-PATTERN-SP blocks/i);
   assert.match(block, /## A weaker response would/i);
   assert.match(block, /## A stronger response would/i);
   assert.match(block, /criteria-led strong/i);
+  assert.match(block, /GAM-PRES-08\/09/i);
 });
 
 test("51-1: example bodies can satisfy commentary shape conventions", () => {

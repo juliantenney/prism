@@ -250,6 +250,7 @@ test("repairLearnerPageCompositionFromUpstream: facilitator page profile is not 
 test("LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS includes support_note and expected_output", () => {
   const ids = api.LEARNER_PAGE_ACTIVITY_FRAMING_PRESERVATION_FIELD_IDS;
   assert.ok(ids.includes("activity_preamble"));
+  assert.ok(ids.includes("learner_task"));
   assert.ok(ids.includes("support_note"));
   assert.ok(ids.includes("expected_output"));
 });

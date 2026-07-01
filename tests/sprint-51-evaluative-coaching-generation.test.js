@@ -70,12 +70,10 @@ test("51-2: full pattern block still includes SP-05 evaluative coaching", () => 
 
 test("51-2: PEL material block reinforces evaluative coaching", () => {
   const block = loadPelMaterialBlock();
-  assert.match(block, /## Common mistakes/i);
-  assert.match(block, /### If any check is not met:/i);
-  assert.match(block, /do NOT embed checklist items/i);
+  assert.match(block, /INSTRUCTIONAL-PATTERN-SP blocks/i);
   assert.match(block, /Which part of your answer provides explanation rather than description/i);
   assert.match(block, /Which claim is least well supported/i);
-  assert.match(block, /diagnostic coaching, not motivational/i);
+  assert.match(block, /diagnostic only/i);
 });
 
 test("51-2: example bodies satisfy evaluative coaching shape conventions", () => {

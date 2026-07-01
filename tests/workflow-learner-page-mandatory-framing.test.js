@@ -141,16 +141,15 @@ function fullyAssembledLearnerPageDlaPrompt(brief) {
 
 test("41-5 final: workshop learner-page DLA prompt requires activity_preamble on every activity", () => {
   const prompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
-  assert.match(prompt, /each activity object must include activity_preamble/i);
-  assert.match(prompt, /why the idea matters/i);
-  assert.match(prompt, /Mandatory per activity/i);
+  assert.match(prompt, /each activity MUST include activity_preamble/i);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
 });
 
 test("41-5 final: workshop learner-page DLA prompt requires cognition field on every activity", () => {
   const prompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   assert.match(
     prompt,
-    /each activity object must include at least one cognition-orientation field/i
+    /≥1 cognition-orientation field/i
   );
   assert.match(prompt, /reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt/i);
   assert.match(prompt, /Learner-page activity framing by archetype/i);
@@ -158,16 +157,13 @@ test("41-5 final: workshop learner-page DLA prompt requires cognition field on e
   assert.match(prompt, /Evaluation activities:/i);
 });
 
-test("49: learner-page DLA prompt includes cognition-orientation authoring contract", () => {
-  const prompt = dlaPromptForBrief(MARX_SELF_STUDY_BRIEF);
-  assert.match(prompt, /LD-COGNITION-ORIENTATION-CONTRACT \(auto-applied\)/i);
+test("49: learner-page DLA prompt includes SSOT scaffold contract (replaces preamble/cognition blocks)", () => {
+  const prompt = fullyAssembledLearnerPageDlaPrompt(MARX_SELF_STUDY_BRIEF);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT \(auto-applied\)/i);
   assert.match(prompt, /MANDATORY PER ACTIVITY/i);
-  assert.match(prompt, /PRE-EMIT CHECKLIST/i);
-  assert.match(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i);
-  const cognitionIdx = prompt.indexOf("LD-COGNITION-ORIENTATION-CONTRACT");
-  const preambleIdx = prompt.indexOf("LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT");
-  assert.ok(preambleIdx !== -1 && cognitionIdx !== -1);
-  assert.ok(preambleIdx < cognitionIdx, "preamble exposition block precedes cognition-orientation block");
+  assert.match(prompt, /DLA PRE-EMIT SCAFFOLD GATE/i);
+  assert.doesNotMatch(prompt, /LD-COGNITION-ORIENTATION-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i);
 });
 
 test("49 salience: fully assembled learner-page DLA prompt has no optional cognition-orientation schema wording", () => {
@@ -177,20 +173,18 @@ test("49 salience: fully assembled learner-page DLA prompt has no optional cogni
   assert.doesNotMatch(prompt, /support_note, cognition-orientation fields/i);
   assert.match(
     prompt,
-    /≥1 cognition-orientation field REQUIRED per activity when self_directed\/learner page/i
+    /≥1 cognition-orientation field REQUIRED \(see OUTPUT CONTRACT\)/i
   );
   const actLine = prompt.match(/- activities\[\]:[^\n]*/i);
   assert.ok(actLine, "activities[] schema line present");
-  assert.match(actLine[0], /activity_preamble \(REQUIRED per activity/i);
-  assert.match(actLine[0], /optional activity_interaction_type, optional support_note/i);
+  assert.match(actLine[0], /activity_preamble \(REQUIRED/i);
+  assert.match(actLine[0], /optional support_note and additive fields per OUTPUT CONTRACT/i);
 });
 
-test("49 salience: fully assembled prompt keeps cognition modules after preamble exposition", () => {
+test("49 salience: fully assembled prompt includes thin OUTPUT CONTRACT and SSOT", () => {
   const prompt = fullyAssembledLearnerPageDlaPrompt(MARX_SELF_STUDY_BRIEF);
-  const preambleIdx = prompt.indexOf("LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT");
-  const cognitionIdx = prompt.indexOf("LD-COGNITION-ORIENTATION-CONTRACT");
-  assert.ok(preambleIdx !== -1 && cognitionIdx !== -1);
-  assert.ok(preambleIdx < cognitionIdx);
+  assert.match(prompt, /OUTPUT CONTRACT \(learner-facing copy fields — author to the learner; scaffold: LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT\)/i);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT \(auto-applied\)/i);
 });
 
 test("49 salience: facilitator-only DLA prompt excludes learner-page framing runtime augmentations", () => {
@@ -204,13 +198,13 @@ test("49 salience: facilitator-only DLA prompt excludes learner-page framing run
 test("41-5 final: self-study learner page receives same mandatory framing guarantees", () => {
   const workshopPrompt = dlaPromptForBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   const selfStudyPrompt = dlaPromptForBrief(MARX_SELF_STUDY_BRIEF);
-  assert.match(selfStudyPrompt, /each activity object must include activity_preamble/i);
+  assert.match(selfStudyPrompt, /Each activity MUST include activity_preamble/i);
   assert.match(
     selfStudyPrompt,
-    /each activity object must include at least one cognition-orientation field/i
+    /≥1 cognition-orientation field/i
   );
-  assert.match(selfStudyPrompt, /do not emit learner-page activities with only title, learner_task/i);
-  assert.match(workshopPrompt, /each activity object must include at least one cognition-orientation field/i);
+  assert.match(selfStudyPrompt, /do not emit procedural-only rows/i);
+  assert.match(workshopPrompt, /≥1 cognition-orientation field/i);
 });
 
 test("41-5 final: facilitator-only outputs do not receive mandatory learner-page DLA framing", () => {

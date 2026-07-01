@@ -1,0 +1,248 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Foundations of Core Concept LO1",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "This activity introduces you to the foundational ideas behind the core concept of LO1. You will explore the context and significance of this topic, understand its framing within the broader subject area, and activate your prior knowledge. Through detailed explanations, examples, and contrasting non-examples, you will build a robust understanding. Common misconceptions will be addressed to clarify difficult points. You will then engage in guided practice and independent tasks to consolidate your learning, followed by verification and reflection to deepen your grasp.",
+      "reasoning_orientation": "As you progress, focus on understanding how each example illustrates the concept and why non-examples fail to meet the criteria. Pay attention to the reasoning behind common misconceptions and how confronting them strengthens your comprehension. This will prepare you for applying the concept independently with confidence.",
+      "self_explanation_prompt": "After completing each section, explain in your own words why the examples fit the concept and why the non-examples do not. Reflect on any misconceptions you previously held and how your understanding has changed.",
+      "learner_task": "Study the provided explanations and examples carefully. Complete the guided practice exercises to apply your understanding, then perform the independent tasks to demonstrate mastery. Finally, verify your work against the checklist and reflect on your learning progress.",
+      "expected_output": "You will produce clear, accurate responses demonstrating your understanding of the core concept, correctly distinguishing examples from non-examples, and effectively addressing misconceptions. Your independent work will show confident application of the concept, and your reflection will reveal thoughtful insights into your learning process.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Explanatory teaching",
+          "specification": "depth_floor: L3; detailed exposition of core concept LO1 with illustrative examples and non-examples."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Modelled application",
+          "specification": "depth_floor: L3; step-by-step demonstration of concept application with reasoning."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "Quality benchmark",
+          "specification": "depth_floor: L3; exemplar responses for guided and independent practice tasks."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-check",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria linked to concept understanding and application."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Exploring Core Concept LO2",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "This activity guides you through the essential aspects of core concept LO2. Starting with orientation and framing, you will activate prior knowledge and engage with detailed explanations. Examples and non-examples will help you differentiate the concept clearly. Misconceptions will be confronted to ensure accurate understanding. You will practice with guided exercises and then perform independently, followed by verification and reflection to solidify your learning.",
+      "reasoning_orientation": "Focus on how examples embody the concept and why non-examples fail. Consider the reasoning behind common misconceptions and how correcting them enhances your understanding. This approach will support your ability to apply the concept independently.",
+      "self_explanation_prompt": "Explain why each example is a valid instance of the concept and why non-examples do not qualify. Reflect on any misconceptions you had and how your perspective has evolved.",
+      "learner_task": "Engage with the explanatory materials and examples. Complete guided practice exercises to reinforce your understanding, then undertake independent tasks to demonstrate mastery. Use the verification checklist to assess your work and reflect on your learning outcomes.",
+      "expected_output": "Your work will show clear understanding of LO2, correctly identifying valid examples and non-examples, addressing misconceptions, and applying the concept independently. Your reflection will highlight your learning progress and insights.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "text",
+          "purpose": "Explanatory teaching",
+          "specification": "depth_floor: L3; comprehensive explanation of core concept LO2 with illustrative examples and contrasting non-examples."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "worked_example",
+          "purpose": "Modelled application",
+          "specification": "depth_floor: L3; detailed worked example demonstrating application of LO2."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "sample_output",
+          "purpose": "Quality benchmark",
+          "specification": "depth_floor: L3; exemplar responses for practice tasks."
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-assessment",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria for assessing understanding and application."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing Core Concept LO3",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "In this activity, you will analyse core concept LO3 by exploring its criteria and underlying mechanisms. Starting with orientation and framing, you will activate prior knowledge and study the criteria exposition. Detailed explanations and worked thinking examples will guide your understanding. You will engage in guided inquiry and practice to develop analytical skills, followed by independent performance. Verification and reflection will help consolidate your analytical capabilities. Finally, you will explore transfer tasks to apply your analysis to new contexts.",
+      "conceptual_contrast_prompt": "As you analyse LO3, focus on distinguishing the criteria that define the concept and the mechanisms that explain how it operates. Contrast these with related but distinct concepts to sharpen your analytical precision.",
+      "reasoning_orientation": "Analyse each stage by connecting criteria to mechanisms and functional outcomes. Avoid superficial descriptions; instead, explain why each element matters and how it contributes to the overall concept.",
+      "self_explanation_prompt": "Before reviewing worked examples, articulate your understanding of the criteria and mechanisms. Explain how these relate to the concept and why they are important.",
+      "transfer_or_application_task": "Apply your analysis framework to a novel example or case study, identifying criteria and mechanisms in a new context to demonstrate transfer of your analytical skills.",
+      "learner_task": "Study the criteria exposition and worked thinking materials carefully. Engage in guided inquiry and practice exercises to develop your analysis skills. Complete independent tasks to demonstrate mastery. Use the verification checklist to assess your work, reflect on your learning, and complete transfer tasks to apply your analysis.",
+      "expected_output": "You will produce a detailed analysis linking criteria and mechanisms, demonstrating clear reasoning and understanding. Your independent work will show confident analytical skills, and your transfer task will illustrate your ability to apply analysis in new contexts. Reflections will reveal thoughtful insights into your analytical process.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "text",
+          "purpose": "Criteria exposition",
+          "specification": "depth_floor: L3; detailed description of analysis criteria with examples."
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "worked_example",
+          "purpose": "Worked analytic thinking",
+          "specification": "depth_floor: L3; stepwise analytic walkthrough linking criteria and mechanisms."
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry and practice",
+          "specification": "depth_floor: L3; table with rows for criteria, mechanisms, and functional outcomes; includes exemplar rows and hint columns."
+        },
+        {
+          "material_id": "A3-M4",
+          "type": "checklist",
+          "purpose": "Verification",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria linked to analytic accuracy and completeness."
+        },
+        {
+          "material_id": "A3-M5",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task",
+          "specification": "depth_floor: L3; prompt guiding application of analysis criteria to a new example."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Analysing Core Concept LO4",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "This activity focuses on analysing core concept LO4 through a structured exploration of its defining criteria and mechanisms. You will begin with orientation and framing, activate your prior knowledge, and study the criteria exposition. Detailed explanations and worked thinking examples will support your understanding. Guided inquiry and practice will develop your analytical skills, followed by independent performance. Verification and reflection will consolidate your learning. Finally, transfer tasks will encourage you to apply your analysis to new situations.",
+      "conceptual_contrast_prompt": "Pay close attention to how the criteria for LO4 differ from related concepts. Contrast the mechanisms involved and consider how these distinctions affect your analysis.",
+      "reasoning_orientation": "Connect each criterion to its underlying mechanism and functional role. Provide explanations that go beyond description to show why these connections matter for understanding LO4.",
+      "self_explanation_prompt": "Explain your reasoning about the criteria and mechanisms before reviewing worked examples. Reflect on how these elements shape your analysis of LO4.",
+      "transfer_or_application_task": "Use the analysis framework to examine a new case or example, applying criteria and mechanisms to demonstrate your ability to transfer your analytical skills.",
+      "learner_task": "Engage deeply with the criteria exposition and worked thinking materials. Participate in guided inquiry and practice exercises to hone your analysis. Complete independent tasks to demonstrate mastery. Verify your work with the checklist, reflect on your learning, and complete the transfer task to apply your skills.",
+      "expected_output": "Your analysis will clearly link criteria and mechanisms with sound reasoning. Independent work will show confident analytical skills, and transfer tasks will demonstrate your ability to apply these skills in new contexts. Reflections will provide insight into your analytical approach.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "Criteria exposition",
+          "specification": "depth_floor: L3; comprehensive description of LO4 analysis criteria with examples."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "worked_example",
+          "purpose": "Worked analytic thinking",
+          "specification": "depth_floor: L3; detailed analytic walkthrough linking criteria and mechanisms."
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry and practice",
+          "specification": "depth_floor: L3; table with criteria, mechanisms, and functional outcomes; includes exemplar rows and hints."
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "checklist",
+          "purpose": "Verification",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria for analytic accuracy and completeness."
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task",
+          "specification": "depth_floor: L3; prompt to apply analysis criteria to a novel example."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building on your previous analysis skills developed in LO3, this activity deepens your understanding by focusing on LO4's specific criteria and mechanisms. The transfer tasks encourage you to apply these refined skills to new contexts, reinforcing your analytical capabilities."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluating Core Concept LO5",
+      "grouping": "individual",
+      "duration_minutes": 70,
+      "mapped_learning_outcomes": [
+        "LO5"
+      ],
+      "activity_preamble": "This comprehensive activity guides you through evaluating core concept LO5 by constructing perspectives, defining and applying criteria, and making reasoned judgements. Starting with orientation and framing, you will activate prior knowledge and build perspectives. You will study criteria exposition and engage in criteria construction. Worked judgement examples will model evaluative reasoning. Guided inquiry and reasoning tasks will develop your evaluative skills, followed by independent performance and evaluative judgement. Verification and reflection will consolidate your learning. Transfer tasks will challenge you to apply your evaluative skills in new contexts.",
+      "uncertainty_tension_prompt": "Evaluation involves balancing multiple criteria and perspectives, often with trade-offs and uncertainty. Reflect on how different criteria influence your judgement and how you weigh conflicting evidence to reach a reasoned conclusion.",
+      "argument_structure_hint": "Structure your evaluation by first constructing clear criteria, then comparing options against these criteria. Follow with reasoned judgements supported by evidence, and justify your conclusions with clear explanations.",
+      "self_explanation_prompt": "Before reviewing worked judgements, explain your reasoning about the criteria and perspectives. Reflect on how these shape your evaluative decisions and the trade-offs involved.",
+      "transfer_or_application_task": "Apply your evaluative framework to a new scenario, constructing criteria, making judgements, and justifying your conclusions to demonstrate transfer of your evaluative skills.",
+      "learner_task": "Study the perspective construction, criteria exposition, and criteria construction materials. Review worked judgement examples to understand evaluative reasoning. Engage in guided inquiry and reasoning exercises. Complete independent evaluative tasks and judgements. Verify your work with the checklist, reflect on your learning, and complete transfer tasks to apply your skills in new contexts.",
+      "expected_output": "You will produce well-reasoned evaluations that clearly apply constructed criteria and perspectives. Your independent judgements will be supported by evidence and justified with coherent arguments. Transfer tasks will demonstrate your ability to apply evaluation skills to novel situations. Reflections will reveal your understanding of evaluative complexity and trade-offs.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "text",
+          "purpose": "Perspective construction and criteria exposition",
+          "specification": "depth_floor: L3; detailed exposition of multiple perspectives and evaluation criteria."
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "template",
+          "purpose": "Criteria construction",
+          "specification": "depth_floor: L3; structured template guiding construction of evaluation criteria."
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "worked_example",
+          "purpose": "Worked evaluative judgement",
+          "specification": "depth_floor: L3; stepwise example of evaluative reasoning including weak and strong judgements."
+        },
+        {
+          "material_id": "A5-M4",
+          "type": "decision_table",
+          "purpose": "Guided inquiry and reasoning",
+          "specification": "depth_floor: L3; table for comparing options against criteria with partial exemplars and scoring guide."
+        },
+        {
+          "material_id": "A5-M5",
+          "type": "template",
+          "purpose": "Independent evaluative judgement",
+          "specification": "depth_floor: L3; template for independent evaluative decision making and justification."
+        },
+        {
+          "material_id": "A5-M6",
+          "type": "checklist",
+          "purpose": "Verification",
+          "specification": "depth_floor: L3; checklist with ≥4 criteria for evaluating judgement quality and reasoning."
+        },
+        {
+          "material_id": "A5-M7",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task",
+          "specification": "depth_floor: L3; prompt guiding application of evaluation framework to a novel scenario."
+        },
+        {
+          "material_id": "A5-M8",
+          "type": "scenario",
+          "purpose": "Evaluation context",
+          "specification": "depth_floor: L3; scenario with ≥2 distinct perspectives and contextual details for evaluation."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity builds on your analytical skills from previous activities by introducing evaluative judgement. You will learn to construct criteria and perspectives, reason through trade-offs, and justify your decisions. The transfer task encourages applying these complex skills in new contexts, advancing your evaluative independence."
+    }
+  ]
+}

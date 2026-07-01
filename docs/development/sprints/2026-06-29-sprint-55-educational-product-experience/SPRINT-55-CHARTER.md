@@ -2,7 +2,8 @@
 
 **Sprint:** 55 — Educational Product Experience  
 **Opened:** 2026-06-29  
-**Predecessor:** Sprint 54 (closed)
+**Predecessor:** Sprint 54 (closed)  
+**Current state:** [SPRINT-55-CURRENT-STATE.md](SPRINT-55-CURRENT-STATE.md)
 
 ---
 
@@ -10,16 +11,21 @@
 
 Transform the exported learner page from a **well-designed educational document** into a **fully realised educational product experience** — improving journey visibility, navigation, progress, orientation, affordances, cognitive accessibility, visual hierarchy, and revision support.
 
+**Structural milestone (complete):** Beat-first rendering — episode plans and the material–beat registry drive activity-internal progression.
+
+**Current phase:** Presentation quality on the explicit Journey → Activity → Beat → Material structure.
+
 ---
 
 ## In scope
 
 * Product-layer improvements to exported learner HTML (and minimal supporting renderer/export code)  
+* **Beat presentation quality** — typography, hierarchy, spacing, clutter reduction inside beat sections  
 * Learning Journey Navigator, TOC/anchors, progress visibility, output affordances (P1)  
 * Revision support, visual hierarchy, cognitive accessibility (P2)  
 * Typography refinement where it serves hierarchy (P3)  
 * Evidence-led slices validated on **fresh** workflow exports  
-* Regression anchors from Sprint 50/51 instructional grammar suites  
+* Regression anchors from Sprint 50/51 instructional grammar suites **and** beat-first test suites  
 
 ---
 
@@ -64,15 +70,16 @@ This definition acts as the **evaluation lens** for all P1 implementation decisi
 | 3 | **Progress visibility** | Resource-level and per-activity progress discernible without reading full prose |
 | 4 | **Output affordances** | Print-friendly export; clear “what to do next” cues |
 | 5 | **P2 slice** (one of): revision support **or** hierarchy **or** cognitive accessibility landmark set | Documented + tested |
-| 6 | **No regression** | Sprint 50/51 grammar + material preservation tests green |
+| 6 | **No regression** | Sprint 50/51 grammar + material preservation + beat-first tests green |
 | 7 | **Fresh-run validation** | At least one Marx or inflation export walked as learner on current codebase |
+| 8 | **Beat-first structure** | Activities with `episode_plan.beats` render beat sections in plan order (see [CURRENT-STATE](SPRINT-55-CURRENT-STATE.md)) |
 
 ---
 
 ## Exit
 
-Sprint 55 closes when criteria 1–7 are met and a closure report is written.
+Sprint 55 closes when criteria 1–7 are met, criterion 8 remains satisfied, and a closure report is written.
 
 ---
 
-*Sprint 55 charter — 2026-06-29.*
+*Sprint 55 charter — 2026-06-29. Structural update — 2026-06-29.*

@@ -52,12 +52,12 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module
 
 test("49-C2: field preservation list unchanged", () => {
   const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /activity_preamble, prior_knowledge_activation, reasoning_orientation/i);
+  assert.match(text, /activity_preamble, learner_task, prior_knowledge_activation, reasoning_orientation/i);
   assert.match(text, /intellectual_frame, intellectual_coherence_bridge/i);
-  assert.match(text, /expected_output and support_note/i);
+  assert.match(text, /learner_task, expected_output, and support_note/i);
   assert.equal(
     compose.FIELD_PRESERVATION_FIELD_IDS,
-    "activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge"
+    "activity_preamble, learner_task, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge"
   );
 });
 

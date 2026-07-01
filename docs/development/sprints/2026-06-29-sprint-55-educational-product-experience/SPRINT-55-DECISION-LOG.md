@@ -10,6 +10,8 @@
 | D-55-03 | 2026-06-29 | P1 backlog: Journey Navigator, TOC/anchors, progress, output affordances. | Sprint 55 product backlog | Accepted |
 | D-55-04 | 2026-06-29 | Theme system development out of scope for Sprint 55. | Charter | Accepted |
 | D-55-05 | 2026-06-29 | Accessibility improvements pursued through orientation, navigation, cognitive accessibility, heading discipline, and affordance clarity — not a standalone remediation workstream. Separate accessibility sprint only if future evidence shows gaps outside Sprint 55 scope. | Sprint 54 product-experience findings | Accepted |
+| D-55-06 | 2026-06-29 | Beat-first rendering operational. `activity.episode_plan.beats` is the source of learner progression and render order inside activities. Material–beat registry (`lib/beat-material-registry.js`) is the single assignment authority. | `tests/beat-first-activity-render.test.js`, [CURRENT-STATE](SPRINT-55-CURRENT-STATE.md) | Accepted |
+| D-55-07 | 2026-06-29 | Sprint 55 primary focus shifts from activity-internal structural discovery to **presentation quality** (typography, hierarchy, spacing, clutter reduction). PEL redesign deferred; support-layer hypothesis documented in CURRENT-STATE. | [CURRENT-STATE § Remaining focus](SPRINT-55-CURRENT-STATE.md#remaining-sprint-55-focus) | Accepted |
 
 *Add rows as implementation decisions are made.*
 

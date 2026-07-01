@@ -106,19 +106,21 @@ test("Marx self-study brief: inferred factors trigger DLA framing without manual
     stepCanonicalStepId: "step_design_learning_activities"
   }, resolved);
   assert.match(prompt, /output contract \(learner-facing page/i);
-  assert.match(prompt, /each activity object must include activity_preamble/i);
-  assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /each activity MUST include activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt on ≥2 activities/i);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
   assert.match(
     prompt,
-    /each activity MUST include activity_preamble and at least one cognition-orientation field/i
+    /Each activity MUST include activity_preamble.*cognition-orientation field/i
   );
-  assert.match(prompt, /Mandatory per activity/i);
-  assert.match(prompt, /do not emit learner-page activities with only title, learner_task/i);
+  assert.match(prompt, /MANDATORY PER ACTIVITY/i);
+  assert.match(prompt, /do not emit procedural-only rows/i);
   assert.match(prompt, /self-directed activity json example \(authoritative shape/i);
+  assert.doesNotMatch(prompt, /learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
 });
 
-test("DLA prompt pipeline: output contract override reaches final prompt", () => {
+test("DLA prompt pipeline: thin OUTPUT CONTRACT and SSOT reach final prompt", () => {
   const resolved = marxResolvedFactors();
   const prompt = applyDlaPromptPipeline("Design executable learning activities.\n", {
     workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
@@ -127,29 +129,16 @@ test("DLA prompt pipeline: output contract override reaches final prompt", () =>
     stepCanonicalStepId: "step_design_learning_activities"
   }, resolved);
   assert.match(prompt, /output contract \(learner-facing page/i);
-  assert.match(prompt, /each activity object must include activity_preamble/i);
-  assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
-  assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /worked-example and faded-support \(auto-applied\)/i);
-  assert.doesNotMatch(prompt, /epistemic synthesis and closure \(auto-applied\)/i);
-  assert.match(prompt, /named move \+ changed context/i);
-  assert.match(prompt, /limit of transfer/i);
-  assert.match(prompt, /what should now be clearer/i);
-  assert.match(prompt, /Explicitly avoid:.*reflect on your learning/i);
-  assert.match(prompt, /intellectual_coherence_bridge: on each activity after the first/i);
-  assert.match(prompt, /OUTPUT CONTRACT on Design Learning Activities/i);
-  assert.match(prompt, /interpretive ambiguity/i);
-  assert.match(prompt, /do not repeat the overview tension verbatim/i);
-  assert.doesNotMatch(prompt, /reflect on uncertainties you encountered/i);
-  assert.match(prompt, /coherent intellectual journey/i);
-  assert.match(prompt, /do not repeat the full overview/i);
-  assert.match(prompt, /What changed in your understanding/i);
-  assert.match(prompt, /step → meaning/i);
-  assert.match(prompt, /Check your thinking:/i);
-  assert.match(prompt, /modelled reasoning/i);
-  assert.match(prompt, /expected_output describes evidence of completion/i);
+  assert.match(prompt, /each activity MUST include activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt on ≥2 activities/i);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
+  assert.match(prompt, /DLA PRE-EMIT SCAFFOLD GATE/i);
+  assert.doesNotMatch(prompt, /learner-page activity framing \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
+  assert.match(prompt, /Learner-page activity framing by archetype/i);
+  assert.match(prompt, /intellectual_coherence_bridge 30–60/i);
+  assert.match(prompt, /Learner-page activity framing by archetype/i);
+  assert.doesNotMatch(prompt, /self_explanation_prompt[^\n]*25–80/i);
 });
 
 test("facilitated workshop brief: DLA prompt does not include self-directed output contract", () => {
@@ -202,7 +191,7 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
   const prompt = api.applyLdDesignPageComposeContractToDraft(scaffolded, ctx);
   assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
   assert.match(prompt, /Activity field preservation/i);
-  assert.match(prompt, /expected_output and support_note/i);
+  assert.match(prompt, /expected_output.*support_note/i);
   assert.match(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.match(prompt, /Design Page rider/i);
   assert.match(prompt, /PRESERVATION BOUNDARY/i);
@@ -354,7 +343,7 @@ test("runtime resolveStepPromptText: legacy library prompt receives self-directe
   assert.equal(resolvedPrompt.error, "");
   assert.match(resolvedPrompt.text, /output contract \(learner-facing page/i);
   assert.match(resolvedPrompt.text, /activity_preamble/i);
-  assert.match(resolvedPrompt.text, /facilitator_moves: omit for self-directed/i);
+  assert.match(resolvedPrompt.text, /facilitator_moves and failure_mode: omit for self-directed/i);
 });
 
 test("runtime buildWorkflowStepInstructions: Marx DLA run prompt includes framing contract", () => {

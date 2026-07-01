@@ -1,0 +1,89 @@
+{
+  "artifact_type": "learning_activities",
+  "title": "RNA viruses and HCV — terse scaffold regression fixture (Sprint 55)",
+  "activities": [
+    {
+      "activity_id": "LO1",
+      "title": "Distinguishing RNA Genome Types",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1"],
+      "activity_preamble": "Different RNA viruses follow distinct rules for converting genomes into proteins. This activity builds a foundational distinction you will reuse throughout the session.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "text",
+          "purpose": "explanation",
+          "specification": "Clear exposition defining positive-sense, negative-sense, and ambisense RNA, including translation implications and need for polymerase; include comparative summary statements.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 0
+        }
+      ],
+      "learner_task": "1. Study the explanation of RNA genome types.\n2. Follow the worked example and sample output carefully.\n3. Classify three given viruses as positive, negative, or ambisense.\n4. Write one-sentence justification for each classification.",
+      "expected_output": "A short classification set (3 items) with correct genome type and one clear justification per item explaining translation requirements and intermediate steps.",
+      "reasoning_orientation": "Focus on how genome structure determines whether translation can occur directly or requires prior synthesis.",
+      "support_note": "Common error: assuming all viral RNA can be translated immediately. Check whether a complementary strand is required first."
+    },
+    {
+      "activity_id": "LO2",
+      "title": "How Viruses Produce Multiple Proteins",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": ["LO2"],
+      "activity_preamble": "RNA viruses solve the problem of limited genome size through efficient protein production strategies.",
+      "learner_task": "1. Review explanation and worked example.\n2. Complete the analysis table comparing protein production strategies.\n3. Ensure each entry explains mechanism and outcome.",
+      "expected_output": "A completed comparison table showing correct mechanisms and clear explanations of how each strategy increases protein production efficiency.",
+      "conceptual_contrast_prompt": "How does producing one large protein differ from producing multiple transcripts in terms of control and efficiency?",
+      "support_note": "Do not list features only; each table cell must include a mechanism and why it benefits the virus."
+    },
+    {
+      "activity_id": "LO3",
+      "title": "Mapping the RNA Virus Replication Cycle",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO3"],
+      "activity_preamble": "Replication follows a structured sequence of steps that must occur in the correct order.",
+      "learner_task": "1. Study the replication cycle explanation.\n2. Create a numbered list of stages.\n3. Add one function for each stage.",
+      "expected_output": "A correctly ordered list of replication steps with brief explanations of each step's role in virus production.",
+      "self_explanation_prompt": "Why is negative-strand synthesis necessary before producing large numbers of genomes?",
+      "support_note": "Avoid listing steps without explaining purpose—each stage must include its biological role."
+    },
+    {
+      "activity_id": "LO4",
+      "title": "How Hepatitis C Virus Optimises Replication",
+      "grouping": "individual",
+      "duration_minutes": 14,
+      "mapped_learning_outcomes": ["LO4"],
+      "activity_preamble": "HCV uses multiple host interactions and structural adaptations to enhance replication and evade detection.",
+      "learner_task": "1. Study explanation and worked example.\n2. Complete the analysis table linking mechanism to benefit.\n3. Ensure all entries include explicit cause-and-effect reasoning.",
+      "expected_output": "A completed table showing mechanisms, their function, and how each improves replication or immune evasion.",
+      "reasoning_orientation": "Focus on mechanism → effect → advantage connections rather than listing features.",
+      "support_note": "Avoid describing structures without linking them to their functional advantage."
+    },
+    {
+      "activity_id": "LO5",
+      "title": "Evaluating HCV Transmission Strategies",
+      "grouping": "individual",
+      "duration_minutes": 14,
+      "mapped_learning_outcomes": ["LO5", "LO3", "LO4"],
+      "activity_preamble": "Viruses can spread through different pathways, each with advantages and limitations for survival and persistence.",
+      "learner_task": "1. Review the two scenarios.\n2. Study the modelling note.\n3. Complete the decision table with ratings and justification.\n4. Answer the transfer prompt.\n5. Write a short consolidation summary.",
+      "expected_output": "A completed decision table with justified comparisons, a brief transfer response applying criteria to a new virus, and a written consolidation summary integrating key ideas.",
+      "argument_structure_hint": "Use criteria-based comparison: claim → evidence → implication.",
+      "support_note": "Avoid describing only one strategy—evaluation requires comparing both using consistent criteria."
+    }
+  ],
+  "outcome_alignment": {
+    "LO1": ["LO1"],
+    "LO2": ["LO2"],
+    "LO3": ["LO3"],
+    "LO4": ["LO4"],
+    "LO5": ["LO5", "LO3", "LO4"]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Final activity includes written synthesis of key ideas across the session.",
+    "workbook_contract_applied": true
+  }
+}

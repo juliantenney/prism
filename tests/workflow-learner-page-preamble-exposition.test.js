@@ -78,7 +78,7 @@ function applyDlaPromptPipeline(baseDraft, briefCtx, resolved) {
   );
 }
 
-test("42-3: Marx DLA prompt includes activity preamble exposition contract", () => {
+test("42-3: Marx DLA prompt includes SSOT scaffold contract (preamble rules consolidated)", () => {
   const resolved = marxResolvedFactors();
   const prompt = applyDlaPromptPipeline(
     "Design executable learning activities.\n",
@@ -90,11 +90,10 @@ test("42-3: Marx DLA prompt includes activity preamble exposition contract", () 
     },
     resolved
   );
-  assert.match(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /ACTIVITY_PREAMBLE AUTHORIAL PURPOSE/i);
-  assert.match(prompt, /AVOID as standalone opening sentences/i);
-  assert.match(prompt, /intellectual momentum/i);
-  assert.match(prompt, /Study the model row/);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /FORBIDDEN on scaffold fields/i);
+  assert.match(prompt, /activity_preamble 50–120/i);
+  assert.doesNotMatch(prompt, /LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT \(auto-applied\)/i);
 });
 
 test("42-3: Design Page step does not receive DLA-only preamble exposition contract", () => {

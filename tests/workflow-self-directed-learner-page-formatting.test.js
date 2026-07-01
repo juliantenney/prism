@@ -114,16 +114,20 @@ test("GAM prompt: table row adequacy scaffold for self-directed learner page", (
   const resolved = marxResolvedFactors();
   resolved.delivery_context = "self_directed";
   resolved.session_materials = ["page"];
-  const ctx = {
-    workflowGoal: MARX_BRIEF.goal,
-    desiredOutputs: MARX_BRIEF.desiredOutputs,
-    stepCanonicalTitle: "Generate Activity Materials",
-    stepCanonicalStepId: "step_generate_activity_materials",
-    workflowBriefResolution: { resolvedFactors: resolved }
-  };
-  const prompt = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+  const prompt = api.applyWorkflowStepRuntimePromptAugmentations(
     "Generate activity materials.\n",
-    ctx
+    {
+      title: "Generate Activity Materials",
+      canonical_title: "Generate Activity Materials",
+      canonical_step_id: "step_generate_activity_materials"
+    },
+    {
+      goal: MARX_BRIEF.goal,
+      desiredOutputs: MARX_BRIEF.desiredOutputs,
+      workflowOutputs: ["page", "activity_materials"],
+      workflowBriefResolution: { resolvedFactors: resolved }
+    },
+    {}
   );
   assert.match(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
   assert.match(prompt, /LD-MATERIALS-COPY \| Layer: L4/i);

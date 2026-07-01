@@ -133,9 +133,13 @@ test("42-6: applyLdJourneyAssimilationContractToDraft is idempotent", () => {
 test("42-6: domain pack Design Page template references journey assimilation and LC/KM", () => {
   const md = fs.readFileSync(ldPatternsPath, "utf8");
   const dpSection = md.slice(md.indexOf("## 13. Design Page"));
+  const factory = JSON.parse(
+    dpSection.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/)[1].trim()
+  );
   assert.match(dpSection, /LD-JOURNEY-ASSIMILATION/);
   assert.match(dpSection, /learning_content, knowledge_model/);
-  assert.match(dpSection, /transition_to_next/);
+  assert.match(factory.promptTemplate, /LD-JOURNEY-ASSIMILATION/);
+  assert.match(factory.defaultPromptNotes, /LD-JOURNEY-ASSIMILATION/);
 });
 
 test("42-6: preservation repair still restores activity_preamble after compose path", () => {

@@ -1,0 +1,28 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Distinguishing RNA Genome Types",
+      "activity_preamble": "This activity builds a foundation by clarifying how different RNA genomes relate to translation and replication.",
+      "learner_task": "Study the explanation and worked example. Complete the classification table by comparing genome types. Use the checklist to verify accuracy.",
+      "expected_output": "A completed comparison table correctly distinguishing RNA genome types with accurate explanations for each column.",
+      "reasoning_orientation": "Focus on why translation differs between genome types."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Analysing Hepatitis C Entry Strategy",
+      "activity_preamble": "This activity develops analytical thinking around multi-step viral entry.",
+      "learner_task": "Analyse the scenario and complete the table explaining roles and advantages of each step.",
+      "expected_output": "An analysis showing how multiple receptors improve infection efficiency.",
+      "conceptual_contrast_prompt": "Compare single vs multi-receptor entry outcomes."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluating Viral Regulation and Immune Evasion",
+      "activity_preamble": "This activity focuses on evaluating key regulatory and evasion strategies.",
+      "learner_task": "Complete comparison and decision tables, then evaluate which mechanisms are most effective and justify your reasoning.",
+      "expected_output": "A justified evaluation identifying most effective mechanisms with reasoning.",
+      "argument_structure_hint": "Use evidence → comparison → judgement."
+    }
+  ]
+}

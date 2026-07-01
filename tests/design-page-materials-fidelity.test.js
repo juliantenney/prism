@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -69,7 +70,6 @@ function createElementStub() {
 
 function loadPrismTestApi() {
   const source = fs.readFileSync(appJsPath, "utf8");
-  const s38Source = fs.readFileSync(path.join(repoRoot, "lib", "sprint38-visual-affordances.js"), "utf8");
   const sandbox = {
     console,
     setTimeout,
@@ -79,7 +79,7 @@ function loadPrismTestApi() {
   };
   const elementStore = new Map();
   const documentStub = {
-    readyState: "complete",
+    readyState: "loading",
     addEventListener: () => {},
     createElement: () => createElementStub(),
     getElementById: (id) => {
@@ -109,32 +109,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
-  vm.runInContext(s38Source, sandbox, { filename: "sprint38-visual-affordances.js" });
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-table-fidelity.js"), "utf8"),
-    sandbox,
-    { filename: "ld-table-fidelity.js" }
-  );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-materials-copy.js"), "utf8"),
-    sandbox,
-    { filename: "ld-materials-copy.js" }
-  );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-math-render.js"), "utf8"),
-    sandbox,
-    { filename: "ld-math-render.js" }
-  );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-self-directed-rhetoric.js"), "utf8"),
-    sandbox,
-    { filename: "ld-self-directed-rhetoric.js" }
-  );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
-    sandbox,
-    { filename: "ld-design-page-compose-contract.js" }
-  );
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -161,7 +136,17 @@ function designPageAugmentedPrompt(api) {
   return api.applyWorkflowStepRuntimePromptAugmentations(
     seeded,
     { canonical_step_id: "step_design_page", title: "Design Page" },
-    { goal: "Learner page", desiredOutputs: "Learner-facing page" }
+    {
+      goal: "RNA/HCV self-directed learner-page brief",
+      desiredOutputs: "learning_activities, activity_materials, page",
+      workflowOutputs: ["page", "activity_materials"],
+      workflowBriefResolution: {
+        resolvedFactors: {
+          delivery_context: "self_directed",
+          learning_environments: ["self_study"]
+        }
+      }
+    }
   );
 }
 
@@ -251,27 +236,24 @@ test("inflation-style page: rich materials coexist with visual_affordances", () 
   assert.equal(merged.visual_affordances.length, 1);
 });
 
-test("Design Page pack: materials fidelity in defaultPromptNotes and promptTemplate", () => {
+test("Design Page pack: materials fidelity delegated to compose contract in notes", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.defaultPromptNotes, /MATERIALS FIDELITY \(hard\)/i);
-  assert.match(factory.defaultPromptNotes, /additive page-root only/i);
-  assert.match(factory.defaultPromptNotes, /Set of scenarios/i);
-  assert.match(factory.promptTemplate, /MATERIALS FIDELITY:/i);
-  assert.match(factory.promptTemplate, /additive page-root metadata/i);
-  assert.match(factory.promptTemplate, /generated figures only/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(factory.defaultPromptNotes, /LD-MATERIALS-COPY/i);
+  assert.match(factory.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(factory.promptTemplate, /embedded LD-MATERIALS-COPY and LD-TABLE-FIDELITY/i);
+  assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
 });
 
-test("Design Page pack §13 38H-3: table-adjunct fidelity in prompt and notes", () => {
+test("Design Page pack §13 38H-3: table-adjunct fidelity in notes and runtime compose", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.promptTemplate, /38H-3/i);
-  assert.match(factory.promptTemplate, /DP-TABLE-ADJ-01/i);
-  assert.match(factory.promptTemplate, /table-adjunct instructional prose/i);
-  assert.match(factory.promptTemplate, /do not reduce to pipe-only/i);
-  assert.match(factory.defaultPromptNotes, /38H-3 table-adjunct fidelity/i);
-  assert.match(factory.defaultPromptNotes, /DP-TABLE-ADJ-01/i);
+  assert.match(factory.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.doesNotMatch(factory.promptTemplate, /DP-TABLE-ADJ-01/i);
 });
 
-test("38S Phase 2C-a: Design Page pack forbids materials shortening and inflation collapse", () => {
+test("38S Phase 2C-a: Design Page pack defers materials rules to runtime compose", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const surfaces = [
     factory.promptTemplate,
@@ -282,17 +264,11 @@ test("38S Phase 2C-a: Design Page pack forbids materials shortening and inflatio
     assert.doesNotMatch(text, /near-verbatim/i, "must not license near-verbatim materials copy");
     assert.doesNotMatch(text, /shorten only clearly non-essential/i, "must not permit materials shortening");
   }
-  assert.match(factory.promptTemplate, /Readable page assembly applies to section structure/i);
-  assert.match(factory.promptTemplate, /copy learner-facing delivery content verbatim into activity\.materials\.\*/i);
-  assert.match(factory.promptTemplate, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
-  assert.match(factory.promptTemplate, /Material bodies are hard constraints/i);
-  assert.match(factory.promptTemplate, /Do not use generation_notes\.limitations to excuse material-body loss/i);
-  assert.match(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
-  assert.match(factory.promptTemplate, /Inflation is a sustained increase/i);
-  assert.match(factory.promptTemplate, /Year 1 basket = £100; Year 2 basket = £105/i);
-  assert.match(factory.promptTemplate, /Demand exceeds supply → demand-pull inflation/i);
-  assert.match(factory.promptTemplate, /Context → Evaluation → Decision → Justification/i);
-  assert.match(factory.promptTemplate, /Apply to real-world inflation/i);
+  assert.match(factory.promptTemplate, /Read-only composition step/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(factory.promptTemplate, /never excuse material-body loss/i);
+  assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
+  assert.doesNotMatch(factory.promptTemplate, /Inflation is a sustained increase/i);
 });
 
 test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbidden collapse patterns", () => {
@@ -362,4 +338,15 @@ test("compose contract prompt block is idempotent on second application", () => 
     (twice.match(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/gi) || []).length,
     1
   );
+});
+
+test("Design Page compose path uses compose-only guided scaffold slice", () => {
+  const api = loadPrismTestApi();
+  const augmented = designPageAugmentedPrompt(api);
+  assert.match(augmented, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/);
+  assert.match(augmented, /Design Page compose preservation/i);
+  assert.match(augmented, /COMPOSE PRESERVATION \(Design Page\)/i);
+  assert.doesNotMatch(augmented, /EXEMPLAR CONTRAST \(topic-specific/i);
+  assert.doesNotMatch(augmented, /DLA PRE-EMIT SCAFFOLD GATE/i);
+  assert.doesNotMatch(augmented, /activity_preamble \(50–120 words/i);
 });

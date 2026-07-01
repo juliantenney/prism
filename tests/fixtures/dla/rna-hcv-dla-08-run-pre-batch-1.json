@@ -1,0 +1,246 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Core Concepts of LO1",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "This activity introduces the foundational concepts related to LO1. You will explore the topic through a structured sequence starting with an orientation to the subject, followed by framing the key ideas. You will activate prior knowledge, receive detailed explanations, and examine examples and non-examples to deepen your understanding. Misconceptions will be confronted before you engage in guided and independent practice. Finally, you will verify your learning and reflect on your progress to consolidate your understanding.",
+      "reasoning_orientation": "As you progress, focus on understanding why each concept matters and how it connects to your existing knowledge. Consider the distinctions between examples and non-examples carefully, as this will help clarify the boundaries of the concept. Reflect on misconceptions to avoid common errors and deepen your conceptual grasp.",
+      "self_explanation_prompt": "After reviewing each explanation and example, explain in your own words why the concept works as it does. Identify any contrasts with non-examples and articulate why those do not fit the concept. This will help solidify your understanding and prepare you for practice tasks.",
+      "learner_task": "Study the provided explanations, examples, and non-examples carefully. Engage with the guided practice exercises to apply your understanding, then complete the independent performance tasks. Use the verification checklist to assess your mastery before reflecting on your learning journey.",
+      "expected_output": "You will produce clear, accurate responses in practice tasks demonstrating your understanding of LO1 concepts. Your reflection should articulate key insights and any remaining uncertainties, showing thoughtful engagement with the material.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Explanatory teaching",
+          "specification": "depth_floor: L3; detailed exposition of core concepts with illustrative examples and non-examples."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Modelled application of LO1 concepts",
+          "specification": "stepwise demonstration with reasoning annotations."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "task_cards",
+          "purpose": "Guided practice exercises",
+          "specification": "scaffolded tasks progressing in difficulty."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification of understanding",
+          "specification": "≥4 criteria linked to LO1 concepts with revision prompts."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Exploring and Applying LO2 Concepts",
+      "grouping": "individual",
+      "duration_minutes": 60,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "This activity guides you through the exploration of LO2 concepts using a similar structured approach. You will begin with orientation and framing to set the context, activate your prior knowledge, and then engage with detailed explanations. Examples and non-examples will clarify the concept boundaries. Misconceptions will be addressed before you undertake guided and independent practice. Verification and reflection will help consolidate your learning.",
+      "reasoning_orientation": "Focus on how the examples and non-examples illustrate the defining features of LO2 concepts. Pay attention to the reasoning behind each explanation and how it connects to your prior knowledge. This will help you build a robust understanding and avoid common pitfalls.",
+      "self_explanation_prompt": "Explain why each example fits the concept and why each non-example does not. Reflect on any misconceptions you encounter and how the explanations resolve them. This practice will enhance your ability to apply the concept independently.",
+      "learner_task": "Review the explanatory texts and worked examples thoroughly. Complete the guided practice tasks to reinforce your understanding, followed by independent exercises. Use the verification checklist to self-assess before reflecting on your learning progress.",
+      "expected_output": "Your responses in practice tasks should demonstrate accurate application of LO2 concepts. Your reflection should summarize key learnings and identify areas for further improvement.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "text",
+          "purpose": "Explanatory teaching",
+          "specification": "depth_floor: L3; comprehensive explanation with illustrative examples and non-examples."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "worked_example",
+          "purpose": "Demonstration of LO2 concept application",
+          "specification": "stepwise worked example with reasoning commentary."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "task_cards",
+          "purpose": "Guided practice tasks",
+          "specification": "incremental exercises with scaffolded support."
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "checklist",
+          "purpose": "Verification checklist",
+          "specification": "≥4 criteria linked to LO2 concept mastery with corrective guidance."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building on the foundational understanding developed in the previous activity, this session deepens your grasp of related concepts. The structured approach ensures you not only comprehend but can also apply the ideas independently, preparing you for more complex analysis ahead."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Analysing LO3 with Criteria and Inquiry",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "This activity focuses on analysing LO3 concepts through a detailed exploration of criteria and inquiry methods. Starting with orientation and framing, you will activate prior knowledge before being introduced to the criteria exposition. Explanations and worked thinking examples will guide you through the analytic process. You will engage in guided inquiry and practice before performing independently. Verification and reflection will consolidate your analytic skills, and a transfer task will help you apply your learning to new contexts.",
+      "conceptual_contrast_prompt": "As you analyse, pay close attention to how different criteria highlight various aspects of the concept. Contrast these criteria to understand their distinct roles and how they influence your analysis. This contrast sharpens your ability to discern subtle differences and enhances your analytic precision.",
+      "self_explanation_prompt": "Explain how each criterion helps you interpret the data or concept. Reflect on the reasoning behind your analytic choices and how the worked thinking examples model this process. This will deepen your analytic capabilities and prepare you for independent inquiry.",
+      "learner_task": "Study the criteria exposition and worked thinking materials carefully. Conduct guided inquiry exercises to practice applying criteria, then complete independent analysis tasks. Use the verification checklist to evaluate your analytic accuracy before reflecting on your learning. Finally, complete the transfer task to apply your analysis skills in a new scenario.",
+      "expected_output": "You will produce detailed analytic responses that apply multiple criteria effectively, demonstrating clear reasoning. Your reflection should articulate insights gained and how you can transfer analytic skills to different contexts.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "text",
+          "purpose": "Criteria exposition and explanatory teaching",
+          "specification": "depth_floor: L3; detailed criteria descriptions with examples."
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "worked_example",
+          "purpose": "Worked analytic thinking demonstration",
+          "specification": "stepwise analytic reasoning with annotations."
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry and practice",
+          "specification": "table with prompts for applying criteria; includes exemplar rows and hint columns."
+        },
+        {
+          "material_id": "A3-M4",
+          "type": "checklist",
+          "purpose": "Verification of analytic accuracy",
+          "specification": "≥4 criteria-linked check items with revision advice."
+        },
+        {
+          "material_id": "A3-M5",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task instructions",
+          "specification": "scenario-based prompt requiring application of analytic criteria in a new context."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity builds on your foundational understanding by introducing analytic criteria and inquiry methods. The progression from guided to independent practice ensures you develop strong analytic reasoning skills applicable beyond this topic."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Advanced Analysis of LO4 with Criteria and Inquiry",
+      "grouping": "individual",
+      "duration_minutes": 65,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "In this activity, you will advance your analytic skills related to LO4 by engaging with criteria exposition and guided inquiry. The sequence begins with orientation and framing, followed by activation of prior knowledge. You will study detailed criteria and explanations, observe worked thinking examples, and participate in guided inquiry and practice. Independent performance tasks will assess your skills, followed by verification and reflection. A transfer task will help you apply your analytic skills in new situations.",
+      "conceptual_contrast_prompt": "Consider how different analytic criteria provide distinct lenses for understanding the concept. Contrast these perspectives to appreciate their unique contributions and limitations. This nuanced understanding will improve your analytic precision and flexibility.",
+      "self_explanation_prompt": "Articulate how each criterion informs your analysis and why you apply it in specific ways. Reflect on the worked thinking examples to internalize analytic strategies. This reflective practice will deepen your analytic expertise.",
+      "learner_task": "Engage thoroughly with the criteria exposition and worked thinking materials. Complete guided inquiry and practice exercises to refine your analytic skills. Perform independent analysis tasks and verify your results using the checklist. Conclude with the transfer task to apply your skills to a novel context.",
+      "expected_output": "Your analytic responses should demonstrate nuanced application of multiple criteria with clear, reasoned explanations. Your reflection should highlight key analytic insights and readiness to transfer skills to new challenges.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "Detailed criteria exposition and explanation",
+          "specification": "depth_floor: L3; comprehensive criteria descriptions with illustrative examples."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "worked_example",
+          "purpose": "Demonstration of advanced analytic thinking",
+          "specification": "stepwise reasoning with detailed annotations."
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "analysis_table",
+          "purpose": "Guided inquiry and practice scaffold",
+          "specification": "table with prompts for applying criteria; includes exemplar rows and hint columns."
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "checklist",
+          "purpose": "Verification checklist for analytic accuracy",
+          "specification": "≥4 criteria-linked check items with corrective guidance."
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task instructions",
+          "specification": "scenario-based prompt requiring application of analytic criteria in a new context."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity extends your analytic skills by applying multiple criteria in complex inquiry tasks. The transfer component ensures you can adapt these skills flexibly to different analytic challenges.",
+      "support_note": "This activity is designed for learners who have completed prior analysis activities and are ready to deepen their reasoning skills."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluating LO5 with Criteria and Judgement",
+      "grouping": "individual",
+      "duration_minutes": 70,
+      "mapped_learning_outcomes": [
+        "LO5"
+      ],
+      "activity_preamble": "This comprehensive activity guides you through the evaluation of LO5 concepts by constructing perspectives and criteria, engaging in guided judgement, and performing independent evaluative tasks. Starting with orientation and framing, you will activate prior knowledge before constructing perspectives and criteria. Worked judgement examples will model evaluative reasoning. Guided inquiry and reasoning tasks will scaffold your skills. Independent performance will culminate in an evaluative judgement. Verification and reflection will consolidate your learning, and a transfer task will challenge you to apply evaluation skills in new contexts.",
+      "argument_structure_hint": "When forming your evaluation, begin by clearly defining two or three defensible criteria and explain why each is important for this case. Compare each option against these criteria, citing specific evidence. Your judgement should logically follow from this comparison, including consideration of trade-offs and uncertainties.",
+      "self_explanation_prompt": "Before finalising your judgement, explain how each criterion influenced your evaluation and why the evidence supports your conclusions. Reflect on the perspectives you constructed and how they shaped your reasoning. This will strengthen the rigor of your evaluative process.",
+      "learner_task": "Study the perspective and criteria construction materials carefully. Analyze the worked judgement examples to understand evaluative reasoning. Complete guided inquiry and reasoning tasks before performing an independent evaluative judgement. Use the verification checklist to assess your evaluation. Reflect on your learning and complete the transfer task to apply evaluation skills in a new scenario.",
+      "expected_output": "Your evaluative judgement should clearly articulate defensible criteria, compare options with evidence, and justify your conclusion with reasoned trade-offs. Your reflection should summarize key evaluation insights and readiness to transfer these skills.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "text",
+          "purpose": "Perspective and criteria construction exposition",
+          "specification": "depth_floor: L3; detailed explanation of evaluation perspectives and criteria."
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "worked_example",
+          "purpose": "Worked evaluative judgement demonstration",
+          "specification": "stepwise reasoning with annotations contrasting weak and strong judgements."
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "decision_table",
+          "purpose": "Guided inquiry and reasoning scaffold",
+          "specification": "table with partial exemplar rows and scoring guide for evaluating options."
+        },
+        {
+          "material_id": "A5-M4",
+          "type": "task_cards",
+          "purpose": "Guided reasoning exercises",
+          "specification": "scaffolded prompts to develop evaluative reasoning."
+        },
+        {
+          "material_id": "A5-M5",
+          "type": "template",
+          "purpose": "Independent evaluative judgement template",
+          "specification": "structured format to record criteria, evidence, comparison, and justification."
+        },
+        {
+          "material_id": "A5-M6",
+          "type": "checklist",
+          "purpose": "Verification checklist for evaluation quality",
+          "specification": "≥4 criteria-linked items covering criteria clarity, evidence use, reasoning, and trade-offs."
+        },
+        {
+          "material_id": "A5-M7",
+          "type": "transfer_prompt",
+          "purpose": "Transfer task instructions",
+          "specification": "scenario-based prompt requiring application of evaluation criteria and judgement in a new context."
+        },
+        {
+          "material_id": "A5-M8",
+          "type": "consolidation_summary",
+          "purpose": "Session consolidation and reflection",
+          "specification": "learner-facing summary requiring ≥80 words synthesizing key evaluation concepts, reasoning strategies, and transfer readiness."
+        }
+      ],
+      "intellectual_coherence_bridge": "This final activity integrates your learning by focusing on evaluative judgement, combining criteria construction, reasoning, and independent decision-making. The transfer task ensures you can apply these complex skills beyond this session.",
+      "support_note": "This activity demands careful reasoning and reflection; allocate sufficient time to engage deeply with each component."
+    }
+  ]
+}

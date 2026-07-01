@@ -13,7 +13,7 @@ test("LD-SELF-DIRECTED-RHETORIC: core block preserves behavioural anchors", () =
   assert.match(text, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.match(text, /LD-MATERIALS-COPY \/ LD-TABLE-FIDELITY/i);
   assert.match(text, /PRESERVATION BOUNDARY/i);
-  assert.match(text, /expected_output describes evidence of completion/i);
+  assert.match(text, /describing evidence of completion/i);
   assert.match(text, /Check your thinking:/i);
   assert.match(text, /step → meaning/i);
   assert.match(text, /coherent intellectual journey/i);

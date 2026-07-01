@@ -232,12 +232,12 @@ test("30-2: DLA runtime prompt includes reasoning contract and field policy", ()
     "Design Learning Activities"
   );
   assert.match(prompt, PEL_REASONING_MARKER);
-  assert.match(prompt, /HOW TO THINK/i);
+  assert.match(prompt, /SCAFFOLD GENRE/i);
   assert.match(prompt, /\bevidence_use_prompt\b/);
   assert.match(prompt, /\bargument_structure_hint\b/);
   assert.match(prompt, /\bconceptual_contrast_prompt\b/);
   assert.match(prompt, /\bdisciplinary_lens\b/);
-  assert.match(prompt, /do not repeat activity_preamble/i);
+  assert.match(prompt, /never restate learner_task, activity_preamble/i);
   assert.match(prompt, /think critically/i);
   assert.match(prompt, PEL_ORIENTATION_MARKER);
 });

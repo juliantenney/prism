@@ -1,0 +1,52 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Distinguishing RNA Genome Types",
+      "activity_preamble": "This activity builds a foundation by clarifying how different RNA genomes relate to translation and replication.",
+      "learner_task": "Study the explanation and worked example. Complete the classification table by comparing genome types.",
+      "expected_output": "A completed comparison table correctly distinguishing RNA genome types with accurate explanations for each column.",
+      "reasoning_orientation": "Focus on why translation differs between genome types."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Explaining RNA Virus Replication and Mutation",
+      "activity_preamble": "This activity examines how replication mechanisms lead to viral diversity.",
+      "learner_task": "Review the explanation and worked example.",
+      "expected_output": "A completed table showing clear causal links between replication mechanisms and viral diversity.",
+      "reasoning_orientation": "Trace cause-and-effect relationships in replication."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Mapping the RNA Virus Replication Cycle",
+      "activity_preamble": "This activity builds procedural understanding of the replication cycle.",
+      "learner_task": "Study the worked example, then complete the replication cycle table.",
+      "expected_output": "A complete and correctly ordered replication cycle with clear explanations for each stage.",
+      "reasoning_orientation": "Focus on sequence and function alignment."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Analysing Hepatitis C Entry Strategy",
+      "activity_preamble": "This activity develops analytical thinking around multi-step viral entry.",
+      "learner_task": "Analyse the scenario and complete the table.",
+      "expected_output": "An analysis showing how multiple receptors improve infection efficiency.",
+      "conceptual_contrast_prompt": "Compare single vs multi-receptor entry outcomes."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Evaluating Viral Regulation and Immune Evasion",
+      "activity_preamble": "This activity focuses on evaluating key regulatory and evasion strategies.",
+      "learner_task": "Complete comparison and decision tables.",
+      "expected_output": "A justified evaluation identifying most effective mechanisms with reasoning.",
+      "argument_structure_hint": "Use evidence → comparison → judgement."
+    },
+    {
+      "activity_id": "A6",
+      "title": "Synthesis: Explaining RNA Virus Strategy",
+      "activity_preamble": "This final activity consolidates learning and supports integration across concepts.",
+      "learner_task": "Write a structured explanation of RNA virus replication using Hepatitis C as an example.",
+      "expected_output": "A coherent written explanation integrating concepts of entry, replication, and immune evasion.",
+      "transfer_or_application_task": "Apply explanation to another RNA virus scenario."
+    }
+  ]
+}

@@ -255,9 +255,9 @@ test("30-1: DLA runtime prompt includes PEL orientation block and field names", 
   assert.match(prompt, /\bintellectual_frame\b/);
   assert.match(prompt, /\bintellectual_coherence_bridge\b/);
   assert.match(prompt, /output contract \(learner-facing page/i);
-  assert.match(prompt, /each activity object must include activity_preamble/i);
-  assert.match(prompt, /self_explanation_prompt: at least two activities/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
+  assert.match(prompt, /Each activity MUST include activity_preamble/i);
+  assert.match(prompt, /self_explanation_prompt on ≥2 activities/i);
+  assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
 });
 
 test("30-1: Design Page runtime prompt uses compose contract for field preservation without duplicate PEL orientation", () => {
@@ -287,8 +287,8 @@ test("41-5: workshop learner handout DLA runtime prompt includes PEL orientation
   );
   assert.match(prompt, PEL_ORIENTATION_MARKER);
   assert.match(prompt, /output contract \(learner-facing page/i);
-  assert.match(prompt, /learner-page activity framing \(auto-applied\)/i);
-  assert.match(prompt, /facilitator_moves: optional when the brief requires facilitated choreography/i);
+  assert.match(prompt, /Learner-page activity framing by archetype/i);
+  assert.match(prompt, /facilitator_moves: optional for facilitated choreography/i);
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
 });
 

@@ -77,6 +77,13 @@ const sampleLo = {
   ]
 };
 
+const sampleLc = {
+  title: "What drives inflation?",
+  sections: [{ title: "Measuring inflation", content: "CPI tracks a basket of goods." }],
+  key_concepts: ["CPI"],
+  examples: [{ title: "Basket update", description: "Weights change over time." }]
+};
+
 test("KM strict parse accepts exactly one fenced json block", () => {
   const parsed = strict.parseKnowledgeModelCaptureStrict(
     fencedJson(sampleKm),
@@ -175,8 +182,19 @@ test("pack §3 KM prompt requires fenced JSON contract", () => {
   const km = extractPromptFactory("## 3. Model Knowledge");
   assert.match(km.promptTemplate, /fenced JSON block only/i);
   assert.match(km.promptTemplate, /```json/i);
+  assert.match(km.promptTemplate, /STEP N OUTPUT: knowledge_model/i);
   assert.equal(km.preferredOutputFormat, "json");
   assert.equal(km.structureStyle, "schema_structured");
+});
+
+test("pack §2 Generate Learning Content prompt requires fenced JSON contract", () => {
+  const glc = extractPromptFactory("## 2. Generate Learning Content");
+  assert.match(glc.promptTemplate, /fenced JSON block only/i);
+  assert.match(glc.promptTemplate, /learning_content root object/i);
+  assert.match(glc.promptTemplate, /STEP N OUTPUT: learning_content/i);
+  assert.doesNotMatch(glc.promptTemplate, /Return only the JSON\./i);
+  assert.equal(glc.preferredOutputFormat, "json");
+  assert.match(glc.defaultPromptNotes, /fenced block/i);
 });
 
 test("pack §10 Learning Sequence prompt requires fenced JSON contract", () => {
@@ -244,12 +262,17 @@ test("workflow run validator accepts fenced LO capture", () => {
   assert.ok(Array.isArray(check.parsed.learning_outcomes));
 });
 
-test("strict contract blocks include KM, LS, and LO fenced keys", () => {
+test("strict contract blocks include KM, LC, LS, and LO fenced keys", () => {
   const kmBlock = strict.buildStrictKnowledgeModelOutputContractBlock();
+  const lcBlock = strict.buildStrictLearningContentOutputContractBlock();
   const lsBlock = strict.buildStrictLearningSequenceOutputContractBlock();
   const loBlock = strict.buildStrictLearningOutcomesOutputContractBlock();
   assert.match(kmBlock, /fenced JSON block only/i);
+  assert.match(kmBlock, /STEP N OUTPUT: knowledge_model/i);
   assert.match(kmBlock, /concepts, relationships, groupings, processes, misconceptions/);
+  assert.match(lcBlock, /fenced JSON block only/i);
+  assert.match(lcBlock, /learning_content root object/i);
+  assert.match(lcBlock, /STEP N OUTPUT: learning_content/i);
   assert.match(lsBlock, /fenced JSON block only/i);
   assert.match(lsBlock, /learning_sequence root object/i);
   assert.match(lsBlock, /timeline, activities_used, activities_omitted, checks/);
@@ -262,6 +285,39 @@ test("strict contract blocks include KM, LS, and LO fenced keys", () => {
   assert.match(epBlock, /Pretty-print JSON with 2-space indentation/i);
   assert.match(epBlock, /Do NOT emit minified single-line JSON/i);
   assert.match(epBlock, /"activity_id": "LO1"/);
+  assert.match(epBlock, /STEP N OUTPUT: episode_plans/i);
+});
+
+test("LC strict parse accepts exactly one fenced json block", () => {
+  const parsed = strict.parseLearningContentCaptureStrict(
+    fencedJson(sampleLc),
+    sanitizePrismRunCapturedOutput
+  );
+  assert.equal(parsed.sections.length, 1);
+});
+
+test("LC strict parse accepts fenced JSON when STEP footer is stripped", () => {
+  const raw = fencedJson(sampleLc) + "\nSTEP 2 OUTPUT: learning_content";
+  const parsed = strict.parseLearningContentCaptureStrict(raw, sanitizePrismRunCapturedOutput);
+  assert.equal(parsed.key_concepts.length, 1);
+});
+
+test("LC strict parse rejects prose before fenced block", () => {
+  const raw = "Here is the learning content:\n" + fencedJson(sampleLc);
+  assert.throws(
+    () => strict.parseLearningContentCaptureStrict(raw, sanitizePrismRunCapturedOutput),
+    /missing_fenced_json_block|fenced JSON/i
+  );
+});
+
+test("workflow run validator accepts fenced LC capture", () => {
+  const check = strict.validateWorkflowStepStrictJsonCapture(
+    fencedJson(sampleLc),
+    "learning_content",
+    sanitizePrismRunCapturedOutput
+  );
+  assert.equal(check.ok, true);
+  assert.ok(Array.isArray(check.parsed.sections));
 });
 
 const sampleEpisodePlans = {

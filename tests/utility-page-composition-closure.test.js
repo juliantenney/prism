@@ -148,9 +148,73 @@ test("closure validator: silent omission appends generation_notes warnings", () 
     "limitations should mention missing A2"
   );
   assert.ok(Array.isArray(page.generation_notes.activities_omitted));
-  assert.ok(
-    page.generation_notes.activities_omitted.some((e) => String(e.activity_id).toLowerCase() === "a2")
-  );
+  assert.equal(page.generation_notes.activities_omitted.length, 0);
+});
+
+test("design page closure: LO3-LO5 omission with duration/readability reasons is repaired", () => {
+  const upstream = {
+    activities: [
+      { activity_id: "LO1", title: "Activity 1" },
+      { activity_id: "LO2", title: "Activity 2" },
+      { activity_id: "LO3", title: "Activity 3" },
+      { activity_id: "LO4", title: "Activity 4" },
+      { activity_id: "LO5", title: "Activity 5" },
+      { activity_id: "LO6", title: "Activity 6" }
+    ]
+  };
+  const page = {
+    artifact_type: "page",
+    page_profile: "learner",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          { activity_id: "LO1", title: "Activity 1" },
+          { activity_id: "LO2", title: "Activity 2" },
+          { activity_id: "LO6", title: "Activity 6" }
+        ]
+      },
+      {
+        section_id: "knowledge_summary",
+        heading: "Knowledge Summary",
+        content: "LO3-LO5 integrated conceptually for readability."
+      }
+    ],
+    generation_notes: {
+      activities_omitted: [
+        {
+          activity_id: "LO3",
+          title: "Activity 3",
+          reason: "condensed into conceptual flow",
+          authority: "duration_constraint"
+        },
+        {
+          activity_id: "LO4",
+          title: "Activity 4",
+          reason: "integrated conceptually",
+          authority: "duration_constraint"
+        },
+        {
+          activity_id: "LO5",
+          title: "Activity 5",
+          reason: "fit readability constraint",
+          authority: "duration_constraint"
+        }
+      ],
+      limitations: []
+    }
+  };
+  const validation = api.applyPageCompositionValidationForUtilitiesPage(page, {
+    upstreamLearningActivities: upstream
+  });
+  const composed = [...api.collectComposedActivityIdsFromPage(page)].sort();
+  assert.equal(validation.outcome, "pass");
+  assert.deepEqual(composed, ["lo1", "lo2", "lo3", "lo4", "lo5", "lo6"]);
+  assert.ok(Array.isArray(page.generation_notes.activities_omitted));
+  assert.equal(page.generation_notes.activities_omitted.length, 0);
+  const limitationsBlob = (page.generation_notes.limitations || []).join(" ").toLowerCase();
+  assert.doesNotMatch(limitationsBlob, /integrated conceptually|conceptual flow|fit readability constraint/i);
 });
 
 test("applyPageCompositionValidationForUtilitiesPage: upstream-aware compose restores omitted activity rows", () => {

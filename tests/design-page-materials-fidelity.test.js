@@ -280,7 +280,22 @@ test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbi
   assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(augmented, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
   assert.match(augmented, /Material bodies are hard constraints/i);
-  assert.match(augmented, /Do not use generation_notes\.limitations to excuse material-body loss/i);
+  assert.match(augmented, /OPAQUE PAYLOAD TRANSPORT/i);
+  assert.match(augmented, /transport, not authoring/i);
+  assert.match(augmented, /AUTHORABLE VS ARCHIVAL FIELDS/i);
+  assert.match(augmented, /AUTHORITATIVE GAM CONTENT BINDING/i);
+  assert.match(augmented, /MULTI-MATERIAL ENUMERATION INVARIANT/i);
+  assert.match(augmented, /PRE-EMIT ENUMERATION VALIDATION/i);
+  assert.match(augmented, /FULL CONTENT BODY PRESERVATION/i);
+  assert.match(augmented, /must not be shortened to the first line/i);
+  assert.match(augmented, /MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION/i);
+  assert.match(augmented, /condensed output is not/i);
+  assert.match(augmented, /represented in condensed form/i);
+  assert.match(augmented, /PAGE ARTEFACT IS FINAL LEARNER OUTPUT/i);
+  assert.match(augmented, /Full checklist from LO1-CHK/i);
+  assert.match(augmented, /do not emit it as a valid page/i);
+  assert.match(augmented, /CONTEXT ACCESS RULE/i);
+  assert.match(augmented, /active Copilot chat history is context/i);
 });
 
 test("Design Page learner page_profile does not bias materials summarisation", () => {
@@ -338,6 +353,21 @@ test("compose contract prompt block is idempotent on second application", () => 
     (twice.match(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/gi) || []).length,
     1
   );
+});
+
+test("Design Page compose contract always includes activity field preservation", () => {
+  const api = loadPrismTestApi();
+  const ctx = { stepCanonicalStepId: "step_design_page", stepTitle: "Design Page" };
+  const prompt = api.applyLdDesignPageComposeContractToDraft("Base prompt", ctx);
+  assert.match(prompt, /Activity field preservation \(learner-facing page\)/i);
+  assert.match(prompt, /activity_preamble/i);
+});
+
+test("Design Page compose contract forbids material-body abbreviation disclaimers", () => {
+  const compose = require(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"));
+  const block = compose.buildLdDesignPageComposePromptBlock({ includeFieldPreservation: true });
+  assert.match(block, /Forbidden compose disclaimer/i);
+  assert.match(block, /full activity material bodies are abbreviated/i);
 });
 
 test("Design Page compose path uses compose-only guided scaffold slice", () => {

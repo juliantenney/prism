@@ -5,6 +5,8 @@
   var DEBUG_OPENAI = true;
   // Toggle temporary workflow-generation trace logs.
   var DEBUG_WORKFLOW_TRACE = false;
+  // Runtime marker for verifying PF-11 hotfix is loaded.
+  var PF11_FIX_VERSION = "pf11-capture-shape-fallback-20260702-0908";
 
   function logWorkflowTrace() {
     if (!DEBUG_WORKFLOW_TRACE) return;
@@ -4339,7 +4341,7 @@
     lines.push("");
     lines.push("Instructions:");
     lines.push(
-      "- Return only the primary deliverable body. Do not prefix the response with step numbers, 'STEP N OUTPUT' lines, workflow metadata, or machine artefact id headers."
+      "- Return only the primary deliverable body and follow any explicit runner footer instruction provided elsewhere in this prompt."
     );
     if (cfg.defaultPromptNotes) {
       lines.push("- " + cfg.defaultPromptNotes);
@@ -8350,16 +8352,75 @@
     return trimmed;
   }
 
+  function formatActivityMaterialsCaptureForPromptEmbed(raw) {
+    var trimmed = sanitizePrismRunCapturedOutput(String(raw || "").trim());
+    if (!trimmed) return "";
+    var preserveMod = resolvePageGamMaterialsPreserveLib();
+    if (
+      preserveMod &&
+      typeof preserveMod.normalizePackTextCaptureInput === "function" &&
+      preserveMod.isPackTextActivityMaterialsCapture &&
+      preserveMod.isPackTextActivityMaterialsCapture(trimmed)
+    ) {
+      return preserveMod.normalizePackTextCaptureInput(trimmed);
+    }
+    return trimmed;
+  }
+
+  function buildDesignPageUpstreamArtefactsConversationalPromptSection(bindings) {
+    var rows = Array.isArray(bindings) ? bindings : [];
+    var internal = rows.filter(function (b) {
+      return b && b.kind === "internal";
+    });
+    if (!internal.length) return "";
+    var lines = [
+      "",
+      "### Upstream artefacts (authoritative — prior step outputs in this conversation)",
+      "",
+      "This Design Page step consumes upstream artefacts from earlier workflow steps already present in this Copilot conversation. The runner does not re-paste those bodies here.",
+      "",
+      "Context access: the active Copilot chat history is context — upstream artefacts do not need to be re-attached in this message. Search conversation history for STEP N OUTPUT, activity_materials, Generate Activity Materials, Material:, and Content: before claiming artefacts are unavailable.",
+      "",
+      "For each binding below, locate the complete output from that source step (marked STEP N OUTPUT: <artefact_name>) and treat it as the authoritative artefact body. Do not reconstruct bodies from the workflow brief, from memory, or from thinner specification fields alone."
+    ];
+    internal.forEach(function (b) {
+      var art = String(b.artifactName || "").trim();
+      var sourceTitle = getStepTitleById(b.sourceStepId) || "an earlier step";
+      var artKey = normalizeWorkflowArtefactBindingKey(art);
+      lines.push("");
+      lines.push("- **" + art + '** from "' + sourceTitle + '":');
+      if (artKey === "activity_materials" || artKey === "session_materials") {
+        lines.push(
+          "  Authoritative GAM content binding: Material/Purpose/type are metadata only; activity.materials.<field> = exact full Content: body (LD-MATERIALS-COPY). Page artefact is final learner output: embed full bodies, never references. Material preservation overrides page optimisation: never condense or summarise Content: bodies; fail if condensed."
+        );
+      } else if (artKey === "episode_plans") {
+        lines.push(
+          "  Populate portable episode_plans schema from that output only; copy beats and archetypes verbatim — do not replan."
+        );
+      } else if (artKey === "learning_activities") {
+        lines.push(
+          "  Use for activity structure, membership, and cognition/scaffold fields; preserve row fields verbatim on compose."
+        );
+      } else {
+        lines.push(
+          "  Use the full prior-step output body for this artefact when composing the page."
+        );
+      }
+    });
+    return lines.join("\n");
+  }
+
   function buildEpisodePlanUpstreamPromptSection(episodePlans, opts) {
     var options = opts && typeof opts === "object" ? opts : {};
     if (!episodePlans || !Array.isArray(episodePlans.episode_plans) || !episodePlans.episode_plans.length) {
       if (options.requireUpstream) {
         return [
           "",
-          "### Upstream episode_plans (required — missing)",
+          "### Upstream episode_plans (required — not embedded)",
           "",
-          "PF-11: upstream `episode_plans` capture is missing. Do **not** emit `learning_activities`.",
-          "Return JSON only: `{ \"error\": \"PF-11: missing episode_plans upstream\" }`."
+          "Upstream `episode_plans` capture is not embedded in this copied prompt.",
+          "Continue normally and use the authoritative episode_plans already available in conversational/workflow context (do not re-plan beats).",
+          "Do not emit PF-11 solely because this prompt block omits an inline episode_plans JSON embed."
         ].join("\n");
       }
       return "";
@@ -8469,6 +8530,49 @@
         return String(node.getAttribute("data-step-id") || "").trim() === sid;
       }) || null;
     return readRunStepCaptureRawFromLi(li);
+  }
+
+  /**
+   * Prompt-copy embed reads: prefer raw workflow capture for pack-text GAM bodies.
+   * GAM run-mode sanitization (facilitator strip / dedupe) must not thin material
+   * bodies before Design Page prompt assembly — the model is the transfer path.
+   */
+  function readWorkflowRunPromptEmbedCaptureTextForStepId(stepId, producerStep) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return "";
+    var captures = state.workflowRunCapturedOutputs || {};
+    var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var gamProducer =
+      producerStep &&
+      isWorkflowStepGenerateActivityMaterials({
+        stepCanonicalStepId:
+          producerStep.canonical_step_id || producerStep.canonicalStepId || "",
+        stepCanonicalTitle: producerStep.title || "",
+        stepTitle: producerStep.title || "",
+        stepOutputName: producerStep.outputName || ""
+      });
+    if (gamProducer) {
+      var fromRaw = sid && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
+      if (String(fromRaw || "").trim()) {
+        return sanitizePrismRunCapturedOutput(fromRaw);
+      }
+    }
+    var fromSanitized = sid && captures[sid] ? String(captures[sid]) : "";
+    if (String(fromSanitized || "").trim()) {
+      return gamProducer ? sanitizePrismRunCapturedOutput(fromSanitized) : fromSanitized;
+    }
+    if (!gamProducer) {
+      var fromRawOther = sid && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
+      if (String(fromRawOther || "").trim()) return fromRawOther;
+    }
+    var liSteps = getWorkflowStepElements();
+    if (!liSteps.length) return "";
+    var li =
+      liSteps.find(function (node) {
+        return String(node.getAttribute("data-step-id") || "").trim() === sid;
+      }) || null;
+    var fromDom = readRunStepCaptureRawFromLi(li);
+    return gamProducer ? sanitizePrismRunCapturedOutput(fromDom) : fromDom;
   }
 
   /** Compose upstream reads: prefer repaired sanitized capture for DLA; otherwise raw paste. */
@@ -8892,17 +8996,162 @@
     return null;
   }
 
+  function looksLikeEpisodePlanRow(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    if (row.episode_plan && typeof row.episode_plan === "object") return true;
+    if (typeof row.archetype === "string" && Array.isArray(row.beats)) return true;
+    if (row.episode && row.episode.plan && typeof row.episode.plan === "object") return true;
+    return false;
+  }
+
+  function looksLikeEpisodePlanRowArray(rows) {
+    if (!Array.isArray(rows) || !rows.length) return false;
+    return rows.some(function (row) {
+      return looksLikeEpisodePlanRow(row);
+    });
+  }
+
+  function normalizeEpisodePlanRowsFromMap(mapObj) {
+    if (!mapObj || typeof mapObj !== "object" || Array.isArray(mapObj)) return null;
+    var keys = Object.keys(mapObj);
+    if (!keys.length) return null;
+    var rows = [];
+    var i;
+    for (i = 0; i < keys.length; i += 1) {
+      var key = String(keys[i] || "").trim();
+      var source = mapObj[key];
+      if (!source || typeof source !== "object" || Array.isArray(source)) continue;
+      if (!looksLikeEpisodePlanRow(source)) continue;
+      var row = Object.assign({}, source);
+      if (!String(row.activity_id || "").trim()) {
+        row.activity_id = key;
+      }
+      rows.push(row);
+    }
+    return rows.length ? rows : null;
+  }
+
+  function normalizeEpisodePlansCaptureForPopulation(capture) {
+    if (!capture) return null;
+    var queue = [capture];
+    var seen = [];
+    var WRAPPER_KEYS = [
+      "content",
+      "output",
+      "result",
+      "artefact",
+      "artifact",
+      "payload",
+      "data",
+      "value"
+    ];
+    var i;
+    while (queue.length) {
+      var node = queue.shift();
+      if (!node) continue;
+      if (seen.indexOf(node) !== -1) continue;
+      seen.push(node);
+
+      if (Array.isArray(node)) {
+        if (looksLikeEpisodePlanRowArray(node)) {
+          return { episode_plans: node.slice() };
+        }
+        continue;
+      }
+      if (typeof node !== "object") continue;
+
+      if (Array.isArray(node.episode_plans)) {
+        return Object.assign({}, node, { episode_plans: node.episode_plans.slice() });
+      }
+
+      if (
+        node.episode_plans &&
+        typeof node.episode_plans === "object" &&
+        !Array.isArray(node.episode_plans)
+      ) {
+        queue.push(node.episode_plans);
+      }
+
+      var mappedRows = normalizeEpisodePlanRowsFromMap(node.episode_plans);
+      if (mappedRows) {
+        return Object.assign({}, node, { episode_plans: mappedRows });
+      }
+
+      for (i = 0; i < WRAPPER_KEYS.length; i += 1) {
+        var wrapped = node[WRAPPER_KEYS[i]];
+        if (!wrapped) continue;
+        if (Array.isArray(wrapped) || (wrapped && typeof wrapped === "object")) {
+          queue.push(wrapped);
+        }
+      }
+    }
+    return null;
+  }
+
+  function resolveEpisodePlansFromAnyWorkflowCapture(diagnostic) {
+    var captures = state.workflowRunCapturedOutputs || {};
+    var capturesRaw = state.workflowRunCapturedOutputsRaw || {};
+    var candidateIds = {};
+    Object.keys(captures).forEach(function (sid) {
+      candidateIds[String(sid || "").trim()] = true;
+    });
+    Object.keys(capturesRaw).forEach(function (sid) {
+      candidateIds[String(sid || "").trim()] = true;
+    });
+    var ids = Object.keys(candidateIds).filter(Boolean);
+    var i;
+    for (i = 0; i < ids.length; i += 1) {
+      var sid = ids[i];
+      var texts = [
+        captures[sid] ? String(captures[sid]) : "",
+        capturesRaw[sid] ? String(capturesRaw[sid]) : "",
+        readWorkflowRunCaptureTextForStepId(sid)
+      ];
+      var j;
+      for (j = 0; j < texts.length; j += 1) {
+        var raw = String(texts[j] || "").trim();
+        if (!raw) continue;
+        var parsed = tryParseWorkflowArtefactJson(raw);
+        if (!parsed) continue;
+        var normalized = normalizeEpisodePlansCaptureForPopulation(parsed);
+        if (!normalized || !Array.isArray(normalized.episode_plans) || !normalized.episode_plans.length) {
+          continue;
+        }
+        var v1 = validateEpisodePlansCaptureV1(normalized);
+        if (!v1.ok) continue;
+        if (diagnostic) {
+          return {
+            episodePlans: normalized,
+            reason: "capture_shape_fallback",
+            validation: v1,
+            upstream: {
+              parsed: parsed,
+              matched_step_id: sid,
+              source: "capture_shape_fallback",
+              parse_ok: true
+            }
+          };
+        }
+        return normalized;
+      }
+    }
+    return diagnostic
+      ? { episodePlans: null, reason: "capture_shape_fallback_miss", validation: null, upstream: null }
+      : null;
+  }
+
   function tryResolveCanonicalEpisodePlansDeriveFallback(wf) {
     if (!workflowHasDesignEpisodePlanStep(wf)) return null;
     var derivedJson = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derivedJson) return null;
     var parsed = tryParseWorkflowArtefactJson(derivedJson);
-    if (!parsed || !Array.isArray(parsed.episode_plans) || !parsed.episode_plans.length) {
+    var normalized = normalizeEpisodePlansCaptureForPopulation(parsed);
+    if (!normalized || !Array.isArray(normalized.episode_plans) || !normalized.episode_plans.length) {
       return null;
     }
-    var check = validateEpisodePlansCaptureV1(parsed);
+    var check = validateEpisodePlansCaptureV1(normalized);
     if (!check.ok) return null;
-    return parsed;
+    return normalized;
   }
 
   function resolveEpisodePlansForDlaPopulation(opts) {
@@ -8920,7 +9169,8 @@
       workflow: wf,
       diagnostic: diagnostic
     });
-    var episodePlans = diagnostic ? upstreamHit && upstreamHit.parsed : upstreamHit;
+    var episodePlansRaw = diagnostic ? upstreamHit && upstreamHit.parsed : upstreamHit;
+    var episodePlans = normalizeEpisodePlansCaptureForPopulation(episodePlansRaw);
     var validation = null;
     var primaryFailReason = "";
     if (episodePlans && Array.isArray(episodePlans.episode_plans) && episodePlans.episode_plans.length) {
@@ -8937,15 +9187,47 @@
       }
       primaryFailReason = "v1_validation_failed";
       episodePlans = null;
+      var shapeFallbackAfterValidationFail = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+      if (diagnostic) {
+        if (shapeFallbackAfterValidationFail && shapeFallbackAfterValidationFail.episodePlans) {
+          return shapeFallbackAfterValidationFail;
+        }
+      } else if (shapeFallbackAfterValidationFail) {
+        return shapeFallbackAfterValidationFail;
+      }
     } else if (
       upstreamHit &&
       upstreamHit.matched_step_id &&
       upstreamHit.parse_ok === false
     ) {
       primaryFailReason = "capture_parse_failed";
+      var shapeFallbackAfterParseFail = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+      if (diagnostic) {
+        if (shapeFallbackAfterParseFail && shapeFallbackAfterParseFail.episodePlans) {
+          return shapeFallbackAfterParseFail;
+        }
+      } else if (shapeFallbackAfterParseFail) {
+        return shapeFallbackAfterParseFail;
+      }
     } else if (workflowHasDesignEpisodePlanStep(wf)) {
       primaryFailReason =
         upstreamHit && upstreamHit.matched_step_id ? "invalid_or_empty_capture" : "missing_capture";
+      var shapeFallbackWhenMissing = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+      if (diagnostic) {
+        if (shapeFallbackWhenMissing && shapeFallbackWhenMissing.episodePlans) {
+          return shapeFallbackWhenMissing;
+        }
+      } else if (shapeFallbackWhenMissing) {
+        return shapeFallbackWhenMissing;
+      }
+    }
+    var shapeFallback = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+    if (diagnostic) {
+      if (shapeFallback && shapeFallback.episodePlans) {
+        return shapeFallback;
+      }
+    } else if (shapeFallback) {
+      return shapeFallback;
     }
     var derivedFallback = tryResolveCanonicalEpisodePlansDeriveFallback(wf);
     if (derivedFallback) {
@@ -9153,6 +9435,13 @@
       return "knowledge_model";
     }
     if (
+      oname === "learning_content" ||
+      canonicalId === "step_generate_learning_content" ||
+      canonicalId === "generate_learning_content"
+    ) {
+      return "learning_content";
+    }
+    if (
       oname === "learning_sequence" ||
       canonicalId === "step_construct_learning_sequence" ||
       canonicalId === "construct_learning_sequence"
@@ -9178,6 +9467,7 @@
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
     if (title === "model knowledge") return "knowledge_model";
+    if (title === "generate learning content") return "learning_content";
     if (title === "construct learning sequence") return "learning_sequence";
     if (title === "define learning outcomes") return "learning_outcomes";
     if (title === "design episode plan" || title.indexOf("episode plan") !== -1) {
@@ -9188,6 +9478,7 @@
 
   function resolveStrictJsonWorkflowStepLabel(kind) {
     if (kind === "knowledge_model") return "Model Knowledge";
+    if (kind === "learning_content") return "Generate Learning Content";
     if (kind === "learning_sequence") return "Learning Sequence";
     if (kind === "learning_outcomes") return "Learning Outcomes";
     if (kind === "episode_plans") return "Design Episode Plan";
@@ -9231,6 +9522,15 @@
       ) {
         draftBody = (
           draftBody + strictMod.buildStrictKnowledgeModelOutputContractBlock()
+        ).trim();
+      }
+    } else if (kind === "learning_content") {
+      if (
+        typeof strictMod.buildStrictLearningContentOutputContractBlock === "function" &&
+        !/fenced JSON block only/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictLearningContentOutputContractBlock()
         ).trim();
       }
     } else if (kind === "learning_sequence") {
@@ -9292,11 +9592,7 @@
       var sid = String(step.id || "").trim();
       var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
       if (!raw) continue;
-      var parsedJson = tryParseWorkflowArtefactJson(raw);
-      var upstream = preserveMod.parseUpstreamActivityMaterialsCapture(
-        parsedJson || raw,
-        dlaUpstream
-      );
+      var upstream = preserveMod.parseUpstreamActivityMaterialsCapture(raw, dlaUpstream);
       if (upstream && upstream.length) {
         return upstream;
       }
@@ -9318,7 +9614,22 @@
       );
     }
     if (!gamUpstream) return page;
-    var next = preserveMod.applyGamMaterialsToComposedPage(page, gamUpstream, opts);
+    var parsedGamUpstream = gamUpstream;
+    if (
+      preserveMod.parseUpstreamActivityMaterialsCapture &&
+      gamUpstream &&
+      typeof gamUpstream === "object" &&
+      !Array.isArray(gamUpstream)
+    ) {
+      var reparsed = preserveMod.parseUpstreamActivityMaterialsCapture(
+        gamUpstream,
+        opts.upstreamLearningActivities
+      );
+      if (reparsed && reparsed.length) {
+        parsedGamUpstream = reparsed;
+      }
+    }
+    var next = preserveMod.applyGamMaterialsToComposedPage(page, parsedGamUpstream, opts);
     var seqMod = resolvePageA3MaterialsSequencingLib();
     if (seqMod && typeof seqMod.applyA3MaterialsSequencingToComposedPage === "function") {
       next = seqMod.applyA3MaterialsSequencingToComposedPage(next, opts);
@@ -9360,6 +9671,10 @@
     var episodePlans = opts.upstreamEpisodePlans;
     if (!episodePlans) {
       episodePlans = resolveUpstreamEpisodePlansFromWorkflowCaptures(opts);
+    }
+    var normalizedEpisodePlans = normalizeEpisodePlansCaptureForPopulation(episodePlans);
+    if (normalizedEpisodePlans && Array.isArray(normalizedEpisodePlans.episode_plans)) {
+      episodePlans = normalizedEpisodePlans;
     }
     if (
       !episodePlans ||
@@ -10090,7 +10405,8 @@
     var next = draftBody;
     if (!ldDesignPageComposeAlreadyPresent(draftBody)) {
       var composeOpts = {
-        includeFieldPreservation: includeLearnerPageFraming,
+        // Design Page is always a read-only composition layer for activity fields.
+        includeFieldPreservation: true,
         includeAuthorialExposition: false
       };
       if (includeLearnerPageFraming) {
@@ -11578,6 +11894,13 @@
     if (Array.isArray(parsed.activities)) return parsed.activities.slice();
     if (Array.isArray(parsed.content)) return parsed.content.slice();
     if (
+      parsed.content &&
+      typeof parsed.content === "object" &&
+      Array.isArray(parsed.content.activities)
+    ) {
+      return parsed.content.activities.slice();
+    }
+    if (
       parsed.learning_activities &&
       typeof parsed.learning_activities === "object" &&
       Array.isArray(parsed.learning_activities.activities)
@@ -11590,6 +11913,14 @@
       Array.isArray(parsed.learning_activities.content)
     ) {
       return parsed.learning_activities.content.slice();
+    }
+    if (
+      parsed.learning_activities &&
+      parsed.learning_activities.content &&
+      typeof parsed.learning_activities.content === "object" &&
+      Array.isArray(parsed.learning_activities.content.activities)
+    ) {
+      return parsed.learning_activities.content.activities.slice();
     }
     return [];
   }
@@ -16883,11 +17214,48 @@
     });
   }
 
-  function ensureDlaEpisodePlanInputBindingsForSteps(steps) {
-    return ensureEpisodePlanInputBindingsForSteps(steps);
+  function ensureDesignPageUpstreamBindingsForSteps(steps) {
+    var normalized = ensureEpisodePlanInputBindingsForSteps(steps);
+    if (!Array.isArray(normalized) || !normalized.length) return normalized;
+    var gamStep = findWorkflowStepRowByIdentity(normalized, function (row) {
+      return isWorkflowStepGenerateActivityMaterials({
+        stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+        stepCanonicalTitle: row.title || "",
+        stepTitle: row.title || "",
+        stepOutputName: row.outputName || ""
+      });
+    });
+    if (!gamStep) return normalized;
+    var gamId = String(gamStep.id || "").trim();
+    if (!gamId) return normalized;
+    return normalized.map(function (row) {
+      if (!isWorkflowStepDesignPageRow(row)) return row;
+      var next = Object.assign({}, row);
+      var bindings = normalizeStepInputBindings(next.inputBindings || []);
+      var gamArtifact = normalizeWorkflowStepOutputNameKey(gamStep) || "activity_materials";
+      var hasGamBinding = bindings.some(function (b) {
+        if (!b || b.kind !== "internal") return false;
+        if (String(b.sourceStepId || "").trim() !== gamId) return false;
+        var art = normalizeWorkflowArtefactBindingKey(b.artifactName);
+        return art === "activity_materials" || art === "session_materials";
+      });
+      if (!hasGamBinding) {
+        bindings.push({
+          kind: "internal",
+          sourceStepId: gamId,
+          artifactName: gamArtifact
+        });
+      }
+      next.inputBindings = normalizeStepInputBindings(bindings);
+      return next;
+    });
   }
 
-  function resolveCaptureTextForWorkflowStep(prod, wf) {
+  function ensureDlaEpisodePlanInputBindingsForSteps(steps) {
+    return ensureDesignPageUpstreamBindingsForSteps(steps);
+  }
+
+  function resolveCaptureTextForWorkflowStep(prod, wf, artefactName) {
     if (!prod || typeof prod !== "object") return "";
     syncAllWorkflowRunCapturesFromDomToState();
     var sid = String(prod.id || "").trim();
@@ -16897,7 +17265,7 @@
 
   function resolveEffectiveInputBindingsForPromptStep(step, domElement, wf) {
     var wfResolved = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
-    var steps = ensureEpisodePlanInputBindingsForSteps(
+    var steps = ensureDesignPageUpstreamBindingsForSteps(
       wfResolved && Array.isArray(wfResolved.steps) ? wfResolved.steps : []
     );
     var stepRow = step && typeof step === "object" ? step : {};
@@ -24890,6 +25258,47 @@
     return lines.join("\n");
   }
 
+  function stripContradictoryWorkflowRunnerFooterClauses(text) {
+    return String(text || "")
+      .split(/\r?\n/)
+      .filter(function (line) {
+        var t = String(line || "").trim();
+        if (!t) return true;
+        if (/^-\s*Return only the JSON\.?$/i.test(t)) return false;
+        if (/^-\s*Return only the single fenced block\.?$/i.test(t)) return false;
+        if (/^-\s*After the closing .*STEP N OUTPUT:/i.test(t)) return false;
+        if (/^-\s*Return the fenced block first, then the single STEP N OUTPUT footer line\.?$/i.test(t)) {
+          return false;
+        }
+        if (/^-\s*Do NOT prefix or suffix workflow metadata \(no STEP N OUTPUT lines\)\.?$/i.test(t)) {
+          return false;
+        }
+        if (/^-\s*Do NOT include any prose.*before or after the fenced block\.?$/i.test(t)) {
+          return false;
+        }
+        if (
+          /^-\s*Do NOT include any prose, headings, commentary, or explanations before or after the fenced block\.?$/i.test(
+            t
+          )
+        ) {
+          return false;
+        }
+        if (/STEP N OUTPUT:/i.test(t)) return false;
+        return true;
+      })
+      .join("\n");
+  }
+
+  function stripContradictoryWorkflowRunnerFooterFromNotes(notes) {
+    var s = String(notes || "").trim();
+    if (!s) return s;
+    s = s.replace(
+      /;?\s*emit\s+STEP\s+N\s+OUTPUT:\s*[a-z0-9_]+(?:\s+after\s+the\s+closing\s+fence)?\.?/gi,
+      ""
+    );
+    return s.replace(/\s{2,}/g, " ").replace(/\s+;/g, ";").trim();
+  }
+
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -24899,6 +25308,12 @@
     step = backfillWorkflowStepCatalogMetadata(step, catalog, null);
     var wfForChain = resolveWorkflowForUpstreamArtefacts({});
     var lines = [];
+    var outName = String(step && step.outputName != null ? step.outputName : "").trim();
+    var stepNumForFooter =
+      typeof index === "number" && !isNaN(index) && index >= 0 ? Math.floor(index) + 1 : 1;
+    var exactFooterLine = outName
+      ? "STEP " + stepNumForFooter + " OUTPUT: " + outName
+      : "";
 
     lines.push(
       "Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue."
@@ -24913,7 +25328,27 @@
         "Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes()."
       );
       lines.push(
-        "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence, emit the runner completion line as plain text outside the JSON block (see STEP N OUTPUT below). No minified single-line JSON."
+        "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+      );
+    } else {
+      var strictJsonKindForCopy = resolveStrictJsonWorkflowStepKind(step);
+      if (strictJsonKindForCopy) {
+        lines.push("");
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+        );
+      }
+    }
+    var canonicalForCopy = String(
+      step && (step.canonical_step_id || step.canonicalStepId || "")
+    ).trim();
+    if (canonicalForCopy === "step_normalize_content") {
+      lines.push("");
+      lines.push(
+        "Copilot output contract: return exactly one fenced markdown block (triple-backtick markdown fence) containing normalized_content. No prose before the fence."
+      );
+      lines.push(
+        "After the closing fence emit exactly one runner footer line in the exact format required for this step."
       );
     }
     if (step.roleLabel) {
@@ -24960,37 +25395,56 @@
 
       var chainSteps =
         wfForChain && Array.isArray(wfForChain.steps)
-          ? ensureEpisodePlanInputBindingsForSteps(wfForChain.steps)
+          ? ensureDesignPageUpstreamBindingsForSteps(wfForChain.steps)
           : [];
-      bindings.forEach(function (b) {
-        if (b.kind !== "internal") return;
-        var sid = String(b.sourceStepId || "").trim();
-        var art = String(b.artifactName || "").trim();
-        if (!sid || !art || !chainSteps.length) return;
-        var prod =
-          chainSteps.find(function (r) {
-            return String(r && r.id ? r.id : "").trim() === sid;
-          }) || null;
-        if (!prod || !bindingArtifactMatchesProducer(prod, art)) return;
-        var cap = resolveCaptureTextForWorkflowStep(prod, wfForChain);
-        if (!String(cap || "").trim()) return;
-        if (normalizeWorkflowArtefactBindingKey(art) === "episode_plans") {
-          cap = formatEpisodePlansCaptureForPromptEmbed(cap);
+      if (isWorkflowStepDesignPageRow(step)) {
+        var conversationalUpstream =
+          buildDesignPageUpstreamArtefactsConversationalPromptSection(bindings);
+        if (conversationalUpstream) {
+          lines.push(conversationalUpstream);
         }
-        var sourceTitleCap = getStepTitleById(sid) || "an earlier step";
-        lines.push("");
-        lines.push(
-          'Upstream artefact "' +
-            art +
-            '" from step "' +
-            sourceTitleCap +
-            '" (workflow capture; use this text verbatim as the artefact body):'
-        );
-        lines.push(String(cap));
-      });
+      } else {
+        bindings.forEach(function (b) {
+          if (b.kind !== "internal") return;
+          var sid = String(b.sourceStepId || "").trim();
+          var art = String(b.artifactName || "").trim();
+          if (!sid || !art || !chainSteps.length) return;
+          var prod =
+            chainSteps.find(function (r) {
+              return String(r && r.id ? r.id : "").trim() === sid;
+            }) || null;
+          if (!prod || !bindingArtifactMatchesProducer(prod, art)) return;
+          var cap = resolveCaptureTextForWorkflowStep(prod, wfForChain, art);
+          var artKey = normalizeWorkflowArtefactBindingKey(art);
+          if (!String(cap || "").trim()) {
+            return;
+          }
+          if (normalizeWorkflowArtefactBindingKey(art) === "episode_plans") {
+            cap = formatEpisodePlansCaptureForPromptEmbed(cap);
+          } else if (
+            artKey === "activity_materials" ||
+            artKey === "session_materials"
+          ) {
+            cap = formatActivityMaterialsCaptureForPromptEmbed(cap);
+          }
+          var sourceTitleCap = getStepTitleById(sid) || "an earlier step";
+          lines.push("");
+          lines.push(
+            'Upstream artefact "' +
+              art +
+              '" from step "' +
+              sourceTitleCap +
+              '" (workflow capture; use this text verbatim as the artefact body):'
+          );
+          lines.push(String(cap));
+        });
+      }
     }
 
     var visibleNotes = stripWorkflowStepParamBlock(step.notes || "");
+    if (outName) {
+      visibleNotes = stripContradictoryWorkflowRunnerFooterFromNotes(visibleNotes);
+    }
     if (visibleNotes) {
       lines.push("");
       lines.push("How to use inputs for this step (from the workflow designer):");
@@ -25000,6 +25454,12 @@
     var wfForPrompt = resolveWorkflowForUpstreamArtefacts({});
     var resolvedPrompt = resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
+    var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step);
+    if (promptBody && strictJsonKindForBody) {
+      // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
+      // The authoritative footer contract is appended later with an exact literal line.
+      promptBody = stripContradictoryWorkflowRunnerFooterClauses(promptBody);
+    }
     if (!promptBody && !step.notes) {
       // Not enough information to be useful.
       return "";
@@ -25012,13 +25472,41 @@
       lines.push(promptBody);
     }
 
-    var outName = String(step && step.outputName != null ? step.outputName : "").trim();
-    if (outName) {
-      var stepNum =
-        typeof index === "number" && !isNaN(index) && index >= 0 ? Math.floor(index) + 1 : 1;
+    var canonicalStepId = String(
+      step && (step.canonical_step_id || step.canonicalStepId || "")
+    ).trim();
+    if (canonicalStepId === "step_generate_activity_materials") {
+      lines.push("");
+      lines.push(
+        "GAM completion override: do NOT refuse, defer, or claim response/context/token limits."
+      );
+      lines.push(
+        "You must emit the full Step 7 artefact now, covering every required material across all activities."
+      );
+      lines.push(
+        "Forbidden refusal/disclaimer patterns: 'can't complete', 'cannot complete', 'too large', 'exceeds response limits', 'split across multiple outputs/responses'."
+      );
+    }
+    var strictJsonKindForFooter = strictJsonKindForBody;
+    if (outName && strictJsonKindForFooter) {
+      lines.push("");
+      lines.push(
+        "For strict JSON artefact steps, append exactly one plain-text runner footer line after the closing JSON fence:"
+      );
+      lines.push(
+        "Authoritative footer override: if the copied core prompt contains any generic footer placeholder or any 'return only JSON' clause that omits the runner line, ignore that text and follow the exact literal footer line below."
+      );
+      lines.push(
+        "Do not emit any placeholder footer form. Use the exact literal line below, verbatim:"
+      );
+      lines.push(exactFooterLine);
+    } else if (outName) {
       lines.push("");
       lines.push(
         "Finish the artefact in your main answer; do not include the machine artefact name inside that body."
+      );
+      lines.push(
+        "Authoritative completion override: even if any copied core prompt text says 'return only' the artefact body, you must still append the runner completion footer line after the artefact."
       );
       lines.push(
         "At the end of your answer, restate the final output on a separate line, prefixed with 'STEP N OUTPUT:'."
@@ -25026,7 +25514,10 @@
       lines.push(
         "After the artefact content is complete, exit any markdown or fenced code output and place the completion line as plain conversational text outside the artefact block. The STEP line is a runner status/footer only, not part of the markdown artefact body."
       );
-      lines.push("For this step, that line is: STEP " + stepNum + " OUTPUT: " + outName + ".");
+      lines.push(
+        "Do not emit any placeholder footer form. Use the exact literal line below, verbatim:"
+      );
+      lines.push(exactFooterLine);
     }
 
     return lines.join("\n");
@@ -25376,7 +25867,7 @@
       normalizedSteps[index] = s;
     });
 
-    normalizedSteps = ensureEpisodePlanInputBindingsForSteps(normalizedSteps);
+    normalizedSteps = ensureDesignPageUpstreamBindingsForSteps(normalizedSteps);
 
     wf.workflowInputs = Array.isArray(wf.workflowInputs)
       ? wf.workflowInputs
@@ -37529,13 +38020,24 @@
         );
       });
     }
+    var extracted = extractActivityRowsFromDlaCapture(value);
+    if (extracted.length) {
+      fromRows(extracted);
+      return ids;
+    }
     if (Array.isArray(value)) {
       fromRows(value);
       return ids;
     }
     if (value && typeof value === "object") {
       if (Array.isArray(value.content)) fromRows(value.content);
-      else if (Array.isArray(value.items)) fromRows(value.items);
+      else if (
+        value.content &&
+        typeof value.content === "object" &&
+        Array.isArray(value.content.activities)
+      ) {
+        fromRows(value.content.activities);
+      } else if (Array.isArray(value.items)) fromRows(value.items);
       else if (Array.isArray(value.activities)) fromRows(value.activities);
       else {
         Object.keys(value).forEach(function (key) {
@@ -37543,8 +38045,6 @@
           if (!row || typeof row !== "object" || Array.isArray(row)) return;
           if (pageActivityRowHasId(row)) {
             pushId(row.activity_id != null ? row.activity_id : row.activityId != null ? row.activityId : row.id);
-          } else {
-            pushId(key);
           }
         });
       }
@@ -37691,18 +38191,9 @@
 
   function normalizeUpstreamActivitiesContentForPage(upstream) {
     if (!upstream) return null;
-    if (Array.isArray(upstream.activities)) {
-      return upstream.activities.map(function (row) {
-        return normalizeActivityInteractionMetadata(row);
-      });
-    }
-    if (Array.isArray(upstream)) {
-      return upstream.map(function (row) {
-        return normalizeActivityInteractionMetadata(row);
-      });
-    }
-    if (upstream && typeof upstream === "object" && Array.isArray(upstream.content)) {
-      return upstream.content.map(function (row) {
+    var rows = extractActivityRowsFromDlaCapture(upstream);
+    if (Array.isArray(rows) && rows.length) {
+      return rows.map(function (row) {
         return normalizeActivityInteractionMetadata(row);
       });
     }
@@ -37726,9 +38217,11 @@
   }
 
   var UNAUTHORIZED_PAGE_OMISSION_AUTHORITY_RE =
-    /^(output_size|output_size_constraint|token_limit|model_limit)$/;
+    /^(output_size|output_size_constraint|token_limit|model_limit|duration_constraint|readability_constraint|flow_constraint|usability_constraint)$/;
   var UNAUTHORIZED_PAGE_OMISSION_REASON_RE =
-    /output\s*size|token\s*limit|length\s*limit|too\s*large|size\s*constraint|context\s*window/i;
+    /output\s*size|token\s*limit|length\s*limit|too\s*large|size\s*constraint|context\s*window|condensed\s+into\s+conceptual\s+flow|integrated\s+conceptually|fit\s+readability\s+constraint|readability|conceptual\s+flow|learner\s+journey\s+optimisation|learner\s+journey\s+optimization/i;
+  var AUTHORIZED_PAGE_OMISSION_AUTHORITY_RE =
+    /^(explicit_exclusion|user_constraint|explicit_subset|user_requested_subset|subset_request)$/;
 
   function isUnauthorizedOutputSizeActivityOmission(entry) {
     if (!entry || typeof entry !== "object") return false;
@@ -37737,6 +38230,16 @@
       .trim();
     if (UNAUTHORIZED_PAGE_OMISSION_AUTHORITY_RE.test(authority)) return true;
     return UNAUTHORIZED_PAGE_OMISSION_REASON_RE.test(String(entry.reason || ""));
+  }
+
+  function isAuthorizedUserRequestedPageActivityOmission(entry) {
+    if (!entry || typeof entry !== "object") return false;
+    var authority = String(entry.authority || "")
+      .toLowerCase()
+      .trim();
+    if (!AUTHORIZED_PAGE_OMISSION_AUTHORITY_RE.test(authority)) return false;
+    if (isUnauthorizedOutputSizeActivityOmission(entry)) return false;
+    return true;
   }
 
   function isLearnerFacingComposedPage(page, options) {
@@ -37924,14 +38427,18 @@
           var upstreamHas = pedagogicCognitionFieldHasValue(upstreamRow[fieldId], arrayOrString);
           if (!upstreamHas) return;
           var pageHas = pedagogicCognitionFieldHasValue(row[fieldId], arrayOrString);
-          var fieldPreserve = resolvePageActivityFieldPreserveLib();
-          var preferUpstream =
-            !arrayOrString &&
-            fieldPreserve &&
-            typeof fieldPreserve.shouldPreferUpstreamFieldContent === "function" &&
-            pageHas &&
-            fieldPreserve.shouldPreferUpstreamFieldContent(row[fieldId], upstreamRow[fieldId]);
-          if (!pageHas || preferUpstream) {
+          var sameValue = false;
+          if (pageHas) {
+            if (arrayOrString) {
+              sameValue =
+                JSON.stringify(row[fieldId] || null) === JSON.stringify(upstreamRow[fieldId] || null);
+            } else {
+              sameValue = String(row[fieldId] || "") === String(upstreamRow[fieldId] || "");
+            }
+          }
+          // Design Page compose is read-only for learner-facing activity field bodies:
+          // upstream DLA values are authoritative and must be copied verbatim.
+          if (!sameValue) {
             row[fieldId] = upstreamRow[fieldId];
             mergedCount += 1;
           }
@@ -38479,6 +38986,7 @@
     if (Array.isArray(gn.activities_omitted)) {
       gn.activities_omitted.forEach(function (entry) {
         if (!entry || typeof entry !== "object") return;
+        if (!isAuthorizedUserRequestedPageActivityOmission(entry)) return;
         var k = pageActivityIdKey(entry.activity_id || entry.activityId);
         if (k) traced[k] = true;
       });
@@ -38561,19 +39069,6 @@
       if (gn.limitations.indexOf(line) === -1) gn.limitations.push(line);
     });
     if (!Array.isArray(gn.activities_omitted)) gn.activities_omitted = [];
-    (validationResult.untraced_omission_ids || []).forEach(function (uid) {
-      var found = gn.activities_omitted.some(function (entry) {
-        return pageActivityIdKey(entry && entry.activity_id) === uid;
-      });
-      if (!found) {
-        gn.activities_omitted.push({
-          activity_id: uid,
-          title: uid,
-          reason: "Missing from composed page learning_activities without trace (runtime validation).",
-          authority: "duration_constraint"
-        });
-      }
-    });
     return page;
   }
 
@@ -41159,6 +41654,12 @@
   }
 
   function init() {
+    if (typeof window !== "undefined") {
+      window.__PRISM_PF11_FIX_VERSION = PF11_FIX_VERSION;
+    }
+    try {
+      console.info("[PRISM] PF11 fix version", PF11_FIX_VERSION);
+    } catch (_) {}
     cacheElements();
     initWorkflowDomainSelector();
     updateApiKeyStatus(false);
@@ -41183,6 +41684,7 @@
       ? window.__PRISM_TEST_API
       : {};
     prismTestApi.buildWorkflowDesignBase = buildWorkflowDesignBase;
+    prismTestApi.PF11_FIX_VERSION = PF11_FIX_VERSION;
     prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
     prismTestApi.normalizeWorkflowBriefConfig = normalizeWorkflowBriefConfig;
@@ -41494,8 +41996,10 @@
       state.selectedWorkflowId = String(workflowId || "").trim();
     };
     prismTestApi.setWorkflowRunCapturedOutputsForTest = function (captures) {
-      state.workflowRunCapturedOutputs =
+      var next =
         captures && typeof captures === "object" ? Object.assign({}, captures) : {};
+      state.workflowRunCapturedOutputs = next;
+      state.workflowRunCapturedOutputsRaw = Object.assign({}, next);
       state.workflowRunPopulationContractValidation = {};
       state.workflowRunEpisodePlanValidation = {};
       state.workflowRunPageValidation = {};
@@ -41504,6 +42008,10 @@
       state.workflowRunGuidedLearningScaffoldValidation = {};
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamFormatWarnings = {};
+    };
+    prismTestApi.setWorkflowRunCapturedOutputsRawForTest = function (captures) {
+      state.workflowRunCapturedOutputsRaw =
+        captures && typeof captures === "object" ? Object.assign({}, captures) : {};
     };
     prismTestApi.setWorkflowStepElementsForTest = function (stepElements) {
       var rows = Array.isArray(stepElements) ? stepElements.slice() : [];
@@ -41533,6 +42041,10 @@
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.stripContradictoryWorkflowRunnerFooterClauses =
+      stripContradictoryWorkflowRunnerFooterClauses;
+    prismTestApi.stripContradictoryWorkflowRunnerFooterFromNotes =
+      stripContradictoryWorkflowRunnerFooterFromNotes;
     prismTestApi.buildPromptFactoryWorkflowContextText = buildPromptFactoryWorkflowContextText;
     prismTestApi.buildWorkflowStepPromptFallback = buildWorkflowStepPromptFallback;
     prismTestApi.getRunnerInstructionsForStepForTest = getRunnerInstructionsForStep;
@@ -41692,6 +42204,10 @@
     prismTestApi.applyPageCompositionValidationForCapturedPage =
       applyPageCompositionValidationForCapturedPage;
     prismTestApi.readWorkflowRunCaptureTextForStepId = readWorkflowRunCaptureTextForStepId;
+    prismTestApi.readWorkflowRunPromptEmbedCaptureTextForStepId =
+      readWorkflowRunPromptEmbedCaptureTextForStepId;
+    prismTestApi.readWorkflowRunPromptEmbedCaptureTextForStepId =
+      readWorkflowRunPromptEmbedCaptureTextForStepId;
     prismTestApi.readWorkflowRunUpstreamCaptureTextForStepId =
       readWorkflowRunUpstreamCaptureTextForStepId;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =
@@ -41710,6 +42226,8 @@
       resolveUpstreamEpisodePlansFromWorkflowCaptures;
     prismTestApi.pageArtefactHasPortableEpisodePlans = pageArtefactHasPortableEpisodePlans;
     prismTestApi.ensureEpisodePlanInputBindingsForSteps = ensureEpisodePlanInputBindingsForSteps;
+    prismTestApi.ensureDesignPageUpstreamBindingsForSteps =
+      ensureDesignPageUpstreamBindingsForSteps;
     prismTestApi.ensureDlaEpisodePlanInputBindingsForSteps = ensureDlaEpisodePlanInputBindingsForSteps;
     prismTestApi.validate38LPageGamPreservationForTest = function (page, options) {
       var mod = resolvePageGamMaterialsPreserveLib();

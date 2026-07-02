@@ -183,8 +183,9 @@ test("GLC prompt tightens canonical learning_content JSON when source is normali
   assert.match(tpl, /governing question|central inquiry/i);
   assert.match(tpl, /intellectual progression/i);
   assert.match(tpl, /do not invent ideas unsupported/i);
-  assert.match(tpl, /title, sections, key_concepts, examples/i);
-  assert.match(tpl, /examples: array of objects, each with title \(string\) and description \(string\)/i);
+  assert.match(tpl, /JSON top-level keys:.*title.*sections.*key_concepts.*examples/i);
+  assert.match(tpl, /fenced JSON block only/i);
+  assert.match(tpl, /STEP N OUTPUT: learning_content/i);
   assert.deepEqual(glcPf.defaultOutputStructure.keys, [
     "title",
     "sections",
@@ -199,4 +200,5 @@ test("Model Knowledge prompt prefers learning_content when both are bound", () =
   const close = ldMd.indexOf("```", fence + 7);
   const mkPf = JSON.parse(ldMd.slice(fence + 7, close).trim());
   assert.match(mkPf.promptTemplate, /When learning_content is provided, treat it as the primary structured source/i);
+  assert.match(mkPf.promptTemplate, /STEP N OUTPUT: knowledge_model/i);
 });

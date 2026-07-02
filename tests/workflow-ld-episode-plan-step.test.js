@@ -213,7 +213,8 @@ test("DLA fails population gate when Episode Plan step present but capture missi
     { stepCanonicalStepId: "step_design_learning_activities" },
     wf
   );
-  assert.match(draftMissing, /PF-11: upstream `episode_plans` capture is missing/i);
+  assert.match(draftMissing, /Upstream episode_plans \(required — not embedded\)/i);
+  assert.match(draftMissing, /Do not emit PF-11 solely because this prompt block omits an inline episode_plans JSON embed/i);
 });
 
 test("deterministic derive replaces prose capture with canonical nested episode_plans JSON", () => {
@@ -403,6 +404,171 @@ test("DLA resolves episode_plans when Design Episode Plan capture exists but out
   );
   assert.doesNotMatch(draft, /PF-11: upstream `episode_plans` capture is missing/i);
   assert.match(draft, /Upstream episode_plans/i);
+});
+
+test("DLA resolver accepts nested/wrapped episode_plans capture shapes", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const baseRows = plans.episode_plans;
+  const wf = {
+    id: "wf-ep-nested-shapes",
+    steps: [
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-nested-shapes");
+
+  const captureShapes = [
+    { label: "shallow episode_plans[]", payload: { episode_plans: baseRows } },
+    {
+      label: "episode_plans.content.episode_plans",
+      payload: { episode_plans: { content: { episode_plans: baseRows } } }
+    },
+    { label: "content.episode_plans", payload: { content: { episode_plans: baseRows } } },
+    {
+      label: "nested workflow wrapper",
+      payload: { result: { output: { artefact: { content: { episode_plans: baseRows } } } } }
+    },
+    {
+      label: "keyed map wrapper",
+      payload: {
+        output: {
+          episode_plans: {
+            LO1: Object.assign({}, baseRows[0], { activity_id: "LO1" })
+          }
+        }
+      }
+    }
+  ];
+
+  captureShapes.forEach((shape) => {
+    api.setWorkflowRunCapturedOutputsForTest({
+      ep_step: JSON.stringify(shape.payload, null, 2)
+    });
+    const resolved = api.resolveEpisodePlansForDlaPopulation({ workflow: wf });
+    assert.ok(resolved && Array.isArray(resolved.episode_plans), shape.label + " resolved");
+    assert.ok(resolved.episode_plans.length > 0, shape.label + " has rows");
+    const first = resolved.episode_plans[0] || {};
+    assert.ok(
+      String(first.activity_id || first.episode_id || "").trim(),
+      shape.label + " preserves activity/episode identifier"
+    );
+    if (Array.isArray(first.mapped_learning_outcome_ids) && first.mapped_learning_outcome_ids.length) {
+      assert.ok(
+        first.mapped_learning_outcome_ids.includes("LO1"),
+        shape.label + " preserves LO mapping metadata"
+      );
+    }
+    assert.equal(
+      String(first.episode_plan.archetype || "").trim(),
+      "understand",
+      shape.label + " preserves archetype"
+    );
+    assert.ok(
+      Array.isArray(first.episode_plan.beats) && first.episode_plan.beats.length > 0,
+      shape.label + " preserves beats"
+    );
+  });
+});
+
+test("DLA resolver still reports PF-11 when episode_plans are genuinely missing", () => {
+  const wf = {
+    id: "wf-ep-missing-nested",
+    steps: [
+      {
+        id: "ep_step",
+        title: "Design Episode Plan",
+        outputName: "episode_plans",
+        canonical_step_id: "step_design_episode_plan"
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-missing-nested");
+  api.setWorkflowRunCapturedOutputsForTest({
+    ep_step: JSON.stringify({ result: { output: { artefact: { content: { not_episode_plans: [] } } } } })
+  });
+  const diag = api.resolveEpisodePlansForDlaPopulation({ workflow: wf, diagnostic: true });
+  assert.equal(diag.episodePlans, null);
+  assert.match(String(diag.reason || ""), /missing_capture|invalid_or_empty_capture/);
+  const draftMissing = api.applyEpisodePlanDlaPopulationPromptBlockToDraft(
+    "DLA task",
+    { stepCanonicalStepId: "step_design_learning_activities" },
+    wf
+  );
+  assert.match(draftMissing, /Upstream episode_plans \(required — not embedded\)/i);
+  assert.match(draftMissing, /Do not emit PF-11 solely because this prompt block omits an inline episode_plans JSON embed/i);
+});
+
+test("DLA resolver falls back to capture-shape scan when EP step metadata is non-canonical", () => {
+  const lo = {
+    learning_outcomes: [
+      { id: "LO1", cognitive_level: "understand", statement: "Explain inflation." }
+    ]
+  };
+  const plans = templates.deriveEpisodePlansFromLearningOutcomes(lo);
+  const wf = {
+    id: "wf-ep-shape-fallback",
+    steps: [
+      {
+        id: "mystery_ep_step",
+        title: "Episode choreography custom",
+        outputName: "",
+        canonical_step_id: ""
+      },
+      {
+        id: "dla_step",
+        title: "Design Learning Activities",
+        outputName: "learning_activities",
+        canonical_step_id: "step_design_learning_activities"
+      }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest("wf-ep-shape-fallback");
+  api.setWorkflowRunCapturedOutputsForTest({
+    mystery_ep_step: JSON.stringify(
+      {
+        result: {
+          output: {
+            artefact: {
+              content: { episode_plans: plans.episode_plans }
+            }
+          }
+        }
+      },
+      null,
+      2
+    )
+  });
+  const resolved = api.resolveEpisodePlansForDlaPopulation({ workflow: wf });
+  assert.ok(resolved && Array.isArray(resolved.episode_plans), "fallback should resolve episode_plans");
+  assert.equal(
+    String(resolved.episode_plans[0].episode_plan.archetype || "").trim(),
+    "understand"
+  );
 });
 
 test("suggestWorkflowOutputNameForStepTitle uses policy produces when pattern missing", () => {
@@ -912,7 +1078,6 @@ test("Design Episode Plan copy instructions include STEP N OUTPUT footer outside
   };
   const instr = api.buildWorkflowStepInstructions(step, 2);
   assert.match(instr, /Copilot output contract: return one pretty-printed fenced JSON block/i);
-  assert.match(instr, /runner completion line as plain text outside the JSON block/i);
   assert.match(instr, /STEP\s+3\s+OUTPUT:\s+episode_plans/i);
-  assert.match(instr, /outside the artefact block/i);
+  assert.doesNotMatch(instr, /At the end of your answer, restate the final output/i);
 });

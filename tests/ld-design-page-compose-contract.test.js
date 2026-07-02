@@ -100,6 +100,60 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: portable episode_plans schema in compose 
   assert.match(text, /without requiring workflow captures or session state/i);
 });
 
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: authorable vs archival pointer before materials embed", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /AUTHORABLE VS ARCHIVAL FIELDS/i);
+  assert.match(text, /materials\.\* is archival only/i);
+  assert.match(text, /PRE-EMIT VALIDATION/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: authoritative GAM content binding pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /Authoritative GAM content binding \(hard\)/i);
+  assert.match(text, /AUTHORITATIVE GAM CONTENT BINDING/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: multi-material enumeration pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /Multi-material enumeration \(hard\)/i);
+  assert.match(text, /MULTI-MATERIAL ENUMERATION INVARIANT/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: full content body preservation pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /Full content body preservation \(hard\)/i);
+  assert.match(text, /FULL CONTENT BODY PRESERVATION/i);
+  assert.match(text, /entire embedded Content: body — not reference, excerpt, summary, or condensed representation/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: page artefact is final learner output pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /Final learner output \(hard\)/i);
+  assert.match(text, /PAGE ARTEFACT IS FINAL LEARNER OUTPUT/i);
+  assert.match(text, /no "Full \.\.\. from \.\.\."/i);
+  assert.match(text, /do not emit it as a valid page/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: material preservation overrides page optimisation pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /Material preservation overrides page optimisation \(hard\)/i);
+  assert.match(text, /MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION/i);
+  assert.match(text, /represented in condensed form/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: opaque payload pointer at activity_materials", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /activity\.materials opaque transport \(hard\)/i);
+  assert.match(text, /OPAQUE PAYLOAD TRANSPORT/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: context access rule pointer", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /CONTEXT ACCESS RULE/i);
+  assert.match(text, /LO1-TEXT, LO2-SCN/i);
+  assert.match(text, /full material bodies are unavailable/i);
+});
+
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: composeAlreadyPresent", () => {
   assert.equal(compose.composeAlreadyPresent(""), false);
   assert.equal(

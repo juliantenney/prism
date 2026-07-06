@@ -102,10 +102,37 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: transport vs archival pointer before mate
   assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
   assert.match(text, /materials\.\* is archival only/i);
   assert.match(text, /transport upstream body when LC\/KM provides one/i);
-  assert.match(text, /thin assembly-coherence only/i);
+  assert.match(text, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
+  assert.match(text, /wrapper-gap fallback obey appended LD-THIN-ASSEMBLY-COHERENCE-CONTRACT only/i);
+  assert.match(text, /R-40\/R-44\/R-45\/R-47 SSOT/i);
+  assert.doesNotMatch(text, /thin assembly-coherence only \(R-40\)/i);
   assert.doesNotMatch(text, /is authorable/i);
   assert.doesNotMatch(text, /visual_affordance descriptions/i);
+  assert.doesNotMatch(text, /WRAPPER SLOT DISCIPLINE/i);
+  assert.doesNotMatch(text, /FORBIDDEN transition glue/i);
   assert.match(text, /PRE-EMIT VALIDATION/i);
+});
+
+test("56C W2.3C: compose points to thin bridge SSOT without duplicating bridge prose", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /runtime LD-THIN-ASSEMBLY-COHERENCE-CONTRACT for wrapper-gap assembly-coherence/i);
+  assert.doesNotMatch(text, /LD-AUTHORIAL-EXPOSITION/i);
+  assert.doesNotMatch(text, /LD-JOURNEY-ASSIMILATION/i);
+  assert.doesNotMatch(text, /TRANSPORT-FIRST \(hard — apply before any bridge fallback\)/i);
+  assert.doesNotMatch(text, /NAVIGATION_POINTER_WORD_CAP|≤ 80 words per affected section/i);
+});
+
+test("56C W2.5: compose R-83 delimiter forbids condensation and readability rewriting", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
+  assert.match(text, /READABLE ASSEMBLY \(R-83 guardrail/i);
+  assert.match(text, /Layer 2 delimiter only/i);
+  assert.match(text, /forbids condensation/i);
+  assert.match(text, /readability rewriting/i);
+  assert.match(text, /brevity optimisation/i);
+  assert.match(text, /MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION \(F40\)/i);
+  assert.match(text, /R-83 does not author wrapper-gap fallback/i);
+  assert.doesNotMatch(text, /optimise.*readable page/i);
+  assert.doesNotMatch(text, /readable page artefact/i);
 });
 
 test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: authoritative GAM content binding pointer", () => {

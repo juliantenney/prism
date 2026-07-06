@@ -2,11 +2,12 @@
 
 **Sprint:** 56C — Design Page Migration Execution  
 **Type:** Implementation sprint  
-**Status:** **Active** — Wave 1 closed; Waves 2–4 pending  
+**Status:** **Active** — Wave 1 closed · Wave 2 closed; Waves 3–4 pending  
 **Date opened:** 2026-07-06  
 **Predecessor:** [Sprint 56B](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-START-HERE.md) (complete)
 
-**Wave 1 closure:** [SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) (2026-07-06)
+**Wave 1 closure:** [SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) (2026-07-06)  
+**Wave 2 closure:** [SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) (2026-07-06)
 
 ---
 
@@ -16,7 +17,7 @@
 | ------ | ------ |
 | **56A** | **Complete** — architecture investigation |
 | **56B** | **Complete** — CP-4 approved; CP-5 plan complete |
-| **56C** | **Active** — Wave 1 complete; Waves 2–4 pending |
+| **56C** | **Active** — Waves 1–2 complete; Waves 3–4 pending |
 | **57** | **Reserved** — future roadmap; not part of Design Page migration |
 
 ### Sprint 56C wave status
@@ -24,7 +25,7 @@
 | Wave | Status | Closure artefact |
 | ---- | ------ | ---------------- |
 | **1** | **Closed** (2026-07-06) | [Wave 1 Closure Summary](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) |
-| **2** | **Not started** | — |
+| **2** | **Closed** (2026-07-06) | [Wave 2 Closure Summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) |
 | **3** | **Not started** | — |
 | **4** | **Not started** | — |
 
@@ -68,7 +69,7 @@ Sprint 56C executes migration **waves 1–4**. It does not reopen architecture d
 | Wave | Focus | Status |
 | ---- | ----- | ------ |
 | **1** | Architecture cleanup — remove rejected responsibilities | **Closed** — [closure summary](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) |
-| **2** | Boundary refactor — align retained items | **Not started** |
+| **2** | Boundary refactor — thin bridge + R-83 delimiter | **Closed** — [closure summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) |
 | **3** | Validation preparation — OQ-24, OQ-25 | **Not started** |
 | **4** | Architecture compliance review | **Not started** |
 
@@ -85,6 +86,7 @@ Detail: implementation plan §5.
 | CP-6 plan approved | **Complete** — Wave 1 executed per CP-4 |
 | Execution checklist published | **Complete** |
 | Wave 1 architecture cleanup | **Closed** — see [closure summary](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) |
+| Wave 2 boundary refactor | **Closed** — see [closure summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) |
 
 ---
 

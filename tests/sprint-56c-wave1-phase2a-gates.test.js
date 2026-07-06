@@ -74,7 +74,8 @@ test("56C W1 P2A: compose contract excludes ownership residue", () => {
     assert.doesNotMatch(text, pattern, `unexpected residue: ${pattern}`);
   }
   assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
-  assert.match(text, /thin assembly-coherence only/i);
+  assert.match(text, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
+  assert.match(text, /wrapper-gap fallback obey appended LD-THIN-ASSEMBLY-COHERENCE-CONTRACT only/i);
   assert.match(text, /LD-GUIDED-LEARNING-SCAFFOLD compose preservation/i);
 });
 

@@ -1,7 +1,7 @@
 # Sprint 56C — Execution Checklist
 
 **Sprint:** 56C — Design Page Migration Execution  
-**Status:** Active governance control — **Wave 1 closed** (2026-07-06)  
+**Status:** Active governance control — **Wave 1 closed** · **Wave 2 closed** (2026-07-06)  
 **Date:** 2026-07-06  
 **Authority:** [CP-4 approval](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-CP-4-ARCHITECTURE-APPROVAL-BRIEF.md) · [Implementation plan](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-IMPLEMENTATION-PLAN.md) · [Guardrails](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-ARCHITECTURE-GUARDRAILS.md)
 
@@ -16,7 +16,7 @@
 | Wave | Status | Evidence |
 | ---- | ------ | -------- |
 | **1** | **Closed** | [Wave 1 Closure Summary](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) · Phases 1–4 execution reports |
-| **2** | **Not started** | — |
+| **2** | **Closed** | [Wave 2 Closure Summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) · W2.3A–W2.5 execution reports · [Governance Closure Report](SPRINT-56C-WAVE-2-GOVERNANCE-CLOSURE-REPORT.md) |
 | **3** | **Not started** | — |
 | **4** | **Not started** | — |
 
@@ -30,6 +30,16 @@
 | Phase 3 — VA residue cleanup | **Complete** |
 | Phase 4 — compliance and legacy test cleanup | **Complete** |
 | All 16 Wave 1 exit criteria ([cleanup analysis §7](SPRINT-56C-WAVE-1-ARCHITECTURE-CLEANUP-ANALYSIS.md)) | **Met** |
+
+### Wave 2 closure basis
+
+| Item | Status |
+| ---- | ------ |
+| W2.3A — thin bridge contract (`lib/ld-thin-assembly-coherence.js`) | **Complete** |
+| W2.3B — runtime integration (compose → bridge inject) | **Complete** |
+| W2.3C — bridge SSOT cleanup (compose/materials/domain pointers) | **Complete** |
+| W2.5 — R-83 delimiter cleanup | **Complete** |
+| W2.4 SQ-1 / SQ-2 upstream packaging | **Deferred** |
 
 ---
 
@@ -96,14 +106,14 @@ Reference: [Implementation plan §4](../2026-07-06-sprint-56b-design-page-migrat
 
 ### Retained (§4B)
 
-*Wave 1: preservation and Layer 2 verified; thin assembly-coherence bridge deferred to Wave 2.*
+*Wave 2 gate (2026-07-06): thin bridge and R-83 verified — see [Wave 2 Governance Closure Report](SPRINT-56C-WAVE-2-GOVERNANCE-CLOSURE-REPORT.md).*
 
 | Check | Pass? |
 | ----- | ----- |
 | Layer 1 preservation (R-17–R-23, R-28–R-30) intact | ☑ |
 | Layer 2 organisation intact | ☑ |
-| Thin assembly-coherence only (R-40, R-44, R-45, R-47) | ☐ — Wave 2 |
-| R-83 narrowed to Layer 2 delimiter | ☐ — Wave 2 |
+| Thin assembly-coherence only (R-40, R-44, R-45, R-47) | ☑ — Wave 2 |
+| R-83 narrowed to Layer 2 delimiter | ☑ — Wave 2 |
 | Preservation guardrails (R-22, R-24, R-46, R-50) active | ☑ |
 
 ### Relocations (§4C)
@@ -129,7 +139,7 @@ Reference: [Implementation plan §4](../2026-07-06-sprint-56b-design-page-migrat
 | Fixture coverage defined for multi-activity, knowledge-bound, assessment, Copilot + PRISM artefact sources | ☐ |
 | Acceptance invariant **structural** review checklist prepared for fixtures (learner-completable from page JSON) | ☐ |
 | Failure modes A–G mapped to structural review criteria | ☐ |
-| Compliance evidence recorded per wave exit (architecture/prompt/artefact — not runtime generation quality) | ☑ — Wave 1 |
+| Compliance evidence recorded per wave exit (architecture/prompt/artefact — not runtime generation quality) | ☑ — Wave 1 · ☑ — Wave 2 |
 | Runtime acceptance testing delegated to Copilot environment where artefact capture requires generation | ☐ |
 
 ---
@@ -142,7 +152,7 @@ Reference: [Implementation plan §4](../2026-07-06-sprint-56b-design-page-migrat
 | [Architecture Guardrails](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-ARCHITECTURE-GUARDRAILS.md) §A–D satisfied | ☐ |
 | Frozen governing principles not reinterpreted | ☐ |
 | SQ-1, SQ-2, SQ-F1, SQ-F2 outcomes recorded (or explicit deferral) | ☐ |
-| Wave 1–4 exit criteria from implementation plan met | ☐ — Wave 1 complete; Waves 2–4 pending |
+| Wave 1–4 exit criteria from implementation plan met | ☐ — Waves 1–2 complete; Waves 3–4 pending |
 
 ---
 
@@ -166,4 +176,4 @@ Do not:
 | ----- | ----- |
 | File | `SPRINT-56C-EXECUTION-CHECKLIST.md` |
 | Sprint | 56C |
-| Wave gates | W1 **closed**; W2–W4 pending |
+| Wave gates | W1 **closed** · W2 **closed**; W3–W4 pending |

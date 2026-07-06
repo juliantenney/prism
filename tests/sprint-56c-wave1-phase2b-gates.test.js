@@ -21,7 +21,6 @@ const DOMAIN_OWNERSHIP_RESIDUE = [
   /LD-JOURNEY-ASSIMILATION/i,
   /LD-SELF-DIRECTED-RHETORIC/i,
   /LD-AUTHORIAL-EXPOSITION/i,
-  /wrapper prose/i,
   /substantive (session )?overview/i,
   /Sprint 38 visual affordance contract/i,
   /per Sprint 38 runtime/i
@@ -80,7 +79,9 @@ test("56C W1 P2B: domain §13 surfaces exclude ownership residue", () => {
   assert.match(factory.defaultPromptNotes, /Transport-first/i);
   assert.match(factory.defaultPromptNotes, /LD-GUIDED-LEARNING-SCAFFOLD compose preservation/i);
   assert.match(factory.promptTemplate, /transport slots/i);
-  assert.match(factory.promptTemplate, /thin assembly-coherence/i);
+  assert.match(factory.promptTemplate, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
+  assert.match(factory.defaultPromptNotes, /R-83 readable assembly/i);
+  assert.doesNotMatch(factory.promptTemplate, /Assemble one readable, self-contained page/i);
 });
 
 test("56C W1 P2B: domain §13 retains preservation and transport obligations", () => {

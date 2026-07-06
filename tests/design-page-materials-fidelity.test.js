@@ -303,7 +303,7 @@ test("Design Page learner page_profile does not bias materials summarisation", (
   const learner = factory.userOptions.find((o) => o.id === "page_profile").choices.find(
     (c) => c.value === "learner"
   );
-  assert.match(learner.promptInstruction, /thin assembly-coherence/i);
+  assert.match(learner.promptInstruction, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
   assert.match(learner.promptInstruction, /never summary-only or placeholder-only materials/i);
 });
 

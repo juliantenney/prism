@@ -57,3 +57,21 @@
 | Mandatory `source_basis` on default DP path | Compose materials bridge | OQ-15 | Wave 1 Phase 2A | Removed from default transport obligations | `sprint-56c-wave1-phase2a-gates.test.js` |
 
 **Lib soak (evaluator/tests only — not emitted on Design Page path):** `ld-journey-assimilation.js`, `ld-authorial-exposition.js`, `ld-self-directed-rhetoric.js` (design_page role), `educational-quality-framework-prompt.js` (design_page manifestation lines), `sprint38-visual-affordances.js` direct API.
+
+---
+
+## Superseded / retired (Sprint 56C Wave 2 — Design Page boundary refactor)
+
+**Authority:** [Thin Bridge Definition](../sprints/2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-WAVE-2-THIN-ASSEMBLY-COHERENCE-BRIDGE-DEFINITION.md) · [Wave 2 Governance Closure Report](../sprints/2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-WAVE-2-GOVERNANCE-CLOSURE-REPORT.md)
+
+| Retired authority / wording | Former locus | Superseded by | Wave 2 phase | Validation evidence |
+| --------------------------- | ------------ | ------------- | ------------ | ------------------- |
+| R-40 label-only assembly-coherence (`thin assembly-coherence only (R-40)` in compose) | `FIELD_AUTHORIZING_LINES` · `ld-materials-copy.js` transport slots | `LD-THIN-ASSEMBLY-COHERENCE-CONTRACT` SSOT + runtime inject | W2.3C | `sprint-56c-wave2-gates.test.js` · `ld-design-page-compose-contract.test.js` |
+| R-44 / R-45 / R-47 as separate DP authorial modules | `ld-authorial-exposition.js` · `ld-journey-assimilation.js` (lib soak — never on DP path) | Merged constraints in thin bridge contract | W2.3A + W2.3C | `ld-thin-assembly-coherence.test.js` · `sprint-56c-wave2-gates.test.js` |
+| Duplicate assembly-coherence procedural text in compose/materials | Inline R-40 mandates across compose + materials | Pointer-only cross-refs to thin bridge SSOT | W2.3C | `ld-materials-copy.test.js` (W2.3C) |
+| Ambiguous “readable page” optimise mandate | Domain §13 Purpose · Task line · `what_this_step_does` | R-83 narrowed Layer 2 delimiter guardrail | W2.5 | `sprint-56c-wave2-gates.test.js` (W2.5) · `sprint-56c-wave1-phase2b-gates.test.js` |
+| Legacy “Readable page assembly applies to…” materials wording | `ld-materials-copy.js` PRESERVE role | `READABLE ASSEMBLY (R-83 guardrail)` structural delimiter | W2.5 | `ld-materials-copy.test.js` (W2.5) |
+
+**Retained on DP path (Wave 2):** `LD-DESIGN-PAGE-COMPOSE-CONTRACT` (transport/preservation), `LD-THIN-ASSEMBLY-COHERENCE-CONTRACT` (sole Layer 3 generative prose), R-83 guardrail (non-generative delimiter via compose + domain).
+
+**Lib soak unchanged:** `ld-authorial-exposition.js`, `ld-journey-assimilation.js` remain in repo for evaluators; DP path must not reinject.

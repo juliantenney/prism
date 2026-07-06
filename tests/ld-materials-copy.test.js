@@ -46,15 +46,45 @@ test("LD-MATERIALS-COPY: transport vs archival fields", () => {
   assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
   assert.match(text, /Archival \(verbatim GAM payload only\): learning_activities\.content\[\]\.materials\.\*/i);
   assert.match(text, /upstream body or omit; not authored here/i);
-  assert.match(text, /thin assembly-coherence or upstream transport only/i);
+  assert.match(text, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
+  assert.match(text, /wrapper-gap fallback obey LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
+  assert.doesNotMatch(text, /thin assembly-coherence or upstream transport only/i);
   assert.doesNotMatch(text, /Authorable:/i);
   assert.doesNotMatch(text, /authored only here/i);
   assert.doesNotMatch(text, /interpret, connect, and explain materials/i);
   assert.doesNotMatch(text, /substantive session overview/i);
   assert.doesNotMatch(text, /source_basis paths in visual_affordances/i);
+  assert.doesNotMatch(text, /WRAPPER SLOT DISCIPLINE/i);
   assert.match(text, /Do not modify materials for coherence, readability, page flow/i);
   assert.match(text, /PRE-EMIT VALIDATION/i);
   assert.match(text, /not model-authored/i);
+});
+
+test("56C W2.3C: materials-copy defers assembly-coherence to thin bridge SSOT", () => {
+  const text = materialsCopy.buildLdMaterialsCopyPromptBlock({
+    role: "preserve",
+    includeMarker: false
+  });
+  assert.match(
+    text,
+    /overview \/ learning_purpose: upstream transport or LD-THIN-ASSEMBLY-COHERENCE-CONTRACT wrapper-gap fallback only/i
+  );
+  assert.doesNotMatch(text, /LD-AUTHORIAL-EXPOSITION/i);
+  assert.doesNotMatch(text, /LD-JOURNEY-ASSIMILATION/i);
+  assert.doesNotMatch(text, /TRANSPORT-FIRST \(hard — apply before any bridge fallback\)/i);
+});
+
+test("56C W2.5: materials-copy R-83 delimiter is structural only", () => {
+  const text = materialsCopy.buildLdMaterialsCopyPromptBlock({
+    role: "preserve",
+    includeMarker: false
+  });
+  assert.match(text, /READABLE ASSEMBLY \(R-83 guardrail/i);
+  assert.match(text, /Layer 2 delimiter only/i);
+  assert.match(text, /forbids condensation/i);
+  assert.match(text, /readability rewriting/i);
+  assert.doesNotMatch(text, /Readable page assembly applies/i);
+  assert.doesNotMatch(text, /optimise.*readable/i);
 });
 
 test("LD-MATERIALS-COPY: authoritative GAM content binding", () => {

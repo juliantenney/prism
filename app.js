@@ -9797,6 +9797,21 @@
     return root && root.PRISM_LD_DESIGN_PAGE_COMPOSE ? root.PRISM_LD_DESIGN_PAGE_COMPOSE : null;
   }
 
+  function resolveLdThinAssemblyCoherenceLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_THIN_ASSEMBLY_COHERENCE &&
+      typeof globalThis.PRISM_LD_THIN_ASSEMBLY_COHERENCE
+        .applyLdThinAssemblyCoherenceContractToDraft === "function"
+    ) {
+      return globalThis.PRISM_LD_THIN_ASSEMBLY_COHERENCE;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_THIN_ASSEMBLY_COHERENCE
+      ? root.PRISM_LD_THIN_ASSEMBLY_COHERENCE
+      : null;
+  }
+
   function resolveLdAuthorialExpositionLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -10411,6 +10426,25 @@
       next = applyLdGuidedLearningScaffoldContractToDraft(next, context);
     }
     return next;
+  }
+
+  function buildLdThinAssemblyCoherencePromptBlock(options) {
+    var lib = resolveLdThinAssemblyCoherenceLib();
+    if (lib && typeof lib.buildLdThinAssemblyCoherencePromptBlock === "function") {
+      return lib.buildLdThinAssemblyCoherencePromptBlock(options);
+    }
+    return "";
+  }
+
+  function applyLdThinAssemblyCoherenceContractToDraft(draftText, context) {
+    var lib = resolveLdThinAssemblyCoherenceLib();
+    if (
+      lib &&
+      typeof lib.applyLdThinAssemblyCoherenceContractToDraft === "function"
+    ) {
+      return lib.applyLdThinAssemblyCoherenceContractToDraft(draftText, context);
+    }
+    return String(draftText || "").trim();
   }
 
   function ldSelfDirectedRhetoricRoleForContext(context) {
@@ -11303,6 +11337,7 @@
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
+    draft = applyLdThinAssemblyCoherenceContractToDraft(draft, ctx);
     draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
@@ -41860,6 +41895,10 @@
       evaluateActivityPreambleExpositionEvidence;
     prismTestApi.applyLdDesignPageComposeContractToDraft =
       applyLdDesignPageComposeContractToDraft;
+    prismTestApi.buildLdThinAssemblyCoherencePromptBlock =
+      buildLdThinAssemblyCoherencePromptBlock;
+    prismTestApi.applyLdThinAssemblyCoherenceContractToDraft =
+      applyLdThinAssemblyCoherenceContractToDraft;
     prismTestApi.buildLdMathRenderPromptBlock = buildLdMathRenderPromptBlock;
     prismTestApi.buildMathSafeOutputContractPromptBlock =
       buildMathSafeOutputContractPromptBlock;

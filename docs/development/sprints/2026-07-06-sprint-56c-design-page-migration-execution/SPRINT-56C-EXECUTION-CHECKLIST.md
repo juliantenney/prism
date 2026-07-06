@@ -1,7 +1,7 @@
 # Sprint 56C — Execution Checklist
 
 **Sprint:** 56C — Design Page Migration Execution  
-**Status:** Active governance control — **Wave 1 closed** · **Wave 2 closed** (2026-07-06)  
+**Status:** **Completed** (2026-07-06)  
 **Date:** 2026-07-06  
 **Authority:** [CP-4 approval](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-CP-4-ARCHITECTURE-APPROVAL-BRIEF.md) · [Implementation plan](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-IMPLEMENTATION-PLAN.md) · [Guardrails](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-ARCHITECTURE-GUARDRAILS.md)
 
@@ -17,8 +17,8 @@
 | ---- | ------ | -------- |
 | **1** | **Closed** | [Wave 1 Closure Summary](SPRINT-56C-WAVE-1-CLOSURE-SUMMARY.md) · Phases 1–4 execution reports |
 | **2** | **Closed** | [Wave 2 Closure Summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) · W2.3A–W2.5 execution reports · [Governance Closure Report](SPRINT-56C-WAVE-2-GOVERNANCE-CLOSURE-REPORT.md) |
-| **3** | **Not started** | — |
-| **4** | **Not started** | — |
+| **3** | **Closed** | [Wave 3 Closure Summary](SPRINT-56C-WAVE-3-CLOSURE-SUMMARY.md) · [Wave 3 Governance Closure Report](SPRINT-56C-WAVE-3-GOVERNANCE-CLOSURE-REPORT.md) |
+| **4** | **Closed** | [Wave 4 Final Compliance Audit](SPRINT-56C-WAVE-4-FINAL-COMPLIANCE-AUDIT.md) · [Governance Sign-Off](SPRINT-56C-GOVERNANCE-SIGNOFF.md) |
 
 ### Wave 1 closure basis
 
@@ -40,6 +40,38 @@
 | W2.3C — bridge SSOT cleanup (compose/materials/domain pointers) | **Complete** |
 | W2.5 — R-83 delimiter cleanup | **Complete** |
 | W2.4 SQ-1 / SQ-2 upstream packaging | **Deferred** |
+
+### Wave 3 closure basis
+
+| Item | Status |
+| ---- | ------ |
+| W3.1 — OQ-25 fixture registry | **Complete** |
+| W3.2 — OQ-24 dual-path review framework | **Complete** |
+| W3.3 — FM-A…FM-G failure-mode crosswalk | **Complete** |
+| W3.4 — regression inventory | **Complete** |
+| W3.5 — validation readiness meta-test bundle | **Complete** |
+| W3.6 — checklist §E completion | **Complete** |
+| W3.7 — Copilot capture playbook (optional) | **Included** |
+
+### Wave 4 closure basis
+
+| Item | Status |
+| ---- | ------ |
+| Final compliance audit (architecture/implementation/governance/validation) | **Complete** |
+| Audit determination | **Compliant with deferred items** |
+| Sprint closure summary | **Complete** |
+| Governance sign-off | **Complete** |
+| Checklist §F completion | **Complete** |
+
+### Deferred item disposition (final)
+
+| Item | Classification |
+| ---- | -------------- |
+| W2.4 SQ-1 | **Deferred** |
+| W2.4 SQ-2 | **Deferred** |
+| FX-KNOWLEDGE-001 PATH-A capture | **Optional** |
+| Synthetic PATH-B placeholders | **Optional** |
+| FX-FACILITATOR-001 (`TBD-SQF-*`) | **Future enhancement** |
 
 ---
 
@@ -134,25 +166,30 @@ Reference: [Implementation plan §4](../2026-07-06-sprint-56b-design-page-migrat
 
 | Check | Pass? |
 | ----- | ----- |
-| **OQ-24** dual-path **review framework** documented | ☐ |
-| **OQ-25** canonical fixtures **identified** (definitions recorded) | ☐ |
-| Fixture coverage defined for multi-activity, knowledge-bound, assessment, Copilot + PRISM artefact sources | ☐ |
-| Acceptance invariant **structural** review checklist prepared for fixtures (learner-completable from page JSON) | ☐ |
-| Failure modes A–G mapped to structural review criteria | ☐ |
-| Compliance evidence recorded per wave exit (architecture/prompt/artefact — not runtime generation quality) | ☑ — Wave 1 · ☑ — Wave 2 |
-| Runtime acceptance testing delegated to Copilot environment where artefact capture requires generation | ☐ |
+| **OQ-24** dual-path **review framework** documented | ☑ — `SPRINT-56C-WAVE-3-DUAL-PATH-REVIEW-FRAMEWORK.md` |
+| **OQ-25** canonical fixtures **identified** (definitions recorded) | ☑ — `SPRINT-56C-WAVE-3-FIXTURE-REGISTRY.md` |
+| Fixture coverage defined for multi-activity, knowledge-bound, assessment, Copilot + PRISM artefact sources | ☑ — OQ-25 class matrix and PATH-A/PATH-B status columns |
+| Acceptance invariant **structural** review checklist prepared for fixtures (learner-completable from page JSON) | ☑ — SC-* checklists in fixture registry + FM crosswalk |
+| Failure modes A–G mapped to structural review criteria | ☑ — `SPRINT-56C-WAVE-3-FAILURE-MODE-STRUCTURAL-REVIEW.md` |
+| Compliance evidence recorded per wave exit (architecture/prompt/artefact — not runtime generation quality) | ☑ — Wave 1 · ☑ — Wave 2 · ☑ — Wave 3 · ☑ — Wave 4 |
+| Runtime acceptance testing delegated to Copilot environment where artefact capture requires generation | ☑ — Generation Visibility Constraint + OQ-24 framework |
 
 ---
 
 ## F. Completion review
 
+*Sprint closure gate (2026-07-06): Wave 4 audit complete — see [Final Compliance Audit](SPRINT-56C-WAVE-4-FINAL-COMPLIANCE-AUDIT.md) · [Governance Sign-Off](SPRINT-56C-GOVERNANCE-SIGNOFF.md) · [Closure Summary](SPRINT-56C-CLOSURE-SUMMARY.md).*
+
 | Check | Pass? |
 | ----- | ----- |
-| Implemented state aligns with **CP-4 Approval Brief** (D1–D7) | ☐ |
-| [Architecture Guardrails](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-ARCHITECTURE-GUARDRAILS.md) §A–D satisfied | ☐ |
-| Frozen governing principles not reinterpreted | ☐ |
-| SQ-1, SQ-2, SQ-F1, SQ-F2 outcomes recorded (or explicit deferral) | ☐ |
-| Wave 1–4 exit criteria from implementation plan met | ☐ — Waves 1–2 complete; Waves 3–4 pending |
+| Implemented state aligns with **CP-4 Approval Brief** (D1–D7) | ☑ — Wave 4 audit conformant |
+| [Architecture Guardrails](../2026-07-06-sprint-56b-design-page-migration-planning/SPRINT-56B-ARCHITECTURE-GUARDRAILS.md) §A–D satisfied | ☑ — Wave 4 audit conformant |
+| Frozen governing principles not reinterpreted | ☑ — no architecture reopening in Waves 1–4 |
+| SQ-1, SQ-2, SQ-F1, SQ-F2 outcomes recorded (or explicit deferral) | ☑ — SQ-1/SQ-2 **deferred**; SQ-F1/SQ-F2 **future enhancement** |
+| Wave 4 audit complete | ☑ — [Final Compliance Audit](SPRINT-56C-WAVE-4-FINAL-COMPLIANCE-AUDIT.md) |
+| Audit result | ☑ — **Compliant with deferred items** (81/81 compliance bundle) |
+| Sprint closure recommendation | ☑ — **Approved** — [Governance Sign-Off](SPRINT-56C-GOVERNANCE-SIGNOFF.md) |
+| Wave 1–4 exit criteria from implementation plan met | ☑ — all waves closed |
 
 ---
 
@@ -175,5 +212,6 @@ Do not:
 | Field | Value |
 | ----- | ----- |
 | File | `SPRINT-56C-EXECUTION-CHECKLIST.md` |
-| Sprint | 56C |
-| Wave gates | W1 **closed** · W2 **closed**; W3–W4 pending |
+| Sprint | 56C — **Completed** |
+| Wave gates | W1 **closed** · W2 **closed** · W3 **closed** · W4 **closed** |
+| Closure | [SPRINT-56C-CLOSURE-SUMMARY.md](SPRINT-56C-CLOSURE-SUMMARY.md) · [SPRINT-56C-GOVERNANCE-SIGNOFF.md](SPRINT-56C-GOVERNANCE-SIGNOFF.md) |

@@ -1,7 +1,7 @@
 # Sprint 56B — Planning Backlog
 
 **Sprint:** 56B — Design Page Migration Planning & Architecture Approval  
-**Status:** Active  
+**Status:** Complete (2026-07-06) — successor: [Sprint 56C](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md)  
 **Seeded from:** [DESIGN-PAGE-MIGRATION-STRATEGY.md](../2026-07-06-sprint-56a-design-page-simplification-planning/DESIGN-PAGE-MIGRATION-STRATEGY.md)
 
 **Legend:** `Pending` · `In progress` · `Done` · `Deferred`
@@ -20,7 +20,7 @@
 | W1-03 | **Knowledge summary policy** — transport vs author vs omit options | OQ-17 | Pending | Blocks C7 boundary review |
 | W1-04 | **Dual-path strategy** — Copilot-primary vs PRISM-repair backstop | OQ-24 | Pending | Blocks validation strategy in plan |
 | W1-05 | **Canonical acceptance fixtures** — identify baseline workflows | OQ-25 | Pending | Blocks plan §validation |
-| W1-06 | **Sprint 57 sequencing** — proceed / defer / narrow | OQ-23 | Pending | Stakeholder decision |
+| W1-06 | **Programme sequencing** — Sprint 56C vs Sprint 57 | OQ-23 | Done | Migration = 56C; 57 reserved |
 | W1-07 | Register resolutions in open questions log | — | Pending | After W1-01–W1-06 |
 
 ---
@@ -75,7 +75,7 @@
 | W4-02 | Stakeholder review session | Pending | |
 | W4-03 | Record approvals in architecture approval tracker | Pending | |
 | W4-04 | Resolve deferrals with owners and accepted risk | Pending | |
-| W4-05 | Sprint 57 impact statement finalised | Pending | OQ-23 |
+| W4-05 | Programme sequencing statement finalised | Done | OQ-23 — Sprint 56C execution |
 
 ---
 

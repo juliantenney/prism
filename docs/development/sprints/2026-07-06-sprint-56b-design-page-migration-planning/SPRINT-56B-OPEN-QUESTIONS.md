@@ -1,7 +1,7 @@
 # Sprint 56B — Open Questions
 
 **Purpose:** Track **blocker** open questions for Sprint 56B. Full register remains in [SPRINT-56A-OPEN-QUESTIONS.md](../2026-07-06-sprint-56a-design-page-simplification-planning/SPRINT-56A-OPEN-QUESTIONS.md).  
-**Status:** Living document during Sprint 56B.
+**Status:** Sprint 56B complete — OQ-24/OQ-25 deferred to Sprint 56C Wave 3.
 
 ---
 
@@ -9,29 +9,30 @@
 
 | Order | ID | Rationale |
 | ----- | -- | --------- |
-| 1 | **OQ-02** | Unblocks wrapper boundary review (critical path) |
-| 2 | **OQ-17** | Knowledge summary structural conflict (mode A) |
-| 3 | **OQ-13** | VA placement — largest non-transport load |
-| 4 | **OQ-24** | Dual-path strategy — validation and acceptance criteria |
-| 5 | **OQ-25** | Fixtures — baseline for plan validation |
-| 6 | **OQ-23** | Sprint 57 coordination (may parallel with 1–5) |
+| 1 | **OQ-02** | Resolved (planning) — Assembly-Time Ownership Test adopted; CP-4 sign-off pending |
+| 2 | **OQ-17** | Resolved (planning) — transport-or-omit; SQ-1/SQ-2 pending |
+| 3 | **OQ-13** | Resolved (planning) — VA spec moves off DP |
+| 4 | **OQ-14** | Resolved (planning) — layered ownership; renderer inference default |
+| 5 | **OQ-24** | Dual-path strategy — validation and acceptance criteria |
+| 6 | **OQ-25** | Fixtures — baseline for plan validation |
+| 7 | **OQ-23** | **Resolved** — Sprint 56C execution; Sprint 57 reserved |
 
 ---
 
 ## Blocker questions
 
-### OQ-02 — Author vs organise
+### OQ-02 — Assembly-time ownership
 
 | Field | Value |
 | ----- | ----- |
-| **Description** | Should Design Page ever **author** new learner-facing prose, or only **organise** upstream prose? |
-| **Importance** | **Critical** — defines whether Layer 3 wrapper stack remains, is bounded, or is removed |
+| **Description** | Which learner-facing prose obligations require **assembly-time visibility** (final membership, section grouping, embedded materials, cross-activity order, journey coherence) vs **upstream transport only**? |
+| **Importance** | **Critical** — defines Layer 3 scope; supersedes “author vs organise” binary |
+| **Normative test** | [DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md](DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md) |
 | **Affected artefacts** | C6 wrapper cluster; R-35–R-51; guardrails R-46, R-50, R-72; target derivation Layer 3 |
-| **Blocking impact** | Blocks W2-08 wrapper review; blocks architecture approval disposition; distorts OQ-09 if answered late |
-| **Evidence needed** | Wrapper value on exported HTML; learner usability comparison; overlap char budget |
-| **56A reference** | Responsibility analysis §3; migration strategy Phase B item 6 |
-| **Status** | Open |
-| **Resolution** | *(pending)* |
+| **Blocking impact** | Was blocker for W2-08 — **unblocked for analysis** pending CP-4 sign-off |
+| **Status** | **Resolved (planning)** — pending CP-4 stakeholder sign-off |
+| **Resolution** | Adopt **Assembly-Time Ownership Test** (v1.0). Design Page is transport-and-organisation first (Layer 1–2). **Assembly-coherence prose** permitted only when T3 = Yes and §4 Allowed categories apply. Instructional substance, LC/KM re-synthesis, GAM paraphrase, and triple wrapper stack authoring are **not** DP identity. |
+| **Date** | 2026-07-06 |
 
 ---
 
@@ -39,14 +40,57 @@
 
 | Field | Value |
 | ----- | ----- |
-| **Description** | Should VA authoring remain on Design Page at all? |
-| **Importance** | **High** — largest non-transport prompt load; token competition with GAM embed |
-| **Affected artefacts** | C8; R-55–R-59; compose pipeline step 4; failure mode G (`source_basis`) |
-| **Blocking impact** | Blocks W2-09; blocks dependency impact for VA relocation; related OQ-14 if relocated |
-| **Evidence needed** | Renderer consumption audit (DQ-01: does HTML export require VA?); Sprint 38 architecture notes |
-| **56A reference** | Audit §I; dependency analysis C8 |
-| **Status** | Open |
-| **Resolution** | *(pending)* |
+| **Description** | Should VA **specification ownership** remain on Design Page? |
+| **Importance** | **High** — largest non-transport generative load; token competition; mode G (`source_basis`) |
+| **Normative review** | [DESIGN-PAGE-OQ-13-VISUAL-AFFORDANCES-OWNERSHIP-REVIEW.md](DESIGN-PAGE-OQ-13-VISUAL-AFFORDANCES-OWNERSHIP-REVIEW.md) |
+| **Governing test** | [DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md](DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md) |
+| **Affected artefacts** | R-55–R-60; C8; audit §I; compose pipeline step 4 |
+| **Blocking impact** | Was blocker for W2-09 — **unblocked** pending OQ-14 |
+| **Status** | **Resolved (planning)** — pending OQ-14, CP-4 |
+| **Resolution** | **Option B — move VA specification ownership out of Design Page.** Generative VA (R-56–R-59) is **not** DP identity. Optional passive VA schema keys on page JSON = shared contract decision only. R-60 follows VA locus. **Not** Option A (retain generative VA on DP). |
+| **Date** | 2026-07-06 |
+
+---
+
+### OQ-14 — VA relocation target
+
+| Field | Value |
+| ----- | ----- |
+| **Description** | Where should VA **specification ownership** reside after removal from Design Page? |
+| **Importance** | **High** — completes VA disposition; affects preservation, Sprint 57 alignment, OQ-15/OQ-16 |
+| **Normative review** | [DESIGN-PAGE-OQ-14-VISUAL-AFFORDANCES-RELOCATION-TARGET-REVIEW.md](DESIGN-PAGE-OQ-14-VISUAL-AFFORDANCES-RELOCATION-TARGET-REVIEW.md) |
+| **Governing inputs** | [OQ-13 review](DESIGN-PAGE-OQ-13-VISUAL-AFFORDANCES-OWNERSHIP-REVIEW.md) · [Assembly-Time Ownership Test](DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md) |
+| **Affected artefacts** | C8 disposition; R-55–R-60 locus; Sprint 57 architecture state (as-built) |
+| **Blocking impact** | Was blocker for W2-09 completion — **unblocked** pending SQ-VA-4 |
+| **Status** | **Resolved (planning)** — pending SQ-VA-4, CP-4 |
+| **Resolution** | **Layered ownership.** Default: **renderer inference** for specification/rendering. **DLA** owns visual intent; **GAM** owns visual substance in materials. **DP passive transport** only if VA artefact bound (episode-plan pattern). **Dedicated VA artefact** conditional on explicit portable metadata need. VA **not** mandatory first-class pipeline concern. |
+| **Date** | 2026-07-06 |
+
+---
+
+### OQ-15 — `source_basis` citations
+
+| Field | Value |
+| ----- | ----- |
+| **Description** | Can `source_basis` coexist with full material embedding without substitution risk? |
+| **Normative review** | [DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md](DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md) |
+| **Affected artefacts** | R-59; failure modes E, G |
+| **Status** | **Closed (planning)** — consequence of OQ-13/OQ-14 |
+| **Resolution** | **Remove** from target architecture (default path). Substitution risk moot when DP does not author VA records. Conditional dedicated VA artefact path: **relocate** with embed-invariant policy only. |
+| **Date** | 2026-07-06 |
+
+---
+
+### OQ-16 — Schema 38.4 scope
+
+| Field | Value |
+| ----- | ----- |
+| **Description** | Is schema 38.4 required on every page or only when figures generated? |
+| **Normative review** | [DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md](DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md) |
+| **Affected artefacts** | R-55; domain pack §13 VA keys; R-60 |
+| **Status** | **Closed (planning)** — consequence of OQ-13/OQ-14 |
+| **Resolution** | **Deprecated** as universal mandatory page output. **Conditional** only when optional VA artefact bound. **Remove** from default DP emit requirements. Legacy renderer tolerates absent/empty VA. |
+| **Date** | 2026-07-06 |
 
 ---
 
@@ -54,14 +98,15 @@
 
 | Field | Value |
 | ----- | ----- |
-| **Description** | Transport KM/LC excerpt verbatim vs omit section vs author preview on Design Page? |
-| **Importance** | **High** — audit §L clearest structural conflict; drives failure mode A |
-| **Affected artefacts** | C7; R-39, R-70, R-71, R-72; `knowledge_summary` section |
-| **Blocking impact** | Blocks W2-07; affects wrapper/knowledge overlap in dependency matrix |
-| **Evidence needed** | Side-by-side page comparison; cross-field bleed to materials |
-| **56A reference** | Audit §L; matrix competition knowledge in two places |
-| **Status** | Open |
-| **Resolution** | *(pending)* |
+| **Description** | Transport KM/LC summary verbatim vs omit section vs author on Design Page? |
+| **Importance** | **High** — audit §L structural conflict; failure mode A |
+| **Normative review** | [DESIGN-PAGE-OQ-17-KNOWLEDGE-SUMMARY-POLICY-REVIEW.md](DESIGN-PAGE-OQ-17-KNOWLEDGE-SUMMARY-POLICY-REVIEW.md) |
+| **Governing test** | [DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md](DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md) |
+| **Affected artefacts** | R-39, R-70, R-71, R-72; C7; audit §L |
+| **Blocking impact** | Was blocker for W2-07 — **unblocked for analysis** pending SQ-1/SQ-2 |
+| **Status** | **Resolved (planning)** — pending stakeholder SQ-1, SQ-2 |
+| **Resolution** | **Transport-or-omit.** Option A when LC/KM provides transportable summary body; Option C otherwise. **Option B (DP authoring) rejected.** R-39/R-71 removed from target architecture; R-70 conditional; R-72 conditional guardrail. |
+| **Date** | 2026-07-06 |
 
 ---
 
@@ -97,17 +142,17 @@
 
 ## Coordination question (not a hard blocker for analysis start)
 
-### OQ-23 — Sprint 57 sequencing
+### OQ-23 — Programme sequencing
 
 | Field | Value |
 | ----- | ----- |
-| **Description** | Does Sprint 57 start before, after, or in parallel with Design Page implementation? |
+| **Description** | Which sprint executes Design Page migration vs future roadmap work? |
 | **Importance** | **Medium** — programme coordination |
-| **Affected artefacts** | Sprint 57 charter; product presentation work |
-| **Blocking impact** | Blocks W4-05; does not block W1–W3 if Layer 1–2 frozen as constraint |
-| **Evidence needed** | Stakeholder decision |
-| **Status** | Open |
-| **Resolution** | *(pending)* |
+| **Affected artefacts** | Sprint 56C charter; Sprint 57 reserved |
+| **Blocking impact** | Was W4-05 — **resolved** |
+| **Evidence needed** | Programme decision |
+| **Status** | **Resolved** 2026-07-06 |
+| **Resolution** | Design Page migration executes as **Sprint 56C**. **Sprint 57** reserved for future roadmap — not part of Design Page migration. |
 
 ---
 
@@ -122,7 +167,6 @@ Resolve if time permits or carry to implementation sprint:
 | OQ-04 | `activities_omitted[]` for size? |
 | OQ-05–08 | Conditional sections mandatory? |
 | OQ-09–12 | Wrapper merge, study tips, profile scope, word budget |
-| OQ-14–16 | VA relocation target, source_basis, schema 38.4 scope |
 | OQ-18–22 | Knowledge bleed, migration mechanics, accretion inventory |
 | OQ-26–27 | Automated equality check, rollback threshold |
 
@@ -134,4 +178,9 @@ Full list: [SPRINT-56A-OPEN-QUESTIONS.md](../2026-07-06-sprint-56a-design-page-s
 
 | ID | Resolution | Date | Owner |
 | -- | ---------- | ---- | ----- |
-| — | *(populate as questions close)* | | |
+| OQ-02 | Adopt [DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md](DESIGN-PAGE-ASSEMBLY-TIME-OWNERSHIP-TEST.md) v1.0 — pending CP-4 sign-off | 2026-07-06 | Sprint 56B planning |
+| OQ-17 | Transport-or-omit per [DESIGN-PAGE-OQ-17-KNOWLEDGE-SUMMARY-POLICY-REVIEW.md](DESIGN-PAGE-OQ-17-KNOWLEDGE-SUMMARY-POLICY-REVIEW.md) — Option B rejected; SQ-1/SQ-2 pending | 2026-07-06 | Sprint 56B planning |
+| OQ-13 | Option B per [DESIGN-PAGE-OQ-13-VISUAL-AFFORDANCES-OWNERSHIP-REVIEW.md](DESIGN-PAGE-OQ-13-VISUAL-AFFORDANCES-OWNERSHIP-REVIEW.md) — generative VA not on DP | 2026-07-06 | Sprint 56B planning |
+| OQ-14 | Layered ownership per [DESIGN-PAGE-OQ-14-VISUAL-AFFORDANCES-RELOCATION-TARGET-REVIEW.md](DESIGN-PAGE-OQ-14-VISUAL-AFFORDANCES-RELOCATION-TARGET-REVIEW.md) — renderer inference default | 2026-07-06 | Sprint 56B planning |
+| OQ-15 | Remove `source_basis` from target architecture per [DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md](DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md) | 2026-07-06 | Sprint 56B planning |
+| OQ-16 | Schema 38.4 deprecated as universal mandatory per [DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md](DESIGN-PAGE-OQ-15-16-VA-CLEANUP-CLOSURE-REVIEW.md) | 2026-07-06 | Sprint 56B planning |

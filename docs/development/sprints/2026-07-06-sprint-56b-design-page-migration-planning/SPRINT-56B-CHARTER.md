@@ -2,9 +2,12 @@
 
 **Sprint:** 56B — Design Page Migration Planning & Architecture Approval  
 **Type:** Planning sprint  
+**Status:** **Complete**  
 **Opened:** 2026-07-06  
+**Closed:** 2026-07-06  
 **Predecessor:** [Sprint 56A](../2026-07-06-sprint-56a-design-page-simplification-planning/SPRINT-56A-CLOSURE-REPORT.md) (closed)  
-**Parallel:** [Sprint 57](../2026-07-01-sprint-57-learner-experience-product-quality/SPRINT-57-START-HERE.md) (prepared — coordinate via OQ-23)
+**Successor:** [Sprint 56C](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md) (migration execution)  
+**Programme note:** [Sprint 57](../2026-07-01-sprint-57-learner-experience-product-quality/SPRINT-57-START-HERE.md) reserved for future roadmap (OQ-23 resolved)
 
 ---
 
@@ -25,7 +28,7 @@ Sprint 56B executes the **decision, review, approval, and planning** phases that
 | 3 | Produce **dependency impact matrix** per boundary disposition | Workstream 3 artefact |
 | 4 | Obtain **stakeholder architecture approval** | [SPRINT-56B-ARCHITECTURE-APPROVAL-TRACKER.md](SPRINT-56B-ARCHITECTURE-APPROVAL-TRACKER.md) |
 | 5 | **Populate and approve** implementation plan | [SPRINT-56B-IMPLEMENTATION-PLAN.md](SPRINT-56B-IMPLEMENTATION-PLAN.md) header signed |
-| 6 | Record **Sprint 57 impact decision** | OQ-23 in open questions log |
+| 6 | Record **programme sequencing decision** | OQ-23 resolved — migration = Sprint 56C; Sprint 57 reserved |
 
 ---
 
@@ -54,7 +57,7 @@ Sprint 56B is explicitly **not**:
 | Recreating Sprint 56A analysis | Evidence frozen in 56A |
 | Modifying Sprint 56A artefacts | Closed sprint — reference only |
 | Modifying Sprint 57 artefacts | Read-only reference |
-| Learner experience delivery | Sprint 57 scope (may parallel with constraints) |
+| Learner experience delivery | Sprint 57 scope (reserved — future roadmap) |
 
 ---
 
@@ -77,15 +80,15 @@ Sprint 56B is explicitly **not**:
 
 ## Exit criteria
 
-Sprint 56B may close when **all** of the following are true:
+Sprint 56B closed **2026-07-06** when all of the following were met:
 
-1. [ ] Blocker OQs (OQ-02, OQ-13, OQ-17, OQ-24, OQ-25) resolved or deferred with owner and accepted risk
-2. [ ] Boundary review complete for all Workstream 2 areas
-3. [ ] Dependency impact matrix complete (Workstream 3)
-4. [ ] Architecture approval tracker shows **approved** derived identity and Layer 3 disposition
-5. [ ] [SPRINT-56B-IMPLEMENTATION-PLAN.md](SPRINT-56B-IMPLEMENTATION-PLAN.md) populated and marked **APPROVED**
-6. [ ] Sprint 57 impact decision recorded (OQ-23)
-7. [ ] Implementation sprint chartered with scope bounded to approved plan
+1. [x] Blocker OQs (OQ-02, OQ-13, OQ-17) resolved; OQ-24/OQ-25 deferred to Sprint 56C Wave 3
+2. [x] Boundary review complete for Workstream 2 areas
+3. [ ] Dependency impact matrix complete (Workstream 3) — deferred to Sprint 56C Wave 3 (non-blocking)
+4. [x] Architecture approval tracker shows **approved** derived identity and Layer 3 disposition
+5. [x] [SPRINT-56B-IMPLEMENTATION-PLAN.md](SPRINT-56B-IMPLEMENTATION-PLAN.md) populated (CP-5 v1.0)
+6. [x] Programme sequencing recorded (OQ-23) — Sprint 56C execution; Sprint 57 reserved
+7. [x] Implementation sprint chartered — [Sprint 56C](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md)
 
 ---
 

@@ -1004,41 +1004,6 @@ They provide a consistent way to structure workflows and ensure that learning de
         "elicitation": "elicited"
       },
       {
-        "key": "tone_style",
-        "canonicalStepId": "step_design_page",
-        "label": "Tone / style",
-        "description": "Voice and register for page content.",
-        "controlType": "select",
-        "default": "academic",
-        "options": [
-          { "value": "formal", "label": "Formal" },
-          { "value": "friendly", "label": "Friendly" },
-          { "value": "academic", "label": "Academic" },
-          { "value": "conversational", "label": "Conversational" },
-          { "value": "mixed", "label": "Mixed" }
-        ],
-        "visible": true,
-        "advanced": true,
-        "elicitation": "settings-only"
-      },
-      {
-        "key": "depth_level",
-        "canonicalStepId": "step_design_page",
-        "label": "Depth level",
-        "description": "How deep page content should go.",
-        "controlType": "select",
-        "default": "mixed",
-        "options": [
-          { "value": "foundational", "label": "Foundational" },
-          { "value": "application", "label": "Application" },
-          { "value": "analysis", "label": "Analysis" },
-          { "value": "mixed", "label": "Mixed" }
-        ],
-        "visible": true,
-        "advanced": true,
-        "elicitation": "settings-only"
-      },
-      {
         "key": "activity_type",
         "canonicalStepId": "step_design_assessment",
         "label": "Question strategy",
@@ -1751,17 +1716,11 @@ They provide a consistent way to structure workflows and ensure that learning de
       },
       {
         "factor": "tone_style",
-        "mapsTo": [
-          "workflow.workflowOutputSpec.constraints.tone_style",
-          "stepParams.step_design_page.tone_style"
-        ]
+        "mapsTo": []
       },
       {
         "factor": "depth_level",
-        "mapsTo": [
-          "workflow.workflowOutputSpec.constraints.depth_level",
-          "stepParams.step_design_page.depth_level"
-        ]
+        "mapsTo": []
       },
       {
         "factor": "include_examples",
@@ -1779,10 +1738,7 @@ They provide a consistent way to structure workflows and ensure that learning de
       },
       {
         "factor": "compact_vs_detailed",
-        "mapsTo": [
-          "workflow.workflowOutputSpec.constraints.output_density",
-          "stepParams.step_design_page.output_density"
-        ]
+        "mapsTo": []
       }
     ],
     "intentClasses": {
@@ -1953,7 +1909,7 @@ They provide a consistent way to structure workflows and ensure that learning de
           ]
         },
         "bindingMode": "factor_ids_via_mapping_rules",
-        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, tone, depth, examples, practice tasks, and compactness — or adjust these in step Settings. (yes/no)",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, examples, and practice tasks — or adjust these in step Settings. (yes/no)",
         "tiers": {
           "required": [],
           "optional": [
@@ -1970,33 +1926,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                   "tutor": "facilitator",
                   "teacher": "facilitator",
                   "assessment": "assessment"
-                }
-              }
-            },
-            {
-              "factorId": "tone_style",
-              "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "formal": "formal",
-                  "friendly": "friendly",
-                  "academic": "academic",
-                  "conversational": "conversational",
-                  "mixed": "mixed"
-                }
-              }
-            },
-            {
-              "factorId": "depth_level",
-              "questionText": "What depth level should the page content target?\nChoose one: foundational, application, analysis, or mixed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "foundational": "foundational",
-                  "application": "application",
-                  "analysis": "analysis",
-                  "mixed": "mixed"
                 }
               }
             },
@@ -2021,18 +1950,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                   "y": true,
                   "no": false,
                   "n": false
-                }
-              }
-            },
-            {
-              "factorId": "compact_vs_detailed",
-              "questionText": "Should the page be compact or detailed?\nChoose one: compact, standard, or detailed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "compact": "compact",
-                  "standard": "standard",
-                  "detailed": "detailed"
                 }
               }
             }
@@ -2055,7 +1972,7 @@ They provide a consistent way to structure workflows and ensure that learning de
           ]
         },
         "bindingMode": "factor_ids_via_mapping_rules",
-        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, tone, depth, examples, practice tasks, and compactness — or adjust these in step Settings. (yes/no)",
+        "optionalOptInPrompt": "Do you want to refine the page further? I can ask about page profile, examples, and practice tasks — or adjust these in step Settings. (yes/no)",
         "tiers": {
           "required": [],
           "optional": [
@@ -2072,33 +1989,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                   "tutor": "facilitator",
                   "teacher": "facilitator",
                   "assessment": "assessment"
-                }
-              }
-            },
-            {
-              "factorId": "tone_style",
-              "questionText": "What tone and style should the page use?\nChoose one: formal, friendly, academic, conversational, or mixed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "formal": "formal",
-                  "friendly": "friendly",
-                  "academic": "academic",
-                  "conversational": "conversational",
-                  "mixed": "mixed"
-                }
-              }
-            },
-            {
-              "factorId": "depth_level",
-              "questionText": "What depth level should the page content target?\nChoose one: foundational, application, analysis, or mixed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "foundational": "foundational",
-                  "application": "application",
-                  "analysis": "analysis",
-                  "mixed": "mixed"
                 }
               }
             },
@@ -2123,18 +2013,6 @@ They provide a consistent way to structure workflows and ensure that learning de
                   "y": true,
                   "no": false,
                   "n": false
-                }
-              }
-            },
-            {
-              "factorId": "compact_vs_detailed",
-              "questionText": "Should the page be compact or detailed?\nChoose one: compact, standard, or detailed.",
-              "parseHints": {
-                "recommendEnabled": true,
-                "aliases": {
-                  "compact": "compact",
-                  "standard": "standard",
-                  "detailed": "detailed"
                 }
               }
             }
@@ -3405,10 +3283,10 @@ page
   "askForCustomSchema": false,
   "defaultPromptStrategy": "default_template",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Assemble one profile-aware self-contained page; strict JSON sections[] (section_id, heading, content). Canonical section_ids when applicable: overview, learning_purpose, knowledge_summary, learning_activities, assessment_check, support_notes. LD-DESIGN-PAGE-COMPOSE-CONTRACT at runtime owns membership, materials fidelity (embedded LD-MATERIALS-COPY / LD-TABLE-FIDELITY preserve roles), field preservation, and portable episode_plans schema. Learner page_profile: LD-JOURNEY-ASSIMILATION, LD-SELF-DIRECTED-RHETORIC, LD-GUIDED-LEARNING-SCAFFOLD compose preservation. Visual affordances: Sprint 38 runtime (schema 38.4). Maths: LD-MATH-RENDER.",
+  "defaultPromptNotes": "Assemble one profile-aware self-contained page; strict JSON sections[] (section_id, heading, content). Canonical section_ids when applicable: overview, learning_purpose, knowledge_summary, learning_activities, assessment_check, support_notes. LD-DESIGN-PAGE-COMPOSE-CONTRACT at runtime owns membership, materials fidelity (embedded LD-MATERIALS-COPY / LD-TABLE-FIDELITY preserve roles), field preservation, and portable episode_plans schema. Transport-first: knowledge_summary transport-or-omit when LC/KM bound; overview/learning_purpose thin assembly-coherence; study_tips transport upstream closure only. Learner page_profile: LD-GUIDED-LEARNING-SCAFFOLD compose preservation. Maths: LD-MATH-RENDER.",
   "runnerInstructions": {
     "what_this_step_does": "This step assembles a profile-aware readable page for HTML/VLE use from existing artefacts.",
-    "what_to_check": "sections[] with section_id, heading, content; canonical section_ids when applicable; learning_activities.content array with predictable keys; structured activity.materials objects (not labels-only); when upstream episode_plans provided: top-level episode_plans[] aligned to composed activity_ids, per-activity episode_plan on each row, episode_plans in source_artefacts; assessment_check.content.items when assessment_items provided; LD-DESIGN-PAGE-COMPOSE-CONTRACT governs verbatim materials preservation and activity membership (U \\ X) ⊆ C with activities_omitted[] authority; page root visual_affordance_schema_version 38.4, activities_visual_review[], visual_affordances[] per Sprint 38 runtime; generation_notes.limitations for non-material page constraints only (not material-body truncation); learner-facing text excludes internal enum values."
+    "what_to_check": "sections[] with section_id, heading, content; canonical section_ids when applicable; learning_activities.content array with predictable keys; structured activity.materials objects (not labels-only); when upstream episode_plans provided: top-level episode_plans[] aligned to composed activity_ids, per-activity episode_plan on each row, episode_plans in source_artefacts; assessment_check.content.items when assessment_items provided; LD-DESIGN-PAGE-COMPOSE-CONTRACT governs verbatim materials preservation and activity membership (U \\ X) ⊆ C with activities_omitted[] authority; generation_notes.limitations for non-material page constraints only (not material-body truncation); learner-facing text excludes internal enum values."
   },
   "defaultOutputStructure": {
     "keys": [
@@ -3418,9 +3296,6 @@ page
       "page_profile",
       "sections",
       "episode_plans",
-      "visual_affordance_schema_version",
-      "activities_visual_review",
-      "visual_affordances",
       "source_artefacts",
       "constraints_applied",
       "generation_notes"
@@ -3436,7 +3311,7 @@ page
         {
           "value": "learner",
           "label": "Learner",
-          "promptInstruction": "Set page_profile to learner and prioritise substantive session overview (overview/learning_purpose) plus full learner tasks and complete activity materials — never summary-only or placeholder-only materials."
+          "promptInstruction": "Set page_profile to learner and prioritise thin assembly-coherence for overview/learning_purpose, transport knowledge_summary when LC/KM bound, and full verbatim activity materials — never summary-only or placeholder-only materials."
         },
         {
           "value": "facilitator",
@@ -3475,7 +3350,7 @@ page
       "promptInstructionWhenFalse": "Do not include feedback guidance."
     }
   ],
-  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, episode_plans (when the workflow includes Design Episode Plan), and may also receive learning_sequence, learning_content, knowledge_model, assessment_items, feedback_pack, marking_rubric, and assessment_blueprint.\n\nUpstream source: in a multi-step Copilot workflow these artefacts are the complete outputs from prior steps in this conversation (each marked STEP N OUTPUT: <artefact_name>). The active chat history is context — artefacts do not need to be re-attached in the current message; search conversation history for activity_materials, Generate Activity Materials, Material:, and Content: before claiming bodies are unavailable. Locate and use those full prior outputs — especially the full Generate Activity Materials pack-text body for activity_materials (Activity ID / Material: / Content: blocks). For activity.materials only: treat each GAM Content: body as opaque payload (transport, not authoring) — obey LD-MATERIALS-COPY AUTHORITATIVE GAM CONTENT BINDING, MULTI-MATERIAL ENUMERATION INVARIANT, FULL CONTENT BODY PRESERVATION, MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION, PAGE ARTEFACT IS FINAL LEARNER OUTPUT, and OPAQUE PAYLOAD TRANSPORT at runtime. Do not reconstruct material bodies from learning_activities.required_materials specs alone.\n\nTask:\nAssemble one readable, self-contained page artefact with artifact_type = page.\n\nInstructions:\n- Read-only composition step — assemble section structure, headings, ordering, and wrapper prose from upstream artefacts; do not redesign pedagogy\n- Treat workflow goal, desired outputs, and step notes as hard constraints (component types, quantities, exclusions)\n- Set page_profile using {{option:page_profile}}; include audience; ground sections in provided upstream artefacts only; exclude unsupported content\n- Page JSON must be self-contained for downstream rendering\n- Runtime canonical authorities (obey all appended blocks): LD-DESIGN-PAGE-COMPOSE-CONTRACT (activity membership, materials fidelity via embedded LD-MATERIALS-COPY and LD-TABLE-FIDELITY preserve roles, field preservation, portable episode_plans schema); LD-JOURNEY-ASSIMILATION and LD-SELF-DIRECTED-RHETORIC when learner page_profile; Sprint 38 visual affordance contract (schema 38.4); LD-MATH-RENDER\n- Use meaningful section headings; avoid schema-style labels in learner-facing content\n- Coherent section ordering: overview, learning purpose/outcomes, knowledge_summary when LC/KM bound, learning activities, assessment check, support notes as applicable\n- learning_activities.content MUST be an array of activity objects with structured materials.<field> objects — not labels-only references\n- If assessment_items present: Formative Assessment Check with assessment_check.content.items[]; MCQ stems and options; respect include_answers, include_marking_guidance, include_feedback_guidance options\n- If learning_sequence present: use timeline for activity order/timing only\n- Record non-material constraint gaps in generation_notes.limitations — never excuse material-body loss (compose contract governs)\n- Apply step notes: {{stepNotes}}\n\nOutput:\n- Return {{preferredOutputFormat}} only — JSON object: artifact_type page, title, audience, page_profile, sections[], episode_plans (when upstream provided), source_artefacts, constraints_applied, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], generation_notes\n- Learner profile: substantive overview/learning_purpose, knowledge_summary when bound, full activity-linked materials (not placeholder-only)\n- Facilitator profile: run guidance and facilitation/logistics notes\n- Assessment profile: structured items section — do not flatten to prose\n- Record generation_notes.activities_omitted[] with activity_id, title, reason, authority for intentional omissions"
+  "promptTemplate": "Context:\nYou are provided with learning_outcomes, learning_activities, activity_materials, episode_plans (when the workflow includes Design Episode Plan), and may also receive learning_sequence, learning_content, knowledge_model, assessment_items, feedback_pack, marking_rubric, and assessment_blueprint.\n\nUpstream source: in a multi-step Copilot workflow these artefacts are the complete outputs from prior steps in this conversation (each marked STEP N OUTPUT: <artefact_name>). The active chat history is context — artefacts do not need to be re-attached in the current message; search conversation history for activity_materials, Generate Activity Materials, Material:, and Content: before claiming bodies are unavailable. Locate and use those full prior outputs — especially the full Generate Activity Materials pack-text body for activity_materials (Activity ID / Material: / Content: blocks). For activity.materials only: treat each GAM Content: body as opaque payload (transport, not authoring) — obey LD-MATERIALS-COPY AUTHORITATIVE GAM CONTENT BINDING, MULTI-MATERIAL ENUMERATION INVARIANT, FULL CONTENT BODY PRESERVATION, MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION, PAGE ARTEFACT IS FINAL LEARNER OUTPUT, and OPAQUE PAYLOAD TRANSPORT at runtime. Do not reconstruct material bodies from learning_activities.required_materials specs alone.\n\nTask:\nAssemble one readable, self-contained page artefact with artifact_type = page.\n\nInstructions:\n- Read-only composition step — assemble section structure, headings, ordering, and transport slots from upstream artefacts; do not redesign pedagogy\n- Treat workflow goal, desired outputs, and step notes as hard constraints (component types, quantities, exclusions)\n- Set page_profile using {{option:page_profile}}; include audience; ground sections in provided upstream artefacts only; exclude unsupported content\n- Page JSON must be self-contained for downstream rendering\n- Runtime canonical authorities (obey all appended blocks): LD-DESIGN-PAGE-COMPOSE-CONTRACT (activity membership, materials fidelity via embedded LD-MATERIALS-COPY and LD-TABLE-FIDELITY preserve roles, field preservation, portable episode_plans schema); LD-GUIDED-LEARNING-SCAFFOLD compose preservation when appended; LD-MATH-RENDER\n- Use meaningful section headings; avoid schema-style labels in learner-facing content\n- Coherent section ordering: overview, learning purpose/outcomes, knowledge_summary when LC/KM bound, learning activities, assessment check, support notes as applicable\n- learning_activities.content MUST be an array of activity objects with structured materials.<field> objects — not labels-only references\n- If assessment_items present: Formative Assessment Check with assessment_check.content.items[]; MCQ stems and options; respect include_answers, include_marking_guidance, include_feedback_guidance options\n- If learning_sequence present: use timeline for activity order/timing only\n- Visual affordance metadata: omit visual_affordance_schema_version, activities_visual_review, and visual_affordances unless an upstream VA artefact explicitly provides them — do not generate, infer, author, or specify VA rows on Design Page\n- Record non-material constraint gaps in generation_notes.limitations — never excuse material-body loss (compose contract governs)\n- Apply step notes: {{stepNotes}}\n\nOutput:\n- Return {{preferredOutputFormat}} only — JSON object: artifact_type page, title, audience, page_profile, sections[], episode_plans (when upstream provided), source_artefacts, constraints_applied, generation_notes\n- Learner profile: thin assembly-coherence for overview/learning_purpose, knowledge_summary transport when LC/KM bound, full activity-linked materials (not placeholder-only)\n- Facilitator profile: run guidance and facilitation/logistics notes\n- Assessment profile: structured items section — do not flatten to prose\n- Record generation_notes.activities_omitted[] with activity_id, title, reason, authority for intentional omissions"
 }
 
 ```

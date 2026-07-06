@@ -7890,9 +7890,7 @@
             '  "Set of scenarios", "Set of short scenarios", "Calculation table", "Model showing", "Table linking",',
             '  "See provided scenarios", "Scenario set describing", "Table with basket items".',
             "- Require per activity when upstream provides them: concrete scenarios (named cases with context/numbers), worked examples with visible steps, learner-completion templates with blank cells, assessment items with stems/options, and prompts/support_note content in materials when upstream supplied.",
-            "- page_profile learner: substantive session overview in overview/learning_purpose — not summary-only activity.materials.",
-            "- If activity_materials live in a separate upstream section, embed them into each activity.materials; do not leave materials empty while describing resources elsewhere.",
-            "- source_basis paths in visual_affordances cite upstream evidence; citing a path does not satisfy the materials requirement."
+            "- If activity_materials live in a separate upstream section, embed them into each activity.materials; do not leave materials empty while describing resources elsewhere."
           ]);
         } else if (role === "author" || role === "gam") {
           lines = lines.concat([
@@ -10190,7 +10188,6 @@
       step_construct_learning_sequence: true,
       step_design_learning_activities: true,
       step_generate_activity_materials: true,
-      step_design_page: true,
       step_design_assessment: true,
       step_generate_assessment_items: true,
       step_design_feedback: true
@@ -10342,8 +10339,7 @@
       "",
       "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):",
       "- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | Layers: L0–L3 page compose, L5 field preservation | Read-only assembly — do not redesign pedagogy.",
-      "- MATERIALS FIDELITY (compose): visual_affordances[] are additive page-root metadata only.",
-      "- L4 preserve (embedded):"
+      "- MATERIALS FIDELITY (compose): copy activity.materials.* verbatim from upstream activity_materials (no paraphrase, shorten, summarise, or rewrite); L4 preserve embed:",
     ];
     if (includeFieldPreservation) {
       lines.push(
@@ -10401,26 +10397,17 @@
       resolved,
       base
     );
-    var facilitated = isFacilitatedLearnerPageFramingContext(context, resolved, base);
     var next = draftBody;
     if (!ldDesignPageComposeAlreadyPresent(draftBody)) {
-      var composeOpts = {
-        // Design Page is always a read-only composition layer for activity fields.
-        includeFieldPreservation: true,
-        includeAuthorialExposition: false
-      };
-      if (includeLearnerPageFraming) {
-        composeOpts.includeAuthorialExposition = true;
-        composeOpts.authorialExpositionBlock = buildLdAuthorialExpositionPromptBlock({
-          facilitated: facilitated
-        });
-      }
-      next = (draftBody + buildLdDesignPageComposePromptBlock(composeOpts)).trim();
-    } else if (includeLearnerPageFraming) {
-      next = applyLdAuthorialExpositionContractToDraft(next, context, facilitated);
+      next = (
+        draftBody +
+        buildLdDesignPageComposePromptBlock({
+          includeFieldPreservation: true,
+          includeAuthorialExposition: false
+        })
+      ).trim();
     }
     if (includeLearnerPageFraming) {
-      next = applyLdJourneyAssimilationContractToDraft(next, context, facilitated);
       next = applyLdGuidedLearningScaffoldContractToDraft(next, context);
     }
     return next;
@@ -10670,15 +10657,7 @@
   }
 
   function applySprint38VisualAffordanceContractToDraft(draftText, context) {
-    var draftBody = String(draftText || "").trim();
-    if (!isWorkflowStepDesignPage(context)) return draftBody;
-    if (/sprint 38 pedagogical added-value contract \(auto-applied\)/i.test(draftBody)) {
-      return draftBody;
-    }
-    if (/sprint 38 visual affordance authoring contract \(auto-applied\)/i.test(draftBody)) {
-      return (draftBody + buildSprint38PedagogicalAddedValuePromptLines().join("\n")).trim();
-    }
-    return (draftBody + buildSprint38VisualAffordanceDesignPagePromptBlock()).trim();
+    return String(draftText || "").trim();
   }
 
   function isWorkflowStepDesignPage(context) {
@@ -11374,7 +11353,7 @@
     );
     var applyLearnerActionRhetoric =
       shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) &&
-      (isDla || isDesignPage || isGam || isAssessmentProducer);
+      (isDla || isGam || isAssessmentProducer);
     if (
       !applySelfDirectedDlaMaterialShape &&
       !applyLearnerPageActivityFraming &&
@@ -15982,16 +15961,44 @@
     };
   }
 
+  var DESIGN_PAGE_BREVITY_REFINEMENT_FACTOR_IDS = {
+    tone_style: true,
+    depth_level: true,
+    compact_vs_detailed: true
+  };
+
+  function filterDesignPageBrevityRefinementProfile(profile) {
+    if (!profile) return null;
+    function stripIds(ids) {
+      return (Array.isArray(ids) ? ids : []).filter(function (id) {
+        return !DESIGN_PAGE_BREVITY_REFINEMENT_FACTOR_IDS[String(id || "")];
+      });
+    }
+    var requiredIds = stripIds(profile.requiredIds);
+    var optionalIds = stripIds(profile.optionalIds);
+    if (!requiredIds.length && !optionalIds.length) return null;
+    return {
+      profileId: profile.profileId,
+      requiredIds: requiredIds,
+      optionalIds: optionalIds,
+      questionTextById: profile.questionTextById,
+      parseHintsById: profile.parseHintsById,
+      optionalOptInPrompt: profile.optionalOptInPrompt
+    };
+  }
+
   function resolveAssessmentRefinementProfile(config) {
     return resolveRefinementProfile(config, "assessment_pack");
   }
 
   function resolveDesignPageRefinementProfile(config) {
-    return resolveRefinementProfile(config, "design_page");
+    return filterDesignPageBrevityRefinementProfile(resolveRefinementProfile(config, "design_page"));
   }
 
   function resolveLearnerPageRefinementProfile(config) {
-    return resolveRefinementProfile(config, "learner_page_pack");
+    return filterDesignPageBrevityRefinementProfile(
+      resolveRefinementProfile(config, "learner_page_pack")
+    );
   }
 
   function getActiveRefinementQuestionOverride(factorId) {
@@ -38888,7 +38895,6 @@
         if (!next.metadata || typeof next.metadata !== "object") next.metadata = {};
         next.metadata.sequencing_interaction_metadata_rows = sequencingTouchedNoCognition;
       }
-      next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
       next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
       next = applyComposedPageGamMaterialsPreserve(next, opts);
       return applyComposedPageEpisodePlansPreserve(next, opts);
@@ -38947,19 +38953,14 @@
       next.generation_notes = {};
     }
     next.generation_notes.cognition_composition = trace;
-    next = applySprint38VisualAffordancesToComposedPage(next, { strictValidation: true });
     next = applySelfDirectedLearnerPageActivityRowSanitizationToComposedPage(next, opts);
     next = applyComposedPageGamMaterialsPreserve(next, opts);
     return applyComposedPageEpisodePlansPreserve(next, opts);
   }
 
   function applySprint38VisualAffordancesToComposedPage(page, options) {
-    var mod =
-      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
-        ? PRISM_SPRINT38_VISUAL_AFFORDANCES
-        : null;
-    if (!mod || typeof mod.applyToComposedPage !== "function") return page;
-    return mod.applyToComposedPage(page, options);
+    // Sprint 56C W1 P3: Design Page does not run post-compose VA authoring or normalisation.
+    return page && typeof page === "object" ? page : page;
   }
 
   function collectComposedActivityIdsFromPage(page) {

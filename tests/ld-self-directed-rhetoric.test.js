@@ -51,10 +51,40 @@ test("49-C3b: DLA rhetoric retains field authoring guidance", () => {
   assert.match(text, /intellectual_coherence_bridge and cognition-orientation field definitions/i);
 });
 
-test("LD-SELF-DIRECTED-RHETORIC: design_page role rider includes journey assimilation", () => {
-  const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
-  assert.match(text, /Journey assimilation/i);
-  assert.match(text, /LD-JOURNEY-ASSIMILATION/i);
+test("56C: lib design_page rhetoric rider retained for evaluators but not DP runtime injection", () => {
+  const libText = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
+  assert.match(libText, /Design Page rider/i);
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const vm = require("node:vm");
+  const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
+  const repoRoot = path.resolve(__dirname, "..");
+  const sandbox = { console, setTimeout, clearTimeout, Promise };
+  const documentStub = { readyState: "loading", addEventListener: () => {} };
+  const windowStub = { document: documentStub };
+  sandbox.document = documentStub;
+  sandbox.window = windowStub;
+  windowStub.window = windowStub;
+  vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot);
+  vm.runInContext(fs.readFileSync(path.join(repoRoot, "app.js"), "utf8"), sandbox, {
+    filename: "app.js"
+  });
+  const api = sandbox.window.__PRISM_TEST_API;
+  const runtimePrompt = api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    {
+      canonical_step_id: "step_design_page",
+      canonical_title: "Design Page",
+      title: "Design Page"
+    },
+    {
+      goal: "Self-directed study page.",
+      desiredOutputs: "Learner-facing page",
+      workflowOutputSpec: { goal: "Self-directed study page." }
+    }
+  );
+  assert.doesNotMatch(runtimePrompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
 });
 
 test("LD-SELF-DIRECTED-RHETORIC: design_page role rider", () => {

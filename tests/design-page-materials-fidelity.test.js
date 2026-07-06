@@ -282,7 +282,7 @@ test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbi
   assert.match(augmented, /Material bodies are hard constraints/i);
   assert.match(augmented, /OPAQUE PAYLOAD TRANSPORT/i);
   assert.match(augmented, /transport, not authoring/i);
-  assert.match(augmented, /AUTHORABLE VS ARCHIVAL FIELDS/i);
+  assert.match(augmented, /TRANSPORT VS ARCHIVAL FIELDS/i);
   assert.match(augmented, /AUTHORITATIVE GAM CONTENT BINDING/i);
   assert.match(augmented, /MULTI-MATERIAL ENUMERATION INVARIANT/i);
   assert.match(augmented, /PRE-EMIT ENUMERATION VALIDATION/i);
@@ -303,18 +303,19 @@ test("Design Page learner page_profile does not bias materials summarisation", (
   const learner = factory.userOptions.find((o) => o.id === "page_profile").choices.find(
     (c) => c.value === "learner"
   );
-  assert.match(learner.promptInstruction, /session overview/i);
+  assert.match(learner.promptInstruction, /thin assembly-coherence/i);
   assert.match(learner.promptInstruction, /never summary-only or placeholder-only materials/i);
 });
 
-test("Design Page runtime augmentation orders compose contract before Sprint 38 visual affordance", () => {
+test("56C W1: Design Page runtime augmentation excludes Sprint 38 VA prompt block", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
   const composeIdx = augmented.search(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  const vaIdx = augmented.search(/sprint 38 visual affordance authoring contract \(auto-applied\)/i);
   assert.ok(composeIdx >= 0, "compose contract must be present");
-  assert.ok(vaIdx >= 0, "Sprint 38 VA contract must be present");
-  assert.ok(composeIdx < vaIdx, "compose contract must precede visual affordance block");
+  assert.doesNotMatch(
+    augmented,
+    /sprint 38 visual affordance authoring contract \(auto-applied\)/i
+  );
 });
 
 test("Design Page runtime augmentation includes compose contract with L4 preserve embed", () => {
@@ -330,10 +331,10 @@ test("Design Page runtime augmentation includes compose contract with L4 preserv
   assert.match(augmented, /38H-3/i);
   assert.match(augmented, /table-adjunct/i);
   assert.doesNotMatch(augmented, /LD-MATERIALS-COPY \(auto-applied\)/i);
-  assert.match(augmented, /additive page-root metadata only/i);
+  assert.match(augmented, /MATERIALS FIDELITY \(compose\)/i);
+  assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(augmented, /Set of scenarios/i);
-  assert.match(augmented, /generated figures only/i);
-  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.doesNotMatch(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
 test("Sprint 38 runtime block states affordances are additive to materials", () => {

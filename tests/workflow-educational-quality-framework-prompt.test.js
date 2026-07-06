@@ -104,14 +104,14 @@ test("41-1: Construct Learning Sequence receives EQF marker", () => {
   assert.match(prompt, /learner journey/i);
 });
 
-test("41-1: Design Page receives EQF marker", () => {
+test("56C: Design Page excludes EQF marker (transport-first CP-4)", () => {
   const prompt = applyRuntimePrompt(
     "Assemble the learner page.\n",
     "step_design_page",
     "Design Page"
   );
-  assert.match(prompt, EQF_MARKER);
-  assert.match(prompt, /learning success/i);
+  assert.doesNotMatch(prompt, EQF_MARKER);
+  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
 test("41-1: Design Assessment receives EQF marker", () => {
@@ -191,16 +191,22 @@ test("41-2: Generate Activity Materials includes preserve judgement and avoid pr
   assert.match(prompt, /not add interaction.*for its own sake/i);
 });
 
-test("41-2: Design Page includes semantic guidance vs activities distinction without literal columns", () => {
+test("56C: Design Page EQF manifestation not resolved and not appended at runtime", () => {
+  const dpCtx = stepContext("step_design_page", "Design Page");
+  const dlaCtx = stepContext("step_design_learning_activities", "Design Learning Activities");
+  const dpLines = eqfLib.buildEducationalQualityFrameworkManifestationLines(dpCtx);
+  const dlaLines = eqfLib.buildEducationalQualityFrameworkManifestationLines(dlaCtx);
+  assert.equal(dpLines.length, 0);
+  assert.ok(dlaLines.length > 0);
+  assert.equal(eqfLib.isEducationalQualityFrameworkTargetStep(dpCtx), false);
+  assert.equal(eqfLib.isEducationalQualityFrameworkTargetStep(dlaCtx), true);
   const prompt = applyRuntimePrompt(
     "Assemble the learner page.\n",
     "step_design_page",
     "Design Page"
   );
-  assert.match(prompt, /learning guidance and learning activities semantically distinct/i);
-  assert.match(prompt, /not a literal two-column layout requirement/i);
-  assert.match(prompt, /expected outputs, completion evidence and reflective closure/i);
-  assert.match(prompt, /do not turn it into heavy extra tasks/i);
+  assert.doesNotMatch(prompt, /learning guidance and learning activities semantically distinct/i);
+  assert.doesNotMatch(prompt, EQF_MARKER);
 });
 
 test("41-2: Design Assessment includes justification and judgement evidence guidance", () => {

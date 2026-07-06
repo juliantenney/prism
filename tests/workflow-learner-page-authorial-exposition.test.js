@@ -96,25 +96,45 @@ function designPagePrompt(brief) {
   return api.applyLdDesignPageComposeContractToDraft("Assemble learner page.\n", ctx);
 }
 
-test("42-2: self-study Design Page includes authorial exposition contract", () => {
+function designPageRuntimePrompt(brief) {
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  const wf = {
+    goal: brief.goal,
+    desiredOutputs: brief.desiredOutputs,
+    workflowOutputSpec: { goal: brief.goal }
+  };
+  return api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    step,
+    wf
+  );
+}
+
+test("56C: Design Page compose path excludes authorial exposition injection", () => {
   const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
-  assert.match(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /RHETORICAL ROLE SEPARATION/i);
-  assert.match(prompt, /PRESERVATION BOUNDARY/i);
-  assert.match(prompt, /Explanation before task/i);
-  assert.match(prompt, /Activity field preservation/i);
+  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
-test("42-2: workshop learner handout includes workshop voice guidance", () => {
+test("56C: workshop learner handout Design Page excludes authorial exposition injection", () => {
   const prompt = designPagePrompt(WORKSHOP_LEARNER_HANDOUT_BRIEF);
-  assert.match(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
-  assert.match(prompt, /No facilitator choreography/i);
-  assert.match(prompt, /collaborative inquiry/i);
+  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
 });
 
-test("42-2: facilitator-only Design Page excludes authorial exposition", () => {
-  const prompt = designPagePrompt(FACILITATOR_ONLY_BRIEF);
-  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
+test("56C: all Design Page briefs exclude authorial exposition on runtime path", () => {
+  for (const brief of [
+    MARX_SELF_STUDY_BRIEF,
+    WORKSHOP_LEARNER_HANDOUT_BRIEF,
+    FACILITATOR_ONLY_BRIEF
+  ]) {
+    const prompt = designPageRuntimePrompt(brief);
+    assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
+  }
 });
 
 test("42-2: preservation repair still restores activity_preamble after compose path", () => {

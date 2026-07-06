@@ -195,13 +195,15 @@ test("assessment_pack: required tier is empty; type/count are optional only", ()
   assert.ok(optional.includes("difficulty_profile"));
 });
 
-test("design_page: no learner_level; page_profile optional only", () => {
+test("design_page: page_profile optional only (no brevity refinement factors)", () => {
   const p = profiles.design_page;
   assert.deepEqual(profileTierFactorIds(p, "required"), []);
   const optional = profileTierFactorIds(p, "optional");
   assert.ok(!optional.includes("learner_level"));
   assert.ok(optional.includes("page_profile"));
-  assert.ok(optional.includes("tone_style"));
+  assert.ok(!optional.includes("tone_style"));
+  assert.ok(!optional.includes("depth_level"));
+  assert.ok(!optional.includes("compact_vs_detailed"));
 });
 
 test("learner_page_pack: mirrors design_page thinning", () => {
@@ -212,17 +214,16 @@ test("learner_page_pack: mirrors design_page thinning", () => {
   assert.ok(optional.includes("page_profile"));
 });
 
-test("mappingRules still map thinned profile factors to Settings paths", () => {
+test("mappingRules: brevity factors detached from Design Page shaping paths", () => {
   const mapped = mappingRuleFactors(briefConfig);
-  [
-    "learner_level",
-    "assessment_type",
-    "assessment_total_items",
-    "page_profile",
-    "tone_style",
-    "depth_level"
-  ].forEach((id) => {
+  ["page_profile", "learner_level", "assessment_type", "assessment_total_items"].forEach((id) => {
     assert.ok(mapped.includes(id), `mappingRules should include ${id}`);
+  });
+  ["tone_style", "depth_level", "compact_vs_detailed"].forEach((factorId) => {
+    const rule = (briefConfig.mappingRules || []).find((r) => r.factor === factorId);
+    const targets = rule && Array.isArray(rule.mapsTo) ? rule.mapsTo : [];
+    assert.ok(!targets.some((t) => /stepParams\.step_design_page\./.test(t)), factorId);
+    assert.ok(!targets.some((t) => /workflow\.workflowOutputSpec\.constraints\./.test(t)), factorId);
   });
 });
 

@@ -87,33 +87,43 @@ function designPagePrompt(brief) {
   return api.applyLdDesignPageComposeContractToDraft("Assemble learner page.\n", ctx);
 }
 
-test("42-6: self-study Design Page includes journey assimilation contract", () => {
-  const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
-  const idx = prompt.indexOf("LD-JOURNEY-ASSIMILATION-CONTRACT (auto-applied):");
-  const journeyBlock = idx >= 0 ? prompt.slice(idx) : prompt;
-  assert.match(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
-  assert.match(journeyBlock, /UPSTREAM SIGNALS/i);
-  assert.match(journeyBlock, /transition_to_next/i);
-  assert.match(journeyBlock, /Question → Investigation → Evidence → Judgement/i);
-  assert.match(journeyBlock, /wrapper\/page-level prose/i);
-  assert.match(journeyBlock, /LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY/i);
-  assert.doesNotMatch(
-    journeyBlock,
-    /wrapper prose \(overview, learning_purpose, knowledge_summary, study_tips, activity_preamble, intellectual_coherence_bridge\)/i
+function designPageRuntimePrompt(brief) {
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  const wf = {
+    goal: brief.goal,
+    desiredOutputs: brief.desiredOutputs,
+    workflowOutputSpec: { goal: brief.goal }
+  };
+  return api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    step,
+    wf
   );
-  assert.doesNotMatch(journeyBlock, /inform preamble\/bridge phrasing/i);
-});
+}
 
-test("42-6: self-study Design Page retains authorial exposition contract", () => {
+test("56C: Design Page compose path excludes journey assimilation injection", () => {
   const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
-  assert.match(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /RHETORICAL ROLE SEPARATION/i);
-  assert.match(prompt, /Activity field preservation/i);
+  assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
-test("42-6: facilitator-only Design Page excludes journey assimilation", () => {
-  const prompt = designPagePrompt(FACILITATOR_ONLY_BRIEF);
-  assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT/i);
+test("56C: Design Page runtime path excludes journey and authorial exposition injection", () => {
+  const prompt = designPageRuntimePrompt(MARX_SELF_STUDY_BRIEF);
+  assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
+});
+
+test("56C: all Design Page briefs exclude journey assimilation on compose path", () => {
+  for (const brief of [MARX_SELF_STUDY_BRIEF, FACILITATOR_ONLY_BRIEF]) {
+    const prompt = designPagePrompt(brief);
+    assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT/i);
+  }
 });
 
 test("42-6: applyLdJourneyAssimilationContractToDraft is idempotent", () => {
@@ -130,16 +140,17 @@ test("42-6: applyLdJourneyAssimilationContractToDraft is idempotent", () => {
   assert.equal(once, twice);
 });
 
-test("42-6: domain pack Design Page template references journey assimilation and LC/KM", () => {
+test("56C: domain pack Design Page template is transport-first (no journey assimilation mandate)", () => {
   const md = fs.readFileSync(ldPatternsPath, "utf8");
   const dpSection = md.slice(md.indexOf("## 13. Design Page"));
   const factory = JSON.parse(
     dpSection.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/)[1].trim()
   );
-  assert.match(dpSection, /LD-JOURNEY-ASSIMILATION/);
   assert.match(dpSection, /learning_content, knowledge_model/);
-  assert.match(factory.promptTemplate, /LD-JOURNEY-ASSIMILATION/);
-  assert.match(factory.defaultPromptNotes, /LD-JOURNEY-ASSIMILATION/);
+  assert.doesNotMatch(factory.promptTemplate, /LD-JOURNEY-ASSIMILATION/);
+  assert.doesNotMatch(factory.defaultPromptNotes, /LD-JOURNEY-ASSIMILATION/);
+  assert.match(factory.defaultPromptNotes, /Transport-first/i);
+  assert.match(factory.promptTemplate, /transport slots/i);
 });
 
 test("42-6: preservation repair still restores activity_preamble after compose path", () => {

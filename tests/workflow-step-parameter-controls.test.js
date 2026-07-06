@@ -136,7 +136,7 @@ test("resolveWorkflowStepParameterValue uses stored params over default", () => 
 test("LD pack defines stepParameterControls for core LD workflow steps", () => {
   const config = loadLdWorkflowBriefConfig();
   assert.ok(Array.isArray(config.stepParameterControls));
-  assert.equal(config.stepParameterControls.length, 39);
+  assert.equal(config.stepParameterControls.length, 37);
   const keys = config.stepParameterControls.map((c) => `${c.canonicalStepId}.${c.key}`);
   assert.ok(keys.includes("step_design_page.page_profile"));
   assert.ok(keys.includes("step_normalize_content.structure_mode"));
@@ -163,7 +163,7 @@ test("getWorkflowStepParameterControlsFromBriefConfig loads LD pilot controls", 
   const api = loadPrismTestApi();
   const config = loadLdWorkflowBriefConfig();
   const controls = api.getWorkflowStepParameterControlsFromBriefConfig(config);
-  assert.equal(controls.length, 39);
+  assert.equal(controls.length, 37);
   const numberControl = controls.find(
     (c) => c.canonicalStepId === "step_generate_assessment_items" && c.key === "number_of_items"
   );
@@ -211,9 +211,17 @@ test("mergeWorkflowStepParamValueMap and upsertWorkflowStepParamBlock persist va
 
 test("select options are preserved through normalization", () => {
   const api = loadPrismTestApi();
-  const config = loadLdWorkflowBriefConfig();
-  const tone = config.stepParameterControls.find((c) => c.key === "tone_style");
-  const normalized = api.normalizeWorkflowStepParameterControl(tone);
+  const toneControl = Object.assign({}, sampleSelect, {
+    key: "tone_style",
+    label: "Tone / style",
+    options: [
+      { value: "formal", label: "Formal" },
+      { value: "friendly", label: "Friendly" },
+      { value: "academic", label: "Academic" },
+      { value: "conversational", label: "Conversational" }
+    ]
+  });
+  const normalized = api.normalizeWorkflowStepParameterControl(toneControl);
   assert.ok(normalized.options.length >= 4);
   const values = normalized.options.map((o) => o.value);
   assert.ok(values.includes("academic"));
@@ -492,11 +500,11 @@ test("resolveWorkflowSettingsParamLabel prefers pack metadata with fallback", ()
   const config = loadLdWorkflowBriefConfig();
   assert.equal(
     api.resolveWorkflowSettingsParamLabel(
-      "tone_style",
+      "page_profile",
       "step_design_page",
       config
     ),
-    "Tone / style"
+    "Page profile"
   );
   assert.equal(
     api.resolveWorkflowSettingsParamLabel(

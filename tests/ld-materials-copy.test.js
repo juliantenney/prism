@@ -38,13 +38,20 @@ test("LD-MATERIALS-COPY: opaque payload forbidden transforms", () => {
   assert.doesNotMatch(text, /concrete scenarios \(named cases with context/i);
 });
 
-test("LD-MATERIALS-COPY: authorable vs archival fields", () => {
+test("LD-MATERIALS-COPY: transport vs archival fields", () => {
   const text = materialsCopy.buildLdMaterialsCopyPromptBlock({
     role: "preserve",
     includeMarker: false
   });
-  assert.match(text, /AUTHORABLE VS ARCHIVAL FIELDS/i);
-  assert.match(text, /Archival \(not authorable\): learning_activities\.content\[\]\.materials\.\*/i);
+  assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
+  assert.match(text, /Archival \(verbatim GAM payload only\): learning_activities\.content\[\]\.materials\.\*/i);
+  assert.match(text, /upstream body or omit; not authored here/i);
+  assert.match(text, /thin assembly-coherence or upstream transport only/i);
+  assert.doesNotMatch(text, /Authorable:/i);
+  assert.doesNotMatch(text, /authored only here/i);
+  assert.doesNotMatch(text, /interpret, connect, and explain materials/i);
+  assert.doesNotMatch(text, /substantive session overview/i);
+  assert.doesNotMatch(text, /source_basis paths in visual_affordances/i);
   assert.match(text, /Do not modify materials for coherence, readability, page flow/i);
   assert.match(text, /PRE-EMIT VALIDATION/i);
   assert.match(text, /not model-authored/i);

@@ -201,7 +201,7 @@ test("applyToComposedPage: drops invalid and sets schema version", () => {
   assert.ok(next.generation_notes.visual_affordance_validation.dropped_count >= 1);
 });
 
-test("integration: applyPedagogicCognitionSemantics preserves valid affordances on inflation page", () => {
+test("integration: applyPedagogicCognitionSemantics transports upstream affordances without VA post-compose", () => {
   const api = loadPrismTestApi();
   const base = JSON.parse(fs.readFileSync(inflationPagePath, "utf8"));
   const page = pageWithAffordances(
@@ -210,19 +210,16 @@ test("integration: applyPedagogicCognitionSemantics preserves valid affordances 
     inflationReview
   );
   const upstream = base.sections.find((s) => s.section_id === "learning_activities").content;
+  delete page.visual_affordance_schema_version;
   const next = api.applyPedagogicCognitionSemanticsToComposedPage(page, {
     upstreamLearningActivities: upstream
   });
-  assert.equal(next.visual_affordance_schema_version, "38.4");
-  assert.ok(Array.isArray(next.activities_visual_review));
-  assert.equal(next.activities_visual_review.length, 2);
+  assert.equal(next.visual_affordance_schema_version, undefined);
   assert.equal(next.visual_affordances.length, 2);
   const a2 = s38.findAffordance(next, (r) => r.activity_id === "A2");
   assert.equal(a2.visual_decision, "generate");
-  assert.equal(a2.purpose, "distinction");
   const a5 = s38.findAffordance(next, (r) => r.activity_id === "A5");
   assert.equal(a5.visual_decision, "reject");
-  assert.equal(a5.rejection_reason, "debrief_without_new_reasoning");
 });
 
 test("integration: climate page affordances survive compose pass", () => {
@@ -279,26 +276,24 @@ function extractDesignPagePromptFactory(md) {
   return JSON.parse(section[1].trim());
 }
 
-test("Design Page pack lists visual affordance output keys", () => {
-  const pack = fs.readFileSync(ldPatternsPath, "utf8");
-  assert.match(pack, /visual_affordance_schema_version/);
-  assert.match(pack, /activities_visual_review/);
-  assert.match(pack, /visual_affordances/);
-  assert.match(pack, /VISUAL AFFORDANCES:/i);
+test("56C: Design Page pack does not require visual affordance output keys", () => {
+  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
+  const keys = factory.defaultOutputStructure.keys;
+  assert.ok(!keys.includes("visual_affordance_schema_version"));
+  assert.ok(!keys.includes("activities_visual_review"));
+  assert.ok(!keys.includes("visual_affordances"));
 });
 
-test("Design Page promptTemplate: Sprint 38 runtime reference and mandatory root keys", () => {
+test("56C: Design Page promptTemplate omits mandatory Sprint 38 VA output", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const template = String(factory.promptTemplate || "");
-  assert.match(template, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
-  assert.match(template, /runtime Sprint 38 visual affordance contract/i);
-  assert.doesNotMatch(template, /hooks are not opportunities/i);
-  assert.match(template, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
-  assert.match(template, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
-  assert.match(template, /visual_affordances \(required array; emit \[\] when no decisions/i);
+  assert.doesNotMatch(template, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
+  assert.doesNotMatch(template, /runtime Sprint 38 visual affordance contract/i);
+  assert.doesNotMatch(template, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
+  assert.match(template, /omit visual_affordance_schema_version/i);
 });
 
-test("Design Page seeded prompt includes Sprint 38 runtime reference and output keys", () => {
+test("56C: Design Page seeded prompt omits mandatory VA output keys", () => {
   const api = loadPrismTestApi();
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const prompt = api.buildSeededStepPromptForWorkflowStep({
@@ -316,9 +311,9 @@ test("Design Page seeded prompt includes Sprint 38 runtime reference and output 
     },
     matchedPattern: { promptFactory: factory }
   });
-  assert.match(prompt, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
-  assert.match(prompt, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
-  assert.match(prompt, /visual_affordances \(required array; emit \[\] when no decisions/i);
+  assert.doesNotMatch(prompt, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
+  assert.doesNotMatch(prompt, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
+  assert.match(prompt, /omit visual_affordance_schema_version/i);
 });
 
 function designPageAugmentedPrompt(api) {
@@ -339,26 +334,13 @@ function designPageAugmentedPrompt(api) {
   );
 }
 
-test("Design Page runtime augmentation includes Sprint 38 authoring contract and examples", () => {
+test("56C: Design Page runtime augmentation excludes Sprint 38 VA authoring contract", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
   assert.match(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(augmented, /additive page-root metadata only/i);
-  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
-  assert.match(augmented, /Sprint 38 pedagogical added-value contract \(auto-applied\)/i);
-  assert.match(augmented, /pedagogical_added_value/i);
-  assert.match(augmented, /Example generate record/i);
-  assert.match(augmented, /"affordance_id": "va-A3-classification-01"/);
-  assert.match(augmented, /Example reject record/i);
-  assert.match(augmented, /"rejection_reason": "assessment_text_sufficient"/);
-  assert.match(augmented, /Example defer record/i);
-  assert.match(augmented, /"defer_reason": "worked_example_sufficient_first"/);
-  assert.match(augmented, /anti_spoiler and requires_exact_data_match are JSON booleans/i);
-  assert.match(augmented, /tier \(generate only\): essential or valuable only/i);
-  assert.match(augmented, /representation_avoid \(generate only\): use only allow-listed tokens/i);
-  assert.match(augmented, /never prose labels such as "simple list"/i);
-  assert.match(augmented, /generate rows must include: affordance_id, activity_id, visual_decision, rationale, visual_slot/i);
-  assert.match(augmented, /hooks are not opportunities/i);
+  assert.doesNotMatch(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.doesNotMatch(augmented, /Page root \(mandatory\): visual_affordance_schema_version/i);
+  assert.doesNotMatch(augmented, /Example generate record/i);
 });
 
 test("buildSprint38VisualAffordanceDesignPagePromptBlock includes valid JSON examples", () => {
@@ -437,7 +419,7 @@ test("applyToComposedPage: empty arrays still set schema version at root", () =>
   assert.deepEqual(next.visual_affordances, []);
 });
 
-test("integration: compose pass preserves empty visual affordance root keys", () => {
+test("integration: compose pass does not inject empty visual affordance root keys", () => {
   const api = loadPrismTestApi();
   const base = JSON.parse(fs.readFileSync(inflationPagePath, "utf8"));
   delete base.visual_affordance_schema_version;
@@ -447,11 +429,9 @@ test("integration: compose pass preserves empty visual affordance root keys", ()
   const next = api.applyPedagogicCognitionSemanticsToComposedPage(base, {
     upstreamLearningActivities: upstream
   });
-  assert.equal(next.visual_affordance_schema_version, "38.4");
-  assert.ok(Array.isArray(next.activities_visual_review));
-  assert.equal(next.activities_visual_review.length, 0);
-  assert.ok(Array.isArray(next.visual_affordances));
-  assert.equal(next.visual_affordances.length, 0);
+  assert.equal(next.visual_affordance_schema_version, undefined);
+  assert.equal(next.activities_visual_review, undefined);
+  assert.equal(next.visual_affordances, undefined);
 });
 
 test("applyToComposedPage: invalid affordance reported in generation_notes limitations", () => {

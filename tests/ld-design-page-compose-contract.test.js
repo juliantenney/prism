@@ -41,7 +41,6 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: materials bridge without duplicate module
       includeMarker: false
     })
   });
-  assert.match(text, /additive page-root metadata only/i);
   assert.match(text, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(text, /LD-MATERIALS-COPY \| Layer: L4/i);
   assert.match(text, /Preserve role \(Design Page\)/i);
@@ -68,22 +67,20 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: field preservation optional", () => {
   assert.doesNotMatch(withoutFields, /Activity field preservation/i);
 });
 
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references LD-AUTHORIAL-EXPOSITION sibling", () => {
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references active L4 compose modules only", () => {
   const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /LD-AUTHORIAL-EXPOSITION/i);
-});
-
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references LD-JOURNEY-ASSIMILATION sibling", () => {
-  const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /LD-JOURNEY-ASSIMILATION/i);
-});
-
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: references sibling modules without inlining bodies", () => {
-  const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /LD-SELF-DIRECTED-RHETORIC/i);
+  assert.match(text, /LD-MATERIALS-COPY/i);
+  assert.match(text, /LD-TABLE-FIDELITY/i);
   assert.match(text, /LD-MATH-RENDER/i);
-  assert.match(text, /Sprint 38 visual/i);
-  assert.match(text, /additive page-root metadata only/i);
+  assert.match(text, /LD-GUIDED-LEARNING-SCAFFOLD compose preservation/i);
+  assert.doesNotMatch(text, /LD-JOURNEY-ASSIMILATION/i);
+  assert.doesNotMatch(text, /LD-AUTHORIAL-EXPOSITION/i);
+  assert.doesNotMatch(text, /LD-SELF-DIRECTED-RHETORIC/i);
+  assert.doesNotMatch(text, /Sprint 38 visual/i);
+});
+
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: sibling modules not inlined", () => {
+  const text = compose.buildLdDesignPageComposePromptBlock();
   assert.doesNotMatch(text, /Example generate record/i);
 });
 
@@ -100,10 +97,14 @@ test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: portable episode_plans schema in compose 
   assert.match(text, /without requiring workflow captures or session state/i);
 });
 
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: authorable vs archival pointer before materials embed", () => {
+test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: transport vs archival pointer before materials embed", () => {
   const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /AUTHORABLE VS ARCHIVAL FIELDS/i);
+  assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
   assert.match(text, /materials\.\* is archival only/i);
+  assert.match(text, /transport upstream body when LC\/KM provides one/i);
+  assert.match(text, /thin assembly-coherence only/i);
+  assert.doesNotMatch(text, /is authorable/i);
+  assert.doesNotMatch(text, /visual_affordance descriptions/i);
   assert.match(text, /PRE-EMIT VALIDATION/i);
 });
 

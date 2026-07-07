@@ -8197,6 +8197,319 @@
     return null;
   }
 
+  function resolvePageShellCreateLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_SHELL_CREATE) {
+        return roots[i].PRISM_PAGE_SHELL_CREATE;
+      }
+    }
+    return null;
+  }
+
+  function resolvePageDlaEnrichLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_DLA_ENRICH) {
+        return roots[i].PRISM_PAGE_DLA_ENRICH;
+      }
+    }
+    return null;
+  }
+
+  function resolveLdDlaPageEnrichContractLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_DLA_PAGE_ENRICH_CONTRACT) {
+        return roots[i].PRISM_LD_DLA_PAGE_ENRICH_CONTRACT;
+      }
+    }
+    return null;
+  }
+
+  function resolveActiveWorkflowForEpisodePlanDerive(wf) {
+    if (wf && typeof wf === "object" && Array.isArray(wf.steps)) return wf;
+    return findWorkflowById(String(state.selectedWorkflowId || "").trim());
+  }
+
+  function isPageEnrichmentV2WorkflowEnabled(wf) {
+    var shellMod = resolvePageShellCreateLib();
+    if (!shellMod) return false;
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    if (workflow && workflow.pageEnrichmentV2 === false) return false;
+    if (
+      workflow &&
+      workflow.workflowOutputSpec &&
+      workflow.workflowOutputSpec.pageEnrichmentV2 === false
+    ) {
+      return false;
+    }
+    if (
+      workflow &&
+      typeof shellMod.isPageEnrichmentV2Enabled === "function" &&
+      shellMod.isPageEnrichmentV2Enabled(workflow)
+    ) {
+      return true;
+    }
+    return true;
+  }
+
+  function resolveEpisodePlanUpstreamBindingArtifactName(wf) {
+    return isPageEnrichmentV2WorkflowEnabled(wf) ? "page" : "episode_plans";
+  }
+
+  function getDesignEpisodePlanEffectiveOutputName(step, wf) {
+    if (!isWorkflowStepDesignEpisodePlanRow(step)) return "";
+    if (isPageEnrichmentV2WorkflowEnabled(wf)) {
+      return "page";
+    }
+    return String(step && step.outputName != null ? step.outputName : "").trim();
+  }
+
+  function buildEpisodePlanV2CopilotSchemaInstructions() {
+    var shellMod = resolvePageShellCreateLib();
+    var canonical =
+      shellMod && typeof shellMod.buildCanonicalShellShapeSnippet === "function"
+        ? shellMod.buildCanonicalShellShapeSnippet()
+        : "";
+    return [
+      "",
+      "### Sprint 56F vNext page shell (required output shape)",
+      "",
+      "Read learning_outcomes from STEP N OUTPUT: learning_outcomes in this Copilot conversation.",
+      "Derive frozen Episode Plan V1 per outcome (archetypes: understand | apply | analyse | evaluate only; approved FunctionEnum beats only).",
+      'Emit one page artefact with schema_version "2.0.0" — not a bare { episode_plans } container.',
+      'Required top-level keys: artifact_type "page", schema_version "2.0.0", title, audience, page_profile, assembly_state, page_synthesis {}, activities[], learning_outcomes[], episode_plans[], source_artefacts[], generation_notes { validation }.',
+      'assembly_state must include enriched_by: ["episode_plan"] and current_stage: "episode_plan".',
+      "Each activities[] row: activity_id, title, learner_task, expected_output, activity_preamble (all three DLA shell fields must be em dash \u2014 until DLA — never empty strings), required_materials [], materials [], episode_plan { archetype, beats[] }.",
+      "page_profile must be an object { profile_type } — never a bare string.",
+      "source_artefacts[] must be structured objects { artefact_type, source_label, role } — never a string array.",
+      "Do NOT write sections[]. Do NOT invent DLA pedagogy fields or GAM material bodies.",
+      canonical ? "" : null,
+      canonical || null
+    ]
+      .filter(function (line) {
+        return line != null;
+      })
+      .join("\n");
+  }
+
+  function buildAuthoritativePageShellEmbedSectionForEpisodePlanCopy(wf) {
+    var json = deriveDesignEpisodePlanCaptureJson(wf);
+    if (!json || !String(json).trim()) return "";
+    return [
+      "",
+      "### Authoritative Sprint 56F page shell (PRISM-derived — return verbatim)",
+      "",
+      "PRISM derived the vNext page artefact from upstream learning_outcomes. Do NOT invent, replan beats, or change activity_ids. Return this JSON verbatim inside one fenced ```json block. Do not omit top-level fields.",
+      "",
+      "```json",
+      String(json).trim(),
+      "```"
+    ].join("\n");
+  }
+
+  function getDesignDlaEffectiveOutputName(step, wf) {
+    if (
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPageEnrichmentV2WorkflowEnabled(wf)
+    ) {
+      return "page";
+    }
+    return String(step && step.outputName != null ? step.outputName : "").trim();
+  }
+
+  function applyPageEnrichmentV2StepNormalization(steps, wf) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    if (!isPageEnrichmentV2WorkflowEnabled(wf)) return steps;
+    return steps.map(function (row) {
+      if (isWorkflowStepDesignEpisodePlanRow(row)) {
+        var epNext = Object.assign({}, row);
+        epNext.outputName = "page";
+        return epNext;
+      }
+      if (
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        var dlaNext = Object.assign({}, row);
+        dlaNext.outputName = "page";
+        return dlaNext;
+      }
+      return row;
+    });
+  }
+
+  function validateDlaOrPageCapture(parsed, baseline) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (
+      String(parsed.schema_version || "") === "2.0.0" &&
+      String(parsed.artifact_type || "") === "page" &&
+      dlaMod &&
+      typeof dlaMod.validateDlaEnrichedPage === "function"
+    ) {
+      if (
+        parsed.assembly_state &&
+        parsed.assembly_state.current_stage === "dla"
+      ) {
+        return dlaMod.validateDlaEnrichedPage(parsed, baseline || null);
+      }
+      var shellMod = resolvePageShellCreateLib();
+      if (
+        shellMod &&
+        typeof shellMod.validatePageShellAgainstVNextSchema === "function" &&
+        (!parsed.assembly_state || parsed.assembly_state.current_stage === "episode_plan")
+      ) {
+        return shellMod.validatePageShellAgainstVNextSchema(parsed);
+      }
+      return dlaMod.validateDlaEnrichedPage(parsed, baseline || null);
+    }
+    if (Array.isArray(parsed.activities) || parsed.learning_activities) {
+      return { ok: true, legacy: true, errors: [] };
+    }
+    return { ok: false, errors: ["unrecognized DLA capture shape"] };
+  }
+
+  function resolvePageShellJsonForDlaCopy(wf) {
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var pageHit = resolveUpstreamWorkflowArtefactFromCaptures("page", { workflow: workflow });
+    if (
+      pageHit &&
+      String(pageHit.schema_version || "") === "2.0.0" &&
+      String(pageHit.artifact_type || "") === "page"
+    ) {
+      var shellCheck = validateEpisodePlanOrPageShellCapture(pageHit);
+      if (shellCheck.ok) {
+        try {
+          return JSON.stringify(pageHit, null, 2);
+        } catch (_) {}
+      }
+    }
+    return deriveDesignEpisodePlanCaptureJson(workflow);
+  }
+
+  function buildDlaV2CopilotSchemaInstructions() {
+    var contractMod = resolveLdDlaPageEnrichContractLib();
+    var contract =
+      contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function"
+        ? contractMod.buildDlaPageEnrichContractBlock()
+        : "";
+    var canonical =
+      contractMod && typeof contractMod.buildCanonicalDlaPageShapeSnippet === "function"
+        ? contractMod.buildCanonicalDlaPageShapeSnippet()
+        : "";
+    return [contract, canonical].filter(Boolean).join("\n");
+  }
+
+  function buildUpstreamPageShellEmbedSectionForDlaCopy(wf) {
+    var json = resolvePageShellJsonForDlaCopy(wf);
+    if (!json || !String(json).trim()) {
+      return [
+        "",
+        "### Upstream page shell (Design Episode Plan — required input)",
+        "",
+        "Locate STEP N OUTPUT: page from Design Episode Plan in this Copilot conversation. Enrich that vNext page in place — do not emit a standalone learning_activities artefact."
+      ].join("\n");
+    }
+    return [
+      "",
+      "### Upstream page shell (Design Episode Plan — enrich in place)",
+      "",
+      "Input: the vNext page artefact below from Design Episode Plan. Output: the SAME page object enriched by DLA. Preserve activity_ids, episode_plan beats, and learning_outcomes. Replace em dash placeholders and populate required_materials[]. Do not write materials bodies or page_synthesis.",
+      "",
+      "```json",
+      String(json).trim(),
+      "```"
+    ].join("\n");
+  }
+
+  function deriveDesignLearningActivitiesCaptureJson(wf) {
+    if (!isPageEnrichmentV2WorkflowEnabled(wf)) return "";
+    var shellJson = deriveDesignEpisodePlanCaptureJson(wf);
+    if (!shellJson || !String(shellJson).trim()) return "";
+    var shellMod = resolvePageShellCreateLib();
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (!shellMod || !dlaMod || typeof dlaMod.enrichPageWithDla !== "function") return "";
+    var shell = tryParseWorkflowArtefactJson(shellJson);
+    if (!shell) return "";
+    var shellCheck = shellMod.validatePageShellAgainstVNextSchema(shell);
+    if (!shellCheck.ok) return "";
+    try {
+      var enriched = dlaMod.enrichPageWithDla(shell);
+      var dlaCheck = dlaMod.validateDlaEnrichedPage(enriched, shell);
+      if (!dlaCheck.ok) return "";
+      return JSON.stringify(enriched, null, 2);
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function validateEpisodePlanOrPageShellCapture(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    if (String(parsed.schema_version || "") === "2.0.0" && String(parsed.artifact_type || "") === "page") {
+      var shellMod = resolvePageShellCreateLib();
+      if (shellMod && typeof shellMod.validatePageShellAgainstVNextSchema === "function") {
+        return shellMod.validatePageShellAgainstVNextSchema(parsed);
+      }
+    }
+    return validateEpisodePlansCaptureV1(parsed);
+  }
+
+  function buildPageShellOptionsFromWorkflow(wf, learningOutcomes) {
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var briefCtx = resolveWorkflowBriefContextForPageComposition({
+      workflowId: workflow && workflow.id ? workflow.id : ""
+    });
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = briefCtx && briefCtx.base && typeof briefCtx.base === "object" ? briefCtx.base : {};
+    var profileType = utilityFirstPresent([
+      resolved.page_profile,
+      resolved.profile_type,
+      "learner"
+    ]);
+    return {
+      title: utilityFirstPresent([
+        resolved.page_title,
+        resolved.title,
+        base.goal,
+        workflow && workflow.goal,
+        workflow && workflow.name,
+        "Learning page"
+      ]),
+      audience: utilityFirstPresent([resolved.audience, resolved.learner_audience, "Learners"]),
+      page_profile: { profile_type: profileType || "learner" },
+      learning_outcomes: learningOutcomes,
+      workflow: workflow
+    };
+  }
+
   function resolveEpisodePlanV1ValidationLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -8280,7 +8593,7 @@
         ? rawOrParsed
         : tryParseWorkflowArtefactJson(rawOrParsed);
     if (!parsed) return false;
-    var check = validateEpisodePlansCaptureV1(parsed);
+    var check = validateEpisodePlanOrPageShellCapture(parsed);
     return !!check.ok;
   }
 
@@ -8295,16 +8608,16 @@
     }
   }
 
-  function applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, stepId) {
+  function applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, stepId, wf) {
     if (!stepRow || !isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       return raw;
     }
     var rawTrim = String(raw || "").trim();
-    var derived = deriveDesignEpisodePlanCaptureJson();
+    var derived = deriveDesignEpisodePlanCaptureJson(wf);
     if (derived) {
       var derivedParsed = tryParseWorkflowArtefactJson(derived);
       var derivedCheck = derivedParsed
-        ? validateEpisodePlansCaptureV1(derivedParsed)
+        ? validateEpisodePlanOrPageShellCapture(derivedParsed)
         : { ok: false, errors: [] };
       if (derivedCheck.ok) {
         var changed = rawTrim && !episodePlanCaptureJsonEquivalent(rawTrim, derived);
@@ -8316,7 +8629,7 @@
               state.workflowRunEpisodePlanValidation[stepId] =
                 "EP-V1: replaced non-JSON capture with deterministic derive from learning_outcomes";
             } else {
-              var rawCheck = validateEpisodePlansCaptureV1(parsedRaw);
+              var rawCheck = validateEpisodePlanOrPageShellCapture(parsedRaw);
               if (!rawCheck.ok) {
                 state.workflowRunEpisodePlanValidation[stepId] =
                   "EP-V1: replaced invalid capture with canonical deriveEpisodePlansFromLearningOutcomes() — " +
@@ -8337,7 +8650,9 @@
       }
     }
     var parsed = tryParseWorkflowArtefactJson(rawTrim);
-    var check = parsed ? validateEpisodePlansCaptureV1(parsed) : { ok: false, errors: ["EP-V1: invalid JSON"] };
+    var check = parsed
+      ? validateEpisodePlanOrPageShellCapture(parsed)
+      : { ok: false, errors: ["EP-V1: invalid JSON"] };
     if (check.ok) {
       if (stepId && state.workflowRunEpisodePlanValidation) {
         delete state.workflowRunEpisodePlanValidation[stepId];
@@ -8373,6 +8688,26 @@
     if (!trimmed) return "";
     var parsed = tryParseWorkflowArtefactJson(trimmed);
     if (parsed) {
+      if (
+        String(parsed.schema_version || "") === "2.0.0" &&
+        String(parsed.artifact_type || "") === "page"
+      ) {
+        var shellCheck = validateEpisodePlanOrPageShellCapture(parsed);
+        if (shellCheck.ok) {
+          try {
+            return JSON.stringify(parsed, null, 2);
+          } catch (_) {}
+        }
+      }
+      var normalized = normalizeEpisodePlansCaptureForPopulation(parsed);
+      if (normalized) {
+        var normalizedCheck = validateEpisodePlansCaptureV1(normalized);
+        if (normalizedCheck.ok) {
+          try {
+            return JSON.stringify(normalized, null, 2);
+          } catch (_) {}
+        }
+      }
       var check = validateEpisodePlansCaptureV1(parsed);
       if (check.ok) {
         try {
@@ -8426,7 +8761,13 @@
         );
       } else if (artKey === "episode_plans") {
         lines.push(
-          "  Populate portable episode_plans schema from that output only; copy beats and archetypes verbatim — do not replan."
+          isPageEnrichmentV2WorkflowEnabled()
+            ? "  Locate STEP N OUTPUT: page from Design Episode Plan. Use page.episode_plans[] and activities[].episode_plan verbatim — do not replan beats or archetypes."
+            : "  Populate portable episode_plans schema from that output only; copy beats and archetypes verbatim — do not replan."
+        );
+      } else if (artKey === "page") {
+        lines.push(
+          "  Sprint 56F progressive enrichment page artefact. Preserve schema_version, activities[], episode_plans[], and assembly_state. Enrich only fields owned by this step — do not replan episode_plan beats."
         );
       } else if (artKey === "learning_activities") {
         lines.push(
@@ -8447,21 +8788,37 @@
       if (options.requireUpstream) {
         return [
           "",
-          "### Upstream episode_plans (required — not embedded)",
+          isPageEnrichmentV2WorkflowEnabled()
+            ? "### Upstream page / episode_plans (required — not embedded)"
+            : "### Upstream episode_plans (required — not embedded)",
           "",
-          "Upstream `episode_plans` capture is not embedded in this copied prompt.",
-          "Continue normally and use the authoritative episode_plans already available in conversational/workflow context (do not re-plan beats).",
-          "Do not emit PF-11 solely because this prompt block omits an inline episode_plans JSON embed."
+          isPageEnrichmentV2WorkflowEnabled()
+            ? "Upstream Design Episode Plan output is not embedded in this copied prompt."
+            : "Upstream `episode_plans` capture is not embedded in this copied prompt.",
+          isPageEnrichmentV2WorkflowEnabled()
+            ? "Locate STEP N OUTPUT: page from Design Episode Plan in this Copilot conversation. Use page.episode_plans[] and activities[].episode_plan as authoritative beat order — do not re-plan."
+            : "Continue normally and use the authoritative episode_plans already available in conversational/workflow context (do not re-plan beats).",
+          "Do not emit PF-11 solely because this prompt block omits an inline JSON embed."
         ].join("\n");
       }
       return "";
     }
+    var embedPayload = episodePlans;
+    if (
+      isPageEnrichmentV2WorkflowEnabled() &&
+      String(episodePlans.schema_version || "") !== "2.0.0" &&
+      Array.isArray(episodePlans.episode_plans)
+    ) {
+      embedPayload = { episode_plans: episodePlans.episode_plans };
+    }
     var lines = [
       "",
-      "### Upstream episode_plans (authoritative — populate only; do not replan beats)",
+      isPageEnrichmentV2WorkflowEnabled()
+        ? "### Upstream page / episode_plans (authoritative — populate only; do not replan beats)"
+        : "### Upstream episode_plans (authoritative — populate only; do not replan beats)",
       "",
       "```json",
-      JSON.stringify(episodePlans, null, 2),
+      JSON.stringify(embedPayload, null, 2),
       "```"
     ];
     if (episodePlans.source === "learning_outcomes_fallback_non_canonical") {
@@ -8476,8 +8833,8 @@
   function deriveDesignEpisodePlanCaptureJson(wf) {
     var mod = resolveEpisodePlanDlaIntegrationLib();
     if (!mod || typeof mod.deriveEpisodePlansFromLearningOutcomes !== "function") return "";
-    var wfOpts =
-      wf && typeof wf === "object" && Array.isArray(wf.steps) ? { workflow: wf } : {};
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var wfOpts = workflow ? { workflow: workflow } : {};
     var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", wfOpts);
     if (!learningOutcomes) return "";
     var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(learningOutcomes);
@@ -8486,6 +8843,26 @@
         ? mod.assertEpisodePlansContainerGate(episodePlans)
         : { ok: true, errors: [] };
     if (!gate.ok) return "";
+    if (isPageEnrichmentV2WorkflowEnabled(workflow)) {
+      var shellMod = resolvePageShellCreateLib();
+      if (
+        shellMod &&
+        typeof shellMod.createPageShellFromEpisodePlan === "function" &&
+        typeof shellMod.validatePageShellAgainstVNextSchema === "function"
+      ) {
+        try {
+          var shell = shellMod.createPageShellFromEpisodePlan(
+            episodePlans,
+            buildPageShellOptionsFromWorkflow(workflow, learningOutcomes)
+          );
+          var shellCheck = shellMod.validatePageShellAgainstVNextSchema(shell);
+          if (!shellCheck.ok) return "";
+          return JSON.stringify(shell, null, 2);
+        } catch (_) {
+          return "";
+        }
+      }
+    }
     try {
       return JSON.stringify(episodePlans, null, 2);
     } catch (_) {
@@ -8503,7 +8880,7 @@
     if (!isRun) return;
     var outArea = li.querySelector('[data-field="runStepOutput"]');
     if (!outArea) return;
-    var derived = deriveDesignEpisodePlanCaptureJson();
+    var derived = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derived) return;
     var existing = String(outArea.value || "").trim();
     if (existing && episodePlanCaptureJsonEquivalent(existing, derived)) return;
@@ -8516,24 +8893,45 @@
     var draftBody = String(draftText || "").trim();
     if (!isWorkflowStepDesignLearningActivities(context)) return draftBody;
     syncAllWorkflowRunCapturesFromDomToState();
-    var block = buildEpisodePlanDlaPopulationPromptBlock();
     var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
-    var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: workflow });
-    var requireUpstream = workflowHasDesignEpisodePlanStep(workflow);
-    if (requireUpstream && !episodePlans) {
-      emitPf11DlaUpstreamDiagnosticTrace(context, workflow, {
-        reason: "applyEpisodePlanDlaPopulationPromptBlockToDraft"
-      });
-    }
-    var upstreamSection = buildEpisodePlanUpstreamPromptSection(episodePlans, {
-      requireUpstream: requireUpstream
-    });
     var appendParts = [];
-    if (block && !/episode plan population contract \(38s-3/i.test(draftBody)) {
-      appendParts.push(block);
-    }
-    if (upstreamSection && !draftHasAuthoritativeEpisodePlansUpstreamSection(draftBody)) {
-      appendParts.push(upstreamSection);
+    if (isPageEnrichmentV2WorkflowEnabled(workflow)) {
+      var contractMod = resolveLdDlaPageEnrichContractLib();
+      if (contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function") {
+        var v2Block = contractMod.buildDlaPageEnrichContractBlock();
+        if (v2Block && !/Sprint 56F vNext DLA enrich-in-place contract/i.test(draftBody)) {
+          appendParts.push(v2Block);
+        }
+      }
+      if (
+        contractMod &&
+        typeof contractMod.buildCanonicalDlaPageShapeSnippet === "function" &&
+        !/Canonical DLA-enriched activity shape/i.test(draftBody)
+      ) {
+        appendParts.push(contractMod.buildCanonicalDlaPageShapeSnippet());
+      }
+      var pageEmbed = buildUpstreamPageShellEmbedSectionForDlaCopy(workflow);
+      if (pageEmbed && !/### Upstream page shell \(Design Episode Plan/i.test(draftBody)) {
+        appendParts.push(pageEmbed);
+      }
+    } else {
+      var block = buildEpisodePlanDlaPopulationPromptBlock();
+      var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: workflow });
+      var requireUpstream = workflowHasDesignEpisodePlanStep(workflow);
+      if (requireUpstream && !episodePlans) {
+        emitPf11DlaUpstreamDiagnosticTrace(context, workflow, {
+          reason: "applyEpisodePlanDlaPopulationPromptBlockToDraft"
+        });
+      }
+      var upstreamSection = buildEpisodePlanUpstreamPromptSection(episodePlans, {
+        requireUpstream: requireUpstream
+      });
+      if (block && !/episode plan population contract \(38s-3/i.test(draftBody)) {
+        appendParts.push(block);
+      }
+      if (upstreamSection && !draftHasAuthoritativeEpisodePlansUpstreamSection(draftBody)) {
+        appendParts.push(upstreamSection);
+      }
     }
     if (!appendParts.length) return draftBody;
     return (draftBody + "\n" + appendParts.join("\n")).trim();
@@ -9201,6 +9599,16 @@
       diagnostic: diagnostic
     });
     var episodePlansRaw = diagnostic ? upstreamHit && upstreamHit.parsed : upstreamHit;
+    if (!episodePlansRaw && isPageEnrichmentV2WorkflowEnabled(wf)) {
+      var pageHit = resolveUpstreamWorkflowArtefactFromCaptures("page", {
+        workflow: wf,
+        diagnostic: diagnostic
+      });
+      if (pageHit) {
+        upstreamHit = pageHit;
+        episodePlansRaw = diagnostic ? pageHit.parsed : pageHit;
+      }
+    }
     var episodePlans = normalizeEpisodePlansCaptureForPopulation(episodePlansRaw);
     var validation = null;
     var primaryFailReason = "";
@@ -9315,13 +9723,49 @@
     if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
       return raw;
     }
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    if (isPageEnrichmentV2WorkflowEnabled(wf)) {
+      var dlaMod = resolvePageDlaEnrichLib();
+      if (!dlaMod || typeof dlaMod.normalizeDlaCaptureToPage !== "function") {
+        return raw;
+      }
+      var parsedV2 = tryParseWorkflowArtefactJson(raw);
+      if (!parsedV2) return raw;
+      var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(wf) || "");
+      var page =
+        String(parsedV2.artifact_type || "") === "page" &&
+        String(parsedV2.schema_version || "") === "2.0.0"
+          ? parsedV2
+          : dlaMod.normalizeDlaCaptureToPage(baseline, parsedV2);
+      if (!page) return raw;
+      var dlaCheck =
+        typeof dlaMod.validateDlaEnrichedPage === "function"
+          ? dlaMod.validateDlaEnrichedPage(page, baseline)
+          : { ok: true, errors: [] };
+      if (stepId) {
+        state.workflowRunDlaPageValidation = state.workflowRunDlaPageValidation || {};
+        if (!dlaCheck.ok) {
+          state.workflowRunDlaPageValidation[stepId] = (dlaCheck.errors || []).join("; ");
+          if (state.workflowRunStepCompleted[stepId]) {
+            delete state.workflowRunStepCompleted[stepId];
+          }
+        } else {
+          delete state.workflowRunDlaPageValidation[stepId];
+        }
+      }
+      if (!dlaCheck.ok) return raw;
+      try {
+        return JSON.stringify(page, null, 2);
+      } catch (_) {
+        return raw;
+      }
+    }
     var mod = resolveEpisodePlanDlaIntegrationLib();
     if (!mod || typeof mod.applyPopulationContractToLearningActivities !== "function") {
       return raw;
     }
     var parsed = tryParseWorkflowArtefactJson(raw);
     if (!parsed) return raw;
-    var wf = resolveWorkflowForUpstreamArtefacts({});
     var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: wf });
     if (!episodePlans) {
       if (stepId) {
@@ -9452,7 +9896,7 @@
       .replace(/\s+/g, "_");
   }
 
-  function resolveStrictJsonWorkflowStepKind(step) {
+  function resolveStrictJsonWorkflowStepKind(step, wf) {
     if (!step || typeof step !== "object") return "";
     var oname = normalizeWorkflowStepOutputNameKey(step);
     var canonicalId = normalizeCanonicalStepId(
@@ -9488,8 +9932,12 @@
     }
     if (
       oname === "episode_plans" ||
+      oname === "page" ||
       canonicalId === "step_design_episode_plan"
     ) {
+      if (isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(wf)) {
+        return "";
+      }
       return "episode_plans";
     }
     var title = String(step.title || "")
@@ -9502,6 +9950,9 @@
     if (title === "construct learning sequence") return "learning_sequence";
     if (title === "define learning outcomes") return "learning_outcomes";
     if (title === "design episode plan" || title.indexOf("episode plan") !== -1) {
+      if (isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(wf)) {
+        return "";
+      }
       return "episode_plans";
     }
     return "";
@@ -9516,8 +9967,14 @@
     return "Step";
   }
 
-  function validateStrictJsonWorkflowRunStepCapture(raw, step) {
-    var kind = resolveStrictJsonWorkflowStepKind(step);
+  function validateStrictJsonWorkflowRunStepCapture(raw, step, wf) {
+    var workflow =
+      wf && typeof wf === "object"
+        ? wf
+        : state.selectedWorkflowId
+        ? findWorkflowById(state.selectedWorkflowId)
+        : null;
+    var kind = resolveStrictJsonWorkflowStepKind(step, workflow);
     if (!kind) return { ok: true, skipped: true, errors: [] };
     var strictMod = resolveWorkflowArtefactJsonStrictLib();
     if (
@@ -9541,11 +9998,14 @@
     var draftBody = String(draftText || "").trim();
     var strictMod = resolveWorkflowArtefactJsonStrictLib();
     if (!strictMod || !context) return draftBody;
-    var kind = resolveStrictJsonWorkflowStepKind({
-      outputName: context.stepOutputName,
-      canonical_step_id: context.stepCanonicalStepId,
-      title: context.stepCanonicalTitle || context.stepTitle
-    });
+    var kind = resolveStrictJsonWorkflowStepKind(
+      {
+        outputName: context.stepOutputName,
+        canonical_step_id: context.stepCanonicalStepId,
+        title: context.stepCanonicalTitle || context.stepTitle
+      },
+      context.workflowId ? findWorkflowById(context.workflowId) : null
+    );
     if (kind === "knowledge_model") {
       if (
         typeof strictMod.buildStrictKnowledgeModelOutputContractBlock === "function" &&
@@ -17204,6 +17664,13 @@
     if (target === "episode_plans" && isWorkflowStepDesignEpisodePlanRow(step)) {
       return true;
     }
+    if (
+      target === "page" &&
+      isWorkflowStepDesignEpisodePlanRow(step) &&
+      isPageEnrichmentV2WorkflowEnabled({ steps: [step] })
+    ) {
+      return true;
+    }
     if (target === "learning_outcomes" && resolveStrictJsonWorkflowStepKind(step) === "learning_outcomes") {
       return true;
     }
@@ -17246,8 +17713,15 @@
     return null;
   }
 
-  function ensureEpisodePlanInputBindingsForSteps(steps) {
+  function ensureEpisodePlanInputBindingsForSteps(steps, wf) {
     if (!Array.isArray(steps) || !steps.length) return steps;
+    var wfResolved =
+      wf && typeof wf === "object"
+        ? wf
+        : state.selectedWorkflowId
+        ? findWorkflowById(state.selectedWorkflowId)
+        : null;
+    var upstreamArtifactName = resolveEpisodePlanUpstreamBindingArtifactName(wfResolved);
     var catalog = Array.isArray(state.workflowStepPatternCatalog)
       ? state.workflowStepPatternCatalog
       : [];
@@ -17272,16 +17746,17 @@
       var bindings = normalizeStepInputBindings(next.inputBindings || []);
       var hasEpBinding = bindings.some(function (b) {
         if (!b || b.kind !== "internal") return false;
+        var art = normalizeWorkflowArtefactBindingKey(b.artifactName);
         return (
           String(b.sourceStepId || "").trim() === epId &&
-          normalizeWorkflowArtefactBindingKey(b.artifactName) === "episode_plans"
+          (art === "episode_plans" || art === "page")
         );
       });
       if (!hasEpBinding) {
         bindings.push({
           kind: "internal",
           sourceStepId: epId,
-          artifactName: "episode_plans"
+          artifactName: upstreamArtifactName
         });
       }
       next.inputBindings = normalizeStepInputBindings(bindings);
@@ -17289,8 +17764,8 @@
     });
   }
 
-  function ensureDesignPageUpstreamBindingsForSteps(steps) {
-    var normalized = ensureEpisodePlanInputBindingsForSteps(steps);
+  function ensureDesignPageUpstreamBindingsForSteps(steps, wf) {
+    var normalized = ensureEpisodePlanInputBindingsForSteps(steps, wf);
     if (!Array.isArray(normalized) || !normalized.length) return normalized;
     var gamStep = findWorkflowStepRowByIdentity(normalized, function (row) {
       return isWorkflowStepGenerateActivityMaterials({
@@ -20212,12 +20687,12 @@
       stepRow = buildWorkflowStepRowFromRunLi(li, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
-      var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid);
+      var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid, wf);
       if (enforcedRaw !== raw) {
         ta.value = enforcedRaw;
         raw = enforcedRaw;
       } else if (raw) {
-        var epCheck = validateEpisodePlansCaptureV1(tryParseWorkflowArtefactJson(raw));
+        var epCheck = validateEpisodePlanOrPageShellCapture(tryParseWorkflowArtefactJson(raw));
         if (!epCheck.ok) {
           state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
           state.workflowRunEpisodePlanValidation[sid] = (epCheck.errors || []).join("; ");
@@ -25383,7 +25858,13 @@
     step = backfillWorkflowStepCatalogMetadata(step, catalog, null);
     var wfForChain = resolveWorkflowForUpstreamArtefacts({});
     var lines = [];
-    var outName = String(step && step.outputName != null ? step.outputName : "").trim();
+    var outName = getDesignEpisodePlanEffectiveOutputName(step, wfForChain);
+    if (!outName) {
+      outName = getDesignDlaEffectiveOutputName(step, wfForChain);
+    }
+    if (!outName) {
+      outName = String(step && step.outputName != null ? step.outputName : "").trim();
+    }
     var stepNumForFooter =
       typeof index === "number" && !isNaN(index) && index >= 0 ? Math.floor(index) + 1 : 1;
     var exactFooterLine = outName
@@ -25399,14 +25880,67 @@
     );
     if (isWorkflowStepDesignEpisodePlanRow(step)) {
       lines.push("");
-      lines.push(
-        "Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes()."
-      );
-      lines.push(
-        "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
-      );
+      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+        lines.push(
+          "Deterministic step (Sprint 56F): PRISM derives the vNext page shell (schema_version 2.0.0) from upstream learning_outcomes. Do NOT invent episode plans with an LLM. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum."
+        );
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        var shellMod = resolvePageShellCreateLib();
+        if (shellMod && typeof shellMod.buildCanonicalShellShapeSnippet === "function") {
+          lines.push("");
+          lines.push(shellMod.buildCanonicalShellShapeSnippet());
+        }
+        var shellEmbed = buildAuthoritativePageShellEmbedSectionForEpisodePlanCopy(wfForChain);
+        if (shellEmbed) {
+          lines.push(shellEmbed);
+        } else {
+          lines.push(buildEpisodePlanV2CopilotSchemaInstructions());
+        }
+      } else {
+        lines.push(
+          "Deterministic step (38S V1): Do NOT invent episode plans with an LLM. PRISM auto-derives frozen Episode Plan V1 from upstream learning_outcomes in Run mode. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum (e.g. explanation, worked_thinking, guided_practice, verification, transfer). Non-V1 taxonomy is rejected and replaced with canonical deriveEpisodePlansFromLearningOutcomes()."
+        );
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+        );
+      }
+    } else if (
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      lines.push("");
+      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+        lines.push(
+          "Sprint 56F DLA enrich-in-place: read the vNext page artefact from Design Episode Plan and return the SAME page enriched by DLA. Do NOT emit a standalone learning_activities artefact. Do NOT write materials bodies, page_synthesis, or sections[]."
+        );
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        var dlaContract = buildDlaV2CopilotSchemaInstructions();
+        if (dlaContract) {
+          lines.push("");
+          lines.push(dlaContract);
+        }
+        var pageShellEmbed = buildUpstreamPageShellEmbedSectionForDlaCopy(wfForChain);
+        if (pageShellEmbed) {
+          lines.push(pageShellEmbed);
+        }
+      } else {
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+        );
+      }
     } else {
-      var strictJsonKindForCopy = resolveStrictJsonWorkflowStepKind(step);
+      var strictJsonKindForCopy = resolveStrictJsonWorkflowStepKind(step, wfForChain);
       if (strictJsonKindForCopy) {
         lines.push("");
         lines.push(
@@ -25494,7 +26028,7 @@
           if (!String(cap || "").trim()) {
             return;
           }
-          if (normalizeWorkflowArtefactBindingKey(art) === "episode_plans") {
+          if (normalizeWorkflowArtefactBindingKey(art) === "episode_plans" || artKey === "page") {
             cap = formatEpisodePlansCaptureForPromptEmbed(cap);
           } else if (
             artKey === "activity_materials" ||
@@ -25529,7 +26063,7 @@
     var wfForPrompt = resolveWorkflowForUpstreamArtefacts({});
     var resolvedPrompt = resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
-    var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step);
+    var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
     if (promptBody && strictJsonKindForBody) {
       // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
       // The authoritative footer contract is appended later with an exact literal line.
@@ -25942,7 +26476,9 @@
       normalizedSteps[index] = s;
     });
 
-    normalizedSteps = ensureDesignPageUpstreamBindingsForSteps(normalizedSteps);
+    normalizedSteps = ensureDesignPageUpstreamBindingsForSteps(normalizedSteps, wf);
+    var wfForV2 = Object.assign({}, wf, { steps: normalizedSteps });
+    normalizedSteps = applyPageEnrichmentV2StepNormalization(normalizedSteps, wfForV2);
 
     wf.workflowInputs = Array.isArray(wf.workflowInputs)
       ? wf.workflowInputs
@@ -42435,6 +42971,17 @@
     prismTestApi.isWorkflowStepDesignEpisodePlan = isWorkflowStepDesignEpisodePlan;
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
     prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
+    prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
+    prismTestApi.validateEpisodePlanOrPageShellCapture = validateEpisodePlanOrPageShellCapture;
+    prismTestApi.deriveDesignLearningActivitiesCaptureJson = deriveDesignLearningActivitiesCaptureJson;
+    prismTestApi.validateDlaOrPageCapture = validateDlaOrPageCapture;
+    prismTestApi.buildDlaV2CopilotSchemaInstructions = buildDlaV2CopilotSchemaInstructions;
+    prismTestApi.buildUpstreamPageShellEmbedSectionForDlaCopy =
+      buildUpstreamPageShellEmbedSectionForDlaCopy;
+    prismTestApi.resolvePageDlaEnrichLib = resolvePageDlaEnrichLib;
+    prismTestApi.getDesignDlaEffectiveOutputName = getDesignDlaEffectiveOutputName;
+    prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
+    prismTestApi.resolvePageShellCreateLib = resolvePageShellCreateLib;
     prismTestApi.buildEpisodePlanUpstreamPromptSection = buildEpisodePlanUpstreamPromptSection;
     prismTestApi.buildPf11DlaUpstreamDiagnosticTrace = buildPf11DlaUpstreamDiagnosticTrace;
     prismTestApi.emitPf11DlaUpstreamDiagnosticTrace = emitPf11DlaUpstreamDiagnosticTrace;

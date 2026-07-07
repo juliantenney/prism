@@ -76,8 +76,8 @@ They provide a consistent way to structure workflows and ensure that learning de
     "dependencies": {
       "Model Knowledge": { "requiresAnyOf": ["normalized_content", "learning_content"], "produces": ["knowledge_model"] },
       "Define Learning Outcomes": { "requires": ["knowledge_model"], "produces": ["learning_outcomes"] },
-      "Design Episode Plan": { "requires": ["learning_outcomes"], "produces": ["episode_plans"] },
-      "Design Learning Activities": { "requires": ["learning_outcomes", "episode_plans"], "produces": ["learning_activities"] },
+      "Design Episode Plan": { "requires": ["learning_outcomes"], "produces": ["page"] },
+      "Design Learning Activities": { "requires": ["learning_outcomes", "page"], "produces": ["learning_activities"] },
       "Generate Activity Materials": { "requires": ["learning_activities"], "produces": ["activity_materials", "session_materials"] },
       "Design Page": { "requiresAnyOf": ["knowledge_model", "activity_materials", "assessment_items", "learning_sequence", "learning_content"], "optionalRequires": ["learning_outcomes", "learning_activities", "activity_materials", "episode_plans", "learning_sequence", "assessment_items", "feedback_pack", "marking_rubric", "assessment_blueprint"], "produces": ["page"] },
       "Generate Slide Deck": { "requires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence"], "produces": ["slide_deck"] },
@@ -2519,10 +2519,10 @@ learning_outcomes
 Generation
 
 ### Input
-learning_outcomes, episode_plans (and optionally knowledge_model or learning_content)
+learning_outcomes, page (Sprint 56F vNext path) or episode_plans (legacy), and optionally knowledge_model or learning_content
 
 ### Output
-learning_activities
+page (Sprint 56F vNext enrich-in-place path) or learning_activities (legacy opt-out when pageEnrichmentV2: false)
 
 ### Purpose
 - Populate learning_activities obligations from upstream episode_plans
@@ -3221,10 +3221,11 @@ Deterministic derive
 learning_outcomes
 
 ### Output
-episode_plans
+page (Sprint 56F vNext shell; includes top-level `episode_plans[]` and `activities[]`)
 
 ### Purpose
 - Derive frozen Episode Plan V1 (archetype + ordered instructional-function beats) from learning outcomes
+- Create the progressive-enrichment page shell (`schema_version: "2.0.0"`) for downstream DLA/GAM/finalise stages
 - Persist authoritative beat order for downstream DLA population — do not replan in DLA
 
 ### Aliases
@@ -3240,14 +3241,14 @@ episode_plans
   "executionMode": "deterministic_derive",
   "structureStyle": "schema_structured",
   "canonical_step_id": "step_design_episode_plan",
-  "promptTemplate": "Deterministic step (38S V1): PRISM derives episode_plans from upstream learning_outcomes in Run mode. Do NOT invent episode plans with an LLM.\n\nArchetypes (frozen): understand | apply | analyse | evaluate only.\nBeat functions: approved FunctionEnum (explanation, worked_thinking, guided_practice, verification, transfer, etc.).\n\nNon-V1 taxonomy is rejected and replaced with deriveEpisodePlansFromLearningOutcomes().\n\nOutput requirements:\n- Return ONLY one markdown fenced JSON block (triple-backtick json fence) — no prose, headings, or commentary before the fence.\n- After the closing fence, emit exactly one plain-text runner footer line: STEP N OUTPUT: episode_plans\n- Pretty-print JSON with 2-space indentation and line breaks (never minified single-line JSON).\n- Top-level key: episode_plans (array).\n- Each entry: activity_id, episode_plan { archetype, beats[] { function } }.\n- Emit complete valid JSON only — do not truncate mid-object.",
+  "promptTemplate": "Deterministic step (Sprint 56F): PRISM derives the vNext page shell (schema_version 2.0.0) from upstream learning_outcomes. Do NOT invent episode plans with an LLM.\n\nArchetypes (frozen): understand | apply | analyse | evaluate only.\nBeat functions: approved FunctionEnum (explanation, worked_thinking, guided_practice, verification, transfer, etc.).\n\nOutput requirements:\n- Return ONLY one markdown fenced JSON block (triple-backtick json fence) — no prose, headings, or commentary before the fence.\n- After the closing fence, emit exactly one plain-text runner footer line: STEP N OUTPUT: page\n- Pretty-print JSON with 2-space indentation and line breaks (never minified single-line JSON).\n- Emit artifact_type \"page\", schema_version \"2.0.0\", page_synthesis {}, activities[], episode_plans[], assembly_state.enriched_by includes \"episode_plan\".\n- page_profile must be an object: { \"profile_type\": \"learner\" } — never a bare string.\n- source_artefacts[] must be structured objects: [{ \"artefact_type\": \"learning_outcomes\", \"source_label\": \"Learning Outcomes\", \"role\": \"structural\" }] — never a string array.\n- Each activities[] row: activity_id, title, learner_task \"—\", expected_output \"—\", activity_preamble \"—\" (all three DLA shell fields must be em dash — never empty strings), required_materials [], materials [], episode_plan { archetype, beats[] }.\n- Do NOT write sections[]. Emit complete valid JSON only — do not truncate mid-object.",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Deterministic derive only — Run mode auto-fills canonical episode_plans from learning_outcomes. Archetypes: understand|apply|analyse|evaluate. Do not replan beats in DLA.",
+  "defaultPromptNotes": "Sprint 56F: deterministic page shell from learning_outcomes. Copilot returns STEP N OUTPUT: page. Archetypes: understand|apply|analyse|evaluate. Do not replan beats in DLA.",
   "runnerInstructions": {
-    "what_this_step_does": "This step derives frozen Episode Plan V1 from learning outcomes for downstream population."
+    "what_this_step_does": "This step derives the Sprint 56F vNext page shell and frozen Episode Plan V1 from learning outcomes for downstream enrichment."
   },
   "defaultOutputStructure": {
-    "keys": ["episode_plans"]
+    "keys": ["artifact_type", "schema_version", "title", "audience", "page_profile", "assembly_state", "page_synthesis", "activities", "episode_plans", "learning_outcomes", "source_artefacts", "generation_notes"]
   }
 }
 ```

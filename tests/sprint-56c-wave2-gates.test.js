@@ -180,11 +180,12 @@ test("56C W2.5: domain §13 R-83 delimiter excludes payload optimisation mandate
   const factory = JSON.parse(factoryMatch[1].trim());
   assert.match(factory.defaultPromptNotes, /R-83 readable assembly \(guardrail\)/i);
   assert.match(factory.defaultPromptNotes, /forbids condensation/i);
-  assert.match(factory.runnerInstructions.what_this_step_does, /R-83 structural delimiters only/i);
+  assert.match(factory.runnerInstructions.what_this_step_does, /archival copy-only payloads/i);
   assert.match(factory.promptTemplate, /READABLE ASSEMBLY \(R-83 guardrail/i);
+  assert.match(factory.promptTemplate, /wrapper\/container structure only/i);
   assert.match(factory.promptTemplate, /forbids condensation/i);
   assert.match(factory.promptTemplate, /readability rewriting/i);
-  assert.match(factory.promptTemplate, /self-contained, well-structured page artefact/i);
+  assert.match(factory.promptTemplate, /self-contained page container/i);
   assert.doesNotMatch(factory.promptTemplate, /Assemble one readable, self-contained page/i);
   assert.doesNotMatch(section13, /### Purpose[\s\S]*?readable page artefact/i);
 });

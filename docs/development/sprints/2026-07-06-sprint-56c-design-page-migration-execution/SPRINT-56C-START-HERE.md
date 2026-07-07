@@ -22,6 +22,7 @@
 | **56A** | **Complete** — architecture investigation |
 | **56B** | **Complete** — CP-4 approved; CP-5 plan complete |
 | **56C** | **Complete** — [closure summary](SPRINT-56C-CLOSURE-SUMMARY.md) |
+| **56D** | **Active** — [material preservation fix](../2026-07-06-sprint-56d-design-page-material-preservation/SPRINT-56D-START-HERE.md) |
 | **57** | **Reserved** — future roadmap; not part of Design Page migration |
 
 ### Sprint 56C wave status
@@ -76,6 +77,8 @@ Sprint 56C executes migration **waves 1–4**. It does not reopen architecture d
 | **2** | Boundary refactor — thin bridge + R-83 delimiter | **Closed** — [closure summary](SPRINT-56C-WAVE-2-CLOSURE-SUMMARY.md) |
 | **3** | Validation preparation — OQ-24, OQ-25 | **Closed** — [closure summary](SPRINT-56C-WAVE-3-CLOSURE-SUMMARY.md) |
 | **4** | Architecture compliance review | **Closed** — [final audit](SPRINT-56C-WAVE-4-FINAL-COMPLIANCE-AUDIT.md) |
+
+**Successor:** [Sprint 56D — Material Preservation Fix](../2026-07-06-sprint-56d-design-page-material-preservation/SPRINT-56D-START-HERE.md) (implementation/debugging; 56C architecture frozen)
 
 Detail: implementation plan §5.
 

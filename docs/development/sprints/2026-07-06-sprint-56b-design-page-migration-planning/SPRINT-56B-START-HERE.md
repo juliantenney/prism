@@ -6,7 +6,7 @@
 **Date opened:** 2026-07-06  
 **Date closed:** 2026-07-06  
 **Predecessor:** [Sprint 56A](../2026-07-06-sprint-56a-design-page-simplification-planning/SPRINT-56A-CLOSURE-REPORT.md) (closed)  
-**Successor:** [Sprint 56C](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md) (migration execution)
+**Successor:** [Sprint 56C](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md) (completed) · [Sprint 56D](../2026-07-06-sprint-56d-design-page-material-preservation/SPRINT-56D-START-HERE.md) (active)
 
 ---
 
@@ -16,7 +16,8 @@
 | ------ | ------ |
 | **56A** | **Complete** |
 | **56B** | **Complete** |
-| **56C** | **Ready to begin** — [execution entry](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-START-HERE.md) |
+| **56C** | **Complete** — [execution closure](../2026-07-06-sprint-56c-design-page-migration-execution/SPRINT-56C-CLOSURE-SUMMARY.md) |
+| **56D** | **Active** — [material preservation fix](../2026-07-06-sprint-56d-design-page-material-preservation/SPRINT-56D-START-HERE.md) |
 | **57** | **Reserved** — future roadmap |
 
 ---

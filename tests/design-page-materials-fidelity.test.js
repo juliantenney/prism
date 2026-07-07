@@ -264,7 +264,15 @@ test("38S Phase 2C-a: Design Page pack defers materials rules to runtime compose
     assert.doesNotMatch(text, /near-verbatim/i, "must not license near-verbatim materials copy");
     assert.doesNotMatch(text, /shorten only clearly non-essential/i, "must not permit materials shortening");
   }
-  assert.match(factory.promptTemplate, /Read-only composition step/i);
+  assert.match(factory.promptTemplate, /PRIMARY IDENTITY OF THIS STEP — TRANSPORT, NOT AUTHORING/i);
+  assert.match(factory.promptTemplate, /ARCHIVAL DOES NOT MEAN REFERENCED/i);
+  assert.match(factory.promptTemplate, /WHOLE-BLOCK MATERIAL EXTRACTION/i);
+  assert.match(factory.promptTemplate, /MATERIAL COMPLETENESS CHECK/i);
+  assert.match(factory.promptTemplate, /Do not copy only the first heading/i);
+  assert.match(factory.promptTemplate, /Never emit an incomplete material value/i);
+  assert.match(factory.promptTemplate, /final embedded container, not a manifest/i);
+  assert.match(factory.promptTemplate, /Read-only transport step/i);
+  assert.match(factory.promptTemplate, /archival copy zone/i);
   assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
   assert.match(factory.promptTemplate, /never excuse material-body loss/i);
   assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);

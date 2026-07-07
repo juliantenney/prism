@@ -21,6 +21,7 @@ const DEFAULT_LIBS = [
   "lib/ld-thin-assembly-coherence.js",
   "lib/page-activity-field-preserve.js",
   "lib/page-gam-materials-preserve.js",
+  "lib/page-render-normalize.js",
   "lib/ld-instructional-manifestation-render.js",
   "lib/ld-pedagogic-salience-render.js",
   "lib/beat-material-registry.js",
@@ -53,6 +54,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_LD_THIN_ASSEMBLY_COHERENCE",
       "PRISM_PAGE_ACTIVITY_FIELD_PRESERVE",
       "PRISM_PAGE_GAM_MATERIALS_PRESERVE",
+      "PRISM_PAGE_RENDER_NORMALIZE",
       "PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER",
       "PRISM_LD_PEDAGOGIC_SALIENCE_RENDER",
       "PRISM_UTILITY_PEDAGOGICAL_ICONS",
@@ -70,7 +72,8 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
 const PEDAGOGICAL_ICON_LIBS = [
   "lib/beat-material-registry.js",
   "lib/utility-pedagogical-icons.js",
-  "lib/utility-pedagogical-beats.js"
+  "lib/utility-pedagogical-beats.js",
+  "lib/page-render-normalize.js"
 ];
 
 module.exports = {

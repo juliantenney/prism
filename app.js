@@ -8150,6 +8150,39 @@
     return null;
   }
 
+  var pageRenderViewCache =
+    typeof WeakMap !== "undefined" ? new WeakMap() : null;
+
+  function resolvePageRenderNormalizeLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_RENDER_NORMALIZE) {
+        return roots[i].PRISM_PAGE_RENDER_NORMALIZE;
+      }
+    }
+    return null;
+  }
+
+  function getPageForRender(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return parsed;
+    if (pageRenderViewCache && pageRenderViewCache.has(parsed)) {
+      return pageRenderViewCache.get(parsed);
+    }
+    var mod = resolvePageRenderNormalizeLib();
+    var normalized =
+      mod && typeof mod.normalizePageForRender === "function"
+        ? mod.normalizePageForRender(parsed)
+        : parsed;
+    if (pageRenderViewCache && normalized !== parsed) {
+      pageRenderViewCache.set(parsed, normalized);
+    }
+    return normalized;
+  }
+
   function resolveEpisodePlanDlaIntegrationLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -30421,9 +30454,10 @@
 
   /** Sections for render/merge: prefer sections[], else synthesize from top-level page body keys. */
   function getPageSectionsForRender(parsed) {
-    var fromArray = getPageSectionsArray(parsed);
+    var renderPage = getPageForRender(parsed);
+    var fromArray = getPageSectionsArray(renderPage);
     if (fromArray.length) return fromArray;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return [];
+    if (!renderPage || typeof renderPage !== "object" || Array.isArray(renderPage)) return [];
     var synthetic = [];
     var canonicalOrder = [
       "overview",
@@ -30438,11 +30472,11 @@
     ];
     canonicalOrder.forEach(function (sid) {
       if (!PAGE_BODY_SECTION_IDS[sid]) return;
-      if (utilityIsEmptyValue(parsed[sid])) return;
+      if (utilityIsEmptyValue(renderPage[sid])) return;
       synthetic.push({
         section_id: sid,
         heading: utilityLabelFromKey(sid),
-        content: parsed[sid]
+        content: renderPage[sid]
       });
     });
     return synthetic;
@@ -39732,7 +39766,8 @@
       .trim()
       .toLowerCase();
     if (!sid || !parsed || typeof parsed !== "object") return null;
-    var sections = getPageSectionsForRender(parsed);
+    var renderPage = getPageForRender(parsed);
+    var sections = getPageSectionsForRender(renderPage);
     var i;
     for (i = 0; i < sections.length; i += 1) {
       var sec = sections[i];
@@ -39742,12 +39777,18 @@
         return sec.content;
       }
     }
-    if (!utilityIsEmptyValue(parsed[sid])) return parsed[sid];
+    if (!utilityIsEmptyValue(renderPage[sid])) return renderPage[sid];
     return null;
   }
 
   function extractLearningActivityRowsFromPage(parsed) {
-    var content = utilityFindPageSectionContent(parsed, "learning_activities");
+    var renderPage = getPageForRender(parsed);
+    if (Array.isArray(renderPage.activities) && renderPage.activities.length) {
+      return renderPage.activities.filter(function (row) {
+        return row && typeof row === "object" && !Array.isArray(row);
+      });
+    }
+    var content = utilityFindPageSectionContent(renderPage, "learning_activities");
     if (Array.isArray(content)) {
       return content.filter(function (row) {
         return row && typeof row === "object" && !Array.isArray(row);
@@ -39756,7 +39797,7 @@
     if (content && typeof content === "object" && Array.isArray(content.activities)) {
       return content.activities.slice();
     }
-    return extractActivityRowsFromDlaCapture(parsed);
+    return extractActivityRowsFromDlaCapture(renderPage);
   }
 
   function utilityBuildLearningSequencePhaseMap(parsed) {
@@ -39787,16 +39828,27 @@
 
   function buildJourneyCompassFromPage(parsed) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
-    var activities = extractLearningActivityRowsFromPage(parsed);
+    var renderPage = getPageForRender(parsed);
+    var activities = extractLearningActivityRowsFromPage(renderPage);
     if (!activities.length) return null;
 
-    var overviewContent = utilityFindPageSectionContent(parsed, "overview");
-    var overviewText =
-      typeof overviewContent === "string"
-        ? overviewContent
-        : overviewContent && typeof overviewContent === "object"
-        ? utilityFirstPresent([overviewContent.text, overviewContent.content, overviewContent.body])
-        : "";
+    var normalizeMod = resolvePageRenderNormalizeLib();
+    var overviewText = "";
+    if (
+      normalizeMod &&
+      typeof normalizeMod.resolveOverviewTextForCompass === "function"
+    ) {
+      overviewText = String(normalizeMod.resolveOverviewTextForCompass(parsed) || "").trim();
+    }
+    if (!overviewText) {
+      var overviewContent = utilityFindPageSectionContent(renderPage, "overview");
+      overviewText =
+        typeof overviewContent === "string"
+          ? overviewContent
+          : overviewContent && typeof overviewContent === "object"
+          ? utilityFirstPresent([overviewContent.text, overviewContent.content, overviewContent.body])
+          : "";
+    }
     var governingInquiry = utilityTruncateCompassSignpost(
       utilityFirstSentencePlain(overviewText) ||
         utilityPlainTextFromRenderable(parsed.title || parsed.name || ""),
@@ -40992,13 +41044,14 @@
         };
       }
     }
+    var renderPage = getPageForRender(parsed);
     var plan = opts.renderPlan || buildDefaultUtilityPageRenderPlan(opts.sectionOrder);
-    var rendered = runUtilityRendererByPlan(plan, parsed, opts.baseName || "", {
+    var rendered = runUtilityRendererByPlan(plan, renderPage, opts.baseName || "", {
       presentationMode:
         String(opts.presentationMode || "single_page").toLowerCase() === "learning_object"
           ? "learning_object"
           : "single_page",
-      pageSections: getPageSectionsForRender(parsed),
+      pageSections: getPageSectionsForRender(renderPage),
       enableSequencingInteractionPolicy: opts.enableSequencingInteractionPolicy
     });
     if (!rendered || rendered.error) {
@@ -42114,6 +42167,13 @@
     prismTestApi.extractLearningActivityRowsFromPageForTest = extractLearningActivityRowsFromPage;
     prismTestApi.renderUtilitiesArtefactHtmlAsyncForTest = renderUtilitiesArtefactHtmlAsync;
     prismTestApi.getPageSectionsForRenderForTest = getPageSectionsForRender;
+    prismTestApi.getPageForRenderForTest = getPageForRender;
+    prismTestApi.normalizePageForRenderForTest = function (parsed) {
+      var mod = resolvePageRenderNormalizeLib();
+      return mod && typeof mod.normalizePageForRender === "function"
+        ? mod.normalizePageForRender(parsed)
+        : parsed;
+    };
     prismTestApi.utilityRenderLiveExportCsvTableBlockForTest = utilityRenderLiveExportCsvTableBlock;
     prismTestApi.utilityClassifyPedagogicalBeatForTest = utilityClassifyPedagogicalBeat;
     prismTestApi.utilityRenderPedagogicalBeatHtmlForTest = utilityRenderPedagogicalBeatHtml;

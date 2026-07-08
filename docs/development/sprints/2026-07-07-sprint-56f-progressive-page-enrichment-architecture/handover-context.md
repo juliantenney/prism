@@ -1,5 +1,15 @@
 # Handover Context
 
+## Sprint closure status (2026-07-08)
+
+- Sprint 56F is **complete and closed**.
+- Architecture/schema/ownership/finalise boundary outcomes are frozen.
+- No production implementation was performed in 56F.
+- Implementation is deferred.
+- Follow-on investigation moves to Sprint 57A (instructional sufficiency and content budgeting).
+
+> New work must not be added to 56F after closure except typo/link maintenance.
+
 ## For a new chat with zero prior context
 
 ### What happened before 56F
@@ -63,6 +73,48 @@ Notable outputs:
 - LLM gatekeeping (length, authority, registry not supplied)
 - Schema-valid but contract-invalid output
 - False positive validation claims
+- Activity-object reconstruction (reduced activity objects that drop immutable DLA-owned fields)
+- Status-only / error-only self-failure output under preservation pressure
+
+## Evidence status update (2026-07-08)
+
+### DLA access hypothesis
+
+Current evidence indicates GAM had access to DLA content:
+- activity-specific materials were aligned to correct activities,
+- page-level structure and activity titles were preserved in later runs.
+
+Therefore, "GAM cannot see DLA" is **DISPROVEN**.
+
+### Current dominant failure mode
+
+Activity-object reconstruction is the active issue:
+- page shell may survive,
+- activity objects are still often reconstructed/compacted,
+- immutable DLA-owned activity fields are dropped.
+
+Status: **ACTIVE INVESTIGATION**.
+
+### Current unknowns
+
+Unknown at present:
+- actual Copilot response budget,
+- whether full-page GAM is comfortably within budget,
+- whether full-page GAM is only slightly over budget,
+- whether required-depth full-page GAM is fundamentally too large.
+
+Status: **UNKNOWN**.
+
+### Unsupported diagnoses (historical only)
+
+The following are not supported by current evidence and should not be treated as current root cause:
+- missing DLA artefact,
+- runtime DLA access failure,
+- orchestration lookup failure,
+- resolver-based embedding as root cause,
+- PRISM runtime inability to access prior outputs.
+
+Keep these as historical hypotheses only.
 
 ## Ownership decisions (proposed)
 
@@ -77,13 +129,28 @@ Notable outputs:
 
 See [context/open-questions.md](context/open-questions.md).
 
+Additional open architectural question:
+
+Can PRISM's additive page-artefact model support full-page GAM enrichment at required instructional depth within practical model output limits?
+
+No architectural decision has been made.
+No architectural change has been approved.
+
 ## Recommended next actions
 
-1. Approve architecture decision (Option 3)
-2. Freeze evolving page schema (extend 56E schema)
-3. Define GAM enrichment contract (JSON materials into page)
-4. Plan workflow binding changes per migration phases
-5. Implement Phase 2 (GAM JSON) in follow-on implementation sprint
+1. Establish evidence about output-budget constraints before architecture changes.
+2. Continue prompt-level mitigation for activity-object reconstruction.
+3. Keep unsupported runtime-access diagnoses out of active root-cause analysis.
+4. Defer architecture changes until budget evidence is available.
+
+## New-chat handover (minimal)
+
+- DLA access appears available.
+- Activity reconstruction remains unresolved.
+- Status-only self-failure remains unresolved.
+- Output-budget limits are unknown.
+
+Current priority: gather budget evidence before architecture changes.
 
 ## Glossary
 

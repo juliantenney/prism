@@ -1,6 +1,6 @@
 # Sprint 56F — Next Chat Briefing
 
-**Updated:** 2026-07-07  
+**Updated:** 2026-07-08  
 **Start here:** [SPRINT-56F-START-HERE.md](SPRINT-56F-START-HERE.md)
 
 ---
@@ -64,3 +64,93 @@ Investigation and schema freeze **proposal** (read-only in chat first; then pers
 - 56E (committed): `docs/development/sprints/2026-07-07-sprint-56e-design-page-minimal-refactor/`
 - 56F scaffold: this folder
 - Prior chat transcript: agent session on Sprint 56F ownership/schema audit
+
+---
+
+## Evidence Update (2026-07-08)
+
+### 1) DLA-access finding
+
+**Finding:** GAM demonstrably had access to DLA content.  
+**Evidence:**
+- Earlier outputs generated activity-specific materials aligned to the correct activities.
+- Later outputs preserved page-level structures and activity titles.
+
+**Status:** **DISPROVEN** — the hypothesis "GAM cannot see DLA" is no longer supported.
+
+### 2) Current dominant failure mode
+
+**Failure mode:** activity-object reconstruction.
+
+**Observed behaviour:**
+- GAM preserves some page-level structure.
+- GAM frequently reconstructs activities as reduced objects instead of preserving full DLA activity objects.
+- Fields such as `learner_task`, `expected_output`, `required_materials`, `episode_plan`, reasoning fields, grouping, durations, etc. are lost.
+
+**Status:** **ACTIVE INVESTIGATION**.
+
+### 3) Fail-closed regression introduced by preservation-oriented contracting
+
+**Failure mode:** status-only / error-only output.
+
+**Observed examples:**
+- "cannot faithfully complete"
+- "missing DLA page"
+- "message-length constraints"
+- "cannot emit complete page"
+
+**Status:** identified as **prompt self-failure behaviour**.
+
+### 4) Current uncertainty (must not be assumed)
+
+We do **not** currently know:
+- actual Copilot response budget,
+- whether full-page GAM is comfortably within budget,
+- whether full-page GAM is slightly over budget,
+- whether full-page GAM is fundamentally too large at required material depth.
+
+**Status:** **UNKNOWN**.
+
+### 5) Unsupported diagnoses (historical only)
+
+The following are unsupported by current evidence and must not be used as current diagnosis:
+- missing DLA artefact,
+- runtime DLA access failure,
+- orchestration lookup failure,
+- resolver-based embedding as root cause,
+- PRISM runtime inability to access prior outputs.
+
+Treat these as **historical hypotheses only**.
+
+### 6) Open architectural question
+
+Can PRISM's additive page-artefact model support full-page GAM enrichment at required instructional depth within practical model output limits?
+
+**Status:** open question.  
+No architectural decision has been made.  
+No architectural change has been approved.
+
+---
+
+## New-Chat Handover (concise)
+
+### Known facts
+- DLA access appears available.
+- Activity reconstruction remains unresolved.
+- Status-only self-failure remains unresolved.
+- Output-budget limits are unknown.
+
+### Current priority
+
+Establish evidence about output-budget constraints **before** making architectural changes.
+
+---
+
+## Sprint closure note (2026-07-08)
+
+- Sprint 56F is formally closed.
+- 56F outcomes are frozen: preferred architecture, ownership boundaries, schema `2.0.0`, and `finalise_page` boundary definition.
+- Production implementation is intentionally deferred.
+- New post-closure investigation work belongs to Sprint 57A.
+
+> Do not add new work items to 56F after closure except typo/link maintenance.

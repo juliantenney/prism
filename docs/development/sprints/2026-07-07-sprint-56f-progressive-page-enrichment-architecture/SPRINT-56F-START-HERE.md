@@ -2,10 +2,21 @@
 
 **Progressive Page Enrichment Architecture**
 
+## Sprint closure
+
+- Sprint 56F is **closed**.
+- Architecture investigation, ownership audit, and schema freeze are complete.
+- No production implementation was done in 56F.
+- Progressive enrichment is selected as the preferred target architecture.
+- Implementation remains deferred to a future sprint.
+- Follow-on investigation is now Sprint 57A (instructional sufficiency and content budgeting).
+
+> Do not add new work to 56F after closure except typo/link maintenance.
+
 ## Status
 
-- **Sprint:** 56F (investigation complete — schema freeze proposal on disk)
-- **Phase:** Schema frozen (`2.0.0`); implementation not started
+- **Sprint:** 56F (closed)
+- **Phase:** Architecture and schema frozen (`2.0.0`); implementation deferred
 - **Entry point for new chat:** [next-chat-briefing.md](next-chat-briefing.md)
 
 ## Why this sprint exists

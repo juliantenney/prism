@@ -2673,10 +2673,10 @@ page (Sprint 56F vNext enrich-in-place path) or learning_activities (legacy opt-
 Generation
 
 ### Input
-learning_activities, optional knowledge_model, optional normalized_content
+page (Sprint 56F vNext path) or learning_activities (legacy), optional knowledge_model, optional normalized_content
 
 ### Output
-activity_materials, session_materials
+page (Sprint 56F vNext enrich-in-place path) or activity_materials, session_materials (legacy opt-out when pageEnrichmentV2: false)
 
 ### Purpose
 - Generate complete, usable teaching materials from activity material specifications

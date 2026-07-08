@@ -1,5 +1,14 @@
 # Sprint 56F Backlog
 
+## Closure note (2026-07-08)
+
+Sprint 56F is closed. This backlog is retained as historical record of investigation/planning scope.
+
+Post-closure rule:
+- Do not add new delivery work to 56F.
+- Only typo/link maintenance is allowed.
+- New investigation work is tracked in Sprint 57A.
+
 ## Workstream A — Architecture (setup) ✅
 
 - [x] Problem statement

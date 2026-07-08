@@ -1,5 +1,18 @@
 # Sprint Overview — 56F
 
+## Closure status (2026-07-08)
+
+- Sprint 56F is **complete and closed**.
+- Scope delivered: architecture investigation, ownership audit, schema freeze.
+- No production implementation was performed in this sprint.
+- Progressive enrichment selected as preferred target architecture.
+- `design-page.schema.vNext.json` (`schema_version: "2.0.0"`) is frozen.
+- Ownership boundaries and `finalise_page` boundaries are frozen/defined.
+- Implementation is deferred to a future sprint.
+- Follow-on investigation continues in Sprint 57A.
+
+> New work must not be added to 56F after closure except typo/link maintenance.
+
 ## Sprint
 
 | Field | Value |
@@ -8,6 +21,7 @@
 | Title | Progressive Page Enrichment Architecture |
 | Type | Architecture / Content Transport Redesign |
 | Predecessor | Sprint 56E (Design Page Minimal Refactor — investigation frozen) |
+| Status | Closed |
 
 ## Goal
 

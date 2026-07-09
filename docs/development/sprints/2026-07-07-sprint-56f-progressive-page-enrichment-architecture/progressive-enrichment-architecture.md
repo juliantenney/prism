@@ -1,5 +1,7 @@
 # Progressive Enrichment Architecture
 
+> **Supersession (2026-07-09):** Post-Episode-Plan **runtime** behaviour described here (full-page enrich-in-place) is superseded by [Sprint 58 — Partial Page Artefact Assembly ADR](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/ADR-partial-page-artefact-assembly.md). Schema, ownership, and stage field boundaries from 56F remain valid. Episode Plan still produces the initial page shell.
+
 ## Concept
 
 One `page` artefact evolves through the workflow. Each stage owns specific fields and may only mutate its owned slice. Downstream stages never re-import independent parallel artefacts for merge.

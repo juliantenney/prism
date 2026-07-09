@@ -1,28 +1,40 @@
 # Sprint 57A Backlog
 
+## Status: Closed (2026-07-09)
+
+All workstreams complete or superseded by Sprint 58.
+
+---
+
 ## Workstream A — Framing and assumptions
 
-- [ ] finalize baseline assumptions for learner-time components
-- [ ] define level/context variants
-- [ ] evaluate `estimated_learner_minutes` as a future workload-modeling concept (investigation only)
+- [x] finalize baseline assumptions for learner-time components
+- [x] define level/context variants (heuristic)
+- [x] evaluate `estimated_learner_minutes` as future concept (deferred)
 
 ## Workstream B — Budget heuristics
 
-- [ ] iterate time-allocation ranges
-- [ ] define minimum sufficiency thresholds for core activities
+- [x] iterate time-allocation ranges
+- [x] define minimum sufficiency thresholds for core activities
 
 ## Workstream C — DLA/GAM guidance validation
 
-- [ ] audit DLA sizing guidance against realistic one-hour pages
-- [ ] audit GAM material budgets for sufficiency vs over-expansion
+- [x] audit DLA sizing guidance against realistic one-hour pages
+- [x] audit GAM material budgets for sufficiency vs over-expansion
 
 ## Workstream D — Experiment execution
 
-- [ ] run initial controlled experiment (low/medium/high richness)
-- [ ] log instructional validity outcomes
-- [ ] identify practical boundary where quality or feasibility degrades
+- [x] run end-to-end full-page enrichment workflow tests
+- [x] log instructional validity and preservation failure outcomes
+- [x] identify practical boundary where full-page preservation fails
 
 ## Workstream E — Decision prep
 
-- [ ] summarize findings for implementation go/no-go recommendation
-- [ ] prepare candidate scope for 57B only after evidence review
+- [x] summarize findings for implementation recommendation
+- [x] recommend Sprint 58 partial artefact architecture (supersedes 57B)
+
+---
+
+## Successor backlog
+
+[Sprint 58 backlog](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/backlog.md)

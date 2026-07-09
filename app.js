@@ -6918,6 +6918,19 @@
     );
   }
 
+  function isWorkflowStepConstructLearningSequence(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_construct_learning_sequence" ||
+      canonicalId === "construct_learning_sequence" ||
+      title === "construct learning sequence" ||
+      title.indexOf("construct learning sequence") !== -1
+    );
+  }
+
   function isWorkflowStepAssessmentProducer(context) {
     var title = String(
       (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
@@ -8273,24 +8286,9 @@
   }
 
   function isPageEnrichmentV2WorkflowEnabled(wf) {
-    var shellMod = resolvePageShellCreateLib();
-    if (!shellMod) return false;
-    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
-    if (workflow && workflow.pageEnrichmentV2 === false) return false;
-    if (
-      workflow &&
-      workflow.workflowOutputSpec &&
-      workflow.workflowOutputSpec.pageEnrichmentV2 === false
-    ) {
-      return false;
-    }
-    if (
-      workflow &&
-      typeof shellMod.isPageEnrichmentV2Enabled === "function" &&
-      shellMod.isPageEnrichmentV2Enabled(workflow)
-    ) {
-      return true;
-    }
+    // Repository operates in v2-only mode.
+    // Legacy/non-v2 workflow branches are intentionally disabled.
+    void wf;
     return true;
   }
 
@@ -8397,6 +8395,12 @@
     return "";
   }
 
+  function getDesignPageEffectiveOutputName(step, wf) {
+    if (!isWorkflowStepDesignPageRow(step)) return "";
+    if (isPageEnrichmentV2WorkflowEnabled(wf)) return "page";
+    return String(step && step.outputName != null ? step.outputName : "").trim();
+  }
+
   function applyPageEnrichmentV2StepNormalization(steps, wf) {
     if (!Array.isArray(steps) || !steps.length) return steps;
     if (!isPageEnrichmentV2WorkflowEnabled(wf)) return steps;
@@ -8428,6 +8432,17 @@
         var gamNext = Object.assign({}, row);
         gamNext.outputName = "page";
         return gamNext;
+      }
+      if (
+        isWorkflowStepConstructLearningSequence({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        var lsNext = Object.assign({}, row);
+        lsNext.outputName = "page";
+        return lsNext;
       }
       return row;
     });
@@ -8596,6 +8611,269 @@
         stepOutputName: step && step.outputName
       }) && isPageEnrichmentV2WorkflowEnabled(wf)
     );
+  }
+
+  function resolveGamEnrichedPageJsonForLearningSequenceCopy(wf) {
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      var row = steps[i];
+      if (
+        !isWorkflowStepGenerateActivityMaterials({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || "",
+          stepOutputName: row.outputName || ""
+        })
+      ) {
+        continue;
+      }
+      var sid = String(row.id || "").trim();
+      if (!sid) continue;
+      var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
+      var pageHit = tryParseWorkflowArtefactJson(raw);
+      if (
+        pageHit &&
+        String(pageHit.schema_version || "") === "2.0.0" &&
+        String(pageHit.artifact_type || "") === "page" &&
+        pageHit.assembly_state &&
+        pageHit.assembly_state.current_stage === "gam"
+      ) {
+        try {
+          return JSON.stringify(pageHit, null, 2);
+        } catch (_) {}
+      }
+    }
+    return deriveGenerateActivityMaterialsCaptureJson(workflow);
+  }
+
+  function isLearningSequencePageEnrichmentV2CopyStep(step, wf) {
+    return (
+      isWorkflowStepConstructLearningSequence({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) && isPageEnrichmentV2WorkflowEnabled(wf)
+    );
+  }
+
+  function buildLearningSequenceV2CopyAuthoringBrief() {
+    return [
+      "Identity: treat the supplied GAM-enriched page as the base JSON object and return that SAME full page.",
+      "Preservation-first rule: preserve all upstream page content exactly as provided.",
+      "Ownership boundary: modify only learning_sequence and assembly_state for Learning Sequence provenance.",
+      "Allowed learning_sequence fields: ordered_activity_ids, sequence_title, total_duration_minutes, timeline[] plus clearly sequence-owned navigation fields.",
+      "Timeline rows should reference existing activities using activity_id and may include phase_type, start_minute, duration_minutes, and transition_to_next.",
+      "Do not regenerate, rewrite, summarise, compact, merge, remove, or reorder activities.",
+      "Do not rewrite activities[].materials, activities[].required_materials, learning_outcomes, episode_plans, page_synthesis, source_artefacts, delivery_notes, or generation_notes.",
+      "Structural invariants: activities.length unchanged; activity order unchanged; activity_id order unchanged.",
+      "Do not emit standalone learning_sequence artefacts. Do not emit activities_used, activities_omitted, omission checks, or merge shortcuts in v2.",
+      "Update assembly_state.current_stage to learning_sequence and ensure assembly_state.enriched_by includes learning_sequence exactly once."
+    ].join("\n");
+  }
+
+  function buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wf) {
+    var json = resolveGamEnrichedPageJsonForLearningSequenceCopy(wf);
+    if (!json || !String(json).trim()) {
+      return [
+        "",
+        "### Upstream GAM page (Generate Activity Materials — required input)",
+        "",
+        "Locate STEP N OUTPUT: page from Generate Activity Materials in this Copilot conversation.",
+        "Return that full page unchanged except for learning_sequence and assembly_state. Do not rewrite upstream fields."
+      ].join("\n");
+    }
+    return [
+      "",
+      "### Upstream GAM page (Generate Activity Materials — enrich in place)",
+      "",
+      "**Return the entire input page below unchanged except for learning_sequence and assembly_state. Treat this JSON as immutable; edit in place only.**",
+      "",
+      "Input: complete GAM-enriched vNext page below. Output: that SAME page with learning_sequence populated and assembly_state updated.",
+      "Preserve activities, materials, required_materials, learning_outcomes, episode_plans, page_synthesis, source_artefacts, delivery_notes, generation_notes, audience, title, and page_profile exactly.",
+      "Do not merge, omit, compact, or reorder activities. Keep activities.length and activity_id order unchanged.",
+      "",
+      "```json",
+      String(json).trim(),
+      "```"
+    ].join("\n");
+  }
+
+  function validateLearningSequenceOrPageCapture(parsed, baseline) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    if (
+      String(parsed.schema_version || "") === "2.0.0" &&
+      String(parsed.artifact_type || "") === "page"
+    ) {
+      var errors = [];
+      if (
+        !parsed.assembly_state ||
+        String(parsed.assembly_state.current_stage || "").trim() !== "learning_sequence"
+      ) {
+        errors.push("assembly_state.current_stage must be learning_sequence");
+      }
+      var enrichedBy = parsed.assembly_state && Array.isArray(parsed.assembly_state.enriched_by)
+        ? parsed.assembly_state.enriched_by
+        : [];
+      if (
+        !enrichedBy.some(function (s) {
+          return String(s || "").trim().toLowerCase() === "learning_sequence";
+        })
+      ) {
+        errors.push("assembly_state.enriched_by must include learning_sequence");
+      }
+      if (
+        !parsed.learning_sequence ||
+        typeof parsed.learning_sequence !== "object" ||
+        Array.isArray(parsed.learning_sequence)
+      ) {
+        errors.push("learning_sequence object required");
+      } else if (!Array.isArray(parsed.learning_sequence.ordered_activity_ids)) {
+        errors.push("learning_sequence.ordered_activity_ids array required");
+      }
+      if (baseline && Array.isArray(baseline.activities) && Array.isArray(parsed.activities)) {
+        var baselineIds = baseline.activities.map(function (a) {
+          return String((a && a.activity_id) || "");
+        });
+        var outputIds = parsed.activities.map(function (a) {
+          return String((a && a.activity_id) || "");
+        });
+        if (baselineIds.length !== outputIds.length) {
+          errors.push("activities.length changed from baseline");
+        }
+        if (baselineIds.join("\n") !== outputIds.join("\n")) {
+          errors.push("activity_id order changed from baseline");
+        }
+      }
+      return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+    }
+    if (parsed.timeline || parsed.activities_used || parsed.activities_omitted || parsed.checks) {
+      return { ok: true, legacy: true, errors: [] };
+    }
+    return { ok: false, errors: ["unrecognized Learning Sequence capture shape"] };
+  }
+
+  function resolveLearningSequenceEnrichedPageJsonForDesignPageCopy(wf) {
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      var row = steps[i];
+      if (
+        !isWorkflowStepConstructLearningSequence({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        continue;
+      }
+      var sid = String(row.id || "").trim();
+      if (!sid) continue;
+      var raw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
+      var pageHit = tryParseWorkflowArtefactJson(raw);
+      if (
+        pageHit &&
+        String(pageHit.schema_version || "") === "2.0.0" &&
+        String(pageHit.artifact_type || "") === "page" &&
+        pageHit.assembly_state &&
+        String(pageHit.assembly_state.current_stage || "").trim() === "learning_sequence"
+      ) {
+        try {
+          return JSON.stringify(pageHit, null, 2);
+        } catch (_) {}
+      }
+    }
+    return "";
+  }
+
+  function isDesignPagePageEnrichmentV2CopyStep(step, wf) {
+    return (
+      isWorkflowStepDesignPage({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) && isPageEnrichmentV2WorkflowEnabled(wf)
+    );
+  }
+
+  function buildDesignPageV2CopyAuthoringBrief() {
+    return [
+      "Identity: treat the supplied Learning Sequence-enriched page as the base JSON object and return that SAME full page.",
+      "Ownership boundary: Design Page v2 may write only Design Page presentation/layout fields and assembly_state for design_page provenance.",
+      "Preservation-first rule: preserve all upstream page content exactly as provided.",
+      "Do not regenerate learning content, activities, materials, learning_outcomes, episode_plans, or learning_sequence.",
+      "Do not compact, summarise, reorder, merge, or remove activities.",
+      "Do not rewrite activities[].materials or required_materials.",
+      "Structural invariants: activities.length unchanged; activity order unchanged; activity_id order unchanged.",
+      "Prompt pipeline model: full page input, full page output, additive enrichment only.",
+      "No patching, merge/reassembly, reconciliation, or diff-based correction behavior in this step."
+    ].join("\n");
+  }
+
+  function buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy(wf) {
+    var json = resolveLearningSequenceEnrichedPageJsonForDesignPageCopy(wf);
+    if (!json || !String(json).trim()) {
+      return [
+        "",
+        "### Upstream Learning Sequence page (Construct Learning Sequence — required input)",
+        "",
+        "Locate STEP N OUTPUT: page from Construct Learning Sequence in this Copilot conversation.",
+        "Return that full page unchanged except for Design Page owned presentation/layout fields and assembly_state."
+      ].join("\n");
+    }
+    return [
+      "",
+      "### Upstream Learning Sequence page (Construct Learning Sequence — enrich in place)",
+      "",
+      "**Return the entire input page below unchanged except for Design Page owned presentation/layout fields and assembly_state. Treat this JSON as immutable; edit in place only.**",
+      "",
+      "Input: complete Learning Sequence-enriched vNext page below. Output: that SAME page with Design Page additive fields applied.",
+      "Preserve activities, materials, required_materials, learning_outcomes, episode_plans, learning_sequence, source_artefacts, delivery_notes, generation_notes, audience, title, and page_profile exactly.",
+      "Do not regenerate upstream outputs. Do not merge, omit, compact, or reorder activities.",
+      "",
+      "```json",
+      String(json).trim(),
+      "```"
+    ].join("\n");
+  }
+
+  function validateDesignPageOrPageCapture(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    if (
+      String(parsed.schema_version || "") === "2.0.0" &&
+      String(parsed.artifact_type || "") === "page"
+    ) {
+      var errors = [];
+      if (!Array.isArray(parsed.activities)) errors.push("activities array required");
+      if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
+        errors.push("assembly_state required");
+      } else {
+        if (String(parsed.assembly_state.current_stage || "").trim() !== "design_page") {
+          errors.push("assembly_state.current_stage must be design_page");
+        }
+        var enrichedBy = Array.isArray(parsed.assembly_state.enriched_by)
+          ? parsed.assembly_state.enriched_by
+          : [];
+        if (
+          !enrichedBy.some(function (s) {
+            return String(s || "").trim().toLowerCase() === "design_page";
+          })
+        ) {
+          errors.push("assembly_state.enriched_by must include design_page");
+        }
+      }
+      return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+    }
+    if (parsed.sections || parsed.activity_materials || parsed.session_materials) {
+      return { ok: true, legacy: true, errors: [] };
+    }
+    return { ok: false, errors: ["unrecognized Design Page capture shape"] };
   }
 
   function buildGamV2CopyMaterialAuthoringBrief() {
@@ -10217,6 +10495,26 @@
     var canonicalId = normalizeCanonicalStepId(
       step.canonical_step_id || step.canonicalStepId || ""
     );
+    var isLearningSequenceStep =
+      canonicalId === "step_construct_learning_sequence" ||
+      canonicalId === "construct_learning_sequence";
+    var isDesignPageStep =
+      canonicalId === "step_design_page" ||
+      (step &&
+        isWorkflowStepDesignPage({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || ""
+        }));
+    if (
+      isLearningSequenceStep &&
+      (oname === "page" || isPageEnrichmentV2WorkflowEnabled(wf))
+    ) {
+      return "";
+    }
+    if (isDesignPageStep && oname === "page" && isPageEnrichmentV2WorkflowEnabled(wf)) {
+      return "";
+    }
     if (
       oname === "knowledge_model" ||
       canonicalId === "step_model_knowledge" ||
@@ -10231,11 +10529,7 @@
     ) {
       return "learning_content";
     }
-    if (
-      oname === "learning_sequence" ||
-      canonicalId === "step_construct_learning_sequence" ||
-      canonicalId === "construct_learning_sequence"
-    ) {
+    if (oname === "learning_sequence" || isLearningSequenceStep) {
       return "learning_sequence";
     }
     if (
@@ -10262,7 +10556,12 @@
       .trim();
     if (title === "model knowledge") return "knowledge_model";
     if (title === "generate learning content") return "learning_content";
-    if (title === "construct learning sequence") return "learning_sequence";
+    if (
+      title === "construct learning sequence" &&
+      !(oname === "page" || isPageEnrichmentV2WorkflowEnabled(wf))
+    ) {
+      return "learning_sequence";
+    }
     if (title === "define learning outcomes") return "learning_outcomes";
     if (title === "design episode plan" || title.indexOf("episode plan") !== -1) {
       if (isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(wf)) {
@@ -10289,6 +10588,47 @@
         : state.selectedWorkflowId
         ? findWorkflowById(state.selectedWorkflowId)
         : null;
+    if (isLearningSequencePageEnrichmentV2CopyStep(step, workflow)) {
+      var parsedLs = tryParseWorkflowArtefactJson(raw);
+      if (!parsedLs) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "Learning Sequence v2 capture must be valid JSON page artefact"
+        };
+      }
+      var baselineLs = tryParseWorkflowArtefactJson(
+        resolveGamEnrichedPageJsonForLearningSequenceCopy(workflow) || ""
+      );
+      var lsCheck = validateLearningSequenceOrPageCapture(parsedLs, baselineLs || null);
+      if (!lsCheck.ok) {
+        return {
+          ok: false,
+          errors: lsCheck.errors || ["invalid_learning_sequence_v2_capture"],
+          message: (lsCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
+    if (isDesignPagePageEnrichmentV2CopyStep(step, workflow)) {
+      var parsedDp = tryParseWorkflowArtefactJson(raw);
+      if (!parsedDp) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "Design Page v2 capture must be valid JSON page artefact"
+        };
+      }
+      var dpCheck = validateDesignPageOrPageCapture(parsedDp);
+      if (!dpCheck.ok) {
+        return {
+          ok: false,
+          errors: dpCheck.errors || ["invalid_design_page_v2_capture"],
+          message: (dpCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
     var kind = resolveStrictJsonWorkflowStepKind(step, workflow);
     if (!kind) return { ok: true, skipped: true, errors: [] };
     var strictMod = resolveWorkflowArtefactJsonStrictLib();
@@ -10313,13 +10653,34 @@
     var draftBody = String(draftText || "").trim();
     var strictMod = resolveWorkflowArtefactJsonStrictLib();
     if (!strictMod || !context) return draftBody;
+    var wfForContext = context.workflowId ? findWorkflowById(context.workflowId) : null;
+    if (isLearningSequencePageEnrichmentV2CopyStep(
+      {
+        outputName: context.stepOutputName,
+        canonical_step_id: context.stepCanonicalStepId,
+        title: context.stepCanonicalTitle || context.stepTitle
+      },
+      wfForContext
+    )) {
+      return draftBody;
+    }
+    if (isDesignPagePageEnrichmentV2CopyStep(
+      {
+        outputName: context.stepOutputName,
+        canonical_step_id: context.stepCanonicalStepId,
+        title: context.stepCanonicalTitle || context.stepTitle
+      },
+      wfForContext
+    )) {
+      return draftBody;
+    }
     var kind = resolveStrictJsonWorkflowStepKind(
       {
         outputName: context.stepOutputName,
         canonical_step_id: context.stepCanonicalStepId,
         title: context.stepCanonicalTitle || context.stepTitle
       },
-      context.workflowId ? findWorkflowById(context.workflowId) : null
+      wfForContext
     );
     if (kind === "knowledge_model") {
       if (
@@ -18169,12 +18530,119 @@
     });
   }
 
+  function ensureLearningSequencePageInputBindingsForSteps(steps, wf) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    var wfResolved =
+      wf && typeof wf === "object"
+        ? wf
+        : state.selectedWorkflowId
+        ? findWorkflowById(state.selectedWorkflowId)
+        : null;
+    if (!isPageEnrichmentV2WorkflowEnabled(wfResolved)) return steps;
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var normalized = steps.map(function (row) {
+      return backfillWorkflowStepCatalogMetadata(row, catalog, null);
+    });
+    var gamStep = findWorkflowStepRowByIdentity(normalized, function (row) {
+      return isWorkflowStepGenerateActivityMaterials({
+        stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+        stepCanonicalTitle: row.title || "",
+        stepTitle: row.title || "",
+        stepOutputName: row.outputName || ""
+      });
+    });
+    if (!gamStep) return normalized;
+    var gamId = String(gamStep.id || "").trim();
+    if (!gamId) return normalized;
+    return normalized.map(function (row) {
+      if (
+        !isWorkflowStepConstructLearningSequence({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        return row;
+      }
+      var next = Object.assign({}, row);
+      var bindings = normalizeStepInputBindings(next.inputBindings || []);
+      var hasPageBinding = bindings.some(function (b) {
+        if (!b || b.kind !== "internal") return false;
+        var art = normalizeWorkflowArtefactBindingKey(b.artifactName);
+        return String(b.sourceStepId || "").trim() === gamId && art === "page";
+      });
+      if (!hasPageBinding) {
+        bindings.push({
+          kind: "internal",
+          sourceStepId: gamId,
+          artifactName: "page"
+        });
+      }
+      next.inputBindings = normalizeStepInputBindings(bindings);
+      return next;
+    });
+  }
+
+  function ensureDesignPageV2PageInputBindingsForSteps(steps, wf) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    var wfResolved =
+      wf && typeof wf === "object"
+        ? wf
+        : state.selectedWorkflowId
+        ? findWorkflowById(state.selectedWorkflowId)
+        : null;
+    if (!isPageEnrichmentV2WorkflowEnabled(wfResolved)) return steps;
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var normalized = steps.map(function (row) {
+      return backfillWorkflowStepCatalogMetadata(row, catalog, null);
+    });
+    var lsStep = findWorkflowStepRowByIdentity(normalized, function (row) {
+      return isWorkflowStepConstructLearningSequence({
+        stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+        stepCanonicalTitle: row.title || "",
+        stepTitle: row.title || ""
+      });
+    });
+    if (!lsStep) return normalized;
+    var lsId = String(lsStep.id || "").trim();
+    if (!lsId) return normalized;
+    return normalized.map(function (row) {
+      if (!isWorkflowStepDesignPageRow(row)) return row;
+      var next = Object.assign({}, row);
+      var bindings = normalizeStepInputBindings(next.inputBindings || []);
+      var hasLsPageBinding = bindings.some(function (b) {
+        if (!b || b.kind !== "internal") return false;
+        var art = normalizeWorkflowArtefactBindingKey(b.artifactName);
+        return String(b.sourceStepId || "").trim() === lsId && art === "page";
+      });
+      if (!hasLsPageBinding) {
+        bindings.push({
+          kind: "internal",
+          sourceStepId: lsId,
+          artifactName: "page"
+        });
+      }
+      next.inputBindings = normalizeStepInputBindings(bindings);
+      return next;
+    });
+  }
+
   function ensureDesignPageUpstreamBindingsForSteps(steps, wf) {
-    var normalized = ensureGamPageInputBindingsForSteps(
-      ensureEpisodePlanInputBindingsForSteps(steps, wf),
+    var normalized = ensureDesignPageV2PageInputBindingsForSteps(
+      ensureLearningSequencePageInputBindingsForSteps(
+      ensureGamPageInputBindingsForSteps(
+        ensureEpisodePlanInputBindingsForSteps(steps, wf),
+        wf
+      ),
+      wf),
       wf
     );
     if (!Array.isArray(normalized) || !normalized.length) return normalized;
+    if (isPageEnrichmentV2WorkflowEnabled(wf)) return normalized;
     var gamStep = findWorkflowStepRowByIdentity(normalized, function (row) {
       return isWorkflowStepGenerateActivityMaterials({
         stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
@@ -26277,6 +26745,9 @@
       outName = getDesignGamEffectiveOutputName(step, wfForChain);
     }
     if (!outName) {
+      outName = getDesignPageEffectiveOutputName(step, wfForChain);
+    }
+    if (!outName) {
       outName = String(step && step.outputName != null ? step.outputName : "").trim();
     }
     var stepNumForFooter =
@@ -26388,6 +26859,62 @@
           "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
         );
       }
+    } else if (
+      isWorkflowStepConstructLearningSequence({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      lines.push("");
+      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+        lines.push(
+          "Sprint 56F Learning Sequence enrich-in-place: read the GAM-enriched vNext page and return the SAME page with learning_sequence populated. Do NOT emit a standalone learning_sequence artefact."
+        );
+        lines.push(
+          "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        lines.push(
+          "Learning Sequence v2 constraints: modify only learning_sequence and assembly_state. Do not rewrite, merge, omit, compact, summarise, or reorder activities. Preserve activities.length and activity_id order exactly."
+        );
+        var gamPageEmbedForLs = buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wfForChain);
+        if (gamPageEmbedForLs) {
+          lines.push(gamPageEmbedForLs);
+        }
+      } else {
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+        );
+      }
+    } else if (
+      isWorkflowStepDesignPage({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      lines.push("");
+      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+        lines.push(
+          "Sprint 56F Design Page enrich-in-place: read the Learning Sequence-enriched vNext page and return the SAME page with Design Page owned presentation/layout fields populated."
+        );
+        lines.push(
+          "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        lines.push(
+          "Design Page v2 constraints: modify only Design Page owned presentation/layout fields and assembly_state. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence. Preserve activities.length and activity_id order exactly."
+        );
+        var lsPageEmbedForDp = buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy(
+          wfForChain
+        );
+        if (lsPageEmbedForDp) {
+          lines.push(lsPageEmbedForDp);
+        }
+      }
     } else {
       var strictJsonKindForCopy = resolveStrictJsonWorkflowStepKind(step, wfForChain);
       if (strictJsonKindForCopy) {
@@ -26455,7 +26982,7 @@
         wfForChain && Array.isArray(wfForChain.steps)
           ? ensureDesignPageUpstreamBindingsForSteps(wfForChain.steps)
           : [];
-      if (isWorkflowStepDesignPageRow(step)) {
+      if (isWorkflowStepDesignPageRow(step) && !isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
         var conversationalUpstream =
           buildDesignPageUpstreamArtefactsConversationalPromptSection(bindings);
         if (conversationalUpstream) {
@@ -26511,12 +27038,18 @@
 
     var wfForPrompt = resolveWorkflowForUpstreamArtefacts({});
     var gamV2CopyStep = isGamPageEnrichmentV2CopyStep(step, wfForChain);
+    var dpV2CopyStep = isDesignPagePageEnrichmentV2CopyStep(step, wfForChain);
+    var lsV2CopyStep = isLearningSequencePageEnrichmentV2CopyStep(step, wfForChain);
     var resolvedPrompt = gamV2CopyStep
       ? { text: buildGamV2CopyMaterialAuthoringBrief(), sourceType: "gam_v2_copy_brief", error: "" }
+      : dpV2CopyStep
+      ? { text: buildDesignPageV2CopyAuthoringBrief(), sourceType: "dp_v2_copy_brief", error: "" }
+      : lsV2CopyStep
+      ? { text: buildLearningSequenceV2CopyAuthoringBrief(), sourceType: "ls_v2_copy_brief", error: "" }
       : resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
     var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
-    if (promptBody && strictJsonKindForBody && !gamV2CopyStep) {
+    if (promptBody && strictJsonKindForBody && !gamV2CopyStep && !lsV2CopyStep && !dpV2CopyStep) {
       // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
       // The authoritative footer contract is appended later with an exact literal line.
       promptBody = stripContradictoryWorkflowRunnerFooterClauses(promptBody);
@@ -26531,6 +27064,14 @@
       if (gamV2CopyStep) {
         lines.push(
           "Material authoring guidance (Sprint 56F v2 — output shape is defined above):"
+        );
+      } else if (dpV2CopyStep) {
+        lines.push(
+          "Design Page authoring guidance (Sprint 56F v2 — output shape is defined above):"
+        );
+      } else if (lsV2CopyStep) {
+        lines.push(
+          "Learning Sequence authoring guidance (Sprint 56F v2 — output shape is defined above):"
         );
       } else {
         lines.push("Here is the core prompt for this step:");
@@ -43456,9 +43997,30 @@
     prismTestApi.isGamPageEnrichmentV2CopyStep = isGamPageEnrichmentV2CopyStep;
     prismTestApi.buildUpstreamDlaPageEmbedSectionForGamCopy =
       buildUpstreamDlaPageEmbedSectionForGamCopy;
+    prismTestApi.resolveGamEnrichedPageJsonForLearningSequenceCopy =
+      resolveGamEnrichedPageJsonForLearningSequenceCopy;
+    prismTestApi.isLearningSequencePageEnrichmentV2CopyStep =
+      isLearningSequencePageEnrichmentV2CopyStep;
+    prismTestApi.buildLearningSequenceV2CopyAuthoringBrief =
+      buildLearningSequenceV2CopyAuthoringBrief;
+    prismTestApi.buildUpstreamGamPageEmbedSectionForLearningSequenceCopy =
+      buildUpstreamGamPageEmbedSectionForLearningSequenceCopy;
+    prismTestApi.validateLearningSequenceOrPageCapture = validateLearningSequenceOrPageCapture;
+    prismTestApi.resolveLearningSequenceEnrichedPageJsonForDesignPageCopy =
+      resolveLearningSequenceEnrichedPageJsonForDesignPageCopy;
+    prismTestApi.isDesignPagePageEnrichmentV2CopyStep =
+      isDesignPagePageEnrichmentV2CopyStep;
+    prismTestApi.buildDesignPageV2CopyAuthoringBrief = buildDesignPageV2CopyAuthoringBrief;
+    prismTestApi.buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy =
+      buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy;
+    prismTestApi.validateDesignPageOrPageCapture = validateDesignPageOrPageCapture;
     prismTestApi.resolvePageGamEnrichLib = resolvePageGamEnrichLib;
     prismTestApi.getDesignGamEffectiveOutputName = getDesignGamEffectiveOutputName;
     prismTestApi.ensureGamPageInputBindingsForSteps = ensureGamPageInputBindingsForSteps;
+    prismTestApi.ensureLearningSequencePageInputBindingsForSteps =
+      ensureLearningSequencePageInputBindingsForSteps;
+    prismTestApi.ensureDesignPageV2PageInputBindingsForSteps =
+      ensureDesignPageV2PageInputBindingsForSteps;
     prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
     prismTestApi.resolvePageShellCreateLib = resolvePageShellCreateLib;
     prismTestApi.buildEpisodePlanUpstreamPromptSection = buildEpisodePlanUpstreamPromptSection;

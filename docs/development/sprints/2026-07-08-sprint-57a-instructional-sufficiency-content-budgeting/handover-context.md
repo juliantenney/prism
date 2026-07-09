@@ -1,30 +1,46 @@
-# Handover Context — Sprint 57A
+# Handover Context — Sprint 57A (Closed)
 
-## Known
+## Status
 
-- Sprint 56F closed architecture/schema work.
-- Progressive enrichment implementation is deferred.
-- New focus is instructional sufficiency and page-size realism.
-- Working hypothesis: valid pages may require less embedded content than previously assumed because learning time includes thinking and production, not only reading.
+**Closed:** 2026-07-09  
+**Successor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/handover-context.md)
 
-## Unknown
+---
 
-- exact appropriate content budgets by level/context
-- whether constrained pages are instructionally satisfying
-- where Copilot output limits become materially relevant
-- whether DLA/GAM prompts can reliably follow workload budgets
+## Known (at closure)
 
-## Next actions
+- Sprint 56F closed architecture/schema work (`schema_version: 2.0.0`, ownership matrix).
+- Learner workload is multi-component — not equivalent to word count.
+- Core vs extension separation prevents textbook-like page bloat.
+- Full-page progressive enrichment was implemented and tested end-to-end during 57A.
+- LLMs fail to preserve complete page JSON across post-EP stages despite prompt hardening.
+- Renderer (`normalizePageForRender`) works when structurally complete pages are available.
+- Partial page artefacts + deterministic assembly is the approved implementation direction.
 
-1. Review all 57A documents.
-2. Refine budget heuristics.
-3. Design first controlled experiment.
-4. After 57A evidence, decide whether to proceed to 57B implementation.
+## Resolved in 57A
 
-## Exit Decision
+- Whether to proceed with full-page enrich-in-place → **No**
+- Whether instructional budgeting blocks implementation → **No** (heuristics sufficient; architecture pivot required)
+- Whether Sprint 57B should implement full-page v2 → **Superseded by Sprint 58**
 
-If instructionally valid pages can be produced within the proposed learner-workload and content-budget assumptions, proceed to Sprint 57B implementation planning.
+## Carried forward to Sprint 58
 
-If instructionally valid pages cannot yet be produced, refine the instructional-budget model before implementation begins.
+- Partial artefact envelope per stage
+- Assembly merge rules by `activity_id` / `material_id`
+- Prompt injection removal for post-EP steps
+- Stage-subset validation on capture paste
+- Legacy workflow gating
+- Chat-only downstream context (operational risk)
 
-The purpose of 57A is to determine whether the instructional model is viable before implementation work starts.
+## Frozen 57A reference material
+
+Budget and sizing docs remain authoritative for **prompt authoring guidance**, not Sprint 58 research scope:
+
+- [instructional-budget-model.md](instructional-budget-model.md)
+- [dla-activity-sizing-guidelines.md](dla-activity-sizing-guidelines.md)
+- [gam-material-budget-guidelines.md](gam-material-budget-guidelines.md)
+- [core-vs-extension-content-policy.md](core-vs-extension-content-policy.md)
+
+## Next actions (for implementers)
+
+Start in Sprint 58 — see [SPRINT-58-START-HERE.md](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-START-HERE.md).

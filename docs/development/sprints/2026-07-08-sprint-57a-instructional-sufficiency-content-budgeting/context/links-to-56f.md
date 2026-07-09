@@ -1,6 +1,10 @@
 # Links to Sprint 56F
 
-Sprint 57A follows Sprint 56F closure and should not reopen 56F architecture decisions without new evidence.
+Sprint 57A followed Sprint 56F closure. Sprint 57A is now closed; implementation continues in Sprint 58.
+
+## Successor
+
+- [Sprint 58 — Partial Page Artefact Architecture Implementation](../../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/README.md)
 
 ## 56F key references
 

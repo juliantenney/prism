@@ -1,36 +1,40 @@
 # Sprint 57A — Next Chat Briefing
 
-## Start here
+## Sprint closed
 
-1. [SPRINT-57A-START-HERE.md](SPRINT-57A-START-HERE.md)
-2. [problem-statement.md](problem-statement.md)
-3. [instructional-budget-model.md](instructional-budget-model.md)
-4. [output-budget-experiment-plan.md](output-budget-experiment-plan.md)
+57A closed 2026-07-09. **Start new work in Sprint 58:**
+
+[Sprint 58 START HERE](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-START-HERE.md)
+
+---
 
 ## Handover (concise)
 
-### Known
-- 56F closed architecture/schema work.
-- Progressive enrichment implementation deferred.
-- Focus now: instructional sufficiency and content-budget realism.
-- Working hypothesis: instructionally valid pages may require less embedded content than previously assumed.
+### What 56F concluded
 
-### Unknown
-- suitable content budgets by level/context
-- instructional satisfaction under constrained pages
-- practical output-limit relevance boundary
-- reliability of DLA/GAM adherence to workload budgets
+- vNext page schema frozen (`2.0.0`)
+- Progressive enrichment ownership model defined
+- Design Page LLM merge retired in favour of stage-owned fields
+- Implementation deferred pending investigation
 
-### Immediate next actions
-- refine budget heuristics
-- define first controlled experiment fixture set
-- run audit-first evaluation
-- defer implementation decisions until evidence is gathered
+### What 57A investigated
 
-## Exit Decision
+- Learner-time and content budgeting
+- Instructional sufficiency vs page size
+- Viability of full-page enrich-in-place under realistic workloads
 
-If instructionally valid pages can be produced within the proposed learner-workload and content-budget assumptions, proceed to Sprint 57B implementation planning.
+### Why full-page enrichment was abandoned
 
-If instructionally valid pages cannot yet be produced, refine the instructional-budget model before implementation begins.
+End-to-end testing showed post-EP LLM steps reconstruct, prune, simplify, or truncate prior page fields — including GAM failures (partial pages, materials-only stubs, meta-notes, emptied `required_materials`).
 
-The purpose of 57A is to determine whether the instructional model is viable before implementation work starts.
+### Decision
+
+**Partial page artefacts** per stage + **deterministic code assembly** at render.
+
+### Authoritative principle
+
+> Post-Episode-Plan stages return partial v2 page artefacts containing only owned fields. PRISM stores those artefacts in stepOutput. Downstream prompts use chat context, not stored step outputs.
+
+### Implementation sprint
+
+[Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CONTEXT-FOR-NEW-CHAT.md)

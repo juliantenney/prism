@@ -9,8 +9,10 @@
 - `design-page.schema.vNext.json` (`schema_version: "2.0.0"`) is frozen.
 - Ownership boundaries are frozen.
 - `finalise_page` boundaries are defined.
-- Implementation is deferred to a future sprint.
-- Follow-on investigation is split to Sprint 57A (instructional sufficiency, learner-time budgeting, content-size realism).
+- Implementation deferred through Sprint 57A investigation.
+- **Runtime architecture superseded for post-EP behaviour:** [Sprint 58 ADR](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/ADR-partial-page-artefact-assembly.md) (partial artefacts + deterministic assembly).
+- Follow-on investigation: [Sprint 57A](../2026-07-08-sprint-57a-instructional-sufficiency-content-budgeting/README.md) (closed).
+- Active implementation: [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/README.md).
 
 > New work after closure must not be added to 56F except typo/link maintenance.
 

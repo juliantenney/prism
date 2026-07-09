@@ -1,9 +1,20 @@
 # Sprint 57A — Instructional Sufficiency & Content Budgeting
 
+## Closure status (2026-07-09)
+
+- Sprint 57A is **closed**.
+- Type: investigation only — no production implementation.
+- Outcome: instructional budgeting models agreed; end-to-end testing showed full-page enrich-in-place is not viable.
+- Successor: [Sprint 58 — Partial Page Artefact Architecture Implementation](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/README.md)
+
+> Do not add new investigation scope to 57A except typo/link maintenance.
+
 - **Sprint ID:** 57A
 - **Date opened:** 2026-07-08
-- **Status:** Active investigation (no implementation)
+- **Date closed:** 2026-07-09
+- **Status:** Closed (investigation complete)
 - **Predecessor:** [Sprint 56F](../2026-07-07-sprint-56f-progressive-page-enrichment-architecture/README.md)
+- **Successor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/README.md)
 
 ## Purpose
 
@@ -39,13 +50,13 @@ A prompt such as "Write 150-200 words..." may require 15-25 minutes once reading
 
 Purpose: prevent Sprint 57A from becoming an open-ended research effort.
 
-## Exit Decision
+## Exit decision (final)
 
-If instructionally valid pages can be produced within the proposed learner-workload and content-budget assumptions, proceed to Sprint 57B implementation planning.
+Proceed to **Sprint 58** with the **partial page artefact architecture** — not full-page progressive enrichment.
 
-If instructionally valid pages cannot yet be produced, refine the instructional-budget model before implementation begins.
+Instructional budgeting heuristics from 57A are retained as reference. Implementation is unblocked; the binding constraint is LLM full-page preservation failure, not unresolved budget theory.
 
-The purpose of 57A is to determine whether the instructional model is viable before implementation work starts.
+Closure report: [SPRINT-57A-CLOSURE-REPORT.md](SPRINT-57A-CLOSURE-REPORT.md)
 
 ## Entry points
 

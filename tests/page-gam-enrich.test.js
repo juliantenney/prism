@@ -359,19 +359,16 @@ test("GAM-enriched page renders through Phase 8 adapter with authored materials"
   assert.match(html, new RegExp(firstMaterial.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
-test("legacy GAM path still works when pageEnrichmentV2 is explicitly disabled", () => {
+test("GAM v2 path stays active even when workflow flag is set false", () => {
   const wf = buildTestWorkflow({ pageEnrichmentV2: false });
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const json = api.deriveGenerateActivityMaterialsCaptureJson(wf);
-  assert.equal(json, "");
-  const legacyCapture = {
-    activity_materials: {
-      content: { activities: [{ activity_id: "A1", materials: { text: "Legacy body" } }] }
-    }
-  };
-  const check = api.validateGamOrPageCapture(legacyCapture, null);
+  assert.ok(json);
+  const page = JSON.parse(json);
+  const check = api.validateGamOrPageCapture(page, null);
   assert.equal(check.ok, true);
-  assert.equal(check.legacy, true);
+  assert.equal(page.artifact_type, "page");
+  assert.equal(page.schema_version, "2.0.0");
 });
 
 test("GAM copy prompt expects page input and page output under v2", () => {

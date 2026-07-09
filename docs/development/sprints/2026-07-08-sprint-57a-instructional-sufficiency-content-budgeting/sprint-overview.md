@@ -7,36 +7,42 @@
 | ID | 57A |
 | Title | Instructional Sufficiency & Content Budgeting |
 | Type | Investigation / instructional design constraints |
+| Status | **Closed** (2026-07-09) |
 | Predecessor | Sprint 56F (closed) |
-| Implementation status | Deferred |
+| Successor | [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/README.md) |
+| Implementation | Deferred to Sprint 58 (revised architecture) |
 
 ## Goal
 
-Define evidence-based learner-time and content-budget assumptions, then test whether instructionally valid pages can be produced within those bounds.
+Define evidence-based learner-time and content-budget assumptions, test whether instructionally valid pages can be produced within those bounds, and determine whether full-page progressive enrichment is viable before implementation.
 
-## Core framing
+## Outcome
 
-- 56F solved architecture direction.
-- 57A evaluates instructional sufficiency and workload realism.
-- Word count is only one component of learner workload.
+| Area | Result |
+| ---- | ------ |
+| Instructional budgeting | Models and guidelines produced — retained as reference |
+| Full-page enrich-in-place | **Not viable** — LLMs reconstruct, prune, or truncate prior fields |
+| Implementation path | **Sprint 58** — partial page artefacts + deterministic assembly |
 
-## Deliverables
+## Deliverables (complete)
 
 - instructional budget model
 - learner-time allocation framework
 - depth and core-vs-extension guidance
 - DLA/GAM budgeting guidelines
-- controlled output-budget experiment plan
-- risk and test strategy for external audit
+- end-to-end workflow test evidence
+- closure report and handover to Sprint 58
 
-## Definition of Done
+## Definition of Done (met)
 
-- Learner-time budgeting model agreed.
-- Core vs extension content policy agreed.
-- DLA activity sizing guidance agreed.
-- GAM material budgeting guidance agreed.
-- At least one controlled page-generation experiment completed.
-- Instructional-validity audit completed.
-- Recommendation produced:
-  - A. Proceed to Sprint 57B implementation
-  - B. Continue instructional-budget investigation
+- [x] Learner-time budgeting model agreed
+- [x] Core vs extension content policy agreed
+- [x] DLA activity sizing guidance agreed
+- [x] GAM material budgeting guidance agreed
+- [x] End-to-end page-generation testing completed
+- [x] Instructional-validity / viability assessment completed
+- [x] Recommendation produced → **Sprint 58 partial artefact architecture**
+
+## Closure
+
+[SPRINT-57A-CLOSURE-REPORT.md](SPRINT-57A-CLOSURE-REPORT.md)

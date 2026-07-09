@@ -448,6 +448,11 @@ test("EP copy prompt includes canonical page_profile and source_artefacts exampl
   const instr = api.buildWorkflowStepInstructions(epStep, 1, null);
   assert.match(instr, /Canonical shape examples/i);
   assert.match(instr, /"page_profile":\s*\{\s*"profile_type":\s*"learner"\s*\}/);
+  assert.match(instr, /"title":\s*"Learner-facing page title"/);
+  assert.match(instr, /"audience":\s*"Learners"/);
+  assert.match(instr, /"learning_outcomes":\s*\[/);
+  assert.match(instr, /"generation_notes":\s*\{/);
+  assert.match(instr, /"validation":\s*\{/);
   assert.match(instr, /"artefact_type":\s*"learning_outcomes"/);
   assert.match(instr, /"source_label":\s*"Learning Outcomes"/);
   assert.match(instr, /source_artefacts: \["learning_outcomes"\] \(string array\)/i);

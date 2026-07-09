@@ -1,0 +1,39 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["dla"],
+    "current_stage": "dla"
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "learner_task": "Compare inflation drivers using evidence.",
+      "expected_output": "A justified comparison paragraph.",
+      "activity_preamble": "Work through the comparison sequence.",
+      "reasoning_orientation": "Link cause to effect.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "purpose": "Concept grounding"
+        }
+      ],
+      "materials": []
+    },
+    {
+      "activity_id": "A2",
+      "learner_task": "Apply CPI calculations to a scenario.",
+      "expected_output": "Completed calculation with interpretation.",
+      "activity_preamble": "Use the CPI method shown.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "template",
+          "purpose": "Calculation scaffold"
+        }
+      ],
+      "materials": []
+    }
+  ]
+}

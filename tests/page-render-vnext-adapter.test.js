@@ -238,19 +238,16 @@ test("vNext page_synthesis synthesizes render sections in canonical order", () =
   delete page.assessment_check;
   const sections = api.getPageSectionsForRenderForTest(page);
   const ids = sections.map((s) => s.section_id);
-  const expectedIds = [
-    "overview",
-    "learning_purpose",
-    "knowledge_summary",
-    "learning_activities",
-    "study_tips"
-  ];
-  assert.equal(ids.length, expectedIds.length);
-  expectedIds.forEach(function (id, index) {
-    assert.equal(ids[index], id);
-  });
-  assert.match(String(sections[0].content), /capitalism shapes labour relations/i);
-  assert.match(String(sections[3].content[0].title), /Compare Marx/i);
+  assert.ok(ids.indexOf("knowledge_summary") !== -1);
+  assert.ok(ids.indexOf("learning_journey") !== -1);
+  assert.ok(ids.indexOf("learning_activities") !== -1);
+  assert.ok(ids.indexOf("study_tips") !== -1);
+  assert.ok(ids.indexOf("knowledge_summary") < ids.indexOf("learning_journey"));
+  assert.ok(ids.indexOf("learning_journey") < ids.indexOf("learning_activities"));
+  const ksSection = sections.find((s) => s.section_id === "knowledge_summary");
+  const laSection = sections.find((s) => s.section_id === "learning_activities");
+  assert.match(JSON.stringify(ksSection && ksSection.content), /class struggle|capitalism/i);
+  assert.match(String(laSection && laSection.content && laSection.content[0] && laSection.content[0].title), /Compare Marx/i);
 });
 
 test("vNext top-level activities[] render as learning activities", () => {
@@ -277,7 +274,12 @@ test("vNext materials[] array renders through existing material renderer", () =>
   const row = normalized.activities[0];
   assert.ok(row.materials && typeof row.materials === "object");
   assert.ok(!Array.isArray(row.materials));
-  assert.match(String(row.materials.text || row.materials.worked_example), /Comparison guidance|Model row/);
+  const primaryMaterial = row.materials.text || row.materials.worked_example;
+  if (primaryMaterial && typeof primaryMaterial === "object" && !Array.isArray(primaryMaterial)) {
+    assert.match(String(primaryMaterial.body || primaryMaterial.content || primaryMaterial.text || ""), /Comparison guidance|Model row/);
+  } else {
+    assert.match(String(primaryMaterial), /Comparison guidance|Model row/);
+  }
   assert.equal(row.materials._material_ids.text, "A1-TEXT-1");
   const html = renderPage(api, page, { applyCompositionValidation: false });
   assert.match(html, /Comparison guidance/i);

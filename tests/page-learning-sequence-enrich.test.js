@@ -211,7 +211,7 @@ test("LS v2 prompt is full-page in/full-page out and excludes legacy omission lo
   assert.match(instr, /Learning Sequence enrich-in-place/i);
   assert.match(instr, /Upstream GAM page/i);
   assert.match(instr, /modify only learning_sequence and assembly_state/i);
-  assert.match(instr, /Do not rewrite.*materials|Do not rewrite.*learning_outcomes/i);
+  assert.match(instr, /Preserve activities, materials, required_materials, learning_outcomes/i);
   assert.match(instr, /activities\.length.*unchanged/i);
   assert.doesNotMatch(instr, /omit an activity|merge it with another activity/i);
 });

@@ -1,0 +1,77 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Inflation Workshop",
+  "audience": "Year 12 learners",
+  "page_profile": { "profile_type": "learner" },
+  "assembly_state": {
+    "enriched_by": ["episode_plan"],
+    "current_stage": "episode_plan"
+  },
+  "page_synthesis": {},
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Activity A1",
+      "learner_task": "\u2014",
+      "expected_output": "\u2014",
+      "activity_preamble": "\u2014",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [{ "function": "orient", "note": "orient" }]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Activity A2",
+      "learner_task": "\u2014",
+      "expected_output": "\u2014",
+      "activity_preamble": "\u2014",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [{ "function": "guided_practice", "note": "practice" }]
+      }
+    }
+  ],
+  "learning_outcomes": [
+    { "id": "LO1", "cognitive_level": "understand", "statement": "Explain inflation drivers." },
+    { "id": "LO2", "cognitive_level": "apply", "statement": "Apply CPI calculations." }
+  ],
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [{ "function": "orient", "note": "orient" }]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [{ "function": "guided_practice", "note": "practice" }]
+      }
+    }
+  ],
+  "source_artefacts": [
+    {
+      "artefact_type": "learning_outcomes",
+      "source_label": "Define Learning Outcomes",
+      "role": "upstream_input"
+    }
+  ],
+  "generation_notes": {
+    "validation": {
+      "activity_coverage": "shell_only",
+      "material_coverage": "pending_gam",
+      "episode_plan_attachment": "attached",
+      "self_containment": "shell_only",
+      "schema_compliance": "episode_plan_boundary",
+      "known_issues": ["DLA pedagogy and GAM materials not yet populated"]
+    }
+  }
+}

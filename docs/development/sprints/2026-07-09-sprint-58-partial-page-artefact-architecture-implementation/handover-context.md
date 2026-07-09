@@ -2,7 +2,7 @@
 
 ## Sprint status
 
-**Active** — implementation sprint opened 2026-07-09
+**Phase 5 hardening complete** — 2026-07-09
 
 ## Predecessors
 
@@ -15,17 +15,33 @@
 
 Partial page artefacts + deterministic assembly. See [ADR-partial-page-artefact-assembly.md](ADR-partial-page-artefact-assembly.md).
 
-## Code baseline at sprint open
+## Implemented architecture state
 
-- Full-page v2 partially implemented in `app.js` and enrich libs
-- `isPageEnrichmentV2WorkflowEnabled()` hard-coded `true`
-- Upstream JSON embeds active for DLA→GAM→LS→DP
-- No `page-vnext-assemble.js`
-- Uncommitted: LS/DP full-page v2 tests and app.js changes
+- `isPageEnrichmentV2WorkflowEnabled()` uses workflow config (no hard-coded `true`)
+- Partial gate implemented: `isPartialPageOutputWorkflowEnabled()`
+- Post-EP no-injection gate implemented: `shouldInjectUpstreamCaptureIntoPrompt()`
+- Deterministic assembly module implemented: `lib/page-vnext-assemble.js`
+- Render path assembles from stored partial captures before rendering: `resolvePageForRenderOrAssembly()`
+- Partial validators implemented for post-EP stages including assessment partials
 
-## Immediate priority
+Assessment partial support is intentionally limited to:
 
-Phase 1: assembly module + gates (see [implementation-plan.md](implementation-plan.md))
+- `step_design_assessment` → `assessment_design`
+- `step_generate_assessment_items` → `assessment_items`
+
+Excluded from assessment partial scope (by design):
+
+- `step_design_feedback`
+- `step_validate_learning_design`
+- `step_revise_assessment_based_on_qa`
+- `step_design_marking_rubric`
+
+## Phase 5 regression summary
+
+- Targeted Sprint 58 regression suite: pass
+- Affected v2 suite: pass
+- Full suite run executed: `1513 pass / 56 fail`
+- Remaining full-suite failures are outside Sprint 58 hardening scope
 
 ## New chat entry
 
@@ -37,6 +53,12 @@ Phase 1: assembly module + gates (see [implementation-plan.md](implementation-pl
 - No LLM reconciliation
 - No upstream capture injection (post-EP)
 - No full-page enrich-in-place (post-EP)
+- No `finalise_page` stage implementation in Sprint 58
+
+## Operational limitations retained
+
+- Manual Copilot paste workflow remains the run-mode interaction path.
+- No API artefact passing between stages.
 
 ## Reference material (read-only)
 

@@ -212,6 +212,17 @@ test("Design Page v2 prompt uses LS page embed and v2 additive contract", () => 
   assert.doesNotMatch(instr, /### Upstream artefacts \(authoritative — prior step outputs in this conversation\)/i);
 });
 
+test("Design Page v2 brief requires learner-facing knowledge summary", () => {
+  const wf = api.normalizeWorkflowForV1(buildWorkflow({ partialPageOutputs: true }), []);
+  const dpStep = wf.steps.find((s) => s.id === "dp_step");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const instr = api.buildWorkflowStepInstructions(dpStep, 5, null);
+  assert.match(instr, /Knowledge summary is mandatory for learner-facing pages/i);
+  assert.match(instr, /page_synthesis\.knowledge_summary/i);
+  assert.match(instr, /section_id "knowledge_summary"/i);
+});
+
 test("Design Page v2 bypasses legacy strict JSON contract augmentation", () => {
   const wf = api.normalizeWorkflowForV1(buildWorkflow(), []);
   api.setWorkflowsForTest([wf]);

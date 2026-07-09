@@ -1,0 +1,34 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["design_page"],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "body": "This workshop examines inflation drivers and CPI application.",
+      "format": "markdown"
+    },
+    "learning_purpose": {
+      "body": "You will explain drivers and apply CPI reasoning.",
+      "format": "markdown"
+    },
+    "knowledge_summary": {
+      "body": "Core inflation concepts include demand-pull and cost-push dynamics, evidence-based interpretation of CPI movement, and judgement about competing explanatory claims.",
+      "format": "markdown"
+    }
+  },
+  "sections": [
+    {
+      "section_id": "overview",
+      "heading": "Overview",
+      "content": "This workshop examines inflation drivers and CPI application."
+    },
+    {
+      "section_id": "knowledge_summary",
+      "heading": "Knowledge summary",
+      "content": "Core inflation concepts include demand-pull and cost-push dynamics, evidence-based interpretation of CPI movement, and judgement about competing explanatory claims."
+    }
+  ]
+}

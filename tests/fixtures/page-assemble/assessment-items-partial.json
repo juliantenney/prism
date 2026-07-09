@@ -1,0 +1,36 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["assessment_items"],
+    "current_stage": "assessment_items"
+  },
+  "assessment_check": {
+    "items": [
+      {
+        "item_id": "Q1",
+        "item_type": "single_answer_mcq",
+        "stem": "Which inflation type is driven by rising demand?",
+        "options": ["Demand-pull", "Cost-push", "Imported inflation", "Wage freeze"],
+        "correct_answer": "Demand-pull"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "section_id": "assessment_check",
+      "heading": "Formative Assessment Check",
+      "content": {
+        "items": [
+          {
+            "item_id": "Q1",
+            "item_type": "single_answer_mcq",
+            "stem": "Which inflation type is driven by rising demand?",
+            "options": ["Demand-pull", "Cost-push", "Imported inflation", "Wage freeze"],
+            "correct_answer": "Demand-pull"
+          }
+        ]
+      }
+    }
+  ]
+}

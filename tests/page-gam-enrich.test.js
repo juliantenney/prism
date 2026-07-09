@@ -96,6 +96,7 @@ function loadPrismTestApi() {
       "lib/page-dla-enrich.js",
       "lib/ld-gam-page-enrich-contract.js",
       "lib/page-gam-enrich.js",
+      "lib/page-vnext-assemble.js",
       "lib/episode-plan-population-contract.js"
     ])
   );
@@ -135,6 +136,7 @@ function buildTestWorkflow(overrides) {
     {
       id: "wf-gam-test",
       goal: "Inflation learning page",
+      pageEnrichmentV2: true,
       steps: [
         { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
         {
@@ -236,6 +238,27 @@ test("setup: build DLA-enriched baseline", () => {
   const check = dlaEnrich.validateDlaEnrichedPage(dlaBaseline, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(dlaBaseline.assembly_state.current_stage, "dla");
+});
+
+test("GAM v2 copy brief enforces canonical hydrated material rows", () => {
+  const wf = buildTestWorkflow({ partialPageOutputs: true, pageEnrichmentV2: true });
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const brief = api.buildWorkflowStepInstructions(
+    {
+      id: "gam_step_brief_probe",
+      title: "Generate Activity Materials",
+      outputName: "page",
+      canonical_step_id: "step_generate_activity_materials"
+    },
+    3,
+    null
+  );
+  assert.match(brief, /exactly one hydrated material object per required_materials\.material_id/i);
+  assert.match(brief, /material_id, material_type, title, body_format, body/i);
+  assert.match(brief, /activity_id \(or parent_activity_id\)/i);
+  assert.match(brief, /no missing IDs, no duplicates, no orphan materials/i);
+  assert.match(brief, /do not leave generation_notes\.validation material_coverage\/self_containment\/activity_coverage in pending\/shell-only states/i);
 });
 
 test("GAM accepts a DLA-enriched vNext page as input", () => {
@@ -359,16 +382,11 @@ test("GAM-enriched page renders through Phase 8 adapter with authored materials"
   assert.match(html, new RegExp(firstMaterial.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
-test("GAM v2 path stays active even when workflow flag is set false", () => {
+test("GAM v2 derive path is disabled when workflow flag is set false", () => {
   const wf = buildTestWorkflow({ pageEnrichmentV2: false });
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const json = api.deriveGenerateActivityMaterialsCaptureJson(wf);
-  assert.ok(json);
-  const page = JSON.parse(json);
-  const check = api.validateGamOrPageCapture(page, null);
-  assert.equal(check.ok, true);
-  assert.equal(page.artifact_type, "page");
-  assert.equal(page.schema_version, "2.0.0");
+  assert.equal(String(json || "").trim(), "");
 });
 
 test("GAM copy prompt expects page input and page output under v2", () => {
@@ -388,170 +406,14 @@ test("GAM copy prompt expects page input and page output under v2", () => {
   );
   assert.match(instr, /Activity count invariant/i);
   assert.match(instr, /exactly \d+ entries/i);
-  assert.match(instr, /output learning_outcomes\.length == input learning_outcomes\.length/i);
-  assert.match(instr, /output episode_plans\.length == input episode_plans\.length/i);
+  assert.match(instr, /Output learning_outcomes\[\] must contain exactly \d+ entries/i);
+  assert.match(instr, /Output episode_plans\[\] must contain exactly \d+ entries/i);
   assert.match(instr, /Do not stop after the first few activities/i);
-  assert.match(instr, /opening `\{` to final `\}`/i);
-
-  // PAGE-15 architecture headings
-  assert.match(instr, /# Identity/i);
-  assert.match(instr, /# Ownership/i);
-  assert.match(instr, /## Ownership Boundary/i);
-  assert.match(instr, /## Field Registry/i);
-  assert.match(instr, /## Activity Integrity/i);
-  assert.match(instr, /## Ownership Failure Conditions/i);
-  assert.match(instr, /# Execution/i);
-  assert.match(instr, /# Quality/i);
-  assert.match(instr, /# Budget/i);
-  assert.match(instr, /# Examples/i);
-
-  // Retired standalone headings must not reappear
-  assert.doesNotMatch(instr, /# Activity Object Preservation Rule/i);
-  assert.doesNotMatch(instr, /# Verbatim Activity Rule/i);
-  assert.doesNotMatch(instr, /# Field Presence Rule/i);
-  assert.doesNotMatch(instr, /# Navigation Preservation Rule/i);
-  assert.doesNotMatch(instr, /# Complete all activities before output/i);
-  assert.doesNotMatch(instr, /# Immutable non-owned fields/i);
-  assert.doesNotMatch(instr, /# Specification Fulfilment Rule/i);
-  assert.doesNotMatch(instr, /# Depth Floor Interpretation/i);
-  assert.doesNotMatch(instr, /# L3 Depth Realisation Rule/i);
-  assert.doesNotMatch(instr, /# Minimum Depth Expectations/i);
-  assert.doesNotMatch(instr, /# Depth Sufficiency Test/i);
-  assert.doesNotMatch(instr, /# Sufficiency Ceiling Rule/i);
-  assert.doesNotMatch(instr, /# Compact Completeness Rule/i);
-  assert.doesNotMatch(instr, /# Owned-Need Rule/i);
-  assert.doesNotMatch(instr, /# Constraint Response Rule/i);
-  assert.doesNotMatch(instr, /# Ownership-Constrained Optimisation Rule/i);
-  assert.doesNotMatch(instr, /# Structural Equality Rule/i);
-  assert.doesNotMatch(instr, /# Compression Target Rule/i);
-  assert.doesNotMatch(instr, /# Depth Efficiency Rule/i);
-  assert.doesNotMatch(instr, /# Material-Type Expectations/i);
-  assert.doesNotMatch(instr, /# Specification Coverage Invariant/i);
-  assert.doesNotMatch(instr, /# Preservation-First Execution Order/i);
-  assert.doesNotMatch(instr, /# Non-Negotiable Preservation Rule/i);
-  assert.doesNotMatch(instr, /# Activity Survival Rule/i);
-  assert.doesNotMatch(instr, /# Structure Preservation Rule/i);
-  assert.doesNotMatch(instr, /# Depth Subordination Rule/i);
-  assert.doesNotMatch(instr, /### Complete full-page emission/i);
-  assert.doesNotMatch(instr, /### No meta-output/i);
-  assert.doesNotMatch(instr, /### Activity object shape preservation/i);
-  assert.doesNotMatch(instr, /### Immutable copy rules/i);
-
-  // Core Identity language
+  assert.match(instr, /from `\{` to `\}`|through the final closing `\}`|complete page JSON/i);
+  assert.match(instr, /Sprint 58 vNext GAM partial-page contract/i);
+  assert.match(instr, /activities\[\] with activity_id and materials\[\] only/i);
+  assert.match(instr, /Explicitly forbidden:/i);
   assert.match(instr, /immutable document|edit in place/i);
-  assert.match(instr, /A1 is not special/i);
-  assert.match(instr, /Do not emit the page after completing A1/i);
-  assert.match(instr, /Completion is determined by the entire page/i);
-  assert.match(instr, /Activity count must never decrease/i);
-  assert.match(instr, /top-level note/i);
-  assert.match(instr, /too large|cannot be reproduced/i);
-  assert.match(instr, /Do not include explanations, apologies, limitation statements/i);
-
-  // Core Ownership language
-  assert.match(instr, /not authorised to rewrite, shorten, paraphrase/i);
-  assert.match(instr, /Preserve all visible non-owned fields from the supplied DLA page as fully as possible/i);
-  assert.match(instr, /Budget pressure does not create an exception/i);
-  assert.match(instr, /every activity field except materials/i);
-  assert.match(instr, /output activity\.learner_task == input activity\.learner_task/i);
-  assert.match(instr, /output activity\.expected_output == input activity\.expected_output/i);
-  assert.match(instr, /output activity\.required_materials == input activity\.required_materials/i);
-  assert.match(instr, /output activity\.episode_plan == input activity\.episode_plan/i);
-  assert.match(instr, /character-for-character|byte-for-byte/i);
-  assert.match(instr, /Do not generate assessment content/i);
-  assert.match(instr, /Do not generate learning-sequence content/i);
-  assert.match(instr, /Do not restate learner_task, expected_output, or required_materials in prose/i);
-  assert.match(instr, /activity object is an immutable container/i);
-  assert.match(instr, /must equal input activity object \+ materials/i);
-  assert.match(instr, /Do not create new activity objects/i);
-  assert.match(instr, /Do not emit \{ activity_id, materials \} objects/i);
-  assert.match(instr, /replace only the materials value|replace only materials value/i);
-  assert.match(instr, /if a field exists in the input activity, it must exist in the output activity/i);
-  assert.match(instr, /All nested structures must remain unchanged/i);
-  assert.match(instr, /metadata supports downstream rendering and navigation/i);
-  assert.match(instr, /must never be removed, omitted, compacted, or replaced/i);
-  assert.match(instr, /generation_notes/i);
-  assert.match(instr, /Do not truncate episode_plans|truncating episode_plans/i);
-
-  // Core Execution language
-  assert.match(instr, /Preservation-First Execution Order/i);
-  assert.match(instr, /Priority 1: Preserve the complete input page/i);
-  assert.match(instr, /Priority 5: Reach the instructional floor/i);
-  assert.match(instr, /Lower-priority requirements must never cause violation of higher-priority requirements/i);
-  assert.match(instr, /depth improvements.*never justify/i);
-  assert.match(instr, /Structural Copy-Forward Rule/i);
-  assert.match(instr, /copy the entire embedded DLA page object as the output base/i);
-  assert.match(instr, /Then apply exactly two patches/i);
-  assert.match(instr, /Replace each activities\[i\]\.materials value/i);
-  assert.match(instr, /Update assembly_state\.current_stage and assembly_state\.enriched_by/i);
-  assert.match(instr, /Do not create a fresh page object/i);
-  assert.match(instr, /Do not select fields to include/i);
-  assert.match(instr, /Do not rebuild activities from activity_id and materials/i);
-  assert.match(instr, /For each activity index i: output\.activities\[i\] must contain every non-materials field present in input\.activities\[i\], with identical values/i);
-  assert.match(instr, /Preserve all visible fields from the supplied DLA page/i);
-  assert.match(instr, /Do not intentionally omit, summarise, or rebuild non-owned fields/i);
-  assert.match(instr, /If uncertainty exists, copy the visible DLA structure as fully as possible and continue/i);
-  assert.match(instr, /Never replace the page with a status\/error object/i);
-  assert.match(instr, /Never return a top-level status-only\/error-only response/i);
-  assert.match(instr, /Work method/i);
-  assert.match(instr, /Treat the supplied DLA page as the base JSON object/i);
-  assert.match(instr, /Copy every activity object in full/i);
-  assert.match(instr, /replace only its materials array/i);
-  assert.match(instr, /Do not emit activity summaries/i);
-  assert.match(instr, /Do not emit activity objects containing only activity_id and materials/i);
-  assert.match(instr, /For every input activity: output the full original activity object/i);
-  assert.match(instr, /preserve all keys and values exactly except materials/i);
-  assert.match(instr, /required_materials must remain present/i);
-  assert.match(instr, /episode_plan must remain present/i);
-  assert.match(instr, /learner_task and expected_output must remain present/i);
-  assert.match(instr, /Do not emit partial activity objects/i);
-  assert.match(instr, /Do not omit fields to save space/i);
-  assert.match(instr, /for each required_materials\[j\], create exactly one corresponding materials\[j\] unless impossible/i);
-  assert.match(instr, /preserve the same material_id as required_materials\[j\]/i);
-  assert.match(instr, /Do not collapse multiple required materials into one generic text material/i);
-
-  // Core Quality language
-  assert.match(instr, /Quality defines the instructional floor/i);
-  assert.match(instr, /required_materials\[\]\.specification as a mandatory content contract/i);
-  assert.match(instr, /depth_floor:L3 means/i);
-  assert.match(instr, /depth_floor:L3 is not satisfied by short summaries/i);
-  assert.match(instr, /Could a learner realistically complete the associated activity using this material alone/i);
-  assert.match(instr, /Material-type matrix/i);
-
-  // Core Budget language
-  assert.match(instr, /Budget defines the instructional ceiling/i);
-  assert.match(instr, /Budget optimisation may occur only within GAM-owned materials/i);
-  assert.match(instr, /minimum complete material needed to satisfy/i);
-  assert.match(instr, /once a material is instructionally sufficient, stop/i);
-  assert.match(instr, /concise enough to preserve downstream page capacity/i);
-  assert.match(instr, /may occur only within GAM-owned material bodies/i);
-  assert.match(instr, /may not optimise, summarise, shorten, rewrite, remove, compact/i);
-  assert.match(instr, /Reduce verbosity only inside GAM-generated material content/i);
-  assert.match(instr, /Never reduce, remove, rewrite, or summarise non-owned content/i);
-  assert.match(instr, /Never emit status-only or error-only objects/i);
-  assert.match(instr, /Never say generation cannot be completed because of response size/i);
-  assert.match(instr, /concept, relationship, consequence, context, and example or reasoning step/i);
-
-  // Examples coverage (one pair per failure cluster)
-  assert.match(instr, /Full-page in-place edit example/i);
-  assert.match(instr, /INVALID example \(compacted activity object\)/i);
-  assert.match(instr, /INVALID example \(still partial activity object\)/i);
-  assert.match(instr, /VALID example \(activity object preserved, materials appended\)/i);
-  assert.match(instr, /INVALID structural copy-forward example/i);
-  assert.match(instr, /VALID structural copy-forward example/i);
-  assert.match(instr, /INVALID example \(rewritten non-owned fields\)/i);
-  assert.match(instr, /VALID example \(non-owned fields copied exactly; only materials populated\)/i);
-  assert.match(instr, /INVALID specification-fulfilment example/i);
-  assert.match(instr, /VALID specification-fulfilment example/i);
-  assert.match(instr, /INVALID shallow-depth example/i);
-  assert.match(instr, /VALID sufficiency example/i);
-  assert.match(instr, /INVALID ownership-constrained optimisation example/i);
-  assert.match(instr, /VALID ownership-constrained optimisation example/i);
-  assert.match(instr, /INVALID meta-output example/i);
-  assert.match(instr, /INVALID status\/error-only example/i);
-  assert.match(instr, /VALID best-effort preservation example/i);
-  assert.match(instr, /INVALID early-stop \/ completion example/i);
-  assert.match(instr, /VALID early-stop \/ completion example/i);
-
   assert.match(instr, /learning_outcomes/i);
   assert.match(instr, /episode_plans/i);
   assert.match(instr, /Material authoring guidance \(Sprint 56F v2/i);
@@ -611,9 +473,9 @@ test("GAM regression fixture enforces full activity-field copy-forward prompt la
   assert.equal(activity.required_materials.length, 2);
   assert.ok("materials" in activity);
   assert.ok("episode_plan" in activity);
-  assert.match(instr, /Do not emit activity objects containing only activity_id and materials/i);
-  assert.match(instr, /Do not emit partial activity objects/i);
-  assert.match(instr, /for each required_materials\[j\], create exactly one corresponding materials\[j\] unless impossible/i);
+  assert.match(instr, /Do NOT emit compact \{ activity_id, materials \} objects/i);
+  assert.match(instr, /Required payload:\s*- activities\[\] with activity_id and materials\[\] only/i);
+  assert.match(instr, /each material must keep stable material_id/i);
 });
 
 test("GAM bindings use page artefact from Design Learning Activities", () => {

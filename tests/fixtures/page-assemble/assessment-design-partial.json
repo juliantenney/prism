@@ -1,0 +1,25 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["assessment_design"],
+    "current_stage": "assessment_design"
+  },
+  "assessment_blueprint": {
+    "assessment_type": "single_answer_mcq",
+    "total_items": 2,
+    "feedback_display": "answer_grid_end"
+  },
+  "coverage_map": {
+    "LO1": 1,
+    "LO2": 1
+  },
+  "difficulty_profile": {
+    "item_counts": {
+      "recall": 1,
+      "comprehension": 1,
+      "application": 0,
+      "analysis": 0
+    }
+  }
+}

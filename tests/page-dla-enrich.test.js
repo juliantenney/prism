@@ -124,6 +124,7 @@ function buildTestWorkflow(overrides) {
     {
       id: "wf-dla-test",
       goal: "Inflation learning page",
+      pageEnrichmentV2: true,
       steps: [
         { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
         {

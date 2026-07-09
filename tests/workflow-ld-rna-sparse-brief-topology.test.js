@@ -141,10 +141,14 @@ test("LD RNA sparse brief: heuristics restore activity and materials steps", () 
     );
   }
   const dloIdx = indexOfTitle(titles, "Define Learning Outcomes");
+  const epIdx = indexOfTitle(titles, "Design Episode Plan");
   const dlaIdx = indexOfTitle(titles, "Design Learning Activities");
   const gamIdx = indexOfTitle(titles, "Generate Activity Materials");
   const gaiIdx = indexOfTitle(titles, "Generate Assessment Items");
   const dpIdx = indexOfTitle(titles, "Design Page");
+  assert.ok(epIdx !== -1, "episode plan step should be present");
+  assert.ok(dloIdx < epIdx, "outcomes should precede episode plans");
+  assert.ok(epIdx < dlaIdx, "episode plans should precede activities");
   assert.ok(dloIdx < dlaIdx, "outcomes should precede activities");
   assert.ok(dlaIdx < gamIdx, "activities should precede materials");
   assert.ok(gamIdx < gaiIdx, "materials should precede assessment items");
@@ -232,6 +236,75 @@ test("LD self-study with activities: keeps activity chain (style not existence)"
     )
   });
   const titles = stepTitles(out);
+  assert.ok(indexOfTitle(titles, "Design Episode Plan") !== -1);
   assert.ok(indexOfTitle(titles, "Design Learning Activities") !== -1);
   assert.ok(indexOfTitle(titles, "Generate Activity Materials") !== -1);
+});
+
+test("LD timed self-study with formative questions restores DLA and GAM", () => {
+  const goal =
+    "Create a 60 minute self study resource for junior managers on change management. Include 5 formative assessment questions.";
+  const factors = api.extractWorkflowBriefExplicitFactors({
+    goal,
+    inputs: "",
+    desiredOutputs: "learner-facing page",
+    startingArtefact: "generate_from_topic",
+    selectedDomains: ["learning-design"]
+  });
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Generate Learning Content", role: "" },
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Generate Assessment Items", role: "" },
+      { title: "Design Page", role: "" }
+    ]
+  }, {
+    goal,
+    inputs: "",
+    desiredOutputs: "learner-facing page",
+    startingArtefact: "generate_from_topic",
+    explicitBriefFactors: factors,
+    resolvedBriefFactors: Object.assign({}, factors)
+  });
+  const titles = stepTitles(out);
+  assert.ok(indexOfTitle(titles, "Design Learning Activities") !== -1);
+  assert.ok(indexOfTitle(titles, "Generate Activity Materials") !== -1);
+});
+
+test("LD stage order: Episode Plan is before DLA when model appends it late", () => {
+  const out = applyLdHeuristics(api, ldWorkflowPolicy, {
+    steps: [
+      { title: "Generate Learning Content", role: "" },
+      { title: "Model Knowledge", role: "" },
+      { title: "Define Learning Outcomes", role: "" },
+      { title: "Design Learning Activities", role: "" },
+      { title: "Generate Activity Materials", role: "" },
+      { title: "Generate Assessment Items", role: "" },
+      { title: "Construct Learning Sequence", role: "" },
+      { title: "Design Episode Plan", role: "" },
+      { title: "Design Page", role: "" }
+    ]
+  }, {
+    goal:
+      "Create a 60 minute self study resource for undergraduate students on the topic of Karl Marx's life. Include a number of short activities and five formative assessment questions.",
+    inputs: "",
+    desiredOutputs: "learner-facing page",
+    startingArtefact: "generate_from_topic",
+    resolvedBriefFactors: {
+      design_scope: "session",
+      delivery_context: "self_directed",
+      session_materials: ["page"],
+      input_strategy: "generate_from_topic",
+      activities_required: true,
+      assessment_total_items: 5
+    }
+  });
+  const titles = stepTitles(out);
+  const loIdx = indexOfTitle(titles, "Define Learning Outcomes");
+  const epIdx = indexOfTitle(titles, "Design Episode Plan");
+  const dlaIdx = indexOfTitle(titles, "Design Learning Activities");
+  assert.ok(epIdx !== -1);
+  assert.ok(loIdx < epIdx, "episode plan should follow learning outcomes");
+  assert.ok(epIdx < dlaIdx, "episode plan should precede DLA");
 });

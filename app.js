@@ -214,10 +214,13 @@
     assessmentItemsShowAdvancedOptions: false,
     utilitiesLastHtml: "",
     utilitiesLastFileName: "",
-    utilitiesPresentationMode: "single_page"
+    utilitiesPresentationMode: "single_page",
+    utilitiesSourceMode: ""
   };
 
   var WORKFLOW_STORAGE_KEY = "promptr.workflows.v1";
+  var WORKFLOW_RUN_STATE_STORAGE_KEY = "promptr.workflows.runstate.v1";
+  var workflowRunAutosaveToastTimer = null;
 
   function cacheElements() {
     els.apiKeyFile = document.getElementById("apiKeyFile");
@@ -471,6 +474,7 @@
     els.utilitiesPresentationMode = document.getElementById("utilitiesPresentationMode");
     els.utilitiesFileName = document.getElementById("utilitiesFileName");
     els.utilitiesJsonInput = document.getElementById("utilitiesJsonInput");
+    els.utilitiesAssembleCurrentRunBtn = document.getElementById("utilitiesAssembleCurrentRunBtn");
     els.utilitiesGenerateBtn = document.getElementById("utilitiesGenerateBtn");
     els.utilitiesDownloadBtn = document.getElementById("utilitiesDownloadBtn");
     els.utilitiesOpenTabBtn = document.getElementById("utilitiesOpenTabBtn");
@@ -528,6 +532,22 @@
         toast.parentNode.removeChild(toast);
       }
     }, 210);
+  }
+
+  function queueWorkflowRunAutosaveToast(type) {
+    var toastType = String(type || "").toLowerCase();
+    if (workflowRunAutosaveToastTimer) {
+      window.clearTimeout(workflowRunAutosaveToastTimer);
+      workflowRunAutosaveToastTimer = null;
+    }
+    workflowRunAutosaveToastTimer = window.setTimeout(function () {
+      workflowRunAutosaveToastTimer = null;
+      if (toastType === "success") {
+        showToast("Step output data saved.", "success");
+      } else if (toastType === "error") {
+        showToast("Step output has validation errors and was not auto-saved.", "error");
+      }
+    }, 450);
   }
 
   function updateTokenUsage(usage, modelId) {
@@ -4386,6 +4406,7 @@
 
   function buildSeededStepPromptForWorkflowStep(input) {
     var seed = input && typeof input === "object" ? input : {};
+    var sprint58PackAuthoringOnly = !!seed.sprint58PackAuthoringOnly;
     var step = seed.step && typeof seed.step === "object" ? seed.step : {};
     var matchedPattern =
       seed.matchedPattern && typeof seed.matchedPattern === "object"
@@ -4466,6 +4487,26 @@
     }
     if (!draft) {
       draft = buildWorkflowStepPromptFallback(cfg, syntheticCtx, selectedOptions).trim();
+    }
+    if (
+      !sprint58PackAuthoringOnly &&
+      isWorkflowStepGenerateAssessmentItems({
+        stepCanonicalStepId: syntheticCtx.stepCanonicalStepId,
+        stepCanonicalTitle: syntheticCtx.stepCanonicalTitle,
+        stepTitle: syntheticCtx.stepTitle
+      })
+    ) {
+      var gaiAuthoring = stripLegacyAssessmentItemsOutputSectionFromPackPrompt(draft);
+      draft = [
+        buildGenerateAssessmentItemsV2CopyAuthoringBrief(),
+        buildGaiV2CopilotSchemaInstructions(),
+        gaiAuthoring
+      ]
+        .filter(function (part) {
+          return !!String(part || "").trim();
+        })
+        .join("\n\n")
+        .trim();
     }
     return String(draft || "").trim();
   }
@@ -5367,6 +5408,7 @@
       state.workflowDesignResult ||
       null;
     if (!parsed) return;
+    normalizeWorkflowDesignStageOrderInPlace(parsed.steps);
 
     if (els.wfDesignStatus) {
       els.wfDesignStatus.textContent = "Complete";
@@ -5498,6 +5540,36 @@
           " step(s), shown below. Would you like to refine it further? (yes/no)"
       );
     }
+  }
+
+  function normalizeWorkflowDesignStageOrderInPlace(steps) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    function idxOf(title) {
+      var target = String(title || "").toLowerCase().trim();
+      return steps.findIndex(function (s) {
+        return String((s && s.title) || "").toLowerCase().trim() === target;
+      });
+    }
+    function moveBefore(titleToMove, anchorTitle) {
+      var from = idxOf(titleToMove);
+      var anchor = idxOf(anchorTitle);
+      if (from === -1 || anchor === -1 || from < anchor) return;
+      var row = steps.splice(from, 1)[0];
+      var anchorNow = idxOf(anchorTitle);
+      steps.splice(anchorNow, 0, row);
+    }
+    moveBefore("Design Episode Plan", "Design Learning Activities");
+    moveBefore("Design Episode Plan", "Generate Activity Materials");
+    moveBefore("Design Episode Plan", "Construct Learning Sequence");
+    moveBefore("Design Episode Plan", "Design Page");
+    var epIdx = idxOf("Design Episode Plan");
+    var loIdx = idxOf("Define Learning Outcomes");
+    if (epIdx !== -1 && loIdx !== -1 && epIdx <= loIdx) {
+      var epRow = steps.splice(epIdx, 1)[0];
+      var loNow = idxOf("Define Learning Outcomes");
+      steps.splice(loNow + 1, 0, epRow);
+    }
+    return steps;
   }
 
   function getSelectedWorkflowDesign() {
@@ -6931,6 +7003,78 @@
     );
   }
 
+  function isWorkflowStepDesignAssessmentRow(step) {
+    if (!step || typeof step !== "object") return false;
+    return isWorkflowStepDesignAssessment({
+      stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+      stepCanonicalTitle: step.title || "",
+      stepTitle: step.title || ""
+    });
+  }
+
+  function isWorkflowStepGenerateAssessmentItemsRow(step) {
+    if (!step || typeof step !== "object") return false;
+    return isWorkflowStepGenerateAssessmentItems({
+      stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+      stepCanonicalTitle: step.title || "",
+      stepTitle: step.title || ""
+    });
+  }
+
+  function isWorkflowStepPageStructureProducer(step, wf) {
+    if (!step || typeof step !== "object") return false;
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(workflow)) {
+      return true;
+    }
+    var ctx = buildWorkflowStepIdentityContextFromRow(step);
+    if (
+      isWorkflowStepDesignLearningActivities(ctx) ||
+      isWorkflowStepGenerateActivityMaterials(ctx) ||
+      isWorkflowStepConstructLearningSequence(ctx) ||
+      isWorkflowStepDesignPageRow(step) ||
+      isWorkflowStepDesignAssessmentRow(step) ||
+      isWorkflowStepGenerateAssessmentItemsRow(step)
+    ) {
+      return true;
+    }
+    var outputName = String(step.outputName || "").trim().toLowerCase().replace(/\s+/g, "_");
+    return outputName === "page";
+  }
+
+  function workflowStepProducesStoredArtefact(step, wf) {
+    if (!step || typeof step !== "object") return false;
+    if (isWorkflowStepPageStructureProducer(step, wf)) return true;
+    var outputName = String(step.outputName || "").trim();
+    if (outputName) return true;
+    var strictKind = resolveStrictJsonWorkflowStepKind(step, wf);
+    return !!strictKind;
+  }
+
+  function isWorkflowStepDesignAssessment(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_design_assessment" ||
+      title === "design assessment" ||
+      title.indexOf("design assessment") !== -1
+    );
+  }
+
+  function isWorkflowStepGenerateAssessmentItems(context) {
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+    ).toLowerCase();
+    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    return (
+      canonicalId === "step_generate_assessment_items" ||
+      title === "generate assessment items" ||
+      title.indexOf("generate assessment item") !== -1
+    );
+  }
+
   function isWorkflowStepAssessmentProducer(context) {
     var title = String(
       (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
@@ -8196,6 +8340,176 @@
     return normalized;
   }
 
+  function workflowStepMatchesCanonicalIdentity(step, canonicalIdentity) {
+    var id = String(canonicalIdentity || "").trim().toLowerCase();
+    if (!id || !step || typeof step !== "object") return false;
+    var canonicalId = normalizeCanonicalStepId(step.canonical_step_id || step.canonicalStepId || "");
+    if (canonicalId && canonicalId === id) return true;
+    var ctx = buildWorkflowStepIdentityContextFromRow(step);
+    if (id === "episode_plan" || id === "step_design_episode_plan") {
+      return isWorkflowStepDesignEpisodePlan(ctx);
+    }
+    if (id === "dla" || id === "step_design_learning_activities") {
+      return isWorkflowStepDesignLearningActivities(ctx);
+    }
+    if (id === "gam" || id === "step_generate_activity_materials") {
+      return isWorkflowStepGenerateActivityMaterials(ctx);
+    }
+    if (id === "learning_sequence" || id === "step_construct_learning_sequence") {
+      return isWorkflowStepConstructLearningSequence(ctx);
+    }
+    if (id === "design_page" || id === "step_design_page") {
+      return isWorkflowStepDesignPage(ctx);
+    }
+    return false;
+  }
+
+  /**
+   * Read stored workflow run capture by canonical step identity.
+   * Read-only helper for deterministic assembly/render integration.
+   */
+  function readWorkflowStepCaptureByCanonicalId(wf, canonicalIdentity, options) {
+    var workflow = wf && typeof wf === "object" ? wf : resolveWorkflowForUpstreamArtefacts({});
+    var opts = options && typeof options === "object" ? options : {};
+    var preferRaw = opts.preferRaw !== false;
+    var captures = opts.captures && typeof opts.captures === "object" ? opts.captures : state.workflowRunCapturedOutputs;
+    var capturesRaw =
+      opts.capturesRaw && typeof opts.capturesRaw === "object"
+        ? opts.capturesRaw
+        : state.workflowRunCapturedOutputsRaw;
+    var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
+    var producerStep =
+      steps.find(function (row) {
+        return workflowStepMatchesCanonicalIdentity(row, canonicalIdentity);
+      }) || null;
+    if (!producerStep) return "";
+    var sid = String(producerStep.id || "").trim();
+    if (!sid) return "";
+    var fromRaw = sid && capturesRaw && capturesRaw[sid] ? String(capturesRaw[sid]) : "";
+    var fromSanitized = sid && captures && captures[sid] ? String(captures[sid]) : "";
+    if (preferRaw && String(fromRaw || "").trim()) return fromRaw;
+    if (String(fromSanitized || "").trim()) return fromSanitized;
+    if (!preferRaw && String(fromRaw || "").trim()) return fromRaw;
+    return "";
+  }
+
+  function resolveCaptureStageFromPageArtefact(parsedPage) {
+    if (!parsedPage || typeof parsedPage !== "object" || Array.isArray(parsedPage)) return "";
+    if (
+      String(parsedPage.artifact_type || "").toLowerCase() !== "page" ||
+      String(parsedPage.schema_version || "") !== "2.0.0"
+    ) {
+      return "";
+    }
+    return String(
+      parsedPage.assembly_state && parsedPage.assembly_state.current_stage
+        ? parsedPage.assembly_state.current_stage
+        : ""
+    )
+      .trim()
+      .toLowerCase();
+  }
+
+  function resolvePageForRenderOrAssembly(parsed, wf, options) {
+    var page = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+    if (!page || String(page.artifact_type || "").toLowerCase() !== "page") return parsed;
+    var workflow = wf && typeof wf === "object" ? wf : resolveWorkflowForUpstreamArtefacts({});
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) return parsed;
+    var assembleMod = resolvePageVnextAssembleLib();
+    if (!assembleMod) {
+      throw new Error("vNext page assembly module unavailable");
+    }
+    if (typeof assembleMod.validateAssembledPageForRender === "function") {
+      var completeCheck = assembleMod.validateAssembledPageForRender(page);
+      if (completeCheck && completeCheck.ok) return parsed;
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    var captures = opts.captures && typeof opts.captures === "object" ? opts.captures : state.workflowRunCapturedOutputs;
+    var capturesRaw =
+      opts.capturesRaw && typeof opts.capturesRaw === "object"
+        ? opts.capturesRaw
+        : state.workflowRunCapturedOutputsRaw;
+    var partials = {};
+    var epRaw = readWorkflowStepCaptureByCanonicalId(workflow, "step_design_episode_plan", {
+      captures: captures,
+      capturesRaw: capturesRaw,
+      preferRaw: true
+    });
+    if (!String(epRaw || "").trim()) {
+      throw new Error("Missing required episode plan page shell capture for assembly");
+    }
+    partials.episode_plan = tryParseWorkflowArtefactJson(epRaw);
+    if (!partials.episode_plan) {
+      throw new Error("Episode plan capture is not valid JSON for assembly");
+    }
+    var stageCaptureSpecs = [
+      { stage: "dla", canonicalId: "step_design_learning_activities" },
+      { stage: "gam", canonicalId: "step_generate_activity_materials" },
+      { stage: "learning_sequence", canonicalId: "step_construct_learning_sequence" },
+      { stage: "assessment_design", canonicalId: "step_design_assessment" },
+      { stage: "assessment_items", canonicalId: "step_generate_assessment_items" },
+      { stage: "design_page", canonicalId: "step_design_page" }
+    ];
+    stageCaptureSpecs.forEach(function (spec) {
+      var raw = readWorkflowStepCaptureByCanonicalId(workflow, spec.canonicalId, {
+        captures: captures,
+        capturesRaw: capturesRaw,
+        preferRaw: true
+      });
+      if (!String(raw || "").trim()) return;
+      var parsedCapture = tryParseWorkflowArtefactJson(raw);
+      if (!parsedCapture) {
+        throw new Error("Invalid JSON capture for " + spec.stage + " assembly stage");
+      }
+      partials[spec.stage] = parsedCapture;
+    });
+    var inlineStage = resolveCaptureStageFromPageArtefact(page);
+    if (inlineStage && inlineStage !== "episode_plan") {
+      if (
+        inlineStage === "learning_sequence" ||
+        inlineStage === "design_page" ||
+        inlineStage === "dla" ||
+        inlineStage === "gam" ||
+        inlineStage === "assessment_design" ||
+        inlineStage === "assessment_items"
+      ) {
+        partials[inlineStage] = page;
+      }
+    }
+    var assembledResult = null;
+    try {
+      if (typeof assembleMod.assembleVNextPageFromPartials === "function") {
+        assembledResult = assembleMod.assembleVNextPageFromPartials(partials);
+      } else if (typeof assembleMod.assembleVNextPageFromWorkflowCaptures === "function") {
+        assembledResult = assembleMod.assembleVNextPageFromWorkflowCaptures(workflow, {
+          captures: captures,
+          capturesRaw: capturesRaw
+        });
+      } else {
+        throw new Error("No compatible assembly function available");
+      }
+    } catch (err) {
+      throw new Error("vNext page assembly failed: " + ((err && err.message) || String(err || "unknown error")));
+    }
+    var assembledPage =
+      assembledResult && assembledResult.page && typeof assembledResult.page === "object"
+        ? assembledResult.page
+        : assembledResult;
+    if (!assembledPage || typeof assembledPage !== "object" || Array.isArray(assembledPage)) {
+      throw new Error("vNext page assembly produced no renderable page object");
+    }
+    if (typeof assembleMod.validateAssembledPageForRender === "function") {
+      var assembledCheck = assembleMod.validateAssembledPageForRender(assembledPage);
+      if (!assembledCheck || !assembledCheck.ok) {
+        throw new Error(
+          "Assembled page failed render validation: " +
+            String((assembledCheck && (assembledCheck.errors || []).join("; ")) || "unknown validation error")
+        );
+      }
+    }
+    return assembledPage;
+  }
+
   function resolveEpisodePlanDlaIntegrationLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -8219,6 +8533,20 @@
     for (i = 0; i < roots.length; i += 1) {
       if (roots[i] && roots[i].PRISM_PAGE_SHELL_CREATE) {
         return roots[i].PRISM_PAGE_SHELL_CREATE;
+      }
+    }
+    return null;
+  }
+
+  function resolvePageVnextAssembleLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PAGE_VNEXT_ASSEMBLE) {
+        return roots[i].PRISM_PAGE_VNEXT_ASSEMBLE;
       }
     }
     return null;
@@ -8280,15 +8608,100 @@
     return null;
   }
 
+  function resolveLdGaiPageEnrichContractLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_GAI_PAGE_ENRICH_CONTRACT) {
+        return roots[i].PRISM_LD_GAI_PAGE_ENRICH_CONTRACT;
+      }
+    }
+    return null;
+  }
+
   function resolveActiveWorkflowForEpisodePlanDerive(wf) {
     if (wf && typeof wf === "object" && Array.isArray(wf.steps)) return wf;
     return findWorkflowById(String(state.selectedWorkflowId || "").trim());
   }
 
+  function readWorkflowOutputSpecFlag(wf, flagName) {
+    if (!wf || typeof wf !== "object" || Array.isArray(wf)) return false;
+    if (wf[flagName] === true) return true;
+    if (
+      wf.workflowOutputSpec &&
+      typeof wf.workflowOutputSpec === "object" &&
+      !Array.isArray(wf.workflowOutputSpec) &&
+      wf.workflowOutputSpec[flagName] === true
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   function isPageEnrichmentV2WorkflowEnabled(wf) {
-    // Repository operates in v2-only mode.
-    // Legacy/non-v2 workflow branches are intentionally disabled.
-    void wf;
+    if (readWorkflowOutputSpecFlag(wf, "pageEnrichmentV2")) return true;
+    // Heuristic fallback: if workflow steps are already normalized to page artefacts,
+    // treat workflow as v2-enabled even when persisted flags are missing/stale.
+    if (!wf || typeof wf !== "object" || !Array.isArray(wf.steps)) return false;
+    var hasEpisodePlanPageStep = wf.steps.some(function (row) {
+      if (!row || typeof row !== "object") return false;
+      if (!isWorkflowStepDesignEpisodePlanRow(row)) return false;
+      return normalizeWorkflowStepOutputNameKey(row) === "page";
+    });
+    if (!hasEpisodePlanPageStep) return false;
+    var hasPostEpisodePageStage = wf.steps.some(function (row) {
+      if (!row || typeof row !== "object") return false;
+      if (normalizeWorkflowStepOutputNameKey(row) !== "page") return false;
+      var ctx = buildWorkflowStepIdentityContextFromRow(row);
+      return (
+        isWorkflowStepDesignLearningActivities(ctx) ||
+        isWorkflowStepGenerateActivityMaterials(ctx) ||
+        isWorkflowStepConstructLearningSequence(ctx) ||
+        isWorkflowStepDesignPageRow(row) ||
+        isWorkflowStepDesignAssessment(ctx) ||
+        isWorkflowStepGenerateAssessmentItems(ctx)
+      );
+    });
+    return hasPostEpisodePageStage;
+  }
+
+  function isPartialPageOutputWorkflowEnabled(wf) {
+    return (
+      isPageEnrichmentV2WorkflowEnabled(wf) &&
+      readWorkflowOutputSpecFlag(wf, "partialPageOutputs")
+    );
+  }
+
+  function buildWorkflowStepIdentityContextFromRow(step) {
+    return {
+      stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+      stepCanonicalTitle: step && step.title,
+      stepTitle: step && step.title,
+      stepOutputName: step && step.outputName
+    };
+  }
+
+  function isPostEpisodePlanPartialOutputStep(step, wf) {
+    if (!isPartialPageOutputWorkflowEnabled(wf)) return false;
+    if (!step || typeof step !== "object") return false;
+    if (isWorkflowStepDesignEpisodePlanRow(step)) return false;
+    var ctx = buildWorkflowStepIdentityContextFromRow(step);
+    return (
+      isWorkflowStepDesignLearningActivities(ctx) ||
+      isWorkflowStepGenerateActivityMaterials(ctx) ||
+      isWorkflowStepConstructLearningSequence(ctx) ||
+      isWorkflowStepDesignAssessment(ctx) ||
+      isWorkflowStepGenerateAssessmentItems(ctx) ||
+      isWorkflowStepDesignPageRow(step)
+    );
+  }
+
+  function shouldInjectUpstreamCaptureIntoPrompt(step, wf) {
+    if (!step) return false;
+    if (isPostEpisodePlanPartialOutputStep(step, wf)) return false;
     return true;
   }
 
@@ -8401,6 +8814,34 @@
     return String(step && step.outputName != null ? step.outputName : "").trim();
   }
 
+  function getDesignAssessmentEffectiveOutputName(step, wf) {
+    if (
+      isWorkflowStepDesignAssessment({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPartialPageOutputWorkflowEnabled(wf)
+    ) {
+      return "page";
+    }
+    return "";
+  }
+
+  function getGenerateAssessmentItemsEffectiveOutputName(step, wf) {
+    if (
+      isWorkflowStepGenerateAssessmentItems({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPartialPageOutputWorkflowEnabled(wf)
+    ) {
+      return "page";
+    }
+    return "";
+  }
+
   function applyPageEnrichmentV2StepNormalization(steps, wf) {
     if (!Array.isArray(steps) || !steps.length) return steps;
     if (!isPageEnrichmentV2WorkflowEnabled(wf)) return steps;
@@ -8444,21 +8885,54 @@
         lsNext.outputName = "page";
         return lsNext;
       }
+      if (
+        isPartialPageOutputWorkflowEnabled(wf) &&
+        isWorkflowStepDesignAssessment({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        var daNext = Object.assign({}, row);
+        daNext.outputName = "page";
+        return daNext;
+      }
+      if (
+        isPartialPageOutputWorkflowEnabled(wf) &&
+        isWorkflowStepGenerateAssessmentItems({
+          stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+          stepCanonicalTitle: row.title || "",
+          stepTitle: row.title || ""
+        })
+      ) {
+        var gaiNext = Object.assign({}, row);
+        gaiNext.outputName = "page";
+        return gaiNext;
+      }
       return row;
     });
   }
 
-  function validateDlaOrPageCapture(parsed, baseline) {
+  function validateDlaOrPageCapture(parsed, baseline, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
     var dlaMod = resolvePageDlaEnrichLib();
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
     if (
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page" &&
-      dlaMod &&
-      typeof dlaMod.validateDlaEnrichedPage === "function"
+      dlaMod
     ) {
+      if (
+        partialMode &&
+        typeof dlaMod.validateDlaPartialPageCapture === "function" &&
+        parsed.assembly_state &&
+        parsed.assembly_state.current_stage === "dla"
+      ) {
+        return dlaMod.validateDlaPartialPageCapture(parsed);
+      }
       if (
         parsed.assembly_state &&
         parsed.assembly_state.current_stage === "dla"
@@ -8513,6 +8987,7 @@
   }
 
   function buildUpstreamPageShellEmbedSectionForDlaCopy(wf) {
+    if (isPartialPageOutputWorkflowEnabled(wf)) return "";
     var json = resolvePageShellJsonForDlaCopy(wf);
     if (!json || !String(json).trim()) {
       return [
@@ -8660,20 +9135,17 @@
 
   function buildLearningSequenceV2CopyAuthoringBrief() {
     return [
-      "Identity: treat the supplied GAM-enriched page as the base JSON object and return that SAME full page.",
-      "Preservation-first rule: preserve all upstream page content exactly as provided.",
-      "Ownership boundary: modify only learning_sequence and assembly_state for Learning Sequence provenance.",
-      "Allowed learning_sequence fields: ordered_activity_ids, sequence_title, total_duration_minutes, timeline[] plus clearly sequence-owned navigation fields.",
-      "Timeline rows should reference existing activities using activity_id and may include phase_type, start_minute, duration_minutes, and transition_to_next.",
-      "Do not regenerate, rewrite, summarise, compact, merge, remove, or reorder activities.",
-      "Do not rewrite activities[].materials, activities[].required_materials, learning_outcomes, episode_plans, page_synthesis, source_artefacts, delivery_notes, or generation_notes.",
-      "Structural invariants: activities.length unchanged; activity order unchanged; activity_id order unchanged.",
-      "Do not emit standalone learning_sequence artefacts. Do not emit activities_used, activities_omitted, omission checks, or merge shortcuts in v2.",
-      "Update assembly_state.current_stage to learning_sequence and ensure assembly_state.enriched_by includes learning_sequence exactly once."
+      "Output contract: return a partial page artefact only (not a full-page replay).",
+      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "learning_sequence", and assembly_state.enriched_by including "learning_sequence".',
+      "Required payload: learning_sequence object (ordered_activity_ids/timeline and sequence-owned navigation fields as needed).",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Forbidden: activities[], materials[], shell fields (title/audience/page_profile/learning_outcomes/episode_plans), page_synthesis, and full-page replay.",
+      "Do not reconstruct or preserve non-owned stage fields."
     ].join("\n");
   }
 
   function buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wf) {
+    if (isPartialPageOutputWorkflowEnabled(wf)) return "";
     var json = resolveGamEnrichedPageJsonForLearningSequenceCopy(wf);
     if (!json || !String(json).trim()) {
       return [
@@ -8700,14 +9172,19 @@
     ].join("\n");
   }
 
-  function validateLearningSequenceOrPageCapture(parsed, baseline) {
+  function validateLearningSequenceOrPageCapture(parsed, baseline, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
     if (
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page"
     ) {
+      if (partialMode) {
+        return validateLearningSequencePartialPageCapture(parsed);
+      }
       var errors = [];
       if (
         !parsed.assembly_state ||
@@ -8756,6 +9233,30 @@
     return { ok: false, errors: ["unrecognized Learning Sequence capture shape"] };
   }
 
+  function validateLearningSequencePartialPageCapture(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var errors = [];
+    if (String(parsed.schema_version || "") !== "2.0.0") {
+      errors.push('schema_version must be "2.0.0"');
+    }
+    if (String(parsed.artifact_type || "") !== "page") {
+      errors.push('artifact_type must be "page"');
+    }
+    if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
+      errors.push("assembly_state required");
+    }
+    if (
+      !parsed.learning_sequence ||
+      typeof parsed.learning_sequence !== "object" ||
+      Array.isArray(parsed.learning_sequence)
+    ) {
+      errors.push("learning_sequence object required");
+    }
+    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+  }
+
   function resolveLearningSequenceEnrichedPageJsonForDesignPageCopy(wf) {
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
     var steps = workflow && Array.isArray(workflow.steps) ? workflow.steps : [];
@@ -8802,19 +9303,59 @@
 
   function buildDesignPageV2CopyAuthoringBrief() {
     return [
-      "Identity: treat the supplied Learning Sequence-enriched page as the base JSON object and return that SAME full page.",
-      "Ownership boundary: Design Page v2 may write only Design Page presentation/layout fields and assembly_state for design_page provenance.",
-      "Preservation-first rule: preserve all upstream page content exactly as provided.",
-      "Do not regenerate learning content, activities, materials, learning_outcomes, episode_plans, or learning_sequence.",
-      "Do not compact, summarise, reorder, merge, or remove activities.",
-      "Do not rewrite activities[].materials or required_materials.",
-      "Structural invariants: activities.length unchanged; activity order unchanged; activity_id order unchanged.",
-      "Prompt pipeline model: full page input, full page output, additive enrichment only.",
-      "No patching, merge/reassembly, reconciliation, or diff-based correction behavior in this step."
+      "Output contract: return a partial page artefact only (not a full-page replay).",
+      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "design_page", and assembly_state.enriched_by including "design_page".',
+      "Required payload: page_synthesis and/or sections.",
+      "Knowledge summary is mandatory for learner-facing pages: emit a substantive concept synthesis in page_synthesis.knowledge_summary and mirror it in sections[] with section_id \"knowledge_summary\" when sections[] is present.",
+      "Knowledge summary must synthesise core concepts and conceptual relations from upstream artefacts (KM/EP/LS/content), not just repeat learning outcomes.",
+      "For Marx/economics concept pages, ensure the knowledge summary explicitly covers: capitalism, bourgeoisie/proletariat, surplus value, historical materialism, class struggle, alienation, and evaluation of evidence for/against Marx.",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Forbidden: activity/material regeneration, shell fields (title/audience/page_profile/learning_outcomes/episode_plans), learning_sequence regeneration, and full-page replay.",
+      "Do not reconstruct or preserve non-owned stage fields."
+    ].join("\n");
+  }
+
+  function buildDesignAssessmentV2CopyAuthoringBrief() {
+    return [
+      "Output contract: return a partial page artefact only (not standalone assessment_blueprint JSON).",
+      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "assessment_design", and assembly_state.enriched_by including "assessment_design".',
+      "Required payload: assessment_blueprint object (and optional coverage_map / difficulty_profile).",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Forbidden: activities/materials regeneration, page_synthesis, sections, learning_sequence, and full-page replay.",
+      "Do not reconstruct or preserve non-owned stage fields."
+    ].join("\n");
+  }
+
+  function buildGaiV2CopilotSchemaInstructions() {
+    var contractMod = resolveLdGaiPageEnrichContractLib();
+    var contract =
+      contractMod && typeof contractMod.buildGaiPageEnrichContractBlock === "function"
+        ? contractMod.buildGaiPageEnrichContractBlock()
+        : "";
+    var canonical =
+      contractMod && typeof contractMod.buildCanonicalGaiAssessmentShapeSnippet === "function"
+        ? contractMod.buildCanonicalGaiAssessmentShapeSnippet()
+        : "";
+    return [contract, canonical].filter(Boolean).join("\n");
+  }
+
+  function buildGenerateAssessmentItemsV2CopyAuthoringBrief() {
+    var contractMod = resolveLdGaiPageEnrichContractLib();
+    if (contractMod && typeof contractMod.buildGaiPageEnrichAuthoringBrief === "function") {
+      return contractMod.buildGaiPageEnrichAuthoringBrief();
+    }
+    return [
+      "Output contract: return a partial page artefact only (not standalone assessment_items JSON).",
+      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "assessment_items", and assembly_state.enriched_by including "assessment_items".',
+      "Required payload: assessment_check object and/or sections containing an assessment_check section with content.items[].",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Forbidden: activities/materials regeneration, page_synthesis synthesis unrelated to assessment sectioning, learning_sequence mutation, and full-page replay.",
+      "Do not reconstruct or preserve non-owned stage fields."
     ].join("\n");
   }
 
   function buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy(wf) {
+    if (isPartialPageOutputWorkflowEnabled(wf)) return "";
     var json = resolveLearningSequenceEnrichedPageJsonForDesignPageCopy(wf);
     if (!json || !String(json).trim()) {
       return [
@@ -8841,14 +9382,111 @@
     ].join("\n");
   }
 
-  function validateDesignPageOrPageCapture(parsed) {
+  function validateDesignPagePartialPageCapture(parsed) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
+    var errors = [];
+    if (String(parsed.schema_version || "") !== "2.0.0") {
+      errors.push('schema_version must be "2.0.0"');
+    }
+    if (String(parsed.artifact_type || "") !== "page") {
+      errors.push('artifact_type must be "page"');
+    }
+    if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
+      errors.push("assembly_state required");
+    }
+    if (parsed.page_synthesis === undefined && parsed.sections === undefined) {
+      errors.push("page_synthesis and/or sections required");
+    }
+    var hasPageSynthesisKnowledgeSummary =
+      parsed.page_synthesis &&
+      typeof parsed.page_synthesis === "object" &&
+      parsed.page_synthesis.knowledge_summary != null;
+    var hasKnowledgeSummarySection =
+      Array.isArray(parsed.sections) &&
+      parsed.sections.some(function (section) {
+        return (
+          section &&
+          typeof section === "object" &&
+          String(section.section_id || "").trim().toLowerCase() === "knowledge_summary"
+        );
+      });
+    if (!hasPageSynthesisKnowledgeSummary && !hasKnowledgeSummarySection) {
+      errors.push(
+        'knowledge summary required: include page_synthesis.knowledge_summary and/or sections[].section_id="knowledge_summary"'
+      );
+    }
+    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+  }
+
+  function validateDesignAssessmentPartialPageCapture(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var errors = [];
+    if (String(parsed.schema_version || "") !== "2.0.0") {
+      errors.push('schema_version must be "2.0.0"');
+    }
+    if (String(parsed.artifact_type || "") !== "page") {
+      errors.push('artifact_type must be "page"');
+    }
+    if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
+      errors.push("assembly_state required");
+    } else if (String(parsed.assembly_state.current_stage || "").trim() !== "assessment_design") {
+      errors.push('assembly_state.current_stage must be "assessment_design"');
+    }
+    if (!parsed.assessment_blueprint || typeof parsed.assessment_blueprint !== "object") {
+      errors.push("assessment_blueprint object required");
+    }
+    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+  }
+
+  function validateGenerateAssessmentItemsPartialPageCapture(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var errors = [];
+    if (String(parsed.schema_version || "") !== "2.0.0") {
+      errors.push('schema_version must be "2.0.0"');
+    }
+    if (String(parsed.artifact_type || "") !== "page") {
+      errors.push('artifact_type must be "page"');
+    }
+    if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
+      errors.push("assembly_state required");
+    } else if (String(parsed.assembly_state.current_stage || "").trim() !== "assessment_items") {
+      errors.push('assembly_state.current_stage must be "assessment_items"');
+    }
+    var hasAssessmentCheck = parsed.assessment_check && typeof parsed.assessment_check === "object";
+    var hasAssessmentSection =
+      Array.isArray(parsed.sections) &&
+      parsed.sections.some(function (section) {
+        return (
+          section &&
+          typeof section === "object" &&
+          String(section.section_id || "").trim().toLowerCase() === "assessment_check"
+        );
+      });
+    if (!hasAssessmentCheck && !hasAssessmentSection) {
+      errors.push("assessment_check object or sections[].section_id=assessment_check required");
+    }
+    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+  }
+
+  function validateDesignPageOrPageCapture(parsed, wf) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
     if (
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page"
     ) {
+      if (partialMode) {
+        return validateDesignPagePartialPageCapture(parsed);
+      }
       var errors = [];
       if (!Array.isArray(parsed.activities)) errors.push("activities array required");
       if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
@@ -8878,49 +9516,16 @@
 
   function buildGamV2CopyMaterialAuthoringBrief() {
     return [
-      "Identity: author activities[].materials[] bodies ONLY; emit the complete page JSON from `{` to `}` unchanged except materials and assembly_state.",
-      "Do not create new activity objects. Do not summarise activity objects. Do not emit { activity_id, materials } objects.",
-      "Every input activity must appear in output with the same activity_id and order. Activity count must never decrease.",
-      "A1 is not special. Do not emit after A1 or any subset; completion is page-level only after all input activities are processed.",
-      "Do not omit later activities due to length. Never use ellipses or comments inside JSON.",
-      "Do not output meta fields such as note/message/warning/explanation. Do not include apologies or limitation statements.",
-      "Do not say the page is too large or cannot be reproduced in full. Still emit the complete page JSON.",
-      "Ownership Boundary: mutate only activities[].materials[] and GAM assembly_state. All other fields are immutable.",
-      "GAM is not authorised to rewrite, shorten, paraphrase, summarise, normalise, improve, regenerate, reorder, compress, or reconstruct any non-owned field.",
-      "Preserve all visible non-owned fields from the supplied DLA page as fully as possible. Do not intentionally rewrite, omit, summarise, or rebuild them. Budget pressure does not create an exception.",
-      "Generate only GAM-owned material content. Do not generate assessment or learning-sequence content. Do not restate learner_task, expected_output, or required_materials in prose unless needed inside the material body.",
-      "Activity Integrity: an activity object is an immutable container. Output activity object = input activity object + materials. Nothing else.",
-      "If a field exists in the input activity, it must exist in the output activity. Leave every sibling property of materials unchanged.",
-      "Activity titles and metadata support downstream navigation and must never be removed, omitted, compacted, or replaced.",
-      "Execution: Preservation-First order — (1) preserve complete page, (2) preserve non-owned fields, (3) preserve full activity objects, (4) populate materials, (5) reach the instructional floor (not maximise depth).",
-      "Lower-priority goals must never violate higher-priority preservation. Depth improvements must never justify dropping activities, compacting objects, clearing arrays, or partial page output.",
-      "If uncertainty exists, copy the visible DLA structure as fully as possible and continue. Do not refuse on lossless-copy guarantees.",
-      "Work method: treat supplied DLA page as base JSON object, copy every activity object in full, then replace only each activity materials array.",
-      "Do not create new activity objects. Do not emit activity summaries. Do not emit activity objects containing only activity_id and materials.",
-      "Activity-level invariant: for each activity index i, output.activities[i] must contain every non-materials field present in input.activities[i] with identical values.",
-      "For every input activity: output the full original activity object and preserve all keys and values exactly except materials.",
-      "required_materials, episode_plan, learner_task, and expected_output must remain present. Do not emit partial activity objects or omit fields to save space.",
-      "Required material fulfilment: for each required_materials[j], create exactly one corresponding materials[j] unless impossible, preserving the same material_id.",
-      "Do not collapse multiple required materials into one generic text material.",
-      "Populate activities[].materials[] — one entry per required_material with exact material_id match.",
-      "Quality defines the instructional floor — not the instructional ceiling.",
-      "required_materials[].specification is a mandatory content contract; every requirement must be visibly represented. Do not output shallow label-only or fragment-only content.",
-      "depth_floor:L3 requires explanation, relationships, cause-and-effect reasoning, contextual detail, and sufficient support for independent completion.",
-      "Depth sufficiency test: before emitting a material, confirm a learner could realistically complete the activity using this material alone; if not, expand depth.",
-      "Material-type matrix: text explains concept/relationships/implications/context/example; worked_example shows problem/context plus at least four visible reasoning steps; scenario includes named roles/context/decision; tables include headers and exemplar rows; checklist criteria are actionable with repair guidance when requested; transfer_prompt applies prior reasoning in a new context; consolidation_summary synthesises ideas.",
-      "Budget defines the instructional ceiling. Quality defines the instructional floor. Budget optimisation may occur only within GAM-owned materials.",
-      "Generate the minimum complete material needed to satisfy the specification; once instructionally sufficient, stop. L3 means adequate support, not exhaustive coverage.",
-      "Prefer concise, specific materials. Avoid essay-like expansion unless required. Avoid repetition, generic padding, and expansion beyond stated purpose.",
-      "If budget is constrained: preserve page, non-owned fields, activity objects, and required_materials exactly; reduce verbosity only inside materials[].body/title using dense bullets, short paragraphs, compact tables, and numbered reasoning.",
-      "Never emit status-only or error-only objects. Never claim output cannot be completed due to size. Never replace the page with a constraint explanation.",
-      "Never reduce, remove, rewrite, or summarise non-owned content to save space.",
-      "Realise L3 efficiently via concept, relationship, consequence, context, and example/reasoning step.",
-      "If an activity's materials are not ready, keep the activity with materials: [] — never drop the activity row.",
-      "Anchor each new material body to the activity learner_task, expected_output, and episode_plan beats — but do not change those DLA fields.",
-      "Realise substantive markdown instructional content — not outlines, catalogue labels, or specification restatement.",
-      "Table-shaped required_materials: emit complete pipe markdown tables — not table descriptions only.",
-      "Do not empty, omit, reorder, or modify activities[].required_materials[]. Do not truncate episode_plans[], learning_outcomes[], or generation_notes.",
-      "Forbidden: partial pages, representative subsets, rewriting DLA text, activity_materials, pack text, or materials-only stubs."
+      "Output contract: return a partial page artefact only (not a full-page replay).",
+      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
+      "Required payload: activities[] containing activity_id and materials[] only.",
+      "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
+      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Include purpose when available.",
+      "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
+      "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.",
+      "Do not reconstruct or preserve non-owned stage fields."
     ].join("\n");
   }
 
@@ -8953,6 +9558,7 @@
   }
 
   function buildUpstreamDlaPageEmbedSectionForGamCopy(wf) {
+    if (isPartialPageOutputWorkflowEnabled(wf)) return "";
     var json = resolveDlaEnrichedPageJsonForGamCopy(wf);
     if (!json || !String(json).trim()) {
       return [
@@ -8979,17 +9585,26 @@
     ].join("\n");
   }
 
-  function validateGamOrPageCapture(parsed, baseline) {
+  function validateGamOrPageCapture(parsed, baseline, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
     var gamMod = resolvePageGamEnrichLib();
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
     if (
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page" &&
-      gamMod &&
-      typeof gamMod.validateGamEnrichedPage === "function"
+      gamMod
     ) {
+      if (
+        partialMode &&
+        typeof gamMod.validateGamPartialPageCapture === "function" &&
+        parsed.assembly_state &&
+        parsed.assembly_state.current_stage === "gam"
+      ) {
+        return gamMod.validateGamPartialPageCapture(parsed);
+      }
       if (parsed.assembly_state && parsed.assembly_state.current_stage === "gam") {
         return gamMod.validateGamEnrichedPage(parsed, baseline || null);
       }
@@ -9019,7 +9634,7 @@
     var contractMod = resolveLdGamPageEnrichContractLib();
     if (contractMod && typeof contractMod.buildGamPageEnrichContractBlock === "function") {
       var v2Block = contractMod.buildGamPageEnrichContractBlock();
-      if (v2Block && !/Sprint 56F vNext GAM enrich-in-place contract/i.test(draftBody)) {
+      if (v2Block && !/GAM partial-page contract|GAM enrich-in-place contract/i.test(draftBody)) {
         appendParts.push(v2Block);
       }
     }
@@ -9030,9 +9645,11 @@
     ) {
       appendParts.push(contractMod.buildCanonicalGamMaterialShapeSnippet());
     }
-    var pageEmbed = buildUpstreamDlaPageEmbedSectionForGamCopy(workflow);
-    if (pageEmbed && !/### Upstream DLA page/i.test(draftBody)) {
-      appendParts.push(pageEmbed);
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) {
+      var pageEmbed = buildUpstreamDlaPageEmbedSectionForGamCopy(workflow);
+      if (pageEmbed && !/### Upstream DLA page/i.test(draftBody)) {
+        appendParts.push(pageEmbed);
+      }
     }
     if (!appendParts.length) return draftBody;
     return (draftBody + "\n" + appendParts.join("\n")).trim();
@@ -9063,7 +9680,45 @@
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
+    function normalizeEpisodePlanValidationFieldsInPlace(pageObj) {
+      if (!pageObj || typeof pageObj !== "object") return;
+      var stage = String(
+        pageObj.assembly_state && pageObj.assembly_state.current_stage
+          ? pageObj.assembly_state.current_stage
+          : ""
+      ).trim().toLowerCase();
+      if (stage && stage !== "episode_plan") return;
+      if (!pageObj.generation_notes || typeof pageObj.generation_notes !== "object") {
+        pageObj.generation_notes = {};
+      }
+      if (
+        !pageObj.generation_notes.validation ||
+        typeof pageObj.generation_notes.validation !== "object"
+      ) {
+        pageObj.generation_notes.validation = {};
+      }
+      var v = pageObj.generation_notes.validation;
+      if (!Array.isArray(v.known_issues)) {
+        v.known_issues = [];
+      }
+      if (!String(v.activity_coverage || "").trim()) {
+        v.activity_coverage = "shell_only";
+      }
+      if (!String(v.material_coverage || "").trim()) {
+        v.material_coverage = "pending_gam";
+      }
+      if (!String(v.episode_plan_attachment || "").trim()) {
+        v.episode_plan_attachment = "attached";
+      }
+      if (!String(v.self_containment || "").trim()) {
+        v.self_containment = "shell_only";
+      }
+      if (!String(v.schema_compliance || "").trim()) {
+        v.schema_compliance = "episode_plan_boundary";
+      }
+    }
     if (String(parsed.schema_version || "") === "2.0.0" && String(parsed.artifact_type || "") === "page") {
+      normalizeEpisodePlanValidationFieldsInPlace(parsed);
       var shellMod = resolvePageShellCreateLib();
       if (shellMod && typeof shellMod.validatePageShellAgainstVNextSchema === "function") {
         return shellMod.validatePageShellAgainstVNextSchema(parsed);
@@ -9215,23 +9870,9 @@
       if (derivedCheck.ok) {
         var changed = rawTrim && !episodePlanCaptureJsonEquivalent(rawTrim, derived);
         if (changed) {
-          state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
-          if (stepId) {
-            var parsedRaw = tryParseWorkflowArtefactJson(rawTrim);
-            if (!parsedRaw) {
-              state.workflowRunEpisodePlanValidation[stepId] =
-                "EP-V1: replaced non-JSON capture with deterministic derive from learning_outcomes";
-            } else {
-              var rawCheck = validateEpisodePlanOrPageShellCapture(parsedRaw);
-              if (!rawCheck.ok) {
-                state.workflowRunEpisodePlanValidation[stepId] =
-                  "EP-V1: replaced invalid capture with canonical deriveEpisodePlansFromLearningOutcomes() — " +
-                  (rawCheck.errors || []).slice(0, 3).join("; ");
-              } else {
-                state.workflowRunEpisodePlanValidation[stepId] =
-                  "EP-V1: deterministic derive refreshed episode_plans from learning_outcomes (manual paste ignored)";
-              }
-            }
+          // Canonical EP normalization in v2 mode is informational and should not be a blocking validation error.
+          if (stepId && state.workflowRunEpisodePlanValidation) {
+            delete state.workflowRunEpisodePlanValidation[stepId];
           }
           if (state.workflowRunStepCompleted[stepId]) {
             delete state.workflowRunStepCompleted[stepId];
@@ -9476,9 +10117,21 @@
     var derived = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derived) return;
     var existing = String(outArea.value || "").trim();
-    if (existing && episodePlanCaptureJsonEquivalent(existing, derived)) return;
+    if (existing) {
+      if (episodePlanCaptureJsonEquivalent(existing, derived)) return;
+      // On step navigation, auto-repair stale/invalid EP captures to canonical v2 shell.
+      var parsedExisting = tryParseWorkflowArtefactJson(existing);
+      var existingCheck = validateEpisodePlanOrPageShellCapture(parsedExisting);
+      if (existingCheck.ok) return;
+    }
     outArea.value = derived;
     syncWorkflowRunCapturedOutputToState(li);
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    if (sid) {
+      if (state.workflowRunEpisodePlanValidation) delete state.workflowRunEpisodePlanValidation[sid];
+      if (state.workflowRunStrictJsonValidation) delete state.workflowRunStrictJsonValidation[sid];
+      if (state.workflowRunPageValidation) delete state.workflowRunPageValidation[sid];
+    }
     updateRunStepOutputStatus(li);
   }
 
@@ -9492,7 +10145,7 @@
       var contractMod = resolveLdDlaPageEnrichContractLib();
       if (contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function") {
         var v2Block = contractMod.buildDlaPageEnrichContractBlock();
-        if (v2Block && !/Sprint 56F vNext DLA enrich-in-place contract/i.test(draftBody)) {
+        if (v2Block && !/DLA partial-page contract|DLA enrich-in-place contract/i.test(draftBody)) {
           appendParts.push(v2Block);
         }
       }
@@ -9503,9 +10156,11 @@
       ) {
         appendParts.push(contractMod.buildCanonicalDlaPageShapeSnippet());
       }
-      var pageEmbed = buildUpstreamPageShellEmbedSectionForDlaCopy(workflow);
-      if (pageEmbed && !/### Upstream page shell \(Design Episode Plan/i.test(draftBody)) {
-        appendParts.push(pageEmbed);
+      if (!isPartialPageOutputWorkflowEnabled(workflow)) {
+        var pageEmbed = buildUpstreamPageShellEmbedSectionForDlaCopy(workflow);
+        if (pageEmbed && !/### Upstream page shell \(Design Episode Plan/i.test(draftBody)) {
+          appendParts.push(pageEmbed);
+        }
       }
     } else {
       var block = buildEpisodePlanDlaPopulationPromptBlock();
@@ -10507,6 +11162,12 @@
           stepTitle: step.title || ""
         }));
     if (
+      isPartialPageOutputWorkflowEnabled(wf) &&
+      (canonicalId === "step_design_assessment" || canonicalId === "step_generate_assessment_items")
+    ) {
+      return "";
+    }
+    if (
       isLearningSequenceStep &&
       (oname === "page" || isPageEnrichmentV2WorkflowEnabled(wf))
     ) {
@@ -10600,7 +11261,7 @@
       var baselineLs = tryParseWorkflowArtefactJson(
         resolveGamEnrichedPageJsonForLearningSequenceCopy(workflow) || ""
       );
-      var lsCheck = validateLearningSequenceOrPageCapture(parsedLs, baselineLs || null);
+      var lsCheck = validateLearningSequenceOrPageCapture(parsedLs, baselineLs || null, workflow);
       if (!lsCheck.ok) {
         return {
           ok: false,
@@ -10619,12 +11280,121 @@
           message: "Design Page v2 capture must be valid JSON page artefact"
         };
       }
-      var dpCheck = validateDesignPageOrPageCapture(parsedDp);
+      var dpCheck = validateDesignPageOrPageCapture(parsedDp, workflow);
       if (!dpCheck.ok) {
         return {
           ok: false,
           errors: dpCheck.errors || ["invalid_design_page_v2_capture"],
           message: (dpCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
+    if (
+      isWorkflowStepDesignAssessment({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPartialPageOutputWorkflowEnabled(workflow)
+    ) {
+      var parsedDa = tryParseWorkflowArtefactJson(raw);
+      if (!parsedDa) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "Design Assessment partial capture must be valid JSON page artefact"
+        };
+      }
+      var daCheck = validateDesignAssessmentPartialPageCapture(parsedDa);
+      if (!daCheck.ok) {
+        return {
+          ok: false,
+          errors: daCheck.errors || ["invalid_design_assessment_partial_capture"],
+          message: (daCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
+    if (
+      isWorkflowStepGenerateAssessmentItems({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPartialPageOutputWorkflowEnabled(workflow)
+    ) {
+      var parsedGai = tryParseWorkflowArtefactJson(raw);
+      if (!parsedGai) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "Generate Assessment Items partial capture must be valid JSON page artefact"
+        };
+      }
+      var gaiCheck = validateGenerateAssessmentItemsPartialPageCapture(parsedGai);
+      if (!gaiCheck.ok) {
+        return {
+          ok: false,
+          errors: gaiCheck.errors || ["invalid_generate_assessment_items_partial_capture"],
+          message: (gaiCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
+    if (
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title
+      }) &&
+      isPageEnrichmentV2WorkflowEnabled(workflow)
+    ) {
+      var parsedDla = tryParseWorkflowArtefactJson(raw);
+      if (!parsedDla) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "DLA v2 capture must be valid JSON page artefact"
+        };
+      }
+      var baselineDla = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
+      var dlaCheck = validateDlaOrPageCapture(parsedDla, baselineDla || null, workflow);
+      if (!dlaCheck.ok) {
+        return {
+          ok: false,
+          errors: dlaCheck.errors || ["invalid_dla_v2_capture"],
+          message: (dlaCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [] };
+    }
+    if (
+      isWorkflowStepGenerateActivityMaterials({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && step.title,
+        stepTitle: step && step.title,
+        stepOutputName: step && step.outputName
+      }) &&
+      isPageEnrichmentV2WorkflowEnabled(workflow)
+    ) {
+      var parsedGam = tryParseWorkflowArtefactJson(raw);
+      if (!parsedGam) {
+        return {
+          ok: false,
+          errors: ["invalid_json"],
+          message: "GAM v2 capture must be valid JSON page artefact"
+        };
+      }
+      var baselineGam = tryParseWorkflowArtefactJson(
+        resolveDlaEnrichedPageJsonForGamCopy(workflow) || ""
+      );
+      var gamCheck = validateGamOrPageCapture(parsedGam, baselineGam || null, workflow);
+      if (!gamCheck.ok) {
+        return {
+          ok: false,
+          errors: gamCheck.errors || ["invalid_gam_v2_capture"],
+          message: (gamCheck.errors || []).join("; ")
         };
       }
       return { ok: true, errors: [] };
@@ -15562,7 +16332,18 @@
     if (/\b(summary|summarise)\b/.test(blob)) out.objective_type = "summary";
     if (/\b(analysis|analyze|analyse)\b/.test(blob)) out.objective_type = "analysis";
     if (/\b(briefing|briefing note|brief)\b/.test(blob)) out.objective_type = "briefing";
-    if (/\b(research question|questions)\b/.test(blob)) out.objective_type = "questions";
+    if (/\b(research question|questions)\b/.test(blob)) {
+      var learnerResourceIntent =
+        out.page_profile === "learner" ||
+        /\b(self[- ]?study|resource|module|lesson|workshop|session|learner[- ]facing)\b/.test(blob) ||
+        (Array.isArray(out.session_materials) && out.session_materials.indexOf("page") !== -1);
+      var hasFormativeAssessmentIntent =
+        out.assessment_required === true ||
+        (isFinite(Number(out.assessment_total_items)) && Number(out.assessment_total_items) > 0);
+      if (!(learnerResourceIntent && hasFormativeAssessmentIntent)) {
+        out.objective_type = "questions";
+      }
+    }
 
     if (/\b(concise|short)\b/.test(blob)) out.output_depth = "concise";
     else if (/\b(detailed|deep)\b/.test(blob)) out.output_depth = "detailed";
@@ -15576,6 +16357,21 @@
 
     if (isFinite(Number(out.duration_minutes)) && Number(out.duration_minutes) >= 45 && out.activities_required === true) {
       out.design_scope = "session";
+    }
+    var selfDirectedSparseAssessmentPage =
+      String(out.delivery_context || "").toLowerCase().trim() === "self_directed" &&
+      Array.isArray(out.session_materials) &&
+      out.session_materials.indexOf("page") !== -1 &&
+      (
+        (isFinite(Number(out.duration_minutes)) && Number(out.duration_minutes) >= 45) ||
+        /\b(self[- ]?study|self[- ]?paced|resource|module|lesson|session|workshop)\b/.test(blob)
+      ) &&
+      (out.assessment_required === true ||
+        (isFinite(Number(out.assessment_total_items)) && Number(out.assessment_total_items) > 0));
+    if (selfDirectedSparseAssessmentPage && out.activities_required !== false) {
+      out.activities_required = true;
+      if (!out.design_scope) out.design_scope = "session";
+      out.materials_required = true;
     }
 
     return reconcileWorkflowBriefPedagogicFactors(out, base);
@@ -18930,6 +19726,12 @@
         return String(id || "").toLowerCase().trim() === "research";
       });
     }
+    function hasLearningDesignDomainInHints() {
+      return selectedDomainsForHints.some(function (id) {
+        var key = String(id || "").toLowerCase().trim();
+        return key === "learning_design" || key === "learning design" || key === "learning-design";
+      });
+    }
     var explicitRegenerateSelectedArtefact = (function () {
       if (!selectedStartingArtefact) return false;
       var blob = [goalText, inputs, desiredOutputsText].join("\n");
@@ -19138,6 +19940,9 @@
     );
     var hasActivityFlowCue = hasIntent(
       /\b(activities?|activity flow|transitions?|pacing|facilitator flow|run[- ]?of[- ]?show)\b/
+    );
+    var hasSelfStudyResourceCue = hasIntent(
+      /\b(self[- ]?study|self[- ]?paced|independent study|resource|lesson|module|workshop|session)\b/
     );
     var draftHasActivitiesStep = Array.isArray(out.steps) && out.steps.some(function (s) {
       var t = String((s && s.title) || "").toLowerCase();
@@ -19461,6 +20266,28 @@
       var selfDirectedPageNeedsSequence =
         String((resolvedBriefFactors && resolvedBriefFactors.delivery_context) || "").toLowerCase().trim() === "self_directed" &&
         sessionMaterialsForInclusion.indexOf("page") !== -1;
+      var selfDirectedSessionAssessmentIntent =
+        String(
+          (resolvedBriefFactors && resolvedBriefFactors.delivery_context) ||
+            (explicitBriefFactors && explicitBriefFactors.delivery_context) ||
+            ""
+        )
+          .toLowerCase()
+          .trim() === "self_directed" &&
+        (hasTimedSessionCue || hasSelfStudyResourceCue) &&
+        (assessmentItemsRequested ||
+          Number(
+            resolvedBriefFactors.assessment_total_items ||
+              explicitBriefFactors.assessment_total_items ||
+              0
+          ) > 0 ||
+          hasIntent(/\bformative assessment questions?\b/));
+      if (selfDirectedSessionAssessmentIntent) {
+        // Sparse self-study briefs should still produce the learner-facing activity chain.
+        activitiesRequired = true;
+        learnerFacingMaterialsRequested = true;
+        sequenceRequested = true;
+      }
       var __prismTriggerTrace = [];
       var __prismStepsAfterTriggerRules = [];
 
@@ -19968,7 +20795,28 @@
         var dep = policy.dependencies[stepTitle] || {};
         (Array.isArray(dep.produces) ? dep.produces : []).forEach(function (art) {
           var k = normalizeWorkflowDesignArtefactKey(art);
-          if (k) producerByArtefact[k] = canonicalStep;
+          if (!k) return;
+          if (!producerByArtefact[k]) {
+            producerByArtefact[k] = canonicalStep;
+            return;
+          }
+          // Prefer earliest canonical producer to avoid late-page producers
+          // (e.g. Design Page) shadowing prerequisite producers (Episode Plan).
+          var current = String(producerByArtefact[k] || "").toLowerCase().trim();
+          var next = String(canonicalStep || "").toLowerCase().trim();
+          var currentOrder = Object.prototype.hasOwnProperty.call(canonicalOrder, current)
+            ? canonicalOrder[current]
+            : (Object.prototype.hasOwnProperty.call(canonicalOrderMap, current)
+              ? canonicalOrderMap[current]
+              : 9999);
+          var nextOrder = Object.prototype.hasOwnProperty.call(canonicalOrder, next)
+            ? canonicalOrder[next]
+            : (Object.prototype.hasOwnProperty.call(canonicalOrderMap, next)
+              ? canonicalOrderMap[next]
+              : 9999);
+          if (nextOrder < currentOrder) {
+            producerByArtefact[k] = canonicalStep;
+          }
         });
       });
       // If users explicitly describe having an artefact in free text inputs,
@@ -20165,6 +21013,35 @@
         }
       }
       var explicitlyRequiredStepSet = collectRequiredStepsClosure(requestedDeliverySteps);
+      var sparseSelfStudyAssessmentRecovery =
+        String(
+          (resolvedBriefFactors && resolvedBriefFactors.delivery_context) ||
+            (explicitBriefFactors && explicitBriefFactors.delivery_context) ||
+            ""
+        )
+          .toLowerCase()
+          .trim() === "self_directed" &&
+        (hasTimedSessionCue || hasSelfStudyResourceCue) &&
+        (assessmentItemsRequested ||
+          Number(
+            resolvedBriefFactors.assessment_total_items ||
+              explicitBriefFactors.assessment_total_items ||
+              0
+          ) > 0);
+      if (sparseSelfStudyAssessmentRecovery) {
+        ["Design Learning Activities", "Generate Activity Materials", "Design Page"].forEach(function (title) {
+          var canonical = canonicalizeFromPolicy(title);
+          if (!canonical) return;
+          var exists = out.steps.some(function (s) {
+            return String((s && s.title) || "").toLowerCase() === String(canonical).toLowerCase();
+          });
+          if (!exists) out.steps.push({ title: canonical, role: "" });
+          var closureSet = collectRequiredStepsClosure([canonical]);
+          Object.keys(closureSet).forEach(function (k) {
+            explicitlyRequiredStepSet[k] = true;
+          });
+        });
+      }
       if (includeVleStructure) {
         var vleRequiredSet = collectRequiredStepsClosure(["Generate VLE Structure"]);
         Object.keys(vleRequiredSet).forEach(function (k) {
@@ -20702,6 +21579,54 @@
     if (researchUploadAuthoritative) {
       out.steps = out.steps.filter(function (s) {
         return String((s && s.title) || "").toLowerCase().trim() !== "generate research content";
+      });
+    }
+
+    // Keep Episode Plan anchored in canonical LD order when present:
+    // Define Learning Outcomes -> Design Episode Plan -> Design Learning Activities.
+    (function enforceEpisodePlanStageOrder() {
+      function idxOf(title) {
+        var target = String(title || "").toLowerCase().trim();
+        return out.steps.findIndex(function (s) {
+          return String((s && s.title) || "").toLowerCase().trim() === target;
+        });
+      }
+      function moveBefore(titleToMove, anchorTitle) {
+        var from = idxOf(titleToMove);
+        var anchor = idxOf(anchorTitle);
+        if (from === -1 || anchor === -1 || from < anchor) return;
+        var row = out.steps.splice(from, 1)[0];
+        var anchorNow = idxOf(anchorTitle);
+        out.steps.splice(anchorNow, 0, row);
+      }
+      moveBefore("Design Episode Plan", "Design Learning Activities");
+      moveBefore("Design Episode Plan", "Generate Activity Materials");
+      moveBefore("Design Episode Plan", "Construct Learning Sequence");
+      var epIdx = idxOf("Design Episode Plan");
+      var loIdx = idxOf("Define Learning Outcomes");
+      if (epIdx !== -1 && loIdx !== -1 && epIdx <= loIdx) {
+        var epRow = out.steps.splice(epIdx, 1)[0];
+        var loNow = idxOf("Define Learning Outcomes");
+        out.steps.splice(loNow + 1, 0, epRow);
+      }
+    })();
+
+    if (selfDirectedSessionAssessmentIntent) {
+      ["Design Learning Activities", "Generate Activity Materials", "Design Page"].forEach(function (title) {
+        var canonical = title;
+        if (!canonical) return;
+        var exists = out.steps.some(function (s) {
+          return String((s && s.title) || "").toLowerCase().trim() === String(canonical).toLowerCase().trim();
+        });
+        if (!exists) out.steps.push({ title: canonical, role: "" });
+      });
+      out.steps.sort(function (a, b) {
+        var at = String(a && a.title ? a.title : "").toLowerCase().trim();
+        var bt = String(b && b.title ? b.title : "").toLowerCase().trim();
+        var ao = Object.prototype.hasOwnProperty.call(canonicalOrderMap, at) ? canonicalOrderMap[at] : 9999;
+        var bo = Object.prototype.hasOwnProperty.call(canonicalOrderMap, bt) ? canonicalOrderMap[bt] : 9999;
+        if (ao !== bo) return ao - bo;
+        return 0;
       });
     }
 
@@ -21406,15 +22331,47 @@
           }) || null
         : null;
       var runnerSummary = getRunnerWhatThisStepDoes(stepForRun || {});
+      var partialWorkflowMode = isPartialPageOutputWorkflowEnabled(wfForRun || {});
+      var postEpisodePartialStep = isPostEpisodePlanPartialOutputStep(stepForRun || {}, wfForRun || {});
       var summaryPanel = li.querySelector('[data-role="runner-summary"]');
       var summaryBody = li.querySelector('[data-role="runner-summary-body"]');
       if (summaryPanel && summaryBody) {
-        summaryPanel.classList.toggle("hidden", !(isRun && runnerSummary));
-        summaryBody.textContent = isRun ? String(runnerSummary || "") : "";
+        var summaryParts = [];
+        if (runnerSummary) summaryParts.push(String(runnerSummary));
+        if (isRun) {
+          summaryParts.push(
+            "Paste this step's generated artefact into Step output. PRISM stores step outputs for deterministic assembly/render."
+          );
+          if (partialWorkflowMode && postEpisodePartialStep) {
+            summaryParts.push(
+              "Partial mode: paste only this step's partial page artefact. Downstream prompts use Copilot conversation context, not PRISM-injected prior outputs."
+            );
+          }
+        }
+        var summaryText = summaryParts.join(" ");
+        summaryPanel.classList.toggle("hidden", !(isRun && summaryText));
+        summaryBody.textContent = isRun ? summaryText : "";
       }
       var runOutWrap = li.querySelector('[data-role="run-step-output-wrap"]');
+      var runOutArea = li.querySelector('[data-field="runStepOutput"]');
+      var runOutStatus = li.querySelector('[data-role="run-step-output-status"]');
+      var shouldShowRunOutput = isRun && workflowStepProducesStoredArtefact(stepForRun || {}, wfForRun || {});
       if (runOutWrap) {
-        runOutWrap.classList.toggle("hidden", !isRun);
+        runOutWrap.classList.toggle("hidden", !shouldShowRunOutput);
+      }
+      if (runOutStatus) {
+        runOutStatus.classList.toggle("hidden", !shouldShowRunOutput || !String(runOutStatus.textContent || "").trim());
+      }
+      if (runOutArea) {
+        if (isWorkflowStepPageStructureProducer(stepForRun || {}, wfForRun || {})) {
+          runOutArea.placeholder =
+            "Paste this step's generated JSON page artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
+        } else if (workflowStepProducesStoredArtefact(stepForRun || {}, wfForRun || {})) {
+          runOutArea.placeholder =
+            "Paste this step's generated JSON artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
+        } else {
+          runOutArea.placeholder = "";
+        }
       }
       var instructionsLabelEl = li.querySelector('[data-role="notes-label"]');
       if (instructionsLabelEl) {
@@ -21487,11 +22444,151 @@
     state.workflowRunCopiedStepId = "";
   }
 
+  function clearPersistedWorkflowRunStateForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return;
+    var store = loadWorkflowRunStateStore();
+    if (!store || typeof store !== "object" || !store[wid]) return;
+    delete store[wid];
+    saveWorkflowRunStateStore(store);
+  }
+
+  function resetWorkflowRunValidationState() {
+    state.workflowRunStrictJsonValidation = {};
+    state.workflowRunPageMaterialsClosureValidation = {};
+    state.workflowRunEpisodePlanValidation = {};
+    state.workflowRunPageValidation = {};
+    state.workflowRunGamFormatValidation = {};
+    state.workflowRunGamPageValidation = {};
+    state.workflowRunGamFormatWarnings = {};
+    state.workflowRunLearnerPageFramingValidation = {};
+  }
+
+  function clearWorkflowRunCaptureState(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    state.workflowRunCapturedOutputs = {};
+    state.workflowRunCapturedOutputsRaw = {};
+    state.workflowRunStepCompleted = {};
+    resetWorkflowRunValidationState();
+    if (opts.resetIndex !== false) {
+      state.currentWorkflowRunIndex = 0;
+    }
+    state.workflowRunVisibleStepId = "";
+    state.workflowRunCopiedStepId = "";
+    if (opts.clearDom !== false) {
+      getWorkflowStepElements().forEach(function (li) {
+        var ta = li.querySelector('[data-field="runStepOutput"]');
+        if (ta) ta.value = "";
+        updateRunStepOutputStatus(li);
+      });
+    }
+    if (opts.workflowId) {
+      clearPersistedWorkflowRunStateForWorkflow(opts.workflowId);
+    }
+  }
+
+  function workflowRunSnapshotHasCapturedData(snapshot) {
+    var rec = snapshot && typeof snapshot === "object" ? snapshot : null;
+    if (!rec) return false;
+    var captured =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? rec.capturedOutputs
+        : {};
+    var capturedRaw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? rec.capturedOutputsRaw
+        : {};
+    var hasText = function (obj) {
+      return Object.keys(obj).some(function (k) {
+        return !!String(obj[k] || "").trim();
+      });
+    };
+    return hasText(captured) || hasText(capturedRaw);
+  }
+
+  function workflowHasPersistedRunCaptureData(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return false;
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    return workflowRunSnapshotHasCapturedData(rec);
+  }
+
+  function currentRunCaptureStateHasData() {
+    return workflowRunSnapshotHasCapturedData({
+      capturedOutputs: state.workflowRunCapturedOutputs,
+      capturedOutputsRaw: state.workflowRunCapturedOutputsRaw
+    });
+  }
+
+  function shouldClearRunDataOnWorkflowActivation(workflowId, sourceLabel) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return true;
+    var hasExisting = workflowHasPersistedRunCaptureData(wid) || currentRunCaptureStateHasData();
+    if (!hasExisting) return true;
+    var source = String(sourceLabel || "workflow").trim();
+    var msg =
+      "Run data already exists for this workflow.\n\n" +
+      "Press OK to clear run data and start fresh.\n" +
+      "Press Cancel to preserve existing run data.\n\n" +
+      "Source: " +
+      source;
+    if (typeof window !== "undefined" && typeof window.confirm === "function") {
+      return !!window.confirm(msg);
+    }
+    return true;
+  }
+
+  function workflowRunStepHasBlockingCaptureErrors(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return false;
+    return !!(
+      (state.workflowRunStrictJsonValidation && state.workflowRunStrictJsonValidation[sid]) ||
+      (state.workflowRunEpisodePlanValidation && state.workflowRunEpisodePlanValidation[sid]) ||
+      (state.workflowRunPageValidation && state.workflowRunPageValidation[sid]) ||
+      (state.workflowRunPageMaterialsClosureValidation &&
+        state.workflowRunPageMaterialsClosureValidation[sid]) ||
+      (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
+      (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
+      workflowRunLearnerPageFramingGateMessage(sid)
+    );
+  }
+
+  function isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li) {
+    if (!isWorkflowStepPageStructureProducer(stepRow || {}, wf || {})) return true;
+    var sid = String(stepId || "").trim();
+    var body = "";
+    if (li) {
+      var ta = li.querySelector('[data-field="runStepOutput"]');
+      if (ta) body = String(ta.value || "").trim();
+    }
+    if (!body && sid) {
+      body = String(
+        (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+          (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+          ""
+      ).trim();
+    }
+    if (!body) return false;
+    return !workflowRunStepHasBlockingCaptureErrors(sid);
+  }
+
+  function resolveWorkflowRunNextStepDisabledReason(stepRow, stepId, wf, li, idx, total) {
+    if (idx >= total - 1) return "This is the final step.";
+    if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li)) {
+      if (isWorkflowStepPageStructureProducer(stepRow || {}, wf || {})) {
+        if (workflowRunStepHasBlockingCaptureErrors(stepId)) {
+          return "Fix validation errors in this step's output artefact before continuing.";
+        }
+        return "Paste a valid output artefact for this step before continuing.";
+      }
+    }
+    return "";
+  }
+
   /** UI-only completion line for run mode (never model prompts, never persisted on steps). */
   function formatWorkflowRunStepCompleteStatus(outputName, hasCapturedBody, markedComplete) {
     if (!hasCapturedBody && !markedComplete) return "";
-    var on = String(outputName || "").trim();
-    if (on) return "Step complete \u00b7 Artefact: " + on;
     return "Step complete";
   }
 
@@ -21550,6 +22647,7 @@
     var ta = li.querySelector('[data-field="runStepOutput"]');
     if (!sid || !ta) return;
     var raw = String(ta.value || "");
+    var rawBefore = raw;
     var gamCtx = buildGamSanitizeContextFromRunStepLi(li);
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     var stepRow = null;
@@ -21562,23 +22660,100 @@
     if (!stepRow) {
       stepRow = buildWorkflowStepRowFromRunLi(li, wf);
     }
+    var storesArtefact = workflowStepProducesStoredArtefact(stepRow || {}, wf || {});
+    var pageStructureStep = isWorkflowStepPageStructureProducer(stepRow || {}, wf || {});
+    var episodePlanStep = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
+    if (storesArtefact && pageStructureStep && String(raw || "").trim()) {
+      var pageCapture = episodePlanStep
+        ? parseEpisodePlanOrPageCaptureForStorage(raw)
+        : stepRow && isWorkflowStepGenerateAssessmentItemsRow(stepRow)
+        ? parseGenerateAssessmentItemsOrPageCaptureForStorage(raw)
+        : parsePageArtefactCaptureForStorage(raw);
+      if (
+        !pageCapture.ok &&
+        !episodePlanStep &&
+        /"assessment"\s*:\s*\{[\s\S]*"items"\s*:\s*\[/i.test(String(raw || ""))
+      ) {
+        pageCapture = parseGenerateAssessmentItemsOrPageCaptureForStorage(raw);
+      }
+      if (!pageCapture.ok) {
+        if (episodePlanStep) {
+          state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+          state.workflowRunEpisodePlanValidation[sid] = String(
+            pageCapture.message || "Invalid Episode Plan/page shell JSON"
+          );
+        } else {
+          state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+          state.workflowRunPageValidation[sid] = String(
+            pageCapture.message || "Invalid page artefact JSON"
+          );
+        }
+        if (state.workflowRunStepCompleted[sid]) {
+          delete state.workflowRunStepCompleted[sid];
+        }
+      } else if (pageCapture.json) {
+        delete state.workflowRunPageValidation[sid];
+        delete state.workflowRunEpisodePlanValidation[sid];
+        ta.value = pageCapture.json;
+        raw = pageCapture.json;
+      }
+    } else if (!String(raw || "").trim() && sid) {
+      if (state.workflowRunPageValidation) {
+        delete state.workflowRunPageValidation[sid];
+      }
+      if (state.workflowRunEpisodePlanValidation) {
+        delete state.workflowRunEpisodePlanValidation[sid];
+      }
+      if (state.workflowRunStrictJsonValidation) {
+        delete state.workflowRunStrictJsonValidation[sid];
+      }
+    }
+    var partialPostEpisodePlanStep = isPostEpisodePlanPartialOutputStep(stepRow, wf);
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid, wf);
       if (enforcedRaw !== raw) {
         ta.value = enforcedRaw;
         raw = enforcedRaw;
       } else if (raw) {
-        var epCheck = validateEpisodePlanOrPageShellCapture(tryParseWorkflowArtefactJson(raw));
+        var parsedEpRaw = tryParseWorkflowArtefactJson(raw);
+        var epCheck = validateEpisodePlanOrPageShellCapture(parsedEpRaw);
         if (!epCheck.ok) {
-          state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
-          state.workflowRunEpisodePlanValidation[sid] = (epCheck.errors || []).join("; ");
-          if (state.workflowRunStepCompleted[sid]) {
+          var repaired = false;
+          if (isPageEnrichmentV2WorkflowEnabled(wf)) {
+            var derivedEpShell = deriveDesignEpisodePlanCaptureJson(wf);
+            if (derivedEpShell && String(derivedEpShell).trim()) {
+              var parsedDerived = tryParseWorkflowArtefactJson(derivedEpShell);
+              var derivedCheck = validateEpisodePlanOrPageShellCapture(parsedDerived);
+              if (derivedCheck.ok) {
+                ta.value = String(derivedEpShell).trim();
+                raw = ta.value;
+                repaired = true;
+                state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+                state.workflowRunEpisodePlanValidation[sid] =
+                  "Episode Plan shell auto-repaired from upstream learning_outcomes.";
+              }
+            }
+          }
+          if (!repaired) {
+            state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+            state.workflowRunEpisodePlanValidation[sid] = (epCheck.errors || []).join("; ");
+            if (state.workflowRunStepCompleted[sid]) {
+              delete state.workflowRunStepCompleted[sid];
+            }
+          } else if (state.workflowRunStepCompleted[sid]) {
             delete state.workflowRunStepCompleted[sid];
           }
+        } else if (state.workflowRunEpisodePlanValidation) {
+          delete state.workflowRunEpisodePlanValidation[sid];
         }
       }
     }
-    if (stepRow && isWorkflowStepDesignPageRow(stepRow) && String(raw || "").trim()) {
+    if (
+      !partialPostEpisodePlanStep &&
+      stepRow &&
+      isWorkflowStepDesignPageRow(stepRow) &&
+      String(raw || "").trim()
+    ) {
       var pageNorm = normalizePageWorkflowRunCapture(raw, sid);
       if (pageNorm.ok && pageNorm.json && pageNorm.json !== raw) {
         ta.value = pageNorm.json;
@@ -21599,20 +22774,25 @@
           }))) ||
       contextLooksLikeLearningActivitiesCapture(tryParseWorkflowArtefactJson(raw) || {})
     );
-    var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
-    var finalizedCapture = applyGuidedLearningScaffoldRepairToDlaCapture(
-      applyLearnerPageDlaFramingValidationToCapture(
-        applyEpisodePlanPopulationEnforcementToDlaCapture(
-          sanitizedDlaCapture,
+    var finalizedCapture = "";
+    if (partialPostEpisodePlanStep) {
+      finalizedCapture = sanitizePrismRunCapturedOutput(raw);
+    } else {
+      var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
+      finalizedCapture = applyGuidedLearningScaffoldRepairToDlaCapture(
+        applyLearnerPageDlaFramingValidationToCapture(
+          applyEpisodePlanPopulationEnforcementToDlaCapture(
+            sanitizedDlaCapture,
+            dlaCaptureCtx,
+            sid
+          ),
           dlaCaptureCtx,
           sid
         ),
         dlaCaptureCtx,
         sid
-      ),
-      dlaCaptureCtx,
-      sid
-    );
+      );
+    }
     if (
       isDlaStep &&
       String(finalizedCapture || "").trim() &&
@@ -21622,13 +22802,26 @@
       raw = finalizedCapture;
     }
     state.workflowRunCapturedOutputsRaw[sid] = raw;
-    var strictCheck = validateStrictJsonWorkflowRunStepCapture(raw, stepRow || {});
-    if (!strictCheck.ok && !strictCheck.skipped) {
-      state.workflowRunStrictJsonValidation[sid] = String(
-        strictCheck.message || strictCheck.errors.join(", ")
-      );
-      if (state.workflowRunStepCompleted[sid]) {
-        delete state.workflowRunStepCompleted[sid];
+    if (storesArtefact) {
+      var strictBypassForEpisodePlan = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
+      if (String(raw || "").trim()) {
+        if (strictBypassForEpisodePlan) {
+          delete state.workflowRunStrictJsonValidation[sid];
+        } else {
+          var strictCheck = validateStrictJsonWorkflowRunStepCapture(raw, stepRow || {}, wf || {});
+          if (!strictCheck.ok && !strictCheck.skipped) {
+            state.workflowRunStrictJsonValidation[sid] = String(
+              strictCheck.message || strictCheck.errors.join(", ")
+            );
+            if (state.workflowRunStepCompleted[sid]) {
+              delete state.workflowRunStepCompleted[sid];
+            }
+          } else {
+            delete state.workflowRunStrictJsonValidation[sid];
+          }
+        }
+      } else {
+        delete state.workflowRunStrictJsonValidation[sid];
       }
     } else {
       delete state.workflowRunStrictJsonValidation[sid];
@@ -21639,7 +22832,11 @@
       outputNameInput && typeof outputNameInput.value === "string"
         ? outputNameInput.value.trim().toLowerCase().replace(/\s+/g, "_")
         : "";
-    if (outputName === "page" || (stepRow && isWorkflowStepDesignPageRow(stepRow))) {
+    if (
+      !partialPostEpisodePlanStep &&
+      !episodePlanStep &&
+      (outputName === "page" || (stepRow && isWorkflowStepDesignPageRow(stepRow)))
+    ) {
       var pageComposeResult = applyPageCompositionValidationForCapturedPage(li, raw);
       if (pageComposeResult && pageComposeResult.json) {
         var composedPageJson = pageComposeResult.json;
@@ -21656,7 +22853,7 @@
           gamCtx
         );
       }
-    } else {
+    } else if (!partialPostEpisodePlanStep && !episodePlanStep) {
       var parsedPage = tryParseWorkflowArtefactJson(raw);
       if (parsedPage && String(parsedPage.artifact_type || "").toLowerCase() === "page") {
         var pageComposeFallback = applyPageCompositionValidationForCapturedPage(li, raw);
@@ -21677,13 +22874,17 @@
         }
       }
     }
-    applyGamPackTextValidationToCapture(
-      state.workflowRunCapturedOutputs[sid],
-      gamCtx || dlaCaptureCtx,
-      sid,
-      raw
-    );
+    if (storesArtefact && !partialPostEpisodePlanStep && !episodePlanStep) {
+      applyGamPackTextValidationToCapture(
+        state.workflowRunCapturedOutputs[sid],
+        gamCtx || dlaCaptureCtx,
+        sid,
+        raw
+      );
+    }
     if (
+      storesArtefact &&
+      !partialPostEpisodePlanStep &&
       stepRow &&
       isWorkflowStepDesignLearningActivities({
         stepCanonicalStepId: stepRow.canonical_step_id || stepRow.canonicalStepId || "",
@@ -21694,6 +22895,32 @@
       recomposeWorkflowPageCapturesFromUpstream();
     }
     updateRunStepOutputStatus(li);
+    if (
+      els.workflowModeRunBtn &&
+      els.workflowModeRunBtn.classList.contains("active") &&
+      els.workflowDetail &&
+      els.workflowDetail.classList.contains("run-mode")
+    ) {
+      updateWorkflowRunView();
+    }
+    if (storesArtefact && String(state.selectedWorkflowId || "").trim()) {
+      var hasBlockingValidationError = !!(
+        (state.workflowRunStrictJsonValidation && state.workflowRunStrictJsonValidation[sid]) ||
+        (state.workflowRunPageValidation && state.workflowRunPageValidation[sid]) ||
+        (state.workflowRunPageMaterialsClosureValidation &&
+          state.workflowRunPageMaterialsClosureValidation[sid]) ||
+        workflowRunLearnerPageFramingGateMessage(sid) ||
+        (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid])
+      );
+      if (
+        !hasBlockingValidationError &&
+        String(raw || "").trim() &&
+        !workflowRunCaptureJsonSemanticallyEquivalent(rawBefore, raw)
+      ) {
+        var persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+        queueWorkflowRunAutosaveToast(persistResult.ok ? "success" : "");
+      }
+    }
   }
 
   function updateRunStepOutputStatus(li) {
@@ -21733,30 +22960,6 @@
     var gamFormatWarn =
       sid && state.workflowRunGamFormatWarnings ? state.workflowRunGamFormatWarnings[sid] : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
-    var text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
-    if (strictErr) {
-      text = (text ? text + " · " : "") + "Invalid JSON: " + strictErr;
-    }
-    if (episodePlanErr) {
-      text = (text ? text + " · " : "") + episodePlanErr;
-    }
-    if (pageErr) {
-      text = (text ? text + " · " : "") + pageErr;
-    }
-    if (materialsClosureErr) {
-      text = (text ? text + " · " : "") + "Materials closure: " + materialsClosureErr;
-    }
-    if (learnerFramingErr) {
-      text = (text ? text + " · " : "") + learnerFramingErr;
-    }
-    if (gamFormatErr) {
-      text = (text ? text + " · " : "") + "GAM format: " + gamFormatErr;
-    }
-    if (gamFormatWarn) {
-      text = (text ? text + " · " : "") + "GAM depth: " + gamFormatWarn;
-    }
-    statusEl.textContent = text;
-    statusEl.classList.toggle("hidden", !text);
     var hasBlockingErr = !!(
       strictErr ||
       episodePlanErr ||
@@ -21764,7 +22967,37 @@
       materialsClosureErr ||
       learnerFramingErr ||
       gamFormatErr
-    );
+    ) && body.length > 0;
+    var blockingMessage = String(
+      strictErr ||
+      episodePlanErr ||
+      pageErr ||
+      materialsClosureErr ||
+      learnerFramingErr ||
+      gamFormatErr ||
+      ""
+    ).trim();
+    var text = "";
+    if (hasBlockingErr) {
+      text = blockingMessage
+        ? "Step output has validation errors: " + blockingMessage
+        : "Step output has validation errors.";
+    } else {
+      text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
+      if (gamFormatWarn) {
+        text = text || "Step captured";
+        text += " (with warnings)";
+      }
+    }
+    statusEl.textContent = text;
+    if (hasBlockingErr && blockingMessage) {
+      statusEl.setAttribute("title", blockingMessage);
+    } else if (typeof statusEl.removeAttribute === "function") {
+      statusEl.removeAttribute("title");
+    } else {
+      statusEl.title = "";
+    }
+    statusEl.classList.toggle("hidden", !text);
     statusEl.classList.toggle("workflow-run-step-output-status--error", hasBlockingErr);
     statusEl.classList.toggle(
       "workflow-run-step-output-status--warning",
@@ -21859,24 +23092,40 @@
         "Step " + displayIndex + " of " + displayTotal;
     }
 
+    var wfRun = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var stepIdRun = currentStepLi
+      ? String(currentStepLi.getAttribute("data-step-id") || "").trim()
+      : "";
+    var stepRowRun = null;
+    if (wfRun && Array.isArray(wfRun.steps) && stepIdRun) {
+      stepRowRun =
+        wfRun.steps.find(function (row) {
+          return String(row && row.id ? row.id : "") === stepIdRun;
+        }) || null;
+    }
+    if (currentStepLi) {
+      maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
+    }
+
     // Prev/next buttons.
     if (els.workflowPrevStepBtn) {
       els.workflowPrevStepBtn.disabled = idx === 0;
     }
     if (els.workflowNextStepBtn) {
-      els.workflowNextStepBtn.disabled = idx === total - 1;
-    }
-    if (currentStepLi) {
-      var wfRun = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
-      var stepIdRun = String(currentStepLi.getAttribute("data-step-id") || "").trim();
-      var stepRowRun = null;
-      if (wfRun && Array.isArray(wfRun.steps) && stepIdRun) {
-        stepRowRun =
-          wfRun.steps.find(function (row) {
-            return String(row && row.id ? row.id : "") === stepIdRun;
-          }) || null;
+      var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
+        stepRowRun,
+        stepIdRun,
+        wfRun,
+        currentStepLi,
+        idx,
+        total
+      );
+      els.workflowNextStepBtn.disabled = !!nextDisabledReason;
+      if (nextDisabledReason) {
+        els.workflowNextStepBtn.setAttribute("title", nextDisabledReason);
+      } else {
+        els.workflowNextStepBtn.removeAttribute("title");
       }
-      maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
     }
     refreshWorkflowRunStepOutputStatusDisplays();
   }
@@ -22004,6 +23253,17 @@
     // shifts numbering because the summary card is Step 1).
     renumberWorkflowSteps();
     if (isRun) {
+      var runWorkflowId = String(state.selectedWorkflowId || "").trim();
+      var clearOnRun = shouldClearRunDataOnWorkflowActivation(runWorkflowId, "run workflow");
+      if (clearOnRun) {
+        clearWorkflowRunCaptureState({
+          workflowId: runWorkflowId,
+          resetIndex: true,
+          clearDom: true
+        });
+      } else if (runWorkflowId) {
+        restoreWorkflowRunStateForWorkflow(runWorkflowId);
+      }
       resetWorkflowRunNavigationState({ resetIndex: true });
     }
     updateWorkflowRunView();
@@ -24457,9 +25717,16 @@
     try {
       var data = JSON.parse(raw);
       var source = Array.isArray(data) ? data : [];
+      var migratedAny = false;
       state.workflows = source.map(function (wf) {
-        return normalizeWorkflowForV1(wf, []);
+        var normalized = normalizeWorkflowForV1(wf, []);
+        var migrated = migrateWorkflowToSprint58PageArtefactContract(normalized);
+        if (migrated.changed) migratedAny = true;
+        return migrated.workflow;
       });
+      if (migratedAny) {
+        saveWorkflows();
+      }
     } catch (e) {
       state.workflows = [];
     }
@@ -24486,6 +25753,95 @@
     } catch (e) {
       // Ignore storage errors; workflows just won't persist.
     }
+  }
+
+  function loadWorkflowRunStateStore() {
+    var raw = null;
+    try {
+      raw = window.localStorage.getItem(WORKFLOW_RUN_STATE_STORAGE_KEY);
+    } catch (_e) {
+      raw = null;
+    }
+    if (!raw) return {};
+    try {
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (_err) {
+      return {};
+    }
+  }
+
+  function saveWorkflowRunStateStore(store) {
+    try {
+      window.localStorage.setItem(
+        WORKFLOW_RUN_STATE_STORAGE_KEY,
+        JSON.stringify(store && typeof store === "object" ? store : {})
+      );
+      return true;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function buildWorkflowRunStateSnapshotForCurrentSelection() {
+    return {
+      capturedOutputs:
+        state.workflowRunCapturedOutputs && typeof state.workflowRunCapturedOutputs === "object"
+          ? Object.assign({}, state.workflowRunCapturedOutputs)
+          : {},
+      capturedOutputsRaw:
+        state.workflowRunCapturedOutputsRaw && typeof state.workflowRunCapturedOutputsRaw === "object"
+          ? Object.assign({}, state.workflowRunCapturedOutputsRaw)
+          : {},
+      stepCompleted:
+        state.workflowRunStepCompleted && typeof state.workflowRunStepCompleted === "object"
+          ? Object.assign({}, state.workflowRunStepCompleted)
+          : {},
+      runIndex:
+        typeof state.currentWorkflowRunIndex === "number" && isFinite(state.currentWorkflowRunIndex)
+          ? state.currentWorkflowRunIndex
+          : 0
+    };
+  }
+
+  function persistWorkflowRunStateForWorkflow(workflowId, options) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return { ok: false, reason: "missing_workflow_id" };
+    var store = loadWorkflowRunStateStore();
+    store[wid] = buildWorkflowRunStateSnapshotForCurrentSelection();
+    var ok = saveWorkflowRunStateStore(store);
+    return ok ? { ok: true } : { ok: false, reason: "storage_write_failed" };
+  }
+
+  function restoreWorkflowRunStateForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return;
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    state.workflowRunCapturedOutputs =
+      rec && rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? Object.assign({}, rec.capturedOutputs)
+        : {};
+    state.workflowRunCapturedOutputsRaw =
+      rec && rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? Object.assign({}, rec.capturedOutputsRaw)
+        : {};
+    state.workflowRunStepCompleted =
+      rec && rec.stepCompleted && typeof rec.stepCompleted === "object"
+        ? Object.assign({}, rec.stepCompleted)
+        : {};
+    state.workflowRunStrictJsonValidation = {};
+    state.workflowRunPageValidation = {};
+    state.workflowRunEpisodePlanValidation = {};
+    state.currentWorkflowRunIndex =
+      rec &&
+      typeof rec.runIndex === "number" &&
+      isFinite(rec.runIndex) &&
+      rec.runIndex >= 0
+        ? rec.runIndex
+        : 0;
+    state.workflowRunVisibleStepId = "";
+    state.workflowRunCopiedStepId = "";
   }
 
   function renderWorkflowList() {
@@ -24620,17 +25976,26 @@
       return;
     }
     var prevSelected = state.selectedWorkflowId;
-    if (String(prevSelected || "") !== String(wf.id || "")) {
-      state.workflowRunCapturedOutputs = {};
-      state.workflowRunCapturedOutputsRaw = {};
-      state.workflowRunStepCompleted = {};
-      state.workflowRunStrictJsonValidation = {};
-      state.workflowRunGamFormatValidation = {};
-      state.workflowRunGamPageValidation = {};
-      state.workflowRunGamFormatWarnings = {};
+    if (
+      String(prevSelected || "").trim() &&
+      String(prevSelected || "") !== String(wf.id || "")
+    ) {
+      persistWorkflowRunStateForWorkflow(prevSelected, { toastType: "" });
+    }
+    var clearOnSelect = shouldClearRunDataOnWorkflowActivation(wf.id, "select workflow");
+    if (clearOnSelect) {
+      clearWorkflowRunCaptureState({
+        workflowId: wf.id,
+        resetIndex: true,
+        clearDom: false
+      });
+    } else {
+      restoreWorkflowRunStateForWorkflow(wf.id);
     }
     state.selectedWorkflowId = wf.id;
-    populateWorkflowDetail(wf);
+    populateWorkflowDetail(wf, {
+      preserveRunNavigation: state.workflowDetailMode === "run"
+    });
     renderWorkflowList();
     refreshWorkflowModeSettingsTabBadge();
     if (state.workflowDetailMode === "settings") {
@@ -24641,8 +26006,9 @@
     }
   }
 
-  function populateWorkflowDetail(wf) {
+  function populateWorkflowDetail(wf, options) {
     if (!els.workflowDetail) return;
+    var opts = options && typeof options === "object" ? options : {};
     syncWorkflowSelectedDomainsFromWorkflowRecord(wf);
     var selectedDomains = getSelectedWorkflowDomains();
     renderWorkflowDetailDomainUiHints(selectedDomains);
@@ -24738,8 +26104,13 @@
     if (els.duplicateWorkflowBtn) els.duplicateWorkflowBtn.disabled = false;
     if (els.renameWorkflowBtn) els.renameWorkflowBtn.disabled = false;
 
-    // Reset transient run navigation when loading/selecting a workflow.
-    resetWorkflowRunNavigationState({ resetIndex: true });
+    // Reset transient run navigation when loading/selecting a workflow unless restoring run state.
+    if (!opts.preserveRunNavigation) {
+      resetWorkflowRunNavigationState({ resetIndex: true });
+    } else {
+      state.workflowRunVisibleStepId = "";
+      state.workflowRunCopiedStepId = "";
+    }
     updateWorkflowRunView();
     // Selection/render path: evaluate current definition snapshot and project warnings in UI.
     renderWorkflowValidationWarnings(validateWorkflow(wf));
@@ -25170,6 +26541,30 @@
     if (!wfRec && state.selectedWorkflowId) {
       wfRec = findWorkflowById(state.selectedWorkflowId);
     }
+    if (step && isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(wfRec)) {
+      // Sprint 58 hard contract: EP prompt must follow canonical v2 page-shell guidance.
+      // Ignore step-local/library bodies that may contain legacy episode_plans-only contracts.
+      return {
+        sourceType: "v2_locked",
+        text: "",
+        error: ""
+      };
+    }
+    if (
+      step &&
+      isWorkflowStepGenerateAssessmentItems({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      // Hard contract: GAI must emit partial page assessment_check, not legacy assessment_items JSON.
+      return {
+        sourceType: "v2_locked",
+        text: "",
+        error: ""
+      };
+    }
     function finalizePromptBody(body) {
       var raw = String(body || "").trim();
       if (!raw) return "";
@@ -25587,7 +26982,8 @@
       if (inRunMode) {
         syncAllWorkflowRunCapturesFromDomToState();
         var resolved = resolveStepPromptText(effectiveStep);
-        if (!resolved.text) {
+        var allowsLockedRuntimePrompt = resolved && resolved.sourceType === "v2_locked";
+        if (!resolved.text && !allowsLockedRuntimePrompt) {
           showToast(
             resolved.error || "No prompt configured for this step.",
             "error"
@@ -26113,14 +27509,14 @@
     userNotesWrap.className = "workflow-step-run-output-wrap hidden";
     userNotesWrap.setAttribute("data-role", "run-step-output-wrap");
     var userNotesLabel = document.createElement("label");
-    userNotesLabel.textContent = "Your notes (optional)";
+    userNotesLabel.textContent = "Step output artefact (stored)";
     var userNotesTextarea = document.createElement("textarea");
     userNotesTextarea.rows = 2;
     userNotesTextarea.className = "workflow-step-run-output";
     userNotesTextarea.setAttribute("data-field", "runStepOutput");
     userNotesTextarea.setAttribute("autocomplete", "off");
     userNotesTextarea.placeholder =
-      "Save anything useful from this step here for later reference.";
+      "Paste this step's generated JSON artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
     var stepIdForRun = String(step.id != null ? step.id : "").trim();
     var rawStored =
       (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[stepIdForRun]) || "";
@@ -26129,7 +27525,6 @@
     userNotesTextarea.value = String(sanStored || rawStored || "");
     userNotesTextarea.addEventListener("input", function () {
       syncWorkflowRunCapturedOutputToState(li);
-      updateRunStepOutputStatus(li);
     });
     var userNotesStatus = document.createElement("div");
     userNotesStatus.setAttribute("data-role", "run-step-output-status");
@@ -26728,6 +28123,94 @@
     return s.replace(/\s{2,}/g, " ").replace(/\s+;/g, ";").trim();
   }
 
+  function promptBodyLooksLikeLegacyEpisodePlansContract(text) {
+    var t = String(text || "");
+    return (
+      /episode_plans root object/i.test(t) ||
+      /JSON top-level key:\s*episode_plans/i.test(t) ||
+      /STEP\s+\d+\s+OUTPUT:\s*episode_plans/i.test(t)
+    );
+  }
+
+  function promptBodyLooksLikeLegacyAssessmentItemsContract(text) {
+    var t = String(text || "");
+    if (/artifact_type\s*[:=]\s*["']page["']/i.test(t) && /assessment_check/i.test(t)) {
+      return false;
+    }
+    return (
+      /Generate assessment_items that are instructionally useful/i.test(t) ||
+      /Return a JSON object containing:[\s\S]*-\s*items:/i.test(t) ||
+      /STEP\s+\d+\s+OUTPUT:\s*assessment_items/i.test(t) ||
+      (/\bitems:\s*assessment items\b/i.test(t) && !/assessment_check/i.test(t))
+    );
+  }
+
+  function stripLegacyAssessmentItemsOutputSectionFromPackPrompt(text) {
+    var body = String(text || "").trim();
+    if (!body) return "";
+    var outputIdx = body.search(/\nOutput:\s*\n/i);
+    if (outputIdx >= 0) {
+      body = body.slice(0, outputIdx).trim();
+    }
+    return body;
+  }
+
+  function sanitizeGenerateAssessmentItemsPackForV2(text) {
+    var body = String(text || "").trim();
+    if (!body) return "";
+    body = body.replace(
+      /Task:\s*\nGenerate assessment_items[^\n]*/i,
+      "Task:\nGenerate assessment_check.items[] inside a partial page artefact."
+    );
+    body = body.replace(
+      /\bassessment_items\b/gi,
+      "assessment_check.items[] (within artifact_type=page envelope)"
+    );
+    body = body.replace(
+      /Return a JSON object containing:[\s\S]*$/i,
+      ""
+    );
+    return body.trim();
+  }
+
+  function buildGenerateAssessmentItemsPackAuthoringPrompt(step, wf, catalog) {
+    var matchedPattern = resolveMatchedWorkflowStepPatternFromCatalog(step, catalog);
+    if (!matchedPattern) return "";
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    var outputSpec = normalizeWorkflowOutputSpec(
+      wfRec && wfRec.workflowOutputSpec ? wfRec.workflowOutputSpec : {}
+    );
+    var packDraft = buildSeededStepPromptForWorkflowStep({
+      workflowName: wfRec && wfRec.name ? wfRec.name : "",
+      workflowGoal: outputSpec.goal || (wfRec && wfRec.goal) || "",
+      workflowInputs:
+        wfRec && Array.isArray(wfRec.workflowInputs) ? wfRec.workflowInputs.slice() : [],
+      workflowOutputs:
+        wfRec && Array.isArray(wfRec.workflowOutputs) ? wfRec.workflowOutputs.slice() : [],
+      workflowOutputSpec: outputSpec,
+      step: step,
+      matchedPattern: matchedPattern,
+      sprint58PackAuthoringOnly: true
+    });
+    return sanitizeGenerateAssessmentItemsPackForV2(
+      stripLegacyAssessmentItemsOutputSectionFromPackPrompt(packDraft)
+    );
+  }
+
+  function buildGenerateAssessmentItemsV2PartialCopyPrompt(step, wf, catalog) {
+    var packAuthoring = buildGenerateAssessmentItemsPackAuthoringPrompt(step, wf, catalog);
+    return [
+      buildGenerateAssessmentItemsV2CopyAuthoringBrief(),
+      "Conflict override: if any inherited pack text says to output standalone assessment_items or top-level assessment/items objects, ignore it. The required output is a partial page artefact with assessment_check.items[].",
+      packAuthoring
+    ]
+      .filter(function (part) {
+        return !!String(part || "").trim();
+      })
+      .join("\n\n")
+      .trim();
+  }
+
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -26748,6 +28231,12 @@
       outName = getDesignPageEffectiveOutputName(step, wfForChain);
     }
     if (!outName) {
+      outName = getDesignAssessmentEffectiveOutputName(step, wfForChain);
+    }
+    if (!outName) {
+      outName = getGenerateAssessmentItemsEffectiveOutputName(step, wfForChain);
+    }
+    if (!outName) {
       outName = String(step && step.outputName != null ? step.outputName : "").trim();
     }
     var stepNumForFooter =
@@ -26755,6 +28244,8 @@
     var exactFooterLine = outName
       ? "STEP " + stepNumForFooter + " OUTPUT: " + outName
       : "";
+    var partialOutputsMode = isPartialPageOutputWorkflowEnabled(wfForChain);
+    var injectUpstreamCapture = shouldInjectUpstreamCaptureIntoPrompt(step, wfForChain);
 
     lines.push(
       "Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue."
@@ -26802,9 +28293,18 @@
     ) {
       lines.push("");
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        lines.push(
-          "Sprint 56F DLA enrich-in-place: read the vNext page artefact from Design Episode Plan and return the SAME page enriched by DLA. Do NOT emit a standalone learning_activities artefact. Do NOT write materials bodies, page_synthesis, or sections[]."
-        );
+        if (partialOutputsMode) {
+          lines.push(
+            "Sprint 58 DLA partial output mode: return a partial page artefact containing only DLA-owned fields."
+          );
+          lines.push(
+            "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+          );
+        } else {
+          lines.push(
+            "Sprint 56F DLA enrich-in-place: read the vNext page artefact from Design Episode Plan and return the SAME page enriched by DLA. Do NOT emit a standalone learning_activities artefact. Do NOT write materials bodies, page_synthesis, or sections[]."
+          );
+        }
         lines.push(
           "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
@@ -26834,12 +28334,19 @@
     ) {
       lines.push("");
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        lines.push(
-          "**CRITICAL:** Treat the embedded DLA page as an immutable document. Edit in place only. Return the entire input page unchanged except for activities[].materials[] and assembly_state."
-        );
-        lines.push(
-          "Sprint 56F GAM enrich-in-place: emit the complete page JSON from `{` to `}` — all input activities, same count, same activity_id order. Do not stop after the first few activities or omit later ones due to length. Copy every other field character-for-character. GAM is not authorised to rewrite, shorten, paraphrase, summarise, normalise, improve, regenerate, reorder, compress, or reconstruct any non-owned field. For each activity object, replace only materials value and preserve all sibling fields. Do NOT emit compact { activity_id, materials } objects, partial pages, subsets, pack text, activity_materials, or skeleton stubs."
-        );
+        if (partialOutputsMode) {
+          lines.push("Sprint 58 GAM partial output mode: return a partial page artefact containing only activity_id + materials.");
+          lines.push(
+            "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+          );
+        } else {
+          lines.push(
+            "**CRITICAL:** Treat the embedded DLA page as an immutable document. Edit in place only. Return the entire input page unchanged except for activities[].materials[] and assembly_state."
+          );
+          lines.push(
+            "Sprint 56F GAM enrich-in-place: emit the complete page JSON from `{` to `}` — all input activities, same count, same activity_id order. Do not stop after the first few activities or omit later ones due to length. Copy every other field character-for-character. GAM is not authorised to rewrite, shorten, paraphrase, summarise, normalise, improve, regenerate, reorder, compress, or reconstruct any non-owned field. For each activity object, replace only materials value and preserve all sibling fields. Do NOT emit compact { activity_id, materials } objects, partial pages, subsets, pack text, activity_materials, or skeleton stubs."
+          );
+        }
         lines.push(
           "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation) containing every input activity — no ellipses, no comments, no continuation, no top-level note/message/warning fields, and no prose or explanations. If output is large, still emit the full JSON. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
@@ -26860,6 +28367,51 @@
         );
       }
     } else if (
+      isWorkflowStepDesignAssessment({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      lines.push("");
+      if (isPageEnrichmentV2WorkflowEnabled(wfForChain) && partialOutputsMode) {
+        lines.push(
+          "Sprint 58 Design Assessment partial output mode: return a partial page artefact containing assessment_blueprint + assembly_state only."
+        );
+        lines.push(
+          "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+        );
+        lines.push(
+          "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+      }
+    } else if (
+      isWorkflowStepGenerateAssessmentItems({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      })
+    ) {
+      lines.push("");
+      lines.push(
+        "Generate Assessment Items output mode: return a partial page artefact containing assessment_check payload + assembly_state only."
+      );
+      lines.push(
+        "Use Copilot conversation context for upstream instructional continuity."
+      );
+      lines.push(
+        "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+          exactFooterLine +
+          ". No other text after the footer line."
+      );
+      var gaiContract = buildGaiV2CopilotSchemaInstructions();
+      if (gaiContract) {
+        lines.push("");
+        lines.push(gaiContract);
+      }
+    } else if (
       isWorkflowStepConstructLearningSequence({
         stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
         stepCanonicalTitle: step.title || "",
@@ -26868,9 +28420,18 @@
     ) {
       lines.push("");
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        lines.push(
-          "Sprint 56F Learning Sequence enrich-in-place: read the GAM-enriched vNext page and return the SAME page with learning_sequence populated. Do NOT emit a standalone learning_sequence artefact."
-        );
+        if (partialOutputsMode) {
+          lines.push(
+            "Sprint 58 Learning Sequence partial output mode: return a partial page artefact containing only learning_sequence + assembly_state."
+          );
+          lines.push(
+            "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+          );
+        } else {
+          lines.push(
+            "Sprint 56F Learning Sequence enrich-in-place: read the GAM-enriched vNext page and return the SAME page with learning_sequence populated. Do NOT emit a standalone learning_sequence artefact."
+          );
+        }
         lines.push(
           "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
@@ -26897,9 +28458,18 @@
     ) {
       lines.push("");
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        lines.push(
-          "Sprint 56F Design Page enrich-in-place: read the Learning Sequence-enriched vNext page and return the SAME page with Design Page owned presentation/layout fields populated."
-        );
+        if (partialOutputsMode) {
+          lines.push(
+            "Sprint 58 Design Page partial output mode: return a partial page artefact containing page_synthesis and/or sections + assembly_state."
+          );
+          lines.push(
+            "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+          );
+        } else {
+          lines.push(
+            "Sprint 56F Design Page enrich-in-place: read the Learning Sequence-enriched vNext page and return the SAME page with Design Page owned presentation/layout fields populated."
+          );
+        }
         lines.push(
           "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
@@ -26988,7 +28558,7 @@
         if (conversationalUpstream) {
           lines.push(conversationalUpstream);
         }
-      } else {
+      } else if (injectUpstreamCapture) {
         bindings.forEach(function (b) {
           if (b.kind !== "internal") return;
           var sid = String(b.sourceStepId || "").trim();
@@ -27023,6 +28593,11 @@
           );
           lines.push(String(cap));
         });
+      } else {
+        lines.push("");
+        lines.push(
+          "Upstream binding bodies are intentionally omitted for this step in partial page output mode. Use Copilot conversation context and referenced upstream step names only."
+        );
       }
     }
 
@@ -27037,11 +28612,31 @@
     }
 
     var wfForPrompt = resolveWorkflowForUpstreamArtefacts({});
+    var daV2PartialStep =
+      isPartialPageOutputWorkflowEnabled(wfForChain) &&
+      isWorkflowStepDesignAssessment({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      });
+    var gaiV2PartialStep = isWorkflowStepGenerateAssessmentItems({
+      stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+      stepCanonicalTitle: step.title || "",
+      stepTitle: step.title || ""
+    });
     var gamV2CopyStep = isGamPageEnrichmentV2CopyStep(step, wfForChain);
     var dpV2CopyStep = isDesignPagePageEnrichmentV2CopyStep(step, wfForChain);
     var lsV2CopyStep = isLearningSequencePageEnrichmentV2CopyStep(step, wfForChain);
     var resolvedPrompt = gamV2CopyStep
       ? { text: buildGamV2CopyMaterialAuthoringBrief(), sourceType: "gam_v2_copy_brief", error: "" }
+      : daV2PartialStep
+      ? { text: buildDesignAssessmentV2CopyAuthoringBrief(), sourceType: "design_assessment_v2_partial_brief", error: "" }
+      : gaiV2PartialStep
+      ? {
+          text: buildGenerateAssessmentItemsV2PartialCopyPrompt(step, wfForPrompt, catalog),
+          sourceType: "generate_assessment_items_v2_partial_brief",
+          error: ""
+        }
       : dpV2CopyStep
       ? { text: buildDesignPageV2CopyAuthoringBrief(), sourceType: "dp_v2_copy_brief", error: "" }
       : lsV2CopyStep
@@ -27054,7 +28649,23 @@
       // The authoritative footer contract is appended later with an exact literal line.
       promptBody = stripContradictoryWorkflowRunnerFooterClauses(promptBody);
     }
-    if (!promptBody && !step.notes) {
+    if (
+      promptBody &&
+      isWorkflowStepDesignEpisodePlanRow(step) &&
+      isPageEnrichmentV2WorkflowEnabled(wfForPrompt) &&
+      promptBodyLooksLikeLegacyEpisodePlansContract(promptBody)
+    ) {
+      // Prevent stale legacy prompt contracts from overriding Sprint 58 v2 page-shell contract.
+      promptBody = "";
+    }
+    if (
+      promptBody &&
+      gaiV2PartialStep &&
+      promptBodyLooksLikeLegacyAssessmentItemsContract(promptBody)
+    ) {
+      promptBody = buildGenerateAssessmentItemsV2CopyAuthoringBrief();
+    }
+    if (!promptBody && !step.notes && lines.length <= 3) {
       // Not enough information to be useful.
       return "";
     }
@@ -27089,12 +28700,21 @@
         "GAM completion override: do NOT refuse, defer, or claim response/context/token limits."
       );
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        lines.push(
-          "You must emit the complete vNext page artefact now — every input activity preserved, same activities[].length and activity_id order, same learning_outcomes[].length, same episode_plans[].length, materials[] populated where required, assembly_state updated. A1 is not completion. Do not stop after A3 or any partial prefix. Never drop later activities. If length is a concern, keep all activities and preserve fields exactly."
-        );
-        lines.push(
-          "Meta-output is invalid: do not emit note/message/warning/explanation/apology/limitation text (including 'too large to reproduce'). Emit only the complete GAM-enriched page JSON."
-        );
+        if (partialOutputsMode) {
+          lines.push(
+            "You must emit the complete GAM partial artefact now: artifact_type, schema_version, assembly_state for gam, and activities[] with activity_id + materials[]."
+          );
+          lines.push(
+            "Do not emit upstream full-page fields. Do not emit note/message/warning/explanation/apology text."
+          );
+        } else {
+          lines.push(
+            "You must emit the complete vNext page artefact now — every input activity preserved, same activities[].length and activity_id order, same learning_outcomes[].length, same episode_plans[].length, materials[] populated where required, assembly_state updated. A1 is not completion. Do not stop after A3 or any partial prefix. Never drop later activities. If length is a concern, keep all activities and preserve fields exactly."
+          );
+          lines.push(
+            "Meta-output is invalid: do not emit note/message/warning/explanation/apology/limitation text (including 'too large to reproduce'). Emit only the complete GAM-enriched page JSON."
+          );
+        }
       } else {
         lines.push(
           "You must emit the full Step 7 artefact now, covering every required material across all activities."
@@ -27102,6 +28722,19 @@
       }
       lines.push(
         "Forbidden refusal/disclaimer patterns: 'can't complete', 'cannot complete', 'too large', 'exceeds response limits', 'split across multiple outputs/responses'."
+      );
+    }
+    if (
+      canonicalStepId === "step_generate_assessment_items" &&
+      isPageEnrichmentV2WorkflowEnabled(wfForChain) &&
+      partialOutputsMode
+    ) {
+      lines.push("");
+      lines.push(
+        "GAI completion override: emit the complete partial page artefact now — artifact_type, schema_version, assembly_state for assessment_items, and assessment_check.items[] (or sections assessment_check)."
+      );
+      lines.push(
+        "Do not emit standalone assessment_items JSON with top-level items, difficulty_distribution, answer_key, or explanations."
       );
     }
     var strictJsonKindForFooter = strictJsonKindForBody;
@@ -27198,11 +28831,104 @@
 
   function normalizeWorkflowOutputSpec(spec) {
     var s = spec && typeof spec === "object" ? spec : {};
+    var rawV2 =
+      s.pageEnrichmentV2 != null
+        ? s.pageEnrichmentV2
+        : s.page_enrichment_v2 != null
+        ? s.page_enrichment_v2
+        : "";
+    var rawPartial =
+      s.partialPageOutputs != null
+        ? s.partialPageOutputs
+        : s.partial_page_outputs != null
+        ? s.partial_page_outputs
+        : "";
+    function normalizeBoolFlag(value) {
+      if (value === true || value === false) return value;
+      var t = String(value || "")
+        .trim()
+        .toLowerCase();
+      if (!t) return false;
+      return t === "1" || t === "true" || t === "yes" || t === "on";
+    }
     return {
       audience: String(s.audience || "").trim(),
       goal: String(s.goal || "").trim(),
-      constraints: String(s.constraints || "").trim()
+      constraints: String(s.constraints || "").trim(),
+      pageEnrichmentV2: normalizeBoolFlag(rawV2),
+      partialPageOutputs: normalizeBoolFlag(rawPartial)
     };
+  }
+
+  function workflowHasSprint58PagePipelineSteps(wf) {
+    if (!wf || !Array.isArray(wf.steps)) return false;
+    return wf.steps.some(function (row) {
+      if (!row || typeof row !== "object") return false;
+      var ctx = buildWorkflowStepIdentityContextFromRow(row);
+      return (
+        isWorkflowStepDesignEpisodePlanRow(row) ||
+        isWorkflowStepDesignLearningActivities(ctx) ||
+        isWorkflowStepGenerateActivityMaterials(ctx) ||
+        isWorkflowStepConstructLearningSequence(ctx) ||
+        isWorkflowStepDesignPageRow(row) ||
+        isWorkflowStepDesignAssessmentRow(row) ||
+        isWorkflowStepGenerateAssessmentItemsRow(row)
+      );
+    });
+  }
+
+  function migrateWorkflowToSprint58PageArtefactContract(wf) {
+    if (!wf || typeof wf !== "object") return { workflow: wf, changed: false };
+    var next = Object.assign({}, wf);
+    var changed = false;
+    var outSpec = normalizeWorkflowOutputSpec(next.workflowOutputSpec);
+    if (workflowHasSprint58PagePipelineSteps(next)) {
+      if (!outSpec.pageEnrichmentV2 || !outSpec.partialPageOutputs) {
+        outSpec.pageEnrichmentV2 = true;
+        outSpec.partialPageOutputs = true;
+        changed = true;
+      }
+    }
+    next.workflowOutputSpec = outSpec;
+    if (Array.isArray(next.steps) && next.steps.length) {
+      next.steps = next.steps.map(function (step) {
+        var s = step && typeof step === "object" ? Object.assign({}, step) : step;
+        if (!s || typeof s !== "object") return s;
+        if (isWorkflowStepDesignEpisodePlanRow(s)) {
+          var epBody = String(s.override_prompt_body || s.overridePromptBody || "").trim();
+          if (epBody && promptBodyLooksLikeLegacyEpisodePlansContract(epBody)) {
+            s.override_prompt_body = "";
+            var epSourceType = normalizePromptSourceType(s.prompt_source_type || s.prompt_source || "");
+            if (epSourceType === "local_override") {
+              s.prompt_source_type = "none";
+              s.prompt_source = "none";
+            }
+            changed = true;
+          }
+          return s;
+        }
+        if (
+          isWorkflowStepGenerateAssessmentItems({
+            stepCanonicalStepId: s.canonical_step_id || s.canonicalStepId || "",
+            stepCanonicalTitle: s.title || "",
+            stepTitle: s.title || ""
+          })
+        ) {
+          var gaiBody = String(s.override_prompt_body || s.overridePromptBody || "").trim();
+          if (gaiBody && promptBodyLooksLikeLegacyAssessmentItemsContract(gaiBody)) {
+            s.override_prompt_body = "";
+            var gaiSourceType = normalizePromptSourceType(s.prompt_source_type || s.prompt_source || "");
+            if (gaiSourceType === "local_override") {
+              s.prompt_source_type = "none";
+              s.prompt_source = "none";
+            }
+            changed = true;
+          }
+        }
+        return s;
+      });
+    }
+    return { workflow: next, changed: changed };
   }
 
   function compressWorkflowConstraints(rawText) {
@@ -28010,6 +29736,7 @@
       showToast("Design a workflow first.", "error");
       return;
     }
+    normalizeWorkflowDesignStageOrderInPlace(design.steps);
     var name = els.wfDesignName ? (els.wfDesignName.value || "").trim() : "";
     var designIntent = els.wfDesignIntent ? (els.wfDesignIntent.value || "").trim() : "";
     var audienceSeed = els.wfDesignAudience ? (els.wfDesignAudience.value || "").trim() : "";
@@ -28151,7 +29878,9 @@
         workflowOutputSpec: normalizeWorkflowOutputSpec({
           audience: audienceSeed,
           goal: designIntent,
-          constraints: scopeAndConstraints
+          constraints: scopeAndConstraints,
+          pageEnrichmentV2: true,
+          partialPageOutputs: true
         }),
         step: step,
         matchedPattern: matchedPattern
@@ -28205,6 +29934,11 @@
       createdAt: now,
       updatedAt: now
     };
+    if (wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object") {
+      // Sprint 58 default for newly generated learner-facing workflows.
+      wf.workflowOutputSpec.pageEnrichmentV2 = true;
+      wf.workflowOutputSpec.partialPageOutputs = true;
+    }
 
     var normalizeWarnings = [];
     wf = normalizeWorkflowForV1(wf, normalizeWarnings);
@@ -31043,12 +32777,20 @@
     if (
       sid === "visual_affordance_schema_version" ||
       sid === "activities_visual_review" ||
-      sid === "visual_affordances"
+      sid === "visual_affordances" ||
+      sid === "assembly_state" ||
+      sid === "generation_notes" ||
+      sid === "validation_notes" ||
+      sid === "limitations" ||
+      sid === "learning_outcomes" ||
+      sid === "diagnostics" ||
+      sid === "renderer_diagnostics" ||
+      sid === "prism_diagnostics"
     ) {
       return true;
     }
     var heading = String(entry.heading || entry.title || entry.name || "").toLowerCase();
-    if (/\b(production\s+metadata|page\s+metadata)\b/.test(heading)) return true;
+    if (/\b(production\s+metadata|page\s+metadata|assembly state|generation notes|validation notes|diagnostics|limitations|learning outcomes)\b/.test(heading)) return true;
     return /\bvisual\s+affordance\s+schema\s+version\b|\bactivities\s+visual\s+review\b|\bvisual\s+affordances\b/.test(
       heading
     );
@@ -31764,6 +33506,56 @@
     var tableHtml = renderColumnRowsTable(obj);
     if (tableHtml) return tableHtml;
     var suppressedKeyLookup = {};
+    function utilityMaterialMetaPurposeOnly(valueObj) {
+      if (!valueObj || typeof valueObj !== "object" || Array.isArray(valueObj)) return false;
+      if (
+        !Object.prototype.hasOwnProperty.call(valueObj, "material_id") &&
+        !Object.prototype.hasOwnProperty.call(valueObj, "material_ids") &&
+        !Object.prototype.hasOwnProperty.call(valueObj, "required_materials") &&
+        !Object.prototype.hasOwnProperty.call(valueObj, "specification")
+      ) {
+        return false;
+      }
+      var learnerFacingBodyKeys = [
+        "content",
+        "body",
+        "text",
+        "markdown",
+        "html",
+        "table",
+        "items",
+        "task_cards",
+        "prompt_set",
+        "checklist",
+        "sample_output",
+        "worked_example",
+        "analysis_table",
+        "comparison_table",
+        "classification_table",
+        "impact_table",
+        "modelling_note"
+      ];
+      var hasLearnerFacingBody = learnerFacingBodyKeys.some(function (k) {
+        return !utilityIsEmptyValue(valueObj[k]);
+      });
+      return !hasLearnerFacingBody;
+    }
+    function utilityShouldSuppressLearnerMetadataKey(sourceObj, lowerKey) {
+      if (/^[a-z]\d+-m\d+(?:-[a-z0-9_-]+)?$/i.test(String(lowerKey || "").trim())) {
+        return true;
+      }
+      if (
+        lowerKey === "_material_ids" ||
+        lowerKey === "material_id" ||
+        lowerKey === "material_ids" ||
+        lowerKey === "required_materials" ||
+        lowerKey === "specification"
+      ) {
+        return true;
+      }
+      if (lowerKey !== "purpose") return false;
+      return utilityMaterialMetaPurposeOnly(sourceObj);
+    }
     var defaultSuppressedKeys = renderOpts.suppressInternalMetadata
       ? ["material_type", "type", "schema", "source_id", "internal_id", "material_id", "activity_id"]
       : [];
@@ -31792,6 +33584,7 @@
     var keys = Object.keys(obj).filter(function (key) {
       var lower = String(key || "").toLowerCase();
       if (suppressedKeyLookup[lower]) return false;
+      if (utilityShouldSuppressLearnerMetadataKey(obj, lower)) return false;
       return !utilityIsEmptyValue(obj[key]);
     });
     function extractPurposeText(value) {
@@ -31979,15 +33772,16 @@
   }
 
   var PAGE_BODY_SECTION_IDS = {
-    overview: true,
-    learning_purpose: true,
     knowledge_summary: true,
-    learning_activities: true,
+    learning_journey: true,
     learning_sequence: true,
+    learning_activities: true,
     activity_materials: true,
     assessment_check: true,
     support_notes: true,
-    study_tips: true
+    study_tips: true,
+    overview: true,
+    learning_purpose: true
   };
 
   function getPageSectionsArray(parsed) {
@@ -32004,15 +33798,16 @@
     if (!renderPage || typeof renderPage !== "object" || Array.isArray(renderPage)) return [];
     var synthetic = [];
     var canonicalOrder = [
-      "overview",
-      "learning_purpose",
       "knowledge_summary",
-      "learning_activities",
+      "learning_journey",
       "learning_sequence",
-      "activity_materials",
+      "learning_activities",
       "assessment_check",
+      "activity_materials",
       "support_notes",
-      "study_tips"
+      "study_tips",
+      "overview",
+      "learning_purpose"
     ];
     canonicalOrder.forEach(function (sid) {
       if (!PAGE_BODY_SECTION_IDS[sid]) return;
@@ -32051,7 +33846,11 @@
     }
     function looksLearningSequenceSection(name) {
       var t = String(name || "").toLowerCase();
-      return /\b(learning[_\s-]?sequence|workshop schedule|session plan|timeline)\b/.test(t);
+      return /\b(learning[_\s-]?(sequence|journey)|workshop schedule|session plan|timeline|journey)\b/.test(t);
+    }
+    function looksLearningJourneySection(name) {
+      var t = String(name || "").toLowerCase();
+      return /\b(learning[_\s-]?journey|journey)\b/.test(t);
     }
     function looksStudyTipsSection(name) {
       var t = String(name || "").toLowerCase();
@@ -32098,6 +33897,8 @@
         item.section
       ]);
       var sectionIdValue = String(item.section_id || item.id || "").trim();
+      var sectionKind = resolveSectionKind(sectionIdValue, headingValue);
+      if (sectionKind === "learning_journey") return "Learning Journey";
       if (String(headingValue || "").trim()) return String(headingValue).trim();
       if (sectionIdValue && labelsMap[sectionIdValue]) return labelsMap[sectionIdValue];
       if (sectionIdValue) return utilityLabelFromKey(sectionIdValue);
@@ -32181,18 +33982,21 @@
         sid === "overview" ||
         sid === "learning_purpose" ||
         sid === "knowledge_summary" ||
+        sid === "learning_journey" ||
         sid === "learning_activities" ||
         sid === "learning_sequence" ||
         sid === "assessment_check" ||
         sid === "support_notes" ||
         sid === "metadata"
       ) {
+        if (sid === "learning_sequence") return "learning_journey";
         return sid;
       }
       if (!sid || /^section_\d+$/.test(sid)) {
         if (looksLearningActivitiesSection(heading)) return "learning_activities";
         if (looksLearningPurposeOrOutcomesSection(heading)) return "learning_purpose";
         if (looksKnowledgeSummarySection(heading)) return "knowledge_summary";
+        if (looksLearningSequenceSection(heading)) return "learning_journey";
         if (looksAssessmentItemsSection(heading)) return "assessment_check";
         if (looksStudyTipsSection(heading)) return "study_tips";
         if (/\b(support|facilitator notes?)\b/.test(heading)) return "support_notes";
@@ -32213,6 +34017,7 @@
       if (sid === "overview") return "util-section-icon--overview";
       if (sid === "learning_purpose") return "util-section-icon--learning-purpose";
       if (sid === "knowledge_summary") return "util-section-icon--knowledge-summary";
+      if (sid === "learning_journey") return "util-section-icon--learning-purpose";
       if (sid === "learning_activities") return "util-section-icon--learning-activities";
       if (sid === "assessment_check") return "util-section-icon--assessment";
       if (sid === "study_tips" || sid === "support_notes") return "util-section-icon--study-tips";
@@ -32492,6 +34297,80 @@
         lookup[key] = String(title);
       });
       return lookup;
+    }
+    function renderLearningJourneyOverview(sequenceValue, activityLookup) {
+      if (utilityIsEmptyValue(sequenceValue)) return "";
+      var rows = [];
+      var sequenceTitle = "";
+      function pushRow(raw, idx) {
+        if (!raw || typeof raw !== "object" || Array.isArray(raw)) return;
+        var activityId = firstNonEmpty([
+          raw.activity_id,
+          raw.activityId,
+          raw.id
+        ]);
+        var title = firstNonEmpty([
+          raw.activity_title,
+          raw.title,
+          raw.name
+        ]);
+        if (!title && activityId) {
+          var mapped = activityLookup[normalizeActivityLookupKey(activityId)];
+          if (mapped) title = mapped;
+        }
+        if (!title) title = "Step " + (idx + 1);
+        var orientation = firstNonEmpty([
+          raw.transition,
+          raw.focus,
+          raw.purpose,
+          raw.intent
+        ]);
+        var duration = formatMinutesIfBare(
+          firstPresent([raw.duration_minutes, raw.duration, raw.time_minutes])
+        );
+        rows.push({
+          activityId: activityId,
+          title: title,
+          orientation: orientation,
+          duration: duration
+        });
+      }
+      if (Array.isArray(sequenceValue)) {
+        sequenceValue.forEach(pushRow);
+      } else if (sequenceValue && typeof sequenceValue === "object") {
+        sequenceTitle = firstNonEmpty([
+          sequenceValue.sequence_title,
+          sequenceValue.title,
+          sequenceValue.name
+        ]);
+        var timelineRows = Array.isArray(sequenceValue.timeline) ? sequenceValue.timeline : [];
+        if (timelineRows.length) {
+          timelineRows.forEach(pushRow);
+        } else if (Array.isArray(sequenceValue.steps)) {
+          sequenceValue.steps.forEach(pushRow);
+        } else if (Array.isArray(sequenceValue.ordered_activity_ids)) {
+          sequenceValue.ordered_activity_ids.forEach(function (aid, idx) {
+            pushRow({ activity_id: aid }, idx);
+          });
+        }
+      }
+      if (!rows.length) return "";
+      var intro = sequenceTitle
+        ? "<p>" + utilityRenderMarkdownInline(String(sequenceTitle)) + "</p>"
+        : "";
+      var list = rows
+        .map(function (row, idx) {
+          var lead = row.activityId
+            ? (String(row.activityId) + " - " + String(row.title))
+            : ("Step " + (idx + 1) + " - " + String(row.title));
+          var detail = [];
+          if (row.orientation) detail.push(utilityRenderMarkdownInline(String(row.orientation)));
+          if (row.duration) detail.push(utilityEscapeHtml(String(row.duration)));
+          var detailHtml = detail.length ? ("<p>" + detail.join(" · ") + "</p>") : "";
+          return "<li><strong>" + utilityEscapeHtml(lead) + "</strong>" + detailHtml + "</li>";
+        })
+        .join("");
+      return '<div class="util-learning-journey-overview">' + intro + "<ol>" + list + "</ol></div>";
     }
     function renderActivityResourcesSection(sectionValue) {
       function renderResourceMarkdownBlock(value) {
@@ -33393,7 +35272,13 @@
         var inline = firstNonEmptyRaw([row.materials, row.activity_materials, row.resources]);
         var normalizedInline = normalizeActivityMaterialsForRender(inline);
         var external = aid && materialsByActivityId[aid] ? materialsByActivityId[aid] : null;
-        if (utilityIsEmptyValue(normalizedInline) && utilityIsEmptyValue(external)) return null;
+        if (utilityIsEmptyValue(normalizedInline) && utilityIsEmptyValue(external)) {
+          var requiredFallback = Array.isArray(row.required_materials) ? row.required_materials : [];
+          if (requiredFallback.length) {
+            return { missing_generated_materials: requiredFallback };
+          }
+          return null;
+        }
         if (utilityIsEmptyValue(normalizedInline)) return external;
         if (utilityIsEmptyValue(external)) return normalizedInline;
         return mergeActivityMaterialObjects(normalizedInline, external);
@@ -35690,6 +37575,57 @@
         if (strategyHtml) {
           parts.push(utilityRenderIconHeading("h4", "Strategy options", "strategy", "util-material-heading") + strategyHtml);
         }
+        function materialValueLooksLinkageMetadataOnly(value) {
+          if (utilityIsEmptyValue(value)) return true;
+          if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+            return false;
+          }
+          if (Array.isArray(value)) {
+            if (!value.length) return true;
+            return value.every(function (entry) {
+              return materialValueLooksLinkageMetadataOnly(entry);
+            });
+          }
+          if (!value || typeof value !== "object") return false;
+          var bodyKeys = [
+            "content",
+            "body",
+            "text",
+            "markdown",
+            "html",
+            "table",
+            "items",
+            "task_cards",
+            "prompt_set",
+            "checklist",
+            "analysis_table",
+            "comparison_table",
+            "classification_table",
+            "impact_table",
+            "worked_example",
+            "sample_output"
+          ];
+          var hasLearnerBody = bodyKeys.some(function (key) {
+            return !utilityIsEmptyValue(value[key]);
+          });
+          if (hasLearnerBody) return false;
+          var metadataKeys = [
+            "_material_ids",
+            "material_id",
+            "material_ids",
+            "type",
+            "material_type",
+            "purpose",
+            "specification",
+            "instructional_function",
+            "plan_beat_index"
+          ];
+          var keys = Object.keys(value);
+          if (!keys.length) return true;
+          return keys.every(function (key) {
+            return metadataKeys.indexOf(String(key || "").toLowerCase()) !== -1;
+          });
+        }
         Object.keys(materials).forEach(function (k) {
           var lowerK = String(k || "").toLowerCase();
           if (wasOrderedMaterialRendered(k)) {
@@ -35748,6 +37684,18 @@
           if (utilityShouldSuppressLearnerWorkshopMaterial(k, materials[k], renderOpts)) {
             return;
           }
+          if (
+            lowerK === "_material_ids" ||
+            lowerK === "required_materials" ||
+            lowerK === "material_ids" ||
+            lowerK === "material_id" ||
+            lowerK === "specification"
+          ) {
+            return;
+          }
+          if (/^[a-z]\d+-m\d+(?:-[a-z0-9_-]+)?$/i.test(String(k || "").trim())) {
+            return;
+          }
           if (cognitionKeysOnRow[k] || cognitionKeysOnRow[lowerK]) {
             return;
           }
@@ -35765,7 +37713,7 @@
             }
           }
           if (
-            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "comparison_table", "classification_table", "worksheet", "table", "strategy_options", "options", "strategies", "material_id", "materialId", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
+            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "comparison_table", "classification_table", "worksheet", "table", "strategy_options", "options", "strategies", "material_id", "material_ids", "_material_ids", "materialId", "required_materials", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
             (lowerK === "scenario" && scenariosRendered) ||
             (lowerK === "scenario_section_title") ||
             (lowerK === "scenario_heading") ||
@@ -35788,7 +37736,70 @@
           }
           var val = materials[k];
           if (utilityIsEmptyValue(val)) return;
-          var rendered = renderMaterialValue(val, k);
+          if (lowerK === "missing_generated_materials") {
+            var missingRows = Array.isArray(val) ? val : [];
+            var missingItems = missingRows
+              .map(function (entry, idx) {
+                if (!entry || typeof entry !== "object") return "";
+                var typeLabel = firstNonEmpty([
+                  entry.material_type,
+                  entry.type,
+                  entry.materialType
+                ]);
+                var purposeLabel = firstNonEmpty([entry.purpose, entry.specification]);
+                var lead = typeLabel
+                  ? utilityLabelFromKey(String(typeLabel))
+                  : ("Material " + (idx + 1));
+                var detail = purposeLabel ? (": " + String(purposeLabel)) : "";
+                return "<li>" + utilityEscapeHtml(lead + detail) + "</li>";
+              })
+              .filter(function (line) {
+                return !!line;
+              });
+            if (missingItems.length) {
+              parts.push(
+                '<div class="util-material-fallback util-material-prose">' +
+                  utilityRenderIconHeading(
+                    "h4",
+                    "Generated materials missing (diagnostic)",
+                    "metadata",
+                    "util-material-heading"
+                  ) +
+                  "<p>Generated activity material bodies are missing for this activity. The plan below is internal diagnostic metadata.</p>" +
+                  "<ul>" +
+                  missingItems.join("") +
+                  "</ul>" +
+                  "</div>"
+              );
+            }
+            return;
+          }
+          if (materialValueLooksLinkageMetadataOnly(val)) return;
+          var renderValue = val;
+          if (val && typeof val === "object" && !Array.isArray(val)) {
+            var hasBodyScalar = !utilityIsEmptyValue(val.body) || !utilityIsEmptyValue(val.content) || !utilityIsEmptyValue(val.text);
+            var looksWrapperObject =
+              hasBodyScalar &&
+              Object.keys(val).every(function (keyName) {
+                var lk = String(keyName || "").toLowerCase();
+                return (
+                  lk === "title" ||
+                  lk === "body" ||
+                  lk === "content" ||
+                  lk === "text" ||
+                  lk === "purpose" ||
+                  lk === "material_id" ||
+                  lk === "material_type" ||
+                  lk === "type" ||
+                  lk === "activity_id" ||
+                  lk === "parent_activity_id"
+                );
+              });
+            if (looksWrapperObject) {
+              renderValue = firstPresent([val.body, val.content, val.text]);
+            }
+          }
+          var rendered = renderMaterialValue(renderValue, k);
           if (!rendered) return;
           var subsectionTitle = "";
           if (val && typeof val === "object" && !Array.isArray(val)) {
@@ -38111,6 +40122,19 @@
       var renderedSections = keys.map(function (sectionName) {
         var sectionValue = sectionsValue[sectionName];
         if (utilityIsEmptyValue(sectionValue)) return "";
+        if (
+          (String(sectionName || "").toLowerCase() === "overview" ||
+            String(sectionName || "").toLowerCase() === "learning_purpose") &&
+          (sectionsValue.learning_journey || sectionsValue.learning_sequence)
+        ) {
+          return "";
+        }
+        if (
+          String(sectionName || "").toLowerCase() === "learning_sequence" &&
+          sectionsValue.learning_journey
+        ) {
+          return "";
+        }
         var sectionHeading = labelsMap[sectionName] || utilityLabelFromKey(sectionName);
         if (looksLearningActivitiesSection(sectionName)) {
           var activityRows = resolveLearningActivityRowsForRender(
@@ -38129,18 +40153,29 @@
           return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(activityRows.length || 0), "learning_activities") + activitiesHtml + "</section>";
         }
         if (looksLearningSequenceSection(sectionName)) {
-          var sequenceRows = Array.isArray(sectionValue)
-            ? sectionValue
-            : (sectionValue && Array.isArray(sectionValue.timeline) ? sectionValue.timeline : []);
-          var flow = renderLinkedJourneyBlocks(sequenceRows, linkedIndex, resourcesValue);
-          if (String(flow.html || "").trim()) {
-            if (flow.facilitatorHtml) facilitatorAppendix.push(flow.facilitatorHtml);
-            return "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + flow.html + "</section>";
+          var journeyIntroParts = [];
+          if (sectionValue && typeof sectionValue === "object" && !Array.isArray(sectionValue)) {
+            var journeyOverviewText = firstNonEmpty([sectionValue.overview, sectionValue.intro, sectionValue.summary]);
+            var journeyPurposeText = firstNonEmpty([sectionValue.learning_purpose, sectionValue.purpose]);
+            if (journeyOverviewText) {
+              journeyIntroParts.push(
+                '<div class="util-learning-journey-intro">' +
+                  utilityRenderMarkdownBlock(String(journeyOverviewText)) +
+                  "</div>"
+              );
+            }
+            if (journeyPurposeText) {
+              journeyIntroParts.push(
+                '<div class="util-learning-journey-purpose">' +
+                  utilityRenderMarkdownBlock(String(journeyPurposeText)) +
+                  "</div>"
+              );
+            }
           }
-          var renderedSequence = renderLearningSequenceBlocks(sequenceRows, activityLookup);
-          if (renderedSequence.facilitatorHtml) facilitatorAppendix.push(renderedSequence.facilitatorHtml);
-          if (!String(renderedSequence.timelineHtml || "").trim()) return "";
-          return "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + renderedSequence.timelineHtml + "</section>";
+          var journeyHtml = renderLearningJourneyOverview(sectionValue, activityLookup);
+          var journeyBody = journeyIntroParts.join("") + String(journeyHtml || "");
+          if (!String(journeyBody || "").trim()) return "";
+          return "<section>" + renderSectionHeadingH2("Learning Journey", "learning_journey") + journeyBody + "</section>";
         }
         if (looksLearningPurposeOrOutcomesSection(sectionName)) {
           var lpoHtml = renderLearningPurposeOutcomes(sectionValue);
@@ -38243,6 +40278,11 @@
       });
       arrayActivityLookup = Object.assign({}, arrayActivityLookup, buildLearningActivityLookup(arrayLearningActivitiesValue));
       var arrayFlowState = { activitiesDetailRendered: false };
+      var arrayHasLearningJourneySection = (Array.isArray(probeSource) ? probeSource : []).some(function (entry) {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+        var sid = String(entry.section_id || entry.id || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
+        return sid === "learning_journey";
+      });
       var renderedArraySections = sectionsValue.map(function (item, idx) {
         if (utilityIsEmptyValue(item)) return "";
         if (utilityIsPageMetadataSectionEntry(item)) {
@@ -38262,6 +40302,19 @@
         var orderedKey = sectionIdValue || orderedKeys[idx] || "";
         var sectionHeading = resolvePageSectionHeadingFromEntry(item, idx, orderedKeys, labelsMap);
         var contentValue = resolvePageSectionContentFromEntry(item);
+        var lowerOrderedKey = String(orderedKey || "").toLowerCase().replace(/[\s-]+/g, "_");
+        if (
+          (lowerOrderedKey === "overview" || lowerOrderedKey === "learning_purpose") &&
+          (arrayLearningSequenceValue || looksLearningJourneySection(sectionHeading))
+        ) {
+          return "";
+        }
+        if (
+          lowerOrderedKey === "learning_sequence" &&
+          arrayHasLearningJourneySection
+        ) {
+          return "";
+        }
         if (looksLearningActivitiesSection(sectionHeading) || looksLearningActivitiesSection(orderedKey)) {
           var arrActivityRows = resolveLearningActivityRowsForRender(
             contentValue,
@@ -38282,22 +40335,32 @@
           };
         }
         if (looksLearningSequenceSection(sectionHeading) || looksLearningSequenceSection(orderedKey)) {
-          var arrSeqRows = Array.isArray(contentValue)
-            ? contentValue
-            : (contentValue && Array.isArray(contentValue.timeline) ? contentValue.timeline : []);
-          var arrFlow = renderLinkedJourneyBlocks(arrSeqRows, arrayLinkedIndex, arrayResourcesValue);
-          if (String(arrFlow.html || "").trim()) {
-            var arrFlowSection = "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + arrFlow.html + "</section>";
-            if (arrFlow.facilitatorHtml) arrFlowSection += arrFlow.facilitatorHtml;
-            return { kind: "other", html: arrFlowSection };
+          var arrJourneyIntroParts = [];
+          if (contentValue && typeof contentValue === "object" && !Array.isArray(contentValue)) {
+            var arrJourneyOverviewText = firstNonEmpty([contentValue.overview, contentValue.intro, contentValue.summary]);
+            var arrJourneyPurposeText = firstNonEmpty([contentValue.learning_purpose, contentValue.purpose]);
+            if (arrJourneyOverviewText) {
+              arrJourneyIntroParts.push(
+                '<div class="util-learning-journey-intro">' +
+                  utilityRenderMarkdownBlock(String(arrJourneyOverviewText)) +
+                  "</div>"
+              );
+            }
+            if (arrJourneyPurposeText) {
+              arrJourneyIntroParts.push(
+                '<div class="util-learning-journey-purpose">' +
+                  utilityRenderMarkdownBlock(String(arrJourneyPurposeText)) +
+                  "</div>"
+              );
+            }
           }
-          var arrRenderedSequence = renderLearningSequenceBlocks(arrSeqRows, arrayActivityLookup);
-          if (!String(arrRenderedSequence.timelineHtml || "").trim()) return "";
-          var arrSequenceSection = "<section>" + renderSectionHeadingH2("Session timeline", "learning_sequence") + arrRenderedSequence.timelineHtml + "</section>";
-          if (arrRenderedSequence.facilitatorHtml) {
-            arrSequenceSection += arrRenderedSequence.facilitatorHtml;
-          }
-          return { kind: "other", html: arrSequenceSection };
+          var arrJourneyHtml = renderLearningJourneyOverview(contentValue, arrayActivityLookup);
+          var arrJourneyBody = arrJourneyIntroParts.join("") + String(arrJourneyHtml || "");
+          if (!String(arrJourneyBody || "").trim()) return "";
+          return {
+            kind: "other",
+            html: "<section>" + renderSectionHeadingH2("Learning Journey", "learning_journey") + arrJourneyBody + "</section>"
+          };
         }
         if (looksLearningPurposeOrOutcomesSection(sectionHeading) || looksLearningPurposeOrOutcomesSection(orderedKey)) {
           var arrLpoHtml = renderLearningPurposeOutcomes(contentValue);
@@ -40995,6 +43058,255 @@
     return null;
   }
 
+  function extractSingleFencedJsonBody(raw) {
+    var text = String(raw || "").trim();
+    var match = text.match(/^```json\s*\r?\n([\s\S]*?)\r?\n```\s*$/i);
+    if (!match) return { ok: false, error: "missing_single_fenced_json_block", body: "" };
+    return { ok: true, error: "", body: String(match[1] || "").trim() };
+  }
+
+  function parsePageArtefactCaptureForStorage(raw) {
+    var initial = String(raw || "");
+    var fencedWhole = /^\s*```json\s*\r?\n[\s\S]*\r?\n```\s*$/i.test(initial);
+    var sanitized = fencedWhole ? initial : sanitizePrismRunCapturedOutput(initial);
+    var trimmed = utilityNormalizeUtilitiesJsonInput(String(sanitized || "").trim());
+    if (!trimmed) {
+      return { ok: false, errors: ["empty_capture"], message: "Page artefact capture is empty" };
+    }
+    var body = trimmed;
+    var hasFence = /```/.test(trimmed);
+    if (hasFence) {
+      var fenced = extractSingleFencedJsonBody(trimmed);
+      if (!fenced.ok) {
+        return {
+          ok: false,
+          errors: ["invalid_fenced_block"],
+          message: "Page artefact capture must be raw JSON or exactly one fenced ```json block"
+        };
+      }
+      body = fenced.body;
+    }
+    if (!/^\s*\{/.test(body) || !/\}\s*$/.test(body)) {
+      return {
+        ok: false,
+        errors: ["prose_outside_json"],
+        message: "Page artefact capture must contain only one JSON object"
+      };
+    }
+    try {
+      var parsed = JSON.parse(body);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return {
+          ok: false,
+          errors: ["not_json_object"],
+          message: "Page artefact capture must be a single JSON object"
+        };
+      }
+      if (String(parsed.artifact_type || "").toLowerCase() !== "page") {
+        return {
+          ok: false,
+          errors: ["not_page_artefact"],
+          message: 'Page artefact capture must contain artifact_type "page"'
+        };
+      }
+      if (/"artifact_type"\s*:\s*"page"[\s\S]*"artifact_type"\s*:\s*"page"/i.test(body)) {
+        return {
+          ok: false,
+          errors: ["duplicate_page_objects"],
+          message: "Page artefact capture must not contain multiple embedded page objects"
+        };
+      }
+      return {
+        ok: true,
+        errors: [],
+        parsed: parsed,
+        json: JSON.stringify(parsed, null, 2)
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        errors: ["invalid_json"],
+        message: "Page artefact JSON parse failed: " + String((err && err.message) || err)
+      };
+    }
+  }
+
+  function parseEpisodePlanOrPageCaptureForStorage(raw) {
+    var pageCapture = parsePageArtefactCaptureForStorage(raw);
+    if (pageCapture.ok) {
+      var normalizedParsed = pageCapture.parsed;
+      var normalizedCheck = validateEpisodePlanOrPageShellCapture(normalizedParsed);
+      if (normalizedCheck && normalizedCheck.ok) {
+        try {
+          pageCapture.json = JSON.stringify(normalizedParsed, null, 2);
+          pageCapture.parsed = normalizedParsed;
+        } catch (_) {}
+      }
+      return pageCapture;
+    }
+    // Episode Plan step UX tolerance:
+    // allow one page object extracted from common conversational wrappers
+    // (prose before/after, fenced json, footer lines), then enforce EP/page-shell contract.
+    var candidates = [];
+    var rawText = String(raw || "").trim();
+    if (rawText) candidates.push(rawText);
+    var sanitized = sanitizePrismRunCapturedOutput(rawText).trim();
+    if (sanitized && candidates.indexOf(sanitized) === -1) candidates.push(sanitized);
+    if (/```/.test(rawText)) {
+      var fenced = extractSingleFencedJsonBody(rawText);
+      if (fenced.ok && fenced.body && candidates.indexOf(fenced.body) === -1) {
+        candidates.push(fenced.body);
+      }
+    }
+    if (rawText.indexOf("{") !== -1 && rawText.lastIndexOf("}") > rawText.indexOf("{")) {
+      var sliced = rawText.slice(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1).trim();
+      if (sliced && candidates.indexOf(sliced) === -1) candidates.push(sliced);
+    }
+    var i;
+    for (i = 0; i < candidates.length; i += 1) {
+      var candidate = candidates[i];
+      var looseParsed = null;
+      try {
+        looseParsed = JSON.parse(candidate);
+      } catch (_) {
+        looseParsed = tryParseWorkflowArtefactJson(candidate);
+      }
+      if (
+        looseParsed &&
+        typeof looseParsed === "object" &&
+        !Array.isArray(looseParsed) &&
+        String(looseParsed.artifact_type || "").toLowerCase() === "page"
+      ) {
+        var shellCheck = validateEpisodePlanOrPageShellCapture(looseParsed);
+        if (shellCheck && shellCheck.ok) {
+          try {
+            return {
+              ok: true,
+              errors: [],
+              parsed: looseParsed,
+              json: JSON.stringify(looseParsed, null, 2)
+            };
+          } catch (_) {}
+        }
+      }
+      // Legacy EP container compatibility: convert bare episode_plans capture
+      // into canonical v2 page shell for storage in Sprint 58 run mode.
+      if (looseParsed && typeof looseParsed === "object" && !Array.isArray(looseParsed)) {
+        var normalizedEpisodePlans = normalizeEpisodePlansCaptureForPopulation(looseParsed);
+        if (normalizedEpisodePlans) {
+          var gateCheck = validateEpisodePlansCaptureV1(normalizedEpisodePlans);
+          if (gateCheck && gateCheck.ok) {
+            var shellMod = resolvePageShellCreateLib();
+            if (
+              shellMod &&
+              typeof shellMod.createPageShellFromEpisodePlan === "function" &&
+              typeof shellMod.validatePageShellAgainstVNextSchema === "function"
+            ) {
+              try {
+                var convertedShell = shellMod.createPageShellFromEpisodePlan(normalizedEpisodePlans);
+                var convertedCheck = shellMod.validatePageShellAgainstVNextSchema(convertedShell);
+                if (convertedCheck && convertedCheck.ok) {
+                  return {
+                    ok: true,
+                    errors: [],
+                    parsed: convertedShell,
+                    json: JSON.stringify(convertedShell, null, 2)
+                  };
+                }
+              } catch (_) {}
+            }
+          }
+        }
+      }
+    }
+    return {
+      ok: false,
+      errors: pageCapture.errors || ["invalid_episode_plan_page_capture"],
+      message:
+        "Design Episode Plan must store a v2 page artefact (artifact_type \"page\", schema_version \"2.0.0\"). " +
+        String(pageCapture.message || "Invalid page JSON")
+    };
+  }
+
+  function parseGenerateAssessmentItemsOrPageCaptureForStorage(raw) {
+    var pageCapture = parsePageArtefactCaptureForStorage(raw);
+    if (pageCapture.ok) return pageCapture;
+
+    var rawText = String(raw || "").trim();
+    if (!rawText) {
+      return {
+        ok: false,
+        errors: ["empty_capture"],
+        message: "Generate Assessment Items capture is empty"
+      };
+    }
+
+    var candidates = [];
+    candidates.push(rawText);
+    var sanitized = sanitizePrismRunCapturedOutput(rawText).trim();
+    if (sanitized && candidates.indexOf(sanitized) === -1) candidates.push(sanitized);
+    if (/```/.test(rawText)) {
+      var fenced = extractSingleFencedJsonBody(rawText);
+      if (fenced.ok && fenced.body && candidates.indexOf(fenced.body) === -1) {
+        candidates.push(fenced.body);
+      }
+    }
+    if (rawText.indexOf("{") !== -1 && rawText.lastIndexOf("}") > rawText.indexOf("{")) {
+      var sliced = rawText.slice(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1).trim();
+      if (sliced && candidates.indexOf(sliced) === -1) candidates.push(sliced);
+    }
+
+    var i;
+    for (i = 0; i < candidates.length; i += 1) {
+      var candidate = candidates[i];
+      var parsed = null;
+      try {
+        parsed = JSON.parse(candidate);
+      } catch (_) {
+        parsed = tryParseWorkflowArtefactJson(candidate);
+      }
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) continue;
+      var legacyAssessment = parsed.assessment && typeof parsed.assessment === "object"
+        ? parsed.assessment
+        : null;
+      var legacyItems = Array.isArray(parsed.items)
+        ? parsed.items
+        : legacyAssessment && Array.isArray(legacyAssessment.items)
+        ? legacyAssessment.items
+        : null;
+      if (!legacyItems && !legacyAssessment) continue;
+
+      var normalized = {
+        artifact_type: "page",
+        schema_version: "2.0.0",
+        assembly_state: {
+          current_stage: "assessment_items",
+          enriched_by: ["assessment_items"]
+        },
+        assessment_check: {
+          items: Array.isArray(legacyItems) ? legacyItems : []
+        }
+      };
+      try {
+        return {
+          ok: true,
+          errors: [],
+          parsed: normalized,
+          json: JSON.stringify(normalized, null, 2)
+        };
+      } catch (_) {}
+    }
+
+    return {
+      ok: false,
+      errors: pageCapture.errors || ["invalid_generate_assessment_items_page_capture"],
+      message:
+        "Generate Assessment Items must store a page partial with assessment_check.items[] " +
+        "(legacy assessment/items root can be auto-converted when present). " +
+        String(pageCapture.message || "Invalid page JSON")
+    };
+  }
+
   function resolveUpstreamLearningActivitiesFromWorkflowCaptures() {
     var wf = resolveWorkflowForUpstreamArtefacts({});
     if (!wf || !Array.isArray(wf.steps)) return null;
@@ -41109,6 +43421,17 @@
         episodePlansValidation: null,
         beatMaterialValidation: null,
         json: null
+      };
+    }
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var stepRow = buildWorkflowStepRowFromRunLi(stepLi, wf);
+    if (isPostEpisodePlanPartialOutputStep(stepRow, wf)) {
+      return {
+        validation: null,
+        materialsValidation: null,
+        episodePlansValidation: null,
+        beatMaterialValidation: null,
+        json: JSON.stringify(parsed, null, 2)
       };
     }
     var upstream = resolveUpstreamLearningActivitiesForPageStep(stepLi);
@@ -41690,18 +44013,37 @@
     var primaryBlocks = [];
     var metadataBlocks = [];
     var metadataKeys = {
+      schema_version: true,
+      assembly_state: true,
+      enrichment_metadata: true,
       source_artefacts: true,
       constraints_applied: true,
       generation_notes: true,
+      validation_notes: true,
+      limitations: true,
+      learning_outcomes: true,
+      diagnostics: true,
+      diagnostic: true,
+      renderer_diagnostics: true,
+      prism_diagnostics: true,
       visual_affordance_schema_version: true,
       activities_visual_review: true,
       visual_affordances: true,
       episode_plans: true
     };
     var pageMetadataKeyOrder = [
+      "schema_version",
+      "assembly_state",
+      "enrichment_metadata",
       "source_artefacts",
       "constraints_applied",
       "generation_notes",
+      "validation_notes",
+      "limitations",
+      "learning_outcomes",
+      "diagnostics",
+      "renderer_diagnostics",
+      "prism_diagnostics",
       "visual_affordance_schema_version",
       "activities_visual_review",
       "visual_affordances"
@@ -41780,6 +44122,7 @@
       var k = String(sectionKey || "").trim();
       if (!k) return false;
       if (k === "sections") return true;
+      if (k === "activities") return true;
       return !!PAGE_BODY_SECTION_IDS[k];
     }
     function buildLearningObjectSectionBlocksFromPageSections() {
@@ -42537,15 +44880,16 @@
       Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
         ? sectionOrderOverride.slice()
         : [
-            "overview",
-            "learning_purpose",
             "knowledge_summary",
-            "learning_activities",
+            "learning_journey",
             "learning_sequence",
-            "activity_materials",
+            "learning_activities",
             "assessment_check",
+            "activity_materials",
             "support_notes",
-            "study_tips"
+            "study_tips",
+            "overview",
+            "learning_purpose"
           ];
     return {
       artefactType: "page",
@@ -42574,6 +44918,14 @@
     }
     if (String(parsed.artifact_type || "").toLowerCase() !== "page") {
       return { error: 'Include top-level "artifact_type": "page".' };
+    }
+    try {
+      parsed = resolvePageForRenderOrAssembly(parsed, opts.workflow || null, {
+        captures: opts.captures,
+        capturesRaw: opts.capturesRaw
+      });
+    } catch (assemblyErr) {
+      return { error: (assemblyErr && assemblyErr.message) || "Could not assemble page from captures." };
     }
     if (opts.applyCompositionValidation !== false) {
       var compositionValidation = applyPageCompositionValidationForUtilitiesPage(
@@ -42699,6 +45051,7 @@
     var pageClosureValidation = null;
     if (String(parsed.artifact_type || "").toLowerCase() === "page") {
       pageClosureValidation = applyPageCompositionValidationForUtilitiesPage(parsed, {});
+      var assembledFromCurrentRun = String(state.utilitiesSourceMode || "") === "assembled_current_run";
       try {
         if (els.utilitiesJsonInput) {
           els.utilitiesJsonInput.value = JSON.stringify(parsed, null, 2);
@@ -42709,6 +45062,12 @@
           pageClosureValidation && pageClosureValidation.materialsValidation
         )
       ) {
+        if (assembledFromCurrentRun) {
+          showToast(
+            "Assembled page has materials-closure warnings; continuing to preview HTML.",
+            "warning"
+          );
+        } else {
         showToast(
           formatPageMaterialsClosureExportError(
             pageClosureValidation && pageClosureValidation.materialsValidation
@@ -42716,6 +45075,7 @@
           "error"
         );
         return;
+        }
       }
     }
     var presentationMode = String(
@@ -42769,6 +45129,70 @@
       });
   }
 
+  function handleUtilitiesAssembleFromCurrentWorkflowRun() {
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) {
+      showToast("Select a workflow with run captures first.", "error");
+      return;
+    }
+    var stageCanonicalIds = [
+      "step_design_page",
+      "step_generate_assessment_items",
+      "step_design_assessment",
+      "step_construct_learning_sequence",
+      "step_generate_activity_materials",
+      "step_design_learning_activities",
+      "step_design_episode_plan"
+    ];
+    var seedRaw = "";
+    var i;
+    for (i = 0; i < stageCanonicalIds.length; i += 1) {
+      seedRaw = readWorkflowStepCaptureByCanonicalId(wf, stageCanonicalIds[i], {
+        captures: state.workflowRunCapturedOutputs,
+        capturesRaw: state.workflowRunCapturedOutputsRaw,
+        preferRaw: true
+      });
+      if (String(seedRaw || "").trim()) break;
+    }
+    if (!String(seedRaw || "").trim()) {
+      showToast("No captured page artefacts found in current workflow run.", "error");
+      return;
+    }
+    var parsedSeed = tryParseWorkflowArtefactJson(seedRaw);
+    if (!parsedSeed || String(parsedSeed.artifact_type || "").toLowerCase() !== "page") {
+      showToast("Latest captured artefact is not valid page JSON.", "error");
+      return;
+    }
+    var assembled;
+    try {
+      assembled = resolvePageForRenderOrAssembly(parsedSeed, wf, {
+        captures: state.workflowRunCapturedOutputs,
+        capturesRaw: state.workflowRunCapturedOutputsRaw
+      });
+    } catch (err) {
+      showToast(
+        "Could not assemble final page from workflow run: " +
+          String((err && err.message) || err || "unknown error"),
+        "error"
+      );
+      return;
+    }
+    if (!assembled || typeof assembled !== "object" || Array.isArray(assembled)) {
+      showToast("Assembled page result is invalid.", "error");
+      return;
+    }
+    if (els.utilitiesJsonInput) {
+      try {
+        els.utilitiesJsonInput.value = JSON.stringify(assembled, null, 2);
+      } catch (_) {
+        showToast("Could not serialize assembled page JSON.", "error");
+        return;
+      }
+    }
+    state.utilitiesSourceMode = "assembled_current_run";
+    showToast("Assembled page loaded into Utilities JSON input.", "success");
+  }
+
   function handleUtilitiesDownloadHtml() {
     var htmlText = String(state.utilitiesLastHtml || "").trim();
     if (!htmlText) {
@@ -42819,6 +45243,7 @@
     state.utilitiesLastHtml = "";
     state.utilitiesLastFileName = "";
     state.utilitiesPresentationMode = "single_page";
+    state.utilitiesSourceMode = "";
   }
 
   function ensureWorkflowFactorySaveBinding() {
@@ -43038,6 +45463,12 @@
     if (els.utilitiesGenerateBtn) {
       els.utilitiesGenerateBtn.addEventListener("click", handleUtilitiesGenerate);
     }
+    if (els.utilitiesAssembleCurrentRunBtn) {
+      els.utilitiesAssembleCurrentRunBtn.addEventListener(
+        "click",
+        handleUtilitiesAssembleFromCurrentWorkflowRun
+      );
+    }
     if (els.utilitiesDownloadBtn) {
       els.utilitiesDownloadBtn.addEventListener("click", handleUtilitiesDownloadHtml);
     }
@@ -43046,6 +45477,11 @@
     }
     if (els.utilitiesClearBtn) {
       els.utilitiesClearBtn.addEventListener("click", handleUtilitiesClear);
+    }
+    if (els.utilitiesJsonInput) {
+      els.utilitiesJsonInput.addEventListener("input", function () {
+        state.utilitiesSourceMode = "";
+      });
     }
 
     // Workflow run/edit wiring and keyboard shortcuts.
@@ -43112,6 +45548,9 @@
     if (els.workflowPrevStepBtn) {
       els.workflowPrevStepBtn.addEventListener("click", function () {
         state.currentWorkflowRunIndex -= 1;
+        if (String(state.selectedWorkflowId || "").trim()) {
+          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+        }
         updateWorkflowRunView();
       });
     }
@@ -43131,10 +45570,28 @@
                 return String(row && row.id ? row.id : "") === sid;
               }) || null;
           }
+          if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow || {}, sid, wf || {}, currentLi)) {
+            updateRunStepOutputStatus(currentLi);
+            showToast(
+              workflowRunStepHasBlockingCaptureErrors(sid)
+                ? "Fix validation errors in this step's output artefact before continuing."
+                : "Paste a valid output artefact for this step before continuing.",
+              "error"
+            );
+            return;
+          }
           var outArea = currentLi.querySelector('[data-field="runStepOutput"]');
           var body = outArea ? String(outArea.value || "").trim() : "";
-          var strictKind = resolveStrictJsonWorkflowStepKind(stepRow || {});
-          if (strictKind && body) {
+          var storesArtefact = workflowStepProducesStoredArtefact(stepRow || {}, wf || {});
+          var pageStructureStep = isWorkflowStepPageStructureProducer(stepRow || {}, wf || {});
+          var strictKind = resolveStrictJsonWorkflowStepKind(stepRow || {}, wf || {});
+          if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
+            strictKind = "";
+            if (sid && state.workflowRunStrictJsonValidation) {
+              delete state.workflowRunStrictJsonValidation[sid];
+            }
+          }
+          if (storesArtefact && strictKind && body) {
             var strictCheck = validateStrictJsonWorkflowRunStepCapture(body, stepRow || {});
             if (!strictCheck.ok) {
               if (sid) {
@@ -43151,6 +45608,53 @@
                 "error"
               );
               return;
+            }
+          }
+          if (storesArtefact && pageStructureStep && body) {
+            var episodePlanStep = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
+            var pageCaptureCheck = episodePlanStep
+              ? parseEpisodePlanOrPageCaptureForStorage(body)
+              : stepRow && isWorkflowStepGenerateAssessmentItemsRow(stepRow)
+              ? parseGenerateAssessmentItemsOrPageCaptureForStorage(body)
+              : parsePageArtefactCaptureForStorage(body);
+            if (
+              !pageCaptureCheck.ok &&
+              !episodePlanStep &&
+              /"assessment"\s*:\s*\{[\s\S]*"items"\s*:\s*\[/i.test(String(body || ""))
+            ) {
+              pageCaptureCheck = parseGenerateAssessmentItemsOrPageCaptureForStorage(body);
+            }
+            if (!pageCaptureCheck.ok) {
+              if (sid) {
+                if (episodePlanStep) {
+                  state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+                  state.workflowRunEpisodePlanValidation[sid] = String(
+                    pageCaptureCheck.message || "Invalid Episode Plan/page shell JSON"
+                  );
+                } else {
+                  state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+                  state.workflowRunPageValidation[sid] = String(
+                    pageCaptureCheck.message || "Invalid page artefact JSON"
+                  );
+                }
+                delete state.workflowRunStepCompleted[sid];
+              }
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                String(
+                  pageCaptureCheck.message ||
+                    (episodePlanStep
+                      ? "Invalid Episode Plan/page shell JSON"
+                      : "Invalid page artefact JSON")
+                ),
+                "error"
+              );
+              return;
+            }
+            if (pageCaptureCheck.json !== body && outArea) {
+              outArea.value = pageCaptureCheck.json;
+              syncWorkflowRunCapturedOutputToState(currentLi);
+              body = pageCaptureCheck.json;
             }
           }
           if (stepRow && isWorkflowStepDesignPageRow(stepRow) && body) {
@@ -43185,12 +45689,13 @@
               syncWorkflowRunCapturedOutputToState(currentLi);
             }
           }
-          if (workflowRunLearnerPageFramingGateMessage(sid)) {
+          if (storesArtefact && workflowRunLearnerPageFramingGateMessage(sid)) {
             updateRunStepOutputStatus(currentLi);
             showToast(workflowRunLearnerPageFramingGateMessage(sid), "error");
             return;
           }
           if (
+            storesArtefact &&
             sid &&
             state.workflowRunGamFormatValidation &&
             state.workflowRunGamFormatValidation[sid]
@@ -43207,8 +45712,14 @@
             state.workflowRunStepCompleted[sid] = true;
           }
           updateRunStepOutputStatus(currentLi);
+          if (String(state.selectedWorkflowId || "").trim()) {
+            persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+          }
         }
         state.currentWorkflowRunIndex += 1;
+        if (String(state.selectedWorkflowId || "").trim()) {
+          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+        }
         updateWorkflowRunView();
       });
     }
@@ -43692,6 +46203,10 @@
       state.workflowStepPatternCatalog = Array.isArray(catalog) ? catalog.slice() : [];
     };
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
+    prismTestApi.clearWorkflowRunCaptureState = clearWorkflowRunCaptureState;
+    prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
+    prismTestApi.resolveWorkflowRunNextStepDisabledReason = resolveWorkflowRunNextStepDisabledReason;
+    prismTestApi.workflowRunStepHasBlockingCaptureErrors = workflowRunStepHasBlockingCaptureErrors;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
     prismTestApi.validateStrictJsonWorkflowRunStepCaptureForTest =
       validateStrictJsonWorkflowRunStepCapture;
@@ -43855,6 +46370,8 @@
       readWorkflowRunPromptEmbedCaptureTextForStepId;
     prismTestApi.readWorkflowRunUpstreamCaptureTextForStepId =
       readWorkflowRunUpstreamCaptureTextForStepId;
+    prismTestApi.readWorkflowStepCaptureByCanonicalId = readWorkflowStepCaptureByCanonicalId;
+    prismTestApi.resolvePageForRenderOrAssembly = resolvePageForRenderOrAssembly;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =
       recomposeWorkflowPageCapturesFromUpstream;
     prismTestApi.resolveUpstreamLearningActivitiesForPageStep =
@@ -43978,20 +46495,43 @@
     prismTestApi.applyEpisodePlanDlaPopulationPromptBlockToDraft =
       applyEpisodePlanDlaPopulationPromptBlockToDraft;
     prismTestApi.isWorkflowStepDesignEpisodePlan = isWorkflowStepDesignEpisodePlan;
+    prismTestApi.isWorkflowStepPageStructureProducer = isWorkflowStepPageStructureProducer;
+    prismTestApi.workflowStepProducesStoredArtefact = workflowStepProducesStoredArtefact;
+    prismTestApi.parsePageArtefactCaptureForStorage = parsePageArtefactCaptureForStorage;
+    prismTestApi.parseEpisodePlanOrPageCaptureForStorage = parseEpisodePlanOrPageCaptureForStorage;
+    prismTestApi.parseGenerateAssessmentItemsOrPageCaptureForStorage =
+      parseGenerateAssessmentItemsOrPageCaptureForStorage;
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
     prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
     prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
+    prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
+    prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;
+    prismTestApi.shouldInjectUpstreamCaptureIntoPrompt = shouldInjectUpstreamCaptureIntoPrompt;
+    prismTestApi.resolvePageVnextAssembleLib = resolvePageVnextAssembleLib;
     prismTestApi.validateEpisodePlanOrPageShellCapture = validateEpisodePlanOrPageShellCapture;
     prismTestApi.deriveDesignLearningActivitiesCaptureJson = deriveDesignLearningActivitiesCaptureJson;
     prismTestApi.validateDlaOrPageCapture = validateDlaOrPageCapture;
+    prismTestApi.validateLearningSequencePartialPageCapture =
+      validateLearningSequencePartialPageCapture;
+    prismTestApi.validateDesignPagePartialPageCapture = validateDesignPagePartialPageCapture;
+    prismTestApi.validateDesignAssessmentPartialPageCapture =
+      validateDesignAssessmentPartialPageCapture;
+    prismTestApi.validateGenerateAssessmentItemsPartialPageCapture =
+      validateGenerateAssessmentItemsPartialPageCapture;
     prismTestApi.buildDlaV2CopilotSchemaInstructions = buildDlaV2CopilotSchemaInstructions;
     prismTestApi.buildUpstreamPageShellEmbedSectionForDlaCopy =
       buildUpstreamPageShellEmbedSectionForDlaCopy;
     prismTestApi.resolvePageDlaEnrichLib = resolvePageDlaEnrichLib;
     prismTestApi.getDesignDlaEffectiveOutputName = getDesignDlaEffectiveOutputName;
+    prismTestApi.getDesignAssessmentEffectiveOutputName = getDesignAssessmentEffectiveOutputName;
+    prismTestApi.getGenerateAssessmentItemsEffectiveOutputName =
+      getGenerateAssessmentItemsEffectiveOutputName;
     prismTestApi.deriveGenerateActivityMaterialsCaptureJson = deriveGenerateActivityMaterialsCaptureJson;
     prismTestApi.validateGamOrPageCapture = validateGamOrPageCapture;
     prismTestApi.buildGamV2CopilotSchemaInstructions = buildGamV2CopilotSchemaInstructions;
+    prismTestApi.buildGaiV2CopilotSchemaInstructions = buildGaiV2CopilotSchemaInstructions;
+    prismTestApi.buildGenerateAssessmentItemsV2CopyAuthoringBrief = buildGenerateAssessmentItemsV2CopyAuthoringBrief;
+    prismTestApi.promptBodyLooksLikeLegacyAssessmentItemsContract = promptBodyLooksLikeLegacyAssessmentItemsContract;
     prismTestApi.buildGamV2CopyMaterialAuthoringBrief = buildGamV2CopyMaterialAuthoringBrief;
     prismTestApi.buildGamV2ActivityCountInvariantSection = buildGamV2ActivityCountInvariantSection;
     prismTestApi.isGamPageEnrichmentV2CopyStep = isGamPageEnrichmentV2CopyStep;

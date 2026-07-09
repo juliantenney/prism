@@ -1,0 +1,20 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["gam"],
+    "current_stage": "gam"
+  },
+  "activities": [
+    {
+      "activity_id": "A9",
+      "materials": [
+        {
+          "material_id": "A9-M1",
+          "material_type": "text",
+          "body": "Orphan material"
+        }
+      ]
+    }
+  ]
+}

@@ -528,3 +528,209 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(a4, /Which evidence is stronger/i);
   assert.match(a2, /Closure/i);
 });
+
+test("learning activity render hides required_materials metadata and material ids", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            activity_id: "A2",
+            title: "Evaluate alternatives",
+            learner_task: "Compare options and justify your decision.",
+            required_materials: [
+              {
+                material_id: "A2-M3",
+                type: "analysis_table",
+                purpose: "comparison scaffold",
+                specification: "Use a three-column criterion table."
+              }
+            ],
+            materials: [
+              {
+                material_id: "A2-M3",
+                type: "analysis_table",
+                content:
+                  "## Comparison table\n| Criterion | Option A | Option B |\n| --- | --- | --- |\n| Cost | 2 | 3 |"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  assert.match(html, /Comparison table/i);
+  const visibleText = markupBodyHtml(html).replace(/<[^>]+>/g, " ");
+  assert.doesNotMatch(visibleText, /\bMaterial Ids\b/i);
+  assert.doesNotMatch(visibleText, /\bA2-M3\b/i);
+  assert.doesNotMatch(visibleText, /\brequired[_\s-]?materials\b/i);
+  assert.doesNotMatch(visibleText, /\bspecification\b/i);
+});
+
+test("material-id keyed bodies do not render id headings", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            activity_id: "A3",
+            title: "Assess competing proposals",
+            learner_task: "Use the table to compare proposals.",
+            materials: {
+              "A2-M3": "Duplicate internal-id copy of worksheet body.",
+              analysis_table:
+                "| Criterion | Option A | Option B |\n| --- | --- | --- |\n| Reliability | High | Medium |"
+            }
+          }
+        ]
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  const visibleText = markupBodyHtml(html).replace(/<[^>]+>/g, " ");
+  assert.match(visibleText, /\bCriterion\b/i);
+  assert.match(visibleText, /\bReliability\b/i);
+  assert.doesNotMatch(visibleText, /\bA2-M3\b/i);
+});
+
+test("metadata-only material type buckets do not render placeholder ids", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Interpret evidence",
+            learner_task: "Read and reason with the provided materials.",
+            materials: {
+              text: { material_id: "A1-M1", type: "text", purpose: "concept exposition" },
+              worked_example: { material_id: "A1-M2", type: "worked_example", purpose: "reasoning model" },
+              sample_output: { material_id: "A1-M3", type: "sample_output", purpose: "quality threshold" }
+            }
+          }
+        ]
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const visibleText = markupBodyHtml(String(rendered.html || "")).replace(/<[^>]+>/g, " ");
+  assert.doesNotMatch(visibleText, /\bText\b/i);
+  assert.doesNotMatch(visibleText, /\bWorked Example\b/i);
+  assert.doesNotMatch(visibleText, /\bSample Output\b/i);
+  assert.doesNotMatch(visibleText, /\bA1-M1\b/i);
+  assert.doesNotMatch(visibleText, /\bA1-M2\b/i);
+  assert.doesNotMatch(visibleText, /\bA1-M3\b/i);
+});
+
+test("v2 activities render hydrated materials and suppress required_materials ids", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    page_synthesis: {
+      title: "Marx workbook",
+      knowledge_summary: "Core terms for analysing Marx."
+    },
+    activities: [
+      {
+        activity_id: "A1",
+        title: "Industrial context and class",
+        learner_task: "Read the material and explain Marx's core claim.",
+        required_materials: [
+          {
+            material_id: "A1-M1",
+            type: "text",
+            purpose: "Concept framing",
+            specification: "Short historical overview"
+          }
+        ],
+        materials: [
+          {
+            material_id: "A1-M1",
+            material_type: "text",
+            title: "Industrial Revolution and Marx",
+            body_format: "markdown",
+            body: "Workers sold labour while owners controlled capital."
+          }
+        ]
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const visibleText = markupBodyHtml(String(rendered.html || "")).replace(/<[^>]+>/g, " ");
+  assert.match(visibleText, /Industrial Revolution and Marx/i);
+  assert.match(visibleText, /Workers sold labour while owners controlled capital/i);
+  assert.doesNotMatch(visibleText, /\bMaterial Ids\b/i);
+  assert.doesNotMatch(visibleText, /\brequired[_\s-]?materials\b/i);
+  assert.doesNotMatch(visibleText, /\bA1-M1\b/i);
+});
+
+test("learner page IA order promotes journey and hides internals", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "Political Economy Workbook",
+    assembly_state: { current_stage: "design_page", enriched_by: ["episode_plan", "dla"] },
+    generation_notes: { validation: { material_coverage: "complete" } },
+    sections: [
+      {
+        section_id: "knowledge_summary",
+        heading: "Knowledge Summary",
+        content: "Core ideas for this workbook."
+      },
+      {
+        section_id: "learning_sequence",
+        heading: "Learning Sequence",
+        content: {
+          sequence_title: "How this learning progresses",
+          ordered_activity_ids: ["A1", "A2"]
+        }
+      },
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          { activity_id: "A1", title: "Concept foundations", learner_task: "Read and explain." },
+          { activity_id: "A2", title: "Evidence and critique", learner_task: "Evaluate claims." }
+        ]
+      },
+      {
+        section_id: "assessment_check",
+        heading: "Assessment Check",
+        content: { items: [{ question: "What is surplus value?" }] }
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = String(rendered.html || "");
+  const body = mainBodyHtml(html);
+  const visibleText = markupBodyHtml(body).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  assert.match(visibleText, /Learning Journey|Orient.*Concept foundations|Concept foundations.*Evidence/i);
+  assert.match(visibleText, /Learning Activit/i);
+  assert.match(visibleText, /Assessment/i);
+  assert.doesNotMatch(body, /assembly_state|current_stage|enriched_by|generation_notes/i);
+});

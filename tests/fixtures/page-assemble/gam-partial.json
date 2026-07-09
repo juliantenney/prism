@@ -1,0 +1,36 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": ["gam"],
+    "current_stage": "gam"
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Inflation drivers",
+          "body": "## Inflation drivers\n\nDemand-pull and cost-push mechanisms interact.",
+          "body_format": "markdown"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "template",
+          "activity_id": "A2",
+          "title": "CPI worksheet",
+          "body": "| Year | CPI |\n| --- | --- |\n| 2020 | 100 |",
+          "body_format": "markdown"
+        }
+      ]
+    }
+  ]
+}

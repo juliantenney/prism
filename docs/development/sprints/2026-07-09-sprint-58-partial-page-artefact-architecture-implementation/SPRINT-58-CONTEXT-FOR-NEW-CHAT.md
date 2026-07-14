@@ -1,8 +1,10 @@
 # Sprint 58 — Context for New Chat
 
-**Use this file** to onboard a new conversation with no prior context.  
-**Target:** concise but complete  
-**Updated:** 2026-07-09
+**Sprint status: COMPLETE (2026-07-14).**  
+Authoritative close-out: [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md).  
+This file remains historical onboarding context for why Sprint 58 existed.
+
+**Updated:** 2026-07-14
 
 ---
 

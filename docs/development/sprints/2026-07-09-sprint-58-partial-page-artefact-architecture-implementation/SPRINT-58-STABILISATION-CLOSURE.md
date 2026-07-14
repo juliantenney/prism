@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-14  
 **Scope:** Pre–Phase 0 stabilisation (prompt resolution + partial validation routing)  
-**Status:** Complete — ready for Phase 0 Design Page partial contract
+**Status:** Complete — superseded by full sprint close [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md)
 
 ---
 

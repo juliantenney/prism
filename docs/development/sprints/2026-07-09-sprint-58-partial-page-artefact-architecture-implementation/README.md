@@ -4,7 +4,9 @@
 
 - **Sprint ID:** 58
 - **Date opened:** 2026-07-09
-- **Status:** Active (implementation)
+- **Date closed:** 2026-07-14
+- **Status:** Complete
+- **Closure:** [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md)
 - **Predecessor:** [Sprint 57A — Instructional Sufficiency & Content Budgeting](../2026-07-08-sprint-57a-instructional-sufficiency-content-budgeting/README.md) (closed)
 - **Architecture baseline:** [Sprint 56F](../2026-07-07-sprint-56f-progressive-page-enrichment-architecture/README.md) (schema/ownership frozen)
 
@@ -28,8 +30,10 @@ New chat: [SPRINT-58-CONTEXT-FOR-NEW-CHAT.md](SPRINT-58-CONTEXT-FOR-NEW-CHAT.md)
 
 | Document | Purpose |
 | -------- | ------- |
+| [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md) | Closure report (authoritative at close) |
 | [SPRINT-58-START-HERE.md](SPRINT-58-START-HERE.md) | Entry point |
-| [SPRINT-58-CONTEXT-FOR-NEW-CHAT.md](SPRINT-58-CONTEXT-FOR-NEW-CHAT.md) | Handover pack for new chats |
+| [SPRINT-58-CONTEXT-FOR-NEW-CHAT.md](SPRINT-58-CONTEXT-FOR-NEW-CHAT.md) | Handover pack (historical) |
+| [SPRINT-58-STABILISATION-CLOSURE.md](SPRINT-58-STABILISATION-CLOSURE.md) | Pre–Phase 0 stabilisation notes |
 | [sprint-overview.md](sprint-overview.md) | Sprint summary |
 | [goals.md](goals.md) | Goals |
 | [scope.md](scope.md) | In/out of scope |

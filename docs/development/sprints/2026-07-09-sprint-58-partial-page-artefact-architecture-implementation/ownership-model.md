@@ -11,10 +11,10 @@ Derived from Sprint 56F [ownership-matrix-vnext.md](../2026-07-07-sprint-56f-pro
 | **Episode Plan** | `episode_plan` | **Full shell:** `title`, `audience`, `page_profile`, `learning_outcomes`, `episode_plans`, `activities[]` skeleton, `page_synthesis {}`, `source_artefacts`, `generation_notes`, `assembly_state` | DLA pedagogy, `materials[].body`, `learning_sequence`, populated `page_synthesis` |
 | **DLA** | `dla` | `activities[]` instructional fields, `required_materials`, cognition/scaffold fields, `assembly_state` | Shell top-level (title, LO, EP arrays), `materials[].body`, `page_synthesis`, `sections[]`, `learning_sequence` |
 | **GAM** | `gam` | `activities[{ activity_id, materials[] }]`, `assembly_state` | DLA text fields, shell top-level, `page_synthesis`, `sections[]`, `learning_sequence` |
+| **Assessment design** | `assessment_design` | Assessment design fields / blueprint-shaped content, `assembly_state` | Activities/materials regeneration; Design Page wrapper ownership |
+| **Assessment items** | `assessment_items` | Generated assessment items / `assessment_check` payload, `assembly_state` | Activities/materials regeneration; Design Page wrapper ownership |
 | **Learning Sequence** | `learning_sequence` | `learning_sequence`, `assembly_state` | `activities`, materials, shell, `page_synthesis` |
-| **Design Page** | `design_page` | `page_synthesis` (vNext) and/or `sections[]`, `assembly_state` | Activity/material regeneration |
-| **Assessment design** (future) | `assessment_design` | `assessment_check` or equivalent, `assembly_state` | TBD |
-| **Assessment items** (future) | `assessment_items` | assessment item fields, `assembly_state` | TBD |
+| **Design Page** | `design_page` | `page_synthesis` (canonical); `sections[]` optional dual-read, `assembly_state` | Activity/material regeneration; shell fields |
 
 ---
 
@@ -24,9 +24,9 @@ Derived from Sprint 56F [ownership-matrix-vnext.md](../2026-07-07-sprint-56f-pro
 1. Episode Plan capture     → base document
 2. DLA partial              → merge activities[] by activity_id (overlay DLA fields)
 3. GAM partial              → merge activities[].materials[] by activity_id + material_id
-4. Learning Sequence        → set learning_sequence (top-level)
-5. Design Page              → set page_synthesis / sections[]
-6. Assessment (future)      → set assessment_check
+4. Assessment design/items  → set assessment fields when present
+5. Learning Sequence        → set learning_sequence (top-level)
+6. Design Page              → set page_synthesis / optional sections[]
 ```
 
 Later stages never delete earlier owned fields unless explicitly overwritten by same field path in assembly rules.

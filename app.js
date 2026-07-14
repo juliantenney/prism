@@ -10443,6 +10443,56 @@
     });
   }
 
+  function getSprint58WorkflowBoolFlag(source, flagName) {
+    if (!source || typeof source !== "object" || Array.isArray(source)) return undefined;
+    if (source[flagName] === true || source[flagName] === false) return source[flagName];
+    var spec = source.workflowOutputSpec;
+    if (spec && typeof spec === "object" && !Array.isArray(spec)) {
+      if (spec[flagName] === true || spec[flagName] === false) return spec[flagName];
+    }
+    return undefined;
+  }
+
+  function mergeSprint58WorkflowFlags(baseWorkflow, flagSources) {
+    var result = Object.assign({}, baseWorkflow || {});
+    var outSpec = Object.assign(
+      {},
+      result.workflowOutputSpec &&
+        typeof result.workflowOutputSpec === "object" &&
+        !Array.isArray(result.workflowOutputSpec)
+        ? result.workflowOutputSpec
+        : {}
+    );
+    ["pageEnrichmentV2", "partialPageOutputs"].forEach(function (flagName) {
+      var value = undefined;
+      var i;
+      for (i = 0; i < (flagSources || []).length; i += 1) {
+        var candidate = getSprint58WorkflowBoolFlag(flagSources[i], flagName);
+        if (candidate !== undefined) {
+          value = candidate;
+          break;
+        }
+      }
+      if (value !== undefined) {
+        result[flagName] = value;
+        outSpec[flagName] = value;
+      }
+    });
+    result.workflowOutputSpec = outSpec;
+    return result;
+  }
+
+  function resolvePersistedWorkflowForSprint58FlagMerge(explicit) {
+    if (explicit && explicit.id != null && String(explicit.id).trim()) {
+      var byExplicitId = findWorkflowById(String(explicit.id).trim());
+      if (byExplicitId) return byExplicitId;
+    }
+    if (state.selectedWorkflowId) {
+      return findWorkflowById(state.selectedWorkflowId);
+    }
+    return null;
+  }
+
   function resolveWorkflowForUpstreamArtefacts(opts) {
     var options = opts && typeof opts === "object" ? opts : {};
     var catalog = Array.isArray(state.workflowStepPatternCatalog)
@@ -10453,11 +10503,15 @@
         return backfillWorkflowStepCatalogMetadata(step, catalog, null);
       });
     }
-    if (options.workflow && Array.isArray(options.workflow.steps)) {
-      var explicit = Object.assign({}, options.workflow);
-      explicit.steps = mapBackfill(explicit.steps);
-      return explicit;
-    }
+    var explicit =
+      options.workflow &&
+      typeof options.workflow === "object" &&
+      !Array.isArray(options.workflow)
+        ? options.workflow
+        : null;
+    var persisted = resolvePersistedWorkflowForSprint58FlagMerge(explicit);
+
+    var gathered = null;
     var inRun =
       !!(
         els.workflowDetail &&
@@ -10465,19 +10519,45 @@
         els.workflowDetail.classList.contains("run-mode")
       );
     if (inRun) {
-      var gathered = gatherWorkflowDetailFormData();
-      if (gathered && Array.isArray(gathered.steps) && gathered.steps.length) {
-        return {
-          id: gathered.id || state.selectedWorkflowId || "",
-          steps: mapBackfill(gathered.steps)
-        };
+      var gatheredRaw = gatherWorkflowDetailFormData();
+      if (gatheredRaw && Array.isArray(gatheredRaw.steps) && gatheredRaw.steps.length) {
+        gathered = gatheredRaw;
       }
     }
-    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
-    if (!wf) return null;
-    var next = Object.assign({}, wf);
-    next.steps = mapBackfill(wf.steps || []);
-    return next;
+
+    var base = null;
+    if (explicit && Array.isArray(explicit.steps)) {
+      base = Object.assign({}, explicit);
+      base.steps = mapBackfill(explicit.steps);
+    } else if (gathered) {
+      base = Object.assign({}, gathered);
+      base.id =
+        gathered.id ||
+        (persisted && persisted.id) ||
+        state.selectedWorkflowId ||
+        "";
+      base.steps = mapBackfill(gathered.steps);
+    } else if (persisted) {
+      base = Object.assign({}, persisted);
+      base.steps = mapBackfill(persisted.steps || []);
+    } else if (explicit) {
+      base = Object.assign({}, explicit);
+      base.steps = [];
+    } else {
+      return null;
+    }
+
+    if (!Array.isArray(base.steps) || base.steps.length === 0) {
+      if (gathered && Array.isArray(gathered.steps) && gathered.steps.length) {
+        base.steps = mapBackfill(gathered.steps);
+      } else if (persisted && Array.isArray(persisted.steps) && persisted.steps.length) {
+        base.steps = mapBackfill(persisted.steps);
+      }
+    }
+
+    // Precedence: explicit opts.workflow flags > persisted catalog > base (gather/persisted/explicit).
+    // Explicit false must win; undefined falls through. Do not mutate originals.
+    return mergeSprint58WorkflowFlags(base, [explicit, persisted, base]);
   }
 
   function resolveWorkflowStepDependencyProduces(stepTitle, wf) {

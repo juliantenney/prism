@@ -20,6 +20,7 @@
 | **Partial validation routing** | `app.js` | Step-identity routing via `validatePartialPageCaptureForStep` |
 | v2 gate | `isPageEnrichmentV2WorkflowEnabled` | Restored workflow-config gate |
 | Partial gate | `isPartialPageOutputWorkflowEnabled` | Requires `pageEnrichmentV2 && partialPageOutputs` |
+| **Workflow flag merge (final)** | `resolveWorkflowForUpstreamArtefacts` | Preserves Sprint 58 flags across explicit / persisted / run-mode gather |
 | No-injection gate | `shouldInjectUpstreamCaptureIntoPrompt` | Active for post-EP partial stages |
 | Stage detection | `isPostEpisodePlanPartialOutputStep` | Includes DLA, GAM, LS, DP, Design Assessment, Generate Assessment Items |
 | Assessment partial validators | `app.js` | `validateDesignAssessmentPartialPageCapture`, `validateGenerateAssessmentItemsPartialPageCapture` |
@@ -27,7 +28,7 @@
 | Render assembly hook | `resolvePageForRenderOrAssembly` in `app.js` | Assembles before render in partial mode |
 | Capture storage | `runStepOutput`, `workflowRunCapturedOutputs*` | **keep** |
 | Compose closure | `applyPageCompositionValidationForCapturedPage` | Gated off for partial post-EP captures |
-| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js`, `tests/sprint-58-stabilisation-e2e.test.js`, `tests/sprint-58-phase0-design-page-partial-gates.test.js`, `tests/sprint-58-phase1-design-page-domain-gates.test.js` | Sprint 58 regression + E2E + Phase 0/1 gates |
+| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js`, `tests/sprint-58-stabilisation-e2e.test.js`, `tests/sprint-58-phase0-design-page-partial-gates.test.js`, `tests/sprint-58-phase1-design-page-domain-gates.test.js`, `tests/sprint-58-flag-preservation-gates.test.js` | Sprint 58 regression + E2E + Phase 0/1 + flag-preservation gates |
 
 ---
 

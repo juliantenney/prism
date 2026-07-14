@@ -8608,6 +8608,20 @@
     return null;
   }
 
+  function resolveLdDesignPagePartialContractLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_DESIGN_PAGE_PARTIAL_CONTRACT) {
+        return roots[i].PRISM_LD_DESIGN_PAGE_PARTIAL_CONTRACT;
+      }
+    }
+    return null;
+  }
+
   function resolveLdGaiPageEnrichContractLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -12397,9 +12411,24 @@
     );
   }
 
-  function applyLdDesignPageComposeContractToDraft(draftText, context) {
+  function applyLdDesignPageComposeContractToDraft(draftText, context, wf) {
     var draftBody = String(draftText || "").trim();
     if (!isWorkflowStepDesignPage(context)) return draftBody;
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    if (
+      !workflow &&
+      context &&
+      context.workflowId &&
+      typeof findWorkflowById === "function"
+    ) {
+      workflow = findWorkflowById(context.workflowId);
+    }
+    if (!workflow && state.selectedWorkflowId && typeof findWorkflowById === "function") {
+      workflow = findWorkflowById(state.selectedWorkflowId);
+    }
+    if (isPartialPageOutputWorkflowEnabled(workflow)) {
+      return draftBody;
+    }
     if (ldDesignPageComposeAlreadyPresent(draftBody)) {
       return draftBody;
     }
@@ -12439,6 +12468,42 @@
       next = applyLdGuidedLearningScaffoldContractToDraft(next, context);
     }
     return next;
+  }
+
+  function applyLdDesignPagePartialContractToDraft(draftText, context, wf) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context)) return draftBody;
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    if (
+      !workflow &&
+      context &&
+      context.workflowId &&
+      typeof findWorkflowById === "function"
+    ) {
+      workflow = findWorkflowById(context.workflowId);
+    }
+    if (!workflow && state.selectedWorkflowId && typeof findWorkflowById === "function") {
+      workflow = findWorkflowById(state.selectedWorkflowId);
+    }
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) {
+      return draftBody;
+    }
+    var lib = resolveLdDesignPagePartialContractLib();
+    if (
+      lib &&
+      typeof lib.partialContractAlreadyPresent === "function" &&
+      lib.partialContractAlreadyPresent(draftBody)
+    ) {
+      return draftBody;
+    }
+    var block =
+      lib && typeof lib.buildDesignPagePartialContractBlock === "function"
+        ? lib.buildDesignPagePartialContractBlock()
+        : "";
+    if (!block || !String(block).trim()) {
+      return draftBody;
+    }
+    return (draftBody + "\n" + block).trim();
   }
 
   function buildLdThinAssemblyCoherencePromptBlock(options) {
@@ -13349,7 +13414,8 @@
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
-    draft = applyLdDesignPageComposeContractToDraft(draft, ctx);
+    draft = applyLdDesignPagePartialContractToDraft(draft, ctx, wf);
+    draft = applyLdDesignPageComposeContractToDraft(draft, ctx, wf);
     draft = applyLdThinAssemblyCoherenceContractToDraft(draft, ctx);
     draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
@@ -46077,6 +46143,8 @@
       evaluateActivityPreambleExpositionEvidence;
     prismTestApi.applyLdDesignPageComposeContractToDraft =
       applyLdDesignPageComposeContractToDraft;
+    prismTestApi.applyLdDesignPagePartialContractToDraft =
+      applyLdDesignPagePartialContractToDraft;
     prismTestApi.buildLdThinAssemblyCoherencePromptBlock =
       buildLdThinAssemblyCoherencePromptBlock;
     prismTestApi.applyLdThinAssemblyCoherenceContractToDraft =

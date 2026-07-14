@@ -1,6 +1,6 @@
 # Current Implementation State — Sprint 58 Phase 5
 
-**Snapshot date:** 2026-07-09 (phase 5 hardening)
+**Snapshot date:** 2026-07-14 (stabilisation + Phase 0 Design Page partial contract)
 
 ---
 
@@ -13,8 +13,10 @@
 | GAM enrich (deterministic) | `lib/page-gam-enrich.js` | Partial validator implemented and used in capture path |
 | DLA contract | `lib/ld-dla-page-enrich-contract.js` | Partial output contract active |
 | GAM contract | `lib/ld-gam-page-enrich-contract.js` | Partial output contract active |
+| **Design Page partial contract (Phase 0)** | `lib/ld-design-page-partial-contract.js` | Injected on DP when `partialPageOutputs: true`; replaces compose contract in partial mode |
 | Render normalize | `lib/page-render-normalize.js` | **keep** |
 | v2 prompt assembly | `app.js` | Post-EP partial-mode prompt instructions active |
+| **Partial validation routing** | `app.js` | Step-identity routing via `validatePartialPageCaptureForStep` |
 | v2 gate | `isPageEnrichmentV2WorkflowEnabled` | Restored workflow-config gate |
 | Partial gate | `isPartialPageOutputWorkflowEnabled` | Requires `pageEnrichmentV2 && partialPageOutputs` |
 | No-injection gate | `shouldInjectUpstreamCaptureIntoPrompt` | Active for post-EP partial stages |
@@ -24,7 +26,7 @@
 | Render assembly hook | `resolvePageForRenderOrAssembly` in `app.js` | Assembles before render in partial mode |
 | Capture storage | `runStepOutput`, `workflowRunCapturedOutputs*` | **keep** |
 | Compose closure | `applyPageCompositionValidationForCapturedPage` | Gated off for partial post-EP captures |
-| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js` | Sprint 58 regression coverage active |
+| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js`, `tests/sprint-58-stabilisation-e2e.test.js`, `tests/sprint-58-phase0-design-page-partial-gates.test.js` | Sprint 58 regression + E2E + Phase 0 gates |
 
 ---
 

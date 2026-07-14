@@ -62,3 +62,5 @@ node --test tests/sprint-58-stabilisation-e2e.test.js \
 ## Next: Phase 0
 
 Replace compose contract injection with vNext-native partial Design Page contract when `partialPageOutputs: true`. See migration plan in sprint handover context.
+
+**Update 2026-07-14:** Phase 0 implemented — see `lib/ld-design-page-partial-contract.js` and `tests/sprint-58-phase0-design-page-partial-gates.test.js`.

@@ -8688,15 +8688,60 @@
     if (!isPartialPageOutputWorkflowEnabled(wf)) return false;
     if (!step || typeof step !== "object") return false;
     if (isWorkflowStepDesignEpisodePlanRow(step)) return false;
+    return !!resolvePartialPageCaptureStageFromStep(step);
+  }
+
+  function resolvePartialPageCaptureStageFromStep(step) {
+    if (!step || typeof step !== "object") return "";
     var ctx = buildWorkflowStepIdentityContextFromRow(step);
-    return (
-      isWorkflowStepDesignLearningActivities(ctx) ||
-      isWorkflowStepGenerateActivityMaterials(ctx) ||
-      isWorkflowStepConstructLearningSequence(ctx) ||
-      isWorkflowStepDesignAssessment(ctx) ||
-      isWorkflowStepGenerateAssessmentItems(ctx) ||
-      isWorkflowStepDesignPageRow(step)
-    );
+    if (isWorkflowStepDesignLearningActivities(ctx)) return "dla";
+    if (isWorkflowStepGenerateActivityMaterials(ctx)) return "gam";
+    if (isWorkflowStepConstructLearningSequence(ctx)) return "learning_sequence";
+    if (isWorkflowStepDesignAssessment(ctx)) return "assessment_design";
+    if (isWorkflowStepGenerateAssessmentItems(ctx)) return "assessment_items";
+    if (isWorkflowStepDesignPageRow(step)) return "design_page";
+    return "";
+  }
+
+  function validatePartialPageCaptureForStep(parsed, step, wf) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, errors: ["invalid capture object"] };
+    }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) return null;
+    var stage = resolvePartialPageCaptureStageFromStep(step);
+    if (!stage) return null;
+    if (
+      String(parsed.schema_version || "") !== "2.0.0" ||
+      String(parsed.artifact_type || "").toLowerCase() !== "page"
+    ) {
+      return null;
+    }
+    if (stage === "dla") {
+      var dlaMod = resolvePageDlaEnrichLib();
+      if (dlaMod && typeof dlaMod.validateDlaPartialPageCapture === "function") {
+        return dlaMod.validateDlaPartialPageCapture(parsed);
+      }
+    }
+    if (stage === "gam") {
+      var gamMod = resolvePageGamEnrichLib();
+      if (gamMod && typeof gamMod.validateGamPartialPageCapture === "function") {
+        return gamMod.validateGamPartialPageCapture(parsed);
+      }
+    }
+    if (stage === "learning_sequence") {
+      return validateLearningSequencePartialPageCapture(parsed);
+    }
+    if (stage === "design_page") {
+      return validateDesignPagePartialPageCapture(parsed);
+    }
+    if (stage === "assessment_design") {
+      return validateDesignAssessmentPartialPageCapture(parsed);
+    }
+    if (stage === "assessment_items") {
+      return validateGenerateAssessmentItemsPartialPageCapture(parsed);
+    }
+    return null;
   }
 
   function shouldInjectUpstreamCaptureIntoPrompt(step, wf) {
@@ -8913,7 +8958,7 @@
     });
   }
 
-  function validateDlaOrPageCapture(parsed, baseline, wf) {
+  function validateDlaOrPageCapture(parsed, baseline, wf, step) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -8925,6 +8970,9 @@
       String(parsed.artifact_type || "") === "page" &&
       dlaMod
     ) {
+      if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "dla") {
+        return dlaMod.validateDlaPartialPageCapture(parsed);
+      }
       if (
         partialMode &&
         typeof dlaMod.validateDlaPartialPageCapture === "function" &&
@@ -9172,7 +9220,7 @@
     ].join("\n");
   }
 
-  function validateLearningSequenceOrPageCapture(parsed, baseline, wf) {
+  function validateLearningSequenceOrPageCapture(parsed, baseline, wf, step) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -9182,7 +9230,11 @@
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page"
     ) {
-      if (partialMode) {
+      if (
+        partialMode &&
+        (resolvePartialPageCaptureStageFromStep(step) === "learning_sequence" ||
+          (!step && partialMode))
+      ) {
         return validateLearningSequencePartialPageCapture(parsed);
       }
       var errors = [];
@@ -9474,7 +9526,7 @@
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
 
-  function validateDesignPageOrPageCapture(parsed, wf) {
+  function validateDesignPageOrPageCapture(parsed, wf, step) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -9484,7 +9536,10 @@
       String(parsed.schema_version || "") === "2.0.0" &&
       String(parsed.artifact_type || "") === "page"
     ) {
-      if (partialMode) {
+      if (
+        partialMode &&
+        (resolvePartialPageCaptureStageFromStep(step) === "design_page" || (!step && partialMode))
+      ) {
         return validateDesignPagePartialPageCapture(parsed);
       }
       var errors = [];
@@ -9585,7 +9640,7 @@
     ].join("\n");
   }
 
-  function validateGamOrPageCapture(parsed, baseline, wf) {
+  function validateGamOrPageCapture(parsed, baseline, wf, step) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -9597,6 +9652,9 @@
       String(parsed.artifact_type || "") === "page" &&
       gamMod
     ) {
+      if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "gam") {
+        return gamMod.validateGamPartialPageCapture(parsed);
+      }
       if (
         partialMode &&
         typeof gamMod.validateGamPartialPageCapture === "function" &&
@@ -11249,6 +11307,22 @@
         : state.selectedWorkflowId
         ? findWorkflowById(state.selectedWorkflowId)
         : null;
+    if (isPostEpisodePlanPartialOutputStep(step, workflow)) {
+      var parsedPartialEarly = tryParseWorkflowArtefactJson(raw);
+      if (parsedPartialEarly) {
+        var partialStepCheck = validatePartialPageCaptureForStep(parsedPartialEarly, step, workflow);
+        if (partialStepCheck) {
+          if (!partialStepCheck.ok) {
+            return {
+              ok: false,
+              errors: partialStepCheck.errors || ["invalid_partial_page_capture"],
+              message: (partialStepCheck.errors || []).join("; ")
+            };
+          }
+          return { ok: true, errors: [] };
+        }
+      }
+    }
     if (isLearningSequencePageEnrichmentV2CopyStep(step, workflow)) {
       var parsedLs = tryParseWorkflowArtefactJson(raw);
       if (!parsedLs) {
@@ -11261,7 +11335,7 @@
       var baselineLs = tryParseWorkflowArtefactJson(
         resolveGamEnrichedPageJsonForLearningSequenceCopy(workflow) || ""
       );
-      var lsCheck = validateLearningSequenceOrPageCapture(parsedLs, baselineLs || null, workflow);
+      var lsCheck = validateLearningSequenceOrPageCapture(parsedLs, baselineLs || null, workflow, step);
       if (!lsCheck.ok) {
         return {
           ok: false,
@@ -11280,7 +11354,7 @@
           message: "Design Page v2 capture must be valid JSON page artefact"
         };
       }
-      var dpCheck = validateDesignPageOrPageCapture(parsedDp, workflow);
+      var dpCheck = validateDesignPageOrPageCapture(parsedDp, workflow, step);
       if (!dpCheck.ok) {
         return {
           ok: false,
@@ -11359,7 +11433,7 @@
         };
       }
       var baselineDla = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
-      var dlaCheck = validateDlaOrPageCapture(parsedDla, baselineDla || null, workflow);
+      var dlaCheck = validateDlaOrPageCapture(parsedDla, baselineDla || null, workflow, step);
       if (!dlaCheck.ok) {
         return {
           ok: false,
@@ -11389,7 +11463,7 @@
       var baselineGam = tryParseWorkflowArtefactJson(
         resolveDlaEnrichedPageJsonForGamCopy(workflow) || ""
       );
-      var gamCheck = validateGamOrPageCapture(parsedGam, baselineGam || null, workflow);
+      var gamCheck = validateGamOrPageCapture(parsedGam, baselineGam || null, workflow, step);
       if (!gamCheck.ok) {
         return {
           ok: false,
@@ -46506,6 +46580,8 @@
     prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
     prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;
+    prismTestApi.resolvePartialPageCaptureStageFromStep = resolvePartialPageCaptureStageFromStep;
+    prismTestApi.validatePartialPageCaptureForStep = validatePartialPageCaptureForStep;
     prismTestApi.shouldInjectUpstreamCaptureIntoPrompt = shouldInjectUpstreamCaptureIntoPrompt;
     prismTestApi.resolvePageVnextAssembleLib = resolvePageVnextAssembleLib;
     prismTestApi.validateEpisodePlanOrPageShellCapture = validateEpisodePlanOrPageShellCapture;

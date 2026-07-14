@@ -149,6 +149,34 @@ test("DLA partial without title is valid", () => {
   assert.equal(check.ok, true, (check.errors || []).join("; "));
 });
 
+test("DLA partial validates by step identity when assembly_state stage is wrong", () => {
+  const api = loadPrismTestApi();
+  const wf = buildWorkflow();
+  const step = wf.steps.find((row) => row.id === "dla_step");
+  const mislabeled = JSON.parse(JSON.stringify(dlaPartial));
+  mislabeled.assembly_state.current_stage = "gam";
+  const check = api.validateStrictJsonWorkflowRunStepCaptureForTest(
+    JSON.stringify(mislabeled, null, 2),
+    step,
+    wf
+  );
+  assert.equal(check.ok, true, (check.errors || []).join("; "));
+});
+
+test("GAM partial validates by step identity when assembly_state stage is wrong", () => {
+  const api = loadPrismTestApi();
+  const wf = buildWorkflow();
+  const step = wf.steps.find((row) => row.id === "gam_step");
+  const mislabeled = JSON.parse(JSON.stringify(gamPartial));
+  mislabeled.assembly_state.current_stage = "dla";
+  const check = api.validateStrictJsonWorkflowRunStepCaptureForTest(
+    JSON.stringify(mislabeled, null, 2),
+    step,
+    wf
+  );
+  assert.equal(check.ok, true, (check.errors || []).join("; "));
+});
+
 test("DLA partial containing forbidden ownership fields is invalid", () => {
   const api = loadPrismTestApi();
   const wf = buildWorkflow();

@@ -41,7 +41,32 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 30 — Pedagogic Enrichment Layer (PEL) (**initialised**, 2026-05-21)
+### Sprint 59 — Instructional Content Richness Audit (**In progress**, 2026-07-14)
+
+**Portable pack:** [`sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/)
+
+| Entry | Path |
+|-------|------|
+| **START HERE** | [`SPRINT-59-START-HERE.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) |
+| **New-chat context** | [`SPRINT-59-CONTEXT-FOR-NEW-CHAT.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CONTEXT-FOR-NEW-CHAT.md) |
+| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/next-chat-briefing.md) |
+| **Archetype audit** | [`instructional-archetype-audit.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/instructional-archetype-audit.md) |
+| **Active workstream** | [`instructional-archetype-framework.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/instructional-archetype-framework.md) |
+| **Backlog** | [`backlog.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/backlog.md) |
+| **Predecessor closed** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
+
+**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Weak: concept exposition, mechanism explanation, process walkthrough, mental-model building.
+
+**Active priority:** Instructional Archetype Framework — start with `mechanism_explanation`, `process_walkthrough`, `mental_model_building`. Do **not** open Sprint 60.
+
+**Completed in-sprint:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit.
+
+**Non-goals:** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; creating Sprint 60.
+
+---
+
+### Sprint 30 — Pedagogic Enrichment Layer (PEL) (**historical note**, initialised 2026-05-21; superseded as active focus)
+
 
 **Portable pack:** [`sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/`](sprints/2026-05-21-sprint-30-pedagogic-enrichment-layer/)
 

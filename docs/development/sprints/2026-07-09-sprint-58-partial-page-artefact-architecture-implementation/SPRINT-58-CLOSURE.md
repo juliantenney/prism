@@ -124,7 +124,9 @@ All targeted + Sprint 58 regression batches reported **green** at close (e.g. 70
 
 ## Next sprint guidance
 
-Do **not** begin renderer redesign or instructional-quality work until a successor sprint is opened with explicit scope. Prefer:
+**Successor opened:** [Sprint 59 — Instructional Content Richness Audit](../2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) (**diagnostic first**; Planned / Ready to Start).
 
-1. Soak live workflows on the four Sprint 58 commits
-2. Then either hard DP ownership validation (evidence-gated) or compose-contract reduction — not both at once
+Sprint 59 must complete the richness audit and produce a renderer input pack **before** renderer redesign or prompt campaigns. Architecture follow-ons remain deferred:
+
+1. Soak live workflows on the four Sprint 58 commits (can run in parallel with Sprint 59 audit collection)
+2. Later: evidence-gated Design Page hard ownership validation **or** compose-contract reduction — not both at once

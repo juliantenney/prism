@@ -1,0 +1,1116 @@
+{
+  "workflowId": "ba3f2a76-b12c-45f5-b99e-f14558023681",
+  "name": "WasMarxRight",
+  "goal": "Create a 60 minute self study resource for undergraduate students on the topic 'Was Marx Right?'. Include a number of short activities and five formative assessment questions",
+  "audience": "undergraduate students",
+  "constraints": "duration_minutes: 60; topic: the topic 'was marx right?'; delivery_mode: async; design_scope: session; delivery_pattern: mostly_online; delivery_context: self_directed; input_strategy: generate_from_topic; learning_environments: vle; assessment_strategy: formative; coverage_scope: balanced; cognitive_demand: mixed; question_style_mix: mixed_response_modes; assessment_type: mixed; feedback_required: item_level; difficulty_profile: balanced; assessment_total_items: 5; session_materials: page; page_profile: learner; feedback_display: answer_grid_end; learner_answer_visibility: show_answer_grid_end; feedback_timing: immediate_self_check; assessment_semantics_constraints_applied: {\"feedback_timing\":\"immediate_self_check\",\"learner_answer_visibility\":\"show_answer_grid_end\",\"feedback_display\":\"answer_grid_end\"}; scope_scale: 60 mins",
+  "flags": {
+    "pageEnrichmentV2": true,
+    "partialPageOutputs": true
+  },
+  "steps": [
+    {
+      "id": "7033652f-c04a-441a-b721-9e5e17d71c9b",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "3f10f01f-ba63-41a0-8a58-d5c0d3a90472",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "d6035725-1102-4fbe-bd39-6300f6b52f05",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "52a12d2a-bd22-4767-a78e-76103028c9f0",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 5955
+    },
+    {
+      "id": "2c043761-556e-4f11-8ad6-ecd87d6290b5",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 16103
+    },
+    {
+      "id": "c03347ec-701c-4dd6-872a-dd8f28cfb642",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 11559
+    },
+    {
+      "id": "afddfbfa-4601-48ca-a687-68a0ac6130eb",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 6302
+    },
+    {
+      "id": "2a544cc0-916c-4bde-9888-d31fa2fac76f",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 1426
+    },
+    {
+      "id": "7675f2d6-1cba-4184-8fa2-b01a31734263",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 4559
+    }
+  ],
+  "captures": {
+    "52a12d2a-bd22-4767-a78e-76103028c9f0": {
+      "role": "EP",
+      "title": "Design Episode Plan",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "title": "Was Marx Right?",
+        "audience": "Learners",
+        "page_profile": {
+          "profile_type": "learner"
+        },
+        "assembly_state": {
+          "current_stage": "episode_plan",
+          "enriched_by": [
+            "episode_plan"
+          ]
+        },
+        "page_synthesis": {},
+        "learning_outcomes": [
+          {
+            "id": "LO1",
+            "statement": "Describe the historical conditions of the Industrial Revolution that influenced Marx's critique of capitalism."
+          },
+          {
+            "id": "LO2",
+            "statement": "Explain the relationships between capitalism, class conflict, the bourgeoisie, the proletariat, profit, and alienation in Marx's analysis of society."
+          },
+          {
+            "id": "LO3",
+            "statement": "Identify and summarise Marx's key predictions concerning wealth concentration, inequality, class consciousness, and social change."
+          },
+          {
+            "id": "LO4",
+            "statement": "Compare evidence and arguments that support Marx's analysis with evidence and arguments that challenge it."
+          },
+          {
+            "id": "LO5",
+            "statement": "Construct a justified judgement about the extent to which Marx's ideas remain relevant to contemporary society, using evidence from the session."
+          }
+        ],
+        "activities": [
+          {
+            "activity_id": "A1",
+            "title": "Historical Context of Marx's Ideas",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "understand",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "exposition"
+                },
+                {
+                  "function": "check"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A2",
+            "title": "Core Concepts in Marx's Analysis",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "understand",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "exposition"
+                },
+                {
+                  "function": "check"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A3",
+            "title": "Marx's Predictions and Expectations",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "apply",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "application"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A4",
+            "title": "Evaluating Competing Arguments",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "analyse",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "analysis"
+                },
+                {
+                  "function": "comparison"
+                },
+                {
+                  "function": "check"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A5",
+            "title": "Was Marx Right? Forming a Judgement",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "evaluate",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "evaluation"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          }
+        ],
+        "episode_plans": [
+          {
+            "learning_outcome_id": "LO1",
+            "activity_id": "A1",
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "exposition"
+              },
+              {
+                "function": "check"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO2",
+            "activity_id": "A2",
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "exposition"
+              },
+              {
+                "function": "check"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO3",
+            "activity_id": "A3",
+            "archetype": "apply",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "application"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO4",
+            "activity_id": "A4",
+            "archetype": "analyse",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "analysis"
+              },
+              {
+                "function": "comparison"
+              },
+              {
+                "function": "check"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO5",
+            "activity_id": "A5",
+            "archetype": "evaluate",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "evaluation"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          }
+        ],
+        "source_artefacts": [
+          {
+            "artefact_type": "learning_outcomes",
+            "source_label": "Learning Outcomes",
+            "role": "structural"
+          }
+        ],
+        "generation_notes": {
+          "validation": {
+            "coverage_mode": "activity_aligned",
+            "known_issues": [],
+            "activity_coverage": "shell_only",
+            "material_coverage": "pending_gam",
+            "episode_plan_attachment": "attached",
+            "self_containment": "shell_only",
+            "schema_compliance": "episode_plan_boundary"
+          }
+        }
+      }
+    },
+    "2c043761-556e-4f11-8ad6-ecd87d6290b5": {
+      "role": "DLA",
+      "title": "Design Learning Activities",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "dla",
+          "enriched_by": [
+            "dla"
+          ]
+        },
+        "activities": [
+          {
+            "activity_id": "A1",
+            "grouping": "individual",
+            "duration_minutes": 12,
+            "mapped_learning_outcomes": [
+              "LO1"
+            ],
+            "activity_preamble": "Begin by investigating the social and economic conditions that shaped Marx's thinking. Your goal is not to memorise dates, but to explain why the Industrial Revolution provided the context for Marx's critique of capitalism.",
+            "reasoning_orientation": "As you read, focus on cause and effect. Ask yourself how changes in industry, urbanisation and working conditions might influence someone's view of society. Look for links between historical conditions and later political or economic arguments.",
+            "self_explanation_prompt": "After studying each section, explain in your own words why Marx might have viewed capitalism critically given the circumstances of the nineteenth century.",
+            "learner_task": "1. Read the explanatory text on the Industrial Revolution and Marx's historical context.\n2. Study the worked example showing how historical evidence can be linked to Marx's critique.\n3. Review the sample output and identify the features that make it effective.\n4. Complete the prompt set by matching historical developments to their possible social consequences.\n5. Write a short explanation describing three historical conditions that influenced Marx's thinking.\n6. Complete the self-check checklist and revise your explanation if required.",
+            "expected_output": "A concise explanation that identifies at least three relevant historical conditions and clearly links each condition to Marx's critique of capitalism. Strong responses use explicit cause-and-effect reasoning and avoid listing facts without explanation.",
+            "required_materials": [
+              {
+                "material_id": "A1-M1",
+                "type": "text",
+                "purpose": "Historical exposition",
+                "specification": "depth_floor:L3. Explanatory text introducing Industrial Revolution conditions, factory growth, urbanisation, inequality and their connection to Marx's concerns."
+              },
+              {
+                "material_id": "A1-M2",
+                "type": "worked_example",
+                "purpose": "Model historical reasoning",
+                "specification": "depth_floor:L3. Stepped expert example showing evidence selection, causal reasoning and a completed explanatory paragraph with intermediate thinking visible."
+              },
+              {
+                "material_id": "A1-M3",
+                "type": "sample_output",
+                "purpose": "Quality benchmark",
+                "specification": "depth_floor:L3. Annotated example of a strong learner response highlighting evidence use and explanation."
+              },
+              {
+                "material_id": "A1-M4",
+                "type": "prompt_set",
+                "purpose": "Guided practice",
+                "specification": "depth_floor:L3. Multiple prompts requiring learners to connect historical developments to Marx's critique."
+              },
+              {
+                "material_id": "A1-M5",
+                "type": "checklist",
+                "purpose": "Verification",
+                "specification": "depth_floor:L3. Four criteria-linked checks covering accuracy, relevance, causal explanation and completeness, including revision actions if criteria are not met."
+              }
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "grouping": "individual",
+            "duration_minutes": 12,
+            "mapped_learning_outcomes": [
+              "LO2"
+            ],
+            "activity_preamble": "This activity focuses on the key concepts within Marx's analysis. You will move from learning definitions to examining how the concepts connect to form an overall explanation of society.",
+            "reasoning_orientation": "Think in terms of relationships rather than isolated definitions. Each concept gains meaning through its connection to the others.",
+            "intellectual_coherence_bridge": "The previous activity explained why Marx developed his ideas. This activity examines the concepts he used to analyse society.",
+            "self_explanation_prompt": "Describe how labour, profit and class relationships connect within Marx's account of capitalism.",
+            "learner_task": "1. Read the concept explanation material.\n2. Review the worked example connecting multiple concepts into a single explanation.\n3. Complete the comparison table by explaining relationships between paired concepts.\n4. Use the completed table to write a brief account of how Marx believed capitalism operates.\n5. Verify your work using the checklist.",
+            "expected_output": "A connected explanation demonstrating accurate use of the key concepts and clear relationships between them. Strong work explains how concepts interact rather than treating them as separate definitions.",
+            "required_materials": [
+              {
+                "material_id": "A2-M1",
+                "type": "text",
+                "purpose": "Concept exposition",
+                "specification": "depth_floor:L3. Definitions and explanations of capitalism, bourgeoisie, proletariat, labour, profit, class conflict and alienation."
+              },
+              {
+                "material_id": "A2-M2",
+                "type": "worked_example",
+                "purpose": "Model conceptual linking",
+                "specification": "depth_floor:L3. Expert think-aloud demonstrating how multiple concepts combine into a coherent explanation."
+              },
+              {
+                "material_id": "A2-M3",
+                "type": "comparison_table",
+                "purpose": "Guided relationship analysis",
+                "specification": "depth_floor:L3. Pipe-table realisation later. Columns require concept pairing, relationship description, supporting reasoning and learner-completed judgement cells."
+              },
+              {
+                "material_id": "A2-M4",
+                "type": "checklist",
+                "purpose": "Verification",
+                "specification": "depth_floor:L3. Four concept-accuracy and relationship-quality criteria with corrective actions."
+              }
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "grouping": "individual",
+            "duration_minutes": 10,
+            "mapped_learning_outcomes": [
+              "LO3"
+            ],
+            "activity_preamble": "You will now apply Marx's predictions to a contemporary context and consider how his expectations might appear in modern society.",
+            "reasoning_orientation": "Focus on transferring ideas from one context to another. The goal is not to prove Marx correct or incorrect but to apply his predictions consistently.",
+            "intellectual_coherence_bridge": "Having explored Marx's main concepts, you will now use them to examine his expectations about future social change.",
+            "transfer_or_application_task": "Apply Marx's predictions to a modern economic example such as a large corporation, digital platform or global industry.",
+            "learner_task": "1. Study the worked example showing how a prediction can be applied to a modern case.\n2. Read the scenario material.\n3. Complete the planning table linking aspects of the scenario to Marx's predictions.\n4. Summarise which predictions appear applicable and which appear less applicable.\n5. Reflect on any uncertainties in your analysis.",
+            "expected_output": "A reasoned summary that accurately applies Marx's predictions to a modern situation and explains both supporting and limiting factors. Strong responses distinguish evidence from opinion.",
+            "required_materials": [
+              {
+                "material_id": "A3-M1",
+                "type": "worked_example",
+                "purpose": "Model application process",
+                "specification": "depth_floor:L3. Step-by-step application of a Marxist prediction to a contemporary example with explicit reasoning."
+              },
+              {
+                "material_id": "A3-M2",
+                "type": "scenario",
+                "purpose": "Application context",
+                "specification": "depth_floor:L3. Two contemporary economic cases with named organisations, contextual details and contrasting features suitable for applying Marx's predictions."
+              },
+              {
+                "material_id": "A3-M3",
+                "type": "planning_table",
+                "purpose": "Guided application",
+                "specification": "depth_floor:L3. Learner-completed table linking prediction, evidence from scenario, applicability and limitations."
+              },
+              {
+                "material_id": "A3-M4",
+                "type": "prompt_set",
+                "purpose": "Reflection",
+                "specification": "depth_floor:L3. Reflection prompts addressing confidence, uncertainty and transfer of ideas."
+              }
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "grouping": "individual",
+            "duration_minutes": 12,
+            "mapped_learning_outcomes": [
+              "LO4"
+            ],
+            "activity_preamble": "This activity develops analytical judgement by examining competing interpretations of Marx's ideas.",
+            "reasoning_orientation": "Analysis involves identifying claims, evidence, assumptions and contrasts. Focus on the strength of arguments rather than choosing a side immediately.",
+            "intellectual_coherence_bridge": "You have explored Marx's arguments and predictions. This activity compares evidence that supports and challenges his analysis.",
+            "argument_structure_hint": "For each argument identify: the claim being made, supporting evidence, limitations and how it contrasts with competing viewpoints.",
+            "learner_task": "1. Read the analytical guidance and worked analytic pass.\n2. Study the two scenarios presenting contrasting perspectives.\n3. Complete the analysis table using the modelled approach.\n4. Use the comparison table to weigh competing arguments.\n5. Complete the verification checklist and strengthen any weak comparisons.",
+            "expected_output": "A balanced comparison identifying strengths and limitations of competing arguments. Strong responses evaluate evidence, explain contrasts and avoid one-sided conclusions.",
+            "required_materials": [
+              {
+                "material_id": "A4-M1",
+                "type": "modelling_note",
+                "purpose": "Worked analytic pass",
+                "specification": "depth_floor:L3. Fact-to-lens-to-mechanism walkthrough demonstrating analytical reasoning before independent analysis."
+              },
+              {
+                "material_id": "A4-M2",
+                "type": "scenario",
+                "purpose": "Contrasting evidence sets",
+                "specification": "depth_floor:L3. Two detailed cases representing evidence commonly interpreted as supporting and challenging Marx's analysis."
+              },
+              {
+                "material_id": "A4-M3",
+                "type": "analysis_table",
+                "purpose": "Structured analysis",
+                "specification": "depth_floor:L3. Includes exemplar row and hint column. Learners record claim, evidence, interpretation and limitation."
+              },
+              {
+                "material_id": "A4-M4",
+                "type": "comparison_table",
+                "purpose": "Comparative judgement",
+                "specification": "depth_floor:L3. Learner-completed comparison with justification fields left blank for independent judgement."
+              },
+              {
+                "material_id": "A4-M5",
+                "type": "checklist",
+                "purpose": "Verification",
+                "specification": "depth_floor:L3. Four criteria covering evidence quality, comparison, balance and justification with revision actions."
+              }
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "grouping": "individual",
+            "duration_minutes": 14,
+            "mapped_learning_outcomes": [
+              "LO1",
+              "LO4",
+              "LO5"
+            ],
+            "activity_preamble": "This capstone activity asks you to answer the central question: Was Marx right? You will evaluate evidence, weigh competing perspectives and construct an independent judgement.",
+            "reasoning_orientation": "A strong judgement acknowledges complexity. Consider what Marx explained well, where his predictions were less convincing and how contemporary evidence affects your conclusion.",
+            "intellectual_coherence_bridge": "This final activity draws together the historical context, core concepts, predictions and competing interpretations examined throughout the session.",
+            "uncertainty_tension_prompt": "Which aspects of Marx's analysis seem strongest, and where does the evidence remain uncertain or contested?",
+            "learner_task": "1. Study the evaluation criteria and worked judgement example.\n2. Examine the contrasting scenarios and viewpoints.\n3. Complete the guided decision table.\n4. Use the independent judgement template to write a short evaluative response.\n5. Check your work using the verification checklist.\n6. Complete the transfer prompt.\n7. Read the consolidation summary to reinforce the key takeaways from the session.",
+            "expected_output": "A justified evaluative response that reaches a clear judgement while acknowledging counterarguments. Strong answers use evidence from multiple parts of the session, apply explicit criteria and explain the reasoning behind the final conclusion.",
+            "required_materials": [
+              {
+                "material_id": "A5-M1",
+                "type": "text",
+                "purpose": "Evaluation criteria exposition",
+                "specification": "depth_floor:L3. Three to five evaluation dimensions for judging the continuing relevance of Marx's ideas."
+              },
+              {
+                "material_id": "A5-M2",
+                "type": "scenario",
+                "purpose": "Multi-perspective evaluation context",
+                "specification": "depth_floor:L3. At least two contrasting contemporary cases and viewpoints to support evaluative judgement."
+              },
+              {
+                "material_id": "A5-M3",
+                "type": "sample_output",
+                "purpose": "Worked judgement comparison",
+                "specification": "depth_floor:L3. Weak versus strong evaluative judgement with commentary highlighting evidence use and reasoning quality."
+              },
+              {
+                "material_id": "A5-M4",
+                "type": "decision_table",
+                "purpose": "Guided judgement",
+                "specification": "depth_floor:L3. Criteria-based decision table containing a partial exemplar row and learner-completed judgement cells."
+              },
+              {
+                "material_id": "A5-M5",
+                "type": "template",
+                "purpose": "Independent judgement",
+                "specification": "depth_floor:L3. Structured writing template for a balanced evaluative response without prewritten conclusions."
+              },
+              {
+                "material_id": "A5-M6",
+                "type": "checklist",
+                "purpose": "Verification",
+                "specification": "depth_floor:L3. Four criteria-linked checks covering judgement, evidence, balance and justification with revision guidance."
+              },
+              {
+                "material_id": "A5-M7",
+                "type": "transfer_prompt",
+                "purpose": "Transfer",
+                "specification": "depth_floor:L3. Prompt requiring application of the same evaluation criteria to a different social or economic issue."
+              },
+              {
+                "material_id": "A5-M8",
+                "type": "consolidation_summary",
+                "purpose": "Session closure",
+                "specification": "depth_floor:L3. Learner-facing summary of at least three major ideas from the session, focusing on retention and synthesis rather than new teaching."
+              }
+            ]
+          }
+        ],
+        "outcome_alignment": [
+          {
+            "activity_id": "A1",
+            "learning_outcomes": [
+              "LO1"
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "learning_outcomes": [
+              "LO2"
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "learning_outcomes": [
+              "LO3"
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "learning_outcomes": [
+              "LO4"
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "learning_outcomes": [
+              "LO1",
+              "LO4",
+              "LO5"
+            ]
+          }
+        ],
+        "delivery_notes": {
+          "resource_intent": "self_study_workbook",
+          "session_duration_target_minutes": 60,
+          "consolidation_requirement": true,
+          "workbook_contract_applied": true
+        }
+      }
+    },
+    "c03347ec-701c-4dd6-872a-dd8f28cfb642": {
+      "role": "GAM",
+      "title": "Generate Activity Materials",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "gam",
+          "enriched_by": [
+            "gam"
+          ]
+        },
+        "activities": [
+          {
+            "activity_id": "A1",
+            "materials": [
+              {
+                "material_id": "A1-M1",
+                "material_type": "text",
+                "activity_id": "A1",
+                "title": "Industrial Revolution and Marx",
+                "body_format": "markdown",
+                "body": "## Historical Context\n\nThe Industrial Revolution transformed production, work and urban life. Factory systems expanded, cities grew rapidly and many workers experienced long hours, low pay and limited influence over workplace decisions. Marx viewed these developments as evidence that economic systems shape social relationships and opportunities.\n\n### Key Idea\nMarx's critique emerged from observing how industrial capitalism created both economic growth and significant inequality.",
+                "purpose": "Historical exposition"
+              },
+              {
+                "material_id": "A1-M2",
+                "material_type": "worked_example",
+                "activity_id": "A1",
+                "title": "Worked Historical Explanation",
+                "body_format": "markdown",
+                "body": "1. Identify a condition: factory expansion.\n2. Identify a consequence: workers became dependent on wage labour.\n3. Explain the link: Marx argued this increased the power of owners.\n4. Connect to critique: this contributed to his criticism of capitalism.",
+                "purpose": "Model historical reasoning"
+              },
+              {
+                "material_id": "A1-M3",
+                "material_type": "sample_output",
+                "activity_id": "A1",
+                "title": "Sample Strong Response",
+                "body_format": "markdown",
+                "body": "A strong response identifies industrialisation, urbanisation and inequality, then explains how each influenced Marx's critique. It uses explicit causal links rather than isolated facts.",
+                "purpose": "Quality benchmark"
+              },
+              {
+                "material_id": "A1-M4",
+                "material_type": "prompt_set",
+                "activity_id": "A1",
+                "title": "Guided Prompts",
+                "body_format": "markdown",
+                "body": "- How did factory work differ from earlier forms of labour?\n- Why might rapid urbanisation concern Marx?\n- How could inequality influence political ideas?\n- Which condition appears most important and why?",
+                "purpose": "Guided practice"
+              },
+              {
+                "material_id": "A1-M5",
+                "material_type": "checklist",
+                "activity_id": "A1",
+                "title": "Self-Check",
+                "body_format": "markdown",
+                "body": "- Included three historical conditions\n- Explained causal links\n- Connected evidence to Marx's critique\n- Revised unclear explanations",
+                "purpose": "Verification"
+              }
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "materials": [
+              {
+                "material_id": "A2-M1",
+                "material_type": "text",
+                "activity_id": "A2",
+                "title": "Core Marxist Concepts",
+                "body_format": "markdown",
+                "body": "## Key Concepts\n\n- **Bourgeoisie**: owners of capital.\n- **Proletariat**: workers who sell labour.\n- **Class conflict**: competition over resources and power.\n- **Alienation**: separation from work, products and potential.\n- **Profit**: generated through production within capitalism."
+              },
+              {
+                "material_id": "A2-M2",
+                "material_type": "worked_example",
+                "activity_id": "A2",
+                "title": "Connecting Concepts",
+                "body_format": "markdown",
+                "body": "Workers provide labour. Owners control capital. Profit is generated through production. These relationships can create class conflict and, according to Marx, alienation."
+              },
+              {
+                "material_id": "A2-M3",
+                "material_type": "comparison_table",
+                "activity_id": "A2",
+                "title": "Concept Relationship Table",
+                "body_format": "markdown",
+                "body": "| Concept Pair | Relationship | Evidence/Reasoning | Your Judgement |\n| --- | --- | --- | --- |\n| Bourgeoisie / Proletariat | Example provided | Ownership versus labour | |\n| Labour / Profit | | | |\n| Class Conflict / Capitalism | | | |"
+              },
+              {
+                "material_id": "A2-M4",
+                "material_type": "checklist",
+                "activity_id": "A2",
+                "title": "Concept Accuracy Check",
+                "body_format": "markdown",
+                "body": "- Definitions accurate\n- Relationships explained\n- Examples relevant\n- Final explanation coherent"
+              }
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "materials": [
+              {
+                "material_id": "A3-M1",
+                "material_type": "worked_example",
+                "activity_id": "A3",
+                "title": "Applying a Prediction",
+                "body_format": "markdown",
+                "body": "Prediction: wealth concentration increases.\nCase: a large technology company.\nReasoning: market dominance may increase economic influence.\nJudgement: prediction appears partly applicable."
+              },
+              {
+                "material_id": "A3-M2",
+                "material_type": "scenario",
+                "activity_id": "A3",
+                "title": "Contemporary Cases",
+                "body_format": "markdown",
+                "body": "### Case A: NovaTech\nA multinational technology firm with global operations.\n\n### Case B: StreamWork\nA digital platform connecting independent workers and customers."
+              },
+              {
+                "material_id": "A3-M3",
+                "material_type": "planning_table",
+                "activity_id": "A3",
+                "title": "Prediction Application Table",
+                "body_format": "markdown",
+                "body": "| Prediction | Evidence from Case | Applies? | Limitations |\n| --- | --- | --- | --- |\n| Wealth concentration | | | |\n| Inequality | | | |\n| Class consciousness | | | |"
+              },
+              {
+                "material_id": "A3-M4",
+                "material_type": "prompt_set",
+                "activity_id": "A3",
+                "title": "Reflection Prompts",
+                "body_format": "markdown",
+                "body": "- Which prediction fits best?\n- Which prediction is hardest to apply?\n- What evidence would strengthen your judgement?"
+              }
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "materials": [
+              {
+                "material_id": "A4-M1",
+                "material_type": "modelling_note",
+                "activity_id": "A4",
+                "title": "Analytical Walkthrough",
+                "body_format": "markdown",
+                "body": "Fact → identify evidence.\nLens → apply Marx's ideas.\nMechanism → explain how the evidence supports or challenges Marx.\nConclusion → evaluate the strength of the argument."
+              },
+              {
+                "material_id": "A4-M2",
+                "material_type": "scenario",
+                "activity_id": "A4",
+                "title": "Contrasting Cases",
+                "body_format": "markdown",
+                "body": "### Supporting View\nRising concerns about inequality and corporate power.\n\n### Challenging View\nImproved living standards, welfare systems and labour protections."
+              },
+              {
+                "material_id": "A4-M3",
+                "material_type": "analysis_table",
+                "activity_id": "A4",
+                "title": "Analysis Table",
+                "body_format": "markdown",
+                "body": "| Claim | Evidence | Interpretation | Limitation |\n| --- | --- | --- | --- |\n| Example row | Inequality remains significant | Could support Marx | Not sufficient alone |\n| | | | |"
+              },
+              {
+                "material_id": "A4-M4",
+                "material_type": "comparison_table",
+                "activity_id": "A4",
+                "title": "Comparative Judgement Table",
+                "body_format": "markdown",
+                "body": "| Argument | Strengths | Weaknesses | Your Evaluation |\n| --- | --- | --- | --- |\n| Marx was right | | | |\n| Marx was wrong | | | |"
+              },
+              {
+                "material_id": "A4-M5",
+                "material_type": "checklist",
+                "activity_id": "A4",
+                "title": "Analysis Verification",
+                "body_format": "markdown",
+                "body": "- Evidence identified\n- Competing views compared\n- Limitations considered\n- Judgements justified"
+              }
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "materials": [
+              {
+                "material_id": "A5-M1",
+                "material_type": "text",
+                "activity_id": "A5",
+                "title": "Evaluation Criteria",
+                "body_format": "markdown",
+                "body": "## Criteria\n\n1. Accuracy of Marx's analysis.\n2. Relevance to modern society.\n3. Strength of supporting evidence.\n4. Strength of counterarguments."
+              },
+              {
+                "material_id": "A5-M2",
+                "material_type": "scenario",
+                "activity_id": "A5",
+                "title": "Evaluation Cases",
+                "body_format": "markdown",
+                "body": "### Case 1\nGrowing concern over wealth concentration.\n\n### Case 2\nExpansion of welfare systems and labour protections."
+              },
+              {
+                "material_id": "A5-M3",
+                "material_type": "sample_output",
+                "activity_id": "A5",
+                "title": "Weak vs Strong Judgement",
+                "body_format": "markdown",
+                "body": "**Weak:** Marx was right because inequality exists.\n\n**Strong:** Some of Marx's predictions remain relevant, particularly regarding inequality, but other predictions were not realised, requiring a balanced judgement."
+              },
+              {
+                "material_id": "A5-M4",
+                "material_type": "decision_table",
+                "activity_id": "A5",
+                "title": "Guided Decision Table",
+                "body_format": "markdown",
+                "body": "| Criterion | Evidence | Evaluation |\n| --- | --- | --- |\n| Relevance today | Example provided | Partial exemplar |\n| Accuracy of predictions | | |\n| Counterarguments | | |"
+              },
+              {
+                "material_id": "A5-M5",
+                "material_type": "template",
+                "activity_id": "A5",
+                "title": "Evaluation Response Template",
+                "body_format": "markdown",
+                "body": "Position:\n\nEvidence supporting position:\n\nCounterargument:\n\nFinal judgement:"
+              },
+              {
+                "material_id": "A5-M6",
+                "material_type": "checklist",
+                "activity_id": "A5",
+                "title": "Evaluation Checklist",
+                "body_format": "markdown",
+                "body": "- Clear judgement reached\n- Evidence used\n- Counterarguments acknowledged\n- Conclusion justified"
+              },
+              {
+                "material_id": "A5-M7",
+                "material_type": "transfer_prompt",
+                "activity_id": "A5",
+                "title": "Transfer Challenge",
+                "body_format": "markdown",
+                "body": "Apply the same evaluation criteria to another contemporary issue involving economic power, inequality or social change."
+              },
+              {
+                "material_id": "A5-M8",
+                "material_type": "consolidation_summary",
+                "activity_id": "A5",
+                "title": "Key Takeaways",
+                "body_format": "markdown",
+                "body": "Marx developed his ideas in response to the Industrial Revolution. His analysis focused on capitalism, class relationships and inequality. Some modern developments appear to support parts of his critique, while other historical developments challenge his predictions. Evaluating Marx requires balancing evidence, counterarguments and contemporary relevance rather than reaching a simple yes-or-no conclusion."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "afddfbfa-4601-48ca-a687-68a0ac6130eb": {
+      "role": "ASSESS_ITEMS",
+      "title": "Generate Assessment Items",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "assessment_items",
+          "enriched_by": [
+            "assessment_items"
+          ]
+        },
+        "assessment_check": {
+          "items": [
+            {
+              "item_id": "Q1",
+              "item_type": "single_answer_mcq",
+              "topic": "Historical Context of Marx's Ideas",
+              "related_learning_outcomes": [
+                "LO1"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "comprehension",
+              "stem": "Which development during the Industrial Revolution most directly contributed to Marx's critique of capitalism according to the session?",
+              "options": [
+                "The expansion of factory systems and the growth of wage labour",
+                "The decline of industrial production",
+                "The disappearance of social classes",
+                "The reduction of urban populations"
+              ],
+              "correct_answer": "The expansion of factory systems and the growth of wage labour",
+              "correct_answer_text": "The expansion of factory systems and the growth of wage labour",
+              "explanation_or_rationale": "Marx's critique was shaped by observing industrialisation, factory work, growing dependence on wage labour and associated inequalities."
+            },
+            {
+              "item_id": "Q2",
+              "item_type": "single_answer_mcq",
+              "topic": "Core Marxist Concepts",
+              "related_learning_outcomes": [
+                "LO2"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "comprehension",
+              "stem": "In Marx's analysis, what is the primary distinction between the bourgeoisie and the proletariat?",
+              "options": [
+                "The bourgeoisie own capital, whereas the proletariat sell their labour",
+                "The bourgeoisie work in factories, whereas the proletariat own businesses",
+                "The bourgeoisie live in cities, whereas the proletariat live in rural areas",
+                "The bourgeoisie support revolution, whereas the proletariat oppose it"
+              ],
+              "correct_answer": "The bourgeoisie own capital, whereas the proletariat sell their labour",
+              "correct_answer_text": "The bourgeoisie own capital, whereas the proletariat sell their labour",
+              "explanation_or_rationale": "The ownership of capital versus the sale of labour is a central distinction in Marx's account of class relations."
+            },
+            {
+              "item_id": "Q3",
+              "item_type": "single_answer_mcq",
+              "topic": "Marx's Predictions",
+              "related_learning_outcomes": [
+                "LO3"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "application",
+              "stem": "A modern industry becomes dominated by a small number of extremely powerful firms. Which Marxist prediction does this scenario most directly illustrate?",
+              "options": [
+                "Increasing wealth concentration",
+                "Declining urbanisation",
+                "The disappearance of labour",
+                "The end of economic inequality"
+              ],
+              "correct_answer": "Increasing wealth concentration",
+              "correct_answer_text": "Increasing wealth concentration",
+              "explanation_or_rationale": "Marx predicted that wealth and economic power would become concentrated in fewer hands under capitalism."
+            },
+            {
+              "item_id": "Q4",
+              "item_type": "single_answer_mcq",
+              "topic": "Evaluating Competing Arguments",
+              "related_learning_outcomes": [
+                "LO4"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "analysis",
+              "stem": "Which argument from the session is most commonly used to challenge Marx's prediction that capitalism would inevitably lead to revolutionary transformation?",
+              "options": [
+                "Capitalist societies introduced welfare systems and labour protections that improved living standards",
+                "Industrialisation never occurred",
+                "Economic inequality completely disappeared",
+                "Large corporations no longer exist"
+              ],
+              "correct_answer": "Capitalist societies introduced welfare systems and labour protections that improved living standards",
+              "correct_answer_text": "Capitalist societies introduced welfare systems and labour protections that improved living standards",
+              "explanation_or_rationale": "Critics argue that capitalism adapted through reforms, reducing pressures that Marx expected would lead to revolutionary change."
+            },
+            {
+              "item_id": "Q5",
+              "item_type": "single_answer_mcq",
+              "topic": "Was Marx Right?",
+              "related_learning_outcomes": [
+                "LO1",
+                "LO4",
+                "LO5"
+              ],
+              "integration_type": "multi_outcome",
+              "difficulty_level": "analysis",
+              "stem": "Which conclusion best reflects the balanced judgement encouraged throughout the session?",
+              "options": [
+                "Marx was entirely correct about every aspect of capitalism",
+                "Marx was entirely wrong and his ideas have no contemporary relevance",
+                "Some of Marx's ideas remain useful for analysing inequality and power, while other predictions were not fully realised",
+                "Marx's ideas can only be understood in nineteenth-century contexts and have no modern application"
+              ],
+              "correct_answer": "Some of Marx's ideas remain useful for analysing inequality and power, while other predictions were not fully realised",
+              "correct_answer_text": "Some of Marx's ideas remain useful for analysing inequality and power, while other predictions were not fully realised",
+              "explanation_or_rationale": "The session emphasises a balanced evaluation that recognises both the continuing relevance and the limitations of Marx's arguments."
+            }
+          ],
+          "answer_key": {
+            "Q1": "The expansion of factory systems and the growth of wage labour",
+            "Q2": "The bourgeoisie own capital, whereas the proletariat sell their labour",
+            "Q3": "Increasing wealth concentration",
+            "Q4": "Capitalist societies introduced welfare systems and labour protections that improved living standards",
+            "Q5": "Some of Marx's ideas remain useful for analysing inequality and power, while other predictions were not fully realised"
+          }
+        }
+      }
+    },
+    "2a544cc0-916c-4bde-9888-d31fa2fac76f": {
+      "role": "LS",
+      "title": "Construct Learning Sequence",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "learning_sequence",
+          "enriched_by": [
+            "learning_sequence"
+          ]
+        },
+        "learning_sequence": {
+          "sequence_type": "self_directed",
+          "ordered_activity_ids": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5"
+          ],
+          "timeline": [
+            {
+              "activity_id": "A1",
+              "sequence_position": 1,
+              "phase": "foundation"
+            },
+            {
+              "activity_id": "A2",
+              "sequence_position": 2,
+              "phase": "conceptual_understanding"
+            },
+            {
+              "activity_id": "A3",
+              "sequence_position": 3,
+              "phase": "application"
+            },
+            {
+              "activity_id": "A4",
+              "sequence_position": 4,
+              "phase": "analysis"
+            },
+            {
+              "activity_id": "A5",
+              "sequence_position": 5,
+              "phase": "evaluation_and_synthesis"
+            }
+          ],
+          "entry_activity_id": "A1",
+          "exit_activity_id": "A5",
+          "navigation_mode": "linear",
+          "completion_rule": "complete_in_order",
+          "study_flow": [
+            {
+              "from_activity_id": "A1",
+              "to_activity_id": "A2"
+            },
+            {
+              "from_activity_id": "A2",
+              "to_activity_id": "A3"
+            },
+            {
+              "from_activity_id": "A3",
+              "to_activity_id": "A4"
+            },
+            {
+              "from_activity_id": "A4",
+              "to_activity_id": "A5"
+            }
+          ]
+        }
+      }
+    },
+    "7675f2d6-1cba-4184-8fa2-b01a31734263": {
+      "role": "DP",
+      "title": "Design Page",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "design_page",
+          "enriched_by": [
+            "design_page"
+          ]
+        },
+        "page_synthesis": {
+          "knowledge_summary": "Karl Marx developed his analysis during the Industrial Revolution, a period characterised by rapid industrialisation, urbanisation and widening economic inequalities. Marx argued that capitalism is an economic system in which the bourgeoisie (owners of capital and productive resources) employ the proletariat (workers who sell their labour). He believed that this relationship creates structural tensions because profit depends upon extracting value from labour. This idea is commonly expressed through the concept of surplus value, where workers produce more value than they receive in wages.\n\nMarx's broader framework, historical materialism, proposes that material and economic conditions strongly influence social institutions, political systems and historical change. From this perspective, class struggle emerges as a recurring feature of history because groups with different economic interests compete over resources, power and control.\n\nA further concept is alienation. Marx argued that workers in industrial capitalist systems can become separated from the products they create, the process of production, other people and aspects of their own human potential. Alienation therefore links economic organisation to social and psychological consequences.\n\nMarx predicted that capitalism would tend toward increasing wealth concentration, persistent inequality and heightened class tensions. Some contemporary developments, including concerns about economic inequality and corporate concentration, are often presented as evidence supporting parts of his analysis. At the same time, critics point to rising living standards, welfare provision, labour protections and social reforms as evidence that some predictions were less accurate than Marx expected.\n\nEvaluating whether Marx was right requires comparison of supporting and opposing evidence rather than acceptance of a single viewpoint. A balanced judgement considers the continuing usefulness of concepts such as class, power and inequality while recognising the limitations and contested aspects of Marx's predictions."
+        },
+        "sections": [
+          {
+            "section_id": "knowledge_summary",
+            "heading": "Knowledge Summary",
+            "content": {
+              "body": "Karl Marx developed his analysis during the Industrial Revolution, a period characterised by rapid industrialisation, urbanisation and widening economic inequalities. Marx argued that capitalism is an economic system in which the bourgeoisie (owners of capital and productive resources) employ the proletariat (workers who sell their labour). He believed that this relationship creates structural tensions because profit depends upon extracting value from labour. This idea is commonly expressed through the concept of surplus value, where workers produce more value than they receive in wages.\n\nMarx's broader framework, historical materialism, proposes that material and economic conditions strongly influence social institutions, political systems and historical change. From this perspective, class struggle emerges as a recurring feature of history because groups with different economic interests compete over resources, power and control.\n\nA further concept is alienation. Marx argued that workers in industrial capitalist systems can become separated from the products they create, the process of production, other people and aspects of their own human potential. Alienation therefore links economic organisation to social and psychological consequences.\n\nMarx predicted that capitalism would tend toward increasing wealth concentration, persistent inequality and heightened class tensions. Some contemporary developments, including concerns about economic inequality and corporate concentration, are often presented as evidence supporting parts of his analysis. At the same time, critics point to rising living standards, welfare provision, labour protections and social reforms as evidence that some predictions were less accurate than Marx expected.\n\nEvaluating whether Marx was right requires comparison of supporting and opposing evidence rather than acceptance of a single viewpoint. A balanced judgement considers the continuing usefulness of concepts such as class, power and inequality while recognising the limitations and contested aspects of Marx's predictions."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

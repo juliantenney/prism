@@ -8,6 +8,7 @@
 - **Status:** Complete
 - **Closure:** [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md)
 - **Predecessor:** [Sprint 57A — Instructional Sufficiency & Content Budgeting](../2026-07-08-sprint-57a-instructional-sufficiency-content-budgeting/README.md) (closed)
+- **Successor:** [Sprint 59 — Instructional Content Richness Audit](../2026-07-14-sprint-59-instructional-content-richness-audit/README.md) (Planned / Ready to Start)
 - **Architecture baseline:** [Sprint 56F](../2026-07-07-sprint-56f-progressive-page-enrichment-architecture/README.md) (schema/ownership frozen)
 
 ## Purpose

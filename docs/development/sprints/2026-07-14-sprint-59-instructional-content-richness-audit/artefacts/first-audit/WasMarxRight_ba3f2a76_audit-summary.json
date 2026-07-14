@@ -1,0 +1,487 @@
+{
+  "name": "WasMarxRight",
+  "id": "ba3f2a76-b12c-45f5-b99e-f14558023681",
+  "steps": [
+    {
+      "id": "7033652f-c04a-441a-b721-9e5e17d71c9b",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "3f10f01f-ba63-41a0-8a58-d5c0d3a90472",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "d6035725-1102-4fbe-bd39-6300f6b52f05",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "52a12d2a-bd22-4767-a78e-76103028c9f0",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 5955
+    },
+    {
+      "id": "2c043761-556e-4f11-8ad6-ecd87d6290b5",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 16103
+    },
+    {
+      "id": "c03347ec-701c-4dd6-872a-dd8f28cfb642",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 11559
+    },
+    {
+      "id": "afddfbfa-4601-48ca-a687-68a0ac6130eb",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 6302
+    },
+    {
+      "id": "2a544cc0-916c-4bde-9888-d31fa2fac76f",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 1426
+    },
+    {
+      "id": "7675f2d6-1cba-4184-8fa2-b01a31734263",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 4559
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "52a12d2a-bd22-4767-a78e-76103028c9f0",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "2c043761-556e-4f11-8ad6-ecd87d6290b5",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities",
+        "outcome_alignment",
+        "delivery_notes"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "1. Read the explanatory text on the Industrial Revolution and Marx's historical context.\n2. Study the worked example showing how historical evidence can be linked to Marx's critique.\n3. Review the sample output and identify the features that make it effective.\n4. Complete the prompt set by matching historical developments to their possible social consequences.\n5. Write a short explanation describing three historical conditions that influenced Marx's thinking.\n6. Complete the self-check checklist and revise your explanation if required.",
+          "expected_output": "A concise explanation that identifies at least three relevant historical conditions and clearly links each condition to Marx's critique of capitalism. Strong responses use explicit cause-and-effect reasoning and avoid listing facts without explanation.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 112
+        },
+        {
+          "id": "A2",
+          "learner_task": "1. Read the concept explanation material.\n2. Review the worked example connecting multiple concepts into a single explanation.\n3. Complete the comparison table by explaining relationships between paired concepts.\n4. Use the completed table to write a brief account of how Marx believed capitalism operates.\n5. Verify your work using the checklist.",
+          "expected_output": "A connected explanation demonstrating accurate use of the key concepts and clear relationships between them. Strong work explains how concepts interact rather than treating them as separate definitions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 80
+        },
+        {
+          "id": "A3",
+          "learner_task": "1. Study the worked example showing how a prediction can be applied to a modern case.\n2. Read the scenario material.\n3. Complete the planning table linking aspects of the scenario to Marx's predictions.\n4. Summarise which predictions appear applicable and which appear less applicable.\n5. Reflect on any uncertainties in your analysis.",
+          "expected_output": "A reasoned summary that accurately applies Marx's predictions to a modern situation and explains both supporting and limiting factors. Strong responses distinguish evidence from opinion.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 78
+        },
+        {
+          "id": "A4",
+          "learner_task": "1. Read the analytical guidance and worked analytic pass.\n2. Study the two scenarios presenting contrasting perspectives.\n3. Complete the analysis table using the modelled approach.\n4. Use the comparison table to weigh competing arguments.\n5. Complete the verification checklist and strengthen any weak comparisons.",
+          "expected_output": "A balanced comparison identifying strengths and limitations of competing arguments. Strong responses evaluate evidence, explain contrasts and avoid one-sided conclusions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 65
+        },
+        {
+          "id": "A5",
+          "learner_task": "1. Study the evaluation criteria and worked judgement example.\n2. Examine the contrasting scenarios and viewpoints.\n3. Complete the guided decision table.\n4. Use the independent judgement template to write a short evaluative response.\n5. Check your work using the verification checklist.\n6. Complete the transfer prompt.\n7. Read the consolidation summary to reinforce the key takeaways from the session.",
+          "expected_output": "A justified evaluative response that reaches a clear judgement while acknowledging counterarguments. Strong answers use evidence from multiple parts of the session, apply explicit criteria and explain the reasoning behind the final conclusion.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 93
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "c03347ec-701c-4dd6-872a-dd8f28cfb642",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Industrial Revolution and Marx",
+              "bodyWords": 64,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Historical Explanation",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample Strong Response",
+              "bodyWords": 24,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "prompt_set",
+              "title": "Guided Prompts",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M5",
+              "type": "checklist",
+              "title": "Self-Check",
+              "bodyWords": 19,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Core Marxist Concepts",
+              "bodyWords": 37,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "worked_example",
+              "title": "Connecting Concepts",
+              "bodyWords": 22,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "comparison_table",
+              "title": "Concept Relationship Table",
+              "bodyWords": 50,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "checklist",
+              "title": "Concept Accuracy Check",
+              "bodyWords": 13,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "worked_example",
+              "title": "Applying a Prediction",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "scenario",
+              "title": "Contemporary Cases",
+              "bodyWords": 23,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "planning_table",
+              "title": "Prediction Application Table",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "prompt_set",
+              "title": "Reflection Prompts",
+              "bodyWords": 19,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "modelling_note",
+              "title": "Analytical Walkthrough",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "scenario",
+              "title": "Contrasting Cases",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "analysis_table",
+              "title": "Analysis Table",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "comparison_table",
+              "title": "Comparative Judgement Table",
+              "bodyWords": 35,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M5",
+              "type": "checklist",
+              "title": "Analysis Verification",
+              "bodyWords": 13,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 8,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "text",
+              "title": "Evaluation Criteria",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "scenario",
+              "title": "Evaluation Cases",
+              "bodyWords": 18,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "sample_output",
+              "title": "Weak vs Strong Judgement",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "decision_table",
+              "title": "Guided Decision Table",
+              "bodyWords": 36,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "template",
+              "title": "Evaluation Response Template",
+              "bodyWords": 7,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "checklist",
+              "title": "Evaluation Checklist",
+              "bodyWords": 13,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M7",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 16,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M8",
+              "type": "consolidation_summary",
+              "title": "Key Takeaways",
+              "bodyWords": 52,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 26,
+        "thinMats": 26,
+        "scenarios": 3
+      }
+    },
+    "ASSESS_ITEMS": {
+      "stepId": "afddfbfa-4601-48ca-a687-68a0ac6130eb",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "assessment_check"
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "type": "single_answer_mcq",
+          "stemWords": 18,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which development during the Industrial Revolution most directly contributed to Marx's critique of capitalism according to the session?"
+        },
+        {
+          "id": "Q2",
+          "type": "single_answer_mcq",
+          "stemWords": 14,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "In Marx's analysis, what is the primary distinction between the bourgeoisie and the proletariat?"
+        },
+        {
+          "id": "Q3",
+          "type": "single_answer_mcq",
+          "stemWords": 22,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A modern industry becomes dominated by a small number of extremely powerful firms. Which Marxist prediction does this scenario most directly illustrat"
+        },
+        {
+          "id": "Q4",
+          "type": "single_answer_mcq",
+          "stemWords": 21,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which argument from the session is most commonly used to challenge Marx's prediction that capitalism would inevitably lead to revolutionary transforma"
+        },
+        {
+          "id": "Q5",
+          "type": "single_answer_mcq",
+          "stemWords": 11,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which conclusion best reflects the balanced judgement encouraged throughout the session?"
+        }
+      ]
+    },
+    "LS": {
+      "stepId": "2a544cc0-916c-4bde-9888-d31fa2fac76f",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "learningSequence": {
+        "keys": [
+          "sequence_type",
+          "ordered_activity_ids",
+          "timeline",
+          "entry_activity_id",
+          "exit_activity_id",
+          "navigation_mode",
+          "completion_rule",
+          "study_flow"
+        ],
+        "text": "{\"sequence_type\":\"self_directed\",\"ordered_activity_ids\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"],\"timeline\":[{\"activity_id\":\"A1\",\"sequence_position\":1,\"phase\":\"foundation\"},{\"activity_id\":\"A2\",\"sequence_position\":2,\"phase\":\"conceptual_understanding\"},{\"activity_id\":\"A3\",\"sequence_position\":3,\"phase\":\"application\"},{\"activity_id\":\"A4\",\"sequence_position\":4,\"phase\":\"analysis\"},{\"activity_id\":\"A5\",\"sequence_position\":5,\"phase\":\"evaluation_and_synthesis\"}],\"entry_activity_id\":\"A1\",\"exit_activity_id\":\"A5\",\"navigat"
+      }
+    },
+    "DP": {
+      "stepId": "7675f2d6-1cba-4184-8fa2-b01a31734263",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ],
+      "pageSynthesis": {
+        "keys": [
+          "knowledge_summary"
+        ],
+        "knowledge_summary_words": 280,
+        "overview_words": 0,
+        "learning_purpose_words": 0,
+        "study_tips_count": 0
+      },
+      "keys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ]
+    }
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "name": "Was Marx Right? Test",
+  "id": "04b6a3c2-6ada-4af3-8d8d-7c3d1d5b2ff7",
+  "steps": [
+    {
+      "id": "8359ce31-115e-4fd9-bf5b-7f98b0012ddf",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "43ee0f28-c6bd-47ce-8a69-b3f1223c7a2d",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "fd9ac3d1-5281-4e97-a7d3-5907e2a16019",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "1e5457ee-3b31-4083-a1b0-edd8b667cfb9",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 6520
+    },
+    {
+      "id": "052c5e08-206f-47fd-ae18-c6fc481d3e39",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 14623
+    },
+    {
+      "id": "2e505ffc-d4ff-4064-95d6-cb5802e5e62e",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 14506
+    },
+    {
+      "id": "ada87548-f2b5-494f-bec7-62ea7b1c8b7d",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 1122
+    },
+    {
+      "id": "2fc7ec3e-45ba-4a92-af84-e522ce0cd5e1",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 3678
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "1e5457ee-3b31-4083-a1b0-edd8b667cfb9",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "052c5e08-206f-47fd-ae18-c6fc481d3e39",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "delivery_notes",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "Study the explanatory text and worked example showing how Marx described capitalism. Identify the roles of the bourgeoisie, proletariat, means of production, labour, and profit. Then complete the classification task by matching concepts to their definitions and relationships. Finish by using the checklist to verify your understanding and revise any uncertain responses.",
+          "expected_output": "Produce accurate concept classifications and a concise written explanation showing how private ownership, labour, and profit connect within Marx's analysis. Strong responses correctly use key terminology and explain relationships rather than listing isolated definitions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 86
+        },
+        {
+          "id": "A2",
+          "learner_task": "Read the explanatory material and compare the concepts of class struggle, surplus value, and exploitation. Complete the comparison table to identify how each concept contributes to Marx's critique. Use the prompts to connect the concepts into a single explanatory chain and then verify your explanation using the checklist.",
+          "expected_output": "Produce a coherent explanation showing how surplus value, exploitation, and class conflict are connected in Marx's critique. Strong responses explain causal links and use concepts together rather than discussing each separately.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 79
+        },
+        {
+          "id": "A3",
+          "learner_task": "Study the worked example showing how an analyst applies the concept of alienation to a modern workplace. Next, examine the provided workplace scenarios and decide whether Marx would describe each as alienating. Record your reasoning and compare cases before completing the self-check.",
+          "expected_output": "Produce justified judgements about contemporary work situations using the concept of alienation. Strong responses explicitly connect workplace features to elements of alienation and acknowledge possible alternative interpretations.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 69
+        },
+        {
+          "id": "A4",
+          "learner_task": "Review the worked analytical pass demonstrating how evidence can be interpreted in relation to a prediction. Use the analysis table to examine evidence connected to inequality, wealth concentration, economic crises, and social change. Identify patterns, similarities, and contradictions before writing an analytical synthesis.",
+          "expected_output": "Produce a balanced analytical summary comparing Marx's predictions with available evidence. Strong responses identify patterns, explain their significance, and distinguish between support, partial support, and challenge.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 69
+        },
+        {
+          "id": "A5",
+          "learner_task": "Study the evaluation criteria, scenario perspectives, and worked judgement example. Complete the decision table to weigh evidence for and against Marx's relevance today. Then produce an independent evaluative memo answering the question 'Was Marx right?' Support your judgement with evidence, explain trade-offs, complete the verification checklist, and finish by completing the transfer task and reading the consolidation summary.",
+          "expected_output": "Produce a concise evaluative memo that reaches a clear judgement on Marx's contemporary relevance. Strong responses apply criteria consistently, weigh competing evidence, acknowledge limitations, and justify a defensible conclusion rather than presenting a one-sided argument.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 93
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "2e505ffc-d4ff-4064-95d6-cb5802e5e62e",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Capitalism in Marx's Analysis",
+              "bodyWords": 122,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Example: Identifying Capitalist Relationships",
+              "bodyWords": 108,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample High-Quality Explanation",
+              "bodyWords": 48,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "classification_table",
+              "title": "Capitalism Concept Classification Table",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M5",
+              "type": "checklist",
+              "title": "Understanding Check",
+              "bodyWords": 45,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Class Struggle, Surplus Value and Exploitation",
+              "bodyWords": 81,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "comparison_table",
+              "title": "Comparison Table",
+              "bodyWords": 38,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "prompt_set",
+              "title": "Reasoning Prompts",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "checklist",
+              "title": "Explanation Quality Check",
+              "bodyWords": 37,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "worked_example",
+              "title": "Worked Example: Applying Alienation",
+              "bodyWords": 58,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "scenario",
+              "title": "Workplace Scenarios",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "analysis_table",
+              "title": "Alienation Analysis Table",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "checklist",
+              "title": "Application Checklist",
+              "bodyWords": 36,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "worked_example",
+              "title": "Worked Analytical Pass",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "analysis_table",
+              "title": "Prediction Analysis Table",
+              "bodyWords": 53,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "reference_table",
+              "title": "Evidence Reference Sheet",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "checklist",
+              "title": "Analysis Quality Checklist",
+              "bodyWords": 36,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 8,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "text",
+              "title": "Criteria for Judging Marx's Relevance",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "scenario",
+              "title": "Contrasting Perspectives",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "worked_example",
+              "title": "Weak vs Strong Judgement",
+              "bodyWords": 42,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "decision_table",
+              "title": "Evaluation Decision Table",
+              "bodyWords": 46,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "template",
+              "title": "Evaluative Memo Template",
+              "bodyWords": 17,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "checklist",
+              "title": "Evaluation Checklist",
+              "bodyWords": 29,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M7",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M8",
+              "type": "consolidation_summary",
+              "title": "Workshop Consolidation",
+              "bodyWords": 86,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 25,
+        "thinMats": 21,
+        "scenarios": 2
+      }
+    },
+    "LS": {
+      "stepId": "ada87548-f2b5-494f-bec7-62ea7b1c8b7d",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "learningSequence": {
+        "keys": [
+          "sequence_type",
+          "ordered_activity_ids",
+          "timeline",
+          "navigation"
+        ],
+        "text": "{\"sequence_type\":\"self_directed_workbook\",\"ordered_activity_ids\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"],\"timeline\":[{\"activity_id\":\"A1\",\"sequence_position\":1,\"study_flow\":\"foundation\"},{\"activity_id\":\"A2\",\"sequence_position\":2,\"study_flow\":\"concept_development\"},{\"activity_id\":\"A3\",\"sequence_position\":3,\"study_flow\":\"application\"},{\"activity_id\":\"A4\",\"sequence_position\":4,\"study_flow\":\"analysis\"},{\"activity_id\":\"A5\",\"sequence_position\":5,\"study_flow\":\"evaluation_and_synthesis\"}],\"navigation\":{\"entry_activit"
+      }
+    },
+    "DP": {
+      "stepId": "2fc7ec3e-45ba-4a92-af84-e522ce0cd5e1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ],
+      "pageSynthesis": {
+        "keys": [
+          "knowledge_summary"
+        ],
+        "knowledge_summary_words": 227,
+        "overview_words": 0,
+        "learning_purpose_words": 0,
+        "study_tips_count": 0
+      },
+      "keys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ]
+    }
+  }
+}

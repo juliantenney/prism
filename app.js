@@ -8580,6 +8580,33 @@
     return null;
   }
 
+  function resolveLdGamInstructionalDepthLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_GAM_INSTRUCTIONAL_DEPTH) {
+        return roots[i].PRISM_LD_GAM_INSTRUCTIONAL_DEPTH;
+      }
+    }
+    return null;
+  }
+
+  function applyLdGamInstructionalDepthContractToDraft(draftText, context) {
+    var lib = resolveLdGamInstructionalDepthLib();
+    if (
+      lib &&
+      typeof lib.applyLdGamInstructionalDepthContractToDraft === "function"
+    ) {
+      return lib.applyLdGamInstructionalDepthContractToDraft(draftText, {
+        isGenerateActivityMaterialsStep: isWorkflowStepGenerateActivityMaterials(context)
+      });
+    }
+    return String(draftText || "").trim();
+  }
+
   function resolvePageDlaEnrichLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -8792,6 +8819,7 @@
       'Required top-level keys: artifact_type "page", schema_version "2.0.0", title, audience, page_profile, assembly_state, page_synthesis {}, activities[], learning_outcomes[], episode_plans[], source_artefacts[], generation_notes { validation }.',
       'assembly_state must include enriched_by: ["episode_plan"] and current_stage: "episode_plan".',
       "Each activities[] row: activity_id, title, learner_task, expected_output, activity_preamble (all three DLA shell fields must be em dash \u2014 until DLA — never empty strings), required_materials [], materials [], episode_plan { archetype, beats[] }.",
+      "Each episode_plans[] row MUST include activity_id matching the corresponding activities[].activity_id (A1, A2, …), plus episode_plan { archetype, beats[] }. Do not emit episode_plans rows without activity_id.",
       "page_profile must be an object { profile_type } — never a bare string.",
       "source_artefacts[] must be structured objects { artefact_type, source_label, role } — never a string array.",
       "Do NOT write sections[]. Do NOT invent DLA pedagogy fields or GAM material bodies.",
@@ -9795,6 +9823,9 @@
     if (String(parsed.schema_version || "") === "2.0.0" && String(parsed.artifact_type || "") === "page") {
       normalizeEpisodePlanValidationFieldsInPlace(parsed);
       var shellMod = resolvePageShellCreateLib();
+      if (shellMod && typeof shellMod.alignEpisodePlansActivityIds === "function") {
+        shellMod.alignEpisodePlansActivityIds(parsed);
+      }
       if (shellMod && typeof shellMod.validatePageShellAgainstVNextSchema === "function") {
         return shellMod.validatePageShellAgainstVNextSchema(parsed);
       }
@@ -13496,6 +13527,7 @@
     // GAM L4 table/materials: single injection here (not duplicated in self-directed sub-chain).
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
+    draft = applyLdGamInstructionalDepthContractToDraft(draft, ctx);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     draft = applyLdDesignPagePartialContractToDraft(draft, ctx, wf);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx, wf);
@@ -43358,14 +43390,28 @@
     var pageCapture = parsePageArtefactCaptureForStorage(raw);
     if (pageCapture.ok) {
       var normalizedParsed = pageCapture.parsed;
+      var shellModForAlign = resolvePageShellCreateLib();
+      if (
+        shellModForAlign &&
+        typeof shellModForAlign.alignEpisodePlansActivityIds === "function"
+      ) {
+        shellModForAlign.alignEpisodePlansActivityIds(normalizedParsed);
+      }
       var normalizedCheck = validateEpisodePlanOrPageShellCapture(normalizedParsed);
       if (normalizedCheck && normalizedCheck.ok) {
         try {
           pageCapture.json = JSON.stringify(normalizedParsed, null, 2);
           pageCapture.parsed = normalizedParsed;
         } catch (_) {}
+        return pageCapture;
       }
-      return pageCapture;
+      return {
+        ok: false,
+        errors: (normalizedCheck && normalizedCheck.errors) || ["Invalid Episode Plan page shell"],
+        message: ((normalizedCheck && normalizedCheck.errors) || []).join("; ") ||
+          "Invalid Episode Plan page shell",
+        parsed: normalizedParsed
+      };
     }
     // Episode Plan step UX tolerance:
     // allow one page object extracted from common conversational wrappers
@@ -46194,6 +46240,8 @@
     prismTestApi.applyLdTableFidelityContractToDraft = applyLdTableFidelityContractToDraft;
     prismTestApi.buildLdMaterialsCopyPromptBlock = buildLdMaterialsCopyPromptBlock;
     prismTestApi.applyLdMaterialsCopyContractToDraft = applyLdMaterialsCopyContractToDraft;
+    prismTestApi.applyLdGamInstructionalDepthContractToDraft =
+      applyLdGamInstructionalDepthContractToDraft;
     prismTestApi.buildDesignPageActivityMaterialsFidelityPromptBlock =
       buildDesignPageActivityMaterialsFidelityPromptBlock;
     prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =

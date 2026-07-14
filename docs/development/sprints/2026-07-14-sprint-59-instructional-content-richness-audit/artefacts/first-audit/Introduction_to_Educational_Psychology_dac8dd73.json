@@ -1,0 +1,1127 @@
+{
+  "workflowId": "dac8dd73-50ff-4abc-b64a-d7547008d191",
+  "name": "Introduction to Educational Psychology",
+  "goal": "Create a 60 minute self study resource for undergraduate education students about Educational Psychology. Include a number of activities and five formative mcq assessment questions.",
+  "audience": "Undergraduate Education Students",
+  "constraints": "duration_minutes: 60; topic: educational psychology; delivery_mode: async; design_scope: session; delivery_pattern: mostly_online; delivery_context: self_directed; input_strategy: generate_from_topic; learning_environments: vle; assessment_strategy: formative; coverage_scope: balanced; cognitive_demand: mixed; question_style_mix: selected_response_only; assessment_type: mcq; feedback_required: item_level; difficulty_profile: balanced; assessment_total_items: 5; session_materials: page; page_profile: learner; feedback_display: answer_grid_end; learner_answer_visibility: show_answer_grid_end; feedback_timing: immediate_self_check; assessment_semantics_constraints_applied: {\"feedback_timing\":\"immediate_self_check\",\"learner_answer_visibility\":\"show_answer_grid_end\",\"feedback_display\":\"answer_grid_end\"}; scope_scale: 60 minutes",
+  "startingArtefact": "generate_from_topic",
+  "flags": {
+    "pageEnrichmentV2": true,
+    "partialPageOutputs": true
+  },
+  "steps": [
+    {
+      "id": "7d5df7f5-cb16-4c52-981f-b53a24ad7085",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "19d30115-f7db-4547-9f7d-2f6619ebac8c",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "5ce1e085-67db-4859-aa5b-776ab6b7bab7",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "ffdc2fbe-14a3-4c69-b416-b49683b5620d",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 6220
+    },
+    {
+      "id": "8cd88a1a-2768-47f2-bae8-18ab019656d1",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 15158
+    },
+    {
+      "id": "fc9cedd0-64df-4db3-afd9-c46fce7a0cff",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 12532
+    },
+    {
+      "id": "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 5221
+    },
+    {
+      "id": "26d14fd3-ad67-4520-be3e-75dbfb209ed1",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 2230
+    },
+    {
+      "id": "2b3633eb-5384-4879-80ba-0f5cf166b9d1",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 2230
+    }
+  ],
+  "captures": {
+    "ffdc2fbe-14a3-4c69-b416-b49683b5620d": {
+      "role": "EP",
+      "title": "Design Episode Plan",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "title": "Introduction to Educational Psychology",
+        "audience": "Learners",
+        "page_profile": {
+          "profile_type": "learner"
+        },
+        "assembly_state": {
+          "current_stage": "episode_plan",
+          "enriched_by": [
+            "episode_plan"
+          ]
+        },
+        "page_synthesis": {},
+        "learning_outcomes": [
+          {
+            "id": "LO1",
+            "statement": "Define educational psychology and describe its role in informing evidence-based educational practice."
+          },
+          {
+            "id": "LO2",
+            "statement": "Compare behaviourism, cognitivism, and constructivism by identifying their main principles and associated approaches to learning and teaching."
+          },
+          {
+            "id": "LO3",
+            "statement": "Explain how attention, working memory, long-term memory, and retrieval practices contribute to effective learning."
+          },
+          {
+            "id": "LO4",
+            "statement": "Distinguish between intrinsic and extrinsic motivation and describe how self-efficacy can influence learner engagement and persistence."
+          },
+          {
+            "id": "LO5",
+            "statement": "Identify how individual differences and developmental factors can inform inclusive and differentiated educational practice."
+          }
+        ],
+        "activities": [
+          {
+            "activity_id": "A1",
+            "title": "What Is Educational Psychology?",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "understand",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "explanation"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A2",
+            "title": "Comparing Major Learning Theories",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "analyse",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "comparison"
+                },
+                {
+                  "function": "analysis"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A3",
+            "title": "Memory and Learning Processes",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "understand",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "explanation"
+                },
+                {
+                  "function": "sequencing"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A4",
+            "title": "Motivation and Engagement",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "analyse",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "comparison"
+                },
+                {
+                  "function": "analysis"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          },
+          {
+            "activity_id": "A5",
+            "title": "Inclusion, Development, and Individual Differences",
+            "learner_task": "—",
+            "expected_output": "—",
+            "activity_preamble": "—",
+            "required_materials": [],
+            "materials": [],
+            "episode_plan": {
+              "archetype": "apply",
+              "beats": [
+                {
+                  "function": "orientation"
+                },
+                {
+                  "function": "application"
+                },
+                {
+                  "function": "reflection"
+                }
+              ]
+            }
+          }
+        ],
+        "episode_plans": [
+          {
+            "learning_outcome_id": "LO1",
+            "activity_id": "A1",
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO2",
+            "activity_id": "A2",
+            "archetype": "analyse",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "comparison"
+              },
+              {
+                "function": "analysis"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO3",
+            "activity_id": "A3",
+            "archetype": "understand",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "explanation"
+              },
+              {
+                "function": "sequencing"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO4",
+            "activity_id": "A4",
+            "archetype": "analyse",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "comparison"
+              },
+              {
+                "function": "analysis"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          },
+          {
+            "learning_outcome_id": "LO5",
+            "activity_id": "A5",
+            "archetype": "apply",
+            "beats": [
+              {
+                "function": "orientation"
+              },
+              {
+                "function": "application"
+              },
+              {
+                "function": "reflection"
+              }
+            ]
+          }
+        ],
+        "source_artefacts": [
+          {
+            "artefact_type": "learning_outcomes",
+            "source_label": "Learning Outcomes",
+            "role": "structural"
+          }
+        ],
+        "generation_notes": {
+          "validation": {
+            "coverage_mode": "activity_aligned",
+            "known_issues": [],
+            "activity_coverage": "shell_only",
+            "material_coverage": "pending_gam",
+            "episode_plan_attachment": "attached",
+            "self_containment": "shell_only",
+            "schema_compliance": "episode_plan_boundary"
+          }
+        }
+      }
+    },
+    "8cd88a1a-2768-47f2-bae8-18ab019656d1": {
+      "role": "DLA",
+      "title": "Design Learning Activities",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "dla",
+          "enriched_by": [
+            "dla"
+          ]
+        },
+        "delivery_notes": {
+          "resource_intent": "self_study_workbook",
+          "session_duration_target_minutes": 60,
+          "consolidation_requirement": "Complete the final synthesis activity and review the consolidation summary before attempting the formative assessment.",
+          "workbook_contract_applied": true
+        },
+        "outcome_alignment": [
+          {
+            "activity_id": "A1",
+            "mapped_learning_outcomes": [
+              "LO1"
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "mapped_learning_outcomes": [
+              "LO2"
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "mapped_learning_outcomes": [
+              "LO3"
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "mapped_learning_outcomes": [
+              "LO4"
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "mapped_learning_outcomes": [
+              "LO1",
+              "LO3",
+              "LO4",
+              "LO5"
+            ]
+          }
+        ],
+        "activities": [
+          {
+            "activity_id": "A1",
+            "grouping": "individual",
+            "duration_minutes": 10,
+            "mapped_learning_outcomes": [
+              "LO1"
+            ],
+            "activity_preamble": "Begin by establishing a clear definition of educational psychology and exploring why educators use psychological research to inform practice.",
+            "reasoning_orientation": "Focus on the relationship between evidence and educational decision-making. Consider how educational psychology provides explanations for learning and teaching. Look for connections between theory, evidence, and classroom practice.",
+            "self_explanation_prompt": "How does educational psychology help educators make better-informed decisions than relying on intuition alone?",
+            "learner_task": "1. Read the introductory explanation.\n2. Study the worked example showing how an educational issue can be examined using evidence.\n3. Review the sample response.\n4. Create your own definition of educational psychology.\n5. Identify two ways it can inform practice.\n6. Complete the self-check checklist and revise your response if required.",
+            "expected_output": "Produce a concise explanation that accurately defines educational psychology and identifies at least two evidence-informed applications. Strong responses connect research evidence to educational decision-making and use terminology consistently.",
+            "required_materials": [
+              {
+                "material_id": "A1-M1",
+                "type": "text",
+                "purpose": "Introduce educational psychology and evidence-informed practice.",
+                "specification": "depth_floor:L3; explanatory text defining educational psychology; relationship to learning, teaching, assessment and evidence-informed decision-making."
+              },
+              {
+                "material_id": "A1-M2",
+                "type": "worked_example",
+                "purpose": "Model expert reasoning.",
+                "specification": "depth_floor:L3; stepped expert example showing movement from educational issue to evidence-informed interpretation; visible intermediate reasoning."
+              },
+              {
+                "material_id": "A1-M3",
+                "type": "sample_output",
+                "purpose": "Provide quality benchmark.",
+                "specification": "depth_floor:L3; annotated high-quality response illustrating definition plus practical application."
+              },
+              {
+                "material_id": "A1-M4",
+                "type": "checklist",
+                "purpose": "Verification and self-check.",
+                "specification": "depth_floor:L3; minimum four criteria-linked checks plus revise-and-repair guidance if criteria are not met."
+              }
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "grouping": "individual",
+            "duration_minutes": 15,
+            "mapped_learning_outcomes": [
+              "LO2"
+            ],
+            "activity_preamble": "You will analyse three influential perspectives on learning and consider how each would interpret teaching and learning differently.",
+            "reasoning_orientation": "Move beyond identifying features. Compare assumptions, focus areas, and implications for teaching. Consider what each theory helps explain and what it emphasises most strongly.",
+            "conceptual_contrast_prompt": "How would behaviourism, cognitivism and constructivism differ when explaining the same learning event?",
+            "intellectual_coherence_bridge": "This activity builds on the purpose of educational psychology by examining different explanatory lenses used to understand learning.",
+            "learner_task": "1. Read the comparison overview.\n2. Study the worked analytic example.\n3. Review the classroom scenarios.\n4. Complete the comparison table.\n5. Analyse which theory is most visible in each scenario and justify your judgement.\n6. Use the checklist to review your analysis.",
+            "expected_output": "Complete a comparative analysis that accurately distinguishes behaviourism, cognitivism and constructivism. High-quality responses justify classifications using features of each theory and explain reasoning rather than simply naming theories.",
+            "required_materials": [
+              {
+                "material_id": "A2-M1",
+                "type": "text",
+                "purpose": "Introduce the three learning theories.",
+                "specification": "depth_floor:L3; explanatory comparison of behaviourism, cognitivism and constructivism including defining characteristics and teaching implications."
+              },
+              {
+                "material_id": "A2-M2",
+                "type": "worked_example",
+                "purpose": "Worked analytic pass.",
+                "specification": "depth_floor:L3; fact-to-theory walkthrough demonstrating identification of evidence, analytical lens, mechanism and justified conclusion."
+              },
+              {
+                "material_id": "A2-M3",
+                "type": "scenario",
+                "purpose": "Provide cases for analysis.",
+                "specification": "depth_floor:L3; at least two named classroom cases with contextual details for theory interpretation."
+              },
+              {
+                "material_id": "A2-M4",
+                "type": "comparison_table",
+                "purpose": "Guided comparative analysis.",
+                "specification": "depth_floor:L3; learner-completed comparison table with columns for key assumptions, focus, teaching implications and justification; include exemplar row or hint column."
+              },
+              {
+                "material_id": "A2-M5",
+                "type": "checklist",
+                "purpose": "Verification and revision.",
+                "specification": "depth_floor:L3; minimum four analysis criteria linked to accurate comparison and justification plus revision prompts."
+              }
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "grouping": "individual",
+            "duration_minutes": 12,
+            "mapped_learning_outcomes": [
+              "LO3"
+            ],
+            "activity_preamble": "Explore how information moves through cognitive systems and how learning strategies strengthen retention and recall.",
+            "reasoning_orientation": "Think about learning as a process. Examine how attention, working memory and long-term memory interact and how retrieval practices support durable learning.",
+            "self_explanation_prompt": "What might happen to learning if attention is weak or working memory becomes overloaded?",
+            "intellectual_coherence_bridge": "Having examined learning theories, you now investigate the cognitive processes that support learning itself.",
+            "activity_interaction_type": "sequencing",
+            "learner_task": "1. Read the explanation of memory systems.\n2. Review the unordered process cards.\n3. Sequence the stages of information processing.\n4. Explain the role of retrieval practice and spaced practice.\n5. Check your sequence and explanations against the verification criteria.",
+            "expected_output": "Produce a correctly sequenced explanation of the learning process and a clear account of how retrieval and spaced practice support long-term retention. Explanations should accurately connect cognitive processes.",
+            "required_materials": [
+              {
+                "material_id": "A3-M1",
+                "type": "text",
+                "purpose": "Explain cognitive learning processes.",
+                "specification": "depth_floor:L3; explanation of attention, working memory, long-term memory, retrieval practice and spaced practice."
+              },
+              {
+                "material_id": "A3-M2",
+                "type": "task_cards",
+                "purpose": "Sequencing exercise.",
+                "specification": "depth_floor:L3; unordered information-processing stages for learner sequencing; events deliberately presented in non-sequential order."
+              },
+              {
+                "material_id": "A3-M3",
+                "type": "reference_table",
+                "purpose": "Support sequencing and explanation.",
+                "specification": "depth_floor:L3; learner-completed table linking process stage, purpose and learning consequence."
+              },
+              {
+                "material_id": "A3-M4",
+                "type": "checklist",
+                "purpose": "Verification and correction.",
+                "specification": "depth_floor:L3; four or more checks covering sequence accuracy, terminology and explanation quality with repair guidance."
+              }
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "grouping": "individual",
+            "duration_minutes": 10,
+            "mapped_learning_outcomes": [
+              "LO4"
+            ],
+            "activity_preamble": "Investigate the relationship between motivation, self-efficacy and learner engagement through comparison and interpretation.",
+            "reasoning_orientation": "Consider why learners engage differently with challenges. Compare internal and external sources of motivation and examine how confidence influences persistence.",
+            "conceptual_contrast_prompt": "When might intrinsic motivation be more powerful than extrinsic motivation, and when might both interact?",
+            "intellectual_coherence_bridge": "This activity extends cognitive explanations of learning by examining factors that influence effort and persistence.",
+            "learner_task": "1. Read the motivation overview.\n2. Review the learner cases.\n3. Compare examples of intrinsic and extrinsic motivation.\n4. Analyse the role of self-efficacy in each case.\n5. Complete the analysis table and self-check.",
+            "expected_output": "Generate a justified comparison of intrinsic and extrinsic motivation and explain how self-efficacy influences engagement. Strong responses use evidence from cases and identify relationships between motivation and persistence.",
+            "required_materials": [
+              {
+                "material_id": "A4-M1",
+                "type": "text",
+                "purpose": "Explain motivation concepts.",
+                "specification": "depth_floor:L3; explanation of intrinsic motivation, extrinsic motivation, self-efficacy and learner engagement."
+              },
+              {
+                "material_id": "A4-M2",
+                "type": "scenario",
+                "purpose": "Provide cases for analysis.",
+                "specification": "depth_floor:L3; at least two named learner profiles showing different motivational patterns and confidence levels."
+              },
+              {
+                "material_id": "A4-M3",
+                "type": "analysis_table",
+                "purpose": "Structured comparative analysis.",
+                "specification": "depth_floor:L3; table with learner evidence, motivation type, self-efficacy indicators and justification columns; include exemplar or hint column."
+              },
+              {
+                "material_id": "A4-M4",
+                "type": "checklist",
+                "purpose": "Verification and improvement.",
+                "specification": "depth_floor:L3; minimum four criteria checking accurate distinctions, evidence use and explanation quality."
+              }
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "grouping": "individual",
+            "duration_minutes": 13,
+            "mapped_learning_outcomes": [
+              "LO1",
+              "LO3",
+              "LO4",
+              "LO5"
+            ],
+            "activity_preamble": "Apply key ideas from the session to a realistic educational context and synthesise your learning into a practical response.",
+            "reasoning_orientation": "Draw together concepts from educational psychology, cognition, motivation and inclusion. Make justified decisions about how an educator could support diverse learners.",
+            "transfer_or_application_task": "Apply the concepts from this session to a new educational context and explain how your decisions are supported by educational psychology.",
+            "intellectual_coherence_bridge": "This capstone integrates the major ideas encountered throughout the session and prepares you to apply them in future educational study and practice.",
+            "learner_task": "1. Review the classroom scenario.\n2. Study the modelled application example.\n3. Complete the planning template.\n4. Recommend inclusive and evidence-informed actions.\n5. Write a short synthesis explaining your reasoning.\n6. Complete the verification checklist.\n7. Read the consolidation summary and identify three key takeaways.",
+            "expected_output": "Produce a short evidence-informed action plan that identifies learner needs, proposes inclusive support strategies and justifies decisions using concepts from educational psychology. High-quality responses integrate multiple concepts rather than discussing them separately.",
+            "required_materials": [
+              {
+                "material_id": "A5-M1",
+                "type": "scenario",
+                "purpose": "Application context.",
+                "specification": "depth_floor:L3; at least two learner cases within one classroom context featuring diverse needs, motivation and learning considerations."
+              },
+              {
+                "material_id": "A5-M2",
+                "type": "worked_example",
+                "purpose": "Model application thinking.",
+                "specification": "depth_floor:L3; think-aloud example showing identification of needs, application of principles and justified action selection."
+              },
+              {
+                "material_id": "A5-M3",
+                "type": "planning_table",
+                "purpose": "Structured application template.",
+                "specification": "depth_floor:L3; learner-completed planning table with learner need, relevant concept, proposed response and rationale columns."
+              },
+              {
+                "material_id": "A5-M4",
+                "type": "transfer_prompt",
+                "purpose": "Promote future transfer.",
+                "specification": "depth_floor:L3; prompt requiring application of the same principles to a different educational setting."
+              },
+              {
+                "material_id": "A5-M5",
+                "type": "checklist",
+                "purpose": "Verification and refinement.",
+                "specification": "depth_floor:L3; four or more criteria covering inclusion, evidence use, concept integration and justification plus revision guidance."
+              },
+              {
+                "material_id": "A5-M6",
+                "type": "consolidation_summary",
+                "purpose": "Session closure.",
+                "specification": "depth_floor:L3; learner-facing summary of at least three major ideas from the session, minimum 80 words, focused on retention and future application."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "fc9cedd0-64df-4db3-afd9-c46fce7a0cff": {
+      "role": "GAM",
+      "title": "Generate Activity Materials",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "gam",
+          "enriched_by": [
+            "gam"
+          ]
+        },
+        "activities": [
+          {
+            "activity_id": "A1",
+            "materials": [
+              {
+                "material_id": "A1-M1",
+                "material_type": "text",
+                "activity_id": "A1",
+                "title": "Introduction to Educational Psychology",
+                "body_format": "markdown",
+                "body": "## Educational Psychology\n\nEducational psychology examines how people learn and how teaching can support learning. It draws on research about learning, memory, motivation, development and educational practice.\n\nEducational psychology helps educators:\n- Explain learner behaviour.\n- Design effective learning experiences.\n- Support diverse learners.\n- Make evidence-informed decisions.\n- Evaluate the impact of teaching approaches.\n\nRather than relying solely on intuition, educational psychology encourages the use of research and evidence when making educational decisions."
+              },
+              {
+                "material_id": "A1-M2",
+                "material_type": "worked_example",
+                "activity_id": "A1",
+                "title": "Worked Example: Using Evidence to Address Low Participation",
+                "body_format": "markdown",
+                "body": "### Educational Issue\nA teacher notices that learners rarely contribute during discussions.\n\n### Step 1: Identify the problem\nLearners appear disengaged.\n\n### Step 2: Consider psychological factors\nPossible factors include motivation, confidence and classroom climate.\n\n### Step 3: Use evidence\nResearch suggests that learner confidence and opportunities for participation influence engagement.\n\n### Step 4: Action\nProvide structured participation activities and supportive feedback.\n\n### Step 5: Review\nMonitor participation and evaluate whether engagement improves."
+              },
+              {
+                "material_id": "A1-M3",
+                "material_type": "sample_output",
+                "activity_id": "A1",
+                "title": "Sample Response",
+                "body_format": "markdown",
+                "body": "Educational psychology is the study of how people learn in educational settings and how teaching can support learning. It helps educators make evidence-informed decisions. For example, teachers can use knowledge of motivation to increase engagement and use research on memory to improve learning activities."
+              },
+              {
+                "material_id": "A1-M4",
+                "material_type": "checklist",
+                "activity_id": "A1",
+                "title": "Self-Check Checklist",
+                "body_format": "markdown",
+                "body": "- Have I provided a clear definition of educational psychology?\n- Have I explained the role of evidence in educational practice?\n- Have I identified at least two practical applications?\n- Have I used accurate terminology?\n\nIf any answer is 'No', revise before continuing."
+              }
+            ]
+          },
+          {
+            "activity_id": "A2",
+            "materials": [
+              {
+                "material_id": "A2-M1",
+                "material_type": "text",
+                "activity_id": "A2",
+                "title": "Comparing Learning Theories",
+                "body_format": "markdown",
+                "body": "## Three Perspectives on Learning\n\n### Behaviourism\nFocuses on observable behaviour and reinforcement.\n\n### Cognitivism\nFocuses on attention, memory and information processing.\n\n### Constructivism\nFocuses on learners actively constructing understanding through experience and interaction.\n\nEach perspective offers a different explanation of how learning occurs."
+              },
+              {
+                "material_id": "A2-M2",
+                "material_type": "worked_example",
+                "activity_id": "A2",
+                "title": "Worked Analytic Pass",
+                "body_format": "markdown",
+                "body": "### Scenario\nA teacher rewards correct answers with praise.\n\n### Evidence\nPraise follows desired behaviour.\n\n### Analytical Lens\nExamine the role of reinforcement.\n\n### Mechanism\nBehaviour is strengthened through rewards.\n\n### Judgement\nBehaviourism provides the strongest explanation because reinforcement is central to the example."
+              },
+              {
+                "material_id": "A2-M3",
+                "material_type": "scenario",
+                "activity_id": "A2",
+                "title": "Classroom Cases",
+                "body_format": "markdown",
+                "body": "### Case 1: Mrs Ahmed\nLearners receive immediate rewards for completing practice activities.\n\n### Case 2: Mr Lewis\nLearners investigate a real-world problem and discuss ideas in groups before presenting conclusions."
+              },
+              {
+                "material_id": "A2-M4",
+                "material_type": "comparison_table",
+                "activity_id": "A2",
+                "title": "Learning Theory Comparison Table",
+                "body_format": "markdown",
+                "body": "| Theory | Main Focus | Teaching Approach | Evidence from Scenario | Justification |\n| --- | --- | --- | --- | --- |\n| Behaviourism | Reinforcement | Example row provided | Praise and rewards | Focus on behaviour |\n| Cognitivism |  |  |  |  |\n| Constructivism |  |  |  |  |"
+              },
+              {
+                "material_id": "A2-M5",
+                "material_type": "checklist",
+                "activity_id": "A2",
+                "title": "Analysis Checklist",
+                "body_format": "markdown",
+                "body": "- Did I accurately describe each theory?\n- Did I use evidence from the scenarios?\n- Did I justify my classification choices?\n- Did I compare similarities and differences?\n\nRevise any weak explanations."
+              }
+            ]
+          },
+          {
+            "activity_id": "A3",
+            "materials": [
+              {
+                "material_id": "A3-M1",
+                "material_type": "text",
+                "activity_id": "A3",
+                "title": "Memory and Learning",
+                "body_format": "markdown",
+                "body": "## Cognitive Learning Process\n\nLearning begins with attention. Information then enters working memory, where it is processed. Knowledge that is retained can move into long-term memory. Retrieval practice and spaced practice help strengthen long-term retention and recall."
+              },
+              {
+                "material_id": "A3-M2",
+                "material_type": "task_cards",
+                "activity_id": "A3",
+                "title": "Unordered Process Cards",
+                "body_format": "markdown",
+                "body": "- Card C: Retrieve knowledge for use.\n- Card A: Attend to information.\n- Card D: Store knowledge in long-term memory.\n- Card B: Process information in working memory.\n\nArrange the cards into the correct sequence."
+              },
+              {
+                "material_id": "A3-M3",
+                "material_type": "reference_table",
+                "activity_id": "A3",
+                "title": "Learning Process Table",
+                "body_format": "markdown",
+                "body": "| Stage | What Happens? | Why Is It Important? |\n| --- | --- | --- |\n|  |  |  |\n|  |  |  |\n|  |  |  |\n|  |  |  |"
+              },
+              {
+                "material_id": "A3-M4",
+                "material_type": "checklist",
+                "activity_id": "A3",
+                "title": "Verification Checklist",
+                "body_format": "markdown",
+                "body": "- Is the sequence correct?\n- Have I explained attention accurately?\n- Have I distinguished working memory from long-term memory?\n- Have I explained retrieval or spaced practice?\n\nCorrect any errors before progressing."
+              }
+            ]
+          },
+          {
+            "activity_id": "A4",
+            "materials": [
+              {
+                "material_id": "A4-M1",
+                "material_type": "text",
+                "activity_id": "A4",
+                "title": "Motivation and Self-Efficacy",
+                "body_format": "markdown",
+                "body": "## Motivation\n\nIntrinsic motivation comes from interest or enjoyment.\n\nExtrinsic motivation comes from external rewards or consequences.\n\nSelf-efficacy refers to a learner's belief that they can succeed. Learners with stronger self-efficacy are more likely to persist when tasks become challenging."
+              },
+              {
+                "material_id": "A4-M2",
+                "material_type": "scenario",
+                "activity_id": "A4",
+                "title": "Learner Profiles",
+                "body_format": "markdown",
+                "body": "### Olivia\nCompletes projects because she enjoys exploring new ideas.\n\n### Daniel\nWorks mainly to achieve high grades and recognition.\n\nConsider how confidence might influence both learners' persistence."
+              },
+              {
+                "material_id": "A4-M3",
+                "material_type": "analysis_table",
+                "activity_id": "A4",
+                "title": "Motivation Analysis Table",
+                "body_format": "markdown",
+                "body": "| Learner | Motivation Type | Evidence | Self-Efficacy Indicators | Justification |\n| --- | --- | --- | --- | --- |\n| Example | Intrinsic | Enjoys learning | Attempts challenges | Interest drives effort |\n| Olivia |  |  |  |  |\n| Daniel |  |  |  |  |"
+              },
+              {
+                "material_id": "A4-M4",
+                "material_type": "checklist",
+                "activity_id": "A4",
+                "title": "Review Checklist",
+                "body_format": "markdown",
+                "body": "- Have I distinguished intrinsic and extrinsic motivation?\n- Have I used evidence from the learner profiles?\n- Have I explained self-efficacy?\n- Have I justified my conclusions?\n\nRevise weak sections as needed."
+              }
+            ]
+          },
+          {
+            "activity_id": "A5",
+            "materials": [
+              {
+                "material_id": "A5-M1",
+                "material_type": "scenario",
+                "activity_id": "A5",
+                "title": "Inclusive Classroom Scenario",
+                "body_format": "markdown",
+                "body": "A Year 8 class includes two learners.\n\n### Sofia\nInterested in learning but lacks confidence when speaking in groups.\n\n### Marcus\nBecomes distracted during long explanations and struggles to retain new information.\n\nDesign support strategies using educational psychology concepts."
+              },
+              {
+                "material_id": "A5-M2",
+                "material_type": "worked_example",
+                "activity_id": "A5",
+                "title": "Modelled Application",
+                "body_format": "markdown",
+                "body": "### Identify Need\nLow confidence limits participation.\n\n### Select Concept\nSelf-efficacy.\n\n### Apply Principle\nProvide structured opportunities for success and constructive feedback.\n\n### Justify\nImproved confidence may increase engagement and persistence."
+              },
+              {
+                "material_id": "A5-M3",
+                "material_type": "planning_table",
+                "activity_id": "A5",
+                "title": "Action Planning Table",
+                "body_format": "markdown",
+                "body": "| Learner Need | Relevant Concept | Proposed Action | Rationale |\n| --- | --- | --- | --- |\n|  |  |  |  |\n|  |  |  |  |"
+              },
+              {
+                "material_id": "A5-M4",
+                "material_type": "transfer_prompt",
+                "activity_id": "A5",
+                "title": "Transfer Challenge",
+                "body_format": "markdown",
+                "body": "Imagine a different educational setting, such as higher education or workplace training. Explain how one principle from educational psychology could be applied and justify your decision."
+              },
+              {
+                "material_id": "A5-M5",
+                "material_type": "checklist",
+                "activity_id": "A5",
+                "title": "Action Plan Checklist",
+                "body_format": "markdown",
+                "body": "- Have I identified learner needs?\n- Have I used relevant educational psychology concepts?\n- Have I proposed realistic support strategies?\n- Have I justified my decisions using evidence-informed reasoning?\n\nRevise where necessary."
+              },
+              {
+                "material_id": "A5-M6",
+                "material_type": "consolidation_summary",
+                "activity_id": "A5",
+                "title": "Key Ideas to Remember",
+                "body_format": "markdown",
+                "body": "Educational psychology helps educators understand how learning occurs and how teaching can support learners effectively. Learning theories such as behaviourism, cognitivism and constructivism provide different perspectives on learning. Cognitive processes including attention, memory and retrieval influence learning success. Motivation and self-efficacy affect engagement and persistence. Inclusive practice recognises individual differences and adapts teaching to support diverse learners. Together, these ideas help educators make evidence-informed decisions that improve learning experiences."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd": {
+      "role": "ASSESS_ITEMS",
+      "title": "Generate Assessment Items",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "assessment_items",
+          "enriched_by": [
+            "assessment_items"
+          ]
+        },
+        "assessment_check": {
+          "items": [
+            {
+              "item_id": "Q1",
+              "item_type": "single_answer_mcq",
+              "topic": "Educational Psychology",
+              "related_learning_outcomes": [
+                "LO1"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "comprehension",
+              "stem": "Which statement best describes educational psychology?",
+              "options": [
+                "The study of educational policy development",
+                "The study of how people learn and how teaching can support learning",
+                "The study of curriculum funding decisions",
+                "The study of school administration procedures"
+              ],
+              "correct_answer": "The study of how people learn and how teaching can support learning",
+              "correct_answer_text": "The study of how people learn and how teaching can support learning",
+              "explanation_or_rationale": "Educational psychology focuses on learning processes and the ways teaching practices can support effective learning."
+            },
+            {
+              "item_id": "Q2",
+              "item_type": "single_answer_mcq",
+              "topic": "Learning Theories",
+              "related_learning_outcomes": [
+                "LO2"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "analysis",
+              "stem": "A teacher encourages learners to investigate a real-world problem, discuss ideas with peers, and develop their own conclusions. Which learning theory is most closely reflected?",
+              "options": [
+                "Behaviourism",
+                "Constructivism",
+                "Cognitivism",
+                "Direct instruction"
+              ],
+              "correct_answer": "Constructivism",
+              "correct_answer_text": "Constructivism",
+              "explanation_or_rationale": "Constructivism emphasises active knowledge construction through experience, inquiry, reflection, and social interaction."
+            },
+            {
+              "item_id": "Q3",
+              "item_type": "single_answer_mcq",
+              "topic": "Memory and Learning",
+              "related_learning_outcomes": [
+                "LO3"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "comprehension",
+              "stem": "According to the learning materials, what must occur before information can be remembered?",
+              "options": [
+                "It must be tested",
+                "It must enter long-term memory",
+                "It must receive attention",
+                "It must be rewarded"
+              ],
+              "correct_answer": "It must receive attention",
+              "correct_answer_text": "It must receive attention",
+              "explanation_or_rationale": "Attention acts as a gateway to learning because information must be attended to before it can be processed and remembered."
+            },
+            {
+              "item_id": "Q4",
+              "item_type": "single_answer_mcq",
+              "topic": "Motivation and Self-Efficacy",
+              "related_learning_outcomes": [
+                "LO4"
+              ],
+              "integration_type": "single",
+              "difficulty_level": "application",
+              "stem": "A learner continues working on a difficult project because they enjoy the challenge and are confident they can improve. Which combination best describes this situation?",
+              "options": [
+                "Extrinsic motivation and low self-efficacy",
+                "Extrinsic motivation and high self-efficacy",
+                "Intrinsic motivation and low self-efficacy",
+                "Intrinsic motivation and high self-efficacy"
+              ],
+              "correct_answer": "Intrinsic motivation and high self-efficacy",
+              "correct_answer_text": "Intrinsic motivation and high self-efficacy",
+              "explanation_or_rationale": "Enjoyment of the task indicates intrinsic motivation, while confidence in success reflects high self-efficacy."
+            },
+            {
+              "item_id": "Q5",
+              "item_type": "single_answer_mcq",
+              "topic": "Inclusive Educational Practice",
+              "related_learning_outcomes": [
+                "LO1",
+                "LO3",
+                "LO5"
+              ],
+              "integration_type": "multi_outcome",
+              "difficulty_level": "analysis",
+              "stem": "Which action best reflects an evidence-informed and inclusive response to learner differences?",
+              "options": [
+                "Using the same teaching approach for all learners to ensure consistency",
+                "Reducing learning opportunities for learners who find tasks difficult",
+                "Adapting teaching approaches to meet diverse learner needs while drawing on evidence about learning",
+                "Focusing only on the highest-achieving learners to improve overall performance"
+              ],
+              "correct_answer": "Adapting teaching approaches to meet diverse learner needs while drawing on evidence about learning",
+              "correct_answer_text": "Adapting teaching approaches to meet diverse learner needs while drawing on evidence about learning",
+              "explanation_or_rationale": "Inclusive practice recognises individual differences and uses evidence-informed approaches to support participation and success for diverse learners."
+            }
+          ]
+        }
+      }
+    },
+    "26d14fd3-ad67-4520-be3e-75dbfb209ed1": {
+      "role": "LS",
+      "title": "Construct Learning Sequence",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "learning_sequence",
+          "enriched_by": [
+            "learning_sequence"
+          ]
+        },
+        "learning_sequence": {
+          "sequence_type": "self_directed",
+          "ordered_activity_ids": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5"
+          ],
+          "timeline": [
+            {
+              "activity_id": "A1",
+              "sequence_position": 1,
+              "duration_minutes": 10,
+              "stage": "foundation",
+              "transition_to_next": "Use your understanding of educational psychology to examine different theories of learning."
+            },
+            {
+              "activity_id": "A2",
+              "sequence_position": 2,
+              "duration_minutes": 15,
+              "stage": "conceptual_analysis",
+              "transition_to_next": "Having compared learning theories, explore the cognitive processes that support learning."
+            },
+            {
+              "activity_id": "A3",
+              "sequence_position": 3,
+              "duration_minutes": 12,
+              "stage": "cognitive_processes",
+              "transition_to_next": "Apply your understanding of cognition to factors that influence learner engagement and persistence."
+            },
+            {
+              "activity_id": "A4",
+              "sequence_position": 4,
+              "duration_minutes": 10,
+              "stage": "motivation_analysis",
+              "transition_to_next": "Integrate learning, cognition and motivation concepts in an inclusive educational scenario."
+            },
+            {
+              "activity_id": "A5",
+              "sequence_position": 5,
+              "duration_minutes": 13,
+              "stage": "synthesis_and_application",
+              "transition_to_next": "Sequence complete. Review your synthesis and prepare for assessment."
+            }
+          ],
+          "total_duration_minutes": 60,
+          "navigation_guidance": {
+            "progression_model": "build_from_foundational_understanding_to_integrated_application",
+            "completion_rule": "Complete activities in order before attempting assessment items.",
+            "study_flow": [
+              "Read and understand concepts",
+              "Observe worked examples",
+              "Complete guided analysis tasks",
+              "Apply concepts independently",
+              "Review consolidation summary",
+              "Attempt assessment"
+            ]
+          }
+        }
+      }
+    },
+    "2b3633eb-5384-4879-80ba-0f5cf166b9d1": {
+      "role": "DP",
+      "title": "Design Page",
+      "parsed": {
+        "artifact_type": "page",
+        "schema_version": "2.0.0",
+        "assembly_state": {
+          "current_stage": "learning_sequence",
+          "enriched_by": [
+            "learning_sequence"
+          ]
+        },
+        "learning_sequence": {
+          "sequence_type": "self_directed",
+          "ordered_activity_ids": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5"
+          ],
+          "timeline": [
+            {
+              "activity_id": "A1",
+              "sequence_position": 1,
+              "duration_minutes": 10,
+              "stage": "foundation",
+              "transition_to_next": "Use your understanding of educational psychology to examine different theories of learning."
+            },
+            {
+              "activity_id": "A2",
+              "sequence_position": 2,
+              "duration_minutes": 15,
+              "stage": "conceptual_analysis",
+              "transition_to_next": "Having compared learning theories, explore the cognitive processes that support learning."
+            },
+            {
+              "activity_id": "A3",
+              "sequence_position": 3,
+              "duration_minutes": 12,
+              "stage": "cognitive_processes",
+              "transition_to_next": "Apply your understanding of cognition to factors that influence learner engagement and persistence."
+            },
+            {
+              "activity_id": "A4",
+              "sequence_position": 4,
+              "duration_minutes": 10,
+              "stage": "motivation_analysis",
+              "transition_to_next": "Integrate learning, cognition and motivation concepts in an inclusive educational scenario."
+            },
+            {
+              "activity_id": "A5",
+              "sequence_position": 5,
+              "duration_minutes": 13,
+              "stage": "synthesis_and_application",
+              "transition_to_next": "Sequence complete. Review your synthesis and prepare for assessment."
+            }
+          ],
+          "total_duration_minutes": 60,
+          "navigation_guidance": {
+            "progression_model": "build_from_foundational_understanding_to_integrated_application",
+            "completion_rule": "Complete activities in order before attempting assessment items.",
+            "study_flow": [
+              "Read and understand concepts",
+              "Observe worked examples",
+              "Complete guided analysis tasks",
+              "Apply concepts independently",
+              "Review consolidation summary",
+              "Attempt assessment"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

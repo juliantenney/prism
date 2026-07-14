@@ -484,3 +484,26 @@ test("Copilot-style bad shell fails validateEpisodePlanOrPageShellCapture", () =
   assert.equal(check.ok, false);
   assert.ok(check.errors.length >= 3);
 });
+
+test("alignEpisodePlansActivityIds recovers missing plan activity_id from activities[]", () => {
+  const shell = createShellFromLo(SAMPLE_LO);
+  shell.episode_plans.forEach((row) => {
+    delete row.activity_id;
+  });
+  const before = shellCreate.validatePageShellAgainstVNextSchema(shell);
+  assert.equal(before.ok, false);
+  assert.ok(before.errors.some((e) => /activity_id required/i.test(e)));
+  assert.equal(shellCreate.alignEpisodePlansActivityIds(shell), true);
+  shell.episode_plans.forEach((row, index) => {
+    assert.equal(row.activity_id, shell.activities[index].activity_id);
+  });
+  const after = shellCreate.validatePageShellAgainstVNextSchema(shell);
+  assert.equal(after.ok, true, after.errors && after.errors.join("; "));
+});
+
+test("canonical shell snippet requires episode_plans activity_id", () => {
+  const text = shellCreate.buildCanonicalShellShapeSnippet();
+  assert.match(text, /"episode_plans":\s*\[/);
+  assert.match(text, /every episode_plans\[\] row must include activity_id/i);
+  assert.match(text, /episode_plans\[\] rows without activity_id/i);
+});

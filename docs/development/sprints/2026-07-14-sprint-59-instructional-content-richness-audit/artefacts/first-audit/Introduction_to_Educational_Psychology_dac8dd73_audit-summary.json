@@ -1,0 +1,453 @@
+{
+  "name": "Introduction to Educational Psychology",
+  "id": "dac8dd73-50ff-4abc-b64a-d7547008d191",
+  "steps": [
+    {
+      "id": "7d5df7f5-cb16-4c52-981f-b53a24ad7085",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "19d30115-f7db-4547-9f7d-2f6619ebac8c",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "5ce1e085-67db-4859-aa5b-776ab6b7bab7",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "ffdc2fbe-14a3-4c69-b416-b49683b5620d",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 6220
+    },
+    {
+      "id": "8cd88a1a-2768-47f2-bae8-18ab019656d1",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 15158
+    },
+    {
+      "id": "fc9cedd0-64df-4db3-afd9-c46fce7a0cff",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 12532
+    },
+    {
+      "id": "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 5221
+    },
+    {
+      "id": "26d14fd3-ad67-4520-be3e-75dbfb209ed1",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 2230
+    },
+    {
+      "id": "2b3633eb-5384-4879-80ba-0f5cf166b9d1",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 2230
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "ffdc2fbe-14a3-4c69-b416-b49683b5620d",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "8cd88a1a-2768-47f2-bae8-18ab019656d1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "delivery_notes",
+        "outcome_alignment",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "1. Read the introductory explanation.\n2. Study the worked example showing how an educational issue can be examined using evidence.\n3. Review the sample response.\n4. Create your own definition of educational psychology.\n5. Identify two ways it can inform practice.\n6. Complete the self-check checklist and revise your response if required.",
+          "expected_output": "Produce a concise explanation that accurately defines educational psychology and identifies at least two evidence-informed applications. Strong responses connect research evidence to educational decision-making and use terminology consistently.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 80
+        },
+        {
+          "id": "A2",
+          "learner_task": "1. Read the comparison overview.\n2. Study the worked analytic example.\n3. Review the classroom scenarios.\n4. Complete the comparison table.\n5. Analyse which theory is most visible in each scenario and justify your judgement.\n6. Use the checklist to review your analysis.",
+          "expected_output": "Complete a comparative analysis that accurately distinguishes behaviourism, cognitivism and constructivism. High-quality responses justify classifications using features of each theory and explain reasoning rather than simply naming theories.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 71
+        },
+        {
+          "id": "A3",
+          "learner_task": "1. Read the explanation of memory systems.\n2. Review the unordered process cards.\n3. Sequence the stages of information processing.\n4. Explain the role of retrieval practice and spaced practice.\n5. Check your sequence and explanations against the verification criteria.",
+          "expected_output": "Produce a correctly sequenced explanation of the learning process and a clear account of how retrieval and spaced practice support long-term retention. Explanations should accurately connect cognitive processes.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 68
+        },
+        {
+          "id": "A4",
+          "learner_task": "1. Read the motivation overview.\n2. Review the learner cases.\n3. Compare examples of intrinsic and extrinsic motivation.\n4. Analyse the role of self-efficacy in each case.\n5. Complete the analysis table and self-check.",
+          "expected_output": "Generate a justified comparison of intrinsic and extrinsic motivation and explain how self-efficacy influences engagement. Strong responses use evidence from cases and identify relationships between motivation and persistence.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 62
+        },
+        {
+          "id": "A5",
+          "learner_task": "1. Review the classroom scenario.\n2. Study the modelled application example.\n3. Complete the planning template.\n4. Recommend inclusive and evidence-informed actions.\n5. Write a short synthesis explaining your reasoning.\n6. Complete the verification checklist.\n7. Read the consolidation summary and identify three key takeaways.",
+          "expected_output": "Produce a short evidence-informed action plan that identifies learner needs, proposes inclusive support strategies and justifies decisions using concepts from educational psychology. High-quality responses integrate multiple concepts rather than discussing them separately.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 77
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "fc9cedd0-64df-4db3-afd9-c46fce7a0cff",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Introduction to Educational Psychology",
+              "bodyWords": 74,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Example: Using Evidence to Address Low Participation",
+              "bodyWords": 73,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample Response",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "checklist",
+              "title": "Self-Check Checklist",
+              "bodyWords": 44,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Comparing Learning Theories",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "worked_example",
+              "title": "Worked Analytic Pass",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "scenario",
+              "title": "Classroom Cases",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "comparison_table",
+              "title": "Learning Theory Comparison Table",
+              "bodyWords": 57,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M5",
+              "type": "checklist",
+              "title": "Analysis Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "text",
+              "title": "Memory and Learning",
+              "bodyWords": 37,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "task_cards",
+              "title": "Unordered Process Cards",
+              "bodyWords": 36,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "reference_table",
+              "title": "Learning Process Table",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "checklist",
+              "title": "Verification Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "text",
+              "title": "Motivation and Self-Efficacy",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "scenario",
+              "title": "Learner Profiles",
+              "bodyWords": 28,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "analysis_table",
+              "title": "Motivation Analysis Table",
+              "bodyWords": 53,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "checklist",
+              "title": "Review Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 6,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "scenario",
+              "title": "Inclusive Classroom Scenario",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "worked_example",
+              "title": "Modelled Application",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "planning_table",
+              "title": "Action Planning Table",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 26,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "checklist",
+              "title": "Action Plan Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "consolidation_summary",
+              "title": "Key Ideas to Remember",
+              "bodyWords": 69,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 23,
+        "thinMats": 23,
+        "scenarios": 3
+      }
+    },
+    "ASSESS_ITEMS": {
+      "stepId": "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "assessment_check"
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "type": "single_answer_mcq",
+          "stemWords": 6,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which statement best describes educational psychology?"
+        },
+        {
+          "id": "Q2",
+          "type": "single_answer_mcq",
+          "stemWords": 25,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A teacher encourages learners to investigate a real-world problem, discuss ideas with peers, and develop their own conclusions. Which learning theory "
+        },
+        {
+          "id": "Q3",
+          "type": "single_answer_mcq",
+          "stemWords": 13,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "According to the learning materials, what must occur before information can be remembered?"
+        },
+        {
+          "id": "Q4",
+          "type": "single_answer_mcq",
+          "stemWords": 25,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A learner continues working on a difficult project because they enjoy the challenge and are confident they can improve. Which combination best describ"
+        },
+        {
+          "id": "Q5",
+          "type": "single_answer_mcq",
+          "stemWords": 12,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which action best reflects an evidence-informed and inclusive response to learner differences?"
+        }
+      ]
+    },
+    "LS": {
+      "stepId": "26d14fd3-ad67-4520-be3e-75dbfb209ed1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "learningSequence": {
+        "keys": [
+          "sequence_type",
+          "ordered_activity_ids",
+          "timeline",
+          "total_duration_minutes",
+          "navigation_guidance"
+        ],
+        "text": "{\"sequence_type\":\"self_directed\",\"ordered_activity_ids\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"],\"timeline\":[{\"activity_id\":\"A1\",\"sequence_position\":1,\"duration_minutes\":10,\"stage\":\"foundation\",\"transition_to_next\":\"Use your understanding of educational psychology to examine different theories of learning.\"},{\"activity_id\":\"A2\",\"sequence_position\":2,\"duration_minutes\":15,\"stage\":\"conceptual_analysis\",\"transition_to_next\":\"Having compared learning theories, explore the cognitive processes that support learning"
+      }
+    },
+    "DP": {
+      "stepId": "2b3633eb-5384-4879-80ba-0f5cf166b9d1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "pageSynthesis": null,
+      "keys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ]
+    }
+  }
+}

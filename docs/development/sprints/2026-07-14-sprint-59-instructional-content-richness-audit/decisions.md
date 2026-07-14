@@ -1,0 +1,71 @@
+# Sprint 59 — Decision Records
+
+**Updated:** 2026-07-14
+
+---
+
+## S59-D01 — Remain in Sprint 59 (no Sprint 60)
+
+**Decision:** Continue Instructional Archetype Framework work inside Sprint 59. Do not create a Sprint 60 folder from this investigation alone.
+
+**Rationale:** Investigation is continuous from richness audit → depth iterations → archetype root-cause. Splitting mid-stream would fragment evidence and handoff.
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D02 — Primary explanation is archetype support asymmetry
+
+**Decision:** Accept instructional-archetype support differences as the **primary** explanation of quality variation (heteroscedasticity vs enzymes). Accept domain exemplar bias as **secondary**. Reject biology-specific routing / domain GAM path divergence (no evidence).
+
+**Evidence:** [instructional-archetype-audit.md](instructional-archetype-audit.md)
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D03 — Material Type ≠ Instructional Archetype
+
+**Decision:** Treat material type as presentation format and instructional archetype as pedagogical function. Contracts and backlog must address both, but must not conflate them.
+
+**Implications:** Improving only `text` / `worked_example` wording without archetype packages will under-serve mechanism and process teaching.
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D04 — Priority 1 teaching archetypes
+
+**Decision:** Start framework implementation with:
+
+1. `mechanism_explanation`  
+2. `process_walkthrough`  
+3. `mental_model_building`  
+
+Priority 2: `concept_exposition`, `recommendation`, `modelling_note` instructional contracts.
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D05 — Preserve Evaluate / diagnostic strength
+
+**Decision:** Do not weaken SP-02..07, Evaluate PRES density, verification, or transfer support while adding teaching archetypes. Retain Iterations 4–7 anti-gaming and anti-exemplar-leakage rules.
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D06 — Scope evolution (prompts allowed after first audit)
+
+**Decision:** Original diagnostic non-goal (“no prompt changes”) is superseded for **approved** Sprint 59 Iterations 1–7 and for subsequent archetype-package work. Renderer redesign and Sprint 58 architecture reopen remain out of scope.
+
+**Date:** 2026-07-14
+
+---
+
+## S59-D07 — Soft validators until packages defined
+
+**Decision:** Do not ship hard body↔mechanism capture validators until archetype packages define purpose, components, criteria, and validation strategy.
+
+**Date:** 2026-07-14

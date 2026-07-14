@@ -1,0 +1,1308 @@
+﻿
+========== Introduction to Educational Psychology ==========
+goal: Create a 60 minute self study resource for undergraduate education students about Educational Psychology. Include a numb
+audience: Undergraduate Education Students
+flags: { pageEnrichmentV2: true, partialPageOutputs: true }
+{
+  "name": "Introduction to Educational Psychology",
+  "id": "dac8dd73-50ff-4abc-b64a-d7547008d191",
+  "steps": [
+    {
+      "id": "7d5df7f5-cb16-4c52-981f-b53a24ad7085",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "19d30115-f7db-4547-9f7d-2f6619ebac8c",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "5ce1e085-67db-4859-aa5b-776ab6b7bab7",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "ffdc2fbe-14a3-4c69-b416-b49683b5620d",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 6220
+    },
+    {
+      "id": "8cd88a1a-2768-47f2-bae8-18ab019656d1",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 15158
+    },
+    {
+      "id": "fc9cedd0-64df-4db3-afd9-c46fce7a0cff",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 12532
+    },
+    {
+      "id": "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 5221
+    },
+    {
+      "id": "26d14fd3-ad67-4520-be3e-75dbfb209ed1",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 2230
+    },
+    {
+      "id": "2b3633eb-5384-4879-80ba-0f5cf166b9d1",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 2230
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "ffdc2fbe-14a3-4c69-b416-b49683b5620d",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "8cd88a1a-2768-47f2-bae8-18ab019656d1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "delivery_notes",
+        "outcome_alignment",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "1. Read the introductory explanation.\n2. Study the worked example showing how an educational issue can be examined using evidence.\n3. Review the sample response.\n4. Create your own definition of educational psychology.\n5. Identify two ways it can inform practice.\n6. Complete the self-check checklist and revise your response if required.",
+          "expected_output": "Produce a concise explanation that accurately defines educational psychology and identifies at least two evidence-informed applications. Strong responses connect research evidence to educational decision-making and use terminology consistently.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 80
+        },
+        {
+          "id": "A2",
+          "learner_task": "1. Read the comparison overview.\n2. Study the worked analytic example.\n3. Review the classroom scenarios.\n4. Complete the comparison table.\n5. Analyse which theory is most visible in each scenario and justify your judgement.\n6. Use the checklist to review your analysis.",
+          "expected_output": "Complete a comparative analysis that accurately distinguishes behaviourism, cognitivism and constructivism. High-quality responses justify classifications using features of each theory and explain reasoning rather than simply naming theories.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 71
+        },
+        {
+          "id": "A3",
+          "learner_task": "1. Read the explanation of memory systems.\n2. Review the unordered process cards.\n3. Sequence the stages of information processing.\n4. Explain the role of retrieval practice and spaced practice.\n5. Check your sequence and explanations against the verification criteria.",
+          "expected_output": "Produce a correctly sequenced explanation of the learning process and a clear account of how retrieval and spaced practice support long-term retention. Explanations should accurately connect cognitive processes.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 68
+        },
+        {
+          "id": "A4",
+          "learner_task": "1. Read the motivation overview.\n2. Review the learner cases.\n3. Compare examples of intrinsic and extrinsic motivation.\n4. Analyse the role of self-efficacy in each case.\n5. Complete the analysis table and self-check.",
+          "expected_output": "Generate a justified comparison of intrinsic and extrinsic motivation and explain how self-efficacy influences engagement. Strong responses use evidence from cases and identify relationships between motivation and persistence.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 62
+        },
+        {
+          "id": "A5",
+          "learner_task": "1. Review the classroom scenario.\n2. Study the modelled application example.\n3. Complete the planning template.\n4. Recommend inclusive and evidence-informed actions.\n5. Write a short synthesis explaining your reasoning.\n6. Complete the verification checklist.\n7. Read the consolidation summary and identify three key takeaways.",
+          "expected_output": "Produce a short evidence-informed action plan that identifies learner needs, proposes inclusive support strategies and justifies decisions using concepts from educational psychology. High-quality responses integrate multiple concepts rather than discussing them separately.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 77
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "fc9cedd0-64df-4db3-afd9-c46fce7a0cff",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Introduction to Educational Psychology",
+              "bodyWords": 74,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Example: Using Evidence to Address Low Participation",
+              "bodyWords": 73,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample Response",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "checklist",
+              "title": "Self-Check Checklist",
+              "bodyWords": 44,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Comparing Learning Theories",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "worked_example",
+              "title": "Worked Analytic Pass",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "scenario",
+              "title": "Classroom Cases",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "comparison_table",
+              "title": "Learning Theory Comparison Table",
+              "bodyWords": 57,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M5",
+              "type": "checklist",
+              "title": "Analysis Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "text",
+              "title": "Memory and Learning",
+              "bodyWords": 37,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "task_cards",
+              "title": "Unordered Process Cards",
+              "bodyWords": 36,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "reference_table",
+              "title": "Learning Process Table",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "checklist",
+              "title": "Verification Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "text",
+              "title": "Motivation and Self-Efficacy",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "scenario",
+              "title": "Learner Profiles",
+              "bodyWords": 28,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "analysis_table",
+              "title": "Motivation Analysis Table",
+              "bodyWords": 53,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "checklist",
+              "title": "Review Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 6,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "scenario",
+              "title": "Inclusive Classroom Scenario",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "worked_example",
+              "title": "Modelled Application",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "planning_table",
+              "title": "Action Planning Table",
+              "bodyWords": 31,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 26,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "checklist",
+              "title": "Action Plan Checklist",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "consolidation_summary",
+              "title": "Key Ideas to Remember",
+              "bodyWords": 69,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 23,
+        "thinMats": 23,
+        "scenarios": 3
+      }
+    },
+    "ASSESS_ITEMS": {
+      "stepId": "31323a6a-62c4-4229-8d6a-7b6d0b1d31fd",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "assessment_check"
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "type": "single_answer_mcq",
+          "stemWords": 6,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which statement best describes educational psychology?"
+        },
+        {
+          "id": "Q2",
+          "type": "single_answer_mcq",
+          "stemWords": 25,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A teacher encourages learners to investigate a real-world problem, discuss ideas with peers, and develop their own conclusions. Which learning theory "
+        },
+        {
+          "id": "Q3",
+          "type": "single_answer_mcq",
+          "stemWords": 13,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "According to the learning materials, what must occur before information can be remembered?"
+        },
+        {
+          "id": "Q4",
+          "type": "single_answer_mcq",
+          "stemWords": 25,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A learner continues working on a difficult project because they enjoy the challenge and are confident they can improve. Which combination best describ"
+        },
+        {
+          "id": "Q5",
+          "type": "single_answer_mcq",
+          "stemWords": 12,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which action best reflects an evidence-informed and inclusive response to learner differences?"
+        }
+      ]
+    },
+    "LS": {
+      "stepId": "26d14fd3-ad67-4520-be3e-75dbfb209ed1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "learningSequence": {
+        "keys": [
+          "sequence_type",
+          "ordered_activity_ids",
+          "timeline",
+          "total_duration_minutes",
+          "navigation_guidance"
+        ],
+        "text": "{\"sequence_type\":\"self_directed\",\"ordered_activity_ids\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"],\"timeline\":[{\"activity_id\":\"A1\",\"sequence_position\":1,\"duration_minutes\":10,\"stage\":\"foundation\",\"transition_to_next\":\"Use your understanding of educational psychology to examine different theories of learning.\"},{\"activity_id\":\"A2\",\"sequence_position\":2,\"duration_minutes\":15,\"stage\":\"conceptual_analysis\",\"transition_to_next\":\"Having compared learning theories, explore the cognitive processes that support learning"
+      }
+    },
+    "DP": {
+      "stepId": "2b363
+
+========== WasMarxRight ==========
+goal: Create a 60 minute self study resource for undergraduate students on the topic 'Was Marx Right?'. Include a number of sh
+audience: undergraduate students
+flags: { pageEnrichmentV2: true, partialPageOutputs: true }
+{
+  "name": "WasMarxRight",
+  "id": "ba3f2a76-b12c-45f5-b99e-f14558023681",
+  "steps": [
+    {
+      "id": "7033652f-c04a-441a-b721-9e5e17d71c9b",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "3f10f01f-ba63-41a0-8a58-d5c0d3a90472",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "d6035725-1102-4fbe-bd39-6300f6b52f05",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "52a12d2a-bd22-4767-a78e-76103028c9f0",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 5955
+    },
+    {
+      "id": "2c043761-556e-4f11-8ad6-ecd87d6290b5",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 16103
+    },
+    {
+      "id": "c03347ec-701c-4dd6-872a-dd8f28cfb642",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 11559
+    },
+    {
+      "id": "afddfbfa-4601-48ca-a687-68a0ac6130eb",
+      "title": "Generate Assessment Items",
+      "role": "ASSESS_ITEMS",
+      "capturePresent": true,
+      "captureChars": 6302
+    },
+    {
+      "id": "2a544cc0-916c-4bde-9888-d31fa2fac76f",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 1426
+    },
+    {
+      "id": "7675f2d6-1cba-4184-8fa2-b01a31734263",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 4559
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "52a12d2a-bd22-4767-a78e-76103028c9f0",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "2c043761-556e-4f11-8ad6-ecd87d6290b5",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities",
+        "outcome_alignment",
+        "delivery_notes"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "1. Read the explanatory text on the Industrial Revolution and Marx's historical context.\n2. Study the worked example showing how historical evidence can be linked to Marx's critique.\n3. Review the sample output and identify the features that make it effective.\n4. Complete the prompt set by matching historical developments to their possible social consequences.\n5. Write a short explanation describing three historical conditions that influenced Marx's thinking.\n6. Complete the self-check checklist and revise your explanation if required.",
+          "expected_output": "A concise explanation that identifies at least three relevant historical conditions and clearly links each condition to Marx's critique of capitalism. Strong responses use explicit cause-and-effect reasoning and avoid listing facts without explanation.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 112
+        },
+        {
+          "id": "A2",
+          "learner_task": "1. Read the concept explanation material.\n2. Review the worked example connecting multiple concepts into a single explanation.\n3. Complete the comparison table by explaining relationships between paired concepts.\n4. Use the completed table to write a brief account of how Marx believed capitalism operates.\n5. Verify your work using the checklist.",
+          "expected_output": "A connected explanation demonstrating accurate use of the key concepts and clear relationships between them. Strong work explains how concepts interact rather than treating them as separate definitions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 80
+        },
+        {
+          "id": "A3",
+          "learner_task": "1. Study the worked example showing how a prediction can be applied to a modern case.\n2. Read the scenario material.\n3. Complete the planning table linking aspects of the scenario to Marx's predictions.\n4. Summarise which predictions appear applicable and which appear less applicable.\n5. Reflect on any uncertainties in your analysis.",
+          "expected_output": "A reasoned summary that accurately applies Marx's predictions to a modern situation and explains both supporting and limiting factors. Strong responses distinguish evidence from opinion.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 78
+        },
+        {
+          "id": "A4",
+          "learner_task": "1. Read the analytical guidance and worked analytic pass.\n2. Study the two scenarios presenting contrasting perspectives.\n3. Complete the analysis table using the modelled approach.\n4. Use the comparison table to weigh competing arguments.\n5. Complete the verification checklist and strengthen any weak comparisons.",
+          "expected_output": "A balanced comparison identifying strengths and limitations of competing arguments. Strong responses evaluate evidence, explain contrasts and avoid one-sided conclusions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 65
+        },
+        {
+          "id": "A5",
+          "learner_task": "1. Study the evaluation criteria and worked judgement example.\n2. Examine the contrasting scenarios and viewpoints.\n3. Complete the guided decision table.\n4. Use the independent judgement template to write a short evaluative response.\n5. Check your work using the verification checklist.\n6. Complete the transfer prompt.\n7. Read the consolidation summary to reinforce the key takeaways from the session.",
+          "expected_output": "A justified evaluative response that reaches a clear judgement while acknowledging counterarguments. Strong answers use evidence from multiple parts of the session, apply explicit criteria and explain the reasoning behind the final conclusion.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 93
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "c03347ec-701c-4dd6-872a-dd8f28cfb642",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Industrial Revolution and Marx",
+              "bodyWords": 64,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Historical Explanation",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample Strong Response",
+              "bodyWords": 24,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "prompt_set",
+              "title": "Guided Prompts",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M5",
+              "type": "checklist",
+              "title": "Self-Check",
+              "bodyWords": 19,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Core Marxist Concepts",
+              "bodyWords": 37,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "worked_example",
+              "title": "Connecting Concepts",
+              "bodyWords": 22,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "comparison_table",
+              "title": "Concept Relationship Table",
+              "bodyWords": 50,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "checklist",
+              "title": "Concept Accuracy Check",
+              "bodyWords": 13,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "worked_example",
+              "title": "Applying a Prediction",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "scenario",
+              "title": "Contemporary Cases",
+              "bodyWords": 23,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "planning_table",
+              "title": "Prediction Application Table",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "prompt_set",
+              "title": "Reflection Prompts",
+              "bodyWords": 19,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "modelling_note",
+              "title": "Analytical Walkthrough",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "scenario",
+              "title": "Contrasting Cases",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "analysis_table",
+              "title": "Analysis Table",
+              "bodyWords": 39,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "comparison_table",
+              "title": "Comparative Judgement Table",
+              "bodyWords": 35,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M5",
+              "type": "checklist",
+              "title": "Analysis Verification",
+              "bodyWords": 13,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 8,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "text",
+              "title": "Evaluation Criteria",
+              "bodyWords": 21,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "scenario",
+              "title": "Evaluation Cases",
+              "bodyWords": 18,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "sample_output",
+              "title": "Weak vs Strong Judgement",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "decision_table",
+              "title": "Guided Decision Table",
+              "bodyWords": 36,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "template",
+              "title": "Evaluation Response Template",
+              "bodyWords": 7,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "checklist",
+              "title": "Evaluation Checklist",
+              "bodyWords": 13,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M7",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 16,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M8",
+              "type": "consolidation_summary",
+              "title": "Key Takeaways",
+              "bodyWords": 52,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 26,
+        "thinMats": 26,
+        "scenarios": 3
+      }
+    },
+    "ASSESS_ITEMS": {
+      "stepId": "afddfbfa-4601-48ca-a687-68a0ac6130eb",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "assessment_check"
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "type": "single_answer_mcq",
+          "stemWords": 18,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which development during the Industrial Revolution most directly contributed to Marx's critique of capitalism according to the session?"
+        },
+        {
+          "id": "Q2",
+          "type": "single_answer_mcq",
+          "stemWords": 14,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "In Marx's analysis, what is the primary distinction between the bourgeoisie and the proletariat?"
+        },
+        {
+          "id": "Q3",
+          "type": "single_answer_mcq",
+          "stemWords": 22,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "A modern industry becomes dominated by a small number of extremely powerful firms. Which Marxist prediction does this scenario most directly illustrat"
+        },
+        {
+          "id": "Q4",
+          "type": "single_answer_mcq",
+          "stemWords": 21,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which argument from the session is most commonly used to challenge Marx's prediction that capitalism would inevitably lead to revolutionary transforma"
+        },
+        {
+          "id": "Q5",
+          "type": "single_answer_mcq",
+          "stemWords": 11,
+          "hasFeedback": false,
+          "optionCount": 4,
+          "stemPreview": "Which conclusion best reflects the balanced judgement encouraged throughout the session?"
+        }
+      ]
+    },
+    "LS": {
+      "stepId": "2a544cc0-
+
+========== Was Marx Right? Test ==========
+goal: Create a 60 minute workshop on the topic 'Was Marx Right?'. Include a number of short activities
+audience: undergraduate students
+flags: { pageEnrichmentV2: true, partialPageOutputs: true }
+{
+  "name": "Was Marx Right? Test",
+  "id": "04b6a3c2-6ada-4af3-8d8d-7c3d1d5b2ff7",
+  "steps": [
+    {
+      "id": "8359ce31-115e-4fd9-bf5b-7f98b0012ddf",
+      "title": "Generate Learning Content",
+      "role": "LC",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "43ee0f28-c6bd-47ce-8a69-b3f1223c7a2d",
+      "title": "Model Knowledge",
+      "role": "KM",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "fd9ac3d1-5281-4e97-a7d3-5907e2a16019",
+      "title": "Define Learning Outcomes",
+      "role": "LO",
+      "capturePresent": false,
+      "captureChars": 0
+    },
+    {
+      "id": "1e5457ee-3b31-4083-a1b0-edd8b667cfb9",
+      "title": "Design Episode Plan",
+      "role": "EP",
+      "capturePresent": true,
+      "captureChars": 6520
+    },
+    {
+      "id": "052c5e08-206f-47fd-ae18-c6fc481d3e39",
+      "title": "Design Learning Activities",
+      "role": "DLA",
+      "capturePresent": true,
+      "captureChars": 14623
+    },
+    {
+      "id": "2e505ffc-d4ff-4064-95d6-cb5802e5e62e",
+      "title": "Generate Activity Materials",
+      "role": "GAM",
+      "capturePresent": true,
+      "captureChars": 14506
+    },
+    {
+      "id": "ada87548-f2b5-494f-bec7-62ea7b1c8b7d",
+      "title": "Construct Learning Sequence",
+      "role": "LS",
+      "capturePresent": true,
+      "captureChars": 1122
+    },
+    {
+      "id": "2fc7ec3e-45ba-4a92-af84-e522ce0cd5e1",
+      "title": "Design Page",
+      "role": "DP",
+      "capturePresent": true,
+      "captureChars": 3678
+    }
+  ],
+  "byRole": {
+    "EP": {
+      "stepId": "1e5457ee-3b31-4083-a1b0-edd8b667cfb9",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ],
+      "shellKeys": [
+        "artifact_type",
+        "schema_version",
+        "title",
+        "audience",
+        "page_profile",
+        "assembly_state",
+        "page_synthesis",
+        "learning_outcomes",
+        "activities",
+        "episode_plans",
+        "source_artefacts",
+        "generation_notes"
+      ]
+    },
+    "DLA": {
+      "stepId": "052c5e08-206f-47fd-ae18-c6fc481d3e39",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "delivery_notes",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "learner_task": "Study the explanatory text and worked example showing how Marx described capitalism. Identify the roles of the bourgeoisie, proletariat, means of production, labour, and profit. Then complete the classification task by matching concepts to their definitions and relationships. Finish by using the checklist to verify your understanding and revise any uncertain responses.",
+          "expected_output": "Produce accurate concept classifications and a concise written explanation showing how private ownership, labour, and profit connect within Marx's analysis. Strong responses correctly use key terminology and explain relationships rather than listing isolated definitions.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 86
+        },
+        {
+          "id": "A2",
+          "learner_task": "Read the explanatory material and compare the concepts of class struggle, surplus value, and exploitation. Complete the comparison table to identify how each concept contributes to Marx's critique. Use the prompts to connect the concepts into a single explanatory chain and then verify your explanation using the checklist.",
+          "expected_output": "Produce a coherent explanation showing how surplus value, exploitation, and class conflict are connected in Marx's critique. Strong responses explain causal links and use concepts together rather than discussing each separately.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 79
+        },
+        {
+          "id": "A3",
+          "learner_task": "Study the worked example showing how an analyst applies the concept of alienation to a modern workplace. Next, examine the provided workplace scenarios and decide whether Marx would describe each as alienating. Record your reasoning and compare cases before completing the self-check.",
+          "expected_output": "Produce justified judgements about contemporary work situations using the concept of alienation. Strong responses explicitly connect workplace features to elements of alienation and acknowledge possible alternative interpretations.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 69
+        },
+        {
+          "id": "A4",
+          "learner_task": "Review the worked analytical pass demonstrating how evidence can be interpreted in relation to a prediction. Use the analysis table to examine evidence connected to inequality, wealth concentration, economic crises, and social change. Identify patterns, similarities, and contradictions before writing an analytical synthesis.",
+          "expected_output": "Produce a balanced analytical summary comparing Marx's predictions with available evidence. Strong responses identify patterns, explain their significance, and distinguish between support, partial support, and challenge.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 69
+        },
+        {
+          "id": "A5",
+          "learner_task": "Study the evaluation criteria, scenario perspectives, and worked judgement example. Complete the decision table to weigh evidence for and against Marx's relevance today. Then produce an independent evaluative memo answering the question 'Was Marx right?' Support your judgement with evidence, explain trade-offs, complete the verification checklist, and finish by completing the transfer task and reading the consolidation summary.",
+          "expected_output": "Produce a concise evaluative memo that reaches a clear judgement on Marx's contemporary relevance. Strong responses apply criteria consistently, weigh competing evidence, acknowledge limitations, and justify a defensible conclusion rather than presenting a one-sided argument.",
+          "materialCount": 0,
+          "materials": [],
+          "instructionWords": 93
+        }
+      ]
+    },
+    "GAM": {
+      "stepId": "2e505ffc-d4ff-4064-95d6-cb5802e5e62e",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "activities"
+      ],
+      "activities": [
+        {
+          "id": "A1",
+          "materialCount": 5,
+          "materials": [
+            {
+              "id": "A1-M1",
+              "type": "text",
+              "title": "Capitalism in Marx's Analysis",
+              "bodyWords": 122,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M2",
+              "type": "worked_example",
+              "title": "Worked Example: Identifying Capitalist Relationships",
+              "bodyWords": 108,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M3",
+              "type": "sample_output",
+              "title": "Sample High-Quality Explanation",
+              "bodyWords": 48,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M4",
+              "type": "classification_table",
+              "title": "Capitalism Concept Classification Table",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A1-M5",
+              "type": "checklist",
+              "title": "Understanding Check",
+              "bodyWords": 45,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A2",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A2-M1",
+              "type": "text",
+              "title": "Class Struggle, Surplus Value and Exploitation",
+              "bodyWords": 81,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M2",
+              "type": "comparison_table",
+              "title": "Comparison Table",
+              "bodyWords": 38,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M3",
+              "type": "prompt_set",
+              "title": "Reasoning Prompts",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A2-M4",
+              "type": "checklist",
+              "title": "Explanation Quality Check",
+              "bodyWords": 37,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A3",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A3-M1",
+              "type": "worked_example",
+              "title": "Worked Example: Applying Alienation",
+              "bodyWords": 58,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M2",
+              "type": "scenario",
+              "title": "Workplace Scenarios",
+              "bodyWords": 44,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M3",
+              "type": "analysis_table",
+              "title": "Alienation Analysis Table",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A3-M4",
+              "type": "checklist",
+              "title": "Application Checklist",
+              "bodyWords": 36,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A4",
+          "materialCount": 4,
+          "materials": [
+            {
+              "id": "A4-M1",
+              "type": "worked_example",
+              "title": "Worked Analytical Pass",
+              "bodyWords": 47,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M2",
+              "type": "analysis_table",
+              "title": "Prediction Analysis Table",
+              "bodyWords": 53,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M3",
+              "type": "reference_table",
+              "title": "Evidence Reference Sheet",
+              "bodyWords": 40,
+              "hasBody": true
+            },
+            {
+              "id": "A4-M4",
+              "type": "checklist",
+              "title": "Analysis Quality Checklist",
+              "bodyWords": 36,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        },
+        {
+          "id": "A5",
+          "materialCount": 8,
+          "materials": [
+            {
+              "id": "A5-M1",
+              "type": "text",
+              "title": "Criteria for Judging Marx's Relevance",
+              "bodyWords": 34,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M2",
+              "type": "scenario",
+              "title": "Contrasting Perspectives",
+              "bodyWords": 33,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M3",
+              "type": "worked_example",
+              "title": "Weak vs Strong Judgement",
+              "bodyWords": 42,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M4",
+              "type": "decision_table",
+              "title": "Evaluation Decision Table",
+              "bodyWords": 46,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M5",
+              "type": "template",
+              "title": "Evaluative Memo Template",
+              "bodyWords": 17,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M6",
+              "type": "checklist",
+              "title": "Evaluation Checklist",
+              "bodyWords": 29,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M7",
+              "type": "transfer_prompt",
+              "title": "Transfer Challenge",
+              "bodyWords": 27,
+              "hasBody": true
+            },
+            {
+              "id": "A5-M8",
+              "type": "consolidation_summary",
+              "title": "Workshop Consolidation",
+              "bodyWords": 86,
+              "hasBody": true
+            }
+          ],
+          "instructionWords": 0
+        }
+      ],
+      "materialStats": {
+        "totalMats": 25,
+        "thinMats": 21,
+        "scenarios": 2
+      }
+    },
+    "LS": {
+      "stepId": "ada87548-f2b5-494f-bec7-62ea7b1c8b7d",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "learning_sequence"
+      ],
+      "learningSequence": {
+        "keys": [
+          "sequence_type",
+          "ordered_activity_ids",
+          "timeline",
+          "navigation"
+        ],
+        "text": "{\"sequence_type\":\"self_directed_workbook\",\"ordered_activity_ids\":[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"],\"timeline\":[{\"activity_id\":\"A1\",\"sequence_position\":1,\"study_flow\":\"foundation\"},{\"activity_id\":\"A2\",\"sequence_position\":2,\"study_flow\":\"concept_development\"},{\"activity_id\":\"A3\",\"sequence_position\":3,\"study_flow\":\"application\"},{\"activity_id\":\"A4\",\"sequence_position\":4,\"study_flow\":\"analysis\"},{\"activity_id\":\"A5\",\"sequence_position\":5,\"study_flow\":\"evaluation_and_synthesis\"}],\"navigation\":{\"entry_activit"
+      }
+    },
+    "DP": {
+      "stepId": "2fc7ec3e-45ba-4a92-af84-e522ce0cd5e1",
+      "topKeys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ],
+      "pageSynthesis": {
+        "keys": [
+          "knowledge_summary"
+        ],
+        "knowledge_summary_words": 227,
+        "overview_words": 0,
+        "learning_purpose_words": 0,
+        "study_tips_count": 0
+      },
+      "keys": [
+        "artifact_type",
+        "schema_version",
+        "assembly_state",
+        "page_synthesis",
+        "sections"
+      ]
+    }
+  }
+}

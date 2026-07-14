@@ -7,6 +7,7 @@
 - **Sprint:** 58 (**complete** — 2026-07-14)
 - **Type:** Implementation
 - **Predecessor:** Sprint 57A (closed)
+- **Successor:** [Sprint 59 — Instructional Content Richness Audit](../2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) (active diagnostic sprint)
 - **Closure:** [SPRINT-58-CLOSURE.md](SPRINT-58-CLOSURE.md)
 - **New chat entry (historical):** [SPRINT-58-CONTEXT-FOR-NEW-CHAT.md](SPRINT-58-CONTEXT-FOR-NEW-CHAT.md)
 

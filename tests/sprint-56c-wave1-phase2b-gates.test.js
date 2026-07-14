@@ -76,22 +76,22 @@ test("56C W1 P2B: domain §13 surfaces exclude ownership residue", () => {
       assert.doesNotMatch(text, pattern, `unexpected residue ${pattern} in domain surface`);
     }
   }
-  assert.match(factory.defaultPromptNotes, /Transport-first/i);
-  assert.match(factory.defaultPromptNotes, /LD-GUIDED-LEARNING-SCAFFOLD compose preservation/i);
-  assert.match(factory.promptTemplate, /transport slots/i);
+  assert.match(factory.defaultPromptNotes, /page_synthesis\.knowledge_summary \(mandatory\)/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
   assert.match(factory.promptTemplate, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
-  assert.match(factory.defaultPromptNotes, /R-83 readable assembly/i);
-  assert.doesNotMatch(factory.promptTemplate, /Assemble one readable, self-contained page/i);
+  assert.match(factory.promptTemplate, /page_synthesis\.knowledge_summary — mandatory/i);
+  assert.doesNotMatch(factory.promptTemplate, /learning_activities\.content/i);
 });
 
-test("56C W1 P2B: domain §13 retains preservation and transport obligations", () => {
+test("56C W1 P2B: domain §13 retains vNext partial ownership and defers compose to rollback", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
-  assert.match(factory.defaultPromptNotes, /LD-MATERIALS-COPY/i);
-  assert.match(factory.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
-  assert.match(factory.promptTemplate, /never excuse material-body loss/i);
-  assert.match(factory.runnerInstructions.what_to_check, /verbatim materials preservation/i);
-  assert.match(factory.defaultOutputStructure.keys.join(","), /episode_plans/);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT applies only to rollback\/legacy/i);
+  assert.match(factory.defaultPromptNotes, /activities\[\]\.materials\[\] already exist upstream/i);
+  assert.match(factory.promptTemplate, /partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.match(factory.runnerInstructions.what_to_check, /knowledge_summary mandatory/i);
+  assert.match(factory.runnerInstructions.what_to_check, /no activities\[\] regeneration/i);
+  assert.match(factory.defaultOutputStructure.keys.join(","), /page_synthesis/);
+  assert.match(factory.defaultOutputStructure.keys.join(","), /assembly_state/);
 });
 
 test("56C W1 P2B: brevity params not mapped to step_design_page", () => {

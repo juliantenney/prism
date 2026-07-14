@@ -157,16 +157,15 @@ test("56C W2.3C: domain §13 recognises thin bridge as Layer 3 authority", () =>
   );
   const domainText = fs.readFileSync(domainPath, "utf8");
   const section13 = domainText.slice(domainText.indexOf("## 13. Design Page"));
-  assert.match(section13, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT at runtime is the sole Layer 3 authority/i);
-  assert.match(section13, /wrapper-gap fallback for overview\/learning_purpose only when upstream body absent/i);
-  assert.match(section13, /minimal and capped/i);
-  assert.match(section13, /R-40\/R-44\/R-45\/R-47 merged/i);
+  assert.match(section13, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT.*wrapper-gap fallback/i);
+  assert.match(section13, /minimal,? and capped|minimal, capped/i);
+  assert.match(section13, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
   assert.match(section13, /removed authorial\/journey\/rhetoric modules are not current DP authorities/i);
   assert.doesNotMatch(section13, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
   assert.doesNotMatch(section13, /LD-JOURNEY-ASSIMILATION-CONTRACT/i);
 });
 
-test("56C W2.5: domain §13 R-83 delimiter excludes payload optimisation mandate", () => {
+test("56C W2.5: domain §13 excludes legacy full-page compose mandate", () => {
   const domainPath = path.join(
     repoRoot,
     "domains",
@@ -178,15 +177,12 @@ test("56C W2.5: domain §13 R-83 delimiter excludes payload optimisation mandate
   const factoryMatch = section13.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/);
   assert.ok(factoryMatch, "Design Page prompt factory JSON");
   const factory = JSON.parse(factoryMatch[1].trim());
-  assert.match(factory.defaultPromptNotes, /R-83 readable assembly \(guardrail\)/i);
-  assert.match(factory.defaultPromptNotes, /forbids condensation/i);
-  assert.match(factory.runnerInstructions.what_this_step_does, /archival copy-only payloads/i);
-  assert.match(factory.promptTemplate, /READABLE ASSEMBLY \(R-83 guardrail/i);
-  assert.match(factory.promptTemplate, /wrapper\/container structure only/i);
-  assert.match(factory.promptTemplate, /forbids condensation/i);
-  assert.match(factory.promptTemplate, /readability rewriting/i);
-  assert.match(factory.promptTemplate, /self-contained page container/i);
-  assert.doesNotMatch(factory.promptTemplate, /Assemble one readable, self-contained page/i);
+  assert.match(factory.defaultPromptNotes, /page_synthesis on a partial page artefact/i);
+  assert.match(factory.runnerInstructions.what_this_step_does, /page_synthesis on a partial v2 page artefact/i);
+  assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
+  assert.match(factory.promptTemplate, /sections\[\] is optional legacy dual-read/i);
+  assert.doesNotMatch(factory.promptTemplate, /WHOLE-BLOCK MATERIAL EXTRACTION/i);
+  assert.doesNotMatch(factory.promptTemplate, /learning_activities\.content/i);
   assert.doesNotMatch(section13, /### Purpose[\s\S]*?readable page artefact/i);
 });
 

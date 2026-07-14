@@ -72,8 +72,8 @@ function designPageAugmentedPrompt(api) {
 test("56C W1 P3: defaultOutputStructure excludes mandatory VA keys", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const keys = factory.defaultOutputStructure.keys;
-  assert.ok(keys.includes("episode_plans"));
-  assert.ok(keys.includes("source_artefacts"));
+  assert.ok(keys.includes("page_synthesis"));
+  assert.ok(keys.includes("assembly_state"));
   assert.ok(!keys.includes("visual_affordance_schema_version"));
   assert.ok(!keys.includes("activities_visual_review"));
   assert.ok(!keys.includes("visual_affordances"));

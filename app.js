@@ -9371,13 +9371,16 @@
     return [
       "Output contract: return a partial page artefact only (not a full-page replay).",
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "design_page", and assembly_state.enriched_by including "design_page".',
-      "Required payload: page_synthesis and/or sections.",
-      "Knowledge summary is mandatory for learner-facing pages: emit a substantive concept synthesis in page_synthesis.knowledge_summary and mirror it in sections[] with section_id \"knowledge_summary\" when sections[] is present.",
+      "Required payload: page_synthesis object (canonical transport shape).",
+      "Knowledge summary is mandatory: emit a substantive concept synthesis in page_synthesis.knowledge_summary (body + format).",
+      "page_synthesis.overview and page_synthesis.learning_purpose — transport upstream bodies from conversation when present.",
+      "page_synthesis.study_tips — transport upstream closure/debrief bodies only.",
+      "sections[] is optional legacy dual-read mirror only — not required when page_synthesis fields are populated.",
       "Knowledge summary must synthesise core concepts and conceptual relations from upstream artefacts (KM/EP/LS/content), not just repeat learning outcomes.",
       "For Marx/economics concept pages, ensure the knowledge summary explicitly covers: capitalism, bourgeoisie/proletariat, surplus value, historical materialism, class struggle, alienation, and evaluation of evidence for/against Marx.",
       "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
-      "Forbidden: activity/material regeneration, shell fields (title/audience/page_profile/learning_outcomes/episode_plans), learning_sequence regeneration, and full-page replay.",
-      "Do not reconstruct or preserve non-owned stage fields."
+      "Forbidden: activities[] regeneration, activities[].materials[] bodies, shell fields (title/audience/page_profile/learning_outcomes/episode_plans), learning_sequence regeneration, activity_materials chat binding, and full-page replay.",
+      "Do not reconstruct or preserve non–Design-Page stage fields."
     ].join("\n");
   }
 

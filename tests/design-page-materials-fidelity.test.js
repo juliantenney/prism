@@ -236,24 +236,22 @@ test("inflation-style page: rich materials coexist with visual_affordances", () 
   assert.equal(merged.visual_affordances.length, 1);
 });
 
-test("Design Page pack: materials fidelity delegated to compose contract in notes", () => {
+test("Design Page pack: partial contract authoritative; compose rollback-only in notes", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
-  assert.match(factory.defaultPromptNotes, /LD-MATERIALS-COPY/i);
-  assert.match(factory.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
-  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
-  assert.match(factory.promptTemplate, /embedded LD-MATERIALS-COPY and LD-TABLE-FIDELITY/i);
-  assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT applies only to rollback\/legacy/i);
+  assert.match(factory.promptTemplate, /partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.doesNotMatch(factory.promptTemplate, /LD-MATERIALS-COPY AUTHORITATIVE GAM CONTENT BINDING/i);
 });
 
-test("Design Page pack §13 38H-3: table-adjunct fidelity in notes and runtime compose", () => {
+test("Design Page pack §13 38H-3: no table-adjunct materials copy in domain seed", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.defaultPromptNotes, /LD-TABLE-FIDELITY/i);
-  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.doesNotMatch(factory.defaultPromptNotes, /LD-TABLE-FIDELITY preserve roles/i);
+  assert.doesNotMatch(factory.promptTemplate, /embedded LD-MATERIALS-COPY and LD-TABLE-FIDELITY/i);
   assert.doesNotMatch(factory.promptTemplate, /DP-TABLE-ADJ-01/i);
 });
 
-test("38S Phase 2C-a: Design Page pack defers materials rules to runtime compose", () => {
+test("38S Phase 2C-a: Design Page pack excludes legacy materials compose language", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const surfaces = [
     factory.promptTemplate,
@@ -263,18 +261,12 @@ test("38S Phase 2C-a: Design Page pack defers materials rules to runtime compose
   for (const text of surfaces) {
     assert.doesNotMatch(text, /near-verbatim/i, "must not license near-verbatim materials copy");
     assert.doesNotMatch(text, /shorten only clearly non-essential/i, "must not permit materials shortening");
+    assert.doesNotMatch(text, /WHOLE-BLOCK MATERIAL EXTRACTION/i);
+    assert.doesNotMatch(text, /GAM Content:/i);
   }
-  assert.match(factory.promptTemplate, /PRIMARY IDENTITY OF THIS STEP — TRANSPORT, NOT AUTHORING/i);
-  assert.match(factory.promptTemplate, /ARCHIVAL DOES NOT MEAN REFERENCED/i);
-  assert.match(factory.promptTemplate, /WHOLE-BLOCK MATERIAL EXTRACTION/i);
-  assert.match(factory.promptTemplate, /MATERIAL COMPLETENESS CHECK/i);
-  assert.match(factory.promptTemplate, /Do not copy only the first heading/i);
-  assert.match(factory.promptTemplate, /Never emit an incomplete material value/i);
-  assert.match(factory.promptTemplate, /final embedded container, not a manifest/i);
-  assert.match(factory.promptTemplate, /Read-only transport step/i);
-  assert.match(factory.promptTemplate, /archival copy zone/i);
-  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
-  assert.match(factory.promptTemplate, /never excuse material-body loss/i);
+  assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
+  assert.match(factory.promptTemplate, /page_synthesis\.knowledge_summary — mandatory/i);
+  assert.match(factory.promptTemplate, /activities\[\]\.materials\[\] bodies are already hydrated/i);
   assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
   assert.doesNotMatch(factory.promptTemplate, /Inflation is a sustained increase/i);
 });
@@ -306,13 +298,15 @@ test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbi
   assert.match(augmented, /active Copilot chat history is context/i);
 });
 
-test("Design Page learner page_profile does not bias materials summarisation", () => {
+test("Design Page learner page_profile targets page_synthesis wrapper prose", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const learner = factory.userOptions.find((o) => o.id === "page_profile").choices.find(
     (c) => c.value === "learner"
   );
+  assert.match(learner.promptInstruction, /page_synthesis wrapper prose only/i);
   assert.match(learner.promptInstruction, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
-  assert.match(learner.promptInstruction, /never summary-only or placeholder-only materials/i);
+  assert.match(learner.promptInstruction, /knowledge_summary is mandatory/i);
+  assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });
 
 test("56C W1: Design Page runtime augmentation excludes Sprint 38 VA prompt block", () => {

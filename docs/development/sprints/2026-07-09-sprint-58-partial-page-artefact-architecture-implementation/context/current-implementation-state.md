@@ -14,6 +14,7 @@
 | DLA contract | `lib/ld-dla-page-enrich-contract.js` | Partial output contract active |
 | GAM contract | `lib/ld-gam-page-enrich-contract.js` | Partial output contract active |
 | **Design Page partial contract (Phase 0)** | `lib/ld-design-page-partial-contract.js` | Injected on DP when `partialPageOutputs: true`; replaces compose contract in partial mode |
+| **Design Page domain §13 (Phase 1)** | `domain-learning-design-step-patterns.md` §13 | page_synthesis-first seed; compose described as rollback/legacy only |
 | Render normalize | `lib/page-render-normalize.js` | **keep** |
 | v2 prompt assembly | `app.js` | Post-EP partial-mode prompt instructions active |
 | **Partial validation routing** | `app.js` | Step-identity routing via `validatePartialPageCaptureForStep` |
@@ -26,7 +27,7 @@
 | Render assembly hook | `resolvePageForRenderOrAssembly` in `app.js` | Assembles before render in partial mode |
 | Capture storage | `runStepOutput`, `workflowRunCapturedOutputs*` | **keep** |
 | Compose closure | `applyPageCompositionValidationForCapturedPage` | Gated off for partial post-EP captures |
-| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js`, `tests/sprint-58-stabilisation-e2e.test.js`, `tests/sprint-58-phase0-design-page-partial-gates.test.js` | Sprint 58 regression + E2E + Phase 0 gates |
+| Tests | `tests/page-vnext-assemble.test.js`, `tests/page-partial-capture-validate.test.js`, `tests/page-prompt-no-upstream-injection.test.js`, `tests/sprint-58-stabilisation-e2e.test.js`, `tests/sprint-58-phase0-design-page-partial-gates.test.js`, `tests/sprint-58-phase1-design-page-domain-gates.test.js` | Sprint 58 regression + E2E + Phase 0/1 gates |
 
 ---
 

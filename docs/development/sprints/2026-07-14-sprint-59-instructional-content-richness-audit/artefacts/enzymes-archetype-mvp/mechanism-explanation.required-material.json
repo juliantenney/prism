@@ -1,0 +1,16 @@
+{
+  "material_id": "A2-M1",
+  "material_type": "text",
+  "purpose": "Teach how temperature affects enzyme reaction rate through a causal chain.",
+  "specification": "Explain temperature→rate rise then fall with intervening links; natural prose only.",
+  "instructional_archetype": "mechanism_explanation",
+  "archetype_plan": {
+    "start": "temperature increases within and beyond the enzyme's stable range",
+    "outcome": "reaction rate first increases and then decreases",
+    "required_links": [
+      "molecular kinetic energy and collision frequency",
+      "enzyme-substrate complex formation",
+      "disruption of enzyme structure at high temperature"
+    ]
+  }
+}

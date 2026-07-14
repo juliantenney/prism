@@ -24,9 +24,11 @@
 | ---- | ------ |
 | Framework charter + inventory | Done — [instructional-archetype-framework.md](instructional-archetype-framework.md) |
 | Backlog P1/P2 tickets | Done — [backlog.md](backlog.md) |
-| Design P1 packages (mechanism, process, mental-model) | **Next** |
-| Implement P1 generation contracts (prompts/runtime) | Pending design |
-| Acceptance: enzymes-like transfer check | Pending |
+| **MVP routing (Priority 1 only)** | **Done (2026-07-14)** — `lib/ld-instructional-archetype.js`; GAM conditional rules; DLA plan validation; enzymes fixtures under `artefacts/enzymes-archetype-mvp/` |
+| **Manual mechanism transfer opt-in** | **Done** — token `S59_MECHANISM_TEST`; DLA emission block + capture stamp on `A2-M1`; GAM debug via `window.__PRISM_S59_ARCHETYPE_ROUTING_DEBUG`; handoff [artefacts/enzymes-archetype-mvp/MANUAL-MECHANISM-TEST.md](artefacts/enzymes-archetype-mvp/MANUAL-MECHANISM-TEST.md) |
+| Design full P1 packages (purpose…validation strategy) | Next (beyond MVP routing) |
+| Implement fuller P1 generation contracts | Pending package design |
+| Acceptance: enzymes-like transfer check | **Ready to run** with fixtures (manual DLA plan attach) |
 | Design P2 (concept_exposition, recommendation, modelling_note) | After P1 outline |
 | Preserve Evaluate/diagnostic strength regression check | Continuous |
 

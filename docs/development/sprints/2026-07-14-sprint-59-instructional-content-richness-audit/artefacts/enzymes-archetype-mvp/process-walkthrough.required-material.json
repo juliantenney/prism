@@ -1,0 +1,16 @@
+{
+  "material_id": "A4-M1",
+  "material_type": "worked_example",
+  "purpose": "Model expert interpretation of an enzyme reaction-rate investigation.",
+  "specification": "Ordered process walkthrough from condition identification to bounded conclusion.",
+  "instructional_archetype": "process_walkthrough",
+  "archetype_plan": {
+    "process_goal": "interpret an enzyme reaction-rate investigation",
+    "stages": [
+      "identify the manipulated condition and measured outcome",
+      "inspect the pattern across observations",
+      "connect the pattern to enzyme behaviour",
+      "form a bounded conclusion"
+    ]
+  }
+}

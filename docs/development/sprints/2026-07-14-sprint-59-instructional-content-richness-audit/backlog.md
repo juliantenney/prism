@@ -9,6 +9,8 @@
 
 ## Priority 1 — Instructional Archetype Framework (teaching gap)
 
+**MVP status (2026-07-14):** Explicit routing + plan validation shipped in `lib/ld-instructional-archetype.js` (conditional GAM rules; DLA capture validation; enzymes fixtures). Full support packages (purpose…validation strategy) remain open.
+
 ### S59-BL-101 — `mechanism_explanation` support package
 
 - **Finding:** Mechanism teaching under-realises when materials use `text` / generic exposition; intervening process often omitted despite DLA specs.
@@ -19,6 +21,7 @@
 - **Primary class:** A
 - **Evidence:** instructional-archetype-audit §3–§5; enzymes A2/A4; soft DEPTH vs hard Evaluate asymmetry
 - **Future fix hypothesis:** Dedicated archetype package (purpose, procedure, components, criteria, anti-patterns, exemplars, validation strategy)
+- **MVP shipped:** optional `instructional_archetype` + `archetype_plan` + compact GAM rule when present
 - **Dependency:** Framework workstream active
 - **Target sprint:** Sprint 59 (in-stream)
 - **Acceptance test:** Mechanism materials teach transmitting process so a learner can answer “why does the next step follow?” without inventing intermediate links; no Cause:/Mechanism: rubric mimicry
@@ -37,6 +40,7 @@
 - **Primary class:** A
 - **Evidence:** audit §3 (enzyme process steps); SP-06 privileges analytic/judgement WE more than physical/biological process walkthrough
 - **Future fix hypothesis:** Archetype contract distinct from generic `worked_example` checklist shape
+- **MVP shipped:** same routing/validation path as BL-101 for `process_walkthrough`
 - **Dependency:** S59-BL-101 (shared intervening-process patterns)
 - **Target sprint:** Sprint 59
 - **Acceptance test:** Process materials expose ordered stages + why each stage advances the process; not definition bullets labelled as steps
@@ -55,6 +59,7 @@
 - **Primary class:** A
 - **Evidence:** audit weak archetypes; enzymes A2 interaction teaching
 - **Future fix hypothesis:** Archetype spanning `text` / `modelling_note` / diagrams-as-prose with relationship-first required components
+- **MVP shipped:** same routing/validation path for `mental_model_building`
 - **Dependency:** Framework workstream
 - **Target sprint:** Sprint 59
 - **Acceptance test:** Learner can describe how parts interact and what constrains the system, not only label components

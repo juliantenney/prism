@@ -8607,6 +8607,210 @@
     return String(draftText || "").trim();
   }
 
+  function resolveLdInstructionalArchetypeLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_INSTRUCTIONAL_ARCHETYPE) {
+        return roots[i].PRISM_LD_INSTRUCTIONAL_ARCHETYPE;
+      }
+    }
+    return null;
+  }
+
+  function applyLdInstructionalArchetypeRoutingToDraft(draftText, context, wf) {
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepGenerateActivityMaterials(context)) {
+      return draftBody;
+    }
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.applyArchetypeRoutingBlockToDraft !== "function") {
+      return draftBody;
+    }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var pageJson = resolveDlaEnrichedPageJsonForGamCopy(workflow);
+    var page = tryParseWorkflowArtefactJson(pageJson);
+    var routed = lib.applyArchetypeRoutingBlockToDraft(draftBody, page, {
+      isGenerateActivityMaterialsStep: true
+    });
+    emitS59ArchetypeRoutingDebug(lib, page);
+    return routed;
+  }
+
+  function resolveS59MechanismTestOptIn(wf, context) {
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.isMechanismTestOptIn !== "function") return false;
+    try {
+      if (
+        typeof window !== "undefined" &&
+        window &&
+        window.__PRISM_S59_MECHANISM_TEST === true
+      ) {
+        return true;
+      }
+    } catch (_) {}
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (lib.isMechanismTestOptIn(context || {})) return true;
+    if (!workflow) return false;
+    return lib.isMechanismTestOptIn({
+      goal: workflow.goal || (workflow.workflowOutputSpec && workflow.workflowOutputSpec.goal),
+      notes: workflow.notes,
+      title: workflow.title || workflow.name,
+      desiredOutputs: workflow.desiredOutputs,
+      workflowOutputs: workflow.workflowOutputs,
+      workflowBriefResolution: workflow.workflowBriefResolution
+    });
+  }
+
+  function resolveS59ProcessTestOptIn(wf, context) {
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.isProcessTestOptIn !== "function") return false;
+    try {
+      if (
+        typeof window !== "undefined" &&
+        window &&
+        window.__PRISM_S59_PROCESS_TEST === true
+      ) {
+        return true;
+      }
+    } catch (_) {}
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (lib.isProcessTestOptIn(context || {})) return true;
+    if (!workflow) return false;
+    return lib.isProcessTestOptIn({
+      goal: workflow.goal || (workflow.workflowOutputSpec && workflow.workflowOutputSpec.goal),
+      notes: workflow.notes,
+      title: workflow.title || workflow.name,
+      desiredOutputs: workflow.desiredOutputs,
+      workflowOutputs: workflow.workflowOutputs,
+      workflowBriefResolution: workflow.workflowBriefResolution
+    });
+  }
+
+  function emitS59ArchetypeRoutingDebug(lib, page) {
+    if (!lib || typeof lib.collectRoutingDebugSnapshots !== "function") return;
+    var snapshots = lib.collectRoutingDebugSnapshots(page);
+    if (!snapshots || !snapshots.length) return;
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_ARCHETYPE_ROUTING_DEBUG = {
+          at: Date.now(),
+          selections: snapshots
+        };
+      }
+    } catch (_) {}
+    try {
+      if (typeof console !== "undefined" && console && typeof console.info === "function") {
+        console.info("[PRISM S59 archetype routing]", snapshots);
+      }
+    } catch (_) {}
+  }
+
+  function applyS59MechanismTestPlanToDlaCaptureJson(raw, wf) {
+    if (!resolveS59MechanismTestOptIn(wf)) return raw;
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.applyEnzymesMechanismTestPlanToDlaPage !== "function") {
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed || String(parsed.artifact_type || "") !== "page") return raw;
+    var stage = String(
+      (parsed.assembly_state && parsed.assembly_state.current_stage) || ""
+    )
+      .trim()
+      .toLowerCase();
+    if (stage && stage !== "dla") return raw;
+    var result = lib.applyEnzymesMechanismTestPlanToDlaPage(parsed);
+    if (!result || !result.ok || !result.page) return raw;
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_MECHANISM_TEST_STAMP = {
+          at: Date.now(),
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          archetype_plan: result.archetype_plan,
+          changed: !!result.changed
+        };
+      }
+    } catch (_) {}
+    try {
+      if (
+        result.changed &&
+        typeof console !== "undefined" &&
+        console &&
+        typeof console.info === "function"
+      ) {
+        console.info("[PRISM S59 mechanism test stamp]", {
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          rule_selected: false,
+          note: "DLA planning stamp (GAM rule selected later)"
+        });
+      }
+    } catch (_) {}
+    try {
+      return JSON.stringify(result.page, null, 2);
+    } catch (_) {
+      return raw;
+    }
+  }
+
+  function applyS59ProcessTestPlanToDlaCaptureJson(raw, wf) {
+    if (!resolveS59ProcessTestOptIn(wf)) return raw;
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.applyEnzymesProcessTestPlanToDlaPage !== "function") {
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed || String(parsed.artifact_type || "") !== "page") return raw;
+    var stage = String(
+      (parsed.assembly_state && parsed.assembly_state.current_stage) || ""
+    )
+      .trim()
+      .toLowerCase();
+    if (stage && stage !== "dla") return raw;
+    var result = lib.applyEnzymesProcessTestPlanToDlaPage(parsed);
+    if (!result || !result.ok || !result.page) return raw;
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_PROCESS_TEST_STAMP = {
+          at: Date.now(),
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          archetype_plan: result.archetype_plan,
+          changed: !!result.changed
+        };
+      }
+    } catch (_) {}
+    try {
+      if (
+        result.changed &&
+        typeof console !== "undefined" &&
+        console &&
+        typeof console.info === "function"
+      ) {
+        console.info("[PRISM S59 process test stamp]", {
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          rule_selected: false,
+          note: "DLA planning stamp (GAM rule selected later)"
+        });
+      }
+    } catch (_) {}
+    try {
+      return JSON.stringify(result.page, null, 2);
+    } catch (_) {
+      return raw;
+    }
+  }
+
   function resolvePageDlaEnrichLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -10287,8 +10491,34 @@
         appendParts.push(upstreamSection);
       }
     }
-    if (!appendParts.length) return draftBody;
-    return (draftBody + "\n" + appendParts.join("\n")).trim();
+    if (appendParts.length) {
+      draftBody = (draftBody + "\n" + appendParts.join("\n")).trim();
+    }
+    if (resolveS59MechanismTestOptIn(workflow, context)) {
+      var archetypeLib = resolveLdInstructionalArchetypeLib();
+      if (
+        archetypeLib &&
+        typeof archetypeLib.applyDlaMechanismTestEmissionBlockToDraft === "function"
+      ) {
+        draftBody = archetypeLib.applyDlaMechanismTestEmissionBlockToDraft(draftBody, {
+          isDesignLearningActivitiesStep: true,
+          mechanismTestOptIn: true
+        });
+      }
+    }
+    if (resolveS59ProcessTestOptIn(workflow, context)) {
+      var processLib = resolveLdInstructionalArchetypeLib();
+      if (
+        processLib &&
+        typeof processLib.applyDlaProcessTestEmissionBlockToDraft === "function"
+      ) {
+        draftBody = processLib.applyDlaProcessTestEmissionBlockToDraft(draftBody, {
+          isDesignLearningActivitiesStep: true,
+          processTestOptIn: true
+        });
+      }
+    }
+    return draftBody;
   }
 
   function readRunStepCaptureRawFromLi(li) {
@@ -13528,6 +13758,7 @@
     draft = applyLdTableFidelityContractToDraft(draft, ctx);
     draft = applyLdMaterialsCopyContractToDraft(draft, ctx);
     draft = applyLdGamInstructionalDepthContractToDraft(draft, ctx);
+    draft = applyLdInstructionalArchetypeRoutingToDraft(draft, ctx, wf);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     draft = applyLdDesignPagePartialContractToDraft(draft, ctx, wf);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx, wf);
@@ -22961,6 +23192,26 @@
       }
       if (state.workflowRunStrictJsonValidation) {
         delete state.workflowRunStrictJsonValidation[sid];
+      }
+    }
+    if (
+      stepRow &&
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: stepRow.canonical_step_id || stepRow.canonicalStepId || "",
+        stepCanonicalTitle: stepRow.title || "",
+        stepTitle: stepRow.title || ""
+      }) &&
+      String(raw || "").trim()
+    ) {
+      var stampedDla = applyS59MechanismTestPlanToDlaCaptureJson(raw, wf);
+      if (stampedDla && stampedDla !== raw) {
+        ta.value = stampedDla;
+        raw = stampedDla;
+      }
+      var stampedProcess = applyS59ProcessTestPlanToDlaCaptureJson(raw, wf);
+      if (stampedProcess && stampedProcess !== raw) {
+        ta.value = stampedProcess;
+        raw = stampedProcess;
       }
     }
     var partialPostEpisodePlanStep = isPostEpisodePlanPartialOutputStep(stepRow, wf);
@@ -46242,6 +46493,16 @@
     prismTestApi.applyLdMaterialsCopyContractToDraft = applyLdMaterialsCopyContractToDraft;
     prismTestApi.applyLdGamInstructionalDepthContractToDraft =
       applyLdGamInstructionalDepthContractToDraft;
+    prismTestApi.applyLdInstructionalArchetypeRoutingToDraft =
+      applyLdInstructionalArchetypeRoutingToDraft;
+    prismTestApi.resolveLdInstructionalArchetypeLib =
+      resolveLdInstructionalArchetypeLib;
+    prismTestApi.resolveS59MechanismTestOptIn = resolveS59MechanismTestOptIn;
+    prismTestApi.applyS59MechanismTestPlanToDlaCaptureJson =
+      applyS59MechanismTestPlanToDlaCaptureJson;
+    prismTestApi.resolveS59ProcessTestOptIn = resolveS59ProcessTestOptIn;
+    prismTestApi.applyS59ProcessTestPlanToDlaCaptureJson =
+      applyS59ProcessTestPlanToDlaCaptureJson;
     prismTestApi.buildDesignPageActivityMaterialsFidelityPromptBlock =
       buildDesignPageActivityMaterialsFidelityPromptBlock;
     prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =

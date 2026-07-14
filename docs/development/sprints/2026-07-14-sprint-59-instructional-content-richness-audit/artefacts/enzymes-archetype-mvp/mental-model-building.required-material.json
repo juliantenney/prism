@@ -1,0 +1,21 @@
+{
+  "material_id": "A2-M2",
+  "material_type": "modelling_note",
+  "purpose": "Help learners assemble a durable working model of enzyme catalysis.",
+  "specification": "Relationship-first model of enzyme-catalysed reaction; not a glossary.",
+  "instructional_archetype": "mental_model_building",
+  "archetype_plan": {
+    "system": "enzyme-catalysed reaction",
+    "parts": [
+      "enzyme",
+      "substrate",
+      "active site",
+      "product"
+    ],
+    "relationships": [
+      "substrate binding depends on active-site compatibility",
+      "enzyme structure constrains binding",
+      "the enzyme becomes available again after product release"
+    ]
+  }
+}

@@ -41,9 +41,11 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 59 — Instructional Content Richness Audit (**In progress**, updated 2026-07-15)
+### Sprint 59 — Instructional Content Richness Audit (**Priority-1 MVP complete**, updated 2026-07-15)
 
 **Portable pack:** [`sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/)
+
+**Proposed successor:** [`sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/`](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/) — [charter](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
 
 | Entry | Path |
 |-------|------|
@@ -54,8 +56,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 | **Active workstream** | [`instructional-archetype-framework.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/instructional-archetype-framework.md) |
 | **Backlog** | [`backlog.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/backlog.md) |
 | **Predecessor closed** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
+| **Sprint 60 (proposed)** | [SPRINT-60-START-HERE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-START-HERE.md) |
 
-**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Historical teaching gaps: concept exposition, mechanism, process, mental-model — mechanism and process MVP transfer now **PASS**.
+**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Priority-1 teaching MVP transfer now **PASS** for mechanism, process, and mental model on **DLA → persistence → GAM routing → generated materials**.
 
 | Component | Status |
 | --------- | ------ |
@@ -66,15 +69,15 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 | Runtime verification | PASS |
 | Mechanism transfer test | PASS |
 | Process transfer test | PASS |
-| Mental model validation | NOT STARTED |
+| Mental model transfer test | PASS |
 
-**Active priority:** Instructional Archetype Framework — next gap is `mental_model_building` transfer; fuller P1/P2 packages still open. Do **not** open Sprint 60.
+**Next focus:** Sprint 60 is **ready to close** (Phases A–C PASS, 2026-07-15). Production SoT = `required_materials[]`; delivery via `window.__PRISM_FINAL_GAM_PROMPT.archetype_delivery`; mixed Priority-1 acceptance at [PHASE-C-ACCEPTANCE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/PHASE-C-ACCEPTANCE.md). Optional follow-ons (Priority-2, UI, fuller packages, token-helper cleanup) need a new sprint charter.
 
-**Completed in-sprint:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit; Priority-1 MVP routing; mechanism + process transfer; GAM Copy recognition-context fix (`buildWorkflowStepRecognitionContext`).
+**Completed in Sprint 59:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit; Priority-1 MVP routing; mechanism + process + mental model transfer; GAM Copy recognition-context fix (`buildWorkflowStepRecognitionContext`).
 
-**Runtime cache-bust:** `ld-instructional-archetype.js?v=20260715-4`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-gam-ctx-1`.
+**Runtime cache-bust:** `ld-instructional-archetype.js?v=20260715-5`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-mental-1`.
 
-**Non-goals:** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; creating Sprint 60; rewriting process rule `v20260715-4` without new post-delivery evidence.
+**Non-goals (carry forward):** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; rewriting process rule `v20260715-4` wording without new post-delivery evidence.
 
 ---
 

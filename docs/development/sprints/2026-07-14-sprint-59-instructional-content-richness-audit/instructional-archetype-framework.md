@@ -1,6 +1,6 @@
 # Sprint 59 — Instructional Archetype Framework (Workstream)
 
-**Status:** Active workstream (in-sprint) — Priority-1 MVP **PASS** for mechanism + process; mental-model transfer **NOT STARTED**  
+**Status:** Priority-1 MVP **complete** (mechanism + process + mental model transfer **PASS**); operationalisation continues in [Sprint 60](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)  
 **Opened:** 2026-07-14  
 **Updated:** 2026-07-15  
 **Authority:** [instructional-archetype-audit.md](instructional-archetype-audit.md)  
@@ -12,7 +12,7 @@
 
 Systematically improve GAM instructional quality by creating **explicit support contracts for instructional archetypes**, independent of topic domain and separate from material presentation types.
 
-This workstream remains inside **Sprint 59**. It does **not** open Sprint 60.
+Priority-1 MVP transfer validation completed in **Sprint 59**. Production activation and mixed-archetype workflows are proposed for **Sprint 60**.
 
 ---
 
@@ -29,7 +29,9 @@ Instructional archetypes are implemented as an **independent instructional dimen
 | Runtime verification | PASS |
 | Mechanism transfer test | PASS |
 | Process transfer test | PASS |
-| Mental model validation | NOT STARTED |
+| Mental model transfer test | PASS |
+
+**Validated chain:** DLA → persistence → GAM routing → generated materials.
 
 Architecture (pipeline unchanged):
 
@@ -39,7 +41,7 @@ LO → EP shell → DLA partial → GAM partial → Assessment → LS partial �
 
 Instructional intent is transmitted through archetype contracts. Material type and instructional archetype are independent.
 
-**Runtime (verified):** `ld-instructional-archetype.js?v=20260715-4` · `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1` · `app.js?v=20260715-s59-gam-ctx-1`
+**Runtime (verified):** `ld-instructional-archetype.js?v=20260715-5` · `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1` · `app.js?v=20260715-s59-mental-1`
 
 ### Mechanism — PASS
 
@@ -47,13 +49,13 @@ Validated behaviour: `required_link` → realised causal transition → `outcome
 
 ### Process — PASS
 
-Final rule version: **`20260715-4`**. Validated behaviour: stage → reasoning → finding → finding transfer → conclusion (enzymes A4-M1).
+Final rule wording: **`20260715-4`**. Validated behaviour: stage → reasoning → finding → finding transfer → conclusion (enzymes A4-M1).
 
 **Delivery-path note:** Earlier process “failures” were often invalid tests because routing never reached GAM Copy (shaped outer recognition vs raw-step inner gate). Fixed via `buildWorkflowStepRecognitionContext`. The process rule was not the failure.
 
-### Mental model — NOT STARTED
+### Mental model — PASS
 
-MVP routing exists for `mental_model_building`; transfer validation has not been run.
+Validated behaviour: coherent account from `key_relationships` + `governing_constraint`; same model for contrast states; no System:/Relationships: rubric headings (thermostat MVP).
 
 ---
 
@@ -100,9 +102,9 @@ The same material type can realise different archetypes (e.g. `worked_example` a
 
 **Strong support today:** evidence interpretation, diagnostic reasoning, comparison, evaluation, judgement, verification, transfer (SP-02..07 + Evaluate PRES density + historical A4/transfer gates on some paths).
 
-**Priority-1 teaching MVP:** mechanism and process now have validated contract → routing → GAM Copy delivery. Mental-model transfer remains open. Fuller support packages (purpose…validation strategy) remain open for all P1/P2 IDs.
+**Priority-1 teaching MVP:** mechanism, process, and mental model have validated contract → routing → GAM materials. Fuller support packages (purpose…validation strategy) and production selection remain open (Sprint 60+).
 
-**Still weak / incomplete without fuller packages:** concept exposition; recommendation; modelling_note instructional depth; mental-model teaching pending transfer evidence.
+**Still weak / incomplete without fuller packages / operationalisation:** concept exposition; recommendation; modelling_note instructional depth; production archetype selection (still token/opt-in in S59).
 
 See audit §5 for the historical asymmetry that opened this workstream.
 
@@ -132,7 +134,7 @@ MVP routing + transfer tests prove the contract/delivery path; they do not close
 | --------- | --- | --------------- |
 | `mechanism_explanation` | Enzymes A2/A4 failure mode; core teaching gap | **PASS** |
 | `process_walkthrough` | Step-list collapse without expert process teaching | **PASS** (`v20260715-4`) |
-| `mental_model_building` | Conceptual systems under-served | **READY TO RUN** (MVP thermostat; live transfer not PASS) |
+| `mental_model_building` | Conceptual systems under-served | **PASS** (thermostat MVP) |
 
 ### Priority 2
 

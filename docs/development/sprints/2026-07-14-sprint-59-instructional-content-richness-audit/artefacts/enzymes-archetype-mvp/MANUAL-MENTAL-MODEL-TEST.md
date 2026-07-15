@@ -1,12 +1,12 @@
 # Manual mental_model_building transfer test — handoff
 
 **Purpose:** First live validation of the `mental_model_building` MVP contract (thermostat fixture).  
-**Status (2026-07-15):** MVP **ready to run** — transfer result **NOT STARTED / not PASS** until a live GAM body is evaluated.
+**Status (2026-07-15):** Transfer **PASS** — live GAM materials validated for thermostat MVP (after delivery integrity confirmed).
 
 **Methodological guardrail:** Do **not** diagnose archetype quality until delivery-path integrity is verified. A run with routing absent from the Copy prompt is **invalid**, not an archetype-quality failure.
 
-**Opt-in token (required):** `S59_MENTAL_MODEL_TEST`  
-**Do not** also enable `S59_MECHANISM_TEST` or `S59_PROCESS_TEST` (any two → fail closed).
+**Opt-in token (Sprint 59 validation):** `S59_MENTAL_MODEL_TEST`  
+**Do not** also enable `S59_MECHANISM_TEST` or `S59_PROCESS_TEST` (any two → fail closed). Production selection without tokens is Sprint 60 work.
 
 ---
 

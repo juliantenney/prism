@@ -7,14 +7,16 @@
 
 ## Briefing (copy below)
 
-You are continuing PRISM / learning-design work in **Sprint 59**.
+You are continuing PRISM / learning-design work after **Sprint 59 Priority-1 MVP completion**.
 
 **Sprint 58 is closed.** Treat the partial-page architecture as baseline. Do **not** reopen Phase 0/1 DP migration, flag preservation, compose shrink, legacy removal, or assembly redesign.
 
-**Do not create Sprint 60.** All remaining work stays in Sprint 59.
+**Sprint 59 Priority-1 transfer validation is complete.** Proposed successor: **Sprint 60 — Instructional Archetype Operationalisation**  
+([SPRINT-60-CHARTER.md](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)).
 
-**Pack:** `docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`  
-**Start:** [SPRINT-59-START-HERE.md](SPRINT-59-START-HERE.md)
+**Pack (historical / S59 facts):** `docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`  
+**Start (S59):** [SPRINT-59-START-HERE.md](SPRINT-59-START-HERE.md)  
+**Start (S60 proposed):** [SPRINT-60-START-HERE.md](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-START-HERE.md)
 
 ---
 
@@ -23,8 +25,10 @@ You are continuing PRISM / learning-design work in **Sprint 59**.
 Quality variation is explained primarily by **instructional-archetype support differences**, not by domain-specific GAM behaviour.
 
 - Strong historically: evidence interpretation, diagnostic reasoning, comparison, evaluation, judgement, verification, transfer  
-- Priority-1 teaching MVP now **validated** for `mechanism_explanation` and `process_walkthrough`  
-- Still open for transfer validation: `mental_model_building`  
+- Priority-1 teaching MVP **validated** for:
+  - `mechanism_explanation` — **PASS**
+  - `process_walkthrough` — **PASS**
+  - `mental_model_building` — **PASS**
 - Secondary factor: domain exemplar bias (economics-heavy DEPTH exemplars)  
 - No evidence of biology-specific routing or domain path divergence  
 
@@ -32,7 +36,14 @@ Formal audit: [instructional-archetype-audit.md](instructional-archetype-audit.m
 
 ---
 
-### Milestone status (2026-07-15)
+### Validated chain (2026-07-15)
+
+```text
+DLA contract generation
+  → persistence (instructional_archetype + archetype_plan)
+  → GAM routing
+  → generated materials
+```
 
 | Component | Status |
 | --------- | ------ |
@@ -43,27 +54,27 @@ Formal audit: [instructional-archetype-audit.md](instructional-archetype-audit.m
 | Runtime verification | PASS |
 | Mechanism transfer test | PASS |
 | Process transfer test | PASS |
-| Mental model validation | NOT STARTED |
+| Mental model transfer test | PASS |
 
 ---
 
-### Current priority
+### Current priority → Sprint 60
 
-Continue the **Instructional Archetype Framework**:
+Sprint 59 proved the Priority-1 contracts under opt-in / test activation (`S59_*_TEST`). **Sprint 60** should operationalise them:
 
-1. `mechanism_explanation` — **PASS** (transfer validated)  
-2. `process_walkthrough` — **PASS** (rule `v20260715-4`; finding-transfer validated)  
-3. `mental_model_building` — **NOT STARTED** (next Priority-1 transfer gap)  
+1. Replace `S59_*_TEST` activation with production archetype selection  
+2. Make archetype choice a normal DLA planning capability  
+3. Preserve routing integrity through GAM  
+4. Improve observability and delivery verification  
+5. Validate mixed-archetype workflows  
 
-Then Priority 2: `concept_exposition`, `recommendation`, `modelling_note` instructional contracts.
+Do **not** expand Priority-2 archetypes until the production activation path is solid. Fuller purpose…validation packages remain open but are secondary to operationalisation.
 
-Workstream: [instructional-archetype-framework.md](instructional-archetype-framework.md)  
-Backlog: [backlog.md](backlog.md) (S59-BL-101 … 203)
+Workstream (S59 record): [instructional-archetype-framework.md](instructional-archetype-framework.md)  
+Backlog carry-forward: [backlog.md](backlog.md) (S59-BL-101 … 203 → S60)
 
 **Principle:** Material Type ≠ Instructional Archetype  
 (Material type = presentation format; archetype = pedagogical function.)
-
-Each full archetype package still needs: purpose · generation procedure · required components · quality criteria · anti-patterns · exemplars · validation strategy (beyond MVP routing).
 
 ---
 
@@ -77,14 +88,14 @@ inner routing context = raw step → false
 → LD-INSTRUCTIONAL-ARCHETYPE-ROUTING skipped
 ```
 
-Fixed with `buildWorkflowStepRecognitionContext` unifying GAM recognition, archetype routing, and snapshot publication. The process rule (`v20260715-4`) was not the failure — delivery was.
+Fixed with `buildWorkflowStepRecognitionContext` unifying GAM recognition, archetype routing, and snapshot publication. The process rule (`v20260715-4` wording) was not the failure — delivery was. Preserve that delivery path.
 
-Runtime cache-bust:
+Runtime cache-bust (S59 close):
 
 ```text
-ld-instructional-archetype.js?v=20260715-4
+ld-instructional-archetype.js?v=20260715-5
 workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1
-app.js?v=20260715-s59-gam-ctx-1
+app.js?v=20260715-s59-mental-1
 ```
 
 ---
@@ -99,6 +110,7 @@ app.js?v=20260715-s59-gam-ctx-1
 6. Archetype prompt/validation audit → framework direction  
 7. MVP routing + mechanism transfer **PASS**  
 8. Process transfer **PASS** + GAM Copy recognition-context fix  
+9. Mental model MVP + live transfer **PASS**  
 
 Also: EP `episode_plans[].activity_id` alignment fix in `lib/page-shell-create.js` (separate bugfix).
 
@@ -114,7 +126,8 @@ GAM owns `materials[]`. DLA owns activity scaffolds + optional archetype plans o
 
 ### Preserve always
 
-- Process rule version `20260715-4` (do not rewrite without new failure evidence after delivery fix)  
+- Process rule version wording frozen at `20260715-4` lineage (do not rewrite without new failure evidence after delivery fix)  
+- Recognition-context delivery path (`buildWorkflowStepRecognitionContext`)  
 - Iterations 4–7: no Cause:/Mechanism: rubric labels; no weak/strong exemplar leakage  
 - Do not weaken Evaluate / SP-02..07 / verification / transfer support  
 - One primary A–F class per finding  
@@ -123,14 +136,15 @@ GAM owns `materials[]`. DLA owns activity scaffolds + optional archetype plans o
 
 ---
 
-### Non-goals
+### Non-goals (carry into Sprint 60)
 
-No Sprint 60 · no renderer redesign · no hard richness validators without archetype definitions · no Sprint 58 architecture reopen
+No renderer redesign · no hard richness validators without archetype definitions · no Sprint 58 architecture reopen · no Priority-2 expansion before production activation works
 
 ---
 
 ## Links
 
+- [Sprint 60 charter (proposed)](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
 - [instructional-archetype-audit.md](instructional-archetype-audit.md)
 - [instructional-archetype-framework.md](instructional-archetype-framework.md)
 - [roadmap.md](roadmap.md)

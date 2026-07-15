@@ -6,11 +6,11 @@
 
 - **Sprint ID:** 59
 - **Date opened:** 2026-07-14
-- **Status:** In progress — Priority-1 MVP **routing + delivery validated** for mechanism and process; mental-model transfer **not started**
-- **Mode:** Diagnostic audit (complete) + GAM depth Iterations 1–7 + archetype MVP implementation/validation (in-sprint)
+- **Status:** Priority-1 MVP **complete** — mechanism, process, and mental-model transfer all **PASS**
+- **Mode:** Diagnostic audit (complete) + GAM depth Iterations 1–7 + archetype MVP implementation/validation (**complete**)
 - **Updated:** 2026-07-15
 - **Predecessor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) (**closed**)
-- **Do not open Sprint 60** from this work — remain in Sprint 59
+- **Successor (proposed):** [Sprint 60 — Instructional Archetype Operationalisation](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
 
 ## Purpose
 
@@ -39,11 +39,13 @@ Formal record: [instructional-archetype-audit.md](instructional-archetype-audit.
 | Runtime verification | **PASS** |
 | Mechanism transfer test | **PASS** |
 | Process transfer test | **PASS** |
-| Mental model validation | **NOT STARTED** |
+| Mental model transfer test | **PASS** |
+
+**Validated chain:** DLA → persistence → GAM routing → generated materials.
 
 Instructional archetypes are an **independent instructional dimension**. Material type ≠ instructional archetype. Intent travels as optional `instructional_archetype` + `archetype_plan` on DLA `required_materials`, then compact Priority-1 rules on GAM Copy.
 
-**Cache-bust verified at runtime:** `ld-instructional-archetype.js?v=20260715-4`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-gam-ctx-1`.
+**Cache-bust verified at runtime:** `ld-instructional-archetype.js?v=20260715-5`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-mental-1`.
 
 ## Scope
 
@@ -55,22 +57,24 @@ Instructional archetypes are an **independent instructional dimension**. Materia
 - Heteroscedasticity success case + enzymes weakness comparison
 - Instructional archetype prompt/validation audit
 
-### Completed — Priority-1 MVP (mechanism + process)
+### Completed — Priority-1 MVP (mechanism + process + mental model)
 
-- Explicit routing module + DLA plan validation + enzymes fixtures
+- Explicit routing module + DLA plan validation + fixtures
 - Mechanism transfer test **PASS** (link → causal transition → outcome)
 - Process transfer test **PASS** (rule `v20260715-4`; finding-transfer walkthrough)
+- Mental model transfer test **PASS** (thermostat MVP; relationships + governing constraint + contrast)
 - GAM Copy context-shape fix (`buildWorkflowStepRecognitionContext`) so routing reaches clipboard-bound prompts
 - Final-prompt snapshot `window.__PRISM_S59_FINAL_GAM_PROMPT` confirmed on live Copy
 
 See [instructional-archetype-framework.md](instructional-archetype-framework.md), [roadmap.md](roadmap.md), [backlog.md](backlog.md).
 
-### Active — remaining Instructional Archetype Framework work
+### Carry-forward — Sprint 60+
 
-**Still open:** `mental_model_building` transfer validation; fuller P1/P2 support packages (purpose…validation strategy beyond MVP routing).
+**Done in Sprint 59 (MVP transfer):** `mechanism_explanation` ✓ · `process_walkthrough` ✓ · `mental_model_building` ✓  
 
-**Priority 1:** `mechanism_explanation` ✓ · `process_walkthrough` ✓ · `mental_model_building` (not started)  
-**Priority 2:** `concept_exposition`, `recommendation`, `modelling_note` instructional contracts
+**Proposed for Sprint 60:** production archetype selection (replace `S59_*_TEST`), DLA planning UX, observability, mixed-archetype workflows — see [SPRINT-60-CHARTER.md](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md).
+
+**Later:** fuller P1/P2 support packages (purpose…validation strategy beyond MVP); Priority 2 IDs (`concept_exposition`, `recommendation`, `modelling_note`).
 
 ### Still in scope (diagnostic artefacts)
 
@@ -84,12 +88,11 @@ See [instructional-archetype-framework.md](instructional-archetype-framework.md)
 - Renderer redesign or CSS/layout implementation
 - Hard richness validators **without** archetype package definitions
 - Architecture migrations (compose shrink, hard DP validation, legacy removal)
-- Creating Sprint 60
 - Weakening Evaluate / diagnostic SP contracts while closing teaching gaps
 
 ### Scope evolution note
 
-The original charter deferred prompt changes. After the first audit and constraint audit, **Iterations 1–7** were approved in-stream to improve GAM depth. That work improved privileged archetypes; the enzymes transfer then showed remaining **teaching-archetype** gaps. Sprint 59 therefore continues with the Instructional Archetype Framework rather than closing as diagnostic-only.
+The original charter deferred prompt changes. After the first audit and constraint audit, **Iterations 1–7** were approved in-stream to improve GAM depth. That work improved privileged archetypes; the enzymes transfer then showed remaining **teaching-archetype** gaps. Sprint 59 therefore delivered the Instructional Archetype Framework Priority-1 MVP rather than closing as diagnostic-only. Operationalisation continues in Sprint 60.
 
 ## Entry criteria
 
@@ -107,6 +110,7 @@ See [definition-of-done.md](definition-of-done.md).
 | [SPRINT-59-START-HERE.md](SPRINT-59-START-HERE.md) | Reading order + immediate actions |
 | [SPRINT-59-CONTEXT-FOR-NEW-CHAT.md](SPRINT-59-CONTEXT-FOR-NEW-CHAT.md) | Architecture + handover facts |
 | [next-chat-briefing.md](next-chat-briefing.md) | Concise paste for new chat |
+| [Sprint 60 charter (proposed)](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md) | Operationalisation successor |
 | [instructional-archetype-audit.md](instructional-archetype-audit.md) | Formal archetype investigation record |
 | [instructional-archetype-framework.md](instructional-archetype-framework.md) | Active workstream + inventory |
 | [roadmap.md](roadmap.md) | Phase A/B roadmap |

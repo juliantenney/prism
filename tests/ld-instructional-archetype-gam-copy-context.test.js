@@ -109,6 +109,7 @@ function loadPrismTestApi() {
   assert.ok(api);
   assert.ok(typeof api.buildWorkflowStepRecognitionContext === "function");
   assert.ok(typeof api.isWorkflowStepGenerateActivityMaterials === "function");
+  assert.ok(typeof api.publishFinalGamPromptSnapshot === "function");
   assert.ok(typeof api.publishS59FinalGamPromptSnapshot === "function");
   return { api, window: windowStub };
 }
@@ -290,11 +291,14 @@ test("recognised GAM Copy publishes snapshot equal to clipboard-bound string", (
   });
   assert.equal(api.isWorkflowStepGenerateActivityMaterials(recognitionCtx), true);
 
-  const snap = api.publishS59FinalGamPromptSnapshot(clipboardBound, {
+  const snap = api.publishFinalGamPromptSnapshot(clipboardBound, {
     source: "workflow_step_copy",
     step_title: recognitionCtx.stepTitle,
-    canonical_step_id: recognitionCtx.stepCanonicalStepId
+    canonical_step_id: recognitionCtx.stepCanonicalStepId,
+    page: page
   });
+  assert.equal(win.__PRISM_FINAL_GAM_PROMPT, snap);
+  assert.equal(win.__PRISM_S59_FINAL_GAM_PROMPT, snap);
   assert.equal(win.__PRISM_S59_FINAL_GAM_PROMPT.prompt, clipboardBound);
   assert.equal(snap.prompt, clipboardBound);
   assert.equal(snap.source, "workflow_step_copy");
@@ -303,6 +307,12 @@ test("recognised GAM Copy publishes snapshot equal to clipboard-bound string", (
   assert.equal(snap.archetype_script_version, "20260715-5");
   assert.equal(snap.step_title, "Generate Activity Materials");
   assert.equal(snap.canonical_step_id, "generate_activity_materials");
+  assert.equal(snap.selected_instructional_archetypes.length, 1);
+  assert.equal(snap.selected_instructional_archetypes[0], "process_walkthrough");
+  assert.equal(snap.archetype_delivery.pass, true);
+  assert.equal(snap.archetype_delivery.expected.length, 1);
+  assert.equal(snap.archetype_delivery.expected[0], "process_walkthrough");
+  assert.equal(snap.acceptance_rule, archetype.ACCEPTANCE_RULE);
 });
 
 test("non-GAM steps do not receive instructional archetype routing or GAM snapshots", () => {
@@ -314,6 +324,7 @@ test("non-GAM steps do not receive instructional archetype routing or GAM snapsh
     dla_step: JSON.stringify(page, null, 2)
   });
 
+  delete win.__PRISM_FINAL_GAM_PROMPT;
   delete win.__PRISM_S59_FINAL_GAM_PROMPT;
 
   const dlaInstr = api.buildWorkflowStepInstructions(wf.steps[0], 0, null);
@@ -328,6 +339,7 @@ test("non-GAM steps do not receive instructional archetype routing or GAM snapsh
   if (!api.isWorkflowStepGenerateActivityMaterials(dlaRecognition)) {
     // do not publish
   }
+  assert.equal(win.__PRISM_FINAL_GAM_PROMPT, undefined);
   assert.equal(win.__PRISM_S59_FINAL_GAM_PROMPT, undefined);
 });
 

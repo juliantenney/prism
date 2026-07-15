@@ -1,6 +1,6 @@
 # Sprint 59 — Backlog
 
-**Status:** Active  
+**Status:** Priority-1 MVP transfer complete; production path / full packages carry to Sprint 60  
 **Updated:** 2026-07-15  
 **Source:** [instructional-archetype-audit.md](instructional-archetype-audit.md), [instructional-archetype-framework.md](instructional-archetype-framework.md), first audit  
 **Template:** [backlog-template.md](backlog-template.md)
@@ -9,7 +9,7 @@
 
 ## Priority 1 — Instructional Archetype Framework (teaching gap)
 
-**MVP status (2026-07-15):** Explicit routing + plan validation + GAM Copy delivery shipped and validated for mechanism and process. Full support packages (purpose…validation strategy) remain open. Mental-model transfer **NOT STARTED**.
+**MVP status (2026-07-15):** Explicit routing + plan validation + GAM routing + generated materials validated for mechanism, process, and mental model. Full support packages (purpose…validation strategy) remain open. Production activation → [Sprint 60](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md).
 
 | Component | Status |
 | --------- | ------ |
@@ -20,7 +20,7 @@
 | Runtime verification | PASS |
 | Mechanism transfer test | PASS |
 | Process transfer test | PASS |
-| Mental model validation | NOT STARTED |
+| Mental model transfer test | PASS |
 
 ### S59-BL-101 — `mechanism_explanation` support package
 
@@ -74,9 +74,9 @@
 - **Evidence:** audit weak archetypes; enzymes A2 interaction teaching
 - **Future fix hypothesis:** Archetype spanning `text` / `modelling_note` / diagrams-as-prose with relationship-first required components
 - **MVP shipped:** same routing/validation path for `mental_model_building`
-- **Transfer test:** **READY TO RUN** (MVP thermostat wiring complete; live GAM transfer **NOT PASS** until evaluated)
+- **Transfer test:** **PASS** (2026-07-15) — thermostat MVP; relationships + governing constraint + contrast on live GAM materials
 - **Dependency:** Framework workstream
-- **Target sprint:** Sprint 59
+- **Target sprint:** Sprint 59 (MVP); production selection → Sprint 60
 - **Acceptance test:** Learner can describe how parts interact and what constrains the system, not only label components
 
 **Package deliverables:** purpose definition · generation procedure · required components · quality criteria · anti-patterns · exemplars · validation strategy

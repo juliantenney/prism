@@ -1,6 +1,6 @@
 # Sprint 59 — Definition of Done
 
-Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint while the Instructional Archetype Framework workstream remains open.
+Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint while the Instructional Archetype Framework Priority-1 MVP remains open.
 
 **Updated:** 2026-07-15
 
@@ -36,26 +36,29 @@ Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint whi
 - [x] Decision records updated ([decisions.md](decisions.md))
 - [x] Formal archetype audit document filed
 
-## Phase B — Instructional Archetype Framework (active — sprint remains open)
+## Phase B — Instructional Archetype Framework (Priority-1 MVP complete)
 
-### MVP path (mechanism + process)
+### MVP path (mechanism + process + mental model)
 
 - [x] Priority-1 MVP routing wired (`lib/ld-instructional-archetype.js`)
 - [x] DLA contract generation + persistence for optional archetype plans
 - [x] Archetype routing on GAM
 - [x] GAM Copy delivery (recognition-context fix; clipboard receives routing)
-- [x] Runtime verification (`?v=20260715-4` archetype · `?v=20260715-s59-gam-ctx-1` recognition + app)
+- [x] Runtime verification (`?v=20260715-5` archetype · `?v=20260715-s59-gam-ctx-1` recognition · `?v=20260715-s59-mental-1` app)
 - [x] Mechanism transfer test **PASS**
-- [x] Process transfer test **PASS** (rule `v20260715-4`)
-- [ ] Mental model transfer validation (**NOT STARTED**)
+- [x] Process transfer test **PASS** (rule wording `v20260715-4`)
+- [x] Mental model transfer test **PASS**
+- [x] Validated chain: DLA → persistence → GAM routing → generated materials
 - [x] Iterations 4–7 anti-gaming and anti-exemplar-leakage preserved
-- [x] No Sprint 60 created; Sprint 58 pipeline ownership preserved
-- [x] Sprint docs and handoff updated at MVP milestones (2026-07-15)
+- [x] Sprint 58 pipeline ownership preserved
+- [x] Sprint docs and handoff updated at MVP completion (2026-07-15)
+- [x] Proposed Sprint 60 charter filed — [SPRINT-60-CHARTER.md](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
 
-### Full packages (still open)
+### Full packages / production path (carry-forward)
 
-- [ ] Priority 1 packages fully designed: purpose · procedure · components · criteria · anti-patterns · exemplars · validation strategy (beyond MVP routing/transfer)
-- [ ] Priority 2 packages scoped: `concept_exposition`, `recommendation`, `modelling_note` contracts
+- [ ] Priority 1 packages fully designed: purpose · procedure · components · criteria · anti-patterns · exemplars · validation strategy (beyond MVP routing/transfer) — **Sprint 60+**
+- [ ] Production archetype selection (replace `S59_*_TEST`) — **Sprint 60**
+- [ ] Priority 2 packages scoped: `concept_exposition`, `recommendation`, `modelling_note` contracts — **after operationalisation**
 - [ ] Implementation of fuller packages without regressing Evaluate / diagnostic / verification / transfer support
 
 ## Explicit non-requirements (still)
@@ -64,4 +67,4 @@ Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint whi
 - Hard validators without archetype package definitions
 - Closing Deferred Sprint 58 architecture follow-ons
 - Documenting-only closure that ignores the archetype workstream
-- Rewriting process rule `v20260715-4` without new post-delivery-failure evidence
+- Rewriting process rule `v20260715-4` wording without new post-delivery-failure evidence

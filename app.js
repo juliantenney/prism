@@ -8707,7 +8707,9 @@
   }
 
   /**
-   * Single activation gate for Sprint 59 manual DLA tests.
+   * Legacy Sprint 59 single-test activation gate (regression / manual lab only).
+   * Production archetype selection is DLA required_materials[].instructional_archetype
+   * + archetype_plan (Sprint 60 Phase A). Do not use selected_dla_test for product authoring.
    * Fail closed when any two or more of mechanism / process / mental_model are requested.
    */
   function resolveS59DlaTestActivation(wf, context) {
@@ -27912,10 +27914,11 @@
         index: zeroBasedIndex
       });
       if (isWorkflowStepGenerateActivityMaterials(copyRecognition)) {
-        publishS59FinalGamPromptSnapshot(filled, {
+        publishFinalGamPromptSnapshot(filled, {
           source: "workflow_step_copy",
           step_title: copyRecognition.stepTitle,
-          canonical_step_id: copyRecognition.stepCanonicalStepId
+          canonical_step_id: copyRecognition.stepCanonicalStepId,
+          workflow: liveWf
         });
       }
 
@@ -29596,41 +29599,52 @@
     return assembledInstructions;
   }
 
-  function publishS59FinalGamPromptSnapshot(promptText, meta) {
+  /**
+   * Publish sprint-neutral final GAM prompt observability (Sprint 60 Phase B).
+   * Derives archetype_delivery from persisted DLA page + final prompt — not test tokens.
+   * __PRISM_FINAL_GAM_PROMPT is canonical; __PRISM_S59_FINAL_GAM_PROMPT is a legacy alias
+   * referencing the same snapshot object.
+   */
+  function publishFinalGamPromptSnapshot(promptText, meta) {
     var text = String(promptText || "");
     var info = meta && typeof meta === "object" ? meta : {};
-    var archMatch = text.match(
-      /instructional_archetype=(process_walkthrough|mechanism_explanation|mental_model_building)/i
-    );
     var lib = resolveLdInstructionalArchetypeLib();
-    var snapshot = {
-      prompt: text,
-      source: info.source ? String(info.source) : "unknown",
-      step_title: String(info.step_title || info.stepTitle || "").trim(),
-      canonical_step_id: String(
-        info.canonical_step_id || info.stepCanonicalStepId || ""
-      ).trim(),
-      archetype_script_version: String(
-        (lib && lib.SCRIPT_VERSION) || info.archetype_script_version || "unknown"
-      ),
-      contains_depth_contract: /LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT/i.test(text),
-      contains_archetype_routing: /LD-INSTRUCTIONAL-ARCHETYPE-ROUTING/i.test(text),
-      contains_process_rule: /Realise the process_goal as .+worked walkthrough/i.test(text),
-      contains_process_goal: /process_goal/i.test(text),
-      contains_mental_model_rule:
-        /Build a coherent account of the named system using the supplied relationships and governing constraint/i.test(
-          text
-        ),
-      contains_thermostat_fixture:
-        /a room heated by a thermostat-controlled heater/i.test(text) &&
-        /governing_constraint/i.test(text),
-      selected_instructional_archetype: archMatch ? archMatch[1] : null,
-      prompt_length: text.length,
-      timestamp: new Date().toISOString(),
-      at: Date.now()
-    };
+    var page = info.page;
+    if (!page && info.workflow) {
+      var wf = resolveWorkflowForUpstreamArtefacts({ workflow: info.workflow });
+      var pageJson = resolveDlaEnrichedPageJsonForGamCopy(wf);
+      page = tryParseWorkflowArtefactJson(pageJson);
+    }
+    var snapshot =
+      lib && typeof lib.buildFinalGamPromptObservabilitySnapshot === "function"
+        ? lib.buildFinalGamPromptObservabilitySnapshot(text, info, page)
+        : {
+            prompt: text,
+            source: info.source ? String(info.source) : "unknown",
+            step_title: String(info.step_title || info.stepTitle || "").trim(),
+            canonical_step_id: String(
+              info.canonical_step_id || info.stepCanonicalStepId || ""
+            ).trim(),
+            archetype_script_version:
+              (lib && lib.SCRIPT_VERSION) || info.archetype_script_version || "unknown",
+            contains_archetype_routing: /LD-INSTRUCTIONAL-ARCHETYPE-ROUTING/i.test(text),
+            selected_instructional_archetype: null,
+            selected_instructional_archetypes: [],
+            archetype_delivery: {
+              expected: [],
+              delivered: [],
+              missing: [],
+              pass: true
+            },
+            acceptance_rule:
+              "Do not evaluate archetype quality until archetype_delivery.pass is true.",
+            prompt_length: text.length,
+            timestamp: new Date().toISOString(),
+            at: Date.now()
+          };
     try {
       if (typeof window !== "undefined" && window) {
+        window.__PRISM_FINAL_GAM_PROMPT = snapshot;
         window.__PRISM_S59_FINAL_GAM_PROMPT = snapshot;
       }
     } catch (_) {}
@@ -29640,19 +29654,27 @@
         console &&
         typeof console.info === "function"
       ) {
-        console.info("[PRISM S59 final GAM prompt]", {
+        console.info("[PRISM final GAM prompt]", {
           source: snapshot.source,
           step_title: snapshot.step_title,
           canonical_step_id: snapshot.canonical_step_id,
           archetype_script_version: snapshot.archetype_script_version,
           contains_archetype_routing: snapshot.contains_archetype_routing,
+          contains_mechanism_rule: snapshot.contains_mechanism_rule,
           contains_process_rule: snapshot.contains_process_rule,
-          selected_instructional_archetype: snapshot.selected_instructional_archetype,
+          contains_mental_model_rule: snapshot.contains_mental_model_rule,
+          selected_instructional_archetypes: snapshot.selected_instructional_archetypes,
+          archetype_delivery: snapshot.archetype_delivery,
           prompt_length: snapshot.prompt_length
         });
       }
     } catch (_) {}
     return snapshot;
+  }
+
+  /** Legacy name — same snapshot as publishFinalGamPromptSnapshot. */
+  function publishS59FinalGamPromptSnapshot(promptText, meta) {
+    return publishFinalGamPromptSnapshot(promptText, meta);
   }
 
   function handleCopyWorkflowSummary() {
@@ -47028,6 +47050,7 @@
       isWorkflowStepGenerateActivityMaterials;
     prismTestApi.buildWorkflowStepRecognitionContext =
       buildWorkflowStepRecognitionContext;
+    prismTestApi.publishFinalGamPromptSnapshot = publishFinalGamPromptSnapshot;
     prismTestApi.publishS59FinalGamPromptSnapshot = publishS59FinalGamPromptSnapshot;
     prismTestApi.SPRINT_28_COGNITION_FACTOR_IDS = SPRINT_28_COGNITION_FACTOR_IDS.slice();
     prismTestApi.SPRINT_28_COGNITION_PACK_IDS = SPRINT_28_COGNITION_PACK_IDS.slice();
@@ -47109,6 +47132,7 @@
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.publishFinalGamPromptSnapshot = publishFinalGamPromptSnapshot;
     prismTestApi.publishS59FinalGamPromptSnapshot = publishS59FinalGamPromptSnapshot;
     prismTestApi.stripContradictoryWorkflowRunnerFooterClauses =
       stripContradictoryWorkflowRunnerFooterClauses;

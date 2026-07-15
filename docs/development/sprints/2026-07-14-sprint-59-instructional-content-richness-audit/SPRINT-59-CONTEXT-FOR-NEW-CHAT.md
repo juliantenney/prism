@@ -4,8 +4,9 @@
 **Not** the authoritative scope document — see [README.md](README.md).  
 **Reading order:** [SPRINT-59-START-HERE.md](SPRINT-59-START-HERE.md).
 
-**Sprint status:** In progress — Priority-1 MVP validated for mechanism + process; mental-model transfer not started  
-**Updated:** 2026-07-15
+**Sprint status:** Priority-1 MVP **complete** — mechanism, process, and mental-model transfer all **PASS**  
+**Updated:** 2026-07-15  
+**Proposed successor:** [Sprint 60 — Instructional Archetype Operationalisation](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
 
 ---
 
@@ -33,7 +34,18 @@ See [instructional-archetype-audit.md](instructional-archetype-audit.md).
 | Runtime verification | **PASS** |
 | Mechanism transfer test | **PASS** |
 | Process transfer test | **PASS** |
-| Mental model validation | **NOT STARTED** |
+| Mental model transfer test | **PASS** |
+
+### Validated chain
+
+```text
+DLA
+  → persistence
+  → GAM routing
+  → generated materials
+```
+
+All three Priority-1 archetypes validated on this chain under Sprint 59 test activation (`S59_*_TEST` / related opt-ins).
 
 ---
 
@@ -45,8 +57,8 @@ Current Priority-1 archetypes:
 
 ```text
 mechanism_explanation   → PASS (transfer validated)
-process_walkthrough     → PASS (transfer validated; rule v20260715-4)
-mental_model_building   → NOT STARTED (routing present; transfer not run)
+process_walkthrough     → PASS (transfer validated; rule wording v20260715-4)
+mental_model_building   → PASS (transfer validated; thermostat MVP)
 ```
 
 Pipeline (unchanged):
@@ -117,7 +129,7 @@ Validated fixture (enzymes A4-M1):
 }
 ```
 
-Final validated rule version: **`20260715-4`**.
+Final validated rule wording version: **`20260715-4`**.
 
 Validated behaviour: stage → reasoning performed → finding produced → finding transferred → conclusion.
 
@@ -150,15 +162,37 @@ Live snapshots (`window.__PRISM_S59_FINAL_GAM_PROMPT`) confirmed the process rul
 
 ---
 
+## Mental model archetype — PASS
+
+Validated MVP contract (thermostat fixture; no `parts`, no `predicted_effect`):
+
+```json
+{
+  "instructional_archetype": "mental_model_building",
+  "archetype_plan": {
+    "system": "…",
+    "key_relationships": ["…"],
+    "governing_constraint": "…",
+    "contrast": { "state_a": "…", "state_b": "…" }
+  }
+}
+```
+
+Validated behaviour: coherent account from relationships + governing constraint; same model used for both contrast states; no System:/Relationships: rubric headings.
+
+Opt-in during Sprint 59 used `S59_MENTAL_MODEL_TEST` (and related fail-closed gating with mechanism/process tokens). **Production selection of archetypes is Sprint 60 work** — not claimed here.
+
+---
+
 ## Runtime verification (cache-bust)
 
 ```text
-lib/ld-instructional-archetype.js?v=20260715-4
+lib/ld-instructional-archetype.js?v=20260715-5
 lib/workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1
-app.js?v=20260715-s59-gam-ctx-1
+app.js?v=20260715-s59-mental-1
 ```
 
-Hard-reload before re-running manual gates. See [artefacts/enzymes-archetype-mvp/MANUAL-PROCESS-TEST.md](artefacts/enzymes-archetype-mvp/MANUAL-PROCESS-TEST.md).
+Hard-reload before re-running manual gates. Process rule **text** remains frozen (`PROCESS_RULE_FROZEN_VERSION = "20260715-4"`).
 
 ---
 
@@ -203,10 +237,10 @@ Sprint 58 is **closed** (2026-07-14). Report: [SPRINT-58-CLOSURE.md](../2026-07-
 | Archetype audit | → Framework workstream |
 | MVP routing + DLA emission | Done |
 | Mechanism transfer | **PASS** |
-| Process transfer + Copy delivery fix | **PASS** (rule `v20260715-4`) |
-| Mental model transfer | **NOT STARTED** |
+| Process transfer + Copy delivery fix | **PASS** (rule wording `v20260715-4`) |
+| Mental model transfer | **PASS** |
 
-Runtime touched: `lib/ld-instructional-archetype.js`, `lib/workflow-step-recognition-context.js`, `app.js` (recognition + Copy snapshot), GAM depth / pack notes, `lib/page-shell-create.js` (`alignEpisodePlansActivityIds`), related contracts/tests.
+Runtime touched: `lib/ld-instructional-archetype.js`, `lib/workflow-step-recognition-context.js`, `app.js` (recognition + Copy snapshot + mental-model opt-in), GAM depth / pack notes, `lib/page-shell-create.js` (`alignEpisodePlansActivityIds`), related contracts/tests.
 
 ---
 
@@ -214,21 +248,32 @@ Runtime touched: `lib/ld-instructional-archetype.js`, `lib/workflow-step-recogni
 
 | Material types (examples) | Instructional archetypes (examples) |
 | ------------------------- | ----------------------------------- |
-| text, worked_example, scenario, checklist, decision_table, modelling_note, template, prompt_set | mechanism_explanation, evaluation, transfer, process_walkthrough, … |
+| text, worked_example, scenario, checklist, decision_table, modelling_note, template, prompt_set | mechanism_explanation, evaluation, transfer, process_walkthrough, mental_model_building, … |
 
 Presentation format ≠ pedagogical function.
 
 ---
 
-## Deferred (not current priority)
+## Deferred / next sprint
 
-Renderer redesign · hard validators without archetype definitions · compose shrink · legacy removal · Sprint 60
+| Item | Note |
+| ---- | ---- |
+| Renderer redesign | Out of scope |
+| Hard validators without archetype definitions | Out of scope until package validation strategy |
+| Compose shrink / legacy removal | Sprint 58 deferred — do not reopen casually |
+| Production archetype selection (replace `S59_*_TEST`) | **Sprint 60** |
+| Observability / delivery verification hardening | **Sprint 60** |
+| Mixed-archetype workflows | **Sprint 60** |
+| Fuller P1/P2 support packages | After operationalisation |
+
+See [Sprint 60 charter](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md).
 
 ---
 
 ## First actions for new chat
 
-1. Read [next-chat-briefing.md](next-chat-briefing.md)  
-2. Treat mechanism + process MVP transfer as **done**; next Priority-1 gap is **`mental_model_building`**  
+1. Read [Sprint 60 START HERE](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-START-HERE.md) if continuing implementation  
+2. Treat Priority-1 MVP transfer (mechanism + process + mental model) as **done**  
 3. Do not re-litigate the process-rule wording (`v20260715-4`) or the recognition-context fix unless new evidence appears  
-4. Implement/design without regressing Evaluate/diagnostic support
+4. Focus Sprint 60 on **operationalisation**, not new archetype IDs first  
+5. Implement without regressing Evaluate/diagnostic support

@@ -3,7 +3,7 @@
 **Source:** First-audit pass (S59-FA-01 … FA-03)  
 **Purpose:** Candidate investigation areas when new workflows are generated later. **Not** workflow briefs.  
 **Status update (2026-07-14):** Several generation-depth hypotheses are **reframed** by the instructional-archetype audit. Prefer [instructional-archetype-audit.md](instructional-archetype-audit.md) and [backlog.md](backlog.md) for current priority work.  
-**Further update (2026-07-15):** Mechanism and process Priority-1 MVP transfer tests are **PASS**; mental-model transfer remains **NOT STARTED**. See [instructional-archetype-framework.md](instructional-archetype-framework.md).
+**Further update (2026-07-15):** Priority-1 MVP transfer tests are **PASS** for mechanism, process, and mental model. See [instructional-archetype-framework.md](instructional-archetype-framework.md).
 
 ---
 

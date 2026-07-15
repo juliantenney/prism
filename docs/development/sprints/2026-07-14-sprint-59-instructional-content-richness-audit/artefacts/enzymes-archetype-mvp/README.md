@@ -10,7 +10,7 @@ These are **DLA planning payloads**, not learner-facing bodies and not a full wo
 | ---- | --------- | --------------- |
 | `mechanism-explanation.required-material.json` | `mechanism_explanation` | **PASS** |
 | `process-walkthrough.required-material.json` | `process_walkthrough` | **PASS** (rule text frozen as `20260715-4`) |
-| `mental-model-building.required-material.json` | `mental_model_building` | **READY TO RUN** (not PASS) — thermostat MVP |
+| `mental-model-building.required-material.json` | `mental_model_building` | **PASS** — thermostat MVP |
 
 Handoffs: [MANUAL-MECHANISM-TEST.md](MANUAL-MECHANISM-TEST.md) · [MANUAL-PROCESS-TEST.md](MANUAL-PROCESS-TEST.md) · [MANUAL-MENTAL-MODEL-TEST.md](MANUAL-MENTAL-MODEL-TEST.md)
 

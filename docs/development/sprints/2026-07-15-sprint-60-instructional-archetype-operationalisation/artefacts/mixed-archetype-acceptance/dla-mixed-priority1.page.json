@@ -1,0 +1,101 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": ["dla"]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "learner_task": "State what an enzyme is and what reaction rate means in this investigation context.",
+      "expected_output": "A short accurate definition pair without mechanism claim.",
+      "activity_preamble": "Before explaining causes, lock the basic vocabulary.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "purpose": "Orient learners to enzyme and reaction-rate vocabulary.",
+          "specification": "Brief definitions only; no temperature mechanism.",
+          "instructional_function": "explanation"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learner_task": "Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.",
+      "expected_output": "A causal chain account connecting temperature change to rate outcome via intervening links.",
+      "activity_preamble": "You will explain the temperature–rate relationship as a transmitting process.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "purpose": "Teach how temperature affects enzyme reaction rate through a causal chain.",
+          "specification": "Explain temperature→rate rise then fall with intervening links; natural prose only.",
+          "instructional_archetype": "mechanism_explanation",
+          "archetype_plan": {
+            "start": "temperature increases within and beyond the enzyme's stable range",
+            "outcome": "reaction rate first increases and then decreases",
+            "required_links": [
+              "molecular kinetic energy and collision frequency",
+              "enzyme-substrate complex formation",
+              "disruption of enzyme structure at high temperature"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learner_task": "Build a working model of thermostat-controlled heating and use it to contrast mild vs extreme cold.",
+      "expected_output": "A coherent system model that explains both contrast states with the same relationships and constraint.",
+      "activity_preamble": "Hold a durable model; then apply it across states.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "modelling_note",
+          "purpose": "Help learners assemble a durable working model of thermostat-controlled heating.",
+          "specification": "Relationship-and-constraint model that contrasts mild vs extreme cold; natural prose only.",
+          "instructional_archetype": "mental_model_building",
+          "archetype_plan": {
+            "system": "a room heated by a thermostat-controlled heater",
+            "key_relationships": [
+              "the thermostat compares room temperature with the set point",
+              "the heater switches on when the room is below the set point and off when it reaches it",
+              "the room continually loses heat to colder surroundings"
+            ],
+            "governing_constraint": "the heater has a finite heating capacity",
+            "contrast": {
+              "state_a": "the outside temperature is mildly cold",
+              "state_b": "the outside temperature becomes extremely cold"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "learner_task": "Work through expert interpretation of an enzyme reaction-rate investigation from condition to conclusion.",
+      "expected_output": "A continuous walkthrough that transfers findings across stages to a bounded conclusion.",
+      "activity_preamble": "Model how an expert reads the evidence set.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "worked_example",
+          "purpose": "Model expert interpretation of an enzyme reaction-rate investigation.",
+          "specification": "Ordered process walkthrough from condition identification to bounded conclusion.",
+          "instructional_archetype": "process_walkthrough",
+          "archetype_plan": {
+            "process_goal": "interpret an enzyme reaction-rate investigation",
+            "stages": [
+              "identify the manipulated condition and measured outcome",
+              "inspect the pattern across observations",
+              "connect the pattern to enzyme behaviour",
+              "form a bounded conclusion"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

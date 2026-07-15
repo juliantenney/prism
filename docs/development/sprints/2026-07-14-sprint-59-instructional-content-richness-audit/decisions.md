@@ -97,3 +97,21 @@ Priority 2: `concept_exposition`, `recommendation`, `modelling_note` instruction
 **Decision:** Freeze process rule text at script version `20260715-4` unless a genuine post-delivery realisation failure is observed with routing confirmed present in `__PRISM_S59_FINAL_GAM_PROMPT.prompt`.
 
 **Date:** 2026-07-15
+
+---
+
+## S59-D11 — Mental model MVP transfer accepted; Priority-1 complete
+
+**Decision:** Accept Priority-1 MVP transfer as **PASS** for `mental_model_building` (thermostat MVP). The validated chain is DLA → persistence → GAM routing → generated materials for all three Priority-1 archetypes. Fuller purpose…validation packages remain open. Production activation (replace `S59_*_TEST`) is proposed for Sprint 60 — see [SPRINT-60-CHARTER.md](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md).
+
+**Supersedes (transfer status only):** S59-D09’s “mental model next / NOT STARTED” clause.
+
+**Date:** 2026-07-15
+
+---
+
+## S59-D12 — Propose Sprint 60 for operationalisation
+
+**Decision:** Open a proposed Sprint 60 charter for **Instructional Archetype Operationalisation** (production selection, DLA planning capability, routing-integrity preservation, observability, mixed-archetype validation). Do not treat Priority-2 archetype expansion as the primary Sprint 60 objective until production activation is stable.
+
+**Date:** 2026-07-15

@@ -41,43 +41,39 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 59 — Instructional Content Richness Audit (**Priority-1 MVP complete**, updated 2026-07-15)
+### Sprint 61 — Priority-1 Archetype Selection Reliability (**Open**, 2026-07-15)
 
-**Portable pack:** [`sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/)
-
-**Proposed successor:** [`sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/`](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/) — [charter](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CHARTER.md)
+**Portable pack:** [`sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/)
 
 | Entry | Path |
 |-------|------|
-| **START HERE** | [`SPRINT-59-START-HERE.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) |
-| **New-chat context** | [`SPRINT-59-CONTEXT-FOR-NEW-CHAT.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CONTEXT-FOR-NEW-CHAT.md) |
-| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/next-chat-briefing.md) |
-| **Archetype audit** | [`instructional-archetype-audit.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/instructional-archetype-audit.md) |
-| **Active workstream** | [`instructional-archetype-framework.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/instructional-archetype-framework.md) |
-| **Backlog** | [`backlog.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/backlog.md) |
-| **Predecessor closed** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
-| **Sprint 60 (proposed)** | [SPRINT-60-START-HERE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-START-HERE.md) |
+| **START HERE** | [`SPRINT-61-START-HERE.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md) |
+| **Charter** | [`SPRINT-61-CHARTER.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CHARTER.md) |
+| **Benchmark** | [`acceptance-matrix.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/acceptance-matrix.md) |
+| **Protocol (frozen)** | [`PHASE-A-PROTOCOL.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/PHASE-A-PROTOCOL.md) |
+| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/next-chat-briefing.md) |
+| **Sprint 60 closure** | [SPRINT-60-CLOSURE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) |
+| **Sprint 59 closure** | [SPRINT-59-CLOSURE.md](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CLOSURE.md) |
+| **Architecture baseline** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
 
-**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Priority-1 teaching MVP transfer now **PASS** for mechanism, process, and mental model on **DLA → persistence → GAM routing → generated materials**.
+**Core research question:** Can ordinary DLA planning reliably infer and emit the correct Priority-1 `instructional_archetype` + complete `archetype_plan` from **sparse briefs**, without author triggers, `S59_*_TEST`, fixture stamps, or manual archetype JSON?
 
-| Component | Status |
-| --------- | ------ |
-| DLA contract generation | PASS |
-| Contract persistence | PASS |
-| Archetype routing | PASS |
-| GAM Copy delivery | PASS |
-| Runtime verification | PASS |
-| Mechanism transfer test | PASS |
-| Process transfer test | PASS |
-| Mental model transfer test | PASS |
+**Unmistakable distinction:** Sprint 60 proved routing/delivery **when valid plans exist**. Sprint 61 tests whether DLA **creates** those plans **unaided**.
 
-**Next focus:** Sprint 60 is **ready to close** (Phases A–C PASS, 2026-07-15). Production SoT = `required_materials[]`; delivery via `window.__PRISM_FINAL_GAM_PROMPT.archetype_delivery`; mixed Priority-1 acceptance at [PHASE-C-ACCEPTANCE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/PHASE-C-ACCEPTANCE.md). Optional follow-ons (Priority-2, UI, fuller packages, token-helper cleanup) need a new sprint charter.
+**Phase:** **A — Scored baseline authorised** (protocol frozen 2026-07-15). Partial-page harness · 3 runs × 10 briefs · [PHASE-A-PROTOCOL.md](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/PHASE-A-PROTOCOL.md).
 
-**Completed in Sprint 59:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit; Priority-1 MVP routing; mechanism + process + mental model transfer; GAM Copy recognition-context fix (`buildWorkflowStepRecognitionContext`).
+**Closed predecessors:** Sprint 59 Priority-1 MVP transfer PASS; Sprint 60 production SoT + mixed-archetype delivery PASS. Do not reopen Sprint 58/59/60 closed workstreams.
 
-**Runtime cache-bust:** `ld-instructional-archetype.js?v=20260715-5`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-mental-1`.
+### Closed — Sprint 59 / 60 (2026-07-15)
 
-**Non-goals (carry forward):** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; rewriting process rule `v20260715-4` wording without new post-delivery evidence.
+| Sprint | Outcome | Closure |
+| ------ | ------- | ------- |
+| **59** | Priority-1 MVP transfer PASS (mechanism · process · mental model) | [SPRINT-59-CLOSURE.md](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CLOSURE.md) |
+| **60** | Production SoT + `__PRISM_FINAL_GAM_PROMPT.archetype_delivery` + mixed-archetype acceptance PASS | [SPRINT-60-CLOSURE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) |
+
+**Locked facts:** Quality variation primarily = instructional-archetype support asymmetry. Production SoT = `required_materials[].instructional_archetype` + `archetype_plan`. Delivery gate: do not evaluate archetype quality until `archetype_delivery.pass` is true. Process rule wording frozen at `20260715-4` lineage unless new post-delivery failure evidence.
+
+**Non-goals (carry forward into Sprint 61+):** Renderer redesign; hard validators without packages; Sprint 58 architecture reopen; Priority-2 expansion; author picker UI; full P1 packages as primary objective.
 
 ---
 

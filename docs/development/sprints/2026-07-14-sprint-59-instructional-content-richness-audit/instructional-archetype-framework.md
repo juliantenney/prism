@@ -135,6 +135,9 @@ MVP routing + transfer tests prove the contract/delivery path; they do not close
 | `mechanism_explanation` | Enzymes A2/A4 failure mode; core teaching gap | **PASS** |
 | `process_walkthrough` | Step-list collapse without expert process teaching | **PASS** (`v20260715-4`) |
 | `mental_model_building` | Conceptual systems under-served | **PASS** (thermostat MVP) |
+| `evaluation_judgement` | Criteria + evidence + trade-offs → justified conclusion (Sprint 61-E01) | **Wired** (production allowlist) |
+
+**Production naming (Sprint 61-E01):** Conceptual inventory labels `evaluation` and `worked_judgement` are represented in production by the single instructional-archetype ID `evaluation_judgement`. Do not invent parallel production IDs for those inventory names.
 
 ### Priority 2
 
@@ -146,7 +149,7 @@ MVP routing + transfer tests prove the contract/delivery path; they do not close
 
 ### Deferred (preserve current strength; do not regress)
 
-Preserve/document contracts for already-strong shapes: `evidence_interpretation`, `diagnostic_comparison`, `worked_judgement`, `evaluation`, `verification`, `transfer`, `worked_analysis`, `guided_practice`, `independent_performance`, `consolidation`, `misconception_repair`.
+Preserve/document contracts for already-strong shapes: `evidence_interpretation`, `diagnostic_comparison`, `verification`, `transfer`, `worked_analysis`, `guided_practice`, `independent_performance`, `consolidation`, `misconception_repair`. (Inventory names `worked_judgement` / `evaluation` → production ID `evaluation_judgement`.)
 
 ---
 

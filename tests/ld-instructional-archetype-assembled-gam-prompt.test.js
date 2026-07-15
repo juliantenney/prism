@@ -115,7 +115,7 @@ test("runtime snapshot exposes loaded rule + plan for A4-M1", () => {
   const snap = archetype.buildS59GamArchetypeRuntimeSnapshot(page, {
     material_id: "A4-M1"
   });
-  assert.equal(snap.loaded_archetype_script_version, "20260715-5");
+  assert.equal(snap.loaded_archetype_script_version, archetype.SCRIPT_VERSION);
   assert.equal(snap.selected_instructional_archetype, "process_walkthrough");
   assert.equal(snap.material_id, "A4-M1");
   assert.equal(

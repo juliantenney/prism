@@ -11,7 +11,7 @@
 - **Workstream:** [Instructional Archetype Framework](instructional-archetype-framework.md) — Priority-1 transfer validated
 - **Milestone (2026-07-15):** Mechanism · process · mental-model transfer tests all **PASS** on DLA → persistence → GAM routing → materials
 - **Predecessor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) — **closed**
-- **Successor (proposed):** [Sprint 60 — Instructional Archetype Operationalisation](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-START-HERE.md)
+- **Successor:** [Sprint 60 (closed)](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) → [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md)
 - **Briefing paste:** [next-chat-briefing.md](next-chat-briefing.md)
 
 ### Component status

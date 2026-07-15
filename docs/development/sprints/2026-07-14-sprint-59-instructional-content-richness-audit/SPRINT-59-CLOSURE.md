@@ -5,7 +5,7 @@
 **Closed:** 2026-07-15  
 **Status:** Complete (Priority-1 MVP transfer validated)  
 **Predecessor:** [Sprint 58 — Partial Page Artefact Architecture](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md)  
-**Successor:** [Sprint 60 — Instructional Archetype Operationalisation](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md)
+**Successor:** [Sprint 60 — Instructional Archetype Operationalisation](../2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) → [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md)
 
 ---
 

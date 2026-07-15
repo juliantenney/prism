@@ -6,7 +6,8 @@
 
 ## Status
 
-- **Sprint:** 60 — **Ready to close** (Phases A–C complete, 2026-07-15)
+- **Sprint:** 60 — **Closed** (Phases A–C complete, 2026-07-15) — [SPRINT-60-CLOSURE.md](SPRINT-60-CLOSURE.md)
+- **Successor:** [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md)
 - **Theme:** Move Priority-1 instructional archetypes from Sprint 59 lab/opt-in activation into production DLA planning
 - **Phase A:** **Complete** — production DLA archetype planning; SoT = `required_materials[]`
 - **Phase B:** **Complete** — `__PRISM_FINAL_GAM_PROMPT` + `archetype_delivery` verification
@@ -36,9 +37,9 @@ Sprint 59 validated Priority-1 archetypes under lab tokens. Sprint 60 operationa
 
 ## Immediate next tasks
 
-1. Formal Sprint 60 closure documentation if desired (this pack already records A–C PASS).  
-2. Do **not** expand Priority-2, authoring UI, renderer, or fuller packages under Sprint 60.  
-3. Keep `S59_*_TEST` helpers as regression-only until a later cleanup sprint retires them.  
+1. Continue in **Sprint 61** — [SPRINT-61-START-HERE.md](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md) (selection reliability measurement).  
+2. Do **not** reopen Sprint 60 for Priority-2, authoring UI, renderer, or fuller packages.  
+3. Keep `S59_*_TEST` helpers as regression-only until an explicit cleanup sprint.  
 4. Preserve process rule wording (`20260715-4` lineage) and recognition-context delivery path.
 
 ### Phases A–C done

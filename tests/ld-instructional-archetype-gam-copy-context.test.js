@@ -304,7 +304,7 @@ test("recognised GAM Copy publishes snapshot equal to clipboard-bound string", (
   assert.equal(snap.source, "workflow_step_copy");
   assert.equal(snap.contains_archetype_routing, true);
   assert.equal(snap.contains_process_rule, true);
-  assert.equal(snap.archetype_script_version, "20260715-5");
+  assert.equal(snap.archetype_script_version, archetype.SCRIPT_VERSION);
   assert.equal(snap.step_title, "Generate Activity Materials");
   assert.equal(snap.canonical_step_id, "generate_activity_materials");
   assert.equal(snap.selected_instructional_archetypes.length, 1);

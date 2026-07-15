@@ -100,11 +100,13 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
   assert.match(guidance, /mechanism_explanation/);
   assert.match(guidance, /process_walkthrough/);
   assert.match(guidance, /mental_model_building/);
+  assert.match(guidance, /evaluation_judgement/);
   assert.match(guidance, /key_relationships/);
   assert.match(guidance, /governing_constraint/);
   assert.match(guidance, /contrast/);
   assert.match(guidance, /state_a/);
   assert.match(guidance, /state_b/);
+  assert.match(guidance, /judgement_focus/);
   assert.match(guidance, /Do NOT emit parts/);
   assert.match(guidance, /predicted_effect/);
   assert.match(guidance, /multiple materials using different Priority-1 archetypes/i);
@@ -117,6 +119,7 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
 
   assert.match(snippet, /Instructional archetype planning on required_materials/);
   assert.match(snippet, /key_relationships/);
+  assert.match(snippet, /evaluation_judgement/);
   assert.doesNotMatch(snippet, /system\/parts\/relationships/);
   assert.equal(dlaContract.CONTRACT_VERSION, "58-DLA-PARTIAL-2");
 });

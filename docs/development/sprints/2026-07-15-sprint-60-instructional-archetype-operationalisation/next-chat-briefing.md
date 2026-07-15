@@ -7,15 +7,17 @@
 
 ## Briefing (copy below)
 
-You are continuing PRISM / learning-design work after **Sprint 60 — Instructional Archetype Operationalisation**.
+You are continuing PRISM / learning-design work after **Sprint 60 — closed**. Active work is **Sprint 61 — Priority-1 Archetype Selection Reliability**.
 
 **Sprint 58 is closed.**  
-**Sprint 59 Priority-1 MVP is complete** (mechanism · process · mental model transfer PASS).  
-**Sprint 60 Phases A–C are complete** — recommend **close Sprint 60**.
+**Sprint 59 is closed** (Priority-1 MVP transfer PASS).  
+**Sprint 60 is closed** (Phases A–C PASS) — [SPRINT-60-CLOSURE.md](SPRINT-60-CLOSURE.md).
 
-**Pack:** `docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/`  
-**Start:** [SPRINT-60-START-HERE.md](SPRINT-60-START-HERE.md)  
-**Phase C evidence:** [artefacts/mixed-archetype-acceptance/PHASE-C-ACCEPTANCE.md](artefacts/mixed-archetype-acceptance/PHASE-C-ACCEPTANCE.md)
+**Active pack:** `docs/development/sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/`  
+**Start:** [SPRINT-61-START-HERE.md](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md)  
+**Sprint 60 evidence (historical):** [PHASE-C-ACCEPTANCE.md](artefacts/mixed-archetype-acceptance/PHASE-C-ACCEPTANCE.md)
+
+**Distinction:** Sprint 60 proved delivery when plans exist. Sprint 61 tests whether DLA creates plans unaided from sparse briefs.
 
 ---
 

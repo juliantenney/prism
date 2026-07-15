@@ -83,6 +83,17 @@ test("each valid archetype selects only its own compact rule", () => {
         contrast: { state_a: "mild cold", state_b: "extreme cold" }
       },
       /Build a coherent account of the named system/
+    ],
+    [
+      "evaluation_judgement",
+      {
+        question: "Should containment be prioritised?",
+        criteria: ["transmission risk", "feasibility"],
+        evidence: ["cluster secondary attack patterns"],
+        tradeoffs: ["service capacity trade-off"],
+        judgement_focus: "whether evidence justifies containment now"
+      },
+      /Apply every supplied criterion to the supplied evidence/
     ]
   ];
 
@@ -153,6 +164,17 @@ test("incomplete planning payloads reject with useful diagnostics", () => {
         contrast: { state_a: "a" }
       },
       expect: /system|key_relationships|governing_constraint|state_b/
+    },
+    {
+      instructional_archetype: "evaluation_judgement",
+      archetype_plan: {
+        question: "",
+        criteria: ["one"],
+        evidence: [],
+        tradeoffs: [],
+        judgement_focus: ""
+      },
+      expect: /question|criteria|evidence|tradeoffs|judgement_focus/
     }
   ];
   cases.forEach(function (row) {

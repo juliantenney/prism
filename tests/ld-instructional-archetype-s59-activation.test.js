@@ -126,5 +126,5 @@ test("activation snapshot shape is compact and stable", () => {
     "workflow_goal"
   ]);
   assert.equal(snapshot.selected_dla_test, "process");
-  assert.equal(snapshot.loaded_archetype_script_version, "20260715-5");
+  assert.equal(snapshot.loaded_archetype_script_version, archetype.SCRIPT_VERSION);
 });

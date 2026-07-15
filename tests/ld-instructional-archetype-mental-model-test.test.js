@@ -150,5 +150,5 @@ test("process rule text remains frozen 20260715-4 wording", () => {
 });
 
 test("SCRIPT_VERSION bumped for mental-model MVP module", () => {
-  assert.equal(archetype.SCRIPT_VERSION, "20260715-5");
+  assert.equal(archetype.SCRIPT_VERSION, "20260715-e01w");
 });

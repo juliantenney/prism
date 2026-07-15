@@ -5,7 +5,7 @@
 **Closed:** 2026-07-15  
 **Status:** Complete (Phases A–C PASS)  
 **Predecessor:** [Sprint 59 — Instructional Content Richness Audit / Archetype Framework MVP](../2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CLOSURE.md)  
-**Successor (recommended):** Sprint 61 — Priority-1 Archetype Authoring Reliability (charter pending)
+**Successor:** [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CHARTER.md) (**open**)
 
 ---
 
@@ -136,10 +136,6 @@ Workflow goal/title tokens, window flags, `selected_dla_test`, fixture emission 
 
 ## 8. Successor sprint
 
-**Recommended theme:** Priority-1 Archetype Authoring Reliability
+**Opened:** [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md)
 
-Focus: minimal, material-scoped planning reliability for existing Priority-1 IDs; surface delivery verification in ordinary workflow use; quarantine legacy lab activation from default author paths; ship 1–2 reference production workflows.
-
-**Out of successor primary scope (unless re-chartered):** new archetypes, renderer work, full support-package expansion, major UI redesign.
-
-Charter to be filed as Sprint 61 pack (not yet created at Sprint 60 close).
+Sprint 60 proved routing and delivery **when valid plans exist**. Sprint 61 measures whether ordinary DLA **creates** those plans **unaided** from sparse briefs (measurement-and-calibration first; no Priority-2 / UI / renderer expansion as primary scope).

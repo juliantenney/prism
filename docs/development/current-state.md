@@ -41,7 +41,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 59 — Instructional Content Richness Audit (**In progress**, 2026-07-14)
+### Sprint 59 — Instructional Content Richness Audit (**In progress**, updated 2026-07-15)
 
 **Portable pack:** [`sprints/2026-07-14-sprint-59-instructional-content-richness-audit/`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/)
 
@@ -55,13 +55,26 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 | **Backlog** | [`backlog.md`](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/backlog.md) |
 | **Predecessor closed** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
 
-**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Weak: concept exposition, mechanism explanation, process walkthrough, mental-model building.
+**Current conclusion:** Quality variation is primarily **instructional-archetype support asymmetry** (not domain-specific GAM routing). Strong: diagnose/compare/evaluate/verify/transfer. Historical teaching gaps: concept exposition, mechanism, process, mental-model — mechanism and process MVP transfer now **PASS**.
 
-**Active priority:** Instructional Archetype Framework — start with `mechanism_explanation`, `process_walkthrough`, `mental_model_building`. Do **not** open Sprint 60.
+| Component | Status |
+| --------- | ------ |
+| DLA contract generation | PASS |
+| Contract persistence | PASS |
+| Archetype routing | PASS |
+| GAM Copy delivery | PASS |
+| Runtime verification | PASS |
+| Mechanism transfer test | PASS |
+| Process transfer test | PASS |
+| Mental model validation | NOT STARTED |
 
-**Completed in-sprint:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit.
+**Active priority:** Instructional Archetype Framework — next gap is `mental_model_building` transfer; fuller P1/P2 packages still open. Do **not** open Sprint 60.
 
-**Non-goals:** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; creating Sprint 60.
+**Completed in-sprint:** first richness audit; generation-constraint audit; GAM depth Iterations 1–7; heteroscedasticity vs enzymes comparison; formal archetype audit; Priority-1 MVP routing; mechanism + process transfer; GAM Copy recognition-context fix (`buildWorkflowStepRecognitionContext`).
+
+**Runtime cache-bust:** `ld-instructional-archetype.js?v=20260715-4`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-gam-ctx-1`.
+
+**Non-goals:** Renderer redesign; hard validators without archetype packages; Sprint 58 architecture reopen; creating Sprint 60; rewriting process rule `v20260715-4` without new post-delivery evidence.
 
 ---
 

@@ -96,8 +96,8 @@ test("GAM routing reads stamped capture and selects only mechanism rule", () => 
   assert.match(routed, /Selected rule ids for this request: mechanism_explanation\./);
   assert.match(routed, /Realise every entry in required_links/);
   assert.match(routed, /more than one phase|each phase/i);
-  assert.doesNotMatch(routed, /Walk through the supplied stages in order/);
-  assert.doesNotMatch(routed, /Build a coherent working model/);
+  assert.doesNotMatch(routed, /worked walkthrough/i);
+  assert.doesNotMatch(routed, /Build a coherent account of the named system/);
   assert.match(routed, /ANTI-GAMING/i);
   assert.match(routed, /ANTI-LEAKAGE/i);
   assert.equal(
@@ -116,14 +116,16 @@ test("mechanism_explanation rule duties: every link + all outcome phases", () =>
   assert.match(rule, /omit an intermediate link/i);
   assert.match(rule, /connected learner-facing prose|labelled list/i);
   assert.doesNotMatch(rule, /each important transition/);
-  assert.equal(
+  assert.match(
     archetype.RULES.process_walkthrough,
-    "Walk through the supplied stages in order. Explain what happens at each stage and why it advances the process; do not turn stage labels into unsupported numbered facts."
+    /worked walkthrough.*every supplied stage.*explicit intermediate finding.*procedural checklist/is
   );
-  assert.equal(
+  assert.match(
     archetype.RULES.mental_model_building,
-    "Build a coherent working model from the supplied parts and relationships. Explain how the parts interact and what constrains the system; do not produce a glossary of separate definitions."
+    /Build a coherent account of the named system using the supplied relationships and governing constraint/
   );
+  assert.match(archetype.RULES.mental_model_building, /two supplied states/);
+  assert.doesNotMatch(archetype.RULES.mental_model_building, /glossary of separate definitions/);
 });
 
 test("planning values included exactly once in mechanism routing block", () => {

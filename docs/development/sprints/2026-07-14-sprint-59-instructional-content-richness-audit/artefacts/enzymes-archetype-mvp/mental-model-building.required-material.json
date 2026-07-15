@@ -1,21 +1,20 @@
 {
-  "material_id": "A2-M2",
+  "material_id": "A3-M1",
   "material_type": "modelling_note",
-  "purpose": "Help learners assemble a durable working model of enzyme catalysis.",
-  "specification": "Relationship-first model of enzyme-catalysed reaction; not a glossary.",
+  "purpose": "Help learners assemble a durable working model of thermostat-controlled heating.",
+  "specification": "Relationship-and-constraint model that contrasts mild vs extreme cold; natural prose only.",
   "instructional_archetype": "mental_model_building",
   "archetype_plan": {
-    "system": "enzyme-catalysed reaction",
-    "parts": [
-      "enzyme",
-      "substrate",
-      "active site",
-      "product"
+    "system": "a room heated by a thermostat-controlled heater",
+    "key_relationships": [
+      "the thermostat compares room temperature with the set point",
+      "the heater switches on when the room is below the set point and off when it reaches it",
+      "the room continually loses heat to colder surroundings"
     ],
-    "relationships": [
-      "substrate binding depends on active-site compatibility",
-      "enzyme structure constrains binding",
-      "the enzyme becomes available again after product release"
-    ]
+    "governing_constraint": "the heater has a finite heating capacity",
+    "contrast": {
+      "state_a": "the outside temperature is mildly cold",
+      "state_b": "the outside temperature becomes extremely cold"
+    }
   }
 }

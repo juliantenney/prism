@@ -2,6 +2,8 @@
 
 Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint while the Instructional Archetype Framework workstream remains open.
 
+**Updated:** 2026-07-15
+
 ## Phase A — Diagnostic richness audit (largely complete)
 
 ### Sample and inventory
@@ -36,14 +38,25 @@ Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint whi
 
 ## Phase B — Instructional Archetype Framework (active — sprint remains open)
 
-- [ ] Priority 1 packages designed: `mechanism_explanation`, `process_walkthrough`, `mental_model_building`
-- [ ] Each P1 package includes: purpose · procedure · components · criteria · anti-patterns · exemplars · validation strategy
+### MVP path (mechanism + process)
+
+- [x] Priority-1 MVP routing wired (`lib/ld-instructional-archetype.js`)
+- [x] DLA contract generation + persistence for optional archetype plans
+- [x] Archetype routing on GAM
+- [x] GAM Copy delivery (recognition-context fix; clipboard receives routing)
+- [x] Runtime verification (`?v=20260715-4` archetype · `?v=20260715-s59-gam-ctx-1` recognition + app)
+- [x] Mechanism transfer test **PASS**
+- [x] Process transfer test **PASS** (rule `v20260715-4`)
+- [ ] Mental model transfer validation (**NOT STARTED**)
+- [x] Iterations 4–7 anti-gaming and anti-exemplar-leakage preserved
+- [x] No Sprint 60 created; Sprint 58 pipeline ownership preserved
+- [x] Sprint docs and handoff updated at MVP milestones (2026-07-15)
+
+### Full packages (still open)
+
+- [ ] Priority 1 packages fully designed: purpose · procedure · components · criteria · anti-patterns · exemplars · validation strategy (beyond MVP routing/transfer)
 - [ ] Priority 2 packages scoped: `concept_exposition`, `recommendation`, `modelling_note` contracts
-- [ ] Implementation wired without regressing Evaluate / diagnostic / verification / transfer support
-- [ ] Iterations 4–7 anti-gaming and anti-exemplar-leakage preserved
-- [ ] Transfer check: teaching-heavy topic (e.g. enzymes-like) shows improved mechanism/process materials
-- [ ] Sprint docs and handoff updated at package milestones
-- [ ] No Sprint 60 created; Sprint 58 pipeline ownership preserved
+- [ ] Implementation of fuller packages without regressing Evaluate / diagnostic / verification / transfer support
 
 ## Explicit non-requirements (still)
 
@@ -51,3 +64,4 @@ Sprint 59 completes in **phases**. Diagnostic exit does not close the sprint whi
 - Hard validators without archetype package definitions
 - Closing Deferred Sprint 58 architecture follow-ons
 - Documenting-only closure that ignores the archetype workstream
+- Rewriting process rule `v20260715-4` without new post-delivery-failure evidence

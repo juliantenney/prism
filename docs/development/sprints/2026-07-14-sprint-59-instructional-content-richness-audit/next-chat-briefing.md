@@ -1,6 +1,7 @@
 # Sprint 59 — Briefing for New Chat
 
-**Document role:** Concise transfer prompt to paste into a new chat. **Not** a second full specification — details live in [README.md](README.md) and linked documents.
+**Document role:** Concise transfer prompt to paste into a new chat. **Not** a second full specification — details live in [README.md](README.md) and linked documents.  
+**Updated:** 2026-07-15
 
 ---
 
@@ -21,8 +22,9 @@ You are continuing PRISM / learning-design work in **Sprint 59**.
 
 Quality variation is explained primarily by **instructional-archetype support differences**, not by domain-specific GAM behaviour.
 
-- Strong today: evidence interpretation, diagnostic reasoning, comparison, evaluation, judgement, verification, transfer  
-- Weak today: concept exposition, mechanism explanation, process walkthrough, mental-model building  
+- Strong historically: evidence interpretation, diagnostic reasoning, comparison, evaluation, judgement, verification, transfer  
+- Priority-1 teaching MVP now **validated** for `mechanism_explanation` and `process_walkthrough`  
+- Still open for transfer validation: `mental_model_building`  
 - Secondary factor: domain exemplar bias (economics-heavy DEPTH exemplars)  
 - No evidence of biology-specific routing or domain path divergence  
 
@@ -30,13 +32,28 @@ Formal audit: [instructional-archetype-audit.md](instructional-archetype-audit.m
 
 ---
 
+### Milestone status (2026-07-15)
+
+| Component | Status |
+| --------- | ------ |
+| DLA contract generation | PASS |
+| Contract persistence | PASS |
+| Archetype routing | PASS |
+| GAM Copy delivery | PASS |
+| Runtime verification | PASS |
+| Mechanism transfer test | PASS |
+| Process transfer test | PASS |
+| Mental model validation | NOT STARTED |
+
+---
+
 ### Current priority
 
-Design and implement the **Instructional Archetype Framework**, beginning with:
+Continue the **Instructional Archetype Framework**:
 
-1. `mechanism_explanation`  
-2. `process_walkthrough`  
-3. `mental_model_building`  
+1. `mechanism_explanation` — **PASS** (transfer validated)  
+2. `process_walkthrough` — **PASS** (rule `v20260715-4`; finding-transfer validated)  
+3. `mental_model_building` — **NOT STARTED** (next Priority-1 transfer gap)  
 
 Then Priority 2: `concept_exposition`, `recommendation`, `modelling_note` instructional contracts.
 
@@ -46,7 +63,29 @@ Backlog: [backlog.md](backlog.md) (S59-BL-101 … 203)
 **Principle:** Material Type ≠ Instructional Archetype  
 (Material type = presentation format; archetype = pedagogical function.)
 
-Each archetype package needs: purpose · generation procedure · required components · quality criteria · anti-patterns · exemplars · validation strategy.
+Each full archetype package still needs: purpose · generation procedure · required components · quality criteria · anti-patterns · exemplars · validation strategy (beyond MVP routing).
+
+---
+
+### Critical process history (do not re-diagnose as rule failure)
+
+Earlier process-validation failures were often **invalid tests**: the process rule never reached the GAM Copy prompt.
+
+```text
+outer GAM recognition = shaped context → true
+inner routing context = raw step → false
+→ LD-INSTRUCTIONAL-ARCHETYPE-ROUTING skipped
+```
+
+Fixed with `buildWorkflowStepRecognitionContext` unifying GAM recognition, archetype routing, and snapshot publication. The process rule (`v20260715-4`) was not the failure — delivery was.
+
+Runtime cache-bust:
+
+```text
+ld-instructional-archetype.js?v=20260715-4
+workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1
+app.js?v=20260715-s59-gam-ctx-1
+```
 
 ---
 
@@ -56,8 +95,10 @@ Each archetype package needs: purpose · generation procedure · required compon
 2. Generation-constraint audit — no PRISM run-mode max_output_tokens; v2 GAM presence-only; DLA hard / GAM soft  
 3. Iterations 1–7 — `LD-GAM-INSTRUCTIONAL-DEPTH` (causal chains, anti-rubric-gaming, anti-exemplar-leakage)  
 4. Heteroscedasticity — strong diagnostic/evaluate behaviour (success case)  
-5. Enzymes and Reaction Rates — strong pipeline, weak mechanism/process teaching  
+5. Enzymes and Reaction Rates — strong pipeline, weak mechanism/process teaching (pre-MVP)  
 6. Archetype prompt/validation audit → framework direction  
+7. MVP routing + mechanism transfer **PASS**  
+8. Process transfer **PASS** + GAM Copy recognition-context fix  
 
 Also: EP `episode_plans[].activity_id` alignment fix in `lib/page-shell-create.js` (separate bugfix).
 
@@ -65,14 +106,15 @@ Also: EP `episode_plans[].activity_id` alignment fix in `lib/page-shell-create.j
 
 ### Pipeline / ownership (unchanged)
 
-LO → EP → DLA → GAM → assessment → LS → DP `page_synthesis` → assemble → render  
+LO → EP shell → DLA partial → GAM partial → Assessment → LS partial → DP synthesis → deterministic assembly → render  
 
-GAM owns `materials[]`. DLA owns activity scaffolds. Do not blur owners in findings.
+GAM owns `materials[]`. DLA owns activity scaffolds + optional archetype plans on `required_materials`. Do not blur owners in findings.
 
 ---
 
 ### Preserve always
 
+- Process rule version `20260715-4` (do not rewrite without new failure evidence after delivery fix)  
 - Iterations 4–7: no Cause:/Mechanism: rubric labels; no weak/strong exemplar leakage  
 - Do not weaken Evaluate / SP-02..07 / verification / transfer support  
 - One primary A–F class per finding  

@@ -6,8 +6,9 @@
 
 - **Sprint ID:** 59
 - **Date opened:** 2026-07-14
-- **Status:** In progress — diagnostic complete; **Instructional Archetype Framework** is the active workstream
-- **Mode:** Diagnostic audit (complete for first pass) + approved GAM depth iterations + archetype-framework design/implementation (in-sprint)
+- **Status:** In progress — Priority-1 MVP **routing + delivery validated** for mechanism and process; mental-model transfer **not started**
+- **Mode:** Diagnostic audit (complete) + GAM depth Iterations 1–7 + archetype MVP implementation/validation (in-sprint)
+- **Updated:** 2026-07-15
 - **Predecessor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) (**closed**)
 - **Do not open Sprint 60** from this work — remain in Sprint 59
 
@@ -21,11 +22,28 @@
 
 **Quality variation is primarily explained by instructional-archetype support differences rather than domain-specific behaviour.**
 
-- **Primary:** Archetype support asymmetry (Evaluate/diagnose/compare rich; mechanism/process/concept thin).
+- **Primary:** Archetype support asymmetry (Evaluate/diagnose/compare rich; mechanism/process/concept thin — historically).
 - **Secondary:** Domain exemplar bias within already-strong archetypes.
 - **No evidence of:** Biology-specific routing or domain-specific GAM path divergence.
 
 Formal record: [instructional-archetype-audit.md](instructional-archetype-audit.md).
+
+## Milestone status (2026-07-15)
+
+| Component | Status |
+| --------- | ------ |
+| DLA contract generation | **PASS** |
+| Contract persistence | **PASS** |
+| Archetype routing | **PASS** |
+| GAM Copy delivery | **PASS** |
+| Runtime verification | **PASS** |
+| Mechanism transfer test | **PASS** |
+| Process transfer test | **PASS** |
+| Mental model validation | **NOT STARTED** |
+
+Instructional archetypes are an **independent instructional dimension**. Material type ≠ instructional archetype. Intent travels as optional `instructional_archetype` + `archetype_plan` on DLA `required_materials`, then compact Priority-1 rules on GAM Copy.
+
+**Cache-bust verified at runtime:** `ld-instructional-archetype.js?v=20260715-4`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, `app.js?v=20260715-s59-gam-ctx-1`.
 
 ## Scope
 
@@ -37,11 +55,21 @@ Formal record: [instructional-archetype-audit.md](instructional-archetype-audit.
 - Heteroscedasticity success case + enzymes weakness comparison
 - Instructional archetype prompt/validation audit
 
-### Active — Instructional Archetype Framework
+### Completed — Priority-1 MVP (mechanism + process)
 
-See [instructional-archetype-framework.md](instructional-archetype-framework.md) and [backlog.md](backlog.md).
+- Explicit routing module + DLA plan validation + enzymes fixtures
+- Mechanism transfer test **PASS** (link → causal transition → outcome)
+- Process transfer test **PASS** (rule `v20260715-4`; finding-transfer walkthrough)
+- GAM Copy context-shape fix (`buildWorkflowStepRecognitionContext`) so routing reaches clipboard-bound prompts
+- Final-prompt snapshot `window.__PRISM_S59_FINAL_GAM_PROMPT` confirmed on live Copy
 
-**Priority 1:** `mechanism_explanation`, `process_walkthrough`, `mental_model_building`  
+See [instructional-archetype-framework.md](instructional-archetype-framework.md), [roadmap.md](roadmap.md), [backlog.md](backlog.md).
+
+### Active — remaining Instructional Archetype Framework work
+
+**Still open:** `mental_model_building` transfer validation; fuller P1/P2 support packages (purpose…validation strategy beyond MVP routing).
+
+**Priority 1:** `mechanism_explanation` ✓ · `process_walkthrough` ✓ · `mental_model_building` (not started)  
 **Priority 2:** `concept_exposition`, `recommendation`, `modelling_note` instructional contracts
 
 ### Still in scope (diagnostic artefacts)

@@ -1,7 +1,11 @@
 # Manual mechanism transfer test — handoff
 
 **Purpose:** Manually verify that a `mechanism_explanation` contract travels DLA → capture → GAM routing → material body.  
-**Do not** treat this as an instructional-quality rubric; only confirm the route and save artefacts.
+**Status (2026-07-15):** Transfer test **PASS**.
+
+**Validated behaviour:** `required_link` → realised causal transition → `outcome`.
+
+**Do not** treat this as a full instructional-quality rubric package; MVP transfer confirms the contract route and realisation pattern.
 
 **Opt-in token (required):** `S59_MECHANISM_TEST`
 
@@ -10,7 +14,10 @@
 ## 1. Workflow / fixture to open
 
 1. Open PRISM in the browser (`index.html` via your usual local host, e.g. XAMPP).
-2. Soft-reload so scripts include `lib/ld-instructional-archetype.js?v=20260714-2`.
+2. Soft-reload so scripts include:
+   - `lib/ld-instructional-archetype.js?v=20260715-4`
+   - `lib/workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`
+   - `app.js?v=20260715-s59-gam-ctx-1`
 3. Create or open an **Enzymes and Reaction Rates** (or equivalent temperature/enzyme) learning-design workflow with partial-page flags on (`pageEnrichmentV2` + `partialPageOutputs`).
 4. In the workflow **goal** (or title/notes), include the exact token:
 
@@ -41,6 +48,23 @@ window.__PRISM_S59_MECHANISM_TEST = true
 | `activity_id` | `A2` |
 | `material_id` | `A2-M1` |
 | `instructional_archetype` | `mechanism_explanation` |
+
+Validated fixture plan:
+
+```json
+{
+  "instructional_archetype": "mechanism_explanation",
+  "archetype_plan": {
+    "start": "temperature increases within and beyond the enzyme's stable range",
+    "outcome": "reaction rate first increases and then decreases",
+    "required_links": [
+      "molecular kinetic energy and collision frequency",
+      "enzyme-substrate complex formation",
+      "disruption of enzyme structure at high temperature"
+    ]
+  }
+}
+```
 
 If A2 / A2-M1 does not exist yet, the capture stamp creates `A2-M1` on activity `A2` (or the first activity if `A2` is missing). Prefer designs that already have activity **A2**.
 
@@ -184,5 +208,5 @@ Fixture reference (planning only):
 
 1. **Token missing** — without `S59_MECHANISM_TEST` (or window flag), no DLA emission block and no capture stamp.
 2. **DLA not persisted in runstate** — GAM routing uses `resolveDlaEnrichedPageJsonForGamCopy`; if the DLA textarea was never synced, no rule injects. Re-blur/save DLA before copying GAM.
-3. **Hard refresh** — ensure cache-bust `ld-instructional-archetype.js?v=20260714-2` is loaded.
+3. **Hard refresh** — ensure cache-bust `ld-instructional-archetype.js?v=20260715-4`, `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1`, and `app.js?v=20260715-s59-gam-ctx-1` are loaded.
 4. No Copilot-history fallback — if DLA never lands in PRISM capture, this path will not self-heal.

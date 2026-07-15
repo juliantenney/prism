@@ -72,16 +72,17 @@ test("each valid archetype selects only its own compact rule", () => {
         process_goal: "interpret results",
         stages: ["stage-1", "stage-2"]
       },
-      /Walk through the supplied stages in order/
+      /worked walkthrough/i
     ],
     [
       "mental_model_building",
       {
-        system: "enzyme system",
-        parts: ["enzyme", "substrate"],
-        relationships: ["binding depends on fit"]
+        system: "thermostat room",
+        key_relationships: ["heater switches when below set point"],
+        governing_constraint: "finite heating capacity",
+        contrast: { state_a: "mild cold", state_b: "extreme cold" }
       },
-      /Build a coherent working model/
+      /Build a coherent account of the named system/
     ]
   ];
 
@@ -118,7 +119,12 @@ test("unknown archetype values do not activate a rule", () => {
     material_id: "A1-M1",
     material_type: "text",
     instructional_archetype: "concept_exposition",
-    archetype_plan: { system: "x", parts: ["a", "b"], relationships: ["r"] }
+    archetype_plan: {
+      system: "x",
+      key_relationships: ["a"],
+      governing_constraint: "c",
+      contrast: { state_a: "a", state_b: "b" }
+    }
   });
   const validated = archetype.validatePageArchetypePlans(page);
   assert.equal(validated.ok, false);
@@ -140,8 +146,13 @@ test("incomplete planning payloads reject with useful diagnostics", () => {
     },
     {
       instructional_archetype: "mental_model_building",
-      archetype_plan: { system: "", parts: ["a"], relationships: [] },
-      expect: /system|parts|relationships/
+      archetype_plan: {
+        system: "",
+        key_relationships: [],
+        governing_constraint: "",
+        contrast: { state_a: "a" }
+      },
+      expect: /system|key_relationships|governing_constraint|state_b/
     }
   ];
   cases.forEach(function (row) {
@@ -190,9 +201,15 @@ test("archetype metadata does not change assembly semantics", () => {
             material_type: "text",
             instructional_archetype: "mental_model_building",
             archetype_plan: {
-              system: "enzyme-catalysed reaction",
-              parts: ["enzyme", "substrate"],
-              relationships: ["binding depends on fit"]
+              system: "a room heated by a thermostat-controlled heater",
+              key_relationships: [
+                "the thermostat compares room temperature with the set point"
+              ],
+              governing_constraint: "the heater has a finite heating capacity",
+              contrast: {
+                state_a: "the outside temperature is mildly cold",
+                state_b: "the outside temperature becomes extremely cold"
+              }
             }
           }
         ],
@@ -241,7 +258,10 @@ test("archetype metadata does not change assembly semantics", () => {
   assert.equal(result.ok, true);
   const mat = result.page.activities[0].required_materials[0];
   assert.equal(mat.instructional_archetype, "mental_model_building");
-  assert.equal(mat.archetype_plan.system, "enzyme-catalysed reaction");
+  assert.equal(
+    mat.archetype_plan.system,
+    "a room heated by a thermostat-controlled heater"
+  );
   assert.equal(result.page.activities[0].materials[0].body.includes("active site"), true);
   assert.equal(
     Object.prototype.hasOwnProperty.call(
@@ -284,11 +304,11 @@ test("full GAM prompt growth limited to selected rule + planning data", () => {
   const estimate = archetype.estimateRoutingPromptGrowth(page);
   assert.ok(estimate.chars > 0);
   assert.ok(growth <= estimate.chars + 5);
-  assert.ok(estimate.chars < 1200);
+  assert.ok(estimate.chars < 2000);
   assert.deepEqual(estimate.selectedRules, ["process_walkthrough"]);
-  assert.match(withRoute, /Walk through the supplied stages in order/);
+  assert.match(withRoute, /worked walkthrough/i);
   assert.doesNotMatch(withRoute, /Explain how the stated start produces the outcome/);
-  assert.doesNotMatch(withRoute, /Build a coherent working model/);
+  assert.doesNotMatch(withRoute, /Build a coherent account of the named system/);
 });
 
 test("enzymes fixtures validate and route independently", () => {
@@ -305,8 +325,8 @@ test("enzymes fixtures validate and route independently", () => {
   });
 
   const mechBlock = archetype.buildArchetypeRoutingBlock(pageWithMaterial(mechanism));
-  assert.doesNotMatch(mechBlock, /Walk through the supplied stages/);
-  assert.doesNotMatch(mechBlock, /Build a coherent working model/);
+  assert.doesNotMatch(mechBlock, /worked walkthrough/i);
+  assert.doesNotMatch(mechBlock, /Build a coherent account of the named system/);
 });
 
 test("page-dla-enrich rejects incomplete archetype plans and accepts legacy rows", () => {

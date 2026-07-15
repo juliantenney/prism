@@ -6,6 +6,8 @@
 **Status:** Completed investigation (findings locked for handoff)  
 **Related:** [GENERATION-CONSTRAINT-AUDIT.md](GENERATION-CONSTRAINT-AUDIT.md), [FIRST-AUDIT-SUMMARY.md](FIRST-AUDIT-SUMMARY.md), [instructional-archetype-framework.md](instructional-archetype-framework.md)
 
+**Follow-on (2026-07-15):** The framework MVP and transfer outcomes (mechanism **PASS**, process **PASS**, mental model **NOT STARTED**, GAM Copy delivery fix) are recorded in [instructional-archetype-framework.md](instructional-archetype-framework.md), [roadmap.md](roadmap.md), and [SPRINT-59-CONTEXT-FOR-NEW-CHAT.md](SPRINT-59-CONTEXT-FOR-NEW-CHAT.md). This audit’s root-cause conclusions remain locked.
+
 ---
 
 ## 1. Background

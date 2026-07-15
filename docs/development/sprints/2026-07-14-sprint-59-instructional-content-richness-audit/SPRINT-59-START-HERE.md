@@ -9,9 +9,24 @@
 - **Sprint:** 59 — **In progress**
 - **Diagnostic first audit:** Complete
 - **Active workstream:** [Instructional Archetype Framework](instructional-archetype-framework.md)
+- **Milestone (2026-07-15):** Mechanism + process transfer tests **PASS**; mental-model MVP **ready to run** (live transfer **NOT STARTED** — do not claim PASS yet)
 - **Predecessor:** [Sprint 58](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) — **closed**
 - **Briefing paste:** [next-chat-briefing.md](next-chat-briefing.md)
 - **Do not create Sprint 60** — continue in Sprint 59
+
+### Component status
+
+| Component | Status |
+| --------- | ------ |
+| DLA contract generation | PASS |
+| Contract persistence | PASS |
+| Archetype routing | PASS |
+| GAM Copy delivery | PASS |
+| Runtime verification | PASS |
+| Mechanism transfer test | PASS |
+| Process transfer test | PASS |
+| Mental model MVP wiring | READY (thermostat) |
+| Mental model live transfer | NOT STARTED |
 
 ---
 
@@ -19,27 +34,29 @@
 
 1. [next-chat-briefing.md](next-chat-briefing.md) — paste / skim first  
 2. [instructional-archetype-audit.md](instructional-archetype-audit.md) — locked conclusions  
-3. [instructional-archetype-framework.md](instructional-archetype-framework.md) — workstream + inventory  
+3. [instructional-archetype-framework.md](instructional-archetype-framework.md) — workstream + MVP status  
 4. [backlog.md](backlog.md) — Priority 1 / 2 packages  
 5. [README.md](README.md) — full scope evolution  
-6. [SPRINT-59-CONTEXT-FOR-NEW-CHAT.md](SPRINT-59-CONTEXT-FOR-NEW-CHAT.md) — pipeline / ownership  
+6. [SPRINT-59-CONTEXT-FOR-NEW-CHAT.md](SPRINT-59-CONTEXT-FOR-NEW-CHAT.md) — pipeline / ownership / delivery fix  
 7. Optional history: [FIRST-AUDIT-SUMMARY.md](FIRST-AUDIT-SUMMARY.md), [GENERATION-CONSTRAINT-AUDIT.md](GENERATION-CONSTRAINT-AUDIT.md)
 
 ---
 
 ## Why this sprint exists (updated)
 
-Sprint 58 stabilised partial artefacts and assembly. Sprint 59 began as a diagnostic richness audit, then iterated GAM instructional depth (1–7). A heteroscedasticity success case versus an enzymes teaching weakness shifted the explanation from domain performance to **instructional-archetype support asymmetry**. The remaining work is to invent archetype contracts — starting with mechanism, process, and mental-model teaching — without regressing Evaluate/diagnostic strength.
+Sprint 58 stabilised partial artefacts and assembly. Sprint 59 began as a diagnostic richness audit, then iterated GAM instructional depth (1–7). A heteroscedasticity success case versus an enzymes teaching weakness shifted the explanation from domain performance to **instructional-archetype support asymmetry**. Priority-1 MVP routing and transfer validation are now **complete for mechanism and process**; remaining work is mental-model validation and fuller archetype support packages — without regressing Evaluate/diagnostic strength.
 
 ---
 
 ## Immediate next tasks
 
-1. Design Priority 1 archetype packages (`mechanism_explanation`, `process_walkthrough`, `mental_model_building`) per deliverable checklist in [instructional-archetype-framework.md](instructional-archetype-framework.md).  
-2. Keep **Material type ≠ Instructional archetype** in every design decision.  
-3. Do **not** reopen Sprint 58 architecture or create Sprint 60.  
-4. Do **not** weaken SP-02..07 / Evaluate gates while adding teaching archetypes.  
-5. Preserve Iterations 4–7 anti-gaming and anti-exemplar-leakage rules.
+1. Run the live **`mental_model_building`** transfer test per [artefacts/enzymes-archetype-mvp/MANUAL-MENTAL-MODEL-TEST.md](artefacts/enzymes-archetype-mvp/MANUAL-MENTAL-MODEL-TEST.md) — verify delivery integrity **before** quality.  
+2. Continue fuller P1/P2 support packages (purpose…validation strategy) beyond MVP routing — see [backlog.md](backlog.md).  
+3. Keep **Material type ≠ Instructional archetype** in every design decision.  
+4. Do **not** reopen Sprint 58 architecture or create Sprint 60.  
+5. Do **not** weaken SP-02..07 / Evaluate gates while adding teaching archetypes.  
+6. Preserve Iterations 4–7 anti-gaming and anti-exemplar-leakage rules.  
+7. Do **not** modify process rule text (frozen `20260715-4` wording) or the recognition-context delivery path.
 
 ---
 

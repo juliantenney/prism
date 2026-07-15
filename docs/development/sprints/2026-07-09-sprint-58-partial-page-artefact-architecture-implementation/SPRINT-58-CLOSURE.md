@@ -124,9 +124,9 @@ All targeted + Sprint 58 regression batches reported **green** at close (e.g. 70
 
 ## Next sprint guidance
 
-**Successor opened:** [Sprint 59 — Instructional Content Richness Audit](../2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) (**diagnostic first**; Planned / Ready to Start).
+**Successor opened:** [Sprint 59 — Instructional Content Richness Audit](../2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-START-HERE.md) (**In progress**; Priority-1 mechanism/process MVP transfer **PASS** as of 2026-07-15).
 
-Sprint 59 must complete the richness audit and produce a renderer input pack **before** renderer redesign or prompt campaigns. Architecture follow-ons remain deferred:
+Sprint 59 must complete richness / archetype work and produce a renderer input pack **before** renderer redesign or prompt campaigns. Architecture follow-ons remain deferred:
 
 1. Soak live workflows on the four Sprint 58 commits (can run in parallel with Sprint 59 audit collection)
 2. Later: evidence-gated Design Page hard ownership validation **or** compose-contract reduction — not both at once

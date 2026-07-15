@@ -6978,13 +6978,67 @@
     return false;
   }
 
-  function isWorkflowStepGenerateActivityMaterials(context) {
+  function resolveWorkflowStepRecognitionLib() {
+    var roots = [];
+    if (typeof window !== "undefined" && window) roots.push(window);
+    if (typeof globalThis !== "undefined" && globalThis) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_WORKFLOW_STEP_RECOGNITION_CONTEXT) {
+        return roots[i].PRISM_WORKFLOW_STEP_RECOGNITION_CONTEXT;
+      }
+    }
+    return null;
+  }
+
+  function buildWorkflowStepRecognitionContext(step, options) {
+    var lib = resolveWorkflowStepRecognitionLib();
+    if (lib && typeof lib.buildWorkflowStepRecognitionContext === "function") {
+      return lib.buildWorkflowStepRecognitionContext(step, options);
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    var row = step && typeof step === "object" ? step : {};
     var title = String(
-      (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
+      row.stepCanonicalTitle || row.stepTitle || row.title || ""
+    ).trim();
+    var canonical = String(
+      row.stepCanonicalStepId || row.canonical_step_id || row.canonicalStepId || ""
+    ).trim();
+    if (!canonical && opts.li && typeof opts.li.getAttribute === "function") {
+      canonical = String(opts.li.getAttribute("data-canonical-step-id") || "").trim();
+    }
+    return {
+      stepTitle: title,
+      stepCanonicalTitle: title,
+      stepCanonicalStepId: canonical,
+      stepOutputName: String(row.stepOutputName || row.outputName || "").trim(),
+      stepIndex: opts.index,
+      title: title,
+      canonical_step_id: canonical,
+      outputName: String(row.outputName || "").trim()
+    };
+  }
+
+  function isWorkflowStepGenerateActivityMaterials(context) {
+    var lib = resolveWorkflowStepRecognitionLib();
+    if (lib && typeof lib.isGenerateActivityMaterialsRecognition === "function") {
+      return lib.isGenerateActivityMaterialsRecognition(context);
+    }
+    var title = String(
+      (context &&
+        (context.stepCanonicalTitle || context.stepTitle || context.title)) ||
+        ""
     ).toLowerCase();
-    var canonicalId = String((context && context.stepCanonicalStepId) || "").toLowerCase();
+    var canonicalId = String(
+      (context &&
+        (context.stepCanonicalStepId ||
+          context.canonical_step_id ||
+          context.canonicalStepId)) ||
+        ""
+    ).toLowerCase();
     return (
       canonicalId === "step_generate_activity_materials" ||
+      canonicalId === "generate_activity_materials" ||
       title === "generate activity materials" ||
       title.indexOf("generate activity material") !== -1
     );
@@ -8641,72 +8695,237 @@
   }
 
   function resolveS59MechanismTestOptIn(wf, context) {
-    var lib = resolveLdInstructionalArchetypeLib();
-    if (!lib || typeof lib.isMechanismTestOptIn !== "function") return false;
-    try {
-      if (
-        typeof window !== "undefined" &&
-        window &&
-        window.__PRISM_S59_MECHANISM_TEST === true
-      ) {
-        return true;
-      }
-    } catch (_) {}
-    var workflow = wf && typeof wf === "object" ? wf : null;
-    if (lib.isMechanismTestOptIn(context || {})) return true;
-    if (!workflow) return false;
-    return lib.isMechanismTestOptIn({
-      goal: workflow.goal || (workflow.workflowOutputSpec && workflow.workflowOutputSpec.goal),
-      notes: workflow.notes,
-      title: workflow.title || workflow.name,
-      desiredOutputs: workflow.desiredOutputs,
-      workflowOutputs: workflow.workflowOutputs,
-      workflowBriefResolution: workflow.workflowBriefResolution
-    });
+    return resolveS59DlaTestActivation(wf, context).selected_dla_test === "mechanism";
   }
 
   function resolveS59ProcessTestOptIn(wf, context) {
+    return resolveS59DlaTestActivation(wf, context).selected_dla_test === "process";
+  }
+
+  function resolveS59MentalModelTestOptIn(wf, context) {
+    return resolveS59DlaTestActivation(wf, context).selected_dla_test === "mental_model";
+  }
+
+  /**
+   * Single activation gate for Sprint 59 manual DLA tests.
+   * Fail closed when any two or more of mechanism / process / mental_model are requested.
+   */
+  function resolveS59DlaTestActivation(wf, context) {
     var lib = resolveLdInstructionalArchetypeLib();
-    if (!lib || typeof lib.isProcessTestOptIn !== "function") return false;
+    var windowMechanism = false;
+    var windowProcess = false;
+    var windowMentalModel = false;
     try {
-      if (
-        typeof window !== "undefined" &&
-        window &&
-        window.__PRISM_S59_PROCESS_TEST === true
-      ) {
-        return true;
+      if (typeof window !== "undefined" && window) {
+        windowMechanism = window.__PRISM_S59_MECHANISM_TEST === true;
+        windowProcess = window.__PRISM_S59_PROCESS_TEST === true;
+        windowMentalModel = window.__PRISM_S59_MENTAL_MODEL_TEST === true;
       }
     } catch (_) {}
+
     var workflow = wf && typeof wf === "object" ? wf : null;
-    if (lib.isProcessTestOptIn(context || {})) return true;
-    if (!workflow) return false;
-    return lib.isProcessTestOptIn({
-      goal: workflow.goal || (workflow.workflowOutputSpec && workflow.workflowOutputSpec.goal),
-      notes: workflow.notes,
-      title: workflow.title || workflow.name,
-      desiredOutputs: workflow.desiredOutputs,
-      workflowOutputs: workflow.workflowOutputs,
-      workflowBriefResolution: workflow.workflowBriefResolution
-    });
+    var ctx = context && typeof context === "object" ? context : {};
+    var workflowGoal = "";
+    if (workflow) {
+      workflowGoal = String(
+        workflow.goal ||
+          (workflow.workflowOutputSpec && workflow.workflowOutputSpec.goal) ||
+          ""
+      ).trim();
+    }
+    if (!workflowGoal) {
+      workflowGoal = String(ctx.workflowGoal || ctx.goal || "").trim();
+    }
+
+    var contextMechanism = false;
+    var contextProcess = false;
+    var contextMentalModel = false;
+    var workflowMechanism = false;
+    var workflowProcess = false;
+    var workflowMentalModel = false;
+    if (lib && typeof lib.isMechanismTestOptIn === "function") {
+      contextMechanism = lib.isMechanismTestOptIn(ctx);
+      contextProcess =
+        typeof lib.isProcessTestOptIn === "function" && lib.isProcessTestOptIn(ctx);
+      contextMentalModel =
+        typeof lib.isMentalModelTestOptIn === "function" &&
+        lib.isMentalModelTestOptIn(ctx);
+      if (workflow) {
+        var haystack = {
+          goal: workflowGoal,
+          notes: workflow.notes,
+          title: workflow.title || workflow.name,
+          desiredOutputs: workflow.desiredOutputs,
+          workflowOutputs: workflow.workflowOutputs,
+          workflowBriefResolution: workflow.workflowBriefResolution
+        };
+        workflowMechanism = lib.isMechanismTestOptIn(haystack);
+        workflowProcess =
+          typeof lib.isProcessTestOptIn === "function" &&
+          lib.isProcessTestOptIn(haystack);
+        workflowMentalModel =
+          typeof lib.isMentalModelTestOptIn === "function" &&
+          lib.isMentalModelTestOptIn(haystack);
+      }
+    }
+
+    var mechanismRequested = !!(windowMechanism || contextMechanism || workflowMechanism);
+    var processRequested = !!(windowProcess || contextProcess || workflowProcess);
+    var mentalModelRequested = !!(
+      windowMentalModel ||
+      contextMentalModel ||
+      workflowMentalModel
+    );
+
+    var selection =
+      lib && typeof lib.resolveS59DlaTestSelection === "function"
+        ? lib.resolveS59DlaTestSelection({
+            mechanism_requested: mechanismRequested,
+            process_requested: processRequested,
+            mental_model_requested: mentalModelRequested
+          })
+        : (function () {
+            var count =
+              (mechanismRequested ? 1 : 0) +
+              (processRequested ? 1 : 0) +
+              (mentalModelRequested ? 1 : 0);
+            var conflict = count > 1;
+            var selected = "none";
+            if (!conflict && mechanismRequested) selected = "mechanism";
+            if (!conflict && processRequested) selected = "process";
+            if (!conflict && mentalModelRequested) selected = "mental_model";
+            return {
+              mechanism_requested: mechanismRequested,
+              process_requested: processRequested,
+              mental_model_requested: mentalModelRequested,
+              selected_dla_test: selected,
+              conflict: conflict,
+              loaded_archetype_script_version: "unknown"
+            };
+          })();
+
+    var snapshot = {
+      workflow_goal: workflowGoal,
+      mechanism_requested: !!selection.mechanism_requested,
+      process_requested: !!selection.process_requested,
+      mental_model_requested: !!selection.mental_model_requested,
+      selected_dla_test: String(selection.selected_dla_test || "none"),
+      loaded_archetype_script_version: String(
+        (lib && lib.SCRIPT_VERSION) ||
+          selection.loaded_archetype_script_version ||
+          "unknown"
+      ),
+      conflict: !!selection.conflict,
+      signals: {
+        window_mechanism: windowMechanism,
+        window_process: windowProcess,
+        window_mental_model: windowMentalModel,
+        context_mechanism: contextMechanism,
+        context_process: contextProcess,
+        context_mental_model: contextMentalModel,
+        workflow_mechanism: workflowMechanism,
+        workflow_process: workflowProcess,
+        workflow_mental_model: workflowMentalModel
+      }
+    };
+
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_DLA_TEST_ACTIVATION = snapshot;
+      }
+    } catch (_) {}
+    try {
+      if (
+        (mechanismRequested ||
+          processRequested ||
+          mentalModelRequested ||
+          snapshot.conflict) &&
+        typeof console !== "undefined" &&
+        console &&
+        typeof console.info === "function"
+      ) {
+        console.info("[PRISM S59 DLA test activation]", snapshot);
+      }
+    } catch (_) {}
+
+    return snapshot;
   }
 
   function emitS59ArchetypeRoutingDebug(lib, page) {
     if (!lib || typeof lib.collectRoutingDebugSnapshots !== "function") return;
     var snapshots = lib.collectRoutingDebugSnapshots(page);
-    if (!snapshots || !snapshots.length) return;
+    var runtimeSnapshot =
+      typeof lib.buildS59GamArchetypeRuntimeSnapshot === "function"
+        ? lib.buildS59GamArchetypeRuntimeSnapshot(page, {
+            material_id: lib.DESIGNATED_PROCESS_MATERIAL_ID || "A4-M1"
+          })
+        : null;
     try {
       if (typeof window !== "undefined" && window) {
         window.__PRISM_S59_ARCHETYPE_ROUTING_DEBUG = {
           at: Date.now(),
-          selections: snapshots
+          loaded_archetype_script_version:
+            (lib && lib.SCRIPT_VERSION) || "unknown",
+          selections: snapshots,
+          a4_m1: runtimeSnapshot
         };
+        if (runtimeSnapshot) {
+          window.__PRISM_S59_GAM_ARCHETYPE_RUNTIME = runtimeSnapshot;
+        }
       }
     } catch (_) {}
     try {
       if (typeof console !== "undefined" && console && typeof console.info === "function") {
-        console.info("[PRISM S59 archetype routing]", snapshots);
+        console.info("[PRISM S59 archetype routing]", {
+          loaded_archetype_script_version:
+            (lib && lib.SCRIPT_VERSION) || "unknown",
+          selections: snapshots,
+          a4_m1: runtimeSnapshot
+        });
       }
     } catch (_) {}
+  }
+
+  function captureS59GamArchetypeRuntimeSnapshot(wf, materialId) {
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.buildS59GamArchetypeRuntimeSnapshot !== "function") {
+      return {
+        loaded_archetype_script_version: "unknown",
+        selected_instructional_archetype: null,
+        selected_rule_text: null,
+        material_id: materialId || "A4-M1",
+        archetype_plan_received: null,
+        error: "archetype lib unavailable"
+      };
+    }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    var pageJson = resolveDlaEnrichedPageJsonForGamCopy(workflow);
+    var page = tryParseWorkflowArtefactJson(pageJson);
+    var snapshot = lib.buildS59GamArchetypeRuntimeSnapshot(page, {
+      material_id: materialId || lib.DESIGNATED_PROCESS_MATERIAL_ID || "A4-M1"
+    });
+    var routingBlock =
+      typeof lib.buildArchetypeRoutingBlock === "function"
+        ? lib.buildArchetypeRoutingBlock(page)
+        : "";
+    snapshot.routing_block = routingBlock;
+    snapshot.revised_rule_present = /Realise the process_goal as .+worked walkthrough/i.test(
+      routingBlock
+    );
+    snapshot.old_rule_present = /Walk through the supplied stages in order/i.test(
+      routingBlock
+    );
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_GAM_ARCHETYPE_RUNTIME = snapshot;
+      }
+    } catch (_) {}
+    try {
+      if (typeof console !== "undefined" && console && typeof console.info === "function") {
+        console.info("[PRISM S59 GAM archetype runtime]", snapshot);
+      }
+    } catch (_) {}
+    return snapshot;
   }
 
   function applyS59MechanismTestPlanToDlaCaptureJson(raw, wf) {
@@ -8745,6 +8964,57 @@
         typeof console.info === "function"
       ) {
         console.info("[PRISM S59 mechanism test stamp]", {
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          rule_selected: false,
+          note: "DLA planning stamp (GAM rule selected later)"
+        });
+      }
+    } catch (_) {}
+    try {
+      return JSON.stringify(result.page, null, 2);
+    } catch (_) {
+      return raw;
+    }
+  }
+
+  function applyS59MentalModelTestPlanToDlaCaptureJson(raw, wf) {
+    if (!resolveS59MentalModelTestOptIn(wf)) return raw;
+    var lib = resolveLdInstructionalArchetypeLib();
+    if (!lib || typeof lib.applyThermostatMentalModelTestPlanToDlaPage !== "function") {
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed || String(parsed.artifact_type || "") !== "page") return raw;
+    var stage = String(
+      (parsed.assembly_state && parsed.assembly_state.current_stage) || ""
+    )
+      .trim()
+      .toLowerCase();
+    if (stage && stage !== "dla") return raw;
+    var result = lib.applyThermostatMentalModelTestPlanToDlaPage(parsed);
+    if (!result || !result.ok || !result.page) return raw;
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_MENTAL_MODEL_TEST_STAMP = {
+          at: Date.now(),
+          activity_id: result.activity_id,
+          material_id: result.material_id,
+          instructional_archetype: result.instructional_archetype,
+          archetype_plan: result.archetype_plan,
+          changed: !!result.changed
+        };
+      }
+    } catch (_) {}
+    try {
+      if (
+        result.changed &&
+        typeof console !== "undefined" &&
+        console &&
+        typeof console.info === "function"
+      ) {
+        console.info("[PRISM S59 mental-model test stamp]", {
           activity_id: result.activity_id,
           material_id: result.material_id,
           instructional_archetype: result.instructional_archetype,
@@ -9373,12 +9643,9 @@
 
   function isGamPageEnrichmentV2CopyStep(step, wf) {
     return (
-      isWorkflowStepGenerateActivityMaterials({
-        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
-        stepCanonicalTitle: step && step.title,
-        stepTitle: step && step.title,
-        stepOutputName: step && step.outputName
-      }) && isPageEnrichmentV2WorkflowEnabled(wf)
+      isWorkflowStepGenerateActivityMaterials(
+        buildWorkflowStepRecognitionContext(step)
+      ) && isPageEnrichmentV2WorkflowEnabled(wf)
     );
   }
 
@@ -10494,7 +10761,8 @@
     if (appendParts.length) {
       draftBody = (draftBody + "\n" + appendParts.join("\n")).trim();
     }
-    if (resolveS59MechanismTestOptIn(workflow, context)) {
+    var activation = resolveS59DlaTestActivation(workflow, context);
+    if (activation.selected_dla_test === "mechanism") {
       var archetypeLib = resolveLdInstructionalArchetypeLib();
       if (
         archetypeLib &&
@@ -10505,8 +10773,7 @@
           mechanismTestOptIn: true
         });
       }
-    }
-    if (resolveS59ProcessTestOptIn(workflow, context)) {
+    } else if (activation.selected_dla_test === "process") {
       var processLib = resolveLdInstructionalArchetypeLib();
       if (
         processLib &&
@@ -10515,6 +10782,17 @@
         draftBody = processLib.applyDlaProcessTestEmissionBlockToDraft(draftBody, {
           isDesignLearningActivitiesStep: true,
           processTestOptIn: true
+        });
+      }
+    } else if (activation.selected_dla_test === "mental_model") {
+      var mentalLib = resolveLdInstructionalArchetypeLib();
+      if (
+        mentalLib &&
+        typeof mentalLib.applyDlaMentalModelTestEmissionBlockToDraft === "function"
+      ) {
+        draftBody = mentalLib.applyDlaMentalModelTestEmissionBlockToDraft(draftBody, {
+          isDesignLearningActivitiesStep: true,
+          mentalModelTestOptIn: true
         });
       }
     }
@@ -23213,6 +23491,11 @@
         ta.value = stampedProcess;
         raw = stampedProcess;
       }
+      var stampedMental = applyS59MentalModelTestPlanToDlaCaptureJson(raw, wf);
+      if (stampedMental && stampedMental !== raw) {
+        ta.value = stampedMental;
+        raw = stampedMental;
+      }
     }
     var partialPostEpisodePlanStep = isPostEpisodePlanPartialOutputStep(stepRow, wf);
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
@@ -27428,6 +27711,7 @@
         inputKind: "",
         outputName: "",
         notes: "",
+        canonical_step_id: String(li.getAttribute("data-canonical-step-id") || "").trim(),
         inputBindings: readStepInputBindings(li)
       };
       var titleEl = li.querySelector('[data-field="title"]');
@@ -27461,6 +27745,11 @@
         });
         if (liveStep) {
           effectiveStep.override_prompt_body = String(liveStep.override_prompt_body || "").trim();
+          if (!effectiveStep.canonical_step_id) {
+            effectiveStep.canonical_step_id = String(
+              liveStep.canonical_step_id || liveStep.canonicalStepId || ""
+            ).trim();
+          }
           if (!effectiveStep.prompt_source_type) {
             effectiveStep.prompt_source_type = getStepPromptSourceType(liveStep);
           }
@@ -27616,6 +27905,18 @@
       if (filled === null) {
         // User cancelled; do not copy anything.
         return;
+      }
+
+      var copyRecognition = buildWorkflowStepRecognitionContext(effectiveStep, {
+        li: li,
+        index: zeroBasedIndex
+      });
+      if (isWorkflowStepGenerateActivityMaterials(copyRecognition)) {
+        publishS59FinalGamPromptSnapshot(filled, {
+          source: "workflow_step_copy",
+          step_title: copyRecognition.stepTitle,
+          canonical_step_id: copyRecognition.stepCanonicalStepId
+        });
       }
 
       window.Utils
@@ -29276,7 +29577,82 @@
       lines.push(exactFooterLine);
     }
 
-    return lines.join("\n");
+    var assembledInstructions = lines.join("\n");
+    // GAM V2 Copy uses buildGamV2CopyMaterialAuthoringBrief (not resolveStepPromptText),
+    // which previously skipped applyWorkflowStepRuntimePromptAugmentations — inject
+    // archetype routing here so the Copilot-bound prompt matches Studio intent.
+    // Pass shaped recognition context (not raw step) so isWorkflowStepGenerateActivityMaterials succeeds.
+    var gamRecognition = buildWorkflowStepRecognitionContext(step, {
+      li: domElement,
+      index: index
+    });
+    if (isWorkflowStepGenerateActivityMaterials(gamRecognition)) {
+      assembledInstructions = applyLdInstructionalArchetypeRoutingToDraft(
+        assembledInstructions,
+        gamRecognition,
+        wfForChain
+      );
+    }
+    return assembledInstructions;
+  }
+
+  function publishS59FinalGamPromptSnapshot(promptText, meta) {
+    var text = String(promptText || "");
+    var info = meta && typeof meta === "object" ? meta : {};
+    var archMatch = text.match(
+      /instructional_archetype=(process_walkthrough|mechanism_explanation|mental_model_building)/i
+    );
+    var lib = resolveLdInstructionalArchetypeLib();
+    var snapshot = {
+      prompt: text,
+      source: info.source ? String(info.source) : "unknown",
+      step_title: String(info.step_title || info.stepTitle || "").trim(),
+      canonical_step_id: String(
+        info.canonical_step_id || info.stepCanonicalStepId || ""
+      ).trim(),
+      archetype_script_version: String(
+        (lib && lib.SCRIPT_VERSION) || info.archetype_script_version || "unknown"
+      ),
+      contains_depth_contract: /LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT/i.test(text),
+      contains_archetype_routing: /LD-INSTRUCTIONAL-ARCHETYPE-ROUTING/i.test(text),
+      contains_process_rule: /Realise the process_goal as .+worked walkthrough/i.test(text),
+      contains_process_goal: /process_goal/i.test(text),
+      contains_mental_model_rule:
+        /Build a coherent account of the named system using the supplied relationships and governing constraint/i.test(
+          text
+        ),
+      contains_thermostat_fixture:
+        /a room heated by a thermostat-controlled heater/i.test(text) &&
+        /governing_constraint/i.test(text),
+      selected_instructional_archetype: archMatch ? archMatch[1] : null,
+      prompt_length: text.length,
+      timestamp: new Date().toISOString(),
+      at: Date.now()
+    };
+    try {
+      if (typeof window !== "undefined" && window) {
+        window.__PRISM_S59_FINAL_GAM_PROMPT = snapshot;
+      }
+    } catch (_) {}
+    try {
+      if (
+        typeof console !== "undefined" &&
+        console &&
+        typeof console.info === "function"
+      ) {
+        console.info("[PRISM S59 final GAM prompt]", {
+          source: snapshot.source,
+          step_title: snapshot.step_title,
+          canonical_step_id: snapshot.canonical_step_id,
+          archetype_script_version: snapshot.archetype_script_version,
+          contains_archetype_routing: snapshot.contains_archetype_routing,
+          contains_process_rule: snapshot.contains_process_rule,
+          selected_instructional_archetype: snapshot.selected_instructional_archetype,
+          prompt_length: snapshot.prompt_length
+        });
+      }
+    } catch (_) {}
+    return snapshot;
   }
 
   function handleCopyWorkflowSummary() {
@@ -46503,6 +46879,12 @@
     prismTestApi.resolveS59ProcessTestOptIn = resolveS59ProcessTestOptIn;
     prismTestApi.applyS59ProcessTestPlanToDlaCaptureJson =
       applyS59ProcessTestPlanToDlaCaptureJson;
+    prismTestApi.resolveS59MentalModelTestOptIn = resolveS59MentalModelTestOptIn;
+    prismTestApi.applyS59MentalModelTestPlanToDlaCaptureJson =
+      applyS59MentalModelTestPlanToDlaCaptureJson;
+    prismTestApi.resolveS59DlaTestActivation = resolveS59DlaTestActivation;
+    prismTestApi.captureS59GamArchetypeRuntimeSnapshot =
+      captureS59GamArchetypeRuntimeSnapshot;
     prismTestApi.buildDesignPageActivityMaterialsFidelityPromptBlock =
       buildDesignPageActivityMaterialsFidelityPromptBlock;
     prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =
@@ -46644,6 +47026,9 @@
       isWorkflowStepDesignLearningActivities;
     prismTestApi.isWorkflowStepGenerateActivityMaterials =
       isWorkflowStepGenerateActivityMaterials;
+    prismTestApi.buildWorkflowStepRecognitionContext =
+      buildWorkflowStepRecognitionContext;
+    prismTestApi.publishS59FinalGamPromptSnapshot = publishS59FinalGamPromptSnapshot;
     prismTestApi.SPRINT_28_COGNITION_FACTOR_IDS = SPRINT_28_COGNITION_FACTOR_IDS.slice();
     prismTestApi.SPRINT_28_COGNITION_PACK_IDS = SPRINT_28_COGNITION_PACK_IDS.slice();
     prismTestApi.resolveAssessmentPresentationFromBriefFactors =
@@ -46724,6 +47109,7 @@
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.publishS59FinalGamPromptSnapshot = publishS59FinalGamPromptSnapshot;
     prismTestApi.stripContradictoryWorkflowRunnerFooterClauses =
       stripContradictoryWorkflowRunnerFooterClauses;
     prismTestApi.stripContradictoryWorkflowRunnerFooterFromNotes =

@@ -1,7 +1,8 @@
 # Sprint 59 — Instructional Archetype Framework (Workstream)
 
-**Status:** Active workstream (in-sprint)  
+**Status:** Active workstream (in-sprint) — Priority-1 MVP **PASS** for mechanism + process; mental-model transfer **NOT STARTED**  
 **Opened:** 2026-07-14  
+**Updated:** 2026-07-15  
 **Authority:** [instructional-archetype-audit.md](instructional-archetype-audit.md)  
 **Backlog:** [backlog.md](backlog.md)
 
@@ -12,6 +13,47 @@
 Systematically improve GAM instructional quality by creating **explicit support contracts for instructional archetypes**, independent of topic domain and separate from material presentation types.
 
 This workstream remains inside **Sprint 59**. It does **not** open Sprint 60.
+
+---
+
+## Implementation status (2026-07-15)
+
+Instructional archetypes are implemented as an **independent instructional dimension**.
+
+| Component | Status |
+| --------- | ------ |
+| DLA contract generation | PASS |
+| Contract persistence | PASS |
+| Archetype routing | PASS |
+| GAM Copy delivery | PASS |
+| Runtime verification | PASS |
+| Mechanism transfer test | PASS |
+| Process transfer test | PASS |
+| Mental model validation | NOT STARTED |
+
+Architecture (pipeline unchanged):
+
+```text
+LO → EP shell → DLA partial → GAM partial → Assessment → LS partial → DP synthesis → deterministic assembly
+```
+
+Instructional intent is transmitted through archetype contracts. Material type and instructional archetype are independent.
+
+**Runtime (verified):** `ld-instructional-archetype.js?v=20260715-4` · `workflow-step-recognition-context.js?v=20260715-s59-gam-ctx-1` · `app.js?v=20260715-s59-gam-ctx-1`
+
+### Mechanism — PASS
+
+Validated behaviour: `required_link` → realised causal transition → `outcome` (enzymes A2-M1 fixture).
+
+### Process — PASS
+
+Final rule version: **`20260715-4`**. Validated behaviour: stage → reasoning → finding → finding transfer → conclusion (enzymes A4-M1).
+
+**Delivery-path note:** Earlier process “failures” were often invalid tests because routing never reached GAM Copy (shaped outer recognition vs raw-step inner gate). Fixed via `buildWorkflowStepRecognitionContext`. The process rule was not the failure.
+
+### Mental model — NOT STARTED
+
+MVP routing exists for `mental_model_building`; transfer validation has not been run.
 
 ---
 
@@ -58,9 +100,11 @@ The same material type can realise different archetypes (e.g. `worked_example` a
 
 **Strong support today:** evidence interpretation, diagnostic reasoning, comparison, evaluation, judgement, verification, transfer (SP-02..07 + Evaluate PRES density + historical A4/transfer gates on some paths).
 
-**Weak support today:** concept exposition, mechanism explanation, process walkthrough, mental-model building (generic `text` / soft DEPTH guidance; presence-only v2 capture).
+**Priority-1 teaching MVP:** mechanism and process now have validated contract → routing → GAM Copy delivery. Mental-model transfer remains open. Fuller support packages (purpose…validation strategy) remain open for all P1/P2 IDs.
 
-See audit §5 for detail.
+**Still weak / incomplete without fuller packages:** concept exposition; recommendation; modelling_note instructional depth; mental-model teaching pending transfer evidence.
+
+See audit §5 for the historical asymmetry that opened this workstream.
 
 ---
 
@@ -76,17 +120,19 @@ Each future archetype support package must define:
 6. **Exemplars** — weak vs better; domain-neutral where possible; **internal generation guidance only**  
 7. **Validation strategy** — soft prompt gates vs future capture rules (design first; implement later with care)
 
+MVP routing + transfer tests prove the contract/delivery path; they do not close the full package checklist above.
+
 ---
 
 ## Phasing
 
 ### Priority 1 (immediate)
 
-| Archetype | Why |
-| --------- | --- |
-| `mechanism_explanation` | Enzymes A2/A4 failure mode; core teaching gap |
-| `process_walkthrough` | Step-list collapse without expert process teaching |
-| `mental_model_building` | Conceptual systems (enzyme–substrate, causal networks) under-served |
+| Archetype | Why | Transfer status |
+| --------- | --- | --------------- |
+| `mechanism_explanation` | Enzymes A2/A4 failure mode; core teaching gap | **PASS** |
+| `process_walkthrough` | Step-list collapse without expert process teaching | **PASS** (`v20260715-4`) |
+| `mental_model_building` | Conceptual systems under-served | **READY TO RUN** (MVP thermostat; live transfer not PASS) |
 
 ### Priority 2
 
@@ -108,4 +154,5 @@ Preserve/document contracts for already-strong shapes: `evidence_interpretation`
 - Do not weaken Evaluate/diagnostic support while adding teaching archetypes.  
 - Retain Iteration 4–7 anti-gaming and anti-exemplar-leakage rules.  
 - Prefer outcome-based success tests over mandatory learner-facing rubric headings.  
-- Material-type schemas stay presentation formats unless a typed SP is deliberately designed.
+- Material-type schemas stay presentation formats unless a typed SP is deliberately designed.  
+- Do not rewrite process rule `v20260715-4` without new post-delivery evidence.

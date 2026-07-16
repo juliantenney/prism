@@ -1,0 +1,24 @@
+{
+  "captured_at": "2026-07-16T13:02:09.865Z",
+  "fixture": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json",
+  "assessment_fixture": "tests/fixtures/page-render/ld-rna-hcv-assessment-page.json",
+  "output_html": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/rna-hcv-baseline-render.html",
+  "assessment_output_html": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/ld-rna-hcv-assessment-baseline-render.html",
+  "renderer_entry_point": "window.__PRISM_TEST_API.buildUtilityStructuredHtmlForTest(page, [\"sections\"], { applyCompositionValidation: false })",
+  "normalize_lib": "lib/page-render-normalize.js",
+  "app_source": "app.js",
+  "harness": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-baseline-render.js",
+  "command": "node docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-baseline-render.js",
+  "environment": {
+    "node": "v24.15.0",
+    "platform": "win32",
+    "cwd": "c:\\xampp\\htdocs\\prism"
+  },
+  "git": {
+    "head": "e0d6b67",
+    "dirty": true,
+    "dirty_summary_lines": 3
+  },
+  "fragment_chars": 98030,
+  "document_chars": 98030
+}

@@ -1,0 +1,485 @@
+{
+  "heading_count": 79,
+  "headings": [
+    {
+      "t": "h1",
+      "text": "RNA Viruses and Hepatitis C — Material Completeness Fixture"
+    },
+    {
+      "t": "h2",
+      "text": "Learning Journey"
+    },
+    {
+      "t": "h2",
+      "text": "Learning Activities"
+    },
+    {
+      "t": "h3",
+      "text": "Classify RNA Virus Genomes"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "What to do"
+    },
+    {
+      "t": "h4",
+      "text": "Understand"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h4",
+      "text": "See it modelled"
+    },
+    {
+      "t": "h4",
+      "text": "Worked Example"
+    },
+    {
+      "t": "h4",
+      "text": "Sample Output"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Classification Table"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h3",
+      "text": "Analyse HCV Replication Steps"
+    },
+    {
+      "t": "h4",
+      "text": "Your goal"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "Understand"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h4",
+      "text": "See it modelled"
+    },
+    {
+      "t": "h4",
+      "text": "Worked Example"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Analysis table"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h3",
+      "text": "Plan an Outbreak Response"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "What to do"
+    },
+    {
+      "t": "h4",
+      "text": "Understand"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Scenarios"
+    },
+    {
+      "t": "h5",
+      "text": "S62 RNA A3-M2 Outbreak Scenario"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h4",
+      "text": "Planning Table"
+    },
+    {
+      "t": "h3",
+      "text": "Analyse Immune Evasion Mechanisms"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "What to do"
+    },
+    {
+      "t": "h4",
+      "text": "See it modelled"
+    },
+    {
+      "t": "h4",
+      "text": "Modelling Note"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Scenarios"
+    },
+    {
+      "t": "h5",
+      "text": "S62 RNA A4-M3 Evasion Scenario"
+    },
+    {
+      "t": "h4",
+      "text": "Analysis table"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h3",
+      "text": "Compare Treatment Strategies"
+    },
+    {
+      "t": "h4",
+      "text": "Your goal"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "Understand"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Analysis table"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h4",
+      "text": "Worked Example"
+    },
+    {
+      "t": "h3",
+      "text": "Evaluate Outbreak Priorities"
+    },
+    {
+      "t": "h4",
+      "text": "Success looks like"
+    },
+    {
+      "t": "h4",
+      "text": "What to do"
+    },
+    {
+      "t": "h4",
+      "text": "Understand"
+    },
+    {
+      "t": "h4",
+      "text": "Text"
+    },
+    {
+      "t": "h4",
+      "text": "See it modelled"
+    },
+    {
+      "t": "h4",
+      "text": "Worked Example"
+    },
+    {
+      "t": "h4",
+      "text": "Your turn"
+    },
+    {
+      "t": "h4",
+      "text": "Scenarios"
+    },
+    {
+      "t": "h5",
+      "text": "S62 RNA A6-M2 Policy Scenario"
+    },
+    {
+      "t": "h4",
+      "text": "Decision Table"
+    },
+    {
+      "t": "h4",
+      "text": "Template"
+    },
+    {
+      "t": "h4",
+      "text": "Apply elsewhere"
+    },
+    {
+      "t": "h4",
+      "text": "Transfer Prompt"
+    },
+    {
+      "t": "h4",
+      "text": "Check your work"
+    },
+    {
+      "t": "h4",
+      "text": "Checklist"
+    },
+    {
+      "t": "h2",
+      "text": "Schema Version"
+    },
+    {
+      "t": "h2",
+      "text": "Assembly State"
+    },
+    {
+      "t": "h3",
+      "text": "Enriched By"
+    },
+    {
+      "t": "h2",
+      "text": "PrismRenderNormalized"
+    }
+  ],
+  "body_label_count": 0,
+  "how_to_think": 0,
+  "success_looks_like": 6,
+  "what_to_do": 4,
+  "connection": 0,
+  "util_meta": 1,
+  "util_warn": 0,
+  "planning_table": 0,
+  "closure": 34,
+  "archetype_visible_labels": {
+    "understand": 5,
+    "apply": 2,
+    "analyse": 7,
+    "evaluate": 4
+  },
+  "material_type_mentions": {
+    "worked_example": 6,
+    "classification_table": 3,
+    "checklist": 51,
+    "scenario": 48
+  },
+  "util_classes": [
+    "util-activity-goal",
+    "util-activity-header",
+    "util-activity-journey-frame",
+    "util-activity-materials",
+    "util-activity-success-looks-like",
+    "util-activity-task",
+    "util-activity-task--primary",
+    "util-activity-task-icon",
+    "util-badge",
+    "util-badge-group",
+    "util-badge-row",
+    "util-beat-heading",
+    "util-beat-materials",
+    "util-beat-ordered-materials",
+    "util-beat-section",
+    "util-checklist",
+    "util-checklist-block",
+    "util-checklist-icon",
+    "util-generic-material-icon",
+    "util-icon-heading",
+    "util-journey-arrow",
+    "util-journey-dot",
+    "util-journey-fill",
+    "util-journey-link",
+    "util-journey-link-text",
+    "util-journey-links",
+    "util-journey-nav",
+    "util-journey-nav--compact",
+    "util-journey-track",
+    "util-learning-header",
+    "util-learning-header__meta",
+    "util-learning-header__title",
+    "util-learning-journey-intro",
+    "util-lucide-icon",
+    "util-lucide-icon--md",
+    "util-material-block",
+    "util-material-heading",
+    "util-material-icon",
+    "util-material-role-action",
+    "util-material-role-checklist",
+    "util-material-role-model",
+    "util-materials-stack",
+    "util-meta",
+    "util-meta-icon",
+    "util-meta-summary",
+    "util-mini-card",
+    "util-output-icon",
+    "util-page",
+    "util-page-export",
+    "util-page-export--with-journey-nav",
+    "util-page-export--with-learning-header",
+    "util-scenario-card-icon",
+    "util-section-heading",
+    "util-section-icon",
+    "util-section-icon--learning-activities",
+    "util-section-icon--learning-purpose",
+    "util-success-looks-like-list",
+    "util-table-icon",
+    "util-task-block",
+    "util-template-icon",
+    "util-visual-affordance",
+    "util-visual-affordance--activity-after-header",
+    "util-visual-affordance--materials-model",
+    "util-worked-example"
+  ],
+  "learner_chars": 95845,
+  "meta_present": true,
+  "meta_summary_preview": "><summary class=\"util-meta-summary util-icon-heading\"><svg class=\"util-lucide-icon util-lucide-icon--md util-material-icon util-meta-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg><span>About this page</span></summary><section><h2>Schema Version</h2><p>2.0.0</p></section><section><h2>Assembly State</h2><h3>Enriched By</h3><ul><li>episode_plan</li><li>dla</li><li>gam</li><li>learning_sequence</li><li>assessment</li></ul></section><section><h2>PrismRenderNormalized</h2><p>true</p></section></details><script>(function(){var header=document.querySelector('.util-learning-header');var nav=header?header.querySelector('.util-journey-nav'):document.querySelector('.util-journey-nav');var sections=[].slice.call(document.querySelectorAll('[data-journey-section]'));var links=[].slice.call(document.querySelectorAll('.util-journey-link'));var track=nav?nav.querySelector('.util-journey-track'):null;if(!nav||!track||sections.length<2||links.length<2)return;var ticking=false;function linkCenterPct(link){var tr=track.getBoundingClientRect(",
+  "assessment_headings": [
+    {
+      "t": "h1",
+      "text": "RNA Viruses and Hepatitis C — Self-Study"
+    },
+    {
+      "t": "h2",
+      "text": "Overview"
+    },
+    {
+      "t": "h2",
+      "text": "Formative Assessment Check"
+    },
+    {
+      "t": "h3",
+      "text": "Question 1"
+    },
+    {
+      "t": "h3",
+      "text": "Question 2"
+    },
+    {
+      "t": "h3",
+      "text": "Question 3"
+    },
+    {
+      "t": "h3",
+      "text": "Question 4"
+    },
+    {
+      "t": "h3",
+      "text": "Question 5"
+    },
+    {
+      "t": "h3",
+      "text": "Question 6"
+    },
+    {
+      "t": "h3",
+      "text": "Question 7"
+    },
+    {
+      "t": "h3",
+      "text": "Question 8"
+    },
+    {
+      "t": "h3",
+      "text": "Question 9"
+    },
+    {
+      "t": "h3",
+      "text": "Question 10"
+    },
+    {
+      "t": "h2",
+      "text": "Study and Revision Guidance"
+    },
+    {
+      "t": "h3",
+      "text": "Production Metadata"
+    },
+    {
+      "t": "h3",
+      "text": "Fixture Id"
+    },
+    {
+      "t": "h3",
+      "text": "Page Profile"
+    },
+    {
+      "t": "h2",
+      "text": "Source Artefacts"
+    }
+  ]
+}

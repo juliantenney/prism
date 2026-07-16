@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wide table</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:42rem;margin:1rem auto;padding:0 1rem;line-height:1.45;background:#f7f7f4;color:#111}
+    .banner{font-family:system-ui,sans-serif;font-size:.8rem;background:#222;color:#eee;padding:.6rem 1rem;margin:0 -1rem 1rem}
+    h2{font-family:system-ui,sans-serif;font-size:.8rem;text-transform:uppercase}
+    .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #ccc;background:#fff}
+    table{border-collapse:collapse;font-size:.85rem;min-width:40rem}
+    th,td{border:1px solid #ccc;padding:.35rem .5rem;white-space:nowrap}
+    th{background:#eee;text-align:left}
+  </style>
+</head>
+<body>
+  <p class="banner"><strong>Experimental material presentation only — not production renderer output.</strong> Wide table · MBP-019 · no column drop</p>
+  <h2>Try it</h2>
+  <p>Planning / analysis workspace — all columns remain available via horizontal scroll on narrow viewports.</p>
+  <div class="scroll" role="region" aria-label="Planning table">
+    <table>
+      <caption>Outbreak response plan</caption>
+      <thead>
+        <tr>
+          <th>Priority</th><th>Action</th><th>Owner</th><th>Timing</th><th>Dependencies</th><th>Risk if delayed</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Case finding</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td>Risk communication</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td>Supply logistics</td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

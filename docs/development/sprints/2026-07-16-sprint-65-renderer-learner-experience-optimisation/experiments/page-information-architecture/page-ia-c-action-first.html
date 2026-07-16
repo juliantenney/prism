@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page IA C — Action first</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:44rem;margin:0 auto;padding:1rem;line-height:1.45;background:#f7f7f4;color:#111}
+    .banner{font-family:system-ui,sans-serif;font-size:.8rem;background:#222;color:#eee;padding:.6rem 1rem;margin:0 -1rem 1rem}
+    header{padding:.5rem 0 .75rem}
+    .meta{color:#555;font-size:.9rem}
+    h1{font-size:1.3rem;margin:.2rem 0}
+    h2{font-family:system-ui,sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em;color:#333}
+    .compact{font-size:.95rem;margin:.5rem 0 0}
+    .journey{font-family:system-ui,sans-serif;font-size:.85rem;margin:.75rem 0}
+    .journey a{margin-right:.5rem}
+    .mode{font-family:system-ui,sans-serif;font-size:.7rem;font-weight:700;text-transform:uppercase;border:1px solid #111;padding:.1rem .35rem;margin-right:.35rem}
+    .task{font-weight:700;font-size:1.05rem}
+    .produce{background:#eee;padding:.45rem;margin:.4rem 0}
+    .later{margin-top:2rem;padding-top:1rem;border-top:1px dashed #999}
+    details.meta-panel{margin-top:2rem;font-family:system-ui,sans-serif;font-size:.85rem}
+  </style>
+</head>
+<body>
+  <p class="banner"><strong>Experimental page information architecture only — not production renderer output.</strong> IA C · action-first progressive disclosure</p>
+
+  <header>
+    <h1>RNA Viruses and Hepatitis C</h1>
+    <p class="meta">65 min · 6 activities</p>
+    <p class="compact"><strong>Purpose.</strong> Build workable distinctions about RNA virus genomes and HCV response decisions.</p>
+    <nav class="journey" aria-label="Learning journey">
+      <a href="#activity-1"><strong>1. Classify RNA Virus Genomes</strong></a>
+      <a href="#a2">2. Analyse HCV…</a>
+      <a href="#a3">3. Plan Outbreak…</a>
+      <span aria-hidden="true">…</span>
+    </nav>
+  </header>
+
+  <article id="activity-1">
+    <p><span class="mode">Understand</span><strong>Classify RNA Virus Genomes</strong></p>
+    <p class="meta">10 mins · Individual</p>
+    <h2>Your task</h2>
+    <p class="task">Study the exposition, worked example, classification table, and checklist.</p>
+    <div class="produce"><strong>Produce:</strong> Completed classification table.</div>
+    <h2>Support</h2>
+    <p><strong>See an example</strong> — polarity before family assignment.</p>
+    <p><strong>Try it</strong> — classification table (abbreviated).</p>
+    <h2>Check and improve</h2>
+    <ul><li>genome polarity named</li><li>example virus matched</li></ul>
+  </article>
+
+  <section class="later" id="a2">
+    <h2>Next activities</h2>
+    <p><em>Remaining activities continue here (abbreviated)…</em></p>
+  </section>
+
+  <section class="later">
+    <h2>Reference (deferred)</h2>
+    <details open>
+      <summary>Knowledge summary &amp; deeper orientation</summary>
+      <p>Placed after the learner has begun. Full source retained. On RNA primary fixture this block is often absent — omit cleanly.</p>
+    </details>
+  </section>
+
+  <section class="later" id="assess">
+    <h2>Assessment &amp; study tips</h2>
+    <p>When present on the page artifact, appear after the activity sequence (see assessment companion pattern).</p>
+  </section>
+
+  <details class="meta-panel"><summary>About this page (developer)</summary><p>Diagnostics gated — not in first viewport.</p></details>
+</body>
+</html>

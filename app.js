@@ -35378,7 +35378,7 @@
       if (t === "discussion_prompts" || t === "discussion_prompt" || t === "wrap_up_prompts") return "prompt_set";
       if (t === "analysis_template" || t === "worksheet_template") return "template";
       if (t === "evaluation_checklist") return "checklist";
-      if (t === "analysis_table" || t === "comparison_table" || t === "classification_table") return "impact_table";
+      if (t === "tables") return "impact_table";
       return t;
     }
     function normalizeMarkdownHeadingLine(line) {
@@ -35684,6 +35684,13 @@
         return clone;
       }
       if (!Array.isArray(materials)) return materials;
+      var normalizeMod = resolvePageRenderNormalizeLib();
+      if (
+        normalizeMod &&
+        typeof normalizeMod.convertMaterialsArrayToObjectMap === "function"
+      ) {
+        return normalizeMod.convertMaterialsArrayToObjectMap(materials);
+      }
       var out = {};
       materials.forEach(function (entry) {
         if (utilityIsEmptyValue(entry)) return;
@@ -35951,6 +35958,258 @@
         ]);
       }
       return String(value == null ? "" : value).trim();
+    }
+
+    /**
+     * Sprint 62 — conservative goal-shaped learner_task rule (deterministic).
+     * Safe: single-clause Complete/Compare/etc. goal (e.g. A2, A5).
+     * Unsafe: multi-item inventories (e.g. A1, A6) — keep "What to do".
+     */
+    function isGoalShapedLearnerTask(text) {
+      var raw = String(text == null ? "" : text).trim();
+      if (!raw) return false;
+      var sentences = raw
+        .split(/[.!?]+/)
+        .map(function (part) {
+          return String(part || "").trim();
+        })
+        .filter(Boolean);
+      if (sentences.length !== 1) return false;
+      if (/,\s*[^,]+,\s*[^,]+/.test(raw)) return false;
+      var lower = raw.toLowerCase();
+      var inventoryNouns = [
+        "exposition",
+        "worked example",
+        "classification table",
+        "analysis table",
+        "planning table",
+        "decision table",
+        "checklist",
+        "template",
+        "scenario",
+        "transfer prompt",
+        "memo",
+        "prompt"
+      ];
+      var nounHits = inventoryNouns.filter(function (noun) {
+        return lower.indexOf(noun) !== -1;
+      });
+      if (nounHits.length >= 3) return false;
+      if (
+        /\band\b/.test(lower) &&
+        nounHits.length >= 2 &&
+        !/\busing\b|\bwith\b|\bfrom\b/.test(lower)
+      ) {
+        return false;
+      }
+      return /^(complete|analyse|analyze|compare|evaluate|write|build|produce|create|identify|decide|determine|apply|construct|map|trace)\b/i.test(
+        raw
+      );
+    }
+
+    // Explicit Sprint 62 RNA assembled-fixture title pattern only (e.g. "S62 RNA A2-M1 …").
+    // Do not broaden to all "S## …" titles — production/fallback titles must remain visible.
+    function isFixtureTestMaterialTitle(title) {
+      return /^S\d{2}\s+RNA\s+[A-Z]\d+-M\d+\b/i.test(String(title == null ? "" : title).trim());
+    }
+
+    function presentationTextsAreEquivalent(a, b) {
+      var left = normalizeComparableText(a);
+      var right = normalizeComparableText(b);
+      if (!left || !right) return false;
+      if (left === right) return true;
+      if (left.length >= 24 && right.indexOf(left) !== -1) return true;
+      if (right.length >= 24 && left.indexOf(right) !== -1) return true;
+      return false;
+    }
+
+    function extractChecklistCriteriaLines(materials) {
+      if (!materials || typeof materials !== "object" || Array.isArray(materials)) return [];
+      var lines = [];
+      var seen = {};
+      function pushLine(line) {
+        var text = String(line == null ? "" : line)
+          .replace(/^[-*•]\s+/, "")
+          .replace(/^criterion\s+[a-z0-9-]+\s*:\s*/i, "")
+          .trim();
+        if (!text) return;
+        // Skip checklist meta/instructions — only promote concrete success criteria.
+        var plainMeta = text.replace(/[*_`]+/g, "").trim();
+        if (
+          /^(use this checklist|if any check|revise your|check that you|when you have finished)\b/i.test(
+            plainMeta
+          )
+        ) {
+          return;
+        }
+        var key = normalizeComparableText(text);
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        lines.push(text);
+      }
+      function absorbChecklistValue(value) {
+        if (utilityIsEmptyValue(value)) return;
+        if (typeof value === "string") {
+          String(value)
+            .replace(/\r\n/g, "\n")
+            .split("\n")
+            .forEach(function (line) {
+              if (/^\s*[-*•]/.test(line) || /criterion\s+/i.test(line)) pushLine(line);
+            });
+          return;
+        }
+        if (Array.isArray(value)) {
+          value.forEach(function (entry) {
+            if (typeof entry === "string") pushLine(entry);
+            else if (entry && typeof entry === "object") {
+              pushLine(firstNonEmpty([entry.text, entry.content, entry.body, entry.criterion, entry.item]));
+            }
+          });
+          return;
+        }
+        if (value && typeof value === "object") {
+          absorbChecklistValue(
+            firstNonEmpty([value.body, value.content, value.text, value.items, value.checklist])
+          );
+        }
+      }
+      Object.keys(materials).forEach(function (key) {
+        if (String(key || "").charAt(0) === "_") return;
+        var typeHint = "";
+        if (materials._material_types && materials._material_types[key]) {
+          typeHint = String(materials._material_types[key] || "").toLowerCase();
+        }
+        var lower = String(key || "").toLowerCase();
+        if (lower.indexOf("checklist") === -1 && typeHint.indexOf("checklist") === -1) return;
+        absorbChecklistValue(materials[key]);
+      });
+      return lines;
+    }
+
+    function resolveActivityExpectedOutputText(row) {
+      return firstNonEmpty([
+        row && row.expected_output,
+        row && row.output,
+        row && row.deliverable,
+        row && row.artefact
+      ]);
+    }
+
+    function buildLearnerJourneyFrameHtml(row, materials, options) {
+      var opts = options && typeof options === "object" ? options : {};
+      var learnerTaskRaw = firstNonEmpty([
+        row && row.learner_task,
+        row && row.task,
+        row && row.instructions
+      ]);
+      if (
+        learnerTaskRaw &&
+        typeof learnerTaskRaw === "object" &&
+        !Array.isArray(learnerTaskRaw)
+      ) {
+        learnerTaskRaw = firstNonEmpty([
+          learnerTaskRaw.text,
+          learnerTaskRaw.content,
+          learnerTaskRaw.body,
+          learnerTaskRaw.prompt
+        ]);
+      }
+      var learnerTaskText = activityComparableSourceText(learnerTaskRaw);
+      var expectedOutput = resolveActivityExpectedOutputText(row);
+      var checklistLines = extractChecklistCriteriaLines(materials);
+      var goalShaped = isGoalShapedLearnerTask(learnerTaskText);
+      var parts = [];
+      var promotedSuccess = false;
+      var promotedGoal = false;
+      var suppressTrailingOutput = false;
+
+      if (goalShaped && learnerTaskText) {
+        var goalBody =
+          typeof opts.renderListFromInstructions === "function"
+            ? opts.renderListFromInstructions(learnerTaskRaw)
+            : utilityRenderMarkdownBlock(String(learnerTaskText)) ||
+              "<p>" + utilityRenderMarkdownInline(String(learnerTaskText)) + "</p>";
+        if (goalBody) {
+          parts.push(
+            '<div class="util-activity-task util-activity-task--primary util-activity-goal util-material-role-action">' +
+              utilityRenderIconHeading("h4", "Your goal", "what_to_do", "util-material-heading") +
+              goalBody +
+              "</div>"
+          );
+          promotedGoal = true;
+        }
+      }
+
+      var successItems = [];
+      checklistLines.forEach(function (line) {
+        successItems.push(line);
+      });
+      if (expectedOutput) {
+        var outputText = String(expectedOutput).trim();
+        var outputAlreadyCovered = successItems.some(function (line) {
+          return presentationTextsAreEquivalent(line, outputText);
+        });
+        // Tight pattern only: pure "… verified with/against the checklist" restatements.
+        // Do not suppress substantive deliverables that merely mention a checklist.
+        var outputIsChecklistRestatement =
+          checklistLines.length > 0 &&
+          /^(?:.+?\s+)?verified (?:with|against)(?: the)? checklist\.?$/i.test(outputText);
+        if (outputAlreadyCovered || outputIsChecklistRestatement) {
+          suppressTrailingOutput = true;
+        } else if (
+          goalShaped &&
+          presentationTextsAreEquivalent(outputText, learnerTaskText)
+        ) {
+          suppressTrailingOutput = true;
+        } else {
+          successItems.push(outputText);
+          suppressTrailingOutput = true;
+        }
+      }
+
+      if (successItems.length) {
+        var successList =
+          "<ul class=\"util-success-looks-like-list\">" +
+          successItems
+            .map(function (item) {
+              return "<li>" + utilityRenderMarkdownInline(String(item)) + "</li>";
+            })
+            .join("") +
+          "</ul>";
+        parts.push(
+          '<div class="util-activity-success-looks-like">' +
+            utilityRenderIconHeading(
+              "h4",
+              "Success looks like",
+              "output",
+              "util-material-heading"
+            ) +
+            successList +
+            "</div>"
+        );
+        promotedSuccess = true;
+      }
+
+      return {
+        html: parts.join(""),
+        promotedGoal: promotedGoal,
+        promotedSuccess: promotedSuccess,
+        suppressTrailingOutput: suppressTrailingOutput,
+        goalShaped: goalShaped,
+        learnerTaskText: learnerTaskText,
+        expectedOutput: expectedOutput || ""
+      };
+    }
+
+    function learnerFacingBeatLabel(beatFunction) {
+      var registry = resolveBeatMaterialRegistryLib();
+      if (registry && typeof registry.learnerFacingEpisodeFunctionLabel === "function") {
+        return registry.learnerFacingEpisodeFunctionLabel(beatFunction);
+      }
+      if (registry && typeof registry.episodeFunctionLabel === "function") {
+        return registry.episodeFunctionLabel(beatFunction);
+      }
+      return String(beatFunction || "");
     }
     function renderActivityFramingForActivity(row, activityComparable) {
       if (!row || typeof row !== "object" || Array.isArray(row)) return "";
@@ -37638,6 +37897,15 @@
           if (value && typeof value === "object") {
             var keys = Object.keys(value).filter(function (k) { return !utilityIsEmptyValue(value[k]); });
             if (!keys.length) return "";
+            var fixtureTitleCandidate = firstNonEmpty([value.heading, value.title]);
+            var fixtureBodyCandidate = firstNonEmpty([value.content, value.body, value.text]);
+            if (
+              fixtureTitleCandidate &&
+              fixtureBodyCandidate &&
+              isFixtureTestMaterialTitle(fixtureTitleCandidate)
+            ) {
+              return renderMaterialValue(fixtureBodyCandidate, keyHint, opts);
+            }
             var textLikeHint =
               hint === "text" ||
               hint === "reading_text" ||
@@ -37650,6 +37918,9 @@
                 var titledBodyHtml =
                   renderPlainStructuredText(titledBody, { materialHint: hint }) ||
                   ("<p>" + utilityRenderMarkdownInline(String(titledBody)) + "</p>");
+                if (isFixtureTestMaterialTitle(titledLabel)) {
+                  return titledBodyHtml;
+                }
                 return (
                   '<h5 class="util-card-subheading">' +
                   utilityEscapeHtml(String(titledLabel)) +
@@ -37659,6 +37930,9 @@
               }
             }
             var valueHeading = firstNonEmpty([value.heading, value.title]);
+            if (valueHeading && isFixtureTestMaterialTitle(valueHeading)) {
+              valueHeading = "";
+            }
             if ((hint === "checklist" || hint === "checklists") && Array.isArray(value.items)) {
               var topChecklistRows = value.items
                 .map(function (entry) { return checklistRowFromPlainLine(entry); })
@@ -37961,7 +38235,8 @@
         }
         function syncMaterialRenderFlagsForKey(key) {
           var lowerK = String(key || "").toLowerCase();
-          if (/checklist/i.test(lowerK)) {
+          var typeHint = String(materialTypeHintForStorageKey(key) || "").toLowerCase();
+          if (/checklist/i.test(lowerK) || /checklist/i.test(typeHint)) {
             checklistRendered = true;
             if (lowerK === "checklist_evaluate" || lowerK === "evaluation_checklist") {
               evaluationChecklistRendered = true;
@@ -37977,8 +38252,11 @@
             markOrderedMaterialRendered("scenario");
           }
           if (
-            /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
+            /analysis_table|worksheet|classification_table|comparison_table|planning_table|decision_table|impact_table|^table$/.test(
               lowerK
+            ) ||
+            /analysis_table|worksheet|classification_table|comparison_table|planning_table|decision_table|impact_table|^table$/.test(
+              typeHint
             )
           ) {
             orderedWorksheetRendered = true;
@@ -38004,6 +38282,52 @@
             analysisTemplateRendered = true;
             templateRendered = true;
           }
+        }
+        function learnerTitleFromMaterialValue(val, fallback) {
+          if (val && typeof val === "object" && !Array.isArray(val)) {
+            var materialTitle = firstNonEmpty([val.title, val.heading, val.label]);
+            if (materialTitle) {
+              var trimmedTitle = String(materialTitle).trim();
+              if (isFixtureTestMaterialTitle(trimmedTitle)) return fallback || "";
+              return trimmedTitle;
+            }
+          }
+          return fallback || "";
+        }
+        function materialTypeHintForStorageKey(storageKey) {
+          var key = String(storageKey || "");
+          if (materials._material_types && materials._material_types[key]) {
+            return String(materials._material_types[key]);
+          }
+          return key;
+        }
+        function renderSequenceMaterialBlock(entry) {
+          if (!entry) return "";
+          var storageKey = String(entry.key || "");
+          if (!storageKey || utilityIsEmptyValue(materials[storageKey])) return "";
+          var typeHint = String(entry.material_type || materialTypeHintForStorageKey(storageKey) || "");
+          var headingOverride = learnerTitleFromMaterialValue(
+            materials[storageKey],
+            prettyMaterialHeading(typeHint)
+          );
+          var block = renderOrderedMaterialKeyBlock(storageKey, headingOverride);
+          if (!block) {
+            block = renderMaterialValue(materials[storageKey], typeHint, {
+              materialHint: typeHint.toLowerCase()
+            });
+            if (block) {
+              var headingLabel = utilityMaterialHeadingRedundantWithInner(headingOverride, block)
+                ? ""
+                : utilityRenderIconHeading(
+                    "h4",
+                    headingOverride,
+                    utilityMaterialTypeFromKeyHint(typeHint),
+                    "util-material-heading"
+                  );
+              block = headingLabel + utilityTagMaterialBlockHtml(block, storageKey);
+            }
+          }
+          return block || "";
         }
         function shouldSkipKeyForRolePrecedence(k) {
           return (
@@ -38041,7 +38365,16 @@
         function renderOrderedChecklistBlock(checklistKey, headingLabel) {
           var checklistVal = materials[checklistKey];
           if (utilityIsEmptyValue(checklistVal)) return "";
-          var checklistHtml = renderMaterialValue(checklistVal, "checklist", { materialHint: "checklist" });
+          var checklistPayload = checklistVal;
+          if (checklistVal && typeof checklistVal === "object" && !Array.isArray(checklistVal)) {
+            var unwrappedChecklist = firstNonEmpty([
+              checklistVal.body,
+              checklistVal.content,
+              checklistVal.text
+            ]);
+            if (unwrappedChecklist != null) checklistPayload = unwrappedChecklist;
+          }
+          var checklistHtml = renderMaterialValue(checklistPayload, "checklist", { materialHint: "checklist" });
           if (!checklistHtml) checklistHtml = renderPromptSetBlocks(checklistVal);
           if (checklistHtml && checklistHtml.indexOf("util-checklist-block") === -1) {
             checklistHtml =
@@ -38064,13 +38397,16 @@
             : utilityRenderIconHeading("h4", headingLabel, "checklist", "util-material-heading");
           return checklistHeading + checklistHtml;
         }
-        function renderOrderedWorksheetBlock(tableKey) {
+        function renderOrderedWorksheetBlock(tableKey, headingOverride) {
           var tablePayload = utilityUnwrapWorksheetTablePayload(materials[tableKey]);
           if (utilityIsEmptyValue(tablePayload)) return "";
+          var tableHeading =
+            headingOverride ||
+            learnerTitleFromMaterialValue(materials[tableKey], prettyMaterialHeading(materialTypeHintForStorageKey(tableKey)));
           var csvWorksheetTable = utilityTryRenderCsvLikeMaterialTable(tablePayload);
           if (csvWorksheetTable) {
             return (
-              utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") +
+              utilityRenderIconHeading("h4", tableHeading, "worksheet", "util-material-heading") +
               csvWorksheetTable
             );
           }
@@ -38082,14 +38418,15 @@
           }
           if (!tableHtml) return "";
           return (
-            utilityRenderIconHeading("h4", "Worksheet", "worksheet", "util-material-heading") + tableHtml
+            utilityRenderIconHeading("h4", tableHeading, "worksheet", "util-material-heading") + tableHtml
           );
         }
         function renderOrderedMaterialKeyBlock(orderKey, headingOverride) {
           var key = String(orderKey || "");
           var lowerK = key.toLowerCase();
+          var typeHint = String(materialTypeHintForStorageKey(key) || "").toLowerCase();
           if (utilityIsEmptyValue(materials[key])) return "";
-          if (lowerK === "checklist") {
+          if (typeHint === "checklist" || typeHint === "checklists" || typeHint === "evaluation_checklist" || lowerK === "checklist") {
             checklistRendered = true;
             return renderOrderedChecklistBlock(key, headingOverride || "Checklist");
           }
@@ -38099,15 +38436,25 @@
             return renderOrderedChecklistBlock(key, headingOverride || "Evaluation checklist");
           }
           if (
+            typeHint === "analysis_table" ||
+            typeHint === "impact_table" ||
+            typeHint === "comparison_table" ||
+            typeHint === "classification_table" ||
+            typeHint === "planning_table" ||
+            typeHint === "decision_table" ||
+            typeHint === "worksheet" ||
+            typeHint === "table" ||
             lowerK === "analysis_table" ||
             lowerK === "impact_table" ||
             lowerK === "comparison_table" ||
             lowerK === "classification_table" ||
+            lowerK === "planning_table" ||
+            lowerK === "decision_table" ||
             lowerK === "worksheet" ||
             lowerK === "table"
           ) {
             orderedWorksheetRendered = true;
-            return renderOrderedWorksheetBlock(key);
+            return renderOrderedWorksheetBlock(key, headingOverride);
           }
           if (
             lowerK === "scenario_maya_households" ||
@@ -38192,11 +38539,14 @@
               }
             });
             if (!beatParts.length) return;
-            var beatLabel =
-              beatGroup.label ||
-              (typeof beatRegistryMod.episodeFunctionLabel === "function"
-                ? beatRegistryMod.episodeFunctionLabel(beatGroup.beat)
-                : beatGroup.beat);
+            var beatLabel = learnerFacingBeatLabel(beatGroup.beat);
+            if (!beatLabel) {
+              beatLabel =
+                beatGroup.label ||
+                (typeof beatRegistryMod.episodeFunctionLabel === "function"
+                  ? beatRegistryMod.episodeFunctionLabel(beatGroup.beat)
+                  : beatGroup.beat);
+            }
             parts.push(
               '<section class="util-beat-section" data-episode-function="' +
                 utilityEscapeHtml(beatGroup.beat) +
@@ -38208,6 +38558,19 @@
                 beatParts.join("") +
                 "</div></section>"
             );
+          });
+        }
+        var renderSequence = Array.isArray(materials._render_sequence) ? materials._render_sequence : null;
+        if (renderSequence && renderSequence.length) {
+          renderSequence.forEach(function (entry) {
+            var storageKey = String((entry && entry.key) || "");
+            if (!storageKey || wasOrderedMaterialRendered(storageKey)) return;
+            var seqBlock = renderSequenceMaterialBlock(entry);
+            if (seqBlock) {
+              parts.push(seqBlock);
+              markOrderedMaterialRendered(storageKey);
+              syncMaterialRenderFlagsForKey(storageKey);
+            }
           });
         }
         if (!beatFirstEpisodePlanActive && rolePrecedenceActive) {
@@ -38505,6 +38868,8 @@
             "analysis_table",
             "comparison_table",
             "classification_table",
+            "planning_table",
+            "decision_table",
             "impact_table",
             "worked_example",
             "sample_output"
@@ -38538,7 +38903,10 @@
           if (shouldSkipKeyForRolePrecedence(k)) {
             return;
           }
-          if (usesAuthoritativeMaterialOrdering() && checklistRendered && /checklist/i.test(lowerK)) {
+          if (usesAuthoritativeMaterialOrdering() && checklistRendered && lowerK === "checklist") {
+            return;
+          }
+          if (usesAuthoritativeMaterialOrdering() && checklistRendered && lowerK === "checklists") {
             return;
           }
           if (
@@ -38550,8 +38918,8 @@
           }
           if (
             usesAuthoritativeMaterialOrdering() &&
-            orderedWorksheetRendered &&
-            /analysis_table|worksheet|classification_table|comparison_table|impact_table|^table$/.test(
+            wasOrderedMaterialRendered(k) &&
+            /analysis_table|worksheet|classification_table|comparison_table|planning_table|decision_table|impact_table|^table$/.test(
               lowerK
             )
           ) {
@@ -38590,14 +38958,22 @@
           }
           if (
             lowerK === "_material_ids" ||
+            lowerK === "_material_types" ||
+            lowerK === "_render_sequence" ||
             lowerK === "required_materials" ||
             lowerK === "material_ids" ||
             lowerK === "material_id" ||
-            lowerK === "specification"
+            lowerK === "specification" ||
+            lowerK === "title" ||
+            lowerK === "heading" ||
+            lowerK === "items"
           ) {
             return;
           }
-          if (/^[a-z]\d+-m\d+(?:-[a-z0-9_-]+)?$/i.test(String(k || "").trim())) {
+          if (
+            /^[a-z]\d+[-_]m\d+$/i.test(lowerK) &&
+            (!materials._material_ids || !materials._material_ids[k])
+          ) {
             return;
           }
           if (cognitionKeysOnRow[k] || cognitionKeysOnRow[lowerK]) {
@@ -38617,7 +38993,6 @@
             }
           }
           if (
-            ["study_scenarios", "scenario_set", "scenario", "scenario_section_title", "scenario_heading", "scenario_title", "analysis_table", "impact_table", "comparison_table", "classification_table", "worksheet", "table", "strategy_options", "options", "strategies", "material_id", "material_ids", "_material_ids", "materialId", "required_materials", "title", "heading", "items", "task_cards", "cards", "prompt_set", "prompts", "discussion_prompts", "analysis_template", "evaluation_checklist", "template", "templates", "worksheet_template", "checklist", "checklists"].indexOf(String(k || "")) !== -1 ||
             (lowerK === "scenario" && scenariosRendered) ||
             (lowerK === "scenario_section_title") ||
             (lowerK === "scenario_heading") ||
@@ -38634,7 +39009,11 @@
             (lowerK === "prompts" && promptSetRendered) ||
             (lowerK === "discussion_prompts" && discussionPromptsRendered) ||
             (lowerK === "analysis_template" && analysisTemplateRendered) ||
-            (lowerK === "evaluation_checklist" && evaluationChecklistRendered)
+            (lowerK === "evaluation_checklist" && evaluationChecklistRendered) ||
+            (wasOrderedMaterialRendered(k) &&
+              /^(study_scenarios|scenario_set|analysis_table|impact_table|comparison_table|classification_table|planning_table|decision_table|worksheet|table)$/.test(
+                lowerK
+              ))
           ) {
             return;
           }
@@ -39056,6 +39435,21 @@
           row.episode_plan &&
           Array.isArray(row.episode_plan.beats) &&
           row.episode_plan.beats.length;
+        var journeyFrame = buildLearnerJourneyFrameHtml(row, cardCtx.materials, {
+          renderListFromInstructions: renderListFromInstructions
+        });
+        if (hasEpisodePlanBeats && journeyFrame.html) {
+          parts.push(
+            '<div class="util-activity-journey-frame">' + journeyFrame.html + "</div>"
+          );
+        }
+        if (
+          hasEpisodePlanBeats &&
+          !journeyFrame.promotedGoal &&
+          grammarApi.hasDoContent(row, partition)
+        ) {
+          parts.push(renderInstructionalDoSection(row, {}, renderListFromInstructions));
+        }
         if (hasEpisodePlanBeats) {
           var episodeBeatMaterialsHtml = renderMaterialsForActivity(cardCtx.materials, row);
           if (episodeBeatMaterialsHtml) {
@@ -39089,11 +39483,28 @@
         }
         if (!hasEpisodePlanBeats && grammarApi.hasDoContent(row, partition)) {
           parts.push(renderInstructionalDoSection(row, partition.do, renderListFromInstructions));
-        } else if (hasEpisodePlanBeats && grammarApi.hasDoContent(row, partition)) {
-          parts.push(renderInstructionalDoSection(row, {}, renderListFromInstructions));
         }
         if (grammarApi.hasCheckContent(row, partition)) {
-          parts.push(renderInstructionalCheckSection(row, partition.check));
+          if (hasEpisodePlanBeats) {
+            if (!journeyFrame.suppressTrailingOutput && journeyFrame.expectedOutput) {
+              var trailingOutputBody =
+                utilityRenderMarkdownBlock(String(journeyFrame.expectedOutput)) ||
+                "<p>" + utilityRenderMarkdownInline(String(journeyFrame.expectedOutput)) + "</p>";
+              parts.push(
+                '<div class="util-activity-completion util-output-block util-material-role-deliverable">' +
+                  utilityRenderIconHeading(
+                    "h4",
+                    "Done",
+                    "output",
+                    "util-output-heading util-icon-heading"
+                  ) +
+                  trailingOutputBody +
+                  "</div>"
+              );
+            }
+          } else {
+            parts.push(renderInstructionalCheckSection(row, partition.check));
+          }
         }
         if (!hasEpisodePlanBeats && grammarApi.activityHasPostCheckSources(row, partition.reflect)) {
           parts.push(
@@ -39249,12 +39660,36 @@
             );
             activityComparable.markSeen(purposeTask);
           }
+          var hasLegacyEpisodeBeats =
+            row.episode_plan &&
+            Array.isArray(row.episode_plan.beats) &&
+            row.episode_plan.beats.length;
+          var legacyJourneyFrame = hasLegacyEpisodeBeats
+            ? buildLearnerJourneyFrameHtml(row, materials, {
+                renderListFromInstructions: renderListFromInstructions
+              })
+            : null;
+          if (legacyJourneyFrame && legacyJourneyFrame.html) {
+            parts.push(
+              '<div class="util-activity-journey-frame">' + legacyJourneyFrame.html + "</div>"
+            );
+            if (legacyJourneyFrame.learnerTaskText) {
+              activityComparable.markSeen(legacyJourneyFrame.learnerTaskText);
+            }
+          }
           var learnerTaskSource = activityComparableSourceText(learnerTaskRaw);
           var learnerTaskHtml = renderListFromInstructions(learnerTaskRaw);
-          if (learnerTaskHtml) {
+          if (
+            learnerTaskHtml &&
+            !(legacyJourneyFrame && legacyJourneyFrame.promotedGoal)
+          ) {
+            var taskHeading =
+              legacyJourneyFrame && legacyJourneyFrame.goalShaped
+                ? "Your goal"
+                : "What to do";
             parts.push(
               '<div class="util-activity-task util-activity-task--primary util-material-role-action">' +
-              utilityRenderIconHeading("h4", "What to do", "what_to_do", "util-material-heading") +
+              utilityRenderIconHeading("h4", taskHeading, "what_to_do", "util-material-heading") +
               learnerTaskHtml +
               "</div>"
             );
@@ -39286,13 +39721,20 @@
             );
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
           }
-          if (expectedOutput) {
+          if (
+            expectedOutput &&
+            !(legacyJourneyFrame && legacyJourneyFrame.suppressTrailingOutput)
+          ) {
             var expectedOutputBody =
               utilityRenderMarkdownBlock(String(expectedOutput)) ||
               "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
+            var outputHeading =
+              legacyJourneyFrame && legacyJourneyFrame.promotedSuccess ? "Done" : "Output";
             parts.push(
-              '<div class="util-output-block util-material-role-deliverable">' +
-              utilityRenderIconHeading("h4", "Output", "output", "util-output-heading util-icon-heading") +
+              '<div class="util-output-block util-material-role-deliverable' +
+                (outputHeading === "Done" ? " util-activity-completion" : "") +
+                '">' +
+              utilityRenderIconHeading("h4", outputHeading, "output", "util-output-heading util-icon-heading") +
               expectedOutputBody +
               "</div>"
             );
@@ -41457,6 +41899,8 @@
       "impact_table",
       "comparison_table",
       "classification_table",
+      "planning_table",
+      "decision_table",
       "worksheet",
       "table"
     ];
@@ -44931,6 +45375,8 @@
     var primaryBlocks = [];
     var metadataBlocks = [];
     var metadataKeys = {
+      metadata: true,
+      Metadata: true,
       schema_version: true,
       assembly_state: true,
       enrichment_metadata: true,
@@ -44944,12 +45390,19 @@
       diagnostic: true,
       renderer_diagnostics: true,
       prism_diagnostics: true,
+      prism_render_normalized: true,
+      prismRenderNormalized: true,
+      prismrendernormalized: true,
+      __prism_render_normalized: true,
+      __prismRenderNormalized: true,
+      __prismrendernormalized: true,
       visual_affordance_schema_version: true,
       activities_visual_review: true,
       visual_affordances: true,
       episode_plans: true
     };
     var pageMetadataKeyOrder = [
+      "metadata",
       "schema_version",
       "assembly_state",
       "enrichment_metadata",
@@ -44962,6 +45415,10 @@
       "diagnostics",
       "renderer_diagnostics",
       "prism_diagnostics",
+      "prism_render_normalized",
+      "prismRenderNormalized",
+      "__prism_render_normalized",
+      "__prismRenderNormalized",
       "visual_affordance_schema_version",
       "activities_visual_review",
       "visual_affordances"
@@ -45041,6 +45498,7 @@
       if (!k) return false;
       if (k === "sections") return true;
       if (k === "activities") return true;
+      if (k === "page_synthesis") return true;
       return !!PAGE_BODY_SECTION_IDS[k];
     }
     function buildLearningObjectSectionBlocksFromPageSections() {

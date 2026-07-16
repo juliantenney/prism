@@ -46,6 +46,33 @@ HTML output is directly inspectable, easy to verify, and aligns with the current
 - page/document rendering paths are treated as first-class runtime surfaces
 - format expansion is considered later and must not destabilise HTML workflows
 
+## 2026-07-16 - Learning experience evolution after Sprint 62
+
+### Date
+
+2026-07-16
+
+### Decision
+
+Record the evolution of learner-experience work as four phases in [`learning-experience-evolution.md`](learning-experience-evolution.md):
+
+1. Renderer correctness  
+2. Journey presentation  
+3. Cognitive orchestration (emerging)  
+4. Reasoning visibility (emerging)
+
+Close Sprint 62 (renderer coherence PASS). Open Sprint 63 as a **discovery and architecture** sprint on cognitive flow and reasoning visibility — **not** an immediate schema redesign.
+
+### Rationale
+
+Sprint 62 showed large learner-experience gains from renderer-only work, and also showed clear limits: inventory-style tasks and evaluative judgement need information that presentation cannot invent. The next bottleneck is therefore cognitive/information architecture, which must be audited before pipeline redesign.
+
+### Consequences
+
+- Sprint 63 produces inventories and recommendations, not production DLA/GAM/schema changes by default
+- Learning Journey and Cognitive Journey are treated as related but non-identical concepts
+- Provisional cognitive patterns (A1–A6) remain hypotheses until Sprint 63 validates them
+
 ## 2026-05-11 - Documentation consolidation and archive cleanup
 
 ### Date

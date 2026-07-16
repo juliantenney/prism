@@ -238,7 +238,8 @@ test("guided learning: beat-first Marx A1 renders expected_output", () => {
     /Historical Materialism and Capitalism[\s\S]*?(?=Surplus Value and Exploitation|Is Marx Still Relevant|$)/i
   );
   assert.ok(a1);
-  assert.match(a1[0], /util-output-block|revised using the checklist/i);
+  // Sprint 62: output may appear as promoted Success looks like rather than trailing util-output-block.
+  assert.match(a1[0], /util-output-block|util-activity-success-looks-like|revised using the checklist/i);
 });
 
 test("guided learning: DLA runtime prompt includes scaffold word targets and terse forbid", () => {

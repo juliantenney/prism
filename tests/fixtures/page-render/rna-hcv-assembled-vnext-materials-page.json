@@ -1,0 +1,383 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "RNA Viruses and Hepatitis C — Material Completeness Fixture",
+  "audience": "Undergraduate virology learners",
+  "page_profile": "learner",
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan",
+      "dla",
+      "gam",
+      "learning_sequence",
+      "assessment"
+    ]
+  },
+  "page_synthesis": {
+    "overview": {
+      "body": "Self-study fixture for Sprint 62 renderer material completeness.",
+      "format": "markdown"
+    }
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Classify RNA Virus Genomes",
+      "duration_minutes": 10,
+      "grouping": "individual",
+      "learner_task": "Study the exposition, worked example, classification table, and checklist.",
+      "expected_output": "Completed classification table and verified checklist.",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "title": "S62 RNA A1-M1 RNA Genome Overview",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A1-M1-BODY. RNA viruses carry RNA genomes that may be positive-sense, negative-sense, or double-stranded."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "title": "S62 RNA A1-M2 Worked Classification",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A1-M2-BODY. Step 1: identify genome polarity before assigning virus family."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "title": "S62 RNA A1-M3 Sample Classification",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A1-M3-BODY. HCV is a positive-sense single-stranded RNA virus."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "classification_table",
+          "title": "S62 RNA A1-M4 Classification Table",
+          "body_format": "markdown",
+          "body": "| Genome type | Example virus | Marker S62-RNA-A1-M4-BODY\n| --- | --- | --- |\n| Positive-sense | HCV | S62-RNA-A1-M4-ROW |\n| Negative-sense | Influenza A |  |"
+        },
+        {
+          "material_id": "A1-M5",
+          "material_type": "checklist",
+          "title": "S62 RNA A1-M5 Classification Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A1-M5-C1: genome polarity named\n- Criterion S62-RNA-A1-M5-C2: example virus matched"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Analyse HCV Replication Steps",
+      "duration_minutes": 10,
+      "grouping": "individual",
+      "learner_task": "Complete the analysis table using the worked example.",
+      "expected_output": "Completed analysis table verified with checklist.",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "title": "S62 RNA A2-M1 Replication Overview",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A2-M1-BODY. HCV replication occurs on membranous webs in the cytoplasm."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "worked_example",
+          "title": "S62 RNA A2-M2 Worked Replication Analysis",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A2-M2-BODY. Trace entry, translation, replication, and assembly in order."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "analysis_table",
+          "title": "S62 RNA A2-M3 Analysis Table",
+          "body_format": "markdown",
+          "body": "| Step | Host factor | Viral product | Marker S62-RNA-A2-M3-BODY\n| --- | --- | --- | --- |\n| Entry | SR-B1 | E1/E2 | S62-RNA-A2-M3-ROW |\n| Replication |  | NS5B |  |"
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "title": "S62 RNA A2-M4 Analysis Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A2-M4-C1: causal order preserved\n- Criterion S62-RNA-A2-M4-C2: host and viral roles distinguished"
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Plan an Outbreak Response",
+      "duration_minutes": 10,
+      "grouping": "individual",
+      "learner_task": "Read the scenario and complete the planning table.",
+      "expected_output": "Completed planning table and checklist.",
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "text",
+          "title": "S62 RNA A3-M1 Response Framing",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A3-M1-BODY. Outbreak response planning balances containment and healthcare capacity."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "scenario",
+          "title": "S62 RNA A3-M2 Outbreak Scenario",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A3-M2-BODY. A regional hospital cluster shows rising HCV RNA-positive cases linked to dialysis exposure."
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "planning_table",
+          "title": "S62 RNA A3-M3 Planning Table",
+          "body_format": "markdown",
+          "body": "| Action | Rationale | Marker S62-RNA-A3-M3-BODY\n| --- | --- | --- |\n| Screen contacts | Interrupt transmission | S62-RNA-A3-M3-ROW |\n| Reinforce PPE | Reduce exposure |  |"
+        },
+        {
+          "material_id": "A3-M4",
+          "material_type": "checklist",
+          "title": "S62 RNA A3-M4 Planning Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A3-M4-C1: actions sequenced logically\n- Criterion S62-RNA-A3-M4-C2: rationale linked to evidence"
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Analyse Immune Evasion Mechanisms",
+      "duration_minutes": 10,
+      "grouping": "individual",
+      "learner_task": "Use the modelling note and scenario to complete the analysis table.",
+      "expected_output": "Analysis table with modelling-informed reasoning.",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "text",
+          "title": "S62 RNA A4-M1 Immune Evasion Intro",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A4-M1-BODY. RNA viruses deploy multiple strategies to delay innate immune detection."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "modelling_note",
+          "title": "S62 RNA A4-M2 Modelling Note",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A4-M2-BODY. Model innate sensing as a race between viral shielding and RIG-I activation."
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "scenario",
+          "title": "S62 RNA A4-M3 Evasion Scenario",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A4-M3-BODY. A variant shows reduced interferon-stimulated gene induction despite high viral load."
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "analysis_table",
+          "title": "S62 RNA A4-M4 Evasion Analysis Table",
+          "body_format": "markdown",
+          "body": "| Mechanism | Evidence cue | Marker S62-RNA-A4-M4-BODY\n| --- | --- | --- |\n| 5' UTR shielding | Delayed RIG-I signal | S62-RNA-A4-M4-ROW |\n| NS3/4A protease | Reduced IRF3 |  |"
+        },
+        {
+          "material_id": "A4-M5",
+          "material_type": "checklist",
+          "title": "S62 RNA A4-M5 Evasion Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A4-M5-C1: mechanism tied to evidence\n- Criterion S62-RNA-A4-M5-C2: scenario details used"
+        }
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "title": "Compare Treatment Strategies",
+      "duration_minutes": 10,
+      "grouping": "individual",
+      "learner_task": "Complete the analysis table comparing direct-acting antivirals.",
+      "expected_output": "Completed comparison analysis table.",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "text",
+          "title": "S62 RNA A5-M1 Treatment Overview",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A5-M1-BODY. Direct-acting antivirals target NS3, NS5A, and NS5B with distinct resistance profiles."
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "worked_example",
+          "title": "S62 RNA A5-M2 Worked Comparison",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A5-M2-BODY. Compare mechanism, barrier to resistance, and pangenotypic coverage."
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "analysis_table",
+          "title": "S62 RNA A5-M3 Treatment Analysis Table",
+          "body_format": "markdown",
+          "body": "| Drug class | Target | Trade-off | Marker S62-RNA-A5-M3-BODY\n| --- | --- | --- | --- |\n| NS5B polymerase inhibitor | NS5B | High barrier | S62-RNA-A5-M3-ROW |\n| NS5A inhibitor | NS5A | Rapid decline |  |"
+        },
+        {
+          "material_id": "A5-M4",
+          "material_type": "checklist",
+          "title": "S62 RNA A5-M4 Treatment Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A5-M4-C1: mechanisms distinguished\n- Criterion S62-RNA-A5-M4-C2: trade-offs explicit"
+        }
+      ]
+    },
+    {
+      "activity_id": "A6",
+      "title": "Evaluate Outbreak Priorities",
+      "duration_minutes": 15,
+      "grouping": "individual",
+      "learner_task": "Complete the decision table, memo template, checklist, and transfer prompt.",
+      "expected_output": "Evaluative judgement memo and transfer response.",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "verification"
+          }
+        ]
+      },
+      "materials": [
+        {
+          "material_id": "A6-M1",
+          "material_type": "text",
+          "title": "S62 RNA A6-M1 Evaluation Framing",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A6-M1-BODY. Prioritise interventions using explicit criteria and trade-offs."
+        },
+        {
+          "material_id": "A6-M2",
+          "material_type": "scenario",
+          "title": "S62 RNA A6-M2 Policy Scenario",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A6-M2-BODY. Limited testing capacity forces a choice between population screening and targeted contact tracing."
+        },
+        {
+          "material_id": "A6-M3",
+          "material_type": "worked_example",
+          "title": "S62 RNA A6-M3 Worked Judgement",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A6-M3-BODY. Worked judgement: weigh speed, coverage, and false-negative risk before recommending a priority."
+        },
+        {
+          "material_id": "A6-M4",
+          "material_type": "decision_table",
+          "title": "S62 RNA A6-M4 Decision Table",
+          "body_format": "markdown",
+          "body": "| Criterion | Option A | Option B | Marker S62-RNA-A6-M4-BODY\n| --- | --- | --- | --- |\n| Speed | Screening | Tracing | S62-RNA-A6-M4-ROW |\n| Coverage |  |  |  |"
+        },
+        {
+          "material_id": "A6-M5",
+          "material_type": "template",
+          "title": "S62 RNA A6-M5 Evaluative Memo Template",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A6-M5-BODY.\n\n**Claim:** State your priority recommendation.\n\n**Reasons:** Give two evidence-based reasons.\n\n**Limits:** Name one uncertainty."
+        },
+        {
+          "material_id": "A6-M6",
+          "material_type": "checklist",
+          "title": "S62 RNA A6-M6 Evaluation Checklist",
+          "body_format": "markdown",
+          "body": "- Criterion S62-RNA-A6-M6-C1: criteria applied explicitly\n- Criterion S62-RNA-A6-M6-C2: trade-offs acknowledged"
+        },
+        {
+          "material_id": "A6-M7",
+          "material_type": "transfer_prompt",
+          "title": "S62 RNA A6-M7 Transfer Prompt",
+          "body_format": "markdown",
+          "body": "Marker S62-RNA-A6-M7-BODY. Apply the same evaluation criteria to a different RNA-virus outbreak you know."
+        }
+      ]
+    }
+  ]
+}

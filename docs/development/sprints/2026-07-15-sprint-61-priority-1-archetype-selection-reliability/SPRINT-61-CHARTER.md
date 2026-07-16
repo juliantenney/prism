@@ -1,7 +1,7 @@
 # Sprint 61 — Charter
 
 **Sprint:** 61 — Priority-1 Archetype Selection Reliability  
-**Status:** Open — Phase A protocol **frozen**; scored baseline authorised (2026-07-15)  
+**Status:** Closed — [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md)  
 **Opened:** 2026-07-15  
 **Type:** Measurement and calibration (selection reliability)  
 **Architecture baseline:** [Sprint 58 — closed](../2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md)  
@@ -11,6 +11,7 @@
 **Decisions:** [decisions.md](decisions.md)  
 **Benchmark:** [acceptance-matrix.md](acceptance-matrix.md)  
 **Phase A protocol (frozen):** [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md)
+**Successor:** [Sprint 62 — Coherent Renderer Pass](../2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-START-HERE.md)
 
 ---
 

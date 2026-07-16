@@ -146,9 +146,9 @@ test("renderer: Marx A1 beat sections in episode-plan order", () => {
   assert.match(beatSectionHtml(a1Html, "worked_thinking"), /Annotated Sample Explanation/);
   assert.match(beatSectionHtml(a1Html, "verification"), /checklist to review your explanation/i);
   assert.doesNotMatch(a1Html, /Beat 1|Beat 2|Beat 3/i);
-  assert.match(a1Html, />Explanation</);
-  assert.match(a1Html, />Worked Thinking</);
-  assert.match(a1Html, />Check Your Thinking</);
+  assert.match(a1Html, />Understand</);
+  assert.match(a1Html, />See it modelled</);
+  assert.match(a1Html, />Check your work</);
 });
 
 test("renderer: Marx A5 beat sections group template and transfer materials", () => {

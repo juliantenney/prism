@@ -6,9 +6,11 @@
 
 ## Status
 
-- **Sprint:** 61 — **Open** (Phase A — **protocol frozen**; scored baseline **Go**)
+- **Sprint:** 61 — **Closed** — [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md)
 - **Theme:** Measure whether ordinary DLA planning spontaneously emits correct Priority-1 plans from sparse briefs
 - **Protocol:** [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md) (frozen 2026-07-15 · S61-D05 … S61-D11)
+- **Extension delivered:** [E01-EVALUATION-JUDGEMENT.md](E01-EVALUATION-JUDGEMENT.md)
+- **Successor:** [Sprint 62 — Coherent Renderer Pass](../2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-START-HERE.md)
 - **Architecture baseline:** Sprint 58 — **closed** (partial-page harness only)
 - **Sprint 59 / 60:** Closed — see closure links below
 - **Charter:** [SPRINT-61-CHARTER.md](SPRINT-61-CHARTER.md)
@@ -38,16 +40,15 @@ Hand-authored DLA partials (including Sprint 60 Phase C mixed fixture) are **not
 
 ---
 
-## Immediate next tasks (Phase A scored baseline)
+## Sprint close outcomes
 
-1. Use **partial-page harness only** (S61-D05).  
-2. Run **3 scored runs per brief** (30 total) — S61-D06.  
-3. Per run: [OPERATOR-CHECKLIST.md](OPERATOR-CHECKLIST.md) + [templates/benchmark-run-record.md](templates/benchmark-run-record.md).  
-4. Store evidence under [artefacts/phase-a/](artefacts/phase-a/README.md); log via [BENCHMARK-LOGGING.md](BENCHMARK-LOGGING.md).  
-5. Classify with **ten codes** and explicit precedence — S61-D08.  
-6. **Do not** change enrich-contract guidance, product code, or benchmark wording.
+1. Protocol and execution support documented and frozen.  
+2. `evaluation_judgement` archetype delivered with production validation, routing, and observability.  
+3. Evaluative worked-example delivery refined to require modeled reasoning sequence.  
+4. Instructional-archetype test set green: **99/99**.  
+5. No new persistence, routing, assembly, or renderer architecture introduced.
 
-Recommended order: B09 → B10 → B01 → B04 → B07 → remainder — see [PHASE-A-EXECUTION-GUIDE.md](PHASE-A-EXECUTION-GUIDE.md).
+See [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md) for full closure evidence.
 
 ### Leading hypothesis
 

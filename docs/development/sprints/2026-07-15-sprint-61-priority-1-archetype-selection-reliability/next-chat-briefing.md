@@ -7,16 +7,15 @@
 
 ## Briefing (copy below)
 
-You are continuing PRISM on **Sprint 61 — Priority-1 Archetype Selection Reliability**.
+You are continuing PRISM after **Sprint 61 — closed**. Active work is **Sprint 62 — Coherent Renderer Pass**.
 
-**Phase A protocol is frozen** — [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md) · S61-D05 … S61-D11. **Scored baseline is Go.**
+**Sprint 61 closure:** [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md).  
+**Sprint 62 start:** [../2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-START-HERE.md](../2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-START-HERE.md).
 
 **Sprint 58 closed** (partial-page = sole scored harness). **Sprint 59 / 60 closed.**
 
-**Pack:** `docs/development/sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/`  
-**Start:** [SPRINT-61-START-HERE.md](SPRINT-61-START-HERE.md)  
-**Protocol:** [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md)  
-**Matrix:** [acceptance-matrix.md](acceptance-matrix.md)
+**Sprint 61 pack (historical):** `docs/development/sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/`  
+**Sprint 62 pack (active):** `docs/development/sprints/2026-07-16-sprint-62-coherent-renderer-pass/`
 
 ---
 

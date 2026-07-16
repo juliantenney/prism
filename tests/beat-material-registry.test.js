@@ -201,3 +201,121 @@ test("page composition wires beat-material closure validation", () => {
     )
   );
 });
+
+test("materialKeysFromObject excludes renderer metadata sidecars", () => {
+  const keys = registry.materialKeysFromObject({
+    text: "Body",
+    _material_ids: { text: "A1-M1" },
+    _material_types: { text: "text" },
+    _render_sequence: [{ key: "text", material_id: "A1-M1", material_type: "text" }]
+  });
+  assert.deepEqual(keys, ["text"]);
+  assert.equal(registry.isRendererMaterialMetaKey("_material_ids"), true);
+  assert.equal(registry.isRendererMaterialMetaKey("_material_types"), true);
+  assert.equal(registry.isRendererMaterialMetaKey("_render_sequence"), true);
+  assert.equal(registry.isRendererMaterialMetaKey("text"), false);
+});
+
+test("diagnostics: no warnings for renderer metadata sidecars on vNext materials object", () => {
+  const page = activityPage(
+    {
+      text: { title: "Intro", body: "Exposition body." },
+      worked_example: "Step 1: model.",
+      checklist: "- item one",
+      _material_ids: { text: "A1-M1", worked_example: "A1-M2", checklist: "A1-M3" },
+      _material_types: { text: "text", worked_example: "worked_example", checklist: "checklist" },
+      _render_sequence: [
+        { key: "text", material_id: "A1-M1", material_type: "text" },
+        { key: "worked_example", material_id: "A1-M2", material_type: "worked_example" },
+        { key: "checklist", material_id: "A1-M3", material_type: "checklist" }
+      ]
+    },
+    {
+      archetype: "understand",
+      beats: [{ function: "explanation" }, { function: "worked_thinking" }, { function: "verification" }]
+    }
+  );
+  const beats = require("../lib/utility-pedagogical-beats.js");
+  const result = registry.validatePageBeatMaterialClosure(page, {
+    classifyFromText: beats.classifyPedagogicalBeat
+  });
+  const joined = result.messages.join(" ");
+  assert.equal(joined.includes("_material_ids"), false, joined);
+  assert.equal(joined.includes("_material_types"), false, joined);
+  assert.equal(joined.includes("_render_sequence"), false, joined);
+  assert.equal(result.diagnostics.unassigned_materials.length, 0);
+  assert.equal(result.diagnostics.empty_beats.length, 0);
+  assert.equal(result.diagnostics.conflicts.length, 0);
+});
+
+test("diagnostics: storage key with _material_types sidecar is not falsely unassigned", () => {
+  const page = activityPage(
+    {
+      a1_m1: { title: "Intro", body: "Exposition body." },
+      _material_types: { a1_m1: "text" },
+      _material_ids: { a1_m1: "A1-M1" }
+    },
+    {
+      archetype: "understand",
+      beats: [{ function: "explanation" }]
+    }
+  );
+  const beats = require("../lib/utility-pedagogical-beats.js");
+  const result = registry.validatePageBeatMaterialClosure(page, {
+    classifyFromText: beats.classifyPedagogicalBeat
+  });
+  const unassignedKeys = result.diagnostics.unassigned_materials.map((row) => row.material_key);
+  assert.equal(unassignedKeys.includes("a1_m1"), false);
+  assert.equal(unassignedKeys.includes("A1-M1"), false);
+});
+
+test("diagnostics: render-assigned table is not reported as conflict or empty-beat false positive", () => {
+  const page = activityPage(
+    {
+      text: "RNA overview.",
+      classification_table:
+        "| Genome type | Example virus |\n| --- | --- | --- |\n| Positive-sense | HCV |",
+      checklist: "- criterion one",
+      _material_types: {
+        text: "text",
+        classification_table: "classification_table",
+        checklist: "checklist"
+      }
+    },
+    {
+      archetype: "understand",
+      beats: [
+        { function: "explanation" },
+        { function: "guided_practice" },
+        { function: "verification" }
+      ]
+    }
+  );
+  const beats = require("../lib/utility-pedagogical-beats.js");
+  const result = registry.validatePageBeatMaterialClosure(page, {
+    classifyFromText: beats.classifyPedagogicalBeat
+  });
+  assert.equal(result.diagnostics.conflicts.length, 0);
+  const emptyFns = result.diagnostics.empty_beats.map((row) => row.episode_function);
+  assert.equal(emptyFns.includes("guided_practice"), false);
+});
+
+test("diagnostics: unknown material type remains reported when genuinely unassigned", () => {
+  const page = activityPage(
+    {
+      planning_table: "| Step | Action |\n| --- | --- |",
+      _material_types: { planning_table: "planning_table" }
+    },
+    {
+      archetype: "analyse",
+      beats: [{ function: "guided_practice" }]
+    }
+  );
+  const beats = require("../lib/utility-pedagogical-beats.js");
+  const result = registry.validatePageBeatMaterialClosure(page, {
+    classifyFromText: beats.classifyPedagogicalBeat
+  });
+  assert.equal(result.outcome, "warn");
+  assert.equal(result.diagnostics.unassigned_materials.length, 1);
+  assert.equal(result.diagnostics.unassigned_materials[0].material_key, "planning_table");
+});

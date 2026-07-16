@@ -41,39 +41,53 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 61 — Priority-1 Archetype Selection Reliability (**Open**, 2026-07-15)
+### Sprint 63 — Cognitive Flow & Reasoning Visibility (**Open**, 2026-07-16)
 
-**Portable pack:** [`sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/)
+**Portable pack:** [`sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)  
+**Canonical charter:** [`docs/sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md`](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)  
+**Evolution synthesis:** [`docs/architecture/learning-experience-evolution.md`](../architecture/learning-experience-evolution.md)
 
 | Entry | Path |
 |-------|------|
-| **START HERE** | [`SPRINT-61-START-HERE.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-START-HERE.md) |
-| **Charter** | [`SPRINT-61-CHARTER.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CHARTER.md) |
-| **Benchmark** | [`acceptance-matrix.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/acceptance-matrix.md) |
-| **Protocol (frozen)** | [`PHASE-A-PROTOCOL.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/PHASE-A-PROTOCOL.md) |
-| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/next-chat-briefing.md) |
-| **Sprint 60 closure** | [SPRINT-60-CLOSURE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) |
-| **Sprint 59 closure** | [SPRINT-59-CLOSURE.md](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CLOSURE.md) |
-| **Architecture baseline** | [Sprint 58 closure](sprints/2026-07-09-sprint-58-partial-page-artefact-architecture-implementation/SPRINT-58-CLOSURE.md) |
+| **START HERE** | [`SPRINT-63-START-HERE.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/SPRINT-63-START-HERE.md) |
+| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/next-chat-briefing.md) |
+| **Handover pack** | [`HANDOVER.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/HANDOVER.md) |
+| **Charter** | [`sprint-63-cognitive-flow-and-reasoning-visibility.md`](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md) |
+| **Learning Experience Evolution** | [`learning-experience-evolution.md`](../architecture/learning-experience-evolution.md) |
+| **Sprint 62 closure** | [SPRINT-62-CLOSURE.md](sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) |
 
-**Core research question:** Can ordinary DLA planning reliably infer and emit the correct Priority-1 `instructional_archetype` + complete `archetype_plan` from **sparse briefs**, without author triggers, `S59_*_TEST`, fixture stamps, or manual archetype JSON?
+**Sprint objective:** Investigate cognitive architecture, reasoning patterns, and information requirements for expert-guided independent learning.
 
-**Unmistakable distinction:** Sprint 60 proved routing/delivery **when valid plans exist**. Sprint 61 tests whether DLA **creates** those plans **unaided**.
+**Nature:** Discovery and architecture sprint — **not** schema redesign, **not** DLA/GAM rewrite, **not** renderer feature work.
 
-**Phase:** **A — Scored baseline authorised** (protocol frozen 2026-07-15). Partial-page harness · 3 runs × 10 briefs · [PHASE-A-PROTOCOL.md](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/PHASE-A-PROTOCOL.md).
+**Objectives:** Cognitive flow audit; cognitive pattern inventory; missing-information inventory; distinguish rendering vs orchestration vs information gaps; evidence-based recommendations for future pipeline evolution.
 
-**Closed predecessors:** Sprint 59 Priority-1 MVP transfer PASS; Sprint 60 production SoT + mixed-archetype delivery PASS. Do not reopen Sprint 58/59/60 closed workstreams.
+**Recommendation:** Begin Sprint 63 in a **new conversation** with a clean context window.
 
-### Closed — Sprint 59 / 60 (2026-07-15)
+### Closed — Sprint 62 — Coherent Renderer Pass (**Closed PASS**, 2026-07-16)
+
+**Portable pack:** [`sprints/2026-07-16-sprint-62-coherent-renderer-pass/`](sprints/2026-07-16-sprint-62-coherent-renderer-pass/)
+
+| Entry | Path |
+|-------|------|
+| **Closure** | [`SPRINT-62-CLOSURE.md`](sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) |
+| **Presentation slice** | [`learner-journey-presentation-slice.md`](sprints/2026-07-16-sprint-62-coherent-renderer-pass/learner-journey-presentation-slice.md) |
+| **Charter** | [`SPRINT-62-CHARTER.md`](sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CHARTER.md) |
+
+**Outcome:** Renderer correctness + minimum learner-journey presentation slice complete within hard boundary (no invented instructional meaning; no DLA/GAM/schema changes).
+
+### Closed — Sprint 59 / 60 / 61 / 62
 
 | Sprint | Outcome | Closure |
 | ------ | ------- | ------- |
 | **59** | Priority-1 MVP transfer PASS (mechanism · process · mental model) | [SPRINT-59-CLOSURE.md](sprints/2026-07-14-sprint-59-instructional-content-richness-audit/SPRINT-59-CLOSURE.md) |
 | **60** | Production SoT + `__PRISM_FINAL_GAM_PROMPT.archetype_delivery` + mixed-archetype acceptance PASS | [SPRINT-60-CLOSURE.md](sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/SPRINT-60-CLOSURE.md) |
+| **61** | Priority-1 selection-reliability docs/process complete + `evaluation_judgement` shipped + evaluative worked-example refinement + 99/99 tests | [SPRINT-61-CLOSURE.md](sprints/2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CLOSURE.md) |
+| **62** | Renderer correctness + learner-journey presentation PASS; A2 acceptance; A6 boundary documented | [SPRINT-62-CLOSURE.md](sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) |
 
-**Locked facts:** Quality variation primarily = instructional-archetype support asymmetry. Production SoT = `required_materials[].instructional_archetype` + `archetype_plan`. Delivery gate: do not evaluate archetype quality until `archetype_delivery.pass` is true. Process rule wording frozen at `20260715-4` lineage unless new post-delivery failure evidence.
+**Locked facts:** Production SoT = `required_materials[].instructional_archetype` + `archetype_plan`. Delivery gate: do not evaluate archetype quality until `archetype_delivery.pass` is true. `evaluation_judgement` is part of the production Priority-1 set (`SCRIPT_VERSION` `20260715-e01w`). Sprint 62 may reorganise/relabel/deduplicate existing meaning only — no invented instructional meaning.
 
-**Non-goals (carry forward into Sprint 61+):** Renderer redesign; hard validators without packages; Sprint 58 architecture reopen; Priority-2 expansion; author picker UI; full P1 packages as primary objective.
+**Non-goals (Sprint 63):** Production renderer changes; DLA/GAM/pipeline implementation; SSOT schema redesign; inventing instructional meaning.
 
 ---
 

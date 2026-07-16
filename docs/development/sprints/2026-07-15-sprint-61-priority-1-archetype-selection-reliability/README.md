@@ -1,12 +1,15 @@
 # Sprint 61 — Pack Index
 
 **Sprint:** 61 — Priority-1 Archetype Selection Reliability  
-**Status:** Open — Phase A protocol **frozen**; scored baseline **Go**  
+**Status:** Closed — [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md)  
 **Opened:** 2026-07-15  
-**Predecessors (closed):** Sprint 60 · Sprint 59 · Sprint 58 (architecture baseline)
+**Closed:** 2026-07-16  
+**Predecessors (closed):** Sprint 60 · Sprint 59 · Sprint 58 (architecture baseline)  
+**Successor:** [Sprint 62](../2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-START-HERE.md)
 
 | Document | Role |
 | -------- | ---- |
+| [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md) | Formal closure |
 | [SPRINT-61-START-HERE.md](SPRINT-61-START-HERE.md) | Reading order |
 | [SPRINT-61-CHARTER.md](SPRINT-61-CHARTER.md) | Authoritative scope |
 | [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md) | **Frozen** Phase A operator protocol |
@@ -26,4 +29,4 @@
 
 ## One-line purpose
 
-Measure whether **ordinary DLA** (partial-page harness) spontaneously selects Priority-1 archetypes from **sparse briefs**; calibrate guidance only after baseline evidence; decide if selection is reliable, prompt-fixable, or needs a future deterministic mechanism.
+Measure and validate Priority-1 archetype selection reliability, then ship the `evaluation_judgement` extensibility increment while preserving existing architecture.

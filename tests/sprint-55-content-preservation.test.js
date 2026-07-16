@@ -162,7 +162,11 @@ test("renderer: beat-first activity still renders expected_output check section"
     /Historical Materialism and Capitalism[\s\S]*?(?=Surplus Value and Exploitation|Is Marx Still Relevant|$)/i
   );
   assert.ok(a1, "expected A1 block");
-  assert.match(a1[0], /util-output-block|util-check-expected-output/i);
+  // Sprint 62: expected_output may be promoted into Success looks like (no trailing Output duplicate).
+  assert.match(
+    a1[0],
+    /util-output-block|util-check-expected-output|util-activity-success-looks-like|revised using the checklist/i
+  );
   assert.match(a1[0], /revised using the checklist/i);
 });
 

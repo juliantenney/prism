@@ -145,7 +145,7 @@ test("typography foundation: Marx A1 retains beat structure with calmer presenta
   );
   assert.ok(a1, "expected A1 block");
   assert.match(a1[0], /class="util-beat-heading"/);
-  assert.match(a1[0], />Explanation</);
-  assert.match(a1[0], />Worked Thinking</);
-  assert.match(a1[0], />Check Your Thinking</);
+  assert.match(a1[0], />Understand</);
+  assert.match(a1[0], />See it modelled</);
+  assert.match(a1[0], />Check your work</);
 });

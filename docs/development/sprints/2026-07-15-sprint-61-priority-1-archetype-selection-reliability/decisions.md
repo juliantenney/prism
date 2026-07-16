@@ -1,6 +1,6 @@
 # Sprint 61 — Decisions
 
-**Updated:** 2026-07-15 (protocol freeze)
+**Updated:** 2026-07-16 (closure)
 
 **Frozen protocol:** [PHASE-A-PROTOCOL.md](PHASE-A-PROTOCOL.md)
 
@@ -149,8 +149,15 @@ Run-level counts are diagnostic only.
 
 ---
 
-## Pending (fill after Phase A)
+## S61-D13 — Close Sprint 61; open Sprint 62
 
-- Baseline result summary decision  
-- Whether Phase B calibration is warranted  
-- Final close vs deterministic-selection successor recommendation  
+**Decision:** Close Sprint 61 as complete. Outcomes include protocol freeze, `evaluation_judgement` implementation, evaluative worked-example delivery refinement, and green instructional-archetype test suite (99/99). Open Sprint 62 — Coherent Renderer Pass as successor sprint.
+
+**Evidence:** [SPRINT-61-CLOSURE.md](SPRINT-61-CLOSURE.md)
+
+**Date:** 2026-07-16
+
+---
+
+## Pending (fill after Phase A)
+- None. Sprint 61 closed.

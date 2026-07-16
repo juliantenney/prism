@@ -5,7 +5,7 @@
 **Opened:** 2026-07-16  
 **Closed:** 2026-07-16  
 **Predecessor:** [Sprint 61 closure](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CLOSURE.md)  
-**Successor:** [Sprint 63](../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/SPRINT-63-START-HERE.md)
+**Successor:** [Sprint 64](../2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md) · Historical: [Sprint 63](../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
 
 | Document | Role |
 | -------- | ---- |
@@ -29,4 +29,4 @@ Improve learner-facing coherence at render time while preserving deterministic o
 
 ## Outcome
 
-**PASS / Complete.** Continue in [Sprint 63](../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/SPRINT-63-START-HERE.md).
+**PASS / Complete.** Sprint 63 closed (Outcome A). Continue in [Sprint 64](../2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md).

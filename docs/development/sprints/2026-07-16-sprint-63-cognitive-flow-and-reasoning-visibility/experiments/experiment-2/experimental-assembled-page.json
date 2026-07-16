@@ -1,0 +1,85 @@
+{
+  "_experiment": {
+    "id": "sprint-63-experiment-2",
+    "title": "Archetype plan propagation (diagnostic only)",
+    "status": "non-production",
+    "constraints": [
+      "No production renderer consumption of debug_instructional_contract",
+      "No synthetic archetype_plan fields",
+      "Plan values copied verbatim from DLA mixed-priority1 / mechanism-explanation fixture"
+    ],
+    "sources": [
+      "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json",
+      "docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/artefacts/enzymes-archetype-mvp/mechanism-explanation.required-material.json",
+      "lib/ld-instructional-archetype.js ENZYMES_MECHANISM_TEST_PLAN"
+    ]
+  },
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "experimental_propagation",
+    "enriched_by": ["dla", "experiment-2-diagnostic"]
+  },
+  "title": "Enzymes and Reaction Rates — Experiment 2 (mechanism_explanation)",
+  "activities": [
+    {
+      "activity_id": "A2",
+      "title": "Explain temperature effects on enzyme reaction rate",
+      "learner_task": "Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.",
+      "expected_output": "A causal chain account connecting temperature change to rate outcome via intervening links.",
+      "activity_preamble": "You will explain the temperature–rate relationship as a transmitting process.",
+      "episode_archetype": "analyse",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "purpose": "Teach how temperature affects enzyme reaction rate through a causal chain.",
+          "specification": "Explain temperature→rate rise then fall with intervening links; natural prose only.",
+          "instructional_archetype": "mechanism_explanation",
+          "archetype_plan": {
+            "start": "temperature increases within and beyond the enzyme's stable range",
+            "outcome": "reaction rate first increases and then decreases",
+            "required_links": [
+              "molecular kinetic energy and collision frequency",
+              "enzyme-substrate complex formation",
+              "disruption of enzyme structure at high temperature"
+            ]
+          }
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "purpose": "Teach how temperature affects enzyme reaction rate through a causal chain.",
+          "body": "Teach how temperature affects enzyme reaction rate through a causal chain.",
+          "_note": "Stand-in learner body = authored purpose only. No GAM-realised prose invented for this experiment."
+        }
+      ],
+      "debug_instructional_contract": {
+        "material_id": "A2-M1",
+        "instructional_archetype": "mechanism_explanation",
+        "archetype_plan": {
+          "start": "temperature increases within and beyond the enzyme's stable range",
+          "outcome": "reaction rate first increases and then decreases",
+          "required_links": [
+            "molecular kinetic energy and collision frequency",
+            "enzyme-substrate complex formation",
+            "disruption of enzyme structure at high temperature"
+          ]
+        },
+        "propagation_note": "Experimental visibility only. Production renderer must not read this object."
+      },
+      "experimental_metadata": {
+        "tier1_signals_available": true,
+        "tier2_signals": {
+          "episode_archetype": "analyse",
+          "material_types": ["text"],
+          "learner_task": "Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.",
+          "expected_output": "A causal chain account connecting temperature change to rate outcome via intervening links.",
+          "activity_preamble": "You will explain the temperature–rate relationship as a transmitting process."
+        }
+      }
+    }
+  ]
+}

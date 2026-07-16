@@ -1,0 +1,78 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Classify RNA Virus Genomes",
+      "episode_archetype": "understand",
+      "beat_functions": [
+        "explanation",
+        "worked_thinking",
+        "guided_practice",
+        "verification"
+      ],
+      "material_types": [
+        "text",
+        "worked_example",
+        "sample_output",
+        "classification_table",
+        "checklist"
+      ],
+      "interaction_type": null,
+      "learner_task": "Study the exposition, worked example, classification table, and checklist.",
+      "expected_output": "Completed classification table and verified checklist.",
+      "reasoning_orientation": null,
+      "self_explanation_prompt": null,
+      "instructional_archetype_on_materials": false
+    },
+    {
+      "activity_id": "A2",
+      "title": "Analyse HCV Replication Steps",
+      "episode_archetype": "analyse",
+      "beat_functions": [
+        "explanation",
+        "worked_thinking",
+        "guided_practice",
+        "verification"
+      ],
+      "material_types": [
+        "text",
+        "worked_example",
+        "analysis_table",
+        "checklist"
+      ],
+      "interaction_type": null,
+      "learner_task": "Complete the analysis table using the worked example.",
+      "expected_output": "Completed analysis table verified with checklist.",
+      "reasoning_orientation": null,
+      "self_explanation_prompt": null,
+      "instructional_archetype_on_materials": false
+    },
+    {
+      "activity_id": "A6",
+      "title": "Evaluate Outbreak Priorities",
+      "episode_archetype": "evaluate",
+      "beat_functions": [
+        "explanation",
+        "worked_judgement",
+        "guided_practice",
+        "transfer",
+        "verification"
+      ],
+      "material_types": [
+        "text",
+        "scenario",
+        "worked_example",
+        "decision_table",
+        "template",
+        "checklist",
+        "transfer_prompt"
+      ],
+      "interaction_type": null,
+      "learner_task": "Complete the decision table, memo template, checklist, and transfer prompt.",
+      "expected_output": "Evaluative judgement memo and transfer response.",
+      "reasoning_orientation": null,
+      "self_explanation_prompt": null,
+      "instructional_archetype_on_materials": false
+    }
+  ]
+}

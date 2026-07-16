@@ -1,0 +1,196 @@
+{
+  "generated": "2026-07-16",
+  "scope": "bounded-sample Sprint 64 S64-BL-002b — not repository-wide",
+  "samples": [
+    {
+      "id": "S1",
+      "name": "Exp2 enzymes mechanism diagnostic",
+      "path_type": "fixture/diagnostic (both arrays on same activity)",
+      "required_materials_count": 1,
+      "realised_materials_count": 1,
+      "why_included": "Sprint 63 Experiment 2 candidate with plan",
+      "artefact": "docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/experiments/experiment-2/experimental-assembled-page.json"
+    },
+    {
+      "id": "S2",
+      "name": "Exp3 process (DLA required + diagnostic material stand-in)",
+      "path_type": "fixture/diagnostic cross-artefact",
+      "required_materials_count": 1,
+      "realised_materials_count": 1,
+      "why_included": "Sprint 63 Experiment 3 process candidate",
+      "artefact": [
+        "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json",
+        "docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/experiments/experiment-3/process-walkthrough/diagnostic.json"
+      ]
+    },
+    {
+      "id": "S3",
+      "name": "Exp3 mental-model (DLA required + diagnostic material stand-in)",
+      "path_type": "fixture/diagnostic cross-artefact",
+      "required_materials_count": 1,
+      "realised_materials_count": 1,
+      "why_included": "Sprint 63 Experiment 3 mental-model candidate",
+      "artefact": [
+        "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json",
+        "docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/experiments/experiment-3/mental-model-building/diagnostic.json"
+      ]
+    },
+    {
+      "id": "S4",
+      "name": "Ed Psych first-audit DLA↔GAM join",
+      "path_type": "production-like workflow capture (cross-stage)",
+      "required_materials_count": 23,
+      "realised_materials_count": 23,
+      "why_included": "Live capture; multiple required materials per activity",
+      "artefact": "docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/artefacts/first-audit/Introduction_to_Educational_Psychology_dac8dd73.json",
+      "gam_capture_retains_required_materials": false,
+      "source_id_presence": "23/23",
+      "realised_id_presence": "23/23"
+    },
+    {
+      "id": "S5",
+      "name": "Marx first-audit DLA↔GAM join",
+      "path_type": "production-like workflow capture (cross-stage)",
+      "required_materials_count": 26,
+      "realised_materials_count": 26,
+      "why_included": "Second domain; multi-material activities",
+      "artefact": "docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/artefacts/first-audit/WasMarxRight_ba3f2a76.json",
+      "gam_capture_retains_required_materials": false
+    },
+    {
+      "id": "S6",
+      "name": "page-assemble gam-partial.json",
+      "path_type": "partial / material-only",
+      "required_materials_count": 0,
+      "realised_materials_count": 2,
+      "why_included": "Canonical partial GAM fixture",
+      "artefact": "tests/fixtures/page-assemble/gam-partial.json"
+    },
+    {
+      "id": "S7",
+      "name": "RNA HCV assembled vnext",
+      "path_type": "material-only assembled",
+      "required_materials_count": 0,
+      "realised_materials_count": 29,
+      "why_included": "Production-like assembled page without required_materials",
+      "artefact": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json",
+      "realised_id_presence": "29/29"
+    },
+    {
+      "id": "S8",
+      "name": "dla-mixed-priority1.page.json (DLA-only multi-required)",
+      "path_type": "DLA / pre-GAM",
+      "required_materials_count": 4,
+      "realised_materials_count": 0,
+      "why_included": "Multiple required materials + Priority-1 plans; source-only",
+      "artefact": "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json"
+    }
+  ],
+  "retention_survey": [
+    {
+      "sample": "S1",
+      "path": "diagnostic both-arrays",
+      "required_materials_retained": "yes",
+      "plan_retained": "yes",
+      "materials_retained": "yes",
+      "evidence": "docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/experiments/experiment-2/experimental-assembled-page.json"
+    },
+    {
+      "sample": "S2",
+      "path": "DLA-only source + diagnostic material",
+      "required_materials_retained": "yes (DLA artefact)",
+      "plan_retained": "yes",
+      "materials_retained": "yes (diagnostic stand-in)",
+      "evidence": "Cross-artefact; not a live GAM capture"
+    },
+    {
+      "sample": "S3",
+      "path": "DLA-only source + diagnostic material",
+      "required_materials_retained": "yes (DLA artefact)",
+      "plan_retained": "yes",
+      "materials_retained": "yes (diagnostic stand-in)",
+      "evidence": "Cross-artefact; not a live GAM capture"
+    },
+    {
+      "sample": "S4",
+      "path": "DLA capture",
+      "required_materials_retained": "yes",
+      "plan_retained": "no (no instructional_archetype on these rows)",
+      "materials_retained": "no (empty at DLA)",
+      "evidence": "captures[*].role=DLA"
+    },
+    {
+      "sample": "S4",
+      "path": "GAM partial capture",
+      "required_materials_retained": "no",
+      "plan_retained": "no",
+      "materials_retained": "yes",
+      "evidence": "captures[*].role=GAM — activities[].materials[] only; required_materials absent on GAM artefact"
+    },
+    {
+      "sample": "S5",
+      "path": "GAM partial capture",
+      "required_materials_retained": "no",
+      "plan_retained": "no",
+      "materials_retained": "yes",
+      "evidence": "Same pattern as S4"
+    },
+    {
+      "sample": "S6",
+      "path": "partial GAM",
+      "required_materials_retained": "no",
+      "plan_retained": "no",
+      "materials_retained": "yes",
+      "evidence": "tests/fixtures/page-assemble/gam-partial.json + app.js buildGamV2CopyMaterialAuthoringBrief"
+    },
+    {
+      "sample": "S7",
+      "path": "assembled materials page",
+      "required_materials_retained": "no",
+      "plan_retained": "no",
+      "materials_retained": "yes",
+      "evidence": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
+    },
+    {
+      "sample": "S8",
+      "path": "DLA page",
+      "required_materials_retained": "yes",
+      "plan_retained": "yes (3 of 4 rows)",
+      "materials_retained": "no (pre-GAM)",
+      "evidence": "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json"
+    }
+  ],
+  "metrics": {
+    "joined_production_like_S4_S5": {
+      "source_entries_assessed": 49,
+      "exact_1_1": 49,
+      "missing_realised": 0,
+      "orphan_realised": 0,
+      "one_to_many": 0,
+      "duplicate_identifier": 0,
+      "identifier_absent": 0,
+      "source_coverage_exact_1_1_pct": 100,
+      "realised_coverage_exact_1_1_pct": 100,
+      "ambiguity_rate_pct": 0
+    },
+    "joined_with_diagnostics_S1_S5": {
+      "source_entries_assessed": 52,
+      "exact_1_1": 52,
+      "missing_realised": 0,
+      "orphan_realised": 0,
+      "one_to_many": 0,
+      "duplicate_identifier": 0,
+      "identifier_absent": 0,
+      "source_coverage_exact_1_1_pct": 100,
+      "realised_coverage_exact_1_1_pct": 100,
+      "ambiguity_rate_pct": 0
+    },
+    "note": "S6/S7 have no source contract; S8 not assessable for join"
+  },
+  "code_contract_notes": {
+    "material_id_creation": "DLA authoring / required_materials rows",
+    "gam_copy_preserves_id": "page-gam-enrich.buildMaterialFromRequired copies required.material_id; GAM V2 brief requires one material per required_materials.material_id",
+    "uniqueness_enforced_at_gam_boundary": "validateGamPageCapture / related checks flag missing, orphan, and duplicate material_id (lib/page-gam-enrich.js)",
+    "partial_path_omits_required_materials": "buildGamV2CopyMaterialAuthoringBrief: activities[] with materials[] only"
+  }
+}

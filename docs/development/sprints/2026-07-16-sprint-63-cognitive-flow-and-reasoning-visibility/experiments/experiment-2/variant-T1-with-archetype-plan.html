@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Experiment 2 — Variant T1 (Tier 1 + plan)</title>
+<style>
+body{font-family:Georgia,serif;max-width:820px;margin:24px auto;padding:0 16px;line-height:1.55;color:#111}
+.exp-banner{background:#ecfdf5;border:1px solid #a7f3d0;padding:12px 14px;margin-bottom:20px;font-size:.92rem}
+.exp-banner strong{display:block;margin-bottom:4px}
+article{border:1px solid #e5e7eb;border-radius:8px;padding:18px 20px}
+h2{font-size:1.2rem;margin-top:0}
+.exp-meta{font-size:.85rem;color:#4b5563;margin:0 0 12px}
+.exp-phase{margin:16px 0;padding:12px 14px;border-left:3px solid #047857;background:#f0fdf4}
+.exp-phase h3{margin:0 0 8px;font-size:1.05rem;color:#0f172a}
+.exp-role{margin:0 0 6px;font-size:.9rem;color:#334155}
+.exp-trace{font-size:.8rem;color:#64748b;margin-top:6px}
+.exp-safe{font-size:.8rem;color:#065f46;margin-top:4px}
+.exp-plan{background:#fff;border:1px dashed #6ee7b7;padding:10px 12px;margin:8px 0}
+ul{margin:8px 0 8px 1.2rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:12px}
+th,td{border:1px solid #d1d5db;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3f4f6}
+</style>
+</head>
+<body>
+<div class="exp-banner">
+  <strong>Sprint 63 — Experiment 2 (non-production)</strong>
+  Variant <strong>T1</strong> — same underlying activity as T2, plus verbatim <code>archetype_plan</code> fields from
+  <code>debug_instructional_contract</code>. Every plan-derived element cites its source field. No paraphrased science.
+</div>
+
+<article class="exp-causal" data-activity-id="A2" data-variant="T1">
+  <h2>Explain temperature effects on enzyme reaction rate</h2>
+  <p class="exp-meta">Experimental manifestation: <strong>Mechanism / causal explanation</strong> (Tier 1) · Archetype: <code>mechanism_explanation</code> · Episode: analyse</p>
+
+  <div class="exp-phase">
+    <h3>Orientation</h3>
+    <p class="exp-role"><strong>Authored preamble</strong></p>
+    <p>You will explain the temperature–rate relationship as a transmitting process.</p>
+    <p class="exp-trace">Source: activity.activity_preamble · Safe: yes (Tier 2 signal)</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Your goal</h3>
+    <p>Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.</p>
+    <p class="exp-trace">Source: activity.learner_task · Safe: yes (Tier 2 signal)</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Success looks like</h3>
+    <p>A causal chain account connecting temperature change to rate outcome via intervening links.</p>
+    <p class="exp-trace">Source: activity.expected_output · Safe: yes (Tier 2 signal)</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Start with the mechanism</h3>
+    <p class="exp-role"><strong>Authored overview</strong></p>
+    <p>Teach how temperature affects enzyme reaction rate through a causal chain.</p>
+    <p class="exp-trace">Source: purpose / body stand-in · Safe: yes</p>
+    <div class="exp-plan">
+      <p class="exp-role"><strong>Starting condition</strong> (from plan — verbatim)</p>
+      <p>temperature increases within and beyond the enzyme's stable range</p>
+      <p class="exp-trace">Source field: archetype_plan.start</p>
+      <p class="exp-safe">Safe: yes — authored string only; not paraphrased</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Follow the causal chain</h3>
+    <p class="exp-role"><strong>Required intervening links</strong> (from plan — verbatim)</p>
+    <ol>
+      <li>molecular kinetic energy and collision frequency</li>
+      <li>enzyme-substrate complex formation</li>
+      <li>disruption of enzyme structure at high temperature</li>
+    </ol>
+    <p class="exp-trace">Source field: archetype_plan.required_links[]</p>
+    <p class="exp-safe">Safe: yes — each item is an authored plan string; order preserved as authored array order</p>
+    <div class="exp-plan">
+      <p class="exp-role"><strong>Outcome</strong> (from plan — verbatim)</p>
+      <p>reaction rate first increases and then decreases</p>
+      <p class="exp-trace">Source field: archetype_plan.outcome</p>
+      <p class="exp-safe">Safe: yes — authored string only</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Test your explanation</h3>
+    <p class="exp-role"><strong>Check against authored plan + expected output</strong></p>
+    <ul>
+      <li>Does the account start from: temperature increases within and beyond the enzyme's stable range?</li>
+      <li>Does it include: molecular kinetic energy and collision frequency?</li>
+      <li>Does it include: enzyme-substrate complex formation?</li>
+      <li>Does it include: disruption of enzyme structure at high temperature?</li>
+      <li>Does it reach: reaction rate first increases and then decreases?</li>
+      <li>Is the whole a causal chain account (expected_output)?</li>
+    </ul>
+    <p class="exp-trace">Source fields: archetype_plan.start, required_links[], outcome + expected_output</p>
+    <p class="exp-safe">Safe: yes — checklist items quote plan strings; no added scientific claims</p>
+  </div>
+
+  <h3>Manifestation element → source (T1 only)</h3>
+  <table>
+    <thead>
+      <tr><th>Manifestation Element</th><th>Source Field</th><th>Safe?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Starting condition box</td><td>archetype_plan.start</td><td>yes</td></tr>
+      <tr><td>Link 1</td><td>archetype_plan.required_links[0]</td><td>yes</td></tr>
+      <tr><td>Link 2</td><td>archetype_plan.required_links[1]</td><td>yes</td></tr>
+      <tr><td>Link 3</td><td>archetype_plan.required_links[2]</td><td>yes</td></tr>
+      <tr><td>Outcome box</td><td>archetype_plan.outcome</td><td>yes</td></tr>
+      <tr><td>Plan-based self-check items</td><td>start + required_links + outcome</td><td>yes</td></tr>
+      <tr><td>instructional_archetype label in meta</td><td>instructional_archetype</td><td>yes (diagnostic label)</td></tr>
+    </tbody>
+  </table>
+</article>
+</body>
+</html>

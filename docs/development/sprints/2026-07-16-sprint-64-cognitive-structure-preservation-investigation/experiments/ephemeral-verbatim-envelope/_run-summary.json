@@ -1,0 +1,17 @@
+{
+  "eligible": 3,
+  "excluded": 4,
+  "archetypes": [
+    "mechanism_explanation",
+    "process_walkthrough",
+    "mental_model_building"
+  ],
+  "success_criteria": {
+    "exact_provenance": true,
+    "no_semantic_invention": true,
+    "fail_closed_gating": true,
+    "validated_samples_produce_t1": true,
+    "unsupported_remain_t2": true,
+    "no_production_structures_modified": true
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "samples": [
+    {
+      "sample_id": "E1",
+      "elements": [
+        {
+          "learner_element": "Causal link 1",
+          "source_field": "archetype_plan.required_links[0]",
+          "source_value": "molecular kinetic energy and collision frequency",
+          "source_material_id": "A2-M1",
+          "realised_material_id": "A2-M1"
+        },
+        {
+          "learner_element": "Causal link 2",
+          "source_field": "archetype_plan.required_links[1]",
+          "source_value": "enzyme-substrate complex formation",
+          "source_material_id": "A2-M1",
+          "realised_material_id": "A2-M1"
+        },
+        {
+          "learner_element": "Causal link 3",
+          "source_field": "archetype_plan.required_links[2]",
+          "source_value": "disruption of enzyme structure at high temperature",
+          "source_material_id": "A2-M1",
+          "realised_material_id": "A2-M1"
+        }
+      ]
+    },
+    {
+      "sample_id": "E2",
+      "elements": [
+        {
+          "learner_element": "Stage 1",
+          "source_field": "archetype_plan.stages[0]",
+          "source_value": "identify the manipulated condition and measured outcome",
+          "source_material_id": "A4-M1",
+          "realised_material_id": "A4-M1"
+        },
+        {
+          "learner_element": "Stage 2",
+          "source_field": "archetype_plan.stages[1]",
+          "source_value": "inspect the pattern across observations",
+          "source_material_id": "A4-M1",
+          "realised_material_id": "A4-M1"
+        },
+        {
+          "learner_element": "Stage 3",
+          "source_field": "archetype_plan.stages[2]",
+          "source_value": "connect the pattern to enzyme behaviour",
+          "source_material_id": "A4-M1",
+          "realised_material_id": "A4-M1"
+        },
+        {
+          "learner_element": "Stage 4",
+          "source_field": "archetype_plan.stages[3]",
+          "source_value": "form a bounded conclusion",
+          "source_material_id": "A4-M1",
+          "realised_material_id": "A4-M1"
+        }
+      ]
+    },
+    {
+      "sample_id": "E3",
+      "elements": [
+        {
+          "learner_element": "Key relationship 1",
+          "source_field": "archetype_plan.key_relationships[0]",
+          "source_value": "the thermostat compares room temperature with the set point",
+          "source_material_id": "A3-M1",
+          "realised_material_id": "A3-M1"
+        },
+        {
+          "learner_element": "Key relationship 2",
+          "source_field": "archetype_plan.key_relationships[1]",
+          "source_value": "the heater switches on when the room is below the set point and off when it reaches it",
+          "source_material_id": "A3-M1",
+          "realised_material_id": "A3-M1"
+        },
+        {
+          "learner_element": "Key relationship 3",
+          "source_field": "archetype_plan.key_relationships[2]",
+          "source_value": "the room continually loses heat to colder surroundings",
+          "source_material_id": "A3-M1",
+          "realised_material_id": "A3-M1"
+        },
+        {
+          "learner_element": "Governing constraint",
+          "source_field": "archetype_plan.governing_constraint",
+          "source_value": "the heater has a finite heating capacity",
+          "source_material_id": "A3-M1",
+          "realised_material_id": "A3-M1"
+        }
+      ]
+    }
+  ]
+}

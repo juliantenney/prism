@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Experiment 3 — Process Walkthrough T1</title>
+<style>
+body{font-family:Georgia,serif;max-width:820px;margin:24px auto;padding:0 16px;line-height:1.55;color:#111}
+.exp-banner{background:#ecfdf5;border:1px solid #a7f3d0;padding:12px 14px;margin-bottom:20px;font-size:.92rem}
+.exp-banner strong{display:block;margin-bottom:4px}
+article{border:1px solid #e5e7eb;border-radius:8px;padding:18px 20px}
+.exp-meta{font-size:.85rem;color:#4b5563}
+.exp-phase{margin:16px 0;padding:12px 14px;border-left:3px solid #047857;background:#f0fdf4}
+.exp-phase h3{margin:0 0 8px;font-size:1.05rem}
+.exp-plan{background:#fff;border:1px dashed #6ee7b7;padding:10px 12px;margin:8px 0}
+.exp-trace{font-size:.8rem;color:#64748b;margin-top:6px}
+.exp-safe{font-size:.8rem;color:#065f46}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:12px}
+th,td{border:1px solid #d1d5db;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3f4f6}
+</style>
+</head>
+<body>
+<div class="exp-banner">
+  <strong>Sprint 63 — Experiment 3 (non-production)</strong>
+  Variant <strong>T1</strong> — same activity as T2 plus verbatim <code>archetype_plan</code> from diagnostic contract.
+</div>
+<article data-activity-id="A4" data-variant="T1">
+  <h2>Expert interpretation walkthrough</h2>
+  <p class="exp-meta">Archetype: <code>process_walkthrough</code> · Episode: analyse · Material: worked_example</p>
+
+  <div class="exp-phase">
+    <h3>Orientation</h3>
+    <p>Model how an expert reads the evidence set.</p>
+    <p class="exp-trace">Source: activity_preamble · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Your goal</h3>
+    <p>Work through expert interpretation of an enzyme reaction-rate investigation from condition to conclusion.</p>
+    <p class="exp-trace">Source: learner_task · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Success looks like</h3>
+    <p>A continuous walkthrough that transfers findings across stages to a bounded conclusion.</p>
+    <p class="exp-trace">Source: expected_output · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Process goal</h3>
+    <div class="exp-plan">
+      <p>interpret an enzyme reaction-rate investigation</p>
+      <p class="exp-trace">Source: archetype_plan.process_goal · Verbatim</p>
+      <p class="exp-safe">Semantic risk: low</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Follow the stages</h3>
+    <ol>
+      <li>identify the manipulated condition and measured outcome</li>
+      <li>inspect the pattern across observations</li>
+      <li>connect the pattern to enzyme behaviour</li>
+      <li>form a bounded conclusion</li>
+    </ol>
+    <p class="exp-trace">Source: archetype_plan.stages[] · Verbatim · order as authored</p>
+    <p class="exp-safe">Semantic risk: low (no paraphrased science)</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>See the process modelled</h3>
+    <p>Model expert interpretation of an enzyme reaction-rate investigation.</p>
+    <p class="exp-trace">Source: purpose stand-in · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Check your walkthrough</h3>
+    <ul>
+      <li>Does the walkthrough pursue: interpret an enzyme reaction-rate investigation?</li>
+      <li>Does it include: identify the manipulated condition and measured outcome?</li>
+      <li>Does it include: inspect the pattern across observations?</li>
+      <li>Does it include: connect the pattern to enzyme behaviour?</li>
+      <li>Does it include: form a bounded conclusion?</li>
+      <li>Is the whole continuous (expected_output)?</li>
+    </ul>
+    <p class="exp-trace">Source: process_goal + stages[] + expected_output · Verbatim quotes</p>
+  </div>
+
+  <h3>T1 element trace</h3>
+  <table>
+    <thead><tr><th>Manifestation Element</th><th>Variant</th><th>Source</th><th>Verbatim or Transformed</th><th>Semantic Risk</th></tr></thead>
+    <tbody>
+      <tr><td>Process goal box</td><td>T1</td><td>process_goal</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Stage 1–4 list</td><td>T1</td><td>stages[]</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Plan-based checks</td><td>T1</td><td>process_goal + stages</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Orientation / goal / success</td><td>T2+T1</td><td>preamble / task / output</td><td>verbatim</td><td>low</td></tr>
+    </tbody>
+  </table>
+</article>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{
+  "warning": "EPHEMERAL DIAGNOSTIC ONLY — not a schema; do not persist to production pages",
+  "envelopes": [
+    {
+      "sample_id": "E1",
+      "envelope": {
+        "_ephemeral": true,
+        "_not_a_schema": true,
+        "source_material_id": "A2-M1",
+        "realised_material_id": "A2-M1",
+        "activity_id": "A2",
+        "instructional_archetype": "mechanism_explanation",
+        "authored_structure": {
+          "required_links": [
+            "molecular kinetic energy and collision frequency",
+            "enzyme-substrate complex formation",
+            "disruption of enzyme structure at high temperature"
+          ]
+        },
+        "provenance": {
+          "correlated": true,
+          "eligible": true,
+          "path": "fixture/diagnostic both-arrays",
+          "gate": "Outcome B path-gated"
+        }
+      }
+    },
+    {
+      "sample_id": "E2",
+      "envelope": {
+        "_ephemeral": true,
+        "_not_a_schema": true,
+        "source_material_id": "A4-M1",
+        "realised_material_id": "A4-M1",
+        "activity_id": "A4",
+        "instructional_archetype": "process_walkthrough",
+        "authored_structure": {
+          "stages": [
+            "identify the manipulated condition and measured outcome",
+            "inspect the pattern across observations",
+            "connect the pattern to enzyme behaviour",
+            "form a bounded conclusion"
+          ]
+        },
+        "provenance": {
+          "correlated": true,
+          "eligible": true,
+          "path": "fixture/diagnostic cross-artefact (ID-aligned stand-in)",
+          "gate": "Outcome B path-gated"
+        }
+      }
+    },
+    {
+      "sample_id": "E3",
+      "envelope": {
+        "_ephemeral": true,
+        "_not_a_schema": true,
+        "source_material_id": "A3-M1",
+        "realised_material_id": "A3-M1",
+        "activity_id": "A3",
+        "instructional_archetype": "mental_model_building",
+        "authored_structure": {
+          "key_relationships": [
+            "the thermostat compares room temperature with the set point",
+            "the heater switches on when the room is below the set point and off when it reaches it",
+            "the room continually loses heat to colder surroundings"
+          ],
+          "governing_constraint": "the heater has a finite heating capacity"
+        },
+        "provenance": {
+          "correlated": true,
+          "eligible": true,
+          "path": "fixture/diagnostic cross-artefact (ID-aligned stand-in)",
+          "gate": "Outcome B path-gated"
+        }
+      }
+    }
+  ]
+}

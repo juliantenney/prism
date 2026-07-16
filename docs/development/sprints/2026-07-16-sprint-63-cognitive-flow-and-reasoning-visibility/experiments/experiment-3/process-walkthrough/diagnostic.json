@@ -1,0 +1,44 @@
+{
+  "_experiment": "sprint-63-experiment-3-process-walkthrough",
+  "status": "non-production",
+  "archetype": "process_walkthrough",
+  "activity_id": "A4",
+  "material_id": "A4-M1",
+  "sources": [
+    "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json",
+    "docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/artefacts/enzymes-archetype-mvp/process-walkthrough.required-material.json"
+  ],
+  "tier2_signals": {
+    "episode_archetype": "analyse",
+    "material_types": ["worked_example"],
+    "learner_task": "Work through expert interpretation of an enzyme reaction-rate investigation from condition to conclusion.",
+    "expected_output": "A continuous walkthrough that transfers findings across stages to a bounded conclusion.",
+    "activity_preamble": "Model how an expert reads the evidence set.",
+    "purpose": "Model expert interpretation of an enzyme reaction-rate investigation.",
+    "specification": "Ordered process walkthrough from condition identification to bounded conclusion.",
+    "body_stand_in": "Model expert interpretation of an enzyme reaction-rate investigation."
+  },
+  "debug_instructional_contract": {
+    "instructional_archetype": "process_walkthrough",
+    "archetype_plan": {
+      "process_goal": "interpret an enzyme reaction-rate investigation",
+      "stages": [
+        "identify the manipulated condition and measured outcome",
+        "inspect the pattern across observations",
+        "connect the pattern to enzyme behaviour",
+        "form a bounded conclusion"
+      ]
+    }
+  },
+  "recoverability": {
+    "method": "score = (yes*1 + partially*0.5 + no*0) / N; N = leaf informational units (process_goal + each stage)",
+    "units": [
+      { "field": "process_goal", "recoverable": "partially", "confidence": "high" },
+      { "field": "stages[0]", "recoverable": "partially", "confidence": "medium" },
+      { "field": "stages[1]", "recoverable": "no", "confidence": "high" },
+      { "field": "stages[2]", "recoverable": "no", "confidence": "high" },
+      { "field": "stages[3]", "recoverable": "partially", "confidence": "medium" }
+    ],
+    "percentage": 30
+  }
+}

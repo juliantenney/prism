@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Experiment 3 — Mental Model T1</title>
+<style>
+body{font-family:Georgia,serif;max-width:820px;margin:24px auto;padding:0 16px;line-height:1.55;color:#111}
+.exp-banner{background:#ecfdf5;border:1px solid #a7f3d0;padding:12px 14px;margin-bottom:20px;font-size:.92rem}
+.exp-banner strong{display:block;margin-bottom:4px}
+article{border:1px solid #e5e7eb;border-radius:8px;padding:18px 20px}
+.exp-meta{font-size:.85rem;color:#4b5563}
+.exp-phase{margin:16px 0;padding:12px 14px;border-left:3px solid #047857;background:#f0fdf4}
+.exp-phase h3{margin:0 0 8px;font-size:1.05rem}
+.exp-plan{background:#fff;border:1px dashed #6ee7b7;padding:10px 12px;margin:8px 0}
+.exp-trace{font-size:.8rem;color:#64748b;margin-top:6px}
+.exp-safe{font-size:.8rem;color:#065f46}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:12px}
+th,td{border:1px solid #d1d5db;padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3f4f6}
+</style>
+</head>
+<body>
+<div class="exp-banner">
+  <strong>Sprint 63 — Experiment 3 (non-production)</strong>
+  Variant <strong>T1</strong> — same activity as T2 plus verbatim <code>archetype_plan</code> from diagnostic contract.
+</div>
+<article data-activity-id="A3" data-variant="T1">
+  <h2>Thermostat heating model</h2>
+  <p class="exp-meta">Archetype: <code>mental_model_building</code> · Episode: analyse · Material: modelling_note</p>
+
+  <div class="exp-phase">
+    <h3>Orientation</h3>
+    <p>Hold a durable model; then apply it across states.</p>
+    <p class="exp-trace">Source: activity_preamble · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Your goal</h3>
+    <p>Build a working model of thermostat-controlled heating and use it to contrast mild vs extreme cold.</p>
+    <p class="exp-trace">Source: learner_task · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Success looks like</h3>
+    <p>A coherent system model that explains both contrast states with the same relationships and constraint.</p>
+    <p class="exp-trace">Source: expected_output · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>System</h3>
+    <div class="exp-plan">
+      <p>a room heated by a thermostat-controlled heater</p>
+      <p class="exp-trace">Source: archetype_plan.system · Verbatim</p>
+      <p class="exp-safe">Semantic risk: low</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Key relationships</h3>
+    <ul>
+      <li>the thermostat compares room temperature with the set point</li>
+      <li>the heater switches on when the room is below the set point and off when it reaches it</li>
+      <li>the room continually loses heat to colder surroundings</li>
+    </ul>
+    <p class="exp-trace">Source: archetype_plan.key_relationships[] · Verbatim</p>
+    <p class="exp-safe">Semantic risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Governing constraint</h3>
+    <div class="exp-plan">
+      <p>the heater has a finite heating capacity</p>
+      <p class="exp-trace">Source: archetype_plan.governing_constraint · Verbatim</p>
+      <p class="exp-safe">Semantic risk: low</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Contrast the states</h3>
+    <div class="exp-plan">
+      <p><strong>State A:</strong> the outside temperature is mildly cold</p>
+      <p><strong>State B:</strong> the outside temperature becomes extremely cold</p>
+      <p class="exp-trace">Source: archetype_plan.contrast.state_a / state_b · Verbatim</p>
+    </div>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Assemble the model</h3>
+    <p>Help learners assemble a durable working model of thermostat-controlled heating.</p>
+    <p class="exp-trace">Source: purpose stand-in · Verbatim · Risk: low</p>
+  </div>
+
+  <div class="exp-phase">
+    <h3>Check your model</h3>
+    <ul>
+      <li>Is the system: a room heated by a thermostat-controlled heater?</li>
+      <li>Does it include each authored key relationship?</li>
+      <li>Does it honour: the heater has a finite heating capacity?</li>
+      <li>Does it explain both contrast states using the same relationships and constraint?</li>
+    </ul>
+    <p class="exp-trace">Source: system + key_relationships + governing_constraint + contrast + expected_output</p>
+  </div>
+
+  <h3>T1 element trace</h3>
+  <table>
+    <thead><tr><th>Manifestation Element</th><th>Variant</th><th>Source</th><th>Verbatim or Transformed</th><th>Semantic Risk</th></tr></thead>
+    <tbody>
+      <tr><td>System box</td><td>T1</td><td>system</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Relationship list</td><td>T1</td><td>key_relationships[]</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Constraint box</td><td>T1</td><td>governing_constraint</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>State A / State B</td><td>T1</td><td>contrast.state_a / state_b</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Plan-based checks</td><td>T1</td><td>all plan fields</td><td>verbatim</td><td>low</td></tr>
+      <tr><td>Orientation / goal / success</td><td>T2+T1</td><td>preamble / task / output</td><td>verbatim</td><td>low</td></tr>
+    </tbody>
+  </table>
+</article>
+</body>
+</html>

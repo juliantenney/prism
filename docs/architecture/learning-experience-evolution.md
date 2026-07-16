@@ -2,7 +2,7 @@
 
 **Status:** Living synthesis (updated at Sprint 62 close)  
 **Date:** 2026-07-16  
-**Related:** [Sprint 62 closure](../development/sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) · [Sprint 63 charter](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)
+**Related:** [Sprint 62 closure](../development/sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) · [Sprint 63 close-out](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md) · [Sprint 64 charter](../sprints/sprint-64-cognitive-structure-preservation-investigation.md)
 
 This document records how PRISM’s understanding of learner experience has evolved. It is **synthesis**, not a schema redesign proposal.
 
@@ -198,5 +198,7 @@ Sprint 63 should validate, revise, or reject these candidates with evidence — 
 
 ## Forward link
 
-Next phase: **Sprint 63 — Cognitive Flow & Reasoning Visibility**  
-Charter: [sprint-63-cognitive-flow-and-reasoning-visibility.md](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)
+**Sprint 63** closed (Outcome A). Next phase: **Sprint 64 — Cognitive Structure Preservation Investigation**  
+Charter: [sprint-64-cognitive-structure-preservation-investigation.md](../sprints/sprint-64-cognitive-structure-preservation-investigation.md)  
+Pack: [SPRINT-64-START-HERE.md](../development/sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md)  
+Sprint 63 close-out: [sprint-63-closeout.md](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)

@@ -1,11 +1,13 @@
 # Sprint 63 — Cognitive Flow & Reasoning Visibility
 
-**Status:** Charter ready (not yet executing implementation)  
-**Opened (planned):** 2026-07-16  
+**Status:** Closed (2026-07-16) — Outcome A — Architecture Investigation Justified  
+**Opened:** 2026-07-16  
 **Type:** Discovery and architecture sprint  
 **Predecessor:** [Sprint 62 — Coherent Renderer Pass (closed)](../development/sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md)  
+**Successor:** [Sprint 64 — Cognitive Structure Preservation Investigation](sprint-64-cognitive-structure-preservation-investigation.md)  
 **Evolution context:** [learning-experience-evolution.md](../architecture/learning-experience-evolution.md)  
-**Portable pack:** [docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)
+**Portable pack:** [docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)  
+**Close-out:** [sprint-63-closeout.md](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
 
 ---
 

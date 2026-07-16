@@ -1,0 +1,769 @@
+{
+  "metrics": {
+    "joined_production_like_S4_S5": {
+      "source_entries_assessed": 49,
+      "exact_1_1": 49,
+      "missing_realised": 0,
+      "orphan_realised": 0,
+      "one_to_many": 0,
+      "duplicate_identifier": 0,
+      "identifier_absent": 0,
+      "source_coverage_exact_1_1_pct": 100,
+      "realised_coverage_exact_1_1_pct": 100,
+      "ambiguity_rate_pct": 0
+    },
+    "joined_with_diagnostics_S1_S5": {
+      "source_entries_assessed": 52,
+      "exact_1_1": 52,
+      "missing_realised": 0,
+      "orphan_realised": 0,
+      "one_to_many": 0,
+      "duplicate_identifier": 0,
+      "identifier_absent": 0,
+      "source_coverage_exact_1_1_pct": 100,
+      "realised_coverage_exact_1_1_pct": 100,
+      "ambiguity_rate_pct": 0
+    },
+    "note": "S6/S7 have no source contract; S8 not assessable for join"
+  },
+  "rows": [
+    {
+      "sample": "S1",
+      "activity_id": "A2",
+      "source_id": "A2-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": true,
+      "instructional_archetype": "mechanism_explanation"
+    },
+    {
+      "sample": "S2",
+      "activity_id": "A4",
+      "source_id": "A4-M1",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": true,
+      "instructional_archetype": "process_walkthrough"
+    },
+    {
+      "sample": "S3",
+      "activity_id": "A3",
+      "source_id": "A3-M1",
+      "source_type": "modelling_note",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": true,
+      "instructional_archetype": "mental_model_building"
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A1",
+      "source_id": "A1-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A1",
+      "source_id": "A1-M2",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A1",
+      "source_id": "A1-M3",
+      "source_type": "sample_output",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A1",
+      "source_id": "A1-M4",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A2",
+      "source_id": "A2-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A2",
+      "source_id": "A2-M2",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A2",
+      "source_id": "A2-M3",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A2",
+      "source_id": "A2-M4",
+      "source_type": "comparison_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A2",
+      "source_id": "A2-M5",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A3",
+      "source_id": "A3-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A3",
+      "source_id": "A3-M2",
+      "source_type": "task_cards",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A3",
+      "source_id": "A3-M3",
+      "source_type": "reference_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A3",
+      "source_id": "A3-M4",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A4",
+      "source_id": "A4-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A4",
+      "source_id": "A4-M2",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A4",
+      "source_id": "A4-M3",
+      "source_type": "analysis_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A4",
+      "source_id": "A4-M4",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M1",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M2",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M3",
+      "source_type": "planning_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M4",
+      "source_type": "transfer_prompt",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M5",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S4",
+      "activity_id": "A5",
+      "source_id": "A5-M6",
+      "source_type": "consolidation_summary",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A1",
+      "source_id": "A1-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A1",
+      "source_id": "A1-M2",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A1",
+      "source_id": "A1-M3",
+      "source_type": "sample_output",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A1",
+      "source_id": "A1-M4",
+      "source_type": "prompt_set",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A1",
+      "source_id": "A1-M5",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A2",
+      "source_id": "A2-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A2",
+      "source_id": "A2-M2",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A2",
+      "source_id": "A2-M3",
+      "source_type": "comparison_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A2",
+      "source_id": "A2-M4",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A3",
+      "source_id": "A3-M1",
+      "source_type": "worked_example",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A3",
+      "source_id": "A3-M2",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A3",
+      "source_id": "A3-M3",
+      "source_type": "planning_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A3",
+      "source_id": "A3-M4",
+      "source_type": "prompt_set",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A4",
+      "source_id": "A4-M1",
+      "source_type": "modelling_note",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A4",
+      "source_id": "A4-M2",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A4",
+      "source_id": "A4-M3",
+      "source_type": "analysis_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A4",
+      "source_id": "A4-M4",
+      "source_type": "comparison_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A4",
+      "source_id": "A4-M5",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M1",
+      "source_type": "text",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M2",
+      "source_type": "scenario",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M3",
+      "source_type": "sample_output",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M4",
+      "source_type": "decision_table",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M5",
+      "source_type": "template",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M6",
+      "source_type": "checklist",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M7",
+      "source_type": "transfer_prompt",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S5",
+      "activity_id": "A5",
+      "source_id": "A5-M8",
+      "source_type": "consolidation_summary",
+      "realised_matches": 1,
+      "match_status": "exact 1:1",
+      "has_plan": false,
+      "instructional_archetype": null
+    },
+    {
+      "sample": "S6",
+      "activity_id": "A1",
+      "realised_id": "A1-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S6",
+      "activity_id": "A2",
+      "realised_id": "A2-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A1",
+      "realised_id": "A1-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A1",
+      "realised_id": "A1-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A1",
+      "realised_id": "A1-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A1",
+      "realised_id": "A1-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A1",
+      "realised_id": "A1-M5",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A2",
+      "realised_id": "A2-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A2",
+      "realised_id": "A2-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A2",
+      "realised_id": "A2-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A2",
+      "realised_id": "A2-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A3",
+      "realised_id": "A3-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A3",
+      "realised_id": "A3-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A3",
+      "realised_id": "A3-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A3",
+      "realised_id": "A3-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A4",
+      "realised_id": "A4-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A4",
+      "realised_id": "A4-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A4",
+      "realised_id": "A4-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A4",
+      "realised_id": "A4-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A4",
+      "realised_id": "A4-M5",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A5",
+      "realised_id": "A5-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A5",
+      "realised_id": "A5-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A5",
+      "realised_id": "A5-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A5",
+      "realised_id": "A5-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M1",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M2",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M3",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M4",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M5",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M6",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S7",
+      "activity_id": "A6",
+      "realised_id": "A6-M7",
+      "match_status": "orphan realised material"
+    },
+    {
+      "sample": "S8",
+      "activity_id": "A1",
+      "source_id": "A1-M1",
+      "match_status": "not assessable",
+      "notes": "no realised materials on DLA-only artefact",
+      "has_plan": false
+    },
+    {
+      "sample": "S8",
+      "activity_id": "A2",
+      "source_id": "A2-M1",
+      "match_status": "not assessable",
+      "notes": "no realised materials on DLA-only artefact",
+      "has_plan": true
+    },
+    {
+      "sample": "S8",
+      "activity_id": "A3",
+      "source_id": "A3-M1",
+      "match_status": "not assessable",
+      "notes": "no realised materials on DLA-only artefact",
+      "has_plan": true
+    },
+    {
+      "sample": "S8",
+      "activity_id": "A4",
+      "source_id": "A4-M1",
+      "match_status": "not assessable",
+      "notes": "no realised materials on DLA-only artefact",
+      "has_plan": true
+    }
+  ]
+}

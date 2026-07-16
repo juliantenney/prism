@@ -1,0 +1,50 @@
+{
+  "_experiment": "sprint-63-experiment-3-mental-model-building",
+  "status": "non-production",
+  "archetype": "mental_model_building",
+  "activity_id": "A3",
+  "material_id": "A3-M1",
+  "sources": [
+    "docs/development/sprints/2026-07-15-sprint-60-instructional-archetype-operationalisation/artefacts/mixed-archetype-acceptance/dla-mixed-priority1.page.json",
+    "docs/development/sprints/2026-07-14-sprint-59-instructional-content-richness-audit/artefacts/enzymes-archetype-mvp/mental-model-building.required-material.json"
+  ],
+  "tier2_signals": {
+    "episode_archetype": "analyse",
+    "material_types": ["modelling_note"],
+    "learner_task": "Build a working model of thermostat-controlled heating and use it to contrast mild vs extreme cold.",
+    "expected_output": "A coherent system model that explains both contrast states with the same relationships and constraint.",
+    "activity_preamble": "Hold a durable model; then apply it across states.",
+    "purpose": "Help learners assemble a durable working model of thermostat-controlled heating.",
+    "specification": "Relationship-and-constraint model that contrasts mild vs extreme cold; natural prose only.",
+    "body_stand_in": "Help learners assemble a durable working model of thermostat-controlled heating."
+  },
+  "debug_instructional_contract": {
+    "instructional_archetype": "mental_model_building",
+    "archetype_plan": {
+      "system": "a room heated by a thermostat-controlled heater",
+      "key_relationships": [
+        "the thermostat compares room temperature with the set point",
+        "the heater switches on when the room is below the set point and off when it reaches it",
+        "the room continually loses heat to colder surroundings"
+      ],
+      "governing_constraint": "the heater has a finite heating capacity",
+      "contrast": {
+        "state_a": "the outside temperature is mildly cold",
+        "state_b": "the outside temperature becomes extremely cold"
+      }
+    }
+  },
+  "recoverability": {
+    "method": "score = (yes*1 + partially*0.5 + no*0) / N; N = leaf units (system + each relationship + governing_constraint + state_a + state_b)",
+    "units": [
+      { "field": "system", "recoverable": "partially", "confidence": "high" },
+      { "field": "key_relationships[0]", "recoverable": "no", "confidence": "high" },
+      { "field": "key_relationships[1]", "recoverable": "no", "confidence": "high" },
+      { "field": "key_relationships[2]", "recoverable": "no", "confidence": "high" },
+      { "field": "governing_constraint", "recoverable": "no", "confidence": "high" },
+      { "field": "contrast.state_a", "recoverable": "partially", "confidence": "high" },
+      { "field": "contrast.state_b", "recoverable": "partially", "confidence": "high" }
+    ],
+    "percentage": 21
+  }
+}

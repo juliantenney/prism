@@ -1,0 +1,188 @@
+[
+  {
+    "sample": "S6",
+    "activity_id": "A1",
+    "realised_id": "A1-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S6",
+    "activity_id": "A2",
+    "realised_id": "A2-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A1",
+    "realised_id": "A1-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A1",
+    "realised_id": "A1-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A1",
+    "realised_id": "A1-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A1",
+    "realised_id": "A1-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A1",
+    "realised_id": "A1-M5",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A2",
+    "realised_id": "A2-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A2",
+    "realised_id": "A2-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A2",
+    "realised_id": "A2-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A2",
+    "realised_id": "A2-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A3",
+    "realised_id": "A3-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A3",
+    "realised_id": "A3-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A3",
+    "realised_id": "A3-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A3",
+    "realised_id": "A3-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A4",
+    "realised_id": "A4-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A4",
+    "realised_id": "A4-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A4",
+    "realised_id": "A4-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A4",
+    "realised_id": "A4-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A4",
+    "realised_id": "A4-M5",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A5",
+    "realised_id": "A5-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A5",
+    "realised_id": "A5-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A5",
+    "realised_id": "A5-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A5",
+    "realised_id": "A5-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M1",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M2",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M3",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M4",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M5",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M6",
+    "match_status": "orphan realised material"
+  },
+  {
+    "sample": "S7",
+    "activity_id": "A6",
+    "realised_id": "A6-M7",
+    "match_status": "orphan realised material"
+  }
+]

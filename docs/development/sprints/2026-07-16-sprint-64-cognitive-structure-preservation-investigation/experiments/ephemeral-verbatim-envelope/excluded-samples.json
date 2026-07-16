@@ -1,0 +1,29 @@
+{
+  "count": 4,
+  "samples": [
+    {
+      "id": "X1",
+      "label": "gam-partial.json materials",
+      "reason": "unsupported_path",
+      "detail": "partial/material-only; no required_materials on artefact"
+    },
+    {
+      "id": "X2",
+      "label": "RNA assembled vnext materials",
+      "reason": "unsupported_path",
+      "detail": "material-only assembled page; no source contract"
+    },
+    {
+      "id": "X3",
+      "label": "dla-mixed A1 ordinary row",
+      "reason": "no_archetype",
+      "detail": "required material without instructional_archetype / plan"
+    },
+    {
+      "id": "X4",
+      "label": "Ed Psych/Marx GAM materials alone",
+      "reason": "unsupported_path",
+      "detail": "GAM capture lacks required_materials; plans absent even on DLA join"
+    }
+  ]
+}

@@ -41,28 +41,37 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 63 — Cognitive Flow & Reasoning Visibility (**Open**, 2026-07-16)
+### No active investigation sprint
 
-**Portable pack:** [`sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)  
-**Canonical charter:** [`docs/sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md`](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)  
-**Evolution synthesis:** [`docs/architecture/learning-experience-evolution.md`](../architecture/learning-experience-evolution.md)
+Sprint 64 is **closed** (Outcome C). No successor sprint was opened. A future production-readiness **investigation** (frequency / value / retention) is recommended only — see [sprint-64-final-recommendation.md](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/sprint-64-final-recommendation.md). Do **not** treat that recommendation as implementation authorisation.
+
+### Closed — Sprint 64 — Cognitive Structure Preservation Investigation (**Closed / Outcome C**, 2026-07-16)
+
+**Portable pack:** [`sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/`](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/)  
+**Canonical charter:** [`docs/sprints/sprint-64-cognitive-structure-preservation-investigation.md`](../sprints/sprint-64-cognitive-structure-preservation-investigation.md)
 
 | Entry | Path |
 |-------|------|
-| **START HERE** | [`SPRINT-63-START-HERE.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/SPRINT-63-START-HERE.md) |
-| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/next-chat-briefing.md) |
-| **Handover pack** | [`HANDOVER.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/HANDOVER.md) |
-| **Charter** | [`sprint-63-cognitive-flow-and-reasoning-visibility.md`](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md) |
-| **Learning Experience Evolution** | [`learning-experience-evolution.md`](../architecture/learning-experience-evolution.md) |
-| **Sprint 62 closure** | [SPRINT-62-CLOSURE.md](sprints/2026-07-16-sprint-62-coherent-renderer-pass/SPRINT-62-CLOSURE.md) |
+| **Final recommendation** | [`sprint-64-final-recommendation.md`](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/sprint-64-final-recommendation.md) |
+| **Sprint summary** | [`sprint-summary.md`](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/sprint-summary.md) |
+| **START HERE** | [`SPRINT-64-START-HERE.md`](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md) |
+| **Prototype** | [`bounded-prototype-ephemeral-verbatim-envelope.md`](sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/bounded-prototype-ephemeral-verbatim-envelope.md) |
 
-**Sprint objective:** Investigate cognitive architecture, reasoning patterns, and information requirements for expert-guided independent learning.
+**Outcome:** Architecture + experimental feasibility established for path-gated ephemeral verbatim manifestation. Production implementation **not** justified. Future production-readiness investigation recommended only (not started).
 
-**Nature:** Discovery and architecture sprint — **not** schema redesign, **not** DLA/GAM rewrite, **not** renderer feature work.
+### Closed — Sprint 63 — Cognitive Flow & Reasoning Visibility (**Closed / Outcome A**, 2026-07-16)
 
-**Objectives:** Cognitive flow audit; cognitive pattern inventory; missing-information inventory; distinguish rendering vs orchestration vs information gaps; evidence-based recommendations for future pipeline evolution.
+**Portable pack:** [`sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)  
+**Canonical charter:** [`docs/sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md`](../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)
 
-**Recommendation:** Begin Sprint 63 in a **new conversation** with a clean context window.
+| Entry | Path |
+|-------|------|
+| **Close-out** | [`sprint-63-closeout.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md) |
+| **Authoritative findings** | [`sprint-63-authoritative-findings.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-authoritative-findings.md) |
+| **Final validation** | [`cognitive-structure-final-validation.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/cognitive-structure-final-validation.md) |
+| **Synthesis** | [`cognitive-structure-preservation-and-manifestation-synthesis.md`](sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/cognitive-structure-preservation-and-manifestation-synthesis.md) |
+
+**Outcome:** Discovery + validation complete. Architecture investigation justified; schema redesign and production implementation **not** approved.
 
 ### Closed — Sprint 62 — Coherent Renderer Pass (**Closed PASS**, 2026-07-16)
 
@@ -87,7 +96,7 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Locked facts:** Production SoT = `required_materials[].instructional_archetype` + `archetype_plan`. Delivery gate: do not evaluate archetype quality until `archetype_delivery.pass` is true. `evaluation_judgement` is part of the production Priority-1 set (`SCRIPT_VERSION` `20260715-e01w`). Sprint 62 may reorganise/relabel/deduplicate existing meaning only — no invented instructional meaning.
 
-**Non-goals (Sprint 63):** Production renderer changes; DLA/GAM/pipeline implementation; SSOT schema redesign; inventing instructional meaning.
+**Non-goals (Sprint 64 closed):** Schema redesign; production propagation/merge; renderer rewrite; inventing instructional meaning; reopening settled Sprint 63/64 conclusions without contradictory evidence.
 
 ---
 

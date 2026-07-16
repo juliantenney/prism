@@ -5,7 +5,7 @@
 **Closed:** 2026-07-16  
 **Status:** Complete  
 **Predecessor:** [Sprint 61 — Priority-1 Archetype Selection Reliability](../2026-07-15-sprint-61-priority-1-archetype-selection-reliability/SPRINT-61-CLOSURE.md)  
-**Successor:** [Sprint 63 — Cognitive Flow & Reasoning Visibility](../../../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)
+**Successor (as closed):** [Sprint 63](../../../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md) — now closed (Outcome A). Current focus: [Sprint 64](../../../sprints/sprint-64-cognitive-structure-preservation-investigation.md).
 
 ---
 
@@ -151,14 +151,14 @@ Evidence: [learner-journey-presentation-slice.md](learner-journey-presentation-s
 
 **Rationale:** Renderer correctness and the minimum learner-journey presentation slice shipped within hard boundaries; A2 acceptance and A6 boundary behaviour documented; focused regression suites green; no educational-architecture changes.
 
-**Recommendation:** Close Sprint 62. Begin Sprint 63 in a **new conversation** with a clean context window.
+**Recommendation (historical):** Close Sprint 62; open Sprint 63. **Update:** Sprint 63 closed (Outcome A); continue in Sprint 64.
 
 ---
 
 ## 12. Successor sprint
 
-**Sprint 63 — Cognitive Flow & Reasoning Visibility** (discovery and architecture).
+**Sprint 63 — Cognitive Flow & Reasoning Visibility** (closed, Outcome A) → **Sprint 64 — Cognitive Structure Preservation Investigation** (active investigation).
 
-- Charter: [`docs/sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md`](../../../sprints/sprint-63-cognitive-flow-and-reasoning-visibility.md)
+- Sprint 63 close-out: [`../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md`](../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
+- Sprint 64 START HERE: [`../2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md`](../2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md)
 - Evolution context: [`docs/architecture/learning-experience-evolution.md`](../../../architecture/learning-experience-evolution.md)
-- Portable pack: [`../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/`](../2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)

@@ -122,7 +122,7 @@ function activityArticleScope(html, headingText) {
   const scopeHtml = mainBodyHtml(html);
   const escaped = headingText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(
-    '<article class="util-task-block"[\\s\\S]*?<h3>[^<]*' + escaped + "[\\s\\S]*?</article>",
+    '<article class="util-task-block[^"]*"[\\s\\S]*?<h2[^>]*>[^<]*' + escaped + "[\\s\\S]*?</article>",
     "i"
   );
   const m = scopeHtml.match(re);
@@ -359,12 +359,55 @@ test("slice 31-5: activity echo dedupe retains distinct orientation and reasonin
 test("page shape: knowledge summary prose → util-knowledge-summary wrapper", () => {
   const { api } = loadPrismTestApi();
   const html = renderPageFixture(api, "shape-knowledge-summary-prose.json");
-  const scope = sectionScope(html, "Key ideas (prose)");
+  const scope = sectionScope(html, "Knowledge Summary");
   assert.match(scope, /util-knowledge-summary/);
   assert.match(scope, /util-knowledge-summary--prose/);
   assert.match(scope, /Statistical significance describes/);
   assert.match(scope, /null hypothesis/);
   assert.doesNotMatch(scope, /util-definition-list/i);
+});
+
+test("generic cleanup: schema field labels are hidden while their learner content remains", () => {
+  const { api } = loadPrismTestApi();
+  const body = api.utilityNormalizeLearnerContentHierarchyForTest(
+    '<h5>Body</h5><p>Body content remains.</p>' +
+      '<h4>Text</h4><p>Text content remains.</p>' +
+      '<h6>Statement</h6><p>Statement content remains.</p>' +
+      '<h5>Id</h5><p>Reference 12</p>' +
+      '<h4>Items</h4><ul><li>First useful item</li></ul>'
+  );
+  assert.match(body, /Body content remains/);
+  assert.match(body, /Text content remains/);
+  assert.match(body, /Statement content remains/);
+  assert.match(body, /Reference 12/);
+  assert.match(body, /First useful item/);
+  assert.doesNotMatch(
+    body,
+    /<[^>]+>\s*(Body|Content|Text|Items|Statement|Id)\s*<\/[^>]+>/i
+  );
+});
+
+test("top orientation: Overview renders once as an h2 without losing content", () => {
+  const { api } = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    title: "Wrapper cleanup",
+    page_profile: "learner",
+    sections: [
+      {
+        section_id: "overview",
+        heading: "Overview",
+        content: "## Overview\n\nThe introduction remains visible."
+      }
+    ]
+  };
+  const rendered = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const body = mainBodyHtml(String(rendered.html || ""));
+  assert.equal((body.match(/>\s*Overview\s*</gi) || []).length, 1);
+  assert.match(body, /<section class="util-overview">/);
+  assert.match(body, /<h2 class="util-section-heading">[\s\S]*?<span>Overview<\/span><\/h2>/);
+  assert.match(body, /The introduction remains visible/);
 });
 
 test("page shape: production metadata → util-meta fold only", () => {
@@ -461,7 +504,7 @@ test("golden composed page: confidence-interval multi-table, scenario, MathJax, 
   assert.match(body, /\\\(\s*\\alpha\s*=\s*0\.05\s*\\\)/);
   assert.match(
     body,
-    /<div class="util-knowledge-summary util-knowledge-summary--prose">[\s\S]*?\\\[[\s\S]*?\\bar\{x\}/
+    /<div class="util-knowledge-summary__content util-knowledge-summary--prose">[\s\S]*?\\\[[\s\S]*?\\bar\{x\}/
   );
   assert.match(body, /\\\(n = 10\\\)/);
   assert.doesNotMatch(body, /\\\$|\\\$\\\$/);
@@ -730,7 +773,9 @@ test("learner page IA order promotes journey and hides internals", () => {
   const body = mainBodyHtml(html);
   const visibleText = markupBodyHtml(body).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   assert.match(visibleText, /Learning Journey|Orient.*Concept foundations|Concept foundations.*Evidence/i);
-  assert.match(visibleText, /Learning Activit/i);
+  assert.doesNotMatch(visibleText, /Learning Activities/i);
+  assert.match(body, /<h2 class="util-activity-title">Concept foundations<\/h2>/i);
+  assert.match(body, /<h2 class="util-activity-title">Evidence and critique<\/h2>/i);
   assert.match(visibleText, /Assessment/i);
   assert.doesNotMatch(body, /assembly_state|current_stage|enriched_by|generation_notes/i);
 });

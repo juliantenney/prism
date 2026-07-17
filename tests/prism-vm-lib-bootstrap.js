@@ -25,6 +25,7 @@ const DEFAULT_LIBS = [
   "lib/page-render-normalize.js",
   "lib/ld-instructional-manifestation-render.js",
   "lib/ld-pedagogic-salience-render.js",
+  "lib/ld-beat-assignment-compose.js",
   "lib/beat-material-registry.js",
   "lib/utility-pedagogical-icons.js",
   "lib/utility-pedagogical-beats.js",
@@ -59,6 +60,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_PAGE_RENDER_NORMALIZE",
       "PRISM_LD_INSTRUCTIONAL_MANIFESTATION_RENDER",
       "PRISM_LD_PEDAGOGIC_SALIENCE_RENDER",
+      "PRISM_LD_BEAT_ASSIGNMENT_COMPOSE",
       "PRISM_UTILITY_PEDAGOGICAL_ICONS",
       "PRISM_UTILITY_PEDAGOGICAL_BEATS",
       "PRISM_BEAT_MATERIAL_REGISTRY",
@@ -72,6 +74,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
 }
 
 const PEDAGOGICAL_ICON_LIBS = [
+  "lib/ld-beat-assignment-compose.js",
   "lib/beat-material-registry.js",
   "lib/utility-pedagogical-icons.js",
   "lib/utility-pedagogical-beats.js",

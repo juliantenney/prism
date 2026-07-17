@@ -178,10 +178,11 @@ test("38M-4 A3 render order follows materials_order on composed page", () => {
   const renderCheck = validateA3RenderMaterialOrder(a3Block);
   assert.equal(renderCheck.ok, true, renderCheck.errors.join("; "));
 
-  const h4Re = /<h4[^>]*util-material-heading[^>]*>([\s\S]*?)<\/h4>/gi;
+  const labelRe =
+    /<(?:h4|p)[^>]*class="[^"]*(?:util-material-heading|util-supporting-label)[^"]*"[^>]*>([\s\S]*?)<\/(?:h4|p)>/gi;
   const headings = [];
   let hm;
-  while ((hm = h4Re.exec(a3Block)) !== null) {
+  while ((hm = labelRe.exec(a3Block)) !== null) {
     headings.push({
       pos: hm.index,
       text: hm[1].replace(/<[^>]+>/g, "").trim()

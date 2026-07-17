@@ -53,6 +53,10 @@
 | S65-D48 | 2026-07-16 | Checklist under Check as lists; ≠ Produce; sample_output is Example/model product not auto answer key; transfer material > duplicate prompt after Check | Accepted |
 | S65-D49 | 2026-07-16 | Progressive disclosure: never default-collapse required Try it; MAY collapse long Idea/Also/sample products; accessible controls; print expands | Accepted |
 | S65-D50 | 2026-07-16 | Mobile single-column role stack; print preserves learner-use order independent of UI state; no colour-only role signalling | Accepted |
+| S65-D51 | 2026-07-16 | Close Sprint 65 without production renderer change; implementation prototype reverted to pre-BL-007 checkpoint | Accepted |
+| S65-D52 | 2026-07-16 | BL-001–006 retained as LX problem inventory only; not production design authority | Accepted |
+| S65-D53 | 2026-07-16 | Sprint 63–64 findings remain research context — not renderer implementation evidence | Accepted |
+| S65-D54 | 2026-07-16 | Successor = Sprint 66 under grounded fresh-input rules; pipeline changes deferred until after Phase C | Accepted |
 
 Schema redesign, GAM redesign, and production preservation remain **out of scope / not authorised**.  
-S65-D17–D50 authorise design through **S65-BL-007 prototyping** — not production hardening (S65-D07).
+Sprint 65 implementation/hardening is **closed and reverted** (S65-D51). Continue under Sprint 66.

@@ -1,0 +1,195 @@
+{
+  "artifact_type": "page",
+  "title": "First-Year Economics Workshop: Supply and Demand Fundamentals",
+  "audience": "first-year economics learners",
+  "page_profile": "learner",
+  "sections": [
+    {
+      "heading": "Workshop Overview",
+      "content": "This workshop introduces you to the fundamental economic concepts of supply and demand, how they determine market equilibrium, and how shifts in these curves affect prices and quantities. You will also develop skills to calculate equilibrium price and quantity using algebraic methods. These concepts are essential for understanding how markets operate and for analyzing real-world economic situations."
+    },
+    {
+      "heading": "Learning Purpose",
+      "content": "Mastering supply and demand principles equips you to explain market behavior, analyze changes in market conditions, and perform quantitative calculations to find equilibrium outcomes. By engaging with graphical and algebraic representations, you will build a strong foundation for further economic study and practical application."
+    },
+    {
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "title": "Foundations of Supply and Demand",
+          "duration_minutes": 15,
+          "activity_preamble": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources. This activity explores the core concepts that explain how buyers and sellers interact to establish prices and quantities in a market.",
+          "reasoning_orientation": "Focus on grasping how supply and demand curves represent market behavior and how their intersection defines equilibrium.",
+          "self_explanation_prompt": "Explain in your own words how supply and demand curves interact to determine the market equilibrium price and quantity.",
+          "learner_task": "Study the worked example illustrating supply and demand curves and their intersection. Then, complete the accompanying task cards that ask you to identify and explain key features of supply, demand, and equilibrium.",
+          "expected_output": "Completed task cards with explanations of supply, demand, and market equilibrium concepts, demonstrating understanding of how these principles interact.",
+          "support_note": "Pay attention to how changes in supply or demand affect the equilibrium point and use the example as a guide to your explanations.",
+          "materials": {
+            "worked_example": "### Worked Example: Understanding Supply and Demand Curves and Market Equilibrium\n\nThis example illustrates how supply and demand curves interact to determine the market equilibrium price and quantity.\n\n- **Supply Curve:** Shows the relationship between price and quantity supplied. As price increases, suppliers are willing to offer more goods.\n- **Demand Curve:** Shows the relationship between price and quantity demanded. As price decreases, consumers want to buy more.\n\n**Graphical Illustration:**  \n- The supply curve slopes upward from left to right.  \n- The demand curve slopes downward from left to right.  \n- The point where these two curves intersect is the **market equilibrium**.\n\n**Stepwise Explanation:**  \n1. At prices above equilibrium, quantity supplied exceeds quantity demanded, causing a surplus. Sellers lower prices to clear excess stock.  \n2. At prices below equilibrium, quantity demanded exceeds quantity supplied, causing a shortage. Buyers compete, pushing prices up.  \n3. The equilibrium price is where quantity demanded equals quantity supplied, and the market clears with no surplus or shortage.  \n4. Changes in supply or demand shift the curves, moving the equilibrium point accordingly.\n\nThis example helps you visualize how buyers and sellers interact in a market to set prices and quantities.\n\n---",
+            "task_cards": "### Task Cards: Supply, Demand, and Market Equilibrium\n\n1. **Identify the supply curve:** Describe how the supply curve behaves as price changes.  \n2. **Identify the demand curve:** Describe how the demand curve behaves as price changes.  \n3. **Explain equilibrium:** In your own words, explain what market equilibrium means.  \n4. **Effect of a price above equilibrium:** What happens to quantity supplied and demanded?  \n5. **Effect of a price below equilibrium:** What happens to quantity supplied and demanded?  \n6. **Curve shifts:** How does an increase in demand affect the equilibrium price and quantity?  \n7. **Curve shifts:** How does a decrease in supply affect the equilibrium price and quantity?\n\nComplete these cards by writing your explanations based on the worked example.\n\n---",
+            "checklist": "### Understanding Supply and Demand Principles Checklist\n\n- [ ] Can you explain how the supply curve shows the relationship between price and quantity supplied?  \n- [ ] Can you explain how the demand curve shows the relationship between price and quantity demanded?  \n- [ ] Can you identify the market equilibrium point on a graph?  \n- [ ] Can you describe what happens when the price is above the equilibrium?  \n- [ ] Can you describe what happens when the price is below the equilibrium?  \n- [ ] Can you explain how shifts in supply or demand curves affect the equilibrium price and quantity?  \n\nIf you find any item difficult, review the worked example and task cards again.\n\n---"
+          }
+        },
+        {
+          "title": "Analyzing Shifts in Supply and Demand",
+          "duration_minutes": 20,
+          "activity_preamble": "Markets are dynamic, and shifts in supply or demand can change prices and quantities. This activity investigates how such shifts affect market outcomes and the underlying reasons for these changes.",
+          "conceptual_contrast_prompt": "Contrast the effects of a supply curve shift with those of a demand curve shift, noting common misconceptions such as confusing movement along a curve with a shift of the curve itself.",
+          "reasoning_orientation": "Analyze cause-effect relationships between curve shifts and market price and quantity changes using graphical reasoning.",
+          "self_explanation_prompt": "Describe how a shift in supply or demand affects equilibrium price and quantity, and justify your reasoning with reference to the curves.",
+          "learner_task": "Examine the modelling note showing examples of supply and demand shifts with their market impacts. Then, complete the analysis table by identifying the type of shift, its cause, and its effects on price and quantity for each scenario.",
+          "expected_output": "A completed analysis table correctly categorizing shifts, causes, and effects, demonstrating ability to interpret graphical market changes.",
+          "support_note": "Focus on distinguishing shifts from movements along curves and carefully link causes to effects in your explanations.",
+          "materials": {
+            "modelling_note": "### Modelling Note: Supply and Demand Curve Shifts and Market Effects\n\nThis note explains how shifts in supply and demand curves affect market price and quantity.\n\n- **Shift in Demand Curve:**  \n  - **Increase in demand:** The demand curve shifts rightward. At every price, consumers want more.  \n  - **Effect:** Equilibrium price and quantity both increase.  \n  - **Decrease in demand:** The demand curve shifts leftward. Consumers want less at every price.  \n  - **Effect:** Equilibrium price and quantity both decrease.\n\n- **Shift in Supply Curve:**  \n  - **Increase in supply:** The supply curve shifts rightward. Suppliers offer more at every price.  \n  - **Effect:** Equilibrium price decreases, quantity increases.  \n  - **Decrease in supply:** The supply curve shifts leftward. Suppliers offer less at every price.  \n  - **Effect:** Equilibrium price increases, quantity decreases.\n\n**Important Distinction:**  \n- **Shift of a curve** means the entire curve moves left or right due to external factors (e.g., income changes, production costs).  \n- **Movement along a curve** means a change in quantity demanded or supplied due to a price change, not a shift.\n\nUnderstanding these differences helps correctly analyze market changes.\n\n---",
+            "analysis_table": "### Analysis Table: Identifying Shifts in Supply and Demand\n\n| Scenario Description                              | Type of Shift       | Cause                         | Effect on Price           | Effect on Quantity        | Justification/Notes                        |\n|-------------------------------------------------|---------------------|-------------------------------|---------------------------|---------------------------|--------------------------------------------|\n| Example: A new technology reduces production cost | Supply curve shifts right | Lower production costs          | Price decreases           | Quantity increases        | Lower costs increase supply, shifting curve right |\n|                                                 |                     |                               |                           |                           |                                            |\n|                                                 |                     |                               |                           |                           |                                            |\n|                                                 |                     |                               |                           |                           |                                            |\n\nComplete the empty rows by describing the scenario, identifying the type of shift, cause, and effects on price and quantity. Use the modelling note to guide your answers.\n\n---",
+            "checklist": "### Verification Checklist: Identifying Shifts and Market Effects\n\n- [ ] Can you distinguish between a shift of a curve and a movement along a curve?  \n- [ ] Can you correctly identify whether a scenario involves a supply or demand curve shift?  \n- [ ] Can you explain the cause of the shift in each scenario?  \n- [ ] Can you predict the effect of the shift on equilibrium price?  \n- [ ] Can you predict the effect of the shift on equilibrium quantity?  \n\nReview your analysis table answers if you are unsure about any of these points.\n\n---"
+          }
+        },
+        {
+          "title": "Calculating Market Equilibrium",
+          "duration_minutes": 20,
+          "activity_preamble": "Quantitative skills are essential for applying economic concepts. This activity develops your ability to calculate equilibrium price and quantity using supply and demand equations, a key tool for market analysis.",
+          "reasoning_orientation": "Follow stepwise algebraic reasoning to solve for equilibrium by setting supply equal to demand and solving for price and quantity.",
+          "self_explanation_prompt": "Explain each step of your calculation process and why setting supply equal to demand finds the equilibrium.",
+          "learner_task": "Study the worked example solving equilibrium from given linear supply and demand equations. Then, apply the method to calculate equilibrium price and quantity for provided practice problems.",
+          "expected_output": "Written calculations showing stepwise solution of equilibrium price and quantity for each practice problem, with explanations.",
+          "support_note": "Ensure you understand the rationale for equating supply and demand functions and carefully check your algebraic steps.",
+          "materials": {
+            "worked_example": "### Worked Example: Calculating Market Equilibrium from Equations\n\nGiven the supply and demand equations:  \n- Demand: \\( Q_d = 100 - 2P \\)  \n- Supply: \\( Q_s = 20 + 3P \\)\n\n**Step 1: Set quantity demanded equal to quantity supplied to find equilibrium:**  \n\\[\n100 - 2P = 20 + 3P\n\\]\n\n**Step 2: Solve for \\(P\\):**  \n\\[\n100 - 20 = 3P + 2P \\\\\n80 = 5P \\\\\nP = \\frac{80}{5} = 16\n\\]\n\n**Step 3: Substitute \\(P=16\\) into either equation to find equilibrium quantity:**  \n\\[\nQ_d = 100 - 2(16) = 100 - 32 = 68\n\\]\n\n**Step 4: Interpretation:**  \n- The equilibrium price is 16.  \n- The equilibrium quantity is 68 units.\n\n**Why this works:**  \nEquilibrium occurs where the quantity consumers want to buy equals the quantity producers want to sell. Setting the equations equal finds that price and quantity.\n\n---",
+            "task_cards": "### Task Cards: Calculating Equilibrium Price and Quantity\n\n1. Given demand \\( Q_d = 150 - 3P \\) and supply \\( Q_s = 30 + 2P \\), calculate the equilibrium price and quantity. Show all steps.  \n2. For demand \\( Q_d = 200 - 4P \\) and supply \\( Q_s = 50 + P \\), find the equilibrium price and quantity. Explain your reasoning.  \n3. Given demand \\( Q_d = 120 - P \\) and supply \\( Q_s = 40 + 4P \\), calculate equilibrium and describe what the result means.  \n\nWrite your stepwise calculations and explanations clearly.\n\n---",
+            "checklist": "### Verification Checklist: Calculating Market Equilibrium\n\n- [ ] Did you correctly set the demand and supply equations equal to each other?  \n- [ ] Did you solve the resulting equation accurately for price?  \n- [ ] Did you substitute the equilibrium price back into one of the equations to find quantity?  \n- [ ] Did you explain why setting supply equal to demand finds the equilibrium?  \n- [ ] Are your calculations clearly shown step-by-step?  \n\nIf you missed any step, revisit the worked example and redo the calculations.\n\n---"
+          }
+        },
+        {
+          "title": "Workshop Consolidation and Reflection",
+          "duration_minutes": 10,
+          "activity_preamble": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently. Reflection deepens learning and highlights key takeaways.",
+          "transfer_or_application_task": "Synthesize your learning by summarizing the core principles, analysis skills, and calculation methods you have developed, and consider how these apply to real-world market situations.",
+          "learner_task": "Write a consolidation summary of at least 80 words that captures three key ideas from the workshop, explaining why they matter and how they connect to your understanding of markets.",
+          "expected_output": "A written consolidation summary that clearly articulates key concepts and skills learned, demonstrating integrated understanding.",
+          "support_note": "Focus on what you now understand about market equilibrium, shifts in supply and demand, and quantitative calculation, rather than repeating definitions.",
+          "materials": {
+            "consolidation_summary": "### Consolidation Summary Template\n\nWrite a summary of at least 80 words that captures three key ideas you have learned in this workshop. Use the prompts below to guide your writing:\n\n- **Key Idea 1:** What is one important principle about supply and demand or market equilibrium? Why does it matter?  \n- **Key Idea 2:** How do shifts in supply or demand curves affect prices and quantities? Why is understanding this important?  \n- **Key Idea 3:** What have you learned about calculating equilibrium price and quantity? How does this skill help you understand markets better?  \n\nFocus on explaining why these ideas matter and how they connect to your overall understanding of market behavior. Avoid just repeating definitions.\n\n---",
+            "prompt_set": "### Reflection Support Questions\n\n- What connections can you draw between the principles of supply and demand and the calculation of equilibrium?  \n- How might understanding shifts in supply and demand help you interpret real-world market changes?  \n- Which part of the workshop did you find most challenging, and how did you overcome it?  \n- How can you apply what you learned about market equilibrium to everyday economic decisions?  \n\nUse these questions to deepen your reflection as you write your consolidation summary.\n\n---"
+          }
+        },
+        {
+          "activity_id": "A1",
+          "title": "Foundations of Supply and Demand",
+          "activity_preamble": "Understanding supply and demand is fundamental to economics because these forces determine how markets allocate resources. This activity explores the core concepts that explain how buyers and sellers interact to establish prices and quantities in a market.",
+          "reasoning_orientation": "Focus on grasping how supply and demand curves represent market behavior and how their intersection defines equilibrium.",
+          "self_explanation_prompt": "Explain in your own words how supply and demand curves interact to determine the market equilibrium price and quantity.",
+          "support_note": "Pay attention to how changes in supply or demand affect the equilibrium point and use the example as a guide to your explanations.",
+          "expected_output": "Completed task cards with explanations of supply, demand, and market equilibrium concepts, demonstrating understanding of how these principles interact.",
+          "learner_task": "Study the worked example illustrating supply and demand curves and their intersection. Then, complete the accompanying task cards that ask you to identify and explain key features of supply, demand, and equilibrium.",
+          "duration_minutes": 15,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A2",
+          "title": "Analyzing Shifts in Supply and Demand",
+          "activity_preamble": "Markets are dynamic, and shifts in supply or demand can change prices and quantities. This activity investigates how such shifts affect market outcomes and the underlying reasons for these changes.",
+          "reasoning_orientation": "Analyze cause-effect relationships between curve shifts and market price and quantity changes using graphical reasoning.",
+          "self_explanation_prompt": "Describe how a shift in supply or demand affects equilibrium price and quantity, and justify your reasoning with reference to the curves.",
+          "conceptual_contrast_prompt": "Contrast the effects of a supply curve shift with those of a demand curve shift, noting common misconceptions such as confusing movement along a curve with a shift of the curve itself.",
+          "support_note": "Focus on distinguishing shifts from movements along curves and carefully link causes to effects in your explanations.",
+          "expected_output": "A completed analysis table correctly categorizing shifts, causes, and effects, demonstrating ability to interpret graphical market changes.",
+          "learner_task": "Examine the modelling note showing examples of supply and demand shifts with their market impacts. Then, complete the analysis table by identifying the type of shift, its cause, and its effects on price and quantity for each scenario.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A3",
+          "title": "Calculating Market Equilibrium",
+          "activity_preamble": "Quantitative skills are essential for applying economic concepts. This activity develops your ability to calculate equilibrium price and quantity using supply and demand equations, a key tool for market analysis.",
+          "reasoning_orientation": "Follow stepwise algebraic reasoning to solve for equilibrium by setting supply equal to demand and solving for price and quantity.",
+          "self_explanation_prompt": "Explain each step of your calculation process and why setting supply equal to demand finds the equilibrium.",
+          "support_note": "Ensure you understand the rationale for equating supply and demand functions and carefully check your algebraic steps.",
+          "expected_output": "Written calculations showing stepwise solution of equilibrium price and quantity for each practice problem, with explanations.",
+          "learner_task": "Study the worked example solving equilibrium from given linear supply and demand equations. Then, apply the method to calculate equilibrium price and quantity for provided practice problems.",
+          "duration_minutes": 20,
+          "grouping": "individual"
+        },
+        {
+          "activity_id": "A4",
+          "title": "Workshop Consolidation and Reflection",
+          "activity_preamble": "Bringing together the concepts and skills from this workshop helps solidify your understanding and prepares you to apply these ideas independently. Reflection deepens learning and highlights key takeaways.",
+          "transfer_or_application_task": "Synthesize your learning by summarizing the core principles, analysis skills, and calculation methods you have developed, and consider how these apply to real-world market situations.",
+          "support_note": "Focus on what you now understand about market equilibrium, shifts in supply and demand, and quantitative calculation, rather than repeating definitions.",
+          "expected_output": "A written consolidation summary that clearly articulates key concepts and skills learned, demonstrating integrated understanding.",
+          "learner_task": "Write a consolidation summary of at least 80 words that captures three key ideas from the workshop, explaining why they matter and how they connect to your understanding of markets.",
+          "duration_minutes": 10,
+          "grouping": "individual"
+        }
+      ]
+    }
+  ],
+  "source_artefacts": [
+    "learning_activities",
+    "activity_materials"
+  ],
+  "constraints_applied": [
+    "page_profile=learner",
+    "preserve activity_preamble, cognition fields, bridges, materials verbatim",
+    "include all upstream activities",
+    "no facilitator choreography in learner-visible fields",
+    "preserve materials fully verbatim",
+    "include learning_activities.content as array with full fields",
+    "include study orientation and self-explanation prompts",
+    "include expected_output and support_note verbatim",
+    "include materials with full content verbatim",
+    "no summarisation or rewriting of materials",
+    "include upstream ordering and timing",
+    "no assessment items present",
+    "no activities omitted"
+  ],
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Materials include graphical worked example and task cards supporting conceptual understanding; visual affordance could highlight curve interactions."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Modelling note and analysis table provide structured visual reasoning; a classification matrix visual could add value but is deferred pending worked examples."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Worked example with algebraic steps and task cards support stepwise reasoning; visual classification of calculation steps could aid but is not essential."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "low",
+        "rationale": "Consolidation and reflection materials are textual; no visual affordance needed."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "generation_notes": {
+    "limitations": [],
+    "visual_affordance_validation": {
+      "valid": true,
+      "kept_count": 0,
+      "dropped_count": 0,
+      "errors": []
+    }
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 4,
+      "framing_fields_merged": 0
+    }
+  }
+}

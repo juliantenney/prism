@@ -1,0 +1,36 @@
+{
+  "task": "S65-BL-008",
+  "scoring_scale": "1 poor – 5 excellent",
+  "confidence_note": "No learner research; structural markers + HTML inspection",
+  "activation_class": ["rna-hcv", "marx-beat"],
+  "identical_class": [
+    "rna-assessment",
+    "kitchen-sink",
+    "marx-self-study",
+    "inflation",
+    "climate",
+    "self-directed",
+    "shape-metadata",
+    "confidence-multitable",
+    "sequencing-rollout",
+    "shape-assessment-mcq"
+  ],
+  "activation_scores": {
+    "Orientation": { "current": 3, "prototype": 4 },
+    "Action clarity": { "current": 3, "prototype": 5 },
+    "Output clarity": { "current": 3, "prototype": 5 },
+    "Cognitive mode": { "current": 2, "prototype": 4 },
+    "Progression": { "current": 3, "prototype": 4 },
+    "Material role": { "current": 2, "prototype": 5 },
+    "Verification": { "current": 3, "prototype": 4 },
+    "Transfer": { "current": 2, "prototype": 4 },
+    "Density": { "current": 2, "prototype": 4 },
+    "Duplication": { "current": 2, "prototype": 4 },
+    "Accessibility": { "current": 3, "prototype": 4 },
+    "Resilience": { "current": 4, "prototype": 5 },
+    "Residual safety": { "current": 1, "prototype": 5 },
+    "Source fidelity": { "current": 5, "prototype": 5 }
+  },
+  "corpus_median_delta_note": "Median delta across 12 samples is 0 for most LX dimensions because 10/12 pages are bit-identical.",
+  "acceptance": "B"
+}

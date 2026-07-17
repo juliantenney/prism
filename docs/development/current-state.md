@@ -41,33 +41,42 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 ## Next Active Focus
 
-### Sprint 65 — Renderer Learner Experience Optimisation (**In progress**, 2026-07-16)
+### Sprint 66 — Grounded Renderer Learner Experience (**Chartered**, 2026-07-16)
 
-**Working title:** Working With What We Have  
+**Working title:** Current Inputs First  
+**Portable pack:** [`sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/)  
+**Canonical charter:** [`docs/sprints/sprint-66-grounded-renderer-learner-experience.md`](../sprints/sprint-66-grounded-renderer-learner-experience.md)
+
+| Entry | Path |
+|-------|------|
+| **START HERE** | [`SPRINT-66-START-HERE.md`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/SPRINT-66-START-HERE.md) |
+| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/next-chat-briefing.md) |
+| **Charter** | [`SPRINT-66-CHARTER.md`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/SPRINT-66-CHARTER.md) |
+| **Backlog** | [`backlog.md`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/backlog.md) |
+| **Summary** | [`sprint-summary.md`](sprints/2026-07-16-sprint-66-grounded-renderer-learner-experience/sprint-summary.md) |
+
+**Key question:** Given the renderer inputs available today, what is the best learner experience we can produce?
+
+**Phases:** A current-state optimisation → B north-star → C gap analysis (pipeline only after C).
+
+**Process rules:** Fresh inputs first · upstream research as context only · renderer-only unless authorised · human review primary · validation workstreams need approval.
+
+**Next:** S66-BL-001 — Fresh renderer-input baseline.
+
+**Recommendation:** Start Sprint 66 in a **new conversation** with a clean context window using the paste briefing.
+
+### Closed — Sprint 65 — Renderer Learner Experience Optimisation (**Closed**, 2026-07-16)
+
 **Portable pack:** [`sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/)  
 **Canonical charter:** [`docs/sprints/sprint-65-renderer-learner-experience-optimisation.md`](../sprints/sprint-65-renderer-learner-experience-optimisation.md)
 
 | Entry | Path |
 |-------|------|
-| **START HERE** | [`SPRINT-65-START-HERE.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-START-HERE.md) |
-| **Paste briefing** | [`next-chat-briefing.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/next-chat-briefing.md) |
-| **Baseline audit (S65-BL-001)** | [`baseline-learner-experience-audit.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/baseline-learner-experience-audit.md) |
-| **Signal inventory (S65-BL-002)** | [`renderer-signal-inventory.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/renderer-signal-inventory.md) |
-| **Contract comparison (S65-BL-003)** | [`learner-activity-contract-comparison.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/learner-activity-contract-comparison.md) |
-| **Manifestation rules (S65-BL-004)** | [`archetype-sensitive-manifestation-rules.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/archetype-sensitive-manifestation-rules.md) |
-| **Page IA (S65-BL-005)** | [`page-information-architecture.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/page-information-architecture.md) |
-| **Material presentation (S65-BL-006)** | [`material-role-and-beat-presentation.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/material-role-and-beat-presentation.md) |
-| **Charter** | [`SPRINT-65-CHARTER.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-CHARTER.md) |
-| **Backlog** | [`backlog.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/backlog.md) |
-| **Summary** | [`sprint-summary.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/sprint-summary.md) |
+| **Closure** | [`SPRINT-65-CLOSURE.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-CLOSURE.md) |
+| **Final recommendation** | [`sprint-65-final-recommendation.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/sprint-65-final-recommendation.md) |
+| **Historical artefacts note** | [`HISTORICAL-IMPLEMENTATION-ARTEFACTS.md`](sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/HISTORICAL-IMPLEMENTATION-ARTEFACTS.md) |
 
-**Sprint objective:** Improve the learner-facing renderer using only page-artifact signals available after the GAM boundary.
-
-**Nature:** Implementation-oriented **renderer** sprint — evidence-led; audit before code. **Not** preservation architecture; **not** schema/GAM redesign; **not** Sprint 64 envelope merge.
-
-**Progress:** S65-BL-001–006 **Complete** (material Option C · 36 MBP rules). **Next:** S65-BL-007 — Bounded renderer prototype. **Implementation:** Not started.
-
-**Recommendation:** Continue Sprint 65 in a **new conversation** with a clean context window using the paste briefing.
+**Outcome:** No production-ready renderer improvement. Prototype **reverted**. Pipeline unchanged. Early analysis (BL-001–006) retained as LX problem inventory. Lesson: ground renderer work in fresh current inputs, not historical fixtures or upstream research assumptions.
 
 ### Closed — Sprint 64 — Cognitive Structure Preservation Investigation (**Closed / Outcome C**, 2026-07-16)
 
@@ -120,7 +129,9 @@ PRISM is in a **v1.0 stabilisation and rationalisation** phase focused on archit
 
 **Locked facts:** Production SoT = `required_materials[].instructional_archetype` + `archetype_plan`. Delivery gate: do not evaluate archetype quality until `archetype_delivery.pass` is true. `evaluation_judgement` is part of the production Priority-1 set (`SCRIPT_VERSION` `20260715-e01w`). Sprint 62 may reorganise/relabel/deduplicate existing meaning only — no invented instructional meaning.
 
-**Non-goals (Sprint 65):** Schema redesign; GAM redesign; Sprint 64 preservation envelopes; inferring unavailable plan fields; unrestricted visual redesign; inventing instructional meaning. Missing upstream plan structure = known architecture ceiling.
+**Non-goals (Sprint 66):** Restore Sprint 65 prototype; treat historical fixtures as live proof; schema/GAM redesign; preservation envelopes; unapproved validation workstreams; pipeline changes before Phase C.
+
+**Non-goals (Sprint 65 closed):** Production renderer change from reverted prototype; inferring unavailable plan fields as if live.
 
 **Non-goals (Sprint 64 closed):** Schema redesign; production preservation merge; renderer hidden-plan consumption; reopening settled Sprint 63/64 conclusions without contradictory evidence.
 

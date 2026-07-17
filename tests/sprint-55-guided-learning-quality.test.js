@@ -230,7 +230,7 @@ test("guided learning: field preserve repairs compressed scaffold from upstream"
   assert.match(String(row.expected_output), /Strong entries should include/i);
 });
 
-test("guided learning: beat-first Marx A1 renders expected_output", () => {
+test("guided learning: beat-first Marx A1 renders expected_output as prose", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(marxFixturePath, "utf8"));
   const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
@@ -238,8 +238,9 @@ test("guided learning: beat-first Marx A1 renders expected_output", () => {
     /Historical Materialism and Capitalism[\s\S]*?(?=Surplus Value and Exploitation|Is Marx Still Relevant|$)/i
   );
   assert.ok(a1);
-  // Sprint 62: output may appear as promoted Success looks like rather than trailing util-output-block.
-  assert.match(a1[0], /util-output-block|util-activity-success-looks-like|revised using the checklist/i);
+  assert.match(a1[0], /class="util-expected-output"/);
+  assert.match(a1[0], /revised using the checklist/i);
+  assert.doesNotMatch(a1[0], /util-activity-success-looks-like|util-success-looks-like-list/);
 });
 
 test("guided learning: DLA runtime prompt includes scaffold word targets and terse forbid", () => {

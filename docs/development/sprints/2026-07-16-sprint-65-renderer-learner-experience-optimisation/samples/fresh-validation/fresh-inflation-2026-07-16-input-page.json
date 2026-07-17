@@ -1,0 +1,22 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  },
+  "page_synthesis": {
+    "overview": "This learner handout guides you through a sequence of activities designed to build foundational understanding of key economic principles relevant to first-year economics learners. The page covers supply and demand fundamentals, opportunity cost calculations, graphical interpretation of market changes, and a consolidation reflection to integrate your learning. Each activity includes detailed materials such as worked examples, model analyses, practice problems, and reflective prompts to support your independent study and deepen your economic reasoning skills.",
+    "learning_purpose": "The activities are structured to progressively develop your ability to analyze market equilibrium through supply and demand principles, calculate opportunity costs in economic decisions, interpret supply and demand graphs accurately, and synthesize these concepts into a coherent understanding of market dynamics. This sequence prepares you for applying economic reasoning to real-world scenarios and further study in economics.",
+    "knowledge_summary": "### Key Concepts in Market Economics\n\nUnderstanding how markets operate requires grasping several interconnected economic principles:\n\n- **Supply and Demand Principles:**\n  Supply curves show how much producers are willing to sell at different prices, typically increasing with price. Demand curves show how much consumers want to buy, usually decreasing as prices rise. Market equilibrium occurs where these curves intersect, balancing quantity supplied and demanded.\n\n- **Shifts vs Movements:**\n  Movements along supply or demand curves result from price changes affecting quantity supplied or demanded. Shifts of the entire curve occur due to external factors like changes in consumer income, preferences, or production costs, altering supply or demand at every price.\n\n- **Opportunity Cost:**\n  This is the value of the next best alternative foregone when making a choice. Calculating opportunity cost involves identifying alternatives, quantifying their benefits, and understanding the trade-offs involved in economic decisions.\n\n- **Graphical Interpretation:**\n  Reading supply and demand graphs involves distinguishing between shifts and movements, identifying causes, and predicting effects on equilibrium price and quantity. This skill is crucial for analyzing market responses to various economic events.\n\n- **Integration and Reflection:**\n  Synthesizing these concepts enhances your ability to reason economically, apply theory to practice, and appreciate the dynamic nature of markets.\n\nMastering these principles equips you with a framework to analyze economic scenarios critically and supports your ongoing study and application of economics."
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 4,
+      "framing_fields_merged": 0
+    }
+  }
+}

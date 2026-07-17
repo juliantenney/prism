@@ -1,0 +1,76 @@
+{
+  "captured_at": "2026-07-16T14:12:04.350Z",
+  "harness": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-prototype-render.js",
+  "command": "node docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-prototype-render.js",
+  "feature_switch": {
+    "option": "renderMode: \"current\" | \"s65-prototype\"",
+    "default": "current",
+    "production_default": "current (prototype off)"
+  },
+  "git": {
+    "head": "d36af7d",
+    "dirty": true
+  },
+  "results": [
+    {
+      "id": "rna-hcv",
+      "mode": "current",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/rna-hcv-current.html",
+      "chars": 99117
+    },
+    {
+      "id": "rna-hcv",
+      "mode": "s65-prototype",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/rna-hcv-s65-prototype.html",
+      "chars": 95367
+    },
+    {
+      "id": "rna-assessment",
+      "mode": "current",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/rna-assessment-current.html",
+      "chars": 65666
+    },
+    {
+      "id": "rna-assessment",
+      "mode": "s65-prototype",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/rna-assessment-s65-prototype.html",
+      "chars": 65666
+    },
+    {
+      "id": "kitchen-sink",
+      "mode": "current",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/kitchen-sink-current.html",
+      "chars": 113010
+    },
+    {
+      "id": "kitchen-sink",
+      "mode": "s65-prototype",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/kitchen-sink-s65-prototype.html",
+      "chars": 113010
+    },
+    {
+      "id": "marx",
+      "mode": "current",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/marx-current.html",
+      "chars": 107169
+    },
+    {
+      "id": "marx",
+      "mode": "s65-prototype",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/marx-s65-prototype.html",
+      "chars": 103226
+    },
+    {
+      "id": "self-directed",
+      "mode": "current",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/self-directed-current.html",
+      "chars": 66875
+    },
+    {
+      "id": "self-directed",
+      "mode": "s65-prototype",
+      "output": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/self-directed-s65-prototype.html",
+      "chars": 66875
+    }
+  ]
+}

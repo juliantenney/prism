@@ -1,0 +1,183 @@
+{
+  "capturedAt": "2026-07-16T14:33:08.207Z",
+  "command": "node tools/sprint-42-4-live-capture.mjs marx-self-study",
+  "model": "gpt-4.1-mini",
+  "git": {
+    "head": "d36af7d19fce869c43ba8129bd8efe5562545980",
+    "workingTreeDirty": true,
+    "dirtyFiles": [
+      "M app.js",
+      " M docs/development/current-state.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-START-HERE.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/backlog.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/decisions.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/evidence-log.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/experiments/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/findings-log.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/next-chat-briefing.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/sprint-summary.md",
+      " M index.html",
+      " M tests/prism-vm-lib-bootstrap.js",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-07-16T14-30-30/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/bounded-renderer-prototype.md",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/cross-sample-validation.md",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/experiments/renderer-learner-experience-prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-prototype-render.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-validation-render.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/probe-a3-order.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/probe-validation-markers.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/validation/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/comparisons/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/validation/",
+      "?? lib/s65-learner-experience-prototype.js",
+      "?? tests/utility-renderer-s65-prototype.test.js"
+    ]
+  },
+  "sprint42ContractsInPrompts": {
+    "dlaHasPreambleExposition": false,
+    "dlaHasAuthorialExposition": false,
+    "dpHasAuthorialExposition": false,
+    "dlaHasLearnerFraming": false
+  },
+  "brief": {
+    "goal": "Create a self-directed learning page on Karl Marx covering life phases, cause-effect links between experience and theory, comparison of The Communist Manifesto and Das Kapital, and application of core concepts to a factory scenario.",
+    "inputs": "Undergraduate (self-directed study)",
+    "desiredOutputs": "Learner-facing page",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "resolvedFactors": {
+    "topic": "karl marx covering life phases",
+    "learner_level": "undergraduate",
+    "design_scope": "session",
+    "delivery_pattern": "mostly_online",
+    "delivery_mode": "async",
+    "delivery_context": "self_directed",
+    "session_materials": [
+      "page"
+    ],
+    "page_profile": "learner",
+    "learning_environments": [
+      "vle"
+    ],
+    "assessment_strategy": "none",
+    "cognitive_engagement_required": false,
+    "reasoning_revision_required": false,
+    "misconception_reconciliation_required": false,
+    "adaptive_scaffolding_required": false,
+    "productive_uncertainty_required": false,
+    "activity_pattern_mix": "balanced",
+    "tone_style": "academic",
+    "depth_level": "mixed",
+    "include_examples": true,
+    "include_practice_tasks": false,
+    "compact_vs_detailed": "standard",
+    "workshop_subject": "karl marx covering life phases"
+  },
+  "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\marx-self-study-2026-07-16T14-30-30",
+  "artefacts": [
+    "learning-content.json",
+    "knowledge-model.json",
+    "learning-outcomes.json",
+    "dla-learning-activities.json",
+    "gam-activity-materials.txt",
+    "design-page.json",
+    "page-rendered.html",
+    "dla-prompt-snapshot.txt",
+    "design-page-prompt-snapshot.txt",
+    "prompt-contract-check.json"
+  ],
+  "dlaPreambleAudit": {
+    "activityCount": 3,
+    "preambleCount": 3,
+    "proceduralOpeningCount": 0,
+    "meetsPreambleCoverage": true,
+    "meetsAuthorialExposition": true,
+    "rows": [
+      {
+        "activity_id": "A1",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Effective self-directed learning depends on your ability to plan and manage your own learning activities."
+      },
+      {
+        "activity_id": "A2",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Reflecting on your learning progress and adapting your strategies are critical steps in becoming an effective self-directed learner."
+      },
+      {
+        "activity_id": "A3",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Choosing the right resources and tools is a critical skill for autonomous learning."
+      }
+    ]
+  },
+  "pageAudit": {
+    "label": "marx-self-study",
+    "centralInquiry": "weak",
+    "activityCount": 0,
+    "preambleCount": 0,
+    "bridgeCount": 0,
+    "hasStudyTips": false,
+    "facilitatorLeak": false,
+    "preambleExposition": {
+      "activityCount": 0,
+      "preambleCount": 0,
+      "proceduralOpeningCount": 0,
+      "meetsPreambleCoverage": false,
+      "meetsAuthorialExposition": false,
+      "rows": []
+    },
+    "eqfScore": 2,
+    "eqfDimensions": {
+      "learner_journey": {
+        "present": false,
+        "evidence": []
+      },
+      "understanding": {
+        "present": false,
+        "evidence": []
+      },
+      "capability": {
+        "present": false,
+        "evidence": []
+      },
+      "judgement": {
+        "present": true,
+        "evidence": [
+          "object: pattern p1"
+        ]
+      },
+      "independence": {
+        "present": false,
+        "evidence": []
+      },
+      "metacognition": {
+        "present": false,
+        "evidence": []
+      },
+      "learning_success": {
+        "present": false,
+        "evidence": []
+      },
+      "cognitive_activity": {
+        "present": true,
+        "evidence": [
+          "object: pattern p1"
+        ]
+      }
+    }
+  },
+  "renderError": null,
+  "validPost423Evidence": false
+}

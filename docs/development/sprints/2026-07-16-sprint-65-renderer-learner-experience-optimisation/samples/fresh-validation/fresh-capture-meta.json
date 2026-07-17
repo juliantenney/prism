@@ -1,0 +1,612 @@
+{
+  "task": "S65-BL-008b",
+  "captured_at": "2026-07-16T14:40:09.468Z",
+  "prototype_unchanged": true,
+  "renderer_logic_unchanged": true,
+  "git": {
+    "head": "d36af7d",
+    "dirty": true
+  },
+  "generationRecords": [
+    {
+      "id": "fresh-marx-2026-07-16",
+      "class": "fresh-pipeline",
+      "workflow": "marx-self-study",
+      "generatedAt": "2026-07-16T14:33:08.207Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs marx-self-study",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-07-16T14-30-30/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-07-16T14-30-30/dla-learning-activities.json",
+      "reproduced": true,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/fresh-marx-2026-07-16-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 0,
+        "cognitionHits": 0,
+        "sectionCount": 0
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 3,
+        "activityIds": 3,
+        "cognitionHits": 9,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "fresh-inflation-2026-07-16",
+      "class": "fresh-pipeline",
+      "workflow": "inflation-workshop",
+      "generatedAt": "2026-07-16T14:35:00.000Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs inflation-workshop",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/inflation-workshop-2026-07-16T14-33-34/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/inflation-workshop-2026-07-16T14-33-34/dla-learning-activities.json",
+      "reproduced": true,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/fresh-inflation-2026-07-16-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 0,
+        "cognitionHits": 0,
+        "sectionCount": 0
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 12,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "fresh-climate-2026-07-16",
+      "class": "fresh-pipeline",
+      "workflow": "climate-workshop",
+      "generatedAt": "2026-07-16T14:38:00.000Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs climate-workshop",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/climate-workshop-2026-07-16T14-35-28/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/climate-workshop-2026-07-16T14-35-28/dla-learning-activities.json",
+      "reproduced": true,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/fresh-climate-2026-07-16-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 1
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-marx-2026-06-11",
+      "class": "pipeline-historical",
+      "workflow": "marx-self-study",
+      "generatedAt": "2026-06-11T16:23:03.000Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs marx-self-study (historical run)",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-06-11T16-23-03/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-06-11T16-23-03/dla-learning-activities.json",
+      "reproduced": false,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/pipeline-hist-marx-2026-06-11-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 11,
+        "cognitionHits": 22,
+        "sectionCount": 4
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-inflation-2026-06-11",
+      "class": "pipeline-historical",
+      "workflow": "inflation-workshop",
+      "generatedAt": "2026-06-11T16:25:08.000Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs inflation-workshop (historical run)",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/inflation-workshop-2026-06-11T16-25-08/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/inflation-workshop-2026-06-11T16-25-08/dla-learning-activities.json",
+      "reproduced": false,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/pipeline-hist-inflation-2026-06-11-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 8,
+        "cognitionHits": 20,
+        "sectionCount": 3
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 8,
+        "cognitionHits": 10,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-climate-2026-06-11",
+      "class": "pipeline-historical",
+      "workflow": "climate-workshop",
+      "generatedAt": "2026-06-11T16:27:00.000Z",
+      "command": "node tools/sprint-42-4-live-capture.mjs climate-workshop (historical run)",
+      "commitAtGeneration": "d36af7d",
+      "sourcePath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/climate-workshop-2026-06-11T16-27-00/design-page.json",
+      "dlaPath": "docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/climate-workshop-2026-06-11T16-27-00/dla-learning-activities.json",
+      "reproduced": false,
+      "preservedInput": "docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/fresh-validation/pipeline-hist-climate-2026-06-11-input-page.json",
+      "shape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 8,
+        "cognitionHits": 18,
+        "sectionCount": 3
+      },
+      "dlaShape": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 9,
+        "sectionCount": 0
+      }
+    }
+  ],
+  "shapeRows": [
+    {
+      "id": "fresh-marx-2026-07-16",
+      "class": "fresh-pipeline",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 0,
+        "cognitionHits": 0,
+        "sectionCount": 0
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 3,
+        "activityIds": 3,
+        "cognitionHits": 9,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "fresh-inflation-2026-07-16",
+      "class": "fresh-pipeline",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 0,
+        "cognitionHits": 0,
+        "sectionCount": 0
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 12,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "fresh-climate-2026-07-16",
+      "class": "fresh-pipeline",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 1
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 0,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-marx-2026-06-11",
+      "class": "pipeline-historical",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 11,
+        "cognitionHits": 22,
+        "sectionCount": 4
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 11,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-inflation-2026-06-11",
+      "class": "pipeline-historical",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 8,
+        "cognitionHits": 20,
+        "sectionCount": 3
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 8,
+        "cognitionHits": 10,
+        "sectionCount": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-climate-2026-06-11",
+      "class": "pipeline-historical",
+      "page": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 8,
+        "activityIds": 8,
+        "cognitionHits": 18,
+        "sectionCount": 3
+      },
+      "dla": {
+        "beatsArrays": 0,
+        "beatCount": 0,
+        "episodePlans": 0,
+        "archetypes": [],
+        "learnerTasks": 4,
+        "activityIds": 4,
+        "cognitionHits": 9,
+        "sectionCount": 0
+      }
+    }
+  ],
+  "activationRows": [
+    {
+      "id": "fresh-marx-2026-07-16",
+      "class": "fresh-pipeline",
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers",
+      "evidence": {
+        "identical": false,
+        "charDelta": -396,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    },
+    {
+      "id": "fresh-inflation-2026-07-16",
+      "class": "fresh-pipeline",
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers",
+      "evidence": {
+        "identical": false,
+        "charDelta": -617,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    },
+    {
+      "id": "fresh-climate-2026-07-16",
+      "class": "fresh-pipeline",
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers",
+      "evidence": {
+        "identical": false,
+        "charDelta": -345,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-marx-2026-06-11",
+      "class": "pipeline-historical",
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output",
+      "evidence": {
+        "identical": true,
+        "charDelta": 0,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-inflation-2026-06-11",
+      "class": "pipeline-historical",
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output",
+      "evidence": {
+        "identical": true,
+        "charDelta": 0,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    },
+    {
+      "id": "pipeline-hist-climate-2026-06-11",
+      "class": "pipeline-historical",
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output",
+      "evidence": {
+        "identical": true,
+        "charDelta": 0,
+        "yourTaskDelta": 0,
+        "badgeDelta": 0,
+        "beatCount": 0,
+        "episodePlans": 0
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "fresh-marx-2026-07-16",
+      "current": {
+        "chars": 60265,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 54,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 59869,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 54,
+        "utilMeta": true
+      },
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers"
+    },
+    {
+      "id": "fresh-inflation-2026-07-16",
+      "current": {
+        "chars": 60643,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 54,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 60026,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 54,
+        "utilMeta": true
+      },
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers"
+    },
+    {
+      "id": "fresh-climate-2026-07-16",
+      "current": {
+        "chars": 93019,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 58,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 92674,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 0,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 58,
+        "utilMeta": true
+      },
+      "status": "Eligible but unchanged / unclear delta",
+      "why": "HTML differs but no contract/mode markers"
+    },
+    {
+      "id": "pipeline-hist-marx-2026-06-11",
+      "current": {
+        "chars": 122488,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 122488,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output"
+    },
+    {
+      "id": "pipeline-hist-inflation-2026-06-11",
+      "current": {
+        "chars": 114046,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 114046,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output"
+    },
+    {
+      "id": "pipeline-hist-climate-2026-06-11",
+      "current": {
+        "chars": 131962,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "prototype": {
+        "chars": 131962,
+        "modeBadgeElements": 0,
+        "yourTask": 0,
+        "produce": 0,
+        "whatToDo": 8,
+        "successLooksLike": 0,
+        "residualAttr": 0,
+        "activityContract": 0,
+        "utilTaskBlock": 62,
+        "utilMeta": true
+      },
+      "status": "Not activated",
+      "why": "No beats/archetypes in input; mount gate not entered; bit-identical output"
+    }
+  ]
+}

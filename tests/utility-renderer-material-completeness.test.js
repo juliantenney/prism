@@ -112,10 +112,10 @@ function extractActivityHtml(html, row, allRows) {
   assert.ok(idx !== -1, "unknown activity id " + activityId);
   const patterns = [];
   if (title) {
-    patterns.push(new RegExp("<h3[^>]*>\\s*" + escapeRegExp(activityId) + "\\s+[—\\-]\\s+" + escapeRegExp(title), "i"));
-    patterns.push(new RegExp("<h3[^>]*>\\s*" + escapeRegExp(title), "i"));
+    patterns.push(new RegExp("<h2[^>]*>\\s*" + escapeRegExp(activityId) + "\\s+[—\\-]\\s+" + escapeRegExp(title), "i"));
+    patterns.push(new RegExp("<h2[^>]*>\\s*" + escapeRegExp(title), "i"));
   } else {
-    patterns.push(new RegExp("<h3[^>]*>\\s*" + escapeRegExp(activityId), "i"));
+    patterns.push(new RegExp("<h2[^>]*>\\s*" + escapeRegExp(activityId), "i"));
   }
   let start = -1;
   for (const pattern of patterns) {
@@ -133,11 +133,11 @@ function extractActivityHtml(html, row, allRows) {
     const nextTitle = String(nextRow.title || "").trim();
     if (nextTitle) {
       nextPatterns.push(
-        new RegExp("<h3[^>]*>\\s*" + escapeRegExp(nextRow.activity_id) + "\\s+[—\\-]\\s+" + escapeRegExp(nextTitle), "i")
+        new RegExp("<h2[^>]*>\\s*" + escapeRegExp(nextRow.activity_id) + "\\s+[—\\-]\\s+" + escapeRegExp(nextTitle), "i")
       );
-      nextPatterns.push(new RegExp("<h3[^>]*>\\s*" + escapeRegExp(nextTitle), "i"));
+      nextPatterns.push(new RegExp("<h2[^>]*>\\s*" + escapeRegExp(nextTitle), "i"));
     } else {
-      nextPatterns.push(new RegExp("<h3[^>]*>\\s*" + escapeRegExp(nextRow.activity_id), "i"));
+      nextPatterns.push(new RegExp("<h2[^>]*>\\s*" + escapeRegExp(nextRow.activity_id), "i"));
     }
     for (const pattern of nextPatterns) {
       const hit = html.slice(start + 1).match(pattern);
@@ -437,7 +437,8 @@ test("RNA vNext fixture: complete flow suppresses duplicate Page Synthesis and k
   ["Overview", "Learning Purpose", "Knowledge Summary", "Learning Journey", "Learning Activities", "Assessment Check", "Study Tips"].forEach((label) => {
     assert.ok(countSectionHeading(body, label) <= 1, label + " should not be duplicated in learner body");
   });
-  assert.equal(countSectionHeading(body, "Learning Activities"), 1);
+  assert.equal(countSectionHeading(body, "Learning Activities"), 0);
+  assert.match(body, /<h2 class="util-activity-title">/i);
 
   assert.match(html, /<details class="util-meta">/i);
   assert.doesNotMatch(html, /<details class="util-meta"[^>]*\bopen\b/i);

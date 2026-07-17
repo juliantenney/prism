@@ -1,0 +1,270 @@
+Activity: Understanding Supply and Demand Principles  
+Activity ID: A1  
+Mapped outcomes: Analyze the basic principles of supply and demand to determine market equilibrium.
+
+Material: M1 (worked_example)  
+Purpose: Demonstrate supply and demand interaction  
+Content:  
+### Worked Example: How Supply and Demand Curves Determine Market Equilibrium
+
+Consider a simple market for apples. The supply curve (S) and demand curve (D) represent the relationship between price and quantity supplied or demanded.
+
+- **Supply Curve (S):** Shows the quantity of apples producers are willing to sell at each price. It slopes upward because higher prices incentivize producers to supply more.
+- **Demand Curve (D):** Shows the quantity of apples consumers want to buy at each price. It slopes downward because higher prices discourage consumption.
+
+#### Step 1: Initial Equilibrium  
+The market equilibrium is where supply equals demand — the curves intersect. Suppose at price \$2 per apple, quantity supplied and demanded is 100 apples. This is the equilibrium price and quantity.
+
+#### Step 2: Increase in Demand  
+Imagine a health report increases demand for apples. The demand curve shifts rightward from D to D1.
+
+- At the original price of \$2, quantity demanded now exceeds quantity supplied, creating a shortage.
+- Producers respond by raising prices.
+- The new equilibrium is at a higher price, say \$3, and a larger quantity, say 120 apples.
+
+#### Step 3: Decrease in Supply  
+Suppose a frost damages apple crops, reducing supply. The supply curve shifts leftward from S to S1.
+
+- At the original price, quantity supplied falls short of quantity demanded, causing a shortage.
+- Prices rise to balance the market.
+- The new equilibrium price might be \$4, with a reduced quantity of 80 apples.
+
+#### Key Points in Reasoning  
+- **Shifts in curves** represent changes in market conditions (e.g., consumer preference, production costs).
+- **Movements along curves** represent changes in quantity supplied or demanded due to price changes.
+- The intersection point moves accordingly, adjusting equilibrium price and quantity.
+
+This example shows how supply and demand interact dynamically to set market outcomes.
+
+---
+
+Material: M2 (sample_output)  
+Purpose: Model analysis of supply and demand shifts  
+Content:  
+### Sample Analysis: Effects of Supply and Demand Changes on Market Equilibrium
+
+**Scenario:** The government introduces a subsidy for apple farmers, lowering production costs.
+
+**Analysis:**  
+- The subsidy effectively increases supply because farmers can produce more at each price.
+- The supply curve shifts rightward from S to S2.
+- At the original equilibrium price of \$2, quantity supplied now exceeds quantity demanded, creating a surplus.
+- Prices will fall to clear the surplus.
+- The new equilibrium price might be \$1.50, with a higher quantity of 130 apples.
+
+**Explanation:**  
+The subsidy reduces costs, shifting supply right. This lowers prices and increases quantity sold. Demand remains unchanged, so the demand curve is stable. The market moves to a new equilibrium reflecting these changes.
+
+This reasoning links the curve shift to real-world policy effects and market outcomes, demonstrating a coherent understanding beyond definitions.
+
+---
+
+Material: M3 (text)  
+Purpose: Conceptual overview of supply and demand  
+Content:  
+### Overview of Supply, Demand, and Market Equilibrium
+
+Supply and demand are fundamental economic concepts describing how markets allocate resources.
+
+- **Supply:** The quantity of a good or service that producers are willing and able to sell at various prices during a certain period. It generally increases with price because higher prices make production more profitable.
+- **Demand:** The quantity of a good or service that consumers are willing and able to purchase at various prices during a certain period. It generally decreases with price because higher prices reduce consumers’ willingness or ability to buy.
+
+**Market Equilibrium:**  
+The point where the quantity supplied equals the quantity demanded. At this price, the market clears with no surplus or shortage.
+
+**Key Principles:**  
+- When demand increases (shifts right), equilibrium price and quantity rise.
+- When supply increases (shifts right), equilibrium price falls and quantity rises.
+- Movements along curves reflect price changes; shifts in curves reflect changes in external factors like income, tastes, or production technology.
+
+Understanding these principles enables analysis of how markets respond to changes and how prices are determined.
+
+---
+
+Activity: Calculating Opportunity Costs in Economic Decisions  
+Activity ID: A2  
+Mapped outcomes: Calculate opportunity costs in simple economic decision scenarios.
+
+Material: M4 (worked_example)  
+Purpose: Stepwise calculation of opportunity cost  
+Content:  
+### Worked Example: Calculating Opportunity Cost
+
+**Scenario:** You have 3 hours of free time. You can either study economics or work at a part-time job earning \$15 per hour.
+
+**Step 1: Identify Alternatives**  
+- Option A: Study economics for 3 hours.  
+- Option B: Work for 3 hours and earn income.
+
+**Step 2: Determine Benefits of Each Alternative**  
+- Benefit of Option A: Improved understanding of economics (non-monetary but valuable for future career).  
+- Benefit of Option B: Earn \$45 (3 hours × \$15/hour).
+
+**Step 3: Calculate Opportunity Cost**  
+- If you choose to study (Option A), the opportunity cost is the income foregone by not working: \$45.  
+- If you choose to work (Option B), the opportunity cost is the benefit of studying, which is harder to quantify but represents lost learning.
+
+**Step 4: Reasoning**  
+Opportunity cost is the value of the next best alternative foregone. Here, choosing one option means sacrificing the benefits of the other.
+
+This example shows how to identify alternatives, quantify benefits, and calculate opportunity cost in a clear, stepwise manner.
+
+---
+
+Material: M5 (sample_output)  
+Purpose: Model solutions for opportunity cost problems  
+Content:  
+### Sample Solution: Opportunity Cost Calculation
+
+**Problem:** You have \$100 and can either buy a textbook or attend a workshop. The textbook improves your knowledge by 20%, while the workshop improves it by 30%. The workshop costs \$80.
+
+**Solution:**  
+- Choosing the textbook means spending \$100 and gaining 20% knowledge improvement.  
+- Choosing the workshop means spending \$80 and gaining 30% knowledge improvement.  
+- Opportunity cost of choosing the workshop: the value of the textbook (\$100 and 20% improvement).  
+- Opportunity cost of choosing the textbook: the value of the workshop (\$80 and 30% improvement).
+
+**Explanation:**  
+The opportunity cost involves comparing both monetary and non-monetary benefits. The decision depends on which alternative offers greater overall value. This solution links numerical costs with qualitative benefits, showing economic trade-offs.
+
+---
+
+Material: M6 (task_cards)  
+Purpose: Practice problems on opportunity cost  
+Content:  
+### Practice Problems: Calculating Opportunity Costs
+
+**Problem 1:**  
+You can spend your Saturday either babysitting for \$50 or attending a seminar that costs \$30 but gives you valuable skills. Calculate the opportunity cost of each choice.
+
+**Problem 2:**  
+A farmer can plant wheat or corn on a field. Wheat yields a profit of \$2000, corn yields \$1800. What is the opportunity cost of planting wheat?
+
+**Problem 3:**  
+You have 4 hours after school. You can either work at a café earning \$10/hour or prepare for an exam that could improve your grade. Calculate the opportunity cost of working.
+
+For each problem:  
+- Identify the next best alternative foregone.  
+- Quantify the opportunity cost in monetary or non-monetary terms.  
+- Explain your reasoning clearly.
+
+---
+
+Activity: Interpreting Supply and Demand Graphs  
+Activity ID: A3  
+Mapped outcomes: Interpret graphical representations of supply and demand curves to predict changes in market conditions.
+
+Material: M7 (modelling_note)  
+Purpose: Graph interpretation guide  
+Content:  
+### Guide to Interpreting Supply and Demand Graphs
+
+Understanding supply and demand graphs is crucial for predicting market changes. Key concepts:
+
+- **Movement Along a Curve:**  
+  - Occurs when price changes cause quantity demanded or supplied to change.  
+  - Demand curve movement: change in quantity demanded.  
+  - Supply curve movement: change in quantity supplied.
+
+- **Shift of a Curve:**  
+  - Occurs when factors other than price change (e.g., income, technology).  
+  - Demand curve shift: change in demand at every price (rightward = increase, leftward = decrease).  
+  - Supply curve shift: change in supply at every price (rightward = increase, leftward = decrease).
+
+- **Interpreting Changes:**  
+  1. Identify if the graph shows a movement along or a shift of the curve.  
+  2. Determine the cause (price change or external factor).  
+  3. Predict the effect on equilibrium price and quantity.
+
+**Example:**  
+- A rightward shift in demand increases equilibrium price and quantity.  
+- A leftward shift in supply increases price but decreases quantity.
+
+Use annotated graphs to practice distinguishing these changes and their market implications.
+
+---
+
+Material: M8 (classification_table)  
+Purpose: Practice table for classifying graph changes  
+Content:  
+
+| Graph Description                                  | Type of Change (Shift/Movement) | Cause of Change                         | Predicted Market Effect (Price & Quantity)       | Your Reasoning (Explain briefly)                     |
+|---------------------------------------------------|---------------------------------|---------------------------------------|--------------------------------------------------|-----------------------------------------------------|
+| Demand curve shifts right due to increased income |                                 |                                       |                                                  |                                                     |
+| Movement up along supply curve due to price rise  |                                 |                                       |                                                  |                                                     |
+| Supply curve shifts left because of higher costs  |                                 |                                       |                                                  |                                                     |
+| Movement down along demand curve due to price fall|                                 |                                       |                                                  |                                                     |
+
+**Instructions:**  
+- Complete the table by classifying each graph description as a shift or movement.  
+- Identify the cause of the change.  
+- Predict how equilibrium price and quantity will change.  
+- Provide a brief explanation linking graph features to economic concepts.
+
+---
+
+Material: M9 (scenario)  
+Purpose: Market condition cases  
+Content:  
+### Market Condition Scenarios for Graph Interpretation Practice
+
+**Scenario 1: Smartphone Market**  
+A new technology reduces production costs for smartphones, making them cheaper to produce. At the same time, consumer income rises, increasing demand for smartphones.
+
+- How do supply and demand curves shift?  
+- What happens to equilibrium price and quantity?
+
+**Scenario 2: Coffee Market**  
+A drought reduces coffee bean harvest, decreasing supply. Simultaneously, a health study reports negative effects of coffee, reducing consumer demand.
+
+- How do supply and demand curves shift?  
+- What happens to equilibrium price and quantity?
+
+Use these scenarios to practice identifying curve shifts, movements, and predicting market outcomes based on graphical analysis.
+
+---
+
+Activity: Consolidation and Reflection on Market Principles  
+Activity ID: A4  
+Mapped outcomes: Analyze the basic principles of supply and demand to determine market equilibrium., Calculate opportunity costs in simple economic decision scenarios., Interpret graphical representations of supply and demand curves to predict changes in market conditions.
+
+Material: M10 (consolidation_summary)  
+Purpose: Session closure and reflection  
+Content:  
+### Reflective Summary Scaffold: Consolidating Market Principles
+
+Use the prompts below to write a reflective summary integrating your learning about supply and demand, opportunity cost, and graph interpretation.
+
+- **Start by summarizing the core idea of market equilibrium:**  
+  What is market equilibrium and how do supply and demand interact to establish it?
+
+- **Explain opportunity cost:**  
+  How does understanding opportunity cost help in making economic decisions? Provide an example.
+
+- **Discuss interpreting supply and demand graphs:**  
+  How do shifts and movements in curves differ, and why is this distinction important for predicting market changes?
+
+- **Connect the concepts:**  
+  How do these principles work together to help you understand real-world markets and economic decision-making?
+
+- **Reflect on your learning:**  
+  Which concept do you find most challenging? How will you apply these ideas in future studies or everyday decisions?
+
+Use clear, coherent sentences to synthesize these ideas into a summary of at least 80 words.
+
+---
+
+Material: M11 (prompt_set)  
+Purpose: Reflection questions  
+Content:  
+### Reflection Questions to Guide Your Summary
+
+1. What key factors cause supply or demand to shift in a market?  
+2. How does a change in equilibrium price affect consumer and producer behavior?  
+3. Why is it important to identify the next best alternative when calculating opportunity cost?  
+4. How can graphical analysis of supply and demand improve your economic reasoning?  
+5. In what ways are supply and demand principles relevant beyond textbook examples?  
+6. What connections can you draw between opportunity cost and market equilibrium?  
+7. How confident do you feel about interpreting supply and demand graphs? What could help improve this skill?
+
+Consider these questions as you write your reflective summary to ensure you cover essential aspects of the session and deepen your understanding.

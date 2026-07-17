@@ -1,0 +1,36 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Analyze the basic principles of supply and demand to determine market equilibrium.",
+      "related_concepts": [
+        "supply",
+        "demand",
+        "market equilibrium"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Focus on first-year level understanding of market forces."
+    },
+    {
+      "statement": "Calculate opportunity costs in simple economic decision scenarios.",
+      "related_concepts": [
+        "opportunity cost",
+        "economic decision-making"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Use numerical examples to demonstrate calculation."
+    },
+    {
+      "statement": "Interpret graphical representations of supply and demand curves to predict changes in market conditions.",
+      "related_concepts": [
+        "supply curve",
+        "demand curve",
+        "graph interpretation"
+      ],
+      "cognitive_level": "Interpret",
+      "notes": "Emphasize reading and explaining shifts and movements."
+    }
+  ],
+  "learner_level": "first-year undergraduate",
+  "scope": "standard session (30-120 minutes)",
+  "alignment_notes": "Outcomes focus on foundational economics concepts suitable for a first-year workshop."
+}

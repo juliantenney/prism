@@ -196,18 +196,17 @@ test("51-salience: Common mistakes renders as diagnostic callout without checkbo
   assert.doesNotMatch(diagnosticAside[0], /util-checkbox/);
 });
 
-test("51-salience: If any check is not met renders as revision callout", () => {
+test("51-salience: If any check is not met renders as checklist instruction prose", () => {
   const html = renderPage(minimalSaliencePage());
   const scope = activityArticleScope(html, "Pedagogic salience fixture");
   const checkSection = scope.slice(scope.indexOf("Check your work"));
-  assert.match(checkSection, /util-pedagogic-callout--revision/);
-  assert.match(checkSection, /How to improve/);
+  assert.match(checkSection, /class="util-checklist-instruction"/);
   assert.match(checkSection, /Revise your report by adding a mechanism sentence/i);
-  const revisionAside = checkSection.match(
-    /<aside class="util-pedagogic-callout util-pedagogic-callout--revision[\s\S]*?<\/aside>/i
-  );
-  assert.ok(revisionAside, "expected revision aside");
-  assert.doesNotMatch(revisionAside[0], /util-checkbox-list/);
+  assert.doesNotMatch(checkSection, /util-pedagogic-callout--revision/);
+  const lists = checkSection.match(/<ul class="util-checklist"[^>]*>[\s\S]*?<\/ul>/gi) || [];
+  assert.equal(lists.length, 1, "expected a single checklist list in Check your work");
+  assert.doesNotMatch(lists[0], /Revise your report/i);
+  assert.doesNotMatch(checkSection, /<ul class="util-checklist"[^>]*>[\s\S]*If any check is not met/i);
 });
 
 test("51-salience: verification checklist items render as plain checklist", () => {

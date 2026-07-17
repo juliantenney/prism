@@ -1,0 +1,144 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Plan and Manage Your Personal Learning Activities",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Apply strategies to independently plan and manage personal learning activities."
+      ],
+      "activity_preamble": "Effective self-directed learning depends on your ability to plan and manage your own learning activities. This involves selecting appropriate goals, scheduling tasks, and allocating time efficiently to meet your learning objectives. Developing these practical skills empowers you to take control of your educational journey and enhances your ability to learn independently.",
+      "reasoning_orientation": "Consider how planning and time management strategies help you organize your learning process to maximize productivity and reduce procrastination. Reflect on how prioritizing tasks and setting realistic timelines contribute to sustained learning progress and motivation. Understanding these mechanisms will help you apply planning techniques effectively in your own context.",
+      "transfer_or_application_task": "Use the provided worked example to observe how an undergraduate learner plans a study schedule and manages time across tasks. Then, create your own personalized learning plan for an upcoming study session, applying similar strategies and adjustments to fit your context.",
+      "learner_task": "Study the worked example of a learning plan and time management. Then, draft your own plan for managing a personal learning activity, including task breakdown, scheduling, and time allocation.",
+      "expected_output": "Your learning plan should clearly outline specific tasks, realistic timelines, and time management strategies tailored to your personal learning goals. It should demonstrate practical application of planning principles with attention to prioritization and scheduling to support independent learning.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Demonstrate effective planning and time management",
+          "specification": "depth_floor: L3; detailed stepwise planning of a study session including task prioritization, scheduling, and time allocation with annotations explaining decisions."
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Model personalized learning plan",
+          "specification": "depth_floor: L3; exemplar learning plan showing task breakdown, scheduling, and time management strategies suitable for undergraduate self-directed learning."
+        },
+        {
+          "material_id": "M3",
+          "type": "task_cards",
+          "purpose": "Guided prompts for planning and time management",
+          "specification": "depth_floor: L3; cards with questions and hints to help identify tasks, set priorities, and allocate time effectively."
+        },
+        {
+          "material_id": "M4",
+          "type": "checklist",
+          "purpose": "Verification of planning quality",
+          "specification": "depth_floor: L3; checklist with criteria including clarity of tasks, feasibility of schedule, prioritization logic, and time allocation adequacy."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity builds foundational skills in planning and managing learning activities, which are essential for effective self-directed learning. By practicing these strategies early, you prepare to monitor and adjust your progress in subsequent activities, ensuring continuous improvement and adaptation to your learning needs."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Evaluate and Adjust Your Learning Strategies",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Evaluate personal learning progress and adjust learning strategies accordingly."
+      ],
+      "activity_preamble": "Reflecting on your learning progress and adapting your strategies are critical steps in becoming an effective self-directed learner. This activity focuses on developing your ability to assess how well your current approaches are working and to make informed adjustments that enhance your learning outcomes. Such reflective practice fosters continuous growth and resilience.",
+      "self_explanation_prompt": "Before reviewing the evaluation framework, explain how you currently assess your learning progress and identify any challenges you face in adapting your strategies. Articulate your reasoning about why reflection and adjustment are important for independent learning.",
+      "argument_structure_hint": "Identify at least two criteria you use or could use to evaluate your learning effectiveness. Compare how different strategies meet these criteria and justify why you would adjust or maintain each strategy based on evidence from your learning experience.",
+      "learner_task": "Use the provided evaluation framework and scenarios to assess your recent learning activities. Then, write a reflective summary identifying what worked, what didn’t, and propose specific strategy adjustments to improve your learning effectiveness.",
+      "expected_output": "Your reflective summary should clearly evaluate your learning progress using defined criteria, provide evidence-based justification for your judgments, and outline actionable adjustments to your learning strategies that demonstrate adaptive and reflective practice.",
+      "required_materials": [
+        {
+          "material_id": "M5",
+          "type": "text",
+          "purpose": "Evaluation framework and criteria",
+          "specification": "depth_floor: L3; explanatory text describing criteria for evaluating learning progress and strategy effectiveness with examples."
+        },
+        {
+          "material_id": "M6",
+          "type": "scenario",
+          "purpose": "Learning progress evaluation cases",
+          "specification": "depth_floor: L3; at least two distinct undergraduate learner scenarios illustrating different learning outcomes and challenges."
+        },
+        {
+          "material_id": "M7",
+          "type": "checklist",
+          "purpose": "Self-assessment verification",
+          "specification": "depth_floor: L3; checklist with four or more items to verify thoroughness and depth of reflection and strategy adjustment."
+        },
+        {
+          "material_id": "M8",
+          "type": "prompt_set",
+          "purpose": "Guided reflection prompts",
+          "specification": "depth_floor: L3; prompts to support critical evaluation of learning progress and identification of strategy adjustments."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building on your ability to plan and manage learning activities, this activity deepens your reflective skills by focusing on evaluation and adjustment. This reflective cycle is vital for self-directed learning as it enables you to continuously refine your approaches based on evidence and experience, preparing you for more complex resource selection and analysis in the next activity."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Identify and Select Resources to Support Autonomous Learning",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Identify appropriate resources and tools to support autonomous learning."
+      ],
+      "activity_preamble": "Choosing the right resources and tools is a critical skill for autonomous learning. This activity guides you through analyzing different types of learning aids and selecting those that best support your specific learning goals and context. Developing information literacy and critical evaluation skills ensures that your resource choices enhance rather than hinder your learning.",
+      "conceptual_contrast_prompt": "When comparing resources, focus on their relevance, credibility, accessibility, and how well they align with your learning objectives. Contrast resources that offer similar content but differ in format, depth, or usability to understand trade-offs in resource selection.",
+      "reasoning_orientation": "Analyze the characteristics and intended uses of various learning tools and resources. Reflect on how each resource supports different aspects of your learning process, such as understanding concepts, practicing skills, or managing information.",
+      "learner_task": "Review the provided resource descriptions and comparison table. Complete the table by rating each resource against key criteria and justify your selections. Then, choose the most appropriate resources for a given learning scenario and explain your reasoning.",
+      "expected_output": "Your completed comparison table should include clear ratings and justifications based on multiple criteria. Your resource selection should be well-argued, demonstrating critical analysis and alignment with the learning goals of the scenario.",
+      "required_materials": [
+        {
+          "material_id": "M9",
+          "type": "comparison_table",
+          "purpose": "Resource evaluation matrix",
+          "specification": "depth_floor: L3; table listing various learning resources with columns for criteria such as relevance, credibility, accessibility, and usability; includes example ratings and justification hints."
+        },
+        {
+          "material_id": "M10",
+          "type": "text",
+          "purpose": "Information literacy and resource selection guidance",
+          "specification": "depth_floor: L3; explanatory text on how to critically evaluate and select learning resources and tools."
+        },
+        {
+          "material_id": "M11",
+          "type": "scenario",
+          "purpose": "Resource selection case",
+          "specification": "depth_floor: L3; at least two distinct undergraduate learning scenarios requiring resource identification and justification."
+        },
+        {
+          "material_id": "M12",
+          "type": "task_cards",
+          "purpose": "Resource selection prompts",
+          "specification": "depth_floor: L3; cards with questions and criteria to guide analysis and justification of resource choices."
+        }
+      ],
+      "intellectual_coherence_bridge": "After developing skills in planning and evaluating your learning, this activity equips you to critically analyze and select resources that support your autonomous learning effectively. Mastering resource identification complements your ability to plan and adjust strategies, completing a core skill set essential for independent undergraduate learners."
+    }
+  ],
+  "outcome_alignment": {
+    "A1": [
+      "Apply strategies to independently plan and manage personal learning activities."
+    ],
+    "A2": [
+      "Evaluate personal learning progress and adjust learning strategies accordingly."
+    ],
+    "A3": [
+      "Identify appropriate resources and tools to support autonomous learning."
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

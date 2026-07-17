@@ -2,59 +2,29 @@
 
 **Sprint:** 65 — Renderer Learner Experience Optimisation  
 **Working title:** Working With What We Have  
-**Status:** **In progress** (S65-BL-001 … S65-BL-006 complete)  
+**Status:** **Closed** (2026-07-16) — no production renderer change  
 **Opened:** 2026-07-16  
-**Implementation status:** **Not started**
+**Implementation:** **Reverted** to pre-BL-007 checkpoint  
 
 ---
 
 ## Sprint purpose
 
-Improve the learner-facing page renderer so it produces the strongest possible instructional experience using **only** data already available after the GAM boundary.
+Improve the learner-facing page renderer using **only** data already available after the GAM boundary.
 
 ---
 
-## Backlog
+## Outcome
 
-| ID | Status |
-| -- | ------ |
-| S65-BL-001 … S65-BL-006 | **Complete** |
-| S65-BL-006 | [`material-role-and-beat-presentation.md`](material-role-and-beat-presentation.md) · S65-MBP-001…036 · Option C |
-| S65-BL-007 | **Next** — bounded renderer prototype |
-| S65-BL-008 … S65-BL-010 | Pending |
+No production-ready improvement. Prototype reverted. Pipeline unchanged.
 
-See [backlog.md](backlog.md).
+Useful retained work: BL-001–006 LX problem inventory.  
+Critical lesson: ground renderer work in **fresh live inputs**, not historical fixtures or upstream research assumptions.
+
+See [SPRINT-65-CLOSURE.md](SPRINT-65-CLOSURE.md).
 
 ---
 
-## Decisions
+## Successor
 
-S65-D00 … S65-D50. Material presentation decisions added in S65-BL-006. See [decisions.md](decisions.md).
-
----
-
-## Evidence status
-
-S65-EV-01 … S65-EV-41. See [evidence-log.md](evidence-log.md).
-
----
-
-## Findings status
-
-BL-006 added S65-F33–F38. See [findings-log.md](findings-log.md).
-
----
-
-## Implementation status
-
-```text
-Not started
-```
-
-Experimental HTML under `experiments/` only. No production renderer, schema, GAM, or Sprint 64 prototype changes.
-
----
-
-## Closure criteria
-
-Complete S65-BL-010 with Outcome A, B, or C in `sprint-65-final-recommendation.md`, without reopening production preservation.
+[Sprint 66 — Grounded Renderer Learner Experience](../2026-07-16-sprint-66-grounded-renderer-learner-experience/SPRINT-66-START-HERE.md)

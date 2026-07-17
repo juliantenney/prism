@@ -12417,6 +12417,21 @@
     return root && root.PRISM_BEAT_MATERIAL_REGISTRY ? root.PRISM_BEAT_MATERIAL_REGISTRY : null;
   }
 
+  function resolveLdBeatAssignmentComposeLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LD_BEAT_ASSIGNMENT_COMPOSE &&
+      typeof globalThis.PRISM_LD_BEAT_ASSIGNMENT_COMPOSE.composeActivityBeatAssignments ===
+        "function"
+    ) {
+      return globalThis.PRISM_LD_BEAT_ASSIGNMENT_COMPOSE;
+    }
+    var root = ldTableFidelityGlobalRoot();
+    return root && root.PRISM_LD_BEAT_ASSIGNMENT_COMPOSE
+      ? root.PRISM_LD_BEAT_ASSIGNMENT_COMPOSE
+      : null;
+  }
+
   function utilityClassifyPedagogicalBeat(text, materialType) {
     var lib = resolvePedagogicalBeatsLib();
     if (!lib || typeof lib.classifyPedagogicalBeat !== "function") return null;
@@ -15148,6 +15163,7 @@
   var COGNITION_PAGE_CANONICAL_SECTION_ORDER = [
     "overview",
     "learning_purpose",
+    "learning_outcomes",
     "knowledge_summary",
     "learning_sequence",
     "learning_activities",
@@ -33686,7 +33702,6 @@
       sid === "generation_notes" ||
       sid === "validation_notes" ||
       sid === "limitations" ||
-      sid === "learning_outcomes" ||
       sid === "diagnostics" ||
       sid === "renderer_diagnostics" ||
       sid === "prism_diagnostics"
@@ -33694,7 +33709,7 @@
       return true;
     }
     var heading = String(entry.heading || entry.title || entry.name || "").toLowerCase();
-    if (/\b(production\s+metadata|page\s+metadata|assembly state|generation notes|validation notes|diagnostics|limitations|learning outcomes)\b/.test(heading)) return true;
+    if (/\b(production\s+metadata|page\s+metadata|assembly state|generation notes|validation notes|diagnostics|limitations)\b/.test(heading)) return true;
     return /\bvisual\s+affordance\s+schema\s+version\b|\bactivities\s+visual\s+review\b|\bvisual\s+affordances\b/.test(
       heading
     );
@@ -33943,6 +33958,17 @@
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
   }
+  function utilityIsStructuralFieldLabel(text) {
+    var normalized = utilityNormalizeHeadingCompareText(text);
+    return !!{
+      body: true,
+      content: true,
+      text: true,
+      items: true,
+      statement: true,
+      id: true
+    }[normalized];
+  }
   function utilityMaterialHeadingRedundantWithInner(headingLabel, renderedHtml) {
     var outer = utilityNormalizeHeadingCompareText(headingLabel);
     if (!outer || !String(renderedHtml || "").trim()) return false;
@@ -34010,12 +34036,14 @@
   }
   function utilityRenderTaskCardHeadingHtml(title) {
     return (
-      '<h5 class="util-task-card-heading"><span>' + utilityEscapeHtml(String(title || "")) + "</span></h5>"
+      '<p class="util-task-card-heading util-supporting-label"><span>' +
+      utilityEscapeHtml(String(title || "")) +
+      "</span></p>"
     );
   }
   function utilityRenderPromptSetHeadingHtml(heading) {
     if (heading) {
-      return utilityRenderIconHeading("h5", heading, "prompt_set", "util-icon-heading util-prompt-set-heading");
+      return utilityRenderIconHeading("p", heading, "prompt_set", "util-icon-heading util-prompt-set-heading util-supporting-label");
     }
     return (
       '<div class="util-prompt-set-heading util-icon-heading">' +
@@ -34558,6 +34586,9 @@
       });
       var extraHtmlForPair = utilityRenderObject(extraObj, depth + 1, renderOpts);
       if (headingText && String(bodyHtmlForPair || "").trim()) {
+        if (utilityIsStructuralFieldLabel(headingText)) {
+          return bodyHtmlForPair + extraHtmlForPair;
+        }
         if (
           (String(selectedPair.headingKey || "").toLowerCase() === "concept" &&
             (String(selectedPair.bodyKey || "").toLowerCase() === "summary" ||
@@ -34596,7 +34627,12 @@
       .map(function (key) {
         var value = obj[key];
         var lowerKey = String(key || "").toLowerCase();
-        if (lowerKey === "items" || lowerKey === "fields") {
+        if (
+          lowerKey === "items" ||
+          lowerKey === "fields" ||
+          lowerKey === "statement" ||
+          lowerKey === "id"
+        ) {
           return Array.isArray(value)
             ? utilityRenderArray(value, renderOpts)
             : value && typeof value === "object"
@@ -34685,7 +34721,8 @@
     support_notes: true,
     study_tips: true,
     overview: true,
-    learning_purpose: true
+    learning_purpose: true,
+    learning_outcomes: true
   };
 
   function getPageSectionsArray(parsed) {
@@ -34694,14 +34731,49 @@
     return [];
   }
 
+  function pageSectionsIncludeLearningOutcomes(sections) {
+    if (!Array.isArray(sections)) return false;
+    return sections.some(function (entry) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+      var sid = String(entry.section_id || entry.id || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[\s-]+/g, "_");
+      if (sid === "learning_outcomes" || sid === "learning_outcome") return true;
+      var heading = String(
+        entry.heading || entry.title || entry.name || entry.label || ""
+      )
+        .toLowerCase()
+        .trim();
+      return /\blearning[_\s-]?outcomes?\b/.test(heading);
+    });
+  }
+
   /** Sections for render/merge: prefer sections[], else synthesize from top-level page body keys. */
   function getPageSectionsForRender(parsed) {
     var renderPage = getPageForRender(parsed);
     var fromArray = getPageSectionsArray(renderPage);
-    if (fromArray.length) return fromArray;
+    if (fromArray.length) {
+      if (
+        !pageSectionsIncludeLearningOutcomes(fromArray) &&
+        !utilityIsEmptyValue(renderPage && renderPage.learning_outcomes)
+      ) {
+        return fromArray.concat([
+          {
+            section_id: "learning_outcomes",
+            heading: "Learning Outcomes",
+            content: renderPage.learning_outcomes
+          }
+        ]);
+      }
+      return fromArray;
+    }
     if (!renderPage || typeof renderPage !== "object" || Array.isArray(renderPage)) return [];
     var synthetic = [];
     var canonicalOrder = [
+      "overview",
+      "learning_purpose",
+      "learning_outcomes",
       "knowledge_summary",
       "learning_journey",
       "learning_sequence",
@@ -34709,9 +34781,7 @@
       "assessment_check",
       "activity_materials",
       "support_notes",
-      "study_tips",
-      "overview",
-      "learning_purpose"
+      "study_tips"
     ];
     canonicalOrder.forEach(function (sid) {
       if (!PAGE_BODY_SECTION_IDS[sid]) return;
@@ -34870,9 +34940,18 @@
       if (sid === "knowledge_summary" || /^knowledge_summary[_]/.test(sid)) return true;
       return /\b(knowledge[_\s-]?summary|knowledge[_\s-]?model|key[_\s-]?concepts?|concept[_\s-]?summary)\b/.test(t);
     }
+    function looksLearningPurposeSection(name) {
+      var t = String(name || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+      if (t === "learning_purpose" || t === "purpose") return true;
+      return /\blearning[_\s-]?purpose\b/.test(String(name || "").toLowerCase());
+    }
+    function looksLearningOutcomesSection(name) {
+      var t = String(name || "").toLowerCase().trim().replace(/[\s-]+/g, "_");
+      if (t === "learning_outcomes" || t === "learning_outcome" || t === "outcomes") return true;
+      return /\blearning[_\s-]?outcomes?\b/.test(String(name || "").toLowerCase());
+    }
     function looksLearningPurposeOrOutcomesSection(name) {
-      var t = String(name || "").toLowerCase();
-      return /\b(learning[_\s-]?purpose|learning[_\s-]?outcomes?|outcomes?)\b/.test(t);
+      return looksLearningPurposeSection(name) || looksLearningOutcomesSection(name);
     }
     function activitySectionHeadingForCount(count) {
       return count === 1 ? "Learning Activity" : "Learning Activities";
@@ -34885,6 +34964,7 @@
       if (
         sid === "overview" ||
         sid === "learning_purpose" ||
+        sid === "learning_outcomes" ||
         sid === "knowledge_summary" ||
         sid === "learning_journey" ||
         sid === "learning_activities" ||
@@ -34898,7 +34978,8 @@
       }
       if (!sid || /^section_\d+$/.test(sid)) {
         if (looksLearningActivitiesSection(heading)) return "learning_activities";
-        if (looksLearningPurposeOrOutcomesSection(heading)) return "learning_purpose";
+        if (looksLearningOutcomesSection(heading)) return "learning_outcomes";
+        if (looksLearningPurposeSection(heading)) return "learning_purpose";
         if (looksKnowledgeSummarySection(heading)) return "knowledge_summary";
         if (looksLearningSequenceSection(heading)) return "learning_journey";
         if (looksAssessmentItemsSection(heading)) return "assessment_check";
@@ -34919,7 +35000,9 @@
     function sectionIconModifierClass(sectionId, headingText) {
       var sid = resolveSectionKind(sectionId, headingText);
       if (sid === "overview") return "util-section-icon--overview";
-      if (sid === "learning_purpose") return "util-section-icon--learning-purpose";
+      if (sid === "learning_purpose" || sid === "learning_outcomes") {
+        return "util-section-icon--learning-purpose";
+      }
       if (sid === "knowledge_summary") return "util-section-icon--knowledge-summary";
       if (sid === "learning_journey") return "util-section-icon--learning-purpose";
       if (sid === "learning_activities") return "util-section-icon--learning-activities";
@@ -34942,6 +35025,127 @@
         heading +
         "</span></h2>"
       );
+    }
+    function utilityStripDuplicateSectionWrapperHeading(bodyHtml, sectionHeading) {
+      var body = String(bodyHtml || "");
+      var expected = utilityNormalizeHeadingCompareText(sectionHeading);
+      var removable = {
+        "knowledge summary": true,
+        "study tips": true,
+        overview: true,
+        "learning purpose": true,
+        "learning outcomes": true,
+        "learning journey": true
+      };
+      if (!removable[expected]) return body;
+      return body.replace(
+        /^(\s*(?:<div\b[^>]*>\s*)?)<h[2-6][^>]*>([\s\S]*?)<\/h[2-6]>\s*/i,
+        function (full, prefix, inner) {
+          var actual = utilityNormalizeHeadingCompareText(
+            String(inner || "").replace(/<[^>]+>/g, " ")
+          );
+          return actual === expected ? String(prefix || "") : full;
+        }
+      );
+    }
+    function withoutOpeningDividerMarkdown(value) {
+      if (typeof value === "string") {
+        return value.replace(/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/gm, "");
+      }
+      if (Array.isArray(value)) {
+        return value.map(withoutOpeningDividerMarkdown);
+      }
+      if (value && typeof value === "object") {
+        var copy = {};
+        Object.keys(value).forEach(function (key) {
+          copy[key] = withoutOpeningDividerMarkdown(value[key]);
+        });
+        return copy;
+      }
+      return value;
+    }
+    function assembleOrientationSections(sectionHtmlRows) {
+      var rows = Array.isArray(sectionHtmlRows) ? sectionHtmlRows.slice() : [];
+      var classes = [
+        "util-overview",
+        "util-learning-purpose",
+        "util-learning-outcomes",
+        "util-knowledge-summary",
+        "util-learning-journey"
+      ];
+      var opening = [];
+      classes.forEach(function (className) {
+        var idx = rows.findIndex(function (html) {
+          return new RegExp(
+            '^<section class="' + className + '"(?:\\s|>)',
+            "i"
+          ).test(String(html || ""));
+        });
+        if (idx !== -1) opening.push(rows.splice(idx, 1)[0]);
+      });
+      if (!opening.length) return rows.join("");
+      return (
+        '<div id="journey-orient" data-journey-section="true">' +
+        opening.join("") +
+        "</div>" +
+        rows.join("")
+      );
+    }
+    function promoteNestedLearningOutcomesIntoSections(sectionsObj) {
+      if (!sectionsObj || typeof sectionsObj !== "object" || Array.isArray(sectionsObj)) {
+        return sectionsObj;
+      }
+      if (!utilityIsEmptyValue(sectionsObj.learning_outcomes)) return sectionsObj;
+      var purpose = sectionsObj.learning_purpose;
+      if (!purpose || typeof purpose !== "object" || Array.isArray(purpose)) return sectionsObj;
+      if (!Array.isArray(purpose.outcomes) || !purpose.outcomes.length) return sectionsObj;
+      var next = Object.assign({}, sectionsObj);
+      next.learning_outcomes = purpose.outcomes.slice();
+      var purposeCopy = Object.assign({}, purpose);
+      delete purposeCopy.outcomes;
+      next.learning_purpose = purposeCopy;
+      return next;
+    }
+    function promoteNestedLearningOutcomesInSectionEntries(entries) {
+      if (!Array.isArray(entries) || !entries.length) return entries;
+      if (pageSectionsIncludeLearningOutcomes(entries)) return entries;
+      var promoted = null;
+      var next = entries.map(function (entry) {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return entry;
+        var sid = String(entry.section_id || entry.id || "")
+          .toLowerCase()
+          .trim()
+          .replace(/[\s-]+/g, "_");
+        if (sid !== "learning_purpose" && !looksLearningPurposeSection(entry.heading || entry.title || "")) {
+          return entry;
+        }
+        var content =
+          entry.content != null
+            ? entry.content
+            : entry.body != null
+            ? entry.body
+            : entry.text != null
+            ? entry.text
+            : null;
+        if (!content || typeof content !== "object" || Array.isArray(content)) return entry;
+        if (!Array.isArray(content.outcomes) || !content.outcomes.length) return entry;
+        promoted = content.outcomes.slice();
+        var contentCopy = Object.assign({}, content);
+        delete contentCopy.outcomes;
+        var entryCopy = Object.assign({}, entry);
+        if (entry.content != null) entryCopy.content = contentCopy;
+        else if (entry.body != null) entryCopy.body = contentCopy;
+        else if (entry.text != null) entryCopy.text = contentCopy;
+        return entryCopy;
+      });
+      if (!promoted) return entries;
+      return next.concat([
+        {
+          section_id: "learning_outcomes",
+          heading: "Learning Outcomes",
+          content: promoted
+        }
+      ]);
     }
     function buildPageSectionProbeContext(pageSections) {
       var ctx = {
@@ -35034,33 +35238,61 @@
       }
       if (value && typeof value === "object") {
         var statement = firstNonEmpty([value.statement, value.purpose, value.summary, value.intro, value.description]);
-        var outcomes = Array.isArray(value.outcomes) ? value.outcomes.filter(function (x) { return !utilityIsEmptyValue(x); }) : [];
         var parts = [];
         if (statement) parts.push(utilityRenderMarkdownBlock(String(statement)));
-        if (outcomes.length) {
-          var outcomesLis = outcomes.map(function (outcome) {
-            if (typeof outcome === "string" || typeof outcome === "number" || typeof outcome === "boolean") {
-              return (
-                "<li>" +
-                utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(outcome))) +
-                "</li>"
-              );
-            }
-            if (outcome && typeof outcome === "object") {
-              var txt = firstNonEmpty([outcome.outcome, outcome.statement, outcome.text, outcome.description, outcome.title, outcome.name]);
-              return txt
-                ? "<li>" +
-                    utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(txt))) +
-                    "</li>"
-                : "";
-            }
-            return "";
-          }).filter(function (x) { return !!x; }).join("");
-          if (outcomesLis) parts.push("<ul>" + outcomesLis + "</ul>");
-        }
         return parts.join("");
       }
       return utilityRenderPrimitive(value, renderOpts);
+    }
+    function extractLearningOutcomeText(outcome) {
+      if (utilityIsEmptyValue(outcome)) return "";
+      if (typeof outcome === "string" || typeof outcome === "number" || typeof outcome === "boolean") {
+        return utilityNormalizeEmbeddedListItemText(String(outcome));
+      }
+      if (!outcome || typeof outcome !== "object" || Array.isArray(outcome)) return "";
+      return utilityNormalizeEmbeddedListItemText(
+        String(
+          firstNonEmpty([
+            outcome.statement,
+            outcome.outcome,
+            outcome.text,
+            outcome.description,
+            outcome.title,
+            outcome.name
+          ]) || ""
+        )
+      );
+    }
+    function renderLearningOutcomesList(value) {
+      if (utilityIsEmptyValue(value)) return "";
+      var rows = [];
+      if (typeof value === "string") {
+        var prose = String(value).trim();
+        if (!prose) return "";
+        return utilityRenderMarkdownBlock(prose);
+      }
+      if (Array.isArray(value)) {
+        rows = value;
+      } else if (value && typeof value === "object") {
+        if (Array.isArray(value.learning_outcomes)) rows = value.learning_outcomes;
+        else if (Array.isArray(value.outcomes)) rows = value.outcomes;
+        else if (Array.isArray(value.items)) rows = value.items;
+        else {
+          var single = extractLearningOutcomeText(value);
+          if (single) rows = [single];
+        }
+      }
+      var lis = rows
+        .map(function (row) {
+          var text = extractLearningOutcomeText(row);
+          if (!text) return "";
+          return "<li>" + utilityRenderMarkdownInline(text) + "</li>";
+        })
+        .filter(function (x) {
+          return !!x;
+        });
+      if (!lis.length) return "";
+      return '<ul class="util-learning-outcomes__list">' + lis.join("") + "</ul>";
     }
     function renderKnowledgeSummaryBlocks(value) {
       var relationshipsText = "";
@@ -35105,7 +35337,7 @@
           utilityRenderMarkdownBlock(proseScalar) ||
           "<p>" + utilityRenderMarkdownInline(proseScalar) + "</p>";
         return (
-          '<div class="util-knowledge-summary util-knowledge-summary--prose">' +
+          '<div class="util-knowledge-summary__content util-knowledge-summary--prose">' +
           scalarHtml +
           "</div>"
         );
@@ -35160,7 +35392,11 @@
         innerParts.push("</div>");
       }
       if (!innerParts.length) return "";
-      return '<div class="util-knowledge-summary">' + innerParts.join("") + "</div>";
+      return (
+        '<div class="util-knowledge-summary__content">' +
+        innerParts.join("") +
+        "</div>"
+      );
     }
     function summarizeOneSentence(text) {
       if (text != null && typeof text === "object") return "";
@@ -35271,7 +35507,13 @@
           if (row.orientation) detail.push(utilityRenderMarkdownInline(String(row.orientation)));
           if (row.duration) detail.push(utilityEscapeHtml(String(row.duration)));
           var detailHtml = detail.length ? ("<p>" + detail.join(" · ") + "</p>") : "";
-          return "<li><strong>" + utilityEscapeHtml(lead) + "</strong>" + detailHtml + "</li>";
+          return (
+            '<li><span class="util-supporting-label">' +
+            utilityEscapeHtml(lead) +
+            "</span>" +
+            detailHtml +
+            "</li>"
+          );
         })
         .join("");
       return '<div class="util-learning-journey-overview">' + intro + "<ol>" + list + "</ol></div>";
@@ -35304,7 +35546,7 @@
               var lineTitle = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]);
               var lineBody = firstNonEmpty([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
               var line = "";
-              if (lineTitle && lineBody) line = "<strong>" + utilityEscapeHtml(String(lineTitle)) + ":</strong> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(lineBody)));
+              if (lineTitle && lineBody) line = '<span class="util-supporting-label">' + utilityEscapeHtml(String(lineTitle)) + ":</span> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(lineBody)));
               else if (lineBody) line = utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(lineBody)));
               else if (lineTitle) line = utilityEscapeHtml(String(lineTitle));
               return line ? ("<li>" + line + "</li>") : "";
@@ -35340,7 +35582,7 @@
                 if (entry && typeof entry === "object" && !Array.isArray(entry)) {
                   var t = firstNonEmpty([entry.title, entry.card_title, entry.name, entry.label]);
                   var c = firstNonEmpty([entry.content, entry.text, entry.body, entry.prompt, entry.description]);
-                  if (t && c) return "<li><strong>" + utilityEscapeHtml(String(t)) + ":</strong> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(c))) + "</li>";
+                  if (t && c) return '<li><span class="util-supporting-label">' + utilityEscapeHtml(String(t)) + ":</span> " + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(c))) + "</li>";
                   if (c) return "<li>" + utilityRenderMarkdownInline(utilityNormalizeEmbeddedListItemText(String(c))) + "</li>";
                   if (t) return "<li>" + utilityEscapeHtml(String(t)) + "</li>";
                   return "";
@@ -36013,86 +36255,39 @@
       return /^S\d{2}\s+RNA\s+[A-Z]\d+-M\d+\b/i.test(String(title == null ? "" : title).trim());
     }
 
-    function presentationTextsAreEquivalent(a, b) {
-      var left = normalizeComparableText(a);
-      var right = normalizeComparableText(b);
-      if (!left || !right) return false;
-      if (left === right) return true;
-      if (left.length >= 24 && right.indexOf(left) !== -1) return true;
-      if (right.length >= 24 && left.indexOf(right) !== -1) return true;
-      return false;
-    }
-
-    function extractChecklistCriteriaLines(materials) {
-      if (!materials || typeof materials !== "object" || Array.isArray(materials)) return [];
-      var lines = [];
-      var seen = {};
-      function pushLine(line) {
-        var text = String(line == null ? "" : line)
-          .replace(/^[-*•]\s+/, "")
-          .replace(/^criterion\s+[a-z0-9-]+\s*:\s*/i, "")
-          .trim();
-        if (!text) return;
-        // Skip checklist meta/instructions — only promote concrete success criteria.
-        var plainMeta = text.replace(/[*_`]+/g, "").trim();
-        if (
-          /^(use this checklist|if any check|revise your|check that you|when you have finished)\b/i.test(
-            plainMeta
-          )
-        ) {
-          return;
-        }
-        var key = normalizeComparableText(text);
-        if (!key || seen[key]) return;
-        seen[key] = true;
-        lines.push(text);
-      }
-      function absorbChecklistValue(value) {
-        if (utilityIsEmptyValue(value)) return;
-        if (typeof value === "string") {
-          String(value)
-            .replace(/\r\n/g, "\n")
-            .split("\n")
-            .forEach(function (line) {
-              if (/^\s*[-*•]/.test(line) || /criterion\s+/i.test(line)) pushLine(line);
-            });
-          return;
-        }
-        if (Array.isArray(value)) {
-          value.forEach(function (entry) {
-            if (typeof entry === "string") pushLine(entry);
-            else if (entry && typeof entry === "object") {
-              pushLine(firstNonEmpty([entry.text, entry.content, entry.body, entry.criterion, entry.item]));
-            }
-          });
-          return;
-        }
-        if (value && typeof value === "object") {
-          absorbChecklistValue(
-            firstNonEmpty([value.body, value.content, value.text, value.items, value.checklist])
-          );
-        }
-      }
-      Object.keys(materials).forEach(function (key) {
-        if (String(key || "").charAt(0) === "_") return;
-        var typeHint = "";
-        if (materials._material_types && materials._material_types[key]) {
-          typeHint = String(materials._material_types[key] || "").toLowerCase();
-        }
-        var lower = String(key || "").toLowerCase();
-        if (lower.indexOf("checklist") === -1 && typeHint.indexOf("checklist") === -1) return;
-        absorbChecklistValue(materials[key]);
-      });
-      return lines;
-    }
-
     function resolveActivityExpectedOutputText(row) {
-      return firstNonEmpty([
-        row && row.expected_output,
-        row && row.output,
-        row && row.deliverable,
-        row && row.artefact
-      ]);
+      return firstNonEmpty([row && row.expected_output]);
+    }
+
+    function renderExpectedOutputGuidanceHtml(row) {
+      var expectedOutput = resolveActivityExpectedOutputText(row);
+      if (!expectedOutput) return "";
+      return (
+        '<div class="util-expected-output">' +
+        '<p class="util-supporting-label">For a strong answer</p>' +
+        "<p>" +
+        utilityRenderMarkdownInline(String(expectedOutput).trim()) +
+        "</p></div>"
+      );
+    }
+
+    function insertExpectedOutputGuidanceBeforeChecklist(materialsHtml, row) {
+      var html = String(materialsHtml || "");
+      if (/util-expected-output/i.test(html)) return html;
+      var guidanceHtml = renderExpectedOutputGuidanceHtml(row);
+      if (!guidanceHtml) return html;
+      var checklistMatch = /<div\b[^>]*class="[^"]*\butil-checklist-block\b[^"]*"[^>]*>/i.exec(
+        html
+      );
+      if (!checklistMatch) return html + guidanceHtml;
+      var insertAt = checklistMatch.index;
+      var prefix = html.slice(0, insertAt);
+      var headingMatch =
+        /<h4\b[^>]*class="[^"]*\butil-material-heading\b[^"]*"[^>]*>(?:(?!<h4\b)[\s\S])*?<\/h4>\s*$/i.exec(
+          prefix
+        );
+      if (headingMatch) insertAt = headingMatch.index;
+      return html.slice(0, insertAt) + guidanceHtml + html.slice(insertAt);
     }
 
     function buildLearnerJourneyFrameHtml(row, materials, options) {
@@ -36116,12 +36311,9 @@
       }
       var learnerTaskText = activityComparableSourceText(learnerTaskRaw);
       var expectedOutput = resolveActivityExpectedOutputText(row);
-      var checklistLines = extractChecklistCriteriaLines(materials);
       var goalShaped = isGoalShapedLearnerTask(learnerTaskText);
       var parts = [];
-      var promotedSuccess = false;
       var promotedGoal = false;
-      var suppressTrailingOutput = false;
 
       if (goalShaped && learnerTaskText) {
         var goalBody =
@@ -36140,61 +36332,11 @@
         }
       }
 
-      var successItems = [];
-      checklistLines.forEach(function (line) {
-        successItems.push(line);
-      });
-      if (expectedOutput) {
-        var outputText = String(expectedOutput).trim();
-        var outputAlreadyCovered = successItems.some(function (line) {
-          return presentationTextsAreEquivalent(line, outputText);
-        });
-        // Tight pattern only: pure "… verified with/against the checklist" restatements.
-        // Do not suppress substantive deliverables that merely mention a checklist.
-        var outputIsChecklistRestatement =
-          checklistLines.length > 0 &&
-          /^(?:.+?\s+)?verified (?:with|against)(?: the)? checklist\.?$/i.test(outputText);
-        if (outputAlreadyCovered || outputIsChecklistRestatement) {
-          suppressTrailingOutput = true;
-        } else if (
-          goalShaped &&
-          presentationTextsAreEquivalent(outputText, learnerTaskText)
-        ) {
-          suppressTrailingOutput = true;
-        } else {
-          successItems.push(outputText);
-          suppressTrailingOutput = true;
-        }
-      }
-
-      if (successItems.length) {
-        var successList =
-          "<ul class=\"util-success-looks-like-list\">" +
-          successItems
-            .map(function (item) {
-              return "<li>" + utilityRenderMarkdownInline(String(item)) + "</li>";
-            })
-            .join("") +
-          "</ul>";
-        parts.push(
-          '<div class="util-activity-success-looks-like">' +
-            utilityRenderIconHeading(
-              "h4",
-              "Success looks like",
-              "output",
-              "util-material-heading"
-            ) +
-            successList +
-            "</div>"
-        );
-        promotedSuccess = true;
-      }
-
       return {
         html: parts.join(""),
         promotedGoal: promotedGoal,
-        promotedSuccess: promotedSuccess,
-        suppressTrailingOutput: suppressTrailingOutput,
+        promotedSuccess: false,
+        suppressTrailingOutput: !!expectedOutput,
         goalShaped: goalShaped,
         learnerTaskText: learnerTaskText,
         expectedOutput: expectedOutput || ""
@@ -36202,6 +36344,10 @@
     }
 
     function learnerFacingBeatLabel(beatFunction) {
+      var compose = resolveLdBeatAssignmentComposeLib();
+      if (compose && typeof compose.beatLabel === "function") {
+        return compose.beatLabel(beatFunction);
+      }
       var registry = resolveBeatMaterialRegistryLib();
       if (registry && typeof registry.learnerFacingEpisodeFunctionLabel === "function") {
         return registry.learnerFacingEpisodeFunctionLabel(beatFunction);
@@ -36263,9 +36409,9 @@
         if (!text || isDuplicateOfSeen(text)) return;
         markSeen(text);
         blocks.push(
-          '<p class="util-activity-preamble-cue util-pel-orientation-cue"><strong>' +
+          '<p class="util-activity-preamble-cue util-pel-orientation-cue"><span class="util-framing-label">' +
             utilityEscapeHtml(label) +
-            ":</strong> " +
+            ":</span> " +
             utilityRenderMarkdownInline(String(text)) +
             "</p>"
         );
@@ -36277,7 +36423,7 @@
           "<p>" + utilityRenderMarkdownInline(String(studyOrientation)) + "</p>";
         blocks.push(
           '<div class="util-activity-preamble util-activity-study-orientation">' +
-            '<p class="util-activity-orientation-label"><strong>Study orientation:</strong></p>' +
+            '<p class="util-activity-orientation-label"><span class="util-framing-label">Study orientation:</span></p>' +
             studyBody +
             "</div>"
         );
@@ -36297,7 +36443,7 @@
       ) {
         markSeen(priorKnowledge);
         blocks.push(
-          '<p class="util-activity-preamble-cue"><strong>Before you start:</strong> ' +
+          '<p class="util-activity-preamble-cue"><span class="util-framing-label">Before you start:</span> ' +
             utilityRenderMarkdownInline(String(priorKnowledge)) +
             "</p>"
         );
@@ -36306,14 +36452,27 @@
       if (reasoningOrientation && !isDuplicateOfSeen(reasoningOrientation)) {
         markSeen(reasoningOrientation);
         blocks.push(
-          '<p class="util-activity-preamble-cue util-pel-reasoning-cue"><strong>How to think:</strong> ' +
+          '<p class="util-activity-preamble-cue util-pel-reasoning-cue"><span class="util-framing-label">How to think:</span> ' +
             utilityRenderMarkdownInline(String(reasoningOrientation)) +
             "</p>"
         );
       }
       pushPelOrientationCue("Using evidence", evidenceUsePrompt);
       pushPelOrientationCue("Structuring your response", argumentStructureHint);
-      pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
+      var hasOrientationBeat =
+        row.episode_plan &&
+        Array.isArray(row.episode_plan.beats) &&
+        row.episode_plan.beats.some(function (beat) {
+          return (
+            String((beat && beat.function) || "")
+              .trim()
+              .toLowerCase()
+              .replace(/[\s-]+/g, "_") === "orientation"
+          );
+        });
+      if (!hasOrientationBeat) {
+        pushPelOrientationCue("Key distinction", conceptualContrastPrompt);
+      }
       if (!blocks.length) return "";
       var framingHook = utilityMaybeRenderVisualAffordanceHook(
         "activity-framing-after",
@@ -36996,6 +37155,148 @@
               })
               .filter(function (x) { return !!x; });
             return rows.length ? ('<ul class="util-checklist">' + rows.join("") + "</ul>") : "";
+          }
+          function isChecklistRevisionLeadLine(line) {
+            var plain = String(line == null ? "" : line)
+              .trim()
+              .replace(/^\s*[-*•]\s+/, "")
+              .replace(/^#{1,6}\s+/, "")
+              .replace(/\*+/g, "")
+              .trim();
+            return /^(?:if any check is not met|if any answer is no)\b/i.test(plain);
+          }
+          function isChecklistMetaIntroLine(line) {
+            var plain = String(line == null ? "" : line)
+              .replace(/[*_`#]+/g, "")
+              .replace(/^\s*[-*•]\s+/, "")
+              .trim();
+            return /^(?:use this checklist|check that you|when you have finished)\b/i.test(plain);
+          }
+          function renderChecklistInstructionHtml(text) {
+            var body = String(text == null ? "" : text).trim();
+            if (!body) return "";
+            return (
+              '<p class="util-checklist-instruction">' +
+              utilityRenderMarkdownInline(body) +
+              "</p>"
+            );
+          }
+          function normalizeChecklistRevisionInstruction(revisionMarkdown) {
+            var lines = String(revisionMarkdown || "")
+              .replace(/\r\n/g, "\n")
+              .split("\n")
+              .map(function (ln) {
+                return String(ln || "").trim();
+              })
+              .filter(function (ln) {
+                return !!ln;
+              });
+            if (!lines.length) return "";
+            var bits = [];
+            lines.forEach(function (ln) {
+              var cleaned = ln.replace(/^\s*[-*•]\s+/, "").trim();
+              if (isChecklistRevisionLeadLine(cleaned)) {
+                var plain = cleaned
+                  .replace(/^#{1,6}\s+/, "")
+                  .replace(/\*+/g, "")
+                  .trim();
+                if (/^if any answer is no\b/i.test(plain)) {
+                  bits.push(plain.replace(/:$/, ""));
+                  return;
+                }
+                var rest = plain
+                  .replace(/^(?:if any check is not met)\s*:?\s*/i, "")
+                  .trim();
+                if (rest) bits.push(rest);
+                return;
+              }
+              bits.push(cleaned.replace(/^#{1,6}\s+/, "").replace(/\*+/g, "").trim());
+            });
+            return bits
+              .filter(function (bit) {
+                return !!String(bit || "").trim();
+              })
+              .join(" ")
+              .replace(/\s+/g, " ")
+              .trim();
+          }
+          function renderSelfCheckChecklistFromMarkdown(markdown) {
+            var text = String(markdown == null ? "" : markdown).replace(/\r\n/g, "\n").trim();
+            if (!text) return "";
+            var salienceLib = resolveLdPedagogicSalienceRenderLib();
+            var split =
+              salienceLib && typeof salienceLib.splitChecklistPedagogicSections === "function"
+                ? salienceLib.splitChecklistPedagogicSections(text)
+                : {
+                    hasPedagogicSections: false,
+                    verification: text,
+                    diagnostic: "",
+                    revision: ""
+                  };
+            var verification = String(split.verification || text || "").trim();
+            var diagnostic = String(split.diagnostic || "").trim();
+            var revision = String(split.revision || "").trim();
+            if (!revision) {
+              var provisional = verification.split("\n");
+              var reviseAt = -1;
+              for (var ri = 0; ri < provisional.length; ri += 1) {
+                if (isChecklistRevisionLeadLine(provisional[ri])) {
+                  reviseAt = ri;
+                  break;
+                }
+              }
+              if (reviseAt !== -1) {
+                revision = provisional.slice(reviseAt).join("\n").trim();
+                verification = provisional.slice(0, reviseAt).join("\n").trim();
+              }
+            }
+            var parts = [];
+            var criteria = [];
+            verification.split("\n").forEach(function (ln) {
+              var raw = String(ln || "").trim();
+              if (!raw) return;
+              if (isChecklistHeadingOnlyLine(raw)) return;
+              if (isChecklistRevisionLeadLine(raw)) return;
+              if (isChecklistMetaIntroLine(raw)) {
+                parts.push(
+                  "<p>" +
+                    utilityRenderMarkdownInline(raw.replace(/^\s*[-*•]\s+/, "")) +
+                    "</p>"
+                );
+                return;
+              }
+              if (/^#{1,6}\s+/.test(raw)) return;
+              var row = checklistRowFromPlainLine(raw);
+              if (!row || !String(row.text || "").trim()) {
+                if (!/^\s*[-*•]/.test(raw)) {
+                  parts.push("<p>" + utilityRenderMarkdownInline(raw) + "</p>");
+                }
+                return;
+              }
+              var criterionText = String(row.text || "").trim();
+              if (
+                isChecklistRevisionLeadLine(criterionText) ||
+                /^(?:revise your|if any check is not met|if any answer is no)\b/i.test(
+                  criterionText.replace(/[*_`]+/g, "").trim()
+                )
+              ) {
+                return;
+              }
+              criteria.push(row);
+            });
+            if (criteria.length) parts.push(renderCheckboxList(criteria));
+            if (diagnostic) {
+              var diagnosticHtml = renderPlainStructuredText(diagnostic, {});
+              if (diagnosticHtml) parts.push(diagnosticHtml);
+            }
+            var instructionText = normalizeChecklistRevisionInstruction(revision);
+            if (instructionText) parts.push(renderChecklistInstructionHtml(instructionText));
+            if (!parts.length) return "";
+            var body = parts.join("");
+            if (diagnostic) body = utilityApplyPedagogicSalienceHtml(body, "checklist");
+            return (
+              '<div class="util-checklist-block util-material-role-checklist">' + body + "</div>"
+            );
           }
           function renderPlainStructuredText(rawText, textOpts) {
             var ro = textOpts && typeof textOpts === "object" ? textOpts : {};
@@ -37768,40 +38069,8 @@
               if (scenarioTableHtml) return scenarioTableHtml;
             }
             if (hint === "checklist" || hint === "checklists") {
-              var salienceLib = resolveLdPedagogicSalienceRenderLib();
-              if (salienceLib && typeof salienceLib.splitChecklistPedagogicSections === "function") {
-                var checklistSplit = salienceLib.splitChecklistPedagogicSections(value);
-                if (checklistSplit.hasPedagogicSections) {
-                  var checklistParts = [];
-                  if (checklistSplit.verification) {
-                    var verificationHtml = renderPlainStructuredText(checklistSplit.verification, {
-                      materialHint: "checklist"
-                    });
-                    if (verificationHtml) {
-                      checklistParts.push(
-                        '<div class="util-checklist-block util-material-role-checklist">' +
-                          verificationHtml +
-                          "</div>"
-                      );
-                    }
-                  }
-                  if (checklistSplit.diagnostic) {
-                    var diagnosticHtml = renderPlainStructuredText(checklistSplit.diagnostic, {});
-                    if (diagnosticHtml) checklistParts.push(diagnosticHtml);
-                  }
-                  if (checklistSplit.revision) {
-                    var revisionHtml = renderPlainStructuredText(checklistSplit.revision, {});
-                    if (revisionHtml) checklistParts.push(revisionHtml);
-                  }
-                  var splitChecklistHtml = checklistParts.join("");
-                  if (splitChecklistHtml) {
-                    if (typeof salienceLib.wrapPedagogicSalienceSectionsInHtml === "function") {
-                      splitChecklistHtml = utilityApplyPedagogicSalienceHtml(splitChecklistHtml, "checklist");
-                    }
-                    return splitChecklistHtml;
-                  }
-                }
-              }
+              var selfCheckHtml = renderSelfCheckChecklistFromMarkdown(value);
+              if (selfCheckHtml) return selfCheckHtml;
             }
             var structured = renderPlainStructuredText(value, { materialHint: hint });
             return structured || renderCardScopedMarkdown(String(value));
@@ -37872,11 +38141,38 @@
             });
             if (onlyStrings) {
               if (hint === "checklist" || hint === "checklists") {
-                var checklistRows = value
-                  .map(function (entry) { return checklistRowFromPlainLine(entry); })
-                  .filter(function (x) { return !!x; });
-                if (checklistRows.length) {
-                  return '<div class="util-checklist-block util-material-role-checklist">' + renderCheckboxList(checklistRows) + "</div>";
+                var checklistRows = [];
+                var checklistInstruction = "";
+                value.forEach(function (entry) {
+                  if (isChecklistRevisionLeadLine(entry)) {
+                    checklistInstruction = normalizeChecklistRevisionInstruction(String(entry));
+                    return;
+                  }
+                  var row = checklistRowFromPlainLine(entry);
+                  if (!row) return;
+                  if (
+                    /^(?:revise your|if any check is not met|if any answer is no)\b/i.test(
+                      String(row.text || "")
+                        .replace(/[*_`]+/g, "")
+                        .trim()
+                    )
+                  ) {
+                    if (!checklistInstruction) {
+                      checklistInstruction = normalizeChecklistRevisionInstruction(String(row.text || ""));
+                    }
+                    return;
+                  }
+                  checklistRows.push(row);
+                });
+                if (checklistRows.length || checklistInstruction) {
+                  return (
+                    '<div class="util-checklist-block util-material-role-checklist">' +
+                    (checklistRows.length ? renderCheckboxList(checklistRows) : "") +
+                    (checklistInstruction
+                      ? renderChecklistInstructionHtml(checklistInstruction)
+                      : "") +
+                    "</div>"
+                  );
                 }
               }
               if (tableLikeKey) {
@@ -38489,20 +38785,148 @@
               );
           return genericTitle + utilityTagMaterialBlockHtml(genericRendered, key);
         }
+        // Preserve instructional prompts that previously lived in activity-level
+        // "What to do" (row.learner_task / aliases). Prefer authored beat fields;
+        // otherwise map activity prompts into beats, with a scoped fallback.
+        function extractOrderedInstructionPrompts(value) {
+          if (utilityIsEmptyValue(value)) return [];
+          if (Array.isArray(value)) {
+            return value
+              .map(function (entry) {
+                if (utilityIsEmptyValue(entry)) return "";
+                if (typeof entry === "string") {
+                  return utilityNormalizeEmbeddedListItemText(String(entry));
+                }
+                if (entry && typeof entry === "object") {
+                  return String(
+                    firstNonEmpty([
+                      entry.step,
+                      entry.instruction,
+                      entry.text,
+                      entry.content,
+                      entry.prompt,
+                      entry.title
+                    ]) || ""
+                  ).trim();
+                }
+                return String(entry).trim();
+              })
+              .filter(function (x) {
+                return !!x;
+              });
+          }
+          if (value && typeof value === "object") {
+            if (Array.isArray(value.steps)) {
+              return extractOrderedInstructionPrompts(value.steps);
+            }
+            if (Array.isArray(value.items)) {
+              return extractOrderedInstructionPrompts(value.items);
+            }
+            var nested = firstNonEmptyRaw([
+              value.text,
+              value.content,
+              value.body,
+              value.prompt,
+              value.instruction
+            ]);
+            if (!utilityIsEmptyValue(nested)) {
+              return extractOrderedInstructionPrompts(nested);
+            }
+          }
+          var text = String(value == null ? "" : value).trim();
+          if (!text) return [];
+          if (/(?:^|\n)\s*\d+[.)]\s+/.test(text)) {
+            var numbered = text
+              .split(/(?:^|\n)\s*\d+[.)]\s+/)
+              .map(function (part) {
+                return utilityNormalizeEmbeddedListItemText(String(part || "").trim());
+              })
+              .filter(Boolean);
+            if (numbered.length > 1) return numbered;
+          }
+          if (/(?:^|\n)\s*[-*•]\s+/.test(text)) {
+            var bullets = text
+              .split(/(?:^|\n)\s*[-*•]\s+/)
+              .map(function (part) {
+                return utilityNormalizeEmbeddedListItemText(String(part || "").trim());
+              })
+              .filter(Boolean);
+            if (bullets.length > 1) return bullets;
+          }
+          return [utilityNormalizeEmbeddedListItemText(text) || text];
+        }
+        function collectActivityBeatSourcePrompts(row) {
+          var prompts = [];
+          var learnerTaskRaw = firstNonEmptyRaw([
+            row && row.learner_task,
+            row && row.task,
+            row && row.instructions
+          ]);
+          var learnerTaskText = activityComparableSourceText(learnerTaskRaw);
+          // Goal-shaped tasks are already promoted to "Your goal" in the journey frame.
+          if (learnerTaskText && !isGoalShapedLearnerTask(learnerTaskText)) {
+            prompts = prompts.concat(extractOrderedInstructionPrompts(learnerTaskRaw));
+          }
+          var secondaryRaw = firstNonEmptyRaw([
+            row && row.learner_instructions,
+            row && row.instruction,
+            row && row.steps,
+            row && row.concise_instructions
+          ]);
+          if (
+            !utilityIsEmptyValue(secondaryRaw) &&
+            normalizeComparableText(activityComparableSourceText(secondaryRaw)) !==
+              normalizeComparableText(learnerTaskText)
+          ) {
+            prompts = prompts.concat(extractOrderedInstructionPrompts(secondaryRaw));
+          }
+          return prompts.filter(function (p) {
+            return !!String(p || "").trim();
+          });
+        }
+        function renderBeatInstructionList(instructions) {
+          var items = Array.isArray(instructions) ? instructions : [];
+          var paragraphs = items
+            .map(function (entry) {
+              if (utilityIsEmptyValue(entry)) return "";
+              var text = String(entry).trim();
+              if (!text) return "";
+              return (
+                '<p class="util-beat-instruction">' +
+                utilityRenderMarkdownInline(text) +
+                "</p>"
+              );
+            })
+            .filter(Boolean);
+          if (!paragraphs.length) return "";
+          return '<div class="util-beat-instructions">' + paragraphs.join("") + "</div>";
+        }
+        // Authoritative beat assembly: activity.episode_plan.beats only.
         var beatFirstEpisodePlanActive = false;
+        var beatAssignMod = resolveLdBeatAssignmentComposeLib();
         var beatRegistryMod = resolveBeatMaterialRegistryLib();
-        var beatFirstPlan =
-          beatRegistryMod &&
-          typeof beatRegistryMod.resolveBeatMaterialPlan === "function" &&
+        var composeActivityRow = activityRow;
+        if (
           activityRow &&
-          activityRow.episode_plan &&
-          Array.isArray(activityRow.episode_plan.beats) &&
-          activityRow.episode_plan.beats.length
-            ? beatRegistryMod.resolveBeatMaterialPlan(activityRow)
+          materials &&
+          typeof materials === "object" &&
+          !Array.isArray(materials)
+        ) {
+          composeActivityRow = Object.assign({}, activityRow, { materials: materials });
+        }
+        var beatAssignment =
+          beatAssignMod &&
+          typeof beatAssignMod.composeActivityBeatAssignments === "function" &&
+          composeActivityRow &&
+          composeActivityRow.episode_plan &&
+          Array.isArray(composeActivityRow.episode_plan.beats) &&
+          composeActivityRow.episode_plan.beats.length
+            ? beatAssignMod.composeActivityBeatAssignments(composeActivityRow)
             : null;
-        if (beatFirstPlan && Array.isArray(beatFirstPlan.beats) && beatFirstPlan.beats.length) {
+        if (beatAssignment && Array.isArray(beatAssignment.beats) && beatAssignment.beats.length) {
           beatFirstEpisodePlanActive = true;
           if (
+            beatRegistryMod &&
             typeof beatRegistryMod.buildBeatRenderDiagnostic === "function" &&
             !renderOpts._beatRenderDiagnosticSuppressed
           ) {
@@ -38511,9 +38935,10 @@
               console.log("[PRISM beat-render]", beatRenderDiagnostic);
             }
           }
-          beatFirstPlan.beats.forEach(function (beatGroup) {
-            var matKeys = beatGroup.materials || [];
-            if (!matKeys.length) return;
+          beatAssignment.beats.forEach(function (beatGroup) {
+            var matKeys = Array.isArray(beatGroup.storageKeys)
+              ? beatGroup.storageKeys.filter(Boolean)
+              : [];
             var beatParts = [];
             matKeys.forEach(function (matKey) {
               var matBlock = renderOrderedMaterialKeyBlock(matKey, "");
@@ -38538,25 +38963,34 @@
                 syncMaterialRenderFlagsForKey(matKey);
               }
             });
-            if (!beatParts.length) return;
-            var beatLabel = learnerFacingBeatLabel(beatGroup.beat);
-            if (!beatLabel) {
-              beatLabel =
-                beatGroup.label ||
-                (typeof beatRegistryMod.episodeFunctionLabel === "function"
-                  ? beatRegistryMod.episodeFunctionLabel(beatGroup.beat)
-                  : beatGroup.beat);
+            var materialsHtml = beatParts.length
+              ? '<div class="util-beat-materials">' + beatParts.join("") + "</div>"
+              : "";
+            if (beatGroup.includeExpectedOutput) {
+              materialsHtml = insertExpectedOutputGuidanceBeforeChecklist(
+                materialsHtml,
+                activityRow
+              );
             }
+            var beatInstructionHtml = renderBeatInstructionList(beatGroup.instructions);
+            var beatLabel =
+              beatGroup.label ||
+              (beatAssignMod && typeof beatAssignMod.beatLabel === "function"
+                ? beatAssignMod.beatLabel(beatGroup.beat)
+                : learnerFacingBeatLabel(beatGroup.beat)) ||
+              beatGroup.beat;
             parts.push(
-              '<section class="util-beat-section" data-episode-function="' +
+              '<section class="util-beat-section" data-beat-function="' +
+                utilityEscapeHtml(beatGroup.beat) +
+                '" data-episode-function="' +
                 utilityEscapeHtml(beatGroup.beat) +
                 '">' +
-                '<h4 class="util-beat-heading">' +
+                '<h3 class="util-beat-heading">' +
                 utilityEscapeHtml(beatLabel) +
-                "</h4>" +
-                '<div class="util-beat-materials">' +
-                beatParts.join("") +
-                "</div></section>"
+                "</h3>" +
+                beatInstructionHtml +
+                materialsHtml +
+                "</section>"
             );
           });
         }
@@ -39112,7 +39546,13 @@
           }
         });
         if (parts.length === 1) {
-          parts[0] = String(parts[0] || "").replace(/^<h4>[^<]+<\/h4>/, "");
+          parts[0] = String(parts[0] || "").replace(
+            /^<h4[^>]*>([\s\S]*?)<\/h4>/i,
+            function (headingHtml, headingInner) {
+              var headingText = String(headingInner || "").replace(/<[^>]+>/g, " ");
+              return utilityIsStructuralFieldLabel(headingText) ? "" : headingHtml;
+            }
+          );
         }
         var materialsBody = parts.join("");
         if (!String(materialsBody || "").trim()) return "";
@@ -39130,9 +39570,9 @@
           '<section class="util-instructional-section' +
           (sectionClass ? " " + sectionClass : "") +
           '">' +
-          '<h4 class="util-instructional-heading">' +
+          '<h3 class="util-instructional-heading">' +
           utilityEscapeHtml(String(heading || "")) +
-          "</h4>" +
+          "</h3>" +
           '<div class="util-instructional-body">' +
           bodyHtml +
           "</div></section>"
@@ -39174,9 +39614,9 @@
             return (
               '<div class="util-instructional-think-block" data-think-field="' +
               utilityEscapeHtml(entry.fieldId) +
-              '"><p class="util-instructional-think-label"><strong>' +
+              '"><p class="util-instructional-think-label"><span class="util-framing-label">' +
               utilityEscapeHtml(entry.label) +
-              ":</strong></p>" +
+              ":</span></p>" +
               body +
               "</div>"
             );
@@ -39244,22 +39684,15 @@
         var grammarApi = resolveLdInstructionalManifestationRenderLib();
         var headings = grammarApi ? grammarApi.HEADINGS : { check: "Check your work" };
         var parts = [];
+        var checkMaterialsHtml = "";
         if (checkMaterials && Object.keys(checkMaterials).length) {
-          var checkMaterialsHtml = renderMaterialsForActivity(checkMaterials, row);
-          if (checkMaterialsHtml) parts.push(checkMaterialsHtml);
+          checkMaterialsHtml = renderMaterialsForActivity(checkMaterials, row);
         }
-        var expectedOutput = firstNonEmpty([
-          row.expected_output,
-          row.output,
-          row.deliverable,
-          row.artefact
-        ]);
-        if (expectedOutput) {
-          var expectedOutputBody =
-            utilityRenderMarkdownBlock(String(expectedOutput)) ||
-            "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
-          parts.push('<div class="util-check-expected-output">' + expectedOutputBody + "</div>");
-        }
+        checkMaterialsHtml = insertExpectedOutputGuidanceBeforeChecklist(
+          checkMaterialsHtml,
+          row
+        );
+        if (checkMaterialsHtml) parts.push(checkMaterialsHtml);
         if (!parts.length) return "";
         return renderInstructionalManifestationSection(
           headings.check,
@@ -39403,9 +39836,9 @@
           );
         }
         parts.push(
-          '<div class="util-activity-header"><h3>' +
+          '<div class="util-activity-header"><h2 class="util-activity-title">' +
             utilityEscapeHtml(displayTitle) +
-            "</h3>" +
+            "</h2>" +
             (headerBadges.length ? '<div class="util-badge-row">' + headerBadges.join("") + "</div>" : "") +
             "</div>"
         );
@@ -39425,16 +39858,24 @@
         );
         if (afterHeaderHook) parts.push(afterHeaderHook);
         var activityComparable = createActivityComparableRegistry();
-        var orientTexts = grammarApi.collectOrientTexts(row);
-        var orientHtml = renderInstructionalOrientSection(row, grammarApi);
-        if (orientHtml) parts.push(orientHtml);
-        var thinkHtml = renderInstructionalThinkSection(row, grammarApi, orientTexts);
-        if (thinkHtml) parts.push(thinkHtml);
-        var partition = grammarApi.partitionActivityMaterialsForGrammar(row, cardCtx.materials);
         var hasEpisodePlanBeats =
           row.episode_plan &&
           Array.isArray(row.episode_plan.beats) &&
           row.episode_plan.beats.length;
+        var orientTexts = grammarApi.collectOrientTexts(row);
+        var orientHtml = renderInstructionalOrientSection(row, grammarApi);
+        if (orientHtml) parts.push(orientHtml);
+        var thinkHtml = renderInstructionalThinkSection(row, grammarApi, orientTexts);
+        if (thinkHtml && hasEpisodePlanBeats) {
+          // Prompt fields consumed by episode-plan beats must not also appear in Think.
+          thinkHtml = String(thinkHtml).replace(
+            /<div class="util-instructional-think-block" data-think-field="(?:conceptual_contrast_prompt|self_explanation_prompt|transfer_or_application_task)"[\s\S]*?<\/div>/gi,
+            ""
+          );
+          if (!/util-instructional-think-block/i.test(thinkHtml)) thinkHtml = "";
+        }
+        if (thinkHtml) parts.push(thinkHtml);
+        var partition = grammarApi.partitionActivityMaterialsForGrammar(row, cardCtx.materials);
         var journeyFrame = buildLearnerJourneyFrameHtml(row, cardCtx.materials, {
           renderListFromInstructions: renderListFromInstructions
         });
@@ -39443,15 +39884,12 @@
             '<div class="util-activity-journey-frame">' + journeyFrame.html + "</div>"
           );
         }
-        if (
-          hasEpisodePlanBeats &&
-          !journeyFrame.promotedGoal &&
-          grammarApi.hasDoContent(row, partition)
-        ) {
-          parts.push(renderInstructionalDoSection(row, {}, renderListFromInstructions));
-        }
         if (hasEpisodePlanBeats) {
           var episodeBeatMaterialsHtml = renderMaterialsForActivity(cardCtx.materials, row);
+          episodeBeatMaterialsHtml = insertExpectedOutputGuidanceBeforeChecklist(
+            episodeBeatMaterialsHtml,
+            row
+          );
           if (episodeBeatMaterialsHtml) {
             episodeBeatMaterialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(
               episodeBeatMaterialsHtml,
@@ -39477,7 +39915,7 @@
             );
           }
         }
-        if (grammarApi.fieldHasValue(row && row.self_explanation_prompt)) {
+        if (grammarApi.fieldHasValue(row && row.self_explanation_prompt) && !hasEpisodePlanBeats) {
           var preReflectHtml = renderInstructionalReflectPreCheckSection(row, grammarApi);
           if (preReflectHtml) parts.push(preReflectHtml);
         }
@@ -39527,7 +39965,7 @@
           if (!row || typeof row !== "object" || Array.isArray(row)) {
             var primitive = utilityRenderPrimitive(row, renderOpts);
             if (!String(primitive || "").trim()) return "";
-            return '<article class="util-task-block"><h3>' + utilityEscapeHtml("Activity " + (idx + 1)) + "</h3>" + primitive + "</article>";
+            return '<article class="util-task-block"><h2 class="util-activity-title">' + utilityEscapeHtml("Activity " + (idx + 1)) + "</h2>" + primitive + "</article>";
           }
           if (renderOpts.instructionalManifestationGrammar) {
             var grammarApi = resolveLdInstructionalManifestationRenderLib();
@@ -39608,12 +40046,6 @@
             row.pairing,
             row.team_structure
           ]);
-          var expectedOutput = firstNonEmpty([
-            row.expected_output,
-            row.output,
-            row.deliverable,
-            row.artefact
-          ]);
           var learnerTaskRaw = firstNonEmptyRaw([
             row.learner_task,
             row.task,
@@ -39631,7 +40063,7 @@
           if (grouping) {
             headerBadges.push('<span class="util-badge util-badge-group">' + utilityEscapeHtml("Grouping: " + prettyGroupingValue(grouping)) + "</span>");
           }
-          parts.push('<div class="util-activity-header"><h3>' + utilityEscapeHtml(title) + "</h3>" + (headerBadges.length ? ('<div class="util-badge-row">' + headerBadges.join("") + "</div>") : "") + "</div>");
+          parts.push('<div class="util-activity-header"><h2 class="util-activity-title">' + utilityEscapeHtml(title) + "</h2>" + (headerBadges.length ? ('<div class="util-badge-row">' + headerBadges.join("") + "</div>") : "") + "</div>");
           var affordanceCtx = {
             subject: title,
             activityId: activityIdLabel
@@ -39681,6 +40113,7 @@
           var learnerTaskHtml = renderListFromInstructions(learnerTaskRaw);
           if (
             learnerTaskHtml &&
+            !hasLegacyEpisodeBeats &&
             !(legacyJourneyFrame && legacyJourneyFrame.promotedGoal)
           ) {
             var taskHeading =
@@ -39713,6 +40146,10 @@
             parts.push(cognitionHtml);
           }
           var materialsHtml = renderMaterialsForActivity(materials, row);
+          materialsHtml = insertExpectedOutputGuidanceBeforeChecklist(
+            materialsHtml,
+            row
+          );
           if (materialsHtml) {
             materialsHtml = utilityAugmentMaterialsHtmlWithVisualAffordances(
               materialsHtml,
@@ -39720,24 +40157,6 @@
               renderOpts
             );
             parts.push('<div class="util-activity-materials">' + materialsHtml + "</div>");
-          }
-          if (
-            expectedOutput &&
-            !(legacyJourneyFrame && legacyJourneyFrame.suppressTrailingOutput)
-          ) {
-            var expectedOutputBody =
-              utilityRenderMarkdownBlock(String(expectedOutput)) ||
-              "<p>" + utilityRenderMarkdownInline(String(expectedOutput)) + "</p>";
-            var outputHeading =
-              legacyJourneyFrame && legacyJourneyFrame.promotedSuccess ? "Done" : "Output";
-            parts.push(
-              '<div class="util-output-block util-material-role-deliverable' +
-                (outputHeading === "Done" ? " util-activity-completion" : "") +
-                '">' +
-              utilityRenderIconHeading("h4", outputHeading, "output", "util-output-heading util-icon-heading") +
-              expectedOutputBody +
-              "</div>"
-            );
           }
           if (
             supportNote &&
@@ -41404,12 +41823,13 @@
         if (!String(bodyHtml || "").trim()) bodyHtml = "";
         var scalarHtml = scalarBits.join("");
         if (!bodyHtml && !extraHtml && !scalarHtml) return "";
-        return '<article class="util-task-block"><h3>' + utilityEscapeHtml(heading) + "</h3>" + scalarHtml + bodyHtml + extraHtml + "</article>";
+        return '<article class="util-task-block"><h2 class="util-activity-title">' + utilityEscapeHtml(heading) + "</h2>" + scalarHtml + bodyHtml + extraHtml + "</article>";
       }).filter(function (x) { return !!String(x || "").trim(); }).join("");
     }
 
     // Object form: { overview: "...", intro: "...", ... }
     if (sectionsValue && typeof sectionsValue === "object" && !Array.isArray(sectionsValue)) {
+      sectionsValue = promoteNestedLearningOutcomesIntoSections(sectionsValue);
       var keys = [];
       orderedKeys.forEach(function (key) {
         if (Object.prototype.hasOwnProperty.call(sectionsValue, key)) keys.push(key);
@@ -41469,13 +41889,6 @@
         var sectionValue = sectionsValue[sectionName];
         if (utilityIsEmptyValue(sectionValue)) return "";
         if (
-          (String(sectionName || "").toLowerCase() === "overview" ||
-            String(sectionName || "").toLowerCase() === "learning_purpose") &&
-          (sectionsValue.learning_journey || sectionsValue.learning_sequence)
-        ) {
-          return "";
-        }
-        if (
           String(sectionName || "").toLowerCase() === "learning_sequence" &&
           sectionsValue.learning_journey
         ) {
@@ -41496,21 +41909,22 @@
           });
           if (!String(activitiesHtml || "").trim()) return "";
           activityFlowState.activitiesDetailRendered = true;
-          return "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(activityRows.length || 0), "learning_activities") + activitiesHtml + "</section>";
+          return '<section class="util-learning-activities">' + activitiesHtml + "</section>";
         }
         if (looksLearningSequenceSection(sectionName)) {
+          var openingJourneyValue = withoutOpeningDividerMarkdown(sectionValue);
           var journeyIntroParts = [];
-          if (sectionValue && typeof sectionValue === "object" && !Array.isArray(sectionValue)) {
-            var journeyOverviewText = firstNonEmpty([sectionValue.overview, sectionValue.intro, sectionValue.summary]);
-            var journeyPurposeText = firstNonEmpty([sectionValue.learning_purpose, sectionValue.purpose]);
-            if (journeyOverviewText) {
+          if (openingJourneyValue && typeof openingJourneyValue === "object" && !Array.isArray(openingJourneyValue)) {
+            var journeyOverviewText = firstNonEmpty([openingJourneyValue.overview, openingJourneyValue.intro, openingJourneyValue.summary]);
+            var journeyPurposeText = firstNonEmpty([openingJourneyValue.learning_purpose, openingJourneyValue.purpose]);
+            if (journeyOverviewText && !sectionsValue.overview) {
               journeyIntroParts.push(
                 '<div class="util-learning-journey-intro">' +
                   utilityRenderMarkdownBlock(String(journeyOverviewText)) +
                   "</div>"
               );
             }
-            if (journeyPurposeText) {
+            if (journeyPurposeText && !sectionsValue.learning_purpose) {
               journeyIntroParts.push(
                 '<div class="util-learning-journey-purpose">' +
                   utilityRenderMarkdownBlock(String(journeyPurposeText)) +
@@ -41518,15 +41932,74 @@
               );
             }
           }
-          var journeyHtml = renderLearningJourneyOverview(sectionValue, activityLookup);
+          var journeyHtml = renderLearningJourneyOverview(openingJourneyValue, activityLookup);
           var journeyBody = journeyIntroParts.join("") + String(journeyHtml || "");
           if (!String(journeyBody || "").trim()) return "";
-          return "<section>" + renderSectionHeadingH2("Learning Journey", "learning_journey") + journeyBody + "</section>";
+          journeyBody = utilityStripDuplicateSectionWrapperHeading(journeyBody, "Learning Journey");
+          return (
+            '<section class="util-learning-journey">' +
+            renderSectionHeadingH2("Learning Journey", "learning_journey") +
+            '<div class="util-learning-journey__content">' +
+            journeyBody +
+            "</div>" +
+            "</section>"
+          );
         }
-        if (looksLearningPurposeOrOutcomesSection(sectionName)) {
-          var lpoHtml = renderLearningPurposeOutcomes(sectionValue);
+        if (resolveSectionKind(sectionName, sectionHeading) === "overview") {
+          var openingOverviewValue = withoutOpeningDividerMarkdown(sectionValue);
+          var overviewHtml =
+            typeof openingOverviewValue === "string"
+              ? utilityRenderMarkdownBlock(String(openingOverviewValue))
+              : Array.isArray(openingOverviewValue)
+              ? utilityRenderArray(openingOverviewValue, renderOpts)
+              : openingOverviewValue && typeof openingOverviewValue === "object"
+              ? utilityRenderObject(openingOverviewValue, 0, renderOpts)
+              : utilityRenderPrimitive(openingOverviewValue, renderOpts);
+          if (String(overviewHtml || "").trim()) {
+            overviewHtml = utilityStripDuplicateSectionWrapperHeading(overviewHtml, "Overview");
+            return (
+              '<section class="util-overview">' +
+              renderSectionHeadingH2("Overview", "overview") +
+              '<div class="util-overview__content">' +
+              overviewHtml +
+              "</div>" +
+              "</section>"
+            );
+          }
+        }
+        if (looksLearningOutcomesSection(sectionName)) {
+          var outcomesHtml = renderLearningOutcomesList(
+            withoutOpeningDividerMarkdown(sectionValue)
+          );
+          if (String(outcomesHtml || "").trim()) {
+            outcomesHtml = utilityStripDuplicateSectionWrapperHeading(
+              outcomesHtml,
+              "Learning Outcomes"
+            );
+            return (
+              '<section class="util-learning-outcomes">' +
+              renderSectionHeadingH2("Learning Outcomes", "learning_outcomes") +
+              '<div class="util-learning-outcomes__content">' +
+              outcomesHtml +
+              "</div>" +
+              "</section>"
+            );
+          }
+        }
+        if (looksLearningPurposeSection(sectionName)) {
+          var lpoHtml = renderLearningPurposeOutcomes(
+            withoutOpeningDividerMarkdown(sectionValue)
+          );
           if (String(lpoHtml || "").trim()) {
-            return "<section>" + renderSectionHeadingH2(sectionHeading, sectionName) + lpoHtml + "</section>";
+            lpoHtml = utilityStripDuplicateSectionWrapperHeading(lpoHtml, sectionHeading);
+            return (
+              '<section class="util-learning-purpose">' +
+              renderSectionHeadingH2("Learning Purpose", "learning_purpose") +
+              '<div class="util-learning-purpose__content">' +
+              lpoHtml +
+              "</div>" +
+              "</section>"
+            );
           }
         }
         if (looksStudyTipsSection(sectionHeading) || looksStudyTipsSection(sectionName)) {
@@ -41539,6 +42012,7 @@
               ? utilityRenderObject(sectionValue, 0, renderOpts)
               : utilityRenderPrimitive(sectionValue, renderOpts);
           if (String(studyTipsHtml || "").trim()) {
+            studyTipsHtml = utilityStripDuplicateSectionWrapperHeading(studyTipsHtml, sectionHeading);
             return "<section>" + renderSectionHeadingH2(sectionHeading, "study_tips") + studyTipsHtml + "</section>";
           }
         }
@@ -41546,9 +42020,17 @@
           return renderAssessmentCheckSectionBlock(sectionValue, sectionHeading, sectionsValue);
         }
         if (looksKnowledgeSummarySection(sectionName)) {
-          var ksHtml = renderKnowledgeSummaryBlocks(sectionValue);
+          var ksHtml = renderKnowledgeSummaryBlocks(
+            withoutOpeningDividerMarkdown(sectionValue)
+          );
           if (String(ksHtml || "").trim()) {
-            return "<section>" + renderSectionHeadingH2(sectionHeading, sectionName) + ksHtml + "</section>";
+            ksHtml = utilityStripDuplicateSectionWrapperHeading(ksHtml, sectionHeading);
+            return (
+              '<section class="util-knowledge-summary">' +
+              renderSectionHeadingH2("Knowledge Summary", "knowledge_summary") +
+              ksHtml +
+              "</section>"
+            );
           }
         }
         if (looksActivityResourcesSection(sectionName)) {
@@ -41573,13 +42055,18 @@
           ? utilityRenderObject(sectionValue, 0, renderOpts)
           : utilityRenderPrimitive(sectionValue, renderOpts);
         if (!String(sectionBody || "").trim()) return "";
+        sectionBody = utilityStripDuplicateSectionWrapperHeading(sectionBody, sectionHeading);
         return "<section>" + renderSectionHeadingH2(sectionHeading, sectionName) + sectionBody + "</section>";
       }).filter(function (x) { return !!String(x || "").trim(); });
-      return renderedSections.join("") + facilitatorAppendix.join("");
+      return (
+        assembleOrientationSections(renderedSections) +
+        facilitatorAppendix.join("")
+      );
     }
 
     // Array form: [{ title, content }, ...]
     if (Array.isArray(sectionsValue)) {
+      sectionsValue = promoteNestedLearningOutcomesInSectionEntries(sectionsValue);
       var probeSource = Array.isArray(renderOpts.pageSections) && renderOpts.pageSections.length
         ? renderOpts.pageSections
         : sectionsValue;
@@ -41650,12 +42137,6 @@
         var contentValue = resolvePageSectionContentFromEntry(item);
         var lowerOrderedKey = String(orderedKey || "").toLowerCase().replace(/[\s-]+/g, "_");
         if (
-          (lowerOrderedKey === "overview" || lowerOrderedKey === "learning_purpose") &&
-          (arrayLearningSequenceValue || looksLearningJourneySection(sectionHeading))
-        ) {
-          return "";
-        }
-        if (
           lowerOrderedKey === "learning_sequence" &&
           arrayHasLearningJourneySection
         ) {
@@ -41677,22 +42158,23 @@
           arrayFlowState.activitiesDetailRendered = true;
           return {
             kind: "activities",
-            html: "<section>" + renderSectionHeadingH2(activitySectionHeadingForCount(arrActivityRows.length || 0), "learning_activities") + arrActivitiesHtml + "</section>"
+            html: '<section class="util-learning-activities">' + arrActivitiesHtml + "</section>"
           };
         }
         if (looksLearningSequenceSection(sectionHeading) || looksLearningSequenceSection(orderedKey)) {
+          var arrOpeningJourneyValue = withoutOpeningDividerMarkdown(contentValue);
           var arrJourneyIntroParts = [];
-          if (contentValue && typeof contentValue === "object" && !Array.isArray(contentValue)) {
-            var arrJourneyOverviewText = firstNonEmpty([contentValue.overview, contentValue.intro, contentValue.summary]);
-            var arrJourneyPurposeText = firstNonEmpty([contentValue.learning_purpose, contentValue.purpose]);
-            if (arrJourneyOverviewText) {
+          if (arrOpeningJourneyValue && typeof arrOpeningJourneyValue === "object" && !Array.isArray(arrOpeningJourneyValue)) {
+            var arrJourneyOverviewText = firstNonEmpty([arrOpeningJourneyValue.overview, arrOpeningJourneyValue.intro, arrOpeningJourneyValue.summary]);
+            var arrJourneyPurposeText = firstNonEmpty([arrOpeningJourneyValue.learning_purpose, arrOpeningJourneyValue.purpose]);
+            if (arrJourneyOverviewText && !arraySectionsObj.overview) {
               arrJourneyIntroParts.push(
                 '<div class="util-learning-journey-intro">' +
                   utilityRenderMarkdownBlock(String(arrJourneyOverviewText)) +
                   "</div>"
               );
             }
-            if (arrJourneyPurposeText) {
+            if (arrJourneyPurposeText && !arraySectionsObj.learning_purpose) {
               arrJourneyIntroParts.push(
                 '<div class="util-learning-journey-purpose">' +
                   utilityRenderMarkdownBlock(String(arrJourneyPurposeText)) +
@@ -41700,18 +42182,91 @@
               );
             }
           }
-          var arrJourneyHtml = renderLearningJourneyOverview(contentValue, arrayActivityLookup);
+          var arrJourneyHtml = renderLearningJourneyOverview(arrOpeningJourneyValue, arrayActivityLookup);
           var arrJourneyBody = arrJourneyIntroParts.join("") + String(arrJourneyHtml || "");
           if (!String(arrJourneyBody || "").trim()) return "";
+          arrJourneyBody = utilityStripDuplicateSectionWrapperHeading(
+            arrJourneyBody,
+            "Learning Journey"
+          );
           return {
             kind: "other",
-            html: "<section>" + renderSectionHeadingH2("Learning Journey", "learning_journey") + arrJourneyBody + "</section>"
+            html:
+              '<section class="util-learning-journey">' +
+              renderSectionHeadingH2("Learning Journey", "learning_journey") +
+              '<div class="util-learning-journey__content">' +
+              arrJourneyBody +
+              "</div>" +
+              "</section>"
           };
         }
-        if (looksLearningPurposeOrOutcomesSection(sectionHeading) || looksLearningPurposeOrOutcomesSection(orderedKey)) {
-          var arrLpoHtml = renderLearningPurposeOutcomes(contentValue);
+        if (resolveSectionKind(orderedKey, sectionHeading) === "overview") {
+          var arrOpeningOverviewValue = withoutOpeningDividerMarkdown(contentValue);
+          var arrOverviewHtml =
+            typeof arrOpeningOverviewValue === "string"
+              ? utilityRenderMarkdownBlock(String(arrOpeningOverviewValue))
+              : Array.isArray(arrOpeningOverviewValue)
+              ? utilityRenderArray(arrOpeningOverviewValue, renderOpts)
+              : arrOpeningOverviewValue && typeof arrOpeningOverviewValue === "object"
+              ? utilityRenderObject(arrOpeningOverviewValue, 0, renderOpts)
+              : utilityRenderPrimitive(arrOpeningOverviewValue, renderOpts);
+          if (String(arrOverviewHtml || "").trim()) {
+            arrOverviewHtml = utilityStripDuplicateSectionWrapperHeading(
+              arrOverviewHtml,
+              "Overview"
+            );
+            return {
+              kind: "other",
+              html:
+                '<section class="util-overview">' +
+                renderSectionHeadingH2("Overview", "overview") +
+                '<div class="util-overview__content">' +
+                arrOverviewHtml +
+                "</div>" +
+                "</section>"
+            };
+          }
+        }
+        if (looksLearningOutcomesSection(sectionHeading) || looksLearningOutcomesSection(orderedKey)) {
+          var arrOutcomesHtml = renderLearningOutcomesList(
+            withoutOpeningDividerMarkdown(contentValue)
+          );
+          if (String(arrOutcomesHtml || "").trim()) {
+            arrOutcomesHtml = utilityStripDuplicateSectionWrapperHeading(
+              arrOutcomesHtml,
+              "Learning Outcomes"
+            );
+            return {
+              kind: "other",
+              html:
+                '<section class="util-learning-outcomes">' +
+                renderSectionHeadingH2("Learning Outcomes", "learning_outcomes") +
+                '<div class="util-learning-outcomes__content">' +
+                arrOutcomesHtml +
+                "</div>" +
+                "</section>"
+            };
+          }
+        }
+        if (looksLearningPurposeSection(sectionHeading) || looksLearningPurposeSection(orderedKey)) {
+          var arrLpoHtml = renderLearningPurposeOutcomes(
+            withoutOpeningDividerMarkdown(contentValue)
+          );
           if (String(arrLpoHtml || "").trim()) {
-            return { kind: "other", html: "<section>" + renderSectionHeadingH2(sectionHeading, orderedKey) + arrLpoHtml + "</section>" };
+            arrLpoHtml = utilityStripDuplicateSectionWrapperHeading(
+              arrLpoHtml,
+              sectionHeading
+            );
+            return {
+              kind: "other",
+              html:
+                '<section class="util-learning-purpose">' +
+                renderSectionHeadingH2("Learning Purpose", "learning_purpose") +
+                '<div class="util-learning-purpose__content">' +
+                arrLpoHtml +
+                "</div>" +
+                "</section>"
+            };
           }
         }
         if (looksStudyTipsSection(sectionHeading) || looksStudyTipsSection(orderedKey)) {
@@ -41724,6 +42279,10 @@
               ? utilityRenderObject(contentValue, 0, renderOpts)
               : utilityRenderPrimitive(contentValue, renderOpts);
           if (String(arrStudyTipsHtml || "").trim()) {
+            arrStudyTipsHtml = utilityStripDuplicateSectionWrapperHeading(
+              arrStudyTipsHtml,
+              sectionHeading
+            );
             return {
               kind: "other",
               html: "<section>" + renderSectionHeadingH2(sectionHeading, "study_tips") + arrStudyTipsHtml + "</section>"
@@ -41756,9 +42315,22 @@
           }
         }
         if (looksKnowledgeSummarySection(sectionHeading) || looksKnowledgeSummarySection(orderedKey)) {
-          var arrKsHtml = renderKnowledgeSummaryBlocks(contentValue);
+          var arrKsHtml = renderKnowledgeSummaryBlocks(
+            withoutOpeningDividerMarkdown(contentValue)
+          );
           if (String(arrKsHtml || "").trim()) {
-            return { kind: "other", html: "<section>" + renderSectionHeadingH2(sectionHeading, orderedKey) + arrKsHtml + "</section>" };
+            arrKsHtml = utilityStripDuplicateSectionWrapperHeading(
+              arrKsHtml,
+              sectionHeading
+            );
+            return {
+              kind: "other",
+              html:
+                '<section class="util-knowledge-summary">' +
+                renderSectionHeadingH2("Knowledge Summary", "knowledge_summary") +
+                arrKsHtml +
+                "</section>"
+            };
           }
         }
         if (looksActivityResourcesSection(sectionHeading) || looksActivityResourcesSection(orderedKey)) {
@@ -41802,6 +42374,10 @@
           ? utilityRenderObject(contentValue, 0, renderOpts)
           : utilityRenderPrimitive(contentValue, renderOpts);
         if (!String(sectionBody || "").trim()) return "";
+        sectionBody = utilityStripDuplicateSectionWrapperHeading(
+          sectionBody,
+          sectionHeading
+        );
         return {
           kind: sectionKind,
           html: "<section>" + renderSectionHeadingH2(sectionHeading, orderedKey) + sectionBody + "</section>"
@@ -41819,7 +42395,9 @@
         var arrActivityEntry = renderedArraySections.splice(arrActivitiesIdx, 1)[0];
         renderedArraySections.splice(arrResourcesIdx, 0, arrActivityEntry);
       }
-      return renderedArraySections.map(function (entry) { return entry.html; }).join("");
+      return assembleOrientationSections(
+        renderedArraySections.map(function (entry) { return entry.html; })
+      );
     }
 
     return "";
@@ -41975,7 +42553,7 @@
   function getUtilityPagePresentationCssV26_4() {
     return [
       "h1{font-size:1.75rem;font-weight:700;letter-spacing:-.02em;color:#0f172a;margin-bottom:12px}",
-      "h2.util-section-heading{align-items:center;gap:.65rem;font-size:1.125rem;font-weight:600;color:#0f172a;margin-top:32px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e2e8f0}",
+      "h2.util-section-heading{align-items:center;gap:.65rem;font-size:1.125rem;font-weight:600;color:#0f172a;margin-top:32px;margin-bottom:12px;padding-bottom:6px}",
       "h2.util-section-heading .util-section-icon,.h2.util-section-heading .util-material-icon{margin-top:0;width:1.1em;font-size:1em;align-self:center}",
       "h2.util-section-heading>span{line-height:1.35}",
       ".util-icon-heading{display:flex;align-items:flex-start;gap:.55rem}",
@@ -42090,11 +42668,11 @@
       ".util-activity-preamble p:last-child{margin-bottom:0}",
       ".util-activity-study-orientation .util-activity-orientation-label{margin:0 0 6px;font-size:.75rem;font-weight:600;letter-spacing:.02em;color:#64748b}",
       ".util-activity-preamble-cue{margin:0 0 8px;padding:9px 11px;border:1px solid #e6edf5;border-left:2px solid #d9e4f2;border-radius:8px;background:#fff;font-size:.8125rem;line-height:1.5;color:#64748b}",
-      ".util-activity-preamble-cue strong{display:block;margin:0 0 4px;font-size:.75rem;font-weight:600;letter-spacing:.02em;line-height:1.3;color:#475569}",
+      ".util-activity-preamble-cue .util-framing-label{display:block;margin:0 0 4px;font-size:.75rem;font-weight:600;letter-spacing:.02em;line-height:1.3;color:#475569}",
       ".util-pel-orientation-cue{border-left-color:#d7dde7;background:#fbfcfe}",
       ".util-pel-reasoning-cue{border-left-color:#cfd9e8;background:#f8fafd}",
-      ".util-pel-orientation-cue strong{color:#64748b}",
-      ".util-pel-reasoning-cue strong{color:#475569}",
+      ".util-pel-orientation-cue .util-framing-label{color:#64748b}",
+      ".util-pel-reasoning-cue .util-framing-label{color:#475569}",
       ".util-activity-header+.util-activity-framing,.util-activity-header+.util-activity-preamble{margin-top:6px}",
       ".util-activity-framing+.util-activity-task,.util-activity-preamble+.util-activity-task,.util-activity-preamble-cue+.util-activity-task{margin-top:0}",
       ".util-activity-task+.util-cognition,.util-cognition+.util-activity-materials{margin-top:12px}",
@@ -42104,8 +42682,8 @@
 
   function getUtilityPagePresentationCssV31_3() {
     return [
-      ".util-knowledge-summary{margin:0 0 20px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#fafbfc}",
-      ".util-knowledge-summary--prose{padding:12px 14px;font-size:.92rem;line-height:1.55;color:#334155}",
+      ".util-knowledge-summary__content{margin:0;padding:0;background:transparent}",
+      ".util-knowledge-summary--prose{font-size:.92rem;line-height:1.55;color:#334155}",
       ".util-concept-group{margin:0 0 12px}",
       ".util-knowledge-subheading{margin:0 0 10px;font-size:.8125rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:#64748b}",
       ".util-definition-list{margin:0;padding:0}",
@@ -42118,7 +42696,7 @@
       ".util-concept-group .util-structured-block.util-concept-item:last-child{margin-bottom:0}",
       ".util-concept-relationships{margin-top:12px;padding-top:12px;border-top:1px dashed #e2e8f0}",
       ".util-concept-relationships p{margin:0;font-size:.875rem;line-height:1.5;color:#475569}",
-      "@media print{.util-knowledge-summary{background:#fff;break-inside:avoid-page}}"
+      "@media print{.util-knowledge-summary__content{background:#fff;break-inside:avoid-page}}"
     ].join("");
   }
 
@@ -42141,15 +42719,15 @@
     return [
       ":root{--space-1:.375rem;--space-2:.75rem;--space-3:1.125rem;--space-4:1.75rem;--space-5:2.5rem}",
       "body,body.util-page-export{font-size:1rem;line-height:1.65;color:#1f2937}",
-      "body.util-page-export:not(.util-page-export--with-learning-header):not(.util-page-export--with-journey-nav):not(.util-page-export--with-compass){max-width:68ch;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}",
+      "body.util-page-export:not(.util-page-export--with-learning-header){max-width:68ch;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}",
       "body.util-page-export>section,body.util-page-export>div[data-journey-section],body.util-page-export>details.util-meta{max-width:68ch;margin-left:auto;margin-right:auto}",
-      "body.util-page-export--with-learning-header,body.util-page-export--with-journey-nav,body.util-page-export--with-compass{max-width:920px;margin-left:auto;margin-right:auto;padding-left:8px;padding-right:8px}",
-      ".util-learning-header,.util-learning-header .util-journey-nav{max-width:none;width:auto}",
+      "body.util-page-export--with-learning-header{max-width:920px;margin-left:auto;margin-right:auto;padding-left:8px;padding-right:8px}",
+      ".util-learning-header{max-width:none;width:auto}",
       "p{margin:0 0 var(--space-3)}",
       "ul,ol{margin:0 0 var(--space-3) 1.25rem;padding:0}",
       "li{margin:0 0 var(--space-1);line-height:1.65}",
       "h1{font-size:1.75rem;line-height:1.25;font-weight:700;color:#111827;margin:0 0 var(--space-4);letter-spacing:-.015em}",
-      "h2.util-section-heading{font-size:1.125rem;font-weight:700;color:#111827;margin:var(--space-5) 0 var(--space-3);padding-bottom:var(--space-2);border-bottom:1px solid #e5e7eb;letter-spacing:normal;text-transform:none}",
+      "h2.util-section-heading{font-size:1.125rem;font-weight:700;color:#111827;margin:var(--space-5) 0 var(--space-3);padding-bottom:var(--space-2);letter-spacing:normal;text-transform:none}",
       "h2.util-section-heading .util-section-icon,.h2.util-section-heading .util-material-icon{color:#6b7280}",
       "article.util-task-block,article.util-task-block.util-instructional-activity{border:0;box-shadow:none;background:transparent;padding:0;margin:var(--space-5) 0;border-radius:0}",
       "article.util-task-block+article.util-task-block{margin-top:var(--space-5)}",
@@ -42188,13 +42766,89 @@
       ".util-table-scroll td{color:#1f2937;border:1px solid #e5e7eb}",
       ".util-table-scroll tbody tr:nth-child(even){background:transparent}",
       ".util-activity-materials .util-table-scroll.util-material-table{border:0;background:transparent}",
-      ".util-knowledge-summary{border:0;border-top:1px solid #e5e7eb;border-radius:0;background:transparent;padding:var(--space-3) 0;margin:0 0 var(--space-5)}",
+      ".util-knowledge-summary__content{margin-top:0;padding-top:0}",
       ".util-knowledge-summary--prose{font-size:1rem;line-height:1.65;color:#1f2937}",
       ".util-activity-framing,.util-activity-preamble,.util-activity-preamble-cue{border:0;border-left:2px solid #e5e7eb;border-radius:0;background:transparent;padding:var(--space-1) 0 var(--space-1) var(--space-2);font-size:.9375rem;line-height:1.6;color:#4b5563}",
       ".util-instructional-section{border:0;padding:0;margin:0 0 var(--space-4)}",
       ".util-instructional-heading{font-size:1.05rem;font-weight:700;color:#111827;margin:0 0 var(--space-2)}",
       "body>section{margin-bottom:var(--space-5)}",
       "@media print{article.util-task-block{break-inside:avoid-page;page-break-inside:avoid}body{max-width:none;color:#111}.util-worked-example,.util-pedagogic-callout,.util-cognition,.util-support-note{background:transparent!important}}"
+    ].join("");
+  }
+
+  function getUtilityPagePresentationCssGenericCleanup() {
+    return [
+      ".util-activity-header h2,.util-activity-title{font-size:1.125rem;line-height:1.35;font-weight:700;color:#111827;margin:0;letter-spacing:normal}",
+      ".util-beat-heading,.util-instructional-heading{font-size:1.05rem;line-height:1.35;font-weight:700;color:#111827;margin:0 0 var(--space-2)}",
+      ".util-supporting-label{font-size:.95rem;line-height:1.45;font-weight:600;color:#374151;margin:0 0 var(--space-1);letter-spacing:normal;text-transform:none}",
+      ".util-supporting-label.util-icon-heading{display:flex}",
+      ".util-checklist{margin:0 0 var(--space-2) 1.25rem}",
+      ".util-checklist>li:last-child{margin-bottom:0}",
+      ".util-checklist-instruction{margin:0;font-size:.9375rem;color:#4b5563;font-weight:400}",
+      ".util-activity-preamble,.util-activity-preamble-cue,.util-instructional-orient-block,.util-instructional-think-block{font-weight:400}",
+      ".util-activity-preamble p,.util-activity-preamble-cue,.util-instructional-orient-block p,.util-instructional-think-block p{font-weight:400}",
+      ".util-framing-label{font-weight:600;color:#64748b}",
+      "section.util-learning-activities{margin:0}",
+      "section.util-learning-activities>article.util-task-block:first-child{margin-top:var(--space-4)}",
+      "article.util-task-block,article.util-task-block.util-instructional-activity{margin:var(--space-5) 0 0}",
+      ".util-activity-header{margin-bottom:var(--space-3)}",
+      ".util-beat-section{margin:0 0 var(--space-4)}",
+      ".util-beat-section+.util-beat-section{margin-top:var(--space-4)}",
+      ".util-beat-materials{gap:var(--space-2)}",
+      ".util-beat-ordered-materials,.util-materials-stack{gap:var(--space-3)}",
+      ".util-beat-materials>.util-material-block,.util-beat-materials>.util-material-card,.util-beat-materials>.util-template-block,.util-beat-materials>.util-scenario-card,.util-beat-materials>.util-prompt-set,.util-beat-materials>.util-checklist-block,.util-beat-materials>.util-worked-example{margin:0}",
+      ".util-beat-materials>.util-supporting-label{margin-bottom:0}",
+      ".util-beat-materials p:last-child,.util-material-block p:last-child,.util-task-card p:last-child,.util-scenario-card p:last-child,.util-prompt-set p:last-child,.util-template-block p:last-child{margin-bottom:0}",
+      ".util-activity-task--primary,.util-output-block,.util-support-note,.util-cognition{margin-top:0;margin-bottom:var(--space-3)}",
+      "#journey-orient>section{margin:0;padding:0}",
+      "#journey-orient>section+section{margin-top:var(--space-4)}",
+      "#journey-orient>section>h2.util-section-heading{margin:0 0 var(--space-2);padding:0}",
+      ".util-overview__content,.util-learning-purpose__content,.util-learning-outcomes__content,.util-knowledge-summary__content,.util-learning-journey__content{margin:0;padding:0}",
+      ".util-overview__content>:first-child,.util-learning-purpose__content>:first-child,.util-learning-outcomes__content>:first-child,.util-knowledge-summary__content>:first-child,.util-learning-journey__content>:first-child{margin-top:0}",
+      ".util-learning-outcomes__list{margin:0 0 var(--space-3) 1.25rem;padding:0}",
+      ".util-learning-outcomes__list>li{margin:0 0 var(--space-1);font-weight:400}",
+      "@media (max-width:720px){article.util-task-block,article.util-task-block.util-instructional-activity{margin-top:var(--space-4)}}"
+    ].join("");
+  }
+
+  function getUtilityDocumentRhythmCss() {
+    return [
+      "body.util-page-export p,body.util-page-export ul,body.util-page-export ol,body.util-page-export table{margin-top:0;margin-bottom:var(--space-3)}",
+      "body.util-page-export ul,body.util-page-export ol{padding-top:0;padding-bottom:0}",
+      "body.util-page-export h2.util-section-heading{margin:0 0 var(--space-2);padding:0}",
+      "body.util-page-export .util-activity-header{margin:0 0 var(--space-3);padding:0}",
+      "body.util-page-export .util-activity-header h2,body.util-page-export .util-activity-header h3,body.util-page-export .util-activity-title{margin:0}",
+      "body.util-page-export h4.util-material-heading,body.util-page-export .util-material-heading{margin:0 0 var(--space-2)}",
+      "body.util-page-export .util-activity-task--primary h4.util-material-heading,body.util-page-export .util-activity-task--primary h4.util-icon-heading{margin:0 0 var(--space-2)}",
+      "body.util-page-export .util-supporting-label{margin:0 0 var(--space-2)}",
+      "body.util-page-export .util-beat-materials,body.util-page-export .util-materials-stack,body.util-page-export .util-beat-ordered-materials{gap:0}",
+      "body.util-page-export .util-beat-section{margin:0 0 var(--space-4);padding:0}",
+      "body.util-page-export .util-beat-section+.util-beat-section{margin-top:0}",
+      "body.util-page-export .util-instructional-section{margin:0 0 var(--space-4);padding:0}",
+      "body.util-page-export .util-instructional-heading,body.util-page-export .util-beat-heading{margin:0 0 var(--space-2)}",
+      "body.util-page-export .util-beat-instruction{margin:0 0 var(--space-3);padding:var(--space-1) 0 var(--space-1) var(--space-2);border-left:2px solid #e5e7eb;color:#4b5563;font-size:.9375rem;line-height:1.6;font-weight:400}",
+      "body.util-page-export .util-beat-instruction>:first-child{margin-top:0}",
+      "body.util-page-export .util-beat-instruction>:last-child{margin-bottom:0}",
+      "body.util-page-export .util-material-block,body.util-page-export .util-worked-example,body.util-page-export .util-scenario-card,body.util-page-export .util-template-block,body.util-page-export .util-prompt-set,body.util-page-export .util-checklist-block,body.util-page-export .util-expected-output{margin:0 0 var(--space-3)}",
+      "body.util-page-export .util-material-block>:first-child,body.util-page-export .util-worked-example>:first-child,body.util-page-export .util-scenario-card>:first-child,body.util-page-export .util-template-block>:first-child,body.util-page-export .util-prompt-set>:first-child,body.util-page-export .util-checklist-block>:first-child,body.util-page-export .util-expected-output>:first-child{margin-top:0}",
+      "body.util-page-export .util-material-block>:last-child,body.util-page-export .util-worked-example>:last-child,body.util-page-export .util-scenario-card>:last-child,body.util-page-export .util-template-block>:last-child,body.util-page-export .util-prompt-set>:last-child,body.util-page-export .util-checklist-block>:last-child,body.util-page-export .util-expected-output>:last-child{margin-bottom:0}",
+      "body.util-page-export .util-table-scroll,body.util-page-export .util-table-scroll.util-material-table,body.util-page-export .util-activity-materials .util-table-scroll.util-material-table{margin:0 0 var(--space-3);padding-top:0;padding-bottom:0}",
+      "body.util-page-export .util-table-scroll table{margin:0}",
+      "body.util-page-export .util-checklist,body.util-page-export ul.util-checklist{margin:0 0 var(--space-2) 1.25rem;padding:0}",
+      "body.util-page-export .util-checklist>li{margin:0 0 var(--space-1);line-height:1.65}",
+      "body.util-page-export .util-checklist>li:last-child{margin-bottom:0}",
+      "body.util-page-export .util-checklist-instruction{margin:0;font-size:.9375rem;color:#4b5563;font-weight:400}",
+      "body.util-page-export .util-activity-task,body.util-page-export .util-activity-task--primary,body.util-page-export .util-cognition,body.util-page-export .util-support-note,body.util-page-export .util-output-block{margin-top:0;margin-bottom:var(--space-3)}",
+      "body.util-page-export .util-card-grid,body.util-page-export .util-scenario-list,body.util-page-export .util-response-lines,body.util-page-export .util-assessment-list{margin-top:0;margin-bottom:var(--space-3);gap:var(--space-3)}",
+      "body.util-page-export .util-assessment-section,body.util-page-export .util-assessment-section.util-material-role-checkpoint{margin:0 0 var(--space-5);padding-top:0;border-top:0}",
+      "body.util-page-export .util-assessment-section>h2.util-section-heading{margin:0 0 var(--space-2);padding:0}",
+      "body.util-page-export .util-material-role-checkpoint .util-assessment-list{margin-top:0}",
+      "body.util-page-export article.util-assessment-item,body.util-page-export article.util-assessment-item.util-task-block{margin:0}",
+      "body.util-page-export .util-assessment-item-header,body.util-page-export .util-assessment-prompt,body.util-page-export .util-assessment-options,body.util-page-export .util-assessment-explanation,body.util-page-export .util-assessment-answer{margin-top:0;margin-bottom:var(--space-3)}",
+      "body.util-page-export .util-assessment-item-body>:first-child{margin-top:0}",
+      "body.util-page-export .util-assessment-item-body>:last-child{margin-bottom:0}",
+      "body.util-page-export #journey-orient>section{margin:0;padding:0}",
+      "body.util-page-export #journey-orient>section+section{margin-top:var(--space-4)}"
     ].join("");
   }
 
@@ -42215,11 +42869,12 @@
       getUtilityPagePresentationCssV31_10() +
       getUtilityPagePresentationCssV31_11() +
       getUtilityPagePresentationCssV31_12() +
-      getUtilityJourneyCompassPresentationCss() +
       getUtilityLearningHeaderPresentationCss() +
       getUtilityLearningJourneyNavPresentationCss() +
       getUtilityPedagogicalIconPresentationCss() +
-      getUtilityPagePresentationCssSprint55Typography()
+      getUtilityPagePresentationCssSprint55Typography() +
+      getUtilityPagePresentationCssGenericCleanup() +
+      getUtilityDocumentRhythmCss()
     );
   }
 
@@ -42244,12 +42899,14 @@
   function getUtilityLearningHeaderPresentationCss() {
     return [
       "body.util-page-export--with-learning-header{overflow-x:clip;max-width:920px}",
-      "body.util-page-export--with-learning-header [data-journey-section]{scroll-margin-top:168px}",
-      ".util-learning-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-bottom:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(17,24,39,.06);padding:12px 16px 14px;margin:0 0 16px}",
+      "body.util-page-export--with-learning-header [data-journey-section]{scroll-margin-top:96px}",
+      ".util-learning-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);padding:12px 16px 14px;margin:0 0 var(--space-4)}",
       ".util-learning-header__title{margin:0 0 6px;font-size:1.35rem;font-weight:700;line-height:1.3;color:#0f172a}",
-      ".util-learning-header__meta{margin:0 0 10px;font-size:.875rem;line-height:1.45;color:#6b7280}",
+      ".util-learning-header__meta{display:block;margin:0 0 var(--space-2);font-size:.875rem;line-height:1.45;font-weight:400;color:#6b7280}",
+      ".util-learning-header__description,.util-learning-header__duration{font-weight:400}",
+      ".util-learning-header__duration{margin-left:0;white-space:normal}",
       ".util-learning-header .util-journey-nav{margin:0;padding:0;border:0;background:transparent;backdrop-filter:none;box-shadow:none}",
-      ".util-journey-compass-header,.util-journey-compass.util-journey-compass--activity{display:none!important}",
+      ".util-overview p,.util-overview li,.util-learning-purpose p,.util-learning-purpose li,.util-learning-outcomes p,.util-learning-outcomes li,.util-knowledge-summary p,.util-knowledge-summary li,.util-learning-journey p,.util-learning-journey li,.util-learning-journey-intro p,.util-learning-journey-purpose p{font-weight:400}",
       "@media (max-width:720px){.util-learning-header{padding:10px 12px 12px}.util-learning-header__title{font-size:1.2rem}}",
       "@media print{.util-learning-header{display:none!important}body.util-page-export--with-learning-header [data-journey-section]{scroll-margin-top:0}}"
     ].join("");
@@ -42274,7 +42931,7 @@
       ".util-journey-track{position:relative;height:3px;margin-top:12px;background:#d1d5db;border-radius:999px;overflow:visible}",
       ".util-journey-fill{height:100%;width:var(--journey-progress,0%);background:var(--journey-accent);border-radius:999px;transition:width .12s ease-out}",
       ".util-journey-dot{position:absolute;top:50%;left:var(--journey-progress,0%);width:12px;height:12px;border-radius:50%;background:var(--journey-accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--journey-accent);transform:translate(-50%,-50%);transition:left .12s ease-out;pointer-events:none}",
-      "@media (max-width:720px){.util-journey-links{gap:6px;font-size:.8125rem}}",
+      "@media (max-width:720px){.util-journey-links{justify-content:flex-start!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:8px;font-size:.8125rem}.util-journey-link{flex:0 0 auto!important;min-width:72px;padding:0 4px}.util-journey-arrow{display:none}}",
       "@media print{.util-journey-nav{display:none!important}}"
     ].join("");
   }
@@ -42405,11 +43062,11 @@
   function utilityExtractJourneyActivityTitle(articleInner) {
     var inner = String(articleInner || "");
     var headerMatch = inner.match(
-      /<div class="util-activity-header"[^>]*>\s*<h3[^>]*>([\s\S]*?)<\/h3>/i
+      /<div class="util-activity-header"[^>]*>\s*<h2[^>]*>([\s\S]*?)<\/h2>/i
     );
     if (headerMatch) return utilityStripHtmlToPlainText(headerMatch[1]);
-    var h3Match = inner.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i);
-    if (h3Match) return utilityStripHtmlToPlainText(h3Match[1]);
+    var h2Match = inner.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i);
+    if (h2Match) return utilityStripHtmlToPlainText(h2Match[1]);
     return "";
   }
 
@@ -42544,10 +43201,20 @@
   }
 
   function utilityBuildLearningHeaderMetaLine(subtitle, duration) {
-    var parts = [];
-    if (String(subtitle || "").trim()) parts.push(String(subtitle).trim());
-    if (String(duration || "").trim()) parts.push(String(duration).trim());
-    return parts.join(" \u00b7 ");
+    var cleanSubtitle = String(subtitle || "")
+      .trim()
+      .replace(/^overview\b\s*(?:[:\-–—]\s*)?/i, "")
+      .trim();
+    return [cleanSubtitle, utilityFormatLearningHeaderDuration(duration)].filter(Boolean).join(" ");
+  }
+
+  function utilityFormatLearningHeaderDuration(duration) {
+    var value = String(duration || "").trim();
+    if (!value) return "";
+    var match = value.match(/^(\d+)\s*(?:minutes?|mins?|min)(?:\s+session)?\.?$/i);
+    if (!match) return value;
+    var minutes = Number(match[1]);
+    return String(minutes) + (minutes === 1 ? " min." : " mins.");
   }
 
   function utilityStripLegacyPageHeaderFromExportHtml(html) {
@@ -42568,19 +43235,37 @@
   function utilityRenderLearningStickyHeaderHtml(headerOpts) {
     var opts = headerOpts && typeof headerOpts === "object" ? headerOpts : {};
     var title = String(opts.title || "").trim();
-    var metaLine = utilityBuildLearningHeaderMetaLine(opts.subtitle, opts.duration);
+    var description = String(opts.subtitle || "")
+      .trim()
+      .replace(/^overview\b\s*(?:[:\-–—]\s*)?/i, "")
+      .trim();
+    var duration = utilityFormatLearningHeaderDuration(opts.duration);
     var navHtml = String(opts.navHtml || "").trim();
-    if (!title && !metaLine && !navHtml) return "";
+    if (!title && !description && !duration && !navHtml) return "";
     var parts = ['<header class="util-learning-header">'];
     if (title) {
       parts.push(
         '<h1 class="util-learning-header__title">' + utilityEscapeHtml(title) + "</h1>"
       );
     }
-    if (metaLine) {
-      parts.push(
-        '<p class="util-learning-header__meta">' + utilityEscapeHtml(metaLine) + "</p>"
-      );
+    if (description || duration) {
+      parts.push('<p class="util-learning-header__meta">');
+      if (description) {
+        parts.push(
+          '<span class="util-learning-header__description">' +
+            utilityEscapeHtml(description) +
+            "</span>"
+        );
+      }
+      if (duration) {
+        if (description) parts.push(" ");
+        parts.push(
+          '<span class="util-learning-header__duration">' +
+            utilityEscapeHtml(duration) +
+            "</span>"
+        );
+      }
+      parts.push("</p>");
     }
     if (navHtml) parts.push(navHtml);
     parts.push("</header>");
@@ -42697,11 +43382,9 @@
     updated = utilityStripLegacyPageHeaderFromExportHtml(updated);
 
     var navHtml = "";
-    var navLen = 0;
     if (hasJourneyNav) {
       var navItems = utilityBuildJourneyNavItems(activities);
       navHtml = utilityRenderLearningJourneyNavHtml(navItems);
-      navLen = navHtml.length;
     }
 
     var headerHtml = utilityRenderLearningStickyHeaderHtml({
@@ -42718,7 +43401,7 @@
     updated = updated.slice(0, injectAt) + headerHtml + updated.slice(injectAt);
 
     if (hasJourneyNav) {
-      var firstActivityIdx = updated.search(/\bid="activity-1"/i);
+      var firstActivityIdx = updated.search(/<div\s+id="activity-1"/i);
       var headerEnd = injectAt + headerHtml.length;
       var orientWrapped = utilityWrapJourneyOrientSection(
         updated,
@@ -42752,46 +43435,12 @@
       var scriptHtml = utilityBuildLearningJourneyNavScript();
       updated = updated.replace(/<\/body>/i, scriptHtml + "</body>");
     }
+
     return updated;
   }
 
   function utilityApplyLearningJourneyRibbonToExportHtml(html, headerOpts) {
     return utilityApplyLearningJourneyHeaderToExportHtml(html, headerOpts);
-  }
-
-  function getUtilityJourneyCompassPresentationCss() {
-    return [
-      "body.util-page-export--with-compass{max-width:920px}",
-      ".util-journey-compass-header{margin:8px 0 20px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
-      ".util-activity-row.util-page-columns{display:grid;grid-template-columns:minmax(180px,26%) minmax(0,1fr);gap:20px;align-items:start;margin:0 0 28px}",
-      ".util-instructional-activity .util-instructional-section{margin:0 0 16px;padding:0}",
-      ".util-instructional-heading{font-size:.95rem;font-weight:700;color:#0f172a;margin:0 0 10px;line-height:1.35}",
-      ".util-instructional-body>:last-child{margin-bottom:0}",
-      ".util-instructional-study .util-materials-stack,.util-instructional-do .util-materials-stack{margin-top:0}",
-      ".util-instructional-check .util-check-expected-output{margin-top:12px}",
-      ".util-activity-progress{font-size:.85rem;color:#64748b;margin:0 0 12px}",
-      ".util-instructional-orient .util-instructional-orient-block+.util-instructional-orient-block{margin-top:10px}",
-      ".util-instructional-think .util-instructional-think-block+.util-instructional-think-block{margin-top:10px}",
-      ".util-activity-row.util-page-columns>.util-task-block{margin:0}",
-      ".util-page-resource{min-width:0}",
-      ".util-journey-compass{padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:.8125rem;line-height:1.5;color:#475569}",
-      ".util-journey-compass--activity{align-self:start}",
-      ".util-journey-compass__title{margin:0 0 12px;font-size:.875rem;font-weight:700;letter-spacing:.02em;color:#0f172a;line-height:1.35}",
-      ".util-journey-compass__section{margin:0 0 14px}",
-      ".util-journey-compass__section:last-child{margin-bottom:0}",
-      ".util-journey-compass__section-heading{margin:0 0 6px;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#64748b}",
-      ".util-journey-compass__steps{margin:0;padding:0 0 0 1.1rem;list-style:decimal}",
-      ".util-journey-compass__step{margin:0 0 12px;padding:0}",
-      ".util-journey-compass__step:last-child{margin-bottom:0}",
-      ".util-journey-compass__step-label{font-weight:600;color:#334155;line-height:1.4}",
-      ".util-journey-compass__step-meta{margin:2px 0 6px;font-size:.75rem;color:#64748b}",
-      ".util-journey-compass__signal{margin:0 0 6px;font-size:.8125rem;color:#475569}",
-      ".util-journey-compass__signal:last-child{margin-bottom:0}",
-      ".util-journey-compass__signal-label{font-weight:600;color:#64748b}",
-      ".util-journey-compass__signal--transition{font-style:italic;color:#64748b}",
-      "@media (max-width:720px){.util-activity-row.util-page-columns{grid-template-columns:1fr;gap:12px}}",
-      "@media print{.util-journey-compass,.util-journey-compass-header{break-inside:avoid-page;background:#fff;border-color:#cbd5e1}.util-activity-row.util-page-columns{grid-template-columns:1fr}}"
-    ].join("");
   }
 
   function getUtilityPagePresentationCssV31_11() {
@@ -42888,7 +43537,7 @@
   function getUtilityPagePresentationCssV31_7() {
     return [
       "h1{font-size:1.8125rem;line-height:1.2;margin-bottom:14px}",
-      "h2.util-section-heading{font-size:1.1875rem;margin-top:36px;margin-bottom:14px;padding-bottom:8px;border-bottom-width:2px;border-bottom-color:#e2e8f0}",
+      "h2.util-section-heading{font-size:1.1875rem;margin-top:36px;margin-bottom:14px;padding-bottom:8px}",
       "article.util-task-block .util-activity-header h3{font-size:1.075rem;font-weight:700;letter-spacing:-.01em;line-height:1.3}",
       "h4.util-material-heading,.h4.util-icon-heading.util-material-heading{font-size:.8125rem;letter-spacing:.04em;text-transform:uppercase;color:#64748b;margin:18px 0 6px}",
       "h4.util-material-heading>.util-material-icon,.h4.util-icon-heading>.util-material-icon{color:#94a3b8}",
@@ -43104,6 +43753,7 @@
     if (sid === "assessment_check") return "assessment_check";
     if (sid === "overview") return "overview";
     if (sid === "learning_purpose") return "learning_purpose";
+    if (sid === "learning_outcomes" || sid === "learning_outcome") return "learning_outcomes";
     if (sid === "knowledge_summary") return "knowledge_summary";
     if (sid === "learning_sequence") return "learning_sequence";
     if (sid === "support_notes") return "support_notes";
@@ -43121,7 +43771,10 @@
       ) {
         return "assessment_check";
       }
-      if (/\b(learning[_\s-]?purpose|learning[_\s-]?outcomes?)\b/.test(heading)) {
+      if (/\blearning[_\s-]?outcomes?\b/.test(heading)) {
+        return "learning_outcomes";
+      }
+      if (/\blearning[_\s-]?purpose\b/.test(heading)) {
         return "learning_purpose";
       }
       if (/\b(knowledge[_\s-]?summary|key[_\s-]?concepts?)\b/.test(heading)) {
@@ -45334,6 +45987,162 @@
     return parts.join("");
   }
 
+  function utilityNormalizeLearnerContentHierarchy(html) {
+    var source = String(html || "");
+    if (!source) return source;
+    var protectedBlocks = [];
+    var out = source.replace(
+      /<section\b[^>]*class="[^"]*\butil-assessment-section\b[^"]*"[^>]*>[\s\S]*?<\/section>|<details\b[^>]*class="[^"]*\butil-meta\b[^"]*"[^>]*>[\s\S]*?<\/details>/gi,
+      function (block) {
+        var token = "@@PRISM_PROTECTED_" + protectedBlocks.length + "@@";
+        protectedBlocks.push(block);
+        return token;
+      }
+    );
+    function supportingLabelOpen(attrs) {
+      var raw = String(attrs || "");
+      if (/\bclass\s*=\s*"[^"]*"/i.test(raw)) {
+        return raw.replace(
+          /\bclass\s*=\s*"([^"]*)"/i,
+          function (_match, classes) {
+            var next = String(classes || "");
+            if (!/\butil-supporting-label\b/.test(next)) {
+              next = (next + " util-supporting-label").trim();
+            }
+            return 'class="' + next + '"';
+          }
+        );
+      }
+      return raw + ' class="util-supporting-label"';
+    }
+    out = out.replace(/<h([4-6])([^>]*)>/gi, function (_match, _level, attrs) {
+      return "<p" + supportingLabelOpen(attrs) + ">";
+    });
+    out = out.replace(/<\/h[4-6]>/gi, "</p>");
+    out = out.replace(/<h3([^>]*)>/gi, function (full, attrs) {
+      var raw = String(attrs || "");
+      if (/\butil-beat-heading\b|\butil-instructional-heading\b/i.test(raw)) {
+        return full;
+      }
+      return "<p" + supportingLabelOpen(raw) + ">";
+    });
+    out = out.replace(/<\/h3>/gi, function (full, offset, whole) {
+      var before = String(whole || "").slice(0, offset);
+      var openTagRe = /<(h3|p)\b/gi;
+      var lastOpen = "";
+      var m;
+      while ((m = openTagRe.exec(before)) !== null) {
+        lastOpen = String(m[1] || "").toLowerCase();
+      }
+      return lastOpen === "p" ? "</p>" : full;
+    });
+    out = out.replace(/<h2([^>]*)>/gi, function (full, attrs) {
+      var raw = String(attrs || "");
+      if (/\butil-section-heading\b|\butil-activity-title\b/i.test(raw)) {
+        return full;
+      }
+      return "<p" + supportingLabelOpen(raw) + ">";
+    });
+    out = out.replace(/<\/h2>/gi, function (full, offset, whole) {
+      var before = String(whole || "").slice(0, offset);
+      var openTagRe = /<(h2|p)\b/gi;
+      var lastOpen = "";
+      var m;
+      while ((m = openTagRe.exec(before)) !== null) {
+        lastOpen = String(m[1] || "").toLowerCase();
+      }
+      return lastOpen === "p" ? "</p>" : full;
+    });
+    out = out.replace(
+      /<p([^>]*)class="([^"]*\butil-supporting-label\b[^"]*)"([^>]*)>\s*(?:<span>)?\s*(Body|Content|Text|Items|Statement|Id)\s*(?:<\/span>)?\s*<\/p>/gi,
+      ""
+    );
+    out = out.replace(
+      /<p([^>]*)class="([^"]*\butil-supporting-label\b[^"]*)"([^>]*)>\s*(?:<span>)?\s*Overview\s*(?:<\/span>)?\s*<\/p>/gi,
+      ""
+    );
+    out = out.replace(
+      /<p([^>]*)class="([^"]*\butil-supporting-label\b[^"]*)"([^>]*)>\s*(?:<span>)?\s*Learning Purpose\s*(?:<\/span>)?\s*<\/p>/gi,
+      "<p>Learning Purpose</p>"
+    );
+    function unwrapLayoutDivs(input) {
+      var value = String(input || "");
+      var openRe =
+        /<div\b[^>]*class="[^"]*\b(?:util-page-columns|util-activity-row|util-page-resource)\b[^"]*"[^>]*>/i;
+      var match;
+      while ((match = openRe.exec(value))) {
+        var start = match.index;
+        var end = utilityEndIndexOfBalancedDiv(value, start);
+        if (end < 0) break;
+        var openEnd = start + match[0].length;
+        var closeStart = value.lastIndexOf("</div>", end);
+        if (closeStart < openEnd) break;
+        value =
+          value.slice(0, start) +
+          value.slice(openEnd, closeStart) +
+          value.slice(end);
+      }
+      return value;
+    }
+    function unwrapOpeningCompass(input) {
+      return String(input || "").replace(
+        /<aside\b[^>]*class="[^"]*\butil-journey-compass(?:--activity)?\b[^"]*"[^>]*>([\s\S]*?)<\/aside>/gi,
+        "$1"
+      );
+    }
+    function flattenOpeningCardGrids(input) {
+      var value = String(input || "");
+      var openRe = /<div\b[^>]*class="[^"]*\butil-card-grid\b[^"]*"[^>]*>/i;
+      var match;
+      while ((match = openRe.exec(value))) {
+        var start = match.index;
+        var end = utilityEndIndexOfBalancedDiv(value, start);
+        if (end < 0) break;
+        var openEnd = start + match[0].length;
+        var closeStart = value.lastIndexOf("</div>", end);
+        if (closeStart < openEnd) break;
+        var inner = value
+          .slice(openEnd, closeStart)
+          .replace(/<article\b[^>]*class="[^"]*\butil-task-card\b[^"]*"[^>]*>/gi, "")
+          .replace(/<\/article>/gi, "");
+        value = value.slice(0, start) + inner + value.slice(end);
+      }
+      return value;
+    }
+    out = unwrapLayoutDivs(out);
+    out = unwrapOpeningCompass(out);
+    if (!/<article\b[^>]*class="[^"]*\butil-task-block\b/i.test(out)) {
+      out = flattenOpeningCardGrids(out);
+      out = out.replace(
+        /<p([^>]*)class="([^"]*\butil-supporting-label\b[^"]*)"([^>]*)>([\s\S]*?)<\/p>/gi,
+        function (full, beforeClass, classes, afterClass, inner) {
+          var text = String(inner || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+          var sentenceLike =
+            text.length > 60 ||
+            text.split(/\s+/).filter(function (word) { return !!word; }).length >= 10 ||
+            /[.!?]\s*$/.test(text);
+          if (!sentenceLike) return full;
+          var nextClasses = String(classes || "")
+            .replace(/\butil-supporting-label\b/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+          var attrs = (String(beforeClass || "") + String(afterClass || "")).trim();
+          if (attrs) attrs = " " + attrs;
+          if (nextClasses) attrs += ' class="' + nextClasses + '"';
+          var body = String(inner || "").replace(
+            /^\s*<(?:strong|b)>\s*([\s\S]*?)\s*<\/(?:strong|b)>\s*$/i,
+            "$1"
+          );
+          return "<p" + attrs + ">" + body + "</p>";
+        }
+      );
+    }
+    protectedBlocks.forEach(function (block, idx) {
+      out = out.replace("@@PRISM_PROTECTED_" + idx + "@@", block);
+    });
+    return out;
+  }
+
   function buildUtilityStructuredHtml(parsed, plan, _baseName, renderOptions) {
     var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
     var presentationMode = String(options.presentationMode || "single_page").toLowerCase();
@@ -45385,7 +46194,6 @@
       generation_notes: true,
       validation_notes: true,
       limitations: true,
-      learning_outcomes: true,
       diagnostics: true,
       diagnostic: true,
       renderer_diagnostics: true,
@@ -45411,7 +46219,6 @@
       "generation_notes",
       "validation_notes",
       "limitations",
-      "learning_outcomes",
       "diagnostics",
       "renderer_diagnostics",
       "prism_diagnostics",
@@ -45667,6 +46474,11 @@
       return buildUtilityLearningObjectHtml(title, loAudience, loBlocks, metadataBlocks);
     }
 
+    if (isPageArtefact) {
+      primaryBlocks = primaryBlocks.map(function (block) {
+        return utilityNormalizeLearnerContentHierarchy(block);
+      });
+    }
     var resourceBodyParts = primaryBlocks.slice();
     if (metadataBlocks.length) {
       resourceBodyParts.push(
@@ -45748,7 +46560,11 @@
         return '<ul class="util-checklist">' + rows + "</ul>";
       });
       out = out.replace(/<li>\s*#{2,3}\s*([^<]+?)\s*<\/li>/gi, function (_, heading) {
-        return '<h5 class="util-card-subheading">' + utilityRenderMarkdownInline(String(heading || "").trim()) + "</h5>";
+        return (
+          '<p class="util-card-subheading util-supporting-label">' +
+          utilityRenderMarkdownInline(String(heading || "").trim()) +
+          "</p>"
+        );
       });
       out = out.replace(/(<(?:p|li|h4|h5)[^>]*>\s*)#{2,3}\s+/gi, "$1");
       // Merge adjacent plain bullet lists only (never merge with util-checklist).
@@ -45788,7 +46604,7 @@
       return utilityStripObjectObjectLeaks(out);
     }
     htmlParts.unshift(
-      "<style>.util-checklist{list-style:disc;margin:8px 0 14px 1.1rem;padding:0}.util-checklist li{margin:0 0 6px;line-height:1.45}</style>"
+      "<style>.util-checklist{list-style:disc;margin:0 0 var(--space-2) 1.25rem;padding:0}.util-checklist>li{margin:0 0 var(--space-1);line-height:1.65}.util-checklist>li:last-child{margin-bottom:0}.util-checklist-instruction{margin:0;font-size:.9375rem;color:#4b5563}</style>"
     );
 
     var htmlDoc = [
@@ -47651,6 +48467,8 @@
       utilityApplyLearningJourneyRibbonToExportHtml;
     prismTestApi.utilityCollectLearningJourneyActivitiesFromExportHtmlForTest =
       utilityCollectLearningJourneyActivitiesFromExportHtml;
+    prismTestApi.utilityNormalizeLearnerContentHierarchyForTest =
+      utilityNormalizeLearnerContentHierarchy;
     prismTestApi.buildUtilityStructuredHtmlForTest = function (parsed, sectionOrderOverride, renderOptions) {
       var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
       return runUtilityPageExportPipeline(parsed, {

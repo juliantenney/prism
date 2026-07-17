@@ -1,0 +1,37 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Apply strategies to independently plan and manage personal learning activities.",
+      "related_concepts": [
+        "self-directed learning",
+        "planning",
+        "time management"
+      ],
+      "cognitive_level": "apply",
+      "notes": "Focuses on practical application of planning skills."
+    },
+    {
+      "statement": "Evaluate personal learning progress and adjust learning strategies accordingly.",
+      "related_concepts": [
+        "self-assessment",
+        "reflection",
+        "strategy adjustment"
+      ],
+      "cognitive_level": "evaluate",
+      "notes": "Emphasizes reflective practice and adaptive learning."
+    },
+    {
+      "statement": "Identify appropriate resources and tools to support autonomous learning.",
+      "related_concepts": [
+        "resource identification",
+        "learning tools",
+        "information literacy"
+      ],
+      "cognitive_level": "analyze",
+      "notes": "Targets critical selection of learning aids."
+    }
+  ],
+  "learner_level": "undergraduate",
+  "scope": "standard session",
+  "alignment_notes": "Outcomes align with core concepts of self-directed learning and focus on skills essential for independent undergraduate learners."
+}

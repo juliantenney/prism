@@ -1,0 +1,238 @@
+{
+  "capturedAt": "2026-07-16T14:38:51.763Z",
+  "command": "node tools/sprint-42-4-live-capture.mjs climate-workshop",
+  "model": "gpt-4.1-mini",
+  "git": {
+    "head": "d36af7d19fce869c43ba8129bd8efe5562545980",
+    "workingTreeDirty": true,
+    "dirtyFiles": [
+      "M app.js",
+      " M docs/development/current-state.md",
+      " M docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/capture-summary.json",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-START-HERE.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/backlog.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/decisions.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/evidence-log.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/experiments/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/findings-log.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/next-chat-briefing.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/README.md",
+      " M docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/sprint-summary.md",
+      " M index.html",
+      " M tests/prism-vm-lib-bootstrap.js",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/climate-workshop-2026-07-16T14-35-28/",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/inflation-workshop-2026-07-16T14-33-34/",
+      "?? docs/development/sprints/2026-06-11-sprint-42-authorial-quality-educational-exposition/captures/sprint-42-exposition/42-4-live-runs/marx-self-study-2026-07-16T14-30-30/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/bounded-renderer-prototype.md",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/cross-sample-validation.md",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/experiments/renderer-learner-experience-prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-prototype-render.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/capture-validation-render.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/probe-a3-order.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/probe-validation-markers.js",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/samples/validation/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/comparisons/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/prototype/",
+      "?? docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/screenshots/validation/"
+    ]
+  },
+  "sprint42ContractsInPrompts": {
+    "dlaHasPreambleExposition": false,
+    "dlaHasAuthorialExposition": false,
+    "dpHasAuthorialExposition": false,
+    "dlaHasLearnerFraming": false
+  },
+  "brief": {
+    "goal": "Using the uploaded lecture on climate change, create a misconception discussion workshop. Provide task cards of common false claims, an analysis worksheet, and discussion prompts. End with true/false diagnostic statements — learners should not see correct answers on the handout.",
+    "inputs": "Uploaded lecture transcript excerpt:\n\nGlobal mean temperature has risen since pre-industrial times, driven largely by greenhouse gases from human activity. Climate models project further warming depending on emissions pathways. Weather describes short-term atmospheric conditions; climate is long-term statistical patterns. Skeptical arguments often confuse cold snaps with disproof of warming, or treat natural variability as ruling out human influence.",
+    "desiredOutputs": "Learner handout page",
+    "startingArtefact": "provided_source_content",
+    "selectedDomains": [
+      "learning-design"
+    ]
+  },
+  "resolvedFactors": {
+    "topic": "climate change",
+    "design_scope": "session",
+    "delivery_pattern": "face_to_face",
+    "input_strategy": "provided_source_content",
+    "delivery_mode": "live_workshop",
+    "delivery_context": "in_person",
+    "session_materials": [
+      "page"
+    ],
+    "page_profile": "learner",
+    "learning_environments": [
+      "classroom"
+    ],
+    "assessment_strategy": "formative",
+    "assessment_interaction_mode": "diagnostic_misconception",
+    "learner_answer_visibility": "hidden_until_reveal",
+    "misconception_assessment_link": true,
+    "cognitive_engagement_required": true,
+    "reasoning_revision_required": false,
+    "misconception_reconciliation_required": true,
+    "adaptive_scaffolding_required": false,
+    "productive_uncertainty_required": false,
+    "feedback_required": "none",
+    "activity_pattern_mix": "balanced",
+    "sequencing_granularity": "standard",
+    "tone_style": "academic",
+    "depth_level": "mixed",
+    "include_examples": true,
+    "include_practice_tasks": false,
+    "compact_vs_detailed": "standard",
+    "include_answers": false,
+    "include_feedback_guidance": false,
+    "workshop_subject": "climate change"
+  },
+  "outputDir": "docs\\development\\sprints\\2026-06-11-sprint-42-authorial-quality-educational-exposition\\captures\\sprint-42-exposition\\42-4-live-runs\\climate-workshop-2026-07-16T14-35-28",
+  "artefacts": [
+    "learning-content.json",
+    "knowledge-model.json",
+    "learning-outcomes.json",
+    "dla-learning-activities.json",
+    "gam-activity-materials.txt",
+    "design-page.json",
+    "page-rendered.html",
+    "dla-prompt-snapshot.txt",
+    "design-page-prompt-snapshot.txt",
+    "prompt-contract-check.json"
+  ],
+  "dlaPreambleAudit": {
+    "activityCount": 4,
+    "preambleCount": 4,
+    "proceduralOpeningCount": 0,
+    "meetsPreambleCoverage": true,
+    "meetsAuthorialExposition": true,
+    "rows": [
+      {
+        "activity_id": "A1",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Climate change is often misunderstood due to widespread myths and misinformation."
+      },
+      {
+        "activity_id": "A2",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Having identified common misconceptions, this activity guides you through analyzing why these misconceptions are inaccurate."
+      },
+      {
+        "activity_id": "A3",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "Misconceptions about climate change can have significant consequences for how the public understands the issue and how policies are shaped."
+      },
+      {
+        "activity_id": "A4",
+        "has_preamble": true,
+        "procedural_opening": false,
+        "duplicates_learner_task": false,
+        "opening": "This final activity invites you to consolidate your learning about climate misconceptions."
+      }
+    ]
+  },
+  "pageAudit": {
+    "label": "climate-workshop",
+    "centralInquiry": "weak",
+    "activityCount": 4,
+    "preambleCount": 4,
+    "bridgeCount": 4,
+    "hasStudyTips": false,
+    "facilitatorLeak": false,
+    "preambleExposition": {
+      "activityCount": 4,
+      "preambleCount": 4,
+      "proceduralOpeningCount": 0,
+      "meetsPreambleCoverage": true,
+      "meetsAuthorialExposition": true,
+      "rows": [
+        {
+          "activity_id": "A1",
+          "has_preamble": true,
+          "procedural_opening": false,
+          "duplicates_learner_task": false,
+          "opening": "Climate change is often misunderstood due to widespread myths and misinformation."
+        },
+        {
+          "activity_id": "A2",
+          "has_preamble": true,
+          "procedural_opening": false,
+          "duplicates_learner_task": false,
+          "opening": "Having identified common misconceptions, this activity guides you through analyzing why these misconceptions are inaccurate."
+        },
+        {
+          "activity_id": "A3",
+          "has_preamble": true,
+          "procedural_opening": false,
+          "duplicates_learner_task": false,
+          "opening": "Misconceptions about climate change can have significant consequences for how the public understands the issue and how policies are shaped."
+        },
+        {
+          "activity_id": "A4",
+          "has_preamble": true,
+          "procedural_opening": false,
+          "duplicates_learner_task": false,
+          "opening": "This final activity invites you to consolidate your learning about climate misconceptions."
+        }
+      ]
+    },
+    "eqfScore": 7,
+    "eqfDimensions": {
+      "learner_journey": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[3].intellectual_coherence_bridge: pattern p1"
+        ]
+      },
+      "understanding": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[0].expected_output: pattern p1"
+        ]
+      },
+      "capability": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[0].transfer_or_application_task: pattern p1"
+        ]
+      },
+      "judgement": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[2].activity_preamble: pattern p1"
+        ]
+      },
+      "independence": {
+        "present": true,
+        "evidence": [
+          "progression-heuristic: \"worked/modelled → guided → independent → transfer language\""
+        ]
+      },
+      "metacognition": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[0].activity_preamble: pattern p1"
+        ]
+      },
+      "learning_success": {
+        "present": false,
+        "evidence": []
+      },
+      "cognitive_activity": {
+        "present": true,
+        "evidence": [
+          "learning_activities.content[0].activity_preamble: pattern p1"
+        ]
+      }
+    }
+  },
+  "renderError": null,
+  "validPost423Evidence": false
+}

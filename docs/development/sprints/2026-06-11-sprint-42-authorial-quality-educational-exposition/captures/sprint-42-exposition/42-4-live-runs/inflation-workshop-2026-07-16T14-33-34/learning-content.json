@@ -1,0 +1,48 @@
+{
+  "title": "What Is Inflation and How Does It Affect Prices and Households?",
+  "sections": [
+    {
+      "title": "Understanding Inflation and Price Level Changes",
+      "content": "Inflation is the general increase in prices of goods and services over time. When inflation occurs, the purchasing power of money decreases, meaning you need more money to buy the same items. Price level changes refer to the overall movement in prices across the economy, not just individual goods. Economists measure these changes to understand how the economy is performing and how households are affected."
+    },
+    {
+      "title": "Measuring Inflation: Consumer Price Index (CPI)",
+      "content": "The Consumer Price Index (CPI) is a key measure of inflation. It tracks the average price changes over time for a fixed basket of goods and services that a typical household buys, such as food, clothing, and transportation. By comparing the cost of this basket in different years, the CPI shows how much prices have increased or decreased. For example, if the CPI rises by 3% in a year, it means that on average, prices have increased by 3%."
+    },
+    {
+      "title": "Measuring Inflation: GDP Deflator",
+      "content": "Another important measure is the GDP deflator, which reflects the price changes of all goods and services produced domestically in an economy, not just those bought by consumers. Unlike the CPI, the GDP deflator's basket changes every year to include current production. This makes it a broader measure of inflation, capturing price changes in investment goods, government services, and exports as well as consumer goods."
+    },
+    {
+      "title": "Comparing CPI and GDP Deflator",
+      "content": "While both CPI and GDP deflator measure inflation, they differ in scope and composition. CPI focuses on consumer purchases and uses a fixed basket, making it sensitive to changes in consumer habits. The GDP deflator covers all domestically produced goods and services with a changing basket, reflecting the economy's overall price changes. Understanding these differences helps economists and policymakers choose the right tool for analyzing inflation."
+    },
+    {
+      "title": "How Inflation Impacts Households",
+      "content": "Inflation affects households by changing the cost of living. When prices rise, families may find their income buys less than before, reducing their real purchasing power. This can lead to adjustments in spending habits, saving, and borrowing. Inflation can also affect wages, interest rates, and government benefits, influencing household budgets in multiple ways. Discussing these impacts helps students connect economic concepts to everyday life."
+    },
+    {
+      "title": "Small-Group Discussion: Exploring Inflation Effects",
+      "content": "In small groups, discuss how inflation might affect different types of households. Consider factors like income levels, spending patterns, and savings. Use the CPI and GDP deflator concepts to think about which measure might better reflect the inflation experience of various households. Share your group's insights with the class to deepen understanding."
+    }
+  ],
+  "key_concepts": [
+    "Inflation",
+    "Price level changes",
+    "Consumer Price Index (CPI)",
+    "GDP deflator",
+    "Purchasing power",
+    "Fixed basket vs. changing basket",
+    "Household impact of inflation"
+  ],
+  "examples": [
+    {
+      "title": "Example of CPI Calculation",
+      "description": "Suppose a basket of goods cost $100 in the base year and $103 in the current year. The CPI would be calculated as (103/100) × 100 = 103, indicating a 3% increase in prices."
+    },
+    {
+      "title": "Example of GDP Deflator Usage",
+      "description": "If the total value of goods and services produced in a country was $1 trillion in the base year and $1.05 trillion in the current year, but the quantity of goods produced also changed, the GDP deflator helps isolate the price change component from the quantity change."
+    }
+  ]
+}

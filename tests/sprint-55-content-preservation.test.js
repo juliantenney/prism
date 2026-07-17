@@ -154,7 +154,7 @@ test("field closure: flags missing upstream learner fields on composed page", ()
   assert.match(validation.messages.join("\n"), /self_explanation_prompt/i);
 });
 
-test("renderer: beat-first activity still renders expected_output check section", () => {
+test("renderer: expected_output prose precedes the intact beat-first checklist", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(marxFixturePath, "utf8"));
   const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
@@ -162,12 +162,79 @@ test("renderer: beat-first activity still renders expected_output check section"
     /Historical Materialism and Capitalism[\s\S]*?(?=Surplus Value and Exploitation|Is Marx Still Relevant|$)/i
   );
   assert.ok(a1, "expected A1 block");
-  // Sprint 62: expected_output may be promoted into Success looks like (no trailing Output duplicate).
-  assert.match(
-    a1[0],
-    /util-output-block|util-check-expected-output|util-activity-success-looks-like|revised using the checklist/i
-  );
+  assert.match(a1[0], /class="util-expected-output"/);
+  assert.match(a1[0], /For a strong answer/);
   assert.match(a1[0], /revised using the checklist/i);
+  assert.match(a1[0], />Checklist<\/span>/i);
+  assert.match(a1[0], /Revise your explanation by adding a missing link/i);
+  assert.match(a1[0], /class="util-checklist-instruction"/);
+  assert.equal((a1[0].match(/<ul class="util-checklist"/g) || []).length, 1);
+  assert.doesNotMatch(
+    a1[0],
+    /<ul class="util-checklist"[^>]*>[\s\S]*Revise your explanation by adding a missing link[\s\S]*?<\/ul>/i
+  );
+  assert.ok(
+    a1[0].indexOf("Sample Output") < a1[0].indexOf("util-expected-output"),
+    "expected_output guidance should remain at the checklist beat"
+  );
+  assert.ok(
+    a1[0].indexOf("util-expected-output") <
+      a1[0].indexOf(">Checklist</span>"),
+    "expected_output guidance should immediately precede its checklist material"
+  );
+  assert.equal((a1[0].match(/revised using the checklist/gi) || []).length, 1);
+  assert.equal((a1[0].match(/Have you clearly identified the material conditions/gi) || []).length, 1);
+  assert.doesNotMatch(a1[0], /util-activity-success-looks-like|util-success-looks-like-list/);
+});
+
+test("renderer: expected_output and checklist fallbacks remain independent", () => {
+  const api = loadPrismTestApi();
+  const narrative = "Explain the mechanism clearly and support it with one relevant example.";
+  const criterion = "The mechanism is explained in plain language.";
+  const page = {
+    artifact_type: "page",
+    page_profile: "learner",
+    title: "Success guidance boundaries",
+    sections: [
+      {
+        section_id: "learning_activities",
+        heading: "Learning Activities",
+        content: [
+          {
+            activity_id: "A1",
+            title: "Narrative only",
+            learner_task: "Write an explanation.",
+            expected_output: narrative,
+            materials: { text: "Use the source passage." }
+          },
+          {
+            activity_id: "A2",
+            title: "Checklist only",
+            learner_task: "Review your explanation.",
+            materials: {
+              checklist:
+                "### Concept Self-Check\n\n- " +
+                criterion +
+                "\n\n**If any check is not met:** Revise the explanation."
+            }
+          }
+        ]
+      }
+    ]
+  };
+  const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
+  assert.equal((html.match(new RegExp(narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
+  assert.match(html, /class="util-expected-output"/);
+  assert.doesNotMatch(html, new RegExp("<li>[^<]*" + narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.equal((html.match(/The mechanism is explained in plain language\./g) || []).length, 1);
+  assert.match(html, /class="util-checklist-instruction"/);
+  assert.match(html, /Revise the explanation/);
+  assert.doesNotMatch(
+    html,
+    /<ul class="util-checklist"[^>]*>[\s\S]*Revise the explanation[\s\S]*?<\/ul>/i
+  );
+  assert.equal((html.match(/<ul class="util-checklist"/g) || []).length, 1);
+  assert.doesNotMatch(html, /util-activity-success-looks-like|util-success-looks-like-list/);
 });
 
 test("renderer: self_explanation_prompt renders without pre-check co-requisites", () => {

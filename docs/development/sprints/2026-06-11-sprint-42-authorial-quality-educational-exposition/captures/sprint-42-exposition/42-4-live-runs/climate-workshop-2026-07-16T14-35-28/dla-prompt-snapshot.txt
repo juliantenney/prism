@@ -1,0 +1,160 @@
+Context:
+You are provided with learning_outcomes, episode_plans (required — authoritative archetype and ordered instructional-function beats from upstream Episode Plan), and optionally knowledge_model or learning_content.
+
+Task:
+Populate executable learning_activities from upstream episode_plans. This step is an obligation population step — translate each episode_plan beat into required_materials obligations and learner_task beat assembly. It is not a learning-design, sequencing, archetype-selection, or session-arc step. Do not replan beats, archetypes, function sequences, or cross-activity session arc.
+- Scaffold strings (activity_preamble, cognition fields, expected_output, intellectual_coherence_bridge): learner-facing page copy at SSOT floors — cognition = three substantive reasoning sentences; bridge mandatory synthesis on A2+; not beat-metadata or cues.
+
+Instructions:
+- Every activity must be implementation-ready with explicit learner_task, expected_output (quality-threshold prose per SSOT), required_materials, grouping, and duration_minutes
+- Consume episode_plans beat order and archetype as fixed — populate obligations per beat; do not reconstruct function_sequence or infer primary_archetype from LO alone
+- Learner-facing fields may use limited Markdown: ##/### headings, lists, **bold**, simple pipe tables, --- rules
+- Canonical contracts: LD-TABLE-FIDELITY (table types → pipe tables in GAM); LD-MATERIALS-COPY (specify types/requirements only; GAM authors bodies); LD-MATH-RENDER (TeX \(...\) / \[...\] only); LD-GUIDED-LEARNING-SCAFFOLD SSOT + PRE-EMIT when self_directed learner-page
+- Omit facilitator_moves and failure_mode for self_directed learner-page workflows
+- Use workflow constraints when present: design_scope, delivery_pattern, learning_environments
+- Define required_materials as material_id, type, purpose, specification — not full material bodies
+- Use KM/LO affordances to enrich specification wording only — not to replan beats or archetypes
+- Avoid LO→task shells; use KM definitions/processes/misconceptions in specs where relevant beats require them
+- If design_scope is single_activity, produce one focused activity unless clearly justified
+- Do not produce discussion-only, facilitator-redesign, or delivery-impossible activities
+
+Obligation population gates (38S — mandatory BEFORE learner_task or required_materials; upstream episode_plans owns archetype and beat order — populate, do not replan; internal reasoning only):
+- IFP-04 POPULATION INFERENCE: INF-01 infer from LO/brief + existing KM only; INF-02 no invented domain facts except brief/minimal scenario constants; INF-03 criteria operational; INF-04 strategy menu 3–6 neutral not pre-ranked; INF-05 exemplar models reasoning not single answer; INF-06 scenario numerics illustrative; Evaluate archetype specs: 3–5 criteria, ≥2 perspectives, ≥2 trade-off prompts, worked judgement weak vs strong (strong ≠ expected_output), Transfer with same criteria; forbid pre-written learner memo in consolidation_summary, pre-ranked strategy, session summary as Evaluate teaching; INF-EVAL-01 (38L-4): KM-T05 household budget inflation workbook → fourth Evaluate LO = household strategy judgement (38I-4 A4); KM-T08 policy communication = macro context only — not primary Evaluate driver
+- IFP-05 ANTI-SHELL: shell = preamble + single learner_task + thin materials without beat obligations — FAIL; AS-01 every Required beat has required_materials entry; AS-02 learner_task ≥2 teach/model segments before perform; AS-03 ≥1 teaching-depth spec (worked_example, modelling_note, text exposition, scenario narrative); AS-04 Verification ≥4 check items specified; AS-05 expected_output = learner-facing quality-threshold prose (30–70w SSOT), not completion labels or evidence tags; AS-06 Evaluate EV-SHELL-01..07; AS-FAIL-01 <80% beat functions populated; AS-FAIL-02 learner_task dominates without Worked thinking/Explanation; AS-FAIL-03 materials only for DLA-WB checklist without beat map; AS-FAIL-04 capstone Evaluate with consolidation_summary+prompt_set only; AS-FAIL-05 Apply without Worked thinking when KM-T03 fired; AS-FAIL-06 (38L-4 R5): Evaluate with guided judgement but missing independent judgement template/task_cards OR verification checklist OR transfer_prompt — add missing obligation rows before emit
+- IFP-06 ANTI-SPOILER: allow worked/modelling/criteria teaching specs; forbid completed learner memo in consolidation_summary when learner must write; sample_output not copy target; SP-01..04 scaffold-only specs when learner-production required (GAM realises in §6)
+- OBLIGATION POPULATION (38S — authoritative beat→obligation contract; merges IFP-09/10 + DLA-WB-26..31): For every Required beat from episode_plans, each required_materials row MUST include depth_floor: L3 plus content obligations — not type-only specs; apply FUNCTION_SPECS + 38K-2 five-dimension sufficiency; GAM-PRES realises bodies. Gates when function Required (cognition fields alone FAIL): G1 Verification (DLA-WB-26 / 38L-2 R1) → every activity MUST list type checklist with purpose verification/self-check/rubric; depth_floor L3: ≥4 criteria-linked check items + repair/revise if any fail; table completion alone does NOT satisfy verification (AS-04, EMIT-FAIL-04); G2 Transfer → transfer_prompt row when Transfer Required; G3 Independent judgement (Evaluate / DLA-WB-28) → template|task_cards separate from consolidation_summary; expected_output names memo artefact; scaffold only per IFP-06; G4 Worked analytic pass (Analyse / DLA-WB-27 / 38L-2 R6) → worked_example|modelling_note with purpose worked analytic pass BEFORE analysis_table; fact→analytical lens→mechanism→draft cell walkthrough; analysis_table spec requires ≥1 exemplar row or hint column; G5 Guided judgement → analysis_table|decision_table|comparison_table with ≥1 partial exemplar row or hint column + scoring guide. Evaluate completion pack (DLA-WB-31 / 38L-4 — EV-CAP-03/04, INF-EVAL-01): criteria exposition (≥3 dimensions) + scenario (≥2 perspectives) + worked judgement weak vs strong + guided table + independent judgement + checklist + transfer_prompt — consolidation_summary alone does NOT satisfy Evaluate; EV-CAP-04: guided judgement alone CANNOT terminate Evaluate; independent judgement + verification + transfer Materials required. Apply (DLA-WB-23): when archetype=Apply and KM-T03 (process ≥3 steps) list worked_example with stepped think-aloud before independent practice. Depth discipline (DLA-WB-30 / 38L-2 R2): every R-function Material specification includes depth_floor: L3 content obligations — thin type-only specs are depth FAIL. Anti-emission (DLA-WB-29 / EMIT-FAIL-01..04): transfer_or_application_task without transfer_prompt; verification implied only by complete the table; consolidation_summary as sole Evaluate capstone evidence; prompt_set substituting for checklist — add Materials before JSON emit (do not replan beats)
+Self-study workbook contract (DLA-WB — when delivery_context is self_directed AND brief/desired outputs imply ~60-minute learner workbook or learner page). Types/purposes only — GAM authors bodies (LD-MATERIALS-COPY). Mandatory rows as explicit required_materials JSON when applied — delivery_notes alone insufficient:
+- DLA-WB-01: delivery_notes: resource_intent self_study_workbook, session_duration_target_minutes (~60), consolidation_requirement, workbook_contract_applied: true
+- DLA-WB-02: Every activity maps ≥1 learning outcome ID; final capstone maps ≥3 distinct outcome IDs when ≥3 outcomes available
+- DLA-WB-03: Sum of activity duration_minutes across the session must be 50–70 unless delivery_notes documents an explicit brief exception
+- DLA-WB-04/17: solo-completable — individual grouping; omit facilitator_moves/failure_mode
+- DLA-WB-06: session MUST NOT be table-only — ≥2 type families; *_table activities need ≥1 non-table type
+- DLA-WB-06a (38F-2 mandatory row — V-01): When workbook_contract_applied is true, the session MUST include ≥1 explicit required_materials row whose type is a table/reference family token: classification_table | comparison_table | analysis_table | impact_table | reference_table | data_table | decision_table | planning_table — on a practice-oriented activity (typically second activity), NOT on the capstone alone (DLA-WB-16); specification must describe learner-work columns to complete with judgement/rating cells left for the learner; must coexist with DLA-WB-08 worked_example/sample_output rows and DLA-WB-12 consolidation_summary; do not omit tables because worked/consolidation mandatory rows were added (38E-10 regression guard)
+- DLA-WB-07/10/11: ≥1 text exposition (type text, purpose explanatory teaching); ≥2 activities with practice-oriented material purpose; ≥2 activities with task_cards, prompt_set, and/or checklist
+- DLA-WB-08 (mandatory required_materials row): ≥1 early-session activity (typically first or second) MUST list explicit required_materials with type worked_example AND type sample_output (preferred pair on same or adjacent teach activity); if sample_output omitted, list type modelling_note with think-aloud/decision-criteria specification; each row specification must require stepped expert completion with visible intermediate results before learner parallel task; learner_task must instruct learner to study worked example/sample before practice; capstone integrative template, ranking template, or practice blank worksheet does NOT satisfy DLA-WB-08
+- DLA-WB-12 (mandatory required_materials row): delivery_notes must include consolidation_requirement AND final capstone activity MUST list required_materials type consolidation_summary with specification requiring learner-facing session closure body (≥80 words, ≥3 key ideas summarised — what to remember, not new teaching); optional prompt_set with reflection purpose may supplement but does NOT replace consolidation_summary; capstone template or prompt_set alone does NOT satisfy DLA-WB-12
+- DLA-WB-13/05/16: last integrative capstone expected_output = synthesis artefact (plan, memo) — not reproduce all prior tables; capstone maps ≥3 outcomes when ≥3 exist; capstone must NOT enumerate all prior *_table types as primary deliverables
+- DLA-WB-15: When activity_interaction_type is ranking or learner_task requires compare/rank — specification must require learner-generated ranking and justification; forbid pre-supplied effectiveness or rating scores; expected_output must mention justification
+- DLA-WB-18 (38F-2 mandatory row — V-05 scenario): When learner_task, activity_preamble, required_materials purpose/specification, or expected_output references cases, scenarios, households, personas, dilemmas, or named narratives — same activity_id MUST include distinct required_materials row with type scenario (specification: ≥2 cases with specific names, numbers, or context); task_cards, prompt_set, or activity prose MUST NOT be the sole carrier of case/household narrative bodies; embedding ≥2 household/case narratives only inside task_cards is contract FAIL (38E-10); prefer pairing scenario with analysis_table or comparison_table per DLA-WB-06a
+- DLA-WB-19: expected_output = SSOT 30–70w quality-threshold prose, not short completion labels
+- DLA-WB-22 (38J-3 Evaluate): when archetype=Evaluate include criteria, scenario, worked judgement, guided table, independent judgement, checklist, transfer — EV-CAP-01/02/03
+
+Constraints:
+
+Output:
+- Learner-page activities: activity_preamble + ≥1 cognition scaffold field + bridge on A2+; SSOT SCAFFOLD GENRE applies — learner_task may stay concise; do not shorten scaffold prose for JSON brevity.
+- Return output as json
+- Return JSON: activities, outcome_alignment, delivery_notes
+- delivery_notes object when workbook applies: resource_intent, session_duration_target_minutes (50–70), consolidation_requirement, workbook_contract_applied
+- When workbook_contract_applied: (1) DLA-WB-08: ≥1 early activity with worked_example + sample_output (or modelling_note); (2) DLA-WB-12: final activity consolidation_summary; (3) DLA-WB-06a: ≥1 practice activity with table/reference type (classification_table, comparison_table, analysis_table, impact_table, reference_table, data_table, decision_table, or planning_table); (4) DLA-WB-18: ≥1 activity with type scenario when session uses household/case/scenario language — rows (1)–(2) and (3)–(4) must all coexist — do not drop worked/consolidation to add table/scenario; (5)–(8) OBLIGATION POPULATION (38S) G1–G5 + DLA-WB-26..31 depth_floor L3 — see gates above; PRE-EMIT GATE: add missing required_materials before emit if (5)–(8) or EMIT-FAIL-01..04 fail (do not replan beats or archetypes)
+- activities[]: activity_id, title, grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT
+- required_materials types: task_cards | prompt_set | scenario | checklist | template | sample_output | worked_example | modelling_note | consolidation_summary | transfer_prompt | text | classification_table | comparison_table | analysis_table | impact_table | reference_table | data_table | decision_table | planning_table
+- Return only the JSON.
+
+LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT (auto-applied):
+- Module: LD-GUIDED-LEARNING-SCAFFOLD | Author scaffold fields as educational prose to the learner — not metadata labels or taxonomy tags.
+- Scope: activity-row fields and intellectual_coherence_bridge only. Do not add fields.
+- learner_task may stay concise; scaffold fields must meet word floors — do not generalise brevity from learner_task.
+- Design Page compose: copy these fields verbatim — never shorten, label-ify, or paraphrase into metadata.
+- AUTHORITATIVE WORD RANGES (no other prompt block may restate):
+  activity_preamble 50–120; reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, argument_structure_hint, transfer_or_application_task 35–80; expected_output 30–70; intellectual_coherence_bridge 30–60; support_note 20–70 when used.
+- SCAFFOLD GENRE: scaffold strings = learner-facing page copy (not metadata). Cognition = three substantive sentences — peer learns the reasoning move; not stems or cues. expected_output = quality threshold. intellectual_coherence_bridge (A2+, mandatory) = carried-reasoning synthesis — not connective metadata.
+- FORBIDDEN on scaffold fields: procedural openers (Begin by…, In this activity you will…); arrow-only chains; one-line stems (Explain your answer); deliverable labels without quality criteria; scheduling-only bridges.
+- EXEMPLAR CONTRAST (topic-specific — do not copy verbatim):
+  • reasoning_orientation — Weak: "Trace mechanism → function relationships."
+  • reasoning_orientation — Strong: "As you analyse each stage, ask what the virus is doing and what problem that solves. Avoid listing events — connect each mechanism to a functional consequence such as entry, replication, or spread."
+  • conceptual_contrast_prompt — Weak: "Contrast positive vs negative-sense RNA."
+  • conceptual_contrast_prompt — Strong: "When comparing genome types, focus on whether the genome translates immediately or needs a transcription step first. Polarity changes the route from genome entry to protein production — not just the label positive or negative."
+  • argument_structure_hint — Weak: "criteria → comparison → judgement → justification"
+  • argument_structure_hint — Strong: "Name two or three defensible criteria and say why each matters. Compare each option against them with cited evidence, then explain why your judgement follows — including trade-offs weighed, not only which option you prefer."
+  • self_explanation_prompt — Weak: "Explain your answer."
+  • self_explanation_prompt — Strong: "Before checking the model row, explain which contrast you find more defensible and cite one passage as evidence. State why that passage supports your judgement and connect it to the mechanism or distinction being tested — expand until a peer could follow your reasoning."
+- MANDATORY PER ACTIVITY (learner-page DLA):
+  • activity_preamble (≥50 words), expected_output (≥30 words), and at least one field from: reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, argument_structure_hint, transfer_or_application_task.
+  • intellectual_coherence_bridge (≥30w, mandatory A2+): synthesis of carried reasoning and why this activity follows — not connective metadata.
+  • Do not emit procedural-only rows (title, learner_task, expected_output, required_materials).
+- DLA PRE-EMIT SCAFFOLD GATE (mandatory before returning learning_activities JSON):
+  1. Presence + word minimum: every populated scaffold field meets the AUTHORITATIVE WORD RANGES above.
+  2. Mandatory coverage: every activity has activity_preamble, expected_output, and at least one cognition scaffold field; intellectual_coherence_bridge on activities after the first when the sequence has 2+ activities.
+  3. Anti-terse: no labels, stems, arrow chains (→), or procedural openers on scaffold fields.
+  4. Self-check: count words in every scaffold field; rewrite any field below its minimum before emit.
+  5. No procedural-only rows.
+Pedagogic cognition contract (auto-applied):
+- Active cognition packs: misconception_repair_pack, transcript_transformation_pack
+- Each activity in the JSON activities array MUST include these additional cognition fields (non-empty, learner-facing):
+  - misconception_claim
+  - reconciliation_prompt
+  - evidence_contrast
+  - transformation_activity
+  - source_to_application_prompt
+- Cognition fields are additive; keep existing required activity schema fields.
+EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied):
+- Module: EDUCATIONAL-QUALITY-FRAMEWORK | Sprint 40 Educational Quality Framework (runtime prompt contract)
+- Learner journey: the learner journey is the primary design unit — generate a coherent learner-development journey, not disconnected content pages or activity collections.
+- Learner transformations: outputs should develop understanding, capability, judgement and independence.
+- Judgement: create opportunities to compare, evaluate, justify, critique and defend — not recall-only or completion-only tasks.
+- Progressive independence: observe → guided practice → independent decision making → transfer; fade learner_task/materials support — not LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT fields (word floors).
+- Metacognition (lightweight): include short confidence, uncertainty, progress, decision and next-step checks in optional fields — without shortening mandatory scaffold prose.
+- Learning success: make progress visible so learners can recognise what they now understand, can do, can judge, and can manage independently.
+- Cognitive over interface activity: optimise for cognitive activity, not more interface activity — depth of thinking beats visible interactivity.
+- Step manifestation (targeted guidance):
+- Activities: state or imply the developmental purpose of each activity.
+- Use required_materials and learner_task to support understanding, capability, judgement and/or independence.
+- Judgement manifestation: compare, evaluate, justify, critique, defend, choose, prioritise or decide — not surface completion only.
+- Across multiple activities: progressive independence in learner_task and materials; scaffold fields follow LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT word floors.
+- Avoid activity shells where learners only complete low-value surface interactions.
+- DLA learner-page scaffold fields: follow LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT word floors and PRE-EMIT gate.
+OUTPUT CONTRACT (learner-facing copy fields — author to the learner; scaffold: LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT):
+- Each activity MUST include activity_preamble, expected_output, and ≥1 cognition scaffold field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, transfer_or_application_task); intellectual_coherence_bridge mandatory on A2+ per SSOT.
+- Additive fields: prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge.
+- Optional: intellectual_frame; uncertainty_tension_prompt; study_orientation (first activity when used); learner_task may stay concise without shortening other scaffold fields.
+- Distribution: self_explanation_prompt on ≥2 activities; prior_knowledge_activation on ≥1 when prior context helps.
+
+Learner-page activity framing by archetype (match episode_plan beat / primary_archetype):
+- Understanding activities: activity_preamble + self_explanation_prompt and/or reasoning_orientation.
+- Application activities: activity_preamble + reasoning_orientation + transfer_or_application_task when the beat is application.
+- Analysis activities: activity_preamble + conceptual_contrast_prompt and/or reasoning_orientation.
+- Evaluation activities: activity_preamble + uncertainty_tension_prompt and/or argument_structure_hint.
+- Final synthesis/judgement activities: activity_preamble + transfer_or_application_task + consolidation or learning-success framing where the beat requires closure.
+- Choose the cognition field(s) that match the episode_plan beat / primary_archetype — do not emit procedural-only rows (title, learner_task, expected_output, required_materials only).
+- facilitator_moves: optional for facilitated choreography; failure_mode: optional when debrief timing is specified.
+Self-directed activity JSON example (authoritative shape — topic-specific strings required):
+{
+  "activity_id": "A2",
+  "title": "Compare major works",
+  "activity_preamble": "Marx's major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative. Notice how authorial purpose changes which evidence counts as decisive.",
+  "reasoning_orientation": "Compare texts as historical arguments rather than plot summaries. For each work, trace the central claim, the evidence Marx selects, and the audience he appears to address. Strong answers explain why a difference in purpose changes how you read the same historical event.",
+  "argument_structure_hint": "Name one defensible claim per work and say why that criterion matters. Cite a passage as evidence, then explain what follows for your judgement. Compare both works on the same criteria before you conclude, including what trade-off you weighed.",
+  "conceptual_contrast_prompt": "When you contrast the Manifesto with Kapital, focus on whether each text is primarily a revolutionary programme or a systematic critique. The distinction changes which evidence and conclusions are appropriate for each work.",
+  "self_explanation_prompt": "Before checking the model row, explain which contrast you find more defensible and cite one passage. State why it supports your judgement and connect it to the distinction being tested — expand until a peer could follow your reasoning.",
+  "learner_task": "Complete the comparison table: write the purpose of each work and one defensible difference per row.",
+  "expected_output": "Your completed table should give a purpose statement and one cited, defensible difference per row. Strong entries explain why the difference follows from evidence in the texts, not from a generic summary of content.",
+  "required_materials": [
+    { "material_id": "M1", "type": "text", "purpose": "Orienting extracts", "specification": "depth_floor: L3; paired excerpt blocks ≥150 words each with quotable spans." }
+  ]
+}
+
+Scaffold strings = SSOT page copy (see LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT); 38L rows omitted in miniature example — IFP-10/DLA-WB-26..31 when applicable.
+Pedagogic enrichment — orientation contract (auto-applied):
+- Use topic-specific orientation tied to the brief subject — never generic module welcomes.
+- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression.
+- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (learner-facing page) on Design Learning Activities; preserve verbatim on Design Page compose.
+- Learner-facing workshop handout: the resource carries pedagogy so facilitators can support learners without re-explaining the resource — write orientation learners read on the page.
+- Facilitator timing, group choreography, and session orchestration belong in facilitator_moves or facilitator-only materials — not in activity_preamble, study_orientation, intellectual_frame, or reasoning_orientation.
+- Explicitly avoid timing cues in learner-facing orientation fields: "minutes 5–15", "circulate during", "by minute 20".
+Pedagogic enrichment — reasoning contract (auto-applied):
+- Make disciplinary thinking visible: populated cognition and bridge fields follow SSOT SCAFFOLD GENRE and word floors — never restate learner_task, activity_preamble, study_orientation, or intellectual_frame.
+- Populated cognition and bridge fields: SSOT SCAFFOLD GENRE and word floors — not one-line hints or single cues.
+- Explicitly avoid hollow filler: "think critically", "discuss in groups", "share with a partner", "analyse the topic carefully" without a concrete thinking move.
+LD-MATH-RENDER (auto-applied):
+- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)
+- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.
+- Inline maths: use \(...\) (for example \(x^2 + y^2\)).
+- Display/block equations: use \[...\] on their own lines where block layout is intended.
+- Do NOT use $...$ or $$...$$ delimiters.
+- Do NOT wrap equations in code spans, code fences, or backtick markdown.
+- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\(...\\) and \\[...\\] in raw JSON text).
+- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).
+- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.
+- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.
+- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.

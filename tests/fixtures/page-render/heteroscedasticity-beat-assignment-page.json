@@ -1,0 +1,960 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Why Does the Spread of Regression Errors Matter? Understanding Heteroscedasticity",
+  "audience": "Learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan",
+      "dla",
+      "gam",
+      "learning_sequence",
+      "assessment_items",
+      "design_page"
+    ],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "## Overview\n\nThis self-study lesson introduces heteroscedasticity, a common issue in applied economic regression analysis. You will progress from understanding residual variance, through interpreting residual plots and economic examples, to evaluating practical detection and remedy approaches used by economists and researchers."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "## Learning Purpose\n\nEconomists frequently rely on regression models to analyse relationships and inform decisions. This lesson develops the ability to recognise when the variability of residuals changes across observations, understand why this matters for statistical inference, and evaluate common practical responses. The goal is not advanced mathematics but confident interpretation of evidence and informed judgement about regression results."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "## Knowledge Summary\n\nA regression residual is the difference between an observed value and the value predicted by a regression model. Residuals are expected in regression analysis, but their behaviour provides important diagnostic information.\n\nThe key distinction in this lesson is between homoscedasticity and heteroscedasticity. Homoscedasticity exists when residuals have a similar spread across observations. Heteroscedasticity exists when residual variance changes systematically. The issue is therefore not whether residuals are present, but whether their variability remains approximately constant.\n\nEconomic data frequently exhibit heteroscedasticity because variation in behaviour often increases as income, wealth, expenditure, or firm size increases. For example, higher-income households may display much greater diversity in spending behaviour than lower-income households, producing larger prediction errors at higher income levels.\n\nResidual plots provide an intuitive way to investigate variance patterns. A residual plot with a consistent vertical spread suggests homoscedasticity. Patterns such as widening funnels, narrowing funnels, or distinct changes in spread provide evidence consistent with heteroscedasticity. Interpretation should focus on systematic patterns in variability rather than isolated observations.\n\nA worked residual analysis follows a common reasoning process: observe residual behaviour, compare spread across observations, identify whether variance changes, and then decide whether the evidence is consistent with heteroscedasticity. This evidence-based reasoning is central to applied economic analysis.\n\nHeteroscedasticity is important because it can affect standard errors and therefore the reliability of statistical inference. Although regression coefficients may still be estimated, confidence intervals and hypothesis tests can become less dependable when constant variance assumptions are violated.\n\nEconomists therefore use diagnostic approaches and remedies. Residual plots provide visual evidence, while the Breusch–Pagan test offers a formal statistical approach to investigating whether residual variance is related to explanatory variables. Common responses include robust standard errors, which improve the reliability of inference, and variable transformations, such as logarithms, which may reduce differences in variability. Improved model specification may also reduce problematic variance patterns.\n\nAcross the lesson, the central conceptual relationship is that changing residual variance leads to heteroscedasticity, heteroscedasticity can reduce confidence in standard errors and inference, and economists use diagnostic and corrective approaches to support more reliable conclusions."
+    },
+    "study_tips": {
+      "format": "markdown",
+      "body": "## Study Tips\n\n- Focus on the spread of residuals, not the existence of residuals.\n- When analysing residual plots, look for changes in the width of the residual cloud.\n- Always justify conclusions using evidence from residual behaviour.\n- Distinguish between detection methods and remedies.\n- Remember that heteroscedasticity primarily affects the reliability of inference rather than automatically invalidating a regression model.\n- Complete the final evaluation activity before attempting the formative assessment to strengthen your judgement skills."
+    }
+  },
+  "learning_outcomes": [
+    {
+      "id": "LO1",
+      "statement": "Define heteroscedasticity and distinguish it from homoscedasticity using the concept of residual variance in linear regression."
+    },
+    {
+      "id": "LO2",
+      "statement": "Interpret residual plots to identify evidence that residual variability is constant or changing across observations."
+    },
+    {
+      "id": "LO3",
+      "statement": "Use regression residual information from economic examples to determine whether evidence is consistent with heteroscedasticity."
+    },
+    {
+      "id": "LO4",
+      "statement": "Explain how heteroscedasticity can affect standard errors, confidence in statistical inference, and interpretation of regression results."
+    },
+    {
+      "id": "LO5",
+      "statement": "Compare introductory approaches for detecting and addressing heteroscedasticity, including residual plots, the Breusch–Pagan test, robust standard errors, and variable transformations."
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Defining Heteroscedasticity and Homoscedasticity",
+      "learner_task": "1. Study the explanatory text introducing residuals, homoscedasticity, and heteroscedasticity.\n2. Work through the expert example showing how residual variance changes across observations.\n3. Compare the sample response with the explanation.\n4. Complete the self-check and identify one misconception you previously held or might have held.\n5. Write a brief explanation distinguishing homoscedasticity from heteroscedasticity in your own words.",
+      "expected_output": "A successful response clearly defines both homoscedasticity and heteroscedasticity, refers to residual variance, and explains the difference using plain language rather than formulae alone. The explanation should demonstrate that changing variability, not simply the presence of residuals, is the defining feature.",
+      "activity_preamble": "You will build a foundational mental model of residual variance before working with evidence. Focus on how the spread of residuals differs between homoscedastic and heteroscedastic situations.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Core concept explanation.",
+          "specification": "depth_floor:L3. Explain residuals, residual variance, homoscedasticity and heteroscedasticity using economic examples. Include distinction between constant and changing spread. Address common misconception that any residual implies heteroscedasticity."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Model expert reasoning about residual variance.",
+          "specification": "depth_floor:L3. Stepped expert walkthrough comparing low-variance and increasing-variance residual patterns. Display intermediate reasoning that links data observations to the heteroscedasticity judgement."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "Demonstrate quality threshold response.",
+          "specification": "depth_floor:L3. Provide exemplar explanation that distinguishes homoscedasticity from heteroscedasticity using residual variance language and an economic context."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-check.",
+          "specification": "depth_floor:L3. Four criteria-linked checks: defines residual variance, distinguishes concepts correctly, avoids misconception about residual presence, uses economic example. Include revision action if any criterion is missed."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Residual Variance and Heteroscedasticity",
+          "body_format": "markdown",
+          "body": "## Residuals and Variance\n\nA residual is the difference between an observed value and a value predicted by a regression model.\n\nHomoscedasticity occurs when residuals have a similar spread across all observations.\n\nHeteroscedasticity occurs when the spread changes. For example, prediction errors may be small for low-income households but much larger for high-income households.\n\nThe key issue is not whether residuals exist. All regressions contain residuals. The issue is whether the variability of those residuals remains constant."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "activity_id": "A1",
+          "title": "Worked Example: Constant versus Changing Spread",
+          "body_format": "markdown",
+          "body": "## Example\n\nConsider two regressions.\n\n### Case A\nResiduals mostly fall between -5 and +5 across the full range of fitted values.\n\nReasoning:\n1. Residuals are present.\n2. Their spread remains similar.\n3. Variance appears constant.\n4. This is consistent with homoscedasticity.\n\n### Case B\nResiduals range from -2 to +2 at low values but from -15 to +15 at high values.\n\nReasoning:\n1. Residual spread increases.\n2. Variability changes systematically.\n3. Variance is not constant.\n4. This is consistent with heteroscedasticity."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Sample Explanation",
+          "body_format": "markdown",
+          "body": "Homoscedasticity means that residuals have a roughly constant spread across observations. Heteroscedasticity means that the spread changes, becoming larger or smaller in different parts of the data. The presence of residuals alone does not indicate heteroscedasticity; it is the change in residual variance that matters."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Concept Self-Check",
+          "body_format": "markdown",
+          "body": "- Have I explained residual variance?\n- Have I correctly distinguished homoscedasticity and heteroscedasticity?\n- Have I avoided claiming that all residuals imply heteroscedasticity?\n- Have I referenced an economic example?\n\nIf any answer is No, revise before continuing."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "reasoning_orientation": "Focus on the spread of errors rather than the existence of errors. Ask yourself whether the amount of prediction error remains stable or changes across observations. Build a mental picture of residual variability before thinking about statistical consequences.",
+      "self_explanation_prompt": "How would you explain to a fellow economics student why two regressions can have residuals but only one exhibits heteroscedasticity?"
+    },
+    {
+      "activity_id": "A2",
+      "title": "Interpreting Residual Plot Evidence",
+      "learner_task": "1. Study the worked analytical pass demonstrating interpretation of a residual plot.\n2. Review the residual plot scenarios.\n3. Complete the analysis table by identifying patterns in residual spread.\n4. Decide whether each case provides evidence consistent with heteroscedasticity.\n5. Use the checklist to verify your reasoning and revise where necessary.",
+      "expected_output": "A successful analysis identifies the relevant pattern in each residual plot, explains whether variability remains constant or changes, and justifies conclusions using evidence from the distribution of residuals rather than isolated observations.",
+      "activity_preamble": "You will learn how economists interpret residual plots by examining patterns rather than individual points.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "worked_example",
+          "purpose": "Worked analytic pass before independent analysis.",
+          "specification": "depth_floor:L3. Demonstrate fact-to-pattern-to-judgement reasoning using a residual plot. Include analytical lens, identification of changing variance, and completed exemplar row."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "analysis_table",
+          "purpose": "Guided analysis scaffold.",
+          "specification": "depth_floor:L3. Pipe-table realisation with columns for observed pattern, evidence of variance behaviour, heteroscedasticity judgement, confidence note. Include one partially completed exemplar row and hint column."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "scenario",
+          "purpose": "Residual plot interpretation cases.",
+          "specification": "depth_floor:L3. At least two named economic cases with contextual details and residual plot descriptions, including one homoscedastic and one heteroscedastic pattern."
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "checklist",
+          "purpose": "Verification.",
+          "specification": "depth_floor:L3. Four checks linked to interpretation quality: identifies pattern, evaluates variance behaviour, uses evidence, avoids overinterpreting single points. Include repair guidance."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "worked_example",
+          "activity_id": "A2",
+          "title": "Worked Residual Plot Interpretation",
+          "body_format": "markdown",
+          "body": "## Interpreting a Residual Plot\n\nObservation: Residuals form a widening funnel.\n\nAnalysis:\n1. The spread is narrow on the left.\n2. The spread increases as fitted values rise.\n3. Residual variance is changing.\n4. The pattern is systematic rather than random.\n\nJudgement: The plot provides evidence consistent with heteroscedasticity.\n\n| Pattern | Variance Behaviour | Judgement |\n| --- | --- | --- |\n| Widening funnel | Increasing variance | Likely heteroscedasticity |"
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "analysis_table",
+          "activity_id": "A2",
+          "title": "Residual Plot Analysis Table",
+          "body_format": "markdown",
+          "body": "| Case | Observed Pattern | Variance Behaviour | Heteroscedasticity Judgement | Hint |\n| --- | --- | --- | --- | --- |\n| Example | Funnel shape | Increasing | Likely yes | Compare spread across values |\n| A | | | | Check width of residual cloud |\n| B | | | | Look for clustering |\n| C | | | | Assess consistency of spread |"
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "scenario",
+          "activity_id": "A2",
+          "title": "Residual Plot Cases",
+          "body_format": "markdown",
+          "body": "## Case A: Household Spending\nResiduals remain between approximately -50 and +50 at all fitted values.\n\n## Case B: Income and Luxury Consumption\nResiduals range from ±20 at low income levels to ±400 at high income levels.\n\n## Case C: Firm Profits\nResiduals are tightly grouped for small firms but highly dispersed for large firms."
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Analysis Verification",
+          "body_format": "markdown",
+          "body": "- Did I identify the visual pattern?\n- Did I evaluate whether variance changes?\n- Did I use evidence from the plot?\n- Did I avoid focusing on only one observation?\n\nRevise any response that fails a criterion."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "analysis"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "reasoning_orientation": "Look for systematic patterns in variability. Avoid focusing on a single unusual point. Compare the width of the residual cloud across the horizontal axis.",
+      "conceptual_contrast_prompt": "What visual features distinguish a constant-width residual pattern from a funnel-shaped pattern?"
+    },
+    {
+      "activity_id": "A3",
+      "title": "Applying Residual Evidence to Economic Data",
+      "learner_task": "1. Review the modelled economic example involving household income and expenditure.\n2. Follow the process walkthrough showing how an economist reaches a conclusion from residual evidence.\n3. Analyse the provided scenarios using the decision table.\n4. Record whether the evidence suggests heteroscedasticity and explain your reasoning.\n5. Complete the verification checklist.",
+      "expected_output": "A strong response uses residual evidence systematically, connects observations to changing variance, and reaches a defensible conclusion. Judgements should be supported by identified patterns rather than assumptions about economic variables alone.",
+      "activity_preamble": "You will apply your understanding to regression residual evidence from economic contexts.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "worked_example",
+          "purpose": "Applied reasoning example.",
+          "specification": "depth_floor:L3. Think-aloud example using household income and expenditure residuals. Show intermediate reasoning before final judgement."
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "scenario",
+          "purpose": "Economic application cases.",
+          "specification": "depth_floor:L3. At least two contextualised economics scenarios with indicative residual evidence and numerical examples."
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "decision_table",
+          "purpose": "Structured evidence-to-judgement scaffold.",
+          "specification": "depth_floor:L3. Pipe-table with columns for evidence observed, variance behaviour, provisional conclusion, justification. Include one guided exemplar."
+        },
+        {
+          "material_id": "A3-M4",
+          "type": "checklist",
+          "purpose": "Verification.",
+          "specification": "depth_floor:L3. Four criteria-linked checks with revision guidance."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "worked_example",
+          "activity_id": "A3",
+          "title": "Applied Economic Reasoning",
+          "body_format": "markdown",
+          "body": "## Household Income and Expenditure\n\nEvidence:\n- Lower-income households: residuals typically ±50.\n- Higher-income households: residuals typically ±400.\n\nReasoning:\n1. Compare residual spread across groups.\n2. Notice systematic increase in variability.\n3. Link the pattern to changing variance.\n4. Conclude that evidence is consistent with heteroscedasticity."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "scenario",
+          "activity_id": "A3",
+          "title": "Economic Scenarios",
+          "body_format": "markdown",
+          "body": "## Scenario 1: Household Spending\nIncome rises from £1,500 to £6,000. Residual spread increases substantially.\n\n## Scenario 2: Firm Revenue\nSmall firms show residuals within ±10. Large firms show residuals within ±150.\n\nUse the evidence rather than assumptions about the variables."
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "decision_table",
+          "activity_id": "A3",
+          "title": "Evidence-to-Judgement Table",
+          "body_format": "markdown",
+          "body": "| Evidence Observed | Variance Behaviour | Conclusion | Justification |\n| --- | --- | --- | --- |\n| Residual spread rises with income | Increasing | Likely heteroscedasticity | Variance changes systematically |\n| | | | |\n| | | | |"
+        },
+        {
+          "material_id": "A3-M4",
+          "material_type": "checklist",
+          "activity_id": "A3",
+          "title": "Application Check",
+          "body_format": "markdown",
+          "body": "- Did I use residual evidence?\n- Did I identify variance behaviour?\n- Did I justify my conclusion?\n- Did I avoid unsupported assumptions?\n\nRevise where necessary."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "practice"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 13,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "reasoning_orientation": "Move from evidence to interpretation. The variable itself does not prove heteroscedasticity; the residual pattern provides the evidence.",
+      "transfer_or_application_task": "Identify another economic variable pair where residual variability might plausibly change as values increase and explain why."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Consequences for Statistical Inference",
+      "learner_task": "1. Study the explanation of how heteroscedasticity affects standard errors and inference.\n2. Review the mechanism linking changing residual variance to unreliable statistical conclusions.\n3. Complete the prompt set by explaining each stage in the chain of effects.\n4. Use the checklist to verify accuracy and clarity.",
+      "expected_output": "A successful explanation describes how changing residual variance can undermine standard errors and lead to less reliable hypothesis tests or confidence intervals. The response should focus on consequences for interpretation rather than mathematical derivations.",
+      "activity_preamble": "You will examine why economists care about heteroscedasticity by exploring its impact on inference and decision making.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "Explanation of practical consequences.",
+          "specification": "depth_floor:L3. Explain links among heteroscedasticity, standard errors, confidence in inference, and research conclusions."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "modelling_note",
+          "purpose": "Mechanism walkthrough.",
+          "specification": "depth_floor:L3. Show stepwise reasoning from changing residual variance to inference concerns.",
+          "instructional_archetype": "mechanism_explanation",
+          "archetype_plan": {
+            "start": "Residual variance changes across observations.",
+            "outcome": "Statistical inference becomes less reliable.",
+            "required_links": [
+              "Violation of constant variance assumption",
+              "Potentially unreliable standard errors",
+              "Less dependable confidence intervals and hypothesis tests"
+            ]
+          }
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "prompt_set",
+          "purpose": "Guided explanation prompts.",
+          "specification": "depth_floor:L3. Sequential prompts requiring learners to explain each stage in the mechanism."
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "checklist",
+          "purpose": "Verification.",
+          "specification": "depth_floor:L3. Four criteria-focused checks with revision prompts."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "text",
+          "activity_id": "A4",
+          "title": "Why Economists Care",
+          "body_format": "markdown",
+          "body": "## Practical Consequences\n\nHeteroscedasticity does not necessarily make coefficient estimates unusable. However, it can make standard errors unreliable. When standard errors are unreliable, confidence intervals and hypothesis tests may also become less reliable, affecting the conclusions researchers draw from data."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "modelling_note",
+          "activity_id": "A4",
+          "title": "How the Problem Affects Inference",
+          "body_format": "markdown",
+          "body": "Imagine that residual variance becomes larger for some observations and smaller for others. This means the constant-variance assumption is no longer holding consistently across the dataset. Because many standard error calculations depend on that assumption, the estimated standard errors may no longer reflect uncertainty accurately. When standard errors become unreliable, confidence intervals and hypothesis tests become less dependable as indicators of evidence. As a result, researchers may place too much or too little confidence in findings, making statistical inference less reliable overall."
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "prompt_set",
+          "activity_id": "A4",
+          "title": "Explain the Chain of Effects",
+          "body_format": "markdown",
+          "body": "1. What changes in the residuals?\n2. Which regression assumption is affected?\n3. How can standard errors be influenced?\n4. Why might confidence intervals become less reliable?\n5. How could this affect a research conclusion?"
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Inference Check",
+          "body_format": "markdown",
+          "body": "- Did I explain changing variance?\n- Did I mention standard errors?\n- Did I link standard errors to inference?\n- Did I focus on consequences rather than derivations?\n\nRevise any missing element."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "application"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "reasoning_orientation": "Trace the consequences of changing variance through the statistical process. Think about how a problem in assumptions can affect later decisions made by researchers."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Comparing Detection and Remedy Approaches",
+      "learner_task": "1. Study the criteria for evaluating detection and remedy approaches.\n2. Review the research scenarios and the worked judgement example.\n3. Complete the comparison and decision framework.\n4. Produce an independent written judgement recommending an approach and defending your reasoning.\n5. Complete the final verification checklist and read the session consolidation summary.\n6. Complete the transfer task.",
+      "expected_output": "Produce a reasoned recommendation that evaluates evidence, applies explicit criteria, acknowledges limitations, and justifies the choice of detection or remedy approach. Strong responses compare alternatives and explain trade-offs rather than simply naming a preferred option.",
+      "activity_preamble": "This capstone activity asks you to judge which detection and remedy approaches are most appropriate in different research situations.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "text",
+          "purpose": "Criteria exposition.",
+          "specification": "depth_floor:L3. Explain residual plots, Breusch–Pagan testing, robust standard errors, and transformations at an introductory level. Present evaluation criteria for appropriateness, evidence needs, and limitations."
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "scenario",
+          "purpose": "Evaluation contexts.",
+          "specification": "depth_floor:L3. At least two research scenarios with differing data characteristics and evidence sources."
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "sample_output",
+          "purpose": "Worked judgement comparison.",
+          "specification": "depth_floor:L3. Contrast weak and strong evaluative judgements, showing use of criteria and trade-off reasoning.",
+          "instructional_archetype": "evaluation_judgement",
+          "archetype_plan": {
+            "question": "Which detection or remedy approach is most appropriate for the scenario?",
+            "criteria": [
+              "Suitability for the evidence available",
+              "Support for reliable inference",
+              "Practical simplicity"
+            ],
+            "evidence": [
+              "Residual pattern information",
+              "Research context"
+            ],
+            "tradeoffs": [
+              "Simplicity versus diagnostic depth",
+              "Correction versus explanation of variance behaviour"
+            ],
+            "judgement_focus": "Justified selection of an appropriate approach"
+          }
+        },
+        {
+          "material_id": "A5-M4",
+          "type": "comparison_table",
+          "purpose": "Guided evaluation scaffold.",
+          "specification": "depth_floor:L3. Pipe-table with criteria columns, evidence notes, strengths, limitations, and provisional judgements. Include one partial exemplar row."
+        },
+        {
+          "material_id": "A5-M5",
+          "type": "template",
+          "purpose": "Independent judgement response structure.",
+          "specification": "depth_floor:L3. Structured template requiring recommendation, evidence, trade-offs, and conclusion. Scaffold only; no completed answer."
+        },
+        {
+          "material_id": "A5-M6",
+          "type": "checklist",
+          "purpose": "Verification.",
+          "specification": "depth_floor:L3. Four evaluation-focused checks covering criteria use, evidence use, trade-off discussion, and justified conclusion with revision guidance."
+        },
+        {
+          "material_id": "A5-M7",
+          "type": "transfer_prompt",
+          "purpose": "Transfer beyond current examples.",
+          "specification": "depth_floor:L3. Apply the same evaluation criteria to a new economics regression context."
+        },
+        {
+          "material_id": "A5-M8",
+          "type": "consolidation_summary",
+          "purpose": "Session closure and synthesis.",
+          "specification": "depth_floor:L3. Learner-facing summary of at least three key ideas from the session, explaining what to remember and when the concepts matter."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "text",
+          "activity_id": "A5",
+          "title": "Detection and Remedy Options",
+          "body_format": "markdown",
+          "body": "## Detection\n\n- Residual plots provide visual evidence.\n- The Breusch–Pagan test provides a formal statistical check.\n\n## Remedies\n\n- Robust standard errors improve inference when variance is not constant.\n- Logarithmic transformations may reduce variability differences.\n- Improved model specification may address omitted influences.\n\nEvaluation criteria:\n1. Suitability for available evidence.\n2. Support for reliable inference.\n3. Practical simplicity."
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "scenario",
+          "activity_id": "A5",
+          "title": "Research Scenarios",
+          "body_format": "markdown",
+          "body": "## Scenario A\nA researcher observes a clear funnel pattern in a residual plot from a household spending model.\n\n## Scenario B\nA researcher has a large dataset but no visual diagnostics yet and wants formal evidence regarding changing variance."
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "sample_output",
+          "activity_id": "A5",
+          "title": "Worked Judgement",
+          "body_format": "markdown",
+          "body": "In Scenario A, the residual plot already provides direct evidence of a widening pattern. Because the available evidence is visual and immediately observable, inspecting the residual plot is highly suitable. It is also simple to implement. However, visual inspection alone may not provide the same level of formal confirmation as a statistical test.\n\nA Breusch–Pagan test could add diagnostic depth, but it requires an additional analytical step. The trade-off is therefore simplicity versus stronger diagnostic evidence.\n\nIf the goal is to improve the reliability of inference after heteroscedasticity has been identified, robust standard errors become particularly valuable. They do not explain why variance changes, but they help address the consequences for statistical inference.\n\nConsidering the evidence available, the need for reliable inference, and practical simplicity, the most appropriate immediate action in Scenario A is to begin with the residual plot evidence and then use robust standard errors if inference is the main concern. This judgement places greater weight on the observed pattern while recognising the limitation that visual evidence alone may not fully diagnose the issue."
+        },
+        {
+          "material_id": "A5-M4",
+          "material_type": "comparison_table",
+          "activity_id": "A5",
+          "title": "Evaluation Framework",
+          "body_format": "markdown",
+          "body": "| Approach | Evidence Available | Strengths | Limitations | Provisional Judgement |\n| --- | --- | --- | --- | --- |\n| Residual Plot | Visible pattern | Simple and intuitive | Less formal | Useful first step |\n| Breusch–Pagan Test | | | | |\n| Robust Standard Errors | | | | |\n| Transformation | | | | |"
+        },
+        {
+          "material_id": "A5-M5",
+          "material_type": "template",
+          "activity_id": "A5",
+          "title": "Independent Judgement Template",
+          "body_format": "markdown",
+          "body": "## Initial Position\nWhat appears to be the most appropriate approach?\n\n## Evidence Assessed Against Criteria\n- Suitability for evidence:\n- Support for reliable inference:\n- Practical simplicity:\n\n## Competing Interpretation or Limitation\nWhat alternative approach could be justified?\n\n## Final Justified Judgement\nState and defend your recommendation."
+        },
+        {
+          "material_id": "A5-M6",
+          "material_type": "checklist",
+          "activity_id": "A5",
+          "title": "Evaluation Checklist",
+          "body_format": "markdown",
+          "body": "- Did I apply explicit criteria?\n- Did I use evidence from the scenario?\n- Did I discuss at least one trade-off?\n- Did I justify my conclusion?\n\nRevise before final submission if needed."
+        },
+        {
+          "material_id": "A5-M7",
+          "material_type": "transfer_prompt",
+          "activity_id": "A5",
+          "title": "Transfer Task",
+          "body_format": "markdown",
+          "body": "Imagine analysing wages and years of education. Apply the same evaluation criteria used in this activity and decide which detection or remedy approach would be most appropriate. Justify your reasoning."
+        },
+        {
+          "material_id": "A5-M8",
+          "material_type": "consolidation_summary",
+          "activity_id": "A5",
+          "title": "Key Takeaways",
+          "body_format": "markdown",
+          "body": "Heteroscedasticity occurs when residual variance changes across observations rather than remaining constant. Residual plots provide a practical way to detect changes in variability, while statistical tests such as the Breusch–Pagan test can provide supporting evidence. The main concern for economists is that changing variance can affect standard errors and therefore the reliability of statistical inference. Common responses include robust standard errors, transformations, and improved model design. When interpreting regression results, focus on evidence, patterns, and the implications for research conclusions."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "comparison"
+          },
+          {
+            "function": "evaluation"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO1",
+        "LO2",
+        "LO4",
+        "LO5"
+      ],
+      "reasoning_orientation": "There is rarely a single universally correct response. Evaluate options against criteria and support your judgement using evidence from the scenario.",
+      "argument_structure_hint": "State the issue, apply evaluation criteria, weigh trade-offs, reach a recommendation, and justify the conclusion.",
+      "intellectual_coherence_bridge": "You have moved from defining heteroscedasticity and recognising it in evidence to evaluating how economists respond to it. Use insights from previous activities when reaching your judgement."
+    }
+  ],
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "mapped_learning_outcome_ids": [
+        "LO1"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "mapped_learning_outcome_ids": [
+        "LO2"
+      ],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "analysis"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A3",
+      "mapped_learning_outcome_ids": [
+        "LO3"
+      ],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "practice"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A4",
+      "mapped_learning_outcome_ids": [
+        "LO4"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "application"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A5",
+      "mapped_learning_outcome_ids": [
+        "LO5"
+      ],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "comparison"
+          },
+          {
+            "function": "evaluation"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      }
+    }
+  ],
+  "source_artefacts": [
+    {
+      "artefact_type": "learning_outcomes",
+      "source_label": "Learning Outcomes",
+      "role": "structural"
+    }
+  ],
+  "generation_notes": {
+    "validation": {
+      "coverage_mode": "activity_aligned",
+      "known_issues": [],
+      "activity_coverage": "shell_only",
+      "material_coverage": "pending_gam",
+      "episode_plan_attachment": "attached",
+      "self_containment": "shell_only",
+      "schema_compliance": "episode_plan_boundary"
+    },
+    "limitations": [
+      "[PRISM page composition] Activity a1 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a2 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a3 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a4 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a5 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page materials closure] Activity A1 material A1-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M5 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M6 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M7 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M8 has upstream GAM body but no matching page learning_activities row."
+    ],
+    "activities_omitted": []
+  },
+  "learning_sequence": {
+    "sequence_type": "self_directed_progression",
+    "ordered_activity_ids": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "sequence_position": 1,
+        "purpose": "Build foundational understanding of heteroscedasticity, homoscedasticity, and residual variance."
+      },
+      {
+        "activity_id": "A2",
+        "sequence_position": 2,
+        "purpose": "Develop analytical skill in interpreting residual plots and identifying changing variance patterns."
+      },
+      {
+        "activity_id": "A3",
+        "sequence_position": 3,
+        "purpose": "Apply residual-based reasoning to economic scenarios and evidence."
+      },
+      {
+        "activity_id": "A4",
+        "sequence_position": 4,
+        "purpose": "Explain the implications of heteroscedasticity for standard errors and statistical inference."
+      },
+      {
+        "activity_id": "A5",
+        "sequence_position": 5,
+        "purpose": "Evaluate detection and remedy approaches and produce an independent judgement."
+      }
+    ],
+    "navigation_guidance": {
+      "entry_point": "A1",
+      "completion_path": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5"
+      ],
+      "progression_logic": "Conceptual foundations precede interpretation, application, consequence analysis, and evaluative judgement.",
+      "capstone_activity_id": "A5"
+    },
+    "study_flow": [
+      {
+        "phase": "Build understanding",
+        "activity_ids": [
+          "A1"
+        ]
+      },
+      {
+        "phase": "Interpret evidence",
+        "activity_ids": [
+          "A2"
+        ]
+      },
+      {
+        "phase": "Apply concepts",
+        "activity_ids": [
+          "A3"
+        ]
+      },
+      {
+        "phase": "Explain implications",
+        "activity_ids": [
+          "A4"
+        ]
+      },
+      {
+        "phase": "Evaluate and synthesise",
+        "activity_ids": [
+          "A5"
+        ]
+      }
+    ]
+  },
+  "assessment_check": {
+    "items": [
+      {
+        "item_id": "Q1",
+        "item_type": "single_answer_mcq",
+        "topic": "Defining heteroscedasticity",
+        "related_learning_outcomes": [
+          "LO1"
+        ],
+        "integration_type": "single",
+        "difficulty_level": "comprehension",
+        "stem": "Which statement best describes heteroscedasticity in a regression model?",
+        "options": [
+          "Residuals are always equal to zero.",
+          "Residuals are normally distributed.",
+          "The spread of residuals changes across observations.",
+          "The regression line has a negative slope."
+        ],
+        "correct_answer": "The spread of residuals changes across observations.",
+        "correct_answer_text": "The spread of residuals changes across observations.",
+        "explanation_or_rationale": "Heteroscedasticity refers to changing residual variance across observations. It concerns the variability of residuals, not the slope of the regression line or whether residuals exist."
+      },
+      {
+        "item_id": "Q2",
+        "item_type": "single_answer_mcq",
+        "topic": "Residual plot interpretation",
+        "related_learning_outcomes": [
+          "LO2"
+        ],
+        "integration_type": "single",
+        "difficulty_level": "analysis",
+        "stem": "A residual plot shows a narrow spread of residuals at low fitted values and a much wider spread at high fitted values. What is the most appropriate conclusion?",
+        "options": [
+          "The model is perfectly accurate.",
+          "The pattern is consistent with heteroscedasticity.",
+          "The regression coefficient must be zero.",
+          "The data prove causation."
+        ],
+        "correct_answer": "The pattern is consistent with heteroscedasticity.",
+        "correct_answer_text": "The pattern is consistent with heteroscedasticity.",
+        "explanation_or_rationale": "A widening funnel pattern indicates increasing residual variance across observations, which is characteristic of heteroscedasticity."
+      },
+      {
+        "item_id": "Q3",
+        "item_type": "single_answer_mcq",
+        "topic": "Applying residual evidence",
+        "related_learning_outcomes": [
+          "LO3"
+        ],
+        "integration_type": "single",
+        "difficulty_level": "application",
+        "stem": "An economist finds that household expenditure residuals are typically within ±£50 for low-income households but within ±£400 for high-income households. Which interpretation is most appropriate?",
+        "options": [
+          "The evidence suggests heteroscedasticity because residual variance increases with income.",
+          "The regression contains no residuals.",
+          "The explanatory variable must be removed.",
+          "The model necessarily produces biased coefficients."
+        ],
+        "correct_answer": "The evidence suggests heteroscedasticity because residual variance increases with income.",
+        "correct_answer_text": "The evidence suggests heteroscedasticity because residual variance increases with income.",
+        "explanation_or_rationale": "The key evidence is the increase in residual spread at higher income levels, indicating changing variance across observations."
+      },
+      {
+        "item_id": "Q4",
+        "item_type": "single_answer_mcq",
+        "topic": "Consequences for inference",
+        "related_learning_outcomes": [
+          "LO4"
+        ],
+        "integration_type": "single",
+        "difficulty_level": "comprehension",
+        "stem": "Why is heteroscedasticity a concern for economists conducting statistical inference?",
+        "options": [
+          "It guarantees the regression coefficient is incorrect.",
+          "It can make standard errors and hypothesis tests less reliable.",
+          "It removes all correlation from the data.",
+          "It prevents residuals from being calculated."
+        ],
+        "correct_answer": "It can make standard errors and hypothesis tests less reliable.",
+        "correct_answer_text": "It can make standard errors and hypothesis tests less reliable.",
+        "explanation_or_rationale": "The primary concern is that changing residual variance can undermine the reliability of standard errors, confidence intervals, and hypothesis tests."
+      },
+      {
+        "item_id": "Q5",
+        "item_type": "single_answer_mcq",
+        "topic": "Detection and remedies",
+        "related_learning_outcomes": [
+          "LO2",
+          "LO4",
+          "LO5"
+        ],
+        "integration_type": "multi_outcome",
+        "difficulty_level": "analysis",
+        "stem": "A researcher observes evidence of heteroscedasticity and wants more reliable statistical inference without changing the underlying data. Which option is the most appropriate?",
+        "options": [
+          "Use robust standard errors.",
+          "Remove all residuals from the model.",
+          "Ignore the issue because coefficients are estimated.",
+          "Replace the residual plot with a histogram."
+        ],
+        "correct_answer": "Use robust standard errors.",
+        "correct_answer_text": "Use robust standard errors.",
+        "explanation_or_rationale": "Robust standard errors are a common response to heteroscedasticity because they help provide more reliable inference when residual variance is not constant."
+      }
+    ]
+  },
+  "metadata": {
+    "gam_materials_preserve_applied": true,
+    "gam_materials_preserve_schema": "38M-2",
+    "gam_materials_preserve_rows": 0
+  },
+  "constraints_applied": [
+    "GAM materials L4 preserve merge applied (page-gam-materials-preserve)"
+  ]
+}

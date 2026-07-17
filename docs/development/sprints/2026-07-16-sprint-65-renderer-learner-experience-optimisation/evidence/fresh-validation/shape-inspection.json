@@ -1,0 +1,146 @@
+[
+  {
+    "id": "fresh-marx-2026-07-16",
+    "class": "fresh-pipeline",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 0,
+      "activityIds": 0,
+      "cognitionHits": 0,
+      "sectionCount": 0
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 3,
+      "activityIds": 3,
+      "cognitionHits": 9,
+      "sectionCount": 0
+    }
+  },
+  {
+    "id": "fresh-inflation-2026-07-16",
+    "class": "fresh-pipeline",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 0,
+      "activityIds": 0,
+      "cognitionHits": 0,
+      "sectionCount": 0
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 4,
+      "activityIds": 4,
+      "cognitionHits": 12,
+      "sectionCount": 0
+    }
+  },
+  {
+    "id": "fresh-climate-2026-07-16",
+    "class": "fresh-pipeline",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 0,
+      "activityIds": 4,
+      "cognitionHits": 11,
+      "sectionCount": 1
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 0,
+      "activityIds": 4,
+      "cognitionHits": 11,
+      "sectionCount": 0
+    }
+  },
+  {
+    "id": "pipeline-hist-marx-2026-06-11",
+    "class": "pipeline-historical",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 8,
+      "activityIds": 11,
+      "cognitionHits": 22,
+      "sectionCount": 4
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 4,
+      "activityIds": 4,
+      "cognitionHits": 11,
+      "sectionCount": 0
+    }
+  },
+  {
+    "id": "pipeline-hist-inflation-2026-06-11",
+    "class": "pipeline-historical",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 8,
+      "activityIds": 8,
+      "cognitionHits": 20,
+      "sectionCount": 3
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 4,
+      "activityIds": 8,
+      "cognitionHits": 10,
+      "sectionCount": 0
+    }
+  },
+  {
+    "id": "pipeline-hist-climate-2026-06-11",
+    "class": "pipeline-historical",
+    "page": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 8,
+      "activityIds": 8,
+      "cognitionHits": 18,
+      "sectionCount": 3
+    },
+    "dla": {
+      "beatsArrays": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "archetypes": [],
+      "learnerTasks": 4,
+      "activityIds": 4,
+      "cognitionHits": 9,
+      "sectionCount": 0
+    }
+  }
+]

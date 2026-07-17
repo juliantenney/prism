@@ -1,0 +1,106 @@
+```json
+{
+  "concepts": [
+    {
+      "name": "Inflation",
+      "definition": "The general increase in prices of goods and services over time, resulting in decreased purchasing power of money."
+    },
+    {
+      "name": "Price level changes",
+      "definition": "The overall movement in prices across the economy, not just individual goods."
+    },
+    {
+      "name": "Consumer Price Index (CPI)",
+      "definition": "A key measure of inflation that tracks average price changes over time for a fixed basket of goods and services typically bought by households."
+    },
+    {
+      "name": "GDP deflator",
+      "definition": "A measure of inflation reflecting price changes of all goods and services produced domestically, with a changing basket that includes consumer goods, investment goods, government services, and exports."
+    },
+    {
+      "name": "Purchasing power",
+      "definition": "The amount of goods and services that can be bought with a unit of money; decreases when inflation occurs."
+    },
+    {
+      "name": "Fixed basket vs. changing basket",
+      "definition": "The CPI uses a fixed basket of goods and services to measure price changes, while the GDP deflator uses a changing basket that reflects current production."
+    },
+    {
+      "name": "Household impact of inflation",
+      "definition": "The effect of inflation on households' cost of living, income, spending habits, saving, borrowing, wages, interest rates, and government benefits."
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Inflation",
+      "target": "Purchasing power",
+      "type": "causes decrease in"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Fixed basket vs. changing basket",
+      "type": "uses"
+    },
+    {
+      "source": "GDP deflator",
+      "target": "Fixed basket vs. changing basket",
+      "type": "uses"
+    },
+    {
+      "source": "Consumer Price Index (CPI)",
+      "target": "Household impact of inflation",
+      "type": "measures inflation relevant to"
+    },
+    {
+      "source": "GDP deflator",
+      "target": "Household impact of inflation",
+      "type": "measures broader inflation including"
+    },
+    {
+      "source": "Price level changes",
+      "target": "Inflation",
+      "type": "describes overall"
+    }
+  ],
+  "groupings": [
+    {
+      "name": "Measures of Inflation",
+      "members": [
+        "Consumer Price Index (CPI)",
+        "GDP deflator"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "name": "Calculating CPI",
+      "steps": [
+        "Select a fixed basket of goods and services typical for households.",
+        "Record the cost of the basket in the base year.",
+        "Record the cost of the same basket in the current year.",
+        "Calculate CPI as (current year cost / base year cost) × 100."
+      ]
+    },
+    {
+      "name": "Using GDP Deflator to Measure Inflation",
+      "steps": [
+        "Calculate the total value of all goods and services produced domestically in the base year.",
+        "Calculate the total value of all goods and services produced domestically in the current year.",
+        "Adjust for changes in quantities produced to isolate price changes.",
+        "Use the GDP deflator to reflect overall price level changes."
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "description": "Confusing CPI and GDP deflator as identical measures of inflation.",
+      "clarification": "CPI uses a fixed basket focused on consumer purchases, while GDP deflator uses a changing basket covering all domestically produced goods and services."
+    },
+    {
+      "description": "Assuming inflation affects all households equally.",
+      "clarification": "Inflation impacts households differently depending on income levels, spending patterns, and savings."
+    }
+  ]
+}
+```
+STEP N OUTPUT: knowledge_model

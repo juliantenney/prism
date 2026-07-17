@@ -1,0 +1,35 @@
+{
+  "learning_outcomes": [
+    {
+      "statement": "Identify common misconceptions about climate change presented in the workshop materials.",
+      "related_concepts": [
+        "climate change misconceptions",
+        "common myths"
+      ],
+      "cognitive_level": "Apply",
+      "notes": "Focus on recognizing misinformation rather than correcting it."
+    },
+    {
+      "statement": "Explain why each identified misconception about climate change is inaccurate based on scientific evidence.",
+      "related_concepts": [
+        "scientific evidence",
+        "climate change facts vs myths"
+      ],
+      "cognitive_level": "Analyze",
+      "notes": "Encourage learners to connect misconceptions to factual information without revealing correct answers on the handout."
+    },
+    {
+      "statement": "Evaluate the potential impact of climate misconceptions on public understanding and policy decisions.",
+      "related_concepts": [
+        "public understanding",
+        "policy impact",
+        "climate communication"
+      ],
+      "cognitive_level": "Evaluate",
+      "notes": "Promote critical thinking about the consequences of misinformation."
+    }
+  ],
+  "learner_level": "Intermediate",
+  "scope": "Standard session (30-120 minutes)",
+  "alignment_notes": "Outcomes focus on misconception identification, explanation, and evaluation to support critical engagement without providing direct answers."
+}

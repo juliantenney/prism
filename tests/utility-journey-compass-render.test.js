@@ -117,9 +117,12 @@ test("49-6b: sticky learning header renders title, inquiry, duration, and journe
   assert.match(html, /util-learning-header__title/);
   assert.match(html, /util-learning-header__meta/);
   assert.match(html, /util-journey-nav/);
+  assert.match(html, /util-journey-link/);
+  assert.match(html, /util-journey-track/);
   assert.match(html, /util-instructional-activity/);
   assert.match(html, /util-activity-progress/);
   assert.match(html, /util-page-export--with-learning-header/);
+  assert.match(html, /util-page-export--with-journey-nav/);
   assert.doesNotMatch(bodyHtml(html), /<section class="util-journey-compass-header"/);
   const bodyWithoutHeader = bodyHtml(html).replace(
     /<header class="util-learning-header"[\s\S]*?<\/header>/i,

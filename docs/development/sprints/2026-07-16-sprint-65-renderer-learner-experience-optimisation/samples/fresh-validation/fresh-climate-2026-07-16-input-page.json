@@ -1,0 +1,211 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  },
+  "page_synthesis": {
+    "overview": "This learner handout supports a workshop focused on climate change misconceptions. It contains activities that guide learners through identifying, analyzing, and evaluating common climate misconceptions without revealing correct answers, fostering critical thinking and deeper understanding.",
+    "learning_purpose": "The activities are sequenced to help learners first recognize common misconceptions about climate change, then analyze why these misconceptions are inaccurate based on scientific reasoning, and finally evaluate their potential impacts on public understanding and policy decisions. This structured approach builds learners' critical engagement skills with climate information.",
+    "knowledge_summary": "Climate change misconceptions often arise from flawed assumptions, incomplete understanding, or misinformation patterns. Identifying these misconceptions requires careful examination of the claims and their underlying assumptions without immediately correcting them. Analyzing misconceptions involves contrasting these assumptions with scientific evidence and reasoning to reveal flaws without stating direct factual rebuttals. Evaluating the impact of misconceptions helps learners appreciate how misinformation can influence public attitudes, policy decisions, and climate communication challenges. Through this progression, learners develop a comprehensive and critical perspective on climate change misinformation, preparing them to engage thoughtfully with climate science discourse.",
+    "study_tips": "Approach each activity by focusing on the reasoning and assumptions behind statements rather than seeking immediate factual corrections. Take notes on why a claim might be misleading or flawed, using evidence contrasts and guided prompts to deepen your analysis. When evaluating impacts, consider multiple criteria such as scope, persistence, and influence on behavior and policy. Reflect on how these skills build on each other to enhance your overall understanding and ability to critically assess climate information."
+  },
+  "metadata": {
+    "learner_page_composition_repair": {
+      "omissions_stripped": 0,
+      "activities_restored": 4,
+      "framing_fields_merged": 0
+    },
+    "cognition_profile": {
+      "active": true,
+      "pack_ids": [
+        "misconception_repair_pack"
+      ],
+      "cognition_fields": [
+        "misconception_claim",
+        "reconciliation_prompt",
+        "evidence_contrast"
+      ],
+      "cognition_activity_priority": true,
+      "cognition_section_required": true
+    }
+  },
+  "sections": [
+    {
+      "section_id": "learning_activities",
+      "heading": "Learning Activities",
+      "content": [
+        {
+          "activity_id": "A1",
+          "title": "Identifying Common Climate Change Misconceptions",
+          "grouping": "individual",
+          "duration_minutes": 20,
+          "mapped_learning_outcomes": [
+            "Identify common misconceptions about climate change presented in the workshop materials."
+          ],
+          "required_materials": [
+            {
+              "material_id": "M1",
+              "type": "worked_example",
+              "purpose": "Demonstrate identification of misconceptions",
+              "specification": "depth_floor: L3; stepwise expert reasoning highlighting common climate change misconceptions, showing how to spot misinformation in statements or claims."
+            },
+            {
+              "material_id": "M2",
+              "type": "sample_output",
+              "purpose": "Example learner identification notes",
+              "specification": "depth_floor: L3; annotated list of common climate misconceptions with learner-style notes on why each is questionable without revealing correct answers."
+            },
+            {
+              "material_id": "M3",
+              "type": "task_cards",
+              "purpose": "Practice identification of misconceptions",
+              "specification": "depth_floor: L3; cards each containing a statement about climate change that may be a misconception, for learner evaluation."
+            }
+          ],
+          "activity_preamble": "Climate change is often misunderstood due to widespread myths and misinformation. This activity focuses on recognizing statements that reflect common misconceptions about climate change. By carefully examining each claim, you will learn to spot misinformation patterns without yet correcting them. This skill is essential for critically engaging with climate communication and public discourse.",
+          "reasoning_orientation": "As you review each statement, consider what makes it a misconception rather than a fact. Focus on identifying the nature of the misinformation and the assumptions underlying each claim. This approach helps build a foundation for deeper analysis and understanding of climate science.",
+          "transfer_or_application_task": "Use the task cards to practice identifying misconceptions in a variety of climate-related statements. Reflect on how these misconceptions might arise and why they persist in public discussions.",
+          "expected_output": "Your notes should clearly identify which statements are misconceptions and briefly explain the reasoning behind your identification. Strong responses will show an ability to recognize misinformation patterns without providing corrections or factual rebuttals.",
+          "misconception_claim": "Statements about climate change often contain inaccurate or misleading ideas that can be identified by examining their assumptions and implications.",
+          "reconciliation_prompt": "Consider why each statement might seem plausible to some people and what assumptions lead to misunderstanding. Reflect on how recognizing these assumptions helps in identifying misconceptions.",
+          "evidence_contrast": "Focus on contrasting the claim’s implied facts with what you know about climate science, noting discrepancies without stating the correct facts explicitly.",
+          "transformation_activity": "Transform each statement by marking it as a misconception and annotating the key misleading elements you detect, preparing for deeper analysis later.",
+          "source_to_application_prompt": "Think about where such misconceptions might originate and how recognizing them can help you critically evaluate climate information in everyday contexts.",
+          "intellectual_coherence_bridge": "This initial activity establishes your ability to detect misinformation by focusing on the characteristics of common climate misconceptions. Recognizing these claims is a prerequisite for the next step, where you will analyze why these misconceptions are inaccurate based on scientific reasoning."
+        },
+        {
+          "activity_id": "A2",
+          "title": "Analyzing Why Climate Misconceptions Are Inaccurate",
+          "grouping": "individual",
+          "duration_minutes": 25,
+          "mapped_learning_outcomes": [
+            "Explain why each identified misconception about climate change is inaccurate based on scientific evidence."
+          ],
+          "required_materials": [
+            {
+              "material_id": "M4",
+              "type": "modelling_note",
+              "purpose": "Expert analysis of misconceptions",
+              "specification": "depth_floor: L3; detailed expert commentary demonstrating how to connect misconceptions to scientific evidence without revealing direct correct answers on the handout."
+            },
+            {
+              "material_id": "M5",
+              "type": "analysis_table",
+              "purpose": "Learner analysis of misconceptions",
+              "specification": "depth_floor: L3; table with columns for misconception claim, implied assumption, scientific evidence contrast (without explicit corrections), and notes for learner reasoning."
+            },
+            {
+              "material_id": "M6",
+              "type": "task_cards",
+              "purpose": "Practice analysis prompts",
+              "specification": "depth_floor: L3; cards with guided questions prompting learners to analyze the reasoning flaws and evidence gaps in each misconception."
+            }
+          ],
+          "activity_preamble": "Having identified common misconceptions, this activity guides you through analyzing why these misconceptions are inaccurate. You will connect each misconception to scientific evidence by exploring the assumptions and reasoning errors they contain. This analysis deepens your understanding without providing direct answers, encouraging critical thinking about climate science.",
+          "conceptual_contrast_prompt": "Contrast the assumptions underlying each misconception with the principles of climate science. Focus on how the evidence challenges these assumptions, rather than simply stating the correct facts.",
+          "self_explanation_prompt": "For each misconception, explain in your own words why the reasoning is flawed and how scientific evidence contradicts the claim. This reflection helps solidify your analytical skills.",
+          "expected_output": "Your completed analysis table should show clear connections between misconceptions and their scientific inaccuracies, articulated through reasoned explanations. Strong outputs demonstrate nuanced understanding without revealing direct corrections.",
+          "misconception_claim": "Each misconception is based on flawed assumptions or incomplete understanding that can be unpacked through scientific reasoning.",
+          "reconciliation_prompt": "Reflect on how scientific evidence challenges the assumptions behind each misconception and why those assumptions lead to incorrect conclusions.",
+          "evidence_contrast": "Identify the gaps or errors in the reasoning of each misconception by contrasting it with established scientific principles, focusing on the logic rather than facts alone.",
+          "transformation_activity": "Transform your initial identification into a reasoned critique that connects the misconception to its scientific weaknesses, preparing for evaluation of impacts.",
+          "source_to_application_prompt": "Consider how analyzing misconceptions in this way can improve your ability to critically assess climate information and communicate effectively about climate science.",
+          "intellectual_coherence_bridge": "This analysis activity builds on your identification skills by requiring you to unpack the reasoning errors in misconceptions. Understanding these inaccuracies is essential before evaluating their broader impacts on public understanding and policy."
+        },
+        {
+          "activity_id": "A3",
+          "title": "Evaluating the Impact of Climate Misconceptions",
+          "grouping": "individual",
+          "duration_minutes": 25,
+          "mapped_learning_outcomes": [
+            "Evaluate the potential impact of climate misconceptions on public understanding and policy decisions."
+          ],
+          "required_materials": [
+            {
+              "material_id": "M7",
+              "type": "decision_table",
+              "purpose": "Impact evaluation framework",
+              "specification": "depth_floor: L3; table listing misconceptions with columns for potential impacts on public understanding, policy decisions, and climate communication challenges, plus space for learner ratings and justifications."
+            },
+            {
+              "material_id": "M8",
+              "type": "checklist",
+              "purpose": "Evaluation criteria checklist",
+              "specification": "depth_floor: L3; checklist of criteria to consider when judging the impact of misinformation, including scope, persistence, and influence on behavior and policy."
+            },
+            {
+              "material_id": "M9",
+              "type": "prompt_set",
+              "purpose": "Guided evaluation questions",
+              "specification": "depth_floor: L3; set of open-ended prompts encouraging learners to critically assess consequences of misconceptions for society and decision-making."
+            }
+          ],
+          "activity_preamble": "Misconceptions about climate change can have significant consequences for how the public understands the issue and how policies are shaped. This activity asks you to evaluate these impacts critically. You will consider multiple perspectives and weigh trade-offs to form a reasoned judgement about the influence of misinformation on climate communication and action.",
+          "argument_structure_hint": "Identify two or three key criteria that affect the impact of each misconception. Compare how each misconception measures against these criteria, then justify your evaluation with reasoned arguments considering trade-offs and uncertainties.",
+          "self_explanation_prompt": "Explain your reasoning for the impact ratings you assign, citing examples or scenarios where misconceptions might alter public opinion or policy outcomes.",
+          "expected_output": "Your completed decision table should include justified impact ratings and a well-argued evaluation of how misconceptions affect climate understanding and policy. Strong responses demonstrate critical thinking about the broader consequences of misinformation.",
+          "misconception_claim": "Climate misconceptions influence public perception and policy decisions in complex ways that require careful evaluation to understand their full impact.",
+          "reconciliation_prompt": "Reflect on how misinformation can shape attitudes and choices, and why evaluating these effects is crucial for effective climate communication and policy-making.",
+          "evidence_contrast": "Contrast the potential negative impacts of misconceptions with the goals of accurate climate communication and informed policy, identifying where misinformation creates barriers.",
+          "transformation_activity": "Transform your analytical insights into evaluative judgements about the societal and political consequences of climate misconceptions, preparing you for informed discussion and action.",
+          "source_to_application_prompt": "Think about how this evaluative skill can help you engage with climate debates, contribute to better communication strategies, and support evidence-based policy decisions.",
+          "intellectual_coherence_bridge": "This evaluative activity synthesizes your earlier identification and analysis by focusing on the real-world implications of misconceptions. Judging their impact completes the critical engagement cycle needed for informed climate literacy."
+        },
+        {
+          "activity_id": "A4",
+          "title": "Consolidation and Reflection on Climate Misconceptions",
+          "grouping": "individual",
+          "duration_minutes": 10,
+          "mapped_learning_outcomes": [
+            "Identify common misconceptions about climate change presented in the workshop materials.",
+            "Explain why each identified misconception about climate change is inaccurate based on scientific evidence.",
+            "Evaluate the potential impact of climate misconceptions on public understanding and policy decisions."
+          ],
+          "required_materials": [
+            {
+              "material_id": "M10",
+              "type": "consolidation_summary",
+              "purpose": "Session summary and reflection",
+              "specification": "depth_floor: L3; learner-facing summary template prompting synthesis of key ideas about misconception identification, analysis, and evaluation, with space for personal reflection."
+            },
+            {
+              "material_id": "M11",
+              "type": "prompt_set",
+              "purpose": "Reflection prompts",
+              "specification": "depth_floor: L3; prompts encouraging learners to reflect on their learning progress, remaining uncertainties, and next steps for applying their understanding."
+            }
+          ],
+          "activity_preamble": "This final activity invites you to consolidate your learning about climate misconceptions. You will synthesize the key insights gained from identifying, analyzing, and evaluating misconceptions, and reflect on how this knowledge shapes your understanding and future engagement with climate issues.",
+          "transfer_or_application_task": "Use the consolidation summary to articulate what you have learned about climate misconceptions and how this understanding can influence your thinking and communication about climate change.",
+          "expected_output": "Your summary should clearly integrate the main points from each stage of the workshop, demonstrating a coherent understanding of misconceptions and their significance. Reflections should reveal thoughtful consideration of how to apply this knowledge independently.",
+          "misconception_claim": "Understanding climate misconceptions requires integrating identification, analysis, and evaluation to develop informed perspectives.",
+          "reconciliation_prompt": "Reflect on how the different stages of learning about misconceptions connect and support each other to build a comprehensive understanding.",
+          "evidence_contrast": "Consider how your evolving understanding contrasts with common misinformation and how this contrast strengthens your critical perspective.",
+          "transformation_activity": "Transform your accumulated knowledge into a coherent summary that guides your future learning and engagement with climate science.",
+          "source_to_application_prompt": "Think about how this integrated understanding equips you to recognize and respond to climate misinformation in real-world contexts.",
+          "intellectual_coherence_bridge": "This consolidation activity completes the learning journey by bringing together identification, analysis, and evaluation into a unified understanding, reinforcing your capability to critically engage with climate misconceptions beyond the workshop."
+        }
+      ]
+    }
+  ],
+  "constraints_applied": {
+    "cognition_composition_active": true
+  },
+  "generation_notes": {
+    "cognition_composition": {
+      "cognitionSectionsPreserved": [
+        "learning_activities"
+      ],
+      "cognitionCompositionParity": true,
+      "cognitionActivitySuppressed": false,
+      "cognitionAssessmentDominancePrevented": true,
+      "cognitionFieldsMerged": 0,
+      "duplicateAssessmentRowsRemoved": 0,
+      "sequencingInteractionRowsTouched": 0
+    }
+  }
+}

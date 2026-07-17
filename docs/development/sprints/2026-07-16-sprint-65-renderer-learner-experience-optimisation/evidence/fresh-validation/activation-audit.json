@@ -1,0 +1,89 @@
+[
+  {
+    "id": "fresh-marx-2026-07-16",
+    "class": "fresh-pipeline",
+    "status": "Partial page-IA only; Composition C Not activated",
+    "why": "0 episode_plan.beats — activity contract not mounted; Learning Journey overview reprint omitted under s65-prototype (intro→purpose)",
+    "evidence": {
+      "identical": false,
+      "charDelta": -396,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "deltaKind": "journey-overview-omit"
+    }
+  },
+  {
+    "id": "fresh-inflation-2026-07-16",
+    "class": "fresh-pipeline",
+    "status": "Partial page-IA only; Composition C Not activated",
+    "why": "0 episode_plan.beats — activity contract not mounted; journey overview omit only",
+    "evidence": {
+      "identical": false,
+      "charDelta": -617,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "deltaKind": "journey-overview-omit"
+    }
+  },
+  {
+    "id": "fresh-climate-2026-07-16",
+    "class": "fresh-pipeline",
+    "status": "Partial page-IA only; Composition C Not activated",
+    "why": "0 episode_plan.beats — activity contract not mounted; journey overview omit only",
+    "evidence": {
+      "identical": false,
+      "charDelta": -345,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0,
+      "deltaKind": "journey-overview-omit"
+    }
+  },
+  {
+    "id": "pipeline-hist-marx-2026-06-11",
+    "class": "pipeline-historical",
+    "status": "Not activated",
+    "why": "No beats; mount gate not entered; bit-identical output",
+    "evidence": {
+      "identical": true,
+      "charDelta": 0,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0
+    }
+  },
+  {
+    "id": "pipeline-hist-inflation-2026-06-11",
+    "class": "pipeline-historical",
+    "status": "Not activated",
+    "why": "No beats; mount gate not entered; bit-identical output",
+    "evidence": {
+      "identical": true,
+      "charDelta": 0,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0
+    }
+  },
+  {
+    "id": "pipeline-hist-climate-2026-06-11",
+    "class": "pipeline-historical",
+    "status": "Not activated",
+    "why": "No beats; mount gate not entered; bit-identical output",
+    "evidence": {
+      "identical": true,
+      "charDelta": 0,
+      "yourTaskDelta": 0,
+      "badgeDelta": 0,
+      "beatCount": 0,
+      "episodePlans": 0
+    }
+  }
+]

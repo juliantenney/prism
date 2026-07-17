@@ -138,17 +138,14 @@ test("learner-facing beat labels map known episode functions", () => {
 });
 
 test("unknown beat functions fall back to structural episodeFunctionLabel", () => {
-  assert.equal(
-    registry.learnerFacingEpisodeFunctionLabel("orientation"),
-    registry.episodeFunctionLabel("orientation")
-  );
+  assert.equal(registry.learnerFacingEpisodeFunctionLabel("orientation"), "Reflect");
   assert.equal(
     registry.learnerFacingEpisodeFunctionLabel("mystery_custom_beat"),
     registry.episodeFunctionLabel("mystery_custom_beat")
   );
 });
 
-test("RNA A2: goal-shaped opening, phase labels, success promotion, no trailing Output", () => {
+test("RNA A2: goal-shaped opening, phase labels, expected-output prose, no trailing Output", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(rnaFixturePath, "utf8"));
   const html = renderPage(api, page);
@@ -158,18 +155,19 @@ test("RNA A2: goal-shaped opening, phase labels, success promotion, no trailing 
   assert.match(a2, /Your goal/i);
   assert.doesNotMatch(a2, /<h4[^>]*>\s*What to do\s*<\/h4>/i);
   assert.match(text, /Complete the analysis table using the worked example/i);
-  assert.match(a2, /Success looks like/i);
+  assert.match(a2, /For a strong answer/i);
   assert.match(text, /causal order preserved/i);
   assert.match(text, /host and viral roles distinguished/i);
 
   const goalIdx = text.indexOf("Your goal");
-  const successIdx = text.indexOf("Success looks like");
   const understandIdx = text.indexOf("Understand");
   const modelIdx = text.indexOf("See it modelled");
   const applyIdx = text.indexOf("Your turn");
   const checkIdx = text.lastIndexOf("Check your work");
-  assert.ok(goalIdx < successIdx && successIdx < understandIdx);
+  const expectedOutputIdx = text.indexOf("For a strong answer");
+  assert.ok(goalIdx < understandIdx);
   assert.ok(understandIdx < modelIdx && modelIdx < applyIdx && applyIdx < checkIdx);
+  assert.ok(checkIdx < expectedOutputIdx);
 
   assert.doesNotMatch(a2, />Explanation</);
   assert.doesNotMatch(a2, />Worked Thinking</);
@@ -183,10 +181,13 @@ test("RNA A2: goal-shaped opening, phase labels, success promotion, no trailing 
   assert.equal((a2.match(/S62-RNA-A2-M1-BODY/g) || []).length, 1);
   assert.doesNotMatch(a2, /S62 RNA A2-M1 Replication Overview/);
   assert.doesNotMatch(text, /\bOutput\b/);
-  assert.doesNotMatch(text, /Completed analysis table verified with checklist/);
+  assert.equal(
+    (text.match(/Completed analysis table verified with checklist/g) || []).length,
+    1
+  );
 });
 
-test("inventory-style learner_task is not rewritten as Your goal", () => {
+test("beat-first activities omit the aggregate activity-level What to do block", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(rnaFixturePath, "utf8"));
   const html = renderPage(api, page);
@@ -194,15 +195,27 @@ test("inventory-style learner_task is not rewritten as Your goal", () => {
   const a6 = html.slice(html.indexOf("Evaluate Outbreak Priorities"));
 
   assert.doesNotMatch(a1, /Your goal/i);
-  assert.match(a1, /What to do/i);
-  assert.match(a1, /Study the exposition, worked example, classification table, and checklist/i);
+  assert.doesNotMatch(a1, /What to do/i);
+  assert.doesNotMatch(
+    a1,
+    /<section[^>]*util-instructional-do[^>]*>/i
+  );
+  // Inventory learner_task is preserved inside beat instructions, not dropped.
+  assert.match(
+    a1,
+    /Study the exposition, worked example, classification table, and checklist/i
+  );
+  assert.match(a1, /util-beat-instruction/);
+  assert.doesNotMatch(a1, /util-unmapped-beat-instructions/);
 
   assert.doesNotMatch(a6, /Your goal/i);
-  assert.match(a6, /What to do/i);
+  assert.doesNotMatch(a6, /What to do/i);
   assert.match(
     a6,
     /Complete the decision table, memo template, checklist, and transfer prompt/i
   );
+  assert.match(a6, /util-beat-instruction/);
+  assert.doesNotMatch(a6, /util-unmapped-beat-instructions/);
 });
 
 test("RNA A6: phase labels apply, materials complete, transfer order preserved, no invented goal", () => {
@@ -290,6 +303,6 @@ test("diagnostics remain unchanged by presentation slice", () => {
   });
   assert.equal(result.diagnostics.conflicts.length, 0);
   const unassigned = result.diagnostics.unassigned_materials.map((row) => row.material_key);
-  assert.deepEqual(unassigned, ["planning_table"]);
+  assert.deepEqual(unassigned, []);
   assert.equal(result.messages.join(" ").includes("_material_ids"), false);
 });

@@ -1,0 +1,18 @@
+```json
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  },
+  "page_synthesis": {
+    "overview": "This learner handout supports a workshop focused on climate change misconceptions. It contains activities that guide learners through identifying, analyzing, and evaluating common climate misconceptions without revealing correct answers, fostering critical thinking and deeper understanding.",
+    "learning_purpose": "The activities are sequenced to help learners first recognize common misconceptions about climate change, then analyze why these misconceptions are inaccurate based on scientific reasoning, and finally evaluate their potential impacts on public understanding and policy decisions. This structured approach builds learners' critical engagement skills with climate information.",
+    "knowledge_summary": "Climate change misconceptions often arise from flawed assumptions, incomplete understanding, or misinformation patterns. Identifying these misconceptions requires careful examination of the claims and their underlying assumptions without immediately correcting them. Analyzing misconceptions involves contrasting these assumptions with scientific evidence and reasoning to reveal flaws without stating direct factual rebuttals. Evaluating the impact of misconceptions helps learners appreciate how misinformation can influence public attitudes, policy decisions, and climate communication challenges. Through this progression, learners develop a comprehensive and critical perspective on climate change misinformation, preparing them to engage thoughtfully with climate science discourse.",
+    "study_tips": "Approach each activity by focusing on the reasoning and assumptions behind statements rather than seeking immediate factual corrections. Take notes on why a claim might be misleading or flawed, using evidence contrasts and guided prompts to deepen your analysis. When evaluating impacts, consider multiple criteria such as scope, persistence, and influence on behavior and policy. Reflect on how these skills build on each other to enhance your overall understanding and ability to critically assess climate information."
+  }
+}
+```

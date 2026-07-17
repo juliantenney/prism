@@ -128,51 +128,163 @@ test("learning journey ribbon: omitted when fewer than two activities", () => {
   );
 });
 
-test("learning journey ribbon: present for multi-activity learner page", () => {
+test("learning journey sticky header: multi-activity page restores journey nav", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(marxFixturePath, "utf8"));
   const r = api.buildUtilityStructuredHtmlForTest(page);
   assert.ok(r.html, "expected html export");
   const html = r.html;
 
-  assert.match(html, /<header class="util-learning-header">[\s\S]*<nav class="util-journey-nav util-journey-nav--compact"/);
+  assert.match(html, /<header class="util-learning-header">/);
   assert.match(html, /util-learning-header__title/);
   assert.match(html, /util-learning-header__meta/);
-  assert.match(html, /util-journey-nav--compact/);
-  assert.match(html, /util-journey-link-text/);
-  assert.match(html, /--journey-accent:#16a34a/);
+  assert.match(html, /util-learning-header__description/);
+  assert.match(html, /util-learning-header__duration/);
+  assert.doesNotMatch(
+    html,
+    /(?:-|–|—|·|\|)\s*<span class="util-learning-header__duration">/
+  );
   assert.match(html, /\.util-learning-header\{position:sticky;top:0/);
-  assert.match(html, /util-journey-track/);
-  assert.match(html, /border-radius:50%/);
-  assert.match(html, /--journey-progress/);
+  const headerCss = html.match(/\.util-learning-header\{([^}]*)\}/);
+  assert.ok(headerCss);
+  assert.doesNotMatch(headerCss[1], /border-bottom|box-shadow/);
+  assert.match(html, /\.util-learning-header__meta\{[^}]*margin:0 0 var\(--space-2\)/);
+  assert.match(html, /\.util-learning-header__duration\{margin-left:0/);
+  assert.doesNotMatch(html, /h2\.util-section-heading\{[^}]*border-bottom/);
+  assert.doesNotMatch(html, /\.util-knowledge-summary\{[^}]*border-top/);
+  assert.match(html, /#journey-orient>section\{margin:0;padding:0\}/);
+  assert.match(
+    html,
+    /#journey-orient>section\+section\{margin-top:var\(--space-4\)\}/
+  );
+  assert.match(
+    html,
+    /#journey-orient>section>h2\.util-section-heading\{margin:0 0 var\(--space-2\);padding:0\}/
+  );
+  assert.match(
+    html,
+    /\.util-knowledge-summary__content\{margin:0;padding:0;background:transparent\}/
+  );
+  assert.doesNotMatch(html, /\.util-knowledge-summary--prose\{[^}]*padding/);
   assert.match(html, /@media print\{[^}]*\.util-learning-header\{display:none/);
+  assert.match(html, /util-journey-nav--compact/);
+  assert.match(html, /util-journey-link/);
+  assert.match(html, /util-journey-arrow/);
+  assert.match(html, /util-journey-track/);
+  assert.match(html, /util-journey-fill/);
+  assert.match(html, /util-journey-dot/);
+  assert.match(html, /--journey-progress/);
+  assert.match(html, /journeyToTrackPct/);
+  assert.match(html, /util-page-export--with-journey-nav/);
 
   const sections = html.match(/data-journey-section="true"/g) || [];
   assert.ok(sections.length >= 3, "expected orient plus activity journey sections");
 
   assert.match(html, /\bid="journey-orient"/);
-  assert.match(
-    html,
-    /<header class="util-learning-header">[\s\S]*<a class="util-journey-link" href="#journey-orient"><span class="util-journey-link-text">Orient<\/span><\/a>/
-  );
-  assert.match(html, /<span class="util-journey-arrow" aria-hidden="true">→<\/span>/);
   assert.doesNotMatch(html, /Journey compass/i);
   assert.doesNotMatch(html, /<section class="util-journey-compass-header"/);
-
-  const arrowCount = (html.match(/<span class="util-journey-arrow"/g) || []).length;
-  const linkCount = (html.match(/<a class="util-journey-link"/g) || []).length;
-  assert.equal(arrowCount, linkCount - 1, "expected one arrow between each pair of labels");
+  assert.match(
+    html,
+    /\.util-overview p,.util-overview li,[^}]*\{font-weight:400\}/
+  );
 
   const ids = [...html.matchAll(/\bid="activity-\d+"/g)].map((m) => m[0]);
   assert.ok(ids.length >= 2, "expected stable activity ids");
+});
 
-  const links = [...html.matchAll(/<a class="util-journey-link" href="#activity-\d+">/g)];
-  assert.ok(links.length >= 2, "expected anchor links");
-
-  assert.match(html, /journeyToTrackPct/);
-  assert.match(html, /currentIndex>=count-1/);
-  assert.doesNotMatch(html, /scrollMax/);
-  assert.doesNotMatch(html, /localStorage/);
+test("top orientation: introductory sections render as aligned h2 sections", () => {
+  const api = loadPrismTestApi();
+  const page = {
+    artifact_type: "page",
+    title: "Journey orientation",
+    page_profile: "learner",
+    learning_outcomes: [
+      { id: "LO1", statement: "Identify the core claim in a short passage." },
+      { id: "LO2", statement: "Explain how evidence supports that claim." }
+    ],
+    sections: [
+      {
+        section_id: "overview",
+        heading: "Overview",
+        content: "Introductory overview prose remains visible.\n\n---\n\nOverview continuation remains visible."
+      },
+      {
+        section_id: "learning_purpose",
+        heading: "Learning Purpose",
+        content: "Purpose prose remains visible."
+      },
+      {
+        section_id: "knowledge_summary",
+        heading: "Knowledge Summary",
+        content: "Knowledge summary prose remains visible."
+      },
+      {
+        section_id: "learning_sequence",
+        heading: "Learning Journey",
+        content: {
+          steps: [{ title: "First step", description: "Begin here." }]
+        }
+      }
+    ]
+  };
+  const r = api.buildUtilityStructuredHtmlForTest(page);
+  assert.ok(r.html, "expected html export");
+  const body = bodyHtml(r.html);
+  assert.match(
+    body,
+    /<div id="journey-orient" data-journey-section="true">\s*<section class="util-overview">/
+  );
+  assert.match(body, /<section class="util-overview">/);
+  assert.match(body, /<section class="util-learning-purpose">/);
+  assert.match(body, /<section class="util-learning-outcomes">/);
+  assert.match(body, /<section class="util-knowledge-summary">/);
+  assert.match(body, /<section class="util-learning-journey">/);
+  assert.match(body, /<div class="util-overview__content">/);
+  assert.match(body, /<div class="util-learning-purpose__content">/);
+  assert.match(body, /<div class="util-learning-outcomes__content">/);
+  assert.match(
+    body,
+    /<div class="util-knowledge-summary__content util-knowledge-summary--prose">/
+  );
+  assert.match(body, /<div class="util-learning-journey__content">/);
+  assert.match(body, /Introductory overview prose remains visible/);
+  assert.match(body, /Overview continuation remains visible/);
+  assert.match(body, /Purpose prose remains visible/);
+  assert.match(body, /Identify the core claim in a short passage/);
+  assert.match(body, /Explain how evidence supports that claim/);
+  assert.match(body, /Knowledge summary prose remains visible/);
+  assert.match(body, /<ul class="util-learning-outcomes__list">/);
+  assert.doesNotMatch(body, /util-learning-outcomes__content[\s\S]{0,200}>\s*(Outcomes|Items|Statement|Text|ID)\s*</i);
+  [
+    "Overview",
+    "Learning Purpose",
+    "Learning Outcomes",
+    "Knowledge Summary",
+    "Learning Journey"
+  ].forEach((heading) => {
+    assert.match(
+      body,
+      new RegExp(
+        '<h2 class="util-section-heading">[\\s\\S]*?<span>' +
+          heading +
+          "<\\/span><\\/h2>"
+      )
+    );
+  });
+  assert.doesNotMatch(
+    body,
+    /<p[^>]*>\s*(?:Overview|Learning Purpose|Learning Outcomes|Learning Journey)\s*<\/p>/i
+  );
+  assert.doesNotMatch(body, /<hr\b/i);
+  const openingOrder = [
+    "util-overview",
+    "util-learning-purpose",
+    "util-learning-outcomes",
+    "util-knowledge-summary",
+    "util-learning-journey"
+  ].map((className) => body.indexOf('<section class="' + className + '">'));
+  assert.ok(openingOrder.every((index) => index !== -1));
+  assert.deepEqual(openingOrder, openingOrder.slice().sort((a, b) => a - b));
 });
 
 test("learning journey nav labels: strip LO prefixes and shorten", () => {
@@ -243,19 +355,16 @@ test("learning journey arrows: compact layout only", () => {
   assert.doesNotMatch(scroll, /util-journey-arrow/);
 });
 
-test("learning journey ribbon: inflation workshop multi-activity export", () => {
+test("learning journey sticky header: inflation workshop includes journey nav", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(inflationFixturePath, "utf8"));
   const r = api.buildUtilityStructuredHtmlForTest(page);
   const html = r.html || "";
-  assert.match(html, /util-journey-nav/);
   assert.match(html, /<header class="util-learning-header">/);
-  assert.match(
-    html,
-    /<a class="util-journey-link" href="#journey-orient"><span class="util-journey-link-text">Orient<\/span><\/a>/
-  );
+  assert.match(html, /util-journey-nav/);
+  assert.match(html, /util-journey-link/);
   assert.match(html, /util-journey-arrow/);
-  assert.doesNotMatch(html, /<a class="util-journey-link" href="#activity-\d+">LO\d/i);
+  assert.match(html, /\bid="journey-orient"/);
   const activities = api.utilityCollectLearningJourneyActivitiesFromExportHtmlForTest(html);
   assert.ok(activities.length >= 2);
 });

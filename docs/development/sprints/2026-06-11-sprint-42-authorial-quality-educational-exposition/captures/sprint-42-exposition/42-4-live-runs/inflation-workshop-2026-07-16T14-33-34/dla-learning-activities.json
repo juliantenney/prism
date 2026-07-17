@@ -1,0 +1,151 @@
+{
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Understanding Supply and Demand Principles",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Analyze the basic principles of supply and demand to determine market equilibrium."
+      ],
+      "activity_preamble": "This activity introduces the fundamental concepts of supply and demand, focusing on how these forces interact to establish market equilibrium. You will explore the mechanisms behind supply and demand changes and how they influence prices and quantities in a market. Understanding these principles is essential for analyzing economic scenarios and predicting market behavior.",
+      "reasoning_orientation": "As you study supply and demand, focus on the causal relationships between shifts in supply or demand and their effects on market equilibrium. Consider how changes in one curve affect the other and the resulting price adjustments. Strong reasoning connects these shifts to real-world market outcomes rather than just describing the curves.",
+      "learner_task": "Study the worked example illustrating supply and demand curves and their intersection. Then, analyze a simple market scenario to identify how shifts in supply or demand affect equilibrium price and quantity.",
+      "expected_output": "Your analysis should clearly explain how supply and demand interact to set the market equilibrium, citing specific changes in curves and their effects on price and quantity. Responses must demonstrate a coherent understanding of market forces beyond mere definitions.",
+      "required_materials": [
+        {
+          "material_id": "M1",
+          "type": "worked_example",
+          "purpose": "Demonstrate supply and demand interaction",
+          "specification": "depth_floor: L3; includes graphical representation of supply and demand curves with stepwise explanation of equilibrium changes."
+        },
+        {
+          "material_id": "M2",
+          "type": "sample_output",
+          "purpose": "Model analysis of supply and demand shifts",
+          "specification": "depth_floor: L3; detailed reasoning linking curve shifts to market equilibrium outcomes."
+        },
+        {
+          "material_id": "M3",
+          "type": "text",
+          "purpose": "Conceptual overview of supply and demand",
+          "specification": "depth_floor: L3; concise exposition of supply, demand, and market equilibrium principles for first-year learners."
+        }
+      ],
+      "intellectual_coherence_bridge": "Building a solid grasp of supply and demand principles is foundational for all subsequent economics analysis. This activity establishes the causal framework and graphical intuition required to interpret market changes, which prepares you for applying these concepts to numerical and graphical tasks in later activities."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Calculating Opportunity Costs in Economic Decisions",
+      "grouping": "individual",
+      "duration_minutes": 20,
+      "mapped_learning_outcomes": [
+        "Calculate opportunity costs in simple economic decision scenarios."
+      ],
+      "activity_preamble": "This activity focuses on the concept of opportunity cost, a critical element in economic decision-making. You will learn to quantify opportunity costs by comparing the benefits of alternative choices in straightforward scenarios. Numerical examples will clarify how to identify and calculate these costs accurately.",
+      "reasoning_orientation": "Approach opportunity cost by carefully identifying the next best alternative foregone when making a decision. Reason through the trade-offs involved and quantify the cost in terms of lost benefits or value. Strong reasoning links the numerical calculation to the underlying economic rationale.",
+      "transfer_or_application_task": "Apply your understanding by calculating opportunity costs in several provided economic decision scenarios. Justify your calculations by explaining which alternatives are considered and why.",
+      "learner_task": "Work through the provided numerical examples of opportunity cost calculations. Then, complete practice problems where you identify and compute opportunity costs for given choices.",
+      "expected_output": "Your calculations should correctly quantify opportunity costs with clear explanations of the alternatives considered. Justifications must demonstrate an understanding of economic trade-offs rather than mechanical number crunching.",
+      "required_materials": [
+        {
+          "material_id": "M4",
+          "type": "worked_example",
+          "purpose": "Stepwise calculation of opportunity cost",
+          "specification": "depth_floor: L3; numerical examples with detailed reasoning on identifying alternatives and computing costs."
+        },
+        {
+          "material_id": "M5",
+          "type": "sample_output",
+          "purpose": "Model solutions for opportunity cost problems",
+          "specification": "depth_floor: L3; includes explanations linking numerical results to economic decision-making."
+        },
+        {
+          "material_id": "M6",
+          "type": "task_cards",
+          "purpose": "Practice problems on opportunity cost",
+          "specification": "depth_floor: L3; multiple scenarios requiring calculation and explanation of opportunity costs."
+        }
+      ],
+      "intellectual_coherence_bridge": "Having understood supply and demand, this activity deepens your economic reasoning by focusing on decision-making trade-offs. Calculating opportunity costs numerically reinforces the practical application of economic principles and prepares you for interpreting graphical shifts in market conditions next.",
+      "support_note": "Review the definitions of opportunity cost and economic decision-making before attempting calculations to ensure clarity in identifying alternatives."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Interpreting Supply and Demand Graphs",
+      "grouping": "individual",
+      "duration_minutes": 25,
+      "mapped_learning_outcomes": [
+        "Interpret graphical representations of supply and demand curves to predict changes in market conditions."
+      ],
+      "activity_preamble": "This activity develops your skills in reading and interpreting supply and demand graphs. You will learn to distinguish between shifts and movements along curves and predict how these changes affect market outcomes. Emphasis is placed on understanding graphical cues and explaining their economic significance.",
+      "reasoning_orientation": "Focus on the differences between movements along curves (changes in quantity demanded or supplied) and shifts of the curves themselves (changes in demand or supply). Reason through the causes and consequences of these graphical changes to predict market effects accurately.",
+      "self_explanation_prompt": "After each graph, articulate the reasoning behind your classification and prediction, ensuring your explanation connects graphical features to economic concepts.",
+      "learner_task": "Examine a series of supply and demand graphs depicting various market changes. Identify and explain each change, then predict its impact on equilibrium price and quantity.",
+      "expected_output": "Your responses should clearly differentiate between shifts and movements, providing reasoned explanations for each. Predictions must be logically consistent with the graphical changes and economic theory.",
+      "required_materials": [
+        {
+          "material_id": "M7",
+          "type": "modelling_note",
+          "purpose": "Graph interpretation guide",
+          "specification": "depth_floor: L3; annotated supply and demand graphs illustrating shifts vs movements with explanatory notes."
+        },
+        {
+          "material_id": "M8",
+          "type": "classification_table",
+          "purpose": "Practice table for classifying graph changes",
+          "specification": "depth_floor: L3; columns for graph description, type of change (shift/movement), cause, and predicted market effect; learner completes classification and reasoning."
+        },
+        {
+          "material_id": "M9",
+          "type": "scenario",
+          "purpose": "Market condition cases",
+          "specification": "depth_floor: L3; at least two distinct market scenarios with specific context and data for graph interpretation practice."
+        }
+      ],
+      "intellectual_coherence_bridge": "This activity synthesizes your prior understanding of supply, demand, and opportunity cost by applying it to graphical analysis. Mastery of graph interpretation is crucial for predicting market responses and sets the stage for more complex economic evaluations."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Consolidation and Reflection on Market Principles",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "Analyze the basic principles of supply and demand to determine market equilibrium.",
+        "Calculate opportunity costs in simple economic decision scenarios.",
+        "Interpret graphical representations of supply and demand curves to predict changes in market conditions."
+      ],
+      "activity_preamble": "This final activity helps you consolidate your learning by reflecting on the key concepts and skills developed throughout the session. You will synthesize your understanding of market equilibrium, opportunity cost, and graph interpretation to articulate what you have learned and how it applies to economic reasoning.",
+      "transfer_or_application_task": "Integrate your knowledge by summarizing the core principles and explaining how they interrelate to support economic decision-making and market analysis.",
+      "learner_task": "Write a reflective summary that captures the essential ideas about supply and demand, opportunity cost, and graphical interpretation. Highlight how these concepts connect and why they matter in understanding markets.",
+      "expected_output": "Your summary should be a coherent synthesis of at least three key ideas, demonstrating clear understanding and the ability to integrate concepts. It should explain the relevance of these principles to real-world economic analysis.",
+      "required_materials": [
+        {
+          "material_id": "M10",
+          "type": "consolidation_summary",
+          "purpose": "Session closure and reflection",
+          "specification": "depth_floor: L3; prompts guiding synthesis of key concepts and their interconnections."
+        },
+        {
+          "material_id": "M11",
+          "type": "prompt_set",
+          "purpose": "Reflection questions",
+          "specification": "depth_floor: L3; questions encouraging consideration of learning progress and application."
+        }
+      ],
+      "intellectual_coherence_bridge": "This consolidation activity draws together the analytical, application, and interpretive skills developed in prior activities. Reflecting on these connections enhances your ability to apply economic principles independently and prepares you for further study.",
+      "support_note": "Use the reflection prompts to guide your summary and ensure you cover all critical aspects of the session."
+    }
+  ],
+  "outcome_alignment": [
+    "Analyze the basic principles of supply and demand to determine market equilibrium.",
+    "Calculate opportunity costs in simple economic decision scenarios.",
+    "Interpret graphical representations of supply and demand curves to predict changes in market conditions."
+  ],
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 75,
+    "consolidation_requirement": true,
+    "workbook_contract_applied": true
+  }
+}

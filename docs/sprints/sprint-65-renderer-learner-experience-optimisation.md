@@ -1,41 +1,23 @@
 # Sprint 65 — Renderer Learner Experience Optimisation
 
-**Status:** Chartered (2026-07-16)  
+**Status:** **Closed** (2026-07-16) — no production-ready renderer improvement; prototype reverted  
 **Opened:** 2026-07-16  
 **Type:** Implementation-oriented renderer sprint (evidence-led)  
 **Working title:** Working With What We Have  
 **Portable pack:** [docs/development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/](../development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/)  
-**START HERE:** [SPRINT-65-START-HERE.md](../development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-START-HERE.md)  
-**Charter:** [SPRINT-65-CHARTER.md](../development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-CHARTER.md)
+**Closure:** [SPRINT-65-CLOSURE.md](../development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-CLOSURE.md)  
+**Successor:** [Sprint 66](sprint-66-grounded-renderer-learner-experience.md)
 
 ---
 
-## Purpose
+## Purpose (original)
 
 > Improve the learner-facing page renderer so that it produces the strongest possible instructional experience using only data already available after the GAM boundary.
 
 ---
 
-## Nature
+## Close
 
-Sprint 65 is a **renderer** sprint.
+Sprint 65 did not deliver a production-ready renderer improvement. The implementation prototype was reverted. No pipeline changes were made.
 
-It is **not** a preservation architecture investigation.  
-It is **not** a schema redesign sprint.  
-It is **not** authorised to implement Sprint 64 preservation machinery.
-
-Authoritative pack charter: [SPRINT-65-CHARTER.md](../development/sprints/2026-07-16-sprint-65-renderer-learner-experience-optimisation/SPRINT-65-CHARTER.md)
-
----
-
-## Inheritance
-
-* Sprint 63 Outcome A — Tier 2 differentiation real; some plan structure non-recoverable  
-* Sprint 64 Outcome C — experimental preservation feasible; production preservation not justified  
-* Sprint 62 PASS — coherent renderer baseline  
-
----
-
-## First task
-
-**S65-BL-001** — Baseline learner-experience audit (documentation only).
+**Lesson carried to Sprint 66:** ground renderer work in fresh, current renderer inputs — not upstream research structures or historical artefacts.

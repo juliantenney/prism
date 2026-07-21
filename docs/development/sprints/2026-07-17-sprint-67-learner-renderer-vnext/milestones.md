@@ -6,8 +6,8 @@
 | **M1** HTML skeleton | Page/activity/beat/material renderers emit structure | Unit tests on beat section markers |
 | **M2** Material fidelity | Text, tables, scenarios, checklists, expected output | Golden fixture content integrity |
 | **M3** Invariant suite | All acceptance assertions automated | CI / `node --test` green |
-| **M4** Feature flag | Legacy default; vNext selectable | Default + exclusive-path tests |
-| **M5** Human review | Fixture walk recorded | Notes in evidence log |
-| **M6** Rollout readiness | Rollout checklist complete; no forced cutover | [rollout-strategy.md](rollout-strategy.md) signed |
+| **M4** Feature flag | Legacy default; vNext selectable | Default + exclusive-path tests + browser registration | **Complete (2026-07-21)** |
+| **M5** Human review | Fixture walk recorded | Notes in evidence log | **Complete (2026-07-21)** — PASS WITH MINOR FINDINGS |
+| **M6** Rollout readiness | Rollout checklist complete; no forced cutover | [rollout-strategy.md](rollout-strategy.md) signed | **Complete (2026-07-21)** — Sprint 67.10 CSS cleanup |
 
 Target order matches [implementation-plan.md](implementation-plan.md).

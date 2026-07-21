@@ -1,9 +1,23 @@
 # Draft Sprint 68 Planning Note
 
 **Status:** Draft planning note only — **Sprint 68 is not created**  
-**Date:** 2026-07-17  
-**Depends on:** Successful Sprint 67 vNext HTML + flag readiness  
+**Date:** 2026-07-17 (updated 2026-07-21)  
+**Depends on:** Sprint 67 closed — vNext default export shell complete  
 **Location intent (when opened):** `docs/development/sprints/YYYY-MM-DD-sprint-68-…` (not created yet)
+
+---
+
+## First Sprint 68 startup item
+
+**Restore consistent activity-to-activity bridging.**
+
+Initial investigation must determine:
+
+- whether authoritative bridge text already exists in the JSON or render model
+- why only one intellectual coherence bridge is currently visible
+- whether existing bridge content is misplaced inside the destination activity
+- how to render concise transitions between consecutive activity articles
+- what schema or pipeline data is genuinely missing, if existing data is insufficient
 
 ---
 

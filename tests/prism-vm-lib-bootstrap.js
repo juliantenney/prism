@@ -81,8 +81,44 @@ const PEDAGOGICAL_ICON_LIBS = [
   "lib/page-render-normalize.js"
 ];
 
+const LEARNER_RENDERER_VNEXT_BROWSER_LIB = "lib/learner-renderer-vnext-browser.js";
+
+function wireBrowserGlobalThis(sandbox) {
+  if (sandbox.window && sandbox.globalThis !== sandbox.window) {
+    sandbox.globalThis = sandbox.window;
+  }
+}
+
+function loadLearnerRendererVNextBrowserInSandbox(sandbox, repoRoot) {
+  const root = repoRoot || path.resolve(__dirname, "..");
+  wireBrowserGlobalThis(sandbox);
+  vm.runInContext(
+    fs.readFileSync(path.join(root, LEARNER_RENDERER_VNEXT_BROWSER_LIB), "utf8"),
+    sandbox,
+    { filename: LEARNER_RENDERER_VNEXT_BROWSER_LIB }
+  );
+  if (sandbox.window && sandbox.PRISM_LEARNER_RENDERER_VNEXT) {
+    sandbox.window.PRISM_LEARNER_RENDERER_VNEXT = sandbox.PRISM_LEARNER_RENDERER_VNEXT;
+  }
+  return sandbox.window
+    ? sandbox.window.PRISM_LEARNER_RENDERER_VNEXT
+    : sandbox.PRISM_LEARNER_RENDERER_VNEXT;
+}
+
+function injectLearnerRendererVNextInSandbox(sandbox) {
+  var vnext = require("../lib/learner-renderer-vnext");
+  sandbox.PRISM_LEARNER_RENDERER_VNEXT = vnext;
+  if (sandbox.window) {
+    sandbox.window.PRISM_LEARNER_RENDERER_VNEXT = vnext;
+  }
+}
+
 module.exports = {
   DEFAULT_LIBS,
   PEDAGOGICAL_ICON_LIBS,
-  runPrismLibScriptsInSandbox
+  LEARNER_RENDERER_VNEXT_BROWSER_LIB,
+  runPrismLibScriptsInSandbox,
+  wireBrowserGlobalThis,
+  loadLearnerRendererVNextBrowserInSandbox,
+  injectLearnerRendererVNextInSandbox
 };

@@ -118,7 +118,7 @@ test("learning journey ribbon: omitted when fewer than two activities", () => {
       }
     ]
   };
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
   const html = r.html || "";
   const acts = api.utilityCollectLearningJourneyActivitiesFromExportHtmlForTest(html);
   assert.equal(acts.length, 1, "expected one learning activity article");
@@ -131,7 +131,7 @@ test("learning journey ribbon: omitted when fewer than two activities", () => {
 test("learning journey sticky header: multi-activity page restores journey nav", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(marxFixturePath, "utf8"));
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
   assert.ok(r.html, "expected html export");
   const html = r.html;
 
@@ -227,7 +227,7 @@ test("top orientation: introductory sections render as aligned h2 sections", () 
       }
     ]
   };
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
   assert.ok(r.html, "expected html export");
   const body = bodyHtml(r.html);
   assert.match(
@@ -324,12 +324,12 @@ test("learning journey structural progress: section-based scale", () => {
   assert.equal(progress(2, 1, 4), 100);
 });
 
-test("learning journey layout: compact up to 7 items, scroll beyond", () => {
+test("learning journey layout: compact up to 8 items, scroll beyond", () => {
   const api = loadPrismTestApi();
   const layout = api.utilityLearningJourneyNavLayoutClassForTest;
   assert.equal(layout(4), " util-journey-nav--compact");
-  assert.equal(layout(7), " util-journey-nav--compact");
-  assert.equal(layout(8), " util-journey-nav--scroll");
+  assert.equal(layout(8), " util-journey-nav--compact");
+  assert.equal(layout(9), " util-journey-nav--scroll");
 });
 
 test("learning journey arrows: compact layout only", () => {
@@ -347,18 +347,20 @@ test("learning journey arrows: compact layout only", () => {
   assert.match(compact, /util-journey-arrow" aria-hidden="true">→<\/span><a class="util-journey-link"/);
 
   const scrollItems = [];
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < 9; i += 1) {
     scrollItems.push({ id: "activity-" + i, label: "Step " + i });
   }
   const scroll = render(scrollItems);
   assert.match(scroll, /util-journey-nav--scroll/);
   assert.doesNotMatch(scroll, /util-journey-arrow/);
+  assert.doesNotMatch(scroll, /util-journey-overflow-cue/);
+  assert.doesNotMatch(scroll, /Scroll →/);
 });
 
 test("learning journey sticky header: inflation workshop includes journey nav", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(inflationFixturePath, "utf8"));
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
   const html = r.html || "";
   assert.match(html, /<header class="util-learning-header">/);
   assert.match(html, /util-journey-nav/);
@@ -401,7 +403,7 @@ test("learning journey ribbon: sequence timeline without learning activities omi
       }
     ]
   };
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
   const html = r.html || "";
   const acts = api.utilityCollectLearningJourneyActivitiesFromExportHtmlForTest(html);
   assert.equal(acts.length, 0, "timeline steps are not learning journey activities");

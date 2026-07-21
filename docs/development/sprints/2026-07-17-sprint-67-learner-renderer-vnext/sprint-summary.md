@@ -1,7 +1,7 @@
 # Sprint 67 — Summary
 
 **Sprint:** 67 — Learner Renderer vNext  
-**Status:** **Chartered** (2026-07-17)  
+**Status:** **Closed** (2026-07-21) — see [SPRINT-67-CLOSURE.md](SPRINT-67-CLOSURE.md)  
 **Predecessor:** Sprint 66 paused — model layer complete  
 
 ---

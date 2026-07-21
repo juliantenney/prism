@@ -482,6 +482,13 @@
               </select>
             </div>
             <div class="form-group small">
+              <label for="utilitiesRendererVersion">Learner renderer</label>
+              <select id="utilitiesRendererVersion" autocomplete="off">
+                <option value="vnext" selected>vNext (default)</option>
+                <option value="legacy">Legacy</option>
+              </select>
+            </div>
+            <div class="form-group small">
               <label for="utilitiesFileName">File name (optional)</label>
               <input
                 type="text"
@@ -1025,6 +1032,7 @@
   <script src="lib/episode-plan-v1-templates.js?v=20260608-1"></script>
   <script src="lib/episode-plan-v1-validation.js?v=20260608-1"></script>
   <script src="lib/episode-plan-dla-integration.js?v=20260608-1"></script>
+  <script src="lib/learner-renderer-vnext-browser.js?v=20260721-s67-bl006a"></script>
   <script src="app.js?v=20260715-s59-mental-1"></script>
 </body>
 </html>

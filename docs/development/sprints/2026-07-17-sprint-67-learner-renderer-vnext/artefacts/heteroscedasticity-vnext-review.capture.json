@@ -1,0 +1,21 @@
+{
+  "captured_at": "2026-07-21T07:20:02.099Z",
+  "reviewer_task": "S67-BL-007",
+  "reviewer": "S67 review agent (Cursor)",
+  "review_date": "2026-07-21",
+  "m5_decision": "PASS WITH MINOR FINDINGS",
+  "viewports": ["desktop ~1440x900", "narrow/mobile 390x844"],
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "invocation": "renderLearnerPageForTest(fixture, { rendererVersion: 'vnext', applyCompositionValidation: false })",
+  "browser_path": "index.html script order: learner-renderer-vnext-browser.js → app.js → runUtilityPageExportPipeline",
+  "runtime": "Node vm sandbox mirroring production browser bundle registration (S67-EV-06 path)",
+  "node_version": "v24.15.0",
+  "vnext_markers": {
+    "util_learner_page": true,
+    "data_renderer_vnext": true
+  },
+  "legacy_markers_absent_in_vnext": {
+    "util_journey_nav": true,
+    "data_journey_section": true
+  }
+}

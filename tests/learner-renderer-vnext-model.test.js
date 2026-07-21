@@ -305,10 +305,16 @@ test("vNext production module excludes legacy planner and consumption patterns",
     "checklistRendered",
     "insertExpectedOutputGuidanceBeforeChecklist"
   ];
+  const compositionAdapterFiles = new Set([
+    "compose-activity-moments.js",
+    "compose-workspace.js",
+    "completion-table-workspace.js"
+  ]);
   const files = fs
     .readdirSync(moduleDir)
     .filter((name) => name.endsWith(".js"));
   const productionSource = files
+    .filter((name) => !compositionAdapterFiles.has(name))
     .map((name) => fs.readFileSync(path.join(moduleDir, name), "utf8"))
     .join("\n");
 

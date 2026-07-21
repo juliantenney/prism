@@ -1,0 +1,77 @@
+{
+  "captured_at": "2026-07-21T14:10:33.529Z",
+  "reviewer_task": "S68-IMP-008",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "invocation": {
+    "beats": "renderLearnerPageHtml(page, { compositionMode: \"beats\" })",
+    "moments": "renderLearnerPageHtml(page, { compositionMode: \"moments\" })"
+  },
+  "shell": "composeStandaloneVnextLearnerExportForTest (production export CSS)",
+  "notes": "A3-M3 decision_table reuses renderTableWorkspace() unchanged in moments mode; beats mode remains static.",
+  "beats": {
+    "label": "beats",
+    "a3_bytes": 14725,
+    "composition_moments": [],
+    "beat_sections": 3,
+    "beat_functions": [
+      "worked_example",
+      "practice",
+      "reflection"
+    ],
+    "orient_moment": 0,
+    "learn_moment": 0,
+    "do_moment": 0,
+    "check_moment": 0,
+    "a3_m1": 1,
+    "a3_m2": 1,
+    "a3_m3": 1,
+    "a3_m4": 1,
+    "reference_table_blocks": 0,
+    "interactive_table_workspaces": 0,
+    "table_workspace_inputs": 0,
+    "reference_table_inputs": 0,
+    "standalone_workspace": 0,
+    "textarea_inputs": 0,
+    "table_inputs": 0,
+    "static_decision_table_beats": 1,
+    "table_workspace_guidance": 0,
+    "transfer_reflection_prompt": 2
+  },
+  "moments": {
+    "label": "moments",
+    "a3_bytes": 15615,
+    "composition_moments": [
+      "orient",
+      "learn",
+      "do",
+      "check"
+    ],
+    "beat_sections": 0,
+    "beat_functions": [],
+    "orient_moment": 1,
+    "learn_moment": 1,
+    "do_moment": 1,
+    "check_moment": 1,
+    "a3_m1": 1,
+    "a3_m2": 1,
+    "a3_m3": 2,
+    "a3_m4": 1,
+    "reference_table_blocks": 0,
+    "interactive_table_workspaces": 1,
+    "table_workspace_inputs": 8,
+    "reference_table_inputs": 0,
+    "standalone_workspace": 0,
+    "textarea_inputs": 0,
+    "table_inputs": 8,
+    "static_decision_table_beats": 1,
+    "table_workspace_guidance": 1,
+    "transfer_reflection_prompt": 2
+  },
+  "artefacts": {
+    "beats_full": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a3-beats-mode-export.html",
+    "moments_full": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a3-moments-mode-export.html",
+    "beats_a3": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a3-beats-mode-a3-only.html",
+    "moments_a3": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a3-moments-mode-a3-only.html",
+    "structural_comparison": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a3-composition-structural-comparison.json"
+  }
+}

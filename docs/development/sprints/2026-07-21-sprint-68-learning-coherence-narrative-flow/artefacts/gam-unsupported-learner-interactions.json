@@ -1,0 +1,271 @@
+{
+  "generated_at": "2026-07-21T14:57:03.473Z",
+  "unsupported": [
+    {
+      "type": "cards",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "checklists",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "classification_table",
+      "observedInFixtures": true,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "criteria_exposition",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "discussion",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "examples",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "expected_output",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "exposition",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "guidance",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "impact_table",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "instructions",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "materials",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "metadata",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "output",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "planning_table",
+      "observedInFixtures": true,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "production",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "prompt",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "prompts",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "reading",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "reading_text",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "reference_table",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "rubric",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "scenarios",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "strategy",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "strategy_options",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "study_scenarios",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "support",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "support_note",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "support_notes",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "table",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "task_card",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "task_cards",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "templates",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "video",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "what_to_do",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "worked_examples",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "worksheet",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    },
+    {
+      "type": "worksheet_template",
+      "observedInFixtures": false,
+      "interactionExpectation": "unsupported-interaction",
+      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
+      "recommendedNextStep": "Add renderer or map alias to supported type"
+    }
+  ]
+}

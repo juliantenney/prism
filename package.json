@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev-server.js",
-    "build:learner-renderer-vnext-browser": "node scripts/build-learner-renderer-vnext-browser.js"
+    "build:learner-renderer-vnext-browser": "node scripts/build-learner-renderer-vnext-browser.js",
+    "build:gam-renderer-type-inventory": "node scripts/build-gam-renderer-type-inventory.js",
+    "build:learner-renderer-kitchen-sink-fixture": "node scripts/build-learner-renderer-kitchen-sink-fixture.js"
   },
   "dependencies": {
     "lucide": "^1.22.0"

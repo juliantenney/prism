@@ -152,7 +152,10 @@ test("vNext export: fragment wrapped in full standalone document", () => {
   assert.match(html, /<html lang="en">/i);
   assert.match(html, /<\/html>\s*$/i);
   assert.match(html, /<body class="[^"]*\butil-page-export--vnext\b/);
-  assert.match(html, /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext">/);
+  assert.match(
+    html,
+    /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext" data-composition-mode="moments">/
+  );
   assert.match(html, /util-vnext-activity/);
   assert.ok(html.includes('data-activity-id="A1"'), "Export must include vNext activity markup.");
   assert.doesNotMatch(html, /<header class="util-page-header util-learning-header"/);

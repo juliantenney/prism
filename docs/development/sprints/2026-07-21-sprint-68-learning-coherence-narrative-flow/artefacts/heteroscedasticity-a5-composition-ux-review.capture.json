@@ -1,0 +1,70 @@
+{
+  "captured_at": "2026-07-21T14:33:42.673Z",
+  "reviewer_task": "S68-IMP-010",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "notes": "A5 capstone Do moment composes comparison_table (table_entry) followed by written judgement (text_entry) without an activity-specific renderer.",
+  "beats": {
+    "label": "beats",
+    "a5_bytes": 23442,
+    "composition_moments": [],
+    "beat_sections": 4,
+    "beat_functions": [
+      "orientation",
+      "comparison",
+      "evaluation",
+      "reflection"
+    ],
+    "a5_m1": 1,
+    "a5_m4": 1,
+    "a5_m5": 1,
+    "a5_m6": 1,
+    "a5_m7": 1,
+    "a5_m8": 1,
+    "table_workspaces": 0,
+    "table_inputs": 0,
+    "text_workspaces": 0,
+    "text_controls": 0,
+    "learner_surface_sequence": [],
+    "duplicated_argument_structure_hint": 2,
+    "reference_tables_in_learn": 0,
+    "check_guidance": 0,
+    "transfer_or_consolidation": 1
+  },
+  "moments": {
+    "label": "moments",
+    "a5_bytes": 24649,
+    "composition_moments": [
+      "orient",
+      "learn",
+      "do",
+      "check"
+    ],
+    "beat_sections": 0,
+    "beat_functions": [],
+    "a5_m1": 1,
+    "a5_m4": 2,
+    "a5_m5": 1,
+    "a5_m6": 1,
+    "a5_m7": 1,
+    "a5_m8": 1,
+    "table_workspaces": 1,
+    "table_inputs": 12,
+    "text_workspaces": 1,
+    "text_controls": 1,
+    "learner_surface_sequence": [
+      "table_entry",
+      "text_entry"
+    ],
+    "duplicated_argument_structure_hint": 1,
+    "reference_tables_in_learn": 0,
+    "check_guidance": 1,
+    "transfer_or_consolidation": 1
+  },
+  "artefacts": {
+    "beats_full": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a5-beats-mode-export.html",
+    "moments_full": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a5-moments-mode-export.html",
+    "beats_a5": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a5-beats-mode-a5-only.html",
+    "moments_a5": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a5-moments-mode-a5-only.html",
+    "structural_comparison": "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/heteroscedasticity-a5-composition-structural-comparison.json"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "captured_at": "2026-07-21T14:57:30.663Z",
+  "reviewer_task": "S68-IMP-012",
+  "fixture": "tests/fixtures/page-render/learner-renderer-kitchen-sink-page.json",
+  "composition_mode": "moments",
+  "inventory_summary": {
+    "canonical_material_types": 51,
+    "vnext_supported_material_types": 13,
+    "registry_material_types": 50,
+    "observed_in_fixtures": 15,
+    "schema_or_registry_only": 36,
+    "kitchen_sink_vnext_coverage": 13,
+    "kitchen_sink_coverage_pct": 100,
+    "prompt_fields": 6,
+    "activity_interaction_types": 7
+  },
+  "render": {
+    "page_bytes": 100147,
+    "activity_count": 5,
+    "composition_moments": 0,
+    "beat_sections": 17,
+    "text_entry_workspaces": 0,
+    "table_entry_workspaces": 0,
+    "table_inputs": 0,
+    "textareas": 0,
+    "static_tables": 3,
+    "prompts": 0,
+    "checklists": 5,
+    "unsupported_fallbacks": 0,
+    "duplicate_ids": [],
+    "material_type_occurrences": 23,
+    "unique_material_types_rendered": 13,
+    "unique_material_types": [
+      "analysis_table",
+      "checklist",
+      "comparison_table",
+      "consolidation_summary",
+      "decision_table",
+      "modelling_note",
+      "prompt_set",
+      "sample_output",
+      "scenario",
+      "template",
+      "text",
+      "transfer_prompt",
+      "worked_example"
+    ]
+  }
+}

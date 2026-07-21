@@ -1,0 +1,385 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Learner Renderer Kitchen Sink — Sprint 68 Type Coverage",
+  "audience": "Renderer development — not for learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan",
+      "dla",
+      "gam",
+      "learning_sequence",
+      "design_page"
+    ],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "Synthetic fixture exercising all thirteen vNext-supported material types across five archetype-matched activities (KS01–KS05)."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "Validate renderer coverage, type-to-surface mapping, and safe fallback behaviour without modifying GAM or PRISM semantics."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "Each activity maps to one archetype variant. Materials are minimal but schema-valid."
+    }
+  },
+  "learning_outcomes": [
+    {
+      "id": "LO-KS1",
+      "statement": "Recognise static instructional material rendering."
+    },
+    {
+      "id": "LO-KS2",
+      "statement": "Complete table and text learner surfaces where composition applies."
+    }
+  ],
+  "learning_sequence": {
+    "ordered_activity_ids": [
+      "KS01",
+      "KS02",
+      "KS03",
+      "KS04",
+      "KS05"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "KS01",
+      "title": "Static exposition and verification (understand-explain-check)",
+      "learner_task": "1. Read the core text.\n2. Study the worked example.\n3. Compare your thinking with the sample output.\n4. Verify using the checklist.\n5. Write a brief summary in your notes.",
+      "expected_output": "A concise summary demonstrating understanding of the core concept.",
+      "activity_preamble": "Kitchen-sink KS01 covers text, worked_example, sample_output, and checklist.",
+      "reasoning_orientation": "Focus on how each material type presents information before you respond.",
+      "self_explanation_prompt": "How would you explain the difference between exposition and verification materials?",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "mapped_learning_outcomes": [
+        "LO-KS1"
+      ],
+      "materials": [
+        {
+          "material_id": "KS01-M1",
+          "material_type": "text",
+          "activity_id": "KS01",
+          "title": "Core exposition",
+          "body_format": "markdown",
+          "body": "KS01-M1: **text** material renders as static prose in the explanation beat."
+        },
+        {
+          "material_id": "KS01-M2",
+          "material_type": "worked_example",
+          "activity_id": "KS01",
+          "title": "Worked pass",
+          "body_format": "markdown",
+          "body": "KS01-M2: **worked_example** shows expert reasoning steps."
+        },
+        {
+          "material_id": "KS01-M3",
+          "material_type": "sample_output",
+          "activity_id": "KS01",
+          "title": "Sample response",
+          "body_format": "markdown",
+          "body": "KS01-M3: **sample_output** demonstrates quality threshold language."
+        },
+        {
+          "material_id": "KS01-M4",
+          "material_type": "checklist",
+          "activity_id": "KS01",
+          "title": "Verification checklist",
+          "body_format": "markdown",
+          "body": "- Criterion KS01-C1: core concept named\n- Criterion KS01-C2: example referenced\n\nRevise if any criterion is missed."
+        }
+      ]
+    },
+    {
+      "activity_id": "KS02",
+      "title": "Modelling note and prompt set (understand-explain-apply-check)",
+      "learner_task": "1. Read the framing text.\n2. Review the modelling note.\n3. Complete the prompt set responses.\n4. Verify with the checklist.",
+      "expected_output": "Responses addressing each prompt with reference to the modelling note.",
+      "activity_preamble": "KS02 covers modelling_note and prompt_set materials.",
+      "conceptual_contrast_prompt": "Contrast static guidance with learner-generated responses.",
+      "intellectual_coherence_bridge": "Connect KS01 exposition to KS02 application prompts.",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "application"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "materials": [
+        {
+          "material_id": "KS02-M1",
+          "material_type": "text",
+          "activity_id": "KS02",
+          "title": "Framing text",
+          "body_format": "markdown",
+          "body": "KS02-M1: introductory **text** for the apply-check variant."
+        },
+        {
+          "material_id": "KS02-M2",
+          "material_type": "modelling_note",
+          "activity_id": "KS02",
+          "title": "Modelling note",
+          "body_format": "markdown",
+          "body": "KS02-M2: **modelling_note** provides expert modelling guidance without a separate heading duplicate."
+        },
+        {
+          "material_id": "KS02-M3",
+          "material_type": "prompt_set",
+          "activity_id": "KS02",
+          "title": "Application prompts",
+          "body_format": "markdown",
+          "body": "1. What evidence supports the model?\n2. What limitation should a learner note?\n3. How would you extend the analysis?"
+        },
+        {
+          "material_id": "KS02-M4",
+          "material_type": "checklist",
+          "activity_id": "KS02",
+          "title": "Apply checklist",
+          "body_format": "markdown",
+          "body": "- All three prompts addressed\n- Modelling note referenced"
+        }
+      ]
+    },
+    {
+      "activity_id": "KS03",
+      "title": "Scenario and analysis table (analyse-model-analyse-check)",
+      "learner_task": "1. Study the worked example.\n2. Read the scenario cases.\n3. Complete the analysis table.\n4. Verify with the checklist.",
+      "expected_output": "Completed analysis table with evidence-based judgements.",
+      "activity_preamble": "KS03 covers scenario and analysis_table (static in beats mode).",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "analysis"
+          },
+          {
+            "function": "check_understanding"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "materials": [
+        {
+          "material_id": "KS03-M1",
+          "material_type": "worked_example",
+          "activity_id": "KS03",
+          "title": "Analytic model",
+          "body_format": "markdown",
+          "body": "KS03-M1: expert analytic pass before independent table completion."
+        },
+        {
+          "material_id": "KS03-M2",
+          "material_type": "scenario",
+          "activity_id": "KS03",
+          "title": "Case scenarios",
+          "body_format": "markdown",
+          "body": "### Case A\nResidual spread widens with fitted values.\n\n### Case B\nSpread remains constant across the range."
+        },
+        {
+          "material_id": "KS03-M3",
+          "material_type": "analysis_table",
+          "activity_id": "KS03",
+          "title": "Analysis table (reference)",
+          "body_format": "markdown",
+          "body": "## Analysis grid\n\n| Case | Pattern | Judgement |\n| --- | --- | --- |\n| Example | Funnel | Likely heteroscedasticity |\n| A |  |  |\n| B |  |  |"
+        },
+        {
+          "material_id": "KS03-M4",
+          "material_type": "checklist",
+          "activity_id": "KS03",
+          "title": "Analysis checklist",
+          "body_format": "markdown",
+          "body": "- Pattern identified\n- Judgement justified"
+        }
+      ]
+    },
+    {
+      "activity_id": "KS04",
+      "title": "Decision table practice (apply-model-practise-transfer)",
+      "learner_task": "1. Work through the worked example.\n2. Apply reasoning to the scenario.\n3. Complete the decision table.\n4. Verify with the checklist.\n5. Identify a transfer context.",
+      "expected_output": "Completed decision table and transfer reflection.",
+      "activity_preamble": "KS04 covers decision_table and transfer prompt field.",
+      "transfer_or_application_task": "Identify another context where the same decision framework applies.",
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "practice"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "materials": [
+        {
+          "material_id": "KS04-M1",
+          "material_type": "worked_example",
+          "activity_id": "KS04",
+          "title": "Practise model",
+          "body_format": "markdown",
+          "body": "KS04-M1: modelled decision reasoning."
+        },
+        {
+          "material_id": "KS04-M2",
+          "material_type": "scenario",
+          "activity_id": "KS04",
+          "title": "Decision scenario",
+          "body_format": "markdown",
+          "body": "A policy team must choose between robust standard errors and variable transformation."
+        },
+        {
+          "material_id": "KS04-M3",
+          "material_type": "decision_table",
+          "activity_id": "KS04",
+          "title": "Decision table",
+          "body_format": "markdown",
+          "body": "## Options\n\n| Option | Benefit | Risk | Choice |\n| --- | --- | --- | --- |\n| Robust SE | Preserves coefficients | Does not fix variance |  |\n| Log transform | May stabilise variance | Changes interpretation |  |"
+        },
+        {
+          "material_id": "KS04-M4",
+          "material_type": "checklist",
+          "activity_id": "KS04",
+          "title": "Practise checklist",
+          "body_format": "markdown",
+          "body": "- Option benefits named\n- Trade-offs acknowledged"
+        }
+      ]
+    },
+    {
+      "activity_id": "KS05",
+      "title": "Evaluation capstone (evaluate-explain-model-practise-transfer)",
+      "learner_task": "1. Read the evaluation framing.\n2. Compare scenario evidence.\n3. Complete the comparison table.\n4. Use the response template.\n5. Verify with the checklist.\n6. Consolidate learning and plan transfer.",
+      "expected_output": "Structured evaluation with comparison table and written judgement.",
+      "activity_preamble": "KS05 covers comparison_table, template, consolidation_summary, and transfer_prompt.",
+      "argument_structure_hint": "State your criterion, evidence, and judgement before recommending an action.",
+      "intellectual_coherence_bridge": "Connect KS03 analysis to KS05 evaluation.",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "comparison"
+          },
+          {
+            "function": "evaluation"
+          },
+          {
+            "function": "reflection"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "materials": [
+        {
+          "material_id": "KS05-M1",
+          "material_type": "text",
+          "activity_id": "KS05",
+          "title": "Evaluation framing",
+          "body_format": "markdown",
+          "body": "KS05-M1: evaluation-oriented **text**."
+        },
+        {
+          "material_id": "KS05-M2",
+          "material_type": "scenario",
+          "activity_id": "KS05",
+          "title": "Comparison scenario",
+          "body_format": "markdown",
+          "body": "Two remediation approaches are under review for a regression diagnostics report."
+        },
+        {
+          "material_id": "KS05-M3",
+          "material_type": "comparison_table",
+          "activity_id": "KS05",
+          "title": "Comparison table",
+          "body_format": "markdown",
+          "body": "## Approaches\n\n| Approach | Strength | Limitation |\n| --- | --- | --- |\n| Residual plots | Visual evidence | Subjective |\n| Breusch-Pagan | Formal test | Assumption sensitive |"
+        },
+        {
+          "material_id": "KS05-M4",
+          "material_type": "template",
+          "activity_id": "KS05",
+          "title": "Response template",
+          "body_format": "markdown",
+          "body": "**Criterion:**\n\n**Evidence:**\n\n**Judgement:**\n\n**Recommendation:**"
+        },
+        {
+          "material_id": "KS05-M5",
+          "material_type": "checklist",
+          "activity_id": "KS05",
+          "title": "Evaluation checklist",
+          "body_format": "markdown",
+          "body": "- Criterion stated\n- Evidence cited\n- Recommendation justified"
+        },
+        {
+          "material_id": "KS05-M6",
+          "material_type": "consolidation_summary",
+          "activity_id": "KS05",
+          "title": "Consolidation",
+          "body_format": "markdown",
+          "body": "Key ideas: residual variance patterns, diagnostic evidence, and remedy trade-offs."
+        },
+        {
+          "material_id": "KS05-M7",
+          "material_type": "transfer_prompt",
+          "activity_id": "KS05",
+          "title": "Transfer",
+          "body_format": "markdown",
+          "body": "Where else would you apply this evaluation framework in economic analysis?"
+        }
+      ]
+    }
+  ]
+}

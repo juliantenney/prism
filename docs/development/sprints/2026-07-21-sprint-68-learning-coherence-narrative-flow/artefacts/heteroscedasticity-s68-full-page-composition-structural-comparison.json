@@ -1,0 +1,55 @@
+{
+  "captured_at": "2026-07-21T14:46:11.624Z",
+  "reviewer_task": "S68-IMP-011",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "notes": "Full-page moments mode is now the default application path for preview and export. Beats mode remains available via compositionMode: \"beats\".",
+  "default_composition_mode": "moments",
+  "beats": {
+    "label": "beats",
+    "active_composition_mode": "beats",
+    "page_bytes": 135479,
+    "activity_count": 5,
+    "composition_moments": 0,
+    "composition_moments_by_activity": {
+      "A1": 0,
+      "A2": 0,
+      "A3": 0,
+      "A4": 0,
+      "A5": 0
+    },
+    "beat_sections": 17,
+    "table_entry_workspaces": 0,
+    "text_entry_workspaces": 0,
+    "table_inputs": 0,
+    "textareas": 0,
+    "reference_tables": 0,
+    "reference_tables_in_learn": 0,
+    "prompt_occurrences": 0,
+    "duplicate_ids": [],
+    "unsupported_capability_fallbacks": 0
+  },
+  "moments": {
+    "label": "moments",
+    "active_composition_mode": "moments",
+    "page_bytes": 134532,
+    "activity_count": 5,
+    "composition_moments": 20,
+    "composition_moments_by_activity": {
+      "A1": 4,
+      "A2": 4,
+      "A3": 4,
+      "A4": 4,
+      "A5": 4
+    },
+    "beat_sections": 0,
+    "table_entry_workspaces": 3,
+    "text_entry_workspaces": 3,
+    "table_inputs": 29,
+    "textareas": 3,
+    "reference_tables": 1,
+    "reference_tables_in_learn": 3,
+    "prompt_occurrences": 4,
+    "duplicate_ids": [],
+    "unsupported_capability_fallbacks": 0
+  }
+}

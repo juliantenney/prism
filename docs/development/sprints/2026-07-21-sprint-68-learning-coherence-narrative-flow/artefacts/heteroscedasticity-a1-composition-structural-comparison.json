@@ -1,0 +1,71 @@
+{
+  "captured_at": "2026-07-21T13:39:27.808Z",
+  "reviewer_task": "S68-CHK-001",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "invocation": {
+    "beats": "renderLearnerPageHtml(page, { compositionMode: \"beats\" })",
+    "moments": "renderLearnerPageHtml(page, { compositionMode: \"moments\" })"
+  },
+  "shell": "composeStandaloneVnextLearnerExportForTest (production export CSS)",
+  "beats": {
+    "label": "beats",
+    "a1_bytes": 15824,
+    "composition_moments": [],
+    "beat_sections": 3,
+    "beat_functions": [
+      "orientation",
+      "explanation",
+      "check_understanding"
+    ],
+    "orientation_beat": true,
+    "explanation_beat": true,
+    "check_beat": true,
+    "activity_framing": true,
+    "orient_moment": 0,
+    "learn_moment": 0,
+    "do_moment": 0,
+    "check_moment": 0,
+    "a1_m1": 1,
+    "a1_m2": 1,
+    "a1_m3": 1,
+    "a1_m4": 1,
+    "workspace": 0,
+    "check_details_closed": false,
+    "check_details_open": false,
+    "study_step_1": 1,
+    "compare_step_3": 1,
+    "write_step_5": 1,
+    "self_explanation_orient": 1
+  },
+  "moments": {
+    "label": "moments",
+    "a1_bytes": 13601,
+    "composition_moments": [
+      "orient",
+      "learn",
+      "do",
+      "check"
+    ],
+    "beat_sections": 0,
+    "beat_functions": [],
+    "orientation_beat": false,
+    "explanation_beat": false,
+    "check_beat": false,
+    "activity_framing": false,
+    "orient_moment": 1,
+    "learn_moment": 1,
+    "do_moment": 1,
+    "check_moment": 1,
+    "a1_m1": 1,
+    "a1_m2": 1,
+    "a1_m3": 1,
+    "a1_m4": 1,
+    "workspace": 1,
+    "check_details_closed": true,
+    "check_details_open": false,
+    "study_step_1": 1,
+    "compare_step_3": 1,
+    "write_step_5": 1,
+    "self_explanation_orient": 0
+  }
+}

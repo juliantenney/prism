@@ -43,10 +43,14 @@ function pageWithAffordances(page, affordances) {
   });
 }
 
-function renderVnextHtml(page) {
-  const rendered = vnext.renderLearnerPageHtml(page);
+function renderVnextHtml(page, options) {
+  const rendered = vnext.renderLearnerPageHtml(page, options);
   assert.equal(rendered.error, null, rendered.error || "render failed");
   return String(rendered.html || "");
+}
+
+function renderBeatsHtml(page) {
+  return renderVnextHtml(page, { compositionMode: "beats" });
 }
 
 function activityBlocks(html) {
@@ -183,7 +187,7 @@ test("vNext legacy mode: heteroscedasticity emits hooks without affordance ids",
 
 test("vNext authoritative: A2 materials-entry only with stable affordance id", () => {
   const page = pageWithAffordances(loadFixture(), [records.inflation_a2_generate]);
-  const html = renderVnextHtml(page);
+  const html = renderBeatsHtml(page);
   const hooks = discoverVisualAffordanceHooks(html);
   const a2 = activityBlocks(html).find(function (block) {
     return /data-activity-id="A2"/.test(block);

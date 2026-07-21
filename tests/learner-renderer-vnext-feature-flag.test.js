@@ -186,7 +186,9 @@ test("feature flag: explicit vnext selects vNext structure", () => {
   VNEXT_ONLY_MARKERS.forEach((marker) => {
     assert.match(html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });
-  assert.match(html, /data-beat-function="/);
+  assert.match(html, /data-composition-mode="moments"/);
+  assert.equal((html.match(/data-composition-moment="/g) || []).length, 20);
+  assert.doesNotMatch(html, /data-beat-function="/);
   assert.deepEqual(activityOrder(html), EXPECTED_ACTIVITY_ORDER);
 });
 
@@ -240,7 +242,7 @@ test("feature flag: vnext path wraps canonical renderer fragment in export shell
   assert.match(entryHtml, /^<!doctype html>/i);
   assert.match(
     entryHtml,
-    /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext">/
+    /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext" data-composition-mode="moments">/
   );
   assert.ok(entryHtml.includes('data-activity-id="A1"'));
   assert.doesNotMatch(entryHtml, /<header class="util-page-header util-learning-header"/);
@@ -263,10 +265,10 @@ test("feature flag: golden fixture subset through public vnext entry", () => {
 
   const materialIds = allMaterialIds(html);
   const uniqueMaterialIds = [...new Set(materialIds)];
-  assert.equal(
-    materialIds.length,
-    uniqueMaterialIds.length,
-    "Each material ID must appear once in vNext public entry output."
+  assert.equal(uniqueMaterialIds.length, 24, "All authored materials must appear in vNext public entry output.");
+  assert.ok(
+    materialIds.length >= uniqueMaterialIds.length,
+    "Table workspaces may repeat reference material wrappers."
   );
 
   const a3Html = html.slice(html.indexOf('id="activity-A3"'));

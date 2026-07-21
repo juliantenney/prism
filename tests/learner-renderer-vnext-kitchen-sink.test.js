@@ -1,0 +1,173 @@
+"use strict";
+
+/**
+ * S68-IMP-012 — GAM type audit and kitchen-sink fixture tests.
+ */
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const { execFileSync } = require("node:child_process");
+
+const repoRoot = path.resolve(__dirname, "..");
+const artefactDir = path.join(
+  repoRoot,
+  "docs",
+  "development",
+  "sprints",
+  "2026-07-21-sprint-68-learning-coherence-narrative-flow",
+  "artefacts"
+);
+const fixturePath = path.join(
+  repoRoot,
+  "tests",
+  "fixtures",
+  "page-render",
+  "learner-renderer-kitchen-sink-page.json"
+);
+
+const vnext = require("../lib/learner-renderer-vnext");
+const { MATERIAL_RENDERER_TYPES } = require("../lib/learner-renderer-vnext/parse-material");
+const { renderMaterial } = require("../lib/learner-renderer-vnext/render-material");
+const { buildMaterialModel } = require("../lib/learner-renderer-vnext/parse-material");
+
+const INVENTORY_PATH = path.join(artefactDir, "gam-renderer-type-inventory.json");
+const SURFACE_MAP_PATH = path.join(artefactDir, "gam-type-to-surface-map.json");
+const UNSUPPORTED_PATH = path.join(artefactDir, "gam-unsupported-learner-interactions.json");
+
+function loadInventory() {
+  return JSON.parse(fs.readFileSync(INVENTORY_PATH, "utf8"));
+}
+
+function loadKitchenSink() {
+  return JSON.parse(fs.readFileSync(fixturePath, "utf8"));
+}
+
+function renderKitchenSink() {
+  const rendered = vnext.renderLearnerPageHtml(loadKitchenSink());
+  assert.equal(rendered.error, null, rendered.error || "render failed");
+  return String(rendered.html || "");
+}
+
+function collectIds(html) {
+  return [...String(html || "").matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+}
+
+test("audit integrity: inventory is generated and type names are unique", () => {
+  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
+    cwd: repoRoot,
+    stdio: "pipe"
+  });
+  const inventory = loadInventory();
+  const types = inventory.material_types.map(function (entry) {
+    return entry.type;
+  });
+  assert.equal(types.length, new Set(types).size, "canonical material type names must be unique");
+  assert.ok(inventory.summary.canonical_material_types >= 50);
+  assert.equal(inventory.summary.vnext_supported_material_types, MATERIAL_RENDERER_TYPES.length);
+  assert.ok(fs.existsSync(SURFACE_MAP_PATH));
+  assert.ok(fs.existsSync(UNSUPPORTED_PATH));
+});
+
+test("audit integrity: every vNext type has evidence and fixture mapping", () => {
+  const inventory = loadInventory();
+  MATERIAL_RENDERER_TYPES.forEach(function (type) {
+    const entry = inventory.material_types.find(function (row) {
+      return row.type === type;
+    });
+    assert.ok(entry, "missing inventory entry for " + type);
+    assert.equal(entry.vnextSupported, true);
+    assert.ok(entry.sourceLocations.length >= 1);
+    assert.ok(entry.kitchenSinkFixtureId, "kitchen sink mapping required for " + type);
+  });
+});
+
+test("fixture coverage: kitchen-sink includes all vNext material types once", () => {
+  const page = loadKitchenSink();
+  const types = (page.activities || []).flatMap(function (activity) {
+    return (activity.materials || []).map(function (material) {
+      return String(material.material_type).toLowerCase();
+    });
+  });
+  MATERIAL_RENDERER_TYPES.forEach(function (type) {
+    assert.ok(types.indexOf(type) >= 0, "fixture missing type " + type);
+  });
+  assert.equal(new Set(types).size, MATERIAL_RENDERER_TYPES.length);
+});
+
+test("fixture coverage: validates through buildPageModel without errors", () => {
+  const result = vnext.buildPageModel(loadKitchenSink());
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+});
+
+test("rendering: kitchen-sink renders in default moments mode", () => {
+  const html = renderKitchenSink();
+  assert.match(html, /data-composition-mode="moments"/);
+  assert.match(html, /data-activity-id="KS01"/);
+  assert.match(html, /data-activity-id="KS05"/);
+  assert.doesNotMatch(html, /data-render-status="unsupported"/);
+  MATERIAL_RENDERER_TYPES.forEach(function (type) {
+    assert.match(html, new RegExp('data-material-type="' + type + '"'));
+  });
+});
+
+test("rendering: table types render as static markdown tables in beats path", () => {
+  const html = renderKitchenSink();
+  assert.match(html, /util-material-table-block/);
+  assert.equal((html.match(/data-workspace-kind="table_entry"/g) || []).length, 0);
+});
+
+test("rendering: unsupported registry types fall back via renderMaterial unit path", () => {
+  const model = buildMaterialModel(
+    {
+      material_id: "UNSUPPORTED-1",
+      material_type: "classification_table",
+      title: "Classification",
+      body: "| A | B |\n| --- | --- |\n| 1 | |"
+    },
+    0
+  );
+  const output = renderMaterial(model);
+  assert.match(output, /data-render-status="unsupported"/);
+  assert.match(output, /classification_table/);
+});
+
+test("surface reuse: type-to-surface map lists table_entry and text_entry mappings", () => {
+  const map = JSON.parse(fs.readFileSync(SURFACE_MAP_PATH, "utf8"));
+  assert.deepEqual(map.table_entry, ["analysis_table", "decision_table", "comparison_table"]);
+  assert.ok(Array.isArray(map.text_entry));
+  assert.ok(map.static.length >= MATERIAL_RENDERER_TYPES.length - 3);
+});
+
+test("accessibility: kitchen-sink page has unique id attributes", () => {
+  const html = renderKitchenSink();
+  const ids = collectIds(html);
+  assert.equal(ids.length, new Set(ids).size);
+});
+
+test("regression: inventory maintenance rule detects new fixture types", () => {
+  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
+    cwd: repoRoot,
+    stdio: "pipe"
+  });
+  const inventory = loadInventory();
+  const observed = inventory.material_types.filter(function (entry) {
+    return entry.observedInFixtures;
+  });
+  assert.ok(observed.length >= 13);
+  const fixtureTypes = new Set(
+    (loadKitchenSink().activities || []).flatMap(function (activity) {
+      return (activity.materials || []).map(function (material) {
+        return String(material.material_type).toLowerCase();
+      });
+    })
+  );
+  inventory.material_types
+    .filter(function (entry) {
+      return entry.vnextSupported;
+    })
+    .forEach(function (entry) {
+      assert.ok(fixtureTypes.has(entry.type), "kitchen sink must include " + entry.type);
+      assert.ok(entry.kitchenSinkFixtureId, "inventory must map " + entry.type);
+    });
+});

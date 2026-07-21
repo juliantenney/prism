@@ -210,10 +210,10 @@ test("field coverage: instructions appear before their paired material in check 
 
 test("field coverage: pedagogical prompt labels and semantic types retained", () => {
   const html = renderVnextExport(loadPrismTestApi());
-  assert.match(html, /Explain it to yourself/);
-  assert.match(html, /data-guidance-type="self_explanation_prompt"/);
-  assert.match(html, /How to think/);
-  assert.match(html, /data-guidance-type="reasoning_orientation"/);
+  assert.match(html, /How would you explain to a fellow economics student/);
+  assert.match(html, /data-source-field="self_explanation_prompt"/);
+  assert.match(html, /Focus on the spread of errors/);
+  assert.match(html, /data-source-field="reasoning_orientation"/);
 });
 
 test("field coverage: sequence progression guidance rendered", () => {
@@ -230,10 +230,12 @@ test("field coverage: assessment feedback available", () => {
   assert.match(html, /changing residual variance/i);
 });
 
-test("field coverage: transfer beat shows single Apply elsewhere label in Activity 3", () => {
+test("field coverage: transfer prompt appears once in Activity 3 Check moment", () => {
   const html = renderVnextExport(loadPrismTestApi());
   const a3 = extractActivityHtml(html, "A3");
-  assert.equal((a3.match(/Apply elsewhere/g) || []).length, 1);
+  const checkStart = a3.indexOf('data-composition-moment="check"');
+  const checkHtml = checkStart >= 0 ? a3.slice(checkStart) : "";
+  assert.equal((checkHtml.match(/data-source-field="transfer_or_application_task"/g) || []).length, 1);
   assert.equal((a3.match(/Identify another economic variable pair/gi) || []).length, 1);
 });
 
@@ -283,7 +285,9 @@ test("field coverage: orientation beat suppression is deterministic by beat-owne
 
 test("field coverage: all 24 material wrappers remain present", () => {
   const html = renderVnextExport(loadPrismTestApi());
-  assert.equal((html.match(/data-material-id="/g) || []).length, 24);
+  const materialIds = [...html.matchAll(/data-material-id="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(materialIds).size, 24);
+  assert.ok(materialIds.length >= 24, "table workspaces may repeat reference material wrappers");
 });
 
 test("field coverage: all five assessment items remain present", () => {

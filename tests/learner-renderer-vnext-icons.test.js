@@ -32,10 +32,14 @@ function loadFixture() {
   return JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 }
 
-function renderVnextHtml(page) {
-  const rendered = vnext.renderLearnerPageHtml(page);
+function renderVnextHtml(page, options) {
+  const rendered = vnext.renderLearnerPageHtml(page, options);
   assert.equal(rendered.error, null, rendered.error || "render failed");
   return String(rendered.html || "");
+}
+
+function renderBeatsHtml(page) {
+  return renderVnextHtml(page, { compositionMode: "beats" });
 }
 
 function countMatches(html, pattern) {
@@ -76,23 +80,29 @@ test("vNext html: page-level section icons render with visible labels", () => {
 });
 
 test("vNext html: guidance and beat icons render from semantic types", () => {
-  const html = renderVnextHtml(loadFixture());
+  const momentsHtml = renderVnextHtml(loadFixture());
   assert.match(
-    html,
+    momentsHtml,
+    /data-source-field="reasoning_orientation"[\s\S]*Focus on the spread of errors/
+  );
+  assert.match(
+    momentsHtml,
+    /data-source-field="self_explanation_prompt"[\s\S]*How would you explain/
+  );
+
+  const beatsHtml = renderBeatsHtml(loadFixture());
+  assert.match(
+    beatsHtml,
     /data-guidance-type="reasoning_orientation"[\s\S]*util-guidance-label util-icon-heading[\s\S]*How to think/
   );
-  assert.match(
-    html,
-    /data-guidance-type="self_explanation_prompt"[\s\S]*Explain it to yourself/
-  );
-  assert.match(html, /util-beat-heading util-icon-heading[\s\S]*Reflect/);
-  assert.match(html, /util-beat-instruction util-icon-heading/);
+  assert.match(beatsHtml, /util-beat-heading util-icon-heading[\s\S]*Reflect/);
+  assert.match(beatsHtml, /util-beat-instruction util-icon-heading/);
 });
 
 test("vNext html: material and expected output icons render", () => {
   const html = renderVnextHtml(loadFixture());
   assert.match(html, /util-material-heading util-icon-heading[\s\S]*Worked example/i);
-  assert.match(html, /util-material-heading util-icon-heading[\s\S]*Expected output/);
+  assert.match(html, /util-composition-subheading[\s\S]*What to produce/);
 });
 
 test("vNext html: assessment feedback summary retains visible label with icon", () => {

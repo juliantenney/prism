@@ -1,0 +1,51 @@
+{
+  "captured_at": "2026-07-21T14:23:42.947Z",
+  "reviewer_task": "S68-IMP-009",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "notes": "A4-M3 prompt_set renders structurally; one combined text_entry workspace for the chain-of-effects response.",
+  "beats": {
+    "label": "beats",
+    "a4_bytes": 13196,
+    "composition_moments": [],
+    "beat_sections": 3,
+    "beat_functions": [
+      "explanation",
+      "application",
+      "check_understanding"
+    ],
+    "a4_m1": 1,
+    "a4_m2": 1,
+    "a4_m3": 1,
+    "a4_m4": 1,
+    "prompt_set_items": 2,
+    "prompt_question_markers": 8,
+    "free_text_workspaces": 0,
+    "free_text_controls": 0,
+    "table_workspaces": 0,
+    "duplicated_prompt_set_material": 1,
+    "check_guidance": 0
+  },
+  "moments": {
+    "label": "moments",
+    "a4_bytes": 11764,
+    "composition_moments": [
+      "orient",
+      "learn",
+      "do",
+      "check"
+    ],
+    "beat_sections": 0,
+    "beat_functions": [],
+    "a4_m1": 1,
+    "a4_m2": 1,
+    "a4_m3": 1,
+    "a4_m4": 1,
+    "prompt_set_items": 2,
+    "prompt_question_markers": 8,
+    "free_text_workspaces": 1,
+    "free_text_controls": 1,
+    "table_workspaces": 0,
+    "duplicated_prompt_set_material": 1,
+    "check_guidance": 1
+  }
+}

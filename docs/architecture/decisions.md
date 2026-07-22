@@ -1,5 +1,25 @@
 # Architecture Decisions
 
+## 2026-07-22 - Learner renderer interprets educational semantics (ADR-012)
+
+### Date
+
+2026-07-22
+
+### Decision
+
+Learner-renderer-vNext interprets authoritative educational semantics through semantic composition and capability-based surfaces. It does not own educational authoring and does not invent renderer-specific pedagogical structures. Full record: [`adr/ADR-012-learner-renderer-interprets-educational-semantics.md`](adr/ADR-012-learner-renderer-interprets-educational-semantics.md). Architecture reference: [`learner-renderer-vnext.md`](learner-renderer-vnext.md).
+
+### Rationale
+
+Sprint 68 demonstrated that composition, tables, multi-part text, ordering, and local drafts can ship without PRISM/DLA/manifestation changes when semantics already exist. Activity-hardcoded paths and silent surface fallbacks were rejected.
+
+### Consequences
+
+- New learner surfaces follow the registry + response-part + certification extension path
+- Unknown archetype variants and unsupported surfaces fail explicitly
+- Sprint 68 closeout: [`../sprints/sprint-68-closeout.md`](../sprints/sprint-68-closeout.md)
+
 ## 2026-05-11 - Docs consolidation and legacy example archive
 
 ### Decision

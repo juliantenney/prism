@@ -202,3 +202,23 @@ Sprint 63 should validate, revise, or reject these candidates with evidence — 
 Charter: [sprint-64-cognitive-structure-preservation-investigation.md](../sprints/sprint-64-cognitive-structure-preservation-investigation.md)  
 Pack: [SPRINT-64-START-HERE.md](../development/sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/SPRINT-64-START-HERE.md)  
 Sprint 63 close-out: [sprint-63-closeout.md](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
+
+---
+
+## Phase 5 — Capability-based learner interaction (Sprint 68)
+
+**Outcome:** Production-certified learner-renderer-vNext with semantic composition and extensible surfaces.
+
+Sprint 67 restored fidelity. Sprint 68 showed that Orient/Learn/Do/Check composition, response parts, `text_entry` / `table_entry` / `ordering`, local drafts, and certification can land **without** PRISM/DLA/manifestation changes when educational semantics already exist.
+
+| Theme | What was done |
+| ----- | ------------- |
+| Semantic composition | Moments Orient → Learn → Do → Check; exactly-once assignment |
+| Surfaces | Registry-driven capabilities; explicit unsupported failure |
+| Persistence | Versioned local drafts; capability adapters |
+| Certification | Corpus runner; `CERTIFIED` |
+| Architecture capture | [learner-renderer-vnext.md](learner-renderer-vnext.md), [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md), [closeout](../sprints/sprint-68-closeout.md) |
+
+### Implication
+
+Future interaction work should extend the registry and certification corpus, not invent renderer-owned pedagogy or activity-id special cases.

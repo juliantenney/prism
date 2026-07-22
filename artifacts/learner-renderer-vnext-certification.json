@@ -1,0 +1,1968 @@
+{
+  "certificationVersion": "s68-imp-020",
+  "corpusVersion": "s68-imp-020-v1",
+  "generatedAt": "2026-07-22T13:04:24.282Z",
+  "gitRevision": "93ed4e2162cb32b51e203e92454017d98e8ac39c",
+  "summary": {
+    "status": "pass",
+    "certificationState": "CERTIFIED",
+    "workflows": 6,
+    "fails": 0,
+    "warnings": 0,
+    "exitCode": 0
+  },
+  "capabilityCoverage": {
+    "text_entry": 31,
+    "table_entry": 18,
+    "ordering": 1
+  },
+  "archetypeCoverage": [
+    "analyse",
+    "apply",
+    "evaluate",
+    "understand"
+  ],
+  "vocabularyCoverage": {
+    "supportedArchetypeRuleCount": 4,
+    "supportedLearnerSurfaces": [
+      "text_entry",
+      "table_entry",
+      "ordering"
+    ]
+  },
+  "workflowResults": [
+    {
+      "workflowId": "videotranscripttest",
+      "name": "VideoTranscriptTest",
+      "authoritative": true,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.text_entry",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": "text_entry",
+          "message": "text_entry workspaces=5",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.table_entry",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": "table_entry",
+          "message": "table_entry workspaces=6",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.no_expected_answers",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Persisted draft does not include expected-order fields.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.diagnostics_privacy",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Diagnostics omit learner response content.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.idempotent_init",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence initialiser is idempotent.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 6,
+        "moments": 19,
+        "capabilities": {
+          "text_entry": 5,
+          "table_entry": 6,
+          "ordering": 0
+        },
+        "archetypes": [
+          "understand",
+          "apply",
+          "analyse",
+          "evaluate"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::0d1c12c0-ad1c-449f-8ad9-8f90b8f01097::cert-videotranscripttest::2.0.0::a1-a2-a3-a4-a5-a6::rna-viruses-and-hepatitis-c-videotranscripttest",
+        "unstable": false
+      }
+    },
+    {
+      "workflowId": "heteroscedasticity",
+      "name": "Heteroscedasticity",
+      "authoritative": true,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.text_entry",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": "text_entry",
+          "message": "text_entry workspaces=11",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.table_entry",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": "table_entry",
+          "message": "table_entry workspaces=3",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.no_expected_answers",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Persisted draft does not include expected-order fields.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.diagnostics_privacy",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Diagnostics omit learner response content.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.idempotent_init",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence initialiser is idempotent.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 5,
+        "moments": 20,
+        "capabilities": {
+          "text_entry": 11,
+          "table_entry": 3,
+          "ordering": 0
+        },
+        "archetypes": [
+          "understand",
+          "analyse",
+          "apply",
+          "evaluate"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::no-workflow::cert-heteroscedasticity::2.0.0::a1-a2-a3-a4-a5::why-does-the-spread-of-regression-errors-matter-understanding-heteroscedasticity",
+        "unstable": false
+      }
+    },
+    {
+      "workflowId": "kitchen-sink",
+      "name": "Kitchen Sink",
+      "authoritative": false,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.text_entry",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": "text_entry",
+          "message": "text_entry workspaces=10",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.table_entry",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": "table_entry",
+          "message": "table_entry workspaces=3",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.no_expected_answers",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Persisted draft does not include expected-order fields.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.diagnostics_privacy",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Diagnostics omit learner response content.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.idempotent_init",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence initialiser is idempotent.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 5,
+        "moments": 20,
+        "capabilities": {
+          "text_entry": 10,
+          "table_entry": 3,
+          "ordering": 0
+        },
+        "archetypes": [
+          "understand",
+          "analyse",
+          "apply",
+          "evaluate"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::no-workflow::cert-kitchen-sink::2.0.0::ks01-ks02-ks03-ks04-ks05::learner-renderer-kitchen-sink-sprint-68-type-coverage",
+        "unstable": false
+      }
+    },
+    {
+      "workflowId": "rna-episode-plan-v1",
+      "name": "RNA episode-plan-v1",
+      "authoritative": true,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.text_entry",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": "text_entry",
+          "message": "text_entry workspaces=4",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.table_entry",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": "table_entry",
+          "message": "table_entry workspaces=6",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.no_expected_answers",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Persisted draft does not include expected-order fields.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.diagnostics_privacy",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Diagnostics omit learner response content.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.idempotent_init",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence initialiser is idempotent.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 6,
+        "moments": 18,
+        "capabilities": {
+          "text_entry": 4,
+          "table_entry": 6,
+          "ordering": 0
+        },
+        "archetypes": [
+          "understand",
+          "analyse",
+          "apply",
+          "evaluate"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::no-workflow::cert-rna-episode-plan-v1::2.0.0::a1-a2-a3-a4-a5-a6::rna-viruses-and-hepatitis-c-material-completeness-fixture",
+        "unstable": false
+      }
+    },
+    {
+      "workflowId": "generic-moments-new01",
+      "name": "Generic moments",
+      "authoritative": false,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.text_entry",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": "text_entry",
+          "message": "text_entry workspaces=1",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.not_required",
+          "status": "not_applicable",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence certification not required for this fixture.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 1,
+        "moments": 4,
+        "capabilities": {
+          "text_entry": 1,
+          "table_entry": 0,
+          "ordering": 0
+        },
+        "archetypes": [
+          "understand"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::no-workflow::cert-generic-moments-new01::2.0.0::new01::generic-moments-proof-arbitrary-activity-id-new01",
+        "unstable": false
+      }
+    },
+    {
+      "workflowId": "authoritative-ordering",
+      "name": "Authoritative PRISM ordering",
+      "authoritative": true,
+      "status": "pass",
+      "checks": [
+        {
+          "checkId": "source.load",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Fixture loaded.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.page_model",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Page model constructed.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "archetype.unknown",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "No unknown archetype variants.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "composition.beat_fallback",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Beat fallbacks: 0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "render.node",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Node HTML rendered.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_key_deterministic",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page key is deterministic.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.page_identity_stability",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence page identity includes workflow or page id.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "source.unique_activity_ids",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Activity IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.materials",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Materials unassigned=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.task_steps",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Task-step duplicates=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "assignment.expected_outputs",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Expected outputs missing=0 duplicated=0",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "capability.ordering",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": "ordering",
+          "message": "ordering workspaces=1",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "ordering.present",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": "ordering",
+          "message": "Authoritative ordering workspace present.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "workspace.unique_ids",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Rendered workspace IDs are unique.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.duplicate_dom_ids",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "No duplicate DOM ids.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.aria_references",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "ARIA and label references resolve.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.synthetic_labels",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "No synthetic table row labels.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.draft_status_live",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Draft status live region present when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.clear_control_name",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Clear control has an accessible name when workspaces exist.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "a11y.ordering_move_names",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": "ordering",
+          "message": "Ordering move controls expose contextual accessible names.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "ordering.expected_not_visible",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": "ordering",
+          "message": "Expected order is not exposed in ordinary learner-facing attributes.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.ordering_restore",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": "ordering",
+          "message": "Ordering draft restored.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.no_expected_answers",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Persisted draft does not include expected-order fields.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.diagnostics_privacy",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Diagnostics omit learner response content.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "persistence.idempotent_init",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Persistence initialiser is idempotent.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "surface.unsupported_leak",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "No unsupported surface leakage.",
+          "provenance": null,
+          "diagnosticCodes": []
+        },
+        {
+          "checkId": "print.learner_values_present",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Learner workspaces are present for print of current DOM values.",
+          "provenance": null,
+          "diagnosticCodes": []
+        }
+      ],
+      "summary": {
+        "activities": 2,
+        "moments": 7,
+        "capabilities": {
+          "text_entry": 0,
+          "table_entry": 0,
+          "ordering": 1
+        },
+        "archetypes": [
+          "understand"
+        ],
+        "beatFallbacks": 0,
+        "materialsUnassigned": 0,
+        "materialsDuplicated": 0,
+        "taskStepsDuplicated": 0,
+        "expectedOutputsMissing": 0,
+        "expectedOutputsDuplicated": 0
+      },
+      "browserParity": {
+        "matched": null,
+        "detail": "not_run"
+      },
+      "persistenceIdentity": {
+        "pageKey": "v1::fixture-seq-authoritative::cert-authoritative-ordering::2.0.0::a1-a2::chronology-practice-page",
+        "unstable": false
+      }
+    }
+  ],
+  "invariantResults": {
+    "workflows": 6,
+    "activities": 25,
+    "moments": 88,
+    "beatFallbacks": 0,
+    "materialsUnassigned": 0,
+    "materialsDuplicated": 0,
+    "taskStepsDuplicated": 0,
+    "expectedOutputsMissing": 0,
+    "expectedOutputsDuplicated": 0,
+    "fails": 0,
+    "warnings": 0
+  },
+  "diagnosticSummary": {
+    "catalogSize": 25,
+    "catalogCodes": [
+      "UNKNOWN_ARCHETYPE_VARIANT",
+      "UNSUPPORTED_LEARNER_SURFACE",
+      "DUPLICATE_RESPONSE_PART",
+      "UNASSIGNED_WRITTEN_RESPONSE",
+      "AMBIGUOUS_ORDERING_SEMANTICS",
+      "ORDERING_ITEMS_MISSING",
+      "DUPLICATE_ORDERING_ITEM_ID",
+      "INVALID_EXPECTED_ORDER",
+      "EXPECTED_ORDER_ITEM_MISMATCH",
+      "UNSUPPORTED_WORKSPACE_STATE_ADAPTER",
+      "UNSTABLE_PERSISTENCE_PAGE_IDENTITY",
+      "UNSUPPORTED_DRAFT_SCHEMA_VERSION",
+      "INVALID_PERSISTED_WORKSPACE_STATE",
+      "INVALID_PERSISTED_ORDERING_STATE",
+      "STALE_PERSISTED_WORKSPACE",
+      "LEARNER_DRAFT_READ_FAILED",
+      "LEARNER_DRAFT_WRITE_FAILED",
+      "LEARNER_DRAFT_DELETE_FAILED",
+      "LEARNER_DRAFT_PARSE_FAILED",
+      "UNASSIGNED_MATERIAL",
+      "MULTIPLY_ASSIGNED_MATERIAL",
+      "UNASSIGNED_TASK_STEP",
+      "MULTIPLY_ASSIGNED_TASK_STEP",
+      "UNASSIGNED_EXPECTED_OUTPUT",
+      "MULTIPLY_ASSIGNED_EXPECTED_OUTPUT"
+    ],
+    "unexpectedProductionCount": 0
+  },
+  "browserParity": {
+    "compared": 0,
+    "mismatches": 0
+  },
+  "persistence": {
+    "passed": 28,
+    "failed": 0
+  },
+  "accessibility": {
+    "passed": 31,
+    "failed": 0
+  },
+  "responsive": {
+    "automated": false,
+    "notes": "Automated geometry checks are limited in Node. Manual verification: open heteroscedasticity and ordering exports at ~375px width; confirm textareas, table scroll/stack strategy, ordering controls wrap, and draft controls remain usable."
+  },
+  "print": {
+    "automatedCssChecks": true,
+    "notes": "Automated: draft controls and ordering move/check controls are hidden in print CSS. Manual: print heteroscedasticity and ordering pages; confirm learner values remain visible and expected answers stay hidden."
+  },
+  "tests": {
+    "notes": "Run `node --test tests/learner-renderer-vnext-*.test.js` for package regression. IMP-020 adds certification tests."
+  },
+  "knownUnrelatedFailures": [
+    {
+      "testFile": "tests/workflow-self-directed-learner-page-formatting.test.js",
+      "summary": "Learning purpose section does not render expected `<ul>` list markup.",
+      "evidence": "Reproduces with learner-renderer-vNext IMP-019/IMP-020 changes stashed; not classified as an IMP-020 regression."
+    }
+  ],
+  "corpus": {
+    "corpusVersion": "s68-imp-020-v1",
+    "generatedAt": "2026-07-22T13:04:24.282Z",
+    "workflows": [
+      {
+        "id": "videotranscripttest",
+        "name": "VideoTranscriptTest",
+        "provenance": "Authoritative production VideoTranscriptTest workflow (IMP-014C)",
+        "authoritative": true,
+        "fixturePath": "tests/fixtures/workflows/videotranscripttest-assembled-page.json",
+        "workflowId": "0d1c12c0-ad1c-449f-8ad9-8f90b8f01097",
+        "activityCount": 6,
+        "expectedCapabilities": [
+          "text_entry",
+          "table_entry"
+        ],
+        "expectedArchetypes": [
+          "understand",
+          "apply",
+          "analyse",
+          "evaluate"
+        ],
+        "certificationPurpose": "Primary production-shaped RNA workflow with journey-compressed beats, tables, and multi-part text",
+        "persistenceRequired": true,
+        "expectations": {
+          "minActivityCount": 6,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": true
+        }
+      },
+      {
+        "id": "heteroscedasticity",
+        "name": "Heteroscedasticity",
+        "provenance": "Sprint 67 vNext golden page fixture",
+        "authoritative": true,
+        "fixturePath": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+        "workflowId": null,
+        "activityCount": 5,
+        "expectedCapabilities": [
+          "text_entry",
+          "table_entry"
+        ],
+        "expectedArchetypes": [
+          "understand",
+          "apply",
+          "analyse",
+          "evaluate"
+        ],
+        "certificationPurpose": "Full lesson regression: text_entry, table_entry, prompt_set multi-part, assessment coexistence",
+        "persistenceRequired": true,
+        "expectations": {
+          "minActivityCount": 5,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": true
+        }
+      },
+      {
+        "id": "kitchen-sink",
+        "name": "Kitchen Sink",
+        "provenance": "S68 GAM type-coverage synthetic fixture",
+        "authoritative": false,
+        "fixturePath": "tests/fixtures/page-render/learner-renderer-kitchen-sink-page.json",
+        "workflowId": null,
+        "activityCount": 5,
+        "expectedCapabilities": [
+          "text_entry",
+          "table_entry"
+        ],
+        "expectedArchetypes": [
+          "understand",
+          "apply",
+          "analyse",
+          "evaluate"
+        ],
+        "certificationPurpose": "Material-type coverage across archetype variants",
+        "persistenceRequired": true,
+        "expectations": {
+          "minActivityCount": 5,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": true
+        }
+      },
+      {
+        "id": "rna-episode-plan-v1",
+        "name": "RNA episode-plan-v1",
+        "provenance": "S62 RNA materials page with episode-plan-v1 beat vocabulary",
+        "authoritative": true,
+        "fixturePath": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json",
+        "workflowId": null,
+        "activityCount": 6,
+        "expectedCapabilities": [
+          "text_entry",
+          "table_entry"
+        ],
+        "expectedArchetypes": [
+          "understand",
+          "apply",
+          "analyse",
+          "evaluate"
+        ],
+        "certificationPurpose": "Archetype and table-routing regression (IMP-014A/B)",
+        "persistenceRequired": true,
+        "expectations": {
+          "minActivityCount": 6,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": true
+        }
+      },
+      {
+        "id": "generic-moments-new01",
+        "name": "Generic moments",
+        "provenance": "Minimal generic composition proof fixture (IMP-013)",
+        "authoritative": false,
+        "fixturePath": "tests/fixtures/page-render/learner-renderer-generic-moments-new01-page.json",
+        "workflowId": null,
+        "activityCount": 1,
+        "expectedCapabilities": [
+          "text_entry"
+        ],
+        "expectedArchetypes": [
+          "understand"
+        ],
+        "certificationPurpose": "Activity-ID-independent moment composition",
+        "persistenceRequired": false,
+        "expectations": {
+          "minActivityCount": 1,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": true
+        }
+      },
+      {
+        "id": "authoritative-ordering",
+        "name": "Authoritative PRISM ordering",
+        "provenance": "Authoritative PRISM sequencing schema adapted from sequencing-rollout; Sprint 59 Ed Psych A3",
+        "authoritative": true,
+        "fixturePath": "tests/fixtures/page-render/prism-authoritative-ordering-page.json",
+        "workflowId": "fixture-seq-authoritative",
+        "activityCount": 2,
+        "expectedCapabilities": [
+          "ordering"
+        ],
+        "expectedArchetypes": [
+          "understand"
+        ],
+        "certificationPurpose": "Genuine ordering surface, Do placement, persistence of item order",
+        "persistenceRequired": true,
+        "expectations": {
+          "minActivityCount": 2,
+          "requireMomentsComposition": true,
+          "allowBeatFallback": false,
+          "allowUnstablePersistenceIdentity": false,
+          "requireOrdering": true
+        }
+      }
+    ]
+  },
+  "globalChecks": [
+    {
+      "checkId": "print.hide_draft_controls",
+      "status": "pass",
+      "workflowId": null,
+      "activityId": null,
+      "capability": null,
+      "message": "Print CSS hides draft controls.",
+      "provenance": null,
+      "diagnosticCodes": []
+    },
+    {
+      "checkId": "print.hide_ordering_controls",
+      "status": "pass",
+      "workflowId": null,
+      "activityId": null,
+      "capability": null,
+      "message": "Print CSS hides ordering controls.",
+      "provenance": null,
+      "diagnosticCodes": []
+    },
+    {
+      "checkId": "registry.unsupported_surface",
+      "status": "pass",
+      "workflowId": null,
+      "activityId": null,
+      "capability": null,
+      "message": "Unknown surface kinds remain explicit unsupported diagnostics.",
+      "provenance": null,
+      "diagnosticCodes": []
+    },
+    {
+      "checkId": "registry.unsupported_state_adapter",
+      "status": "pass",
+      "workflowId": null,
+      "activityId": null,
+      "capability": null,
+      "message": "Unknown persisted workspace kinds emit UNSUPPORTED_WORKSPACE_STATE_ADAPTER.",
+      "provenance": null,
+      "diagnosticCodes": []
+    }
+  ]
+}

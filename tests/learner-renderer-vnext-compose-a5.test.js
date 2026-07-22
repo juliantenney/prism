@@ -192,7 +192,7 @@ test("workspace: A5 step 4 routes through shared text-entry rule", () => {
   const { a5 } = buildGoldenContext();
   const evaluationBeat = a5.beats.find((beat) => beat.sourceFunction === "evaluation");
   const step4 = evaluationBeat.instructions.find((entry) => entry.sourceStepNumber === 4);
-  const workspace = determineWorkspaceRequirement("A5", step4);
+  const workspace = determineWorkspaceRequirement(step4);
   assert.ok(workspace);
   assert.equal(workspace.capability, "text_entry");
   assert.equal(workspace.responseLabel, "Write your justified recommendation");

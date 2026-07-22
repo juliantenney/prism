@@ -209,7 +209,7 @@ test("render slice: A3 beats mode keeps decision table static", () => {
   assert.doesNotMatch(a3Html, /<input/);
 });
 
-test("workspace: A3-M3 decision_table renders editable cells with row labels for blank rows", () => {
+test("workspace: A3-M3 decision_table renders editable cells without synthetic row labels", () => {
   const { a3 } = buildGoldenContext();
   const material = findMaterial(a3, "A3-M3");
   assert.ok(material);
@@ -220,8 +220,8 @@ test("workspace: A3-M3 decision_table renders editable cells with row labels for
 
   const html = renderTableWorkspace(material, "A3");
   assert.match(html, /Likely heteroscedasticity/);
-  assert.match(html, /util-visually-hidden/);
-  assert.match(html, /Response row 2/);
+  assert.doesNotMatch(html, /Response row \d+/);
+  assert.match(html, /aria-label="Response field, row 2, column Evidence Observed"/);
   assert.equal((html.match(/util-learner-table-workspace__input/g) || []).length, 8);
 });
 

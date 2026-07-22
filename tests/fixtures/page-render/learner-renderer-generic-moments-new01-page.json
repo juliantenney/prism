@@ -1,0 +1,72 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Generic moments proof — arbitrary activity ID NEW01",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "Minimal schema-valid page proving generic moments composition is independent of activity IDs."
+    }
+  },
+  "learning_sequence": {
+    "ordered_activity_ids": ["NEW01"]
+  },
+  "activities": [
+    {
+      "activity_id": "NEW01",
+      "title": "Generic understand-explain-check proof",
+      "learner_task": "1. Read the core text.\n2. Study the worked example.\n3. Compare your thinking with the sample output.\n4. Verify using the checklist.\n5. Write a brief summary in your notes.",
+      "expected_output": "A concise summary demonstrating understanding of the core concept.",
+      "activity_preamble": "Proof fixture for IMP-013 generic composition.",
+      "reasoning_orientation": "Focus on semantic beat classification rather than activity IDs.",
+      "self_explanation_prompt": "How would you explain the difference between exposition and verification materials?",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "check_understanding" }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "materials": [
+        {
+          "material_id": "NEW01-M1",
+          "material_type": "text",
+          "activity_id": "NEW01",
+          "title": "Core exposition",
+          "body_format": "markdown",
+          "body": "NEW01-M1: generic **text** material in Learn moment."
+        },
+        {
+          "material_id": "NEW01-M2",
+          "material_type": "worked_example",
+          "activity_id": "NEW01",
+          "title": "Worked pass",
+          "body_format": "markdown",
+          "body": "NEW01-M2: generic **worked_example** in Do moment."
+        },
+        {
+          "material_id": "NEW01-M3",
+          "material_type": "sample_output",
+          "activity_id": "NEW01",
+          "title": "Sample response",
+          "body_format": "markdown",
+          "body": "NEW01-M3: generic **sample_output** in Check moment."
+        },
+        {
+          "material_id": "NEW01-M4",
+          "material_type": "checklist",
+          "activity_id": "NEW01",
+          "title": "Verification checklist",
+          "body_format": "markdown",
+          "body": "- Criterion NEW01-C1: core concept named\n- Criterion NEW01-C2: example referenced"
+        }
+      ]
+    }
+  ]
+}

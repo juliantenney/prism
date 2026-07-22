@@ -152,7 +152,7 @@ test("adapter: A4 Do uses one combined text_entry workspace for prompt set", () 
   assert.equal(doMoment.workspace.sourceStepNumber, 3);
   assert.equal(doMoment.workspace.responseLabel, "Explain the chain of effects");
 
-  const workspace = determineWorkspaceRequirement("A4", {
+  const workspace = determineWorkspaceRequirement({
     sourceStepNumber: 3,
     text: "Complete the prompt set by explaining each stage in the chain of effects."
   });

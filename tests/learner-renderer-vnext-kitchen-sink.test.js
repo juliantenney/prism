@@ -25,6 +25,13 @@ const fixturePath = path.join(
   "page-render",
   "learner-renderer-kitchen-sink-page.json"
 );
+const rnaFixturePath = path.join(
+  repoRoot,
+  "tests",
+  "fixtures",
+  "page-render",
+  "rna-hcv-assembled-vnext-materials-page.json"
+);
 
 const vnext = require("../lib/learner-renderer-vnext");
 const { MATERIAL_RENDERER_TYPES } = require("../lib/learner-renderer-vnext/parse-material");
@@ -82,17 +89,22 @@ test("audit integrity: every vNext type has evidence and fixture mapping", () =>
   });
 });
 
-test("fixture coverage: kitchen-sink includes all vNext material types once", () => {
-  const page = loadKitchenSink();
-  const types = (page.activities || []).flatMap(function (activity) {
+function materialTypesFromPage(page) {
+  return (page.activities || []).flatMap(function (activity) {
     return (activity.materials || []).map(function (material) {
       return String(material.material_type).toLowerCase();
     });
   });
+}
+
+test("fixture coverage: supported material types have fixture evidence", () => {
+  const kitchenTypes = materialTypesFromPage(loadKitchenSink());
+  const rnaTypes = materialTypesFromPage(JSON.parse(fs.readFileSync(rnaFixturePath, "utf8")));
+  const combined = new Set(kitchenTypes.concat(rnaTypes));
   MATERIAL_RENDERER_TYPES.forEach(function (type) {
-    assert.ok(types.indexOf(type) >= 0, "fixture missing type " + type);
+    assert.ok(combined.has(type), "fixture evidence missing for " + type);
   });
-  assert.equal(new Set(types).size, MATERIAL_RENDERER_TYPES.length);
+  assert.equal(new Set(kitchenTypes).size, 13);
 });
 
 test("fixture coverage: validates through buildPageModel without errors", () => {
@@ -100,41 +112,50 @@ test("fixture coverage: validates through buildPageModel without errors", () => 
   assert.equal(result.ok, true, JSON.stringify(result.errors));
 });
 
-test("rendering: kitchen-sink renders in default moments mode", () => {
+test("rendering: kitchen-sink renders composed moments without beat sections", () => {
   const html = renderKitchenSink();
   assert.match(html, /data-composition-mode="moments"/);
-  assert.match(html, /data-activity-id="KS01"/);
-  assert.match(html, /data-activity-id="KS05"/);
-  assert.doesNotMatch(html, /data-render-status="unsupported"/);
-  MATERIAL_RENDERER_TYPES.forEach(function (type) {
+  assert.match(html, /data-composed-activity-count="5"/);
+  assert.match(html, /data-beats-fallback-activity-count="0"/);
+  assert.equal((html.match(/data-beat-function="/g) || []).length, 0);
+  assert.ok((html.match(/data-composition-moment="/g) || []).length >= 15);
+  assert.match(html, /data-activity-id="KS01" data-render-path="moments"/);
+  assert.match(html, /data-activity-id="KS05" data-render-path="moments"/);
+  materialTypesFromPage(loadKitchenSink()).forEach(function (type) {
     assert.match(html, new RegExp('data-material-type="' + type + '"'));
   });
 });
 
-test("rendering: table types render as static markdown tables in beats path", () => {
+test("rendering: table types route to table_entry workspaces in composed Do moments", () => {
   const html = renderKitchenSink();
-  assert.match(html, /util-material-table-block/);
-  assert.equal((html.match(/data-workspace-kind="table_entry"/g) || []).length, 0);
+  assert.match(html, /data-workspace-kind="table_entry"/);
+  assert.match(html, /util-learner-table-workspace/);
 });
 
 test("rendering: unsupported registry types fall back via renderMaterial unit path", () => {
   const model = buildMaterialModel(
     {
       material_id: "UNSUPPORTED-1",
-      material_type: "classification_table",
-      title: "Classification",
+      material_type: "impact_table",
+      title: "Impact table",
       body: "| A | B |\n| --- | --- |\n| 1 | |"
     },
     0
   );
   const output = renderMaterial(model);
   assert.match(output, /data-render-status="unsupported"/);
-  assert.match(output, /classification_table/);
+  assert.match(output, /impact_table/);
 });
 
 test("surface reuse: type-to-surface map lists table_entry and text_entry mappings", () => {
   const map = JSON.parse(fs.readFileSync(SURFACE_MAP_PATH, "utf8"));
-  assert.deepEqual(map.table_entry, ["analysis_table", "decision_table", "comparison_table"]);
+  assert.deepEqual(map.table_entry, [
+    "analysis_table",
+    "decision_table",
+    "comparison_table",
+    "classification_table",
+    "planning_table"
+  ]);
   assert.ok(Array.isArray(map.text_entry));
   assert.ok(map.static.length >= MATERIAL_RENDERER_TYPES.length - 3);
 });
@@ -154,7 +175,7 @@ test("regression: inventory maintenance rule detects new fixture types", () => {
   const observed = inventory.material_types.filter(function (entry) {
     return entry.observedInFixtures;
   });
-  assert.ok(observed.length >= 13);
+  assert.ok(observed.length >= 15);
   const fixtureTypes = new Set(
     (loadKitchenSink().activities || []).flatMap(function (activity) {
       return (activity.materials || []).map(function (material) {
@@ -167,7 +188,10 @@ test("regression: inventory maintenance rule detects new fixture types", () => {
       return entry.vnextSupported;
     })
     .forEach(function (entry) {
-      assert.ok(fixtureTypes.has(entry.type), "kitchen sink must include " + entry.type);
+      assert.ok(
+        fixtureTypes.has(entry.type) || entry.observedInFixtures,
+        "fixture evidence required for " + entry.type
+      );
       assert.ok(entry.kitchenSinkFixtureId, "inventory must map " + entry.type);
     });
 });

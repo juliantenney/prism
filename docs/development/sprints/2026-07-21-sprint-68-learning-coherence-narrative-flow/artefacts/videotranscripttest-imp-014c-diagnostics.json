@@ -1,0 +1,368 @@
+{
+  "workflowId": "0d1c12c0-ad1c-449f-8ad9-8f90b8f01097",
+  "workflowName": "VideoTranscriptTest",
+  "fixturePath": "C:\\xampp\\htdocs\\prism\\tests\\fixtures\\workflows\\videotranscripttest-assembled-page.json",
+  "activityCount": 6,
+  "inspections": [
+    {
+      "activityId": "A1",
+      "title": "Classify RNA Virus Genomes",
+      "archetype": "understand",
+      "rawBeatSequence": [
+        "orientation",
+        "explanation",
+        "check"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "explanation",
+        "check"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "understand-orient-explain-check",
+        "understand-explain-check",
+        "understand-explain-apply-check",
+        "understand-explain-model-practise-verify",
+        "understand-explain-model-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "explanation",
+          "check"
+        ],
+        [
+          "orientation",
+          "explanation",
+          "check_understanding"
+        ],
+        [
+          "orientation",
+          "explanation",
+          "application",
+          "check_understanding"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "understand-orient-explain-check",
+      "match": true,
+      "noMatchReason": null
+    },
+    {
+      "activityId": "A2",
+      "title": "Analyse HCV Replication Steps",
+      "archetype": "understand",
+      "rawBeatSequence": [
+        "orientation",
+        "explanation",
+        "check"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "explanation",
+        "check"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "understand-orient-explain-check",
+        "understand-explain-check",
+        "understand-explain-apply-check",
+        "understand-explain-model-practise-verify",
+        "understand-explain-model-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "explanation",
+          "check"
+        ],
+        [
+          "orientation",
+          "explanation",
+          "check_understanding"
+        ],
+        [
+          "orientation",
+          "explanation",
+          "application",
+          "check_understanding"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "understand-orient-explain-check",
+      "match": true,
+      "noMatchReason": null
+    },
+    {
+      "activityId": "A3",
+      "title": "Plan an Outbreak Response",
+      "archetype": "apply",
+      "rawBeatSequence": [
+        "orientation",
+        "practice",
+        "feedback"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "practice",
+        "feedback"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "apply-orient-practise-feedback",
+        "apply-model-practise-transfer",
+        "apply-explain-practise-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "practice",
+          "feedback"
+        ],
+        [
+          "orientation",
+          "worked_example",
+          "practice",
+          "reflection"
+        ],
+        [
+          "explanation",
+          "guided_practice",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "apply-orient-practise-feedback",
+      "match": true,
+      "noMatchReason": null
+    },
+    {
+      "activityId": "A4",
+      "title": "Analyse Immune Evasion Mechanisms",
+      "archetype": "analyse",
+      "rawBeatSequence": [
+        "orientation",
+        "investigation",
+        "synthesis"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "investigation",
+        "synthesis"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "analyse-orient-investigate-synthesise",
+        "analyse-model-analyse-check",
+        "analyse-explain-model-practise-verify",
+        "analyse-model-practise-verify",
+        "analyse-explain-practise-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "investigation",
+          "synthesis"
+        ],
+        [
+          "orientation",
+          "worked_example",
+          "analysis",
+          "check_understanding"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "explanation",
+          "guided_practice",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "analyse-orient-investigate-synthesise",
+      "match": true,
+      "noMatchReason": null
+    },
+    {
+      "activityId": "A5",
+      "title": "Compare Treatment Strategies",
+      "archetype": "analyse",
+      "rawBeatSequence": [
+        "orientation",
+        "investigation",
+        "synthesis"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "investigation",
+        "synthesis"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "analyse-orient-investigate-synthesise",
+        "analyse-model-analyse-check",
+        "analyse-explain-model-practise-verify",
+        "analyse-model-practise-verify",
+        "analyse-explain-practise-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "investigation",
+          "synthesis"
+        ],
+        [
+          "orientation",
+          "worked_example",
+          "analysis",
+          "check_understanding"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "worked_thinking",
+          "guided_practice",
+          "verification"
+        ],
+        [
+          "explanation",
+          "guided_practice",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "analyse-orient-investigate-synthesise",
+      "match": true,
+      "noMatchReason": null
+    },
+    {
+      "activityId": "A6",
+      "title": "Evaluate Outbreak Priorities",
+      "archetype": "evaluate",
+      "rawBeatSequence": [
+        "orientation",
+        "judgement",
+        "reflection"
+      ],
+      "normalizedBeatSequence": [
+        "orientation",
+        "judgement",
+        "reflection"
+      ],
+      "beatIds": [
+        "beat-1",
+        "beat-2",
+        "beat-3"
+      ],
+      "registeredVariantIds": [
+        "evaluate-orient-judge-reflect",
+        "evaluate-explain-model-practise-transfer",
+        "evaluate-explain-judgement-practise-transfer-verify",
+        "evaluate-explain-model-practise-transfer-verify"
+      ],
+      "acceptedSequences": [
+        [
+          "orientation",
+          "judgement",
+          "reflection"
+        ],
+        [
+          "orientation",
+          "comparison",
+          "evaluation",
+          "reflection"
+        ],
+        [
+          "explanation",
+          "worked_judgement",
+          "guided_practice",
+          "transfer",
+          "verification"
+        ],
+        [
+          "explanation",
+          "worked_thinking",
+          "guided_practice",
+          "transfer",
+          "verification"
+        ]
+      ],
+      "matchedVariantId": "evaluate-orient-judge-reflect",
+      "match": true,
+      "noMatchReason": null
+    }
+  ],
+  "modelOk": true,
+  "cascadeSummary": {},
+  "errorCodes": [],
+  "render": {
+    "compositionMode": "moments",
+    "composedActivityCount": 6,
+    "beatsFallbackActivityCount": 0,
+    "compositionMoments": 19,
+    "momentCounts": {
+      "orient": 5,
+      "learn": 2,
+      "do": 6,
+      "check": 6
+    },
+    "textWorkspaces": 0,
+    "tableWorkspaces": 6,
+    "tableEntryInputs": 9,
+    "unsupportedTypes": [],
+    "duplicateIdCount": 0,
+    "htmlLength": 69042,
+    "renderError": null
+  }
+}

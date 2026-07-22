@@ -1,0 +1,26 @@
+{
+  "label": "NEW01",
+  "fixture": "tests/fixtures/page-render/learner-renderer-generic-moments-new01-page.json",
+  "activityCount": 1,
+  "beatsFallbackActivityIds": [],
+  "compositionMode": "moments",
+  "composedActivityCount": 1,
+  "beatsFallbackActivityCount": 0,
+  "compositionMoments": 4,
+  "momentsByType": {
+    "orient": 1,
+    "learn": 1,
+    "do": 1,
+    "check": 1
+  },
+  "beatSections": 0,
+  "textWorkspaces": 1,
+  "tableWorkspaces": 0,
+  "materialTypes": [
+    "checklist",
+    "sample_output",
+    "text",
+    "worked_example"
+  ],
+  "duplicateIdCount": 0
+}

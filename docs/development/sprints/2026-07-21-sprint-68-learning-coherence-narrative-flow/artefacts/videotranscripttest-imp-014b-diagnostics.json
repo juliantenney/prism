@@ -1,0 +1,122 @@
+{
+  "workflowId": "0d1c12c0-ad1c-449f-8ad9-8f90b8f01097",
+  "workflowName": "VideoTranscriptTest",
+  "source": "assembled-page:C:\\xampp\\htdocs\\prism\\tests\\fixtures\\page-render\\rna-hcv-assembled-vnext-materials-page.json",
+  "activities": [
+    {
+      "activityId": "A1",
+      "title": "Classify RNA Virus Genomes",
+      "archetype": "understand",
+      "beatSequence": [
+        "explanation",
+        "worked_thinking",
+        "guided_practice",
+        "verification"
+      ],
+      "variantId": "understand-explain-model-practise-verify",
+      "materialCount": 5
+    },
+    {
+      "activityId": "A2",
+      "title": "Analyse HCV Replication Steps",
+      "archetype": "analyse",
+      "beatSequence": [
+        "explanation",
+        "worked_thinking",
+        "guided_practice",
+        "verification"
+      ],
+      "variantId": "analyse-explain-model-practise-verify",
+      "materialCount": 4
+    },
+    {
+      "activityId": "A3",
+      "title": "Plan an Outbreak Response",
+      "archetype": "apply",
+      "beatSequence": [
+        "explanation",
+        "guided_practice",
+        "verification"
+      ],
+      "variantId": "apply-explain-practise-verify",
+      "materialCount": 4
+    },
+    {
+      "activityId": "A4",
+      "title": "Analyse Immune Evasion Mechanisms",
+      "archetype": "analyse",
+      "beatSequence": [
+        "worked_thinking",
+        "guided_practice",
+        "verification"
+      ],
+      "variantId": "analyse-model-practise-verify",
+      "materialCount": 5
+    },
+    {
+      "activityId": "A5",
+      "title": "Compare Treatment Strategies",
+      "archetype": "analyse",
+      "beatSequence": [
+        "explanation",
+        "guided_practice",
+        "verification"
+      ],
+      "variantId": "analyse-explain-practise-verify",
+      "materialCount": 4
+    },
+    {
+      "activityId": "A6",
+      "title": "Evaluate Outbreak Priorities",
+      "archetype": "evaluate",
+      "beatSequence": [
+        "explanation",
+        "worked_judgement",
+        "guided_practice",
+        "transfer",
+        "verification"
+      ],
+      "variantId": "evaluate-explain-judgement-practise-transfer-verify",
+      "materialCount": 7
+    }
+  ],
+  "assemblyState": {
+    "enriched_by": [
+      "episode_plan",
+      "dla",
+      "gam",
+      "learning_sequence",
+      "assessment"
+    ]
+  },
+  "render": {
+    "compositionMode": "moments",
+    "composedActivityCount": 6,
+    "beatsFallbackActivityCount": 0,
+    "compositionMoments": 18,
+    "momentCounts": {
+      "orient": 0,
+      "learn": 6,
+      "do": 6,
+      "check": 6
+    },
+    "textWorkspaces": 0,
+    "tableWorkspaces": 6,
+    "renderPaths": {
+      "A1": "moments",
+      "A2": "moments",
+      "A3": "moments",
+      "A4": "moments",
+      "A5": "moments",
+      "A6": "moments"
+    },
+    "unsupportedTypes": [],
+    "duplicateIdCount": 0
+  },
+  "momentCounts": {
+    "orient": 0,
+    "learn": 6,
+    "do": 6,
+    "check": 6
+  }
+}

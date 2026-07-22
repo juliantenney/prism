@@ -93,13 +93,16 @@ function rendererPathFor(type, vnextSupported) {
       interactive: false
     };
   }
-  if (["analysis_table", "decision_table", "comparison_table"].indexOf(type) >= 0) {
+  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table"].indexOf(type) >= 0) {
     return {
       path: "renderMaterial + renderTableWorkspace (Do composition)",
       renderer: "renderMaterial / renderTableWorkspace",
       static: true,
       interactive: "conditional",
-      note: "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
+      note:
+        type === "classification_table" || type === "planning_table"
+          ? "Static when fully populated; table_entry in composed Do when blank cells present"
+          : "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
     };
   }
   if (type === "checklist") {
@@ -110,7 +113,7 @@ function rendererPathFor(type, vnextSupported) {
 
 function surfaceCapabilities(type, vnextSupported) {
   if (!vnextSupported) return ["static", "unsupported-interaction"];
-  if (["analysis_table", "decision_table", "comparison_table"].indexOf(type) >= 0) {
+  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table"].indexOf(type) >= 0) {
     return ["table_entry", "static"];
   }
   return ["static"];
@@ -160,18 +163,27 @@ function buildMaterialEntry(type, context) {
   };
 }
 
-function kitchenSinkMaterialMap() {
-  var fixturePath = path.join(repoRoot, "tests", "fixtures", "page-render", "learner-renderer-kitchen-sink-page.json");
+function materialMapFromFixtures(relativePaths) {
   var map = Object.create(null);
-  if (!fs.existsSync(fixturePath)) return map;
-  var page = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
-  (page.activities || []).forEach(function (activity) {
-    (activity.materials || []).forEach(function (material) {
-      var type = String(material.material_type || "").trim().toLowerCase();
-      if (type && !map[type]) map[type] = material.material_id;
+  relativePaths.forEach(function (relativePath) {
+    var fixturePath = path.join(repoRoot, relativePath);
+    if (!fs.existsSync(fixturePath)) return;
+    var page = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
+    (page.activities || []).forEach(function (activity) {
+      (activity.materials || []).forEach(function (material) {
+        var type = String(material.material_type || "").trim().toLowerCase();
+        if (type && !map[type]) map[type] = material.material_id;
+      });
     });
   });
   return map;
+}
+
+function kitchenSinkMaterialMap() {
+  return materialMapFromFixtures([
+    "tests/fixtures/page-render/learner-renderer-kitchen-sink-page.json",
+    "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
+  ]);
 }
 
 function buildTypeToSurfaceMap(materialEntries) {
@@ -189,7 +201,13 @@ function buildTypeToSurfaceMap(materialEntries) {
     "recommendation",
     "prediction"
   ];
-  map.table_entry = ["analysis_table", "decision_table", "comparison_table"];
+  map.table_entry = [
+    "analysis_table",
+    "decision_table",
+    "comparison_table",
+    "classification_table",
+    "planning_table"
+  ];
   return map;
 }
 
@@ -247,7 +265,9 @@ function main() {
     generated_at: new Date().toISOString(),
     reviewer_task: "S68-IMP-012",
     methodology:
-      "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (13 types), and material_type scan of tests/fixtures/**/*.json.",
+      "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (" +
+      vnextTypes.length +
+      " types), and material_type scan of tests/fixtures/**/*.json.",
     summary: {
       canonical_material_types: canonicalMaterialTypes.length,
       vnext_supported_material_types: vnextSupportedCount,
@@ -299,13 +319,15 @@ function main() {
         {
           type: "classification_table",
           orderEncoding: "pipe-table rows; learner completes blank cells",
-          vnextTreatment: "unsupported — validation blocked",
+          vnextTreatment:
+            "static when fully populated; table_entry in composed Do when blank cells present (IMP-014A)",
           fixtureEvidence: "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
         },
         {
           type: "planning_table",
           orderEncoding: "sequenced action rows in markdown table",
-          vnextTreatment: "unsupported — validation blocked",
+          vnextTreatment:
+            "static when fully populated; table_entry in composed Do when blank cells present (IMP-014A)",
           fixtureEvidence: "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
         },
         {

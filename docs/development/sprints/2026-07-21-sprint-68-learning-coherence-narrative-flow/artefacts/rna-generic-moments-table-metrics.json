@@ -1,0 +1,42 @@
+{
+  "label": "rna-hcv-assembled",
+  "fixture": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json",
+  "materialTypeValidationClear": true,
+  "materialRendererErrors": [],
+  "renderSuccess": false,
+  "renderError": "No exact archetype rule matches the activity beat sequence.; No exact archetype rule matches the activity beat sequence.; No exact archetype rule matches the activity beat sequence.; No exact archetype rule matches the activity beat sequence.; No exact archetype rule matches the activity beat sequence.; No exact archetype rule matches the activity beat sequence.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Material must appear exactly once in the page model.; Learner-task step must appear exactly once in the page model.; Expected output must appear exactly once in the page model.",
+  "modelBuildSuccess": false,
+  "modelBuildErrors": [
+    "No exact archetype rule matches the activity beat sequence.",
+    "No exact archetype rule matches the activity beat sequence.",
+    "No exact archetype rule matches the activity beat sequence.",
+    "No exact archetype rule matches the activity beat sequence.",
+    "No exact archetype rule matches the activity beat sequence.",
+    "No exact archetype rule matches the activity beat sequence.",
+    "Material must appear exactly once in the page model.",
+    "Material must appear exactly once in the page model."
+  ],
+  "activityCount": 6,
+  "composedActivityCount": 0,
+  "beatsFallbackActivityCount": 0,
+  "beatsFallbackActivityIds": [],
+  "tableMaterials": [
+    {
+      "activityId": "A1",
+      "materialId": "A1-M4",
+      "materialType": "classification_table",
+      "tableWorkspaceEligible": true,
+      "rendersStaticTable": true,
+      "unsupported": false
+    },
+    {
+      "activityId": "A3",
+      "materialId": "A3-M3",
+      "materialType": "planning_table",
+      "tableWorkspaceEligible": true,
+      "rendersStaticTable": true,
+      "unsupported": false
+    }
+  ],
+  "htmlMetrics": null
+}

@@ -133,7 +133,6 @@ test("adapter: workspace requirement is separate from task content", () => {
   assert.match(doMoment.workspace.guidance, /not saved on this page/i);
 
   const workspaceRule = determineWorkspaceRequirement(
-    "A1",
     doMoment.taskSteps.find((step) => step.sourceStepNumber === 5)
   );
   assert.deepEqual(workspaceRule, doMoment.workspace);

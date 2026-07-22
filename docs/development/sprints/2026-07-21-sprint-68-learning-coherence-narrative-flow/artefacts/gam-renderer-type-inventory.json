@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-21T14:57:03.473Z",
+  "generated_at": "2026-07-22T08:32:43.904Z",
   "reviewer_task": "S68-IMP-012",
-  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (13 types), and material_type scan of tests/fixtures/**/*.json.",
+  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (15 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {
     "canonical_material_types": 51,
-    "vnext_supported_material_types": 13,
+    "vnext_supported_material_types": 15,
     "registry_material_types": 50,
     "observed_in_fixtures": 15,
     "schema_or_registry_only": 36,
-    "kitchen_sink_vnext_coverage": 13,
+    "kitchen_sink_vnext_coverage": 15,
     "kitchen_sink_coverage_pct": 100,
     "prompt_fields": 6,
     "activity_interaction_types": 7
@@ -24,6 +24,8 @@
     "modelling_note",
     "prompt_set",
     "comparison_table",
+    "classification_table",
+    "planning_table",
     "template",
     "transfer_prompt",
     "consolidation_summary"
@@ -168,13 +170,13 @@
       {
         "type": "classification_table",
         "orderEncoding": "pipe-table rows; learner completes blank cells",
-        "vnextTreatment": "unsupported — validation blocked",
+        "vnextTreatment": "static when fully populated; table_entry in composed Do when blank cells present (IMP-014A)",
         "fixtureEvidence": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
       },
       {
         "type": "planning_table",
         "orderEncoding": "sequenced action rows in markdown table",
-        "vnextTreatment": "unsupported — validation blocked",
+        "vnextTreatment": "static when fully populated; table_entry in composed Do when blank cells present (IMP-014A)",
         "fixtureEvidence": "tests/fixtures/page-render/rna-hcv-assembled-vnext-materials-page.json"
       },
       {
@@ -343,33 +345,33 @@
       "schemaOnly": false,
       "sourceLocations": [
         "lib/beat-material-registry.js",
+        "lib/learner-renderer-vnext/parse-material.js",
         "tests/fixtures/**"
       ],
       "legacyBeat": "PRACTICE",
       "educationalRoles": [
-        "instruction",
+        "reference",
         "learner_completion"
       ],
       "likelyMoments": [
         "Learn",
-        "Do",
-        "Check"
+        "Do"
       ],
-      "interactionExpectation": "static",
+      "interactionExpectation": "conditional by composition context",
       "currentRenderTreatment": {
         "static": true,
         "interactive": false
       },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
+      "rendererPath": "renderMaterial + renderTableWorkspace (Do composition)",
+      "renderer": "renderMaterial / renderTableWorkspace",
       "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
+        "table_entry",
+        "static"
       ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
+      "vnextSupported": true,
+      "kitchenSinkCoverage": true,
+      "kitchenSinkFixtureId": "A1-M4",
+      "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
     },
     {
       "type": "comparison_table",
@@ -927,33 +929,33 @@
       "observedInFixtures": true,
       "schemaOnly": false,
       "sourceLocations": [
+        "lib/learner-renderer-vnext/parse-material.js",
         "tests/fixtures/**"
       ],
       "legacyBeat": null,
       "educationalRoles": [
-        "instruction",
+        "reference",
         "learner_completion"
       ],
       "likelyMoments": [
         "Learn",
-        "Do",
-        "Check"
+        "Do"
       ],
-      "interactionExpectation": "static",
+      "interactionExpectation": "conditional by composition context",
       "currentRenderTreatment": {
         "static": true,
         "interactive": false
       },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
+      "rendererPath": "renderMaterial + renderTableWorkspace (Do composition)",
+      "renderer": "renderMaterial / renderTableWorkspace",
       "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
+        "table_entry",
+        "static"
       ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
+      "vnextSupported": true,
+      "kitchenSinkCoverage": true,
+      "kitchenSinkFixtureId": "A3-M3",
+      "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
     },
     {
       "type": "production",

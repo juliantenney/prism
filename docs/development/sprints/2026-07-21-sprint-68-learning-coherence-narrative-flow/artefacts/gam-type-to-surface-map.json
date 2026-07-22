@@ -2,7 +2,9 @@
   "table_entry": [
     "analysis_table",
     "decision_table",
-    "comparison_table"
+    "comparison_table",
+    "classification_table",
+    "planning_table"
   ],
   "static": [
     "analysis_table",
@@ -60,7 +62,6 @@
   "unsupported-interaction": [
     "cards",
     "checklists",
-    "classification_table",
     "criteria_exposition",
     "discussion",
     "examples",
@@ -72,7 +73,6 @@
     "materials",
     "metadata",
     "output",
-    "planning_table",
     "production",
     "prompt",
     "prompts",

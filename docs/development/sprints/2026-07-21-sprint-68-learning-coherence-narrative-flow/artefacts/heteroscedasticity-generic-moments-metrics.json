@@ -1,0 +1,35 @@
+{
+  "label": "heteroscedasticity-A1-A5",
+  "fixture": "tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json",
+  "activityCount": 5,
+  "beatsFallbackActivityIds": [],
+  "compositionMode": "moments",
+  "composedActivityCount": 5,
+  "beatsFallbackActivityCount": 0,
+  "compositionMoments": 20,
+  "momentsByType": {
+    "orient": 5,
+    "learn": 5,
+    "do": 5,
+    "check": 5
+  },
+  "beatSections": 0,
+  "textWorkspaces": 3,
+  "tableWorkspaces": 3,
+  "materialTypes": [
+    "analysis_table",
+    "checklist",
+    "comparison_table",
+    "consolidation_summary",
+    "decision_table",
+    "modelling_note",
+    "prompt_set",
+    "sample_output",
+    "scenario",
+    "template",
+    "text",
+    "transfer_prompt",
+    "worked_example"
+  ],
+  "duplicateIdCount": 0
+}

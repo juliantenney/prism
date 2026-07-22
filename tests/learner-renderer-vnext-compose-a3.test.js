@@ -184,8 +184,9 @@ test("render slice: A3-M3 reuses renderTableWorkspace in moments mode", () => {
 
   assert.doesNotMatch(a3Html, /data-beat-function="/);
   assert.equal((a3Html.match(/data-composition-moment="/g) || []).length, 4);
-  assert.doesNotMatch(a3Html, /util-learner-workspace/);
-  assert.doesNotMatch(a3Html, /<textarea/);
+  assert.doesNotMatch(momentHtml(a3Html, "do"), /util-learner-workspace/);
+  assert.doesNotMatch(momentHtml(a3Html, "do"), /<textarea/);
+  assert.match(momentHtml(a3Html, "check"), /util-learner-workspace__input/);
 
   assert.match(learnHtml, /data-material-id="A3-M1"/);
   assert.doesNotMatch(learnHtml, /util-learner-table-workspace/);

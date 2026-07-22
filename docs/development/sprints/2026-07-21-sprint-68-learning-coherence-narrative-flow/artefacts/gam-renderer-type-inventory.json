@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T08:32:43.904Z",
+  "generated_at": "2026-07-22T12:29:21.408Z",
   "reviewer_task": "S68-IMP-012",
   "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (15 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {

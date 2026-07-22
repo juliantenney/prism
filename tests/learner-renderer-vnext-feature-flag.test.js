@@ -242,7 +242,7 @@ test("feature flag: vnext path wraps canonical renderer fragment in export shell
   assert.match(entryHtml, /^<!doctype html>/i);
   assert.match(
     entryHtml,
-    /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext" data-composition-mode="moments" data-composed-activity-count="5" data-beats-fallback-activity-count="0">/
+    /<main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext"(?:[^>]*) data-composition-mode="moments" data-composed-activity-count="5" data-beats-fallback-activity-count="0">/
   );
   assert.ok(entryHtml.includes('data-activity-id="A1"'));
   assert.doesNotMatch(entryHtml, /<header class="util-page-header util-learning-header"/);

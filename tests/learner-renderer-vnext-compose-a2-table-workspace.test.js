@@ -129,7 +129,7 @@ test("render: A2-M2 uses interactive table workspace in moments mode", () => {
   assert.match(doHtml, /data-material-id="A2-M2"/);
   assert.match(doHtml, /util-learner-table-workspace__input/);
   assert.match(doHtml, /util-learner-table-workspace__guidance/);
-  assert.match(doHtml, /not saved on this page/i);
+  assert.match(doHtml, /saved on this device/i);
   assert.doesNotMatch(doHtml, /util-learner-workspace/);
   assert.doesNotMatch(doHtml, /<textarea/);
 

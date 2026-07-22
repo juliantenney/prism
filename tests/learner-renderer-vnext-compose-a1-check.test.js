@@ -320,7 +320,7 @@ test("render slice: Do workspace remains present and unchanged", () => {
 
   assert.match(a1Html, /data-composition-moment="do"/);
   assert.match(a1Html, /<textarea[^>]*class="util-learner-workspace__input"/);
-  assert.match(a1Html, /not saved on this page/i);
+  assert.match(a1Html, /saved on this device/i);
 });
 
 test("render slice: Orient and Learn content remain present", () => {

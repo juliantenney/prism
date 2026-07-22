@@ -147,10 +147,11 @@ test("adapter: A4 Do uses one combined text_entry workspace for prompt set", () 
   assert.ok(promptMaterial);
   assert.notEqual(promptMaterial.tableWorkspace, true);
 
-  assert.ok(doMoment.workspace);
-  assert.equal(doMoment.workspace.capability, "text_entry");
-  assert.equal(doMoment.workspace.sourceStepNumber, 3);
-  assert.equal(doMoment.workspace.responseLabel, "Explain the chain of effects");
+  assert.ok(doMoment.workspaces);
+  assert.equal(doMoment.workspaces.length, 5);
+  assert.equal(doMoment.workspaces[0].capability, "text_entry");
+  assert.equal(doMoment.workspaces[0].sourceKind, "prompt_item");
+  assert.match(doMoment.workspaces[0].prompt, /What changes in the residuals/);
 
   const workspace = determineWorkspaceRequirement({
     sourceStepNumber: 3,
@@ -180,7 +181,7 @@ test("adapter: A4 Check includes checklist verification only", () => {
   assert.ok(!checkMoment.items.some((item) => item.kind === "prompt"));
 });
 
-test("render slice: A4 Do preserves prompt set once with single textarea workspace", () => {
+test("render slice: A4 Do composes one labelled textarea per prompt-set item", () => {
   const { sourcePage } = buildGoldenContext();
   const a4Html = extractActivityHtml(
     renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html,
@@ -191,11 +192,11 @@ test("render slice: A4 Do preserves prompt set once with single textarea workspa
   assert.match(doHtml, /data-material-id="A4-M3"/);
   assert.match(doHtml, /What changes in the residuals/);
   assert.match(doHtml, /How could this affect a research conclusion/);
-  assert.equal((doHtml.match(/data-material-id="A4-M3"/g) || []).length, 1);
-  assert.equal((doHtml.match(/util-learner-workspace__input/g) || []).length, 1);
-  assert.equal((doHtml.match(/<textarea/g) || []).length, 1);
-  assert.match(doHtml, /Explain the chain of effects/);
+  assert.equal((doHtml.match(/util-learner-workspace__input/g) || []).length, 5);
+  assert.equal((doHtml.match(/<textarea/g) || []).length, 5);
+  assert.match(doHtml, /chain of effects/i);
   assert.match(doHtml, /util-composition-expected-output/);
+  assert.match(doHtml, /util-learner-response-group/);
   assert.doesNotMatch(doHtml, /util-learner-table-workspace/);
 });
 

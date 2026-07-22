@@ -162,10 +162,10 @@ test("adapter: A5 Do composes table and text surfaces in authored order", () => 
   assert.equal(prompt.prompt.sourceField, "argument_structure_hint");
 
   const workspaces = resolveWorkspaceList(doMoment);
-  assert.equal(workspaces.length, 1);
+  assert.equal(workspaces.length, 3);
   assert.equal(workspaces[0].capability, "text_entry");
-  assert.equal(workspaces[0].sourceStepNumber, A5_WORKSPACE_STEP_NUMBERS[0]);
-  assert.equal(workspaces[0].responseLabel, "Write your justified recommendation");
+  assert.equal(workspaces[0].responseLabel, "Initial Position");
+  assert.equal(workspaces[2].responseLabel, "Final Justified Judgement");
   assert.match(doMoment.expectedOutput.text, /reasoned recommendation/i);
 });
 
@@ -209,15 +209,15 @@ test("render slice: A5 Do renders table_entry before text_entry with deduplicate
   assert.match(doHtml, /data-workspace-kind="table_entry"/);
   assert.match(doHtml, /data-workspace-capability="text_entry"/);
   assert.equal((doHtml.match(/util-learner-table-workspace__input/g) || []).length, 12);
-  assert.equal((doHtml.match(/util-learner-workspace__input/g) || []).length, 1);
+  assert.equal((doHtml.match(/util-learner-workspace__input/g) || []).length, 3);
 
   const tablePos = indexOfOrFail(doHtml, 'data-material-id="A5-M4"', "comparison table");
   const textPos = indexOfOrFail(doHtml, 'data-workspace-capability="text_entry"', "text workspace");
   assert.ok(tablePos < textPos, "table workspace must precede text workspace");
 
   assert.doesNotMatch(doHtml, /util-learner-table-workspace__guidance/);
-  assert.match(doHtml, /util-learner-workspace__note/);
-  assert.match(doHtml, /Write your justified recommendation/);
+  assert.match(doHtml, /util-learner-response-group__note|util-learner-workspace__note/);
+  assert.match(doHtml, /Final Justified Judgement/);
   assert.match(doHtml, /data-material-id="A5-M5"/);
 });
 

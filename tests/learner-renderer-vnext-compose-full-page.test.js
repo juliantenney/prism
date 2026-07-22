@@ -222,8 +222,8 @@ test("full page: learner surface inventory matches composed page", () => {
   const html = renderDefaultMomentsPage();
 
   assert.equal((html.match(/data-workspace-kind="table_entry"/g) || []).length, 3);
-  assert.equal((html.match(/data-workspace-capability="text_entry"/g) || []).length, 3);
-  assert.equal((html.match(/util-learner-workspace__input/g) || []).length, 3);
+  assert.equal((html.match(/data-workspace-capability="text_entry"/g) || []).length, 11);
+  assert.equal((html.match(/util-learner-workspace__input/g) || []).length, 11);
   assert.equal((html.match(/util-learner-table-workspace__input/g) || []).length, 29);
 
   const learnHtml = EXPECTED_ACTIVITY_ORDER.map((activityId) =>
@@ -255,8 +255,8 @@ test("full page: accessibility ids are unique and table headers resolve", () => 
     });
   });
 
-  assert.match(html, /Write your justified recommendation/);
-  assert.match(html, /Explain the chain of effects/);
+  assert.match(html, /Final Justified Judgement/);
+  assert.match(html, /chain of effects/i);
 });
 
 test("legacy compatibility: explicit beats mode remains available", () => {

@@ -1,0 +1,111 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Chronology Practice Page",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "metadata": {
+    "workflow_id": "fixture-seq-authoritative",
+    "provenance": "Adapted from tests/fixtures/page-render/sequencing-rollout-learner-page.json (Sprint 65 sequencing rollout). Preserves PRISM activity_interaction_type=sequencing and ordering.{canonical_order,learner_display_order,learner_display_order_strategy,shuffle_seed_key}. Corroborated by Sprint 59 Educational Psychology production audit A3 (activity_interaction_type=sequencing; unordered process cards)."
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "Practice sequencing authored events from earliest to latest."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "Develop chronological ordering skill using an authoritative PRISM sequencing activity."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "Learners rearrange candidate events. The correct sequence is authored as ordering.canonical_order; the initial learner presentation uses ordering.learner_display_order."
+    }
+  },
+  "learning_sequence": {
+    "ordered_activity_ids": ["A1", "A2"]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Put these in order",
+      "activity_interaction_type": "sequencing",
+      "ordering": {
+        "canonical_order": ["Event A", "Event B", "Event C"],
+        "learner_display_order": ["Event C", "Event A", "Event B"],
+        "learner_display_order_strategy": "deterministic_shuffle",
+        "shuffle_seed_key": "fixture-seq-a1"
+      },
+      "learner_task": "1. Read the chronology guidance.\n2. Put these in order from earliest to latest.\n3. Check your sequence against the verification criteria.",
+      "expected_output": "Events ordered from earliest to latest.",
+      "activity_preamble": "You will sequence three authored events.",
+      "reasoning_orientation": "Decide which event must come first, then arrange the remaining events relative to it.",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "check_understanding" }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Chronology guidance",
+          "body_format": "markdown",
+          "body": "Read each event carefully. Arrange them from earliest to latest."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Sequence check",
+          "body_format": "markdown",
+          "body": "- Earliest event is first\n- Latest event is last\n- Middle event sits between them"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Discuss implications",
+      "activity_interaction_type": "discussion",
+      "learner_task": "1. Read the discussion prompt.\n2. Note one implication.\n3. Verify your note against the checklist.",
+      "expected_output": "One implication with a short example.",
+      "activity_preamble": "Non-ordering control activity.",
+      "reasoning_orientation": "Focus on implication, not sequence.",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "check_understanding" }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "activity_id": "A2",
+          "title": "Discussion prompt",
+          "body_format": "markdown",
+          "body": "Discuss one implication of the chronology."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Discussion check",
+          "body_format": "markdown",
+          "body": "- Implication stated\n- Example included"
+        }
+      ]
+    }
+  ]
+}

@@ -128,14 +128,16 @@ test("adapter: workspace requirement is separate from task content", () => {
   assert.equal(doMoment.workspace.sourceStepNumber, A1_WRITTEN_RESPONSE_STEP);
   assert.equal(doMoment.workspace.mode, "inline");
   assert.equal(doMoment.workspace.capability, "text_entry");
-  assert.equal(doMoment.workspace.persistenceAvailable, false);
+  assert.equal(doMoment.workspace.persistenceAvailable, true);
   assert.match(doMoment.workspace.instruction, /Write a brief explanation/i);
-  assert.match(doMoment.workspace.guidance, /not saved on this page/i);
+  assert.match(doMoment.workspace.guidance, /saved on this device/i);
 
   const workspaceRule = determineWorkspaceRequirement(
     doMoment.taskSteps.find((step) => step.sourceStepNumber === 5)
   );
-  assert.deepEqual(workspaceRule, doMoment.workspace);
+  assert.ok(workspaceRule);
+  assert.equal(workspaceRule.capability, doMoment.workspace.capability);
+  assert.equal(workspaceRule.sourceStepNumber, doMoment.workspace.sourceStepNumber);
 });
 
 test("adapter: missing optional expected output degrades safely", () => {
@@ -185,23 +187,22 @@ test("render slice: A1 renders one coherent Do section with accessible workspace
   assert.equal((a1Html.match(/data-composition-moment="do"/g) || []).length, 1);
   assert.match(a1Html, /Your task/);
   assert.match(a1Html, /What to produce/);
-  assert.match(a1Html, /Record your response/);
+  assert.match(a1Html, /Your response/);
   assert.match(a1Html, /<textarea[^>]*class="util-learner-workspace__input"/);
-  assert.match(a1Html, /aria-label="Record your response"/);
-  assert.match(a1Html, /not saved on this page/i);
+  assert.match(a1Html, /for="learner-workspace-a1-/);
+  assert.match(a1Html, /saved on this device/i);
 });
 
-test("render slice: workspace does not claim persistence, saving, submission, or scoring", () => {
+test("render slice: workspace claims local draft only, not submission or scoring", () => {
   const sourcePage = loadFixture();
   const a1Html = extractActivityHtml(
     renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html,
     "A1"
   );
 
-  assert.doesNotMatch(a1Html, /save your response/i);
-  assert.doesNotMatch(a1Html, /submit/i);
+  assert.match(a1Html, /saved on this device/i);
+  assert.match(a1Html, /not submitted/i);
   assert.doesNotMatch(a1Html, /score/i);
-  assert.doesNotMatch(a1Html, /assessment/i);
 });
 
 test("render slice: consumed Do content is not rendered twice in A1", () => {

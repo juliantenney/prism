@@ -1,6 +1,6 @@
 # Adding a new learner surface
 
-**Parent:** [learner-renderer-vnext.md](learner-renderer-vnext.md)  
+**Parent:** [learner-renderer-vnext.md](learner-renderer-vnext.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md)  
 **Audience:** Engineers implementing Sprint 69+ interaction capabilities
 
 This guide shows how to extend learner-renderer-vNext with a new capability **without** changing PRISM, DLA, or manifestation when educational semantics already exist on the assembled page.

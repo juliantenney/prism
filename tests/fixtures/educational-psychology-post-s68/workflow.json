@@ -1,0 +1,3096 @@
+{
+  "id": "440910f0-041b-4f00-a32b-83345e732307",
+  "name": "Educational Psychology",
+  "selectedDomains": [
+    "general",
+    "learning-design"
+  ],
+  "artefacts": "",
+  "startingArtefact": "generate_from_topic",
+  "workflowInputs": [],
+  "workflowOutputs": [],
+  "workflowOutputSpec": {
+    "audience": "undergraduate students",
+    "goal": "Create a 60 minute self study resource for undergraduate students. The topic is 'An Introduction to Educational Psychology'",
+    "constraints": "duration_minutes: 60; topic: An Introduction to Educational Psychology; delivery_mode: async; design_scope: session; delivery_pattern: mostly_online; delivery_context: self_directed; input_strategy: generate_from_topic; learning_environments: vle; assessment_strategy: none; session_materials: page; page_profile: learner; scope_scale: 60 mins",
+    "pageEnrichmentV2": true,
+    "partialPageOutputs": true
+  },
+  "workflowBriefResolution": {
+    "initialBrief": {
+      "name": "Educational Psychology",
+      "goal": "Create a 60 minute self study resource for undergraduate students. The topic is 'An Introduction to Educational Psychology'",
+      "designIntent": "Create a 60 minute self study resource for undergraduate students. The topic is 'An Introduction to Educational Psychology'",
+      "audience": "undergraduate students",
+      "scopeScale": "60 mins",
+      "inputs": "",
+      "startingArtefact": "generate_from_topic",
+      "desiredOutputs": "",
+      "domainExtraValues": {},
+      "scopeConstraints": "",
+      "selectedDomains": [
+        "general",
+        "learning-design"
+      ]
+    },
+    "askedFactors": [],
+    "inferredFactors": {
+      "topic": "An Introduction to Educational Psychology",
+      "learner_level": "undergraduate",
+      "design_scope": "session",
+      "input_strategy": "generate_from_topic",
+      "duration_minutes": 60,
+      "delivery_context": "self_directed",
+      "delivery_mode": "async",
+      "delivery_pattern": "mostly_online",
+      "learning_environments": [
+        "vle"
+      ]
+    },
+    "confirmedInferredFactors": {
+      "topic": "An Introduction to Educational Psychology",
+      "design_scope": "session"
+    },
+    "resolvedSources": {
+      "topic": "inferred",
+      "learner_level": "explicit",
+      "design_scope": "inferred",
+      "delivery_pattern": "explicit",
+      "input_strategy": "explicit",
+      "duration_minutes": "explicit",
+      "delivery_mode": "explicit",
+      "delivery_context": "explicit",
+      "session_materials": "default",
+      "page_profile": "default",
+      "learning_environments": "explicit",
+      "assessment_strategy": "default",
+      "cognitive_engagement_required": "default",
+      "reasoning_revision_required": "default",
+      "misconception_reconciliation_required": "default",
+      "adaptive_scaffolding_required": "default",
+      "productive_uncertainty_required": "default",
+      "workshop_subject": "default"
+    },
+    "resolvedFactors": {
+      "topic": "An Introduction to Educational Psychology",
+      "learner_level": "undergraduate",
+      "design_scope": "session",
+      "delivery_pattern": "mostly_online",
+      "input_strategy": "generate_from_topic",
+      "duration_minutes": 60,
+      "delivery_mode": "async",
+      "delivery_context": "self_directed",
+      "session_materials": [
+        "page"
+      ],
+      "page_profile": "learner",
+      "learning_environments": [
+        "vle"
+      ],
+      "assessment_strategy": "none",
+      "cognitive_engagement_required": false,
+      "reasoning_revision_required": false,
+      "misconception_reconciliation_required": false,
+      "adaptive_scaffolding_required": false,
+      "productive_uncertainty_required": false,
+      "workshop_subject": "An Introduction to Educational Psychology"
+    },
+    "mappedBindings": {
+      "workflowOutputSpecPatch": {
+        "audience": "undergraduate"
+      },
+      "workflowConstraintPatch": {
+        "duration_minutes": 60,
+        "topic": "An Introduction to Educational Psychology",
+        "delivery_mode": "async",
+        "design_scope": "session",
+        "delivery_pattern": "mostly_online",
+        "delivery_context": "self_directed",
+        "input_strategy": "generate_from_topic",
+        "learning_environments": [
+          "vle"
+        ],
+        "assessment_strategy": "none",
+        "session_materials": [
+          "page"
+        ],
+        "page_profile": "learner"
+      },
+      "stepParamPatch": {
+        "step_construct_learning_sequence": {
+          "duration_minutes": 60
+        },
+        "step_define_learning_outcomes": {
+          "learnerLevel": "undergraduate"
+        },
+        "step_generate_activity_materials": {
+          "session_materials": [
+            "page"
+          ]
+        },
+        "step_design_page": {
+          "page_profile": "learner",
+          "audience_level": "undergraduate"
+        }
+      },
+      "mapped": [
+        {
+          "factor": "duration_minutes",
+          "target": "workflow.workflowOutputSpec.constraints.duration_minutes",
+          "value": 60
+        },
+        {
+          "factor": "duration_minutes",
+          "target": "stepParams.step_construct_learning_sequence.duration_minutes",
+          "value": 60
+        },
+        {
+          "factor": "topic",
+          "target": "workflow.workflowOutputSpec.constraints.topic",
+          "value": "An Introduction to Educational Psychology"
+        },
+        {
+          "factor": "learner_level",
+          "target": "workflow.workflowOutputSpec.audience",
+          "value": "undergraduate"
+        },
+        {
+          "factor": "learner_level",
+          "target": "stepParams.step_define_learning_outcomes.learnerLevel",
+          "value": "undergraduate"
+        },
+        {
+          "factor": "delivery_mode",
+          "target": "workflow.workflowOutputSpec.constraints.delivery_mode",
+          "value": "async"
+        },
+        {
+          "factor": "design_scope",
+          "target": "workflow.workflowOutputSpec.constraints.design_scope",
+          "value": "session"
+        },
+        {
+          "factor": "delivery_pattern",
+          "target": "workflow.workflowOutputSpec.constraints.delivery_pattern",
+          "value": "mostly_online"
+        },
+        {
+          "factor": "delivery_context",
+          "target": "workflow.workflowOutputSpec.constraints.delivery_context",
+          "value": "self_directed"
+        },
+        {
+          "factor": "input_strategy",
+          "target": "workflow.workflowOutputSpec.constraints.input_strategy",
+          "value": "generate_from_topic"
+        },
+        {
+          "factor": "learning_environments",
+          "target": "workflow.workflowOutputSpec.constraints.learning_environments",
+          "value": [
+            "vle"
+          ]
+        },
+        {
+          "factor": "assessment_strategy",
+          "target": "workflow.workflowOutputSpec.constraints.assessment_strategy",
+          "value": "none"
+        },
+        {
+          "factor": "session_materials",
+          "target": "workflow.workflowOutputSpec.constraints.session_materials",
+          "value": [
+            "page"
+          ]
+        },
+        {
+          "factor": "session_materials",
+          "target": "stepParams.step_generate_activity_materials.session_materials",
+          "value": [
+            "page"
+          ]
+        },
+        {
+          "factor": "page_profile",
+          "target": "workflow.workflowOutputSpec.constraints.page_profile",
+          "value": "learner"
+        },
+        {
+          "factor": "page_profile",
+          "target": "stepParams.step_design_page.page_profile",
+          "value": "learner"
+        },
+        {
+          "factor": "learner_level",
+          "target": "stepParams.step_design_page.audience_level",
+          "value": "undergraduate"
+        }
+      ],
+      "warnings": []
+    },
+    "missing": [],
+    "briefConfig": {
+      "version": "1",
+      "requiredFactors": [
+        {
+          "id": "topic",
+          "label": "Topic",
+          "question": "What topic or subject should this focus on?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "learner_level",
+          "label": "Learner level",
+          "question": "What learner level should this workflow target? (beginner/intermediate/advanced/undergraduate/postgraduate)",
+          "type": "select",
+          "required": true,
+          "choices": [
+            "beginner",
+            "intermediate",
+            "advanced",
+            "undergraduate",
+            "postgraduate"
+          ]
+        },
+        {
+          "id": "design_scope",
+          "label": "Design scope",
+          "question": "What is the design scope? (single_activity/session/sequence/module)",
+          "type": "select",
+          "required": true,
+          "choices": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ],
+          "default": "session"
+        },
+        {
+          "id": "delivery_pattern",
+          "label": "Delivery pattern",
+          "question": "What delivery pattern should this use? (face_to_face/blended/mostly_online)",
+          "type": "select",
+          "required": true,
+          "choices": [
+            "face_to_face",
+            "blended",
+            "mostly_online"
+          ],
+          "default": "face_to_face"
+        },
+        {
+          "id": "input_strategy",
+          "label": "Input strategy",
+          "question": "Should this workflow generate from a topic, rely on uploaded material, or combine both?",
+          "type": "select",
+          "required": true,
+          "choices": [
+            {
+              "value": "generate_from_topic",
+              "label": "Generate content"
+            },
+            {
+              "value": "provided_source_content",
+              "label": "Use uploaded material"
+            },
+            {
+              "value": "mixed",
+              "label": "Mix uploaded material and generated content"
+            }
+          ]
+        }
+      ],
+      "optionalFactors": [
+        {
+          "id": "duration_minutes",
+          "label": "Session duration (minutes)",
+          "question": "How long is the session?",
+          "type": "number",
+          "min": 10,
+          "max": 480
+        },
+        {
+          "id": "delivery_mode",
+          "label": "Delivery mode",
+          "question": "What delivery mode should this use? (live_workshop/seminar/async)",
+          "type": "select",
+          "choices": [
+            "live_workshop",
+            "seminar",
+            "async"
+          ]
+        },
+        {
+          "id": "delivery_context",
+          "label": "Delivery context",
+          "question": "What pedagogic delivery context should this use? (in_person/online_sync/online_async/blended/self_directed)",
+          "type": "select",
+          "choices": [
+            "in_person",
+            "online_sync",
+            "online_async",
+            "blended",
+            "self_directed"
+          ]
+        },
+        {
+          "id": "session_materials",
+          "label": "Session-level materials",
+          "question": "Which session materials should be generated? (comma-separated: page, slide_deck)",
+          "type": "multi_select",
+          "choices": [
+            "page",
+            "slide_deck"
+          ],
+          "default": [
+            "page"
+          ]
+        },
+        {
+          "id": "page_profile",
+          "label": "Page profile",
+          "question": "What page profile should be used? (learner/facilitator/assessment)",
+          "type": "select",
+          "choices": [
+            "learner",
+            "facilitator",
+            "assessment"
+          ],
+          "default": "learner"
+        },
+        {
+          "id": "assessment_required",
+          "label": "Assessment required",
+          "question": "Do you need assessment outputs? (yes/no)",
+          "type": "boolean"
+        },
+        {
+          "id": "learning_environments",
+          "label": "Learning environments",
+          "question": "Which learning environments are in scope? (classroom, vle, xerte, external_tools)",
+          "type": "multi_select",
+          "choices": [
+            "classroom",
+            "vle",
+            "xerte",
+            "external_tools"
+          ],
+          "default": [
+            "classroom"
+          ]
+        },
+        {
+          "id": "assessment_strategy",
+          "label": "Assessment strategy",
+          "question": "Assessment strategy (none/formative/summative/mixed)",
+          "type": "select",
+          "choices": [
+            "none",
+            "formative",
+            "summative",
+            "mixed"
+          ],
+          "default": "none"
+        },
+        {
+          "id": "feedback_timing",
+          "label": "Feedback timing",
+          "question": "When should learners see feedback or correct answers?",
+          "type": "select",
+          "choices": [
+            "immediate_self_check",
+            "after_peer_discussion",
+            "end_of_session_reveal",
+            "tutor_led_reveal_only"
+          ],
+          "default": "immediate_self_check",
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "assessment_interaction_mode",
+          "label": "Assessment interaction mode",
+          "question": "What interaction mode should the assessment support?",
+          "type": "select",
+          "choices": [
+            "retrieval_practice",
+            "discussion_oriented",
+            "diagnostic_misconception"
+          ],
+          "default": "retrieval_practice",
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "learner_answer_visibility",
+          "label": "Learner answer visibility",
+          "question": "When should learners see correct answers on exported materials?",
+          "type": "select",
+          "choices": [
+            "hidden_until_reveal",
+            "show_after_activity_block",
+            "show_answer_grid_end",
+            "show_with_explanations"
+          ],
+          "default": "show_answer_grid_end",
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "peer_instruction_phase",
+          "label": "Peer instruction phase",
+          "question": "Does the session include a structured peer-instruction phase?",
+          "type": "select",
+          "choices": [
+            "none",
+            "think_pair_share",
+            "small_group_discussion_then_check"
+          ],
+          "default": "none",
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "misconception_assessment_link",
+          "label": "Link assessment to misconceptions",
+          "question": "Should assessment items explicitly target misconception themes from activities?",
+          "type": "boolean",
+          "default": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "design_feedback_required",
+          "label": "Design feedback step required",
+          "question": "Should the workflow include a Design Feedback step?",
+          "type": "boolean",
+          "default": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          }
+        },
+        {
+          "id": "cognitive_engagement_required",
+          "label": "Cognitive engagement required",
+          "question": "Should materials encode a structured learning process (not only content delivery)?",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "id": "reasoning_revision_required",
+          "label": "Reasoning revision required",
+          "question": "Should learners predict, discuss, and revise their reasoning?",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "id": "misconception_reconciliation_required",
+          "label": "Misconception reconciliation required",
+          "question": "Should activities confront and reconcile misconceptions with evidence?",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "id": "adaptive_scaffolding_required",
+          "label": "Adaptive scaffolding required",
+          "question": "Should materials include contingent scaffolding (hints, if-then guidance)?",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "id": "productive_uncertainty_required",
+          "label": "Productive uncertainty required",
+          "question": "Should learners work through uncertainty, conflict, or competing evidence?",
+          "type": "boolean",
+          "default": false
+        }
+      ],
+      "refinementFactors": [
+        {
+          "id": "coverage_scope",
+          "label": "Coverage scope",
+          "question": "Should this focus on selected themes, broad coverage, or a balanced middle ground?",
+          "plainEnglish": "Do you want this to focus on a few key topics, cover lots of topics, or sit between the two?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            {
+              "value": "selected_themes",
+              "label": "Selected themes",
+              "description": "Focus on the most important topics rather than covering everything."
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced",
+              "description": "Cover key topics with a practical balance of depth and breadth."
+            },
+            {
+              "value": "broad_coverage",
+              "label": "Broad coverage",
+              "description": "Sample across many topics for wider overall coverage."
+            }
+          ],
+          "default": "balanced",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay",
+            "task",
+            "exercise"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "cognitive_demand",
+          "label": "Cognitive demand profile",
+          "question": "What level of thinking should most tasks target?",
+          "plainEnglish": "Should learners mainly recall facts, apply ideas, or do higher-order analysis/evaluation?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            {
+              "value": "recall_foundation",
+              "label": "Recall and understanding",
+              "description": "Mostly checks core facts, concepts, and basic understanding."
+            },
+            {
+              "value": "application_oriented",
+              "label": "Application and problem-solving",
+              "description": "Focuses on applying ideas to tasks and practical problems."
+            },
+            {
+              "value": "analysis_evaluation",
+              "label": "Analysis and evaluation (higher-order)",
+              "description": "Emphasizes comparison, critique, judgement, and deeper reasoning."
+            },
+            {
+              "value": "mixed",
+              "label": "Mixed levels",
+              "description": "Uses a deliberate mix from foundational to higher-order thinking."
+            }
+          ],
+          "default": "mixed",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay",
+            "task",
+            "exercise"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "question_style_mix",
+          "label": "Response mode mix",
+          "question": "What kind of responses should learners give?",
+          "plainEnglish": "Do you want multiple choice, written answers, or a mix?",
+          "type": "select",
+          "choices": [
+            {
+              "value": "selected_response_only",
+              "label": "Selected response only (e.g. MCQ)",
+              "description": "Learners choose from provided options (faster marking, tighter structure)."
+            },
+            {
+              "value": "constructed_response_only",
+              "label": "Constructed response only (e.g. short/essay)",
+              "description": "Learners write their own responses (more depth, richer evidence)."
+            },
+            {
+              "value": "mixed_response_modes",
+              "label": "Mixed selected + constructed responses",
+              "description": "Combine option-based and written-response items in one set."
+            },
+            {
+              "value": "integrative_performance_oriented",
+              "label": "Integrative/performance-style responses",
+              "description": "Use more authentic responses that integrate multiple skills or outcomes."
+            }
+          ],
+          "default": "mixed_response_modes",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "assessment_type",
+          "label": "Assessment type",
+          "question": "What assessment type should this use?",
+          "plainEnglish": "Should this be multiple-choice, short-answer, essay, case-study, problem-based, or mixed?",
+          "type": "select",
+          "choices": [
+            {
+              "value": "mcq",
+              "label": "MCQ",
+              "description": "Single-best-answer multiple-choice questions."
+            },
+            {
+              "value": "short_answer",
+              "label": "Short answer",
+              "description": "Brief written responses demonstrating understanding or application."
+            },
+            {
+              "value": "essay",
+              "label": "Essay",
+              "description": "Extended written responses with argument, analysis, or evaluation."
+            },
+            {
+              "value": "problem",
+              "label": "Problem solving",
+              "description": "Solve a problem using methods, reasoning, and justified steps."
+            },
+            {
+              "value": "case_study",
+              "label": "Case study",
+              "description": "Analyze a realistic case and respond using evidence-based reasoning."
+            },
+            {
+              "value": "mixed",
+              "label": "Mixed types",
+              "description": "Use a deliberate mix of assessment types."
+            }
+          ],
+          "default": "mixed",
+          "mustAsk": false,
+          "skipIfContextResolved": true,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay",
+            "mcq",
+            "exam"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "feedback_required",
+          "label": "Feedback mode",
+          "question": "What feedback mode should the workflow produce for learners/tutors?",
+          "plainEnglish": "Should feedback be none, per question, overall summary, or both?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            {
+              "value": "none",
+              "label": "No feedback",
+              "description": "Provide answers/results without learner-facing feedback commentary."
+            },
+            {
+              "value": "item_level",
+              "label": "Per item",
+              "description": "Provide feedback for each question or task response."
+            },
+            {
+              "value": "aggregate",
+              "label": "Overall summary",
+              "description": "Provide a consolidated summary of strengths and gaps."
+            },
+            {
+              "value": "both_item_and_aggregate",
+              "label": "Per item + overall summary",
+              "description": "Provide both per-item guidance and an overall summary."
+            }
+          ],
+          "default": "item_level",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "difficulty_profile",
+          "label": "Difficulty distribution",
+          "question": "How should difficulty be distributed across the assessment set?",
+          "plainEnglish": "Should this be mostly easier items, balanced, or mostly harder items?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            {
+              "value": "foundation_heavy",
+              "label": "Mostly foundational items",
+              "description": "Bias toward easier/foundational items with fewer advanced ones."
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced mix",
+              "description": "Use a balanced spread across easier and harder items."
+            },
+            {
+              "value": "higher_order_heavy",
+              "label": "Mostly higher-order items",
+              "description": "Bias toward more challenging analysis/application items."
+            }
+          ],
+          "default": "balanced",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "assessment_total_items",
+          "label": "Total assessment items",
+          "question": "How many assessment items/questions should be generated in total?",
+          "plainEnglish": "What is the total number of questions/items you want (for example: 8, 10, or 20)?",
+          "skipIfContextResolved": true,
+          "type": "number",
+          "min": 1,
+          "max": 200,
+          "default": 10,
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "assessment",
+            "quiz",
+            "test",
+            "question",
+            "essay",
+            "mcq",
+            "exam"
+          ],
+          "askWhenDesignScopeIn": [
+            "single_activity",
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "activity_pattern_mix",
+          "label": "Activity pattern mix",
+          "question": "What activity pattern mix should learning activities use?",
+          "plainEnglish": "Should activities be mostly guided, mixed, or more applied/collaborative?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            {
+              "value": "guided",
+              "label": "Guided",
+              "description": "Structured tasks led by the tutor, with clear instructions and support."
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced",
+              "description": "A mix of tutor-guided tasks and more student-led discussion or group work."
+            },
+            {
+              "value": "applied_collaborative",
+              "label": "Applied collaborative",
+              "description": "More open-ended tasks where students work together to apply ideas in practice."
+            }
+          ],
+          "default": "balanced",
+          "askWhenGoalMentionsAnyOf": [
+            "workshop",
+            "session",
+            "lesson",
+            "module",
+            "teaching",
+            "learning"
+          ],
+          "askWhenDesignScopeIn": [
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "sequencing_granularity",
+          "label": "Sequencing granularity",
+          "question": "How detailed should the learning sequence structure be?",
+          "plainEnglish": "Do you want a light plan, a standard plan, or a very detailed step-by-step sequence?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            "lightweight",
+            "standard",
+            "detailed"
+          ],
+          "default": "standard",
+          "askWhenGoalMentionsAnyOf": [
+            "workshop",
+            "session",
+            "sequence",
+            "module",
+            "weekly",
+            "lecture"
+          ],
+          "askWhenDesignScopeIn": [
+            "session",
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "assessment_cadence",
+          "label": "Assessment cadence",
+          "question": "How should assessment be distributed across the broader learning scope?",
+          "plainEnglish": "Should assessment happen only at the end, regularly during learning, or as a mix of formative and summative?",
+          "skipIfContextResolved": true,
+          "type": "select",
+          "choices": [
+            "single_end_point",
+            "periodic_formative",
+            "mixed_formative_summative"
+          ],
+          "default": "periodic_formative",
+          "askWhenResolvedFactorEquals": {
+            "assessment_required": true
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "module",
+            "course",
+            "programme",
+            "sequence"
+          ],
+          "askWhenDesignScopeIn": [
+            "sequence",
+            "module"
+          ]
+        },
+        {
+          "id": "tone_style",
+          "label": "Tone / style",
+          "question": "What tone and style should the page use?",
+          "plainEnglish": "Should the language be formal, friendly, academic, or conversational?",
+          "type": "select",
+          "choices": [
+            "formal",
+            "friendly",
+            "academic",
+            "conversational",
+            "mixed"
+          ],
+          "default": "academic",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "session_materials": [
+              "page"
+            ]
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "page",
+            "content",
+            "lesson",
+            "module",
+            "course"
+          ]
+        },
+        {
+          "id": "depth_level",
+          "label": "Depth level",
+          "question": "What depth level should the page content target?",
+          "plainEnglish": "Should it cover foundational concepts, application, or deeper analysis?",
+          "type": "select",
+          "choices": [
+            "foundational",
+            "application",
+            "analysis",
+            "mixed"
+          ],
+          "default": "mixed",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "session_materials": [
+              "page"
+            ]
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "page",
+            "content",
+            "lesson",
+            "module",
+            "course"
+          ]
+        },
+        {
+          "id": "include_examples",
+          "label": "Include examples",
+          "question": "Should the page include illustrative examples?",
+          "type": "boolean",
+          "default": true,
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "session_materials": [
+              "page"
+            ]
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "page",
+            "content",
+            "lesson",
+            "module",
+            "course"
+          ]
+        },
+        {
+          "id": "include_practice_tasks",
+          "label": "Include practice tasks",
+          "question": "Should the page include short practice tasks or questions?",
+          "type": "boolean",
+          "default": false,
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "session_materials": [
+              "page"
+            ]
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "page",
+            "content",
+            "activity",
+            "tasks"
+          ]
+        },
+        {
+          "id": "compact_vs_detailed",
+          "label": "Page compactness",
+          "question": "Should the page be compact or detailed?",
+          "plainEnglish": "Do you want a concise summary or a more detailed explanation?",
+          "type": "select",
+          "choices": [
+            "compact",
+            "standard",
+            "detailed"
+          ],
+          "default": "standard",
+          "mustAsk": false,
+          "askWhenResolvedFactorEquals": {
+            "session_materials": [
+              "page"
+            ]
+          },
+          "askWhenGoalMentionsAnyOf": [
+            "page",
+            "content",
+            "summary"
+          ]
+        }
+      ],
+      "extraFields": [],
+      "uiHints": {
+        "design_intent": "Describe the learning-design output to produce (workshop, lesson, module, assessment pack).",
+        "audience": "Primary learner/cohort for this design.",
+        "scope_scale": "Delivery scale and duration (for example: 60-minute workshop, two-week module, or full course).",
+        "scope_scale_placeholder": "e.g. single activity, workshop block, multi-week module, programme",
+        "inputs": "Source content or note that content must be generated from topic.",
+        "desired_outputs": "Target artefacts (activities, sequence, assessment, facilitator materials).",
+        "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."
+      },
+      "inferenceRules": [
+        {
+          "whenInputsMentionAnyOf": [
+            "undergraduate",
+            "undergraduates",
+            "first-year undergraduate",
+            "first year undergraduate",
+            "first-year undergraduates",
+            "first year undergraduates",
+            "second-year undergraduate",
+            "second year undergraduate",
+            "second-year undergraduates",
+            "second year undergraduates",
+            "final-year undergraduate",
+            "final year undergraduate",
+            "final-year undergraduates",
+            "final year undergraduates"
+          ],
+          "set": {
+            "learner_level": "undergraduate"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "postgraduate",
+            "postgraduates",
+            "postgraduate taught students"
+          ],
+          "set": {
+            "learner_level": "postgraduate"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "year 7",
+            "year 8",
+            "year 9",
+            "ks3",
+            "key stage 3"
+          ],
+          "set": {
+            "learner_level": "beginner"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "year 10",
+            "year 11",
+            "ks4",
+            "key stage 4",
+            "gcse"
+          ],
+          "set": {
+            "learner_level": "intermediate"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "year 12",
+            "year 13",
+            "ks5",
+            "key stage 5",
+            "a-level",
+            "a level"
+          ],
+          "set": {
+            "learner_level": "advanced"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "primary",
+            "primary school"
+          ],
+          "set": {
+            "learner_level": "beginner"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "beginner",
+            "beginners"
+          ],
+          "set": {
+            "learner_level": "beginner"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "intermediate"
+          ],
+          "set": {
+            "learner_level": "intermediate"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "advanced"
+          ],
+          "set": {
+            "learner_level": "advanced"
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "quiz",
+            "activity",
+            "exercise",
+            "question set",
+            "worksheet",
+            "task"
+          ],
+          "set": {
+            "design_scope": "single_activity"
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "workshop",
+            "session",
+            "class",
+            "live"
+          ],
+          "set": {
+            "delivery_mode": "live_workshop"
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "quiz",
+            "mcq",
+            "assessment",
+            "test"
+          ],
+          "set": {
+            "assessment_required": true
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "module",
+            "course",
+            "programme",
+            "6-week",
+            "weekly schedule"
+          ],
+          "set": {
+            "design_scope": "module"
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "online",
+            "moodle"
+          ],
+          "set": {
+            "delivery_pattern": "blended",
+            "learning_environments": [
+              "classroom",
+              "vle"
+            ]
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "vle",
+            "moodle",
+            "course site",
+            "online course space",
+            "vle structure",
+            "moodle structure",
+            "moodle course structure"
+          ],
+          "set": {
+            "learning_environments": [
+              "vle"
+            ]
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "vle",
+            "moodle",
+            "course site",
+            "online course space",
+            "vle structure",
+            "moodle structure",
+            "moodle course structure"
+          ],
+          "set": {
+            "learning_environments": [
+              "vle"
+            ]
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "self-directed",
+            "independent study",
+            "self study",
+            "study independently",
+            "work through on their own"
+          ],
+          "set": {
+            "delivery_context": "self_directed"
+          }
+        },
+        {
+          "whenGoalMentionsAnyOf": [
+            "self-study",
+            "self study",
+            "revision resource",
+            "preparation resource",
+            "learner-facing page",
+            "learner facing page",
+            "learner resource",
+            "learning resource"
+          ],
+          "set": {
+            "delivery_context": "self_directed",
+            "delivery_mode": "async",
+            "delivery_pattern": "mostly_online",
+            "learning_environments": [
+              "vle"
+            ]
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "self-directed",
+            "independent study",
+            "self study",
+            "study independently",
+            "work through on their own"
+          ],
+          "set": {
+            "delivery_context": "self_directed"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "self-study",
+            "self study",
+            "independent study",
+            "uploaded transcript",
+            "lecture transcript"
+          ],
+          "set": {
+            "delivery_context": "self_directed",
+            "delivery_mode": "async"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "no source content",
+            "generate from topic",
+            "from topic only"
+          ],
+          "set": {
+            "input_strategy": "generate_from_topic"
+          }
+        },
+        {
+          "whenInputsMentionAnyOf": [
+            "transcript",
+            "article",
+            "document",
+            "pdf",
+            "slides",
+            "uploaded file",
+            "uploaded lecture",
+            "source material",
+            "provided lecture",
+            "provided reading",
+            "attached material"
+          ],
+          "set": {
+            "input_strategy": "provided_source_content"
+          }
+        }
+      ],
+      "mappingRules": [
+        {
+          "factor": "duration_minutes",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.duration_minutes",
+            "stepParams.step_construct_learning_sequence.duration_minutes"
+          ]
+        },
+        {
+          "factor": "topic",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.topic"
+          ]
+        },
+        {
+          "factor": "learner_level",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.audience",
+            "stepParams.step_define_learning_outcomes.learnerLevel"
+          ]
+        },
+        {
+          "factor": "delivery_mode",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.delivery_mode"
+          ]
+        },
+        {
+          "factor": "design_scope",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.design_scope"
+          ]
+        },
+        {
+          "factor": "delivery_pattern",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.delivery_pattern"
+          ]
+        },
+        {
+          "factor": "delivery_context",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.delivery_context"
+          ]
+        },
+        {
+          "factor": "input_strategy",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.input_strategy"
+          ]
+        },
+        {
+          "factor": "learning_environments",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.learning_environments"
+          ]
+        },
+        {
+          "factor": "assessment_strategy",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.assessment_strategy"
+          ]
+        },
+        {
+          "factor": "coverage_scope",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.coverage_scope",
+            "stepParams.step_design_assessment.coverage_scope"
+          ]
+        },
+        {
+          "factor": "cognitive_demand",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.cognitive_demand",
+            "stepParams.step_design_assessment.cognitive_demand"
+          ]
+        },
+        {
+          "factor": "question_style_mix",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.question_style_mix",
+            "stepParams.step_generate_assessment_items.question_style_mix"
+          ]
+        },
+        {
+          "factor": "assessment_type",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.assessment_type",
+            "stepParams.step_design_assessment.activity_type"
+          ]
+        },
+        {
+          "factor": "feedback_required",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.feedback_required",
+            "stepParams.step_design_feedback.feedback_required"
+          ]
+        },
+        {
+          "factor": "difficulty_profile",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.difficulty_profile",
+            "stepParams.step_design_assessment.difficulty_profile",
+            "stepParams.step_generate_assessment_items.difficulty_profile"
+          ]
+        },
+        {
+          "factor": "assessment_total_items",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.assessment_total_items",
+            "stepParams.step_design_assessment.total_items",
+            "stepParams.step_generate_assessment_items.number_of_items"
+          ]
+        },
+        {
+          "factor": "activity_pattern_mix",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.activity_pattern_mix",
+            "stepParams.step_design_learning_activities.activity_pattern_mix"
+          ]
+        },
+        {
+          "factor": "sequencing_granularity",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.sequencing_granularity",
+            "stepParams.step_construct_learning_sequence.sequencing_granularity"
+          ]
+        },
+        {
+          "factor": "assessment_cadence",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.assessment_cadence",
+            "stepParams.step_design_assessment.assessment_cadence"
+          ]
+        },
+        {
+          "factor": "session_materials",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.session_materials",
+            "stepParams.step_generate_activity_materials.session_materials"
+          ]
+        },
+        {
+          "factor": "page_profile",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.page_profile",
+            "stepParams.step_design_page.page_profile"
+          ]
+        },
+        {
+          "factor": "learner_level",
+          "mapsTo": [
+            "stepParams.step_design_page.audience_level"
+          ]
+        },
+        {
+          "factor": "tone_style",
+          "mapsTo": []
+        },
+        {
+          "factor": "depth_level",
+          "mapsTo": []
+        },
+        {
+          "factor": "include_examples",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.include_examples",
+            "stepParams.step_design_page.include_examples"
+          ]
+        },
+        {
+          "factor": "include_practice_tasks",
+          "mapsTo": [
+            "workflow.workflowOutputSpec.constraints.include_practice_tasks",
+            "stepParams.step_design_page.include_practice_tasks"
+          ]
+        },
+        {
+          "factor": "compact_vs_detailed",
+          "mapsTo": []
+        }
+      ],
+      "stepParameterControls": [
+        {
+          "key": "page_profile",
+          "canonicalStepId": "step_design_page",
+          "label": "Page profile",
+          "description": "Who the assembled page is primarily for.",
+          "controlType": "select",
+          "default": "learner",
+          "options": [
+            {
+              "value": "learner",
+              "label": "Learner"
+            },
+            {
+              "value": "facilitator",
+              "label": "Facilitator"
+            },
+            {
+              "value": "assessment",
+              "label": "Assessment"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "elicited"
+        },
+        {
+          "key": "activity_type",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Question strategy",
+          "description": "Assessment type for the blueprint (maps from brief assessment type).",
+          "controlType": "select",
+          "default": "mcq",
+          "options": [
+            {
+              "value": "mcq",
+              "label": "Selected response"
+            },
+            {
+              "value": "short_answer",
+              "label": "Short written response"
+            },
+            {
+              "value": "essay",
+              "label": "Extended response"
+            },
+            {
+              "value": "problem",
+              "label": "Problem-solving response"
+            },
+            {
+              "value": "case_study",
+              "label": "Scenario-based response"
+            },
+            {
+              "value": "mixed",
+              "label": "Mixed response types"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "elicited"
+        },
+        {
+          "key": "number_of_items",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Number of items",
+          "description": "How many assessment items to generate (inherits Design Assessment total_items by default).",
+          "controlType": "number",
+          "default": "10",
+          "min": 1,
+          "max": 200,
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "response_formats",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Allowed response formats",
+          "description": "Permitted item response formats (inherits from Design Assessment activity_type by default).",
+          "controlType": "select",
+          "default": "single_answer_mcq",
+          "options": [
+            {
+              "value": "single_answer_mcq",
+              "label": "Single-answer MCQ"
+            },
+            {
+              "value": "multiple_answer_mcq",
+              "label": "Multiple-answer MCQ"
+            },
+            {
+              "value": "true_false",
+              "label": "True/false"
+            },
+            {
+              "value": "short_answer",
+              "label": "Short answer"
+            },
+            {
+              "value": "essay",
+              "label": "Essay"
+            },
+            {
+              "value": "single_mcq_and_true_false",
+              "label": "Single-answer MCQ + true/false"
+            },
+            {
+              "value": "objective_mix_all",
+              "label": "Objective mix (MCQ + true/false)"
+            },
+            {
+              "value": "constructed_mix",
+              "label": "Constructed mix (short answer + essay)"
+            },
+            {
+              "value": "all_formats_mix",
+              "label": "All supported formats"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "difficulty_profile",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Difficulty profile",
+          "description": "Item-set difficulty emphasis (inherits from Design Assessment by default).",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "foundational",
+              "label": "Foundational-heavy"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced"
+            },
+            {
+              "value": "higher_order",
+              "label": "Higher-order-heavy"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "coverage_mode",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Coverage mode",
+          "description": "Outcome/theme coverage for generated items (inherits from Design Assessment coverage_scope by default).",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "selected_themes",
+              "label": "Selected themes"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced"
+            },
+            {
+              "value": "broad_coverage",
+              "label": "Broad coverage"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "composition_mode",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Composition mode",
+          "description": "Whether the item set uses a single format or a mixed set.",
+          "controlType": "select",
+          "default": "single_format",
+          "options": [
+            {
+              "value": "single_format",
+              "label": "Single format"
+            },
+            {
+              "value": "mixed_set",
+              "label": "Mixed set"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "stimulus_mode",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Stimulus mode",
+          "description": "Whether items are direct questions or anchored to scenarios/problems/cases.",
+          "controlType": "select",
+          "default": "direct_questions",
+          "options": [
+            {
+              "value": "direct_questions",
+              "label": "Direct questions"
+            },
+            {
+              "value": "scenario_based",
+              "label": "Scenario based"
+            },
+            {
+              "value": "problem_based",
+              "label": "Problem based"
+            },
+            {
+              "value": "case_based",
+              "label": "Case based"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "scenario_scope",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Stimulus scope",
+          "description": "Shared vs per-item stimulus when using scenario/problem/case-based items.",
+          "controlType": "select",
+          "default": "shared_scenario_for_set",
+          "options": [
+            {
+              "value": "shared_scenario_for_set",
+              "label": "Shared stimulus for set"
+            },
+            {
+              "value": "scenario_per_item",
+              "label": "Stimulus per item"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "cognitive_emphasis",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Cognitive emphasis",
+          "description": "Dominant cognitive level emphasis across generated items.",
+          "controlType": "select",
+          "default": "mixed",
+          "options": [
+            {
+              "value": "mixed",
+              "label": "Mixed"
+            },
+            {
+              "value": "foundational",
+              "label": "Foundational understanding"
+            },
+            {
+              "value": "application",
+              "label": "Application and transfer"
+            },
+            {
+              "value": "analysis",
+              "label": "Analysis and evaluation"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "feedback_mode",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Item feedback mode",
+          "description": "Learner-facing feedback included with generated items (distinct from Design Feedback step).",
+          "controlType": "select",
+          "default": "per_item",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "per_item",
+              "label": "Per item"
+            },
+            {
+              "value": "aggregate",
+              "label": "Aggregate"
+            },
+            {
+              "value": "both",
+              "label": "Per item + aggregate"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "question_style_mix",
+          "canonicalStepId": "step_generate_assessment_items",
+          "label": "Response mode mix",
+          "description": "Preferred mix of selected vs constructed response modes.",
+          "controlType": "select",
+          "default": "mixed_response_modes",
+          "options": [
+            {
+              "value": "selected_response_only",
+              "label": "Selected response only"
+            },
+            {
+              "value": "constructed_response_only",
+              "label": "Constructed response only"
+            },
+            {
+              "value": "mixed_response_modes",
+              "label": "Mixed selected + constructed"
+            },
+            {
+              "value": "integrative_performance_oriented",
+              "label": "Integrative/performance-style"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "include_examples",
+          "canonicalStepId": "step_design_page",
+          "label": "Include examples",
+          "description": "Whether the page should include illustrative examples.",
+          "controlType": "boolean",
+          "default": "true",
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "total_items",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Total assessment items",
+          "description": "Total items/questions in the assessment blueprint.",
+          "controlType": "number",
+          "default": "10",
+          "min": 1,
+          "max": 200,
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "coverage_scope",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Coverage scope",
+          "description": "How broadly the assessment blueprint should cover outcomes/themes.",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "selected_themes",
+              "label": "Selected themes"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced"
+            },
+            {
+              "value": "broad_coverage",
+              "label": "Broad coverage"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "difficulty_profile",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Difficulty profile",
+          "description": "Overall difficulty distribution for the assessment blueprint (maps from brief difficulty_profile).",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "foundation_heavy",
+              "label": "Mostly foundational items"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced mix"
+            },
+            {
+              "value": "higher_order_heavy",
+              "label": "Mostly higher-order items"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "cognitive_demand",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Cognitive demand profile",
+          "description": "Dominant thinking level targeted by assessment tasks.",
+          "controlType": "select",
+          "default": "mixed",
+          "options": [
+            {
+              "value": "recall_foundation",
+              "label": "Recall and understanding"
+            },
+            {
+              "value": "application_oriented",
+              "label": "Application and problem-solving"
+            },
+            {
+              "value": "analysis_evaluation",
+              "label": "Analysis and evaluation"
+            },
+            {
+              "value": "mixed",
+              "label": "Mixed levels"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "assessment_cadence",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Assessment cadence",
+          "description": "How assessment is distributed across the broader learning scope.",
+          "controlType": "select",
+          "default": "periodic_formative",
+          "options": [
+            {
+              "value": "single_end_point",
+              "label": "Single end-point"
+            },
+            {
+              "value": "periodic_formative",
+              "label": "Periodic formative"
+            },
+            {
+              "value": "mixed_formative_summative",
+              "label": "Mixed formative and summative"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "feedback_display",
+          "canonicalStepId": "step_design_assessment",
+          "label": "Feedback display",
+          "description": "How answers/feedback are planned in the blueprint (prompt-shaping; distinct from Design Feedback step).",
+          "controlType": "select",
+          "default": "answer_grid_end",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "answer_grid_end",
+              "label": "Answer grid at end"
+            },
+            {
+              "value": "answers_explanations",
+              "label": "Answers + explanations"
+            },
+            {
+              "value": "reflection_then_answers",
+              "label": "Reflection first, answers after"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "structure_mode",
+          "canonicalStepId": "step_normalize_content",
+          "label": "Structure mode",
+          "description": "How normalized source content is structured.",
+          "controlType": "select",
+          "default": "reorganise_into_sections",
+          "options": [
+            {
+              "value": "preserve_original_structure",
+              "label": "Preserve original structure"
+            },
+            {
+              "value": "reorganise_into_sections",
+              "label": "Reorganise into sections"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "detail_level",
+          "canonicalStepId": "step_normalize_content",
+          "label": "Detail level",
+          "description": "How much detail to preserve when normalizing content.",
+          "controlType": "select",
+          "default": "lightly_simplify_language",
+          "options": [
+            {
+              "value": "preserve_full_detail",
+              "label": "Preserve full detail"
+            },
+            {
+              "value": "lightly_simplify_language",
+              "label": "Lightly simplify language"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "keep_examples",
+          "canonicalStepId": "step_normalize_content",
+          "label": "Keep examples",
+          "description": "Whether to retain meaningful examples from the source.",
+          "controlType": "boolean",
+          "default": "true",
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "include_relationships",
+          "canonicalStepId": "step_model_knowledge",
+          "label": "Include concept relationships",
+          "description": "Include explicit relationships between concepts in the knowledge model.",
+          "controlType": "boolean",
+          "default": "true",
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "include_misconceptions",
+          "canonicalStepId": "step_model_knowledge",
+          "label": "Include misconceptions",
+          "description": "Include likely misconceptions when supported by the source.",
+          "controlType": "boolean",
+          "default": "true",
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "include_processes",
+          "canonicalStepId": "step_model_knowledge",
+          "label": "Include processes/workflows",
+          "description": "Include processes or workflows when present in the source.",
+          "controlType": "boolean",
+          "default": "true",
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "learnerLevel",
+          "canonicalStepId": "step_define_learning_outcomes",
+          "label": "Learner level",
+          "description": "Target learner level for outcome wording (maps from brief learner level).",
+          "controlType": "select",
+          "default": "general_adult",
+          "options": [
+            {
+              "value": "school",
+              "label": "School"
+            },
+            {
+              "value": "undergraduate",
+              "label": "Undergraduate"
+            },
+            {
+              "value": "postgraduate",
+              "label": "Postgraduate"
+            },
+            {
+              "value": "professional",
+              "label": "Professional"
+            },
+            {
+              "value": "general_adult",
+              "label": "General adult"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "numberOfOutcomes",
+          "canonicalStepId": "step_define_learning_outcomes",
+          "label": "Number of outcomes",
+          "description": "How many learning outcomes to generate.",
+          "controlType": "number",
+          "default": "6",
+          "min": 2,
+          "max": 12,
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "cognitiveEmphasis",
+          "canonicalStepId": "step_define_learning_outcomes",
+          "label": "Cognitive emphasis",
+          "description": "Cognitive emphasis across generated outcomes.",
+          "controlType": "select",
+          "default": "mixed",
+          "options": [
+            {
+              "value": "mixed",
+              "label": "Mixed"
+            },
+            {
+              "value": "foundational",
+              "label": "Foundational understanding"
+            },
+            {
+              "value": "application",
+              "label": "Application and transfer"
+            },
+            {
+              "value": "analysis",
+              "label": "Analysis and evaluation"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "scope",
+          "canonicalStepId": "step_define_learning_outcomes",
+          "label": "Outcome scope",
+          "description": "Scope framing for generated outcomes.",
+          "controlType": "select",
+          "default": "module",
+          "options": [
+            {
+              "value": "lesson",
+              "label": "Lesson"
+            },
+            {
+              "value": "module",
+              "label": "Module"
+            },
+            {
+              "value": "course",
+              "label": "Course"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "activity_pattern_mix",
+          "canonicalStepId": "step_design_learning_activities",
+          "label": "Activity pattern mix",
+          "description": "Balance of guided vs applied/collaborative activity patterns.",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "guided",
+              "label": "Guided"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced"
+            },
+            {
+              "value": "applied_collaborative",
+              "label": "Applied collaborative"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "grouping_preference",
+          "canonicalStepId": "step_design_learning_activities",
+          "label": "Grouping preference",
+          "description": "Preferred learner grouping modes across activities.",
+          "controlType": "select",
+          "default": "mixed",
+          "options": [
+            {
+              "value": "mixed",
+              "label": "Mixed"
+            },
+            {
+              "value": "individual",
+              "label": "Individual"
+            },
+            {
+              "value": "pair",
+              "label": "Pair"
+            },
+            {
+              "value": "small_group",
+              "label": "Small group"
+            },
+            {
+              "value": "whole_group",
+              "label": "Whole group"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "difficulty_level",
+          "canonicalStepId": "step_design_learning_activities",
+          "label": "Activity difficulty",
+          "description": "Challenge level for designed learning activities.",
+          "controlType": "select",
+          "default": "moderate",
+          "options": [
+            {
+              "value": "introductory",
+              "label": "Introductory"
+            },
+            {
+              "value": "moderate",
+              "label": "Moderate"
+            },
+            {
+              "value": "advanced",
+              "label": "Advanced"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "coverage_breadth",
+          "canonicalStepId": "step_design_learning_activities",
+          "label": "Coverage breadth",
+          "description": "How broadly activities should cover outcomes.",
+          "controlType": "select",
+          "default": "balanced",
+          "options": [
+            {
+              "value": "narrow",
+              "label": "Narrow (key outcomes only)"
+            },
+            {
+              "value": "balanced",
+              "label": "Balanced"
+            },
+            {
+              "value": "broad",
+              "label": "Broad coverage"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "session_materials",
+          "canonicalStepId": "step_generate_activity_materials",
+          "label": "Session materials",
+          "description": "Which session-level material types to generate.",
+          "controlType": "select",
+          "default": "page",
+          "options": [
+            {
+              "value": "page",
+              "label": "Page"
+            },
+            {
+              "value": "slide_deck",
+              "label": "Slide deck"
+            },
+            {
+              "value": "page,slide_deck",
+              "label": "Page and slide deck"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "duration_minutes",
+          "canonicalStepId": "step_construct_learning_sequence",
+          "label": "Sequence duration (minutes)",
+          "description": "Total duration for the constructed learning sequence.",
+          "controlType": "number",
+          "default": "60",
+          "min": 15,
+          "max": 240,
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "sequencing_granularity",
+          "canonicalStepId": "step_construct_learning_sequence",
+          "label": "Sequencing granularity",
+          "description": "How detailed the learning sequence plan should be.",
+          "controlType": "select",
+          "default": "standard",
+          "options": [
+            {
+              "value": "lightweight",
+              "label": "Lightweight"
+            },
+            {
+              "value": "standard",
+              "label": "Standard"
+            },
+            {
+              "value": "detailed",
+              "label": "Detailed"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "sequencing_style",
+          "canonicalStepId": "step_construct_learning_sequence",
+          "label": "Sequencing style",
+          "description": "Pedagogic sequencing style for the session plan.",
+          "controlType": "select",
+          "default": "progressive_scaffold",
+          "options": [
+            {
+              "value": "progressive_scaffold",
+              "label": "Progressive scaffold"
+            },
+            {
+              "value": "spiral_revisit",
+              "label": "Spiral revisit"
+            },
+            {
+              "value": "assessment_anchored",
+              "label": "Assessment anchored"
+            }
+          ],
+          "visible": true,
+          "advanced": true,
+          "elicitation": "settings-only"
+        }
+      ],
+      "workflowParameterControls": [
+        {
+          "key": "delivery_context",
+          "label": "Delivery context",
+          "description": "How learners progress through the design (pedagogic delivery mode).",
+          "controlType": "select",
+          "default": "blended",
+          "options": [
+            {
+              "value": "in_person",
+              "label": "In-person classroom/workshop"
+            },
+            {
+              "value": "online_sync",
+              "label": "Live online (synchronous)"
+            },
+            {
+              "value": "online_async",
+              "label": "Self-paced online (asynchronous)"
+            },
+            {
+              "value": "blended",
+              "label": "Blended (in-person + online)"
+            },
+            {
+              "value": "self_directed",
+              "label": "Self-directed independent progression"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "design_scope",
+          "label": "Design scope",
+          "description": "Breadth of the learning design (single activity through module).",
+          "controlType": "select",
+          "default": "session",
+          "options": [
+            {
+              "value": "single_activity",
+              "label": "Single activity"
+            },
+            {
+              "value": "session",
+              "label": "Session"
+            },
+            {
+              "value": "sequence",
+              "label": "Sequence"
+            },
+            {
+              "value": "module",
+              "label": "Module"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "input_strategy",
+          "label": "Input strategy",
+          "description": "Whether the workflow generates from a topic, uses uploaded material, or both.",
+          "controlType": "select",
+          "default": "generate_from_topic",
+          "options": [
+            {
+              "value": "generate_from_topic",
+              "label": "Generate content"
+            },
+            {
+              "value": "provided_source_content",
+              "label": "Use uploaded material"
+            },
+            {
+              "value": "mixed",
+              "label": "Mix uploaded and generated content"
+            }
+          ],
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        },
+        {
+          "key": "duration_minutes",
+          "label": "Session duration (minutes)",
+          "description": "Total session duration used for sequencing and workflow constraints.",
+          "controlType": "number",
+          "default": "60",
+          "min": 10,
+          "max": 480,
+          "visible": true,
+          "advanced": false,
+          "elicitation": "settings-only"
+        }
+      ],
+      "intentClasses": {
+        "assessment_pack": {
+          "stepIncludes": [
+            "generate_assessment_items"
+          ],
+          "detection": {
+            "whenResolvedFactorsInclude": {
+              "assessment_required": true
+            },
+            "whenGoalMentionsAnyOf": [
+              "assessment",
+              "quiz",
+              "mcq",
+              "question set",
+              "question bank",
+              "assessment pack",
+              "test"
+            ]
+          },
+          "elicitation": {
+            "orderedFactors": [
+              "assessment_type",
+              "assessment_total_items",
+              "question_style_mix",
+              "difficulty_profile",
+              "feedback_required",
+              "coverage_scope",
+              "cognitive_demand",
+              "feedback_timing",
+              "learner_answer_visibility",
+              "assessment_interaction_mode"
+            ],
+            "mustAskFactors": [
+              "assessment_type",
+              "assessment_total_items"
+            ],
+            "optionalFactors": [
+              "question_style_mix",
+              "difficulty_profile",
+              "feedback_required",
+              "coverage_scope",
+              "feedback_timing",
+              "learner_answer_visibility",
+              "assessment_interaction_mode"
+            ],
+            "optionalHighValueFactors": [
+              "cognitive_demand"
+            ]
+          },
+          "stepBiasHints": {
+            "preferLeanAssessmentFlow": true,
+            "defaultInclude": [
+              "Generate Assessment Items"
+            ],
+            "defaultExclude": [
+              "Design Assessment"
+            ]
+          }
+        },
+        "self_study_cognition_pack": {
+          "stepIncludes": [
+            "design_learning_activities",
+            "generate_activity_materials"
+          ],
+          "detection": {
+            "whenAnyResolvedFactorTrue": [
+              "cognitive_engagement_required",
+              "adaptive_scaffolding_required"
+            ],
+            "whenDeliveryContextAnyOf": [
+              "self_directed",
+              "async"
+            ]
+          },
+          "stepBiasHints": {
+            "preferLeanAssessmentFlow": false,
+            "cognitionPack": true
+          }
+        },
+        "peer_instruction_pack": {
+          "stepIncludes": [
+            "design_learning_activities",
+            "generate_activity_materials"
+          ],
+          "detection": {
+            "whenAnyResolvedFactorTrue": [
+              "reasoning_revision_required"
+            ]
+          },
+          "stepBiasHints": {
+            "preferLeanAssessmentFlow": false,
+            "cognitionPack": true
+          }
+        },
+        "misconception_repair_pack": {
+          "stepIncludes": [
+            "design_learning_activities",
+            "generate_activity_materials"
+          ],
+          "detection": {
+            "whenAnyResolvedFactorTrue": [
+              "misconception_reconciliation_required"
+            ]
+          },
+          "stepBiasHints": {
+            "preferLeanAssessmentFlow": false,
+            "cognitionPack": true
+          }
+        },
+        "transcript_transformation_pack": {
+          "stepIncludes": [
+            "design_learning_activities",
+            "generate_activity_materials"
+          ],
+          "detection": {
+            "whenInputStrategyAnyOf": [
+              "provided_source_content"
+            ],
+            "whenAnyResolvedFactorTrue": [
+              "cognitive_engagement_required",
+              "misconception_reconciliation_required",
+              "productive_uncertainty_required"
+            ],
+            "whenActivitiesRequired": true
+          },
+          "stepBiasHints": {
+            "preferLeanAssessmentFlow": false,
+            "cognitionPack": true
+          }
+        }
+      },
+      "stopConditions": [
+        "all_required_factors_resolved"
+      ],
+      "validationRules": [],
+      "conflictPolicies": [],
+      "disclosurePolicy": {
+        "messages": {
+          "ld_generate_without_source": "The brief mentions uploaded or source material, but the plan is set to generate from a topic without aligning source-ingest steps to that intent.",
+          "ld_scope_step_mismatch": "A session-scale design was requested, but the draft plan has a relatively long step chain.",
+          "ld_assessment_generate_step_missing": "The brief targets assessment outputs, but the draft plan does not yet include a step to generate assessment items.",
+          "ld_page_profile_facilitator_mismatch": "The brief points to facilitator or tutor materials, but the page profile is set to learner."
+        },
+        "categories": {
+          "missing_essential": {
+            "label": "Still needed",
+            "order": 1
+          },
+          "conflicting_intent": {
+            "label": "Conflicting intent",
+            "order": 2
+          },
+          "blocked_unsafe_inference": {
+            "label": "Blocked unsafe inference",
+            "order": 3
+          },
+          "rejected_inference": {
+            "label": "Inferred but not used",
+            "order": 4
+          },
+          "gated_planning": {
+            "label": "Planning steps withheld",
+            "order": 5
+          },
+          "planning_adequacy": {
+            "label": "Planning adequacy",
+            "order": 6
+          }
+        },
+        "entries": {
+          "ld_generate_without_source": {
+            "category": "planning_adequacy",
+            "action": "Attach source content in Inputs, set starting point to uploaded material, or confirm topic-only generation."
+          },
+          "ld_scope_step_mismatch": {
+            "category": "planning_adequacy",
+            "action": "Narrow design scope, remove optional steps, or change scope to sequence or module if a longer workflow is intended."
+          },
+          "ld_assessment_generate_step_missing": {
+            "category": "planning_adequacy",
+            "action": "Add or confirm a Generate Assessment Items step, or adjust the brief if assessment is not required."
+          },
+          "ld_page_profile_facilitator_mismatch": {
+            "category": "planning_adequacy",
+            "action": "Set page profile to facilitator in the brief or step Settings, or confirm a learner-facing page is intended."
+          }
+        }
+      },
+      "planningGateDisclosures": [],
+      "planningAdequacyChecks": [
+        {
+          "id": "ld_generate_without_source",
+          "category": "planning_adequacy",
+          "severity": "recommendation",
+          "when": {
+            "resolvedFactorEquals": {
+              "input_strategy": "generate_from_topic"
+            },
+            "briefFieldMentionAnyOf": {
+              "fields": [
+                "designIntent",
+                "goal",
+                "desiredOutputs",
+                "inputs"
+              ],
+              "terms": [
+                "evidence",
+                "source material",
+                "uploaded",
+                "pdf",
+                "document",
+                "transcript",
+                "attached",
+                "case study materials",
+                "provided source"
+              ]
+            },
+            "stepsIncludeAny": [
+              "Normalize Content"
+            ]
+          },
+          "disclosureId": "ld_generate_without_source"
+        },
+        {
+          "id": "ld_scope_step_mismatch",
+          "category": "planning_adequacy",
+          "severity": "recommendation",
+          "when": {
+            "resolvedFactorEquals": {
+              "design_scope": "session"
+            },
+            "stepCountAtLeast": {
+              "minSteps": 8
+            }
+          },
+          "disclosureId": "ld_scope_step_mismatch"
+        },
+        {
+          "id": "ld_assessment_generate_step_missing",
+          "category": "planning_adequacy",
+          "severity": "recommendation",
+          "when": {
+            "resolvedFactorEquals": {
+              "assessment_required": true
+            },
+            "briefFieldMentionAnyOf": {
+              "fields": [
+                "designIntent",
+                "goal",
+                "desiredOutputs"
+              ],
+              "terms": [
+                "assessment",
+                "quiz",
+                "mcq",
+                "question set",
+                "assessment pack",
+                "formative assessment",
+                "test"
+              ]
+            },
+            "stepsLackAny": [
+              "Generate Assessment Items"
+            ]
+          },
+          "disclosureId": "ld_assessment_generate_step_missing"
+        },
+        {
+          "id": "ld_page_profile_facilitator_mismatch",
+          "category": "planning_adequacy",
+          "severity": "recommendation",
+          "when": {
+            "resolvedFactorEquals": {
+              "page_profile": "learner"
+            },
+            "briefFieldMentionAnyOf": {
+              "fields": [
+                "designIntent",
+                "goal",
+                "desiredOutputs"
+              ],
+              "terms": [
+                "facilitator",
+                "tutor",
+                "instructor",
+                "facilitator guide",
+                "tutor resource"
+              ]
+            },
+            "stepsIncludeAny": [
+              "Design Page"
+            ]
+          },
+          "disclosureId": "ld_page_profile_facilitator_mismatch"
+        }
+      ],
+      "questionPolicy": {
+        "maxDefaultQuestions": 8,
+        "askOptionalByDefault": false,
+        "maxRefinementQuestions": 8,
+        "askRefinementByDefault": false
+      }
+    },
+    "validationDisclosures": [],
+    "rejectedInference": [],
+    "planningDisclosures": [
+      {
+        "id": "ld_scope_step_mismatch",
+        "message": "A session-scale design was requested, but the draft plan has a relatively long step chain.",
+        "category": "planning_adequacy",
+        "action": "Narrow design scope, remove optional steps, or change scope to sequence or module if a longer workflow is intended.",
+        "factorId": "",
+        "blockedValue": ""
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "58ba2c96-10a9-4618-a8bd-306b1304d6d0",
+      "title": "Generate Learning Content",
+      "roleLabel": "Content creation",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_generate_learning_content",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {},
+        "outputName": "learning_content",
+        "notes": ""
+      },
+      "override_prompt_body": "Context:\nYou may be provided with topic, audience, level, and optional source_material (including normalized_content from upstream Normalize Content).\n\nTask:\nGenerate or extend teaching-ready learning_content that is pedagogically structured and suitable for downstream learning design.\n\nInstructions:\n- If source_material is provided (including normalized_content), treat it as the factual base: preserve source meaning, do not discard or contradict valid material, and do not invent ideas unsupported by the source\n- When source_material is normalized_content, convert the cleaned source into teaching-ready sectioned learning_content — clarify explanations, add suitable examples only when grounded in the source, and reorganise into intellectual progression (not Normalize-style headings such as Source overview, Cleaned content, Key terms, or Retained examples)\n- State a governing question or central inquiry in title or the first section\n- If source_material is not provided, generate content from topic, audience, and level\n- Use clear explanations, logical sectioning, key concepts, and illustrative examples\n- Organise progression from simpler ideas to more complex ideas\n- Adapt depth, terminology, and explanation style to the specified audience and level\n- Avoid unnecessary technicality unless required by audience/level\n- Avoid generic summaries; produce purposeful teaching content\n- Keep content grounded in provided topic and/or source material\n- Do not hallucinate unnecessary detail\n- Ensure output can be consumed by downstream steps such as knowledge modelling, learning-outcome generation, activity design, and Design Page journey assimilation\n\nOutput requirements (strict — fenced JSON block only):\n- Return exactly one markdown fenced JSON block opened with ```json and closed with ```\n- The fenced block body must be the learning_content root object as valid JSON\n- Pretty-print JSON with 2-space indentation and line breaks after `{`, `[`, and each property\n- Do NOT emit minified single-line JSON (unbroken `{...}` on one line is invalid)\n- Do NOT include any prose, headings, commentary, or explanations before the fenced block\n- After the closing ``` fence, emit exactly one plain-text runner footer line: STEP N OUTPUT: learning_content\n- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)\n- Do NOT include JSON comments (no // or block comments)\n- JSON top-level keys: title (string), sections (array of {title, content} objects), key_concepts (array of strings), examples (array of {title, description} objects)\n- title: include governing question or inquiry when possible\n- sections: ordered teaching progression (not Normalize-style source-cleaning headings)\n- Return the fenced block first, then the single STEP N OUTPUT footer line.",
+      "inputKind": "text",
+      "inputBindings": [],
+      "outputName": "learning_content",
+      "notes": ""
+    },
+    {
+      "id": "ebae1106-59c0-459a-8d7e-acfb59526b46",
+      "title": "Model Knowledge",
+      "roleLabel": "Concept extraction",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_model_knowledge",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {},
+        "outputName": "knowledge_model",
+        "notes": ""
+      },
+      "override_prompt_body": "You are given structured content representing source material.\n\nYour task is to model the conceptual knowledge contained in this content as a structured artefact called \"knowledge_model\".\n\nInstructions:\n- When learning_content is provided, treat it as the primary structured source; use normalized_content only when learning_content is absent\n- Identify key concepts from the source and include a clear definition for each concept\n- Make important relationships between concepts explicit (e.g. prerequisite, part-of, causes, enables, contrasts)\n- Identify meaningful groupings or hierarchies of concepts where relevant\n- Identify processes, sequences, or workflows when present in the source\n- Identify likely misconceptions or confusion points when supported by the source\n- Keep all output faithful to the provided content only\n- Do not introduce external knowledge, assumptions, or unsupported interpretation\n- Write with clarity and precision so the output can be reused directly downstream\n\n\nOutput requirements (strict — fenced JSON block only):\n- Return exactly one markdown fenced JSON block opened with ```json and closed with ```\n- The fenced block body must be the knowledge_model root object as valid JSON\n- Pretty-print JSON with 2-space indentation and line breaks after `{`, `[`, and each property\n- Do NOT emit minified single-line JSON (unbroken `{...}` on one line is invalid)\n- Do NOT include any prose, headings, commentary, or explanations before the fenced block\n- After the closing ``` fence, emit exactly one plain-text runner footer line: STEP N OUTPUT: knowledge_model\n- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)\n- Do NOT include JSON comments (no // or block comments)\n- The JSON object MUST include these top-level keys (use empty arrays when none apply): concepts, relationships, groupings, processes, misconceptions\n- concepts: each entry with name and definition when supported by the source\n- Include relationships, groupings, processes, and misconceptions when supported by the source\n- Keep output faithful to source for downstream reuse without reinterpretation\n- Return the fenced block first, then the single STEP N OUTPUT footer line",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "learning_content",
+          "sourceStepId": "58ba2c96-10a9-4618-a8bd-306b1304d6d0"
+        }
+      ],
+      "outputName": "knowledge_model",
+      "notes": ""
+    },
+    {
+      "id": "0c6361e1-e053-4ff5-8ea6-8d7aea4ff1a6",
+      "title": "Define Learning Outcomes",
+      "roleLabel": "Outcome specification",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_define_learning_outcomes",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {
+          "learnerLevel": "undergraduate"
+        },
+        "outputName": "learning_outcomes",
+        "notes": ""
+      },
+      "override_prompt_body": "You are designing learning outcomes from a structured knowledge model.\n\nTask:\nGenerate clear, observable, and assessable learning outcomes derived from the provided knowledge model.\n\nInstructions:\n- Use measurable language and avoid vague verbs such as \"understand\", \"know\", or \"appreciate\"\n- Ensure each outcome aligns with concepts in the knowledge model\n- Set cognitive demand in line with the specified learner level, scope, and cognitive emphasis\n- Produce balanced coverage without redundancy\n- Keep all outcomes grounded in the knowledge model and source content\n- Keep wording precise so outcomes can be reused directly for assessment and activity design\n- Outcomes must be realistically achievable within the stated time and structure\n- Avoid attempting to cover all concepts in short designs\n- Prefer tightly focused, demonstrable outcomes\n\nScope-aware outcome guidance:\n- If the design is a short session (<= 30 minutes) or explicitly single_activity: generate 2-4 outcomes maximum, focus on depth over coverage, and select only the most essential and achievable goals\n- If the design is a standard session (30-120 minutes): generate 3-6 outcomes with moderate breadth and progression\n- If the design is extended (multi-session, module, or longer duration): generate a broader set of outcomes reflecting wider coverage\n\nConstraints:\n\nOutput requirements (strict — fenced JSON block only):\n- Return exactly one markdown fenced JSON block opened with ```json and closed with ```\n- The fenced block body must be the learning_outcomes root object as valid JSON\n- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block\n- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)\n- Do NOT include JSON comments (no // or block comments)\n- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)\n- JSON top-level keys: learning_outcomes (required array), plus optional learner_level, scope, alignment_notes\n- Each learning_outcomes entry must include statement, related_concepts, cognitive_level, and notes where needed\n- Return only the single fenced block.",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "knowledge_model",
+          "sourceStepId": "ebae1106-59c0-459a-8d7e-acfb59526b46"
+        }
+      ],
+      "outputName": "learning_outcomes",
+      "notes": "[PRISM_STEP_PARAMS]\nlearnerLevel=undergraduate\n[/PRISM_STEP_PARAMS]"
+    },
+    {
+      "id": "2be06c96-4901-4a52-908d-1d4e8b3080c8",
+      "title": "Design Episode Plan",
+      "roleLabel": "Episode planning — derive frozen Episode Plan V1 (archetype + ordered instructional-function beats) from learning outcomes for downstream population.",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_design_episode_plan",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {},
+        "outputName": "page",
+        "notes": ""
+      },
+      "override_prompt_body": "Deterministic step (Sprint 56F): PRISM derives the vNext page shell (schema_version 2.0.0) from upstream learning_outcomes. Do NOT invent episode plans with an LLM.\n\nArchetypes (frozen): understand | apply | analyse | evaluate only.\nBeat functions: approved FunctionEnum (explanation, worked_thinking, guided_practice, verification, transfer, etc.).\n\nOutput requirements:\n- Return ONLY one markdown fenced JSON block (triple-backtick json fence) — no prose, headings, or commentary before the fence.\n- After the closing fence, emit exactly one plain-text runner footer line: STEP N OUTPUT: page\n- Pretty-print JSON with 2-space indentation and line breaks (never minified single-line JSON).\n- Emit artifact_type \"page\", schema_version \"2.0.0\", page_synthesis {}, activities[], episode_plans[], assembly_state.enriched_by includes \"episode_plan\".\n- page_profile must be an object: { \"profile_type\": \"learner\" } — never a bare string.\n- source_artefacts[] must be structured objects: [{ \"artefact_type\": \"learning_outcomes\", \"source_label\": \"Learning Outcomes\", \"role\": \"structural\" }] — never a string array.\n- Each activities[] row: activity_id, title, learner_task \"—\", expected_output \"—\", activity_preamble \"—\" (all three DLA shell fields must be em dash — never empty strings), required_materials [], materials [], episode_plan { archetype, beats[] }.\n- Do NOT write sections[]. Emit complete valid JSON only — do not truncate mid-object.",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "learning_outcomes",
+          "sourceStepId": "0c6361e1-e053-4ff5-8ea6-8d7aea4ff1a6"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "2be06c96-4901-4a52-908d-1d4e8b3080c8"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "c6e04a67-7745-44dc-8635-4b9fbde64ea0"
+        }
+      ],
+      "outputName": "page",
+      "notes": ""
+    },
+    {
+      "id": "df059e87-5e6e-4046-95a1-fda5b792cdbb",
+      "title": "Design Learning Activities",
+      "roleLabel": "Activity design",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_design_learning_activities",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {},
+        "outputName": "learning_activities",
+        "notes": ""
+      },
+      "override_prompt_body": "Context:\nYou are provided with learning_outcomes, episode_plans (required — authoritative archetype and ordered instructional-function beats from upstream Episode Plan), and optionally knowledge_model or learning_content.\n\nTask:\nPopulate executable learning_activities from upstream episode_plans. This step is an obligation population step — translate each episode_plan beat into required_materials obligations and learner_task beat assembly. It is not a learning-design, sequencing, archetype-selection, or session-arc step. Do not replan beats, archetypes, function sequences, or cross-activity session arc.\n- Scaffold strings (activity_preamble, cognition fields, expected_output, intellectual_coherence_bridge): learner-facing page copy at SSOT floors — cognition = three substantive reasoning sentences; bridge mandatory synthesis on A2+; not beat-metadata or cues.\n\nInstructions:\n- Every activity must be implementation-ready with explicit learner_task, expected_output (quality-threshold prose per SSOT), required_materials, grouping, and duration_minutes\n- Consume episode_plans beat order and archetype as fixed — populate obligations per beat; do not reconstruct function_sequence or infer primary_archetype from LO alone\n- Learner-facing fields may use limited Markdown: ##/### headings, lists, **bold**, simple pipe tables, --- rules\n- Canonical contracts: LD-TABLE-FIDELITY (table types → pipe tables in GAM); LD-MATERIALS-COPY (specify types/requirements only; GAM authors bodies); LD-MATH-RENDER (TeX \\(...\\) / \\[...\\] only); LD-GUIDED-LEARNING-SCAFFOLD SSOT + PRE-EMIT when self_directed learner-page\n- Omit facilitator_moves and failure_mode for self_directed learner-page workflows\n- Use workflow constraints when present: design_scope, delivery_pattern, learning_environments\n- Define required_materials as material_id, type, purpose, specification — not full material bodies\n- Use KM/LO affordances to enrich specification wording only — not to replan beats or archetypes\n- Avoid LO→task shells; use KM definitions/processes/misconceptions in specs where relevant beats require them\n- If design_scope is single_activity, produce one focused activity unless clearly justified\n- Do not produce discussion-only, facilitator-redesign, or delivery-impossible activities\n\nObligation population gates (38S — mandatory BEFORE learner_task or required_materials; upstream episode_plans owns archetype and beat order — populate, do not replan; internal reasoning only):\n- IFP-04 POPULATION INFERENCE: INF-01 infer from LO/brief + existing KM only; INF-02 no invented domain facts except brief/minimal scenario constants; INF-03 criteria operational; INF-04 strategy menu 3–6 neutral not pre-ranked; INF-05 exemplar models reasoning not single answer; INF-06 scenario numerics illustrative; Evaluate archetype specs: 3–5 criteria, ≥2 perspectives, ≥2 trade-off prompts, worked judgement weak vs strong (strong ≠ expected_output), Transfer with same criteria; forbid pre-written learner memo in consolidation_summary, pre-ranked strategy, session summary as Evaluate teaching; INF-EVAL-01 (38L-4): KM-T05 household budget inflation workbook → fourth Evaluate LO = household strategy judgement (38I-4 A4); KM-T08 policy communication = macro context only — not primary Evaluate driver\n- IFP-05 ANTI-SHELL: shell = preamble + single learner_task + thin materials without beat obligations — FAIL; AS-01 every Required beat has required_materials entry; AS-02 learner_task ≥2 teach/model segments before perform; AS-03 ≥1 teaching-depth spec (worked_example, modelling_note, text exposition, scenario narrative); AS-04 Verification ≥4 check items specified; AS-05 expected_output = learner-facing quality-threshold prose (30–70w SSOT), not completion labels or evidence tags; AS-06 Evaluate EV-SHELL-01..07; AS-FAIL-01 <80% beat functions populated; AS-FAIL-02 learner_task dominates without Worked thinking/Explanation; AS-FAIL-03 materials only for DLA-WB checklist without beat map; AS-FAIL-04 capstone Evaluate with consolidation_summary+prompt_set only; AS-FAIL-05 Apply without Worked thinking when KM-T03 fired; AS-FAIL-06 (38L-4 R5): Evaluate with guided judgement but missing independent judgement template/task_cards OR verification checklist OR transfer_prompt — add missing obligation rows before emit\n- IFP-06 ANTI-SPOILER: allow worked/modelling/criteria teaching specs; forbid completed learner memo in consolidation_summary when learner must write; sample_output not copy target; SP-01..04 scaffold-only specs when learner-production required (GAM realises in §6)\n- OBLIGATION POPULATION (38S — authoritative beat→obligation contract; merges IFP-09/10 + DLA-WB-26..31): For every Required beat from episode_plans, each required_materials row MUST include depth_floor: L3 plus content obligations — not type-only specs; apply FUNCTION_SPECS + 38K-2 five-dimension sufficiency; GAM-PRES realises bodies. Gates when function Required (cognition fields alone FAIL): G1 Verification (DLA-WB-26 / 38L-2 R1) → every activity MUST list type checklist with purpose verification/self-check/rubric; depth_floor L3: ≥4 criteria-linked check items + repair/revise if any fail; table completion alone does NOT satisfy verification (AS-04, EMIT-FAIL-04); G2 Transfer → transfer_prompt row when Transfer Required; G3 Independent judgement (Evaluate / DLA-WB-28) → template|task_cards separate from consolidation_summary; expected_output names memo artefact; scaffold only per IFP-06; G4 Worked analytic pass (Analyse / DLA-WB-27 / 38L-2 R6) → worked_example|modelling_note with purpose worked analytic pass BEFORE analysis_table; fact→analytical lens→mechanism→draft cell walkthrough; analysis_table spec requires ≥1 exemplar row or hint column; G5 Guided judgement → analysis_table|decision_table|comparison_table with ≥1 partial exemplar row or hint column + scoring guide. Evaluate completion pack (DLA-WB-31 / 38L-4 — EV-CAP-03/04, INF-EVAL-01): criteria exposition (≥3 dimensions) + scenario (≥2 perspectives) + worked judgement weak vs strong + guided table + independent judgement + checklist + transfer_prompt — consolidation_summary alone does NOT satisfy Evaluate; EV-CAP-04: guided judgement alone CANNOT terminate Evaluate; independent judgement + verification + transfer Materials required. Apply (DLA-WB-23): when archetype=Apply and KM-T03 (process ≥3 steps) list worked_example with stepped think-aloud before independent practice. Depth discipline (DLA-WB-30 / 38L-2 R2): every R-function Material specification includes depth_floor: L3 content obligations — thin type-only specs are depth FAIL. Anti-emission (DLA-WB-29 / EMIT-FAIL-01..04): transfer_or_application_task without transfer_prompt; verification implied only by complete the table; consolidation_summary as sole Evaluate capstone evidence; prompt_set substituting for checklist — add Materials before JSON emit (do not replan beats)\nSelf-study workbook contract (DLA-WB — when delivery_context is self_directed AND brief/desired outputs imply ~60-minute learner workbook or learner page). Types/purposes only — GAM authors bodies (LD-MATERIALS-COPY). Mandatory rows as explicit required_materials JSON when applied — delivery_notes alone insufficient:\n- DLA-WB-01: delivery_notes: resource_intent self_study_workbook, session_duration_target_minutes (~60), consolidation_requirement, workbook_contract_applied: true\n- DLA-WB-02: Every activity maps ≥1 learning outcome ID; final capstone maps ≥3 distinct outcome IDs when ≥3 outcomes available\n- DLA-WB-03: Sum of activity duration_minutes across the session must be 50–70 unless delivery_notes documents an explicit brief exception\n- DLA-WB-04/17: solo-completable — individual grouping; omit facilitator_moves/failure_mode\n- DLA-WB-06: session MUST NOT be table-only — ≥2 type families; *_table activities need ≥1 non-table type\n- DLA-WB-06a (38F-2 mandatory row — V-01): When workbook_contract_applied is true, the session MUST include ≥1 explicit required_materials row whose type is a table/reference family token: classification_table | comparison_table | analysis_table | impact_table | reference_table | data_table | decision_table | planning_table — on a practice-oriented activity (typically second activity), NOT on the capstone alone (DLA-WB-16); specification must describe learner-work columns to complete with judgement/rating cells left for the learner; must coexist with DLA-WB-08 worked_example/sample_output rows and DLA-WB-12 consolidation_summary; do not omit tables because worked/consolidation mandatory rows were added (38E-10 regression guard)\n- DLA-WB-07/10/11: ≥1 text exposition (type text, purpose explanatory teaching); ≥2 activities with practice-oriented material purpose; ≥2 activities with task_cards, prompt_set, and/or checklist\n- DLA-WB-08 (mandatory required_materials row): ≥1 early-session activity (typically first or second) MUST list explicit required_materials with type worked_example AND type sample_output (preferred pair on same or adjacent teach activity); if sample_output omitted, list type modelling_note with think-aloud/decision-criteria specification; each row specification must require stepped expert completion with visible intermediate results before learner parallel task; learner_task must instruct learner to study worked example/sample before practice; capstone integrative template, ranking template, or practice blank worksheet does NOT satisfy DLA-WB-08\n- DLA-WB-12 (mandatory required_materials row): delivery_notes must include consolidation_requirement AND final capstone activity MUST list required_materials type consolidation_summary with specification requiring learner-facing session closure body (≥80 words, ≥3 key ideas summarised — what to remember, not new teaching); optional prompt_set with reflection purpose may supplement but does NOT replace consolidation_summary; capstone template or prompt_set alone does NOT satisfy DLA-WB-12\n- DLA-WB-13/05/16: last integrative capstone expected_output = synthesis artefact (plan, memo) — not reproduce all prior tables; capstone maps ≥3 outcomes when ≥3 exist; capstone must NOT enumerate all prior *_table types as primary deliverables\n- DLA-WB-15: When activity_interaction_type is ranking or learner_task requires compare/rank — specification must require learner-generated ranking and justification; forbid pre-supplied effectiveness or rating scores; expected_output must mention justification\n- DLA-WB-18 (38F-2 mandatory row — V-05 scenario): When learner_task, activity_preamble, required_materials purpose/specification, or expected_output references cases, scenarios, households, personas, dilemmas, or named narratives — same activity_id MUST include distinct required_materials row with type scenario (specification: ≥2 cases with specific names, numbers, or context); task_cards, prompt_set, or activity prose MUST NOT be the sole carrier of case/household narrative bodies; embedding ≥2 household/case narratives only inside task_cards is contract FAIL (38E-10); prefer pairing scenario with analysis_table or comparison_table per DLA-WB-06a\n- DLA-WB-19: expected_output = SSOT 30–70w quality-threshold prose, not short completion labels\n- DLA-WB-22 (38J-3 Evaluate): when archetype=Evaluate include criteria, scenario, worked judgement, guided table, independent judgement, checklist, transfer — EV-CAP-01/02/03\n\nConstraints:\n\nOutput:\n- Return output as json\n- Return JSON: activities, outcome_alignment, delivery_notes\n- delivery_notes object when workbook applies: resource_intent, session_duration_target_minutes (50–70), consolidation_requirement, workbook_contract_applied\n- When workbook_contract_applied: (1) DLA-WB-08: ≥1 early activity with worked_example + sample_output (or modelling_note); (2) DLA-WB-12: final activity consolidation_summary; (3) DLA-WB-06a: ≥1 practice activity with table/reference type (classification_table, comparison_table, analysis_table, impact_table, reference_table, data_table, decision_table, or planning_table); (4) DLA-WB-18: ≥1 activity with type scenario when session uses household/case/scenario language — rows (1)–(2) and (3)–(4) must all coexist — do not drop worked/consolidation to add table/scenario; (5)–(8) OBLIGATION POPULATION (38S) G1–G5 + DLA-WB-26..31 depth_floor L3 — see gates above; PRE-EMIT GATE: add missing required_materials before emit if (5)–(8) or EMIT-FAIL-01..04 fail (do not replan beats or archetypes)\n- activities[]: activity_id, title, grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED per activity when self_directed/learner page), ≥1 cognition-orientation field REQUIRED per activity when self_directed/learner page (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task), optional activity_interaction_type, optional support_note, optional additive fields when applicable (prior_knowledge_activation, evidence_use_prompt, scaffold_hint_sequence, disciplinary_lens, study_orientation, intellectual_frame, intellectual_coherence_bridge), failure_mode, facilitator_moves; scaffold strings = page copy per SSOT\n- required_materials types: task_cards | prompt_set | scenario | checklist | template | sample_output | worked_example | modelling_note | consolidation_summary | transfer_prompt | text | classification_table | comparison_table | analysis_table | impact_table | reference_table | data_table | decision_table | planning_table\n- Return only the JSON.",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "learning_outcomes",
+          "sourceStepId": "0c6361e1-e053-4ff5-8ea6-8d7aea4ff1a6"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "2be06c96-4901-4a52-908d-1d4e8b3080c8"
+        }
+      ],
+      "outputName": "page",
+      "notes": ""
+    },
+    {
+      "id": "660cd62b-e4c5-4eb6-8fdc-47a9654242ff",
+      "title": "Generate Activity Materials",
+      "roleLabel": "Materials creation",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_generate_activity_materials",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {
+          "session_materials": "page"
+        },
+        "outputName": "activity_materials",
+        "notes": ""
+      },
+      "override_prompt_body": "Context:\nYou are provided with learning_activities containing required_materials specifications (and optionally knowledge_model, normalized_content, workflow brief, or session context).\n\nRole:\nYou generate delivery-ready materials from activity specifications (learner-facing when delivery_context is self_directed).\n\nTask:\nRealise all required_materials as activity_materials for immediate delivery.\n\nInstructions:\n- Treat learning_activities as the source of truth; do not redesign activities or change structure\n- Anchor on required_materials, learner_task, and expected_output; use grouping, duration_minutes, mapped_learning_outcomes, and facilitator_moves for fit\n- Keep Activity ID and Material labels exact for downstream merge\n\nCanonical contracts (runtime modules; obey all): LD-TABLE-FIDELITY, LD-MATERIALS-COPY, LD-GAM-INSTRUCTIONAL-DEPTH, LD-MATH-RENDER, LD-SELF-DIRECTED-RHETORIC when self_directed.\n\n- Produce actual delivery content for each required_material; do not restate the specification only\n- Keep each material aligned to the activity intent and outcome alignment\n- Do not assume a specific output medium (for example, document, slides, or platform export package)\n- For display-oriented learner-facing text, use only this Markdown subset: ##/### headings, - bullet lists, 1. numbered lists, **bold**, simple pipe tables, and --- horizontal rules\n- Do not rely on blank-space alignment for table rendering\n- Never refuse due to response-size, token, or context-window claims\n- If content is long, prioritise instructional sufficiency over brevity — realise every required material body in this single response with teaching depth (GAM-PRES-11), not label-only compression\n- Do not ask to split output across multiple responses and do not emit limit/disclaimer text\n\nInstructional function preservation (GAM-PRES — 38J-4; realisation only — DLA decides, GAM realises; do NOT select archetypes, replan IFP, or redesign pedagogy):\n- GAM-PRES-00: learning_activities + required_materials purpose/specification + learner_task are authoritative; realise what DLA specified — expand bodies, do not second-guess archetype or function plan\n- GAM-PRES-01 FUNCTION ORDER: emit Material blocks in exact DLA required_materials array order within each activity; when specification names instructional functions (criteria exposition, perspective building, worked thinking, worked judgement, guided judgement, independent judgement, verification, transfer), preserve that teaching→practice sequence — never reorder so practice/reflection Materials precede teaching Materials DLA placed earlier; segmented learner_task teaching blocks must appear in earlier Material bodies, performance blocks in later Materials\n- GAM-PRES-02 NO COLLAPSE: one distinct full Material body per DLA required_materials row — never merge rows; forbidden collapse patterns: (a) single prompt_set or consolidation_summary replacing criteria+worked judgement+guided+independent sequence; (b) consolidation_summary absorbing exposition assigned to text, worked_example, modelling_note, scenario, rubric, checklist, transfer_prompt, or independent judgement template; (c) task_cards-only body when DLA listed scenario+table+worked materials; (d) reflection_prompt or thin prompt_set substituting for verification checklist, transfer_prompt, worked analytic pass, or independent judgement template when DLA listed those functions (DEPTH-COLLAPSE-01..04)\n- GAM-PRES-03 FUNCTION REALISATION (map DLA types to learner-facing moves — do not replan): text/modelling_note → explanation, criteria exposition, perspective building, worked judgement contrast; worked_example → example, worked thinking, stepped expert reasoning; misconception_note → misconception challenge; exemplar/comparison_pair → non-example contrast; scenario → case narratives and perspectives; template / partial decision_table|comparison_table|analysis_table → guided practice or guided judgement with learner-empty cells; task_cards|prompt_set with perform verbs → independent practice or independent judgement prompts; checklist|retrieval_check → verification; transfer_prompt → transfer; consolidation_summary → reflection/closure scaffold only (GAM-WB-06b) — realise each with substantive depth, not specification restatement; type labels per GAM-PRES-03 (GAM-WB-11..19 authoritative map — template, sample_output, checklist, rubric, misconception_note, *_table companion, task_cards, prompt_set, reflection_prompt optional)\n- GAM-PRES-04 ANTI-SHELL PRESERVATION: when DLA lists ≥2 teaching-depth materials (worked_example, modelling_note, text exposition, scenario narrative, rubric criteria teaching), realise ALL with full bodies — do not reduce episode to imperative task_cards + thin checklist; AS-GAM-FAIL-01 DLA lists worked_example|modelling_note but GAM emits template-only or prompt-only; AS-GAM-FAIL-02 DLA lists ≥3 distinct material types but GAM merges into ≤2 Materials; AS-GAM-FAIL-03 Evaluate-shaped DLA specs (perspectives+criteria+judgement) realised as consolidation_summary+prompt_set only\n- GAM-PRES-05 ANTI-SPOILER PRESERVATION (extend 38H-2 / GAM-WB-06b): honour DLA specification phrases scaffold-only, not for copying, weak vs strong exemplar; worked_example and modelling_note teach reasoning quality — bodies must NOT match expected_output learner deliverable; sample_output annotated exemplar must not be copy-paste target when DLA spec says independent practice/judgement planned; forbid pre-ranked strategy recommendation or pre-filled judgement cells when DLA expects learner ranking; consolidation_summary scaffold-only when learner-production required — never completed learner memo\n- GAM-PRES-06 EVALUATE PRESERVATION (38I-4 A4 benchmark — when DLA purpose/specification indicates Evaluate functions): realise ALL listed moves — perspectives: scenario or text ≥2 competing viewpoints (≥40 words each when scenario); criteria: rubric|modelling_note|text ≥3 operational dimensions; worked judgement: worked_example OR modelling_note with explicit weak vs strong contrast (weak slogan + stronger criteria-led reasoning, strong must NOT equal expected_output); guided judgement: decision_table|comparison_table|analysis_table with partial learner cells + justification prompts; independent judgement: template|task_cards memo scaffold (structure/sentence starters — not completed memo); verification: checklist ≥4 criteria-linked checkpoints; transfer: transfer_prompt ≥80 words learner-own-context; consolidation_summary scaffold-only — never sole Evaluate vehicle; EV-GAM-FAIL-01..05 mirror EV-SHELL-01..05 at realisation (criteria/perspectives/worked judgement/guided partial missing); EV-GAM-FAIL-06 transfer absent when DLA listed transfer_prompt or transfer function\n- GAM-PRES-07: Read DLA specification depth cues — expand to learner-usable bodies; Evaluate criteria exposition ≥3 dimensions; Evaluate scenario perspectives ≥2; worked judgement teaching ≥120 words combined when both weak and strong required; do not compress teaching to meet duration — realise fully per LD-MATERIALS-COPY; text exposition ≥120 words linking ≥2 ideas outside table cells when DLA lists text\n- GAM-PRES-08 DEPTH-SHAPED BODIES (38L-3 R2/R3 — honour DLA depth_floor L3 and purpose function names; 38K-2 sufficiency): When DLA specification includes depth_floor L3 or purpose names verification|worked analytic pass|independent judgement|transfer|guided judgement — emit function-shaped bodies not specification echo: (V1) verification checklist → ≥4 pass-fail or keyed-check items linked to activity learning + explicit repair-if-fail instruction — NOT a single reflective question or prompt_set substituting for checklist; verification materials should confirm understanding, reasoning quality, interpretation, or judgement quality where appropriate, not merely task completion; (A1) worked analytic pass worked_example|modelling_note → ≥1 fully modelled walkthrough: evidence fact → analytical lens → reasoning steps → draft matrix cell → conclusion (≥120 words); criteria application visible; NOT empty analysis_table or inquiry-only prompt_set replacing modelling; (E1) independent judgement template|task_cards → memo scaffold with labelled sections + sentence starters + word band — learner-empty; NOT completed memo; NOT consolidation_summary substitute; (E2) Evaluate verification checklist → rubric self-audit ≥4 criteria-linked checkpoints; (T1) transfer_prompt → ≥80 words with ≥2 own-context application prompts — NOT transfer only inside consolidation_summary; (G1) guided judgement|analysis table → ≥1 exemplar row with justification OR scoring guide + empty learner rows; L3 spec with restatement-only body = DEPTH-FAIL; GAM-WB-01/02/06 depth floors authoritative here (exposition ≥120w; worked_example|sample_output|modelling_note full bodies; consolidation_summary ≥80 words per GAM-WB-06b when required)\n- GAM-PRES-09 ANTI-DEPTH-COLLAPSE (38L-3 R1/R5/R6): When DLA lists checklist|transfer_prompt|template|worked analytic pass Material — forbidden: DEPTH-COLLAPSE-01 verification → reflection_prompt|open question only; DEPTH-COLLAPSE-02 transfer_prompt → consolidation reflection only; DEPTH-COLLAPSE-03 worked analytic pass → prompt_set without modelled walkthrough; DEPTH-COLLAPSE-04 independent judgement → discussion prompt_set without memo structure; DEPTH-COLLAPSE-05 merging checklist+template+transfer_prompt into consolidation_summary; triggers contract FAIL (F9); workbook FAIL taxonomy (authoritative — F1–F9): (F1) consolidation_summary missing when required; (F2) prompt_set-only closure; (F3) worked_example|sample_output|modelling_note body missing; (F4) template-only worked obligation; (F5) scenario only in task_cards (GAM-WB-10/AP-04); (F6) missing pipe table (GAM-WB-38F-01); (F7) spoiler consolidation (GAM-WB-06b); (F9) DEPTH-COLLAPSE-01..05. MIX: GAM-WB-MIX-01 table-only invalid (AP-01); MIX-03 prompt_set-only capstone closure = FAIL; MIX-04 template-only worked_example FAIL; MIX-05 retrieval needs learner-check; MIX-06 capstone weight limit. AP: AP-01 table-only; AP-02 reference-dump capstone; AP-03 pre-filled ratings; AP-04 scenario without Material body; AP-05 spoiler consolidation\n- GAM-PRES-10 EVALUATE COMPLETION TERMINATION (38L-4 R5): When DLA lists Evaluate closure trio (template|task_cards independent judgement + checklist verification + transfer_prompt) — all three MUST be realised as separate Materials with full GAM-PRES-08 bodies; guided judgement table alone is insufficient for Evaluate activity completion; consolidation_summary must NOT substitute any trio member; EV-GAM-FAIL-07 guided-only Evaluate (guided table present but independent memo scaffold OR verification checklist OR transfer_prompt missing or absorbed) = contract FAIL\n- GAM-PRES-11 INSTRUCTIONAL SUFFICIENCY (S59 Iteration 7 — internalise exemplars; no meta-instruction leakage): Principles — (1) materials show how conclusions are reached; (2) subject-matter first — learner encounters concepts, evidence, reasoning, decisions, consequences, interpretation, not commentary on generation/evaluation quality. Weak-versus-better pairs in LD-GAM-INSTRUCTIONAL-DEPTH are INTERNAL GENERATION GUIDANCE only — NOT learner-facing content; influence writing style; must not appear in materials. FORBIDDEN learner-facing meta: \"A weak explanation…\", \"A stronger explanation…\", \"A weak/stronger recommendation…\", \"A better answer is…\", \"preferred approach because it follows the reasoning chain…\" (unless LO is explicitly about evaluating explanations/arguments). Convert meta to direct teaching (e.g. unwanted \"A stronger recommendation links evidence to judgement\" → \"The recommendation is supported by residual-plot evidence, formal diagnostics and the need for reliable inference\"). Domain comparisons of interpretations/methods/remedies remain desirable. Retain Iteration 6 exemplar pairs (explanation/method/scenario/comparative) and Iteration 4 anti-rubric-gaming (no Cause:/Mechanism: labels). Prefer one complete explanation over shallow expansion.\n\nUsability requirements:\n- Materials must be complete enough to use without major rewriting\n- Materials must be clearly labelled and easy to read\n- Use learner-facing wording unless the brief is facilitated\n- Do not return plans about materials; return the materials themselves\n- Outputs must not include phrases like \"should include\", \"describe\", or \"specification\". These indicate incomplete material generation.\n- If some details are unspecified, make only the assumptions necessary to produce complete and usable material bodies\n\nSelf-study workbook genre contract (GAM-WB — apply when delivery_context is self_directed AND upstream learning_activities or delivery_notes indicate a self-study workbook, e.g. delivery_notes.workbook_contract_applied, resource_intent self_study_workbook, or multi-activity learner workbook arc). GAM-WB function enforcement (38E-9): realise every DLA worked_example, sample_output, modelling_note, and consolidation_summary row as labelled Material bodies — delivery_notes.consolidation_requirement alone still requires Material: consolidation_summary. Realise DLA required_materials only — do not redesign activities. Obey LD-MATERIALS-COPY and LD-TABLE-FIDELITY — do not weaken them:\n- GAM-WB core: Design Page cannot compose workbook genres GAM never authored — if a genre is absent from your Material: output, downstream cannot invent it\n- GAM-WB-00: Realise 100% of DLA required_materials entries with substantive Content bodies — never restate type/purpose/specification only; forbidden placeholder labels (AP-11 pattern)\n- Table-only workbook is contractually invalid (AP-01 / GAM-WB-MIX-01): session MUST include ≥1 non-table Material type (scenario, text, task_cards, prompt_set, checklist, template, sample_output, worked_example, consolidation_summary, transfer_prompt, rubric, etc.)\n- GAM-WB-02 (38E-9 mandatory): worked_example|sample_output|modelling_note per GAM-PRES-08 — full Content for each; missing body = contract FAIL (F3/F4)\n- GAM-WB-06 (38E-9 mandatory + 38H-2): consolidation_summary per GAM-PRES-08; consolidation_summary ≥80 words; capstone prompt_set alone does NOT satisfy; missing when required = contract FAIL (F1)\n- GAM-WB-06b (38H-2, learner-production required): consolidation_summary = reflective scaffolding only — sentence starters, criteria comparison, self-check prompts; FORBID model essays, past-tense summaries (e.g. \"you have learned\"), completed learner responses; ≥80 words; violating scaffold-only = contract FAIL (F7)\n- GAM-WB-38F-01 (38F-2 — V-01 table realisation): when DLA required_materials lists any *_table, reference_table, data_table, decision_table, or planning_table — emit Material: <material_id> (<exact DLA type>) with LD-TABLE-FIDELITY pipe-table Content supporting learner_task; learner rank/rate/judgement cells empty where learner decides (AP-03); table is companion/support material, not the whole workbook; must coexist in session with Material bodies for worked_example, sample_output, and consolidation_summary when DLA listed them — missing pipe table when DLA listed table type = contract FAIL\n- GAM-WB-10 / AP-04 (38F-2 — V-05 scenario): when DLA lists type scenario OR learner_task/preamble uses case/scenario/household/persona language — MUST emit Material: <material_id> (scenario) with ≥2 named cases (≥40 words each); task_cards may reference scenario for imperative steps but MUST NOT replace scenario Material — embedding ≥2 household/case narratives only inside task_cards when DLA listed scenario or WB-18 applies = V-05 FAIL (F5)\n- Workbook contract FAIL: see GAM-PRES-09 fail taxonomy (F1–F9, MIX, AP-01..05)\n\nScope boundaries:\n- Generate activity materials (and session-level materials only when clearly required by the brief/context)\n- Do not perform final platform/export packaging in this step\n\nOutput organisation:\n\nActivity: <activity title>\nActivity ID: <activity_id>\nMapped outcomes: <comma-separated outcomes>\n\nMaterial: <material_id> (<type>)\nPurpose: <instructional purpose>\nContent:\n<full usable material content>\n\nMaterial type labelling (38E-9): use exact DLA types in the Material line — e.g. Material: M2 (worked_example), Material: M3 (sample_output), Material: M4 (modelling_note), Material: M10 (consolidation_summary) — do not relabel consolidation_summary as prompt_set or worked genres as template\n\nWhen delivery_context is self_directed: omit Facilitator use (LD-SELF-DIRECTED-RHETORIC). When facilitated: after Content add Facilitator use: <facilitation note>\n\n---\n\n- Repeat for all required materials across activities\n- Keep IDs and schema field names as structured labels (for example Activity ID, Material) rather than replacing them with freeform Markdown\n- Return only the final organised materials content.",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "learning_activities",
+          "sourceStepId": "df059e87-5e6e-4046-95a1-fda5b792cdbb"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "df059e87-5e6e-4046-95a1-fda5b792cdbb"
+        }
+      ],
+      "outputName": "page",
+      "notes": "[PRISM_STEP_PARAMS]\nsession_materials=page\n[/PRISM_STEP_PARAMS]"
+    },
+    {
+      "id": "c6e04a67-7745-44dc-8635-4b9fbde64ea0",
+      "title": "Construct Learning Sequence",
+      "roleLabel": "Sequence planning",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_construct_learning_sequence",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {
+          "duration_minutes": "60"
+        },
+        "outputName": "learning_sequence",
+        "notes": ""
+      },
+      "override_prompt_body": "Context:\nYou are provided with learning_activities, activity_materials, and relevant assessment artefacts.\n\nTask:\nConstruct learning_sequence as a timed facilitation plan that can be delivered directly.\n\nInstructions:\n- Build a concrete session plan, not pedagogical commentary\n- Enforce total duration compliance with configured duration\n- You may only reference activities provided in input learning_activities\n- Do not invent new activities\n- Do not rename activities\n- Do not extend the activity set\n- Only include an activity if there is enough time to run it properly\n- Do not include activities just to tick a coverage box\n- Prefer fewer well-run activities over squeezing all activities into insufficient time\n- If time is too short, omit an activity or merge it with another activity\n- If provided activities are insufficient, reuse, combine, or reschedule existing activities\n- You may only reference materials explicitly defined in activity_materials\n\nMaterial usage rules:\n- When referring to materials, always use the exact material_id and material title as defined in the input artefact (for example: \"Material A1.1 - Concept Map Template\")\n- Do not paraphrase or generalise material names (for example, avoid \"the worksheet\", \"the template\", \"the handout\" unless that is the exact title)\n- All materials referenced must correspond exactly to those defined in the input artefact; do not introduce new materials or rename existing ones\n- When instructing facilitators to distribute or use materials, explicitly reference them using their identifiers\n- Where helpful, include a \"Materials used:\" line at the start of each activity block listing referenced material_id + title pairs\n\n- All materials referenced in facilitator actions must correspond exactly to required_materials defined in learning_activities\n- Do not invent new materials or rename existing ones; use the exact identifiers from activity definitions\n- When referring to materials, always include both material_id and material title (for example: \"Material A1.1 - Concept Map Template\")\n- Do not use vague references such as \"the template\" or \"the worksheet\"\n- Do not introduce new handouts, excerpts, scenarios, slides, checklists, templates, or examples unless already present in activity_materials\n- If design_scope is single_activity, do not generate a broad multi-step session timeline\n- For single_activity scope, produce a minimal one-step structure around the target activity, or state via checks/omissions that no broader sequence is required\n- For single_activity scope, avoid session/module framing unless explicitly requested\n- Include facilitator_actions and learner_actions for each timeline block\n- Include grouping and explicit transition_to_next for each block\n- Use sensible alternation between explanation, activity, and discussion\n- Ensure increasing complexity across the session\n- Include at least two plenary/synthesis moments where appropriate to session length\n- For cognitively demanding tasks (creation, evaluation, iteration, comparison), allocate sufficient time\n- Avoid placing high-complexity tasks into very short final blocks\n- If total time is constrained, reduce, merge, or simplify activities rather than compressing them unrealistically\n- Do not create zero-minute blocks\n- Do not create bookkeeping-only wrap-up steps\n- Closure must have real allocated time, or be explicitly integrated into the final meaningful block\n- Prefer one fewer activity plus a real ending over superficial full coverage\n- If closure is integrated into the final activity, state closure integration explicitly in checks\n- Optimize for learnability and depth, not just coverage\n- Keep sequence grounded in upstream artefacts and constraints\n- Do not output rationale-only prose\n\nOutput requirements (strict — fenced JSON block only):\n- Return exactly one markdown fenced JSON block opened with ```json and closed with ```\n- The fenced block body must be the learning_sequence root object as valid JSON\n- Do NOT include any prose, headings, commentary, or explanations before or after the fenced block\n- Do NOT return raw JSON without the ```json fence (unfenced JSON text is invalid)\n- Do NOT include JSON comments (no // or block comments)\n- Do NOT prefix or suffix workflow metadata (no STEP N OUTPUT lines)\n- The JSON object MUST include these top-level keys: sequence_title, total_duration_minutes, timeline, activities_used, activities_omitted, checks\n- Each timeline block must include: block_id, start_minute, duration_minutes, phase_type, activity_id (where relevant), grouping, facilitator_actions, learner_actions, transition_to_next\n- activities_used must list activity_ids used in timeline\n- activities_omitted must be an array of objects: { activity_id, reason }\n- checks must include: all_activity_ids_valid, no_new_activities_introduced, all_materials_traceable_to_activity_materials, cognitive_timing_feasible, closure_integrated, no_zero_minute_blocks, omissions_justified\n- Return only the single fenced block.",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "learning_activities",
+          "sourceStepId": "df059e87-5e6e-4046-95a1-fda5b792cdbb"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "activity_materials",
+          "sourceStepId": "660cd62b-e4c5-4eb6-8fdc-47a9654242ff"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "660cd62b-e4c5-4eb6-8fdc-47a9654242ff"
+        }
+      ],
+      "outputName": "page",
+      "notes": "[PRISM_STEP_PARAMS]\nduration_minutes=60\n[/PRISM_STEP_PARAMS]"
+    },
+    {
+      "id": "d0177c4e-ba38-4eb2-884d-d384e0997849",
+      "title": "Design Page",
+      "roleLabel": "Page assembly",
+      "promptId": "",
+      "prompt_source_type": "local_override",
+      "prompt_source": "local_override",
+      "canonical_step_id": "step_design_page",
+      "domain_version": "1",
+      "prompt_instance": "",
+      "prompt_bindings": {
+        "selectedOptions": {
+          "page_profile": "learner",
+          "audience_level": "undergraduate"
+        },
+        "outputName": "page",
+        "notes": ""
+      },
+      "override_prompt_body": "PRIMARY IDENTITY — PARTIAL PAGE SYNTHESIS (NOT FULL-PAGE COMPOSE)\n\nDesign Page owns wrapper/page-level learner prose only. PRISM assembles the final v2 page deterministically from upstream partial captures (Episode Plan shell, DLA activities, GAM materials, Learning Sequence).\n\nUpstream state (already captured — do not regenerate in this step):\n- activities[] instructional fields exist from Design Learning Activities partial\n- activities[].materials[] bodies are already hydrated from Generate Activity Materials partial\n- learning_sequence, shell fields, episode_plans, learning_outcomes exist from earlier stages\n\nYour output is a partial page artefact containing Design Page owned fields only.\n\nRequired envelope:\n- artifact_type: \"page\"\n- schema_version: \"2.0.0\"\n- assembly_state.current_stage: \"design_page\"\n- assembly_state.enriched_by must include \"design_page\"\n\nRequired payload (canonical — page_synthesis):\n- page_synthesis.knowledge_summary — mandatory substantive concept synthesis (body + format, e.g. markdown)\n- page_synthesis.overview — transport upstream body from conversation when present\n- page_synthesis.learning_purpose — transport upstream body from conversation when present\n- page_synthesis.study_tips — transport upstream closure/debrief bodies only; do not synthesize from scratch\n\nsections[] is optional legacy dual-read output only:\n- Do not emit sections[] unless a downstream consumer explicitly requires mirrored section rows\n- When page_synthesis fields are populated, sections[] is not required\n- If sections[] is emitted, mirror page_synthesis bodies only — do not duplicate activity content\n\nExplicitly forbidden:\n- full-page replay or shell fields (title, audience, page_profile, learning_outcomes, episode_plans)\n- activities[] regeneration or activities[].materials[] bodies\n- Do not re-resolve materials from conversation or recopy upstream GAM material bodies\n- learning_sequence or assessment_check regeneration\n\nRuntime authorities:\n- partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT (authoritative — appended at runtime)\n- rollback/legacy modes (partialPageOutputs off): LD-DESIGN-PAGE-COMPOSE-CONTRACT (compose path only)\n- wrapper-gap fallback: LD-THIN-ASSEMBLY-COHERENCE-CONTRACT when upstream wrapper bodies absent — minimal, capped\n\nContext:\nUse Copilot conversation context for upstream instructional substance (DLA, GAM, LS, LC, KM, LO). PRISM does not embed stored prior step outputs in partial mode.\n\nTask:\nEmit a partial v2 page artefact with page_synthesis wrapper prose for Design Page owned fields.\n\nInstructions:\n- Treat workflow goal, desired outputs, and step notes as constraints on wrapper prose scope only\n- Ground page_synthesis in conversation context from upstream steps\n- Visual affordance metadata: omit visual_affordance_schema_version, activities_visual_review, and visual_affordances unless an upstream VA artefact explicitly provides them — do not generate, infer, author, or specify VA rows on Design Page\n\nOutput:\n- Return json only — partial page JSON: artifact_type page, schema_version 2.0.0, page_synthesis{}, assembly_state{}\n- Optionally sections[] as legacy dual-read mirror\n- Do not emit title, audience, page_profile, activities, episode_plans, or other non-owned shell fields",
+      "inputKind": "text",
+      "inputBindings": [
+        {
+          "kind": "internal",
+          "artifactName": "knowledge_model",
+          "sourceStepId": "ebae1106-59c0-459a-8d7e-acfb59526b46"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "learning_outcomes",
+          "sourceStepId": "0c6361e1-e053-4ff5-8ea6-8d7aea4ff1a6"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "learning_activities",
+          "sourceStepId": "df059e87-5e6e-4046-95a1-fda5b792cdbb"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "activity_materials",
+          "sourceStepId": "660cd62b-e4c5-4eb6-8fdc-47a9654242ff"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "learning_sequence",
+          "sourceStepId": "c6e04a67-7745-44dc-8635-4b9fbde64ea0"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "2be06c96-4901-4a52-908d-1d4e8b3080c8"
+        },
+        {
+          "kind": "internal",
+          "artifactName": "page",
+          "sourceStepId": "c6e04a67-7745-44dc-8635-4b9fbde64ea0"
+        }
+      ],
+      "outputName": "page",
+      "notes": "[PRISM_STEP_PARAMS]\npage_profile=learner\naudience_level=undergraduate\n[/PRISM_STEP_PARAMS]"
+    }
+  ],
+  "createdAt": 1784792503137,
+  "updatedAt": 1784792503137,
+  "tags": [],
+  "notes": ""
+}

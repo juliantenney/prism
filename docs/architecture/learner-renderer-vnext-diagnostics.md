@@ -2,7 +2,7 @@
 
 **Status:** Sprint 68 catalogue  
 **Source of truth (machine):** `lib/learner-renderer-vnext/certification-diagnostics-catalog.js`  
-**Parent:** [learner-renderer-vnext.md](learner-renderer-vnext.md)
+**Parent:** [learner-renderer-vnext.md](learner-renderer-vnext.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md)
 
 Successful authoritative rendering and certification should emit **no unexpected** warning or error diagnostics. Codes may appear in isolated negative tests.
 

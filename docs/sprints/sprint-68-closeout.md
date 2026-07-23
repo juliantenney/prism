@@ -158,3 +158,5 @@ COMPLETE
 
 Learner-renderer-vNext is production certified and establishes the reference architecture for future learner interaction capabilities.
 ```
+
+Next planning pack: [Sprint 69 — Archetype Grammar Validation](sprint-69-archetype-grammar-validation.md).

@@ -23,3 +23,5 @@ Sprint 67 restored renderer fidelity. Sprint 68 delivered semantic composition, 
 ## Outcome
 
 Learner-renderer-vNext is **CERTIFIED**. Architecture reference and ADR-012 capture the design for Sprint 69+.
+
+Next planning pack: [Sprint 69 — Archetype Grammar Validation](sprint-69-archetype-grammar-validation.md).

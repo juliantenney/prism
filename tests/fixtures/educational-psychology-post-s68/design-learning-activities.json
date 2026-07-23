@@ -1,0 +1,335 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": [
+      "dla"
+    ]
+  },
+  "delivery_notes": {
+    "resource_intent": "self_study_workbook",
+    "session_duration_target_minutes": 60,
+    "consolidation_requirement": "Learner completes a final synthesis activity supported by a consolidation summary.",
+    "workbook_contract_applied": true
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "What Is Educational Psychology?",
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "activity_preamble": "Begin by building a foundational understanding of educational psychology. You will explore what the field studies, why it matters, and how it helps explain learning in educational settings.",
+      "learner_task": "1. Study the explanatory text introducing educational psychology.\n2. Review the worked example showing how an educational psychologist might investigate a learning problem.\n3. Examine the sample output that models a concise explanation of the discipline.\n4. Write your own summary explaining what educational psychology is and identify three areas it investigates.\n5. Use the verification checklist to review and improve your response.",
+      "expected_output": "Produce a concise explanation that accurately defines educational psychology, identifies its purpose, and references at least three areas of study such as learning, motivation, memory, development, or individual differences. The explanation should use appropriate terminology and clearly connect the field to educational practice.",
+      "reasoning_orientation": "Focus on the relationship between learning and educational environments. Consider why studying learning scientifically might improve educational experiences. Look for connections between psychology research and teaching decisions.",
+      "self_explanation_prompt": "How does educational psychology help explain differences in learner experiences and outcomes?",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Provide an introductory explanation of educational psychology and its scope.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 1,
+          "depth_floor": "L3",
+          "specification": "Expository text defining educational psychology, explaining its purpose, and introducing core areas including learning, development, motivation, memory, and individual differences."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Model expert reasoning when explaining the discipline.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Stepped expert example demonstrating how to define educational psychology and connect its areas of study to educational practice."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "Provide a quality benchmark for learner responses.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Annotated model response showing definition, purpose, and scope with visible reasoning structure."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-review.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Checklist with at least four criteria: accurate definition, stated purpose, three areas identified, clear connection to learning. Include revision action if any criterion is unmet."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Comparing Major Learning Perspectives",
+      "grouping": "individual",
+      "duration_minutes": 15,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "activity_preamble": "Educational psychologists use different theories to explain learning. This activity helps you compare key perspectives and identify their distinctive features.",
+      "learner_task": "1. Read the comparative overview of behaviourism, cognitivism, constructivism, and social learning.\n2. Study the worked analytical example.\n3. Complete the comparison table by identifying focus, view of learning, and implications for teaching.\n4. Write a short comparison explaining the most significant differences between two perspectives.\n5. Review your work using the checklist.",
+      "expected_output": "Produce a completed comparison and a short analytical explanation that accurately distinguishes learning perspectives using evidence from the comparison table. Strong responses identify similarities and differences rather than listing isolated characteristics.",
+      "reasoning_orientation": "Compare how each theory explains learning. Focus on what each perspective considers most important and how this influences educational practice.",
+      "conceptual_contrast_prompt": "How does learning as observable behaviour differ from learning as active knowledge construction?",
+      "intellectual_coherence_bridge": "The previous activity introduced the field of educational psychology. This activity examines the major theories that educational psychologists use to explain learning.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "text",
+          "purpose": "Present overview descriptions of the four learning perspectives.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 1,
+          "depth_floor": "L3",
+          "specification": "Comparative explanatory text describing behaviourism, cognitivism, constructivism, and social learning using aligned categories."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "worked_example",
+          "purpose": "Model a worked analytic comparison.",
+          "instructional_function": "comparison",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Expert walkthrough showing how to move from theory features to analytical comparison with visible reasoning."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "comparison_table",
+          "purpose": "Guide structured analysis of learning perspectives.",
+          "instructional_function": "comparison",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table structure with columns for theory, central focus, view of learning, role of learner, and teaching implications. Include one partially completed exemplar row."
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "checklist",
+          "purpose": "Verification of analytical comparison.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "At least four checks linked to accuracy, comparison quality, correct terminology, and justified distinctions, with revision instructions."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "How Memory Supports Learning",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "activity_preamble": "Learning depends on how information is processed and stored. In this activity, you will build a mental model of the information-processing approach to memory.",
+      "learner_task": "1. Read the explanation of sensory memory, working memory, and long-term memory.\n2. Study the process walkthrough showing how information moves through the memory system.\n3. Create a brief annotated flow description showing the movement of information through the three memory stages.\n4. Check your explanation against the verification checklist.",
+      "expected_output": "Produce an accurate description of how information progresses through sensory memory, working memory, and long-term memory. High-quality responses explain the role of each stage and show the connections between them.",
+      "reasoning_orientation": "Focus on relationships between stages rather than memorising definitions in isolation. Consider how each part of the process supports learning.",
+      "self_explanation_prompt": "Why might limitations in working memory affect learning experiences?",
+      "intellectual_coherence_bridge": "Having explored theories of learning, you will now examine a cognitive explanation of how information is processed and remembered.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "text",
+          "purpose": "Explain the information-processing model.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Text explaining sensory memory, working memory, and long-term memory with examples of learning-related processing.",
+          "instructional_archetype": "mental_model_building",
+          "archetype_plan": {
+            "system": "Human memory during learning",
+            "key_relationships": [
+              "Information moves from sensory memory to working memory",
+              "Working memory processes information",
+              "Long-term memory stores information for later retrieval"
+            ],
+            "governing_constraint": "Working memory has limited capacity",
+            "contrast": {
+              "state_a": "Information processed and retained",
+              "state_b": "Information not effectively processed and lost"
+            }
+          }
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "modelling_note",
+          "purpose": "Demonstrate expert thinking about the memory process.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Think-aloud showing how information flows through the memory system and how learning strategies support retention.",
+          "instructional_archetype": "process_walkthrough",
+          "archetype_plan": {
+            "process_goal": "Explain how information becomes retained knowledge",
+            "stages": [
+              "Receive information",
+              "Process in working memory",
+              "Store in long-term memory",
+              "Retrieve when needed"
+            ]
+          }
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "checklist",
+          "purpose": "Verification of process explanation.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Four-item self-check covering sequence accuracy, stage descriptions, relationships, and use of terminology with revision guidance."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Motivation, Diversity, and Engagement",
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "activity_preamble": "Learners are influenced by motivation and individual differences. You will examine how these factors shape engagement and learning experiences.",
+      "learner_task": "1. Read two contrasting learner scenarios.\n2. Analyse the factors influencing motivation and engagement in each case.\n3. Complete the analysis table.\n4. Suggest practical ways educational experiences could better support each learner.\n5. Check your reasoning using the verification checklist.",
+      "expected_output": "Produce a completed analysis that identifies motivational factors, individual differences, and likely effects on engagement. Strong responses clearly connect learner characteristics to educational experiences and support strategies.",
+      "reasoning_orientation": "Avoid assuming that all learners require the same support. Look for evidence that different experiences and motivations can influence engagement in different ways.",
+      "uncertainty_tension_prompt": "To what extent can differences in engagement be explained by motivation alone?",
+      "intellectual_coherence_bridge": "After examining cognitive aspects of learning, you will now consider personal and contextual factors that affect learners.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "scenario",
+          "purpose": "Provide contrasting learner cases for analysis.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Two named learner profiles with distinct motivations, backgrounds, prior experiences, and engagement patterns."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "analysis_table",
+          "purpose": "Support structured examination of the scenarios.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Table with columns for learner characteristics, motivation factors, engagement indicators, and possible educational responses. Include one partially completed exemplar row."
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "checklist",
+          "purpose": "Verification of analysis quality.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Four criteria-linked checks covering evidence use, identification of motivation, recognition of differences, and support recommendations."
+        }
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "title": "Applying Educational Psychology to Learning Design",
+      "grouping": "individual",
+      "duration_minutes": 13,
+      "mapped_learning_outcomes": [
+        "LO1",
+        "LO3",
+        "LO4",
+        "LO5"
+      ],
+      "activity_preamble": "This capstone activity brings together the key ideas from the session. You will apply educational psychology concepts to propose learning-support strategies for a realistic educational context.",
+      "learner_task": "1. Study the worked example showing how educational psychology principles can inform learning design.\n2. Review the planning template.\n3. Develop a short proposal describing how learning, memory, motivation, and support strategies could be incorporated into an educational experience.\n4. Review your proposal using the verification checklist.\n5. Complete the transfer prompt and read the consolidation summary.",
+      "expected_output": "Produce a short evidence-informed proposal that integrates multiple educational psychology concepts. Strong responses explain how memory, motivation, learner differences, and instructional support can be used together to improve learning experiences and justify the choices made.",
+      "reasoning_orientation": "Focus on integrating ideas across the session rather than treating concepts separately. Explain why selected strategies are likely to support learning.",
+      "transfer_or_application_task": "Identify one current or future learning situation and explain how at least two educational psychology principles could improve the experience.",
+      "intellectual_coherence_bridge": "This activity integrates concepts from across the session and supports transfer to future academic or educational contexts.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "worked_example",
+          "purpose": "Model application of educational psychology concepts.",
+          "instructional_function": "worked_example",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Stepped expert example demonstrating how learning theories, memory principles, motivation, and support strategies can be combined in a learning design decision."
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "planning_table",
+          "purpose": "Support structured application and synthesis.",
+          "instructional_function": "application",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table planning framework with sections for learning challenge, memory considerations, motivation strategies, support mechanisms, and rationale."
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "checklist",
+          "purpose": "Verification of synthesis quality.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Four review criteria covering concept integration, justification, applicability, and clarity. Include revision actions."
+        },
+        {
+          "material_id": "A5-M4",
+          "type": "transfer_prompt",
+          "purpose": "Promote application beyond the session.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Prompt requiring learners to apply principles to a new educational situation and explain anticipated benefits."
+        },
+        {
+          "material_id": "A5-M5",
+          "type": "consolidation_summary",
+          "purpose": "Provide learner-facing session closure.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Summary of at least three key ideas from the session, highlighting what learners should remember and apply in future learning contexts."
+        }
+      ]
+    }
+  ],
+  "outcome_alignment": [
+    {
+      "activity_id": "A1",
+      "learning_outcomes": [
+        "LO1"
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learning_outcomes": [
+        "LO2"
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learning_outcomes": [
+        "LO3"
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "learning_outcomes": [
+        "LO4"
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "learning_outcomes": [
+        "LO1",
+        "LO3",
+        "LO4",
+        "LO5"
+      ]
+    }
+  ]
+}

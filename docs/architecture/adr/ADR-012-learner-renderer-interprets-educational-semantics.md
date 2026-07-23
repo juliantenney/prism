@@ -3,7 +3,7 @@
 **Status:** Accepted  
 **Date:** 2026-07-22  
 **Sprint:** 68 (IMP-021)  
-**Related:** [learner-renderer-vnext.md](../learner-renderer-vnext.md) · [Sprint 68 closeout](../../sprints/sprint-68-closeout.md)
+**Related:** [learner-renderer-vnext.md](../learner-renderer-vnext.md) · [Sprint 68 closeout](../../sprints/sprint-68-closeout.md) · [Sprint 69 planning pack](../../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md)
 
 ---
 

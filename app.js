@@ -10443,6 +10443,12 @@
     }
     var rawTrim = String(raw || "").trim();
     var derived = deriveDesignEpisodePlanCaptureJson(wf);
+    if (!derived) {
+      var embeddedLos = resolveLearningOutcomesEmbeddedInEpisodePlanCapture(wf, rawTrim);
+      if (embeddedLos) {
+        derived = deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes(embeddedLos, wf);
+      }
+    }
     if (derived) {
       var derivedParsed = tryParseWorkflowArtefactJson(derived);
       var derivedCheck = derivedParsed
@@ -10651,6 +10657,9 @@
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
     var wfOpts = workflow ? { workflow: workflow } : {};
     var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", wfOpts);
+    if (!learningOutcomes) {
+      learningOutcomes = resolveLearningOutcomesEmbeddedInEpisodePlanCapture(workflow);
+    }
     if (!learningOutcomes) return "";
     var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(learningOutcomes);
     var gate =
@@ -10669,6 +10678,90 @@
           var shell = shellMod.createPageShellFromEpisodePlan(
             episodePlans,
             buildPageShellOptionsFromWorkflow(workflow, learningOutcomes)
+          );
+          var shellCheck = shellMod.validatePageShellAgainstVNextSchema(shell);
+          if (!shellCheck.ok) return "";
+          return JSON.stringify(shell, null, 2);
+        } catch (_) {
+          return "";
+        }
+      }
+    }
+    try {
+      return JSON.stringify(episodePlans, null, 2);
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function normalizeLearningOutcomesArtefact(value) {
+    if (!value) return null;
+    if (Array.isArray(value)) {
+      return value.length ? { learning_outcomes: value } : null;
+    }
+    if (typeof value !== "object") return null;
+    if (Array.isArray(value.learning_outcomes) && value.learning_outcomes.length) {
+      return { learning_outcomes: value.learning_outcomes };
+    }
+    return null;
+  }
+
+  function resolveLearningOutcomesEmbeddedInEpisodePlanCapture(wf, rawCapture) {
+    var fromRaw = null;
+    if (rawCapture != null) {
+      var parsedRaw =
+        typeof rawCapture === "string"
+          ? tryParseWorkflowArtefactJson(rawCapture)
+          : rawCapture;
+      fromRaw = normalizeLearningOutcomesArtefact(
+        parsedRaw && parsedRaw.learning_outcomes != null
+          ? parsedRaw.learning_outcomes
+          : parsedRaw
+      );
+      if (fromRaw) return fromRaw;
+      if (parsedRaw && Array.isArray(parsedRaw.learning_outcomes)) {
+        fromRaw = normalizeLearningOutcomesArtefact(parsedRaw);
+        if (fromRaw) return fromRaw;
+      }
+    }
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var pageHit =
+      resolveUpstreamWorkflowArtefactFromCaptures("page", {
+        workflow: workflow
+      }) ||
+      resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {
+        workflow: workflow
+      });
+    if (!pageHit) return null;
+    if (Array.isArray(pageHit.learning_outcomes) && pageHit.learning_outcomes.length) {
+      return { learning_outcomes: pageHit.learning_outcomes };
+    }
+    return normalizeLearningOutcomesArtefact(pageHit);
+  }
+
+  function deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes(learningOutcomes, wf) {
+    var mod = resolveEpisodePlanDlaIntegrationLib();
+    if (!mod || typeof mod.deriveEpisodePlansFromLearningOutcomes !== "function") return "";
+    var normalized = normalizeLearningOutcomesArtefact(learningOutcomes);
+    if (!normalized) return "";
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(normalized);
+    var gate =
+      typeof mod.assertEpisodePlansContainerGate === "function"
+        ? mod.assertEpisodePlansContainerGate(episodePlans)
+        : { ok: true, errors: [] };
+    if (!gate.ok) return "";
+    if (isPageEnrichmentV2WorkflowEnabled(workflow)) {
+      var shellMod = resolvePageShellCreateLib();
+      if (
+        shellMod &&
+        typeof shellMod.createPageShellFromEpisodePlan === "function" &&
+        typeof shellMod.validatePageShellAgainstVNextSchema === "function"
+      ) {
+        try {
+          var shell = shellMod.createPageShellFromEpisodePlan(
+            episodePlans,
+            buildPageShellOptionsFromWorkflow(workflow, normalized)
           );
           var shellCheck = shellMod.validatePageShellAgainstVNextSchema(shell);
           if (!shellCheck.ok) return "";
@@ -49311,6 +49404,10 @@
       parseGenerateAssessmentItemsOrPageCaptureForStorage;
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
     prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
+    prismTestApi.deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes =
+      deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes;
+    prismTestApi.resolveLearningOutcomesEmbeddedInEpisodePlanCapture =
+      resolveLearningOutcomesEmbeddedInEpisodePlanCapture;
     prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
     prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;

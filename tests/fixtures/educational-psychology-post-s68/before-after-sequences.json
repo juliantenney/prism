@@ -1,0 +1,151 @@
+{
+  "before": [
+    {
+      "id": "A1",
+      "archetype": "understand",
+      "seq": [
+        "orientation",
+        "explanation",
+        "consolidation"
+      ]
+    },
+    {
+      "id": "A2",
+      "archetype": "analyse",
+      "seq": [
+        "orientation",
+        "explanation",
+        "comparison",
+        "consolidation"
+      ]
+    },
+    {
+      "id": "A3",
+      "archetype": "understand",
+      "seq": [
+        "orientation",
+        "explanation",
+        "consolidation"
+      ]
+    },
+    {
+      "id": "A4",
+      "archetype": "understand",
+      "seq": [
+        "orientation",
+        "explanation",
+        "consolidation"
+      ]
+    },
+    {
+      "id": "A5",
+      "archetype": "apply",
+      "seq": [
+        "orientation",
+        "worked_example",
+        "application",
+        "consolidation"
+      ]
+    }
+  ],
+  "after": [
+    {
+      "id": "A1",
+      "archetype": "understand",
+      "seq": [
+        "orientation",
+        "framing",
+        "activation",
+        "explanation",
+        "example",
+        "non_example",
+        "misconception_confrontation",
+        "guided_practice",
+        "independent_performance",
+        "verification",
+        "reflection",
+        "transition"
+      ]
+    },
+    {
+      "id": "A2",
+      "archetype": "apply",
+      "seq": [
+        "orientation",
+        "framing",
+        "activation",
+        "criteria_exposition",
+        "worked_thinking",
+        "guided_practice",
+        "independent_performance",
+        "verification",
+        "revision",
+        "reflection",
+        "transfer",
+        "transition"
+      ]
+    },
+    {
+      "id": "A3",
+      "archetype": "analyse",
+      "seq": [
+        "orientation",
+        "framing",
+        "activation",
+        "criteria_exposition",
+        "explanation",
+        "worked_thinking",
+        "guided_inquiry",
+        "guided_practice",
+        "independent_performance",
+        "verification",
+        "reflection",
+        "transfer",
+        "transition"
+      ]
+    },
+    {
+      "id": "A4",
+      "archetype": "evaluate",
+      "seq": [
+        "orientation",
+        "framing",
+        "activation",
+        "perspective_construction",
+        "criteria_exposition",
+        "criteria_construction",
+        "worked_judgement",
+        "guided_inquiry",
+        "guided_reasoning",
+        "independent_performance",
+        "evaluative_judgement",
+        "verification",
+        "reflection",
+        "transfer",
+        "transition"
+      ]
+    },
+    {
+      "id": "A5",
+      "archetype": "understand",
+      "seq": [
+        "orientation",
+        "framing",
+        "activation",
+        "explanation",
+        "example",
+        "non_example",
+        "misconception_confrontation",
+        "guided_practice",
+        "independent_performance",
+        "verification",
+        "reflection",
+        "transition"
+      ]
+    }
+  ],
+  "renderer": {
+    "ok": true,
+    "errors": []
+  }
+}

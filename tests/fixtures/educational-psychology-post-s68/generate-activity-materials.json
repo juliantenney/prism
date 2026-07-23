@@ -1,0 +1,189 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Introduction to Educational Psychology",
+          "body_format": "markdown",
+          "body": "## Educational Psychology\n\nEducational psychology is the scientific study of how people learn in educational settings and how teaching, environments, social factors, and individual differences influence learning.\n\n### What does it examine?\n\n- Learning processes\n- Cognitive development\n- Motivation and engagement\n- Memory and information processing\n- Individual differences among learners\n- Educational environments and teaching approaches\n\n### Why is it important?\n\nEducational psychology helps educators make informed decisions about teaching and helps learners understand how learning occurs. Research in this field informs educational practice, curriculum design, learner support, and the development of effective learning experiences."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "activity_id": "A1",
+          "title": "Worked Example: Defining the Discipline",
+          "body_format": "markdown",
+          "body": "## Worked Example\n\nA student is asked: *What is educational psychology?*\n\nAn expert response begins by defining the field as the scientific study of learning in educational contexts. The explanation then expands by identifying areas such as memory, motivation, development, and learner differences. Finally, the response connects these areas to practice by explaining that evidence about learning helps teachers and learners make more effective decisions.\n\nThe reasoning moves from:\n\n1. Definition\n2. Areas of study\n3. Practical significance"
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Sample Response",
+          "body_format": "markdown",
+          "body": "## Sample Response\n\nEducational psychology is the scientific study of how people learn in educational settings. It investigates topics such as memory, motivation, cognitive development, and individual differences among learners. Knowledge from educational psychology helps educators design effective learning experiences and supports learners in developing successful learning strategies."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Self-Check Checklist",
+          "body_format": "markdown",
+          "body": "## Verification Checklist\n\n- Have I provided an accurate definition of educational psychology?\n- Have I identified at least three areas studied within the field?\n- Have I explained why the field is important?\n- Have I connected the field to learning or teaching?\n\nIf any answer is 'No', revise the relevant section before continuing."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "activity_id": "A2",
+          "title": "Major Learning Perspectives",
+          "body_format": "markdown",
+          "body": "## Four Perspectives on Learning\n\n### Behaviourism\nLearning is demonstrated through observable changes in behaviour. Reinforcement and practice play central roles.\n\n### Cognitivism\nLearning involves mental processes such as memory, thinking, and problem-solving.\n\n### Constructivism\nLearners actively construct understanding by linking new information with prior knowledge.\n\n### Social Learning\nLearning is influenced by observation, modelling, and interaction with others.\n\nEach perspective offers a different explanation of how learning occurs and therefore suggests different approaches to teaching."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "worked_example",
+          "activity_id": "A2",
+          "title": "Worked Analytical Comparison",
+          "body_format": "markdown",
+          "body": "## Worked Comparison\n\nConsider behaviourism and constructivism.\n\nBehaviourism focuses on observable behaviour and emphasises reinforcement. Constructivism focuses on the learner's active construction of meaning.\n\nAn analytical comparison does more than list features. It explains that the two theories differ in how learning is understood. One emphasises external influences on behaviour, while the other emphasises the learner's internal development of understanding.\n\nThis comparison identifies both differences and their implications for teaching."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "comparison_table",
+          "activity_id": "A2",
+          "title": "Learning Perspectives Comparison Table",
+          "body_format": "markdown",
+          "body": "| Theory | Central Focus | View of Learning | Role of Learner | Teaching Implications |\n| --- | --- | --- | --- | --- |\n| Behaviourism | Observable behaviour | Behaviour change through reinforcement | Responds to stimuli and feedback | Practice and reinforcement |\n| Cognitivism |  |  |  |  |\n| Constructivism |  |  |  |  |\n| Social Learning |  |  |  |  |"
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Comparison Quality Checklist",
+          "body_format": "markdown",
+          "body": "## Verification Checklist\n\n- Did I accurately describe each theory?\n- Did I identify meaningful similarities or differences?\n- Did I use correct terminology?\n- Did I explain implications rather than simply listing features?\n\nRevise any section that does not meet these criteria."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "text",
+          "activity_id": "A3",
+          "title": "Human Memory During Learning",
+          "body_format": "markdown",
+          "body": "## Building a Mental Model of Memory\n\nLearning depends on a connected memory system rather than three isolated components. Information first enters sensory memory, where it is briefly noticed. Some of this information moves into working memory, the part of the system responsible for active processing. Information that is processed effectively can then become part of long-term memory, where it is available for later retrieval.\n\nThe system is constrained by the limited capacity of working memory. Because working memory can process only a limited amount of information at one time, learning is more successful when information is organised and manageable.\n\nWhen information is attended to, processed, and connected to existing knowledge, the system operates effectively and information is retained. When information receives insufficient processing or exceeds working-memory capacity, information is less likely to be retained and may be forgotten. Understanding learning therefore requires seeing how the entire memory system works together rather than viewing its components separately."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "modelling_note",
+          "activity_id": "A3",
+          "title": "Worked Walkthrough: From Information to Knowledge",
+          "body_format": "markdown",
+          "body": "## Expert Thinking Walkthrough\n\nA student attends a lecture and encounters a new concept. The concept is initially received as incoming information. At this point, the information has only been noticed and could easily disappear if attention is directed elsewhere.\n\nThe student focuses on the concept and begins connecting it with ideas encountered earlier in the course. This creates an intermediate result: the information is now being actively processed rather than simply noticed. The learner is comparing, organising, and interpreting what has been encountered.\n\nBecause the concept has been processed meaningfully, it becomes associated with existing knowledge. The result is that the idea is stored in a more durable form and becomes available beyond the immediate learning event.\n\nSeveral weeks later, the learner encounters a related problem and recalls the concept. The successful retrieval demonstrates that earlier processing supported lasting retention. The final conclusion is that retained knowledge emerges not from exposure alone but from a sequence in which information is received, processed, stored, and later retrieved."
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "checklist",
+          "activity_id": "A3",
+          "title": "Memory Explanation Checklist",
+          "body_format": "markdown",
+          "body": "## Verification Checklist\n\n- Have I included sensory memory, working memory, and long-term memory?\n- Have I explained the role of each stage?\n- Have I described the relationships between stages?\n- Have I used key terminology accurately?\n\nRevise any missing or unclear elements."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "scenario",
+          "activity_id": "A4",
+          "title": "Learner Scenarios",
+          "body_format": "markdown",
+          "body": "## Scenario 1: Maya\n\nMaya is highly interested in environmental issues and chooses optional reading beyond course requirements. She regularly participates in learning activities and seeks feedback.\n\n## Scenario 2: Daniel\n\nDaniel recently joined the programme and is unfamiliar with some academic expectations. He contributes less frequently and sometimes appears uncertain about how to approach learning tasks.\n\nConsider how motivation, experience, confidence, and background may influence their engagement."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "analysis_table",
+          "activity_id": "A4",
+          "title": "Learner Analysis Table",
+          "body_format": "markdown",
+          "body": "| Learner | Motivation Factors | Individual Differences | Engagement Indicators | Possible Educational Responses |\n| --- | --- | --- | --- | --- |\n| Maya | Interest in topic | Strong prior interest | Active participation | Continue providing challenging opportunities |\n| Daniel |  |  |  |  |"
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Analysis Checklist",
+          "body_format": "markdown",
+          "body": "## Verification Checklist\n\n- Did I identify motivation factors?\n- Did I consider individual differences?\n- Did I link these factors to engagement?\n- Did I propose realistic ways to support learning?\n\nRevise any response that lacks evidence-based connections."
+        }
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "worked_example",
+          "activity_id": "A5",
+          "title": "Applying Educational Psychology",
+          "body_format": "markdown",
+          "body": "## Worked Example\n\nA lecturer notices that students struggle to retain complex information.\n\nAn educational psychology perspective considers several factors. Information may overload working memory, learners may have differing levels of prior knowledge, and motivation may vary across the group.\n\nThe lecturer responds by breaking content into smaller sections, providing opportunities for retrieval practice, connecting learning to real-world examples, and offering structured support. These decisions are justified using principles of memory, motivation, and learner differences.\n\nThe example demonstrates how multiple concepts can be combined when designing learning experiences."
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "planning_table",
+          "activity_id": "A5",
+          "title": "Educational Psychology Planning Framework",
+          "body_format": "markdown",
+          "body": "| Learning Challenge | Memory Considerations | Motivation Strategies | Support Mechanisms | Rationale |\n| --- | --- | --- | --- | --- |\n|  |  |  |  |  |\n|  |  |  |  |  |"
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "checklist",
+          "activity_id": "A5",
+          "title": "Synthesis Checklist",
+          "body_format": "markdown",
+          "body": "## Verification Checklist\n\n- Have I included ideas from multiple educational psychology concepts?\n- Have I justified my choices?\n- Are the proposed strategies realistic and relevant?\n- Is my explanation clear and coherent?\n\nRevise any section that fails one or more criteria."
+        },
+        {
+          "material_id": "A5-M4",
+          "material_type": "transfer_prompt",
+          "activity_id": "A5",
+          "title": "Transfer Activity",
+          "body_format": "markdown",
+          "body": "## Transfer Prompt\n\nIdentify a current or future learning situation.\n\nExplain:\n\n1. Which educational psychology principles apply.\n2. How they could improve learning.\n3. Why these changes would be effective.\n\nSupport your reasoning using ideas from this session."
+        },
+        {
+          "material_id": "A5-M5",
+          "material_type": "consolidation_summary",
+          "activity_id": "A5",
+          "title": "Session Summary",
+          "body_format": "markdown",
+          "body": "## What to Remember\n\nEducational psychology examines how people learn and how educational experiences can support learning. The field draws on research about learning, motivation, memory, development, and learner differences.\n\nDifferent learning theories provide alternative explanations of how learning occurs. Behaviourist, cognitivist, constructivist, and social learning perspectives each highlight different influences on learning.\n\nMemory plays a critical role in learning through the interaction of sensory memory, working memory, and long-term memory. Motivation, individual differences, and social factors also shape learner engagement.\n\nA key message from educational psychology is that effective learning experiences are informed by evidence about how people learn. Understanding these principles can help both educators and learners make more effective decisions."
+        }
+      ]
+    }
+  ]
+}

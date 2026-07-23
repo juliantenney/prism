@@ -1,0 +1,63 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "learning_sequence",
+    "enriched_by": [
+      "learning_sequence"
+    ]
+  },
+  "learning_sequence": {
+    "sequence_type": "self_directed_study_flow",
+    "ordered_activity_ids": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "sequence_position": 1,
+        "duration_minutes": 12,
+        "purpose": "Establish core disciplinary understanding and vocabulary."
+      },
+      {
+        "activity_id": "A2",
+        "sequence_position": 2,
+        "duration_minutes": 15,
+        "purpose": "Analyse and compare major theories of learning."
+      },
+      {
+        "activity_id": "A3",
+        "sequence_position": 3,
+        "duration_minutes": 10,
+        "purpose": "Develop a mental model of memory and information processing."
+      },
+      {
+        "activity_id": "A4",
+        "sequence_position": 4,
+        "duration_minutes": 10,
+        "purpose": "Apply concepts to learner motivation, engagement, and individual differences."
+      },
+      {
+        "activity_id": "A5",
+        "sequence_position": 5,
+        "duration_minutes": 13,
+        "purpose": "Integrate and apply educational psychology concepts in a synthesis task."
+      }
+    ],
+    "navigation": {
+      "entry_activity_id": "A1",
+      "exit_activity_id": "A5",
+      "progression_model": "foundation_to_application",
+      "completion_rule": "Complete activities in order before progressing to the next activity."
+    },
+    "study_guidance": {
+      "recommended_pacing": "Follow the sequence as presented. Complete verification activities before moving forward.",
+      "knowledge_building_pattern": "Concept introduction -> theoretical comparison -> cognitive process model -> learner factors -> integrated application",
+      "independence_progression": "Worked support is strongest in early activities and gradually reduces as learners move toward independent synthesis and transfer."
+    }
+  }
+}

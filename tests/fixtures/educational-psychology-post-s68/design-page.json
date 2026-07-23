@@ -1,0 +1,28 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "## Welcome\n\nThis self-study resource introduces the field of educational psychology and explores how psychological theories and research help explain learning. You will progress from foundational concepts through learning theories, memory processes, motivation, individual differences, and the practical application of educational psychology to educational settings.\n\nThe session is designed to be completed independently in approximately 60 minutes."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "## Why Study Educational Psychology?\n\nEducational psychology helps explain how people learn and how educational experiences can be designed to support successful learning. By examining theories of learning, cognitive processes, motivation, and learner diversity, students gain a foundation for understanding both educational practice and their own learning experiences."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "## Knowledge Summary\n\nEducational psychology is the scientific study of learning within educational contexts. The discipline investigates how learners acquire knowledge, how cognitive processes influence learning, and how teaching approaches, environments, and social factors affect educational experiences.\n\nSeveral major learning perspectives provide different explanations of learning. Behaviourism focuses on observable behavioural change and the role of reinforcement. Cognitivism examines mental processes such as memory and problem-solving. Constructivism proposes that learners actively build understanding through experience and prior knowledge. Social learning perspectives emphasise observation, modelling, and interaction with others. Together, these perspectives provide complementary explanations of learning.\n\nA central concept in educational psychology is information processing. Learning involves the movement of information through sensory memory, working memory, and long-term memory. Because working memory has limited capacity, the way information is organised and presented has important implications for learning and retention.\n\nMotivation influences effort, persistence, and engagement. Both intrinsic motivation, arising from personal interest, and extrinsic motivation, arising from external outcomes, can shape learner behaviour. Motivation interacts with individual differences such as prior knowledge, experience, ability, and background.\n\nEducational psychology also recognises the importance of social and cultural influences. Learning occurs within environments shaped by relationships, collaboration, and participation in communities of learning. Social constructivist perspectives highlight how interaction can support knowledge development.\n\nThe application of educational psychology involves using evidence about learning to inform educational decisions. Effective educational experiences often incorporate appropriate challenge, scaffolding, active engagement, inclusive practices, and opportunities for meaningful knowledge construction. Understanding these relationships enables learners and educators to make more informed decisions about teaching and learning."
+    },
+    "study_tips": {
+      "format": "markdown",
+      "body": "## Study Tips\n\n- Work through activities in the recommended sequence.\n- Read worked examples carefully before completing independent tasks.\n- Use each verification checklist to identify areas for improvement.\n- Focus on relationships between concepts rather than memorising isolated definitions.\n- Connect theories and principles to your own educational experiences.\n- Complete the transfer activity to strengthen long-term understanding and application.\n\nBy the end of the session, you should be able to explain major concepts in educational psychology and apply them to educational situations and personal learning contexts."
+    }
+  }
+}

@@ -19,6 +19,7 @@ Sprint 68 demonstrated that composition, tables, multi-part text, ordering, and 
 - New learner surfaces follow the registry + response-part + certification extension path
 - Unknown archetype variants and unsupported surfaces fail explicitly
 - Sprint 68 closeout: [`../sprints/sprint-68-closeout.md`](../sprints/sprint-68-closeout.md)
+- Sprint 69 planning pack: [`../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md`](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md)
 
 ## 2026-05-11 - Docs consolidation and legacy example archive
 

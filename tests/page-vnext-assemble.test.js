@@ -122,6 +122,30 @@ test("EP + DLA overlays activities by activity_id", () => {
   assert.deepEqual(result.page.assembly_state.enriched_by, ["episode_plan", "dla"]);
 });
 
+test("DLA episode_plan overwrite is ignored; canonical EP beats preserved", () => {
+  const dlaAttack = JSON.parse(JSON.stringify(dlaPartial));
+  dlaAttack.activities[0].episode_plan = {
+    archetype: "understand",
+    beats: [{ function: "consolidation" }]
+  };
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    dla: dlaAttack
+  });
+  assert.equal(result.ok, true);
+  const a1 = result.page.activities.find((row) => row.activity_id === "A1");
+  assert.equal(a1.episode_plan.archetype, "understand");
+  assert.deepEqual(
+    a1.episode_plan.beats.map((b) => b.function),
+    epShell.activities[0].episode_plan.beats.map((b) => b.function)
+  );
+  assert.ok(
+    (result.diagnostics || []).some(
+      (row) => row.code === "DOWNSTREAM_EPISODE_PLAN_OVERWRITE_IGNORED"
+    )
+  );
+});
+
 test("EP + DLA + GAM attaches materials and preserves DLA fields", () => {
   const result = assemble.assembleVNextPageFromPartials({
     episode_plan: epShell,

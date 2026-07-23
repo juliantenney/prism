@@ -1,0 +1,287 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "An Introduction to Educational Psychology",
+  "audience": "Learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan"
+    ],
+    "current_stage": "episode_plan"
+  },
+  "page_synthesis": {},
+  "learning_outcomes": [
+    {
+      "id": "LO1",
+      "statement": "Define educational psychology and describe its purpose in understanding learning within educational settings."
+    },
+    {
+      "id": "LO2",
+      "statement": "Differentiate between behaviourist, cognitivist, constructivist, and social learning perspectives using their key characteristics."
+    },
+    {
+      "id": "LO3",
+      "statement": "Explain how information moves through sensory memory, working memory, and long-term memory during learning."
+    },
+    {
+      "id": "LO4",
+      "statement": "Describe how motivation and individual differences influence learner engagement and educational experiences."
+    },
+    {
+      "id": "LO5",
+      "statement": "Illustrate how social and instructional factors can support learning through collaboration, scaffolding, and inclusive practice."
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "What Is Educational Psychology?",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Comparing Major Learning Perspectives",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "comparison"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A3",
+      "title": "How Memory Supports Learning",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A4",
+      "title": "Motivation, Diversity, and Engagement",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A5",
+      "title": "Applying Educational Psychology to Teaching and Learning",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "application"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    }
+  ],
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "mapped_learning_outcome_ids": [
+        "LO1"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "mapped_learning_outcome_ids": [
+        "LO2"
+      ],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "comparison"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A3",
+      "mapped_learning_outcome_ids": [
+        "LO3"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A4",
+      "mapped_learning_outcome_ids": [
+        "LO4"
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    },
+    {
+      "activity_id": "A5",
+      "mapped_learning_outcome_ids": [
+        "LO5"
+      ],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "worked_example"
+          },
+          {
+            "function": "application"
+          },
+          {
+            "function": "consolidation"
+          }
+        ]
+      }
+    }
+  ],
+  "source_artefacts": [
+    {
+      "artefact_type": "learning_outcomes",
+      "source_label": "Learning Outcomes",
+      "role": "structural"
+    }
+  ],
+  "generation_notes": {
+    "validation": {
+      "coverage_mode": "activity_aligned",
+      "known_issues": [],
+      "activity_coverage": "shell_only",
+      "material_coverage": "pending_gam",
+      "episode_plan_attachment": "attached",
+      "self_containment": "shell_only",
+      "schema_compliance": "episode_plan_boundary"
+    }
+  }
+}

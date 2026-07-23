@@ -2,7 +2,7 @@
 
 **Status:** Production certified (Sprint 68 / IMP-020)  
 **Audience:** Engineers extending learner interaction; educators reviewing renderer boundaries  
-**Related:** [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · [Diagnostics](learner-renderer-vnext-diagnostics.md) · [Extension guide](learner-renderer-vnext-extension-guide.md) · [Sprint 68 closeout](../sprints/sprint-68-closeout.md) · [Certification artefacts](../../artifacts/learner-renderer-vnext-certification.md)
+**Related:** [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · [Diagnostics](learner-renderer-vnext-diagnostics.md) · [Extension guide](learner-renderer-vnext-extension-guide.md) · [Sprint 68 closeout](../sprints/sprint-68-closeout.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md) · [Certification artefacts](../../artifacts/learner-renderer-vnext-certification.md)
 
 ---
 
@@ -86,6 +86,7 @@ flowchart TD
 | **DLA** | Activity scaffolds, cognition fields, tasks | DOM / workspaces |
 | **Manifestation model** | Assembled page JSON delivered to the renderer | Presentation layout |
 | **Educational semantics** | Parsed page model: activities, beats, materials, prompts | HTML |
+| **Episode Plan ownership** | Canonical archetype + beat sequence; downstream must not replan ([ownership boundary](./episode-plan-ownership-boundary.md)) | Presentation |
 | **Semantic composition** | Orient / Learn / Do / Check moments; exactly-once assignment | Persistence |
 | **Response parts** | Canonical “what the learner must produce” units | Visual chrome |
 | **Learner-surface requests** | Capability kind + provenance | Upstream authoring |

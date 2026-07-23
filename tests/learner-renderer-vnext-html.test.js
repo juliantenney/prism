@@ -98,7 +98,7 @@ test("vNext beat renderer omits a beat with no learner-facing content", () => {
 
 test("vNext beat heading uses learnerLabel and keeps source function as metadata", () => {
   const output = renderBeat({
-    sourceFunction: "check_understanding",
+    sourceFunction: "verification",
     learnerRole: "check",
     learnerLabel: "Check your work",
     instructions: [{ sourceStepNumber: 1, text: "Review your answer." }],
@@ -107,14 +107,14 @@ test("vNext beat heading uses learnerLabel and keeps source function as metadata
     expectedOutput: null
   });
 
-  assert.match(output, /data-beat-function="check_understanding"/);
+  assert.match(output, /data-beat-function="verification"/);
   assert.match(
     output,
     /<h3 class="util-beat-heading util-icon-heading">[\s\S]*<span class="util-semantic-icon__label">Check your work<\/span>/
   );
   assert.doesNotMatch(
     output,
-    /<span class="util-semantic-icon__label">check_understanding<\/span>/
+    /<span class="util-semantic-icon__label">verification<\/span>/
   );
 });
 
@@ -129,7 +129,7 @@ test("vNext beat renderer preserves material order and stable ID markers", () =>
     output.indexOf(`data-material-id="${id}"`)
   );
 
-  assert.deepEqual(materialIds, ["A5-M8", "A5-M7"]);
+  assert.deepEqual(materialIds, ["A5-M7", "A5-M8", "A5-M6"]);
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual(positions, positions.slice().sort((left, right) => left - right));
 });
@@ -207,7 +207,7 @@ test("vNext material renderer renders checklist criteria and revision guidance",
 test("vNext beat renderer renders expected output once with markdown body", () => {
   const activity = loadModel().model.activities.find((candidate) => candidate.id === "A1");
   const beat = activity.beats.find(
-    (candidate) => candidate.sourceFunction === "check_understanding"
+    (candidate) => candidate.sourceFunction === "verification"
   );
   const output = renderBeat(beat);
 

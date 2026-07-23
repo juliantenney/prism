@@ -450,6 +450,7 @@
     els.newWorkflowBtn = document.getElementById("newWorkflowBtn");
     els.duplicateWorkflowBtn = document.getElementById("duplicateWorkflowBtn");
     els.renameWorkflowBtn = document.getElementById("renameWorkflowBtn");
+    els.clearWorkflowRunDataBtn = document.getElementById("clearWorkflowRunDataBtn");
     els.addWorkflowStepBtn = document.getElementById("addWorkflowStepBtn");
     els.saveWorkflowBtn = document.getElementById("saveWorkflowBtn");
     els.saveWorkflowBtnBottom = document.getElementById("saveWorkflowBtnBottom");
@@ -8466,18 +8467,36 @@
       .toLowerCase();
   }
 
+  function attachLearnerPageIdentityFromWorkflow(page, workflow) {
+    var lib =
+      typeof window !== "undefined" && window.PRISM_LEARNER_RENDERER_VNEXT
+        ? window.PRISM_LEARNER_RENDERER_VNEXT
+        : typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_RENDERER_VNEXT
+          ? globalThis.PRISM_LEARNER_RENDERER_VNEXT
+          : null;
+    if (lib && typeof lib.attachLearnerPageIdentityFromWorkflow === "function") {
+      return lib.attachLearnerPageIdentityFromWorkflow(page, workflow);
+    }
+    return page;
+  }
+
   function resolvePageForRenderOrAssembly(parsed, wf, options) {
     var page = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
     if (!page || String(page.artifact_type || "").toLowerCase() !== "page") return parsed;
+    page = migrateEpisodePlanVocabularyInPage(page, "resolvePageForRenderOrAssembly:inputPage");
     var workflow = wf && typeof wf === "object" ? wf : resolveWorkflowForUpstreamArtefacts({});
-    if (!isPartialPageOutputWorkflowEnabled(workflow)) return parsed;
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) {
+      return attachLearnerPageIdentityFromWorkflow(page, workflow);
+    }
     var assembleMod = resolvePageVnextAssembleLib();
     if (!assembleMod) {
       throw new Error("vNext page assembly module unavailable");
     }
     if (typeof assembleMod.validateAssembledPageForRender === "function") {
       var completeCheck = assembleMod.validateAssembledPageForRender(page);
-      if (completeCheck && completeCheck.ok) return parsed;
+      if (completeCheck && completeCheck.ok) {
+        return attachLearnerPageIdentityFromWorkflow(page, workflow);
+      }
     }
     var opts = options && typeof options === "object" ? options : {};
     var captures = opts.captures && typeof opts.captures === "object" ? opts.captures : state.workflowRunCapturedOutputs;
@@ -8485,6 +8504,36 @@
       opts.capturesRaw && typeof opts.capturesRaw === "object"
         ? opts.capturesRaw
         : state.workflowRunCapturedOutputsRaw;
+    var migrationMod = resolveEpisodePlanPersistenceMigrationLib();
+    if (migrationMod && typeof migrationMod.migrateCaptureMap === "function") {
+      // no-op: migrateCaptureMap is internal; migrate maps via migrateRunStateRecord shape
+    }
+    if (migrationMod && typeof migrationMod.migrateCaptureText === "function") {
+      var migratedCaptures = {};
+      var migratedCapturesRaw = {};
+      var captureChanged = false;
+      Object.keys(captures || {}).forEach(function (stepId) {
+        var migrated = migrationMod.migrateCaptureText(captures[stepId]);
+        migratedCaptures[stepId] = migrated.changed ? migrated.text : captures[stepId];
+        if (migrated.changed) captureChanged = true;
+      });
+      Object.keys(capturesRaw || {}).forEach(function (stepId) {
+        var migratedRaw = migrationMod.migrateCaptureText(capturesRaw[stepId]);
+        migratedCapturesRaw[stepId] = migratedRaw.changed ? migratedRaw.text : capturesRaw[stepId];
+        if (migratedRaw.changed) captureChanged = true;
+      });
+      if (captureChanged) {
+        captures = migratedCaptures;
+        capturesRaw = migratedCapturesRaw;
+        if (!opts.captures) state.workflowRunCapturedOutputs = Object.assign({}, migratedCaptures);
+        if (!opts.capturesRaw) {
+          state.workflowRunCapturedOutputsRaw = Object.assign({}, migratedCapturesRaw);
+        }
+        if (state.selectedWorkflowId) {
+          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, { toastType: "" });
+        }
+      }
+    }
     var partials = {};
     var epRaw = readWorkflowStepCaptureByCanonicalId(workflow, "step_design_episode_plan", {
       captures: captures,
@@ -8498,6 +8547,10 @@
     if (!partials.episode_plan) {
       throw new Error("Episode plan capture is not valid JSON for assembly");
     }
+    partials.episode_plan = migrateEpisodePlanVocabularyInPage(
+      partials.episode_plan,
+      "resolvePageForRenderOrAssembly:episode_plan_capture"
+    );
     var stageCaptureSpecs = [
       { stage: "dla", canonicalId: "step_design_learning_activities" },
       { stage: "gam", canonicalId: "step_generate_activity_materials" },
@@ -8517,7 +8570,10 @@
       if (!parsedCapture) {
         throw new Error("Invalid JSON capture for " + spec.stage + " assembly stage");
       }
-      partials[spec.stage] = parsedCapture;
+      partials[spec.stage] = migrateEpisodePlanVocabularyInPage(
+        parsedCapture,
+        "resolvePageForRenderOrAssembly:" + spec.stage
+      );
     });
     var inlineStage = resolveCaptureStageFromPageArtefact(page);
     if (inlineStage && inlineStage !== "episode_plan") {
@@ -8531,6 +8587,31 @@
       ) {
         partials[inlineStage] = page;
       }
+    }
+    if (
+      typeof console !== "undefined" &&
+      typeof console.log === "function" &&
+      partials.episode_plan &&
+      Array.isArray(partials.episode_plan.activities)
+    ) {
+      partials.episode_plan.activities.forEach(function (activity) {
+        var selectedPlan = activity && activity.episode_plan ? activity.episode_plan : null;
+        var validationSequence = Array.isArray(selectedPlan && selectedPlan.beats)
+          ? selectedPlan.beats.map(function (beat) {
+              return String((beat && beat.function) || "");
+            })
+          : [];
+        console.log({
+          workflowId: String((workflow && workflow.id) || state.selectedWorkflowId || ""),
+          activityId: String((activity && activity.activity_id) || ""),
+          workflowActivityPlan: selectedPlan,
+          mirroredWorkflowPlan: null,
+          selectedPlan: selectedPlan,
+          validationSequence: validationSequence,
+          sourceProvenance:
+            "loadWorkflowRunStateStore→readWorkflowStepCaptureByCanonicalId(step_design_episode_plan)→migrateEpisodePlanVocabularyInPage→assembleVNextPageFromPartials"
+        });
+      });
     }
     var assembledResult = null;
     try {
@@ -8554,6 +8635,10 @@
     if (!assembledPage || typeof assembledPage !== "object" || Array.isArray(assembledPage)) {
       throw new Error("vNext page assembly produced no renderable page object");
     }
+    assembledPage = migrateEpisodePlanVocabularyInPage(
+      assembledPage,
+      "resolvePageForRenderOrAssembly:assembledPage"
+    );
     if (typeof assembleMod.validateAssembledPageForRender === "function") {
       var assembledCheck = assembleMod.validateAssembledPageForRender(assembledPage);
       if (!assembledCheck || !assembledCheck.ok) {
@@ -8563,7 +8648,7 @@
         );
       }
     }
-    return assembledPage;
+    return attachLearnerPageIdentityFromWorkflow(assembledPage, workflow);
   }
 
   function resolveEpisodePlanDlaIntegrationLib() {
@@ -10351,6 +10436,38 @@
       }
     }
     return null;
+  }
+
+  function resolveEpisodePlanPersistenceMigrationLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_EPISODE_PLAN_V1_PERSISTENCE_MIGRATION) {
+        return roots[i].PRISM_EPISODE_PLAN_V1_PERSISTENCE_MIGRATION;
+      }
+    }
+    return null;
+  }
+
+  function migrateEpisodePlanVocabularyInPage(page, provenance) {
+    var mod = resolveEpisodePlanPersistenceMigrationLib();
+    if (!mod || typeof mod.migratePageLikeArtefact !== "function") return page;
+    var migrated = mod.migratePageLikeArtefact(page);
+    if (
+      migrated &&
+      migrated.changed &&
+      typeof console !== "undefined" &&
+      typeof console.info === "function"
+    ) {
+      console.info("[prism:episode-plan-persistence-migration]", {
+        provenance: provenance || "page",
+        migrations: migrated.migrations
+      });
+    }
+    return migrated && migrated.page ? migrated.page : page;
   }
 
   function resolveWorkflowPageCaptureNormalizeLib() {
@@ -23364,56 +23481,21 @@
     }
   }
 
-  function workflowRunSnapshotHasCapturedData(snapshot) {
-    var rec = snapshot && typeof snapshot === "object" ? snapshot : null;
-    if (!rec) return false;
-    var captured =
-      rec.capturedOutputs && typeof rec.capturedOutputs === "object"
-        ? rec.capturedOutputs
-        : {};
-    var capturedRaw =
-      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
-        ? rec.capturedOutputsRaw
-        : {};
-    var hasText = function (obj) {
-      return Object.keys(obj).some(function (k) {
-        return !!String(obj[k] || "").trim();
-      });
-    };
-    return hasText(captured) || hasText(capturedRaw);
-  }
-
-  function workflowHasPersistedRunCaptureData(workflowId) {
-    var wid = String(workflowId || "").trim();
-    if (!wid) return false;
-    var store = loadWorkflowRunStateStore();
-    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
-    return workflowRunSnapshotHasCapturedData(rec);
-  }
-
-  function currentRunCaptureStateHasData() {
-    return workflowRunSnapshotHasCapturedData({
-      capturedOutputs: state.workflowRunCapturedOutputs,
-      capturedOutputsRaw: state.workflowRunCapturedOutputsRaw
-    });
-  }
-
-  function shouldClearRunDataOnWorkflowActivation(workflowId, sourceLabel) {
-    var wid = String(workflowId || "").trim();
-    if (!wid) return true;
-    var hasExisting = workflowHasPersistedRunCaptureData(wid) || currentRunCaptureStateHasData();
-    if (!hasExisting) return true;
-    var source = String(sourceLabel || "workflow").trim();
-    var msg =
-      "Run data already exists for this workflow.\n\n" +
-      "Press OK to clear run data and start fresh.\n" +
-      "Press Cancel to preserve existing run data.\n\n" +
-      "Source: " +
-      source;
-    if (typeof window !== "undefined" && typeof window.confirm === "function") {
-      return !!window.confirm(msg);
+  /** Run data is preserved on select/run; users clear it explicitly via Clear run data. */
+  function handleClearWorkflowRunData() {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    if (!workflowId) {
+      showToast("Select a workflow first.", "error");
+      return;
     }
-    return true;
+    clearWorkflowRunCaptureState({
+      workflowId: workflowId,
+      resetIndex: true,
+      clearDom: true
+    });
+    resetWorkflowRunNavigationState({ resetIndex: true });
+    updateWorkflowRunView();
+    showToast("Run data cleared.", "success");
   }
 
   function workflowRunStepHasBlockingCaptureErrors(stepId) {
@@ -24156,14 +24238,7 @@
     renumberWorkflowSteps();
     if (isRun) {
       var runWorkflowId = String(state.selectedWorkflowId || "").trim();
-      var clearOnRun = shouldClearRunDataOnWorkflowActivation(runWorkflowId, "run workflow");
-      if (clearOnRun) {
-        clearWorkflowRunCaptureState({
-          workflowId: runWorkflowId,
-          resetIndex: true,
-          clearDom: true
-        });
-      } else if (runWorkflowId) {
+      if (runWorkflowId) {
         restoreWorkflowRunStateForWorkflow(runWorkflowId);
       }
       resetWorkflowRunNavigationState({ resetIndex: true });
@@ -26667,7 +26742,23 @@
     if (!raw) return {};
     try {
       var parsed = JSON.parse(raw);
-      return parsed && typeof parsed === "object" ? parsed : {};
+      var store = parsed && typeof parsed === "object" ? parsed : {};
+      var migrationMod = resolveEpisodePlanPersistenceMigrationLib();
+      if (migrationMod && typeof migrationMod.migrateRunStateStore === "function") {
+        var migrated = migrationMod.migrateRunStateStore(store);
+        if (migrated && migrated.changed) {
+          saveWorkflowRunStateStore(migrated.store);
+          if (typeof console !== "undefined" && typeof console.info === "function") {
+            console.info("[prism:episode-plan-persistence-migration]", {
+              provenance: "loadWorkflowRunStateStore",
+              storageKey: WORKFLOW_RUN_STATE_STORAGE_KEY,
+              migrations: migrated.migrations
+            });
+          }
+          return migrated.store;
+        }
+      }
+      return store;
     } catch (_err) {
       return {};
     }
@@ -26868,6 +26959,7 @@
     if (els.deleteWorkflowBtn) els.deleteWorkflowBtn.disabled = true;
     if (els.duplicateWorkflowBtn) els.duplicateWorkflowBtn.disabled = true;
     if (els.renameWorkflowBtn) els.renameWorkflowBtn.disabled = true;
+    if (els.clearWorkflowRunDataBtn) els.clearWorkflowRunDataBtn.disabled = true;
   }
 
   function selectWorkflow(id) {
@@ -26884,16 +26976,7 @@
     ) {
       persistWorkflowRunStateForWorkflow(prevSelected, { toastType: "" });
     }
-    var clearOnSelect = shouldClearRunDataOnWorkflowActivation(wf.id, "select workflow");
-    if (clearOnSelect) {
-      clearWorkflowRunCaptureState({
-        workflowId: wf.id,
-        resetIndex: true,
-        clearDom: false
-      });
-    } else {
-      restoreWorkflowRunStateForWorkflow(wf.id);
-    }
+    restoreWorkflowRunStateForWorkflow(wf.id);
     state.selectedWorkflowId = wf.id;
     populateWorkflowDetail(wf, {
       preserveRunNavigation: state.workflowDetailMode === "run"
@@ -27005,6 +27088,7 @@
     if (els.deleteWorkflowBtn) els.deleteWorkflowBtn.disabled = false;
     if (els.duplicateWorkflowBtn) els.duplicateWorkflowBtn.disabled = false;
     if (els.renameWorkflowBtn) els.renameWorkflowBtn.disabled = false;
+    if (els.clearWorkflowRunDataBtn) els.clearWorkflowRunDataBtn.disabled = false;
 
     // Reset transient run navigation when loading/selecting a workflow unless restoring run state.
     if (!opts.preserveRunNavigation) {
@@ -42966,6 +43050,9 @@
       ".util-learner-renderer-vnext .util-composition-preamble{margin:0 0 var(--learner-space-2)}",
       ".util-learner-renderer-vnext .util-composition-reasoning-orientation{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569;margin:0 0 var(--learner-space-2)}",
       ".util-learner-renderer-vnext .util-composition-self-explanation{color:#374151;margin:0}",
+      ".util-learner-renderer-vnext .util-composition-argument-structure{margin:var(--learner-space-3) 0 0;padding:var(--learner-space-2) .75rem;background:#fafafa;border-left-color:#d1d5db}",
+      ".util-learner-renderer-vnext .util-composition-argument-structure .util-guidance-label{font-size:var(--learner-text-xs);line-height:1.35;font-weight:600;color:#64748b;margin:0 0 .3rem}",
+      ".util-learner-renderer-vnext .util-composition-argument-structure .util-guidance-body{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#374151}",
       ".util-learner-renderer-vnext .util-composition-moment .util-beat-instruction{border-left:0;padding:0;margin:0 0 var(--learner-space-3);background:transparent}",
       ".util-learner-renderer-vnext .util-composition-moment .util-beat-instruction .util-semantic-icon{margin-top:.12em}",
       ".util-learner-renderer-vnext .util-composition-learn-item{margin:0 0 var(--learner-space-3)}",
@@ -43017,8 +43104,9 @@
       ".util-learner-renderer-vnext .util-learner-table-workspace__table{margin:0}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table table{width:100%;border-collapse:collapse}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--fixed{padding:.5rem .65rem;background:#f1f5f9;color:#0f172a}",
-      ".util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:8rem}",
-      ".util-learner-renderer-vnext .util-learner-table-workspace__input{display:block;width:100%;min-width:0;box-sizing:border-box;padding:.4rem .5rem;font:inherit;font-size:var(--learner-text-sm);line-height:1.35;color:#111827;border:1px solid #cbd5e1;border-radius:4px;background:#fff}",
+      ".util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:8rem;height:1px;vertical-align:top}",
+      ".util-learner-renderer-vnext .util-learner-table-workspace__cell--editable-inner{display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;min-height:100%;height:100%}",
+      ".util-learner-renderer-vnext .util-learner-table-workspace__input{flex:1 1 auto;display:block;width:100%;min-width:0;min-height:100%;box-sizing:border-box;margin:0;padding:.4rem .5rem;resize:none;overflow:auto;font:inherit;font-size:var(--learner-text-sm);line-height:1.35;color:#111827;border:1px solid #cbd5e1;border-radius:4px;background:#fff;vertical-align:top}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__input:focus{outline:2px solid #2563eb;outline-offset:0;border-color:#93c5fd}",
       ".util-learner-renderer-vnext .util-composition-check-guidance{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569;margin:0 0 var(--learner-space-3);padding:0 0 var(--learner-space-2);border-bottom:1px solid #f1f5f9}",
       ".util-learner-renderer-vnext .util-composition-reveal{margin:var(--learner-space-3) 0;border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden}",
@@ -43086,7 +43174,9 @@
       ".util-learner-renderer-vnext .util-page-orientation,.util-learner-renderer-vnext .util-learning-activities,.util-learner-renderer-vnext .util-assessment-section,.util-learner-renderer-vnext .util-study-tips{margin:0 0 var(--learner-space-5)}" +
       ".util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-xl);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:var(--learner-space-5) 0 var(--learner-space-2)}" +
       ".util-learner-renderer-vnext .util-page-orientation .util-section-heading:first-child{margin-top:0}" +
-      ".util-learner-renderer-vnext .util-activity{margin:0 0 var(--learner-space-5);padding:0;border:0;background:transparent;box-shadow:none;border-radius:0}" +
+      ".util-learner-renderer-vnext .util-activity{margin:0;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0}" +
+      ".util-learner-renderer-vnext .util-activity+.util-activity{margin-top:4rem;padding-top:3rem;border-top:1px solid #e5e7eb}" +
+      ".util-learner-renderer-vnext .util-learning-activities>.util-activity:last-child{margin-bottom:var(--learner-space-5)}" +
       ".util-learner-renderer-vnext .util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--learner-space-2);flex-wrap:wrap;margin:0 0 var(--learner-space-3)}" +
       ".util-learner-renderer-vnext .util-activity-title{font-size:var(--learner-text-lg);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:0}" +
       ".util-learner-renderer-vnext .util-badge-row{display:flex;gap:.5rem;flex-wrap:wrap}" +
@@ -43123,6 +43213,22 @@
       ".util-learner-renderer-vnext .util-assessment-options li,.util-learner-renderer-vnext .util-assessment-rationale,.util-learner-renderer-vnext .util-assessment-feedback p{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}" +
       ".util-learner-renderer-vnext .util-assessment-feedback{margin-top:var(--learner-space-2)}" +
       ".util-learner-renderer-vnext .util-assessment-feedback summary{cursor:pointer;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#374151}" +
+      ".util-learner-renderer-vnext .util-assessment-fieldset{border:0;margin:0;padding:0;min-width:0}" +
+      ".util-learner-renderer-vnext .util-assessment-legend{padding:0;margin:0 0 var(--learner-space-2);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:500;color:#111827}" +
+      ".util-learner-renderer-vnext .util-assessment-option{display:flex;align-items:flex-start;gap:.55rem;margin:0 0 .55rem}" +
+      ".util-learner-renderer-vnext .util-assessment-option__input{margin:.35rem 0 0;flex:0 0 auto}" +
+      ".util-learner-renderer-vnext .util-assessment-option__label{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;cursor:pointer}" +
+      ".util-learner-renderer-vnext .util-assessment-option__input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
+      ".util-learner-renderer-vnext .util-assessment-check{margin-top:var(--learner-space-2);padding:.45rem .8rem;font:inherit;font-size:var(--learner-text-sm);font-weight:600;color:#1e3a8a;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;cursor:pointer}" +
+      ".util-learner-renderer-vnext .util-assessment-check:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
+      ".util-learner-renderer-vnext .util-assessment-result{margin-top:var(--learner-space-2);padding:var(--learner-space-2);border-left:3px solid #64748b;background:#f8fafc;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}" +
+      ".util-learner-renderer-vnext .util-assessment-result--prompt{border-left-color:#d97706;background:#fffbeb}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist{border:0;margin:0;padding:0;min-width:0}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist legend{padding:0;margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:var(--learner-leading-heading);font-weight:650;color:#374151}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist__item{display:flex;align-items:flex-start;gap:.55rem;margin:0 0 .55rem}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist__input{margin:.3rem 0 0;flex:0 0 auto}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist__label{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;cursor:pointer}" +
+      ".util-learner-renderer-vnext .util-interactive-checklist__input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
       ".util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}" +
       ".util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
       ".util-learner-renderer-vnext table{width:100%;border-collapse:collapse;min-width:34rem}" +
@@ -43138,8 +43244,8 @@
       journeyScrollLinkCss +
       ";width:auto}}" +
       "@media (max-width:820px){.util-learning-header__subtitle{white-space:normal}}" +
-      "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .8rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-journey-links{font-size:.8125rem}.util-journey-arrow{display:none}}" +
-      "@media print{.util-learning-header,.util-journey-nav{display:none!important}body.util-page-export--vnext{overflow:visible}.util-learner-page{width:100%;max-width:none;padding:0}}"
+      "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .8rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-journey-links{font-size:.8125rem}.util-journey-arrow{display:none}.util-learner-renderer-vnext .util-activity+.util-activity{margin-top:2.5rem;padding-top:2rem}}" +
+      "@media print{.util-learning-header,.util-journey-nav{display:none!important}body.util-page-export--vnext{overflow:visible}.util-learner-page{width:100%;max-width:none;padding:0}.util-learner-renderer-vnext .util-activity+.util-activity{margin-top:1.5rem;padding-top:1rem;border-top-color:#d1d5db;break-before:auto}.util-learner-renderer-vnext .util-assessment-check{display:none}.util-learner-renderer-vnext .util-assessment-result{display:none}.util-learner-renderer-vnext .util-assessment-option__input{accent-color:#111}.util-learner-renderer-vnext .util-interactive-checklist__input{accent-color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}}"
     );
   }
 
@@ -47841,7 +47947,10 @@
         compositionOptions: options.compositionOptions,
         baseName: options.baseName,
         enableSequencingInteractionPolicy: options.enableSequencingInteractionPolicy,
-        rendererVersion: options.rendererVersion
+        rendererVersion: options.rendererVersion,
+        workflow: options.workflow || findWorkflowById(state.selectedWorkflowId || "") || null,
+        captures: options.captures,
+        capturesRaw: options.capturesRaw
       });
       return pageRendered;
     }
@@ -48369,6 +48478,9 @@
     }
     if (els.renameWorkflowBtn) {
       els.renameWorkflowBtn.addEventListener("click", handleRenameWorkflow);
+    }
+    if (els.clearWorkflowRunDataBtn) {
+      els.clearWorkflowRunDataBtn.addEventListener("click", handleClearWorkflowRunData);
     }
     if (els.addWorkflowStepBtn) {
       els.addWorkflowStepBtn.addEventListener("click", handleAddWorkflowStep);
@@ -49015,6 +49127,13 @@
     prismTestApi.getWorkflowsForTest = function () {
       return Array.isArray(state.workflows) ? state.workflows.slice() : [];
     };
+    prismTestApi.loadWorkflowRunStateStoreForTest = function () {
+      return loadWorkflowRunStateStore();
+    };
+    prismTestApi.restoreWorkflowRunStateForWorkflowForTest = function (workflowId) {
+      restoreWorkflowRunStateForWorkflow(workflowId);
+    };
+    prismTestApi.migrateEpisodePlanVocabularyInPageForTest = migrateEpisodePlanVocabularyInPage;
     prismTestApi.setSelectedWorkflowIdForTest = function (workflowId) {
       state.selectedWorkflowId = String(workflowId || "").trim();
     };

@@ -200,7 +200,7 @@ test("static tables: non-workspace markdown tables are not regressed by workspac
   const html = renderMaterial(material);
   assert.match(html, /Widening funnel/);
   assert.doesNotMatch(html, /util-learner-table-workspace__cell--editable/);
-  assert.doesNotMatch(html, /<input/);
+  assert.doesNotMatch(html, /util-learner-table-workspace__input/);
 });
 
 test("presentation css: editable and fixed workspace cells use separate padding", () => {
@@ -213,6 +213,17 @@ test("presentation css: editable and fixed workspace cells use separate padding"
     source,
     /\.util-learner-table-workspace__table \.util-learner-table-workspace__cell--fixed\{padding:\.5rem \.65rem/
   );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__cell--editable\{[^"]*height:1px[^"]*vertical-align:top/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__cell--editable-inner\{[^"]*display:flex[^"]*min-height:100%[^"]*height:100%/
+  );
+  assert.match(source, /\.util-learner-table-workspace__input\{[^"]*flex:1 1 auto/);
+  assert.match(source, /\.util-learner-table-workspace__input\{[^"]*min-height:100%/);
+  assert.match(source, /\.util-learner-table-workspace__input\{[^"]*resize:none/);
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*padding:\.4rem \.5rem/);
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*border-radius:4px/);
   assert.match(source, /\.util-learner-table-workspace__input:focus\{[^"]*outline-offset:0/);

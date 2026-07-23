@@ -22,7 +22,6 @@ const {
 
 const repoRoot = path.resolve(__dirname, "..");
 const browserBundlePath = path.join(repoRoot, "lib", "learner-renderer-vnext-browser.js");
-const sourceRulesPath = path.join(repoRoot, "lib", "learner-renderer-vnext", "archetype-rules.js");
 const heteroFixturePath = path.join(
   repoRoot,
   "tests",
@@ -37,24 +36,6 @@ const kitchenSinkPath = path.join(
   "page-render",
   "learner-renderer-kitchen-sink-page.json"
 );
-
-const EPISODE_PLAN_V1_VARIANT_IDS = Object.freeze([
-  "understand-explain-model-practise-verify",
-  "understand-explain-model-verify",
-  "analyse-explain-model-practise-verify",
-  "analyse-model-practise-verify",
-  "analyse-explain-practise-verify",
-  "apply-explain-practise-verify",
-  "evaluate-explain-judgement-practise-transfer-verify",
-  "evaluate-explain-model-practise-transfer-verify"
-]);
-
-const JOURNEY_COMPRESSED_VARIANT_IDS = Object.freeze([
-  "understand-orient-explain-check",
-  "apply-orient-practise-feedback",
-  "analyse-orient-investigate-synthesise",
-  "evaluate-orient-judge-reflect"
-]);
 
 function createElementStub() {
   return {
@@ -173,17 +154,13 @@ function buildUnknownSequencePage() {
   };
 }
 
-test("production: browser bundle is rebuilt and includes episode-plan-v1 variant IDs", () => {
-  var source = fs.readFileSync(sourceRulesPath, "utf8");
+test("production: browser bundle has no journey-compatibility or composition-continuity modules", () => {
   var bundle = fs.readFileSync(browserBundlePath, "utf8");
-  EPISODE_PLAN_V1_VARIANT_IDS.concat(JOURNEY_COMPRESSED_VARIANT_IDS).forEach(function (variantId) {
-    assert.match(source, new RegExp('"' + variantId + '"'));
-    assert.match(
-      bundle,
-      new RegExp('"' + variantId + '"'),
-      "Stale browser bundle missing variant: " + variantId
-    );
-  });
+  assert.doesNotMatch(bundle, /journey-compatibility-registry\.js/);
+  assert.doesNotMatch(bundle, /canonical-composition-continuity\.js/);
+  assert.doesNotMatch(bundle, /JOURNEY_COMPATIBILITY_REGISTRY/);
+  assert.match(bundle, /shared-archetype-grammar/);
+  assert.match(bundle, /canonical-grammar/);
 });
 
 test("production: browser bundle and Node renderLearnerPageHtml agree for heteroscedasticity", () => {
@@ -204,7 +181,11 @@ test("production: unknown beat sequence fails with grouped primary diagnostic an
   assert.equal(result.ok, false);
   assert.ok(result.diagnostics && result.diagnostics.cascadeSummary);
   assert.ok(result.diagnostics.cascadeSummary.X1);
-  assert.equal(result.diagnostics.cascadeSummary.X1.primaryCode, "UNKNOWN_ARCHETYPE_VARIANT");
+  // Canonical FunctionEnum illegality is grammar-authoritative after Phase 4.
+  assert.equal(
+    result.diagnostics.cascadeSummary.X1.primaryCode,
+    "ARCHETYPE_GRAMMAR_VALIDATION_FAILED"
+  );
   assert.ok(result.diagnostics.cascadeSummary.X1.consequenceCounts.materials >= 1);
   assert.ok(result.diagnostics.cascadeSummary.X1.consequenceCounts.taskSteps >= 1);
   assert.ok(result.diagnostics.cascadeSummary.X1.consequenceCounts.expectedOutputs >= 1);
@@ -213,11 +194,14 @@ test("production: unknown beat sequence fails with grouped primary diagnostic an
   var rendered = renderPage(page);
   assert.ok(rendered.error);
   assert.match(rendered.error, /Activity X1 failed page-model construction/);
-  assert.match(rendered.error, /UNKNOWN_ARCHETYPE_VARIANT/);
+  assert.match(rendered.error, /ARCHETYPE_GRAMMAR_VALIDATION_FAILED/);
   assert.match(rendered.error, /Consequences:/);
   assert.ok(
     result.errors.some(function (error) {
-      return error.code === "UNASSIGNED_MATERIAL" && error.cascadeOf === "UNKNOWN_ARCHETYPE_VARIANT";
+      return (
+        error.code === "UNASSIGNED_MATERIAL" &&
+        error.cascadeOf === "ARCHETYPE_GRAMMAR_VALIDATION_FAILED"
+      );
     })
   );
 });
@@ -251,6 +235,9 @@ test(
     assert.equal(inspections.length, loaded.page.activities.length);
     inspections.forEach(function (row) {
       assert.equal(row.match, true, row.activityId + " " + (row.noMatchReason || ""));
+      assert.equal(row.validationRoute, "canonical-grammar");
+      assert.equal(row.runtimeAuthority, "shared-archetype-grammar");
+      assert.equal(row.bindingSource, "canonical-grammar-binding");
     });
 
     var buildPageModel = require("../lib/learner-renderer-vnext/build-page-model").buildPageModel;

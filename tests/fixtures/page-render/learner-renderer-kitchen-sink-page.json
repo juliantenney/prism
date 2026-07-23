@@ -68,7 +68,7 @@
             "function": "explanation"
           },
           {
-            "function": "check_understanding"
+            "function": "verification"
           }
         ]
       },
@@ -130,10 +130,10 @@
             "function": "explanation"
           },
           {
-            "function": "application"
+            "function": "guided_practice"
           },
           {
-            "function": "check_understanding"
+            "function": "verification"
           }
         ]
       },
@@ -187,13 +187,13 @@
             "function": "orientation"
           },
           {
-            "function": "worked_example"
+            "function": "worked_thinking"
           },
           {
-            "function": "analysis"
+            "function": "guided_practice"
           },
           {
-            "function": "check_understanding"
+            "function": "verification"
           }
         ]
       },
@@ -248,10 +248,10 @@
             "function": "orientation"
           },
           {
-            "function": "worked_example"
+            "function": "worked_thinking"
           },
           {
-            "function": "practice"
+            "function": "guided_practice"
           },
           {
             "function": "reflection"
@@ -310,10 +310,10 @@
             "function": "orientation"
           },
           {
-            "function": "comparison"
+            "function": "worked_judgement"
           },
           {
-            "function": "evaluation"
+            "function": "guided_practice"
           },
           {
             "function": "reflection"

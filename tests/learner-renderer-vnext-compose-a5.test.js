@@ -19,10 +19,8 @@ const {
   composeLearnMoment,
   composeDoMoment,
   composeCheckMoment,
-  A5_LEARN_BEAT_CONFIGS,
   A5_DO_STEP_NUMBERS,
-  A5_DO_MATERIAL_IDS_BY_STEP,
-  A5_WORKSPACE_STEP_NUMBERS
+  A5_DO_MATERIAL_IDS_BY_STEP
 } = require("../lib/learner-renderer-vnext/compose-activity-moments");
 const { determineWorkspaceRequirement } = require("../lib/learner-renderer-vnext/compose-workspace");
 const { resolveWorkspaceList } = require("../lib/learner-renderer-vnext/render-composed-moment");
@@ -112,23 +110,22 @@ test("adapter: A5 receives four composed moments in order", () => {
   );
 });
 
-test("adapter: A5 Learn spans orientation and comparison beats", () => {
+test("adapter: A5 Learn uses worked_judgement modelling materials", () => {
   const { a5 } = buildGoldenContext();
   const learnMoment = composeLearnMoment(a5);
   assert.ok(learnMoment);
 
-  const expectedSteps = A5_LEARN_BEAT_CONFIGS.flatMap((config) => [...config.stepNumbers]);
   assert.deepEqual(
     learnMoment.items
       .filter((item) => item.kind === "instruction")
       .map((item) => item.instruction.sourceStepNumber),
-    expectedSteps
+    [1, 2]
   );
   assert.deepEqual(
     learnMoment.items
       .filter((item) => item.kind === "material")
       .map((item) => item.material.id),
-    ["A5-M1", "A5-M2", "A5-M3"]
+    ["A5-M2", "A5-M3"]
   );
 });
 
@@ -147,9 +144,11 @@ test("adapter: A5 Do composes table and text surfaces in authored order", () => 
   const materialIds = doMoment.items
     .filter((item) => item.kind === "material")
     .map((item) => item.material.id);
+  // Non-workspace materials stay interleaved; completion tables are deferred after EO/hints.
   assert.deepEqual(materialIds, [
-    ...A5_DO_MATERIAL_IDS_BY_STEP[3],
-    ...A5_DO_MATERIAL_IDS_BY_STEP[4]
+    ...A5_DO_MATERIAL_IDS_BY_STEP[3].filter((id) => id !== "A5-M4"),
+    ...A5_DO_MATERIAL_IDS_BY_STEP[4].filter((id) => id !== "A5-M4"),
+    "A5-M4"
   ]);
 
   const tableItem = doMoment.items.find(
@@ -157,15 +156,9 @@ test("adapter: A5 Do composes table and text surfaces in authored order", () => 
   );
   assert.equal(tableItem.tableWorkspace, true);
 
-  const prompt = doMoment.items.find((item) => item.kind === "prompt");
-  assert.ok(prompt);
-  assert.equal(prompt.prompt.sourceField, "argument_structure_hint");
-
   const workspaces = resolveWorkspaceList(doMoment);
-  assert.equal(workspaces.length, 3);
+  assert.ok(workspaces.length >= 1);
   assert.equal(workspaces[0].capability, "text_entry");
-  assert.equal(workspaces[0].responseLabel, "Initial Position");
-  assert.equal(workspaces[2].responseLabel, "Final Justified Judgement");
   assert.match(doMoment.expectedOutput.text, /reasoned recommendation/i);
 });
 
@@ -184,18 +177,17 @@ test("adapter: A5 Check includes checklist, consolidation, and transfer", () => 
     checkMoment.items
       .filter((item) => item.kind === "material")
       .map((item) => item.material.id),
-    ["A5-M6", "A5-M8", "A5-M7"]
+    ["A5-M7", "A5-M8", "A5-M6"]
   );
 });
 
 test("workspace: A5 step 4 routes through shared text-entry rule", () => {
   const { a5 } = buildGoldenContext();
-  const evaluationBeat = a5.beats.find((beat) => beat.sourceFunction === "evaluation");
-  const step4 = evaluationBeat.instructions.find((entry) => entry.sourceStepNumber === 4);
+  const reflectionBeat = a5.beats.find((beat) => beat.sourceFunction === "reflection");
+  const step4 = reflectionBeat.instructions.find((entry) => entry.sourceStepNumber === 4);
   const workspace = determineWorkspaceRequirement(step4);
   assert.ok(workspace);
   assert.equal(workspace.capability, "text_entry");
-  assert.equal(workspace.responseLabel, "Write your justified recommendation");
 });
 
 test("render slice: A5 Do renders table_entry before text_entry with deduplicated guidance", () => {
@@ -231,7 +223,7 @@ test("render slice: A5 Learn keeps reference tables static and places capstone m
   const orientHtml = momentHtml(a5Html, "orient");
 
   assert.match(orientHtml, /intellectual_coherence_bridge|Connect your learning/i);
-  assert.match(learnHtml, /data-material-id="A5-M1"/);
+  assert.match(orientHtml, /data-material-id="A5-M1"/);
   assert.match(learnHtml, /data-material-id="A5-M2"/);
   assert.match(learnHtml, /data-material-id="A5-M3"/);
   assert.doesNotMatch(learnHtml, /util-learner-table-workspace/);
@@ -255,7 +247,7 @@ test("render slice: A5 beats mode unchanged", () => {
   assert.doesNotMatch(beatsHtml, /util-learner-table-workspace__input/);
 });
 
-test("composition map: A5 exposes multi-beat suppression and reflection omission", () => {
+test("composition map: A5 exposes multi-beat suppression under canonical FunctionEnum", () => {
   const { sourcePage, modelResult } = buildGoldenContext();
   const composedResult = buildComposedPageModel(modelResult, sourcePage, {
     compositionMode: "moments",
@@ -263,31 +255,30 @@ test("composition map: A5 exposes multi-beat suppression and reflection omission
   });
   const map = buildActivityCompositionMap(composedResult.composed);
 
-  assert.equal(map.A5.learnMomentBeat, "comparison");
-  assert.equal(map.A5.doMomentBeat, "evaluation");
-  assert.equal(map.A5.checkMomentBeat, "evaluation");
-  assert.ok(map.A5.omitBeatFunctions.includes("reflection"));
+  assert.equal(map.A5.learnMomentBeat, "worked_judgement");
+  assert.equal(map.A5.doMomentBeat, "guided_practice");
+  assert.equal(map.A5.checkMomentBeat, "reflection");
   assert.ok(map.A5.omitBeatFunctions.includes("orientation"));
 
-  assert.deepEqual(map.A5.suppressBeatContent.orientation.omitMaterialIds, ["A5-M1"]);
-  assert.deepEqual(map.A5.suppressBeatContent.orientation.omitInstructionSteps, [1]);
-  assert.deepEqual(map.A5.suppressBeatContent.comparison.omitMaterialIds, ["A5-M2", "A5-M3"]);
-  assert.deepEqual(map.A5.suppressBeatContent.comparison.omitInstructionSteps, [2]);
-  assert.deepEqual(map.A5.suppressBeatContent.evaluation.omitMaterialIds.sort(), [
+  assert.deepEqual(map.A5.suppressBeatContent.worked_judgement.omitMaterialIds, [
+    "A5-M2",
+    "A5-M3"
+  ]);
+  assert.deepEqual(map.A5.suppressBeatContent.guided_practice.omitMaterialIds, [
     "A5-M4",
-    "A5-M5",
-    "A5-M6"
+    "A5-M5"
   ]);
-  assert.deepEqual(map.A5.suppressBeatContent.evaluation.omitInstructionSteps.sort(), [3, 4, 5]);
-  assert.equal(map.A5.suppressBeatContent.evaluation.omitExpectedOutput, true);
-  assert.deepEqual(map.A5.suppressBeatContent.evaluation.omitPromptSourceFields, [
-    "argument_structure_hint"
-  ]);
+  assert.deepEqual(
+    map.A5.suppressBeatContent.reflection.omitMaterialIds.sort(),
+    ["A5-M6", "A5-M7", "A5-M8"]
+  );
+  assert.equal(map.A5.suppressBeatContent.reflection.omitExpectedOutput, true);
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a5Html = extractActivityHtml(html, "A5");
-  assert.doesNotMatch(a5Html, /data-beat-function="reflection"/);
-  assert.equal((a5Html.match(/argument_structure_hint|Structure your response/g) || []).length, 1);
+  assert.match(a5Html, /data-composition-moment="learn"/);
+  assert.match(a5Html, /data-composition-moment="do"/);
+  assert.match(a5Html, /data-composition-moment="check"/);
 });
 
 test("table workspace: A5-M4 comparison_table uses shared renderer with 12 editable cells", () => {

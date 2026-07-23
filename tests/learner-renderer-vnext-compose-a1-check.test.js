@@ -74,7 +74,7 @@ function getA1Moments(composedResult) {
 }
 
 function fullCheckSuppression(map) {
-  return map.A1.suppressBeatContent.check_understanding;
+  return map.A1.suppressBeatContent.verification;
 }
 
 test("adapter: A1 receives exactly one Check moment in moments mode", () => {
@@ -131,7 +131,7 @@ test("adapter: source order and identity are preserved in Check moment", () => {
   assert.deepEqual(kinds, ["step:3", "material:A1-M3", "step:4", "material:A1-M4"]);
 
   checkMoment.items.forEach((item) => {
-    assert.equal(item.sourceRef.beatFunction, "check_understanding");
+    assert.equal(item.sourceRef.beatFunction, "verification");
     assert.equal(item.sourceRef.activityId, "A1");
   });
 });
@@ -169,7 +169,7 @@ test("adapter: reveal behaviour is represented separately from HTML", () => {
 test("adapter: missing optional checking material degrades safely", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
-  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "verification");
   checkBeat.materials = checkBeat.materials.filter((material) => material.id !== "A1-M4");
 
   const checkMoment = composeCheckMoment(clone);
@@ -186,7 +186,7 @@ test("adapter: missing optional checking material degrades safely", () => {
 test("adapter: missing Check task steps degrades to no Check moment", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
-  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "verification");
   checkBeat.instructions = checkBeat.instructions.filter(
     (instruction) => instruction.sourceStepNumber !== 3 && instruction.sourceStepNumber !== 4
   );
@@ -216,7 +216,7 @@ test("suppression: merged filter removes all consumed Do and Check sources", () 
     buildComposedPageModel(modelResult, sourcePage, { compositionMode: "moments" }).composed
   );
   const { a1 } = buildGoldenContext();
-  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "verification");
   const filtered = applyBeatContentSuppression(checkBeat, fullCheckSuppression(map));
 
   assert.equal(filtered.instructions.length, 0);
@@ -230,7 +230,7 @@ test("suppression: empty filtered beat renders nothing", () => {
     buildComposedPageModel(modelResult, sourcePage, { compositionMode: "moments" }).composed
   );
   const { a1 } = buildGoldenContext();
-  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "verification");
   const filtered = applyBeatContentSuppression(checkBeat, fullCheckSuppression(map));
 
   assert.equal(renderBeat(filtered, fullCheckSuppression(map)), "");
@@ -277,8 +277,8 @@ test("render slice: consumed checking content is not duplicated in legacy beat",
     "A1"
   );
 
-  assert.doesNotMatch(a1Html, /data-beat-function="check_understanding"/);
-  assert.doesNotMatch(a1Html, /util-beat-section[^>]*data-beat-function="check_understanding"/);
+  assert.doesNotMatch(a1Html, /data-beat-function="verification"/);
+  assert.doesNotMatch(a1Html, /util-beat-section[^>]*data-beat-function="verification"/);
 });
 
 test("render slice: reveal UI is accessible and works without JavaScript", () => {
@@ -362,12 +362,12 @@ test("composition map: exposes Check moment and merged beat suppression hints", 
   const map = buildActivityCompositionMap(composedResult.composed);
 
   assert.ok(map.A1.checkMoment);
-  assert.deepEqual(fullCheckSuppression(map).omitInstructionSteps, [2, 3, 4, 5]);
-  assert.deepEqual(fullCheckSuppression(map).omitMaterialIds, ["A1-M2", "A1-M3", "A1-M4"]);
+  assert.deepEqual(fullCheckSuppression(map).omitInstructionSteps, [1, 2, 3, 4, 5]);
+  assert.deepEqual(fullCheckSuppression(map).omitMaterialIds, ["A1-M3", "A1-M4"]);
   assert.equal(fullCheckSuppression(map).omitExpectedOutput, true);
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a1Html = extractActivityHtml(html, "A1");
   assert.match(a1Html, /data-composition-moment="check"/);
-  assert.doesNotMatch(a1Html, /data-beat-function="check_understanding"/);
+  assert.doesNotMatch(a1Html, /data-beat-function="verification"/);
 });

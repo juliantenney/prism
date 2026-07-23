@@ -174,7 +174,7 @@ test("adapter: A2 Do moment includes scenarios, analysis table, and expected out
   assert.match(doMoment.expectedOutput.text, /successful analysis identifies/i);
 });
 
-test("render slice: A2 moments HTML has table workspace in Do and no textarea workspace", () => {
+test("render slice: A2 moments HTML has table workspace in Do and no free-text workspace", () => {
   const { sourcePage } = buildGoldenContext();
   const a2Html = extractActivityHtml(
     renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html,
@@ -184,7 +184,8 @@ test("render slice: A2 moments HTML has table workspace in Do and no textarea wo
   assert.doesNotMatch(a2Html, /data-beat-function="/);
   assert.equal((a2Html.match(/data-composition-moment="/g) || []).length, 4);
   assert.doesNotMatch(a2Html, /util-learner-workspace/);
-  assert.doesNotMatch(a2Html, /<textarea/);
+  assert.doesNotMatch(a2Html, /util-learner-workspace__input/);
+  assert.match(a2Html, /<textarea class="util-learner-table-workspace__input"/);
 
   const learnHtml = momentHtml(a2Html, "learn");
   const doHtml = momentHtml(a2Html, "do");
@@ -231,19 +232,27 @@ test("composition map: A2 exposes beat anchors and suppression hints", () => {
   assert.ok(map.A2.learnMoment);
   assert.ok(map.A2.doMoment);
   assert.ok(map.A2.checkMoment);
-  assert.equal(map.A2.learnMomentBeat, "worked_example");
-  assert.equal(map.A2.doMomentBeat, "analysis");
-  assert.equal(map.A2.checkMomentBeat, "check_understanding");
+  assert.equal(map.A2.learnMomentBeat, "worked_thinking");
+  assert.equal(map.A2.doMomentBeat, "guided_practice");
+  assert.equal(map.A2.checkMomentBeat, "verification");
 
-  assert.deepEqual(map.A2.suppressBeatContent.worked_example.omitMaterialIds, ["A2-M1"]);
-  assert.deepEqual(map.A2.suppressBeatContent.analysis.omitMaterialIds.sort(), [
+  assert.deepEqual(map.A2.suppressBeatContent.worked_thinking.omitMaterialIds, ["A2-M1"]);
+  assert.deepEqual(map.A2.suppressBeatContent.guided_practice.omitMaterialIds.sort(), [
     "A2-M2",
     "A2-M3"
   ]);
-  assert.deepEqual(map.A2.suppressBeatContent.analysis.omitInstructionSteps, [2, 3, 4]);
-  assert.equal(map.A2.suppressBeatContent.check_understanding.omitExpectedOutput, true);
-  assert.deepEqual(map.A2.suppressBeatContent.check_understanding.omitMaterialIds, ["A2-M4"]);
-  assert.deepEqual(map.A2.suppressBeatContent.check_understanding.omitInstructionSteps, [5]);
+  const a2OmittedSteps = []
+    .concat(map.A2.suppressBeatContent.worked_thinking.omitInstructionSteps || [])
+    .concat(map.A2.suppressBeatContent.guided_practice.omitInstructionSteps || [])
+    .concat(map.A2.suppressBeatContent.verification.omitInstructionSteps || [])
+    .sort(function (a, b) {
+      return a - b;
+    });
+  assert.deepEqual(a2OmittedSteps, [1, 2, 3, 4, 5]);
+  assert.equal(map.A2.suppressBeatContent.verification.omitExpectedOutput, true);
+  assert.deepEqual(map.A2.suppressBeatContent.verification.omitMaterialIds, ["A2-M4"]);
+  assert.ok(map.A2.suppressBeatContent.guided_practice.omitInstructionSteps.includes(3));
+  assert.ok(map.A2.suppressBeatContent.guided_practice.omitInstructionSteps.includes(4));
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a2Html = extractActivityHtml(html, "A2");

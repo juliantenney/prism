@@ -202,7 +202,7 @@ test("beats mode A1 markup is unchanged by presentation pass", () => {
   assert.doesNotMatch(first, /util-composition-moment/);
   assert.match(first, /data-beat-function="orientation"/);
   assert.match(first, /data-beat-function="explanation"/);
-  assert.match(first, /data-beat-function="check_understanding"/);
+  assert.match(first, /data-beat-function="verification"/);
 });
 
 test("moments and beats fragment HTML differ only by composition structure, not authored text loss", () => {

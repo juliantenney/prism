@@ -97,6 +97,13 @@ function createElement(tagName) {
           });
       }
     },
+    removeAttribute(name) {
+      delete this.attributes[name];
+      if (name === "class") {
+        this.className = "";
+        this.classList._classes = Object.create(null);
+      }
+    },
     appendChild(child) {
       if (child.parentNode) {
         const siblings = child.parentNode.children;
@@ -302,7 +309,7 @@ function parseHtmlFragment(html, documentRef) {
       node.setAttribute(key, decodeEntities(attrs[key]));
     });
     stack[stack.length - 1].appendChild(node);
-    const voidTags = { br: 1, img: 1, input: 1, meta: 1, link: 1, textarea: 1 };
+    const voidTags = { br: 1, img: 1, input: 1, meta: 1, link: 1 };
     if (!voidTags[tag] && !/\/\s*$/.test(attrText)) stack.push(node);
   }
   return root;
@@ -496,7 +503,7 @@ test("15-21 table entry serialise and restore", () => {
   const page = loadJson(heteroFixture);
   const html = renderLearnerPageHtml(page, { compositionMode: "moments" }).html;
   const session = initPersistence(html, { debounceMs: 0 });
-  const inputs = session.root.querySelectorAll("input.util-learner-table-workspace__input");
+  const inputs = session.root.querySelectorAll(".util-learner-table-workspace__input");
   assert.ok(inputs.length >= 2);
   const cellA = inputs[0].getAttribute("data-learner-cell");
   const cellB = inputs[1].getAttribute("data-learner-cell");
@@ -526,7 +533,7 @@ test("15-21 table entry serialise and restore", () => {
   const reloaded = initPersistence(html, { storage: session.storage, debounceMs: 0 });
   assert.equal(reloaded.root.querySelector("#" + inputs[0].getAttribute("id")).value, "cell-one");
   assert.equal(
-    (reloaded.root.querySelectorAll("input.util-learner-table-workspace__input") || []).length,
+    (reloaded.root.querySelectorAll(".util-learner-table-workspace__input") || []).length,
     inputs.length
   );
 });
@@ -741,7 +748,7 @@ test("50-58 clear draft behaviour", () => {
   }).html;
   const hetero = initPersistence(heteroHtml, { debounceMs: 0, confirmResult: true });
   const text = hetero.root.querySelector("textarea.util-learner-workspace__input");
-  const tableInput = hetero.root.querySelector("input.util-learner-table-workspace__input");
+  const tableInput = hetero.root.querySelector(".util-learner-table-workspace__input");
   emitInput(hetero.root, "#" + text.getAttribute("id"), "wipe");
   emitInput(hetero.root, "#" + tableInput.getAttribute("id"), "cell");
   hetero.api.flushPendingSave();

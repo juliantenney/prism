@@ -95,10 +95,11 @@ test("adapter: Do moment preserves authoritative task text and source ordering",
     .map((item) => item.instruction.sourceStepNumber);
   assert.deepEqual(instructionSteps, A1_DO_STEP_NUMBERS);
 
-  assert.match(doMoment.items[0].instruction.text, /Work through the expert example/i);
-  assert.match(
-    doMoment.items.find((item) => item.kind === "material").material.id,
-    /A1-M2/
+  assert.match(doMoment.items[0].instruction.text, /Write a brief explanation/i);
+  assert.equal(
+    doMoment.items.some((item) => item.kind === "material"),
+    false,
+    "A1-M2 is Learn-owned under canonical FunctionEnum binding"
   );
   assert.match(
     doMoment.items.find((item) => item.instruction && item.instruction.sourceStepNumber === 5)
@@ -106,8 +107,7 @@ test("adapter: Do moment preserves authoritative task text and source ordering",
     /Write a brief explanation/i
   );
 
-  assert.equal(doMoment.items[0].sourceRef.beatFunction, "check_understanding");
-  assert.equal(doMoment.items[1].sourceRef.materialId, "A1-M2");
+  assert.equal(doMoment.items[0].sourceRef.beatFunction, "verification");
 });
 
 test("adapter: expected output is represented explicitly in Do moment", () => {
@@ -143,7 +143,7 @@ test("adapter: workspace requirement is separate from task content", () => {
 test("adapter: missing optional expected output degrades safely", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
-  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "verification");
   checkBeat.expectedOutput = null;
 
   const doMoment = composeDoMoment(clone);
@@ -156,11 +156,8 @@ test("adapter: missing optional expected output degrades safely", () => {
 test("adapter: missing Do task steps degrades to no Do moment", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
-  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "check_understanding");
-  checkBeat.instructions = checkBeat.instructions.filter(
-    (instruction) => instruction.sourceStepNumber !== 2 && instruction.sourceStepNumber !== 5
-  );
-  checkBeat.materials = checkBeat.materials.filter((material) => material.id !== "A1-M2");
+  const checkBeat = clone.beats.find((beat) => beat.sourceFunction === "verification");
+  checkBeat.instructions = [];
   checkBeat.expectedOutput = null;
 
   assert.equal(composeDoMoment(clone), null);
@@ -265,7 +262,7 @@ test("render slice: Do output remains deterministic", () => {
 
 test("suppression: beat content filter removes only consumed Do sources", () => {
   const { a1 } = buildGoldenContext();
-  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "check_understanding");
+  const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "verification");
   const filtered = applyBeatContentSuppression(checkBeat, {
     omitInstructionSteps: A1_DO_STEP_NUMBERS,
     omitMaterialIds: A1_DO_MATERIAL_IDS,
@@ -274,7 +271,7 @@ test("suppression: beat content filter removes only consumed Do sources", () => 
 
   assert.deepEqual(
     filtered.instructions.map((instruction) => instruction.sourceStepNumber),
-    [3, 4]
+    [1, 2, 3, 4]
   );
   assert.deepEqual(
     filtered.materials.map((material) => material.id),
@@ -292,20 +289,21 @@ test("composition map: exposes Do moment and beat suppression hints", () => {
 
   assert.ok(map.A1.doMoment);
   assert.ok(map.A1.checkMoment);
-  assert.ok(map.A1.suppressBeatContent.check_understanding);
-  assert.deepEqual(map.A1.suppressBeatContent.check_understanding.omitInstructionSteps, [2, 3, 4, 5]);
-  assert.deepEqual(map.A1.suppressBeatContent.check_understanding.omitMaterialIds, [
-    "A1-M2",
+  assert.ok(map.A1.suppressBeatContent.verification);
+  assert.deepEqual(map.A1.suppressBeatContent.verification.omitInstructionSteps, [
+    1, 2, 3, 4, 5
+  ]);
+  assert.deepEqual(map.A1.suppressBeatContent.verification.omitMaterialIds, [
     "A1-M3",
     "A1-M4"
   ]);
-  assert.equal(map.A1.suppressBeatContent.check_understanding.omitExpectedOutput, true);
+  assert.equal(map.A1.suppressBeatContent.verification.omitExpectedOutput, true);
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a1Html = extractActivityHtml(html, "A1");
   assert.match(a1Html, /data-composition-moment="do"/);
   assert.match(a1Html, /data-composition-moment="check"/);
-  assert.doesNotMatch(a1Html, /data-beat-function="check_understanding"/);
+  assert.doesNotMatch(a1Html, /data-beat-function="verification"/);
 });
 
 test("adapter: Do moment consumes exact A1 source inventory", () => {
@@ -314,13 +312,13 @@ test("adapter: Do moment consumes exact A1 source inventory", () => {
 
   assert.deepEqual(
     doMoment.taskSteps.map((step) => step.sourceStepNumber),
-    [2, 5]
+    [5]
   );
   assert.deepEqual(
-    doMoment.materials.map((material) => material.id),
-    ["A1-M2"]
+    (doMoment.materials || []).map((material) => material.id),
+    []
   );
-  assert.equal(doMoment.items.filter((item) => item.kind === "instruction").length, 2);
-  assert.equal(doMoment.items.filter((item) => item.kind === "material").length, 1);
+  assert.equal(doMoment.items.filter((item) => item.kind === "instruction").length, 1);
+  assert.equal(doMoment.items.filter((item) => item.kind === "material").length, 0);
   assert.equal(doMoment.items.filter((item) => item.kind === "expectedOutput").length, 1);
 });

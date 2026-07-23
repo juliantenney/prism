@@ -26,6 +26,21 @@ Move exact validation from sequence enumeration to shared archetype grammar.
 ## D69-08 Excluded strategy
 No fuzzy matching and no nearest-sequence fallback.
 
+## D69-09 Phase 4 validation routing
+Canonical all-FunctionEnum sequences are validated by shared grammar at renderer runtime. Journey-compressed sequences (any known non-FunctionEnum compatibility beat) remain on the explicit compatibility-registry path. Mixed/unknown/malformed vocabulary fails closed. No grammar→registry rescue and no compressed→FunctionEnum normalisation.
+
+## D69-10 Phase 4 binding derivation
+Educational legality and manifestation binding remain separate. Grammar decides legality; renderer composition metadata is either exact registry composition (when present) or deterministic `buildCanonicalFunctionEnumVariant` from archetype + FunctionEnum + shared role map.
+
+## D69-11 Phase 5 mixed-known vocabulary (superseded by D69-13)
+Originally retained mixed FE+compressed as compatibility. Superseded: Prism has no deployed legacy content; mixed vocabulary now fails closed.
+
+## D69-12 Phase 5 registry demotion (superseded by D69-13)
+Whole-sequence enumeration demoted; journey + continuity registries remained temporarily. Superseded by full removal in Phase 5B.
+
+## D69-13 Phase 5B pre-launch compatibility removal
+Internal fixtures are not legacy contracts. Production runtime has one educational validation route: canonical Episode Plan → FunctionEnum → shared archetype grammar → deterministic canonical binding. Journey-compatibility registry and composition-continuity overlays are removed. Mixed FunctionEnum/compressed → `MIXED_EPISODE_PLAN_VOCABULARY` fail closed. Compressed-only → `UNKNOWN_EPISODE_PLAN_BEAT` fail closed. No renderer compressed→FunctionEnum mapping. No exact whole-sequence legality. `UNKNOWN_ARCHETYPE_VARIANT` is catalog history only.
+
 Related:
 - [ADR-012](../../../architecture/adr/ADR-012-learner-renderer-interprets-educational-semantics.md)
 - [Episode Plan ownership boundary](../../../architecture/episode-plan-ownership-boundary.md)

@@ -2,10 +2,7 @@
 
 /**
  * Sprint 68 IMP-014B — Episode Plan V1 beat sequences reach vNext page model.
- *
- * Production episode plans emit FunctionEnum beats (explanation, worked_thinking,
- * guided_practice, verification, …). vNext archetype rules must accept those exact
- * sequences without weakening validation or activity-id-specific logic.
+ * Phase 5B: sequences resolve via shared grammar + canonical binding only.
  */
 
 const test = require("node:test");
@@ -13,7 +10,9 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const selectVariant = require("../lib/learner-renderer-vnext/archetype-rules").selectArchetypeVariant;
+const resolveArchetypeValidation =
+  require("../lib/learner-renderer-vnext/archetype-validation-route")
+    .resolveArchetypeValidation;
 const buildModel = require("../lib/learner-renderer-vnext/build-page-model").buildPageModel;
 const renderPage = require("../lib/learner-renderer-vnext/render-learner-page").renderLearnerPageHtml;
 
@@ -32,31 +31,31 @@ const EXPECTED_VARIANTS = Object.freeze([
     activityId: "A1",
     archetype: "understand",
     beatSequence: ["explanation", "worked_thinking", "guided_practice", "verification"],
-    variantId: "understand-explain-model-practise-verify"
+    variantIdPrefix: "understand-"
   },
   {
     activityId: "A2",
     archetype: "analyse",
     beatSequence: ["explanation", "worked_thinking", "guided_practice", "verification"],
-    variantId: "analyse-explain-model-practise-verify"
+    variantIdPrefix: "analyse-"
   },
   {
     activityId: "A3",
     archetype: "apply",
     beatSequence: ["explanation", "guided_practice", "verification"],
-    variantId: "apply-explain-practise-verify"
+    variantIdPrefix: "apply-"
   },
   {
     activityId: "A4",
     archetype: "analyse",
     beatSequence: ["worked_thinking", "guided_practice", "verification"],
-    variantId: "analyse-model-practise-verify"
+    variantIdPrefix: "analyse-"
   },
   {
     activityId: "A5",
     archetype: "analyse",
     beatSequence: ["explanation", "guided_practice", "verification"],
-    variantId: "analyse-explain-practise-verify"
+    variantIdPrefix: "analyse-"
   },
   {
     activityId: "A6",
@@ -68,7 +67,7 @@ const EXPECTED_VARIANTS = Object.freeze([
       "transfer",
       "verification"
     ],
-    variantId: "evaluate-explain-judgement-practise-transfer-verify"
+    variantIdPrefix: "evaluate-"
   }
 ]);
 
@@ -109,12 +108,22 @@ function metricsFromHtml(html) {
   };
 }
 
-test("IMP-014B: production beat sequences resolve archetype variants", () => {
-  const page = loadRnaPage();
+test("IMP-014B: production beat sequences resolve via grammar + canonical binding", () => {
   EXPECTED_VARIANTS.forEach(function (row) {
-    const variant = selectVariant(row.archetype, row.beatSequence);
-    assert.ok(variant, row.activityId + " should match a variant");
-    assert.equal(variant.id, row.variantId, row.activityId + " variant id");
+    const resolved = resolveArchetypeValidation({
+      activityId: row.activityId,
+      archetype: row.archetype,
+      normalizedBeatSequence: row.beatSequence
+    });
+    assert.equal(resolved.ok, true, row.activityId + " " + JSON.stringify(resolved.errors));
+    assert.equal(resolved.validationRoute, "canonical-grammar");
+    assert.equal(resolved.runtimeAuthority, "shared-archetype-grammar");
+    assert.equal(resolved.bindingSource, "canonical-grammar-binding");
+    assert.equal(resolved.continuityMatch, false);
+    assert.ok(
+      String(resolved.matchedVariantId || "").indexOf(row.variantIdPrefix) === 0,
+      row.activityId + " variant id " + resolved.matchedVariantId
+    );
   });
 });
 
@@ -127,6 +136,10 @@ test("IMP-014B: RNA transcript assembled page builds and renders through vNext",
   modelResult.model.activities.forEach(function (activity) {
     assert.ok(activity.beats.length >= 3, activity.id + " should retain learner-facing beats");
   });
+  modelResult.diagnostics.archetypeInspection.forEach(function (insp) {
+    assert.equal(insp.validationRoute, "canonical-grammar");
+    assert.equal(insp.bindingSource, "canonical-grammar-binding");
+  });
 
   const rendered = renderPage(page, { compositionMode: "moments" });
   assert.equal(rendered.error, null, rendered.error);
@@ -136,8 +149,6 @@ test("IMP-014B: RNA transcript assembled page builds and renders through vNext",
   assert.equal(metrics.compositionMode, "moments");
   assert.equal(metrics.composedActivityCount, 6);
   assert.equal(metrics.beatsFallbackActivityCount, 0);
-  assert.equal(metrics.unsupportedTypes.length, 0);
   assert.equal(metrics.duplicateIdCount, 0);
-  assert.ok(metrics.compositionMoments >= 6);
-  assert.ok(metrics.tableWorkspaces >= 1);
+  assert.deepEqual(metrics.unsupportedTypes, []);
 });

@@ -1,8 +1,8 @@
 {
   "certificationVersion": "s68-imp-020",
   "corpusVersion": "s68-imp-020-v1",
-  "generatedAt": "2026-07-23T08:29:45.575Z",
-  "gitRevision": "3157a62d95facf39dfeed48117ac1c989b6ffdb1",
+  "generatedAt": "2026-07-23T12:05:29.355Z",
+  "gitRevision": "fe16960babd509389d2ec43053767be06af4ca88",
   "summary": {
     "status": "pass",
     "certificationState": "CERTIFIED",
@@ -12,7 +12,7 @@
     "exitCode": 0
   },
   "capabilityCoverage": {
-    "text_entry": 31,
+    "text_entry": 32,
     "table_entry": 18,
     "ordering": 1
   },
@@ -23,7 +23,7 @@
     "understand"
   ],
   "vocabularyCoverage": {
-    "supportedArchetypeRuleCount": 4,
+    "supportedArchetypeRuleCount": 0,
     "supportedLearnerSurfaces": [
       "text_entry",
       "table_entry",
@@ -63,7 +63,7 @@
           "workflowId": "videotranscripttest",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -276,11 +276,21 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "videotranscripttest",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
         "activities": 6,
-        "moments": 19,
+        "moments": 21,
         "capabilities": {
           "text_entry": 5,
           "table_entry": 6,
@@ -300,8 +310,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::0d1c12c0-ad1c-449f-8ad9-8f90b8f01097::cert-videotranscripttest::2.0.0::a1-a2-a3-a4-a5-a6::rna-viruses-and-hepatitis-c-videotranscripttest",
@@ -340,7 +350,7 @@
           "workflowId": "heteroscedasticity",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -553,6 +563,16 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "heteroscedasticity",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
@@ -577,8 +597,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::no-workflow::cert-heteroscedasticity::2.0.0::a1-a2-a3-a4-a5::why-does-the-spread-of-regression-errors-matter-understanding-heteroscedasticity",
@@ -617,7 +637,7 @@
           "workflowId": "kitchen-sink",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -830,6 +850,16 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "kitchen-sink",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
@@ -854,8 +884,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::no-workflow::cert-kitchen-sink::2.0.0::ks01-ks02-ks03-ks04-ks05::learner-renderer-kitchen-sink-sprint-68-type-coverage",
@@ -894,7 +924,7 @@
           "workflowId": "rna-episode-plan-v1",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -1107,6 +1137,16 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "rna-episode-plan-v1",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
@@ -1131,8 +1171,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::no-workflow::cert-rna-episode-plan-v1::2.0.0::a1-a2-a3-a4-a5-a6::rna-viruses-and-hepatitis-c-material-completeness-fixture",
@@ -1171,7 +1211,7 @@
           "workflowId": "generic-moments-new01",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -1354,6 +1394,16 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "generic-moments-new01",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
@@ -1375,8 +1425,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::no-workflow::cert-generic-moments-new01::2.0.0::new01::generic-moments-proof-arbitrary-activity-id-new01",
@@ -1415,7 +1465,7 @@
           "workflowId": "authoritative-ordering",
           "activityId": null,
           "capability": null,
-          "message": "No unknown archetype variants.",
+          "message": "No primary archetype validation failures.",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -1658,13 +1708,23 @@
           "message": "Learner workspaces are present for print of current DOM values.",
           "provenance": null,
           "diagnosticCodes": []
+        },
+        {
+          "checkId": "parity.browser_node",
+          "status": "pass",
+          "workflowId": "authoritative-ordering",
+          "activityId": null,
+          "capability": null,
+          "message": "Browser and Node initial HTML match.",
+          "provenance": null,
+          "diagnosticCodes": []
         }
       ],
       "summary": {
         "activities": 2,
-        "moments": 7,
+        "moments": 8,
         "capabilities": {
-          "text_entry": 0,
+          "text_entry": 1,
           "table_entry": 0,
           "ordering": 1
         },
@@ -1679,8 +1739,8 @@
         "expectedOutputsDuplicated": 0
       },
       "browserParity": {
-        "matched": null,
-        "detail": "not_run"
+        "matched": true,
+        "detail": "equal"
       },
       "persistenceIdentity": {
         "pageKey": "v1::fixture-seq-authoritative::cert-authoritative-ordering::2.0.0::a1-a2::chronology-practice-page",
@@ -1691,7 +1751,7 @@
   "invariantResults": {
     "workflows": 6,
     "activities": 25,
-    "moments": 88,
+    "moments": 91,
     "beatFallbacks": 0,
     "materialsUnassigned": 0,
     "materialsDuplicated": 0,
@@ -1702,9 +1762,16 @@
     "warnings": 0
   },
   "diagnosticSummary": {
-    "catalogSize": 25,
+    "catalogSize": 32,
     "catalogCodes": [
       "UNKNOWN_ARCHETYPE_VARIANT",
+      "UNKNOWN_ARCHETYPE",
+      "ARCHETYPE_GRAMMAR_VALIDATION_FAILED",
+      "UNKNOWN_EPISODE_PLAN_BEAT",
+      "MIXED_EPISODE_PLAN_VOCABULARY",
+      "MALFORMED_EPISODE_PLAN_SEQUENCE",
+      "ARCHETYPE_GRAMMAR_REJECTS_REGISTERED_SEQUENCE",
+      "ARCHETYPE_GRAMMAR_ACCEPTS_UNREGISTERED_SEQUENCE",
       "UNSUPPORTED_LEARNER_SURFACE",
       "DUPLICATE_RESPONSE_PART",
       "UNASSIGNED_WRITTEN_RESPONSE",
@@ -1733,7 +1800,7 @@
     "unexpectedProductionCount": 0
   },
   "browserParity": {
-    "compared": 0,
+    "compared": 6,
     "mismatches": 0
   },
   "persistence": {
@@ -1764,7 +1831,7 @@
   ],
   "corpus": {
     "corpusVersion": "s68-imp-020-v1",
-    "generatedAt": "2026-07-23T08:29:45.575Z",
+    "generatedAt": "2026-07-23T12:05:29.355Z",
     "workflows": [
       {
         "id": "videotranscripttest",
@@ -1784,7 +1851,7 @@
           "analyse",
           "evaluate"
         ],
-        "certificationPurpose": "Primary production-shaped RNA workflow with journey-compressed beats, tables, and multi-part text",
+        "certificationPurpose": "Primary production-shaped RNA workflow with canonical FunctionEnum Episode Plans, tables, and multi-part text",
         "persistenceRequired": true,
         "expectations": {
           "minActivityCount": 6,

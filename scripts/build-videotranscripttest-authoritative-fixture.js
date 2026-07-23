@@ -31,7 +31,7 @@ const outPath = path.join(
 const BEAT_PLANS = Object.freeze({
   A1: {
     archetype: "understand",
-    beats: ["orientation", "explanation", "check"],
+    beats: ["explanation", "worked_thinking", "guided_practice", "verification"],
     learner_task:
       "1. Study the explanatory text introducing RNA virus genome types.\n" +
       "2. Work through the worked example showing how experts classify genomes.\n" +
@@ -43,7 +43,7 @@ const BEAT_PLANS = Object.freeze({
   },
   A2: {
     archetype: "understand",
-    beats: ["orientation", "explanation", "check"],
+    beats: ["explanation", "worked_thinking", "guided_practice", "verification"],
     learner_task:
       "1. Study the replication overview text.\n" +
       "2. Work through the worked replication analysis example.\n" +
@@ -54,7 +54,7 @@ const BEAT_PLANS = Object.freeze({
   },
   A3: {
     archetype: "apply",
-    beats: ["orientation", "practice", "feedback"],
+    beats: ["explanation", "guided_practice", "verification"],
     learner_task:
       "1. Read the outbreak response framing text.\n" +
       "2. Study the outbreak scenario and identify immediate constraints.\n" +
@@ -65,7 +65,7 @@ const BEAT_PLANS = Object.freeze({
   },
   A4: {
     archetype: "analyse",
-    beats: ["orientation", "investigation", "synthesis"],
+    beats: ["worked_thinking", "guided_practice", "verification"],
     learner_task:
       "1. Study the immune evasion introduction.\n" +
       "2. Read the modelling note and apply its framework to the scenario.\n" +
@@ -77,7 +77,7 @@ const BEAT_PLANS = Object.freeze({
   },
   A5: {
     archetype: "analyse",
-    beats: ["orientation", "investigation", "synthesis"],
+    beats: ["worked_thinking", "guided_practice", "verification"],
     learner_task:
       "1. Study the treatment overview text.\n" +
       "2. Work through the worked comparison of direct-acting antivirals.\n" +
@@ -88,7 +88,7 @@ const BEAT_PLANS = Object.freeze({
   },
   A6: {
     archetype: "evaluate",
-    beats: ["orientation", "judgement", "reflection"],
+    beats: ["explanation", "worked_judgement", "guided_practice", "transfer", "verification"],
     learner_task:
       "1. Read the evaluative framing text.\n" +
       "2. Study the outbreak scenario and identify decision constraints.\n" +

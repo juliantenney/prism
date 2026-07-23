@@ -35,7 +35,7 @@ const EXPECTED_BEAT_COUNTS = Object.freeze({
 
 const MATERIAL_LABEL_ASSOCIATIONS = Object.freeze({
   "A1-M1": "Understand",
-  "A1-M2": "Check your work",
+  "A1-M2": "Understand",
   "A1-M3": "Check your work",
   "A2-M1": "See it modelled",
   "A2-M3": "Your turn",
@@ -45,12 +45,12 @@ const MATERIAL_LABEL_ASSOCIATIONS = Object.freeze({
   "A4-M3": "Your turn",
   "A5-M4": "Your turn",
   "A5-M5": "Your turn",
-  "A5-M8": "Apply elsewhere",
-  "A5-M7": "Apply elsewhere"
+  "A5-M8": "Check your work",
+  "A5-M7": "Check your work"
 });
 
 const RAW_SCHEMA_HEADINGS = [
-  "check_understanding",
+  "verification",
   "worked_example",
   "guided_practice",
   "independent_practice",
@@ -401,8 +401,8 @@ test("golden: critical material order preserved in rendered HTML", () => {
 
   const a5 = extractActivityHtml(html, "A5", activityIds);
   assert.ok(
-    a5.indexOf('data-material-id="A5-M8"') < a5.indexOf('data-material-id="A5-M7"'),
-    "Expected A5-M8 to appear before A5-M7 in rendered HTML."
+    a5.indexOf('data-material-id="A5-M7"') < a5.indexOf('data-material-id="A5-M8"'),
+    "Expected A5-M7 to appear before A5-M8 in rendered HTML."
   );
 });
 

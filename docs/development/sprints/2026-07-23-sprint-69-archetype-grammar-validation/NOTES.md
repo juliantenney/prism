@@ -14,11 +14,12 @@
 
 ## Current known metrics snapshot
 
-- Certification: **CERTIFIED** (6 workflows, 25 activities, 88 moments)
+- Certification: **CERTIFIED** (6 workflows, 25 activities; hetero pass)
 - Capability coverage: text_entry 31, table_entry 18, ordering 1
 - Architecture docs test: 13 pass / 0 fail
 - Educational Psychology contract regression: pass
-- Renderer vNext suite: 476 pass / 0 fail (latest run)
+- Renderer vNext suite (incl. hetero/scan Phase 5B residuals): **536 pass / 0 fail**
+- Retirement targets: `runtimeCompatibilityEntries: 0`, `positiveCompressedFixtures: 0`, `positiveMixedVocabularyFixtures: 0`
 
 ## Important diagnostics already in use
 

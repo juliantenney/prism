@@ -1,0 +1,44 @@
+[
+  {
+    "id": "hetero-interactive-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Why Does the Spread of Regression Errors Matter? Understanding Heteroscedasticity",
+    "selectedDomains": [
+      "general",
+      "learning-design"
+    ],
+    "startingArtefact": "generate_from_topic",
+    "workflowOutputSpec": {
+      "pageEnrichmentV2": true,
+      "partialPageOutputs": true,
+      "goal": "Why Does the Spread of Regression Errors Matter? Understanding Heteroscedasticity",
+      "audience": "Learners"
+    },
+    "steps": [
+      {
+        "id": "step-ep",
+        "title": "Design Episode Plan",
+        "canonical_step_id": "step_design_episode_plan"
+      },
+      {
+        "id": "step-dla",
+        "title": "Design Learning Activities",
+        "canonical_step_id": "step_design_learning_activities"
+      },
+      {
+        "id": "step-gam",
+        "title": "Generate Activity Materials",
+        "canonical_step_id": "step_generate_activity_materials"
+      },
+      {
+        "id": "step-ls",
+        "title": "Construct Learning Sequence",
+        "canonical_step_id": "step_construct_learning_sequence"
+      },
+      {
+        "id": "step-dp",
+        "title": "Design Page",
+        "canonical_step_id": "step_design_page"
+      }
+    ]
+  }
+]

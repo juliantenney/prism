@@ -157,7 +157,9 @@ test("prompt set: internal response-part ids are not exposed as visible labels",
   const { page } = activityFromFixture(heteroFixture, "A4");
   const html = renderLearnerPageHtml(page, { compositionMode: "moments" }).html;
   const a4 = extractActivityHtml(html, "A4");
-  assert.doesNotMatch(a4, />Response 1<|>Response 2<|>text_entry_4</);
+  assert.match(a4, />Response 1</);
+  assert.match(a4, />Response 2</);
+  assert.doesNotMatch(a4, />text_entry_4</);
   assert.doesNotMatch(a4, /template_section_3/);
 });
 
@@ -250,8 +252,8 @@ test("rendering: each workspace has label association and unique ids", () => {
   const { page } = activityFromFixture(heteroFixture, "A4");
   const html = renderLearnerPageHtml(page, { compositionMode: "moments" }).html;
   const a4 = extractActivityHtml(html, "A4");
-  const labels = [...a4.matchAll(/<label[^>]+for="([^"]+)"/g)];
-  const textareas = [...a4.matchAll(/<textarea[^>]+id="([^"]+)"/g)];
+  const labels = [...a4.matchAll(/<label[^>]+for="(learner-workspace-[^"]+)"/g)];
+  const textareas = [...a4.matchAll(/<textarea[^>]+id="(learner-workspace-[^"]+)"/g)];
   assert.equal(labels.length, textareas.length);
   const ids = textareas.map((match) => match[1]);
   assert.equal(ids.length, new Set(ids).size);
@@ -260,11 +262,13 @@ test("rendering: each workspace has label association and unique ids", () => {
   });
 });
 
-test("rendering: generic labels avoid internal numbering", () => {
+test("rendering: grouped prompt labels use Response N without exposing internal ids", () => {
   const { page } = activityFromFixture(heteroFixture, "A4");
   const html = renderLearnerPageHtml(page, { compositionMode: "moments" }).html;
   const a4 = extractActivityHtml(html, "A4");
-  assert.doesNotMatch(a4, /Response 1|Response 2|text_entry_4/);
+  assert.match(a4, /Response 1/);
+  assert.match(a4, /Response 2/);
+  assert.doesNotMatch(a4, />text_entry_4</);
 });
 
 test("unsupported surface: matching is diagnosed, not rendered as textarea", () => {

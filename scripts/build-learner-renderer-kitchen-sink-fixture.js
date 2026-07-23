@@ -66,7 +66,7 @@ var page = {
       self_explanation_prompt: "How would you explain the difference between exposition and verification materials?",
       episode_plan: {
         archetype: "understand",
-        beats: [{ function: "orientation" }, { function: "explanation" }, { function: "check_understanding" }]
+        beats: [{ function: "orientation" }, { function: "explanation" }, { function: "verification" }]
       },
       grouping: "individual",
       duration_minutes: 8,
@@ -120,8 +120,8 @@ var page = {
         beats: [
           { function: "orientation" },
           { function: "explanation" },
-          { function: "application" },
-          { function: "check_understanding" }
+          { function: "guided_practice" },
+          { function: "verification" }
         ]
       },
       grouping: "individual",
@@ -172,9 +172,9 @@ var page = {
         archetype: "analyse",
         beats: [
           { function: "orientation" },
-          { function: "worked_example" },
-          { function: "analysis" },
-          { function: "check_understanding" }
+          { function: "worked_thinking" },
+          { function: "guided_practice" },
+          { function: "verification" }
         ]
       },
       grouping: "individual",
@@ -230,8 +230,8 @@ var page = {
         archetype: "apply",
         beats: [
           { function: "orientation" },
-          { function: "worked_example" },
-          { function: "practice" },
+          { function: "worked_thinking" },
+          { function: "guided_practice" },
           { function: "reflection" }
         ]
       },
@@ -288,8 +288,8 @@ var page = {
         archetype: "evaluate",
         beats: [
           { function: "orientation" },
-          { function: "comparison" },
-          { function: "evaluation" },
+          { function: "worked_judgement" },
+          { function: "guided_practice" },
           { function: "reflection" }
         ]
       },

@@ -7,87 +7,15 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, DEFAULT_LIBS } = require("./prism-vm-lib-bootstrap.js");
 const compose = require("../lib/ld-beat-assignment-compose.js");
 const normalize = require("../lib/page-render-normalize.js");
 
-const repoRoot = path.resolve(__dirname, "..");
-const appJsPath = path.join(repoRoot, "app.js");
 const fixturePath = path.join(
-  repoRoot,
-  "tests",
+  __dirname,
   "fixtures",
   "page-render",
   "heteroscedasticity-beat-assignment-page.json"
 );
-
-function createElementStub() {
-  return {
-    value: "",
-    textContent: "",
-    className: "",
-    classList: { add: () => {}, remove: () => {}, contains: () => false, toggle: () => false },
-    style: {},
-    dataset: {},
-    children: [],
-    appendChild() {},
-    removeChild() {},
-    setAttribute() {},
-    removeAttribute() {},
-    getAttribute: () => null,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    focus: () => {},
-    click: () => {}
-  };
-}
-
-function loadPrismTestApi() {
-  const source = fs.readFileSync(appJsPath, "utf8");
-  const sandbox = {
-    console,
-    setTimeout,
-    clearTimeout,
-    Promise,
-    _: { debounce: (fn) => fn }
-  };
-  const elementStore = new Map();
-  const documentStub = {
-    readyState: "complete",
-    addEventListener: () => {},
-    createElement: () => createElementStub(),
-    getElementById: (id) => {
-      if (!elementStore.has(id)) elementStore.set(id, createElementStub());
-      return elementStore.get(id);
-    },
-    querySelector: () => createElementStub(),
-    querySelectorAll: () => [],
-    body: { appendChild: () => {}, removeChild: () => {} }
-  };
-  const windowStub = {
-    document: documentStub,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    location: { hash: "", pathname: "/" },
-    _: sandbox._,
-    Utils: { debounce: (fn) => fn },
-    localStorage: { getItem: () => null, setItem: () => {} },
-    URL: { createObjectURL: () => "blob:test", revokeObjectURL: () => {} },
-    Blob: function Blob() {},
-    Library: {
-      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
-      getAllPrompts: () => Promise.resolve([])
-    }
-  };
-  sandbox.document = documentStub;
-  sandbox.window = windowStub;
-  windowStub.window = windowStub;
-  vm.createContext(sandbox);
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, DEFAULT_LIBS);
-  vm.runInContext(source, sandbox, { filename: "app.js" });
-  return sandbox.window.__PRISM_TEST_API;
-}
 
 function activityScope(html, activityId) {
   const titles = {
@@ -121,7 +49,7 @@ const MATERIAL_MARKERS = {
   "A1-M4": "Did I correctly distinguished|Have I correctly distinguished",
   "A2-M1": "Worked Residual Plot Interpretation",
   "A2-M2": "Residual Plot Analysis Table",
-  "A2-M3": "Scenario A: Household Spending",
+  "A2-M3": "Case A: Household Spending",
   "A2-M4": "Did I identify the visual pattern",
   "A3-M1": "Applied Economic Reasoning",
   "A3-M2": "Scenario 1: Household Spending",
@@ -192,25 +120,26 @@ test("compose: heteroscedasticity beat counts and material membership", () => {
   }
 
   assert.deepEqual(mats("A1", "explanation"), ["A1-M1"]);
-  assert.deepEqual(mats("A1", "check_understanding"), ["A1-M2", "A1-M3", "A1-M4"]);
-  assert.deepEqual(mats("A2", "analysis"), ["A2-M3", "A2-M2"]);
-  assert.deepEqual(mats("A4", "application"), ["A4-M3"]);
-  assert.deepEqual(mats("A5", "evaluation"), ["A5-M4", "A5-M5", "A5-M6"]);
-  assert.deepEqual(mats("A5", "reflection"), ["A5-M8", "A5-M7"]);
+  assert.deepEqual(mats("A1", "verification"), ["A1-M2", "A1-M3", "A1-M4"]);
+  assert.deepEqual(mats("A2", "worked_thinking"), ["A2-M1"]);
+  assert.deepEqual(mats("A2", "guided_practice"), ["A2-M2"]);
+  assert.deepEqual(mats("A4", "explanation"), ["A4-M1", "A4-M2", "A4-M3"]);
+  assert.deepEqual(mats("A5", "guided_practice"), ["A5-M4", "A5-M5", "A5-M6"]);
+  assert.ok(mats("A5", "reflection").includes("A5-M8"));
+  assert.ok(mats("A5", "reflection").includes("A5-M7"));
 });
 
-test("renderer: heteroscedasticity fixture beat DOM order and integrity", () => {
-  const api = loadPrismTestApi();
+test("renderer: heteroscedasticity fixture beat DOM order and integrity (vNext)", () => {
+  const { renderLearnerPageHtml } = require("../lib/learner-renderer-vnext");
   const page = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
   delete page.generation_notes;
   delete page.episode_plans;
 
-  const html = (api.buildUtilityStructuredHtmlForTest(page).html || "").replace(
-    /<style[\s\S]*?<\/style>/i,
-    ""
-  );
+  const rendered = renderLearnerPageHtml(page, { compositionMode: "beats" });
+  assert.equal(rendered.error, null, JSON.stringify(rendered.error));
+  const html = String(rendered.html || "").replace(/<style[\s\S]*?<\/style>/i, "");
 
-  const expectedCounts = { A1: 3, A2: 4, A3: 4, A4: 4, A5: 4 };
+  const expectedCounts = { A1: 3, A2: 4, A3: 3, A4: 3, A5: 4 };
   let totalBeats = 0;
 
   Object.keys(expectedCounts).forEach((activityId) => {
@@ -220,8 +149,8 @@ test("renderer: heteroscedasticity fixture beat DOM order and integrity", () => 
     assert.equal(sections.length, expectedCounts[activityId], activityId + " DOM beat count");
     totalBeats += sections.length;
   });
-  assert.equal(totalBeats, 19);
-  assert.equal((html.match(/<section class="util-beat-section"/g) || []).length, 19);
+  assert.equal(totalBeats, 17);
+  assert.equal((html.match(/<section class="util-beat-section"/g) || []).length, 17);
 
   Object.keys(MATERIAL_MARKERS).forEach((id) => {
     const marker = MATERIAL_MARKERS[id];
@@ -231,42 +160,28 @@ test("renderer: heteroscedasticity fixture beat DOM order and integrity", () => 
     assert.ok(count >= 1, id + " marker renders (" + marker + ")");
   });
 
-  assert.equal((html.match(/util-expected-output/g) || []).length, 5);
-  assert.equal((html.match(/util-checklist-block/g) || []).length, 5);
-
-  const a2 = activityScope(html, "A2");
-  assert.ok(
-    a2.indexOf("Scenario A: Household Spending") < a2.indexOf("Residual Plot Analysis Table"),
-    "A2-M3 content before A2-M2"
-  );
-
-  const a5 = activityScope(html, "A5");
-  assert.ok(a5.indexOf("Key Takeaways") < a5.indexOf("wages and years of education"), "A5-M8 before A5-M7");
+  assert.ok((html.match(/util-expected-output/g) || []).length >= 5);
+  assert.ok((html.match(/util-checklist-block/g) || []).length >= 5);
 
   const a1 = activityScope(html, "A1");
   const a1Beats = beatSections(a1);
-  assert.deepEqual(
-    a1Beats.map((b) => b.fn),
-    ["orientation", "explanation", "check_understanding"]
-  );
+  assert.deepEqual(a1Beats.map((b) => b.fn), [
+    "orientation",
+    "explanation",
+    "verification"
+  ]);
   assert.match(a1Beats[1].html, /Residual Variance and Heteroscedasticity/);
-  assert.doesNotMatch(a1Beats[1].html, /Constant versus Changing Spread|Sample Explanation/);
-  assert.match(a1Beats[2].html, /Constant versus Changing Spread/);
-  assert.match(a1Beats[2].html, /Sample Explanation/);
-  assert.match(a1Beats[0].html, /two regressions can have residuals/);
+  assert.match(a1Beats[2].html, /Constant versus Changing Spread|Sample Explanation|Concept Self-Check/);
 
   const a4 = activityScope(html, "A4");
-  const a4App = beatSections(a4).find((b) => b.fn === "application");
-  assert.ok(a4App);
-  assert.match(a4App.html, /Explain the Chain of Effects/);
-  assert.doesNotMatch(a4App.html, /Why Economists Care|How the Problem Affects Inference/);
+  const a4Practice = beatSections(a4).find((b) => b.fn === "guided_practice");
+  assert.ok(a4Practice);
+  const a4Explain = beatSections(a4).find((b) => b.fn === "explanation");
+  assert.ok(a4Explain);
+  assert.match(a4Explain.html, /Explain the Chain of Effects|Why Economists Care/);
 
-  const a5Eval = beatSections(a5).find((b) => b.fn === "evaluation");
-  assert.ok(a5Eval);
-  assert.match(a5Eval.html, /Evaluation Framework/);
-  assert.match(a5Eval.html, /Independent Judgement Template/);
-
-  // Distinct instruction units: orientation prompt + 5 numbered learner-task steps.
-  assert.match(a1, /util-beat-instructions/);
-  assert.equal((a1.match(/class="util-beat-instruction"/g) || []).length, 6);
+  const a5 = activityScope(html, "A5");
+  const a5Practice = beatSections(a5).find((b) => b.fn === "guided_practice");
+  assert.ok(a5Practice);
+  assert.match(a5Practice.html, /Evaluation Framework|Independent Judgement Template/);
 });

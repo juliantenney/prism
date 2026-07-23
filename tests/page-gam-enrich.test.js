@@ -97,6 +97,7 @@ function loadPrismTestApi() {
       "lib/ld-gam-page-enrich-contract.js",
       "lib/page-gam-enrich.js",
       "lib/page-vnext-assemble.js",
+      "lib/episode-plan-v1-vocabulary.js",
       "lib/episode-plan-population-contract.js"
     ])
   );

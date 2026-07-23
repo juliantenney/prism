@@ -97,6 +97,7 @@ function readEnvKey() {
 }
 
 const DEFAULT_PROBE_LIBS = [
+  "lib/episode-plan-v1-vocabulary.js",
   "lib/episode-plan-population-contract.js",
   "lib/episode-plan-v1-templates.js",
   "lib/episode-plan-v1-validation.js",

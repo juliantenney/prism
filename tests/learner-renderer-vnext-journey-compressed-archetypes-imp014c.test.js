@@ -1,8 +1,8 @@
 "use strict";
 
 /**
- * Sprint 68 IMP-014C — journey-compressed beat vocabulary from production
- * VideoTranscriptTest diagnostics.
+ * Sprint 69 Phase 5B — former journey-compressed vocabulary fails closed.
+ * Historical IMP-014C positive coverage is replaced by negative fail-closed proofs.
  */
 
 const test = require("node:test");
@@ -10,13 +10,9 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const selectVariant = require("../lib/learner-renderer-vnext/archetype-rules").selectArchetypeVariant;
 const buildModel = require("../lib/learner-renderer-vnext/build-page-model").buildPageModel;
 const renderPage = require("../lib/learner-renderer-vnext/render-learner-page").renderLearnerPageHtml;
-const {
-  classifyBeatMoment,
-  beatRequiresDoCheckSplit
-} = require("../lib/learner-renderer-vnext/compose-moment-classification");
+const route = require("../lib/learner-renderer-vnext/archetype-validation-route");
 const {
   readVideoTranscriptTestPage,
   WORKFLOW_ID,
@@ -38,266 +34,102 @@ const kitchenSinkPath = path.join(
   "page-render",
   "learner-renderer-kitchen-sink-page.json"
 );
-const browserBundlePath = path.join(repoRoot, "lib", "learner-renderer-vnext-browser.js");
-const sourceRulesPath = path.join(repoRoot, "lib", "learner-renderer-vnext", "archetype-rules.js");
 
-const JOURNEY_VARIANT_IDS = Object.freeze([
-  "understand-orient-explain-check",
-  "apply-orient-practise-feedback",
-  "analyse-orient-investigate-synthesise",
-  "evaluate-orient-judge-reflect"
-]);
-
-const AUTHORITATIVE_SEQUENCES = Object.freeze([
+const HISTORICAL_COMPRESSED = Object.freeze([
   {
     activityId: "A1",
     archetype: "understand",
-    beatSequence: ["orientation", "explanation", "check"],
-    variantId: "understand-orient-explain-check"
-  },
-  {
-    activityId: "A2",
-    archetype: "understand",
-    beatSequence: ["orientation", "explanation", "check"],
-    variantId: "understand-orient-explain-check"
+    beatSequence: ["orientation", "explanation", "check"]
   },
   {
     activityId: "A3",
     archetype: "apply",
-    beatSequence: ["orientation", "practice", "feedback"],
-    variantId: "apply-orient-practise-feedback"
+    beatSequence: ["orientation", "practice", "feedback"]
   },
   {
     activityId: "A4",
     archetype: "analyse",
-    beatSequence: ["orientation", "investigation", "synthesis"],
-    variantId: "analyse-orient-investigate-synthesise"
+    beatSequence: ["orientation", "investigation", "synthesis"]
   },
   {
     activityId: "A5",
-    archetype: "analyse",
-    beatSequence: ["orientation", "investigation", "synthesis"],
-    variantId: "analyse-orient-investigate-synthesise"
-  },
-  {
-    activityId: "A6",
     archetype: "evaluate",
-    beatSequence: ["orientation", "judgement", "reflection"],
-    variantId: "evaluate-orient-judge-reflect"
+    beatSequence: ["orientation", "judgement", "reflection"]
   }
 ]);
 
-function loadAuthoritativePage() {
-  return readVideoTranscriptTestPage().page;
-}
-
-function countMaterials(page) {
-  return (page.activities || []).reduce(function (sum, activity) {
-    return sum + (Array.isArray(activity.materials) ? activity.materials.length : 0);
-  }, 0);
-}
-
-test("IMP-014C: understand accepts exactly orientation → explanation → check", () => {
-  var variant = selectVariant("understand", ["orientation", "explanation", "check"]);
-  assert.ok(variant);
-  assert.equal(variant.id, "understand-orient-explain-check");
-  assert.deepEqual(variant.beatSequence, ["orientation", "explanation", "check"]);
-});
-
-test("IMP-014C: apply accepts exactly orientation → practice → feedback", () => {
-  var variant = selectVariant("apply", ["orientation", "practice", "feedback"]);
-  assert.ok(variant);
-  assert.equal(variant.id, "apply-orient-practise-feedback");
-});
-
-test("IMP-014C: analyse accepts exactly orientation → investigation → synthesis", () => {
-  var variant = selectVariant("analyse", ["orientation", "investigation", "synthesis"]);
-  assert.ok(variant);
-  assert.equal(variant.id, "analyse-orient-investigate-synthesise");
-});
-
-test("IMP-014C: evaluate accepts exactly orientation → judgement → reflection", () => {
-  var variant = selectVariant("evaluate", ["orientation", "judgement", "reflection"]);
-  assert.ok(variant);
-  assert.equal(variant.id, "evaluate-orient-judge-reflect");
-});
-
-test("IMP-014C: A1 and A2 both resolve to understand-orient-explain-check", () => {
-  ["A1", "A2"].forEach(function (activityId) {
-    var page = loadAuthoritativePage();
-    var activity = page.activities.find(function (row) {
-      return row.activity_id === activityId;
-    });
-    var beats = activity.episode_plan.beats.map(function (beat) {
-      return beat.function;
-    });
-    var variant = selectVariant(activity.episode_plan.archetype, beats);
-    assert.equal(variant.id, "understand-orient-explain-check", activityId);
-  });
-});
-
-test("IMP-014C: A4 and A5 both resolve to analyse-orient-investigate-synthesise", () => {
-  ["A4", "A5"].forEach(function (activityId) {
-    var page = loadAuthoritativePage();
-    var activity = page.activities.find(function (row) {
-      return row.activity_id === activityId;
-    });
-    var beats = activity.episode_plan.beats.map(function (beat) {
-      return beat.function;
-    });
-    var variant = selectVariant(activity.episode_plan.archetype, beats);
-    assert.equal(variant.id, "analyse-orient-investigate-synthesise", activityId);
-  });
-});
-
-test("IMP-014C: authoritative workflow assigns all materials exactly once", () => {
-  var result = buildModel(loadAuthoritativePage());
-  assert.equal(result.ok, true, result.errors.map((e) => e.code).join(", "));
-  assert.ok(
-    !result.errors.some(function (error) {
-      return (
-        error.code === "UNASSIGNED_MATERIAL" ||
-        error.code === "MULTIPLY_ASSIGNED_MATERIAL"
-      );
-    })
-  );
-  assert.equal(countMaterials(loadAuthoritativePage()), 29);
-});
-
-test("IMP-014C: authoritative workflow assigns all learner-task steps exactly once", () => {
-  var result = buildModel(loadAuthoritativePage());
-  assert.equal(result.ok, true);
-  assert.ok(
-    !result.errors.some(function (error) {
-      return (
-        error.code === "UNASSIGNED_TASK_STEP" ||
-        error.code === "MULTIPLY_ASSIGNED_TASK_STEP"
-      );
-    })
-  );
-});
-
-test("IMP-014C: authoritative workflow assigns all expected outputs exactly once", () => {
-  var result = buildModel(loadAuthoritativePage());
-  assert.equal(result.ok, true);
-  assert.ok(
-    !result.errors.some(function (error) {
-      return (
-        error.code === "UNASSIGNED_EXPECTED_OUTPUT" ||
-        error.code === "MULTIPLY_ASSIGNED_EXPECTED_OUTPUT"
-      );
-    })
-  );
-});
-
-test("IMP-014C: journey-compressed functions classify into correct moments", () => {
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "check", learnerRole: "check" }),
-    "check"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "practice", learnerRole: "practise" }),
-    "do"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "feedback", learnerRole: "check" }),
-    "check"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "investigation", learnerRole: "practise" }),
-    "do"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "synthesis", learnerRole: "check" }),
-    "check"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "judgement", learnerRole: "practise" }),
-    "do"
-  );
-  assert.equal(
-    classifyBeatMoment({ sourceFunction: "judgement", learnerRole: "model" }),
-    "learn"
-  );
-});
-
-test("IMP-014C: investigation beats with learn and task materials split", () => {
-  var beat = {
-    sourceFunction: "investigation",
-    learnerRole: "practise",
-    instructions: [{ text: "Study the modelling note." }, { text: "Complete the analysis table." }],
-    materials: [
-      { id: "M1", type: "text" },
-      { id: "M2", type: "analysis_table" }
+function pageWithPlan(activityId, archetype, beats) {
+  return {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "imp014c-negative",
+    activities: [
+      {
+        activity_id: activityId,
+        title: activityId,
+        episode_plan: {
+          archetype: archetype,
+          beats: beats.map(function (fn) {
+            return { function: fn };
+          })
+        },
+        materials: [{ material_id: activityId + "-M1", type: "text", body: "Body" }]
+      }
     ]
   };
-  assert.equal(beatRequiresDoCheckSplit(beat), true);
+}
+
+test("IMP-014C Phase 5B: journey registry module is gone", () => {
+  assert.equal(
+    fs.existsSync(
+      path.join(repoRoot, "lib", "learner-renderer-vnext", "journey-compatibility-registry.js")
+    ),
+    false
+  );
+  assert.equal(route.VALIDATION_ROUTE.JOURNEY_COMPATIBILITY_REGISTRY, undefined);
 });
 
-test("IMP-014C: activity-id renaming does not change variant resolution", () => {
-  var page = loadAuthoritativePage();
-  page.activities.forEach(function (activity) {
-    activity.activity_id = "RENAMED-" + activity.activity_id;
-    (activity.materials || []).forEach(function (material) {
-      material.activity_id = activity.activity_id;
-    });
-  });
-  var result = buildModel(page);
-  assert.equal(result.ok, true, result.errors.map((e) => e.code).join(", "));
+HISTORICAL_COMPRESSED.forEach(function (row) {
+  test(
+    "IMP-014C Phase 5B: historical compressed sequence fails closed (" + row.activityId + ")",
+    () => {
+      const model = buildModel(pageWithPlan(row.activityId, row.archetype, row.beatSequence));
+      assert.equal(model.ok, false);
+      assert.ok(
+        model.errors.some(function (err) {
+          return (
+            err.code === "MIXED_EPISODE_PLAN_VOCABULARY" ||
+            err.code === "UNKNOWN_EPISODE_PLAN_BEAT"
+          );
+        }),
+        JSON.stringify(model.errors)
+      );
+      const rendered = renderPage(pageWithPlan(row.activityId, row.archetype, row.beatSequence));
+      assert.ok(rendered.error);
+    }
+  );
 });
 
-test("IMP-014C: reordered beat sequence fails strict matching", () => {
-  assert.equal(selectVariant("understand", ["explanation", "orientation", "check"]), null);
-  assert.equal(selectVariant("apply", ["orientation", "feedback", "practice"]), null);
-});
-
-test("IMP-014C: unknown beat function fails strict matching", () => {
-  assert.equal(selectVariant("understand", ["orientation", "explanation", "unknown_fn"]), null);
-  assert.equal(selectVariant("analyse", ["orientation", "investigation", "verification"]), null);
-});
-
-test("IMP-014C: browser and Node catalogues include journey-compressed variants", () => {
-  var source = fs.readFileSync(sourceRulesPath, "utf8");
-  var bundle = fs.readFileSync(browserBundlePath, "utf8");
-  JOURNEY_VARIANT_IDS.forEach(function (variantId) {
-    assert.match(source, new RegExp('"' + variantId + '"'));
-    assert.match(bundle, new RegExp('"' + variantId + '"'), "Stale browser bundle: " + variantId);
-  });
-});
-
-test("IMP-014C: authoritative VideoTranscriptTest page renders through production path", () => {
-  var loaded = readVideoTranscriptTestPage();
+test("IMP-014C Phase 5B: migrated VTT / Hetero / kitchen-sink are canonical FunctionEnum", () => {
+  const loaded = readVideoTranscriptTestPage();
   assert.equal(String(loaded.provenance.workflow_id), WORKFLOW_ID);
   assert.equal(String(loaded.provenance.workflow_name || ""), WORKFLOW_NAME);
 
-  AUTHORITATIVE_SEQUENCES.forEach(function (row) {
-    var activity = loaded.page.activities.find(function (entry) {
-      return entry.activity_id === row.activityId;
-    });
-    var beats = activity.episode_plan.beats.map(function (beat) {
-      return beat.function;
-    });
-    var variant = selectVariant(row.archetype, beats);
-    assert.equal(variant.id, row.variantId, row.activityId);
-  });
-
-  var modelResult = buildModel(loaded.page);
-  assert.equal(modelResult.ok, true, modelResult.errors.map((e) => e.code).join(", "));
-  assert.deepEqual(modelResult.diagnostics.cascadeSummary, {});
-
-  var rendered = renderPage(loaded.page, { compositionMode: "moments" });
-  assert.equal(rendered.error, null, rendered.error);
-  assert.ok(rendered.html && rendered.html.length > 1000);
-});
-
-test("IMP-014C: heteroscedasticity golden page still renders unchanged", () => {
-  var fixture = JSON.parse(fs.readFileSync(heteroPath, "utf8"));
-  var result = renderPage(fixture);
-  assert.equal(result.error, null, result.error);
-});
-
-test("IMP-014C: kitchen sink page still renders unchanged", () => {
-  var fixture = JSON.parse(fs.readFileSync(kitchenSinkPath, "utf8"));
-  var result = renderPage(fixture);
-  assert.equal(result.error, null, result.error);
+  [loaded.page, JSON.parse(fs.readFileSync(heteroPath, "utf8")), JSON.parse(fs.readFileSync(kitchenSinkPath, "utf8"))].forEach(
+    function (page) {
+      const model = buildModel(page);
+      assert.equal(model.ok, true, JSON.stringify(model.errors));
+      model.diagnostics.archetypeInspection.forEach(function (insp) {
+        assert.equal(insp.validationRoute, "canonical-grammar");
+        assert.equal(insp.runtimeAuthority, "shared-archetype-grammar");
+        insp.normalizedBeatSequence.forEach(function (beat) {
+          assert.equal(
+            require("../lib/episode-plan-v1-vocabulary").FUNCTION_ENUM_SET[beat],
+            true,
+            beat
+          );
+        });
+      });
+    }
+  );
 });

@@ -93,6 +93,7 @@ function loadPrismTestApi() {
       "lib/page-shell-create.js",
       "lib/ld-dla-page-enrich-contract.js",
       "lib/page-dla-enrich.js",
+      "lib/episode-plan-v1-vocabulary.js",
       "lib/episode-plan-population-contract.js"
     ])
   );

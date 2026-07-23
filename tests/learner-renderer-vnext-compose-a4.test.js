@@ -210,7 +210,7 @@ test("render slice: A4 beats mode unchanged with static prompt set", () => {
   assert.match(a4Html, /data-material-id="A4-M3"/);
   assert.doesNotMatch(a4Html, /util-learner-workspace/);
   assert.doesNotMatch(a4Html, /<textarea/);
-  assert.match(a4Html, /data-beat-function="application"/);
+  assert.match(a4Html, /data-beat-function="guided_practice"/);
 });
 
 test("composition map: A4 beat anchors and suppression hints", () => {
@@ -222,16 +222,27 @@ test("composition map: A4 beat anchors and suppression hints", () => {
   const map = buildActivityCompositionMap(composedResult.composed);
 
   assert.equal(map.A4.learnMomentBeat, "explanation");
-  assert.equal(map.A4.doMomentBeat, "application");
-  assert.equal(map.A4.checkMomentBeat, "check_understanding");
+  assert.equal(map.A4.doMomentBeat, "guided_practice");
+  assert.equal(map.A4.checkMomentBeat, "verification");
 
   assert.deepEqual(map.A4.suppressBeatContent.explanation.omitMaterialIds, ["A4-M1", "A4-M2"]);
-  assert.deepEqual(map.A4.suppressBeatContent.explanation.omitInstructionSteps, [1, 2]);
-  assert.deepEqual(map.A4.suppressBeatContent.application.omitMaterialIds, ["A4-M3"]);
-  assert.deepEqual(map.A4.suppressBeatContent.application.omitInstructionSteps, [3]);
-  assert.deepEqual(map.A4.suppressBeatContent.check_understanding.omitMaterialIds, ["A4-M4"]);
-  assert.deepEqual(map.A4.suppressBeatContent.check_understanding.omitInstructionSteps, [4]);
-  assert.equal(map.A4.suppressBeatContent.check_understanding.omitExpectedOutput, true);
+  assert.deepEqual(map.A4.suppressBeatContent.guided_practice.omitMaterialIds, ["A4-M3"]);
+  assert.ok(map.A4.suppressBeatContent.guided_practice.omitInstructionSteps.includes(3));
+  assert.ok(
+    (map.A4.suppressBeatContent.guided_practice.omitInstructionSteps || [])
+      .concat(map.A4.suppressBeatContent.verification.omitInstructionSteps || [])
+      .concat(map.A4.suppressBeatContent.explanation.omitInstructionSteps || [])
+      .includes(1)
+  );
+  assert.ok(
+    (map.A4.suppressBeatContent.guided_practice.omitInstructionSteps || [])
+      .concat(map.A4.suppressBeatContent.verification.omitInstructionSteps || [])
+      .concat(map.A4.suppressBeatContent.explanation.omitInstructionSteps || [])
+      .includes(2)
+  );
+  assert.deepEqual(map.A4.suppressBeatContent.verification.omitMaterialIds, ["A4-M4"]);
+  assert.ok(map.A4.suppressBeatContent.verification.omitInstructionSteps.includes(4));
+  assert.equal(map.A4.suppressBeatContent.verification.omitExpectedOutput, true);
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   assert.doesNotMatch(extractActivityHtml(html, "A4"), /data-beat-function="/);

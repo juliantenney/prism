@@ -25,7 +25,14 @@ Certification treats unexpected production diagnostics as release-blocking regar
 
 | Code | Severity | Expected in success? | Blocking | Meaning | Learner impact | Developer action |
 | ---- | -------- | -------------------- | -------- | ------- | -------------- | ---------------- |
-| `UNKNOWN_ARCHETYPE_VARIANT` | error | no | yes | Beat sequence is not a registered production variant | Activity may fail closed or fall back | Fix episode plan or register only with production evidence |
+| `UNKNOWN_ARCHETYPE_VARIANT` | error | no | yes | **Retired Phase 5B** (catalog history). Was: exact whole-sequence registry miss | n/a | Prefer FunctionEnum Episode Plans |
+| `UNKNOWN_ARCHETYPE` | error | no | yes | Missing or non-V1 Episode Plan archetype | Activity fails closed | Capture a frozen V1 archetype |
+| `ARCHETYPE_GRAMMAR_VALIDATION_FAILED` | error | no | yes | Canonical FunctionEnum sequence failed shared archetype grammar (canonical authority) | Activity fails closed | Fix producer sequence; do not widen renderer acceptance |
+| `UNKNOWN_EPISODE_PLAN_BEAT` | error | no | yes | Beat values outside FunctionEnum and known journey compatibility vocabulary | Activity fails closed | Remove unknown beats at capture |
+| `MIXED_EPISODE_PLAN_VOCABULARY` | error | no | yes | Sequence mixes known vocabularies with unknown beat values | Activity fails closed | Normalize to one ownership boundary |
+| `MALFORMED_EPISODE_PLAN_SEQUENCE` | error | no | yes | Empty sequence or empty beat functions | Activity fails closed | Fix episode_plan.beats |
+| `ARCHETYPE_GRAMMAR_REJECTS_REGISTERED_SEQUENCE` | info | yes | no | Observational: composition/journey evidence disagrees with grammar on a FunctionEnum sequence | Canonical path follows grammar | Investigate historical entry |
+| `ARCHETYPE_GRAMMAR_ACCEPTS_UNREGISTERED_SEQUENCE` | info | yes | no | Observational: grammar accepts a sequence absent from journey registry | Expected on canonical path | Grammar is runtime authority |
 | `UNASSIGNED_MATERIAL` | error | no | yes | Material not assigned exactly once | Content missing | Fix composition / absorption |
 | `MULTIPLY_ASSIGNED_MATERIAL` | error | no | yes | Material assigned more than once | Duplicate content | Deduplicate routing |
 | `UNASSIGNED_TASK_STEP` | error | no | yes | Task step not assigned exactly once | Missing instruction/workspace | Fix Do/Check routing |
@@ -95,7 +102,7 @@ NOT CERTIFIED
 
 | Subsystem | Codes |
 | --------- | ----- |
-| archetype | `UNKNOWN_ARCHETYPE_VARIANT` |
+| archetype | `UNKNOWN_ARCHETYPE_VARIANT`, `UNKNOWN_ARCHETYPE`, `ARCHETYPE_GRAMMAR_VALIDATION_FAILED`, `UNKNOWN_EPISODE_PLAN_BEAT`, `MIXED_EPISODE_PLAN_VOCABULARY`, `MALFORMED_EPISODE_PLAN_SEQUENCE`, `ARCHETYPE_GRAMMAR_REJECTS_REGISTERED_SEQUENCE`, `ARCHETYPE_GRAMMAR_ACCEPTS_UNREGISTERED_SEQUENCE` |
 | assignment | `UNASSIGNED_*`, `MULTIPLY_ASSIGNED_*` |
 | learner-surface / response-parts | `UNSUPPORTED_LEARNER_SURFACE`, `DUPLICATE_RESPONSE_PART`, `UNASSIGNED_WRITTEN_RESPONSE` |
 | ordering | `AMBIGUOUS_ORDERING_SEMANTICS`, `ORDERING_ITEMS_MISSING`, `DUPLICATE_ORDERING_ITEM_ID`, `INVALID_EXPECTED_ORDER`, `EXPECTED_ORDER_ITEM_MISMATCH` |

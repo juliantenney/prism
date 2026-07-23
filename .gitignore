@@ -1,2 +1,3 @@
 .env.local
 node_modules/
+tools/_tmp_hetero_live_export/

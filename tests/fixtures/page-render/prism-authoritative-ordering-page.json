@@ -24,7 +24,10 @@
     }
   },
   "learning_sequence": {
-    "ordered_activity_ids": ["A1", "A2"]
+    "ordered_activity_ids": [
+      "A1",
+      "A2"
+    ]
   },
   "activities": [
     {
@@ -32,8 +35,16 @@
       "title": "Put these in order",
       "activity_interaction_type": "sequencing",
       "ordering": {
-        "canonical_order": ["Event A", "Event B", "Event C"],
-        "learner_display_order": ["Event C", "Event A", "Event B"],
+        "canonical_order": [
+          "Event A",
+          "Event B",
+          "Event C"
+        ],
+        "learner_display_order": [
+          "Event C",
+          "Event A",
+          "Event B"
+        ],
         "learner_display_order_strategy": "deterministic_shuffle",
         "shuffle_seed_key": "fixture-seq-a1"
       },
@@ -44,9 +55,15 @@
       "episode_plan": {
         "archetype": "understand",
         "beats": [
-          { "function": "orientation" },
-          { "function": "explanation" },
-          { "function": "check_understanding" }
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "verification"
+          }
         ]
       },
       "grouping": "individual",
@@ -81,9 +98,15 @@
       "episode_plan": {
         "archetype": "understand",
         "beats": [
-          { "function": "orientation" },
-          { "function": "explanation" },
-          { "function": "check_understanding" }
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "verification"
+          }
         ]
       },
       "grouping": "individual",

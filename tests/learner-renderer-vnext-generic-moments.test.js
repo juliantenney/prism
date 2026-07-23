@@ -94,8 +94,8 @@ test("classification: canonical sourceFunction inventory maps to moments", () =>
   assert.equal(SOURCE_FUNCTION_MOMENT_MAP.orientation, "orient");
   assert.equal(SOURCE_FUNCTION_MOMENT_MAP.explanation, "learn");
   assert.equal(SOURCE_FUNCTION_MOMENT_MAP.analysis, "do");
-  assert.equal(SOURCE_FUNCTION_MOMENT_MAP.check_understanding, "check");
-  assert.equal(SOURCE_FUNCTION_MOMENT_MAP.evaluation, "do");
+  assert.equal(SOURCE_FUNCTION_MOMENT_MAP.verification, "check");
+  assert.equal(SOURCE_FUNCTION_MOMENT_MAP.guided_practice, "do");
   assert.equal(SOURCE_FUNCTION_MOMENT_MAP.reflection, "check");
 });
 

@@ -6,22 +6,22 @@
 
 - Certification version: `s68-imp-020`
 - Corpus version: `s68-imp-020-v1`
-- Generated at: `2026-07-23T08:29:45.575Z`
-- Git revision: `3157a62d95facf39dfeed48117ac1c989b6ffdb1`
+- Generated at: `2026-07-23T12:05:29.355Z`
+- Git revision: `fe16960babd509389d2ec43053767be06af4ca88`
 
 ## Corpus summary
 
-- **VideoTranscriptTest** (`videotranscripttest`): pass — activities 6, moments 19
+- **VideoTranscriptTest** (`videotranscripttest`): pass — activities 6, moments 21
 - **Heteroscedasticity** (`heteroscedasticity`): pass — activities 5, moments 20
 - **Kitchen Sink** (`kitchen-sink`): pass — activities 5, moments 20
 - **RNA episode-plan-v1** (`rna-episode-plan-v1`): pass — activities 6, moments 18
 - **Generic moments** (`generic-moments-new01`): pass — activities 1, moments 4
-- **Authoritative PRISM ordering** (`authoritative-ordering`): pass — activities 2, moments 7
+- **Authoritative PRISM ordering** (`authoritative-ordering`): pass — activities 2, moments 8
 
 ## Capability coverage
 
 ```text
-text_entry: 31
+text_entry: 32
 table_entry: 18
 ordering: 1
 ```
@@ -34,7 +34,7 @@ analyse, apply, evaluate, understand
 
 - workflows: 6
 - activities: 25
-- moments: 88
+- moments: 91
 - beatFallbacks: 0
 - materialsUnassigned: 0
 - materialsDuplicated: 0
@@ -46,11 +46,11 @@ analyse, apply, evaluate, understand
 
 ## Diagnostics
 
-Catalogue size: 25; unexpected production diagnostics: 0
+Catalogue size: 32; unexpected production diagnostics: 0
 
 ## Browser/Node parity
 
-Workflows compared: 0; mismatches: 0
+Workflows compared: 6; mismatches: 0
 
 ## Persistence
 

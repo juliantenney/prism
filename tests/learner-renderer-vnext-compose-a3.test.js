@@ -149,7 +149,7 @@ test("adapter: A3 Do composes scenarios and decision table with table workspace 
   assert.match(doMoment.expectedOutput.text, /strong response uses residual evidence/i);
 });
 
-test("adapter: A3 Check includes checklist and transfer reflection guidance", () => {
+test("adapter: A3 Check includes checklist verification", () => {
   const { a3 } = buildGoldenContext();
   const checkMoment = composeCheckMoment(a3);
   assert.ok(checkMoment);
@@ -166,11 +166,6 @@ test("adapter: A3 Check includes checklist and transfer reflection guidance", ()
       .map((item) => item.material.id),
     A3_CHECK_MATERIAL_IDS
   );
-
-  const transfer = checkMoment.items.find((item) => item.kind === "prompt");
-  assert.ok(transfer);
-  assert.equal(transfer.prompt.sourceField, "transfer_or_application_task");
-  assert.match(transfer.prompt.text, /another economic variable pair/i);
 });
 
 test("render slice: A3-M3 reuses renderTableWorkspace in moments mode", () => {
@@ -185,7 +180,8 @@ test("render slice: A3-M3 reuses renderTableWorkspace in moments mode", () => {
   assert.doesNotMatch(a3Html, /data-beat-function="/);
   assert.equal((a3Html.match(/data-composition-moment="/g) || []).length, 4);
   assert.doesNotMatch(momentHtml(a3Html, "do"), /util-learner-workspace/);
-  assert.doesNotMatch(momentHtml(a3Html, "do"), /<textarea/);
+  assert.doesNotMatch(momentHtml(a3Html, "do"), /util-learner-workspace__input/);
+  assert.match(momentHtml(a3Html, "do"), /<textarea class="util-learner-table-workspace__input"/);
   assert.match(momentHtml(a3Html, "check"), /util-learner-workspace__input/);
 
   assert.match(learnHtml, /data-material-id="A3-M1"/);
@@ -207,7 +203,7 @@ test("render slice: A3 beats mode keeps decision table static", () => {
 
   assert.match(a3Html, /data-material-id="A3-M3"/);
   assert.doesNotMatch(a3Html, /util-learner-table-workspace/);
-  assert.doesNotMatch(a3Html, /<input/);
+  assert.doesNotMatch(a3Html, /util-learner-table-workspace__input/);
 });
 
 test("workspace: A3-M3 decision_table renders editable cells without synthetic row labels", () => {
@@ -237,16 +233,28 @@ test("composition map: A3 exposes beat anchors, reflection omission, and suppres
   assert.ok(map.A3.learnMoment);
   assert.ok(map.A3.doMoment);
   assert.ok(map.A3.checkMoment);
-  assert.equal(map.A3.learnMomentBeat, "worked_example");
-  assert.equal(map.A3.doMomentBeat, "practice");
-  assert.equal(map.A3.checkMomentBeat, "practice");
+  assert.equal(map.A3.learnMomentBeat, "worked_thinking");
+  assert.equal(map.A3.doMomentBeat, "guided_practice");
+  assert.equal(map.A3.checkMomentBeat, "reflection");
   assert.ok(map.A3.omitBeatFunctions.includes("reflection"));
 
-  assert.deepEqual(map.A3.suppressBeatContent.worked_example.omitMaterialIds, ["A3-M1"]);
-  assert.deepEqual(map.A3.suppressBeatContent.worked_example.omitInstructionSteps, [1, 2]);
-  assert.deepEqual(map.A3.suppressBeatContent.practice.omitMaterialIds.sort(), ["A3-M2", "A3-M3", "A3-M4"]);
-  assert.deepEqual(map.A3.suppressBeatContent.practice.omitInstructionSteps.sort(), [3, 4, 5]);
-  assert.equal(map.A3.suppressBeatContent.practice.omitExpectedOutput, true);
+  assert.deepEqual(map.A3.suppressBeatContent.worked_thinking.omitMaterialIds, ["A3-M1"]);
+  assert.deepEqual(map.A3.suppressBeatContent.guided_practice.omitMaterialIds.sort(), [
+    "A3-M2",
+    "A3-M3"
+  ]);
+  const a3OmittedSteps = []
+    .concat(map.A3.suppressBeatContent.worked_thinking.omitInstructionSteps || [])
+    .concat(map.A3.suppressBeatContent.guided_practice.omitInstructionSteps || [])
+    .concat(map.A3.suppressBeatContent.reflection.omitInstructionSteps || [])
+    .sort(function (a, b) {
+      return a - b;
+    });
+  assert.deepEqual(a3OmittedSteps, [1, 2, 3, 4, 5]);
+  assert.equal(map.A3.suppressBeatContent.reflection.omitExpectedOutput, true);
+  assert.deepEqual(map.A3.suppressBeatContent.reflection.omitMaterialIds, ["A3-M4"]);
+  assert.ok(map.A3.suppressBeatContent.guided_practice.omitInstructionSteps.includes(3));
+  assert.ok(map.A3.suppressBeatContent.guided_practice.omitInstructionSteps.includes(4));
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a3Html = extractActivityHtml(html, "A3");

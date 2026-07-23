@@ -12,7 +12,9 @@
     }
   },
   "learning_sequence": {
-    "ordered_activity_ids": ["NEW01"]
+    "ordered_activity_ids": [
+      "NEW01"
+    ]
   },
   "activities": [
     {
@@ -26,9 +28,15 @@
       "episode_plan": {
         "archetype": "understand",
         "beats": [
-          { "function": "orientation" },
-          { "function": "explanation" },
-          { "function": "check_understanding" }
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "verification"
+          }
         ]
       },
       "grouping": "individual",

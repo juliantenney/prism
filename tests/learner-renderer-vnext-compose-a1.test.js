@@ -281,12 +281,15 @@ test("render hints: activity composition map drives page render options", () => 
   assert.ok(map.A1.doMoment);
   assert.ok(map.A1.checkMoment);
   assert.equal(map.A1.suppressFraming, true);
-  assert.deepEqual(map.A1.omitBeatFunctions, ["orientation"]);
-  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitInstructionSteps, [1]);
-  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitMaterialIds, ["A1-M1"]);
-  assert.deepEqual(map.A1.suppressBeatContent.check_understanding.omitInstructionSteps, [2, 3, 4, 5]);
-  assert.deepEqual(map.A1.suppressBeatContent.check_understanding.omitMaterialIds, [
-    "A1-M2",
+  assert.ok(map.A1.omitBeatFunctions.includes("orientation"));
+  assert.ok(map.A1.omitBeatFunctions.includes("explanation"));
+  assert.ok(map.A1.omitBeatFunctions.includes("verification"));
+  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitInstructionSteps, []);
+  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitMaterialIds, ["A1-M1", "A1-M2"]);
+  assert.deepEqual(map.A1.suppressBeatContent.verification.omitInstructionSteps, [
+    1, 2, 3, 4, 5
+  ]);
+  assert.deepEqual(map.A1.suppressBeatContent.verification.omitMaterialIds, [
     "A1-M3",
     "A1-M4"
   ]);

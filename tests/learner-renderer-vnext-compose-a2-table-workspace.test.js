@@ -131,7 +131,8 @@ test("render: A2-M2 uses interactive table workspace in moments mode", () => {
   assert.match(doHtml, /util-learner-table-workspace__guidance/);
   assert.match(doHtml, /saved on this device/i);
   assert.doesNotMatch(doHtml, /util-learner-workspace/);
-  assert.doesNotMatch(doHtml, /<textarea/);
+  assert.match(doHtml, /<textarea class="util-learner-table-workspace__input"/);
+  assert.doesNotMatch(doHtml, /util-learner-workspace__input/);
 
   assert.match(learnHtml, /data-material-id="A2-M1"/);
   assert.match(learnHtml, /<table>/);
@@ -176,7 +177,8 @@ test("cell fidelity: fixed example row and hints remain text; blanks become inpu
   assert.match(html, /Check width of residual cloud/);
 
   assert.equal((html.match(/util-learner-table-workspace__input/g) || []).length, 9);
-  assert.doesNotMatch(html, /<textarea/);
+  assert.match(html, /<textarea class="util-learner-table-workspace__input"/);
+  assert.doesNotMatch(html, /<input\b/);
 
   assert.match(html, /<th scope="col"/);
   assert.match(html, /<th scope="row"/);

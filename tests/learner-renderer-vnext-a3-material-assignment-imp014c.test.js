@@ -1,7 +1,8 @@
 "use strict";
 
 /**
- * Sprint 68 IMP-014C follow-up — A3-M2 material assignment for apply-orient-practise-feedback.
+ * Sprint 68 IMP-014C follow-up — A3 material assignment for canonical apply sequence.
+ * Phase 5B: explanation → guided_practice → verification (FunctionEnum).
  */
 
 const test = require("node:test");
@@ -11,7 +12,9 @@ const path = require("node:path");
 
 const buildModel = require("../lib/learner-renderer-vnext/build-page-model").buildPageModel;
 const buildBeatModels = require("../lib/learner-renderer-vnext/build-beat-model").buildBeatModels;
-const selectVariant = require("../lib/learner-renderer-vnext/archetype-rules").selectArchetypeVariant;
+const buildCanonical =
+  require("../lib/learner-renderer-vnext/archetype-canonical-binding")
+    .buildCanonicalFunctionEnumVariant;
 const renderPage = require("../lib/learner-renderer-vnext/render-learner-page").renderLearnerPageHtml;
 const classifyActivityBeats =
   require("../lib/learner-renderer-vnext/compose-moment-classification").classifyActivityBeats;
@@ -28,7 +31,12 @@ const browserBundlePath = path.join(
   "learner-renderer-vnext-browser.js"
 );
 
-const APPLY_VARIANT = selectVariant("apply", ["orientation", "practice", "feedback"]);
+const APPLY_SEQUENCE = Object.freeze([
+  "explanation",
+  "guided_practice",
+  "verification"
+]);
+const APPLY_VARIANT = buildCanonical("apply", APPLY_SEQUENCE);
 
 function buildA3Activity(materials) {
   return {
@@ -42,27 +50,30 @@ function buildA3Activity(materials) {
     expected_output: "Completed planning table and checklist.",
     episode_plan: {
       archetype: "apply",
-      beats: [{ function: "orientation" }, { function: "practice" }, { function: "feedback" }]
+      beats: APPLY_SEQUENCE.map(function (fn) {
+        return { function: fn };
+      })
     },
     materials: materials
   };
 }
 
-function beatForMaterial(activity) {
+function beatForMaterial(activity, materialId) {
+  var id = materialId || "A3-M2";
   var result = buildBeatModels(activity, APPLY_VARIANT);
   assert.equal(result.errors.length, 0, result.errors.map((e) => e.message).join("; "));
-  var modelActivity = { id: "A3", beats: result.beats };
-  var materialId = "A3-M2";
   for (var i = 0; i < result.beats.length; i += 1) {
     var beat = result.beats[i];
-    if ((beat.materials || []).some(function (material) { return material.id === materialId; })) {
+    if ((beat.materials || []).some(function (material) {
+      return material.id === id;
+    })) {
       return beat;
     }
   }
   return null;
 }
 
-test("IMP-014C A3: A3-M2 with type alias resolves to scenario and matches practice beat", () => {
+test("IMP-014C A3: A3-M2 scenario resolves onto guided_practice", () => {
   var activity = buildA3Activity([
     {
       material_id: "A3-M1",
@@ -96,11 +107,11 @@ test("IMP-014C A3: A3-M2 with type alias resolves to scenario and matches practi
   assert.equal(resolveMaterialType(activity.materials[1]), "scenario");
   var beat = beatForMaterial(activity);
   assert.ok(beat);
-  assert.equal(beat.sourceFunction, "practice");
+  assert.equal(beat.sourceFunction, "guided_practice");
   assert.equal(beat.learnerRole, "practise");
 });
 
-test("IMP-014C A3: worked_example A3-M2 matches exactly one practice beat rule", () => {
+test("IMP-014C A3: worked_example A3-M2 matches explanation beat", () => {
   var activity = buildA3Activity([
     {
       material_id: "A3-M1",
@@ -128,10 +139,10 @@ test("IMP-014C A3: worked_example A3-M2 matches exactly one practice beat rule",
     }
   ]);
   var beat = beatForMaterial(activity);
-  assert.equal(beat.sourceFunction, "practice");
+  assert.equal(beat.sourceFunction, "explanation");
 });
 
-test("IMP-014C A3: A3-M2 composed into Do moment for practice beat", () => {
+test("IMP-014C A3: A3-M2 composed into Do moment for guided_practice", () => {
   var page = {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -147,8 +158,8 @@ test("IMP-014C A3: A3-M2 composed into Do moment for practice beat", () => {
         },
         {
           material_id: "A3-M2",
-          material_type: "worked_example",
-          title: "Modeled scenario response",
+          material_type: "scenario",
+          title: "Outbreak Scenario",
           body: "Expert walkthrough of outbreak prioritisation."
         },
         {
@@ -197,7 +208,7 @@ test("IMP-014C A3: all materials assigned exactly once", () => {
         },
         {
           material_id: "A3-M2",
-          type: "worked_example",
+          type: "scenario",
           title: "Scenario model",
           body: "Expert scenario analysis."
         },
@@ -220,7 +231,7 @@ test("IMP-014C A3: all materials assigned exactly once", () => {
   assert.equal(result.ok, true, result.errors.map((e) => e.message).join("; "));
 });
 
-test("IMP-014C A3: scenarios alias resolves to scenario on practice beat", () => {
+test("IMP-014C A3: scenarios alias resolves to scenario on guided_practice", () => {
   var activity = buildA3Activity([
     { material_id: "A3-M1", material_type: "text", title: "Framing", body: "Framing" },
     { material_id: "A3-M2", type: "scenarios", title: "Cases", body: "Case details." },
@@ -228,10 +239,10 @@ test("IMP-014C A3: scenarios alias resolves to scenario on practice beat", () =>
     { material_id: "A3-M4", material_type: "checklist", title: "Check", body: "- one" }
   ]);
   var beat = beatForMaterial(activity);
-  assert.equal(beat.sourceFunction, "practice");
+  assert.equal(beat.sourceFunction, "guided_practice");
 });
 
-test("IMP-014C A3: apply-orient-practise-feedback rejects unrelated material types", () => {
+test("IMP-014C A3: canonical apply sequence rejects unrelated material types", () => {
   var activity = buildA3Activity([
     { material_id: "A3-M1", material_type: "text", title: "Framing", body: "Framing" },
     { material_id: "A3-M2", material_type: "transfer_prompt", title: "Transfer", body: "Transfer" },
@@ -292,7 +303,7 @@ test("IMP-014C: authoritative VideoTranscriptTest page renders completely", () =
   assert.ok(rendered.html && rendered.html.length > 1000);
 });
 
-test("IMP-014C: journey-compressed variants cover authoritative workflow materials", () => {
+test("IMP-014C: canonical FunctionEnum variants cover authoritative workflow materials", () => {
   var page = readVideoTranscriptTestPage().page;
   var result = buildModel(page);
   assert.equal(result.ok, true, result.errors.map((e) => e.code + " " + e.message).join("; "));
@@ -303,7 +314,9 @@ test("IMP-014C: journey-compressed variants cover authoritative workflow materia
         return row.id === activity.activity_id;
       });
       (modelActivity.beats || []).forEach(function (beat) {
-        if ((beat.materials || []).some(function (row) { return row.id === material.material_id; })) {
+        if ((beat.materials || []).some(function (row) {
+          return row.id === material.material_id;
+        })) {
           assigned = true;
         }
       });
@@ -312,8 +325,9 @@ test("IMP-014C: journey-compressed variants cover authoritative workflow materia
   });
 });
 
-test("IMP-014C: browser bundle includes resolveMaterialType and practice worked_example rule", () => {
+test("IMP-014C: browser bundle includes resolveMaterialType and canonical binding", () => {
   var bundle = fs.readFileSync(browserBundlePath, "utf8");
   assert.match(bundle, /resolveMaterialType/);
-  assert.match(bundle, /apply-orient-practise-feedback[\s\S]*worked_example/);
+  assert.match(bundle, /buildCanonicalFunctionEnumVariant/);
+  assert.doesNotMatch(bundle, /apply-orient-practise-feedback/);
 });

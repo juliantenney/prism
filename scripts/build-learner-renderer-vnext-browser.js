@@ -20,8 +20,12 @@ function normalizeModuleName(name) {
 
 function resolveModulePath(fromFile, relPath) {
   var normalized = String(relPath || "").replace(/\\/g, "/");
-  if (normalized.startsWith("../")) {
-    return path.normalize(path.join(moduleDir, "..", normalized.slice(3)));
+  // Resolve relative to the requiring file so lib/ modules outside
+  // learner-renderer-vnext (vocabulary, grammar) bundle correctly.
+  if (normalized.startsWith("./") || normalized.startsWith("../")) {
+    return path.normalize(
+      path.join(path.dirname(fromFile), normalizeModuleName(normalized))
+    );
   }
   return path.join(moduleDir, normalizeModuleName(normalized));
 }

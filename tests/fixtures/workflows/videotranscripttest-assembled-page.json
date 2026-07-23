@@ -31,13 +31,16 @@
         "archetype": "understand",
         "beats": [
           {
-            "function": "orientation"
-          },
-          {
             "function": "explanation"
           },
           {
-            "function": "check"
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
           }
         ]
       },
@@ -91,13 +94,16 @@
         "archetype": "understand",
         "beats": [
           {
-            "function": "orientation"
-          },
-          {
             "function": "explanation"
           },
           {
-            "function": "check"
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "verification"
           }
         ]
       },
@@ -144,13 +150,13 @@
         "archetype": "apply",
         "beats": [
           {
-            "function": "orientation"
+            "function": "explanation"
           },
           {
-            "function": "practice"
+            "function": "guided_practice"
           },
           {
-            "function": "feedback"
+            "function": "verification"
           }
         ]
       },
@@ -197,13 +203,13 @@
         "archetype": "analyse",
         "beats": [
           {
-            "function": "orientation"
+            "function": "worked_thinking"
           },
           {
-            "function": "investigation"
+            "function": "guided_practice"
           },
           {
-            "function": "synthesis"
+            "function": "verification"
           }
         ]
       },
@@ -257,13 +263,13 @@
         "archetype": "analyse",
         "beats": [
           {
-            "function": "orientation"
+            "function": "explanation"
           },
           {
-            "function": "investigation"
+            "function": "guided_practice"
           },
           {
-            "function": "synthesis"
+            "function": "verification"
           }
         ]
       },
@@ -310,13 +316,19 @@
         "archetype": "evaluate",
         "beats": [
           {
-            "function": "orientation"
+            "function": "explanation"
           },
           {
-            "function": "judgement"
+            "function": "worked_judgement"
           },
           {
-            "function": "reflection"
+            "function": "guided_practice"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "verification"
           }
         ]
       },

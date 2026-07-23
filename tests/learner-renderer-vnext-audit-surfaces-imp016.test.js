@@ -277,8 +277,8 @@ test("command: audit script emits deterministic JSON summary", () => {
 
 test("activity surface usage totals include text, table, ordering, and none buckets", () => {
   const result = runAudit();
-  assert.equal(result.activitySurfaceUsage.text_entry, 11);
+  assert.equal(result.activitySurfaceUsage.text_entry, 12);
   assert.equal(result.activitySurfaceUsage.table_entry, 18);
   assert.equal(result.activitySurfaceUsage.ordering, 1);
-  assert.equal(result.activitySurfaceUsage.no_learner_workspace, 1);
+  assert.equal(result.activitySurfaceUsage.no_learner_workspace, 0);
 });

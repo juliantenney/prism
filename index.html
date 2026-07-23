@@ -704,7 +704,15 @@
               <div class="workflow-actions-group">
                 <button id="newWorkflowBtn" class="btn small">New</button>
                 <button id="duplicateWorkflowBtn" class="btn small" disabled>Duplicate</button>
-                  <button id="renameWorkflowBtn" class="btn small" disabled>Rename</button>
+                <button id="renameWorkflowBtn" class="btn small" disabled>Rename</button>
+                <button
+                  id="clearWorkflowRunDataBtn"
+                  class="btn small"
+                  disabled
+                  title="Delete saved step/run data for the selected workflow"
+                >
+                  Clear run data
+                </button>
               </div>
               <div class="workflow-actions-group">
                 <label class="btn small file-button">
@@ -1028,6 +1036,8 @@
   <script src="lib/ld-gam-page-enrich-contract.js?v=20260707-1"></script>
   <script src="lib/ld-gai-page-enrich-contract.js?v=20260709-1"></script>
   <script src="lib/page-gam-enrich.js?v=20260707-1"></script>
+  <script src="lib/episode-plan-v1-vocabulary.js?v=20260723-1"></script>
+  <script src="lib/episode-plan-v1-persistence-migration.js?v=20260723-1"></script>
   <script src="lib/episode-plan-population-contract.js?v=20260608-1"></script>
   <script src="lib/episode-plan-v1-templates.js?v=20260608-1"></script>
   <script src="lib/episode-plan-v1-validation.js?v=20260608-1"></script>

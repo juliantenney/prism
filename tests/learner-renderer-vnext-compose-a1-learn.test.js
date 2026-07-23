@@ -101,12 +101,9 @@ test("adapter: only concept-building explanatory sources are assigned to Learn",
     .map((item) => item.material.id);
   assert.deepEqual(materialIds, A1_LEARN_MATERIAL_IDS);
 
-  assert.match(
-    learnMoment.items.find((item) => item.kind === "instruction").instruction.text,
-    /Study the explanatory text introducing residuals/i
-  );
   assert.equal(
-    learnMoment.items.find((item) => item.kind === "material").material.title,
+    learnMoment.items.find((item) => item.kind === "material" && item.material.id === "A1-M1")
+      .material.title,
     "Residual Variance and Heteroscedasticity"
   );
 
@@ -119,14 +116,14 @@ test("adapter: exact Learn sources match the fixture", () => {
   const learnMoment = composeLearnMoment(a1);
 
   assert.deepEqual(
-    learnMoment.explanatorySteps.map((step) => step.sourceStepNumber),
-    [1]
+    (learnMoment.explanatorySteps || []).map((step) => step.sourceStepNumber),
+    [1, 2]
   );
   assert.deepEqual(
     learnMoment.materials.map((material) => material.id),
-    ["A1-M1"]
+    ["A1-M1", "A1-M2"]
   );
-  assert.equal(learnMoment.items.length, 2);
+  assert.equal(learnMoment.items.length, 4);
 });
 
 test("adapter: source order and identity are preserved in Learn moment", () => {
@@ -138,10 +135,20 @@ test("adapter: source order and identity are preserved in Learn moment", () => {
     if (item.kind === "material") return "material:" + item.material.id;
     return item.kind;
   });
-  assert.deepEqual(sequence, ["step:1", "material:A1-M1"]);
+  assert.deepEqual(sequence, [
+    "step:1",
+    "material:A1-M1",
+    "step:2",
+    "material:A1-M2"
+  ]);
 
   learnMoment.items.forEach((item) => {
-    assert.equal(item.sourceRef.beatFunction, "explanation");
+    if (item.kind === "material") {
+      assert.equal(item.sourceRef.beatFunction, "explanation");
+    }
+    if (item.kind === "instruction") {
+      assert.equal(item.sourceRef.beatFunction, "verification");
+    }
     assert.equal(item.sourceRef.activityId, "A1");
   });
 });
@@ -158,12 +165,9 @@ test("adapter: Learn moment appears after Orient and before Do", () => {
 test("adapter: Learn item roles distinguish explanatory semantics", () => {
   const { a1 } = buildGoldenContext();
   const learnMoment = composeLearnMoment(a1);
-  const instructionItem = learnMoment.items.find((item) => item.kind === "instruction");
   const materialItem = learnMoment.items.find((item) => item.kind === "material");
 
-  assert.equal(instructionItem.role, learnItemRoleForInstruction(instructionItem.instruction));
   assert.equal(materialItem.role, learnItemRoleForMaterial(materialItem.material));
-  assert.equal(instructionItem.role, "explanation");
   assert.equal(materialItem.role, "definition");
 });
 
@@ -177,24 +181,35 @@ test("adapter: Learn content has no reveal by default", () => {
   });
 });
 
-test("adapter: missing optional explanatory content degrades safely", () => {
+test("adapter: missing optional explanatory content keeps owned study prompts", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
   const explanationBeat = clone.beats.find((beat) => beat.sourceFunction === "explanation");
-  explanationBeat.materials = explanationBeat.materials.filter((material) => material.id !== "A1-M1");
+  explanationBeat.materials = explanationBeat.materials.filter(
+    (material) => material.id !== "A1-M1" && material.id !== "A1-M2"
+  );
 
   const learnMoment = composeLearnMoment(clone);
   assert.ok(learnMoment);
+  assert.deepEqual(
+    learnMoment.items
+      .filter((item) => item.kind === "instruction")
+      .map((item) => item.instruction.sourceStepNumber),
+    [1, 2]
+  );
   assert.equal(learnMoment.items.filter((item) => item.kind === "material").length, 0);
-  assert.equal(learnMoment.items.filter((item) => item.kind === "instruction").length, 1);
 });
 
-test("adapter: missing Learn task step degrades to no Learn moment", () => {
+test("adapter: Learn returns null when no learn materials or study prompts remain", () => {
   const { a1 } = buildGoldenContext();
   const clone = JSON.parse(JSON.stringify(a1));
   const explanationBeat = clone.beats.find((beat) => beat.sourceFunction === "explanation");
   explanationBeat.instructions = [];
   explanationBeat.materials = [];
+  const verificationBeat = clone.beats.find((beat) => beat.sourceFunction === "verification");
+  verificationBeat.instructions = verificationBeat.instructions.filter(function (instruction) {
+    return ![1, 2].includes(Number(instruction.sourceStepNumber));
+  });
 
   assert.equal(composeLearnMoment(clone), null);
 });
@@ -249,8 +264,8 @@ test("render slice: Learn section renders explanatory content once with structur
 
   assert.match(learnHtml, /data-composition-moment="learn"/);
   assert.match(learnHtml, /Explore the idea/);
-  assert.match(learnHtml, /Study the explanatory text introducing residuals/i);
   assert.match(learnHtml, /data-material-id="A1-M1"/);
+  assert.match(learnHtml, /data-material-id="A1-M2"/);
   assert.match(learnHtml, /Residual Variance and Heteroscedasticity/);
   assert.match(learnHtml, /Homoscedasticity occurs when residuals have a similar spread/i);
   assert.ok(learnHtml.includes(materialHtml));
@@ -313,7 +328,7 @@ test("render slice: no raw schema or composition labels in learner-facing HTML",
 
   assert.doesNotMatch(learnSection, /explanation beat/i);
   assert.doesNotMatch(learnSection, /sourceStepNumber/i);
-  assert.doesNotMatch(learnSection, /check_understanding/i);
+  assert.doesNotMatch(learnSection, /verification/i);
 });
 
 test("render slice: Orient, Do workspace, and Check reveal remain unchanged", () => {
@@ -357,9 +372,11 @@ test("composition map: exposes Learn moment and explanation beat suppression hin
   const map = buildActivityCompositionMap(composedResult.composed);
 
   assert.ok(map.A1.learnMoment);
-  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitInstructionSteps, [1]);
-  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitMaterialIds, ["A1-M1"]);
+  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitInstructionSteps, []);
+  assert.deepEqual(map.A1.suppressBeatContent.explanation.omitMaterialIds, ["A1-M1", "A1-M2"]);
   assert.equal(map.A1.suppressBeatContent.explanation.omitExpectedOutput, false);
+  assert.ok(map.A1.suppressBeatContent.verification.omitInstructionSteps.includes(1));
+  assert.ok(map.A1.suppressBeatContent.verification.omitInstructionSteps.includes(2));
 
   const html = renderPage(modelResult.model, { activityComposition: map });
   const a1Html = extractActivityHtml(html, "A1");

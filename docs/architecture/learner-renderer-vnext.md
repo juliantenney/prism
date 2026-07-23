@@ -548,7 +548,7 @@ collaboration
 | Concern | Primary modules |
 | ------- | --------------- |
 | Page model | `build-page-model.js`, `build-activity-model.js`, `build-beat-model.js` |
-| Archetypes | `archetype-rules.js`, `archetype-diagnostics.js` |
+| Archetypes | `episode-plan-v1-archetype-grammar.js` (canonical legality), `archetype-validation-route.js`, `archetype-canonical-binding.js`, `archetype-diagnostics.js` |
 | Composition | `compose-page-model.js`, `compose-activity-moments.js`, `compose-generic-moments.js` |
 | Response parts | `compose-response-parts.js`, `compose-learner-surfaces.js`, `response-part-types.js` |
 | Surfaces | `learner-surface-registry.js`, `render-table-workspace.js`, `render-ordering-workspace.js` |

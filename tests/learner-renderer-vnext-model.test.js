@@ -77,21 +77,20 @@ test("vNext builds A1 canonical activity model", () => {
         sourceFunction: "explanation",
         learnerRole: "explain",
         learnerLabel: "Understand",
+        instructions: [],
+        prompts: [],
+        materialIds: ["A1-M1", "A1-M2"],
+        expectedOutput: null
+      },
+      {
+        sourceFunction: "verification",
+        learnerRole: "check",
+        learnerLabel: "Check your work",
         instructions: [
           {
             sourceStepNumber: 1,
             text: "Study the explanatory text introducing residuals, homoscedasticity, and heteroscedasticity."
-          }
-        ],
-        prompts: [],
-        materialIds: ["A1-M1"],
-        expectedOutput: null
-      },
-      {
-        sourceFunction: "check_understanding",
-        learnerRole: "check",
-        learnerLabel: "Check your work",
-        instructions: [
+          },
           {
             sourceStepNumber: 2,
             text: "Work through the expert example showing how residual variance changes across observations."
@@ -110,7 +109,7 @@ test("vNext builds A1 canonical activity model", () => {
           }
         ],
         prompts: [],
-        materialIds: ["A1-M2", "A1-M3", "A1-M4"],
+        materialIds: ["A1-M3", "A1-M4"],
         expectedOutput: {
           text: "A successful response clearly defines both homoscedasticity and heteroscedasticity, refers to residual variance, and explains the difference using plain language rather than formulae alone. The explanation should demonstrate that changing variability, not simply the presence of residuals, is the defining feature."
         }
@@ -138,44 +137,44 @@ test("vNext builds A5 canonical activity model without splitting step 5", () => 
     [
       {
         sourceFunction: "orientation",
-        learnerRole: "explain",
-        learnerLabel: "Understand",
-        sourceSteps: [1],
+        learnerRole: "reflect",
+        learnerLabel: "Reflect",
+        sourceSteps: [],
         promptFields: ["intellectual_coherence_bridge"],
         materialIds: ["A5-M1"],
         hasExpectedOutput: false
       },
       {
-        sourceFunction: "comparison",
+        sourceFunction: "worked_judgement",
         learnerRole: "model",
         learnerLabel: "See it modelled",
-        sourceSteps: [2],
+        sourceSteps: [],
         promptFields: [],
         materialIds: ["A5-M2", "A5-M3"],
         hasExpectedOutput: false
       },
       {
-        sourceFunction: "evaluation",
+        sourceFunction: "guided_practice",
         learnerRole: "practise",
         learnerLabel: "Your turn",
-        sourceSteps: [3, 4, 5],
-        promptFields: ["argument_structure_hint"],
-        materialIds: ["A5-M4", "A5-M5", "A5-M6"],
-        hasExpectedOutput: true
+        sourceSteps: [],
+        promptFields: [],
+        materialIds: ["A5-M4", "A5-M5"],
+        hasExpectedOutput: false
       },
       {
         sourceFunction: "reflection",
-        learnerRole: "transfer",
-        learnerLabel: "Apply elsewhere",
-        sourceSteps: [6],
+        learnerRole: "check",
+        learnerLabel: "Check your work",
+        sourceSteps: [1, 2, 3, 4, 5, 6],
         promptFields: [],
-        materialIds: ["A5-M8", "A5-M7"],
-        hasExpectedOutput: false
+        materialIds: ["A5-M7", "A5-M8", "A5-M6"],
+        hasExpectedOutput: true
       }
     ]
   );
 
-  const step5 = compact.beats[2].instructions.find(
+  const step5 = compact.beats[3].instructions.find(
     (step) => step.sourceStepNumber === 5
   );
   assert.equal(
@@ -247,7 +246,7 @@ test("vNext fixture model satisfies source closure and empty-beat invariants", (
 
   const a2 = result.model.activities.find((activity) => activity.id === "A2");
   assert.deepEqual(
-    a2.beats.find((beat) => beat.sourceFunction === "analysis").materials.map(
+    a2.beats.find((beat) => beat.sourceFunction === "guided_practice").materials.map(
       (material) => material.id
     ),
     ["A2-M3", "A2-M2"]

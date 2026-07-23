@@ -17,8 +17,9 @@ const templates = require("../lib/episode-plan-v1-templates");
 const validation = require("../lib/episode-plan-v1-validation");
 const shellCreate = require("../lib/page-shell-create");
 const assemble = require("../lib/page-vnext-assemble");
-const selectVariant =
-  require("../lib/learner-renderer-vnext/archetype-rules").selectArchetypeVariant;
+const resolveArchetypeValidation =
+  require("../lib/learner-renderer-vnext/archetype-validation-route")
+    .resolveArchetypeValidation;
 const buildPageModel =
   require("../lib/learner-renderer-vnext/build-page-model").buildPageModel;
 
@@ -163,12 +164,16 @@ test("Educational Psychology repaired assembly binds A1–A5 with exactly-once a
       archetype: activity.episode_plan.archetype,
       seq: seq
     };
-    const variant = selectVariant(activity.episode_plan.archetype, seq);
-    assert.ok(
-      variant,
-      activity.activity_id + " must match a registered variant"
-    );
-    assert.match(variant.id, /episode-plan-v1$/);
+    const resolved = resolveArchetypeValidation({
+      activityId: activity.activity_id,
+      archetype: activity.episode_plan.archetype,
+      normalizedBeatSequence: seq
+    });
+    assert.equal(resolved.ok, true, activity.activity_id + " must pass grammar route");
+    assert.equal(resolved.validationRoute, "canonical-grammar");
+    assert.equal(resolved.runtimeAuthority, "shared-archetype-grammar");
+    assert.equal(resolved.bindingSource, "canonical-grammar-binding");
+    assert.ok(resolved.variant && resolved.variant.beats.length === seq.length);
   });
 
   assert.deepEqual(sequences.A1.archetype, "understand");

@@ -17,7 +17,10 @@ const outDir = path.join(
 );
 const fixturesDir = path.join(repoRoot, "tests", "fixtures");
 
-const vnextTypes = require("../lib/learner-renderer-vnext/parse-material").MATERIAL_RENDERER_TYPES;
+const parseMaterial = require("../lib/learner-renderer-vnext/parse-material");
+const vnextTypes = parseMaterial.MATERIAL_RENDERER_TYPES;
+const hasMaterialRenderer = parseMaterial.hasMaterialRenderer;
+const NON_RENDERABLE_MATERIAL_TYPES = parseMaterial.NON_RENDERABLE_MATERIAL_TYPES;
 const registry = require("../lib/beat-material-registry");
 const promptLabels = require("../lib/learner-renderer-vnext/prompt-labels");
 
@@ -133,6 +136,7 @@ function surfaceCapabilities(type, vnextSupported) {
 
 function buildMaterialEntry(type, context) {
   var vnextSupported = vnextTypes.indexOf(type) >= 0;
+  var vnextCompatible = hasMaterialRenderer(type);
   var registryRow = context.registryByType[type];
   var observed = context.observed[type];
   var inRegistry = !!registryRow;
@@ -167,12 +171,17 @@ function buildMaterialEntry(type, context) {
     renderer: treatment.renderer,
     learnerSurfaceCapabilities: surfaceCapabilities(type, vnextSupported),
     vnextSupported: vnextSupported,
+    vnextCompatible: vnextCompatible,
     kitchenSinkCoverage: vnextSupported,
     kitchenSinkFixtureId: vnextSupported ? context.kitchenSinkMaterialByType[type] || null : null,
     notes: !vnextSupported
       ? "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
       : treatment.note || ""
   };
+}
+
+function isAuthoringValidLearnerMaterialType(type) {
+  return !NON_RENDERABLE_MATERIAL_TYPES[String(type || "").toLowerCase()];
 }
 
 function materialMapFromFixtures(relativePaths) {
@@ -228,7 +237,7 @@ function buildTypeToSurfaceMap(materialEntries) {
 function buildUnsupportedReport(materialEntries) {
   return materialEntries
     .filter(function (entry) {
-      return !entry.vnextSupported && (entry.observedInFixtures || entry.emittedByGam);
+      return !hasMaterialRenderer(entry.type) && (entry.observedInFixtures || entry.emittedByGam);
     })
     .map(function (entry) {
       return {
@@ -250,13 +259,15 @@ function main() {
 
   var allTypes = Object.create(null);
   registryRows().forEach(function (row) {
-    if (row.materialType) allTypes[row.materialType] = true;
+    if (row.materialType && isAuthoringValidLearnerMaterialType(row.materialType)) {
+      allTypes[row.materialType] = true;
+    }
   });
   vnextTypes.forEach(function (type) {
-    allTypes[type] = true;
+    if (isAuthoringValidLearnerMaterialType(type)) allTypes[type] = true;
   });
   Object.keys(observed).forEach(function (type) {
-    allTypes[type] = true;
+    if (isAuthoringValidLearnerMaterialType(type)) allTypes[type] = true;
   });
 
   var canonicalMaterialTypes = Object.keys(allTypes).sort();
@@ -297,6 +308,14 @@ function main() {
       prompt_fields: PROMPT_FIELDS.length,
       activity_interaction_types: ACTIVITY_INTERACTION_TYPES.length
     },
+    non_renderable_material_types: Object.keys(NON_RENDERABLE_MATERIAL_TYPES).map(function (type) {
+      return {
+        type: type,
+        boundaryKind: NON_RENDERABLE_MATERIAL_TYPES[type],
+        observedInFixtures: !!(observed[type] && observed[type].fixturePaths.length),
+        notes: "Excluded from learner material inventory by structural boundary contract."
+      };
+    }),
     vnext_material_types: vnextTypes.slice(),
     episode_archetypes: EPISODE_ARCHETYPES.slice(),
     prompt_fields: PROMPT_FIELDS.map(function (field) {

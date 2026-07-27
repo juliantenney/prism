@@ -243,7 +243,11 @@ test("css: editable cell three-line textarea contract is present in learner util
   const source = fs.readFileSync(appJsPath, "utf8");
   assert.match(
     source,
-    /\.util-learner-table-workspace__cell--editable\{[^"]*padding:2px[^"]*min-width:10rem[^"]*height:1px[^"]*vertical-align:top/
+    /\.util-learner-table-breakout,\.util-learner-renderer-vnext \.util-material-table-block\{[^"]*width:min\(75rem,calc\(100vw - var\(--learner-breakout-left\) - var\(--learner-page-gutter\)\)\)/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__cell--editable\{[^"]*padding:2px[^"]*min-width:8rem[^"]*height:1px[^"]*vertical-align:top/
   );
   assert.match(
     source,
@@ -251,7 +255,27 @@ test("css: editable cell three-line textarea contract is present in learner util
   );
   assert.match(
     source,
-    /\.util-learner-table-workspace__input\{flex:1 1 auto;[^"]*min-width:10rem;[^"]*min-height:4\.5rem;[^"]*resize:vertical;[^"]*line-height:1\.4/
+    /\.util-learner-table-workspace__input\{flex:1 1 auto;[^"]*width:100%;[^"]*min-width:0;[^"]*min-height:4\.5rem;[^"]*resize:vertical;[^"]*line-height:1\.4/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:100%;[^"]*table-layout:auto/
+  );
+  assert.doesNotMatch(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:max-content/
+  );
+  assert.doesNotMatch(
+    source,
+    /\.util-learner-table-workspace__input\{[^"]*min-width:10rem/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*white-space:normal;[^"]*overflow-wrap:anywhere/
+  );
+  assert.match(
+    source,
+    /th\[scope=\\"row\\"\],\.util-learner-renderer-vnext \.util-learner-table-workspace__table th:first-child,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td:first-child\{[^"]*width:1%;[^"]*min-width:6rem/
   );
   assert.match(
     source,

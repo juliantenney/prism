@@ -162,7 +162,35 @@ test("layout css: textarea fills cell width, vertical resize, table scroll overf
   const source = fs.readFileSync(appJsPath, "utf8");
   assert.match(
     source,
-    /\.util-learner-table-workspace__input\{[^"]*width:100%;[^"]*min-width:10rem;[^"]*min-height:4\.5rem;[^"]*resize:vertical/
+    /\.util-learner-table-breakout,\.util-learner-renderer-vnext \.util-material-table-block\{[^"]*width:min\(75rem,calc\(100vw - var\(--learner-breakout-left\) - var\(--learner-page-gutter\)\)\)[^"]*max-width:none/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__input\{[^"]*width:100%;[^"]*min-width:0;[^"]*min-height:4\.5rem;[^"]*resize:vertical/
+  );
+  assert.doesNotMatch(
+    source,
+    /\.util-learner-table-workspace__input\{[^"]*min-width:10rem/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:100%;[^"]*table-layout:auto/
+  );
+  assert.doesNotMatch(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:max-content/
+  );
+  assert.match(
+    source,
+    /\.util-table-scroll\.util-material-table table\{[^"]*width:100%;[^"]*table-layout:auto/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*overflow-wrap:anywhere/
+  );
+  assert.match(
+    source,
+    /th\[scope=\\"row\\"\].*min-width:6rem/
   );
   assert.match(
     source,

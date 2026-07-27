@@ -1,18 +1,92 @@
 {
-  "generated_at": "2026-07-27T09:06:16.753Z",
+  "generated_at": "2026-07-27T10:54:32.989Z",
   "reviewer_task": "S68-IMP-012",
-  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (18 types), and material_type scan of tests/fixtures/**/*.json.",
+  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (19 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {
-    "canonical_material_types": 52,
-    "vnext_supported_material_types": 18,
-    "registry_material_types": 50,
+    "canonical_material_types": 36,
+    "vnext_supported_material_types": 19,
+    "registry_material_types": 34,
     "observed_in_fixtures": 18,
-    "schema_or_registry_only": 34,
+    "schema_or_registry_only": 18,
     "kitchen_sink_vnext_coverage": 18,
-    "kitchen_sink_coverage_pct": 100,
+    "kitchen_sink_coverage_pct": 95,
     "prompt_fields": 6,
     "activity_interaction_types": 7
   },
+  "non_renderable_material_types": [
+    {
+      "type": "expected_output",
+      "boundaryKind": "activity_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "output",
+      "boundaryKind": "activity_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "materials",
+      "boundaryKind": "structural_container",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "metadata",
+      "boundaryKind": "metadata",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "production",
+      "boundaryKind": "metadata",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "criteria_exposition",
+      "boundaryKind": "episode_function_or_guidance_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "discussion",
+      "boundaryKind": "episode_function_or_prompt_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "guidance",
+      "boundaryKind": "instructional_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "instructions",
+      "boundaryKind": "instructional_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "what_to_do",
+      "boundaryKind": "instructional_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "support_note",
+      "boundaryKind": "activity_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    },
+    {
+      "type": "support_notes",
+      "boundaryKind": "page_section_field",
+      "observedInFixtures": false,
+      "notes": "Excluded from learner material inventory by structural boundary contract."
+    }
+  ],
   "vnext_material_types": [
     "text",
     "worked_example",
@@ -30,6 +104,7 @@
     "data_table",
     "impact_table",
     "template",
+    "task_card",
     "transfer_prompt",
     "consolidation_summary"
   ],
@@ -224,6 +299,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS03-M3",
       "notes": "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
@@ -260,6 +336,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -299,6 +376,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS01-M4",
       "notes": ""
@@ -335,6 +413,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -372,6 +451,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "A1-M4",
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
@@ -409,6 +489,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS05-M3",
       "notes": "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
@@ -448,45 +529,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS05-M6",
       "notes": ""
-    },
-    {
-      "type": "criteria_exposition",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "READ",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "data_table",
@@ -520,6 +566,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS03-M3b",
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
@@ -557,45 +604,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS04-M3",
       "notes": "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
-    },
-    {
-      "type": "discussion",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "DISCUSS",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "examples",
@@ -629,42 +641,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "expected_output",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "CHECK",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -701,42 +678,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "guidance",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "PRACTICE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -774,117 +716,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS04-M3b",
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
-    },
-    {
-      "type": "instructions",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "PRACTICE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "materials",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "metadata",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "modelling_note",
@@ -921,45 +756,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS02-M2",
       "notes": ""
-    },
-    {
-      "type": "output",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "CHECK",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "planning_table",
@@ -993,45 +793,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "A3-M3",
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
-    },
-    {
-      "type": "production",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "prompt",
@@ -1065,6 +830,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1104,6 +870,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS02-M3",
       "notes": ""
@@ -1140,6 +907,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1176,6 +944,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1212,6 +981,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1251,45 +1021,10 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS02-M1b",
       "notes": "Explanatory/criteria reference; static shared table path; type identity preserved"
-    },
-    {
-      "type": "rubric",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "EVALUATE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
       "type": "sample_output",
@@ -1326,6 +1061,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS01-M3",
       "notes": ""
@@ -1365,6 +1101,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS03-M2",
       "notes": ""
@@ -1401,78 +1138,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "strategy",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "REFLECT",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "strategy_options",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "REFLECT",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1509,114 +1175,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "support",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "support_note",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "support_notes",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "NOTE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1653,6 +1212,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": false,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1663,14 +1223,17 @@
       "aliases": [],
       "emittedByGam": true,
       "observedInFixtures": false,
-      "schemaOnly": true,
+      "schemaOnly": false,
       "sourceLocations": [
-        "lib/beat-material-registry.js"
+        "lib/beat-material-registry.js",
+        "lib/learner-renderer-vnext/parse-material.js"
       ],
       "legacyBeat": "PRACTICE",
       "educationalRoles": [
         "instruction",
-        "learner_completion"
+        "verification",
+        "transfer",
+        "modelling"
       ],
       "likelyMoments": [
         "Learn",
@@ -1682,16 +1245,16 @@
         "static": true,
         "interactive": false
       },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
+      "rendererPath": "renderMaterial",
+      "renderer": "renderMaterial",
       "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
+        "static"
       ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
+      "vnextSupported": true,
+      "vnextCompatible": true,
+      "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
+      "notes": ""
     },
     {
       "type": "task_cards",
@@ -1725,6 +1288,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1764,6 +1328,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS05-M4",
       "notes": ""
@@ -1800,6 +1365,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1839,6 +1405,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS01-M1",
       "notes": ""
@@ -1878,6 +1445,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS05-M7",
       "notes": ""
@@ -1914,42 +1482,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
-    },
-    {
-      "type": "what_to_do",
-      "category": "material",
-      "aliases": [],
-      "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
-      "sourceLocations": [
-        "lib/beat-material-registry.js"
-      ],
-      "legacyBeat": "PRACTICE",
-      "educationalRoles": [
-        "instruction",
-        "learner_completion"
-      ],
-      "likelyMoments": [
-        "Learn",
-        "Do",
-        "Check"
-      ],
-      "interactionExpectation": "static",
-      "currentRenderTreatment": {
-        "static": true,
-        "interactive": false
-      },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
-      "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
-      ],
-      "vnextSupported": false,
+      "vnextCompatible": false,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -1989,6 +1522,7 @@
         "static"
       ],
       "vnextSupported": true,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": true,
       "kitchenSinkFixtureId": "KS01-M2",
       "notes": ""
@@ -2025,6 +1559,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -2061,6 +1596,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": false,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
@@ -2097,6 +1633,7 @@
         "unsupported-interaction"
       ],
       "vnextSupported": false,
+      "vnextCompatible": true,
       "kitchenSinkCoverage": false,
       "kitchenSinkFixtureId": null,
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."

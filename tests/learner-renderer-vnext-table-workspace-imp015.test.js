@@ -207,7 +207,27 @@ test("presentation css: editable and fixed workspace cells use separate padding"
   const source = fs.readFileSync(appJsPath, "utf8");
   assert.match(
     source,
+    /\.util-learner-table-breakout,\.util-learner-renderer-vnext \.util-material-table-block\{[^"]*width:min\(75rem,calc\(100vw - var\(--learner-breakout-left\) - var\(--learner-page-gutter\)\)\)[^"]*max-width:none/
+  );
+  assert.match(
+    source,
     /\.util-learner-table-workspace__table \.util-learner-table-workspace__cell--editable\{padding:2px/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:100%;[^"]*table-layout:auto/
+  );
+  assert.doesNotMatch(
+    source,
+    /\.util-learner-table-workspace__table table\{[^"]*width:max-content/
+  );
+  assert.match(
+    source,
+    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem/
+  );
+  assert.match(
+    source,
+    /th\[scope=\\"row\\"\],\.util-learner-renderer-vnext \.util-learner-table-workspace__table th:first-child,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td:first-child\{[^"]*width:1%;[^"]*min-width:6rem/
   );
   assert.match(
     source,
@@ -222,7 +242,8 @@ test("presentation css: editable and fixed workspace cells use separate padding"
     /\.util-learner-table-workspace__cell--editable-inner\{[^"]*display:flex[^"]*min-height:100%[^"]*height:100%/
   );
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*flex:1 1 auto/);
-  assert.match(source, /\.util-learner-table-workspace__input\{[^"]*min-width:10rem/);
+  assert.match(source, /\.util-learner-table-workspace__input\{[^"]*min-width:0/);
+  assert.doesNotMatch(source, /\.util-learner-table-workspace__input\{[^"]*min-width:10rem/);
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*min-height:4\.5rem/);
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*resize:vertical/);
   assert.match(source, /\.util-learner-table-workspace__input\{[^"]*line-height:1\.4/);

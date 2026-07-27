@@ -70,7 +70,7 @@ test("audit integrity: inventory is generated and type names are unique", () => 
     return entry.type;
   });
   assert.equal(types.length, new Set(types).size, "canonical material type names must be unique");
-  assert.ok(inventory.summary.canonical_material_types >= 50);
+  assert.ok(inventory.summary.canonical_material_types >= 45);
   assert.equal(inventory.summary.vnext_supported_material_types, MATERIAL_RENDERER_TYPES.length);
   assert.ok(fs.existsSync(SURFACE_MAP_PATH));
   assert.ok(fs.existsSync(UNSUPPORTED_PATH));

@@ -1,8 +1,8 @@
 {
   "certificationVersion": "s68-imp-020",
   "corpusVersion": "s68-imp-020-v1",
-  "generatedAt": "2026-07-23T12:05:29.355Z",
-  "gitRevision": "fe16960babd509389d2ec43053767be06af4ca88",
+  "generatedAt": "2026-07-27T11:23:51.634Z",
+  "gitRevision": "458b598e09d61be0f99876f209f3f0aa0eb0e27f",
   "summary": {
     "status": "pass",
     "certificationState": "CERTIFIED",
@@ -13,7 +13,7 @@
   },
   "capabilityCoverage": {
     "text_entry": 32,
-    "table_entry": 18,
+    "table_entry": 20,
     "ordering": 1
   },
   "archetypeCoverage": [
@@ -737,7 +737,7 @@
           "workflowId": "kitchen-sink",
           "activityId": null,
           "capability": "table_entry",
-          "message": "table_entry workspaces=3",
+          "message": "table_entry workspaces=5",
           "provenance": null,
           "diagnosticCodes": []
         },
@@ -867,7 +867,7 @@
         "moments": 20,
         "capabilities": {
           "text_entry": 10,
-          "table_entry": 3,
+          "table_entry": 5,
           "ordering": 0
         },
         "archetypes": [
@@ -1831,7 +1831,7 @@
   ],
   "corpus": {
     "corpusVersion": "s68-imp-020-v1",
-    "generatedAt": "2026-07-23T12:05:29.355Z",
+    "generatedAt": "2026-07-27T11:23:51.634Z",
     "workflows": [
       {
         "id": "videotranscripttest",

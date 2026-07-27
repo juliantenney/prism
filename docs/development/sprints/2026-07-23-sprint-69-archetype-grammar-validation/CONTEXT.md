@@ -1,92 +1,49 @@
 # Sprint 69 Context (Primary onboarding document)
 
-**Related:** [SPRINT-69-START-HERE.md](SPRINT-69-START-HERE.md) · [WHY-SPRINT-69.md](WHY-SPRINT-69.md) · [HANDOVER.md](HANDOVER.md) · [GOALS.md](GOALS.md) · [PLAN.md](PLAN.md)
+**Status:** Sprint 69 **COMPLETE** (closed 2026-07-27). For active work, use [Sprint 70 CONTEXT](../2026-07-27-sprint-70-visual-affordance-pipeline/CONTEXT.md).
+
+**Related:** [sprint-69-closeout.md](../../../sprints/sprint-69-closeout.md) · [HANDOVER.md](HANDOVER.md)
 
 ---
 
-## Current repository state
+## Final repository state (Sprint 69 closeout)
 
-- Sprint 68 complete and closed.
-- Post-closeout Educational Psychology contract repair merged in local workspace.
-- Sprint 69 Phases 1–4 implemented; Phase 4 cutover complete for canonical FunctionEnum renderer legality.
+- Shared archetype grammar is the production validation authority.
+- Journey-compressed / mixed vocabulary fails closed in production runtime.
+- Learner material canonicalisation audit complete; unsupported count **9 → 3**.
+- Certification: **CERTIFIED** (6 workflows, 25 activities, 91 moments).
+- Git revision at closeout: `458b598`.
 
 ## Important architectural decisions
 
 - Renderer interprets semantics, does not author them ([ADR-012](../../../architecture/adr/ADR-012-learner-renderer-interprets-educational-semantics.md)).
 - Episode Plan owns archetype and beat sequence semantics ([ownership boundary](../../../architecture/episode-plan-ownership-boundary.md)).
-- Validation must fail closed with explicit diagnostics.
-- Exact validation will move from sequence enumeration to shared archetype grammar — not fuzzy matching. See [WHY-SPRINT-69.md](WHY-SPRINT-69.md).
+- One educational validation route: FunctionEnum → grammar → canonical binding (D69-13).
+- Material types resolve via aliases → non-renderable boundary → shared renderer families.
+- No fuzzy matching; no new renderer families for resolved material types.
 
-## Active contracts
+## Active contracts (post-Sprint 69)
 
-- `lib/episode-plan-v1-vocabulary.js` — canonical FunctionEnum membership (Sprint 69 Phase 1)
-- `lib/episode-plan-v1-archetype-grammar.js` — shared archetype legality grammar (Sprint 69 Phase 2)
-- `lib/learner-renderer-vnext/archetype-grammar-dual-validation.js` — observational registry↔grammar compare (updated Phase 4)
-- `lib/learner-renderer-vnext/archetype-validation-route.js` — Phase 4 explicit validation routing
-- `scripts/report-episode-plan-grammar-parity.js` — Phase 4 authority-aware parity report
-- `lib/episode-plan-v1-validation.js` — EP legality (consumes shared vocabulary)
-- `lib/page-shell-create.js` — shell validation and EP vocabulary checks
-- `lib/page-vnext-assemble.js` — deterministic assembly + EP overwrite protection
-- `lib/learner-renderer-vnext/archetype-rules.js` — registry + canonical binding helper (journey compatibility + FE composition metadata)
+### Episode Plan / grammar
 
-## Deferred work
+- `lib/episode-plan-v1-vocabulary.js`
+- `lib/episode-plan-v1-archetype-grammar.js`
+- `lib/learner-renderer-vnext/archetype-validation-route.js`
+- `lib/episode-plan-v1-persistence-migration.js`
+- `lib/page-vnext-assemble.js`
 
-- Phase 5: retire redundant whole-sequence registry legality for FunctionEnum; keep journey compatibility until ownership/mapping is resolved.
-- Keep exact deterministic validation semantics; no fuzzy matching.
+### Learner material
 
-## Risks
+- `lib/learner-renderer-vnext/parse-material.js`
+- `lib/learner-renderer-vnext/validate-input.js`
+- `lib/beat-material-registry.js`
+- `lib/page-render-normalize.js`
 
-- Grammar mismatch between producer and renderer
-- Over/under-constrained grammar
-- Diagnostic regressions during migration
-- Journey-compressed compatibility vocabulary still depends on registry until Phase 5 ownership decision
+## Material audit retrospective
 
-See [RISKS.md](RISKS.md).
+- Consolidation over proliferation: task_card, checklist, table_workspace extended — not duplicated.
+- Remaining unsupported: `table`, `video`, `worksheet` — intentional guarded compatibility / future capability.
 
-## Open questions
+## Successor
 
-1. Final grammar representation format (code-first vs declarative schema).
-2. Dual-validation window length before registry retirement.
-3. Backward compatibility strategy for legacy sequence fixtures.
-
-## Expected implementation order
-
-1. shared vocabulary
-2. shared grammar
-3. dual validation
-4. renderer migration
-5. registry retirement
-6. certification and closeout
-
-Details: [PLAN.md](PLAN.md)
-
-## Important files
-
-- `docs/architecture/learner-renderer-vnext.md`
-- `docs/architecture/learner-renderer-vnext-diagnostics.md`
-- `docs/architecture/learner-renderer-vnext-extension-guide.md`
-- `docs/architecture/episode-plan-ownership-boundary.md`
-- `docs/architecture/adr/ADR-012-learner-renderer-interprets-educational-semantics.md`
-- `docs/sprints/sprint-68-closeout.md`
-- `tests/fixtures/educational-psychology-post-s68/`
-
-## Existing diagnostics
-
-Primary error families:
-- archetype/variant mismatch
-- assignment integrity
-- unsupported surfaces/capabilities
-- producer-boundary vocabulary violations
-
-## Existing tests
-
-- EP validation: `tests/episode-plan-v1-validation.test.js`
-- EP workflow enforcement: `tests/workflow-ld-episode-plan-step.test.js`
-- assembly: `tests/page-vnext-assemble.test.js`
-- Educational Psychology regression: `tests/educational-psychology-episode-plan-contract.test.js`
-- renderer suites: `tests/learner-renderer-vnext*.test.js`
-
-## Completion criteria
-
-Authoritative checklist: [HANDOVER.md — Sprint 69 Definition of Done](HANDOVER.md#sprint-69-definition-of-done).
-
+[Sprint 70 — Visual Affordance Pipeline](../2026-07-27-sprint-70-visual-affordance-pipeline/CONTEXT.md)

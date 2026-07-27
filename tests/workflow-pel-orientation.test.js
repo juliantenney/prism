@@ -339,7 +339,7 @@ test("30-1c: evaluatePelOrientationContractSatisfaction passes well-formed orien
         activity_id: "A2",
         activity_preamble: "As you analyse cause and effect, link each event to a concept.",
         intellectual_coherence_bridge:
-          "Use your timeline from the previous activity when matching historical events."
+          "You mapped life phases and exile conditions in the previous activity. Carry that contextual lens forward when matching historical events to concepts: use the same cause-and-effect standard rather than treating each event as an isolated fact on the timeline."
       }
     ]
   };
@@ -349,7 +349,45 @@ test("30-1c: evaluatePelOrientationContractSatisfaction passes well-formed orien
   assert.equal(evalResult.preambleCount, 2);
   assert.equal(evalResult.studyOrientationPresent, true);
   assert.equal(evalResult.bridgeCount, 1);
+  assert.equal(evalResult.followOnCount, 1);
+  assert.equal(evalResult.missingBridgeActivityIds.length, 0);
   assert.equal(evalResult.missingFields.length, 0);
+});
+
+test("30-1c: evaluatePelOrientationContractSatisfaction requires a bridge on every follow-on activity", () => {
+  const onlyLastBridge = {
+    activities: [
+      {
+        activity_id: "A1",
+        activity_preamble: "Orient to residual variance before you examine plots.",
+        study_orientation: "Move from definition through interpretation to evaluation."
+      },
+      {
+        activity_id: "A2",
+        activity_preamble: "Interpret residual-plot patterns carefully."
+      },
+      {
+        activity_id: "A3",
+        activity_preamble: "Apply residual evidence to economic cases."
+      },
+      {
+        activity_id: "A4",
+        activity_preamble: "Trace consequences for statistical inference."
+      },
+      {
+        activity_id: "A5",
+        activity_preamble: "Evaluate detection and remedy approaches.",
+        intellectual_coherence_bridge:
+          "You traced how heteroscedasticity undermines statistical inference. This activity asks you to evaluate detection and remedy options against criteria grounded in that chain of consequences and justify trade-offs with scenario evidence."
+      }
+    ]
+  };
+  const evalResult = api.evaluatePelOrientationContractSatisfaction(onlyLastBridge);
+  assert.equal(evalResult.satisfied, false);
+  assert.ok(evalResult.missingFields.includes("intellectual_coherence_bridge"));
+  assert.equal(evalResult.bridgeCount, 1);
+  assert.equal(evalResult.followOnCount, 4);
+  assert.equal(Array.from(evalResult.missingBridgeActivityIds || []).join("|"), "A2|A3|A4");
 });
 
 test("30-1c: evaluatePelOrientationContractSatisfaction flags procedural DLA and facilitator GAM text", () => {
@@ -382,5 +420,10 @@ test("30-1c: evaluatePelOrientationContractSatisfaction accepts live Marx DLA wi
   const evalResult = api.evaluatePelOrientationContractSatisfaction(dla, { page });
   assert.equal(evalResult.preambleCount, evalResult.activityCount);
   assert.ok(evalResult.studyOrientationPresent);
-  assert.ok(evalResult.bridgeCount >= 1);
+  if (evalResult.followOnCount > 0) {
+    assert.equal(
+      evalResult.bridgeCount + (evalResult.missingBridgeActivityIds || []).length,
+      evalResult.followOnCount
+    );
+  }
 });

@@ -93,16 +93,28 @@ function rendererPathFor(type, vnextSupported) {
       interactive: false
     };
   }
-  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table"].indexOf(type) >= 0) {
+  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table", "data_table", "impact_table"].indexOf(type) >= 0) {
     return {
       path: "renderMaterial + renderTableWorkspace (Do composition)",
       renderer: "renderMaterial / renderTableWorkspace",
       static: true,
       interactive: "conditional",
       note:
-        type === "classification_table" || type === "planning_table"
+        type === "classification_table" ||
+        type === "planning_table" ||
+        type === "data_table" ||
+        type === "impact_table"
           ? "Static when fully populated; table_entry in composed Do when blank cells present"
           : "Static in beats/Learn; table_entry in composed Do for A2/A3/A5"
+    };
+  }
+  if (type === "reference_table") {
+    return {
+      path: "renderMaterial (static table)",
+      renderer: "renderMaterial",
+      static: true,
+      interactive: false,
+      note: "Explanatory/criteria reference; static shared table path; type identity preserved"
     };
   }
   if (type === "checklist") {
@@ -113,7 +125,7 @@ function rendererPathFor(type, vnextSupported) {
 
 function surfaceCapabilities(type, vnextSupported) {
   if (!vnextSupported) return ["static", "unsupported-interaction"];
-  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table"].indexOf(type) >= 0) {
+  if (["analysis_table", "decision_table", "comparison_table", "classification_table", "planning_table", "data_table", "impact_table"].indexOf(type) >= 0) {
     return ["table_entry", "static"];
   }
   return ["static"];
@@ -206,7 +218,9 @@ function buildTypeToSurfaceMap(materialEntries) {
     "decision_table",
     "comparison_table",
     "classification_table",
-    "planning_table"
+    "planning_table",
+    "data_table",
+    "impact_table"
   ];
   return map;
 }

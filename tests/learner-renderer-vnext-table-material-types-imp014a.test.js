@@ -153,6 +153,67 @@ test("registry: classification_table and planning_table are registered renderers
   assert.equal(hasMaterialRenderer("planning_table"), true);
 });
 
+test("registry: reference_table, data_table, and impact_table are registered renderers", () => {
+  assert.equal(hasMaterialRenderer("reference_table"), true);
+  assert.equal(hasMaterialRenderer("data_table"), true);
+  assert.equal(hasMaterialRenderer("impact_table"), true);
+});
+
+test("render: reference_table / data_table / impact_table static pipe tables keep type identity", () => {
+  ["reference_table", "data_table", "impact_table"].forEach(function (type) {
+    const material = buildTableMaterial(type, informationalBody, "X-" + type);
+    assert.equal(material.type, type);
+    const html = renderMaterial(material);
+    assert.match(html, new RegExp('data-material-type="' + type + '"'));
+    assert.match(html, /<table>/);
+    assert.doesNotMatch(html, /data-render-status="unsupported"/);
+    assert.doesNotMatch(html, /util-learner-table-workspace/);
+  });
+});
+
+test("workspace: reference_table stays static even with blank cells", () => {
+  const material = buildTableMaterial("reference_table", completionBody);
+  assert.equal(shouldComposeTableWorkspaceMaterial(material), false);
+  const doMoment = composeDoMoment(buildProbeActivity("reference_table", completionBody));
+  const item = doMoment.items.find(function (entry) {
+    return entry.material && entry.material.id === "T01-M2";
+  });
+  assert.ok(item);
+  assert.notEqual(item.tableWorkspace, true);
+});
+
+test("workspace: populated data_table stays static; blank cells create table_entry", () => {
+  assert.equal(
+    shouldComposeTableWorkspaceMaterial(buildTableMaterial("data_table", informationalBody)),
+    false
+  );
+  assert.equal(
+    shouldComposeTableWorkspaceMaterial(buildTableMaterial("data_table", completionBody)),
+    true
+  );
+  const doMoment = composeDoMoment(buildProbeActivity("data_table", completionBody));
+  const item = doMoment.items.find(function (entry) {
+    return entry.material && entry.material.id === "T01-M2";
+  });
+  assert.equal(item.tableWorkspace, true);
+});
+
+test("workspace: populated impact_table stays static; blank cells create table_entry", () => {
+  assert.equal(
+    shouldComposeTableWorkspaceMaterial(buildTableMaterial("impact_table", informationalBody)),
+    false
+  );
+  assert.equal(
+    shouldComposeTableWorkspaceMaterial(buildTableMaterial("impact_table", completionBody)),
+    true
+  );
+  const doMoment = composeDoMoment(buildProbeActivity("impact_table", completionBody));
+  const item = doMoment.items.find(function (entry) {
+    return entry.material && entry.material.id === "T01-M2";
+  });
+  assert.equal(item.tableWorkspace, true);
+});
+
 test("render: classification_table static markdown table renders without throw", () => {
   const material = buildTableMaterial("classification_table", informationalBody, "X-M1");
   const html = renderMaterial(material);
@@ -222,23 +283,25 @@ test("regression: analysis_table workspace behaviour unchanged", () => {
   assert.equal(shouldComposeTableWorkspaceMaterial(m2.material), true);
 });
 
-test("validation: unsupported unrelated material types still fail explicitly", () => {
+test("validation: previously incomplete impact_table coverage is now registered", () => {
+  // Prior IMP-014A expectation that impact_table failed represented incomplete
+  // vNext registry coverage, not an intentional rejection rule.
   const page = {
     artifact_type: "page",
     schema_version: "2.0.0",
-    title: "Unsupported table probe",
+    title: "Impact table probe",
     page_profile: "learner",
     activities: [
       {
         activity_id: "U01",
-        title: "Unsupported",
+        title: "Impact",
         learner_task: "Read.",
         episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] },
         materials: [
           {
             material_id: "U01-M1",
             material_type: "impact_table",
-            title: "Unsupported table",
+            title: "Impact table",
             body_format: "markdown",
             body: "| A | B |\n| --- | --- |\n| 1 | 2 |"
           }
@@ -247,8 +310,43 @@ test("validation: unsupported unrelated material types still fail explicitly", (
     ]
   };
   const result = validateInput(page);
+  const typeErrors = result.errors.filter(function (error) {
+    return String(error.message || "").includes("No vNext material renderer is registered");
+  });
+  assert.equal(typeErrors.length, 0);
+  assert.equal(hasMaterialRenderer("impact_table"), true);
+});
+
+test("validation: truly unregistered material types still fail explicitly", () => {
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "Unsupported probe",
+    page_profile: "learner",
+    activities: [
+      {
+        activity_id: "U02",
+        title: "Unsupported",
+        learner_task: "Read.",
+        episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] },
+        materials: [
+          {
+            material_id: "U02-M1",
+            material_type: "totally_unknown_widget",
+            title: "Unknown",
+            body_format: "markdown",
+            body: "Not a table."
+          }
+        ]
+      }
+    ]
+  };
+  const result = validateInput(page);
   assert.ok(result.errors.length >= 1);
-  assert.match(result.errors[0].message, /No vNext material renderer is registered for type: impact_table/);
+  assert.match(
+    result.errors[0].message,
+    /No vNext material renderer is registered for type: totally_unknown_widget/
+  );
 });
 
 test("integration: RNA fixture clears material-type validation and table materials render", () => {

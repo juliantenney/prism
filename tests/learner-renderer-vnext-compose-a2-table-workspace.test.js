@@ -150,8 +150,13 @@ test("render: beats mode keeps A2-M2 static with no form controls", () => {
   assert.match(a2Html, /data-material-id="A2-M2"/);
   assert.match(a2Html, /util-material-table-block/);
   assert.doesNotMatch(a2Html, /util-learner-table-workspace/);
-  assert.doesNotMatch(a2Html, /<input/);
-  assert.doesNotMatch(a2Html, /<textarea/);
+
+  const m2Match = a2Html.match(
+    /<article\b[^>]*data-material-id="A2-M2"[^>]*>[\s\S]*?<\/article>/
+  );
+  assert.ok(m2Match, "A2-M2 material article should render");
+  assert.doesNotMatch(m2Match[0], /<input\b/);
+  assert.doesNotMatch(m2Match[0], /<textarea\b/);
 });
 
 test("cell fidelity: fixed example row and hints remain text; blanks become inputs", () => {
@@ -177,8 +182,9 @@ test("cell fidelity: fixed example row and hints remain text; blanks become inpu
   assert.match(html, /Check width of residual cloud/);
 
   assert.equal((html.match(/util-learner-table-workspace__input/g) || []).length, 9);
-  assert.match(html, /<textarea class="util-learner-table-workspace__input"/);
+  assert.match(html, /<textarea class="util-learner-table-workspace__input"[^>]*rows="3"/);
   assert.doesNotMatch(html, /<input\b/);
+  assert.doesNotMatch(html, /rows="1"/);
 
   assert.match(html, /<th scope="col"/);
   assert.match(html, /<th scope="row"/);

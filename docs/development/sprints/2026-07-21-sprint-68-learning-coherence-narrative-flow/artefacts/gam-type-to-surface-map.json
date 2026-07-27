@@ -4,7 +4,9 @@
     "decision_table",
     "comparison_table",
     "classification_table",
-    "planning_table"
+    "planning_table",
+    "data_table",
+    "impact_table"
   ],
   "static": [
     "analysis_table",
@@ -15,6 +17,7 @@
     "comparison_table",
     "consolidation_summary",
     "criteria_exposition",
+    "data_table",
     "decision_table",
     "discussion",
     "examples",
@@ -68,7 +71,6 @@
     "expected_output",
     "exposition",
     "guidance",
-    "impact_table",
     "instructions",
     "materials",
     "metadata",
@@ -78,7 +80,6 @@
     "prompts",
     "reading",
     "reading_text",
-    "reference_table",
     "rubric",
     "scenarios",
     "strategy",

@@ -235,7 +235,8 @@
         "LO2"
       ],
       "reasoning_orientation": "Look for systematic patterns in variability. Avoid focusing on a single unusual point. Compare the width of the residual cloud across the horizontal axis.",
-      "conceptual_contrast_prompt": "What visual features distinguish a constant-width residual pattern from a funnel-shaped pattern?"
+      "conceptual_contrast_prompt": "What visual features distinguish a constant-width residual pattern from a funnel-shaped pattern?",
+      "intellectual_coherence_bridge": "You defined residual variance and distinguished constant from changing error spread. This activity carries that distinction into residual-plot reading: judge whether the residual cloud stays even or fans out across fitted values, applying the same spread criterion rather than isolated unusual points when you decide whether the plot supports heteroscedasticity."
     },
     {
       "activity_id": "A3",
@@ -326,7 +327,8 @@
         "LO3"
       ],
       "reasoning_orientation": "Move from evidence to interpretation. The variable itself does not prove heteroscedasticity; the residual pattern provides the evidence.",
-      "transfer_or_application_task": "Identify another economic variable pair where residual variability might plausibly change as values increase and explain why."
+      "transfer_or_application_task": "Identify another economic variable pair where residual variability might plausibly change as values increase and explain why.",
+      "intellectual_coherence_bridge": "You learned to read residual plots for systematic changes in residual spread. Now apply that visual judgement to economic regression cases: treat the residual pattern—not the predictor variable itself—as the evidence, and justify whether each scenario is consistent with heteroscedasticity using the same pattern-based standard."
     },
     {
       "activity_id": "A4",
@@ -426,7 +428,8 @@
       "mapped_learning_outcomes": [
         "LO4"
       ],
-      "reasoning_orientation": "Trace the consequences of changing variance through the statistical process. Think about how a problem in assumptions can affect later decisions made by researchers."
+      "reasoning_orientation": "Trace the consequences of changing variance through the statistical process. Think about how a problem in assumptions can affect later decisions made by researchers.",
+      "intellectual_coherence_bridge": "Having identified heteroscedasticity from residual patterns in economic data, carry that identification into inference consequences: explain how changing residual variance affects standard errors, confidence intervals, and the reliability of conclusions economists draw from regression results when assumptions about constant variance fail."
     },
     {
       "activity_id": "A5",
@@ -595,7 +598,7 @@
       ],
       "reasoning_orientation": "There is rarely a single universally correct response. Evaluate options against criteria and support your judgement using evidence from the scenario.",
       "argument_structure_hint": "State the issue, apply evaluation criteria, weigh trade-offs, reach a recommendation, and justify the conclusion.",
-      "intellectual_coherence_bridge": "You have moved from defining heteroscedasticity and recognising it in evidence to evaluating how economists respond to it. Use insights from previous activities when reaching your judgement."
+      "intellectual_coherence_bridge": "You traced how heteroscedasticity undermines statistical inference. This activity asks you to evaluate detection and remedy options against criteria grounded in that chain of consequences—prefer approaches that restore trustworthy standard errors rather than merely renaming the problem—and justify trade-offs with scenario evidence from prior activities."
     }
   ],
   "episode_plans": [

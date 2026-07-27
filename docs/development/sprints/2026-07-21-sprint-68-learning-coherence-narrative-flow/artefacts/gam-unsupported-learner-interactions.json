@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-23T12:05:27.624Z",
+  "generated_at": "2026-07-27T09:06:16.753Z",
   "unsupported": [
     {
       "type": "cards",
@@ -52,13 +52,6 @@
     },
     {
       "type": "guidance",
-      "observedInFixtures": false,
-      "interactionExpectation": "unsupported-interaction",
-      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
-      "recommendedNextStep": "Add renderer or map alias to supported type"
-    },
-    {
-      "type": "impact_table",
       "observedInFixtures": false,
       "interactionExpectation": "unsupported-interaction",
       "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
@@ -122,13 +115,6 @@
     },
     {
       "type": "reading_text",
-      "observedInFixtures": false,
-      "interactionExpectation": "unsupported-interaction",
-      "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",
-      "recommendedNextStep": "Add renderer or map alias to supported type"
-    },
-    {
-      "type": "reference_table",
       "observedInFixtures": false,
       "interactionExpectation": "unsupported-interaction",
       "currentBehaviour": "vNext validation error UNKNOWN_MATERIAL_TYPE",

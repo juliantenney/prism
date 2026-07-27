@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-23T12:05:27.624Z",
+  "generated_at": "2026-07-27T09:06:16.753Z",
   "reviewer_task": "S68-IMP-012",
-  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (15 types), and material_type scan of tests/fixtures/**/*.json.",
+  "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (18 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {
-    "canonical_material_types": 51,
-    "vnext_supported_material_types": 15,
+    "canonical_material_types": 52,
+    "vnext_supported_material_types": 18,
     "registry_material_types": 50,
-    "observed_in_fixtures": 15,
-    "schema_or_registry_only": 36,
-    "kitchen_sink_vnext_coverage": 15,
+    "observed_in_fixtures": 18,
+    "schema_or_registry_only": 34,
+    "kitchen_sink_vnext_coverage": 18,
     "kitchen_sink_coverage_pct": 100,
     "prompt_fields": 6,
     "activity_interaction_types": 7
@@ -26,6 +26,9 @@
     "comparison_table",
     "classification_table",
     "planning_table",
+    "reference_table",
+    "data_table",
+    "impact_table",
     "template",
     "transfer_prompt",
     "consolidation_summary"
@@ -486,6 +489,42 @@
       "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
     },
     {
+      "type": "data_table",
+      "category": "material",
+      "aliases": [],
+      "emittedByGam": false,
+      "observedInFixtures": true,
+      "schemaOnly": false,
+      "sourceLocations": [
+        "lib/learner-renderer-vnext/parse-material.js",
+        "tests/fixtures/**"
+      ],
+      "legacyBeat": null,
+      "educationalRoles": [
+        "reference",
+        "learner_completion"
+      ],
+      "likelyMoments": [
+        "Learn",
+        "Do"
+      ],
+      "interactionExpectation": "conditional by composition context",
+      "currentRenderTreatment": {
+        "static": true,
+        "interactive": false
+      },
+      "rendererPath": "renderMaterial + renderTableWorkspace (Do composition)",
+      "renderer": "renderMaterial / renderTableWorkspace",
+      "learnerSurfaceCapabilities": [
+        "table_entry",
+        "static"
+      ],
+      "vnextSupported": true,
+      "kitchenSinkCoverage": true,
+      "kitchenSinkFixtureId": "KS03-M3b",
+      "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
+    },
+    {
       "type": "decision_table",
       "category": "material",
       "aliases": [],
@@ -707,36 +746,37 @@
       "category": "material",
       "aliases": [],
       "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
+      "observedInFixtures": true,
+      "schemaOnly": false,
       "sourceLocations": [
-        "lib/beat-material-registry.js"
+        "lib/beat-material-registry.js",
+        "lib/learner-renderer-vnext/parse-material.js",
+        "tests/fixtures/**"
       ],
       "legacyBeat": "PRACTICE",
       "educationalRoles": [
-        "instruction",
+        "reference",
         "learner_completion"
       ],
       "likelyMoments": [
         "Learn",
-        "Do",
-        "Check"
+        "Do"
       ],
-      "interactionExpectation": "static",
+      "interactionExpectation": "conditional by composition context",
       "currentRenderTreatment": {
         "static": true,
         "interactive": false
       },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
+      "rendererPath": "renderMaterial + renderTableWorkspace (Do composition)",
+      "renderer": "renderMaterial / renderTableWorkspace",
       "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
+        "table_entry",
+        "static"
       ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
+      "vnextSupported": true,
+      "kitchenSinkCoverage": true,
+      "kitchenSinkFixtureId": "KS04-M3b",
+      "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
     },
     {
       "type": "instructions",
@@ -1181,15 +1221,19 @@
       "category": "material",
       "aliases": [],
       "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
+      "observedInFixtures": true,
+      "schemaOnly": false,
       "sourceLocations": [
-        "lib/beat-material-registry.js"
+        "lib/beat-material-registry.js",
+        "lib/learner-renderer-vnext/parse-material.js",
+        "tests/fixtures/**"
       ],
       "legacyBeat": "READ",
       "educationalRoles": [
         "instruction",
-        "learner_completion"
+        "verification",
+        "transfer",
+        "modelling"
       ],
       "likelyMoments": [
         "Learn",
@@ -1201,16 +1245,15 @@
         "static": true,
         "interactive": false
       },
-      "rendererPath": "validation_blocked",
-      "renderer": "validate-input rejects before renderMaterial fallback",
+      "rendererPath": "renderMaterial (static table)",
+      "renderer": "renderMaterial",
       "learnerSurfaceCapabilities": [
-        "static",
-        "unsupported-interaction"
+        "static"
       ],
-      "vnextSupported": false,
-      "kitchenSinkCoverage": false,
-      "kitchenSinkFixtureId": null,
-      "notes": "Registry/GAM type; vNext validate-input rejects — does not reach renderMaterial unsupported fallback in full page path."
+      "vnextSupported": true,
+      "kitchenSinkCoverage": true,
+      "kitchenSinkFixtureId": "KS02-M1b",
+      "notes": "Explanatory/criteria reference; static shared table path; type identity preserved"
     },
     {
       "type": "rubric",

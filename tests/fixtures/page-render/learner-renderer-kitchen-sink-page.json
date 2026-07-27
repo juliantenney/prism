@@ -19,7 +19,7 @@
   "page_synthesis": {
     "overview": {
       "format": "markdown",
-      "body": "Synthetic fixture exercising all thirteen vNext-supported material types across five archetype-matched activities (KS01–KS05)."
+      "body": "Synthetic fixture exercising all sixteen vNext-supported material types across five archetype-matched activities (KS01–KS05)."
     },
     "learning_purpose": {
       "format": "markdown",
@@ -149,6 +149,14 @@
           "body": "KS02-M1: introductory **text** for the apply-check variant."
         },
         {
+          "material_id": "KS02-M1b",
+          "material_type": "reference_table",
+          "activity_id": "KS02",
+          "title": "Criteria reference",
+          "body_format": "markdown",
+          "body": "| Criterion | Look for |\n| --- | --- |\n| Evidence | Cited detail |\n| Limitation | Named constraint |"
+        },
+        {
           "material_id": "KS02-M2",
           "material_type": "modelling_note",
           "activity_id": "KS02",
@@ -225,6 +233,14 @@
           "body": "## Analysis grid\n\n| Case | Pattern | Judgement |\n| --- | --- | --- |\n| Example | Funnel | Likely heteroscedasticity |\n| A |  |  |\n| B |  |  |"
         },
         {
+          "material_id": "KS03-M3b",
+          "material_type": "data_table",
+          "activity_id": "KS03",
+          "title": "Residual calculation data",
+          "body_format": "markdown",
+          "body": "| Case | Residual | Magnitude | Interpretation |\n| --- | --- | --- | --- |\n| Example | 12 | High | Widening |\n| A |  |  |  |\n| B |  |  |  |"
+        },
+        {
           "material_id": "KS03-M4",
           "material_type": "checklist",
           "activity_id": "KS03",
@@ -284,6 +300,14 @@
           "title": "Decision table",
           "body_format": "markdown",
           "body": "## Options\n\n| Option | Benefit | Risk | Choice |\n| --- | --- | --- | --- |\n| Robust SE | Preserves coefficients | Does not fix variance |  |\n| Log transform | May stabilise variance | Changes interpretation |  |"
+        },
+        {
+          "material_id": "KS04-M3b",
+          "material_type": "impact_table",
+          "activity_id": "KS04",
+          "title": "Impact map",
+          "body_format": "markdown",
+          "body": "| Scenario | Cost pressure | Revenue pressure | Response |\n| --- | --- | --- | --- |\n| Renter |  |  |  |\n| Shop owner |  |  |  |"
         },
         {
           "material_id": "KS04-M4",

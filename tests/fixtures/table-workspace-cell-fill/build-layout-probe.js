@@ -33,12 +33,12 @@ const css = `
 .util-learner-table-workspace__table th,
 .util-learner-table-workspace__table td{border:1px solid #cbd5e1}
 .util-learner-table-workspace__table .util-learner-table-workspace__cell--fixed{padding:.5rem .65rem;background:#f1f5f9;color:#0f172a}
-.util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:8rem;height:1px;vertical-align:top}
+.util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:10rem;height:1px;vertical-align:top}
 .util-learner-table-workspace__cell--editable-inner{display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;min-height:100%;height:100%}
-.util-learner-table-workspace__input{flex:1 1 auto;display:block;width:100%;min-width:0;min-height:100%;box-sizing:border-box;margin:0;padding:.4rem .5rem;resize:none;overflow:auto;font:inherit;font-size:0.875rem;line-height:1.35;color:#111827;border:1px solid #cbd5e1;border-radius:4px;background:#fff;vertical-align:top}
+.util-learner-table-workspace__input{flex:1 1 auto;display:block;width:100%;min-width:10rem;min-height:4.5rem;box-sizing:border-box;margin:0;padding:.4rem .5rem;resize:vertical;overflow:auto;font:inherit;font-size:0.875rem;line-height:1.4;color:#111827;border:1px solid #cbd5e1;border-radius:4px;background:#fff;vertical-align:top}
 .util-learner-table-workspace__input:focus{outline:2px solid #2563eb;outline-offset:0;border-color:#93c5fd}
-@media (max-width:720px){.util-learner-table-workspace__cell--editable{min-width:6.5rem}}
-@media print{.util-learner-table-workspace__input{border-color:#94a3b8;background:transparent;box-shadow:none;-webkit-appearance:none;appearance:none;min-height:1.35rem}.util-learner-table-workspace__cell--editable{background:#fff}.util-learner-table-workspace__cell--fixed{background:#f8fafc;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media (max-width:720px){.util-learner-table-workspace__cell--editable{min-width:10rem}}
+@media print{.util-learner-table-workspace__input{border-color:#94a3b8;background:transparent;box-shadow:none;-webkit-appearance:none;appearance:none;min-height:4.5rem;resize:none}.util-learner-table-workspace__cell--editable{background:#fff}.util-learner-table-workspace__cell--fixed{background:#f8fafc;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 `.trim();
 
 const script = `

@@ -158,7 +158,7 @@ test("vNext builds A5 canonical activity model without splitting step 5", () => 
         learnerRole: "practise",
         learnerLabel: "Your turn",
         sourceSteps: [],
-        promptFields: [],
+        promptFields: ["argument_structure_hint"],
         materialIds: ["A5-M4", "A5-M5"],
         hasExpectedOutput: false
       },
@@ -191,18 +191,7 @@ test("vNext fixture model satisfies source closure and empty-beat invariants", (
     result.model.activities.map((activity) => activity.id),
     ["A1", "A2", "A3", "A4", "A5"]
   );
-  assert.deepEqual(result.diagnostics.omittedBeats, [
-    {
-      activityId: "A3",
-      sourceFunction: "orientation",
-      reason: "empty_learner_facing_content"
-    },
-    {
-      activityId: "A4",
-      sourceFunction: "orientation",
-      reason: "empty_learner_facing_content"
-    }
-  ]);
+  assert.deepEqual(result.diagnostics.omittedBeats, []);
 
   result.model.activities.forEach((activity) => {
     activity.beats.forEach((beat) => {

@@ -104,7 +104,7 @@ test("fixture coverage: supported material types have fixture evidence", () => {
   MATERIAL_RENDERER_TYPES.forEach(function (type) {
     assert.ok(combined.has(type), "fixture evidence missing for " + type);
   });
-  assert.equal(new Set(kitchenTypes).size, 13);
+  assert.equal(new Set(kitchenTypes).size, 16);
 });
 
 test("fixture coverage: validates through buildPageModel without errors", () => {
@@ -132,19 +132,21 @@ test("rendering: table types route to table_entry workspaces in composed Do mome
   assert.match(html, /util-learner-table-workspace/);
 });
 
-test("rendering: unsupported registry types fall back via renderMaterial unit path", () => {
+test("rendering: impact_table now uses shared table path (former unsupported expectation flipped)", () => {
+  // Previous unsupported expectation encoded incomplete registry coverage, not rejection.
   const model = buildMaterialModel(
     {
-      material_id: "UNSUPPORTED-1",
+      material_id: "IMPACT-1",
       material_type: "impact_table",
       title: "Impact table",
-      body: "| A | B |\n| --- | --- |\n| 1 | |"
+      body: "| A | B |\n| --- | --- |\n| 1 | 2 |"
     },
     0
   );
   const output = renderMaterial(model);
-  assert.match(output, /data-render-status="unsupported"/);
-  assert.match(output, /impact_table/);
+  assert.doesNotMatch(output, /data-render-status="unsupported"/);
+  assert.match(output, /data-material-type="impact_table"/);
+  assert.match(output, /<table>/);
 });
 
 test("surface reuse: type-to-surface map lists table_entry and text_entry mappings", () => {
@@ -154,7 +156,9 @@ test("surface reuse: type-to-surface map lists table_entry and text_entry mappin
     "decision_table",
     "comparison_table",
     "classification_table",
-    "planning_table"
+    "planning_table",
+    "data_table",
+    "impact_table"
   ]);
   assert.ok(Array.isArray(map.text_entry));
   assert.ok(map.static.length >= MATERIAL_RENDERER_TYPES.length - 3);

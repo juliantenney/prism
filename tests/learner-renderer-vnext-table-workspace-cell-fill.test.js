@@ -73,7 +73,7 @@ function mockTableWorkspace(controls) {
   };
 }
 
-test("markup: editable cells emit flex inner wrapper and one textarea control", () => {
+test("markup: editable cells emit flex inner wrapper and one three-line textarea control", () => {
   const html = renderTableWorkspace(wrapMaterial(FIXTURE_BODY), "A1");
   const cells = extractEditableCells(html);
   assert.equal(cells.length, 8);
@@ -83,6 +83,7 @@ test("markup: editable cells emit flex inner wrapper and one textarea control", 
       cellHtml,
       /^<div class="util-learner-table-workspace__cell--editable-inner"><textarea class="util-learner-table-workspace__input"/
     );
+    assert.match(cellHtml, /<textarea\b[^>]*\brows="3"/);
     assert.equal((cellHtml.match(/<textarea\b/g) || []).length, 1);
     assert.doesNotMatch(cellHtml, /<input\b/);
   });
@@ -108,7 +109,7 @@ test("markup: editable cells emit flex inner wrapper and one textarea control", 
           id +
           '" data-learner-cell="' +
           id +
-          '"'
+          '" rows="3"'
       )
     );
   });
@@ -198,11 +199,51 @@ test("markup: one-line, multi-editable, long and empty responses keep persistenc
   assert.equal(emptyControl.value, "");
 });
 
-test("css: editable cell stretch contract is present in learner utility styles", () => {
+test("persistence: multiline cell values round-trip with line breaks and HTML-sensitive characters", () => {
+  const cellId = "a1-multi-m1-input-r0-c1";
+  const multiline =
+    "Residual increases\nVariance widens\n<tag> & \"quotes\" 'apostrophe'";
+  const control = {
+    id: cellId,
+    value: multiline,
+    getAttribute(name) {
+      if (name === "data-learner-cell" || name === "id") return cellId;
+      return null;
+    }
+  };
+  const workspace = mockTableWorkspace([control]);
+
+  const serialized = learnerDraftAdapters.serializeWorkspaceState(workspace);
+  assert.equal(serialized.ok, true);
+  assert.equal(serialized.state.value.cells[cellId], multiline);
+  assert.match(serialized.state.value.cells[cellId], /\n/);
+  assert.match(serialized.state.value.cells[cellId], /</);
+  assert.match(serialized.state.value.cells[cellId], /&/);
+
+  control.value = "";
+  const restored = learnerDraftAdapters.restoreWorkspaceState(
+    workspace,
+    serialized.state
+  );
+  assert.equal(restored.ok, true);
+  assert.equal(control.value, multiline);
+  assert.equal(control.value.split("\n").length, 3);
+});
+
+test("markup: initial editable textarea has empty text content (no value attribute)", () => {
+  const html = renderTableWorkspace(wrapMaterial(FIXTURE_BODY), "A1");
+  const match = html.match(
+    /<textarea class="util-learner-table-workspace__input"[^>]*><\/textarea>/
+  );
+  assert.ok(match, "textarea should close with empty text content");
+  assert.doesNotMatch(html, /<textarea[^>]*\bvalue=/);
+});
+
+test("css: editable cell three-line textarea contract is present in learner utility styles", () => {
   const source = fs.readFileSync(appJsPath, "utf8");
   assert.match(
     source,
-    /\.util-learner-table-workspace__cell--editable\{[^"]*padding:2px[^"]*height:1px[^"]*vertical-align:top/
+    /\.util-learner-table-workspace__cell--editable\{[^"]*padding:2px[^"]*min-width:10rem[^"]*height:1px[^"]*vertical-align:top/
   );
   assert.match(
     source,
@@ -210,7 +251,7 @@ test("css: editable cell stretch contract is present in learner utility styles",
   );
   assert.match(
     source,
-    /\.util-learner-table-workspace__input\{flex:1 1 auto;[^"]*min-height:100%;[^"]*resize:none/
+    /\.util-learner-table-workspace__input\{flex:1 1 auto;[^"]*min-width:10rem;[^"]*min-height:4\.5rem;[^"]*resize:vertical;[^"]*line-height:1\.4/
   );
   assert.match(
     source,

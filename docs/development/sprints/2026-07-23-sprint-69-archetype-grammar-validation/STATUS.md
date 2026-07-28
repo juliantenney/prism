@@ -1,43 +1,56 @@
 # Sprint 69 Status
 
-**Related:** [HANDOVER.md](HANDOVER.md) · [sprint-69-closeout.md](../../../sprints/sprint-69-closeout.md)
+**Related:** [HANDOVER.md](HANDOVER.md) · [WHY-SPRINT-69.md](WHY-SPRINT-69.md) · [SPRINT-69-START-HERE.md](SPRINT-69-START-HERE.md)
 
-**State:** **COMPLETE** — closed 2026-07-27  
-**Certification:** **CERTIFIED**
+**State:** Phase 5B complete (including residual hetero producer migration); ready for Phase 6 certification closeout.  
+**Preparation type:** Documentation + handover complete; Phases 1–5B implementation landed.
 
-## Final checkpoint
+## Current checkpoint
 
 - [x] Sprint folder created
-- [x] Handover and context docs created
-- [x] Roadmap and task breakdown created
-- [x] Risk/decision logs created
-- [x] Start-here guide created
-- [x] Phase 1 — shared FunctionEnum vocabulary module
-- [x] Phase 2 — shared archetype grammar
+- [x] handover and context docs created
+- [x] roadmap and task breakdown created
+- [x] risk/decision logs created
+- [x] start-here guide created
+- [x] architecture principles and Definition of Done documented
+- [x] WHY-SPRINT-69 rationale document created
+- [x] cross-reference links added across core pack
+- [x] Phase 1 — shared FunctionEnum vocabulary module (`lib/episode-plan-v1-vocabulary.js`)
+- [x] Phase 2 — shared archetype grammar (`lib/episode-plan-v1-archetype-grammar.js`)
 - [x] Phase 3 — dual validation + parity report
-- [x] Phase 4 — renderer migration (grammar authority)
-- [x] Phase 5 — registry demotion + compatibility boundary
-- [x] Phase 5B — remove journey-compressed compatibility from production runtime
-- [x] Phase 5B residual — heteroscedasticity runstate persistence migration
-- [x] Phase 6 — certification closeout
-- [x] Material audit Phase 0 — GAM inventory + unsupported ledger
-- [x] Material audit Phase 1 — alias normalisation
-- [x] Material audit Phases 2–3 — non-renderable structural/workflow boundaries
-- [x] Material audit Phase 4 — card family consolidation
-- [x] Material audit Phase 5 — guarded table/worksheet compatibility
-- [x] Material audit Phase 6 — support family boundaries
-- [x] Material audit Phase 7 — strategy → task_card consolidation
-- [x] Material audit Phase 8 — rubric → checklist consolidation
-- [x] Sprint closeout artefacts published
+- [x] Phase 4 — renderer migration (grammar authority for canonical FunctionEnum)
+- [x] Phase 5 — registry demotion + compatibility boundary clarification
+- [x] Phase 5B — remove journey-compressed / whole-sequence compatibility from production runtime
+- [x] Phase 5B residual — heteroscedasticity positive producer + kitchen-sink builder aligned to FunctionEnum
+- [ ] Phase 6 — certification closeout
 
-## Closeout metrics
+## Phase 5B notes
 
-```text
-Unsupported learner material types: 3 (table, video, worksheet — intentional)
-Runtime compatibility entries: 0
-Certification: CERTIFIED (6 workflows, 25 activities, 91 moments)
-```
+- Journey compatibility registry and composition-continuity overlays **removed** from runtime.
+- Sole educational validation route: FunctionEnum → shared grammar → canonical binding.
+- Compressed and mixed vocabulary fail closed (`UNKNOWN_EPISODE_PLAN_BEAT` / `MIXED_EPISODE_PLAN_VOCABULARY`).
+- VTT, Heteroscedasticity, RNA, kitchen-sink, Ed Psych repaired fixtures migrated to canonical FunctionEnum.
+- `UNKNOWN_ARCHETYPE_VARIANT` retired from production validation (catalog history only).
+- Retirement targets: zero runtime compatibility entries; all positive cases `canonical-grammar`.
 
-## Next sprint
+## Residual blocker (resolved)
 
-[Sprint 70 — Visual Affordance Pipeline](../../../sprints/sprint-70-visual-affordance-pipeline.md)
+**Symptom:** Heteroscedasticity interactive render failed all five activities with `MIXED_EPISODE_PLAN_VOCABULARY` / `validationRoute: unknown-or-mixed-vocabulary`.
+
+**Authoritative source:** stale compressed Episode Plan functions in workflow **runstate / assembled page captures** (production keys `promptr.workflows.v1` + `promptr.workflows.runstate.v1`). Certification golden fixture migration alone did not repair the interactive path.
+
+**Why it escaped inventory:** Phase 5B migrated page-render fixtures, but live interactive validation reads Episode Plan from runstate captures / Utilities page JSON. Those retained compressed vocabulary (`check_understanding`, `worked_example` as EP function, etc.).
+
+**Fix:** production persistence migration `lib/episode-plan-v1-persistence-migration.js` on runstate load and assembly/page selection (not grammar aliases).
+
+**Canonical sequences now:**
+
+| Activity | Archetype | Sequence |
+|---|---|---|
+| A1 | understand | orientation → explanation → verification |
+| A2 | analyse | orientation → worked_thinking → guided_practice → verification |
+| A3 | apply | orientation → worked_thinking → guided_practice → reflection |
+| A4 | understand | orientation → explanation → guided_practice → verification |
+| A5 | evaluate | orientation → worked_judgement → guided_practice → reflection |
+
+**Regression:** `tests/heteroscedasticity-interactive-workflow-path.test.js` (workflow storage loaders) + prior fixture/scan tests.

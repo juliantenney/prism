@@ -1,22 +1,26 @@
-# Sprint 69 — Next Chat Briefing
-
-**Sprint 69 is COMPLETE.** Begin Sprint 70.
-
-Use this pack for Sprint 70:  
-`docs/development/sprints/2026-07-27-sprint-70-visual-affordance-pipeline/`
-
-Start with:
-1. [SPRINT-70-START-HERE.md](../2026-07-27-sprint-70-visual-affordance-pipeline/SPRINT-70-START-HERE.md)
-2. [WHY-SPRINT-70.md](../2026-07-27-sprint-70-visual-affordance-pipeline/WHY-SPRINT-70.md)
-3. [HANDOVER.md](../2026-07-27-sprint-70-visual-affordance-pipeline/HANDOVER.md)
-4. [CONTEXT.md](../2026-07-27-sprint-70-visual-affordance-pipeline/CONTEXT.md)
-5. [PLAN.md](../2026-07-27-sprint-70-visual-affordance-pipeline/PLAN.md)
-
-Sprint 70 mission:
-- replace manual multi-tool visual workflow with a Prism-owned visual affordance pipeline
-- generate visual jobs and deterministic prompts from approved affordances
-- provide UI for copy prompt / upload image / replace / remove
-- assemble and export HTML package (`index.html`, `media/`, visual manifest)
-- keep **image generation external** (manual/Copilot) — no API integration in Sprint 70
-
-Sprint 69 closeout: [sprint-69-closeout.md](../../../sprints/sprint-69-closeout.md)
+# Sprint 69 — Next Chat Briefing
+
+Sprint 68 is closed and certified.  
+Use this pack: `docs/development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/`
+
+Start with:
+1. [SPRINT-69-START-HERE.md](SPRINT-69-START-HERE.md)
+2. [WHY-SPRINT-69.md](WHY-SPRINT-69.md)
+3. [HANDOVER.md](HANDOVER.md)
+4. [CONTEXT.md](CONTEXT.md)
+5. [PLAN.md](PLAN.md)
+
+Mission:
+- move exact validation from sequence enumeration to shared archetype grammar
+- preserve deterministic fail-closed behaviour
+- do **not** introduce fuzzy matching
+
+Definition of Done: [HANDOVER.md#sprint-69-definition-of-done](HANDOVER.md#sprint-69-definition-of-done)
+
+Guardrails:
+- Episode Plan owns archetype/beat semantics
+- renderer interprets preserved semantics
+- diagnostics remain explicit and ownership-aware
+
+See [HANDOVER.md — Architecture Principles](HANDOVER.md#architecture-principles).
+

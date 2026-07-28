@@ -41,24 +41,6 @@ Whole-sequence enumeration demoted; journey + continuity registries remained tem
 ## D69-13 Phase 5B pre-launch compatibility removal
 Internal fixtures are not legacy contracts. Production runtime has one educational validation route: canonical Episode Plan → FunctionEnum → shared archetype grammar → deterministic canonical binding. Journey-compatibility registry and composition-continuity overlays are removed. Mixed FunctionEnum/compressed → `MIXED_EPISODE_PLAN_VOCABULARY` fail closed. Compressed-only → `UNKNOWN_EPISODE_PLAN_BEAT` fail closed. No renderer compressed→FunctionEnum mapping. No exact whole-sequence legality. `UNKNOWN_ARCHETYPE_VARIANT` is catalog history only.
 
-## D69-14 Material audit — consolidation over proliferation
-Unsupported learner material count is reduced through alias normalisation, non-renderable boundaries, and shared renderer families — not by introducing new renderer families per legacy token.
-
-## D69-15 Material audit — non-renderable structural boundary
-Workflow, instructional, metadata, and activity-field tokens (`support_note`, `support_notes`, `expected_output`, etc.) are classified `NON_RENDERABLE` and excluded from learner material inventory.
-
-## D69-16 Material audit — strategy → task_card
-`strategy`, `strategy_options`, and `strategies` are lossless aliases of `task_card`. Static exposition only; no selection UI in Sprint 69.
-
-## D69-17 Material audit — rubric → checklist
-`rubric` is a lossless alias of `checklist` for markdown/bullet payloads. Structured scoring objects → `AMBIGUOUS_MATERIAL_TYPE`; empty → `INVALID_MATERIAL_PAYLOAD`.
-
-## D69-18 Material audit — guarded table/worksheet compatibility
-Generic `table` and `worksheet` remain in the unsupported ledger as intentional guarded compatibility paths to `table_workspace` — not missing renderers for resolved types.
-
-## D69-19 Material audit — video deferred
-`video` remains unsupported intentionally. Video rendering is future capability, not a Sprint 69 implementation gap.
-
 Related:
 - [ADR-012](../../../architecture/adr/ADR-012-learner-renderer-interprets-educational-semantics.md)
 - [Episode Plan ownership boundary](../../../architecture/episode-plan-ownership-boundary.md)

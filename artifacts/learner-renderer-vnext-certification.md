@@ -6,8 +6,8 @@
 
 - Certification version: `s68-imp-020`
 - Corpus version: `s68-imp-020-v1`
-- Generated at: `2026-07-27T11:23:51.634Z`
-- Git revision: `458b598e09d61be0f99876f209f3f0aa0eb0e27f`
+- Generated at: `2026-07-23T12:05:29.355Z`
+- Git revision: `fe16960babd509389d2ec43053767be06af4ca88`
 
 ## Corpus summary
 
@@ -22,7 +22,7 @@
 
 ```text
 text_entry: 32
-table_entry: 20
+table_entry: 18
 ordering: 1
 ```
 

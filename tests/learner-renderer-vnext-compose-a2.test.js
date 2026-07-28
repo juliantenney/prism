@@ -192,7 +192,8 @@ test("render slice: A2 moments HTML has table workspace in Do and no free-text w
   assert.equal((learnHtml.match(/data-material-id="A2-M1"/g) || []).length, 1);
   assert.doesNotMatch(learnHtml, /data-material-id="A2-M2"/);
   assert.equal((doHtml.match(/data-workspace-kind="table_entry"/g) || []).length, 1);
-  assert.equal((doHtml.match(/data-material-id="A2-M2"/g) || []).length, 2);
+  assert.equal((doHtml.match(/data-material-id="A2-M2"/g) || []).length, 1);
+  assert.equal((doHtml.match(/data-material-source-id="A2-M2"/g) || []).length, 1);
   assert.equal((doHtml.match(/data-material-id="A2-M3"/g) || []).length, 1);
   assert.doesNotMatch(doHtml, /data-material-id="A2-M1"/);
 });

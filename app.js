@@ -23632,7 +23632,14 @@
     var ta = li.querySelector('[data-field="runStepOutput"]');
     if (!sid || !ta) return;
     var raw = String(ta.value || "");
-    var rawBefore = raw;
+    var prevStoredRaw =
+      sid && state.workflowRunCapturedOutputsRaw
+        ? String(state.workflowRunCapturedOutputsRaw[sid] || "")
+        : "";
+    var prevStoredFinal =
+      sid && state.workflowRunCapturedOutputs
+        ? String(state.workflowRunCapturedOutputs[sid] || "")
+        : "";
     var gamCtx = buildGamSanitizeContextFromRunStepLi(li);
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     var stepRow = null;
@@ -23922,10 +23929,20 @@
         workflowRunLearnerPageFramingGateMessage(sid) ||
         (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid])
       );
+      var persistedRawNow =
+        sid && state.workflowRunCapturedOutputsRaw
+          ? String(state.workflowRunCapturedOutputsRaw[sid] || "")
+          : "";
+      var persistedFinalNow =
+        sid && state.workflowRunCapturedOutputs
+          ? String(state.workflowRunCapturedOutputs[sid] || "")
+          : "";
+      var captureChanged =
+        !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredRaw, persistedRawNow) ||
+        !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredFinal, persistedFinalNow);
       if (
         !hasBlockingValidationError &&
-        String(raw || "").trim() &&
-        !workflowRunCaptureJsonSemanticallyEquivalent(rawBefore, raw)
+        captureChanged
       ) {
         var persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
         queueWorkflowRunAutosaveToast(persistResult.ok ? "success" : "");

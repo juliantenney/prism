@@ -1,0 +1,1267 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Create a 60 minute self study resource on the topic 'An introduction to heteroscedasticity",
+  "audience": "Learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan",
+      "dla",
+      "gam",
+      "learning_sequence"
+    ],
+    "current_stage": "learning_sequence"
+  },
+  "page_synthesis": {},
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Define heteroscedasticity and distinguish it from homoscedasticity in the context of regression analysis.",
+      "learner_task": "1. Study the explanatory material on variance, homoscedasticity and heteroscedasticity.\n2. Work through the expert example showing how error spread differs between models.\n3. Compare the two conditions using the provided prompts.\n4. Write a concise explanation distinguishing heteroscedasticity from homoscedasticity and state why economists care about the distinction.",
+      "expected_output": "A clear explanation that accurately defines both concepts, identifies the difference in error variance, and explains that changing variance can affect the reliability of statistical inference even when coefficient estimates remain unchanged.",
+      "activity_preamble": "Begin by building a clear conceptual distinction between homoscedasticity and heteroscedasticity. This foundation will support all later interpretation and analysis tasks.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Concept exposition introducing variance assumptions in regression.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Teaching text explaining error terms, variance, homoscedasticity and heteroscedasticity, including economic examples and contrast statements."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Model expert reasoning when comparing variance patterns.",
+          "instructional_function": "worked_example",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Step-by-step expert comparison of two regression situations showing constant versus changing error spread with intermediate reasoning visible."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "Provide a quality benchmark for conceptual explanation.",
+          "instructional_function": "worked_example",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Annotated exemplar response distinguishing homoscedasticity from heteroscedasticity and highlighting common misconceptions."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-check.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "At least four criteria: correct definitions, correct comparison, accurate use of variance terminology, explanation of significance for economics; include revise-and-recheck guidance."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Variance Assumptions in Regression",
+          "body_format": "markdown",
+          "body": "## Variance and Error Terms\n\nIn regression analysis, the error term captures influences on the dependent variable that are not explained by the model.\n\n### Homoscedasticity\n\nThe variance of errors remains roughly constant across all observations.\n\n### Heteroscedasticity\n\nThe variance of errors changes across observations. Error spread may increase or decrease as values of an explanatory variable change.\n\nEconomists care about heteroscedasticity because it can make standard errors unreliable and affect statistical inference."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "activity_id": "A1",
+          "title": "Comparing Constant and Changing Variance",
+          "body_format": "markdown",
+          "body": "## Worked Example\n\nModel A:\n\n1. Residuals remain similarly spread at low and high values.\n2. Variance appears stable.\n3. Conclusion: homoscedasticity.\n\nModel B:\n\n1. Residuals are tightly grouped at low values.\n2. Residual spread widens as values increase.\n3. Variance changes across observations.\n4. Conclusion: heteroscedasticity."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Example Conceptual Explanation",
+          "body_format": "markdown",
+          "body": "Homoscedasticity occurs when error variance remains constant across observations. Heteroscedasticity occurs when error variance changes. The difference matters because changing variance can distort standard errors and make statistical tests less reliable."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Concept Check",
+          "body_format": "markdown",
+          "body": "- Defined homoscedasticity correctly\n- Defined heteroscedasticity correctly\n- Explained the difference in variance behaviour\n- Identified why economists care about the distinction\n\nIf any item is incomplete, revise your explanation before continuing."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO1"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "reasoning_orientation": "Focus on variance rather than regression coefficients. Examine what changes across observations and what remains constant. Build a mental model that separates constant error variation from changing error variation.",
+      "self_explanation_prompt": "In your own words, explain why two regression models with similar trend lines might differ in the variability of their errors."
+    },
+    {
+      "activity_id": "A2",
+      "title": "Explain the role of error terms and residuals in a regression model and describe how changing error variance appears ...",
+      "learner_task": "1. Read the explanation of error terms and residuals.\n2. Study the worked example and scenario cases.\n3. Complete the analysis table by identifying where error variability appears to increase.\n4. Explain how the observed patterns relate to heteroscedasticity.",
+      "expected_output": "A completed analysis table and short explanation linking residual behaviour to changing error variance, supported by evidence from the economic scenarios and appropriate use of regression terminology.",
+      "activity_preamble": "You will develop a practical understanding of how residuals and changing error variance appear in real economic datasets.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "type": "text",
+          "purpose": "Explain error terms, residuals and economic variability.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Exposition linking error terms and residuals to cross-sectional economic examples such as income, expenditure and firm performance."
+        },
+        {
+          "material_id": "A2-M2",
+          "type": "scenario",
+          "purpose": "Provide realistic economic contexts for interpretation.",
+          "instructional_function": "worked_example",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "At least two named cases with numerical and contextual detail showing different levels of variability across observations."
+        },
+        {
+          "material_id": "A2-M3",
+          "type": "analysis_table",
+          "purpose": "Structured examination of variability patterns.",
+          "instructional_function": "practice",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table format with columns for scenario evidence, residual pattern, indication of changing variance and learner justification; include one partial exemplar row."
+        },
+        {
+          "material_id": "A2-M4",
+          "type": "checklist",
+          "purpose": "Verification and revision support.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "At least four checks covering evidence use, residual interpretation, variance reasoning and economic relevance."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "text",
+          "activity_id": "A2",
+          "title": "Error Terms and Residuals",
+          "body_format": "markdown",
+          "body": "## Error Terms and Residuals\n\nA residual is the difference between an actual value and a predicted value.\n\nResiduals help economists inspect whether error variation remains constant.\n\nLarge differences in variability across groups often suggest heteroscedasticity."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "scenario",
+          "activity_id": "A2",
+          "title": "Economic Variability Scenarios",
+          "body_format": "markdown",
+          "body": "## Scenario 1: Household Spending\n\nHousehold Alpha earns £18,000. Spending patterns are similar to those of comparable households.\n\nHousehold Beta earns £150,000. Spending patterns vary substantially.\n\n## Scenario 2: Firm Profits\n\nFirm Orion has annual profits near £50,000 with limited variation.\n\nFirm Vega has profits near £5 million but outcomes vary greatly between years."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "analysis_table",
+          "activity_id": "A2",
+          "title": "Variability Analysis Table",
+          "body_format": "markdown",
+          "body": "| Scenario | Evidence of variability | Residual pattern | Suggests heteroscedasticity? | Justification |\n| --- | --- | --- | --- | --- |\n| Household spending | Higher-income households vary more | Wider spread | Yes | Example row |\n| Firm profits |  |  |  |  |"
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Residual Interpretation Check",
+          "body_format": "markdown",
+          "body": "- Identified residual behaviour\n- Used evidence from scenarios\n- Linked variability to variance changes\n- Used regression terminology accurately"
+        }
+      ],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "revision"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO2"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": [
+        "LO2"
+      ],
+      "reasoning_orientation": "Move from definitions to interpretation. Link observable data patterns to underlying variability in economic behaviour. Consider why some groups naturally exhibit greater variability than others.",
+      "intellectual_coherence_bridge": "Having distinguished the two variance conditions, you will now examine how these ideas emerge in economic observations and residuals."
+    },
+    {
+      "activity_id": "A3",
+      "title": "Interpret residual plots to identify visual evidence that may indicate the presence of heteroscedasticity.",
+      "learner_task": "1. Study the modelled interpretation of a residual plot.\n2. Examine the provided residual plot examples.\n3. Complete the classification table.\n4. Justify whether each plot suggests homoscedasticity or heteroscedasticity.",
+      "expected_output": "Accurate classifications supported by explanations that reference the spread and pattern of residuals rather than isolated observations or coefficient values.",
+      "activity_preamble": "Residual plots provide one of the most important visual diagnostics for heteroscedasticity.",
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "type": "worked_example",
+          "purpose": "Model expert interpretation of residual plots.",
+          "instructional_function": "worked_example",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Think-aloud interpretation showing how an economist evaluates residual spread before reaching a conclusion."
+        },
+        {
+          "material_id": "A3-M2",
+          "type": "classification_table",
+          "purpose": "Structured practice identifying plot patterns.",
+          "instructional_function": "practice",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table with plot observations, pattern indicators, variance judgement and learner rationale columns."
+        },
+        {
+          "material_id": "A3-M3",
+          "type": "checklist",
+          "purpose": "Verification of interpretation quality.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Four-item self-check focused on identifying spread, avoiding coefficient confusion, evidence quality and judgement accuracy."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "worked_example",
+          "activity_id": "A3",
+          "title": "Reading a Residual Plot",
+          "body_format": "markdown",
+          "body": "## Think-Aloud Example\n\n1. Examine the overall spread.\n2. Compare low and high fitted values.\n3. Look for funnel-shaped patterns.\n4. Decide whether spread is constant.\n5. Reach a conclusion about heteroscedasticity."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "classification_table",
+          "activity_id": "A3",
+          "title": "Residual Plot Classification",
+          "body_format": "markdown",
+          "body": "| Plot Observation | Spread Pattern | Variance Judgement | Rationale |\n| --- | --- | --- | --- |\n| Residuals widen as values increase | Expanding | Heteroscedasticity | Example |\n| Residuals equally spread |  |  |  |\n| Funnel shape visible |  |  |  |"
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "checklist",
+          "activity_id": "A3",
+          "title": "Plot Interpretation Check",
+          "body_format": "markdown",
+          "body": "- Focused on spread rather than coefficient values\n- Identified pattern correctly\n- Supported judgement with evidence\n- Used appropriate terminology"
+        }
+      ],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO3"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO3"
+      ],
+      "reasoning_orientation": "Look for patterns rather than isolated points. Concentrate on whether residual spread remains constant or expands across the range of fitted values.",
+      "intellectual_coherence_bridge": "You have examined residuals conceptually. This activity develops the skill of interpreting residual plots directly."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Describe the effects of heteroscedasticity on standard errors, confidence intervals, hypothesis tests, and statistica...",
+      "learner_task": "1. Read the explanation of inference consequences.\n2. Study the worked analytic walkthrough.\n3. Complete the impact table.\n4. Write a short analytical summary of why heteroscedasticity can lead to misleading conclusions.",
+      "expected_output": "An analytical explanation that correctly links heteroscedasticity to inaccurate standard errors and discusses the implications for confidence intervals, hypothesis testing and researcher conclusions.",
+      "activity_preamble": "You will analyse why heteroscedasticity matters for statistical inference rather than merely identifying its presence.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "text",
+          "purpose": "Explain consequences for inference.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Detailed explanation connecting heteroscedasticity, standard errors, confidence intervals and hypothesis tests."
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "modelling_note",
+          "purpose": "Worked analytic pass before independent analysis.",
+          "instructional_function": "analysis",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Fact-to-mechanism walkthrough showing how changing variance affects inferential reliability."
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "impact_table",
+          "purpose": "Analyse relationships between concepts.",
+          "instructional_function": "analysis",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table with concept, mechanism, consequence and learner explanation columns; include one partially completed exemplar row."
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "checklist",
+          "purpose": "Verification and refinement.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Four criteria linked to causal reasoning, terminology, inferential consequences and analytical quality."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "text",
+          "activity_id": "A4",
+          "title": "Why Heteroscedasticity Matters",
+          "body_format": "markdown",
+          "body": "## Consequences for Inference\n\nHeteroscedasticity does not necessarily bias coefficient estimates.\n\nHowever, it can affect estimated standard errors.\n\nAs a result, confidence intervals, p-values and hypothesis tests may become unreliable."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "modelling_note",
+          "activity_id": "A4",
+          "title": "Analytical Walkthrough",
+          "body_format": "markdown",
+          "body": "1. Variance changes across observations.\n2. Standard error estimates become less reliable.\n3. Statistical tests rely on those estimates.\n4. Conclusions about significance may therefore be misleading."
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "impact_table",
+          "activity_id": "A4",
+          "title": "Inference Impact Table",
+          "body_format": "markdown",
+          "body": "| Concept | Mechanism | Consequence | Explanation |\n| --- | --- | --- | --- |\n| Heteroscedasticity | Changing variance | Unreliable standard errors | Example |\n| Standard errors |  |  |  |\n| Hypothesis tests |  |  |  |"
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Analysis Quality Check",
+          "body_format": "markdown",
+          "body": "- Explained the causal chain\n- Referred to standard errors\n- Connected inference consequences\n- Produced an analytical explanation"
+        }
+      ],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO4"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "reasoning_orientation": "Trace the chain from changing variance to standard errors and then to confidence intervals, hypothesis testing and statistical conclusions.",
+      "self_explanation_prompt": "Explain why reliable coefficient estimates do not automatically guarantee reliable statistical inference.",
+      "intellectual_coherence_bridge": "After identifying heteroscedasticity visually, you will now consider its consequences for economic decision-making and research conclusions."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Identify common methods used to detect heteroscedasticity, including residual plots, the Breusch-Pagan test, and the ...",
+      "learner_task": "1. Review the process for diagnosing heteroscedasticity.\n2. Use the reference material to compare diagnostic approaches.\n3. Complete the comparison table.\n4. Decide when each method is most useful.",
+      "expected_output": "A comparison that distinguishes residual plots, the Breusch-Pagan test and the White test, including the type of evidence each method provides and situations where it may be useful.",
+      "activity_preamble": "Detection involves both visual diagnostics and formal statistical procedures.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "reference_table",
+          "purpose": "Summarise diagnostic methods.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Reference matrix comparing residual plots, Breusch-Pagan and White tests by purpose, evidence and output."
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "comparison_table",
+          "purpose": "Learner comparison activity.",
+          "instructional_function": "practice",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table requiring learners to compare methods and record strengths, limitations and use cases."
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "checklist",
+          "purpose": "Verification and self-monitoring.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Four-item review covering diagnostic selection, evidence interpretation and terminology."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "reference_table",
+          "activity_id": "A5",
+          "title": "Diagnostic Methods Reference",
+          "body_format": "markdown",
+          "body": "| Method | Evidence Type | Purpose |\n| --- | --- | --- |\n| Residual Plot | Visual | Inspect changing spread |\n| Breusch-Pagan Test | Statistical | Test variance relationships |\n| White Test | Statistical | Detect heteroscedasticity patterns |"
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "comparison_table",
+          "activity_id": "A5",
+          "title": "Method Comparison Worksheet",
+          "body_format": "markdown",
+          "body": "| Method | Strengths | Limitations | Best Use Case |\n| --- | --- | --- | --- |\n| Residual Plot |  |  |  |\n| Breusch-Pagan Test |  |  |  |\n| White Test |  |  |  |"
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "checklist",
+          "activity_id": "A5",
+          "title": "Detection Review",
+          "body_format": "markdown",
+          "body": "- Identified each diagnostic method\n- Distinguished visual and statistical evidence\n- Compared strengths and limitations\n- Selected appropriate applications"
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO5"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 8,
+      "mapped_learning_outcomes": [
+        "LO5"
+      ],
+      "reasoning_orientation": "Compare detection methods by purpose and evidence requirements rather than memorising names alone.",
+      "intellectual_coherence_bridge": "Having analysed the consequences of heteroscedasticity, you will now focus on the methods economists use to detect it."
+    },
+    {
+      "activity_id": "A6",
+      "title": "Compare approaches for addressing heteroscedasticity, including variable transformations, robust standard errors, and...",
+      "learner_task": "1. Review the comparison material on corrective approaches.\n2. Complete the planning table comparing transformations, robust standard errors and weighted least squares.\n3. Produce a short recommendation memo identifying the most suitable response for a specified regression scenario.\n4. Complete the session consolidation summary and transfer task.",
+      "expected_output": "A justified recommendation memo that compares available remedies, explains the reasoning behind the selected approach, acknowledges limitations, and demonstrates integration of key ideas from across the session.",
+      "activity_preamble": "This capstone activity brings together the main ideas from the session and requires you to compare approaches for addressing heteroscedasticity.",
+      "required_materials": [
+        {
+          "material_id": "A6-M1",
+          "type": "text",
+          "purpose": "Explain available corrective approaches.",
+          "instructional_function": "explanation",
+          "plan_beat_index": 2,
+          "depth_floor": "L3",
+          "specification": "Comparative exposition of transformations, robust standard errors and weighted least squares."
+        },
+        {
+          "material_id": "A6-M2",
+          "type": "planning_table",
+          "purpose": "Structured comparison and recommendation building.",
+          "instructional_function": "comparison",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Pipe-table requiring comparison of purpose, strengths, limitations and appropriate use; learner completes recommendation column."
+        },
+        {
+          "material_id": "A6-M3",
+          "type": "template",
+          "purpose": "Support creation of the recommendation memo.",
+          "instructional_function": "comparison",
+          "plan_beat_index": 3,
+          "depth_floor": "L3",
+          "specification": "Memo template with sections for evidence, reasoning, selected approach and limitations."
+        },
+        {
+          "material_id": "A6-M4",
+          "type": "checklist",
+          "purpose": "Final verification before submission.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Four criteria covering comparison quality, justification, evidence and terminology; include revise-and-improve guidance."
+        },
+        {
+          "material_id": "A6-M5",
+          "type": "transfer_prompt",
+          "purpose": "Transfer learning to a new regression context.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Prompt requiring application of remedy-selection reasoning to a new economics dataset."
+        },
+        {
+          "material_id": "A6-M6",
+          "type": "consolidation_summary",
+          "purpose": "Session closure and knowledge consolidation.",
+          "instructional_function": "consolidation",
+          "plan_beat_index": 4,
+          "depth_floor": "L3",
+          "specification": "Learner-facing summary activity of at least 80 words covering three or more key ideas, what to remember and how concepts connect."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A6-M1",
+          "material_type": "text",
+          "activity_id": "A6",
+          "title": "Approaches to Addressing Heteroscedasticity",
+          "body_format": "markdown",
+          "body": "## Common Remedies\n\n### Variable Transformations\nCan stabilise variance.\n\n### Robust Standard Errors\nAdjust statistical inference without changing coefficient estimates.\n\n### Weighted Least Squares\nUseful when the variance structure is known."
+        },
+        {
+          "material_id": "A6-M2",
+          "material_type": "planning_table",
+          "activity_id": "A6",
+          "title": "Remedy Comparison Planner",
+          "body_format": "markdown",
+          "body": "| Approach | Main Purpose | Advantages | Limitations | Recommendation |\n| --- | --- | --- | --- | --- |\n| Variable Transformation |  |  |  |  |\n| Robust Standard Errors |  |  |  |  |\n| Weighted Least Squares |  |  |  |  |"
+        },
+        {
+          "material_id": "A6-M3",
+          "material_type": "template",
+          "activity_id": "A6",
+          "title": "Recommendation Memo Template",
+          "body_format": "markdown",
+          "body": "## Recommendation Memo\n\n### Problem\n\n### Evidence\n\n### Recommended Approach\n\n### Justification\n\n### Limitations\n\n### Conclusion"
+        },
+        {
+          "material_id": "A6-M4",
+          "material_type": "checklist",
+          "activity_id": "A6",
+          "title": "Memo Verification Checklist",
+          "body_format": "markdown",
+          "body": "- Compared available remedies\n- Supported recommendation with evidence\n- Identified limitations\n- Used accurate terminology"
+        },
+        {
+          "material_id": "A6-M5",
+          "material_type": "transfer_prompt",
+          "activity_id": "A6",
+          "title": "Transfer Challenge",
+          "body_format": "markdown",
+          "body": "A new regression analysing regional earnings shows an expanding residual spread. Which corrective approach would you investigate first? Justify your choice using evidence and reasoning."
+        },
+        {
+          "material_id": "A6-M6",
+          "material_type": "consolidation_summary",
+          "activity_id": "A6",
+          "title": "Session Consolidation",
+          "body_format": "markdown",
+          "body": "Write a summary of at least 80 words that explains:\n\n- What heteroscedasticity is\n- How it differs from homoscedasticity\n- How it can be detected\n- Why it matters for statistical inference\n- Which corrective methods are available\n\nFinish by identifying the single most important idea you will remember from this session."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO6"
+      ],
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO1",
+        "LO4",
+        "LO5",
+        "LO6"
+      ],
+      "reasoning_orientation": "Compare remedies in relation to the problem they solve. Focus on justification, limitations and appropriate use rather than simple description.",
+      "transfer_or_application_task": "Consider a future economics project in which residual plots indicate changing variance. Explain which corrective approach you would investigate first and why.",
+      "intellectual_coherence_bridge": "This final activity integrates conceptual understanding, diagnosis and remedy selection into a coherent judgement."
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "outcome_id": "LO1",
+      "statement": "Define heteroscedasticity and distinguish it from homoscedasticity in the context of regression analysis."
+    },
+    {
+      "outcome_id": "LO2",
+      "statement": "Explain the role of error terms and residuals in a regression model and describe how changing error variance appears in economic data."
+    },
+    {
+      "outcome_id": "LO3",
+      "statement": "Interpret residual plots to identify visual evidence that may indicate the presence of heteroscedasticity."
+    },
+    {
+      "outcome_id": "LO4",
+      "statement": "Describe the effects of heteroscedasticity on standard errors, confidence intervals, hypothesis tests, and statistical inference."
+    },
+    {
+      "outcome_id": "LO5",
+      "statement": "Identify common methods used to detect heteroscedasticity, including residual plots, the Breusch-Pagan test, and the White test."
+    },
+    {
+      "outcome_id": "LO6",
+      "statement": "Compare approaches for addressing heteroscedasticity, including variable transformations, robust standard errors, and weighted least squares."
+    }
+  ],
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO1"
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "revision"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO2"
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO3"
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO4"
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO5"
+      ]
+    },
+    {
+      "activity_id": "A6",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO6"
+      ]
+    }
+  ],
+  "source_artefacts": [
+    {
+      "artefact_type": "learning_outcomes",
+      "source_label": "Learning Outcomes",
+      "role": "structural"
+    }
+  ],
+  "generation_notes": {
+    "validation": {
+      "activity_coverage": "shell_only",
+      "material_coverage": "pending_gam",
+      "episode_plan_attachment": "attached",
+      "self_containment": "shell_only",
+      "schema_compliance": "episode_plan_boundary",
+      "known_issues": [
+        "DLA pedagogy and GAM materials not yet populated"
+      ]
+    },
+    "notes": "Sprint 56F Episode Plan page shell (56F-EP-SHELL-2) — pending DLA, GAM, Learning Sequence, Assessment, and finalise_page enrichment",
+    "limitations": [
+      "[PRISM page composition] Activity a1 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a2 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a3 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a4 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a5 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page composition] Activity a6 is in upstream learning_activities but missing from page.sections[].learning_activities.content and not listed in generation_notes.activities_omitted.",
+      "[PRISM page materials closure] Activity A1 material A1-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A1 material A1-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A2 material A2-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A3 material A3-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A4 material A4-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A5 material A5-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M1 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M2 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M3 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M4 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M5 has upstream GAM body but no matching page learning_activities row.",
+      "[PRISM page materials closure] Activity A6 material A6-M6 has upstream GAM body but no matching page learning_activities row."
+    ],
+    "activities_omitted": []
+  },
+  "learning_sequence": {
+    "sequence_type": "self_directed_study_flow",
+    "ordered_activity_ids": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "sequence_position": 1,
+        "phase": "concept_foundations",
+        "study_focus": "Define heteroscedasticity and distinguish it from homoscedasticity."
+      },
+      {
+        "activity_id": "A2",
+        "sequence_position": 2,
+        "phase": "concept_application",
+        "study_focus": "Connect error terms and residuals to economic variability."
+      },
+      {
+        "activity_id": "A3",
+        "sequence_position": 3,
+        "phase": "diagnostic_interpretation",
+        "study_focus": "Interpret residual plots and identify variance patterns."
+      },
+      {
+        "activity_id": "A4",
+        "sequence_position": 4,
+        "phase": "analytical_reasoning",
+        "study_focus": "Analyse the consequences of heteroscedasticity for inference."
+      },
+      {
+        "activity_id": "A5",
+        "sequence_position": 5,
+        "phase": "method_selection",
+        "study_focus": "Compare and apply methods used to detect heteroscedasticity."
+      },
+      {
+        "activity_id": "A6",
+        "sequence_position": 6,
+        "phase": "integration_and_transfer",
+        "study_focus": "Compare remedies, justify decisions and consolidate learning."
+      }
+    ],
+    "navigation": {
+      "progression_model": "linear",
+      "allow_activity_review": true,
+      "recommended_completion_order": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6"
+      ]
+    }
+  },
+  "metadata": {
+    "workflow_id": "be37424d-ca7c-4244-bac4-c39de6668f71",
+    "page_id": "learner-page",
+    "workflow_name": "Heteroscedasticity",
+    "gam_materials_preserve_applied": true,
+    "gam_materials_preserve_schema": "38M-2",
+    "gam_materials_preserve_rows": 0
+  },
+  "workflow_id": "be37424d-ca7c-4244-bac4-c39de6668f71",
+  "page_id": "learner-page",
+  "constraints_applied": [
+    "GAM materials L4 preserve merge applied (page-gam-materials-preserve)"
+  ]
+}

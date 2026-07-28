@@ -6,8 +6,8 @@
 
 - Certification version: `s68-imp-020`
 - Corpus version: `s68-imp-020-v1`
-- Generated at: `2026-07-23T12:05:29.355Z`
-- Git revision: `fe16960babd509389d2ec43053767be06af4ca88`
+- Generated at: `2026-07-28T08:30:06.234Z`
+- Git revision: `541285e255d79d125c46365782cb01ecd69247af`
 
 ## Corpus summary
 
@@ -22,7 +22,7 @@
 
 ```text
 text_entry: 32
-table_entry: 18
+table_entry: 20
 ordering: 1
 ```
 
@@ -50,7 +50,7 @@ Catalogue size: 32; unexpected production diagnostics: 0
 
 ## Browser/Node parity
 
-Workflows compared: 6; mismatches: 0
+Workflows compared: 0; mismatches: 0
 
 ## Persistence
 

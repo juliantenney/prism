@@ -3,6 +3,7 @@
 Canonical location for portable sprint restart bundles:
 
 - `docs/development/sprints/YYYY-MM-DD-sprint-name/`
+- `docs/development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/` (Sprint 70 redesign recovery pack)
 
 Required structure per sprint folder:
 

@@ -276,24 +276,24 @@ function extractDesignPagePromptFactory(md) {
   return JSON.parse(section[1].trim());
 }
 
-test("56C: Design Page pack does not require visual affordance output keys", () => {
+test("Slice1: Design Page pack requires visual affordance output keys", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const keys = factory.defaultOutputStructure.keys;
-  assert.ok(!keys.includes("visual_affordance_schema_version"));
-  assert.ok(!keys.includes("activities_visual_review"));
-  assert.ok(!keys.includes("visual_affordances"));
+  assert.ok(keys.includes("visual_affordance_schema_version"));
+  assert.ok(keys.includes("activities_visual_review"));
+  assert.ok(keys.includes("visual_affordances"));
 });
 
-test("56C: Design Page promptTemplate omits mandatory Sprint 38 VA output", () => {
+test("Slice1: Design Page promptTemplate requires authoritative Sprint 38 VA output", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const template = String(factory.promptTemplate || "");
-  assert.doesNotMatch(template, /VISUAL AFFORDANCES: mandatory page-root metadata only/i);
-  assert.doesNotMatch(template, /runtime Sprint 38 visual affordance contract/i);
-  assert.doesNotMatch(template, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
-  assert.match(template, /omit visual_affordance_schema_version/i);
+  assert.match(template, /visual_affordance_schema_version/i);
+  assert.match(template, /authoritative visual planning/i);
+  assert.match(template, /generate \| defer \| skip/i);
+  assert.match(template, /knowledge_summary/i);
 });
 
-test("56C: Design Page seeded prompt omits mandatory VA output keys", () => {
+test("Slice1: Design Page seeded prompt requires mandatory VA output keys", () => {
   const api = loadPrismTestApi();
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const prompt = api.buildSeededStepPromptForWorkflowStep({
@@ -311,9 +311,9 @@ test("56C: Design Page seeded prompt omits mandatory VA output keys", () => {
     },
     matchedPattern: { promptFactory: factory }
   });
-  assert.doesNotMatch(prompt, /visual_affordance_schema_version \(required; must be "38\.4"\)/i);
-  assert.doesNotMatch(prompt, /activities_visual_review \(required array; emit \[\] when no rows\)/i);
-  assert.match(prompt, /omit visual_affordance_schema_version/i);
+  assert.match(prompt, /visual_affordance_schema_version/i);
+  assert.match(prompt, /activities_visual_review/i);
+  assert.match(prompt, /visual_affordances/i);
 });
 
 function designPageAugmentedPrompt(api) {
@@ -334,22 +334,23 @@ function designPageAugmentedPrompt(api) {
   );
 }
 
-test("56C: Design Page runtime augmentation excludes Sprint 38 VA authoring contract", () => {
+test("Slice1: Design Page runtime augmentation includes Sprint 38 VA authoring contract", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
   assert.match(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.doesNotMatch(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
-  assert.doesNotMatch(augmented, /Page root \(mandatory\): visual_affordance_schema_version/i);
-  assert.doesNotMatch(augmented, /Example generate record/i);
+  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.match(augmented, /Page root \(mandatory\): visual_affordance_schema_version/i);
+  assert.match(augmented, /Example page-level Knowledge Summary generate record/i);
 });
 
 test("buildSprint38VisualAffordanceDesignPagePromptBlock includes valid JSON examples", () => {
   const api = loadPrismTestApi();
   const block = api.buildSprint38VisualAffordanceDesignPagePromptBlock();
   assert.match(block, /"visual_decision": "generate"/);
+  assert.match(block, /"visual_decision": "skip"/);
   assert.match(block, /"anti_spoiler": true/);
-  assert.match(block, /"visual_slot": "materials-entry"/);
-  assert.match(block, /"visual_decision": "reject"/);
+  assert.match(block, /"visual_slot": "knowledge-summary-after-content"/);
+  assert.match(block, /"scope": "page"/);
   assert.match(block, /"visual_decision": "defer"/);
 });
 

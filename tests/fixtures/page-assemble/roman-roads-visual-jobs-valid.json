@@ -1,0 +1,212 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Roman Roads and the Connected Empire",
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Concept map prepares learners to notice road-system relationships before classification."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "medium",
+        "rationale": "Process visual supports inspecting construction stages before completing the sequence task."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Comparison framework supports road-type discrimination before the ranking task."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-a1-concept-map-01",
+      "scope": "activity",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "concept_map",
+      "subject": "Roman road network relationships",
+      "context": "Visual brief: help learners notice how roads, forts, and supply nodes relate before they classify network roles; show labelled structural links without revealing the completed classification.",
+      "evidence_anchors": ["A1.learner_task", "A1.materials.scenarios"],
+      "must_show": ["road corridor links", "fort and supply node relationships"],
+      "must_not_show": ["completed classification key", "model answer labels"],
+      "allowed_claims": ["Road networks connect military and economic nodes."],
+      "disallowed_claims": ["All Roman roads served only military purposes."],
+      "rationale": "Prepare noticing and sorting before the classification task.",
+      "pedagogical_added_value": "Adds relational cues for network roles without revealing conclusions.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "summary_table"],
+      "requires_exact_data_match": false,
+      "source_basis": "A1 learner_task; A1 materials.scenarios",
+      "caption_intent": "Structural relationships only.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners notice and sort relationships before classifying.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Empty labelled relationship structures only."
+    },
+    {
+      "affordance_id": "va-a2-process-01",
+      "scope": "activity",
+      "activity_id": "A2",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "mechanism",
+      "preferred_representation": "process",
+      "subject": "Roman road construction stages",
+      "context": "Visual brief: show the ordered construction process so learners can inspect stages before completing the sequence reasoning task; do not reveal worked answers.",
+      "evidence_anchors": ["A2.learner_task", "A2.materials.worked_example"],
+      "must_show": ["ordered construction stages", "layer sequence cues"],
+      "must_not_show": ["completed stage answers", "model solution narrative"],
+      "allowed_claims": ["Road construction proceeds through layered stages."],
+      "disallowed_claims": ["Construction order is arbitrary."],
+      "rationale": "Support process inspection before learners complete the sequencing task.",
+      "pedagogical_added_value": "Makes stage order inspectable without completing the learner sequence.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "generic_infographic"],
+      "requires_exact_data_match": false,
+      "source_basis": "A2 learner_task; A2 materials.worked_example",
+      "caption_intent": "Process stages for inspection.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners inspect process structure before completing sequence reasoning.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Show stages as inspectable structure, not answered worksheet."
+    },
+    {
+      "affordance_id": "va-a3-comparison-01",
+      "scope": "activity",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "comparison",
+      "preferred_representation": "comparison",
+      "subject": "Types and functions of Roman roads",
+      "context": "Visual brief: compare road types and functions so learners can identify discriminating features before ranking or classifying examples.",
+      "evidence_anchors": ["A3.learner_task", "A3.materials.comparison_table"],
+      "must_show": ["road-type contrast cues", "function comparison dimensions"],
+      "must_not_show": ["completed ranking cells", "answer key"],
+      "allowed_claims": ["Roman roads differ by function and construction class."],
+      "disallowed_claims": ["All road types are functionally identical."],
+      "rationale": "Support comparison before the learner ranking task.",
+      "pedagogical_added_value": "Adds comparison dimensions without revealing rankings.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "summary_table"],
+      "requires_exact_data_match": false,
+      "source_basis": "A3 learner_task; A3 materials.comparison_table",
+      "caption_intent": "Comparison cues only.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners compare before completing ranking conclusions.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Empty labelled contrast structure only."
+    },
+    {
+      "affordance_id": "va-page-knowledge-summary-01",
+      "scope": "page",
+      "region": "knowledge_summary",
+      "visual_decision": "generate",
+      "visual_slot": "knowledge-summary-after-content",
+      "tier": "essential",
+      "purpose": "synthesis",
+      "preferred_representation": "concept_map",
+      "subject": "Knowledge Summary of imperial connectivity",
+      "context": "Visual brief: after Knowledge Summary prose, consolidate how road types, construction process, and network roles support imperial connectivity; synthesise conclusions already developed in the summary.",
+      "evidence_anchors": ["page_synthesis.knowledge_summary", "page_synthesis.learning_purpose"],
+      "must_show": ["connectivity synthesis links", "road-type to function relationships"],
+      "must_not_show": ["new claims absent from summary", "worked-solution reveal"],
+      "allowed_claims": ["Road networks supported imperial connectivity."],
+      "disallowed_claims": ["Causal claims not present in the knowledge summary."],
+      "rationale": "Knowledge Summary benefits from a consolidation visual after reasoning.",
+      "pedagogical_added_value": "Consolidates completed synthesis relationships.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "generic_infographic"],
+      "requires_exact_data_match": false,
+      "source_basis": "page_synthesis.knowledge_summary",
+      "caption_intent": "Consolidate summary relationships.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Connect road types, process, and network roles after analysis.",
+      "learner_stage": "post_reasoning",
+      "canonical_discipline_note": "Use only summary-supported relationships."
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "learner_task": "Classify Roman road network relationships using the scenario cards.",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenarios",
+          "body": "## Scenarios\n\nRoad corridor, fort, and supply-node cases."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learner_task": "Sequence the Roman road construction stages from the worked example.",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "worked_example",
+          "body": "Layered construction stages from survey to surfacing."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learner_task": "Compare road types and rank them by function using the comparison table.",
+      "materials": {
+        "comparison_table": "| Type | Function |\n| --- | --- |\n| Via militaris | Military movement |"
+      }
+    }
+  ],
+  "page_synthesis": {
+    "overview": {
+      "body": "This self-study resource explores Roman roads and imperial connectivity.",
+      "format": "markdown"
+    },
+    "learning_purpose": {
+      "body": "Learners analyse road types, construction process, and network roles.",
+      "format": "markdown"
+    },
+    "knowledge_summary": {
+      "body": "Roman roads supported imperial connectivity through differentiated road types, staged construction, and networked military-economic nodes.",
+      "format": "markdown"
+    }
+  }
+}

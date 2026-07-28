@@ -76,7 +76,8 @@ function loadPrismTestApi() {
     repoRoot,
     PEDAGOGICAL_ICON_LIBS.concat([
       "lib/page-shell-create.js",
-      "lib/page-render-normalize.js"
+      "lib/page-render-normalize.js",
+      "lib/ld-design-page-partial-contract.js"
     ])
   );
   vm.runInContext(source, sandbox, { filename: "app.js" });
@@ -212,15 +213,48 @@ test("Design Page v2 prompt uses LS page embed and v2 additive contract", () => 
   assert.doesNotMatch(instr, /### Upstream artefacts \(authoritative — prior step outputs in this conversation\)/i);
 });
 
-test("Design Page v2 brief requires learner-facing knowledge summary", () => {
-  const wf = api.normalizeWorkflowForV1(buildWorkflow({ partialPageOutputs: true }), []);
+test("Design Page v2 partial run uses authoritative prompt with knowledge summary + VA contract", () => {
+  const factory = (() => {
+    const md = fs.readFileSync(
+      path.join(repoRoot, "domains", "learning-design", "domain-learning-design-step-patterns.md"),
+      "utf8"
+    );
+    const dpSection = md.slice(md.indexOf("## 13. Design Page"));
+    const match = dpSection.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/);
+    return JSON.parse(match[1].trim());
+  })();
+  const seeded = api.buildSeededStepPromptForWorkflowStep({
+    workflowName: "Design Page partial",
+    step: {
+      title: "Design Page",
+      canonical_step_id: "step_design_page",
+      inputBindings: []
+    },
+    matchedPattern: { promptFactory: factory }
+  });
+  const wf = api.normalizeWorkflowForV1(
+    buildWorkflow({
+      partialPageOutputs: true,
+      steps: buildWorkflow().steps.map((s) =>
+        s.id === "dp_step"
+          ? Object.assign({}, s, {
+              override_prompt_body: seeded,
+              prompt_source_type: "local_override"
+            })
+          : s
+      )
+    }),
+    []
+  );
   const dpStep = wf.steps.find((s) => s.id === "dp_step");
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   const instr = api.buildWorkflowStepInstructions(dpStep, 5, null);
-  assert.match(instr, /Knowledge summary is mandatory for learner-facing pages/i);
-  assert.match(instr, /page_synthesis\.knowledge_summary/i);
-  assert.match(instr, /section_id "knowledge_summary"/i);
+  assert.match(instr, /page_synthesis\.knowledge_summary.*mandatory/i);
+  assert.match(instr, /Sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.match(instr, /visual_decision/i);
+  assert.match(instr, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(instr, /omit visual_affordances/i);
 });
 
 test("Design Page v2 bypasses legacy strict JSON contract augmentation", () => {

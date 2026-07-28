@@ -95,6 +95,7 @@ const dpPartial = loadFixture("dp-partial.json");
 const daPartial = loadFixture("assessment-design-partial.json");
 const gaiPartial = loadFixture("assessment-items-partial.json");
 const gamUnknownPartial = loadFixture("gam-unknown-activity-partial.json");
+const dpPartialWithVa = loadFixture("dp-partial-with-va.json");
 
 test("EP shell only assembles", () => {
   const result = assemble.assembleVNextPageFromPartials({
@@ -243,6 +244,176 @@ test("full chain produces a renderable-looking complete page object", () => {
     "design_page"
   ]);
   assert.equal(result.page.assembly_state.current_stage, "design_page");
+});
+
+// --- Sprint 70 Slice 2 — Design Page visual planning preservation ---
+
+function assertDeepEqualAuthoredPlanning(actual, expected, label) {
+  assert.deepEqual(actual, expected, label || "authored planning must survive assembly unchanged");
+}
+
+test("Slice 2: Design Page visual planning fields are preserved through assembly", () => {
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    dla: dlaPartial,
+    gam: gamPartial,
+    learning_sequence: lsPartial,
+    design_page: dpPartialWithVa
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.page.visual_affordance_schema_version, "38.4");
+  assert.equal(Array.isArray(result.page.activities_visual_review), true);
+  assert.equal(result.page.activities_visual_review.length, 2);
+  assert.equal(Array.isArray(result.page.visual_affordances), true);
+  assert.equal(result.page.visual_affordances.length, 4);
+  assertDeepEqualAuthoredPlanning(
+    result.page.visual_affordance_schema_version,
+    dpPartialWithVa.visual_affordance_schema_version
+  );
+  assertDeepEqualAuthoredPlanning(
+    result.page.activities_visual_review,
+    dpPartialWithVa.activities_visual_review
+  );
+  assertDeepEqualAuthoredPlanning(result.page.visual_affordances, dpPartialWithVa.visual_affordances);
+});
+
+test("Slice 2A: Design Page title replaces provisional shell title through assembly", () => {
+  const shell = JSON.parse(JSON.stringify(epShell));
+  shell.title =
+    "Create a 60 minute self study resource for undergraduate history students on roman roads";
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: shell,
+    design_page: dpPartialWithVa
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.page.title, "Inflation Drivers and CPI Reasoning");
+  assert.notEqual(result.page.title, shell.title);
+  assertDeepEqualAuthoredPlanning(result.page.visual_affordances, dpPartialWithVa.visual_affordances);
+  assert.match(result.page.page_synthesis.overview.body, /^## Welcome/i);
+});
+
+test("Slice 2A: omitting Design Page title preserves legacy shell title", () => {
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    design_page: dpPartial
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.page.title, "Inflation Workshop");
+  assert.equal(result.page.visual_affordances, undefined);
+});
+
+test("Slice 2: activity generate/defer/skip rows survive assembly unchanged", () => {
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    design_page: dpPartialWithVa
+  });
+  const generateRow = result.page.visual_affordances.find(
+    (row) => row.affordance_id === "va-A1-generate-01"
+  );
+  const deferRow = result.page.visual_affordances.find((row) => row.affordance_id === "va-A2-defer-01");
+  const skipRow = result.page.visual_affordances.find((row) => row.affordance_id === "va-A2-skip-01");
+  assert.ok(generateRow);
+  assert.ok(deferRow);
+  assert.ok(skipRow);
+  assert.equal(generateRow.visual_decision, "generate");
+  assert.equal(deferRow.visual_decision, "defer");
+  assert.equal(skipRow.visual_decision, "skip");
+  assert.equal(generateRow.context, dpPartialWithVa.visual_affordances[0].context);
+  assert.deepEqual(generateRow.evidence_anchors, dpPartialWithVa.visual_affordances[0].evidence_anchors);
+  assert.deepEqual(generateRow.must_show, dpPartialWithVa.visual_affordances[0].must_show);
+  assert.deepEqual(generateRow.must_not_show, dpPartialWithVa.visual_affordances[0].must_not_show);
+  assert.equal(generateRow.pedagogical_added_value, dpPartialWithVa.visual_affordances[0].pedagogical_added_value);
+  assert.deepEqual(generateRow.spoiler_boundary, dpPartialWithVa.visual_affordances[0].spoiler_boundary);
+});
+
+test("Slice 2: page-level Knowledge Summary affordance survives assembly unchanged", () => {
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    design_page: dpPartialWithVa
+  });
+  const pageRow = result.page.visual_affordances.find(
+    (row) => row.affordance_id === "va-page-knowledge-summary-01"
+  );
+  assert.ok(pageRow);
+  assert.equal(pageRow.scope, "page");
+  assert.equal(pageRow.region, "knowledge_summary");
+  assert.equal(pageRow.visual_slot, "knowledge-summary-after-content");
+  assert.equal(pageRow.context, dpPartialWithVa.visual_affordances[3].context);
+  assert.deepEqual(pageRow.evidence_anchors, dpPartialWithVa.visual_affordances[3].evidence_anchors);
+});
+
+test("Slice 2: resolvePageForRenderOrAssembly preserves authored visual planning", () => {
+  const dpInput = JSON.parse(JSON.stringify(dpPartialWithVa));
+  const wf = {
+    id: "wf-s70-va-assemble",
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
+    steps: [
+      { id: "ep_step", title: "Design Episode Plan", outputName: "page", canonical_step_id: "step_design_episode_plan" },
+      { id: "dla_step", title: "Design Learning Activities", outputName: "page", canonical_step_id: "step_design_learning_activities" },
+      { id: "gam_step", title: "Generate Activity Materials", outputName: "page", canonical_step_id: "step_generate_activity_materials" },
+      { id: "ls_step", title: "Construct Learning Sequence", outputName: "page", canonical_step_id: "step_construct_learning_sequence" },
+      { id: "dp_step", title: "Design Page", outputName: "page", canonical_step_id: "step_design_page" }
+    ]
+  };
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setWorkflowRunCaptureMapsForTest(
+    {
+      ep_step: JSON.stringify(epShell, null, 2),
+      dla_step: JSON.stringify(dlaPartial, null, 2),
+      gam_step: JSON.stringify(gamPartial, null, 2),
+      ls_step: JSON.stringify(lsPartial, null, 2),
+      dp_step: JSON.stringify(dpInput, null, 2)
+    },
+    {
+      ep_step: JSON.stringify(epShell, null, 2),
+      dla_step: JSON.stringify(dlaPartial, null, 2),
+      gam_step: JSON.stringify(gamPartial, null, 2),
+      ls_step: JSON.stringify(lsPartial, null, 2),
+      dp_step: JSON.stringify(dpInput, null, 2)
+    }
+  );
+  const resolved = api.resolvePageForRenderOrAssembly(dpInput, wf, {});
+  assert.equal(
+    JSON.stringify(resolved.visual_affordances),
+    JSON.stringify(dpInput.visual_affordances),
+    "visual_affordances must survive resolvePageForRenderOrAssembly unchanged"
+  );
+  assert.equal(
+    JSON.stringify(resolved.activities_visual_review),
+    JSON.stringify(dpInput.activities_visual_review),
+    "activities_visual_review must survive resolvePageForRenderOrAssembly unchanged"
+  );
+  assert.equal(resolved.visual_affordance_schema_version, "38.4");
+});
+
+test("Slice 2: no legacy affordance injection when authoritative planning exists", () => {
+  const s38 = require(path.join(repoRoot, "lib", "sprint38-visual-affordances.js"));
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    design_page: dpPartialWithVa
+  });
+  assert.equal(result.page.visual_affordances.length, dpPartialWithVa.visual_affordances.length);
+  assert.equal(s38.buildVisualAffordanceRenderPlan(result.page).legacy, false);
+  const authoredIds = new Set(dpPartialWithVa.visual_affordances.map((row) => row.affordance_id));
+  result.page.visual_affordances.forEach((row) => {
+    assert.ok(authoredIds.has(row.affordance_id));
+    assert.ok(row.affordance_id);
+    assert.ok(String(row.context || "").length > 0);
+  });
+});
+
+test("Slice 2: legacy handover remains when Design Page omits visual planning", () => {
+  const s38 = require(path.join(repoRoot, "lib", "sprint38-visual-affordances.js"));
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    design_page: dpPartial
+  });
+  assert.equal(result.page.visual_affordance_schema_version, undefined);
+  assert.equal(result.page.visual_affordances, undefined);
+  assert.equal(s38.detectVisualAffordanceHandoverMode(result.page), "legacy");
+  assert.equal(s38.buildVisualAffordanceRenderPlan(result.page).legacy, true);
 });
 
 test("mergeAssemblyState orders enriched_by correctly", () => {

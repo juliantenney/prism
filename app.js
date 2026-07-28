@@ -214,9 +214,14 @@
     assessmentItemsShowAdvancedOptions: false,
     utilitiesLastHtml: "",
     utilitiesLastFileName: "",
+    utilitiesOutputWorkspace: null,
     utilitiesPresentationMode: "single_page",
     utilitiesRendererVersion: "vnext",
-    utilitiesSourceMode: ""
+    utilitiesSourceMode: "",
+    utilitiesVisualAssetObjectUrlsByBriefId: {},
+    visualAssetPreviewRevision: 0,
+    utilitiesPreviewLastAppliedRevision: 0,
+    utilitiesPreviewWriteLog: []
   };
 
   var WORKFLOW_STORAGE_KEY = "promptr.workflows.v1";
@@ -485,6 +490,12 @@
     els.utilitiesPreviewPanel = document.getElementById("utilitiesPreviewPanel");
     els.utilitiesPreviewError = document.getElementById("utilitiesPreviewError");
     els.utilitiesPreviewFrame = document.getElementById("utilitiesPreviewFrame");
+    els.utilitiesOutputViewBar = document.getElementById("utilitiesOutputViewBar");
+    els.utilitiesOutputViewLearnerBtn = document.getElementById("utilitiesOutputViewLearnerBtn");
+    els.utilitiesOutputViewVisualJobsBtn = document.getElementById("utilitiesOutputViewVisualJobsBtn");
+    els.utilitiesOutputWorkspace = document.getElementById("utilitiesOutputWorkspace");
+    els.utilitiesVisualJobsPanel = document.getElementById("utilitiesVisualJobsPanel");
+    els.utilitiesCopyAnnounce = document.getElementById("utilitiesCopyAnnounce");
 
     els.toastContainer = document.getElementById("toastContainer");
   }
@@ -9960,18 +9971,9 @@
 
   function buildDesignPageV2CopyAuthoringBrief() {
     return [
-      "Output contract: return a partial page artefact only (not a full-page replay).",
-      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "design_page", and assembly_state.enriched_by including "design_page".',
-      "Required payload: page_synthesis object (canonical transport shape).",
-      "Knowledge summary is mandatory: emit a substantive concept synthesis in page_synthesis.knowledge_summary (body + format).",
-      "page_synthesis.overview and page_synthesis.learning_purpose — transport upstream bodies from conversation when present.",
-      "page_synthesis.study_tips — transport upstream closure/debrief bodies only.",
-      "sections[] is optional legacy dual-read mirror only — not required when page_synthesis fields are populated.",
-      "Knowledge summary must synthesise core concepts and conceptual relations from upstream artefacts (KM/EP/LS/content), not just repeat learning outcomes.",
-      "For Marx/economics concept pages, ensure the knowledge summary explicitly covers: capitalism, bourgeoisie/proletariat, surplus value, historical materialism, class struggle, alienation, and evaluation of evidence for/against Marx.",
-      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
-      "Forbidden: activities[] regeneration, activities[].materials[] bodies, shell fields (title/audience/page_profile/learning_outcomes/episode_plans), learning_sequence regeneration, activity_materials chat binding, and full-page replay.",
-      "Do not reconstruct or preserve non–Design-Page stage fields."
+      "Execution reminder (partial Design Page): emit Design Page owned fields only — not a full-page replay.",
+      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in partial mode.",
+      "Do not reconstruct or preserve non–Design-Page stage fields in this JSON."
     ].join("\n");
   }
 
@@ -13573,40 +13575,66 @@
 
   function buildSprint38VisualAffordanceDesignPagePromptBlock() {
     var exampleGenerate =
-      '{"affordance_id": "va-A3-classification-01", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull inflation", "cost-push inflation", "wage-price spiral"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."], "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
-    var exampleReject =
-      '{"affordance_id": "va-A1-reject-01", "activity_id": "A1", "visual_decision": "reject", "rejection_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task."}';
+      '{"affordance_id": "va-A3-classification-01", "scope": "activity", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "subject": "Inflation mechanism classification cues", "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by their triggering drivers, transmission pathways, and observable implications so learners can classify scenarios before completing the table; include only mechanism-level discriminators, preserve uncertainty where evidence is partial, and avoid answer-key disclosure or completed learner classifications.", "evidence_anchors": ["A3.learner_task", "A3.materials.scenarios", "A3.materials.analysis_table"], "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull pathway cues", "cost-push shock pathway", "wage-price feedback loop"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."], "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
+    var exampleSkip =
+      '{"affordance_id": "va-A1-skip-01", "scope": "activity", "activity_id": "A1", "visual_decision": "skip", "skip_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task.", "subject": "Concept distinction already explicit", "context": "Visual brief: no additional visual needed because existing prose and worked examples already communicate the core conceptual contrast from the learner viewpoint without introducing new inferential load.", "evidence_anchors": ["A1.learner_task", "A1.materials.text", "A1.materials.worked_example"]}';
     var exampleDefer =
-      '{"affordance_id": "va-A2-defer-01", "activity_id": "A2", "visual_decision": "defer", "defer_reason": "worked_example_sufficient_first", "rationale": "Attempt the worked example and calculation table before any visual summary."}';
+      '{"affordance_id": "va-A2-defer-01", "scope": "activity", "activity_id": "A2", "visual_decision": "defer", "defer_reason": "worked_example_sufficient_first", "rationale": "Attempt the worked example and calculation table before any visual summary.", "subject": "Residual variability interpretation", "context": "Visual brief: learners should first complete quantitative reasoning steps in the worked example; defer visual synthesis until after baseline interpretation is established to prevent shortcutting core calculation logic.", "evidence_anchors": ["A2.learner_task", "A2.materials.scenario", "A2.materials.analysis_table"]}';
+    var exampleKnowledgeSummary =
+      '{"affordance_id": "va-page-knowledge-summary-01", "scope": "page", "region": "knowledge_summary", "visual_decision": "generate", "visual_slot": "knowledge-summary-after-content", "tier": "essential", "purpose": "synthesis", "preferred_representation": "concept_map", "subject": "Knowledge Summary inference map", "context": "Visual brief: after the full Knowledge Summary prose, synthesize how error-variance patterns connect to diagnostic reading, inference reliability risks, and corrective approaches; show cross-links between concepts from the learner perspective and exclude any unsupported causal or quantitative claims beyond provided evidence.", "evidence_anchors": ["page_synthesis.knowledge_summary", "page_synthesis.learning_purpose"], "reasoning_supported": "Connect error variance, diagnostics, inference consequences, and remedies.", "learner_stage": "post_reasoning", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "generic_infographic"], "canonical_discipline_note": "Use only supplied concepts and links.", "requires_exact_data_match": false, "must_show": ["widening residual spread", "diagnostic pattern-to-risk links", "inference consequences", "corrective approach mapping"], "must_not_show": ["new claims not in summary", "worked-solution reveal"], "allowed_claims": ["Heteroscedasticity affects inference reliability."], "disallowed_claims": ["Causal claims not present in source summary."], "source_basis": "page_synthesis.knowledge_summary", "caption_intent": "Map how core knowledge-summary ideas connect.", "discipline_risk_level": "medium", "rationale": "Knowledge Summary benefits from a synthesis visual that links concepts."}';
+    var learnerStages =
+      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined" &&
+      Array.isArray(PRISM_SPRINT38_VISUAL_AFFORDANCES.LEARNER_STAGES)
+        ? PRISM_SPRINT38_VISUAL_AFFORDANCES.LEARNER_STAGES.slice()
+        : ["pre_classification", "post_reasoning"];
     return [
       "",
       "Sprint 38 visual affordance authoring contract (auto-applied):",
       "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (see LD-DESIGN-PAGE-COMPOSE-CONTRACT).",
       "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
-      "- Every visual_affordances[] row requires affordance_id (unique string) and activity_id.",
-      "- visual_decision must be exactly: generate, defer, or reject.",
+      "- Every visual_affordances[] row requires affordance_id (unique string), scope (activity|page), subject, context, and evidence_anchors[] grounded in upstream content.",
+      "- subject: concise noun phrase naming what the visual is about; do not just repeat the activity title.",
+      "- context: write as a visual brief (not a label). Specify relationships/comparisons to communicate, key concepts to include, learner perspective, educational purpose, and conceptual boundaries so later deterministic prompt building does not infer intent.",
+      "- context must NOT include artistic style, rendering instructions, filenames, or runtime metadata.",
+      "- must_show / must_not_show must use concrete educational constraints (e.g., widening residual spread, threshold boundaries, bidirectional causal links), not vague phrases such as \"important concepts\".",
+      "- evidence_anchors: cite all relevant supporting locations when multiple sources ground the row (e.g., learner_task + materials + page_synthesis).",
+      "- activity scope rows require activity_id. page scope rows require region (currently knowledge_summary).",
+      "- visual_decision must be exactly: generate, defer, or skip. reject is accepted only as legacy alias for skip.",
+      "- No downstream prompt may invent purpose, preferred_representation, subject, context, or evidence anchors; later steps may repair schema shape only.",
       "- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; source_basis is a non-empty string citing upstream paths; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.",
       "- tier (generate only): essential or valuable only — never core, primary, optional, or descriptive labels.",
-      "- purpose (generate only): distinction | comparison | classification | mechanism | evidence_structure | data_pattern_reading.",
-      "- preferred_representation (generate only): comparison_framework | classification_matrix | causal_model | evidence_t_chart | number_line_segments | ordered_bar_strip | labelled_contrast_panel.",
+      "- purpose (generate only): distinction | comparison | classification | mechanism | evidence_structure | data_pattern_reading | synthesis.",
+      "- preferred_representation (generate only): use controlled vocabulary tokens when possible — comparison_framework | classification_matrix | causal_model | evidence_t_chart | number_line_segments | ordered_bar_strip | labelled_contrast_panel | concept_map | causal_chain | process | comparison | hierarchy | decision_framework | diagnostic_pathway | annotated_system. Preserve expressive power by selecting the closest valid token and clarifying intent in context/rationale.",
       "- representation_avoid (generate only): use only allow-listed tokens: summary_table, filled_worksheet, stock_photography, generic_infographic, unsupported_causal_arrow, numeric_claim_without_source, topic_hero_image, assessment_answer_visual, author_portrait_collage, duplicate_mechanism_and_evidence — never prose labels such as \"simple list\" or \"chart\".",
+      "- learner_stage (generate only): must be exactly one of: \"" +
+        learnerStages.join('" | "') +
+        "\". No other values are permitted.",
+      "- Use \"pre_classification\" when the visual supports noticing, sorting, comparison, classification, or reasoning before the learner reaches a conclusion.",
+      "- Use \"post_reasoning\" when the visual consolidates, summarises, or represents reasoning after the learner has completed the relevant analysis.",
+      "- Do not use learner_stage values such as: introduction, introductory, foundation, foundational, pre_reasoning, during_reasoning, post_classification, synthesis, consolidation, overview, beginner, intermediate, advanced.",
+      "- Activity example shape: {\"scope\":\"activity\",\"activity_id\":\"A1\",\"visual_slot\":\"materials-entry\",\"learner_stage\":\"pre_classification\"}.",
+      "- Page Knowledge Summary example shape: {\"scope\":\"page\",\"visual_slot\":\"knowledge-summary-after-content\",\"learner_stage\":\"post_reasoning\"}.",
       "- defer_reason (defer only): worked_example_sufficient_first | model_row_sufficient_first.",
-      "- rejection_reason (reject only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.",
-      "- generate rows must include: affordance_id, activity_id, visual_decision, rationale, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (≥1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
-      "- defer rows: affordance_id, activity_id, visual_decision, defer_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
-      "- reject rows: affordance_id, activity_id, visual_decision, rejection_reason, rationale — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
-      "- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; reject debrief-only or duplicate-structure activities.",
+      "- skip_reason (skip only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.",
+      "- generate rows must include: affordance_id, scope, rationale, subject, context, evidence_anchors, visual_decision, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint | knowledge-summary-after-content), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (>=1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
+      "- visual_slot guidance: reuse existing activity slot names for activity placements; introduce new slot names only when genuinely required (e.g., knowledge-summary-after-content for page synthesis placement).",
+      "- defer rows: affordance_id, scope, visual_decision, defer_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- skip rows: affordance_id, scope, visual_decision, skip_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; skip debrief-only or duplicate-structure activities.",
       "- activities_visual_review[]: one row per upstream activity_id with activity_visual_value.decision high|medium|low|none and rationale.",
       "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (use [] if empty), visual_affordances (use [] if empty).",
       "",
       "Example generate record (copy shape and types; adapt ids and content to upstream materials):",
       exampleGenerate,
       "",
-      "Example reject record:",
-      exampleReject,
+      "Example skip record:",
+      exampleSkip,
       "",
       "Example defer record:",
-      exampleDefer
+      exampleDefer,
+      "",
+      "Example page-level Knowledge Summary generate record:",
+      exampleKnowledgeSummary
     ]
       .concat(buildSprint38PedagogicalAddedValuePromptLines())
       .join("\n");
@@ -13622,8 +13650,45 @@
     return applyLdDesignPageComposeContractToDraft(draftText, context);
   }
 
+  function sprint38VisualAffordanceMarkerPresent(text) {
+    return /Sprint 38 visual affordance authoring contract \(auto-applied\):/i.test(
+      String(text || "")
+    );
+  }
+
+  function countSprint38VisualAffordanceAuthoringBlocks(text) {
+    var matches = String(text || "").match(
+      /Sprint 38 visual affordance authoring contract \(auto-applied\):/gi
+    );
+    return matches ? matches.length : 0;
+  }
+
+  function stripContradictoryDesignPageVisualAffordanceOmitClauses(text) {
+    return String(text || "")
+      .split("\n")
+      .filter(function (line) {
+        var trimmed = String(line || "").trim();
+        if (!trimmed) return true;
+        if (/omit visual_affordance_schema_version/i.test(trimmed)) return false;
+        if (/omit visual_affordances/i.test(trimmed)) return false;
+        if (/omit activities_visual_review/i.test(trimmed)) return false;
+        if (/do not generate, infer, author, or specify VA rows on Design Page/i.test(trimmed)) {
+          return false;
+        }
+        if (/page_synthesis only/i.test(trimmed) && /omit.*visual_affordance/i.test(trimmed)) {
+          return false;
+        }
+        return true;
+      })
+      .join("\n")
+      .trim();
+  }
+
   function applySprint38VisualAffordanceContractToDraft(draftText, context) {
-    return String(draftText || "").trim();
+    var draftBody = String(draftText || "").trim();
+    if (!isWorkflowStepDesignPage(context)) return draftBody;
+    if (sprint38VisualAffordanceMarkerPresent(draftBody)) return draftBody;
+    return (draftBody + buildSprint38VisualAffordanceDesignPagePromptBlock()).trim();
   }
 
   function isWorkflowStepDesignPage(context) {
@@ -14273,6 +14338,9 @@
     draft = applyLdDesignPagePartialContractToDraft(draft, ctx, wf);
     draft = applyLdDesignPageComposeContractToDraft(draft, ctx, wf);
     draft = applyLdThinAssemblyCoherenceContractToDraft(draft, ctx);
+    if (isWorkflowStepDesignPage(ctx)) {
+      draft = stripContradictoryDesignPageVisualAffordanceOmitClauses(draft);
+    }
     draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
     draft = applyMathSafeOutputContractToDraft(draft, ctx);
     draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
@@ -29508,24 +29576,36 @@
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
         if (partialOutputsMode) {
           lines.push(
-            "Sprint 58 Design Page partial output mode: return a partial page artefact containing page_synthesis and/or sections + assembly_state."
+            "Sprint 58 Design Page partial output mode: return a partial page artefact containing title, page_synthesis, visual_affordance_schema_version, activities_visual_review[], visual_affordances[], optional sections[], and assembly_state."
           );
           lines.push(
             "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+          );
+          var dpPartialExecNotes = buildDesignPageV2CopyAuthoringBrief();
+          if (dpPartialExecNotes) {
+            lines.push(dpPartialExecNotes);
+          }
+          lines.push(
+            "Copilot output contract: return one complete pretty-printed fenced JSON partial page artefact (triple-backtick json fence, 2-space indentation). Include only Design Page owned fields — do not replay the full upstream page. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+              exactFooterLine +
+              ". No other text after the footer line."
+          );
+          lines.push(
+            "Design Page v2 partial constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional sections[], assembly_state). Author a concise learner-facing title — do not copy the request/brief. Orientation bodies must not repeat renderer-owned headings (Overview, Welcome, Learning purpose, Knowledge summary, Study tips). Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
           );
         } else {
           lines.push(
             "Sprint 56F Design Page enrich-in-place: read the Learning Sequence-enriched vNext page and return the SAME page with Design Page owned presentation/layout fields populated."
           );
+          lines.push(
+            "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+              exactFooterLine +
+              ". No other text after the footer line."
+          );
+          lines.push(
+            "Design Page v2 constraints: modify only Design Page owned presentation/layout fields and assembly_state. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence. Preserve activities.length and activity_id order exactly."
+          );
         }
-        lines.push(
-          "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). Preserve all upstream fields exactly. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
-            exactFooterLine +
-            ". No other text after the footer line."
-        );
-        lines.push(
-          "Design Page v2 constraints: modify only Design Page owned presentation/layout fields and assembly_state. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence. Preserve activities.length and activity_id order exactly."
-        );
         var lsPageEmbedForDp = buildUpstreamLearningSequencePageEmbedSectionForDesignPageCopy(
           wfForChain
         );
@@ -29673,7 +29753,6 @@
       stepTitle: step.title || ""
     });
     var gamV2CopyStep = isGamPageEnrichmentV2CopyStep(step, wfForChain);
-    var dpV2CopyStep = isDesignPagePageEnrichmentV2CopyStep(step, wfForChain);
     var lsV2CopyStep = isLearningSequencePageEnrichmentV2CopyStep(step, wfForChain);
     var resolvedPrompt = gamV2CopyStep
       ? { text: buildGamV2CopyMaterialAuthoringBrief(), sourceType: "gam_v2_copy_brief", error: "" }
@@ -29685,14 +29764,12 @@
           sourceType: "generate_assessment_items_v2_partial_brief",
           error: ""
         }
-      : dpV2CopyStep
-      ? { text: buildDesignPageV2CopyAuthoringBrief(), sourceType: "dp_v2_copy_brief", error: "" }
       : lsV2CopyStep
       ? { text: buildLearningSequenceV2CopyAuthoringBrief(), sourceType: "ls_v2_copy_brief", error: "" }
       : resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
     var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
-    if (promptBody && strictJsonKindForBody && !gamV2CopyStep && !lsV2CopyStep && !dpV2CopyStep) {
+    if (promptBody && strictJsonKindForBody && !gamV2CopyStep && !lsV2CopyStep) {
       // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
       // The authoritative footer contract is appended later with an exact literal line.
       promptBody = stripContradictoryWorkflowRunnerFooterClauses(promptBody);
@@ -29723,10 +29800,6 @@
       if (gamV2CopyStep) {
         lines.push(
           "Material authoring guidance (Sprint 56F v2 — output shape is defined above):"
-        );
-      } else if (dpV2CopyStep) {
-        lines.push(
-          "Design Page authoring guidance (Sprint 56F v2 — output shape is defined above):"
         );
       } else if (lsV2CopyStep) {
         lines.push(
@@ -43284,6 +43357,9 @@
       ".util-learner-renderer-vnext th,.util-learner-renderer-vnext td{border:1px solid #e5e7eb;padding:.6rem .75rem;text-align:left;vertical-align:top;line-height:1.5}" +
       ".util-learner-renderer-vnext td{font-size:.9375rem;color:#1f2937}" +
       ".util-learner-renderer-vnext th{font-size:.875rem;background:#f9fafb;font-weight:600;color:#374151}" +
+      ".util-learner-renderer-vnext .util-visual-asset{margin:var(--learner-space-3) 0;max-width:100%}" +
+      ".util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px}" +
+      ".util-learner-renderer-vnext .util-visual-asset-caption{margin-top:var(--learner-space-1);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}" +
       ".util-visual-affordance{display:none!important}" +
       getUtilityVnextCompositionMomentPresentationCss() +
       iconCss +
@@ -45217,8 +45293,24 @@
   }
 
   function applySprint38VisualAffordancesToComposedPage(page, options) {
-    // Sprint 56C W1 P3: Design Page does not run post-compose VA authoring or normalisation.
-    return page && typeof page === "object" ? page : page;
+    if (!page || typeof page !== "object" || Array.isArray(page)) return page;
+    var hasSchema =
+      Object.prototype.hasOwnProperty.call(page, "visual_affordance_schema_version");
+    var hasReview = Object.prototype.hasOwnProperty.call(page, "activities_visual_review");
+    var hasAffordances = Object.prototype.hasOwnProperty.call(page, "visual_affordances");
+    if (!hasSchema && !hasReview && !hasAffordances) {
+      // No authored planning present: preserve legacy fallback mode.
+      return page;
+    }
+    var mod =
+      typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined"
+        ? PRISM_SPRINT38_VISUAL_AFFORDANCES
+        : null;
+    if (!mod || typeof mod.applyToComposedPage !== "function") return page;
+    var opts = options && typeof options === "object" ? options : {};
+    return mod.applyToComposedPage(page, {
+      strictValidation: opts.strictValidation !== false
+    });
   }
 
   function collectComposedActivityIdsFromPage(page) {
@@ -47230,6 +47322,8 @@
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.disabled = true;
     }
+    updateUtilitiesOutputViewControls();
+    applyUtilitiesOutputViewVisibility();
   }
 
   var utilityPreviewMathRenderToken = 0;
@@ -47286,13 +47380,24 @@
     return bootstrap + html;
   }
 
+  var UTILITIES_PREVIEW_FRAME_SANDBOX = "allow-same-origin";
+
+  function ensureUtilitiesPreviewFrameSandbox() {
+    if (!els.utilitiesPreviewFrame) return;
+    if (els.utilitiesPreviewFrame.getAttribute("sandbox") !== UTILITIES_PREVIEW_FRAME_SANDBOX) {
+      els.utilitiesPreviewFrame.setAttribute("sandbox", UTILITIES_PREVIEW_FRAME_SANDBOX);
+    }
+  }
+
   function utilityGetPreviewDocument() {
     if (!els.utilitiesPreviewFrame) return null;
-    return (
-      els.utilitiesPreviewFrame.contentDocument ||
-      (els.utilitiesPreviewFrame.contentWindow && els.utilitiesPreviewFrame.contentWindow.document) ||
-      null
-    );
+    try {
+      var directDoc = els.utilitiesPreviewFrame.contentDocument;
+      if (directDoc) return directDoc;
+      var previewWindow = els.utilitiesPreviewFrame.contentWindow;
+      if (previewWindow && previewWindow.document) return previewWindow.document;
+    } catch (_) {}
+    return null;
   }
 
   function utilityGetPreviewMathScopeNode() {
@@ -47354,8 +47459,663 @@
     }, 0);
   }
 
-  function applyUtilityPreviewHtml(html) {
+  function getUtilitiesVisualJobsWorkspaceMod() {
+    return typeof PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE !== "undefined"
+      ? PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE
+      : null;
+  }
+
+  function emptyUtilitiesOutputWorkspaceState() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (mod && typeof mod.emptyWorkspaceState === "function") {
+      return mod.emptyWorkspaceState();
+    }
+    return {
+      assembledPageSnapshot: null,
+      contractResult: null,
+      plannerResult: null,
+      compilerResult: null,
+      activeView: "learner_page",
+      selectedBriefId: "",
+      humanPromptExpandedByBriefId: {},
+      copyStateByBriefId: {},
+      assetsByBriefId: {},
+      assetErrorsByBriefId: {},
+      visualAssetManifest: { manifest_version: "70.8", schema_version: "", assets: [], missing_brief_ids: [] },
+      rendererPlacementByBriefId: {},
+      learnerPreviewRefreshStatus: ""
+    };
+  }
+
+  function refreshUtilitiesOutputWorkspaceFromPage(page, options) {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var opts = options && typeof options === "object" ? options : {};
+    var prevView =
+      state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.activeView
+        ? state.utilitiesOutputWorkspace.activeView
+        : "learner_page";
+    if (!page || typeof page !== "object" || Array.isArray(page)) {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+      updateUtilitiesOutputViewControls();
+      return state.utilitiesOutputWorkspace;
+    }
+    if (String(page.artifact_type || "").toLowerCase() !== "page") {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+      updateUtilitiesOutputViewControls();
+      return state.utilitiesOutputWorkspace;
+    }
+    if (!mod || typeof mod.buildVisualJobsWorkspaceState !== "function") {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+      updateUtilitiesOutputViewControls();
+      return state.utilitiesOutputWorkspace;
+    }
+    try {
+      revokeAllVisualAssetObjectUrls();
+      state.utilitiesOutputWorkspace = mod.buildVisualJobsWorkspaceState(page, {
+        activeView: opts.activeView || prevView
+      });
+    } catch (_) {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+    }
+    updateUtilitiesOutputViewControls();
+    if (
+      state.utilitiesOutputWorkspace &&
+      state.utilitiesOutputWorkspace.activeView === "visual_jobs" &&
+      els.utilitiesPreviewPanel &&
+      !els.utilitiesPreviewPanel.classList.contains("hidden")
+    ) {
+      renderUtilitiesVisualJobsView();
+    }
+    return state.utilitiesOutputWorkspace;
+  }
+
+  function updateUtilitiesOutputViewControls() {
+    var ws = state.utilitiesOutputWorkspace;
+    var count = 0;
+    if (ws && ws.compilerResult && Array.isArray(ws.compilerResult.briefs)) {
+      count = ws.compilerResult.briefs.length;
+    }
+    if (els.utilitiesOutputViewVisualJobsBtn) {
+      els.utilitiesOutputViewVisualJobsBtn.textContent =
+        count > 0 ? "Visual Jobs (" + count + ")" : "Visual Jobs";
+    }
+    var hasPage = !!(ws && ws.assembledPageSnapshot);
+    if (els.utilitiesOutputViewBar) {
+      els.utilitiesOutputViewBar.classList.toggle("hidden", !hasPage);
+    }
+  }
+
+  function showUtilitiesOutputPanel() {
+    if (els.utilitiesPreviewPanel) {
+      els.utilitiesPreviewPanel.classList.remove("hidden");
+    }
+    updateUtilitiesOutputViewControls();
+    applyUtilitiesOutputViewVisibility();
+  }
+
+  function setUtilitiesOutputView(view) {
+    var next = view === "visual_jobs" ? "visual_jobs" : "learner_page";
+    if (!state.utilitiesOutputWorkspace) {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+    }
+    state.utilitiesOutputWorkspace.activeView = next;
+    showUtilitiesOutputPanel();
+  }
+
+  function applyUtilitiesOutputViewVisibility() {
+    var view =
+      state.utilitiesOutputWorkspace &&
+      state.utilitiesOutputWorkspace.activeView === "visual_jobs"
+        ? "visual_jobs"
+        : "learner_page";
+    if (els.utilitiesPreviewFrame) {
+      els.utilitiesPreviewFrame.classList.toggle("hidden", view === "visual_jobs");
+    }
+    if (els.utilitiesVisualJobsPanel) {
+      els.utilitiesVisualJobsPanel.classList.toggle("hidden", view !== "visual_jobs");
+      if (view === "visual_jobs") {
+        renderUtilitiesVisualJobsView();
+      }
+    }
+    if (els.utilitiesOutputViewLearnerBtn) {
+      els.utilitiesOutputViewLearnerBtn.setAttribute(
+        "aria-selected",
+        view === "learner_page" ? "true" : "false"
+      );
+      els.utilitiesOutputViewLearnerBtn.classList.toggle("is-active", view === "learner_page");
+    }
+    if (els.utilitiesOutputViewVisualJobsBtn) {
+      els.utilitiesOutputViewVisualJobsBtn.setAttribute(
+        "aria-selected",
+        view === "visual_jobs" ? "true" : "false"
+      );
+      els.utilitiesOutputViewVisualJobsBtn.classList.toggle("is-active", view === "visual_jobs");
+    }
+  }
+
+  function renderUtilitiesVisualJobsView() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod || !els.utilitiesVisualJobsPanel) return;
+    els.utilitiesVisualJobsPanel.innerHTML = mod.renderVisualJobsWorkspaceHtml(
+      state.utilitiesOutputWorkspace || emptyUtilitiesOutputWorkspaceState()
+    );
+    bindUtilitiesVisualJobsInteractionHandlers();
+  }
+
+  function bindUtilitiesVisualJobsInteractionHandlers() {
+    if (!els.utilitiesVisualJobsPanel) return;
+    var buttons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-copy-brief-id]");
+    var i;
+    for (i = 0; i < buttons.length; i += 1) {
+      var btn = buttons[i];
+      if (btn.getAttribute("data-copy-bound") === "1") continue;
+      btn.setAttribute("data-copy-bound", "1");
+      btn.addEventListener("click", handleUtilitiesVisualJobCopyPrompt);
+    }
+    var selects = els.utilitiesVisualJobsPanel.querySelectorAll("[data-brief-select-id]");
+    for (i = 0; i < selects.length; i += 1) {
+      var sel = selects[i];
+      if (sel.getAttribute("data-select-bound") === "1") continue;
+      sel.setAttribute("data-select-bound", "1");
+      sel.addEventListener("click", handleUtilitiesVisualJobSelect);
+    }
+    var toggles = els.utilitiesVisualJobsPanel.querySelectorAll("[data-toggle-prompt-brief-id]");
+    for (i = 0; i < toggles.length; i += 1) {
+      var toggle = toggles[i];
+      if (toggle.getAttribute("data-toggle-bound") === "1") continue;
+      toggle.setAttribute("data-toggle-bound", "1");
+      toggle.addEventListener("click", handleUtilitiesVisualJobTogglePrompt);
+    }
+    var removeButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-remove-image-brief-id]");
+    for (i = 0; i < removeButtons.length; i += 1) {
+      var removeBtn = removeButtons[i];
+      if (removeBtn.getAttribute("data-remove-bound") === "1") continue;
+      removeBtn.setAttribute("data-remove-bound", "1");
+      removeBtn.addEventListener("click", handleUtilitiesVisualJobRemoveImage);
+    }
+    var replaceButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-replace-image-brief-id]");
+    for (i = 0; i < replaceButtons.length; i += 1) {
+      var replaceBtn = replaceButtons[i];
+      if (replaceBtn.getAttribute("data-replace-bound") === "1") continue;
+      replaceBtn.setAttribute("data-replace-bound", "1");
+      replaceBtn.addEventListener("click", handleUtilitiesVisualJobReplaceImage);
+    }
+    var pickerInputs = els.utilitiesVisualJobsPanel.querySelectorAll("[data-image-file-input-brief-id]");
+    for (i = 0; i < pickerInputs.length; i += 1) {
+      var input = pickerInputs[i];
+      if (input.getAttribute("data-picker-bound") === "1") continue;
+      input.setAttribute("data-picker-bound", "1");
+      input.addEventListener("change", handleUtilitiesVisualJobFilePickerChange);
+    }
+    var dropzones = els.utilitiesVisualJobsPanel.querySelectorAll("[data-image-dropzone-brief-id]");
+    for (i = 0; i < dropzones.length; i += 1) {
+      var zone = dropzones[i];
+      if (zone.getAttribute("data-drop-bound") === "1") continue;
+      zone.setAttribute("data-drop-bound", "1");
+      zone.addEventListener("dragover", handleUtilitiesVisualJobDragOver);
+      zone.addEventListener("dragenter", handleUtilitiesVisualJobDragEnter);
+      zone.addEventListener("dragleave", handleUtilitiesVisualJobDragLeave);
+      zone.addEventListener("drop", handleUtilitiesVisualJobDrop);
+      zone.addEventListener("paste", handleUtilitiesVisualJobPaste);
+      zone.addEventListener("click", function () {
+        this.focus();
+      });
+    }
+    var viewLearnerButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-view-learner-page]");
+    for (i = 0; i < viewLearnerButtons.length; i += 1) {
+      var viewBtn = viewLearnerButtons[i];
+      if (viewBtn.getAttribute("data-view-bound") === "1") continue;
+      viewBtn.setAttribute("data-view-bound", "1");
+      viewBtn.addEventListener("click", handleUtilitiesVisualJobViewLearnerPage);
+    }
+  }
+
+  function handleUtilitiesVisualJobCopyPrompt(event) {
+    var btn = event.currentTarget;
+    var briefId = btn.getAttribute("data-copy-brief-id");
+    var copyKind = btn.getAttribute("data-copy-kind") || "human";
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod) return;
+    var text =
+      copyKind === "canonical" && typeof mod.getBriefGenerationInstruction === "function"
+        ? mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId)
+        : typeof mod.getBriefHumanPrompt === "function"
+          ? mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId)
+          : mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+    var originalLabel = btn.textContent;
+    mod
+      .copyVisualJobPrompt(text, navigator.clipboard)
+      .then(function (result) {
+        if (result && result.ok) {
+          btn.textContent = "Copied";
+          if (els.utilitiesCopyAnnounce) {
+            els.utilitiesCopyAnnounce.textContent =
+              copyKind === "canonical"
+                ? "Canonical prompt copied to clipboard."
+                : "Human prompt copied to clipboard.";
+          }
+          setTimeout(function () {
+            btn.textContent = originalLabel;
+          }, 2000);
+          return;
+        }
+        if (els.utilitiesCopyAnnounce) {
+          els.utilitiesCopyAnnounce.textContent =
+            "Could not copy automatically. Select the prompt text and copy manually.";
+        }
+      });
+  }
+
+  function getSelectedVisualJobBriefId() {
+    return state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.selectedBriefId
+      ? String(state.utilitiesOutputWorkspace.selectedBriefId)
+      : "";
+  }
+
+  function getUtilitiesVisualAssetManifestForPreview() {
+    var ws = state.utilitiesOutputWorkspace;
+    if (!ws || !ws.visualAssetManifest || !Array.isArray(ws.visualAssetManifest.assets)) {
+      return null;
+    }
+    return ws.visualAssetManifest.assets.length ? ws.visualAssetManifest : null;
+  }
+
+  function buildIframePreviewHtmlFromRendered(htmlText) {
+    var html = String(htmlText || "");
+    var ws = state.utilitiesOutputWorkspace;
+    if (!html || !ws || !ws.assetsByBriefId) return html;
+    var objectUrls = state.utilitiesVisualAssetObjectUrlsByBriefId || {};
+    var briefIds = Object.keys(ws.assetsByBriefId);
+    var i;
+    for (i = 0; i < briefIds.length; i += 1) {
+      var briefId = briefIds[i];
+      var asset = ws.assetsByBriefId[briefId];
+      var dataUrl =
+        asset &&
+        asset.render_source &&
+        String(asset.render_source.kind || "") === "data_url"
+          ? String(asset.render_source.value || "")
+          : "";
+      var blobUrl = objectUrls[briefId] ? String(objectUrls[briefId]) : "";
+      if (dataUrl && blobUrl && html.indexOf(dataUrl) !== -1) {
+        html = html.split(dataUrl).join(blobUrl);
+      }
+    }
+    return html;
+  }
+
+  function resolveUtilitiesCompositionModeForRender(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.visualAssets && Array.isArray(opts.visualAssets.assets) && opts.visualAssets.assets.length) {
+      return "beats";
+    }
+    var manifest = getUtilitiesVisualAssetManifestForPreview();
+    if (manifest && manifest.assets && manifest.assets.length) {
+      return "beats";
+    }
+    if (opts.compositionMode) return opts.compositionMode;
+    if (state.utilitiesCompositionMode) return state.utilitiesCompositionMode;
+    return undefined;
+  }
+
+  function setVisualJobAssetError(briefId, message) {
+    var id = String(briefId || "").trim();
+    if (!id || !state.utilitiesOutputWorkspace) return;
+    if (!state.utilitiesOutputWorkspace.assetErrorsByBriefId) {
+      state.utilitiesOutputWorkspace.assetErrorsByBriefId = {};
+    }
+    state.utilitiesOutputWorkspace.assetErrorsByBriefId[id] = String(message || "");
+  }
+
+  function revokeVisualAssetObjectUrlForBrief(briefId) {
+    var id = String(briefId || "").trim();
+    if (!id) return;
+    var map = state.utilitiesVisualAssetObjectUrlsByBriefId || {};
+    var existing = map[id];
+    if (existing && window.URL && typeof window.URL.revokeObjectURL === "function") {
+      window.URL.revokeObjectURL(existing);
+    }
+    delete map[id];
+    state.utilitiesVisualAssetObjectUrlsByBriefId = map;
+  }
+
+  function revokeAllVisualAssetObjectUrls() {
+    var map = state.utilitiesVisualAssetObjectUrlsByBriefId || {};
+    Object.keys(map).forEach(function (briefId) {
+      revokeVisualAssetObjectUrlForBrief(briefId);
+    });
+  }
+
+  function decodeImageFileForVisualJob(file) {
+    if (!file) return Promise.reject(new Error("No file selected."));
+    if (!window.URL || typeof window.URL.createObjectURL !== "function") {
+      return Promise.reject(new Error("Object URL API unavailable."));
+    }
+    var objectUrl = window.URL.createObjectURL(file);
+    if (typeof Image === "undefined") {
+      return Promise.resolve({ objectUrl: objectUrl, width: 1, height: 1 });
+    }
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var reader = new FileReader();
+        reader.onload = function () {
+          resolve({
+            objectUrl: objectUrl,
+            dataUrl: String(reader.result || ""),
+            width: Number(img.naturalWidth || img.width || 0),
+            height: Number(img.naturalHeight || img.height || 0)
+          });
+        };
+        reader.onerror = function () {
+          if (window.URL && typeof window.URL.revokeObjectURL === "function") {
+            window.URL.revokeObjectURL(objectUrl);
+          }
+          reject(new Error("Image data read failed."));
+        };
+        reader.readAsDataURL(file);
+      };
+      img.onerror = function () {
+        if (window.URL && typeof window.URL.revokeObjectURL === "function") {
+          window.URL.revokeObjectURL(objectUrl);
+        }
+        reject(new Error("Image decode failed."));
+      };
+      img.src = objectUrl;
+    });
+  }
+
+  function applyVisualJobAssetFile(briefId, file, intakeMethod) {
+    var id = String(briefId || "").trim();
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod || !id || !file || !state.utilitiesOutputWorkspace) {
+      return Promise.resolve({ ok: false, error: "Visual job image attach unavailable." });
+    }
+    var hadExisting =
+      !!(
+        state.utilitiesOutputWorkspace.assetsByBriefId &&
+        state.utilitiesOutputWorkspace.assetsByBriefId[id]
+      );
+    return decodeImageFileForVisualJob(file)
+      .then(function (decoded) {
+        var dataUrl = String(decoded.dataUrl || "");
+        if (!/^data:image\/(?:png|jpeg|webp);base64,/i.test(dataUrl)) {
+          if (window.URL && typeof window.URL.revokeObjectURL === "function") {
+            window.URL.revokeObjectURL(decoded.objectUrl);
+          }
+          setVisualJobAssetError(id, "Image data URL conversion failed.");
+          renderUtilitiesVisualJobsView();
+          return { ok: false, error: "Image data URL conversion failed." };
+        }
+        var imageInput = {
+          filename: file.name || "",
+          mime_type: file.type || "",
+          byte_size: typeof file.size === "number" ? file.size : 0,
+          width: decoded.width,
+          height: decoded.height,
+          render_source: { kind: "data_url", value: dataUrl },
+          preview_source: { kind: "object_url", value: decoded.objectUrl }
+        };
+        var attached = mod.attachVisualAssetToWorkspace(state.utilitiesOutputWorkspace, id, imageInput, {
+          intakeMethod: intakeMethod
+        });
+        if (!attached || !attached.ok) {
+          if (window.URL && typeof window.URL.revokeObjectURL === "function") {
+            window.URL.revokeObjectURL(decoded.objectUrl);
+          }
+          var failMessage = (attached && attached.message) || "Could not attach image.";
+          setVisualJobAssetError(id, failMessage);
+          renderUtilitiesVisualJobsView();
+          return { ok: false, error: failMessage };
+        }
+        revokeVisualAssetObjectUrlForBrief(id);
+        state.utilitiesVisualAssetObjectUrlsByBriefId[id] = decoded.objectUrl;
+        setVisualJobAssetError(id, "");
+        refreshUtilitiesLearnerPreviewWithVisualAssets(hadExisting ? "replace" : "attach");
+        renderUtilitiesVisualJobsView();
+        return { ok: true, asset: attached.asset };
+      })
+      .catch(function (err) {
+        var message = (err && err.message) || "Could not decode image.";
+        setVisualJobAssetError(id, message);
+        renderUtilitiesVisualJobsView();
+        return { ok: false, error: message };
+      });
+  }
+
+  function refreshUtilitiesLearnerPreviewWithVisualAssets(reason) {
+    if (!state.utilitiesOutputWorkspace || !state.utilitiesOutputWorkspace.assembledPageSnapshot) return;
+    var why = String(reason || "attach");
+    state.visualAssetPreviewRevision += 1;
+    var revision = state.visualAssetPreviewRevision;
+    state.utilitiesOutputWorkspace.learnerPreviewRefreshStatus = "refreshing";
+    var manifestAssetCount =
+      state.utilitiesOutputWorkspace.visualAssetManifest &&
+      Array.isArray(state.utilitiesOutputWorkspace.visualAssetManifest.assets)
+        ? state.utilitiesOutputWorkspace.visualAssetManifest.assets.length
+        : 0;
+    var rendered = runUtilityPageExportPipeline(state.utilitiesOutputWorkspace.assembledPageSnapshot, {
+      rendererVersion: getUtilitiesRendererVersion(),
+      compositionMode: resolveUtilitiesCompositionModeForRender({
+        visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null
+      }),
+      visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null,
+      applyCompositionValidation: false,
+      skipWorkflowAssembly: true,
+      __previewRevision: revision,
+      __previewReason: why
+    });
+    if (!rendered || rendered.error) {
+      state.utilitiesOutputWorkspace.learnerPreviewRefreshStatus = "failed";
+      return;
+    }
+    var htmlText = String(rendered.html || "").trim();
+    if (!htmlText) {
+      state.utilitiesOutputWorkspace.learnerPreviewRefreshStatus = "failed";
+      return;
+    }
+    var placements = (rendered.visualAssetDiagnostics && rendered.visualAssetDiagnostics.placements) || [];
+    var warnings = (rendered.visualAssetDiagnostics && rendered.visualAssetDiagnostics.warnings) || [];
+    var byBriefId = {};
+    placements.forEach(function (row) {
+      var briefId = String(row && row.brief_id || "");
+      if (!briefId) return;
+      byBriefId[briefId] = {
+        manifest_entry_created: true,
+        renderer_asset_matched: true,
+        slot_recognised: true,
+        figure_emitted: !!row.figure_emitted,
+        learner_preview_refreshed: true,
+        warning: ""
+      };
+    });
+    warnings.forEach(function (warning) {
+      var bid = String((warning && warning.brief_id) || "");
+      if (!bid) return;
+      if (!byBriefId[bid]) {
+        byBriefId[bid] = {
+          manifest_entry_created: true,
+          renderer_asset_matched: false,
+          slot_recognised: warning.code !== "VAR_ASSET_SLOT_UNSUPPORTED",
+          figure_emitted: false,
+          learner_preview_refreshed: true,
+          warning: String(warning.code || "")
+        };
+      } else if (!byBriefId[bid].warning) {
+        byBriefId[bid].warning = String(warning.code || "");
+      }
+    });
+    state.utilitiesOutputWorkspace.rendererPlacementByBriefId = byBriefId;
+    state.utilitiesLastHtml = htmlText;
+    applyUtilityPreviewHtml(htmlText, {
+      preserveView: true,
+      previewRevision: revision,
+      reason: why,
+      manifestAssetCount: manifestAssetCount
+    });
+    state.utilitiesOutputWorkspace.learnerPreviewRefreshStatus = "ok";
+    state.utilitiesOutputWorkspace.previewRevision = revision;
+  }
+
+  function handleUtilitiesVisualJobSelect(event) {
+    var btn = event.currentTarget;
+    var briefId = btn ? btn.getAttribute("data-brief-select-id") : "";
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod || !briefId || !state.utilitiesOutputWorkspace) return;
+    mod.selectVisualJob(state.utilitiesOutputWorkspace, briefId);
+    renderUtilitiesVisualJobsView();
+  }
+
+  function handleUtilitiesVisualJobTogglePrompt(event) {
+    var btn = event.currentTarget;
+    var briefId = btn ? btn.getAttribute("data-toggle-prompt-brief-id") : "";
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod || !briefId || !state.utilitiesOutputWorkspace) return;
+    mod.toggleVisualJobPromptVisibility(state.utilitiesOutputWorkspace, briefId);
+    renderUtilitiesVisualJobsView();
+  }
+
+  function handleUtilitiesVisualJobFilePickerChange(event) {
+    var input = event.currentTarget;
+    var briefId = input ? input.getAttribute("data-image-file-input-brief-id") : "";
+    var files = input && input.files ? input.files : null;
+    var file = files && files.length ? files[0] : null;
+    if (!briefId || !file) return;
+    applyVisualJobAssetFile(briefId, file, "file_picker").finally(function () {
+      try {
+        if (input) input.value = "";
+      } catch (_) {}
+    });
+  }
+
+  function handleUtilitiesVisualJobReplaceImage(event) {
+    var btn = event.currentTarget;
+    var briefId = btn ? btn.getAttribute("data-replace-image-brief-id") : "";
+    if (!briefId || !els.utilitiesVisualJobsPanel) return;
+    var input = els.utilitiesVisualJobsPanel.querySelector(
+      '[data-image-file-input-brief-id="' + briefId + '"]'
+    );
+    if (input && typeof input.click === "function") input.click();
+  }
+
+  function handleUtilitiesVisualJobRemoveImage(event) {
+    var btn = event.currentTarget;
+    var briefId = btn ? btn.getAttribute("data-remove-image-brief-id") : "";
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    if (!mod || !briefId || !state.utilitiesOutputWorkspace) return;
+    mod.removeVisualAssetFromWorkspace(state.utilitiesOutputWorkspace, briefId);
+    revokeVisualAssetObjectUrlForBrief(briefId);
+    setVisualJobAssetError(briefId, "");
+    refreshUtilitiesLearnerPreviewWithVisualAssets("remove");
+    renderUtilitiesVisualJobsView();
+  }
+
+  function handleUtilitiesVisualJobDragOver(event) {
+    event.preventDefault();
+  }
+
+  function handleUtilitiesVisualJobDragEnter(event) {
+    event.preventDefault();
+    var zone = event.currentTarget;
+    if (zone && zone.classList) zone.classList.add("is-drag-over");
+  }
+
+  function handleUtilitiesVisualJobDragLeave(event) {
+    var zone = event.currentTarget;
+    if (zone && zone.classList) zone.classList.remove("is-drag-over");
+  }
+
+  function handleUtilitiesVisualJobDrop(event) {
+    event.preventDefault();
+    var zone = event.currentTarget;
+    if (zone && zone.classList) zone.classList.remove("is-drag-over");
+    var briefId = zone ? zone.getAttribute("data-image-dropzone-brief-id") : "";
+    var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+    if (!briefId || !files || !files.length) return;
+    if (files.length > 1) {
+      setVisualJobAssetError(briefId, "Drop exactly one image file.");
+      renderUtilitiesVisualJobsView();
+      return;
+    }
+    applyVisualJobAssetFile(briefId, files[0], "drag");
+  }
+
+  function handleUtilitiesVisualJobPaste(event) {
+    var zone = event.currentTarget;
+    var briefId = zone ? zone.getAttribute("data-image-dropzone-brief-id") : "";
+    if (!briefId) return;
+    var items = event.clipboardData && event.clipboardData.items ? event.clipboardData.items : [];
+    var imageItems = [];
+    for (var i = 0; i < items.length; i += 1) {
+      if (String(items[i].type || "").indexOf("image/") === 0) imageItems.push(items[i]);
+    }
+    if (!imageItems.length) return;
+    event.preventDefault();
+    if (imageItems.length > 1) {
+      setVisualJobAssetError(briefId, "Paste exactly one image.");
+      renderUtilitiesVisualJobsView();
+      return;
+    }
+    var file = imageItems[0].getAsFile ? imageItems[0].getAsFile() : null;
+    if (!file) {
+      setVisualJobAssetError(briefId, "Clipboard image is unavailable.");
+      renderUtilitiesVisualJobsView();
+      return;
+    }
+    applyVisualJobAssetFile(briefId, file, "paste");
+  }
+
+  function handleUtilitiesVisualJobViewLearnerPage() {
+    var ws = state.utilitiesOutputWorkspace;
+    if (
+      ws &&
+      ws.visualAssetManifest &&
+      Array.isArray(ws.visualAssetManifest.assets) &&
+      ws.visualAssetManifest.assets.length > 0
+    ) {
+      refreshUtilitiesLearnerPreviewWithVisualAssets("view");
+    }
+    setUtilitiesOutputView("learner_page");
+  }
+
+  function handleUtilitiesOutputViewLearnerClick() {
+    setUtilitiesOutputView("learner_page");
+  }
+
+  function handleUtilitiesOutputViewVisualJobsClick() {
+    setUtilitiesOutputView("visual_jobs");
+  }
+
+  function applyUtilityPreviewHtml(html, options) {
+    var opts = options && typeof options === "object" ? options : {};
     var htmlText = String(html || "");
+    var revision = typeof opts.previewRevision === "number" ? opts.previewRevision : 0;
+    var reason = String(opts.reason || "");
+    var manifestAssetCount =
+      typeof opts.manifestAssetCount === "number" ? opts.manifestAssetCount : 0;
+    if (
+      typeof state.utilitiesPreviewLastAppliedRevision === "number" &&
+      state.utilitiesPreviewLastAppliedRevision > 0
+    ) {
+      if (revision <= 0 || revision < state.utilitiesPreviewLastAppliedRevision) {
+        if (state.utilitiesOutputWorkspace) {
+          state.utilitiesOutputWorkspace.previewWriteSkipped = {
+            attemptedRevision: revision,
+            lastAppliedRevision: state.utilitiesPreviewLastAppliedRevision,
+            reason: reason || "stale_or_unversioned",
+            htmlLength: htmlText.length,
+            assetFigureCount: (htmlText.match(/util-visual-asset/g) || []).length
+          };
+        }
+        return;
+      }
+    } else if (
+      revision > 0 &&
+      typeof state.utilitiesPreviewLastAppliedRevision === "number" &&
+      revision < state.utilitiesPreviewLastAppliedRevision
+    ) {
+      return;
+    }
     // Invalidate any in-flight preview math attempts from older renders.
     utilityPreviewMathRenderToken += 1;
     if (els.utilitiesPreviewPanel) {
@@ -47366,13 +48126,41 @@
       els.utilitiesPreviewError.textContent = "";
     }
     if (els.utilitiesPreviewFrame) {
-      els.utilitiesPreviewFrame.srcdoc = htmlText;
+      ensureUtilitiesPreviewFrameSandbox();
+      var iframeHtml =
+        manifestAssetCount > 0 ? buildIframePreviewHtmlFromRendered(htmlText) : htmlText;
+      els.utilitiesPreviewFrame.srcdoc = iframeHtml;
+    }
+    if (revision > 0) {
+      state.utilitiesPreviewLastAppliedRevision = revision;
+    }
+    state.utilitiesPreviewWriteLog.push({
+      revision: revision,
+      reason: reason,
+      manifestAssetCount: manifestAssetCount,
+      htmlLength: htmlText.length,
+      figureCount: (htmlText.match(/<figure/g) || []).length,
+      assetFigureCount: (htmlText.match(/util-visual-asset/g) || []).length
+    });
+    if (state.utilitiesPreviewWriteLog.length > 50) {
+      state.utilitiesPreviewWriteLog = state.utilitiesPreviewWriteLog.slice(-50);
+    }
+    if (state.utilitiesOutputWorkspace) {
+      state.utilitiesOutputWorkspace.previewWriteLog = state.utilitiesPreviewWriteLog.slice();
+      if (revision > 0) {
+        state.utilitiesOutputWorkspace.previewRevision = revision;
+      }
     }
     if (els.utilitiesDownloadBtn) {
       els.utilitiesDownloadBtn.disabled = !htmlText.trim();
     }
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.disabled = !htmlText.trim();
+    }
+    if (!opts.preserveView) {
+      setUtilitiesOutputView("learner_page");
+    } else {
+      showUtilitiesOutputPanel();
     }
     utilitySchedulePreviewMathTypeset(htmlText);
   }
@@ -47871,7 +48659,8 @@
     }
     var opts = exportOpts && typeof exportOpts === "object" ? exportOpts : {};
     var rendered = lib.renderLearnerPageHtml(parsed, {
-      compositionMode: opts.compositionMode
+      compositionMode: opts.compositionMode,
+      visualAssets: opts.visualAssets || null
     });
     if (!rendered || rendered.error) {
       return {
@@ -47882,7 +48671,8 @@
     if (!html) return { error: "Rendered output is empty." };
     return {
       html: composeStandaloneVnextLearnerExport(html, rendered.modelResult, parsed),
-      error: null
+      error: null,
+      visualAssetDiagnostics: rendered.visualAssetDiagnostics || null
     };
   }
 
@@ -47904,13 +48694,15 @@
     } catch (versionErr) {
       return { error: (versionErr && versionErr.message) || "Unsupported learner renderer version." };
     }
-    try {
-      parsed = resolvePageForRenderOrAssembly(parsed, opts.workflow || null, {
-        captures: opts.captures,
-        capturesRaw: opts.capturesRaw
-      });
-    } catch (assemblyErr) {
-      return { error: (assemblyErr && assemblyErr.message) || "Could not assemble page from captures." };
+    if (!opts.skipWorkflowAssembly) {
+      try {
+        parsed = resolvePageForRenderOrAssembly(parsed, opts.workflow || null, {
+          captures: opts.captures,
+          capturesRaw: opts.capturesRaw
+        });
+      } catch (assemblyErr) {
+        return { error: (assemblyErr && assemblyErr.message) || "Could not assemble page from captures." };
+      }
     }
     if (opts.applyCompositionValidation !== false) {
       var compositionValidation = applyPageCompositionValidationForUtilitiesPage(
@@ -47927,7 +48719,8 @@
     }
     if (rendererVersion === "vnext") {
       return runLearnerRendererVNextExport(parsed, {
-        compositionMode: opts.compositionMode
+        compositionMode: opts.compositionMode,
+        visualAssets: opts.visualAssets || null
       });
     }
     var renderPage = getPageForRender(parsed);
@@ -47999,7 +48792,12 @@
         rendererVersion: options.rendererVersion,
         workflow: options.workflow || findWorkflowById(state.selectedWorkflowId || "") || null,
         captures: options.captures,
-        capturesRaw: options.capturesRaw
+        capturesRaw: options.capturesRaw,
+        skipWorkflowAssembly: !!options.skipWorkflowAssembly,
+        visualAssets: options.visualAssets || null,
+        compositionMode: resolveUtilitiesCompositionModeForRender(options),
+        __previewRevision: options.__previewRevision,
+        __previewReason: options.__previewReason
       });
       return pageRendered;
     }
@@ -48090,16 +48888,31 @@
     state.utilitiesPresentationMode = presentationMode === "learning_object" ? "learning_object" : "single_page";
     var rendererVersion = getUtilitiesRendererVersion();
     state.utilitiesRendererVersion = rendererVersion;
+    state.visualAssetPreviewRevision += 1;
+    var generateRevision = state.visualAssetPreviewRevision;
     var baseName = getUtilityOutputBaseName(
       parsed,
       els.utilitiesFileName ? els.utilitiesFileName.value : ""
     );
+    if (String(parsed.artifact_type || "").toLowerCase() === "page") {
+      refreshUtilitiesOutputWorkspaceFromPage(parsed, { activeView: "learner_page" });
+    } else {
+      state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+      updateUtilitiesOutputViewControls();
+    }
     renderUtilitiesArtefactHtmlAsync(parsed, {
       selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
       presentationMode: state.utilitiesPresentationMode,
       rendererVersion: rendererVersion,
       baseName: baseName,
-      applyCompositionValidation: false
+      applyCompositionValidation: false,
+      skipWorkflowAssembly: String(state.utilitiesSourceMode || "") !== "assembled_current_run",
+      visualAssets: getUtilitiesVisualAssetManifestForPreview(),
+      compositionMode: resolveUtilitiesCompositionModeForRender({
+        visualAssets: getUtilitiesVisualAssetManifestForPreview()
+      }),
+      __previewRevision: generateRevision,
+      __previewReason: "generate"
     })
       .then(function (rendered) {
         if (!rendered || rendered.error) {
@@ -48113,7 +48926,13 @@
         }
         state.utilitiesLastHtml = htmlText;
         state.utilitiesLastFileName = getUtilityHtmlDownloadName(baseName);
-        applyUtilityPreviewHtml(htmlText);
+        var manifest = getUtilitiesVisualAssetManifestForPreview();
+        applyUtilityPreviewHtml(htmlText, {
+          previewRevision: generateRevision,
+          reason: "generate",
+          manifestAssetCount:
+            manifest && Array.isArray(manifest.assets) ? manifest.assets.length : 0
+        });
         return true;
       })
       .then(function (ok) {
@@ -48197,6 +49016,8 @@
       }
     }
     state.utilitiesSourceMode = "assembled_current_run";
+    refreshUtilitiesOutputWorkspaceFromPage(assembled, { activeView: "learner_page" });
+    showUtilitiesOutputPanel();
     showToast("Assembled page loaded into Utilities JSON input.", "success");
   }
 
@@ -48229,6 +49050,7 @@
   }
 
   function handleUtilitiesClear() {
+    revokeAllVisualAssetObjectUrls();
     if (els.utilitiesJsonInput) els.utilitiesJsonInput.value = "";
     if (els.utilitiesFileName) els.utilitiesFileName.value = "";
     if (els.utilitiesOutputFormat) els.utilitiesOutputFormat.value = "html";
@@ -48242,6 +49064,19 @@
     if (els.utilitiesPreviewPanel) {
       els.utilitiesPreviewPanel.classList.add("hidden");
     }
+    if (els.utilitiesVisualJobsPanel) {
+      els.utilitiesVisualJobsPanel.innerHTML = "";
+      els.utilitiesVisualJobsPanel.classList.add("hidden");
+    }
+    if (els.utilitiesOutputViewBar) {
+      els.utilitiesOutputViewBar.classList.add("hidden");
+    }
+    if (els.utilitiesPreviewFrame) {
+      els.utilitiesPreviewFrame.classList.remove("hidden");
+    }
+    if (els.utilitiesCopyAnnounce) {
+      els.utilitiesCopyAnnounce.textContent = "";
+    }
     if (els.utilitiesDownloadBtn) {
       els.utilitiesDownloadBtn.disabled = true;
     }
@@ -48250,9 +49085,11 @@
     }
     state.utilitiesLastHtml = "";
     state.utilitiesLastFileName = "";
+    state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
     state.utilitiesPresentationMode = "single_page";
     state.utilitiesRendererVersion = "vnext";
     state.utilitiesSourceMode = "";
+    state.utilitiesVisualAssetObjectUrlsByBriefId = {};
   }
 
   function ensureWorkflowFactorySaveBinding() {
@@ -48486,6 +49323,15 @@
     }
     if (els.utilitiesClearBtn) {
       els.utilitiesClearBtn.addEventListener("click", handleUtilitiesClear);
+    }
+    if (els.utilitiesOutputViewLearnerBtn) {
+      els.utilitiesOutputViewLearnerBtn.addEventListener("click", handleUtilitiesOutputViewLearnerClick);
+    }
+    if (els.utilitiesOutputViewVisualJobsBtn) {
+      els.utilitiesOutputViewVisualJobsBtn.addEventListener(
+        "click",
+        handleUtilitiesOutputViewVisualJobsClick
+      );
     }
     if (els.utilitiesJsonInput) {
       els.utilitiesJsonInput.addEventListener("input", function () {
@@ -48979,6 +49825,11 @@
       buildSprint38PedagogicalAddedValuePromptLines;
     prismTestApi.applySprint38VisualAffordanceContractToDraft =
       applySprint38VisualAffordanceContractToDraft;
+    prismTestApi.sprint38VisualAffordanceMarkerPresent = sprint38VisualAffordanceMarkerPresent;
+    prismTestApi.countSprint38VisualAffordanceAuthoringBlocks =
+      countSprint38VisualAffordanceAuthoringBlocks;
+    prismTestApi.stripContradictoryDesignPageVisualAffordanceOmitClauses =
+      stripContradictoryDesignPageVisualAffordanceOmitClauses;
     prismTestApi.buildLdTableFidelityPromptBlock = buildLdTableFidelityPromptBlock;
     prismTestApi.applyLdTableFidelityContractToDraft = applyLdTableFidelityContractToDraft;
     prismTestApi.buildLdMaterialsCopyPromptBlock = buildLdMaterialsCopyPromptBlock;
@@ -49544,6 +50395,166 @@
         ? mod.validatePageVisualAffordances(page)
         : { valid: false, errors: ["PRISM_SPRINT38_VISUAL_AFFORDANCES unavailable"] };
     };
+    prismTestApi.validateVisualPlanningContractForTest = function (page) {
+      var mod =
+        typeof PRISM_VISUAL_PLANNING_CONTRACT !== "undefined"
+          ? PRISM_VISUAL_PLANNING_CONTRACT
+          : null;
+      return mod && typeof mod.validateVisualPlanningContract === "function"
+        ? mod.validateVisualPlanningContract(page)
+        : { valid: false, errors: [{ code: "VPC_MODULE_UNAVAILABLE", message: "PRISM_VISUAL_PLANNING_CONTRACT unavailable" }] };
+    };
+    prismTestApi.planPrismVisualJobsForTest = function (page) {
+      var mod =
+        typeof PRISM_VISUAL_JOBS_PLANNER !== "undefined"
+          ? PRISM_VISUAL_JOBS_PLANNER
+          : null;
+      return mod && typeof mod.planPrismVisualJobs === "function"
+        ? mod.planPrismVisualJobs(page)
+        : {
+            valid: false,
+            jobs: [],
+            errors: [{ code: "VPC_PLANNER_MODULE_UNAVAILABLE", message: "PRISM_VISUAL_JOBS_PLANNER unavailable" }]
+          };
+    };
+    prismTestApi.compilePrismImageBriefsForTest = function (plannerResult) {
+      var mod =
+        typeof PRISM_IMAGE_BRIEF_COMPILER !== "undefined"
+          ? PRISM_IMAGE_BRIEF_COMPILER
+          : null;
+      return mod && typeof mod.compilePrismImageBriefs === "function"
+        ? mod.compilePrismImageBriefs(plannerResult)
+        : {
+            valid: false,
+            briefs: [],
+            errors: [{ code: "PIC_MODULE_UNAVAILABLE", message: "PRISM_IMAGE_BRIEF_COMPILER unavailable" }]
+          };
+    };
+    prismTestApi.getUtilitiesVisualJobsWorkspaceModForTest = getUtilitiesVisualJobsWorkspaceMod;
+    prismTestApi.buildVisualJobsWorkspaceStateForTest = function (page, options) {
+      return refreshUtilitiesOutputWorkspaceFromPage(page, options);
+    };
+    prismTestApi.getUtilitiesOutputWorkspaceForTest = function () {
+      return state.utilitiesOutputWorkspace
+        ? JSON.parse(JSON.stringify(state.utilitiesOutputWorkspace))
+        : emptyUtilitiesOutputWorkspaceState();
+    };
+    prismTestApi.setUtilitiesOutputViewForTest = function (view) {
+      setUtilitiesOutputView(view);
+    };
+    prismTestApi.renderVisualJobsWorkspaceForTest = function () {
+      renderUtilitiesVisualJobsView();
+      return els.utilitiesVisualJobsPanel ? String(els.utilitiesVisualJobsPanel.innerHTML || "") : "";
+    };
+    prismTestApi.copyVisualJobPromptForTest = function (briefId, clipboard) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod) return Promise.resolve({ ok: false, error: "module_unavailable" });
+      var text = mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId);
+      return mod.copyVisualJobPrompt(text, clipboard);
+    };
+    prismTestApi.copyVisualJobCanonicalPromptForTest = function (briefId, clipboard) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod) return Promise.resolve({ ok: false, error: "module_unavailable" });
+      var text = mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+      return mod.copyVisualJobPrompt(text, clipboard);
+    };
+    prismTestApi.getBriefHumanPromptForTest = function (briefId) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      return mod ? mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId) : "";
+    };
+    prismTestApi.getUtilitiesOutputViewForTest = function () {
+      return state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.activeView === "visual_jobs"
+        ? "visual_jobs"
+        : "learner_page";
+    };
+    prismTestApi.getUtilitiesVisualJobsPanelHtmlForTest = function () {
+      return els.utilitiesVisualJobsPanel ? String(els.utilitiesVisualJobsPanel.innerHTML || "") : "";
+    };
+    prismTestApi.getUtilitiesOutputViewBarHiddenForTest = function () {
+      return els.utilitiesOutputViewBar
+        ? els.utilitiesOutputViewBar.classList.contains("hidden")
+        : true;
+    };
+    prismTestApi.getUtilitiesPreviewFrameHiddenForTest = function () {
+      return els.utilitiesPreviewFrame ? els.utilitiesPreviewFrame.classList.contains("hidden") : false;
+    };
+    prismTestApi.getUtilitiesVisualJobsPanelHiddenForTest = function () {
+      return els.utilitiesVisualJobsPanel
+        ? els.utilitiesVisualJobsPanel.classList.contains("hidden")
+        : true;
+    };
+    prismTestApi.getUtilitiesOutputViewVisualJobsLabelForTest = function () {
+      return els.utilitiesOutputViewVisualJobsBtn
+        ? String(els.utilitiesOutputViewVisualJobsBtn.textContent || "")
+        : "";
+    };
+    prismTestApi.selectVisualJobForTest = function (briefId) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod || !state.utilitiesOutputWorkspace) return false;
+      mod.selectVisualJob(state.utilitiesOutputWorkspace, briefId);
+      renderUtilitiesVisualJobsView();
+      return true;
+    };
+    prismTestApi.getSelectedVisualJobForTest = function () {
+      return getSelectedVisualJobBriefId();
+    };
+    prismTestApi.attachVisualImageForTest = function (briefId, imageInput, options) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod || !state.utilitiesOutputWorkspace) return { ok: false, error: "module_unavailable" };
+      var result = mod.attachVisualAssetToWorkspace(
+        state.utilitiesOutputWorkspace,
+        briefId,
+        imageInput,
+        options || { intakeMethod: "file_picker" }
+      );
+      if (result && result.ok) {
+        refreshUtilitiesLearnerPreviewWithVisualAssets();
+      }
+      return result;
+    };
+    prismTestApi.validateVisualImageFileForTest = function (imageInput, options) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod || typeof mod.validateVisualImageInput !== "function") {
+        return { ok: false, code: "module_unavailable" };
+      }
+      return mod.validateVisualImageInput(imageInput, options || {});
+    };
+    prismTestApi.removeVisualImageForTest = function (briefId) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod || !state.utilitiesOutputWorkspace) return { ok: false, error: "module_unavailable" };
+      var result = mod.removeVisualAssetFromWorkspace(state.utilitiesOutputWorkspace, briefId);
+      if (result && result.ok) {
+        refreshUtilitiesLearnerPreviewWithVisualAssets();
+      }
+      return result;
+    };
+    prismTestApi.getVisualAssetManifestForTest = function () {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod || !state.utilitiesOutputWorkspace) return null;
+      return mod.getVisualAssetManifest(state.utilitiesOutputWorkspace);
+    };
+    prismTestApi.getVisualJobAssetRecordForTest = function (briefId) {
+      var id = String(briefId || getSelectedVisualJobBriefId() || "").trim();
+      if (!id || !state.utilitiesOutputWorkspace || !state.utilitiesOutputWorkspace.assetsByBriefId) {
+        return null;
+      }
+      var asset = state.utilitiesOutputWorkspace.assetsByBriefId[id];
+      return asset ? JSON.parse(JSON.stringify(asset)) : null;
+    };
+    prismTestApi.simulateVisualJobFilePickerChangeForTest = function (briefId, file) {
+      var id = String(briefId || getSelectedVisualJobBriefId() || "").trim();
+      if (!id || !file) return Promise.resolve({ ok: false, error: "missing_input" });
+      return applyVisualJobAssetFile(id, file, "file_picker");
+    };
+    prismTestApi.getUtilitiesPreviewRevisionStateForTest = function () {
+      return {
+        visualAssetPreviewRevision: state.visualAssetPreviewRevision,
+        utilitiesPreviewLastAppliedRevision: state.utilitiesPreviewLastAppliedRevision,
+        previewWriteLog: state.utilitiesPreviewWriteLog.slice()
+      };
+    };
+    prismTestApi.handleUtilitiesClearForTest = handleUtilitiesClear;
+    prismTestApi.refreshUtilitiesOutputWorkspaceFromPageForTest = refreshUtilitiesOutputWorkspaceFromPage;
     prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
     prismTestApi.utilityMaybeRenderVisualAffordanceHookForTest =
       utilityMaybeRenderVisualAffordanceHook;

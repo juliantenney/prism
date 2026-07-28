@@ -134,13 +134,13 @@ test("Phase 1: partial mode seeded prompt references partial contract at runtime
   assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
-test("Phase 1: buildDesignPageV2CopyAuthoringBrief aligns with page_synthesis partial contract", () => {
+test("Phase 1: buildDesignPageV2CopyAuthoringBrief is a thin partial execution wrapper only", () => {
   const api = loadPrismTestApi(["lib/ld-design-page-partial-contract.js"]);
   const brief = api.buildDesignPageV2CopyAuthoringBrief();
-  assert.match(brief, /page_synthesis object \(canonical transport shape\)/i);
-  assert.match(brief, /Knowledge summary is mandatory/i);
-  assert.match(brief, /sections\[\] is optional legacy dual-read/i);
-  assert.match(brief, /Forbidden: activities\[\] regeneration/i);
-  assert.match(brief, /activity_materials chat binding/i);
-  assert.doesNotMatch(brief, /page_synthesis and\/or sections/i);
+  assert.match(brief, /Execution reminder \(partial Design Page\)/i);
+  assert.match(brief, /not a full-page replay/i);
+  assert.match(brief, /Do not reconstruct or preserve non–Design-Page stage fields/i);
+  assert.doesNotMatch(brief, /page_synthesis object \(canonical transport shape\)/i);
+  assert.doesNotMatch(brief, /visual_affordance_schema_version/i);
+  assert.doesNotMatch(brief, /Sprint 38 visual affordance authoring contract/i);
 });

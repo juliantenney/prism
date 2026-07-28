@@ -1,0 +1,121 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Inflation Drivers and CPI Reasoning",
+  "assembly_state": {
+    "enriched_by": ["design_page"],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "body": "## Welcome\n\nThis workshop examines inflation drivers and CPI application.",
+      "format": "markdown"
+    },
+    "knowledge_summary": {
+      "body": "Core inflation concepts include demand-pull and cost-push dynamics.",
+      "format": "markdown"
+    }
+  },
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": { "decision": "high", "rationale": "Classification matrix supports mechanism typing." }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": { "decision": "medium", "rationale": "Comparison framework adds index discrimination." }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A1-generate-01",
+      "scope": "activity",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "subject": "Inflation mechanism classification cues",
+      "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by triggering drivers and transmission pathways.",
+      "evidence_anchors": ["A1.learner_task", "A1.materials.scenarios"],
+      "must_show": ["demand-pull pathway cues", "cost-push shock pathway"],
+      "must_not_show": ["scenario answer key", "completed classification cells"],
+      "allowed_claims": ["Different causal mechanisms can produce inflation."],
+      "disallowed_claims": ["All inflation has one cause."],
+      "rationale": "Classify scenarios by mechanism before the analysis table.",
+      "pedagogical_added_value": "Adds discriminating cause-type cues — not a blank copy of the learner table.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "summary_table"],
+      "requires_exact_data_match": false,
+      "source_basis": "A1 learner_task; A1 materials.scenarios",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners classify without completed classifications.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Empty labelled cause structures only."
+    },
+    {
+      "affordance_id": "va-A2-defer-01",
+      "scope": "activity",
+      "activity_id": "A2",
+      "visual_decision": "defer",
+      "defer_reason": "worked_example_sufficient_first",
+      "subject": "CPI index discrimination",
+      "context": "Visual brief: learners should complete the worked comparison table before any visual summary.",
+      "evidence_anchors": ["A2.learner_task", "A2.materials.comparison_table"],
+      "rationale": "Attempt the worked example before any visual summary."
+    },
+    {
+      "affordance_id": "va-A2-skip-01",
+      "scope": "activity",
+      "activity_id": "A2",
+      "visual_decision": "skip",
+      "skip_reason": "assessment_text_sufficient",
+      "subject": "Debrief-only closure",
+      "context": "Visual brief: debrief prose already communicates the closure move without new inferential load.",
+      "evidence_anchors": ["A2.materials.debrief"],
+      "rationale": "Debrief text is sufficient; a visual would duplicate closure."
+    },
+    {
+      "affordance_id": "va-page-knowledge-summary-01",
+      "scope": "page",
+      "region": "knowledge_summary",
+      "visual_decision": "generate",
+      "visual_slot": "knowledge-summary-after-content",
+      "tier": "essential",
+      "purpose": "synthesis",
+      "preferred_representation": "concept_map",
+      "subject": "Knowledge Summary inference map",
+      "context": "Visual brief: after Knowledge Summary prose, synthesize how demand-pull and cost-push connect to CPI interpretation risks.",
+      "evidence_anchors": ["page_synthesis.knowledge_summary", "page_synthesis.learning_purpose"],
+      "must_show": ["demand-pull to CPI link", "cost-push shock pathway"],
+      "must_not_show": ["new claims not in summary", "worked-solution reveal"],
+      "allowed_claims": ["Inflation mechanisms affect CPI interpretation."],
+      "disallowed_claims": ["Causal claims not present in source summary."],
+      "rationale": "Knowledge Summary benefits from a synthesis visual linking concepts.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "generic_infographic"],
+      "requires_exact_data_match": false,
+      "source_basis": "page_synthesis.knowledge_summary",
+      "caption_intent": "Map how core knowledge-summary ideas connect.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Connect drivers, CPI reading, and judgement risks.",
+      "learner_stage": "post_reasoning",
+      "canonical_discipline_note": "Use only knowledge-summary concepts and links."
+    }
+  ]
+}

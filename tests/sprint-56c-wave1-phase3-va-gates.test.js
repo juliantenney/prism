@@ -19,13 +19,13 @@ const ldPatternsPath = path.join(
 
 const VA_MANDATE_PATTERNS = [
   /visual_affordance_schema_version.*38\.4/i,
-  /activities_visual_review.*required/i,
-  /visual_affordances.*required array/i,
-  /Sprint 38 visual affordance contract/i,
+  /activities_visual_review\[\]/i,
+  /visual_affordances\[\]/i
+];
+
+const RUNTIME_ONLY_VA_PATTERNS = [
   /sprint 38 visual affordance authoring contract \(auto-applied\)/i,
-  /Page root \(mandatory\): visual_affordance_schema_version/i,
-  /per Sprint 38 runtime/i,
-  /source_basis paths in visual_affordances/i
+  /Page root \(mandatory\): visual_affordance_schema_version/i
 ];
 
 function extractDesignPagePromptFactory(md) {
@@ -69,17 +69,17 @@ function designPageAugmentedPrompt(api) {
     .trim();
 }
 
-test("56C W1 P3: defaultOutputStructure excludes mandatory VA keys", () => {
+test("Slice1: defaultOutputStructure includes mandatory VA keys", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const keys = factory.defaultOutputStructure.keys;
   assert.ok(keys.includes("page_synthesis"));
   assert.ok(keys.includes("assembly_state"));
-  assert.ok(!keys.includes("visual_affordance_schema_version"));
-  assert.ok(!keys.includes("activities_visual_review"));
-  assert.ok(!keys.includes("visual_affordances"));
+  assert.ok(keys.includes("visual_affordance_schema_version"));
+  assert.ok(keys.includes("activities_visual_review"));
+  assert.ok(keys.includes("visual_affordances"));
 });
 
-test("56C W1 P3: domain template omits mandatory VA output lines", () => {
+test("Slice1: domain template mandates authoritative VA output lines", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   const surfaces = [
     factory.promptTemplate,
@@ -88,23 +88,27 @@ test("56C W1 P3: domain template omits mandatory VA output lines", () => {
   ];
   for (const text of surfaces) {
     for (const pattern of VA_MANDATE_PATTERNS) {
-      assert.doesNotMatch(text, pattern, `unexpected VA mandate: ${pattern}`);
+      assert.match(text, pattern, `missing VA mandate: ${pattern}`);
     }
   }
-  assert.match(factory.promptTemplate, /omit visual_affordance_schema_version/i);
-  assert.match(factory.promptTemplate, /do not generate, infer, author, or specify VA rows/i);
+  assert.match(factory.promptTemplate, /authoritative visual planning/i);
+  assert.match(factory.promptTemplate, /No downstream prompt may invent visual purpose/i);
+  assert.match(factory.promptTemplate, /evidence_anchors/i);
 });
 
-test("56C W1 P3: runtime Design Page prompt excludes VA authoring contract", () => {
+test("Slice1: runtime Design Page prompt includes VA authoring contract", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
   for (const pattern of VA_MANDATE_PATTERNS) {
-    assert.doesNotMatch(prompt, pattern, `runtime VA residue: ${pattern}`);
+    assert.match(prompt, pattern, `runtime VA requirement missing: ${pattern}`);
+  }
+  for (const pattern of RUNTIME_ONLY_VA_PATTERNS) {
+    assert.match(prompt, pattern, `runtime VA requirement missing: ${pattern}`);
   }
   assert.match(prompt, /Material preservation overrides page optimisation/i);
 });
 
-test("56C W1 P3: post-compose VA processing is passthrough", () => {
+test("Slice1: post-compose VA processing validates and normalizes authoritative rows", () => {
   const api = loadPrismTestApi();
   const page = {
     artifact_type: "page",
@@ -112,9 +116,8 @@ test("56C W1 P3: post-compose VA processing is passthrough", () => {
     visual_affordances: [{ affordance_id: "va-upstream-01", activity_id: "A1" }]
   };
   const next = api.applySprint38VisualAffordancesToComposedPage(page, { strictValidation: true });
-  assert.equal(next.visual_affordance_schema_version, undefined);
-  assert.equal(next.visual_affordances.length, 1);
-  assert.equal(next.visual_affordances[0].affordance_id, "va-upstream-01");
+  assert.equal(next.visual_affordance_schema_version, "38.4");
+  assert.equal(Array.isArray(next.visual_affordances), true);
 });
 
 test("56C W1 P3: compose pipeline does not inject schema 38.4", () => {

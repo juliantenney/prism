@@ -309,15 +309,12 @@ test("Design Page learner page_profile targets page_synthesis wrapper prose", ()
   assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });
 
-test("56C W1: Design Page runtime augmentation excludes Sprint 38 VA prompt block", () => {
+test("Slice1: Design Page runtime augmentation includes Sprint 38 VA prompt block", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
   const composeIdx = augmented.search(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
   assert.ok(composeIdx >= 0, "compose contract must be present");
-  assert.doesNotMatch(
-    augmented,
-    /sprint 38 visual affordance authoring contract \(auto-applied\)/i
-  );
+  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
 test("Design Page runtime augmentation includes compose contract with L4 preserve embed", () => {
@@ -336,7 +333,7 @@ test("Design Page runtime augmentation includes compose contract with L4 preserv
   assert.match(augmented, /MATERIALS FIDELITY \(compose\)/i);
   assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
   assert.match(augmented, /Set of scenarios/i);
-  assert.doesNotMatch(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
 test("Sprint 38 runtime block states affordances are additive to materials", () => {

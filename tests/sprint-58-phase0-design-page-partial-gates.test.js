@@ -107,4 +107,12 @@ test("Phase 0: partial contract lib shape", () => {
   assert.match(block, /page_synthesis/);
   assert.match(block, /sections\[\] is optional/i);
   assert.match(block, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.match(block, /visual_affordance_schema_version/i);
+  assert.match(block, /activities_visual_review\[\]/i);
+  assert.match(block, /visual_affordances\[\]/i);
+  assert.match(block, /visual_decision/i);
+  assert.match(block, /concise publication-quality resource title/i);
+  assert.match(block, /Do not copy the original request\/brief as the title/i);
+  assert.match(block, /Do not start bodies with ## Welcome/i);
+  assert.doesNotMatch(block, /shell fields: title,/i);
 });

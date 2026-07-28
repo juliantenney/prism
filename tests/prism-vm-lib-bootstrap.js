@@ -7,6 +7,11 @@ const vm = require("node:vm");
 
 const DEFAULT_LIBS = [
   "lib/sprint38-visual-affordances.js",
+  "lib/visual-planning-contract.js",
+  "lib/prism-visual-jobs-planner.js",
+  "lib/prism-image-brief-compiler.js",
+  "lib/prism-visual-assets.js",
+  "lib/utilities-visual-jobs-workspace.js",
   "lib/gam-output-format.js",
   "lib/ld-table-fidelity.js",
   "lib/ld-materials-copy.js",
@@ -64,7 +69,13 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_UTILITY_PEDAGOGICAL_ICONS",
       "PRISM_UTILITY_PEDAGOGICAL_BEATS",
       "PRISM_BEAT_MATERIAL_REGISTRY",
-      "PRISM_INSTRUCTIONAL_PATTERN_PROMPT"
+      "PRISM_INSTRUCTIONAL_PATTERN_PROMPT",
+      "PRISM_SPRINT38_VISUAL_AFFORDANCES",
+      "PRISM_VISUAL_PLANNING_CONTRACT",
+      "PRISM_VISUAL_JOBS_PLANNER",
+      "PRISM_IMAGE_BRIEF_COMPILER",
+      "PRISM_VISUAL_ASSETS",
+      "PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE"
     ].forEach(function (key) {
       if (sandbox[key]) {
         sandbox.window[key] = sandbox[key];

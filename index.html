@@ -518,12 +518,47 @@
           </div>
           <div id="utilitiesPreviewPanel" class="utilities-preview hidden" aria-live="polite">
             <div id="utilitiesPreviewError" class="utilities-preview-error hidden" role="alert"></div>
-            <iframe
-              id="utilitiesPreviewFrame"
-              class="utilities-preview-frame"
-              title="Utilities HTML preview"
-              sandbox=""
-            ></iframe>
+            <div
+              id="utilitiesOutputViewBar"
+              class="utilities-output-view-bar hidden"
+              role="tablist"
+              aria-label="Utilities output view"
+            >
+              <button
+                id="utilitiesOutputViewLearnerBtn"
+                type="button"
+                class="utilities-output-view-btn is-active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="utilitiesOutputWorkspace"
+              >
+                Learner Page
+              </button>
+              <button
+                id="utilitiesOutputViewVisualJobsBtn"
+                type="button"
+                class="utilities-output-view-btn"
+                role="tab"
+                aria-selected="false"
+                aria-controls="utilitiesVisualJobsPanel"
+              >
+                Visual Jobs
+              </button>
+            </div>
+            <div id="utilitiesOutputWorkspace" class="utilities-output-workspace">
+              <iframe
+                id="utilitiesPreviewFrame"
+                class="utilities-preview-frame"
+                title="Utilities HTML preview"
+                sandbox="allow-same-origin"
+              ></iframe>
+              <div
+                id="utilitiesVisualJobsPanel"
+                class="utilities-visual-jobs-panel hidden"
+                aria-live="polite"
+              ></div>
+            </div>
+            <div id="utilitiesCopyAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
           </div>
         </div>
       </section>
@@ -993,6 +1028,11 @@
   <script src="library.js?v=20260326-1"></script>
   <script src="workflowGenerationContext.js?v=20260603-2"></script>
   <script src="lib/sprint38-visual-affordances.js?v=20260603-3"></script>
+  <script src="lib/visual-planning-contract.js?v=20260728-1"></script>
+  <script src="lib/prism-visual-jobs-planner.js?v=20260728-1"></script>
+  <script src="lib/prism-image-brief-compiler.js?v=20260728-1"></script>
+  <script src="lib/prism-visual-assets.js?v=20260728-1"></script>
+  <script src="lib/utilities-visual-jobs-workspace.js?v=20260728-1"></script>
   <script src="lib/sprint38-representation-pedagogical-value.js?v=20260603-4"></script>
   <script src="lib/gam-output-format.js?v=20260617-1"></script>
   <script src="lib/ld-table-fidelity.js?v=20260604-1"></script>

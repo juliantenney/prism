@@ -379,6 +379,41 @@ test("Slice 8D integration: hook-driven attach cannot bypass data_url requiremen
   assert.match(hookAsset.render_source.value, /^data:image\/png;base64,/);
 });
 
+test("Slice 8D integration: re-click Preview HTML reuses current learner page with attached images", async () => {
+  const { api, elementStore } = loadPrismHarness();
+  const page = buildE2EPageWithVisualJobs();
+  const briefId = getBriefIdForActivity(page, "A1");
+  api.refreshUtilitiesOutputWorkspaceFromPageForTest(page, { activeView: "learner_page" });
+  const input = elementStore.get("utilitiesJsonInput") || createElementStub("utilitiesJsonInput");
+  assert.ok(input, "utilitiesJsonInput missing");
+  input.value = JSON.stringify(page, null, 2);
+  api.setUtilitiesLastRenderInputNormalizedForTest(
+    api.utilityNormalizeUtilitiesJsonInputForTest(input.value)
+  );
+
+  await api.simulateVisualJobFilePickerChangeForTest(briefId, createPngFile("reuse-preview.png"));
+  await waitFor(
+    () => /util-visual-asset/.test(String(api.getUtilitiesPreviewSrcdocForTest() || "")),
+    5000
+  );
+
+  const before = String(api.getUtilitiesPreviewSrcdocForTest() || "");
+  const revBefore = api.getUtilitiesPreviewRevisionStateForTest();
+  api.handleUtilitiesGenerateForTest();
+  await waitFor(
+    () => /util-visual-asset/.test(String(api.getUtilitiesPreviewSrcdocForTest() || "")),
+    5000
+  );
+  const after = String(api.getUtilitiesPreviewSrcdocForTest() || "");
+  const revAfter = api.getUtilitiesPreviewRevisionStateForTest();
+  assert.match(after, /util-visual-asset/);
+  assert.equal(after, before);
+  assert.ok(
+    revAfter.visualAssetPreviewRevision >= revBefore.visualAssetPreviewRevision,
+    "preview reuse must not roll back visual-asset revision state"
+  );
+});
+
 test("Slice 8D browser E2E: Choose image → learner iframe shows decoded PNG", { skip: process.env.PRISM_SKIP_BROWSER_E2E === "1" }, async (t) => {
   let puppeteer;
   try {

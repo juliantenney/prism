@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260729-s70-expandable-images" />
 </head>
 <body>
       <div class="app-shell">
@@ -465,7 +465,8 @@
         <div class="card">
           <h2>Utilities</h2>
           <p class="helper-text">
-            Paste structured JSON from PRISM outputs to preview browser-native HTML and download a `.html` file.
+            Paste structured JSON from PRISM outputs to preview browser-native HTML, then download
+            as HTML only or a learner package ZIP.
           </p>
           <div class="form-row compact">
             <div class="form-group small">
@@ -512,7 +513,28 @@
               Assemble From Current Workflow Run
             </button>
             <button id="utilitiesGenerateBtn" type="button" class="btn primary">Preview HTML</button>
-            <button id="utilitiesDownloadBtn" type="button" class="btn" disabled>Download HTML</button>
+            <div
+              class="utilities-download-actions"
+              role="group"
+              aria-label="Download options"
+            >
+              <button
+                id="utilitiesDownloadHtmlBtn"
+                type="button"
+                class="btn utilities-download-action"
+                disabled
+              >
+                HTML only (.html)
+              </button>
+              <button
+                id="utilitiesDownloadPackageBtn"
+                type="button"
+                class="btn utilities-download-action"
+                disabled
+              >
+                Learner package (.zip)
+              </button>
+            </div>
             <button id="utilitiesOpenTabBtn" type="button" class="btn" disabled>Open in New Tab</button>
             <button id="utilitiesClearBtn" type="button" class="btn ghost">Clear</button>
           </div>
@@ -550,7 +572,7 @@
                 id="utilitiesPreviewFrame"
                 class="utilities-preview-frame"
                 title="Utilities HTML preview"
-                sandbox="allow-same-origin"
+                sandbox="allow-same-origin allow-scripts"
               ></iframe>
               <div
                 id="utilitiesVisualJobsPanel"
@@ -1033,6 +1055,10 @@
   <script src="lib/prism-image-brief-compiler.js?v=20260728-1"></script>
   <script src="lib/prism-visual-assets.js?v=20260728-1"></script>
   <script src="lib/utilities-visual-jobs-workspace.js?v=20260728-1"></script>
+  <script src="node_modules/fflate/umd/index.js"></script>
+  <script src="lib/learner-package.js?v=20260729-1"></script>
+  <script src="lib/learner-package-zip.js?v=20260729-1"></script>
+  <script src="lib/learner-content-viewer.js?v=20260729-1"></script>
   <script src="lib/sprint38-representation-pedagogical-value.js?v=20260603-4"></script>
   <script src="lib/gam-output-format.js?v=20260617-1"></script>
   <script src="lib/ld-table-fidelity.js?v=20260604-1"></script>
@@ -1082,7 +1108,7 @@
   <script src="lib/episode-plan-v1-templates.js?v=20260608-1"></script>
   <script src="lib/episode-plan-v1-validation.js?v=20260608-1"></script>
   <script src="lib/episode-plan-dla-integration.js?v=20260608-1"></script>
-  <script src="lib/learner-renderer-vnext-browser.js?v=20260722-s68-imp014c-a3"></script>
-  <script src="app.js?v=20260715-s59-mental-1"></script>
+  <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
+  <script src="app.js?v=20260729-s70-expandable-images"></script>
 </body>
 </html>

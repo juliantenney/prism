@@ -1856,6 +1856,18 @@ textarea:focus {
   display: none;
 }
 
+.utilities-download-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.utilities-download-action {
+  white-space: nowrap;
+}
+
 .utilities-preview {
   margin-top: 12px;
   border: 1px solid var(--border-subtle);
@@ -2077,6 +2089,13 @@ textarea:focus {
 
 .util-visual-asset {
   margin: 10px 0;
+  max-width: 100%;
+  position: relative;
+}
+
+.util-visual-asset-media {
+  position: relative;
+  display: block;
   max-width: 100%;
 }
 

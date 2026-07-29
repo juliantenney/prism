@@ -104,8 +104,9 @@ function loadFixture() {
   return JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 }
 
-function renderVnextExport(api) {
-  const result = api.renderLearnerPageForTest(loadFixture(), {
+function renderVnextExport(api, page) {
+  const sourcePage = page || loadFixture();
+  const result = api.renderLearnerPageForTest(sourcePage, {
     rendererVersion: "vnext",
     applyCompositionValidation: false
   });
@@ -148,6 +149,33 @@ test("field coverage: all learning outcomes rendered", () => {
   assert.match(html, /LO1/);
   assert.match(html, /LO5/);
   assert.match(html, /heteroscedasticity and distinguish it from homoscedasticity/i);
+});
+
+test("field coverage: orient learning outcomes render from outcome_id in source order", () => {
+  const api = loadPrismTestApi();
+  const page = loadFixture();
+  page.learning_outcomes = [
+    { outcome_id: "LO1", statement: "First ordered outcome." },
+    { outcome_id: "LO2", statement: "Second ordered outcome." },
+    { outcome_id: "LO3", statement: "Third ordered outcome." }
+  ];
+  const html = renderVnextExport(api, page);
+  assert.match(html, /data-orientation-type="learning_outcomes"/);
+  assert.match(html, /First ordered outcome\./);
+  assert.match(html, /Second ordered outcome\./);
+  assert.match(html, /Third ordered outcome\./);
+  const lo1 = html.indexOf("First ordered outcome.");
+  const lo2 = html.indexOf("Second ordered outcome.");
+  const lo3 = html.indexOf("Third ordered outcome.");
+  assert.ok(lo1 >= 0 && lo2 > lo1 && lo3 > lo2);
+});
+
+test("field coverage: orient section omits learning outcomes block when absent", () => {
+  const api = loadPrismTestApi();
+  const page = loadFixture();
+  page.learning_outcomes = [];
+  const html = renderVnextExport(api, page);
+  assert.doesNotMatch(html, /data-orientation-type="learning_outcomes"/);
 });
 
 test("field coverage: each activity appears in journey navigation", () => {

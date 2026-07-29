@@ -53,6 +53,44 @@ function renderBeatsHtml(page) {
   return renderVnextHtml(page, { compositionMode: "beats" });
 }
 
+function tinyDataUrl(tag) {
+  return "data:image/png;base64," + Buffer.from("img-" + String(tag || ""), "utf8").toString("base64");
+}
+
+function buildFourAffordanceMomentsFixture() {
+  const page = loadFixture();
+  page.visual_affordance_schema_version = "38.4";
+  page.visual_affordances = [
+    Object.assign({}, records.inflation_a2_generate),
+    Object.assign({}, records.inflation_a3_generate),
+    {
+      affordance_id: "va-page-knowledge-summary-01",
+      scope: "page",
+      region: "knowledge_summary",
+      visual_decision: "generate",
+      visual_slot: "knowledge-summary-after-content",
+      subject: "Knowledge summary map"
+    }
+  ];
+  return page;
+}
+
+function attachAllManifestAssets(page) {
+  const affordances = Array.isArray(page.visual_affordances) ? page.visual_affordances : [];
+  return {
+    assets: affordances.map(function (row, index) {
+      return {
+        brief_id: "brief-" + String(index + 1),
+        affordance_id: String(row.affordance_id || ""),
+        scope: String(row.scope || ""),
+        activity_id: String(row.activity_id || ""),
+        visual_slot: String(row.visual_slot || ""),
+        render_source: { kind: "data_url", value: tinyDataUrl(row.affordance_id) }
+      };
+    })
+  };
+}
+
 function activityBlocks(html) {
   const out = [];
   const source = String(html || "");
@@ -271,4 +309,87 @@ test("legacy renderer unchanged for climate fixture hook count", () => {
   assert.ok(legacy && !legacy.error);
   const legacyHooks = discoverVisualAffordanceHooks(String(legacy.html || ""));
   assert.ok(legacyHooks.length >= 2);
+});
+
+test("moments mode: preserves activity affordance slots from beats path", () => {
+  const page = buildFourAffordanceMomentsFixture();
+  const manifest = attachAllManifestAssets(page);
+  const beatsRendered = vnext.renderLearnerPageHtml(page, {
+    compositionMode: "beats"
+  });
+  assert.equal(beatsRendered.error, null, beatsRendered.error || "beats render failed");
+  const beatsHtml = String(beatsRendered.html || "");
+  const baselineActivityHooks = discoverVisualAffordanceHooks(beatsHtml).filter(function (hook) {
+    return hook && hook.affordanceId && hook.activityId;
+  });
+  assert.ok(baselineActivityHooks.length > 0, "expected at least one activity affordance hook");
+
+  const rendered = vnext.renderLearnerPageHtml(page, {
+    compositionMode: "moments"
+  });
+  assert.equal(rendered.error, null, rendered.error || "render failed");
+  const html = String(rendered.html || "");
+  assert.match(html, /data-composition-mode="moments"/);
+  assert.match(html, /data-beats-fallback-activity-count="0"/);
+
+  const momentsHooks = discoverVisualAffordanceHooks(html);
+
+  // Activity-scoped affordances stay in matching activity + slot.
+  const blocks = activityBlocks(html);
+  baselineActivityHooks.forEach(function (hook) {
+    const momentHook = momentsHooks.find(function (candidate) {
+      return (
+        candidate &&
+        candidate.affordanceId === hook.affordanceId &&
+        candidate.activityId === hook.activityId &&
+        candidate.slot === hook.slot
+      );
+    });
+    assert.ok(momentHook, "expected moments hook for " + hook.affordanceId);
+    const block = blocks.find((b) => new RegExp('data-activity-id="' + hook.activityId + '"').test(b));
+    assert.ok(block, "expected activity block for " + hook.activityId);
+    assert.match(block, new RegExp('data-affordance-id="' + hook.affordanceId + '"'));
+    assert.match(block, new RegExp('data-visual-slot="' + hook.slot + '"'));
+  });
+
+  // Restored hooks resolve to visual figure + lightbox in moments once assets are supplied.
+  const renderedWithAssets = vnext.renderLearnerPageHtml(page, {
+    compositionMode: "moments",
+    visualAssets: manifest
+  });
+  assert.equal(renderedWithAssets.error, null, renderedWithAssets.error || "render with assets failed");
+  const withAssetsHtml = String(renderedWithAssets.html || "");
+  const withAssetsDiag = renderedWithAssets.visualAssetDiagnostics || {};
+  assert.ok((withAssetsHtml.match(/util-visual-asset-image/g) || []).length >= baselineActivityHooks.length);
+  assert.ok((withAssetsHtml.match(/util-learner-content-expand/g) || []).length >= baselineActivityHooks.length);
+  assert.ok(
+    Number(withAssetsDiag.matchedAssetCount || 0) >= baselineActivityHooks.length,
+    "matched assets should cover activity hooks"
+  );
+});
+
+test("diagnostics: unmatched supplied assets emit explicit VAR_ASSET_UNPLACED warnings", () => {
+  const page = buildFourAffordanceMomentsFixture();
+  const manifest = attachAllManifestAssets(page);
+  // Add an asset that cannot match any hook.
+  manifest.assets.push({
+    brief_id: "vb-unmatched",
+    affordance_id: "va-unmatched",
+    activity_id: "A9",
+    scope: "activity",
+    visual_slot: "materials-entry",
+    render_source: { kind: "data_url", value: tinyDataUrl("unmatched") }
+  });
+  const rendered = vnext.renderLearnerPageHtml(page, {
+    compositionMode: "moments",
+    visualAssets: manifest
+  });
+  assert.equal(rendered.error, null, rendered.error || "render failed");
+  const diagnostics = rendered.visualAssetDiagnostics || {};
+  const warnings = Array.isArray(diagnostics.warnings) ? diagnostics.warnings : [];
+  assert.ok(warnings.some((w) => String(w.code || "") === "VAR_ASSET_UNPLACED"));
+  assert.equal(typeof diagnostics.suppliedAssetCount, "number");
+  assert.equal(typeof diagnostics.matchedAssetCount, "number");
+  assert.ok(Array.isArray(diagnostics.unmatchedAssets));
+  assert.ok(diagnostics.unmatchedAssets.some((row) => String(row.affordance_id || "") === "va-unmatched"));
 });

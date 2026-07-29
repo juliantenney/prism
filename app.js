@@ -214,6 +214,8 @@
     assessmentItemsShowAdvancedOptions: false,
     utilitiesLastHtml: "",
     utilitiesLastFileName: "",
+    utilitiesLastRenderInputNormalized: "",
+    utilitiesDownloadTestLog: [],
     utilitiesOutputWorkspace: null,
     utilitiesPresentationMode: "single_page",
     utilitiesRendererVersion: "vnext",
@@ -484,7 +486,8 @@
     els.utilitiesJsonInput = document.getElementById("utilitiesJsonInput");
     els.utilitiesAssembleCurrentRunBtn = document.getElementById("utilitiesAssembleCurrentRunBtn");
     els.utilitiesGenerateBtn = document.getElementById("utilitiesGenerateBtn");
-    els.utilitiesDownloadBtn = document.getElementById("utilitiesDownloadBtn");
+    els.utilitiesDownloadHtmlBtn = document.getElementById("utilitiesDownloadHtmlBtn");
+    els.utilitiesDownloadPackageBtn = document.getElementById("utilitiesDownloadPackageBtn");
     els.utilitiesOpenTabBtn = document.getElementById("utilitiesOpenTabBtn");
     els.utilitiesClearBtn = document.getElementById("utilitiesClearBtn");
     els.utilitiesPreviewPanel = document.getElementById("utilitiesPreviewPanel");
@@ -43357,9 +43360,11 @@
       ".util-learner-renderer-vnext th,.util-learner-renderer-vnext td{border:1px solid #e5e7eb;padding:.6rem .75rem;text-align:left;vertical-align:top;line-height:1.5}" +
       ".util-learner-renderer-vnext td{font-size:.9375rem;color:#1f2937}" +
       ".util-learner-renderer-vnext th{font-size:.875rem;background:#f9fafb;font-weight:600;color:#374151}" +
-      ".util-learner-renderer-vnext .util-visual-asset{margin:var(--learner-space-3) 0;max-width:100%}" +
-      ".util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px}" +
+      ".util-learner-renderer-vnext .util-visual-asset{margin:var(--learner-space-3) 0;max-width:100%;position:relative}" +
+      ".util-learner-renderer-vnext .util-visual-asset-media{position:relative;display:block;max-width:100%}" +
+      ".util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;cursor:zoom-in}" +
       ".util-learner-renderer-vnext .util-visual-asset-caption{margin-top:var(--learner-space-1);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}" +
+      getUtilityLearnerContentViewerCss() +
       ".util-visual-affordance{display:none!important}" +
       getUtilityVnextCompositionMomentPresentationCss() +
       iconCss +
@@ -47316,9 +47321,7 @@
     if (els.utilitiesPreviewFrame) {
       els.utilitiesPreviewFrame.srcdoc = "";
     }
-    if (els.utilitiesDownloadBtn) {
-      els.utilitiesDownloadBtn.disabled = true;
-    }
+    setUtilitiesDownloadControlsDisabled(true);
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.disabled = true;
     }
@@ -47380,13 +47383,39 @@
     return bootstrap + html;
   }
 
-  var UTILITIES_PREVIEW_FRAME_SANDBOX = "allow-same-origin";
+  // allow-scripts: trusted Prism-generated scripts only (journey nav, content viewer).
+  // Learner text/HTML is escaped by the renderer; do not weaken further.
+  var UTILITIES_PREVIEW_FRAME_SANDBOX = "allow-same-origin allow-scripts";
 
   function ensureUtilitiesPreviewFrameSandbox() {
     if (!els.utilitiesPreviewFrame) return;
     if (els.utilitiesPreviewFrame.getAttribute("sandbox") !== UTILITIES_PREVIEW_FRAME_SANDBOX) {
       els.utilitiesPreviewFrame.setAttribute("sandbox", UTILITIES_PREVIEW_FRAME_SANDBOX);
     }
+  }
+
+  function getLearnerContentViewerApi() {
+    return (
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_CONTENT_VIEWER) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_CONTENT_VIEWER) ||
+      null
+    );
+  }
+
+  function getUtilityLearnerContentViewerCss() {
+    var api = getLearnerContentViewerApi();
+    if (api && typeof api.buildCss === "function") {
+      return String(api.buildCss() || "");
+    }
+    return "";
+  }
+
+  function utilityEnhanceExportHtmlWithLearnerContentViewer(htmlText) {
+    var api = getLearnerContentViewerApi();
+    if (!api || typeof api.enhanceStandaloneLearnerHtml !== "function") {
+      return String(htmlText || "");
+    }
+    return api.enhanceStandaloneLearnerHtml(htmlText);
   }
 
   function utilityGetPreviewDocument() {
@@ -47737,6 +47766,8 @@
           ? String(asset.render_source.value || "")
           : "";
       var blobUrl = objectUrls[briefId] ? String(objectUrls[briefId]) : "";
+      // Preview-only optimization: large inline data URLs can fail/stall in iframe srcdoc.
+      // Keep session preview on object URLs while export paths stay on durable render_source.
       if (dataUrl && blobUrl && html.indexOf(dataUrl) !== -1) {
         html = html.split(dataUrl).join(blobUrl);
       }
@@ -47744,15 +47775,44 @@
     return html;
   }
 
+  function normalizeUtilitiesVisualAssetSourcesForDurableHtml(htmlText) {
+    var html = String(htmlText || "");
+    if (!html) return html;
+    var ws = state.utilitiesOutputWorkspace;
+    if (!ws || !ws.assetsByBriefId) return html;
+    var objectUrlsByBriefId = state.utilitiesVisualAssetObjectUrlsByBriefId || {};
+    var briefIds = Object.keys(ws.assetsByBriefId);
+    var i;
+    for (i = 0; i < briefIds.length; i += 1) {
+      var briefId = briefIds[i];
+      var asset = ws.assetsByBriefId[briefId];
+      var renderSource =
+        asset &&
+        asset.render_source &&
+        String(asset.render_source.kind || "") === "data_url"
+          ? String(asset.render_source.value || "")
+          : "";
+      if (!renderSource) continue;
+      var previewBlob =
+        asset &&
+        asset.preview_source &&
+        String(asset.preview_source.kind || "") === "object_url"
+          ? String(asset.preview_source.value || "")
+          : "";
+      var trackedBlob = objectUrlsByBriefId[briefId] ? String(objectUrlsByBriefId[briefId]) : "";
+      // Keep preview/export durable: replace ephemeral blob refs with canonical data URLs.
+      if (previewBlob && html.indexOf(previewBlob) !== -1) {
+        html = html.split(previewBlob).join(renderSource);
+      }
+      if (trackedBlob && html.indexOf(trackedBlob) !== -1) {
+        html = html.split(trackedBlob).join(renderSource);
+      }
+    }
+    return html;
+  }
+
   function resolveUtilitiesCompositionModeForRender(options) {
     var opts = options && typeof options === "object" ? options : {};
-    if (opts.visualAssets && Array.isArray(opts.visualAssets.assets) && opts.visualAssets.assets.length) {
-      return "beats";
-    }
-    var manifest = getUtilitiesVisualAssetManifestForPreview();
-    if (manifest && manifest.assets && manifest.assets.length) {
-      return "beats";
-    }
     if (opts.compositionMode) return opts.compositionMode;
     if (state.utilitiesCompositionMode) return state.utilitiesCompositionMode;
     return undefined;
@@ -47946,8 +48006,9 @@
       }
     });
     state.utilitiesOutputWorkspace.rendererPlacementByBriefId = byBriefId;
-    state.utilitiesLastHtml = htmlText;
-    applyUtilityPreviewHtml(htmlText, {
+    var durableHtmlText = normalizeUtilitiesVisualAssetSourcesForDurableHtml(htmlText);
+    state.utilitiesLastHtml = durableHtmlText;
+    applyUtilityPreviewHtml(durableHtmlText, {
       preserveView: true,
       previewRevision: revision,
       reason: why,
@@ -48151,9 +48212,7 @@
         state.utilitiesOutputWorkspace.previewRevision = revision;
       }
     }
-    if (els.utilitiesDownloadBtn) {
-      els.utilitiesDownloadBtn.disabled = !htmlText.trim();
-    }
+    setUtilitiesDownloadControlsDisabled(!htmlText.trim());
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.disabled = !htmlText.trim();
     }
@@ -48331,9 +48390,48 @@
     URL.revokeObjectURL(url);
   }
 
+  function triggerBinaryDownload(bytes, fileName, mimeType) {
+    var blob = new Blob([bytes], {
+      type: String(mimeType || "application/octet-stream")
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function getUtilityHtmlDownloadName(baseName) {
     var safeBase = String(baseName || "").trim() || "rendered-output";
     return slugify(safeBase) + ".html";
+  }
+
+  function getUtilityLearnerPackageZipName(baseName) {
+    var api =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
+      null;
+    var safeBase = String(baseName || "")
+      .trim()
+      .replace(/\.html$/i, "");
+    if (!safeBase) safeBase = "rendered-output";
+    if (api && typeof api.buildLearnerPackageZipBasename === "function") {
+      return api.buildLearnerPackageZipBasename(safeBase);
+    }
+    return slugify(safeBase) + "-learner-package.zip";
+  }
+
+  function setUtilitiesDownloadControlsDisabled(disabled) {
+    var isDisabled = !!disabled;
+    if (els.utilitiesDownloadHtmlBtn) {
+      els.utilitiesDownloadHtmlBtn.disabled = isDisabled;
+    }
+    if (els.utilitiesDownloadPackageBtn) {
+      els.utilitiesDownloadPackageBtn.disabled = isDisabled;
+    }
   }
 
   function utilityNormalizeUtilitiesJsonInput(rawInput) {
@@ -48641,12 +48739,13 @@
     if (headerHtml) bodyParts.push(headerHtml);
     bodyParts.push(content);
     if (hasJourneyNav) bodyParts.push(utilityBuildLearningJourneyNavScript());
-    return buildUtilityStandaloneExportDocument({
+    var standalone = buildUtilityStandaloneExportDocument({
       title: meta.title || "Learner page",
       bodyClass: bodyClass,
       bodyHtml: bodyParts.join(""),
       cssText: getUtilityVnextProseMeasureCss()
     });
+    return utilityEnhanceExportHtmlWithLearnerContentViewer(standalone);
   }
 
   function runLearnerRendererVNextExport(parsed, exportOpts) {
@@ -48888,6 +48987,41 @@
     state.utilitiesPresentationMode = presentationMode === "learning_object" ? "learning_object" : "single_page";
     var rendererVersion = getUtilitiesRendererVersion();
     state.utilitiesRendererVersion = rendererVersion;
+    var hasAttachedVisualAssets =
+      !!(
+        state.utilitiesOutputWorkspace &&
+        state.utilitiesOutputWorkspace.visualAssetManifest &&
+        Array.isArray(state.utilitiesOutputWorkspace.visualAssetManifest.assets) &&
+        state.utilitiesOutputWorkspace.visualAssetManifest.assets.length > 0
+      );
+    var canReuseLearnerPreviewWithAssets =
+      String(parsed.artifact_type || "").toLowerCase() === "page" &&
+      hasAttachedVisualAssets &&
+      !!(
+        state.utilitiesOutputWorkspace &&
+        state.utilitiesOutputWorkspace.assembledPageSnapshot &&
+        String(state.utilitiesLastHtml || "").trim()
+      );
+    if (canReuseLearnerPreviewWithAssets) {
+      // UX guard: once images are attached, Preview HTML should not reset image-job state.
+      // Route through the same learner-page refresh path users rely on in Visual Jobs.
+      handleUtilitiesVisualJobViewLearnerPage();
+      showToast("Showing current learner page with attached images.", "success");
+      return;
+    }
+    if (
+      String(parsed.artifact_type || "").toLowerCase() === "page" &&
+      hasAttachedVisualAssets &&
+      String(state.utilitiesLastRenderInputNormalized || "") === normalizedRaw &&
+      String(state.utilitiesLastHtml || "").trim()
+    ) {
+      applyUtilityPreviewHtml(state.utilitiesLastHtml, {
+        reason: "reuse_current_with_visual_assets",
+        manifestAssetCount: state.utilitiesOutputWorkspace.visualAssetManifest.assets.length
+      });
+      showToast("Showing current preview with attached images.", "success");
+      return;
+    }
     state.visualAssetPreviewRevision += 1;
     var generateRevision = state.visualAssetPreviewRevision;
     var baseName = getUtilityOutputBaseName(
@@ -48924,10 +49058,12 @@
           applyUtilityPreviewError("Rendered output is empty.");
           return null;
         }
-        state.utilitiesLastHtml = htmlText;
+        var durableHtmlText = normalizeUtilitiesVisualAssetSourcesForDurableHtml(htmlText);
+        state.utilitiesLastHtml = durableHtmlText;
+        state.utilitiesLastRenderInputNormalized = normalizedRaw;
         state.utilitiesLastFileName = getUtilityHtmlDownloadName(baseName);
         var manifest = getUtilitiesVisualAssetManifestForPreview();
-        applyUtilityPreviewHtml(htmlText, {
+        applyUtilityPreviewHtml(durableHtmlText, {
           previewRevision: generateRevision,
           reason: "generate",
           manifestAssetCount:
@@ -49028,8 +49164,101 @@
       return;
     }
     var fileName = String(state.utilitiesLastFileName || "rendered-output.html").trim();
+    if (Array.isArray(state.utilitiesDownloadTestLog)) {
+      state.utilitiesDownloadTestLog.push("html");
+    }
     triggerHtmlDownload(htmlText, fileName);
     showToast("HTML downloaded.", "success");
+  }
+
+  function handleUtilitiesDownloadLearnerPackage() {
+    var htmlText = String(state.utilitiesLastHtml || "").trim();
+    if (!htmlText) {
+      showToast("Preview HTML first, then download.", "error");
+      return;
+    }
+
+    var packageApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
+      null;
+    var zipApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE_ZIP) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE_ZIP) ||
+      null;
+    if (
+      !packageApi ||
+      typeof packageApi.buildLearnerPackage !== "function" ||
+      !zipApi ||
+      typeof zipApi.serializeLearnerPackageToZip !== "function"
+    ) {
+      showToast("Learner package export is unavailable.", "error");
+      return;
+    }
+
+    var exportHtml = utilityEnhanceExportHtmlWithMathJax(htmlText);
+    var manifest = getUtilitiesVisualAssetManifestForExport();
+    // Snapshot only — do not mutate workspace / page / planner state.
+    var built = packageApi.buildLearnerPackage({
+      html: exportHtml,
+      visualAssetManifest: manifest,
+      pageSlug: String(state.utilitiesLastFileName || "rendered-output")
+        .replace(/\.html$/i, ""),
+      builtAt: new Date().toISOString()
+    });
+    if (!built || !built.ok || !built.package) {
+      showToast(
+        (built && built.error && built.error.message) ||
+          "Could not build learner package.",
+        "error"
+      );
+      return;
+    }
+
+    var zipped = zipApi.serializeLearnerPackageToZip(built.package);
+    if (!zipped || !zipped.ok || !zipped.bytes) {
+      showToast(
+        (zipped && zipped.error && zipped.error.message) ||
+          "Could not serialize learner package ZIP.",
+        "error"
+      );
+      return;
+    }
+
+    var zipName = getUtilityLearnerPackageZipName(
+      state.utilitiesLastFileName || "rendered-output"
+    );
+    if (Array.isArray(state.utilitiesDownloadTestLog)) {
+      state.utilitiesDownloadTestLog.push("zip");
+    }
+    triggerBinaryDownload(zipped.bytes, zipName, "application/zip");
+
+    if (built.warnings && built.warnings.length) {
+      showToast(
+        "Learner package downloaded with " +
+          String(built.warnings.length) +
+          " warning(s).",
+        "warning"
+      );
+    } else {
+      showToast("Learner package downloaded.", "success");
+    }
+  }
+
+  function getUtilitiesVisualAssetManifestForExport() {
+    var ws = state.utilitiesOutputWorkspace;
+    if (
+      ws &&
+      ws.visualAssetManifest &&
+      typeof ws.visualAssetManifest === "object"
+    ) {
+      try {
+        return JSON.parse(JSON.stringify(ws.visualAssetManifest));
+      } catch (_) {
+        return { assets: [] };
+      }
+    }
+    return { assets: [] };
   }
 
   function handleUtilitiesOpenInNewTab() {
@@ -49077,13 +49306,12 @@
     if (els.utilitiesCopyAnnounce) {
       els.utilitiesCopyAnnounce.textContent = "";
     }
-    if (els.utilitiesDownloadBtn) {
-      els.utilitiesDownloadBtn.disabled = true;
-    }
+    setUtilitiesDownloadControlsDisabled(true);
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.disabled = true;
     }
     state.utilitiesLastHtml = "";
+    state.utilitiesLastRenderInputNormalized = "";
     state.utilitiesLastFileName = "";
     state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
     state.utilitiesPresentationMode = "single_page";
@@ -49315,8 +49543,17 @@
         handleUtilitiesAssembleFromCurrentWorkflowRun
       );
     }
-    if (els.utilitiesDownloadBtn) {
-      els.utilitiesDownloadBtn.addEventListener("click", handleUtilitiesDownloadHtml);
+    if (els.utilitiesDownloadHtmlBtn) {
+      els.utilitiesDownloadHtmlBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        handleUtilitiesDownloadHtml();
+      });
+    }
+    if (els.utilitiesDownloadPackageBtn) {
+      els.utilitiesDownloadPackageBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        handleUtilitiesDownloadLearnerPackage();
+      });
     }
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.addEventListener("click", handleUtilitiesOpenInNewTab);
@@ -50235,8 +50472,52 @@
     prismTestApi.setUtilitiesLastHtmlForTest = function (value) {
       state.utilitiesLastHtml = String(value || "");
     };
+    prismTestApi.setUtilitiesLastRenderInputNormalizedForTest = function (value) {
+      state.utilitiesLastRenderInputNormalized = String(value || "");
+    };
+    prismTestApi.getUtilitiesLastRenderInputNormalizedForTest = function () {
+      return String(state.utilitiesLastRenderInputNormalized || "");
+    };
     prismTestApi.getUtilitiesLastHtmlForTest = function () {
       return String(state.utilitiesLastHtml || "");
+    };
+    prismTestApi.setUtilitiesDownloadControlsDisabledForTest = setUtilitiesDownloadControlsDisabled;
+    prismTestApi.getUtilitiesDownloadControlsStateForTest = function () {
+      return {
+        htmlDisabled: !!(els.utilitiesDownloadHtmlBtn && els.utilitiesDownloadHtmlBtn.disabled),
+        packageDisabled: !!(
+          els.utilitiesDownloadPackageBtn && els.utilitiesDownloadPackageBtn.disabled
+        ),
+        htmlLabel: els.utilitiesDownloadHtmlBtn
+          ? String(els.utilitiesDownloadHtmlBtn.textContent || "").trim()
+          : "",
+        packageLabel: els.utilitiesDownloadPackageBtn
+          ? String(els.utilitiesDownloadPackageBtn.textContent || "").trim()
+          : ""
+      };
+    };
+    prismTestApi.clickUtilitiesDownloadHtmlBtnForTest = function () {
+      if (els.utilitiesDownloadHtmlBtn && typeof els.utilitiesDownloadHtmlBtn.click === "function") {
+        els.utilitiesDownloadHtmlBtn.click();
+      }
+    };
+    prismTestApi.clickUtilitiesDownloadPackageBtnForTest = function () {
+      if (
+        els.utilitiesDownloadPackageBtn &&
+        typeof els.utilitiesDownloadPackageBtn.click === "function"
+      ) {
+        els.utilitiesDownloadPackageBtn.click();
+      }
+    };
+    prismTestApi.handleUtilitiesDownloadHtmlForTest = handleUtilitiesDownloadHtml;
+    prismTestApi.handleUtilitiesDownloadLearnerPackageForTest = handleUtilitiesDownloadLearnerPackage;
+    prismTestApi.clearUtilitiesDownloadTestLogForTest = function () {
+      state.utilitiesDownloadTestLog = [];
+    };
+    prismTestApi.getUtilitiesDownloadTestLogForTest = function () {
+      return Array.isArray(state.utilitiesDownloadTestLog)
+        ? state.utilitiesDownloadTestLog.slice()
+        : [];
     };
     prismTestApi.setSelectedWorkflowIdForTest = function (id) {
       state.selectedWorkflowId = id ? String(id) : null;
@@ -50554,6 +50835,9 @@
       };
     };
     prismTestApi.handleUtilitiesClearForTest = handleUtilitiesClear;
+    prismTestApi.handleUtilitiesGenerateForTest = handleUtilitiesGenerate;
+    prismTestApi.attachEventListenersForTest = attachEventListeners;
+    prismTestApi.cacheElementsForTest = cacheElements;
     prismTestApi.refreshUtilitiesOutputWorkspaceFromPageForTest = refreshUtilitiesOutputWorkspaceFromPage;
     prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
     prismTestApi.utilityMaybeRenderVisualAffordanceHookForTest =

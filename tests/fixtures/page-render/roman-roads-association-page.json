@@ -1,0 +1,442 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Roads of Empire",
+  "audience": "Learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "Roman roads overview."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "Learning purpose."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "Knowledge summary."
+    },
+    "study_tips": {
+      "format": "markdown",
+      "body": "Study tips."
+    }
+  },
+  "learning_outcomes": [
+    {
+      "outcome_id": "LO1",
+      "statement": "LO1"
+    },
+    {
+      "outcome_id": "LO2",
+      "statement": "LO2"
+    },
+    {
+      "outcome_id": "LO3",
+      "statement": "LO3"
+    },
+    {
+      "outcome_id": "LO4",
+      "statement": "LO4"
+    },
+    {
+      "outcome_id": "LO5",
+      "statement": "LO5"
+    }
+  ],
+  "learning_sequence": {
+    "sequence_type": "self_directed_study_flow",
+    "ordered_activity_ids": [
+      "A1",
+      "A4",
+      "A5"
+    ],
+    "timeline": [],
+    "navigation": {
+      "entry_activity_id": "A1",
+      "completion_activity_id": "A5",
+      "progression_rule": "complete_in_order"
+    }
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Origins and Expansion of the Roman Road Network",
+      "learner_task": "1. Study the explanatory text and worked example.\n2. Examine the sample output and identify how evidence is linked to interpretation.\n3. Create a brief concept map showing the links between imperial expansion, communication, administration, and road building.\n4. Complete the verification checklist and revise your concept map if needed.",
+      "expected_output": "Produce a concise concept map and accompanying explanation.",
+      "activity_preamble": "Begin by building a foundation for the rest of the session.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text"
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example"
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output"
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist"
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Why Roman Roads Expanded",
+          "body_format": "markdown",
+          "body": "Teaching text."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "activity_id": "A1",
+          "title": "Worked Historical Reasoning Example",
+          "body_format": "markdown",
+          "body": "Worked example."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Sample Concept Map Outcome",
+          "body_format": "markdown",
+          "body": "Sample output."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Self-Check",
+          "body_format": "markdown",
+          "body": "Checklist."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": [
+        "LO1"
+      ],
+      "reasoning_orientation": "Look for relationships."
+    },
+    {
+      "activity_id": "A4",
+      "title": "Roman Roads, Cultural Exchange, and Romanisation",
+      "learner_task": "1. Examine the case-study scenarios.\n2. Study the worked judgement example.\n3. Complete the decision table using the provided criteria.\n4. Write an independent historical judgement on the role of roads in cultural exchange and Romanisation.\n5. Complete the checklist and revise your conclusion.",
+      "expected_output": "Produce a justified evaluative judgement.",
+      "activity_preamble": "Historians debate the significance of Roman roads in cultural change.",
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "type": "scenario"
+        },
+        {
+          "material_id": "A4-M2",
+          "type": "worked_example"
+        },
+        {
+          "material_id": "A4-M3",
+          "type": "decision_table"
+        },
+        {
+          "material_id": "A4-M4",
+          "type": "template"
+        },
+        {
+          "material_id": "A4-M5",
+          "type": "checklist"
+        },
+        {
+          "material_id": "A4-M6",
+          "type": "transfer_prompt"
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "scenario",
+          "activity_id": "A4",
+          "title": "Provincial Case Studies",
+          "body_format": "markdown",
+          "body": "Case studies."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "worked_example",
+          "activity_id": "A4",
+          "title": "Worked Historical Judgement",
+          "body_format": "markdown",
+          "body": "Worked judgement."
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "decision_table",
+          "activity_id": "A4",
+          "title": "Evaluation Table",
+          "body_format": "markdown",
+          "body": "| Criterion | Evidence |"
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "template",
+          "activity_id": "A4",
+          "title": "Independent Judgement Template",
+          "body_format": "markdown",
+          "body": "## Historical Judgement"
+        },
+        {
+          "material_id": "A4-M5",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Evaluation Checklist",
+          "body_format": "markdown",
+          "body": "Checklist."
+        },
+        {
+          "material_id": "A4-M6",
+          "material_type": "transfer_prompt",
+          "activity_id": "A4",
+          "title": "Transfer Challenge",
+          "body_format": "markdown",
+          "body": "Transfer prompt."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": [
+        "LO4"
+      ],
+      "reasoning_orientation": "Evaluate rather than describe.",
+      "argument_structure_hint": "State a judgement, support it with evidence."
+    },
+    {
+      "activity_id": "A5",
+      "title": "Interpreting Evidence and Synthesising Significance",
+      "learner_task": "1. Review the source evidence and reference material.\n2. Plan a short historical briefing explaining the significance of Roman roads.\n3. Complete the planning template.\n4. Produce a synthesis response supported by evidence from across the session.\n5. Review the consolidation summary and complete the final transfer prompt.",
+      "expected_output": "Produce a concise historical briefing.",
+      "activity_preamble": "Capstone synthesis activity.",
+      "required_materials": [
+        {
+          "material_id": "A5-M1",
+          "type": "reference_table"
+        },
+        {
+          "material_id": "A5-M2",
+          "type": "planning_table"
+        },
+        {
+          "material_id": "A5-M3",
+          "type": "template"
+        },
+        {
+          "material_id": "A5-M4",
+          "type": "checklist"
+        },
+        {
+          "material_id": "A5-M5",
+          "type": "consolidation_summary"
+        },
+        {
+          "material_id": "A5-M6",
+          "type": "transfer_prompt"
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "reference_table",
+          "activity_id": "A5",
+          "title": "Evidence Reference",
+          "body_format": "markdown",
+          "body": "| Area | Key Evidence |"
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "planning_table",
+          "activity_id": "A5",
+          "title": "Synthesis Planner",
+          "body_format": "markdown",
+          "body": "| Claim | Supporting Evidence |"
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "template",
+          "activity_id": "A5",
+          "title": "Historical Briefing Template",
+          "body_format": "markdown",
+          "body": "## Introduction"
+        },
+        {
+          "material_id": "A5-M4",
+          "material_type": "checklist",
+          "activity_id": "A5",
+          "title": "Final Review",
+          "body_format": "markdown",
+          "body": "Final checklist."
+        },
+        {
+          "material_id": "A5-M5",
+          "material_type": "consolidation_summary",
+          "activity_id": "A5",
+          "title": "What to Remember",
+          "body_format": "markdown",
+          "body": "Consolidation summary."
+        },
+        {
+          "material_id": "A5-M6",
+          "material_type": "transfer_prompt",
+          "activity_id": "A5",
+          "title": "Beyond Rome",
+          "body_format": "markdown",
+          "body": "Transfer prompt."
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "grouping": "individual",
+      "duration_minutes": 12,
+      "mapped_learning_outcomes": [
+        "LO5"
+      ],
+      "reasoning_orientation": "Synthesise across the session.",
+      "transfer_or_application_task": "Apply the interpretive framework developed during the session to explain why infrastructure can become historically significant beyond its immediate practical purpose."
+    }
+  ]
+}

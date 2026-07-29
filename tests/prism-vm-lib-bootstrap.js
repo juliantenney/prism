@@ -12,6 +12,9 @@ const DEFAULT_LIBS = [
   "lib/prism-image-brief-compiler.js",
   "lib/prism-visual-assets.js",
   "lib/utilities-visual-jobs-workspace.js",
+  "lib/learner-package.js",
+  "lib/learner-package-zip.js",
+  "lib/learner-content-viewer.js",
   "lib/gam-output-format.js",
   "lib/ld-table-fidelity.js",
   "lib/ld-materials-copy.js",
@@ -75,7 +78,10 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_VISUAL_JOBS_PLANNER",
       "PRISM_IMAGE_BRIEF_COMPILER",
       "PRISM_VISUAL_ASSETS",
-      "PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE"
+      "PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE",
+      "PRISM_LEARNER_PACKAGE",
+      "PRISM_LEARNER_PACKAGE_ZIP",
+      "PRISM_LEARNER_CONTENT_VIEWER"
     ].forEach(function (key) {
       if (sandbox[key]) {
         sandbox.window[key] = sandbox[key];

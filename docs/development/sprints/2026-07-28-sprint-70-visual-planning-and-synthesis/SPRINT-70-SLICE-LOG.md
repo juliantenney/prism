@@ -131,3 +131,16 @@ Use this file to record executed slice outcomes. Keep entries concise and factua
 - **Decisions recorded:** 
 - **Residual risks:** 
 - **Rollback point:** 
+
+## Final slice E1–E6 — Durable Learner Package Export
+
+- **Status:** complete
+- **Commit:** none (uncommitted)
+- **Goal:** Explicit HTML-only vs LearnerPackage ZIP export; provider-neutral package model before ZIP serialisation.
+- **Scope delivered:** `lib/learner-package.js`, `lib/learner-package-zip.js` (fflate), Download menu (HTML / ZIP), Open-in-New-Tab unchanged, MathJax CDN offline note.
+- **Files changed:** see `learner-package-export.md`; `app.js`, `index.html`, `style.css`, `package.json`, tests `sprint-70-slice-e1`…`e6`.
+- **Tests run:** `node --test tests/sprint-70-slice-*.test.js` — 244 pass / 1 skip (puppeteer) / 0 fail (after E6).
+- **Browser verification:** automated E6 package extract/offline path checks; full UI attach→download checklist remains operator-confirmable.
+- **Decisions recorded:** no auto-switch by asset presence; no SCORM; no MathJax vendoring; no `assets/manifest.json` this sprint.
+- **Residual risks:** MathJax CDN still required offline for math pages; package omit+warn if durable `data_url` missing.
+- **Rollback point:** remove learner-package modules + download menu wiring; restore single Download HTML button.

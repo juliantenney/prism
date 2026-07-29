@@ -122,6 +122,11 @@ test("Slice 7A: concept map / process / comparison fixtures discourage text-heav
   const comparisonPrompt = workspace.buildVisualJobHumanPrompt(briefsByRep.comparison);
   assert.match(comparisonPrompt, /Parallel layout|aligned comparison/i);
   assert.match(comparisonPrompt, /paragraph-length descriptions/i);
+  assert.match(comparisonPrompt, /Preferred visual output:/i);
+  assert.match(comparisonPrompt, /Explanatory diagrams/i);
+  assert.match(comparisonPrompt, /Conceptual relationship diagrams/i);
+  assert.match(comparisonPrompt, /Worksheets or activity sheets/i);
+  assert.match(comparisonPrompt, /Question prompts inside the image/i);
 });
 
 test("Slice 7A: annotated_system fixture limits label clutter and requires rendered image", () => {
@@ -252,6 +257,26 @@ test("Slice 7A: prompt-quality diagnostics pass for successful briefs", () => {
   assert.equal(d.representation_guidance_present, true);
   assert.equal(d.finished_visual_reminder_present, true);
   assert.ok(["concise", "extended", "unusually_long"].includes(d.prompt_length_class));
+});
+
+test("Slice 7A: representative affordances include explicit non-worksheet guardrails", () => {
+  // Add annotated_system from the dedicated fixture
+  const annotatedWs = workspace.buildVisualJobsWorkspaceState(annotatedSystemPage());
+  const localByRep = Object.assign({}, briefsByRep);
+  annotatedWs.compilerResult.briefs.forEach((b) => { localByRep[b.preferred_representation] = b; });
+  const reps = ["concept_map", "process", "comparison", "annotated_system"];
+  reps.forEach((rep) => {
+    const brief = localByRep[rep];
+    assert.ok(brief, rep + " brief");
+    const prompt = workspace.buildVisualJobHumanPrompt(brief);
+    assert.match(prompt, /The image should explain concepts/i);
+    assert.match(prompt, /Worksheets or activity sheets/i);
+    assert.match(prompt, /Tables intended for learner completion/i);
+    // "Moving learner exercises" only appears in activity mode
+    if (/activity learning support/i.test(prompt)) {
+      assert.match(prompt, /Moving learner exercises into the image itself/i);
+    }
+  });
 });
 
 test("Slice 7A: UI keeps simplified card and exposes rendered-image note", () => {

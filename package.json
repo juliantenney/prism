@@ -9,6 +9,7 @@
     "build:learner-renderer-kitchen-sink-fixture": "node scripts/build-learner-renderer-kitchen-sink-fixture.js"
   },
   "dependencies": {
+    "fflate": "^0.8.2",
     "lucide": "^1.22.0"
   }
 }

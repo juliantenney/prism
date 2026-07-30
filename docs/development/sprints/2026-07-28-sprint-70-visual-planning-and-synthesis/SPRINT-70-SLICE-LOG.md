@@ -1,6 +1,12 @@
 # Sprint 70 Slice Log
 
+**Sprint status:** Closed (2026-07-30) — [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md)
+
 Use this file to record executed slice outcomes. Keep entries concise and factual.
+
+**Closure note:** At formal close, only **Final slice E1–E6** is recorded complete below. Slices 1–10 retain template “not started” rows and were **not** fully reconciled to implementation history. Do not invent completion claims for those rows without a separate ledger update.
+
+---
 
 ## Slice 1 — Planning contract baseline
 

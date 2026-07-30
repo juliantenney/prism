@@ -1,15 +1,16 @@
 # Sprint 70 Context (Compact)
 
+**Status:** Closed (2026-07-30) — [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md)  
+**Successor:** [Sprint 71](../2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md)
+
 ## Baseline
 
 - Recovery code baseline commit: `6853376` (`Stabilise Sprint 69 renderer baseline`).
-- Sprint 70 documentation-pack commit: `pending`
-- Current slice commit: `none`
 - Sprint 70 previous init commit: `2e44803`.
 - Previous init reverted by `541285e`.
 - Historical abandoned snapshot branch: `sprint-70-abandoned-debug-state` (`9aa0d5d`).
 
-## Immutable constraints
+## Immutable constraints (still apply to renderer work)
 
 - Do not destabilize recovered Sprint 69 renderer behavior.
 - Preserve locked recovery fixture:
@@ -29,26 +30,19 @@
 - Visual hook rendering: `lib/learner-renderer-vnext/render-visual-affordance.js`
 - Utilities preview export test boundary: `runUtilityPageExportPipelineForTest` in `app.js`
 
-## Sprint 70 direction
+## Sprint 70 direction (charter — historical)
 
 - Support activity-level and page-level visual planning.
 - Add strong-default Knowledge Summary synthesis visual planning with explicit skip reasons.
-- Use recommended initial Knowledge Summary placement after full summary prose.
-- Implement in narrow slices.
-- Progressive enhancement is mandatory.
+- Implement in narrow slices; progressive enhancement mandatory.
 
-## Known risk clusters
+## Closure outcome (programme)
 
-- Identity conflation (`planning_id` / `evidence_anchor_id` / `job_id` / `asset_id` / `placement_key` / DOM identity).
-- Browser/Node divergence.
-- Hidden prompt invention.
-- Renderer regression from broad coupling.
-
-## Required artifacts
-
-- Handover, design spec, implementation plan, test plan, decisions, checklist, historical evidence report, slice log.
+Sprint 70 closed on the Resource Quality QA methodology track: Benchmark v2.1, Validation Review v2.0, production vs instructional separation, educational priority, stage attribution before prompt change. Active work continues in **Sprint 71** (evidence + attribution only).
 
 ## Current status
 
-- Documentation pack recreated.
-- Sprint 70 production implementation intentionally not started.
+- **Sprint 70 Complete.**
+- Formal closure: [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md).
+- Visual-planning slice log remains **partially unreconciled** (E1–E6 recorded complete; Slices 1–10 template rows not fully ledgered) — see closure gaps.
+- Do not start new Sprint 70 implementation; use Sprint 71 pack for QA evidence work.

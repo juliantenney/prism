@@ -1,5 +1,12 @@
 # Sprint 70 Handover (Recovery Baseline)
 
+**Status:** Closed (2026-07-30) — [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md)  
+**Successor (active):** [Sprint 71 — START HERE](../2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md)
+
+This document is the **historical** recovery-baseline handover for the visual-planning charter. For programme close outcomes, decisions, and Sprint 71 carry-over, use [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md). Do not treat this file as an instruction to reopen Sprint 70 implementation.
+
+---
+
 ## Baseline and intent
 
 This Sprint 70 pack starts from the recovered stable baseline lineage:
@@ -102,15 +109,11 @@ Each slice must:
 
 ## First recommended task (after review)
 
-Start Slice 1 only after explicit review approval:
-
-- define/ratify visual planning contracts for activity-level and page-level synthesis planning;
-- decide where page-level synthesis planning fields live;
-- codify deterministic ID rules before adding runtime behavior.
+~~Start Slice 1 only after explicit review approval~~ — **superseded.** Sprint 70 is closed. Continue in [Sprint 71](../2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md).
 
 ## Hard constraints
 
-- Do not begin production implementation until this pack is reviewed.
-- Do not alter locked heteroscedasticity fixture to satisfy Sprint 70 tests.
-- Do not change beat/composition ownership unless a dedicated slice requires it and regression evidence supports it.
-- Do not introduce external dependencies for Sprint 70 planning slices.
+- Sprint 70 is **closed** — do not reopen implementation under this pack.
+- Do not alter locked heteroscedasticity fixture to satisfy tests without explicit review.
+- Do not change beat/composition ownership unless a dedicated engineering decision requires it and regression evidence supports it.
+- Learner-facing QA evidence work belongs in **Sprint 71**, not here.

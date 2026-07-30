@@ -105,3 +105,68 @@ Format:
 - **Rationale:** Prevents false historical certainty and architectural drift.
 - **Consequences:** Evidence report uses explicit sections for verified/inferred/recommended items.
 - **Alternatives considered:** Narrative-only retrospective; rejected.
+
+---
+
+## Closure decisions (2026-07-30) — QA methodology → Sprint 71
+
+These decisions close the Resource Quality QA methodology track and bind Sprint 71.
+
+**Authoritative IDs for this closure set:** `S70-D01` … `S70-D10` in [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md).  
+Sprint 71 aliases: `S71-D01` … `S71-D10`.
+
+**ID collision warning:** The headings below reuse `D70-10` … `D70-15`, which already exist earlier in this file for the **visual-planning** track (e.g. Accessibility, Knowledge Summary, Fixture hash). Treat the headings below as **narrative aliases only** — do **not** cite `D70-10`…`D70-15` as authoritative closure IDs. Always cite **`S70-D01`…`S70-D10`**.
+
+## D70-10 Sprint 71 will not redesign authoring workflow
+*(Narrative alias of **S70-D01** — not the visual-planning D70-10 Accessibility decision above.)*
+
+- **Decision:** Sprint 71 will not redesign the authoring workflow.
+- **Status:** Accepted
+- **Rationale:** Focus is evidence and attribution for learner-facing generation quality.
+- **Consequences:** Workflow observations may be logged but are not Sprint 71 implementation work.
+- **Alternatives considered:** Workflow redesign sprint; deferred.
+
+## D70-11 No post-generation author questioning in this workstream
+*(Narrative alias of **S70-D02** — not the visual-planning D70-11 Knowledge Summary decision.)*
+
+- **Decision:** Prism will not introduce post-generation author questioning as part of this work.
+- **Status:** Accepted
+- **Rationale:** Improves generation quality in-pipeline rather than compensating after the fact.
+- **Consequences:** Out of scope for Sprint 71 and immediate successors in this line.
+- **Alternatives considered:** Author Q&A loops; rejected for this cycle.
+
+## D70-12 Workflow and author observations non-actionable in Sprint 71
+*(Narrative alias of **S70-D03** + **S70-D04** — not the visual-planning D70-12 Fixture hash decision.)*
+
+- **Decision:** Workflow and author-responsibility observations may be logged but are not actionable in Sprint 71.
+- **Status:** Accepted
+- **Rationale:** Prevents scope bleed while preserving visibility.
+- **Consequences:** Register must retain these categories without treating them as implementation tickets.
+- **Alternatives considered:** Action both classes in Sprint 71; rejected.
+
+## D70-13 Retain rejected benchmark findings
+*(Narrative alias of **S70-D05**.)*
+
+- **Decision:** Rejected benchmark findings remain logged.
+- **Status:** Accepted
+- **Rationale:** Avoid later implementing unnecessary features based on overturned hypotheses.
+- **Consequences:** Improvement register keeps Rejected rows permanently.
+- **Alternatives considered:** Delete rejected rows; rejected.
+
+## D70-14 Sprint 71 is evidence and attribution only
+*(Narrative alias of **S70-D06** + **S70-D07** + **S70-D08**.)*
+
+- **Decision:** Sprint 71 is primarily an evidence-gathering and attribution sprint; pipeline prompts must not be rewritten prematurely.
+- **Status:** Accepted
+- **Rationale:** Patterns must emerge across approximately 15–20 resources before a prompt-improvement sprint.
+- **Consequences:** Prompt capability themes are consolidated for handover; no prompt rewrites unless scope is explicitly changed.
+- **Alternatives considered:** Immediate prompt edits from single reports; rejected.
+
+## D70-15 Attribution distinguishes observation from ownership
+*(Narrative alias of **S70-D09** + **S70-D10**.)*
+
+- **Decision:** A defect must not automatically be attributed to the stage where it becomes visible. QA records distinguish observed location, primary owning stage, contributing stages, and responsibility type.
+- **Status:** Accepted
+- **Rationale:** Visible failures often originate upstream (obligation, handoff, sequencing, assembly).
+- **Consequences:** Sprint 71 register and classification rules enforce multi-field attribution.
+- **Alternatives considered:** Attribute solely by rendered location; rejected.

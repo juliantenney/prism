@@ -56,8 +56,12 @@
 
 ## Final Sprint 70 completion criteria
 
-- [ ] All planned slices completed or explicitly deferred with rationale.
-- [ ] End-to-end acceptance scenarios pass.
-- [ ] Regression suite remains green on recovered baseline tests.
-- [ ] No baseline safety constraint violated.
-- [ ] Final handover/closeout docs updated and internally consistent.
+- [x] Final handover/closeout docs updated — [SPRINT-70-CLOSURE.md](SPRINT-70-CLOSURE.md) (2026-07-30).
+- [x] Programme QA methodology outcomes and Sprint 71 decisions recorded.
+- [x] Successor Sprint 71 pack created and marked Active.
+- [ ] All planned visual-planning slices 1–10 completed or explicitly deferred with rationale — **unresolved at close** (slice log not fully reconciled; E1–E6 recorded complete).
+- [ ] End-to-end visual-planning acceptance scenarios signed off — **not claimed** in closure (gap).
+- [ ] Regression suite remains green on recovered baseline tests — **not re-certified in closure docs**.
+- [ ] No baseline safety constraint violated — treat as ongoing engineering invariant, not closure-attested.
+
+**Sprint 70 is Closed** on the QA-methodology outcome track. Remaining visual-planning ledger gaps are documentation/engineering follow-ups, not Sprint 71 primary work.

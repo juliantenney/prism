@@ -1,22 +1,26 @@
 # Sprint 71 — Learner-Facing Pipeline Quality Evidence and Prompt Attribution
 
-**Status:** Active  
+**Status:** **COMPLETE** (Closed 2026-07-31)  
 **Opened:** 2026-07-30  
-**Type:** Evidence gathering and pipeline-stage attribution (QA)  
+**Closed:** 2026-07-31  
+**Type:** Evidence gathering, pipeline-stage attribution, and instructional-architecture investigation (QA)  
 **Portable pack:** [docs/development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/)  
 **START HERE:** [SPRINT-71-START-HERE.md](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md)  
-**CHARTER:** [SPRINT-71-CHARTER.md](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-CHARTER.md)  
-**HANDOVER:** [HANDOVER.md](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/HANDOVER.md)  
-**Predecessor close:** [Sprint 70 closeout](sprint-70-closeout.md)
+**Final report:** [SPRINT-71-FINAL-REPORT.md](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-FINAL-REPORT.md)  
+**Closeout:** [sprint-71-closeout.md](sprint-71-closeout.md)  
+**Predecessor:** [Sprint 70 closeout](sprint-70-closeout.md)  
+**Successor:** Not opened (Sprint 72 deferred)
 
 ---
 
-## Mission
+## Mission (as executed)
 
-Collect validated quality evidence across approximately 15–20 Prism-generated resources and attribute findings to the canonical Learning Design pipeline stage that should have prevented them.
+Collect validated quality evidence, attribute findings to Learning Design stages, and establish architectural understanding of steerable generation quality — **without** premature rewriting of canonical prompts.
 
-**Not in scope:** premature rewriting of canonical prompts; authoring-workflow redesign; post-generation author questioning.
+## Arc
 
-## Central question
+Question → Benchmarking → Validation → Synthesis → Controlled experiment (`S71-R-010` 88 → `S71-R-011` 91) → Architectural understanding → Closure.
 
-> How can Prism itself generate better learner-facing resources?
+## Outcome
+
+Eleven closed reviews; **Validated Sprint 71 candidate architectural principles**; three-layer model (Layer 1 Platform instructional architecture · Layer 2 Workflow elicitation · Layer 3 Author-supplied evidence). Pedagogically informed workflow guidance steers quality; Critical residuals increasingly concern evidence availability. Zero prompt rewrites.

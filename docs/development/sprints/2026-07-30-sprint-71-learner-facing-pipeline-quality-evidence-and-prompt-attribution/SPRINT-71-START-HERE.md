@@ -2,48 +2,64 @@
 
 **Learner-Facing Pipeline Quality Evidence and Prompt Attribution**
 
-**Document role:** Reading order and immediate actions. Authoritative scope lives in [SPRINT-71-CHARTER.md](SPRINT-71-CHARTER.md).
+**Document role:** Entry point for the **completed** sprint pack.  
+**Authoritative close narrative:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)
 
 ## Status
 
-- **Sprint:** 71 — **Active**
+- **Sprint:** 71 — **COMPLETE** (Closed 2026-07-31)
 - **Opened:** 2026-07-30
-- **Predecessor:** Sprint 70 — **Closed** ([SPRINT-70-CLOSURE.md](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md))
-- **Charter:** [SPRINT-71-CHARTER.md](SPRINT-71-CHARTER.md)
-- **Dashboard:** [STATUS.md](STATUS.md)
-- **Briefing paste:** [next-chat-briefing.md](next-chat-briefing.md)
+- **Predecessor:** Sprint 70 — Closed
+- **Final report:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)
+- **Closure:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md) · [sprint-71-closeout.md](../../../sprints/sprint-71-closeout.md)
+- **Successor:** Sprint 72 **not opened**
 
 ---
 
-## Central question
+## Story of the sprint
 
-> How can Prism itself generate better learner-facing resources?
+```text
+Question → Benchmarking → Validation → Cross-resource synthesis
+  → Controlled experiment (S71-R-010 88 → S71-R-011 91)
+  → Architectural understanding → Closure
+```
 
-Answer by evidence: generate → benchmark → validate → attribute → recur → consolidate themes for a **later** prompt-improvement sprint.
+Began as benchmarking; concluded as an investigation into Prism’s **instructional architecture**.
 
 ---
 
-## Read in this order (new chat)
+## What Sprint 71 proved (one screen)
 
-1. [CONTEXT.md](CONTEXT.md) — spine, classification rules, Design Page vs assembly attribution, recurrence model  
-2. [learning-design-pipeline-attribution-map.md](learning-design-pipeline-attribution-map.md) — stage dependency map for attribution  
-3. [SPRINT-71-CHARTER.md](SPRINT-71-CHARTER.md) — goals, boundaries, completion criteria  
-4. [HANDOVER.md](HANDOVER.md) — inherited decisions from Sprint 70 (`S70-D01`…`S70-D10` authoritative)  
-5. [sample-selection-plan.md](sample-selection-plan.md) — variety tracker for ~15–20 samples  
-6. [review-logging-template.md](review-logging-template.md) — how to log one resource review  
-7. [improvement-register.md](improvement-register.md) — master findings register (cluster + recurrence)  
-8. [PLAN.md](PLAN.md) — task tracker (Phase 0 gate)  
-9. [STATUS.md](STATUS.md) — progress  
+1. Instructional quality is materially steerable through **pedagogically informed workflow guidance**.  
+2. Remaining critical limitations increasingly concern **evidence availability**, not sequencing alone.  
+3. Long-term quality belongs in Layer 1 architecture, Layer 2 elicitation, discipline profiles, and default contracts — not longer author prompts.
+
+---
+
+## Three-layer model
+
+| Layer | Name |
+| ----- | ---- |
+| **1** | Platform instructional architecture |
+| **2** | Workflow elicitation |
+| **3** | Author-supplied evidence |
+
+---
+
+## Read in this order
+
+1. [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)  
+2. [cross-resource-synthesis.md](cross-resource-synthesis.md)  
+3. [design-principles.md](design-principles.md) — **Validated Sprint 71 candidate architectural principles**  
+4. [improvement-register.md](improvement-register.md) · [review-metadata-index.md](review-metadata-index.md)  
+5. [STATUS.md](STATUS.md) · [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md)  
+6. [CONTEXT.md](CONTEXT.md) · [HANDOVER.md](HANDOVER.md) · [reviews/](reviews/)
 
 ---
 
 ## Immediate actions
 
-1. **Phase 0 gate:** Confirm access to **Prism Resource Quality Benchmark v2.1** and **Prism Benchmark Validation Review v2.0**; record canonical **paths + versions** in STATUS before counting Review 1.  
-2. Select the next sample for variety ([sample-selection-plan.md](sample-selection-plan.md)); generate via the learner-page spine.  
-3. Run Benchmark v2.1, then Validation Review v2.0.  
-4. Enter findings via the review template; update register **cluster** rows (recurrence fields).  
-5. Attribute each **validated** finding — distinguish Design Page prompt vs assembly vs renderer (do not rewrite prompts).
+**None** — Sprint 71 is closed. No Sprint 72 pack in this close. Evidence base frozen.
 
 ---
 
@@ -51,12 +67,6 @@ Answer by evidence: generate → benchmark → validate → attribute → recur 
 
 | Sprint | Role |
 | ------ | ---- |
-| **70** | Established QA methodology, severity/priority rules, validation posture, pipeline map, Sprint 71 decisions |
-| **71** | Evidence across ~15–20 resources + stage attribution + recurrence |
-| **Later** | Prompt capability improvements based on recurring themes |
-
----
-
-## Document index
-
-See [README.md](README.md).
+| **70** | QA methodology (Benchmark v2.1, Validation Review v2.0) |
+| **71** | Evidence + attribution + architectural understanding (**COMPLETE**) |
+| **Later** | Productise principles / elicitation / contracts when authorised |

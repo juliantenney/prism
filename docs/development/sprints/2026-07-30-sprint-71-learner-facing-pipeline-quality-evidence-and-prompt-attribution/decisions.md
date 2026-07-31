@@ -1,8 +1,11 @@
 # Sprint 71 — Decision Log
 
+**Sprint status:** **COMPLETE** (Closed 2026-07-31)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Inherited Sprint 70 closure decisions are restated once for convenience; **authoritative close record** remains [SPRINT-70-CLOSURE.md](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md) (`S70-D01` … `S70-D10`).
+
+Architectural conclusions of Sprint 71 (steerability via pedagogically informed workflow guidance; three-layer evidence model; validated candidate principles) are recorded in [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md) — **no new decision IDs invented at close**.
 
 ### Decision-ID namespaces (read before citing)
 

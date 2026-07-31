@@ -5,7 +5,7 @@
 **Status:** Complete  
 **Portable pack:** [docs/development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/](../development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/)  
 **Full closure report:** [SPRINT-70-CLOSURE.md](../development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)  
-**Successor:** [Sprint 71](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md)
+**Successor:** [Sprint 71](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md) — **Closed** ([sprint-71-closeout.md](sprint-71-closeout.md))
 
 ---
 

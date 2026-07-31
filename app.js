@@ -8196,7 +8196,9 @@
               "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
               "- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.",
               "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
-              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters."
+              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.",
+              "- Math spans must be intact TeX only: never interleave numbered steps, instructional prose, or truncated symbols inside \\(...\\) or \\[...\\].",
+              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous."
             ]
           : [
               "- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)",
@@ -8209,7 +8211,9 @@
               "- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).",
               "- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.",
               "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
-              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters."
+              "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.",
+              "- Math spans must be intact TeX only: never interleave numbered steps, instructional prose, or truncated symbols inside \\(...\\) or \\[...\\].",
+              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous."
             ];
         return lines.join("\n");
       },
@@ -8218,6 +8222,49 @@
       },
       moduleIdInTextRegex: function () {
         return /LD-MATH-RENDER \| Layer: L7/i;
+      },
+      validateLearnerFacingMathIntegrity: function (text) {
+        var source = String(text == null ? "" : text);
+        var issues = [];
+        if (!source) return { ok: true, issues: issues };
+        var remainder = source;
+        var spans = [];
+        remainder = remainder.replace(/\\\[([\s\S]*?)\\\]/g, function (full, interior) {
+          spans.push({ kind: "display", interior: interior });
+          return "\0";
+        });
+        remainder = remainder.replace(/\\\(([\s\S]*?)\\\)/g, function (full, interior) {
+          spans.push({ kind: "inline", interior: interior });
+          return "\0";
+        });
+        if (/\\[\[()\]]/.test(remainder)) {
+          issues.push({
+            code: "UNBALANCED_MATH_DELIMITERS",
+            message: "Unbalanced TeX delimiters (\\( \\) \\[ \\])"
+          });
+        }
+        spans.forEach(function (span) {
+          var body = String(span.interior || "");
+          if (/\b[a-z]{3,}(?:\s+[a-z]{2,}){2,}\b/i.test(body)) {
+            issues.push({
+              code: "PROSE_INSIDE_MATH",
+              message: span.kind + " math contains instructional prose; keep TeX contiguous"
+            });
+          }
+          if (/(^|\n)\s*\d+\.\s+\S/.test(body)) {
+            issues.push({
+              code: "LIST_MARKER_INSIDE_MATH",
+              message: span.kind + " math contains a numbered list marker"
+            });
+          }
+          if (/\([A-Za-z]\s*\[/.test(body)) {
+            issues.push({
+              code: "TRUNCATED_GROUP_OPENER",
+              message: span.kind + " math has a truncated group opener (e.g. (x[)"
+            });
+          }
+        });
+        return { ok: issues.length === 0, issues: issues };
       }
     };
     if (typeof window !== "undefined" && root === window) {
@@ -10081,6 +10128,70 @@
       errors.push(
         'knowledge summary required: include page_synthesis.knowledge_summary and/or sections[].section_id="knowledge_summary"'
       );
+    }
+    if (Array.isArray(parsed.visual_affordances)) {
+      var vpcMod =
+        typeof PRISM_VISUAL_PLANNING_CONTRACT !== "undefined" ? PRISM_VISUAL_PLANNING_CONTRACT : null;
+      parsed.visual_affordances.forEach(function (row, index) {
+        if (!row || typeof row !== "object" || !Array.isArray(row.evidence_anchors)) return;
+        row.evidence_anchors.forEach(function (anchor, anchorIndex) {
+          var path = "visual_affordances[" + index + "].evidence_anchors[" + anchorIndex + "]";
+          var text =
+            typeof anchor === "string"
+              ? String(anchor).trim()
+              : anchor && typeof anchor === "object"
+                ? String(anchor.anchor || anchor.ref || anchor.path || "").trim()
+                : "";
+          if (!text) {
+            errors.push(path + ": evidence_anchors entry must be a non-empty canonical string");
+            return;
+          }
+          var ok =
+            vpcMod && typeof vpcMod.isCanonicalEvidenceAnchorSyntax === "function"
+              ? vpcMod.isCanonicalEvidenceAnchorSyntax(text)
+              : /^page_synthesis\.(overview|knowledge_summary|learning_purpose|study_tips)$/.test(
+                  text
+                ) || /^[A-Za-z][A-Za-z0-9_-]*\.[A-Za-z0-9_.-]+$/.test(text);
+          if (!ok) {
+            errors.push(
+              path +
+                ": evidence_anchors must use activity_id.path or page_synthesis.field form (got free-text/label/incomplete id)"
+            );
+          }
+        });
+      });
+    }
+    if (Array.isArray(parsed.activities_visual_review)) {
+      parsed.activities_visual_review.forEach(function (row, index) {
+        var path = "activities_visual_review[" + index + "]";
+        if (!row || typeof row !== "object") {
+          errors.push(path + ": must be an object");
+          return;
+        }
+        var gate = row.activity_visual_value;
+        if (!gate || typeof gate !== "object" || Array.isArray(gate)) {
+          errors.push(path + ": activity_visual_value object is required");
+          return;
+        }
+        var rationale = String(gate.rationale || "").trim();
+        if (!rationale) {
+          rationale = String(
+            gate.reason ||
+              gate.recommendation ||
+              gate.notes ||
+              gate.justification ||
+              row.rationale ||
+              ""
+          ).trim();
+        }
+        if (!rationale) {
+          errors.push(path + ": activity_visual_value.rationale is required (non-empty string)");
+        }
+        var decision = String(gate.decision || "").trim();
+        if (!decision) {
+          errors.push(path + ": activity_visual_value.decision is required (high|medium|low|none)");
+        }
+      });
     }
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
@@ -13578,7 +13689,7 @@
 
   function buildSprint38VisualAffordanceDesignPagePromptBlock() {
     var exampleGenerate =
-      '{"affordance_id": "va-A3-classification-01", "scope": "activity", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "subject": "Inflation mechanism classification cues", "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by their triggering drivers, transmission pathways, and observable implications so learners can classify scenarios before completing the table; include only mechanism-level discriminators, preserve uncertainty where evidence is partial, and avoid answer-key disclosure or completed learner classifications.", "evidence_anchors": ["A3.learner_task", "A3.materials.scenarios", "A3.materials.analysis_table"], "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull pathway cues", "cost-push shock pathway", "wage-price feedback loop"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."], "source_basis": "A3 learner_task; A3 materials.scenarios; A3 materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
+      '{"affordance_id": "va-A3-classification-01", "scope": "activity", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "subject": "Inflation mechanism classification cues", "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by their triggering drivers, transmission pathways, and observable implications so learners can classify scenarios before completing the table; include only mechanism-level discriminators, preserve uncertainty where evidence is partial, and avoid answer-key disclosure or completed learner classifications.", "evidence_anchors": ["A3.learner_task", "A3.materials.scenarios", "A3.materials.analysis_table"], "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull pathway cues", "cost-push shock pathway", "wage-price feedback loop"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."],       "source_basis": "A3.learner_task; A3.materials.scenarios; A3.materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
     var exampleSkip =
       '{"affordance_id": "va-A1-skip-01", "scope": "activity", "activity_id": "A1", "visual_decision": "skip", "skip_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task.", "subject": "Concept distinction already explicit", "context": "Visual brief: no additional visual needed because existing prose and worked examples already communicate the core conceptual contrast from the learner viewpoint without introducing new inferential load.", "evidence_anchors": ["A1.learner_task", "A1.materials.text", "A1.materials.worked_example"]}';
     var exampleDefer =
@@ -13600,11 +13711,12 @@
       "- context: write as a visual brief (not a label). Specify relationships/comparisons to communicate, key concepts to include, learner perspective, educational purpose, and conceptual boundaries so later deterministic prompt building does not infer intent.",
       "- context must NOT include artistic style, rendering instructions, filenames, or runtime metadata.",
       "- must_show / must_not_show must use concrete educational constraints (e.g., widening residual spread, threshold boundaries, bidirectional causal links), not vague phrases such as \"important concepts\".",
-      "- evidence_anchors: cite all relevant supporting locations when multiple sources ground the row (e.g., learner_task + materials + page_synthesis).",
+      "- evidence_anchors: non-empty string array of canonical artefact references only. Each entry MUST be exactly activity_id.path (e.g. \"A3.learner_task\", \"A3.materials.scenarios\") or page_synthesis.field (overview|knowledge_summary|learning_purpose|study_tips). Forbidden: free-text labels, topic names, incomplete activity IDs without a path, source_basis prose, or object shapes.",
+      "- Prefer citing every supporting location that grounds the row (learner_task + materials + page_synthesis) using those canonical forms.",
       "- activity scope rows require activity_id. page scope rows require region (currently knowledge_summary).",
       "- visual_decision must be exactly: generate, defer, or skip. reject is accepted only as legacy alias for skip.",
       "- No downstream prompt may invent purpose, preferred_representation, subject, context, or evidence anchors; later steps may repair schema shape only.",
-      "- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; source_basis is a non-empty string citing upstream paths; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.",
+      "- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; source_basis is a non-empty string citing upstream paths in the same dotted canonical form as evidence_anchors; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.",
       "- tier (generate only): essential or valuable only — never core, primary, optional, or descriptive labels.",
       "- purpose (generate only): distinction | comparison | classification | mechanism | evidence_structure | data_pattern_reading | synthesis.",
       "- preferred_representation (generate only): use controlled vocabulary tokens when possible — comparison_framework | classification_matrix | causal_model | evidence_t_chart | number_line_segments | ordered_bar_strip | labelled_contrast_panel | concept_map | causal_chain | process | comparison | hierarchy | decision_framework | diagnostic_pathway | annotated_system. Preserve expressive power by selecting the closest valid token and clarifying intent in context/rationale.",
@@ -13624,8 +13736,9 @@
       "- defer rows: affordance_id, scope, visual_decision, defer_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
       "- skip rows: affordance_id, scope, visual_decision, skip_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
       "- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; skip debrief-only or duplicate-structure activities.",
-      "- activities_visual_review[]: one row per upstream activity_id with activity_visual_value.decision high|medium|low|none and rationale.",
-      "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (use [] if empty), visual_affordances (use [] if empty).",
+      "- activities_visual_review[]: REQUIRED — one object per upstream activity_id. Exact shape: {\"activity_id\":\"A1\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Non-empty pedagogical reason why visual value is high|medium|low|none.\"}}. Both activity_visual_value.decision (high|medium|low|none) AND activity_visual_value.rationale (non-empty string) are mandatory. Forbidden: omitting rationale; emitting decision alone; using recommendation/visual_need/reason as substitutes for activity_visual_value; empty rationale strings.",
+      "- Example activities_visual_review row: {\"activity_id\":\"A3\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Classification matrix supports mechanism typing before the analysis table.\"}}.",
+      "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (one row per activity with decision + rationale; use [] only if no activities), visual_affordances (use [] if empty).",
       "",
       "Example generate record (copy shape and types; adapt ids and content to upstream materials):",
       exampleGenerate,
@@ -47418,13 +47531,30 @@
     return api.enhanceStandaloneLearnerHtml(htmlText);
   }
 
+  function utilityGetPreviewWindow() {
+    if (!els.utilitiesPreviewFrame) return null;
+    try {
+      return els.utilitiesPreviewFrame.contentWindow || null;
+    } catch (_) {}
+    return null;
+  }
+
   function utilityGetPreviewDocument() {
     if (!els.utilitiesPreviewFrame) return null;
     try {
       var directDoc = els.utilitiesPreviewFrame.contentDocument;
       if (directDoc) return directDoc;
-      var previewWindow = els.utilitiesPreviewFrame.contentWindow;
+      var previewWindow = utilityGetPreviewWindow();
       if (previewWindow && previewWindow.document) return previewWindow.document;
+    } catch (_) {}
+    return null;
+  }
+
+  function utilityGetPreviewMathJax() {
+    var previewWindow = utilityGetPreviewWindow();
+    if (!previewWindow) return null;
+    try {
+      return previewWindow.MathJax || null;
     } catch (_) {}
     return null;
   }
@@ -47435,11 +47565,18 @@
     return previewDoc.body || previewDoc.documentElement || null;
   }
 
+  // Preview-only: inject Prism-owned MathJax bootstrap into the iframe document.
+  // Does not mutate utilitiesLastHtml / export source. Idempotent via marker/loader id.
+  function utilityBuildPreviewHtmlWithMathJax(htmlText) {
+    return utilityEnhanceExportHtmlWithMathJax(String(htmlText == null ? "" : htmlText));
+  }
+
   function utilityTypesetPreviewMathIfNeeded(htmlOrText) {
     if (!utilityContainsSupportedMathDelimiters(htmlOrText)) {
       return Promise.resolve(false);
     }
-    var mathJax = window.MathJax;
+    // Typeset inside the preview iframe — parent Prism shell does not host MathJax.
+    var mathJax = utilityGetPreviewMathJax();
     if (!mathJax || typeof mathJax.typesetPromise !== "function") {
       return Promise.resolve(false);
     }
@@ -47467,6 +47604,9 @@
       });
   }
 
+  var UTILITY_PREVIEW_MATHJAX_MAX_ATTEMPTS = 40;
+  var UTILITY_PREVIEW_MATHJAX_RETRY_MS = 50;
+
   function utilitySchedulePreviewMathTypeset(htmlOrText) {
     var html = String(htmlOrText == null ? "" : htmlOrText);
     if (!utilityContainsSupportedMathDelimiters(html)) return;
@@ -47475,12 +47615,10 @@
       if (token !== utilityPreviewMathRenderToken) return;
       utilityTypesetPreviewMathIfNeeded(html).then(function (ok) {
         if (ok || token !== utilityPreviewMathRenderToken) return;
-        if (attemptIndex >= 1) return;
-        var mathJax = window.MathJax;
-        if (!mathJax || typeof mathJax.typesetPromise !== "function") return;
+        if (attemptIndex + 1 >= UTILITY_PREVIEW_MATHJAX_MAX_ATTEMPTS) return;
         setTimeout(function () {
           attempt(attemptIndex + 1);
-        }, 40);
+        }, UTILITY_PREVIEW_MATHJAX_RETRY_MS);
       });
     }
     setTimeout(function () {
@@ -48190,6 +48328,9 @@
       ensureUtilitiesPreviewFrameSandbox();
       var iframeHtml =
         manifestAssetCount > 0 ? buildIframePreviewHtmlFromRendered(htmlText) : htmlText;
+      // Preview-only MathJax injection (trusted Prism bootstrap + pinned CDN).
+      // utilitiesLastHtml stays unenhanced so download/open-tab enhance once.
+      iframeHtml = utilityBuildPreviewHtmlWithMathJax(iframeHtml);
       els.utilitiesPreviewFrame.srcdoc = iframeHtml;
     }
     if (revision > 0) {
@@ -50450,6 +50591,8 @@
     prismTestApi.utilityTypesetPreviewMathIfNeededForTest = utilityTypesetPreviewMathIfNeeded;
     prismTestApi.utilityBuildMathJaxExportBootstrapForTest =
       utilityBuildMathJaxExportBootstrap;
+    prismTestApi.utilityBuildPreviewHtmlWithMathJaxForTest =
+      utilityBuildPreviewHtmlWithMathJax;
     prismTestApi.utilityEnhanceExportHtmlWithMathJaxForTest =
       utilityEnhanceExportHtmlWithMathJax;
     prismTestApi.utilityHasMathJaxExportBootstrapForTest =
@@ -50457,17 +50600,27 @@
     prismTestApi.getUtilityMathJaxExportLoaderSrcForTest = function () {
       return UTILITY_MATHJAX_EXPORT_LOADER_SRC;
     };
+    prismTestApi.getUtilitiesPreviewFrameSandboxForTest = function () {
+      return UTILITIES_PREVIEW_FRAME_SANDBOX;
+    };
     prismTestApi.applyUtilityPreviewHtmlForTest = applyUtilityPreviewHtml;
     prismTestApi.getUtilitiesPreviewSrcdocForTest = function () {
       return els.utilitiesPreviewFrame ? String(els.utilitiesPreviewFrame.srcdoc || "") : "";
     };
-    prismTestApi.setUtilitiesPreviewFrameContentDocumentForTest = function (doc) {
+    prismTestApi.setUtilitiesPreviewFrameContentDocumentForTest = function (doc, options) {
       if (!els.utilitiesPreviewFrame) return;
+      var opts = options && typeof options === "object" ? options : {};
       els.utilitiesPreviewFrame.contentDocument = doc || null;
       if (!els.utilitiesPreviewFrame.contentWindow || typeof els.utilitiesPreviewFrame.contentWindow !== "object") {
         els.utilitiesPreviewFrame.contentWindow = {};
       }
       els.utilitiesPreviewFrame.contentWindow.document = doc || null;
+      if (Object.prototype.hasOwnProperty.call(opts, "MathJax")) {
+        els.utilitiesPreviewFrame.contentWindow.MathJax = opts.MathJax;
+      }
+    };
+    prismTestApi.getUtilitiesPreviewFrameMathJaxForTest = function () {
+      return utilityGetPreviewMathJax();
     };
     prismTestApi.setUtilitiesLastHtmlForTest = function (value) {
       state.utilitiesLastHtml = String(value || "");

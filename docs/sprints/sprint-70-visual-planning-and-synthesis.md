@@ -6,7 +6,7 @@
 **Type:** Visual-planning architecture (charter) · Resource Quality QA methodology (completed outcome track)  
 **Detailed pack:** [docs/development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/](../development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/)  
 **Closeout:** [sprint-70-closeout.md](sprint-70-closeout.md) · [SPRINT-70-CLOSURE.md](../development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)  
-**Successor:** [Sprint 71 — Learner-Facing Pipeline Quality Evidence and Prompt Attribution](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md)  
+**Successor:** [Sprint 71](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-START-HERE.md) — **Closed** ([sprint-71-closeout.md](sprint-71-closeout.md))  
 **Baseline (charter):** `6853376` (`Stabilise Sprint 69 renderer baseline`)
 
 ---
@@ -31,4 +31,4 @@ Established and validated a systematic QA approach for Prism-generated learning 
 
 - **Sprint 70 Complete.**
 - Formal closure: [SPRINT-70-CLOSURE.md](../development/sprints/2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md).
-- Active successor: Sprint 71.
+- Successor Sprint 71: **Closed** ([sprint-71-closeout.md](sprint-71-closeout.md)).

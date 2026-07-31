@@ -257,6 +257,75 @@ test("IMP-014C A3: canonical apply sequence rejects unrelated material types", (
   );
 });
 
+test("apply + independent_performance: task_cards assign once to independent_performance", () => {
+  var sequence = [
+    "criteria_exposition",
+    "worked_thinking",
+    "guided_practice",
+    "independent_performance",
+    "verification"
+  ];
+  var variant = buildCanonical("apply", sequence);
+  var guided = variant.beats.find(function (beat) {
+    return beat.sourceFunction === "guided_practice";
+  });
+  var independent = variant.beats.find(function (beat) {
+    return beat.sourceFunction === "independent_performance";
+  });
+  assert.equal(guided.materialTypes.indexOf("task_card"), -1);
+  assert.ok(independent.materialTypes.indexOf("task_card") !== -1);
+
+  var activity = {
+    activity_id: "A2",
+    learner_task:
+      "1. Study the walkthrough.\n2. Complete the table.\n3. Solve the cards.\n4. Check.",
+    expected_output: "Factorisation solutions.",
+    episode_plan: {
+      archetype: "apply",
+      beats: sequence.map(function (fn) {
+        return { function: fn };
+      })
+    },
+    materials: [
+      {
+        material_id: "A2-M1",
+        material_type: "worked_example",
+        title: "Walkthrough",
+        body: "Solve by factorisation."
+      },
+      {
+        material_id: "A2-M2",
+        material_type: "classification_table",
+        title: "Practice table",
+        body: "| Equation | Roots |\n| --- | --- |\n| x^2-5x+6=0 |  |"
+      },
+      {
+        material_id: "A2-M3",
+        material_type: "task_cards",
+        title: "Independent practice",
+        body: "### Card 1\nSolve x^2-8x+15=0\n\n### Card 2\nSolve x^2-4=0"
+      },
+      {
+        material_id: "A2-M4",
+        material_type: "checklist",
+        title: "Check",
+        body: "- Correct roots?"
+      }
+    ]
+  };
+  var result = buildBeatModels(activity, variant);
+  assert.equal(result.errors.length, 0, result.errors.map((e) => e.message).join("; "));
+  var byId = {};
+  result.beats.forEach(function (beat) {
+    (beat.materials || []).forEach(function (material) {
+      byId[material.id] = beat.sourceFunction;
+    });
+  });
+  assert.equal(byId["A2-M2"], "guided_practice");
+  assert.equal(byId["A2-M3"], "independent_performance");
+  assert.equal(byId["A2-M4"], "verification");
+});
+
 test("IMP-014C A3: material matching more than one beat rule still fails", () => {
   var overlapVariant = {
     id: "test-overlap",

@@ -1,16 +1,21 @@
 # Sprint 71 — Context
 
 **Sprint:** 71 — Learner-Facing Pipeline Quality Evidence and Prompt Attribution  
-**Audience:** New chat / new operator  
-**Authority:** [SPRINT-71-CHARTER.md](SPRINT-71-CHARTER.md)
+**Status:** **COMPLETE** (Closed 2026-07-31)  
+**Audience:** Readers of the closed pack  
+**Authority:** [SPRINT-71-CHARTER.md](SPRINT-71-CHARTER.md) · close narrative [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)
 
 ---
 
-## Why this sprint exists
+## Why this sprint existed
 
-Sprint 70 established Benchmark v2.1, Validation Review v2.0, and the rule that instructional improvement must be attributed to the responsible Learning Design pipeline stage before prompts change. Sprint 71 executes that evidence programme.
+Sprint 70 established Benchmark v2.1, Validation Review v2.0, and stage attribution before prompt change. Sprint 71 executed that evidence programme and, through synthesis plus a controlled experiment (`S71-R-010` **88** → `S71-R-011` **91**), produced **architectural understanding** of steerable instructional quality and evidence-availability limits.
 
 Central question: **How can Prism itself generate better learner-facing resources?**
+
+Answer at close: embed **Validated Sprint 71 candidate architectural principles** in Layer 1 platform instructional architecture and Layer 2 pedagogically informed elicitation; use Layer 3 for author-supplied authentic evidence; do not rely on authors writing ever-longer prompts.
+
+See Final Report § How understanding evolved · What Sprint 71 proved · Three-layer evidence model.
 
 ---
 
@@ -139,16 +144,13 @@ Update the same register row when the finding recurs; do not create a duplicate 
 
 ## Phase 0 artefact-path gate
 
-**Before Review 1 is counted**, STATUS must record canonical paths **and** versions for:
-
-1. Prism Resource Quality Benchmark **v2.1**  
-2. Prism Benchmark Validation Review **v2.0**  
+**Before Review 1 is counted**, STATUS must record that Benchmark v2.1 and Validation Review v2.0 are available (canonical paths **and** versions preferred).
 
 Also required as a formal Sprint 71 artefact:
 
 3. [learning-design-pipeline-attribution-map.md](learning-design-pipeline-attribution-map.md) (done)
 
-Until the Benchmark and Validation paths are recorded, treat Phase 0 as incomplete and do not increment the reviewed-resource counter for Review 1.
+**S71-R-001:** Counted — Benchmark v2.1 and Validation Review v2.0 completed (operator-confirmed). In-repo instrument paths may remain unresolved; see [STATUS.md](STATUS.md).
 
 ---
 
@@ -156,11 +158,11 @@ Until the Benchmark and Validation paths are recorded, treat Phase 0 as incomple
 
 | Artefact | Version | In-repo path |
 | -------- | ------- | ------------ |
-| Prism Resource Quality Benchmark | v2.1 | **Unresolved** — finalised/saved per Sprint 70 closure; path not yet recorded in this pack |
-| Prism Benchmark Validation Review | v2.0 | **Unresolved** — same |
+| Prism Resource Quality Benchmark | v2.1 | **Operator-confirmed complete** for S71-R-001; in-repo path still unresolved — see [STATUS.md](STATUS.md) |
+| Prism Benchmark Validation Review | v2.0 | **Operator-confirmed complete** for S71-R-001; in-repo path still unresolved — see [STATUS.md](STATUS.md) |
 | Learning Design pipeline attribution map | Sprint 71 | [learning-design-pipeline-attribution-map.md](learning-design-pipeline-attribution-map.md) |
 
-Update [STATUS.md](STATUS.md) when Benchmark/Validation paths are known.
+Update [STATUS.md](STATUS.md) when Benchmark/Validation in-repo paths are known.
 
 ---
 

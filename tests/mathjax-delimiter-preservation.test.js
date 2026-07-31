@@ -3,6 +3,9 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const {
+  injectLearnerRendererVNextInSandbox
+} = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -72,6 +75,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  injectLearnerRendererVNextInSandbox(sandbox);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -80,9 +84,11 @@ function loadPrismTestApi() {
   assert.equal(typeof api.utilityContainsSupportedMathDelimitersForTest, "function");
   assert.equal(typeof api.utilityTypesetPreviewMathIfNeededForTest, "function");
   assert.equal(typeof api.utilityBuildMathJaxExportBootstrapForTest, "function");
+  assert.equal(typeof api.utilityBuildPreviewHtmlWithMathJaxForTest, "function");
   assert.equal(typeof api.utilityEnhanceExportHtmlWithMathJaxForTest, "function");
   assert.equal(typeof api.utilityHasMathJaxExportBootstrapForTest, "function");
   assert.equal(typeof api.getUtilityMathJaxExportLoaderSrcForTest, "function");
+  assert.equal(typeof api.getUtilitiesPreviewFrameSandboxForTest, "function");
   assert.equal(typeof api.applyUtilityPreviewHtmlForTest, "function");
   assert.equal(typeof api.getUtilitiesPreviewSrcdocForTest, "function");
   assert.equal(typeof api.setUtilitiesPreviewFrameContentDocumentForTest, "function");
@@ -211,18 +217,39 @@ test("non-math markdown behavior remains unchanged in math baseline fixture", ()
   assert.match(html, /Final control line\./);
 });
 
-test("preview/export source: rendered HTML stays identical for preview srcdoc and export source", () => {
+test("preview/export source: durable HTML stays unenhanced; preview srcdoc gets MathJax when math present", () => {
   const { api } = loadPrismTestApi();
-  const parsed = loadFixture("mathjax-delimiter-preservation-page.json");
-  const rendered = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"]);
-  assert.ok(rendered && !rendered.error, rendered && rendered.error);
-  const html = String(rendered.html || "");
+  const html =
+    "<!doctype html><html><head><title>Math</title></head><body>" +
+    "<p>Inline \\(x^2-5x+6=0\\)</p>" +
+    "<p>\\[ax^2+bx+c=0\\]</p>" +
+    "</body></html>";
 
   api.applyUtilityPreviewHtmlForTest(html);
-  assert.equal(api.getUtilitiesPreviewSrcdocForTest(), html);
+  const srcdoc = api.getUtilitiesPreviewSrcdocForTest();
+  assert.match(srcdoc, /prism-mathjax-export-bootstrap/);
+  assert.match(srcdoc, /tex-chtml\.js/);
+  assert.match(srcdoc, /\\\(x\^2-5x\+6=0\\\)/);
+  assert.match(srcdoc, /\\\[ax\^2\+bx\+c=0\\\]/);
 
   api.setUtilitiesLastHtmlForTest(html);
   assert.equal(api.getUtilitiesLastHtmlForTest(), html);
+  assert.doesNotMatch(api.getUtilitiesLastHtmlForTest(), /prism-mathjax-export-bootstrap/);
+});
+
+test("preview srcdoc: non-math HTML remains unchanged and has no MathJax bootstrap", () => {
+  const { api } = loadPrismTestApi();
+  const html = "<!doctype html><html><body><p>No maths here.</p></body></html>";
+  api.applyUtilityPreviewHtmlForTest(html);
+  assert.equal(api.getUtilitiesPreviewSrcdocForTest(), html);
+  assert.doesNotMatch(api.getUtilitiesPreviewSrcdocForTest(), /prism-mathjax-export-bootstrap/);
+});
+
+test("preview iframe sandbox stays allow-same-origin allow-scripts", () => {
+  const { api } = loadPrismTestApi();
+  assert.equal(api.getUtilitiesPreviewFrameSandboxForTest(), "allow-same-origin allow-scripts");
+  const indexHtml = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
+  assert.match(indexHtml, /sandbox="allow-same-origin allow-scripts"/);
 });
 
 test("math delimiter detector: true for supported delimiters", () => {
@@ -239,52 +266,54 @@ test("math delimiter detector: false for no math and dollar delimiters", () => {
 });
 
 test("preview hook: no supported delimiters means no MathJax call", async () => {
-  const { api, windowStub } = loadPrismTestApi();
+  const { api } = loadPrismTestApi();
   const previewDoc = { body: { nodeName: "BODY" }, documentElement: { nodeName: "HTML" } };
-  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc);
   var calls = 0;
-  windowStub.MathJax = {
-    typesetPromise() {
-      calls += 1;
-      return Promise.resolve();
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, {
+    MathJax: {
+      typesetPromise() {
+        calls += 1;
+        return Promise.resolve();
+      }
     }
-  };
+  });
   api.applyUtilityPreviewHtmlForTest("<p>plain text only</p>");
   await new Promise((resolve) => setTimeout(resolve, 90));
   assert.equal(calls, 0);
 });
 
-test("preview hook: MathJax unavailable exits safely", async () => {
-  const { api, windowStub } = loadPrismTestApi();
+test("preview hook: MathJax unavailable in iframe exits safely", async () => {
+  const { api } = loadPrismTestApi();
   const previewDoc = { body: { nodeName: "BODY" }, documentElement: { nodeName: "HTML" } };
-  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc);
-  windowStub.MathJax = null;
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, { MathJax: null });
   assert.doesNotThrow(() => {
     api.applyUtilityPreviewHtmlForTest("<p>Inline \\(x+y\\)</p>");
   });
   await new Promise((resolve) => setTimeout(resolve, 90));
   assert.match(api.getUtilitiesPreviewSrcdocForTest(), /\\\(x\+y\\\)/);
+  assert.match(api.getUtilitiesPreviewSrcdocForTest(), /prism-mathjax-export-bootstrap/);
 });
 
-test("preview hook: supported delimiters call scoped MathJax typeset", async () => {
-  const { api, windowStub } = loadPrismTestApi();
+test("preview hook: supported delimiters call iframe MathJax typeset", async () => {
+  const { api } = loadPrismTestApi();
   const scopeNode = { nodeName: "BODY" };
   const previewDoc = { body: scopeNode, documentElement: { nodeName: "HTML" } };
-  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc);
   var clearCalls = 0;
   var typesetCalls = 0;
   var lastArgs = null;
-  windowStub.MathJax = {
-    typesetClear(nodes) {
-      clearCalls += 1;
-      lastArgs = nodes;
-    },
-    typesetPromise(nodes) {
-      typesetCalls += 1;
-      lastArgs = nodes;
-      return Promise.resolve();
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, {
+    MathJax: {
+      typesetClear(nodes) {
+        clearCalls += 1;
+        lastArgs = nodes;
+      },
+      typesetPromise(nodes) {
+        typesetCalls += 1;
+        lastArgs = nodes;
+        return Promise.resolve();
+      }
     }
-  };
+  });
   api.applyUtilityPreviewHtmlForTest("<p>Inline \\(x+y\\)</p>");
   await new Promise((resolve) => setTimeout(resolve, 90));
   assert.equal(clearCalls >= 1, true);
@@ -293,39 +322,101 @@ test("preview hook: supported delimiters call scoped MathJax typeset", async () 
   assert.equal(lastArgs[0], scopeNode);
 });
 
-test("preview hook: typeset rejection does not throw or corrupt preview HTML", async () => {
+test("preview hook: parent window MathJax is ignored", async () => {
   const { api, windowStub } = loadPrismTestApi();
-  const previewDoc = { body: { nodeName: "BODY" }, documentElement: { nodeName: "HTML" } };
-  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc);
+  const scopeNode = { nodeName: "BODY" };
+  const previewDoc = { body: scopeNode, documentElement: { nodeName: "HTML" } };
+  var parentCalls = 0;
+  var iframeCalls = 0;
   windowStub.MathJax = {
     typesetPromise() {
-      return Promise.reject(new Error("typeset failed"));
+      parentCalls += 1;
+      return Promise.resolve();
     }
   };
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, {
+    MathJax: {
+      typesetPromise(nodes) {
+        iframeCalls += 1;
+        return Promise.resolve();
+      }
+    }
+  });
+  api.applyUtilityPreviewHtmlForTest("<p>Inline \\(x+y\\)</p>");
+  await new Promise((resolve) => setTimeout(resolve, 90));
+  assert.equal(parentCalls, 0);
+  assert.equal(iframeCalls >= 1, true);
+});
+
+test("preview hook: typeset rejection does not throw or corrupt preview HTML", async () => {
+  const { api } = loadPrismTestApi();
+  const previewDoc = { body: { nodeName: "BODY" }, documentElement: { nodeName: "HTML" } };
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, {
+    MathJax: {
+      typesetPromise() {
+        return Promise.reject(new Error("typeset failed"));
+      }
+    }
+  });
   const html = "<p>Block \\[x+y\\]</p>";
   assert.doesNotThrow(() => {
     api.applyUtilityPreviewHtmlForTest(html);
   });
   await new Promise((resolve) => setTimeout(resolve, 90));
-  assert.equal(api.getUtilitiesPreviewSrcdocForTest(), html);
+  const srcdoc = api.getUtilitiesPreviewSrcdocForTest();
+  assert.match(srcdoc, /\\\[x\+y\\\]/);
+  assert.match(srcdoc, /prism-mathjax-export-bootstrap/);
 });
 
 test("preview hook: repeated rerenders preserve latest non-math HTML", async () => {
-  const { api, windowStub } = loadPrismTestApi();
+  const { api } = loadPrismTestApi();
   const previewDoc = { body: { nodeName: "BODY" }, documentElement: { nodeName: "HTML" } };
-  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc);
   var typesetCalls = 0;
-  windowStub.MathJax = {
-    typesetPromise() {
-      typesetCalls += 1;
-      return Promise.resolve();
+  api.setUtilitiesPreviewFrameContentDocumentForTest(previewDoc, {
+    MathJax: {
+      typesetPromise() {
+        typesetCalls += 1;
+        return Promise.resolve();
+      }
     }
-  };
+  });
   api.applyUtilityPreviewHtmlForTest("<p>Inline \\(x+y\\)</p>");
   api.applyUtilityPreviewHtmlForTest("<p>Latest plain text render.</p>");
   await new Promise((resolve) => setTimeout(resolve, 90));
   assert.equal(api.getUtilitiesPreviewSrcdocForTest(), "<p>Latest plain text render.</p>");
   assert.equal(typesetCalls >= 0, true);
+});
+
+test("preview MathJax: bootstrap is idempotent when HTML already has loader", () => {
+  const { api } = loadPrismTestApi();
+  const html =
+    "<!doctype html><html><head><title>T</title></head><body><p>Inline \\(x^2-5x+6=0\\)</p><p>\\[ax^2+bx+c=0\\]</p></body></html>";
+  const once = api.utilityBuildPreviewHtmlWithMathJaxForTest(html);
+  const twice = api.utilityBuildPreviewHtmlWithMathJaxForTest(once);
+  assert.equal((twice.match(/prism-mathjax-export-bootstrap/g) || []).length, 1);
+  assert.equal((twice.match(/prism-mathjax-export-loader/g) || []).length, 1);
+  assert.equal(api.utilityHasMathJaxExportBootstrapForTest(twice), true);
+});
+
+test("preview MathJax: minimal document gets inline and display delimiter support", () => {
+  const { api } = loadPrismTestApi();
+  const html = [
+    "<!doctype html>",
+    "<html>",
+    "<head></head>",
+    "<body>",
+    "<p>Inline: \\(x^2 - 5x + 6 = 0\\)</p>",
+    "<p>\\[x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\\]</p>",
+    "</body>",
+    "</html>"
+  ].join("");
+  api.applyUtilityPreviewHtmlForTest(html);
+  const srcdoc = api.getUtilitiesPreviewSrcdocForTest();
+  assert.match(srcdoc, /inlineMath:\s*\[\['\\\\\(','\\\\\)'\]\]/);
+  assert.match(srcdoc, /displayMath:\s*\[\['\\\\\[','\\\\\]'\]\]/);
+  assert.match(srcdoc, /cdn\.jsdelivr\.net\/npm\/mathjax@3\.2\.2\/es5\/tex-chtml\.js/);
+  assert.match(srcdoc, /\\\(x\^2 - 5x \+ 6 = 0\\\)/);
+  assert.match(srcdoc, /\\\[x = \\frac/);
 });
 
 test("export enhancement: includes MathJax bootstrap for supported delimiters", () => {

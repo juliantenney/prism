@@ -1,9 +1,12 @@
 # Sprint 71 — Charter
 
 **Sprint:** 71 — Learner-Facing Pipeline Quality Evidence and Prompt Attribution  
+**Status:** **COMPLETE**  
 **Opened:** 2026-07-30  
-**Status:** Active  
-**Predecessor close:** [Sprint 70 closure](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)
+**Closed:** 2026-07-31  
+**Predecessor close:** [Sprint 70 closure](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)  
+**Final report:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)  
+**Closure:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md)
 
 ---
 

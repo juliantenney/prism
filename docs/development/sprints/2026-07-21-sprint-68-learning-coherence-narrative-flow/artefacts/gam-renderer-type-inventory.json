@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-07-28T08:30:06.770Z",
+  "generated_at": "2026-07-31T07:00:26.669Z",
   "reviewer_task": "S68-IMP-012",
   "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (19 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {
     "canonical_material_types": 36,
     "vnext_supported_material_types": 19,
     "registry_material_types": 34,
-    "observed_in_fixtures": 18,
-    "schema_or_registry_only": 18,
+    "observed_in_fixtures": 19,
+    "schema_or_registry_only": 17,
     "kitchen_sink_vnext_coverage": 18,
     "kitchen_sink_coverage_pct": 95,
     "prompt_fields": 6,
@@ -1111,10 +1111,11 @@
       "category": "material",
       "aliases": [],
       "emittedByGam": true,
-      "observedInFixtures": false,
-      "schemaOnly": true,
+      "observedInFixtures": true,
+      "schemaOnly": false,
       "sourceLocations": [
-        "lib/beat-material-registry.js"
+        "lib/beat-material-registry.js",
+        "tests/fixtures/**"
       ],
       "legacyBeat": "READ",
       "educationalRoles": [

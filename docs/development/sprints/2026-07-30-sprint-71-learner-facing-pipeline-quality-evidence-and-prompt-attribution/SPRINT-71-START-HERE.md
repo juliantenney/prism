@@ -12,7 +12,7 @@
 - **Predecessor:** Sprint 70 — Closed
 - **Final report:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)
 - **Closure:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md) · [sprint-71-closeout.md](../../../sprints/sprint-71-closeout.md)
-- **Successor:** Sprint 72 **not opened**
+- **Successor:** [Sprint 72 — OPEN (planning)](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) — Sprint 71 remains **COMPLETE**; evidence frozen
 
 ---
 
@@ -59,7 +59,7 @@ Began as benchmarking; concluded as an investigation into Prism’s **instructio
 
 ## Immediate actions
 
-**None** — Sprint 71 is closed. No Sprint 72 pack in this close. Evidence base frozen.
+Sprint 71 is closed. Evidence base frozen. Implementation successor: [Sprint 72 START HERE](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md).
 
 ---
 

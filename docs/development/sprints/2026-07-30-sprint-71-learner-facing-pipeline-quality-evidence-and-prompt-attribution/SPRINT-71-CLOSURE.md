@@ -5,7 +5,7 @@
 **Closed:** 2026-07-31  
 **Status:** **COMPLETE**  
 **Predecessor:** [Sprint 70 closure](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)  
-**Successor:** Not opened (Sprint 72 documentation deferred)  
+**Successor:** [Sprint 72 — OPEN (planning pack)](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) — opened 2026-07-31; does not reopen this sprint  
 **Final report:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)  
 **Top-level closeout:** [docs/sprints/sprint-71-closeout.md](../../../sprints/sprint-71-closeout.md)
 
@@ -13,7 +13,7 @@
 
 ## Closure authority
 
-Sprint 71 is closed by operator decision on 2026-07-31 after the Wilfred Owen controlled experiment and editorial freeze of the evidence base. This record does not open Sprint 72, add findings, or invent issue IDs.
+Sprint 71 is closed by operator decision on 2026-07-31 after the Wilfred Owen controlled experiment and editorial freeze of the evidence base. This closure record did not itself open Sprint 72, add findings, or invent issue IDs. Sprint 72 was subsequently opened as a separate planning/documentation pack; Sprint 71 evidence remains frozen.
 
 ---
 
@@ -54,13 +54,15 @@ Sprint 71 began as benchmarking and closed as an **instructional-architecture in
 
 ---
 
-## Factual gaps (Sprint 72 setup only)
+## Factual gaps (addressed by Sprint 72 setup)
+
+Honest gaps recorded at Sprint 71 close (sample size vs ~15–20 target; in-repo Benchmark/Validation paths; Theme ID table; `S71-O-005` open). Sprint 72 planning pack now exists: [SPRINT-72-START-HERE.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md). Sprint 71 evidence files remain unchanged.
 
 - In-repo Benchmark v2.1 / Validation Review v2.0 paths unresolved.  
 - Sample count below ~15–20.  
 - Theme ID rows empty.  
 - Open `S71-O-005` (semantic headings).  
-- No Sprint 72 charter in this close.
+- Sprint 72 charter now lives in the Sprint 72 pack (not in this close).
 
 ---
 

@@ -48,4 +48,4 @@ Steerability demonstrated in targeted dimensions; Critical availability persiste
 
 ## Close statement
 
-Sprint 71 documentation is complete and frozen for commit. Sprint 72 was not opened.
+Sprint 71 documentation is complete and frozen. Successor: [Sprint 72](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) (planning opened 2026-07-31).

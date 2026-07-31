@@ -2,7 +2,7 @@
 
 **Sprint 71 is COMPLETE.** Prefer [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md).
 
-Evidence base frozen. No new findings, issue IDs, or principles. Sprint 72 not opened.
+Evidence base frozen. No new findings, issue IDs, or principles in this pack. Implementation successor: [Sprint 72 START HERE](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md).
 
 ---
 

@@ -11,7 +11,7 @@
 
 ## Executive summary
 
-Sprint 71 is a **completed** evidence and architecture sprint. Understanding moved from benchmarking and validation through cross-resource synthesis to a controlled experiment (`S71-R-010` **88** → `S71-R-011` **91**) and architectural conclusions. Instructional quality is steerable via **pedagogically informed workflow guidance**; residual Critical limits increasingly concern evidence availability. Embed quality in Layer 1 architecture, Layer 2 pedagogically informed elicitation, and Layer 3 author-supplied evidence — not longer author prompts. Zero prompt rewrites. Sprint 72 not opened.
+Sprint 71 is a **completed** evidence and architecture sprint. Understanding moved from benchmarking and validation through cross-resource synthesis to a controlled experiment (`S71-R-010` **88** → `S71-R-011` **91**) and architectural conclusions. Instructional quality is steerable via **pedagogically informed workflow guidance**; residual Critical limits increasingly concern evidence availability. Embed quality in Layer 1 architecture, Layer 2 pedagogically informed elicitation, and Layer 3 author-supplied evidence — not longer author prompts. Zero prompt rewrites. Implementation successor: [Sprint 72 START HERE](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) (planning opened 2026-07-31; evidence here remains frozen).
 
 ---
 
@@ -51,7 +51,7 @@ Details: [design-principles.md](design-principles.md) · [SPRINT-71-FINAL-REPORT
 
 ## What not to do
 
-- Do not invent Sprint 72 IDs or open Sprint 72 here.  
+- Do not invent Sprint 71 IDs or reopen this evidence base. Use Sprint 72 IDs in the successor pack.  
 - Do not add principles, findings, or issue IDs to this pack.  
 - Do not rewrite canonical prompts from a single review.  
 - Do not collapse Partial links into Confirmed recurrence.

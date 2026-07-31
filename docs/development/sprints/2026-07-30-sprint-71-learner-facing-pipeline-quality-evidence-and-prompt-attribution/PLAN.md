@@ -50,4 +50,4 @@ Sprint closed. Do not treat this tracker as an open prompt-implementation backlo
 - Rewrite canonical prompts  
 - Authoring workflow redesign  
 - Post-generation author questioning  
-- Sprint 72 pack creation (deferred)
+- Sprint 72 pack: [../2026-07-31-sprint-72-productising-instructional-architecture/](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) (opened after this sprint closed)

@@ -5,7 +5,7 @@
 **Closed:** 2026-07-31  
 **Status:** **COMPLETE**  
 **Predecessor:** Sprint 70 — Resource Quality QA Methodology  
-**Successor:** Not opened in this close (Sprint 72 setup deferred)  
+**Successor:** [Sprint 72 — OPEN (planning)](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md) — opened after this close; Sprint 71 evidence frozen  
 **Portable pack:** this folder  
 **Top-level closeout:** [docs/sprints/sprint-71-closeout.md](../../../sprints/sprint-71-closeout.md)  
 **Closure companion:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md)
@@ -34,7 +34,7 @@ Question
 | **Cross-resource synthesis** | Recurring patterns were clustered and attributed to Learning Design stages (`S71-F-*`, `S71-O-*`). |
 | **Controlled experiment** | Matched Wilfred Owen topic: sparse brief [`S71-R-010`](reviews/S71-R-010.md) **88/100** → pedagogically informed brief [`S71-R-011`](reviews/S71-R-011.md) **91/100**. |
 | **Architectural understanding** | Quality was shown to be steerable; residual Critical limits sit mainly in evidence availability; three-layer responsibility model clarified. |
-| **Sprint closure** | Evidence base frozen; principles frozen as validated candidates; no prompt rewrites; Sprint 72 not opened. |
+| **Sprint closure** | Evidence base frozen; principles frozen as validated candidates; no prompt rewrites. Sprint 72 later opened as a separate planning pack without reopening this evidence base. |
 
 Sprint 71 **began as a benchmarking exercise** and **concluded as an investigation into the instructional architecture of Prism**. The principal output is architectural understanding of where educational quality originates and where remaining limitations now lie — not a list of completed tasks alone.
 
@@ -240,7 +240,7 @@ In-repo paths for Benchmark v2.1 / Validation Review v2.0 instruments remain unr
 
 ## Recommendations for Sprint 72
 
-Do **not** open Sprint 72 in this close. When setup begins, consider:
+Historical close guidance (do **not** open Sprint 72 *in this close*). Sprint 72 planning pack was subsequently opened at [../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md). When implementation begins, consider:
 
 1. Productise the **Validated Sprint 71 candidate architectural principles** into Layer-1 default contracts and Layer-2 pedagogically informed elicitation.  
 2. Design Layer-2 questions for evidence source / generate / upload / rights.  

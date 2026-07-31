@@ -6,7 +6,8 @@
 **Predecessor:** [Sprint 70 closeout](../../../sprints/sprint-70-closeout.md) · [SPRINT-70-CLOSURE.md](../2026-07-28-sprint-70-visual-planning-and-synthesis/SPRINT-70-CLOSURE.md)  
 **Top-level closeout:** [docs/sprints/sprint-71-closeout.md](../../../sprints/sprint-71-closeout.md)  
 **Final report:** [SPRINT-71-FINAL-REPORT.md](SPRINT-71-FINAL-REPORT.md)  
-**Closure:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md)
+**Closure:** [SPRINT-71-CLOSURE.md](SPRINT-71-CLOSURE.md)  
+**Successor:** [Sprint 72 — OPEN (planning)](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md)
 
 ## One-line purpose
 
@@ -37,4 +38,4 @@ Collect validated quality evidence across Prism-generated resources and attribut
 
 ## Mode at close
 
-Evidence gathering and attribution **complete**. Architectural understanding recorded. **No** Sprint 72 pack created in this close. **No** implementation code changed for closure.
+Evidence gathering and attribution **complete**. Architectural understanding recorded. Sprint 72 opened separately as documentation/planning only (2026-07-31). **No** implementation code changed for Sprint 71 closure. Sprint 71 evidence remains frozen.

@@ -9,7 +9,7 @@
 **Final report:** [SPRINT-71-FINAL-REPORT.md](../development/sprints/2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-FINAL-REPORT.md)  
 **Closeout:** [sprint-71-closeout.md](sprint-71-closeout.md)  
 **Predecessor:** [Sprint 70 closeout](sprint-70-closeout.md)  
-**Successor:** Not opened (Sprint 72 deferred)
+**Successor:** [Sprint 72 — OPEN](sprint-72-productising-instructional-architecture.md) · [portable pack](../development/sprints/2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-START-HERE.md)
 
 ---
 

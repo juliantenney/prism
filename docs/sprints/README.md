@@ -9,6 +9,7 @@ Programme-facing sprint charters that are not only stored inside dated portable 
 | **69** | [sprint-69-archetype-grammar-validation.md](sprint-69-archetype-grammar-validation.md) |
 | **70** | [sprint-70-closeout.md](sprint-70-closeout.md) · [sprint-70-visual-planning-and-synthesis.md](sprint-70-visual-planning-and-synthesis.md) — **Closed** |
 | **71** | [sprint-71-closeout.md](sprint-71-closeout.md) · [sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution.md](sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution.md) — **Closed** |
+| **72** | [sprint-72-productising-instructional-architecture.md](sprint-72-productising-instructional-architecture.md) — **OPEN** (planning/docs; implementation not started) |
 
 Portable packs (START HERE / briefing) remain under `docs/development/sprints/YYYY-MM-DD-sprint-N-…/`.
 

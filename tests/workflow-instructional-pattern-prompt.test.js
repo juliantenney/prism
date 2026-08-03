@@ -511,50 +511,47 @@ test("48-6: lib apply helper appends SP-04 without duplicating marker", () => {
 
 test("48-7: SP-05 block requires MUST bundle for checklist", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /every checklist body MUST provide criteria-linked learner self-check verification/i);
-  assert.match(block, /at least four checkable items tied to expected_output/i);
-  assert.match(block, /learner-check imperatives \(Have you \/ Did you \/ Does your\)/i);
-  assert.match(block, /## Common mistakes/i);
-  assert.match(block, /### If any check is not met:/i);
+  assert.match(block, /prefer structured guided-review JSON/i);
+  assert.match(block, /review_mode.*guided_criteria/i);
+  assert.match(block, /Emit 3–4 criteria/i);
+  assert.match(block, /normally emit 2–3 independently observable/i);
+  assert.match(block, /Every expected feature MUST have a paired repair/i);
 });
 
 test("48-7: SP-05 defines FM-09 instructional fail", () => {
   const block = patternLib.buildSp05PromptBlock();
   assert.match(
     block,
-    /verifies row, table, or task completion only without reasoning-quality or criteria-evidence checks.*instructional FAIL \(FM-09\).*do not emit/i
+    /verifies row\/table\/task completion only without reasoning-quality or criteria-evidence checks is an instructional FAIL \(FM-09\)/i
   );
 });
 
 test("48-7: SP-05 defines stub and thin checklist instructional fails", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /fewer than four checkable items.*pointer-only body.*instructional FAIL/i);
-  assert.match(block, /FORBIDDEN: pointer or stub checklist/i);
+  assert.match(block, /fewer than three complete criteria.*instructional FAIL/i);
+  assert.match(block, /Forbidden as stand-alone repairs \(generic-only\)/i);
 });
 
-test("48-7: SP-05 GOOD shape example shows Common mistakes and revise block", () => {
+test("48-7: SP-05 GOOD shape example shows multi-feature guided depth", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /GOOD shape example/i);
-  assert.match(block, /Have you \[criterion tied to expected_output\]/i);
-  assert.match(block, /not just named it/i);
-  assert.match(block, /not described in general/i);
-  assert.match(block, /GOOD shape example[\s\S]*## Common mistakes[\s\S]*### If any check is not met:/i);
-  assert.match(block, /mechanism linking them/i);
-  assert.match(block, /Revise your \[deliverable\] by \(1\)/i);
+  assert.match(block, /GOOD guided depth example/i);
+  assert.match(block, /Have you identified the correct role of each replication component/i);
+  assert.match(block, /IRES recruits ribosomes/i);
+  assert.match(block, /microRNA-122/i);
+  assert.match(block, /NS5A.*NS5B/i);
 });
 
-test("48-7: SP-05 FORBIDDEN floors name completion and reflection-only shapes", () => {
+test("48-7: SP-05 FORBIDDEN floors name completion and generic repairs", () => {
   const block = patternLib.buildSp05PromptBlock();
   assert.match(block, /FORBIDDEN: Did you finish\?/i);
-  assert.match(block, /FORBIDDEN: reflection-only verification/i);
-  assert.match(block, /FORBIDDEN: completion-dominant structures.*Is each row complete\?.*FM-09/i);
-  assert.match(block, /FORBIDDEN in checklist.*Reflect on/i);
   assert.match(block, /FORBIDDEN: generic revise guidance/i);
+  assert.match(block, /revisit\/review the material/i);
+  assert.match(block, /complete model answer or finished deliverable/i);
 });
 
 test("48-7: SP-05 retains MP-1 ownership constraint", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /Do not supply completed learner work or model answers/i);
+  assert.match(block, /without supplying a complete replacement answer \(MP-1\)/i);
   assert.doesNotMatch(block, /FM-11/i);
   assert.doesNotMatch(block, /grouped sections/i);
   assert.doesNotMatch(block, /misconception guard/i);
@@ -676,10 +673,11 @@ test("51-1: SP-07 defines FM-11 instructional fail for missing Why this works", 
   assert.match(block, /no `## Why this works` section/i);
 });
 
-test("51-2: SP-05 defines FM-13 for missing Common mistakes or revise block", () => {
+test("51-2: SP-05 defines guided-review feature-depth fail floors", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /instructional FAIL \(FM-13\)/i);
-  assert.match(block, /without `## Common mistakes`/i);
+  assert.match(block, /instructional FAIL \(FM-09\)/i);
+  assert.match(block, /fewer than three complete criteria.*instructional FAIL/i);
+  assert.match(block, /Forbidden as stand-alone repairs \(generic-only\)/i);
 });
 
 test("51-2: SP-06 forbids embedded checklist in worked_example (FM-14)", () => {

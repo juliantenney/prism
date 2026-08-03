@@ -1,0 +1,210 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "RNA Virus Entry and Replication",
+  "visual_affordance_schema_version": "38.4",
+  "page_synthesis": {
+    "overview": {
+      "body": "This self-study resource explores RNA virus classification, entry, and replication.",
+      "format": "markdown"
+    },
+    "learning_purpose": {
+      "body": "Learners discriminate virus families and inspect entry and replication systems.",
+      "format": "markdown"
+    },
+    "knowledge_summary": {
+      "body": "RNA viruses differ by genome organisation, entry route, and replication strategy.",
+      "format": "markdown"
+    },
+    "study_tips": {
+      "body": "Revisit the labelled figures after each activity.",
+      "format": "markdown"
+    }
+  },
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Classification matrix supports virus-family typing before the analysis table."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "low",
+        "rationale": "Existing worked example already carries the needed structure."
+      }
+    },
+    {
+      "activity_id": "A3",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Process visual makes HCV entry stages inspectable before sequencing."
+      }
+    },
+    {
+      "activity_id": "A4",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "System diagram externalises replication components and relationships."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-a1-rna-classification",
+      "scope": "activity",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "pedagogical_added_value": "Adds discriminating genome and entry cues without revealing completed classifications.",
+      "subject": "RNA virus classification cues",
+      "context": "Visual brief: compare RNA virus examples by genome organisation and entry-route discriminators so learners can classify before completing the analysis table; keep cells empty and avoid answer-key disclosure.",
+      "evidence_anchors": ["A1.learner_task", "A1.materials.scenarios"],
+      "must_show": ["genome organisation cues", "entry-route discriminators", "empty classification cells"],
+      "must_not_show": ["completed classification key", "model answers"],
+      "allowed_claims": ["RNA viruses differ by genome organisation and entry route."],
+      "disallowed_claims": ["All RNA viruses enter host cells identically."],
+      "rationale": "Makes discriminating genome and entry cues inspectable so learners can classify virus families before completing the analysis table.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic"],
+      "requires_exact_data_match": false,
+      "source_basis": "A1.learner_task; A1.materials.scenarios",
+      "caption_intent": "Classification cues only — not the learner table.",
+      "alt_text": "RNA virus classification cues by genome and entry route; detailed description follows.",
+      "detailed_description": "A classification matrix places RNA virus examples in rows against genome-organisation and entry-route cue columns. Labels name discriminating traits only; classification cells remain empty so learners assign virus families themselves without an answer key.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners classify without completed classifications.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Empty labelled cue structures only."
+    },
+    {
+      "affordance_id": "va-a3-entry-process",
+      "scope": "activity",
+      "activity_id": "A3",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "process",
+      "pedagogical_added_value": "Makes ordered entry stages inspectable without completing the learner sequence answers.",
+      "subject": "HCV entry pathway stages",
+      "context": "Visual brief: show receptor attachment, internalization, membrane fusion, and RNA release as an ordered inspectable sequence before learners complete the sequencing task; do not reveal worked answers.",
+      "evidence_anchors": ["A3.learner_task", "A3.materials.worked_example"],
+      "must_show": ["receptor attachment", "internalization", "membrane fusion", "RNA release"],
+      "must_not_show": ["completed sequence answers", "model solution narrative"],
+      "allowed_claims": ["HCV entry proceeds through ordered attachment-to-release stages."],
+      "disallowed_claims": ["Entry order is arbitrary."],
+      "rationale": "Makes the HCV entry sequence inspectable so learners can reason about stage order before completing the sequencing task.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "generic_infographic"],
+      "requires_exact_data_match": false,
+      "source_basis": "A3.learner_task; A3.materials.worked_example",
+      "caption_intent": "Ordered entry stages for inspection.",
+      "alt_text": "HCV entry pathway from receptor attachment to RNA release; detailed description follows.",
+      "detailed_description": "An ordered pathway shows HCV progressing from receptor attachment through internalization and membrane fusion to cytosolic RNA release. Arrows mark sequence direction; stage labels name each process without claiming timing certainty beyond the brief.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners inspect process structure before completing sequence reasoning.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Show stages as inspectable structure, not answered worksheet."
+    },
+    {
+      "affordance_id": "va-a4-replication-system",
+      "scope": "activity",
+      "activity_id": "A4",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "annotated_system",
+      "pedagogical_added_value": "Externalises replication components and relationships without duplicating the worksheet.",
+      "subject": "HCV replication system components",
+      "context": "Visual brief: show replication complex components and directional relationships among RNA synthesis, protein processing, and assembly so learners can inspect the system before completing analysis; exclude unsupported quantitative claims.",
+      "evidence_anchors": ["A4.learner_task", "A4.materials.system_overview"],
+      "must_show": ["RNA synthesis node", "protein processing node", "assembly relationships"],
+      "must_not_show": ["completed analysis answers", "unsupported kinetic claims"],
+      "allowed_claims": ["HCV replication links RNA synthesis, processing, and assembly."],
+      "disallowed_claims": ["Exact kinetic rates not present in source materials."],
+      "rationale": "Externalises the replication system so learners can inspect component relationships before completing the analysis task, reducing avoidable working-memory load.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "generic_infographic", "unsupported_causal_arrow"],
+      "requires_exact_data_match": false,
+      "source_basis": "A4.learner_task; A4.materials.system_overview",
+      "caption_intent": "Replication system relationships for inspection.",
+      "alt_text": "HCV replication system linking RNA synthesis, processing, and assembly; detailed description follows.",
+      "detailed_description": "An annotated system diagram links RNA synthesis, protein processing, and particle assembly. Directional relationships show how synthesised RNA and processed proteins feed assembly. Labels name components and relationships only; no kinetic rates or completed analysis answers appear.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners inspect system relationships before analysis conclusions.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Use only source-supported components and links."
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "learner_task": "Classify RNA virus examples using genome and entry cues.",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenarios",
+          "body": "## Scenarios\n\nVirus family cases for classification."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "learner_task": "Complete the worked genome-reading example.",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "worked_example",
+          "body": "## Worked example\n\nGenome reading steps."
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "learner_task": "Order the HCV entry stages.",
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "worked_example",
+          "body": "## Entry stages\n\nAttachment to RNA release."
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "learner_task": "Analyse HCV replication component relationships.",
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "system_overview",
+          "body": "## Replication overview\n\nSynthesis, processing, assembly."
+        }
+      ]
+    }
+  ]
+}

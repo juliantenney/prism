@@ -13707,13 +13707,13 @@
 
   function buildSprint38VisualAffordanceDesignPagePromptBlock() {
     var exampleGenerate =
-      '{"affordance_id": "va-A3-classification-01", "scope": "activity", "activity_id": "A3", "visual_decision": "generate", "rationale": "Classify scenarios by mechanism before the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "subject": "Inflation mechanism classification cues", "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by their triggering drivers, transmission pathways, and observable implications so learners can classify scenarios before completing the table; include only mechanism-level discriminators, preserve uncertainty where evidence is partial, and avoid answer-key disclosure or completed learner classifications.", "evidence_anchors": ["A3.learner_task", "A3.materials.scenarios", "A3.materials.analysis_table"], "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull pathway cues", "cost-push shock pathway", "wage-price feedback loop"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."],       "source_basis": "A3.learner_task; A3.materials.scenarios; A3.materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "discipline_risk_level": "medium"}';
+      '{"affordance_id": "va-A3-classification-01", "scope": "activity", "activity_id": "A3", "visual_decision": "generate", "rationale": "Makes cause-type pathway cues inspectable so learners can discriminate mechanisms before completing the analysis table.", "visual_slot": "materials-entry", "tier": "valuable", "purpose": "classification", "preferred_representation": "classification_matrix", "pedagogical_added_value": "Adds discriminating cause-type cues and decision criteria for typing scenarios — not a blank copy of the learner analysis_table.", "subject": "Inflation mechanism classification cues", "context": "Visual brief: compare demand-pull, cost-push, and wage-price spiral mechanisms by their triggering drivers, transmission pathways, and observable implications so learners can classify scenarios before completing the table; include only mechanism-level discriminators, preserve uncertainty where evidence is partial, and avoid answer-key disclosure or completed learner classifications.", "evidence_anchors": ["A3.learner_task", "A3.materials.scenarios", "A3.materials.analysis_table"], "reasoning_supported": "Learners classify without completed classifications.", "learner_stage": "pre_classification", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "topic_hero_image"], "canonical_discipline_note": "Empty labelled cause structures only.", "requires_exact_data_match": false, "must_show": ["demand-pull pathway cues", "cost-push shock pathway", "wage-price feedback loop"], "must_not_show": ["scenario answer key", "completed classification cells"], "allowed_claims": ["Different causal mechanisms can produce inflation."], "disallowed_claims": ["All inflation has one cause."],       "source_basis": "A3.learner_task; A3.materials.scenarios; A3.materials.analysis_table", "caption_intent": "Cause-type cues only — not the learner table.", "alt_text": "Inflation cause-type cues for demand-pull, cost-push, and wage-price spiral; detailed description follows.", "detailed_description": "Three parallel cause pathways sit side by side. Demand-pull emphasises excess demand and price pressure rising from spending. Cost-push emphasises an upstream cost shock transmitting into prices. The wage-price spiral emphasises feedback between wages and prices. Labels name triggering drivers and transmission cues only; cells stay empty so learners classify scenarios themselves.", "discipline_risk_level": "medium"}';
     var exampleSkip =
       '{"affordance_id": "va-A1-skip-01", "scope": "activity", "activity_id": "A1", "visual_decision": "skip", "skip_reason": "assessment_text_sufficient", "rationale": "Scenario cards and checklist already provide structure; a visual would duplicate the task.", "subject": "Concept distinction already explicit", "context": "Visual brief: no additional visual needed because existing prose and worked examples already communicate the core conceptual contrast from the learner viewpoint without introducing new inferential load.", "evidence_anchors": ["A1.learner_task", "A1.materials.text", "A1.materials.worked_example"]}';
     var exampleDefer =
       '{"affordance_id": "va-A2-defer-01", "scope": "activity", "activity_id": "A2", "visual_decision": "defer", "defer_reason": "worked_example_sufficient_first", "rationale": "Attempt the worked example and calculation table before any visual summary.", "subject": "Residual variability interpretation", "context": "Visual brief: learners should first complete quantitative reasoning steps in the worked example; defer visual synthesis until after baseline interpretation is established to prevent shortcutting core calculation logic.", "evidence_anchors": ["A2.learner_task", "A2.materials.scenario", "A2.materials.analysis_table"]}';
     var exampleKnowledgeSummary =
-      '{"affordance_id": "va-page-knowledge-summary-01", "scope": "page", "region": "knowledge_summary", "visual_decision": "generate", "visual_slot": "knowledge-summary-after-content", "tier": "essential", "purpose": "synthesis", "preferred_representation": "concept_map", "subject": "Knowledge Summary inference map", "context": "Visual brief: after the full Knowledge Summary prose, synthesize how error-variance patterns connect to diagnostic reading, inference reliability risks, and corrective approaches; show cross-links between concepts from the learner perspective and exclude any unsupported causal or quantitative claims beyond provided evidence.", "evidence_anchors": ["page_synthesis.knowledge_summary", "page_synthesis.learning_purpose"], "reasoning_supported": "Connect error variance, diagnostics, inference consequences, and remedies.", "learner_stage": "post_reasoning", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "generic_infographic"], "canonical_discipline_note": "Use only supplied concepts and links.", "requires_exact_data_match": false, "must_show": ["widening residual spread", "diagnostic pattern-to-risk links", "inference consequences", "corrective approach mapping"], "must_not_show": ["new claims not in summary", "worked-solution reveal"], "allowed_claims": ["Heteroscedasticity affects inference reliability."], "disallowed_claims": ["Causal claims not present in source summary."], "source_basis": "page_synthesis.knowledge_summary", "caption_intent": "Map how core knowledge-summary ideas connect.", "discipline_risk_level": "medium", "rationale": "Knowledge Summary benefits from a synthesis visual that links concepts."}';
+      '{"affordance_id": "va-page-knowledge-summary-01", "scope": "page", "region": "knowledge_summary", "visual_decision": "generate", "visual_slot": "knowledge-summary-after-content", "tier": "essential", "purpose": "synthesis", "preferred_representation": "concept_map", "subject": "Knowledge Summary inference map", "context": "Visual brief: after the full Knowledge Summary prose, synthesize how error-variance patterns connect to diagnostic reading, inference reliability risks, and corrective approaches; show cross-links between concepts from the learner perspective and exclude any unsupported causal or quantitative claims beyond provided evidence.", "evidence_anchors": ["page_synthesis.knowledge_summary", "page_synthesis.learning_purpose"], "reasoning_supported": "Connect error variance, diagnostics, inference consequences, and remedies.", "learner_stage": "post_reasoning", "anti_spoiler": true, "spoiler_boundary": {"hide_answers": true, "hide_classification_keys": true, "hide_model_solution": true, "allow_structural_hint": true}, "representation_avoid": ["filled_worksheet", "generic_infographic"], "canonical_discipline_note": "Use only supplied concepts and links.", "requires_exact_data_match": false, "must_show": ["widening residual spread", "diagnostic pattern-to-risk links", "inference consequences", "corrective approach mapping"], "must_not_show": ["new claims not in summary", "worked-solution reveal"], "allowed_claims": ["Heteroscedasticity affects inference reliability."], "disallowed_claims": ["Causal claims not present in source summary."], "source_basis": "page_synthesis.knowledge_summary", "caption_intent": "Map how core knowledge-summary ideas connect.", "alt_text": "Knowledge-summary map linking error variance, diagnostics, inference risk, and remedies; detailed description follows.", "detailed_description": "A concept map links four clusters drawn from the Knowledge Summary: error-variance patterns, diagnostic reading cues, inference-reliability risks, and corrective approaches. Arrows show that variance patterns inform diagnosis, diagnosis highlights inference risks, and those risks point to corrective approaches. No numeric results or worked-solution steps appear.", "discipline_risk_level": "medium", "rationale": "Externalises cross-links among variance patterns, diagnosis, inference risk, and remedies so learners can revisit the synthesis model."}';
     var learnerStages =
       typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined" &&
       Array.isArray(PRISM_SPRINT38_VISUAL_AFFORDANCES.LEARNER_STAGES)
@@ -13724,8 +13724,9 @@
       "Sprint 38 visual affordance authoring contract (auto-applied):",
       "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (see LD-DESIGN-PAGE-COMPOSE-CONTRACT).",
       "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
-      "- Every visual_affordances[] row requires affordance_id (unique string), scope (activity|page), subject, context, and evidence_anchors[] grounded in upstream content.",
+      "- Every visual_affordances[] row requires affordance_id (unique string), scope (activity|page), rationale, subject, context, and evidence_anchors[] grounded in upstream content.",
       "- subject: concise noun phrase naming what the visual is about; do not just repeat the activity title.",
+      "- rationale (mandatory on every row): explain why the proposed visual materially supports the specified learning or reasoning task — for example making a sequence inspectable, showing relationships between components, supporting comparison, externalising a system or causal model, or reducing avoidable working-memory demands. Do not merely restate the title, visual type, or activity topic. Do not omit rationale when authoring alt_text/detailed_description; do not copy detailed_description into rationale.",
       "- context: write as a visual brief (not a label). Specify relationships/comparisons to communicate, key concepts to include, learner perspective, educational purpose, and conceptual boundaries so later deterministic prompt building does not infer intent.",
       "- context must NOT include artistic style, rendering instructions, filenames, or runtime metadata.",
       "- must_show / must_not_show must use concrete educational constraints (e.g., widening residual spread, threshold boundaries, bidirectional causal links), not vague phrases such as \"important concepts\".",
@@ -13745,11 +13746,11 @@
       "- Use \"pre_classification\" when the visual supports noticing, sorting, comparison, classification, or reasoning before the learner reaches a conclusion.",
       "- Use \"post_reasoning\" when the visual consolidates, summarises, or represents reasoning after the learner has completed the relevant analysis.",
       "- Do not use learner_stage values such as: introduction, introductory, foundation, foundational, pre_reasoning, during_reasoning, post_classification, synthesis, consolidation, overview, beginner, intermediate, advanced.",
-      "- Activity example shape: {\"scope\":\"activity\",\"activity_id\":\"A1\",\"visual_slot\":\"materials-entry\",\"learner_stage\":\"pre_classification\"}.",
-      "- Page Knowledge Summary example shape: {\"scope\":\"page\",\"visual_slot\":\"knowledge-summary-after-content\",\"learner_stage\":\"post_reasoning\"}.",
+      "- Activity example shape: {\"scope\":\"activity\",\"activity_id\":\"A1\",\"visual_slot\":\"materials-entry\",\"learner_stage\":\"pre_classification\",\"rationale\":\"Makes discriminating category cues inspectable before classification.\"}.",
+      "- Page Knowledge Summary example shape: {\"scope\":\"page\",\"visual_slot\":\"knowledge-summary-after-content\",\"learner_stage\":\"post_reasoning\",\"rationale\":\"Externalises concept relationships so learners can revisit synthesis links.\"}.",
       "- defer_reason (defer only): worked_example_sufficient_first | model_row_sufficient_first.",
       "- skip_reason (skip only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.",
-      "- generate rows must include: affordance_id, scope, rationale, subject, context, evidence_anchors, visual_decision, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint | knowledge-summary-after-content), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (>=1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
+      "- generate rows must include: affordance_id, scope, rationale, subject, context, evidence_anchors, visual_decision, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint | knowledge-summary-after-content), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (>=1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, alt_text, detailed_description, discipline_risk_level; spoiler_boundary object when anti_spoiler is true; requires_exact_data_match true when preferred_representation is number_line_segments.",
       "- visual_slot guidance: reuse existing activity slot names for activity placements; introduce new slot names only when genuinely required (e.g., knowledge-summary-after-content for page synthesis placement).",
       "- defer rows: affordance_id, scope, visual_decision, defer_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
       "- skip rows: affordance_id, scope, visual_decision, skip_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
@@ -13757,6 +13758,26 @@
       "- activities_visual_review[]: REQUIRED — one object per upstream activity_id. Exact shape: {\"activity_id\":\"A1\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Non-empty pedagogical reason why visual value is high|medium|low|none.\"}}. Both activity_visual_value.decision (high|medium|low|none) AND activity_visual_value.rationale (non-empty string) are mandatory. Forbidden: omitting rationale; emitting decision alone; using recommendation/visual_need/reason as substitutes for activity_visual_value; empty rationale strings.",
       "- Example activities_visual_review row: {\"activity_id\":\"A3\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Classification matrix supports mechanism typing before the analysis table.\"}}.",
       "- Page root (mandatory): visual_affordance_schema_version \"38.4\", activities_visual_review (one row per activity with decision + rationale; use [] only if no activities), visual_affordances (use [] if empty).",
+      "",
+      "Textbook figure description contract (auto-applied for generate visuals):"
+    ]
+      .concat(
+        typeof PRISM_LEARNER_FIGURE_DESCRIPTION_CONTRACT !== "undefined" &&
+          PRISM_LEARNER_FIGURE_DESCRIPTION_CONTRACT &&
+          typeof PRISM_LEARNER_FIGURE_DESCRIPTION_CONTRACT.buildFigureDescriptionAuthoringGuidanceLines ===
+            "function"
+          ? PRISM_LEARNER_FIGURE_DESCRIPTION_CONTRACT.buildFigureDescriptionAuthoringGuidanceLines()
+          : [
+              "- For each generate visual, author alt_text (<=140 chars; signpost that a detailed description follows) and detailed_description (textbook learner prose from the same must_show/context) alongside caption_intent.",
+              "- Keep non-empty rationale on every row; do not omit it when authoring alt_text/detailed_description; do not copy detailed_description into rationale.",
+              "- Do not put 'Figure N.' inside detailed_description; numbering is renderer-owned.",
+              "- Do not use image-generation style/camera language in detailed_description.",
+              "- Example alt_text: \"HCV entry pathway from receptor attachment to RNA release; detailed description follows.\""
+            ]
+      )
+      .concat([
+      "",
+      "- Hard requirement reminder: every generate/defer/skip visual_affordances[] row must still include non-empty rationale. Authoring alt_text and detailed_description does not remove that requirement.",
       "",
       "Example generate record (copy shape and types; adapt ids and content to upstream materials):",
       exampleGenerate,
@@ -13769,7 +13790,7 @@
       "",
       "Example page-level Knowledge Summary generate record:",
       exampleKnowledgeSummary
-    ]
+    ])
       .concat(buildSprint38PedagogicalAddedValuePromptLines())
       .join("\n");
   }
@@ -13897,6 +13918,7 @@
       "- Source-based activities: quotable spans, labelled evidence columns, or \"your evidence here\" cells — not empty placeholders.",
       "- Optional static retrieval: \"Before you re-read…\" / \"Without looking back, write…\" — not adaptive.",
       "- Weak vs strong judgement when upstream specifies worked judgement: `## A weaker response would` / `## A stronger response would` (slogan-style weak vs criteria-led strong).",
+      "- Guided-review checklists (material_type checklist): prefer body_format json with review_mode guided_criteria; normally 2–3 independently observable expected/repair pairs per criterion (max 4); repairs must name missing content/relationships in disciplinary language — not generic revisit/clarify/add-detail stems alone.",
       "- Evaluative coaching (diagnostic only) in checklist or prompt_set — e.g. Which part of your answer provides explanation rather than description? Which claim is least well supported? — not motivational filler.",
       "- Preserve comparison scaffolds and evidence tables; avoid duplicating the same instruction in narrative and table."
     ].join("\n");
@@ -43493,6 +43515,24 @@
       ".util-learner-renderer-vnext .util-interactive-checklist__input{margin:.3rem 0 0;flex:0 0 auto}" +
       ".util-learner-renderer-vnext .util-interactive-checklist__label{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;cursor:pointer}" +
       ".util-learner-renderer-vnext .util-interactive-checklist__input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
+      ".util-learner-renderer-vnext .util-guided-review{margin:0;padding:0;border:0;min-width:0;max-width:100%}" +
+      ".util-learner-renderer-vnext .util-guided-review__title{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-md);line-height:var(--learner-leading-heading);font-weight:700;color:#111827}" +
+      ".util-learner-renderer-vnext .util-guided-review__progress{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#475569}" +
+      ".util-learner-renderer-vnext .util-guided-review__statement{margin:0 0 var(--learner-space-3);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:600;color:#111827}" +
+      ".util-learner-renderer-vnext .util-guided-review__section-label{margin:0 0 .35rem;font-size:var(--learner-text-sm);line-height:1.4;font-weight:650;color:#374151}" +
+      ".util-learner-renderer-vnext .util-guided-review__why,.util-learner-renderer-vnext .util-guided-review__look-for,.util-learner-renderer-vnext .util-guided-review__missing{margin:0 0 var(--learner-space-3)}" +
+      ".util-learner-renderer-vnext .util-guided-review__why p,.util-learner-renderer-vnext .util-guided-review__look-for li,.util-learner-renderer-vnext .util-guided-review__missing li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}" +
+      ".util-learner-renderer-vnext .util-guided-review__feature-key{font-weight:650;color:#374151}" +
+      ".util-learner-renderer-vnext .util-guided-review__confirm{margin-top:var(--learner-space-2)}" +
+      ".util-learner-renderer-vnext .util-guided-review__panel{margin:0 0 var(--learner-space-4);padding:0 0 var(--learner-space-3);border-bottom:1px solid #e5e7eb}" +
+      ".util-learner-renderer-vnext .util-guided-review__panel:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}" +
+      ".util-learner-renderer-vnext .util-guided-review__nav{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;margin-top:var(--learner-space-3)}" +
+      ".util-learner-renderer-vnext .util-guided-review__nav-btn{font:inherit;font-size:var(--learner-text-sm);line-height:1.3;font-weight:600;padding:.55rem .85rem;min-height:44px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;cursor:pointer}" +
+      ".util-learner-renderer-vnext .util-guided-review__nav-btn:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
+      ".util-learner-renderer-vnext .util-guided-review__nav-btn:disabled{opacity:.45;cursor:not-allowed}" +
+      "@media (max-width:720px){.util-learner-renderer-vnext .util-guided-review__nav{flex-direction:column}.util-learner-renderer-vnext .util-guided-review__nav-btn{width:100%}}" +
+      "@media (prefers-reduced-motion:reduce){.util-learner-renderer-vnext .util-guided-review__panel{transition:none}}" +
+      "@media print{.util-learner-renderer-vnext .util-guided-review__nav{display:none!important}.util-learner-renderer-vnext .util-guided-review__panel,.util-learner-renderer-vnext .util-guided-review__panel[hidden]{display:block!important}}" +
       ".util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}" +
       ".util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
       ".util-learner-renderer-vnext .util-table-scroll.util-material-table table{width:100%;table-layout:auto}" +
@@ -49138,7 +49178,31 @@
       bodyHtml: bodyParts.join(""),
       cssText: getUtilityVnextProseMeasureCss()
     });
+    standalone = injectStandaloneVnextExportRuntime(standalone);
     return utilityEnhanceExportHtmlWithLearnerContentViewer(standalone);
+  }
+
+  function getVnextStandaloneEmbedApi() {
+    if (typeof window !== "undefined" && window.PRISM_LEARNER_VNEXT_STANDALONE_EMBED) {
+      return window.PRISM_LEARNER_VNEXT_STANDALONE_EMBED;
+    }
+    if (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_VNEXT_STANDALONE_EMBED) {
+      return globalThis.PRISM_LEARNER_VNEXT_STANDALONE_EMBED;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/learner-renderer-vnext-standalone-embed.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function injectStandaloneVnextExportRuntime(htmlText) {
+    var api = getVnextStandaloneEmbedApi();
+    if (!api || typeof api.injectStandaloneVnextExportRuntime !== "function") {
+      return String(htmlText || "");
+    }
+    return api.injectStandaloneVnextExportRuntime(htmlText);
   }
 
   function runLearnerRendererVNextExport(parsed, exportOpts) {

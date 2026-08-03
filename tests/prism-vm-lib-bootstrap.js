@@ -122,11 +122,29 @@ function loadLearnerRendererVNextBrowserInSandbox(sandbox, repoRoot) {
     : sandbox.PRISM_LEARNER_RENDERER_VNEXT;
 }
 
-function injectLearnerRendererVNextInSandbox(sandbox) {
+function injectLearnerRendererVNextInSandbox(sandbox, repoRoot) {
+  var root = repoRoot || path.resolve(__dirname, "..");
   var vnext = require("../lib/learner-renderer-vnext");
   sandbox.PRISM_LEARNER_RENDERER_VNEXT = vnext;
   if (sandbox.window) {
     sandbox.window.PRISM_LEARNER_RENDERER_VNEXT = vnext;
+  }
+  wireBrowserGlobalThis(sandbox);
+  [
+    "lib/learner-renderer-vnext-export-runtime-source.js",
+    "lib/learner-renderer-vnext-standalone-embed.js"
+  ].forEach(function (rel) {
+    var filePath = path.join(root, rel);
+    if (!fs.existsSync(filePath)) return;
+    vm.runInContext(fs.readFileSync(filePath, "utf8"), sandbox, { filename: rel });
+  });
+  if (sandbox.window && sandbox.PRISM_LEARNER_VNEXT_STANDALONE_EMBED) {
+    sandbox.window.PRISM_LEARNER_VNEXT_STANDALONE_EMBED =
+      sandbox.PRISM_LEARNER_VNEXT_STANDALONE_EMBED;
+  }
+  if (sandbox.window && sandbox.PRISM_VNEXT_EXPORT_RUNTIME_SOURCE) {
+    sandbox.window.PRISM_VNEXT_EXPORT_RUNTIME_SOURCE =
+      sandbox.PRISM_VNEXT_EXPORT_RUNTIME_SOURCE;
   }
 }
 

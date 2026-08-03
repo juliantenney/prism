@@ -679,3 +679,159 @@ test("rendered HTML shorter than JSON is renderer presentation, not GAM mutation
     );
   }
 });
+
+function guidedCriteriaPayload(overrides) {
+  return Object.assign(
+    {
+      review_mode: "guided_criteria",
+      criteria: [
+        {
+          statement: "Have you described how each genome type produces mRNA?",
+          why_it_matters: "Genome-to-mRNA mapping is the core discrimination in this task.",
+          features: [
+            {
+              expected: "Each genome type is linked to an mRNA production route",
+              repair: "Add one sentence per genome type naming how mRNA is produced."
+            },
+            {
+              expected: "Positive-sense, negative-sense, and dsRNA are treated distinctly",
+              repair: "Separate the three routes instead of collapsing them into one process."
+            }
+          ],
+          confirmation_label: "My response now meets this criterion"
+        },
+        {
+          statement: "Have you avoided treating all RNA genomes as interchangeable?",
+          why_it_matters: "Interchangeable treatment hides the diagnostic differences learners must use.",
+          features: [
+            {
+              expected: "At least one explicit contrast between genome types",
+              repair: "Add a contrast sentence that names how two genome types differ in mRNA production."
+            }
+          ]
+        },
+        {
+          statement: "Have you connected genome type to a practical implication for the activity?",
+          features: [
+            {
+              expected: "One consequence for detection, infection, or laboratory practice",
+              repair: "State one practical consequence that follows from the genome-to-mRNA route."
+            }
+          ]
+        }
+      ]
+    },
+    overrides || {}
+  );
+}
+
+function buildGamPartialCaptureWithMaterial(material) {
+  return {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    assembly_state: { current_stage: "gam", enriched_by: ["gam"] },
+    activities: [
+      {
+        activity_id: "A1",
+        materials: [
+          Object.assign(
+            {
+              material_id: "A1-M4",
+              material_type: "checklist",
+              activity_id: "A1",
+              title: "Response quality review"
+            },
+            material
+          )
+        ]
+      }
+    ]
+  };
+}
+
+test("GAM partial capture accepts guided-review checklist JSON body (object form)", () => {
+  const page = buildGamPartialCaptureWithMaterial({
+    body_format: "json",
+    body: guidedCriteriaPayload()
+  });
+  const check = gamEnrich.validateGamPartialPageCapture(page);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+});
+
+test("GAM partial capture accepts guided-review checklist JSON body (JSON string form)", () => {
+  const page = buildGamPartialCaptureWithMaterial({
+    body_format: "json",
+    body: JSON.stringify(guidedCriteriaPayload())
+  });
+  const check = gamEnrich.validateGamPartialPageCapture(page);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+});
+
+test("GAM partial capture still accepts legacy markdown checklist", () => {
+  const page = buildGamPartialCaptureWithMaterial({
+    body_format: "markdown",
+    body: "- Criterion one is clear\n- Criterion two is actionable\n\nIf any check is not met, revise and retry."
+  });
+  const check = gamEnrich.validateGamPartialPageCapture(page);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+});
+
+test("GAM partial capture rejects malformed guided criteria with field-specific errors", () => {
+  const page = buildGamPartialCaptureWithMaterial({
+    body_format: "json",
+    body: {
+      review_mode: "guided_criteria",
+      criteria: [
+        {
+          statement: "",
+          features: [{ expected: "", repair: "fix me" }]
+        },
+        {
+          statement: "Second criterion",
+          features: []
+        }
+      ]
+    }
+  });
+  const check = gamEnrich.validateGamPartialPageCapture(page);
+  assert.equal(check.ok, false);
+  assert.ok(
+    check.errors.some((err) => /criteria\[0\]\.statement required/i.test(err)),
+    check.errors.join("; ")
+  );
+  assert.ok(
+    check.errors.some((err) => /criteria\[0\]\.features\[0\]\.expected required/i.test(err)),
+    check.errors.join("; ")
+  );
+  assert.ok(
+    check.errors.some((err) => /criteria\[1\]\.features must include at least one item/i.test(err)),
+    check.errors.join("; ")
+  );
+});
+
+test("GAM partial capture rejects JSON body_format on non-checklist materials", () => {
+  const page = buildGamPartialCaptureWithMaterial({
+    material_type: "text",
+    body_format: "json",
+    body: guidedCriteriaPayload()
+  });
+  const check = gamEnrich.validateGamPartialPageCapture(page);
+  assert.equal(check.ok, false);
+  assert.ok(check.errors.some((err) => /body required/i.test(err)), check.errors.join("; "));
+  assert.ok(
+    check.errors.some((err) => /body_format must be "markdown"/i.test(err)),
+    check.errors.join("; ")
+  );
+});
+
+test("validateGamEnrichedPage accepts guided-review checklist JSON body", () => {
+  const page = JSON.parse(JSON.stringify(gamEnrichedPage));
+  const checklist = page.activities[0].materials.find(
+    (row) => String(row.material_type || "").toLowerCase() === "checklist"
+  );
+  assert.ok(checklist, "fixture should include a checklist material");
+  checklist.body_format = "json";
+  checklist.body = guidedCriteriaPayload();
+  const check = gamEnrich.validateGamEnrichedPage(page, dlaBaseline);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+});

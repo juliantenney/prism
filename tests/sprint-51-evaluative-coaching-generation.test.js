@@ -30,28 +30,29 @@ function loadPelMaterialBlock() {
   return sandbox.window.__PRISM_TEST_API.buildSelfDirectedGamPelReasoningMaterialPromptBlock();
 }
 
-test("51-2: SP-05 requires Common mistakes on checklist", () => {
+test("51-2: SP-05 requires guided-review feature depth on checklist", () => {
   const block = patternLib.buildSp05PromptBlock();
   assert.match(block, SP05_MARKER);
-  assert.match(block, /## Common mistakes/i);
-  assert.match(block, /2–4 discipline-specific novice traps/i);
-  assert.match(block, /diagnostic, not motivational/i);
-  assert.match(block, /instructional FAIL \(FM-13\)/i);
+  assert.match(block, /guided_criteria/i);
+  assert.match(block, /normally emit 2–3 independently observable/i);
+  assert.match(block, /Forbidden as stand-alone repairs \(generic-only\)/i);
+  assert.match(block, /without supplying a complete replacement answer/i);
 });
 
-test("51-2: SP-05 requires actionable revision guidance", () => {
+test("51-2: SP-05 requires actionable paired repairs", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /### If any check is not met:/i);
-  assert.match(block, /specific, actionable revision moves/i);
-  assert.match(block, /GOOD shape example[\s\S]*### If any check is not met:[\s\S]*Revise your \[deliverable\] by \(1\)/i);
+  assert.match(block, /Every expected feature MUST have a paired repair/i);
+  assert.match(block, /GOOD guided depth example/i);
+  assert.match(block, /IRES recruits ribosomes/i);
   assert.match(block, /FORBIDDEN: generic revise guidance/i);
 });
 
-test("51-2: SP-05 forbids motivational coaching language", () => {
+test("51-2: SP-05 forbids motivational and generic-only coaching language", () => {
   const block = patternLib.buildSp05PromptBlock();
-  assert.match(block, /FORBIDDEN in checklist.*Reflect on/i);
-  assert.match(block, /Think about/i);
-  assert.match(block, /Consider whether/i);
+  assert.match(block, /FORBIDDEN: motivational coaching/i);
+  assert.match(block, /revisit\/review the material/i);
+  assert.match(block, /add more detail/i);
+  assert.match(block, /use precise terminology/i);
 });
 
 test("51-2: SP-06 forbids checklist embedded in worked_example", () => {
@@ -62,10 +63,11 @@ test("51-2: SP-06 forbids checklist embedded in worked_example", () => {
   assert.match(block, /separate Material: \.\.\. \(checklist\)/i);
 });
 
-test("51-2: full pattern block still includes SP-05 evaluative coaching", () => {
+test("51-2: full pattern block still includes SP-05 guided-review quality", () => {
   const block = patternLib.buildInstructionalPatternPromptBlock();
   assert.match(block, SP05_MARKER);
-  assert.match(block, /## Common mistakes/i);
+  assert.match(block, /guided_criteria/i);
+  assert.match(block, /normally emit 2–3 independently observable/i);
 });
 
 test("51-2: PEL material block reinforces evaluative coaching", () => {

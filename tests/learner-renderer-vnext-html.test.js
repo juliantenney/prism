@@ -185,7 +185,10 @@ test("vNext material renderer renders markdown headings and emphasis", () => {
   const material = materialById(model, "A1-M1");
   const output = renderMaterial(material);
 
-  assert.match(output, /<h2>Residuals and Variance<\/h2>/);
+  assert.match(
+    output,
+    /<h3 class="util-md-heading util-md-heading--source-2">Residuals and Variance<\/h3>/
+  );
   assert.match(output, /Homoscedasticity occurs/);
   assert.match(output, /data-material-id="A1-M1"/);
   assert.match(output, /data-material-type="text"/);

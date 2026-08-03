@@ -91,6 +91,7 @@ function loadPrismTestApi() {
     repoRoot,
     PEDAGOGICAL_ICON_LIBS.concat([
       "lib/page-shell-create.js",
+      "lib/ld-activity-title-contract.js",
       "lib/ld-dla-page-enrich-contract.js",
       "lib/page-dla-enrich.js",
       "lib/episode-plan-v1-vocabulary.js",

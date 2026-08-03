@@ -12,6 +12,7 @@ function pageWithMaterial(material) {
     activities: [
       {
         activity_id: "A4",
+        title: "Enzyme process walkthrough",
         required_materials: [material]
       }
     ]

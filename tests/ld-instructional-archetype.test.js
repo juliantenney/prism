@@ -360,6 +360,7 @@ test("page-dla-enrich rejects incomplete archetype plans and accepts legacy rows
     activities: [
       {
         activity_id: "A1",
+        title: "Ordinary material row",
         required_materials: [{ material_id: "A1-M1", material_type: "text", purpose: "x" }]
       }
     ]
@@ -373,6 +374,7 @@ test("page-dla-enrich rejects incomplete archetype plans and accepts legacy rows
     activities: [
       {
         activity_id: "A1",
+        title: "Incomplete mechanism plan",
         required_materials: [
           {
             material_id: "A1-M1",

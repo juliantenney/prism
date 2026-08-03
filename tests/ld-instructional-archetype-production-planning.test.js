@@ -77,9 +77,16 @@ function mentalModelMaterial(overrides) {
 }
 
 function pageFromMaterials(materialsByActivity) {
-  const activities = Object.keys(materialsByActivity).map(function (activityId) {
+  const distinctTitles = [
+    "Orient enzyme vocabulary",
+    "Trace temperature–rate mechanism",
+    "Model thermostat heating system",
+    "Walk enzyme investigation process"
+  ];
+  const activities = Object.keys(materialsByActivity).map(function (activityId, index) {
     return {
       activity_id: activityId,
+      title: distinctTitles[index] || ("Learning pathway focus " + (index + 1)),
       required_materials: materialsByActivity[activityId]
     };
   });
@@ -121,7 +128,7 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
   assert.match(snippet, /key_relationships/);
   assert.match(snippet, /evaluation_judgement/);
   assert.doesNotMatch(snippet, /system\/parts\/relationships/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "58-DLA-PARTIAL-2");
+  assert.equal(dlaContract.CONTRACT_VERSION, "58-DLA-PARTIAL-3");
 });
 
 test("S60 Phase A: valid archetype DLA page routes to GAM with no S59 activation", () => {

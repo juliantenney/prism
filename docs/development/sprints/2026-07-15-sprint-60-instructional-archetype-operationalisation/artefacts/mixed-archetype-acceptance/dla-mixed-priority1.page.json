@@ -8,6 +8,7 @@
   "activities": [
     {
       "activity_id": "A1",
+      "title": "Define enzyme and rate terms",
       "learner_task": "State what an enzyme is and what reaction rate means in this investigation context.",
       "expected_output": "A short accurate definition pair without mechanism claim.",
       "activity_preamble": "Before explaining causes, lock the basic vocabulary.",
@@ -23,6 +24,7 @@
     },
     {
       "activity_id": "A2",
+      "title": "Trace temperature–rate mechanism",
       "learner_task": "Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.",
       "expected_output": "A causal chain account connecting temperature change to rate outcome via intervening links.",
       "activity_preamble": "You will explain the temperature–rate relationship as a transmitting process.",
@@ -47,6 +49,7 @@
     },
     {
       "activity_id": "A3",
+      "title": "Model thermostat heating system",
       "learner_task": "Build a working model of thermostat-controlled heating and use it to contrast mild vs extreme cold.",
       "expected_output": "A coherent system model that explains both contrast states with the same relationships and constraint.",
       "activity_preamble": "Hold a durable model; then apply it across states.",
@@ -75,6 +78,7 @@
     },
     {
       "activity_id": "A4",
+      "title": "Walk enzyme investigation process",
       "learner_task": "Work through expert interpretation of an enzyme reaction-rate investigation from condition to conclusion.",
       "expected_output": "A continuous walkthrough that transfers findings across stages to a bounded conclusion.",
       "activity_preamble": "Model how an expert reads the evidence set.",

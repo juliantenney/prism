@@ -10,11 +10,23 @@ const dlaEnrich = require("../lib/page-dla-enrich.js");
 const assemble = require("../lib/page-vnext-assemble.js");
 
 function pageWithActivities(activities) {
+  const distinctTitles = [
+    "Primary learning pathway",
+    "Secondary learning pathway",
+    "Tertiary learning pathway",
+    "Further learning pathway"
+  ];
   return {
     artifact_type: "page",
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
-    activities: activities
+    activities: (activities || []).map(function (row, index) {
+      if (!row || typeof row !== "object") return row;
+      if (row.title) return row;
+      return Object.assign({}, row, {
+        title: distinctTitles[index] || ("Learning pathway focus " + (index + 1))
+      });
+    })
   };
 }
 

@@ -1,0 +1,13 @@
+{
+  "name": "sequential-nav-qa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build-fixture.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

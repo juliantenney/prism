@@ -117,7 +117,7 @@ test("EP + DLA overlays activities by activity_id", () => {
   const a1 = result.page.activities.find((row) => row.activity_id === "A1");
   assert.ok(a1);
   assert.equal(a1.learner_task, "Compare inflation drivers using evidence.");
-  assert.equal(a1.title, "Activity A1");
+  assert.equal(a1.title, "Map inflation cause chains");
   assert.equal(a1.episode_plan.archetype, "understand");
   assert.equal(result.page.assembly_state.current_stage, "dla");
   assert.deepEqual(result.page.assembly_state.enriched_by, ["episode_plan", "dla"]);

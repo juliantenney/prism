@@ -174,43 +174,48 @@ test("vNext export: includes shared presentation CSS in head", () => {
   assert.match(html, /--learner-font-sans:"Segoe UI",Roboto,Helvetica,Arial,sans-serif/);
   assert.match(html, /--learner-text-base:1rem/);
   assert.match(html, /--learner-leading-body:1\.65/);
-  assert.match(html, /--learner-sticky-nav-height:96px/);
+  assert.match(html, /--learner-sticky-nav-height:7\.5rem/);
   assert.match(html, /\.util-learning-header,\.util-journey-nav\{width:min\(calc\(100% - 2 \* var\(--learner-page-gutter\)\),var\(--learner-navigation-width\)\)/);
   assert.match(html, /\.util-learning-header,\.util-journey-nav\{[^}]*margin-inline:auto/);
   assert.doesNotMatch(html, /\.util-learning-header\{[^}]*margin-block:0 var\(--learner-space-4\)/);
   assert.doesNotMatch(html, /\.util-learning-header\{[^}]*position:sticky/);
   assert.doesNotMatch(html, /\.util-learning-header\{[^}]*top:0/);
-  assert.match(html, /\.util-learning-header__intro\{width:100%;padding-block:\.75rem var\(--learner-space-2\)/);
-  assert.doesNotMatch(html, /\.util-learning-header__intro\{[^}]*max-width:var\(--learner-reading-width\)/);
+  assert.match(
+    html,
+    /\.util-learning-header__intro\{width:100%;max-width:var\(--learner-reading-width\);margin-inline:auto;padding-block:\.75rem var\(--learner-space-2\)/
+  );
   assert.match(html, /\.util-journey-nav\{[^}]*position:sticky[^}]*top:0[^}]*z-index:50/);
   assert.match(html, /\.util-journey-nav\{[^}]*margin-bottom:var\(--learner-space-4\)/);
   assert.match(html, /\.util-journey-nav\{[^}]*background:rgba\(255,255,255,\.97\)/);
   assert.match(html, /body\.util-page-export--vnext \[data-journey-section\]\{scroll-margin-top:var\(--learner-sticky-nav-height\)/);
   assert.doesNotMatch(html, /\.util-learning-header \[data-journey-section\]\{scroll-margin-top/);
   assert.doesNotMatch(html, /\.util-learning-header \.util-journey-nav/);
-  assert.match(html, /\.util-learning-header__subtitle\{[^}]*white-space:nowrap/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*max-width:min\(100%,58ch\)/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*margin-inline:auto/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*text-align:left/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*white-space:normal/);
+  assert.doesNotMatch(html, /\.util-learning-header__subtitle\{[^}]*white-space:nowrap/);
   assert.doesNotMatch(html, /\.util-learning-header__subtitle\{[^}]*text-overflow:ellipsis/);
-  assert.match(html, /@media \(max-width:820px\)\{\.util-learning-header__subtitle\{white-space:normal\}/);
+  assert.doesNotMatch(html, /@media \(max-width:820px\)\{[^}]*\.util-learning-header__subtitle/);
   assert.match(html, /\.util-learning-header__subtitle\{[^}]*color:#475569/);
-  assert.match(html, /\.util-learning-header__duration\{color:#64748b\}/);
-  assert.doesNotMatch(html, /\.util-learning-header__subtitle \.util-learning-header__duration/);
-  assert.doesNotMatch(html, /\.util-learning-header__duration\{margin-block/);
+  assert.match(html, /\.util-learning-header__duration\{color:#64748b;white-space:nowrap\}/);
+  assert.doesNotMatch(html, /\.util-learning-header__duration\{display:block/);
+  assert.doesNotMatch(html, /\.util-learning-header__duration\{[^}]*margin-block/);
+  assert.doesNotMatch(html, /\.util-learning-header__duration\{[^}]*text-align:center/);
   assert.doesNotMatch(html, /\.util-journey-overflow-cue/);
   assert.doesNotMatch(html, /\.util-learning-header__meta-item/);
-  assert.match(html, /\.util-journey-nav--scroll \.util-journey-links\{display:flex;justify-content:flex-start;overflow-x:auto/);
-  assert.match(html, /\.util-learning-header__title\{[^}]*text-align:left/);
+  assert.match(html, /util-journey-nav--sequential/);
+  assert.doesNotMatch(html, /\.util-journey-nav--scroll/);
+  assert.doesNotMatch(html, /\.util-journey-nav--compact/);
+  assert.doesNotMatch(html, /\.util-journey-track\{/);
+  assert.doesNotMatch(html, /\.util-journey-dot\{/);
+  assert.match(html, /\.util-journey-all-btn\{/);
+  assert.match(html, /\.util-learning-header__title\{[^}]*text-align:center/);
+  assert.match(html, /\.util-learning-header__title\{[^}]*margin-block:0 var\(--learner-space-1\)/);
   assert.match(html, /\.util-learner-page\{width:min\(calc\(100% - 2 \* var\(--learner-page-gutter\)\),var\(--learner-reading-width\)\)/);
-  assert.match(html, /\.util-journey-nav--compact \.util-journey-links\{display:grid;grid-template-columns:repeat\(var\(--journey-count\),minmax\(0,1fr\)\)/);
-  assert.match(html, /\.util-journey-nav--compact \.util-journey-link\{[^}]*min-height:calc\(3 \* 1\.25em\)/);
-  assert.match(html, /\.util-journey-link-text\{display:-webkit-box/);
-  assert.match(html, /\.util-journey-link-text\{[^}]*-webkit-line-clamp:3/);
-  assert.match(html, /\.util-journey-link-text\{[^}]*line-clamp:3/);
-  assert.match(html, /\.util-journey-link-text\{[^}]*white-space:normal/);
-  assert.doesNotMatch(html, /\.util-journey-link-text\{[^}]*white-space:nowrap/);
-  assert.doesNotMatch(html, /\.util-journey-link-text\{[^}]*text-overflow:ellipsis/);
-  assert.match(html, /\.util-journey-track\{[^}]*margin-top:\.65rem/);
-  assert.match(html, /@media \(max-width:1024px\)/);
-  assert.doesNotMatch(html, /\.util-journey-nav--compact \.util-journey-link\{[^}]*min-width:76px/);
+  assert.doesNotMatch(html, /-webkit-line-clamp|line-clamp:/);
+  assert.doesNotMatch(html, /text-overflow:\s*ellipsis/);
+  assert.doesNotMatch(html, /@media \(max-width:1024px\)/);
   assert.match(html, /body\.util-page-export--vnext\{[^}]*font-family:var\(--learner-font-sans\)/);
   assert.match(html, /\.util-learner-renderer-vnext\{font-size:var\(--learner-text-base\);line-height:var\(--learner-leading-body\);color:#1f2937;text-align:left\}/);
   assert.match(html, /\.util-learning-header__title\{[^}]*font-size:var\(--learner-text-title\)/);
@@ -218,14 +223,21 @@ test("vNext export: includes shared presentation CSS in head", () => {
   assert.match(html, /\.util-activity-title\{[^}]*font-size:var\(--learner-text-lg\)/);
   assert.match(html, /\.util-beat-heading\{[^}]*font-size:var\(--learner-text-md\)/);
   assert.match(html, /\.util-material-heading\{[^}]*font-size:var\(--learner-text-base\)/);
-  assert.match(html, /\.util-material-block h2,[^}]*font-size:var\(--learner-text-md\)/);
-  assert.match(html, /\.util-material-block h3,[^}]*font-size:var\(--learner-text-base\)/);
-  assert.match(html, /\.util-material-block h4,[^}]*font-size:var\(--learner-text-sm\)/);
+  assert.match(html, /\.util-md-heading\{[^}]*font-size:var\(--learner-text-base\)/);
+  assert.match(
+    html,
+    /\.util-md-heading--source-1,\.util-learner-renderer-vnext \.util-md-heading--source-2\{[^}]*font-size:var\(--learner-text-md\)/
+  );
+  assert.match(html, /\.util-md-heading--source-3\{[^}]*font-size:var\(--learner-text-base\)/);
+  assert.match(
+    html,
+    /\.util-md-heading--source-4,\.util-learner-renderer-vnext \.util-md-heading--source-5,\.util-learner-renderer-vnext \.util-md-heading--source-6\{[^}]*font-size:var\(--learner-text-sm\)/
+  );
   assert.match(html, /\.util-beat-instruction\{[^}]*font-size:var\(--learner-text-base\)/);
   assert.match(html, /\.util-guidance-label\{[^}]*font-size:var\(--learner-text-sm\)/);
   assert.match(html, /\.util-guidance-body,[^}]*font-size:var\(--learner-text-base\)/);
   assert.match(html, /\.util-assessment-statement\{[^}]*font-size:var\(--learner-text-base\)/);
-  assert.match(html, /\.util-assessment-item h3:not\(\.util-assessment-title\)/);
+  assert.match(html, /\.util-task-card__title\{[^}]*font-size:var\(--learner-text-base\)/);
   assert.match(html, /\.util-assessment-title\{margin:0/);
   assert.match(html, /\.util-assessment-feedback summary\{[^}]*font-size:var\(--learner-text-sm\)/);
   assert.match(html, /\.util-learner-renderer-vnext td\{font-size:\.9375rem/);
@@ -238,39 +250,32 @@ test("vNext export: includes section journey navigation and targets", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
   assert.match(html, /class="util-learning-header"/);
-  assert.match(html, /class="util-journey-nav/);
-  assert.match(html, /util-journey-nav--compact/);
-  assert.match(html, /util-journey-nav--responsive-overflow/);
+  assert.match(html, /class="util-journey-nav util-journey-nav--sequential"/);
+  assert.match(html, /aria-label="Learning sections"/);
   assert.match(html, /Self assessment/);
-  assert.doesNotMatch(html, /util-journey-link-text">Self<br>assessment/);
-  assert.doesNotMatch(
-    html,
-    /href="#journey-assessment"[\s\S]*?<span class="util-journey-link-text">Assessment(?:<br>[^<]*)?<\/span>/
-  );
+  assert.doesNotMatch(html, /util-journey-nav--compact|util-journey-nav--scroll|util-journey-track/);
   assert.match(html, /class="util-learning-header__title"/);
   VNEXT_NAV_TARGETS.forEach((target) => {
     assert.match(html, new RegExp(`href="${target.href.replace("#", "\\#")}"`));
     assert.match(html, new RegExp(`id="${target.id}"[^>]*data-journey-section="true"`));
   });
-  assert.match(html, /<script>[\s\S]*util-journey-nav[\s\S]*<\/script>/);
+  assert.match(html, /<script>[\s\S]*util-journey-nav--sequential[\s\S]*<\/script>/);
 });
 
-test("vNext export: complete journey exposes eight visible destinations", () => {
+test("vNext export: complete journey exposes eight destinations in All Activities list", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
-  const linkMatches = html.match(/class="util-journey-link"/g) || [];
+  const linkMatches = html.match(/class="util-journey-all-link"/g) || [];
   assert.equal(linkMatches.length, 8);
   assert.match(html, /href="#journey-orient"[\s\S]*?>[\s\S]*?Orient/);
   VNEXT_ACTIVITY_NAV_TITLES.forEach((title) => {
-    assert.match(html, new RegExp(`class="util-journey-link-text">${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<`));
+    assert.match(
+      html,
+      new RegExp(`class="util-journey-all-link"[^>]*>${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<`)
+    );
   });
   assert.match(html, /href="#journey-assessment"[\s\S]*Self assessment/);
   assert.match(html, /href="#journey-study-tips"[\s\S]*Study tips/);
-  assert.doesNotMatch(html, /util-journey-link-text">Define</);
-  assert.doesNotMatch(html, /util-journey-link-text">Interpret</);
-  assert.doesNotMatch(html, /util-journey-link-text">Apply</);
-  assert.doesNotMatch(html, /util-journey-link-text">Consequences</);
-  assert.doesNotMatch(html, /util-journey-link-text">Compare</);
 });
 
 test("vNext export: authored activity titles preserve full accessible names", () => {
@@ -279,18 +284,18 @@ test("vNext export: authored activity titles preserve full accessible names", ()
   VNEXT_ACTIVITY_NAV_TITLES.forEach((title, index) => {
     const activityId = "A" + String(index + 1);
     const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(html, new RegExp(`href="#activity-${activityId}"`));
     assert.match(
       html,
-      new RegExp(
-        `href="#activity-${activityId}"[^>]*aria-label="${escaped}"[^>]*title="${escaped}"`
-      )
-    );
-    assert.match(
-      html,
-      new RegExp(`href="#activity-${activityId}"[\\s\\S]*?<span class="util-journey-link-text">${escaped}</span>`)
+      new RegExp(`class="util-journey-all-link" href="#activity-${activityId}"[^>]*>${escaped}<`)
     );
   });
-  assert.doesNotMatch(html, /util-journey-link-text">[^<]*<br>/);
+  assert.match(
+    html,
+    new RegExp(
+      `aria-label="Next section: ${VNEXT_ACTIVITY_NAV_TITLES[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`
+    )
+  );
 });
 
 test('vNext export: assessment nav label uses "Self assessment"', () => {
@@ -298,8 +303,7 @@ test('vNext export: assessment nav label uses "Self assessment"', () => {
   const html = renderVnextExport(api, loadFixture());
   assert.match(html, /href="#journey-assessment"/);
   assert.match(html, /Self assessment/);
-  assert.doesNotMatch(html, /util-journey-link-text">Self<br>assessment/);
-  assert.doesNotMatch(html, /href="#journey-assessment"[\s\S]*?>\s*<span class="util-journey-link-text">Assessment/);
+  assert.match(html, /class="util-journey-all-link" href="#journey-assessment"[^>]*>Self assessment</);
 });
 
 test("vNext export: assessment nav item omitted when assessment absent", () => {
@@ -319,22 +323,23 @@ test('vNext export: visible assessment section heading uses "Self assessment"', 
   assert.doesNotMatch(html, /util-semantic-icon__label">Assessment<\/span>/);
 });
 
-test("vNext export: overflow mode keeps endpoints reachable without scroll cue", () => {
+test("vNext export: sequential nav keeps endpoints reachable without scroll cue", () => {
   const { api } = loadPrismTestApi();
-  const scrollHtml = api.utilityRenderLearningJourneyNavHtmlForTest(
+  const html = api.utilityRenderVnextSequentialJourneyNavHtmlForTest(
     Array.from({ length: 9 }, (_, i) => ({
       id: "activity-" + i,
       label: "Step " + i,
       accessibleLabel: "Step " + i,
       title: "Step " + i
-    }))
+    })),
+    { currentIndex: 0 }
   );
-  assert.match(scrollHtml, /util-journey-nav--scroll/);
-  assert.match(scrollHtml, /href="#activity-0"/);
-  assert.match(scrollHtml, /href="#activity-8"/);
-  assert.doesNotMatch(scrollHtml, /util-journey-overflow-cue/);
-  assert.doesNotMatch(scrollHtml, /Scroll →/);
-  assert.match(scrollHtml, /util-journey-track/);
+  assert.match(html, /util-journey-nav--sequential/);
+  assert.match(html, /href="#activity-0"/);
+  assert.match(html, /href="#activity-8"/);
+  assert.doesNotMatch(html, /util-journey-overflow-cue/);
+  assert.doesNotMatch(html, /Scroll →/);
+  assert.doesNotMatch(html, /util-journey-track/);
 });
 
 test("vNext export: 320px-safe layout and print rule present", () => {
@@ -349,9 +354,17 @@ test("vNext export: 320px-safe layout and print rule present", () => {
 test("vNext export: material markdown headings are scoped and not browser defaults", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
-  assert.match(html, /\.util-material-block h2,[\s\S]*font-size:var\(--learner-text-md\)/);
-  assert.match(html, /\.util-material-block h3,[\s\S]*font-size:var\(--learner-text-base\)/);
-  assert.match(html, /\.util-material-block h4,[\s\S]*font-size:var\(--learner-text-sm\)/);
+  assert.match(
+    html,
+    /\.util-md-heading--source-1,\.util-learner-renderer-vnext \.util-md-heading--source-2\{[^}]*font-size:var\(--learner-text-md\)/
+  );
+  assert.match(html, /\.util-md-heading--source-3\{[^}]*font-size:var\(--learner-text-base\)/);
+  assert.match(
+    html,
+    /\.util-md-heading--source-4,\.util-learner-renderer-vnext \.util-md-heading--source-5,\.util-learner-renderer-vnext \.util-md-heading--source-6\{[^}]*font-size:var\(--learner-text-sm\)/
+  );
+  assert.doesNotMatch(html, /\.util-material-block h2,/);
+  assert.doesNotMatch(html, /\.util-material-block h4,/);
   assert.doesNotMatch(html, /\.util-learner-renderer-vnext h2\{font-size:1\.5em/);
 });
 
@@ -420,7 +433,6 @@ test("vNext export: header subtitle uses first overview sentence and legacy dura
   const html = renderVnextExport(api, loadFixture());
   const escapedSubtitle = EXPECTED_HEADER_SUBTITLE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   assert.match(html, /class="util-learning-header__intro"/);
-  assert.match(html, /class="util-learning-header__subtitle">/);
   assert.match(
     html,
     new RegExp(
@@ -498,6 +510,22 @@ test("vNext export: missing overview omits subtitle cleanly", () => {
   );
 });
 
+test("vNext export: missing duration omits duration element cleanly", () => {
+  const { api } = loadPrismTestApi();
+  const fixture = loadFixture();
+  (fixture.activities || []).forEach((activity) => {
+    delete activity.duration_minutes;
+    delete activity.durationMinutes;
+  });
+  const html = renderVnextExport(api, fixture);
+  const headerIntro = html.match(/<div class="util-learning-header__intro">[\s\S]*?<\/div>/);
+  assert.ok(headerIntro);
+  assert.match(headerIntro[0], /class="util-learning-header__subtitle">[^<]+<\/p>/);
+  assert.doesNotMatch(headerIntro[0], /util-learning-header__duration/);
+  assert.doesNotMatch(headerIntro[0], /\d+\s*mins?\./i);
+  assert.doesNotMatch(headerIntro[0], /class="util-learning-header__subtitle">[^<]*\s<\/p>/);
+});
+
 test("vNext export: assessment label appears in nav and section only", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
@@ -523,37 +551,33 @@ test("vNext export: sticky navigation shell uses full width intro and nav-only s
   assert.ok(headerEnd > -1 && navStart > headerEnd, "Navigation must follow the closed header as a sibling.");
   assert.doesNotMatch(html, /\.util-learning-header::before/);
   assert.doesNotMatch(html, /\.util-journey-nav::before/);
-  assert.doesNotMatch(html, /100vw/);
+  assert.doesNotMatch(html, /\.util-journey-nav\{[^}]*100vw/);
   assert.doesNotMatch(html, /position:fixed/);
   assert.match(html, /@media print\{[^}]*\.util-learning-header,.util-journey-nav\{display:none!important/);
-  assert.match(html, /nav\.offsetHeight\+24/);
+  assert.match(html, /stickyClearanceHeight\(\)\+8/);
   assert.doesNotMatch(html, /header\|\|nav\)\.offsetHeight/);
+  assert.match(html, /--learner-sticky-nav-height/);
+  assert.match(html, /scroll-margin-top:var\(--learner-sticky-nav-height\)/);
   assert.doesNotMatch(html, /header\.querySelector\('\.util-journey-nav'\)/);
   assert.doesNotMatch(html, /classList\.(add|toggle)\(['"]is-sticky/);
 });
 
-test("vNext export: sprint 67.10 CSS cleanup retains behaviour and removes defects", () => {
+test("vNext export: sequential nav CSS replaces compact/scroll track modes", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
   assert.doesNotMatch(html, /min-width:0;min-width:0/);
   assert.doesNotMatch(html, /-ms-overflow-style:/);
-  assert.doesNotMatch(html, /\.util-journey-nav--scroll \.util-journey-links::-webkit-scrollbar\{display:none/);
-  assert.match(html, /\.util-journey-nav--scroll \.util-journey-links\{[^}]*scrollbar-width:thin/);
-  assert.match(html, /\.util-journey-nav--scroll \.util-journey-links\{[^}]*overflow-x:auto/);
-  assert.match(
-    html,
-    /\.util-journey-nav--compact\.util-journey-nav--responsive-overflow \.util-journey-links\{display:flex;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;gap:8px;padding:0 2px 2px;width:100%\}/
-  );
-  assert.match(
-    html,
-    /\.util-journey-nav--compact\.util-journey-nav--responsive-overflow \.util-journey-link\{flex:0 0 clamp\(9rem,34vw,14rem\);min-width:0;padding-inline:4px;display:flex;align-items:center;justify-content:center;min-height:calc\(3 \* 1\.25em\);padding-block:\.2rem;width:auto\}/
-  );
-  assert.doesNotMatch(html, /break-inside:auto/);
+  assert.doesNotMatch(html, /\.util-journey-nav--scroll/);
+  assert.doesNotMatch(html, /\.util-journey-nav--compact/);
+  assert.doesNotMatch(html, /\.util-journey-track\{/);
+  assert.doesNotMatch(html, /\.util-journey-dot\{/);
+  assert.match(html, /util-journey-nav--sequential/);
+  assert.match(html, /\.util-journey-all-btn\{/);
+  assert.match(html, /\.util-journey-adjacent\{/);
   assert.match(html, /@media print\{[\s\S]*\.util-learner-page\{width:100%;max-width:none;padding:0\}/);
-  assert.match(html, /\.util-journey-nav--compact \.util-journey-links\{display:grid/);
-  assert.match(html, /\.util-learning-header__subtitle\{[^}]*white-space:nowrap/);
-  assert.match(html, /@media \(max-width:820px\)\{\.util-learning-header__subtitle\{white-space:normal\}/);
-  assert.match(html, /\.util-journey-arrow\{/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*max-width:min\(100%,58ch\)/);
+  assert.match(html, /\.util-learning-header__subtitle\{[^}]*text-align:left/);
+  assert.doesNotMatch(html, /\.util-learning-header__subtitle\{[^}]*white-space:nowrap/);
   assert.match(html, /\.util-knowledge-summary__content/);
   assert.match(html, /\.util-learner-renderer-vnext \.util-activity\{[^}]*padding:0;border:0;background:transparent/);
 });

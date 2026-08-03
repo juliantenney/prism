@@ -30,6 +30,7 @@ function pageWithMaterial(material) {
     activities: [
       {
         activity_id: "A3",
+        title: "Thermostat system model",
         required_materials: [material]
       }
     ]

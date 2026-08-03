@@ -80,6 +80,7 @@ function loadPrismTestApi() {
     repoRoot,
     PEDAGOGICAL_ICON_LIBS.concat([
       "lib/page-shell-create.js",
+      "lib/ld-activity-title-contract.js",
       "lib/ld-dla-page-enrich-contract.js",
       "lib/page-dla-enrich.js",
       "lib/ld-gam-page-enrich-contract.js",
@@ -142,7 +143,17 @@ const dpPartial = loadFixture("dp-partial.json");
 const daPartial = loadFixture("assessment-design-partial.json");
 const gaiPartial = loadFixture("assessment-items-partial.json");
 
-test("DLA partial without title is valid", () => {
+test("DLA partial without activity title is rejected", () => {
+  const api = loadPrismTestApi();
+  const wf = buildWorkflow();
+  const missingTitle = JSON.parse(JSON.stringify(dlaPartial));
+  delete missingTitle.activities[0].title;
+  const check = api.validateDlaOrPageCapture(missingTitle, epShell, wf);
+  assert.equal(check.ok, false);
+  assert.match((check.errors || []).join("; "), /title is required/i);
+});
+
+test("DLA partial with final activity titles is valid", () => {
   const api = loadPrismTestApi();
   const wf = buildWorkflow();
   const check = api.validateDlaOrPageCapture(dlaPartial, epShell, wf);

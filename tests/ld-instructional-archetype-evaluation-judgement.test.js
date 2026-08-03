@@ -49,6 +49,7 @@ function pageWithMaterial(material) {
     activities: [
       {
         activity_id: "A5",
+        title: "Evidence-based policy judgement",
         required_materials: [material]
       }
     ]

@@ -144,3 +144,27 @@ test("hook placed only once per activity even with multiple materials", () => {
   const cardGridHooks = hooks.filter(h => h.slot === "materials-card-grid-after");
   assert.equal(cardGridHooks.length, 1, "exactly one hook per activity");
 });
+
+test("plan-authorised materials-table-pair-between is consumed once across multiple tables", () => {
+  const page = {
+    visual_affordances: [{
+      affordance_id: "va-pair", scope: "activity", activity_id: "A4",
+      visual_decision: "generate", visual_slot: "materials-table-pair-between"
+    }]
+  };
+  const model = buildModel([{
+    id: "A4", title: "Compare",
+    beats: [{
+      contentSequence: [
+        { kind: "material", material: { type: "comparison_table" } },
+        { kind: "material", material: { type: "comparison_table" } },
+        { kind: "material", material: { type: "checklist" } }
+      ]
+    }]
+  }]);
+  placements.attachVisualAffordancePlacements(page, model);
+  const hooks = findHooks(model).filter(h => h.slot === "materials-table-pair-between");
+  assert.equal(hooks.length, 1, "exactly one table-pair-between hook");
+  assert.equal(hooks[0].index, 0, "placed after the first table in the pair");
+  assert.equal(hooks[0].pos, "after");
+});

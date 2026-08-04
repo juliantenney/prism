@@ -9720,7 +9720,7 @@
       "",
       "### Upstream page shell (Design Episode Plan — enrich in place)",
       "",
-      "Input: the vNext page artefact below from Design Episode Plan. Output: the SAME page object enriched by DLA. Preserve activity_ids, episode_plan beats, and learning_outcomes. Replace provisional Episode Plan activity titles with final learner-facing activities[].title (concise, ≤60 characters, distinct, not the LO statement). Replace em dash placeholders and populate required_materials[]. Emit activities[].evidence_decision for every activity (required boolean, reason, provider_material_ids). When a task requires inspectable learner evidence, attach required_materials[].evidence_requirement only to evidence-provider material(s) named in provider_material_ids (scenario/data/source/results that supply observations). Response scaffolds (analysis_table/decision_table/etc.) organise learner analysis and must not carry evidence_requirement merely because learners record evidence or interpretations in them — prefer a separate provider plus ordinary scaffold. Use combined_evidence_workspace only when that same provider-listed table contains both fixed observation columns and learner response columns (both field arrays non-empty). Include concrete observable_features and use provenance system_generated_simulation for generated simulated evidence. Do not write materials bodies or page_synthesis.",
+      "Input: the vNext page artefact below from Design Episode Plan. Output: the SAME page object enriched by DLA. PRE-DESIGN: inspect Copilot attachments first; classify each as supporting knowledge, learner evidence, or both; inventory available source units; optionally record generation_notes.learner_evidence_attachments { present, role, inventoried_units } when learner evidence applies. For every activity, decide evidence before finalising learner_task/required_materials: (1) what must the learner produce; (2) does production require inspecting evidence/examples/source properties; (3) if yes set evidence_decision.required true with a genuine provider in provider_material_ids and separate teaching/scaffold rows; (4) if no set required false and ensure task/output/checklist do not require quotations, observations, data, cases, images or supplied examples-as-evidence; (5) consistency check—no required:false analyse/interpret/compare/classify/evaluate of supplied examples/source properties; no required:true without a genuine provider. Preserve activity_ids, episode_plan beats, and learning_outcomes. Replace provisional Episode Plan activity titles with final learner-facing activities[].title (concise, ≤60 characters, distinct, not the LO statement). Replace em dash placeholders and populate required_materials[]. Emit activities[].evidence_decision for every activity. Infer evidence dependency from current learner-production obligations (learner_task, expected_output, evidence_use_prompt, response/workspace/checklist specs)—not preamble/bridge references to later evidence. Tasks that interpret language, form, structure, imagery, tone, data, cases, observations, identify examples/quotations from a named source, or require supporting evidence from a text/dataset/case/image must set required true; ordinary conceptual teaching that only mentions examples must not. Resource-level source-use: when learner-evidence attachments are present, make them central to analytical/comparative/evaluative activities about that material using provenance conversation_attachment; do not avoid the source via thematic summaries, generic simulations, teaching-only examples, pre-interpreted observations, or generated viewpoints without underlying source excerpts. Orientation may remain source-free. Do not invent unattached related works. system_generated_simulation remains valid for genuinely different evidential needs or when no suitable source is available. Mixed evaluation uses separate conversation_attachment and simulation providers, both listed in provider_material_ids. Keep teaching text, source/evidence provider, and response scaffold separate for separate_provider layout. Use combined_evidence_workspace only when that same provider-listed table contains both fixed observation columns and learner response columns (both field arrays non-empty). Include concrete observable_features. FINAL AUDIT before JSON (internal only): if learner evidence was attached, which activities use conversation_attachment; do analytical/comparative/evaluative activities about that material avoid summary/simulation-only providers; does every required:false activity avoid source-dependent production; are only inventoried units named; are mixed-provenance materials separated. Do not write audit prose outside the JSON. If no learner-evidence material is available, continue with normal system-generated evidence decisions—never fabricate copyrighted or exact source-bound wording. Do not write materials bodies or page_synthesis.",
       "",
       "```json",
       String(json).trim(),
@@ -10302,6 +10302,8 @@
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
       "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Include purpose when available. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
+      "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
+      "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
       "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
       "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
@@ -15409,6 +15411,16 @@
           : { ok: true, errors: [] };
       if (stepId) {
         state.workflowRunGamPageValidation = state.workflowRunGamPageValidation || {};
+        state.workflowRunGamPageQualityDiagnostics = state.workflowRunGamPageQualityDiagnostics || {};
+        var qualityDiagnostics =
+          (page.generation_notes &&
+            page.generation_notes.validation &&
+            page.generation_notes.validation.quality_diagnostics) ||
+          gamCheck.warnings ||
+          [];
+        if (Array.isArray(qualityDiagnostics)) {
+          state.workflowRunGamPageQualityDiagnostics[stepId] = qualityDiagnostics;
+        }
         if (!gamCheck.ok) {
           state.workflowRunGamPageValidation[stepId] = (gamCheck.errors || []).join("; ");
           if (state.workflowRunStepCompleted[stepId]) {
@@ -15418,7 +15430,13 @@
           delete state.workflowRunGamPageValidation[stepId];
         }
       }
-      if (!gamCheck.ok) return sanitizedText;
+      if (!gamCheck.ok) {
+        try {
+          return JSON.stringify(page, null, 2);
+        } catch (_) {
+          return sanitizedText;
+        }
+      }
       try {
         return JSON.stringify(page, null, 2);
       } catch (_) {

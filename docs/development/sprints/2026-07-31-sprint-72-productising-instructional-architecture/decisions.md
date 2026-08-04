@@ -93,6 +93,13 @@ Do **not** copy colliding predecessor ID families as if they were new Sprint 72 
 - **Rationale:** Operator clarification of persistence responsibilities.  
 - **Consequences:** Phase 4 and Phase 5 path work cross-reference; storage technology choice still open investigation.
 
+## S72-D10 Evidence-centred activity slice — system-generated evidence boundary
+
+- **Decision:** The validated evidence-centred activity thin-slice supports **system-generated learner evidence** (simulated observations/cases with honest provenance labelling; separate-provider and combined evidence/workspace patterns). It does **not** implement uploaded primary-evidence preservation as a stable, addressable artefact throughout the pipeline. Source-bound disciplines that require exact excerpts, source identity, methodology or provenance evaluation remain a **separate future work package** (upload classification, preservation, identifiers, retrieval, rights/provenance). Generated evidence must not be treated as a substitute for required primary textual evidence (Owen boundary).  
+- **Status:** Accepted (slice closure boundary)  
+- **Rationale:** RNA/HCV and heteroscedasticity validated system-generated evidence sufficiency; Owen established that uploaded poems were summarised into model knowledge rather than reliably preserved and referenced.  
+- **Consequences:** Do not expand this commit into upload ingestion or source-bound architecture; cite this decision when deferring Layer-3 artefact work.
+
 ---
 
 ## Decisions deliberately not made yet
@@ -101,3 +108,4 @@ Do **not** copy colliding predecessor ID families as if they were new Sprint 72 
 - Storage technology for the shared workflow asset-persistence model.  
 - Whether music/chemistry/engineering renderers receive any implementation thin-slice.  
 - Exact mid-sprint capacity cut-line for stretch items.
+- Upload classification / primary-evidence artefact pipeline design (deferred under `S72-D10`).

@@ -7895,7 +7895,7 @@
   }
 
   var LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
-    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, required_materials[{ material_id, type, purpose, specification }], learner_task, expected_output, activity_preamble (REQUIRED), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), intellectual_coherence_bridge REQUIRED on every activity after the first (omit on A1), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
+    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, evidence_decision{ required, reason, provider_material_ids[] }, required_materials[{ material_id, type, purpose, specification, optional evidence_requirement{ kind, purpose, learner_action, observable_features, minimum_suitable_form?, processing_notes?, provenance?, disclosure_constraint?, evidence_layout?, fixed_observation_fields?, learner_response_fields? } }], learner_task, expected_output, activity_preamble (REQUIRED), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), intellectual_coherence_bridge REQUIRED on every activity after the first (omit on A1), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
 
   function reinforceLearnerPageDlaActivitiesOutputSchema(draftBody) {
     var body = String(draftBody || "");
@@ -9720,7 +9720,7 @@
       "",
       "### Upstream page shell (Design Episode Plan — enrich in place)",
       "",
-      "Input: the vNext page artefact below from Design Episode Plan. Output: the SAME page object enriched by DLA. Preserve activity_ids, episode_plan beats, and learning_outcomes. Replace provisional Episode Plan activity titles with final learner-facing activities[].title (concise, ≤60 characters, distinct, not the LO statement). Replace em dash placeholders and populate required_materials[]. Do not write materials bodies or page_synthesis.",
+      "Input: the vNext page artefact below from Design Episode Plan. Output: the SAME page object enriched by DLA. Preserve activity_ids, episode_plan beats, and learning_outcomes. Replace provisional Episode Plan activity titles with final learner-facing activities[].title (concise, ≤60 characters, distinct, not the LO statement). Replace em dash placeholders and populate required_materials[]. Emit activities[].evidence_decision for every activity (required boolean, reason, provider_material_ids). When a task requires inspectable learner evidence, attach required_materials[].evidence_requirement only to evidence-provider material(s) named in provider_material_ids (scenario/data/source/results that supply observations). Response scaffolds (analysis_table/decision_table/etc.) organise learner analysis and must not carry evidence_requirement merely because learners record evidence or interpretations in them — prefer a separate provider plus ordinary scaffold. Use combined_evidence_workspace only when that same provider-listed table contains both fixed observation columns and learner response columns (both field arrays non-empty). Include concrete observable_features and use provenance system_generated_simulation for generated simulated evidence. Do not write materials bodies or page_synthesis.",
       "",
       "```json",
       String(json).trim(),
@@ -10301,7 +10301,7 @@
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
-      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Include purpose when available.",
+      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Include purpose when available. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
       "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
       "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",

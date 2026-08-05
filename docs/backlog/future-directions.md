@@ -1,29 +1,17 @@
+# Future directions (historical)
+
+**Superseded for planning by** [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) § Future architecture and Research/design questions.  
+This file is retained for history. Do **not** treat entries below as active sprint allocations.
+
 These are future possibilities and programme-level next phases — not automatic implementation commitments.
 
-# Future Direction Candidates
+---
 
-## Active next phase
+## Historical note (pre–Sprint 72 cut-line)
 
-### Sprint 64 — Cognitive Structure Preservation Investigation
+Earlier “active next phase” pointers in this file (e.g. Sprint 64 cognitive structure investigation) are **historical**. For current next-sprint selection see [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) and the canonical [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md).
 
-Investigate the smallest viable preservation and manifestation mechanism for learner-relevant intermediate reasoning structure beyond the GAM→assembly boundary.
-
-- **Nature:** Architecture investigation (not schema redesign; not production implementation)
-- **Charter:** [`docs/sprints/sprint-64-cognitive-structure-preservation-investigation.md`](../sprints/sprint-64-cognitive-structure-preservation-investigation.md)
-- **Pack:** [`docs/development/sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/`](../development/sprints/2026-07-16-sprint-64-cognitive-structure-preservation-investigation/)
-- **Predecessor close-out:** [`sprint-63-closeout.md`](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
-
-## Recently closed
-
-### Sprint 63 — Cognitive Flow & Reasoning Visibility (**Closed / Outcome A**)
-
-Discovery and validation complete. Architecture investigation justified; schema redesign and production implementation not approved.
-
-- **Close-out:** [`sprint-63-closeout.md`](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-closeout.md)
-- **Findings:** [`sprint-63-authoritative-findings.md`](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/sprint-63-authoritative-findings.md)
-- **Pack:** [`docs/development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/`](../development/sprints/2026-07-16-sprint-63-cognitive-flow-and-reasoning-visibility/)
-
-## Longer-horizon candidates
+## Longer-horizon candidates (programme-level only)
 
 - institutional deployment models
 - collaborative workflow authoring and review
@@ -31,4 +19,4 @@ Discovery and validation complete. Architecture investigation justified; schema 
 - richer validation systems
 - domain-pack marketplaces
 - utility transformation ecosystem
-- pipeline/authoring evolution for explicit goals, success criteria, judgement frameworks, and reasoning visibility (only after Sprint 64 investigation recommendation)
+- pipeline/authoring evolution for explicit goals, success criteria, judgement frameworks, and reasoning visibility

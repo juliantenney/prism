@@ -1,53 +1,47 @@
 # Sprint 72 — Productising the Instructional Architecture Validated in Sprint 71
 
-**Status:** OPEN / IN PROGRESS (implementation underway; handover updated 2026-08-05)  
+**Status:** **COMPLETE / CLOSED** (2026-08-05)  
 **Opened:** 2026-07-31  
-**Implementation status:** Substantially progressed; current next tasks are Owen rerender/inspection and commit of verified Sprint 72 slice  
 **Success criteria:** Accepted (`S72-D07`)  
-**Predecessor:** Sprint 71 — **COMPLETE / Closed** (do not reopen)
+**Predecessor:** Sprint 71 — **COMPLETE / Closed** (do not reopen)  
+**Closure:** [SPRINT-72-CLOSURE.md](SPRINT-72-CLOSURE.md) · [SPRINT-72-FINAL-REPORT.md](SPRINT-72-FINAL-REPORT.md)  
+**Next:** [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) · [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
 
 | Authority | Path |
 | --------- | ---- |
 | Start here | [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md) |
+| Final report | [SPRINT-72-FINAL-REPORT.md](SPRINT-72-FINAL-REPORT.md) |
+| Closure | [SPRINT-72-CLOSURE.md](SPRINT-72-CLOSURE.md) |
 | Charter | [SPRINT-72-CHARTER.md](SPRINT-72-CHARTER.md) |
 | Context | [CONTEXT.md](CONTEXT.md) |
 | Handover | [HANDOVER.md](HANDOVER.md) |
 | Plan | [PLAN.md](PLAN.md) |
+| Backlog rationalisation (historical) | [SPRINT-72-BACKLOG-RATIONALISATION.md](SPRINT-72-BACKLOG-RATIONALISATION.md) |
 | Status dashboard | [STATUS.md](STATUS.md) |
 | Decisions | [decisions.md](decisions.md) |
-| Predecessor links | [links-to-predecessors.md](links-to-predecessors.md) |
-| Traceability (S71 → S72 destinations) | [findings-traceability.md](findings-traceability.md) |
+| Traceability | [findings-traceability.md](findings-traceability.md) |
 | Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
-| Top-level charter overview | [../../../sprints/sprint-72-productising-instructional-architecture.md](../../../sprints/sprint-72-productising-instructional-architecture.md) |
+| Canonical product backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
+| Top-level closeout | [../../../sprints/sprint-72-closeout.md](../../../sprints/sprint-72-closeout.md) |
 
-## Reading order (current)
+## Reading order (closed)
 
-1. [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md)  
-2. [HANDOVER.md](HANDOVER.md)  
-3. [SPRINT-72-CHARTER.md](SPRINT-72-CHARTER.md)  
-4. [CONTEXT.md](CONTEXT.md)  
-5. [findings-traceability.md](findings-traceability.md)  
-6. [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) · [decisions.md](decisions.md)  
-7. Authoritative Sprint 71 evidence via [links-to-predecessors.md](links-to-predecessors.md) — **link, do not copy**
+1. [SPRINT-72-FINAL-REPORT.md](SPRINT-72-FINAL-REPORT.md)  
+2. [SPRINT-72-CLOSURE.md](SPRINT-72-CLOSURE.md)  
+3. [decisions.md](decisions.md) · [STATUS.md](STATUS.md)  
+4. [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)  
 
-## Theme
+## Theme (delivered)
 
 Embed validated Sprint 71 instructional principles into Prism so high-quality instructional design is produced by default; authors are asked only for information the system genuinely needs; and discipline-specific evidence can be supplied and retained where Prism must not invent it.
 
-## Binding priority order
+## Planning principle
 
-1. Platform / system instructional architecture  
-2. Workflow elicitation  
-3. Author-supplied evidence  
-4. Product / UX (images, representations, headings, navigation)  
-5. Raise the ceiling (~90–91 → aspirational 95–98)
+> A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria. Ideas and possible future enhancements remain in the product backlog until they are ready for planning.
 
-Do **not** collapse these into generic “prompt improvement.”
+## Boundaries at close
 
-## Current handover boundaries
-
-- No Sprint 72 closure or final report yet  
-- Sprint 71 remains closed; its evidence is linked, not rewritten  
-- Existing activity-oriented pipeline remains the mechanism for this slice; no new stage/page type required  
-- Shared evidence spines and dedicated case-study pages are deferred future options, not Sprint 72 slice requirements  
-- Current repository state includes uncommitted Sprint 72 implementation/test changes; docs must distinguish uncommitted vs committed state explicitly  
+- No new pipeline stage / page type for the shipped slice  
+- Attachment byte persistence → product backlog PB-FA-001 (not Sprint 72 incompleteness)  
+- Focused suites passed; broader evidence-centred suite **not green** (28 known failures)  
+- Sprint 73 **not** pre-assigned  

@@ -1,8 +1,9 @@
 # Sprint 72 — Context
 
-**Status:** OPEN / IN PROGRESS (opened 2026-07-31)  
-**Role:** Durable architectural and methodological context for implementation work  
-**Predecessor authority:** Sprint 71 closed pack — **link, do not rewrite evidence**
+**Status:** **COMPLETE / CLOSED** (opened 2026-07-31; closed 2026-08-05)  
+**Role:** Durable architectural and methodological context for the closed sprint  
+**Predecessor authority:** Sprint 71 closed pack — **link, do not rewrite evidence**  
+**Post-sprint planning:** [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 
 ---
 

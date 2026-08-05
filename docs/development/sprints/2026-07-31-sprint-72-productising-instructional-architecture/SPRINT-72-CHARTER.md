@@ -1,10 +1,12 @@
 # Sprint 72 — Charter
 
 **Sprint:** 72 — Productising the Instructional Architecture Validated in Sprint 71  
-**Status:** **OPEN / IN PROGRESS**  
+**Status:** **COMPLETE / CLOSED** (2026-08-05)  
 **Opened:** 2026-07-31  
 **Predecessor:** Sprint 71 — COMPLETE / Closed (2026-07-31)  
-**Start here:** [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md)
+**Closure:** [SPRINT-72-CLOSURE.md](SPRINT-72-CLOSURE.md) · [SPRINT-72-FINAL-REPORT.md](SPRINT-72-FINAL-REPORT.md)  
+**Start here (historical):** [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md)  
+**Next:** [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) · [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
 
 ---
 

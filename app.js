@@ -1125,10 +1125,40 @@
     return lines.join("\n");
   }
 
+  function getRunnerWhatToExpect(step) {
+    var ri = getRunnerInstructionsForStep(step);
+    if (!ri) return "";
+    return String(ri.what_to_expect || "").trim();
+  }
+
   function getRunnerWhatThisStepDoes(step) {
     var ri = getRunnerInstructionsForStep(step);
     if (!ri) return "";
     return String(ri.what_this_step_does || "").trim();
+  }
+
+  function buildWorkflowStepRunSummaryText(step, wf, isRun) {
+    var summaryParts = [];
+    var runnerSummary = getRunnerWhatThisStepDoes(step || {});
+    if (runnerSummary) summaryParts.push(String(runnerSummary));
+    if (
+      isRun &&
+      isWorkflowStepDesignLearningActivities(buildWorkflowStepRecognitionContext(step || {}))
+    ) {
+      var expectText = getRunnerWhatToExpect(step || {});
+      if (expectText) summaryParts.push(expectText);
+    }
+    if (isRun) {
+      summaryParts.push(
+        "Paste this step's generated artefact into Step output. PRISM stores step outputs for deterministic assembly/render."
+      );
+      if (isPartialPageOutputWorkflowEnabled(wf || {}) && isPostEpisodePlanPartialOutputStep(step || {}, wf || {})) {
+        summaryParts.push(
+          "Partial mode: paste only this step's partial page artefact. Downstream prompts use Copilot conversation context, not PRISM-injected prior outputs."
+        );
+      }
+    }
+    return summaryParts.join(" ");
   }
 
   function upsertWorkflowStepParamBlock(existingText, selectedOptions) {
@@ -7006,6 +7036,39 @@
       }
     }
     return null;
+  }
+
+  function resolveWorkflowPipelineExecutionDirectiveLib() {
+    var roots = [];
+    if (typeof window !== "undefined" && window) roots.push(window);
+    if (typeof globalThis !== "undefined" && globalThis) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_WORKFLOW_PIPELINE_EXECUTION_DIRECTIVE) {
+        return roots[i].PRISM_WORKFLOW_PIPELINE_EXECUTION_DIRECTIVE;
+      }
+    }
+    return null;
+  }
+
+  function getPipelineExecutionOpeningDirective() {
+    var lib = resolveWorkflowPipelineExecutionDirectiveLib();
+    if (lib && typeof lib.PIPELINE_EXECUTION_OPENING_DIRECTIVE === "string") {
+      return lib.PIPELINE_EXECUTION_OPENING_DIRECTIVE;
+    }
+    return (
+      "Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue."
+    );
+  }
+
+  function getPipelineExecutionCompletionDirective() {
+    var lib = resolveWorkflowPipelineExecutionDirectiveLib();
+    if (lib && typeof lib.PIPELINE_EXECUTION_COMPLETION_DIRECTIVE === "string") {
+      return lib.PIPELINE_EXECUTION_COMPLETION_DIRECTIVE;
+    }
+    return (
+      'Pipeline completion rule: after you emit the required artefact and the exact runner footer line, stop immediately. Do not ask follow-up questions and do not offer optional next steps (including phrasing such as "Would you like me to...", "Shall I also...", "Should I generate...", "Would you like another version...", "Any other changes?", or "Any further refinements?").'
+    );
   }
 
   function buildWorkflowStepRecognitionContext(step, options) {
@@ -23647,19 +23710,7 @@
       var summaryPanel = li.querySelector('[data-role="runner-summary"]');
       var summaryBody = li.querySelector('[data-role="runner-summary-body"]');
       if (summaryPanel && summaryBody) {
-        var summaryParts = [];
-        if (runnerSummary) summaryParts.push(String(runnerSummary));
-        if (isRun) {
-          summaryParts.push(
-            "Paste this step's generated artefact into Step output. PRISM stores step outputs for deterministic assembly/render."
-          );
-          if (partialWorkflowMode && postEpisodePartialStep) {
-            summaryParts.push(
-              "Partial mode: paste only this step's partial page artefact. Downstream prompts use Copilot conversation context, not PRISM-injected prior outputs."
-            );
-          }
-        }
-        var summaryText = summaryParts.join(" ");
+        var summaryText = buildWorkflowStepRunSummaryText(stepForRun || {}, wfForRun || {}, isRun);
         summaryPanel.classList.toggle("hidden", !(isRun && summaryText));
         summaryBody.textContent = isRun ? summaryText : "";
       }
@@ -29590,9 +29641,7 @@
     var partialOutputsMode = isPartialPageOutputWorkflowEnabled(wfForChain);
     var injectUpstreamCapture = shouldInjectUpstreamCaptureIntoPrompt(step, wfForChain);
 
-    lines.push(
-      "Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue."
-    );
+    lines.push(getPipelineExecutionOpeningDirective());
 
     lines.push(
       "This step is titled: " + (step.title || "Untitled step") + "."
@@ -30134,6 +30183,15 @@
         wfForChain
       );
     }
+    assembledInstructions = [
+      assembledInstructions,
+      "",
+      getPipelineExecutionCompletionDirective()
+    ]
+      .filter(function (part) {
+        return part != null && String(part).length > 0;
+      })
+      .join("\n");
     return assembledInstructions;
   }
 
@@ -50851,6 +50909,12 @@
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.getRunnerWhatToExpectForTest = getRunnerWhatToExpect;
+    prismTestApi.buildWorkflowStepRunSummaryText = buildWorkflowStepRunSummaryText;
+    prismTestApi.getPipelineExecutionOpeningDirective = getPipelineExecutionOpeningDirective;
+    prismTestApi.getPipelineExecutionCompletionDirective = getPipelineExecutionCompletionDirective;
+    prismTestApi.resolveWorkflowPipelineExecutionDirectiveLib =
+      resolveWorkflowPipelineExecutionDirectiveLib;
     prismTestApi.publishFinalGamPromptSnapshot = publishFinalGamPromptSnapshot;
     prismTestApi.publishS59FinalGamPromptSnapshot = publishS59FinalGamPromptSnapshot;
     prismTestApi.stripContradictoryWorkflowRunnerFooterClauses =

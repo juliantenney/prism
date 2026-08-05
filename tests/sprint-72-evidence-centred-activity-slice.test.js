@@ -1562,7 +1562,7 @@ test("S72: no Episode Plan schema or source-manifest fields are introduced", () 
   assert.deepEqual(Object.keys(page.activities[0].episode_plan).sort(), ["archetype", "beats"]);
 });
 
-test("S72: DLA runner Instructions guide Copilot attachment without implying Prism storage", () => {
+test("S72: DLA runner Instructions guide optional Copilot attachment without implying Prism storage", () => {
   const fs = require("node:fs");
   const patterns = fs.readFileSync(
     path.join(repoRoot, "domains", "learning-design", "domain-learning-design-step-patterns.md"),
@@ -1570,10 +1570,9 @@ test("S72: DLA runner Instructions guide Copilot attachment without implying Pri
   );
   assert.match(
     patterns,
-    /attach them when running this prompt in Copilot|keep earlier attachments available in the same conversation/i
+    /Optional: Upload subject-specific evidence with this prompt/i
   );
-  assert.match(patterns, /Prism does not store the attachments/i);
-  assert.match(patterns, /system-generated evidence where suitable/i);
+  assert.match(patterns, /clearly identified simulated examples \(default\)/i);
   assert.match(patterns, /conversation_attachment/);
 });
 

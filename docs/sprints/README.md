@@ -9,8 +9,11 @@ Programme-facing sprint charters that are not only stored inside dated portable 
 | **69** | [sprint-69-archetype-grammar-validation.md](sprint-69-archetype-grammar-validation.md) |
 | **70** | [sprint-70-closeout.md](sprint-70-closeout.md) · [sprint-70-visual-planning-and-synthesis.md](sprint-70-visual-planning-and-synthesis.md) — **Closed** |
 | **71** | [sprint-71-closeout.md](sprint-71-closeout.md) · [sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution.md](sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution.md) — **Closed** |
-| **72** | [sprint-72-productising-instructional-architecture.md](sprint-72-productising-instructional-architecture.md) — **OPEN / IN PROGRESS** (implementation underway; verification + commit pending) |
+| **72** | [sprint-72-closeout.md](sprint-72-closeout.md) · [sprint-72-productising-instructional-architecture.md](sprint-72-productising-instructional-architecture.md) — **CLOSED** |
+| **Next** | [NEXT-SPRINT.md](NEXT-SPRINT.md) — Sprint 73 not yet opened; select from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) |
 
 Portable packs (START HERE / briefing) remain under `docs/development/sprints/YYYY-MM-DD-sprint-N-…/`.
+
+**Canonical product backlog:** [docs/backlog/PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
 
 Architecture reference for learner-renderer-vNext: [../architecture/learner-renderer-vnext.md](../architecture/learner-renderer-vnext.md).

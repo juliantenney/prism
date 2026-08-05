@@ -1,5 +1,8 @@
 # Known Technical Debt
 
+**Superseded for planning by** [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) § Stabilisation.  
+This file is retained as a historical capture. Scoped defects should be promoted into the canonical Stabilisation section with readiness notes.
+
 - duplicated logic in several UI/state pathways
 - legacy code paths that remain for compatibility but reduce clarity
 
@@ -22,4 +25,3 @@
 
 - inspectability gaps in some workflow/configuration flows
 - occasional ambiguity in user-facing semantics for advanced options
-

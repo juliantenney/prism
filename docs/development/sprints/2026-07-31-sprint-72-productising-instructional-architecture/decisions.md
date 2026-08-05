@@ -1,6 +1,6 @@
 # Sprint 72 — Decision Log
 
-**Sprint status:** OPEN / IN PROGRESS (opened 2026-07-31)  
+**Sprint status:** **COMPLETE / CLOSED** (opened 2026-07-31; closed 2026-08-05)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Do **not** invent decisions for matters still under investigation.  
@@ -117,15 +117,29 @@ Do **not** copy colliding predecessor ID families as if they were new Sprint 72 
 ## S72-D13 Committed vs uncommitted sprint state must be explicit in handover
 
 - **Decision:** Sprint 72 documentation must distinguish implemented work that is currently uncommitted in the working tree from committed baseline state, and must not claim commits that do not exist.
-- **Status:** Accepted (handover integrity)
-- **Rationale:** Current repository state shows substantial uncommitted implementation and test changes.
-- **Consequences:** Status/plan/docs must mark bridge-correction and presentation refinements as implemented but currently uncommitted until verification and commit.
+- **Status:** Accepted (handover integrity)  
+- **Rationale:** Substantial Sprint 72 work landed in commits; late slices and closure docs may remain uncommitted until operator commit.  
+- **Consequences:** Closure and STATUS must not claim a green full suite or invent commits; late-slice commit is operational follow-up after close.
+
+## S72-D14 Continuous verification replaces dedicated close-gate cross-disciplinary sweep
+
+- **Decision:** Sprint 72 closes without a dedicated final cross-disciplinary verification programme. Ongoing real content generation provides continuous verification. If a regression is observed later, stop, fix the owning layer, and add focused regression coverage.  
+- **Status:** **Accepted** (closure)  
+- **Rationale:** Operator closure instruction 2026-08-05; primary objective already validated on indicative resources.  
+- **Consequences:** `S72-T-070` / formal Owen re-inspection are not falsely reported as executed sweeps; continuous verification is the recorded strategy.
+
+## S72-D15 Canonical product backlog for maturation phase
+
+- **Decision:** Post–Sprint 72 planning uses the canonical product backlog at `docs/backlog/PRODUCT-BACKLOG.md` (Stabilisation · Future architecture · Research/design questions · Product ideas). Sprint 73 is selected by pulling a planning-ready item from that backlog — not by pre-assigning a feature in Sprint 72 closure.  
+- **Status:** **Accepted** (closure)  
+- **Rationale:** Maturation / v1.0 stabilisation phase; avoid competing backlogs and speculative sprint numbers.  
+- **Consequences:** Large unfinished Sprint 72 streams migrate to the product backlog; no Sprint 73 charter created in this close.
 
 ---
 
-## Decisions deliberately not made yet
+## Decisions deliberately not made
 
 - Storage technology for the shared workflow asset-persistence model.  
 - Whether music/chemistry/engineering renderers receive any implementation thin-slice.  
-- Exact mid-sprint capacity cut-line for stretch items.
-- Upload classification / primary-evidence artefact pipeline design (deferred under `S72-D10`).
+- Which product-backlog item becomes Sprint 73.  
+- Upload classification / primary-evidence artefact pipeline design (deferred under `S72-D10` → PB-FA-001).

@@ -11,6 +11,8 @@ Use these docs to keep PRISM development coherent across Cursor, ChatGPT, commit
 - `end-of-session-protocol.md` — ritual for ending a chat/session cleanly
 - `chat-bootstrap-template.md` — template for preparing a new ChatGPT conversation
 - `shared-vocabulary.md` — operational shorthand and continuity phrases used across PRISM development sessions
+- Canonical product backlog: [`docs/backlog/PRODUCT-BACKLOG.md`](../backlog/PRODUCT-BACKLOG.md) (maturation / v1.0 stabilisation phase)
+- Next sprint pointer: [`docs/sprints/NEXT-SPRINT.md`](../sprints/NEXT-SPRINT.md)
 
 ## Recommended Use
 

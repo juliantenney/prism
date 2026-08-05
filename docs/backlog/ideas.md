@@ -1,5 +1,8 @@
 # Feature Ideas
 
+**Superseded for planning by** [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) § Product ideas.  
+This file is retained as a historical capture. New ideas should be added to the canonical product backlog.
+
 - richer parameter systems for prompts/workflows
 - reusable workflow templates for common design patterns
 
@@ -17,4 +20,3 @@
 
 - additional utility transforms for structured artefact rendering
 - expanded renderer quality presets for export readability
-

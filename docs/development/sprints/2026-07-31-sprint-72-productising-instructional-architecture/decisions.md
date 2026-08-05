@@ -95,16 +95,36 @@ Do **not** copy colliding predecessor ID families as if they were new Sprint 72 
 
 ## S72-D10 Evidence-centred activity slice — system-generated evidence boundary
 
-- **Decision:** The validated evidence-centred activity thin-slice supports **system-generated learner evidence** (simulated observations/cases with honest provenance labelling; separate-provider and combined evidence/workspace patterns). It does **not** implement uploaded primary-evidence preservation as a stable, addressable artefact throughout the pipeline. Source-bound disciplines that require exact excerpts, source identity, methodology or provenance evaluation remain a **separate future work package** (upload classification, preservation, identifiers, retrieval, rights/provenance). Generated evidence must not be treated as a substitute for required primary textual evidence (Owen boundary).  
+- **Decision:** The validated evidence-centred activity thin-slice supports both **system-generated learner evidence** (simulated observations/cases with honest provenance labelling; separate-provider and combined evidence/workspace patterns) and **source-bound conversation-attachment evidence** (`conversation_attachment`) where DLA inventories source units and GAM renders attributed source-native evidence (quotations/excerpts/values/observations/clauses) for learner reasoning. Prism still does **not** inspect, ingest, persist, or verify Copilot attachment bytes as stable, addressable artefacts. Deferred boundary is narrowed to upload classification, storage, identifiers, retrieval, rights handling, and byte-level fidelity verification.  
 - **Status:** Accepted (slice closure boundary)  
-- **Rationale:** RNA/HCV and heteroscedasticity validated system-generated evidence sufficiency; Owen established that uploaded poems were summarised into model knowledge rather than reliably preserved and referenced.  
-- **Consequences:** Do not expand this commit into upload ingestion or source-bound architecture; cite this decision when deferring Layer-3 artefact work.
+- **Rationale:** RNA/HCV and heteroscedasticity validated system-generated evidence sufficiency. Owen progression showed an initial summary-collapse attempt, followed by source-bound DLA/GAM refinements that produced attributed quotations and evidence-centred activities where supplied poems were central. This proves conversation-bound source use while preserving the attachment-byte storage/fidelity limitation.  
+- **Consequences:** Do not regress source-bound conversation usage now that it is implemented; defer only stable attachment ingestion/persistence and byte-level verification capabilities.
+
+## S72-D11 Sprint-72 evidence-centred slice does not require pipeline redesign
+
+- **Decision:** The Sprint 72 evidence-centred implementation slice must remain within the existing activity-oriented pipeline and must not introduce a new pipeline stage, new page type, or complex shared evidence-spine architecture for this sprint slice.
+- **Status:** Accepted (implemented boundary)
+- **Rationale:** Governing sprint principle: “Make activities use evidence for reasoning.” Empirical runs (RNA, heteroscedasticity, Owen source-bound package) showed substantial gains without architecture replacement.
+- **Consequences:** Dedicated case-study page and shared-evidence-spine architecture remain future options, not completion requirements for this slice.
+
+## S72-D12 Evidence use is selective, bounded by pedagogy and session realism
+
+- **Decision:** Evidence is required when it supports reasoning demands of the activity, and may be omitted when unnecessary for learning efficiency, prerequisites, cognitive load, or available time. Authentic published evidence is not mandatory for every effective activity.
+- **Status:** Accepted (implemented boundary)
+- **Rationale:** Activity-level evidence design selected during corpus analysis and validated across sparse-brief experiments.
+- **Consequences:** DLA evidence decisions remain per-activity and selective; contracts must preserve explanatory/non-evidence activities as valid.
+
+## S72-D13 Committed vs uncommitted sprint state must be explicit in handover
+
+- **Decision:** Sprint 72 documentation must distinguish implemented work that is currently uncommitted in the working tree from committed baseline state, and must not claim commits that do not exist.
+- **Status:** Accepted (handover integrity)
+- **Rationale:** Current repository state shows substantial uncommitted implementation and test changes.
+- **Consequences:** Status/plan/docs must mark bridge-correction and presentation refinements as implemented but currently uncommitted until verification and commit.
 
 ---
 
 ## Decisions deliberately not made yet
 
-- Which single validated principle is the first Layer-1 implementation slice (`S72-T-012`).  
 - Storage technology for the shared workflow asset-persistence model.  
 - Whether music/chemistry/engineering renderers receive any implementation thin-slice.  
 - Exact mid-sprint capacity cut-line for stretch items.

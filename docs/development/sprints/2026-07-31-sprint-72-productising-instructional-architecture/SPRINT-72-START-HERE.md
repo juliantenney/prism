@@ -1,8 +1,8 @@
 # Sprint 72 — START HERE
 
 **Sprint:** 72 — Productising the Instructional Architecture Validated in Sprint 71  
-**Status:** **OPEN / IN PROGRESS** (Phase 0 complete; next `S72-T-010`)  
-**Implementation:** Not started  
+**Status:** **OPEN / IN PROGRESS** (implementation underway; verification + commit pending)  
+**Implementation:** Substantially progressed (including evidence-centred activity slice; bridge and presentation refinements currently uncommitted)  
 **Success criteria:** Accepted (`S72-D07`)  
 **Predecessor:** [Sprint 71 — COMPLETE](../2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-CLOSURE.md)
 
@@ -45,12 +45,12 @@ Full link table: [links-to-predecessors.md](links-to-predecessors.md)
 
 ## Immediate next actions
 
-1. **`S72-T-010`** — Map Evidence-Centred Learning + validated principles to responsible pipeline stages/contracts (**next**; Phase 0 complete).  
-2. `S72-T-011` / `S72-T-015` — Represent Evidence-Centred Learning umbrella + Evidence Sufficiency (`S71-F-001` route A).  
-3. `S72-T-012`–`S72-T-014` — Select, implement, and validate one coherent Layer-1 improvement (**committed**).  
+1. **`S72-T-073`** — Re-render the Owen page after bridge and presentation changes; inspect learner-facing result.  
+2. `S72-T-070` — Run focused QA/benchmark validation for the currently implemented slice where needed.  
+3. `S72-T-074` — Commit verified Sprint 72 implementation slice.  
 4. Keep Sprint 71 closed — cite, do not edit, its evidence files.
 
-Success criteria: **Accepted** (`S72-D07`). Implementation: **not started**.
+Success criteria: **Accepted** (`S72-D07`). Implementation: **in progress**.
 
 ---
 

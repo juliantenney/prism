@@ -35,16 +35,14 @@ function mandatoryPassPct(activities) {
       (f) => row[f] && lib.wordCount(row[f]) >= lib.FIELD_WORD_RANGES[f].min
     );
     const br =
-      index === 0 ||
-      arr.length <= 1 ||
       lib.wordCount(row.intellectual_coherence_bridge) >=
-        lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min;
+      lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min;
     if (pre && exp && cog && br) pass += 1;
   });
   return activities.length ? Math.round((pass / activities.length) * 100) : 0;
 }
 
-test("capture repair: missing bridge synthesized on A2+", () => {
+test("capture repair: missing bridge synthesized on A1 and A2+", () => {
   const row = {
     activity_id: "A2",
     title: "Applying core ideas",
@@ -69,7 +67,16 @@ test("capture repair: missing bridge synthesized on A2+", () => {
   const bridge = lib.expandIntellectualCoherenceBridge(row, prior, lib.buildRepairContext([row], {}));
   assert.ok(lib.wordCount(bridge) >= lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min);
   assert.equal(lib.bridgeLooksSchedulingOnly(bridge), false);
-  assert.match(bridge, /comparison table|strategies|criteria/i);
+  assert.match(bridge, /comparison table|strategies|criteria|capability|reasoning/i);
+
+  const a1Bridge = lib.expandIntellectualCoherenceBridge(
+    prior,
+    null,
+    lib.buildRepairContext([prior], { workflowGoal: "Strategy comparison learning page" })
+  );
+  assert.ok(lib.wordCount(a1Bridge) >= lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min);
+  assert.match(a1Bridge, /overview|foundation|first activity/i);
+  assert.doesNotMatch(a1Bridge, /\bprevious activity\b|\bprior activity\b/i);
 });
 
 test("capture repair: sub-floor bridge expanded in place", () => {
@@ -87,8 +94,8 @@ test("capture repair: sub-floor bridge expanded in place", () => {
     learner_task: "Complete the comparison table."
   };
   const bridge = lib.expandIntellectualCoherenceBridge(row, prior, lib.buildRepairContext([row], {}));
-  assert.ok(lib.wordCount(bridge) >= 30);
-  assert.match(bridge, /extends your prior work/i);
+  assert.ok(lib.wordCount(bridge) >= lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min);
+  assert.match(bridge, /extends your prior work|Carry that reasoning/i);
 });
 
 test("capture repair: borderline cognition expanded via repair", () => {
@@ -136,7 +143,9 @@ test("capture repair: no-op when already compliant", () => {
           "Your response should meet the task scope with clear reasoning, accurate terminology, and enough detail that a peer could assess quality against the checklist criteria and explain why each claim matters for the overall argument.",
         reasoning_orientation:
           "Name what evidence you are using, how it supports your claim, and one mistake to avoid when mechanism is described without functional consequence or explanatory depth in your written response to the task materials provided.",
-        learner_task: "Study and classify three examples."
+        learner_task: "Study and classify three examples.",
+        intellectual_coherence_bridge:
+          "The overview introduced the core mechanism distinction. This first activity begins by using that foundation to classify examples with functional consequence."
       }
     ]
   };
@@ -252,4 +261,5 @@ test("capture repair: scheduling-only bridge replaced", () => {
     lib.wordCount(a2.intellectual_coherence_bridge) >=
       lib.FIELD_WORD_RANGES.intellectual_coherence_bridge.min
   );
+  assert.ok(String(result.activities[0].intellectual_coherence_bridge || "").trim());
 });

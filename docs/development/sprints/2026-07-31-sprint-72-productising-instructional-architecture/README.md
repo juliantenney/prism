@@ -1,8 +1,8 @@
 # Sprint 72 — Productising the Instructional Architecture Validated in Sprint 71
 
-**Status:** OPEN / IN PROGRESS (documentation and planning opened 2026-07-31; Phase 0 complete)  
+**Status:** OPEN / IN PROGRESS (implementation underway; handover updated 2026-08-05)  
 **Opened:** 2026-07-31  
-**Implementation status:** Not started — next task `S72-T-010`  
+**Implementation status:** Substantially progressed; current next tasks are Owen rerender/inspection and commit of verified Sprint 72 slice  
 **Success criteria:** Accepted (`S72-D07`)  
 **Predecessor:** Sprint 71 — **COMPLETE / Closed** (do not reopen)
 
@@ -20,7 +20,7 @@
 | Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
 | Top-level charter overview | [../../../sprints/sprint-72-productising-instructional-architecture.md](../../../sprints/sprint-72-productising-instructional-architecture.md) |
 
-## Reading order (opening)
+## Reading order (current)
 
 1. [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md)  
 2. [HANDOVER.md](HANDOVER.md)  
@@ -44,8 +44,10 @@ Embed validated Sprint 71 instructional principles into Prism so high-quality in
 
 Do **not** collapse these into generic “prompt improvement.”
 
-## Boundaries for this opening pack
+## Current handover boundaries
 
-- No application or pipeline code changes in the setup task  
 - No Sprint 72 closure or final report yet  
 - Sprint 71 remains closed; its evidence is linked, not rewritten  
+- Existing activity-oriented pipeline remains the mechanism for this slice; no new stage/page type required  
+- Shared evidence spines and dedicated case-study pages are deferred future options, not Sprint 72 slice requirements  
+- Current repository state includes uncommitted Sprint 72 implementation/test changes; docs must distinguish uncommitted vs committed state explicitly  

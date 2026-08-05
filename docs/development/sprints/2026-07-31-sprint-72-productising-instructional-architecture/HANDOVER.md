@@ -7,6 +7,16 @@
 
 ---
 
+## Current state (2026-08-05)
+
+- Sprint 72 implementation is now substantially progressed.
+- Evidence-centred activity architecture is implemented in the existing activity-oriented pipeline.
+- Simulated evidence (`system_generated_simulation`) and source-bound conversation-attachment evidence (`conversation_attachment`) routes are implemented.
+- Bridge and learner-page presentation refinements are implemented but currently uncommitted in the working tree.
+- Immediate next task is `S72-T-073` (rerender and inspect Owen), then focused QA if needed, then commit the verified slice.
+
+---
+
 ## Concise predecessor outcome
 
 Sprint 71 proved instructional quality is **steerable** through pedagogically informed workflow guidance and attributed recurring gaps to pipeline stages. It froze a three-layer responsibility model and candidate architectural principles. Residual Critical limits often = **evidence availability**. Diagnostic feedback remains a High platform gap. Semantic headings remain open. See [SPRINT-71-FINAL-REPORT.md](../2026-07-30-sprint-71-learner-facing-pipeline-quality-evidence-and-prompt-attribution/SPRINT-71-FINAL-REPORT.md).
@@ -72,12 +82,13 @@ Dependency chain: evidence → classify → Layer 1 → Layer 2 → Layer 3 → 
 
 ---
 
-## First recommended tasks
+## Immediate recommended sequence
 
-1. **`S72-T-010`** — Map Evidence-Centred Learning + principles → stage/contract owners (**next**; Phase 0 complete).  
-2. `S72-T-011` / `S72-T-015` — Umbrella principle + Evidence Sufficiency (F-001-A).  
-3. `S72-T-012`–`S72-T-014` — Select, implement (**committed**), and validate one coherent Layer-1 slice.  
-4. Keep Sprint 71 closed — cite, do not edit, its evidence files.
+1. Re-render Owen after bridge and presentation refinements.
+2. Inspect learner-facing output.
+3. Run focused QA if needed.
+4. Commit the verified Sprint 72 slice.
+5. Continue deferred backlog only after demo-day verification.
 
 ---
 
@@ -104,4 +115,4 @@ Dependency chain: evidence → classify → Layer 1 → Layer 2 → Layer 3 → 
 - Do not assume all issues are prompt issues  
 - Do not imply authors should write longer prompts  
 - Do not open Sprint 72 closure / final report prematurely  
-- Do not claim implementation has started when only documentation exists  
+- Distinguish implemented-but-uncommitted work from committed baseline state  

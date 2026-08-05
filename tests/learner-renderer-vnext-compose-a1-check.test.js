@@ -73,6 +73,16 @@ function getA1Moments(composedResult) {
   return composedResult.composed.activities[0].moments;
 }
 
+function extractMomentHtml(activityHtml, kind) {
+  const marker = 'data-composition-moment="' + kind + '"';
+  const start = activityHtml.indexOf(marker);
+  if (start < 0) return "";
+  const sectionStart = activityHtml.lastIndexOf("<section", start);
+  const sectionEnd = activityHtml.indexOf("</section>", start);
+  if (sectionStart < 0 || sectionEnd < 0) return "";
+  return activityHtml.slice(sectionStart, sectionEnd + "</section>".length);
+}
+
 function fullCheckSuppression(map) {
   return map.A1.suppressBeatContent.verification;
 }
@@ -96,18 +106,14 @@ test("adapter: only verification-oriented sources are assigned to Check", () => 
   const instructionSteps = checkMoment.items
     .filter((item) => item.kind === "instruction")
     .map((item) => item.instruction.sourceStepNumber);
-  assert.deepEqual(instructionSteps, A1_CHECK_STEP_NUMBERS);
+  assert.deepEqual(instructionSteps, [4]);
 
   const materialIds = checkMoment.items
     .filter((item) => item.kind === "material")
     .map((item) => item.material.id);
-  assert.deepEqual(materialIds, A1_CHECK_MATERIAL_IDS);
+  assert.deepEqual(materialIds, ["A1-M4", "A1-M3"]);
 
-  assert.match(
-    checkMoment.items.find((item) => item.instruction && item.instruction.sourceStepNumber === 3)
-      .instruction.text,
-    /Compare the sample response/i
-  );
+  assert.ok(!checkMoment.items.some((item) => item.instruction && item.instruction.sourceStepNumber === 3));
   assert.match(
     checkMoment.items.find((item) => item.instruction && item.instruction.sourceStepNumber === 4)
       .instruction.text,
@@ -128,7 +134,7 @@ test("adapter: source order and identity are preserved in Check moment", () => {
     if (item.kind === "material") return "material:" + item.material.id;
     return item.kind;
   });
-  assert.deepEqual(kinds, ["step:3", "material:A1-M3", "step:4", "material:A1-M4"]);
+  assert.deepEqual(kinds, ["step:4", "material:A1-M4", "material:A1-M3"]);
 
   checkMoment.items.forEach((item) => {
     assert.equal(item.sourceRef.beatFunction, "verification");
@@ -180,7 +186,7 @@ test("adapter: missing optional checking material degrades safely", () => {
       .map((item) => item.material.id),
     ["A1-M3"]
   );
-  assert.equal(checkMoment.items.filter((item) => item.kind === "instruction").length, 2);
+  assert.equal(checkMoment.items.filter((item) => item.kind === "instruction").length, 0);
 });
 
 test("adapter: missing Check task steps degrades to no Check moment", () => {
@@ -219,7 +225,7 @@ test("suppression: merged filter removes all consumed Do and Check sources", () 
   const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "verification");
   const filtered = applyBeatContentSuppression(checkBeat, fullCheckSuppression(map));
 
-  assert.equal(filtered.instructions.length, 0);
+  assert.equal(filtered.instructions.length, 1);
   assert.equal(filtered.materials.length, 0);
   assert.equal(filtered.expectedOutput, null);
 });
@@ -233,7 +239,7 @@ test("suppression: empty filtered beat renders nothing", () => {
   const checkBeat = a1.beats.find((beat) => beat.sourceFunction === "verification");
   const filtered = applyBeatContentSuppression(checkBeat, fullCheckSuppression(map));
 
-  assert.equal(renderBeat(filtered, fullCheckSuppression(map)), "");
+  assert.match(renderBeat(filtered, fullCheckSuppression(map)), /data-beat-function="verification"/);
 });
 
 test("render slice: Check section follows Do and renders verification content once", () => {
@@ -247,7 +253,7 @@ test("render slice: Check section follows Do and renders verification content on
   assert.equal((a1Html.match(/data-composition-moment="check"/g) || []).length, 1);
   assert.match(a1Html, /Check your response/);
   assert.match(a1Html, /Complete your response first, then use this material to check or improve it/i);
-  assert.match(a1Html, /Compare the sample response with the explanation/i);
+  assert.match(a1Html, /Review the example response/i);
   assert.match(a1Html, /Complete the self-check/i);
 
   const doIndex = a1Html.indexOf('data-composition-moment="do"');
@@ -323,6 +329,43 @@ test("render slice: Do workspace remains present and unchanged", () => {
   assert.match(a1Html, /saved on this device/i);
 });
 
+test("regression: A1 renders exactly one Do text-entry before Check when assembled data requires a response", () => {
+  const sourcePage = loadFixture();
+  sourcePage.activities[0].learner_task = [
+    "Analyse how Owen's imagery shapes representation of soldiers by citing two exact phrases.",
+    "Complete the self-check against the checklist."
+  ].join("\n");
+  sourcePage.activities[0].expected_output =
+    "A short comparative response citing exact phrases from the provided extracts.";
+  const html = renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html;
+  const a1Html = extractActivityHtml(html, "A1");
+  const doHtml = extractMomentHtml(a1Html, "do");
+  const checkHtml = extractMomentHtml(a1Html, "check");
+
+  assert.ok(doHtml.length > 0);
+  assert.ok(checkHtml.length > 0);
+  assert.equal((doHtml.match(/data-workspace-capability="text_entry"/g) || []).length, 1);
+  assert.equal((a1Html.match(/data-workspace-capability="text_entry"/g) || []).length, 1);
+  assert.ok(a1Html.indexOf('data-composition-moment="do"') < a1Html.indexOf('data-composition-moment="check"'));
+});
+
+test("guard: no Do text-entry is synthesized for study-and-check-only A1 tasks", () => {
+  const sourcePage = loadFixture();
+  sourcePage.activities[0].learner_task = [
+    "Review the provided quotations and notes.",
+    "Complete the self-check against the checklist."
+  ].join("\n");
+  sourcePage.activities[0].expected_output = "A completed self-check.";
+  const html = renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html;
+  const a1Html = extractActivityHtml(html, "A1");
+  const doHtml = extractMomentHtml(a1Html, "do");
+
+  if (doHtml) {
+    assert.doesNotMatch(doHtml, /data-workspace-capability="text_entry"/);
+  }
+  assert.equal((a1Html.match(/data-workspace-capability="text_entry"/g) || []).length, 0);
+});
+
 test("render slice: Orient and Learn content remain present", () => {
   const sourcePage = loadFixture();
   const a1Html = extractActivityHtml(
@@ -362,7 +405,7 @@ test("composition map: exposes Check moment and merged beat suppression hints", 
   const map = buildActivityCompositionMap(composedResult.composed);
 
   assert.ok(map.A1.checkMoment);
-  assert.deepEqual(fullCheckSuppression(map).omitInstructionSteps, [1, 2, 3, 4, 5]);
+  assert.deepEqual(fullCheckSuppression(map).omitInstructionSteps, [1, 2, 4, 5]);
   assert.deepEqual(fullCheckSuppression(map).omitMaterialIds, ["A1-M3", "A1-M4"]);
   assert.equal(fullCheckSuppression(map).omitExpectedOutput, true);
 

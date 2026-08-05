@@ -7794,8 +7794,8 @@
       "- Before each substantial activity, include activity_preamble: approximately 50–120 words (2–4 sentences) of topic-specific explanatory educational prose — why the idea matters, the intellectual question explored, the key distinction or mechanism to attend to, connection to prior learning, and the kind of reasoning required (see LD-ACTIVITY-PREAMBLE-EXPOSITION-CONTRACT when auto-applied).",
       "- activity_preamble must not open with procedural verbs (Identify, Analyse, Examine, Establish, Complete, Study the model row) or restate learner_task instructions.",
       "- Vary preamble wording across activities; do not repeat the activity title or use generic filler (for example avoid opening every activity with \"In this activity you will…\").",
-      "- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).",
-      "- Activity-row intellectual_coherence_bridge: required on every activity after the first (A2+). It is learner-facing carried-reasoning copy on the activity row — not a page-level field. Omit on the first activity.",
+      "- Mandatory per activity (in addition to learner_task, expected_output, required_materials): activity_preamble + intellectual_coherence_bridge + at least one cognition-orientation field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, or transfer_or_application_task).",
+      "- Activity-row intellectual_coherence_bridge: required on every activity including A1. Prefer one or two concise sentences of cumulative cognitive sequence. A1 connects page orientation, enquiry, learning purpose, prior knowledge or knowledge summary to the first activity (do not refer to a nonexistent preceding activity). A2+ identifies carried learning, reasoning, evidence, learner production or capability from earlier work and how this activity develops or uses it. Must not duplicate activity_preamble or reduce to scheduling/activity-number metadata. It is learner-facing activity-row copy — not a page-level field.",
       "- Page-level additive fields (study_orientation, intellectual_frame, prior_knowledge_activation, scaffold_hint_sequence) follow OUTPUT CONTRACT — they do not replace the per-activity minimum.",
       "- Keep preamble and cognition orientation fields learner-facing, concrete, and topic-specific; put facilitator timing, group choreography, and session orchestration in facilitator_moves or facilitator-only materials — not in activity_preamble, study_orientation, intellectual_frame, or reasoning_orientation.",
       "- learner_task remains the actionable instructions; the preamble orients only — do not move the full task list into activity_preamble.",
@@ -7809,9 +7809,9 @@
     var lines = [
       "",
       "OUTPUT CONTRACT (learner-facing copy fields — author to the learner; scaffold: LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT):",
-      "- Each activity MUST include activity_preamble, expected_output, and ≥1 cognition scaffold field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, transfer_or_application_task).",
-      "- intellectual_coherence_bridge is mandatory on every activity after the first (A2+): 30–60 words of carried reasoning from the previous activity into this one. Omit on the first activity. This is activity-row learner copy, not a page-level field.",
-      "- Additive activity-row fields: prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, intellectual_coherence_bridge (A2+).",
+      "- Each activity MUST include activity_preamble, intellectual_coherence_bridge, expected_output, and ≥1 cognition scaffold field (reasoning_orientation, self_explanation_prompt, conceptual_contrast_prompt, uncertainty_tension_prompt, argument_structure_hint, transfer_or_application_task).",
+      "- intellectual_coherence_bridge is mandatory on every activity including A1. Prefer one or two concise sentences. A1 connects page orientation / learning purpose / prior knowledge to the first activity (no preceding-activity reference). A2+ carries prior learning, reasoning, evidence, production or capability into the current demand. Distinct from activity_preamble; forbid scheduling-only or Activity-N-follows-Activity-M text. Activity-row learner copy, not a page-level field.",
+      "- Additive activity-row fields: prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, intellectual_coherence_bridge (every activity including A1).",
       "- Optional page/first-activity framing: intellectual_frame; study_orientation (first activity when used); learner_task may stay concise without shortening other scaffold fields.",
       "- Distribution: self_explanation_prompt on ≥2 activities; prior_knowledge_activation on ≥1 when prior context helps.",
       buildLearnerPageActivityFramingArchetypePromptBlock().replace(
@@ -7843,10 +7843,11 @@
     return [
       "",
       "Self-directed activity JSON example (authoritative shape — topic-specific strings required):",
+      "A1 bridge pattern (required): \"The overview introduced Marx's audiences and aims as the page enquiry. This first activity begins by using that foundation to separate authorial purpose from narrative summary.\"",
       "{",
       '  "activity_id": "A2",',
       '  "title": "Compare major works",',
-      '  "intellectual_coherence_bridge": "You distinguished each work\'s audience and purpose in the previous activity. This activity escalates that comparison by asking you to judge which differences are defensible from evidence rather than from plot summary alone. Carry forward the same criteria when you weigh trade-offs across both texts.",',
+      '  "intellectual_coherence_bridge": "You distinguished each work\'s audience and purpose. This activity develops that capability by judging which differences are defensible from evidence rather than plot summary alone.",',
       '  "activity_preamble": "Marx\'s major works were written for different audiences and aims — one as political programme, one as systematic critique. Before you judge whether a difference is defensible, separate what each text is trying to accomplish from what merely happens in the narrative. Notice how authorial purpose changes which evidence counts as decisive.",',
       '  "reasoning_orientation": "Compare texts as historical arguments rather than plot summaries. For each work, trace the central claim, the evidence Marx selects, and the audience he appears to address. Strong answers explain why a difference in purpose changes how you read the same historical event.",',
       '  "argument_structure_hint": "Name one defensible claim per work and say why that criterion matters. Cite a passage as evidence, then explain what follows for your judgement. Compare both works on the same criteria before you conclude, including what trade-off you weighed.",',
@@ -7866,7 +7867,7 @@
   function augmentSelfDirectedDlaDraftOutputSection(draftBody) {
     var body = String(draftBody || "");
     var pointer =
-      "- Learner-page activities: activity_preamble + ≥1 cognition scaffold field + bridge on A2+; SSOT SCAFFOLD GENRE applies — learner_task may stay concise; do not shorten scaffold prose for JSON brevity.\n";
+      "- Learner-page activities: activity_preamble + intellectual_coherence_bridge (every activity including A1) + ≥1 cognition scaffold field; SSOT SCAFFOLD GENRE applies — learner_task may stay concise; do not shorten scaffold prose for JSON brevity.\n";
     if (
       /activity_preamble and at least one cognition-orientation field per output contract/i.test(body) ||
       /activity_preamble and may include cognition-orientation fields per output contract/i.test(body) ||
@@ -7895,7 +7896,7 @@
   }
 
   var LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
-    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, evidence_decision{ required, reason, provider_material_ids[] }, required_materials[{ material_id, type, purpose, specification, optional evidence_requirement{ kind, purpose, learner_action, observable_features, minimum_suitable_form?, processing_notes?, provenance?, disclosure_constraint?, evidence_layout?, fixed_observation_fields?, learner_response_fields? } }], learner_task, expected_output, activity_preamble (REQUIRED), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), intellectual_coherence_bridge REQUIRED on every activity after the first (omit on A1), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
+    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, evidence_decision{ required, reason, provider_material_ids[] }, required_materials[{ material_id, type, purpose, specification, optional evidence_requirement{ kind, purpose, learner_action, observable_features, minimum_suitable_form?, processing_notes?, provenance?, disclosure_constraint?, evidence_layout?, fixed_observation_fields?, learner_response_fields? } }], learner_task, expected_output, activity_preamble (REQUIRED), intellectual_coherence_bridge (REQUIRED on every activity including A1), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
 
   function reinforceLearnerPageDlaActivitiesOutputSchema(draftBody) {
     var body = String(draftBody || "");
@@ -12033,22 +12034,11 @@
           ? parsedV2
           : dlaMod.normalizeDlaCaptureToPage(baseline, parsedV2);
       if (!page) return raw;
-      var dlaCheck =
-        typeof dlaMod.validateDlaEnrichedPage === "function"
-          ? dlaMod.validateDlaEnrichedPage(page, baseline)
-          : { ok: true, errors: [] };
-      if (stepId) {
-        state.workflowRunDlaPageValidation = state.workflowRunDlaPageValidation || {};
-        if (!dlaCheck.ok) {
-          state.workflowRunDlaPageValidation[stepId] = (dlaCheck.errors || []).join("; ");
-          if (state.workflowRunStepCompleted[stepId]) {
-            delete state.workflowRunStepCompleted[stepId];
-          }
-        } else {
-          delete state.workflowRunDlaPageValidation[stepId];
-        }
+      // Normalise only here. Guided scaffold repair runs next; hard validateDlaEnrichedPage
+      // runs after repair so missing bridges can be synthesised before final rejection.
+      if (stepId && state.workflowRunDlaPageValidation) {
+        delete state.workflowRunDlaPageValidation[stepId];
       }
-      if (!dlaCheck.ok) return raw;
       try {
         return JSON.stringify(page, null, 2);
       } catch (_) {
@@ -14571,7 +14561,7 @@
       }
     }
     if (isDla && applyLearnerPageActivityFraming) {
-      if (!/output contract \(learner-facing page/i.test(draftBody)) {
+      if (!/OUTPUT CONTRACT \(learner-facing copy fields/i.test(draftBody)) {
         draftBody = (
           draftBody +
           buildLearnerPageDlaOutputContractOverrideBlock({
@@ -14703,19 +14693,18 @@
       }
       if (index > 0) {
         followOnCount += 1;
-        var bridgeText = String(row.intellectual_coherence_bridge || "").trim();
-        var bridgeWords = bridgeText ? bridgeText.split(/\s+/).filter(Boolean).length : 0;
-        if (bridgeWords >= 30) {
-          bridgeCount += 1;
-        } else {
-          var bridgeActivityId =
-            row.activity_id != null
-              ? String(row.activity_id)
-              : row.activityId != null
-                ? String(row.activityId)
-                : "activity-" + String(index + 1);
-          missingBridgeActivityIds.push(bridgeActivityId);
-        }
+      }
+      var bridgeText = String(row.intellectual_coherence_bridge || "").trim();
+      if (bridgeText && bridgeText !== "\u2014") {
+        bridgeCount += 1;
+      } else {
+        var bridgeActivityId =
+          row.activity_id != null
+            ? String(row.activity_id)
+            : row.activityId != null
+              ? String(row.activityId)
+              : "activity-" + String(index + 1);
+        missingBridgeActivityIds.push(bridgeActivityId);
       }
       if (pedagogicCognitionFieldHasValue(row.facilitator_moves, false)) {
         warnings.push("facilitator_moves present on activity " + String(row.activity_id || index + 1));
@@ -14752,12 +14741,12 @@
       missingFields.push("study_orientation");
       warnings.push("study_orientation not found on page or first activity");
     }
-    if (followOnCount > 0 && missingBridgeActivityIds.length) {
+    if (count > 0 && missingBridgeActivityIds.length) {
       missingFields.push("intellectual_coherence_bridge");
       warnings.push(
-        "intellectual_coherence_bridge missing or below 30 words on " +
+        "intellectual_coherence_bridge missing on " +
           missingBridgeActivityIds.join(", ") +
-          " (required on every activity after the first)"
+          " (required on every activity including A1)"
       );
     }
     if (pelOrientationBlobHasFacilitatorLanguage(checkBlob)) {
@@ -15153,10 +15142,14 @@
       var missing = [];
       if (!hasPreamble) missing.push("activity_preamble");
       if (!hasCognition) missing.push("cognition_orientation_field");
-      if (index > 0) {
-        var bridgeText = String(row.intellectual_coherence_bridge || "").trim();
-        var bridgeWords = bridgeText ? bridgeText.split(/\s+/).filter(Boolean).length : 0;
-        if (bridgeWords < 30) missing.push("intellectual_coherence_bridge");
+      var bridgeText = String(row.intellectual_coherence_bridge || "").trim();
+      if (!bridgeText || bridgeText === "\u2014") {
+        missing.push("intellectual_coherence_bridge");
+      } else if (
+        hasPreamble &&
+        bridgeText === String(row.activity_preamble || "").trim()
+      ) {
+        missing.push("intellectual_coherence_bridge");
       }
       if (missing.length) {
         activityFailures.push({ activity_id: activityId, missing: missing });
@@ -15339,7 +15332,8 @@
       episodePlans: resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {}),
       learningSequence:
         resolveUpstreamWorkflowArtefactFromCaptures("learning_sequence", {}) ||
-        resolveUpstreamWorkflowArtefactFromCaptures("construct_learning_sequence", {})
+        resolveUpstreamWorkflowArtefactFromCaptures("construct_learning_sequence", {}),
+      page: parsed
     };
     var repairResult = repairGuidedLearningScaffoldOnDlaCapture(parsed, repairOptions);
     var nextRaw = raw;
@@ -15377,6 +15371,61 @@
       }
     }
     return nextRaw;
+  }
+
+  function applyDlaEnrichedPageHardValidationToCapture(raw, stepContext, stepId) {
+    if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
+      if (stepId && state.workflowRunDlaPageValidation) {
+        delete state.workflowRunDlaPageValidation[stepId];
+      }
+      return raw;
+    }
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    if (!isPageEnrichmentV2WorkflowEnabled(wf)) {
+      if (stepId && state.workflowRunDlaPageValidation) {
+        delete state.workflowRunDlaPageValidation[stepId];
+      }
+      return raw;
+    }
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (!dlaMod || typeof dlaMod.validateDlaEnrichedPage !== "function") {
+      return raw;
+    }
+    if (!String(raw || "").trim()) {
+      if (stepId && state.workflowRunDlaPageValidation) {
+        delete state.workflowRunDlaPageValidation[stepId];
+      }
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return raw;
+    var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(wf) || "");
+    var page =
+      String(parsed.artifact_type || "") === "page" &&
+      String(parsed.schema_version || "") === "2.0.0"
+        ? parsed
+        : typeof dlaMod.normalizeDlaCaptureToPage === "function"
+          ? dlaMod.normalizeDlaCaptureToPage(baseline, parsed)
+          : null;
+    if (!page) return raw;
+    var dlaCheck = dlaMod.validateDlaEnrichedPage(page, baseline);
+    if (stepId) {
+      state.workflowRunDlaPageValidation = state.workflowRunDlaPageValidation || {};
+      if (!dlaCheck.ok) {
+        state.workflowRunDlaPageValidation[stepId] = (dlaCheck.errors || []).join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      } else {
+        delete state.workflowRunDlaPageValidation[stepId];
+      }
+    }
+    if (!dlaCheck.ok) return raw;
+    try {
+      return JSON.stringify(page, null, 2);
+    } catch (_) {
+      return raw;
+    }
   }
 
   function applyGamPackTextValidationToCapture(sanitizedText, stepContext, stepId, rawCapture) {
@@ -24038,10 +24087,14 @@
       finalizedCapture = sanitizePrismRunCapturedOutput(raw);
     } else {
       var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
-      finalizedCapture = applyGuidedLearningScaffoldRepairToDlaCapture(
-        applyLearnerPageDlaFramingValidationToCapture(
-          applyEpisodePlanPopulationEnforcementToDlaCapture(
-            sanitizedDlaCapture,
+      finalizedCapture = applyLearnerPageDlaFramingValidationToCapture(
+        applyDlaEnrichedPageHardValidationToCapture(
+          applyGuidedLearningScaffoldRepairToDlaCapture(
+            applyEpisodePlanPopulationEnforcementToDlaCapture(
+              sanitizedDlaCapture,
+              dlaCaptureCtx,
+              sid
+            ),
             dlaCaptureCtx,
             sid
           ),
@@ -43258,7 +43311,7 @@
       ".util-activity-preamble p,.util-activity-preamble-cue,.util-instructional-orient-block p,.util-instructional-think-block p{font-weight:400}",
       ".util-framing-label{font-weight:600;color:#64748b}",
       "section.util-learning-activities{margin:0}",
-      "section.util-learning-activities>article.util-task-block:first-child{margin-top:var(--space-4)}",
+      "section.util-learning-activities>.util-activity:first-child{margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid #e5e7eb}",
       "article.util-task-block,article.util-task-block.util-instructional-activity{margin:var(--space-5) 0 0}",
       ".util-activity-header{margin-bottom:var(--space-3)}",
       ".util-beat-section{margin:0 0 var(--space-4)}",
@@ -43337,7 +43390,7 @@
       ".util-learner-renderer-vnext .util-composition-moment--orient .util-composition-moment__body{display:flow-root}",
       ".util-learner-renderer-vnext .util-composition-study-phase,.util-learner-renderer-vnext .util-composition-activity-purpose{font-size:var(--learner-text-sm);line-height:1.45;color:#64748b;margin:0 0 var(--learner-space-1)}",
       ".util-learner-renderer-vnext .util-composition-study-phase{font-weight:600;color:#475569}",
-      ".util-learner-renderer-vnext .util-composition-preamble{margin:0 0 var(--learner-space-2)}",
+      ".util-learner-renderer-vnext .util-composition-preamble{margin:0 0 var(--learner-space-2);padding:0;border:0;background:transparent;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}",
       ".util-learner-renderer-vnext .util-composition-reasoning-orientation{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569;margin:0 0 var(--learner-space-2)}",
       ".util-learner-renderer-vnext .util-composition-self-explanation{color:#374151;margin:0}",
       ".util-learner-renderer-vnext .util-composition-argument-structure{margin:var(--learner-space-3) 0 0;padding:var(--learner-space-2) .75rem;background:#fafafa;border-left-color:#d1d5db}",
@@ -43395,8 +43448,8 @@
       ".util-learner-renderer-vnext .util-learner-table-workspace__guidance{font-size:var(--learner-text-xs);line-height:1.45;color:#64748b;margin:0 0 var(--learner-space-2)}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table{margin:0}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table table{width:100%;table-layout:auto;border-collapse:collapse}",
-      ".util-learner-renderer-vnext .util-learner-table-workspace__table th,.util-learner-renderer-vnext .util-learner-table-workspace__table td{min-width:8rem;white-space:normal;overflow-wrap:anywhere;vertical-align:top}",
-      ".util-learner-renderer-vnext .util-learner-table-workspace__table th[scope=\"row\"],.util-learner-renderer-vnext .util-learner-table-workspace__table th:first-child,.util-learner-renderer-vnext .util-learner-table-workspace__table td:first-child{width:1%;min-width:6rem;white-space:normal}",
+      ".util-learner-renderer-vnext .util-learner-table-workspace__table th,.util-learner-renderer-vnext .util-learner-table-workspace__table td{min-width:8rem;white-space:normal;overflow-wrap:normal;word-break:normal;vertical-align:top}",
+      ".util-learner-renderer-vnext .util-learner-table-workspace__table th[scope=\"row\"],.util-learner-renderer-vnext .util-learner-table-workspace__table th:first-child,.util-learner-renderer-vnext .util-learner-table-workspace__table td:first-child{min-width:6rem;white-space:normal}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--fixed{padding:.5rem .65rem;background:#f1f5f9;color:#0f172a}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:8rem;height:1px;vertical-align:top}",
       ".util-learner-renderer-vnext .util-learner-table-workspace__cell--editable-inner{display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;min-height:100%;height:100%}",
@@ -43554,8 +43607,8 @@
       ".util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}" +
       ".util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
       ".util-learner-renderer-vnext .util-table-scroll.util-material-table table{width:100%;table-layout:auto}" +
-      ".util-learner-renderer-vnext .util-table-scroll.util-material-table th,.util-learner-renderer-vnext .util-table-scroll.util-material-table td{min-width:8rem;white-space:normal;overflow-wrap:anywhere;vertical-align:top}" +
-      ".util-learner-renderer-vnext .util-table-scroll.util-material-table th:first-child,.util-learner-renderer-vnext .util-table-scroll.util-material-table td:first-child{width:1%;min-width:6rem;white-space:normal}" +
+      ".util-learner-renderer-vnext .util-table-scroll.util-material-table th,.util-learner-renderer-vnext .util-table-scroll.util-material-table td{min-width:8rem;white-space:normal;overflow-wrap:normal;word-break:normal;vertical-align:top}" +
+      ".util-learner-renderer-vnext .util-table-scroll.util-material-table th:first-child,.util-learner-renderer-vnext .util-table-scroll.util-material-table td:first-child{min-width:6rem;white-space:normal}" +
       ".util-learner-renderer-vnext table{width:100%;border-collapse:collapse;min-width:34rem}" +
       ".util-learner-renderer-vnext th,.util-learner-renderer-vnext td{border:1px solid #e5e7eb;padding:.6rem .75rem;text-align:left;vertical-align:top;line-height:1.5}" +
       ".util-learner-renderer-vnext td{font-size:.9375rem;color:#1f2937}" +
@@ -50587,6 +50640,8 @@
     prismTestApi.repairGuidedLearningScaffoldOnDlaCapture = repairGuidedLearningScaffoldOnDlaCapture;
     prismTestApi.applyGuidedLearningScaffoldRepairToDlaCapture =
       applyGuidedLearningScaffoldRepairToDlaCapture;
+    prismTestApi.applyDlaEnrichedPageHardValidationToCapture =
+      applyDlaEnrichedPageHardValidationToCapture;
     prismTestApi.buildLdCognitionOrientationPromptBlock = buildLdCognitionOrientationPromptBlock;
     prismTestApi.reinforceLearnerPageDlaActivitiesOutputSchema =
       reinforceLearnerPageDlaActivitiesOutputSchema;

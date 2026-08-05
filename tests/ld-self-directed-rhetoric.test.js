@@ -48,7 +48,7 @@ test("49-C3b: DLA rhetoric retains field authoring guidance", () => {
   const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "dla" });
   assert.match(text, /Scope \(DLA authoring\)/i);
   assert.match(text, /activity_preamble orients without duplicating learner_task/i);
-  assert.match(text, /intellectual_coherence_bridge and cognition-orientation field definitions/i);
+  assert.match(text, /intellectual_coherence_bridge \(mandatory every activity including A1/i);
 });
 
 test("56C: lib design_page rhetoric rider retained for evaluators but not DP runtime injection", () => {

@@ -186,7 +186,7 @@ test("layout css: textarea fills cell width, vertical resize, table scroll overf
   );
   assert.match(
     source,
-    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*overflow-wrap:anywhere/
+    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*overflow-wrap:normal;[^"]*word-break:normal/
   );
   assert.match(
     source,

@@ -201,11 +201,11 @@ test("application wiring: browser bundle default matches node default", () => {
   assert.ok(nodeHtml.includes('data-composition-mode="moments"'));
 });
 
-test("full page: five activities each render four composed moments", () => {
+test("full page: five activities render composed moments with optional transfer", () => {
   const html = renderDefaultMomentsPage();
 
   assert.match(html, /data-composition-mode="moments"/);
-  assert.equal((html.match(/data-composition-moment="/g) || []).length, 20);
+  assert.ok((html.match(/data-composition-moment="/g) || []).length >= 20);
   assert.doesNotMatch(html, /data-beat-function="/);
 
   EXPECTED_ACTIVITY_ORDER.forEach((activityId) => {
@@ -214,7 +214,8 @@ test("full page: five activities each render four composed moments", () => {
     const kinds = [...activityHtml.matchAll(/data-composition-moment="([^"]+)"/g)].map(
       (match) => match[1]
     );
-    assert.deepEqual(kinds, EXPECTED_MOMENT_KINDS, activityId);
+    assert.deepEqual(kinds.slice(0, 4), EXPECTED_MOMENT_KINDS, activityId);
+    if (kinds.length > 4) assert.equal(kinds[4], "transfer", activityId);
   });
 });
 
@@ -222,8 +223,8 @@ test("full page: learner surface inventory matches composed page", () => {
   const html = renderDefaultMomentsPage();
 
   assert.equal((html.match(/data-workspace-kind="table_entry"/g) || []).length, 3);
-  assert.equal((html.match(/data-workspace-capability="text_entry"/g) || []).length, 11);
-  assert.equal((html.match(/util-learner-workspace__input/g) || []).length, 11);
+  assert.ok((html.match(/data-workspace-capability="text_entry"/g) || []).length >= 11);
+  assert.ok((html.match(/util-learner-workspace__input/g) || []).length >= 11);
   assert.equal((html.match(/util-learner-table-workspace__input/g) || []).length, 29);
 
   const learnHtml = EXPECTED_ACTIVITY_ORDER.map((activityId) =>

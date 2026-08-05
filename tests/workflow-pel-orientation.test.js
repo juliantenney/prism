@@ -254,7 +254,7 @@ test("30-1: DLA runtime prompt includes PEL orientation block and field names", 
   assert.match(prompt, /\bstudy_orientation\b/);
   assert.match(prompt, /\bintellectual_frame\b/);
   assert.match(prompt, /\bintellectual_coherence_bridge\b/);
-  assert.match(prompt, /output contract \(learner-facing page/i);
+  assert.match(prompt, /OUTPUT CONTRACT \(learner-facing copy fields/i);
   assert.match(prompt, /Each activity MUST include activity_preamble/i);
   assert.match(prompt, /self_explanation_prompt on ≥2 activities/i);
   assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
@@ -286,7 +286,7 @@ test("41-5: workshop learner handout DLA runtime prompt includes PEL orientation
     "Design Learning Activities"
   );
   assert.match(prompt, PEL_ORIENTATION_MARKER);
-  assert.match(prompt, /output contract \(learner-facing page/i);
+  assert.match(prompt, /OUTPUT CONTRACT \(learner-facing copy fields/i);
   assert.match(prompt, /Learner-page activity framing by archetype/i);
   assert.match(prompt, /facilitator_moves: optional for facilitated choreography/i);
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
@@ -302,7 +302,7 @@ test("30-1: facilitator-only workshop DLA runtime prompt excludes PEL orientatio
     "Design Learning Activities"
   );
   assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
-  assert.doesNotMatch(prompt, /output contract \(learner-facing page/i);
+  assert.doesNotMatch(prompt, /OUTPUT CONTRACT \(learner-facing copy fields/i);
 });
 
 test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-facing material voice", () => {
@@ -333,13 +333,15 @@ test("30-1c: evaluatePelOrientationContractSatisfaction passes well-formed orien
         activity_id: "A1",
         activity_preamble: "Before you begin, note how Marx's exile shaped his writing.",
         study_orientation:
-          "This self-study page moves from life phases to comparing texts and applying concepts."
+          "This self-study page moves from life phases to comparing texts and applying concepts.",
+        intellectual_coherence_bridge:
+          "The overview introduced Marx's exile and writing aims. This first activity begins by using that foundation to notice how displacement shapes ideas."
       },
       {
         activity_id: "A2",
         activity_preamble: "As you analyse cause and effect, link each event to a concept.",
         intellectual_coherence_bridge:
-          "You mapped life phases and exile conditions in the previous activity. Carry that contextual lens forward when matching historical events to concepts: use the same cause-and-effect standard rather than treating each event as an isolated fact on the timeline."
+          "You mapped life phases and exile conditions. Carry that contextual lens forward when matching historical events to concepts rather than treating each event as an isolated fact."
       }
     ]
   };
@@ -348,13 +350,13 @@ test("30-1c: evaluatePelOrientationContractSatisfaction passes well-formed orien
   assert.equal(evalResult.orientationContractSatisfied, true);
   assert.equal(evalResult.preambleCount, 2);
   assert.equal(evalResult.studyOrientationPresent, true);
-  assert.equal(evalResult.bridgeCount, 1);
+  assert.equal(evalResult.bridgeCount, 2);
   assert.equal(evalResult.followOnCount, 1);
   assert.equal(evalResult.missingBridgeActivityIds.length, 0);
   assert.equal(evalResult.missingFields.length, 0);
 });
 
-test("30-1c: evaluatePelOrientationContractSatisfaction requires a bridge on every follow-on activity", () => {
+test("30-1c: evaluatePelOrientationContractSatisfaction requires a bridge on every activity including A1", () => {
   const onlyLastBridge = {
     activities: [
       {
@@ -387,7 +389,7 @@ test("30-1c: evaluatePelOrientationContractSatisfaction requires a bridge on eve
   assert.ok(evalResult.missingFields.includes("intellectual_coherence_bridge"));
   assert.equal(evalResult.bridgeCount, 1);
   assert.equal(evalResult.followOnCount, 4);
-  assert.equal(Array.from(evalResult.missingBridgeActivityIds || []).join("|"), "A2|A3|A4");
+  assert.equal(Array.from(evalResult.missingBridgeActivityIds || []).join("|"), "A1|A2|A3|A4");
 });
 
 test("30-1c: evaluatePelOrientationContractSatisfaction flags procedural DLA and facilitator GAM text", () => {
@@ -420,10 +422,8 @@ test("30-1c: evaluatePelOrientationContractSatisfaction accepts live Marx DLA wi
   const evalResult = api.evaluatePelOrientationContractSatisfaction(dla, { page });
   assert.equal(evalResult.preambleCount, evalResult.activityCount);
   assert.ok(evalResult.studyOrientationPresent);
-  if (evalResult.followOnCount > 0) {
-    assert.equal(
-      evalResult.bridgeCount + (evalResult.missingBridgeActivityIds || []).length,
-      evalResult.followOnCount
-    );
-  }
+  assert.equal(
+    evalResult.bridgeCount + (evalResult.missingBridgeActivityIds || []).length,
+    evalResult.activityCount
+  );
 });

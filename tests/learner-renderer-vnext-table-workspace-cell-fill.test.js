@@ -271,12 +271,9 @@ test("css: editable cell three-line textarea contract is present in learner util
   );
   assert.match(
     source,
-    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*white-space:normal;[^"]*overflow-wrap:anywhere/
+    /\.util-learner-table-workspace__table th,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td\{[^"]*min-width:8rem;[^"]*white-space:normal;[^"]*overflow-wrap:normal;[^"]*word-break:normal/
   );
-  assert.match(
-    source,
-    /th\[scope=\\"row\\"\],\.util-learner-renderer-vnext \.util-learner-table-workspace__table th:first-child,\.util-learner-renderer-vnext \.util-learner-table-workspace__table td:first-child\{[^"]*width:1%;[^"]*min-width:6rem/
-  );
+  assert.doesNotMatch(source, /width:1%/);
   assert.match(
     source,
     /@media print\{[^"]*util-learner-table-workspace__input\{border-color:#94a3b8;background:transparent/

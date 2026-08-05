@@ -1,0 +1,146 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Wilfred Owen and the Realities of War",
+  "audience": "Learners",
+  "page_profile": { "profile_type": "learner" },
+  "assembly_state": {
+    "enriched_by": ["episode_plan", "dla", "gam", "learning_sequence", "design_page"],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "format": "markdown",
+      "body": "This self-study resource explores how Wilfred Owen presents the realities of war through his poetry."
+    },
+    "learning_purpose": {
+      "format": "markdown",
+      "body": "The activities progress from contextual understanding to textual analysis and evaluation."
+    },
+    "knowledge_summary": {
+      "format": "markdown",
+      "body": "Wilfred Owen's poetry challenges idealised representations of war by foregrounding lived experience."
+    },
+    "study_tips": {
+      "format": "markdown",
+      "body": "Work through the activities in sequence and keep notes from each stage."
+    }
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Experience Shapes Representation",
+      "learner_task": "Study the explanatory material and worked example. Then write a short paragraph explaining how personal experience can shape literary representation. Finally, apply the model to Wilfred Owen by explaining why a poet with battlefield experience might focus on suffering, trauma, and loss rather than glory.",
+      "expected_output": "A coherent explanatory paragraph that clearly links experience, perspective, thematic focus, and representation. The response should use appropriate literary terminology and show a logical cause-and-effect chain.",
+      "activity_preamble": "Begin by building a conceptual model of how a writer's lived experience can influence literary representation before applying that idea to Wilfred Owen.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "type": "text",
+          "purpose": "Introduce the relationship between experience, perspective, and representation.",
+          "specification": "Depth_floor L3."
+        },
+        {
+          "material_id": "A1-M2",
+          "type": "worked_example",
+          "purpose": "Model explanatory reasoning using an analogous non-war example.",
+          "specification": "Depth_floor L3."
+        },
+        {
+          "material_id": "A1-M3",
+          "type": "sample_output",
+          "purpose": "Provide a model explanatory paragraph.",
+          "specification": "Depth_floor L3."
+        },
+        {
+          "material_id": "A1-M4",
+          "type": "checklist",
+          "purpose": "Verification and self-review.",
+          "specification": "Depth_floor L3."
+        }
+      ],
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Experience and Representation",
+          "body_format": "markdown",
+          "body": "Literary representation is influenced by perspective, and perspective is influenced by experience."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "worked_example",
+          "activity_id": "A1",
+          "title": "Reasoning Through Influence",
+          "body_format": "markdown",
+          "body": "Experience -> Perspective -> Representation."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Model Explanatory Paragraph",
+          "body_format": "markdown",
+          "body": "A writer's experiences can influence how events are represented in literature."
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Explanation Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you explained a clear chain from experience to representation?",
+                "why_it_matters": "The response should show causal reasoning.",
+                "features": [{ "expected": "A clear chain is present.", "repair": "State how experience alters perspective and representation." }]
+              }
+            ]
+          }
+        }
+      ],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "framing" },
+          { "function": "activation" },
+          { "function": "explanation" },
+          { "function": "example" },
+          { "function": "non_example" },
+          { "function": "misconception_confrontation" },
+          { "function": "guided_practice" },
+          { "function": "independent_performance" },
+          { "function": "verification" },
+          { "function": "reflection" },
+          { "function": "transition" }
+        ]
+      },
+      "learning_outcome_ids": ["LO1"],
+      "grouping": "individual",
+      "duration_minutes": 10,
+      "mapped_learning_outcomes": ["LO1"],
+      "intellectual_coherence_bridge": "This opening activity establishes the core explanatory relationship that underpins the whole session: experience influences perspective, and perspective influences representation.",
+      "reasoning_orientation": "Focus on causal explanation rather than description.",
+      "self_explanation_prompt": "How might direct experience of conflict lead a poet to emphasise different aspects of war from someone relying on patriotic ideals alone?",
+      "evidence_decision": {
+        "required": false,
+        "reason": "The activity develops a conceptual model and does not require inspection of source evidence.",
+        "provider_material_ids": []
+      }
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "outcome_id": "LO1",
+      "statement": "Describe how Wilfred Owen's First World War experiences influence his presentation of the realities of war."
+    }
+  ],
+  "learning_sequence": {
+    "sequence_type": "self_directed_study_flow",
+    "ordered_activity_ids": ["A1"]
+  }
+}

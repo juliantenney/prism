@@ -3,8 +3,8 @@
 **Use this** to start a fresh implementation or planning session.  
 **Pack status:** OPEN / IN PROGRESS  
 **Phase 0:** COMPLETE  
-**Implementation:** Not started  
-**Next task:** **`S72-T-010`**  
+**Implementation:** Substantially progressed  
+**Next task:** **`S72-T-073`** (rerender + inspect Owen)  
 **Do not** reopen Sprint 71 or edit its evidence.
 
 ---
@@ -32,13 +32,24 @@ Productise Sprint 71’s validated instructional architecture into Prism (platfo
 - `S72-D07` success criteria **Accepted**  
 - `S72-D08` `S71-F-001` dual-routed A → B → C  
 - `S72-D09` shared workflow asset-persistence model (T-042 + T-051)
+- `S72-D10` evidence-centred slice supports simulated + conversation-attachment source-bound evidence; deferred boundary is stable attachment ingestion/persistence + byte-level fidelity verification
+- `S72-D11` no new pipeline stage/page type/complex evidence spine required for this slice
+- `S72-D12` evidence use is selective and bounded by pedagogy/time/prerequisites
+- `S72-D13` distinguish implemented-but-uncommitted work from committed baseline state
 
-## First implementation-oriented tasks
+## Immediate execution sequence
 
-1. **`S72-T-010`** — Map principles → stage/contract owners (**start here**)  
-2. `S72-T-011` / `S72-T-015` — Umbrella + Evidence Sufficiency (F-001-A)  
-3. `S72-T-012`–`S72-T-014` — First Layer-1 slice + validate (**committed**)  
-4. `S72-T-020`–`S72-T-023` — Diagnostic feedback  
+1. **`S72-T-073`** — Re-render Owen after bridge + presentation refinements; inspect learner-facing output  
+2. Run focused QA/benchmark checks if needed  
+3. **`S72-T-074`** — Commit verified Sprint 72 slice  
+4. Continue deferred hardening backlog only after demo-day verification
+
+## Current implemented state snapshot
+
+- Evidence-centred activity architecture implemented (activity-level evidence decisions; provider/response separation; selective evidence use).
+- Simulated evidence route implemented (`system_generated_simulation`).
+- Source-bound conversation-attachment route implemented (`conversation_attachment`) with source-unit inventory and attributed source-native evidence rendering.
+- Bridge correction and learner-page presentation refinements implemented but currently uncommitted in working tree.
 
 ## Hard rules
 

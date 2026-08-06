@@ -49642,7 +49642,7 @@
     document: {
       defaultVariant: "generic_document",
       variants: {
-        page: buildUtilityStructuredHtml,
+        // Learner pages no longer use structured HTML (S74A-T-045); keep non-page document variants.
         generic_document: buildUtilityStructuredHtml
       }
     },
@@ -49938,38 +49938,6 @@
       i += 1;
     }
     return out;
-  }
-
-  function buildDefaultUtilityPageRenderPlan(sectionOrderOverride) {
-    var sectionOrder =
-      Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
-        ? sectionOrderOverride.slice()
-        : [
-            "knowledge_summary",
-            "learning_journey",
-            "learning_sequence",
-            "learning_activities",
-            "assessment_check",
-            "activity_materials",
-            "support_notes",
-            "study_tips",
-            "overview",
-            "learning_purpose"
-          ];
-    return {
-      artefactType: "page",
-      rendererType: "document",
-      rendererVariant: "page",
-      renderHints: {
-        renderConfig: {
-          labels: {},
-          omitIfMissing: [],
-          sectionOrder: sectionOrder,
-          grouping: "document_sections",
-          itemKeyMap: {}
-        }
-      }
-    };
   }
 
   function buildUtilityStandaloneExportDocument(exportOpts) {
@@ -51935,7 +51903,6 @@
     prismTestApi.resolveStrictJsonWorkflowStepKindForTest = resolveStrictJsonWorkflowStepKind;
     prismTestApi.applyStrictJsonArtefactContractToDraftForTest =
       applyStrictJsonArtefactContractToDraft;
-    prismTestApi.buildDefaultUtilityPageRenderPlanForTest = buildDefaultUtilityPageRenderPlan;
     prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
     prismTestApi.buildJourneyCompassFromPageForTest = buildJourneyCompassFromPage;

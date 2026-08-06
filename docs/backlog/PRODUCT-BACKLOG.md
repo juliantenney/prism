@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — maturation / v1.0 stabilisation phase  
-**Last updated:** 2026-08-05  
-**Source migrations:** Sprint 72 cut-line (`S72-T-077`); historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
+**Last updated:** 2026-08-06 (PB-FA-001 renamed to Workflow Resources; Sprint 73 pack refinement)  
+**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
 
 ---
 
@@ -32,21 +32,27 @@ Concrete defects, friction, polish and robustness. Suitable to pull into a sprin
 
 Coherent capabilities large enough to become a sprint. **No sprint numbers assigned.** Do not create detailed sprint plans here.
 
-### PB-FA-001 — Workflow asset persistence
+### PB-FA-001 — Workflow Resources
+
+**Product-facing capability:** First-class **Workflow Resources** — durable learner-facing and workflow-bound assets that authors and learners can rely on across refresh, navigation, export, and regeneration.
+
+**Implementation mechanism (initial architectural problem):** **Workflow asset persistence** — stable identity, storage, reconnect, and regeneration semantics. Generated images are the first implementation slice; the persistence architecture must not be specialised for images alone (Sprint 73 design constraint).
+
+**Broader direction (not Sprint 73 commitments):** Workflow Resources are expected ultimately to encompass **generated media**, **uploaded documents**, and **embedded external resources**. PDF, Word, and video remain anticipated architecture consumers until a later sprint assigns them.
 
 **Evidence basis:** `S72-D09` (shared workflow asset-persistence model); `S72-D10` (conversation-attachment bytes intentionally out of Sprint 72 scope); Sprint 72 Phase 4/5 path work; Owen source-bound runs proved conversation-bound source use without byte storage.
 
 **Scope sketch (not a charter):**
 
-- Image / generated-asset persistence (IDs, generation metadata, reconnect, selective regeneration)
-- Conversation-attachment persistence
-- Shared workflow asset model
-- Stable asset identity
+- Workflow Resources model (resource-type-neutral persistence architecture)
+- Image / generated-media persistence (IDs, generation metadata, reconnect, selective regeneration) — first slice
+- Conversation-attachment persistence (byte path — harder; bound by `S72-D10`)
+- Stable resource identity
 - Byte-level fidelity verification
 - Reconnection and regeneration semantics
-- Workflow ↔ author-evidence association persistence
+- Workflow ↔ author-evidence association persistence (shared model per `S72-D09`)
 
-**Readiness:** Strongest **candidate** for a future sprint among architecture items — decisions and boundaries exist; implementation approach and acceptance criteria still required before sprint open.
+**Readiness:** Sprint 73 **OPEN** (2026-08-06) — [SPRINT-73-START-HERE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md). Phase 1 discovery must establish implementation approach and acceptance criteria before Phase 2 begins.
 
 **Former Sprint 72 links (retired from S72):** T-040 remaining, T-041, T-042, T-044, T-051, B-002.
 
@@ -90,6 +96,8 @@ Unresolved questions requiring investigation before planning. **No implementatio
 | PB-R-003 | How should “raise the ceiling” (~90–91 → aspirational 95–98) be measured without score-chasing? | Avoids premature ceiling sprints | Sprint 72 T-060 baseline selected; T-061/T-062 not completed |
 | PB-R-004 | When is a dedicated case-study / shared-evidence-spine page type warranted vs activity-level evidence? | Prevents premature page-type proliferation | Explicitly deferred in Sprint 72 (`S72-D11`) |
 | PB-R-005 | How far should progressive-disclosure elicitation go beyond source-bound attachment guidance? | Layer 2 redesign still largely discovery | Former T-030–T-032 |
+| PB-R-006 | What does discipline-appropriate source / evidence evaluation require beyond the Evidence-Centred Learning umbrella? | Residual Confirmed `S71-F-007` after Sprint 72 umbrella adoption | Do not import history provenance rules into literature; investigate per-discipline profiles |
+| PB-R-007 | Where should Benchmark v2.1 / Validation Review v2.0 instruments live in-repo (if at all)? | Sprint 71 Final Report recommendation; paths unresolved at S71 close | Methodology / tooling — not a generation-contract defect |
 
 ---
 
@@ -102,7 +110,11 @@ Lightly formed possibilities. Concise only. **No task IDs, sprint allocation, or
 - Specialist discipline renderers (music, maths notation beyond current TeX, chemistry, engineering diagrams)
 - Richer evidence visualisations
 - Design Feedback attribution programme beyond guided-review slice
-- Broader Layer-1 uncertainty / timing programme beyond shipped delayed-disclosure constraints
+- Broader Layer-1 uncertainty / timing / competing-interpretations programme beyond shipped constraints (`S71-F-005`, related)
+- Ambiguous / conflicting diagnostic evidence for professional judgement (`S71-F-009`) — **PB-I-009**
+- Worked-example conceptual explanation depth (`S71-F-011`) — **PB-I-011**
+- Transfer / modelling depth beyond Check→Transfer ordering (`S71-F-010`)
+- Rejection-of-alternatives prompting (`S71-F-006`); scholarly-perspective specificity (`S71-F-008`); later-stage prediction (`S71-F-012`); contrasting worked patterns (`S71-F-013`)
 - Controlled raise-the-ceiling experiment
 - Further nav/heading a11y polish beyond Sprint 72 bounded fixes
 - Historical ideas retained from [ideas.md](ideas.md): richer parameter systems; reusable workflow templates; workflow inspectability surfaces; optional API gateway; utility transforms; renderer quality presets
@@ -110,16 +122,22 @@ Lightly formed possibilities. Concise only. **No task IDs, sprint allocation, or
 
 ---
 
+## Sprint 71 disposition audit
+
+Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](../development/sprints/2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-71-DISPOSITION-AUDIT.md). Every validated Sprint 71 finding/recommendation has an explicit disposition (implemented, deferred to this backlog, superseded, or intentionally not adopted).
+
+---
+
 ## Maturity ranking for next-sprint selection (non-binding)
 
 | Rank | Item | Why |
 | ---- | ---- | --- |
-| 1 | **PB-FA-001** Workflow asset persistence | Binding decisions (`S72-D09`/`D10`); clear deferred boundary; cross-cutting product need |
+| 1 | **PB-FA-001** Workflow Resources | **Sprint 73 OPEN** — binding decisions (`S72-D09`/`D10`); Phase 1 discovery not yet started |
 | 2 | **PB-FA-003** Pipeline integrity | Recent public-export/bundle parity lesson; hardening for maturation phase |
 | 3 | **PB-FA-002** Programming learning resources | Confirmed S71 finding; needs requirements pass first |
 | — | Stabilisation PB-S-001 | Fix when capacity allows; do not block sprint selection on greenwashing the full suite |
 
-**Sprint 73 is not pre-assigned** to any of the above.
+**Sprint 73** is open on **PB-FA-001** — see [SPRINT-73-START-HERE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md).
 
 ---
 

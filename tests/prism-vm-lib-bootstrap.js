@@ -11,6 +11,7 @@ const DEFAULT_LIBS = [
   "lib/prism-visual-jobs-planner.js",
   "lib/prism-image-brief-compiler.js",
   "lib/prism-visual-assets.js",
+  "lib/prism-workflow-resources.js",
   "lib/utilities-visual-jobs-workspace.js",
   "lib/learner-package.js",
   "lib/learner-package-zip.js",

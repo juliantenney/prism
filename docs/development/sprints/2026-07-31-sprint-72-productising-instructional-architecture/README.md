@@ -12,6 +12,7 @@
 | Start here | [SPRINT-72-START-HERE.md](SPRINT-72-START-HERE.md) |
 | Final report | [SPRINT-72-FINAL-REPORT.md](SPRINT-72-FINAL-REPORT.md) |
 | Closure | [SPRINT-72-CLOSURE.md](SPRINT-72-CLOSURE.md) |
+| Sprint 71 disposition audit | [SPRINT-71-DISPOSITION-AUDIT.md](SPRINT-71-DISPOSITION-AUDIT.md) |
 | Charter | [SPRINT-72-CHARTER.md](SPRINT-72-CHARTER.md) |
 | Context | [CONTEXT.md](CONTEXT.md) |
 | Handover | [HANDOVER.md](HANDOVER.md) |

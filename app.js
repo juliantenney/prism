@@ -221,6 +221,8 @@
     utilitiesRendererVersion: "vnext",
     utilitiesSourceMode: "",
     utilitiesVisualAssetObjectUrlsByBriefId: {},
+    /** Sprint 73: ephemeral cache of workflow resource refs mirrored in runstate (canonical bytes in owner store). */
+    workflowResourceRefs: [],
     visualAssetPreviewRevision: 0,
     utilitiesPreviewLastAppliedRevision: 0,
     utilitiesPreviewWriteLog: []
@@ -27182,7 +27184,10 @@
       runIndex:
         typeof state.currentWorkflowRunIndex === "number" && isFinite(state.currentWorkflowRunIndex)
           ? state.currentWorkflowRunIndex
-          : 0
+          : 0,
+      workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
+        ? state.workflowResourceRefs.slice()
+        : []
     };
   }
 
@@ -27224,6 +27229,8 @@
         : 0;
     state.workflowRunVisibleStepId = "";
     state.workflowRunCopiedStepId = "";
+    state.workflowResourceRefs =
+      rec && Array.isArray(rec.workflowResourceRefs) ? rec.workflowResourceRefs.slice() : [];
   }
 
   function renderWorkflowList() {
@@ -48053,6 +48060,118 @@
       : null;
   }
 
+  function getWorkflowResourcesMod() {
+    return typeof PRISM_WORKFLOW_RESOURCES !== "undefined" ? PRISM_WORKFLOW_RESOURCES : null;
+  }
+
+  function persistWorkflowResourceFromVisualAttach(briefId, file, asset) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    if (!workflowId || !resourcesMod || !file || !asset) {
+      return Promise.resolve({ ok: false, code: "persist_unavailable" });
+    }
+    return resourcesMod
+      .putBinaryResource({
+        workflow_id: workflowId,
+        affordance_id: asset.affordance_id,
+        brief_id: asset.brief_id || briefId,
+        mime_type: asset.mime_type,
+        payload_blob: file,
+        byte_size: asset.byte_size
+      })
+      .then(function (result) {
+        if (result.ok && result.refs) {
+          state.workflowResourceRefs = result.refs;
+          persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+        }
+        return result;
+      });
+  }
+
+  function rehydrateWorkflowResourcesIntoUtilitiesWorkspace(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    var assetsMod = typeof PRISM_VISUAL_ASSETS !== "undefined" ? PRISM_VISUAL_ASSETS : null;
+    var workspaceMod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!workflowId || !resourcesMod || !ws || !assetsMod) {
+      return Promise.resolve({ ok: false, code: "rehydrate_unavailable", hydrated: 0 });
+    }
+    return resourcesMod
+      .hydrateVisualAssetsIntoWorkspace({
+        workflowId: workflowId,
+        workspace: ws,
+        assetsMod: assetsMod,
+        workspaceMod: workspaceMod
+      })
+      .then(function (result) {
+        if (result.ok && result.refs) {
+          state.workflowResourceRefs = result.refs;
+        }
+        if (result.ok && result.hydrated > 0 && opts.refreshPreview !== false) {
+          Object.keys(ws.assetsByBriefId || {}).forEach(function (bid) {
+            var row = ws.assetsByBriefId[bid];
+            if (
+              row &&
+              row.preview_source &&
+              row.preview_source.kind === "object_url" &&
+              row.preview_source.value
+            ) {
+              revokeVisualAssetObjectUrlForBrief(bid);
+              state.utilitiesVisualAssetObjectUrlsByBriefId[bid] = row.preview_source.value;
+            }
+          });
+          refreshUtilitiesLearnerPreviewWithVisualAssets(opts.reason || "rehydrate");
+        }
+        return result;
+      });
+  }
+
+  function regenerateUtilitiesExportHtmlFromDurableState() {
+    var ws = state.utilitiesOutputWorkspace;
+    if (!ws || !ws.assembledPageSnapshot) {
+      return Promise.resolve({ ok: false, code: "no_workspace" });
+    }
+    return rehydrateWorkflowResourcesIntoUtilitiesWorkspace({
+      refreshPreview: false,
+      reason: "export"
+    }).then(function () {
+      var rendered = runUtilityPageExportPipeline(ws.assembledPageSnapshot, {
+        rendererVersion: getUtilitiesRendererVersion(),
+        compositionMode: resolveUtilitiesCompositionModeForRender({
+          visualAssets: ws.visualAssetManifest || null
+        }),
+        visualAssets: ws.visualAssetManifest || null,
+        applyCompositionValidation: false,
+        skipWorkflowAssembly: true
+      });
+      if (!rendered || rendered.error || !rendered.html) {
+        return {
+          ok: false,
+          code: "export_render_failed",
+          message: (rendered && rendered.error) || "Could not render export HTML."
+        };
+      }
+      var durableHtml = normalizeUtilitiesVisualAssetSourcesForDurableHtml(
+        String(rendered.html || "")
+      );
+      state.utilitiesLastHtml = durableHtml;
+      return { ok: true, html: durableHtml };
+    });
+  }
+
+  function resolveUtilitiesExportHtmlForDownload() {
+    var cached = String(state.utilitiesLastHtml || "").trim();
+    if (cached) {
+      return Promise.resolve({ ok: true, html: cached, source: "cache" });
+    }
+    return regenerateUtilitiesExportHtmlFromDurableState().then(function (result) {
+      if (result.ok) result.source = "regenerated";
+      return result;
+    });
+  }
+
   function emptyUtilitiesOutputWorkspaceState() {
     var mod = getUtilitiesVisualJobsWorkspaceMod();
     if (mod && typeof mod.emptyWorkspaceState === "function") {
@@ -48114,6 +48233,7 @@
     ) {
       renderUtilitiesVisualJobsView();
     }
+    rehydrateWorkflowResourcesIntoUtilitiesWorkspace({ reason: "workspace_refresh" });
     return state.utilitiesOutputWorkspace;
   }
 
@@ -48490,9 +48610,28 @@
         revokeVisualAssetObjectUrlForBrief(id);
         state.utilitiesVisualAssetObjectUrlsByBriefId[id] = decoded.objectUrl;
         setVisualJobAssetError(id, "");
-        refreshUtilitiesLearnerPreviewWithVisualAssets(hadExisting ? "replace" : "attach");
-        renderUtilitiesVisualJobsView();
-        return { ok: true, asset: attached.asset };
+        return persistWorkflowResourceFromVisualAttach(id, file, attached.asset).then(function (
+          persistResult
+        ) {
+          if (!persistResult || persistResult.code === "persist_unavailable") {
+            refreshUtilitiesLearnerPreviewWithVisualAssets(hadExisting ? "replace" : "attach");
+            renderUtilitiesVisualJobsView();
+            return { ok: true, asset: attached.asset, persisted: false };
+          }
+          if (!persistResult.ok) {
+            mod.removeVisualAssetFromWorkspace(state.utilitiesOutputWorkspace, id);
+            revokeVisualAssetObjectUrlForBrief(id);
+            var persistMessage =
+              (persistResult && persistResult.message) ||
+              "Could not persist workflow resource.";
+            setVisualJobAssetError(id, persistMessage);
+            renderUtilitiesVisualJobsView();
+            return { ok: false, error: persistMessage };
+          }
+          refreshUtilitiesLearnerPreviewWithVisualAssets(hadExisting ? "replace" : "attach");
+          renderUtilitiesVisualJobsView();
+          return { ok: true, asset: attached.asset, resource_id: persistResult.resource_id };
+        });
       })
       .catch(function (err) {
         var message = (err && err.message) || "Could not decode image.";
@@ -49744,91 +49883,96 @@
   }
 
   function handleUtilitiesDownloadHtml() {
-    var htmlText = String(state.utilitiesLastHtml || "").trim();
-    if (!htmlText) {
-      showToast("Preview HTML first, then download.", "error");
-      return;
-    }
-    var fileName = String(state.utilitiesLastFileName || "rendered-output.html").trim();
-    if (Array.isArray(state.utilitiesDownloadTestLog)) {
-      state.utilitiesDownloadTestLog.push("html");
-    }
-    triggerHtmlDownload(htmlText, fileName);
-    showToast("HTML downloaded.", "success");
+    resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
+      if (!resolved || !resolved.ok || !resolved.html) {
+        showToast(
+          (resolved && resolved.message) || "Could not generate HTML for download.",
+          "error"
+        );
+        return;
+      }
+      var htmlText = String(resolved.html || "").trim();
+      var fileName = String(state.utilitiesLastFileName || "rendered-output.html").trim();
+      if (Array.isArray(state.utilitiesDownloadTestLog)) {
+        state.utilitiesDownloadTestLog.push("html");
+      }
+      triggerHtmlDownload(htmlText, fileName);
+      showToast("HTML downloaded.", "success");
+    });
   }
 
   function handleUtilitiesDownloadLearnerPackage() {
-    var htmlText = String(state.utilitiesLastHtml || "").trim();
-    if (!htmlText) {
-      showToast("Preview HTML first, then download.", "error");
-      return;
-    }
+    resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
+      if (!resolved || !resolved.ok || !resolved.html) {
+        showToast(
+          (resolved && resolved.message) || "Could not generate HTML for learner package.",
+          "error"
+        );
+        return;
+      }
+      var htmlText = String(resolved.html || "").trim();
 
-    var packageApi =
-      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
-      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
-      null;
-    var zipApi =
-      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE_ZIP) ||
-      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE_ZIP) ||
-      null;
-    if (
-      !packageApi ||
-      typeof packageApi.buildLearnerPackage !== "function" ||
-      !zipApi ||
-      typeof zipApi.serializeLearnerPackageToZip !== "function"
-    ) {
-      showToast("Learner package export is unavailable.", "error");
-      return;
-    }
+      var packageApi =
+        (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
+        (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
+        null;
+      var zipApi =
+        (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE_ZIP) ||
+        (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE_ZIP) ||
+        null;
+      if (
+        !packageApi ||
+        typeof packageApi.buildLearnerPackage !== "function" ||
+        !zipApi ||
+        typeof zipApi.serializeLearnerPackageToZip !== "function"
+      ) {
+        showToast("Learner package export is unavailable.", "error");
+        return;
+      }
 
-    var exportHtml = utilityEnhanceExportHtmlWithMathJax(htmlText);
-    var manifest = getUtilitiesVisualAssetManifestForExport();
-    // Snapshot only — do not mutate workspace / page / planner state.
-    var built = packageApi.buildLearnerPackage({
-      html: exportHtml,
-      visualAssetManifest: manifest,
-      pageSlug: String(state.utilitiesLastFileName || "rendered-output")
-        .replace(/\.html$/i, ""),
-      builtAt: new Date().toISOString()
+      var exportHtml = utilityEnhanceExportHtmlWithMathJax(htmlText);
+      var manifest = getUtilitiesVisualAssetManifestForExport();
+      var built = packageApi.buildLearnerPackage({
+        html: exportHtml,
+        visualAssetManifest: manifest,
+        pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
+        builtAt: new Date().toISOString()
+      });
+      if (!built || !built.ok || !built.package) {
+        showToast(
+          (built && built.error && built.error.message) || "Could not build learner package.",
+          "error"
+        );
+        return;
+      }
+
+      var zipped = zipApi.serializeLearnerPackageToZip(built.package);
+      if (!zipped || !zipped.ok || !zipped.bytes) {
+        showToast(
+          (zipped && zipped.error && zipped.error.message) ||
+            "Could not serialize learner package ZIP.",
+          "error"
+        );
+        return;
+      }
+
+      var zipName = getUtilityLearnerPackageZipName(
+        state.utilitiesLastFileName || "rendered-output"
+      );
+      if (Array.isArray(state.utilitiesDownloadTestLog)) {
+        state.utilitiesDownloadTestLog.push("zip");
+      }
+      triggerBinaryDownload(zipped.bytes, zipName, "application/zip");
+
+      if (built.warnings && built.warnings.length) {
+        showToast(
+          "Learner package downloaded with " + String(built.warnings.length) + " warning(s).",
+          "warning"
+        );
+      } else {
+        showToast("Learner package downloaded.", "success");
+      }
     });
-    if (!built || !built.ok || !built.package) {
-      showToast(
-        (built && built.error && built.error.message) ||
-          "Could not build learner package.",
-        "error"
-      );
-      return;
-    }
-
-    var zipped = zipApi.serializeLearnerPackageToZip(built.package);
-    if (!zipped || !zipped.ok || !zipped.bytes) {
-      showToast(
-        (zipped && zipped.error && zipped.error.message) ||
-          "Could not serialize learner package ZIP.",
-        "error"
-      );
-      return;
-    }
-
-    var zipName = getUtilityLearnerPackageZipName(
-      state.utilitiesLastFileName || "rendered-output"
-    );
-    if (Array.isArray(state.utilitiesDownloadTestLog)) {
-      state.utilitiesDownloadTestLog.push("zip");
-    }
-    triggerBinaryDownload(zipped.bytes, zipName, "application/zip");
-
-    if (built.warnings && built.warnings.length) {
-      showToast(
-        "Learner package downloaded with " +
-          String(built.warnings.length) +
-          " warning(s).",
-        "warning"
-      );
-    } else {
-      showToast("Learner package downloaded.", "success");
-    }
   }
 
   function getUtilitiesVisualAssetManifestForExport() {
@@ -49848,20 +49992,25 @@
   }
 
   function handleUtilitiesOpenInNewTab() {
-    var htmlText = String(state.utilitiesLastHtml || "").trim();
-    if (!htmlText) {
-      showToast("Preview HTML first, then open in new tab.", "error");
-      return;
-    }
-    var newTab = window.open("", "_blank");
-    if (!newTab || !newTab.document) {
-      showToast("Popup blocked. Allow popups and try again.", "error");
-      return;
-    }
-    newTab.document.open();
-    newTab.document.write(utilityEnhanceExportHtmlWithMathJax(htmlText));
-    newTab.document.close();
-    showToast("Opened HTML in a new tab.", "success");
+    resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
+      if (!resolved || !resolved.ok || !resolved.html) {
+        showToast(
+          (resolved && resolved.message) || "Could not generate HTML for new tab.",
+          "error"
+        );
+        return;
+      }
+      var htmlText = String(resolved.html || "").trim();
+      var newTab = window.open("", "_blank");
+      if (!newTab || !newTab.document) {
+        showToast("Popup blocked. Allow popups and try again.", "error");
+        return;
+      }
+      newTab.document.open();
+      newTab.document.write(utilityEnhanceExportHtmlWithMathJax(htmlText));
+      newTab.document.close();
+      showToast("Opened HTML in a new tab.", "success");
+    });
   }
 
   function handleUtilitiesClear() {
@@ -51450,6 +51599,15 @@
     prismTestApi.attachEventListenersForTest = attachEventListeners;
     prismTestApi.cacheElementsForTest = cacheElements;
     prismTestApi.refreshUtilitiesOutputWorkspaceFromPageForTest = refreshUtilitiesOutputWorkspaceFromPage;
+    prismTestApi.rehydrateWorkflowResourcesIntoUtilitiesWorkspaceForTest =
+      rehydrateWorkflowResourcesIntoUtilitiesWorkspace;
+    prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
+    prismTestApi.getWorkflowResourceRefsForTest = function () {
+      return Array.isArray(state.workflowResourceRefs) ? state.workflowResourceRefs.slice() : [];
+    };
+    prismTestApi.regenerateUtilitiesExportHtmlFromDurableStateForTest =
+      regenerateUtilitiesExportHtmlFromDurableState;
+    prismTestApi.resolveUtilitiesExportHtmlForDownloadForTest = resolveUtilitiesExportHtmlForDownload;
     prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
     prismTestApi.utilityMaybeRenderVisualAffordanceHookForTest =
       utilityMaybeRenderVisualAffordanceHook;

@@ -13,6 +13,7 @@ Use these docs to keep PRISM development coherent across Cursor, ChatGPT, commit
 - `shared-vocabulary.md` — operational shorthand and continuity phrases used across PRISM development sessions
 - Canonical product backlog: [`docs/backlog/PRODUCT-BACKLOG.md`](../backlog/PRODUCT-BACKLOG.md) (maturation / v1.0 stabilisation phase)
 - Next sprint pointer: [`docs/sprints/NEXT-SPRINT.md`](../sprints/NEXT-SPRINT.md)
+- Current sprint pack: [`docs/development/sprints/2026-08-06-sprint-73-workflow-resources/`](sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md) — Sprint 73 **OPEN**
 
 ## Recommended Use
 

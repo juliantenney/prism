@@ -67,3 +67,11 @@ Governing principle delivered: **“Make activities use evidence for reasoning.�
 ## Binding carry-forward
 
 Retain `S72-D01`…`S72-D15` unless a later sprint revises them. Sprint 71 evidence remains linked, not rewritten.
+
+---
+
+## Sprint 71 disposition audit
+
+Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](SPRINT-71-DISPOSITION-AUDIT.md).
+
+Every validated Sprint 71 finding and Final Report recommendation for Sprint 72 has an explicit disposition (implemented in Sprint 72, deferred into the product backlog, superseded by an architectural decision, or intentionally not adopted). Four underspecified residuals (`S71-F-009`, `S71-F-011`, residual `S71-F-007`, Benchmark instrument paths) were added to [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) during the audit. **No dispositions remain missing.** Sprint 73 was not opened by this audit.

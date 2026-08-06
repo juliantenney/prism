@@ -135,15 +135,6 @@ function renderVnextExport(api, fixture) {
   return String(result.html || "");
 }
 
-function renderLegacyExport(api, fixture) {
-  const result = api.renderLearnerPageForTest(fixture, {
-    rendererVersion: "legacy",
-    applyCompositionValidation: false
-  });
-  assert.ok(result && !result.error, result && result.error);
-  return String(result.html || "");
-}
-
 test("vNext export: fragment wrapped in full standalone document", () => {
   const { api } = loadPrismTestApi();
   const html = renderVnextExport(api, loadFixture());
@@ -379,20 +370,6 @@ test("vNext export: retains vNext marker and excludes legacy renderer duplicates
       `vNext export must not contain legacy renderer marker: ${marker}`
     );
   });
-});
-
-test("vNext export: legacy output unchanged", () => {
-  const { api } = loadPrismTestApi();
-  const fixture = loadFixture();
-  const legacyViaEntry = renderLegacyExport(api, fixture);
-  const legacyBaseline = api.buildUtilityStructuredHtmlForTest(fixture, ["sections"], {
-    applyCompositionValidation: false,
-    rendererVersion: "legacy"
-  });
-  assert.ok(legacyBaseline && !legacyBaseline.error, legacyBaseline && legacyBaseline.error);
-  assert.equal(legacyViaEntry, String(legacyBaseline.html || ""));
-  assert.doesNotMatch(legacyViaEntry, /data-renderer="vnext"/);
-  assert.doesNotMatch(legacyViaEntry, /util-vnext-activity/);
 });
 
 test("vNext export: preview and download paths share the same pipeline output", () => {

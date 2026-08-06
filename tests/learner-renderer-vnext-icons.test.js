@@ -105,9 +105,9 @@ test("vNext html: material and expected output icons render", () => {
   assert.match(html, /util-composition-subheading[\s\S]*What to produce/);
 });
 
-test("vNext html: assessment feedback summary retains visible label with icon", () => {
+test("vNext html: assessment check control retains visible Check answer label with question icon title", () => {
   const html = renderVnextHtml(loadFixture());
-  assert.match(html, /util-assessment-feedback[\s\S]*<summary>[\s\S]*Check answer/);
+  assert.match(html, /util-assessment-check[^>]*>Check answer</);
   assert.match(html, /util-assessment-title util-icon-heading[\s\S]*Question 1/);
   assert.doesNotMatch(html, /util-assessment-number/);
 });
@@ -195,78 +195,4 @@ test("visual affordance hooks unchanged after icon restoration", () => {
     assert.doesNotMatch(hook.raw, /util-semantic-icon/);
   });
   assert.equal(countMatches(html, /<div class="util-visual-affordance /g), hooks.length);
-});
-
-test("legacy renderer unchanged for inflation workshop icons baseline", () => {
-  function createElementStub() {
-    return {
-      value: "",
-      textContent: "",
-      className: "",
-      classList: { add() {}, remove() {}, contains() { return false; }, toggle() { return false; } },
-      style: {},
-      dataset: {},
-      children: [],
-      appendChild() {},
-      removeChild() {},
-      setAttribute() {},
-      removeAttribute() {},
-      getAttribute() {
-        return null;
-      },
-      addEventListener() {},
-      removeEventListener() {},
-      focus() {},
-      click() {}
-    };
-  }
-  const sandbox = { console, setTimeout, clearTimeout, Promise, _: { debounce: (fn) => fn } };
-  const elementStore = new Map();
-  const documentStub = {
-    readyState: "complete",
-    addEventListener() {},
-    createElement: () => createElementStub(),
-    getElementById: (id) => {
-      if (!elementStore.has(id)) elementStore.set(id, createElementStub());
-      return elementStore.get(id);
-    },
-    querySelector: () => createElementStub(),
-    querySelectorAll: () => [],
-    body: { appendChild() {}, removeChild() {} }
-  };
-  const windowStub = {
-    document: documentStub,
-    addEventListener() {},
-    removeEventListener() {},
-    location: { hash: "", pathname: "/" },
-    _: sandbox._,
-    Utils: { debounce: (fn) => fn },
-    localStorage: { getItem: () => null, setItem() {} },
-    URL: { createObjectURL: () => "blob:test", revokeObjectURL() {} },
-    Blob: function Blob() {},
-    Library: {
-      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
-      getAllPrompts: () => Promise.resolve([])
-    }
-  };
-  sandbox.document = documentStub;
-  sandbox.window = windowStub;
-  windowStub.window = windowStub;
-  vm.createContext(sandbox);
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
-  vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
-  const api = sandbox.window.__PRISM_TEST_API;
-  const inflationPath = path.join(
-    repoRoot,
-    "tests",
-    "fixtures",
-    "page-render",
-    "ld-inflation-workshop-page-full.json"
-  );
-  const page = JSON.parse(fs.readFileSync(inflationPath, "utf8"));
-  const legacy = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
-  assert.ok(legacy && !legacy.error);
-  const html = String(legacy.html || "");
-  assert.match(html, /util-lucide-icon/);
-  assert.doesNotMatch(html, /util-semantic-icon/);
 });

@@ -8,7 +8,6 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const vm = require("node:vm");
 
 const vnext = require("../lib/learner-renderer-vnext");
 const {
@@ -20,8 +19,6 @@ const {
 } = require("../lib/learner-renderer-vnext/render-visual-affordance");
 
 const repoRoot = path.resolve(__dirname, "..");
-const appJsPath = path.join(repoRoot, "app.js");
-const s38LibPath = path.join(repoRoot, "lib", "sprint38-visual-affordances.js");
 const recordsPath = path.join(repoRoot, "tests", "fixtures", "sprint-38", "affordance-records.json");
 const fixturePath = path.join(
   repoRoot,
@@ -111,76 +108,6 @@ function activityBlocks(html) {
     }
   }
   return out;
-}
-
-function createElementStub() {
-  return {
-    value: "",
-    textContent: "",
-    className: "",
-    classList: { add() {}, remove() {}, contains() { return false; }, toggle() { return false; } },
-    style: {},
-    dataset: {},
-    children: [],
-    appendChild() {},
-    removeChild() {},
-    setAttribute() {},
-    removeAttribute() {},
-    getAttribute() {
-      return null;
-    },
-    addEventListener() {},
-    removeEventListener() {},
-    focus() {},
-    click() {}
-  };
-}
-
-function loadLegacyApi() {
-  const source = fs.readFileSync(appJsPath, "utf8");
-  const s38Source = fs.readFileSync(s38LibPath, "utf8");
-  const sandbox = {
-    console,
-    setTimeout,
-    clearTimeout,
-    Promise,
-    _: { debounce: (fn) => fn }
-  };
-  const elementStore = new Map();
-  const documentStub = {
-    readyState: "complete",
-    addEventListener() {},
-    createElement: () => createElementStub(),
-    getElementById: (id) => {
-      if (!elementStore.has(id)) elementStore.set(id, createElementStub());
-      return elementStore.get(id);
-    },
-    querySelector: () => createElementStub(),
-    querySelectorAll: () => [],
-    body: { appendChild() {}, removeChild() {} }
-  };
-  const windowStub = {
-    document: documentStub,
-    addEventListener() {},
-    removeEventListener() {},
-    location: { hash: "", pathname: "/" },
-    _: sandbox._,
-    Utils: { debounce: (fn) => fn },
-    localStorage: { getItem: () => null, setItem() {} },
-    URL: { createObjectURL: () => "blob:test", revokeObjectURL() {} },
-    Blob: function Blob() {},
-    Library: {
-      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
-      getAllPrompts: () => Promise.resolve([])
-    }
-  };
-  sandbox.document = documentStub;
-  sandbox.window = windowStub;
-  windowStub.window = windowStub;
-  vm.createContext(sandbox);
-  vm.runInContext(s38Source, sandbox, { filename: "sprint38-visual-affordances.js" });
-  vm.runInContext(source, sandbox, { filename: "app.js" });
-  return sandbox.window.__PRISM_TEST_API;
 }
 
 function assertNoAffordanceInsideForbiddenRegions(html) {
@@ -293,22 +220,6 @@ test("downstream discovery: vNext hooks match VEU selector contract", () => {
       assert.ok(hook.activityId, "authoritative hooks require data-activity-id");
     }
   });
-});
-
-test("legacy renderer unchanged for climate fixture hook count", () => {
-  const api = loadLegacyApi();
-  const climatePath = path.join(
-    repoRoot,
-    "tests",
-    "fixtures",
-    "page-render",
-    "ld-climate-misconception-discussion-page.json"
-  );
-  const page = JSON.parse(fs.readFileSync(climatePath, "utf8"));
-  const legacy = api.buildUtilityStructuredHtmlForTest(page, undefined, { rendererVersion: "legacy" });
-  assert.ok(legacy && !legacy.error);
-  const legacyHooks = discoverVisualAffordanceHooks(String(legacy.html || ""));
-  assert.ok(legacyHooks.length >= 2);
 });
 
 test("moments mode: preserves activity affordance slots from beats path", () => {

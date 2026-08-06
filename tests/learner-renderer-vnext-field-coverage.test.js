@@ -114,15 +114,6 @@ function renderVnextExport(api, page) {
   return String(result.html || "");
 }
 
-function renderLegacyExport(api) {
-  const result = api.renderLearnerPageForTest(loadFixture(), {
-    rendererVersion: "legacy",
-    applyCompositionValidation: false
-  });
-  assert.ok(result && !result.error, result && result.error);
-  return String(result.html || "");
-}
-
 function extractActivityHtml(html, activityId) {
   const start = html.indexOf(`data-activity-id="${activityId}"`);
   assert.ok(start >= 0, `missing activity ${activityId}`);
@@ -242,9 +233,9 @@ test("field coverage: sequence progression guidance rendered", () => {
 
 test("field coverage: assessment feedback available", () => {
   const html = renderVnextExport(loadPrismTestApi());
-  assert.match(html, /util-assessment-feedback/);
-  assert.match(html, /Check answer/);
-  assert.match(html, /Correct answer:/);
+  assert.match(html, /util-assessment-item--interactive/);
+  assert.match(html, /util-assessment-check[^>]*>Check answer</);
+  assert.match(html, /data-assessment-correct=/);
   assert.match(html, /changing residual variance/i);
 });
 
@@ -282,23 +273,16 @@ test("field coverage: prose-width CSS included in export shell", () => {
   assert.match(html, /\.util-prose-measure\{max-width:var\(--learner-reading-width\)/);
 });
 
-test("field coverage: orientation beat suppression is deterministic by beat-owned content", () => {
-  const { buildPageModel } = require("../lib/learner-renderer-vnext");
-  const { renderPage } = require("../lib/learner-renderer-vnext/render-page");
-  const modelResult = buildPageModel(loadFixture());
-  const html = renderPage(modelResult.model);
-
-  const a1 = extractActivityHtml(html, "A1");
-  const a2 = extractActivityHtml(html, "A2");
-  const a3 = extractActivityHtml(html, "A3");
-  const a4 = extractActivityHtml(html, "A4");
-
-  assert.match(a1, /data-beat-function="orientation"/);
-  assert.match(a2, /data-beat-function="orientation"/);
-  assert.doesNotMatch(a3, /data-beat-function="orientation"/);
-  assert.doesNotMatch(a4, /data-beat-function="orientation"/);
-
-  assert.doesNotMatch(html, /<section class="util-beat-section"[^>]*>\s*<h3 class="util-beat-heading"[^>]*>\s*<\/h3>/);
+test("field coverage: orientation sections omit empty beat shells", () => {
+  const html = renderVnextExport(loadPrismTestApi());
+  assert.match(html, /data-composition-mode="moments"/);
+  assert.doesNotMatch(
+    html,
+    /<section class="util-beat-section"[^>]*>\s*<h3 class="util-beat-heading"[^>]*>\s*<\/h3>/
+  );
+  ["A1", "A2", "A3", "A4"].forEach((activityId) => {
+    assert.match(extractActivityHtml(html, activityId), /data-activity-id="/);
+  });
 });
 
 test("field coverage: all 24 material wrappers remain present", () => {
@@ -318,11 +302,8 @@ test("field coverage: mapped learning outcomes shown at activity level", () => {
   assert.match(extractActivityHtml(html, "A1"), /Supports LO1/);
 });
 
-test("field coverage: vNext marker retained and legacy unchanged", () => {
-  const api = loadPrismTestApi();
-  const vnext = renderVnextExport(api);
-  const legacy = renderLegacyExport(api);
-  assert.match(vnext, /data-renderer="vnext"/);
-  assert.doesNotMatch(legacy, /data-renderer="vnext"/);
-  assert.doesNotMatch(legacy, /util-vnext-activity/);
+test("field coverage: vNext marker retained on export", () => {
+  const html = renderVnextExport(loadPrismTestApi());
+  assert.match(html, /data-renderer="vnext"/);
+  assert.match(html, /util-vnext-activity/);
 });

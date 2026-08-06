@@ -64,6 +64,7 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 | S3 | Remove obsolete learner page routing | Drop dead page plan + registry page variant |
 | S4 | Remove obsolete learner renderer implementation | Structured HTML rejects pages; slide_deck retained |
 | S5 | Browser bootstrap / normalizeRendererVersion | Sole-version API; rebuild artefacts |
+| S6 | Remove obsolete renderer tests and fixtures | Legacy parity suites deleted/rewritten |
 
 ---
 

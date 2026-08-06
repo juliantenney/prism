@@ -290,13 +290,13 @@ test("feature flag: selector module and vnext entry exclude legacy planner archi
   });
 });
 
-test("feature flag: normalizeRendererVersion defaults to vNext and rejects truthy non-vnext values", () => {
+test("feature flag: normalizeRendererVersion accepts only vNext", () => {
   const { normalizeRendererVersion } = require("../lib/learner-renderer-vnext/render-learner-page");
   assert.equal(normalizeRendererVersion(undefined), "vnext");
   assert.equal(normalizeRendererVersion(null), "vnext");
   assert.equal(normalizeRendererVersion(""), "vnext");
-  assert.equal(normalizeRendererVersion("legacy"), "legacy");
   assert.equal(normalizeRendererVersion("vnext"), "vnext");
+  assert.throws(() => normalizeRendererVersion("legacy"), /Unsupported learner renderer version/);
   assert.throws(() => normalizeRendererVersion(true), /Unsupported learner renderer version/);
   assert.throws(() => normalizeRendererVersion(1), /Unsupported learner renderer version/);
 });

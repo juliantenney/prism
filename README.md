@@ -94,7 +94,7 @@ In Run mode:
 
 ### 3) Authoring
 
-Assemble a learner page from the current workflow run, then **Preview** with the **Supported** learner renderer (**vNext**, default). Download standalone HTML, a learner package ZIP, or open the result in a new tab. **Legacy** remains a selectable **Compatibility** option — see [Authoring Learner Export (vNext)](#authoring-learner-export-vnext).
+Assemble a learner page from the current workflow run, then **Preview** with the **definitive** learner renderer (**vNext**, default). Download standalone HTML, a learner package ZIP, or open the result in a new tab. An obsolete Legacy selector may still appear in the UI until **S74A-T-045** removes it — see [Authoring Learner Export (vNext)](#authoring-learner-export-vnext).
 
 ### 4) Prompt Studio
 
@@ -494,8 +494,8 @@ PRISM’s **Supported** learner page export path is:
 Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext) → HTML / learner ZIP / Open in New Tab
 ```
 
-- **Supported:** learner-renderer-**vNext** (Authoring UI default; `utilitiesRendererVersion` = `vnext`)
-- **Compatibility:** **Legacy** renderer option remains selectable; it is not the normal page path
+- **Definitive learner renderer:** learner-renderer-**vNext** (Authoring UI default; `utilitiesRendererVersion` = `vnext`)
+- **Obsolete surfaces:** a Legacy selector / route may still exist in code until **S74A-T-045** completes removal; Legacy retention is **not** the product target (`S74A-D02` / `S74-D07`)
 - **Runtime:** browser-only; static `index.html`-driven deployment; Node.js is development/test tooling only
 - **Browser-loaded implementation:** `lib/learner-renderer-vnext-browser.js` (generated browser artefact), exposed as `window.PRISM_LEARNER_RENDERER_VNEXT`
 - **Rebuild (development/test tooling):** `npm run build:learner-renderer-vnext-browser`

@@ -1,12 +1,12 @@
 # Authoring → Learner Export Path (Current Behavior)
 
-**Status:** Authoritative for the **supported** page export path (Sprint 74A / S74A-T-010)  
+**Status:** Authoritative for the **definitive** page export path (Sprint 74A / `S74A-D02`; freshness discipline S74A-T-020)  
 **Product surface:** **Authoring** tab (`#utilitiesPanel` — internal id retained; user-facing label is Authoring)  
 **Related:** [learner-renderer-vnext.md](learner-renderer-vnext.md) · [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · Sprint 74 [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)
 
 ---
 
-## Supported product spine
+## Definitive product spine
 
 ```text
 Create Workflow
@@ -21,18 +21,18 @@ Prism is a **browser-only** application. Deployment is **static** and **`index.h
 
 ---
 
-## Supported vs Compatibility
+## Definitive vs obsolete (current tree)
 
 | Kind | Meaning |
 | ---- | ------- |
-| **Supported** | Page artefacts rendered with **learner-renderer-vNext** via the Authoring UI default (`utilitiesRendererVersion` = `vnext`) |
-| **Compatibility** | **Legacy** Authoring renderer option (`utilitiesRendererVersion` = `legacy`) — still selectable; not the normal page path; **not** removed |
+| **Definitive** | Page artefacts rendered with **learner-renderer-vNext** (Authoring UI default; `utilitiesRendererVersion` = `vnext`) |
+| **Obsolete (pending removal)** | Legacy Authoring selector / route (`utilitiesRendererVersion` = `legacy`) — may still exist in code until **S74A-T-045**; **not** a retention target (`S74A-D02` / `S74-D07`) |
 
-Internal identifiers may still use `utilities*` names. That does **not** change the user-facing **Authoring** label or the Supported/Compatibility classification above.
+Internal identifiers may still use `utilities*` names. That does **not** change the user-facing **Authoring** label. Historical T-010 “Supported/Compatibility” wording remains accurate as a dated audit; active guidance is sole-renderer.
 
 ---
 
-## Layers of the supported implementation
+## Layers of the definitive implementation
 
 | Layer | What it is | Where |
 | ----- | ---------- | ----- |
@@ -43,9 +43,10 @@ Internal identifiers may still use `utilities*` names. That does **not** change 
 | Application orchestration | Authoring assemble / preview / download wiring | `app.js` (`handleUtilities*`, `runUtilityPageExportPipeline`, …) |
 
 End users do **not** run a build step. They open/serve the static application files. Generated artefacts are produced during development and committed/served as static files. After editing `lib/learner-renderer-vnext/*`, run `npm run build:learner-renderer-vnext-browser` and commit the generated outputs; confirm with `npm run check:learner-renderer-vnext-browser`.
+
 ---
 
-## Supported page export path (vNext)
+## Definitive page export path (vNext)
 
 Default in Authoring UI and `app.js` state: **`vnext`** (`index.html` option `vNext (default)`; `state.utilitiesRendererVersion: "vnext"`).
 
@@ -72,45 +73,46 @@ If download/open output looks stale, regenerate Preview first, then download or 
 
 ---
 
-## Compatibility path (Legacy)
+## Obsolete Legacy page path (present until T-045)
 
-When Authoring **Learner renderer** is set to **Legacy**, or a call explicitly requests Legacy:
+Until **S74A-T-045** completes, selecting **Legacy** (or an explicit Legacy call) still takes a non-vNext branch:
 
 1. `runUtilityPageExportPipeline(...)` does **not** take the vNext branch.  
 2. It uses `runUtilityRendererByPlan(...)` → **`buildUtilityStructuredHtml(...)`** and related helpers (`utilityRenderPageSections`, `sanitizeUtilityHtmlOutput`, …).  
 
-Legacy remains available for Compatibility (including some non-page artefact catalog mappings that still reference `buildUtilityStructuredHtml`). Exhaustive invocation inventory is **S74A-T-040** — this document only establishes the Supported/Compatibility distinction.
+That branch is **obsolete for learner pages** and scheduled for removal under the T-040 inventory. Non-page artefacts (notably **`slide_deck`**) that still use `buildUtilityStructuredHtml` are a separate retain surface — see T-040. Do **not** treat Legacy page selection as a Compatibility retention goal.
 
 ---
 
 ## Material / assessment notes
 
-### Supported (vNext)
+### Definitive (vNext)
 
-Authoritative behaviour for learner page HTML is defined by the vNext architecture and implementation — see [learner-renderer-vnext.md](learner-renderer-vnext.md). Do not treat the Legacy section below as the Supported page narrative.
+Authoritative behaviour for learner page HTML is defined by the vNext architecture and implementation — see [learner-renderer-vnext.md](learner-renderer-vnext.md). Do not treat the obsolete Legacy section below as the page-export narrative.
 
-### Compatibility (Legacy) — historical page HTML helpers
+### Obsolete Legacy — historical page HTML helpers
 
-When Legacy is selected for pages, structured material/assessment rendering historically used rules such as:
+When Legacy is still selected for pages (pre-T-045), structured material/assessment rendering historically used rules such as:
 
 - Markdown-like headings and bullet/checkbox normalisation in material contexts  
 - `renderQuestionBlocks` / `feedback_display` for assessment sections  
 - `sanitizeUtilityHtmlOutput` conservative cleanup  
 
-These rules apply to the **Compatibility** path. They are retained here so Compatibility behaviour remains documented; they are **not** the Supported page export narrative.
+These rules describe the obsolete page path only; they are **not** the definitive page export narrative.
 
 ---
 
 ## Regression checklist (documentation / change discipline)
 
-When changing **Supported** export behaviour or docs:
+When changing definitive export behaviour or docs:
 
 - Confirm Authoring default remains **vNext** unless an explicit product decision changes it  
-- Confirm docs still label Legacy as **Compatibility**  
+- Confirm active docs do **not** present Legacy page retention as the target; removal is authorised under **T-045**  
 - Confirm production confidence is argued from the **production browser path**, not Node-based tests alone  
 - Confirm `index.html` still loads the **generated browser artefact** for vNext  
+- Confirm freshness: `npm run check:learner-renderer-vnext-browser`  
 
-When changing **Compatibility** (Legacy) helpers, verify Legacy-selected exports separately; do not assume vNext coverage.
+Until T-045, if exercising the obsolete Legacy branch for comparison, verify it separately; do not assume vNext coverage.
 
 ---
 
@@ -118,6 +120,7 @@ When changing **Compatibility** (Legacy) helpers, verify Legacy-selected exports
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | Active guidance — vNext definitive; obsolete Legacy pending T-045 (not Compatibility retention) |
 | 2026-08-06 | S74A-T-020 — artefact freshness gate + single-builder discipline |
-| 2026-08-06 | S74A-T-010 — rewritten as Supported (vNext) + Compatibility (Legacy); Authoring terminology; browser-only / static deployment framing |
-| (prior) | Legacy-centred “Utilities Page Export Renderer” narrative (superseded for Supported path) |
+| 2026-08-06 | S74A-T-010 — rewritten as Supported (vNext) + Compatibility (Legacy); Authoring terminology; browser-only / static deployment framing (historical; retention target superseded by `S74A-D02`) |
+| (prior) | Legacy-centred “Utilities Page Export Renderer” narrative (superseded for definitive path) |

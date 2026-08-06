@@ -1,6 +1,6 @@
 # Learner-renderer-vNext Architecture
 
-**Status:** Production certified (Sprint 68 / IMP-020); **Supported** Authoring page export implementation (Sprint 74A)  
+**Status:** Production certified (Sprint 68 / IMP-020); **definitive** Authoring page export implementation (Sprint 74A / `S74A-D02`)  
 **Audience:** Engineers extending learner interaction; educators reviewing renderer boundaries  
 **Related:** [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · [Authoring export path](renderer-export-behavior.md) · [Diagnostics](learner-renderer-vnext-diagnostics.md) · [Extension guide](learner-renderer-vnext-extension-guide.md) · [Sprint 68 closeout](../sprints/sprint-68-closeout.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md) · [Certification artefacts](../../artifacts/learner-renderer-vnext-certification.md)
 
@@ -8,7 +8,7 @@
 
 ## Authoring export (product surface)
 
-In the Prism **Authoring** tab, **vNext is the Supported** learner page export path (UI default and `app.js` default). **Legacy** remains a selectable **Compatibility** option and is not removed by documentation alignment.
+In the Prism **Authoring** tab, **vNext is the definitive** learner page export path (UI default and `app.js` default). Obsolete Legacy selector/routing surfaces may still exist in the tree until **S74A-T-045** removes them; Legacy retention is **not** the target (`S74A-D02` / `S74-D07`).
 
 | Concern | Authority |
 | ------- | --------- |
@@ -597,6 +597,7 @@ Node-based freshness checks are **supporting evidence**; the **production browse
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | Active guidance — vNext definitive; obsolete Legacy removal authorised under T-045 (pre-removal wording) |
 | 2026-08-06 | S74A-T-020 — generated browser artefact discipline (source / builder / check) |
-| 2026-08-06 | S74A-T-010 — Authoring Supported/Compatibility export pointers; terminology aligned with Sprint 74 constraints |
+| 2026-08-06 | S74A-T-010 — Authoring Supported/Compatibility export pointers; terminology aligned with Sprint 74 constraints (historical; retention target superseded by `S74A-D02`) |
 | 2026-07-22 | Initial Sprint 68 / IMP-021 architecture reference |

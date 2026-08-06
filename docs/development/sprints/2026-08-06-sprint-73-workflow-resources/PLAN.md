@@ -44,13 +44,17 @@ Task IDs: `S73-T-###`. Decision IDs: `S73-D##` in [decisions.md](decisions.md).
 
 ## Phase 2 — Persistent generated images (conditional)
 
-*Acceptance criteria recorded (`S73-T-010`); implementation may begin on `S73-T-011`.*
+*Acceptance criteria and MVP verification complete with documented constraints.*
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
 | S73-T-010 | Define acceptance criteria for image persistence | **Done** | [S73-T-010-phase-2-acceptance-criteria.md](S73-T-010-phase-2-acceptance-criteria.md) |
 | S73-T-011 | Implement persistent generated images (minimal vertical slice) | **Done** | [S73-T-011-generated-image-persistence-implementation.md](S73-T-011-generated-image-persistence-implementation.md) |
-| S73-T-012 | Focused regression coverage for persistence path | **Next** | Complete verification matrix + browser proof per T-010 |
+| S73-T-012 | Focused regression coverage for persistence path | **Done** | [S73-T-012-generated-image-persistence-verification.md](S73-T-012-generated-image-persistence-verification.md) |
+
+**Phase 2 outcome:** Complete with documented constraints (see T-012).
+
+**Next action (not Phase 3 start):** Post-Phase-2 review and explicit Phase 3 decision/planning task.
 
 ---
 

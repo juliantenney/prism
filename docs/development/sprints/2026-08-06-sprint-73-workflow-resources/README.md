@@ -1,6 +1,6 @@
 # Sprint 73 — Workflow Resources
 
-**Status:** **OPEN** (Phase 2 implementation complete; verification next)  
+**Status:** **OPEN** (Phase 2 complete with documented constraints)  
 **Opened:** 2026-08-06  
 **Predecessor:** Sprint 72 — **COMPLETE / Closed** (do not reopen)  
 **Backlog anchor:** [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)  
@@ -18,6 +18,7 @@
 | Discovery (Phase 1) | [S73-T-001](S73-T-001-generated-image-lifecycle-discovery.md) · [S73-T-002](S73-T-002-canonical-workflow-resource-ownership.md) · [S73-T-003](S73-T-003-persistence-strategy-evaluation.md) · [S73-T-004](S73-T-004-export-and-regeneration-path-implications.md) · [S73-T-005](S73-T-005-feasibility-synthesis.md) |
 | Phase 2 acceptance criteria | [S73-T-010](S73-T-010-phase-2-acceptance-criteria.md) |
 | Phase 2 implementation | [S73-T-011](S73-T-011-generated-image-persistence-implementation.md) |
+| Phase 2 verification | [S73-T-012](S73-T-012-generated-image-persistence-verification.md) |
 | Predecessor links | [links-to-predecessors.md](links-to-predecessors.md) |
 | Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
 | Canonical product backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
@@ -29,7 +30,8 @@
 - Feasibility decision: [S73-D02 — feasible with explicit conditions](decisions.md#s73-d02-workflow-resource-persistence-is-feasible-with-explicit-conditions)
 - Acceptance criteria: [S73-T-010](S73-T-010-phase-2-acceptance-criteria.md) — complete
 - Implementation: [S73-T-011](S73-T-011-generated-image-persistence-implementation.md) — complete
-- Next task: [S73-T-012](PLAN.md#phase-2--persistent-generated-images-conditional) (verification)
+- Verification: [S73-T-012](S73-T-012-generated-image-persistence-verification.md) — complete with documented constraints
+- Next task: post-Phase-2 review / explicit Phase 3 decision-planning task (Phase 3 remains blocked)
 
 ## Reading order (open)
 

@@ -282,6 +282,14 @@ test("Slice 6: no new top-level navigation item is added for Graphics tab", () =
   const html = fs.readFileSync(indexHtmlPath, "utf8");
   assert.doesNotMatch(html, /Graphics[\s\S]{0,80}tab-/i);
   assert.match(html, /id="tabUtilities"/);
+  assert.match(
+    html,
+    /id="tabUtilities"[\s\S]*?>\s*Authoring\s*</
+  );
+  assert.match(
+    html,
+    /id="tabWorkflows"[\s\S]*?>\s*My Workflows\s*<\/button>\s*<button id="tabUtilities"/
+  );
 });
 
 // --- Pipeline integration (module) ---

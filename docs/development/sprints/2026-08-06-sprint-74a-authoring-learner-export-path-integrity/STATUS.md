@@ -26,8 +26,10 @@ T-001 ✅ → T-010 ✅ → T-020 ✅ → T-030 ✅ → T-040 ✅ → T-042 inte
 | T-001 / T-010 / T-020 / T-030 / T-040 / T-042 | **Done** |
 | T-045 | **Not started — next** (unblocked after T-042 browser evidence) |
 | T-050 | **Not started** |
-| Interleaving regression | **Repaired** (T-042) |
-| Obsolete-renderer removal | Inventory Done; deletion not started |
+| Interleaving regression | **Repaired** (T-042) — production behaviour includes corrected activity/task interleaving |
+| Generated artefact freshness | **Green** (`npm run check:learner-renderer-vnext-browser`) |
+| Pre-removal working tree | **Clean checkpoint** before T-045 |
+| Obsolete-renderer removal | Inventory Done; deletion **not started** |
 | 74B / 74C | **Not opened** |
 
 ---
@@ -55,4 +57,4 @@ Begin **S74A-T-045** when authorised — execute [T-040 inventory](S74A-T-040-ob
 
 ## Last updated
 
-2026-08-06 — S74A-T-042 Done (interleaving repair); T-045 unblocked as next.
+2026-08-06 — Pre-removal checkpoint: T-020…T-042 Done; freshness green; working tree clean before T-045 (Not started).

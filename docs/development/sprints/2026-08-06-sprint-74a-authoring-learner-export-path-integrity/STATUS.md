@@ -5,20 +5,15 @@
 **Opened:** 2026-08-06  
 **Parent:** Sprint 74 — **OPEN** (programme wrapper)  
 **Charter:** [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md)  
-**Sole-renderer removal direction:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer) — **Accepted**  
-**Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)
+**Sole-renderer removal direction:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer) — **Accepted**
 
 ---
 
 ## Narrative
 
 ```text
-Sprint 74 discovery → 74A OPEN (S74A-D01)
-  → T-001 ✅ → T-010 ✅ (Compatibility-era audit)
-  → S74-D07 definitive-codebase principle
-  → S74A-D02 obsolete renderer removal Accepted
-  → next: T-020 artefact integrity
-  → T-030 baseline → T-040 removal inventory → T-045 remove → T-050 verify/close
+T-001 ✅ → T-010 ✅ → T-020 ✅ → T-030 ✅ → T-040 ✅ → T-042 interleaving repair ✅
+  → next: T-045 remove (slices S1–S8) → T-050 verify/close
 ```
 
 ---
@@ -28,11 +23,11 @@ Sprint 74 discovery → 74A OPEN (S74A-D01)
 | Item | State |
 | ---- | ----- |
 | Sprint 74A | **OPEN** |
-| T-001 / T-010 | **Done** |
-| Sole-renderer removal direction | **Accepted** (`S74A-D02`) |
-| T-020 | **Not started — next** |
-| T-030 / T-040 / T-045 / T-050 | **Not started** |
-| Runtime changes (this reconciliation) | **None** |
+| T-001 / T-010 / T-020 / T-030 / T-040 / T-042 | **Done** |
+| T-045 | **Not started — next** (unblocked after T-042 browser evidence) |
+| T-050 | **Not started** |
+| Interleaving regression | **Repaired** (T-042) |
+| Obsolete-renderer removal | Inventory Done; deletion not started |
 | 74B / 74C | **Not opened** |
 
 ---
@@ -43,20 +38,21 @@ Sprint 74 discovery → 74A OPEN (S74A-D01)
 | -- | ---- | ------ |
 | S74A-T-001 | Sprint pack initialisation | **Done** |
 | S74A-T-010 | Export-path documentation audit | **Done** |
-| S74A-T-020 | vNext generated browser artefact integrity | **Not started — next** |
-| S74A-T-030 | Definitive vNext production-browser baseline | **Not started** |
-| S74A-T-040 | Obsolete renderer responsibility and removal inventory | **Not started** |
-| S74A-T-045 | Remove obsolete learner-renderer implementation | **Not started** |
+| S74A-T-020 | vNext generated browser artefact integrity | **Done** |
+| S74A-T-030 | Definitive vNext production-browser baseline | **Done** (see §8a qualification) |
+| S74A-T-040 | Obsolete renderer responsibility and removal inventory | **Done** |
+| S74A-T-042 | Activity-beat/task interleaving definitive-path repair | **Done** |
+| S74A-T-045 | Remove obsolete learner-renderer implementation | **Not started — next** |
 | S74A-T-050 | Sole-renderer verification and sprint closure | **Not started** |
 
 ---
 
 ## Current task
 
-When authorised: begin **S74A-T-020**. Do not begin T-045 until T-030 and T-040 are Done. Do not open 74B/74C.
+Begin **S74A-T-045** when authorised — execute [T-040 inventory](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) slices S1–S8. Preserve [T-030 §8](S74A-T-030-production-browser-baseline.md) **and** corrected interleaving ([T-042](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) / §8a). Do not mark removal ACs complete until T-050.
 
 ---
 
 ## Last updated
 
-2026-08-06 — Reconciled to definitive-codebase / obsolete-renderer removal (`S74-D07` / `S74A-D02`); T-020 next; runtime None.
+2026-08-06 — S74A-T-042 Done (interleaving repair); T-045 unblocked as next.

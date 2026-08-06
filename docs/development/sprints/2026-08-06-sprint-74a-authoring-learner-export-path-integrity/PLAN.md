@@ -18,14 +18,15 @@ Acceptance criteria AC-01…AC-15: [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md
 ```text
 S74A-T-001 (pack init) ✅
   → S74A-T-010 (docs audit — Supported/Compatibility posture at the time) ✅
-    → S74A-T-020 (vNext generated browser artefact integrity) ← next
-      → S74A-T-030 (definitive vNext production-browser baseline)
-      → S74A-T-040 (obsolete renderer responsibility and removal inventory)
-      → S74A-T-045 (remove obsolete learner-renderer implementation)
+    → S74A-T-020 (vNext generated browser artefact integrity) ✅
+      → S74A-T-030 (definitive vNext production-browser baseline) ✅
+      → S74A-T-040 (obsolete renderer responsibility and removal inventory) ✅
+      → S74A-T-042 (activity-beat/task interleaving definitive-path repair) ✅
+      → S74A-T-045 (remove obsolete learner-renderer implementation) ← next
       → S74A-T-050 (sole-renderer verification and sprint closure)
 ```
 
-Do **not** begin T-045 until T-030 baseline and T-040 removal inventory are complete. T-050 closes only when AC-01…AC-15 are evidenced.
+T-042 completed after T-040 and **blocked T-045** until corrected interleaving had production-browser evidence. T-045 may now proceed via inventory slices S1–S8, preserving T-030 §8 **and** §8a / T-042 interleaving. T-050 closes only when AC-01…AC-15 are evidenced.
 
 ---
 
@@ -60,12 +61,12 @@ Do **not** begin T-045 until T-030 baseline and T-040 removal inventory are comp
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started — next** |
+| **Status** | **Done** (2026-08-06) |
 | **Ownership** | Development/test tooling + browser-loaded renderer artefact |
-| **Surfaces** | `lib/learner-renderer-vnext/*`; `lib/learner-renderer-vnext-browser.js`; build script; npm build/pretest hooks |
-| **Approach** | Establish reliable source → generated-artefact workflow; prevent stale `learner-renderer-vnext-browser.js`; ensure the definitive renderer loaded by `index.html` matches its source; retain static deployment; foundation before obsolete-code removal |
+| **Surfaces** | `lib/learner-renderer-vnext/*`; `lib/learner-renderer-vnext-browser.js`; build + check scripts; npm scripts; architecture docs |
+| **Approach** | Document single source/builder/artefact/load path; add freshness gate; no obsolete-renderer or export-behaviour changes |
 | **Acceptance** | AC-04; contributes to AC-12, AC-13 |
-| **Verification** | Rebuild discipline automated or checklist-gated; coordinate with T-030 |
+| **Verification** | [S74A-T-020-vnext-generated-browser-artefact-integrity.md](S74A-T-020-vnext-generated-browser-artefact-integrity.md) |
 | **Dependencies** | T-010 Done |
 
 ---
@@ -74,13 +75,13 @@ Do **not** begin T-045 until T-030 baseline and T-040 removal inventory are comp
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-06) |
 | **Ownership** | Authoring export verification |
-| **Surfaces** | Assemble; Preview; standalone HTML; learner ZIP; Open in New Tab; required image/resource/video rendering; relevant page types and known fixtures |
-| **Approach** | **Before removal**, verify and record the complete existing product path. Record focused **Node-based test evidence** and separate **production browser-path** evidence. This is the behavioural baseline obsolete-code removal must preserve. |
+| **Surfaces** | Assemble; Preview; standalone HTML; learner ZIP; Open in New Tab; Workflow Resources panes; page fixture |
+| **Approach** | Production browser path verification + separate Node supporting evidence; document behavioural baseline for T-045/T-050 |
 | **Acceptance** | Contributes to AC-05, AC-11, AC-12, AC-13 |
-| **Verification** | Written pre-removal baseline evidence note |
-| **Dependencies** | Prefer after T-020; required before T-045 |
+| **Verification** | [S74A-T-030-production-browser-baseline.md](S74A-T-030-production-browser-baseline.md) |
+| **Dependencies** | T-020 Done |
 
 ---
 
@@ -88,12 +89,26 @@ Do **not** begin T-045 until T-030 baseline and T-040 removal inventory are comp
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-06) |
 | **Ownership** | Definitive-codebase removal design |
-| **Approach** | Complete code-level inventory of every old-renderer surface. For each: file; function/symbol; caller; responsibility; vNext replacement; shared?; test-only?; unreachable?; removal action; verification protecting removal. Classify: **remove** · **retain as shared** · **move to definitive owner** · **rename** · **requires a decision**. Produce the **exact removal plan**. Do **not** default to retaining code as Compatibility. |
+| **Approach** | Complete code-level inventory of every old-renderer surface. For each: file; function/symbol; caller; responsibility; vNext replacement; shared?; test-only?; unreachable?; removal action; verification protecting removal. Classify: **remove** · **retain as shared** · **move to definitive owner** · **rename** · **investigate**. Produce the **exact removal plan** (slices S1–S8). Do **not** default to retaining code as Compatibility. |
 | **Acceptance** | AC-06; enables AC-07…AC-10 |
-| **Verification** | Inventory + removal-plan artefact with anchors |
-| **Dependencies** | Can parallel T-030; **must** complete before T-045 |
+| **Verification** | [S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) |
+| **Dependencies** | T-030 Done; **must** complete before T-045 |
+| **Runtime** | **Unchanged** (docs/inventory only) |
+
+---
+
+### S74A-T-042 — Activity-beat/task interleaving provenance and definitive-path repair
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Done** (2026-08-06) |
+| **Ownership** | Definitive vNext compose/parse path |
+| **Approach** | Reproduce from fresh artefacts; layer trace; repair sole owner (`parse-learner-task` + `compose-generic-moments`); strengthen ordering regression tests; production-browser verify; qualify T-030; refine T-040/T-045 notes. Do not begin T-045 in the same change. |
+| **Acceptance** | Corrected interleaving on production browser path; one definitive owner; no Legacy involvement |
+| **Verification** | [S74A-T-042-activity-task-interleaving-definitive-path-repair.md](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) |
+| **Dependencies** | After T-040; **blocked T-045** until Done |
 
 ---
 

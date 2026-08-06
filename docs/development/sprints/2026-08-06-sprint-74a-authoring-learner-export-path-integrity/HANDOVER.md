@@ -8,17 +8,25 @@
 
 ## Current state
 
-- T-001 / T-010 **Done**  
-- `S74A-D02` **Accepted** — remove obsolete renderer after inventory; vNext sole implementation  
-- Runtime changes from documentation reconciliation: **None**  
-- Current task: **S74A-T-020** (**Not started — next**)  
+- T-001…T-040 / **T-042** **Done**  
+- Interleaving repair: [S74A-T-042-activity-task-interleaving-definitive-path-repair.md](S74A-T-042-activity-task-interleaving-definitive-path-repair.md)  
+- Removal inventory: [S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) (§20 T-042 follow-up)  
+- Baseline: [S74A-T-030-production-browser-baseline.md](S74A-T-030-production-browser-baseline.md) §8 + **§8a**  
+- Current task: **S74A-T-045** (**Not started — next**)  
 - 74B / 74C: **Not opened**
 
 ---
 
-## Mission
+## Engineering disciplines (see CONTEXT)
 
-Establish vNext as the sole learner-renderer implementation, remove the obsolete renderer and redundant paths, verify existing learner-export functionality on the production browser path.
+Verification provenance, freshness gate, production browser path, Node ≠ deployment proof, baseline before removal, residue sweep.  
+T-042: interleaving owned by vNext parse + compose — not structured HTML / Legacy.
+
+---
+
+## Preserve after removal
+
+T-030 §8 export spine **and** corrected beat/task interleaving (T-042 / §8a). No silent Legacy fallback. slide_deck keeps `buildUtilityStructuredHtml` without retaining obsolete learner-page interleaving there.
 
 ---
 
@@ -26,21 +34,16 @@ Establish vNext as the sole learner-renderer implementation, remove the obsolete
 
 | Now | Later |
 | --- | ----- |
-| **T-020** artefact integrity | **T-030** production-browser baseline |
-| | **T-040** obsolete-renderer removal inventory |
-| | **T-045** remove obsolete implementation |
-| | **T-050** sole-renderer verification + closure |
+| **T-045** remove obsolete implementation (slices S1–S8) | **T-050** sole-renderer verification + closure |
 
 ---
 
 ## What not to do
 
-- Do not begin T-045 before T-030 and T-040  
-- Do not retain the obsolete renderer as Compatibility by default  
-- Do not leave dead code behind flags / hidden selectors / unreachable branches  
-- Do not create an in-tree archive of the obsolete renderer  
-- Do not treat Node-based green as deployment proof  
-- Do not open 74B/74C; no schema redesign; no size-driven `app.js` split  
+- Do not reintroduce aggregate terminal **Your task** for multi-clause study+write tasks  
+- Do not delete `buildUtilityStructuredHtml` wholesale — slide_deck owner  
+- Do not fix Sprint-70 E4 cache-bust drift under T-045  
+- Do not open 74B/74C  
 
 ---
 
@@ -49,5 +52,7 @@ Establish vNext as the sole learner-renderer implementation, remove the obsolete
 | Kind | Path |
 | ---- | ---- |
 | Start here | [SPRINT-74A-START-HERE.md](SPRINT-74A-START-HERE.md) |
-| Charter / Plan / Status | [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md) · [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) |
-| Constraints | [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) |
+| T-042 repair | [S74A-T-042-activity-task-interleaving-definitive-path-repair.md](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) |
+| T-040 inventory | [S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) |
+| T-030 baseline | [S74A-T-030-production-browser-baseline.md](S74A-T-030-production-browser-baseline.md) |
+| Plan / Status | [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) |

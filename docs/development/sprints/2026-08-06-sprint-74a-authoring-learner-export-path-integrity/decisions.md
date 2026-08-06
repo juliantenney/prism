@@ -27,4 +27,4 @@ Inherited programme constraints are **linked, not duplicated** — [ARCHITECTURA
 
 ## Pending decisions
 
-None required for the sole-renderer removal direction (`S74A-D02` Accepted). Add further `S74A-D##` entries only when T-040 classifies a surface as “requires a decision because responsibility is unclear.”
+None required to begin T-045. `S74A-D02` covers selector removal and unconditional vNext routing. T-040 found no durable persisted Legacy preference and classified shared `buildUtilityStructuredHtml` (slide_deck) as **retain** with evidence — not a Compatibility retention. Remaining “Investigate” items (page-only internals inside structured HTML; unused registry variants) are T-045 evidence gates, not new product decisions. Add further `S74A-D##` only if T-045 discovers a genuine ownership conflict that cannot be resolved from the inventory.

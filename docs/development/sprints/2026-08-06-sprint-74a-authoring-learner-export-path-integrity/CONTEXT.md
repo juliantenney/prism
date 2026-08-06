@@ -37,9 +37,11 @@ Do not use **Compatibility** for the old renderer except historically (e.g. T-01
 | Surface | Role |
 | ------- | ---- |
 | `lib/learner-renderer-vnext/*` + `learner-renderer-vnext-browser.js` | Definitive renderer (source + generated artefact) |
-| `app.js` page-export pipeline | Converge exclusively on vNext; remove obsolete branches |
+| `scripts/build-learner-renderer-vnext-browser.js` | **One** generation mechanism |
+| `npm run check:learner-renderer-vnext-browser` | Freshness gate (T-020) |
+| `app.js` page-export pipeline | Converge exclusively on vNext; remove obsolete branches (T-045) |
 | Authoring renderer select / version state | Remove (T-045) |
-| Obsolete structured HTML page renderer | Remove when T-040 proves no remaining responsibility |
+| Obsolete structured HTML **page** path | Remove per [T-040 inventory](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md); keep shared structured HTML for `slide_deck` |
 | Export architecture docs | Sole-renderer narrative by T-050 |
 
 ---
@@ -56,6 +58,39 @@ At audit time, Authoring defaulted to vNext while the old renderer remained sele
 - **T-050** — post-removal sole-renderer production-browser verification  
 - Node-based tests = supporting evidence only  
 
+---
+
+## Engineering disciplines adopted during Sprint 74A
+
+Implementation working practices evidenced by **T-020** and **T-030** (not new product architecture):
+
+1. **Every verification claim requires explicit provenance.**
+2. Generated browser artefacts must pass the freshness check (`npm run check:learner-renderer-vnext-browser`) before browser-facing verification.
+3. Browser evidence must use the normal static `index.html` production path.
+4. Node-based tests are supporting evidence, not deployment proof.
+5. Existing exported HTML, ZIPs, screenshots, snapshots and fixtures are not current evidence unless regenerated and their provenance is recorded.
+6. Controlled fixtures may provide inputs, but derived renderer output must be freshly generated.
+7. A behavioural baseline must be established before removing an implementation (T-030 §8 before T-045).
+8. Repository history is the archive; obsolete active-code implementations should not be retained solely for historical reference.
+9. Cleanup includes a repository-wide residue sweep covering code, state, UI, tests, fixtures, scripts, styles, comments and documentation.
+10. Every remaining residue match must be removed, reassigned to a current owner, renamed, or explicitly deferred with a reason.
+
+### Known evidence limitations (T-030)
+
+- **Assemble-from-current-run** was not exercised end-to-end because the saved run did not contain runnable prompts; the control and surrounding production path were observed. This was **not** treated as product failure; it remains a known evidence limitation for T-050 re-check.
+- **Sprint-70 E4** Node suite failures were classified as stale `app.js?v=` test drift, **not** production-path failure. Do not treat them as removal blockers; do not fix that drift under T-040/T-045 renderer-removal work.
+
+### Durable inventory finding (T-040)
+
+- Obsolete page renderer is reachable via Authoring `#utilitiesRendererVersion=legacy` → non-vNext branch of `runUtilityPageExportPipeline` → `buildUtilityStructuredHtml`.
+- **`buildUtilityStructuredHtml` is shared** with non-page **`slide_deck`** — retain that owner; do not delete the function wholesale with the obsolete page path.
+- No durable localStorage/IndexedDB renderer preference; session DOM/state only. Selector removal + unconditional vNext is governed by **S74A-D02**.
+
+### Durable ownership finding (T-042)
+
+- **Activity-beat/task interleaving** is owned by vNext `parse-learner-task.js` (clause identity) and `compose-generic-moments.js` (Learn/Do placement). Not by Legacy/`buildUtilityStructuredHtml`.
+- Unnumbered sequential `learner_task` clauses (`Then` / `Finally` / …) must split so study clauses stay with Learn materials and production clauses stay in Do.
+- T-030 §8a qualifies aggregate terminal **Your task** as a regression, not required baseline.
 ---
 
 ## Predecessor links (only)

@@ -20,6 +20,10 @@
 | Handover | [HANDOVER.md](HANDOVER.md) |
 | Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
 | T-010 evidence | [S74A-T-010-supported-export-path-documentation-audit.md](S74A-T-010-supported-export-path-documentation-audit.md) |
+| T-020 evidence | [S74A-T-020-vnext-generated-browser-artefact-integrity.md](S74A-T-020-vnext-generated-browser-artefact-integrity.md) |
+| T-030 baseline | [S74A-T-030-production-browser-baseline.md](S74A-T-030-production-browser-baseline.md) |
+| T-040 inventory | [S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) |
+| T-042 interleaving repair | [S74A-T-042-activity-task-interleaving-definitive-path-repair.md](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) |
 | Top-level overview | [sprint-74a-authoring-learner-export-path-integrity.md](../../../sprints/sprint-74a-authoring-learner-export-path-integrity.md) |
 
 ## Mission
@@ -28,9 +32,10 @@ Establish vNext as Prism’s sole learner-renderer implementation, remove the ob
 
 ## Current state
 
-- T-001 / T-010 **Done**  
-- Next: **T-020** (**Not started**)  
-- Later: T-030 baseline → T-040 removal inventory → T-045 remove → T-050 verify/close  
-- Sole-renderer removal direction: **Accepted**  
-- Runtime changes from this reconciliation: **None**  
+- T-001 / T-010 / T-020 / T-030 / T-040 / **T-042** **Done**  
+- Next: **T-045** (**Not started**) — removal slices S1–S8  
+- Later: T-050 verify/close  
+- Interleaving regression repaired on definitive vNext path  
+- Baseline: [S74A-T-030](S74A-T-030-production-browser-baseline.md) (§8 + §8a)  
+- Inventory: [S74A-T-040](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md)  
 - 74B / 74C **not opened**  

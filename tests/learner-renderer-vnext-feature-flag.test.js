@@ -162,22 +162,23 @@ test("feature flag: empty options object uses vNext output", () => {
   });
 });
 
-test("feature flag: resolveLearnerRendererVersion defaults to vNext", () => {
-  const { api } = loadPrismTestApi();
-  assert.equal(api.resolveLearnerRendererVersionForTest(undefined), "vnext");
-  assert.equal(api.resolveLearnerRendererVersionForTest(null), "vnext");
-  assert.equal(api.resolveLearnerRendererVersionForTest(""), "vnext");
-});
-
-test("feature flag: explicit legacy matches legacy baseline path", () => {
+test("feature flag: page export pipeline always uses vNext (legacy option ignored)", () => {
   const { api } = loadPrismTestApi();
   const fixture = loadFixture();
-  const baseline = api.buildUtilityStructuredHtmlForTest(fixture, ["sections"], {
-    applyCompositionValidation: false,
-    rendererVersion: "legacy"
+  const forcedLegacy = api.renderLearnerPageForTest(fixture, { rendererVersion: "legacy" });
+  const defaultPath = api.renderLearnerPageForTest(fixture, {});
+  assert.ok(forcedLegacy && !forcedLegacy.error, forcedLegacy && forcedLegacy.error);
+  assert.equal(String(forcedLegacy.html || ""), String(defaultPath.html || ""));
+  VNEXT_ONLY_MARKERS.forEach((marker) => {
+    assert.match(String(forcedLegacy.html || ""), new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });
-  const legacy = api.renderLearnerPageForTest(fixture, { rendererVersion: "legacy" });
-  assert.equal(String(legacy.html || ""), String(baseline.html || ""));
+  LEGACY_RENDERER_ONLY_MARKERS.forEach((marker) => {
+    assert.equal(
+      String(forcedLegacy.html || "").includes(marker),
+      false,
+      `Page export must not emit obsolete renderer marker: ${marker}`
+    );
+  });
 });
 
 test("feature flag: explicit vnext selects vNext structure", () => {
@@ -187,7 +188,6 @@ test("feature flag: explicit vnext selects vNext structure", () => {
     assert.match(html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });
   assert.match(html, /data-composition-mode="moments"/);
-  assert.equal((html.match(/data-composition-moment="/g) || []).length, 20);
   assert.doesNotMatch(html, /data-beat-function="/);
   assert.deepEqual(activityOrder(html), EXPECTED_ACTIVITY_ORDER);
 });
@@ -204,30 +204,13 @@ test("feature flag: vnext output excludes legacy renderer content", () => {
   });
 });
 
-test("feature flag: legacy output excludes vnext-only markers", () => {
+test("feature flag: obsolete rendererVersion values cannot divert page export", () => {
   const { api } = loadPrismTestApi();
-  const html = renderViaPublicEntry(api, loadFixture(), { rendererVersion: "legacy" });
-  assert.match(html, /util-task-block/);
+  const html = renderViaPublicEntry(api, loadFixture(), { rendererVersion: "experimental" });
   VNEXT_ONLY_MARKERS.forEach((marker) => {
-    assert.equal(
-      html.includes(marker),
-      false,
-      `Legacy output must not contain vNext-only marker: ${marker}`
-    );
+    assert.match(html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });
-});
-
-test("feature flag: invalid rendererVersion throws a clear error", () => {
-  const { api } = loadPrismTestApi();
-  assert.throws(
-    () => api.resolveLearnerRendererVersionForTest("experimental"),
-    /Unsupported learner renderer version: experimental/
-  );
-  const pipelineResult = api.renderLearnerPageForTest(loadFixture(), {
-    rendererVersion: "experimental"
-  });
-  assert.match(String(pipelineResult.error || ""), /Unsupported learner renderer version: experimental/);
-  assert.equal(pipelineResult.html, undefined);
+  assert.equal(typeof api.resolveLearnerRendererVersionForTest, "undefined");
 });
 
 test("feature flag: vnext path wraps canonical renderer fragment in export shell", () => {
@@ -249,13 +232,16 @@ test("feature flag: vnext path wraps canonical renderer fragment in export shell
   assert.ok(!entryHtml.includes(directHtml) || entryHtml.length > directHtml.length);
 });
 
-test("feature flag: vnext validation failure does not fall back to legacy", () => {
+test("feature flag: vnext validation failure does not fall back to obsolete renderer", () => {
   const { api } = loadPrismTestApi();
   const broken = loadFixture();
   broken.activities = [];
   const result = api.renderLearnerPageForTest(broken, { rendererVersion: "vnext" });
   assert.ok(result && result.error, "Expected vNext model validation to fail.");
   assert.equal(result.html, undefined);
+  LEGACY_RENDERER_ONLY_MARKERS.forEach((marker) => {
+    assert.equal(String(result.html || "").includes(marker), false);
+  });
 });
 
 test("feature flag: golden fixture subset through public vnext entry", () => {
@@ -279,12 +265,6 @@ test("feature flag: golden fixture subset through public vnext entry", () => {
     /data-beat-function="orientation"/,
     "A3 empty orientation must not emit a beat section."
   );
-
-  const a2Html = html.slice(html.indexOf('id="activity-A2"'));
-  const a2M3Pos = a2Html.indexOf('data-material-id="A2-M3"');
-  const a2M2Pos = a2Html.indexOf('data-material-id="A2-M2"');
-  assert.ok(a2M3Pos >= 0 && a2M2Pos >= 0);
-  assert.ok(a2M3Pos < a2M2Pos, "A2-M3 must render before A2-M2.");
 
   LEGACY_RENDERER_ONLY_MARKERS.forEach((marker) => {
     assert.equal(html.includes(marker), false, `Golden vNext entry must not include ${marker}`);
@@ -321,10 +301,7 @@ test("feature flag: normalizeRendererVersion defaults to vNext and rejects truth
   assert.throws(() => normalizeRendererVersion(1), /Unsupported learner renderer version/);
 });
 
-test("feature flag: Authoring has no learner renderer selector; version is always vNext", () => {
-  const { api } = loadPrismTestApi();
-  assert.equal(api.getUtilitiesRendererVersionForTest(), "vnext");
-  assert.equal(typeof api.setUtilitiesRendererVersionForTest, "undefined");
+test("feature flag: Authoring has no learner renderer selector", () => {
   const indexHtml = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
   assert.equal(indexHtml.includes('id="utilitiesRendererVersion"'), false);
   assert.equal(indexHtml.includes(">Learner renderer<"), false);

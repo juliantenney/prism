@@ -176,31 +176,22 @@ test("browser registration: default pipeline uses vNext export shell", () => {
   assert.match(html, /data-renderer="vnext"/);
 });
 
-test("browser registration: explicit legacy matches baseline", () => {
+test("browser registration: page export is always vNext (legacy option ignored)", () => {
   const { api } = loadProductionBrowserRuntime();
   const fixture = loadFixture();
-  const baseline = api.buildUtilityStructuredHtmlForTest(fixture, ["sections"], {
-    applyCompositionValidation: false,
-    rendererVersion: "legacy"
-  });
-  assert.ok(baseline && !baseline.error, baseline && baseline.error);
-  const legacy = api.renderLearnerPageForTest(fixture, { rendererVersion: "legacy" });
-  assert.equal(String(legacy.html || ""), String(baseline.html || ""));
-});
-
-test("browser registration: vnext and legacy paths stay exclusive", () => {
-  const { api } = loadProductionBrowserRuntime();
-  const vnextHtml = renderViaPublicEntry(api, loadFixture(), { rendererVersion: "vnext" });
-  const legacyHtml = renderViaPublicEntry(api, loadFixture(), { rendererVersion: "legacy" });
-  LEGACY_RENDERER_ONLY_MARKERS.forEach((marker) => {
-    assert.equal(vnextHtml.includes(marker), false, `vNext must not include ${marker}`);
-  });
+  const forcedLegacy = api.renderLearnerPageForTest(fixture, { rendererVersion: "legacy" });
+  const defaultPath = api.renderLearnerPageForTest(fixture, {});
+  assert.ok(forcedLegacy && !forcedLegacy.error, forcedLegacy && forcedLegacy.error);
+  assert.equal(String(forcedLegacy.html || ""), String(defaultPath.html || ""));
   VNEXT_ONLY_MARKERS.forEach((marker) => {
-    assert.equal(legacyHtml.includes(marker), false, `Legacy must not include ${marker}`);
+    assert.match(String(forcedLegacy.html || ""), new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  });
+  LEGACY_RENDERER_ONLY_MARKERS.forEach((marker) => {
+    assert.equal(String(forcedLegacy.html || "").includes(marker), false, `must not include ${marker}`);
   });
 });
 
-test("browser registration: vnext validation failure does not fall back to legacy", () => {
+test("browser registration: vnext validation failure does not fall back to obsolete renderer", () => {
   const { api } = loadProductionBrowserRuntime();
   const broken = loadFixture();
   broken.activities = [];
@@ -209,7 +200,7 @@ test("browser registration: vnext validation failure does not fall back to legac
   assert.equal(result.html, undefined);
 });
 
-test("browser registration: bundle is loaded before selector can invoke vnext", () => {
+test("browser registration: bundle is loaded before page export can invoke vnext", () => {
   const sandbox = createBrowserSandbox();
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
   assert.equal(sandbox.window.PRISM_LEARNER_RENDERER_VNEXT, undefined);

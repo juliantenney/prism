@@ -59,7 +59,8 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 
 | Slice | Subject | Notes |
 | ----- | ------- | ----- |
-| S1 | Remove learner renderer selection | Selector/state removed; `getUtilitiesRendererVersion` hardwired to `vnext` |
+| S1 | Remove learner renderer selection | Selector/state removed |
+| S2 | Route learner page export exclusively through vNext | Pipeline always `runLearnerRendererVNextExport` |
 
 ---
 

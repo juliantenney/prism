@@ -48561,7 +48561,6 @@
       return rehydrateWorkflowPageResourcesIntoWorkspace();
     }).then(function () {
       var rendered = runUtilityPageExportPipeline(ws.assembledPageSnapshot, {
-        rendererVersion: getUtilitiesRendererVersion(),
         compositionMode: resolveUtilitiesCompositionModeForRender({
           visualAssets: ws.visualAssetManifest || null
         }),
@@ -49192,7 +49191,6 @@
         ? state.utilitiesOutputWorkspace.visualAssetManifest.assets.length
         : 0;
     var rendered = runUtilityPageExportPipeline(state.utilitiesOutputWorkspace.assembledPageSnapshot, {
-      rendererVersion: getUtilitiesRendererVersion(),
       compositionMode: resolveUtilitiesCompositionModeForRender({
         visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null
       }),
@@ -49974,18 +49972,6 @@
     };
   }
 
-  /**
-   * Learner renderer version selector (S67-BL-006).
-   * Default is vNext; only "legacy" and "vnext" are supported.
-   */
-  function resolveLearnerRendererVersion(value) {
-    if (value == null || value === "") return "vnext";
-    var version = String(value).trim();
-    if (version === "legacy") return "legacy";
-    if (version === "vnext") return "vnext";
-    throw new Error("Unsupported learner renderer version: " + version);
-  }
-
   function buildUtilityStandaloneExportDocument(exportOpts) {
     var opts = exportOpts && typeof exportOpts === "object" ? exportOpts : {};
     var title = String(opts.title || "Learner page").trim() || "Learner page";
@@ -50360,8 +50346,8 @@
   }
 
   /**
-   * Mirrors handleUtilitiesGenerate → runUtilityRendererByPlan → buildUtilityStructuredHtml
-   * (including sanitizeUtilityHtmlOutput), without DOM preview side effects.
+   * Authoring learner-page export pipeline — always vNext (S74A-D02 / S74A-T-045).
+   * Non-page artefacts (e.g. slide_deck) use renderUtilitiesArtefactHtmlWithResolvedPlan → runUtilityRendererByPlan.
    */
   function runUtilityPageExportPipeline(parsed, pipelineOpts) {
     var opts = pipelineOpts && typeof pipelineOpts === "object" ? pipelineOpts : {};
@@ -50370,12 +50356,6 @@
     }
     if (String(parsed.artifact_type || "").toLowerCase() !== "page") {
       return { error: 'Include top-level "artifact_type": "page".' };
-    }
-    var rendererVersion;
-    try {
-      rendererVersion = resolveLearnerRendererVersion(opts.rendererVersion);
-    } catch (versionErr) {
-      return { error: (versionErr && versionErr.message) || "Unsupported learner renderer version." };
     }
     if (!opts.skipWorkflowAssembly) {
       try {
@@ -50400,30 +50380,12 @@
         };
       }
     }
-    if (rendererVersion === "vnext") {
-      return runLearnerRendererVNextExport(parsed, {
-        compositionMode: opts.compositionMode,
-        visualAssets: opts.visualAssets || null,
-        videoProjection: opts.videoProjection || null,
-        additionalResourcesProjection: opts.additionalResourcesProjection || null
-      });
-    }
-    var renderPage = getPageForRender(parsed);
-    var plan = opts.renderPlan || buildDefaultUtilityPageRenderPlan(opts.sectionOrder);
-    var rendered = runUtilityRendererByPlan(plan, renderPage, opts.baseName || "", {
-      presentationMode:
-        String(opts.presentationMode || "single_page").toLowerCase() === "learning_object"
-          ? "learning_object"
-          : "single_page",
-      pageSections: getPageSectionsForRender(renderPage),
-      enableSequencingInteractionPolicy: opts.enableSequencingInteractionPolicy
+    return runLearnerRendererVNextExport(parsed, {
+      compositionMode: opts.compositionMode,
+      visualAssets: opts.visualAssets || null,
+      videoProjection: opts.videoProjection || null,
+      additionalResourcesProjection: opts.additionalResourcesProjection || null
     });
-    if (!rendered || rendered.error) {
-      return { error: (rendered && rendered.error) || "Could not render HTML output." };
-    }
-    var html = String(rendered.html || "").trim();
-    if (!html) return { error: "Rendered output is empty." };
-    return { html: html, error: null };
   }
 
   /**
@@ -50474,7 +50436,6 @@
         compositionOptions: options.compositionOptions,
         baseName: options.baseName,
         enableSequencingInteractionPolicy: options.enableSequencingInteractionPolicy,
-        rendererVersion: options.rendererVersion,
         workflow: options.workflow || findWorkflowById(state.selectedWorkflowId || "") || null,
         captures: options.captures,
         capturesRaw: options.capturesRaw,
@@ -50502,11 +50463,6 @@
     var html = String(rendered.html || "").trim();
     if (!html) return { error: "Rendered output is empty." };
     return { html: html, error: null };
-  }
-
-  /** Sole learner renderer (S74A-D02). Selector/state removed in S74A-T-045 Slice 1. */
-  function getUtilitiesRendererVersion() {
-    return "vnext";
   }
 
   function handleUtilitiesGenerate() {
@@ -50568,7 +50524,6 @@
       "single_page"
     ).toLowerCase();
     state.utilitiesPresentationMode = presentationMode === "learning_object" ? "learning_object" : "single_page";
-    var rendererVersion = getUtilitiesRendererVersion();
     var hasAttachedVisualAssets =
       !!(
         state.utilitiesOutputWorkspace &&
@@ -50630,7 +50585,6 @@
         return renderUtilitiesArtefactHtmlAsync(parsed, {
       selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
       presentationMode: state.utilitiesPresentationMode,
-      rendererVersion: rendererVersion,
       baseName: baseName,
       applyCompositionValidation: false,
       skipWorkflowAssembly: String(state.utilitiesSourceMode || "") !== "assembled_current_run",
@@ -52014,7 +51968,6 @@
     prismTestApi.utilityBuildVnextJourneyNavItemsForTest = utilityBuildVnextJourneyNavItems;
     prismTestApi.utilityExtractFirstCompleteSentenceForTest = utilityExtractFirstCompleteSentence;
     prismTestApi.utilityBuildVnextLearningHeaderIntroForTest = utilityBuildVnextLearningHeaderIntro;
-    prismTestApi.getUtilitiesRendererVersionForTest = getUtilitiesRendererVersion;
     prismTestApi.utilityNormalizeJourneyNavLabelForTest = utilityNormalizeJourneyNavLabel;
     prismTestApi.utilityFormatJourneyNavLabelDisplayForTest = utilityFormatJourneyNavLabelDisplay;
     prismTestApi.utilityLearningJourneyNavLayoutClassForTest = utilityLearningJourneyNavLayoutClass;
@@ -52037,11 +51990,9 @@
         presentationMode: options.presentationMode,
         applyCompositionValidation: options.applyCompositionValidation,
         compositionOptions: options.compositionOptions,
-        baseName: options.baseName,
-        rendererVersion: options.rendererVersion
+        baseName: options.baseName
       });
     };
-    prismTestApi.resolveLearnerRendererVersionForTest = resolveLearnerRendererVersion;
     prismTestApi.composeStandaloneVnextLearnerExportForTest = composeStandaloneVnextLearnerExport;
     prismTestApi.renderLearnerPageForTest = function (parsed, options) {
       var opts = options && typeof options === "object" ? options : {};

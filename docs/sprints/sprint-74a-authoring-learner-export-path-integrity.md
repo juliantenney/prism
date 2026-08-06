@@ -16,9 +16,10 @@ Establish vNext as the sole learner-renderer implementation; remove the obsolete
 
 ## Task posture
 
-- T-001 / T-010: **Done** (T-010 Compatibility-era; target superseded)  
-- Next: **T-020** (**Not started**)  
-- Later: T-030 baseline → T-040 removal inventory → T-045 remove → T-050 verify/close  
-- Sole-renderer removal direction: **Accepted**  
-- Runtime changes from documentation reconciliation: **None**  
+- T-001 / T-010 / T-020 / T-030 / T-040 / **T-042**: **Done**  
+- Next: **T-045** remove obsolete learner renderer (**Not started**)  
+- Later: T-050 verify/close  
+- Sole-renderer removal direction: **Accepted** (`S74A-D02`)  
+- Production behaviour includes corrected activity/task interleaving (T-042)  
+- Generated artefact freshness gate: green (T-020)  
 - 74B / 74C: **Not opened**

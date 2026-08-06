@@ -23,7 +23,7 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 - Constraints binding (`S74-D03`…`S74-D05`, **`S74-D07`** definitive codebase).  
 - Operator approval opened Sprint 74A (`S74-D06`).  
 - `S74A-D02`: vNext replaces obsolete learner renderer — removal after inventory **Accepted**.  
-- Next 74A task: **S74A-T-020**.
+- Next 74A task: **S74A-T-045** (Not started). T-020…T-042 Done.
 
 ## Phase overview
 

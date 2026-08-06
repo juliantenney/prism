@@ -19,7 +19,7 @@
 
 ## Immediate sequence
 
-1. Continue in **Sprint 74A** — current task **S74A-T-020**.  
+1. Continue in **Sprint 74A** — current task **S74A-T-045** (Not started; do not begin until authorised).  
 2. Do **not** implement under this wrapper.  
 3. Do **not** open 74B/74C yet.
 

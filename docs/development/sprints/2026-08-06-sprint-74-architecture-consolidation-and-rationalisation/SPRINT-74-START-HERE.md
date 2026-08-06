@@ -58,4 +58,4 @@ See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010]
 
 ## Next
 
-Continue in **Sprint 74A** — begin **S74A-T-020**.  
+Continue in **Sprint 74A** — next task **S74A-T-045** (Not started).  

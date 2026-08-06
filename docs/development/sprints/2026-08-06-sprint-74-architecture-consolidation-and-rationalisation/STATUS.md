@@ -15,7 +15,7 @@
 Sprint 74 discovery + domain refinement ✅
   → S74-D03…D05 constraints; S74-D07 definitive-codebase principle
   → Sprint 74A OPEN (S74-D06) · S74A-D02 obsolete renderer removal
-  → 74A next: S74A-T-020
+  → 74A: T-020…T-042 Done; next S74A-T-045 (Not started)
   → 74B / 74C not opened
 ```
 
@@ -30,7 +30,7 @@ Sprint 74 discovery + domain refinement ✅
 | Binding constraints | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**) |
 | Sprint 74A | **OPEN** — sole / definitive vNext; obsolete renderer removal **Accepted** |
 | Sprint 74B / 74C | **Not opened** |
-| Current task (programme) | Continue under **Sprint 74A** (`S74A-T-020` next) |
+| Current task (programme) | Continue under **Sprint 74A** (`S74A-T-045` next — Not started) |
 
 ---
 
@@ -47,4 +47,4 @@ Sprint 74 discovery + domain refinement ✅
 
 ## Last updated
 
-2026-08-06 — `S74-D07` definitive-codebase principle; `S74A-D02` obsolete-renderer removal; 74A next T-020; runtime None under reconciliation.
+2026-08-06 — Pre-removal checkpoint: 74A T-020…T-042 Done; next T-045; `S74-D07` / `S74A-D02` binding; 74B/74C unopened.

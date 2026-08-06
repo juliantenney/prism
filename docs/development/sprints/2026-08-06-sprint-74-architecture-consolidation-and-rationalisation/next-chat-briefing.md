@@ -1,76 +1,47 @@
 # Sprint 74 — Next-chat briefing
 
-**Pack status:** **OPEN** (2026-08-06) — T-001 + T-010 complete; constraints binding; 74A not opened  
-**Theme:** Architecture Consolidation and Rationalisation  
-**Decisions:** `S74-D01`…`S74-D05`  
-**Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)
+**Pack status:** **OPEN** (programme wrapper) — Sprint 74A **OPEN**  
+**Theme:** Architecture Consolidation and Rationalisation — **one definitive codebase**  
+**Decisions:** `S74-D01`…`S74-D07`  
+**Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
+**Active work:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/next-chat-briefing.md)
 
 ---
 
 ## One-line mission
 
-**Await operator approval, then open Sprint 74A** (Authoring → learner export path integrity). Do **not** implement under the Sprint 74 wrapper. No runtime changes until 74A is opened and scoped.
-
-## Planning principle
-
-> A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
+**Continue Sprint 74A** (vNext sole learner renderer; remove obsolete renderer). Do **not** implement under this wrapper. Next 74A task: **S74A-T-020**.
 
 ---
 
-## Binding constraints (must carry into 74A)
+## Binding constraints
 
-1. **Browser-only runtime** — production is HTML/JS/CSS + browser APIs; Node is tooling only.  
-2. **One supported path** — one authoritative implementation; label Compatibility.  
-3. **`app.js` by ownership** — no size-driven split.  
-4. **Static deployment** — `index.html` bootstrap; no backend; no runtime compilation for end users.
-
-Full text: [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md).
+See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially Constraint 2 / **`S74-D07`** (definitive codebase; Compatibility only for current product requirements).
 
 ---
 
-## Read first
+## Read first (active work)
 
-1. [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-2. [S74-T-010-rationalisation-domain-refinement.md](S74-T-010-rationalisation-domain-refinement.md)  
-3. [decisions.md](decisions.md) (`S74-D02`…`S74-D05`)  
-4. [STATUS.md](STATUS.md) · [PLAN.md](PLAN.md)
-
----
-
-## Immediate sequence
-
-1. Operator approves opening **Sprint 74A** (or requests S74-T-011 / changes).  
-2. On approval: create **Sprint 74A pack** from Domain A in T-010 — still no drive-by cleanup.  
-3. Verify **production browser path**; treat Node-based suites as **test evidence**, not deployment proof.  
-4. Do **not** open 74B / 74C yet.  
-5. Do **not** split `app.js` by size.
+1. [Sprint 74A START HERE](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
+2. [S74A-D02](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer)  
+3. [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 
 ---
 
-## Recommended order (not opened)
+## Sub-sprint status
 
-| Sprint | Domain |
+| Sprint | Status |
 | ------ | ------ |
-| **74A** | Authoring → learner export path integrity |
-| **74B** | Generation-contract & capture-validator hygiene |
-| **74C** | Repository & fixture hygiene |
+| **74A** | **OPEN** — obsolete renderer removal Accepted |
+| **74B** | Not opened |
+| **74C** | Not opened |
 
 ---
 
 ## Hard rules
 
-- **No** runtime changes in the Sprint 74 wrapper after T-010  
-- **No** 74A/B/C pack without operator approval  
-- **No** Sprint 73 reopen  
-- **No** backend / runtime Node / non-static deployment  
-- Legacy **inventory** in 74A; Legacy **deletion** not in 74A  
-- Continuous verification (`S72-D14`) if regressions appear  
-
----
-
-## Predecessor gold links
-
-- [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-- [S74-T-010](S74-T-010-rationalisation-domain-refinement.md)  
-- [SPRINT-73-FINAL-REPORT.md](../2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md)  
-- [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) (PB-FA-003)  
+- Implement in the **74A pack**, not this wrapper  
+- Evidence-led removal of obsolete alternatives is the intended outcome when covered (`S74-D07`)  
+- Do not retain obsolete learner renderer as Compatibility by default  
+- No 74B / 74C yet  
+- Node-based tests ≠ deployment proof  

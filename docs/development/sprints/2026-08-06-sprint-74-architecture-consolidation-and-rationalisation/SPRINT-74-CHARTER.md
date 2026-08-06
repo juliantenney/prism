@@ -13,12 +13,12 @@
 ## Binding architectural constraints
 
 **Authoritative expanded statement:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-**Decisions:** `S74-D03` (browser-only + static deployment) · `S74-D04` (one supported path) · `S74-D05` (`app.js` by ownership, not size)
+**Decisions:** `S74-D03` (browser-only + static deployment) · `S74-D04` (one supported path) · `S74-D05` (`app.js` by ownership, not size) · **`S74-D07`** (one definitive codebase)
 
 These constraints bind Sprint 74 and all later **74A / 74B / 74C** work. Summary:
 
 1. **Browser-only runtime** — production is HTML/JS/CSS + browser APIs; Node is development/test tooling only.  
-2. **One supported path** — one authoritative implementation per major responsibility; Compatibility must be labelled.  
+2. **One definitive implementation** — converge established responsibilities onto one definitive codebase; remove obsolete alternatives once covered; Compatibility only for current explicit product requirements (`S74-D07` clarifies `S74-D04`).  
 3. **`app.js` by ownership** — no size-driven split sprint; shell orchestration may remain.  
 4. **Static deployment** — `index.html`-driven browser loading; no backend; no runtime compilation for end users.
 
@@ -30,7 +30,7 @@ Sprint 74 is a **discovery-led wrapper sprint**.
 
 Its purpose is **not** to perform indiscriminate code cleanup or line-count reduction.
 
-Its purpose is to **understand the current supported Prism architecture** and **establish a sequence of evidence-based rationalisation sprints** so the supported architecture is unmistakable to maintainers, contributors, and coding agents.
+Its purpose is to **understand the current supported Prism architecture** and **establish a sequence of evidence-based rationalisation sprints** that leave **one definitive implementation** per established responsibility — unmistakable to maintainers, contributors, and coding agents.
 
 Follow-on implementation work will occur as **Sprint 74A**, **Sprint 74B**, **Sprint 74C**, etc., once discovery has identified coherent domains **and** operator approval opens those packs.
 

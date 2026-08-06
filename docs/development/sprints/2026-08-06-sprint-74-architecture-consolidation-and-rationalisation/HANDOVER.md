@@ -1,77 +1,39 @@
 # Sprint 74 — Handover
 
 **From:** Sprint 73 (COMPLETE / Closed 2026-08-06)  
-**To:** Sprint 74 — Architecture Consolidation and Rationalisation (**OPEN** 2026-08-06)  
-**Decision:** [S74-D01](decisions.md#s74-d01-sprint-74-scope--architecture-consolidation-and-rationalisation-discovery-led-wrapper)
+**To:** Sprint 74 programme wrapper (**OPEN**) · active implementation in Sprint 74A  
+**Decisions:** `S74-D01`…`S74-D07` · 74A [S74A-D01](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/decisions.md) · [S74A-D02](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer)
 
 ---
 
 ## Current state
 
-- **Sprint 73** is closed. Workflow Resources objective **met**. Do **not** reopen Sprint 73 implementation.  
-- **Sprint 74** is open as a **discovery-led wrapper** — map supported architecture; recommend sequenced rationalisation domains.  
-- **S74-T-001** discovery report is **complete**.  
-- **S74-T-010** domain refinement is **complete** (`S74-D02` recommends 74A).  
-- **Sprint 74A / 74B / 74C** are **not opened** — 74A awaits operator approval.
-
----
-
-## Planning principle
-
-> A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
-
----
-
-## What Sprint 74 inherits
-
-| From | Carry-forward |
-| ---- | ------------- |
-| Sprint 73 | Workflow Resources owner; image/resource/video persistence; Authoring UI; learner presentation; `S73-D01`…`S73-D03` |
-| Sprint 72 | Continuous verification (`S72-D14`); production browser-path / generated-artefact consistency lesson; maturation backlog model |
-| Sprint 67 / architecture docs | Learner-renderer-vNext as supported production browser path |
-| Sprint 56 / 56F | Progressive page enrichment / vNext page schema direction |
-| Sprint 38 series | Why LD visual/pedagogical architecture exists |
-
----
-
-## Binding constraints (carry into 74A–C)
-
-See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) and `S74-D03`…`S74-D05`:
-
-- Browser-only runtime; Node = development/test tooling only  
-- One supported path per major responsibility  
-- `app.js` by ownership, not size  
-- Static deployment preserved  
-- Repository comprehension (reduce ambiguity; not line-count chasing) — see constraints doc  
+- **Sprint 73** closed.  
+- **Sprint 74** open as programme wrapper.  
+- **S74-T-001** / **S74-T-010** complete (findings preserved).  
+- **S74-D07** Accepted — one definitive codebase around established functionality.  
+- **Sprint 74A** OPEN — remove obsolete learner renderer after inventory (`S74A-D02`).  
+- **74B / 74C** not opened.
 
 ---
 
 ## Immediate sequence
 
-1. Read [S74-T-010-rationalisation-domain-refinement.md](S74-T-010-rationalisation-domain-refinement.md).  
-2. Operator approval to **open Sprint 74A** (Authoring → learner export path integrity).  
-3. Optional: **S74-T-011** only if a thinner AC seed is required before pack open.  
-4. Do **not** open 74B/74C yet; do **not** implement under this wrapper.
+1. Continue in **Sprint 74A** — current task **S74A-T-020**.  
+2. Do **not** implement under this wrapper.  
+3. Do **not** open 74B/74C yet.
 
 ---
 
-## Binding predecessor evidence (link only)
+## Binding constraints
 
-| Kind | Authority |
-| ---- | --------- |
-| Sprint 73 Final Report | [SPRINT-73-FINAL-REPORT.md](../2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md) |
-| Sprint 73 Closure | [SPRINT-73-CLOSURE.md](../2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md) |
-| Product Backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
-| Learner renderer architecture | [learner-renderer-vnext.md](../../../architecture/learner-renderer-vnext.md) |
+[ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**).
 
 ---
 
 ## What not to do
 
-- Do not delete, consolidate, rename, or refactor runtime code under discovery/planning tasks  
-- Do not reopen Sprint 73 feature work  
-- Do not open Sprint 74A / 74B / 74C from this handover alone  
-- Do not classify code as removable without evidence  
-- Do not treat historical sprint experiments as supported product surface without verification  
-- Do not invent a backend or treat Node tests as production proof (`S74-D03`)  
-- Do not open a size-driven `app.js` split sprint (`S74-D05`)  
+- Do not implement under this wrapper  
+- Do not treat discovery “inventory-only / Compatibility retention” as the current end-state target  
+- Do not retain obsolete parallels indefinitely without a current product Compatibility requirement  
+- Do not open 74B/74C without readiness  

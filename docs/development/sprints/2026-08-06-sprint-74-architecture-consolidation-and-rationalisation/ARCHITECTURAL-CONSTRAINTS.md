@@ -1,7 +1,7 @@
 # Sprint 74 — Binding Architectural Constraints
 
 **Authority:** This document is the **expanded statement** of binding constraints for Sprint 74 and all later **74A / 74B / 74C** rationalisation work.  
-**Decision bindings:** [S74-D03](decisions.md#s74-d03-browser-only-runtime-and-static-deployment) · [S74-D04](decisions.md#s74-d04-one-supported-path-per-major-product-responsibility) · [S74-D05](decisions.md#s74-d05-appjs-rationalised-by-ownership-not-size)  
+**Decision bindings:** [S74-D03](decisions.md#s74-d03-browser-only-runtime-and-static-deployment) · [S74-D04](decisions.md#s74-d04-one-supported-path-per-major-product-responsibility) · [S74-D05](decisions.md#s74-d05-appjs-rationalised-by-ownership-not-size) · [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Status:** Binding (2026-08-06)  
 **Mode:** Documentation — governs planning and future implementation; does not open Sprint 74A
 
@@ -19,6 +19,8 @@ Other Sprint 74 docs **link here**; do not duplicate the full text.
 | development/test tooling | implying Node is available to deployed code |
 | Node-based test evidence | treating Node tests as deployment proof |
 | generated browser artefact | mandatory end-user build step |
+| definitive implementation · sole learner renderer · one definitive codebase | presenting obsolete parallel renderers as ongoing choices |
+| obsolete / superseded renderer (when referring to code scheduled for removal) | calling superseded code “Compatibility” without a current product requirement |
 
 ---
 
@@ -76,21 +78,28 @@ Rationalisation must **not** introduce:
 
 ---
 
-## Constraint 2 — One supported path
+## Constraint 2 — One definitive implementation per established responsibility
 
-Every major product responsibility should have **one clearly identifiable supported implementation**.
+Every major product responsibility should converge on **one definitive implementation** in the active codebase.
 
-Compatibility, historical, and experimental paths may remain temporarily, but:
+**Interpretation (binding — `S74-D07`):**
 
-- one implementation must be **authoritative**;  
-- future development must target the authoritative path;  
-- compatibility paths must be **labelled clearly**;  
-- rationalisation should **reduce ambiguity**;  
-- removal must follow **evidence and verification**.  
+Sprint 74 rationalisation exists to establish **one stable, definitive codebase around Prism’s existing functionality**. “One supported path” is **not** satisfied by documenting an authoritative path while leaving unused, superseded, or redundant alternative implementations available in the tree.
 
-Sprint 74’s purpose is **not** line-count reduction.
+Therefore:
 
-Success means the supported architecture is unmistakable to maintainers, future contributors, and coding agents — fewer plausible-but-wrong paths; clearer module, documentation, and schema authority; clearer browser-loading behaviour; easier identification of where a change belongs.
+- Established product responsibilities must converge onto **one definitive implementation**.  
+- Obsolete, superseded, and redundant implementation paths should be **removed** once their responsibilities are verified as covered by the definitive implementation.  
+- **Compatibility** code is retained **only** where there is a **current, explicit product requirement** for compatibility.  
+- **Historical existence is not a compatibility requirement.**  
+- Rationalisation success includes **removal of plausible-but-wrong code paths** that confuse maintainers and coding agents.  
+- Removal remains **evidence-led** and must preserve current required functionality (identify responsibility → confirm coverage → verify production browser path → remove obsolete surfaces → focused regression).  
+- Evidence must **not** become a rationale for retaining obsolete parallel implementations indefinitely.  
+- Line-count reduction is **not** the purpose, but **code removal is expected** where it eliminates obsolete architectural alternatives.
+
+While a superseded path still exists in the tree (during inventory or before verified removal), it must not be presented as an ongoing product choice. Prefer terms such as **obsolete**, **superseded**, or **scheduled for removal** over **Compatibility**, unless Compatibility is an explicit current product requirement.
+
+Sprint 74 success means the supported architecture is unmistakable: fewer plausible-but-wrong paths; clearer module, documentation, and schema authority; clearer browser-loading behaviour; easier identification of where a change belongs.
 
 ---
 
@@ -145,19 +154,19 @@ Every rationalisation slice should leave the repository easier for a new maintai
 
 After any rationalisation work it should be easier to identify:
 
-- the authoritative implementation;  
+- the authoritative / definitive implementation;  
 - the ownership boundary;  
 - where future changes belong;  
-- which paths are compatibility only.  
+- which paths are obsolete/superseded and scheduled for evidence-led removal (or Compatibility only when a current product requirement exists).  
 
-The objective of Sprint 74 is to **reduce architectural ambiguity** rather than simply reduce line count.
+The objective of Sprint 74 is to **reduce architectural ambiguity** and converge on **one definitive codebase** rather than simply reduce line count.
 
-This note supports Constraints 2–3; it is programme guidance, not a separate decision ID.
+This note supports Constraints 2–3 and `S74-D07`; it is programme guidance, not a separate decision ID.
 
 ---
 
 ## Programme note
 
-These constraints **do not invalidate** the recommended order **74A → 74B → 74C** from [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). They sharpen how 74A “export path integrity” must be framed: verify the **production browser path** and **generated browser artefact** loading — not “Node/browser runtime parity.”
+These constraints **do not invalidate** the recommended order **74A → 74B → 74C** from [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). They sharpen how 74A must be framed: establish **one definitive learner-renderer implementation**, verify the **production browser path** and **generated browser artefact**, then remove the obsolete renderer — not “Node/browser runtime parity,” and not indefinite Compatibility retention without a product requirement.
 
-Sprint 74A remains **unopened** until operator approval.
+**Sprint 74A is OPEN** — [SPRINT-74A-START-HERE.md](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md). Sprint 74B / 74C remain unopened.

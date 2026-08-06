@@ -1,64 +1,46 @@
 # Sprint 74 — Plan
 
-**Status:** **OPEN** (2026-08-06) — discovery / planning refinement complete; implementation sub-sprints not opened  
+**Status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **OPEN**  
 **Theme:** Architecture Consolidation and Rationalisation  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
-**Planning principle:** A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.  
-**Binding constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`)
+**Binding constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**)  
+**Active implementation:** [Sprint 74A PLAN](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/PLAN.md)
 
 Task IDs: `S74-T-###`. Decision IDs: `S74-D##` in [decisions.md](decisions.md).
 
-**Implementation is not assumed.** Sprint 74A / 74B / 74C are **not opened**. Opening 74A requires **operator approval**.
-
-All 74A–C work (when opened) must preserve **browser-only runtime**, **static deployment**, **one supported path** labelling, and **ownership-based** `app.js` changes — not size-driven splits.
+Sprint 74A / 74B / 74C implementation work lives in **sub-sprint packs**. Do not schedule Domain A tasks under this wrapper.
 
 ---
 
-## Phase 1 — Codebase rationalisation discovery (committed)
+## Phase 1 — Codebase rationalisation discovery
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
-| S74-T-001 | Codebase Rationalisation Discovery — map supported architecture, runtime path, ownership, schemas, bundles, tests; classify findings; recommend 74A/B/C domains | **Done** | [S74-T-001-codebase-rationalisation-discovery.md](S74-T-001-codebase-rationalisation-discovery.md) |
+| S74-T-001 | Codebase Rationalisation Discovery | **Done** | [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) |
 
 ---
 
-## Phase 2 — Domain sequencing (committed)
+## Phase 2 — Domain sequencing
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
-| S74-T-010 | Prioritise and refine recommended domains into planning-ready candidates | **Done** | [S74-T-010-rationalisation-domain-refinement.md](S74-T-010-rationalisation-domain-refinement.md) · `S74-D02` |
-| S74-T-011 | Draft acceptance-criteria / readiness notes for the first selected domain (optional precursor to opening 74A) | **Not started** | Optional — Domain A AC outline already in T-010; use only if operator wants a thinner seed before pack open |
+| S74-T-010 | Prioritise and refine recommended domains | **Done** | [S74-T-010](S74-T-010-rationalisation-domain-refinement.md) · `S74-D02` |
+| S74-T-011 | Optional thinner AC seed before 74A | **Superseded** | Domain A AC carried into Sprint 74A charter; not required |
 
 ---
 
-## Explicit non-scope (this plan)
+## Implementation sub-sprints
 
-- Runtime deletion / consolidation / rename / refactor  
-- Opening Sprint 74A / 74B / 74C implementation packs (gated on operator approval)  
-- PB-FA-002 programming resources  
-- PB-FA-004 manually uploaded graphics (product backlog)  
-- Reconstructing predecessor sprint histories  
-
----
-
-## Execution order
-
-```text
-S74-T-001 (discovery) ✅
-  → S74-T-010 (domain refinement) ✅
-  → operator approval
-  → Open Sprint 74A (separate pack) — NOT started
-  → later 74B → 74C (not opened)
-```
+| Sprint | Theme | Status |
+| ------ | ----- | ------ |
+| **74A** | Authoring → learner export path integrity (sole vNext; remove obsolete renderer) | **OPEN** — [pack](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) (`S74-D06` / `S74A-D02` / `S74-D07`) |
+| **74B** | Generation-contract & capture-validator hygiene | **Not opened** |
+| **74C** | Repository & fixture hygiene | **Not opened** |
 
 ---
 
-## Recommended domains (refined — not opened)
+## Explicit non-scope (wrapper)
 
-See [S74-T-010](S74-T-010-rationalisation-domain-refinement.md):
-
-| Order | Domain | Theme |
-| ----- | ------ | ----- |
-| 74A | Authoring → learner export path integrity | Docs + production browser-path / generated-artefact verification + Legacy inventory |
-| 74B | Generation-contract & capture-validator hygiene | Deprecated/legacy generation surfaces |
-| 74C | Repository & fixture hygiene | Scratch audit + PB-S-001 fixtures |
+- Runtime implementation under this wrapper (use 74A pack)  
+- Opening 74B / 74C without readiness  
+- Altering accepted discovery findings  

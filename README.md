@@ -21,19 +21,19 @@ Everything runs client-side from static files. No backend, no server. Your data 
 - [What PRISM Does](#what-prism-does)
 - [Tabs and Main Areas](#tabs-and-main-areas)
 - [OpenAI API Setup](#openai-api-setup)
-- [Prompt Factory: How to Use](#prompt-factory-how-to-use)
+- [Prompt Studio: How to Use](#prompt-studio-how-to-use)
 - [Manual (No API) Workflow](#manual-no-api-workflow)
 - [Prompt Library: How to Use](#prompt-library-how-to-use)
 - [Template Variables](#template-variables)
-- [Workflow Factory: How to Use](#workflow-factory-how-to-use)
-- [Workflows Tab: Edit vs Run](#workflows-tab-edit-vs-run)
+- [Create Workflow: How to Use](#create-workflow-how-to-use)
+- [My Workflows: Edit vs Run](#my-workflows-edit-vs-run)
 - [Copy Behavior in Workflows](#copy-behavior-in-workflows)
 - [Token Usage and Approx Cost](#token-usage-and-approx-cost)
 - [Export, Import, and Sync](#export-import-and-sync)
 - [Troubleshooting](#troubleshooting)
 - [Privacy and Data](#privacy-and-data)
 - [Recommended Working Pattern](#recommended-working-pattern)
-- [Utilities HTML Export Renderer](#utilities-html-export-renderer)
+- [Authoring Learner Export (vNext)](#authoring-learner-export-vnext)
 
 ---
 
@@ -53,36 +53,15 @@ PRISM helps you:
 
 ## Tabs and Main Areas
 
-PRISM has four top tabs:
+PRISM has five top tabs (user-facing labels; some element ids still use older names such as `utilities*`):
 
-1. **Prompt Factory**
-2. **Prompt Library**
-3. **Workflow Factory**
-4. **Workflows**
+1. **Create Workflow**
+2. **My Workflows**
+3. **Authoring**
+4. **Prompt Studio**
+5. **Prompt Library**
 
-### 1) Prompt Factory
-
-This tab has three panels:
-
-- **Define the Brief**
-- **Refine the Brief**
-- **Final Prompt**
-
-Use it to turn rough intent into a polished prompt.
-
-### 2) Prompt Library
-
-Use this to store and manage prompts.
-
-- Search and tag filter
-- Sort list (by updated, created, title, usage)
-- Edit prompt metadata/body
-- Version history
-- **Export selected** (one prompt as JSON)
-- **Export all** (all prompts and workflows – same as Workflows tab)
-- **Import** (prompts, workflows, or full backup – same as Workflows tab)
-
-### 3) Workflow Factory
+### 1) Create Workflow
 
 Use this to quickly generate workflow structures from:
 
@@ -91,9 +70,9 @@ Use this to quickly generate workflow structures from:
 - Inputs/artifacts
 - Scope and constraints (e.g. 5-minute video vs full module, expected student time, accessibility, target level)
 
-You can review suggestions, switch between **Draft** and **Refined**, edit step titles/roles, delete steps, then save to Workflows.
+You can review suggestions, switch between **Draft** and **Refined**, edit step titles/roles, delete steps, then save to **My Workflows**.
 
-### 4) Workflows
+### 2) My Workflows
 
 Use this to maintain and run saved workflows.
 
@@ -112,6 +91,32 @@ In Run mode:
 - One step is shown at a time
 - **Step 1 copy** prepends workflow summary context
 - Next steps copy only step-specific instructions/prompt content
+
+### 3) Authoring
+
+Assemble a learner page from the current workflow run, then **Preview** with the **Supported** learner renderer (**vNext**, default). Download standalone HTML, a learner package ZIP, or open the result in a new tab. **Legacy** remains a selectable **Compatibility** option — see [Authoring Learner Export (vNext)](#authoring-learner-export-vnext).
+
+### 4) Prompt Studio
+
+This tab has three panels:
+
+- **Define the Brief**
+- **Refine the Brief**
+- **Final Prompt**
+
+Use it to turn rough intent into a polished prompt.
+
+### 5) Prompt Library
+
+Use this to store and manage prompts.
+
+- Search and tag filter
+- Sort list (by updated, created, title, usage)
+- Edit prompt metadata/body
+- Version history
+- **Export selected** (one prompt as JSON)
+- **Export all** (all prompts and workflows – same as My Workflows tab)
+- **Import** (prompts, workflows, or full backup – same as My Workflows tab)
 
 ---
 
@@ -142,7 +147,7 @@ These two dropdowns replace technical controls like "temperature" and "max token
 
 ---
 
-## Prompt Factory: How to Use
+## Prompt Studio: How to Use
 
 ### Define the Brief
 
@@ -188,7 +193,7 @@ If the field has text, **Save to library** is enabled. Use it to add the prompt 
 
 If you prefer not to use API:
 
-1. Fill the brief in Prompt Factory
+1. Fill the brief in Prompt Studio
 2. Click **Refine manually**
 3. Paste the copied brief into Copilot/ChatGPT
 4. Refine there
@@ -222,7 +227,7 @@ Selected tile highlights in blue. Click a tile to view and edit its details.
 When a prompt is selected, you can:
 
 - **Save changes** – Persist edits to title, body, tags, notes
-- **Use as template** – Insert the prompt into the Prompt Factory brief for further refinement
+- **Use as template** – Insert the prompt into the Prompt Studio brief for further refinement
 - **Copy prompt body** – Copy the raw prompt text to the clipboard
 - **Duplicate** – Create a copy with a new ID
 - **Rename** – Quick way to update the title
@@ -252,11 +257,11 @@ When copying from:
 
 …PRISM asks for variable values and substitutes them before copying.
 
-In Prompt Factory, placeholders remain untouched while authoring.
+In Prompt Studio, placeholders remain untouched while authoring.
 
 ---
 
-## Workflow Factory: How to Use
+## Create Workflow: How to Use
 
 1. Enter workflow basics (name + description required; optionally add inputs and scope/constraints)
 2. Click **Design workflow**
@@ -268,7 +273,7 @@ In Prompt Factory, placeholders remain untouched while authoring.
 
 ---
 
-## Workflows Tab: Edit vs Run
+## My Workflows: Edit vs Run
 
 ### Edit mode
 
@@ -279,7 +284,7 @@ In Prompt Factory, placeholders remain untouched while authoring.
 - Define primary input source from an earlier step (chain outputs)
 - Edit **Step instructions** – Per-step notes describing inputs, how to use them, any conditional logic, and anything else useful to the person running the workflow
 
-### Export and Import in Workflows
+### Export and Import in My Workflows
 
 - **Export selected** – Downloads the current workflow and all prompts it references
 - **Export all** – Same as in Prompt Library: downloads everything (all prompts + all workflows)
@@ -318,7 +323,7 @@ Usage updates for:
 
 - Prompt refinement calls
 - Prompt review calls
-- Workflow Factory design/review calls
+- Workflow design/review calls (Create Workflow)
 
 For the fixed `gpt-4.1-mini` model, PRISM uses phase-tuned budgets based on **Response detail**:
 
@@ -470,36 +475,39 @@ Export creates a file on your machine. Where you store that file (USB drive, clo
 
 For most users:
 
-1. Draft in **Prompt Factory**
+1. Draft in **Prompt Studio**
 2. Save to **Prompt Library**
-3. Build process in **Workflow Factory** / **Workflows**
-4. Run in **Workflows (Run mode)** with step-by-step copy
-5. **Backup and sync:** Use Export all periodically. When moving machines or syncing, Import the file.
+3. Build process in **Create Workflow** / **My Workflows**
+4. Assemble and Preview in **Authoring** (Supported path: **vNext**)
+5. Run in **My Workflows (Run mode)** with step-by-step copy
+6. **Backup and sync:** Use Export all periodically. When moving machines or syncing, Import the file.
 
 This gives reusable, maintainable prompt systems instead of one-off prompts, with safe backup and sync between devices.
 
 ---
 
-## Utilities HTML Export Renderer
+## Authoring Learner Export (vNext)
 
-PRISM includes a Utilities HTML export/preview path for renderable artifacts such as `page`.
+PRISM’s **Supported** learner page export path is:
 
-Current active path:
+```text
+Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext) → HTML / learner ZIP / Open in New Tab
+```
 
-- `handleUtilitiesGenerate()` resolves render metadata and renders HTML
-- `buildUtilityStructuredHtml(...)` builds page HTML for document/page variants
-- `utilityRenderPageSections(...)` handles section-level rendering (activities, assessment, support notes, etc.)
-- `sanitizeUtilityHtmlOutput(...)` applies a conservative cleanup pass before the final HTML is stored and downloaded
+- **Supported:** learner-renderer-**vNext** (Authoring UI default; `utilitiesRendererVersion` = `vnext`)
+- **Compatibility:** **Legacy** renderer option remains selectable; it is not the normal page path
+- **Runtime:** browser-only; static `index.html`-driven deployment; Node.js is development/test tooling only
+- **Browser-loaded implementation:** `lib/learner-renderer-vnext-browser.js` (generated browser artefact), exposed as `window.PRISM_LEARNER_RENDERER_VNEXT`
 
-Important behavior:
+Authoring actions:
 
-- `handleUtilitiesDownloadHtml()` downloads `state.utilitiesLastHtml` and does **not** re-render.
-- If output seems stale, regenerate first, then download.
-- The workflow-step button label in the Workflows editor is now **Settings**.
+- **Assemble From Current Workflow Run** — builds the page from the current run
+- **Preview HTML** — renders via `runUtilityPageExportPipeline` → `runLearnerRendererVNextExport` when vNext is selected
+- **HTML only** / **learner package (.zip)** / **Open in New Tab** — use the last rendered HTML (download does not re-render by itself; regenerate Preview if output looks stale)
 
-For detailed renderer behavior and regression checks, see:
+Internal element ids may still use `utilities*` names; the user-facing tab is **Authoring**.
 
-- `docs/architecture/renderer-export-behavior.md`
+Authoritative detail: [`docs/architecture/renderer-export-behavior.md`](docs/architecture/renderer-export-behavior.md) · [`docs/architecture/learner-renderer-vnext.md`](docs/architecture/learner-renderer-vnext.md)
 
 ---
 

@@ -10,6 +10,19 @@
 
 ---
 
+## Operator supersession (2026-08-06)
+
+This refinement recommended Sprint 74A as docs + production-browser verification + Legacy **inventory** — **not** Legacy deletion. That recommendation text is **preserved**.
+
+Subsequent operator decisions:
+
+1. **`S74-D07`** — programme principle: one definitive codebase around established functionality; Compatibility only for current product requirements.  
+2. **`S74A-D02`** — vNext replaces the obsolete learner renderer; **removal** after inventory is the intended 74A outcome.
+
+Discovery content below is not falsified; implementation packs follow the later decisions.
+
+---
+
 ## 1. Executive summary
 
 S74-T-001’s three-domain sketch is **directionally correct** but too loose for implementation. This refinement:

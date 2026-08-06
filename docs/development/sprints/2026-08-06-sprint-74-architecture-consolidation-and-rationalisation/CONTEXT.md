@@ -71,7 +71,8 @@ Prompt Studio and Prompt Library remain parallel prompt-development surfaces.
 - Classify findings; do not mark removable without evidence  
 - No runtime changes in discovery/planning tasks under this wrapper  
 - Obey [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-- Recommend 74A / 74B / 74C domains; open packs only with operator approval  
+- Sprint 74A **OPEN** for Domain A — sole vNext learner renderer; obsolete renderer removal Accepted (`S74-D07` / `S74A-D02`); 74B / 74C open only with readiness + approval  
+- Do not implement Domain A under this wrapper  
 
 ---
 
@@ -83,6 +84,7 @@ Prompt Studio and Prompt Library remain parallel prompt-development surfaces.
 | `S72-D09` / Sprint 73 | Shared Workflow Resources model for durable assets |
 | `S73-D01`…`S73-D03` | Workflow Resources scope, conditional persistence, verbatim video embed |
 | `S74-D03`…`S74-D05` | Browser-only + static deployment; one supported path; `app.js` by ownership |
+| `S74-D07` / `S74A-D02` | One definitive codebase; vNext replaces obsolete learner renderer (removal after inventory) |
 
 ---
 

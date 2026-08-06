@@ -1,8 +1,23 @@
 # Learner-renderer-vNext Architecture
 
-**Status:** Production certified (Sprint 68 / IMP-020)  
+**Status:** Production certified (Sprint 68 / IMP-020); **Supported** Authoring page export implementation (Sprint 74A)  
 **Audience:** Engineers extending learner interaction; educators reviewing renderer boundaries  
-**Related:** [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · [Diagnostics](learner-renderer-vnext-diagnostics.md) · [Extension guide](learner-renderer-vnext-extension-guide.md) · [Sprint 68 closeout](../sprints/sprint-68-closeout.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md) · [Certification artefacts](../../artifacts/learner-renderer-vnext-certification.md)
+**Related:** [ADR-012](adr/ADR-012-learner-renderer-interprets-educational-semantics.md) · [Authoring export path](renderer-export-behavior.md) · [Diagnostics](learner-renderer-vnext-diagnostics.md) · [Extension guide](learner-renderer-vnext-extension-guide.md) · [Sprint 68 closeout](../sprints/sprint-68-closeout.md) · [Sprint 69 planning pack](../development/sprints/2026-07-23-sprint-69-archetype-grammar-validation/README.md) · [Certification artefacts](../../artifacts/learner-renderer-vnext-certification.md)
+
+---
+
+## Authoring export (product surface)
+
+In the Prism **Authoring** tab, **vNext is the Supported** learner page export path (UI default and `app.js` default). **Legacy** remains a selectable **Compatibility** option and is not removed by documentation alignment.
+
+| Concern | Authority |
+| ------- | --------- |
+| Product export narrative | [renderer-export-behavior.md](renderer-export-behavior.md) |
+| Binding runtime constraints | Sprint 74 [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) |
+| Browser-loaded API | `window.PRISM_LEARNER_RENDERER_VNEXT` from `lib/learner-renderer-vnext-browser.js` (generated browser artefact loaded by `index.html`) |
+| Source modules | `lib/learner-renderer-vnext/*` |
+
+**Node-based test evidence** and certification scripts exercise shared logic. They do **not** replace verification of the **production browser path**.
 
 ---
 
@@ -91,7 +106,7 @@ flowchart TD
 | **Response parts** | Canonical “what the learner must produce” units | Visual chrome |
 | **Learner-surface requests** | Capability kind + provenance | Upstream authoring |
 | **Workspace models** | Stable IDs, editable structure, guidance | Remote sync |
-| **HTML renderer** | Deterministic Node/browser markup | Event handling |
+| **HTML renderer** | Deterministic markup (browser-loaded production; also exercisable as Node-based test evidence) | Event handling |
 | **Browser runtime** | Ordering moves, draft flush, clear UI | Grading |
 | **Local draft persistence** | Versioned envelopes in `localStorage` | Submission / teacher review |
 | **Production certification** | Corpus regression and release gates | Feature design |
@@ -133,7 +148,7 @@ flowchart TD
 ### Rendering is deterministic
 
 - **Motivation:** Parity, persistence identity, and certification require stable output.
-- **Consequence:** No time-based IDs; Node and browser initial HTML must match.
+- **Consequence:** No time-based IDs; Node-based test evidence and browser-loaded initial HTML must match.
 - **Example:** Ordering initial order uses a documented deterministic strategy.
 
 ### Interaction capabilities are isolated
@@ -151,7 +166,7 @@ flowchart TD
 ### Certification validates behaviour rather than implementation
 
 - **Motivation:** Refactors should not require rewriting golden HTML snapshots wholesale.
-- **Consequence:** Corpus checks assert invariants (assignment, a11y, parity, persistence).
+- **Consequence:** Corpus checks assert invariants (assignment, a11y, markup consistency between Node-based test evidence and the browser-loaded artefact, persistence).
 - **Example:** IMP-020 certifies material roots in HTML without encoding composition algorithms in expectations.
 
 ---
@@ -340,7 +355,7 @@ If page identity lacks workflow/page ids, the draft key falls back to schema + a
 
 | Phase | Responsibility |
 | ----- | -------------- |
-| **Initial rendering** | Deterministic HTML from Node or browser bundle — no storage access in Node |
+| **Initial rendering** | Deterministic HTML from the browser-loaded implementation (or equivalent Node-based test evidence) — Node tooling must not be treated as the production runtime |
 | **Runtime enhancement** | Wire ordering controls, draft persistence, status UI after DOM exists |
 | **Learner interaction** | Edits, moves, clear/confirm; emit workspace-change events |
 
@@ -473,7 +488,7 @@ Six workflows (authoritative + representative): VideoTranscriptTest, Heterosceda
 
 ### Guarantees checked
 
-Exactly-once assignment, archetype coverage, surface coverage, a11y, persistence restore, browser/Node parity, diagnostic cleanliness, print CSS gates.
+Exactly-once assignment, archetype coverage, surface coverage, a11y, persistence restore, markup consistency between Node-based test evidence and the browser-loaded artefact, diagnostic cleanliness, print CSS gates.
 
 ### Known unrelated failures
 
@@ -555,7 +570,7 @@ collaboration
 | Render | `render-learner-page.js`, `render-activity.js`, `render-composed-moment.js` |
 | Runtime | `ordering-runtime.js`, `learner-draft-persistence.js` |
 | Certification | `certification-corpus.js`, `certify-learner-renderer.js`, `scripts/certify-learner-renderer-vnext.js` |
-| Browser bundle | `scripts/build-learner-renderer-vnext-browser.js` → `lib/learner-renderer-vnext-browser.js` |
+| Generated browser artefact | `scripts/build-learner-renderer-vnext-browser.js` → `lib/learner-renderer-vnext-browser.js` (loaded by `index.html`) |
 
 Public boundary: `lib/learner-renderer-vnext/index.js`.
 
@@ -565,4 +580,5 @@ Public boundary: `lib/learner-renderer-vnext/index.js`.
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | S74A-T-010 — Authoring Supported/Compatibility export pointers; terminology aligned with Sprint 74 constraints |
 | 2026-07-22 | Initial Sprint 68 / IMP-021 architecture reference |

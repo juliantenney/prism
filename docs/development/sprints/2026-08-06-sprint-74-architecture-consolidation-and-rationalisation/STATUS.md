@@ -1,21 +1,22 @@
 # Sprint 74 — Status / Dashboard
 
 **Sprint:** 74 — Architecture Consolidation and Rationalisation  
-**Status:** **OPEN** (planning refinement complete; awaiting operator approval to open 74A)  
+**Status:** **OPEN** (programme wrapper; Sprint 74A implementation active)  
 **Opened:** 2026-08-06  
 **Predecessor:** Sprint 73 — COMPLETE / Closed  
-**Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)
+**Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
+**Active sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)
 
 ---
 
 ## Narrative
 
 ```text
-Sprint 73 closed → Sprint 74 opened (discovery-led wrapper)
-  → S74-T-001 discovery ✅
-  → S74-T-010 domain refinement ✅ (S74-D02 recommends 74A)
-  → operator approval required
-  → Open Sprint 74A (not started)
+Sprint 74 discovery + domain refinement ✅
+  → S74-D03…D05 constraints; S74-D07 definitive-codebase principle
+  → Sprint 74A OPEN (S74-D06) · S74A-D02 obsolete renderer removal
+  → 74A next: S74A-T-020
+  → 74B / 74C not opened
 ```
 
 ---
@@ -24,14 +25,12 @@ Sprint 73 closed → Sprint 74 opened (discovery-led wrapper)
 
 | Item | State |
 | ---- | ----- |
-| Sprint status | **OPEN** — wrapper; no implementation sub-sprint open |
-| S74-T-001 | **Done** |
-| S74-T-010 | **Done** — [refinement](S74-T-010-rationalisation-domain-refinement.md) |
-| Binding constraints | Recorded — [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`) |
-| Runtime changes | **None** |
-| Sprint 74A / 74B / 74C | **Not opened** |
-| Recommended 74A | Authoring → learner export path integrity (`S74-D02`) |
-| Current task | **Awaiting operator approval to open Sprint 74A** |
+| Sprint 74 (wrapper) | **OPEN** |
+| S74-T-001 / S74-T-010 | **Done** (factual findings preserved) |
+| Binding constraints | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**) |
+| Sprint 74A | **OPEN** — sole / definitive vNext; obsolete renderer removal **Accepted** |
+| Sprint 74B / 74C | **Not opened** |
+| Current task (programme) | Continue under **Sprint 74A** (`S74A-T-020` next) |
 
 ---
 
@@ -39,21 +38,13 @@ Sprint 73 closed → Sprint 74 opened (discovery-led wrapper)
 
 | Phase | Name | Status |
 | ----- | ---- | ------ |
-| 1 | Codebase rationalisation discovery | **Complete** (`S74-T-001`) |
-| 2 | Domain sequencing / readiness | **Complete** (`S74-T-010`) |
-| — | Sprint 74A implementation pack | **Not opened** (operator-gated) |
-
----
-
-## Current task
-
-**Next:** Open **Sprint 74A** — only after operator approval.  
-Optional: **S74-T-011** if a thinner AC seed is wanted before pack open (Domain A outline already in T-010).
-
-Do **not** begin implementation under the Sprint 74 wrapper.
+| 1 | Codebase rationalisation discovery | **Complete** |
+| 2 | Domain sequencing / readiness | **Complete** |
+| — | Sprint 74A implementation | **OPEN** |
+| — | Sprint 74B / 74C | **Not opened** |
 
 ---
 
 ## Last updated
 
-2026-08-06 — Binding architectural constraints recorded (`S74-D03`…`S74-D05`); S74-T-010 terminology aligned; Sprint 74A remains unopened.
+2026-08-06 — `S74-D07` definitive-codebase principle; `S74A-D02` obsolete-renderer removal; 74A next T-020; runtime None under reconciliation.

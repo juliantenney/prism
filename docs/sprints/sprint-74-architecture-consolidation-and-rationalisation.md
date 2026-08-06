@@ -1,11 +1,12 @@
 # Sprint 74 — Architecture Consolidation and Rationalisation
 
-**Status:** **OPEN** (discovery)  
+**Status:** **OPEN** (programme wrapper; Sprint 74A implementation active)  
 **Opened:** 2026-08-06  
 **Type:** Discovery-led wrapper sprint (maturation phase)  
 **Portable pack:** [docs/development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 **Predecessor:** [sprint-73-closeout.md](sprint-73-closeout.md) — **COMPLETE / Closed**  
-**Successor sub-sprints:** 74A / 74B / 74C **not opened**
+**Active sub-sprint:** [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) — **OPEN**  
+**Other sub-sprints:** 74B / 74C **not opened**
 
 ## Theme
 
@@ -13,31 +14,32 @@ Understand the current supported Prism architecture and establish a sequence of 
 
 ## Purpose
 
-Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, and tests; classify compatibility/duplication; recommend coherent domains for later implementation sprints.
+Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, and tests; classify compatibility/duplication; recommend coherent domains. **Sprint 74A** implements the first domain.
 
-## Entry state
+## Entry / current state
 
-- Sprint 73 **complete** — Workflow Resources shipped.  
-- Sprint 74 opened under [S74-D01](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md).  
-- Discovery [S74-T-001](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-001-codebase-rationalisation-discovery.md) **complete**.  
-- Domain refinement [S74-T-010](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md) **complete** (`S74-D02`).
+- Sprint 73 **complete**.  
+- Sprint 74 discovery (`S74-T-001`) and domain refinement (`S74-T-010`) **complete**.  
+- Constraints binding (`S74-D03`…`S74-D05`, **`S74-D07`** definitive codebase).  
+- Operator approval opened Sprint 74A (`S74-D06`).  
+- `S74A-D02`: vNext replaces obsolete learner renderer — removal after inventory **Accepted**.  
+- Next 74A task: **S74A-T-020**.
 
 ## Phase overview
 
 | Phase | Focus | Status |
 | ----- | ----- | ------ |
-| 1 | Codebase rationalisation discovery | **Complete** (S74-T-001) |
-| 2 | Domain sequencing / readiness | **Complete** (S74-T-010) |
-| — | Sprint 74A / 74B / 74C implementation | **Not opened** (74A recommended; operator-gated) |
+| 1 | Codebase rationalisation discovery | **Complete** |
+| 2 | Domain sequencing / readiness | **Complete** |
+| — | Sprint 74A implementation | **OPEN** |
+| — | Sprint 74B / 74C | **Not opened** |
 
 ## Boundaries
 
-No runtime changes in discovery/planning under the wrapper. No Sprint 73 reopen. Binding constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`) — browser-only runtime; one supported path; `app.js` by ownership; static deployment. Related backlog (PB-FA-003, PB-S-004) informs domains but is not auto-consumed. Sprint 74A remains **unopened**.
+Binding constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md). Implement Domain A only in the 74A pack.
 
 ## Authoritative docs
 
 - [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
-- [SPRINT-74-CHARTER.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-CHARTER.md)  
 - [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)  
-- [S74-T-001 discovery](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-001-codebase-rationalisation-discovery.md)  
-- [S74-T-010 refinement](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md)  
+- [Sprint 74A START HERE](../development/sprints/2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  

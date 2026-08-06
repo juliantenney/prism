@@ -218,7 +218,6 @@
     utilitiesDownloadTestLog: [],
     utilitiesOutputWorkspace: null,
     utilitiesPresentationMode: "single_page",
-    utilitiesRendererVersion: "vnext",
     utilitiesSourceMode: "",
     utilitiesVisualAssetObjectUrlsByBriefId: {},
     /** Sprint 73: ephemeral cache of workflow resource refs mirrored in runstate (canonical bytes in owner store). */
@@ -491,7 +490,6 @@
     // Utilities
     els.utilitiesOutputFormat = document.getElementById("utilitiesOutputFormat");
     els.utilitiesPresentationMode = document.getElementById("utilitiesPresentationMode");
-    els.utilitiesRendererVersion = document.getElementById("utilitiesRendererVersion");
     els.utilitiesFileName = document.getElementById("utilitiesFileName");
     els.utilitiesJsonInput = document.getElementById("utilitiesJsonInput");
     els.utilitiesAssembleCurrentRunBtn = document.getElementById("utilitiesAssembleCurrentRunBtn");
@@ -50506,13 +50504,8 @@
     return { html: html, error: null };
   }
 
+  /** Sole learner renderer (S74A-D02). Selector/state removed in S74A-T-045 Slice 1. */
   function getUtilitiesRendererVersion() {
-    var raw = String(
-      (els.utilitiesRendererVersion && els.utilitiesRendererVersion.value) ||
-        state.utilitiesRendererVersion ||
-        "vnext"
-    ).trim();
-    if (raw === "legacy") return "legacy";
     return "vnext";
   }
 
@@ -50576,7 +50569,6 @@
     ).toLowerCase();
     state.utilitiesPresentationMode = presentationMode === "learning_object" ? "learning_object" : "single_page";
     var rendererVersion = getUtilitiesRendererVersion();
-    state.utilitiesRendererVersion = rendererVersion;
     var hasAttachedVisualAssets =
       !!(
         state.utilitiesOutputWorkspace &&
@@ -50912,7 +50904,6 @@
     if (els.utilitiesFileName) els.utilitiesFileName.value = "";
     if (els.utilitiesOutputFormat) els.utilitiesOutputFormat.value = "html";
     if (els.utilitiesPresentationMode) els.utilitiesPresentationMode.value = "single_page";
-    if (els.utilitiesRendererVersion) els.utilitiesRendererVersion.value = "vnext";
     if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.srcdoc = "";
     if (els.utilitiesPreviewError) {
       els.utilitiesPreviewError.classList.add("hidden");
@@ -50943,7 +50934,6 @@
     state.utilitiesLastFileName = "";
     state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
     state.utilitiesPresentationMode = "single_page";
-    state.utilitiesRendererVersion = "vnext";
     state.utilitiesSourceMode = "";
     state.utilitiesVisualAssetObjectUrlsByBriefId = {};
   }
@@ -52025,11 +52015,6 @@
     prismTestApi.utilityExtractFirstCompleteSentenceForTest = utilityExtractFirstCompleteSentence;
     prismTestApi.utilityBuildVnextLearningHeaderIntroForTest = utilityBuildVnextLearningHeaderIntro;
     prismTestApi.getUtilitiesRendererVersionForTest = getUtilitiesRendererVersion;
-    prismTestApi.setUtilitiesRendererVersionForTest = function (value) {
-      var next = String(value == null ? "" : value);
-      state.utilitiesRendererVersion = next;
-      if (els.utilitiesRendererVersion) els.utilitiesRendererVersion.value = next;
-    };
     prismTestApi.utilityNormalizeJourneyNavLabelForTest = utilityNormalizeJourneyNavLabel;
     prismTestApi.utilityFormatJourneyNavLabelDisplayForTest = utilityFormatJourneyNavLabelDisplay;
     prismTestApi.utilityLearningJourneyNavLayoutClassForTest = utilityLearningJourneyNavLayoutClass;

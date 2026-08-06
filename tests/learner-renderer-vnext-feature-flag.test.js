@@ -321,22 +321,12 @@ test("feature flag: normalizeRendererVersion defaults to vNext and rejects truth
   assert.throws(() => normalizeRendererVersion(1), /Unsupported learner renderer version/);
 });
 
-test("feature flag: utilities renderer selector defaults to vNext", () => {
+test("feature flag: Authoring has no learner renderer selector; version is always vNext", () => {
   const { api } = loadPrismTestApi();
-  api.setUtilitiesRendererVersionForTest("vnext");
   assert.equal(api.getUtilitiesRendererVersionForTest(), "vnext");
-});
-
-test("feature flag: utilities renderer selector respects explicit legacy choice", () => {
-  const { api } = loadPrismTestApi();
-  api.setUtilitiesRendererVersionForTest("legacy");
-  assert.equal(api.getUtilitiesRendererVersionForTest(), "legacy");
-});
-
-test("feature flag: utilities renderer selector resolves absent or invalid values to vNext", () => {
-  const { api } = loadPrismTestApi();
-  api.setUtilitiesRendererVersionForTest("");
-  assert.equal(api.getUtilitiesRendererVersionForTest(), "vnext");
-  api.setUtilitiesRendererVersionForTest("experimental");
-  assert.equal(api.getUtilitiesRendererVersionForTest(), "vnext");
+  assert.equal(typeof api.setUtilitiesRendererVersionForTest, "undefined");
+  const indexHtml = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
+  assert.equal(indexHtml.includes('id="utilitiesRendererVersion"'), false);
+  assert.equal(indexHtml.includes(">Learner renderer<"), false);
+  assert.equal(/<option[^>]*value="legacy"/.test(indexHtml), false);
 });

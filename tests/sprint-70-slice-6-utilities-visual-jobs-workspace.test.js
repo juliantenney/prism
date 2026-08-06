@@ -265,20 +265,22 @@ const sampleWorkspace = workspace.buildVisualJobsWorkspaceState(samplePage);
 
 // --- Placement / markup ---
 
-test("Slice 6: index.html includes Visual Jobs output view controls in Utilities preview panel", () => {
+test("Slice 6: index.html includes Utilities output view controls in preview panel", () => {
   const html = fs.readFileSync(indexHtmlPath, "utf8");
   assert.match(html, /id="utilitiesOutputViewBar"/);
   assert.match(html, /id="utilitiesOutputViewLearnerBtn"/);
   assert.match(html, /id="utilitiesOutputViewVisualJobsBtn"/);
+  assert.match(html, /id="utilitiesOutputViewVideoBtn"/);
+  assert.match(html, /id="utilitiesOutputViewResourcesBtn"/);
   assert.match(html, /id="utilitiesVisualJobsPanel"/);
   assert.match(html, /utilities-visual-jobs-workspace\.js/);
   assert.match(html, /id="utilitiesPreviewFrame"/);
   assert.equal((html.match(/id="utilitiesJsonInput"/g) || []).length, 1);
 });
 
-test("Slice 6: no new top-level navigation item is added for Visual Jobs", () => {
+test("Slice 6: no new top-level navigation item is added for Graphics tab", () => {
   const html = fs.readFileSync(indexHtmlPath, "utf8");
-  assert.doesNotMatch(html, /Visual Jobs[\s\S]{0,80}tab-/i);
+  assert.doesNotMatch(html, /Graphics[\s\S]{0,80}tab-/i);
   assert.match(html, /id="tabUtilities"/);
 });
 
@@ -415,7 +417,7 @@ test("Slice 6: copy failure leaves prompt available (no mutation)", async () => 
 
 test("Slice 6: no assembled page empty state", () => {
   const html = workspace.renderVisualJobsWorkspaceHtml(workspace.emptyWorkspaceState());
-  assert.match(html, /Assemble or preview a page to see its visual jobs/);
+  assert.match(html, /Assemble or preview a page to see its graphics jobs/);
   assert.doesNotMatch(html, /util-vj-two-pane/);
 });
 
@@ -464,7 +466,7 @@ test("Slice 6: app test hooks build and render workspace from assembled page", (
   api.setUtilitiesOutputViewForTest("visual_jobs");
   assert.equal(api.getUtilitiesOutputViewForTest(), "visual_jobs");
   const html = api.renderVisualJobsWorkspaceForTest();
-  assert.match(html, /Visual Jobs/);
+  assert.match(html, /Graphics/);
   assert.match(html, /util-vj-two-pane/);
 });
 
@@ -482,12 +484,14 @@ test("Slice 6: switching views does not reassemble or mutate JSON input", () => 
   assert.equal(jsonEl.value, JSON.stringify(page));
 });
 
-test("Slice 6: Visual Jobs count label reflects compiled brief count", () => {
+test("Slice 6: Graphics, Video, and Resources count labels always show counts", () => {
   const { api } = loadPrismTestApiWithWorkspace();
   const page = basePage();
   api.buildVisualJobsWorkspaceStateForTest(page);
   const count = api.getUtilitiesOutputWorkspaceForTest().compilerResult.briefs.length;
-  assert.match(api.getUtilitiesOutputViewVisualJobsLabelForTest(), new RegExp("\\(" + count + "\\)"));
+  assert.equal(api.getUtilitiesOutputViewVisualJobsLabelForTest(), "Graphics (" + count + ")");
+  assert.equal(api.getUtilitiesOutputViewVideoLabelForTest(), "Video (0)");
+  assert.equal(api.getUtilitiesOutputViewResourcesLabelForTest(), "Resources (0)");
 });
 
 test("Slice 6: Clear removes visual workspace state", () => {

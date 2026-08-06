@@ -347,3 +347,41 @@ test("Slice 8A: authoritative page-scope knowledge-summary asset emits figure in
   assert.match(rendered.html, /data:image\/png;base64,/);
   assert.match(rendered.html, /data-visual-slot="knowledge-summary-after-content"/);
 });
+
+test("Slice 73: workspace splits Graphics, Video, and Resources panels", () => {
+  const wsGraphics = workspace.buildVisualJobsWorkspaceState(page, { activeView: "visual_jobs" });
+  const graphicsHtml = workspace.renderVisualJobsWorkspaceHtml(wsGraphics);
+  assert.match(graphicsHtml, />Graphics</);
+  assert.doesNotMatch(graphicsHtml, /data-video-embed-input/);
+  assert.doesNotMatch(graphicsHtml, /data-add-resource-ref/);
+
+  const wsVideo = workspace.buildVisualJobsWorkspaceState(page, { activeView: "video" });
+  const videoHtml = workspace.renderVisualJobsWorkspaceHtml(wsVideo);
+  assert.match(videoHtml, />Video</);
+  assert.match(videoHtml, /util-vj-authoring-form/);
+  assert.match(videoHtml, /util-vj-form-field/);
+  assert.match(videoHtml, /data-video-title-input/);
+  assert.match(videoHtml, /data-video-intro-input/);
+  assert.match(videoHtml, /data-video-embed-input/);
+  assert.match(videoHtml, /util-vj-form-control--embed/);
+  assert.doesNotMatch(videoHtml, /data-add-resource-ref/);
+  assert.doesNotMatch(videoHtml, /util-vj-mini-pre/);
+  assert.doesNotMatch(videoHtml, /No video embed saved/);
+
+  const wsResources = workspace.buildVisualJobsWorkspaceState(page, { activeView: "resources" });
+  const resourcesHtml = workspace.renderVisualJobsWorkspaceHtml(wsResources);
+  assert.match(resourcesHtml, />Resources</);
+  assert.match(resourcesHtml, /util-vj-authoring-form/);
+  assert.match(resourcesHtml, /data-add-resource-ref/);
+  assert.doesNotMatch(resourcesHtml, /data-video-embed-input/);
+});
+
+test("Slice 73: workspace keeps explicit additional resource order", () => {
+  const ws = workspace.buildVisualJobsWorkspaceState(page, { activeView: "visual_jobs" });
+  workspace.addAdditionalResourceReference(ws, "wr-1", "Worksheet");
+  workspace.addAdditionalResourceReference(ws, "wr-2", "Case study");
+  workspace.moveAdditionalResourceReference(ws, "wr-2", "up");
+  const refs = workspace.readPageResourceRefsFromPage(ws.assembledPageSnapshot);
+  assert.equal(refs.additional_resources[0].resource_id, "wr-2");
+  assert.equal(refs.additional_resources[1].resource_id, "wr-1");
+});

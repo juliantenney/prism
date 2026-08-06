@@ -223,6 +223,14 @@
     utilitiesVisualAssetObjectUrlsByBriefId: {},
     /** Sprint 73: ephemeral cache of workflow resource refs mirrored in runstate (canonical bytes in owner store). */
     workflowResourceRefs: [],
+    /** Sprint 73 Phase 3: lightweight page-level refs (video + additional resources) per selected workflow. */
+    workflowPageResourceRefs: {
+      videoResourceId: "",
+      videoSectionTitle: "Video",
+      videoIntroText: "",
+      additionalResourcesIntro: "",
+      additionalResources: []
+    },
     visualAssetPreviewRevision: 0,
     utilitiesPreviewLastAppliedRevision: 0,
     utilitiesPreviewWriteLog: []
@@ -498,6 +506,8 @@
     els.utilitiesOutputViewBar = document.getElementById("utilitiesOutputViewBar");
     els.utilitiesOutputViewLearnerBtn = document.getElementById("utilitiesOutputViewLearnerBtn");
     els.utilitiesOutputViewVisualJobsBtn = document.getElementById("utilitiesOutputViewVisualJobsBtn");
+    els.utilitiesOutputViewVideoBtn = document.getElementById("utilitiesOutputViewVideoBtn");
+    els.utilitiesOutputViewResourcesBtn = document.getElementById("utilitiesOutputViewResourcesBtn");
     els.utilitiesOutputWorkspace = document.getElementById("utilitiesOutputWorkspace");
     els.utilitiesVisualJobsPanel = document.getElementById("utilitiesVisualJobsPanel");
     els.utilitiesCopyAnnounce = document.getElementById("utilitiesCopyAnnounce");
@@ -27168,6 +27178,10 @@
   }
 
   function buildWorkflowRunStateSnapshotForCurrentSelection() {
+    var pageRefs =
+      state.workflowPageResourceRefs && typeof state.workflowPageResourceRefs === "object"
+        ? state.workflowPageResourceRefs
+        : {};
     return {
       capturedOutputs:
         state.workflowRunCapturedOutputs && typeof state.workflowRunCapturedOutputs === "object"
@@ -27187,7 +27201,24 @@
           : 0,
       workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
         ? state.workflowResourceRefs.slice()
-        : []
+        : [],
+      workflowPageResourceRefs: {
+        videoResourceId: String(pageRefs.videoResourceId || "").trim(),
+        videoSectionTitle: String(pageRefs.videoSectionTitle || "Video"),
+        videoIntroText: String(pageRefs.videoIntroText || ""),
+        additionalResourcesIntro: String(pageRefs.additionalResourcesIntro || ""),
+        additionalResources: Array.isArray(pageRefs.additionalResources)
+          ? pageRefs.additionalResources.map(function (row) {
+              var item = row && typeof row === "object" ? row : {};
+              return {
+                resource_id: String(item.resource_id || "").trim(),
+                link_text: String(item.link_text || "").trim(),
+                order:
+                  typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
+              };
+            })
+          : []
+      }
     };
   }
 
@@ -27231,6 +27262,36 @@
     state.workflowRunCopiedStepId = "";
     state.workflowResourceRefs =
       rec && Array.isArray(rec.workflowResourceRefs) ? rec.workflowResourceRefs.slice() : [];
+    state.workflowPageResourceRefs =
+      rec && rec.workflowPageResourceRefs && typeof rec.workflowPageResourceRefs === "object"
+        ? {
+            videoResourceId: String(rec.workflowPageResourceRefs.videoResourceId || "").trim(),
+            videoSectionTitle: String(rec.workflowPageResourceRefs.videoSectionTitle || "Video"),
+            videoIntroText: String(rec.workflowPageResourceRefs.videoIntroText || ""),
+            additionalResourcesIntro: String(
+              rec.workflowPageResourceRefs.additionalResourcesIntro || ""
+            ),
+            additionalResources: Array.isArray(rec.workflowPageResourceRefs.additionalResources)
+              ? rec.workflowPageResourceRefs.additionalResources.map(function (row) {
+                  var item = row && typeof row === "object" ? row : {};
+                  return {
+                    resource_id: String(item.resource_id || "").trim(),
+                    link_text: String(item.link_text || "").trim(),
+                    order:
+                      typeof item.order === "number" && isFinite(item.order)
+                        ? Math.floor(item.order)
+                        : 0
+                  };
+                })
+              : []
+          }
+        : {
+            videoResourceId: "",
+            videoSectionTitle: "Video",
+            videoIntroText: "",
+            additionalResourcesIntro: "",
+            additionalResources: []
+          };
   }
 
   function renderWorkflowList() {
@@ -43670,6 +43731,7 @@
       "@media (prefers-reduced-motion:reduce){.util-learner-renderer-vnext .util-guided-review__panel{transition:none}}" +
       "@media print{.util-learner-renderer-vnext .util-guided-review__nav{display:none!important}.util-learner-renderer-vnext .util-guided-review__panel,.util-learner-renderer-vnext .util-guided-review__panel[hidden]{display:block!important}}" +
       ".util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}" +
+      ".util-learner-renderer-vnext .util-page-video__content iframe,.util-learner-renderer-vnext .util-page-video__content video{max-width:100%}" +
       ".util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
       ".util-learner-renderer-vnext .util-table-scroll.util-material-table table{width:100%;table-layout:auto}" +
       ".util-learner-renderer-vnext .util-table-scroll.util-material-table th,.util-learner-renderer-vnext .util-table-scroll.util-material-table td{min-width:8rem;white-space:normal;overflow-wrap:normal;word-break:normal;vertical-align:top}" +
@@ -48064,6 +48126,125 @@
     return typeof PRISM_WORKFLOW_RESOURCES !== "undefined" ? PRISM_WORKFLOW_RESOURCES : null;
   }
 
+  function cloneWorkflowPageResourceRefs() {
+    var src =
+      state.workflowPageResourceRefs && typeof state.workflowPageResourceRefs === "object"
+        ? state.workflowPageResourceRefs
+        : {};
+    return {
+      videoResourceId: String(src.videoResourceId || "").trim(),
+      videoSectionTitle: String(src.videoSectionTitle || "Video"),
+      videoIntroText: String(src.videoIntroText || ""),
+      additionalResourcesIntro: String(src.additionalResourcesIntro || ""),
+      additionalResources: Array.isArray(src.additionalResources)
+        ? src.additionalResources.map(function (row, idx) {
+            var item = row && typeof row === "object" ? row : {};
+            return {
+              resource_id: String(item.resource_id || "").trim(),
+              link_text: String(item.link_text || "").trim(),
+              order:
+                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : idx
+            };
+          })
+        : []
+    };
+  }
+
+  function normalizeWorkflowPageResourceRefsInState() {
+    var next = cloneWorkflowPageResourceRefs();
+    next.videoSectionTitle = String(next.videoSectionTitle || "").trim() || "Video";
+    next.videoIntroText = String(next.videoIntroText || "");
+    next.additionalResources = next.additionalResources
+      .filter(function (row) {
+        return row.resource_id && row.link_text;
+      })
+      .sort(function (a, b) {
+        return a.order - b.order;
+      })
+      .map(function (row, idx) {
+        return {
+          resource_id: row.resource_id,
+          link_text: row.link_text,
+          order: idx
+        };
+      });
+    state.workflowPageResourceRefs = next;
+    return next;
+  }
+
+  function ensureWorkspaceAdditionalResourceState() {
+    if (!state.utilitiesOutputWorkspace || typeof state.utilitiesOutputWorkspace !== "object") return;
+    if (!state.utilitiesOutputWorkspace.additionalResourceProjection) {
+      state.utilitiesOutputWorkspace.additionalResourceProjection = {
+        intro_text: "",
+        items: [],
+        diagnostics: []
+      };
+    }
+    if (!state.utilitiesOutputWorkspace.videoResourceProjection) {
+      state.utilitiesOutputWorkspace.videoResourceProjection = {
+        resource_id: "",
+        section_title: "Video",
+        intro_text: "",
+        embed_code: ""
+      };
+    }
+    if (!state.utilitiesOutputWorkspace.pageResourceDrafts) {
+      state.utilitiesOutputWorkspace.pageResourceDrafts = {
+        videoTitle: "Video",
+        videoIntroText: "",
+        videoEmbedCode: "",
+        resourceLinkText: "",
+        resourceIntroText: ""
+      };
+    } else {
+      var drafts = state.utilitiesOutputWorkspace.pageResourceDrafts;
+      if (!Object.prototype.hasOwnProperty.call(drafts, "videoTitle")) drafts.videoTitle = "Video";
+      if (!Object.prototype.hasOwnProperty.call(drafts, "videoIntroText")) drafts.videoIntroText = "";
+      if (!Object.prototype.hasOwnProperty.call(drafts, "videoEmbedCode")) drafts.videoEmbedCode = "";
+      if (!Object.prototype.hasOwnProperty.call(drafts, "resourceLinkText")) drafts.resourceLinkText = "";
+      if (!Object.prototype.hasOwnProperty.call(drafts, "resourceIntroText")) drafts.resourceIntroText = "";
+    }
+  }
+
+  function buildAdditionalResourceLinkPath(meta, idx) {
+    var name = String((meta && (meta.original_filename || meta.filename)) || "").trim();
+    var ext = "";
+    if (name.indexOf(".") > -1) {
+      ext = "." + name.split(".").pop().toLowerCase().replace(/[^a-z0-9]+/g, "");
+    } else if (meta && meta.mime_type) {
+      if (/pdf/i.test(meta.mime_type)) ext = ".pdf";
+      else if (/word|officedocument\.wordprocessingml/i.test(meta.mime_type)) ext = ".docx";
+      else if (/excel|spreadsheetml/i.test(meta.mime_type)) ext = ".xlsx";
+      else if (/powerpoint|presentationml/i.test(meta.mime_type)) ext = ".pptx";
+      else if (/plain/i.test(meta.mime_type)) ext = ".txt";
+    }
+    if (!ext) ext = ".bin";
+    return "assets/additional-resource-" + String(idx + 1) + ext;
+  }
+
+  function applyWorkflowPageResourceRefsToPage(page) {
+    if (!page || typeof page !== "object" || Array.isArray(page)) return page;
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    page.workflow_page_resources = {
+      video_resource_id: String(refs.videoResourceId || "").trim(),
+      video_section_title: String(refs.videoSectionTitle || "Video"),
+      video_intro_text: String(refs.videoIntroText || ""),
+      additional_resources_intro: String(refs.additionalResourcesIntro || ""),
+      additional_resources: Array.isArray(refs.additionalResources)
+        ? refs.additionalResources.map(function (row, idx) {
+            return {
+              resource_id: String(row.resource_id || "").trim(),
+              link_text: String(row.link_text || "").trim(),
+              order:
+                typeof row.order === "number" && isFinite(row.order) ? Math.floor(row.order) : idx
+            };
+          })
+        : []
+    };
+    return page;
+  }
+
   function persistWorkflowResourceFromVisualAttach(briefId, file, asset) {
     var workflowId = String(state.selectedWorkflowId || "").trim();
     var resourcesMod = getWorkflowResourcesMod();
@@ -48086,6 +48267,123 @@
         }
         return result;
       });
+  }
+
+  function persistWorkflowVideoEmbedResource(embedCode) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    var payload = String(embedCode || "");
+    if (!workflowId || !resourcesMod) {
+      return Promise.resolve({ ok: false, code: "persist_unavailable" });
+    }
+    if (!payload.trim()) {
+      return Promise.resolve({ ok: false, code: "empty_embed_code" });
+    }
+    return resourcesMod
+      .putTextResource({
+        workflow_id: workflowId,
+        slot_key: "page_video_embed",
+        mime_type: "text/html",
+        text_payload: payload
+      })
+      .then(function (result) {
+        if (!result || !result.ok || !result.resource_id) return result || { ok: false };
+        normalizeWorkflowPageResourceRefsInState();
+        state.workflowPageResourceRefs.videoResourceId = String(result.resource_id);
+        persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+        return result;
+      });
+  }
+
+  function persistWorkflowAdditionalFileResource(file) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    if (!workflowId || !resourcesMod || !file) {
+      return Promise.resolve({ ok: false, code: "persist_unavailable" });
+    }
+    return resourcesMod.putBinaryFileResource({
+      workflow_id: workflowId,
+      mime_type: file.type || "application/octet-stream",
+      filename: file.name || "",
+      payload_blob: file,
+      byte_size: Number(file.size || 0)
+    });
+  }
+
+  function addWorkflowAdditionalResourceRef(resourceId, linkText) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    refs.additionalResources.push({
+      resource_id: String(resourceId || "").trim(),
+      link_text: String(linkText || "").trim(),
+      order: refs.additionalResources.length
+    });
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+  }
+
+  function removeWorkflowAdditionalResourceRefById(resourceId) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var target = String(resourceId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    refs.additionalResources = refs.additionalResources
+      .filter(function (row) {
+        return String(row.resource_id || "").trim() !== target;
+      })
+      .map(function (row, idx) {
+        return {
+          resource_id: row.resource_id,
+          link_text: row.link_text,
+          order: idx
+        };
+      });
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+  }
+
+  function moveWorkflowAdditionalResourceRef(resourceId, direction) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var target = String(resourceId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    var idx = refs.additionalResources.findIndex(function (row) {
+      return String(row.resource_id || "").trim() === target;
+    });
+    if (idx < 0) return;
+    var nextIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (nextIdx < 0 || nextIdx >= refs.additionalResources.length) return;
+    var tmp = refs.additionalResources[idx];
+    refs.additionalResources[idx] = refs.additionalResources[nextIdx];
+    refs.additionalResources[nextIdx] = tmp;
+    refs.additionalResources = refs.additionalResources.map(function (row, i) {
+      return { resource_id: row.resource_id, link_text: row.link_text, order: i };
+    });
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+  }
+
+  function setWorkflowAdditionalResourcesIntroText(text) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    refs.additionalResourcesIntro = String(text == null ? "" : text);
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+  }
+
+  function setWorkflowVideoPresentation(title, introText) {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    refs.videoSectionTitle = String(title == null ? "" : title).trim() || "Video";
+    refs.videoIntroText = String(introText == null ? "" : introText);
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+  }
+
+  function removeWorkflowVideoResourceRef() {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    refs.videoResourceId = "";
+    state.workflowPageResourceRefs = refs;
+    if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
   }
 
   function rehydrateWorkflowResourcesIntoUtilitiesWorkspace(options) {
@@ -48128,6 +48426,131 @@
       });
   }
 
+  function rehydrateWorkflowPageResourcesIntoWorkspace() {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    var ws = state.utilitiesOutputWorkspace;
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    if (!workflowId || !resourcesMod || !ws) {
+      return Promise.resolve({ ok: false, code: "rehydrate_unavailable" });
+    }
+    ensureWorkspaceAdditionalResourceState();
+    ws.additionalResourceProjection = { intro_text: refs.additionalResourcesIntro || "", items: [], diagnostics: [] };
+    ws.videoResourceProjection = {
+      resource_id: refs.videoResourceId || "",
+      section_title: refs.videoSectionTitle || "Video",
+      intro_text: refs.videoIntroText || "",
+      embed_code: ""
+    };
+
+    var chain = Promise.resolve();
+    if (refs.videoResourceId) {
+      chain = chain.then(function () {
+        return resourcesMod
+          .getTextResourcePayload(refs.videoResourceId)
+          .then(function (textPayload) {
+            if (String(textPayload || "").trim()) {
+              ws.videoResourceProjection = {
+                resource_id: refs.videoResourceId,
+                section_title: refs.videoSectionTitle || "Video",
+                intro_text: refs.videoIntroText || "",
+                embed_code: String(textPayload || "")
+              };
+            } else {
+              ws.videoResourceProjection = {
+                resource_id: "",
+                section_title: refs.videoSectionTitle || "Video",
+                intro_text: refs.videoIntroText || "",
+                embed_code: ""
+              };
+              ws.additionalResourceProjection.diagnostics.push({
+                code: "missing_video_embed_payload",
+                resource_id: refs.videoResourceId
+              });
+            }
+          })
+          .catch(function () {
+            ws.videoResourceProjection = {
+              resource_id: "",
+              section_title: refs.videoSectionTitle || "Video",
+              intro_text: refs.videoIntroText || "",
+              embed_code: ""
+            };
+            ws.additionalResourceProjection.diagnostics.push({
+              code: "video_embed_read_failed",
+              resource_id: refs.videoResourceId
+            });
+          });
+      });
+    }
+
+    refs.additionalResources.forEach(function (ref, idx) {
+      chain = chain.then(function () {
+        return resourcesMod
+          .getResourceMetadata(ref.resource_id)
+          .then(function (meta) {
+            if (!meta) {
+              ws.additionalResourceProjection.diagnostics.push({
+                code: "missing_resource_metadata",
+                resource_id: ref.resource_id
+              });
+              return null;
+            }
+            return resourcesMod.getResourcePayload(ref.resource_id).then(function (blob) {
+              if (!blob) {
+                ws.additionalResourceProjection.diagnostics.push({
+                  code: "missing_payload",
+                  resource_id: ref.resource_id
+                });
+                return null;
+              }
+              return resourcesMod.blobToDataUrl(blob, meta.mime_type).then(function (dataUrl) {
+                ws.additionalResourceProjection.items.push({
+                  resource_id: ref.resource_id,
+                  order: idx,
+                  link_text: String(ref.link_text || "").trim(),
+                  filename: String(meta.original_filename || ""),
+                  mime_type: String(meta.mime_type || "").toLowerCase(),
+                  byte_size: Number(meta.byte_size || 0),
+                  href: dataUrl,
+                  package_path: buildAdditionalResourceLinkPath(meta, idx)
+                });
+              });
+            });
+          })
+          .catch(function () {
+            ws.additionalResourceProjection.diagnostics.push({
+              code: "resource_read_failed",
+              resource_id: ref.resource_id
+            });
+            return null;
+          });
+      });
+    });
+
+    return chain.then(function () {
+      ws.additionalResourceProjection.items.sort(function (a, b) {
+        return a.order - b.order;
+      });
+      if (
+        ws.pageResourceDrafts &&
+        typeof ws.pageResourceDrafts === "object" &&
+        !String(ws.pageResourceDrafts.resourceIntroText || "").trim()
+      ) {
+        ws.pageResourceDrafts.resourceIntroText = String(refs.additionalResourcesIntro || "");
+      }
+      if (ws.pageResourceDrafts && typeof ws.pageResourceDrafts === "object") {
+        if (!String(ws.pageResourceDrafts.videoTitle || "").trim()) {
+          ws.pageResourceDrafts.videoTitle = String(refs.videoSectionTitle || "Video");
+        }
+        if (!String(ws.pageResourceDrafts.videoIntroText || "").trim()) {
+          ws.pageResourceDrafts.videoIntroText = String(refs.videoIntroText || "");
+        }
+      }
+      return { ok: true };
+    });
+  }
+
   function regenerateUtilitiesExportHtmlFromDurableState() {
     var ws = state.utilitiesOutputWorkspace;
     if (!ws || !ws.assembledPageSnapshot) {
@@ -48137,12 +48560,16 @@
       refreshPreview: false,
       reason: "export"
     }).then(function () {
+      return rehydrateWorkflowPageResourcesIntoWorkspace();
+    }).then(function () {
       var rendered = runUtilityPageExportPipeline(ws.assembledPageSnapshot, {
         rendererVersion: getUtilitiesRendererVersion(),
         compositionMode: resolveUtilitiesCompositionModeForRender({
           visualAssets: ws.visualAssetManifest || null
         }),
         visualAssets: ws.visualAssetManifest || null,
+        videoProjection: ws.videoResourceProjection || null,
+        additionalResourcesProjection: ws.additionalResourceProjection || null,
         applyCompositionValidation: false,
         skipWorkflowAssembly: true
       });
@@ -48190,7 +48617,16 @@
       assetErrorsByBriefId: {},
       visualAssetManifest: { manifest_version: "70.8", schema_version: "", assets: [], missing_brief_ids: [] },
       rendererPlacementByBriefId: {},
-      learnerPreviewRefreshStatus: ""
+      learnerPreviewRefreshStatus: "",
+      additionalResourceProjection: { intro_text: "", items: [], diagnostics: [] },
+      videoResourceProjection: { resource_id: "", section_title: "Video", intro_text: "", embed_code: "" },
+      pageResourceDrafts: {
+        videoTitle: "Video",
+        videoIntroText: "",
+        videoEmbedCode: "",
+        resourceLinkText: "",
+        resourceIntroText: ""
+      }
     };
   }
 
@@ -48218,34 +48654,70 @@
     }
     try {
       revokeAllVisualAssetObjectUrls();
-      state.utilitiesOutputWorkspace = mod.buildVisualJobsWorkspaceState(page, {
+      var pageForWorkspace = JSON.parse(JSON.stringify(page));
+      applyWorkflowPageResourceRefsToPage(pageForWorkspace);
+      state.utilitiesOutputWorkspace = mod.buildVisualJobsWorkspaceState(pageForWorkspace, {
         activeView: opts.activeView || prevView
       });
     } catch (_) {
       state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
     }
     updateUtilitiesOutputViewControls();
+    var activeView = state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.activeView;
+    var shouldRenderAuthoring =
+      activeView === "visual_jobs" || activeView === "video" || activeView === "resources";
     if (
       state.utilitiesOutputWorkspace &&
-      state.utilitiesOutputWorkspace.activeView === "visual_jobs" &&
+      shouldRenderAuthoring &&
       els.utilitiesPreviewPanel &&
       !els.utilitiesPreviewPanel.classList.contains("hidden")
     ) {
       renderUtilitiesVisualJobsView();
     }
-    rehydrateWorkflowResourcesIntoUtilitiesWorkspace({ reason: "workspace_refresh" });
+    rehydrateWorkflowResourcesIntoUtilitiesWorkspace({ reason: "workspace_refresh" }).then(function () {
+      rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
+        var nextView = state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.activeView;
+        var shouldRender =
+          nextView === "visual_jobs" || nextView === "video" || nextView === "resources";
+        if (
+          state.utilitiesOutputWorkspace &&
+          shouldRender &&
+          els.utilitiesPreviewPanel &&
+          !els.utilitiesPreviewPanel.classList.contains("hidden")
+        ) {
+          renderUtilitiesVisualJobsView();
+        }
+      });
+    });
     return state.utilitiesOutputWorkspace;
   }
 
   function updateUtilitiesOutputViewControls() {
     var ws = state.utilitiesOutputWorkspace;
-    var count = 0;
+    var graphicsCount = 0;
+    var videoCount = 0;
+    var resourcesCount = 0;
     if (ws && ws.compilerResult && Array.isArray(ws.compilerResult.briefs)) {
-      count = ws.compilerResult.briefs.length;
+      graphicsCount = ws.compilerResult.briefs.length;
+    }
+    if (ws && ws.pageResourceRefs && String(ws.pageResourceRefs.video_resource_id || "").trim()) {
+      videoCount = 1;
+    }
+    if (
+      ws &&
+      ws.pageResourceRefs &&
+      Array.isArray(ws.pageResourceRefs.additional_resources)
+    ) {
+      resourcesCount = ws.pageResourceRefs.additional_resources.length;
     }
     if (els.utilitiesOutputViewVisualJobsBtn) {
-      els.utilitiesOutputViewVisualJobsBtn.textContent =
-        count > 0 ? "Visual Jobs (" + count + ")" : "Visual Jobs";
+      els.utilitiesOutputViewVisualJobsBtn.textContent = "Graphics (" + graphicsCount + ")";
+    }
+    if (els.utilitiesOutputViewVideoBtn) {
+      els.utilitiesOutputViewVideoBtn.textContent = "Video (" + videoCount + ")";
+    }
+    if (els.utilitiesOutputViewResourcesBtn) {
+      els.utilitiesOutputViewResourcesBtn.textContent = "Resources (" + resourcesCount + ")";
     }
     var hasPage = !!(ws && ws.assembledPageSnapshot);
     if (els.utilitiesOutputViewBar) {
@@ -48262,7 +48734,10 @@
   }
 
   function setUtilitiesOutputView(view) {
-    var next = view === "visual_jobs" ? "visual_jobs" : "learner_page";
+    var next =
+      view === "visual_jobs" || view === "video" || view === "resources"
+        ? view
+        : "learner_page";
     if (!state.utilitiesOutputWorkspace) {
       state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
     }
@@ -48273,15 +48748,18 @@
   function applyUtilitiesOutputViewVisibility() {
     var view =
       state.utilitiesOutputWorkspace &&
-      state.utilitiesOutputWorkspace.activeView === "visual_jobs"
-        ? "visual_jobs"
+      (state.utilitiesOutputWorkspace.activeView === "visual_jobs" ||
+        state.utilitiesOutputWorkspace.activeView === "video" ||
+        state.utilitiesOutputWorkspace.activeView === "resources")
+        ? state.utilitiesOutputWorkspace.activeView
         : "learner_page";
+    var isAuthoringView = view === "visual_jobs" || view === "video" || view === "resources";
     if (els.utilitiesPreviewFrame) {
-      els.utilitiesPreviewFrame.classList.toggle("hidden", view === "visual_jobs");
+      els.utilitiesPreviewFrame.classList.toggle("hidden", isAuthoringView);
     }
     if (els.utilitiesVisualJobsPanel) {
-      els.utilitiesVisualJobsPanel.classList.toggle("hidden", view !== "visual_jobs");
-      if (view === "visual_jobs") {
+      els.utilitiesVisualJobsPanel.classList.toggle("hidden", !isAuthoringView);
+      if (isAuthoringView) {
         renderUtilitiesVisualJobsView();
       }
     }
@@ -48298,6 +48776,20 @@
         view === "visual_jobs" ? "true" : "false"
       );
       els.utilitiesOutputViewVisualJobsBtn.classList.toggle("is-active", view === "visual_jobs");
+    }
+    if (els.utilitiesOutputViewVideoBtn) {
+      els.utilitiesOutputViewVideoBtn.setAttribute(
+        "aria-selected",
+        view === "video" ? "true" : "false"
+      );
+      els.utilitiesOutputViewVideoBtn.classList.toggle("is-active", view === "video");
+    }
+    if (els.utilitiesOutputViewResourcesBtn) {
+      els.utilitiesOutputViewResourcesBtn.setAttribute(
+        "aria-selected",
+        view === "resources" ? "true" : "false"
+      );
+      els.utilitiesOutputViewResourcesBtn.classList.toggle("is-active", view === "resources");
     }
   }
 
@@ -48375,6 +48867,55 @@
       if (viewBtn.getAttribute("data-view-bound") === "1") continue;
       viewBtn.setAttribute("data-view-bound", "1");
       viewBtn.addEventListener("click", handleUtilitiesVisualJobViewLearnerPage);
+    }
+    var saveVideoButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-save-video-embed]");
+    for (i = 0; i < saveVideoButtons.length; i += 1) {
+      var saveVideoBtn = saveVideoButtons[i];
+      if (saveVideoBtn.getAttribute("data-save-video-bound") === "1") continue;
+      saveVideoBtn.setAttribute("data-save-video-bound", "1");
+      saveVideoBtn.addEventListener("click", handleUtilitiesSaveVideoEmbed);
+    }
+    var removeVideoButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-remove-video-embed]");
+    for (i = 0; i < removeVideoButtons.length; i += 1) {
+      var removeVideoBtn = removeVideoButtons[i];
+      if (removeVideoBtn.getAttribute("data-remove-video-bound") === "1") continue;
+      removeVideoBtn.setAttribute("data-remove-video-bound", "1");
+      removeVideoBtn.addEventListener("click", handleUtilitiesRemoveVideoEmbed);
+    }
+    var saveIntroButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-save-resource-intro]");
+    for (i = 0; i < saveIntroButtons.length; i += 1) {
+      var saveIntroBtn = saveIntroButtons[i];
+      if (saveIntroBtn.getAttribute("data-save-intro-bound") === "1") continue;
+      saveIntroBtn.setAttribute("data-save-intro-bound", "1");
+      saveIntroBtn.addEventListener("click", handleUtilitiesSaveResourcesIntro);
+    }
+    var addResourceButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-add-resource-ref]");
+    for (i = 0; i < addResourceButtons.length; i += 1) {
+      var addResourceBtn = addResourceButtons[i];
+      if (addResourceBtn.getAttribute("data-add-resource-bound") === "1") continue;
+      addResourceBtn.setAttribute("data-add-resource-bound", "1");
+      addResourceBtn.addEventListener("click", handleUtilitiesAddAdditionalResource);
+    }
+    var removeResourceButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-remove-resource-ref-id]");
+    for (i = 0; i < removeResourceButtons.length; i += 1) {
+      var removeResourceBtn = removeResourceButtons[i];
+      if (removeResourceBtn.getAttribute("data-remove-resource-bound") === "1") continue;
+      removeResourceBtn.setAttribute("data-remove-resource-bound", "1");
+      removeResourceBtn.addEventListener("click", handleUtilitiesRemoveAdditionalResource);
+    }
+    var moveResourceButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-resource-ref-id]");
+    for (i = 0; i < moveResourceButtons.length; i += 1) {
+      var moveResourceBtn = moveResourceButtons[i];
+      if (moveResourceBtn.getAttribute("data-move-resource-bound") === "1") continue;
+      moveResourceBtn.setAttribute("data-move-resource-bound", "1");
+      moveResourceBtn.addEventListener("click", handleUtilitiesMoveAdditionalResource);
+    }
+    var draftInputs = els.utilitiesVisualJobsPanel.querySelectorAll("[data-draft-field]");
+    for (i = 0; i < draftInputs.length; i += 1) {
+      var draftInput = draftInputs[i];
+      if (draftInput.getAttribute("data-draft-bound") === "1") continue;
+      draftInput.setAttribute("data-draft-bound", "1");
+      draftInput.addEventListener("input", handleUtilitiesPageResourceDraftInput);
     }
   }
 
@@ -48658,6 +49199,9 @@
         visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null
       }),
       visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null,
+      videoProjection: state.utilitiesOutputWorkspace.videoResourceProjection || null,
+      additionalResourcesProjection:
+        state.utilitiesOutputWorkspace.additionalResourceProjection || null,
       applyCompositionValidation: false,
       skipWorkflowAssembly: true,
       __previewRevision: revision,
@@ -48837,12 +49381,178 @@
     setUtilitiesOutputView("learner_page");
   }
 
+  function getUtilitiesVisualJobsPanelInputValue(selector) {
+    if (!els.utilitiesVisualJobsPanel) return "";
+    var node = els.utilitiesVisualJobsPanel.querySelector(selector);
+    if (!node) return "";
+    return String(node.value || "");
+  }
+
+  function handleUtilitiesSaveVideoEmbed() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    var sectionTitle = getUtilitiesVisualJobsPanelInputValue("[data-video-title-input]");
+    var introText = getUtilitiesVisualJobsPanelInputValue("[data-video-intro-input]");
+    var embedCode = getUtilitiesVisualJobsPanelInputValue("[data-video-embed-input]");
+    if (!mod || !ws) return;
+    if (!String(sectionTitle || "").trim()) {
+      showToast("Enter a video section title before saving.", "error");
+      return;
+    }
+    if (!String(embedCode || "").trim()) {
+      showToast("Paste provider embed code before saving.", "error");
+      return;
+    }
+    ensureWorkspaceAdditionalResourceState();
+    ws.pageResourceDrafts.videoTitle = String(sectionTitle || "");
+    ws.pageResourceDrafts.videoIntroText = String(introText || "");
+    ws.pageResourceDrafts.videoEmbedCode = String(embedCode || "");
+    persistWorkflowVideoEmbedResource(embedCode).then(function (result) {
+      if (!result || !result.ok) {
+        showToast((result && result.message) || "Could not persist video embed.", "error");
+        return;
+      }
+      setWorkflowVideoPresentation(sectionTitle, introText);
+      mod.setVideoResourceReference(ws, result.resource_id, embedCode);
+      rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
+        refreshUtilitiesLearnerPreviewWithVisualAssets("video_save");
+        updateUtilitiesOutputViewControls();
+        renderUtilitiesVisualJobsView();
+        showToast("Video embed saved.", "success");
+      });
+    });
+  }
+
+  function handleUtilitiesRemoveVideoEmbed() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!mod || !ws) return;
+    removeWorkflowVideoResourceRef();
+    mod.clearVideoResourceReference(ws);
+    ensureWorkspaceAdditionalResourceState();
+    var refs = normalizeWorkflowPageResourceRefsInState();
+    ws.videoResourceProjection = {
+      resource_id: "",
+      section_title: refs.videoSectionTitle || "Video",
+      intro_text: refs.videoIntroText || "",
+      embed_code: ""
+    };
+    refreshUtilitiesLearnerPreviewWithVisualAssets("video_remove");
+    updateUtilitiesOutputViewControls();
+    renderUtilitiesVisualJobsView();
+    showToast("Video reference removed.", "success");
+  }
+
+  function handleUtilitiesSaveResourcesIntro() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!mod || !ws) return;
+    var intro = getUtilitiesVisualJobsPanelInputValue("[data-resource-intro-input]");
+    mod.setAdditionalResourcesIntro(ws, intro);
+    setWorkflowAdditionalResourcesIntroText(intro);
+    ensureWorkspaceAdditionalResourceState();
+    ws.additionalResourceProjection.intro_text = String(intro || "");
+    ws.pageResourceDrafts.resourceIntroText = String(intro || "");
+    refreshUtilitiesLearnerPreviewWithVisualAssets("resources_intro");
+    renderUtilitiesVisualJobsView();
+    showToast("Additional resources introduction saved.", "success");
+  }
+
+  function handleUtilitiesAddAdditionalResource() {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!mod || !ws || !els.utilitiesVisualJobsPanel) return;
+    var fileInput = els.utilitiesVisualJobsPanel.querySelector("[data-resource-file-input]");
+    var file = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+    var linkText = getUtilitiesVisualJobsPanelInputValue("[data-resource-link-text-input]").trim();
+    if (!file) {
+      showToast("Choose a file first.", "error");
+      return;
+    }
+    if (!linkText) {
+      showToast("Enter learner-facing link text.", "error");
+      return;
+    }
+    persistWorkflowAdditionalFileResource(file).then(function (result) {
+      if (!result || !result.ok || !result.resource_id) {
+        showToast((result && result.message) || "Could not persist resource file.", "error");
+        return;
+      }
+      mod.addAdditionalResourceReference(ws, result.resource_id, linkText);
+      addWorkflowAdditionalResourceRef(result.resource_id, linkText);
+      ensureWorkspaceAdditionalResourceState();
+      ws.pageResourceDrafts.resourceLinkText = "";
+      if (fileInput) fileInput.value = "";
+      rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
+        refreshUtilitiesLearnerPreviewWithVisualAssets("resource_add");
+        updateUtilitiesOutputViewControls();
+        renderUtilitiesVisualJobsView();
+        showToast("Additional resource added.", "success");
+      });
+    });
+  }
+
+  function handleUtilitiesRemoveAdditionalResource(event) {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!mod || !ws) return;
+    var btn = event && event.currentTarget ? event.currentTarget : null;
+    var resourceId = btn ? String(btn.getAttribute("data-remove-resource-ref-id") || "") : "";
+    if (!resourceId) return;
+    mod.removeAdditionalResourceReference(ws, resourceId);
+    removeWorkflowAdditionalResourceRefById(resourceId);
+    rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
+      refreshUtilitiesLearnerPreviewWithVisualAssets("resource_remove");
+      updateUtilitiesOutputViewControls();
+      renderUtilitiesVisualJobsView();
+      showToast("Additional resource removed.", "success");
+    });
+  }
+
+  function handleUtilitiesMoveAdditionalResource(event) {
+    var mod = getUtilitiesVisualJobsWorkspaceMod();
+    var ws = state.utilitiesOutputWorkspace;
+    if (!mod || !ws) return;
+    var btn = event && event.currentTarget ? event.currentTarget : null;
+    var resourceId = btn ? String(btn.getAttribute("data-resource-ref-id") || "") : "";
+    var dir = btn ? String(btn.getAttribute("data-resource-move-dir") || "") : "";
+    if (!resourceId || (dir !== "up" && dir !== "down")) return;
+    var moved = mod.moveAdditionalResourceReference(ws, resourceId, dir);
+    if (!moved || !moved.ok) return;
+    moveWorkflowAdditionalResourceRef(resourceId, dir);
+    rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
+      refreshUtilitiesLearnerPreviewWithVisualAssets("resource_move");
+      renderUtilitiesVisualJobsView();
+    });
+  }
+
   function handleUtilitiesOutputViewLearnerClick() {
     setUtilitiesOutputView("learner_page");
   }
 
   function handleUtilitiesOutputViewVisualJobsClick() {
     setUtilitiesOutputView("visual_jobs");
+  }
+
+  function handleUtilitiesOutputViewVideoClick() {
+    setUtilitiesOutputView("video");
+  }
+
+  function handleUtilitiesOutputViewResourcesClick() {
+    setUtilitiesOutputView("resources");
+  }
+
+  function handleUtilitiesPageResourceDraftInput(event) {
+    var ws = state.utilitiesOutputWorkspace;
+    var node = event && event.target;
+    if (!ws || !node || !node.getAttribute) return;
+    var field = String(node.getAttribute("data-draft-field") || "");
+    if (!field) return;
+    ensureWorkspaceAdditionalResourceState();
+    if (!ws.pageResourceDrafts || typeof ws.pageResourceDrafts !== "object") {
+      ws.pageResourceDrafts = {};
+    }
+    ws.pageResourceDrafts[field] = String(node.value || "");
   }
 
   function applyUtilityPreviewHtml(html, options) {
@@ -49493,11 +50203,162 @@
     }
     var html = String(rendered.html || "").trim();
     if (!html) return { error: "Rendered output is empty." };
+    html = injectWorkflowResourceSectionsIntoLearnerHtml(html, {
+      videoProjection: opts.videoProjection || null,
+      additionalResourcesProjection: opts.additionalResourcesProjection || null
+    });
     return {
       html: composeStandaloneVnextLearnerExport(html, rendered.modelResult, parsed),
       error: null,
       visualAssetDiagnostics: rendered.visualAssetDiagnostics || null
     };
+  }
+
+  function escapeHtmlText(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function buildOrientSupportingSubsectionHeadingHtml(title, iconSemanticKey) {
+    var icons = getUtilityPedagogicalIconRenderer();
+    var iconSvg =
+      icons && typeof icons.renderIconHtml === "function"
+        ? icons.renderIconHtml(iconSemanticKey, {
+            size: "md",
+            className: "util-section-icon util-section-icon--default"
+          })
+        : "";
+    var iconHtml = iconSvg
+      ? '<span class="util-semantic-icon" aria-hidden="true">' + iconSvg + "</span>"
+      : "";
+    return (
+      '<h2 class="util-section-heading util-icon-heading">' +
+      iconHtml +
+      '<span class="util-semantic-icon__label">' +
+      escapeHtmlText(title) +
+      "</span></h2>"
+    );
+  }
+
+  function buildVideoResourceSectionHtml(videoProjection) {
+    var vp = videoProjection && typeof videoProjection === "object" ? videoProjection : null;
+    var embedCode = vp ? String(vp.embed_code || "") : "";
+    if (!embedCode.trim()) return "";
+    var sectionTitle = vp ? String(vp.section_title || "").trim() : "";
+    if (!sectionTitle) sectionTitle = "Video";
+    var introText = vp ? String(vp.intro_text || "").trim() : "";
+    return (
+      '<section class="util-orientation-section util-page-video learner-video" data-orientation-type="page_video" data-region="video">' +
+      buildOrientSupportingSubsectionHeadingHtml(sectionTitle, "WATCH") +
+      '<div class="util-orientation-content util-page-video__content util-prose-measure">' +
+      (introText ? '<p class="util-page-video-intro">' + escapeHtmlText(introText) + "</p>" : "") +
+      embedCode +
+      "</div></section>"
+    );
+  }
+
+  function buildAdditionalResourcesSectionHtml(resourcesProjection) {
+    var rp = resourcesProjection && typeof resourcesProjection === "object" ? resourcesProjection : null;
+    var items = rp && Array.isArray(rp.items) ? rp.items : [];
+    if (!items.length) return "";
+    var intro = rp ? String(rp.intro_text || "").trim() : "";
+    var listHtml = items
+      .filter(function (item) {
+        return item && item.href && item.link_text;
+      })
+      .map(function (item) {
+        return (
+          "<li>" +
+          '<a href="' +
+          escapeHtmlText(item.href) +
+          '" target="_blank" rel="noopener noreferrer" data-additional-resource-id="' +
+          escapeHtmlText(item.resource_id || "") +
+          '">' +
+          escapeHtmlText(item.link_text) +
+          '<span class="sr-only"> (opens in a new tab)</span>' +
+          "</a>" +
+          "</li>"
+        );
+      })
+      .join("");
+    if (!listHtml) return "";
+    return (
+      '<section class="util-orientation-section util-page-additional-resources learner-additional-resources" data-orientation-type="additional_resources" data-region="additional-resources">' +
+      buildOrientSupportingSubsectionHeadingHtml("Additional Resources", "RESOURCE") +
+      '<div class="util-orientation-content util-page-additional-resources__content util-prose-measure">' +
+      (intro ? '<p class="util-page-additional-resources-intro">' + escapeHtmlText(intro) + "</p>" : "") +
+      "<ul>" +
+      listHtml +
+      "</ul></div></section>"
+    );
+  }
+
+  function injectWorkflowResourceSectionsIntoLearnerHtml(htmlText, options) {
+    var html = String(htmlText || "");
+    var opts = options && typeof options === "object" ? options : {};
+    var videoHtml = buildVideoResourceSectionHtml(opts.videoProjection);
+    var resourcesHtml = buildAdditionalResourcesSectionHtml(opts.additionalResourcesProjection);
+    var insertHtml = videoHtml + resourcesHtml;
+    if (!insertHtml) return html;
+    if (typeof DOMParser === "function") {
+      try {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, "text/html");
+        var main = doc.querySelector("main.util-learner-renderer-vnext");
+        if (main) {
+          var orient = main.querySelector('section[data-region="orientation"]');
+          var journeyOrient = orient
+            ? orient.querySelector("#journey-orient") || orient
+            : null;
+          var activities = main.querySelector('section[data-region="activities"]');
+          var container = doc.createElement("div");
+          container.innerHTML = insertHtml;
+          var nodes = [];
+          while (container.firstChild) {
+            nodes.push(container.firstChild);
+            container.removeChild(container.firstChild);
+          }
+          var parent = journeyOrient || main;
+          var anchor = journeyOrient ? null : activities;
+          for (var ni = 0; ni < nodes.length; ni += 1) {
+            var node = nodes[ni];
+            if (anchor && anchor.parentNode === parent) {
+              parent.insertBefore(node, anchor);
+            } else {
+              parent.appendChild(node);
+            }
+          }
+          var trimmed = html.trim();
+          if (/^<main[\s>]/i.test(trimmed)) {
+            return doc.body.innerHTML;
+          }
+          return "<!doctype html>\n" + doc.documentElement.outerHTML;
+        }
+      } catch (_domErr) {}
+    }
+    var orientBeforeActivitiesPattern =
+      /(<div id="journey-orient"[^>]*>[\s\S]*)(<\/div>\s*<\/section>\s*<section[^>]*(?:data-region="activities"|class="[^"]*util-learning-activities))/i;
+    if (orientBeforeActivitiesPattern.test(html)) {
+      return html.replace(orientBeforeActivitiesPattern, function (_m, before, closeAndNext) {
+        return before + insertHtml + closeAndNext;
+      });
+    }
+    var orientTailPattern =
+      /(<div id="journey-orient"[^>]*>[\s\S]*)(<\/div>\s*<\/section>)(?![\s\S]*id="journey-orient")/i;
+    if (orientTailPattern.test(html)) {
+      return html.replace(orientTailPattern, function (_m, before, close) {
+        return before + insertHtml + close;
+      });
+    }
+    var activitiesPattern = /<section class="util-learning-activities"[^>]*>/i;
+    if (activitiesPattern.test(html)) {
+      return html.replace(activitiesPattern, insertHtml + "$&");
+    }
+    return html + insertHtml;
   }
 
   /**
@@ -49544,7 +50405,9 @@
     if (rendererVersion === "vnext") {
       return runLearnerRendererVNextExport(parsed, {
         compositionMode: opts.compositionMode,
-        visualAssets: opts.visualAssets || null
+        visualAssets: opts.visualAssets || null,
+        videoProjection: opts.videoProjection || null,
+        additionalResourcesProjection: opts.additionalResourcesProjection || null
       });
     }
     var renderPage = getPageForRender(parsed);
@@ -49619,6 +50482,8 @@
         capturesRaw: options.capturesRaw,
         skipWorkflowAssembly: !!options.skipWorkflowAssembly,
         visualAssets: options.visualAssets || null,
+        videoProjection: options.videoProjection || null,
+        additionalResourcesProjection: options.additionalResourcesProjection || null,
         compositionMode: resolveUtilitiesCompositionModeForRender(options),
         __previewRevision: options.__previewRevision,
         __previewReason: options.__previewReason
@@ -49759,7 +50624,18 @@
       state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
       updateUtilitiesOutputViewControls();
     }
-    renderUtilitiesArtefactHtmlAsync(parsed, {
+    var preRenderPromise = Promise.resolve();
+    if (String(parsed.artifact_type || "").toLowerCase() === "page") {
+      preRenderPromise = rehydrateWorkflowResourcesIntoUtilitiesWorkspace({
+        reason: "generate",
+        refreshPreview: false
+      }).then(function () {
+        return rehydrateWorkflowPageResourcesIntoWorkspace();
+      });
+    }
+    preRenderPromise
+      .then(function () {
+        return renderUtilitiesArtefactHtmlAsync(parsed, {
       selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
       presentationMode: state.utilitiesPresentationMode,
       rendererVersion: rendererVersion,
@@ -49767,12 +50643,22 @@
       applyCompositionValidation: false,
       skipWorkflowAssembly: String(state.utilitiesSourceMode || "") !== "assembled_current_run",
       visualAssets: getUtilitiesVisualAssetManifestForPreview(),
+      videoProjection:
+        state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.videoResourceProjection
+          ? state.utilitiesOutputWorkspace.videoResourceProjection
+          : null,
+      additionalResourcesProjection:
+        state.utilitiesOutputWorkspace &&
+        state.utilitiesOutputWorkspace.additionalResourceProjection
+          ? state.utilitiesOutputWorkspace.additionalResourceProjection
+          : null,
       compositionMode: resolveUtilitiesCompositionModeForRender({
         visualAssets: getUtilitiesVisualAssetManifestForPreview()
       }),
       __previewRevision: generateRevision,
       __previewReason: "generate"
-    })
+    });
+      })
       .then(function (rendered) {
         if (!rendered || rendered.error) {
           applyUtilityPreviewError((rendered && rendered.error) || "Could not render HTML output.");
@@ -49932,9 +50818,16 @@
 
       var exportHtml = utilityEnhanceExportHtmlWithMathJax(htmlText);
       var manifest = getUtilitiesVisualAssetManifestForExport();
+      var additionalResourceAssets =
+        state.utilitiesOutputWorkspace &&
+        state.utilitiesOutputWorkspace.additionalResourceProjection &&
+        Array.isArray(state.utilitiesOutputWorkspace.additionalResourceProjection.items)
+          ? state.utilitiesOutputWorkspace.additionalResourceProjection.items.slice()
+          : [];
       var built = packageApi.buildLearnerPackage({
         html: exportHtml,
         visualAssetManifest: manifest,
+        additionalResourceAssets: additionalResourceAssets,
         pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
         builtAt: new Date().toISOString()
       });
@@ -50303,6 +51196,15 @@
       els.utilitiesOutputViewVisualJobsBtn.addEventListener(
         "click",
         handleUtilitiesOutputViewVisualJobsClick
+      );
+    }
+    if (els.utilitiesOutputViewVideoBtn) {
+      els.utilitiesOutputViewVideoBtn.addEventListener("click", handleUtilitiesOutputViewVideoClick);
+    }
+    if (els.utilitiesOutputViewResourcesBtn) {
+      els.utilitiesOutputViewResourcesBtn.addEventListener(
+        "click",
+        handleUtilitiesOutputViewResourcesClick
       );
     }
     if (els.utilitiesJsonInput) {
@@ -51504,9 +52406,11 @@
       return mod ? mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId) : "";
     };
     prismTestApi.getUtilitiesOutputViewForTest = function () {
-      return state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.activeView === "visual_jobs"
-        ? "visual_jobs"
-        : "learner_page";
+      var view = state.utilitiesOutputWorkspace ? state.utilitiesOutputWorkspace.activeView : "";
+      if (view === "visual_jobs" || view === "video" || view === "resources") {
+        return view;
+      }
+      return "learner_page";
     };
     prismTestApi.getUtilitiesVisualJobsPanelHtmlForTest = function () {
       return els.utilitiesVisualJobsPanel ? String(els.utilitiesVisualJobsPanel.innerHTML || "") : "";
@@ -51527,6 +52431,16 @@
     prismTestApi.getUtilitiesOutputViewVisualJobsLabelForTest = function () {
       return els.utilitiesOutputViewVisualJobsBtn
         ? String(els.utilitiesOutputViewVisualJobsBtn.textContent || "")
+        : "";
+    };
+    prismTestApi.getUtilitiesOutputViewVideoLabelForTest = function () {
+      return els.utilitiesOutputViewVideoBtn
+        ? String(els.utilitiesOutputViewVideoBtn.textContent || "")
+        : "";
+    };
+    prismTestApi.getUtilitiesOutputViewResourcesLabelForTest = function () {
+      return els.utilitiesOutputViewResourcesBtn
+        ? String(els.utilitiesOutputViewResourcesBtn.textContent || "")
         : "";
     };
     prismTestApi.selectVisualJobForTest = function (briefId) {
@@ -51601,13 +52515,20 @@
     prismTestApi.refreshUtilitiesOutputWorkspaceFromPageForTest = refreshUtilitiesOutputWorkspaceFromPage;
     prismTestApi.rehydrateWorkflowResourcesIntoUtilitiesWorkspaceForTest =
       rehydrateWorkflowResourcesIntoUtilitiesWorkspace;
+    prismTestApi.rehydrateWorkflowPageResourcesIntoWorkspaceForTest =
+      rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
     prismTestApi.getWorkflowResourceRefsForTest = function () {
       return Array.isArray(state.workflowResourceRefs) ? state.workflowResourceRefs.slice() : [];
     };
+    prismTestApi.getWorkflowPageResourceRefsForTest = function () {
+      return cloneWorkflowPageResourceRefs();
+    };
     prismTestApi.regenerateUtilitiesExportHtmlFromDurableStateForTest =
       regenerateUtilitiesExportHtmlFromDurableState;
     prismTestApi.resolveUtilitiesExportHtmlForDownloadForTest = resolveUtilitiesExportHtmlForDownload;
+    prismTestApi.injectWorkflowResourceSectionsIntoLearnerHtmlForTest =
+      injectWorkflowResourceSectionsIntoLearnerHtml;
     prismTestApi.utilityRenderVisualAffordanceHookForTest = utilityRenderVisualAffordanceHook;
     prismTestApi.utilityMaybeRenderVisualAffordanceHookForTest =
       utilityMaybeRenderVisualAffordanceHook;

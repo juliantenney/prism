@@ -29,8 +29,13 @@ Sprint 73 **links** to authoritative predecessor artefacts. Do not duplicate or 
 | Artefact | Link |
 | -------- | ---- |
 | Canonical backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
-| Sprint 73 anchor | [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources) |
+| Sprint 73 anchor (closed) | [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources) |
+| Manually uploaded graphics | [PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics) |
 | Research: attachment store | [PB-R-001](../../../backlog/PRODUCT-BACKLOG.md#3-research--design-questions) |
+| Research: orphan cleanup | [PB-R-008](../../../backlog/PRODUCT-BACKLOG.md#3-research--design-questions) |
+| Sprint 73 final report | [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md) |
+| Sprint 73 closure | [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md) |
+| Top-level closeout | [sprint-73-closeout.md](../../../sprints/sprint-73-closeout.md) |
 
 ## Domain / architecture references (investigate in Phase 1)
 

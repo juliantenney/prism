@@ -141,3 +141,66 @@ test("index.html loads workflow resources module before workspace", function () 
   assert.ok(resourcesIdx > 0);
   assert.ok(workspaceIdx > resourcesIdx);
 });
+
+test("putTextResource stores embed payload and replaces slot in place", async function () {
+  const first = await resources.putTextResource({
+    workflow_id: "wf-video",
+    slot_key: "page_video_embed",
+    text_payload: '<div class="video-wrap"><iframe src="https://example.com/embed/1"></iframe></div>'
+  });
+  assert.equal(first.ok, true);
+  const second = await resources.putTextResource({
+    workflow_id: "wf-video",
+    slot_key: "page_video_embed",
+    text_payload: '<figure><iframe src="https://example.com/embed/2"></iframe></figure>'
+  });
+  assert.equal(second.ok, true);
+  assert.equal(second.resource_id, first.resource_id);
+  const text = await resources.getTextResourcePayload(second.resource_id);
+  assert.match(text, /embed\/2/);
+});
+
+test("putBinaryFileResource persists downloadable file metadata and payload", async function () {
+  const blob = new Blob([Buffer.from("sample,payload\n1,2", "utf8")], { type: "text/csv" });
+  const put = await resources.putBinaryFileResource({
+    workflow_id: "wf-file",
+    filename: "table.csv",
+    mime_type: "text/csv",
+    payload_blob: blob,
+    byte_size: blob.size
+  });
+  assert.equal(put.ok, true);
+  const meta = await resources.getResourceMetadata(put.resource_id);
+  assert.equal(meta.original_filename, "table.csv");
+  assert.equal(meta.mime_type, "text/csv");
+  const payload = await resources.getResourcePayload(put.resource_id);
+  const text = await payload.text();
+  assert.match(text, /sample,payload/);
+});
+
+test("hydrateVisualAssetsIntoWorkspace ignores non-image resources", async function () {
+  const ws = workspaceMod.buildVisualJobsWorkspaceState(pageFixture, { activeView: "visual_jobs" });
+  const brief = ws.compilerResult.briefs[0];
+  await resources.putBinaryResource({
+    workflow_id: "wf-mixed",
+    affordance_id: brief.affordance_id,
+    brief_id: brief.brief_id,
+    mime_type: "image/png",
+    payload_blob: makeBlob(),
+    byte_size: TINY_PNG_BYTES.length
+  });
+  await resources.putTextResource({
+    workflow_id: "wf-mixed",
+    slot_key: "page_video_embed",
+    text_payload: "<iframe src='https://example.com'></iframe>"
+  });
+  const hydrated = await resources.hydrateVisualAssetsIntoWorkspace({
+    workflowId: "wf-mixed",
+    workspace: ws,
+    assetsMod: assetsMod,
+    workspaceMod: workspaceMod
+  });
+  assert.equal(hydrated.ok, true);
+  assert.equal(hydrated.hydrated, 1);
+  assert.equal(ws.visualAssetManifest.assets.length, 1);
+});

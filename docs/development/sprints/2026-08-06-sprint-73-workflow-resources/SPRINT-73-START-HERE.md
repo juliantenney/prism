@@ -1,27 +1,30 @@
 # Sprint 73 — START HERE
 
 **Sprint:** 73 — Workflow Resources  
-**Status:** **OPEN** (planning / discovery)  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
 **Opened:** 2026-08-06  
+**Closed:** 2026-08-06  
 **Predecessor:** [Sprint 72 — COMPLETE](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-CLOSURE.md)  
 **Backlog anchor:** [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md)  
+**Closure:** [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)  
 **Charter:** [SPRINT-73-CHARTER.md](SPRINT-73-CHARTER.md)
 
 ---
 
 ## Purpose (summary)
 
-**Provide first-class Workflow Resources for Prism** by investigating durable persistence for learner-facing resources, beginning with generated images. Workflow asset persistence is the initial architectural mechanism — not the product-facing feature name.
+**Provide first-class Workflow Resources for Prism** by investigating durable persistence for learner-facing resources, beginning with generated images — then shipping a bounded persistence slice and generalisation for downloadable resources and one embedded video.
 
-**Broader direction:** Workflow Resources are expected ultimately to encompass **generated media**, **uploaded documents**, and **embedded external resources**. Sprint 73 does not commit to all types — PDF, Word, and video remain anticipated consumers only.
+**Outcome:** Sprint objective **met**. Pack is closed. Do not continue implementation under Sprint 73.
 
 ---
 
-## Central question (to be answered in Phase 1)
+## Central question (answered)
 
 > Can Prism introduce first-class Workflow Resources — beginning with persistent generated images — through a shared, extensible architecture that survives refresh, export, and regeneration without compromising fidelity or workflow continuity?
 
-**Sprint posture:** Discovery-led. **Do not assume implementation is possible** until Phase 1 completes and the feasibility decision gate is recorded.
+**Answer:** Yes, under the explicit conditions recorded in `S73-D02` and verified in Phases 2–3. See [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md).
 
 ---
 
@@ -29,46 +32,29 @@
 
 > A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria. Ideas and possible future enhancements remain in the product backlog until they are ready for planning.
 
-Sprint 73 is open on **PB-FA-001** because binding predecessor decisions exist (`S72-D09`, `S72-D10`) — but **implementation approach and acceptance criteria are still to be established** in Phase 1.
+---
+
+## Reading order (closed pack)
+
+1. [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md) · [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)  
+2. [STATUS.md](STATUS.md) · [HANDOVER.md](HANDOVER.md) · [next-chat-briefing.md](next-chat-briefing.md)  
+3. Evidence notes via [README.md](README.md) (link only; do not rewrite)  
+4. Future work: [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) — [PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics)
 
 ---
 
-## Reading order (open pack)
-
-1. [SPRINT-73-CHARTER.md](SPRINT-73-CHARTER.md)  
-2. [next-chat-briefing.md](next-chat-briefing.md)  
-3. [CONTEXT.md](CONTEXT.md) · [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md)  
-4. [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) — scope anchor **PB-FA-001** only  
-5. Predecessor authorities via [links-to-predecessors.md](links-to-predecessors.md)
-
----
-
-## What this sprint is / is not
+## What this sprint is / is not (at close)
 
 | Is | Is not |
 | -- | ------ |
-| Discovery-led investigation of Workflow Resources (via workflow asset persistence) | A commitment to ship every anticipated resource type |
-| First concrete sprint for **PB-FA-001 — Workflow Resources** | Programming-resource support (PB-FA-002) |
-| Architecture evaluation before implementation | Evidence-architecture changes or Sprint 71/72 reopening |
-| Maturation-phase durability / continuity / author-experience work | Unrelated UI polish or learner-renderer redesign |
-| Tightly scoped to the selected backlog item | A sink for unrelated product-backlog items |
+| Closed evidence pack for Workflow Resources | An active implementation sprint |
+| Authority for S73 decisions and verification | A place to continue feature work |
+| Predecessor for future backlog selection | Sprint 74 (not opened) |
 
 ---
 
-## Phase overview (initial)
+## Next steps (outside this pack)
 
-| Phase | Name | Status |
-| ----- | ---- | ------ |
-| **1** | Architecture discovery | **Next** (not started) |
-| **Gate** | Feasibility decision | Pending Phase 1 |
-| **2** | Persistent generated images | **Conditional** — blocked |
-| **3** | Generalise Workflow Resources architecture | **Conditional** — blocked |
-
----
-
-## Predecessor links (quick)
-
-- [SPRINT-72-FINAL-REPORT.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-FINAL-REPORT.md)  
-- [SPRINT-72-CLOSURE.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-CLOSURE.md)  
-- [SPRINT-71-DISPOSITION-AUDIT.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-71-DISPOSITION-AUDIT.md)  
-- [decisions.md](../2026-07-31-sprint-72-productising-instructional-architecture/decisions.md) (`S72-D09`, `S72-D10`)
+1. Operator review/commit of working-tree changes (manual).  
+2. Select future work from [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) when approach/ownership/AC exist.  
+3. Do **not** open Sprint 74 from this closeout.

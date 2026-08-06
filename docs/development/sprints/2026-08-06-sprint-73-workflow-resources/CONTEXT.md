@@ -1,9 +1,10 @@
 # Sprint 73 — Context
 
-**Status:** **OPEN** (opened 2026-08-06)  
-**Role:** Durable architectural context for Workflow Resources discovery and conditional implementation  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
+**Role:** Durable architectural context for Workflow Resources (historical + carry-forward)  
 **Predecessor authority:** Sprint 72 closed pack — **link, do not rewrite evidence**  
-**Backlog anchor:** [PB-FA-001](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)
+**Backlog anchor:** [PB-FA-001](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md)
 
 ---
 
@@ -23,7 +24,7 @@ Workflow Resources are expected ultimately to encompass:
 - **Uploaded documents**  
 - **Embedded external resources**
 
-Sprint 73 evaluates persistence beginning with generated images only. PDF, Word, and video are **anticipated consumers** of the architecture — not Sprint 73 implementation commitments.
+Sprint 73 evaluated persistence beginning with generated images, then shipped downloadable Additional Resources and one provider-supplied embedded video under the same owner. Manually uploaded graphics and further media types remain backlog ([PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics)).
 
 ---
 

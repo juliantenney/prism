@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — maturation / v1.0 stabilisation phase  
-**Last updated:** 2026-08-06 (PB-FA-001 renamed to Workflow Resources; Sprint 73 pack refinement)  
-**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
+**Last updated:** 2026-08-06 (Sprint 73 closed; PB-FA-004 Manually uploaded graphics added)  
+**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
 
 ---
 
@@ -11,7 +11,7 @@
 
 > A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria. Ideas and possible future enhancements remain in the product backlog until they are ready for planning.
 
-**How Sprint 73 is selected:** Pull a sufficiently mature item from **Stabilisation** or **Future architecture** below. Do **not** pre-assign a sprint number to a feature until a sprint pack is opened with approach and acceptance criteria.
+**How the next sprint is selected:** Pull a sufficiently mature item from **Stabilisation** or **Future architecture** below. Do **not** pre-assign a sprint number to a feature until a sprint pack is opened with approach and acceptance criteria.
 
 ---
 
@@ -36,23 +36,13 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 
 **Product-facing capability:** First-class **Workflow Resources** — durable learner-facing and workflow-bound assets that authors and learners can rely on across refresh, navigation, export, and regeneration.
 
-**Implementation mechanism (initial architectural problem):** **Workflow asset persistence** — stable identity, storage, reconnect, and regeneration semantics. Generated images are the first implementation slice; the persistence architecture must not be specialised for images alone (Sprint 73 design constraint).
+**Sprint 73 outcome (COMPLETE / Closed 2026-08-06):** Established the workflow-scoped Workflow Resources owner; IndexedDB-backed generated-image persistence with same-browser/profile rehydration; downloadable Additional Resources; one provider-supplied embedded video with page-owned presentation; authoring tabs and Orient-supporting learner presentation. See [SPRINT-73-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md) · [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md).
 
-**Broader direction (not Sprint 73 commitments):** Workflow Resources are expected ultimately to encompass **generated media**, **uploaded documents**, and **embedded external resources**. PDF, Word, and video remain anticipated architecture consumers until a later sprint assigns them.
+**Remaining under this theme (not Sprint 73):** Conversation-attachment byte persistence (`S72-D10` / PB-R-001); orphan/mixed-data cleanup; cross-device/server sync; package re-import; central resource library. **Manually uploaded graphics** (non–visual-job images) are tracked separately as [PB-FA-004](#pb-fa-004--manually-uploaded-graphics).
 
-**Evidence basis:** `S72-D09` (shared workflow asset-persistence model); `S72-D10` (conversation-attachment bytes intentionally out of Sprint 72 scope); Sprint 72 Phase 4/5 path work; Owen source-bound runs proved conversation-bound source use without byte storage.
+**Evidence basis:** `S72-D09`, `S72-D10`; Sprint 73 decisions `S73-D01`…`S73-D03` and implementation/verification notes in the Sprint 73 pack.
 
-**Scope sketch (not a charter):**
-
-- Workflow Resources model (resource-type-neutral persistence architecture)
-- Image / generated-media persistence (IDs, generation metadata, reconnect, selective regeneration) — first slice
-- Conversation-attachment persistence (byte path — harder; bound by `S72-D10`)
-- Stable resource identity
-- Byte-level fidelity verification
-- Reconnection and regeneration semantics
-- Workflow ↔ author-evidence association persistence (shared model per `S72-D09`)
-
-**Readiness:** Sprint 73 **OPEN** (2026-08-06) — [SPRINT-73-START-HERE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md). Phase 1 discovery must establish implementation approach and acceptance criteria before Phase 2 begins.
+**Readiness:** Sprint 73 **COMPLETE / Closed** (2026-08-06). Residual follow-ons are separate backlog items — do not continue work under Sprint 73.
 
 **Former Sprint 72 links (retired from S72):** T-040 remaining, T-041, T-042, T-044, T-051, B-002.
 
@@ -83,6 +73,44 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 
 **Readiness:** Direction clear; needs concrete audit plan and acceptance criteria before sprint open.
 
+### PB-FA-004 — Manually uploaded graphics
+
+**Product need:** Authors should be able to add an existing image directly through the Graphics authoring area without requiring an AI-generated visual job.
+
+**Desired behaviour:**
+
+- Allow an author to upload an image as a graphic
+- Persist it through the established Workflow Resources owner
+- Allow it to participate in learner rendering and packaging
+- Present generated and manually uploaded graphics through the same Graphics authoring concept
+- Distinguish origin only where useful
+- Do not require the learner renderer or package builder to care whether a graphic was generated or uploaded
+
+**Architectural alignment:**
+
+- Uploaded graphics are Workflow Resources
+- Use the existing resource-type-neutral owner
+- Use the existing binary-payload persistence path
+- Do not create a separate image attachment system
+- Do not assume a graphic must originate from a visual job
+- Image origin may be recorded as minimal metadata if required
+- Renderer and package output consume the same image-resource projection
+
+**Predecessor evidence:** Sprint 73 Workflow Resources architecture — [PB-FA-001](#pb-fa-001--workflow-resources); [S73-T-002](../development/sprints/2026-08-06-sprint-73-workflow-resources/S73-T-002-canonical-workflow-resource-ownership.md); [S73-T-011](../development/sprints/2026-08-06-sprint-73-workflow-resources/S73-T-011-generated-image-persistence-implementation.md); [S73-T-020](../development/sprints/2026-08-06-sprint-73-workflow-resources/S73-T-020-workflow-resources-generalisation-design.md); [SPRINT-73-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md).
+
+**Explicit non-scope (for this item):**
+
+- Implementation in Sprint 73
+- AI image generation changes
+- Central media library
+- Cross-workflow resource sharing
+- Image editor
+- Automatic image optimisation
+- Bulk upload unless separately prioritised
+- Learner-renderer redesign
+
+**Readiness:** Evidence of need and architectural alignment exist after Sprint 73; **implementation approach and acceptance criteria not yet written** — Future architecture candidate, **not sprint-allocated**.
+
 ---
 
 ## 3. Research / design questions
@@ -98,6 +126,7 @@ Unresolved questions requiring investigation before planning. **No implementatio
 | PB-R-005 | How far should progressive-disclosure elicitation go beyond source-bound attachment guidance? | Layer 2 redesign still largely discovery | Former T-030–T-032 |
 | PB-R-006 | What does discipline-appropriate source / evidence evaluation require beyond the Evidence-Centred Learning umbrella? | Residual Confirmed `S71-F-007` after Sprint 72 umbrella adoption | Do not import history provenance rules into literature; investigate per-discipline profiles |
 | PB-R-007 | Where should Benchmark v2.1 / Validation Review v2.0 instruments live in-repo (if at all)? | Sprint 71 Final Report recommendation; paths unresolved at S71 close | Methodology / tooling — not a generation-contract defect |
+| PB-R-008 | How should unreferenced / orphan Workflow Resources be cleaned up without destructive surprise? | Sprint 73 retained mixed-data limitation; only referenced resources render | Follow-on to PB-FA-001; no automatic cleanup shipped |
 
 ---
 
@@ -132,17 +161,20 @@ Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](../development/sprints/20
 
 | Rank | Item | Why |
 | ---- | ---- | --- |
-| 1 | **PB-FA-001** Workflow Resources | **Sprint 73 OPEN** — binding decisions (`S72-D09`/`D10`); Phase 1 discovery not yet started |
-| 2 | **PB-FA-003** Pipeline integrity | Recent public-export/bundle parity lesson; hardening for maturation phase |
+| 1 | **PB-FA-003** Pipeline integrity | Recent public-export/bundle parity lesson; hardening for maturation phase |
+| 2 | **PB-FA-004** Manually uploaded graphics | Extends Sprint 73 Graphics path; approach/acceptance criteria still needed |
 | 3 | **PB-FA-002** Programming learning resources | Confirmed S71 finding; needs requirements pass first |
 | — | Stabilisation PB-S-001 | Fix when capacity allows; do not block sprint selection on greenwashing the full suite |
+| — | **PB-FA-001** Workflow Resources | Sprint 73 **closed**; residual follow-ons via PB-FA-004 / PB-R-001 / PB-R-008 |
 
-**Sprint 73** is open on **PB-FA-001** — see [SPRINT-73-START-HERE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md).
+**Sprint 73** is **COMPLETE / Closed** — see [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md). **Sprint 74 is not opened.** Select the next sprint from this backlog via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
 
 ---
 
 ## Related
 
+- Sprint 73 closure: [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md)  
+- Sprint 73 final report: [SPRINT-73-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md)  
 - Sprint 72 closure: [SPRINT-72-CLOSURE.md](../development/sprints/2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-CLOSURE.md)  
 - Sprint 72 cut-line history: [SPRINT-72-BACKLOG-RATIONALISATION.md](../development/sprints/2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-BACKLOG-RATIONALISATION.md)  
 - Next sprint pointer: [docs/sprints/NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md)  

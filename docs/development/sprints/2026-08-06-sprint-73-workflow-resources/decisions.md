@@ -1,11 +1,12 @@
 # Sprint 73 — Decision Log
 
-**Sprint status:** **OPEN** (2026-08-06)  
+**Sprint status:** **COMPLETE / Closed** (2026-08-06)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md) · [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)
 
 Inherited Sprint 72 binding decisions are **linked, not duplicated** — see [Sprint 72 decisions.md](../2026-07-31-sprint-72-productising-instructional-architecture/decisions.md) (`S72-D09`, `S72-D10`, `S72-D14`).
 
-Design principles **resource-type neutrality** and **prompt-independence** are recorded in [SPRINT-73-CHARTER.md](SPRINT-73-CHARTER.md) and [CONTEXT.md](CONTEXT.md) as planning constraints — no separate decision ID unless Phase 1 elevates them to binding implementation decisions.
+Design principles **resource-type neutrality** and **prompt-independence** are recorded in [SPRINT-73-CHARTER.md](SPRINT-73-CHARTER.md) and [CONTEXT.md](CONTEXT.md). Page-owned video/resource presentation and final UI tab-count polish are recorded in implementation/verification notes (not separate decision IDs).
 
 ---
 
@@ -27,15 +28,25 @@ Design principles **resource-type neutrality** and **prompt-independence** are r
 
 ---
 
-## Pending decisions (expected from Phase 1)
+## S73-D03 MVP video embed contract is verbatim storage/render
 
-| Topic | Expected ID | Trigger |
-| ----- | ----------- | ------- |
-| Persistence feasibility | `S73-D02` | **Recorded** — feasible with explicit conditions (2026-08-06) |
-| Canonical owner of a workflow resource | Discovery output | `S73-T-002` — [recommends workflow-scoped Workflow Resources layer](S73-T-002-canonical-workflow-resource-ownership.md) |
-| Storage technology choice | TBD | **S73-T-003** — P5/P6/P4 promising; not selected |
-| Export/regeneration compatibility | Discovery output | **S73-T-004** — **conditionally compatible**; not **S73-D02** |
-| Feasibility synthesis recommendation | Discovery output | **S73-T-005** — recommendation adopted by `S73-D02` |
-| Attachment-byte path in sprint scope | TBD | Default: defer; revisit only if discovery proves narrow coupling |
+- **Decision:** Provider-supplied video embed code is stored and rendered verbatim. Prism does not parse, normalise, sanitise or reconstruct embed code in the MVP. Empty input is rejected; responsibility for valid provider markup remains with the author/provider.
+- **Status:** Accepted (2026-08-06)
+- **Rationale:** Keeps Phase 3 MVP implementation small and reversible while preserving the requested provider wrapper markup contract.
+- **Consequences:** Video rendering uses provider markup as-is; no provider adapters, no player abstraction, and no sanitisation controls in this slice.
 
-Do not record implementation decisions before Phase 1 evidence exists.
+---
+
+## Discovery / gate topics (resolved or deferred at close)
+
+| Topic | Outcome |
+| ----- | ------- |
+| Persistence feasibility | **`S73-D02`** — feasible with explicit conditions |
+| Canonical owner of a workflow resource | Workflow-scoped Workflow Resources layer — [S73-T-002](S73-T-002-canonical-workflow-resource-ownership.md); implemented in Phase 2/3 |
+| Minimal authoritative persistence / regenerate HTML·ZIP | Binding via `S73-D02` + T-004; shipped |
+| Provider embed verbatim | **`S73-D03`** |
+| Attachment-byte path in sprint scope | **Deferred** — [PB-R-001](../../../backlog/PRODUCT-BACKLOG.md#3-research--design-questions) / `S72-D10` |
+| Manually uploaded graphics | **Backlog** — [PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics) |
+| Orphan / mixed-data cleanup | **Research** — [PB-R-008](../../../backlog/PRODUCT-BACKLOG.md#3-research--design-questions) |
+
+No further Sprint 73 decisions are pending. Sprint 74 was not opened by closeout.

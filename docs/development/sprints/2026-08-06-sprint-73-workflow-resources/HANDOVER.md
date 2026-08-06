@@ -1,19 +1,21 @@
 # Sprint 73 — Handover
 
-**From:** Sprint 72 (COMPLETE / Closed 2026-08-05) · Sprint 71 disposition audit complete  
-**To:** Sprint 73 — Workflow Resources (OPEN 2026-08-06)  
-**Backlog anchor:** [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)
+**From:** Sprint 73 — Workflow Resources (**COMPLETE / Closed** 2026-08-06)  
+**To:** Product backlog / future sprint selection (Sprint 74 **not opened**)  
+**Backlog authority:** [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md)  
+**Closure:** [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)
 
 ---
 
 ## Current state
 
-- **Sprint 72** is closed. Instructional-architecture productisation objective is **met**.  
-- **Sprint 71** findings are **fully dispositioned** — see [SPRINT-71-DISPOSITION-AUDIT.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-71-DISPOSITION-AUDIT.md).  
-- Prism is approaching **v1.0 feature completeness**; emphasis shifts to **durability**, **workflow continuity**, **content quality**, **author experience**, and **polish**.  
-- **Sprint 73** is open as a **discovery-led** sprint on **PB-FA-001 — Workflow Resources** (workflow asset persistence is the initial mechanism, beginning with generated images).
-
-**S73-T-011 implementation is complete.** **S73-T-012** verification is next.
+- **Sprint 73 is CLOSED.** Workflow Resources objective is **met**.  
+- **No implementation work should be continued under Sprint 73.**  
+- **Product backlog** is the authority for future work.  
+- **Manually uploaded graphics** captured as [PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics).  
+- Orphan / mixed-data handling remains a known future consideration ([PB-R-008](../../../backlog/PRODUCT-BACKLOG.md#3-research--design-questions)).  
+- **No next sprint has been selected or opened.**
 
 ---
 
@@ -23,44 +25,35 @@
 
 ---
 
-## What Sprint 73 inherits
+## What Sprint 73 delivered (link to evidence)
 
-| From | Carry-forward |
-| ---- | ------------- |
-| `S72-D09` | One **shared** workflow asset-persistence model (images + author-evidence associations) |
-| `S72-D10` | Conversation-bound source use works; **byte persistence** still deferred |
-| `S72-D14` | Continuous verification — stop, fix owning layer, add focused regression on observation |
-| Sprint 72 closure | Public-export / browser-bundle parity lesson — evaluate export implications in Phase 1 |
-| PB-FA-001 | Workflow Resources; former S72 tasks T-042, T-051, B-002, etc. |
-
----
-
-## Immediate sequence (Phase 2 implementation)
-
-1. Read [S73-T-010-phase-2-acceptance-criteria.md](S73-T-010-phase-2-acceptance-criteria.md), [PLAN.md](PLAN.md), and [decisions.md](decisions.md) (`S73-D02`).  
-2. Execute `S73-T-011` — implement the minimal generated-image persistence vertical slice.  
-3. Execute `S73-T-012` focused regression coverage alongside T-011.  
-4. Do not widen into Phase 3 or out-of-scope resource types.
+| Outcome | Authority |
+| ------- | --------- |
+| Discovery + feasibility | `S73-T-001`…`T-006`, `S73-D02` |
+| Generated-image persistence | `S73-T-011`, `S73-T-012` (~23.7 MB heavy verify) |
+| Resources + video | `S73-T-022`…`T-025`, `S73-D03` |
+| Authoring / Orient refinements | T-022-024 / T-023-025 addenda |
+| Full narrative | [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md) |
 
 ---
 
-## Binding predecessor evidence (link only)
+## Binding carry-forward
 
 | Kind | Authority |
 | ---- | --------- |
-| Sprint 72 Final Report | [SPRINT-72-FINAL-REPORT.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-FINAL-REPORT.md) |
-| Sprint 72 Closure | [SPRINT-72-CLOSURE.md](../2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-CLOSURE.md) |
-| Sprint 72 Decisions | [decisions.md](../2026-07-31-sprint-72-productising-instructional-architecture/decisions.md) |
-| Product Backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
+| Sprint 73 decisions | [decisions.md](decisions.md) (`S73-D01`…`S73-D03`) |
+| Inherited Sprint 72 | `S72-D09`, `S72-D10`, `S72-D14` |
+| Product backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
+| Next-sprint pointer | [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) |
 
-Do **not** reopen or edit Sprint 71 evidence files.
+Do **not** reopen or edit Sprint 71/72 evidence files.
 
 ---
 
 ## What not to do
 
-- Do not assume persistence is already solved — **investigate first**  
-- Do not expand into PB-FA-002 (programming), PB-FA-003 (pipeline integrity), or unrelated backlog items  
-- Do not change evidence architecture unless discovery proves a narrow necessary coupling  
-- Do not schedule PDF / video / Word implementation in this sprint  
-- Do not claim the broader Sprint 72 evidence-centred suite is green (28 known pre-existing failures)
+- Do not continue Sprint 73 implementation tasks  
+- Do not treat known limitations as incomplete sprint failures  
+- Do not open Sprint 74 from this handover  
+- Do not invent a parallel asset/attachment system outside Workflow Resources  
+- Do not claim attachment-byte persistence or manually uploaded graphics were delivered in Sprint 73

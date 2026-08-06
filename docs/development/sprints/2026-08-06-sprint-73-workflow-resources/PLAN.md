@@ -1,18 +1,20 @@
 # Sprint 73 — Plan
 
-**Status:** **OPEN** (2026-08-06)  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
 **Theme:** Workflow Resources  
 **Backlog anchor:** [PB-FA-001](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)  
 **Charter:** [SPRINT-73-CHARTER.md](SPRINT-73-CHARTER.md)  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md)  
+**Closure:** [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)  
 **Planning principle:** A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
 
 Task IDs: `S73-T-###`. Decision IDs: `S73-D##` in [decisions.md](decisions.md).
 
-**Implementation is not assumed.** Phase 2 and Phase 3 tasks are **conditional** on the feasibility decision gate.
+All Sprint 73 phases and implementation tasks below are **Done**. No implementation tasks remain active. No Sprint 74 tasks are created here. Future work: [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
 
 ---
 
-## Phase 1 — Architecture discovery (committed)
+## Phase 1 — Architecture discovery (committed) — Complete
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
@@ -22,19 +24,11 @@ Task IDs: `S73-T-###`. Decision IDs: `S73-D##` in [decisions.md](decisions.md).
 | S73-T-004 | Assess export and public-export-path implications | **Done** | [S73-T-004-export-and-regeneration-path-implications.md](S73-T-004-export-and-regeneration-path-implications.md) |
 | S73-T-005 | Feasibility synthesis and decision-gate recommendation (incl. prompt-independence durability) | **Done** | [S73-T-005-feasibility-synthesis.md](S73-T-005-feasibility-synthesis.md) |
 
-**Phase 1 deliverables:**
-
-- Architecture discovery notes: [S73-T-001](S73-T-001-generated-image-lifecycle-discovery.md) · [S73-T-002](S73-T-002-canonical-workflow-resource-ownership.md) · [S73-T-003](S73-T-003-persistence-strategy-evaluation.md) · [S73-T-004](S73-T-004-export-and-regeneration-path-implications.md) · [S73-T-005](S73-T-005-feasibility-synthesis.md)  
-- Regeneration verdict (T-004): **conditionally compatible** with canonical owner model  
-- Feasibility synthesis verdict (T-005): **feasible with explicit conditions** (input to decision gate)  
-- Prompt-independence durability assessed without requiring durable generation prompts  
-- Draft Phase 2 acceptance-criteria obligations recorded  
-- Feasibility gate outcome recorded in `S73-D02` (**accepted; conditional feasibility**)  
-- Phase 2 acceptance criteria: [S73-T-010](S73-T-010-phase-2-acceptance-criteria.md)  
+**Phase 1 deliverables:** discovery notes linked above; regeneration verdict conditionally compatible; feasibility **feasible with explicit conditions**; gate outcome `S73-D02`.
 
 ---
 
-## Decision gate
+## Decision gate — Complete
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
@@ -42,9 +36,7 @@ Task IDs: `S73-T-###`. Decision IDs: `S73-D##` in [decisions.md](decisions.md).
 
 ---
 
-## Phase 2 — Persistent generated images (conditional)
-
-*Acceptance criteria and MVP verification complete with documented constraints.*
+## Phase 2 — Persistent generated images — Complete
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
@@ -52,46 +44,49 @@ Task IDs: `S73-T-###`. Decision IDs: `S73-D##` in [decisions.md](decisions.md).
 | S73-T-011 | Implement persistent generated images (minimal vertical slice) | **Done** | [S73-T-011-generated-image-persistence-implementation.md](S73-T-011-generated-image-persistence-implementation.md) |
 | S73-T-012 | Focused regression coverage for persistence path | **Done** | [S73-T-012-generated-image-persistence-verification.md](S73-T-012-generated-image-persistence-verification.md) |
 
-**Phase 2 outcome:** Complete with documented constraints (see T-012).
-
-**Next action (not Phase 3 start):** Post-Phase-2 review and explicit Phase 3 decision/planning task.
+**Phase 2 outcome:** Complete with documented constraints (see T-012). Heavy verify ~10 images / ~23.7 MB.
 
 ---
 
-## Phase 3 — Generalise Workflow Resources architecture (conditional)
-
-*Do not schedule until Phase 2 is working.*
+## Phase 3 — Generalise Workflow Resources architecture — Complete
 
 | ID | Task | Status | Notes |
 | -- | ---- | ------ | ----- |
-| S73-T-020 | Document generalised Workflow Resources model | **Blocked** | Extensible to uploaded documents, embedded video — design only |
-| S73-T-021 | Evaluate alignment with author-evidence association persistence (`S72-D09`) | **Blocked** | Unified workflow asset persistence model |
+| S73-T-020 | Document generalised Workflow Resources model | **Done** | [S73-T-020-workflow-resources-generalisation-design.md](S73-T-020-workflow-resources-generalisation-design.md) |
+| S73-T-021 | Evaluate alignment with author-evidence association persistence (`S72-D09`) | **Done** | Shared owner model retained; page refs remain lightweight and compatible |
+| S73-T-022 | Slice A implementation — page-level downloadable resources | **Done** | [S73-T-022-024-resources-and-video-implementation.md](S73-T-022-024-resources-and-video-implementation.md) |
+| S73-T-023 | Slice A verification | **Done** | [S73-T-023-025-resources-and-video-verification.md](S73-T-023-025-resources-and-video-verification.md) |
+| S73-T-024 | Slice B implementation — one embedded video | **Done** | [S73-T-022-024-resources-and-video-implementation.md](S73-T-022-024-resources-and-video-implementation.md) |
+| S73-T-025 | Slice B verification | **Done** | [S73-T-023-025-resources-and-video-verification.md](S73-T-023-025-resources-and-video-verification.md) |
+
+**UI / presentation polish (within Phase 3 evidence, not separate tasks):** authoring tabs with always-visible counts; Orient nested video/resources; vertical Video form — documented in T-022-024 §15–16 and T-023-025 presentation addendum. **Complete.**
 
 ---
 
-## Explicit non-scope (this plan)
+## Explicit non-scope (this plan — unchanged)
 
 - PB-FA-002 programming resources  
 - PB-FA-003 pipeline integrity  
+- Manually uploaded graphics → [PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics) (backlog; not Sprint 73)  
 - Evidence architecture changes (default out)  
-- PDF / Word / video implementation  
-- Unrelated UI polish · learner renderer redesign  
+- Unrelated learner-renderer redesign  
 
-Unrelated product-backlog items are **not** added to this plan without a recorded scope decision.
+No new future-resource implementation is scheduled in this plan.
 
 ---
 
-## Execution order
+## Execution order (historical)
 
 ```text
 Phase 1 (S73-T-001 … T-005)
   → Decision gate (S73-T-006 / S73-D02)
-  → [if feasible] Phase 2 (S73-T-010 … T-012)
-  → [if Phase 2 succeeds] Phase 3 (S73-T-020 … T-021)
+  → Phase 2 (S73-T-010 … T-012)
+  → Phase 3 (S73-T-020 … T-025 + documented UI refinements)
+  → Closeout (Final Report + Closure)
 ```
 
 ---
 
 ## Former Sprint 72 links (historical — now PB-FA-001)
 
-T-042, T-051, B-002, T-040, T-041, T-044 — retired from Sprint 72; tracked under [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources).
+T-042, T-051, B-002, T-040, T-041, T-044 — retired from Sprint 72; Sprint 73 closed against [PB-FA-001 — Workflow Resources](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources).

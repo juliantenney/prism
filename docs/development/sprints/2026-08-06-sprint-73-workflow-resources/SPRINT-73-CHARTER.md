@@ -1,11 +1,13 @@
 # Sprint 73 — Charter
 
 **Sprint:** 73 — Workflow Resources  
-**Status:** **OPEN** (2026-08-06)  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
 **Opened:** 2026-08-06  
+**Closed:** 2026-08-06  
 **Predecessor:** Sprint 72 — COMPLETE / Closed (2026-08-05)  
 **Backlog anchor:** [PB-FA-001](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources)  
-**Start here:** [SPRINT-73-START-HERE.md](SPRINT-73-START-HERE.md)
+**Start here:** [SPRINT-73-START-HERE.md](SPRINT-73-START-HERE.md)  
+**Final report:** [SPRINT-73-FINAL-REPORT.md](SPRINT-73-FINAL-REPORT.md) · [SPRINT-73-CLOSURE.md](SPRINT-73-CLOSURE.md)
 
 ---
 
@@ -25,7 +27,7 @@
 - **Uploaded documents** (e.g. PDF, Word — anticipated consumers only)  
 - **Embedded external resources** (e.g. video — anticipated consumers only)
 
-Sprint 73 **does not commit** to implementing uploaded documents or embedded video. PDF, Word, and video remain anticipated architecture consumers unless a later decision changes scope.
+At open, Sprint 73 did not commit to all media types. **As closed:** generated-image persistence, downloadable Additional Resources, and one provider-supplied embedded video shipped. Broader uploaded documents and manually uploaded graphics remain backlog ([PB-FA-004](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics)).
 
 ---
 

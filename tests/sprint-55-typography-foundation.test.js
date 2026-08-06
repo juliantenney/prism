@@ -7,7 +7,11 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const {
+  runPrismLibScriptsInSandbox,
+  PEDAGOGICAL_ICON_LIBS,
+  injectLearnerRendererVNextInSandbox
+} = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -83,6 +87,7 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -210,38 +215,20 @@ test("generic cleanup: learner content uses lesson, activity, and beat heading l
   assert.doesNotMatch(learnerBody, /<h2[^>]*>\s*Learning Activities\s*<\/h2>/i);
 });
 
-test("generic cleanup: sticky description drops a leaked Overview prefix", () => {
+test("generic cleanup: vNext header intro drops a leaked Overview prefix", () => {
   const api = loadPrismTestApi();
-  const source =
-    '<!doctype html><html><body><h1>Example lesson</h1>' +
-    '<article class="util-task-block"><div class="util-activity-header">' +
-    '<h2 class="util-activity-title">First activity</h2></div></article>' +
-    '<article class="util-task-block"><div class="util-activity-header">' +
-    '<h2 class="util-activity-title">Second activity</h2></div></article>' +
-    "</body></html>";
-  const html = api.utilityApplyLearningJourneyHeaderToExportHtmlForTest(source, {
-    journeyCompassEnabled: true,
-    journeyCompass: {
-      governing_inquiry: "Overview This lesson introduces a useful idea.",
-      session_frame: "60 min session",
-      steps: [
-        { activity_id: "A1", title: "First activity", duration_minutes: 30 },
-        { activity_id: "A2", title: "Second activity", duration_minutes: 30 }
-      ]
-    }
-  });
-  const header = html.match(/<header class="util-learning-header"[\s\S]*?<\/header>/i);
-  assert.ok(header);
-  assert.match(
-    header[0],
-    /<span class="util-learning-header__description">This lesson introduces a useful idea\.<\/span>/
+  const intro = api.utilityBuildVnextLearningHeaderIntroForTest(
+    {
+      header: {
+        description: "Overview This lesson introduces a useful idea.",
+        durationMinutes: 60
+      }
+    },
+    {}
   );
-  assert.match(
-    header[0],
-    /<\/span> <span class="util-learning-header__duration">60 mins\.<\/span>/
-  );
-  assert.doesNotMatch(header[0], /(?:-|–|—|·|\|)\s*60 mins\./);
-  assert.doesNotMatch(header[0], />Overview\b/i);
+  assert.equal(intro.subtitle, "This lesson introduces a useful idea.");
+  assert.equal(intro.duration, "60 mins.");
+  assert.doesNotMatch(intro.subtitle, />Overview\b/i);
 });
 
 test("presentation repair: obsolete activity-column CSS is absent", () => {

@@ -6,7 +6,11 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const {
+  runPrismLibScriptsInSandbox,
+  PEDAGOGICAL_ICON_LIBS,
+  injectLearnerRendererVNextInSandbox
+} = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -78,6 +82,7 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS.concat(["lib/page-render-normalize.js"]));
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -256,9 +261,11 @@ test("vNext top-level activities[] render as learning activities", () => {
   delete page.page_synthesis;
   delete page.learning_sequence;
   delete page.assessment_check;
-  const rows = api.extractLearningActivityRowsFromPageForTest(page);
-  assert.equal(rows.length, 2);
-  assert.equal(rows[0].activity_id, "A1");
+  const sections = api.getPageSectionsForRenderForTest(page);
+  const laSection = sections.find((s) => s.section_id === "learning_activities");
+  assert.ok(laSection);
+  assert.equal(laSection.content.length, 2);
+  assert.equal(laSection.content[0].activity_id, "A1");
   const html = renderPage(api, page, { applyCompositionValidation: false });
   assert.match(html, /Compare Marx/i);
   assert.match(html, /Apply Core Concepts/i);
@@ -312,15 +319,19 @@ test("vNext assessment_check renders through existing path", () => {
   assert.match(html, /historical materialism/i);
 });
 
-test("Journey Compass uses page_synthesis.overview.body for governing inquiry", () => {
+test("vNext header intro uses page_synthesis.overview.body for the subtitle sentence", () => {
   const { api } = loadPrismTestApi();
   const page = JSON.parse(JSON.stringify(VNEXT_PAGE));
   delete page.learning_sequence;
   delete page.assessment_check;
-  const compass = api.buildJourneyCompassFromPageForTest(page);
-  assert.ok(compass);
-  assert.match(compass.governing_inquiry, /capitalism shapes labour relations/i);
-  assert.equal(compass.steps.length, 2);
+  const sections = api.getPageSectionsForRenderForTest(page);
+  const overview = sections.find((s) => s.section_id === "overview");
+  assert.ok(overview);
+  const intro = api.utilityBuildVnextLearningHeaderIntroForTest(
+    { header: { description: overview.content } },
+    {}
+  );
+  assert.match(intro.subtitle, /capitalism shapes labour relations/i);
 });
 
 test("page_synthesis wins over legacy sections for the same slot", () => {

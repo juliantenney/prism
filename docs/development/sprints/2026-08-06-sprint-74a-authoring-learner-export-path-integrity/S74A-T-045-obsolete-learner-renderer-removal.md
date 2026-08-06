@@ -35,7 +35,7 @@ T-045 removed the obsolete learner-page renderer choice, routing, fallback, regi
 | S5b | S74A-T-045: rebuild vNext browser artefacts after renderer removal | `521d511` | `521d511a84dab3ef56c66a28860666500f24f63b` |
 | S6 | S74A-T-045: remove obsolete renderer tests and fixtures | `ccab7e2` | `ccab7e221d75837e1efdca673f25c64cdefac6f4` |
 | S7 | S74A docs: describe sole vNext renderer after removal | `9cc73e6` | `9cc73e65ca6835d18a9647f08a1eb25ec7ccdef8` |
-| S8 | S74A docs: record obsolete renderer removal | `e08ff59` | `e08ff59a9efe4146f76f064e453213cdd2481caf` |
+| S8 | S74A docs: record obsolete renderer removal | *(docs commit; see `git log --grep=record obsolete renderer removal`)* | — |
 
 ---
 

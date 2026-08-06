@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — maturation / v1.0 stabilisation phase  
-**Last updated:** 2026-08-06 (Sprint 73 closed; PB-FA-004 Manually uploaded graphics added)  
-**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
+**Last updated:** 2026-08-06 (Sprint 74 opened — architecture consolidation discovery; Sprint 73 closed)  
+**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; Sprint 74 open; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
 
 ---
 
@@ -71,7 +71,7 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 - Model-to-DOM / render-closure validation
 - Renderer-contract validation
 
-**Readiness:** Direction clear; needs concrete audit plan and acceptance criteria before sprint open.
+**Readiness:** Direction clear; needs concrete audit plan and acceptance criteria before sprint open. Sprint 74 discovery ([S74-T-001](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-001-codebase-rationalisation-discovery.md)) recommends a **74A** domain aligned with this item — **74A is not opened**.
 
 ### PB-FA-004 — Manually uploaded graphics
 
@@ -161,18 +161,21 @@ Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](../development/sprints/20
 
 | Rank | Item | Why |
 | ---- | ---- | --- |
-| 1 | **PB-FA-003** Pipeline integrity | Recent public-export/bundle parity lesson; hardening for maturation phase |
+| 1 | **PB-FA-003** Pipeline integrity | Recent public-export/bundle parity lesson; hardening for maturation phase; aligned with Sprint 74 recommended **74A** (not opened) |
 | 2 | **PB-FA-004** Manually uploaded graphics | Extends Sprint 73 Graphics path; approach/acceptance criteria still needed |
 | 3 | **PB-FA-002** Programming learning resources | Confirmed S71 finding; needs requirements pass first |
 | — | Stabilisation PB-S-001 | Fix when capacity allows; do not block sprint selection on greenwashing the full suite |
+| — | Stabilisation PB-S-004 | Duplicate/legacy pathways — informed by Sprint 74 discovery; not auto-consumed |
 | — | **PB-FA-001** Workflow Resources | Sprint 73 **closed**; residual follow-ons via PB-FA-004 / PB-R-001 / PB-R-008 |
 
-**Sprint 73** is **COMPLETE / Closed** — see [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md). **Sprint 74 is not opened.** Select the next sprint from this backlog via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
+**Sprint 74** is **OPEN** (discovery wrapper) — see [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md). **Sprint 74A / 74B / 74C are not opened.** Select follow-on domains from discovery + this backlog via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
 
 ---
 
 ## Related
 
+- Sprint 74 pack: [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
+- Sprint 74 discovery: [S74-T-001](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-001-codebase-rationalisation-discovery.md)  
 - Sprint 73 closure: [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md)  
 - Sprint 73 final report: [SPRINT-73-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md)  
 - Sprint 72 closure: [SPRINT-72-CLOSURE.md](../development/sprints/2026-07-31-sprint-72-productising-instructional-architecture/SPRINT-72-CLOSURE.md)  

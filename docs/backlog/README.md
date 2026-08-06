@@ -21,7 +21,7 @@ Do **not** create competing product backlogs under sprint folders or `docs/devel
 
 ## Navigation
 
+- Sprint 74 open (discovery): [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) · [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 - Sprint 73 closed: [sprint-73-closeout.md](../sprints/sprint-73-closeout.md) · [PB-FA-001](PRODUCT-BACKLOG.md#pb-fa-001--workflow-resources) · [PB-FA-004 Manually uploaded graphics](PRODUCT-BACKLOG.md#pb-fa-004--manually-uploaded-graphics)  
 - Sprint 72 closed: [sprint-72-closeout.md](../sprints/sprint-72-closeout.md)  
-- Selecting the next sprint: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) (Sprint 74 not opened)  
 - Sprint index: [docs/sprints/README.md](../sprints/README.md)  

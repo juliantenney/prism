@@ -80,11 +80,12 @@ Implementation working practices evidenced by **T-020** and **T-030** (not new p
 - **Assemble-from-current-run** was not exercised end-to-end because the saved run did not contain runnable prompts; the control and surrounding production path were observed. This was **not** treated as product failure; it remains a known evidence limitation for T-050 re-check.
 - **Sprint-70 E4** Node suite failures were classified as stale `app.js?v=` test drift, **not** production-path failure. Do not treat them as removal blockers; do not fix that drift under T-040/T-045 renderer-removal work.
 
-### Durable inventory finding (T-040)
+### Durable inventory finding (T-040) — superseded by T-045 for reachability
 
-- Obsolete page renderer is reachable via Authoring `#utilitiesRendererVersion=legacy` → non-vNext branch of `runUtilityPageExportPipeline` → `buildUtilityStructuredHtml`.
-- **`buildUtilityStructuredHtml` is shared** with non-page **`slide_deck`** — retain that owner; do not delete the function wholesale with the obsolete page path.
-- No durable localStorage/IndexedDB renderer preference; session DOM/state only. Selector removal + unconditional vNext is governed by **S74A-D02**.
+- **Pre-T-045:** Obsolete page renderer was reachable via Authoring `#utilitiesRendererVersion=legacy` → non-vNext branch of `runUtilityPageExportPipeline` → `buildUtilityStructuredHtml`.  
+- **Post-T-045:** That path is **removed**. Pages always use vNext. See [S74A-T-045-obsolete-learner-renderer-removal.md](S74A-T-045-obsolete-learner-renderer-removal.md).  
+- **`buildUtilityStructuredHtml` remains** for non-page **`slide_deck`** — retain that owner; do not delete the function wholesale.  
+- No durable localStorage/IndexedDB renderer preference existed; selector removal + unconditional vNext was governed by **S74A-D02**.
 
 ### Durable ownership finding (T-042)
 

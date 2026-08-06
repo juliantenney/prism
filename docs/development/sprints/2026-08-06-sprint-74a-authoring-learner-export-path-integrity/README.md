@@ -24,6 +24,7 @@
 | T-030 baseline | [S74A-T-030-production-browser-baseline.md](S74A-T-030-production-browser-baseline.md) |
 | T-040 inventory | [S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) |
 | T-042 interleaving repair | [S74A-T-042-activity-task-interleaving-definitive-path-repair.md](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) |
+| T-045 removal evidence | [S74A-T-045-obsolete-learner-renderer-removal.md](S74A-T-045-obsolete-learner-renderer-removal.md) |
 | Top-level overview | [sprint-74a-authoring-learner-export-path-integrity.md](../../../sprints/sprint-74a-authoring-learner-export-path-integrity.md) |
 
 ## Mission
@@ -32,10 +33,11 @@ Establish vNext as Prism’s sole learner-renderer implementation, remove the ob
 
 ## Current state
 
-- T-001 / T-010 / T-020 / T-030 / T-040 / **T-042** **Done**  
-- Next: **T-045** (**Not started**) — removal slices S1–S8  
-- Later: T-050 verify/close  
+- T-001 / T-010 / T-020 / T-030 / T-040 / T-042 / **T-045** **Done**  
+- Next: **T-050** sole-renderer verification / close (**Not started**)  
+- Obsolete learner renderer removed; acceptance pending T-050  
 - Interleaving regression repaired on definitive vNext path  
 - Baseline: [S74A-T-030](S74A-T-030-production-browser-baseline.md) (§8 + §8a)  
+- Removal evidence: [S74A-T-045](S74A-T-045-obsolete-learner-renderer-removal.md)  
 - Inventory: [S74A-T-040](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md)  
 - 74B / 74C **not opened**  

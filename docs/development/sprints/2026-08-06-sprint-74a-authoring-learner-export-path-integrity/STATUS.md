@@ -1,19 +1,19 @@
-﻿# Sprint 74A â€” Status / Dashboard
+﻿# Sprint 74A — Status / Dashboard
 
-**Sprint:** 74A â€” Authoring â†’ Learner Export Path Integrity  
+**Sprint:** 74A — Authoring → Learner Export Path Integrity  
 **Status:** **OPEN**  
 **Opened:** 2026-08-06  
-**Parent:** Sprint 74 â€” **OPEN** (programme wrapper)  
+**Parent:** Sprint 74 — **OPEN** (programme wrapper)  
 **Charter:** [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md)  
-**Sole-renderer removal direction:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer) â€” **Accepted**
+**Sole-renderer removal direction:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer) — **Accepted**
 
 ---
 
 ## Narrative
 
 ```text
-T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ… â†’ T-040 âœ… â†’ T-042 interleaving repair âœ…
-  â†’ T-045 remove In progress (slices S1â€“S8) â†’ T-050 verify/close
+T-001 ✅ → T-010 ✅ → T-020 ✅ → T-030 ✅ → T-040 ✅ → T-042 ✅ → T-045 remove ✅
+  → next: T-050 sole-renderer verification / close
 ```
 
 ---
@@ -23,13 +23,12 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 | Item | State |
 | ---- | ----- |
 | Sprint 74A | **OPEN** |
-| T-001 / T-010 / T-020 / T-030 / T-040 / T-042 | **Done** |
-| T-045 | **In progress** (pre-removal rollback: `065b3ac`) |
-| T-050 | **Not started** |
-| Interleaving regression | **Repaired** (T-042) â€” production behaviour includes corrected activity/task interleaving |
-| Generated artefact freshness | **Green** (`npm run check:learner-renderer-vnext-browser`) |
-| Pre-removal working tree | **Clean checkpoint** before T-045 |
-| Obsolete-renderer removal | Inventory Done; deletion **not started** |
+| T-001 / T-010 / T-020 / T-030 / T-040 / T-042 / **T-045** | **Done** |
+| T-050 | **Not started — next** |
+| Interleaving regression | **Repaired** (T-042) — preserve under T-050 |
+| Generated artefact freshness | **Green** |
+| Obsolete-renderer removal | **Done** (T-045); acceptance pending T-050 |
+| Pre-removal rollback | `065b3ac` |
 | 74B / 74C | **Not opened** |
 
 ---
@@ -41,17 +40,17 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 | S74A-T-001 | Sprint pack initialisation | **Done** |
 | S74A-T-010 | Export-path documentation audit | **Done** |
 | S74A-T-020 | vNext generated browser artefact integrity | **Done** |
-| S74A-T-030 | Definitive vNext production-browser baseline | **Done** (see Â§8a qualification) |
+| S74A-T-030 | Definitive vNext production-browser baseline | **Done** (see §8a qualification) |
 | S74A-T-040 | Obsolete renderer responsibility and removal inventory | **Done** |
 | S74A-T-042 | Activity-beat/task interleaving definitive-path repair | **Done** |
-| S74A-T-045 | Remove obsolete learner-renderer implementation | **In progress** |
-| S74A-T-050 | Sole-renderer verification and sprint closure | **Not started** |
+| S74A-T-045 | Remove obsolete learner-renderer implementation | **Done** |
+| S74A-T-050 | Sole-renderer verification and sprint closure | **Not started — next** |
 
 ---
 
 ## Current task
 
-**S74A-T-045** In progress â€” execute [T-040 inventory](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md) slices S1â€“S8. Preserve [T-030 Â§8](S74A-T-030-production-browser-baseline.md) **and** corrected interleaving ([T-042](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) / Â§8a). Do not mark removal ACs complete until T-050.
+Begin **S74A-T-050** when authorised — production-browser sole-renderer verification against [T-030 §8](S74A-T-030-production-browser-baseline.md) + [T-042](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) interleaving. Evidence: [S74A-T-045-obsolete-learner-renderer-removal.md](S74A-T-045-obsolete-learner-renderer-removal.md).
 
 ---
 
@@ -66,9 +65,10 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 | S5 | Browser bootstrap / normalizeRendererVersion | Sole-version API; rebuild artefacts |
 | S6 | Remove obsolete renderer tests and fixtures | Legacy parity suites deleted/rewritten |
 | S7 | Docs / terminology after removal | Active guidance describes sole vNext |
+| S8 | Residue sweep + evidence | [T-045 report](S74A-T-045-obsolete-learner-renderer-removal.md) |
 
 ---
 
 ## Last updated
 
-2026-08-06 â€” S74A-T-045 In progress from checkpoint `065b3ac`.
+2026-08-06 — S74A-T-045 Done; next T-050. Pre-removal rollback `065b3ac`.

@@ -10,7 +10,7 @@
 
 ## One-line mission
 
-**Continue Sprint 74A** (vNext sole learner renderer; remove obsolete renderer). Do **not** implement under this wrapper. Next 74A task: **S74A-T-045** (Not started).
+**Continue Sprint 74A** (vNext sole learner renderer; verify after removal). Do **not** implement under this wrapper. Next 74A task: **S74A-T-050** (Not started).
 
 ---
 

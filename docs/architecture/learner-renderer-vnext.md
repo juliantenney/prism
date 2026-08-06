@@ -571,8 +571,25 @@ collaboration
 | Runtime | `ordering-runtime.js`, `learner-draft-persistence.js` |
 | Certification | `certification-corpus.js`, `certify-learner-renderer.js`, `scripts/certify-learner-renderer-vnext.js` |
 | Generated browser artefact | `scripts/build-learner-renderer-vnext-browser.js` → `lib/learner-renderer-vnext-browser.js` (loaded by `index.html`) |
+| Artefact freshness gate | `npm run check:learner-renderer-vnext-browser` · `tests/learner-renderer-vnext-browser-artefact-freshness.test.js` |
 
 Public boundary: `lib/learner-renderer-vnext/index.js`.
+
+### Generated browser artefact discipline (S74A-T-020)
+
+| Role | Path |
+| ---- | ---- |
+| **Authoritative source** | `lib/learner-renderer-vnext/*` (edit here) |
+| **Generation mechanism** | `scripts/build-learner-renderer-vnext-browser.js` — **one** builder |
+| **Browser-loaded artefact** | `lib/learner-renderer-vnext-browser.js` → `window.PRISM_LEARNER_RENDERER_VNEXT` via `index.html` |
+| **Companion artefacts** (same builder) | `lib/learner-renderer-vnext-export-runtime.js`, `lib/learner-renderer-vnext-export-runtime-source.js` |
+| **Hand-maintained embed helper** | `lib/learner-renderer-vnext-standalone-embed.js` (not generated; injects export-runtime source) |
+| **Rebuild** | `npm run build:learner-renderer-vnext-browser` |
+| **Freshness check** | `npm run check:learner-renderer-vnext-browser` (fails if committed artefacts ≠ rebuild from source) |
+
+After editing source under `lib/learner-renderer-vnext/`, rebuild and commit the three generated files. Optionally bump the `?v=` query on the matching `<script>` tags in `index.html` so browsers do not keep a cached copy.
+
+Node-based freshness checks are **supporting evidence**; the **production browser path** remains authoritative for deployment confidence.
 
 ---
 
@@ -580,5 +597,6 @@ Public boundary: `lib/learner-renderer-vnext/index.js`.
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | S74A-T-020 — generated browser artefact discipline (source / builder / check) |
 | 2026-08-06 | S74A-T-010 — Authoring Supported/Compatibility export pointers; terminology aligned with Sprint 74 constraints |
 | 2026-07-22 | Initial Sprint 68 / IMP-021 architecture reference |

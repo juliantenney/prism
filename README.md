@@ -498,6 +498,8 @@ Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext) 
 - **Compatibility:** **Legacy** renderer option remains selectable; it is not the normal page path
 - **Runtime:** browser-only; static `index.html`-driven deployment; Node.js is development/test tooling only
 - **Browser-loaded implementation:** `lib/learner-renderer-vnext-browser.js` (generated browser artefact), exposed as `window.PRISM_LEARNER_RENDERER_VNEXT`
+- **Rebuild (development/test tooling):** `npm run build:learner-renderer-vnext-browser`
+- **Freshness check:** `npm run check:learner-renderer-vnext-browser` (artefacts must match `lib/learner-renderer-vnext/*` source)
 
 Authoring actions:
 

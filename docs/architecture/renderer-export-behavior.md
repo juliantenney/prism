@@ -37,12 +37,12 @@ Internal identifiers may still use `utilities*` names. That does **not** change 
 | Layer | What it is | Where |
 | ----- | ---------- | ----- |
 | Source modules | Editable vNext renderer source | `lib/learner-renderer-vnext/*` |
-| Generated browser artefact | Built for browser loading (development/test tooling) | `lib/learner-renderer-vnext-browser.js` via `scripts/build-learner-renderer-vnext-browser.js` |
+| Generated browser artefact | Built for browser loading (development/test tooling) | `lib/learner-renderer-vnext-browser.js` via **one** builder: `scripts/build-learner-renderer-vnext-browser.js` |
+| Freshness gate | Fails if committed artefacts ≠ rebuild from source | `npm run check:learner-renderer-vnext-browser` |
 | Browser-loaded implementation | What the deployed app actually runs | Script tag in `index.html` → `window.PRISM_LEARNER_RENDERER_VNEXT` |
 | Application orchestration | Authoring assemble / preview / download wiring | `app.js` (`handleUtilities*`, `runUtilityPageExportPipeline`, …) |
 
-End users do **not** run a build step. They open/serve the static application files. Generated artefacts are produced during development and committed/served as static files.
-
+End users do **not** run a build step. They open/serve the static application files. Generated artefacts are produced during development and committed/served as static files. After editing `lib/learner-renderer-vnext/*`, run `npm run build:learner-renderer-vnext-browser` and commit the generated outputs; confirm with `npm run check:learner-renderer-vnext-browser`.
 ---
 
 ## Supported page export path (vNext)
@@ -118,5 +118,6 @@ When changing **Compatibility** (Legacy) helpers, verify Legacy-selected exports
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | S74A-T-020 — artefact freshness gate + single-builder discipline |
 | 2026-08-06 | S74A-T-010 — rewritten as Supported (vNext) + Compatibility (Legacy); Authoring terminology; browser-only / static deployment framing |
 | (prior) | Legacy-centred “Utilities Page Export Renderer” narrative (superseded for Supported path) |

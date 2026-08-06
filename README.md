@@ -94,7 +94,7 @@ In Run mode:
 
 ### 3) Authoring
 
-Assemble a learner page from the current workflow run, then **Preview** with the **definitive** learner renderer (**vNext**, default). Download standalone HTML, a learner package ZIP, or open the result in a new tab. An obsolete Legacy selector may still appear in the UI until **S74A-T-045** removes it — see [Authoring Learner Export (vNext)](#authoring-learner-export-vnext).
+Assemble a learner page from the current workflow run, then **Preview** with the **sole** learner renderer (**vNext**). Download standalone HTML, a learner package ZIP, or open the result in a new tab — see [Authoring Learner Export (vNext)](#authoring-learner-export-vnext).
 
 ### 4) Prompt Studio
 
@@ -488,14 +488,14 @@ This gives reusable, maintainable prompt systems instead of one-off prompts, wit
 
 ## Authoring Learner Export (vNext)
 
-PRISM’s **Supported** learner page export path is:
+PRISM’s **sole** learner page export path is:
 
 ```text
 Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext) → HTML / learner ZIP / Open in New Tab
 ```
 
-- **Definitive learner renderer:** learner-renderer-**vNext** (Authoring UI default; `utilitiesRendererVersion` = `vnext`)
-- **Obsolete surfaces:** a Legacy selector / route may still exist in code until **S74A-T-045** completes removal; Legacy retention is **not** the product target (`S74A-D02` / `S74-D07`)
+- **Sole learner renderer:** learner-renderer-**vNext** (no Authoring renderer selector; `S74A-D02` / S74A-T-045)
+- **Non-page HTML:** `slide_deck` still uses structured HTML helpers — not a second learner-page renderer
 - **Runtime:** browser-only; static `index.html`-driven deployment; Node.js is development/test tooling only
 - **Browser-loaded implementation:** `lib/learner-renderer-vnext-browser.js` (generated browser artefact), exposed as `window.PRISM_LEARNER_RENDERER_VNEXT`
 - **Rebuild (development/test tooling):** `npm run build:learner-renderer-vnext-browser`
@@ -504,7 +504,7 @@ Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext) 
 Authoring actions:
 
 - **Assemble From Current Workflow Run** — builds the page from the current run
-- **Preview HTML** — renders via `runUtilityPageExportPipeline` → `runLearnerRendererVNextExport` when vNext is selected
+- **Preview HTML** — renders via `runUtilityPageExportPipeline` → `runLearnerRendererVNextExport`
 - **HTML only** / **learner package (.zip)** / **Open in New Tab** — use the last rendered HTML (download does not re-render by itself; regenerate Preview if output looks stale)
 
 Internal element ids may still use `utilities*` names; the user-facing tab is **Authoring**.

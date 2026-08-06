@@ -8,7 +8,7 @@
 
 ## Authoring export (product surface)
 
-In the Prism **Authoring** tab, **vNext is the definitive** learner page export path (UI default and `app.js` default). Obsolete Legacy selector/routing surfaces may still exist in the tree until **S74A-T-045** removes them; Legacy retention is **not** the target (`S74A-D02` / `S74-D07`).
+In the Prism **Authoring** tab, **vNext is the sole** learner page export path. There is no renderer selector. Non-page artefacts such as `slide_deck` continue to use structured HTML helpers and are not a second learner-page renderer (`S74A-D02` / S74A-T-045). Final sole-renderer acceptance is **S74A-T-050**.
 
 | Concern | Authority |
 | ------- | --------- |
@@ -597,6 +597,7 @@ Node-based freshness checks are **supporting evidence**; the **production browse
 
 | Date | Change |
 | ---- | ------ |
+| 2026-08-06 | S74A-T-045 — sole vNext Authoring page path after obsolete renderer removal |
 | 2026-08-06 | Active guidance — vNext definitive; obsolete Legacy removal authorised under T-045 (pre-removal wording) |
 | 2026-08-06 | S74A-T-020 — generated browser artefact discipline (source / builder / check) |
 | 2026-08-06 | S74A-T-010 — Authoring Supported/Compatibility export pointers; terminology aligned with Sprint 74 constraints (historical; retention target superseded by `S74A-D02`) |

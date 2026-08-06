@@ -58,4 +58,4 @@ See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010]
 
 ## Next
 
-Continue in **Sprint 74A** — next task **S74A-T-050** (Not started).  
+Sprint 74A is **COMPLETE / Closed**. Do **not** open 74B/74C automatically.  

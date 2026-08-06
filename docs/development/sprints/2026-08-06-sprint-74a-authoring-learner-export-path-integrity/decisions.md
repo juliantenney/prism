@@ -1,6 +1,6 @@
 # Sprint 74A — Decision Log
 
-**Sprint status:** **OPEN** (2026-08-06)  
+**Sprint status:** **COMPLETE / Closed** (2026-08-06)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Inherited programme constraints are **linked, not duplicated** — [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md); parent decisions `S74-D01`…`S74-D07`.
@@ -27,4 +27,4 @@ Inherited programme constraints are **linked, not duplicated** — [ARCHITECTURA
 
 ## Pending decisions
 
-None required to begin T-045. `S74A-D02` covers selector removal and unconditional vNext routing. T-040 found no durable persisted Legacy preference and classified shared `buildUtilityStructuredHtml` (slide_deck) as **retain** with evidence — not a Compatibility retention. Remaining “Investigate” items (page-only internals inside structured HTML; unused registry variants) are T-045 evidence gates, not new product decisions. Add further `S74A-D##` only if T-045 discovers a genuine ownership conflict that cannot be resolved from the inventory.
+None. Sprint 74A closed under `S74A-D02` / `S74-D07`. `slide_deck` remains owned by `buildUtilityStructuredHtml`. No further 74A decisions required.

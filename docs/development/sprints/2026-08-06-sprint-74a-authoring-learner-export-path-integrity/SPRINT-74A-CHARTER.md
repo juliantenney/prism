@@ -1,8 +1,9 @@
 # Sprint 74A — Charter
 
 **Sprint:** 74A — Authoring → Learner Export Path Integrity  
-**Status:** **OPEN** (2026-08-06)  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
 **Opened:** 2026-08-06  
+**Closed:** 2026-08-06  
 **Type:** Implementation sprint  
 **Parent programme:** Sprint 74 — Architecture Consolidation and Rationalisation  
 **Start here:** [SPRINT-74A-START-HERE.md](SPRINT-74A-START-HERE.md)  

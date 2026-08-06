@@ -10,7 +10,7 @@
 
 ## One-line mission
 
-**Continue Sprint 74A** (vNext sole learner renderer; verify after removal). Do **not** implement under this wrapper. Next 74A task: **S74A-T-050** (Not started).
+**Sprint 74A is COMPLETE / Closed** (sole vNext verified). Do **not** implement under this wrapper. Do **not** open 74B/74C automatically.
 
 ---
 

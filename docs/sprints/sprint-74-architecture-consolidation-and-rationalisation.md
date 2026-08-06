@@ -5,7 +5,8 @@
 **Type:** Discovery-led wrapper sprint (maturation phase)  
 **Portable pack:** [docs/development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 **Predecessor:** [sprint-73-closeout.md](sprint-73-closeout.md) — **COMPLETE / Closed**  
-**Active sub-sprint:** [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) — **OPEN**  
+**Active sub-sprint:** [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) — **COMPLETE / Closed**  
+**Closeout:** [sprint-74a-closeout.md](sprint-74a-closeout.md)  
 **Other sub-sprints:** 74B / 74C **not opened**
 
 ## Theme
@@ -23,7 +24,8 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 - Constraints binding (`S74-D03`…`S74-D05`, **`S74-D07`** definitive codebase).  
 - Operator approval opened Sprint 74A (`S74-D06`).  
 - `S74A-D02`: vNext replaces obsolete learner renderer — removal after inventory **Accepted**.  
-- Next 74A task: **S74A-T-050** (Not started). T-020…T-045 Done.
+- Sprint 74A **COMPLETE / Closed** (T-001…T-050).  
+- 74B / 74C **not opened**.
 
 ## Phase overview
 
@@ -31,7 +33,7 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 | ----- | ----- | ------ |
 | 1 | Codebase rationalisation discovery | **Complete** |
 | 2 | Domain sequencing / readiness | **Complete** |
-| — | Sprint 74A implementation | **OPEN** |
+| — | Sprint 74A implementation | **Complete / Closed** |
 | — | Sprint 74B / 74C | **Not opened** |
 
 ## Boundaries

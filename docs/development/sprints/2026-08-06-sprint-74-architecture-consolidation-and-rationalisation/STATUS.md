@@ -15,7 +15,7 @@
 Sprint 74 discovery + domain refinement ✅
   → S74-D03…D05 constraints; S74-D07 definitive-codebase principle
   → Sprint 74A OPEN (S74-D06) · S74A-D02 obsolete renderer removal
-  → 74A: T-020…T-045 Done; next S74A-T-050 (Not started)
+  → Sprint 74A COMPLETE / Closed (T-001…T-050)
   → 74B / 74C not opened
 ```
 
@@ -28,9 +28,9 @@ Sprint 74 discovery + domain refinement ✅
 | Sprint 74 (wrapper) | **OPEN** |
 | S74-T-001 / S74-T-010 | **Done** (factual findings preserved) |
 | Binding constraints | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**) |
-| Sprint 74A | **OPEN** — sole / definitive vNext; obsolete renderer removal **Accepted** |
+| Sprint 74A | **COMPLETE / Closed** — sole / definitive vNext verified (T-050) |
 | Sprint 74B / 74C | **Not opened** |
-| Current task (programme) | Continue under **Sprint 74A** (`S74A-T-050` next — Not started) |
+| Current task (programme) | Sprint 74A closed; do **not** open 74B/74C automatically |
 
 ---
 
@@ -40,11 +40,11 @@ Sprint 74 discovery + domain refinement ✅
 | ----- | ---- | ------ |
 | 1 | Codebase rationalisation discovery | **Complete** |
 | 2 | Domain sequencing / readiness | **Complete** |
-| — | Sprint 74A implementation | **OPEN** |
+| — | Sprint 74A implementation | **Complete / Closed** |
 | — | Sprint 74B / 74C | **Not opened** |
 
 ---
 
 ## Last updated
 
-2026-08-06 — 74A T-045 Done; next T-050; `S74-D07` / `S74A-D02` binding; 74B/74C unopened.
+2026-08-06 — Sprint 74A CLOSED after T-050; wrapper remains OPEN; 74B/74C unopened.

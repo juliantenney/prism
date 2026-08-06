@@ -1,15 +1,16 @@
 # Sprint 74A — Plan
 
-**Status:** **OPEN** (2026-08-06)  
+**Status:** **COMPLETE / Closed** (2026-08-06)  
 **Theme:** Authoring → Learner Export Path Integrity — sole / definitive vNext learner renderer  
 **Charter:** [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md)  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Sole-renderer decision:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer)  
 **Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)
+**Verification:** [S74A-T-050-sole-renderer-final-verification.md](S74A-T-050-sole-renderer-final-verification.md)
 
 Task IDs: `S74A-T-###`. Decision IDs: `S74A-D##` in [decisions.md](decisions.md).
 
-Acceptance criteria AC-01…AC-15: [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md).
+Acceptance criteria AC-01…AC-15: [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md) — **all evidenced under T-050**.
 
 ---
 
@@ -22,11 +23,11 @@ S74A-T-001 (pack init) ✅
       → S74A-T-030 (definitive vNext production-browser baseline) ✅
       → S74A-T-040 (obsolete renderer responsibility and removal inventory) ✅
       → S74A-T-042 (activity-beat/task interleaving definitive-path repair) ✅
-      → S74A-T-045 (remove obsolete learner-renderer implementation) ← next
-      → S74A-T-050 (sole-renderer verification and sprint closure)
+      → S74A-T-045 (remove obsolete learner-renderer implementation) ✅
+      → S74A-T-050 (sole-renderer verification and sprint closure) ✅
 ```
 
-T-042 completed after T-040 and **blocked T-045** until corrected interleaving had production-browser evidence. T-045 may now proceed via inventory slices S1–S8, preserving T-030 §8 **and** §8a / T-042 interleaving. T-050 closes only when AC-01…AC-15 are evidenced.
+T-050 closed Sprint 74A after AC-01…AC-15 were evidenced on the production browser path.
 
 ---
 
@@ -116,8 +117,7 @@ T-042 completed after T-040 and **blocked T-045** until corrected interleaving h
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
-| **Ownership** | Authoring page-export / renderer codebase |
+| **Status** | **Done** (2026-08-06) — [S74A-T-045-obsolete-learner-renderer-removal.md](S74A-T-045-obsolete-learner-renderer-removal.md) |
 | **Approach** | Execute the T-040 removal plan. Expected where evidenced: remove Authoring renderer selector; remove renderer-version state used only for obsolete selection; route page export directly to vNext; remove obsolete branches/fallbacks/implementation/exclusive helpers/globals/script loading; remove tests/fixtures protecting only obsolete behaviour; remove obsolete docs/comments; narrowly rename misleading terminology; update focused tests for the single path. Do **not** retain dead code behind flags, comments, hidden selectors, or unreachable branches. Do **not** create an in-tree archive/compatibility module. Repository history preserves deleted code. |
 | **Acceptance** | AC-02, AC-03, AC-07, AC-08, AC-09, AC-10, AC-11, AC-15 |
 | **Verification** | Diff vs T-040 plan; focused tests; no reachable obsolete path |
@@ -129,8 +129,7 @@ T-042 completed after T-040 and **blocked T-045** until corrected interleaving h
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
-| **Ownership** | Sprint closure |
+| **Status** | **Done** (2026-08-06) — [S74A-T-050-sole-renderer-final-verification.md](S74A-T-050-sole-renderer-final-verification.md) |
 | **Approach** | After removal: confirm no user-facing choice, no reachable obsolete branch, no obsolete script loaded, no runtime symbol depends on removed implementation; Preview/HTML/ZIP/Open in New Tab and required resources via vNext; generated artefact current; focused Node suites pass (evidence only); production browser path passes; static deployment intact; docs describe one renderer only; searches find no misleading active references to obsolete-renderer availability. Prepare closure only when AC-01…AC-15 evidenced. |
 | **Acceptance** | AC-01, AC-05, AC-11…AC-15; prior task ACs met; 74B/74C not opened |
 | **Verification** | Evidence pack + STATUS complete |

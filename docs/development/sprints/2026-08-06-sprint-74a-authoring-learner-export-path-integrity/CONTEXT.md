@@ -1,26 +1,26 @@
 # Sprint 74A — Context
 
-**Status:** **OPEN** (opened 2026-08-06)  
-**Role:** Durable context for definitive learner-renderer codebase work  
-**Parent:** Sprint 74 wrapper — link discovery; do not rewrite factual findings  
+**Status:** **COMPLETE / Closed** (closed 2026-08-06)  
+**Role:** Durable context for the sole learner-renderer architecture delivered by Sprint 74A  
+**Parent:** Sprint 74 wrapper — **OPEN**; 74B/74C not opened  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Sole renderer:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer)
 
 ---
 
-## Why this sprint exists
+## Why this sprint existed
 
-Sprint 74A establishes **one definitive learner-renderer implementation** around existing Authoring → export functionality. vNext is the architecture. The previous renderer is **obsolete**. There is no product requirement to retain it as Compatibility. After evidence confirms coverage, remove it and its exclusive supporting surfaces.
+Sprint 74A established **one definitive learner-renderer implementation** around existing Authoring → export functionality. vNext is the architecture. The previous renderer was **obsolete** and has been removed.
 
 ---
 
-## Target architecture
+## Final architecture
 
 | Kind | State |
 | ---- | ----- |
-| **Definitive** | vNext — Authoring → Preview / HTML / ZIP / Open in New Tab |
-| **Obsolete** | Previous renderer — inventoried (T-040), removed (T-045) |
-| **Shared helpers** | Retain/move only with evidence of current responsibility |
+| **Sole learner-page renderer** | vNext — Authoring → Preview / HTML / ZIP / Open in New Tab via `runLearnerRendererVNextExport` |
+| **Obsolete learner-page path** | Removed (T-045); residue cleaned (T-050) |
+| **Non-page structured HTML** | `slide_deck` via `runUtilityRendererByPlan` → `buildUtilityStructuredHtml` |
 
 Do not use **Compatibility** for the old renderer except historically (e.g. T-010-era classification).
 
@@ -36,13 +36,12 @@ Do not use **Compatibility** for the old renderer except historically (e.g. T-01
 
 | Surface | Role |
 | ------- | ---- |
-| `lib/learner-renderer-vnext/*` + `learner-renderer-vnext-browser.js` | Definitive renderer (source + generated artefact) |
+| `lib/learner-renderer-vnext/*` + `learner-renderer-vnext-browser.js` | Sole learner-page renderer (source + generated artefact) |
 | `scripts/build-learner-renderer-vnext-browser.js` | **One** generation mechanism |
 | `npm run check:learner-renderer-vnext-browser` | Freshness gate (T-020) |
-| `app.js` page-export pipeline | Converge exclusively on vNext; remove obsolete branches (T-045) |
-| Authoring renderer select / version state | Remove (T-045) |
-| Obsolete structured HTML **page** path | Remove per [T-040 inventory](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md); keep shared structured HTML for `slide_deck` |
-| Export architecture docs | Sole-renderer narrative by T-050 |
+| `app.js` page-export pipeline | Unconditional vNext |
+| `buildUtilityStructuredHtml` | Non-page / `slide_deck` only (pages rejected) |
+| Export architecture docs | Sole-renderer narrative |
 
 ---
 

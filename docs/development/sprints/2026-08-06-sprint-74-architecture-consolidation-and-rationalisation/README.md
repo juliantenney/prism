@@ -1,12 +1,13 @@
 # Sprint 74 — Architecture Consolidation and Rationalisation
 
-**Status:** **OPEN** (programme wrapper; Sprint 74A implementation active)  
+**Status:** **OPEN** (programme wrapper; Sprint 74A **COMPLETE / Closed**)  
 **Opened:** 2026-08-06  
 **Predecessor:** Sprint 73 — **COMPLETE / Closed** (do not reopen)  
 **Theme:** Discovery-led wrapper — map supported architecture; sequence rationalisation domains  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
 **Decision:** [S74-D01](decisions.md#s74-d01-sprint-74-scope--architecture-consolidation-and-rationalisation-discovery-led-wrapper)  
-**Active sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/README.md)
+**Completed sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/README.md) — **CLOSED**  
+**Next sub-sprints:** 74B / 74C **not opened**
 
 | Authority | Path |
 | --------- | ---- |
@@ -20,7 +21,7 @@
 | **Architectural constraints** | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) |
 | Discovery (S74-T-001) | [S74-T-001-codebase-rationalisation-discovery.md](S74-T-001-codebase-rationalisation-discovery.md) |
 | Domain refinement (S74-T-010) | [S74-T-010-rationalisation-domain-refinement.md](S74-T-010-rationalisation-domain-refinement.md) |
-| **Sprint 74A (active)** | [SPRINT-74A-START-HERE.md](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) |
+| **Sprint 74A (CLOSED)** | [SPRINT-74A-START-HERE.md](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) · [FINAL-REPORT](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md) |
 | Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
 | Predecessor (Sprint 73) | [SPRINT-73-FINAL-REPORT.md](../2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md) |
 | Canonical product backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
@@ -28,9 +29,9 @@
 
 ## Reading order
 
-1. Active implementation: [Sprint 74A START HERE](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
+1. Closed implementation: [Sprint 74A FINAL REPORT](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md)  
 2. [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-3. [S74-T-010](S74-T-010-rationalisation-domain-refinement.md) · [STATUS.md](STATUS.md)  
+3. [STATUS.md](STATUS.md) · [S74-T-010](S74-T-010-rationalisation-domain-refinement.md)  
 
 ## Theme
 
@@ -38,8 +39,8 @@ Understand the current supported Prism architecture and establish a sequence of 
 
 ## Boundaries
 
-- Wrapper governs constraints and sequencing — Domain A implementation lives in **74A**  
+- Wrapper governs constraints and sequencing — Domain A implementation completed in **74A**  
 - Binding constraints: [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**)  
-- **74A OPEN** — sole vNext learner renderer; obsolete renderer removal Accepted (`S74A-D02`)  
+- **74A COMPLETE / Closed** — sole vNext learner renderer verified (`S74A-D02` / T-050)  
 - **74B / 74C not opened**  
 - Sprint 73 remains closed predecessor authority for Workflow Resources / Authoring  

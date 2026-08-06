@@ -19,9 +19,9 @@
 
 ## Immediate sequence
 
-1. Continue in **Sprint 74A** — current task **S74A-T-050** (Not started; sole-renderer verification).  
-2. Do **not** implement under this wrapper.  
-3. Do **not** open 74B/74C yet.
+1. Sprint 74A is **COMPLETE / Closed**. Do **not** open 74B/74C automatically.  
+2. Do **not** implement under this wrapper unless a new programme decision opens further work.  
+3. Keep 74B/74C unopened until authorised.  
 
 ---
 

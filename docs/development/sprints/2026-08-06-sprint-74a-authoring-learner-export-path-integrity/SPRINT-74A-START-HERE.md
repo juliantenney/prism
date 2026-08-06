@@ -1,11 +1,14 @@
 # Sprint 74A — START HERE
 
 **Sprint:** 74A — Authoring → Learner Export Path Integrity  
-**Status:** **OPEN**  
+**Status:** **COMPLETE / Closed**  
 **Opened:** 2026-08-06  
+**Closed:** 2026-08-06  
 **Type:** Implementation sprint  
-**Parent:** [Sprint 74](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
+**Parent:** [Sprint 74](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md) — **OPEN**  
 **Charter:** [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md)  
+**Final report:** [SPRINT-74A-FINAL-REPORT.md](SPRINT-74A-FINAL-REPORT.md)  
+**Verification:** [S74A-T-050-sole-renderer-final-verification.md](S74A-T-050-sole-renderer-final-verification.md)  
 **Opening:** [S74A-D01](decisions.md#s74a-d01-open-sprint-74a-for-authoring--learner-export-path-integrity)  
 **Sole renderer:** [S74A-D02](decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer) — **Accepted**  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)
@@ -45,23 +48,22 @@ Create Workflow → My Workflows → Authoring → Assemble → Preview (vNext)
 | Remove obsolete implementation (T-045) | In-tree archive / dead flags / hidden selectors |
 | Docs/tests for one definitive renderer | 74B/74C; schema redesign; size-driven `app.js` split |
 
-## Current task
+## Sprint outcome
 
-**S74A-T-045** — Remove obsolete learner-renderer implementation (**Not started — next**).
+T-001…**T-050** are **Done**. Sprint 74A is **COMPLETE / Closed**.
 
-T-001…**T-042** are **Done**.  
-Baseline: [S74A-T-030](S74A-T-030-production-browser-baseline.md) §8 + §8a.  
-Inventory: [S74A-T-040](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md).  
-Interleaving repair: [S74A-T-042](S74A-T-042-activity-task-interleaving-definitive-path-repair.md).
+- Sole learner-page renderer: **vNext**  
+- Verification: [S74A-T-050](S74A-T-050-sole-renderer-final-verification.md)  
+- Final report: [SPRINT-74A-FINAL-REPORT.md](SPRINT-74A-FINAL-REPORT.md)  
+- Parent Sprint 74 remains **OPEN**; **74B / 74C not opened**
 
-## Reading order
+## Reading order (post-closure)
 
-1. This file → [SPRINT-74A-CHARTER.md](SPRINT-74A-CHARTER.md)  
-2. [decisions.md](decisions.md) (`S74A-D02`) · parent `S74-D07`  
-3. [T-042](S74A-T-042-activity-task-interleaving-definitive-path-repair.md) · [T-040](S74A-T-040-obsolete-renderer-responsibility-removal-inventory.md)  
-4. [T-030](S74A-T-030-production-browser-baseline.md)  
-5. [CONTEXT.md](CONTEXT.md) · [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) · [next-chat-briefing.md](next-chat-briefing.md)  
+1. [SPRINT-74A-FINAL-REPORT.md](SPRINT-74A-FINAL-REPORT.md)  
+2. [S74A-T-050-sole-renderer-final-verification.md](S74A-T-050-sole-renderer-final-verification.md)  
+3. [SPRINT-74A-CLOSURE.md](SPRINT-74A-CLOSURE.md) · [STATUS.md](STATUS.md)  
+4. Parent [Sprint 74 STATUS](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/STATUS.md)
 
 ## Immediate next action
 
-When authorised: begin **S74A-T-045** — execute inventory slices S1–S8. Preserve T-030 §8 and T-042 interleaving. Do not open 74B/74C. Do not fix Sprint-70 E4 cache-bust drift under removal.
+Do **not** open Sprint 74B or 74C automatically. Continue only under the parent Sprint 74 programme if authorised.

@@ -99,7 +99,7 @@ function extractActivityHtml(html, activityId) {
   return "";
 }
 
-test("S72-T-073 public export path: Owen A1 renders orient-learn-do-check with one textarea and no production instruction in Learn", () => {
+test("S72-T-073 / S74A-T-042 public export path: Owen A1 Learn keeps study; Do keeps production only", () => {
   const api = loadAppWithBrowserBundle();
   const parsed = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
   const result = api.renderLearnerPageForTest(parsed, {
@@ -119,7 +119,11 @@ test("S72-T-073 public export path: Owen A1 renders orient-learn-do-check with o
 
   const doSection = a1Html.slice(doIdx, checkIdx);
   const learnSection = a1Html.slice(learnIdx, doIdx);
-  assert.equal((doSection.match(/data-workspace-capability="text_entry"/g) || []).length, 1);
-  assert.equal((a1Html.match(/<textarea\b/g) || []).length, 1);
-  assert.doesNotMatch(learnSection, /Then write a short paragraph/i);
+  assert.match(learnSection, /Study the explanatory material and worked example/i);
+  assert.ok(learnSection.indexOf("Study the explanatory material") < learnSection.indexOf('data-material-id="A1-M1"'));
+  assert.doesNotMatch(learnSection, /Write a short paragraph/i);
+  assert.doesNotMatch(doSection, /Study the explanatory material and worked example/i);
+  assert.match(doSection, /Write a short paragraph/i);
+  assert.ok((doSection.match(/data-workspace-capability="text_entry"/g) || []).length >= 1);
+  assert.ok((a1Html.match(/<textarea\b/g) || []).length >= 1);
 });

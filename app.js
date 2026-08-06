@@ -47443,11 +47443,16 @@
       ? cfg.sectionOrder.slice()
       : [];
     var artefactType = String((plan && plan.artefactType) || "").toLowerCase();
-    var isPageArtefact = artefactType === "page";
-    var journeyCompassWillRender =
-      isPageArtefact &&
-      shouldRenderJourneyCompassForPage(parsed, presentationMode);
-    var journeyCompassData = journeyCompassWillRender ? buildJourneyCompassFromPage(parsed) : null;
+    if (artefactType === "page") {
+      return {
+        error:
+          "Learner page artefacts must use the vNext export path; structured HTML no longer renders pages (S74A-T-045)."
+      };
+    }
+    // Page-only Legacy branches below are unreachable; keep isPageArtefact false so shared
+    // slide_deck / generic_document / assessment paths remain the only live structured HTML uses.
+    var isPageArtefact = false;
+    var journeyCompassData = null;
 
     var htmlParts = [];
     var title = String((parsed && (parsed.title || parsed.name)) || utilityLabelFromKey(plan.artefactType || "Artefact"));
@@ -47902,12 +47907,6 @@
       "</html>"
     ].join("");
     htmlDoc = sanitizeUtilityHtmlOutput(htmlDoc);
-    if (isPageArtefact) {
-      htmlDoc = utilityApplyLearningJourneyHeaderToExportHtml(htmlDoc, {
-        journeyCompass: journeyCompassData,
-        journeyCompassEnabled: journeyCompassWillRender
-      });
-    }
     return { html: htmlDoc };
   }
 

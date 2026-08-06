@@ -62,6 +62,7 @@ T-001 âœ… â†’ T-010 âœ… â†’ T-020 âœ… â†’ T-030 âœ�
 | S1 | Remove learner renderer selection | Selector/state removed |
 | S2 | Route learner page export exclusively through vNext | Pipeline always `runLearnerRendererVNextExport` |
 | S3 | Remove obsolete learner page routing | Drop dead page plan + registry page variant |
+| S4 | Remove obsolete learner renderer implementation | Structured HTML rejects pages; slide_deck retained |
 
 ---
 

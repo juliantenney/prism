@@ -124,11 +124,35 @@ Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decis
 
 | Topic | Expected trigger |
 | ----- | ---------------- |
-| Open Sprint 74C pack | After 74B closure / programme order |
-| WR orphan cleanup implementation | PB-R-008 policy — not 74B |
+| WR orphan cleanup implementation | PB-R-008 policy — not Sprint 74 reopen |
 | Post-alpha / release Compatibility policy | When external users or release commitments exist — revisit `S74-D09` |
+| Group F tooling retain/delete | Post-74 / separate investigation |
+| Open Sprint 75 | Separate operator decision |
 
 Obsolete learner-renderer removal in 74A — **complete** (`S74-D07` / `S74A-D02`).  
-Compose / partial page-construction — **S74B-D02**. Pre-release Compatibility — **S74-D09** / **S74B-D03**.
+Compose / partial page-construction — **S74B-D02**. Pre-release Compatibility — **S74-D09** / **S74B-D03**.  
+Sprint 74C opened as narrowed hygiene — **S74C-D01** / **S74-D10**.  
+Sprint 74C closed — **S74C-D03**. Sprint 74 programme closed — **S74-D11**.
+
+---
+
+## S74-D10 Open Sprint 74C as narrowed repository hygiene (final Sprint 74 phase)
+
+- **Decision:** Operator approval has **opened Sprint 74C** — Repository Hygiene & Historical Residue Rationalisation — implementing the **narrowed R1** boundary from [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md). Original Domain C (scratch + PB-S-001) must **not** proceed unchanged. PB-S-001, WR orphan cleanup, and PB-FA-004 remain **out of scope**. Sprint 74C is **not** architectural redesign. Sprint 74 remains the open programme wrapper. Sprint 74A and 74B remain **COMPLETE / Closed**. Sprint 75 remains **not opened**. Pack work: [Sprint 74C](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/SPRINT-74C-START-HERE.md) under `S74C-D01`.
+- **Status:** **Accepted** (2026-08-07) — fulfilled; 74C now closed
+- **Rationale:** Post-74B review; operator direction to clean repository before UI work without fixture/architecture scope bleed.
+- **Consequences:** Implement only in the 74C pack; do not rewrite the post-74B review; do not open Sprint 75 from this decision.
+
+---
+
+## S74-D11 Close Sprint 74 programme
+
+- **Decision:** Sprint **74** — Architecture Consolidation and Rationalisation — is **COMPLETE / Closed**. Sub-sprints **74A**, **74B**, and **74C** are all **COMPLETE / Closed**. Programme objectives are met: definitive vNext renderer path (74A), rationalised generation/capture architecture (74B), and completed repository hygiene under Historical Retention Principle (74C / `S74C-D02`). Evidence: [S74C-T-050-final-verification-and-programme-closure.md](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md). **Group F** deferred tooling is **not** outstanding Sprint 74 work. **Sprint 75 is not opened** by this decision; it is recorded only as the next programme when separately authorised.
+
+- **Status:** **Accepted** (2026-08-07)
+
+- **Rationale:** Operator-authorised T-050 closure after verified 74C completion; 74A/74B already closed; post-74B R1 hygiene phase complete.
+
+- **Consequences:** Do not reopen Sprint 74 for hygiene or architecture rationalisation without a new programme decision. Standing policies remain: `S74-D07`, `S74-D09`, `S74C-D02`, Engineering Disciplines. PB-S-001 / WR orphans / PB-FA-004 remain future candidates, not open 74 tasks.
 
 Do not record implementation consolidation decisions without discovery evidence and explicit acceptance criteria.

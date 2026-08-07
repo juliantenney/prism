@@ -1,6 +1,6 @@
 # Sprint 74C — Plan
 
-**Status:** **OPEN** (2026-08-07) — T-040 Done; T-050 next  
+**Status:** **COMPLETE / Closed** (2026-08-07) — [S74C-T-050](S74C-T-050-final-verification-and-programme-closure.md)  
 **Theme:** Repository Hygiene & Historical Residue Rationalisation  
 **Charter:** [SPRINT-74C-CHARTER.md](SPRINT-74C-CHARTER.md)  
 **Scope authority:** [S74-programme-post-74B-review.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-programme-post-74B-review.md) — narrowed **R1**  
@@ -17,11 +17,13 @@ Acceptance criteria AC-01…AC-13: [SPRINT-74C-CHARTER.md](SPRINT-74C-CHARTER.md
 ## Execution order
 
 ```text
-S74C-T-001 … S74C-T-040 ✅
-  → S74C-T-050 (verify + close 74C / programme if authorised) ← next
+S74C-T-001 … S74C-T-050 ✅
+  → Sprint 74C COMPLETE / Closed
+  → Sprint 74 programme COMPLETE / Closed (S74-D11)
+  → Sprint 75 NOT OPENED
 ```
 
-**T-040 executed:** A → D → G → B → C → E1 → E2. Group F excluded. Evidence: [S74C-T-040-repository-hygiene-execution-evidence.md](S74C-T-040-repository-hygiene-execution-evidence.md).
+**Closure:** [S74C-T-050-final-verification-and-programme-closure.md](S74C-T-050-final-verification-and-programme-closure.md).
 
 ---
 
@@ -100,15 +102,16 @@ S74C-T-001 … S74C-T-040 ✅
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** ← next |
+| **Status** | **Done** (2026-08-07) |
 | **Ownership** | Sprint / programme closure |
-| **Approach** | Confirm ACs; no product regressions claimed without evidence; close 74C; close Sprint 74 programme **only if authorised**. Do not open Sprint 75. |
+| **Approach** | Confirm ACs; no product regressions claimed without evidence; close 74C; close Sprint 74 programme **as authorised**. Do not open Sprint 75. |
 | **Acceptance** | AC-01…AC-13; 75 not opened |
-| **Verification** | Closure evidence |
+| **Verification** | [S74C-T-050-final-verification-and-programme-closure.md](S74C-T-050-final-verification-and-programme-closure.md) |
 | **Dependencies** | T-010…T-040 Done |
+| **Runtime** | **Unchanged** |
 
 ---
 
 ## Explicit non-scope (plan)
 
-See charter. T-040 hygiene execution is **Done**. Next is **T-050 verify/close**. Do not open Sprint 75. Do not pull PB-S-001. Do not expand into Group F without a new decision.
+See charter. Sprint 74C is **COMPLETE / Closed**. Sprint 74 programme is **COMPLETE / Closed**. Sprint 75 is **not opened**. Group F remains intentionally deferred.

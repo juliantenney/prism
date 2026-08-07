@@ -1,25 +1,17 @@
 # Sprint 74 — Next-chat briefing
 
-**Pack status:** **OPEN** (programme wrapper) — **replanning**  
-**Theme:** Architecture Consolidation and Rationalisation — **one definitive codebase**  
-**Decisions:** `S74-D01`…`S74-D09`  
+**Pack status:** **COMPLETE / Closed** (2026-08-07)  
+**Theme:** Architecture Consolidation and Rationalisation  
+**Decisions:** `S74-D01`…`S74-D11` · Sprint 74C `S74C-D01`…`S74C-D03`  
 **Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
 **Disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-**Review:** [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)
+**Closure:** [S74C-T-050](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md)
 
 ---
 
 ## One-line mission
 
-**74A and 74B are closed.** Original Domain C must **not** open unchanged. Read the post-74B review; await operator choice (R1 / R2 / R3). **Do not create a 74C pack.**
-
----
-
-## Read first
-
-1. [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)  
-2. [STATUS.md](STATUS.md) · [HANDOVER.md](HANDOVER.md)  
-3. [S74B-T-050 closure](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-050-final-verification-and-sprint-closure.md)  
+Sprint **74 is CLOSED**. Sprint **75 is NOT OPENED**. Do not reopen 74 hygiene or architecture slices from this pack.
 
 ---
 
@@ -29,14 +21,14 @@
 | ------ | ------ |
 | **74A** | **COMPLETE / Closed** |
 | **74B** | **COMPLETE / Closed** |
-| **74C** | **Not opened** — boundary under replan |
+| **74C** | **COMPLETE / Closed** |
+| **74 programme** | **COMPLETE / Closed** |
+| **75** | **Not opened** |
 
 ---
 
 ## Hard rules
 
-- Do **not** open 74C unchanged  
-- Do **not** create a 74C folder or tasks  
-- Compatibility is **opt-in** by explicit product requirement (`S74-D09`)  
-- Node-based tests ≠ deployment proof  
-- PB-S-001 remains investigation-needed until readiness is proven  
+- Do not open Sprint 75 without separate operator authority  
+- Group F is intentionally deferred — not open Sprint 74 debt  
+- Preserve Engineering Disciplines / S74-D07 / S74-D09 / S74C-D02 as standing policy  

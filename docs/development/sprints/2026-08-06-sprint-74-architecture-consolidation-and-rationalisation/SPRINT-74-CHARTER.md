@@ -1,7 +1,7 @@
 # Sprint 74 — Charter
 
 **Sprint:** 74 — Architecture Consolidation and Rationalisation  
-**Status:** **OPEN** (2026-08-06)  
+**Status:** **COMPLETE / Closed** (2026-08-07) — [S74-D11](decisions.md#s74-d11--close-sprint-74-programme)  
 **Opened:** 2026-08-06  
 **Predecessor:** Sprint 73 — COMPLETE / Closed (2026-08-06)  
 **Type:** Discovery-led wrapper sprint (maturation phase)  

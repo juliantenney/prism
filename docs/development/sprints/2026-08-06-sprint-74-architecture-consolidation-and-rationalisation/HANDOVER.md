@@ -1,41 +1,36 @@
 # Sprint 74 — Handover
 
-**From:** Post-74B programme review (2026-08-07)  
-**To:** Sprint 74 programme wrapper (**OPEN** — replanning) · **74C Not opened**  
-**Review:** [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)  
-**Decisions:** `S74-D01`…`S74-D09` · 74A / 74B packs closed
+**From:** S74C-T-050 / S74-D11 (programme closed)  
+**To:** Closed programme — next is **Sprint 75** (**not opened**)
 
 ---
 
 ## Current state
 
 - **Sprint 73** closed.  
-- **Sprint 74** open as programme wrapper.  
-- **Sprint 74A** **COMPLETE / Closed** (sole vNext learner-page export).  
-- **Sprint 74B** **COMPLETE / Closed** (partial → capture → validation → assemble).  
-- **Post-74B review complete:** original Domain C must **not** proceed unchanged.  
-- **74C** **Not opened** — no pack created.
+- **Sprint 74** **COMPLETE / Closed**.  
+- **Sprint 74A / 74B / 74C** all **COMPLETE / Closed**.  
+- **Sprint 75** **Not opened**.  
+- Closure evidence: [S74C-T-050](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md)
 
 ---
 
 ## Immediate sequence
 
-1. Operator chooses a review option (**R1** narrowed hygiene later / **R2** pause or close architectural programme / **R3** PB-S-001 investigation first) — see review §9.  
-2. Do **not** open Sprint 74C until that choice is made and a revised boundary is authorised.  
-3. Do **not** implement under this wrapper without a new authorised sub-sprint.
+1. Do **not** reopen Sprint 74.  
+2. Open Sprint 75 only by **separate** operator decision.  
+3. Carry forward: Group F deferred tooling; PB-S-001 when sprint-ready; Engineering Disciplines / S74-D07 / S74-D09 / S74C-D02 as standing policy.
 
 ---
 
 ## Binding references
 
-[ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) · [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)
+[ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) · [74C closure](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md)
 
 ---
 
 ## What not to do
 
-- Do not open 74C unchanged  
-- Do not create a 74C pack without operator choice after this review  
-- Do not pull PB-S-001 / WR orphans / PB-FA-004 into an unready hygiene sprint  
-- Do not reintroduce Design Page compose or Legacy page renderer  
-- Do not regress Authoring sole-vNext export  
+- Do not treat Group F as open Sprint 74 debt  
+- Do not open Sprint 75 from this handover alone  
+- Do not rewrite post-74B review (historical evidence)  

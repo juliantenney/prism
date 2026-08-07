@@ -1,15 +1,17 @@
 # Sprint 74C — Charter
 
 **Sprint:** 74C — Repository Hygiene & Historical Residue Rationalisation  
-**Status:** **OPEN** (2026-08-07) — planning only  
+**Status:** **COMPLETE / Closed** (2026-08-07)  
 **Opened:** 2026-08-07  
+**Closed:** 2026-08-07 — [S74C-T-050](S74C-T-050-final-verification-and-programme-closure.md)  
 **Type:** Repository hygiene (final narrowed Sprint 74 phase)  
-**Parent programme:** Sprint 74 — Architecture Consolidation and Rationalisation  
+**Parent programme:** Sprint 74 — **COMPLETE / Closed**  
 **Start here:** [SPRINT-74C-START-HERE.md](SPRINT-74C-START-HERE.md)  
 **Scope authority:** [S74-programme-post-74B-review.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-programme-post-74B-review.md) (narrowed R1 — not original Domain C unchanged)  
 **Historical Domain C sketch:** [S74-T-010 Domain C](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md#domain-c--repository--fixture-hygiene-recommended-sprint-74c) — **superseded for boundary** by post-74B review  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality) · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
 **Opening decision:** [S74C-D01](decisions.md#s74c-d01-open-sprint-74c-for-repository-hygiene--historical-residue-rationalisation)  
+**Closure decision:** [S74C-D03](decisions.md#s74c-d03--close-sprint-74c)  
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) *(inherited — not duplicated)*
 
 ---

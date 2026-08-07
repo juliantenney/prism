@@ -1,37 +1,28 @@
 # Sprint 74C — Next-chat briefing
 
-**Pack status:** **OPEN** (T-040 Done; T-050 next)  
-**Decisions:** **S74C-D01** · **S74C-D02** Accepted  
-**Parent:** Sprint 74 — **OPEN** · 74A/74B **Closed** · Sprint 75 **Not opened**
+**Pack status:** **COMPLETE / Closed** (2026-08-07)  
+**Decisions:** **S74C-D01** · **S74C-D02** · **S74C-D03** Accepted  
+**Parent:** Sprint 74 — **COMPLETE / Closed** (`S74-D11`)  
+**Next programme:** Sprint 75 — **Not opened**
 
 ---
 
 ## One-line mission
 
-**S74C-T-050** next — verify repository hygiene and close Sprint 74C (programme close only if authorised).
+Sprint 74C and Sprint 74 are **closed**. Do **not** begin Sprint 75 unless separately authorised.
 
 ---
 
 ## Read first
 
-1. [S74C-T-040-repository-hygiene-execution-evidence.md](S74C-T-040-repository-hygiene-execution-evidence.md)  
-2. [S74C-T-030-repository-hygiene-execution-plan.md](S74C-T-030-repository-hygiene-execution-plan.md)  
-3. [SPRINT-74C-CHARTER.md](SPRINT-74C-CHARTER.md)  
-4. [STATUS.md](STATUS.md)  
-
----
-
-## Current task
-
-**S74C-T-050** — Verify and close (**Not started**).
-
-**Completed:** T-010…T-040 (seven hygiene commits).
+1. [S74C-T-050-final-verification-and-programme-closure.md](S74C-T-050-final-verification-and-programme-closure.md)  
+2. [STATUS.md](STATUS.md)  
+3. Parent: [Sprint 74 STATUS](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/STATUS.md)  
 
 ---
 
 ## Hard rules
 
-- Do not re-execute deletions  
-- Do not pull Group F into 74C without a new decision  
-- No Sprint 75 unless separately authorised  
-- Programme close only if operator authorises at T-050  
+- No further 74C hygiene  
+- Group F remains deferred  
+- Sprint 75 not opened by this pack  

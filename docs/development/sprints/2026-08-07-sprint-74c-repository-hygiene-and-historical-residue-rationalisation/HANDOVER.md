@@ -1,30 +1,30 @@
 # Sprint 74C — Handover
 
-**From:** S74C-T-040 (Done)  
-**To:** S74C-T-050 (Not started)
+**From:** S74C-T-050 (Done)  
+**To:** Closed pack — next programme is **Sprint 75** (**not opened**)
 
 ---
 
 ## Current state
 
-- Sprint 74C **OPEN** (hygiene executed; verify/close next)  
-- Evidence: [S74C-T-040-repository-hygiene-execution-evidence.md](S74C-T-040-repository-hygiene-execution-evidence.md)  
-- Commits: A `218cc97` · D `9772aa1` · G `43cbd0a` · B `49f6f4a` · C `5650d54` · E1 `7004ef1` · E2 `fec8a52`  
-- Runtime / tests / fixtures / Group F: **unchanged**  
-- Sprint 75 **Not opened**
+- Sprint **74C** **COMPLETE / Closed**  
+- Sprint **74** programme **COMPLETE / Closed** (`S74-D11`)  
+- Closure: [S74C-T-050-final-verification-and-programme-closure.md](S74C-T-050-final-verification-and-programme-closure.md)  
+- Sprint **75** **Not opened**  
+- Group F **intentionally deferred** (not open 74 debt)
 
 ---
 
 ## Immediate sequence
 
-1. When authorised: begin **S74C-T-050** — verify ACs and close 74C (programme close only if authorised).  
-2. Do not reopen hygiene slices.  
-3. Do not open Sprint 75.
+1. Do **not** reopen 74C hygiene.  
+2. Open Sprint 75 only by **separate** operator decision.  
+3. Treat Group F / PB-S-001 as future candidate inputs, not Sprint 74 reopen triggers.
 
 ---
 
 ## Do not
 
-- Touch product behaviour  
-- Delete Group F without a new decision  
-- Rewrite T-010/T-020/T-030 history  
+- Continue deletions under 74C  
+- Open Sprint 75 from this handover alone  
+- Treat Group F silence as “approved current forever” without a later decision  

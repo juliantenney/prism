@@ -1,12 +1,13 @@
 # Sprint 74 — START HERE
 
 **Sprint:** 74 — Architecture Consolidation and Rationalisation  
-**Status:** **OPEN** (programme wrapper; Sprint 74A implementation active)  
+**Status:** **OPEN** (programme wrapper)  
 **Opened:** 2026-08-06  
 **Predecessor:** [Sprint 73 — COMPLETE / Closed](../2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md) — do not reopen  
 **Theme:** Discovery-led wrapper — sequence evidence-based rationalisation toward **one definitive codebase**  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
-**Active sub-sprint:** [Sprint 74A START HERE](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)
+**Completed sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) — **COMPLETE / Closed**  
+**Next sub-sprints:** 74B / 74C **Not opened**
 
 ---
 
@@ -14,7 +15,7 @@
 
 Understand the current supported Prism architecture and establish a sequence of evidence-based rationalisation sprints (**74A / 74B / 74C …**) that converge established responsibilities onto **one definitive implementation** (`S74-D07`).
 
-Discovery and domain refinement are **complete**. **Sprint 74A is OPEN**. Continue work in the **74A pack**.
+Discovery and domain refinement are **complete**. Sprint 74A is **COMPLETE / Closed**. Current programme action: **review / readiness for Sprint 74B** — do **not** open automatically.
 
 ---
 
@@ -22,7 +23,7 @@ Discovery and domain refinement are **complete**. **Sprint 74A is OPEN**. Contin
 
 > What is the supported Prism architecture today, where do ownership and runtime paths diverge, and which coherent domains should become sequenced rationalisation sprints?
 
-See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). First implementation domain: **74A** (sole vNext learner renderer; remove obsolete renderer).
+See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010](S74-T-010-rationalisation-domain-refinement.md) (including the [post-74A Domain B methodology refinement](S74-T-010-rationalisation-domain-refinement.md#post-74a-implementation-refinement-2026-08-07)). First completed implementation domain: **74A** (sole vNext learner renderer).
 
 ---
 
@@ -32,25 +33,29 @@ See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010]
 
 | Sub-sprint | Status |
 | ---------- | ------ |
-| **74A** | **OPEN** — [pack](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) (`S74-D06`; `S74A-D02` under `S74-D07`) |
-| **74B** | Not opened |
-| **74C** | Not opened |
+| **74A** | **COMPLETE / Closed** — [pack](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) |
+| **74B** | **Not opened** — Generation-contract & capture-validator hygiene |
+| **74C** | **Not opened** |
+
+Architectural constraints define what Prism must remain; [Engineering Disciplines](../../ENGINEERING-DISCIPLINES.md) define how consolidation work is carried out safely.
 
 ---
 
 ## Reading order
 
 1. [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D07` / Constraint 2)  
-2. Active work: [Sprint 74A START HERE](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
-3. Programme: [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md) · [STATUS.md](STATUS.md)  
+2. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+3. Closed 74A: [FINAL REPORT](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md)  
+4. Domain B readiness: [S74-T-010 §8](S74-T-010-rationalisation-domain-refinement.md#8-recommended-sprint-74b)  
+5. Programme: [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md) · [STATUS.md](STATUS.md)  
 
 ---
 
 ## Hard rules
 
 - **Do not** reopen Sprint 73 implementation work  
-- **Do not** implement Domain A under this wrapper — use the 74A pack  
-- **Do not** open 74B / 74C without readiness  
+- **Do not** implement under this wrapper — use an authorised sub-sprint pack  
+- **Do not** open 74B / 74C without readiness and operator approval  
 - **Do not** introduce backend, runtime Node, or non-static deployment (`S74-D03`)  
 - **Do not** plan a size-driven `app.js` split (`S74-D05`)  
 - Obey [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — definitive codebase; Compatibility only for current product requirements  
@@ -58,4 +63,4 @@ See [S74-T-001](S74-T-001-codebase-rationalisation-discovery.md) and [S74-T-010]
 
 ## Next
 
-Sprint 74A is **COMPLETE / Closed**. Do **not** open 74B/74C automatically.  
+Review readiness for Sprint 74B (ownership-inventory-first methodology). Do **not** open 74B/74C automatically. Do **not** create the 74B pack until authorised.

@@ -1,16 +1,19 @@
 # Sprint 74 — Next-chat briefing
 
-**Pack status:** **OPEN** (programme wrapper) — Sprint 74A **OPEN**  
+**Pack status:** **OPEN** (programme wrapper)  
 **Theme:** Architecture Consolidation and Rationalisation — **one definitive codebase**  
 **Decisions:** `S74-D01`…`S74-D07`  
 **Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-**Active work:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/next-chat-briefing.md)
+**Disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+**Completed sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md) — **COMPLETE / Closed**
 
 ---
 
 ## One-line mission
 
-**Sprint 74A is COMPLETE / Closed** (sole vNext verified). Do **not** implement under this wrapper. Do **not** open 74B/74C automatically.
+Sprint 74A is **COMPLETE / Closed**. Current programme action: **review / readiness for Sprint 74B**. Do **not** open 74B/74C automatically. Do **not** implement under this wrapper.
+
+Architectural constraints define what Prism must remain; Engineering Disciplines define how consolidation work is carried out safely.
 
 ---
 
@@ -20,11 +23,12 @@ See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially 
 
 ---
 
-## Read first (active work)
+## Read first (programme readiness)
 
-1. [Sprint 74A START HERE](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
-2. [S74A-D02](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/decisions.md#s74a-d02--vnext-replaces-the-obsolete-learner-renderer)  
-3. [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
+1. [S74-T-010 post-74A Domain B refinement](S74-T-010-rationalisation-domain-refinement.md#post-74a-implementation-refinement-2026-08-07)  
+2. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+3. [Sprint 74A FINAL REPORT](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md)  
+4. [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 
 ---
 
@@ -32,16 +36,15 @@ See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially 
 
 | Sprint | Status |
 | ------ | ------ |
-| **74A** | **OPEN** — obsolete renderer removal Accepted |
-| **74B** | Not opened |
-| **74C** | Not opened |
+| **74A** | **COMPLETE / Closed** |
+| **74B** | **Not opened** |
+| **74C** | **Not opened** |
 
 ---
 
 ## Hard rules
 
-- Implement in the **74A pack**, not this wrapper  
-- Evidence-led removal of obsolete alternatives is the intended outcome when covered (`S74-D07`)  
-- Do not retain obsolete learner renderer as Compatibility by default  
-- No 74B / 74C yet  
+- Do not implement under this wrapper  
+- Do not open 74B / 74C without readiness and operator approval  
+- Do not create the Sprint 74B pack until authorised  
 - Node-based tests ≠ deployment proof  

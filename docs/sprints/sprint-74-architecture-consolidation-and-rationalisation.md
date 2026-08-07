@@ -1,13 +1,14 @@
 # Sprint 74 — Architecture Consolidation and Rationalisation
 
-**Status:** **OPEN** (programme wrapper; Sprint 74A implementation active)  
+**Status:** **OPEN** (programme wrapper; Sprint 74A **COMPLETE / Closed**)  
 **Opened:** 2026-08-06  
 **Type:** Discovery-led wrapper sprint (maturation phase)  
 **Portable pack:** [docs/development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 **Predecessor:** [sprint-73-closeout.md](sprint-73-closeout.md) — **COMPLETE / Closed**  
-**Active sub-sprint:** [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) — **COMPLETE / Closed**  
+**Completed sub-sprint:** [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) — **COMPLETE / Closed**  
 **Closeout:** [sprint-74a-closeout.md](sprint-74a-closeout.md)  
-**Other sub-sprints:** 74B / 74C **not opened**
+**Other sub-sprints:** 74B / 74C **not opened**  
+**Programme action:** Review / readiness for Sprint 74B — do **not** open automatically
 
 ## Theme
 
@@ -38,10 +39,11 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 
 ## Boundaries
 
-Binding constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md). Implement Domain A only in the 74A pack.
+Binding constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md). Engineering disciplines: [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md). Do not open 74B/74C without readiness and approval.
 
 ## Authoritative docs
 
 - [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 - [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)  
-- [Sprint 74A START HERE](../development/sprints/2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
+- [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md)  
+- [Sprint 74A FINAL REPORT](../development/sprints/2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md)  

@@ -21,6 +21,22 @@ Subsequent operator decisions:
 
 Discovery content below is not falsified; implementation packs follow the later decisions.
 
+### Post-74A implementation refinement (2026-08-07)
+
+Sprint 74A showed that architectural ambiguity can arise from **duplicate ownership inside the current supported path**, not only from obsolete or deprecated implementations.
+
+For Sprint 74B, the implementation methodology is therefore refined:
+
+- begin with a **generation ownership and duplicate-path inventory**;
+- establish definitive ownership before removal or consolidation;
+- identify multiple transformations or validators that believe they own the same responsibility;
+- distinguish obsolete code from current code with duplicated ownership;
+- remove or consolidate only after ownership and behavioural responsibility are evidenced.
+
+This refines the **methodology** for Domain B only. It does not change the approved Domain B scope, ordering, non-scope or programme boundaries.
+
+The original Domain B planning text below remains **historical planning evidence**.
+
 ---
 
 ## 1. Executive summary
@@ -205,11 +221,14 @@ Focused **Node-based test evidence** remains useful for shared logic; new/extend
 
 Reduce **dead or dual generation surfaces** (deprecated prompt builders, legacy capture validators that always `{ ok: true, legacy: true }`) without changing instructional pedagogy or the Authoring export path.
 
+The first implementation activity must establish **definitive ownership** across prompt generation, generation contracts, capture validation, compose / partial contract roles, and any duplicate transformations or “last writer” behaviour — including cases where multiple **current** stages still believe they own the same responsibility.
+
 #### Responsibilities
 
 - Inventory `@deprecated` prompt helpers and call sites in `app.js` / contracts  
 - Inventory legacy capture-validator shims  
-- Remove or thin **only** call sites proven unused / superseded  
+- Map generation ownership and duplicate paths **before** deletion or consolidation  
+- Removal or consolidation follows **ownership proof**, not just zero-call-site proof. A still-called surface may represent obsolete or duplicate ownership; a seemingly unused surface must still be checked for dynamic/browser/test use  
 - Clarify compose vs partial Design Page contract *roles in docs* before any code merge  
 - Do **not** treat “make app.js smaller” as a success metric
 
@@ -264,14 +283,14 @@ None to persisted workflow schema. Prompt text generation must remain byte-stabl
 
 #### Expected cleanup actions
 
-- Call-site audit spreadsheet/note  
-- Delete unused deprecated wrappers **only after** zero call-site proof  
+- Call-site audit spreadsheet/note (**ownership / duplicate-path inventory first**)  
+- Delete or consolidate only after **ownership proof** (zero call sites alone is insufficient; still-called surfaces may be obsolete/duplicate ownership)  
 - Document remaining shims as Compatibility with owner
 
 #### Expected consolidations
 
 - Prefer **documentation of ownership** over merging compose/partial in the first B slice  
-- Optional thin consolidation only where duplication is proven and tests exist
+- Optional thin consolidation only where duplication is proven, an ownership matrix exists, and tests exist
 
 #### Expected removals
 
@@ -310,6 +329,10 @@ Focused contract/prompt tests + spot-check one Learning Design run prompt for a 
 #### Estimated implementation risk
 
 **Medium.** Silent prompt drift is the main hazard.
+
+**Silent ownership drift** — multiple current stages or validators may believe they own the same transformation or validation responsibility.
+
+Mitigation: ownership inventory before modification; call-path tracing; behavioural invariants; focused regression coverage; no merge/consolidation without an ownership matrix.
 
 ---
 
@@ -518,6 +541,10 @@ Schema SSOT move ──► needs further discovery (not 74A–C)
 **Slice:** Inventory + remove proven-unused deprecated helpers; document remaining shims  
 **Explicit non-goals:** Pedagogy redesign; compose/partial forced merge; export-path changes  
 
+**First task (when the 74B pack is opened):** Generation ownership and duplicate-path inventory — map responsibility before any deletion or consolidation. No final task ID assigned here; Sprint 74B is **not opened**.
+
+**Methodology refinement:** See [Post-74A implementation refinement (2026-08-07)](#post-74a-implementation-refinement-2026-08-07). Scope, ordering, non-scope and programme boundaries are unchanged.
+
 ---
 
 ## 9. Recommended Sprint 74C
@@ -536,6 +563,7 @@ Schema SSOT move ──► needs further discovery (not 74A–C)
 | 74A quietly becomes Legacy deletion | Stop condition + AC-A5 |
 | Production browser-path checks skipped “because Node-based tests are green” | AC-A2 mandatory |
 | 74B prompt drift | Call-site proof + focused golden prompts |
+| 74B silent ownership drift (multiple current stages/validators claim the same responsibility) | Ownership inventory before modification; call-path tracing; behavioural invariants; focused regression; no merge without ownership matrix |
 | 74C fixture masking | Keep focused guardians authoritative |
 | Premature app.js extraction | Allocation table + `S74-D05` — remain in `app.js` by default |
 | Operator opens all three at once | Programme order + planning principle |

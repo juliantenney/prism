@@ -1,14 +1,15 @@
 # Sprint 74 — Plan
 
-**Status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **OPEN**  
+**Status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **COMPLETE / Closed**  
 **Theme:** Architecture Consolidation and Rationalisation  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
 **Binding constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**)  
-**Active implementation:** [Sprint 74A PLAN](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/PLAN.md)
+**Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+**Closed implementation:** [Sprint 74A PLAN](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/PLAN.md)
 
 Task IDs: `S74-T-###`. Decision IDs: `S74-D##` in [decisions.md](decisions.md).
 
-Sprint 74A / 74B / 74C implementation work lives in **sub-sprint packs**. Do not schedule Domain A tasks under this wrapper.
+Sprint 74A / 74B / 74C implementation work lives in **sub-sprint packs**. Do not schedule Domain A/B/C tasks under this wrapper.
 
 ---
 
@@ -33,14 +34,14 @@ Sprint 74A / 74B / 74C implementation work lives in **sub-sprint packs**. Do not
 
 | Sprint | Theme | Status |
 | ------ | ----- | ------ |
-| **74A** | Authoring → learner export path integrity (sole vNext; remove obsolete renderer) | **OPEN** — [pack](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) (`S74-D06` / `S74A-D02` / `S74-D07`) |
-| **74B** | Generation-contract & capture-validator hygiene | **Not opened** |
+| **74A** | Authoring → learner export path integrity (sole vNext; remove obsolete renderer) | **COMPLETE / Closed** — [pack](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) |
+| **74B** | Generation-contract & capture-validator hygiene | **Not opened** — readiness: ownership-inventory-first ([S74-T-010](S74-T-010-rationalisation-domain-refinement.md#post-74a-implementation-refinement-2026-08-07)) |
 | **74C** | Repository & fixture hygiene | **Not opened** |
 
 ---
 
 ## Explicit non-scope (wrapper)
 
-- Runtime implementation under this wrapper (use 74A pack)  
-- Opening 74B / 74C without readiness  
+- Runtime implementation under this wrapper (use an authorised sub-sprint pack)  
+- Opening 74B / 74C without readiness and operator approval  
 - Altering accepted discovery findings  

@@ -3,7 +3,8 @@
 **Authority:** This document is the **expanded statement** of binding constraints for Sprint 74 and all later **74A / 74B / 74C** rationalisation work.  
 **Decision bindings:** [S74-D03](decisions.md#s74-d03-browser-only-runtime-and-static-deployment) · [S74-D04](decisions.md#s74-d04-one-supported-path-per-major-product-responsibility) · [S74-D05](decisions.md#s74-d05-appjs-rationalised-by-ownership-not-size) · [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Status:** Binding (2026-08-06)  
-**Mode:** Documentation — governs planning and future implementation; does not open Sprint 74A
+**Mode:** Documentation — governs planning and future implementation  
+**How to work:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) — Architectural constraints define what Prism must remain; Engineering Disciplines define how consolidation work is carried out safely.
 
 Other Sprint 74 docs **link here**; do not duplicate the full text.
 
@@ -167,6 +168,8 @@ This note supports Constraints 2–3 and `S74-D07`; it is programme guidance, no
 
 ## Programme note
 
-These constraints **do not invalidate** the recommended order **74A → 74B → 74C** from [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). They sharpen how 74A must be framed: establish **one definitive learner-renderer implementation**, verify the **production browser path** and **generated browser artefact**, then remove the obsolete renderer — not “Node/browser runtime parity,” and not indefinite Compatibility retention without a product requirement.
+These constraints **do not invalidate** the recommended order **74A → 74B → 74C** from [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). They sharpened how 74A was framed: establish **one definitive learner-renderer implementation**, verify the **production browser path** and **generated browser artefact**, then remove the obsolete renderer — not “Node/browser runtime parity,” and not indefinite Compatibility retention without a product requirement.
 
-**Sprint 74A is OPEN** — [SPRINT-74A-START-HERE.md](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md). Sprint 74B / 74C remain unopened.
+**Sprint 74A is COMPLETE / Closed** — [SPRINT-74A-FINAL-REPORT.md](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md). Sprint 74B / 74C remain **Not opened**. Current programme action: review / readiness for 74B — do not open automatically.
+
+Architectural constraints define what Prism must remain; [Engineering Disciplines](../../ENGINEERING-DISCIPLINES.md) define how consolidation work is carried out safely.

@@ -1,9 +1,10 @@
 # Sprint 74 — Decision Log
 
-**Sprint status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **OPEN** (implementation)  
+**Sprint status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **COMPLETE / Closed**  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 **Expanded constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-**Active implementation pack:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
+**Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+**Closed implementation pack:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
 **Decisions:** `S74-D01`…`S74-D07`
 Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decisions.md`](../2026-08-06-sprint-73-workflow-resources/decisions.md); Sprint 72 (`S72-D09`, `S72-D10`, `S72-D14`).
 

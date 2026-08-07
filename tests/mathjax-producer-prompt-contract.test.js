@@ -117,9 +117,9 @@ test("buildLdMathRenderPromptBlock: includes supported and prohibited rules", ()
   assertLdMathRenderContractText(api.buildLdMathRenderPromptBlock());
 });
 
-test("buildMathSafeOutputContractPromptBlock: alias returns canonical LD-MATH-RENDER block", () => {
-  const { api } = loadPrismTestApi();
-  assertLdMathRenderContractText(api.buildMathSafeOutputContractPromptBlock());
+test("buildLdMathRenderPromptBlock: lib export matches canonical LD-MATH-RENDER block", () => {
+  const ldMath = require("../lib/ld-math-render.js");
+  assertLdMathRenderContractText(ldMath.buildLdMathRenderPromptBlock());
 });
 
 test("applyMathSafeOutputContractToDraft: appends once for DLA, GAM, Design Page, and assessment producer steps", () => {
@@ -200,11 +200,9 @@ test("domain step patterns: DLA/GAM/Design Page prompts reference math-safe deli
   assert.ok(gamSection, "expected GAM section");
   assert.ok(pageSection, "expected Design Page section");
   for (const section of [dlaSection[0], gamSection[0], pageSection[0]]) {
-    assert.match(section, /renderer-supported TeX delimiters/i);
-    assert.match(section, /Math notation output contract/i);
-    assert.match(section, /\$\.\.\.\$/);
-    assert.match(section, /\$\$\.\.\.\$\$/);
-    assert.match(section, /code spans\/fences for equations/i);
+    const factoryMatch = section.match(/### Prompt Factory\s*```json\s*([\s\S]*?)```/i);
+    assert.ok(factoryMatch, "expected Prompt Factory JSON block");
+    assert.match(factoryMatch[1], /LD-MATH-RENDER/i);
   }
 });
 

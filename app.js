@@ -7671,11 +7671,6 @@
     return lib.buildLdMathRenderPromptBlock(options || {});
   }
 
-  /** @deprecated Use buildLdMathRenderPromptBlock — PR-W1-3 */
-  function buildMathSafeOutputContractPromptBlock() {
-    return buildLdMathRenderPromptBlock();
-  }
-
   function applyMathSafeOutputContractToDraft(draftText, context) {
     var draftBody = String(draftText || "").trim();
     var isDla = isWorkflowStepDesignLearningActivities(context);
@@ -7795,56 +7790,6 @@
     "argument_structure_hint",
     "transfer_or_application_task"
   ];
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedLearnerActionRhetoricPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedWorkedExampleFadingPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedEmbeddedFeedbackMisconceptionPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedConceptProcedureIntegrationPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedConceptualTensionDifficultyPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedIntellectualProgressionPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedSessionOrientationRhetoricPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedEpistemicSynthesisClosurePromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedTransferDurableUnderstandingPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
-
-  /** @deprecated PR-W1-4 — use buildLdSelfDirectedRhetoricPromptBlock */
-  function buildSelfDirectedMetacognitiveJudgementPromptBlock() {
-    return buildLdSelfDirectedRhetoricPromptBlock();
-  }
 
   function buildLearnerPageActivityFramingArchetypePromptBlock() {
     return [
@@ -8138,11 +8083,6 @@
     }
     var root = gamOutputFormatGlobalRoot();
     return root && root.PRISM_GAM_OUTPUT_FORMAT ? root.PRISM_GAM_OUTPUT_FORMAT : null;
-  }
-
-  /** @deprecated Use buildLdTableFidelityPromptBlock({ role: "author" }) — PR-W1-1 */
-  function buildSelfDirectedGamTableRowAdequacyPromptBlock() {
-    return buildLdTableFidelityPromptBlock({ role: "author" });
   }
 
   function resolveLdMaterialsCopyLib() {
@@ -50412,8 +50352,6 @@
     prismTestApi.applyLdThinAssemblyCoherenceContractToDraft =
       applyLdThinAssemblyCoherenceContractToDraft;
     prismTestApi.buildLdMathRenderPromptBlock = buildLdMathRenderPromptBlock;
-    prismTestApi.buildMathSafeOutputContractPromptBlock =
-      buildMathSafeOutputContractPromptBlock;
     prismTestApi.applyMathSafeOutputContractToDraft = applyMathSafeOutputContractToDraft;
     prismTestApi.buildLdSelfDirectedRhetoricPromptBlock =
       buildLdSelfDirectedRhetoricPromptBlock;

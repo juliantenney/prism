@@ -100,13 +100,11 @@ test("Phase 1: domain §13 treats sections[] as optional legacy dual-read only",
   assert.match(factory.runnerInstructions.what_to_check, /sections\[\] optional legacy dual-read/i);
 });
 
-test("Phase 1: domain §13 names partial contract authoritative and compose rollback-only", () => {
+test("Phase 1: domain §13 names partial contract authoritative", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
-  assert.match(factory.defaultPromptNotes, /partialPageOutputs mode/i);
-  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT applies only to rollback\/legacy/i);
-  assert.match(factory.promptTemplate, /partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
-  assert.match(factory.promptTemplate, /rollback\/legacy modes.*LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.doesNotMatch(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
 });
 
 test("Phase 1: domain §13 excludes legacy materials transport language", () => {

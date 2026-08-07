@@ -87,7 +87,7 @@ test("LD-THIN-ASSEMBLY-COHERENCE: preserves upstream content and forbids condens
   assert.match(text, /Never condense, summarise, paraphrase, or optimise GAM, DLA, episode, or assessment payloads/i);
   assert.match(text, /copy verbatim on activity rows/i);
   assert.match(text, /never assimilate into overview or learning_purpose/i);
-  assert.match(text, /obey appended LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(text, /obey partial Design Page contract/i);
 });
 
 test("LD-THIN-ASSEMBLY-COHERENCE: includes 80-word navigation and 60-word transition caps", () => {
@@ -105,7 +105,7 @@ test("LD-THIN-ASSEMBLY-COHERENCE: does not reference removed modules as authorit
   assert.doesNotMatch(text, /LD-SELF-DIRECTED-RHETORIC/i);
   assert.doesNotMatch(text, /Question → Investigation → Evidence → Judgement/i);
   assert.doesNotMatch(text, /RHETORICAL ROLE SEPARATION/i);
-  assert.match(text, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+  assert.match(text, /partial Design Page contract/i);
   assert.match(text, /LD-MATERIALS-COPY/i);
 });
 

@@ -2,7 +2,6 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const exposition = require("../lib/ld-authorial-exposition.js");
-const compose = require("../lib/ld-design-page-compose-contract.js");
 
 test("LD-AUTHORIAL-EXPOSITION: module metadata", () => {
   assert.equal(exposition.MODULE_ID, "LD-AUTHORIAL-EXPOSITION");
@@ -61,14 +60,10 @@ test("LD-AUTHORIAL-EXPOSITION: expositionAlreadyPresent", () => {
   );
 });
 
-test("LD-DESIGN-PAGE-COMPOSE: embeds authorial exposition block when provided", () => {
-  const authorialBlock = exposition.buildLdAuthorialExpositionPromptBlock({ includeMarker: false });
-  const text = compose.buildLdDesignPageComposePromptBlock({
-    includeAuthorialExposition: true,
-    authorialExpositionBlock: authorialBlock
-  });
-  assert.match(text, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
+test("LD-AUTHORIAL-EXPOSITION: block is standalone and self-contained", () => {
+  const text = exposition.buildLdAuthorialExpositionPromptBlock();
+  assert.match(text, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
   assert.match(text, /RHETORICAL ROLE SEPARATION/i);
   assert.match(text, /PRESERVATION BOUNDARY/i);
-  assert.match(text, /LD-AUTHORIAL-EXPOSITION/i);
+  assert.doesNotMatch(text, /LD-DESIGN-PAGE-COMPOSE-CONTRACT/i);
 });

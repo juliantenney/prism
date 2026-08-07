@@ -8311,13 +8311,13 @@
               "LD-SELF-DIRECTED-RHETORIC (auto-applied):",
               "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
               "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
-              "- PRESERVATION BOUNDARY (Design Page compose): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-COMPOSE and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
+              "- PRESERVATION BOUNDARY (partial Design Page + deterministic assembly): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-PARTIAL-CONTRACT field preservation and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
               "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields."
             ]
           : [
               "- Module: LD-SELF-DIRECTED-RHETORIC | Layers: L5 (orientation, progression, closure), L7 (learner voice) | Clusters: 1, 11",
               "- Precedence: L4 LD-MATERIALS-COPY / LD-TABLE-FIDELITY and L7 LD-MATH-RENDER override rhetoric — never summarise activity.materials or thin materials for overview; overview/learning_purpose frame journey only.",
-              "- PRESERVATION BOUNDARY (Design Page compose): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-COMPOSE and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
+              "- PRESERVATION BOUNDARY (partial Design Page + deterministic assembly): copy activity-row, PEL/cognition, support_note, learner_task, expected_output, and activity.materials.* verbatim per LD-DESIGN-PAGE-PARTIAL-CONTRACT field preservation and LD-AUTHORIAL-EXPOSITION PRESERVATION BOUNDARY — rhetoric does not rewrite, restyle, assimilate, or improve preserved fields.",
               "- Facilitator ban: no Welcome to this module, In this session we will, explore the topic, timing choreography, or tutor/facilitator voice in learner-visible fields."
             ];
         if (role === "design_page") {
@@ -8353,12 +8353,12 @@
             "- Progression: cumulative reasoning journeys; phase vocabulary orienting → distinguishing → testing → integrating → judging → transferring — no facilitator narration (now you will, in this session we will).",
             "- Closure: study_tips 2–4 bullets with at least ONE epistemic synthesis (what should now be clearer; what distinction can now be sustained); Explicitly avoid: reflect on your learning, well done, diary tone.",
             "- knowledge_summary previews at start only.",
-            "- Scope (DLA authoring): learner_task, expected_output, support_note, activity_preamble, and cognition-orientation fields on learning_activities — field semantics at generation; preserve verbatim on Design Page compose.",
+            "- Scope (DLA authoring): learner_task, expected_output, support_note, activity_preamble, and cognition-orientation fields on learning_activities — field semantics at generation; preserve verbatim through partial Design Page + deterministic assembly.",
             "- Learner voice: learner_task uses observable learner verbs and states actions on materials; expected_output describes evidence of completion the learner could show; support_note is a 1–2 sentence misconception or evidence guard — not tutoring.",
             "- purpose names the learning move; activity_preamble orients without duplicating learner_task; preserve support_note, expected_output, activity_preamble on pages — do not merge into materials.",
             "- Assessment: stems require decision, justification, or interpretation; formative MCQ sets use numbered sub-questions for multi-step reasoning.",
             "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
-            "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve on Design Page compose.",
+            "- intellectual_coherence_bridge and cognition-orientation field definitions: see OUTPUT CONTRACT on Design Learning Activities; preserve verbatim through partial Design Page + deterministic assembly.",
             "- Misconception: Check your thinking: in support_note (reactive); overview names proactive tension — do not repeat the overview tension verbatim in support_note; prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
             "- Concept/procedure: step → meaning lines and Use this when… cues in materials; learner_task states procedure + conceptual question; expected_output requires interpretation not completion-only.",
             "- study_orientation adds working guidance only — do not repeat the full overview.",
@@ -13701,7 +13701,7 @@
       "Pedagogic enrichment — orientation contract (auto-applied):",
       "- Use topic-specific orientation tied to the brief subject — never generic module welcomes.",
       "- For learner pages with 2+ activities: compose sections overview and/or learning_purpose with topic, stakes, one why-this-is-hard tension, intellectual work modes, and named activity progression.",
-      "- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (learner-facing page) on Design Learning Activities; preserve verbatim on Design Page compose."
+      "- Activity-level orientation fields (study_orientation, intellectual_frame, intellectual_coherence_bridge, activity_preamble): follow OUTPUT CONTRACT (learner-facing page) on Design Learning Activities; preserve verbatim through partial Design Page + deterministic assembly."
     ];
     if (facilitated) {
       lines.push(
@@ -44658,8 +44658,7 @@
               sameValue = String(row[fieldId] || "") === String(upstreamRow[fieldId] || "");
             }
           }
-          // Design Page compose is read-only for learner-facing activity field bodies:
-          // upstream DLA values are authoritative and must be copied verbatim.
+          // Partial Design Page + deterministic assembly: upstream DLA values are authoritative.
           if (!sameValue) {
             row[fieldId] = upstreamRow[fieldId];
             mergedCount += 1;

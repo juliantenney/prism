@@ -1188,6 +1188,14 @@ test("S72: DLA and GAM contracts include evidence-centred guidance and source-bo
   assert.match(dlaText, /PRE-DESIGN|Evidence-decision planning order|FINAL PRE-EMIT AUDIT|learner_evidence_attachments/i);
   assert.match(
     dlaText,
+    /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT|After drafting each activity|required:false contradicts evidence-dependent/i
+  );
+  assert.match(
+    dlaText,
+    /Analyse the supplied case evidence and support your judgement with examples/i
+  );
+  assert.match(
+    dlaText,
     /Inventory the source units actually available|Do not invent related but unattached works|Allocate only those units|only inventoried/i
   );
   assert.match(

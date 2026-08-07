@@ -70,6 +70,12 @@ Probe scripts (`scripts/probe-*`, `tools/capture-sprint-42-4-provenance.js`) and
 
 ---
 
+## Post-closure producer correction (2026-08-07)
+
+Manual E2E after 74B exposed a stochastic DLA `evidence_decision` inconsistency (validator correctly rejected; second generation passed). Producer contract strengthened — see [S74B-POST-manual-acceptance-dla-evidence-decision-prompt.md](S74B-POST-manual-acceptance-dla-evidence-decision-prompt.md). Validator unchanged; not a 74B regression; architectural rationalisation not reopened.
+
+---
+
 ## Out of scope (unchanged)
 
 - Learner-renderer-vNext / Authoring export (74A closed)  

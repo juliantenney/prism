@@ -21,7 +21,7 @@ Reduce dead or dual generation surfaces — deprecated prompt builders, legacy c
 - T-001…**T-050**: **Done** · **S74B-D02** / **S74B-D03 Accepted**  
 - Removals executed: **Yes** (T-040) · Acceptance verified (T-050)  
 - Closure: [S74B-T-050](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-050-final-verification-and-sprint-closure.md)  
-- Sprint 74C: **Not opened**
+- Sprint 74C: **OPEN** — narrowed R1 hygiene ([sprint-74c](sprint-74c-repository-hygiene-and-historical-residue-rationalisation.md))
 
 ## Methodology
 

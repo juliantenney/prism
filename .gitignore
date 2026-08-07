@@ -1,3 +1,11 @@
 .env.local
 node_modules/
 tools/_tmp_hetero_live_export/
+
+# S74C — prevent reintroduction of hygiene scratch (S74C-D02 / T-020 Group G)
+/test*.txt
+/tmp-*
+/page - *.html
+/NEXT-CHAT-CONTEXT.md
+/tmp-was-marx-right/
+tools/_tmp_*/

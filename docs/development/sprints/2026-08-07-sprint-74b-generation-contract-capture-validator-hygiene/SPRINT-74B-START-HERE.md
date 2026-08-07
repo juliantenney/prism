@@ -50,20 +50,16 @@ Authoring → learner export remains on sole vNext (Sprint 74A)
 
 ## Current task
 
-**S74B-T-040** — Execute evidenced removals and consolidations (**Not started** — await authorisation).
+**S74B-T-050** — Verification and sprint closure (**Not started**).
 
-T-001…**T-030** are **Done**. **S74B-D02** / **S74B-D03** are **Accepted**. Programme **S74-D09** is **Accepted**.  
-Plan (reconciled): [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md).
+T-001…**T-040** are **Done**. Evidence: [S74B-T-040](S74B-T-040-execute-evidenced-removals-evidence.md).
 
 ## Reading order
 
-1. [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation)  
-2. [decisions.md — S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture)  
-3. [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md)  
-4. [S74B-T-020](S74B-T-020-compose-vs-partial-contract-role-documentation.md) · [S74B-T-010](S74B-T-010-generation-pipeline-architectural-discovery.md)  
-5. [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+1. [S74B-T-040 evidence](S74B-T-040-execute-evidenced-removals-evidence.md)  
+2. [STATUS.md](STATUS.md) · [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
 
 ## Immediate next action
 
-When authorised: begin **S74B-T-040** slice S1 (tests before/with module deletion per reconciled plan). Do not open 74C. Do not rewrite assemble. Do not add Compatibility migrations for historical pre-release state.
+When authorised: begin **S74B-T-050**. Do not open 74C.
 

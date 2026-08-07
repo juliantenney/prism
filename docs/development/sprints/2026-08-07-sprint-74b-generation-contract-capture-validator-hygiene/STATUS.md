@@ -8,17 +8,17 @@
 **Decisions:** [S74B-D01](decisions.md) · [S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) **Accepted** · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation) **Accepted**  
 **Programme:** [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) **Accepted**  
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) *(inherited)*  
-**Plan:** [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md)
+**Evidence:** [S74B-T-040](S74B-T-040-execute-evidenced-removals-evidence.md)
 
 ---
 
 ## Narrative
 
 ```text
-T-001…T-030 ✅ · S74B-D02 / S74B-D03 Accepted · S74-D09 Accepted
-  → T-030 plan reconciled (Compatibility policy)
-  → S74B-T-040 execute removals (Not started — next when authorised)
-  → 74C not opened · no runtime removals yet
+T-001…T-040 ✅ · S74B-D02 / S74B-D03 · S74-D09 Accepted
+  → compose removed; partial sole page-construction contract
+  → S74B-T-050 closure (Not started — next)
+  → 74C not opened
 ```
 
 ---
@@ -28,11 +28,11 @@ T-001…T-030 ✅ · S74B-D02 / S74B-D03 Accepted · S74-D09 Accepted
 | Item | State |
 | ---- | ----- |
 | Sprint 74B | **OPEN** |
-| T-001…T-030 | **Done** |
+| T-001…T-040 | **Done** |
 | S74B-D02 / S74B-D03 | **Accepted** |
 | S74-D09 | **Accepted** |
-| Current task | **S74B-T-040** (Not started) |
-| Removals executed | **No** |
+| Current task | **S74B-T-050** (Not started) |
+| Removals executed | **Yes** (T-040) |
 | Sprint 74C | **Not opened** |
 
 ---
@@ -44,12 +44,12 @@ T-001…T-030 ✅ · S74B-D02 / S74B-D03 Accepted · S74-D09 Accepted
 | S74B-T-001 | Sprint pack initialisation | **Done** |
 | S74B-T-010 | Generation pipeline architectural discovery | **Done** |
 | S74B-T-020 | Compose vs partial contract role documentation | **Done** |
-| S74B-T-030 | Deprecated helper / compose / legacy-validator removal plan | **Done** (reconciled) |
-| S74B-T-040 | Execute evidenced removals and consolidations | **Not started** ← next |
-| S74B-T-050 | Verification and sprint closure | **Not started** |
+| S74B-T-030 | Deprecated helper / compose / legacy-validator removal plan | **Done** |
+| S74B-T-040 | Execute evidenced removals and consolidations | **Done** |
+| S74B-T-050 | Verification and sprint closure | **Not started** ← next |
 
 ---
 
 ## Last updated
 
-2026-08-07 — S74-D09 / S74B-D03 Accepted; T-030 reconciled; T-040 Not started; docs-only.
+2026-08-07 — S74B-T-040 Done; T-050 next.

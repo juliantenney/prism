@@ -34,8 +34,7 @@ Reduce dead or dual **generation** surfaces — deprecated prompt builders, lega
 
 ## Current posture
 
-- T-001…**T-030 Done** · **S74B-D02** / **S74B-D03 Accepted** · programme **S74-D09 Accepted**  
-- T-030 plan **reconciled** for pre-release Compatibility policy  
-- **Next:** `S74B-T-040` — execute removal slices (**Not started**; await authorisation)  
-- Removals **not yet executed**  
+- T-001…**T-040 Done** · **S74B-D02** / **S74B-D03 Accepted** · programme **S74-D09 Accepted**  
+- **Next:** `S74B-T-050` — verification and sprint closure (**Not started**)  
+- Removals **executed** (T-040)  
 - Sprint 74C **Not opened**  

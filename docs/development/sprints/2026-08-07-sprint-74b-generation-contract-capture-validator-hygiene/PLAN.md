@@ -20,8 +20,8 @@ S74B-T-001 (pack init) ✅
   → S74B-T-010 (generation pipeline architectural discovery) ✅
     → S74B-T-020 (compose vs partial contract role documentation) ✅
       → S74B-T-030 (deprecated helper / compose / legacy-validator removal plan) ✅
-        → S74B-T-040 (execute evidenced removals and consolidations) ← next when authorised
-          → S74B-T-050 (verification and sprint closure)
+        → S74B-T-040 (execute evidenced removals and consolidations) ✅
+          → S74B-T-050 (verification and sprint closure) ← next
 ```
 
 T-010…T-030 are complete. **S74B-D02** / **S74B-D03 Accepted.** Programme **S74-D09 Accepted.** T-030 plan reconciled for pre-release Compatibility policy. Removals begin only under **T-040** when authorised.
@@ -89,11 +89,11 @@ T-010…T-030 are complete. **S74B-D02** / **S74B-D03 Accepted.** Programme **S7
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-07) — [S74B-T-040-execute-evidenced-removals-evidence.md](S74B-T-040-execute-evidenced-removals-evidence.md) |
 | **Ownership** | Generation-contract hygiene implementation |
-| **Approach** | Execute reconciled T-030 plan in small reversible commits (S2 tests before/with S3 module). Fail-closed obsolete shapes; no Compatibility migrations for historical pre-release state. Focused contract/generation tests after each slice. Residue sweep per Engineering Disciplines. Spot-check Authoring export unchanged. |
+| **Approach** | Executed reconciled T-030 slices S1–S7. Compose removed; PR-W aliases removed; legacy shims fail-closed. |
 | **Acceptance** | AC-03, AC-04, AC-05, AC-08, AC-12 |
-| **Verification** | Focused suites; diff vs plan |
+| **Verification** | Focused suites; [evidence report](S74B-T-040-execute-evidenced-removals-evidence.md) |
 | **Dependencies** | T-030 Done; **S74B-D03** / **S74-D09** Accepted |
 
 ---

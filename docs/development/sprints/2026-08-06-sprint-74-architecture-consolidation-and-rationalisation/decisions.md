@@ -1,11 +1,12 @@
 # Sprint 74 — Decision Log
 
-**Sprint status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74A **COMPLETE / Closed**  
+**Sprint status:** **OPEN** (2026-08-06) — programme wrapper; Sprint 74B **OPEN** (implementation)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 **Expanded constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-**Closed implementation pack:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
-**Decisions:** `S74-D01`…`S74-D07`
+**Active implementation pack:** [Sprint 74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md)  
+**Closed predecessor:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
+**Decisions:** `S74-D01`…`S74-D08`
 Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decisions.md`](../2026-08-06-sprint-73-workflow-resources/decisions.md); Sprint 72 (`S72-D09`, `S72-D10`, `S72-D14`).
 
 ---
@@ -73,15 +74,23 @@ Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decis
 
 ---
 
+## S74-D08 Operator approval opens Sprint 74B
+
+- **Decision:** Operator approval has **opened** the Sprint 74B implementation pack — Generation-contract & capture-validator hygiene — implementing Domain B from [S74-T-010](S74-T-010-rationalisation-domain-refinement.md). Sprint 74 remains the open programme wrapper. Sprint 74A is **COMPLETE / Closed**. Sprint 74C remains **not opened**. Binding constraints `S74-D03`…`S74-D05`, `S74-D07`, and [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) govern 74B. First implementation task: ownership-first investigation (`S74B-T-010`). Pack init does not begin runtime implementation.
+- **Status:** Accepted (2026-08-07)
+- **Rationale:** Sprint 74A closed; Domain B readiness and post-74A methodology refinement complete. Opening a bounded pack with ownership-inventory-first sequencing reduces silent prompt and ownership drift risk.
+- **Consequences:** Implementation proceeds in [Sprint 74B pack](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) under `S74B-D01`; do not implement Domain B under the Sprint 74 wrapper; do not treat this as opening 74C.
+
+---
+
 ## Pending decisions
 
 | Topic | Expected trigger |
 | ----- | ---------------- |
-| Open Sprint 74B pack | After 74A closure / readiness for generation-contract hygiene |
-| Open Sprint 74C pack | After 74B (programme order) or operator resequence |
-| Whether compose/partial merge enters 74B | 74B planning — default docs-only first |
-| WR orphan cleanup implementation | PB-R-008 policy — not 74A–C |
+| Open Sprint 74C pack | After 74B closure / programme order |
+| Whether compose/partial merge enters 74B | 74B planning — default docs-only first (`S74B-T-020`) |
+| WR orphan cleanup implementation | PB-R-008 policy — not 74B |
 
-Obsolete learner-renderer removal in 74A — **authorised** by `S74-D07` / `S74A-D02` (evidence-led; intended outcome).
+Obsolete learner-renderer removal in 74A — **complete** (`S74-D07` / `S74A-D02`).
 
 Do not record implementation consolidation decisions without discovery evidence and explicit acceptance criteria.

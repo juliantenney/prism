@@ -71,8 +71,8 @@ Prompt Studio and Prompt Library remain parallel prompt-development surfaces.
 - Classify findings; do not mark removable without evidence  
 - No runtime changes in discovery/planning tasks under this wrapper  
 - Obey [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
-- Sprint 74A **COMPLETE / Closed**; 74B / 74C **Not opened** — open only with readiness + approval  
-- Do not implement Domain A/B/C under this wrapper  
+- Sprint 74A **COMPLETE / Closed**  
+- Sprint 74B **OPEN** — implement in 74B pack; 74C **Not opened**  
 - Engineering practice: [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
 
 ---

@@ -2,16 +2,16 @@
 
 **Pack status:** **OPEN** (programme wrapper)  
 **Theme:** Architecture Consolidation and Rationalisation — **one definitive codebase**  
-**Decisions:** `S74-D01`…`S74-D07`  
+**Decisions:** `S74-D01`…`S74-D08`  
 **Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md)  
 **Disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-**Completed sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md) — **COMPLETE / Closed**
+**Active work:** [Sprint 74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/next-chat-briefing.md)
 
 ---
 
 ## One-line mission
 
-Sprint 74A is **COMPLETE / Closed**. Current programme action: **review / readiness for Sprint 74B**. Do **not** open 74B/74C automatically. Do **not** implement under this wrapper.
+**Sprint 74B is OPEN** — generation-contract hygiene with **ownership inventory first**. Implement in the 74B pack. Do **not** open 74C.
 
 Architectural constraints define what Prism must remain; Engineering Disciplines define how consolidation work is carried out safely.
 
@@ -19,16 +19,16 @@ Architectural constraints define what Prism must remain; Engineering Disciplines
 
 ## Binding constraints
 
-See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially Constraint 2 / **`S74-D07`** (definitive codebase; Compatibility only for current product requirements).
+See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially Constraint 2 / **`S74-D07`**.
 
 ---
 
-## Read first (programme readiness)
+## Read first (active work)
 
-1. [S74-T-010 post-74A Domain B refinement](S74-T-010-rationalisation-domain-refinement.md#post-74a-implementation-refinement-2026-08-07)  
-2. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-3. [Sprint 74A FINAL REPORT](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md)  
-4. [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
+1. [Sprint 74B START HERE](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md)  
+2. [S74B-T-010 baseline](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-010-generation-pipeline-architectural-discovery.md)  
+3. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
+4. [S74-D08](decisions.md#s74-d08-operator-approval-opens-sprint-74b)  
 
 ---
 
@@ -37,14 +37,14 @@ See [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) — especially 
 | Sprint | Status |
 | ------ | ------ |
 | **74A** | **COMPLETE / Closed** |
-| **74B** | **Not opened** |
+| **74B** | **OPEN** — T-010 Done; T-020 next (Not started) |
 | **74C** | **Not opened** |
 
 ---
 
 ## Hard rules
 
-- Do not implement under this wrapper  
-- Do not open 74B / 74C without readiness and operator approval  
-- Do not create the Sprint 74B pack until authorised  
+- Implement in the **74B pack**, not this wrapper  
+- Ownership inventory **before** removal  
+- No 74C; no Authoring export-path changes  
 - Node-based tests ≠ deployment proof  

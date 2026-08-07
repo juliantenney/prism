@@ -541,7 +541,7 @@ Schema SSOT move ──► needs further discovery (not 74A–C)
 **Slice:** Inventory + remove proven-unused deprecated helpers; document remaining shims  
 **Explicit non-goals:** Pedagogy redesign; compose/partial forced merge; export-path changes  
 
-**First task (when the 74B pack is opened):** Generation ownership and duplicate-path inventory — map responsibility before any deletion or consolidation. No final task ID assigned here; Sprint 74B is **not opened**.
+**First task (74B pack opened 2026-08-07):** Generation ownership and duplicate-path inventory — see [Sprint 74B PLAN](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/PLAN.md) (`S74B-T-010`).
 
 **Methodology refinement:** See [Post-74A implementation refinement (2026-08-07)](#post-74a-implementation-refinement-2026-08-07). Scope, ordering, non-scope and programme boundaries are unchanged.
 

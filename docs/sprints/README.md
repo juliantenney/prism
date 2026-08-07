@@ -13,7 +13,8 @@ Programme-facing sprint charters that are not only stored inside dated portable 
 | **73** | [sprint-73-closeout.md](sprint-73-closeout.md) · [sprint-73-workflow-resources.md](sprint-73-workflow-resources.md) — **COMPLETE / Closed** |
 | **74** | [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) · [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md) — **OPEN** (wrapper) |
 | **74A** | [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) · [sprint-74a-closeout.md](sprint-74a-closeout.md) — **COMPLETE / Closed** |
-| **Next** | [NEXT-SPRINT.md](NEXT-SPRINT.md) — 74A closed; 74B/74C not opened · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) |
+| **74B** | [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) · [SPRINT-74B-START-HERE.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) — **OPEN** |
+| **Next** | [NEXT-SPRINT.md](NEXT-SPRINT.md) — 74B active; 74C not opened · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) |
 
 Portable packs (START HERE / briefing) remain under `docs/development/sprints/YYYY-MM-DD-sprint-N-…/`.
 

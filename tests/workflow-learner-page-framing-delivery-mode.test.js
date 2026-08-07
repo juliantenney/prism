@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, injectLearnerRendererVNextInSandbox, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -41,16 +41,66 @@ function extractWorkflowBriefConfig(md) {
   return JSON.parse(md.slice(fence + 7, close).trim()).workflowBriefConfig;
 }
 
+function createElementStub() {
+  return {
+    value: "",
+    textContent: "",
+    className: "",
+    classList: { add() {}, remove() {}, contains() { return false; }, toggle() { return false; } },
+    style: {},
+    dataset: {},
+    children: [],
+    appendChild() {},
+    removeChild() {},
+    setAttribute() {},
+    removeAttribute() {},
+    getAttribute() {
+      return null;
+    },
+    addEventListener() {},
+    removeEventListener() {},
+    focus() {},
+    click() {}
+  };
+}
+
 function loadPrismTestApi() {
   const source = fs.readFileSync(appJsPath, "utf8");
-  const sandbox = { console, setTimeout, clearTimeout, Promise };
-  const documentStub = { readyState: "loading", addEventListener: () => {} };
-  const windowStub = { document: documentStub };
+  const sandbox = { console, setTimeout, clearTimeout, Promise, _: { debounce: (fn) => fn } };
+  const elementStore = new Map();
+  const documentStub = {
+    readyState: "complete",
+    addEventListener() {},
+    createElement: () => createElementStub(),
+    getElementById: (id) => {
+      if (!elementStore.has(id)) elementStore.set(id, createElementStub());
+      return elementStore.get(id);
+    },
+    querySelector: () => createElementStub(),
+    querySelectorAll: () => [],
+    body: { appendChild() {}, removeChild() {} }
+  };
+  const windowStub = {
+    document: documentStub,
+    addEventListener() {},
+    removeEventListener() {},
+    location: { hash: "", pathname: "/" },
+    _: sandbox._,
+    Utils: { debounce: (fn) => fn },
+    localStorage: { getItem: () => null, setItem() {} },
+    URL: { createObjectURL: () => "blob:test", revokeObjectURL() {} },
+    Blob: function Blob() {},
+    Library: {
+      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
+      getAllPrompts: () => Promise.resolve([])
+    }
+  };
   sandbox.document = documentStub;
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot);
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -124,56 +174,74 @@ test("41-5: facilitator-only brief does not trigger pedagogic framing scaffold",
   );
 });
 
-test("41-5: workshop learner handout Design Page compose preserves framing fields", () => {
+test("41-5: workshop learner handout Design Page partial path excludes authorial exposition", () => {
   const resolved = resolveBrief(WORKSHOP_LEARNER_HANDOUT_BRIEF);
-  const ctx = buildCtx(
-    WORKSHOP_LEARNER_HANDOUT_BRIEF,
-    resolved,
-    "step_design_page",
-    "Design Page"
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  const wf = {
+    goal: WORKSHOP_LEARNER_HANDOUT_BRIEF.goal,
+    desiredOutputs: WORKSHOP_LEARNER_HANDOUT_BRIEF.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
+    workflowOutputSpec: { goal: WORKSHOP_LEARNER_HANDOUT_BRIEF.goal },
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const prompt = api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    step,
+    wf
   );
-  const prompt = api.applyLdDesignPageComposeContractToDraft("Assemble learner page.\n", ctx);
-  assert.match(prompt, /Activity field preservation/i);
-  assert.match(prompt, /self_explanation_prompt/i);
-  assert.match(prompt, /intellectual_coherence_bridge/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
 });
 
 test("41-5: workshop learner page renders upstream framing fields in HTML", () => {
   const page = {
     artifact_type: "page",
+    schema_version: "2.0.0",
     title: "Climate misconception workshop — learner handout",
-    page_profile: "learner",
+    page_profile: { profile_type: "learner" },
     constraints_applied: {
       delivery_mode: "live_workshop",
       learning_environments: ["classroom"]
     },
-    sections: [
+    assembly_state: {
+      enriched_by: ["design_page"],
+      current_stage: "design_page"
+    },
+    activities: [
       {
-        section_id: "learning_activities",
-        heading: "Learning activities",
-        content: [
-          {
-            activity_id: "A1",
-            title: "Misconception discussion",
-            activity_preamble: "Before you classify claims, note what would make each sound persuasive.",
-            intellectual_frame: "You are evaluating evidence quality, not debating opinions.",
-            reasoning_orientation: "Separate weather anecdotes from climate trend evidence.",
-            self_explanation_prompt: "State one criterion you used before checking the template.",
-            conceptual_contrast_prompt: "Contrast weather variability with long-term climate change.",
-            learner_task: "Complete the analysis template for one claim.",
-            facilitator_moves: "Allow 8 minutes then ask pairs to compare classifications."
-          }
-        ]
+        activity_id: "A1",
+        title: "Misconception discussion",
+        activity_preamble: "Before you classify claims, note what would make each sound persuasive.",
+        intellectual_frame: "You are evaluating evidence quality, not debating opinions.",
+        reasoning_orientation: "Separate weather anecdotes from climate trend evidence.",
+        self_explanation_prompt: "State one criterion you used before checking the template.",
+        conceptual_contrast_prompt: "Contrast weather variability with long-term climate change.",
+        learner_task: "Complete the analysis template for one claim.",
+        expected_output: "A completed analysis template for one claim.",
+        facilitator_moves: "Allow 8 minutes then ask pairs to compare classifications.",
+        episode_plan: {
+          archetype: "understand",
+          beats: [
+            { function: "orientation" },
+            { function: "explanation" },
+            { function: "verification" }
+          ]
+        },
+        materials: []
       }
     ]
   };
-  const r = api.buildUtilityStructuredHtmlForTest(page);
+  const r = renderUtilityPageHtmlForTest(api, page);
   assert.ok(r && !r.error, r && r.error);
   const html = String(r.html || "");
   assert.match(html, /util-activity-preamble/);
-  assert.match(html, /Intellectual frame/i);
-  assert.match(html, /How to think/i);
-  assert.match(html, /Key distinction/i);
-  assert.match(html, /data-cognition-field="self_explanation_prompt"/);
+  assert.match(html, /Before you classify claims/);
+  assert.match(html, /Misconception discussion/);
+  assert.match(html, /Complete the analysis template/);
   assert.doesNotMatch(html, /Allow 8 minutes/i);
 });

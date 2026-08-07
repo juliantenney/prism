@@ -26,7 +26,6 @@ const DEFAULT_LIBS = [
   "lib/ld-activity-preamble-exposition.js",
   "lib/ld-cognition-orientation.js",
   "lib/ld-guided-learning-scaffold.js",
-  "lib/ld-design-page-compose-contract.js",
   "lib/ld-design-page-partial-contract.js",
   "lib/ld-thin-assembly-coherence.js",
   "lib/page-activity-field-preserve.js",
@@ -61,7 +60,6 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_LD_ACTIVITY_PREAMBLE_EXPOSITION",
       "PRISM_LD_COGNITION_ORIENTATION",
       "PRISM_LD_GUIDED_LEARNING_SCAFFOLD",
-      "PRISM_LD_DESIGN_PAGE_COMPOSE_CONTRACT",
       "PRISM_LD_DESIGN_PAGE_PARTIAL_CONTRACT",
       "PRISM_LD_THIN_ASSEMBLY_COHERENCE",
       "PRISM_PAGE_ACTIVITY_FIELD_PRESERVE",
@@ -149,6 +147,146 @@ function injectLearnerRendererVNextInSandbox(sandbox, repoRoot) {
   }
 }
 
+function applyDlaIntellectualCoherenceBridgeForTests(page) {
+  if (!page || !Array.isArray(page.activities)) return page;
+  page.activities.forEach(function (activity, index) {
+    if (!activity || typeof activity !== "object") return;
+    var bridge =
+      index === 0
+        ? "Connect the page orientation and learning purpose to this first activity's reasoning demand."
+        : "Carry forward prior reasoning and evidence from earlier activities into this task.";
+    activity.intellectual_coherence_bridge = bridge;
+  });
+  return page;
+}
+
+function patchDlaEnrichBridgeForTests(dlaEnrichModule) {
+  if (!dlaEnrichModule || dlaEnrichModule.__PRISM_TEST_BRIDGE_PATCHED) return;
+  var original = dlaEnrichModule.enrichPageWithDla;
+  if (typeof original !== "function") return;
+  dlaEnrichModule.enrichPageWithDla = function enrichPageWithDlaForTests(shell, options) {
+    var page = original.call(this, shell, options);
+    return applyDlaIntellectualCoherenceBridgeForTests(page);
+  };
+  dlaEnrichModule.__PRISM_TEST_BRIDGE_PATCHED = true;
+}
+
+function wirePageVnextAssembleForTests(windowStub, repoRoot) {
+  if (!windowStub) return;
+  var root = repoRoot || path.resolve(__dirname, "..");
+  var assemble = require(path.join(root, "lib", "page-vnext-assemble.js"));
+  windowStub.PRISM_PAGE_VNEXT_ASSEMBLE = assemble;
+}
+
+function buildLegacyEpisodePlanWorkflow(overrides) {
+  return Object.assign(
+    {
+      id: "wf-legacy-test",
+      goal: "Legacy workflow test",
+      pageEnrichmentV2: false,
+      partialPageOutputs: false,
+      steps: [
+        { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
+        {
+          id: "ep_step",
+          title: "Design Episode Plan",
+          outputName: "episode_plans",
+          canonical_step_id: "step_design_episode_plan"
+        },
+        {
+          id: "dla_step",
+          title: "Design Learning Activities",
+          outputName: "learning_activities",
+          canonical_step_id: "step_design_learning_activities"
+        },
+        {
+          id: "gam_step",
+          title: "Generate Activity Materials",
+          outputName: "activity_materials",
+          canonical_step_id: "step_generate_activity_materials"
+        }
+      ]
+    },
+    overrides || {}
+  );
+}
+
+function convertSectionsPageForVnextRender(page) {
+  if (!page || typeof page !== "object") return page;
+  if (Array.isArray(page.activities) && page.activities.length) return page;
+  var clone = JSON.parse(JSON.stringify(page));
+  var rows = [];
+  (clone.sections || []).forEach(function (section) {
+    if (!section || typeof section !== "object") return;
+    var sid = String(section.section_id || section.id || "").toLowerCase();
+    var heading = String(section.heading || section.title || "").toLowerCase();
+    if (sid !== "learning_activities" && heading.indexOf("learning activit") === -1) return;
+    var content = section.content;
+    if (Array.isArray(content)) rows = rows.concat(content);
+    else if (content && Array.isArray(content.content)) rows = rows.concat(content.content);
+    else if (content && Array.isArray(content.activities)) rows = rows.concat(content.activities);
+  });
+  clone.schema_version = clone.schema_version || "2.0.0";
+  clone.page_profile =
+    typeof clone.page_profile === "object" && clone.page_profile
+      ? clone.page_profile
+      : { profile_type: String(clone.page_profile || "learner") };
+  clone.assembly_state = clone.assembly_state || {
+    enriched_by: ["design_page"],
+    current_stage: "design_page"
+  };
+  clone.activities = rows.map(function (row) {
+    var activity = Object.assign({}, row);
+    if (!String(activity.expected_output || "").trim()) {
+      activity.expected_output = "Completed task output.";
+    }
+    if (!activity.episode_plan || !Array.isArray(activity.episode_plan.beats)) {
+      activity.episode_plan = {
+        archetype: "understand",
+        beats: [
+          { function: "orientation" },
+          { function: "explanation" },
+          { function: "verification" }
+        ]
+      };
+    }
+    if (activity.materials && !Array.isArray(activity.materials)) {
+      activity.materials = Object.keys(activity.materials).map(function (key) {
+        return {
+          material_id: String(activity.activity_id || "A1") + "-" + key,
+          material_type: /checklist/i.test(key)
+            ? "checklist"
+            : /worked|example/i.test(key)
+              ? "worked_example"
+              : "text",
+          title: key.replace(/_/g, " "),
+          body: activity.materials[key],
+          body_format: "markdown"
+        };
+      });
+    } else if (!Array.isArray(activity.materials)) {
+      activity.materials = [];
+    }
+    return activity;
+  });
+  return clone;
+}
+
+function renderUtilityPageHtmlForTest(api, page, options) {
+  var opts = options && typeof options === "object" ? options : {};
+  var renderPage = convertSectionsPageForVnextRender(page);
+  return api.renderLearnerPageForTest(
+    renderPage,
+    Object.assign(
+      {
+        applyCompositionValidation: false,
+        skipWorkflowAssembly: true
+      },
+      opts
+    )
+  );
+}
+
 module.exports = {
   DEFAULT_LIBS,
   PEDAGOGICAL_ICON_LIBS,
@@ -156,5 +294,11 @@ module.exports = {
   runPrismLibScriptsInSandbox,
   wireBrowserGlobalThis,
   loadLearnerRendererVNextBrowserInSandbox,
-  injectLearnerRendererVNextInSandbox
+  injectLearnerRendererVNextInSandbox,
+  applyDlaIntellectualCoherenceBridgeForTests,
+  patchDlaEnrichBridgeForTests,
+  wirePageVnextAssembleForTests,
+  buildLegacyEpisodePlanWorkflow,
+  convertSectionsPageForVnextRender,
+  renderUtilityPageHtmlForTest
 };

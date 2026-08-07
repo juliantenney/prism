@@ -139,6 +139,8 @@ function designPageAugmentedPrompt(api) {
     {
       goal: "RNA/HCV self-directed learner-page brief",
       desiredOutputs: "learning_activities, activity_materials, page",
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
       workflowOutputs: ["page", "activity_materials"],
       workflowBriefResolution: {
         resolvedFactors: {
@@ -236,10 +238,9 @@ test("inflation-style page: rich materials coexist with visual_affordances", () 
   assert.equal(merged.visual_affordances.length, 1);
 });
 
-test("Design Page pack: partial contract authoritative; compose rollback-only in notes", () => {
+test("Design Page pack: partial contract authoritative in domain seed", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
   assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
-  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT applies only to rollback\/legacy/i);
   assert.match(factory.promptTemplate, /partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
   assert.doesNotMatch(factory.promptTemplate, /LD-MATERIALS-COPY AUTHORITATIVE GAM CONTENT BINDING/i);
 });
@@ -271,31 +272,15 @@ test("38S Phase 2C-a: Design Page pack excludes legacy materials compose languag
   assert.doesNotMatch(factory.promptTemplate, /Inflation is a sustained increase/i);
 });
 
-test("38S Phase 2C-a: runtime augmentation includes strict L4 preserve and forbidden collapse patterns", () => {
+test("38S Phase 2C-a: partial runtime augmentation includes partial contract and VA block", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
-  assert.doesNotMatch(augmented, /near-verbatim/i);
-  assert.doesNotMatch(augmented, /shorten only clearly non-essential/i);
-  assert.match(augmented, /FORBIDDEN inflation-collapse substitutes/i);
-  assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
-  assert.match(augmented, /Do not paraphrase, shorten, simplify, summarise, compress, convert, or rewrite material bodies/i);
-  assert.match(augmented, /Material bodies are hard constraints/i);
-  assert.match(augmented, /OPAQUE PAYLOAD TRANSPORT/i);
-  assert.match(augmented, /transport, not authoring/i);
-  assert.match(augmented, /TRANSPORT VS ARCHIVAL FIELDS/i);
-  assert.match(augmented, /AUTHORITATIVE GAM CONTENT BINDING/i);
-  assert.match(augmented, /MULTI-MATERIAL ENUMERATION INVARIANT/i);
-  assert.match(augmented, /PRE-EMIT ENUMERATION VALIDATION/i);
-  assert.match(augmented, /FULL CONTENT BODY PRESERVATION/i);
-  assert.match(augmented, /must not be shortened to the first line/i);
-  assert.match(augmented, /MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION/i);
-  assert.match(augmented, /condensed output is not/i);
-  assert.match(augmented, /represented in condensed form/i);
-  assert.match(augmented, /PAGE ARTEFACT IS FINAL LEARNER OUTPUT/i);
-  assert.match(augmented, /Full checklist from LO1-CHK/i);
-  assert.match(augmented, /do not emit it as a valid page/i);
-  assert.match(augmented, /CONTEXT ACCESS RULE/i);
-  assert.match(augmented, /active Copilot chat history is context/i);
+  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(augmented, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.match(augmented, /Materials and activities are already hydrated upstream/i);
+  assert.match(augmented, /activities\[\] regeneration/i);
+  assert.doesNotMatch(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
 test("Design Page learner page_profile targets page_synthesis wrapper prose", () => {
@@ -309,30 +294,10 @@ test("Design Page learner page_profile targets page_synthesis wrapper prose", ()
   assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });
 
-test("Slice1: Design Page runtime augmentation includes Sprint 38 VA prompt block", () => {
+test("Slice1: Design Page partial runtime augmentation includes Sprint 38 VA prompt block", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
-  const composeIdx = augmented.search(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.ok(composeIdx >= 0, "compose contract must be present");
-  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
-});
-
-test("Design Page runtime augmentation includes compose contract with L4 preserve embed", () => {
-  const api = loadPrismTestApi();
-  const augmented = designPageAugmentedPrompt(api);
-  assert.match(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.doesNotMatch(augmented, /design page activity materials fidelity \(auto-applied\)/i);
-  assert.match(augmented, /LD-MATERIALS-COPY \| Layer: L4/i);
-  assert.match(augmented, /PREC-02/i);
-  assert.match(augmented, /LD-TABLE-FIDELITY \| Layer: L4/i);
-  assert.match(augmented, /Scenario 1,,,/i);
-  assert.match(augmented, /Preserve role \(Design Page\)/i);
-  assert.match(augmented, /38H-3/i);
-  assert.match(augmented, /table-adjunct/i);
-  assert.doesNotMatch(augmented, /LD-MATERIALS-COPY \(auto-applied\)/i);
-  assert.match(augmented, /MATERIALS FIDELITY \(compose\)/i);
-  assert.match(augmented, /copy activity\.materials\.\* verbatim from upstream activity_materials/i);
-  assert.match(augmented, /Set of scenarios/i);
+  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
@@ -341,42 +306,4 @@ test("Sprint 38 runtime block states affordances are additive to materials", () 
   const block = api.buildSprint38VisualAffordanceDesignPagePromptBlock();
   assert.match(block, /additive page-root metadata only/i);
   assert.match(block, /must not replace, summarise, or substitute for learning_activities\.content\[\]\.materials/i);
-});
-
-test("compose contract prompt block is idempotent on second application", () => {
-  const api = loadPrismTestApi();
-  const ctx = { stepCanonicalStepId: "step_design_page", stepTitle: "Design Page" };
-  const once = api.applyLdDesignPageComposeContractToDraft("Base prompt", ctx);
-  const twice = api.applyLdDesignPageComposeContractToDraft(once, ctx);
-  assert.equal(once, twice);
-  assert.equal(
-    (twice.match(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/gi) || []).length,
-    1
-  );
-});
-
-test("Design Page compose contract always includes activity field preservation", () => {
-  const api = loadPrismTestApi();
-  const ctx = { stepCanonicalStepId: "step_design_page", stepTitle: "Design Page" };
-  const prompt = api.applyLdDesignPageComposeContractToDraft("Base prompt", ctx);
-  assert.match(prompt, /Activity field preservation \(learner-facing page\)/i);
-  assert.match(prompt, /activity_preamble/i);
-});
-
-test("Design Page compose contract forbids material-body abbreviation disclaimers", () => {
-  const compose = require(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"));
-  const block = compose.buildLdDesignPageComposePromptBlock({ includeFieldPreservation: true });
-  assert.match(block, /Forbidden compose disclaimer/i);
-  assert.match(block, /full activity material bodies are abbreviated/i);
-});
-
-test("Design Page compose path uses compose-only guided scaffold slice", () => {
-  const api = loadPrismTestApi();
-  const augmented = designPageAugmentedPrompt(api);
-  assert.match(augmented, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/);
-  assert.match(augmented, /Design Page compose preservation/i);
-  assert.match(augmented, /COMPOSE PRESERVATION \(Design Page\)/i);
-  assert.doesNotMatch(augmented, /EXEMPLAR CONTRAST \(topic-specific/i);
-  assert.doesNotMatch(augmented, /DLA PRE-EMIT SCAFFOLD GATE/i);
-  assert.doesNotMatch(augmented, /activity_preamble \(50–120 words/i);
 });

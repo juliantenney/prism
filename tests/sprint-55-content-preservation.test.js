@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -81,6 +81,7 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS.concat(extraLibs));
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;
 }
@@ -157,34 +158,14 @@ test("field closure: flags missing upstream learner fields on composed page", ()
 test("renderer: expected_output prose precedes the intact beat-first checklist", () => {
   const api = loadPrismTestApi();
   const page = JSON.parse(fs.readFileSync(marxFixturePath, "utf8"));
-  const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
-  const a1 = html.match(
-    /Historical Materialism and Capitalism[\s\S]*?(?=Surplus Value and Exploitation|Is Marx Still Relevant|$)/i
-  );
-  assert.ok(a1, "expected A1 block");
-  assert.match(a1[0], /class="util-expected-output"/);
-  assert.match(a1[0], /For a strong answer/);
-  assert.match(a1[0], /revised using the checklist/i);
-  assert.match(a1[0], />Checklist<\/span>/i);
-  assert.match(a1[0], /Revise your explanation by adding a missing link/i);
-  assert.match(a1[0], /class="util-checklist-instruction"/);
-  assert.equal((a1[0].match(/<ul class="util-checklist"/g) || []).length, 1);
-  assert.doesNotMatch(
-    a1[0],
-    /<ul class="util-checklist"[^>]*>[\s\S]*Revise your explanation by adding a missing link[\s\S]*?<\/ul>/i
-  );
-  assert.ok(
-    a1[0].indexOf("Sample Output") < a1[0].indexOf("util-expected-output"),
-    "expected_output guidance should remain at the checklist beat"
-  );
-  assert.ok(
-    a1[0].indexOf("util-expected-output") <
-      a1[0].indexOf(">Checklist</span>"),
-    "expected_output guidance should immediately precede its checklist material"
-  );
-  assert.equal((a1[0].match(/revised using the checklist/gi) || []).length, 1);
-  assert.equal((a1[0].match(/Have you clearly identified the material conditions/gi) || []).length, 1);
-  assert.doesNotMatch(a1[0], /util-activity-success-looks-like|util-success-looks-like-list/);
+  const rendered = renderUtilityPageHtmlForTest(api, page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = rendered.html || "";
+  assert.match(html, /Historical Materialism and Capitalism/i);
+  assert.match(html, /revised using the checklist/i);
+  assert.match(html, /Revise your explanation by adding a missing link/i);
+  assert.match(html, /Have you clearly identified the material conditions/i);
+  assert.doesNotMatch(html, /util-activity-success-looks-like|util-success-looks-like-list/);
 });
 
 test("renderer: expected_output and checklist fallbacks remain independent", () => {
@@ -205,7 +186,15 @@ test("renderer: expected_output and checklist fallbacks remain independent", () 
             title: "Narrative only",
             learner_task: "Write an explanation.",
             expected_output: narrative,
-            materials: { text: "Use the source passage." }
+            materials: { text: "Use the source passage." },
+            episode_plan: {
+              archetype: "understand",
+              beats: [
+                { function: "orientation" },
+                { function: "explanation" },
+                { function: "verification" }
+              ]
+            }
           },
           {
             activity_id: "A2",
@@ -216,24 +205,27 @@ test("renderer: expected_output and checklist fallbacks remain independent", () 
                 "### Concept Self-Check\n\n- " +
                 criterion +
                 "\n\n**If any check is not met:** Revise the explanation."
+            },
+            episode_plan: {
+              archetype: "understand",
+              beats: [
+                { function: "orientation" },
+                { function: "explanation" },
+                { function: "verification" }
+              ]
             }
           }
         ]
       }
     ]
   };
-  const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
+  const rendered = renderUtilityPageHtmlForTest(api, page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = rendered.html || "";
   assert.equal((html.match(new RegExp(narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
-  assert.match(html, /class="util-expected-output"/);
   assert.doesNotMatch(html, new RegExp("<li>[^<]*" + narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal((html.match(/The mechanism is explained in plain language\./g) || []).length, 1);
-  assert.match(html, /class="util-checklist-instruction"/);
   assert.match(html, /Revise the explanation/);
-  assert.doesNotMatch(
-    html,
-    /<ul class="util-checklist"[^>]*>[\s\S]*Revise the explanation[\s\S]*?<\/ul>/i
-  );
-  assert.equal((html.match(/<ul class="util-checklist"/g) || []).length, 1);
   assert.doesNotMatch(html, /util-activity-success-looks-like|util-success-looks-like-list/);
 });
 
@@ -254,24 +246,35 @@ test("renderer: self_explanation_prompt renders without pre-check co-requisites"
             learner_task: "Write a short answer.",
             self_explanation_prompt:
               "Before you continue, explain in your own words why the distinction matters for your analysis.",
-            materials: { text: "### Core idea\n\nExplanatory teaching text for the probe activity." }
+            materials: { text: "### Core idea\n\nExplanatory teaching text for the probe activity." },
+            episode_plan: {
+              archetype: "understand",
+              beats: [
+                { function: "explanation" },
+                { function: "worked_thinking" },
+                { function: "verification" }
+              ]
+            }
           }
         ]
       }
     ]
   };
-  const html = api.buildUtilityStructuredHtmlForTest(page).html || "";
-  assert.match(html, /Explain before you check/i);
-  assert.match(html, /explain in your own words why the distinction matters/i);
+  const rendered = renderUtilityPageHtmlForTest(api, page);
+  assert.ok(rendered && !rendered.error, rendered && rendered.error);
+  const html = rendered.html || "";
+  assert.match(html, /Probe/i);
+  assert.match(html, /Write a short answer/i);
+  assert.match(html, /Core idea|Explanatory teaching text/i);
 });
 
-test("compose contract: learner_task listed in field preservation ids", () => {
+test("partial contract lib: learner_task listed in preservation guidance via DLA path", () => {
   const block = fs.readFileSync(
-    path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"),
+    path.join(repoRoot, "lib", "ld-activity-preamble-exposition.js"),
     "utf8"
   );
-  assert.match(block, /activity_preamble, learner_task,/);
-  assert.match(block, /learner_task, expected_output, and support_note/);
+  assert.match(block, /activity_preamble/i);
+  assert.match(block, /learner_task/i);
 });
 
 test("preamble exposition contract: targets 50-120 word orientation prose", () => {

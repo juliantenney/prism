@@ -91,7 +91,7 @@ function loadAugmentedDlaPrompt() {
     "ld-materials-copy.js",
     "ld-math-render.js",
     "ld-self-directed-rhetoric.js",
-    "ld-design-page-compose-contract.js"
+    "ld-design-page-partial-contract.js"
   ]) {
     vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", f), "utf8"), sandbox, {
       filename: f
@@ -159,10 +159,10 @@ test("38L DLA augmented prompt surface includes mandatory pack markers", () => {
   assert.match(augmented, /PRE-EMIT GATE/i);
 });
 
-test("app.js: self-directed DLA example block anti-thin 38L pointer when scaffolds apply", () => {
+test("app.js: self-directed DLA example block notes 38L rows omitted in miniature example", () => {
   const appSrc = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
-  assert.match(appSrc, /38L mandatory rows not shown in miniature example/);
-  assert.match(appSrc, /"type": "checklist"/);
+  assert.match(appSrc, /38L rows omitted in miniature example/i);
+  assert.match(appSrc, /IFP-10\/DLA-WB-26\.\.31 when applicable/i);
 });
 
 test("38L harness DLA user envelope cites obligation population gates (38S-final)", () => {

@@ -12,6 +12,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 
 const episodePreserve = require("../lib/page-episode-plans-preserve.js");
+const { injectLearnerRendererVNextInSandbox, convertSectionsPageForVnextRender } = require("./prism-vm-lib-bootstrap.js");
 
 const SAMPLE_BEATS = [
   { function: "orientation" },
@@ -125,7 +126,7 @@ function loadPrismTestApi(extraLibs) {
     "lib/sprint38-visual-affordances.js",
     "lib/ld-table-fidelity.js",
     "lib/ld-materials-copy.js",
-    "lib/ld-design-page-compose-contract.js",
+    "lib/ld-design-page-partial-contract.js",
     "lib/ld-instructional-manifestation-render.js",
     "lib/utility-pedagogical-icons.js",
     "lib/utility-pedagogical-beats.js",
@@ -140,6 +141,7 @@ function loadPrismTestApi(extraLibs) {
   if (sandbox.PRISM_PAGE_GAM_MATERIALS_PRESERVE) {
     windowStub.PRISM_PAGE_GAM_MATERIALS_PRESERVE = sandbox.PRISM_PAGE_GAM_MATERIALS_PRESERVE;
   }
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -330,7 +332,8 @@ test("renderer does not emit raw episode_plans section in export HTML", () => {
   const enriched = episodePreserve.applyEpisodePlansToComposedPage(page, plans, {
     activities: [{ activity_id: "A1" }]
   });
-  const result = api.runUtilityPageExportPipelineForTest(enriched, {
+  const result = api.runUtilityPageExportPipelineForTest(convertSectionsPageForVnextRender(enriched), {
+    skipWorkflowAssembly: true,
     applyCompositionValidation: false
   });
   assert.equal(result.error, null);

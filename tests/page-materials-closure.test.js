@@ -16,6 +16,7 @@ if (typeof globalThis !== "undefined") {
   globalThis.PRISM_DESIGN_PAGE_MATERIALS_FIDELITY = fidelity;
 }
 const preserve = require("../lib/page-gam-materials-preserve.js");
+const { injectLearnerRendererVNextInSandbox, convertSectionsPageForVnextRender } = require("./prism-vm-lib-bootstrap.js");
 
 const WORKED_EXAMPLE_BODY = [
   "## What experts notice",
@@ -168,13 +169,15 @@ function loadPrismTestApi() {
     "lib/sprint38-visual-affordances.js",
     "lib/ld-table-fidelity.js",
     "lib/ld-materials-copy.js",
-    "lib/ld-design-page-compose-contract.js"
+    "lib/ld-design-page-partial-contract.js"
   ].forEach((rel) => {
     vm.runInContext(fs.readFileSync(path.join(repoRoot, rel), "utf8"), sandbox, { filename: rel });
   });
   if (sandbox.PRISM_PAGE_GAM_MATERIALS_PRESERVE) {
     windowStub.PRISM_PAGE_GAM_MATERIALS_PRESERVE = sandbox.PRISM_PAGE_GAM_MATERIALS_PRESERVE;
   }
+  const { injectLearnerRendererVNextInSandbox: injectRenderer } = require("./prism-vm-lib-bootstrap.js");
+  injectRenderer(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -319,7 +322,8 @@ test("runUtilityPageExportPipelineForTest: blocks HTML when material closure fai
 test("runUtilityPageExportPipelineForTest: passes when materials are complete", () => {
   const api = loadPrismTestApi();
   const page = basePage(fullMaterials());
-  const result = api.runUtilityPageExportPipelineForTest(page, {
+  const result = api.runUtilityPageExportPipelineForTest(convertSectionsPageForVnextRender(page), {
+    skipWorkflowAssembly: true,
     compositionOptions: {
       upstreamLearningActivities: [{ activity_id: "A3", title: "Analyse household inflation effects" }],
       upstreamActivityMaterials: upstreamGam

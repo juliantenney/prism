@@ -187,10 +187,7 @@ function loadPrismTestApi() {
   };
   windowStub.window = windowStub;
   vm.createContext(sandbox);
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, [
-    "lib/ld-design-page-partial-contract.js",
-    "lib/ld-design-page-compose-contract.js"
-  ]);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, ["lib/ld-design-page-partial-contract.js"]);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api, "Expected __PRISM_TEST_API");

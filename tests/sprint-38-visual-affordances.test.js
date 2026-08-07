@@ -330,14 +330,19 @@ function designPageAugmentedPrompt(api) {
   return api.applyWorkflowStepRuntimePromptAugmentations(
     seeded,
     { canonical_step_id: "step_design_page", title: "Design Page" },
-    { goal: "Learner page", desiredOutputs: "Learner-facing page" }
+    {
+      goal: "Learner page",
+      desiredOutputs: "Learner-facing page",
+      pageEnrichmentV2: true,
+      partialPageOutputs: true
+    }
   );
 }
 
-test("Slice1: Design Page runtime augmentation includes Sprint 38 VA authoring contract", () => {
+test("Slice1: Design Page partial runtime augmentation includes Sprint 38 VA authoring contract", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
-  assert.match(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
   assert.match(augmented, /Page root \(mandatory\): visual_affordance_schema_version/i);
   assert.match(augmented, /Example page-level Knowledge Summary generate record/i);

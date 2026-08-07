@@ -75,16 +75,24 @@ function resolveBrief(brief) {
   ).resolved;
 }
 
-function designPagePrompt(brief) {
-  const resolved = resolveBrief(brief);
-  const ctx = {
-    workflowGoal: brief.goal,
-    desiredOutputs: brief.desiredOutputs,
-    stepCanonicalTitle: "Design Page",
-    stepCanonicalStepId: "step_design_page",
-    workflowBriefResolution: { resolvedFactors: resolved }
+function designPagePartialPrompt(brief) {
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
   };
-  return api.applyLdDesignPageComposeContractToDraft("Assemble learner page.\n", ctx);
+  const wf = {
+    goal: brief.goal,
+    desiredOutputs: brief.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
+    workflowOutputSpec: { goal: brief.goal }
+  };
+  return api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    step,
+    wf
+  );
 }
 
 function designPageRuntimePrompt(brief) {
@@ -96,6 +104,8 @@ function designPageRuntimePrompt(brief) {
   const wf = {
     goal: brief.goal,
     desiredOutputs: brief.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
     workflowOutputSpec: { goal: brief.goal }
   };
   return api.applyWorkflowStepRuntimePromptAugmentations(
@@ -105,11 +115,11 @@ function designPageRuntimePrompt(brief) {
   );
 }
 
-test("56C: Design Page compose path excludes journey assimilation injection", () => {
-  const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
+test("56C: Design Page partial path excludes journey assimilation injection", () => {
+  const prompt = designPagePartialPrompt(MARX_SELF_STUDY_BRIEF);
   assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION/i);
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
 });
 
 test("56C: Design Page runtime path excludes journey and authorial exposition injection", () => {
@@ -119,9 +129,9 @@ test("56C: Design Page runtime path excludes journey and authorial exposition in
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
 });
 
-test("56C: all Design Page briefs exclude journey assimilation on compose path", () => {
+test("56C: all Design Page briefs exclude journey assimilation on partial path", () => {
   for (const brief of [MARX_SELF_STUDY_BRIEF, FACILITATOR_ONLY_BRIEF]) {
-    const prompt = designPagePrompt(brief);
+    const prompt = designPagePartialPrompt(brief);
     assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT/i);
   }
 });
@@ -140,20 +150,20 @@ test("42-6: applyLdJourneyAssimilationContractToDraft is idempotent", () => {
   assert.equal(once, twice);
 });
 
-test("56C: domain pack Design Page template is transport-first (no journey assimilation mandate)", () => {
+test("56C: domain pack Design Page template is partial-first (no journey assimilation mandate)", () => {
   const md = fs.readFileSync(ldPatternsPath, "utf8");
   const dpSection = md.slice(md.indexOf("## 13. Design Page"));
   const factory = JSON.parse(
     dpSection.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/)[1].trim()
   );
-  assert.match(dpSection, /learning_content, knowledge_model/);
+  assert.match(dpSection, /optional learning_content, optional knowledge_model/);
   assert.doesNotMatch(factory.promptTemplate, /LD-JOURNEY-ASSIMILATION/);
   assert.doesNotMatch(factory.defaultPromptNotes, /LD-JOURNEY-ASSIMILATION/);
-  assert.match(factory.defaultPromptNotes, /Transport-first/i);
-  assert.match(factory.promptTemplate, /transport slots/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
+  assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
 });
 
-test("42-6: preservation repair still restores activity_preamble after compose path", () => {
+test("42-6: preservation repair still restores activity_preamble after partial path", () => {
   const upstream = {
     activities: [
       {

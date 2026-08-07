@@ -172,10 +172,37 @@ test("facilitated workshop brief: DLA prompt does not include self-directed outp
   assert.doesNotMatch(prompt, /learner-action rhetoric \(auto-applied\)/i);
 });
 
-test("Design Page prompt: field preservation scaffold for self-directed learner page", () => {
+test("Design Page prompt: partial contract for self-directed learner page", () => {
   const resolved = marxResolvedFactors();
   resolved.delivery_context = "self_directed";
   resolved.session_materials = ["page"];
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  const wf = {
+    goal: MARX_SELF_STUDY_BRIEF.goal,
+    desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
+    workflowOutputSpec: { goal: MARX_SELF_STUDY_BRIEF.goal },
+    workflowBriefResolution: { resolvedFactors: resolved }
+  };
+  const scaffolded = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
+    "Assemble learner page.\n",
+    {
+      workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
+      desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
+      stepCanonicalTitle: "Design Page",
+      stepCanonicalStepId: "step_design_page",
+      workflowBriefResolution: { resolvedFactors: resolved }
+    }
+  );
+  const prompt = api.applyWorkflowStepRuntimePromptAugmentations(scaffolded, step, wf);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
   const ctx = {
     workflowGoal: MARX_SELF_STUDY_BRIEF.goal,
     desiredOutputs: MARX_SELF_STUDY_BRIEF.desiredOutputs,
@@ -183,20 +210,9 @@ test("Design Page prompt: field preservation scaffold for self-directed learner 
     stepCanonicalStepId: "step_design_page",
     workflowBriefResolution: { resolvedFactors: resolved }
   };
-  const scaffolded = api.applySelfDirectedLearnerPageStepScaffoldsToDraft(
-    "Assemble learner page.\n",
-    ctx
-  );
-  const prompt = api.applyLdDesignPageComposeContractToDraft(scaffolded, ctx);
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /Activity field preservation/i);
-  assert.match(prompt, /expected_output.*support_note/i);
-  assert.match(prompt, /intellectual_coherence_bridge/i);
   const rhetoric = api.applyLdSelfDirectedRhetoricContractToDraft("Assemble learner page.\n", ctx);
   assert.match(rhetoric, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.match(rhetoric, /Design Page rider|PRESERVATION BOUNDARY|wrapper\/page-level prose/i);
-  assert.match(prompt, /Activity field preservation[\s\S]*activity_preamble/i);
-  assert.match(prompt, /self_explanation_prompt/i);
 });
 
 test("evaluateSelfDirectedDlaActivityFramingCoverage: well-formed self-directed activities", () => {

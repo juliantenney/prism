@@ -84,16 +84,24 @@ function resolveBrief(brief) {
   ).resolved;
 }
 
-function designPagePrompt(brief) {
-  const resolved = resolveBrief(brief);
-  const ctx = {
-    workflowGoal: brief.goal,
-    desiredOutputs: brief.desiredOutputs,
-    stepCanonicalTitle: "Design Page",
-    stepCanonicalStepId: "step_design_page",
-    workflowBriefResolution: { resolvedFactors: resolved }
+function designPagePartialPrompt(brief) {
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
   };
-  return api.applyLdDesignPageComposeContractToDraft("Assemble learner page.\n", ctx);
+  const wf = {
+    goal: brief.goal,
+    desiredOutputs: brief.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
+    workflowOutputSpec: { goal: brief.goal }
+  };
+  return api.applyWorkflowStepRuntimePromptAugmentations(
+    "Assemble learner page.\n",
+    step,
+    wf
+  );
 }
 
 function designPageRuntimePrompt(brief) {
@@ -105,6 +113,8 @@ function designPageRuntimePrompt(brief) {
   const wf = {
     goal: brief.goal,
     desiredOutputs: brief.desiredOutputs,
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
     workflowOutputSpec: { goal: brief.goal }
   };
   return api.applyWorkflowStepRuntimePromptAugmentations(
@@ -114,15 +124,15 @@ function designPageRuntimePrompt(brief) {
   );
 }
 
-test("56C: Design Page compose path excludes authorial exposition injection", () => {
-  const prompt = designPagePrompt(MARX_SELF_STUDY_BRIEF);
+test("56C: Design Page partial path excludes authorial exposition injection", () => {
+  const prompt = designPagePartialPrompt(MARX_SELF_STUDY_BRIEF);
   assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION/i);
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
 });
 
 test("56C: workshop learner handout Design Page excludes authorial exposition injection", () => {
-  const prompt = designPagePrompt(WORKSHOP_LEARNER_HANDOUT_BRIEF);
+  const prompt = designPagePartialPrompt(WORKSHOP_LEARNER_HANDOUT_BRIEF);
   assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT/i);
 });
 
@@ -137,7 +147,7 @@ test("56C: all Design Page briefs exclude authorial exposition on runtime path",
   }
 });
 
-test("42-2: preservation repair still restores activity_preamble after compose path", () => {
+test("42-2: preservation repair still restores activity_preamble after partial path", () => {
   const upstream = {
     activities: [
       {

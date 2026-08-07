@@ -23,11 +23,6 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   vm.createContext(sandbox);
   vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
-    sandbox,
-    { filename: "ld-design-page-compose-contract.js" }
-  );
-  vm.runInContext(
     fs.readFileSync(path.join(repoRoot, "lib", "ld-materials-copy.js"), "utf8"),
     sandbox,
     { filename: "ld-materials-copy.js" }
@@ -47,6 +42,8 @@ const { api } = loadPrismTestApi();
 
 const wf = {
   id: "wf-dp-upstream",
+  pageEnrichmentV2: true,
+  partialPageOutputs: true,
   steps: [
     {
       id: "gam_step",
@@ -72,42 +69,34 @@ const wf = {
   ]
 };
 
-test("buildWorkflowStepInstructions tells Design Page to use prior Copilot outputs, not PRISM captures", () => {
+test("buildWorkflowStepInstructions: partial Design Page uses conversation context, not PRISM captures", () => {
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest("wf-dp-upstream");
   api.setWorkflowRunCapturedOutputsForTest({});
   api.setWorkflowRunCapturedOutputsRawForTest({});
 
   const instr = api.buildWorkflowStepInstructions(wf.steps[1], 1, null);
-  assert.match(instr, /prior step outputs in this conversation/i);
-  assert.match(instr, /STEP N OUTPUT:/i);
-  assert.match(instr, /runner does not re-paste those bodies/i);
+  assert.match(instr, /partial page artefact/i);
+  assert.match(instr, /Use Copilot conversation context/i);
+  assert.match(instr, /PRISM does not embed stored prior step outputs/i);
   assert.match(instr, /Generate Activity Materials/i);
-  assert.match(instr, /Multi-material enumeration/i);
-  assert.match(instr, /transport, not authoring/i);
-  assert.match(instr, /Context access:/i);
-  assert.match(instr, /chat history is context/i);
-  assert.match(instr, /before claiming artefacts are unavailable/i);
+  assert.match(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.match(instr, /page_synthesis/i);
   assert.doesNotMatch(instr, /workflow capture; use this text verbatim/i);
   assert.doesNotMatch(instr, /CAPTURE MISSING:/i);
 });
 
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT requires conversational upstream and pack-text GAM merge", () => {
-  const compose = require("../lib/ld-design-page-compose-contract.js");
-  const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /prior workflow steps already present in this Copilot/i);
-  assert.match(text, /pack text with Activity ID/i);
-  assert.match(text, /Definitions of/i);
-  assert.match(text, /FORBIDDEN: composing material bodies only from learning_activities\.required_materials/i);
+test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: forbids chat-based materials resolution", () => {
+  const partial = require("../lib/ld-design-page-partial-contract.js");
+  const text = partial.buildDesignPagePartialContractBlock();
+  assert.match(text, /Use Copilot conversation context for upstream instructional content/i);
+  assert.match(text, /resolving activity_materials from chat/i);
+  assert.match(text, /activities\[\] regeneration/i);
 });
 
-test("LD-DESIGN-PAGE-COMPOSE-CONTRACT: context access rule", () => {
-  const compose = require("../lib/ld-design-page-compose-contract.js");
-  const text = compose.buildLdDesignPageComposePromptBlock();
-  assert.match(text, /CONTEXT ACCESS RULE/i);
-  assert.match(text, /do not need to be attached again in the current user message/i);
-  assert.match(text, /activity_materials bodies are not present/i);
-  assert.match(text, /current message context lacks the artefacts/i);
-  assert.match(text, /active Copilot chat history is context/i);
-  assert.match(text, /GAM Content: bodies already present in the conversation/i);
+test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: context access via conversation", () => {
+  const partial = require("../lib/ld-design-page-partial-contract.js");
+  const text = partial.buildDesignPagePartialContractBlock();
+  assert.match(text, /PRISM does not embed stored prior step outputs in partial mode/i);
+  assert.match(text, /activities\[\] regeneration/i);
 });

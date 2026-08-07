@@ -12864,19 +12864,6 @@
     return icons.getIconPresentationCss();
   }
 
-  function resolveLdDesignPageComposeLib() {
-    if (
-      typeof globalThis !== "undefined" &&
-      globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE &&
-      typeof globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE.buildLdDesignPageComposePromptBlock ===
-        "function"
-    ) {
-      return globalThis.PRISM_LD_DESIGN_PAGE_COMPOSE;
-    }
-    var root = ldTableFidelityGlobalRoot();
-    return root && root.PRISM_LD_DESIGN_PAGE_COMPOSE ? root.PRISM_LD_DESIGN_PAGE_COMPOSE : null;
-  }
-
   function resolveLdThinAssemblyCoherenceLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -13376,153 +13363,6 @@
     return draftBody;
   }
 
-  function bootstrapLdDesignPageComposeInlineIfMissing() {
-    if (resolveLdDesignPageComposeLib()) return;
-    var root = ldTableFidelityGlobalRoot();
-    if (!root) return;
-    root.PRISM_LD_DESIGN_PAGE_COMPOSE = {
-      MODULE_ID: "LD-DESIGN-PAGE-COMPOSE-CONTRACT",
-      MARKER: "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)",
-      markerRegex: function () {
-        return /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i;
-      },
-      moduleIdInTextRegex: function () {
-        return /LD-DESIGN-PAGE-COMPOSE-CONTRACT \| Layers: L0/i;
-      },
-      legacyComposePresentRegex: function () {
-        return /design page activity materials fidelity \(auto-applied\)/i;
-      },
-      composeAlreadyPresent: function (text) {
-        var body = String(text || "");
-        if (
-          /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i.test(body) ||
-          /LD-DESIGN-PAGE-COMPOSE-CONTRACT \| Layers: L0/i.test(body)
-        ) {
-          return true;
-        }
-        return /design page activity materials fidelity \(auto-applied\)/i.test(body);
-      }
-    };
-    if (typeof window !== "undefined" && root === window) {
-      window.PRISM_LD_DESIGN_PAGE_COMPOSE = root.PRISM_LD_DESIGN_PAGE_COMPOSE;
-    }
-  }
-
-  function buildLdDesignPageComposePromptBlock(options) {
-    bootstrapLdDesignPageComposeInlineIfMissing();
-    bootstrapLdMaterialsCopyInlineIfMissing();
-    bootstrapLdTableFidelityInlineIfMissing();
-    var lib = resolveLdDesignPageComposeLib();
-    var opts = options && typeof options === "object" ? options : {};
-    if (!opts.materialsCopyBlock) {
-      opts.materialsCopyBlock = buildLdMaterialsCopyPromptBlock({
-        role: "design_page",
-        includeMarker: false
-      });
-    }
-    if (!opts.tableFidelityBlock) {
-      opts.tableFidelityBlock = buildLdTableFidelityPromptBlock({
-        role: "design_page",
-        includeMarker: false
-      });
-    }
-    if (lib && typeof lib.buildLdDesignPageComposePromptBlock === "function") {
-      return lib.buildLdDesignPageComposePromptBlock(opts);
-    }
-    var includeFieldPreservation = opts.includeFieldPreservation !== false;
-    var lines = [
-      "",
-      "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):",
-      "- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | Layers: L0–L3 page compose, L5 field preservation | Read-only assembly — do not redesign pedagogy.",
-      "- MATERIALS FIDELITY (compose): copy activity.materials.* verbatim from upstream activity_materials (no paraphrase, shorten, summarise, or rewrite); L4 preserve embed:",
-    ];
-    if (includeFieldPreservation) {
-      lines.push(
-        "- Activity field preservation: copy activity_preamble, prior_knowledge_activation, reasoning_orientation, self_explanation_prompt, evidence_use_prompt, argument_structure_hint, conceptual_contrast_prompt, disciplinary_lens, transfer_or_application_task, scaffold_hint_sequence, uncertainty_tension_prompt, study_orientation, intellectual_frame, intellectual_coherence_bridge, expected_output, support_note verbatim when present upstream."
-      );
-    }
-    lines.push(
-      "- EPISODE PLANS (portable page schema — hard when upstream episode_plans exist): the page artefact MUST be self-describing; carry authoritative instructional choreography on the page itself without requiring workflow captures or session state.",
-      "- Top-level episode_plans[] (required when upstream episode_plans were provided): copy each row with activity_id aligned to learning_activities.content[]; each row: activity_id, optional mapped_learning_outcome_ids, episode_plan { archetype, beats: [{ function }] } — copy beats verbatim; do not replan, reorder, or invent beats.",
-      "- Per-activity episode_plan (required when upstream episode_plans were provided): attach episode_plan { archetype, beats[] } on each matching learning_activities.content[] row; when upstream plan activity_id differs from the page activity_id, record episode_plan_source_activity_id on the page activity.",
-      "- source_artefacts MUST list episode_plans when upstream episode_plans were consumed."
-    );
-    if (opts.materialsCopyBlock) lines.push(opts.materialsCopyBlock);
-    if (opts.tableFidelityBlock) lines.push(opts.tableFidelityBlock);
-    return lines.join("\n");
-  }
-
-  function ldDesignPageComposeAlreadyPresent(draftBody) {
-    bootstrapLdDesignPageComposeInlineIfMissing();
-    var lib = resolveLdDesignPageComposeLib();
-    if (lib && typeof lib.composeAlreadyPresent === "function") {
-      return lib.composeAlreadyPresent(draftBody);
-    }
-    return (
-      /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i.test(draftBody) ||
-      /design page activity materials fidelity \(auto-applied\)/i.test(draftBody)
-    );
-  }
-
-  function applyLdDesignPageComposeContractToDraft(draftText, context, wf) {
-    var draftBody = String(draftText || "").trim();
-    if (!isWorkflowStepDesignPage(context)) return draftBody;
-    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
-    if (
-      !workflow &&
-      context &&
-      context.workflowId &&
-      typeof findWorkflowById === "function"
-    ) {
-      workflow = findWorkflowById(context.workflowId);
-    }
-    if (!workflow && state.selectedWorkflowId && typeof findWorkflowById === "function") {
-      workflow = findWorkflowById(state.selectedWorkflowId);
-    }
-    if (isPartialPageOutputWorkflowEnabled(workflow)) {
-      return draftBody;
-    }
-    if (ldDesignPageComposeAlreadyPresent(draftBody)) {
-      return draftBody;
-    }
-    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
-    var resolved =
-      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
-        ? briefCtx.resolved
-        : {};
-    var base = {
-      goal: String(
-        (context && context.workflowGoal) ||
-          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
-          ""
-      ).trim(),
-      desiredOutputs: String(
-        (context && context.desiredOutputs) ||
-          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
-          ""
-      ).trim()
-    };
-    var includeLearnerPageFraming = shouldApplyLearnerPagePedagogicFramingScaffold(
-      context,
-      resolved,
-      base
-    );
-    var next = draftBody;
-    if (!ldDesignPageComposeAlreadyPresent(draftBody)) {
-      next = (
-        draftBody +
-        buildLdDesignPageComposePromptBlock({
-          includeFieldPreservation: true,
-          includeAuthorialExposition: false
-        })
-      ).trim();
-    }
-    if (includeLearnerPageFraming) {
-      next = applyLdGuidedLearningScaffoldContractToDraft(next, context);
-    }
-    return next;
-  }
-
   function applyLdDesignPagePartialContractToDraft(draftText, context, wf) {
     var draftBody = String(draftText || "").trim();
     if (!isWorkflowStepDesignPage(context)) return draftBody;
@@ -13693,7 +13533,7 @@
       }
       return (draftBody + buildLdTableFidelityPromptBlock({ role: "dla" })).trim();
     }
-    // Design Page: L4 table fidelity is embedded in LD-DESIGN-PAGE-COMPOSE (design_page role, no marker).
+    // Design Page: L4 table fidelity for GAM/DLA steps — not injected on partial Design Page runtime.
     return draftBody;
   }
 
@@ -13787,7 +13627,7 @@
     return [
       "",
       "Sprint 38 visual affordance authoring contract (auto-applied):",
-      "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (see LD-DESIGN-PAGE-COMPOSE-CONTRACT).",
+      "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (partial + assemble owns materials transport).",
       "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
       "- Every visual_affordances[] row requires affordance_id (unique string), scope (activity|page), rationale, subject, context, and evidence_anchors[] grounded in upstream content.",
       "- subject: concise noun phrase naming what the visual is about; do not just repeat the activity title.",
@@ -13858,16 +13698,6 @@
     ])
       .concat(buildSprint38PedagogicalAddedValuePromptLines())
       .join("\n");
-  }
-
-  /** @deprecated PR-W3-2 — use buildLdDesignPageComposePromptBlock */
-  function buildDesignPageActivityMaterialsFidelityPromptBlock(options) {
-    return buildLdDesignPageComposePromptBlock(options || {});
-  }
-
-  /** @deprecated PR-W3-2 — use applyLdDesignPageComposeContractToDraft */
-  function applyDesignPageActivityMaterialsFidelityContractToDraft(draftText, context) {
-    return applyLdDesignPageComposeContractToDraft(draftText, context);
   }
 
   function sprint38VisualAffordanceMarkerPresent(text) {
@@ -45705,16 +45535,6 @@
     };
   }
 
-  function designPageComposeContractIncludesEpisodePlans(text) {
-    return /EPISODE PLANS \(portable page schema/i.test(String(text || ""));
-  }
-
-  function designPageComposeContractStaleWithoutEpisodePlans(text) {
-    var body = String(text || "");
-    if (!ldDesignPageComposeAlreadyPresent(body)) return false;
-    return !designPageComposeContractIncludesEpisodePlans(body);
-  }
-
   function validatePageMaterialsClosureFromLib(page, upstreamActivityMaterials, options) {
     var mod = resolvePageGamMaterialsPreserveLib();
     if (!mod || typeof mod.validatePageMaterialsClosure !== "function") {
@@ -50558,11 +50378,6 @@
     prismTestApi.resolveS59DlaTestActivation = resolveS59DlaTestActivation;
     prismTestApi.captureS59GamArchetypeRuntimeSnapshot =
       captureS59GamArchetypeRuntimeSnapshot;
-    prismTestApi.buildDesignPageActivityMaterialsFidelityPromptBlock =
-      buildDesignPageActivityMaterialsFidelityPromptBlock;
-    prismTestApi.applyDesignPageActivityMaterialsFidelityContractToDraft =
-      applyDesignPageActivityMaterialsFidelityContractToDraft;
-    prismTestApi.buildLdDesignPageComposePromptBlock = buildLdDesignPageComposePromptBlock;
     prismTestApi.buildLdAuthorialExpositionPromptBlock = buildLdAuthorialExpositionPromptBlock;
     prismTestApi.applyLdAuthorialExpositionContractToDraft =
       applyLdAuthorialExpositionContractToDraft;
@@ -50590,8 +50405,6 @@
       LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE;
     prismTestApi.evaluateActivityPreambleExpositionEvidence =
       evaluateActivityPreambleExpositionEvidence;
-    prismTestApi.applyLdDesignPageComposeContractToDraft =
-      applyLdDesignPageComposeContractToDraft;
     prismTestApi.applyLdDesignPagePartialContractToDraft =
       applyLdDesignPagePartialContractToDraft;
     prismTestApi.buildLdThinAssemblyCoherencePromptBlock =
@@ -51000,11 +50813,6 @@
     prismTestApi.appendPageCompositionEpisodePlansClosureWarnings =
       appendPageCompositionEpisodePlansClosureWarnings;
     prismTestApi.buildPageEpisodePlansClosureDiagnostic = buildPageEpisodePlansClosureDiagnostic;
-    prismTestApi.designPageComposeContractIncludesEpisodePlans =
-      designPageComposeContractIncludesEpisodePlans;
-    prismTestApi.designPageComposeContractStaleWithoutEpisodePlans =
-      designPageComposeContractStaleWithoutEpisodePlans;
-    prismTestApi.ldDesignPageComposeAlreadyPresent = ldDesignPageComposeAlreadyPresent;
     prismTestApi.validatePageMaterialsClosureFromLib = validatePageMaterialsClosureFromLib;
     prismTestApi.validatePageActivityFieldClosureFromLib = validatePageActivityFieldClosureFromLib;
     prismTestApi.validatePageBeatMaterialClosureFromLib = validatePageBeatMaterialClosureFromLib;

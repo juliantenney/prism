@@ -6,7 +6,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, patchDlaEnrichBridgeForTests, buildLegacyEpisodePlanWorkflow, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -91,11 +91,9 @@ function loadPrismTestApi() {
   windowStub.PRISM_EPISODE_PLAN_V1_VALIDATION = validation;
   windowStub.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT = strictJson;
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS.concat(["lib/page-shell-create.js"]));
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
-    sandbox,
-    { filename: "ld-design-page-compose-contract.js" }
-  );
+  patchDlaEnrichBridgeForTests(require(path.join(repoRoot, "lib", "page-dla-enrich.js")));
+  windowStub.PRISM_PAGE_SHELL_CREATE = shellCreate;
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -111,19 +109,21 @@ function buildTestWorkflow(overrides) {
     {
       id: "wf-shell-test",
       goal: "Inflation learning page",
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
       steps: [
         { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
         {
           id: "ep_step",
           title: "Design Episode Plan",
-          outputName: "episode_plans",
+          outputName: "page",
           canonical_step_id: "step_design_episode_plan",
           override_prompt_body: "Derive the Sprint 56F page shell from learning_outcomes."
         },
         {
           id: "dla_step",
           title: "Design Learning Activities",
-          outputName: "learning_activities",
+          outputName: "page",
           canonical_step_id: "step_design_learning_activities"
         }
       ]
@@ -235,7 +235,7 @@ test("no GAM material bodies are invented on shell activities", () => {
 });
 
 test("existing legacy Episode Plan output still works when v2 is explicitly disabled", () => {
-  const wf = buildTestWorkflow({ pageEnrichmentV2: false });
+  const wf = buildLegacyEpisodePlanWorkflow({ id: "wf-shell-legacy" });
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const json = api.deriveDesignEpisodePlanCaptureJson(wf);
   assert.ok(json);
@@ -266,7 +266,7 @@ test("EP copy prompt requests STEP N OUTPUT: page and vNext shell when LO availa
   const instr = api.buildWorkflowStepInstructions(epStep, 1, null);
   assert.match(instr, /STEP 2 OUTPUT: page/);
   assert.match(instr, /schema_version.*2\.0\.0|Sprint 56F vNext page shell/i);
-  assert.match(instr, /"artifact_type":\s*"page"|artifact_type "page"/i);
+  assert.match(instr, /Authoritative Sprint 56F page shell|mapped_learning_outcome_ids/i);
 });
 
 test("DLA bindings use page artefact from Design Episode Plan under Sprint 56F", () => {
@@ -308,11 +308,7 @@ test("shell renders through Phase 8 adapter without renderer crash", () => {
     title: "Renderer shell smoke test",
     audience: "Learners"
   });
-  const normalized = api.normalizePageForRenderForTest(shell);
-  assert.equal(normalized.__prismRenderNormalized, true);
-  const renderResult = api.buildUtilityStructuredHtmlForTest(normalized, {
-    applyCompositionValidation: false
-  });
+  const renderResult = renderUtilityPageHtmlForTest(api, shell);
   assert.ok(renderResult && !renderResult.error, renderResult && renderResult.error);
   const html = String(renderResult.html || "");
   assert.ok(html.length > 0);
@@ -441,42 +437,33 @@ test("internally derived shell uses em dash placeholders on all DLA shell fields
   });
 });
 
-test("EP copy prompt includes canonical page_profile and source_artefacts examples", () => {
+test("EP copy prompt includes authoritative derived page shell examples", () => {
   const wf = buildTestWorkflow();
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const epStep = wf.steps.find((s) => s.canonical_step_id === "step_design_episode_plan");
   const instr = api.buildWorkflowStepInstructions(epStep, 1, null);
-  assert.match(instr, /Canonical shape examples/i);
-  assert.match(instr, /"page_profile":\s*\{\s*"profile_type":\s*"learner"\s*\}/);
-  assert.match(instr, /"title":\s*"Learner-facing page title"/);
-  assert.match(instr, /"audience":\s*"Learners"/);
-  assert.match(instr, /"learning_outcomes":\s*\[/);
-  assert.match(instr, /"generation_notes":\s*\{/);
-  assert.match(instr, /"validation":\s*\{/);
-  assert.match(instr, /"artefact_type":\s*"learning_outcomes"/);
-  assert.match(instr, /"source_label":\s*"Learning Outcomes"/);
-  assert.match(instr, /source_artefacts: \["learning_outcomes"\] \(string array\)/i);
-  assert.match(instr, /page_profile: "learner" \(string\)/i);
+  assert.match(instr, /Authoritative Sprint 56F page shell/i);
+  assert.match(instr, /mapped_learning_outcome_ids/i);
+  assert.match(instr, /"function":\s*"orientation"/);
+  assert.match(instr, /Do NOT invent, replan beats, or change activity_ids/i);
 });
 
-test("EP copy prompt does not append legacy episode_plans strict JSON contract under v2", () => {
+test("EP copy prompt does not duplicate legacy-only episode_plans footer under v2 page shell path", () => {
   const wf = buildTestWorkflow();
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const epStep = wf.steps.find((s) => s.canonical_step_id === "step_design_episode_plan");
   const instr = api.buildWorkflowStepInstructions(epStep, 1, null);
-  assert.doesNotMatch(instr, /JSON top-level key: episode_plans/i);
-  assert.doesNotMatch(instr, /episode_plans root object/i);
+  assert.match(instr, /STEP 2 OUTPUT: page/i);
+  assert.doesNotMatch(instr, /STEP 2 OUTPUT: episode_plans/i);
 });
 
 test("Copilot-style bad shell fails validateEpisodePlanOrPageShellCapture", () => {
   const badShell = buildMinimalValidShell({
-    page_profile: "learner",
-    source_artefacts: ["learning_outcomes"],
     activities: buildMinimalValidShell().activities.map((activity) =>
       Object.assign({}, activity, {
         learner_task: "",
         expected_output: "",
-        activity_preamble: PLACEHOLDER
+        activity_preamble: ""
       })
     )
   });

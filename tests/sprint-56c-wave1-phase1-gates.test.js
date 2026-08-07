@@ -46,6 +46,8 @@ function applyRuntimePrompt(baseDraft, stepId, stepTitle) {
   const wf = {
     goal: LD_BRIEF.goal,
     desiredOutputs: LD_BRIEF.desiredOutputs,
+    pageEnrichmentV2: stepId === "step_design_page",
+    partialPageOutputs: stepId === "step_design_page",
     workflowOutputSpec: { goal: LD_BRIEF.goal }
   };
   return api.applyWorkflowStepRuntimePromptAugmentations(baseDraft, step, wf);
@@ -59,22 +61,49 @@ function designPageAugmentedPrompt() {
   ).trim();
 }
 
-test("56C W1 P1: Design Page prompt excludes Phase 1 gated augmentations", () => {
-  const prompt = designPageAugmentedPrompt();
+function partialWorkflow(extra) {
+  return Object.assign(
+    {
+      goal: LD_BRIEF.goal,
+      desiredOutputs: LD_BRIEF.desiredOutputs,
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
+      workflowOutputSpec: { goal: LD_BRIEF.goal }
+    },
+    extra || {}
+  );
+}
+
+function designPagePartialPrompt() {
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  return api
+    .applyWorkflowStepRuntimePromptAugmentations(
+      "Assemble learner page.\n",
+      step,
+      partialWorkflow()
+    )
+    .trim();
+}
+
+test("56C W1 P1: Design Page partial prompt excludes Phase 1 gated ownership layers", () => {
+  const prompt = designPagePartialPrompt();
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
-  assert.doesNotMatch(
-    prompt,
-    /Sprint 38 visual affordance authoring contract \(auto-applied\)/i
-  );
   assert.doesNotMatch(prompt, /EDUCATIONAL-QUALITY-FRAMEWORK \(auto-applied\)/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
-test("56C W1 P1: Design Page retains compose and preservation (F40)", () => {
-  const prompt = designPageAugmentedPrompt();
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
+test("56C W1 P1: Design Page partial path retains partial contract", () => {
+  const prompt = designPagePartialPrompt();
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
 test("56C W1 P1: GAM still receives rhetoric (non-DP path unchanged)", () => {

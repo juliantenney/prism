@@ -84,7 +84,6 @@ test("56C W3 readiness: regression inventory maps 56C suites to controls", () =>
     "sprint-56c-wave1-phase3-va-gates.test.js",
     "sprint-56c-wave2-gates.test.js",
     "ld-thin-assembly-coherence.test.js",
-    "ld-design-page-compose-contract.test.js",
     "ld-materials-copy.test.js"
   ].forEach((name) => assert.match(text, new RegExp(name.replace(/\./g, "\\."))));
   assert.match(text, /56C-VALIDATION-READINESS-BUNDLE/);

@@ -123,8 +123,7 @@ function loadPrismTestApi() {
       "lib/episode-plan-population-contract.js",
       "lib/episode-plan-v1-templates.js",
       "lib/episode-plan-v1-validation.js",
-      "lib/episode-plan-dla-integration.js",
-      "lib/ld-design-page-compose-contract.js"
+      "lib/episode-plan-dla-integration.js"
     ])
   );
   vm.runInContext(source, sandbox, { filename: "app.js" });

@@ -20,7 +20,11 @@
       "materials": [],
       "episode_plan": {
         "archetype": "understand",
-        "beats": [{ "function": "orient", "note": "orient" }]
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "verification" }
+        ]
       }
     },
     {
@@ -32,8 +36,12 @@
       "required_materials": [],
       "materials": [],
       "episode_plan": {
-        "archetype": "apply",
-        "beats": [{ "function": "guided_practice", "note": "practice" }]
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "verification" }
+        ]
       }
     }
   ],
@@ -46,14 +54,22 @@
       "activity_id": "A1",
       "episode_plan": {
         "archetype": "understand",
-        "beats": [{ "function": "orient", "note": "orient" }]
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "verification" }
+        ]
       }
     },
     {
       "activity_id": "A2",
       "episode_plan": {
-        "archetype": "apply",
-        "beats": [{ "function": "guided_practice", "note": "practice" }]
+        "archetype": "understand",
+        "beats": [
+          { "function": "orientation" },
+          { "function": "explanation" },
+          { "function": "verification" }
+        ]
       }
     }
   ],

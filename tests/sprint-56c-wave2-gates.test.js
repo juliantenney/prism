@@ -52,10 +52,21 @@ function applyRuntimePrompt(baseDraft, stepId, stepTitle) {
 }
 
 function designPageAugmentedPrompt() {
-  return applyRuntimePrompt(
+  const step = {
+    canonical_step_id: "step_design_page",
+    canonical_title: "Design Page",
+    title: "Design Page"
+  };
+  return api.applyWorkflowStepRuntimePromptAugmentations(
     "Assemble learner page.\n",
-    "step_design_page",
-    "Design Page"
+    step,
+    {
+      goal: LD_BRIEF.goal,
+      desiredOutputs: LD_BRIEF.desiredOutputs,
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
+      workflowOutputSpec: { goal: LD_BRIEF.goal }
+    }
   ).trim();
 }
 
@@ -64,13 +75,13 @@ test("56C W2: Design Page runtime includes LD-THIN-ASSEMBLY-COHERENCE-CONTRACT",
   assert.match(prompt, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT \(auto-applied\)/i);
 });
 
-test("56C W2: thin bridge appears after LD-DESIGN-PAGE-COMPOSE-CONTRACT", () => {
+test("56C W2: thin bridge appears after partial contract on Design Page", () => {
   const prompt = designPageAugmentedPrompt();
-  const composeIdx = prompt.search(/LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  const partialIdx = prompt.search(/LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   const bridgeIdx = prompt.search(/LD-THIN-ASSEMBLY-COHERENCE-CONTRACT \(auto-applied\)/i);
-  assert.ok(composeIdx >= 0, "compose contract must be present");
+  assert.ok(partialIdx >= 0, "partial contract must be present");
   assert.ok(bridgeIdx >= 0, "thin bridge contract must be present");
-  assert.ok(composeIdx < bridgeIdx, "compose must precede thin bridge");
+  assert.ok(partialIdx < bridgeIdx, "partial contract must precede thin bridge");
 });
 
 test("56C W2: thin bridge is Design Page only", () => {
@@ -108,34 +119,33 @@ test("56C W2: thin bridge injection is idempotent", () => {
   assert.equal(markerCount, 1);
 });
 
-test("56C W2: Design Page still excludes Wave 1 removed ownership layers", () => {
+test("56C W2: Design Page partial path still excludes Wave 1 removed ownership layers", () => {
   const prompt = designPageAugmentedPrompt();
   assert.doesNotMatch(prompt, /LD-SELF-DIRECTED-RHETORIC \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-AUTHORIAL-EXPOSITION-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /EDUCATIONAL-QUALITY-FRAMEWORK \(auto-applied\)/i);
-  assert.doesNotMatch(
-    prompt,
-    /Sprint 38 visual affordance authoring contract \(auto-applied\)/i
-  );
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
-test("56C W2: Design Page retains compose and F40 preservation obligations", () => {
+test("56C W2: Design Page partial path retains upstream materials guard", () => {
   const prompt = designPageAugmentedPrompt();
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /Materials and activities are already hydrated upstream/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
-test("56C W2.3C: compose runtime points to thin bridge without duplicating bridge prose", () => {
+test("56C W2.3C: partial runtime points to thin bridge without duplicating bridge prose", () => {
   const prompt = designPageAugmentedPrompt();
   assert.match(prompt, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /wrapper-gap fallback obey appended LD-THIN-ASSEMBLY-COHERENCE-CONTRACT only/i);
-  const composeStart = prompt.indexOf("LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied)");
+  assert.match(prompt, /obey appended LD-THIN-ASSEMBLY-COHERENCE-CONTRACT when upstream wrapper bodies are absent/i);
+  const partialStart = prompt.indexOf("LD-DESIGN-PAGE-PARTIAL-CONTRACT (auto-applied)");
   const bridgeStart = prompt.indexOf("LD-THIN-ASSEMBLY-COHERENCE-CONTRACT (auto-applied)");
-  const composeSlice = prompt.slice(composeStart, bridgeStart);
-  assert.doesNotMatch(composeSlice, /WRAPPER SLOT DISCIPLINE/i);
-  assert.doesNotMatch(composeSlice, /FORBIDDEN transition glue/i);
-  assert.doesNotMatch(composeSlice, /≤ 80 words per affected section/i);
+  const partialSlice = prompt.slice(partialStart, bridgeStart);
+  assert.doesNotMatch(partialSlice, /WRAPPER SLOT DISCIPLINE/i);
+  assert.doesNotMatch(partialSlice, /FORBIDDEN transition glue/i);
+  assert.doesNotMatch(partialSlice, /≤ 80 words per affected section/i);
 });
 
 test("56C W2.3C: R-40/R-44/R-45/R-47 merged under thin bridge only on DP runtime", () => {
@@ -177,8 +187,8 @@ test("56C W2.5: domain §13 excludes legacy full-page compose mandate", () => {
   const factoryMatch = section13.match(/### Prompt Factory\s*```json\s*([\s\S]*?)\s*```/);
   assert.ok(factoryMatch, "Design Page prompt factory JSON");
   const factory = JSON.parse(factoryMatch[1].trim());
-  assert.match(factory.defaultPromptNotes, /page_synthesis on a partial page artefact/i);
-  assert.match(factory.runnerInstructions.what_this_step_does, /page_synthesis on a partial v2 page artefact/i);
+  assert.match(factory.defaultPromptNotes, /partial page artefact/i);
+  assert.match(factory.runnerInstructions.what_this_step_does, /partial v2 page artefact/i);
   assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
   assert.match(factory.promptTemplate, /sections\[\] is optional legacy dual-read/i);
   assert.doesNotMatch(factory.promptTemplate, /WHOLE-BLOCK MATERIAL EXTRACTION/i);
@@ -186,11 +196,9 @@ test("56C W2.5: domain §13 excludes legacy full-page compose mandate", () => {
   assert.doesNotMatch(section13, /### Purpose[\s\S]*?readable page artefact/i);
 });
 
-test("56C W2.5: runtime R-83 delimiter present; bridge does not absorb R-83 generative prose", () => {
+test("56C W2.5: runtime R-83 delimiter present on partial path; bridge does not absorb R-83 generative prose", () => {
   const prompt = designPageAugmentedPrompt();
-  assert.match(prompt, /READABLE ASSEMBLY \(R-83 guardrail/i);
-  assert.match(prompt, /forbids condensation/i);
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   const bridgeStart = prompt.indexOf("LD-THIN-ASSEMBLY-COHERENCE-CONTRACT (auto-applied)");
   const bridgeSlice = prompt.slice(bridgeStart);
   assert.doesNotMatch(bridgeSlice, /READABLE ASSEMBLY \(R-83/i);

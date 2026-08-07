@@ -56,6 +56,8 @@ function designPageAugmentedPrompt(api) {
   const wf = {
     goal: "Learner page",
     desiredOutputs: "Learner-facing page",
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
     workflowOutputSpec: { goal: "Learner page" }
   };
   return api
@@ -83,11 +85,11 @@ test("56C W1 P2B: domain §13 surfaces exclude ownership residue", () => {
   assert.doesNotMatch(factory.promptTemplate, /learning_activities\.content/i);
 });
 
-test("56C W1 P2B: domain §13 retains vNext partial ownership and defers compose to rollback", () => {
+test("56C W1 P2B: domain §13 retains vNext partial ownership", () => {
   const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-COMPOSE-CONTRACT applies only to rollback\/legacy/i);
+  assert.match(factory.defaultPromptNotes, /LD-DESIGN-PAGE-PARTIAL-CONTRACT is authoritative/i);
   assert.match(factory.defaultPromptNotes, /activities\[\]\.materials\[\] already exist upstream/i);
-  assert.match(factory.promptTemplate, /partialPageOutputs mode: LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
   assert.match(factory.runnerInstructions.what_to_check, /knowledge_summary mandatory/i);
   assert.match(factory.runnerInstructions.what_to_check, /no activities\[\] regeneration/i);
   assert.match(factory.defaultOutputStructure.keys.join(","), /page_synthesis/);
@@ -138,18 +140,20 @@ test("56C W1 P2B: design_page refinement profile excludes brevity factors", () =
   assert.ok(!optional.includes("compact_vs_detailed"));
 });
 
-test("56C W1 P2B: runtime Design Page prompt excludes domain-pack wrapper residue", () => {
+test("56C W1 P2B: runtime Design Page partial prompt excludes domain-pack wrapper residue", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
   for (const pattern of DOMAIN_OWNERSHIP_RESIDUE) {
     assert.doesNotMatch(prompt, pattern, `runtime residue: ${pattern}`);
   }
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /page_synthesis\.knowledge_summary is mandatory/i);
 });
 
-test("56C W1 P2B: Phase 2A lib contract gates still hold", () => {
+test("56C W1 P2B: Phase 2A partial contract gates still hold at runtime", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
-  assert.match(prompt, /TRANSPORT VS ARCHIVAL FIELDS/i);
+  assert.match(prompt, /Materials and activities are already hydrated upstream/i);
   assert.doesNotMatch(prompt, /is authorable/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });

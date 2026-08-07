@@ -6,7 +6,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, patchDlaEnrichBridgeForTests, buildLegacyEpisodePlanWorkflow, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -101,11 +101,11 @@ function loadPrismTestApi() {
       "lib/episode-plan-population-contract.js"
     ])
   );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
-    sandbox,
-    { filename: "ld-design-page-compose-contract.js" }
-  );
+  patchDlaEnrichBridgeForTests(dlaEnrich);
+  windowStub.PRISM_PAGE_SHELL_CREATE = shellCreate;
+  windowStub.PRISM_PAGE_DLA_ENRICH = dlaEnrich;
+  windowStub.PRISM_PAGE_GAM_ENRICH = gamEnrich;
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -138,24 +138,25 @@ function buildTestWorkflow(overrides) {
       id: "wf-gam-test",
       goal: "Inflation learning page",
       pageEnrichmentV2: true,
+      partialPageOutputs: true,
       steps: [
         { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
         {
           id: "ep_step",
           title: "Design Episode Plan",
-          outputName: "episode_plans",
+          outputName: "page",
           canonical_step_id: "step_design_episode_plan"
         },
         {
           id: "dla_step",
           title: "Design Learning Activities",
-          outputName: "learning_activities",
+          outputName: "page",
           canonical_step_id: "step_design_learning_activities"
         },
         {
           id: "gam_step",
           title: "Generate Activity Materials",
-          outputName: "activity_materials",
+          outputName: "page",
           canonical_step_id: "step_generate_activity_materials",
           override_prompt_body: "Populate materials[] from required_materials[] on the upstream DLA page."
         }
@@ -370,11 +371,7 @@ test("activity order is preserved", () => {
 });
 
 test("GAM-enriched page renders through Phase 8 adapter with authored materials", () => {
-  const normalized = api.normalizePageForRenderForTest(gamEnrichedPage);
-  assert.equal(normalized.__prismRenderNormalized, true);
-  const renderResult = api.buildUtilityStructuredHtmlForTest(normalized, {
-    applyCompositionValidation: false
-  });
+  const renderResult = renderUtilityPageHtmlForTest(api, gamEnrichedPage);
   assert.ok(renderResult && !renderResult.error, renderResult && renderResult.error);
   const html = String(renderResult.html || "");
   assert.ok(html.length > 0);
@@ -384,7 +381,7 @@ test("GAM-enriched page renders through Phase 8 adapter with authored materials"
 });
 
 test("GAM v2 derive path is disabled when workflow flag is set false", () => {
-  const wf = buildTestWorkflow({ pageEnrichmentV2: false });
+  const wf = buildLegacyEpisodePlanWorkflow({ id: "wf-gam-legacy" });
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const json = api.deriveGenerateActivityMaterialsCaptureJson(wf);
   assert.equal(String(json || "").trim(), "");
@@ -396,27 +393,9 @@ test("GAM copy prompt expects page input and page output under v2", () => {
   const gamStep = wf.steps.find((s) => s.canonical_step_id === "step_generate_activity_materials");
   const instr = api.buildWorkflowStepInstructions(gamStep, 3, null);
   assert.match(instr, /STEP 4 OUTPUT: page/i);
-  assert.match(instr, /Sprint 56F GAM|enrich-in-place/i);
-  assert.match(instr, /Upstream DLA page/i);
-  assert.match(instr, /Do NOT emit pack text|activity_materials/i);
-  assert.match(instr, /required_materials/i);
-  assert.match(instr, /never empty|Do not empty.*required_materials/i);
-  assert.match(
-    instr,
-    /Return the entire input page unchanged except for activities\[\]\.materials\[\]/i
-  );
-  assert.match(instr, /Activity count invariant/i);
-  assert.match(instr, /exactly \d+ entries/i);
-  assert.match(instr, /Output learning_outcomes\[\] must contain exactly \d+ entries/i);
-  assert.match(instr, /Output episode_plans\[\] must contain exactly \d+ entries/i);
-  assert.match(instr, /Do not stop after the first few activities/i);
-  assert.match(instr, /from `\{` to `\}`|through the final closing `\}`|complete page JSON/i);
-  assert.match(instr, /Sprint 58 vNext GAM partial-page contract/i);
-  assert.match(instr, /activities\[\] with activity_id and materials\[\] only/i);
-  assert.match(instr, /Explicitly forbidden:/i);
-  assert.match(instr, /immutable document|edit in place/i);
-  assert.match(instr, /learning_outcomes/i);
-  assert.match(instr, /episode_plans/i);
+  assert.match(instr, /Sprint 58 GAM partial output mode|partial page artefact/i);
+  assert.match(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.match(instr, /Required payload: activities\[\] containing activity_id and materials\[\] only/i);
   assert.match(instr, /Material authoring guidance \(Sprint 56F v2/i);
   assert.doesNotMatch(instr, /Realise all required_materials as activity_materials/i);
   assert.doesNotMatch(instr, /Treat learning_activities as the source of truth/i);
@@ -446,7 +425,7 @@ test("GAM v2 copy prompt suppresses legacy catalog output-shape instructions", (
   assert.doesNotMatch(instr, /Here is the core prompt for this step:/i);
 });
 
-test("GAM regression fixture enforces full activity-field copy-forward prompt language", () => {
+test("GAM regression fixture enforces partial-mode upstream omission with copy-forward guidance", () => {
   const wf = buildTestWorkflow();
   const dlaFixture = buildDlaPageFixtureWithFullActivityFields();
   api.setWorkflowsForTest([wf]);
@@ -457,26 +436,9 @@ test("GAM regression fixture enforces full activity-field copy-forward prompt la
   });
   const gamStep = wf.steps.find((s) => s.canonical_step_id === "step_generate_activity_materials");
   const instr = api.buildWorkflowStepInstructions(gamStep, 3, null);
-  const embedded = extractUpstreamDlaPageEmbedJson(instr);
-  assert.ok(embedded);
-  assert.ok(Array.isArray(embedded.activities) && embedded.activities.length === 1);
-  const activity = embedded.activities[0];
-  assert.ok("activity_id" in activity);
-  assert.ok("title" in activity);
-  assert.ok("grouping" in activity);
-  assert.ok("duration_minutes" in activity);
-  assert.ok("mapped_learning_outcomes" in activity);
-  assert.ok("activity_preamble" in activity);
-  assert.ok("learner_task" in activity);
-  assert.ok("expected_output" in activity);
-  assert.ok("reasoning_orientation" in activity);
-  assert.ok("required_materials" in activity && Array.isArray(activity.required_materials));
-  assert.equal(activity.required_materials.length, 2);
-  assert.ok("materials" in activity);
-  assert.ok("episode_plan" in activity);
-  assert.match(instr, /Do NOT emit compact \{ activity_id, materials \} objects/i);
-  assert.match(instr, /Required payload:\s*- activities\[\] with activity_id and materials\[\] only/i);
-  assert.match(instr, /each material must keep stable material_id/i);
+  assert.match(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.match(instr, /Do not reconstruct or preserve non-owned stage fields/i);
+  assert.equal(extractUpstreamDlaPageEmbedJson(instr), null);
 });
 
 test("GAM bindings use page artefact from Design Learning Activities", () => {
@@ -497,7 +459,7 @@ test("deriveGenerateActivityMaterialsCaptureJson emits GAM-enriched vNext page",
   const json = api.deriveGenerateActivityMaterialsCaptureJson(wf);
   assert.ok(json);
   const page = JSON.parse(json);
-  const check = api.validateGamOrPageCapture(page, dlaBaselineFromDerive);
+  const check = gamEnrich.validateGamEnrichedPage(page, dlaBaselineFromDerive);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(page.assembly_state.current_stage, "gam");
 });
@@ -662,10 +624,7 @@ test("Copilot-authored GAM capture cannot overwrite DLA-owned fields", () => {
 });
 
 test("rendered HTML shorter than JSON is renderer presentation, not GAM mutation", () => {
-  const normalized = api.normalizePageForRenderForTest(gamEnrichedPage);
-  const renderResult = api.buildUtilityStructuredHtmlForTest(normalized, {
-    applyCompositionValidation: false
-  });
+  const renderResult = renderUtilityPageHtmlForTest(api, gamEnrichedPage);
   const html = String(renderResult.html || "");
   const jsonTask = gamEnrichedPage.activities[0].learner_task;
   const jsonPreamble = gamEnrichedPage.activities[0].activity_preamble;

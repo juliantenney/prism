@@ -11,7 +11,7 @@ const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 
-const compose = require("../lib/ld-design-page-compose-contract.js");
+const partial = require("../lib/ld-design-page-partial-contract.js");
 const materialsCopy = require("../lib/ld-materials-copy.js");
 const guidedScaffold = require("../lib/ld-guided-learning-scaffold.js");
 
@@ -52,6 +52,8 @@ function designPageAugmentedPrompt(api) {
   const wf = {
     goal: "Learner page",
     desiredOutputs: "Learner-facing page",
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
     workflowOutputSpec: { goal: "Learner page" }
   };
   return api
@@ -59,24 +61,18 @@ function designPageAugmentedPrompt(api) {
     .trim();
 }
 
-function buildDesignPageComposeEmbed() {
-  return compose.buildLdDesignPageComposePromptBlock({
-    materialsCopyBlock: materialsCopy.buildLdMaterialsCopyPromptBlock({
-      role: "preserve",
-      includeMarker: false
-    })
-  });
+function buildDesignPagePartialEmbed() {
+  return partial.buildDesignPagePartialContractBlock();
 }
 
-test("56C W1 P2A: compose contract excludes ownership residue", () => {
-  const text = buildDesignPageComposeEmbed();
+test("56C W1 P2A: partial contract excludes ownership residue", () => {
+  const text = buildDesignPagePartialEmbed();
   for (const pattern of OWNERSHIP_RESIDUE_PATTERNS) {
     assert.doesNotMatch(text, pattern, `unexpected residue: ${pattern}`);
   }
-  assert.match(text, /TRANSPORT VS ARCHIVAL FIELDS/i);
+  assert.match(text, /page_synthesis\.knowledge_summary is mandatory/i);
   assert.match(text, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
-  assert.match(text, /wrapper-gap fallback obey appended LD-THIN-ASSEMBLY-COHERENCE-CONTRACT only/i);
-  assert.match(text, /LD-GUIDED-LEARNING-SCAFFOLD compose preservation/i);
+  assert.match(text, /Materials and activities are already hydrated upstream/i);
 });
 
 test("56C W1 P2A: materials-copy preserve role excludes ownership residue", () => {
@@ -90,22 +86,22 @@ test("56C W1 P2A: materials-copy preserve role excludes ownership residue", () =
   assert.match(text, /wrapper transport slots/i);
 });
 
-test("56C W1 P2A: guided scaffold composeOnly excludes authorial boundary ref", () => {
+test("56C W1 P2A: guided scaffold DLA path excludes compose preservation slice", () => {
   const text = guidedScaffold.buildLdGuidedLearningScaffoldPromptBlock({
-    includeCompose: true,
-    composeOnly: true
+    includeCompose: false,
+    composeOnly: false
   });
   assert.doesNotMatch(text, /LD-AUTHORIAL-EXPOSITION/i);
-  assert.match(text, /LD-DESIGN-PAGE-COMPOSE field preservation boundaries/i);
-  assert.match(text, /COMPOSE PRESERVATION/i);
+  assert.doesNotMatch(text, /COMPOSE PRESERVATION/i);
+  assert.doesNotMatch(text, /LD-DESIGN-PAGE-COMPOSE field preservation boundaries/i);
 });
 
-test("56C W1 P2A: runtime Design Page prompt retains F40 preservation", () => {
+test("56C W1 P2A: runtime Design Page partial prompt retains upstream materials guard", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
-  assert.match(prompt, /MATERIAL PRESERVATION OVERRIDES PAGE OPTIMISATION/i);
-  assert.match(prompt, /PAGE ARTEFACT IS FINAL LEARNER OUTPUT/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /Materials and activities are already hydrated upstream/i);
+  assert.match(prompt, /activities\[\] regeneration/i);
 });
 
 test("56C W1 P2A: Phase 1 augment gates still hold", () => {

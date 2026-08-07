@@ -105,7 +105,7 @@ function loadPrismTestApi(extraLibs) {
     "lib/sprint38-visual-affordances.js",
     "lib/ld-table-fidelity.js",
     "lib/ld-materials-copy.js",
-    "lib/ld-design-page-compose-contract.js",
+    "lib/ld-design-page-partial-contract.js",
     "lib/ld-instructional-manifestation-render.js",
     "lib/utility-pedagogical-icons.js",
     "lib/utility-pedagogical-beats.js",
@@ -150,6 +150,8 @@ function setupInflationWorkflow(api) {
   api.setWorkflowsForTest([
     {
       id: "wf-inflation-ep",
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
       steps: [
         {
           id: "ep_step",
@@ -245,17 +247,19 @@ test("applyPageCompositionValidationForCapturedPage: workflow trace report", () 
     },
     matchedPattern: { promptFactory: factory }
   });
+  const partialWf = { id: "wf-inflation-ep", pageEnrichmentV2: true, partialPageOutputs: true };
   const freshAugmented = api.applyWorkflowStepRuntimePromptAugmentations(
     seeded,
     { canonical_step_id: "step_design_page", title: "Design Page", stepOutputName: "page" },
-    { id: "wf-inflation-ep" }
+    partialWf
   );
+  const partialLib = require(path.join(repoRoot, "lib", "ld-design-page-partial-contract.js"));
   const staleOverride =
-    "LD-DESIGN-PAGE-COMPOSE-CONTRACT (auto-applied):\n- Module: LD-DESIGN-PAGE-COMPOSE-CONTRACT | L0–L3 read-only page compose\n- ACTIVITY MEMBERSHIP (hard): every upstream activity_id\n";
+    "LD-DESIGN-PAGE-PARTIAL-CONTRACT (auto-applied):\n- Module: LD-DESIGN-PAGE-PARTIAL-CONTRACT\n";
   const staleAugmented = api.applyWorkflowStepRuntimePromptAugmentations(
     staleOverride,
     { canonical_step_id: "step_design_page", title: "Design Page", stepOutputName: "page" },
-    { id: "wf-inflation-ep" }
+    partialWf
   );
 
   const stepLi = {
@@ -264,35 +268,33 @@ test("applyPageCompositionValidationForCapturedPage: workflow trace report", () 
         ? "page_step"
         : name === "data-canonical-step-id"
           ? "step_design_page"
-          : ""
+          : "",
+    querySelector: () => null
   };
 
   const result = api.applyPageCompositionValidationForCapturedPage(stepLi, rawPageJson);
   assert.ok(result && result.json);
 
   const trace = {
-    validator_after_compose: result.episodePlansValidation && result.episodePlansValidation.outcome,
-    validator_before_compose:
-      result.episodePlansValidationBefore && result.episodePlansValidationBefore.outcome,
+    partial_mode_skips_legacy_validation:
+      result.validation == null &&
+      result.episodePlansValidation == null &&
+      result.episodePlansValidationBefore == null,
     raw_design_page: result.rawEpisodePlansDiagnostic,
-    compose_prompt: {
-      fresh_has_episode_plan_contract: api.designPageComposeContractIncludesEpisodePlans(
+    partial_prompt: {
+      fresh_has_partial_contract: /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i.test(
         freshAugmented
       ),
-      stale_marker_blocks_episode_plan_contract: api.designPageComposeContractStaleWithoutEpisodePlans(
-        staleAugmented
-      ),
-      stale_override_skips_reappend: api.ldDesignPageComposeAlreadyPresent(staleOverride)
+      fresh_forbids_episode_plans_regen: /episode_plans/i.test(freshAugmented),
+      stale_override_skips_reappend: partialLib.partialContractAlreadyPresent(staleOverride),
+      stale_still_has_partial_marker: partialLib.partialContractAlreadyPresent(staleAugmented)
     }
   };
 
   console.log("\n[PRISM page episode plans workflow trace]\n" + JSON.stringify(trace, null, 2) + "\n");
 
-  assert.equal(trace.validator_before_compose, "fail");
-  assert.equal(trace.raw_design_page.raw_has_top_level_episode_plans, false);
-  assert.equal(trace.raw_design_page.source_artefacts_lists_episode_plans, true);
-  assert.equal(trace.compose_prompt.fresh_has_episode_plan_contract, true);
-  assert.equal(trace.compose_prompt.stale_marker_blocks_episode_plan_contract, true);
-  assert.equal(trace.compose_prompt.stale_override_skips_reappend, true);
-  assert.equal(trace.validator_after_compose, "pass");
+  assert.equal(trace.partial_mode_skips_legacy_validation, true);
+  assert.equal(trace.partial_prompt.fresh_has_partial_contract, true);
+  assert.equal(trace.partial_prompt.stale_override_skips_reappend, true);
+  assert.doesNotMatch(freshAugmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });

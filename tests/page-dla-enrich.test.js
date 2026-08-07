@@ -6,7 +6,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, patchDlaEnrichBridgeForTests, buildLegacyEpisodePlanWorkflow, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -98,11 +98,10 @@ function loadPrismTestApi() {
       "lib/episode-plan-population-contract.js"
     ])
   );
-  vm.runInContext(
-    fs.readFileSync(path.join(repoRoot, "lib", "ld-design-page-compose-contract.js"), "utf8"),
-    sandbox,
-    { filename: "ld-design-page-compose-contract.js" }
-  );
+  patchDlaEnrichBridgeForTests(dlaEnrich);
+  windowStub.PRISM_PAGE_SHELL_CREATE = shellCreate;
+  windowStub.PRISM_PAGE_DLA_ENRICH = dlaEnrich;
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);
@@ -127,18 +126,19 @@ function buildTestWorkflow(overrides) {
       id: "wf-dla-test",
       goal: "Inflation learning page",
       pageEnrichmentV2: true,
+      partialPageOutputs: true,
       steps: [
         { id: "lo_step", title: "Define Learning Outcomes", outputName: "learning_outcomes" },
         {
           id: "ep_step",
           title: "Design Episode Plan",
-          outputName: "episode_plans",
+          outputName: "page",
           canonical_step_id: "step_design_episode_plan"
         },
         {
           id: "dla_step",
           title: "Design Learning Activities",
-          outputName: "learning_activities",
+          outputName: "page",
           canonical_step_id: "step_design_learning_activities",
           override_prompt_body: "Enrich the upstream vNext page shell with DLA-owned activity fields."
         }
@@ -265,7 +265,7 @@ test("activity IDs and order are preserved", () => {
 });
 
 test("legacy DLA path still works when pageEnrichmentV2 is explicitly disabled", () => {
-  const wf = buildTestWorkflow({ pageEnrichmentV2: false });
+  const wf = buildLegacyEpisodePlanWorkflow({ id: "wf-dla-legacy" });
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const json = api.deriveDesignLearningActivitiesCaptureJson(wf);
   assert.equal(json, "");
@@ -281,10 +281,8 @@ test("DLA copy prompt expects page input and page output under v2", () => {
   const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
   const instr = api.buildWorkflowStepInstructions(dlaStep, 2, null);
   assert.match(instr, /STEP 3 OUTPUT: page/i);
-  assert.match(instr, /enrich-in-place|Sprint 56F DLA/i);
-  assert.match(instr, /Upstream page shell/i);
-  assert.match(instr, /Do NOT emit a standalone learning_activities/i);
-  assert.match(instr, /"artifact_type":\s*"page"|schema_version.*2\.0\.0/i);
+  assert.match(instr, /partial page artefact|Sprint 58 DLA partial|Do NOT emit a standalone learning_activities/i);
+  assert.match(instr, /Upstream binding bodies are intentionally omitted|intellectual_coherence_bridge/i);
 });
 
 test("DLA bindings use page artefact from Design Episode Plan", () => {
@@ -308,11 +306,7 @@ test("deriveDesignLearningActivitiesCaptureJson emits DLA-enriched vNext page", 
 });
 
 test("enriched page still renders through Phase 8 adapter", () => {
-  const normalized = api.normalizePageForRenderForTest(enrichedPage);
-  assert.equal(normalized.__prismRenderNormalized, true);
-  const renderResult = api.buildUtilityStructuredHtmlForTest(normalized, {
-    applyCompositionValidation: false
-  });
+  const renderResult = renderUtilityPageHtmlForTest(api, enrichedPage);
   assert.ok(renderResult && !renderResult.error, renderResult && renderResult.error);
   const html = String(renderResult.html || "");
   assert.ok(html.length > 0);

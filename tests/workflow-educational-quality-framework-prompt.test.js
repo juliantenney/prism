@@ -48,6 +48,8 @@ function applyRuntimePrompt(baseDraft, stepId, stepTitle) {
   const wf = {
     goal: LD_BRIEF.goal,
     desiredOutputs: LD_BRIEF.desiredOutputs,
+    pageEnrichmentV2: stepId === "step_design_page",
+    partialPageOutputs: stepId === "step_design_page",
     workflowOutputSpec: { goal: LD_BRIEF.goal }
   };
   return api.applyWorkflowStepRuntimePromptAugmentations(baseDraft, step, wf);
@@ -111,7 +113,8 @@ test("56C: Design Page excludes EQF marker (transport-first CP-4)", () => {
     "Design Page"
   );
   assert.doesNotMatch(prompt, EQF_MARKER);
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
 test("41-1: Design Assessment receives EQF marker", () => {

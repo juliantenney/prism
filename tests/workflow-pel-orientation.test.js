@@ -138,6 +138,8 @@ function buildWorkflowRecord(brief, resolved) {
     inputs: brief.inputs || "",
     desiredOutputs: brief.desiredOutputs,
     startingArtefact: brief.startingArtefact || "",
+    pageEnrichmentV2: true,
+    partialPageOutputs: true,
     workflowOutputSpec: { goal: brief.goal },
     workflowBriefResolution: { resolvedFactors: resolved }
   };
@@ -260,7 +262,7 @@ test("30-1: DLA runtime prompt includes PEL orientation block and field names", 
   assert.match(prompt, /LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT/i);
 });
 
-test("30-1: Design Page runtime prompt uses compose contract for field preservation without duplicate PEL orientation", () => {
+test("30-1: Design Page runtime prompt uses partial contract without duplicate PEL orientation", () => {
   const resolved = resolveBrief(MARX_SELF_STUDY_BRIEF);
   const prompt = applyRuntimePrompt(
     "Assemble learner page.\n",
@@ -270,10 +272,9 @@ test("30-1: Design Page runtime prompt uses compose contract for field preservat
     "Design Page"
   );
   assert.doesNotMatch(prompt, PEL_ORIENTATION_MARKER);
-  assert.match(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(prompt, /Activity field preservation/i);
-  assert.match(prompt, /study_orientation, intellectual_frame, intellectual_coherence_bridge/);
-  assert.match(prompt, /intellectual_coherence_bridge/i);
+  assert.match(prompt, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(prompt, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
 
 test("41-5: workshop learner handout DLA runtime prompt includes PEL orientation and learner-facing output contract", () => {

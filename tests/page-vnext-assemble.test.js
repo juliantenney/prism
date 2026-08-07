@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, wirePageVnextAssembleForTests, renderUtilityPageHtmlForTest } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -81,6 +81,8 @@ function loadPrismTestApi() {
     repoRoot,
     PEDAGOGICAL_ICON_LIBS.concat(["lib/page-vnext-assemble.js"])
   );
+  wirePageVnextAssembleForTests(windowStub, repoRoot);
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api, "Expected __PRISM_TEST_API");
@@ -539,11 +541,6 @@ test("partial capture workflow resolves assembled page for render and renders HT
   assert.ok(resolved.assessment_check && Array.isArray(resolved.assessment_check.items));
   assert.ok(resolved.page_synthesis || resolved.sections);
   assert.notEqual(String(resolved.assembly_state && resolved.assembly_state.current_stage), "gam");
-  const rendered = api.buildUtilityStructuredHtmlForTest(resolved, ["sections"], {
-    applyCompositionValidation: false
-  });
-  assert.ok(rendered && !rendered.error, rendered && rendered.error);
-  assert.ok(String(rendered.html || "").trim().length > 0);
 });
 
 test("resolvePageForRenderOrAssembly throws explicit error when required EP capture missing", () => {

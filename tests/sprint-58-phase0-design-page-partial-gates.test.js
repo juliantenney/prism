@@ -63,7 +63,7 @@ test("Phase 0: partial mode injects partial contract and excludes compose contra
   assert.doesNotMatch(prompt, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \| L0/i);
 });
 
-test("Phase 0: rollback v2 mode retains compose contract and excludes partial contract", () => {
+test("Phase 0: non-partial mode excludes compose and partial contracts", () => {
   const api = loadPrismTestApi(["lib/ld-design-page-partial-contract.js"]);
   const prompt = designPagePrompt(api, {
     id: "wf-rollback-dp",
@@ -84,11 +84,11 @@ test("Phase 0: rollback v2 mode retains compose contract and excludes partial co
       }
     ]
   });
-  assert.match(prompt, COMPOSE_MARKER);
+  assert.doesNotMatch(prompt, COMPOSE_MARKER);
   assert.doesNotMatch(prompt, PARTIAL_MARKER);
 });
 
-test("Phase 0: legacy mode retains compose contract and excludes partial contract", () => {
+test("Phase 0: legacy non-partial mode excludes compose and partial contracts", () => {
   const api = loadPrismTestApi(["lib/ld-design-page-partial-contract.js"]);
   const prompt = designPagePrompt(api, {
     id: "wf-legacy-dp",
@@ -96,7 +96,7 @@ test("Phase 0: legacy mode retains compose contract and excludes partial contrac
     partialPageOutputs: false,
     steps: [{ id: "dp", title: "Design Page", outputName: "page" }]
   });
-  assert.match(prompt, COMPOSE_MARKER);
+  assert.doesNotMatch(prompt, COMPOSE_MARKER);
   assert.doesNotMatch(prompt, PARTIAL_MARKER);
 });
 

@@ -329,7 +329,7 @@ test("C: explicit partialPageOutputs false is not overwritten by persisted true"
   const prompt = api
     .applyWorkflowStepRuntimePromptAugmentations("Assemble learner page.\n", dpStep, resolved, {})
     .trim();
-  assert.match(prompt, COMPOSE_MARKER);
+  assert.doesNotMatch(prompt, COMPOSE_MARKER);
   assert.doesNotMatch(prompt, PARTIAL_MARKER);
 });
 

@@ -14557,7 +14557,6 @@
     draft = applyLdInstructionalArchetypeRoutingToDraft(draft, ctx, wf);
     draft = applyPedagogicEnrichmentContractScaffoldToDraft(draft, ctx);
     draft = applyLdDesignPagePartialContractToDraft(draft, ctx, wf);
-    draft = applyLdDesignPageComposeContractToDraft(draft, ctx, wf);
     draft = applyLdThinAssemblyCoherenceContractToDraft(draft, ctx);
     if (isWorkflowStepDesignPage(ctx)) {
       draft = stripContradictoryDesignPageVisualAffordanceOmitClauses(draft);

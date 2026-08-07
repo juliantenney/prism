@@ -9683,7 +9683,7 @@
       return dlaMod.validateDlaEnrichedPage(parsed, baseline || null);
     }
     if (Array.isArray(parsed.activities) || parsed.learning_activities) {
-      return { ok: true, legacy: true, errors: [] };
+      return { ok: false, errors: ["unrecognized capture shape — use modern partial page artefact"] };
     }
     return { ok: false, errors: ["unrecognized DLA capture shape"] };
   }
@@ -9962,7 +9962,7 @@
       return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
     }
     if (parsed.timeline || parsed.activities_used || parsed.activities_omitted || parsed.checks) {
-      return { ok: true, legacy: true, errors: [] };
+      return { ok: false, errors: ["unrecognized capture shape — use modern partial page artefact"] };
     }
     return { ok: false, errors: ["unrecognized Learning Sequence capture shape"] };
   }
@@ -10304,7 +10304,7 @@
       return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
     }
     if (parsed.sections || parsed.activity_materials || parsed.session_materials) {
-      return { ok: true, legacy: true, errors: [] };
+      return { ok: false, errors: ["unrecognized capture shape — use modern partial page artefact"] };
     }
     return { ok: false, errors: ["unrecognized Design Page capture shape"] };
   }
@@ -10420,7 +10420,7 @@
       return gamMod.validateGamEnrichedPage(parsed, baseline || null);
     }
     if (parsed.activity_materials || parsed.session_materials) {
-      return { ok: true, legacy: true, errors: [] };
+      return { ok: false, errors: ["unrecognized capture shape — use modern partial page artefact"] };
     }
     return { ok: false, errors: ["unrecognized GAM capture shape"] };
   }

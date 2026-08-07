@@ -60,6 +60,8 @@ function loadPrismTestApi() {
     document: documentStub,
     addEventListener() {},
     removeEventListener() {},
+    setTimeout,
+    clearTimeout,
     location: { hash: "", pathname: "/" },
     _: sandbox._,
     Utils: { debounce: (fn) => fn },
@@ -137,6 +139,17 @@ function buildWorkflow(overrides) {
 
 const epShell = loadFixture("ep-shell.json");
 const dlaPartial = loadFixture("dla-partial.json");
+dlaPartial.activities[0].learner_task = "Compare inflation drivers using the classification framework.";
+dlaPartial.activities[0].expected_output = "A structured comparison paragraph.";
+dlaPartial.activities[1].learner_task = "Apply CPI calculations using the scaffold.";
+dlaPartial.activities[1].expected_output = "Completed calculation worksheet showing each step.";
+dlaPartial.activities.forEach((activity) => {
+  activity.evidence_decision = {
+    required: false,
+    reason: "Task completes from scaffolded materials without external evidence inspection.",
+    provider_material_ids: []
+  };
+});
 const gamPartial = loadFixture("gam-partial.json");
 const lsPartial = loadFixture("ls-partial.json");
 const dpPartial = loadFixture("dp-partial.json");
@@ -291,8 +304,7 @@ test("legacy path still follows existing validation path", () => {
     }
   };
   const check = api.validateDlaOrPageCapture(legacyCapture, null, legacyWf);
-  assert.equal(check.ok, true);
-  assert.equal(check.legacy, true);
+  assert.equal(check.ok, false);
 });
 
 test("page artefact parser accepts raw JSON and single fenced JSON block", () => {

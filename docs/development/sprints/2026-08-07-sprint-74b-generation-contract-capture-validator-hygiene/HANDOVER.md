@@ -1,28 +1,30 @@
 # Sprint 74B — Handover
 
-**From:** S74B-T-040 (Done)  
-**To:** S74B-T-050 (Not started)
+**From:** S74B-T-050 (Done) — Sprint 74B **COMPLETE / Closed**  
+**To:** Sprint 74 programme wrapper (**OPEN**) — **74C Not opened**
 
 ---
 
-## Current state
+## Outcome
 
-- T-001…**T-040 Done**  
-- Removals executed per [S74B-T-040 evidence](S74B-T-040-execute-evidenced-removals-evidence.md)  
-- Compose path removed; partial + assemble definitive  
-- Legacy capture shims fail-closed  
-- 74C **Not opened**
+Sprint 74B closed after acceptance verification. Supported generation architecture:
 
----
+```text
+partial contract → capture → validation → deterministic assemble → learner renderer
+```
 
-## Immediate sequence
-
-1. When authorised: begin **S74B-T-050** — verification and sprint closure.  
-2. Do not open 74C.  
+Evidence: [S74B-T-050](S74B-T-050-final-verification-and-sprint-closure.md) · implementation: [S74B-T-040](S74B-T-040-execute-evidenced-removals-evidence.md)
 
 ---
 
-## Do not
+## Do not (without explicit authorisation)
 
-- Reintroduce compose or legacy Compatibility shims without explicit product requirement  
-- Begin T-050 closure before verification evidence is complete  
+- Reintroduce Design Page compose or legacy Compatibility shims  
+- Open Sprint 74C  
+- Regress Authoring sole-vNext export (74A)  
+
+---
+
+## Next authorised work
+
+Await programme direction on Sprint 74 wrapper / Sprint 74C opening. **Do not begin 74C** without explicit authorisation.

@@ -1,11 +1,12 @@
 # Sprint 74 — Status / Dashboard
 
 **Sprint:** 74 — Architecture Consolidation and Rationalisation  
-**Status:** **OPEN** (programme wrapper)  
+**Status:** **OPEN** (programme wrapper) — **replanning after 74B**  
 **Opened:** 2026-08-06  
 **Predecessor:** Sprint 73 — COMPLETE / Closed  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
-**Active sub-sprint:** [Sprint 74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) — **OPEN**  
+**Post-74B review:** [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)  
+**Closed sub-sprint:** [Sprint 74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) — **COMPLETE / Closed**  
 **Closed sub-sprint:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)
 
 ---
@@ -15,10 +16,10 @@
 ```text
 Sprint 74 discovery + domain refinement ✅
   → Sprint 74A COMPLETE / Closed (sole vNext)
-  → Post-74A Domain B methodology refinement (2026-08-07)
-  → Sprint 74B OPEN (T-001…T-040 ✅ · T-050 next)
-  → S74-D09 / S74B-D03 Accepted (pre-release Compatibility not default)
-  → 74C not opened · T-040 removals complete
+  → Sprint 74B COMPLETE / Closed (generation-contract hygiene)
+  → supported spine ownership consolidated
+  → Post-74B review: Domain C must NOT proceed unchanged
+  → 74C not opened · programme replanning
 ```
 
 ---
@@ -27,16 +28,16 @@ Sprint 74 discovery + domain refinement ✅
 
 | Item | State |
 | ---- | ----- |
-| Sprint 74 (wrapper) | **OPEN** |
+| Sprint 74 (wrapper) | **OPEN** — replanning |
 | S74-T-001 / S74-T-010 | **Done** |
+| Post-74B review | **Done** — [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md) |
 | Binding constraints | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) |
 | Engineering disciplines | [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) |
 | S74-D09 | **Accepted** |
 | Sprint 74A | **COMPLETE / Closed** |
-| Sprint 74B | **OPEN** — T-001…T-040 Done; **S74B-T-050** next |
-| Sprint 74C | **Not opened** |
-| Removals started (74B) | **Yes** (T-040) |
-| Current task (programme) | **S74B-T-050** in 74B pack |
+| Sprint 74B | **COMPLETE / Closed** |
+| Sprint 74C | **Not opened** — original Domain C **not** authorised unchanged |
+| Current task (programme) | Await operator choice (review options R1 / R2 / R3) |
 
 ---
 
@@ -47,11 +48,12 @@ Sprint 74 discovery + domain refinement ✅
 | 1 | Codebase rationalisation discovery | **Complete** |
 | 2 | Domain sequencing / readiness | **Complete** |
 | — | Sprint 74A implementation | **Complete / Closed** |
-| — | Sprint 74B implementation | **OPEN** (T-040 Done; T-050 next) |
+| — | Sprint 74B implementation | **Complete / Closed** |
+| — | Post-74B programme review | **Complete** |
 | — | Sprint 74C | **Not opened** |
 
 ---
 
 ## Last updated
 
-2026-08-07 — S74B-T-040 Done; T-050 next.
+2026-08-07 — Post-74B review: replan before any 74C; Domain C not unchanged.

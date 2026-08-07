@@ -1,7 +1,7 @@
 # Sprint 74B — Charter
 
 **Sprint:** 74B — Generation-contract & capture-validator hygiene  
-**Status:** **OPEN** (2026-08-07)  
+**Status:** **COMPLETE / Closed** (2026-08-07)  
 **Opened:** 2026-08-07  
 **Type:** Implementation sprint  
 **Parent programme:** Sprint 74 — Architecture Consolidation and Rationalisation  

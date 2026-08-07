@@ -2,19 +2,19 @@
 
 ## Certification outcome
 
-**CERTIFIED**
+**NOT CERTIFIED**
 
 - Certification version: `s68-imp-020`
 - Corpus version: `s68-imp-020-v1`
-- Generated at: `2026-07-28T08:30:06.234Z`
-- Git revision: `541285e255d79d125c46365782cb01ecd69247af`
+- Generated at: `2026-08-07T08:39:16.668Z`
+- Git revision: `e8f527201c877f7e0fb5b3bde8189db789d3ac52`
 
 ## Corpus summary
 
-- **VideoTranscriptTest** (`videotranscripttest`): pass — activities 6, moments 21
-- **Heteroscedasticity** (`heteroscedasticity`): pass — activities 5, moments 20
-- **Kitchen Sink** (`kitchen-sink`): pass — activities 5, moments 20
-- **RNA episode-plan-v1** (`rna-episode-plan-v1`): pass — activities 6, moments 18
+- **VideoTranscriptTest** (`videotranscripttest`): fail — activities 6, moments 22
+- **Heteroscedasticity** (`heteroscedasticity`): fail — activities 5, moments 22
+- **Kitchen Sink** (`kitchen-sink`): fail — activities 5, moments 22
+- **RNA episode-plan-v1** (`rna-episode-plan-v1`): fail — activities 6, moments 19
 - **Generic moments** (`generic-moments-new01`): pass — activities 1, moments 4
 - **Authoritative PRISM ordering** (`authoritative-ordering`): pass — activities 2, moments 8
 
@@ -34,14 +34,14 @@ analyse, apply, evaluate, understand
 
 - workflows: 6
 - activities: 25
-- moments: 91
+- moments: 97
 - beatFallbacks: 0
-- materialsUnassigned: 0
+- materialsUnassigned: 20
 - materialsDuplicated: 0
 - taskStepsDuplicated: 0
 - expectedOutputsMissing: 0
 - expectedOutputsDuplicated: 0
-- fails: 0
+- fails: 4
 - warnings: 0
 
 ## Diagnostics
@@ -79,6 +79,6 @@ Run `node --test tests/learner-renderer-vnext-*.test.js` for package regression.
 
 ## Release recommendation
 
-Learner-renderer-vNext is ready for production use on the certified corpus.
+Do not ship until release-blocking certification failures are resolved.
 
-CERTIFIED
+NOT CERTIFIED

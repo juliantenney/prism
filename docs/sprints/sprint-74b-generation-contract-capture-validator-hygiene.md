@@ -1,7 +1,8 @@
 # Sprint 74B — Generation-contract & capture-validator hygiene
 
-**Status:** **OPEN**  
+**Status:** **COMPLETE / Closed**  
 **Opened:** 2026-08-07  
+**Closed:** 2026-08-07  
 **Type:** Implementation sprint  
 **Parent:** [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) — **OPEN**  
 **Portable pack:** [SPRINT-74B-START-HERE.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md)  
@@ -17,9 +18,9 @@ Reduce dead or dual generation surfaces — deprecated prompt builders, legacy c
 
 ## Task posture
 
-- T-001…**T-030**: **Done** · **S74B-D02 Accepted**  
-- **Next:** `S74B-T-040` — execute removals (**Not started**)  
-- Removals executed: **No**  
+- T-001…**T-050**: **Done** · **S74B-D02** / **S74B-D03 Accepted**  
+- Removals executed: **Yes** (T-040) · Acceptance verified (T-050)  
+- Closure: [S74B-T-050](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-050-final-verification-and-sprint-closure.md)  
 - Sprint 74C: **Not opened**
 
 ## Methodology

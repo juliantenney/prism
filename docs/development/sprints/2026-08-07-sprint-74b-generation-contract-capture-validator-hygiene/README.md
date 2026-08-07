@@ -1,7 +1,8 @@
 # Sprint 74B — Generation-contract & capture-validator hygiene
 
-**Status:** **OPEN**  
+**Status:** **COMPLETE / Closed**  
 **Opened:** 2026-08-07  
+**Closed:** 2026-08-07  
 **Type:** Implementation sprint  
 **Parent programme:** [Sprint 74](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/README.md) — **OPEN**  
 **Opening:** [S74B-D01](decisions.md)  
@@ -22,19 +23,17 @@
 | Status | [STATUS.md](STATUS.md) |
 | Decisions | [decisions.md](decisions.md) |
 | Handover | [HANDOVER.md](HANDOVER.md) |
-| Next-chat briefing | [next-chat-briefing.md](next-chat-briefing.md) |
-| T-010 baseline | [S74B-T-010-generation-pipeline-architectural-discovery.md](S74B-T-010-generation-pipeline-architectural-discovery.md) |
-| T-020 compose vs partial | [S74B-T-020-compose-vs-partial-contract-role-documentation.md](S74B-T-020-compose-vs-partial-contract-role-documentation.md) |
-| T-030 removal plan | [S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md) |
+| Closure evidence | [S74B-T-050-final-verification-and-sprint-closure.md](S74B-T-050-final-verification-and-sprint-closure.md) |
+| T-040 evidence | [S74B-T-040-execute-evidenced-removals-evidence.md](S74B-T-040-execute-evidenced-removals-evidence.md) |
 | Top-level overview | [sprint-74b-generation-contract-capture-validator-hygiene.md](../../../sprints/sprint-74b-generation-contract-capture-validator-hygiene.md) |
 
 ## Mission
 
 Reduce dead or dual **generation** surfaces — deprecated prompt builders, legacy capture-validator shims, and duplicate ownership across contracts — without changing instructional pedagogy or the Authoring learner-export path.
 
-## Current posture
+## Outcome
 
-- T-001…**T-040 Done** · **S74B-D02** / **S74B-D03 Accepted** · programme **S74-D09 Accepted**  
-- **Next:** `S74B-T-050` — verification and sprint closure (**Not started**)  
-- Removals **executed** (T-040)  
-- Sprint 74C **Not opened**  
+- **Partial contract + deterministic assemble** is the sole supported page-construction architecture.  
+- Design Page compose, PR-W aliases, and legacy always-pass capture shims **removed** (T-040).  
+- Acceptance verified (T-050): **134/134** supporting Node; production browser spot-check.  
+- Sprint 74C **Not opened**.

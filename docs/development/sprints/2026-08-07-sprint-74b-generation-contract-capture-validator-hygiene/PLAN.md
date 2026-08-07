@@ -1,6 +1,6 @@
 # Sprint 74B — Plan
 
-**Status:** **OPEN** (2026-08-07)  
+**Status:** **COMPLETE / Closed** (2026-08-07)  
 **Theme:** Generation-contract & capture-validator hygiene  
 **Charter:** [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality) · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
@@ -21,10 +21,10 @@ S74B-T-001 (pack init) ✅
     → S74B-T-020 (compose vs partial contract role documentation) ✅
       → S74B-T-030 (deprecated helper / compose / legacy-validator removal plan) ✅
         → S74B-T-040 (execute evidenced removals and consolidations) ✅
-          → S74B-T-050 (verification and sprint closure) ← next
+          → S74B-T-050 (verification and sprint closure) ✅
 ```
 
-T-010…T-030 are complete. **S74B-D02** / **S74B-D03 Accepted.** Programme **S74-D09 Accepted.** T-030 plan reconciled for pre-release Compatibility policy. Removals begin only under **T-040** when authorised.
+T-001…T-050 **Done.** **S74B-D02** / **S74B-D03 Accepted.** Programme **S74-D09 Accepted.** Removals executed (T-040); acceptance verified (T-050). Sprint **closed**.
 
 ---
 
@@ -102,11 +102,11 @@ T-010…T-030 are complete. **S74B-D02** / **S74B-D03 Accepted.** Programme **S7
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-07) — [S74B-T-050-final-verification-and-sprint-closure.md](S74B-T-050-final-verification-and-sprint-closure.md) |
 | **Ownership** | Sprint closure |
-| **Approach** | Confirm ownership documented; no unreachable duplicate ownership; supported builders stable; Authoring export unchanged; focused suites green; residue sweep complete; AC-01…AC-13 evidenced. Prepare closure only when complete. |
+| **Approach** | Confirmed ownership documented; no duplicate runtime ownership; supported builders stable; Authoring export unchanged; focused suites green (134/134 supporting); residue sweep complete; AC-01…AC-13 evidenced. |
 | **Acceptance** | All charter ACs; 74C not opened |
-| **Verification** | Evidence pack + STATUS complete |
+| **Verification** | [S74B-T-050 evidence](S74B-T-050-final-verification-and-sprint-closure.md); browser + supporting Node |
 | **Dependencies** | T-010…T-040 Done |
 
 ---

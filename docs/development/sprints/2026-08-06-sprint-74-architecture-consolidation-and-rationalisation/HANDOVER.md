@@ -1,8 +1,9 @@
 # Sprint 74 — Handover
 
-**From:** Sprint 74A (COMPLETE / Closed 2026-08-06)  
-**To:** Sprint 74 programme wrapper (**OPEN**) · active implementation in **Sprint 74B**  
-**Decisions:** `S74-D01`…`S74-D09` · 74B [S74B-D01](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md) · [S74B-D02](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) · [S74B-D03](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation)
+**From:** Post-74B programme review (2026-08-07)  
+**To:** Sprint 74 programme wrapper (**OPEN** — replanning) · **74C Not opened**  
+**Review:** [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)  
+**Decisions:** `S74-D01`…`S74-D09` · 74A / 74B packs closed
 
 ---
 
@@ -10,34 +11,31 @@
 
 - **Sprint 73** closed.  
 - **Sprint 74** open as programme wrapper.  
-- **S74-T-001** / **S74-T-010** complete (findings preserved; Domain B methodology refined 2026-08-07).  
-- **Sprint 74A** **COMPLETE / Closed**.  
-- **Sprint 74B** **OPEN** — T-001…T-030 Done; **S74B-D02** / **S74B-D03 Accepted**; **S74B-T-040** next; **no removals executed**.  
-- **S74-D09 Accepted** — pre-release Compatibility is not a default requirement.  
-- **74C** **Not opened**.
+- **Sprint 74A** **COMPLETE / Closed** (sole vNext learner-page export).  
+- **Sprint 74B** **COMPLETE / Closed** (partial → capture → validation → assemble).  
+- **Post-74B review complete:** original Domain C must **not** proceed unchanged.  
+- **74C** **Not opened** — no pack created.
 
 ---
 
 ## Immediate sequence
 
-1. When authorised: begin **S74B-T-040** in the 74B pack using the **reconciled** [T-030](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md) slices.  
-2. Do **not** implement under this wrapper.  
-3. Keep 74C unopened until authorised.  
-4. Preserve **current intended functionality**; do not treat old local data as a Compatibility default (`S74-D09`).  
+1. Operator chooses a review option (**R1** narrowed hygiene later / **R2** pause or close architectural programme / **R3** PB-S-001 investigation first) — see review §9.  
+2. Do **not** open Sprint 74C until that choice is made and a revised boundary is authorised.  
+3. Do **not** implement under this wrapper without a new authorised sub-sprint.
 
 ---
 
 ## Binding references
 
-[ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, **`S74-D07`**, **`S74-D09`**).  
-[ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md).
+[ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) · [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md)
 
 ---
 
 ## What not to do
 
-- Do not implement under this wrapper  
-- Do not begin T-040 until authorised  
-- Do not open 74C  
-- Do not regress Authoring sole-vNext export (74A)  
-- Do not add migrations solely to preserve historical pre-release state  
+- Do not open 74C unchanged  
+- Do not create a 74C pack without operator choice after this review  
+- Do not pull PB-S-001 / WR orphans / PB-FA-004 into an unready hygiene sprint  
+- Do not reintroduce Design Page compose or Legacy page renderer  
+- Do not regress Authoring sole-vNext export  

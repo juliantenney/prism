@@ -4,7 +4,7 @@
 **Task:** S74B-T-040  
 **Status:** **Done** (2026-08-07)  
 **Authority:** [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md) · [S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation) · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
-**Mode:** Implementation + verification — **T-050 not started**
+**Mode:** Implementation + verification — **T-050 Done** ([closure evidence](S74B-T-050-final-verification-and-sprint-closure.md))
 
 ---
 
@@ -183,4 +183,4 @@ Leave **unstaged**: `artifacts/learner-renderer-vnext-certification.*`, sprint-2
 
 ## 8. Next
 
-**S74B-T-050** — verification and sprint closure (**Not started**).
+**S74B-T-050** — verification and sprint closure (**Done** — [S74B-T-050-final-verification-and-sprint-closure.md](S74B-T-050-final-verification-and-sprint-closure.md)).

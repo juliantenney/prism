@@ -238,6 +238,8 @@ The first implementation activity must establish **definitive ownership** across
 | ------- | ---- |
 | `app.js` deprecated PR-W* prompt wrappers and their call sites | Hygiene target |
 | `app.js` legacy capture validator returns | Compatibility inventory |
+
+> **Policy note (2026-08-07):** Domain B planning above classified legacy capture-validator returns as “Compatibility inventory” under the prior posture. Under accepted [S74-D09](decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) / [S74B-D03](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation), historical pre-release shapes have **no automatic Compatibility requirement**. Active 74B execution treats those shims as obsolete removal candidates (fail-closed), not Compatibility retention. This note does **not** rewrite discovery evidence rows.
 | Relevant `lib/ld-*-contract.js` / compose vs partial modules | Boundary clarity |
 | Focused generation/contract tests | Guardians |
 
@@ -286,6 +288,8 @@ None to persisted workflow schema. Prompt text generation must remain byte-stabl
 - Call-site audit spreadsheet/note (**ownership / duplicate-path inventory first**)  
 - Delete or consolidate only after **ownership proof** (zero call sites alone is insufficient; still-called surfaces may be obsolete/duplicate ownership)  
 - Document remaining shims as Compatibility with owner
+
+> **Policy note (2026-08-07):** “Document remaining shims as Compatibility” reflected the prior planning posture. Under [S74-D09](decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) / [S74B-D03](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation), pre-release historical shims are **removal candidates** (fail-closed), not default Compatibility retention. Evidence lists above are unchanged.
 
 #### Expected consolidations
 

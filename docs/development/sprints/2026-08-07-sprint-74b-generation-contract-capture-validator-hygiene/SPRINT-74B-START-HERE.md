@@ -7,6 +7,8 @@
 **Parent:** [Sprint 74](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md) — **OPEN**  
 **Charter:** [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
 **Opening:** [S74B-D01](decisions.md#s74b-d01-open-sprint-74b-for-generation-contract--capture-validator-hygiene)  
+**Page construction:** [S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) — **Accepted**  
+**Pre-release Compatibility:** [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation) — **Accepted** · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
 **Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Methodology:** [S74-T-010 post-74A refinement](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md#post-74a-implementation-refinement-2026-08-07)
 
@@ -48,18 +50,20 @@ Authoring → learner export remains on sole vNext (Sprint 74A)
 
 ## Current task
 
-**S74B-T-020** — Compose vs partial contract role documentation (**Not started — next**).
+**S74B-T-040** — Execute evidenced removals and consolidations (**Not started** — await authorisation).
 
-T-001 and **T-010** are **Done**. Architectural baseline: [S74B-T-010](S74B-T-010-generation-pipeline-architectural-discovery.md). Do **not** begin removals until T-030.
+T-001…**T-030** are **Done**. **S74B-D02** / **S74B-D03** are **Accepted**. Programme **S74-D09** is **Accepted**.  
+Plan (reconciled): [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md).
 
 ## Reading order
 
-1. This file → [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
-2. [S74B-T-010-generation-pipeline-architectural-discovery.md](S74B-T-010-generation-pipeline-architectural-discovery.md) ← **baseline**  
-3. [decisions.md](decisions.md) (`S74B-D01`) · parent `S74-D07` · [S74-D08](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d08-operator-approval-opens-sprint-74b)  
-4. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-5. [CONTEXT.md](CONTEXT.md) · [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) · [next-chat-briefing.md](next-chat-briefing.md)  
+1. [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation)  
+2. [decisions.md — S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture)  
+3. [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md)  
+4. [S74B-T-020](S74B-T-020-compose-vs-partial-contract-role-documentation.md) · [S74B-T-010](S74B-T-010-generation-pipeline-architectural-discovery.md)  
+5. [PLAN.md](PLAN.md) · [STATUS.md](STATUS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
 
 ## Immediate next action
 
-When authorised: begin **S74B-T-020** — document compose vs partial roles from T-010. Do not open 74C. Do not modify runtime code under T-020.
+When authorised: begin **S74B-T-040** slice S1 (tests before/with module deletion per reconciled plan). Do not open 74C. Do not rewrite assemble. Do not add Compatibility migrations for historical pre-release state.
+

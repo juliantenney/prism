@@ -3,7 +3,7 @@
 **Status:** **OPEN** (opened 2026-08-07)  
 **Role:** Durable context for generation-contract & capture-validator hygiene  
 **Parent:** Sprint 74 wrapper — **OPEN**; 74C **Not opened**  
-**Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
+**Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality) · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
 **Predecessor:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md) — sole vNext learner export **closed**
 
 ---
@@ -11,6 +11,8 @@
 ## Why this sprint exists
 
 Sprint 74B applies `S74-D07` to **generation surfaces**: prompt builders, generation contracts, capture validators, and compose / partial roles. Sprint 74A proved that duplicate **ownership** inside a supported path can be as harmful as obsolete implementations. Domain B therefore begins with architectural discovery and an **ownership inventory**, not deletion.
+
+**Pre-release Compatibility (`S74-D09` / `S74B-D03`):** Old local workflows/runstate do **not** block rationalisation. Preserve current intended functionality and current supported contracts — not historical pre-release shapes.
 
 ---
 
@@ -27,6 +29,21 @@ Durable facts:
 
 ---
 
+## Compose vs partial (T-020 + S74B-D02 / D03)
+
+[S74B-T-020](S74B-T-020-compose-vs-partial-contract-role-documentation.md) · [S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) **Accepted** · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation) **Accepted**
+
+| Path | Role |
+| ---- | ---- |
+| **Partial + `assembleVNextPageFromPartials`** | **Sole definitive** supported page-construction architecture |
+| **Full Design Page compose** | **Obsolete** — removal planned in [T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md); not yet executed; **no** rollback Compatibility requirement |
+| **`partialPageOutputs: false`** | **Obsolete** unless a current supported responsibility is evidenced — not retained for old local state |
+| **Legacy `{ ok: true, legacy: true }` shims** | Fail-closed authorised; no migration solely for historical runstate |
+
+Design Page partial owns title / `page_synthesis` / visual planning. Activities, materials, sequence, and assessment content are owned by upstream partials + assemble + P11a.
+
+---
+
 ## Authoritative domain planning
 
 [S74-T-010 Domain B](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md#domain-b--generation-contract--capture-validator-hygiene-recommended-sprint-74b) — historical planning text preserved; post-74A methodology refinement (2026-08-07) governs execution order.
@@ -35,7 +52,7 @@ Durable facts:
 
 ## Binding constraints
 
-[ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) — browser-only; static deployment; one definitive implementation (`S74-D07`); `app.js` by ownership.
+[ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) — browser-only; static deployment; one definitive implementation (`S74-D07`); pre-release Compatibility not default (`S74-D09`); `app.js` by ownership.
 
 ---
 
@@ -52,7 +69,7 @@ Key practices for 74B:
 - **Ownership before change** — inventory duplicate ownership, not only duplicate code  
 - **Inventory before removal** — trace callers, browser/test/dynamic access  
 - **Baseline before removal** — supported prompt behaviour must be understood before thinning surfaces  
-- **Small reversible commits** — one slice per commit with rollback checkpoints  
+- **Small reversible commits** — one slice per commit; every intermediate commit must stay green; retarget tests before/with module deletion  
 
 ---
 
@@ -61,10 +78,10 @@ Key practices for 74B:
 | Surface | Role |
 | ------- | ---- |
 | `app.js` deprecated PR-W* prompt wrappers | Hygiene / ownership investigation |
-| `app.js` legacy capture validator returns | Compatibility inventory |
+| `app.js` legacy capture validator returns | Obsolete pre-release shims — fail-closed planned (S74B-D03); not Compatibility retention |
 | `lib/ld-*-contract.js` | Contract boundaries |
-| Compose vs partial Design Page modules | Role clarity (docs-first) |
-| Focused generation/contract tests | Guardians — Node supporting evidence |
+| Compose vs partial Design Page modules | Compose obsolete (D02); removal planned |
+| Focused generation/contract tests | Guardians of **current** intended behaviour |
 
 ---
 

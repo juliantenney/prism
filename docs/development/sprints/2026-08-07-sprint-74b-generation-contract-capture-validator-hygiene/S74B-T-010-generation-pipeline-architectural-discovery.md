@@ -329,6 +329,8 @@ Calling a function is **not** owning the responsibility. Below: orchestration vs
 | -------- | ---- | ----- | ---------- |
 | Capture-time stage validation | On paste | Stage validators / libs | Fail closed for modern shapes |
 | Legacy capture shims | On paste for old shapes | `app.js` `validate*OrPageCapture` | **Always pass** (`legacy: true`) |
+
+> **Policy note (2026-08-07):** Row above is discovery evidence of current code behaviour. Under accepted [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) / [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation), those always-pass shims are **not** a Compatibility product requirement — T-040 plans fail-closed removal without migrations for historical pre-release captures. Evidence rows are not rewritten.
 | Advance gate | Next click | `isWorkflowRunStepCaptureReadyForAdvance` | Blocks progression |
 | Assembled-page render validation | Assemble / Preview | `validateAssembledPageForRender` | Completeness for render |
 | Composition validation | Before hand-off | `applyPageCompositionValidationForUtilitiesPage` | Can block export (materials closure) |

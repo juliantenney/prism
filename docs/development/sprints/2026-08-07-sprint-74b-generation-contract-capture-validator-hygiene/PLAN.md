@@ -3,7 +3,7 @@
 **Status:** **OPEN** (2026-08-07)  
 **Theme:** Generation-contract & capture-validator hygiene  
 **Charter:** [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
-**Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
+**Programme principle:** [S74-D07](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality) · [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
 **Constraints:** [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)  
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) *(inherited)*
 
@@ -17,14 +17,14 @@ Acceptance criteria AC-01…AC-13: [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md
 
 ```text
 S74B-T-001 (pack init) ✅
-  → S74B-T-010 (generation pipeline architectural discovery + ownership inventory) ✅
-    → S74B-T-020 (compose vs partial contract role documentation) ← next
-      → S74B-T-030 (removal / consolidation plan from inventory)
-        → S74B-T-040 (execute evidenced removals and consolidations)
+  → S74B-T-010 (generation pipeline architectural discovery) ✅
+    → S74B-T-020 (compose vs partial contract role documentation) ✅
+      → S74B-T-030 (deprecated helper / compose / legacy-validator removal plan) ✅
+        → S74B-T-040 (execute evidenced removals and consolidations) ← next when authorised
           → S74B-T-050 (verification and sprint closure)
 ```
 
-T-010 is complete as **evidence-only** discovery. **No implementation / removals started.** Next is T-020 (docs-only).
+T-010…T-030 are complete. **S74B-D02** / **S74B-D03 Accepted.** Programme **S74-D09 Accepted.** T-030 plan reconciled for pre-release Compatibility policy. Removals begin only under **T-040** when authorised.
 
 ---
 
@@ -61,25 +61,27 @@ T-010 is complete as **evidence-only** discovery. **No implementation / removals
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-07) — [S74B-T-020-compose-vs-partial-contract-role-documentation.md](S74B-T-020-compose-vs-partial-contract-role-documentation.md) |
 | **Ownership** | Design Page / contract documentation |
-| **Approach** | Document compose vs partial contract **roles** and boundaries from T-010 findings. Docs-first — no forced code merge. |
-| **Acceptance** | AC-07 |
-| **Verification** | Doc review against inventory |
+| **Approach** | Evidence-led role documentation for compose vs partial using T-010 phases. Prove or reject operator hypothesis that partial + assemble is definitive and compose is obsolete residue. Docs-only — no forced code merge; no runtime changes. |
+| **Acceptance** | AC-07; contributes to AC-01…AC-03 |
+| **Verification** | [S74B-T-020-compose-vs-partial-contract-role-documentation.md](S74B-T-020-compose-vs-partial-contract-role-documentation.md) |
 | **Dependencies** | T-010 Done |
+| **Runtime** | **Unchanged** |
 
 ---
 
-### S74B-T-030 — Deprecated helper and legacy-validator removal plan
+### S74B-T-030 — Deprecated helper, compose-path and legacy-validator removal plan
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not started** |
+| **Status** | **Done** (2026-08-07) — [S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md) |
 | **Ownership** | Definitive-codebase removal design (generation domain) |
-| **Approach** | From T-010 inventory: for each surface classify **remove** · **retain as shared** · **consolidate to definitive owner** · **rename** · **investigate** · **defer**. Produce exact removal/consolidation slices with verification and rollback checkpoints. Removal follows ownership proof. |
+| **Approach** | Under **S74B-D02** / **S74B-D03** / **S74-D09**, produce exact removal/consolidation slices for obsolete compose, PR-W\* thin aliases, four legacy always-pass capture shims, and dead `partialPageOutputs: false` branches. Ownership proof from T-010/T-020. Plan reconciled so every T-040 intermediate commit can stay green. **No runtime execution.** |
 | **Acceptance** | AC-03; enables T-040 |
-| **Verification** | Plan artefact; stop conditions respected |
-| **Dependencies** | T-010 Done; T-020 Done (or explicitly waived with reason) |
+| **Verification** | [S74B-T-030 plan](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md); S74B-D02 / S74B-D03 Accepted |
+| **Dependencies** | T-010 Done; T-020 Done; **S74B-D02 Accepted**; reconciled under **S74-D09** / **S74B-D03** |
+| **Runtime** | **Unchanged** |
 
 ---
 
@@ -89,10 +91,10 @@ T-010 is complete as **evidence-only** discovery. **No implementation / removals
 | ----- | ------- |
 | **Status** | **Not started** |
 | **Ownership** | Generation-contract hygiene implementation |
-| **Approach** | Execute T-030 plan in small reversible commits. Focused contract/generation tests after each slice. Residue sweep per Engineering Disciplines. Spot-check Authoring export unchanged. |
+| **Approach** | Execute reconciled T-030 plan in small reversible commits (S2 tests before/with S3 module). Fail-closed obsolete shapes; no Compatibility migrations for historical pre-release state. Focused contract/generation tests after each slice. Residue sweep per Engineering Disciplines. Spot-check Authoring export unchanged. |
 | **Acceptance** | AC-03, AC-04, AC-05, AC-08, AC-12 |
 | **Verification** | Focused suites; diff vs plan |
-| **Dependencies** | T-030 Done |
+| **Dependencies** | T-030 Done; **S74B-D03** / **S74-D09** Accepted |
 
 ---
 

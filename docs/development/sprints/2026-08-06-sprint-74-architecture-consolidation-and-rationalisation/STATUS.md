@@ -16,8 +16,9 @@
 Sprint 74 discovery + domain refinement ✅
   → Sprint 74A COMPLETE / Closed (sole vNext)
   → Post-74A Domain B methodology refinement (2026-08-07)
-  → Sprint 74B OPEN (pack init ✅ · T-010 next)
-  → 74C not opened
+  → Sprint 74B OPEN (T-001…T-030 ✅ · T-040 next)
+  → S74-D09 / S74B-D03 Accepted (pre-release Compatibility not default)
+  → 74C not opened · no T-040 removals yet
 ```
 
 ---
@@ -30,11 +31,12 @@ Sprint 74 discovery + domain refinement ✅
 | S74-T-001 / S74-T-010 | **Done** |
 | Binding constraints | [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) |
 | Engineering disciplines | [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) |
+| S74-D09 | **Accepted** |
 | Sprint 74A | **COMPLETE / Closed** |
-| Sprint 74B | **OPEN** — T-001 + T-010 Done; **S74B-T-020** next (Not started) |
+| Sprint 74B | **OPEN** — T-001…T-030 Done; **S74B-D02** / **S74B-D03 Accepted**; **S74B-T-040** next |
 | Sprint 74C | **Not opened** |
 | Removals started (74B) | **No** |
-| Current task (programme) | Authorise **S74B-T-020** in 74B pack |
+| Current task (programme) | Authorise **S74B-T-040** in 74B pack |
 
 ---
 
@@ -45,11 +47,11 @@ Sprint 74 discovery + domain refinement ✅
 | 1 | Codebase rationalisation discovery | **Complete** |
 | 2 | Domain sequencing / readiness | **Complete** |
 | — | Sprint 74A implementation | **Complete / Closed** |
-| — | Sprint 74B implementation | **OPEN** (T-010 Done; T-020 next) |
+| — | Sprint 74B implementation | **OPEN** (T-030 Done; T-040 next) |
 | — | Sprint 74C | **Not opened** |
 
 ---
 
 ## Last updated
 
-2026-08-07 — Sprint 74B T-010 Done (pipeline discovery); T-020 next; no removals.
+2026-08-07 — S74-D09 / S74B-D03 Accepted; T-030 plan reconciled; T-040 Not started; docs-only.

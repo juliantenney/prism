@@ -1,8 +1,8 @@
 # Sprint 74 — Binding Architectural Constraints
 
 **Authority:** This document is the **expanded statement** of binding constraints for Sprint 74 and all later **74A / 74B / 74C** rationalisation work.  
-**Decision bindings:** [S74-D03](decisions.md#s74-d03-browser-only-runtime-and-static-deployment) · [S74-D04](decisions.md#s74-d04-one-supported-path-per-major-product-responsibility) · [S74-D05](decisions.md#s74-d05-appjs-rationalised-by-ownership-not-size) · [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
-**Status:** Binding (2026-08-06)  
+**Decision bindings:** [S74-D03](decisions.md#s74-d03-browser-only-runtime-and-static-deployment) · [S74-D04](decisions.md#s74-d04-one-supported-path-per-major-product-responsibility) · [S74-D05](decisions.md#s74-d05-appjs-rationalised-by-ownership-not-size) · [S74-D07](decisions.md#s74-d07--one-definitive-codebase-around-established-functionality) · [S74-D09](decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement)  
+**Status:** Binding (2026-08-06; Compatibility clarified 2026-08-07 via `S74-D09`)  
 **Mode:** Documentation — governs planning and future implementation  
 **How to work:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) — Architectural constraints define what Prism must remain; Engineering Disciplines define how consolidation work is carried out safely.
 
@@ -97,6 +97,12 @@ Therefore:
 - Removal remains **evidence-led** and must preserve current required functionality (identify responsibility → confirm coverage → verify production browser path → remove obsolete surfaces → focused regression).  
 - Evidence must **not** become a rationale for retaining obsolete parallel implementations indefinitely.  
 - Line-count reduction is **not** the purpose, but **code removal is expected** where it eliminates obsolete architectural alternatives.
+
+**Pre-release Compatibility (`S74-D09`, 2026-08-07):** Prism is pre-user / pre-release. Historical persisted state and superseded implementation paths have **no automatic Compatibility requirement**.  
+
+> Preserve current intended functionality, not historical pre-release data shapes or superseded implementation behaviour.
+
+> Compatibility is opt-in by explicit product requirement, not opt-out by historical existence.
 
 While a superseded path still exists in the tree (during inventory or before verified removal), it must not be presented as an ongoing product choice. Prefer terms such as **obsolete**, **superseded**, or **scheduled for removal** over **Compatibility**, unless Compatibility is an explicit current product requirement.
 

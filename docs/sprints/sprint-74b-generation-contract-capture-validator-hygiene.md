@@ -6,7 +6,8 @@
 **Parent:** [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) — **OPEN**  
 **Portable pack:** [SPRINT-74B-START-HERE.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md)  
 **Predecessor:** [sprint-74a-closeout.md](sprint-74a-closeout.md) — Sprint 74A **COMPLETE / Closed**  
-**Opening:** [S74B-D01](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d01-open-sprint-74b-for-generation-contract--capture-validator-hygiene)  
+**Opening:** [S74B-D01](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md)  
+**Page construction:** [S74B-D02](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture) — **Accepted**  
 **Programme principle:** [S74-D07](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d07--one-definitive-codebase-around-established-functionality)  
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md) *(inherited)*
 
@@ -16,11 +17,9 @@ Reduce dead or dual generation surfaces — deprecated prompt builders, legacy c
 
 ## Task posture
 
-- T-001: **Done** (pack init)  
-- T-010: **Done** — [architectural discovery](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-010-generation-pipeline-architectural-discovery.md)  
-- **Next:** `S74B-T-020` — compose vs partial contract role documentation (**Not started**)  
-- T-030…T-050: **Not started**  
-- Removals / runtime changes: **Not started**  
+- T-001…**T-030**: **Done** · **S74B-D02 Accepted**  
+- **Next:** `S74B-T-040` — execute removals (**Not started**)  
+- Removals executed: **No**  
 - Sprint 74C: **Not opened**
 
 ## Methodology

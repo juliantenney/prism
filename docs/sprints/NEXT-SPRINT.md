@@ -16,7 +16,7 @@
 | Top-level | [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) |
 | Engineering disciplines | [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md) |
 
-**Current 74B task:** `S74B-T-020` — compose vs partial contract role documentation (**Not started**). T-001 and T-010 are Done. **No removals started.**
+**Current 74B task:** `S74B-T-040` — execute removals (**Not started**). T-001…T-030 Done · **S74B-D02 Accepted**. **No removals executed yet.**
 
 ---
 

@@ -1,41 +1,41 @@
 # Sprint 74B — Next-chat briefing
 
 **Pack status:** **OPEN**  
-**Mission:** Generation-contract & capture-validator hygiene — ownership-first  
-**Charter:** [SPRINT-74B-CHARTER.md](SPRINT-74B-CHARTER.md)  
-**Disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md) *(inherited)*  
-**Baseline:** [S74B-T-010](S74B-T-010-generation-pipeline-architectural-discovery.md)  
-**Parent:** Sprint 74 programme wrapper — **OPEN** · 74C **Not opened**
+**Decisions:** S74B-D01 · **S74B-D02 Accepted** · **S74B-D03 Accepted**  
+**Programme:** **S74-D09 Accepted** (pre-release Compatibility not default)  
+**Removal plan:** [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md) (reconciled)  
+**Parent:** Sprint 74 — **OPEN** · 74C **Not opened**
 
 ---
 
 ## One-line mission
 
-T-010 established the brief→page→renderer-hand-off architecture. Next: **document compose vs partial contract roles** (T-020, docs-only). Do **not** begin removals.
+When authorised, execute **S74B-T-040** using reconciled T-030 slices (compose path, PR-W\* aliases, legacy capture shims, dead `partialPageOutputs: false` branches). Do not rewrite assemble or open 74C.
+
+> Preserve current intended functionality, not historical pre-release data shapes or superseded implementation behaviour.
 
 ---
 
 ## Read first
 
-1. [S74B-T-010-generation-pipeline-architectural-discovery.md](S74B-T-010-generation-pipeline-architectural-discovery.md)  
-2. [SPRINT-74B-START-HERE.md](SPRINT-74B-START-HERE.md)  
-3. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-4. [PLAN.md](PLAN.md) — T-020 is next  
+1. [S74-D09](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement) · [S74B-D03](decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation)  
+2. [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md)  
+3. [decisions.md — S74B-D02](decisions.md#s74b-d02--partial--deterministic-assemble-is-the-sole-definitive-page-construction-architecture)  
+4. [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
 
 ---
 
 ## Current task
 
-**S74B-T-020** — Compose vs partial contract role documentation (**Not started**).
+**S74B-T-040** — Execute evidenced removals (**Not started**). Do not begin until authorised.
 
-T-001 and T-010 are **Done**. Removals remain blocked until T-030.
+Keep every intermediate commit green: retarget/delete compose-dependent tests **before or atomically with** module deletion.
 
 ---
 
 ## Hard rules
 
-- Implement in **this 74B pack**, not the Sprint 74 wrapper  
-- Use T-010 as architectural baseline — do not re-assume Candidate A/B/C as fact  
-- Domain B scope **unchanged** — no formation redesign, no renderer, no 74C  
-- Ownership inventory **before** removal  
-- Node-based tests = supporting evidence  
+- D02/D03 do **not** authorise assemble rewrite, pedagogy redesign, renderer changes, or 74C  
+- Historical pre-release state does **not** require Compatibility migrations  
+- Live non-deprecated self-directed scaffolds are **not** PR-W thin aliases  
+- Node suites = supporting evidence; browser path for Authoring spot-check after capture/compose slices  

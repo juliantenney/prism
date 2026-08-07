@@ -1,41 +1,34 @@
 # Sprint 74B — Handover
 
-**From:** S74B-T-010 (Done)  
-**To:** S74B-T-020 (Not started)  
-**Decisions:** [S74B-D01](decisions.md#s74b-d01-open-sprint-74b-for-generation-contract--capture-validator-hygiene) · parent [S74-D08](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d08-operator-approval-opens-sprint-74b)
+**From:** S74B-T-030 (Done, reconciled under S74-D09 / S74B-D03) + **S74B-D02** / **S74B-D03 Accepted**  
+**To:** S74B-T-040 (Not started)
 
 ---
 
 ## Current state
 
-- Sprint 74B **OPEN**  
-- T-001 **Done**; **T-010 Done** — [architectural discovery](S74B-T-010-generation-pipeline-architectural-discovery.md)  
-- **Next:** S74B-T-020 (compose vs partial docs)  
-- Removals / consolidation: **not started**  
-- Sprint 74C **Not opened**
-
----
-
-## Durable findings from T-010
-
-- “Generation” is **multiple responsibilities**, not one owner.  
-- Stable pre-renderer phases: brief → elicitation → design LLM → persist → prompt/contracts → external Copilot → capture → validate → runstate → assemble → hand-off.  
-- Domain B remains correctly scoped to **prompt/contract & capture-validator hygiene**.  
-- Four live `{ legacy: true }` always-pass capture shims; PR-W\* deprecated aliases still on test API.  
-- Operator A/B/C hypothesis: useful clusters but must be **split** for ownership work.
+- T-001…**T-030 Done** (plan reconciled 2026-08-07)  
+- **S74B-D02 Accepted** — partial + assemble sole definitive page-construction architecture  
+- **S74B-D03 Accepted** — historical pre-release workflow/runstate Compatibility does not block rationalisation  
+- **S74-D09 Accepted** — pre-release Compatibility is not a default requirement  
+- Removal plan: [S74B-T-030](S74B-T-030-deprecated-helper-compose-legacy-validator-removal-plan.md)  
+- Removals **not executed**  
+- 74C **Not opened**
 
 ---
 
 ## Immediate sequence
 
-1. Begin **S74B-T-020** — docs-only compose vs partial roles from T-010 §11.  
-2. Do **not** delete or consolidate before T-030 plan.  
-3. Do **not** open 74C or touch Authoring export / renderer.
+1. When authorised: begin **S74B-T-040** at slice **S1** (remove compose inject).  
+2. Follow reconciled order: **S2 retarget/delete compose tests → S3 remove module** (or atomic S2+S3); then S4→S7.  
+3. Do not open 74C.  
 
 ---
 
-## Binding references
+## Do not
 
-- Constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md)  
-- Disciplines: [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
-- Baseline: [S74B-T-010](S74B-T-010-generation-pipeline-architectural-discovery.md)  
+- Rewrite `assembleVNextPageFromPartials`  
+- Delete live self-directed scaffolds mistaken for PR-W aliases  
+- Treat T-030 as executed removal  
+- Add migrations solely to preserve historical pre-release runstate  
+- Knowingly land a broken intermediate commit  

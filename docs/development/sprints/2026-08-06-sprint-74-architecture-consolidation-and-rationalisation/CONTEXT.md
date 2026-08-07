@@ -9,9 +9,11 @@
 
 ## Binding architectural constraints
 
-**Authoritative:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`)
+**Authoritative:** [ARCHITECTURAL-CONSTRAINTS.md](ARCHITECTURAL-CONSTRAINTS.md) (`S74-D03`…`S74-D05`, `S74-D07`, **`S74-D09`**)
 
-Prism is **browser-only at runtime** (static deployment via `index.html`). Node.js is **development/test tooling only**. Rationalisation targets **one supported path** per major responsibility. `app.js` is rationalised by **ownership**, not size.
+Prism is **browser-only at runtime** (static deployment via `index.html`). Node.js is **development/test tooling only**. Rationalisation targets **one definitive path** per major responsibility. `app.js` is rationalised by **ownership**, not size.
+
+**Pre-release Compatibility (`S74-D09`):** Historical persisted state and superseded implementation paths have **no automatic Compatibility requirement**. Preserve **current intended functionality**; Compatibility is opt-in by explicit product requirement.
 
 ---
 
@@ -86,6 +88,7 @@ Prompt Studio and Prompt Library remain parallel prompt-development surfaces.
 | `S73-D01`…`S73-D03` | Workflow Resources scope, conditional persistence, verbatim video embed |
 | `S74-D03`…`S74-D05` | Browser-only + static deployment; one supported path; `app.js` by ownership |
 | `S74-D07` / `S74A-D02` | One definitive codebase; vNext replaces obsolete learner renderer (removal after inventory) |
+| `S74-D09` | Pre-release Compatibility is not a default requirement — preserve current intended functionality |
 
 ---
 

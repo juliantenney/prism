@@ -76,6 +76,19 @@ Every remaining match must be:
 - Do not retain obsolete active code solely for historical reference.
 - Git history preserves removed implementations.
 
+## Pre-release Compatibility
+
+Binding programme decision: [S74-D09](sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md#s74-d09--pre-release-compatibility-is-not-a-default-requirement).
+
+- Pre-release historical-state Compatibility is **not assumed**.
+- Preserve **current product behaviour**, not obsolete internal development states.
+- Do **not** introduce migrations merely to save historical internal data.
+- Compatibility becomes mandatory only when **explicitly required** by product/release policy (revisit after external users or release commitments).
+
+> Preserve current intended functionality, not historical pre-release data shapes or superseded implementation behaviour.
+
+> Compatibility is opt-in by explicit product requirement, not opt-out by historical existence.
+
 ## Regression handling
 
 - Stop on unexpected behaviour.

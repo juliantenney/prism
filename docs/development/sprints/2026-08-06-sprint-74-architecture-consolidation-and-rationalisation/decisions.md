@@ -6,7 +6,7 @@
 **Engineering disciplines:** [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)  
 **Active implementation pack:** [Sprint 74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md)  
 **Closed predecessor:** [Sprint 74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md)  
-**Decisions:** `S74-D01`…`S74-D08`
+**Decisions:** `S74-D01`…`S74-D09`
 Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decisions.md`](../2026-08-06-sprint-73-workflow-resources/decisions.md); Sprint 72 (`S72-D09`, `S72-D10`, `S72-D14`).
 
 ---
@@ -83,14 +83,52 @@ Inherited binding decisions are **linked, not duplicated** — Sprint 73 [`decis
 
 ---
 
+## S74-D09 — Pre-release compatibility is not a default requirement
+
+- **Decision:** Prism is currently **pre-user / pre-release**. There is **no external user population** whose historical persisted data must be preserved across internal development versions. The next real usage phase is **alpha testing**.
+
+  Therefore:
+
+  - Historical persisted state, deprecated runtime shapes, rollback modes, and superseded implementation paths have **no automatic compatibility requirement**.  
+  - **Compatibility** must be retained **only** where there is an **explicit current product requirement**.  
+  - **Historical existence alone is not a requirement.**  
+  - Repository history preserves retired implementations.  
+  - Tests should protect **current intended behaviour**, not obsolete internal development states.  
+  - Old local workflows/runstate may **legitimately require regeneration/re-run** after architectural convergence.  
+  - Migration code, fallback branches, shims, and version flags should be **removed** when they exist only to preserve superseded pre-release data or behaviour.
+
+  This principle **does not** authorise indiscriminate deletion:
+
+  - current intended functionality must be preserved;  
+  - current supported contracts/data shapes must remain valid;  
+  - destructive changes still require ownership and residue evidence;  
+  - user-facing behaviour must be verified.
+
+  Once Prism has **external users** or **release compatibility commitments**, compatibility policy must be **revisited explicitly** rather than inferred from this decision.
+
+  **Governing formulation:**
+
+  > Preserve current intended functionality, not historical pre-release data shapes or superseded implementation behaviour.
+
+  > Compatibility is opt-in by explicit product requirement, not opt-out by historical existence.
+
+  Expands Constraint 2 / `S74-D07` for the pre-release phase. Working practice: [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md). Sprint 74B application: [S74B-D03](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/decisions.md#s74b-d03--historical-pre-release-workflowrunstate-compatibility-does-not-block-rationalisation).
+
+- **Status:** **Accepted** — **binding** (2026-08-07)
+- **Rationale:** Operator direction for Sprint 74 rationalisation while Prism remains pre-release: do not treat local historical development state as a Compatibility product requirement.
+- **Consequences:** Active Sprint 74 / 74B guidance must not imply old local data must be preserved by default. T-040 may fail-close obsolete shapes without adding migrations solely for pre-release state. Historical discovery docs are not rewritten; dated policy notes apply where earlier Compatibility posture appeared.
+
+---
+
 ## Pending decisions
 
 | Topic | Expected trigger |
 | ----- | ---------------- |
 | Open Sprint 74C pack | After 74B closure / programme order |
-| Whether compose/partial merge enters 74B | 74B planning — default docs-only first (`S74B-T-020`) |
 | WR orphan cleanup implementation | PB-R-008 policy — not 74B |
+| Post-alpha / release Compatibility policy | When external users or release commitments exist — revisit `S74-D09` |
 
-Obsolete learner-renderer removal in 74A — **complete** (`S74-D07` / `S74A-D02`).
+Obsolete learner-renderer removal in 74A — **complete** (`S74-D07` / `S74A-D02`).  
+Compose / partial page-construction — **S74B-D02**. Pre-release Compatibility — **S74-D09** / **S74B-D03**.
 
 Do not record implementation consolidation decisions without discovery evidence and explicit acceptance criteria.

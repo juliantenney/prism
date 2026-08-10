@@ -202,7 +202,6 @@ test("renderUtilitiesArtefactHtmlAsyncForTest: mirrors handleUtilitiesGenerate c
   const page = JSON.parse(fs.readFileSync(csvFixturePath, "utf8"));
   const r = await apiUi.renderUtilitiesArtefactHtmlAsyncForTest(page, {
     selectedFormat: "html",
-    presentationMode: "single_page",
     applyCompositionValidation: true
   });
   assert.ok(r && !r.error, r && r.error);

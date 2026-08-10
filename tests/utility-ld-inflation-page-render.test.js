@@ -376,20 +376,17 @@ test("inflation workshop (full): production shape renders visible A2 title in HT
   assert.match(a2Scope[0], /<table>[\s\S]*PPI/i);
 });
 
-test("inflation workshop (full): learning_object mode requires A2 in section content (strict closure)", () => {
+test("inflation workshop (full): strict closure still requires A2 in section content (vNext path)", () => {
   const parsed = JSON.parse(fs.readFileSync(fullFixturePath, "utf8"));
-  const pageSectionsSnapshot = JSON.parse(JSON.stringify(parsed.sections));
   const la = parsed.sections.find((s) => s.section_id === "learning_activities");
   la.content = la.content.filter((row) => String(row.activity_id) !== "A2");
   const r = api.buildUtilityStructuredHtmlForTest(parsed, ["sections"], {
-    presentationMode: "learning_object",
-    pageSections: pageSectionsSnapshot
+    applyCompositionValidation: false
   });
   assert.ok(r && !r.error, r && r.error);
   const html = String(r.html || "");
-  const loScreen = html.match(/data-lo-screen="3"[\s\S]*?(?=data-lo-screen="4"|$)/i);
-  assert.ok(loScreen, "learning activities LO screen should exist");
-  assert.doesNotMatch(loScreen[0], /Measuring Inflation: Indicator Comparison/i);
+  assert.doesNotMatch(html, /data-lo-screen/i);
+  assert.doesNotMatch(html, /Measuring Inflation: Indicator Comparison/i);
 });
 
 const CATALOG_PAGE_SECTION_ORDER = [

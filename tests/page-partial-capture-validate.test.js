@@ -173,6 +173,41 @@ test("DLA partial with final activity titles is valid", () => {
   assert.equal(check.ok, true, (check.errors || []).join("; "));
 });
 
+test("DLA partial with copy-forwarded shell preambles validates after repair", () => {
+  const api = loadPrismTestApi();
+  const wf = buildWorkflow();
+  const copyForward = JSON.parse(JSON.stringify(dlaPartial));
+  copyForward.activities.forEach((activity) => {
+    activity.activity_preamble = "\u2014";
+  });
+  const check = api.validateDlaOrPageCapture(copyForward, epShell, wf);
+  assert.equal(check.ok, true, (check.errors || []).join("; "));
+});
+
+test("DLA partial capture path repairs shell preambles before storage", () => {
+  const api = loadPrismTestApi();
+  const wf = buildWorkflow();
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setWorkflowRunCapturedOutputsForTest({});
+  api.setWorkflowRunCapturedOutputsRawForTest({});
+  api.setWorkflowRunCapturedOutputsForTest({ ep_step: JSON.stringify(epShell, null, 2) });
+  api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: JSON.stringify(epShell, null, 2) });
+  const copyForward = JSON.parse(JSON.stringify(dlaPartial));
+  copyForward.activities.forEach((activity) => {
+    activity.activity_preamble = "\u2014";
+  });
+  const raw = JSON.stringify(copyForward, null, 2);
+  const { li, textarea } = buildRunLi("dla_step", "page", raw);
+  api.syncWorkflowRunCapturedOutputToState(li);
+  const storedRaw = api.getWorkflowRunCapturedOutputsRawForTest().dla_step || "";
+  const parsedStored = JSON.parse(storedRaw);
+  parsedStored.activities.forEach((activity) => {
+    assert.notEqual(activity.activity_preamble, "\u2014");
+  });
+  assert.notEqual(textarea.value.trim(), raw.trim());
+});
+
 test("DLA partial validates by step identity when assembly_state stage is wrong", () => {
   const api = loadPrismTestApi();
   const wf = buildWorkflow();

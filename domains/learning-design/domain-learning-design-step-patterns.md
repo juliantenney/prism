@@ -721,12 +721,12 @@ They provide a consistent way to structure workflows and ensure that learning de
       }
     ],
     "uiHints": {
-      "design_intent": "Describe the learning-design output to produce (workshop, lesson, module, assessment pack).",
+      "design_intent": "Describe the topic and focus for the selected resource (not a second product choice).",
       "audience": "Primary learner/cohort for this design.",
-      "scope_scale": "Delivery scale and duration (for example: 60-minute workshop, two-week module, or full course).",
-      "scope_scale_placeholder": "e.g. single activity, workshop block, multi-week module, programme",
+      "scope_scale": "Delivery scale and duration (for example: 60 minutes, half day, or multi-session series).",
+      "scope_scale_placeholder": "e.g. 60-minute session, half-day workshop, two-week block",
       "inputs": "Source content or note that content must be generated from topic.",
-      "desired_outputs": "Target artefacts (activities, sequence, assessment, facilitator materials).",
+      "desired_outputs": "Optional supporting contents or materials (activities, formative checks, handouts, slides) for the selected resource.",
       "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."
     },
     "extraFields": [],

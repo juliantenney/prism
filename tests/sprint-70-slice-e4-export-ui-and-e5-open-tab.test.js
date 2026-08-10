@@ -164,7 +164,7 @@ test("E4: rendered Utilities markup exposes both visible download actions", () =
   assert.doesNotMatch(indexHtml, /id="utilitiesDownloadBtn"/);
   assert.match(indexHtml, /lib\/learner-package\.js/);
   assert.match(indexHtml, /lib\/learner-package-zip\.js/);
-  assert.match(indexHtml, /app\.js\?v=20260729-s70-expandable-images/);
+  assert.match(indexHtml, /app\.js\?v=20260810-s75-d12-1/);
 });
 
 test("E4: both download buttons are always present in the live control state", () => {

@@ -696,6 +696,17 @@ textarea:focus {
   margin-bottom: 4px;
 }
 
+#workflowFactoryPanel .wf-layout-spacer {
+  min-height: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  #workflowFactoryPanel .wf-layout-spacer {
+    display: none;
+  }
+}
+
 #workflowFactoryPanel .workflow-factory-basics-card > .helper-text {
   margin-top: 0;
   margin-bottom: 8px;
@@ -1053,13 +1064,48 @@ textarea:focus {
 .workflow-run-controls {
   display: none;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.workflow-run-step-heading {
+  flex: 1 1 12rem;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
 }
 
 .workflow-run-buttons {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+}
+
+.utilities-workflow-context {
+  margin: 0 0 10px;
+}
+
+.utilities-workflow-context .helper-text {
+  margin: 0 0 4px;
+}
+
+.utilities-workflow-mismatch {
+  margin-top: 6px;
+  border: 1px solid rgba(180, 83, 9, 0.45);
+  background: rgba(251, 191, 36, 0.14);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.35;
 }
 
 .workflow-steps-section {
@@ -1076,9 +1122,19 @@ textarea:focus {
 /* Only show run controls when in Run mode. */
 .workflow-detail.run-mode .workflow-run-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
+}
+
+.workflow-detail.run-mode .workflow-steps-header,
+.workflow-detail.run-mode .workflow-step-header {
+  display: none;
+}
+
+.workflow-step-run-instructions {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .workflow-steps-list {
@@ -1589,8 +1645,8 @@ textarea:focus {
 
   .workflow-run-controls {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    align-items: stretch;
+    gap: 8px;
   }
 
   .workflow-run-buttons {
@@ -1615,6 +1671,24 @@ textarea:focus {
   font-size: 0.85rem;
   color: var(--text-muted);
   white-space: pre-wrap;
+}
+
+/* Sprint 75 C-03/C-04: persistent lightweight Run execution orientation (single guidance line). */
+.workflow-run-orientation {
+  display: none;
+  margin: 0 0 10px;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.workflow-run-orientation-text {
+  margin: 0;
+}
+
+.workflow-detail.run-mode .workflow-run-orientation {
+  display: block;
 }
 
 /* In Run mode: keep the runner focused on step execution only. */

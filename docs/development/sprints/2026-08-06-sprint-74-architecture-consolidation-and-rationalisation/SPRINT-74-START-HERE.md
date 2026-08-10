@@ -8,7 +8,7 @@
 **Theme:** Discovery-led wrapper — sequence evidence-based rationalisation toward **one definitive codebase**  
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
 **Closed sub-sprints:** [74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-START-HERE.md) · [74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) · [74C](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/SPRINT-74C-START-HERE.md) — **COMPLETE / Closed**  
-**Next programme:** Sprint 75 — **Not opened**  
+**Next programme:** [Sprint 75 — OPEN](../2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md) (opened 2026-08-10)  
 **Programme closure:** [S74C-T-050](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md)
 
 ---
@@ -35,4 +35,4 @@ Sprint 74 established a sequence of evidence-based rationalisation slices conver
 
 ## Immediate next action
 
-None in Sprint 74. Open Sprint 75 only by **separate** operator decision.
+None in Sprint 74. Sprint 75 is **OPEN** as a separate programme — [SPRINT-75-START-HERE.md](../2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md). Do **not** reopen Sprint 74 architecture.

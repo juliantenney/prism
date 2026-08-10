@@ -16,7 +16,7 @@
 ```text
 74A Closed · 74B Closed · 74C Closed
   → Sprint 74 programme COMPLETE / Closed
-  → Sprint 75 NOT OPENED (next programme only)
+  → Sprint 75 OPEN (separate UX programme)
 ```
 
 ---
@@ -28,7 +28,7 @@
 | Sprint 74C | **COMPLETE / Closed** |
 | T-001 … T-050 | **Done** |
 | Sprint 74 programme | **COMPLETE / Closed** |
-| Sprint 75 | **Not opened** |
+| Sprint 75 | **OPEN** (separate programme) |
 | Group F | **Intentionally deferred** (not open 74 debt) |
 | Runtime / tests / fixtures | **Unchanged** by 74C |
 
@@ -55,4 +55,4 @@ A `218cc97` · D `9772aa1` · G `43cbd0a` · B `49f6f4a` · C `5650d54` · E1 `7
 
 ## Last updated
 
-2026-08-07 — S74C-T-050 Done; Sprint 74C and Sprint 74 programme closed; Sprint 75 not opened.
+2026-08-10 — Pointer update: Sprint 75 OPEN as separate programme; 74C remains COMPLETE / Closed.

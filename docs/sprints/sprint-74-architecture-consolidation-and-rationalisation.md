@@ -8,7 +8,7 @@
 **Predecessor:** [sprint-73-closeout.md](sprint-73-closeout.md) — **COMPLETE / Closed**  
 **Closed sub-sprints:** [sprint-74a-closeout.md](sprint-74a-closeout.md) · [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) · [sprint-74c-repository-hygiene-and-historical-residue-rationalisation.md](sprint-74c-repository-hygiene-and-historical-residue-rationalisation.md) — **COMPLETE / Closed**  
 **Programme closure:** [S74C-T-050](../development/sprints/2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md) · [S74-D11](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/decisions.md)  
-**Next programme:** Sprint 75 — **Not opened**
+**Next programme:** [Sprint 75 — OPEN](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md) (opened 2026-08-10)
 
 ## Theme
 
@@ -24,7 +24,7 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 - Sprint 74 discovery and domain refinement **complete**.  
 - Sprint 74A / 74B / 74C **COMPLETE / Closed**.  
 - Sprint 74 programme **COMPLETE / Closed**.  
-- Sprint 75 **not opened**.
+- Sprint 75 **OPEN** (separate UX programme; do not reopen 74 architecture).
 
 ## Phase overview
 
@@ -35,7 +35,7 @@ Discovery-led wrapper: map supported runtime path, ownership, schemas, bundles, 
 | — | Sprint 74A implementation | **Complete / Closed** |
 | — | Sprint 74B implementation | **Complete / Closed** |
 | — | Sprint 74C (narrowed hygiene) | **Complete / Closed** |
-| — | Sprint 75 | **Not opened** |
+| — | Sprint 75 | **OPEN** (separate programme) |
 
 ## Boundaries
 

@@ -186,12 +186,6 @@
     workflowDesignResult: null,
     workflowDesignVersions: null,
     workflowSelectedVersion: "refined",
-    workflowAwaitingRefineOptIn: false,
-    workflowAwaitingSuggestionAnswer: false,
-    workflowReviewSuggestions: null,
-    workflowReviewIndex: 0,
-    workflowAwaitingDeepRefineOptIn: false,
-    workflowDeepRefineContext: null,
     workflowBriefElicitation: null,
     workflowDomainSuggestionPending: null,
     workflowBriefInferenceConfirmation: null,
@@ -207,7 +201,7 @@
     workflowDomainUiConfig: null,
     promptFactoryWorkflowContext: null,
     workflowStepGeneratedDraft: "",
-    workflowDetailMode: "edit",
+    workflowDetailMode: "run",
     /** Session cache: pack briefConfig recovered for unified Settings when workflow lacks persisted briefConfig. */
     unifiedSettingsRecoveredBriefConfigById: {},
     unifiedSettingsBriefConfigLoadSeq: 0,
@@ -217,7 +211,6 @@
     utilitiesLastRenderInputNormalized: "",
     utilitiesDownloadTestLog: [],
     utilitiesOutputWorkspace: null,
-    utilitiesPresentationMode: "single_page",
     utilitiesSourceMode: "",
     utilitiesVisualAssetObjectUrlsByBriefId: {},
     /** Sprint 73: ephemeral cache of workflow resource refs mirrored in runstate (canonical bytes in owner store). */
@@ -353,13 +346,18 @@
 
     // Workflow Factory elements
     els.wfDesignName = document.getElementById("wfDesignName");
+    els.wfDesignBasicsIntro = document.getElementById("wfDesignBasicsIntro");
+    els.wfLdCreateOutputTypeGroup = document.getElementById("wfLdCreateOutputTypeGroup");
+    els.wfLdCreateOutputType = document.getElementById("wfLdCreateOutputType");
     els.wfDesignIntent = document.getElementById("wfDesignIntent");
+    els.wfDesignIntentLabel = document.getElementById("wfDesignIntentLabel");
     els.wfDesignAudience = document.getElementById("wfDesignAudience");
     els.wfDesignScale = document.getElementById("wfDesignScale");
     els.wfDesignInputs = document.getElementById("wfDesignInputs");
     els.wfDesignInputsLabel = document.getElementById("wfDesignInputsLabel");
     els.wfDesignStartingArtefact = document.getElementById("wfDesignStartingArtefact");
     els.wfDesignDesiredOutputs = document.getElementById("wfDesignDesiredOutputs");
+    els.wfDesignDesiredOutputsLabel = document.getElementById("wfDesignDesiredOutputsLabel");
     els.wfDesignScopeConstraints = document.getElementById("wfDesignScopeConstraints");
     els.wfDesignIntentHint = document.getElementById("wfDesignIntentHint");
     els.wfDesignAudienceHint = document.getElementById("wfDesignAudienceHint");
@@ -378,7 +376,6 @@
     els.wfDesignSteps = document.getElementById("wfDesignSteps");
     els.wfDesignVersionSelect = document.getElementById("wfDesignVersionSelect");
     els.wfDesignSaveBtn = document.getElementById("wfDesignSaveBtn");
-    els.wfDesignReviewBtn = document.getElementById("wfDesignReviewBtn");
     els.wfDesignAnswer = document.getElementById("wfDesignAnswer");
     els.wfDesignSendBtn = document.getElementById("wfDesignSendBtn");
     els.wfBriefResolvedDetails = document.getElementById("wfBriefResolvedDetails");
@@ -486,12 +483,23 @@
     els.workflowRunStatus = document.getElementById("workflowRunStatus");
     els.workflowPrevStepBtn = document.getElementById("workflowPrevStepBtn");
     els.workflowNextStepBtn = document.getElementById("workflowNextStepBtn");
+    els.workflowRunCopyBtn = document.getElementById("workflowRunCopyBtn");
+    els.workflowContinueToAuthoringBtn = document.getElementById(
+      "workflowContinueToAuthoringBtn"
+    );
 
     // Utilities
     els.utilitiesOutputFormat = document.getElementById("utilitiesOutputFormat");
-    els.utilitiesPresentationMode = document.getElementById("utilitiesPresentationMode");
     els.utilitiesFileName = document.getElementById("utilitiesFileName");
     els.utilitiesJsonInput = document.getElementById("utilitiesJsonInput");
+    els.utilitiesWorkflowContext = document.getElementById("utilitiesWorkflowContext");
+    els.utilitiesSelectedWorkflowLabel = document.getElementById(
+      "utilitiesSelectedWorkflowLabel"
+    );
+    els.utilitiesAssembledFromLabel = document.getElementById("utilitiesAssembledFromLabel");
+    els.utilitiesWorkflowMismatchWarning = document.getElementById(
+      "utilitiesWorkflowMismatchWarning"
+    );
     els.utilitiesAssembleCurrentRunBtn = document.getElementById("utilitiesAssembleCurrentRunBtn");
     els.utilitiesGenerateBtn = document.getElementById("utilitiesGenerateBtn");
     els.utilitiesDownloadHtmlBtn = document.getElementById("utilitiesDownloadHtmlBtn");
@@ -1147,28 +1155,79 @@
     return String(ri.what_this_step_does || "").trim();
   }
 
+  /**
+   * Sprint 75 Run-UI-only step descriptions.
+   * Deliberately separate from promptFactory.runnerInstructions (also fed into Copy).
+   */
+  var WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL = {
+    step_normalize_content: "Cleans and organises your source material for later steps.",
+    step_generate_learning_content: "Creates learning content from your topic or source material.",
+    step_model_knowledge: "Organises the key concepts and relationships in the content.",
+    step_define_learning_outcomes: "Defines clear learning outcomes for the resource.",
+    step_design_episode_plan: "Creates a structured learning plan from the learning outcomes.",
+    step_design_learning_activities: "Designs the learning activities for this resource.",
+    step_generate_activity_materials: "Creates the learning materials for each activity.",
+    step_construct_learning_sequence: "Orders the activities into a clear learning sequence.",
+    step_design_page: "Adds the learner-facing page title and framing text.",
+    step_design_assessment: "Plans how learning will be assessed.",
+    step_generate_assessment_items: "Creates the assessment questions or items."
+  };
+
+  var WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_TITLE = {
+    "normalize content": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_normalize_content,
+    "generate learning content": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_generate_learning_content,
+    "model knowledge": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_model_knowledge,
+    "define learning outcomes": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_define_learning_outcomes,
+    "design episode plan": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_episode_plan,
+    "design learning activities": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_learning_activities,
+    "generate activity materials": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_generate_activity_materials,
+    "construct learning sequence": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_construct_learning_sequence,
+    "design page": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_page,
+    "design assessment": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_assessment,
+    "generate assessment items": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_generate_assessment_items
+  };
+
+  function normalizeWorkflowRunUiDescriptionKey(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function isTechnicalWorkflowRunUiFallbackText(text) {
+    var raw = String(text || "");
+    if (!raw.trim()) return true;
+    return /workflow artefacts?|artefact|artifact|pipeline|downstream|upstream|schema|contract|vnext|page shell|deterministic|partial v\d|sprint\s*\d+/i.test(
+      raw
+    );
+  }
+
+  function getWorkflowRunUiStepDescription(step) {
+    var s = step && typeof step === "object" ? step : {};
+    var canonicalId = String(s.canonical_step_id || s.canonicalStepId || "").trim();
+    if (canonicalId && WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL[canonicalId]) {
+      return WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL[canonicalId];
+    }
+    var titleKey = normalizeWorkflowRunUiDescriptionKey(s.title || "");
+    if (titleKey && WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_TITLE[titleKey]) {
+      return WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_TITLE[titleKey];
+    }
+    var roleText = String(s.roleLabel || "").trim();
+    if (roleText && !isTechnicalWorkflowRunUiFallbackText(roleText)) {
+      return roleText;
+    }
+    var titleText = String(s.title || "").trim();
+    if (titleText) {
+      return "Complete \u201c" + titleText + "\u201d.";
+    }
+    return "Complete this step.";
+  }
+
   function buildWorkflowStepRunSummaryText(step, wf, isRun) {
-    var summaryParts = [];
-    var runnerSummary = getRunnerWhatThisStepDoes(step || {});
-    if (runnerSummary) summaryParts.push(String(runnerSummary));
-    if (
-      isRun &&
-      isWorkflowStepDesignLearningActivities(buildWorkflowStepRecognitionContext(step || {}))
-    ) {
-      var expectText = getRunnerWhatToExpect(step || {});
-      if (expectText) summaryParts.push(expectText);
-    }
-    if (isRun) {
-      summaryParts.push(
-        "Paste this step's generated artefact into Step output. PRISM stores step outputs for deterministic assembly/render."
-      );
-      if (isPartialPageOutputWorkflowEnabled(wf || {}) && isPostEpisodePlanPartialOutputStep(step || {}, wf || {})) {
-        summaryParts.push(
-          "Partial mode: paste only this step's partial page artefact. Downstream prompts use Copilot conversation context, not PRISM-injected prior outputs."
-        );
-      }
-    }
-    return summaryParts.join(" ");
+    if (!isRun) return "";
+    // Sprint 75: Run UI description only — never pack runnerInstructions / Copy guidance.
+    return getWorkflowRunUiStepDescription(step || {});
   }
 
   function upsertWorkflowStepParamBlock(existingText, selectedOptions) {
@@ -5402,8 +5461,7 @@
         refinementQa: 160,
         refinementFinal: 900,
         refinementReview: 256,
-        workflowDesign: 1800,
-        workflowReview: 320
+        workflowDesign: 1800
       };
     }
     if (preset === "detailed") {
@@ -5411,16 +5469,14 @@
         refinementQa: 384,
         refinementFinal: 2400,
         refinementReview: 640,
-        workflowDesign: 3600,
-        workflowReview: 768
+        workflowDesign: 3600
       };
     }
     return {
       refinementQa: 256,
       refinementFinal: 1600,
       refinementReview: 384,
-      workflowDesign: 2600,
-      workflowReview: 512
+      workflowDesign: 2600
     };
   }
 
@@ -5437,10 +5493,6 @@
     return getTokenBudgets().workflowDesign;
   }
 
-  function getWorkflowReviewMaxOutputTokens() {
-    return getTokenBudgets().workflowReview;
-  }
-
   function debugOpenAI(msg) {
     if (!DEBUG_OPENAI) return;
     try {
@@ -5452,10 +5504,7 @@
   }
 
   function renderWorkflowDesignResult(options) {
-    var promptRefine =
-      options && typeof options.promptRefine === "boolean"
-        ? options.promptRefine
-        : false;
+    // options retained for call-site compatibility; generic review/promptRefine path retired (S75-D03).
     var versions = state.workflowDesignVersions;
     var selected = state.workflowSelectedVersion || "refined";
     var parsed =
@@ -5560,42 +5609,8 @@
     if (els.wfDesignSaveBtn) {
       els.wfDesignSaveBtn.disabled = false;
     }
-    if (els.wfDesignReviewBtn) {
-      var hasDraft =
-        !!(
-          versions &&
-          versions.draft &&
-          versions.draft.steps &&
-          versions.draft.steps.length
-        );
-      els.wfDesignReviewBtn.disabled = !hasDraft;
-    }
     if (els.wfDesignVersionSelect) {
       els.wfDesignVersionSelect.value = selected;
-    }
-
-    if (promptRefine) {
-      var hasPostGenerationQueue =
-        !!(
-          state.workflowBriefElicitation &&
-          String(state.workflowBriefElicitation.stage || "") === "post_generation_refinement" &&
-          Array.isArray(state.workflowBriefElicitation.queue) &&
-          state.workflowBriefElicitation.queue.length
-        );
-      if (hasPostGenerationQueue) {
-        return;
-      }
-      // After the initial design, prompt the user about refinement.
-      state.workflowAwaitingRefineOptIn = true;
-      state.workflowAwaitingSuggestionAnswer = false;
-      state.workflowReviewSuggestions = null;
-      state.workflowReviewIndex = 0;
-      appendWorkflowDesignLog(
-        "assistant",
-        "I’ve designed a workflow with " +
-          (parsed.steps ? parsed.steps.length : 0) +
-          " step(s), shown below. Would you like to refine it further? (yes/no)"
-      );
     }
   }
 
@@ -5858,6 +5873,7 @@
   function renderWorkflowFactoryDomainUiHints(uiHints) {
     var hints = uiHints && typeof uiHints === "object" ? uiHints : {};
     var structuredId = getWorkflowFactoryStructuredDomainId();
+    syncWorkflowFactoryLdCreateOutputTypeUi(structuredId);
     var generalScaleHint =
       "Describe the expected size, duration, or breadth of the output.";
     var generalScalePlaceholder =
@@ -5870,8 +5886,12 @@
         : "Scope / size";
     var scopeScaleHint = String(hints.scope_scale || generalScaleHint);
     if (els.wfDesignIntentHint) {
-      els.wfDesignIntentHint.textContent =
-        String(hints.design_intent || "State the primary design intent in one line.");
+      els.wfDesignIntentHint.textContent = structuredId === "learning-design"
+        ? String(
+            hints.design_intent ||
+              "Describe the topic and focus for the selected resource (not a second product choice)."
+          )
+        : String(hints.design_intent || "State the primary design intent in one line.");
     }
     if (els.wfDesignAudienceHint) {
       els.wfDesignAudienceHint.textContent =
@@ -5904,10 +5924,15 @@
     }
     if (els.wfDesignDesiredOutputsHint) {
       els.wfDesignDesiredOutputsHint.textContent =
-        String(
-          hints.desired_outputs ||
-            "Primary deliverables and supporting artefacts this design run should produce (orchestrated through the workflow below)."
-        );
+        structuredId === "learning-design"
+          ? String(
+              hints.desired_outputs ||
+                "Optional supporting contents or materials (activities, formative checks, handouts, slides) for the selected resource."
+            )
+          : String(
+              hints.desired_outputs ||
+                "Primary deliverables and supporting artefacts this design run should produce (orchestrated through the workflow below)."
+            );
     }
     if (els.wfDesignConstraintsHint) {
       els.wfDesignConstraintsHint.textContent =
@@ -6084,7 +6109,7 @@
           "Describe or paste uploaded source material this workflow should treat as authoritative at the start.";
       } else if (selected === "generate_from_topic") {
         els.wfDesignInputsHint.textContent =
-          "Optional: extra constraints, tone, or reference notes. The main topic usually lives in design intent / goal.";
+          "Optional: extra constraints, tone, or reference notes. The main topic usually lives in What should this cover? / design intent.";
       } else if (selected === "mixed") {
         els.wfDesignInputsHint.textContent =
           "Describe uploaded material to use and what should be generated fresh (or how they should combine).";
@@ -6261,6 +6286,9 @@
     ) {
       window.WorkflowGenerationContext.persistSelectedDomains(next);
     }
+    // Surface LD Create output radios immediately from the selected domain value
+    // (do not wait on async brief-config fetch).
+    syncWorkflowFactoryLdCreateOutputTypeUi(selectedValue);
     // Clear previous domain overlay immediately to avoid stale leakage while loading new config.
     renderWorkflowFactoryDomainUiHints({});
     renderWorkflowFactoryDomainExtraFields([]);
@@ -8571,12 +8599,9 @@
     if (!assembleMod) {
       throw new Error("vNext page assembly module unavailable");
     }
-    if (typeof assembleMod.validateAssembledPageForRender === "function") {
-      var completeCheck = assembleMod.validateAssembledPageForRender(page);
-      if (completeCheck && completeCheck.ok) {
-        return attachLearnerPageIdentityFromWorkflow(page, workflow);
-      }
-    }
+    // Partial-page workflows always merge available stage captures. A structurally
+    // valid Episode Plan shell must not early-return ahead of DLA/GAM/etc enrichment
+    // (S75 authoring assembly readiness).
     var opts = options && typeof options === "object" ? options : {};
     var captures = opts.captures && typeof opts.captures === "object" ? opts.captures : state.workflowRunCapturedOutputs;
     var capturesRaw =
@@ -8725,6 +8750,29 @@
           "Assembled page failed render validation: " +
             String((assembledCheck && (assembledCheck.errors || []).join("; ")) || "unknown validation error")
         );
+      }
+    }
+    if (typeof assembleMod.assessAssembledPageLearnerReady === "function") {
+      var learnerReadyCheck = assembleMod.assessAssembledPageLearnerReady(assembledPage, {
+        partialsPresent: {
+          dla: !!partials.dla,
+          gam: !!partials.gam,
+          learning_sequence: !!partials.learning_sequence,
+          assessment_design: !!partials.assessment_design,
+          assessment_items: !!partials.assessment_items,
+          design_page: !!partials.design_page
+        }
+      });
+      if (!learnerReadyCheck || !learnerReadyCheck.ok) {
+        var incompleteErr = new Error(
+          String(
+            (learnerReadyCheck && learnerReadyCheck.message) ||
+              "This workflow run does not yet contain the learner activity content needed to assemble the page."
+          )
+        );
+        incompleteErr.code =
+          (learnerReadyCheck && learnerReadyCheck.code) || "PAGE_NOT_LEARNER_READY";
+        throw incompleteErr;
       }
     }
     return attachLearnerPageIdentityFromWorkflow(assembledPage, workflow);
@@ -9404,7 +9452,13 @@
       var dlaMod = resolvePageDlaEnrichLib();
       if (dlaMod && typeof dlaMod.validateDlaPartialPageCapture === "function") {
         var dlaBaseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
-        return dlaMod.validateDlaPartialPageCapture(parsed, { baseline: dlaBaseline || null });
+        return dlaMod.validateDlaPartialPageCapture(
+          repairDlaPartialPageCaptureForValidation(
+            parsed,
+            dlaBaseline || null
+          ),
+          { baseline: dlaBaseline || null }
+        );
       }
     }
     if (stage === "gam") {
@@ -9643,6 +9697,52 @@
     });
   }
 
+  function repairDlaPartialPageCaptureForValidation(parsed, baseline) {
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (
+      !dlaMod ||
+      typeof dlaMod.repairDlaPartialShellPlaceholderFields !== "function" ||
+      !parsed ||
+      typeof parsed !== "object"
+    ) {
+      return parsed;
+    }
+    return dlaMod.repairDlaPartialShellPlaceholderFields(parsed, {
+      baseline: baseline || null
+    }).page;
+  }
+
+  function applyDlaPartialShellPlaceholderRepairToCapture(raw, stepContext, wf) {
+    if (!stepContext || !isWorkflowStepDesignLearningActivities(stepContext)) {
+      return raw;
+    }
+    var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
+    if (!isPartialPageOutputWorkflowEnabled(workflow)) {
+      return raw;
+    }
+    if (!String(raw || "").trim()) {
+      return raw;
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return raw;
+    var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (!dlaMod || typeof dlaMod.repairDlaPartialShellPlaceholderFields !== "function") {
+      return raw;
+    }
+    var repairResult = dlaMod.repairDlaPartialShellPlaceholderFields(parsed, {
+      baseline: baseline || null
+    });
+    if (!repairResult.repairApplied) {
+      return raw;
+    }
+    try {
+      return JSON.stringify(repairResult.page, null, 2);
+    } catch (_) {
+      return raw;
+    }
+  }
+
   function validateDlaOrPageCapture(parsed, baseline, wf, step) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
@@ -9656,7 +9756,10 @@
       dlaMod
     ) {
       if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "dla") {
-        return dlaMod.validateDlaPartialPageCapture(parsed, { baseline: baseline || null });
+        return dlaMod.validateDlaPartialPageCapture(
+          repairDlaPartialPageCaptureForValidation(parsed, baseline || null),
+          { baseline: baseline || null }
+        );
       }
       if (
         partialMode &&
@@ -9664,7 +9767,10 @@
         parsed.assembly_state &&
         parsed.assembly_state.current_stage === "dla"
       ) {
-        return dlaMod.validateDlaPartialPageCapture(parsed, { baseline: baseline || null });
+        return dlaMod.validateDlaPartialPageCapture(
+          repairDlaPartialPageCaptureForValidation(parsed, baseline || null),
+          { baseline: baseline || null }
+        );
       }
       if (
         parsed.assembly_state &&
@@ -16840,6 +16946,159 @@
     );
   }
 
+  /** Sprint 75 C-06 — Create-time LD product choice only (not a persisted output-type schema). */
+  var LD_CREATE_OUTPUT_TYPE_SELF_STUDY = "self_study_resource";
+  var LD_CREATE_OUTPUT_TYPE_WORKSHOP = "workshop";
+  var LD_CREATE_OUTPUT_TYPE_CHOICES = [
+    { value: LD_CREATE_OUTPUT_TYPE_SELF_STUDY, label: "Self-study resource" },
+    { value: LD_CREATE_OUTPUT_TYPE_WORKSHOP, label: "Workshop" }
+  ];
+
+  function normalizeLdCreateOutputType(raw) {
+    var v = String(raw == null ? "" : raw).trim();
+    if (v === LD_CREATE_OUTPUT_TYPE_SELF_STUDY || v === LD_CREATE_OUTPUT_TYPE_WORKSHOP) return v;
+    return "";
+  }
+
+  function getSelectedLdCreateOutputTypeFromUi() {
+    refreshWfLdCreateOutputTypeElementRefs();
+    if (!els.wfLdCreateOutputType) return "";
+    return normalizeLdCreateOutputType(els.wfLdCreateOutputType.value);
+  }
+
+  function composeLdCreateDesignIntent(kind, focusText) {
+    var focus = String(focusText == null ? "" : focusText).trim();
+    var normalized = normalizeLdCreateOutputType(kind);
+    if (normalized === LD_CREATE_OUTPUT_TYPE_SELF_STUDY) {
+      return focus ? "Create a self-study resource: " + focus : "Create a self-study resource";
+    }
+    if (normalized === LD_CREATE_OUTPUT_TYPE_WORKSHOP) {
+      return focus ? "Create a workshop: " + focus : "Create a workshop";
+    }
+    return focus;
+  }
+
+  function getLdCreateOutputTypePrimaryFactorSeed(kind) {
+    var normalized = normalizeLdCreateOutputType(kind);
+    if (normalized === LD_CREATE_OUTPUT_TYPE_SELF_STUDY) {
+      return {
+        delivery_context: "self_directed",
+        delivery_mode: "async",
+        delivery_pattern: "mostly_online",
+        page_profile: "learner"
+      };
+    }
+    if (normalized === LD_CREATE_OUTPUT_TYPE_WORKSHOP) {
+      return {
+        delivery_mode: "live_workshop",
+        delivery_context: "in_person",
+        delivery_pattern: "face_to_face",
+        learning_environments: ["classroom"]
+      };
+    }
+    return null;
+  }
+
+  function mergeLdCreateOutputTypeIntoExplicitFactors(explicitValues, kind) {
+    var out = explicitValues && typeof explicitValues === "object" ? Object.assign({}, explicitValues) : {};
+    var seed = getLdCreateOutputTypePrimaryFactorSeed(kind);
+    if (!seed) return out;
+    Object.keys(seed).forEach(function (k) {
+      if (k === "learning_environments") {
+        out.learning_environments = mergeUniqueStringList(seed.learning_environments, out.learning_environments);
+        return;
+      }
+      out[k] = seed[k];
+    });
+    var mats = Array.isArray(out.session_materials) ? out.session_materials.slice() : [];
+    if (mats.indexOf("page") === -1) mats.unshift("page");
+    out.session_materials = mats;
+    return out;
+  }
+
+  function applyLdCreateOutputTypePrimaryFactors(factors, base) {
+    var kind = normalizeLdCreateOutputType(base && base.ldCreateOutputType);
+    if (!kind) return factors && typeof factors === "object" ? factors : {};
+    var out = factors && typeof factors === "object" ? factors : {};
+    var seed = getLdCreateOutputTypePrimaryFactorSeed(kind);
+    if (!seed) return out;
+    Object.keys(seed).forEach(function (k) {
+      if (k === "learning_environments") {
+        out.learning_environments = mergeUniqueStringList(
+          seed.learning_environments,
+          out.learning_environments
+        );
+        return;
+      }
+      out[k] = seed[k];
+    });
+    var mats = Array.isArray(out.session_materials) ? out.session_materials.slice() : [];
+    if (mats.indexOf("page") === -1) mats.unshift("page");
+    out.session_materials = mats;
+    if (kind === LD_CREATE_OUTPUT_TYPE_SELF_STUDY) {
+      var envs = Array.isArray(out.learning_environments) ? out.learning_environments.slice() : [];
+      envs = envs.filter(function (e) {
+        return String(e || "").toLowerCase() !== "classroom";
+      });
+      if (!envs.length) envs = ["vle"];
+      out.learning_environments = envs;
+    }
+    return out;
+  }
+
+  function refreshWfLdCreateOutputTypeElementRefs() {
+    // Re-resolve Create LD output controls from the live DOM. Protects against
+    // stale els caches and mismatched cached HTML/JS after C-06 markup landed.
+    if (typeof document === "undefined" || !document.getElementById) return;
+    els.wfLdCreateOutputTypeGroup = document.getElementById("wfLdCreateOutputTypeGroup");
+    els.wfLdCreateOutputType = document.getElementById("wfLdCreateOutputType");
+    els.wfDesignBasicsIntro = document.getElementById("wfDesignBasicsIntro");
+    els.wfDesignIntentLabel = document.getElementById("wfDesignIntentLabel");
+    els.wfDesignDesiredOutputsLabel = document.getElementById("wfDesignDesiredOutputsLabel");
+  }
+
+  function syncWorkflowFactoryLdCreateOutputTypeUi(structuredDomainId) {
+    refreshWfLdCreateOutputTypeElementRefs();
+    var isLd = String(structuredDomainId || "") === "learning-design";
+    if (els.wfLdCreateOutputTypeGroup) {
+      els.wfLdCreateOutputTypeGroup.classList.toggle("hidden", !isLd);
+      if (isLd) {
+        els.wfLdCreateOutputTypeGroup.removeAttribute("hidden");
+        els.wfLdCreateOutputTypeGroup.setAttribute("aria-hidden", "false");
+      } else {
+        els.wfLdCreateOutputTypeGroup.setAttribute("aria-hidden", "true");
+      }
+    }
+    if (!isLd && els.wfLdCreateOutputType) {
+      els.wfLdCreateOutputType.value = "";
+    }
+    if (els.wfDesignBasicsIntro) {
+      els.wfDesignBasicsIntro.textContent = isLd
+        ? "Choose what you are creating, then describe that resource. The usual end product is an HTML page; use My Workflows to refine steps and prompts."
+        : "Describe what you want this workflow to produce. The usual end product is an HTML page; use the Workflows tab to refine workflow steps and prompts.";
+    }
+    if (els.wfDesignIntentLabel) {
+      els.wfDesignIntentLabel.textContent = isLd
+        ? "What should this cover?"
+        : "What are you trying to design or produce?";
+    }
+    if (els.wfDesignIntent) {
+      els.wfDesignIntent.placeholder = isLd
+        ? "e.g. Managing Risk for programme managers; climate-change misconceptions from the uploaded lecture"
+        : "e.g. research summary workflow, literature review pipeline, evidence briefing";
+    }
+    if (els.wfDesignDesiredOutputsLabel) {
+      els.wfDesignDesiredOutputsLabel.textContent = isLd
+        ? "Supporting contents and materials (optional)"
+        : "Learner-facing page and supporting outputs (optional)";
+    }
+    if (els.wfDesignDesiredOutputs) {
+      els.wfDesignDesiredOutputs.placeholder = isLd
+        ? "e.g. activities, formative checks, handouts, slide deck, facilitator notes"
+        : "e.g. activities, assessment on the page, slide deck, facilitator guide, handout";
+    }
+  }
+
   function isWorkflowBriefFacilitatedDeliveryIntent(blob, factors) {
     var text = String(blob || "").toLowerCase();
     if (!text) return false;
@@ -17089,6 +17348,7 @@
     out = reconcileFacilitatedBriefDeliveryOverrides(out, b);
     out = applyLearnerResourceBriefDeliveryAlignment(out, b);
     out = reconcileWorkflowBriefTopicFromSource(out, b);
+    out = applyLdCreateOutputTypePrimaryFactors(out, b);
     return out;
   }
 
@@ -19476,7 +19736,9 @@
           ? source.domainExtraValues
           : {},
       scopeConstraints: String(source.scopeConstraints || "").trim(),
-      selectedDomains: Array.isArray(source.selectedDomains) ? source.selectedDomains : []
+      selectedDomains: Array.isArray(source.selectedDomains) ? source.selectedDomains : [],
+      // Create-time LD product choice only — maps into existing factors; not a new WOS field.
+      ldCreateOutputType: normalizeLdCreateOutputType(source.ldCreateOutputType)
     };
   }
 
@@ -19649,8 +19911,6 @@
           renderWorkflowBriefResolvedPanel(resolvedState);
         }
         if (skipPostGenerationRefinement) {
-          state.workflowAwaitingDeepRefineOptIn = false;
-          state.workflowDeepRefineContext = null;
           appendWorkflowDesignLog(
             "assistant",
             "Your workflow is ready. You can adjust Settings at any time."
@@ -19752,8 +20012,6 @@
         }
         if (!postQueue.length) {
           logWorkflowTrace("[PRISM][WizardFlow] no required post-generation queue; finalizing current draft");
-          state.workflowAwaitingDeepRefineOptIn = false;
-          state.workflowDeepRefineContext = null;
           appendWorkflowDesignLog(
             "assistant",
             "Your workflow is ready. You can adjust Settings at any time."
@@ -19816,7 +20074,7 @@
   function handleStartWorkflowDesign() {
     if (!els.wfDesignName || !els.wfDesignIntent || !els.wfDesignInputs) return;
     var name = (els.wfDesignName.value || "").trim();
-    var designIntent = (els.wfDesignIntent.value || "").trim();
+    var focusOrIntent = (els.wfDesignIntent.value || "").trim();
     var audience = els.wfDesignAudience ? (els.wfDesignAudience.value || "").trim() : "";
     var scopeScale = els.wfDesignScale ? (els.wfDesignScale.value || "").trim() : "";
     var inputs = (els.wfDesignInputs.value || "").trim();
@@ -19824,13 +20082,42 @@
       ? String(els.wfDesignStartingArtefact.value || "").trim()
       : "";
     var desiredOutputs = els.wfDesignDesiredOutputs ? (els.wfDesignDesiredOutputs.value || "").trim() : "";
-    var goal = designIntent;
-    if (!name || !designIntent) {
-      showToast("Enter at least workflow name and design intent.", "error");
+    var selectedDomains = getSelectedWorkflowDomains();
+    var isLearningDesign = selectedDomains.indexOf("learning-design") !== -1;
+    var ldCreateOutputType = isLearningDesign ? getSelectedLdCreateOutputTypeFromUi() : "";
+    if (isLearningDesign && !ldCreateOutputType) {
+      showToast("Choose what you are creating: Self-study resource or Workshop.", "error");
+      // Ensure the required selector is visible even if a prior sync missed the live DOM.
+      syncWorkflowFactoryLdCreateOutputTypeUi("learning-design");
+      if (els.wfLdCreateOutputTypeGroup) {
+        try {
+          els.wfLdCreateOutputTypeGroup.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        } catch (_eScroll) {}
+      }
+      if (els.wfLdCreateOutputType && typeof els.wfLdCreateOutputType.focus === "function") {
+        try {
+          els.wfLdCreateOutputType.focus();
+        } catch (_eFocus) {}
+      }
       return;
     }
-    if (!state.apiKey) {
-      showToast("Load an API key first to design workflows.", "error");
+    var designIntent = isLearningDesign
+      ? composeLdCreateDesignIntent(ldCreateOutputType, focusOrIntent)
+      : focusOrIntent;
+    var goal = designIntent;
+    if (!name || !designIntent) {
+      showToast(
+        isLearningDesign
+          ? "Enter at least workflow name and what this should cover."
+          : "Enter at least workflow name and design intent.",
+        "error"
+      );
+      return;
+    }
+    // API-action gate (S75-D09 revised): Design workflow is the first Create
+    // action that leads to OpenAI calls (intent interpretation → design).
+    // Keep the user on Create with brief state intact; do not navigate away.
+    if (!ensureCreateWorkflowApiKeyPrerequisite()) {
       return;
     }
 
@@ -19858,19 +20145,12 @@
     state.workflowSelectedVersion = "refined";
 
     var scopeConstraints = els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "";
-    state.workflowAwaitingRefineOptIn = false;
-    state.workflowAwaitingSuggestionAnswer = false;
-    state.workflowReviewSuggestions = null;
-    state.workflowReviewIndex = 0;
-    state.workflowAwaitingDeepRefineOptIn = false;
-    state.workflowDeepRefineContext = null;
     state.workflowBriefElicitation = null;
     state.workflowDomainSuggestionPending = null;
     state.workflowBriefInferenceConfirmation = null;
     state.workflowBriefResolved = null;
     renderWorkflowBriefResolvedPanel(null);
 
-    var selectedDomains = getSelectedWorkflowDomains();
     if (shouldRecommendLearningDesignDomain(designIntent, goal, selectedDomains)) {
       state.workflowDomainSuggestionPending = {
         name: name,
@@ -19880,7 +20160,8 @@
         inputs: inputs,
         startingArtefact: startingArtefact,
         desiredOutputs: desiredOutputs,
-        scopeConstraints: els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : ""
+        scopeConstraints: els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "",
+        ldCreateOutputType: ldCreateOutputType
       };
       if (els.wfDesignStatus) {
         els.wfDesignStatus.textContent = "Domain suggestion";
@@ -19916,7 +20197,8 @@
       desiredOutputs: desiredOutputs,
       domainExtraValues: collectWorkflowDomainExtraFieldValues(),
       scopeConstraints: scopeConstraints,
-      selectedDomains: selectedDomains
+      selectedDomains: selectedDomains,
+      ldCreateOutputType: ldCreateOutputType
     });
     var briefConfigPromise =
       window.WorkflowGenerationContext &&
@@ -19961,7 +20243,10 @@
         }
 
         var config = normalizeWorkflowBriefConfig(effectiveConfig);
-        var explicitValues = extractWorkflowBriefExplicitFactors(base);
+        var explicitValues = mergeLdCreateOutputTypeIntoExplicitFactors(
+          extractWorkflowBriefExplicitFactors(base),
+          ldCreateOutputType
+        );
         var ruleInferredValues = applyWorkflowBriefInferenceRules(
           config,
           [designIntent, goal, desiredOutputs].join("\n"),
@@ -19985,7 +20270,10 @@
               explicitValues,
               inferredValues
             );
-            explicitValues = validatedCandidates.explicitValues;
+            explicitValues = mergeLdCreateOutputTypeIntoExplicitFactors(
+              validatedCandidates.explicitValues,
+              ldCreateOutputType
+            );
             inferredValues = validatedCandidates.inferredValues;
             var firstPass = resolveWorkflowBriefFactors(config, explicitValues, {}, inferredValues, base);
             if (firstPass.missing.length) {
@@ -22852,9 +23140,70 @@
       els.apiKeyHelperText.classList.toggle("hidden", loaded);
     }
     syncStartRefinementButtonState();
+    // Create Workflow Design remains clickable without a key so the action gate
+    // can reveal/focus the existing API-key controls (S75-D09 revised).
     if (els.wfDesignStartBtn) {
-      els.wfDesignStartBtn.disabled = !loaded;
+      els.wfDesignStartBtn.disabled = false;
     }
+  }
+
+  /** True when an OpenAI API key is already in memory for Create Workflow / API calls. */
+  function hasConfiguredOpenAiApiKey() {
+    return !!String(state.apiKey || "").trim();
+  }
+
+  /**
+   * Reveal the existing header API-key file picker (no new UI).
+   * Used when an API-dependent Create Workflow action is attempted without a key.
+   */
+  function revealOpenAiApiKeyEntry(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    updateApiKeyStatus(hasConfiguredOpenAiApiKey());
+    if (hasConfiguredOpenAiApiKey()) return true;
+    if (els.apiKeyControls) {
+      els.apiKeyControls.classList.remove("hidden");
+    }
+    if (els.apiKeyHelperText) {
+      els.apiKeyHelperText.classList.remove("hidden");
+    }
+    var loader =
+      (els.apiKeyFile && els.apiKeyFile.closest && els.apiKeyFile.closest(".api-key-loader")) ||
+      (typeof document !== "undefined" && document.querySelector
+        ? document.querySelector(".api-key-loader")
+        : null);
+    if (loader && typeof loader.scrollIntoView === "function") {
+      try {
+        loader.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      } catch (_eScroll) {
+        try {
+          loader.scrollIntoView(true);
+        } catch (_eScroll2) {}
+      }
+    }
+    if (els.apiKeyFile && typeof els.apiKeyFile.focus === "function") {
+      try {
+        els.apiKeyFile.focus();
+      } catch (_eFocus) {}
+    }
+    if (opts.silent !== true) {
+      showToast(
+        String(opts.message || "Load your OpenAI API key to continue."),
+        "error"
+      );
+    }
+    return false;
+  }
+
+  /**
+   * Create Workflow API-action prerequisite (not a navigation gate).
+   * Returns true when an OpenAI-dependent Create action may proceed.
+   */
+  function ensureCreateWorkflowApiKeyPrerequisite() {
+    if (hasConfiguredOpenAiApiKey()) return true;
+    revealOpenAiApiKeyEntry({
+      message: "Load your OpenAI API key to continue."
+    });
+    return false;
   }
 
   /**
@@ -23483,9 +23832,6 @@
             return String(row && row.id ? row.id : "").trim() === stepId;
           }) || null
         : null;
-      var runnerSummary = getRunnerWhatThisStepDoes(stepForRun || {});
-      var partialWorkflowMode = isPartialPageOutputWorkflowEnabled(wfForRun || {});
-      var postEpisodePartialStep = isPostEpisodePlanPartialOutputStep(stepForRun || {}, wfForRun || {});
       var summaryPanel = li.querySelector('[data-role="runner-summary"]');
       var summaryBody = li.querySelector('[data-role="runner-summary-body"]');
       if (summaryPanel && summaryBody) {
@@ -23496,20 +23842,24 @@
       var runOutWrap = li.querySelector('[data-role="run-step-output-wrap"]');
       var runOutArea = li.querySelector('[data-field="runStepOutput"]');
       var runOutStatus = li.querySelector('[data-role="run-step-output-status"]');
-      var shouldShowRunOutput = isRun && workflowStepProducesStoredArtefact(stepForRun || {}, wfForRun || {});
+      var runOutLabel = li.querySelector('[data-role="run-step-output-label"]');
+      // Sprint 75 C-04: show capture only when PRISM requires a page-structure artefact.
+      var shouldShowRunOutput =
+        isRun && isWorkflowStepPageStructureProducer(stepForRun || {}, wfForRun || {});
       if (runOutWrap) {
         runOutWrap.classList.toggle("hidden", !shouldShowRunOutput);
+      }
+      if (runOutLabel) {
+        runOutLabel.textContent = shouldShowRunOutput
+          ? "Paste the result back into PRISM"
+          : "Step output artefact (stored)";
       }
       if (runOutStatus) {
         runOutStatus.classList.toggle("hidden", !shouldShowRunOutput || !String(runOutStatus.textContent || "").trim());
       }
       if (runOutArea) {
-        if (isWorkflowStepPageStructureProducer(stepForRun || {}, wfForRun || {})) {
-          runOutArea.placeholder =
-            "Paste this step's generated JSON page artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
-        } else if (workflowStepProducesStoredArtefact(stepForRun || {}, wfForRun || {})) {
-          runOutArea.placeholder =
-            "Paste this step's generated JSON artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
+        if (shouldShowRunOutput) {
+          runOutArea.placeholder = "Paste the result from your AI chat here.";
         } else {
           runOutArea.placeholder = "";
         }
@@ -23542,6 +23892,30 @@
           el.disabled = isRun;
         }
       });
+
+      // Sprint 75: meaningful Instructions as read-only prose in Run; Edit keeps textarea.
+      var notesAreaEl = li.querySelector('[data-field="notes"]');
+      var runInstructionsProseEl = li.querySelector('[data-role="run-instructions-prose"]');
+      var notesMeaningful = "";
+      if (notesAreaEl) {
+        notesMeaningful = String(notesAreaEl.value || "").trim();
+      }
+      var showRunInstructions = isRun && !!notesMeaningful;
+      if (instructionsLabelEl) {
+        instructionsLabelEl.classList.toggle("hidden", isRun);
+      }
+      if (notesAreaEl) {
+        notesAreaEl.classList.toggle("hidden", isRun);
+      }
+      if (runInstructionsProseEl) {
+        if (showRunInstructions) {
+          runInstructionsProseEl.textContent = notesMeaningful;
+          runInstructionsProseEl.classList.remove("hidden");
+        } else {
+          runInstructionsProseEl.textContent = "";
+          runInstructionsProseEl.classList.add("hidden");
+        }
+      }
 
       // Move / remove buttons are disabled in run mode, copy stays active.
       var moveAndRemove = li.querySelectorAll(
@@ -23684,9 +24058,9 @@
     if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li)) {
       if (isWorkflowStepPageStructureProducer(stepRow || {}, wf || {})) {
         if (workflowRunStepHasBlockingCaptureErrors(stepId)) {
-          return "Fix validation errors in this step's output artefact before continuing.";
+          return "Fix the validation errors in this step's result before continuing.";
         }
-        return "Paste a valid output artefact for this step before continuing.";
+        return "Paste a valid result for this step before continuing.";
       }
     }
     return "";
@@ -23914,6 +24288,25 @@
     );
     var finalizedCapture = "";
     if (partialPostEpisodePlanStep) {
+      if (
+        stepRow &&
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: stepRow.canonical_step_id || stepRow.canonicalStepId || "",
+          stepCanonicalTitle: stepRow.title || "",
+          stepTitle: stepRow.title || "",
+          stepOutputName: stepRow.outputName || ""
+        })
+      ) {
+        var repairedPartialDla = applyDlaPartialShellPlaceholderRepairToCapture(
+          raw,
+          dlaCaptureCtx,
+          wf
+        );
+        if (repairedPartialDla !== raw) {
+          ta.value = repairedPartialDla;
+          raw = repairedPartialDla;
+        }
+      }
       finalizedCapture = sanitizePrismRunCapturedOutput(raw);
     } else {
       var sanitizedDlaCapture = sanitizeWorkflowRunCapturedOutputForStep(raw, gamCtx);
@@ -24132,8 +24525,8 @@
     var text = "";
     if (hasBlockingErr) {
       text = blockingMessage
-        ? "Step output has validation errors: " + blockingMessage
-        : "Step output has validation errors.";
+        ? "This result has validation errors: " + blockingMessage
+        : "This result has validation errors.";
     } else {
       text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
       if (gamFormatWarn) {
@@ -24167,6 +24560,199 @@
   // - run mode source-of-truth: workflow detail run-mode class + active mode buttons
   // - transient run navigation: currentWorkflowRunIndex/workflowRunVisibleStepId/workflowRunCopiedStepId
   // - definition state remains canonical in state.workflows/state.selectedWorkflowId
+
+  /** Sprint 75 C-01: final Run step uses the same index bound as disabled Next. */
+  function isWorkflowRunAtFinalStep(idx, total) {
+    var i = typeof idx === "number" && isFinite(idx) ? idx : -1;
+    var t = typeof total === "number" && isFinite(total) ? total : 0;
+    return t > 0 && i >= t - 1;
+  }
+
+  function setWorkflowContinueToAuthoringVisible(visible) {
+    if (!els.workflowContinueToAuthoringBtn) return;
+    els.workflowContinueToAuthoringBtn.classList.toggle("hidden", !visible);
+  }
+
+  function handleContinueToAuthoring() {
+    switchTab("utilities");
+    refreshUtilitiesWorkflowContextUI();
+    if (els.utilitiesAssembleCurrentRunBtn && typeof els.utilitiesAssembleCurrentRunBtn.focus === "function") {
+      try {
+        els.utilitiesAssembleCurrentRunBtn.focus();
+      } catch (_e) {}
+    }
+  }
+
+  function firstNonEmptyText(values) {
+    var list = Array.isArray(values) ? values : [];
+    var i;
+    for (i = 0; i < list.length; i += 1) {
+      var text = String(list[i] == null ? "" : list[i]).trim();
+      if (text) return text;
+    }
+    return "";
+  }
+
+  /**
+   * Sprint 75 C-02: read Assemble-stamped workflow provenance from page JSON.
+   * Does not invent provenance when ids/names are absent (manual paste).
+   */
+  function extractAssembledWorkflowProvenanceFromPage(page) {
+    if (!page || typeof page !== "object" || Array.isArray(page)) {
+      return { workflowId: "", workflowName: "" };
+    }
+    var metadata =
+      page.metadata && typeof page.metadata === "object" && !Array.isArray(page.metadata)
+        ? page.metadata
+        : {};
+    return {
+      workflowId: firstNonEmptyText([
+        metadata.workflow_id,
+        metadata.workflowId,
+        page.workflow_id,
+        page.workflowId
+      ]),
+      workflowName: firstNonEmptyText([
+        metadata.workflow_name,
+        metadata.workflowName,
+        page.workflow_name,
+        page.workflowName
+      ])
+    };
+  }
+
+  function parseUtilitiesJsonInputForProvenance(rawInput) {
+    var raw = String(rawInput == null ? "" : rawInput).trim();
+    if (!raw) {
+      return { hasJson: false, page: null, provenance: { workflowId: "", workflowName: "" } };
+    }
+    var parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (_e) {
+      return { hasJson: false, page: null, provenance: { workflowId: "", workflowName: "" } };
+    }
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { hasJson: false, page: null, provenance: { workflowId: "", workflowName: "" } };
+    }
+    return {
+      hasJson: true,
+      page: parsed,
+      provenance: extractAssembledWorkflowProvenanceFromPage(parsed)
+    };
+  }
+
+  /**
+   * Pure model for Authoring selected / assembled-from / mismatch presentation.
+   * resolveWorkflowName(id) should return library name or "".
+   */
+  function buildAuthoringWorkflowContextModel(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var selectedId = String(opts.selectedWorkflowId || "").trim();
+    var selectedName = String(opts.selectedWorkflowName || "").trim();
+    var assembledId = String(opts.assembledWorkflowId || "").trim();
+    var assembledNameHint = String(opts.assembledWorkflowName || "").trim();
+    var hasAuthoringContent = !!opts.hasAuthoringContent;
+    var resolveName =
+      typeof opts.resolveWorkflowName === "function" ? opts.resolveWorkflowName : function () {
+        return "";
+      };
+
+    var selectedDisplay = selectedId
+      ? selectedName || resolveName(selectedId) || "Untitled workflow"
+      : "";
+    var assembledLibraryName = assembledId ? resolveName(assembledId) : "";
+    var assembledDisplay = assembledId
+      ? assembledLibraryName || assembledNameHint || "Unknown workflow"
+      : "";
+
+    var selectedLabel = selectedId
+      ? hasAuthoringContent
+        ? "Current workflow: " + selectedDisplay
+        : "Current workflow: " +
+          selectedDisplay +
+          ". Assemble From Current Workflow Run uses this workflow's Run captures."
+      : hasAuthoringContent
+      ? "Current workflow: none selected."
+      : "No workflow selected. Select a workflow in My Workflows before assembling.";
+
+    var assembledFromLabel = assembledId ? "Assembled from: " + assembledDisplay : "";
+    var mismatch = !!(selectedId && assembledId && selectedId !== assembledId);
+    var mismatchMessage = "";
+    if (mismatch) {
+      mismatchMessage =
+        "Authoring currently shows content assembled from \"" +
+        assembledDisplay +
+        "\". The selected workflow is \"" +
+        selectedDisplay +
+        "\". Assemble again to work with \"" +
+        selectedDisplay +
+        "\".";
+    }
+
+    return {
+      selectedWorkflowId: selectedId,
+      selectedDisplayName: selectedDisplay,
+      selectedLabel: selectedLabel,
+      assembledWorkflowId: assembledId,
+      assembledDisplayName: assembledDisplay,
+      assembledFromLabel: assembledFromLabel,
+      hasAssembledProvenance: !!assembledId,
+      mismatch: mismatch,
+      mismatchMessage: mismatchMessage,
+      hasAuthoringContent: hasAuthoringContent
+    };
+  }
+
+  function refreshUtilitiesWorkflowContextUI() {
+    if (
+      !els.utilitiesSelectedWorkflowLabel &&
+      !els.utilitiesAssembledFromLabel &&
+      !els.utilitiesWorkflowMismatchWarning
+    ) {
+      return null;
+    }
+    var selectedId = String(state.selectedWorkflowId || "").trim();
+    var selectedWf = selectedId ? findWorkflowById(selectedId) : null;
+    var raw = els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "") : "";
+    var parsed = parseUtilitiesJsonInputForProvenance(raw);
+    var hasContent = !!String(raw || "").trim();
+    var model = buildAuthoringWorkflowContextModel({
+      selectedWorkflowId: selectedId,
+      selectedWorkflowName: selectedWf && selectedWf.name ? String(selectedWf.name) : "",
+      assembledWorkflowId: parsed.provenance.workflowId,
+      assembledWorkflowName: parsed.provenance.workflowName,
+      hasAuthoringContent: hasContent,
+      resolveWorkflowName: function (id) {
+        var wf = findWorkflowById(id);
+        return wf && wf.name ? String(wf.name) : "";
+      }
+    });
+
+    if (els.utilitiesSelectedWorkflowLabel) {
+      els.utilitiesSelectedWorkflowLabel.textContent = model.selectedLabel;
+    }
+    if (els.utilitiesAssembledFromLabel) {
+      if (model.hasAssembledProvenance) {
+        els.utilitiesAssembledFromLabel.textContent = model.assembledFromLabel;
+        els.utilitiesAssembledFromLabel.classList.remove("hidden");
+      } else {
+        els.utilitiesAssembledFromLabel.textContent = "";
+        els.utilitiesAssembledFromLabel.classList.add("hidden");
+      }
+    }
+    if (els.utilitiesWorkflowMismatchWarning) {
+      if (model.mismatch) {
+        els.utilitiesWorkflowMismatchWarning.textContent = model.mismatchMessage;
+        els.utilitiesWorkflowMismatchWarning.classList.remove("hidden");
+      } else {
+        els.utilitiesWorkflowMismatchWarning.textContent = "";
+        els.utilitiesWorkflowMismatchWarning.classList.add("hidden");
+      }
+    }
+    return model;
+  }
+
   function updateWorkflowRunView() {
     if (!els.workflowDetail || !els.workflowSteps) return;
 
@@ -24203,6 +24789,11 @@
       if (els.workflowNextStepBtn) {
         els.workflowNextStepBtn.disabled = true;
       }
+      if (els.workflowRunCopyBtn) {
+        els.workflowRunCopyBtn.disabled = true;
+        els.workflowRunCopyBtn.textContent = "Copy";
+      }
+      setWorkflowContinueToAuthoringVisible(false);
       return;
     }
 
@@ -24236,14 +24827,6 @@
       copyBtn.textContent = shouldShowCopied ? "✓ Copied" : "Copy";
     });
 
-    // Status text, e.g. "Step 1 of 4".
-    if (els.workflowRunStatus) {
-      var displayIndex = idx + 1; // show steps as 1-based
-      var displayTotal = total;
-      els.workflowRunStatus.textContent =
-        "Step " + displayIndex + " of " + displayTotal;
-    }
-
     var wfRun = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     var stepIdRun = currentStepLi
       ? String(currentStepLi.getAttribute("data-step-id") || "").trim()
@@ -24255,13 +24838,41 @@
           return String(row && row.id ? row.id : "") === stepIdRun;
         }) || null;
     }
+
+    // Single progress heading: "Step N of M — Title"
+    if (els.workflowRunStatus) {
+      var displayIndex = idx + 1;
+      var displayTotal = total;
+      var stepTitle = "";
+      if (stepRowRun && String(stepRowRun.title || "").trim()) {
+        stepTitle = String(stepRowRun.title || "").trim();
+      } else if (currentStepLi) {
+        var titleInput = currentStepLi.querySelector('[data-field="title"]');
+        stepTitle =
+          titleInput && typeof titleInput.value === "string"
+            ? titleInput.value.trim()
+            : "";
+      }
+      if (!stepTitle) stepTitle = "Untitled step";
+      els.workflowRunStatus.textContent =
+        "Step " + displayIndex + " of " + displayTotal + " \u2014 " + stepTitle;
+    }
+
     if (currentStepLi) {
       maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
     }
 
-    // Prev/next buttons.
+    // Prev / Copy / Next share the top execution bar.
     if (els.workflowPrevStepBtn) {
       els.workflowPrevStepBtn.disabled = idx === 0;
+    }
+    if (els.workflowRunCopyBtn) {
+      els.workflowRunCopyBtn.disabled = !currentStepLi;
+      var shouldShowBarCopied =
+        !!currentStepId &&
+        currentStepId === state.workflowRunVisibleStepId &&
+        currentStepId === state.workflowRunCopiedStepId;
+      els.workflowRunCopyBtn.textContent = shouldShowBarCopied ? "✓ Copied" : "Copy";
     }
     if (els.workflowNextStepBtn) {
       var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
@@ -24279,17 +24890,22 @@
         els.workflowNextStepBtn.removeAttribute("title");
       }
     }
+    setWorkflowContinueToAuthoringVisible(isWorkflowRunAtFinalStep(idx, total));
     refreshWorkflowRunStepOutputStatusDisplays();
   }
 
   function setWorkflowMode(mode) {
-    if (!els.workflowModeEditBtn || !els.workflowModeRunBtn) return;
-
-    var normalized = String(mode || "edit").toLowerCase();
+    var normalized = String(mode || "run").toLowerCase();
+    if (normalized !== "run" && normalized !== "settings" && normalized !== "edit") {
+      normalized = "run";
+    }
     var isRun = normalized === "run";
     var isSettings = normalized === "settings";
     var isEdit = !isRun && !isSettings;
+    // Session mode is always recorded so navigation can preserve the operator's choice.
     state.workflowDetailMode = normalized;
+
+    if (!els.workflowModeEditBtn || !els.workflowModeRunBtn) return;
 
     if (!isRun) {
       state.workflowRunStepCompleted = {};
@@ -25409,167 +26025,6 @@
         // IMPORTANT: return parsed design so post-generation queueing receives
         // the finalized, heuristics-applied step list.
         return parsed;
-      });
-  }
-
-  function tryParseWorkflowReviewJson(text) {
-    if (!text) return null;
-    var trimmed = String(text).trim();
-    if (trimmed.startsWith("```")) {
-      var start = trimmed.indexOf("{");
-      var end = trimmed.lastIndexOf("}");
-      if (start !== -1 && end !== -1 && end > start) {
-        trimmed = trimmed.slice(start, end + 1);
-      }
-    }
-    try {
-      return JSON.parse(trimmed);
-    } catch (e) {
-      var s = trimmed.indexOf("{");
-      var eIdx = trimmed.lastIndexOf("}");
-      if (s !== -1 && eIdx !== -1 && eIdx > s) {
-        var candidate = trimmed.slice(s, eIdx + 1);
-        try {
-          return JSON.parse(candidate);
-        } catch (e2) {
-          return null;
-        }
-      }
-      return null;
-    }
-  }
-
-  function callOpenAIForWorkflowReview(design) {
-    var apiKey = state.apiKey;
-    if (!apiKey) {
-      return Promise.reject(new Error("API key not loaded"));
-    }
-    if (!design || !Array.isArray(design.steps)) {
-      return Promise.reject(new Error("Design a workflow first."));
-    }
-
-    var model = getSelectedModelId();
-    var temperature = getTemperatureFromCreativity();
-    var maxTokens = getWorkflowReviewMaxOutputTokens();
-
-    var reviewerPrompt =
-      "You are reviewing an existing workflow.\n\n" +
-      "The workflow is provided as JSON with a summary and steps.\n" +
-      "Each step has a 1-based index in the array order.\n\n" +
-      "Your job is to suggest only high-value improvements, such as:\n" +
-      "- Adding explicit review/refine/QA steps after major generation steps.\n" +
-      "- Adding missing steps that significantly improve clarity or robustness.\n" +
-      "- Avoiding unnecessary bloat.\n\n" +
-      "Respond with JSON ONLY, of the form:\n" +
-      "{\n" +
-      '  \"status\": \"review\",\n' +
-      '  \"proposed_changes\": [\n' +
-      "    {\n" +
-      '      \"description\": \"Short description of the change.\",\n' +
-      '      \"after_step\": 3,\n' +
-      "      \"step\": { \"title\": \"New step title\", \"role\": \"Optional role\", \"depends_on\": [3] }\n" +
-      "    }\n" +
-      "  ]\n" +
-      "}\n\n" +
-      "If you have no suggestions, return:\n" +
-      "{ \"status\": \"review\", \"proposed_changes\": [] }";
-
-    var input = [
-      { role: "system", content: reviewerPrompt },
-      { role: "user", content: JSON.stringify(design) }
-    ];
-
-    var body = {
-      model: model,
-      input: input,
-      max_output_tokens: maxTokens
-    };
-    body.temperature = temperature;
-
-    debugOpenAI(
-      "Calling Workflow Review with model='" +
-        model +
-        "', creativity='" +
-        getCreativityPreset() +
-        "', detail='" +
-        getResponseDetailPreset() +
-        "'"
-    );
-
-    return fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + apiKey
-      },
-      body: JSON.stringify(body)
-    })
-      .then(function (res) {
-        if (!res.ok) {
-          return res
-            .json()
-            .catch(function () {
-              return {};
-            })
-            .then(function (errBody) {
-              var msg = "Request failed";
-              if (errBody && errBody.error && errBody.error.message) {
-                msg = mapOpenAIError(errBody.error.message, res.status);
-              } else {
-                msg = "OpenAI responded with status " + res.status;
-              }
-              throw new Error(msg);
-            });
-        }
-        return res.json();
-    })
-      .then(function (data) {
-        // Track token usage for Workflow Factory review calls as well.
-        if (data && data.usage) {
-          var wfReviewUsage = {
-            prompt_tokens: data.usage.input_tokens,
-            completion_tokens: data.usage.output_tokens,
-            total_tokens: data.usage.total_tokens
-          };
-          updateTokenUsage(wfReviewUsage, model);
-        }
-
-        try {
-          console.log("[PRISM][Workflow Review raw response]", data);
-        } catch (e) {}
-
-        if (
-          data &&
-          data.status === "incomplete" &&
-          data.incomplete_details &&
-          data.incomplete_details.reason === "max_output_tokens"
-        ) {
-          throw new Error(
-            "The model hit its output token limit while reviewing the workflow. Try lowering max tokens or switching models."
-          );
-        }
-
-        if (
-          !data ||
-          !Array.isArray(data.output) ||
-          !data.output[0] ||
-          !data.output[0].content ||
-          !data.output[0].content[0] ||
-          typeof data.output[0].content[0].text !== "string"
-        ) {
-          throw new Error("Unexpected OpenAI response format for review.");
-        }
-
-        var content = String(data.output[0].content[0].text || "").trim();
-        var parsed = tryParseWorkflowReviewJson(content);
-        if (
-          !parsed ||
-          parsed.status !== "review" ||
-          !Array.isArray(parsed.proposed_changes)
-        ) {
-          throw new Error("The reviewer did not return valid review JSON.");
-        }
-        return parsed.proposed_changes;
       });
   }
 
@@ -26989,18 +27444,166 @@
     };
   }
 
+  /**
+   * Cumulative map merge: durable baseline + live overlay.
+   * Keys present in live update/replace durable values.
+   * Keys absent from a partial live map are preserved from durable state.
+   * ABSENT ≠ DELETE (S75-D14). Explicit Clear removes the whole record.
+   */
+  function mergeWorkflowRunCaptureMaps(durableMap, liveMap) {
+    var durable =
+      durableMap && typeof durableMap === "object" && !Array.isArray(durableMap)
+        ? durableMap
+        : {};
+    var live =
+      liveMap && typeof liveMap === "object" && !Array.isArray(liveMap) ? liveMap : {};
+    return Object.assign({}, durable, live);
+  }
+
+  function mergeWorkflowResourceRefsPreservingDurable(durableRefs, liveRefs) {
+    var live = Array.isArray(liveRefs) ? liveRefs.slice() : [];
+    var durable = Array.isArray(durableRefs) ? durableRefs.slice() : [];
+    if (live.length) return live;
+    return durable;
+  }
+
+  function mergeWorkflowPageResourceRefsPreservingDurable(durableRefs, liveRefs) {
+    var durable =
+      durableRefs && typeof durableRefs === "object" && !Array.isArray(durableRefs)
+        ? durableRefs
+        : {};
+    var live =
+      liveRefs && typeof liveRefs === "object" && !Array.isArray(liveRefs) ? liveRefs : {};
+    var liveVideo = String(live.videoResourceId || "").trim();
+    var durableVideo = String(durable.videoResourceId || "").trim();
+    var liveAdditional = Array.isArray(live.additionalResources)
+      ? live.additionalResources
+      : [];
+    var durableAdditional = Array.isArray(durable.additionalResources)
+      ? durable.additionalResources
+      : [];
+    return {
+      videoResourceId: liveVideo || durableVideo,
+      videoSectionTitle: String(
+        live.videoSectionTitle != null && String(live.videoSectionTitle).trim()
+          ? live.videoSectionTitle
+          : durable.videoSectionTitle || "Video"
+      ),
+      videoIntroText:
+        live.videoIntroText != null && String(live.videoIntroText) !== ""
+          ? String(live.videoIntroText)
+          : String(durable.videoIntroText || ""),
+      additionalResourcesIntro:
+        live.additionalResourcesIntro != null && String(live.additionalResourcesIntro) !== ""
+          ? String(live.additionalResourcesIntro)
+          : String(durable.additionalResourcesIntro || ""),
+      additionalResources: liveAdditional.length
+        ? liveAdditional.map(function (row) {
+            var item = row && typeof row === "object" ? row : {};
+            return {
+              resource_id: String(item.resource_id || "").trim(),
+              link_text: String(item.link_text || "").trim(),
+              order:
+                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
+            };
+          })
+        : durableAdditional.map(function (row) {
+            var item = row && typeof row === "object" ? row : {};
+            return {
+              resource_id: String(item.resource_id || "").trim(),
+              link_text: String(item.link_text || "").trim(),
+              order:
+                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
+            };
+          })
+    };
+  }
+
+  function mergeWorkflowRunStateRecordWithLiveSnapshot(existingRec, liveSnapshot) {
+    var durable = existingRec && typeof existingRec === "object" ? existingRec : {};
+    var live = liveSnapshot && typeof liveSnapshot === "object" ? liveSnapshot : {};
+    return {
+      capturedOutputs: mergeWorkflowRunCaptureMaps(durable.capturedOutputs, live.capturedOutputs),
+      capturedOutputsRaw: mergeWorkflowRunCaptureMaps(
+        durable.capturedOutputsRaw,
+        live.capturedOutputsRaw
+      ),
+      stepCompleted: mergeWorkflowRunCaptureMaps(durable.stepCompleted, live.stepCompleted),
+      runIndex:
+        typeof live.runIndex === "number" && isFinite(live.runIndex) && live.runIndex >= 0
+          ? live.runIndex
+          : typeof durable.runIndex === "number" && isFinite(durable.runIndex) && durable.runIndex >= 0
+          ? durable.runIndex
+          : 0,
+      workflowResourceRefs: mergeWorkflowResourceRefsPreservingDurable(
+        durable.workflowResourceRefs,
+        live.workflowResourceRefs
+      ),
+      workflowPageResourceRefs: mergeWorkflowPageResourceRefsPreservingDurable(
+        durable.workflowPageResourceRefs,
+        live.workflowPageResourceRefs
+      )
+    };
+  }
+
   function persistWorkflowRunStateForWorkflow(workflowId, options) {
     var wid = String(workflowId || "").trim();
     if (!wid) return { ok: false, reason: "missing_workflow_id" };
     var store = loadWorkflowRunStateStore();
-    store[wid] = buildWorkflowRunStateSnapshotForCurrentSelection();
+    var existing =
+      store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var liveSnapshot = buildWorkflowRunStateSnapshotForCurrentSelection();
+    store[wid] = mergeWorkflowRunStateRecordWithLiveSnapshot(existing, liveSnapshot);
     var ok = saveWorkflowRunStateStore(store);
     return ok ? { ok: true } : { ok: false, reason: "storage_write_failed" };
+  }
+
+  /**
+   * Reconcile selected-workflow live capture maps with durable runstate.
+   * Durable baseline + live overlay (live wins for matching keys; missing live keys recovered).
+   */
+  function reconcileWorkflowRunCapturesWithDurableState(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) {
+      return {
+        capturedOutputs: Object.assign({}, state.workflowRunCapturedOutputs || {}),
+        capturedOutputsRaw: Object.assign({}, state.workflowRunCapturedOutputsRaw || {})
+      };
+    }
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var durableOutputs =
+      rec && rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? rec.capturedOutputs
+        : {};
+    var durableRaw =
+      rec && rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? rec.capturedOutputsRaw
+        : {};
+    var reconciledOutputs = mergeWorkflowRunCaptureMaps(
+      durableOutputs,
+      state.workflowRunCapturedOutputs
+    );
+    var reconciledRaw = mergeWorkflowRunCaptureMaps(
+      durableRaw,
+      state.workflowRunCapturedOutputsRaw
+    );
+    state.workflowRunCapturedOutputs = Object.assign({}, reconciledOutputs);
+    state.workflowRunCapturedOutputsRaw = Object.assign({}, reconciledRaw);
+    return {
+      capturedOutputs: Object.assign({}, reconciledOutputs),
+      capturedOutputsRaw: Object.assign({}, reconciledRaw)
+    };
   }
 
   function restoreWorkflowRunStateForWorkflow(workflowId) {
     var wid = String(workflowId || "").trim();
     if (!wid) return;
+    // Flush same-workflow live overlay into durable state before replace/restore so
+    // newer unsaved captures are not discarded and truncated live cannot erase durable keys.
+    if (String(state.selectedWorkflowId || "").trim() === wid) {
+      persistWorkflowRunStateForWorkflow(wid, { toastType: "" });
+    }
     var store = loadWorkflowRunStateStore();
     var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
     state.workflowRunCapturedOutputs =
@@ -27213,6 +27816,7 @@
     if (els.exportWorkflowBtn) {
       els.exportWorkflowBtn.disabled = false;
     }
+    refreshUtilitiesWorkflowContextUI();
   }
 
   function populateWorkflowDetail(wf, options) {
@@ -27817,6 +28421,35 @@
     };
   }
 
+  /**
+   * Shared Run + Edit validation: whether a step has a runnable prompt configuration
+   * under the current executable model (Sprint 75 S75-D05).
+   * Treats non-empty resolved prompt text and sourceType "v2_locked" as runnable
+   * (same rule used by Run Copy).
+   */
+  function isWorkflowStepRunnablePromptConfiguration(step, wf, promptResolved) {
+    var resolved =
+      promptResolved && typeof promptResolved === "object"
+        ? promptResolved
+        : resolveStepPromptText(step, wf);
+    if (String((resolved && resolved.text) || "").trim()) return true;
+    if (resolved && String(resolved.sourceType || "") === "v2_locked") return true;
+    return false;
+  }
+
+  /**
+   * Shared-page enrichment bindings are artefact wiring under linear Run order, not DAG
+   * execution dependencies. Same/later page→page edges must not warn in Edit validation.
+   */
+  function isSharedPageEnrichmentInputBinding(consumerStep, producerStep, binding, wf) {
+    if (!binding || binding.kind !== "internal") return false;
+    if (normalizeWorkflowArtefactBindingKey(binding.artifactName) !== "page") return false;
+    if (!isPageEnrichmentV2WorkflowEnabled(wf)) return false;
+    if (!isWorkflowStepPageStructureProducer(consumerStep, wf)) return false;
+    if (!isWorkflowStepPageStructureProducer(producerStep, wf)) return false;
+    return true;
+  }
+
   function getStepPromptEmptyOptionLabel(info) {
     var row = info && typeof info === "object" ? info : {};
     var promptSource = normalizePromptSourceType(row.promptSource || "");
@@ -28197,11 +28830,10 @@
       // In Run mode, explicitly check for a prompt and give feedback when none is set.
       if (inRunMode) {
         syncAllWorkflowRunCapturesFromDomToState();
-        var resolved = resolveStepPromptText(effectiveStep);
-        var allowsLockedRuntimePrompt = resolved && resolved.sourceType === "v2_locked";
-        if (!resolved.text && !allowsLockedRuntimePrompt) {
+        var resolved = resolveStepPromptText(effectiveStep, liveWf);
+        if (!isWorkflowStepRunnablePromptConfiguration(effectiveStep, liveWf, resolved)) {
           showToast(
-            resolved.error || "No prompt configured for this step.",
+            (resolved && resolved.error) || "No prompt configured for this step.",
             "error"
           );
           return;
@@ -28351,6 +28983,9 @@
               );
               state.workflowRunCopiedStepId = copiedStepId;
               setCopyBtnCopiedState(true);
+              if (els.workflowRunCopyBtn) {
+                els.workflowRunCopyBtn.textContent = "✓ Copied";
+              }
             } else {
               setCopyBtnCopiedState(false);
             }
@@ -28733,19 +29368,23 @@
     instructionsGroup.appendChild(runSummary);
     instructionsGroup.appendChild(instructionsLabel);
     instructionsGroup.appendChild(instructionsArea);
+    var runInstructionsProse = document.createElement("div");
+    runInstructionsProse.className = "workflow-step-run-instructions helper-text hidden";
+    runInstructionsProse.setAttribute("data-role", "run-instructions-prose");
+    instructionsGroup.appendChild(runInstructionsProse);
 
     var userNotesWrap = document.createElement("div");
     userNotesWrap.className = "workflow-step-run-output-wrap hidden";
     userNotesWrap.setAttribute("data-role", "run-step-output-wrap");
     var userNotesLabel = document.createElement("label");
-    userNotesLabel.textContent = "Step output artefact (stored)";
+    userNotesLabel.setAttribute("data-role", "run-step-output-label");
+    userNotesLabel.textContent = "Paste the result back into PRISM";
     var userNotesTextarea = document.createElement("textarea");
     userNotesTextarea.rows = 2;
     userNotesTextarea.className = "workflow-step-run-output";
     userNotesTextarea.setAttribute("data-field", "runStepOutput");
     userNotesTextarea.setAttribute("autocomplete", "off");
-    userNotesTextarea.placeholder =
-      "Paste this step's generated JSON artefact here. Raw JSON is accepted; a single fenced ```json block is also accepted.";
+    userNotesTextarea.placeholder = "Paste the result from your AI chat here.";
     var stepIdForRun = String(step.id != null ? step.id : "").trim();
     var rawStored =
       (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[stepIdForRun]) || "";
@@ -30621,6 +31260,7 @@
     // Validation ownership boundary:
     // evaluate a workflow-definition snapshot and return warnings only.
     // This function does not mutate workflow definition state.
+    // Sprint 75 S75-D05: runnable-prompt and same/later rules align with current Run model.
     var warnings = [];
     if (!wf || typeof wf !== "object") return warnings;
     var steps = Array.isArray(wf.steps) ? wf.steps : [];
@@ -30629,8 +31269,8 @@
       stepById[s.id] = { step: s, index: i };
     });
     steps.forEach(function (s, i) {
-      var promptResolved = resolveStepPromptText(s);
-      if (!promptResolved.text) {
+      var promptResolved = resolveStepPromptText(s, wf);
+      if (!isWorkflowStepRunnablePromptConfiguration(s, wf, promptResolved)) {
         warnings.push(
           "Step " + (i + 1) + " has no runnable prompt configured (" +
           (promptResolved.error || "No prompt configured") +
@@ -30645,7 +31285,10 @@
           warnings.push("Step " + (i + 1) + " references missing source step.");
           return;
         }
-        if (ref.index >= i) {
+        if (
+          ref.index >= i &&
+          !isSharedPageEnrichmentInputBinding(s, ref.step, b, wf)
+        ) {
           warnings.push("Step " + (i + 1) + " depends on same/later step.");
         }
         if (!String(ref.step.outputName || "").trim()) {
@@ -31291,9 +31934,10 @@
       );
     }
 
-    // Switch to Workflows tab and select the new workflow.
+    // Switch to My Workflows, select the new workflow, and enter Run (Create → Run handoff).
     switchTab("workflows");
     selectWorkflow(wfId);
+    setWorkflowMode("run");
     } catch (err) {
       try {
         console.error("[PRISM] handleSaveDesignedWorkflow failed", err);
@@ -31304,48 +31948,6 @@
         els.wfDesignStatus.className = "badge badge-danger";
       }
     }
-  }
-
-  function handleWorkflowReview() {
-    var versions = state.workflowDesignVersions;
-    if (!versions || !versions.draft || !Array.isArray(versions.draft.steps)) {
-      showToast("Design a workflow first.", "error");
-      return;
-    }
-
-    // Ensure we have a refined copy to modify, leaving draft intact.
-    if (!versions.refined) {
-      versions.refined = JSON.parse(JSON.stringify(versions.draft));
-    }
-    state.workflowSelectedVersion = "refined";
-
-    callOpenAIForWorkflowReview(versions.refined)
-      .then(function (changes) {
-        if (!changes || !changes.length) {
-          appendWorkflowDesignLog(
-            "assistant",
-            "The reviewer did not find any changes to suggest. You can save this workflow or adjust it manually."
-          );
-          showToast("Reviewer did not find any changes to suggest.", "success");
-          state.workflowAwaitingSuggestionAnswer = false;
-          state.workflowReviewSuggestions = null;
-          state.workflowReviewIndex = 0;
-          return;
-        }
-
-        state.workflowReviewSuggestions = changes;
-        state.workflowReviewIndex = 0;
-        state.workflowAwaitingSuggestionAnswer = true;
-
-        var first = changes[0];
-        appendWorkflowDesignLog(
-          "assistant",
-          "Suggestion 1: " + first.description + " Apply this change? (yes/no)"
-        );
-      })
-      .catch(function (err) {
-        showToast(err.message || "Error reviewing workflow.", "error");
-      });
   }
 
   function handleWorkflowAnswer() {
@@ -31423,33 +32025,6 @@
           els.wfDesignStatus.textContent = "Ready";
           els.wfDesignStatus.className = "badge badge-success";
         }
-      }
-      return;
-    }
-
-    var hasActivePostGenerationQueue =
-      !!(
-        state.workflowBriefElicitation &&
-        Array.isArray(state.workflowBriefElicitation.queue) &&
-        Number(state.workflowBriefElicitation.index || 0) <
-          state.workflowBriefElicitation.queue.length
-      );
-    if (hasActivePostGenerationQueue && state.workflowAwaitingDeepRefineOptIn) {
-      // Required post-generation questions take precedence over optional deep refinement.
-      state.workflowAwaitingDeepRefineOptIn = false;
-      state.workflowDeepRefineContext = null;
-    }
-
-    if (state.workflowAwaitingDeepRefineOptIn && !hasActivePostGenerationQueue) {
-      state.workflowAwaitingDeepRefineOptIn = false;
-      state.workflowDeepRefineContext = null;
-      appendWorkflowDesignLog(
-        "assistant",
-        "Your workflow is ready. You can adjust Settings at any time."
-      );
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Ready";
-        els.wfDesignStatus.className = "badge badge-success";
       }
       return;
     }
@@ -31971,102 +32546,6 @@
       return;
     }
 
-    // First: opt-in to refinement?
-    if (state.workflowAwaitingRefineOptIn) {
-      state.workflowAwaitingRefineOptIn = false;
-      var isNo =
-        answer === "no" ||
-        answer === "nope" ||
-        answer === "skip" ||
-        answer === "skip review";
-      if (isNo) {
-        appendWorkflowDesignLog(
-          "assistant",
-          "Great, you can now save this workflow or fine-tune it manually in the Workflows tab."
-        );
-        return;
-      }
-
-      appendWorkflowDesignLog(
-        "assistant",
-        "Okay, I’ll review the workflow and suggest a few improvements."
-      );
-      handleWorkflowReview();
-      return;
-    }
-
-    // Stepping through individual review suggestions.
-    if (state.workflowAwaitingSuggestionAnswer && state.workflowReviewSuggestions) {
-      var idx = state.workflowReviewIndex || 0;
-      if (idx < 0 || idx >= state.workflowReviewSuggestions.length) {
-        state.workflowAwaitingSuggestionAnswer = false;
-        return;
-      }
-
-      var apply =
-        answer !== "no" &&
-        answer !== "nope" &&
-        answer !== "skip" &&
-        answer !== "reject";
-
-      if (apply) {
-        var change = state.workflowReviewSuggestions[idx];
-        if (change && change.step) {
-          var versions = state.workflowDesignVersions;
-          if (!versions || !versions.refined || !Array.isArray(versions.refined.steps)) {
-            showToast("No refined workflow is available to update.", "error");
-            state.workflowAwaitingSuggestionAnswer = false;
-            return;
-          }
-          var steps = versions.refined.steps || [];
-          var after = typeof change.after_step === "number" ? change.after_step : steps.length;
-          var insertIndex = steps.length;
-          // after_step is 1-based index of the step after which we insert.
-          if (after >= 0 && after <= steps.length) {
-            insertIndex = after;
-          }
-
-          var newStep = {
-            title: change.step.title || "New step",
-            role: change.step.role || "",
-            depends_on: Array.isArray(change.step.depends_on)
-              ? change.step.depends_on.slice()
-              : []
-          };
-
-          steps.splice(insertIndex, 0, newStep);
-          versions.refined.steps = steps;
-          renderWorkflowDesignResult({ promptRefine: false });
-        }
-      }
-
-      // Move to the next suggestion.
-      state.workflowReviewIndex = idx + 1;
-      var nextIdx = state.workflowReviewIndex;
-      if (
-        nextIdx < state.workflowReviewSuggestions.length &&
-        state.workflowReviewSuggestions[nextIdx]
-      ) {
-        var next = state.workflowReviewSuggestions[nextIdx];
-        appendWorkflowDesignLog(
-          "assistant",
-          "Suggestion " +
-            (nextIdx + 1) +
-            ": " +
-            next.description +
-            " Apply this change? (yes/no)"
-        );
-      } else {
-        state.workflowAwaitingSuggestionAnswer = false;
-        appendWorkflowDesignLog(
-          "assistant",
-          "All review suggestions have been processed. You can now save this workflow or adjust it manually."
-        );
-      }
-
-      return;
-    }
-
     // Fallback: if we're not expecting an answer, gently guide the user.
     if (state.workflowDesignResult && state.workflowDesignResult.steps) {
       appendWorkflowDesignLog(
@@ -32246,6 +32725,8 @@
     if (!els.tabRefiner || !els.tabLibrary || !els.refinementPanel || !els.libraryPanel) {
       return;
     }
+    // Create Workflow is always navigable; API key is gated on Design workflow
+    // (and other OpenAI-dependent Create actions), not on tab entry (S75-D09).
     var showPromptFactory = name === "promptFactory";
     var showPromptLibrary = name === "promptLibrary";
     var showWorkflowFactory = name === "workflowFactory";
@@ -32316,6 +32797,14 @@
         "aria-hidden",
         showUtilities ? "false" : "true"
       );
+    }
+
+    if (showWorkflowFactory) {
+      // Re-sync LD Create output radios with the current domain whenever Create is shown.
+      syncWorkflowFactoryLdCreateOutputTypeUi(getWorkflowFactoryStructuredDomainId());
+    }
+    if (showUtilities) {
+      refreshUtilitiesWorkflowContextUI();
     }
     if (showWorkflowFactory && els.wfDesignSaveBtn) {
       els.wfDesignSaveBtn.disabled = false;
@@ -44161,51 +44650,6 @@
     ].join("");
   }
 
-  function buildUtilityLearningObjectHtml(title, audience, sectionHtmlBlocks, metadataHtmlBlocks) {
-    var sections = Array.isArray(sectionHtmlBlocks) ? sectionHtmlBlocks.filter(function (x) { return !!String(x || "").trim(); }) : [];
-    if (!sections.length) {
-      return { error: "No renderable sections found for learning object mode." };
-    }
-    var metadata = Array.isArray(metadataHtmlBlocks) ? metadataHtmlBlocks.filter(function (x) { return !!String(x || "").trim(); }) : [];
-    var navLinks = sections.map(function (_s, idx) {
-      return '<a href="#" data-lo-index="' + idx + '">' + (idx + 1) + "</a>";
-    }).join(" ");
-    var screensHtml = sections.map(function (sectionHtml, idx) {
-      var active = idx === 0 ? " active" : "";
-      return '<section class="lo-screen' + active + '" data-lo-screen="' + idx + '">' + sectionHtml + "</section>";
-    }).join("");
-    var metadataHtml = metadata.length
-      ? (
-          '<details class="util-meta lo-meta">' + utilityRenderMetaSummaryHtml() +
-            metadata.join("") +
-          "</details>"
-        )
-      : "";
-    var htmlDoc = [
-      "<!doctype html>",
-      "<html lang=\"en\">",
-      "<head>",
-      "<meta charset=\"utf-8\" />",
-      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
-      "<title>" + utilityEscapeHtml(title) + "</title>",
-      "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px auto;padding:0 8px;max-width:980px;color:#111827;line-height:1.65}h1{margin:0 0 10px;font-size:1.9rem;line-height:1.25}h2{margin:0 0 10px;font-size:1.2rem;line-height:1.35}h3{margin:18px 0 8px;font-size:1rem}h4{margin:12px 0 8px;font-size:.95rem;color:#374151}p{margin:0 0 12px}ul{margin:0 0 14px 20px;padding:0}li{margin:0 0 6px}section{margin:0 0 16px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#f9fafb;font-weight:600}tbody tr:nth-child(even){background:#fcfcfd}tbody tr{min-height:2.2rem}.util-task-block{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:14px 0;background:#fff;box-shadow:0 2px 6px rgba(17,24,39,.04)}.util-task-block p strong{line-height:1.4}.util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}.util-activity-header h3{margin:0}.util-activity-task{margin:0 0 12px}.util-badge-row{display:flex;gap:6px;flex-wrap:wrap}.util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-badge-time{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.util-badge-group{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.util-section-heading{display:flex;align-items:center;gap:.55rem;margin-bottom:8px}h2.util-section-heading{margin:22px 0 6px}.util-icon-heading{display:flex;align-items:flex-start;gap:.6rem}.util-icon-heading>span,.util-icon-heading>strong{flex:1;min-width:0}.util-material-icon{font-size:.88em;line-height:1;flex-shrink:0;width:1.05em;text-align:center;margin-top:.18em}.util-section-heading .util-section-icon,.util-section-heading .util-material-icon{margin-top:0;font-size:.95em;width:1.15em}.util-section-icon{margin-right:0}.util-section-icon--overview{color:#475569}.util-section-icon--learning-purpose{color:#2563eb}.util-section-icon--knowledge-summary{color:#d97706}.util-section-icon--learning-activities{color:#6366f1}.util-section-icon--assessment{color:#0891b2}.util-section-icon--study-tips{color:#059669}.util-section-icon--default{color:#64748b}.util-task-card-icon{color:#6366f1}.util-scenario-card-icon{color:#0f766e}.util-prompt-set-icon{color:#2563eb}.util-template-icon{color:#b45309}.util-table-icon{color:#475569}.util-output-icon{color:#16a34a}.util-support-note-icon{color:#64748b}.util-activity-task-icon{color:#334155}.util-meta-icon{color:#64748b}.util-strategy-icon{color:#6b7280}.util-generic-material-icon{color:#64748b}.util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.util-material-heading{margin:14px 0 10px;font-size:.95rem;line-height:1.35}.util-material-heading--plain{margin:10px 0 8px;font-weight:600;color:#4b5563}.util-task-block h4.util-material-heading{margin:12px 0 8px}.util-task-block h4.util-material-heading+.util-card-grid,.util-task-block h4.util-material-heading+.util-scenario-list,.util-task-block h4.util-material-heading+.util-prompt-set{margin-top:2px}.util-task-block h4.util-material-heading+h4.util-material-heading{margin-top:6px}.util-output-block{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #86efac;background:#f9fafb;border-radius:0 8px 8px 0}.util-output-inline{margin:8px 0}.util-line-label{margin:0 0 6px;color:#334155}.util-card-subheading{margin:8px 0 6px;font-size:.95rem;color:#374151;font-weight:600}.util-session-step{border-style:dashed;background:#f9fafb}.util-slide{border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:10px 0}.util-scenario-list{margin:8px 0 14px;padding-left:0}.util-scenario-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #2dd4bf;border-radius:8px;background:#fafafa}.util-scenario-card:last-child{margin-bottom:0}.util-scenario-card h3,.util-scenario-card h4{margin:0 0 8px;font-size:1rem}.util-scenario-title{margin:0 0 10px;font-size:1rem;line-height:1.35;color:#374151;font-weight:600}.util-stage-list{display:grid;gap:10px}.util-stage-card{border-left:3px solid #93c5fd;background:#fff;border-radius:8px;padding:10px 12px}.util-stage-card h5{margin:0 0 6px}.util-materials-stack{display:flex;flex-direction:column;gap:8px}.util-materials-stack>h4{margin:6px 0 2px}.util-material-card{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-material-card:last-child{margin-bottom:0}.util-material-card h4,.util-material-card h5{margin:0 0 8px}.util-card-grid{display:grid;gap:12px;margin:10px 0 14px}.util-task-card{margin:0 0 12px;padding:14px 16px;border:1px solid #e5e7eb;border-left:3px solid #a5b4fc;border-radius:8px;background:#fafafa}.util-task-card h5,.util-task-card-heading{margin:0 0 10px;font-size:.95rem;font-weight:600;color:#374151;line-height:1.35}.util-prompt-set{margin:10px 0 14px;padding:12px 14px;border:1px solid #e0e7ff;border-left:3px solid #93c5fd;border-radius:8px;background:#f8fafc}.util-prompt-set h5{margin:0 0 8px}.util-mini-card{margin:0 0 10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff}.util-mini-card h5{margin:0 0 6px}.util-check-list{margin-left:18px}.util-check-list li span{color:#16a34a;font-weight:700;margin-right:6px}.util-template-block{margin:0 0 10px;padding:10px 12px;border:1px dashed #cbd5e1;border-left:3px solid #fbbf24;border-radius:8px;background:#fff}.util-template-block h5{margin:0 0 6px}.util-template-note-line{height:1.1rem;border-bottom:1px dotted #cbd5e1;margin-top:8px}.util-structured-block{margin:0 0 12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fafafa}.util-structured-block:last-child{margin-bottom:0}.util-scenario-card p{margin:6px 0}.util-worksheet-line{margin:6px 0 10px;font-family:Segoe UI,Arial,sans-serif;letter-spacing:.02em}.util-activity-materials{margin:4px 0 10px}.util-support-note{display:flex;align-items:flex-start;gap:.5rem;font-size:.9rem;color:#4b5563;margin:12px 0 0;padding:10px 12px;border:1px solid #e5e7eb;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;background:#f8fafc}.util-support-note-body{flex:1;min-width:0}.util-support-note-label{font-weight:600;color:#374151}.util-meta{margin-top:26px;padding-top:10px;border-top:1px solid #e5e7eb;color:#4b5563}.util-meta summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta-summary{cursor:pointer;font-weight:600;color:#374151;margin-bottom:8px}.util-meta section{margin-bottom:10px}.util-meta h2{font-size:.98rem;margin:12px 0 6px}.util-meta p,.util-meta li{font-size:.92rem}.lo-shell{display:flex;flex-direction:column;gap:12px}.lo-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.lo-progress{font-size:.92rem;color:#4b5563;white-space:nowrap}.lo-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.lo-nav a{font-size:.88rem;color:#2563eb;text-decoration:none;border:1px solid #dbeafe;border-radius:999px;padding:4px 10px}.lo-nav a.active{background:#eff6ff;color:#1d4ed8}.lo-stage{border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:14px}.lo-screen{display:none}.lo-screen.active{display:block}.lo-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.lo-controls button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}.lo-controls button:disabled{opacity:.45;cursor:not-allowed}" +
-        getUtilityPagePresentationCss() +
-        "</style>",
-      "</head>",
-      "<body>",
-      '<div class="lo-shell">',
-      '<div class="lo-top"><div><h1>' + utilityEscapeHtml(title) + '</h1>' + (audience ? ('<p><strong>Audience:</strong> ' + utilityEscapeHtml(audience) + "</p>") : "") + '</div><div id="loProgress" class="lo-progress">1 of ' + sections.length + "</div></div>",
-      '<main class="lo-stage" id="loStage">' + screensHtml + "</main>",
-      '<div class="lo-controls"><button id="loPrevBtn" type="button">Previous</button><nav class="lo-nav" id="loNav">' + navLinks + '</nav><button id="loNextBtn" type="button">Next</button></div>',
-      metadataHtml,
-      "</div>",
-      "<script>(function(){var screens=[].slice.call(document.querySelectorAll('[data-lo-screen]'));var nav=[].slice.call(document.querySelectorAll('#loNav [data-lo-index]'));var progress=document.getElementById('loProgress');var prev=document.getElementById('loPrevBtn');var next=document.getElementById('loNextBtn');var idx=0;function render(){if(!screens.length)return;idx=Math.max(0,Math.min(idx,screens.length-1));screens.forEach(function(s,i){s.classList.toggle('active',i===idx);});nav.forEach(function(a,i){a.classList.toggle('active',i===idx);});if(progress)progress.textContent=(idx+1)+' of '+screens.length;if(prev)prev.disabled=idx<=0;if(next)next.disabled=idx>=screens.length-1;}if(prev)prev.addEventListener('click',function(){idx-=1;render();});if(next)next.addEventListener('click',function(){idx+=1;render();});nav.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var n=parseInt(a.getAttribute('data-lo-index'),10);if(!isNaN(n)){idx=n;render();}});});render();})();</script>",
-      "</body>",
-      "</html>"
-    ].join("");
-    return { html: htmlDoc };
-  }
-
   function pageActivityIdKey(value) {
     return String(value == null ? "" : value).trim().toLowerCase();
   }
@@ -46307,9 +46751,7 @@
     return out;
   }
 
-  function buildUtilityStructuredHtml(parsed, plan, _baseName, renderOptions) {
-    var options = renderOptions && typeof renderOptions === "object" ? renderOptions : {};
-    var presentationMode = String(options.presentationMode || "single_page").toLowerCase();
+  function buildUtilityStructuredHtml(parsed, plan, _baseName, _renderOptions) {
     var hints = plan && plan.renderHints && typeof plan.renderHints === "object"
       ? plan.renderHints
       : {};
@@ -49013,6 +49455,24 @@
       } catch (assemblyErr) {
         return { error: (assemblyErr && assemblyErr.message) || "Could not assemble page from captures." };
       }
+    } else {
+      // Authoring Preview/export must not silently render Episode Plan shells as finished pages.
+      var readyAssembleMod = resolvePageVnextAssembleLib();
+      if (
+        readyAssembleMod &&
+        typeof readyAssembleMod.assessAssembledPageLearnerReady === "function"
+      ) {
+        var readyGate = readyAssembleMod.assessAssembledPageLearnerReady(parsed, {
+          mode: "export_gate"
+        });
+        if (!readyGate || !readyGate.ok) {
+          return {
+            error:
+              (readyGate && readyGate.message) ||
+              "This workflow run does not yet contain the learner activity content needed to assemble the page."
+          };
+        }
+      }
     }
     if (opts.applyCompositionValidation !== false) {
       var compositionValidation = applyPageCompositionValidationForUtilitiesPage(
@@ -49078,7 +49538,6 @@
       var pageRendered = runUtilityPageExportPipeline(parsed, {
         renderPlan: options.renderPlan,
         sectionOrder: options.sectionOrder,
-        presentationMode: options.presentationMode,
         applyCompositionValidation: false,
         compositionOptions: options.compositionOptions,
         baseName: options.baseName,
@@ -49101,7 +49560,6 @@
       return { error: (plan && plan.error) || "Could not resolve renderer." };
     }
     var rendered = runUtilityRendererByPlan(plan, parsed, options.baseName || "", {
-      presentationMode: options.presentationMode,
       pageSections: getPageSectionsForRender(parsed)
     });
     if (!rendered || rendered.error) {
@@ -49165,12 +49623,6 @@
         }
       }
     }
-    var presentationMode = String(
-      (els.utilitiesPresentationMode && els.utilitiesPresentationMode.value) ||
-      state.utilitiesPresentationMode ||
-      "single_page"
-    ).toLowerCase();
-    state.utilitiesPresentationMode = presentationMode === "learning_object" ? "learning_object" : "single_page";
     var hasAttachedVisualAssets =
       !!(
         state.utilitiesOutputWorkspace &&
@@ -49231,7 +49683,6 @@
       .then(function () {
         return renderUtilitiesArtefactHtmlAsync(parsed, {
       selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
-      presentationMode: state.utilitiesPresentationMode,
       baseName: baseName,
       applyCompositionValidation: false,
       skipWorkflowAssembly: String(state.utilitiesSourceMode || "") !== "assembled_current_run",
@@ -49301,6 +49752,16 @@
       showToast("Select a workflow with run captures first.", "error");
       return;
     }
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    var reconciled = reconcileWorkflowRunCapturesWithDurableState(workflowId);
+    var capturesForAssemble =
+      reconciled && reconciled.capturedOutputs
+        ? reconciled.capturedOutputs
+        : state.workflowRunCapturedOutputs;
+    var capturesRawForAssemble =
+      reconciled && reconciled.capturedOutputsRaw
+        ? reconciled.capturedOutputsRaw
+        : state.workflowRunCapturedOutputsRaw;
     var stageCanonicalIds = [
       "step_design_page",
       "step_generate_assessment_items",
@@ -49314,8 +49775,8 @@
     var i;
     for (i = 0; i < stageCanonicalIds.length; i += 1) {
       seedRaw = readWorkflowStepCaptureByCanonicalId(wf, stageCanonicalIds[i], {
-        captures: state.workflowRunCapturedOutputs,
-        capturesRaw: state.workflowRunCapturedOutputsRaw,
+        captures: capturesForAssemble,
+        capturesRaw: capturesRawForAssemble,
         preferRaw: true
       });
       if (String(seedRaw || "").trim()) break;
@@ -49332,8 +49793,8 @@
     var assembled;
     try {
       assembled = resolvePageForRenderOrAssembly(parsedSeed, wf, {
-        captures: state.workflowRunCapturedOutputs,
-        capturesRaw: state.workflowRunCapturedOutputsRaw
+        captures: capturesForAssemble,
+        capturesRaw: capturesRawForAssemble
       });
     } catch (err) {
       showToast(
@@ -49358,6 +49819,7 @@
     state.utilitiesSourceMode = "assembled_current_run";
     refreshUtilitiesOutputWorkspaceFromPage(assembled, { activeView: "learner_page" });
     showUtilitiesOutputPanel();
+    refreshUtilitiesWorkflowContextUI();
     showToast("Assembled page loaded into Utilities JSON input.", "success");
   }
 
@@ -49504,7 +49966,6 @@
     if (els.utilitiesJsonInput) els.utilitiesJsonInput.value = "";
     if (els.utilitiesFileName) els.utilitiesFileName.value = "";
     if (els.utilitiesOutputFormat) els.utilitiesOutputFormat.value = "html";
-    if (els.utilitiesPresentationMode) els.utilitiesPresentationMode.value = "single_page";
     if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.srcdoc = "";
     if (els.utilitiesPreviewError) {
       els.utilitiesPreviewError.classList.add("hidden");
@@ -49534,9 +49995,9 @@
     state.utilitiesLastRenderInputNormalized = "";
     state.utilitiesLastFileName = "";
     state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
-    state.utilitiesPresentationMode = "single_page";
     state.utilitiesSourceMode = "";
     state.utilitiesVisualAssetObjectUrlsByBriefId = {};
+    refreshUtilitiesWorkflowContextUI();
   }
 
   function ensureWorkflowFactorySaveBinding() {
@@ -49662,9 +50123,6 @@
       // Never leave this action silent due to disabled button state.
       els.wfDesignSaveBtn.disabled = false;
       els.wfDesignSaveBtn.addEventListener("click", handleSaveDesignedWorkflow);
-    }
-    if (els.wfDesignReviewBtn) {
-      els.wfDesignReviewBtn.addEventListener("click", handleWorkflowReview);
     }
     if (els.wfDesignSendBtn) {
       els.wfDesignSendBtn.addEventListener("click", handleWorkflowAnswer);
@@ -49801,7 +50259,12 @@
     if (els.utilitiesJsonInput) {
       els.utilitiesJsonInput.addEventListener("input", function () {
         state.utilitiesSourceMode = "";
+        refreshUtilitiesWorkflowContextUI();
       });
+    }
+
+    if (els.workflowContinueToAuthoringBtn) {
+      els.workflowContinueToAuthoringBtn.addEventListener("click", handleContinueToAuthoring);
     }
 
     // Workflow run/edit wiring and keyboard shortcuts.
@@ -49875,6 +50338,18 @@
           persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
         }
         updateWorkflowRunView();
+      });
+    }
+    if (els.workflowRunCopyBtn) {
+      els.workflowRunCopyBtn.addEventListener("click", function () {
+        var liSteps = getWorkflowStepElements();
+        var idx = state.currentWorkflowRunIndex;
+        var currentLi = liSteps[idx] || null;
+        if (!currentLi) return;
+        var stepCopyBtn = currentLi.querySelector(".workflow-step-copy-btn");
+        if (stepCopyBtn && typeof stepCopyBtn.click === "function") {
+          stepCopyBtn.click();
+        }
       });
     }
     if (els.workflowNextStepBtn) {
@@ -50116,7 +50591,7 @@
     updateOutputTypeVisibility();
     updateWorkflowFactoryInputsCopyFromStartingPoint();
     renderWorkflowPromptWizardNotice();
-    setWorkflowMode("edit");
+    setWorkflowMode("run");
     switchTab("workflowFactory");
   }
 
@@ -50153,6 +50628,16 @@
     prismTestApi.buildWorkflowDesignBase = buildWorkflowDesignBase;
     prismTestApi.PF11_FIX_VERSION = PF11_FIX_VERSION;
     prismTestApi.buildWorkflowDesignBrief = buildWorkflowDesignBrief;
+    prismTestApi.normalizeLdCreateOutputType = normalizeLdCreateOutputType;
+    prismTestApi.composeLdCreateDesignIntent = composeLdCreateDesignIntent;
+    prismTestApi.getLdCreateOutputTypePrimaryFactorSeed = getLdCreateOutputTypePrimaryFactorSeed;
+    prismTestApi.mergeLdCreateOutputTypeIntoExplicitFactors = mergeLdCreateOutputTypeIntoExplicitFactors;
+    prismTestApi.applyLdCreateOutputTypePrimaryFactors = applyLdCreateOutputTypePrimaryFactors;
+    prismTestApi.syncWorkflowFactoryLdCreateOutputTypeUi = syncWorkflowFactoryLdCreateOutputTypeUi;
+    prismTestApi.refreshWfLdCreateOutputTypeElementRefs = refreshWfLdCreateOutputTypeElementRefs;
+    prismTestApi.LD_CREATE_OUTPUT_TYPE_CHOICES = LD_CREATE_OUTPUT_TYPE_CHOICES;
+    prismTestApi.LD_CREATE_OUTPUT_TYPE_SELF_STUDY = LD_CREATE_OUTPUT_TYPE_SELF_STUDY;
+    prismTestApi.LD_CREATE_OUTPUT_TYPE_WORKSHOP = LD_CREATE_OUTPUT_TYPE_WORKSHOP;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
     prismTestApi.normalizeWorkflowBriefConfig = normalizeWorkflowBriefConfig;
     prismTestApi.applyWorkflowBriefInferenceRules = applyWorkflowBriefInferenceRules;
@@ -50406,6 +50891,10 @@
     prismTestApi.buildWorkflowStepPromptAugmentContextFromStep =
       buildWorkflowStepPromptAugmentContextFromStep;
     prismTestApi.resolveStepPromptText = resolveStepPromptText;
+    prismTestApi.isWorkflowStepRunnablePromptConfiguration =
+      isWorkflowStepRunnablePromptConfiguration;
+    prismTestApi.isSharedPageEnrichmentInputBinding = isSharedPageEnrichmentInputBinding;
+    prismTestApi.validateWorkflow = validateWorkflow;
     prismTestApi.isStaleCatalogSeededStepOverride = isStaleCatalogSeededStepOverride;
     prismTestApi.resolveLiveCatalogStepPromptBody = resolveLiveCatalogStepPromptBody;
     prismTestApi.utilityNormalizeEmbeddedListItemText = utilityNormalizeEmbeddedListItemText;
@@ -50544,6 +51033,7 @@
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
     prismTestApi.getRunnerWhatToExpectForTest = getRunnerWhatToExpect;
     prismTestApi.buildWorkflowStepRunSummaryText = buildWorkflowStepRunSummaryText;
+    prismTestApi.getWorkflowRunUiStepDescription = getWorkflowRunUiStepDescription;
     prismTestApi.getPipelineExecutionOpeningDirective = getPipelineExecutionOpeningDirective;
     prismTestApi.getPipelineExecutionCompletionDirective = getPipelineExecutionCompletionDirective;
     prismTestApi.resolveWorkflowPipelineExecutionDirectiveLib =
@@ -50565,6 +51055,20 @@
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.clearWorkflowRunCaptureState = clearWorkflowRunCaptureState;
     prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
+    prismTestApi.isWorkflowRunAtFinalStep = isWorkflowRunAtFinalStep;
+    prismTestApi.extractAssembledWorkflowProvenanceFromPage =
+      extractAssembledWorkflowProvenanceFromPage;
+    prismTestApi.parseUtilitiesJsonInputForProvenance = parseUtilitiesJsonInputForProvenance;
+    prismTestApi.buildAuthoringWorkflowContextModel = buildAuthoringWorkflowContextModel;
+    prismTestApi.refreshUtilitiesWorkflowContextUIForTest = refreshUtilitiesWorkflowContextUI;
+    prismTestApi.handleContinueToAuthoringForTest = handleContinueToAuthoring;
+    prismTestApi.hasConfiguredOpenAiApiKeyForTest = hasConfiguredOpenAiApiKey;
+    prismTestApi.setOpenAiApiKeyForTest = function (key) {
+      state.apiKey = key == null || key === "" ? null : String(key);
+    };
+    prismTestApi.ensureCreateWorkflowApiKeyPrerequisiteForTest =
+      ensureCreateWorkflowApiKeyPrerequisite;
+    prismTestApi.revealOpenAiApiKeyEntryForTest = revealOpenAiApiKeyEntry;
     prismTestApi.resolveWorkflowRunNextStepDisabledReason = resolveWorkflowRunNextStepDisabledReason;
     prismTestApi.workflowRunStepHasBlockingCaptureErrors = workflowRunStepHasBlockingCaptureErrors;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
@@ -50606,7 +51110,6 @@
           Array.isArray(sectionOrderOverride) && sectionOrderOverride.length
             ? sectionOrderOverride
             : ["sections"],
-        presentationMode: options.presentationMode,
         applyCompositionValidation: options.applyCompositionValidation,
         compositionOptions: options.compositionOptions,
         baseName: options.baseName
@@ -51068,6 +51571,13 @@
     prismTestApi.rehydrateWorkflowPageResourcesIntoWorkspaceForTest =
       rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
+    prismTestApi.reconcileWorkflowRunCapturesWithDurableStateForTest =
+      reconcileWorkflowRunCapturesWithDurableState;
+    prismTestApi.mergeWorkflowRunCaptureMapsForTest = mergeWorkflowRunCaptureMaps;
+    prismTestApi.clearPersistedWorkflowRunStateForWorkflowForTest =
+      clearPersistedWorkflowRunStateForWorkflow;
+    prismTestApi.handleUtilitiesAssembleFromCurrentWorkflowRunForTest =
+      handleUtilitiesAssembleFromCurrentWorkflowRun;
     prismTestApi.getWorkflowResourceRefsForTest = function () {
       return Array.isArray(state.workflowResourceRefs) ? state.workflowResourceRefs.slice() : [];
     };

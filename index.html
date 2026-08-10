@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260806-orient-subsections" />
+  <link rel="stylesheet" href="style.css?v=20260810-s75-d12-1" />
 </head>
 <body>
       <div class="app-shell">
@@ -75,7 +75,7 @@
         </button>
       </div>
 
-      <section id="refinementPanel" class="refinement-panel" aria-label="Prompt refinement" role="tabpanel">
+      <section id="refinementPanel" class="refinement-panel hidden" aria-label="Prompt refinement" role="tabpanel" aria-hidden="true">
         <div id="workflowStepConfigPanel" class="workflow-step-config-panel hidden">
           <p id="workflowStepConfigTitle" class="workflow-step-config-title"></p>
           <p id="workflowStepConfigHint" class="workflow-step-config-hint"></p>
@@ -476,13 +476,6 @@
               </select>
             </div>
             <div class="form-group small">
-              <label for="utilitiesPresentationMode">Presentation mode</label>
-              <select id="utilitiesPresentationMode" autocomplete="off">
-                <option value="single_page" selected>Single page HTML</option>
-                <option value="learning_object">Learning object HTML</option>
-              </select>
-            </div>
-            <div class="form-group small">
               <label for="utilitiesFileName">File name (optional)</label>
               <input
                 type="text"
@@ -500,6 +493,19 @@
               placeholder='Paste JSON here with a top-level "artifact_type" field.'
               autocomplete="off"
             ></textarea>
+          </div>
+          <div
+            id="utilitiesWorkflowContext"
+            class="utilities-workflow-context"
+            aria-live="polite"
+          >
+            <p id="utilitiesSelectedWorkflowLabel" class="helper-text"></p>
+            <p id="utilitiesAssembledFromLabel" class="helper-text hidden"></p>
+            <div
+              id="utilitiesWorkflowMismatchWarning"
+              class="utilities-workflow-mismatch hidden"
+              role="status"
+            ></div>
           </div>
           <div class="button-row">
             <button id="utilitiesAssembleCurrentRunBtn" type="button" class="btn">
@@ -600,14 +606,14 @@
 
       <section
         id="workflowFactoryPanel"
-        class="refinement-panel hidden"
+        class="refinement-panel"
         aria-label="Workflow Factory"
         role="tabpanel"
-        aria-hidden="true"
+        aria-hidden="false"
       >
         <div class="card workflow-factory-basics-card">
           <h2>Workflow basics</h2>
-          <p class="helper-text">
+          <p id="wfDesignBasicsIntro" class="helper-text">
             Describe what you want this workflow to produce. The usual end product is an HTML page; use the Workflows
             tab to refine workflow steps and prompts.
           </p>
@@ -622,6 +628,7 @@
                 autocomplete="off"
               />
             </div>
+            <div class="form-group wf-layout-spacer" aria-hidden="true"></div>
             <div class="form-group">
               <label for="wfDesignDomainSelect">Domain</label>
               <p class="helper-text">
@@ -631,8 +638,19 @@
                 <option value="general">General</option>
               </select>
             </div>
+            <div class="form-group hidden" id="wfLdCreateOutputTypeGroup">
+              <label for="wfLdCreateOutputType">What are you creating?</label>
+              <p id="wfLdCreateOutputTypeHint" class="helper-text">
+                Choose the Learning Design product this workflow will produce.
+              </p>
+              <select id="wfLdCreateOutputType" autocomplete="off" aria-describedby="wfLdCreateOutputTypeHint">
+                <option value="">Select what you are creating…</option>
+                <option value="self_study_resource">Self-study resource</option>
+                <option value="workshop">Workshop</option>
+              </select>
+            </div>
             <div class="form-group wf-span-2">
-              <label for="wfDesignIntent">What are you trying to design or produce?</label>
+              <label for="wfDesignIntent" id="wfDesignIntentLabel">What are you trying to design or produce?</label>
               <p id="wfDesignIntentHint" class="helper-text">State the primary design intent in one line.</p>
               <textarea
                 id="wfDesignIntent"
@@ -681,7 +699,7 @@
               ></textarea>
             </div>
             <div class="form-group wf-span-2">
-              <label for="wfDesignDesiredOutputs">Learner-facing page and supporting outputs (optional)</label>
+              <label for="wfDesignDesiredOutputs" id="wfDesignDesiredOutputsLabel">Learner-facing page and supporting outputs (optional)</label>
               <p id="wfDesignDesiredOutputsHint" class="helper-text">What the learner-facing page should contain, plus any supporting artefacts this design run should produce (orchestrated through the workflow below).</p>
               <textarea
                 id="wfDesignDesiredOutputs"
@@ -720,6 +738,9 @@
             </div>
             <span id="wfDesignStatus" class="badge badge-muted">Idle</span>
           </div>
+          <p id="wfDesignApiKeyHint" class="helper-text">
+            An OpenAI API key is needed to generate the workflow. You can fill in the brief first.
+          </p>
           <div id="wfDesignLog" class="conversation-log" aria-live="polite" aria-label="Workflow design log">
           </div>
           <div class="followup-container">
@@ -754,7 +775,6 @@
           </p>
           <ol id="wfDesignSteps" class="workflow-steps-list"></ol>
           <div class="button-row">
-            <button id="wfDesignReviewBtn" class="btn" disabled>Review &amp; suggest improvements</button>
             <button id="wfDesignSaveBtn" class="btn primary" disabled>Save as workflow</button>
           </div>
         </div>
@@ -864,10 +884,10 @@
                 <div class="workflow-mode-tabs" role="tablist" aria-label="Workflow mode">
                   <button
                     id="workflowModeRunBtn"
-                    class="workflow-mode-tab"
+                    class="workflow-mode-tab active"
                     type="button"
                     role="tab"
-                    aria-selected="false"
+                    aria-selected="true"
                     aria-controls="workflowDetail"
                   >
                     Run
@@ -891,10 +911,10 @@
                   </button>
                   <button
                     id="workflowModeEditBtn"
-                    class="workflow-mode-tab active"
+                    class="workflow-mode-tab"
                     type="button"
                     role="tab"
-                    aria-selected="true"
+                    aria-selected="false"
                     aria-controls="workflowDetail"
                   >
                     Edit
@@ -1032,19 +1052,42 @@
               <div id="workflowValidationPanel" class="workflow-validation-panel hidden" aria-live="polite"></div>
 
               <div class="workflow-steps-section">
+                <div
+                  id="workflowRunOrientation"
+                  class="workflow-run-orientation"
+                  aria-label="How to run this workflow"
+                >
+                  <p class="workflow-run-orientation-text">
+                    Start a fresh AI chat for this workflow run. Copy each step into the same chat and
+                    work through the steps in order. Paste results back into PRISM only when the step
+                    asks you to.
+                  </p>
+                </div>
+                <div
+                  class="workflow-run-controls"
+                  role="group"
+                  aria-label="Step controls"
+                >
+                  <div id="workflowRunStatus" class="workflow-run-step-heading"></div>
+                  <div class="workflow-run-buttons">
+                    <button id="workflowPrevStepBtn" class="btn small" type="button">Previous</button>
+                    <button id="workflowRunCopyBtn" class="btn small primary" type="button">Copy</button>
+                    <button id="workflowNextStepBtn" class="btn small primary" type="button">Next</button>
+                    <button
+                      id="workflowContinueToAuthoringBtn"
+                      class="btn small primary hidden"
+                      type="button"
+                    >
+                      Continue to Authoring
+                    </button>
+                  </div>
+                </div>
                 <div class="workflow-steps-header">
                   <h3>Steps</h3>
                 </div>
                 <ol id="workflowSteps" class="workflow-steps-list">
                   <li class="workflow-steps-empty">No steps yet. Add your first step.</li>
                 </ol>
-                <div class="workflow-run-controls">
-                  <span id="workflowRunStatus" class="helper-text"></span>
-                  <div class="workflow-run-buttons">
-                    <button id="workflowPrevStepBtn" class="btn small" type="button">Previous</button>
-                    <button id="workflowNextStepBtn" class="btn small primary" type="button">Next</button>
-                  </div>
-                </div>
               </div>
 
               <div class="detail-buttons">
@@ -1128,6 +1171,6 @@
   <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
-  <script src="app.js?v=20260806-phase3-final-polish-1"></script>
+  <script src="app.js?v=20260810-s75-d12-1"></script>
 </body>
 </html>

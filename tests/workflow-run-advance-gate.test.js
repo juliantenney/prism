@@ -115,7 +115,7 @@ test("resolveWorkflowRunNextStepDisabledReason blocks empty artefact steps", () 
   const api = loadPrismTestApi();
   const step = { id: "s1", title: "Design Learning Activities", outputName: "page" };
   const reason = api.resolveWorkflowRunNextStepDisabledReason(step, "s1", {}, null, 0, 3);
-  assert.match(reason, /Paste a valid output artefact/i);
+  assert.match(reason, /Paste a valid result/i);
 });
 
 test("resolveWorkflowRunNextStepDisabledReason does not block non-page output steps", () => {
@@ -139,7 +139,7 @@ test("episode plan validation residue does not block when capture is empty", () 
   };
   api.setWorkflowRunCapturedOutputsForTest({ s1: "" });
   const reason = api.resolveWorkflowRunNextStepDisabledReason(step, "s1", {}, li, 0, 3);
-  assert.match(reason, /Paste a valid output artefact/i);
+  assert.match(reason, /Paste a valid result/i);
 });
 
 test("EP page shell capture is advance-ready without design-page composition gates", () => {

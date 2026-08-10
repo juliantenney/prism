@@ -8,7 +8,7 @@
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
 **Post-74B review:** [S74-programme-post-74B-review.md](S74-programme-post-74B-review.md) *(historical planning evidence — preserved)*  
 **Sub-sprints:** 74A · 74B · 74C — all **COMPLETE / Closed**  
-**Next programme:** Sprint 75 — **Not opened**
+**Next programme:** [Sprint 75 — OPEN](../2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md) (opened 2026-08-10)
 
 ---
 
@@ -20,7 +20,7 @@ Sprint 74 discovery + domain refinement ✅
   → Sprint 74B COMPLETE / Closed (generation-contract hygiene)
   → Sprint 74C COMPLETE / Closed (narrowed repository hygiene)
   → Sprint 74 programme COMPLETE / Closed
-  → Sprint 75 NOT OPENED
+  → Sprint 75 OPEN (separate UX programme — do not reopen 74)
 ```
 
 ---
@@ -37,7 +37,7 @@ Sprint 74 discovery + domain refinement ✅
 | Sprint 74A | **COMPLETE / Closed** |
 | Sprint 74B | **COMPLETE / Closed** |
 | Sprint 74C | **COMPLETE / Closed** |
-| Sprint 75 | **Not opened** |
+| Sprint 75 | **OPEN** (separate programme) |
 
 ---
 
@@ -51,10 +51,10 @@ Sprint 74 discovery + domain refinement ✅
 | — | Sprint 74B implementation | **Complete / Closed** |
 | — | Post-74B programme review | **Complete** |
 | — | Sprint 74C (narrowed hygiene) | **Complete / Closed** |
-| — | Sprint 75 | **Not opened** |
+| — | Sprint 75 | **OPEN** (separate programme) |
 
 ---
 
 ## Last updated
 
-2026-08-07 — Sprint 74 programme closed after S74C-T-050; Sprint 75 not opened.
+2026-08-10 — Pointer update only: Sprint 75 opened as separate UX programme; Sprint 74 remains COMPLETE / Closed.

@@ -63,4 +63,4 @@ Retention matrix — [S74C-T-020-retention-and-deletion-decisions.md](S74C-T-020
 | Topic | Expected trigger |
 | ----- | ---------------- |
 | Group F tooling retain/delete (consumer proof) | Post-74 / separately authorised investigation — **not** Sprint 74 reopen |
-| Open Sprint 75 | Separate operator decision |
+| Open Sprint 75 | **Done** — opened 2026-08-10 as separate UX programme |

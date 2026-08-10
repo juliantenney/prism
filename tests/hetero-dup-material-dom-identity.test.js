@@ -202,7 +202,6 @@ test("hash-locked Utilities pipeline: no duplicate DOM material identity", async
   const seed = JSON.parse(raw);
   const rendered = api.runUtilityPageExportPipelineForTest(seed, {
     sectionOrder: SECTION_ORDER,
-    presentationMode: "single_page",
     rendererVersion: "vnext",
     applyCompositionValidation: true
   });

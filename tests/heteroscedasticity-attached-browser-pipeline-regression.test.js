@@ -194,7 +194,6 @@ test("attached heteroscedasticity fixture: browser preview pipeline keeps unique
   const seed = JSON.parse(raw);
   const rendered = api.runUtilityPageExportPipelineForTest(seed, {
     sectionOrder: CATALOG_PAGE_SECTION_ORDER,
-    presentationMode: "single_page",
     rendererVersion: "vnext",
     applyCompositionValidation: true
   });

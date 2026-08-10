@@ -70,7 +70,7 @@ Use this to quickly generate workflow structures from:
 - Inputs/artifacts
 - Scope and constraints (e.g. 5-minute video vs full module, expected student time, accessibility, target level)
 
-You can review suggestions, switch between **Draft** and **Refined**, edit step titles/roles, delete steps, then save to **My Workflows**.
+You can switch between **Draft** and **Refined**, edit step titles/roles, delete steps, then save to **My Workflows**.
 
 ### 2) My Workflows
 
@@ -265,11 +265,10 @@ In Prompt Studio, placeholders remain untouched while authoring.
 
 1. Enter workflow basics (name + description required; optionally add inputs and scope/constraints)
 2. Click **Design workflow**
-3. Review assistant suggestions
-4. Optionally run review suggestions flow
-5. Switch Draft/Refined versions
-6. Edit step titles/roles, delete unwanted steps
-7. **Save as workflow**
+3. Inspect the proposed steps (and any post-generation settings questions)
+4. Switch Draft/Refined versions if needed
+5. Edit step titles/roles, delete unwanted steps
+6. **Save as workflow**
 
 ---
 

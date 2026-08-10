@@ -8,7 +8,7 @@
 **Charter:** [SPRINT-74-CHARTER.md](SPRINT-74-CHARTER.md)  
 **Decision:** [S74-D01](decisions.md#s74-d01-sprint-74-scope--architecture-consolidation-and-rationalisation-discovery-led-wrapper) · [S74-D11](decisions.md#s74-d11--close-sprint-74-programme)  
 **Closed sub-sprints:** [74A](../2026-08-06-sprint-74a-authoring-learner-export-path-integrity/README.md) · [74B](../2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/README.md) · [74C](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/README.md)  
-**Next programme:** Sprint 75 — **Not opened**  
+**Next programme:** [Sprint 75 — OPEN](../2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md) (UX / interface — opened 2026-08-10)  
 **Programme closure:** [S74C-T-050](../2026-08-07-sprint-74c-repository-hygiene-and-historical-residue-rationalisation/S74C-T-050-final-verification-and-programme-closure.md)
 
 | Authority | Path |
@@ -34,4 +34,4 @@
 
 ## Final posture
 
-Sprint 74 **COMPLETE / Closed**. Sprint 75 **Not opened**. Group F intentionally deferred.
+Sprint 74 **COMPLETE / Closed**. Sprint 75 **OPEN** (separate programme — do not reopen 74 architecture). Group F intentionally deferred.

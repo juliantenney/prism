@@ -95,20 +95,11 @@ test("formatWorkflowRunStepCompleteStatus: empty until pasted body or marked com
   assert.equal(api.formatWorkflowRunStepCompleteStatus("", false, false), "");
 });
 
-test("formatWorkflowRunStepCompleteStatus: with output name when body or complete", () => {
+test("formatWorkflowRunStepCompleteStatus: Step complete when body or marked complete", () => {
   const { api } = loadPrismTestApi();
-  assert.equal(
-    api.formatWorkflowRunStepCompleteStatus("normalized_content", true, false),
-    "Step complete \u00b7 Artefact: normalized_content"
-  );
-  assert.equal(
-    api.formatWorkflowRunStepCompleteStatus("normalized_content", false, true),
-    "Step complete \u00b7 Artefact: normalized_content"
-  );
-});
-
-test("formatWorkflowRunStepCompleteStatus: no artefact line when output name blank", () => {
-  const { api } = loadPrismTestApi();
+  // UI-only line; outputName is unused (no machine artefact id in operator-facing status).
+  assert.equal(api.formatWorkflowRunStepCompleteStatus("normalized_content", true, false), "Step complete");
+  assert.equal(api.formatWorkflowRunStepCompleteStatus("normalized_content", false, true), "Step complete");
   assert.equal(api.formatWorkflowRunStepCompleteStatus("  ", true, false), "Step complete");
   assert.equal(api.formatWorkflowRunStepCompleteStatus("", false, true), "Step complete");
 });

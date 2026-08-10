@@ -83,17 +83,15 @@ test("getRunnerWhatToExpect: DLA step resolves new guidance from catalog", () =>
   assert.equal(expect, OPTIONAL_EVIDENCE_GUIDANCE);
 });
 
-test("buildWorkflowStepRunSummaryText: DLA run summary includes optional evidence guidance exactly once", () => {
+test("buildWorkflowStepRunSummaryText: DLA run summary is operator-facing (no evidence/paste dump)", () => {
   const api = loadPrismTestApi();
   seedDlaCatalog(api);
   const wf = { pageEnrichmentV2: true, partialPageOutputs: true };
   const summary = api.buildWorkflowStepRunSummaryText(dlaStep, wf, true);
-  assert.match(summary, /Optional: Upload subject-specific evidence/i);
-  assert.equal(
-    (summary.match(/Optional: Upload subject-specific evidence/g) || []).length,
-    1
-  );
-  assert.match(summary, /Paste this step's generated artefact into Step output/i);
+  assert.equal(summary, "Designs the learning activities for this resource.");
+  assert.doesNotMatch(summary, /Optional: Upload subject-specific evidence/i);
+  assert.doesNotMatch(summary, /Paste the result back into PRISM/i);
+  assert.doesNotMatch(summary, /Sprint|vNext|pipeline/i);
 });
 
 test("buildWorkflowStepRunSummaryText: non-DLA step does not include optional evidence guidance", () => {

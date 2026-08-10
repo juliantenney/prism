@@ -342,3 +342,68 @@ test("normalizeDlaCaptureToPage merges legacy learning_activities rows into page
   const check = dlaEnrich.validateDlaEnrichedPage(merged, shellBaseline);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
+
+test("repairDlaPartialShellPlaceholderFields replaces copy-forwarded em dash preambles", () => {
+  const partial = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
+    activities: shellBaseline.activities.map((activity) => ({
+      activity_id: activity.activity_id,
+      title: activity.title || "Activity " + activity.activity_id,
+      learner_task: "Substantive learner task for " + activity.activity_id + ".",
+      expected_output: "Substantive expected output for " + activity.activity_id + ".",
+      activity_preamble: PLACEHOLDER,
+      required_materials: [{ material_id: activity.activity_id + "-M1", material_type: "text", purpose: "Support" }],
+      materials: [],
+      evidence_decision: {
+        required: false,
+        reason: "No evidence inspection required.",
+        provider_material_ids: []
+      }
+    }))
+  };
+  const before = dlaEnrich.validateDlaPartialPageCapture(partial, { baseline: shellBaseline });
+  assert.equal(before.ok, false);
+  assert.ok(
+    before.errors.some((err) => /activity_preamble must be enriched when present/.test(err))
+  );
+
+  const repaired = dlaEnrich.repairDlaPartialShellPlaceholderFields(partial, {
+    baseline: shellBaseline
+  });
+  assert.equal(repaired.repairApplied, true);
+  assert.ok(repaired.repairs.length > 0);
+  repaired.page.activities.forEach((activity) => {
+    assert.notEqual(activity.activity_preamble, PLACEHOLDER);
+    assert.equal(dlaEnrich.isShellPlaceholder(activity.activity_preamble), false);
+  });
+
+  const after = dlaEnrich.validateDlaPartialPageCapture(repaired.page, { baseline: shellBaseline });
+  assert.equal(after.ok, true, after.errors && after.errors.join("; "));
+});
+
+test("repairDlaPartialShellPlaceholderFields preserves enriched preamble prose", () => {
+  const preamble = "Orient yourself to the comparison sequence before you begin.";
+  const partial = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
+    activities: [
+      {
+        activity_id: "A1",
+        title: "Map inflation cause chains",
+        learner_task: "Compare inflation drivers.",
+        expected_output: "A comparison paragraph.",
+        activity_preamble: preamble,
+        required_materials: [{ material_id: "A1-M1", material_type: "text", purpose: "Support" }],
+        materials: []
+      }
+    ]
+  };
+  const repaired = dlaEnrich.repairDlaPartialShellPlaceholderFields(partial, {
+    baseline: shellBaseline
+  });
+  assert.equal(repaired.repairApplied, false);
+  assert.equal(repaired.page.activities[0].activity_preamble, preamble);
+});

@@ -31170,8 +31170,7 @@
     if (!wf) return;
 
     var currentName = wf.name || "Untitled workflow";
-    var suggested = currentName + " (copy)";
-    var nextName = window.prompt("New name for the duplicated workflow:", suggested);
+    var nextName = window.prompt("New workflow name:", currentName);
     if (nextName === null) {
       // User cancelled.
       return;
@@ -31183,44 +31182,14 @@
       return;
     }
 
-    var now = Date.now();
-    var clone = JSON.parse(JSON.stringify(wf));
-    clone.id = window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now);
-    clone.name = nextName;
-    clone.createdAt = now;
-    clone.updatedAt = now;
-
-    var oldToNew = {};
-    (clone.steps || []).forEach(function (step) {
-      var newId =
-        window.Utils && window.Utils.uuid
-          ? window.Utils.uuid()
-          : String(now + Math.random());
-      oldToNew[step.id] = newId;
-    });
-
-    clone.steps = (clone.steps || []).map(function (step) {
-      var s = Object.assign({}, step);
-      s.id = oldToNew[step.id] || s.id;
-      s.inputBindings = normalizeStepInputBindings(step.inputBindings || []).map(function (b) {
-        if (b.kind !== "internal") return b;
-        return {
-          kind: "internal",
-          artifactName: b.artifactName,
-          sourceStepId: oldToNew[b.sourceStepId] || b.sourceStepId
-        };
-      });
-      return s;
-    });
-
-    var renameNormWarnings = [];
-    clone = normalizeWorkflowForV1(clone, renameNormWarnings);
-    state.workflows.push(clone);
+    // In-place rename: preserve workflow.id, step IDs, Run state, and resources.
+    wf.name = nextName;
+    wf.updatedAt = Date.now();
     saveWorkflows();
     renderWorkflowList();
-    selectWorkflow(clone.id);
+    selectWorkflow(wf.id);
     renderLibraryList();
-    showToast("Workflow duplicated and renamed.", "success");
+    showToast("Workflow renamed.", "success");
   }
 
   function handleDeleteWorkflow() {
@@ -52392,6 +52361,12 @@
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.gatherWorkflowDetailFormDataForTest = gatherWorkflowDetailFormData;
     prismTestApi.handleSaveWorkflowForTest = handleSaveWorkflow;
+    prismTestApi.handleRenameWorkflowForTest = handleRenameWorkflow;
+    prismTestApi.handleDuplicateWorkflowForTest = handleDuplicateWorkflow;
+    prismTestApi.selectWorkflowForTest = selectWorkflow;
+    prismTestApi.getSelectedWorkflowIdForTest = function () {
+      return state.selectedWorkflowId;
+    };
     prismTestApi.loadWorkflowsForTest = loadWorkflows;
     prismTestApi.saveWorkflowsForTest = saveWorkflows;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;

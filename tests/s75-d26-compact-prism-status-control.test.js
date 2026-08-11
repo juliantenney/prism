@@ -250,7 +250,7 @@ test("A: Markup uses button disclosure with preserved API hooks", () => {
     indexHtml,
     /Creativity and Response Detail apply to PRISM API calls[\s\S]*do not control My Workflows Run/
   );
-  assert.match(indexHtml, /app\.js\?v=20260811-s75-d26d/);
+  assert.match(indexHtml, /app\.js\?v=20260811-s75-rename/);
   assert.match(styleCss, /\.api-key-loader\.prism-status/);
   assert.doesNotMatch(indexHtml, /<details[\s\S]*id="prismStatusDetails"/);
   assert.doesNotMatch(indexHtml, /id="prismStatusSummary"/);

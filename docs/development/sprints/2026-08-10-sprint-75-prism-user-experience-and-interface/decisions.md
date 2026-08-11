@@ -338,6 +338,64 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 
 ---
 
+## S75-D23 — Workflow Design Assistant progressive disclosure
+
+- **Decision:** Apply **progressive disclosure** to the Create Workflow design assistant resting state. Show controls only when the user needs them.
+
+  **No usable API key:** Design workflow is **disabled**; actionable status **API key required** reveals/focuses the existing header `#apiKeyFile` loader (`revealOpenAiApiKeyEntry`, silent — not an error). Remove the resting prose “An OpenAI API key is needed…”. Create remains navigable; brief fields remain editable (`S75-D09` navigation rule retained).
+
+  **Key present:** Design workflow enabled; **API key required** absent. Do **not** show Ready / API key loaded /Configured reassurance for the key — the enabled button is enough.
+
+  **Resting chrome:** No Idle badge; hide empty design log; hide Your answer / textarea / Send until the assistant is awaiting input (domain suggestion, inference confirmation, or elicitation queue). Meaningful runtime statuses (Designing…, Needs essentials, Refining quality, etc.) remain.
+
+  Explicitly **out of scope:** refinement/generation semantics; API-key storage/persistence; redesign of Create; C-08; Sprint 76.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** After `S75-D22` simplified the brief, the inactive assistant still exposed configuration and answer UI before there was anything to do. Progressive disclosure keeps the resting surface quiet.
+
+- **Consequences:** UX sync via `syncWorkflowFactoryDesignAssistantChrome` / `setWorkflowDesignStatusBadge`; tests in `tests/s75-d23-create-assistant-progressive-disclosure.test.js` (+ C-05 amendments for disabled Design). Amends C-05 **presentation** only (Design disabled without key + proactive key action); does not reintroduce a navigation gate. Sprint **76 not opened**.
+
+---
+
+## S75-D24 — Hide Resolved workflow brief panel; keep resolution engine
+
+- **Decision:** **Resolved workflow brief / factor provenance is internal workflow-design state, not normal user-facing UI.** Required unresolved information is surfaced through **natural-language assistant elicitation**.
+
+  **Remove from Create UI:** the expandable “Resolved workflow brief” panel (`#wfBriefResolvedDetails` and its explicit/inferred/defaulted tables, assumption detail, step mappings, planning/debug copy, and machine-state missing-factor diagnostics).
+
+  **Retain:** `state.workflowBriefResolved`, explicit/inferred/defaulted factors, provenance helpers, missing-required tracking, mappings, resolution/elicitation/refinement queues, and call sites that assign resolution state. `renderWorkflowBriefResolvedPanel` becomes a **presentation no-op** so design flow never depends on mounting a diagnostic view.
+
+  **Missing factors:** continue to block via assistant questions (e.g. learner_level → “What learner level should this workflow target?”). Do not weaken required-factor gates. Do not add replacement “assumptions” badges/panels. Applies to Learning Design and Research Create presentation alike.
+
+  Historically the panel was valuable for debugging elicitation; that role is preserved via state, tests, and internal helpers — not via user-facing Create chrome.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** After `S75-D22`/`S75-D23` quieted Create, the remaining diagnostic brief panel still exposed implementation vocabulary. Users already receive needed questions through the Workflow design assistant.
+
+- **Consequences:** Markup removed from `index.html`; renderer no-op in `app.js`; tests in `tests/s75-d24-hide-resolved-brief-panel.test.js` (+ existing `workflow-brief-panel-ux` helpers remain green). Sprint **76 not opened**. Persistence untouched. Generation/elicitation semantics unchanged.
+
+---
+
+## S75-D25 — Create Proposed workflow: one graph, read-only preview
+
+- **Decision:** Create presents **one** generated workflow as a compact **read-only Proposed workflow** preview. Retire Create-time **Draft / Refined** version chrome and Create-time graph-edit controls (title/role inputs, Delete, Tunable badges, per-row Settings cues). **Save as workflow** remains the primary commitment action and always saves `state.workflowDesignResult`. Detailed tuning belongs to the **saved workflow / Settings** experience. Do **not** broadly delete pack `post_generation_refinement` / `stepRefinementProfiles` machinery (future Settings/pack cleanup under **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)**). Prompt Studio Draft/Refined remains separate and unchanged.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** Investigation showed Create Draft/Refined were identical deep copies with no production path producing a distinct Refined graph — Prompt Studio–style scaffolding, not durable versioning. Editable step cards implied Create is a graph editor; the meaningful Create decision is whether to save the proposal. Assistant already points users to Settings after generation.
+
+- **Historical distinction:**
+  - **Prompt Studio Draft/Refined** — legitimate prompt-text versions (`#promptVersionSelect`).
+  - **Create Draft/Refined** — non-durable twin-copy scaffolding (retired from UI / generation twinning).
+  - **Pack post-generation factor refinement** — separate dormant/policy-limited machinery; **not** removed by this decision.
+  - **S75-D03** generic LLM reviewer — already retired; unrelated to Draft/Refined chrome.
+
+- **Consequences:** `#wfDesignVersionSelect` removed; heading **Proposed workflow**; compact semantic table preview; Create edit/delete mutation paths removed; D03 regression no longer requires version select; tests in `tests/s75-d25-proposed-workflow-readonly-preview.test.js`. Cache-bust `app.js?v=20260811-s75-d25` / `style.css?v=20260811-s75-d25`. Persistence untouched; Sprint 76 not opened.
+
+---
+
 ## Pending decisions / hypotheses (not accepted)
 
 | Topic | Expected trigger |
@@ -346,11 +404,14 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 | Authorise S75-T-011 / T-012 / T-013 | **Superseded/retired** — use S75-T-020 candidate slices |
 | Authorise S75-T-020 intervention slices | **Partial** — C-01…C-07/C-10 Done; **C-08 CLOSED AS RESOLVED** (`S75-D22`); C-09/C-11/C-12 remain deferred |
 | Create one-product simplification (LD) | **Done** — `S75-D22` |
+| Create assistant progressive disclosure | **Done** — `S75-D23` |
+| Hide Resolved workflow brief panel | **Done** — `S75-D24` |
+| Create Proposed workflow read-only / retire Draft–Refined chrome | **Done** — `S75-D25` |
 | Domain B first-time selection / mode persistence rules | **Done** — `S75-D10` (Run default + session preservation + Create→Run handoff) |
 | Run paste/store-output visibility rule | **Done** — `S75-D07` (page-structure producer visibility) |
 | Custom vs runtime-aware stored-output behaviour | **Done** under `S75-D07` (non-page `outputName` ≠ paste; page producer keeps gate) |
 | Run operator copy + execution-bar layout | **Done** — `S75-D08` (Run-UI-only descriptions; top Prev/Copy/Next bar) |
-| Create Workflow API-key prerequisite (C-05) | **Done** — `S75-D09` |
+| Create Workflow API-key prerequisite (C-05) | **Done** — `S75-D09`; presentation amended by `S75-D23` |
 | Separate human Instructions from PRISM_STEP_PARAMS storage | Deferred — smell noted under **PB-FA-005**; not redesigned in `S75-D08` |
 | Domain B Settings / parameterisation | **Investigation complete** — deferred to [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 | Domain C Authoring + B→C handover | **Evidence recorded** 2026-08-10; thin handoff/provenance **Done** (`S75-D04`) |

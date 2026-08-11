@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260811-s75-d22" />
+  <link rel="stylesheet" href="style.css?v=20260811-s75-d25b" />
 </head>
 <body>
       <div class="app-shell">
@@ -722,28 +722,37 @@
           <div id="wfDomainExtraFields" class="hidden"></div>
         </div>
 
-        <details id="wfBriefResolvedDetails" class="card hidden">
-          <summary id="wfBriefResolvedSummary">Resolved workflow brief</summary>
-          <p class="helper-text">
-            Review planning suggestions first, then inspect assumptions and step mappings. Tune execution in the workflow Settings tab; planning guidance is advisory and does not block saving.
-          </p>
-          <div id="wfBriefResolvedContent" class="workflow-brief-resolved-content"></div>
-        </details>
-
-        <div class="card">
+        <div class="card" id="wfDesignAssistantCard">
           <div class="conversation-header">
             <div class="conversation-header-main">
               <h2>Workflow design assistant</h2>
-              <button id="wfDesignStartBtn" class="btn primary">Design workflow</button>
+              <button id="wfDesignStartBtn" class="btn primary" type="button" disabled>
+                Design workflow
+              </button>
+              <button
+                type="button"
+                id="wfDesignApiKeyRequiredBtn"
+                class="wf-design-api-key-required"
+                aria-label="API key required — open OpenAI API key configuration"
+              >
+                API key required
+              </button>
             </div>
-            <span id="wfDesignStatus" class="badge badge-muted">Idle</span>
+            <span
+              id="wfDesignStatus"
+              class="badge badge-muted hidden"
+              hidden
+              aria-hidden="true"
+            ></span>
           </div>
-          <p id="wfDesignApiKeyHint" class="helper-text">
-            An OpenAI API key is needed to generate the workflow. You can fill in the brief first.
-          </p>
-          <div id="wfDesignLog" class="conversation-log" aria-live="polite" aria-label="Workflow design log">
-          </div>
-          <div class="followup-container">
+          <div
+            id="wfDesignLog"
+            class="conversation-log hidden"
+            hidden
+            aria-live="polite"
+            aria-label="Workflow design log"
+          ></div>
+          <div id="wfDesignAnswerGroup" class="followup-container hidden" hidden aria-hidden="true">
             <div class="form-group">
               <label for="wfDesignAnswer">Your answer:</label>
               <textarea
@@ -754,28 +763,31 @@
               ></textarea>
             </div>
             <div class="button-row">
-              <button id="wfDesignSendBtn" class="btn">Send</button>
+              <button id="wfDesignSendBtn" class="btn" type="button">Send</button>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <h2>Suggested workflow</h2>
-          <div class="form-row compact">
-            <div class="form-group small">
-              <label for="wfDesignVersionSelect">Workflow version</label>
-              <select id="wfDesignVersionSelect" autocomplete="off">
-                <option value="refined">Refined</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-          </div>
+          <h2>Proposed workflow</h2>
           <p id="wfDesignSummary" class="summary-text empty">
-            When the assistant proposes an orchestration, its summary and authoring steps will appear here.
+            When the assistant proposes a workflow, its summary and steps will appear here.
           </p>
-          <ol id="wfDesignSteps" class="workflow-steps-list"></ol>
+          <div id="wfDesignProposedTableWrap" class="wf-proposed-workflow-wrap hidden">
+            <table class="wf-proposed-workflow-table">
+              <caption class="sr-only">Proposed workflow steps</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Step</th>
+                  <th scope="col">Workflow step</th>
+                  <th scope="col">Purpose</th>
+                </tr>
+              </thead>
+              <tbody id="wfDesignSteps"></tbody>
+            </table>
+          </div>
           <div class="button-row">
-            <button id="wfDesignSaveBtn" class="btn primary" disabled>Save as workflow</button>
+            <button id="wfDesignSaveBtn" class="btn primary" disabled>Save Workflow</button>
           </div>
         </div>
       </section>
@@ -1171,6 +1183,6 @@
   <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
-  <script src="app.js?v=20260811-s75-d22"></script>
+  <script src="app.js?v=20260811-s75-d25b"></script>
 </body>
 </html>

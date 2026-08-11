@@ -5,7 +5,7 @@
 **Opened:** 2026-08-10  
 **Predecessor:** Sprint 74 — **COMPLETE / Closed**  
 **Charter:** [SPRINT-75-CHARTER.md](SPRINT-75-CHARTER.md)  
-**Decisions:** [S75-D01](decisions.md#s75-d01--open-sprint-75--prism-user-experience-and-interface) · … · [S75-D22](decisions.md#s75-d22--one-workflow--one-product-learning-design-create-simplification)  
+**Decisions:** [S75-D01](decisions.md#s75-d01--open-sprint-75--prism-user-experience-and-interface) · … · [S75-D25](decisions.md#s75-d25--create-proposed-workflow-one-graph-read-only-preview)  
 **Cross-journey synthesis:** [S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md](S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md)
 
 ---
@@ -13,15 +13,10 @@
 ## Narrative
 
 ```text
-… prior D03–D21 …
-  → Persistence closed: IndexedDB Run captures (S75-D21); do not reopen
-  → S75-D22 Accepted — ONE WORKFLOW → ONE PRODUCT
-     LD Create simplified: omit Supporting + Constraints;
-     Source material conditional on Starting point;
-     Current products remain Self-study · Workshop only
-  → C-08 CLOSED AS RESOLVED (not implemented as polish)
-  → Research retains Supporting + Constraints (no LD product picker yet)
-  → Sprint 76 NOT opened
+… prior D03–D24 …
+  → S75-D25 Accepted — Create Proposed workflow is one read-only graph
+     Draft/Refined Create chrome retired; pack post-gen machinery retained
+  → Persistence closed (do not reopen); Sprint 76 NOT opened
 ```
 
 ---
@@ -46,8 +41,8 @@ Legacy inline `capturedOutputs` / `capturedOutputsRaw` bodies are migration/reco
 | Item | State |
 | ---- | ----- |
 | Sprint 75 | **OPEN** |
-| S75-D03–D21 | **Accepted** (persistence closed — do not reopen) |
-| S75-D22 | **Accepted** — one workflow → one product; LD Create simplification |
+| S75-D03–D24 | **Accepted** |
+| S75-D25 | **Accepted** — Proposed workflow read-only; Create Draft/Refined retired |
 | C-08 Create refinement discoverability | **CLOSED AS RESOLVED** |
 | Orphaned runstate cleanup | **Backlog** — [PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management) |
 | Release / development process (incl. cache-bust) | **Backlog** — [PB-S-005](../../../backlog/PRODUCT-BACKLOG.md#pb-s-005--stable-release--development-process) |
@@ -60,4 +55,4 @@ Legacy inline `capturedOutputs` / `capturedOutputsRaw` bodies are migration/reco
 
 ## Last updated
 
-2026-08-11 — Backlog maintenance after `S75-D22`: expanded PB-S-005 / PB-FA-005 / PB-FA-007; added PB-FA-008 (Slideshow + catalogue/composition) and PB-FA-009 (Research pack maturation). Application code and tests unchanged in this docs pass. Sprint 76 not opened.
+2026-08-11 — `S75-D25` Create Proposed workflow read-only preview; Draft/Refined Create chrome retired; pack post-generation refinement machinery retained. Persistence untouched; Sprint 76 not opened.

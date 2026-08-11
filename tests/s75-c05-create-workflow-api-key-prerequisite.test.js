@@ -73,13 +73,18 @@ test("C: Navigation into Create Workflow is not API-gated", () => {
   assert.ok(initSlice.includes('switchTab("workflowFactory")'));
 });
 
-test("D: Local brief controls remain editable without a key (Design not disabled by key)", () => {
-  const { source } = loadPrismTestApi();
-  assert.match(source, /els\.wfDesignStartBtn\.disabled\s*=\s*false/);
-  assert.doesNotMatch(source, /els\.wfDesignStartBtn\.disabled\s*=\s*!loaded/);
+test("D: Local brief controls remain editable without a key; Design is disabled until key present", () => {
+  const { source, api } = loadPrismTestApi();
+  // S75-D23 progressive disclosure: Design is disabled without a key, while
+  // Create remains navigable and brief fields stay editable (unchanged).
+  assert.match(source, /els\.wfDesignStartBtn\.disabled\s*=\s*!hasKey/);
+  assert.match(source, /syncWorkflowFactoryDesignAssistantChrome/);
   assert.match(indexHtml, /id="wfDesignName"/);
   assert.match(indexHtml, /id="wfDesignIntent"/);
   assert.match(indexHtml, /id="wfLdCreateOutputTypeGroup"/);
+  assert.match(indexHtml, /id="wfDesignApiKeyRequiredBtn"/);
+  api.setOpenAiApiKeyForTest(null);
+  assert.equal(api.hasConfiguredOpenAiApiKeyForTest(), false);
 });
 
 test("E: Entering Create Workflow does not itself invoke OpenAI callers", () => {
@@ -98,7 +103,7 @@ test("F: First API-dependent Create action is Design workflow / handleStartWorkf
   assert.ok(start > 0);
   const slice = source.slice(start, start + 5000);
   const gateIdx = slice.indexOf("ensureCreateWorkflowApiKeyPrerequisite()");
-  const statusIdx = slice.indexOf('wfDesignStatus.textContent = "Designing');
+  const statusIdx = slice.indexOf('setWorkflowDesignStatusBadge("Designing');
   const intentCall = source.indexOf("callOpenAIForWorkflowIntentInterpretation", start);
   assert.ok(gateIdx > 0, "action gate present in handleStartWorkflowDesign");
   assert.ok(statusIdx > gateIdx, "gate before Designing status mutation");
@@ -122,7 +127,7 @@ test("G: Blocking Design preserves brief — gate runs before design log / resul
   assert.doesNotMatch(slice, /wfDesignIntent\.value\s*=\s*""/);
 });
 
-test("H: Missing-key action reveals existing controls and concise guidance", () => {
+test("H: Missing-key guidance uses existing API controls; Create progressive disclosure action present", () => {
   const { source, api } = loadPrismTestApi();
   api.setOpenAiApiKeyForTest(null);
   assert.equal(typeof api.revealOpenAiApiKeyEntryForTest, "function");
@@ -133,7 +138,12 @@ test("H: Missing-key action reveals existing controls and concise guidance", () 
   assert.doesNotMatch(source, /Load your OpenAI API key first to create workflows/);
   assert.equal(api.ensureCreateWorkflowApiKeyPrerequisiteForTest(), false);
   assert.match(indexHtml, /id="apiKeyFile"/);
-  assert.match(indexHtml, /id="wfDesignApiKeyHint"/);
+  assert.match(indexHtml, /id="wfDesignApiKeyRequiredBtn"/);
+  assert.doesNotMatch(indexHtml, /id="wfDesignApiKeyHint"/);
+  assert.doesNotMatch(
+    indexHtml,
+    /An OpenAI API key is needed to generate the workflow\. You can fill in the brief first/
+  );
 });
 
 test("I: After loading a key, Create API-action prerequisite passes (continue existing flow)", () => {

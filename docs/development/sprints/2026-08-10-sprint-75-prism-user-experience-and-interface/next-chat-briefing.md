@@ -1,14 +1,14 @@
 # Sprint 75 — Next-chat briefing
 
 **Pack status:** **OPEN**  
-**Latest accepted decision:** [S75-D22](decisions.md#s75-d22--one-workflow--one-product-learning-design-create-simplification) — One workflow → one product; LD Create simplification  
+**Latest accepted decision:** [S75-D25](decisions.md#s75-d25--create-proposed-workflow-one-graph-read-only-preview) — Create Proposed workflow: one graph, read-only preview  
 **Next:** Operator review of remaining S75-T-020 candidate slices (C-09 / C-11 / C-12) — **not automatic**
 
 ---
 
 ## One-line mission
 
-LD Create now invites one product only. Persistence is closed. Continue only with authorised slices.
+Create is a proposal surface (one product, quiet assistant, no factor-debug panel, read-only proposed graph). Persistence is closed. Continue only with authorised slices.
 
 ---
 
@@ -17,5 +17,7 @@ LD Create now invites one product only. Persistence is closed. Continue only wit
 - Do **not** reopen Run-capture persistence  
 - Do **not** add Slideshow / Assessment pack / Module outline to Create yet  
 - Do **not** wire Create source material to DLA evidence  
-- Do **not** confuse product components with sibling final products  
+- Do **not** reintroduce user-facing Resolved workflow brief diagnostics without a new decision  
+- Do **not** reintroduce Create Draft/Refined chrome or Create-time graph editing without a new decision  
+- Do **not** broadly delete pack post-generation refinement without Settings/pack authorisation (**PB-FA-005**)  
 - Sprint 76 **not opened**  

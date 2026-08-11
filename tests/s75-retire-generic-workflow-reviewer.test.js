@@ -43,7 +43,8 @@ test("Create Workflow UI no longer exposes Review & suggest improvements", () =>
   assert.doesNotMatch(html, /Review\s*&amp;\s*suggest improvements/);
   assert.match(html, /wfDesignSaveBtn/);
   assert.match(html, /wfDesignSteps/);
-  assert.match(html, /wfDesignVersionSelect/);
+  assert.doesNotMatch(html, /wfDesignVersionSelect/);
+  assert.match(html, /Proposed workflow/);
 });
 
 test("generic workflow reviewer runtime is removed from app.js", () => {

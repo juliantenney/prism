@@ -191,8 +191,10 @@
     /** Run-mode: Design Page material closure validation errors per step id. */
     workflowRunPageMaterialsClosureValidation: {},
     workflowDesignResult: null,
+    /** @deprecated S75-D25: Create no longer twins Draft/Refined; kept null for compatibility. */
     workflowDesignVersions: null,
-    workflowSelectedVersion: "refined",
+    /** @deprecated S75-D25: unused after retiring Create version selector. */
+    workflowSelectedVersion: "draft",
     workflowBriefElicitation: null,
     workflowDomainSuggestionPending: null,
     workflowBriefInferenceConfirmation: null,
@@ -383,17 +385,19 @@
     els.wfDomainExtraFields = document.getElementById("wfDomainExtraFields");
     els.wfDesignDomainSelect = document.getElementById("wfDesignDomainSelect");
     els.wfDesignStartBtn = document.getElementById("wfDesignStartBtn");
+    els.wfDesignApiKeyRequiredBtn = document.getElementById("wfDesignApiKeyRequiredBtn");
     els.wfDesignStatus = document.getElementById("wfDesignStatus");
     els.wfDesignLog = document.getElementById("wfDesignLog");
     els.wfDesignSummary = document.getElementById("wfDesignSummary");
+    els.wfDesignProposedTableWrap = document.getElementById("wfDesignProposedTableWrap");
     els.wfDesignSteps = document.getElementById("wfDesignSteps");
-    els.wfDesignVersionSelect = document.getElementById("wfDesignVersionSelect");
+    // S75-D25: Create Draft/Refined version select removed from UI.
+    els.wfDesignVersionSelect = null;
     els.wfDesignSaveBtn = document.getElementById("wfDesignSaveBtn");
+    els.wfDesignAnswerGroup = document.getElementById("wfDesignAnswerGroup");
     els.wfDesignAnswer = document.getElementById("wfDesignAnswer");
     els.wfDesignSendBtn = document.getElementById("wfDesignSendBtn");
-    els.wfBriefResolvedDetails = document.getElementById("wfBriefResolvedDetails");
-    els.wfBriefResolvedSummary = document.getElementById("wfBriefResolvedSummary");
-    els.wfBriefResolvedContent = document.getElementById("wfBriefResolvedContent");
+    // S75-D24: Resolved brief panel DOM removed; resolution state remains in memory.
 
     els.sessionStatus = document.getElementById("sessionStatus");
     els.conversationLog = document.getElementById("conversationLog");
@@ -3047,6 +3051,13 @@
       }
       var titleInput = child.querySelector('[data-field="title"]');
       var titleValue = titleInput && typeof titleInput.value === "string" ? titleInput.value : "";
+      if (!titleValue) {
+        titleValue = String(child.getAttribute("data-step-title") || "").trim();
+      }
+      if (!titleValue) {
+        var titleCell = child.querySelector(".wf-proposed-step-title");
+        titleValue = titleCell ? String(titleCell.textContent || "").trim() : "";
+      }
       var titleNorm = normalizeWorkflowStepTitleForMatch(titleValue);
       if (titleHint && titleNorm && titleNorm.indexOf(titleHint) !== -1) {
         found = child;
@@ -3099,9 +3110,6 @@
     var designLi = els.wfDesignSteps ? findWorkflowStepListItem(els.wfDesignSteps, navTarget) : null;
     if (designLi) {
       switchTab("workflowFactory");
-      if (els.wfBriefResolvedDetails) {
-        els.wfBriefResolvedDetails.open = false;
-      }
       highlightWorkflowStepSettingsTarget(designLi);
       showToast(
         "Save the workflow, then open Settings on the matching step to tune parameters.",
@@ -5520,21 +5528,13 @@
 
   function renderWorkflowDesignResult(options) {
     // options retained for call-site compatibility; generic review/promptRefine path retired (S75-D03).
-    var versions = state.workflowDesignVersions;
-    var selected = state.workflowSelectedVersion || "refined";
-    var parsed =
-      (versions && versions[selected]) ||
-      (versions && versions.refined) ||
-      (versions && versions.draft) ||
-      state.workflowDesignResult ||
-      null;
+    // S75-D25: Create presents one proposed graph as a compact read-only preview (no Draft/Refined,
+    // no Create-time graph editing). Tunability metadata remains internal for Settings after Save.
+    var parsed = state.workflowDesignResult || null;
     if (!parsed) return;
     normalizeWorkflowDesignStageOrderInPlace(parsed.steps);
 
-    if (els.wfDesignStatus) {
-      els.wfDesignStatus.textContent = "Complete";
-      els.wfDesignStatus.className = "badge badge-success";
-    }
+    setWorkflowDesignStatusBadge("Complete", "badge badge-success");
 
     if (els.wfDesignSummary) {
       var summaryText = String(parsed.summary || "").trim();
@@ -5552,80 +5552,55 @@
       els.wfDesignSummary.classList.toggle("empty", !summaryText);
     }
 
+    var steps = Array.isArray(parsed.steps) ? parsed.steps : [];
+    if (els.wfDesignProposedTableWrap) {
+      els.wfDesignProposedTableWrap.classList.toggle("hidden", !steps.length);
+      if (steps.length) {
+        els.wfDesignProposedTableWrap.removeAttribute("hidden");
+      } else {
+        els.wfDesignProposedTableWrap.setAttribute("hidden", "hidden");
+      }
+    }
+
     if (els.wfDesignSteps) {
       els.wfDesignSteps.innerHTML = "";
-      (parsed.steps || []).forEach(function (step, index) {
-        var li = document.createElement("li");
-        li.className = "workflow-step";
-        li.setAttribute("data-wf-step-index", String(index));
-
-        var header = document.createElement("div");
-        header.className = "workflow-step-header";
-
-        var label = document.createElement("div");
-        label.className = "workflow-step-header-title";
-        label.textContent = "Step " + (index + 1);
-
-        var actions = document.createElement("div");
-        actions.className = "workflow-step-header-actions";
-
-        var deleteBtn = document.createElement("button");
-        deleteBtn.type = "button";
-        deleteBtn.className = "btn small danger";
-        deleteBtn.textContent = "Delete";
-        deleteBtn.setAttribute("data-action", "delete-wf-step");
-        actions.appendChild(deleteBtn);
-
-        header.appendChild(label);
-        header.appendChild(actions);
-        li.appendChild(header);
-
-        var fields = document.createElement("div");
-        fields.className = "workflow-step-fields";
-
-        var titleGroup = document.createElement("div");
-        titleGroup.className = "form-group small";
-        var titleLabel = document.createElement("label");
-        titleLabel.textContent = "Title";
-        var titleInput = document.createElement("input");
-        titleInput.type = "text";
-        titleInput.value = step.title || "";
-        titleInput.autocomplete = "off";
-        titleInput.setAttribute("data-field", "title");
-        titleGroup.appendChild(titleLabel);
-        titleGroup.appendChild(titleInput);
-
-        var roleGroup = document.createElement("div");
-        roleGroup.className = "form-group small";
-        var roleLabel = document.createElement("label");
-        roleLabel.textContent = "Role / purpose";
-        var roleInput = document.createElement("input");
-        roleInput.type = "text";
-        var displayRole = String(step.role || "").trim() || deriveWorkflowStepRoleFromMetadata(
-          step,
-          state.workflowStepPatternCatalog,
-          null
+      steps.forEach(function (step, index) {
+        var tr = document.createElement("tr");
+        tr.className = "workflow-step";
+        tr.setAttribute("data-wf-step-index", String(index));
+        var stepTitle = String((step && step.title) || "").trim();
+        tr.setAttribute("data-step-title", stepTitle);
+        var canonicalId = normalizeCanonicalStepId(
+          (step && (step.canonical_step_id || step.canonicalStepId)) || ""
         );
-        roleInput.value = displayRole;
-        roleInput.autocomplete = "off";
-        roleInput.setAttribute("data-field", "role");
-        roleGroup.appendChild(roleLabel);
-        roleGroup.appendChild(roleInput);
+        if (canonicalId) {
+          tr.setAttribute("data-canonical-step-id", canonicalId);
+        }
 
-        fields.appendChild(titleGroup);
-        fields.appendChild(roleGroup);
-        li.appendChild(fields);
+        var numTd = document.createElement("td");
+        numTd.className = "wf-proposed-step-num";
+        numTd.textContent = String(index + 1);
 
-        decorateWorkflowStepSettingsDiscoverability(li, step, { context: "design" });
-        els.wfDesignSteps.appendChild(li);
+        var titleTd = document.createElement("td");
+        titleTd.className = "wf-proposed-step-title";
+        titleTd.textContent = stepTitle || "Untitled step";
+
+        var purposeTd = document.createElement("td");
+        purposeTd.className = "wf-proposed-step-purpose";
+        var displayRole =
+          String((step && step.role) || "").trim() ||
+          deriveWorkflowStepRoleFromMetadata(step, state.workflowStepPatternCatalog, null);
+        purposeTd.textContent = displayRole || "—";
+
+        tr.appendChild(numTd);
+        tr.appendChild(titleTd);
+        tr.appendChild(purposeTd);
+        els.wfDesignSteps.appendChild(tr);
       });
     }
 
     if (els.wfDesignSaveBtn) {
       els.wfDesignSaveBtn.disabled = false;
-    }
-    if (els.wfDesignVersionSelect) {
-      els.wfDesignVersionSelect.value = selected;
     }
   }
 
@@ -5660,66 +5635,8 @@
   }
 
   function getSelectedWorkflowDesign() {
-    var versions = state.workflowDesignVersions;
-    var selected = state.workflowSelectedVersion || "refined";
-    return (
-      (versions && versions[selected]) ||
-      (versions && versions.refined) ||
-      (versions && versions.draft) ||
-      state.workflowDesignResult ||
-      null
-    );
-  }
-
-  function normalizeDependsAfterDelete(steps, deletedIndexZeroBased) {
-    if (!Array.isArray(steps)) return;
-    var deletedOneBased = deletedIndexZeroBased + 1;
-    steps.forEach(function (s) {
-      if (!s || !Array.isArray(s.depends_on)) return;
-      var next = [];
-      s.depends_on.forEach(function (n) {
-        if (typeof n !== "number") return;
-        if (n === deletedOneBased) return; // drop reference to deleted step
-        if (n > deletedOneBased) next.push(n - 1);
-        else next.push(n);
-      });
-      // Deduplicate while preserving order.
-      var seen = {};
-      s.depends_on = next.filter(function (n) {
-        if (seen[n]) return false;
-        seen[n] = true;
-        return true;
-      });
-    });
-  }
-
-  function updateWorkflowDesignStepField(index, field, value) {
-    var versions = state.workflowDesignVersions;
-    var selected = state.workflowSelectedVersion || "refined";
-    var design = getSelectedWorkflowDesign();
-    if (!design || !Array.isArray(design.steps)) return;
-    if (index < 0 || index >= design.steps.length) return;
-    if (field !== "title" && field !== "role") return;
-
-    design.steps[index][field] = value;
-
-    // Keep versions in sync when editing: edits apply to the selected version only.
-    if (versions && versions[selected] === design) {
-      // already editing selected version object
-    } else if (versions && versions[selected]) {
-      versions[selected] = design;
-    }
-  }
-
-  function deleteWorkflowDesignStep(index) {
-    var design = getSelectedWorkflowDesign();
-    if (!design || !Array.isArray(design.steps)) return;
-    if (index < 0 || index >= design.steps.length) return;
-
-    design.steps.splice(index, 1);
-    normalizeDependsAfterDelete(design.steps, index);
-
-    renderWorkflowDesignResult({ promptRefine: false });
+    // S75-D25: single proposed Create graph (no Draft/Refined twinning).
+    return state.workflowDesignResult || null;
   }
 
   function appendWorkflowDesignLog(role, content) {
@@ -5735,6 +5652,92 @@
     item.appendChild(body);
     els.wfDesignLog.appendChild(item);
     els.wfDesignLog.scrollTop = els.wfDesignLog.scrollHeight;
+    syncWorkflowFactoryDesignAssistantChrome();
+  }
+
+  function isWorkflowDesignAssistantAwaitingAnswer() {
+    if (state.workflowDomainSuggestionPending) return true;
+    if (
+      state.workflowBriefInferenceConfirmation &&
+      state.workflowBriefInferenceConfirmation.pending
+    ) {
+      return true;
+    }
+    var elicit = state.workflowBriefElicitation;
+    if (!elicit || typeof elicit !== "object") return false;
+    if (elicit.awaitingAssessmentOptionalOptIn) return true;
+    var queue = Array.isArray(elicit.queue) ? elicit.queue : [];
+    var index = Number(elicit.index);
+    if (!isFinite(index) || index < 0) index = 0;
+    return queue.length > 0 && index < queue.length;
+  }
+
+  function setWorkflowDesignStatusBadge(text, className) {
+    if (!els.wfDesignStatus) {
+      syncWorkflowFactoryDesignAssistantChrome();
+      return;
+    }
+    var label = text == null ? "" : String(text).trim();
+    if (!label || /^idle$/i.test(label)) {
+      els.wfDesignStatus.textContent = "";
+      els.wfDesignStatus.className = "badge badge-muted hidden";
+      els.wfDesignStatus.setAttribute("hidden", "hidden");
+      els.wfDesignStatus.setAttribute("aria-hidden", "true");
+    } else {
+      els.wfDesignStatus.textContent = label;
+      els.wfDesignStatus.className = String(className || "badge badge-muted");
+      els.wfDesignStatus.classList.remove("hidden");
+      els.wfDesignStatus.removeAttribute("hidden");
+      els.wfDesignStatus.setAttribute("aria-hidden", "false");
+    }
+    syncWorkflowFactoryDesignAssistantChrome();
+  }
+
+  /**
+   * Progressive disclosure for Create Workflow design assistant (S75-D23):
+   * hide inactive chrome; surface API-key action only when missing;
+   * show answer controls only when the assistant awaits input.
+   */
+  function syncWorkflowFactoryDesignAssistantChrome() {
+    var hasKey = hasConfiguredOpenAiApiKey();
+    if (els.wfDesignStartBtn) {
+      els.wfDesignStartBtn.disabled = !hasKey;
+    }
+    if (els.wfDesignApiKeyRequiredBtn) {
+      var showKeyAction = !hasKey;
+      els.wfDesignApiKeyRequiredBtn.classList.toggle("hidden", !showKeyAction);
+      els.wfDesignApiKeyRequiredBtn.setAttribute("aria-hidden", showKeyAction ? "false" : "true");
+      if (showKeyAction) {
+        els.wfDesignApiKeyRequiredBtn.removeAttribute("hidden");
+      } else {
+        els.wfDesignApiKeyRequiredBtn.setAttribute("hidden", "hidden");
+      }
+    }
+    if (els.wfDesignStatus) {
+      var statusText = String(els.wfDesignStatus.textContent || "").trim();
+      if (!statusText || /^idle$/i.test(statusText)) {
+        els.wfDesignStatus.textContent = "";
+        els.wfDesignStatus.className = "badge badge-muted hidden";
+        els.wfDesignStatus.setAttribute("hidden", "hidden");
+        els.wfDesignStatus.setAttribute("aria-hidden", "true");
+      } else {
+        els.wfDesignStatus.classList.remove("hidden");
+        els.wfDesignStatus.removeAttribute("hidden");
+        els.wfDesignStatus.setAttribute("aria-hidden", "false");
+      }
+    }
+    var hasLog =
+      !!(els.wfDesignLog && els.wfDesignLog.children && els.wfDesignLog.children.length > 0);
+    setWorkflowFactoryFormGroupHidden(els.wfDesignLog, !hasLog);
+    var awaiting = isWorkflowDesignAssistantAwaitingAnswer();
+    setWorkflowFactoryFormGroupHidden(els.wfDesignAnswerGroup, !awaiting);
+  }
+
+  function handleWorkflowDesignApiKeyRequiredClick() {
+    return revealOpenAiApiKeyEntry({
+      silent: true,
+      message: "Load your OpenAI API key to continue."
+    });
   }
 
   function tryParseWorkflowDesignJson(text) {
@@ -18639,80 +18642,12 @@
   }
 
   function renderWorkflowBriefResolvedPanel(resolvedState) {
-    if (!els.wfBriefResolvedDetails || !els.wfBriefResolvedSummary || !els.wfBriefResolvedContent) return;
-    if (!resolvedState || typeof resolvedState !== "object") {
-      els.wfBriefResolvedDetails.classList.add("hidden");
-      els.wfBriefResolvedContent.textContent = "";
-      return;
-    }
-    els.wfBriefResolvedDetails.classList.remove("hidden");
-    var missingCount = Array.isArray(resolvedState.missing) ? resolvedState.missing.length : 0;
-    els.wfBriefResolvedSummary.textContent =
-      "Resolved workflow brief (" + (missingCount ? "missing: " + missingCount : "complete") + ")";
-    var briefConfig =
-      resolvedState.briefConfig && typeof resolvedState.briefConfig === "object"
-        ? resolvedState.briefConfig
-        : state.workflowBriefElicitation &&
-            state.workflowBriefElicitation.config &&
-            typeof state.workflowBriefElicitation.config === "object"
-          ? state.workflowBriefElicitation.config
-          : null;
-    var designSnapshot = getSelectedWorkflowDesign();
-    var catalog = state.workflowStepPatternCatalog || [];
-    var model =
-      briefConfig && typeof buildWorkflowBriefProvenanceViewModel === "function"
-        ? buildWorkflowBriefProvenanceViewModel(briefConfig, resolvedState, designSnapshot, {
-            catalog: catalog
-          })
-        : null;
-
-    els.wfBriefResolvedContent.innerHTML = "";
-    appendWorkflowBriefResolvedStatusStrip(els.wfBriefResolvedContent, resolvedState, model);
-
-    if (briefConfig) {
-      appendWorkflowBriefResolvedFactorsCompact(
-        els.wfBriefResolvedContent,
-        briefConfig,
-        resolvedState
-      );
-      appendWorkflowBriefPlanningNoticesUi(els.wfBriefResolvedContent, briefConfig, resolvedState);
-      if (!buildWorkflowBriefPlanningNoticeRows(briefConfig, resolvedState).length) {
-        var validationDisclosures = Array.isArray(resolvedState.validationDisclosures)
-          ? resolvedState.validationDisclosures
-          : [];
-        if (validationDisclosures.length) {
-          var legacyWrap = document.createElement("div");
-          legacyWrap.className = "workflow-brief-panel-section workflow-brief-planning-notices";
-          var legacyHeading = document.createElement("div");
-          legacyHeading.className = "workflow-brief-panel-section-heading";
-          legacyHeading.textContent = "Planning guidance";
-          legacyWrap.appendChild(legacyHeading);
-          validationDisclosures.forEach(function (row) {
-            if (!row || !row.message) return;
-            var item = document.createElement("div");
-            item.className = "workflow-brief-planning-item";
-            item.textContent = String(row.message).trim();
-            legacyWrap.appendChild(item);
-          });
-          els.wfBriefResolvedContent.appendChild(legacyWrap);
-        }
-      }
-      if (model) {
-        appendWorkflowBriefProvenanceStepRelevanceSection(
-          els.wfBriefResolvedContent,
-          model,
-          briefConfig,
-          resolvedState,
-          catalog
-        );
-        appendWorkflowBriefProvenanceDetailSections(
-          els.wfBriefResolvedContent,
-          model,
-          resolvedState
-        );
-        appendWorkflowBriefProvenanceTailSections(els.wfBriefResolvedContent, model, resolvedState);
-      }
-    }
+    // S75-D24: User-facing "Resolved workflow brief" panel removed from Create.
+    // Factor resolution, provenance, planning disclosures, and elicitation remain
+    // on state.workflowBriefResolved / assistant Q&A. Call sites kept so design
+    // flow does not depend on mounting a diagnostic view.
+    void resolvedState;
+    return;
   }
 
   function buildWorkflowBriefQuestionText(factor) {
@@ -19989,10 +19924,7 @@
             "assistant",
             "Your workflow is ready. You can adjust Settings at any time."
           );
-          if (els.wfDesignStatus) {
-            els.wfDesignStatus.textContent = "Ready";
-            els.wfDesignStatus.className = "badge badge-success";
-          }
+          setWorkflowDesignStatusBadge("Ready", "badge badge-success");
           return;
         }
         var askedMap = buildAskedFactorMap(resolvedState && resolvedState.askedFactors);
@@ -20090,10 +20022,7 @@
             "assistant",
             "Your workflow is ready. You can adjust Settings at any time."
           );
-          if (els.wfDesignStatus) {
-            els.wfDesignStatus.textContent = "Ready";
-            els.wfDesignStatus.className = "badge badge-success";
-          }
+          setWorkflowDesignStatusBadge("Ready", "badge badge-success");
           return;
         }
         state.workflowBriefElicitation = {
@@ -20131,17 +20060,11 @@
             : "I’ve drafted the workflow. I’ll ask only essential setup questions, then finalize."
         );
         appendWorkflowDesignLog("assistant", buildWorkflowBriefQuestionText(postQueue[0]));
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Refining quality";
-          els.wfDesignStatus.className = "badge badge-muted";
-        }
+        setWorkflowDesignStatusBadge("Refining quality", "badge badge-muted");
       })
       .catch(function (err) {
         showToast(err.message || "Error designing workflow.", "error");
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Error";
-          els.wfDesignStatus.className = "badge badge-danger";
-        }
+        setWorkflowDesignStatusBadge("Error", "badge badge-danger");
       });
   }
 
@@ -20204,17 +20127,19 @@
       return;
     }
 
-    if (els.wfDesignStatus) {
-      els.wfDesignStatus.textContent = "Designing…";
-      els.wfDesignStatus.className = "badge badge-success";
-    }
+    setWorkflowDesignStatusBadge("Designing…", "badge badge-success");
     if (els.wfDesignLog) {
       els.wfDesignLog.innerHTML = "";
     }
+    syncWorkflowFactoryDesignAssistantChrome();
     if (els.wfDesignSummary) {
       els.wfDesignSummary.textContent =
-        "When the assistant proposes an orchestration, its summary and authoring steps will appear here.";
+        "When the assistant proposes a workflow, its summary and steps will appear here.";
       els.wfDesignSummary.classList.add("empty");
+    }
+    if (els.wfDesignProposedTableWrap) {
+      els.wfDesignProposedTableWrap.classList.add("hidden");
+      els.wfDesignProposedTableWrap.setAttribute("hidden", "hidden");
     }
     if (els.wfDesignSteps) {
       els.wfDesignSteps.innerHTML = "";
@@ -20225,7 +20150,7 @@
     }
     state.workflowDesignResult = null;
     state.workflowDesignVersions = null;
-    state.workflowSelectedVersion = "refined";
+    state.workflowSelectedVersion = "draft";
 
     var scopeConstraints = els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "";
     // S75-D22: LD Create omits the constraints box; do not carry stale DOM values.
@@ -20250,10 +20175,7 @@
         scopeConstraints: els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "",
         ldCreateOutputType: ldCreateOutputType
       };
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Domain suggestion";
-        els.wfDesignStatus.className = "badge badge-muted";
-      }
+      setWorkflowDesignStatusBadge("Domain suggestion", "badge badge-muted");
       appendWorkflowDesignLog(
         "assistant",
         "This looks like a Learning Design task. Switch to Learning Design domain? (recommended) Reply yes/no."
@@ -20266,10 +20188,7 @@
         "Choose a domain (Learning Design or Research) before generating a workflow.",
         "error"
       );
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Needs domain";
-        els.wfDesignStatus.className = "badge badge-muted";
-      }
+      setWorkflowDesignStatusBadge("Needs domain", "badge badge-muted");
       return;
     }
 
@@ -20403,10 +20322,7 @@
                 "assistant",
                 "Great start. I’ll fill the missing essentials, and you can answer naturally (one message can cover multiple details)."
               );
-              if (els.wfDesignStatus) {
-                els.wfDesignStatus.textContent = "Needs essentials";
-                els.wfDesignStatus.className = "badge badge-muted";
-              }
+              setWorkflowDesignStatusBadge("Needs essentials", "badge badge-muted");
               appendWorkflowDesignLog("assistant", buildWorkflowBriefQuestionText(queue[0]));
               return;
             }
@@ -20454,10 +20370,7 @@
       })
       .catch(function (err) {
         showToast(err.message || "Error preparing workflow brief.", "error");
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Error";
-          els.wfDesignStatus.className = "badge badge-danger";
-        }
+        setWorkflowDesignStatusBadge("Error", "badge badge-danger");
       });
   }
 
@@ -23212,10 +23125,11 @@
   }
 
   function updateApiKeyStatus(loaded) {
-    if (!els.apiKeyStatus) return;
-    els.apiKeyStatus.textContent = loaded ? "Loaded" : "Not loaded";
-    els.apiKeyStatus.classList.toggle("badge-success", loaded);
-    els.apiKeyStatus.classList.toggle("badge-danger", !loaded);
+    if (els.apiKeyStatus) {
+      els.apiKeyStatus.textContent = loaded ? "Loaded" : "Not loaded";
+      els.apiKeyStatus.classList.toggle("badge-success", loaded);
+      els.apiKeyStatus.classList.toggle("badge-danger", !loaded);
+    }
     if (els.apiKeyControls) {
       // Hide the file picker and status pill once a key is loaded.
       els.apiKeyControls.classList.toggle("hidden", loaded);
@@ -23227,11 +23141,10 @@
       els.apiKeyHelperText.classList.toggle("hidden", loaded);
     }
     syncStartRefinementButtonState();
-    // Create Workflow Design remains clickable without a key so the action gate
-    // can reveal/focus the existing API-key controls (S75-D09 revised).
-    if (els.wfDesignStartBtn) {
-      els.wfDesignStartBtn.disabled = false;
-    }
+    // S75-D23: Design workflow is disabled until a usable key exists; the
+    // actionable "API key required" control reveals the existing header loader.
+    // Create Workflow remains navigable; brief fields remain editable.
+    syncWorkflowFactoryDesignAssistantChrome();
   }
 
   /** True when an OpenAI API key is already in memory for Create Workflow / API calls. */
@@ -26174,13 +26087,10 @@
           stepsAfterHeuristicsCount: Array.isArray(parsed && parsed.steps) ? parsed.steps.length : 0,
           generatedStepIdsAfterHeuristics: getGeneratedWorkflowStepIds(parsed)
         });
-        // Store versions so users can compare draft vs refined, like prompt versions.
-        state.workflowDesignVersions = {
-          draft: JSON.parse(JSON.stringify(parsed)),
-          refined: JSON.parse(JSON.stringify(parsed))
-        };
+        // S75-D25: one proposed Create graph (no Draft/Refined twinning).
+        state.workflowDesignResult = parsed;
+        state.workflowDesignVersions = null;
         state.workflowSelectedVersion = "draft";
-        state.workflowDesignResult = parsed; // backward compat
         renderWorkflowDesignResult({ promptRefine: false });
         // IMPORTANT: return parsed design so post-generation queueing receives
         // the finalized, heuristics-applied step list.
@@ -32918,18 +32828,9 @@
 
   function handleSaveDesignedWorkflow() {
     try {
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Saving…";
-        els.wfDesignStatus.className = "badge badge-muted";
-      }
-    var versions = state.workflowDesignVersions;
-    var selected = state.workflowSelectedVersion || "refined";
-    var design =
-      (versions && versions[selected]) ||
-      (versions && versions.refined) ||
-      (versions && versions.draft) ||
-      state.workflowDesignResult ||
-      null;
+      setWorkflowDesignStatusBadge("Saving…", "badge badge-muted");
+    // S75-D25: Save the single proposed Create graph (no Draft/Refined selection).
+    var design = state.workflowDesignResult || null;
 
     if (!design || !design.steps || !Array.isArray(design.steps)) {
       showToast("Design a workflow first.", "error");
@@ -33174,10 +33075,7 @@
         console.error("[PRISM] handleSaveDesignedWorkflow failed", err);
       } catch (_e) {}
       showToast("Could not save workflow: " + (err && err.message ? err.message : "unknown error"), "error");
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Error";
-        els.wfDesignStatus.className = "badge badge-danger";
-      }
+      setWorkflowDesignStatusBadge("Error", "badge badge-danger");
     }
   }
 
@@ -33236,10 +33134,7 @@
         : [];
       var mustRegenerate = postGenAnsweredIds.some(isGraphAffectingPostGenerationFactorId);
       if (mustRegenerate) {
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Designing…";
-          els.wfDesignStatus.className = "badge badge-success";
-        }
+        setWorkflowDesignStatusBadge("Designing…", "badge badge-success");
         continueWorkflowDesignGeneration(
           assessElicit.base,
           finalResolvedNow,
@@ -33252,10 +33147,7 @@
           "assistant",
           "Workflow updated with step-specific settings. No graph changes required."
         );
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Ready";
-          els.wfDesignStatus.className = "badge badge-success";
-        }
+        setWorkflowDesignStatusBadge("Ready", "badge badge-success");
       }
       return;
     }
@@ -33335,17 +33227,11 @@
             "assistant",
             "Great — confirmed. Continuing with step-specific configuration."
           );
-          if (els.wfDesignStatus) {
-            els.wfDesignStatus.textContent = "Refining quality";
-            els.wfDesignStatus.className = "badge badge-muted";
-          }
+          setWorkflowDesignStatusBadge("Refining quality", "badge badge-muted");
           return;
         }
         appendWorkflowDesignLog("assistant", "Inferred factors confirmed. Generating workflow now.");
-        if (els.wfDesignStatus) {
-          els.wfDesignStatus.textContent = "Designing…";
-          els.wfDesignStatus.className = "badge badge-success";
-        }
+        setWorkflowDesignStatusBadge("Designing…", "badge badge-success");
         continueWorkflowDesignGeneration(inf.base, finalInfResolved, inf.config);
       }
 
@@ -33360,10 +33246,7 @@
         })
         .filter(function (f) { return !!(f && f.id); });
       var fallbackOverrides = parseInferenceOverrides(raw, pending);
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Understanding updates";
-        els.wfDesignStatus.className = "badge badge-muted";
-      }
+      setWorkflowDesignStatusBadge("Understanding updates", "badge badge-muted");
       callOpenAIForWorkflowBriefExtraction(raw, {
         config: inf.config,
         explicitValues: inf.explicitValues,
@@ -33408,10 +33291,7 @@
               "assistant",
               "Tell me what to change in plain language (for example: 'use single activity and beginner level'), or reply 'yes' to keep the inferred values."
             );
-            if (els.wfDesignStatus) {
-              els.wfDesignStatus.textContent = "Confirm inferred";
-              els.wfDesignStatus.className = "badge badge-muted";
-            }
+            setWorkflowDesignStatusBadge("Confirm inferred", "badge badge-muted");
             return;
           }
           finalizeInferenceResponse(validated);
@@ -33422,10 +33302,7 @@
               "assistant",
               "Tell me what to change in plain language, or reply 'yes' to keep the inferred values."
             );
-            if (els.wfDesignStatus) {
-              els.wfDesignStatus.textContent = "Confirm inferred";
-              els.wfDesignStatus.className = "badge badge-muted";
-            }
+            setWorkflowDesignStatusBadge("Confirm inferred", "badge badge-muted");
             return;
           }
           finalizeInferenceResponse(fallbackOverrides);
@@ -33444,10 +33321,7 @@
         if (f && f.id) remainingMap[String(f.id)] = f;
       });
 
-      if (els.wfDesignStatus) {
-        els.wfDesignStatus.textContent = "Understanding brief";
-        els.wfDesignStatus.className = "badge badge-muted";
-      }
+      setWorkflowDesignStatusBadge("Understanding brief", "badge badge-muted");
 
       callOpenAIForWorkflowBriefExtraction(raw, elicit, remaining)
         .then(function (capturedRaw) {
@@ -33651,10 +33525,7 @@
               );
             }
             appendWorkflowDesignLog("assistant", buildWorkflowBriefQuestionText(nextFactor));
-            if (els.wfDesignStatus) {
-              els.wfDesignStatus.textContent = "Needs essentials";
-              els.wfDesignStatus.className = "badge badge-muted";
-            }
+            setWorkflowDesignStatusBadge("Needs essentials", "badge badge-muted");
             return;
           }
 
@@ -33693,10 +33564,7 @@
                 finalResolved.missing.join(", ") +
                 ". Please add them in the Workflow Factory fields and click Design workflow again."
             );
-            if (els.wfDesignStatus) {
-              els.wfDesignStatus.textContent = "Needs essentials";
-              els.wfDesignStatus.className = "badge badge-muted";
-            }
+            setWorkflowDesignStatusBadge("Needs essentials", "badge badge-muted");
             return;
           }
           var pendingAfterElicit = getPendingHighImpactInferredFactors(
@@ -33734,10 +33602,7 @@
                 "assistant",
                 captureMessage
               );
-              if (els.wfDesignStatus) {
-                els.wfDesignStatus.textContent = "Designing…";
-                els.wfDesignStatus.className = "badge badge-success";
-              }
+              setWorkflowDesignStatusBadge("Designing…", "badge badge-success");
               continueWorkflowDesignGeneration(
                 elicit.base,
                 finalResolved,
@@ -33751,17 +33616,11 @@
               "assistant",
               "Thanks — those step-specific settings are captured. You can review, tweak, and save this workflow."
             );
-            if (els.wfDesignStatus) {
-              els.wfDesignStatus.textContent = "Ready";
-              els.wfDesignStatus.className = "badge badge-success";
-            }
+            setWorkflowDesignStatusBadge("Ready", "badge badge-success");
             return;
           }
           appendWorkflowDesignLog("assistant", "Brief essentials and quality factors resolved. Generating workflow now.");
-          if (els.wfDesignStatus) {
-            els.wfDesignStatus.textContent = "Designing…";
-            els.wfDesignStatus.className = "badge badge-success";
-          }
+          setWorkflowDesignStatusBadge("Designing…", "badge badge-success");
           continueWorkflowDesignGeneration(elicit.base, finalResolved, elicit.config);
         })
         .catch(function () {
@@ -33769,10 +33628,7 @@
             "assistant",
             "I couldn't interpret that fully yet. " + (factor ? buildWorkflowBriefQuestionText(factor) : "Please rephrase.")
           );
-          if (els.wfDesignStatus) {
-            els.wfDesignStatus.textContent = "Needs essentials";
-            els.wfDesignStatus.className = "badge badge-muted";
-          }
+          setWorkflowDesignStatusBadge("Needs essentials", "badge badge-muted");
         });
       return;
     }
@@ -51354,6 +51210,12 @@
     if (els.wfDesignStartBtn) {
       els.wfDesignStartBtn.addEventListener("click", handleStartWorkflowDesign);
     }
+    if (els.wfDesignApiKeyRequiredBtn) {
+      els.wfDesignApiKeyRequiredBtn.addEventListener(
+        "click",
+        handleWorkflowDesignApiKeyRequiredClick
+      );
+    }
     if (els.wfDesignSaveBtn) {
       // Never leave this action silent due to disabled button state.
       els.wfDesignSaveBtn.disabled = false;
@@ -51371,47 +51233,9 @@
       });
     }
 
-    if (els.wfDesignVersionSelect) {
-      els.wfDesignVersionSelect.addEventListener("change", function () {
-        var val = els.wfDesignVersionSelect.value;
-        if (val !== "draft" && val !== "refined") return;
-        state.workflowSelectedVersion = val;
-        renderWorkflowDesignResult({ promptRefine: false });
-      });
-    }
     if (els.wfDesignStartingArtefact) {
       els.wfDesignStartingArtefact.addEventListener("change", function () {
         updateWorkflowFactoryInputsCopyFromStartingPoint();
-      });
-    }
-
-    if (els.wfDesignSteps) {
-      els.wfDesignSteps.addEventListener("input", function (event) {
-        var target = event.target;
-        if (!target || !target.getAttribute) return;
-        var field = target.getAttribute("data-field");
-        if (field !== "title" && field !== "role") return;
-        var li = target.closest ? target.closest(".workflow-step") : null;
-        if (!li) return;
-        var idxStr = li.getAttribute("data-wf-step-index");
-        var idx = parseInt(idxStr, 10);
-        if (!Number.isFinite(idx)) return;
-        updateWorkflowDesignStepField(idx, field, target.value || "");
-      });
-
-      els.wfDesignSteps.addEventListener("click", function (event) {
-        var target = event.target;
-        if (!target || !target.getAttribute) return;
-        if (target.getAttribute("data-action") !== "delete-wf-step") return;
-        var li = target.closest ? target.closest(".workflow-step") : null;
-        if (!li) return;
-        var idxStr = li.getAttribute("data-wf-step-index");
-        var idx = parseInt(idxStr, 10);
-        if (!Number.isFinite(idx)) return;
-
-        var confirmed = window.confirm("Delete this step from the suggested workflow?");
-        if (!confirmed) return;
-        deleteWorkflowDesignStep(idx);
       });
     }
 
@@ -51999,6 +51823,17 @@
     prismTestApi.buildWorkflowBriefStepRelevanceIndex = buildWorkflowBriefStepRelevanceIndex;
     prismTestApi.attachWorkflowBriefPlanningToResolvedState = attachWorkflowBriefPlanningToResolvedState;
     prismTestApi.resolveWorkflowBriefFactors = resolveWorkflowBriefFactors;
+    prismTestApi.buildWorkflowBriefQuestionText = buildWorkflowBriefQuestionText;
+    prismTestApi.renderWorkflowBriefResolvedPanel = renderWorkflowBriefResolvedPanel;
+    prismTestApi.renderWorkflowDesignResult = renderWorkflowDesignResult;
+    prismTestApi.getSelectedWorkflowDesign = getSelectedWorkflowDesign;
+    prismTestApi.handleSaveDesignedWorkflow = handleSaveDesignedWorkflow;
+    prismTestApi.cacheElements = cacheElements;
+    prismTestApi.setWorkflowDesignResultForTest = function (design) {
+      state.workflowDesignResult = design && typeof design === "object" ? design : null;
+      state.workflowDesignVersions = null;
+      return state.workflowDesignResult;
+    };
     prismTestApi.resolvePedagogicCognitionPackIds = resolvePedagogicCognitionPackIds;
     prismTestApi.hasPedagogicCognitionIntent = hasPedagogicCognitionIntent;
     prismTestApi.resolvePedagogicCognitionOrchestrationSemantics =
@@ -52346,10 +52181,42 @@
     prismTestApi.hasConfiguredOpenAiApiKeyForTest = hasConfiguredOpenAiApiKey;
     prismTestApi.setOpenAiApiKeyForTest = function (key) {
       state.apiKey = key == null || key === "" ? null : String(key);
+      updateApiKeyStatus(!!hasConfiguredOpenAiApiKey());
     };
     prismTestApi.ensureCreateWorkflowApiKeyPrerequisiteForTest =
       ensureCreateWorkflowApiKeyPrerequisite;
     prismTestApi.revealOpenAiApiKeyEntryForTest = revealOpenAiApiKeyEntry;
+    prismTestApi.syncWorkflowFactoryDesignAssistantChrome =
+      syncWorkflowFactoryDesignAssistantChrome;
+    prismTestApi.isWorkflowDesignAssistantAwaitingAnswer =
+      isWorkflowDesignAssistantAwaitingAnswer;
+    prismTestApi.setWorkflowDesignStatusBadgeForTest = setWorkflowDesignStatusBadge;
+    prismTestApi.handleWorkflowDesignApiKeyRequiredClickForTest =
+      handleWorkflowDesignApiKeyRequiredClick;
+    prismTestApi.refreshWorkflowFactoryDesignAssistantElsForTest = function () {
+      if (typeof document === "undefined" || !document.getElementById) return;
+      els.wfDesignStartBtn = document.getElementById("wfDesignStartBtn");
+      els.wfDesignApiKeyRequiredBtn = document.getElementById("wfDesignApiKeyRequiredBtn");
+      els.wfDesignStatus = document.getElementById("wfDesignStatus");
+      els.wfDesignLog = document.getElementById("wfDesignLog");
+      els.wfDesignAnswerGroup = document.getElementById("wfDesignAnswerGroup");
+      els.wfDesignAnswer = document.getElementById("wfDesignAnswer");
+      els.wfDesignSendBtn = document.getElementById("wfDesignSendBtn");
+      els.apiKeyFile = document.getElementById("apiKeyFile");
+      els.apiKeyStatus = document.getElementById("apiKeyStatus");
+      els.apiKeyControls = document.getElementById("apiKeyControls");
+      els.apiKeyHelperText = document.getElementById("apiKeyHelperText");
+      els.apiSettings = document.getElementById("apiSettings");
+      syncWorkflowFactoryDesignAssistantChrome();
+    };
+    prismTestApi.setWorkflowDomainSuggestionPendingForTest = function (pending) {
+      state.workflowDomainSuggestionPending = pending || null;
+      syncWorkflowFactoryDesignAssistantChrome();
+    };
+    prismTestApi.setWorkflowBriefElicitationForTest = function (elicit) {
+      state.workflowBriefElicitation = elicit || null;
+      syncWorkflowFactoryDesignAssistantChrome();
+    };
     prismTestApi.resolveWorkflowRunNextStepDisabledReason = resolveWorkflowRunNextStepDisabledReason;
     prismTestApi.workflowRunStepHasBlockingCaptureErrors = workflowRunStepHasBlockingCaptureErrors;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;

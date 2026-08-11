@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260810-s75-d12-1" />
+  <link rel="stylesheet" href="style.css?v=20260811-s75-d22" />
 </head>
 <body>
       <div class="app-shell">
@@ -650,12 +650,12 @@
               </select>
             </div>
             <div class="form-group wf-span-2">
-              <label for="wfDesignIntent" id="wfDesignIntentLabel">What are you trying to design or produce?</label>
-              <p id="wfDesignIntentHint" class="helper-text">State the primary design intent in one line.</p>
+              <label for="wfDesignIntent" id="wfDesignIntentLabel">What should this cover?</label>
+              <p id="wfDesignIntentHint" class="helper-text">Describe the topic, purpose and anything important PRISM should take into account.</p>
               <textarea
                 id="wfDesignIntent"
                 rows="2"
-                placeholder="e.g. workshop, lesson, module, assessment materials, research summary workflow"
+                placeholder="e.g. Managing Risk for programme managers; 60-minute session using browser-based tools only"
                 autocomplete="off"
               ></textarea>
             </div>
@@ -670,51 +670,51 @@
               />
             </div>
             <div class="form-group">
-              <label for="wfDesignScale" id="wfDesignScaleLabel">Scope / size</label>
+              <label for="wfDesignScale" id="wfDesignScaleLabel">Scale / scope</label>
               <p id="wfDesignScaleHint" class="helper-text">
-                Describe the expected size, duration, or breadth of the output.
+                How long or how broad should this be? For example: 30 minutes, 60-minute workshop, one session, or 12-week module.
               </p>
               <input
                 type="text"
                 id="wfDesignScale"
-                placeholder="e.g. short summary, detailed guide, multi-part workflow, ongoing process"
+                placeholder="e.g. 30 minutes, 60-minute workshop, one session, 12-week module"
                 autocomplete="off"
               />
             </div>
             <div class="form-group">
               <label for="wfDesignStartingArtefact">Starting point (optional)</label>
-              <p id="wfDesignStartingArtefactHint" class="helper-text">Choose how this workflow begins: generate from a topic, rely on uploaded material, or combine both. Legacy saved values appear as an extra option until you change them.</p>
+              <p id="wfDesignStartingArtefactHint" class="helper-text">Choose how this workflow begins: generate from a topic, use source material, or combine both. Legacy saved values appear as an extra option until you change them.</p>
               <select id="wfDesignStartingArtefact" autocomplete="off">
-                <option value="">From source material (e.g. document, notes, PDF)</option>
+                <option value="">Select starting point…</option>
               </select>
             </div>
-            <div class="form-group wf-span-2">
-              <label id="wfDesignInputsLabel" for="wfDesignInputs">Source material / inputs</label>
-              <p id="wfDesignInputsHint" class="helper-text">Describe source materials or other inputs available at the start (runtime artefacts, not workflow mechanics).</p>
+            <div class="form-group wf-span-2" id="wfDesignInputsGroup">
+              <label id="wfDesignInputsLabel" for="wfDesignInputs">What source material will you be working from?</label>
+              <p id="wfDesignInputsHint" class="helper-text">Describe the lecture slides, transcript, readings, notes, or other material this workflow should work from. You will supply it when you run the workflow — this field does not upload or bind files automatically.</p>
               <textarea
                 id="wfDesignInputs"
                 rows="2"
-                placeholder="e.g. PDF, notes, transcript, list of topics..."
+                placeholder="e.g. lecture transcript, course slides, readings, notes, dataset…"
                 autocomplete="off"
               ></textarea>
             </div>
-            <div class="form-group wf-span-2">
-              <label for="wfDesignDesiredOutputs" id="wfDesignDesiredOutputsLabel">Learner-facing page and supporting outputs (optional)</label>
-              <p id="wfDesignDesiredOutputsHint" class="helper-text">What the learner-facing page should contain, plus any supporting artefacts this design run should produce (orchestrated through the workflow below).</p>
+            <div class="form-group wf-span-2" id="wfDesignDesiredOutputsGroup">
+              <label for="wfDesignDesiredOutputs" id="wfDesignDesiredOutputsLabel">Expected research deliverables (optional)</label>
+              <p id="wfDesignDesiredOutputsHint" class="helper-text">Primary deliverables this research workflow should produce (kept for Research Create; not used on Learning Design Create).</p>
               <textarea
                 id="wfDesignDesiredOutputs"
                 rows="2"
-                placeholder="e.g. activities, assessment on the page, slide deck, facilitator guide, handout"
+                placeholder="e.g. research summary, briefing note, evidence matrix, questions"
                 autocomplete="off"
               ></textarea>
             </div>
-            <div class="form-group wf-span-2">
+            <div class="form-group wf-span-2" id="wfDesignScopeConstraintsGroup">
               <label for="wfDesignScopeConstraints">Scope and constraints</label>
-              <p id="wfDesignConstraintsHint" class="helper-text">Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe learner pace or grouping in plain language if it matters—there is no separate sequencing editor.</p>
+              <p id="wfDesignConstraintsHint" class="helper-text">Hard requirements: method, policy, citation, tooling, or delivery conditions.</p>
               <textarea
                 id="wfDesignScopeConstraints"
                 rows="2"
-                placeholder="e.g. 5-minute video, lesson, lecture, short course, or full module; expected student time (e.g. 30 mins); accessibility requirements; target audience level; language; prerequisites; any do/don'ts…"
+                placeholder="e.g. citation style, evidence standards, tooling limits, delivery format…"
                 autocomplete="off"
               ></textarea>
             </div>
@@ -1171,6 +1171,6 @@
   <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
-  <script src="app.js?v=20260810-s75-d12-1"></script>
+  <script src="app.js?v=20260811-s75-d22"></script>
 </body>
 </html>

@@ -424,9 +424,9 @@ They provide a consistent way to structure workflows and ensure that learning de
         "type": "select",
         "required": true,
         "choices": [
-          { "value": "generate_from_topic", "label": "Generate content" },
-          { "value": "provided_source_content", "label": "Use uploaded material" },
-          { "value": "mixed", "label": "Mix uploaded material and generated content" }
+          { "value": "generate_from_topic", "label": "Generate from a topic" },
+          { "value": "provided_source_content", "label": "Use source material" },
+          { "value": "mixed", "label": "Combine topic and source material" }
         ]
       }
     ],
@@ -721,13 +721,13 @@ They provide a consistent way to structure workflows and ensure that learning de
       }
     ],
     "uiHints": {
-      "design_intent": "Describe the topic and focus for the selected resource (not a second product choice).",
+      "design_intent": "Describe the topic, purpose and anything important PRISM should take into account.",
       "audience": "Primary learner/cohort for this design.",
-      "scope_scale": "Delivery scale and duration (for example: 60 minutes, half day, or multi-session series).",
-      "scope_scale_placeholder": "e.g. 60-minute session, half-day workshop, two-week block",
-      "inputs": "Source content or note that content must be generated from topic.",
-      "desired_outputs": "Optional supporting contents or materials (activities, formative checks, handouts, slides) for the selected resource.",
-      "constraints": "Hard constraints only: timing, policy, tools, accessibility, delivery conditions."
+      "scope_scale": "How long or how broad should this be? For example: 30 minutes, 60-minute workshop, one session, or 12-week module.",
+      "scope_scale_placeholder": "e.g. 30 minutes, 60-minute workshop, one session, 12-week module",
+      "inputs": "Describe the source material this workflow should work from when Starting point uses source material.",
+      "desired_outputs": "Not used on Learning Design Create (S75-D22 one-product rule). Retained for Research / legacy compatibility.",
+      "constraints": "Not used on Learning Design Create (S75-D22). Prefer Scale/scope and What should this cover?."
     },
     "extraFields": [],
     "inferenceRules": [
@@ -965,9 +965,9 @@ They provide a consistent way to structure workflows and ensure that learning de
         "controlType": "select",
         "default": "generate_from_topic",
         "options": [
-          { "value": "generate_from_topic", "label": "Generate content" },
-          { "value": "provided_source_content", "label": "Use uploaded material" },
-          { "value": "mixed", "label": "Mix uploaded and generated content" }
+          { "value": "generate_from_topic", "label": "Generate from a topic" },
+          { "value": "provided_source_content", "label": "Use source material" },
+          { "value": "mixed", "label": "Combine topic and source material" }
         ],
         "visible": true,
         "advanced": false,

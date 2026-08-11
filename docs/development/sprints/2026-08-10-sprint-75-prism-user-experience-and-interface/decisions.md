@@ -214,13 +214,138 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 
 ---
 
+## S75-D15 DLA evidence_decision false-positive validation (instructional scaffold vs supplied evidence)
+
+- **Decision:** Tighten `taskLooksEvidenceDependent` in `lib/page-dla-enrich.js` so `evidence_decision.required = false` is **not** contradicted by ordinary instructional-material wording. **Principle:** evidence dependency refers to reliance on **supplied evidence/source material**, not ordinary use of generated instructional explanations, examples, samples, or checklists.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** Lagrangian Multipliers DLA capture rejected valid A5 (`activities[4]`) where learners review explanatory material, compare weak/strong interpretation **examples**, and write a conceptual summary — because `productionOverSource` treated interpret/compare + `(provided|supplied|attached) examples` as source-evidence dependency.
+
+- **Consequences:** Validator-only fix; DLA prompt/schema/runtime semantics unchanged. Tests: `tests/s75-dla-evidence-decision-false-positive.test.js`. Genuine supplied-dataset/source-extract/case-evidence tasks still fail closed when `required:false`. Literary imagery/tone/structure source-analysis paths preserved. Sprint **76 not opened**.
+
+---
+
+## S75-D16 DLA partial-page activities[] false-positive validation
+
+- **Decision:** Resolve the partial DLA capture **subject** before `validateDlaPartialPageCapture` checks `activities[]`. Run paste → `tryParseWorkflowArtefactJson` / `parsePageArtefactCaptureForStorage` → optional partial repair → strict partial validator must inspect activities wherever the production capture shape stores them, not only a missing top-level `activities` key on an otherwise valid v2 page shell.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Root cause:** `validateDlaPartialPageCapture` only read `page.activities`. Production captures that are valid DLA partial pages can arrive with activities under tolerated alternate shapes — notably `learning_activities.activities`, a nested `page` wrapper from conversational paste, or a stringified JSON array — while still presenting `artifact_type` / `schema_version` / `assembly_state.current_stage: "dla"` at the outer object. The validator treated those as missing `activities[]`.
+
+- **Consequences:** Validator-only fix in `lib/page-dla-enrich.js` (`resolveDlaPartialPageCaptureSubject`) and Run strict/partial routing in `app.js` (`resolveDlaPartialCaptureForValidation` before repair/validate). Requirement preserved: partial DLA must still contain a non-empty activities array after resolution. Tests: `tests/s75-dla-activities-missing-false-positive.test.js`. DLA prompts/schemas, C-04, D13, D14, Authoring, renderer unchanged. Sprint **76 not opened**.
+
+---
+
+## S75-D17 Generated-workflow Run persistence identity: durable step.id across Edit/Save/reload
+
+- **Decision:** Treat workflow step `step.id` as durable workflow-instance identity. Existing steps retain id across Edit/Save/load/reload and Run/Authoring round-trips; only genuinely new steps receive new ids once. Run persistence remains keyed by workflow id + step.id.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Root cause:** `gatherWorkflowDetailFormData` derived ids from `data-step-id || uuid()`. If a rendered existing step row reached gather without `data-step-id`, save assigned a fresh uuid and persisted a new definition id for that step. D14 durable runstate remained correct, but captures stayed under old step ids and appeared missing under regenerated ids after reload.
+
+- **Consequences:** `app.js` now anchors gather/save to durable existing ids by: (1) rendering every step with stable id metadata (`data-step-id`, hidden `stepId`, in-memory `__workflowStepId`), and (2) resolving gather step id in priority order attr/property/hidden, then existing selected-workflow row fallback, then uuid only for genuinely new rows. No canonical-step-id capture lookup fallback introduced. No Rename/Duplicate/Delete residual changes. Tests: `tests/s75-generated-workflow-run-persistence-identity.test.js` plus existing D14/C-04/D13/D15/D16 suites remain green. Sprint **76 not opened**.
+
+---
+
+## S75-D18 Run position is session-scoped (captures remain durable)
+
+- **Decision:** Treat workflow Run position (`currentWorkflowRunIndex`) as **session-only UI state**. Keep persisted run captures durable across sessions, but on a fresh application session/reload start Run at Step 1 (index 0).
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** Operators found cross-session auto-resume to later steps surprising and potentially misleading during fresh-session reopening. Product rule separates concerns: capture data durability remains D14-owned; Run position is transient navigation state.
+
+- **Consequences:** `restoreWorkflowRunStateForWorkflow` restores capture maps/step-completion/resource refs as before but resolves active run index from in-session state only; cold session defaults to 0. Persisted runstate schema can continue to carry `runIndex` for compatibility, but cold-session positioning ignores durable `runIndex`. No D14 merge changes, no D17 identity changes, no capture gating/validation changes. Tests: `tests/s75-run-position-session-scope.test.js` plus D14 and D17 suites remain green. Sprint **76 not opened**.
+
+---
+
+## S75-D19 Accepted Run capture refresh loss when in-memory equals accepted paste but durable key is missing
+
+- **Decision:** Keep existing validation/gating semantics and D14 merge behaviour, but ensure an accepted Run capture is durably written when the live step value is valid and current in memory even if local in-memory change detection reports no delta.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Root cause:** `syncWorkflowRunCapturedOutputToState` only persisted when `captureChanged === true` against in-memory previous values. In the reproduced Step 5 refresh-loss path, the accepted capture value could match existing in-memory step state while the corresponding durable `capturedOutputs/capturedOutputsRaw` key was absent or stale, so persistence was skipped and refresh lost the value.
+
+- **Consequences:** `app.js` now checks step-level durable equivalence before deciding to skip persist. If a valid accepted capture is not durably current for that workflow+step, persistence runs even when in-memory changed detection is false. No canonical-id fallback, no Next-gating changes, no D13/D14/D15/D16/D17/D18 contract changes. Regression coverage added to `tests/s75-run-capture-persistence.test.js` (accepted unchanged-in-memory capture still durably persists). Sprint **76 not opened**.
+
+---
+
+## S75-D20 Live refresh-loss hardening: blank live capture values cannot erase durable accepted captures
+
+- **Decision:** Preserve D14 non-destructive persistence contract by treating blank live capture-string values as non-authoritative during merge when a durable non-empty capture already exists for the same step key.
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Root cause:** In live refresh/open flows, a step can transiently present an empty run capture field in the live map while durable storage still holds the accepted capture. D14 merge used plain `Object.assign`, so a blank live string for an existing key could overwrite the durable non-empty value, making runIndex persistence appear correct while the step capture disappeared.
+
+- **Consequences:** `mergeWorkflowRunCaptureMaps` now keeps durable non-empty values when the live value for that key is blank; ordinary non-blank live updates still win. This does not weaken Next gating, does not introduce canonical-step fallback, and keeps D13/D14/D15/D16/D17/D18/D19 semantics. Regression added: `merge helper: blank live value does not erase durable accepted capture` in `tests/s75-run-capture-persistence.test.js`. Sprint **76 not opened**.
+
+- **Amendment (real-browser finding, 2026-08-11):** Blank durable placeholder presence is not durable currency. `isWorkflowRunCaptureDurablyCurrent` must treat durable-blank vs accepted-live-nonblank as **not current**, so accepted captures always trigger persistence replacement for the same workflow+step key. Regression added: durable blank placeholder replaced by accepted non-blank DLA capture.
+
+- **Amendment (operator diagnostic hardening, 2026-08-11):** Single global last-capture diagnostics were being overwritten by later non-current step syncs (for example Design Page render-path sync after DLA input), which obscured the actual DLA persist decision. Temporary diagnostics now include per-step records keyed by step id (`workflowRunCapturePersistDiagnostics[stepId]`) with persistence-decision fields (previous/incoming/live/durable lengths, captureChanged, durableCurrent, blockingValidation, shouldPersist, persistAttempted, storageWriteReached). Run sync now distinguishes user input from system reconciliation and ignores blank non-current render syncs so rendering does not masquerade as capture input or churn durable placeholders.
+
+- **Amendment (proven persist boundary, 2026-08-11):** Real-operator trace proved `persistWorkflowRunStateForWorkflow` entered with `shouldPersist=true` but `storageWriteReached=false`. Root cause was storage-write failure at `window.localStorage.setItem` (previously swallowed). Persistence now emits in-function stage markers (`persist_enter` through `setitem_called/completed/readback`), captures exception name/message, and retries quota-like failures after pruning blank placeholder capture keys from runstate records. This preserves accepted non-blank captures for the active workflow while avoiding blank-placeholder bloat that can block durable writes.
+
+- **Amendment (resource-backed run captures, 2026-08-11):** Large Run capture payloads are now treated as workflow-owned resources. Durable capture bodies persist via `PRISM_WORKFLOW_RESOURCES` (IndexedDB-backed owner store), while `promptr.workflows.runstate.v1` remains a lightweight metadata/index rail (capture refs, completion flags, run index, resource refs). Storage-pressure behavior now warns operators near quota and surfaces explicit durability-failure messaging instead of silent success.
+
+---
+
+## S75-D21 — One-off Run capture migration to IndexedDB; ref-only runtime after migration
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Decision (current architecture):** **Run capture payloads are stored as workflow resources in IndexedDB. localStorage stores lightweight refs and run metadata only.** Root cause of the operator persistence failure was `localStorage` quota on large inline Run captures. Migrating payloads into `PRISM_WORKFLOW_RESOURCES` resolved it. Operator verification confirmed Jamies Maths DLA/GAM persist across refresh and Authoring → Assemble From Current Workflow Run works with hydrated captures. `promptr.runCaptureStorageVersion = 2` marks a migrated installation. Legacy inline bodies (`capturedOutputs` / `capturedOutputsRaw` in runstate) are **migration/recovery only**, not the normal Run contract. Orphaned runstate records remain preserved; storage-management UX is backlog ([PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management)).
+
+- **History (investigation trail, not primary architecture):** D14–D20 hardened merge/blank/durability behaviour while captures were still localStorage-inline. Those patches remain valid as merge/hydration semantics, but the durable store is now resource-backed (D21). Temporary Copy Run diagnostic / Migrate Run data UI and stage-marker tracing were removed after successful operator migration (cleanup 2026-08-11). Migration remains callable from tests/recovery (`migrateAllWorkflowRunCapturesToResourceStore`).
+
+- **Consequences:** Ref-backed persist/hydrate/restore; textarea bind after hydrate; explicit durability-failure toast + storage-pressure warning retained; no automatic orphan deletion; no silent conflict overwrite. Tests: `tests/s75-run-capture-migration.test.js`, `tests/s75-run-capture-resource-persistence.test.js`, updated `tests/s75-run-capture-persistence.test.js`. Sprint **76 not opened**.
+
+---
+
+## S75-D22 — One workflow → one product; Learning Design Create simplification
+
+- **Decision:** **One workflow produces one product.** A product may contain multiple components, and a workflow may generate many intermediate artefacts to construct that product, but Create must **not** invite multiple independent final products.
+
+  **Learning Design Create (authoritative initial form):**
+  1. Workflow name
+  2. Domain
+  3. What are you creating? (Self-study resource · Workshop only — unchanged from `S75-D11`)
+  4. What should this cover? (brief/goal; may include important requirements)
+  5. Who is this for?
+  6. Scale / scope (duration / breadth)
+  7. Starting point (`input_strategy`)
+  8. **Conditional** source-material description only when Starting point is Use source material or Combine topic and source material
+
+  **Removed from initial LD Create UI:** Supporting contents and materials (`desiredOutputs`); Scope and constraints (`scopeConstraints`).
+
+  **Compatibility:** Internal `desiredOutputs` / `scopeConstraints` / `workflowOutputs` paths remain for Research and legacy saved workflows. LD Create forces empty `desiredOutputs` / `scopeConstraints` at Design/Save so hidden DOM values cannot invite sibling products (e.g. Self-study + Slide deck). Source description is prose expectation only — not runtime upload/binding. **DLA learner evidence remains separate** and is not wired from Create source material.
+
+  **Current first-class LD Create products:** Self-study resource · Workshop. **Future candidates** (not introduced here): Slideshow, Assessment pack, Module outline — only when product contract + Authoring/render path are mature (pack-declared outputs note from `S75-D11` retained). Future Authoring composition of products into larger products is out of scope.
+
+  **Research:** Retains Expected research deliverables + Scope and constraints on Create for now (no LD product picker; `objective_type` remains the Research product signal via inference/elicitation). Research product selection can be made explicit later.
+
+  **C-08** Create refinement discoverability: **CLOSED AS RESOLVED** (prior investigation — original problem addressed by `S75-D03` retirement + current assistant UX; not implemented as a polish slice).
+
+- **Status:** **Accepted** (2026-08-11)
+
+- **Rationale:** Field-semantics and one-product investigations showed Supporting materials and Constraints were unclear, overlapping, or multi-product inviting. Starting point already owns input posture; source description is only needed when material exists. PRISM should hide workflow/artefact vocabulary and design the workflow from the selected product + brief.
+
+- **Consequences:** Create UI/runtime sync in `app.js` / `index.html`; LD domain uiHints updated; tests in `tests/s75-d22-create-one-product-simplification.test.js` (+ neighbouring C-05/C-06/C-07 green). Architectural debt noted but not redesigned: `session_materials` may still include sibling delivery steps (e.g. slide_deck) via Settings/refinement/legacy; constraint propagation to Run prompts remains weak. Sprint **76 not opened**. Persistence untouched.
+
+---
+
 ## Pending decisions / hypotheses (not accepted)
 
 | Topic | Expected trigger |
 | ----- | ---------------- |
 | Authorise execution of S75-T-010 | **Done** (2026-08-10) |
 | Authorise S75-T-011 / T-012 / T-013 | **Superseded/retired** — use S75-T-020 candidate slices |
-| Authorise S75-T-020 intervention slices | **Partial** — through `S75-D14`; remaining slices await review |
+| Authorise S75-T-020 intervention slices | **Partial** — C-01…C-07/C-10 Done; **C-08 CLOSED AS RESOLVED** (`S75-D22`); C-09/C-11/C-12 remain deferred |
+| Create one-product simplification (LD) | **Done** — `S75-D22` |
 | Domain B first-time selection / mode persistence rules | **Done** — `S75-D10` (Run default + session preservation + Create→Run handoff) |
 | Run paste/store-output visibility rule | **Done** — `S75-D07` (page-structure producer visibility) |
 | Custom vs runtime-aware stored-output behaviour | **Done** under `S75-D07` (non-page `outputName` ≠ paste; page producer keeps gate) |
@@ -240,6 +365,13 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 | Authoring Learning object presentation format | **Retired** — `S75-D12` |
 | Authoring assembly readiness (EP shell ≠ learner-ready) | **Done** — `S75-D13` |
 | Run capture persistence non-destructive merge | **Done** — `S75-D14` |
+| DLA evidence_decision instructional-scaffold false positive | **Done** — `S75-D15` |
+| DLA partial-page activities[] false-positive validation | **Done** — `S75-D16` |
+| Generated-workflow Run persistence identity (durable step.id) | **Done** — `S75-D17` |
+| Run position session-only; captures durable across sessions | **Done** — `S75-D18` |
+| Accepted Run capture durability when in-memory value is unchanged | **Done** — `S75-D19` |
+| Blank live capture overwrite of durable accepted key | **Done** — `S75-D20` |
+| One-off Run capture migration + ref-only runtime | **Done** — `S75-D21` (operator-verified; diagnostic UI cleaned up) |
 | Rename / Duplicate / Delete runstate identity hygiene | Residual — recorded under `S75-D14`; not implemented |
 | Domains D–E detailed discovery sequencing | Not started — operator to prioritise |
 | Any architectural work arising from UX findings | Explicit operator authorisation only |

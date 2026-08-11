@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — maturation / v1.0 stabilisation phase  
-**Last updated:** 2026-08-10 (Sprint 75 — PB-FA-006 strengthened with Sprint 71 QA prior art)  
-**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; Sprint 74 open; Sprint 75 Settings investigation + QA/review retirement; historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
+**Last updated:** 2026-08-11 (Sprint 75 — `S75-D22` one-product Create + backlog consolidation)  
+**Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; Sprint 74 open; Sprint 75 Settings investigation + QA/review retirement + one-product Create (`S75-D22`); historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
 
 ---
 
@@ -25,6 +25,34 @@ Concrete defects, friction, polish and robustness. Suitable to pull into a sprin
 | PB-S-002 | Residual nav / long-title / heading a11y polish beyond Sprint 72 bounded T-056 fixes | Occasional overflow / hierarchy friction on long titles | Targeted CSS / nav acceptance criteria | **Partial** — needs clear acceptance criteria |
 | PB-S-003 | Historical UX/runtime friction notes (inspectability, `app.js` state complexity, domain-pack overlap) | Ongoing author friction and maintenance cost | See legacy [known-issues.md](known-issues.md); promote only when scoped | **Low readiness** — needs scoping |
 | PB-S-004 | Duplicate / legacy UI–state pathways | Clarity and regression risk | Incremental rationalisation with fixtures | **Low readiness** |
+| PB-S-005 | **Stable release / development process** (includes asset cache-bust discipline) | Stale `index.html` `?v=` / `app.js` mismatches and Sprint 75 persistence debugging showed operators cannot always know which code is running; no repeatable path from active development to a known-good stable release | Establish a release-engineering process (dev vs stable, versioning, cache-bust, regression gate, checklist, rollback) — see detailed scope below | **Partial** — known debt from S74A / S75; needs approach + acceptance criteria |
+
+### PB-S-005 — Stable release / development process
+
+**Product problem:** PRISM lacks a repeatable path from active development to a **known-good stable release**. Cache-bust mismatches (`index.html` `?v=` vs `app.js`) and Sprint 75 persistence debugging demonstrated that knowing **exactly which code is running** is a product reliability concern, not a cosmetic nicety.
+
+**Why it matters:** Without a stable/release discipline, investigation and operator verification waste time on stale assets; a bad release is hard to recognise and hard to roll back; development and “what users should trust” blur together.
+
+**Product goal (not implementation speculation):** Establish a release-engineering / process capability so PRISM can preserve a known-good stable build while development continues, and update/deploy with confidence.
+
+**Scope sketch (absorbing former cache-bust-only framing):**
+
+1. **Development vs stable/release state** — Clear distinction between in-progress work and a cut that operators may treat as known-good.
+2. **Versioning / release identifiers** — Human- and machine-visible markers for which build is running (where appropriate); do not invent a second competing versioning system without need.
+3. **Asset / cache-bust discipline** — Reliable convention (and later automation) for bumping browser asset `?v=` (and equivalents) when shipping changed assets — the original PB-S-005 core.
+4. **Regression-test gate** — What must be green before a cut is called a release.
+5. **Release checklist** — Repeatable readiness checks (docs/version alignment, smoke journeys, known defects).
+6. **Documentation / version alignment** — STATUS, decisions, and shipped behaviour stay consistent with the cut.
+7. **Backup / rollback / recovery** — How to recover from a bad release without losing operator data unnecessarily.
+8. **Preserve known-good while developing** — Procedure for keeping a stable baseline available alongside ongoing work.
+9. **Deployment / update procedure** — How an installation is updated to a release cut.
+10. **Release readiness definition** — Explicit criteria for what constitutes “ready to call stable.”
+
+**Explicit non-scope (for backlog placement):** Implementing the process in Sprint 75; opening Sprint 76; redesigning product features under the guise of “release work.”
+
+**Evidence:** Sprint 75 operator/debug experience (stale assets; persistence investigation needing certainty about running code); S74A/S75 cache-bust debt.
+
+**Readiness:** Problem is documented; **approach and acceptance criteria not yet written** — Stabilisation candidate, **not sprint-allocated**.
 
 ---
 
@@ -113,9 +141,11 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 
 ### PB-FA-005 — Workflow Settings / parameterisation source-of-truth and runtime consistency
 
-**Product problem:** My Workflows → **Settings** provides a functioning UI and persistence mechanism for pack-declared workflow and step parameters, but edited values are **not consistently authoritative** for subsequent **Run** prompt construction and runtime behaviour. This is a **parameter / source-of-truth** problem, not merely a Settings presentation problem.
+**Also covers (expanded 2026-08-11 after `S75-D22`):** Settings **information architecture / product semantics** review — what belongs in Settings vs Create vs defaults vs refinement; terminology; hierarchy; global / domain / product / workflow layers; interaction with pack-declared products. Not visual polish alone.
 
-**Evidence basis (Sprint 75 — discovery + implementation investigation, 2026-08-10):**
+**Product problem:** My Workflows → **Settings** provides a functioning UI and persistence mechanism for pack-declared workflow and step parameters, but (1) edited values are **not consistently authoritative** for subsequent **Run** prompt construction and runtime behaviour, and (2) as Create and Run increasingly **hide internal complexity** (`S75-D22`), Settings still risks exposing implementation concepts, unclear hierarchy, and choices that belong in Create, defaults, or refinement instead. This is both a **parameter / source-of-truth** problem and a **Settings information-architecture / product-semantics** problem — not merely a Settings presentation problem.
+
+**Evidence basis (Sprint 75 — discovery + implementation investigation, 2026-08-10…11):**
 
 - Operator observation: Settings is intentionally important for reusable workflows; full elicitation is not the target model; a representative Learning Design workflow exposed ~**25** pack-declared controls; experienced users may legitimately tune workflows before running them. See [S75-T-010-domain-a-operator-observation-synthesis.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-010-domain-a-operator-observation-synthesis.md) (§§3.5–3.7, 3.21, Part II) and [CONTEXT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/CONTEXT.md).
 - Implementation investigation (same programme): Settings → Save workflow → **Run** does not reliably consume the values the user just chose. Configuration state is distributed across multiple representations that can **diverge after workflow creation**, including:
@@ -128,8 +158,11 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
   - runtime prompt augmentations (often reading frozen brief resolution, not live Settings)
 - **Prompt Studio shared dependency:** My Workflows Settings and Prompt Studio workflow-step configuration share the same pack-parameter storage and `renderWorkflowPackParameterControlsSection()` infrastructure (`[PRISM_STEP_PARAMS]` in notes). PS can regenerate drafts from parameter values; Run assembles prompts through a different path (`buildWorkflowStepInstructions()` + `resolveStepPromptText()`). Parameter-contract changes must account for both surfaces — **not** a Prompt Studio UX redesign in this item.
 - **My Workflows Settings** (workflow Settings tab) is **distinct** from the step header **“Settings…”** control, which opens Prompt Studio workflow-step mode — naming collision documented in Sprint 75; do not conflate in implementation.
+- **`S75-D22` Create simplification:** LD Create no longer surfaces Supporting materials / Scope-and-constraints. Residual **weak constraint → Run prompt propagation** remains architectural debt under this item (constraints are not reliably enforced downstream). Product components that belong in defaults/refinement/Settings must not reappear as Create “second products.”
 
 **Scope (for a future sprint — not prescribed here):**
+
+**A. Parameter contract / runtime consistency**
 
 1. **Settings → Run consistency** — Ensure values edited in My Workflows Settings are consumed by subsequent Run prompt construction / runtime behaviour. Avoid Run continuing to use creation-time `override_prompt_body`, frozen `resolvedFactors`, stale `workflowOutputSpec`, or other derived configuration after the user has saved new Settings values.
 
@@ -148,19 +181,35 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 
 6. **Verification requirement** — Future implementation must include controlled verification that Settings changes have real behavioural consequences. Suggested operator pattern: same workflow + same input + same external model where practical + change **one** setting → verify Run prompt and/or downstream artefact changes as intended. Static tests should verify parameter propagation / source-of-truth where possible.
 
+**B. Settings information architecture / product semantics** (coordinate with A; do not treat as “visual polish only”)
+
+End-to-end review of Settings now that PRISM hides more internal complexity at Create/Run. Questions to answer:
+
+- What genuinely belongs in Settings?
+- What should instead be inferred / defaulted?
+- What belongs in Create?
+- What should be elicited through refinement only when relevant?
+- Are any settings exposing PRISM implementation concepts rather than meaningful user choices?
+- Is terminology understandable?
+- Is the hierarchy / scanning sensible?
+- Which settings are global, domain-specific, product-specific, or workflow-specific?
+- How should Settings interact with domain packs and future product declarations ([PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test))?
+
+**Outcome criteria (when mature enough to plan):** Settings changes are behaviourally authoritative at Run; Settings surfaces only meaningful user choices at appropriate layers; Create / refinement / Settings responsibilities are coherent under **one workflow → one product** (`S75-D22`).
+
 **Explicit non-scope (for backlog placement):**
 
 - Sprint 75 implementation (deferred — see Sprint 75 STATUS)
-- Detailed Settings UI redesign **before** or **without** coordination on parameter-contract resolution (UI may follow or run in parallel once contract is clear)
+- Implementing Settings IA changes **without** coordinating on parameter-contract resolution (UI/IA may follow or run in parallel once contract direction is clear)
 - Prompt Studio UX review or redesign
 - Automatic assignment to Sprint 76 or any future sprint number
 - Prescribing a specific run-profile / per-run overlay implementation
 
-**Sprint 75 posture:** Settings **observations remain valid evidence**. Underlying parameter-contract work is **deferred to this backlog item** for later prioritisation. Sprint 75 may continue UX synthesis on areas where behaviour is sufficiently stable.
+**Sprint 75 posture:** Settings **observations remain valid evidence**. Underlying parameter-contract and Settings IA work are **deferred to this backlog item** for later prioritisation.
 
 **Readiness:** Problem and divergence mechanisms are **documented** from Sprint 75 investigation; **implementation approach, migration strategy, and acceptance criteria not yet written** — Future architecture candidate, **not sprint-allocated**.
 
-**Related stabilisation signals (do not duplicate):** [PB-S-003](#pb-s-003) (historical UX friction) · [PB-S-004](#pb-s-004) (duplicate UI–state pathways) · [ideas.md](ideas.md) (“richer parameter systems” — superseded for planning by this item).
+**Related stabilisation signals (do not duplicate):** [PB-S-003](#pb-s-003) (historical UX friction) · [PB-S-004](#pb-s-004) (duplicate UI–state pathways) · [ideas.md](ideas.md) (“richer parameter systems” — superseded for planning by this item) · `S75-D22` (Create simplification; weak constraint→Run debt).
 
 ### PB-FA-006 — QA / workflow and resource refinement lifecycle
 
@@ -275,6 +324,111 @@ Sprint 71 answered (1) richly for a research corpus and attributed causes for su
 
 **Related:** [PB-FA-005](#pb-fa-005) · [PB-R-007](#pb-r-007) · [PB-R-009](#pb-r-009) · [PB-R-010](#pb-r-010) · Design Feedback attribution (product ideas) · Sprint 71 quality evidence programme · `S75-D03`.
 
+### PB-FA-007 — User-controlled storage management
+
+**Product need:** Authors/operators need **visible, understandable control** over browser storage used by PRISM — presented simply as **PRISM storage**, not as IndexedDB/localStorage jargon — especially as Run captures and generated assets grow.
+
+**Why it matters:** Sprint 75 proved a real `localStorage` quota failure on large inline Run captures (`S75-D21`). Payloads now live in IndexedDB Workflow Resources; localStorage holds lightweight refs/metadata. Browser quota is environment-dependent. Orphaned runstate was intentionally preserved during migration. Without a user-facing storage surface, pressure becomes a surprise and cleanup risks silent data loss.
+
+**Sprint 75 finding:** Run capture payloads moved to IndexedDB (`PRISM_WORKFLOW_RESOURCES`) after a proven `localStorage` quota failure. The operator installation also contains **orphaned runstate** workflow IDs (no owning workflow) that consume storage. These orphans were **intentionally preserved** during migration — no automatic eviction.
+
+**Scope sketch:**
+
+- Visible storage usage
+- Available capacity where the browser exposes it
+- A simple storage usage / capacity bar
+- Warning as storage pressure approaches meaningful thresholds (retain existing pressure-estimate behaviour as a starting point)
+- Clear handling when a write cannot be completed
+- Breakdown of what is consuming storage where useful
+- Workflow / resource ownership where useful
+- Orphaned-resource identification (runstate and Workflow Resources)
+- User-controlled cleanup with **explicit choices** about what to remove if space must be freed
+- **No silent deletion** of valid user data (user-created or generated)
+- User-facing language: **PRISM storage** (do not require understanding of IndexedDB vs localStorage)
+
+**Architectural context (do not redesign persistence here):**
+
+- Large Run captures / resources → IndexedDB / Workflow Resources
+- localStorage → lightweight refs and metadata
+- Quota is browser/environment-dependent
+
+**Out of scope for Sprint 75:** Implementing the storage manager UI; reopening persistence architecture.
+
+**Related:** [PB-FA-001](#pb-fa-001--workflow-resources) · [PB-R-008](#pb-r-008) · Sprint 75 `S75-D21`.
+
+**Outcome criteria (when mature enough to plan):** User can see usage/pressure, understand what consumes space at a useful grain, and deliberately free space without silent deletion of valid data.
+
+**Readiness:** Evidence of need exists; **approach and acceptance criteria not yet written** — Future architecture candidate, not sprint-allocated.
+
+### PB-FA-008 — First-class Slideshow product / architecture extensibility test
+
+**Product problem:** PRISM’s honest first-class Learning Design Create products are currently **Self-study resource** and **Workshop** only (`S75-D11`, `S75-D22`). Heuristic / sibling `slide_deck` behaviour inside `session_materials` is **not** a first-class Slideshow product. Adding Slideshow as a genuine product is the best near-term **architecture extensibility test** under the rule **one workflow → one product**.
+
+**Why it matters:** This is **not** primarily “we need slides.” It deliberately tests how extensible PRISM’s architecture has become: how cleanly a domain/product pack can declare a new product end-to-end without hard-coded learner-page assumptions or `desiredOutputs`/keyword heuristics.
+
+**Product goal:** Investigate and (when ready) implement Slideshow as a coherent first-class product across:
+
+domain/product declaration → Create product selection → factors/refinement → workflow generation/topology → prompts → Run → persistence → rendering → Authoring → export/use
+
+**Architecture questions to answer:**
+
+- How much existing code must change to add one new product?
+- Are product definitions sufficiently pack-driven?
+- Which assumptions are still hard-coded around learner pages?
+- Can a domain pack declare a product cleanly?
+- Can Authoring handle a non-page product coherently?
+- What renderer/export contract does a slideshow require?
+- Can the product be added without `desiredOutputs` / keyword heuristics?
+
+**Honest product catalogue (direction from `S75-D11` / `S75-D22` — retained here):**
+
+| Status | Products |
+| ------ | -------- |
+| **Current first-class LD Create** | Self-study resource · Workshop |
+| **Future candidates** (not Create options until contracts mature) | Slideshow · Assessment pack · Module outline · other pack-declared products |
+
+A product becomes first-class only when its contract is coherent across Create → workflow → Run → Authoring/render/export. Do **not** expose every currently recognised artefact type as a product.
+
+**Longer-term composition (record only — do not design now):** Authoring may eventually help compose smaller components into larger products (e.g. a learner resource containing a slideshow **component**). That does **not** weaken **one workflow → one product**: the authoritative Create product can still be the learner resource; the slideshow is a component within it.
+
+**D22 architectural debt absorbed here:**
+
+- `session_materials` can still introduce sibling delivery artefacts such as `slide_deck` via Settings/refinement/legacy — **not** equivalent to first-class Slideshow; resolve as part of product-topology honesty when this item is planned.
+
+**Explicit non-scope:** Implementing Slideshow in Sprint 75; expanding Create options now; redesigning `desiredOutputs` UI; opening Sprint 76; designing composition UX now.
+
+**Related:** `S75-D11` · `S75-D22` · [PB-FA-005](#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) (Settings × future product declarations) · [PB-FA-009](#pb-fa-009--research-domain-pack-maturation).
+
+**Readiness:** Direction and motivation documented post-`S75-D22`; **approach and acceptance criteria not yet written** — Future architecture candidate, **not sprint-allocated**.
+
+### PB-FA-009 — Research domain pack maturation
+
+**Product problem:** Research has not yet received the same architectural / product maturation as Learning Design. After `S75-D22`, Research still differs materially: product identity is primarily `objective_type`; there is no LD-style “What are you creating?” control; some intent still arrives via `desiredOutputs` / free text; Create still retains fields LD could remove.
+
+**Why it matters:** The product rule **one workflow → one product** applies across domains. Research should express its own domain semantics through the common PRISM architecture — not remain a heuristic special case, and **not** by simply copying the Learning Design Create UI.
+
+**Product goal:** Bring Research through pack-driven product maturation:
+
+- first-class Research products / objectives
+- product declaration
+- factors, defaults, refinement
+- workflow patterns / topologies
+- prompts
+- Run behaviour
+- output / render contracts
+- Authoring behaviour where appropriate
+- removal of heuristic / legacy dependencies where possible
+
+**D22 architectural debt absorbed here:** Research product selection remains immature (inference/`desiredOutputs` cues rather than an explicit first-class product model).
+
+**Explicit non-scope:** Copying LD Create controls into Research in Sprint 75; stripping Research fields without a replacement product signal; opening Sprint 76.
+
+**Related:** `S75-D22` · [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test) (shared product-declaration / catalogue direction).
+
+**Outcome criteria (when mature enough to plan):** Research products are explicit and pack-declared; Create/refinement/Settings responsibilities are coherent; workflows produce one Research product without inviting sibling final products via free-text deliverable lists.
+
+**Readiness:** Problem framed from Sprint 75 Create investigations; **approach and acceptance criteria not yet written** — Future architecture candidate, **not sprint-allocated**.
+
 ---
 
 ## 3. Research / design questions
@@ -315,6 +469,9 @@ Lightly formed possibilities. Concise only. **No task IDs, sprint allocation, or
 - Historical ideas retained from [ideas.md](ideas.md): reusable workflow templates; workflow inspectability surfaces; optional API gateway; utility transforms; renderer quality presets
 - Richer parameter systems — **promoted to [PB-FA-005](#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)** (Sprint 75)
 - Longer-horizon notes from [future-directions.md](future-directions.md): institutional deployment; collaborative authoring; domain-pack marketplaces — programme-level only
+- First-class Slideshow / pack-declared product catalogue / future composition — **promoted to [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test)** (`S75-D22`)
+- Research domain pack maturation — **promoted to [PB-FA-009](#pb-fa-009--research-domain-pack-maturation)** (`S75-D22`)
+- Stable release / development process — **see [PB-S-005](#pb-s-005--stable-release--development-process)** (expanded from cache-bust)
 
 ---
 
@@ -334,10 +491,14 @@ Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](../development/sprints/20
 | — | Stabilisation PB-S-001 | Fix when capacity allows; do not block sprint selection on greenwashing the full suite |
 | — | Stabilisation PB-S-004 | Duplicate/legacy pathways — informed by Sprint 74 discovery; not auto-consumed |
 | — | **PB-FA-001** Workflow Resources | Sprint 73 **closed**; residual follow-ons via PB-FA-004 / PB-R-001 / PB-R-008 |
-| — | **PB-FA-005** Workflow Settings / parameterisation | Sprint 75 evidence complete; needs approach + acceptance criteria before sprint open |
+| — | Stabilisation **PB-S-005** Stable release / development process | Expanded from cache-bust; needs approach + AC |
+| — | **PB-FA-005** Workflow Settings / parameterisation (+ Settings IA) | Sprint 75 evidence complete; needs approach + acceptance criteria before sprint open |
 | — | **PB-FA-006** QA / refinement lifecycle | S75-D03 retired unsafe in-workflow path; Sprint 71 corpus QA is prior art; productised closed loop not started |
+| — | **PB-FA-007** User-controlled storage management | Sprint 75 evidence (quota failure + orphaned runstate); UX scope expanded post-D21; approach/AC not written |
+| — | **PB-FA-008** First-class Slideshow / product extensibility | Architecture test under `S75-D22` one-product rule; includes catalogue/composition direction |
+| — | **PB-FA-009** Research domain pack maturation | Research product model still immature post-D22 |
 
-**Sprint 74** is **COMPLETE / Closed** — see [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md). **Sprint 75** is **OPEN** (UX discovery — Settings → PB-FA-005; QA lifecycle → PB-FA-006). **Sprint 76 not opened.** **Sprint 74A / 74B / 74C are not opened.** Select follow-on domains from discovery + this backlog via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
+**Sprint 74** is **COMPLETE / Closed** — see [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md). **Sprint 75** is **OPEN** (`S75-D22` one-product Create done; Settings → [PB-FA-005](#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency); QA → [PB-FA-006](#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle); storage → [PB-FA-007](#pb-fa-007--user-controlled-storage-management); Slideshow/catalogue → [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test); Research pack → [PB-FA-009](#pb-fa-009--research-domain-pack-maturation); release process → [PB-S-005](#pb-s-005--stable-release--development-process)). **Sprint 76 not opened.** **Sprint 74A / 74B / 74C are not opened.** Select follow-on domains from discovery + this backlog via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
 
 ---
 

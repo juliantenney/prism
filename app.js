@@ -170,17 +170,24 @@
       lastCost: 0
     },
     currentWorkflowRunIndex: 0,
+    workflowRunSessionIndexByWorkflow: {},
     workflowRunVisibleStepId: "",
     workflowRunCopiedStepId: "",
-    /** Ephemeral run-mode captured step output per step id, sanitized (not persisted on workflow). */
+    /** Ephemeral run-mode captured step output per step id, sanitized (hydrated from resource refs). */
     workflowRunCapturedOutputs: {},
     workflowRunPf11DiagnosticTrace: null,
-    /** Ephemeral: raw pasted Copilot output per step id (textarea rehydrate; not persisted). */
+    /** Ephemeral: raw pasted Copilot output per step id (textarea rehydrate; hydrated from resource refs). */
     workflowRunCapturedOutputsRaw: {},
+    workflowRunCaptureRefs: {},
+    workflowRunCaptureHydrationByWorkflow: {},
+    lastStoragePressureEstimate: null,
+    lastStoragePressureWarningAt: 0,
     /** Run-mode: user advanced past this step (Next); drives UI-only completion line. */
     workflowRunStepCompleted: {},
     /** Run-mode: strict JSON validation errors per step id (Model Knowledge / Learning Sequence). */
     workflowRunStrictJsonValidation: {},
+    workflowRunPageValidation: {},
+    workflowRunEpisodePlanValidation: {},
     /** Run-mode: Design Page material closure validation errors per step id. */
     workflowRunPageMaterialsClosureValidation: {},
     workflowDesignResult: null,
@@ -230,6 +237,9 @@
 
   var WORKFLOW_STORAGE_KEY = "promptr.workflows.v1";
   var WORKFLOW_RUN_STATE_STORAGE_KEY = "promptr.workflows.runstate.v1";
+  var RUN_CAPTURE_STORAGE_VERSION_KEY = "promptr.runCaptureStorageVersion";
+  var RUN_CAPTURE_MIGRATION_REPORT_KEY = "promptr.runCaptureMigrationReport.v1";
+  var RUN_CAPTURE_STORAGE_VERSION = 2;
   var workflowRunAutosaveToastTimer = null;
 
   function cacheElements() {
@@ -353,11 +363,14 @@
     els.wfDesignIntentLabel = document.getElementById("wfDesignIntentLabel");
     els.wfDesignAudience = document.getElementById("wfDesignAudience");
     els.wfDesignScale = document.getElementById("wfDesignScale");
+    els.wfDesignInputsGroup = document.getElementById("wfDesignInputsGroup");
     els.wfDesignInputs = document.getElementById("wfDesignInputs");
     els.wfDesignInputsLabel = document.getElementById("wfDesignInputsLabel");
     els.wfDesignStartingArtefact = document.getElementById("wfDesignStartingArtefact");
+    els.wfDesignDesiredOutputsGroup = document.getElementById("wfDesignDesiredOutputsGroup");
     els.wfDesignDesiredOutputs = document.getElementById("wfDesignDesiredOutputs");
     els.wfDesignDesiredOutputsLabel = document.getElementById("wfDesignDesiredOutputsLabel");
+    els.wfDesignScopeConstraintsGroup = document.getElementById("wfDesignScopeConstraintsGroup");
     els.wfDesignScopeConstraints = document.getElementById("wfDesignScopeConstraints");
     els.wfDesignIntentHint = document.getElementById("wfDesignIntentHint");
     els.wfDesignAudienceHint = document.getElementById("wfDesignAudienceHint");
@@ -2931,6 +2944,8 @@
     if (!li) return;
     var opts = options && typeof options === "object" ? options : {};
     clearWorkflowStepSettingsDiscoverability(li);
+    // Run mode uses runner-summary descriptions only — not Settings-tab discoverability cues.
+    if (opts.context === "run") return;
 
     var catalog = Array.isArray(state.workflowStepPatternCatalog)
       ? state.workflowStepPatternCatalog
@@ -5882,14 +5897,14 @@
       structuredId === "research"
         ? "Research scope"
         : structuredId === "learning-design"
-        ? "What is the scale / scope?"
+        ? "Scale / scope"
         : "Scope / size";
     var scopeScaleHint = String(hints.scope_scale || generalScaleHint);
     if (els.wfDesignIntentHint) {
       els.wfDesignIntentHint.textContent = structuredId === "learning-design"
         ? String(
             hints.design_intent ||
-              "Describe the topic and focus for the selected resource (not a second product choice)."
+              "Describe the topic, purpose and anything important PRISM should take into account."
           )
         : String(hints.design_intent || "State the primary design intent in one line.");
     }
@@ -5905,42 +5920,53 @@
       );
     }
     if (els.wfDesignScaleHint) {
-      els.wfDesignScaleHint.textContent = scopeScaleHint;
+      els.wfDesignScaleHint.textContent =
+        structuredId === "learning-design"
+          ? String(
+              hints.scope_scale ||
+                "How long or how broad should this be? For example: 30 minutes, 60-minute workshop, one session, or 12-week module."
+            )
+          : scopeScaleHint;
     }
     if (els.wfDesignScale) {
       var scalePlaceholder = String(
         hints.scope_scale_placeholder != null && String(hints.scope_scale_placeholder).trim()
           ? hints.scope_scale_placeholder
+          : structuredId === "learning-design"
+          ? "e.g. 30 minutes, 60-minute workshop, one session, 12-week module"
           : generalScalePlaceholder
       );
       els.wfDesignScale.placeholder = scalePlaceholder;
     }
-    if (els.wfDesignInputsHint) {
-      els.wfDesignInputsHint.textContent =
-        String(
-          hints.inputs ||
-            "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics)."
-        );
+    // LD Create no longer surfaces Supporting / Constraints (S75-D22). Research keeps them.
+    if (els.wfDesignDesiredOutputsHint && structuredId !== "learning-design") {
+      els.wfDesignDesiredOutputsHint.textContent = String(
+        hints.desired_outputs ||
+          "Primary deliverables and supporting artefacts this design run should produce (orchestrated through the workflow below)."
+      );
     }
-    if (els.wfDesignDesiredOutputsHint) {
-      els.wfDesignDesiredOutputsHint.textContent =
-        structuredId === "learning-design"
-          ? String(
-              hints.desired_outputs ||
-                "Optional supporting contents or materials (activities, formative checks, handouts, slides) for the selected resource."
-            )
-          : String(
-              hints.desired_outputs ||
-                "Primary deliverables and supporting artefacts this design run should produce (orchestrated through the workflow below)."
-            );
+    if (els.wfDesignConstraintsHint && structuredId !== "learning-design") {
+      els.wfDesignConstraintsHint.textContent = String(
+        hints.constraints ||
+          "Hard requirements: method, policy, citation, tooling, or delivery conditions."
+      );
     }
-    if (els.wfDesignConstraintsHint) {
-      els.wfDesignConstraintsHint.textContent =
-        String(
-          hints.constraints ||
-            "Hard requirements: time, tools, policy, accessibility, venue/channel-style delivery conditions. Describe pace or grouping in plain language if it matters—there is no separate sequencing editor."
-        );
+  }
+
+  function setWorkflowFactoryFormGroupHidden(groupEl, hidden) {
+    if (!groupEl) return;
+    groupEl.classList.toggle("hidden", !!hidden);
+    groupEl.setAttribute("aria-hidden", hidden ? "true" : "false");
+    if (hidden) {
+      groupEl.setAttribute("hidden", "hidden");
+    } else {
+      groupEl.removeAttribute("hidden");
     }
+  }
+
+  function workflowFactoryStartingPointNeedsSourceDescription(startingValue) {
+    var selected = String(startingValue || "").trim();
+    return selected === "provided_source_content" || selected === "mixed";
   }
 
   function renderWorkflowFactoryDomainExtraFields(extraFields) {
@@ -6083,54 +6109,64 @@
   }
 
   function updateWorkflowFactoryInputsCopyFromStartingPoint() {
-    if (!els.wfDesignInputs) return;
+    if (!els.wfDesignInputsGroup && !els.wfDesignInputs) return;
+    var structuredId = getWorkflowFactoryStructuredDomainId();
+    var isLd = structuredId === "learning-design";
     var selected = els.wfDesignStartingArtefact
       ? String(els.wfDesignStartingArtefact.value || "").trim()
       : "";
+    // LD (S75-D22): source description only when Starting point needs material.
+    // Research / other: keep the field visible (product objective cues retained).
+    var showSource = isLd
+      ? workflowFactoryStartingPointNeedsSourceDescription(selected)
+      : true;
+    setWorkflowFactoryFormGroupHidden(els.wfDesignInputsGroup, !showSource);
+    if (!showSource && isLd && els.wfDesignInputs) {
+      els.wfDesignInputs.value = "";
+    }
+    if (!els.wfDesignInputs) return;
     if (els.wfDesignInputsLabel) {
-      if (!selected) {
-        els.wfDesignInputsLabel.textContent = "Source material / inputs";
-      } else if (selected === "provided_source_content") {
-        els.wfDesignInputsLabel.textContent = "Uploaded material / inputs";
-      } else if (selected === "generate_from_topic") {
-        els.wfDesignInputsLabel.textContent = "Input details (optional)";
-      } else if (selected === "mixed") {
-        els.wfDesignInputsLabel.textContent = "Input details (optional)";
-      } else {
-        els.wfDesignInputsLabel.textContent = "Input details (optional)";
-      }
+      els.wfDesignInputsLabel.textContent = "What source material will you be working from?";
     }
     if (els.wfDesignInputsHint) {
-      if (!selected) {
+      if (!isLd && !selected) {
         els.wfDesignInputsHint.textContent =
-          "Describe source materials or inputs available at the start (runtime artefacts, not workflow mechanics).";
+          "Describe source materials available at the start of this research workflow.";
       } else if (selected === "provided_source_content") {
         els.wfDesignInputsHint.textContent =
-          "Describe or paste uploaded source material this workflow should treat as authoritative at the start.";
-      } else if (selected === "generate_from_topic") {
-        els.wfDesignInputsHint.textContent =
-          "Optional: extra constraints, tone, or reference notes. The main topic usually lives in What should this cover? / design intent.";
+          "Describe the lecture slides, transcript, readings, notes, or other material this workflow should work from. You will supply it when you run the workflow — this field does not upload or bind files automatically.";
       } else if (selected === "mixed") {
         els.wfDesignInputsHint.textContent =
-          "Describe uploaded material to use and what should be generated fresh (or how they should combine).";
+          "Describe the source material to use alongside topic-generated content. You will supply the material when you run the workflow — this field does not upload or bind files automatically.";
+      } else if (!isLd && selected === "generate_from_topic") {
+        els.wfDesignInputsHint.textContent =
+          "Optional notes about references or material context. The main topic usually lives in the design intent field.";
       } else {
         els.wfDesignInputsHint.textContent =
-          "This workflow uses a saved custom starting value. Describe how that starting point should be interpreted.";
+          "Describe the lecture slides, transcript, readings, notes, or other material this workflow should work from. You will supply it when you run the workflow — this field does not upload or bind files automatically.";
       }
     }
-    if (!selected) {
-      els.wfDesignInputs.placeholder = "e.g. PDF, notes, transcript, list of topics...";
-    } else if (selected === "provided_source_content") {
-      els.wfDesignInputs.placeholder = "e.g. paste excerpts, file names, links, or notes on what is uploaded";
-    } else if (selected === "generate_from_topic") {
-      els.wfDesignInputs.placeholder = "e.g. constraints, tone, references (optional)";
-    } else if (selected === "mixed") {
+    if (selected === "provided_source_content" || selected === "mixed") {
       els.wfDesignInputs.placeholder =
-        "e.g. what is uploaded vs what should be generated, and any constraints on how they combine";
+        "e.g. lecture transcript, course slides, readings, notes, dataset…";
+    } else if (!isLd && selected === "generate_from_topic") {
+      els.wfDesignInputs.placeholder = "e.g. optional reference notes (optional)";
     } else {
       els.wfDesignInputs.placeholder =
-        "e.g. describe how the saved starting value should be used (the value itself is preserved on the starting-point control)";
+        "e.g. lecture transcript, course slides, readings, notes, dataset…";
     }
+  }
+
+  function syncWorkflowFactoryCreateProductFields(structuredDomainId) {
+    var isLd = String(structuredDomainId || "") === "learning-design";
+    // ONE WORKFLOW → ONE PRODUCT (S75-D22): LD Create omits Supporting + Constraints.
+    setWorkflowFactoryFormGroupHidden(els.wfDesignDesiredOutputsGroup, isLd);
+    setWorkflowFactoryFormGroupHidden(els.wfDesignScopeConstraintsGroup, isLd);
+    if (isLd) {
+      if (els.wfDesignDesiredOutputs) els.wfDesignDesiredOutputs.value = "";
+      if (els.wfDesignScopeConstraints) els.wfDesignScopeConstraints.value = "";
+    }
+    updateWorkflowFactoryInputsCopyFromStartingPoint();
   }
 
   function renderWorkflowFactoryStartingArtefactOptions(selectedDomains) {
@@ -6138,9 +6174,9 @@
     var current = String(els.wfDesignStartingArtefact.value || "").trim();
     function getUniversalInputStrategyChoices() {
       return [
-        { value: "generate_from_topic", label: "Generate content" },
-        { value: "provided_source_content", label: "Use uploaded material" },
-        { value: "mixed", label: "Mix uploaded material and generated content" }
+        { value: "generate_from_topic", label: "Generate from a topic" },
+        { value: "provided_source_content", label: "Use source material" },
+        { value: "mixed", label: "Combine topic and source material" }
       ];
     }
     function normalizeChoiceRow(choice) {
@@ -9452,9 +9488,10 @@
       var dlaMod = resolvePageDlaEnrichLib();
       if (dlaMod && typeof dlaMod.validateDlaPartialPageCapture === "function") {
         var dlaBaseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
+        var resolvedPartial = resolveDlaPartialCaptureForValidation(parsed, dlaBaseline || null);
         return dlaMod.validateDlaPartialPageCapture(
           repairDlaPartialPageCaptureForValidation(
-            parsed,
+            resolvedPartial,
             dlaBaseline || null
           ),
           { baseline: dlaBaseline || null }
@@ -9697,6 +9734,21 @@
     });
   }
 
+  function resolveDlaPartialCaptureForValidation(parsed, baseline) {
+    var dlaMod = resolvePageDlaEnrichLib();
+    if (
+      !dlaMod ||
+      typeof dlaMod.resolveDlaPartialPageCaptureSubject !== "function" ||
+      !parsed ||
+      typeof parsed !== "object"
+    ) {
+      return parsed;
+    }
+    return dlaMod.resolveDlaPartialPageCaptureSubject(parsed, {
+      baseline: baseline || null
+    }).page;
+  }
+
   function repairDlaPartialPageCaptureForValidation(parsed, baseline) {
     var dlaMod = resolvePageDlaEnrichLib();
     if (
@@ -9726,6 +9778,7 @@
     var parsed = tryParseWorkflowArtefactJson(raw);
     if (!parsed) return raw;
     var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
+    parsed = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
     var dlaMod = resolvePageDlaEnrichLib();
     if (!dlaMod || typeof dlaMod.repairDlaPartialShellPlaceholderFields !== "function") {
       return raw;
@@ -9756,8 +9809,9 @@
       dlaMod
     ) {
       if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "dla") {
+        var resolvedDlaPartial = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
-          repairDlaPartialPageCaptureForValidation(parsed, baseline || null),
+          repairDlaPartialPageCaptureForValidation(resolvedDlaPartial, baseline || null),
           { baseline: baseline || null }
         );
       }
@@ -9767,8 +9821,9 @@
         parsed.assembly_state &&
         parsed.assembly_state.current_stage === "dla"
       ) {
+        var resolvedDlaByStage = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
-          repairDlaPartialPageCaptureForValidation(parsed, baseline || null),
+          repairDlaPartialPageCaptureForValidation(resolvedDlaByStage, baseline || null),
           { baseline: baseline || null }
         );
       }
@@ -11159,7 +11214,7 @@
       if (existingCheck.ok) return;
     }
     outArea.value = derived;
-    syncWorkflowRunCapturedOutputToState(li);
+    syncWorkflowRunCapturedOutputToState(li, { source: "episode_plan_auto_repair" });
     var sid = String(li.getAttribute("data-step-id") || "").trim();
     if (sid) {
       if (state.workflowRunEpisodePlanValidation) delete state.workflowRunEpisodePlanValidation[sid];
@@ -11401,6 +11456,10 @@
     }
   }
 
+  function workflowRunCaptureValueIsBlank(value) {
+    return !String(value || "").trim();
+  }
+
   function buildWorkflowStepRowFromRunLi(li, wf) {
     if (!li) return null;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
@@ -11451,7 +11510,7 @@
 
   function syncAllWorkflowRunCapturesFromDomToState() {
     getWorkflowStepElements().forEach(function (li) {
-      syncWorkflowRunCapturedOutputToState(li);
+      syncWorkflowRunCapturedOutputToState(li, { source: "sync_all_dom" });
     });
   }
 
@@ -11797,7 +11856,7 @@
           }) || null;
         if (li) {
           if (target === "learning_activities") {
-            syncWorkflowRunCapturedOutputToState(li);
+            syncWorkflowRunCapturedOutputToState(li, { source: "upstream_normalize" });
             var normalizedRaw = readWorkflowRunUpstreamCaptureTextForStepId(sid);
             var normalizedHit = tryRawCapture(
               step,
@@ -17054,7 +17113,17 @@
     els.wfLdCreateOutputType = document.getElementById("wfLdCreateOutputType");
     els.wfDesignBasicsIntro = document.getElementById("wfDesignBasicsIntro");
     els.wfDesignIntentLabel = document.getElementById("wfDesignIntentLabel");
+    els.wfDesignIntentHint = document.getElementById("wfDesignIntentHint");
+    els.wfDesignDesiredOutputsGroup = document.getElementById("wfDesignDesiredOutputsGroup");
     els.wfDesignDesiredOutputsLabel = document.getElementById("wfDesignDesiredOutputsLabel");
+    els.wfDesignDesiredOutputs = document.getElementById("wfDesignDesiredOutputs");
+    els.wfDesignScopeConstraintsGroup = document.getElementById("wfDesignScopeConstraintsGroup");
+    els.wfDesignScopeConstraints = document.getElementById("wfDesignScopeConstraints");
+    els.wfDesignInputsGroup = document.getElementById("wfDesignInputsGroup");
+    els.wfDesignInputs = document.getElementById("wfDesignInputs");
+    els.wfDesignInputsLabel = document.getElementById("wfDesignInputsLabel");
+    els.wfDesignInputsHint = document.getElementById("wfDesignInputsHint");
+    els.wfDesignStartingArtefact = document.getElementById("wfDesignStartingArtefact");
   }
 
   function syncWorkflowFactoryLdCreateOutputTypeUi(structuredDomainId) {
@@ -17074,7 +17143,7 @@
     }
     if (els.wfDesignBasicsIntro) {
       els.wfDesignBasicsIntro.textContent = isLd
-        ? "Choose what you are creating, then describe that resource. The usual end product is an HTML page; use My Workflows to refine steps and prompts."
+        ? "Choose what you are creating, then describe that one product. PRISM designs the workflow needed to produce it."
         : "Describe what you want this workflow to produce. The usual end product is an HTML page; use the Workflows tab to refine workflow steps and prompts.";
     }
     if (els.wfDesignIntentLabel) {
@@ -17082,21 +17151,26 @@
         ? "What should this cover?"
         : "What are you trying to design or produce?";
     }
+    if (els.wfDesignIntentHint) {
+      els.wfDesignIntentHint.textContent = isLd
+        ? "Describe the topic, purpose and anything important PRISM should take into account."
+        : "State the primary design intent in one line.";
+    }
     if (els.wfDesignIntent) {
       els.wfDesignIntent.placeholder = isLd
-        ? "e.g. Managing Risk for programme managers; climate-change misconceptions from the uploaded lecture"
+        ? "e.g. Managing Risk for programme managers; 60-minute session using browser-based tools only"
         : "e.g. research summary workflow, literature review pipeline, evidence briefing";
     }
     if (els.wfDesignDesiredOutputsLabel) {
-      els.wfDesignDesiredOutputsLabel.textContent = isLd
-        ? "Supporting contents and materials (optional)"
-        : "Learner-facing page and supporting outputs (optional)";
+      els.wfDesignDesiredOutputsLabel.textContent =
+        "Expected research deliverables (optional)";
     }
     if (els.wfDesignDesiredOutputs) {
-      els.wfDesignDesiredOutputs.placeholder = isLd
-        ? "e.g. activities, formative checks, handouts, slide deck, facilitator notes"
-        : "e.g. activities, assessment on the page, slide deck, facilitator guide, handout";
+      els.wfDesignDesiredOutputs.placeholder =
+        "e.g. research summary, briefing note, evidence matrix, questions";
     }
+    // S75-D22: hide Supporting + Constraints for LD; keep for Research; conditional Source.
+    syncWorkflowFactoryCreateProductFields(structuredDomainId);
   }
 
   function isWorkflowBriefFacilitatedDeliveryIntent(blob, factors) {
@@ -20084,6 +20158,15 @@
     var desiredOutputs = els.wfDesignDesiredOutputs ? (els.wfDesignDesiredOutputs.value || "").trim() : "";
     var selectedDomains = getSelectedWorkflowDomains();
     var isLearningDesign = selectedDomains.indexOf("learning-design") !== -1;
+    // S75-D22: LD Create no longer treats desiredOutputs / scopeConstraints as
+    // authoritative Create concepts. Force empty so hidden DOM values cannot
+    // invite sibling final products. Source description only when Starting point needs it.
+    if (isLearningDesign) {
+      desiredOutputs = "";
+      if (!workflowFactoryStartingPointNeedsSourceDescription(startingArtefact)) {
+        inputs = "";
+      }
+    }
     var ldCreateOutputType = isLearningDesign ? getSelectedLdCreateOutputTypeFromUi() : "";
     if (isLearningDesign && !ldCreateOutputType) {
       showToast("Choose what you are creating: Self-study resource or Workshop.", "error");
@@ -20145,6 +20228,10 @@
     state.workflowSelectedVersion = "refined";
 
     var scopeConstraints = els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "";
+    // S75-D22: LD Create omits the constraints box; do not carry stale DOM values.
+    if (isLearningDesign) {
+      scopeConstraints = "";
+    }
     state.workflowBriefElicitation = null;
     state.workflowDomainSuggestionPending = null;
     state.workflowBriefInferenceConfirmation = null;
@@ -23946,7 +24033,7 @@
       wfForDiscoverability && Array.isArray(wfForDiscoverability.steps)
         ? wfForDiscoverability.steps
         : [],
-      { context: "library" }
+      { context: isRun ? "run" : "library" }
     );
   }
 
@@ -23965,7 +24052,10 @@
     var store = loadWorkflowRunStateStore();
     if (!store || typeof store !== "object" || !store[wid]) return;
     delete store[wid];
-    saveWorkflowRunStateStore(store);
+    saveWorkflowRunStateStore(store, {
+      source: "clearPersistedWorkflowRunStateForWorkflow",
+      workflowId: wid
+    });
   }
 
   function resetWorkflowRunValidationState() {
@@ -23983,6 +24073,7 @@
     var opts = options && typeof options === "object" ? options : {};
     state.workflowRunCapturedOutputs = {};
     state.workflowRunCapturedOutputsRaw = {};
+    state.workflowRunCaptureRefs = {};
     state.workflowRunStepCompleted = {};
     resetWorkflowRunValidationState();
     if (opts.resetIndex !== false) {
@@ -24121,11 +24212,26 @@
     return String(result.text != null ? result.text : s);
   }
 
-  function syncWorkflowRunCapturedOutputToState(li) {
+  function syncWorkflowRunCapturedOutputToState(li, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var source = String(opts.source || "system").trim() || "system";
     if (!li) return;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
     var ta = li.querySelector('[data-field="runStepOutput"]');
     if (!sid || !ta) return;
+    var activeStepId = "";
+    if (
+      state.selectedWorkflowId &&
+      typeof state.currentWorkflowRunIndex === "number" &&
+      isFinite(state.currentWorkflowRunIndex) &&
+      state.currentWorkflowRunIndex >= 0
+    ) {
+      var activeWf = findWorkflowById(state.selectedWorkflowId);
+      if (activeWf && Array.isArray(activeWf.steps)) {
+        var activeStep = activeWf.steps[state.currentWorkflowRunIndex] || null;
+        activeStepId = String(activeStep && activeStep.id ? activeStep.id : "").trim();
+      }
+    }
     var raw = String(ta.value || "");
     var prevStoredRaw =
       sid && state.workflowRunCapturedOutputsRaw
@@ -24146,6 +24252,26 @@
     }
     if (!stepRow) {
       stepRow = buildWorkflowStepRowFromRunLi(li, wf);
+    }
+    var blankNonCurrentSystemSync =
+      source !== "user_input" &&
+      sid &&
+      activeStepId &&
+      sid !== activeStepId &&
+      !String(raw || "").trim();
+    var blankDomWithHydratedCapture =
+      source !== "user_input" &&
+      !String(raw || "").trim() &&
+      (!!String(prevStoredFinal || "").trim() || !!String(prevStoredRaw || "").trim());
+    if (blankDomWithHydratedCapture) {
+      var hydratedBindValue = String(prevStoredFinal || prevStoredRaw || "");
+      if (hydratedBindValue && ta.value !== hydratedBindValue) {
+        ta.value = hydratedBindValue;
+      }
+      return;
+    }
+    if (blankNonCurrentSystemSync) {
+      return;
     }
     var storesArtefact = workflowStepProducesStoredArtefact(stepRow || {}, wf || {});
     var pageStructureStep = isWorkflowStepPageStructureProducer(stepRow || {}, wf || {});
@@ -24458,12 +24584,43 @@
       var captureChanged =
         !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredRaw, persistedRawNow) ||
         !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredFinal, persistedFinalNow);
-      if (
-        !hasBlockingValidationError &&
-        captureChanged
-      ) {
-        var persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
-        queueWorkflowRunAutosaveToast(persistResult.ok ? "success" : "");
+      var captureDurablyCurrent = isWorkflowRunCaptureDurablyCurrent(
+        state.selectedWorkflowId,
+        sid,
+        persistedRawNow,
+        persistedFinalNow
+      );
+      var hasNonEmptyAcceptedCaptureNow =
+        !!String(persistedRawNow || "").trim() || !!String(persistedFinalNow || "").trim();
+      var shouldPersist =
+        (captureChanged || !captureDurablyCurrent) &&
+        (!hasBlockingValidationError || hasNonEmptyAcceptedCaptureNow);
+      if (shouldPersist) {
+        return persistWorkflowRunCapturePayloadForStep(
+          state.selectedWorkflowId,
+          sid,
+          persistedRawNow,
+          persistedFinalNow
+        ).then(function (payloadPersist) {
+          var persistResult = { ok: false };
+          if (payloadPersist && payloadPersist.ok) {
+            state.workflowRunCaptureRefs = state.workflowRunCaptureRefs || {};
+            state.workflowRunCaptureRefs[sid] = payloadPersist.refs || {};
+            persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, {
+              source: "syncWorkflowRunCapturedOutputToState",
+              observedStepId: sid
+            });
+          }
+          if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
+            showToast(
+              "PRISM couldn't save this result because browser storage is full. The result is still available in this session, but it may be lost if you refresh or close PRISM.",
+              "error"
+            );
+            return { ok: false, reason: "persist_failed" };
+          }
+          queueWorkflowRunAutosaveToast("success");
+          return { ok: true };
+        });
       }
     }
   }
@@ -24860,6 +25017,7 @@
 
     if (currentStepLi) {
       maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
+      bindWorkflowRunCaptureTextareaFromState(currentStepLi, { force: true });
     }
 
     // Prev / Copy / Next share the top execution bar.
@@ -25025,7 +25183,9 @@
       if (runWorkflowId) {
         restoreWorkflowRunStateForWorkflow(runWorkflowId);
       }
-      resetWorkflowRunNavigationState({ resetIndex: true });
+      // Run position is session state: preserve current index while switching
+      // panels/tabs in the same session; only clear transient copy/visibility flags.
+      resetWorkflowRunNavigationState({ resetIndex: false });
     }
     updateWorkflowRunView();
   }
@@ -27370,7 +27530,9 @@
       if (migrationMod && typeof migrationMod.migrateRunStateStore === "function") {
         var migrated = migrationMod.migrateRunStateStore(store);
         if (migrated && migrated.changed) {
-          saveWorkflowRunStateStore(migrated.store);
+          saveWorkflowRunStateStore(migrated.store, {
+            source: "loadWorkflowRunStateStore:migration"
+          });
           if (typeof console !== "undefined" && typeof console.info === "function") {
             console.info("[prism:episode-plan-persistence-migration]", {
               provenance: "loadWorkflowRunStateStore",
@@ -27387,14 +27549,62 @@
     }
   }
 
-  function saveWorkflowRunStateStore(store) {
+  function readWorkflowRunStateStepValueLengths(workflowId, stepId) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid || !sid) {
+      return {
+        rawLength: 0,
+        finalLength: 0
+      };
+    }
+    var runStore = loadWorkflowRunStateStore();
+    var rec = runStore && runStore[wid] && typeof runStore[wid] === "object" ? runStore[wid] : null;
+    if (!rec) {
+      return {
+        rawLength: 0,
+        finalLength: 0
+      };
+    }
+    var raw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? String(rec.capturedOutputsRaw[sid] || "")
+        : "";
+    var final =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? String(rec.capturedOutputs[sid] || "")
+        : "";
+    return {
+      rawLength: raw.length,
+      finalLength: final.length
+    };
+  }
+
+  function saveWorkflowRunStateStore(store, meta) {
+    var writerMeta = meta && typeof meta === "object" ? meta : {};
     try {
-      window.localStorage.setItem(
-        WORKFLOW_RUN_STATE_STORAGE_KEY,
-        JSON.stringify(store && typeof store === "object" ? store : {})
-      );
+      var serialized = JSON.stringify(store && typeof store === "object" ? store : {});
+      window.localStorage.setItem(WORKFLOW_RUN_STATE_STORAGE_KEY, serialized);
       return true;
     } catch (_e) {
+      var errName = String((_e && _e.name) || "Error");
+      var errMsg = String((_e && _e.message) || _e || "");
+      var quotaLike = /quota|exceed|storage/i.test(errName + " " + errMsg);
+      if (quotaLike && store && typeof store === "object") {
+        try {
+          var compactedStore = {};
+          Object.keys(store).forEach(function (widKey) {
+            compactedStore[widKey] = pruneBlankWorkflowRunStateRecordEntries(store[widKey]);
+          });
+          window.localStorage.setItem(
+            WORKFLOW_RUN_STATE_STORAGE_KEY,
+            JSON.stringify(compactedStore)
+          );
+          return true;
+        } catch (_retryErr) {
+          // Fall through to failure.
+        }
+      }
       return false;
     }
   }
@@ -27405,13 +27615,13 @@
         ? state.workflowPageResourceRefs
         : {};
     return {
-      capturedOutputs:
-        state.workflowRunCapturedOutputs && typeof state.workflowRunCapturedOutputs === "object"
-          ? Object.assign({}, state.workflowRunCapturedOutputs)
-          : {},
-      capturedOutputsRaw:
-        state.workflowRunCapturedOutputsRaw && typeof state.workflowRunCapturedOutputsRaw === "object"
-          ? Object.assign({}, state.workflowRunCapturedOutputsRaw)
+      // S75 storage architecture: large capture payloads are owner-store resources.
+      // Keep runstate lightweight by persisting refs rather than full capture bodies.
+      capturedOutputs: {},
+      capturedOutputsRaw: {},
+      captureRefs:
+        state.workflowRunCaptureRefs && typeof state.workflowRunCaptureRefs === "object"
+          ? JSON.parse(JSON.stringify(state.workflowRunCaptureRefs))
           : {},
       stepCompleted:
         state.workflowRunStepCompleted && typeof state.workflowRunStepCompleted === "object"
@@ -27457,7 +27667,23 @@
         : {};
     var live =
       liveMap && typeof liveMap === "object" && !Array.isArray(liveMap) ? liveMap : {};
-    return Object.assign({}, durable, live);
+    var merged = Object.assign({}, durable);
+    Object.keys(live).forEach(function (key) {
+      var liveValue = live[key];
+      var durableValue = durable[key];
+      // S75-D19 follow-through: absent/blank live DOM state must not erase
+      // a previously durable accepted capture during ordinary persistence.
+      if (
+        typeof liveValue === "string" &&
+        !String(liveValue).trim() &&
+        typeof durableValue === "string" &&
+        String(durableValue).trim()
+      ) {
+        return;
+      }
+      merged[key] = liveValue;
+    });
+    return merged;
   }
 
   function mergeWorkflowResourceRefsPreservingDurable(durableRefs, liveRefs) {
@@ -27528,6 +27754,7 @@
         durable.capturedOutputsRaw,
         live.capturedOutputsRaw
       ),
+      captureRefs: mergeWorkflowRunCaptureMaps(durable.captureRefs, live.captureRefs),
       stepCompleted: mergeWorkflowRunCaptureMaps(durable.stepCompleted, live.stepCompleted),
       runIndex:
         typeof live.runIndex === "number" && isFinite(live.runIndex) && live.runIndex >= 0
@@ -27546,16 +27773,930 @@
     };
   }
 
+  function pruneBlankWorkflowRunCaptureMapEntries(map) {
+    var source = map && typeof map === "object" && !Array.isArray(map) ? map : {};
+    var cleaned = {};
+    Object.keys(source).forEach(function (key) {
+      var value = source[key];
+      if (typeof value === "string" && !String(value).trim()) return;
+      cleaned[key] = value;
+    });
+    return cleaned;
+  }
+
+  function pruneBlankWorkflowRunStateRecordEntries(record) {
+    var rec = record && typeof record === "object" ? Object.assign({}, record) : {};
+    rec.capturedOutputs = pruneBlankWorkflowRunCaptureMapEntries(rec.capturedOutputs);
+    rec.capturedOutputsRaw = pruneBlankWorkflowRunCaptureMapEntries(rec.capturedOutputsRaw);
+    rec.stepCompleted = pruneBlankWorkflowRunCaptureMapEntries(rec.stepCompleted);
+    return rec;
+  }
+
+  function buildWorkflowRunCaptureResourceSlotKey(stepId, kind) {
+    var sid = String(stepId || "").trim();
+    var k = kind === "raw" ? "raw" : "final";
+    if (!sid) return "";
+    return "run_capture:" + sid + ":" + k;
+  }
+
+  function resolveWorkflowRunCaptureRefsMap(source) {
+    return source && typeof source === "object" && !Array.isArray(source) ? source : {};
+  }
+
+  function readWorkflowRunCaptureRefForStep(refMap, stepId, kind) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return null;
+    var refs = resolveWorkflowRunCaptureRefsMap(refMap);
+    var row = refs[sid] && typeof refs[sid] === "object" ? refs[sid] : null;
+    if (!row) return null;
+    var entry = row[kind] && typeof row[kind] === "object" ? row[kind] : null;
+    if (!entry) return null;
+    var resourceId = String(entry.resource_id || "").trim();
+    var slotKey = String(entry.slot_key || "").trim();
+    if (!resourceId) return null;
+    return {
+      resource_id: resourceId,
+      slot_key: slotKey || buildWorkflowRunCaptureResourceSlotKey(sid, kind)
+    };
+  }
+
+  function buildWorkflowRunCaptureRefEntry(resourceId, slotKey) {
+    var rid = String(resourceId || "").trim();
+    var key = String(slotKey || "").trim();
+    if (!rid) return null;
+    return {
+      resource_id: rid,
+      slot_key: key
+    };
+  }
+
   function persistWorkflowRunStateForWorkflow(workflowId, options) {
+    var opts = options && typeof options === "object" ? options : {};
     var wid = String(workflowId || "").trim();
-    if (!wid) return { ok: false, reason: "missing_workflow_id" };
+    if (!wid) {
+      return { ok: false, reason: "missing_workflow_id" };
+    }
     var store = loadWorkflowRunStateStore();
     var existing =
       store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
     var liveSnapshot = buildWorkflowRunStateSnapshotForCurrentSelection();
-    store[wid] = mergeWorkflowRunStateRecordWithLiveSnapshot(existing, liveSnapshot);
-    var ok = saveWorkflowRunStateStore(store);
+    state.workflowRunSessionIndexByWorkflow[wid] = liveSnapshot.runIndex;
+    var mergedRecord = mergeWorkflowRunStateRecordWithLiveSnapshot(existing, liveSnapshot);
+    store[wid] = pruneBlankWorkflowRunStateRecordEntries(mergedRecord);
+    var ok = saveWorkflowRunStateStore(store, {
+      source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
+      workflowId: wid,
+      observedStepId: String(opts.observedStepId || "")
+    });
     return ok ? { ok: true } : { ok: false, reason: "storage_write_failed" };
+  }
+
+  function persistWorkflowRunCapturePayloadForStep(workflowId, stepId, rawValue, finalValue) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    var raw = String(rawValue || "");
+    var finalText = String(finalValue || "");
+    var resourcesMod = getWorkflowResourcesMod();
+    if (!wid || !sid || !resourcesMod || typeof resourcesMod.putTextResource !== "function") {
+      return Promise.resolve({
+        ok: false,
+        reason: "resource_store_unavailable"
+      });
+    }
+    var finalSlot = buildWorkflowRunCaptureResourceSlotKey(sid, "final");
+    var rawSlot = buildWorkflowRunCaptureResourceSlotKey(sid, "raw");
+    var samePayload = workflowRunCaptureJsonSemanticallyEquivalent(raw, finalText);
+    return resourcesMod
+      .putTextResource({
+        workflow_id: wid,
+        slot_key: finalSlot,
+        mime_type: "application/json",
+        text_payload: finalText
+      })
+      .then(function (finalWrite) {
+        if (!finalWrite || !finalWrite.ok || !finalWrite.resource_id) {
+          return {
+            ok: false,
+            reason: "final_payload_write_failed",
+            detail: finalWrite || null
+          };
+        }
+        if (samePayload) {
+          maybeWarnStoragePressure();
+          return {
+            ok: true,
+            refs: {
+              final: buildWorkflowRunCaptureRefEntry(finalWrite.resource_id, finalSlot),
+              raw: buildWorkflowRunCaptureRefEntry(finalWrite.resource_id, finalSlot),
+              rawSameAsFinal: true
+            }
+          };
+        }
+        return resourcesMod
+          .putTextResource({
+            workflow_id: wid,
+            slot_key: rawSlot,
+            mime_type: "application/json",
+            text_payload: raw
+          })
+          .then(function (rawWrite) {
+            if (!rawWrite || !rawWrite.ok || !rawWrite.resource_id) {
+              return {
+                ok: false,
+                reason: "raw_payload_write_failed",
+                detail: rawWrite || null
+              };
+            }
+            maybeWarnStoragePressure();
+            return {
+              ok: true,
+              refs: {
+                final: buildWorkflowRunCaptureRefEntry(finalWrite.resource_id, finalSlot),
+                raw: buildWorkflowRunCaptureRefEntry(rawWrite.resource_id, rawSlot),
+                rawSameAsFinal: false
+              }
+            };
+          });
+      })
+      .catch(function (err) {
+        return {
+          ok: false,
+          reason: "payload_write_exception",
+          message: String((err && err.message) || err || "")
+        };
+      });
+  }
+
+  function hydrateWorkflowRunCapturePayloadsForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    var resourcesMod = getWorkflowResourcesMod();
+    if (!wid || !resourcesMod || typeof resourcesMod.getTextResourcePayload !== "function") {
+      return Promise.resolve({ ok: false, reason: "resource_store_unavailable" });
+    }
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var refs = rec && rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs : {};
+    var nextFinal = Object.assign({}, state.workflowRunCapturedOutputs || {});
+    var nextRaw = Object.assign({}, state.workflowRunCapturedOutputsRaw || {});
+    var stepIds = Object.keys(refs);
+    if (!stepIds.length) {
+      return Promise.resolve({ ok: true, hydrated: 0 });
+    }
+    state.workflowRunCaptureHydrationByWorkflow[wid] = {
+      pending: true,
+      hydrated: 0,
+      failed: 0,
+      startedAt: Date.now()
+    };
+    var chain = Promise.resolve();
+    var hydratedCount = 0;
+    var failedCount = 0;
+    stepIds.forEach(function (sid) {
+      chain = chain.then(function () {
+        var row = refs[sid] && typeof refs[sid] === "object" ? refs[sid] : {};
+        var finalRef = row.final && typeof row.final === "object" ? row.final : null;
+        var rawRef = row.raw && typeof row.raw === "object" ? row.raw : null;
+        if (!finalRef || !finalRef.resource_id) return null;
+        return resourcesMod
+          .getTextResourcePayload(finalRef.resource_id)
+          .then(function (finalPayload) {
+            var finalText = String(finalPayload || "");
+            nextFinal[sid] = finalText;
+            if (rawRef && rawRef.resource_id && rawRef.resource_id !== finalRef.resource_id) {
+              return resourcesMod.getTextResourcePayload(rawRef.resource_id).then(function (rawPayload) {
+                nextRaw[sid] = String(rawPayload || "");
+                hydratedCount += 1;
+                return null;
+              });
+            }
+            nextRaw[sid] = finalText;
+            hydratedCount += 1;
+            return null;
+          })
+          .catch(function () {
+            failedCount += 1;
+            return null;
+          });
+      });
+    });
+    return chain.then(function () {
+      state.workflowRunCapturedOutputs = nextFinal;
+      state.workflowRunCapturedOutputsRaw = nextRaw;
+      state.workflowRunCaptureHydrationByWorkflow[wid] = {
+        pending: false,
+        hydrated: hydratedCount,
+        failed: failedCount,
+        finishedAt: Date.now()
+      };
+      if (String(state.selectedWorkflowId || "").trim() === wid) {
+        applyHydratedCaptureToVisibleRunTextareas(wid);
+      }
+      return { ok: true, hydrated: hydratedCount, failed: failedCount };
+    });
+  }
+
+  function migrateLegacyInlineWorkflowRunCapturesToResourceRefs(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return Promise.resolve({ ok: false, reason: "missing_workflow_id" });
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!rec) return Promise.resolve({ ok: true, migrated: 0 });
+    var inlineFinal =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object" ? rec.capturedOutputs : {};
+    var inlineRaw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object" ? rec.capturedOutputsRaw : {};
+    var refs = rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs : {};
+    var stepIds = Array.from(new Set(Object.keys(inlineFinal).concat(Object.keys(inlineRaw))));
+    if (!stepIds.length) return Promise.resolve({ ok: true, migrated: 0 });
+    var migrated = 0;
+    var failed = 0;
+    var chain = Promise.resolve();
+    stepIds.forEach(function (sid) {
+      chain = chain.then(function () {
+        var existingRef = refs[sid] && typeof refs[sid] === "object" ? refs[sid] : null;
+        if (existingRef && existingRef.final && existingRef.final.resource_id) return null;
+        var finalText = String(inlineFinal[sid] || "");
+        var rawText = String(inlineRaw[sid] || finalText || "");
+        if (!finalText.trim() && !rawText.trim()) return null;
+        return persistWorkflowRunCapturePayloadForStep(wid, sid, rawText, finalText).then(function (result) {
+          if (!result || !result.ok) {
+            failed += 1;
+            return null;
+          }
+          refs[sid] = result.refs || {};
+          delete inlineFinal[sid];
+          delete inlineRaw[sid];
+          migrated += 1;
+          return null;
+        });
+      });
+    });
+    return chain.then(function () {
+      if (migrated > 0) {
+        rec.captureRefs = refs;
+        rec.capturedOutputs = inlineFinal;
+        rec.capturedOutputsRaw = inlineRaw;
+        store[wid] = rec;
+        saveWorkflowRunStateStore(store, {
+          source: "migrateLegacyInlineWorkflowRunCapturesToResourceRefs",
+          workflowId: wid
+        });
+      }
+      return {
+        ok: failed === 0,
+        migrated: migrated,
+        failed: failed
+      };
+    });
+  }
+
+  function getRunCaptureStorageVersion() {
+    try {
+      var raw = window.localStorage.getItem(RUN_CAPTURE_STORAGE_VERSION_KEY);
+      var parsed = parseInt(String(raw || ""), 10);
+      return isFinite(parsed) && parsed >= 0 ? parsed : 0;
+    } catch (_e) {
+      return 0;
+    }
+  }
+
+  function setRunCaptureStorageVersion(version) {
+    try {
+      window.localStorage.setItem(RUN_CAPTURE_STORAGE_VERSION_KEY, String(version));
+    } catch (_e) {}
+  }
+
+  function loadRunCaptureMigrationReport() {
+    try {
+      var raw = window.localStorage.getItem(RUN_CAPTURE_MIGRATION_REPORT_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : null;
+    } catch (_e) {
+      return null;
+    }
+  }
+
+  function saveRunCaptureMigrationReport(report) {
+    try {
+      window.localStorage.setItem(RUN_CAPTURE_MIGRATION_REPORT_KEY, JSON.stringify(report || {}));
+    } catch (_e) {}
+  }
+
+  function resolveWorkflowRunCaptureTextForStep(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return "";
+    var finalText =
+      state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid] != null
+        ? String(state.workflowRunCapturedOutputs[sid])
+        : "";
+    var rawText =
+      state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid] != null
+        ? String(state.workflowRunCapturedOutputsRaw[sid])
+        : "";
+    return finalText || rawText || "";
+  }
+
+  function bindWorkflowRunCaptureTextareaFromState(li, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (!li) return false;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var ta = li.querySelector('[data-field="runStepOutput"]');
+    if (!sid || !ta) return false;
+    var captureText = resolveWorkflowRunCaptureTextForStep(sid);
+    if (!String(captureText || "").trim()) return false;
+    var domText = String(ta.value || "");
+    if (domText === captureText) return false;
+    if (opts.force || !domText.trim()) {
+      ta.value = captureText;
+      updateRunStepOutputStatus(li);
+      return true;
+    }
+    return false;
+  }
+
+  function applyHydratedCaptureToVisibleRunTextareas(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid || String(state.selectedWorkflowId || "").trim() !== wid) return;
+    if (!els.workflowDetail || !els.workflowDetail.classList.contains("run-mode")) return;
+    getWorkflowStepElements().forEach(function (li) {
+      var hidden = li.classList && li.classList.contains("hidden");
+      bindWorkflowRunCaptureTextareaFromState(li, { force: !hidden });
+    });
+  }
+
+  function resolveRunCaptureStepMeta(workflowId, stepId) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    var wf = wid ? findWorkflowById(wid) : null;
+    var stepTitle = "";
+    if (wf && Array.isArray(wf.steps) && sid) {
+      var row =
+        wf.steps.find(function (step) {
+          return String(step && step.id ? step.id : "").trim() === sid;
+        }) || null;
+      if (row) stepTitle = String(row.title || "").trim();
+    }
+    return {
+      workflowId: wid,
+      workflowName: wf ? String(wf.name || "").trim() : "",
+      stepId: sid,
+      stepTitle: stepTitle
+    };
+  }
+
+  function readInlineCaptureMetaForStep(rec, stepId) {
+    var sid = String(stepId || "").trim();
+    var inlineFinal =
+      rec && rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? rec.capturedOutputs
+        : {};
+    var inlineRaw =
+      rec && rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? rec.capturedOutputsRaw
+        : {};
+    var finalText =
+      Object.prototype.hasOwnProperty.call(inlineFinal, sid) ? String(inlineFinal[sid] || "") : "";
+    var rawText =
+      Object.prototype.hasOwnProperty.call(inlineRaw, sid) ? String(inlineRaw[sid] || "") : "";
+    return {
+      finalPresent: !!finalText.trim(),
+      finalLength: finalText.length,
+      rawPresent: !!rawText.trim(),
+      rawLength: rawText.length,
+      finalText: finalText,
+      rawText: rawText || finalText
+    };
+  }
+
+  function readRefMetaForStep(refRow, kind, resourcesMod) {
+    var entry =
+      refRow && refRow[kind] && typeof refRow[kind] === "object" ? refRow[kind] : null;
+    if (!entry || !entry.resource_id) {
+      return Promise.resolve({
+        refPresent: false,
+        resourceId: "",
+        slotKey: "",
+        payloadResolved: false,
+        payloadLength: 0
+      });
+    }
+    if (!resourcesMod || typeof resourcesMod.getTextResourcePayload !== "function") {
+      return Promise.resolve({
+        refPresent: true,
+        resourceId: String(entry.resource_id || "").trim(),
+        slotKey: String(entry.slot_key || "").trim(),
+        payloadResolved: false,
+        payloadLength: 0
+      });
+    }
+    return resourcesMod
+      .getTextResourcePayload(entry.resource_id)
+      .then(function (payload) {
+        var text = String(payload || "");
+        return {
+          refPresent: true,
+          resourceId: String(entry.resource_id || "").trim(),
+          slotKey: String(entry.slot_key || "").trim(),
+          payloadResolved: true,
+          payloadLength: text.length
+        };
+      })
+      .catch(function () {
+        return {
+          refPresent: true,
+          resourceId: String(entry.resource_id || "").trim(),
+          slotKey: String(entry.slot_key || "").trim(),
+          payloadResolved: false,
+          payloadLength: 0
+        };
+      });
+  }
+
+  function inventoryWorkflowRunCaptureStorage(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var resourcesMod = getWorkflowResourcesMod();
+    var store = loadWorkflowRunStateStore();
+    var ownedIds = {};
+    (Array.isArray(state.workflows) ? state.workflows : []).forEach(function (wf) {
+      var wid = String(wf && wf.id ? wf.id : "").trim();
+      if (wid) ownedIds[wid] = String(wf.name || "").trim();
+    });
+    var allWorkflowIds = Object.keys(store || {}).slice();
+    ownedIds &&
+      Object.keys(ownedIds).forEach(function (wid) {
+        if (allWorkflowIds.indexOf(wid) < 0) allWorkflowIds.push(wid);
+      });
+    var summary = {
+      timestamp: Date.now(),
+      storageVersion: getRunCaptureStorageVersion(),
+      localStorageUsageBefore: buildLocalStorageUsageSnapshot(),
+      workflowsScanned: 0,
+      stepsScanned: 0,
+      inlineOnly: [],
+      refOnly: [],
+      mixed: [],
+      neither: [],
+      orphanedRunstate: [],
+      conflicts: [],
+      inventory: []
+    };
+    var chain = Promise.resolve();
+    allWorkflowIds.forEach(function (workflowId) {
+      chain = chain.then(function () {
+        var wid = String(workflowId || "").trim();
+        if (!wid) return null;
+        var rec = store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+        if (!rec) return null;
+        summary.workflowsScanned += 1;
+        var isOrphan = !ownedIds[wid];
+        if (isOrphan) {
+          summary.orphanedRunstate.push({
+            workflowId: wid,
+            stepKeys: Array.from(
+              new Set(
+                Object.keys(rec.capturedOutputs || {})
+                  .concat(Object.keys(rec.capturedOutputsRaw || {}))
+                  .concat(Object.keys(rec.captureRefs || {}))
+              )
+            )
+          });
+        }
+        var stepIds = Array.from(
+          new Set(
+            Object.keys(rec.capturedOutputs || {})
+              .concat(Object.keys(rec.capturedOutputsRaw || {}))
+              .concat(Object.keys(rec.captureRefs || {}))
+          )
+        );
+        var stepChain = Promise.resolve();
+        stepIds.forEach(function (stepId) {
+          stepChain = stepChain.then(function () {
+            summary.stepsScanned += 1;
+            var inline = readInlineCaptureMetaForStep(rec, stepId);
+            var refRow =
+              rec.captureRefs &&
+              rec.captureRefs[stepId] &&
+              typeof rec.captureRefs[stepId] === "object"
+                ? rec.captureRefs[stepId]
+                : null;
+            return Promise.all([
+              readRefMetaForStep(refRow, "final", resourcesMod),
+              readRefMetaForStep(refRow, "raw", resourcesMod)
+            ]).then(function (refParts) {
+              var finalRef = refParts[0];
+              var rawRef = refParts[1];
+              var hasInline = inline.finalPresent || inline.rawPresent;
+              var hasRef = !!(finalRef && finalRef.refPresent);
+              var meta = Object.assign(resolveRunCaptureStepMeta(wid, stepId), {
+                classification: "neither",
+                orphaned: isOrphan,
+                inline: {
+                  finalPresent: inline.finalPresent,
+                  finalLength: inline.finalLength,
+                  rawPresent: inline.rawPresent,
+                  rawLength: inline.rawLength
+                },
+                resourceRef: {
+                  refPresent: hasRef,
+                  finalResourceId: finalRef.resourceId || "",
+                  rawResourceId: rawRef.resourceId || "",
+                  finalPayloadResolved: !!finalRef.payloadResolved,
+                  finalPayloadLength: finalRef.payloadLength || 0,
+                  rawPayloadResolved: !!rawRef.payloadResolved,
+                  rawPayloadLength: rawRef.payloadLength || 0
+                }
+              });
+              if (hasInline && hasRef) {
+                meta.classification = "inline_and_ref";
+                summary.mixed.push(meta);
+              } else if (hasInline) {
+                meta.classification = "inline_only";
+                summary.inlineOnly.push(meta);
+              } else if (hasRef) {
+                meta.classification = "ref_only";
+                summary.refOnly.push(meta);
+              } else {
+                meta.classification = "neither";
+                summary.neither.push(meta);
+              }
+              summary.inventory.push(meta);
+              return null;
+            });
+          });
+        });
+        return stepChain;
+      });
+    });
+    return chain.then(function () {
+      return estimateBrowserStoragePressure().then(function (estimate) {
+        summary.indexedDbUsage = estimate;
+        return summary;
+      });
+    });
+  }
+
+  function countOwnedInlineCapturesRemaining() {
+    var store = loadWorkflowRunStateStore();
+    var ownedIds = {};
+    (Array.isArray(state.workflows) ? state.workflows : []).forEach(function (wf) {
+      var wid = String(wf && wf.id ? wf.id : "").trim();
+      if (wid) ownedIds[wid] = true;
+    });
+    var count = 0;
+    Object.keys(store || {}).forEach(function (wid) {
+      if (!ownedIds[wid]) return;
+      var rec = store[wid];
+      if (!rec || typeof rec !== "object") return;
+      var stepIds = Array.from(
+        new Set(
+          Object.keys(rec.capturedOutputs || {}).concat(Object.keys(rec.capturedOutputsRaw || {}))
+        )
+      );
+      stepIds.forEach(function (sid) {
+        var inline = readInlineCaptureMetaForStep(rec, sid);
+        if (inline.finalPresent || inline.rawPresent) count += 1;
+      });
+    });
+    return count;
+  }
+
+  function migrateWorkflowRunCaptureStep(workflowId, stepId, rec, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid || !sid || !rec) {
+      return Promise.resolve({ action: "skipped", reason: "missing_context" });
+    }
+    var inline = readInlineCaptureMetaForStep(rec, sid);
+    var refs =
+      rec.captureRefs && typeof rec.captureRefs === "object"
+        ? rec.captureRefs
+        : {};
+    var refRow = refs[sid] && typeof refs[sid] === "object" ? refs[sid] : null;
+    var resourcesMod = getWorkflowResourcesMod();
+    var meta = resolveRunCaptureStepMeta(wid, sid);
+    var hasInline = inline.finalPresent || inline.rawPresent;
+    var hasRef = !!(refRow && refRow.final && refRow.final.resource_id);
+
+    function writeInlineToResources() {
+      return persistWorkflowRunCapturePayloadForStep(
+        wid,
+        sid,
+        inline.rawText,
+        inline.finalText || inline.rawText
+      ).then(function (writeResult) {
+        if (!writeResult || !writeResult.ok || !writeResult.refs) {
+          return {
+            action: "failed",
+            reason: (writeResult && writeResult.reason) || "resource_write_failed",
+            meta: meta
+          };
+        }
+        var finalRef = writeResult.refs.final;
+        var rawRef = writeResult.refs.raw;
+        return Promise.all([
+          resourcesMod.getTextResourcePayload(finalRef.resource_id),
+          rawRef && rawRef.resource_id && rawRef.resource_id !== finalRef.resource_id
+            ? resourcesMod.getTextResourcePayload(rawRef.resource_id)
+            : Promise.resolve(null)
+        ]).then(function (readback) {
+          var readFinal = String(readback[0] || "");
+          var readRaw =
+            readback[1] != null ? String(readback[1] || "") : readFinal;
+          var finalOk = workflowRunCaptureJsonSemanticallyEquivalent(
+            readFinal,
+            inline.finalText || inline.rawText
+          );
+          var rawOk = workflowRunCaptureJsonSemanticallyEquivalent(readRaw, inline.rawText);
+          if (!finalOk || !rawOk) {
+            return {
+              action: "failed",
+              reason: "readback_mismatch",
+              meta: meta
+            };
+          }
+          refs[sid] = writeResult.refs;
+          delete rec.capturedOutputs[sid];
+          delete rec.capturedOutputsRaw[sid];
+          return {
+            action: "migrated",
+            meta: meta,
+            refs: writeResult.refs
+          };
+        });
+      });
+    }
+
+    if (!hasInline && !hasRef) {
+      return Promise.resolve({ action: "none", meta: meta });
+    }
+
+    if (hasRef && !hasInline) {
+      return readRefMetaForStep(refRow, "final", resourcesMod).then(function (finalRefMeta) {
+        if (finalRefMeta.payloadResolved) {
+          return { action: "already_resource", meta: meta };
+        }
+        return { action: "failed", reason: "missing_resource_payload", meta: meta };
+      });
+    }
+
+    if (hasRef && hasInline) {
+      return Promise.all([
+        resourcesMod.getTextResourcePayload(refRow.final.resource_id),
+        refRow.raw && refRow.raw.resource_id && refRow.raw.resource_id !== refRow.final.resource_id
+          ? resourcesMod.getTextResourcePayload(refRow.raw.resource_id)
+          : resourcesMod.getTextResourcePayload(refRow.final.resource_id)
+      ]).then(function (payloads) {
+        var resourceFinal = String(payloads[0] || "");
+        var resourceRaw = String(payloads[1] || "");
+        var resourceResolved =
+          !!resourceFinal.trim() ||
+          (!hasInline && (payloads[0] === "" || payloads[0] == null));
+        if (!resourceResolved) {
+          return writeInlineToResources();
+        }
+        var inlineMatchesResource =
+          workflowRunCaptureJsonSemanticallyEquivalent(inline.finalText || inline.rawText, resourceFinal) &&
+          workflowRunCaptureJsonSemanticallyEquivalent(inline.rawText, resourceRaw);
+        if (inlineMatchesResource) {
+          delete rec.capturedOutputs[sid];
+          delete rec.capturedOutputsRaw[sid];
+          return { action: "migrated", meta: meta, note: "removed_identical_inline" };
+        }
+        return {
+          action: "conflict",
+          reason: "inline_differs_from_resource",
+          meta: Object.assign({}, meta, {
+            inlineFinalLength: inline.finalLength,
+            inlineRawLength: inline.rawLength,
+            resourceFinalLength: resourceFinal.length,
+            resourceRawLength: resourceRaw.length
+          })
+        };
+      });
+    }
+
+    return writeInlineToResources();
+  }
+
+  function migrateAllWorkflowRunCapturesToResourceStore(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var store = loadWorkflowRunStateStore();
+    var ownedIds = {};
+    (Array.isArray(state.workflows) ? state.workflows : []).forEach(function (wf) {
+      var wid = String(wf && wf.id ? wf.id : "").trim();
+      if (wid) ownedIds[wid] = String(wf.name || "").trim();
+    });
+    var workflowIds = Object.keys(store || {}).slice();
+    Object.keys(ownedIds).forEach(function (wid) {
+      if (workflowIds.indexOf(wid) < 0) workflowIds.push(wid);
+    });
+    var summary = {
+      timestamp: Date.now(),
+      storageVersionBefore: getRunCaptureStorageVersion(),
+      localStorageUsageBefore: buildLocalStorageUsageSnapshot(),
+      indexedDbUsageBefore: null,
+      workflowsScanned: 0,
+      stepsScanned: 0,
+      inlineCapturesFound: 0,
+      capturesMigrated: 0,
+      capturesAlreadyResourceBacked: 0,
+      conflicts: [],
+      failures: [],
+      orphanedRunstate: [],
+      unmigrated: [],
+      localStorageUsageAfter: null,
+      indexedDbUsageAfter: null,
+      storageVersionAfter: getRunCaptureStorageVersion()
+    };
+    return estimateBrowserStoragePressure()
+      .then(function (estimateBefore) {
+        summary.indexedDbUsageBefore = estimateBefore;
+        var chain = Promise.resolve();
+        workflowIds.forEach(function (workflowId) {
+          chain = chain.then(function () {
+            var wid = String(workflowId || "").trim();
+            if (!wid) return null;
+            var rec = store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+            if (!rec) return null;
+            summary.workflowsScanned += 1;
+            if (!ownedIds[wid]) {
+              summary.orphanedRunstate.push({ workflowId: wid, preserved: true });
+            }
+            var stepIds = Array.from(
+              new Set(
+                Object.keys(rec.capturedOutputs || {})
+                  .concat(Object.keys(rec.capturedOutputsRaw || {}))
+                  .concat(Object.keys(rec.captureRefs || {}))
+              )
+            );
+            var stepChain = Promise.resolve();
+            stepIds.forEach(function (stepId) {
+              stepChain = stepChain.then(function () {
+                summary.stepsScanned += 1;
+                var inline = readInlineCaptureMetaForStep(rec, stepId);
+                if (inline.finalPresent || inline.rawPresent) summary.inlineCapturesFound += 1;
+                return migrateWorkflowRunCaptureStep(wid, stepId, rec, opts).then(function (result) {
+                  if (!result) return null;
+                  if (result.action === "migrated") summary.capturesMigrated += 1;
+                  if (result.action === "already_resource") summary.capturesAlreadyResourceBacked += 1;
+                  if (result.action === "conflict") summary.conflicts.push(result);
+                  if (result.action === "failed") summary.failures.push(result);
+                  if (
+                    result.action === "conflict" ||
+                    result.action === "failed" ||
+                    (ownedIds[wid] && result.action === "none")
+                  ) {
+                    if (result.action !== "none") summary.unmigrated.push(result);
+                  }
+                  if (result.refs) {
+                    rec.captureRefs = rec.captureRefs || {};
+                    rec.captureRefs[stepId] = result.refs;
+                  }
+                  return null;
+                });
+              });
+            });
+            return stepChain.then(function () {
+              store[wid] = pruneBlankWorkflowRunStateRecordEntries(rec);
+              return null;
+            });
+          });
+        });
+        return chain.then(function () {
+          saveWorkflowRunStateStore(store, {
+            source: "migrateAllWorkflowRunCapturesToResourceStore",
+            workflowId: ""
+          });
+          summary.localStorageUsageAfter = buildLocalStorageUsageSnapshot();
+          var ownedInlineRemaining = countOwnedInlineCapturesRemaining();
+          summary.ownedInlineCapturesRemaining = ownedInlineRemaining;
+          var ownedFailures = summary.failures.filter(function (row) {
+            return row && row.meta && ownedIds[row.meta.workflowId];
+          });
+          var ownedConflicts = summary.conflicts.filter(function (row) {
+            return row && row.meta && ownedIds[row.meta.workflowId];
+          });
+          if (
+            ownedInlineRemaining === 0 &&
+            !ownedFailures.length &&
+            !ownedConflicts.length
+          ) {
+            setRunCaptureStorageVersion(RUN_CAPTURE_STORAGE_VERSION);
+          }
+          summary.storageVersionAfter = getRunCaptureStorageVersion();
+          return estimateBrowserStoragePressure().then(function (estimateAfter) {
+            summary.indexedDbUsageAfter = estimateAfter;
+            saveRunCaptureMigrationReport(summary);
+            if (String(state.selectedWorkflowId || "").trim()) {
+              restoreWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+            }
+            return summary;
+          });
+        });
+      });
+  }
+
+  function estimateBrowserStoragePressure() {
+    var nav = typeof navigator !== "undefined" ? navigator : window && window.navigator ? window.navigator : null;
+    if (!nav || !nav.storage || typeof nav.storage.estimate !== "function") {
+      return Promise.resolve(null);
+    }
+    return nav.storage
+      .estimate()
+      .then(function (estimate) {
+        var usage = Number((estimate && estimate.usage) || 0);
+        var quota = Number((estimate && estimate.quota) || 0);
+        var pct = quota > 0 ? usage / quota : 0;
+        var out = {
+          usage: usage,
+          quota: quota,
+          usageRatio: pct,
+          remaining: quota > 0 ? Math.max(0, quota - usage) : 0
+        };
+        state.lastStoragePressureEstimate = out;
+        return out;
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
+  function maybeWarnStoragePressure() {
+    return estimateBrowserStoragePressure().then(function (estimate) {
+      if (!estimate) return;
+      var highPressure = estimate.usageRatio >= 0.85 || estimate.remaining <= 20 * 1024 * 1024;
+      if (!highPressure) return;
+      var now = Date.now();
+      if (now - Number(state.lastStoragePressureWarningAt || 0) < 60000) return;
+      state.lastStoragePressureWarningAt = now;
+      showToast(
+        "PRISM storage is getting full. You may need to remove older workflow data or resources before creating more content.",
+        "warning"
+      );
+    });
+  }
+
+  function isWorkflowRunCaptureDurablyCurrent(workflowId, stepId, rawValue, finalValue) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid || !sid) return false;
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!rec) return false;
+    var liveRaw = String(rawValue || "");
+    var liveFinal = String(finalValue || "");
+    var refs =
+      rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs[sid] : null;
+    if (refs && refs.final && refs.final.resource_id) {
+      var stateRefs =
+        state.workflowRunCaptureRefs &&
+        state.workflowRunCaptureRefs[sid] &&
+        typeof state.workflowRunCaptureRefs[sid] === "object"
+          ? state.workflowRunCaptureRefs[sid]
+          : null;
+      var stateFinal =
+        state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid] != null
+          ? String(state.workflowRunCapturedOutputs[sid])
+          : "";
+      var stateRaw =
+        state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid] != null
+          ? String(state.workflowRunCapturedOutputsRaw[sid])
+          : "";
+      var refsMatch =
+        stateRefs &&
+        String(stateRefs.final && stateRefs.final.resource_id ? stateRefs.final.resource_id : "") ===
+          String(refs.final.resource_id || "") &&
+        workflowRunCaptureJsonSemanticallyEquivalent(
+          JSON.stringify(stateRefs || {}),
+          JSON.stringify(refs || {})
+        );
+      return (
+        refsMatch &&
+        workflowRunCaptureJsonSemanticallyEquivalent(liveRaw, stateRaw) &&
+        workflowRunCaptureJsonSemanticallyEquivalent(liveFinal, stateFinal)
+      );
+    }
+    var durableRaw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? String(rec.capturedOutputsRaw[sid] || "")
+        : "";
+    var durableFinal =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+        ? String(rec.capturedOutputs[sid] || "")
+        : "";
+    // Blank durable placeholders are never "current" against an accepted non-blank live capture.
+    if (
+      workflowRunCaptureValueIsBlank(durableRaw) !== workflowRunCaptureValueIsBlank(liveRaw) ||
+      workflowRunCaptureValueIsBlank(durableFinal) !== workflowRunCaptureValueIsBlank(liveFinal)
+    ) {
+      return false;
+    }
+    return (
+      workflowRunCaptureJsonSemanticallyEquivalent(durableRaw, liveRaw) &&
+      workflowRunCaptureJsonSemanticallyEquivalent(durableFinal, liveFinal)
+    );
   }
 
   /**
@@ -27606,14 +28747,24 @@
     }
     var store = loadWorkflowRunStateStore();
     var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
-    state.workflowRunCapturedOutputs =
-      rec && rec.capturedOutputs && typeof rec.capturedOutputs === "object"
-        ? Object.assign({}, rec.capturedOutputs)
+    var refOnlyRuntime = getRunCaptureStorageVersion() >= RUN_CAPTURE_STORAGE_VERSION;
+    state.workflowRunCaptureRefs =
+      rec && rec.captureRefs && typeof rec.captureRefs === "object"
+        ? JSON.parse(JSON.stringify(rec.captureRefs))
         : {};
-    state.workflowRunCapturedOutputsRaw =
-      rec && rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
-        ? Object.assign({}, rec.capturedOutputsRaw)
-        : {};
+    if (refOnlyRuntime) {
+      state.workflowRunCapturedOutputs = {};
+      state.workflowRunCapturedOutputsRaw = {};
+    } else {
+      state.workflowRunCapturedOutputs =
+        rec && rec.capturedOutputs && typeof rec.capturedOutputs === "object"
+          ? Object.assign({}, rec.capturedOutputs)
+          : {};
+      state.workflowRunCapturedOutputsRaw =
+        rec && rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+          ? Object.assign({}, rec.capturedOutputsRaw)
+          : {};
+    }
     state.workflowRunStepCompleted =
       rec && rec.stepCompleted && typeof rec.stepCompleted === "object"
         ? Object.assign({}, rec.stepCompleted)
@@ -27621,12 +28772,12 @@
     state.workflowRunStrictJsonValidation = {};
     state.workflowRunPageValidation = {};
     state.workflowRunEpisodePlanValidation = {};
+    var sessionRunIndex = state.workflowRunSessionIndexByWorkflow[wid];
     state.currentWorkflowRunIndex =
-      rec &&
-      typeof rec.runIndex === "number" &&
-      isFinite(rec.runIndex) &&
-      rec.runIndex >= 0
-        ? rec.runIndex
+      typeof sessionRunIndex === "number" &&
+      isFinite(sessionRunIndex) &&
+      sessionRunIndex >= 0
+        ? sessionRunIndex
         : 0;
     state.workflowRunVisibleStepId = "";
     state.workflowRunCopiedStepId = "";
@@ -27662,6 +28813,13 @@
             additionalResourcesIntro: "",
             additionalResources: []
           };
+    // Async hydrate ref-backed payloads into live run maps.
+    hydrateWorkflowRunCapturePayloadsForWorkflow(wid).then(function () {
+      if (String(state.selectedWorkflowId || "").trim() === wid) {
+        applyHydratedCaptureToVisibleRunTextareas(wid);
+        updateWorkflowRunView();
+      }
+    });
   }
 
   function renderWorkflowList() {
@@ -28466,8 +29624,15 @@
   function createWorkflowStepElement(step, index) {
     var li = document.createElement("li");
     li.className = "workflow-step";
+    var stableStepId = String(step && step.id != null ? step.id : "").trim();
+    if (!stableStepId) {
+      stableStepId =
+        window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(Date.now() + index);
+      if (step && typeof step === "object") step.id = stableStepId;
+    }
     // step.id is the workflow-local durable step instance identity.
-    li.setAttribute("data-step-id", step.id);
+    li.setAttribute("data-step-id", stableStepId);
+    li.__workflowStepId = stableStepId;
     // canonical_step_id is semantic/domain identity (not the local instance id).
     li.setAttribute("data-canonical-step-id", String(step.canonical_step_id || ""));
     li.setAttribute("data-prompt-source", getStepPromptSourceType(step));
@@ -28477,6 +29642,10 @@
 
     var header = document.createElement("div");
     header.className = "workflow-step-header";
+    var hiddenStepIdInput = document.createElement("input");
+    hiddenStepIdInput.type = "hidden";
+    hiddenStepIdInput.setAttribute("data-field", "stepId");
+    hiddenStepIdInput.value = stableStepId;
 
     var label = document.createElement("div");
     label.className = "workflow-step-header-title";
@@ -29392,7 +30561,7 @@
       (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[stepIdForRun]) || "";
     userNotesTextarea.value = String(sanStored || rawStored || "");
     userNotesTextarea.addEventListener("input", function () {
-      syncWorkflowRunCapturedOutputToState(li);
+      syncWorkflowRunCapturedOutputToState(li, { source: "user_input" });
     });
     var userNotesStatus = document.createElement("div");
     userNotesStatus.setAttribute("data-role", "run-step-output-status");
@@ -29401,6 +30570,7 @@
     userNotesWrap.appendChild(userNotesTextarea);
     userNotesWrap.appendChild(userNotesStatus);
 
+    li.appendChild(hiddenStepIdInput);
     li.appendChild(header);
     li.appendChild(fields);
     li.appendChild(instructionsGroup);
@@ -29437,11 +30607,41 @@
     });
 
     var steps = [];
+    var existingWf = findWorkflowById(state.selectedWorkflowId || "");
+    var existingStepIds = {};
+    if (existingWf && Array.isArray(existingWf.steps)) {
+      existingWf.steps.forEach(function (row) {
+        var sid = String(row && row.id ? row.id : "").trim();
+        if (sid) existingStepIds[sid] = true;
+      });
+    }
+    var usedStepIds = {};
     if (els.workflowSteps) {
-      Array.prototype.forEach.call(els.workflowSteps.children, function (child) {
+      Array.prototype.forEach.call(els.workflowSteps.children, function (child, childIndex) {
         if (!child.classList.contains("workflow-step")) return;
-        var id = child.getAttribute("data-step-id") ||
-          (window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(Date.now()));
+        var idFromAttr = String(child.getAttribute("data-step-id") || "").trim();
+        var idFromProperty = String(child.__workflowStepId || "").trim();
+        var idFromHidden = "";
+        var stepIdInput = child.querySelector('[data-field="stepId"]');
+        if (stepIdInput && typeof stepIdInput.value === "string") {
+          idFromHidden = String(stepIdInput.value || "").trim();
+        }
+        var id = idFromAttr || idFromProperty || idFromHidden;
+        if (!id && existingWf && Array.isArray(existingWf.steps)) {
+          var fallbackExisting = existingWf.steps[childIndex];
+          var fallbackId = String(fallbackExisting && fallbackExisting.id ? fallbackExisting.id : "").trim();
+          if (fallbackId && existingStepIds[fallbackId] && !usedStepIds[fallbackId]) {
+            id = fallbackId;
+          }
+        }
+        if (!id) {
+          id = window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(Date.now() + childIndex);
+        }
+        if (typeof child.setAttribute === "function") {
+          child.setAttribute("data-step-id", id);
+        }
+        child.__workflowStepId = id;
+        usedStepIds[id] = true;
         var inputBindings = readStepInputBindings(child);
         var titleInput = child.querySelector('[data-field="title"]');
         var roleInput = child.querySelector('[data-field="roleLabel"]');
@@ -29449,7 +30649,6 @@
         var inputKindSelect = child.querySelector('[data-field="inputKind"]');
         var outputInput = child.querySelector('[data-field="outputName"]');
         var notesArea = child.querySelector('[data-field="notes"]');
-        var existingWf = findWorkflowById(state.selectedWorkflowId || "");
         var existingStep = null;
         if (existingWf && Array.isArray(existingWf.steps)) {
           existingStep = existingWf.steps.find(function (row) {
@@ -30780,6 +31979,28 @@
       });
   }
 
+  function buildLocalStorageUsageSnapshot() {
+    var out = {
+      totalChars: 0,
+      byKeyChars: {},
+      runstateChars: 0
+    };
+    try {
+      if (!window.localStorage || typeof window.localStorage.length !== "number") return out;
+      for (var i = 0; i < window.localStorage.length; i += 1) {
+        var key = String(window.localStorage.key(i) || "");
+        var value = String(window.localStorage.getItem(key) || "");
+        var chars = key.length + value.length;
+        out.byKeyChars[key] = chars;
+        out.totalChars += chars;
+      }
+      out.runstateChars = Number(out.byKeyChars[WORKFLOW_RUN_STATE_STORAGE_KEY] || 0);
+      return out;
+    } catch (_) {
+      return out;
+    }
+  }
+
   function parseStringList(text) {
     return String(text || "")
       .split(/[\n,]/)
@@ -31725,6 +32946,16 @@
       : "";
     var desiredOutputsSeed = els.wfDesignDesiredOutputs ? (els.wfDesignDesiredOutputs.value || "").trim() : "";
     var scopeAndConstraints = els.wfDesignScopeConstraints ? (els.wfDesignScopeConstraints.value || "").trim() : "";
+    var saveDomains = getSelectedWorkflowDomains();
+    var saveIsLd = saveDomains.indexOf("learning-design") !== -1;
+    if (saveIsLd) {
+      // S75-D22: Create no longer invites multi-product desiredOutputs / constraints.
+      desiredOutputsSeed = "";
+      scopeAndConstraints = "";
+      if (!workflowFactoryStartingPointNeedsSourceDescription(startingArtefact)) {
+        artefacts = "";
+      }
+    }
     if (!name) {
       showToast("Enter a workflow name before saving.", "error");
       return;
@@ -49753,6 +50984,7 @@
       return;
     }
     var workflowId = String(state.selectedWorkflowId || "").trim();
+    hydrateWorkflowRunCapturePayloadsForWorkflow(workflowId).then(function () {
     var reconciled = reconcileWorkflowRunCapturesWithDurableState(workflowId);
     var capturesForAssemble =
       reconciled && reconciled.capturedOutputs
@@ -49821,6 +51053,9 @@
     showUtilitiesOutputPanel();
     refreshUtilitiesWorkflowContextUI();
     showToast("Assembled page loaded into Utilities JSON input.", "success");
+    }).catch(function () {
+      showToast("Could not hydrate run captures before assembly.", "error");
+    });
   }
 
   function handleUtilitiesDownloadHtml() {
@@ -50358,7 +51593,7 @@
         var idx = state.currentWorkflowRunIndex;
         var currentLi = liSteps[idx] || null;
         if (currentLi) {
-          syncWorkflowRunCapturedOutputToState(currentLi);
+          syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click" });
           var sid = String(currentLi.getAttribute("data-step-id") || "").trim();
           var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
           var stepRow = null;
@@ -50451,7 +51686,7 @@
             }
             if (pageCaptureCheck.json !== body && outArea) {
               outArea.value = pageCaptureCheck.json;
-              syncWorkflowRunCapturedOutputToState(currentLi);
+              syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click_normalize" });
               body = pageCaptureCheck.json;
             }
           }
@@ -50484,7 +51719,7 @@
             if (pageGate.json !== body && currentLi) {
               var pageOut = currentLi.querySelector('[data-field="runStepOutput"]');
               if (pageOut) pageOut.value = pageGate.json;
-              syncWorkflowRunCapturedOutputToState(currentLi);
+              syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click_normalize" });
             }
           }
           if (storesArtefact && workflowRunLearnerPageFramingGateMessage(sid)) {
@@ -50634,6 +51869,11 @@
     prismTestApi.mergeLdCreateOutputTypeIntoExplicitFactors = mergeLdCreateOutputTypeIntoExplicitFactors;
     prismTestApi.applyLdCreateOutputTypePrimaryFactors = applyLdCreateOutputTypePrimaryFactors;
     prismTestApi.syncWorkflowFactoryLdCreateOutputTypeUi = syncWorkflowFactoryLdCreateOutputTypeUi;
+    prismTestApi.syncWorkflowFactoryCreateProductFields = syncWorkflowFactoryCreateProductFields;
+    prismTestApi.updateWorkflowFactoryInputsCopyFromStartingPoint =
+      updateWorkflowFactoryInputsCopyFromStartingPoint;
+    prismTestApi.workflowFactoryStartingPointNeedsSourceDescription =
+      workflowFactoryStartingPointNeedsSourceDescription;
     prismTestApi.refreshWfLdCreateOutputTypeElementRefs = refreshWfLdCreateOutputTypeElementRefs;
     prismTestApi.LD_CREATE_OUTPUT_TYPE_CHOICES = LD_CREATE_OUTPUT_TYPE_CHOICES;
     prismTestApi.LD_CREATE_OUTPUT_TYPE_SELF_STUDY = LD_CREATE_OUTPUT_TYPE_SELF_STUDY;
@@ -50696,6 +51936,16 @@
     prismTestApi.setWorkflowDetailModeForTest = setWorkflowMode;
     prismTestApi.getWorkflowDetailModeForTest = function () {
       return state.workflowDetailMode;
+    };
+    prismTestApi.getCurrentWorkflowRunIndexForTest = function () {
+      return state.currentWorkflowRunIndex;
+    };
+    prismTestApi.setCurrentWorkflowRunIndexForTest = function (index) {
+      state.currentWorkflowRunIndex =
+        typeof index === "number" && isFinite(index) ? Math.max(0, Math.floor(index)) : 0;
+    };
+    prismTestApi.getWorkflowRunSessionIndexByWorkflowForTest = function () {
+      return Object.assign({}, state.workflowRunSessionIndexByWorkflow || {});
     };
     prismTestApi.collectPackParamRowsFromDomContainer = collectPackParamRowsFromDomContainer;
     prismTestApi.syncUnifiedWorkflowSettingsToStepNotes = syncUnifiedWorkflowSettingsToStepNotes;
@@ -50953,6 +52203,10 @@
     prismTestApi.deriveAssessmentSemanticFactors = deriveAssessmentSemanticFactors;
     prismTestApi.getAssessmentPostGenerationElicitationQueue = getAssessmentPostGenerationElicitationQueue;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
+    prismTestApi.gatherWorkflowDetailFormDataForTest = gatherWorkflowDetailFormData;
+    prismTestApi.handleSaveWorkflowForTest = handleSaveWorkflow;
+    prismTestApi.loadWorkflowsForTest = loadWorkflows;
+    prismTestApi.saveWorkflowsForTest = saveWorkflows;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
     prismTestApi.normalizeActivityInteractionMetadata = normalizeActivityInteractionMetadata;
@@ -51003,9 +52257,36 @@
       state.workflowRunCapturedOutputsRaw =
         captures && typeof captures === "object" ? Object.assign({}, captures) : {};
     };
+    prismTestApi.setWorkflowRunCaptureRefsForTest = function (refs) {
+      state.workflowRunCaptureRefs =
+        refs && typeof refs === "object" ? JSON.parse(JSON.stringify(refs)) : {};
+    };
+    prismTestApi.getWorkflowRunCaptureRefsForTest = function () {
+      return JSON.parse(JSON.stringify(state.workflowRunCaptureRefs || {}));
+    };
     prismTestApi.setWorkflowStepElementsForTest = function (stepElements) {
       var rows = Array.isArray(stepElements) ? stepElements.slice() : [];
-      els.workflowSteps = { children: rows };
+      els.workflowSteps = {
+        children: rows,
+        appendChild: function (node) {
+          this.children.push(node);
+        },
+        removeChild: function (node) {
+          var idx = this.children.indexOf(node);
+          if (idx >= 0) this.children.splice(idx, 1);
+        },
+        querySelectorAll: function (selector) {
+          if (selector === ".workflow-steps-empty") return [];
+          return [];
+        },
+        set innerHTML(value) {
+          void value;
+          this.children = [];
+        },
+        get innerHTML() {
+          return "";
+        }
+      };
     };
     prismTestApi.getWorkflowRunCapturedOutputsForTest = function () {
       return Object.assign({}, state.workflowRunCapturedOutputs || {});
@@ -51571,6 +52852,21 @@
     prismTestApi.rehydrateWorkflowPageResourcesIntoWorkspaceForTest =
       rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
+    prismTestApi.persistWorkflowRunCapturePayloadForStepForTest = persistWorkflowRunCapturePayloadForStep;
+    prismTestApi.hydrateWorkflowRunCapturePayloadsForWorkflowForTest =
+      hydrateWorkflowRunCapturePayloadsForWorkflow;
+    prismTestApi.migrateLegacyInlineWorkflowRunCapturesToResourceRefsForTest =
+      migrateLegacyInlineWorkflowRunCapturesToResourceRefs;
+    prismTestApi.migrateAllWorkflowRunCapturesToResourceStoreForTest =
+      migrateAllWorkflowRunCapturesToResourceStore;
+    prismTestApi.inventoryWorkflowRunCaptureStorageForTest = inventoryWorkflowRunCaptureStorage;
+    prismTestApi.bindWorkflowRunCaptureTextareaFromStateForTest = bindWorkflowRunCaptureTextareaFromState;
+    prismTestApi.applyHydratedCaptureToVisibleRunTextareasForTest =
+      applyHydratedCaptureToVisibleRunTextareas;
+    prismTestApi.getRunCaptureStorageVersionForTest = getRunCaptureStorageVersion;
+    prismTestApi.setRunCaptureStorageVersionForTest = setRunCaptureStorageVersion;
+    prismTestApi.countOwnedInlineCapturesRemainingForTest = countOwnedInlineCapturesRemaining;
+    prismTestApi.buildLocalStorageUsageSnapshotForTest = buildLocalStorageUsageSnapshot;
     prismTestApi.reconcileWorkflowRunCapturesWithDurableStateForTest =
       reconcileWorkflowRunCapturesWithDurableState;
     prismTestApi.mergeWorkflowRunCaptureMapsForTest = mergeWorkflowRunCaptureMaps;

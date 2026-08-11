@@ -448,6 +448,7 @@ Small, evidence-coherent slices for operator review. **No implementation steps.*
 | **Dependencies** | Independent of Theme 8 investigation |
 | **Exclusions** | New review/QA mechanisms |
 | **Confidence** | **Medium** |
+| **Status (2026-08-11)** | **CLOSED AS RESOLVED** under [`S75-D22`](decisions.md#s75-d22--one-workflow--one-product-learning-design-create-simplification): original off-screen Review-responses / Complete-while-refining problem tracked the retired generic Create reviewer (`S75-D03`). Current pack-driven Q&A is adequate; no polish slice implemented. |
 
 ---
 
@@ -527,7 +528,7 @@ Small, evidence-coherent slices for operator review. **No implementation steps.*
 | **C-05** API prerequisite | **Done** (`S75-D09`, amended) — action gate on Design workflow; Create always navigable |
 | **C-07** Mode landing | **Done** (`S75-D10`) — Run default + Create handoff; session mode preserved |
 | **C-06** Output capability | **Done** (`S75-D11`) — Self-study · Workshop Create chooser |
-| **C-08** Refinement feedback | Improves SHAPE phase; low architecture risk |
+| **C-08** Refinement feedback | **CLOSED AS RESOLVED** (`S75-D22`) — original problem superseded by `S75-D03` retirement |
 
 ### DEFER / BACKLOG
 
@@ -578,4 +579,4 @@ No contradiction on Sprint 74 closure or Sprint 76 not opened.
 
 ## 15. Stop condition
 
-Cross-journey synthesis **complete**. Theme 8 generic reviewer **retired** (`S75-D03`). **C-01/C-02** handoff + provenance **implemented** (`S75-D04`). **C-03** Run orientation **implemented** as persistent lightweight guidance (`S75-D06`). **C-04** Run capture relevance **implemented** (`S75-D07`). **C-10** / Run UX simplification **implemented** (`S75-D08` — Run-UI-only descriptions + execution bar; pack RI unchanged). **C-05** Create Workflow API-key prerequisite **implemented** (`S75-D09`; **amended**: action gate, not navigation). **C-07** My Workflows mode default/handoff **implemented** (`S75-D10`). **C-06** LD Create output honesty **implemented** (`S75-D11`). Remaining candidate slices **await operator review**. Sprint 76 **not opened.**
+Cross-journey synthesis **complete**. Theme 8 generic reviewer **retired** (`S75-D03`). **C-01/C-02** handoff + provenance **implemented** (`S75-D04`). **C-03** Run orientation **implemented** as persistent lightweight guidance (`S75-D06`). **C-04** Run capture relevance **implemented** (`S75-D07`). **C-10** / Run UX simplification **implemented** (`S75-D08` — Run-UI-only descriptions + execution bar; pack RI unchanged). **C-05** Create Workflow API-key prerequisite **implemented** (`S75-D09`; **amended**: action gate, not navigation). **C-07** My Workflows mode default/handoff **implemented** (`S75-D10`). **C-06** LD Create output honesty **implemented** (`S75-D11`). **C-08** refinement discoverability **CLOSED AS RESOLVED** (`S75-D22`). LD Create one-product simplification **implemented** (`S75-D22`). Remaining candidate slices (C-09/C-11/C-12) **await operator review**. Sprint 76 **not opened.**

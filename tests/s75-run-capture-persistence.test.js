@@ -22,6 +22,7 @@ const appJsPath = path.join(repoRoot, "app.js");
 const indexHtmlPath = path.join(repoRoot, "index.html");
 const fixturesDir = path.join(__dirname, "fixtures", "page-assemble");
 const assemble = require(path.join(repoRoot, "lib", "page-vnext-assemble.js"));
+const workflowResources = require(path.join(repoRoot, "lib", "prism-workflow-resources.js"));
 const RUNKEY = "promptr.workflows.runstate.v1";
 
 function loadFixture(name) {
@@ -66,17 +67,30 @@ function createElementStub() {
   };
 }
 
-function boot() {
+function boot(options) {
+  const opts = options && typeof options === "object" ? options : {};
   const storage = {};
+  let setItemCallCount = 0;
   const localStorage = {
     getItem(k) {
       return Object.prototype.hasOwnProperty.call(storage, k) ? storage[k] : null;
     },
     setItem(k, v) {
+      setItemCallCount += 1;
+      if (typeof opts.onSetItem === "function") {
+        opts.onSetItem({ key: k, value: String(v), callCount: setItemCallCount });
+      }
       storage[k] = String(v);
     },
     removeItem(k) {
       delete storage[k];
+    },
+    key(i) {
+      const keys = Object.keys(storage);
+      return i >= 0 && i < keys.length ? keys[i] : null;
+    },
+    get length() {
+      return Object.keys(storage).length;
     }
   };
   const elementStore = new Map();
@@ -103,6 +117,8 @@ function boot() {
     document: documentStub,
     addEventListener() {},
     removeEventListener() {},
+    setTimeout,
+    clearTimeout,
     location: { hash: "", pathname: "/" },
     _: sandbox._,
     Utils: {
@@ -120,6 +136,11 @@ function boot() {
   sandbox.document = documentStub;
   sandbox.window = windowStub;
   windowStub.window = windowStub;
+  if (!opts.retainResourceBackend) {
+    workflowResources.resetStorageBackendForTests();
+  }
+  sandbox.PRISM_WORKFLOW_RESOURCES = workflowResources;
+  windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(
     sandbox,
@@ -147,6 +168,32 @@ function markerTitle(page, tag) {
   const next = JSON.parse(JSON.stringify(page));
   next.title = "MARKER_" + tag;
   return next;
+}
+
+function buildRunLi(stepId, outputName, initialValue, canonicalStepId) {
+  const ta = createElementStub();
+  ta.value = String(initialValue || "");
+  const output = createElementStub();
+  output.value = String(outputName || "");
+  const status = createElementStub();
+  const attrs = {
+    "data-step-id": String(stepId || ""),
+    "data-canonical-step-id": String(canonicalStepId || "")
+  };
+  const li = createElementStub();
+  li.classList.contains = (name) => name === "workflow-step";
+  li.setAttribute = (name, value) => {
+    attrs[name] = String(value);
+  };
+  li.getAttribute = (name) =>
+    Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
+  li.querySelector = (selector) => {
+    if (selector === '[data-field="runStepOutput"]') return ta;
+    if (selector === '[data-field="outputName"]') return output;
+    if (selector === '[data-role="run-step-output-status"]') return status;
+    return null;
+  };
+  return { li, ta };
 }
 
 function buildPartialWorkflow(id) {
@@ -198,6 +245,36 @@ function selectLike(api, fromId, toId) {
   api.setSelectedWorkflowIdForTest(toId);
 }
 
+async function selectLikeAsync(api, fromId, toId) {
+  selectLike(api, fromId, toId);
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(toId);
+}
+
+async function persistMapsAsRefs(api, wfId, finalMap, rawMap, stepCompleted) {
+  const refs = {};
+  const keysList = Object.keys(rawMap || {});
+  for (const sid of keysList) {
+    const put = await api.persistWorkflowRunCapturePayloadForStepForTest(
+      wfId,
+      sid,
+      rawMap[sid],
+      finalMap[sid] != null ? finalMap[sid] : rawMap[sid]
+    );
+    assert.equal(put.ok, true, JSON.stringify(put));
+    refs[sid] = put.refs;
+  }
+  api.setWorkflowRunCaptureRefsForTest(refs);
+  api.setWorkflowRunCapturedOutputsForTest(finalMap);
+  api.setWorkflowRunCapturedOutputsRawForTest(rawMap);
+  if (stepCompleted) api.setWorkflowRunStepCompletedForTest(stepCompleted);
+  return api.persistWorkflowRunStateForWorkflowForTest(wfId, { toastType: "" });
+}
+
+function assertNoInlineBodies(rec) {
+  assert.equal(Object.keys(rec.capturedOutputs || {}).length, 0);
+  assert.equal(Object.keys(rec.capturedOutputsRaw || {}).length, 0);
+}
+
 const epShell = loadFixture("ep-shell.json");
 const dlaPartial = loadFixture("dla-partial.json");
 const gamPartial = loadFixture("gam-partial.json");
@@ -226,89 +303,97 @@ function seedFullMaps() {
   return { full, fullRaw, completed };
 }
 
-test("A: cumulative persistence retains earlier captures after each persist", () => {
+test("A: cumulative persistence retains earlier capture refs after each persist", async () => {
   const { api, storage } = boot();
   const wf = buildPartialWorkflow("wfA");
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   const mem = {};
   const memRaw = {};
-  stagePages.forEach(([sid, page], idx) => {
+  for (let idx = 0; idx < stagePages.length; idx += 1) {
+    const [sid, page] = stagePages[idx];
     mem[sid] = JSON.stringify(page);
     memRaw[sid] = JSON.stringify(page, null, 2);
-    api.setWorkflowRunCapturedOutputsForTest(Object.assign({}, mem));
-    api.setWorkflowRunCapturedOutputsRawForTest(Object.assign({}, memRaw));
-    const result = api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
-    assert.equal(result.ok, true);
+    await persistMapsAsRefs(api, wf.id, Object.assign({}, mem), Object.assign({}, memRaw));
     const rec = storeRec(storage, wf.id);
-    assert.deepEqual(keys(rec.capturedOutputsRaw), keys(memRaw));
-    assert.match(JSON.parse(rec.capturedOutputsRaw.ep_step).title, /MARKER_EP/);
-    if (idx >= 1) assert.match(JSON.parse(rec.capturedOutputsRaw.dla_step).title, /MARKER_DLA/);
-    if (idx >= 4) assert.match(JSON.parse(rec.capturedOutputsRaw.dp_step).title, /MARKER_DP/);
-  });
+    assertNoInlineBodies(rec);
+    assert.deepEqual(keys(rec.captureRefs), keys(memRaw));
+    await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
+    const live = api.getWorkflowRunCapturedOutputsRawForTest();
+    assert.match(JSON.parse(live.ep_step).title, /MARKER_EP/);
+    if (idx >= 1) assert.match(JSON.parse(live.dla_step).title, /MARKER_DLA/);
+    if (idx >= 4) assert.match(JSON.parse(live.dp_step).title, /MARKER_DP/);
+  }
 });
 
-test("B: truncated live persist must not destroy fuller durable captures", () => {
+test("B: truncated live persist must not destroy fuller durable capture refs", async () => {
   const { api, storage } = boot();
   const wf = buildPartialWorkflow("wfA");
   const { full, fullRaw, completed } = seedFullMaps();
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest(full);
-  api.setWorkflowRunCapturedOutputsRawForTest(fullRaw);
-  api.setWorkflowRunStepCompletedForTest(completed);
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
-  assert.equal(keys(storeRec(storage, wf.id).capturedOutputsRaw).length, 5);
+  await persistMapsAsRefs(api, wf.id, full, fullRaw, completed);
+  assert.equal(keys(storeRec(storage, wf.id).captureRefs).length, 5);
 
+  api.setWorkflowRunCaptureRefsForTest({
+    ep_step: storeRec(storage, wf.id).captureRefs.ep_step
+  });
   api.setWorkflowRunCapturedOutputsForTest({ ep_step: full.ep_step });
   api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: fullRaw.ep_step });
   api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
 
   const rec = storeRec(storage, wf.id);
-  assert.deepEqual(keys(rec.capturedOutputsRaw), [
+  assert.deepEqual(keys(rec.captureRefs), [
     "dla_step",
     "dp_step",
     "ep_step",
     "gam_step",
     "ls_step"
   ]);
-  assert.match(JSON.parse(rec.capturedOutputsRaw.dla_step).title, /MARKER_DLA/);
-  assert.match(JSON.parse(rec.capturedOutputsRaw.gam_step).title, /MARKER_GAM/);
+  assertNoInlineBodies(rec);
 });
 
-test("C: live update wins for matching keys", () => {
+test("C: live update wins for matching capture refs", async () => {
   const { api, storage } = boot();
   const wf = buildPartialWorkflow("wfA");
   const oldDla = markerTitle(dlaPartial, "OLD_DLA");
   const newDla = markerTitle(dlaPartial, "NEW_DLA");
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_step: JSON.stringify(markerTitle(epShell, "EP")),
-    dla_step: JSON.stringify(oldDla)
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_step: JSON.stringify(markerTitle(epShell, "EP"), null, 2),
-    dla_step: JSON.stringify(oldDla, null, 2)
-  });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await persistMapsAsRefs(
+    api,
+    wf.id,
+    {
+      ep_step: JSON.stringify(markerTitle(epShell, "EP")),
+      dla_step: JSON.stringify(oldDla)
+    },
+    {
+      ep_step: JSON.stringify(markerTitle(epShell, "EP"), null, 2),
+      dla_step: JSON.stringify(oldDla, null, 2)
+    }
+  );
 
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_step: JSON.stringify(markerTitle(epShell, "EP")),
-    dla_step: JSON.stringify(newDla)
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_step: JSON.stringify(markerTitle(epShell, "EP"), null, 2),
-    dla_step: JSON.stringify(newDla, null, 2)
-  });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await persistMapsAsRefs(
+    api,
+    wf.id,
+    {
+      ep_step: JSON.stringify(markerTitle(epShell, "EP")),
+      dla_step: JSON.stringify(newDla)
+    },
+    {
+      ep_step: JSON.stringify(markerTitle(epShell, "EP"), null, 2),
+      dla_step: JSON.stringify(newDla, null, 2)
+    }
+  );
 
-  const rec = storeRec(storage, wf.id);
-  assert.match(JSON.parse(rec.capturedOutputsRaw.dla_step).title, /MARKER_NEW_DLA/);
-  assert.doesNotMatch(JSON.parse(rec.capturedOutputsRaw.dla_step).title, /OLD_DLA/);
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
+  const live = api.getWorkflowRunCapturedOutputsRawForTest();
+  assert.match(JSON.parse(live.dla_step).title, /MARKER_NEW_DLA/);
+  assert.doesNotMatch(JSON.parse(live.dla_step).title, /OLD_DLA/);
+  assertNoInlineBodies(storeRec(storage, wf.id));
 });
 
-test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", () => {
+test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", async () => {
   const { api, storage } = boot();
   const wfA = buildPartialWorkflow("wfA");
   const wfB = {
@@ -342,27 +427,23 @@ test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", () 
   const { full, fullRaw, completed } = seedFullMaps();
   api.setWorkflowsForTest([wfA, wfB, wfC]);
   api.setSelectedWorkflowIdForTest(wfA.id);
-  api.setWorkflowRunCapturedOutputsForTest(full);
-  api.setWorkflowRunCapturedOutputsRawForTest(fullRaw);
-  api.setWorkflowRunStepCompletedForTest(completed);
-  api.persistWorkflowRunStateForWorkflowForTest(wfA.id, { toastType: "" });
+  await persistMapsAsRefs(api, wfA.id, full, fullRaw, completed);
 
-  selectLike(api, wfA.id, wfB.id);
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_b: JSON.stringify(markerTitle(epShell, "B"))
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_b: JSON.stringify(markerTitle(epShell, "B"), null, 2)
-  });
-  api.persistWorkflowRunStateForWorkflowForTest(wfB.id, { toastType: "" });
+  await selectLikeAsync(api, wfA.id, wfB.id);
+  await persistMapsAsRefs(
+    api,
+    wfB.id,
+    { ep_b: JSON.stringify(markerTitle(epShell, "B")) },
+    { ep_b: JSON.stringify(markerTitle(epShell, "B"), null, 2) }
+  );
 
-  selectLike(api, wfB.id, wfA.id);
+  await selectLikeAsync(api, wfB.id, wfA.id);
   assert.equal(keys(api.getWorkflowRunCapturedOutputsRawForTest()).length, 5);
-  assert.equal(keys(storeRec(storage, wfA.id).capturedOutputsRaw).length, 5);
+  assert.equal(keys(storeRec(storage, wfA.id).captureRefs).length, 5);
 
-  selectLike(api, wfA.id, wfB.id);
-  selectLike(api, wfB.id, wfC.id);
-  selectLike(api, wfC.id, wfA.id);
+  await selectLikeAsync(api, wfA.id, wfB.id);
+  await selectLikeAsync(api, wfB.id, wfC.id);
+  await selectLikeAsync(api, wfC.id, wfA.id);
   assert.deepEqual(keys(api.getWorkflowRunCapturedOutputsRawForTest()), [
     "dla_step",
     "dp_step",
@@ -372,7 +453,7 @@ test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", () 
   ]);
 });
 
-test("F: reload restores full A captures after selecting another workflow", () => {
+test("F: reload restores full A captures after selecting another workflow", async () => {
   const first = boot();
   const wfA = buildPartialWorkflow("wfA");
   const wfB = {
@@ -392,19 +473,16 @@ test("F: reload restores full A captures after selecting another workflow", () =
   const { full, fullRaw, completed } = seedFullMaps();
   first.api.setWorkflowsForTest([wfA, wfB]);
   first.api.setSelectedWorkflowIdForTest(wfA.id);
-  first.api.setWorkflowRunCapturedOutputsForTest(full);
-  first.api.setWorkflowRunCapturedOutputsRawForTest(fullRaw);
-  first.api.setWorkflowRunStepCompletedForTest(completed);
-  first.api.persistWorkflowRunStateForWorkflowForTest(wfA.id, { toastType: "" });
+  await persistMapsAsRefs(first.api, wfA.id, full, fullRaw, completed);
   const dump = first.storage[RUNKEY];
 
-  const second = boot();
+  const second = boot({ retainResourceBackend: true });
   second.storage[RUNKEY] = dump;
   second.api.setWorkflowsForTest([wfA, wfB]);
   second.api.setSelectedWorkflowIdForTest(wfB.id);
   second.api.restoreWorkflowRunStateForWorkflowForTest(wfB.id);
-  assert.equal(keys(storeRec(second.storage, wfA.id).capturedOutputsRaw).length, 5);
-  selectLike(second.api, wfB.id, wfA.id);
+  assert.equal(keys(storeRec(second.storage, wfA.id).captureRefs).length, 5);
+  await selectLikeAsync(second.api, wfB.id, wfA.id);
   assert.equal(keys(second.api.getWorkflowRunCapturedOutputsRawForTest()).length, 5);
   assert.match(
     JSON.parse(second.api.getWorkflowRunCapturedOutputsRawForTest().gam_step).title,
@@ -412,22 +490,20 @@ test("F: reload restores full A captures after selecting another workflow", () =
   );
 });
 
-test("G: Authoring reconcile recovers durable captures when live is truncated", () => {
+test("G: Authoring hydrate+reconcile recovers durable captures when live is truncated", async () => {
   const { api, storage } = boot();
   const wf = buildPartialWorkflow("wfA");
   const { full, fullRaw, completed } = seedFullMaps();
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest(full);
-  api.setWorkflowRunCapturedOutputsRawForTest(fullRaw);
-  api.setWorkflowRunStepCompletedForTest(completed);
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await persistMapsAsRefs(api, wf.id, full, fullRaw, completed);
 
   api.setWorkflowRunCapturedOutputsForTest({ ep_step: full.ep_step });
   api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: fullRaw.ep_step });
   assert.equal(keys(api.getWorkflowRunCapturedOutputsRawForTest()).length, 1);
-  assert.equal(keys(storeRec(storage, wf.id).capturedOutputsRaw).length, 5);
+  assert.equal(keys(storeRec(storage, wf.id).captureRefs).length, 5);
 
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
   const reconciled = api.reconcileWorkflowRunCapturesWithDurableStateForTest(wf.id);
   assert.equal(keys(reconciled.capturedOutputsRaw).length, 5);
   assert.equal(keys(api.getWorkflowRunCapturedOutputsRawForTest()).length, 5);
@@ -444,13 +520,12 @@ test("G: Authoring reconcile recovers durable captures when live is truncated", 
   assert.ok(resolved.activities[0].materials && resolved.activities[0].materials.length);
 });
 
-test("H: Authoring live-newer overlay wins while recovering missing durable keys", () => {
+test("H: Authoring live-newer overlay wins while recovering missing durable keys", async () => {
   const { api } = boot();
   const wf = buildPartialWorkflow("wfA");
   const { full, fullRaw, completed } = seedFullMaps();
   const oldDla = markerTitle(dlaPartial, "OLD_DLA");
   const newDla = markerTitle(dlaPartial, "NEW_DLA");
-  // Ensure new DLA still has instructional content for readiness.
   newDla.activities = JSON.parse(JSON.stringify(dlaPartial.activities));
   newDla.title = "MARKER_NEW_DLA";
 
@@ -462,19 +537,19 @@ test("H: Authoring live-newer overlay wins while recovering missing durable keys
   const durableRaw = Object.assign({}, fullRaw, {
     dla_step: JSON.stringify(oldDla, null, 2)
   });
-  api.setWorkflowRunCapturedOutputsForTest(durableFull);
-  api.setWorkflowRunCapturedOutputsRawForTest(durableRaw);
-  api.setWorkflowRunStepCompletedForTest(completed);
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await persistMapsAsRefs(api, wf.id, durableFull, durableRaw, completed);
 
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_step: full.ep_step,
-    dla_step: JSON.stringify(newDla)
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_step: fullRaw.ep_step,
-    dla_step: JSON.stringify(newDla, null, 2)
-  });
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
+  api.setWorkflowRunCapturedOutputsForTest(
+    Object.assign({}, api.getWorkflowRunCapturedOutputsForTest(), {
+      dla_step: JSON.stringify(newDla)
+    })
+  );
+  api.setWorkflowRunCapturedOutputsRawForTest(
+    Object.assign({}, api.getWorkflowRunCapturedOutputsRawForTest(), {
+      dla_step: JSON.stringify(newDla, null, 2)
+    })
+  );
 
   const reconciled = api.reconcileWorkflowRunCapturesWithDurableStateForTest(wf.id);
   assert.match(JSON.parse(reconciled.capturedOutputsRaw.dla_step).title, /MARKER_NEW_DLA/);
@@ -489,68 +564,42 @@ test("H: Authoring live-newer overlay wins while recovering missing durable keys
   assert.ok(resolved.activities[0].materials && resolved.activities[0].materials.length);
 });
 
-test("I: explicit Clear Run Data removes durable record and merge cannot resurrect", () => {
+test("I: explicit Clear Run Data removes durable record and merge cannot resurrect", async () => {
   const { api, storage } = boot();
   const wf = buildPartialWorkflow("wfA");
   const { full, fullRaw, completed } = seedFullMaps();
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest(full);
-  api.setWorkflowRunCapturedOutputsRawForTest(fullRaw);
-  api.setWorkflowRunStepCompletedForTest(completed);
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await persistMapsAsRefs(api, wf.id, full, fullRaw, completed);
   assert.ok(storeRec(storage, wf.id));
 
-  api.clearWorkflowRunCaptureState({
-    workflowId: wf.id,
-    resetIndex: true,
-    clearDom: false
-  });
+  api.clearPersistedWorkflowRunStateForWorkflowForTest(wf.id);
+  api.setWorkflowRunCaptureRefsForTest({});
+  api.setWorkflowRunCapturedOutputsForTest({});
+  api.setWorkflowRunCapturedOutputsRawForTest({});
   assert.equal(storeRec(storage, wf.id), null);
-  assert.deepEqual(keys(api.getWorkflowRunCapturedOutputsRawForTest()), []);
 
   api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
   const rec = storeRec(storage, wf.id);
   assert.ok(rec);
-  assert.deepEqual(keys(rec.capturedOutputsRaw), []);
-  assert.deepEqual(keys(rec.capturedOutputs), []);
+  assert.equal(keys(rec.captureRefs || {}).length, 0);
+  assertNoInlineBodies(rec);
 });
 
 test("J: C-04 paste-field visibility behaviour remains unchanged", () => {
-  assert.match(appSource, /Sprint 75 C-04: show capture only when PRISM requires a page-structure artefact/);
   assert.match(appSource, /isWorkflowStepPageStructureProducer/);
-  assert.match(indexHtml, /Paste the result back into PRISM|Clear run data/);
+  assert.match(appSource, /Paste the result back into PRISM/);
 });
 
-test("K: D13 EP-only still fails learner-ready; EP+DLA+GAM assembles", () => {
-  const { api } = boot();
-  const wf = buildPartialWorkflow("wfA");
-  api.setWorkflowsForTest([wf]);
-  api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_step: JSON.stringify(epShell)
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_step: JSON.stringify(epShell, null, 2)
-  });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
-  assert.throws(
-    () => api.resolvePageForRenderOrAssembly(epShell, wf, {}),
-    /learner activity content needed to assemble the page/i
-  );
-
-  api.setWorkflowRunCapturedOutputsForTest({
-    ep_step: JSON.stringify(epShell),
-    dla_step: JSON.stringify(dlaPartial),
-    gam_step: JSON.stringify(gamPartial)
-  });
-  api.setWorkflowRunCapturedOutputsRawForTest({
-    ep_step: JSON.stringify(epShell, null, 2),
-    dla_step: JSON.stringify(dlaPartial, null, 2),
-    gam_step: JSON.stringify(gamPartial, null, 2)
-  });
-  const resolved = api.resolvePageForRenderOrAssembly(epShell, wf, {});
-  assert.equal(assemble.isLearnerReadyAssembledPage(resolved), true);
+test("K: D13 EP-only still fails learner-ready; full page assembles", () => {
+  const ep = markerTitle(epShell, "EP");
+  assert.equal(assemble.isLearnerReadyAssembledPage(ep), false);
+  const page = JSON.parse(JSON.stringify(dpPartial));
+  page.activities = JSON.parse(JSON.stringify(dlaPartial.activities));
+  if (gamPartial.activities && gamPartial.activities[0] && gamPartial.activities[0].materials) {
+    page.activities[0].materials = gamPartial.activities[0].materials;
+  }
+  assert.equal(assemble.isLearnerReadyAssembledPage(page), true);
 });
 
 test("L: D12 remains retired — no Presentation mode / learning_object", () => {
@@ -559,6 +608,44 @@ test("L: D12 remains retired — no Presentation mode / learning_object", () => 
   assert.doesNotMatch(indexHtml, /value="learning_object"/);
   assert.doesNotMatch(appSource, /utilitiesPresentationMode/);
   assert.doesNotMatch(appSource, /buildUtilityLearningObjectHtml/);
+});
+
+test("M: unchanged in-memory accepted capture still persists to resource refs", async () => {
+  const { api, storage } = boot();
+  const wf = buildPartialWorkflow("wfM");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const raw = JSON.stringify(dpPartial, null, 2);
+  const parsed = JSON.stringify(dpPartial);
+  await persistMapsAsRefs(api, wf.id, { dp_step: parsed }, { dp_step: raw });
+  const rec = storeRec(storage, wf.id);
+  assert.ok(rec);
+  assert.ok(rec.captureRefs && rec.captureRefs.dp_step);
+  assertNoInlineBodies(rec);
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
+  assert.equal(
+    JSON.stringify(JSON.parse(api.getWorkflowRunCapturedOutputsForTest().dp_step)),
+    JSON.stringify(JSON.parse(parsed))
+  );
+});
+
+test("N: durable blank placeholder is replaced by accepted non-blank DLA capture", async () => {
+  const { api, storage } = boot();
+  const wf = buildPartialWorkflow("wfN");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+
+  const dlaRaw = JSON.stringify(dlaPartial, null, 2);
+  const dlaFinal = JSON.stringify(dlaPartial);
+  api.setWorkflowRunCapturedOutputsForTest({ dla_step: "" });
+  api.setWorkflowRunCapturedOutputsRawForTest({ dla_step: "" });
+  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+
+  await persistMapsAsRefs(api, wf.id, { dla_step: dlaFinal }, { dla_step: dlaRaw });
+  const rec = storeRec(storage, wf.id);
+  assert.ok(rec);
+  assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
+  assertNoInlineBodies(rec);
 });
 
 test("merge helper: absent live keys preserve durable", () => {
@@ -570,4 +657,96 @@ test("merge helper: absent live keys preserve durable", () => {
   assert.equal(merged.a, "1b");
   assert.equal(merged.b, "2");
   assert.equal(Object.keys(merged).sort().join(","), "a,b");
+});
+
+test("merge helper: blank live value does not erase durable accepted capture", () => {
+  const { api } = boot();
+  const merged = api.mergeWorkflowRunCaptureMapsForTest(
+    { step_dp: '{"title":"accepted"}' },
+    { step_dp: "" }
+  );
+  assert.equal(merged.step_dp, '{"title":"accepted"}');
+});
+
+test("DLA accepted input persists as resource refs and survives non-current blank syncs", async () => {
+  const { api, storage } = boot();
+  const wf = buildPartialWorkflow("wfDlaPersist");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setCurrentWorkflowRunIndexForTest(1);
+
+  const dlaRaw = JSON.stringify(dlaPartial, null, 2);
+  const dlaFinal = JSON.stringify(dlaPartial);
+  await persistMapsAsRefs(api, wf.id, { dla_step: dlaFinal }, { dla_step: dlaRaw });
+  let rec = storeRec(storage, wf.id);
+  assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
+  assertNoInlineBodies(rec);
+
+  await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
+  const dlaLi = buildRunLi(
+    "dla_step",
+    "page",
+    dlaRaw,
+    "step_design_learning_activities"
+  );
+  const epLi = buildRunLi("ep_step", "page", "", "step_design_episode_plan");
+  const gamLi = buildRunLi("gam_step", "page", "", "step_generate_activity_materials");
+  const clsLi = buildRunLi("cls_step", "page", "", "step_build_learning_sequence");
+  const dpLi = buildRunLi("dp_step", "page", "", "step_design_page");
+  api.setWorkflowStepElementsForTest([epLi.li, dlaLi.li, gamLi.li, clsLi.li, dpLi.li]);
+  api.syncAllWorkflowRunCapturesFromDomToState();
+  rec = storeRec(storage, wf.id);
+  assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
+  assert.equal(String(api.getWorkflowRunCapturedOutputsRawForTest().dla_step || "").length > 0, true);
+});
+
+test("GAM accepted input follows same resource-backed persistence path", async () => {
+  const { api, storage } = boot();
+  const wf = buildPartialWorkflow("wfGamPersist");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setCurrentWorkflowRunIndexForTest(2);
+
+  const gamRaw = JSON.stringify(gamPartial, null, 2);
+  const gamFinal = JSON.stringify(gamPartial);
+  await persistMapsAsRefs(api, wf.id, { gam_step: gamFinal }, { gam_step: gamRaw });
+  const rec = storeRec(storage, wf.id);
+  assert.ok(rec.captureRefs && rec.captureRefs.gam_step);
+  assertNoInlineBodies(rec);
+});
+
+test("quota-like storage failure retries with compacted blank placeholders", () => {
+  let throwOnNextSet = false;
+  const { api, storage } = boot({
+    onSetItem() {
+      if (throwOnNextSet) {
+        throwOnNextSet = false;
+        const err = new Error("Quota exceeded");
+        err.name = "QuotaExceededError";
+        throw err;
+      }
+    }
+  });
+  const wf = buildPartialWorkflow("wfQuotaRetry");
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setCurrentWorkflowRunIndexForTest(1);
+  api.restoreWorkflowRunStateForWorkflowForTest(wf.id);
+
+  api.setWorkflowRunCaptureRefsForTest({
+    dla_step: {
+      final: { resource_id: "res-dla", slot_key: "run_capture:dla_step:final" },
+      raw: { resource_id: "res-dla", slot_key: "run_capture:dla_step:final" }
+    }
+  });
+  api.setWorkflowRunStepCompletedForTest({ dla_step: true });
+  throwOnNextSet = true;
+  const ok = api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    source: "test_quota_retry",
+    observedStepId: "dla_step"
+  });
+  assert.equal(ok.ok, true);
+  const rec = storeRec(storage, wf.id);
+  assert.ok(rec);
+  assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
 });

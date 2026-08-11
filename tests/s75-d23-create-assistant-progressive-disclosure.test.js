@@ -67,13 +67,19 @@ function createElementStub(tagName = "div") {
       return Object.prototype.hasOwnProperty.call(attrs, String(name));
     },
     focus() {},
-    click() {},
+    click() {
+      this.__clicked = true;
+    },
     scrollIntoView() {},
     closest() {
       return null;
     },
     addEventListener() {},
     removeEventListener() {},
+    insertBefore(newNode) {
+      children.push(newNode);
+      return newNode;
+    },
     querySelector() {
       return createElementStub("div");
     },
@@ -104,7 +110,17 @@ function loadPrism() {
     "apiKeyStatus",
     "apiKeyControls",
     "apiKeyHelperText",
-    "apiSettings"
+    "apiSettings",
+    "prismStatusDetails",
+    "prismStatusToggle",
+    "prismStatusPanel",
+    "prismStatusKeyChip",
+    "prismStatusKeyText",
+    "prismStatusCostChip",
+    "prismStatusCostText",
+    "prismStatusStorageChip",
+    "prismStatusStorageText",
+    "prismStatusStorageDetail"
   ].forEach((id) => ensure(id));
 
   // Initial resting markup semantics.
@@ -115,13 +131,23 @@ function loadPrism() {
   ensure("wfDesignLog").classList.add("hidden");
   ensure("wfDesignAnswerGroup").setAttribute("hidden", "hidden");
   ensure("wfDesignAnswerGroup").classList.add("hidden");
+  ensure("prismStatusDetails").open = false;
+  ensure("prismStatusPanel").hidden = true;
+  ensure("prismStatusToggle").setAttribute("aria-expanded", "false");
+  ensure("prismStatusKeyText").textContent = "Not loaded";
+  ensure("prismStatusCostText").textContent = "$0.00";
+  ensure("prismStatusStorageText").textContent = "Storage health: estimate unavailable";
 
   const documentStub = {
     readyState: "loading",
     addEventListener() {},
     createElement: (tag) => createElementStub(tag),
     getElementById: (id) => ensure(id),
-    querySelector: (sel) => (sel === ".api-key-loader" ? ensure("apiKeyControls") : null),
+    querySelector: (sel) => {
+      if (sel === ".api-key-loader") return ensure("prismStatusDetails");
+      if (sel === ".api-key-controls") return ensure("apiKeyControls");
+      return null;
+    },
     querySelectorAll: () => []
   };
   const windowStub = { document: documentStub };
@@ -190,12 +216,18 @@ test("C: Resting assistant hides Idle, answer UI, and empty log", () => {
   assert.match(indexHtml, /id="wfDesignAnswerGroup"[^>]*\bhidden\b/);
 });
 
-test("D: API key required invokes existing revealOpenAiApiKeyEntry path", () => {
-  const { api, source } = loadPrism();
+test("D: API key required invokes revealOpenAiApiKeyEntry with direct file picker", () => {
+  const { api, source, ensure } = loadPrism();
   api.setOpenAiApiKeyForTest(null);
   assert.match(source, /handleWorkflowDesignApiKeyRequiredClick[\s\S]{0,220}revealOpenAiApiKeyEntry\(\{\s*silent:\s*true/);
+  assert.equal(ensure("prismStatusDetails").open, false);
+  ensure("apiKeyFile").__clicked = false;
   assert.equal(api.handleWorkflowDesignApiKeyRequiredClickForTest(), false);
+  assert.equal(ensure("apiKeyFile").__clicked, true);
+  assert.equal(ensure("prismStatusDetails").open, false);
+  assert.match(source, /triggerOpenAiApiKeyFilePicker/);
   assert.match(source, /els\.apiKeyFile\.focus/);
+  assert.match(source, /openPrismStatusDisclosure/);
 });
 
 test("E: Assistant asking a question reveals answer controls", () => {
@@ -240,5 +272,5 @@ test("H: Neighbouring Create contracts remain intact in markup/source", () => {
   assert.match(source, /ensureCreateWorkflowApiKeyPrerequisite/);
   assert.match(source, /S75-D22|ONE WORKFLOW → ONE PRODUCT/);
   assert.match(indexHtml, /id="wfLdCreateOutputType"/);
-  assert.match(indexHtml, /app\.js\?v=20260811-s75-d25b/);
+  assert.match(indexHtml, /app\.js\?v=20260811-s75-d26d/);
 });

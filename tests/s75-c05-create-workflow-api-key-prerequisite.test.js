@@ -132,6 +132,7 @@ test("H: Missing-key guidance uses existing API controls; Create progressive dis
   api.setOpenAiApiKeyForTest(null);
   assert.equal(typeof api.revealOpenAiApiKeyEntryForTest, "function");
   assert.match(source, /function revealOpenAiApiKeyEntry\s*\(/);
+  assert.match(source, /triggerOpenAiApiKeyFilePicker/);
   assert.match(source, /els\.apiKeyFile\.focus/);
   assert.match(source, /apiKeyControls\.classList\.remove\("hidden"\)/);
   assert.match(source, /Load your OpenAI API key to continue/);

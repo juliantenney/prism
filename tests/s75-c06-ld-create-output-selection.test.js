@@ -297,5 +297,5 @@ test("N: Supporting fields, legacy briefs, and topology helpers remain intact", 
   assert.match(source, /out = applyLdCreateOutputTypePrimaryFactors\(out, b\)/);
   assert.doesNotMatch(source, /supportedOutputs|outputKinds|ldOutputTypeEnum/);
   assert.match(indexHtml, /wf-layout-spacer/);
-  assert.match(indexHtml, /app\.js\?v=20260811-s75-d25b/);
+  assert.match(indexHtml, /app\.js\?v=20260811-s75-d26d/);
 });

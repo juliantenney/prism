@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260811-s75-d25b" />
+  <link rel="stylesheet" href="style.css?v=20260811-s75-d26e" />
 </head>
 <body>
       <div class="app-shell">
@@ -20,38 +20,96 @@
           <p class="subtitle">Programmable Reasoning<br>Intelligent System Mapping</p>
         </div>
       </div>
-      <div class="api-key-loader">
-        <h2 class="sr-only">OpenAI API</h2>
-        <label for="apiKeyFile" class="label">OpenAI API</label>
-        <div class="api-key-controls">
-          <input type="file" id="apiKeyFile" accept=".txt" />
-          <span id="apiKeyStatus" class="badge badge-danger">Not loaded</span>
+      <div class="api-key-loader prism-status" id="prismStatusDetails">
+        <input type="file" id="apiKeyFile" class="prism-api-key-file" accept=".txt" />
+        <div class="prism-status-bar" id="prismStatusBar">
+          <span
+            class="prism-status-chip prism-status-key"
+            id="prismStatusKeyChip"
+            title="OpenAI API key status"
+          >
+            <span class="prism-status-label">API key:</span>
+            <button
+              type="button"
+              class="prism-status-key-action"
+              id="prismStatusKeyLoadBtn"
+              aria-label="Load API key"
+            >
+              Not loaded
+            </button>
+            <span class="prism-status-value" id="prismStatusKeyText" hidden>Loaded</span>
+          </span>
+          <span
+            class="prism-status-chip prism-status-cost"
+            id="prismStatusCostChip"
+            title="Approximate PRISM API session cost for this page load. Does not include external Copilot, ChatGPT, or other bring-your-own LLM use. Not persisted."
+          >
+            <span class="prism-status-label">Session cost:</span>
+            <span class="prism-status-value" id="prismStatusCostText">$0.00</span>
+          </span>
+          <span
+            class="prism-status-chip prism-status-storage"
+            id="prismStatusStorageChip"
+            role="img"
+            aria-label="Storage health: estimate unavailable"
+            title="Browser storage health for this site"
+          >
+            <span class="prism-status-label">Storage health:</span>
+            <span class="prism-status-storage-blocks" aria-hidden="true">
+              <span class="prism-status-storage-block" data-storage-block="1"></span>
+              <span class="prism-status-storage-block" data-storage-block="2"></span>
+              <span class="prism-status-storage-block" data-storage-block="3"></span>
+              <span class="prism-status-storage-block" data-storage-block="4"></span>
+            </span>
+            <span class="sr-only" id="prismStatusStorageText">Storage health: estimate unavailable</span>
+          </span>
+          <button
+            type="button"
+            class="prism-status-toggle"
+            id="prismStatusToggle"
+            aria-expanded="false"
+            aria-controls="prismStatusPanel"
+            aria-label="Show API and storage details"
+          >
+            <span aria-hidden="true">▾</span>
+          </button>
         </div>
-        <p id="apiKeyHelperText" class="helper-text">
-          The file must contain <strong>only</strong> your API key. It is kept in memory only and never stored.
-        </p>
-        <div id="apiSettings" class="api-settings hidden">
-          <div class="form-row compact">
-            <div class="form-group small">
-              <label for="creativitySelect">Creativity</label>
-              <select id="creativitySelect" autocomplete="off">
-                <option value="focused">Focused</option>
-                <option value="balanced" selected>Balanced</option>
-                <option value="exploratory">Exploratory</option>
-              </select>
-            </div>
-            <div class="form-group small">
-              <label for="responseDetailSelect">Response detail</label>
-              <select id="responseDetailSelect" autocomplete="off">
-                <option value="short">Short</option>
-                <option value="standard" selected>Standard</option>
-                <option value="detailed">Detailed</option>
-              </select>
-            </div>
+        <div class="prism-status-panel" id="prismStatusPanel" hidden>
+          <h2 class="sr-only">OpenAI API and storage</h2>
+          <div class="api-key-controls">
+            <label for="apiKeyFile" class="label">OpenAI API key</label>
+            <span id="apiKeyStatus" class="badge badge-danger">Not loaded</span>
           </div>
-          <p id="tokenUsage" class="helper-text">
-            Input: 0; Output: 0; Total: 0; Approx cost: $0.0000
+          <p id="apiKeyHelperText" class="helper-text">
+            The file must contain <strong>only</strong> your API key. It is kept in memory only and never stored.
           </p>
+          <div id="apiSettings" class="api-settings hidden">
+            <p id="prismStatusApiScopeHelper" class="helper-text">
+              Creativity and Response Detail apply to PRISM API calls (Create, Prompt Studio). They do not control My Workflows Run.
+            </p>
+            <div class="form-row compact">
+              <div class="form-group small">
+                <label for="creativitySelect">Creativity</label>
+                <select id="creativitySelect" autocomplete="off">
+                  <option value="focused">Focused</option>
+                  <option value="balanced" selected>Balanced</option>
+                  <option value="exploratory">Exploratory</option>
+                </select>
+              </div>
+              <div class="form-group small">
+                <label for="responseDetailSelect">Response detail</label>
+                <select id="responseDetailSelect" autocomplete="off">
+                  <option value="short">Short</option>
+                  <option value="standard" selected>Standard</option>
+                  <option value="detailed">Detailed</option>
+                </select>
+              </div>
+            </div>
+            <p id="tokenUsage" class="helper-text">
+              Input: 0; Output: 0; Total: 0; Approx cost: $0.0000
+            </p>
+          </div>
+          <p id="prismStatusStorageDetail" class="helper-text" hidden></p>
         </div>
       </div>
     </header>
@@ -1183,6 +1241,6 @@
   <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
-  <script src="app.js?v=20260811-s75-d25b"></script>
+  <script src="app.js?v=20260811-s75-d26d"></script>
 </body>
 </html>

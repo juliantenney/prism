@@ -250,6 +250,18 @@
     els.apiKeyHelperText = document.getElementById("apiKeyHelperText");
     els.apiSettings = document.getElementById("apiSettings");
     els.apiKeyControls = document.querySelector(".api-key-controls");
+    els.prismStatusDetails = document.getElementById("prismStatusDetails");
+    els.prismStatusBar = document.getElementById("prismStatusBar");
+    els.prismStatusToggle = document.getElementById("prismStatusToggle");
+    els.prismStatusPanel = document.getElementById("prismStatusPanel");
+    els.prismStatusKeyChip = document.getElementById("prismStatusKeyChip");
+    els.prismStatusKeyLoadBtn = document.getElementById("prismStatusKeyLoadBtn");
+    els.prismStatusKeyText = document.getElementById("prismStatusKeyText");
+    els.prismStatusCostChip = document.getElementById("prismStatusCostChip");
+    els.prismStatusCostText = document.getElementById("prismStatusCostText");
+    els.prismStatusStorageChip = document.getElementById("prismStatusStorageChip");
+    els.prismStatusStorageText = document.getElementById("prismStatusStorageText");
+    els.prismStatusStorageDetail = document.getElementById("prismStatusStorageDetail");
 
     els.outputType = document.getElementById("outputType");
     els.outputTypeGroup = document.getElementById("outputTypeGroup");
@@ -641,6 +653,332 @@
         u.sessionTotal +
         "; Approx cost: " +
         sessionCostStr;
+    }
+    renderPrismStatusCostChip();
+  }
+
+  /** S75-D26: compact header cost from in-memory page-load totals only. */
+  function renderPrismStatusCostChip() {
+    var u = state.tokenUsage || {};
+    var cost = Number(u.sessionCost || 0);
+    if (!isFinite(cost) || cost < 0) cost = 0;
+    var label = cost === 0 ? "$0.00" : "$" + cost.toFixed(3);
+    if (els.prismStatusCostText) {
+      els.prismStatusCostText.textContent = label;
+    }
+    if (els.prismStatusCostChip) {
+      els.prismStatusCostChip.setAttribute(
+        "title",
+        "Approximate PRISM API session cost for this page load (" +
+          label +
+          "). Does not include external Copilot, ChatGPT, or other bring-your-own LLM use. Not persisted."
+      );
+    }
+  }
+
+  /**
+   * S75-D26 presentation-only storage health for the collapsed block indicator.
+   * Thresholds: lit 1 if usageRatio < 0.75; lit 2 if 0.75–0.95 inclusive; lit 3 if > 0.95.
+   * Never lights 4 blocks. Does not change maybeWarnStoragePressure write-protection logic.
+   */
+  function classifyBrowserStorageHealth(estimate) {
+    if (!estimate || typeof estimate !== "object") {
+      return {
+        level: "unknown",
+        litBlocks: 0,
+        label: "Storage health: estimate unavailable",
+        title: "Browser storage estimate unavailable for this site"
+      };
+    }
+    var usageRatio = Number(estimate.usageRatio || 0);
+    if (!isFinite(usageRatio) || usageRatio < 0) usageRatio = 0;
+    if (usageRatio > 0.95) {
+      return {
+        level: "critical",
+        litBlocks: 3,
+        label: "Storage health: critically constrained",
+        title:
+          "Site storage is critically constrained (over 95% of the browser estimate used). This is site storage, not PRISM-workflow-only."
+      };
+    }
+    if (usageRatio >= 0.75) {
+      return {
+        level: "warning",
+        litBlocks: 2,
+        label: "Storage health: getting full",
+        title:
+          "Site storage is getting full (about 75% to 95% of the browser estimate used). This is site storage, not PRISM-workflow-only."
+      };
+    }
+    return {
+      level: "ok",
+      litBlocks: 1,
+      label: "Storage health: healthy",
+      title: "Site storage looks healthy (under 75% of the browser estimate used)"
+    };
+  }
+
+  function renderPrismStatusStorageChip(estimate) {
+    var health = classifyBrowserStorageHealth(
+      estimate || state.lastStoragePressureEstimate || null
+    );
+    var lit = Math.max(0, Math.min(3, Number(health.litBlocks) || 0));
+    if (els.prismStatusStorageText) {
+      els.prismStatusStorageText.textContent = health.label;
+    }
+    if (els.prismStatusStorageChip) {
+      els.prismStatusStorageChip.classList.remove(
+        "is-ok",
+        "is-warning",
+        "is-critical",
+        "is-unknown"
+      );
+      if (health.level === "critical") {
+        els.prismStatusStorageChip.classList.add("is-critical");
+      } else if (health.level === "warning") {
+        els.prismStatusStorageChip.classList.add("is-warning");
+      } else if (health.level === "ok") {
+        els.prismStatusStorageChip.classList.add("is-ok");
+      } else {
+        els.prismStatusStorageChip.classList.add("is-unknown");
+      }
+      els.prismStatusStorageChip.setAttribute("title", health.title);
+      els.prismStatusStorageChip.setAttribute("aria-label", health.label);
+      var blocks = els.prismStatusStorageChip.querySelectorAll
+        ? els.prismStatusStorageChip.querySelectorAll("[data-storage-block]")
+        : [];
+      for (var i = 0; i < blocks.length; i++) {
+        var shouldLit = i < lit;
+        blocks[i].classList.toggle("is-lit", shouldLit);
+      }
+    }
+    if (els.prismStatusStorageDetail) {
+      if (estimate && typeof estimate === "object" && Number(estimate.quota) > 0) {
+        var usedMb = Number(estimate.usage || 0) / (1024 * 1024);
+        var quotaMb = Number(estimate.quota || 0) / (1024 * 1024);
+        els.prismStatusStorageDetail.hidden = false;
+        els.prismStatusStorageDetail.removeAttribute("hidden");
+        els.prismStatusStorageDetail.textContent =
+          "Site storage (browser estimate): about " +
+          usedMb.toFixed(1) +
+          " MB used of " +
+          quotaMb.toFixed(0) +
+          " MB. Not PRISM-workflow-only.";
+      } else {
+        els.prismStatusStorageDetail.textContent = "";
+        els.prismStatusStorageDetail.hidden = true;
+        els.prismStatusStorageDetail.setAttribute("hidden", "hidden");
+      }
+    }
+  }
+
+  function refreshPrismStatusStorageChip() {
+    return estimateBrowserStoragePressure().then(function (estimate) {
+      renderPrismStatusStorageChip(estimate);
+      return estimate;
+    });
+  }
+
+  function isPrismStatusExpanded() {
+    if (els.prismStatusToggle) {
+      return els.prismStatusToggle.getAttribute("aria-expanded") === "true";
+    }
+    if (els.prismStatusDetails) {
+      return !!els.prismStatusDetails.open || els.prismStatusDetails.classList.contains("is-open");
+    }
+    return false;
+  }
+
+  function setPrismStatusExpanded(open) {
+    var expanded = !!open;
+    var root =
+      els.prismStatusDetails ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("prismStatusDetails")
+        : null);
+    var panel =
+      els.prismStatusPanel ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("prismStatusPanel")
+        : null);
+    var toggle =
+      els.prismStatusToggle ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("prismStatusToggle")
+        : null);
+    if (root) {
+      els.prismStatusDetails = root;
+      root.classList.toggle("is-open", expanded);
+      try {
+        root.open = expanded;
+      } catch (_eOpenProp) {}
+      if (expanded) root.setAttribute("data-open", "true");
+      else root.removeAttribute("data-open");
+    }
+    if (panel) {
+      els.prismStatusPanel = panel;
+      if (expanded) {
+        panel.removeAttribute("hidden");
+        panel.hidden = false;
+      } else {
+        panel.setAttribute("hidden", "hidden");
+        panel.hidden = true;
+      }
+    }
+    if (toggle) {
+      els.prismStatusToggle = toggle;
+      toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      toggle.setAttribute(
+        "aria-label",
+        expanded ? "Hide API and storage details" : "Show API and storage details"
+      );
+      var glyph = toggle.querySelector ? toggle.querySelector("[aria-hidden='true']") : null;
+      if (glyph) glyph.textContent = expanded ? "▴" : "▾";
+      else if (!toggle.querySelector) toggle.textContent = expanded ? "▴" : "▾";
+    }
+    placeApiKeyFileForDisclosure(expanded);
+    if (expanded) {
+      refreshPrismStatusStorageChip();
+    }
+  }
+
+  function togglePrismStatusDisclosure() {
+    setPrismStatusExpanded(!isPrismStatusExpanded());
+  }
+
+  function openPrismStatusDisclosure() {
+    setPrismStatusExpanded(true);
+  }
+
+  function bindPrismStatusDisclosureControl() {
+    if (!els.prismStatusToggle || els.prismStatusToggle.__prismStatusClickBound) return;
+    els.prismStatusToggle.__prismStatusClickBound = true;
+    els.prismStatusToggle.addEventListener("click", function (evt) {
+      if (evt && typeof evt.preventDefault === "function") evt.preventDefault();
+      togglePrismStatusDisclosure();
+    });
+  }
+
+  function bindPrismStatusKeyLoadControl() {
+    if (!els.prismStatusKeyLoadBtn || els.prismStatusKeyLoadBtn.__prismKeyLoadBound) return;
+    els.prismStatusKeyLoadBtn.__prismKeyLoadBound = true;
+    els.prismStatusKeyLoadBtn.addEventListener("click", function (evt) {
+      if (evt && typeof evt.preventDefault === "function") evt.preventDefault();
+      if (evt && typeof evt.stopPropagation === "function") evt.stopPropagation();
+      if (hasConfiguredOpenAiApiKey()) return;
+      triggerOpenAiApiKeyFilePicker({ expandOnFailure: false });
+    });
+  }
+
+  /**
+   * Open the existing #apiKeyFile chooser from a user gesture.
+   * Does not expand the status disclosure by default.
+   * Returns true when click() was invoked on the file input.
+   */
+  function triggerOpenAiApiKeyFilePicker(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var input =
+      els.apiKeyFile ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("apiKeyFile")
+        : null);
+    if (!input) return false;
+    els.apiKeyFile = input;
+    if (els.apiKeyControls) {
+      els.apiKeyControls.classList.remove("hidden");
+    }
+    if (els.apiKeyHelperText) {
+      els.apiKeyHelperText.classList.remove("hidden");
+    }
+    if (typeof input.click === "function") {
+      try {
+        input.click();
+        return true;
+      } catch (_eClick) {}
+    }
+    if (opts.expandOnFailure) {
+      openPrismStatusDisclosure();
+      placeApiKeyFileForDisclosure(true);
+      if (typeof input.focus === "function") {
+        try {
+          input.focus();
+        } catch (_eFocus) {}
+      }
+    }
+    return false;
+  }
+
+  /** Keep #apiKeyFile outside display:none when collapsed; show it in the panel when open. */
+  function placeApiKeyFileForDisclosure(expanded) {
+    var input =
+      els.apiKeyFile ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("apiKeyFile")
+        : null);
+    if (!input) return;
+    els.apiKeyFile = input;
+    var controls =
+      els.apiKeyControls ||
+      (typeof document !== "undefined" && document.querySelector
+        ? document.querySelector(".api-key-controls")
+        : null);
+    var root =
+      els.prismStatusDetails ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("prismStatusDetails")
+        : null);
+    var bar =
+      els.prismStatusBar ||
+      (typeof document !== "undefined" && document.getElementById
+        ? document.getElementById("prismStatusBar")
+        : null);
+    if (expanded && controls && typeof controls.insertBefore === "function") {
+      input.classList.add("is-in-panel");
+      var statusEl = els.apiKeyStatus || document.getElementById("apiKeyStatus");
+      if (statusEl && statusEl.parentNode === controls) {
+        controls.insertBefore(input, statusEl);
+      } else {
+        controls.appendChild(input);
+      }
+      return;
+    }
+    input.classList.remove("is-in-panel");
+    if (root && bar && typeof root.insertBefore === "function") {
+      root.insertBefore(input, bar);
+    }
+  }
+
+  function renderPrismStatusKeyChip(loaded) {
+    var isLoaded = !!loaded;
+    if (els.prismStatusKeyLoadBtn) {
+      if (isLoaded) {
+        els.prismStatusKeyLoadBtn.setAttribute("hidden", "hidden");
+        els.prismStatusKeyLoadBtn.setAttribute("aria-hidden", "true");
+        els.prismStatusKeyLoadBtn.hidden = true;
+        els.prismStatusKeyLoadBtn.tabIndex = -1;
+      } else {
+        els.prismStatusKeyLoadBtn.removeAttribute("hidden");
+        els.prismStatusKeyLoadBtn.setAttribute("aria-hidden", "false");
+        els.prismStatusKeyLoadBtn.hidden = false;
+        els.prismStatusKeyLoadBtn.removeAttribute("tabindex");
+        els.prismStatusKeyLoadBtn.textContent = "Not loaded";
+        els.prismStatusKeyLoadBtn.setAttribute("aria-label", "Load API key");
+      }
+    }
+    if (els.prismStatusKeyText) {
+      if (isLoaded) {
+        els.prismStatusKeyText.removeAttribute("hidden");
+        els.prismStatusKeyText.hidden = false;
+        els.prismStatusKeyText.textContent = "Loaded";
+      } else {
+        els.prismStatusKeyText.setAttribute("hidden", "hidden");
+        els.prismStatusKeyText.hidden = true;
+        els.prismStatusKeyText.textContent = "Loaded";
+      }
+    }
+    if (els.prismStatusKeyChip) {
+      els.prismStatusKeyChip.classList.toggle("is-loaded", isLoaded);
+      els.prismStatusKeyChip.classList.toggle("is-missing", !isLoaded);
     }
   }
 
@@ -23140,6 +23478,8 @@
     if (els.apiKeyHelperText) {
       els.apiKeyHelperText.classList.toggle("hidden", loaded);
     }
+    renderPrismStatusKeyChip(loaded);
+    renderPrismStatusCostChip();
     syncStartRefinementButtonState();
     // S75-D23: Design workflow is disabled until a usable key exists; the
     // actionable "API key required" control reveals the existing header loader.
@@ -23153,37 +23493,42 @@
   }
 
   /**
-   * Reveal the existing header API-key file picker (no new UI).
-   * Used when an API-dependent Create Workflow action is attempted without a key.
+   * Offer an immediate route to load an OpenAI API key (Create prerequisite path).
+   * Prefers triggering #apiKeyFile.click() from the user gesture without expanding
+   * the status disclosure. Falls back to expand + focus if click is unavailable.
    */
   function revealOpenAiApiKeyEntry(options) {
     var opts = options && typeof options === "object" ? options : {};
     updateApiKeyStatus(hasConfiguredOpenAiApiKey());
     if (hasConfiguredOpenAiApiKey()) return true;
-    if (els.apiKeyControls) {
-      els.apiKeyControls.classList.remove("hidden");
-    }
-    if (els.apiKeyHelperText) {
-      els.apiKeyHelperText.classList.remove("hidden");
-    }
-    var loader =
-      (els.apiKeyFile && els.apiKeyFile.closest && els.apiKeyFile.closest(".api-key-loader")) ||
-      (typeof document !== "undefined" && document.querySelector
-        ? document.querySelector(".api-key-loader")
-        : null);
-    if (loader && typeof loader.scrollIntoView === "function") {
-      try {
-        loader.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      } catch (_eScroll) {
-        try {
-          loader.scrollIntoView(true);
-        } catch (_eScroll2) {}
+    var openedPicker = triggerOpenAiApiKeyFilePicker({ expandOnFailure: false });
+    if (!openedPicker) {
+      openPrismStatusDisclosure();
+      if (els.apiKeyControls) {
+        els.apiKeyControls.classList.remove("hidden");
       }
-    }
-    if (els.apiKeyFile && typeof els.apiKeyFile.focus === "function") {
-      try {
-        els.apiKeyFile.focus();
-      } catch (_eFocus) {}
+      if (els.apiKeyHelperText) {
+        els.apiKeyHelperText.classList.remove("hidden");
+      }
+      var loader =
+        (els.apiKeyFile && els.apiKeyFile.closest && els.apiKeyFile.closest(".api-key-loader")) ||
+        (typeof document !== "undefined" && document.querySelector
+          ? document.querySelector(".api-key-loader")
+          : null);
+      if (loader && typeof loader.scrollIntoView === "function") {
+        try {
+          loader.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } catch (_eScroll) {
+          try {
+            loader.scrollIntoView(true);
+          } catch (_eScroll2) {}
+        }
+      }
+      if (els.apiKeyFile && typeof els.apiKeyFile.focus === "function") {
+        try {
+          els.apiKeyFile.focus();
+        } catch (_eFocus) {}
+      }
     }
     if (opts.silent !== true) {
       showToast(
@@ -23302,6 +23647,7 @@
       els.tokenUsage.textContent =
         "Input: 0; Output: 0; Total: 0; Approx cost: $0.0000";
     }
+    renderPrismStatusCostChip();
     if (state.promptFactoryWorkflowContext) {
       state.workflowRefinementUiActivated = false;
     }
@@ -28535,6 +28881,7 @@
 
   function maybeWarnStoragePressure() {
     return estimateBrowserStoragePressure().then(function (estimate) {
+      renderPrismStatusStorageChip(estimate);
       if (!estimate) return;
       var highPressure = estimate.usageRatio >= 0.85 || estimate.remaining <= 20 * 1024 * 1024;
       if (!highPressure) return;
@@ -51652,6 +51999,11 @@
     renderWorkflowPromptWizardNotice();
     setWorkflowMode("run");
     switchTab("workflowFactory");
+    renderPrismStatusCostChip();
+    renderPrismStatusKeyChip(hasConfiguredOpenAiApiKey());
+    refreshPrismStatusStorageChip();
+    bindPrismStatusDisclosureControl();
+    bindPrismStatusKeyLoadControl();
   }
 
   function init() {
@@ -52186,6 +52538,36 @@
     prismTestApi.ensureCreateWorkflowApiKeyPrerequisiteForTest =
       ensureCreateWorkflowApiKeyPrerequisite;
     prismTestApi.revealOpenAiApiKeyEntryForTest = revealOpenAiApiKeyEntry;
+    prismTestApi.openPrismStatusDisclosureForTest = openPrismStatusDisclosure;
+    prismTestApi.setPrismStatusExpandedForTest = setPrismStatusExpanded;
+    prismTestApi.togglePrismStatusDisclosureForTest = togglePrismStatusDisclosure;
+    prismTestApi.isPrismStatusExpandedForTest = isPrismStatusExpanded;
+    prismTestApi.triggerOpenAiApiKeyFilePickerForTest = triggerOpenAiApiKeyFilePicker;
+    prismTestApi.renderPrismStatusCostChipForTest = renderPrismStatusCostChip;
+    prismTestApi.renderPrismStatusKeyChipForTest = renderPrismStatusKeyChip;
+    prismTestApi.renderPrismStatusStorageChipForTest = renderPrismStatusStorageChip;
+    prismTestApi.classifyBrowserStorageHealthForTest = classifyBrowserStorageHealth;
+    prismTestApi.getTokenUsageForTest = function () {
+      return state.tokenUsage;
+    };
+    prismTestApi.setTokenUsageSessionCostForTest = function (cost) {
+      if (!state.tokenUsage || typeof state.tokenUsage !== "object") {
+        state.tokenUsage = {
+          sessionPrompt: 0,
+          sessionCompletion: 0,
+          sessionTotal: 0,
+          sessionCost: 0,
+          lastPrompt: 0,
+          lastCompletion: 0,
+          lastTotal: 0,
+          lastCost: null
+        };
+      }
+      state.tokenUsage.sessionCost = Number(cost) || 0;
+      state.tokenUsage.lastCost = state.tokenUsage.sessionCost;
+      renderPrismStatusCostChip();
+      return state.tokenUsage.sessionCost;
+    };
     prismTestApi.syncWorkflowFactoryDesignAssistantChrome =
       syncWorkflowFactoryDesignAssistantChrome;
     prismTestApi.isWorkflowDesignAssistantAwaitingAnswer =
@@ -52204,9 +52586,23 @@
       els.wfDesignSendBtn = document.getElementById("wfDesignSendBtn");
       els.apiKeyFile = document.getElementById("apiKeyFile");
       els.apiKeyStatus = document.getElementById("apiKeyStatus");
-      els.apiKeyControls = document.getElementById("apiKeyControls");
+      els.apiKeyControls =
+        document.querySelector(".api-key-controls") ||
+        document.getElementById("apiKeyControls");
       els.apiKeyHelperText = document.getElementById("apiKeyHelperText");
       els.apiSettings = document.getElementById("apiSettings");
+      els.prismStatusDetails = document.getElementById("prismStatusDetails");
+      els.prismStatusBar = document.getElementById("prismStatusBar");
+      els.prismStatusToggle = document.getElementById("prismStatusToggle");
+      els.prismStatusPanel = document.getElementById("prismStatusPanel");
+      els.prismStatusKeyChip = document.getElementById("prismStatusKeyChip");
+      els.prismStatusKeyLoadBtn = document.getElementById("prismStatusKeyLoadBtn");
+      els.prismStatusKeyText = document.getElementById("prismStatusKeyText");
+      els.prismStatusCostChip = document.getElementById("prismStatusCostChip");
+      els.prismStatusCostText = document.getElementById("prismStatusCostText");
+      els.prismStatusStorageChip = document.getElementById("prismStatusStorageChip");
+      els.prismStatusStorageText = document.getElementById("prismStatusStorageText");
+      els.prismStatusStorageDetail = document.getElementById("prismStatusStorageDetail");
       syncWorkflowFactoryDesignAssistantChrome();
     };
     prismTestApi.setWorkflowDomainSuggestionPendingForTest = function (pending) {

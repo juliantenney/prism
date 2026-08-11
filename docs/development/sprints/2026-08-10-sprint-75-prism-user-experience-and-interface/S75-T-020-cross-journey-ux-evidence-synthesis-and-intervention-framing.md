@@ -1,8 +1,12 @@
 # S75-T-020 — Cross-journey UX evidence synthesis and intervention framing
 
+> **Historical synthesis artefact (2026-08-10) with later status amendments.**  
+> Themes and candidate-slice framing below preserve discovery-time evidence. Later “Status” rows and §15 record subsequent Sprint 75 outcomes; they do **not** rewrite the original observations.  
+> **Current product state:** [STATUS.md](STATUS.md) · [decisions.md](decisions.md). Create UX pass **COMPLETE**; persistence **SETTLED**; **NEXT** My Workflows functional / operator audit.
+
 **Task:** S75-T-020  
 **Status:** **Done** (2026-08-10) — synthesis / documentation only  
-**Mode:** DISCOVERY SYNTHESIS — **no implementation authorised**  
+**Mode (at synthesis):** DISCOVERY SYNTHESIS — no implementation in the synthesis task itself  
 **Builds on:** [S75-T-010 operator synthesis](S75-T-010-domain-a-operator-observation-synthesis.md) (Parts I–III) · [S75-T-010 journey map](S75-T-010-primary-journey-map-and-domain-a-decomposition.md) · Sprint 75 dependency investigations (2026-08-10, chat/task evidence — not separately persisted)  
 **Does not replace:** Operator observation transcript — historical evidence in T-010 synthesis is retained unchanged.
 
@@ -464,6 +468,7 @@ Small, evidence-coherent slices for operator review. **No implementation steps.*
 | **Dependencies** | None |
 | **Exclusions** | Version control system |
 | **Confidence** | **Medium** (needs product rule) |
+| **Status (2026-08-11)** | **Deferred** — historical T-020 slice. **Do not collapse** with the separately recorded **My Workflows Rename** defect (Rename must preserve identity rather than create another workflow). Forthcoming My Workflows functional audit should determine whether C-09 and the Rename defect share an implementation cause; that question is **not** decided here. |
 
 ---
 
@@ -580,4 +585,4 @@ No contradiction on Sprint 74 closure or Sprint 76 not opened.
 
 ## 15. Stop condition
 
-Cross-journey synthesis **complete**. Theme 8 generic reviewer **retired** (`S75-D03`). **C-01/C-02** handoff + provenance **implemented** (`S75-D04`). **C-03** Run orientation **implemented** as persistent lightweight guidance (`S75-D06`). **C-04** Run capture relevance **implemented** (`S75-D07`). **C-10** / Run UX simplification **implemented** (`S75-D08` — Run-UI-only descriptions + execution bar; pack RI unchanged). **C-05** Create Workflow API-key prerequisite **implemented** (`S75-D09`; **amended**: action gate, not navigation; **presentation** further amended by `S75-D23`). **C-07** My Workflows mode default/handoff **implemented** (`S75-D10`). **C-06** LD Create output honesty **implemented** (`S75-D11`). **C-08** refinement discoverability **CLOSED AS RESOLVED** (`S75-D22`). LD Create one-product simplification **implemented** (`S75-D22`). Create assistant progressive disclosure **implemented** (`S75-D23`). Resolved workflow brief panel **removed from Create UI** (`S75-D24`; resolution engine retained). Create **Proposed workflow** read-only preview; Create Draft/Refined chrome retired (`S75-D25`; pack post-generation refinement retained for **PB-FA-005**). Remaining candidate slices (C-09/C-11/C-12) **await operator review**. Sprint 76 **not opened.**
+Cross-journey synthesis **complete**. Theme 8 generic reviewer **retired** (`S75-D03`). **C-01/C-02** handoff + provenance **implemented** (`S75-D04`). **C-03** Run orientation **implemented** as persistent lightweight guidance (`S75-D06`). **C-04** Run capture relevance **implemented** (`S75-D07`). **C-10** / Run UX simplification **implemented** (`S75-D08` — Run-UI-only descriptions + execution bar; pack RI unchanged). **C-05** Create Workflow API-key prerequisite **implemented** (`S75-D09`; **amended**: action gate, not navigation; **presentation** further amended by `S75-D23`). **C-07** My Workflows mode default/handoff **implemented** (`S75-D10`). **C-06** LD Create output honesty **implemented** (`S75-D11`). **C-08** refinement discoverability **CLOSED AS RESOLVED** (`S75-D22`). LD Create one-product simplification **implemented** (`S75-D22`). Create assistant progressive disclosure **implemented** (`S75-D23`). Resolved workflow brief panel **removed from Create UI** (`S75-D24`; resolution engine retained). Create **Proposed workflow** read-only preview; Create Draft/Refined chrome retired (`S75-D25`; pack post-generation refinement retained for **PB-FA-005**). Create UX pass **COMPLETE**. Persistence **SETTLED** (`S75-D21`). Remaining candidate slices (**C-09 / C-11 / C-12**) **deferred**. **NEXT** programme review area: **My Workflows** functional / operator audit (UI simplification after behavioural understanding); Settings later under **PB-FA-005**. Historical **C-09** (Save / update / duplicate semantics) remains distinct from the known **Rename** identity defect. Sprint 76 **not opened.**

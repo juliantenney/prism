@@ -1,5 +1,9 @@
 # S75-T-010 — Operator observation synthesis (Domains A, B & C)
 
+> **Historical discovery / evidence artefact (2026-08-10).**  
+> Observations and hypotheses below describe the product **as experienced during that walkthrough**. They have **not** been rewritten to match later Sprint 75 Create UX (`S75-D22`–`D25`) or persistence (`S75-D21`) outcomes.  
+> **Current product state:** [STATUS.md](STATUS.md) · [decisions.md](decisions.md) · [next-chat-briefing.md](next-chat-briefing.md).
+
 **Evidence type:** Primary operator observation (Julian)  
 **Dates recorded:** 2026-08-10 (Domain A Create Workflow); 2026-08-10 (Domain B My Workflows / Run); 2026-08-10 (B→C handover + Domain C Authoring)  
 **Mode:** DISCOVERY ONLY — observations and hypotheses only in this document  

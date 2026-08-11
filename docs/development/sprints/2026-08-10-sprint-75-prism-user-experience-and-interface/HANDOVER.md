@@ -1,43 +1,51 @@
 # Sprint 75 — Handover
 
-**From:** `S75-D25` Create Proposed workflow: one graph, read-only preview  
-**To:** Operator review of remaining S75-T-020 candidate slices (C-09/C-11/C-12) — **no automatic further implementation**
+**Kind:** Product/design continuation context (not a coding-agent handoff).  
+**Primary pasteable brief:** [next-chat-briefing.md](next-chat-briefing.md)  
+**Dashboard:** [STATUS.md](STATUS.md)
+
+**From:** Create UX pass **COMPLETE** (`S75-D22`–`D25`); persistence **SETTLED** (`S75-D21`)  
+**To:** **My Workflows** functional / operator audit → then UI simplification → later **Settings** (**PB-FA-005**)
 
 ---
 
 ## Current state
 
-- Sprint **75** **OPEN**  
-- **Latest:** `S75-D25` — Create shows one **Proposed workflow** as a compact read-only table; Draft/Refined Create chrome and Create-time graph edit (title/role/Delete/Tunable cues) retired; Save always persists `workflowDesignResult`; pack `post_generation_refinement` retained for later Settings/pack cleanup (**PB-FA-005**)  
-- Prior: `S75-D24` hide resolved-brief panel; `S75-D23` progressive disclosure; `S75-D22` one-product Create; persistence closed (`S75-D21`)  
-- **Sprint 76** — **not opened**
+- Sprint **75** **OPEN** · Sprint **76** **not opened**
+- **Create** journey for this pass is **done** (intent → internal resolve → required elicitation → one graph → Proposed workflow → **Save Workflow**)
+- **Persistence** is **SETTLED** (`S75-D21`) — IndexedDB payloads; localStorage refs; `storageVersion` ≥ 2; operator-verified; no silent auto-deletion; do not casually reopen
+- **Next:** My Workflows walkthrough with screenshots/observations — **behaviour first**, polish second
 
 ---
 
-## Residual (not implemented)
+## Established contracts to carry forward
 
-- Rename currently creates new workflow identity  
-- Duplicate creates new identity without copying runstate  
-- Delete can leave orphan runstate  
-- No browser unload flush for never-persisted pastes  
-- `session_materials` sibling delivery artefacts (e.g. `slide_deck`) — **not** first-class Slideshow → [PB-FA-008](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test)  
-- Weak constraint → Run prompt propagation → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)  
-- Research product selection still immature → [PB-FA-009](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-009--research-domain-pack-maturation)  
-- Settings IA / parameter contract → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)  
-- Dormant pack post-generation refinement / profile opt-in cleanup → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)  
-- User storage management UX → [PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management)  
-- Stable release process → [PB-S-005](../../../backlog/PRODUCT-BACKLOG.md#pb-s-005--stable-release--development-process)
+- **One workflow → one product** (Create must not invite sibling final products)
+- Create Draft/Refined were non-durable twin scaffolding — **retired**; My Workflows/Run/Authoring never versioned that way
+- Factor resolution stays internal; assistant asks only needed questions (`S75-D24`)
+- **Rename** must keep identity (known defect today: behaves like duplicate)
+- **Duplicate** = new identity + **clean** Run state (decided — do not reopen)
+- Delete / Import / Export still need identity-aware audit
+- Dormant pack post-generation refinement → consider with **Settings / PB-FA-005**, not casual deletion
+
+---
+
+## Known defects / residuals
+
+- Rename identity bug (priority for My Workflows)
+- Delete orphan / resource cleanup behaviour (audit)
+- Import/Export semantics unknown in detail (audit)
+- Storage usage UX → **PB-FA-007** (usage/capacity bar; explicit cleanup; no silent deletion)
+- Settings efficacy / IA / Run propagation → **PB-FA-005**
+- Slideshow first-class product → **PB-FA-008**; Research pack → **PB-FA-009**; release process → **PB-S-005**; orphan research → **PB-R-008**
 
 ---
 
 ## Do not
 
-- Reopen persistence / IndexedDB Run-capture work  
-- Invite multiple independent final products on LD Create  
-- Add Slideshow / Assessment pack / Module outline to Create without product-contract maturity  
-- Wire Create source material to DLA learner evidence  
-- Reintroduce Authoring Learning object presentation mode without a new product decision  
-- Reintroduce user-facing Resolved workflow brief diagnostics without a new product decision  
-- Reintroduce Create Draft/Refined version chrome or Create-time graph surgery without a new product decision  
-- Broadly delete pack post-generation refinement machinery without Settings/pack authorisation  
+- Restart Create UX redesign in this conversation  
+- Reopen persistence architecture (Sprint 75 question is **SETTLED** under `S75-D21`)  
+- Reopen Duplicate Run-state inheritance  
+- Implement Settings redesign before My Workflows audit  
+- Broadly delete pack refinement machinery without Settings/pack authority  
 - Open Sprint 76  

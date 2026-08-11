@@ -43,9 +43,20 @@ S75-T-001 (pack init) ✅ Done
   → S75-D08 Run UX simplification (operator copy + execution bar) ✅
   → S75-D09 Create Workflow API-key prerequisite (C-05) ✅
   → S75-D10 My Workflows default / handoff mode (C-07) ✅
-  → Remaining candidate UX slices — await operator review (not authorised)
-  → (Deferred: PB-FA-005 Settings · PB-FA-006 QA lifecycle · custom workflows · D/E)
+  → S75-D11 C-06 LD Create output honesty ✅
+  → S75-D12–D20 Authoring / Run-capture durability sequence ✅ (see decisions.md)
+  → S75-D21 Run capture migration to IndexedDB / ref-only runtime ✅
+     → Persistence SETTLED (do not casually reopen)
+  → S75-D22–D25 Create UX pass ✅
+     → one product · progressive assistant · hide resolved-brief UI · Proposed workflow read-only
+     → Create UX pass COMPLETE
+  → NEXT: My Workflows functional / operator audit
+     → UI simplification only after behavioural understanding
+  → Later: Settings / parameterisation (PB-FA-005)
+  → Deferred: T-020 C-09 / C-11 / C-12 · PB-FA-006 QA lifecycle · Domains D/E · Sprint 76 not opened
 ```
+
+Authoritative current snapshot: [STATUS.md](STATUS.md).
 
 ---
 
@@ -87,7 +98,7 @@ Post-init refinement (`S75-D02`, T-010 reframe): recorded in T-001 §11 — not 
 | **Ownership** | UX discovery / synthesis |
 | **Mode** | **SYNTHESIS ONLY** — no implementation |
 | **Deliverable** | [S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md](S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md) |
-| **Outcome** | Nine cross-journey themes; experienced journey model; T-011/012/013 reassessment; twelve candidate slices (C-01…C-12) + prioritisation — C-01/C-02 shipped (`S75-D04`); remaining await operator review |
+| **Outcome** | Nine cross-journey themes; experienced journey model; T-011/012/013 reassessment; twelve candidate slices (C-01…C-12). Later Sprint 75 work implemented/resolved many slices (see [STATUS.md](STATUS.md) / [decisions.md](decisions.md)). **C-09 / C-11 / C-12** remain **deferred**. Create UX pass **COMPLETE**; persistence **SETTLED**; **NEXT** My Workflows functional audit. |
 
 ---
 
@@ -166,16 +177,18 @@ navigation · orientation · terminology · progress/state feedback · errors/re
 | **S75-T-011** (A0–A3) | **Superseded** — see S75-T-020 §9 |
 | **S75-T-012** (A4–A6) | **Retired** as discovery boundary |
 | **S75-T-013** (A7–A11) | **Superseded** — see S75-T-020 §9 |
-| **S75-T-020 intervention slices (C-01…C-12)** | Through **C-07 Done** (`S75-D10`); remaining **not authorised** |
+| **S75-T-020 intervention slices (C-01…C-12)** | Through Create/Run/Authoring work many slices **Done/Resolved** (see [STATUS.md](STATUS.md)); **C-09 / C-11 / C-12 deferred**; **NEXT** My Workflows functional audit (distinct from historical C-09 framing) |
 | **QA / refinement lifecycle** | Deferred to [PB-FA-006](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) (Sprint 71 prior art explicit) |
 | **Provisional slice A** — Intent, capability & brief formation | Not a task — operator may authorise revised discovery |
-| **Provisional slice B** — Generated design, refinement & parameterisation | Generic graph reviewer retired (`S75-D03`); remaining parameterisation → PB-FA-005 / PB-FA-006 |
+| **Provisional slice B** — Generated design, refinement & parameterisation | Generic graph reviewer retired (`S75-D03`); Create Draft/Refined chrome retired (`S75-D25`); remaining parameterisation → PB-FA-005 / PB-FA-006 |
 | **Provisional slice C** — Workflow commitment & handoff | Not a task |
-| **Domain B — Settings / parameterisation** | Investigation **complete** 2026-08-10 — **deferred** to [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency); not Sprint 75 implementation |
+| **Domain B — Settings / parameterisation** | Investigation **complete** 2026-08-10 — **deferred** to [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency); major review **after** My Workflows audit |
+| **Domain B — My Workflows functional audit** | **NEXT** — behaviour first; UI simplification after understanding; Rename defect known; Duplicate = clean Run state (decided) |
 | **Domain B — Run UX (observation only)** | Recorded 2026-08-10 — see operator synthesis Part II |
 | **Domain B — custom workflow Instructions** | Empty Run Instructions hidden (`S75-D07`); meaningful custom notes preserved |
 | **Domain C — Authoring + B→C handover (observation only)** | Recorded 2026-08-10 — see operator synthesis Part III |
-| **Primary journey A→B→C→export** | Evidence complete — not implementation authorisation |
+| **Primary journey A→B→C→export** | Evidence complete — historical discovery; Create pass later completed separately |
+| **Persistence architecture (Sprint 75)** | **SETTLED** under `S75-D21` — do not casually reopen |
 | **SCORM / additional export formats** | Future product context — not Sprint 75 task |
 | Domains D–E detailed discovery | Not started |
 | Implementation slices (IA, navigation, interaction, terminology, visual, a11y, feedback) | After domain discovery + decisions + operator authorisation |

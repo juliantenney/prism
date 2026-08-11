@@ -5,8 +5,8 @@
 **Type:** UX / interaction-design programme  
 **Portable pack:** [docs/development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md)  
 **Predecessor:** [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) — **COMPLETE / Closed**  
-**Decisions:** [S75-D01](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md) · [S75-D02](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)  
-**Pack init:** [S75-T-001](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-001-sprint-pack-initialisation.md)  
+**Current truth:** [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md) · [decisions.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)  
+**Continuation:** [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md)  
 **Next programme:** Sprint 76 — **Not opened**
 
 ## Theme
@@ -27,38 +27,26 @@ UX programme: five programme domains (A–E); experience-before-implementation; 
 | D | Prompt Studio |
 | E | Prompt Library |
 
-## Entry state
+## Current position (2026-08-11)
 
-- Sprint 74 **COMPLETE / Closed**.  
-- Sprint 75 **OPEN**.  
-- S75-T-001 **Done**.  
-- S75-D02 **Accepted**.  
-- S75-T-010 **Done** (+ operator synthesis Domains A, B, C).  
-- **Primary operator journey** (Create → Run → Authoring → export) — **evidence complete**.  
-- S75-T-020 **Done** — cross-journey synthesis; remaining candidate slices await review.  
-- **S75-D03** — generic Create Workflow reviewer **retired**; future QA → [PB-FA-006](../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) (Sprint 71 corpus QA = prior art).  
-- S75-T-011/012/013 — **superseded/retired** as discovery boundaries.  
-- No Settings redesign or post-workflow QA implementation in Sprint 75 beyond the retirement above.
+- Sprint 75 **OPEN** · Sprint 76 **not opened**  
+- Create UX pass **COMPLETE** (`S75-D22`–`D25`)  
+- Persistence **SETTLED** (`S75-D21`) — do not casually reopen  
+- **NEXT:** My Workflows functional / operator audit → UI simplification after behavioural understanding → later Settings / [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)  
+- Deferred T-020 slices **C-09 / C-11 / C-12**  
+- Detail: pack [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md)
 
-## Phase overview
+## Phase overview (summary)
 
 | Phase | Focus | Status |
 | ----- | ----- | ------ |
-| 1 | Pack initialisation (S75-T-001) | **Done** |
-| 2 | Programme structure refinement (S75-D02) | **Accepted** |
-| 3 | Primary journey map + Domain A decomposition (S75-T-010) | **Done** |
-| 3b | Domain A operator observation synthesis | **Recorded** |
-| 3c | Domain B Run operator observation synthesis | **Recorded** |
-| 3d | B→C handover + Domain C Authoring synthesis | **Recorded** |
-| 3e | Primary journey A→B→C→export | **Evidence complete** |
-| 4 | Cross-journey synthesis (S75-T-020) | **Done** |
-| 4b | Retire generic Create Workflow reviewer (S75-D03) | **Done** |
-| — | Candidate intervention slices C-01…C-12 | **Await operator review** — not authorised (Theme 8 path closed) |
-| — | Proposed T-011…T-013 | **Superseded/retired** |
-| — | Domain B Settings / parameterisation | **Deferred** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
-| — | QA / refinement lifecycle | **Deferred** — [PB-FA-006](../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
+| 1–4 | Pack init, T-010/T-020 discovery synthesis | **Done** (historical) |
+| — | Create UX pass (`S75-D22`–`D25`) | **COMPLETE** |
+| — | Persistence (`S75-D21`) | **SETTLED** |
+| — | My Workflows functional / operator audit | **NEXT** |
+| — | Settings / parameterisation | **Later** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| — | T-020 C-09 / C-11 / C-12 | **Deferred** |
 | — | Domains D–E detailed discovery | **Not started** |
-| — | Later implementation (evidence-led) | **Not defined / not authorised** |
 | — | Sprint 76 | **Not opened** |
 
 ## Boundaries
@@ -68,9 +56,8 @@ Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/202
 ## Authoritative docs
 
 - [SPRINT-75-START-HERE.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md)  
-- [SPRINT-75-CHARTER.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-CHARTER.md)  
 - [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md)  
-- [PLAN.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/PLAN.md)  
-- [S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md)  
-- [S75-T-010-domain-a-operator-observation-synthesis.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-010-domain-a-operator-observation-synthesis.md)  
+- [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md)  
 - [decisions.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)  
+- [PLAN.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/PLAN.md)  
+- Historical: [S75-T-020](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md) · [T-010 operator synthesis](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-010-domain-a-operator-observation-synthesis.md)  

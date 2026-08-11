@@ -380,9 +380,9 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 
 ## S75-D25 — Create Proposed workflow: one graph, read-only preview
 
-- **Decision:** Create presents **one** generated workflow as a compact **read-only Proposed workflow** preview. Retire Create-time **Draft / Refined** version chrome and Create-time graph-edit controls (title/role inputs, Delete, Tunable badges, per-row Settings cues). **Save as workflow** remains the primary commitment action and always saves `state.workflowDesignResult`. Detailed tuning belongs to the **saved workflow / Settings** experience. Do **not** broadly delete pack `post_generation_refinement` / `stepRefinementProfiles` machinery (future Settings/pack cleanup under **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)**). Prompt Studio Draft/Refined remains separate and unchanged.
+- **Decision:** Create presents **one** generated workflow as a compact **read-only Proposed workflow** preview. Retire Create-time **Draft / Refined** version chrome and Create-time graph-edit controls (title/role inputs, Delete, Tunable badges, per-row Settings cues). **Save Workflow** is the primary commitment action and always saves `state.workflowDesignResult`. Detailed tuning belongs to the **saved workflow / Settings** experience. Do **not** broadly delete pack `post_generation_refinement` / `stepRefinementProfiles` machinery (future Settings/pack cleanup under **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)**). Prompt Studio Draft/Refined remains separate and unchanged.
 
-- **Status:** **Accepted** (2026-08-11)
+- **Status:** **Accepted** (2026-08-11). Create UX pass for Sprint 75 recorded **COMPLETE** after this decision (plus presentation polish below).
 
 - **Rationale:** Investigation showed Create Draft/Refined were identical deep copies with no production path producing a distinct Refined graph — Prompt Studio–style scaffolding, not durable versioning. Editable step cards implied Create is a graph editor; the meaningful Create decision is whether to save the proposal. Assistant already points users to Settings after generation.
 
@@ -392,48 +392,53 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
   - **Pack post-generation factor refinement** — separate dormant/policy-limited machinery; **not** removed by this decision.
   - **S75-D03** generic LLM reviewer — already retired; unrelated to Draft/Refined chrome.
 
-- **Consequences:** `#wfDesignVersionSelect` removed; heading **Proposed workflow**; compact semantic table preview; Create edit/delete mutation paths removed; D03 regression no longer requires version select; tests in `tests/s75-d25-proposed-workflow-readonly-preview.test.js`. Cache-bust `app.js?v=20260811-s75-d25` / `style.css?v=20260811-s75-d25`. Persistence untouched; Sprint 76 not opened.
+- **Presentation polish (same decision; no new decision ID):** table column proportions ~9% / 53% / 38% (Step / Workflow step / Purpose) with `table-layout: fixed`; button label **Save Workflow** (was “Save as workflow”). Cache-bust `app.js?v=20260811-s75-d25b` / `style.css?v=20260811-s75-d25b`.
+
+- **Consequences:** `#wfDesignVersionSelect` removed; heading **Proposed workflow**; compact semantic table preview; Create edit/delete mutation paths removed; D03 regression no longer requires version select; tests in `tests/s75-d25-proposed-workflow-readonly-preview.test.js`. Persistence untouched; Sprint 76 not opened. Next product/design review: **My Workflows** functional audit.
 
 ---
 
-## Pending decisions / hypotheses (not accepted)
+## Decision / investigation tracker
 
-| Topic | Expected trigger |
-| ----- | ---------------- |
-| Authorise execution of S75-T-010 | **Done** (2026-08-10) |
-| Authorise S75-T-011 / T-012 / T-013 | **Superseded/retired** — use S75-T-020 candidate slices |
-| Authorise S75-T-020 intervention slices | **Partial** — C-01…C-07/C-10 Done; **C-08 CLOSED AS RESOLVED** (`S75-D22`); C-09/C-11/C-12 remain deferred |
-| Create one-product simplification (LD) | **Done** — `S75-D22` |
-| Create assistant progressive disclosure | **Done** — `S75-D23` |
-| Hide Resolved workflow brief panel | **Done** — `S75-D24` |
-| Create Proposed workflow read-only / retire Draft–Refined chrome | **Done** — `S75-D25` |
-| Domain B first-time selection / mode persistence rules | **Done** — `S75-D10` (Run default + session preservation + Create→Run handoff) |
-| Run paste/store-output visibility rule | **Done** — `S75-D07` (page-structure producer visibility) |
-| Custom vs runtime-aware stored-output behaviour | **Done** under `S75-D07` (non-page `outputName` ≠ paste; page producer keeps gate) |
-| Run operator copy + execution-bar layout | **Done** — `S75-D08` (Run-UI-only descriptions; top Prev/Copy/Next bar) |
-| Create Workflow API-key prerequisite (C-05) | **Done** — `S75-D09`; presentation amended by `S75-D23` |
-| Separate human Instructions from PRISM_STEP_PARAMS storage | Deferred — smell noted under **PB-FA-005**; not redesigned in `S75-D08` |
-| Domain B Settings / parameterisation | **Investigation complete** — deferred to [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
-| Domain C Authoring + B→C handover | **Evidence recorded** 2026-08-10; thin handoff/provenance **Done** (`S75-D04`) |
-| Authoring workflow provenance / assemble entry | **Done** for selected/assembled identity + mismatch (`S75-D04`); same-workflow run freshness **deferred** |
-| Authoring peer-tab IA equivalence | Operator evidence §3.29 — later consideration, not redesign |
-| SCORM / future export formats | Future product context — not Sprint 75 task |
-| Copilot follow-up suppression (prompt vs host UI) | Operator evidence §3.19 |
-| Refinement/QA step provenance and executable integrity | **Done** — investigation + `S75-D03` retirement; future lifecycle **PB-FA-006** |
-| My Workflows Edit validation false positives | **Done** — `S75-D05` (validator aligned with Run; no migration) |
-| Run BYO-LLM execution orientation (C-03) | **Done** — `S75-D06` (+ C-04 compact one-line wording under `S75-D07`) |
-| Supported LD Create output honesty (C-06) | **Done** — `S75-D11` (Self-study resource · Workshop only) |
-| Authoring Learning object presentation format | **Retired** — `S75-D12` |
-| Authoring assembly readiness (EP shell ≠ learner-ready) | **Done** — `S75-D13` |
-| Run capture persistence non-destructive merge | **Done** — `S75-D14` |
-| DLA evidence_decision instructional-scaffold false positive | **Done** — `S75-D15` |
-| DLA partial-page activities[] false-positive validation | **Done** — `S75-D16` |
-| Generated-workflow Run persistence identity (durable step.id) | **Done** — `S75-D17` |
-| Run position session-only; captures durable across sessions | **Done** — `S75-D18` |
-| Accepted Run capture durability when in-memory value is unchanged | **Done** — `S75-D19` |
-| Blank live capture overwrite of durable accepted key | **Done** — `S75-D20` |
-| One-off Run capture migration + ref-only runtime | **Done** — `S75-D21` (operator-verified; diagnostic UI cleaned up) |
-| Rename / Duplicate / Delete runstate identity hygiene | Residual — recorded under `S75-D14`; not implemented |
-| Domains D–E detailed discovery sequencing | Not started — operator to prioritise |
-| Any architectural work arising from UX findings | Explicit operator authorisation only |
-| Open Sprint 76 | Separate operator decision (not relevant yet) |
+Programme tracker for Sprint 75 topics (many entries are **Done** / **Deferred** / **Next** — this is **not** a “pending only” list). Accepted decision text above is unchanged.
+
+| Topic | Status | Notes |
+| ----- | ------ | ----- |
+| Authorise execution of S75-T-010 | **Done** | 2026-08-10 |
+| Authorise S75-T-011 / T-012 / T-013 | **Retired** | Superseded — use S75-T-020 candidate slices |
+| Authorise S75-T-020 intervention slices | **Partial** | C-01…C-07/C-10 Done; **C-08 CLOSED AS RESOLVED** (`S75-D22`); **C-09/C-11/C-12 deferred** |
+| Create one-product simplification (LD) | **Done** | `S75-D22` |
+| Create assistant progressive disclosure | **Done** | `S75-D23` |
+| Hide Resolved workflow brief panel | **Done** | `S75-D24` |
+| Create Proposed workflow read-only / retire Draft–Refined chrome | **Done** | `S75-D25` (Create UX pass **COMPLETE** for this Sprint 75 pass) |
+| My Workflows functional audit + identity CRUD (Rename/Duplicate/Delete/Import/Export) | **Next** | Operator walkthrough; Rename defect known (must keep identity); Duplicate = clean Run state (decided). Historical **C-09** remains a separate deferred slice until audit determines overlap. |
+| Domain B first-time selection / mode persistence rules | **Done** | `S75-D10` (Run default + session preservation + Create→Run handoff) |
+| Run paste/store-output visibility rule | **Done** | `S75-D07` (page-structure producer visibility) |
+| Custom vs runtime-aware stored-output behaviour | **Done** | under `S75-D07` (non-page `outputName` ≠ paste; page producer keeps gate) |
+| Run operator copy + execution-bar layout | **Done** | `S75-D08` (Run-UI-only descriptions; top Prev/Copy/Next bar) |
+| Create Workflow API-key prerequisite (C-05) | **Done** | `S75-D09`; presentation amended by `S75-D23` |
+| Separate human Instructions from PRISM_STEP_PARAMS storage | **Deferred** | Smell noted under **PB-FA-005**; not redesigned in `S75-D08` |
+| Domain B Settings / parameterisation | **Deferred** | Investigation complete — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency); major review after My Workflows |
+| Domain C Authoring + B→C handover | **Done** | Evidence recorded 2026-08-10; thin handoff/provenance **Done** (`S75-D04`) |
+| Authoring workflow provenance / assemble entry | **Partial** | Done for selected/assembled identity + mismatch (`S75-D04`); same-workflow run freshness **deferred** |
+| Authoring peer-tab IA equivalence | **Deferred** | Operator evidence §3.29 — later consideration, not redesign |
+| SCORM / future export formats | **Deferred** | Future product context — not Sprint 75 task |
+| Copilot follow-up suppression (prompt vs host UI) | **Deferred** | Operator evidence §3.19 |
+| Refinement/QA step provenance and executable integrity | **Done** | Investigation + `S75-D03` retirement; future lifecycle **PB-FA-006** |
+| My Workflows Edit validation false positives | **Done** | `S75-D05` (validator aligned with Run; no migration) |
+| Run BYO-LLM execution orientation (C-03) | **Done** | `S75-D06` (+ C-04 compact one-line wording under `S75-D07`) |
+| Supported LD Create output honesty (C-06) | **Done** | `S75-D11` (Self-study resource · Workshop only) |
+| Authoring Learning object presentation format | **Retired** | `S75-D12` |
+| Authoring assembly readiness (EP shell ≠ learner-ready) | **Done** | `S75-D13` |
+| Run capture persistence non-destructive merge | **Done** | `S75-D14` |
+| DLA evidence_decision instructional-scaffold false positive | **Done** | `S75-D15` |
+| DLA partial-page activities[] false-positive validation | **Done** | `S75-D16` |
+| Generated-workflow Run persistence identity (durable step.id) | **Done** | `S75-D17` |
+| Run position session-only; captures durable across sessions | **Done** | `S75-D18` |
+| Accepted Run capture durability when in-memory value is unchanged | **Done** | `S75-D19` |
+| Blank live capture overwrite of durable accepted key | **Done** | `S75-D20` |
+| One-off Run capture migration + ref-only runtime | **Done** | `S75-D21` (operator-verified; diagnostic UI cleaned up) — persistence **SETTLED** |
+| Rename / Duplicate / Delete runstate identity hygiene | **Next** | Under My Workflows audit — Rename defect known (must keep identity); Duplicate clean-Run contract decided; Delete/Import/Export still to audit (`S75-D14` residual) |
+| Domains D–E detailed discovery sequencing | **Pending** | Not started — operator to prioritise |
+| Any architectural work arising from UX findings | **Pending** | Explicit operator authorisation only |
+| Open Sprint 76 | **Pending** | Separate operator decision (not relevant yet) |

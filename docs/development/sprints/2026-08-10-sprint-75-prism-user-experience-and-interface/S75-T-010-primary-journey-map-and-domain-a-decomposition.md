@@ -1,5 +1,9 @@
 # S75-T-010 — Primary journey map and Domain A decomposition
 
+> **Historical discovery artefact (2026-08-10).**  
+> This document records the journey map and Domain A decomposition **as understood during discovery**. It does **not** describe the current post-`S75-D25` Create interface or settled persistence model.  
+> **Current product state:** [STATUS.md](STATUS.md) · [decisions.md](decisions.md) · [next-chat-briefing.md](next-chat-briefing.md).
+
 **Task:** S75-T-010  
 **Status:** **Done** (2026-08-10)  
 **Mode:** DISCOVERY ONLY — no UI, runtime, test, fixture, or architecture changes  

@@ -214,11 +214,14 @@ Sprint 75 **may** eventually change IA, navigation, interaction, terminology, vi
 
 ## Working posture
 
-- Discovery first — **primary journey evidence complete**; **S75-T-020 synthesis complete**; candidate slices await operator review  
+- Create UX pass **COMPLETE**; persistence **SETTLED** (`S75-D21`) — do not casually reopen  
+- **NEXT:** My Workflows functional / operator audit → UI simplification after behaviour is understood → later Settings / **PB-FA-005**  
+- Historical discovery (T-010 / T-020) retained; do not rewrite evidence to match current UI  
 - Evidence before decisions; decisions before implementation  
-- Do not redesign during discovery  
-- Do not invent detailed implementation tasks before T-010  
+- Do not invent unauthorised implementation scope  
 - Stop and report if a proposed UX change requires architectural redesign without operator authorisation  
+
+Current snapshot: [STATUS.md](STATUS.md) · [next-chat-briefing.md](next-chat-briefing.md).
 
 ---
 

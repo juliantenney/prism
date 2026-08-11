@@ -33,21 +33,29 @@ First detailed discovery: **Domain A** (T-010). **Domains B Run and C Authoring*
 
 ---
 
-## Current programme position (2026-08-10)
+## Current programme position (2026-08-11)
 
 | Area | Status |
 | ---- | ------ |
-| Domain A Create Workflow | Operator evidence **recorded** |
-| Domain B My Workflows / Run | Operator evidence **recorded** |
-| B→C handover + Domain C Authoring | Operator evidence **recorded** |
-| Primary journey through export | **Evidence complete** |
-| Domain B Settings / parameterisation | **Investigation complete** — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| **Create UX pass** | **COMPLETE** (`S75-D22`–`D25`) |
+| **Persistence** | **SETTLED** (`S75-D21`) — do not casually reopen |
+| **NEXT review** | **My Workflows** — functional / operator audit first; UI simplification after behaviour is understood |
+| **Settings / parameterisation** | Later major review → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| Sprint 76 | **Not opened** |
+
+Authoritative detail: [STATUS.md](STATUS.md) · [decisions.md](decisions.md) · [next-chat-briefing.md](next-chat-briefing.md).
+
+### Discovery / earlier programme context (still true)
+
+| Area | Status |
+| ---- | ------ |
+| Primary journey evidence (A→B→C→export) | **Recorded** (historical T-010 / T-020) |
+| Domain B Settings investigation | **Complete** as investigation — implementation deferred **PB-FA-005** |
 | Generic Create Workflow reviewer | **Retired** — [S75-D03](decisions.md#s75-d03--retire-generic-create-workflow-workflow-review-step-insertion) · [PB-FA-006](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
-| C-01/C-02 Run→Authoring handoff + provenance | **Done** — [S75-D04](decisions.md#s75-d04--implement-c-01c-02-run--authoring-handoff-and-provenance-clarity) |
-| Domains D–E | **Not started** |
+| T-020 slices C-01…C-08 / C-10 | Implemented or resolved as recorded in [STATUS.md](STATUS.md) / [decisions.md](decisions.md) |
+| T-020 slices **C-09 / C-11 / C-12** | **Deferred** |
+| Domains D–E detailed discovery | **Not started** |
 | Domain A T-011/012/013 | **Superseded/retired** — S75-T-020 |
-| S75-T-020 cross-journey synthesis | **Done** — slices await review |
-| Product changes | **None** from Sprint 75 documentation |
 
 ---
 
@@ -108,19 +116,20 @@ Inherited (link, do not rewrite):
 
 | State | Action |
 | ----- | ------ |
-| **Done** | S75-T-010 + operator synthesis (Domains A, B, C) |
-| **Done** | S75-T-020 cross-journey synthesis & intervention framing |
-| **Awaiting review** | Candidate slices C-01…C-12 (**not authorised**) |
-| **Deferred (NOT authorised)** | Settings (**PB-FA-005**) · QA lifecycle (**PB-FA-006**) · Domain A slices · D/E · remaining T-020 UX slices (C-05…) |
-| **Do not** | Implement UX fixes from observation docs without authorisation |
+| **Done** | Create UX pass (`S75-D22`–`D25`); persistence **SETTLED** (`S75-D21`); earlier T-020 slices as recorded |
+| **NEXT** | **My Workflows** functional / operator audit (Rename known defect; Duplicate = clean Run state — decided) |
+| **After audit** | My Workflows UI simplification only once behaviour is understood |
+| **Later** | Settings / parameterisation → **PB-FA-005** |
+| **Deferred** | T-020 **C-09 / C-11 / C-12**; Domains D–E detailed discovery; QA lifecycle **PB-FA-006** |
+| **Do not** | Casually reopen persistence; reopen Duplicate Run-state inheritance; open Sprint 76 |
 | **Do not** | Reopen Sprint 74 architecture |
 
 ---
 
 ## Hard rules (this programme open)
 
-- No UI changes until authorised implementation tasks exist.  
+- No UI / runtime product changes without explicit authorisation.  
 - No runtime / generation / renderer / pedagogic-contract redesign casually from UX work.  
 - Evidence before decisions; decisions before implementation.  
 - **Experience before implementation** — use the product first.  
-- Later programme structure is **evidence-led from T-010** — do not invent detailed implementation tasks yet.
+- Programme structure remains **evidence-led** — do not invent unauthorised implementation scope.

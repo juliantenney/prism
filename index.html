@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260811-s75-d26e" />
+  <link rel="stylesheet" href="style.css?v=20260812-s75-library-actions" />
 </head>
 <body>
       <div class="app-shell">
@@ -139,8 +139,109 @@
           <p id="workflowStepConfigHint" class="workflow-step-config-hint"></p>
           <div id="workflowStepConfigOptions" class="workflow-step-config-options"></div>
         </div>
+        <div id="promptStudioStandaloneChrome" class="prompt-studio-standalone-chrome">
+          <p id="promptStudioIntro" class="helper-text prompt-studio-intro">
+            Paste an existing prompt or generate one from a structured brief, then save it to Prompt Library.
+          </p>
+          <div
+            id="promptStudioModeControl"
+            class="prompt-studio-mode-control"
+            role="tablist"
+            aria-label="Prompt Studio mode"
+          >
+            <button
+              id="promptStudioModePasteBtn"
+              type="button"
+              class="prompt-studio-mode-pill active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="pfPasteModePanel"
+            >
+              Paste a prompt
+            </button>
+            <button
+              id="promptStudioModeGenerateBtn"
+              type="button"
+              class="prompt-studio-mode-pill"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pfGenerateModePanel"
+              tabindex="-1"
+            >
+              Generate a prompt
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="pfPasteModePanel"
+          class="card pf-paste-mode"
+          role="tabpanel"
+          aria-labelledby="promptStudioModePasteBtn"
+        >
+          <h2 id="pastePromptHeading">Paste a prompt</h2>
+          <div class="form-group">
+            <label for="pastePromptTitle">Prompt title</label>
+            <input
+              type="text"
+              id="pastePromptTitle"
+              placeholder="Name this prompt"
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-group pf-paste-meta-field">
+            <label for="pastePromptTags">Tags (optional)</label>
+            <input
+              type="text"
+              id="pastePromptTags"
+              placeholder="assessment, feedback, review"
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-group pf-paste-meta-field">
+            <label for="pastePromptNotes">Notes (optional)</label>
+            <p class="helper-text">Add notes about what this prompt is for or when to use it.</p>
+            <textarea
+              id="pastePromptNotes"
+              rows="2"
+              placeholder="Internal notes about how/when to use this prompt"
+              autocomplete="off"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="pastePromptBody">Prompt</label>
+            <textarea
+              id="pastePromptBody"
+              rows="12"
+              placeholder="Paste your finished prompt here"
+              autocomplete="off"
+            ></textarea>
+          </div>
+          <p
+            id="pastePromptValidation"
+            class="helper-text pf-paste-validation hidden"
+            role="alert"
+            aria-live="polite"
+          ></p>
+          <div class="button-row">
+            <button id="pasteSaveToLibraryBtn" type="button" class="btn primary" disabled>
+              Save to Prompt Library
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="pfGenerateModePanel"
+          class="pf-generate-mode hidden"
+          role="tabpanel"
+          aria-labelledby="promptStudioModeGenerateBtn"
+          aria-hidden="true"
+        >
         <div class="card pf-card-brief">
           <h2 id="defineBriefHeading">Define the Brief</h2>
+          <p id="defineBriefIntro" class="helper-text">
+            Describe what you want this prompt to produce.
+          </p>
           <div id="workflowPromptWizardNotice" class="workflow-wizard-notice hidden" aria-live="polite">
             <p id="workflowPromptWizardTitle" class="workflow-wizard-title"></p>
             <p id="workflowPromptWizardHint" class="workflow-wizard-hint"></p>
@@ -158,23 +259,11 @@
               </select>
             </div>
           </div>
-          <div class="form-row compact">
-            <div class="form-group small" id="promptAudienceGroup">
-              <label for="promptAudience">Audience</label>
-              <p class="helper-text">Who should the output be written for?</p>
-              <input type="text" id="promptAudience" placeholder="e.g. non-technical executives, beginners" autocomplete="off" />
-            </div>
-            <div class="form-group small" id="promptRoleGroup">
-              <label for="promptRole">Act as</label>
-              <p class="helper-text">Optional role/persona the model should adopt.</p>
-              <input type="text" id="promptRole" placeholder="e.g. senior copywriter, strict code reviewer" autocomplete="off" />
-            </div>
-          </div>
           <details id="workflowContextDisclosure" class="workflow-context-disclosure">
             <summary id="workflowContextDisclosureSummary" class="workflow-context-disclosure-summary">Workflow context</summary>
             <div id="workflowContextGroup" class="form-group workflow-context-group">
-              <label for="initialPrompt" id="initialPromptLabel">Task description</label>
-              <p id="initialPromptHelper" class="helper-text">Describe clearly what you want the model to do.</p>
+              <label for="initialPrompt" id="initialPromptLabel">What should this prompt do?</label>
+              <p id="initialPromptHelper" class="helper-text">Describe the task in plain language.</p>
               <div id="workflowContextDocumentHost" class="workflow-context-document-host hidden">
                 <pre
                   id="workflowContextDocument"
@@ -195,41 +284,44 @@
                   </button>
                 </div>
               </div>
-              <textarea id="initialPrompt" rows="5" placeholder="Describe what you want the AI to do..." autocomplete="off"></textarea>
+              <textarea id="initialPrompt" rows="5" placeholder="e.g. a short briefing for programme managers on managing risk" autocomplete="off"></textarea>
             </div>
           </details>
           <div class="form-row compact">
+            <div class="form-group small" id="promptAudienceGroup">
+              <label for="promptAudience">Who is this for?</label>
+              <p class="helper-text">Who should the output be written for?</p>
+              <input type="text" id="promptAudience" placeholder="e.g. non-technical executives, beginners" autocomplete="off" />
+            </div>
             <div class="form-group small" id="promptGoalGroup">
               <label for="promptGoal">Goal / outcome</label>
               <p class="helper-text">What does a successful result look like?</p>
               <input type="text" id="promptGoal" placeholder="What does success look like for this?" autocomplete="off" />
             </div>
-            <div class="form-group small" id="promptContextGroup">
-              <label for="promptContext">Context / background</label>
-              <p class="helper-text">Relevant facts or situation the model should consider.</p>
-              <input type="text" id="promptContext" placeholder="What should the model know about the situation?" autocomplete="off" />
-            </div>
           </div>
-          <div class="form-row compact">
-            <div class="form-group small" id="promptToneGroup">
-              <label for="promptTone">Tone / voice</label>
-              <p class="helper-text">Style of writing/voice for the output.</p>
-              <input
-                type="text"
-                id="promptTone"
-                placeholder="Describe the tone, e.g. professional, playful, warm, authoritative"
-                autocomplete="off"
-              />
-            </div>
-            <div class="form-group small" id="textReadingLevelGroup">
-              <label for="textReadingLevel">Reading level</label>
-              <p class="helper-text">How simple or advanced should the language be?</p>
-              <input
-                type="text"
-                id="textReadingLevel"
-                placeholder="Describe the reading level, e.g. very simple, general adult, technical expert"
-                autocomplete="off"
-              />
+
+          <div id="typeFieldsText" class="type-fields">
+            <div class="form-row compact">
+              <div class="form-group small" id="promptLengthGroup">
+                <label for="promptLength">Length / depth</label>
+                <p class="helper-text">Target length or depth of response.</p>
+                <input
+                  type="text"
+                  id="promptLength"
+                  placeholder="e.g. short overview, 3–5 bullets, ~500 words, deep dive with examples"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group small" id="textReadingLevelGroup">
+                <label for="textReadingLevel">Reading level</label>
+                <p class="helper-text">How simple or advanced should the language be?</p>
+                <input
+                  type="text"
+                  id="textReadingLevel"
+                  placeholder="Describe the reading level, e.g. very simple, general adult, technical expert"
+                  autocomplete="off"
+                />
+              </div>
             </div>
           </div>
 
@@ -331,44 +423,66 @@
               <input type="text" id="structuredValidation" placeholder="Any rules the data must follow" autocomplete="off" />
             </div>
           </div>
-          <div class="form-row compact">
-            <div class="form-group small" id="promptFormatGroup">
-              <label for="promptFormat">Desired output format</label>
-              <p class="helper-text">Format the response should return in.</p>
-              <input
-                type="text"
-                id="promptFormat"
-                placeholder="e.g. content format (bullets, email, JSON) or file format (CSV, PDF, markdown)"
-                autocomplete="off"
-              />
+
+          <details id="promptStudioAdvancedOptions" class="prompt-studio-advanced">
+            <summary id="promptStudioAdvancedSummary">Advanced options</summary>
+            <div class="form-row compact">
+              <div class="form-group small" id="promptRoleGroup">
+                <label for="promptRole">Act as</label>
+                <p class="helper-text">Optional role/persona the model should adopt.</p>
+                <input type="text" id="promptRole" placeholder="e.g. senior copywriter, strict code reviewer" autocomplete="off" />
+              </div>
+              <div class="form-group small" id="promptContextGroup">
+                <label for="promptContext">Context / background</label>
+                <p class="helper-text">Relevant facts or situation the model should consider.</p>
+                <input type="text" id="promptContext" placeholder="What should the model know about the situation?" autocomplete="off" />
+              </div>
             </div>
-            <div class="form-group small" id="promptLengthGroup">
-              <label for="promptLength">Length / depth</label>
-              <p class="helper-text">Target length or depth of response.</p>
-              <input
-                type="text"
-                id="promptLength"
-                placeholder="e.g. short overview, 3–5 bullets, ~500 words, deep dive with examples"
-                autocomplete="off"
-              />
+            <div class="form-row compact">
+              <div class="form-group small" id="promptToneGroup">
+                <label for="promptTone">Tone / voice</label>
+                <p class="helper-text">Style of writing/voice for the output.</p>
+                <input
+                  type="text"
+                  id="promptTone"
+                  placeholder="Describe the tone, e.g. professional, playful, warm, authoritative"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group small" id="promptFormatGroup">
+                <label for="promptFormat">Desired output format</label>
+                <p class="helper-text">Format the response should return in.</p>
+                <input
+                  type="text"
+                  id="promptFormat"
+                  placeholder="e.g. content format (bullets, email, JSON) or file format (CSV, PDF, markdown)"
+                  autocomplete="off"
+                />
+              </div>
             </div>
-          </div>
-          <div class="form-group" id="promptConstraintsGroup">
-            <label for="promptConstraints">Constraints and must haves</label>
-            <p class="helper-text">Hard requirements, exclusions, or mandatory points to include.</p>
-            <input type="text" id="promptConstraints" placeholder="Style rules, do/don'ts, specific points to include, etc." autocomplete="off" />
+            <div class="form-group" id="promptConstraintsGroup">
+              <label for="promptConstraints">Constraints and must haves</label>
+              <p class="helper-text">Hard requirements, exclusions, or mandatory points to include.</p>
+              <input type="text" id="promptConstraints" placeholder="Style rules, do/don'ts, specific points to include, etc." autocomplete="off" />
+            </div>
+          </details>
+          <div id="pfBriefStartRefinementRow" class="button-row pf-brief-start-refinement">
+            <button id="startRefinementBtn" type="button" class="btn primary">Start refinement</button>
           </div>
           <div id="pfBriefAuthoringActions" class="button-row pf-brief-authoring-actions">
-            <button id="newBriefBtn" type="button" class="btn ghost">
+            <button id="newBriefBtn" type="button" class="btn ghost hidden">
               New brief
             </button>
             <button id="copyBriefForCopilotBtn" type="button" class="btn ghost">
-              Refine manually
+              Copy brief
             </button>
           </div>
+          <p id="copyBriefHelper" class="helper-text pf-copy-brief-helper">
+            Copy this brief to refine it in ChatGPT, Copilot or another AI tool.
+          </p>
         </div>
 
-        <div class="card pf-card-editable-prompt">
+        <div id="pfCardEditablePrompt" class="card pf-card-editable-prompt hidden" aria-hidden="true">
           <h2 id="editablePromptHeading">Final Prompt</h2>
           <p id="editablePromptHelper" class="helper-text pf-editable-prompt-helper hidden"></p>
           <div class="final-prompt-layout">
@@ -383,7 +497,7 @@
                 </div>
               </div>
               <label for="finalPrompt" id="finalPromptLabel" class="sr-only">Final refined prompt</label>
-              <textarea id="finalPrompt" rows="8" placeholder="Your final prompt will appear here after refinement, or paste a prompt refined manually in Copilot/ChatGPT to save it to your library."></textarea>
+              <textarea id="finalPrompt" rows="8" placeholder="Your final prompt will appear here after refinement."></textarea>
               <div class="button-row">
                 <button id="copyFinalPromptBtn" type="button" class="btn">Copy</button>
                 <button id="saveToLibraryBtn" type="button" class="btn primary" disabled>Save to library</button>
@@ -396,7 +510,7 @@
           </div>
         </div>
 
-        <div id="pfCardRefinement" class="card conversation-card pf-card-refinement">
+        <div id="pfCardRefinement" class="card conversation-card pf-card-refinement hidden" aria-hidden="true">
           <div class="conversation-header">
             <div class="conversation-header-main">
               <h2 id="refinementSectionHeading">Refine the Brief</h2>
@@ -406,7 +520,6 @@
               <p id="pfRefinementIdlePrompt" class="helper-text pf-refinement-idle-prompt hidden">
                 Need help improving this prompt?
               </p>
-              <button id="startRefinementBtn" type="button" class="btn primary">Start refinement</button>
             </div>
             <span id="sessionStatus" class="badge badge-muted">Idle</span>
           </div>
@@ -425,6 +538,7 @@
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       <aside id="libraryPanel" class="library-panel hidden" aria-label="Prompt library" role="tabpanel" aria-hidden="true">
@@ -432,16 +546,27 @@
           <div class="library-header">
             <h2>Prompt Library</h2>
             <div class="library-header-actions">
-              <button id="newPromptBtn" class="btn small">New prompt</button>
-              <button id="duplicatePromptBtn" class="btn small" disabled>Duplicate</button>
-              <button id="renamePromptBtn" class="btn small" disabled>Rename</button>
-              <label class="btn small file-button">
-                Import
-                <input type="file" id="importFileInput" accept=".json" />
-              </label>
-              <button id="exportPromptBtn" class="btn small" disabled>Export selected</button>
-              <button id="exportAllBtn" class="btn small">Export all</button>
-              <button id="deletePromptBtn" class="btn small danger" disabled>Delete</button>
+              <div class="library-actions-group">
+                <button id="newPromptBtn" class="btn small">New prompt</button>
+                <button id="duplicatePromptBtn" class="btn small" disabled>Duplicate</button>
+                <button id="renamePromptBtn" class="btn small" disabled>Rename</button>
+              </div>
+              <div class="library-actions-group">
+                <button id="copyPromptBodyBtn" class="btn small primary" disabled>Copy prompt</button>
+                <button id="usePromptBtn" class="btn small" disabled>Use as template</button>
+              </div>
+              <div class="library-actions-group">
+                <label class="btn small file-button">
+                  Import
+                  <input type="file" id="importFileInput" accept=".json" />
+                </label>
+                <button id="exportPromptBtn" class="btn small" disabled>Export selected</button>
+                <button id="exportAllBtn" class="btn small">Export all</button>
+              </div>
+              <div class="library-actions-group">
+                <button id="savePromptChangesBtn" class="btn small primary">Save</button>
+                <button id="deletePromptBtn" class="btn small danger" disabled>Delete</button>
+              </div>
             </div>
           </div>
 
@@ -496,12 +621,6 @@
                 <span id="detailMetaCreated">Created: —</span>
                 <span id="detailMetaUpdated">Updated: —</span>
                 <span id="detailMetaUsage">Usage: 0</span>
-              </div>
-
-              <div class="detail-buttons">
-                <button id="savePromptChangesBtn" class="btn primary">Save changes</button>
-                <button id="usePromptBtn" class="btn" disabled>Use as template</button>
-                <button id="copyPromptBodyBtn" class="btn" disabled>Copy Prompt Body</button>
               </div>
 
               <div class="versions-section">
@@ -1134,14 +1253,19 @@
                   </p>
                 </div>
                 <div
-                  class="workflow-run-controls"
-                  role="group"
-                  aria-label="Step controls"
+                  id="workflowRunChromePark"
+                  class="workflow-run-chrome-park hidden"
+                  aria-hidden="true"
                 >
-                  <div id="workflowRunStatus" class="workflow-run-step-heading"></div>
-                  <div class="workflow-run-buttons">
+                  <div id="workflowRunProgress" class="workflow-run-progress">
+                    <div
+                      id="workflowRunProgressSegments"
+                      class="workflow-run-progress-segments hidden"
+                      role="img"
+                    ></div>
+                  </div>
+                  <div id="workflowRunButtons" class="workflow-run-buttons">
                     <button id="workflowPrevStepBtn" class="btn small" type="button">Previous</button>
-                    <button id="workflowRunCopyBtn" class="btn small primary" type="button">Copy</button>
                     <button id="workflowNextStepBtn" class="btn small primary" type="button">Next</button>
                     <button
                       id="workflowContinueToAuthoringBtn"
@@ -1151,6 +1275,8 @@
                       Continue to Authoring
                     </button>
                   </div>
+                  <div id="workflowRunStatus" class="workflow-run-step-heading"></div>
+                  <button id="workflowRunCopyBtn" class="btn small primary" type="button">Copy</button>
                 </div>
                 <div class="workflow-steps-header">
                   <h3>Steps</h3>
@@ -1241,6 +1367,104 @@
   <script src="lib/learner-renderer-vnext-browser.js?v=20260729-s70-expandable-images"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
-  <script src="app.js?v=20260811-s75-rename"></script>
+  <dialog
+    id="clearWorkflowRunDataConfirmDialog"
+    class="prism-confirm-dialog"
+    aria-labelledby="clearWorkflowRunDataConfirmTitle"
+    aria-describedby="clearWorkflowRunDataConfirmBody"
+  >
+    <form method="dialog" class="prism-confirm-dialog-panel">
+      <h2 id="clearWorkflowRunDataConfirmTitle" class="prism-confirm-dialog-title"></h2>
+      <p id="clearWorkflowRunDataConfirmBody" class="prism-confirm-dialog-body"></p>
+      <div class="prism-confirm-dialog-actions">
+        <button
+          type="submit"
+          value="cancel"
+          class="btn small"
+          id="clearWorkflowRunDataConfirmCancel"
+          autofocus
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          value="confirm"
+          class="btn small danger"
+          id="clearWorkflowRunDataConfirmSubmit"
+        >
+          Clear run data
+        </button>
+      </div>
+    </form>
+  </dialog>
+  <dialog
+    id="workflowImportCollisionDialog"
+    class="prism-confirm-dialog"
+    aria-labelledby="workflowImportCollisionTitle"
+    aria-describedby="workflowImportCollisionBody"
+  >
+    <form method="dialog" class="prism-confirm-dialog-panel">
+      <h2 id="workflowImportCollisionTitle" class="prism-confirm-dialog-title"></h2>
+      <p id="workflowImportCollisionBody" class="prism-confirm-dialog-body"></p>
+      <div class="prism-confirm-dialog-actions">
+        <button
+          type="submit"
+          value="cancel"
+          class="btn small"
+          id="workflowImportCollisionCancel"
+          autofocus
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          value="import_as_new"
+          class="btn small"
+          id="workflowImportCollisionImportAsNew"
+        >
+          Import as new workflow
+        </button>
+        <button
+          type="submit"
+          value="update_existing"
+          class="btn small primary"
+          id="workflowImportCollisionUpdateExisting"
+        >
+          Update existing workflow
+        </button>
+      </div>
+    </form>
+  </dialog>
+  <dialog
+    id="deleteWorkflowConfirmDialog"
+    class="prism-confirm-dialog"
+    aria-labelledby="deleteWorkflowConfirmTitle"
+    aria-describedby="deleteWorkflowConfirmBody"
+  >
+    <form method="dialog" class="prism-confirm-dialog-panel">
+      <h2 id="deleteWorkflowConfirmTitle" class="prism-confirm-dialog-title"></h2>
+      <p id="deleteWorkflowConfirmBody" class="prism-confirm-dialog-body"></p>
+      <div class="prism-confirm-dialog-actions">
+        <button
+          type="submit"
+          value="cancel"
+          class="btn small"
+          id="deleteWorkflowConfirmCancel"
+          autofocus
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          value="confirm"
+          class="btn small danger"
+          id="deleteWorkflowConfirmSubmit"
+        >
+          Delete workflow
+        </button>
+      </div>
+    </form>
+  </dialog>
+  <script src="app.js?v=20260812-s75-library-actions"></script>
 </body>
 </html>

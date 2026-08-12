@@ -1,12 +1,13 @@
 # Sprint 75 — Status / Dashboard
 
 **Sprint:** 75 — PRISM User Experience and Interface  
-**Status:** **OPEN** (opened 2026-08-10)  
+**Status:** **COMPLETE / Closed** (closed 2026-08-12)  
 **Opened:** 2026-08-10  
 **Predecessor:** Sprint 74 — **COMPLETE / Closed**  
 **Charter:** [SPRINT-75-CHARTER.md](SPRINT-75-CHARTER.md)  
-**Decisions:** [S75-D01](decisions.md#s75-d01--open-sprint-75--prism-user-experience-and-interface) · … · [S75-D25](decisions.md#s75-d25--create-proposed-workflow-one-graph-read-only-preview)  
-**Pasteable context for product/design chat:** [next-chat-briefing.md](next-chat-briefing.md)  
+**Closure:** [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md) · [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md)  
+**Decisions:** [S75-D01](decisions.md#s75-d01--open-sprint-75--prism-user-experience-and-interface) · … · [S75-D32](decisions.md#s75-d32--prompt-library-header-action-grouping)  
+**Handover:** [HANDOVER.md](HANDOVER.md) · [next-chat-briefing.md](next-chat-briefing.md)  
 **Cross-journey synthesis:** [S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md](S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md)
 
 ---
@@ -15,71 +16,58 @@
 
 | Lane | State |
 | ---- | ----- |
+| **Sprint 75 programme** | **COMPLETE / Closed** (2026-08-12) |
 | **Create UX pass** | **COMPLETE** (`S75-D22`–`D25`) |
+| **My Workflows / Run / lifecycle** | **Delivered** (see Final Report §4) |
+| **Prompt Studio / Prompt Library** | **Delivered** (see Final Report §6–7) |
 | **Persistence** | **SETTLED** (`S75-D21`) — do not reopen |
-| **NEXT REVIEW** | **My Workflows** — functional audit first, then UI |
-| **Settings** | Major review **after** My Workflows → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| **NEXT (post-Sprint 75)** | **Lagrangian Multipliers resource quality investigation** |
+| **Following** | **Settings** → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 | **Sprint 76** | **Not opened** |
 
 ```text
-Create COMPLETE (intent → essentials → one graph → Proposed → Save Workflow)
-  → Persistence SETTLED (IndexedDB payloads / localStorage refs)
-  → NEXT: My Workflows functional/operator audit
-  → Later: Settings (PB-FA-005)
+Sprint 75 COMPLETE
+  → NEXT: Lagrangian Multipliers resource quality investigation (diagnose before fix)
+  → THEN: Settings (PB-FA-005)
+  → Sprint 76 not opened
 ```
 
 ---
 
-## DONE
+## Delivered (summary)
 
-- Create journey simplified and coherent for this pass (see [next-chat-briefing.md](next-chat-briefing.md)).
-- Cross-journey / Run / Authoring interventions through `S75-D21` as recorded in [decisions.md](decisions.md).
-- Generic Create workflow reviewer retired (`S75-D03`).
-- Run captures migrated to IndexedDB resources; ref-backed runtime (`storageVersion` ≥ 2).
+Full narrative: [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md).
 
----
-
-## ESTABLISHED PRODUCT DECISIONS (Create)
-
-| Decision | One-line |
-| -------- | -------- |
-| **S75-D22** | One workflow → one product; simplified LD Create brief |
-| **S75-D23** | Assistant progressive disclosure + API-key action gate |
-| **S75-D24** | Resolved-brief diagnostics off Create UI; resolution engine retained |
-| **S75-D25** | One Proposed workflow (read-only); Draft/Refined Create chrome retired; **Save Workflow** |
-
-Product model: **CREATE** = intent + essentials + generation · **SETTINGS** = deliberate detail · **RUN** / **AUTHORING** unchanged in role.
+- **Create** — one-product brief; progressive assistant; hidden resolved-brief UI; Proposed workflow; Save Workflow; API-key action gate; generic reviewer retired.
+- **My Workflows** — Run defaults and UX; display-only segmented progress; persisted-output indication; lifecycle (Rename, Duplicate, Delete, Import); control grouping; DLA guidance/validator fixes.
+- **Authoring** — Run handoff; learner-ready assembly gate; Learning object format retired.
+- **Run persistence** — D14–D21 sequence; IndexedDB resource-backed captures (**SETTLED**).
+- **Prompt Studio** — Output type visibility; Generate progressive disclosure; Paste/Generate split (Paste default); Library-aligned paste save.
+- **Prompt Library** — header action grouping; Copy prompt / Save / Use as template relocation.
 
 ---
 
-## KNOWN DEFECTS
+## Testing (closeout)
 
-| Defect | Notes |
-| ------ | ----- |
-| **Rename** | Known: appears to create a duplicate. Contract: rename in place; same identity; retain associated state. |
-| **Delete / Import / Export** | Need My Workflows functional audit (identity, runstate, resources). |
-| Duplicate Run inheritance | **Not a defect question** — Duplicate = **new identity + clean Run state** (decided). |
+| Suite | Result |
+| ----- | ------ |
+| Authoritative Sprint 75 regression batch (8 files) | **114 / 114 pass** |
+| Full `tests/s75-*.test.js` | 1 stale cache-bust assertion in `s75-d26-compact-prism-status-control.test.js` (test maintenance; not fixed at closeout) |
+| `tests/workflow-design-page-upstream-prompt.test.js` | **3 / 3 pass** (prior `visual_need` failure not reproduced) |
 
 ---
 
-## BACKLOG / DEFERRED
+## Deferred / backlog
 
 | Item | Link |
 | ---- | ---- |
+| Lagrangian Multipliers resource quality investigation | **Immediate next** — [HANDOVER.md](HANDOVER.md) |
 | Settings / parameterisation + IA | [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
-| User-controlled storage management (usage bar, explicit cleanup) | [PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management) |
-| Stable release / cache-bust process | [PB-S-005](../../../backlog/PRODUCT-BACKLOG.md#pb-s-005--stable-release--development-process) |
-| Slideshow / product extensibility | [PB-FA-008](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test) |
-| Research pack maturation | [PB-FA-009](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-009--research-domain-pack-maturation) |
-| Orphan-resource research | [PB-R-008](../../../backlog/PRODUCT-BACKLOG.md#pb-r-008) |
+| Advanced custom-workflow Edit machinery | Future sprint **if evidence warrants** — not opened |
+| User-controlled storage management | [PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management) |
 | QA / refinement lifecycle | [PB-FA-006](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
-| T-020 C-09 / C-11 / C-12 | Deferred — operator prioritisation |
-
----
-
-## NEXT REVIEW AREA
-
-**My Workflows** — selection, modes (Run/Edit/Settings), switch/reload, Rename, Duplicate, Delete, Import, Export, Save/update, identity, runstate/resources. UI simplification **after** behaviour is understood.
+| T-020 C-09 / C-11 / C-12 | Deferred |
+| Slideshow / Research pack / release process | PB-FA-008 / PB-FA-009 / PB-S-005 |
 
 ---
 
@@ -97,4 +85,4 @@ Legacy inline `capturedOutputs` / `capturedOutputsRaw` = migration/recovery only
 
 ## Last updated
 
-2026-08-11 — Documentation consistency pass: navigation docs aligned with Create **COMPLETE** / persistence **SETTLED** / My Workflows **NEXT**. Sprint 76 not opened.
+2026-08-12 — Sprint 75 **COMPLETE / Closed**. Handover points to Lagrangian Multipliers resource quality investigation, then Settings. Sprint 76 not opened.

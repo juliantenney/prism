@@ -272,5 +272,5 @@ test("H: Neighbouring Create contracts remain intact in markup/source", () => {
   assert.match(source, /ensureCreateWorkflowApiKeyPrerequisite/);
   assert.match(source, /S75-D22|ONE WORKFLOW → ONE PRODUCT/);
   assert.match(indexHtml, /id="wfLdCreateOutputType"/);
-  assert.match(indexHtml, /app\.js\?v=20260811-s75-rename/);
+  assert.match(indexHtml, /app\.js\?v=20260812-s75-ps-progressive/);
 });

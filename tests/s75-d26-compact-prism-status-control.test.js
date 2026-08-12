@@ -250,7 +250,7 @@ test("A: Markup uses button disclosure with preserved API hooks", () => {
     indexHtml,
     /Creativity and Response Detail apply to PRISM API calls[\s\S]*do not control My Workflows Run/
   );
-  assert.match(indexHtml, /app\.js\?v=20260811-s75-rename/);
+  assert.match(indexHtml, /app\.js\?v=20260812-s75-ps-progressive/);
   assert.match(styleCss, /\.api-key-loader\.prism-status/);
   assert.doesNotMatch(indexHtml, /<details[\s\S]*id="prismStatusDetails"/);
   assert.doesNotMatch(indexHtml, /id="prismStatusSummary"/);
@@ -262,17 +262,27 @@ test("B: Collapsed key chip reflects Loaded / Not loaded without colour alone", 
   const { api, ensure } = loadPrism();
   api.setOpenAiApiKeyForTest(null);
   assert.equal(ensure("prismStatusKeyLoadBtn").hidden, false);
+  assert.equal(ensure("prismStatusKeyLoadBtn").classList.contains("hidden"), false);
   assert.equal(ensure("prismStatusKeyLoadBtn").textContent, "Not loaded");
   assert.equal(ensure("prismStatusKeyLoadBtn").getAttribute("aria-label"), "Load API key");
   assert.equal(ensure("prismStatusKeyText").hidden, true);
+  assert.equal(ensure("prismStatusKeyText").classList.contains("hidden"), true);
   assert.equal(ensure("prismStatusKeyChip").classList.contains("is-missing"), true);
   assert.equal(ensure("prismStatusKeyChip").classList.contains("is-loaded"), false);
   api.setOpenAiApiKeyForTest("sk-test");
   assert.equal(ensure("prismStatusKeyLoadBtn").hidden, true);
+  assert.equal(ensure("prismStatusKeyLoadBtn").classList.contains("hidden"), true);
   assert.equal(ensure("prismStatusKeyText").hidden, false);
+  assert.equal(ensure("prismStatusKeyText").classList.contains("hidden"), false);
   assert.equal(ensure("prismStatusKeyText").textContent, "Loaded");
   assert.equal(ensure("prismStatusKeyChip").classList.contains("is-loaded"), true);
   assert.equal(ensure("prismStatusKeyChip").classList.contains("is-missing"), false);
+});
+
+test("B2: status key CSS keeps loaded state from showing Not loaded + Loaded together", () => {
+  const css = fs.readFileSync(path.join(repoRoot, "style.css"), "utf8");
+  assert.match(css, /\.prism-status-key-action\[hidden\][\s\S]*display:\s*none\s*!important/);
+  assert.match(css, /\.prism-status-key-action\.hidden[\s\S]*display:\s*none\s*!important/);
 });
 
 test("C: Not-loaded load action invokes #apiKeyFile without expanding disclosure", () => {

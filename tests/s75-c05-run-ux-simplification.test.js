@@ -176,20 +176,22 @@ test("I: capture gating helpers still block page producers without capture", () 
   );
 });
 
-test("K/L: one Step N of M heading; Prev/Copy/Next share top bar", () => {
+test("K/L: one Step N of M heading; Prev/Next grouped; Copy is step-scoped", () => {
   const html = fs.readFileSync(indexHtmlPath, "utf8");
   const css = fs.readFileSync(styleCssPath, "utf8");
-  const controlsStart = html.indexOf('class="workflow-run-controls"');
   const stepsList = html.indexOf('id="workflowSteps"');
   const copyBar = html.indexOf('id="workflowRunCopyBtn"');
   const prev = html.indexOf('id="workflowPrevStepBtn"');
   const next = html.indexOf('id="workflowNextStepBtn"');
-  assert.ok(controlsStart > 0 && controlsStart < stepsList, "controls above step list");
-  assert.ok(prev > controlsStart && copyBar > prev && next > copyBar && next < stepsList);
+  assert.ok(prev > 0 && next > prev && next < stepsList);
   assert.match(html, /id="workflowRunStatus"/);
   assert.equal((html.match(/id="workflowPrevStepBtn"/g) || []).length, 1);
   assert.equal((html.match(/id="workflowNextStepBtn"/g) || []).length, 1);
   assert.equal((html.match(/id="workflowRunCopyBtn"/g) || []).length, 1);
+  const buttonsStart = html.indexOf('class="workflow-run-buttons"');
+  const buttons = html.slice(buttonsStart, html.indexOf("</div>", buttonsStart));
+  assert.doesNotMatch(buttons, /id="workflowRunCopyBtn"/);
+  assert.ok(copyBar > 0);
   assert.match(css, /\.workflow-detail\.run-mode\s+\.workflow-step-header\s*\{[\s\S]*?display:\s*none/);
   const { source } = loadPrismTestApi();
   assert.match(

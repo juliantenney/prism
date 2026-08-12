@@ -17,7 +17,7 @@ const patternsPath = path.join(
 );
 
 const OPTIONAL_EVIDENCE_GUIDANCE =
-  "Optional: Upload subject-specific evidence with this prompt if you want learning activities to draw on your own materials (for example, source documents, case studies, datasets or worked examples). If you don't upload any evidence, Prism will generate activities using its existing knowledge and, where appropriate, clearly identified simulated examples (default).";
+  "Optional: If you want the activities in this resource to use specific evidence or source material, upload it with this prompt.";
 
 const OLD_GUIDANCE = "attach them when running this prompt in Copilot";
 
@@ -69,6 +69,13 @@ const dlaStep = {
   outputName: "page"
 };
 
+test("Run guidance text for DLA uses the short optional evidence instruction", () => {
+  const api = loadPrismTestApi();
+  seedDlaCatalog(api);
+  const text = api.getWorkflowRunStepGuidanceTextForTest(dlaStep);
+  assert.equal(text, OPTIONAL_EVIDENCE_GUIDANCE);
+});
+
 test("domain pack: DLA runnerInstructions.what_to_expect advertises optional evidence upload", () => {
   const ri = extractDlaRunnerInstructions(fs.readFileSync(patternsPath, "utf8"));
   assert.match(String(ri.what_to_expect || ""), /Optional: Upload subject-specific evidence/i);
@@ -76,11 +83,15 @@ test("domain pack: DLA runnerInstructions.what_to_expect advertises optional evi
   assert.doesNotMatch(String(ri.what_to_expect || ""), new RegExp(OLD_GUIDANCE, "i"));
 });
 
-test("getRunnerWhatToExpect: DLA step resolves new guidance from catalog", () => {
+test("non-DLA step does not get DLA-specific run guidance", () => {
   const api = loadPrismTestApi();
-  seedDlaCatalog(api);
-  const expect = api.getRunnerWhatToExpectForTest(dlaStep);
-  assert.equal(expect, OPTIONAL_EVIDENCE_GUIDANCE);
+  const step = {
+    title: "Generate Activity Materials",
+    canonical_step_id: "step_generate_activity_materials",
+    outputName: "page"
+  };
+  const text = api.getWorkflowRunStepGuidanceTextForTest(step);
+  assert.equal(text, "");
 });
 
 test("buildWorkflowStepRunSummaryText: DLA run summary is operator-facing (no evidence/paste dump)", () => {
@@ -132,9 +143,16 @@ test("buildWorkflowStepInstructions: Copilot copy still includes What to expect 
   ]);
   api.setSelectedWorkflowIdForTest("wf-dla");
   const instr = api.buildWorkflowStepInstructions(dlaStep, 0, null);
-  assert.match(instr, /What to expect: Optional: Upload subject-specific evidence/i);
+  assert.match(
+    instr,
+    /What to expect: Optional: If you want the activities in this resource to use specific evidence or source material, upload it with this prompt\./i
+  );
   assert.equal(
-    (instr.match(/Optional: Upload subject-specific evidence/g) || []).length,
+    (
+      instr.match(
+        /Optional: If you want the activities in this resource to use specific evidence or source material, upload it with this prompt\./g
+      ) || []
+    ).length,
     1
   );
 });

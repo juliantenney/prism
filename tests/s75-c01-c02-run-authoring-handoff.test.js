@@ -27,14 +27,15 @@ function loadPrismTestApi() {
   return { api, source };
 }
 
-test("final Run step exposes Continue to Authoring; mid-run does not (index rule)", () => {
+test("final Run step still governs visibility; persisted readiness governs enabled state", () => {
   const { api, source } = loadPrismTestApi();
   assert.equal(api.isWorkflowRunAtFinalStep(0, 3), false);
   assert.equal(api.isWorkflowRunAtFinalStep(1, 3), false);
   assert.equal(api.isWorkflowRunAtFinalStep(2, 3), true);
   assert.equal(api.isWorkflowRunAtFinalStep(0, 1), true);
   assert.equal(api.isWorkflowRunAtFinalStep(0, 0), false);
-  assert.match(source, /setWorkflowContinueToAuthoringVisible\(isWorkflowRunAtFinalStep\(idx, total\)\)/);
+  assert.match(source, /setWorkflowContinueToAuthoringVisible\(isFinalStep\)/);
+  assert.match(source, /isWorkflowRunAuthoringReady\(/);
   assert.match(source, /function handleContinueToAuthoring\s*\(/);
   assert.match(source, /switchTab\("utilities"\)/);
 });

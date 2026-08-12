@@ -121,6 +121,7 @@ function loadPrismTestApi() {
     Utils: {
       debounce: (fn) => fn
     },
+    prompt: () => "2",
     localStorage: {
       getItem: () => null,
       setItem: () => {}
@@ -269,7 +270,7 @@ test("PE-import-workflow-array-object: importWorkflowsAndPrompts merges workflow
   });
 });
 
-test("PE-conflict-newerWins: updatedAt precedence keeps newer workflow", async () => {
+test("PE-conflict-explicit-choice: collision updates existing by user choice", async () => {
   const fixture = loadFixture("pe-conflict-newerWins.json");
   const { api } = loadPrismTestApi();
   await flushAsync();
@@ -281,16 +282,16 @@ test("PE-conflict-newerWins: updatedAt precedence keeps newer workflow", async (
   await flushAsync();
   let workflows = api.getWorkflowsForTest();
   assert.equal(workflows.length, 1);
-  assert.equal(workflows[0].name, fixture.expectedAfterOlderImport.name);
-  assert.equal(workflows[0].updatedAt, fixture.expectedAfterOlderImport.updatedAt);
+  assert.equal(workflows[0].id, fixture.existingWorkflows[0].id);
+  assert.equal(workflows[0].name, fixture.incomingOlder.name);
 
   api.importWorkflowsAndPrompts([fixture.incomingNewer], [], { newerWins: true });
   await flushAsync();
   await flushAsync();
   workflows = api.getWorkflowsForTest();
   assert.equal(workflows.length, 1);
-  assert.equal(workflows[0].name, fixture.expectedAfterNewerImport.name);
-  assert.equal(workflows[0].updatedAt, fixture.expectedAfterNewerImport.updatedAt);
+  assert.equal(workflows[0].id, fixture.existingWorkflows[0].id);
+  assert.equal(workflows[0].name, fixture.incomingNewer.name);
 });
 
 test("PE-normalise-no-self-binding: strips internal binding where sourceStepId equals step id", async () => {

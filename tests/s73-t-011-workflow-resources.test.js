@@ -204,3 +204,30 @@ test("hydrateVisualAssetsIntoWorkspace ignores non-image resources", async funct
   assert.equal(hydrated.hydrated, 1);
   assert.equal(ws.visualAssetManifest.assets.length, 1);
 });
+
+test("deleteResourcesForWorkflow removes only owned records", async function () {
+  await resources.putTextResource({
+    workflow_id: "wf-del-a",
+    slot_key: "run_capture:step-a:final",
+    text_payload: "{\"ok\":true}",
+    mime_type: "application/json"
+  });
+  await resources.putBinaryFileResource({
+    workflow_id: "wf-del-a",
+    filename: "asset-a.csv",
+    mime_type: "text/csv",
+    payload_blob: new Blob([Buffer.from("a", "utf8")], { type: "text/csv" }),
+    byte_size: 1
+  });
+  await resources.putTextResource({
+    workflow_id: "wf-del-b",
+    slot_key: "run_capture:step-b:final",
+    text_payload: "{\"ok\":false}",
+    mime_type: "application/json"
+  });
+
+  const res = await resources.deleteResourcesForWorkflow("wf-del-a");
+  assert.equal(res.ok, true);
+  assert.equal((await resources.listActiveResources("wf-del-a")).length, 0);
+  assert.equal((await resources.listActiveResources("wf-del-b")).length >= 1, true);
+});

@@ -1,9 +1,8 @@
 # Sprint 75 — Context
 
-**Status:** **OPEN** (opened 2026-08-10)  
-**Role:** Durable context for the UX / interaction-design programme  
-**Predecessor authority:** Sprint 74 closed programme — **link, do not rewrite evidence**  
-**Theme:** PRISM User Experience and Interface
+**Status:** **COMPLETE / Closed** (closed 2026-08-12)  
+**Role:** Durable context for the UX / interaction-design programme (historical + carry-forward decisions)  
+**Closure:** [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md) · [HANDOVER.md](HANDOVER.md)
 
 ---
 

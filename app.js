@@ -149,6 +149,8 @@
     awaitingReviewOptIn: false,
     // Remaining queued reviewer questions for current review phase.
     reviewQuestions: [],
+    // Standalone Prompt Studio mode: "paste" (default) or "generate".
+    promptStudioStandaloneMode: null,
     // Prompt Asset Lifecycle Contract (durable/canonical Prompt Library state):
     // - canonical durable state in app runtime: state.prompts + state.selectedPromptId
     // - user-authored fields: title, body, notes, tags
@@ -304,6 +306,8 @@
     els.workflowStepConfigOptions = document.getElementById("workflowStepConfigOptions");
     els.exitWorkflowPromptWizardBtn = document.getElementById("exitWorkflowPromptWizardBtn");
     els.defineBriefHeading = document.getElementById("defineBriefHeading");
+    els.defineBriefIntro = document.getElementById("defineBriefIntro");
+    els.promptStudioAdvancedOptions = document.getElementById("promptStudioAdvancedOptions");
     els.workflowContextGroup = document.getElementById("workflowContextGroup");
     els.initialPromptLabel = document.getElementById("initialPromptLabel");
     els.initialPromptHelper = document.getElementById("initialPromptHelper");
@@ -355,7 +359,23 @@
     els.copyBriefForCopilotBtn = document.getElementById("copyBriefForCopilotBtn");
     els.newBriefBtn = document.getElementById("newBriefBtn");
     els.pfBriefAuthoringActions = document.getElementById("pfBriefAuthoringActions");
+    els.pfBriefStartRefinementRow = document.getElementById("pfBriefStartRefinementRow");
+    els.pfCardEditablePrompt = document.getElementById("pfCardEditablePrompt");
     els.finalPromptSummaryAside = document.getElementById("finalPromptSummaryAside");
+    els.promptStudioStandaloneChrome = document.getElementById("promptStudioStandaloneChrome");
+    els.promptStudioIntro = document.getElementById("promptStudioIntro");
+    els.promptStudioModeControl = document.getElementById("promptStudioModeControl");
+    els.promptStudioModePasteBtn = document.getElementById("promptStudioModePasteBtn");
+    els.promptStudioModeGenerateBtn = document.getElementById("promptStudioModeGenerateBtn");
+    els.pfPasteModePanel = document.getElementById("pfPasteModePanel");
+    els.pfGenerateModePanel = document.getElementById("pfGenerateModePanel");
+    els.pastePromptTitle = document.getElementById("pastePromptTitle");
+    els.pastePromptTags = document.getElementById("pastePromptTags");
+    els.pastePromptNotes = document.getElementById("pastePromptNotes");
+    els.pastePromptBody = document.getElementById("pastePromptBody");
+    els.pastePromptValidation = document.getElementById("pastePromptValidation");
+    els.pasteSaveToLibraryBtn = document.getElementById("pasteSaveToLibraryBtn");
+    els.copyBriefHelper = document.getElementById("copyBriefHelper");
 
     els.tabRefiner = document.getElementById("tabRefiner");
     els.tabLibrary = document.getElementById("tabLibrary");
@@ -493,6 +513,44 @@
     els.duplicateWorkflowBtn = document.getElementById("duplicateWorkflowBtn");
     els.renameWorkflowBtn = document.getElementById("renameWorkflowBtn");
     els.clearWorkflowRunDataBtn = document.getElementById("clearWorkflowRunDataBtn");
+    els.clearWorkflowRunDataConfirmDialog = document.getElementById(
+      "clearWorkflowRunDataConfirmDialog"
+    );
+    els.clearWorkflowRunDataConfirmTitle = document.getElementById(
+      "clearWorkflowRunDataConfirmTitle"
+    );
+    els.clearWorkflowRunDataConfirmBody = document.getElementById(
+      "clearWorkflowRunDataConfirmBody"
+    );
+    els.clearWorkflowRunDataConfirmCancel = document.getElementById(
+      "clearWorkflowRunDataConfirmCancel"
+    );
+    els.clearWorkflowRunDataConfirmSubmit = document.getElementById(
+      "clearWorkflowRunDataConfirmSubmit"
+    );
+    els.workflowImportCollisionDialog = document.getElementById(
+      "workflowImportCollisionDialog"
+    );
+    els.workflowImportCollisionTitle = document.getElementById(
+      "workflowImportCollisionTitle"
+    );
+    els.workflowImportCollisionBody = document.getElementById(
+      "workflowImportCollisionBody"
+    );
+    els.workflowImportCollisionImportAsNew = document.getElementById(
+      "workflowImportCollisionImportAsNew"
+    );
+    els.workflowImportCollisionUpdateExisting = document.getElementById(
+      "workflowImportCollisionUpdateExisting"
+    );
+    els.workflowImportCollisionCancel = document.getElementById(
+      "workflowImportCollisionCancel"
+    );
+    els.deleteWorkflowConfirmDialog = document.getElementById("deleteWorkflowConfirmDialog");
+    els.deleteWorkflowConfirmTitle = document.getElementById("deleteWorkflowConfirmTitle");
+    els.deleteWorkflowConfirmBody = document.getElementById("deleteWorkflowConfirmBody");
+    els.deleteWorkflowConfirmCancel = document.getElementById("deleteWorkflowConfirmCancel");
+    els.deleteWorkflowConfirmSubmit = document.getElementById("deleteWorkflowConfirmSubmit");
     els.addWorkflowStepBtn = document.getElementById("addWorkflowStepBtn");
     els.saveWorkflowBtn = document.getElementById("saveWorkflowBtn");
     els.saveWorkflowBtnBottom = document.getElementById("saveWorkflowBtnBottom");
@@ -510,6 +568,10 @@
     els.unifiedWorkflowSettingsOptions = document.getElementById("unifiedWorkflowSettingsOptions");
     els.workflowModeSettingsBadge = document.getElementById("workflowModeSettingsBadge");
     els.workflowRunStatus = document.getElementById("workflowRunStatus");
+    els.workflowRunProgress = document.getElementById("workflowRunProgress");
+    els.workflowRunProgressSegments = document.getElementById("workflowRunProgressSegments");
+    els.workflowRunButtons = document.getElementById("workflowRunButtons");
+    els.workflowRunChromePark = document.getElementById("workflowRunChromePark");
     els.workflowPrevStepBtn = document.getElementById("workflowPrevStepBtn");
     els.workflowNextStepBtn = document.getElementById("workflowNextStepBtn");
     els.workflowRunCopyBtn = document.getElementById("workflowRunCopyBtn");
@@ -955,11 +1017,13 @@
         els.prismStatusKeyLoadBtn.setAttribute("hidden", "hidden");
         els.prismStatusKeyLoadBtn.setAttribute("aria-hidden", "true");
         els.prismStatusKeyLoadBtn.hidden = true;
+        els.prismStatusKeyLoadBtn.classList.add("hidden");
         els.prismStatusKeyLoadBtn.tabIndex = -1;
       } else {
         els.prismStatusKeyLoadBtn.removeAttribute("hidden");
         els.prismStatusKeyLoadBtn.setAttribute("aria-hidden", "false");
         els.prismStatusKeyLoadBtn.hidden = false;
+        els.prismStatusKeyLoadBtn.classList.remove("hidden");
         els.prismStatusKeyLoadBtn.removeAttribute("tabindex");
         els.prismStatusKeyLoadBtn.textContent = "Not loaded";
         els.prismStatusKeyLoadBtn.setAttribute("aria-label", "Load API key");
@@ -969,10 +1033,12 @@
       if (isLoaded) {
         els.prismStatusKeyText.removeAttribute("hidden");
         els.prismStatusKeyText.hidden = false;
+        els.prismStatusKeyText.classList.remove("hidden");
         els.prismStatusKeyText.textContent = "Loaded";
       } else {
         els.prismStatusKeyText.setAttribute("hidden", "hidden");
         els.prismStatusKeyText.hidden = true;
+        els.prismStatusKeyText.classList.add("hidden");
         els.prismStatusKeyText.textContent = "Loaded";
       }
     }
@@ -982,10 +1048,11 @@
     }
   }
 
-  function updateOutputTypeVisibility() {
+  function applyPromptStudioOutputTypeFieldVisibility() {
     var outputType = getSelectedOutputType();
+    var inWorkflowMode = !!state.promptFactoryWorkflowContext;
     if (els.typeFieldsText) {
-      els.typeFieldsText.classList.toggle("hidden", outputType !== "text");
+      els.typeFieldsText.classList.toggle("hidden", outputType !== "text" || inWorkflowMode);
     }
     if (els.typeFieldsCode) {
       els.typeFieldsCode.classList.toggle("hidden", outputType !== "code");
@@ -997,8 +1064,16 @@
       els.typeFieldsStructured.classList.toggle("hidden", outputType !== "structured");
     }
     if (els.promptLengthGroup) {
-      els.promptLengthGroup.classList.toggle("hidden", outputType !== "text");
+      els.promptLengthGroup.classList.toggle("hidden", outputType !== "text" || inWorkflowMode);
     }
+    if (els.textReadingLevelGroup) {
+      els.textReadingLevelGroup.classList.toggle("hidden", outputType !== "text" || inWorkflowMode);
+    }
+  }
+
+  function updateOutputTypeVisibility() {
+    var outputType = getSelectedOutputType();
+    applyPromptStudioOutputTypeFieldVisibility();
     // Contextualize format placeholder by output type to guide users.
     if (els.promptFormat && els.promptFormat.placeholder != null) {
       if (outputType === "text") {
@@ -1036,6 +1111,8 @@
     toggle(els.promptLengthGroup, inWorkflowMode);
     toggle(els.promptConstraintsGroup, inWorkflowMode);
     toggle(els.textReadingLevelGroup, inWorkflowMode);
+    toggle(els.defineBriefIntro, inWorkflowMode);
+    toggle(els.promptStudioAdvancedOptions, inWorkflowMode);
 
     // Keep minimal type-specific fields.
     // Code: keep language + environment, hide framework/style.
@@ -1053,13 +1130,13 @@
 
     // Structured: keep schema, hide validation in minimal mode.
     toggle(els.structuredValidationGroup, inWorkflowMode);
-    toggle(els.typeFieldsCode, inWorkflowMode);
-    toggle(els.typeFieldsImage, inWorkflowMode);
-    toggle(els.typeFieldsStructured, inWorkflowMode);
     toggle(els.defineBriefHeading, inWorkflowMode);
     toggle(els.pfBriefAuthoringActions, inWorkflowMode);
+    toggle(els.copyBriefHelper, inWorkflowMode);
     toggle(els.finalPromptSummaryAside, inWorkflowMode);
     toggle(els.copyFinalPromptBtn, inWorkflowMode);
+    // Type-field wrappers are owned by Output type, not workflow-mode chrome.
+    applyPromptStudioOutputTypeFieldVisibility();
     applyWorkflowPromptFactoryStepUx();
   }
 
@@ -1095,6 +1172,353 @@
     }
   }
 
+  function hasPromptStudioConversationHistory() {
+    return !!(
+      els.conversationLog &&
+      String(els.conversationLog.textContent || "").trim()
+    );
+  }
+
+  function shouldShowStandalonePromptStudioRefinementCard() {
+    return (
+      hasActiveRefinementSession() ||
+      hasPromptStudioConversationHistory() ||
+      !!state.finalResult ||
+      hasPendingFinalCandidate() ||
+      state.awaitingFinalConfirmation ||
+      state.awaitingReviewAnswer ||
+      state.awaitingReviewOptIn
+    );
+  }
+
+  function shouldShowStandalonePromptStudioFinalPromptCard() {
+    if (state.finalResult && String(state.finalResult.final_prompt || "").trim()) {
+      return true;
+    }
+    var versions = state.promptVersions || {};
+    if (
+      (versions.draft && String(versions.draft.prompt || "").trim()) ||
+      (versions.refined && String(versions.refined.prompt || "").trim())
+    ) {
+      return true;
+    }
+    if (state.pendingFinal && String(state.pendingFinal.final_prompt || "").trim()) {
+      return true;
+    }
+    return !!(els.finalPrompt && String(els.finalPrompt.value || "").trim());
+  }
+
+  function syncPromptStudioProgressiveDisclosure(opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
+    var inWorkflow = !!state.promptFactoryWorkflowContext;
+
+    if (inWorkflow) {
+      if (els.pfCardEditablePrompt) {
+        els.pfCardEditablePrompt.classList.remove("hidden");
+        els.pfCardEditablePrompt.setAttribute("aria-hidden", "false");
+      }
+      if (els.pfBriefStartRefinementRow) {
+        els.pfBriefStartRefinementRow.classList.add("hidden");
+      }
+      return;
+    }
+
+    var showRefinement = shouldShowStandalonePromptStudioRefinementCard();
+    var showFinal = shouldShowStandalonePromptStudioFinalPromptCard();
+
+    if (els.pfBriefStartRefinementRow) {
+      els.pfBriefStartRefinementRow.classList.toggle("hidden", showRefinement);
+      els.pfBriefStartRefinementRow.setAttribute(
+        "aria-hidden",
+        showRefinement ? "true" : "false"
+      );
+    }
+    if (els.pfCardRefinement) {
+      els.pfCardRefinement.classList.toggle("hidden", !showRefinement);
+      els.pfCardRefinement.setAttribute("aria-hidden", showRefinement ? "false" : "true");
+    }
+    if (els.pfCardEditablePrompt) {
+      els.pfCardEditablePrompt.classList.toggle("hidden", !showFinal);
+      els.pfCardEditablePrompt.setAttribute("aria-hidden", showFinal ? "false" : "true");
+    }
+
+    if (opts.focusRefinement && showRefinement) {
+      var focusTarget = null;
+      if (els.followUpAnswer && !els.followUpAnswer.disabled) {
+        focusTarget = els.followUpAnswer;
+      } else if (els.conversationLog) {
+        if (!els.conversationLog.hasAttribute("tabindex")) {
+          els.conversationLog.setAttribute("tabindex", "-1");
+        }
+        focusTarget = els.conversationLog;
+      } else if (els.pfCardRefinement) {
+        focusTarget = els.pfCardRefinement;
+      }
+      if (focusTarget && typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(function () {
+          if (typeof focusTarget.scrollIntoView === "function") {
+            focusTarget.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          }
+          if (typeof focusTarget.focus === "function") {
+            focusTarget.focus();
+          }
+        });
+      } else if (focusTarget) {
+        if (typeof focusTarget.scrollIntoView === "function") {
+          focusTarget.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+        if (typeof focusTarget.focus === "function") {
+          focusTarget.focus();
+        }
+      }
+    }
+    syncNewBriefButtonVisibility();
+  }
+
+  function hasMeaningfulGenerateBriefState() {
+    if (getCurrentTaskDescription()) return true;
+    var brief = getCurrentBriefSnapshot();
+    var keys = Object.keys(brief || {});
+    for (var i = 0; i < keys.length; i += 1) {
+      var key = keys[i];
+      // Output type always has a default select value; ignore unless other brief input exists.
+      if (key === "outputType") continue;
+      var val = brief[key];
+      if (val != null && String(val).trim()) return true;
+    }
+    return false;
+  }
+
+  function hasMeaningfulGenerateState() {
+    if (hasMeaningfulGenerateBriefState()) return true;
+    if (hasActiveRefinementSession()) return true;
+    if (hasPromptStudioConversationHistory()) return true;
+    if (state.finalResult && String(state.finalResult.final_prompt || "").trim()) return true;
+    if (hasPendingFinalCandidate()) return true;
+    if (state.awaitingFinalConfirmation || state.awaitingReviewAnswer || state.awaitingReviewOptIn) {
+      return true;
+    }
+    var versions = state.promptVersions || {};
+    if (
+      (versions.draft && String(versions.draft.prompt || "").trim()) ||
+      (versions.refined && String(versions.refined.prompt || "").trim())
+    ) {
+      return true;
+    }
+    return !!(els.finalPrompt && String(els.finalPrompt.value || "").trim());
+  }
+
+  function hasActiveStandaloneGenerateSession() {
+    if (state.promptFactoryWorkflowContext) return false;
+    return hasMeaningfulGenerateState();
+  }
+
+  function resolvePromptStudioStandaloneMode() {
+    if (state.promptStudioStandaloneMode === "paste" || state.promptStudioStandaloneMode === "generate") {
+      return state.promptStudioStandaloneMode;
+    }
+    state.promptStudioStandaloneMode = hasActiveStandaloneGenerateSession() ? "generate" : "paste";
+    return state.promptStudioStandaloneMode;
+  }
+
+  function setPromptStudioStandaloneMode(mode, opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
+    var next = mode === "generate" ? "generate" : "paste";
+    state.promptStudioStandaloneMode = next;
+    syncPromptStudioModeVisibility(opts);
+  }
+
+  function syncNewBriefButtonVisibility() {
+    if (!els.newBriefBtn) return;
+    var show = hasMeaningfulGenerateState();
+    els.newBriefBtn.classList.toggle("hidden", !show);
+  }
+
+  function clearPastePromptValidation() {
+    if (!els.pastePromptValidation) return;
+    els.pastePromptValidation.textContent = "";
+    els.pastePromptValidation.classList.add("hidden");
+  }
+
+  function showPastePromptValidation(message) {
+    if (!els.pastePromptValidation) return;
+    els.pastePromptValidation.textContent = String(message || "");
+    els.pastePromptValidation.classList.toggle("hidden", !message);
+  }
+
+  function syncPasteSaveButtonState() {
+    if (!els.pasteSaveToLibraryBtn) return;
+    var title =
+      els.pastePromptTitle && typeof els.pastePromptTitle.value === "string"
+        ? els.pastePromptTitle.value.trim()
+        : "";
+    var body =
+      els.pastePromptBody && typeof els.pastePromptBody.value === "string"
+        ? els.pastePromptBody.value.trim()
+        : "";
+    els.pasteSaveToLibraryBtn.disabled = !(title && body);
+    if (title && body) {
+      clearPastePromptValidation();
+    }
+  }
+
+  function syncPromptStudioModePills(mode) {
+    var isPaste = mode === "paste";
+    if (els.promptStudioModePasteBtn) {
+      els.promptStudioModePasteBtn.classList.toggle("active", isPaste);
+      els.promptStudioModePasteBtn.setAttribute("aria-selected", isPaste ? "true" : "false");
+      els.promptStudioModePasteBtn.setAttribute("tabindex", isPaste ? "0" : "-1");
+    }
+    if (els.promptStudioModeGenerateBtn) {
+      els.promptStudioModeGenerateBtn.classList.toggle("active", !isPaste);
+      els.promptStudioModeGenerateBtn.setAttribute("aria-selected", isPaste ? "false" : "true");
+      els.promptStudioModeGenerateBtn.setAttribute("tabindex", isPaste ? "-1" : "0");
+    }
+  }
+
+  function syncPromptStudioModeVisibility(opts) {
+    opts = opts && typeof opts === "object" ? opts : {};
+    var inWorkflow = !!state.promptFactoryWorkflowContext;
+
+    if (inWorkflow) {
+      if (els.promptStudioStandaloneChrome) {
+        els.promptStudioStandaloneChrome.classList.add("hidden");
+      }
+      if (els.pfPasteModePanel) {
+        els.pfPasteModePanel.classList.add("hidden");
+        els.pfPasteModePanel.setAttribute("aria-hidden", "true");
+      }
+      if (els.pfGenerateModePanel) {
+        els.pfGenerateModePanel.classList.remove("hidden");
+        els.pfGenerateModePanel.setAttribute("aria-hidden", "false");
+      }
+      syncPromptStudioProgressiveDisclosure(opts);
+      syncNewBriefButtonVisibility();
+      return;
+    }
+
+    if (els.promptStudioStandaloneChrome) {
+      els.promptStudioStandaloneChrome.classList.remove("hidden");
+    }
+
+    var mode = resolvePromptStudioStandaloneMode();
+    syncPromptStudioModePills(mode);
+
+    if (mode === "paste") {
+      if (els.pfPasteModePanel) {
+        els.pfPasteModePanel.classList.remove("hidden");
+        els.pfPasteModePanel.setAttribute("aria-hidden", "false");
+      }
+      if (els.pfGenerateModePanel) {
+        els.pfGenerateModePanel.classList.add("hidden");
+        els.pfGenerateModePanel.setAttribute("aria-hidden", "true");
+      }
+      syncPasteSaveButtonState();
+    } else {
+      if (els.pfPasteModePanel) {
+        els.pfPasteModePanel.classList.add("hidden");
+        els.pfPasteModePanel.setAttribute("aria-hidden", "true");
+      }
+      if (els.pfGenerateModePanel) {
+        els.pfGenerateModePanel.classList.remove("hidden");
+        els.pfGenerateModePanel.setAttribute("aria-hidden", "false");
+      }
+      syncPromptStudioProgressiveDisclosure(opts);
+      syncNewBriefButtonVisibility();
+    }
+  }
+
+  function handlePromptStudioModeKeydown(event) {
+    if (!els.promptStudioModeControl || !event) return;
+    var key = event.key || "";
+    if (key !== "ArrowLeft" && key !== "ArrowRight" && key !== "Home" && key !== "End") return;
+    event.preventDefault();
+    var mode = resolvePromptStudioStandaloneMode();
+    if (key === "Home" || key === "ArrowLeft") {
+      if (mode !== "paste") setPromptStudioStandaloneMode("paste");
+      if (els.promptStudioModePasteBtn && typeof els.promptStudioModePasteBtn.focus === "function") {
+        els.promptStudioModePasteBtn.focus();
+      }
+      return;
+    }
+    if (key === "End" || key === "ArrowRight") {
+      if (mode !== "generate") setPromptStudioStandaloneMode("generate");
+      if (
+        els.promptStudioModeGenerateBtn &&
+        typeof els.promptStudioModeGenerateBtn.focus === "function"
+      ) {
+        els.promptStudioModeGenerateBtn.focus();
+      }
+    }
+  }
+
+  function handlePasteSaveToLibrary() {
+    if (state.promptFactoryWorkflowContext) return;
+
+    var title =
+      els.pastePromptTitle && typeof els.pastePromptTitle.value === "string"
+        ? els.pastePromptTitle.value.trim()
+        : "";
+    var body =
+      els.pastePromptBody && typeof els.pastePromptBody.value === "string"
+        ? els.pastePromptBody.value.trim()
+        : "";
+
+    if (!title) {
+      showPastePromptValidation("Enter a prompt title.");
+      if (els.pastePromptTitle && typeof els.pastePromptTitle.focus === "function") {
+        els.pastePromptTitle.focus();
+      }
+      return;
+    }
+    if (!body) {
+      showPastePromptValidation("Paste a prompt before saving.");
+      if (els.pastePromptBody && typeof els.pastePromptBody.focus === "function") {
+        els.pastePromptBody.focus();
+      }
+      return;
+    }
+
+    clearPastePromptValidation();
+
+    var tagsRaw =
+      els.pastePromptTags && typeof els.pastePromptTags.value === "string"
+        ? els.pastePromptTags.value
+        : "";
+    var notes =
+      els.pastePromptNotes && typeof els.pastePromptNotes.value === "string"
+        ? els.pastePromptNotes.value.trim()
+        : "";
+
+    var promptAssetDraft = {
+      title: title,
+      body: body,
+      tags: parsePromptLibraryTagsInput(tagsRaw),
+      source: "manual",
+      notes: notes
+    };
+
+    updatePromptAssetMetadata(promptAssetDraft, { usageCount: 0 });
+
+    if (!window.Library || !window.Library.savePrompt) {
+      showToast("Prompt Library is not available.", "error");
+      return;
+    }
+
+    window.Library
+      .savePrompt(promptAssetDraft)
+      .then(function (saved) {
+        state.prompts.push(saved);
+        selectPrompt(saved.id);
+        renderLibraryList();
+        refreshWorkflowPromptOptions();
+        showToast("Prompt saved to library.", "success");
+      })
+      .catch(function (err) {
+        showToast(err.message || "Could not save prompt.", "error");
+      });
+  }
+
   function syncStartRefinementButtonState() {
     if (!els.startRefinementBtn) return;
     var inWorkflow = !!state.promptFactoryWorkflowContext;
@@ -1124,19 +1548,21 @@
         : "Final refined prompt";
     }
     if (els.initialPromptLabel) {
-      els.initialPromptLabel.textContent = inWorkflowMode ? "Workflow context" : "Task description";
+      els.initialPromptLabel.textContent = inWorkflowMode
+        ? "Workflow context"
+        : "What should this prompt do?";
     }
     if (els.initialPromptHelper) {
       els.initialPromptHelper.textContent = inWorkflowMode
         ? "Generated provenance from workflow brief and settings. Use Copy context if needed; edit the prompt draft above to change what runs."
-        : "Describe clearly what you want the model to do.";
+        : "Describe the task in plain language.";
     }
     if (els.workflowContextGroup) {
       els.workflowContextGroup.classList.toggle("workflow-context-readonly", inWorkflowMode);
     }
-    if (els.pfCardRefinement) {
-      els.pfCardRefinement.classList.toggle("hidden", inWorkflowMode);
-      els.pfCardRefinement.setAttribute("aria-hidden", inWorkflowMode ? "true" : "false");
+    if (els.pfCardRefinement && inWorkflowMode) {
+      els.pfCardRefinement.classList.add("hidden");
+      els.pfCardRefinement.setAttribute("aria-hidden", "true");
     }
     syncStartRefinementButtonState();
     syncWorkflowContextPresentation();
@@ -1147,6 +1573,7 @@
       els.promptVersionSelectRow.classList.toggle("hidden", inWorkflowMode);
     }
     syncWorkflowRefinementPanelUx();
+    syncPromptStudioModeVisibility();
   }
 
   function shouldExpandWorkflowRefinementPanel() {
@@ -1202,9 +1629,8 @@
     }
     var expanded = shouldExpandWorkflowRefinementPanel();
 
-    if (els.pfCardRefinement) {
-      els.pfCardRefinement.classList.remove("hidden");
-      els.pfCardRefinement.setAttribute("aria-hidden", "false");
+    syncPromptStudioProgressiveDisclosure();
+    if (els.pfCardRefinement && !inWorkflow) {
       els.pfCardRefinement.classList.toggle("pf-refinement-idle", false);
     }
     if (els.pfRefinementActivePanel) {
@@ -1583,6 +2009,14 @@
     if (!isRun) return "";
     // Sprint 75: Run UI description only — never pack runnerInstructions / Copy guidance.
     return getWorkflowRunUiStepDescription(step || {});
+  }
+
+  function getWorkflowRunStepGuidanceText(step) {
+    var ctx = buildWorkflowStepIdentityContextFromRow(step || {});
+    if (isWorkflowStepDesignLearningActivities(ctx)) {
+      return "Optional: If you want the activities in this resource to use specific evidence or source material, upload it with this prompt.";
+    }
+    return "";
   }
 
   function upsertWorkflowStepParamBlock(existingText, selectedOptions) {
@@ -23622,6 +24056,9 @@
     els.sessionStatus.textContent = "Idle";
     els.sessionStatus.className = "badge badge-muted";
     els.conversationLog.innerHTML = "";
+    if (els.conversationLog && "textContent" in els.conversationLog) {
+      els.conversationLog.textContent = "";
+    }
     els.followUpAnswer.value = "";
     els.followUpAnswer.disabled = true;
     els.sendFollowUpBtn.disabled = true;
@@ -23652,6 +24089,7 @@
       state.workflowRefinementUiActivated = false;
     }
     syncWorkflowRefinementPanelUx();
+    syncPromptStudioModeVisibility();
   }
 
   function clearBriefFields() {
@@ -23787,6 +24225,7 @@
     clearBriefFields();
     clearWorkflowPromptContext();
     updateOutputTypeVisibility();
+    syncNewBriefButtonVisibility();
     showToast("New brief ready.", "success");
   }
 
@@ -24180,10 +24619,16 @@
         : null;
       var summaryPanel = li.querySelector('[data-role="runner-summary"]');
       var summaryBody = li.querySelector('[data-role="runner-summary-body"]');
+      var summaryGuidance = li.querySelector('[data-role="runner-step-guidance"]');
       if (summaryPanel && summaryBody) {
         var summaryText = buildWorkflowStepRunSummaryText(stepForRun || {}, wfForRun || {}, isRun);
+        var guidanceText = isRun ? getWorkflowRunStepGuidanceText(stepForRun || {}) : "";
         summaryPanel.classList.toggle("hidden", !(isRun && summaryText));
         summaryBody.textContent = isRun ? summaryText : "";
+        if (summaryGuidance) {
+          summaryGuidance.textContent = guidanceText;
+          summaryGuidance.classList.toggle("hidden", !guidanceText);
+        }
       }
       var runOutWrap = li.querySelector('[data-role="run-step-output-wrap"]');
       var runOutArea = li.querySelector('[data-field="runStepOutput"]');
@@ -24353,20 +24798,76 @@
   }
 
   /** Run data is preserved on select/run; users clear it explicitly via Clear run data. */
-  function handleClearWorkflowRunData() {
-    var workflowId = String(state.selectedWorkflowId || "").trim();
-    if (!workflowId) {
-      showToast("Select a workflow first.", "error");
-      return;
-    }
+  function buildClearWorkflowRunDataConfirmCopy(workflowName) {
+    var name = String(workflowName || "Untitled workflow").trim() || "Untitled workflow";
+    return {
+      title: 'Clear run data for "' + name + '"?',
+      body:
+        "This will permanently remove this workflow's Run progress, captured data and generated assets. The workflow itself and its settings will not be deleted. This cannot be undone."
+    };
+  }
+
+  function executeClearWorkflowRunData(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return;
     clearWorkflowRunCaptureState({
-      workflowId: workflowId,
+      workflowId: wid,
       resetIndex: true,
       clearDom: true
     });
     resetWorkflowRunNavigationState({ resetIndex: true });
     updateWorkflowRunView();
     showToast("Run data cleared.", "success");
+  }
+
+  function requestClearWorkflowRunDataConfirmation(workflowName) {
+    var copy = buildClearWorkflowRunDataConfirmCopy(workflowName);
+    var dialog = els.clearWorkflowRunDataConfirmDialog;
+    if (!dialog || typeof dialog.showModal !== "function") {
+      var fallback = window.confirm(
+        copy.title + "\n\n" + copy.body + "\n\nChoose OK to clear run data, or Cancel to keep it."
+      );
+      return Promise.resolve(!!fallback);
+    }
+    if (els.clearWorkflowRunDataConfirmTitle) {
+      els.clearWorkflowRunDataConfirmTitle.textContent = copy.title;
+    }
+    if (els.clearWorkflowRunDataConfirmBody) {
+      els.clearWorkflowRunDataConfirmBody.textContent = copy.body;
+    }
+    return new Promise(function (resolve) {
+      var onClose = function () {
+        dialog.removeEventListener("close", onClose);
+        resolve(String(dialog.returnValue || "") === "confirm");
+      };
+      dialog.addEventListener("close", onClose);
+      try {
+        dialog.showModal();
+      } catch (_eShow) {
+        dialog.removeEventListener("close", onClose);
+        resolve(false);
+        return;
+      }
+      if (els.clearWorkflowRunDataConfirmCancel && typeof els.clearWorkflowRunDataConfirmCancel.focus === "function") {
+        try {
+          els.clearWorkflowRunDataConfirmCancel.focus();
+        } catch (_eFocus) {}
+      }
+    });
+  }
+
+  function handleClearWorkflowRunData() {
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    if (!workflowId) {
+      showToast("Select a workflow first.", "error");
+      return;
+    }
+    var wf = findWorkflowById(workflowId);
+    var workflowName = wf ? wf.name || "Untitled workflow" : "Untitled workflow";
+    requestClearWorkflowRunDataConfirmation(workflowName).then(function (confirmed) {
+      if (!confirmed) return;
+      executeClearWorkflowRunData(workflowId);
+    });
   }
 
   function workflowRunStepHasBlockingCaptureErrors(stepId) {
@@ -24989,6 +25490,157 @@
     els.workflowContinueToAuthoringBtn.classList.toggle("hidden", !visible);
   }
 
+  function workflowStepHasPersistedRunData(workflowId, stepId) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid || !sid) return false;
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!rec) return false;
+    var captureRefs = rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs : {};
+    var stepRefs =
+      captureRefs[sid] && typeof captureRefs[sid] === "object" ? captureRefs[sid] : null;
+    if (
+      stepRefs &&
+      ((stepRefs.final && String(stepRefs.final.resource_id || "").trim()) ||
+        (stepRefs.raw && String(stepRefs.raw.resource_id || "").trim()))
+    ) {
+      return true;
+    }
+    var capturedOutputs =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object" ? rec.capturedOutputs : {};
+    var capturedOutputsRaw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? rec.capturedOutputsRaw
+        : {};
+    if (!workflowRunCaptureValueIsBlank(capturedOutputs[sid])) return true;
+    if (!workflowRunCaptureValueIsBlank(capturedOutputsRaw[sid])) return true;
+    return false;
+  }
+
+  function workflowHasPersistedDesignPageResult(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return false;
+    var wf = findWorkflowById(wid);
+    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) return false;
+    var designPageStep = wf.steps.find(function (step) {
+      return isWorkflowStepDesignPage({
+        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+        stepCanonicalTitle: step && (step.title || ""),
+        stepTitle: step && (step.title || "")
+      });
+    });
+    if (!designPageStep || !designPageStep.id) return false;
+    return workflowStepHasPersistedRunData(wid, designPageStep.id);
+  }
+
+  function buildWorkflowRunProgressSegments(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var steps = Array.isArray(opts.steps) ? opts.steps : [];
+    var currentIndex =
+      typeof opts.currentIndex === "number" && isFinite(opts.currentIndex)
+        ? Math.max(0, Math.floor(opts.currentIndex))
+        : 0;
+    var workflowId = String(opts.workflowId || "").trim();
+    return steps.map(function (step, i) {
+      var row = step && typeof step === "object" ? step : {};
+      var progress = i < currentIndex ? "passed" : i === currentIndex ? "current" : "future";
+      return {
+        index: i,
+        stepId: String(row.id || "").trim(),
+        title: String(row.title || "").trim() || "Untitled step",
+        progress: progress,
+        hasSavedData: workflowStepHasPersistedRunData(workflowId, row.id)
+      };
+    });
+  }
+
+  function buildWorkflowRunProgressSegmentsAriaLabel(segments, currentIndex) {
+    var rows = Array.isArray(segments) ? segments : [];
+    var total = rows.length;
+    if (!total) return "";
+    var idx =
+      typeof currentIndex === "number" && isFinite(currentIndex)
+        ? Math.max(0, Math.floor(currentIndex))
+        : 0;
+    var displayIndex = Math.min(idx + 1, total);
+    var saved = [];
+    rows.forEach(function (seg, i) {
+      if (seg && seg.hasSavedData) saved.push(String(i + 1));
+    });
+    var label = "Workflow progress: step " + displayIndex + " of " + total + ".";
+    if (saved.length) {
+      label +=
+        " Saved data on step" +
+        (saved.length === 1 ? " " : "s ") +
+        saved.join(", ") +
+        ".";
+    } else {
+      label += " No saved step data.";
+    }
+    return label;
+  }
+
+  function renderWorkflowRunProgressSegments(segments, currentIndex) {
+    var host = els.workflowRunProgressSegments;
+    if (!host) return;
+    var rows = Array.isArray(segments) ? segments : [];
+    host.textContent = "";
+    if (!rows.length) {
+      host.classList.add("hidden");
+      if (typeof host.removeAttribute === "function") {
+        host.removeAttribute("aria-label");
+      }
+      return;
+    }
+    host.classList.remove("hidden");
+    host.setAttribute("role", "img");
+    host.setAttribute("aria-label", buildWorkflowRunProgressSegmentsAriaLabel(rows, currentIndex));
+    rows.forEach(function (seg) {
+      var block = document.createElement("span");
+      block.className = "workflow-run-progress-segment";
+      if (seg.progress === "passed") block.classList.add("is-passed");
+      if (seg.progress === "current") block.classList.add("is-current");
+      if (seg.progress === "future") block.classList.add("is-future");
+      if (seg.hasSavedData) block.classList.add("is-saved");
+      block.setAttribute("aria-hidden", "true");
+      host.appendChild(block);
+    });
+  }
+
+  function syncWorkflowRunStepIdentityPlacement(currentStepLi) {
+    var park = els.workflowRunChromePark;
+    var navHost =
+      currentStepLi && currentStepLi.querySelector
+        ? currentStepLi.querySelector('[data-role="run-step-nav"]')
+        : null;
+    var identityHost =
+      currentStepLi && currentStepLi.querySelector
+        ? currentStepLi.querySelector('[data-role="run-step-identity"]')
+        : null;
+    var copyHost =
+      currentStepLi && currentStepLi.querySelector
+        ? currentStepLi.querySelector('[data-role="run-step-copy"]')
+        : null;
+    var navTarget = navHost || park;
+    if (navTarget) {
+      if (els.workflowRunProgress) navTarget.appendChild(els.workflowRunProgress);
+      if (els.workflowRunButtons) navTarget.appendChild(els.workflowRunButtons);
+    }
+    var identityTarget = identityHost || park;
+    if (identityTarget && els.workflowRunStatus) {
+      identityTarget.appendChild(els.workflowRunStatus);
+    }
+    var copyTarget = copyHost || park;
+    if (copyTarget && els.workflowRunCopyBtn) {
+      copyTarget.appendChild(els.workflowRunCopyBtn);
+    }
+  }
+
+  function isWorkflowRunAuthoringReady(workflowId) {
+    return workflowHasPersistedDesignPageResult(workflowId);
+  }
+
   function handleContinueToAuthoring() {
     switchTab("utilities");
     refreshUtilitiesWorkflowContextUI();
@@ -25210,6 +25862,12 @@
         els.workflowRunCopyBtn.textContent = "Copy";
       }
       setWorkflowContinueToAuthoringVisible(false);
+      if (els.workflowContinueToAuthoringBtn) {
+        els.workflowContinueToAuthoringBtn.disabled = true;
+        els.workflowContinueToAuthoringBtn.removeAttribute("title");
+      }
+      renderWorkflowRunProgressSegments([], 0);
+      syncWorkflowRunStepIdentityPlacement(null);
       return;
     }
 
@@ -25273,13 +25931,22 @@
       els.workflowRunStatus.textContent =
         "Step " + displayIndex + " of " + displayTotal + " \u2014 " + stepTitle;
     }
+    renderWorkflowRunProgressSegments(
+      buildWorkflowRunProgressSegments({
+        workflowId: state.selectedWorkflowId || "",
+        steps: wfRun && Array.isArray(wfRun.steps) ? wfRun.steps : [],
+        currentIndex: idx
+      }),
+      idx
+    );
+    syncWorkflowRunStepIdentityPlacement(currentStepLi);
 
     if (currentStepLi) {
       maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
       bindWorkflowRunCaptureTextareaFromState(currentStepLi, { force: true });
     }
 
-    // Prev / Copy / Next share the top execution bar.
+    // Previous / Next stay in the panel navigation row; Copy is placed after step guidance.
     if (els.workflowPrevStepBtn) {
       els.workflowPrevStepBtn.disabled = idx === 0;
     }
@@ -25307,7 +25974,20 @@
         els.workflowNextStepBtn.removeAttribute("title");
       }
     }
-    setWorkflowContinueToAuthoringVisible(isWorkflowRunAtFinalStep(idx, total));
+    var isFinalStep = isWorkflowRunAtFinalStep(idx, total);
+    setWorkflowContinueToAuthoringVisible(isFinalStep);
+    if (els.workflowContinueToAuthoringBtn) {
+      var authoringReady = isWorkflowRunAuthoringReady(state.selectedWorkflowId || "");
+      els.workflowContinueToAuthoringBtn.disabled = !authoringReady;
+      if (isFinalStep && !authoringReady) {
+        els.workflowContinueToAuthoringBtn.setAttribute(
+          "title",
+          "Continue to Authoring is available after a persisted Design Page result exists."
+        );
+      } else {
+        els.workflowContinueToAuthoringBtn.removeAttribute("title");
+      }
+    }
     refreshWorkflowRunStepOutputStatusDisplays();
   }
 
@@ -25513,6 +26193,7 @@
         summary: current.summary || ""
       };
     }
+    syncPromptStudioProgressiveDisclosure();
   }
 
   function handleStartRefinement() {
@@ -25735,6 +26416,7 @@
       callOpenAI(false).catch(function (err) {
         showToast(err.message || "Error calling OpenAI API.", "error");
       });
+      syncPromptStudioProgressiveDisclosure({ focusRefinement: true });
     };
 
     // Keep standalone Prompt Studio refinement concise.
@@ -26476,6 +27158,7 @@
     els.followUpAnswer.disabled = true;
     els.sendFollowUpBtn.disabled = true;
     els.finishRefinementBtn.disabled = true;
+    syncPromptStudioProgressiveDisclosure();
   }
 
   function mapOpenAIError(message, status) {
@@ -27198,17 +27881,23 @@
     return findPromptById(id);
   }
 
+  function parsePromptLibraryTagsInput(tagsRaw) {
+    return tagsRaw && String(tagsRaw).trim()
+      ? String(tagsRaw)
+          .split(",")
+          .map(function (t) {
+            return t.trim();
+          })
+          .filter(Boolean)
+      : [];
+  }
+
   function buildPromptAssetFromDetailForm(existingAsset) {
     var title = (els.detailTitle.value || "").trim();
     var tagsRaw = els.detailTags.value;
     var notes = (els.detailNotes.value || "").trim();
     var body = (els.detailBody.value || "").trim();
-    var tags =
-      tagsRaw && tagsRaw.trim()
-        ? tagsRaw.split(",").map(function (t) {
-            return t.trim();
-          }).filter(Boolean)
-        : [];
+    var tags = parsePromptLibraryTagsInput(tagsRaw);
     return {
       id: state.selectedPromptId || (existingAsset && existingAsset.id ? existingAsset.id : null),
       title: title || "Untitled prompt",
@@ -27659,6 +28348,48 @@
     return items;
   }
 
+  function resolveWorkflowSelectionForCurrentView(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var all = Array.isArray(opts.workflows) ? opts.workflows : state.workflows || [];
+    var filters = opts.filters && typeof opts.filters === "object" ? opts.filters : getActiveWorkflowListFilters();
+    var visible = Array.isArray(opts.visible) ? opts.visible : applyWorkflowListFilters(all, filters);
+    var selectedId =
+      opts.selectedWorkflowId != null
+        ? String(opts.selectedWorkflowId || "").trim()
+        : String(state.selectedWorkflowId || "").trim();
+    var selectedVisible = !!(
+      selectedId &&
+      visible.some(function (wf) {
+        return wf && String(wf.id || "") === selectedId;
+      })
+    );
+    if (selectedVisible) {
+      return { action: "keep", workflowId: selectedId, visible: visible };
+    }
+    if (!visible.length) {
+      return { action: "none", workflowId: "", visible: visible };
+    }
+    return {
+      action: "select",
+      workflowId: String(visible[0] && visible[0].id ? visible[0].id : ""),
+      visible: visible
+    };
+  }
+
+  function applyResolvedWorkflowSelection(resolved) {
+    var next = resolved && typeof resolved === "object" ? resolved : { action: "none", workflowId: "" };
+    if (next.action === "keep") return false;
+    if (next.action === "select" && next.workflowId) {
+      if (String(state.selectedWorkflowId || "") === String(next.workflowId)) return false;
+      selectWorkflow(next.workflowId);
+      return true;
+    }
+    if (state.selectedWorkflowId) {
+      clearWorkflowDetail();
+    }
+    return false;
+  }
+
   function getActiveWorkflowListFilters() {
     var tagInput = els.workflowTagFilter ? String(els.workflowTagFilter.value || "").trim() : "";
     var tagList = tagInput
@@ -27746,15 +28477,8 @@
     } catch (e) {
       state.workflows = [];
     }
-    if (state.workflows.length) {
-      state.selectedWorkflowId = state.workflows[0].id;
-    } else {
-      state.selectedWorkflowId = null;
-    }
     renderWorkflowList();
-    if (state.selectedWorkflowId) {
-      selectWorkflow(state.selectedWorkflowId);
-    } else {
+    if (!state.selectedWorkflowId) {
       clearWorkflowDetail();
     }
     // Workflows can reference prompts; re-render library so "In workflow" indicators update.
@@ -29079,12 +29803,24 @@
     });
   }
 
-  function renderWorkflowList() {
-    if (!els.workflowList) return;
-    renderLibraryWorkflowFilterOptions();
+  function renderWorkflowList(options) {
+    var opts = options && typeof options === "object" ? options : {};
     var all = Array.isArray(state.workflows) ? state.workflows : [];
     var filters = getActiveWorkflowListFilters();
     var visible = applyWorkflowListFilters(all, filters);
+    if (!opts.skipDefaultSelection) {
+      var resolved = resolveWorkflowSelectionForCurrentView({
+        workflows: all,
+        visible: visible,
+        filters: filters
+      });
+      if (applyResolvedWorkflowSelection(resolved)) {
+        return;
+      }
+      visible = resolved.visible || visible;
+    }
+    if (!els.workflowList) return;
+    renderLibraryWorkflowFilterOptions();
 
     els.workflowList.innerHTML = "";
     if (!all.length) {
@@ -29223,7 +29959,7 @@
     populateWorkflowDetail(wf, {
       preserveRunNavigation: state.workflowDetailMode === "run"
     });
-    renderWorkflowList();
+    renderWorkflowList({ skipDefaultSelection: true });
     refreshWorkflowModeSettingsTabBadge();
     if (state.workflowDetailMode === "settings") {
       renderUnifiedWorkflowSettingsUI();
@@ -29896,6 +30632,20 @@
     li.setAttribute("data-domain-version", String(step.domain_version || ""));
     var initialBindings = Array.isArray(step.inputBindings) ? step.inputBindings.slice() : [];
     writeStepInputBindings(li, initialBindings);
+
+    var runNav = document.createElement("div");
+    runNav.className = "workflow-step-run-nav";
+    runNav.setAttribute("data-role", "run-step-nav");
+    runNav.setAttribute("role", "group");
+    runNav.setAttribute("aria-label", "Workflow progress and navigation");
+
+    var runIdentity = document.createElement("div");
+    runIdentity.className = "workflow-step-run-identity";
+    runIdentity.setAttribute("data-role", "run-step-identity");
+
+    var runCopy = document.createElement("div");
+    runCopy.className = "workflow-step-run-copy";
+    runCopy.setAttribute("data-role", "run-step-copy");
 
     var header = document.createElement("div");
     header.className = "workflow-step-header";
@@ -30791,6 +31541,10 @@
     runSummaryBody.className = "small muted";
     runSummaryBody.setAttribute("data-role", "runner-summary-body");
     runSummary.appendChild(runSummaryBody);
+    var runSummaryGuidance = document.createElement("div");
+    runSummaryGuidance.className = "workflow-step-run-guidance helper-text hidden";
+    runSummaryGuidance.setAttribute("data-role", "runner-step-guidance");
+    runSummary.appendChild(runSummaryGuidance);
     instructionsGroup.appendChild(runSummary);
     instructionsGroup.appendChild(instructionsLabel);
     instructionsGroup.appendChild(instructionsArea);
@@ -30828,9 +31582,12 @@
     userNotesWrap.appendChild(userNotesStatus);
 
     li.appendChild(hiddenStepIdInput);
+    li.appendChild(runNav);
+    li.appendChild(runIdentity);
     li.appendChild(header);
     li.appendChild(fields);
     li.appendChild(instructionsGroup);
+    li.appendChild(runCopy);
     li.appendChild(userNotesWrap);
     renderInputBindings();
     updateRunStepOutputStatus(li);
@@ -30997,9 +31754,34 @@
   }
 
   function handleNewWorkflow() {
-    clearWorkflowDetail();
+    var now = Date.now();
+    var newId =
+      window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now + Math.random());
+    var newWorkflow = normalizeWorkflowForV1(
+      {
+        id: newId,
+        name: "New workflow",
+        tags: [],
+        notes: "",
+        selectedDomains: ["general"],
+        artefacts: "",
+        workflowInputs: [],
+        workflowOutputs: [],
+        workflowOutputSpec: normalizeWorkflowOutputSpec({}),
+        steps: [],
+        createdAt: now,
+        updatedAt: now
+      },
+      []
+    );
+    state.workflows.push(newWorkflow);
+    saveWorkflows();
     renderWorkflowList();
+    setWorkflowMode("edit");
+    selectWorkflow(newWorkflow.id);
+    renderLibraryList();
     if (els.workflowName) {
+      els.workflowName.select();
       els.workflowName.focus();
     }
   }
@@ -31192,21 +31974,47 @@
     showToast("Workflow renamed.", "success");
   }
 
-  function handleDeleteWorkflow() {
-    if (!state.selectedWorkflowId) return;
-    var wf = findWorkflowById(state.selectedWorkflowId);
+  async function handleDeleteWorkflow() {
+    var selectedId = String(state.selectedWorkflowId || "").trim();
+    if (!selectedId) return;
+    var wf = findWorkflowById(selectedId);
     var title = wf ? wf.name || "this workflow" : "this workflow";
-    var confirmed = window.confirm(
-      'Delete "' + title + "\"? This cannot be undone."
-    );
+    var confirmed = await requestDeleteWorkflowConfirmation(title);
     if (!confirmed) return;
-
+    var resourcesMod = getWorkflowResourcesMod();
+    var purgeResult;
+    try {
+      purgeResult =
+        resourcesMod && typeof resourcesMod.deleteResourcesForWorkflow === "function"
+          ? await resourcesMod.deleteResourcesForWorkflow(selectedId)
+          : {
+              ok: false,
+              code: "resource_cleanup_unavailable",
+              message: "Workflow resource cleanup is unavailable."
+            };
+    } catch (err) {
+      showToast(
+        (err && err.message) || "Workflow resource cleanup failed. Delete was cancelled.",
+        "error"
+      );
+      return;
+    }
+    if (!purgeResult || purgeResult.ok !== true) {
+      showToast(
+        (purgeResult && purgeResult.message) ||
+          "Workflow resource cleanup failed. Delete was cancelled.",
+        "error"
+      );
+      return;
+    }
+    clearPersistedWorkflowRunStateForWorkflow(selectedId);
+    pruneWorkflowSessionStateForDeletedWorkflow(selectedId);
     state.workflows = state.workflows.filter(function (w) {
-      return w.id !== state.selectedWorkflowId;
+      return String((w && w.id) || "") !== selectedId;
     });
     state.selectedWorkflowId = null;
     saveWorkflows();
-    renderWorkflowList();
+    renderWorkflowList({ skipDefaultSelection: true });
     clearWorkflowDetail();
     renderLibraryList();
     showToast("Workflow deleted.", "success");
@@ -32811,6 +33619,238 @@
     };
   }
 
+  function buildWorkflowImportCollisionCopy(importedName, existingName) {
+    var incoming = String(importedName || "Imported workflow").trim() || "Imported workflow";
+    var current = String(existingName || "Existing workflow").trim() || "Existing workflow";
+    return {
+      title: "A matching workflow already exists",
+      body:
+        'The imported workflow "' +
+        incoming +
+        '" has the same internal identity as the existing workflow "' +
+        current +
+        '".\n\nWhat would you like to do?'
+    };
+  }
+
+  function requestWorkflowImportCollisionResolution(importedWorkflow, existingWorkflow) {
+    var importedName =
+      importedWorkflow && importedWorkflow.name
+        ? importedWorkflow.name
+        : "Imported workflow";
+    var existingName =
+      existingWorkflow && existingWorkflow.name
+        ? existingWorkflow.name
+        : "Existing workflow";
+    var copy = buildWorkflowImportCollisionCopy(importedName, existingName);
+    var dialog = els.workflowImportCollisionDialog;
+    if (!dialog || typeof dialog.showModal !== "function") {
+      if (typeof window.prompt !== "function") {
+        return Promise.resolve("cancel");
+      }
+      var fallback = window.prompt(
+        copy.title +
+          "\n\n" +
+          copy.body +
+          "\n\nType 1 to import as new, 2 to update existing, or 3 to cancel."
+      );
+      var choice = String(fallback || "").trim();
+      if (choice === "1") return Promise.resolve("import_as_new");
+      if (choice === "2") return Promise.resolve("update_existing");
+      return Promise.resolve("cancel");
+    }
+    if (els.workflowImportCollisionTitle) {
+      els.workflowImportCollisionTitle.textContent = copy.title;
+    }
+    if (els.workflowImportCollisionBody) {
+      els.workflowImportCollisionBody.textContent = copy.body;
+    }
+    return new Promise(function (resolve) {
+      var onClose = function () {
+        dialog.removeEventListener("close", onClose);
+        var answer = String(dialog.returnValue || "");
+        if (answer === "import_as_new" || answer === "update_existing") {
+          resolve(answer);
+          return;
+        }
+        resolve("cancel");
+      };
+      dialog.addEventListener("close", onClose);
+      try {
+        dialog.showModal();
+      } catch (_eShow) {
+        dialog.removeEventListener("close", onClose);
+        resolve("cancel");
+        return;
+      }
+      if (
+        els.workflowImportCollisionCancel &&
+        typeof els.workflowImportCollisionCancel.focus === "function"
+      ) {
+        try {
+          els.workflowImportCollisionCancel.focus();
+        } catch (_eFocus) {}
+      }
+    });
+  }
+
+  function buildDeleteWorkflowConfirmCopy(workflowName) {
+    var name = String(workflowName || "this workflow").trim() || "this workflow";
+    return {
+      title: 'Delete "' + name + '"?',
+      body:
+        "This will permanently delete the workflow, its Run data and its generated assets. This cannot be undone."
+    };
+  }
+
+  function requestDeleteWorkflowConfirmation(workflowName) {
+    var copy = buildDeleteWorkflowConfirmCopy(workflowName);
+    var dialog = els.deleteWorkflowConfirmDialog;
+    if (!dialog || typeof dialog.showModal !== "function") {
+      var fallback = window.confirm(copy.title + "\n\n" + copy.body);
+      return Promise.resolve(!!fallback);
+    }
+    if (els.deleteWorkflowConfirmTitle) {
+      els.deleteWorkflowConfirmTitle.textContent = copy.title;
+    }
+    if (els.deleteWorkflowConfirmBody) {
+      els.deleteWorkflowConfirmBody.textContent = copy.body;
+    }
+    return new Promise(function (resolve) {
+      var onClose = function () {
+        dialog.removeEventListener("close", onClose);
+        resolve(String(dialog.returnValue || "") === "confirm");
+      };
+      dialog.addEventListener("close", onClose);
+      try {
+        dialog.showModal();
+      } catch (_eShow) {
+        dialog.removeEventListener("close", onClose);
+        resolve(false);
+        return;
+      }
+      if (els.deleteWorkflowConfirmCancel && typeof els.deleteWorkflowConfirmCancel.focus === "function") {
+        try {
+          els.deleteWorkflowConfirmCancel.focus();
+        } catch (_eFocus) {}
+      }
+    });
+  }
+
+  function pruneWorkflowSessionStateForDeletedWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return;
+    if (state.workflowRunSessionIndexByWorkflow && typeof state.workflowRunSessionIndexByWorkflow === "object") {
+      delete state.workflowRunSessionIndexByWorkflow[wid];
+    }
+    if (state.workflowRunCaptureHydrationByWorkflow && typeof state.workflowRunCaptureHydrationByWorkflow === "object") {
+      delete state.workflowRunCaptureHydrationByWorkflow[wid];
+    }
+    if (
+      state.unifiedSettingsRecoveredBriefConfigById &&
+      typeof state.unifiedSettingsRecoveredBriefConfigById === "object"
+    ) {
+      delete state.unifiedSettingsRecoveredBriefConfigById[wid];
+    }
+  }
+
+  function cloneWorkflowWithNewIdentityForImport(workflow) {
+    var clone = workflow && typeof workflow === "object" ? JSON.parse(JSON.stringify(workflow)) : {};
+    var now = Date.now();
+    var nextWorkflowId =
+      window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now + Math.random());
+    clone.id = nextWorkflowId;
+    clone.createdAt = now;
+    clone.updatedAt = now;
+    var oldToNew = {};
+    (clone.steps || []).forEach(function (step) {
+      var oldId = String((step && step.id) || "").trim();
+      if (!oldId) return;
+      var newId =
+        window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(now + Math.random());
+      oldToNew[oldId] = newId;
+    });
+    clone.steps = (clone.steps || []).map(function (step) {
+      var s = Object.assign({}, step || {});
+      var oldId = String((step && step.id) || "").trim();
+      if (oldToNew[oldId]) s.id = oldToNew[oldId];
+      s.inputBindings = normalizeStepInputBindings((step && step.inputBindings) || []).map(
+        function (b) {
+          if (b.kind !== "internal") return b;
+          return {
+            kind: "internal",
+            artifactName: b.artifactName,
+            sourceStepId: oldToNew[b.sourceStepId] || b.sourceStepId
+          };
+        }
+      );
+      return s;
+    });
+    return clone;
+  }
+
+  function buildImportedWorkflowForExistingIdentity(existingWorkflow, importedWorkflow) {
+    var existing = existingWorkflow && typeof existingWorkflow === "object" ? existingWorkflow : {};
+    var imported = importedWorkflow && typeof importedWorkflow === "object" ? importedWorkflow : {};
+    var now = Date.now();
+    var updated = JSON.parse(JSON.stringify(imported));
+    updated.id = String(existing.id || updated.id || "");
+    updated.createdAt =
+      typeof existing.createdAt === "number" && isFinite(existing.createdAt)
+        ? existing.createdAt
+        : typeof updated.createdAt === "number" && isFinite(updated.createdAt)
+        ? updated.createdAt
+        : now;
+    updated.updatedAt = now;
+    return updated;
+  }
+
+  function assessWorkflowRunStateCompatibilityForImportedWorkflow(workflowId, candidateWorkflow) {
+    var wid = String(workflowId || "").trim();
+    if (!wid || !candidateWorkflow || typeof candidateWorkflow !== "object") {
+      return { compatible: true, missingStepIds: [] };
+    }
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!rec) return { compatible: true, missingStepIds: [] };
+    var knownIds = {};
+    (Array.isArray(candidateWorkflow.steps) ? candidateWorkflow.steps : []).forEach(function (step) {
+      var sid = String((step && step.id) || "").trim();
+      if (sid) knownIds[sid] = true;
+    });
+    var referencedIds = {};
+    function addKeys(map) {
+      if (!map || typeof map !== "object") return;
+      Object.keys(map).forEach(function (k) {
+        var sid = String(k || "").trim();
+        if (sid) referencedIds[sid] = true;
+      });
+    }
+    addKeys(rec.capturedOutputs);
+    addKeys(rec.capturedOutputsRaw);
+    addKeys(rec.captureRefs);
+    addKeys(rec.stepCompleted);
+    var missing = Object.keys(referencedIds).filter(function (sid) {
+      return !knownIds[sid];
+    });
+    return {
+      compatible: missing.length === 0,
+      missingStepIds: missing
+    };
+  }
+
+  function shouldSuppressWorkflowImportWarning(message, source) {
+    var msg = String(message || "").trim();
+    var origin = String(source || "").trim();
+    if (!msg) return true;
+    if (origin === "normalize") {
+      if (/omitted self-referential internal input binding/i.test(msg)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   function handleExportAllWorkflows() {
     exportAllData();
   }
@@ -32892,11 +33932,11 @@
   }
 
   function importWorkflowsAndPrompts(workflows, prompts, options) {
-    var newerWins = options && options.newerWins === true;
     var importedWorkflows = Array.isArray(workflows) ? workflows : [];
     var importedPrompts = Array.isArray(prompts) ? prompts : [];
-
-    var promptMergeOptions = { newerWins: newerWins };
+    var promptMergeOptions = {
+      newerWins: options && options.newerWins === true
+    };
     var promptsPromise =
       importedPrompts.length && window.Library && window.Library.importPromptsFromEntries
         ? window.Library.importPromptsFromEntries(importedPrompts, promptMergeOptions)
@@ -32907,105 +33947,149 @@
         loadLibrary();
         renderLibraryList();
 
-        var existingById = {};
-        (state.workflows || []).forEach(function (w) {
-          existingById[w.id] = w;
-        });
-
         var addedCount = 0;
         var updatedCount = 0;
-        var skippedCount = 0;
+        var importedAsNewCount = 0;
+        var cancelledCount = 0;
         var workflowWarnings = [];
-
+        var importChain = Promise.resolve();
         importedWorkflows.forEach(function (wf) {
-          if (!wf || typeof wf !== "object") return;
-          var normalizeWarnings = [];
-          // Import path ownership:
-          // normalize first, then validate normalized workflow, then merge by id/update policy.
-          var normalizedWorkflow = normalizeWorkflowForV1(wf, normalizeWarnings);
-          // Import path: normalize first, validate second; validation is warning-only and
-          // does not block merge/update decisions for normalized records.
-          var validationWarnings = validateWorkflow(normalizedWorkflow);
-          if (normalizeWarnings.length || validationWarnings.length) {
-            workflowWarnings = workflowWarnings.concat(
-              dedupeWarnings(normalizeWarnings.concat(validationWarnings))
-            );
-          }
-          var wfId = normalizedWorkflow.id && String(normalizedWorkflow.id);
-          if (!wfId) {
-            wfId = window.Utils && window.Utils.uuid ? window.Utils.uuid() : String(Date.now());
-            normalizedWorkflow.id = wfId;
-          }
+          importChain = importChain.then(function () {
+            if (!wf || typeof wf !== "object") return;
+            var normalizeWarnings = [];
+            var normalizedWorkflow = normalizeWorkflowForV1(wf, normalizeWarnings);
+            var validationWarnings = validateWorkflow(normalizedWorkflow);
+            var wfId = normalizedWorkflow.id && String(normalizedWorkflow.id || "").trim();
+            if (!wfId) {
+              wfId =
+                window.Utils && window.Utils.uuid
+                  ? window.Utils.uuid()
+                  : String(Date.now() + Math.random());
+              normalizedWorkflow.id = wfId;
+            }
 
-          var existing = existingById[wfId];
-          if (existing && newerWins) {
-            var existingTime =
-              typeof existing.updatedAt === "number" ? existing.updatedAt : 0;
-            var importedTime =
-              typeof normalizedWorkflow.updatedAt === "number" ? normalizedWorkflow.updatedAt : 0;
-            if (importedTime <= existingTime) {
-              skippedCount += 1;
+            var idx = state.workflows.findIndex(function (w) {
+              return w && String(w.id || "") === wfId;
+            });
+            var existing = idx >= 0 ? state.workflows[idx] : null;
+
+            function collectWarningsIfNeeded() {
+              var warnings = [];
+              normalizeWarnings.forEach(function (msg) {
+                if (shouldSuppressWorkflowImportWarning(msg, "normalize")) return;
+                warnings.push(String(msg || ""));
+              });
+              validationWarnings.forEach(function (msg) {
+                if (shouldSuppressWorkflowImportWarning(msg, "validate")) return;
+                warnings.push(String(msg || ""));
+              });
+              if (warnings.length) {
+                workflowWarnings = workflowWarnings.concat(dedupeWarnings(warnings));
+              }
+            }
+
+            if (!existing) {
+              state.workflows.push(normalizedWorkflow);
+              addedCount += 1;
+              collectWarningsIfNeeded();
               return;
             }
-          }
 
-          var idx = state.workflows.findIndex(function (w) {
-            return w.id === wfId;
+            return requestWorkflowImportCollisionResolution(normalizedWorkflow, existing).then(
+              function (choice) {
+                if (choice === "cancel") {
+                  cancelledCount += 1;
+                  return;
+                }
+                if (choice === "import_as_new") {
+                  var clone = cloneWorkflowWithNewIdentityForImport(normalizedWorkflow);
+                  var cloneNormalizeWarnings = [];
+                  clone = normalizeWorkflowForV1(clone, cloneNormalizeWarnings);
+                  state.workflows.push(clone);
+                  addedCount += 1;
+                  importedAsNewCount += 1;
+                  collectWarningsIfNeeded();
+                  return;
+                }
+                var updated = buildImportedWorkflowForExistingIdentity(existing, normalizedWorkflow);
+                state.workflows[idx] = updated;
+                updatedCount += 1;
+                collectWarningsIfNeeded();
+                var compat = assessWorkflowRunStateCompatibilityForImportedWorkflow(
+                  updated.id,
+                  updated
+                );
+                if (!compat.compatible) {
+                  workflowWarnings.push(
+                    "Updated workflow keeps existing Run data, but " +
+                      compat.missingStepIds.length +
+                      " captured step ID(s) are not present in the imported definition."
+                  );
+                }
+              }
+            );
           });
-          if (idx >= 0) {
-            state.workflows[idx] = normalizedWorkflow;
-            updatedCount += 1;
-          } else {
-            state.workflows.push(normalizedWorkflow);
-            addedCount += 1;
-          }
         });
 
-        saveWorkflows();
-        renderWorkflowList();
+        return importChain.then(function () {
+          saveWorkflows();
+          renderWorkflowList();
 
-        var pAdd = promptSummary.added || 0;
-        var pUp = promptSummary.updated || 0;
-        var pSkip = promptSummary.skipped || 0;
-        var pTotal = pAdd + pUp;
-        var wTotal = addedCount + updatedCount;
+          var pAdd = promptSummary.added || 0;
+          var pUp = promptSummary.updated || 0;
+          var pSkip = promptSummary.skipped || 0;
+          var pTotal = pAdd + pUp;
+          var wTotal = addedCount + updatedCount;
 
-        var parts = [];
-        if (pTotal > 0) {
-          parts.push(
-            pTotal +
-              " prompt(s) (" +
-              pAdd +
-              " added, " +
-              pUp +
-              " updated" +
-              (pSkip ? ", " + pSkip + " skipped (newer local)" : "") +
-              ")"
-          );
-        }
-        if (wTotal > 0) {
-          parts.push(
-            wTotal +
+          var parts = [];
+          if (pTotal > 0) {
+            parts.push(
+              pTotal +
+                " prompt(s) (" +
+                pAdd +
+                " added, " +
+                pUp +
+                " updated" +
+                (pSkip ? ", " + pSkip + " skipped (newer local)" : "") +
+                ")"
+            );
+          }
+          if (wTotal > 0) {
+            var wfPart =
+              wTotal +
               " workflow(s) (" +
               addedCount +
-              " added, " +
+              " imported, " +
               updatedCount +
-              " updated" +
-              (skippedCount ? ", " + skippedCount + " skipped (newer local)" : "") +
-              ")"
-          );
-        }
-        showToast(
-          "Imported " + (parts.length ? parts.join(" and ") : "nothing") + ".",
-          "success"
-        );
-        if (workflowWarnings.length) {
-          workflowWarnings = dedupeWarnings(workflowWarnings);
-          showToast(
-            "Imported with " + workflowWarnings.length + " workflow warning(s). Open a workflow to review.",
-            "warning"
-          );
-        }
+              " updated";
+            if (importedAsNewCount) {
+              wfPart += ", " + importedAsNewCount + " imported as new";
+            }
+            wfPart += ")";
+            parts.push(wfPart);
+          }
+          if (cancelledCount > 0) {
+            parts.push(cancelledCount + " cancelled");
+          }
+
+          if (parts.length) {
+            showToast("Imported " + parts.join(" and ") + ".", "success");
+          } else {
+            showToast("Import cancelled.", "warning");
+          }
+          if (workflowWarnings.length) {
+            workflowWarnings = dedupeWarnings(workflowWarnings);
+            var firstWarning = String(workflowWarnings[0] || "");
+            var moreCount = workflowWarnings.length - 1;
+            var warningMsg =
+              "Imported with " +
+              workflowWarnings.length +
+              " workflow warning(s): " +
+              firstWarning;
+            if (moreCount > 0) warningMsg += " (+" + moreCount + " more)";
+            showToast(warningMsg, "warning");
+          }
+        });
       })
       .catch(function () {
         showToast("Unable to import.", "error");
@@ -34208,6 +35292,12 @@
     }
     if (showUtilities) {
       refreshUtilitiesWorkflowContextUI();
+    }
+    if (showPromptFactory) {
+      syncPromptStudioModeVisibility();
+    }
+    if (showWorkflows) {
+      renderWorkflowList();
     }
     if (showWorkflowFactory && els.wfDesignSaveBtn) {
       els.wfDesignSaveBtn.disabled = false;
@@ -51460,6 +52550,34 @@
     els.copyFinalPromptBtn.addEventListener("click", handleCopyFinalPrompt);
     els.saveToLibraryBtn.addEventListener("click", handleSaveRefinedToLibrary);
 
+    if (els.promptStudioModePasteBtn) {
+      els.promptStudioModePasteBtn.addEventListener("click", function () {
+        setPromptStudioStandaloneMode("paste");
+      });
+    }
+    if (els.promptStudioModeGenerateBtn) {
+      els.promptStudioModeGenerateBtn.addEventListener("click", function () {
+        setPromptStudioStandaloneMode("generate");
+      });
+    }
+    if (els.promptStudioModeControl) {
+      els.promptStudioModeControl.addEventListener("keydown", handlePromptStudioModeKeydown);
+    }
+    if (els.pasteSaveToLibraryBtn) {
+      els.pasteSaveToLibraryBtn.addEventListener("click", handlePasteSaveToLibrary);
+    }
+    if (els.pastePromptTitle) {
+      els.pastePromptTitle.addEventListener("input", syncPasteSaveButtonState);
+    }
+    if (els.pastePromptBody) {
+      els.pastePromptBody.addEventListener("input", syncPasteSaveButtonState);
+    }
+    if (els.pfGenerateModePanel) {
+      els.pfGenerateModePanel.addEventListener("input", function () {
+        syncNewBriefButtonVisibility();
+      });
+    }
+
     // Prompt asset save readiness in Prompt Studio panel.
     if (els.finalPrompt && els.saveToLibraryBtn) {
       els.finalPrompt.addEventListener("input", function () {
@@ -51973,6 +53091,7 @@
     refreshPrismStatusStorageChip();
     bindPrismStatusDisclosureControl();
     bindPrismStatusKeyLoadControl();
+    syncPromptStudioModeVisibility();
   }
 
   function init() {
@@ -52361,8 +53480,10 @@
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.gatherWorkflowDetailFormDataForTest = gatherWorkflowDetailFormData;
     prismTestApi.handleSaveWorkflowForTest = handleSaveWorkflow;
+    prismTestApi.handleNewWorkflowForTest = handleNewWorkflow;
     prismTestApi.handleRenameWorkflowForTest = handleRenameWorkflow;
     prismTestApi.handleDuplicateWorkflowForTest = handleDuplicateWorkflow;
+    prismTestApi.handleDeleteWorkflowForTest = handleDeleteWorkflow;
     prismTestApi.selectWorkflowForTest = selectWorkflow;
     prismTestApi.getSelectedWorkflowIdForTest = function () {
       return state.selectedWorkflowId;
@@ -52371,6 +53492,11 @@
     prismTestApi.saveWorkflowsForTest = saveWorkflows;
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
+    prismTestApi.resolveWorkflowSelectionForCurrentViewForTest =
+      resolveWorkflowSelectionForCurrentView;
+    prismTestApi.renderWorkflowListForTest = renderWorkflowList;
+    prismTestApi.syncWorkflowRunStepIdentityPlacementForTest =
+      syncWorkflowRunStepIdentityPlacement;
     prismTestApi.normalizeActivityInteractionMetadata = normalizeActivityInteractionMetadata;
     prismTestApi.computeStableSeed = computeStableSeed;
     prismTestApi.deterministicShuffle = deterministicShuffle;
@@ -52476,6 +53602,7 @@
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
     prismTestApi.getRunnerWhatToExpectForTest = getRunnerWhatToExpect;
     prismTestApi.buildWorkflowStepRunSummaryText = buildWorkflowStepRunSummaryText;
+    prismTestApi.getWorkflowRunStepGuidanceTextForTest = getWorkflowRunStepGuidanceText;
     prismTestApi.getWorkflowRunUiStepDescription = getWorkflowRunUiStepDescription;
     prismTestApi.getPipelineExecutionOpeningDirective = getPipelineExecutionOpeningDirective;
     prismTestApi.getPipelineExecutionCompletionDirective = getPipelineExecutionCompletionDirective;
@@ -52497,8 +53624,34 @@
     };
     prismTestApi.formatWorkflowRunStepCompleteStatus = formatWorkflowRunStepCompleteStatus;
     prismTestApi.clearWorkflowRunCaptureState = clearWorkflowRunCaptureState;
+    prismTestApi.buildClearWorkflowRunDataConfirmCopyForTest = buildClearWorkflowRunDataConfirmCopy;
+    prismTestApi.requestClearWorkflowRunDataConfirmationForTest =
+      requestClearWorkflowRunDataConfirmation;
+    prismTestApi.executeClearWorkflowRunDataForTest = executeClearWorkflowRunData;
+    prismTestApi.handleClearWorkflowRunDataForTest = handleClearWorkflowRunData;
+    prismTestApi.buildWorkflowImportCollisionCopyForTest = buildWorkflowImportCollisionCopy;
+    prismTestApi.requestWorkflowImportCollisionResolutionForTest =
+      requestWorkflowImportCollisionResolution;
+    prismTestApi.cloneWorkflowWithNewIdentityForImportForTest =
+      cloneWorkflowWithNewIdentityForImport;
+    prismTestApi.buildImportedWorkflowForExistingIdentityForTest =
+      buildImportedWorkflowForExistingIdentity;
+    prismTestApi.assessWorkflowRunStateCompatibilityForImportedWorkflowForTest =
+      assessWorkflowRunStateCompatibilityForImportedWorkflow;
+    prismTestApi.shouldSuppressWorkflowImportWarningForTest =
+      shouldSuppressWorkflowImportWarning;
+    prismTestApi.buildDeleteWorkflowConfirmCopyForTest = buildDeleteWorkflowConfirmCopy;
+    prismTestApi.requestDeleteWorkflowConfirmationForTest = requestDeleteWorkflowConfirmation;
+    prismTestApi.pruneWorkflowSessionStateForDeletedWorkflowForTest =
+      pruneWorkflowSessionStateForDeletedWorkflow;
     prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
     prismTestApi.isWorkflowRunAtFinalStep = isWorkflowRunAtFinalStep;
+    prismTestApi.workflowHasPersistedDesignPageResultForTest = workflowHasPersistedDesignPageResult;
+    prismTestApi.workflowStepHasPersistedRunDataForTest = workflowStepHasPersistedRunData;
+    prismTestApi.buildWorkflowRunProgressSegmentsForTest = buildWorkflowRunProgressSegments;
+    prismTestApi.buildWorkflowRunProgressSegmentsAriaLabelForTest =
+      buildWorkflowRunProgressSegmentsAriaLabel;
+    prismTestApi.isWorkflowRunAuthoringReadyForTest = isWorkflowRunAuthoringReady;
     prismTestApi.extractAssembledWorkflowProvenanceFromPage =
       extractAssembledWorkflowProvenanceFromPage;
     prismTestApi.parseUtilitiesJsonInputForProvenance = parseUtilitiesJsonInputForProvenance;
@@ -53084,6 +54237,80 @@
     prismTestApi.handleUtilitiesGenerateForTest = handleUtilitiesGenerate;
     prismTestApi.attachEventListenersForTest = attachEventListeners;
     prismTestApi.cacheElementsForTest = cacheElements;
+    prismTestApi.updateOutputTypeVisibilityForTest = updateOutputTypeVisibility;
+    prismTestApi.getSelectedOutputTypeForTest = getSelectedOutputType;
+    prismTestApi.getCurrentBriefSnapshotForTest = getCurrentBriefSnapshot;
+    prismTestApi.buildRefinementBriefPartsForTest = buildRefinementBriefParts;
+    prismTestApi.syncPromptStudioProgressiveDisclosureForTest = syncPromptStudioProgressiveDisclosure;
+    prismTestApi.syncPromptStudioModeVisibilityForTest = syncPromptStudioModeVisibility;
+    prismTestApi.setPromptStudioStandaloneModeForTest = setPromptStudioStandaloneMode;
+    prismTestApi.resetPromptStudioStandaloneModeForTest = function () {
+      state.promptStudioStandaloneMode = null;
+    };
+    prismTestApi.resolvePromptStudioStandaloneModeForTest = resolvePromptStudioStandaloneMode;
+    prismTestApi.handlePasteSaveToLibraryForTest = handlePasteSaveToLibrary;
+    prismTestApi.parsePromptLibraryTagsInputForTest = parsePromptLibraryTagsInput;
+    prismTestApi.syncPasteSaveButtonStateForTest = syncPasteSaveButtonState;
+    prismTestApi.hasMeaningfulGenerateStateForTest = hasMeaningfulGenerateState;
+    prismTestApi.handleCopyBriefForCopilotForTest = handleCopyBriefForCopilot;
+    prismTestApi.shouldShowStandalonePromptStudioRefinementCardForTest =
+      shouldShowStandalonePromptStudioRefinementCard;
+    prismTestApi.shouldShowStandalonePromptStudioFinalPromptCardForTest =
+      shouldShowStandalonePromptStudioFinalPromptCard;
+    prismTestApi.resetConversationStateForTest = resetConversationState;
+    prismTestApi.handleNewBriefForTest = handleNewBrief;
+    prismTestApi.handleStartRefinementForTest = handleStartRefinement;
+    prismTestApi.finalizeFromPendingForTest = finalizeFromPending;
+    prismTestApi.simulateStandaloneRefinementStartedForTest = function () {
+      resetConversationState();
+      state.sessionActive = true;
+      state.messages = [
+        { role: "system", content: "system" },
+        { role: "user", content: "task" },
+        { role: "assistant", content: "What audience?" }
+      ];
+      if (els.conversationLog) {
+        els.conversationLog.textContent = "What audience?";
+      }
+      if (els.sessionStatus) {
+        els.sessionStatus.textContent = "Waiting for assistant…";
+      }
+      if (els.followUpAnswer) {
+        els.followUpAnswer.disabled = false;
+      }
+      if (els.sendFollowUpBtn) {
+        els.sendFollowUpBtn.disabled = false;
+      }
+      if (els.finishRefinementBtn) {
+        els.finishRefinementBtn.disabled = false;
+      }
+      syncPromptStudioProgressiveDisclosure({ focusRefinement: true });
+    };
+    prismTestApi.simulateStandaloneFinalPromptForTest = function (body, summary) {
+      var text = String(body || "").trim();
+      state.finalResult = {
+        status: "complete",
+        final_prompt: text,
+        summary: summary || ""
+      };
+      state.pendingFinal = null;
+      state.sessionActive = false;
+      if (els.finalPrompt) {
+        els.finalPrompt.value = text;
+      }
+      if (els.finalSummary) {
+        els.finalSummary.textContent = summary || "";
+        els.finalSummary.classList.toggle("empty", !(summary || "").trim());
+      }
+      if (els.saveToLibraryBtn) {
+        els.saveToLibraryBtn.disabled = !text;
+      }
+      syncPromptStudioProgressiveDisclosure();
+    };
+    prismTestApi.setPromptFactoryWorkflowContextForTest = function (ctx) {
+      state.promptFactoryWorkflowContext = ctx || null;
+      applyWorkflowPromptFactoryStepUx();
+    };
     prismTestApi.refreshUtilitiesOutputWorkspaceFromPageForTest = refreshUtilitiesOutputWorkspaceFromPage;
     prismTestApi.rehydrateWorkflowResourcesIntoUtilitiesWorkspaceForTest =
       rehydrateWorkflowResourcesIntoUtilitiesWorkspace;

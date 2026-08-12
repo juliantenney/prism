@@ -1,63 +1,51 @@
 # Sprint 75 — PRISM User Experience and Interface
 
-**Status:** **OPEN** (opened 2026-08-10)  
+**Status:** **COMPLETE / Closed** (closed 2026-08-12)  
 **Opened:** 2026-08-10  
 **Type:** UX / interaction-design programme  
 **Portable pack:** [docs/development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md)  
 **Predecessor:** [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) — **COMPLETE / Closed**  
-**Current truth:** [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md) · [decisions.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)  
-**Continuation:** [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md)  
-**Next programme:** Sprint 76 — **Not opened**
+**Closeout:** [sprint-75-closeout.md](sprint-75-closeout.md) · [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md)  
+**Handover:** [HANDOVER.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/HANDOVER.md)  
+**Next programme:** Lagrangian Multipliers resource quality investigation → Settings (**PB-FA-005**) · Sprint 76 **not opened**
 
 ## Theme
 
 Systematically improve Prism’s user experience and interface for eventual users. Sequential domain discovery — not visual polish alone, not one whole-application audit.
 
-## Purpose
+## Outcome (summary)
 
-UX programme: five programme domains (A–E); experience-before-implementation; discovery-led improvement after Sprint 74 architecture consolidation.
+Sprint 75 delivered UX refinements across Create Workflow, My Workflows, Authoring handoffs, Run durability (**SETTLED**), Prompt Studio, and Prompt Library. See [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md).
 
-## Programme domains
+## Immediate next work
 
-| Domain | Name |
-| ------ | ---- |
-| A | Elicitation & Workflow Generation |
-| B | My Workflows |
-| C | Authoring |
-| D | Prompt Studio |
-| E | Prompt Library |
+> **Sprint 75 is complete. Begin next with the Lagrangian Multipliers resource quality investigation. Settings follows after that.**
 
-## Current position (2026-08-11)
+## Programme domains — final posture
 
-- Sprint 75 **OPEN** · Sprint 76 **not opened**  
-- Create UX pass **COMPLETE** (`S75-D22`–`D25`)  
-- Persistence **SETTLED** (`S75-D21`) — do not casually reopen  
-- **NEXT:** My Workflows functional / operator audit → UI simplification after behavioural understanding → later Settings / [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)  
-- Deferred T-020 slices **C-09 / C-11 / C-12**  
-- Detail: pack [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md)
+| Domain | Status |
+| ------ | ------ |
+| A — Create | **COMPLETE** (`S75-D22`–`D25`) |
+| B — My Workflows | **Delivered** |
+| C — Authoring | **Delivered** (handoff + readiness) |
+| D — Prompt Studio | **Delivered** (`S75-D30`) |
+| E — Prompt Library | **Delivered** (`S75-D32`) |
 
-## Phase overview (summary)
+## Phase overview
 
 | Phase | Focus | Status |
 | ----- | ----- | ------ |
-| 1–4 | Pack init, T-010/T-020 discovery synthesis | **Done** (historical) |
-| — | Create UX pass (`S75-D22`–`D25`) | **COMPLETE** |
-| — | Persistence (`S75-D21`) | **SETTLED** |
-| — | My Workflows functional / operator audit | **NEXT** |
-| — | Settings / parameterisation | **Later** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
-| — | T-020 C-09 / C-11 / C-12 | **Deferred** |
-| — | Domains D–E detailed discovery | **Not started** |
-| — | Sprint 76 | **Not opened** |
-
-## Boundaries
-
-Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md). Engineering disciplines: [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md). Do not reopen Sprint 74 architecture. Actual product use is primary UX evidence.
+| Discovery (T-010, T-020) | Evidence synthesis | **Done** |
+| Create + Run + persistence | C-01…C-08, D03…D21 | **Done** — persistence **SETTLED** |
+| My Workflows / Prompt surfaces | Run UX, lifecycle, PS, Library | **Done** |
+| Sprint 75 closeout | Documentation + handover | **Done** (2026-08-12) |
+| Lagrangian resource investigation | Diagnostic | **NEXT** |
+| Settings | PB-FA-005 | **Following** |
+| Sprint 76 | — | **Not opened** |
 
 ## Authoritative docs
 
-- [SPRINT-75-START-HERE.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md)  
+- [HANDOVER.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/HANDOVER.md)  
+- [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md)  
 - [STATUS.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/STATUS.md)  
-- [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md)  
-- [decisions.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)  
-- [PLAN.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/PLAN.md)  
-- Historical: [S75-T-020](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-020-cross-journey-ux-evidence-synthesis-and-intervention-framing.md) · [T-010 operator synthesis](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/S75-T-010-domain-a-operator-observation-synthesis.md)  
+- [decisions.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/decisions.md)

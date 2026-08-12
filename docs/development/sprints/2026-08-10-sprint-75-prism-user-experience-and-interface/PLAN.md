@@ -1,9 +1,8 @@
 # Sprint 75 — Plan
 
-**Status:** **OPEN** (opened 2026-08-10)  
-**Theme:** PRISM User Experience and Interface  
-**Charter:** [SPRINT-75-CHARTER.md](SPRINT-75-CHARTER.md)  
-**Decisions:** [S75-D01](decisions.md#s75-d01--open-sprint-75--prism-user-experience-and-interface) · [S75-D02](decisions.md#s75-d02--sprint-75-follows-the-product-journey-and-major-product-surfaces-sequentially)
+**Status:** **COMPLETE / Closed** (closed 2026-08-12)  
+**Closure:** [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md) · [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md)  
+**Next:** Lagrangian Multipliers resource quality investigation → Settings (**PB-FA-005**)
 
 Task IDs: `S75-T-###`. Decision IDs: `S75-D##` in [decisions.md](decisions.md).
 
@@ -50,13 +49,15 @@ S75-T-001 (pack init) ✅ Done
   → S75-D22–D25 Create UX pass ✅
      → one product · progressive assistant · hide resolved-brief UI · Proposed workflow read-only
      → Create UX pass COMPLETE
-  → NEXT: My Workflows functional / operator audit
-     → UI simplification only after behavioural understanding
-  → Later: Settings / parameterisation (PB-FA-005)
-  → Deferred: T-020 C-09 / C-11 / C-12 · PB-FA-006 QA lifecycle · Domains D/E · Sprint 76 not opened
+  → My Workflows Run UX, lifecycle, progress indication ✅
+  → Prompt Studio + Prompt Library UX ✅ (S75-D26–D32)
+  → Sprint 75 programme COMPLETE (2026-08-12)
+  → NEXT: Lagrangian Multipliers resource quality investigation
+  → THEN: Settings / parameterisation (PB-FA-005)
+  → Deferred: T-020 C-09 / C-11 / C-12 · advanced Edit overhaul (if warranted) · Sprint 76 not opened
 ```
 
-Authoritative current snapshot: [STATUS.md](STATUS.md).
+Authoritative current snapshot: [STATUS.md](STATUS.md) · [HANDOVER.md](HANDOVER.md).
 
 ---
 

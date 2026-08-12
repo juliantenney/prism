@@ -1,44 +1,55 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 74 **OPEN** (programme wrapper). Sprint 74B **OPEN** (implementation). Sprint 74A **COMPLETE / Closed**. Sprint 74C **Not opened**.  
-**Updated:** 2026-08-07
+**Status:** Sprint 75 **COMPLETE / Closed** (2026-08-12). Sprint 76 **not opened**.  
+**Updated:** 2026-08-12
 
 ---
 
-## Active implementation — Sprint 74B
+## Immediate next work — Priority 1
+
+**Lagrangian Multipliers resource quality investigation**
+
+A PRISM-generated Lagrangian Multipliers learning resource scored substantially lower on QA/benchmark than peer resources. **Investigate why before changing generation behaviour.**
 
 | Resource | Path |
 | -------- | ---- |
-| Start here | [SPRINT-74B-START-HERE.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) |
-| Charter | [SPRINT-74B-CHARTER.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-CHARTER.md) |
-| Briefing | [next-chat-briefing.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/next-chat-briefing.md) |
-| T-010 baseline | [S74B-T-010](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/S74B-T-010-generation-pipeline-architectural-discovery.md) |
-| Top-level | [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) |
-| Engineering disciplines | [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md) |
+| Handover (start here) | [HANDOVER.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/HANDOVER.md) |
+| Next-chat briefing | [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md) |
+| Sprint 75 final report | [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md) |
+| Benchmark / QA lifecycle context | [PB-FA-006](../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
 
-**Current 74B task:** `S74B-T-040` — execute removals (**Not started**). T-001…T-030 Done · **S74B-D02 Accepted**. **No removals executed yet.**
+> **Sprint 75 is complete. Begin next with the Lagrangian Multipliers resource quality investigation. Settings follows after that.**
 
 ---
 
-## Sprint 74 (programme wrapper)
+## Following priority — Priority 2
+
+**Settings** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
+
+Parameter source-of-truth, Settings information architecture, Run propagation. Investigation largely complete during Sprint 75; **implementation deferred** until after the resource-quality investigation.
+
+---
+
+## Closed — Sprint 75
 
 | Resource | Path |
 | -------- | ---- |
-| Start here | [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md) |
+| Closeout | [sprint-75-closeout.md](sprint-75-closeout.md) |
+| Final report | [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md) |
+| Closure record | [SPRINT-75-CLOSURE.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-CLOSURE.md) |
+| Portable pack | [SPRINT-75-START-HERE.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md) |
+| Top-level charter | [sprint-75-prism-user-experience-and-interface.md](sprint-75-prism-user-experience-and-interface.md) |
+
+---
+
+## Historical — Sprint 74 programme (closed)
+
+Sprint 74 architecture consolidation remains **COMPLETE / Closed**. Do not reopen from next-work pointers.
+
+| Resource | Path |
+| -------- | ---- |
+| Sprint 74 | [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) |
 | Constraints | [ARCHITECTURAL-CONSTRAINTS.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) |
-| Domain refinement | [S74-T-010](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/S74-T-010-rationalisation-domain-refinement.md) |
-| Top-level | [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) |
-
-**Posture:** Wrapper open. **74C not opened.**
-
----
-
-## Completed — Sprint 74A
-
-| Resource | Path |
-| -------- | ---- |
-| Final report | [SPRINT-74A-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-74a-authoring-learner-export-path-integrity/SPRINT-74A-FINAL-REPORT.md) |
-| Closeout | [sprint-74a-closeout.md](sprint-74a-closeout.md) |
 
 ---
 
@@ -46,14 +57,14 @@
 
 > A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
 
+The Lagrangian investigation is **diagnostic first** — do not prescribe fixes until evidence identifies failure point(s).
+
 ---
 
 ## Navigation
 
 | Resource | Path |
 | -------- | ---- |
-| Sprint 74B | [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) |
-| Sprint 74 | [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) |
-| Sprint 74A | [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) |
 | Product backlog | [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) |
 | Sprint index | [README.md](README.md) |
+| Engineering disciplines | [ENGINEERING-DISCIPLINES.md](../development/ENGINEERING-DISCIPLINES.md) |

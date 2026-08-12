@@ -1,6 +1,6 @@
 # Sprint 75 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-08-10)  
+**Sprint status:** **COMPLETE / Closed** (closed 2026-08-12)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Inherited programme constraints are **linked, not duplicated** — [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md); parent Sprint 74 decisions `S74-D03`…`S74-D11`.
@@ -394,7 +394,91 @@ Inherited working practice — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DI
 
 - **Presentation polish (same decision; no new decision ID):** table column proportions ~9% / 53% / 38% (Step / Workflow step / Purpose) with `table-layout: fixed`; button label **Save Workflow** (was “Save as workflow”). Cache-bust `app.js?v=20260811-s75-d25b` / `style.css?v=20260811-s75-d25b`.
 
-- **Consequences:** `#wfDesignVersionSelect` removed; heading **Proposed workflow**; compact semantic table preview; Create edit/delete mutation paths removed; D03 regression no longer requires version select; tests in `tests/s75-d25-proposed-workflow-readonly-preview.test.js`. Persistence untouched; Sprint 76 not opened. Next product/design review: **My Workflows** functional audit.
+- **Consequences:** `#wfDesignVersionSelect` removed; heading **Proposed workflow**; compact semantic table preview; Create edit/delete mutation paths removed; D03 regression no longer requires version select; tests in `tests/s75-d25-proposed-workflow-readonly-preview.test.js`. Persistence untouched; Sprint 76 not opened.
+
+---
+
+## S75-D26 — Compact persistent PRISM status / API disclosure
+
+- **Decision:** Replace the always-expanded header API-key block with a **compact persistent status bar** (API key chip, session cost, storage health) and a collapsible detail panel for key load + PRISM API settings. Create and Prompt Studio API-dependent actions continue to reveal/focus key entry when needed (`S75-D23` / `S75-D09` presentation paths retained).
+
+- **Status:** **Accepted** (2026-08-12)
+
+- **Rationale:** Header chrome consumed disproportionate vertical space on every surface; key and storage signals are important but do not need permanent full-panel exposure.
+
+- **Consequences:** `#prismStatusDetails` compact bar + panel in `index.html` / `style.css` / `app.js`; tests in `tests/s75-d26-compact-prism-status-control.test.js`. No API-key persistence change. Sprint 76 not opened.
+
+---
+
+## S75-D27 — Run segmented progress is display-only
+
+- **Decision:** My Workflows Run may show **segmented step progress** and related visual affordances derived from the existing run index and step list. This is **display-only orientation** — it does **not** introduce a separate completion model, persisted progress semantics, or new gating rules beyond existing Run capture/advance behaviour.
+
+- **Status:** **Accepted** (2026-08-12)
+
+- **Rationale:** Operators benefit from at-a-glance position within a workflow without conflating navigation chrome with durable completion state.
+
+- **Consequences:** Run progress UI in `index.html` / `style.css` / `app.js`; tests in `tests/s75-run-progress-segments.test.js`. Existing `stepCompleted` / capture gating unchanged in role. Do not add a parallel completion architecture without explicit future requirement.
+
+---
+
+## S75-D28 — Persisted capture indication is distinct from step visit
+
+- **Decision:** Visual indication that a step has **persisted Run output** (resource ref or legacy capture key) must reflect **durable runstate**, not merely that the operator navigated to or viewed the step during the session.
+
+- **Status:** **Accepted** (2026-08-12)
+
+- **Rationale:** Visit history and durable capture state diverge after refresh, partial runs, and non-destructive merge (`S75-D14` / `D21`). Misleading “saved” signals undermine trust in Run and Authoring assembly.
+
+- **Consequences:** Saved-data indicators reuse existing runstate / capture-ref probes; tests in `tests/s75-run-progress-segments.test.js`. No new persistence schema.
+
+---
+
+## S75-D29 — Generate/run workflows primary; custom Edit is the advanced route
+
+- **Decision:** **Typical users are expected primarily to generate and run workflows**, not manually construct complex custom graphs. **Custom workflow authoring via Edit remains deliberately available** as the advanced/manual route for experienced users who may create, tune, export, and share workflows for less experienced users to import and run.
+
+- **Status:** **Accepted** (2026-08-12) — programme closeout product model
+
+- **Rationale:** Sprint 75 simplified Create and Run precisely because front-loading graph editing and implementation vocabulary misaligned with the primary journey. Capability is retained without presenting it as the default path.
+
+- **Consequences:** UX hierarchy treats Create + Run as primary; Edit/Settings as deliberate post-save surfaces. **Do not remove Edit machinery in this closeout.** A future sprint may address advanced Edit UX **only if evidence shows substantial work is warranted** — not assigned here.
+
+---
+
+## S75-D30 — Prompt Studio: Paste default + lightweight Generate
+
+- **Decision:** Standalone Prompt Studio presents two modes: **Paste a prompt** (default for fresh sessions) and **Generate a prompt** (structured brief → refinement → save). Prompt Studio is **not** assumed to be the primary environment for sophisticated iterative prompt development — conversational external LLMs are often better suited to that work. PRISM provides **lightweight structured generation** and **straightforward import/paste** of prompts developed elsewhere.
+
+- **Status:** **Accepted** (2026-08-12)
+
+- **Rationale:** Operator evidence and product positioning: Library + external LLM iteration + paste/import is a common happy path; Generate remains valuable for structured PRISM-native briefs without claiming parity with full conversational IDE workflows.
+
+- **Consequences:** Mode pills and panels in `index.html` / `app.js`; tests in `tests/s75-prompt-studio-generate-paste-modes.test.js` and related suites. Workflow-step Prompt Studio remains a **distinct** surface (step override path unchanged). “Refine manually” retired in favour of **Copy brief** for external-AI handoff.
+
+---
+
+## S75-D31 — Prompt Library authoritative; Library abstraction for persistence
+
+- **Decision:** **Prompt Library remains the authoritative reusable-prompt collection.** All standalone Prompt Studio saves and Library edit saves must continue through the existing **`window.Library` abstraction** (`savePrompt` / `updatePrompt`) backed by IndexedDB with existing localStorage fallback — **not** parallel stores or ad-hoc persistence paths.
+
+- **Status:** **Accepted** (2026-08-12)
+
+- **Rationale:** Sprint 75 Paste and Generate save paths were verified against Library semantics; duplicating persistence would fracture import/export and version history.
+
+- **Consequences:** Paste save uses `Library.savePrompt({ source: "manual" })` without Generate `brief` metadata; Generate save path unchanged in authority; tests in `tests/s75-prompt-studio-library-save-alignment.test.js`. Version history remains via `populateDetailForm` → `renderVersions`.
+
+---
+
+## S75-D32 — Prompt Library header action grouping
+
+- **Decision:** Prompt Library selected-prompt and persistence actions live in the **header action row**, grouped consistently with My Workflows: creation/management · selected-prompt · transfer · persistence/destructive. Rename labels: **Copy prompt**, **Save**. **Copy prompt** is the primary selected-prompt action. Remove duplicate detail-pane button row; editor fields and version history unchanged.
+
+- **Status:** **Accepted** (2026-08-12) — final Sprint 75 UI slice
+
+- **Rationale:** Copy and Save were buried below the editor; My Workflows already exposes Save at header level. Grouping reduces hunt-and-peck without redesigning Library semantics.
+
+- **Consequences:** `index.html` / `style.css` grouping; handlers unchanged (`handleCopyPromptBody`, `handleUsePrompt`, `handleSavePromptChanges`); tests in `tests/s75-prompt-library-action-layout.test.js`. Sprint 75 UX programme **COMPLETE** after this slice.
 
 ---
 
@@ -411,7 +495,17 @@ Programme tracker for Sprint 75 topics (many entries are **Done** / **Deferred**
 | Create assistant progressive disclosure | **Done** | `S75-D23` |
 | Hide Resolved workflow brief panel | **Done** | `S75-D24` |
 | Create Proposed workflow read-only / retire Draft–Refined chrome | **Done** | `S75-D25` (Create UX pass **COMPLETE** for this Sprint 75 pass) |
-| My Workflows functional audit + identity CRUD (Rename/Duplicate/Delete/Import/Export) | **Next** | Operator walkthrough; Rename defect known (must keep identity); Duplicate = clean Run state (decided). Historical **C-09** remains a separate deferred slice until audit determines overlap. |
+| My Workflows Run UX, progress indication, lifecycle CRUD | **Done** | Run layout, segments, Rename/Delete/Import, default selection — see Final Report §4 |
+| Compact PRISM status control | **Done** | `S75-D26` |
+| Run display-only progress + persisted-output indication | **Done** | `S75-D27`, `S75-D28` |
+| Product model: generate/run primary; custom Edit advanced | **Done** | `S75-D29` (closeout) |
+| Prompt Studio Paste/Generate split | **Done** | `S75-D30` |
+| Prompt Library persistence authority | **Done** | `S75-D31` |
+| Prompt Library header action grouping | **Done** | `S75-D32` — **final Sprint 75 slice** |
+| Lagrangian Multipliers resource quality investigation | **Next** | Diagnostic programme — [HANDOVER.md](HANDOVER.md) |
+| Domain B Settings / parameterisation implementation | **Deferred** | **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)** — after Lagrangian investigation |
+| Advanced custom-workflow Edit machinery overhaul | **Deferred** | Future sprint **if evidence warrants** — not opened at closeout |
+| My Workflows functional audit + identity CRUD (Rename/Duplicate/Delete/Import/Export) | **Done** | Rename identity fixed; lifecycle tests added; Import collision UX |
 | Domain B first-time selection / mode persistence rules | **Done** | `S75-D10` (Run default + session preservation + Create→Run handoff) |
 | Run paste/store-output visibility rule | **Done** | `S75-D07` (page-structure producer visibility) |
 | Custom vs runtime-aware stored-output behaviour | **Done** | under `S75-D07` (non-page `outputName` ≠ paste; page producer keeps gate) |
@@ -438,7 +532,7 @@ Programme tracker for Sprint 75 topics (many entries are **Done** / **Deferred**
 | Accepted Run capture durability when in-memory value is unchanged | **Done** | `S75-D19` |
 | Blank live capture overwrite of durable accepted key | **Done** | `S75-D20` |
 | One-off Run capture migration + ref-only runtime | **Done** | `S75-D21` (operator-verified; diagnostic UI cleaned up) — persistence **SETTLED** |
-| Rename / Duplicate / Delete runstate identity hygiene | **Next** | Under My Workflows audit — Rename defect known (must keep identity); Duplicate clean-Run contract decided; Delete/Import/Export still to audit (`S75-D14` residual) |
-| Domains D–E detailed discovery sequencing | **Pending** | Not started — operator to prioritise |
-| Any architectural work arising from UX findings | **Pending** | Explicit operator authorisation only |
+| Rename / Duplicate / Delete runstate identity hygiene | **Done** | Rename preserves identity; Delete cleanup; Duplicate clean Run — see lifecycle tests |
+| Domains D–E detailed discovery sequencing | **Done** | Prompt Studio + Prompt Library implemented per `S75-D30`–`D32` |
+| Sprint 75 programme closeout | **Done** | 2026-08-12 — [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md) |
 | Open Sprint 76 | **Pending** | Separate operator decision (not relevant yet) |

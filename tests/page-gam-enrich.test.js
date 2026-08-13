@@ -210,6 +210,15 @@ function buildDlaPageFixtureWithFullActivityFields() {
         { material_id: "A1-M1", material_type: "text", purpose: "Concept grounding", specification: "Define strategic HR in HE context." },
         { material_id: "A1-M2", material_type: "worked_example", purpose: "Reasoning model", specification: "Show strategic HR reasoning chain." }
       ],
+      task_material_decision: {
+        separate_inputs_required: false,
+        task_input_material_ids: []
+      },
+      evidence_decision: {
+        required: false,
+        reason: "Conceptual comparison from teaching materials.",
+        provider_material_ids: []
+      },
       materials: [],
       episode_plan: {
         archetype: "understand",
@@ -240,6 +249,8 @@ test("setup: build DLA-enriched baseline", () => {
   const check = dlaEnrich.validateDlaEnrichedPage(dlaBaseline, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(dlaBaseline.assembly_state.current_stage, "dla");
+  assert.ok(gamEnrich.GAM_DLA_OWNED_JSON_FIELDS.includes("task_material_decision"));
+  assert.ok(gamEnrich.GAM_DLA_OWNED_JSON_FIELDS.includes("evidence_decision"));
 });
 
 test("GAM v2 copy brief enforces canonical hydrated material rows", () => {
@@ -260,6 +271,8 @@ test("GAM v2 copy brief enforces canonical hydrated material rows", () => {
   assert.match(brief, /material_id, material_type, title, body_format, body/i);
   assert.match(brief, /activity_id \(or parent_activity_id\)/i);
   assert.match(brief, /no missing IDs, no duplicates, no orphan materials/i);
+  assert.match(brief, /treat specification as binding content bounds/i);
+  assert.doesNotMatch(brief, /task_material_decision/);
   assert.match(brief, /do not leave generation_notes\.validation material_coverage\/self_containment\/activity_coverage in pending\/shell-only states/i);
 });
 

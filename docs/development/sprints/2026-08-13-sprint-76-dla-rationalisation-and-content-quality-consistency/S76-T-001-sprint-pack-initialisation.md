@@ -36,7 +36,7 @@ This is **not** a general PRISM redesign and **not** a Settings sprint.
 | ID | Role | State after T-001 |
 | -- | ---- | ----------------- |
 | **S76-T-001** | Sprint pack initialisation | **Done** |
-| **S76-T-010** | DLA audit | **Defined — Not started** |
+| **S76-T-010** | DLA audit | **Diagnostic complete** |
 | **S76-D01** | Open Sprint 76 | **Accepted** |
 
 ---

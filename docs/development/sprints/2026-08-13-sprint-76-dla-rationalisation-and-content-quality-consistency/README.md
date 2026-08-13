@@ -15,9 +15,22 @@
 | **Execution plan** | [PLAN.md](PLAN.md) |
 | **Charter** | [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) |
 | **Pack init** | [S76-T-001-sprint-pack-initialisation.md](S76-T-001-sprint-pack-initialisation.md) |
+| **DLA audit** | [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) |
+| **DLA-P02 design** | [S76-T-020-dla-p02-solution-design.md](S76-T-020-dla-p02-solution-design.md) |
+| **DLA-P01 design** | [S76-T-021-dla-p01-solution-design.md](S76-T-021-dla-p01-solution-design.md) |
+| **DLA-P03 design** | [S76-T-022-dla-p03-solution-design.md](S76-T-022-dla-p03-solution-design.md) |
+| **P01/P02/P03 impl. plan** | [S76-T-023-dla-p01-p02-p03-implementation-plan.md](S76-T-023-dla-p01-p02-p03-implementation-plan.md) |
+| **P01/P02/P03 Gate A+B** | [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md) |
+| **P01 residual diagnostic** | [S76-T-026-dla-p01-residual-operand-closure-diagnostic.md](S76-T-026-dla-p01-residual-operand-closure-diagnostic.md) |
+| **P01 residual solution design** | [S76-T-027-dla-p01-residual-operand-closure-solution-design.md](S76-T-027-dla-p01-residual-operand-closure-solution-design.md) |
+| **P01 residual implementation** | [S76-T-028-dla-p01-residual-operand-closure-implementation.md](S76-T-028-dla-p01-residual-operand-closure-implementation.md) |
+| **Design Page graphics capture repair** | [S76-T-029-design-page-graphics-capture-contract-repair.md](S76-T-029-design-page-graphics-capture-contract-repair.md) |
+| **Generated-operand operational suitability** | [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md) · [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md) |
+| **A4 constructive alignment** | [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md) · [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) |
+| **DLA-P04 evidence-guidance rationalisation** | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) · [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
 
 ## Programme posture (open)
 
-Sprint 76 is **OPEN**. Sprint 75 remains **CLOSED**. Immediate work is **diagnostic**: DLA audit (historical delta from known-good / rationalised DLA to current ~72k; duplication; EP→DLA / DLA→GAM; evidence machinery; task-material sufficiency). Investigation order: **RECOVER** (hypothesis) then **ADVANCE**. Roman Roads is the **control** benchmark; Lagrangian Multipliers is the **challenge/diagnostic** benchmark. Settings (**PB-FA-005**) follows later and is **not** absorbed here.
+Sprint 76 is **OPEN**. Sprint 75 remains **CLOSED**. P01-R1 is **implemented**. T-031, T-033, and T-034 **designs are complete**. T-035 P04 **plan is complete**. P04 **implementation is not authorised**. P05 is **not started**. **RECOVER** remains a hypothesis.
 
 Detail: [STATUS.md](STATUS.md).

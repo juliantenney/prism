@@ -7,6 +7,7 @@ const archetype = require("../lib/ld-instructional-archetype.js");
 const depth = require("../lib/ld-gam-instructional-depth.js");
 const assemble = require("../lib/page-vnext-assemble.js");
 const instructionalPattern = require("../lib/instructional-pattern-prompt.js");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 const enzymesDir = path.join(
   __dirname,
@@ -31,10 +32,14 @@ function pageWithMaterial(material) {
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
     activities: [
-      {
-        activity_id: "A1",
-        required_materials: [material]
-      }
+      applyS76CommissionShape(
+        {
+          activity_id: "A1",
+          title: "Ordinary material row",
+          required_materials: [material]
+        },
+        { fillEvidenceDecision: true }
+      )
     ]
   };
 }
@@ -358,11 +363,14 @@ test("page-dla-enrich rejects incomplete archetype plans and accepts legacy rows
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
     activities: [
-      {
-        activity_id: "A1",
-        title: "Ordinary material row",
-        required_materials: [{ material_id: "A1-M1", material_type: "text", purpose: "x" }]
-      }
+      applyS76CommissionShape(
+        {
+          activity_id: "A1",
+          title: "Ordinary material row",
+          required_materials: [{ material_id: "A1-M1", material_type: "text", purpose: "x" }]
+        },
+        { fillEvidenceDecision: true }
+      )
     ]
   };
   assert.equal(dlaEnrich.validateDlaPartialPageCapture(legacy).ok, true);
@@ -372,18 +380,21 @@ test("page-dla-enrich rejects incomplete archetype plans and accepts legacy rows
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
     activities: [
-      {
-        activity_id: "A1",
-        title: "Incomplete mechanism plan",
-        required_materials: [
-          {
-            material_id: "A1-M1",
-            material_type: "text",
-            instructional_archetype: "mechanism_explanation",
-            archetype_plan: { start: "only" }
-          }
-        ]
-      }
+      applyS76CommissionShape(
+        {
+          activity_id: "A1",
+          title: "Incomplete mechanism plan",
+          required_materials: [
+            {
+              material_id: "A1-M1",
+              material_type: "text",
+              instructional_archetype: "mechanism_explanation",
+              archetype_plan: { start: "only" }
+            }
+          ]
+        },
+        { fillEvidenceDecision: true }
+      )
     ]
   };
   const bad = dlaEnrich.validateDlaPartialPageCapture(incomplete);

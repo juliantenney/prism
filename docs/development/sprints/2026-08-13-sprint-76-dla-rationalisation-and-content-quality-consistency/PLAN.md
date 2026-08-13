@@ -2,7 +2,7 @@
 
 **Status:** **OPEN** (opened 2026-08-13)  
 **Opening decision:** [S76-D01](decisions.md#s76-d01--open-sprint-76--dla-rationalisation-and-content-quality-consistency)  
-**Dashboard:** [STATUS.md](STATUS.md) · **Evidence:** [CONTEXT.md](CONTEXT.md)
+**Dashboard:** [STATUS.md](STATUS.md) · **Opening evidence:** [CONTEXT.md](CONTEXT.md) · **T-010:** [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) · **T-024:** [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md)
 
 Task IDs: `S76-T-###`. Decision IDs: `S76-D##` in [decisions.md](decisions.md).
 
@@ -15,10 +15,26 @@ Later implementation structure after T-010 is **evidence-led**. Do not invent de
 ```text
 S76-T-001 (pack init) ✅ Done
   → S76-D01 (open Sprint 76) ✅ Accepted
-  → S76-T-010 (DLA audit) — Defined; Not started (await authorisation)
-  → PHASE 2: Rationalise / fix DLA (from audit evidence) — Not started
-  → PHASE 3: Roman Roads control runs (repeated) — Not started
-  → PHASE 4: Lagrangian challenge runs (repeated) — Not started
+  → S76-T-010 (DLA audit) ✅ Diagnostic complete
+  → S76-T-020 (DLA-P02 solution design) ✅ Design complete (not implementation)
+  → S76-T-021 (DLA-P01 solution design) ✅ Design complete (not implementation)
+  → S76-T-022 (DLA-P03 solution design) ✅ Design complete (not implementation)
+  → S76-T-023 (P01/P02/P03 implementation plan) ✅ Planning complete
+  → S76-T-024 (P01/P02/P03 Gate A + Gate B) ✅ Complete
+  → Gate C first RR/Lagrangian runs (operator-reported)
+  → S76-T-026 (P01 residual operand-closure diagnostic) ✅ Diagnostic complete
+  → S76-T-027 (P01 residual solution design) ✅ Design complete
+  → S76-T-028 (P01 residual implementation) ✅ Complete — awaiting operator re-benchmark
+  → S76-T-029 (Design Page graphics capture shape) ✅ Complete
+  → S76-T-030 (generated-operand operational suitability diagnostic) ✅ Diagnostic complete — not fixed; not P04
+  → S76-T-031 (operational suitability solution design) ✅ Design complete — implementation deferred until after P04
+  → S76-T-032 (A4 constructive-alignment diagnostic) ✅ Diagnostic complete — not fixed; not P04
+  → S76-T-033 (LO-operation coverage solution design) ✅ Design complete — implementation deferred until after P04
+  → S76-T-034 (DLA-P04 evidence-guidance rationalisation solution design) ✅ Design complete
+  → S76-T-035 (DLA-P04 evidence-guidance rationalisation implementation plan) ✅ Planning complete — no implementation authorised
+  → PHASE 2 remainder: P04 implementation / P05 — Not started
+  → PHASE 3: Roman Roads control runs (repeated) — Not started (Gate C)
+  → PHASE 4: Lagrangian challenge runs (repeated) — Not started (Gate C)
   → PHASE 5: Decision gate — Not started
   → BEFORE CLOSE: Durable prompt-engineering discipline (S76-D03) — Not started
   → Settings (PB-FA-005) — Deferred after this programme lane
@@ -45,10 +61,11 @@ S76-T-001 (pack init) ✅ Done
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Defined — Not started** (await explicit authorisation after pack review) |
+| **Status** | **Diagnostic complete** (2026-08-13) — [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) |
 | **Ownership** | Generation-contract / DLA investigation |
 | **Mode** | **DIAGNOSTIC ONLY** — no prompt rewrite, no generation behaviour change, no schema change, no evidence rollback execution |
 | **Purpose** | Establish an evidence-based account of current DLA responsibilities, prompt growth **as a historical delta**, duplication, and contract gaps before rationalisation. Include whether current DLA may have **regressed** from the Sprint 71 known-good historical quality baseline (hypothesis only). |
+| **Deliverable** | [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) |
 
 #### Audit scope (minimum)
 
@@ -78,8 +95,9 @@ S76-T-001 (pack init) ✅ Done
 - Historical delta account (known-good / rationalised DLA → additions → current), with per-addition fields above where history permits.  
 - Explicit list of duplication / competition / supersession findings.  
 - Contract-gap hypotheses for EP → DLA and DLA → GAM (with examples from Lagrangian / Roman Roads where available).  
-- Recommendation options for Phase 2 (including whether evidence rollback experiment is warranted; whether **RECOVER** work is indicated) — **recommendations only**.  
-- **No** implementation in T-010.
+- Bounded problem register **DLA-P01..P05** (problems, not solutions).  
+- Explicit non-findings, including: size/dual-injection did not establish quality regression; GAM not an independent architectural problem; **RECOVER** remains a hypothesis.  
+- **No** implementation in T-010. Phase 2 solution design is a **separate** authorised step.
 
 #### Explicit exclusions (T-010)
 
@@ -94,9 +112,144 @@ S76-T-001 (pack init) ✅ Done
 
 ## Phase 2 — Rationalise / fix DLA
 
-**Status:** Not started (blocked on T-010 evidence + operator authorisation)
+**Status:** P01/P02/P03 implemented through **Gate A + Gate B**. **P01-R1 implemented**. Lagrangian re-benchmark QA **84**. **T-031, T-033, T-034 designs complete. T-035 P04 plan complete.** **P04 implementation not authorised. P05 not started.** Do not claim RECOVER.
 
-Based on audit evidence:
+### S76-T-020 — DLA-P02 solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-020-dla-p02-solution-design.md](S76-T-020-dla-p02-solution-design.md) |
+| **Scope** | **DLA-P02 only** |
+| **Mode** | DESIGN ONLY — no prompt/validator/schema/production changes |
+| **Verdict** | **DLA-P02 READY FOR IMPLEMENTATION PLANNING** (not authorised by this task) |
+
+### S76-T-021 — DLA-P01 solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-021-dla-p01-solution-design.md](S76-T-021-dla-p01-solution-design.md) |
+| **Scope** | **DLA-P01 only** |
+| **Mode** | DESIGN ONLY — no prompt/validator/schema/production changes |
+| **Verdict** | **DLA-P01 READY FOR IMPLEMENTATION PLANNING** (not authorised by this task) |
+
+### S76-T-022 — DLA-P03 solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-022-dla-p03-solution-design.md](S76-T-022-dla-p03-solution-design.md) |
+| **Scope** | **DLA-P03 only** |
+| **Mode** | DESIGN ONLY — no prompt/validator/schema/production changes |
+| **Verdict** | **DLA-P03 READY FOR IMPLEMENTATION PLANNING** (not authorised by this task) |
+
+### S76-T-023 — P01/P02/P03 implementation plan
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Planning complete** (2026-08-13) — [S76-T-023-dla-p01-p02-p03-implementation-plan.md](S76-T-023-dla-p01-p02-p03-implementation-plan.md) |
+| **Scope** | Coordinated **P01 + P02 + P03** only (not P04/P05) |
+| **Mode** | PLANNING ONLY — no prompt/validator/schema/production/test changes |
+| **Verdict** | **P01/P02/P03 IMPLEMENTATION PLAN READY FOR OPERATOR REVIEW** — subsequently authorised and implemented through Gate B (T-024) |
+
+### S76-T-024 — P01/P02/P03 Gate A + Gate B implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Gate A + Gate B complete** (2026-08-13) — [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md) |
+| **Scope** | Coordinated **P01 + P02 + P03** only (not P04/P05; not Gate C) |
+| **Mode** | Implementation through validators + enrich + tests + minimal DLA contract/shape/GAM preservation |
+| **Verdict** | **READY FOR OPERATOR REVIEW BEFORE GATE C** — Gate C subsequently run; see T-026 for residual |
+
+### S76-T-026 — P01 residual operand-closure diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-13) — [S76-T-026-dla-p01-residual-operand-closure-diagnostic.md](S76-T-026-dla-p01-residual-operand-closure-diagnostic.md) |
+| **Scope** | Gate C Lagrangian A2/A3 P01 residual only (not P04/P05; not a fix) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Verdict** | **P01 RESIDUAL READY FOR SOLUTION DESIGN** — subsequently designed in T-027 |
+
+### S76-T-027 — P01 residual operand-closure solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-027-dla-p01-residual-operand-closure-solution-design.md](S76-T-027-dla-p01-residual-operand-closure-solution-design.md) |
+| **Scope** | P01-R1 operand vs model/workspace/scaffold only (not P04/P05; not implementation) |
+| **Mode** | DESIGN ONLY |
+| **Verdict** | **P01 RESIDUAL READY FOR IMPLEMENTATION PLANNING** — subsequently implemented in T-028 |
+
+### S76-T-028 — P01 residual operand-closure implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implemented** (2026-08-13) — [S76-T-028-dla-p01-residual-operand-closure-implementation.md](S76-T-028-dla-p01-residual-operand-closure-implementation.md) |
+| **Scope** | T-027 Option 2: commissioning-order step 2 operand/stimulus clarification only |
+| **Mode** | Bounded prompt clarification — no schema, no behavioural validator, no P04/P05, no generation |
+| **Verdict** | **P01 RESIDUAL IMPLEMENTED — READY FOR OPERATOR RE-BENCHMARK** |
+
+### S76-T-029 — Design Page graphics capture contract repair
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implemented** (2026-08-13) — [S76-T-029-design-page-graphics-capture-contract-repair.md](S76-T-029-design-page-graphics-capture-contract-repair.md) |
+| **Scope** | Design Page capture generate-row SHAPE gate only (not prompt, not Graphics planner, not P04/P05) |
+| **Mode** | Bounded capture enforcement — reuse Sprint 38 envelope + Sprint 70 generate shape; skip assembled-page activity existence |
+| **Verdict** | **GRAPHICS CAPTURE/HANDOFF DEFECT IMPLEMENTED — READY TO RECAPTURE DESIGN PAGE** |
+
+### S76-T-030 — Generated-operand operational suitability diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-13) — [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md) |
+| **Scope** | Lagrangian A3 Problem B generated-operand validity only (not P01 reopen; not P04/P05; not a fix; A4/A5 classify-only) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Verdict** | **GENERATED OPERAND VALIDITY READY FOR SOLUTION DESIGN** — do not implement before P04; do not absorb into P04 |
+
+### S76-T-031 — Generated-operand operational suitability solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md) |
+| **Scope** | Shared DLA-P03 / GAM fulfilment principle only (not P01/P02; not P04/P05; not implementation; A4/A5 not in scope) |
+| **Mode** | DESIGN ONLY |
+| **Verdict** | **GENERATED OPERAND VALIDITY DESIGN COMPLETE — IMPLEMENTATION DEFERRED UNTIL AFTER P04** |
+
+### S76-T-032 — Lagrangian A4 constructive-alignment diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-13) — [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md) |
+| **Scope** | A4 LO↔task supporting-check collapse only (not P01/P02/P03; not T-031 implementation; not P04/P05) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Verdict** | **A4 CONSTRUCTIVE ALIGNMENT READY FOR SOLUTION DESIGN** — design before P04; implement after; do not absorb into P04 |
+
+### S76-T-033 — DLA LO-operation coverage solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) |
+| **Scope** | DLA learner-production covers mapped LO load-bearing operations (not P01/P02/P03; not T-031; not P04/P05; not implementation) |
+| **Mode** | DESIGN ONLY |
+| **Verdict** | **LO-OPERATION COVERAGE DESIGN COMPLETE — IMPLEMENTATION DEFERRED UNTIL AFTER P04** |
+
+### S76-T-034 — DLA-P04 evidence-guidance rationalisation solution design
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Solution design complete** (2026-08-13) — [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) |
+| **Scope** | DLA evidence/self-audit rationalisation only (not P01/P02/P03 redesign; not P05; not T-031/T-033 implementation; not Sprint 72 rollback) |
+| **Mode** | DESIGN ONLY |
+| **Verdict** | **DLA-P04 READY FOR IMPLEMENTATION PLANNING** — no implementation authorised from this task |
+
+### S76-T-035 — DLA-P04 evidence-guidance rationalisation implementation plan
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Planning complete** (2026-08-13) — [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
+| **Scope** | P04 Option 2 mechanical change-set only (contract + pack notes + prompt tests + version pin; not P05; not T-031/T-033; not validators) |
+| **Mode** | IMPLEMENTATION PLANNING ONLY |
+| **Verdict** | **DLA-P04 IMPLEMENTATION PLAN READY FOR OPERATOR REVIEW** — no implementation authorised from this task |
+
+Based on audit evidence, later authorised implementation may:
 
 - remove duplication;  
 - remove superseded machinery;  
@@ -190,4 +343,4 @@ See [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) · [S76-D03](decisions.md#s76-d
 
 ## Last updated
 
-2026-08-13 — Pack opened; T-001 done; T-010 defined not started. Pack review: T-010 historical-delta + Sprint 71 baseline framing. Final pre-commit integrity: closure gate for durable prompt-engineering discipline added (`S76-D03`); T-010 still **not started**.
+2026-08-13 — T-035 P04 **implementation plan complete**. No implementation authorised. P04/P05/T-031/T-033 live changes not started. Do not claim RECOVER.

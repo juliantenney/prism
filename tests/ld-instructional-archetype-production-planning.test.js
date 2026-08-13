@@ -9,6 +9,7 @@ const assert = require("node:assert/strict");
 const archetype = require("../lib/ld-instructional-archetype.js");
 const dlaContract = require("../lib/ld-dla-page-enrich-contract.js");
 const dlaEnrich = require("../lib/page-dla-enrich.js");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 function mechanismMaterial(overrides) {
   return Object.assign(
@@ -84,11 +85,14 @@ function pageFromMaterials(materialsByActivity) {
     "Walk enzyme investigation process"
   ];
   const activities = Object.keys(materialsByActivity).map(function (activityId, index) {
-    return {
-      activity_id: activityId,
-      title: distinctTitles[index] || ("Learning pathway focus " + (index + 1)),
-      required_materials: materialsByActivity[activityId]
-    };
+    return applyS76CommissionShape(
+      {
+        activity_id: activityId,
+        title: distinctTitles[index] || ("Learning pathway focus " + (index + 1)),
+        required_materials: materialsByActivity[activityId]
+      },
+      { fillEvidenceDecision: true }
+    );
   });
   return {
     artifact_type: "page",
@@ -127,8 +131,10 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
   assert.match(snippet, /Instructional archetype planning on required_materials/);
   assert.match(snippet, /key_relationships/);
   assert.match(snippet, /evaluation_judgement/);
+  assert.match(snippet, /task_material_decision/);
+  assert.match(snippet, /"specification":/);
   assert.doesNotMatch(snippet, /system\/parts\/relationships/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "58-DLA-PARTIAL-3");
+  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-5");
 });
 
 test("S60 Phase A: valid archetype DLA page routes to GAM with no S59 activation", () => {

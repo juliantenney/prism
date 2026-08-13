@@ -12,6 +12,7 @@ const gamEnrich = require("../lib/page-gam-enrich.js");
 const shellCreate = require("../lib/page-shell-create.js");
 const integration = require("../lib/episode-plan-dla-integration.js");
 const vnext = require("../lib/learner-renderer-vnext");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 const LO = {
   learning_outcomes: [
@@ -39,24 +40,27 @@ function pageShell() {
 }
 
 function dlaActivity(overrides) {
-  return Object.assign(
-    {
-      activity_id: "A1",
-      title: "Compare political economy frames",
-      learner_task: "Compare the texts using shared criteria.",
-      expected_output: "A justified comparison paragraph.",
-      activity_preamble: "Orient to the contrast before judging.",
-      learning_outcome_ids: ["LO1"],
-      required_materials: [
-        {
-          material_id: "A1-M1",
-          material_type: "text",
-          purpose: "Source extracts"
-        }
-      ],
-      materials: []
-    },
-    overrides || {}
+  return applyS76CommissionShape(
+    Object.assign(
+      {
+        activity_id: "A1",
+        title: "Compare political economy frames",
+        learner_task: "Compare the texts using shared criteria.",
+        expected_output: "A justified comparison paragraph.",
+        activity_preamble: "Orient to the contrast before judging.",
+        learning_outcome_ids: ["LO1"],
+        required_materials: [
+          {
+            material_id: "A1-M1",
+            material_type: "text",
+            purpose: "Source extracts"
+          }
+        ],
+        materials: []
+      },
+      overrides || {}
+    ),
+    { fillEvidenceDecision: true }
   );
 }
 
@@ -276,7 +280,22 @@ test("13. Downstream attempted rename cannot overwrite DLA title", () => {
 test("14. GAM equality validation remains valid", () => {
   const shell = pageShell();
   const enriched = dlaEnrich.enrichPageWithDla(shell);
-  assert.equal(dlaEnrich.validateDlaEnrichedPage(enriched, shell).ok, true);
+  enriched.activities.forEach(function (row, index) {
+    if (
+      !String(row.intellectual_coherence_bridge || "").trim() ||
+      dlaEnrich.isShellPlaceholder(row.intellectual_coherence_bridge)
+    ) {
+      row.intellectual_coherence_bridge =
+        index === 0
+          ? "The page orientation established the enquiry. This first activity begins from that foundation."
+          : "You completed the previous activity. This activity carries that capability into the next demand.";
+    }
+  });
+  assert.equal(
+    dlaEnrich.validateDlaEnrichedPage(enriched, shell).ok,
+    true,
+    (dlaEnrich.validateDlaEnrichedPage(enriched, shell).errors || []).join("; ")
+  );
   const gamPage = gamEnrich.enrichPageWithGam(enriched);
   const check = gamEnrich.validateGamEnrichedPage(gamPage, enriched);
   assert.equal(check.ok, true, (check.errors || []).join("; "));

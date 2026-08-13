@@ -2,7 +2,15 @@
 
 **Status:** **OPEN** (opened 2026-08-13)  
 **Role:** Durable investigation evidence and working hypotheses for DLA / content-quality work  
-**Charter:** [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) · **Plan:** [PLAN.md](PLAN.md)
+**Charter:** [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) · **Plan:** [PLAN.md](PLAN.md)  
+**T-010 diagnostic SSOT:** [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) (complete 2026-08-13). This file remains the **opening** evidence pack; where it conflicts with T-010, the audit report wins.
+
+Sprint 76 therefore has two sequential investigation postures. After T-010:
+
+| Posture | Meaning after T-010 |
+| ------- | ------------------- |
+| **RECOVER** | Still a **hypothesis**. T-010 did not establish that DLA prompt growth caused a quality regression from the Sprint 71 score baseline. Re-benchmarks (Phase 3–4) remain required before claiming regression. |
+| **ADVANCE** | T-010 **did** establish current contract problems (**DLA-P01..P05**), especially task→material closure and evidence-ownership blur. These can be designed against without waiting for RECOVER proof. |
 
 ---
 
@@ -19,14 +27,9 @@ Sprint 76 opens to:
 
 **Settings (PB-FA-005)** remains a **later** priority and is not absorbed into this opening.
 
-Sprint 76 therefore has two sequential investigation postures (**hypotheses until T-010 / re-benchmark evidence**):
+Opening RECOVER/ADVANCE definitions (below) remain historically accurate. **T-010 outcome** is recorded at the top of this file and in the audit report: RECOVER is still unproven; ADVANCE-class problems **DLA-P01..P05** are established.
 
-| Posture | Meaning |
-| ------- | ------- |
-| **RECOVER** | Determine whether current DLA has **regressed** from the Sprint 71 known-good historical quality baseline; identify and remove causes of any regression; restore quality and consistency. |
-| **ADVANCE** | Once that baseline is recovered, address remaining task–material / content-richness problems and work toward **consistent** mid-90s quality. |
-
-**Do not claim regression as established** until T-010 (and subsequent control/challenge runs) demonstrate it. Record it as a serious evidence-supported **investigation hypothesis**.
+**Do not claim score regression as established** until control/challenge re-benchmarks demonstrate it.
 
 ---
 
@@ -282,4 +285,4 @@ These are **blocking transition corrections**, not planned Sprint 76 feature wor
 
 ## Last updated
 
-2026-08-13 — Sprint 76 opened; investigation evidence captured from post–Sprint 75 Lagrangian / DLA transition work. Pack review amendment: Sprint 71 known-good historical quality baseline + RECOVER/ADVANCE framing (regression **not** claimed established; “general-content baseline” terminology corrected). Final pre-commit integrity: durable prompt-engineering exit condition recorded (`S76-D03`).
+2026-08-13 — T-035 P04 implementation plan complete. No implementation authorised. P04/P05/T-031/T-033 live changes not started. RECOVER remains a hypothesis.

@@ -12,6 +12,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 const shellCreate = require(path.join(repoRoot, "lib", "page-shell-create.js"));
 const dlaEnrich = require(path.join(repoRoot, "lib", "page-dla-enrich.js"));
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 const templates = require(path.join(repoRoot, "lib", "episode-plan-v1-templates.js"));
 const integration = require(path.join(repoRoot, "lib", "episode-plan-dla-integration.js"));
 const validation = require(path.join(repoRoot, "lib", "episode-plan-v1-validation.js"));
@@ -214,7 +215,16 @@ test("DLA populates required_materials[] from episode plan beats", () => {
       assert.ok(row.material_id);
       assert.ok(row.material_type || row.type);
       assert.ok(row.purpose);
+      assert.ok(String(row.specification || "").trim());
     });
+    assert.ok(activity.task_material_decision);
+    assert.equal(typeof activity.task_material_decision.separate_inputs_required, "boolean");
+    assert.ok(Array.isArray(activity.task_material_decision.task_input_material_ids));
+    if (activity.task_material_decision.separate_inputs_required) {
+      assert.ok(activity.task_material_decision.task_input_material_ids.length >= 1);
+    } else {
+      assert.deepEqual(activity.task_material_decision.task_input_material_ids, []);
+    }
   });
 });
 
@@ -285,6 +295,25 @@ test("DLA copy prompt expects page input and page output under v2", () => {
   assert.match(instr, /Upstream binding bodies are intentionally omitted|intellectual_coherence_bridge/i);
 });
 
+test("S76 Gate B: DLA contract+shape remain dual-injected; OUTPUT CONTRACT lists task_material_decision", () => {
+  const dlaContract = require(path.join(repoRoot, "lib", "ld-dla-page-enrich-contract.js"));
+  const contract = dlaContract.buildDlaPageEnrichContractBlock();
+  const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  assert.match(contract, /Activity commissioning order/i);
+  assert.match(contract, /task_material_decision/);
+  assert.match(shape, /task_material_decision/);
+  assert.match(shape, /"specification":/);
+  const appSrc = fs.readFileSync(appJsPath, "utf8");
+  const contractCallHits = appSrc.match(/buildDlaPageEnrichContractBlock\(\)/g) || [];
+  const shapeCallHits = appSrc.match(/buildCanonicalDlaPageShapeSnippet\(\)/g) || [];
+  assert.equal(contractCallHits.length, 2, "no third unique contract injection site");
+  assert.equal(shapeCallHits.length, 2, "no third unique shape injection site");
+  assert.match(
+    api.LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE,
+    /task_material_decision\{ separate_inputs_required, task_input_material_ids\[\] \}/
+  );
+});
+
 test("DLA bindings use page artefact from Design Episode Plan", () => {
   const wf = buildTestWorkflow();
   const bindings = api.ensureEpisodePlanInputBindingsForSteps(wf.steps, wf);
@@ -348,20 +377,22 @@ test("repairDlaPartialShellPlaceholderFields replaces copy-forwarded em dash pre
     artifact_type: "page",
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
-    activities: shellBaseline.activities.map((activity) => ({
-      activity_id: activity.activity_id,
-      title: activity.title || "Activity " + activity.activity_id,
-      learner_task: "Substantive learner task for " + activity.activity_id + ".",
-      expected_output: "Substantive expected output for " + activity.activity_id + ".",
-      activity_preamble: PLACEHOLDER,
-      required_materials: [{ material_id: activity.activity_id + "-M1", material_type: "text", purpose: "Support" }],
-      materials: [],
-      evidence_decision: {
-        required: false,
-        reason: "No evidence inspection required.",
-        provider_material_ids: []
-      }
-    }))
+    activities: shellBaseline.activities.map((activity) =>
+      applyS76CommissionShape({
+        activity_id: activity.activity_id,
+        title: activity.title || "Activity " + activity.activity_id,
+        learner_task: "Substantive learner task for " + activity.activity_id + ".",
+        expected_output: "Substantive expected output for " + activity.activity_id + ".",
+        activity_preamble: PLACEHOLDER,
+        required_materials: [{ material_id: activity.activity_id + "-M1", material_type: "text", purpose: "Support" }],
+        materials: [],
+        evidence_decision: {
+          required: false,
+          reason: "No evidence inspection required.",
+          provider_material_ids: []
+        }
+      })
+    )
   };
   const before = dlaEnrich.validateDlaPartialPageCapture(partial, { baseline: shellBaseline });
   assert.equal(before.ok, false);
@@ -397,7 +428,16 @@ test("repairDlaPartialShellPlaceholderFields preserves enriched preamble prose",
         expected_output: "A comparison paragraph.",
         activity_preamble: preamble,
         required_materials: [{ material_id: "A1-M1", material_type: "text", purpose: "Support" }],
-        materials: []
+        materials: [],
+        task_material_decision: {
+          separate_inputs_required: false,
+          task_input_material_ids: []
+        },
+        evidence_decision: {
+          required: false,
+          reason: "No evidence inspection required.",
+          provider_material_ids: []
+        }
       }
     ]
   };

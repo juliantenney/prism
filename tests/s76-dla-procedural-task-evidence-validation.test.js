@@ -2,7 +2,7 @@
  * Sprint 76 — DLA evidence_decision: procedural task inputs vs learner evidence.
  *
  * Ordinary supplied practice inputs must not force evidence_decision.required=true.
- * Genuine observation/source/data interpretation tasks must still fail when required:false.
+ * Evidential-looking learner_task wording with required:false must pass (P02: DLA owns the boolean).
  */
 
 const test = require("node:test");
@@ -11,8 +11,10 @@ const path = require("node:path");
 
 const repoRoot = path.resolve(__dirname, "..");
 const dlaEnrich = require(path.join(repoRoot, "lib", "page-dla-enrich.js"));
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 function buildMinimalPage(activity) {
+  activity = applyS76CommissionShape(activity);
   return {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -78,6 +80,10 @@ function baseActivity(learnerTask, expectedOutput, extra) {
           "Learners construct expressions from provided optimisation statements rather than interpret evidence.",
         provider_material_ids: []
       },
+      task_material_decision: {
+        separate_inputs_required: false,
+        task_input_material_ids: []
+      },
       required_materials: lagrangianMaterials(),
       materials: [],
       episode_plan: { archetype: "apply", beats: [{ function: "guided_practice" }] }
@@ -99,14 +105,6 @@ function assertPassesEvidenceCheck(check, label) {
   );
 }
 
-function assertFailsEvidenceCheck(check, label) {
-  assert.equal(check.ok, false, label);
-  assert.ok(
-    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
-    label + " should contradict evidence-dependent wording"
-  );
-}
-
 test("S76 A2 Lagrangian Build activity passes with evidence_decision.required false", () => {
   const check = validateActivity(
     baseActivity(
@@ -125,7 +123,7 @@ test("EXACT live A2 wording passes paste-path validateDlaEnrichedPage with requi
   const page = buildMinimalPage(activity);
   // activities[1] shape: pad with a preceding activity so index matches live error.
   page.activities = [
-    {
+    applyS76CommissionShape({
       activity_id: "A1",
       title: "Orient",
       grouping: "individual",
@@ -150,8 +148,8 @@ test("EXACT live A2 wording passes paste-path validateDlaEnrichedPage with requi
       ],
       materials: [],
       episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
-    },
-    activity
+    }),
+    applyS76CommissionShape(activity)
   ];
   page.episode_plans = [
     {
@@ -209,15 +207,15 @@ test("EXACT live A2 still passes when checklist mentions mathematical expression
   assertPassesEvidenceCheck(validateActivity(activity), "A2 with mathematical structure checklist");
 });
 
-test("Literary imagery/tone/structure with required:false still fails after structure narrowing", () => {
-  assertFailsEvidenceCheck(
+test("Literary imagery/tone/structure with required:false must pass after structure narrowing (P02)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Analyse imagery, tone and structure using the provided examples and explain how they shape meaning.",
         "An analysis that refers to imagery, tone and structure in the provided examples."
       )
     ),
-    "literary structure still evidence-dependent"
+    "literary structure with required false"
   );
 });
 
@@ -281,8 +279,8 @@ test("PASS 5: compare problem statement with completed transformation", () => {
   );
 });
 
-test("FAIL 6: analyse supplied observations to infer conclusion", () => {
-  assertFailsEvidenceCheck(
+test("PASS 6: analyse supplied observations with required:false (P02 no prose fail-close)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Analyse the supplied observations to infer which mechanism best explains the outcome.",
@@ -293,8 +291,8 @@ test("FAIL 6: analyse supplied observations to infer conclusion", () => {
   );
 });
 
-test("FAIL 7: evaluate claim using supplied data", () => {
-  assertFailsEvidenceCheck(
+test("PASS 7: evaluate claim using supplied data with required:false (P02 no prose fail-close)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Evaluate the claim using the supplied data and determine which explanation is best supported.",
@@ -305,8 +303,8 @@ test("FAIL 7: evaluate claim using supplied data", () => {
   );
 });
 
-test("FAIL 8: interpret historical source excerpt", () => {
-  assertFailsEvidenceCheck(
+test("PASS 8: interpret historical source excerpt with required:false (P02 no prose fail-close)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Interpret the historical source excerpt and explain its significance.",
@@ -317,8 +315,8 @@ test("FAIL 8: interpret historical source excerpt", () => {
   );
 });
 
-test("FAIL 9: compare cases as evidential support", () => {
-  assertFailsEvidenceCheck(
+test("PASS 9: compare cases as evidential support with required:false (P02 no prose fail-close)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Compare the cases as evidential support for your judgement about the best explanation.",
@@ -329,8 +327,8 @@ test("FAIL 9: compare cases as evidential support", () => {
   );
 });
 
-test("FAIL 10: quotations and source properties for justification", () => {
-  assertFailsEvidenceCheck(
+test("PASS 10: quotations and source properties with required:false (P02 no prose fail-close)", () => {
+  assertPassesEvidenceCheck(
     validateActivity(
       baseActivity(
         "Use the quotations and source properties to justify your interpretation.",

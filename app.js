@@ -8753,7 +8753,7 @@
   }
 
   var LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE =
-    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, evidence_decision{ required, reason, provider_material_ids[] }, required_materials[{ material_id, type, purpose, specification, optional evidence_requirement{ kind, purpose, learner_action, observable_features, minimum_suitable_form?, processing_notes?, provenance?, disclosure_constraint?, evidence_layout?, fixed_observation_fields?, learner_response_fields? } }], learner_task, expected_output, activity_preamble (REQUIRED), intellectual_coherence_bridge (REQUIRED on every activity including A1), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
+    "- activities[]: activity_id, title (final learner-facing name ≤60 chars; describe the activity, not the LO statement; replace Episode Plan provisional title; no internal activity IDs as tokens/suffixes; semantic distinctness only), grouping, duration_minutes, mapped_learning_outcomes, learner_task, expected_output, task_material_decision{ separate_inputs_required, task_input_material_ids[] }, required_materials[{ material_id, type, purpose, specification, optional evidence_requirement{ kind, purpose, learner_action, observable_features, minimum_suitable_form?, processing_notes?, provenance?, disclosure_constraint?, evidence_layout?, fixed_observation_fields?, learner_response_fields? } }], evidence_decision{ required, reason, provider_material_ids[] }, activity_preamble (REQUIRED), intellectual_coherence_bridge (REQUIRED on every activity including A1), ≥1 cognition-orientation field REQUIRED (see OUTPUT CONTRACT), optional support_note and additive fields per OUTPUT CONTRACT, failure_mode, facilitator_moves; scaffold strings per SSOT";
 
   function reinforceLearnerPageDlaActivitiesOutputSchema(draftBody) {
     var body = String(draftBody || "");
@@ -11081,9 +11081,14 @@
         'knowledge summary required: include page_synthesis.knowledge_summary and/or sections[].section_id="knowledge_summary"'
       );
     }
-    if (Array.isArray(parsed.visual_affordances)) {
-      var vpcMod =
-        typeof PRISM_VISUAL_PLANNING_CONTRACT !== "undefined" ? PRISM_VISUAL_PLANNING_CONTRACT : null;
+    var vpcMod =
+      typeof PRISM_VISUAL_PLANNING_CONTRACT !== "undefined" ? PRISM_VISUAL_PLANNING_CONTRACT : null;
+    if (vpcMod && typeof vpcMod.validateVisualPlanningCaptureShape === "function") {
+      var shapeResult = vpcMod.validateVisualPlanningCaptureShape(parsed);
+      (shapeResult.errors || []).forEach(function (issue) {
+        errors.push(issue && issue.message ? String(issue.message) : String(issue || ""));
+      });
+    } else if (Array.isArray(parsed.visual_affordances)) {
       parsed.visual_affordances.forEach(function (row, index) {
         if (!row || typeof row !== "object" || !Array.isArray(row.evidence_anchors)) return;
         row.evidence_anchors.forEach(function (anchor, anchorIndex) {
@@ -11251,7 +11256,7 @@
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
-      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Include purpose when available. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
+      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
       "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
       "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",

@@ -13,6 +13,7 @@ const { runPrismLibScriptsInSandbox } = require("./prism-vm-lib-bootstrap.js");
 const repoRoot = path.resolve(__dirname, "..");
 const scaffoldLib = require("../lib/ld-guided-learning-scaffold.js");
 const pageDlaEnrich = require("../lib/page-dla-enrich.js");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 const {
   buildPageModel,
   renderLearnerPageHtml
@@ -161,28 +162,31 @@ function makeMinimalEnrichedPage(activities) {
     source_artefacts: [],
     generation_notes: {},
     activities: activities.map((row, index) =>
-      Object.assign(
-        {
-          activity_id: "A" + (index + 1),
-          title: "Source evidence move " + (index + 1),
-          learner_task: "Complete the task for activity " + (index + 1) + ".",
-          expected_output: "A reasoned response with evidence for activity " + (index + 1) + ".",
-          activity_preamble:
-            "This activity develops focused reasoning about the page enquiry so you practise the move needed before later comparison and judgement work.",
-          reasoning_orientation:
-            "Name the claim you are testing, cite evidence from the materials, and explain what follows before you conclude.",
-          required_materials: [
-            {
-              material_id: "A" + (index + 1) + "-M1",
-              type: "text",
-              purpose: "Orienting exposition",
-              specification: "depth_floor: L3"
-            }
-          ],
-          materials: [],
-          episode_plan: { archetype: "understand", beats: [{ function: "orientation" }] }
-        },
-        row
+      applyS76CommissionShape(
+        Object.assign(
+          {
+            activity_id: "A" + (index + 1),
+            title: "Source evidence move " + (index + 1),
+            learner_task: "Complete the task for activity " + (index + 1) + ".",
+            expected_output: "A reasoned response with evidence for activity " + (index + 1) + ".",
+            activity_preamble:
+              "This activity develops focused reasoning about the page enquiry so you practise the move needed before later comparison and judgement work.",
+            reasoning_orientation:
+              "Name the claim you are testing, cite evidence from the materials, and explain what follows before you conclude.",
+            required_materials: [
+              {
+                material_id: "A" + (index + 1) + "-M1",
+                type: "text",
+                purpose: "Orienting exposition",
+                specification: "depth_floor: L3"
+              }
+            ],
+            materials: [],
+            episode_plan: { archetype: "understand", beats: [{ function: "orientation" }] }
+          },
+          row
+        ),
+        { fillEvidenceDecision: true }
       )
     )
   };
@@ -375,28 +379,33 @@ test("repair: Owen full-page missing A1–A3 bridges are restored; A4/A5 preserv
     learning_outcomes: [{ id: "LO1", statement: "Interpret source evidence carefully." }],
     source_artefacts: [],
     generation_notes: {},
-    activities: rows.map((row, index) => ({
-      activity_id: row.activity_id,
-      title: "Source evidence move " + (index + 1),
-      learner_task: "Complete the evidential task for this activity.",
-      expected_output: "A reasoned response with evidence and quality criteria a peer could assess.",
-      activity_preamble:
-        "This activity develops focused reasoning about the page enquiry so you practise the move needed before later comparison and judgement work.",
-      intellectual_coherence_bridge: row.intellectual_coherence_bridge,
-      reasoning_orientation:
-        "Name the claim you are testing, cite evidence from the materials, and explain what follows before you conclude.",
-      evidence_decision: { required: false, reason: "Conceptual orientation step.", provider_material_ids: [] },
-      required_materials: [
+    activities: rows.map((row, index) =>
+      applyS76CommissionShape(
         {
-          material_id: String(row.activity_id || "A") + "-M1",
-          type: "text",
-          purpose: "Orienting exposition",
-          specification: "depth_floor: L3"
-        }
-      ],
-      materials: [],
-      episode_plan: { archetype: "understand", beats: [{ function: "orientation" }] }
-    }))
+          activity_id: row.activity_id,
+          title: "Source evidence move " + (index + 1),
+          learner_task: "Complete the evidential task for this activity.",
+          expected_output: "A reasoned response with evidence and quality criteria a peer could assess.",
+          activity_preamble:
+            "This activity develops focused reasoning about the page enquiry so you practise the move needed before later comparison and judgement work.",
+          intellectual_coherence_bridge: row.intellectual_coherence_bridge,
+          reasoning_orientation:
+            "Name the claim you are testing, cite evidence from the materials, and explain what follows before you conclude.",
+          evidence_decision: { required: false, reason: "Conceptual orientation step.", provider_material_ids: [] },
+          required_materials: [
+            {
+              material_id: String(row.activity_id || "A") + "-M1",
+              type: "text",
+              purpose: "Orienting exposition",
+              specification: "depth_floor: L3"
+            }
+          ],
+          materials: [],
+          episode_plan: { archetype: "understand", beats: [{ function: "orientation" }] }
+        },
+        { fillEvidenceDecision: true }
+      )
+    )
   };
   assert.equal(pageDlaEnrich.validateDlaEnrichedPage(page).ok, true);
 });

@@ -13,13 +13,23 @@
       "expected_output": "A justified comparison paragraph.",
       "activity_preamble": "Work through the comparison sequence.",
       "reasoning_orientation": "Link cause to effect.",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
       "required_materials": [
         {
           "material_id": "A1-M1",
           "material_type": "text",
-          "purpose": "Concept grounding"
+          "purpose": "Concept grounding",
+          "specification": "Short explanation of inflation cause chains with one worked comparison."
         }
       ],
+      "evidence_decision": {
+        "required": false,
+        "reason": "Task can be completed from teaching scaffolds without inspectable particulars as grounds.",
+        "provider_material_ids": []
+      },
       "materials": []
     },
     {
@@ -28,13 +38,23 @@
       "learner_task": "Apply CPI calculations to a scenario.",
       "expected_output": "Completed calculation with interpretation.",
       "activity_preamble": "Use the CPI method shown.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": ["A2-M1"]
+      },
       "required_materials": [
         {
           "material_id": "A2-M1",
           "material_type": "template",
-          "purpose": "Calculation scaffold"
+          "purpose": "Calculation scaffold",
+          "specification": "CPI scenario values with blank working lines for the required calculation."
         }
       ],
+      "evidence_decision": {
+        "required": false,
+        "reason": "Practice calculation inputs are procedural, not particulars-as-grounds.",
+        "provider_material_ids": []
+      },
       "materials": []
     }
   ]

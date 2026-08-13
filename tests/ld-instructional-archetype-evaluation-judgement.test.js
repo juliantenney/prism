@@ -8,6 +8,7 @@ const archetype = require("../lib/ld-instructional-archetype.js");
 const dlaContract = require("../lib/ld-dla-page-enrich-contract.js");
 const depth = require("../lib/ld-gam-instructional-depth.js");
 const dlaEnrich = require("../lib/page-dla-enrich.js");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 const RNA_EVALUATION_PLAN = {
   question:
@@ -47,11 +48,14 @@ function pageWithMaterial(material) {
     schema_version: "2.0.0",
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
     activities: [
-      {
-        activity_id: "A5",
-        title: "Evidence-based policy judgement",
-        required_materials: [material]
-      }
+      applyS76CommissionShape(
+        {
+          activity_id: "A5",
+          title: "Evidence-based policy judgement",
+          required_materials: [material]
+        },
+        { fillEvidenceDecision: true }
+      )
     ]
   };
 }

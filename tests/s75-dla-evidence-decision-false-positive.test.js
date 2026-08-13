@@ -62,6 +62,10 @@ function lagrangianA5Activity(overrides) {
           "The task requires conceptual explanation rather than interpretation of supplied evidence.",
         provider_material_ids: []
       },
+      task_material_decision: {
+        separate_inputs_required: false,
+        task_input_material_ids: []
+      },
       required_materials: [
         {
           material_id: "A5-M1",
@@ -113,6 +117,10 @@ function baseActivity(learnerTask, expectedOutput, extra) {
         required: false,
         reason: "Conceptual teaching activity.",
         provider_material_ids: []
+      },
+      task_material_decision: {
+        separate_inputs_required: false,
+        task_input_material_ids: []
       },
       required_materials: [
         {
@@ -185,37 +193,46 @@ test("S75-D15 D: review explanatory material passes with required:false", () => 
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
-test("S75-D15 E: analyse supplied dataset still fails with required:false", () => {
+test("S75-D15 E: analyse supplied dataset with required:false must pass (P02 no prose fail-close)", () => {
   const check = validateActivity(
     baseActivity(
       "Analyse the supplied dataset and identify the trend.",
       "A trend statement grounded in the dataset."
     )
   );
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
-test("S75-D15 F: compare provided source extracts still fails with required:false", () => {
+test("S75-D15 F: compare provided source extracts with required:false must pass (P02 no prose fail-close)", () => {
   const check = validateActivity(
     baseActivity(
       "Compare the two provided source extracts and justify your conclusion.",
       "A justified comparison."
     )
   );
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
-test("S75-D15 F: attached case evidence still fails with required:false", () => {
+test("S75-D15 F: attached case evidence with required:false must pass (P02 no prose fail-close)", () => {
   const check = validateActivity(
     baseActivity(
       "Use the attached case evidence to justify your conclusion.",
       "A evidence-based justification."
     )
   );
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
 test("S75-D15 G: genuine evidence-required activity passes with required:true and provider", () => {
@@ -229,6 +246,10 @@ test("S75-D15 G: genuine evidence-required activity passes with required:true an
         required: true,
         reason: "Learner must inspect poem excerpts for imagery, tone and structure.",
         provider_material_ids: ["A1-ME1"]
+      },
+      task_material_decision: {
+        separate_inputs_required: true,
+        task_input_material_ids: ["A1-ME1"]
       },
       required_materials: [
         {
@@ -257,7 +278,7 @@ test("S75-D15 G: genuine evidence-required activity passes with required:true an
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
-test("S75-D15 H: literary imagery/tone/structure with required:false still fails", () => {
+test("S75-D15 H: literary imagery/tone/structure with required:false must pass (P02 no prose fail-close)", () => {
   const check = validateActivity(
     Object.assign(baseActivity("", ""), {
       learner_task:
@@ -268,6 +289,10 @@ test("S75-D15 H: literary imagery/tone/structure with required:false still fails
         required: false,
         reason: "Incorrectly marked non-evidence.",
         provider_material_ids: []
+      },
+      task_material_decision: {
+        separate_inputs_required: false,
+        task_input_material_ids: []
       },
       required_materials: [
         {
@@ -286,8 +311,11 @@ test("S75-D15 H: literary imagery/tone/structure with required:false still fails
       episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
     })
   );
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
 test("S75-D15 I: malformed evidence_decision shape validation unchanged", () => {

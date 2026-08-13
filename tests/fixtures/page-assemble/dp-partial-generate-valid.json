@@ -1,0 +1,71 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "Inflation Drivers and CPI Reasoning",
+  "assembly_state": {
+    "enriched_by": ["design_page"],
+    "current_stage": "design_page"
+  },
+  "page_synthesis": {
+    "overview": {
+      "body": "This workshop examines inflation drivers and CPI application.",
+      "format": "markdown"
+    },
+    "learning_purpose": {
+      "body": "You will explain drivers and apply CPI reasoning.",
+      "format": "markdown"
+    },
+    "knowledge_summary": {
+      "body": "Core inflation concepts include demand-pull and cost-push dynamics.",
+      "format": "markdown"
+    }
+  },
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "high",
+        "rationale": "Classification matrix supports mechanism typing."
+      }
+    }
+  ],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-A1-generate-01",
+      "scope": "activity",
+      "activity_id": "A1",
+      "visual_decision": "generate",
+      "visual_slot": "materials-entry",
+      "tier": "valuable",
+      "purpose": "classification",
+      "preferred_representation": "classification_matrix",
+      "subject": "Inflation mechanism classification cues",
+      "context": "Visual brief: compare demand-pull and cost-push mechanisms by triggering drivers and transmission pathways.",
+      "evidence_anchors": ["A1.learner_task", "A1.materials.text"],
+      "must_show": ["demand-pull pathway cues", "cost-push shock pathway"],
+      "must_not_show": ["scenario answer key", "completed classification cells"],
+      "allowed_claims": ["Different causal mechanisms can produce inflation."],
+      "disallowed_claims": ["All inflation has one cause."],
+      "rationale": "Classify scenarios by mechanism before the analysis table.",
+      "pedagogical_added_value": "Adds discriminating cause-type cues — not a blank copy of the learner table.",
+      "anti_spoiler": true,
+      "spoiler_boundary": {
+        "hide_answers": true,
+        "hide_classification_keys": true,
+        "hide_model_solution": true,
+        "allow_structural_hint": true
+      },
+      "representation_avoid": ["filled_worksheet", "summary_table"],
+      "requires_exact_data_match": false,
+      "source_basis": "A1.learner_task; A1.materials.text",
+      "caption_intent": "Cause-type cues only — not the learner table.",
+      "alt_text": "Inflation cause-type cues for demand-pull and cost-push; detailed description follows.",
+      "detailed_description": "Two parallel cause pathways sit side by side. Demand-pull emphasises excess demand. Cost-push emphasises an upstream cost shock. Labels name triggering drivers only; cells stay empty so learners classify themselves.",
+      "discipline_risk_level": "medium",
+      "reasoning_supported": "Learners classify without completed classifications.",
+      "learner_stage": "pre_classification",
+      "canonical_discipline_note": "Empty labelled cause structures only."
+    }
+  ]
+}

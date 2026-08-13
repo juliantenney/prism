@@ -11,9 +11,9 @@
 
 ## Start here
 
-> **Sprint 76 is OPEN. Begin with S76-T-010 — DLA audit (diagnostic only) when authorised. Do not rationalise prompts or change generation behaviour until the audit completes.**
+> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04, P05, T-031, or T-033 from this handover. Do not claim RECOVER.**
 
-Do **not** reconstruct investigation findings from chat alone — use [CONTEXT.md](CONTEXT.md).
+Diagnostic SSOT: [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md). Implementation record: [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md). Opening investigation notes remain in [CONTEXT.md](CONTEXT.md).
 
 ---
 
@@ -21,27 +21,44 @@ Do **not** reconstruct investigation findings from chat alone — use [CONTEXT.m
 
 | Priority | Work |
 | -------- | ---- |
-| **1** | **S76-T-010 — DLA audit** — responsibilities; reconstruct known-good / rationalised DLA → additions → current ~72k; EP→DLA / DLA→GAM; evidence machinery; task–material sufficiency |
-| **2** | Phase 2 — rationalise / fix DLA from audit evidence |
-| **3** | Phase 3 — repeated **Roman Roads** control benchmarks |
-| **4** | Phase 4 — repeated **Lagrangian** challenge benchmarks |
-| **5** | Phase 5 — decision gate (mechanisms only after evidence) |
-| **Before close** | Durable prompt-engineering discipline — prevent **APPEND NOW → RATIONALISE LATER** ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition); exact form informed by T-010 — no arbitrary limit / guardrail mandated at open) |
+| **1** | [T-035](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) P04 **implementation plan complete** — **no implementation authorised** |
+| **2** | P04 implementation / P05 — **not started**; T-031 / T-033 live implementation still **deferred until after P04** |
+| **3** | Phase 5 decision gate — **not started** |
+| **Before close** | Durable prompt-engineering discipline — prevent **APPEND NOW → RATIONALISE LATER** ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition); exact form still a sprint output — T-010 supports the accretion diagnosis, does not specify the mechanism) |
 | **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 
 ---
 
 ## What we already know (do not re-discover blindly)
 
-1. Architecture / scaffolding / feedback often score strongly — problem is relatively **bounded**.  
-2. Sprint 71 known-good historical quality baseline (cluster ~**85.3–91**; Roman Roads **90**; constructed/generated-content STEM **87–90** as comparison evidence) is stronger than current Lagrangian release ~**79**. Whether DLA has **regressed** is the **RECOVER** hypothesis — not established until T-010 / re-benchmarks show it. Then **ADVANCE** remaining task–material / richness work.  
-3. Task–material **closure** failures (esp. A4 lambda exercises) are traceable from intermediate artefacts to benchmark Major defects.  
-4. GAM can generate maths content when commissioned — primary suspect is **incomplete commissioning**, not subject ignorance.  
-5. DLA ~**72k** character assembled prompt is a **first-class anomaly** — do not assume legitimacy; T-010 must account for growth as a **historical delta**.  
-6. Evidence machinery **may conflate or insufficiently distinguish** material requirement, provenance/authenticity, and epistemic function; observed semantic friction (validator false positive; procedural mathematical task material treated as evidence-dependent) makes this a first-class **audit question**. Rollback is an **option**, not an opening action.  
-7. Consistency matters: multiple Lagrangian runs clustered ~79 release territory with one substantially better run.
+T-010 diagnostic SSOT: [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md).  
+P02 design: [S76-T-020-dla-p02-solution-design.md](S76-T-020-dla-p02-solution-design.md).  
+P01 design: [S76-T-021-dla-p01-solution-design.md](S76-T-021-dla-p01-solution-design.md).  
+P03 design: [S76-T-022-dla-p03-solution-design.md](S76-T-022-dla-p03-solution-design.md).  
+Implementation plan: [S76-T-023-dla-p01-p02-p03-implementation-plan.md](S76-T-023-dla-p01-p02-p03-implementation-plan.md).  
+Gate A/B implementation: [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md).  
+P01 residual diagnostic: [S76-T-026-dla-p01-residual-operand-closure-diagnostic.md](S76-T-026-dla-p01-residual-operand-closure-diagnostic.md).  
+P01 residual solution design: [S76-T-027-dla-p01-residual-operand-closure-solution-design.md](S76-T-027-dla-p01-residual-operand-closure-solution-design.md).  
+P01 residual implementation: [S76-T-028-dla-p01-residual-operand-closure-implementation.md](S76-T-028-dla-p01-residual-operand-closure-implementation.md).  
+Graphics capture repair: [S76-T-029-design-page-graphics-capture-contract-repair.md](S76-T-029-design-page-graphics-capture-contract-repair.md).  
+Generated-operand operational suitability diagnostic: [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md).  
+Operational suitability solution design: [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md).  
+A4 constructive alignment: [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md).  
+LO-operation coverage solution design: [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md).  
+P04 evidence-guidance rationalisation: [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md).  
+P04 implementation plan: [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md).
 
-Detail: [CONTEXT.md](CONTEXT.md).
+1. EP → DLA → GAM responsibility split is coherent. GAM is bounded fulfilment, not the primary owner of missing commissions.  
+2. **DLA-P01** structural `task_material_decision` is live. P01-R1 prompt clarification is live (`76-DLA-PARTIAL-5`). Post-T-028 Lagrangian re-benchmark (operator-reported, JSON not in git): QA **84**; P01 residual **worked** (A2/A3 commissioned real practice problems as task inputs). Do **not** reopen P01.  
+3. **DLA-P02** validators no longer fail-close from `learner_task` wording. Gate C P02 behaviour reported strong. A2/A3 remain `evidence_decision.required: false`.  
+4. **DLA-P03** requires non-empty purpose + specification; Gate C P03 reported strong.  
+5. Unique DLA contract+shape **23,210 → 24,103** (Δ **+893** vs T-024; assembled ×2 **+1,786**); still dual-injected (P05 open).  
+6. Gate C scores (operator-reported, JSON not in git): pre-T-028 Roman Roads **87**, Lagrangian **88**; post-T-028 Lagrangian **84**. **RECOVER remains a hypothesis**.  
+7. **DLA-P04** Option 2 design + implementation plan are complete. **Implementation is not authorised.** Do not implement P05. Do not absorb T-031 or T-033 into P04.  
+8. **T-030 / T-031:** A3 generated-operand operational suitability designed (Option 3). **Not implemented.**  
+9. **T-032 / T-033:** A4 constructive alignment — supporting check ≠ LO judgement. LO-operation coverage **designed** (Option 3, step 1). **Not implemented.** Do not absorb into P04.
+
+Opening notes (Lagrangian variance, rollback as option only) remain in [CONTEXT.md](CONTEXT.md).
 
 ---
 
@@ -53,12 +70,15 @@ Move toward mid-90s **consistently** by improving underlying educational quality
 
 ## Do not
 
-- Execute T-010 without authorisation  
-- Rewrite DLA / GAM / EP during pack review  
+- Treat Gate C single runs as RECOVER proof  
+- Implement P04, P05, T-031, or T-033 from this handover  
+- Absorb T-032/T-033 into P04  
+- Run fresh generation / Roman Roads / Lagrangian without operator authorisation  
 - Add a new workflow step by default  
 - Start Settings before this DLA / quality lane finishes its decision gate (unless operator re-prioritises)  
 - Reopen Run persistence architecture (`S75-D21`) casually  
-- Commit the Sprint 76 pack without operator review (opening task was documentation-only, no commit)
+- Claim Sprint 71 score regression as established (RECOVER remains a hypothesis)  
+- Roll back evidence machinery as an opening action
 
 ---
 

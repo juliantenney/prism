@@ -8,6 +8,7 @@ const depth = require("../lib/ld-gam-instructional-depth.js");
 const instructionalPattern = require("../lib/instructional-pattern-prompt.js");
 const dlaEnrich = require("../lib/page-dla-enrich.js");
 const assemble = require("../lib/page-vnext-assemble.js");
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 function pageWithActivities(activities) {
   const distinctTitles = [
@@ -22,10 +23,12 @@ function pageWithActivities(activities) {
     assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
     activities: (activities || []).map(function (row, index) {
       if (!row || typeof row !== "object") return row;
-      if (row.title) return row;
-      return Object.assign({}, row, {
-        title: distinctTitles[index] || ("Learning pathway focus " + (index + 1))
-      });
+      const withTitle = row.title
+        ? row
+        : Object.assign({}, row, {
+            title: distinctTitles[index] || ("Learning pathway focus " + (index + 1))
+          });
+      return applyS76CommissionShape(withTitle, { fillEvidenceDecision: true });
     })
   };
 }

@@ -12,6 +12,15 @@
       "learner_task": "State what an enzyme is and what reaction rate means in this investigation context.",
       "expected_output": "A short accurate definition pair without mechanism claim.",
       "activity_preamble": "Before explaining causes, lock the basic vocabulary.",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
+      "evidence_decision": {
+        "required": false,
+        "reason": "Vocabulary teaching does not require particulars as grounds.",
+        "provider_material_ids": []
+      },
       "required_materials": [
         {
           "material_id": "A1-M1",
@@ -28,6 +37,15 @@
       "learner_task": "Explain why reaction rate rises then falls as temperature increases within and beyond the enzyme's stable range.",
       "expected_output": "A causal chain account connecting temperature change to rate outcome via intervening links.",
       "activity_preamble": "You will explain the temperature–rate relationship as a transmitting process.",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
+      "evidence_decision": {
+        "required": false,
+        "reason": "Mechanism teaching does not require particulars as grounds.",
+        "provider_material_ids": []
+      },
       "required_materials": [
         {
           "material_id": "A2-M1",
@@ -53,6 +71,15 @@
       "learner_task": "Build a working model of thermostat-controlled heating and use it to contrast mild vs extreme cold.",
       "expected_output": "A coherent system model that explains both contrast states with the same relationships and constraint.",
       "activity_preamble": "Hold a durable model; then apply it across states.",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
+      "evidence_decision": {
+        "required": false,
+        "reason": "Model-building teaching does not require particulars as grounds.",
+        "provider_material_ids": []
+      },
       "required_materials": [
         {
           "material_id": "A3-M1",
@@ -82,6 +109,15 @@
       "learner_task": "Work through expert interpretation of an enzyme reaction-rate investigation from condition to conclusion.",
       "expected_output": "A continuous walkthrough that transfers findings across stages to a bounded conclusion.",
       "activity_preamble": "Model how an expert reads the evidence set.",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
+      "evidence_decision": {
+        "required": false,
+        "reason": "Worked walkthrough teaching does not require particulars as grounds.",
+        "provider_material_ids": []
+      },
       "required_materials": [
         {
           "material_id": "A4-M1",

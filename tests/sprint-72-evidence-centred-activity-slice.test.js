@@ -7,8 +7,10 @@ const dlaEnrich = require(path.join(repoRoot, "lib", "page-dla-enrich.js"));
 const gamEnrich = require(path.join(repoRoot, "lib", "page-gam-enrich.js"));
 const dlaContract = require(path.join(repoRoot, "lib", "ld-dla-page-enrich-contract.js"));
 const gamContract = require(path.join(repoRoot, "lib", "ld-gam-page-enrich-contract.js"));
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 function buildMinimalPage(activity) {
+  activity = applyS76CommissionShape(activity, { fillBridge: true });
   return {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -30,6 +32,17 @@ function buildMinimalPage(activity) {
     source_artefacts: [],
     generation_notes: {}
   };
+}
+
+function validateShapedDlaEnrichedPage(page, baseline) {
+  if (page && Array.isArray(page.activities)) {
+    page = Object.assign({}, page, {
+      activities: page.activities.map(function (activity) {
+        return applyS76CommissionShape(activity, { fillBridge: true });
+      })
+    });
+  }
+  return dlaEnrich.validateDlaEnrichedPage(page, baseline);
 }
 
 test("S72: explanatory activity does not auto-add evidence requirement", () => {
@@ -118,7 +131,7 @@ test("S72: malformed evidence requirement hard-fails DLA validation", () => {
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(check.errors.some((e) => /evidence_requirement/.test(e)));
 });
@@ -143,7 +156,7 @@ test("S72: A2/A5-style contradiction fails when task is evidence-dependent but e
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(check.errors.some((e) => /evidence_decision required/i.test(e)));
 });
@@ -174,7 +187,7 @@ test("S72: RNA A1 conceptual classification with required:false must pass (no fa
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     check.errors.some((e) => /contradicts evidence-dependent/i.test(e)),
@@ -182,7 +195,7 @@ test("S72: RNA A1 conceptual classification with required:false must pass (no fa
   );
 });
 
-test("S72: A3 wording Analyse the supplied entry pathway evidence with no provider must fail", () => {
+test("S72: A3 wording Analyse the supplied entry pathway evidence with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A3",
     title: "Interpret entry pathway evidence",
@@ -205,12 +218,15 @@ test("S72: A3 wording Analyse the supplied entry pathway evidence with no provid
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
-test("S72: A5 wording Analyse the evidence from the HCV persistence scenario with no provider must fail", () => {
+test("S72: A5 wording Analyse the evidence from the HCV persistence scenario with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A5",
     title: "Evaluate HCV persistence evidence",
@@ -233,9 +249,12 @@ test("S72: A5 wording Analyse the evidence from the HCV persistence scenario wit
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(check.errors.some((e) => /contradicts evidence-dependent/i.test(e)));
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
+  );
 });
 
 test("S72: generic compare/classify/explain wording passes with required:false", () => {
@@ -262,7 +281,7 @@ test("S72: generic compare/classify/explain wording passes with required:false",
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -289,7 +308,7 @@ test("S72: evidence_decision required=true must reference provider rows with evi
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(check.errors.some((e) => /must include evidence_requirement/i.test(e)));
 });
@@ -951,7 +970,7 @@ test("S72: heteroscedasticity A2 separate provider + analysis scaffold passes", 
     }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   const required = page.activities[0].required_materials;
   const providers = required.filter((row) => row && row.evidence_requirement);
@@ -1025,7 +1044,7 @@ test("S72: heteroscedasticity A2 invalid scaffold evidence_requirement fails pro
     }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(
     check.errors.some((e) => /provider\/scaffold closure/i.test(e)),
@@ -1077,7 +1096,7 @@ test("S72: valid combined evidence/workspace table listed as provider passes", (
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -1117,7 +1136,7 @@ test("S72: combined mode with empty learner_response_fields hard-fails shape", (
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(
     check.errors.some((e) =>
@@ -1163,7 +1182,7 @@ test("S72: combined mode with empty fixed_observation_fields hard-fails shape", 
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(
     check.errors.some((e) =>
@@ -1271,7 +1290,7 @@ function buildSourceBoundOwenDlaPage() {
 
 test("S72: source-bound DLA plans remain valid without fabricating attachments", () => {
   const page = buildSourceBoundOwenDlaPage();
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(Array.isArray(check.warnings));
   assert.equal(
@@ -1341,7 +1360,7 @@ test("S72: source-bound provenance does not receive a simulation label", () => {
 
 test("S72: source-bound providers remain distinct from response scaffolds", () => {
   const page = buildSourceBoundOwenDlaPage();
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   const scaffoldWithEvidence = {
     ...page,
@@ -1367,7 +1386,7 @@ test("S72: source-bound providers remain distinct from response scaffolds", () =
       }
     ]
   };
-  const bad = dlaEnrich.validateDlaEnrichedPage(scaffoldWithEvidence, null);
+  const bad = validateShapedDlaEnrichedPage(scaffoldWithEvidence, null);
   assert.equal(bad.ok, false);
   assert.ok(
     bad.errors.some((e) => /provider\/scaffold closure|not listed in .*provider_material_ids/i.test(e)),
@@ -1546,10 +1565,10 @@ test("S72: missing attachment never hard-fails ordinary or source-bound DLA vali
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   ordinary.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  assert.equal(dlaEnrich.validateDlaEnrichedPage(ordinary, null).ok, true);
+  assert.equal(validateShapedDlaEnrichedPage(ordinary, null).ok, true);
 
   const sourceBound = buildSourceBoundOwenDlaPage();
-  const check = dlaEnrich.validateDlaEnrichedPage(sourceBound, null);
+  const check = validateShapedDlaEnrichedPage(sourceBound, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -1584,7 +1603,7 @@ test("S72: DLA runner Instructions guide optional Copilot attachment without imp
   assert.match(patterns, /conversation_attachment/);
 });
 
-test("S72: literary form/structure analysis requires evidence even without analyse-evidence phrasing", () => {
+test("S72: literary form/structure analysis with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A3",
     title: "Form and Perspective",
@@ -1626,11 +1645,11 @@ test("S72: literary form/structure analysis requires evidence even without analy
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(
-    check.errors.some((e) => /contradicts evidence-dependent|evidence_decision required/i.test(e)),
-    check.errors.join("; ")
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
   );
 });
 
@@ -1668,7 +1687,7 @@ test("S72: conceptual teaching about form does not automatically require evidenc
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -1716,7 +1735,7 @@ test("S72: source-bound evaluation warns on summary/reference-only providers", (
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "SOURCE_BOUND_SUMMARY_REFERENCE_ONLY"),
@@ -1774,7 +1793,7 @@ test("S72: source-bound evaluation accepts multiple exact attributed excerpts", 
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some(
@@ -1813,7 +1832,7 @@ test("S72: RNA and heteroscedasticity evidence decisions remain valid after form
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   rna.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  assert.equal(dlaEnrich.validateDlaEnrichedPage(rna, null).ok, true);
+  assert.equal(validateShapedDlaEnrichedPage(rna, null).ok, true);
 
   const hetero = buildMinimalPage({
     activity_id: "A2",
@@ -1854,7 +1873,7 @@ test("S72: RNA and heteroscedasticity evidence decisions remain valid after form
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   hetero.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  assert.equal(dlaEnrich.validateDlaEnrichedPage(hetero, null).ok, true);
+  assert.equal(validateShapedDlaEnrichedPage(hetero, null).ok, true);
 });
 
 test("S72: formal analysis receives separate teaching and source-evidence materials", () => {
@@ -1912,7 +1931,7 @@ test("S72: formal analysis receives separate teaching and source-evidence materi
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     Object.prototype.hasOwnProperty.call(page.activities[0].required_materials[0], "evidence_requirement"),
@@ -1966,7 +1985,7 @@ test("S72: teaching explanation alone fails as evidence provider", () => {
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, false);
   assert.ok(
     check.errors.some((e) => /provider-role closure|teaching\/explanatory/i.test(e)),
@@ -2070,7 +2089,7 @@ test("S72: later evaluation should continue established source-bound evidence", 
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "SOURCE_BOUND_REPLACED_BY_SIMULATION"),
@@ -2131,7 +2150,7 @@ test("S72: legitimate RNA/statistics simulation evidence remains valid with sour
     }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some(
@@ -2240,7 +2259,7 @@ test("S72: mixed resource may use source-bound and simulated evidence for differ
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) => w.code === "SOURCE_BOUND_REPLACED_BY_SIMULATION"),
@@ -2283,7 +2302,7 @@ test("S72: simulation purporting to describe a named authoritative source soft-w
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "SIMULATION_DESCRIBES_AUTHORITATIVE_SOURCE"),
@@ -2291,7 +2310,7 @@ test("S72: simulation purporting to describe a named authoritative source soft-w
   );
 });
 
-test("S72: A1 poem evidence/examples/quotation classification requires evidence_decision", () => {
+test("S72: A1 poem evidence/examples/quotation classification with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A1",
     title: "Classify poetic techniques",
@@ -2333,11 +2352,11 @@ test("S72: A1 poem evidence/examples/quotation classification requires evidence_
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(
-    check.errors.some((e) => /contradicts evidence-dependent|evidence_decision required/i.test(e)),
-    check.errors.join("; ")
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
   );
 });
 
@@ -2375,7 +2394,7 @@ test("S72: conceptual classification without required source use remains require
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -2476,7 +2495,7 @@ test("S72: two inventoried source units must not expand into an unattached third
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "SOURCE_BOUND_UNIT_NOT_IN_INVENTORY"),
@@ -2585,7 +2604,7 @@ test("S72: source-bound comparison using only inventoried units passes without i
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) => w.code === "SOURCE_BOUND_UNIT_NOT_IN_INVENTORY"),
@@ -2694,7 +2713,7 @@ test("S72: mixed source-bound and simulated evidence remains valid after invento
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some(
@@ -2751,11 +2770,11 @@ test("S72: later-evidence preamble alone does not make conceptual A1 evidence-de
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
-test("S72: current learner output requiring quotations still requires evidence", () => {
+test("S72: current learner output requiring quotations with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A2",
     title: "Support claims with quotations",
@@ -2788,11 +2807,11 @@ test("S72: current learner output requiring quotations still requires evidence",
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(
-    check.errors.some((e) => /contradicts evidence-dependent|evidence_decision required/i.test(e)),
-    check.errors.join("; ")
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
   );
 });
 
@@ -2825,7 +2844,7 @@ test("S72: conceptual contextual detail remains distinct from learner evidence",
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -2876,7 +2895,7 @@ test("S72: simulated provider claiming poem extracts and quotations soft-warns f
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "MIXED_PROVENANCE_SINGLE_PROVIDER"),
@@ -2943,7 +2962,7 @@ test("S72: honest separate source-bound and simulated providers remain valid tog
     episode_plan: { archetype: "evaluate", beats: [{ function: "evaluative_judgement" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) => w.code === "MIXED_PROVENANCE_SINGLE_PROVIDER"),
@@ -2952,7 +2971,7 @@ test("S72: honest separate source-bound and simulated providers remain valid tog
   );
 });
 
-test("S72: A3 imagery/tone/structure using provided examples fails when required:false", () => {
+test("S72: A3 imagery/tone/structure using provided examples with required:false must pass (P02 no prose fail-close)", () => {
   const page = buildMinimalPage({
     activity_id: "A3",
     title: "Analyse imagery tone and structure",
@@ -2986,11 +3005,11 @@ test("S72: A3 imagery/tone/structure using provided examples fails when required
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
-  assert.equal(check.ok, false);
-  assert.ok(
-    check.errors.some((e) => /contradicts evidence-dependent|evidence_decision required/i.test(e)),
-    check.errors.join("; ")
+  const check = validateShapedDlaEnrichedPage(page, null);
+  assert.equal(check.ok, true, check.errors && check.errors.join("; "));
+  assert.equal(
+    (check.errors || []).some((e) => /contradicts evidence-dependent/i.test(e)),
+    false
   );
 });
 
@@ -3045,7 +3064,7 @@ test("S72: A3 imagery/tone/structure with genuine source provider passes", () =>
     episode_plan: { archetype: "analyse", beats: [{ function: "guided_reasoning" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
 });
 
@@ -3218,7 +3237,7 @@ test("S72: Owen-like resource with learner-evidence declaration requires convers
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.ok(
     (check.warnings || []).some((w) => w.code === "SOURCE_INTENDED_WITHOUT_ATTACHMENT_PROVIDERS"),
@@ -3380,7 +3399,7 @@ test("S72: Owen-like resource with conversation_attachment on analytical activit
       }
     ]
   };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) =>
@@ -3420,7 +3439,7 @@ test("S72: no attachment declaration continues normally for automation", () => {
     episode_plan: { archetype: "understand", beats: [{ function: "explanation" }] }
   });
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) => w.code === "SOURCE_INTENDED_WITHOUT_ATTACHMENT_PROVIDERS"),
@@ -3462,7 +3481,7 @@ test("S72: irrelevant supporting-knowledge declaration is not forced into activi
     }
   };
   page.assembly_state = { current_stage: "dla", enriched_by: ["episode_plan", "dla"] };
-  const check = dlaEnrich.validateDlaEnrichedPage(page, null);
+  const check = validateShapedDlaEnrichedPage(page, null);
   assert.equal(check.ok, true, check.errors && check.errors.join("; "));
   assert.equal(
     (check.warnings || []).some((w) => w.code === "SOURCE_INTENDED_WITHOUT_ATTACHMENT_PROVIDERS"),

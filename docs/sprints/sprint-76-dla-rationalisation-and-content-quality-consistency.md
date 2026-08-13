@@ -15,17 +15,29 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 
 ## Immediate next work
 
-> **Sprint 76 is OPEN. Begin with S76-T-010 — DLA audit when authorised. Settings follows later.**
+> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04/P05/T-031/T-033 from this charter. Settings follows later.**
 
 ## Phase overview
 
 | Phase | Focus | Status |
 | ----- | ----- | ------ |
 | T-001 pack init | Documentation | **Done** |
-| T-010 DLA audit | Diagnostic | **Defined — Not started** |
-| Phase 2 | Rationalise / fix DLA | Not started |
-| Phase 3 | Roman Roads control runs | Not started |
-| Phase 4 | Lagrangian challenge runs | Not started |
+| T-010 DLA audit | Diagnostic | **Complete** — [S76-T-010-dla-audit-report.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-010-dla-audit-report.md) |
+| T-023 P01/P02/P03 plan | Planning | **Complete** |
+| T-024 P01/P02/P03 Gate A+B | Implementation | **Complete** |
+| T-026 P01 residual diagnostic | Diagnostic | **Complete** |
+| T-027 P01 residual solution design | Design | **Complete** |
+| T-028 P01 residual implementation | Bounded prompt clarification | **Complete** — Lagrangian re-benchmark QA 84; P01 residual worked |
+| T-029 Design Page graphics capture | Capture shape gate | **Complete** |
+| T-030 generated-operand operational suitability | Diagnostic | **Complete** — not fixed; not P04 |
+| T-031 operational suitability solution design | Design | **Complete** — implementation deferred until after P04 |
+| T-032 A4 constructive alignment | Diagnostic | **Complete** — not fixed; not P04 |
+| T-033 LO-operation coverage | Design | **Complete** — implementation deferred until after P04 |
+| T-034 P04 evidence-guidance rationalisation | Design | **Complete** |
+| T-035 P04 implementation plan | Planning | **Complete** — no implementation authorised |
+| Phase 2 remainder | P04 implementation / P05 | **Not started** |
+| Phase 3 | Roman Roads control runs | First Gate C run reported (87) — not a repeated programme |
+| Phase 4 | Lagrangian challenge runs | First Gate C run reported (88; P01 mixed) — not a repeated programme |
 | Phase 5 | Decision gate | Not started |
 | Settings | PB-FA-005 | **Deferred** |
 
@@ -35,4 +47,8 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 - [STATUS.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/STATUS.md)  
 - [CONTEXT.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/CONTEXT.md)  
 - [PLAN.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/PLAN.md)  
+- [T-027 P01-R1 design](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-027-dla-p01-residual-operand-closure-solution-design.md)  
+- [T-028 P01-R1 implementation](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-028-dla-p01-residual-operand-closure-implementation.md)  
+- [T-034 P04 evidence-guidance design](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md)  
+- [T-035 P04 implementation plan](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)  
 - [NEXT-SPRINT.md](NEXT-SPRINT.md)

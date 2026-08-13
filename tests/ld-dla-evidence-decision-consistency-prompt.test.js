@@ -79,3 +79,43 @@ test("DLA contract: includes invalid/valid evidence_decision contrast", () => {
     /Rewrite learner_task \/ expected_output \/ evidence_use_prompt/i
   );
 });
+
+test("S76: activity commissioning order is production → inputs → commissions → evidence", () => {
+  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  assert.match(text, /Activity commissioning order/i);
+  assert.match(text, /Define the learner production obligation/i);
+  assert.match(text, /task_material_decision/i);
+  assert.match(text, /non-empty purpose[\s\S]*non-empty specification/i);
+  assert.match(text, /particulars-as-grounds/i);
+  assert.match(text, /provider_material_ids must be a subset of task_input_material_ids/i);
+  assert.doesNotMatch(text, /### Evidence-decision planning order/);
+});
+
+test("S76: canonical DLA shape includes task_material_decision and specification", () => {
+  const snippet = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  const taskIdx = snippet.indexOf("task_material_decision");
+  const materialsIdx = snippet.indexOf('"required_materials"');
+  const evidenceIdx = snippet.lastIndexOf("evidence_decision");
+  assert.ok(taskIdx >= 0);
+  assert.ok(materialsIdx > taskIdx);
+  assert.ok(evidenceIdx > materialsIdx);
+  assert.match(snippet, /"specification":/);
+  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-5");
+});
+
+test("S76 P01-R1: commissioning order distinguishes operand from model/workspace/scaffold", () => {
+  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  assert.match(text, /particular content upon which the learner performs the required operation/i);
+  assert.match(text, /operand\/stimulus/i);
+  assert.match(text, /model = shows how/i);
+  assert.match(text, /workspace = place\/structure/i);
+  assert.match(text, /scaffold = prompts, supports or checks/i);
+  assert.match(text, /when not already fully contained in learner_task/i);
+  assert.match(text, /Used during the activity ≠ automatically a task input/);
+  assert.match(
+    text,
+    /Listing a task input does not set evidence_decision\.required; P01 and P02 remain independent/
+  );
+  assert.match(text, /list only their material_ids in task_input_material_ids/);
+  assert.doesNotMatch(text, /### Evidence-decision planning order/);
+});

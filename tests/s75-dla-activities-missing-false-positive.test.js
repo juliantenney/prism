@@ -16,6 +16,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 const fixturesDir = path.join(repoRoot, "tests", "fixtures", "page-assemble");
 const dlaEnrich = require(path.join(repoRoot, "lib", "page-dla-enrich.js"));
+const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
 
 function loadFixture(name) {
   return JSON.parse(fs.readFileSync(path.join(fixturesDir, name), "utf8"));
@@ -130,7 +131,7 @@ function buildSuppliedStyleActivity(id, title) {
     A4: "Evaluate stabilisation trade-offs",
     A5: "Interpret shadow price (lambda)"
   };
-  return {
+  return applyS76CommissionShape({
     activity_id: id,
     title: title || titles[id] || "Compare inflation drivers",
     learner_task: "Complete the conceptual task for " + id + ".",
@@ -149,7 +150,7 @@ function buildSuppliedStyleActivity(id, title) {
       provider_material_ids: []
     },
     materials: []
-  };
+  });
 }
 
 function buildSuppliedStyleDlaPage(activityCount) {
@@ -170,7 +171,7 @@ function buildSuppliedStyleDlaPage(activityCount) {
 }
 
 function lagrangianA5Activity() {
-  return {
+  return applyS76CommissionShape({
     activity_id: "A5",
     title: "Interpret shadow price (lambda)",
     grouping: "individual",
@@ -197,7 +198,7 @@ function lagrangianA5Activity() {
       }
     ],
     materials: []
-  };
+  });
 }
 
 function buildRunLi(stepId, jsonText) {

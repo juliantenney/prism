@@ -13,7 +13,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first, then this pack’s [STATUS.md](STATUS.md) and [PLAN.md](PLAN.md).
 
-> **Sprint 76 is OPEN. Begin with S76-T-010 — DLA audit (diagnostic only). Do not rationalise, rewrite prompts, or change generation behaviour until the audit is authorised and complete.**
+> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04, P05, T-031, or T-033 from this pack. Do not claim RECOVER.**
 
 ---
 
@@ -31,9 +31,9 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 
 | Priority | Work |
 | -------- | ---- |
-| **Task 1** | **S76-T-010 — DLA audit** (defined; await authorisation to execute) |
-| **Following** | Rationalise / fix DLA from evidence → Roman Roads control runs → Lagrangian challenge runs → decision gate |
-| **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) — **not** in opening scope |
+| **Now** | T-035 plan complete — [S76-T-035](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) — **no implementation authorised** |
+| **Not started** | P04 implementation · P05 · Settings · T-031 / T-033 live-prompt implementation |
+| **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 
 ---
 
@@ -49,6 +49,22 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 | [HANDOVER.md](HANDOVER.md) | Continuation context |
 | [next-chat-briefing.md](next-chat-briefing.md) | Pasteable fresh-session brief |
 | [S76-T-001-sprint-pack-initialisation.md](S76-T-001-sprint-pack-initialisation.md) | Opening documentation task |
+| [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) | DLA audit — diagnostic SSOT |
+| [S76-T-020-dla-p02-solution-design.md](S76-T-020-dla-p02-solution-design.md) | DLA-P02 solution design |
+| [S76-T-021-dla-p01-solution-design.md](S76-T-021-dla-p01-solution-design.md) | DLA-P01 solution design |
+| [S76-T-022-dla-p03-solution-design.md](S76-T-022-dla-p03-solution-design.md) | DLA-P03 solution design |
+| [S76-T-023-dla-p01-p02-p03-implementation-plan.md](S76-T-023-dla-p01-p02-p03-implementation-plan.md) | P01/P02/P03 implementation plan |
+| [S76-T-024-dla-p01-p02-p03-gate-a-b.md](S76-T-024-dla-p01-p02-p03-gate-a-b.md) | P01/P02/P03 Gate A + Gate B implementation record |
+| [S76-T-026-dla-p01-residual-operand-closure-diagnostic.md](S76-T-026-dla-p01-residual-operand-closure-diagnostic.md) | P01 residual operand-closure diagnostic |
+| [S76-T-027-dla-p01-residual-operand-closure-solution-design.md](S76-T-027-dla-p01-residual-operand-closure-solution-design.md) | P01 residual operand-closure solution design |
+| [S76-T-028-dla-p01-residual-operand-closure-implementation.md](S76-T-028-dla-p01-residual-operand-closure-implementation.md) | P01 residual operand-closure implementation |
+| [S76-T-029-design-page-graphics-capture-contract-repair.md](S76-T-029-design-page-graphics-capture-contract-repair.md) | Design Page graphics capture contract repair |
+| [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md) | Generated-operand operational suitability diagnostic |
+| [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md) | Generated-operand operational suitability solution design |
+| [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md) | Lagrangian A4 constructive-alignment diagnostic |
+| [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) | DLA LO-operation coverage solution design |
+| [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) | DLA-P04 evidence-guidance rationalisation solution design |
+| [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) | DLA-P04 evidence-guidance rationalisation implementation plan |
 
 Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)
 
@@ -56,9 +72,10 @@ Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-ar
 
 ## Do not
 
-- Execute **S76-T-010** until explicitly authorised after pack review  
-- Implement DLA/GAM/EP/prompt/schema changes as part of pack opening  
+- Implement P04, P05, T-031, or T-033 from this pack  
+- Absorb T-032/T-033 into P04 implementation  
+- Run fresh generation from this pack without operator authorisation  
 - Add a new workflow step by default  
 - Absorb **Settings** into this sprint’s opening work  
 - Treat mid-90s aspiration as an artificial score-gaming requirement  
-- Commit without operator review of this pack  
+- Claim Sprint 71 score regression as established (T-010 non-finding)  

@@ -12235,6 +12235,51 @@
     return !String(value || "").trim();
   }
 
+  /** NO CONTENT → NO DURABLE CAPTURE RESOURCE. */
+  function isWorkflowRunCapturePayloadEmpty(rawValue, finalValue) {
+    return (
+      workflowRunCaptureValueIsBlank(rawValue) && workflowRunCaptureValueIsBlank(finalValue)
+    );
+  }
+
+  var WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA =
+    "PRISM couldn't save this result because browser storage is full. The result is still available in this session, but it may be lost if you refresh or close PRISM.";
+  var WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC =
+    "PRISM couldn't save this result. The result is still available in this session, but it may be lost if you refresh or close PRISM.";
+
+  function isWorkflowRunCapturePersistQuotaFailure(payloadPersist, runstatePersistResult) {
+    var detail =
+      payloadPersist && payloadPersist.detail && typeof payloadPersist.detail === "object"
+        ? payloadPersist.detail
+        : null;
+    var code = String(
+      (detail && (detail.code || detail.reason)) ||
+        (payloadPersist && payloadPersist.reason) ||
+        (runstatePersistResult && runstatePersistResult.reason) ||
+        ""
+    ).toLowerCase();
+    var message = String(
+      (detail && detail.message) ||
+        (payloadPersist && payloadPersist.message) ||
+        (runstatePersistResult && runstatePersistResult.message) ||
+        ""
+    ).toLowerCase();
+    if (/invalid_put_input|resource_store_unavailable|missing_workflow|missing_step/.test(code)) {
+      return false;
+    }
+    if (/quota|exceed|storage.?full|ns_error_dom_quota/.test(code + " " + message)) {
+      return true;
+    }
+    return false;
+  }
+
+  function buildWorkflowRunCapturePersistFailureToastMessage(payloadPersist, runstatePersistResult) {
+    if (isWorkflowRunCapturePersistQuotaFailure(payloadPersist, runstatePersistResult)) {
+      return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA;
+    }
+    return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC;
+  }
+
   function buildWorkflowStepRowFromRunLi(li, wf) {
     if (!li) return null;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
@@ -25352,6 +25397,11 @@
       );
       var hasNonEmptyAcceptedCaptureNow =
         !!String(persistedRawNow || "").trim() || !!String(persistedFinalNow || "").trim();
+      // Empty/whitespace captures must never create durable resources or failure toasts.
+      // Absence of a durable record is not a reason to persist blank payloads.
+      if (isWorkflowRunCapturePayloadEmpty(persistedRawNow, persistedFinalNow)) {
+        return;
+      }
       var shouldPersist =
         (captureChanged || !captureDurablyCurrent) &&
         (!hasBlockingValidationError || hasNonEmptyAcceptedCaptureNow);
@@ -25373,7 +25423,7 @@
           }
           if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
             showToast(
-              "PRISM couldn't save this result because browser storage is full. The result is still available in this session, but it may be lost if you refresh or close PRISM.",
+              buildWorkflowRunCapturePersistFailureToastMessage(payloadPersist, persistResult),
               "error"
             );
             return { ok: false, reason: "persist_failed" };
@@ -54318,6 +54368,15 @@
       rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
     prismTestApi.persistWorkflowRunCapturePayloadForStepForTest = persistWorkflowRunCapturePayloadForStep;
+    prismTestApi.isWorkflowRunCapturePayloadEmptyForTest = isWorkflowRunCapturePayloadEmpty;
+    prismTestApi.buildWorkflowRunCapturePersistFailureToastMessageForTest =
+      buildWorkflowRunCapturePersistFailureToastMessage;
+    prismTestApi.isWorkflowRunCapturePersistQuotaFailureForTest =
+      isWorkflowRunCapturePersistQuotaFailure;
+    prismTestApi.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA_FOR_TEST =
+      WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA;
+    prismTestApi.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST =
+      WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC;
     prismTestApi.hydrateWorkflowRunCapturePayloadsForWorkflowForTest =
       hydrateWorkflowRunCapturePayloadsForWorkflow;
     prismTestApi.migrateLegacyInlineWorkflowRunCapturesToResourceRefsForTest =

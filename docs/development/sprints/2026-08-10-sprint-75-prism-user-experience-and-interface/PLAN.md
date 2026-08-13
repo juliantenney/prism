@@ -2,7 +2,7 @@
 
 **Status:** **COMPLETE / Closed** (closed 2026-08-12)  
 **Closure:** [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md) · [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md)  
-**Next:** Lagrangian Multipliers resource quality investigation → Settings (**PB-FA-005**)
+**Next:** [Sprint 76 — OPEN](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) → Settings (**PB-FA-005**) later
 
 Task IDs: `S75-T-###`. Decision IDs: `S75-D##` in [decisions.md](decisions.md).
 
@@ -52,12 +52,12 @@ S75-T-001 (pack init) ✅ Done
   → My Workflows Run UX, lifecycle, progress indication ✅
   → Prompt Studio + Prompt Library UX ✅ (S75-D26–D32)
   → Sprint 75 programme COMPLETE (2026-08-12)
-  → NEXT: Lagrangian Multipliers resource quality investigation
+  → Sprint 76 OPEN (2026-08-13) — DLA audit / content-quality consistency
   → THEN: Settings / parameterisation (PB-FA-005)
-  → Deferred: T-020 C-09 / C-11 / C-12 · advanced Edit overhaul (if warranted) · Sprint 76 not opened
+  → Deferred: T-020 C-09 / C-11 / C-12 · advanced Edit overhaul (if warranted)
 ```
 
-Authoritative current snapshot: [STATUS.md](STATUS.md) · [HANDOVER.md](HANDOVER.md).
+Authoritative historical snapshot: [STATUS.md](STATUS.md). Live programme: [Sprint 76 STATUS](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/STATUS.md).
 
 ---
 
@@ -194,5 +194,5 @@ navigation · orientation · terminology · progress/state feedback · errors/re
 | Domains D–E detailed discovery | Not started |
 | Implementation slices (IA, navigation, interaction, terminology, visual, a11y, feedback) | After domain discovery + decisions + operator authorisation |
 | Architectural work triggered by UX | Only if evidence shows genuine product requirement **and** operator authorises |
-| Sprint 76 | Not opened; not relevant yet |
+| Sprint 76 | **OPEN** (2026-08-13) — see Sprint 76 pack; not part of Sprint 75 delivery |
 | Group F tooling / PB-S-001 / WR orphans / PB-FA-004 | Remain outside Sprint 75 open scope unless separately authorised |

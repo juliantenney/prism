@@ -1,32 +1,42 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 75 **COMPLETE / Closed** (2026-08-12). Sprint 76 **not opened**.  
-**Updated:** 2026-08-12
+**Status:** Sprint 76 **OPEN** (opened 2026-08-13). Sprint 75 **COMPLETE / Closed**.  
+**Updated:** 2026-08-13
 
 ---
 
-## Immediate next work — Priority 1
+## Current programme — Sprint 76
 
-**Lagrangian Multipliers resource quality investigation**
-
-A PRISM-generated Lagrangian Multipliers learning resource scored substantially lower on QA/benchmark than peer resources. **Investigate why before changing generation behaviour.**
+**DLA rationalisation, task–material sufficiency, and content-quality consistency**
 
 | Resource | Path |
 | -------- | ---- |
-| Handover (start here) | [HANDOVER.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/HANDOVER.md) |
-| Next-chat briefing | [next-chat-briefing.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/next-chat-briefing.md) |
-| Sprint 75 final report | [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md) |
-| Benchmark / QA lifecycle context | [PB-FA-006](../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
+| Start here | [SPRINT-76-START-HERE.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) |
+| Handover | [HANDOVER.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/HANDOVER.md) |
+| Next-chat briefing | [next-chat-briefing.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/next-chat-briefing.md) |
+| Status | [STATUS.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/STATUS.md) |
+| Context / evidence | [CONTEXT.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/CONTEXT.md) |
+| Plan | [PLAN.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/PLAN.md) |
+| Top-level charter | [sprint-76-dla-rationalisation-and-content-quality-consistency.md](sprint-76-dla-rationalisation-and-content-quality-consistency.md) |
 
-> **Sprint 75 is complete. Begin next with the Lagrangian Multipliers resource quality investigation. Settings follows after that.**
+> **Sprint 76 is OPEN. Current priority: DLA audit (S76-T-010 when authorised) — reconstruct DLA growth as a historical delta; RECOVER (hypothesis) then ADVANCE. Then rationalisation and repeated Roman Roads / Lagrangian re-benchmarks. Settings follows later.**
+
+### Immediate task
+
+**S76-T-010 — DLA audit** (diagnostic only; defined, not started until authorised).
+
+### Benchmark roles
+
+| Subject | Role |
+| ------- | ---- |
+| Roman Roads | Control |
+| Lagrangian Multipliers | Challenge / diagnostic |
 
 ---
 
-## Following priority — Priority 2
+## Following priority — after Sprint 76 decision gate
 
 **Settings** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
-
-Parameter source-of-truth, Settings information architecture, Run propagation. Investigation largely complete during Sprint 75; **implementation deferred** until after the resource-quality investigation.
 
 ---
 
@@ -57,7 +67,7 @@ Sprint 74 architecture consolidation remains **COMPLETE / Closed**. Do not reope
 
 > A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
 
-The Lagrangian investigation is **diagnostic first** — do not prescribe fixes until evidence identifies failure point(s).
+Sprint 76 Phase 1 is **diagnostic first** — do not prescribe DLA rewrites until T-010 evidence is in.
 
 ---
 

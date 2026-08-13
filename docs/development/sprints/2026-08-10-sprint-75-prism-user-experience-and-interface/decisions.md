@@ -502,8 +502,8 @@ Programme tracker for Sprint 75 topics (many entries are **Done** / **Deferred**
 | Prompt Studio Paste/Generate split | **Done** | `S75-D30` |
 | Prompt Library persistence authority | **Done** | `S75-D31` |
 | Prompt Library header action grouping | **Done** | `S75-D32` — **final Sprint 75 slice** |
-| Lagrangian Multipliers resource quality investigation | **Next** | Diagnostic programme — [HANDOVER.md](HANDOVER.md) |
-| Domain B Settings / parameterisation implementation | **Deferred** | **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)** — after Lagrangian investigation |
+| Lagrangian / DLA investigation → Sprint 76 | **Opened as Sprint 76** (2026-08-13) | [Sprint 76 START HERE](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) |
+| Domain B Settings / parameterisation implementation | **Deferred** | **[PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)** — after Sprint 76 decision gate |
 | Advanced custom-workflow Edit machinery overhaul | **Deferred** | Future sprint **if evidence warrants** — not opened at closeout |
 | My Workflows functional audit + identity CRUD (Rename/Duplicate/Delete/Import/Export) | **Done** | Rename identity fixed; lifecycle tests added; Import collision UX |
 | Domain B first-time selection / mode persistence rules | **Done** | `S75-D10` (Run default + session preservation + Create→Run handoff) |

@@ -4,7 +4,7 @@
 **Status:** **COMPLETE / Closed** (closed 2026-08-12)  
 **Predecessor:** [Sprint 74 — COMPLETE / Closed](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md)  
 **Closure:** [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md) · [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md)  
-**Successor:** Sprint 76 — **Not opened**
+**Successor:** [Sprint 76 — OPEN](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md)
 
 ---
 
@@ -12,7 +12,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first.
 
-> **Sprint 75 is complete. Begin next with the Lagrangian Multipliers resource quality investigation. Settings follows after that.**
+> **Sprint 75 is complete. Sprint 76 is OPEN — begin with the DLA audit (S76-T-010 when authorised). Settings follows after the Sprint 76 decision gate.**
 
 ---
 
@@ -42,12 +42,12 @@ Run capture payloads in IndexedDB; lightweight refs in localStorage (`S75-D21`).
 
 ---
 
-## Next priorities (post-Sprint 75)
+## Next priorities
 
 | Priority | Work |
 | -------- | ---- |
-| **1** | Lagrangian Multipliers resource quality investigation — diagnose before fix |
-| **2** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| **1** | **Sprint 76** — DLA audit / rationalisation and content-quality consistency — [SPRINT-76-START-HERE.md](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) |
+| **2** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) (after Sprint 76 decision gate) |
 
 ---
 
@@ -66,4 +66,4 @@ Inherited: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-c
 
 - Continue Sprint 75 implementation without a new programme decision  
 - Reopen Sprint 74 architecture casually  
-- Open Sprint 76 from this pack  
+- Treat this pack as the live Sprint 76 dashboard — use the Sprint 76 pack  

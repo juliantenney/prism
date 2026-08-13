@@ -21,15 +21,14 @@
 | **My Workflows / Run / lifecycle** | **Delivered** (see Final Report §4) |
 | **Prompt Studio / Prompt Library** | **Delivered** (see Final Report §6–7) |
 | **Persistence** | **SETTLED** (`S75-D21`) — do not reopen |
-| **NEXT (post-Sprint 75)** | **Lagrangian Multipliers resource quality investigation** |
-| **Following** | **Settings** → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
-| **Sprint 76** | **Not opened** |
+| **NEXT (live programme)** | **Sprint 76 OPEN** — [SPRINT-76-START-HERE.md](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) |
+| **Following** | **Settings** → [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) (after Sprint 76 decision gate) |
+| **Sprint 76** | **OPEN** (opened 2026-08-13) |
 
 ```text
-Sprint 75 COMPLETE
-  → NEXT: Lagrangian Multipliers resource quality investigation (diagnose before fix)
+Sprint 75 COMPLETE / Closed
+  → Sprint 76 OPEN (DLA audit / content-quality consistency)
   → THEN: Settings (PB-FA-005)
-  → Sprint 76 not opened
 ```
 
 ---
@@ -61,8 +60,8 @@ Full narrative: [SPRINT-75-FINAL-REPORT.md](SPRINT-75-FINAL-REPORT.md).
 
 | Item | Link |
 | ---- | ---- |
-| Lagrangian Multipliers resource quality investigation | **Immediate next** — [HANDOVER.md](HANDOVER.md) |
-| Settings / parameterisation + IA | [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
+| Lagrangian Multipliers → DLA / content-quality programme | **Absorbed into Sprint 76 OPEN** — [Sprint 76 HANDOVER](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/HANDOVER.md) |
+| Settings / parameterisation + IA | [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) — after Sprint 76 decision gate |
 | Advanced custom-workflow Edit machinery | Future sprint **if evidence warrants** — not opened |
 | User-controlled storage management | [PB-FA-007](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-007--user-controlled-storage-management) |
 | QA / refinement lifecycle | [PB-FA-006](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle) |
@@ -85,4 +84,4 @@ Legacy inline `capturedOutputs` / `capturedOutputsRaw` = migration/recovery only
 
 ## Last updated
 
-2026-08-12 — Sprint 75 **COMPLETE / Closed**. Handover points to Lagrangian Multipliers resource quality investigation, then Settings. Sprint 76 not opened.
+2026-08-13 — Sprint 76 **OPEN**. Sprint 75 remains **COMPLETE / Closed**. Live next work: Sprint 76 DLA audit lane (see Sprint 76 pack).

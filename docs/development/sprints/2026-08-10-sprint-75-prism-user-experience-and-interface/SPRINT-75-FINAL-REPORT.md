@@ -5,7 +5,8 @@
 **Closed:** 2026-08-12  
 **Status:** **COMPLETE / Closed**  
 **Predecessor:** Sprint 74 — Closed (architecture not reopened)  
-**Successor:** Lagrangian Multipliers resource quality investigation → then Settings (**PB-FA-005**)  
+**Successor at closeout:** Lagrangian Multipliers resource quality investigation → then Settings (**PB-FA-005**)  
+**Live successor (2026-08-13):** [Sprint 76 — OPEN](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md)  
 **Closure companion:** [SPRINT-75-CLOSURE.md](SPRINT-75-CLOSURE.md)  
 **Top-level closeout:** [docs/sprints/sprint-75-closeout.md](../../../sprints/sprint-75-closeout.md)  
 **Decisions:** [decisions.md](decisions.md)
@@ -113,25 +114,21 @@ Recorded in [decisions.md](decisions.md) as `S75-D27`–`S75-D32`. Summary:
 | T-020 C-09 / C-11 / C-12 | Deferred |
 | QA / refinement lifecycle productisation | **PB-FA-006** |
 | Storage management UX | **PB-FA-007** |
-| Sprint 76 | **Not opened** |
+| Sprint 76 (at closeout) | **Not opened** on 2026-08-12; **opened 2026-08-13** as DLA / content-quality consistency |
 
 ---
 
 ## 11. Next priorities
 
-### Priority 1 — Lagrangian Multipliers resource quality investigation
+### Priority 1 — Lagrangian / DLA investigation → Sprint 76
 
-A PRISM-generated Lagrangian Multipliers learning resource scored substantially lower on QA/benchmark than peer resources. **Investigate why before changing generation behaviour.** Known benchmark signal includes missing independent Lagrangian-construction practice — **do not assume that is the sole root cause.**
+At Sprint 75 closeout, the next programme was a **Lagrangian Multipliers resource quality investigation** (diagnose before changing generation). Post-closeout evidence bounded a DLA / task–material / consistency problem and formally opened **Sprint 76** (2026-08-13).
 
-Trace systematically across: user input/source material → learning outcomes → episode/design plan → learning content → activities → assessment/practice → mathematical correctness → sequencing/scaffolding → evidence/source use → prompts → upstream artefacts → final QA/benchmark report.
-
-Distinguish: source weakness · workflow/design weakness · individual prompt weakness · upstream artefact propagation · model variance · QA/benchmark calibration · genuine pedagogical/content-quality problems.
-
-**Goal:** determine whether PRISM is producing educationally weak resources, why, and what intervention would improve quality reliably — not merely raise a benchmark score.
+Live pack: [SPRINT-76-START-HERE.md](../2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md). Historical investigation framing remains valid: distinguish source weakness · workflow/design weakness · prompt weakness · upstream artefact propagation · model variance · QA calibration · genuine pedagogical/content-quality problems — improve underlying quality, not merely raise a benchmark score.
 
 ### Priority 2 — Settings
 
-After the investigation, move to Settings (**PB-FA-005**). Do not begin during Sprint 75 closeout.
+After the Sprint 76 decision gate, move to Settings (**PB-FA-005**). Do not begin during Sprint 75 closeout.
 
 ---
 

@@ -27,10 +27,10 @@
 | **Design Page graphics capture repair** | [S76-T-029-design-page-graphics-capture-contract-repair.md](S76-T-029-design-page-graphics-capture-contract-repair.md) |
 | **Generated-operand operational suitability** | [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md) · [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md) |
 | **A4 constructive alignment** | [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md) · [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) |
-| **DLA-P04 evidence-guidance rationalisation** | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) · [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
+| **DLA-P04 evidence-guidance rationalisation** | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) · [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) · [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) · [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md) |
 
 ## Programme posture (open)
 
-Sprint 76 is **OPEN**. Sprint 75 remains **CLOSED**. P01-R1 is **implemented**. T-031, T-033, and T-034 **designs are complete**. T-035 P04 **plan is complete**. P04 **implementation is not authorised**. P05 is **not started**. **RECOVER** remains a hypothesis.
+Sprint 76 is **OPEN**. Sprint 75 remains **CLOSED**. P01-R1 is **implemented**. P04 Gate A/B is **complete**. P04 Gate C is **PASS** (`76-DLA-PARTIAL-6`; RR **86**; Lagrangian **76/69**). T-031 / T-033 **designs are complete, not implemented**. P05 is **not started**. **RECOVER** remains a hypothesis.
 
 Detail: [STATUS.md](STATUS.md).

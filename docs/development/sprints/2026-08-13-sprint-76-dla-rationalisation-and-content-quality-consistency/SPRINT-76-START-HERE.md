@@ -13,7 +13,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first, then this pack’s [STATUS.md](STATUS.md) and [PLAN.md](PLAN.md).
 
-> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04, P05, T-031, or T-033 from this pack. Do not claim RECOVER.**
+> **Sprint 76 is OPEN. P04 Gate A/B is complete. P04 Gate C is PASS ([T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md)). Next session: review that verdict, then decide ordering among A–F. Do not implement P05, T-031, or T-033 from this pack. Do not claim RECOVER.**
 
 ---
 
@@ -31,8 +31,8 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | T-035 plan complete — [S76-T-035](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) — **no implementation authorised** |
-| **Not started** | P04 implementation · P05 · Settings · T-031 / T-033 live-prompt implementation |
+| **Now** | Review T-037 Gate C PASS — [S76-T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md) — then decide ordering among A–F |
+| **Not started / not ordered** | P05 · T-031 / T-033 live-prompt · GAM D/E diagnostics · Settings |
 | **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 
 ---
@@ -65,6 +65,8 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 | [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) | DLA LO-operation coverage solution design |
 | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) | DLA-P04 evidence-guidance rationalisation solution design |
 | [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) | DLA-P04 evidence-guidance rationalisation implementation plan |
+| [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) | DLA-P04 Gate A + Gate B implementation record |
+| [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md) | DLA-P04 Gate C rebenchmark (PASS) |
 
 Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)
 
@@ -72,9 +74,9 @@ Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-ar
 
 ## Do not
 
-- Implement P04, P05, T-031, or T-033 from this pack  
+- Implement P05, T-031, or T-033 from this pack without a decided order  
+- Diagnose queue D/E GAM issues from this pack  
 - Absorb T-032/T-033 into P04 implementation  
-- Run fresh generation from this pack without operator authorisation  
 - Add a new workflow step by default  
 - Absorb **Settings** into this sprint’s opening work  
 - Treat mid-90s aspiration as an artificial score-gaming requirement  

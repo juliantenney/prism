@@ -15,7 +15,7 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 
 ## Immediate next work
 
-> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04/P05/T-031/T-033 from this charter. Settings follows later.**
+> **Sprint 76 is OPEN. P04 Gate A/B complete. P04 Gate C PASS (T-037). Next session: review T-037, then decide ordering among A–F. Do not implement P05/T-031/T-033 from this charter. Settings follows later.**
 
 ## Phase overview
 
@@ -34,10 +34,12 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 | T-032 A4 constructive alignment | Diagnostic | **Complete** — not fixed; not P04 |
 | T-033 LO-operation coverage | Design | **Complete** — implementation deferred until after P04 |
 | T-034 P04 evidence-guidance rationalisation | Design | **Complete** |
-| T-035 P04 implementation plan | Planning | **Complete** — no implementation authorised |
-| Phase 2 remainder | P04 implementation / P05 | **Not started** |
-| Phase 3 | Roman Roads control runs | First Gate C run reported (87) — not a repeated programme |
-| Phase 4 | Lagrangian challenge runs | First Gate C run reported (88; P01 mixed) — not a repeated programme |
+| T-035 P04 implementation plan | Planning | **Complete** |
+| T-036 P04 Gate A+B | Implementation | **Complete** |
+| T-037 P04 Gate C | Rebenchmark | **Complete — P04 PASS** (RR 86; Lagrangian 76/69) |
+| Phase 2 remainder | P05 | **Not started** |
+| Phase 3 | Roman Roads control runs | Post-P04 Gate C **86 Strong** (T-037); earlier Gate C 87 |
+| Phase 4 | Lagrangian challenge runs | Post-P04 Gate C **76 / 69** (T-037); earlier 88 then 84 |
 | Phase 5 | Decision gate | Not started |
 | Settings | PB-FA-005 | **Deferred** |
 
@@ -51,4 +53,6 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 - [T-028 P01-R1 implementation](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-028-dla-p01-residual-operand-closure-implementation.md)  
 - [T-034 P04 evidence-guidance design](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md)  
 - [T-035 P04 implementation plan](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)  
+- [T-036 P04 Gate A+B](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md)  
+- [T-037 P04 Gate C](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-037-dla-p04-gate-c-rebenchmark.md)  
 - [NEXT-SPRINT.md](NEXT-SPRINT.md)

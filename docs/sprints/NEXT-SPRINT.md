@@ -33,13 +33,15 @@
 | T-033 LO-operation coverage solution design | [S76-T-033-dla-lo-operation-coverage-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-033-dla-lo-operation-coverage-solution-design.md) |
 | T-034 P04 evidence-guidance rationalisation | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) |
 | T-035 P04 implementation plan | [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
+| T-036 P04 Gate A+B | [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) |
+| T-037 P04 Gate C | [S76-T-037-dla-p04-gate-c-rebenchmark.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-037-dla-p04-gate-c-rebenchmark.md) |
 | Top-level charter | [sprint-76-dla-rationalisation-and-content-quality-consistency.md](sprint-76-dla-rationalisation-and-content-quality-consistency.md) |
 
-> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04/P05/T-031/T-033 from this pointer. Settings follows later.**
+> **Sprint 76 is OPEN. P04 Gate A/B complete. P04 Gate C PASS (T-037). Next session: review T-037, then decide ordering among A–F. Do not implement P05/T-031/T-033 from this pointer. Settings follows later.**
 
 ### Immediate task
 
-**S76-T-035 — DLA-P04 evidence-guidance rationalisation implementation plan** — complete ([S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)). No implementation authorised. Do not implement P04/P05/T-031/T-033.
+**S76-T-037 — DLA-P04 Gate C** — complete ([S76-T-037-dla-p04-gate-c-rebenchmark.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-037-dla-p04-gate-c-rebenchmark.md)). **P04 PASS.** Next session reviews that verdict then orders A–F. Do not implement P05/T-031/T-033. Do not diagnose new GAM findings from this pointer.
 
 ### Benchmark roles
 

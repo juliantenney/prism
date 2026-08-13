@@ -31,10 +31,12 @@ S76-T-001 (pack init) ✅ Done
   → S76-T-032 (A4 constructive-alignment diagnostic) ✅ Diagnostic complete — not fixed; not P04
   → S76-T-033 (LO-operation coverage solution design) ✅ Design complete — implementation deferred until after P04
   → S76-T-034 (DLA-P04 evidence-guidance rationalisation solution design) ✅ Design complete
-  → S76-T-035 (DLA-P04 evidence-guidance rationalisation implementation plan) ✅ Planning complete — no implementation authorised
-  → PHASE 2 remainder: P04 implementation / P05 — Not started
-  → PHASE 3: Roman Roads control runs (repeated) — Not started (Gate C)
-  → PHASE 4: Lagrangian challenge runs (repeated) — Not started (Gate C)
+  → S76-T-035 (DLA-P04 evidence-guidance rationalisation implementation plan) ✅ Planning complete
+  → S76-T-036 (DLA-P04 Gate A + Gate B) ✅ Complete
+  → S76-T-037 (DLA-P04 Gate C rebenchmark) ✅ Complete — P04 PASS
+  → PHASE 2 remainder: P05 — Not started
+  → PHASE 3: Roman Roads control — post-P04 Gate C recorded (86)
+  → PHASE 4: Lagrangian challenge — post-P04 Gate C recorded (76/69)
   → PHASE 5: Decision gate — Not started
   → BEFORE CLOSE: Durable prompt-engineering discipline (S76-D03) — Not started
   → Settings (PB-FA-005) — Deferred after this programme lane
@@ -112,7 +114,7 @@ S76-T-001 (pack init) ✅ Done
 
 ## Phase 2 — Rationalise / fix DLA
 
-**Status:** P01/P02/P03 implemented through **Gate A + Gate B**. **P01-R1 implemented**. Lagrangian re-benchmark QA **84**. **T-031, T-033, T-034 designs complete. T-035 P04 plan complete.** **P04 implementation not authorised. P05 not started.** Do not claim RECOVER.
+**Status:** P01/P02/P03 implemented through **Gate A + Gate B**. **P01-R1 implemented.** **P04 Gate A/B + Gate C complete (PASS)** (`76-DLA-PARTIAL-6`). **T-031 / T-033 designs complete, not implemented. P05 not started.** Next session orders A–F. Do not claim RECOVER.
 
 ### S76-T-020 — DLA-P02 solution design
 
@@ -247,7 +249,25 @@ S76-T-001 (pack init) ✅ Done
 | **Status** | **Planning complete** (2026-08-13) — [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
 | **Scope** | P04 Option 2 mechanical change-set only (contract + pack notes + prompt tests + version pin; not P05; not T-031/T-033; not validators) |
 | **Mode** | IMPLEMENTATION PLANNING ONLY |
-| **Verdict** | **DLA-P04 IMPLEMENTATION PLAN READY FOR OPERATOR REVIEW** — no implementation authorised from this task |
+| **Verdict** | **DLA-P04 IMPLEMENTATION PLAN READY FOR OPERATOR REVIEW** — implementation authorised separately via T-036 |
+
+### S76-T-036 — DLA-P04 evidence-guidance rationalisation implementation (Gate A + Gate B)
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Gate A + Gate B complete** (2026-08-13) — [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) |
+| **Scope** | P04 Option 2 live change-set (contract + pack notes + prompt tests + version pin; not P05; not T-031/T-033; not validators; not Gate C) |
+| **Mode** | Authorised implementation through Gate A + Gate B only |
+| **Verdict** | **DLA-P04 GATE A/B COMPLETE — READY FOR OPERATOR REVIEW BEFORE GATE C** |
+
+### S76-T-037 — DLA-P04 Gate C rebenchmark
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Complete** (2026-08-13) — [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md) |
+| **Scope** | Record post-P04 Roman Roads + Lagrangian Gate C only (not P05; not T-031/T-033; not GAM diagnostics; not further generation) |
+| **Mode** | DOCUMENTATION / STATUS ONLY |
+| **Verdict** | **DLA-P04 GATE C PASS** — RR **86 Strong**; Lagrangian **76 / 69**. Remaining defects recorded as not-P04. Sprint 76 remains OPEN |
 
 Based on audit evidence, later authorised implementation may:
 
@@ -343,4 +363,4 @@ See [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) · [S76-D03](decisions.md#s76-d
 
 ## Last updated
 
-2026-08-13 — T-035 P04 **implementation plan complete**. No implementation authorised. P04/P05/T-031/T-033 live changes not started. Do not claim RECOVER.
+2026-08-13 — T-037 P04 **Gate C PASS**. RR **86**; Lagrangian **76/69**. Sprint 76 remains OPEN. Next session: review T-037, then order A–F. Do not implement P05/T-031/T-033. Do not claim RECOVER.

@@ -1202,24 +1202,18 @@ test("S72: DLA and GAM contracts include evidence-centred guidance and source-bo
   assert.match(dlaText, /distinct analogous case|procedure-only modelling|focal evidence provider/i);
   assert.match(dlaText, /Referencing or recording evidence|ordinary response scaffold|combined_evidence_workspace only when/i);
   assert.match(dlaText, /Known boundary|source-bound|conversation_attachment/i);
-  assert.match(dlaText, /complete activity contract|language, form, structure|summary packs/i);
-  assert.match(dlaText, /Source preference|Provider-role closure|Resource-level consistency/i);
-  assert.match(dlaText, /PRE-DESIGN|Evidence-decision planning order|FINAL PRE-EMIT AUDIT|learner_evidence_attachments/i);
+  assert.match(dlaText, /summary packs/i);
+  assert.match(dlaText, /learner_evidence_attachments/i);
   assert.match(
     dlaText,
-    /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT|After drafting each activity|required:false contradicts evidence-dependent/i
+    /Inventory the source units actually available|Do not invent related but unattached works/i
   );
-  assert.match(
+  assert.match(dlaText, /activity_preamble|later-activity mentions/i);
+  assert.doesNotMatch(dlaText, /FINAL PRE-EMIT AUDIT/i);
+  assert.doesNotMatch(dlaText, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
+  assert.doesNotMatch(
     dlaText,
     /Analyse the supplied case evidence and support your judgement with examples/i
-  );
-  assert.match(
-    dlaText,
-    /Inventory the source units actually available|Do not invent related but unattached works|Allocate only those units|only inventoried/i
-  );
-  assert.match(
-    dlaText,
-    /activity_preamble|later activities|current learner-production obligations|separate conversation_attachment and system_generated_simulation providers/i
   );
   assert.match(gamText, /required_materials\[\]\.evidence_requirement/i);
   assert.match(gamText, /Never fabricate exact source-bound evidence/i);

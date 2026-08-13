@@ -8,7 +8,7 @@
 
 ## Immediate instruction
 
-> **Sprint 76 is OPEN. T-035 P04 implementation plan is complete — no implementation authorised. Do not implement P04, P05, T-031, or T-033 from this briefing. Do not claim RECOVER. Settings follows later. Sprint 75 remains CLOSED.**
+> **Sprint 76 is OPEN. P04 Gate A/B is complete. P04 Gate C is PASS ([T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md)). First review that verdict, then decide ordering among A–F. Do not implement P05, T-031, or T-033 from this briefing. Do not diagnose the new GAM findings from this briefing. Do not claim RECOVER. Settings follows later. Sprint 75 remains CLOSED.**
 
 ---
 
@@ -33,27 +33,27 @@ Graphics capture repair: [S76-T-029-design-page-graphics-capture-contract-repair
 Generated-operand operational suitability diagnostic: [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md)  
 Operational suitability solution design: [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md)  
 A4 constructive alignment: [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md)  
-LO-operation coverage solution design: [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md)
-P04 evidence-guidance rationalisation: [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md)
-P04 implementation plan: [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)
+LO-operation coverage solution design: [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md)  
+P04 evidence-guidance rationalisation: [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md)  
+P04 implementation plan: [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)  
+P04 Gate A+B: [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md)  
+P04 Gate C: [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md)
 
 Register:
 
 | ID | Problem |
 | -- | ------- |
-| **DLA-P01** | Task→material closure — **structurally contracted**; **P01-R1 implemented**; post-T-028 Lagrangian re-benchmark **worked** (QA 84) — do not reopen |
-| **DLA-P02** | Evidence dependence — **contracted at Gate B**; Gate C reported strong |
-| **DLA-P03** | Ordinary commissioning — **contracted at Gate B**; Gate C reported strong |
-| **DLA-P04** | DLA evidence guidance accumulated redundant self-audit — **design + implementation plan complete** (do **not** implement; do **not** absorb T-031 or T-033) |
-| **DLA-P05** | Expanding DLA contract/shape is dual-injected on Copy — **open** |
-| **T-030** | Generated-operand **operational suitability** — diagnostic complete |
-| **T-031** | Operational suitability **solution design complete** — **implementation deferred until after P04**; do not absorb into P04 |
-| **T-032** | A4 **constructive alignment** — diagnostic complete; supporting check ≠ LO judgement; not P01/P02/P03/T-031 |
-| **T-033** | LO-operation coverage **solution design complete** — **implementation deferred until after P04**; do not absorb into P04 |
-| **T-034** | P04 evidence-guidance rationalisation **solution design complete** |
-| **T-035** | P04 **implementation plan complete** — **no implementation authorised** |
+| **DLA-P01** | Task→material closure — **structurally contracted**; **P01-R1 implemented**; post-P04 Lagrangian **A2 held**, **A3 residual recurred** (queue A) — do not reopen structural validators |
+| **DLA-P02** | Evidence dependence — **contracted**; **P04 Gate C PASS** (RR P02 coherent; Lagrangian A2 false / A5 true) |
+| **DLA-P03** | Ordinary commissioning — **contracted at Gate B** |
+| **DLA-P04** | Evidence self-audit rationalisation — **Gate A/B complete; Gate C PASS** (`76-DLA-PARTIAL-6`) |
+| **DLA-P05** | Expanding DLA contract/shape is dual-injected on Copy — **open** (queue F) |
+| **T-030 / T-031** | Generated-operand operational suitability — design complete; **not implemented** (queue B) |
+| **T-032 / T-033** | A4 constructive alignment / LO-operation coverage — design complete; **not implemented** (queue C) |
+| **NEW D** | GAM pedagogical-function fulfilment — A4 worked_example structurally present, not actually worked — **not investigated** |
+| **NEW E** | GAM learner-facing corruption — A3 derivation mangling — **not investigated**; do not assume same cause as D |
 
-GAM is bounded fulfilment, not a Sprint 76 redesign target.
+GAM is bounded fulfilment, not a Sprint 76 redesign target. Queue D/E are recorded exhibits only.
 
 ---
 
@@ -61,10 +61,10 @@ GAM is bounded fulfilment, not a Sprint 76 redesign target.
 
 | Subject | Role |
 | ------- | ---- |
-| Roman Roads | Control — repeated runs after authorised rationalisation |
-| Lagrangian Multipliers | Challenge — repeated runs; task–material completeness |
+| Roman Roads | Control — post-P04 Gate C **86 Strong** |
+| Lagrangian Multipliers | Challenge — post-P04 Gate C **76 / 69** |
 
-Latest scores (operator-reported, JSON not in git): pre-T-028 Roman Roads **87**, Lagrangian **88**; post-T-028 Lagrangian **84** (P01 residual worked; A3 T-030; A4 constructive alignment T-032). Do not claim RECOVER.
+Latest scores (operator-reported, JSON not in git): pre-T-028 RR **87**, Lagrangian **88**; post-T-028 Lagrangian **84**; post-P04 RR **86**, Lagrangian **76** uncapped / **69** release. Do not claim RECOVER. Do not treat Lagrangian drop as a P04 evidence-role failure.
 
 ---
 
@@ -73,9 +73,9 @@ Latest scores (operator-reported, JSON not in git): pre-T-028 Roman Roads **87**
 - Settings (**PB-FA-005**)  
 - Evidence rollback execution  
 - New workflow step (default no)  
-- P04 implementation or P05 until authorised  
-- T-031 / T-033 live-prompt implementation until after P04  
-- Fresh generation unless the operator authorises re-benchmark  
+- P05 / T-031 / T-033 until ordered after T-037 review  
+- Queue D/E GAM diagnostics until ordered  
+- Fresh generation unless the operator authorises another run  
 
 ## Closure (not optional)
 
@@ -92,7 +92,8 @@ Uncommitted fixes may exist for empty-capture false storage-full toast and DLA e
 ## Do not
 
 - Reopen Sprint 75 UX casually  
-- Start P04 implementation or P05 without authorisation  
+- Implement P05, T-031, or T-033 without a decided order  
+- Diagnose A3/A4 GAM from this briefing  
 - Absorb T-032/T-033 into P04 or T-031  
 - Absorb Settings into this lane prematurely  
 - Claim DLA size or Copy×2 caused quality regression  

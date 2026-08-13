@@ -285,4 +285,4 @@ These are **blocking transition corrections**, not planned Sprint 76 feature wor
 
 ## Last updated
 
-2026-08-13 — T-035 P04 implementation plan complete. No implementation authorised. P04/P05/T-031/T-033 live changes not started. RECOVER remains a hypothesis.
+2026-08-13 — T-037 P04 Gate C PASS. RR 86; Lagrangian 76/69. P05/T-031/T-033 not implemented. New GAM findings recorded, not investigated. RECOVER remains a hypothesis.

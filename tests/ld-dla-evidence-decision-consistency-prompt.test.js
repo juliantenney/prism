@@ -1,5 +1,5 @@
 /**
- * DLA producer contract — P04 evidence-guidance rationalisation (76-DLA-PARTIAL-6).
+ * DLA producer contract — P04 + P01-R1 + T-033 + T-031 operational suitability (76-DLA-PARTIAL-9).
  * Historical per-activity / PRE-EMIT / INVALID–VALID audits are deleted.
  */
 const test = require("node:test");
@@ -29,7 +29,7 @@ test("S76: canonical DLA shape includes task_material_decision and specification
   assert.ok(materialsIdx > taskIdx);
   assert.ok(evidenceIdx > materialsIdx);
   assert.match(snippet, /"specification":/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-6");
+  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-9");
 });
 
 test("S76 P01-R1: commissioning order distinguishes operand from model/workspace/scaffold", () => {
@@ -47,6 +47,48 @@ test("S76 P01-R1: commissioning order distinguishes operand from model/workspace
   );
   assert.match(text, /list only their material_ids in task_input_material_ids/);
   assert.doesNotMatch(text, /### Evidence-decision planning order/);
+});
+
+test("S76 P01-R1: intermediate object/state may be a system-supplied task input", () => {
+  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  assert.match(text, /already-formed object or state/);
+  assert.match(text, /this activity.s operation acts on/);
+  assert.match(text, /when the system must supply it/);
+  assert.match(
+    text,
+    /Recording work in a workspace does not make the workspace the operand/
+  );
+  assert.match(text, /prior-activity product is not a new GAM commission/);
+  assert.match(text, /P01 and P02 remain independent/);
+  assert.match(
+    text,
+    /if they lose only an example of how, a place to write, guidance, or a checklist, it is not/
+  );
+  assert.doesNotMatch(text, /Lagrangian/);
+  assert.doesNotMatch(text, /FINAL PRE-EMIT AUDIT/i);
+  assert.doesNotMatch(text, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
+  assert.equal((shape.match(/"activity_id": "A2"/g) || []).length, 0);
+});
+
+test("S76 T-033: Step 1 requires load-bearing mapped-LO operations", () => {
+  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  assert.match(
+    text,
+    /Completing it must require every load-bearing operation needed to demonstrate the mapped LO/
+  );
+  assert.match(
+    text,
+    /A supporting check must not substitute for the operation the mapped LO requires/
+  );
+  assert.match(
+    text,
+    /If completed perfectly, would the work demonstrate every load-bearing mapped-LO operation/
+  );
+  assert.match(text, /redesign production before commissioning materials/);
+  assert.doesNotMatch(text, /Bloom/);
+  assert.doesNotMatch(text, /one activity per/);
+  assert.doesNotMatch(text, /mandatory activity splitting/);
 });
 
 test("S76 P04: step 4 is the compact particulars-as-grounds definition", () => {
@@ -117,12 +159,40 @@ test("S76 P04: redundant evidence self-audits and noun force-true are absent", (
   assert.doesNotMatch(text, /must set required true/i);
 });
 
+test("S76 T-031: Step 3 requires operational bounds for this commissioned operation", () => {
+  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  assert.match(
+    text,
+    /Include any pedagogically chosen method, condition, assumption, boundary, or exclusion the commissioned operation depends on/
+  );
+  assert.match(
+    text,
+    /If omitting it would permit an operand that requires a different operation or untaught reasoning, the specification is insufficient/
+  );
+  assert.match(text, /State bounds for this commissioned operation only/);
+  assert.match(text, /specification must not be only the material_type token/);
+  assert.match(
+    text,
+    /Completing it must require every load-bearing operation needed to demonstrate the mapped LO/
+  );
+  assert.match(text, /already-formed object or state/);
+  assert.match(text, /P01 and P02 remain independent/);
+  assert.match(text, /particulars-as-grounds/);
+  assert.match(text, /list those task-input rows in provider_material_ids and attach evidence_requirement/);
+  assert.doesNotMatch(text, /Lagrangian/);
+  assert.doesNotMatch(text, /KKT/);
+  assert.doesNotMatch(text, /Bloom/);
+  assert.doesNotMatch(text, /FINAL PRE-EMIT AUDIT/i);
+  assert.doesNotMatch(text, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
+  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-9");
+});
+
 test("S76 P04: unique contract+shape stays inside the rationalisation size band", () => {
   const block = dlaContract.buildDlaPageEnrichContractBlock();
   const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
   const unique = block.length + shape.length;
-  assert.ok(unique > 15500, "unique contract+shape " + unique + " below 15500 — possible over-deletion");
-  assert.ok(unique < 18500, "unique contract+shape " + unique + " above 18500 — possible leftover duplication");
+  assert.ok(unique > 18700, "unique contract+shape " + unique + " below 18700 — possible over-deletion");
+  assert.ok(unique < 18950, "unique contract+shape " + unique + " above 18950 — possible leftover duplication");
 });
 
 test("S76 P04: canonical shape keeps one evidence-true example and one P01-true/P02-false contrast", () => {

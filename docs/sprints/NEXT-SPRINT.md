@@ -1,60 +1,58 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 76 **OPEN** (opened 2026-08-13). Sprint 75 **COMPLETE / Closed**.  
-**Updated:** 2026-08-13
+**Status:** Sprint 76 **COMPLETE / Closed** (2026-08-14). Sprint 75 **COMPLETE / Closed**.  
+**Updated:** 2026-08-14
 
 ---
 
-## Current programme — Sprint 76
+## Current programme — Prompt Contract Architecture
+
+**Working title:** Prompt Contract Architecture  
+
+**Intent:** Make model-visible instruction architecture comprehensible, traceable, and maintainable while **preserving established behavioural contracts**. This is **not** initially a “make prompts shorter” sprint.
+
+**Sprint pack:** not opened in the Sprint 76 close-out. Open a dated pack when authorised.
+
+**Close-out SSOT:** [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) · [sprint-76-closeout.md](sprint-76-closeout.md)
+
+### Immediate task
+
+**DIAGNOSTIC / INVENTORY** of model-visible prompt construction across relevant workflow stages (blocks, authorship, injection sites and multiplicity, assembled order, invariant ownership, duplication, examples that introduce semantics, validator vs authoring guidance, unique vs assembled cost, dead surfaces, defect-to-instruction traceability).
+
+Do **not** implement P05, GAM D/E, Graphics, or prompt restructuring from this pointer. Do **not** reopen T-031. Do **not** add a generic DLA “must be solvable” clause.
+
+### Carry-forward (do not drop)
+
+| Item | Status |
+| ---- | ------ |
+| P05 dual DLA contract/shape Copy injection | OPEN / deferred until architecture is known |
+| GAM D pedagogical-function fulfilment | OPEN |
+| GAM E learner-facing corruption | OPEN (separate from D and T-031) |
+| Graphics / image lifecycle | OPEN / SEPARATE |
+| T-032 A4 constructive alignment | OPEN diagnostic; T-033 stays closed |
+| Settings (PB-FA-005) | Deferred unless re-prioritised |
+| S76-D03 prompt-engineering discipline | Transferred here as architecture work |
+
+### Principles (not a designed hierarchy)
+
+Behaviour preservation first · inventory before restructuring · structure before deletion · one canonical home per invariant where possible · examples illustrate rather than silently contract · authoring guidance ≠ validators · inspectable assembly/order · preserve stage/layer ownership · UNIQUE and ASSEMBLED costs measured separately · do not change behaviour merely to tidy prose.
+
+---
+
+## Closed — Sprint 76
 
 **DLA rationalisation, task–material sufficiency, and content-quality consistency**
 
 | Resource | Path |
 | -------- | ---- |
+| Closeout | [sprint-76-closeout.md](sprint-76-closeout.md) |
+| Close-out artefact | [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) |
 | Start here | [SPRINT-76-START-HERE.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) |
 | Handover | [HANDOVER.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/HANDOVER.md) |
-| Next-chat briefing | [next-chat-briefing.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/next-chat-briefing.md) |
 | Status | [STATUS.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/STATUS.md) |
-| Context / evidence | [CONTEXT.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/CONTEXT.md) |
-| Plan | [PLAN.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/PLAN.md) |
-| T-010 audit | [S76-T-010-dla-audit-report.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-010-dla-audit-report.md) |
-| T-020 P02 design | [S76-T-020-dla-p02-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-020-dla-p02-solution-design.md) |
-| T-021 P01 design | [S76-T-021-dla-p01-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-021-dla-p01-solution-design.md) |
-| T-022 P03 design | [S76-T-022-dla-p03-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-022-dla-p03-solution-design.md) |
-| T-023 P01/P02/P03 plan | [S76-T-023-dla-p01-p02-p03-implementation-plan.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-023-dla-p01-p02-p03-implementation-plan.md) |
-| T-024 P01/P02/P03 Gate A+B | [S76-T-024-dla-p01-p02-p03-gate-a-b.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-024-dla-p01-p02-p03-gate-a-b.md) |
-| T-026 P01 residual diagnostic | [S76-T-026-dla-p01-residual-operand-closure-diagnostic.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-026-dla-p01-residual-operand-closure-diagnostic.md) |
-| T-027 P01 residual solution design | [S76-T-027-dla-p01-residual-operand-closure-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-027-dla-p01-residual-operand-closure-solution-design.md) |
-| T-028 P01 residual implementation | [S76-T-028-dla-p01-residual-operand-closure-implementation.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-028-dla-p01-residual-operand-closure-implementation.md) |
-| T-029 Design Page graphics capture | [S76-T-029-design-page-graphics-capture-contract-repair.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-029-design-page-graphics-capture-contract-repair.md) |
-| T-030 generated-operand operational suitability | [S76-T-030-generated-operand-operational-suitability-diagnostic.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-030-generated-operand-operational-suitability-diagnostic.md) |
-| T-031 operational suitability solution design | [S76-T-031-generated-operand-operational-suitability-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-031-generated-operand-operational-suitability-solution-design.md) |
-| T-032 A4 constructive alignment | [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-032-dla-a4-constructive-alignment-diagnostic.md) |
-| T-033 LO-operation coverage solution design | [S76-T-033-dla-lo-operation-coverage-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-033-dla-lo-operation-coverage-solution-design.md) |
-| T-034 P04 evidence-guidance rationalisation | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) |
-| T-035 P04 implementation plan | [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) |
-| T-036 P04 Gate A+B | [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) |
-| T-037 P04 Gate C | [S76-T-037-dla-p04-gate-c-rebenchmark.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-037-dla-p04-gate-c-rebenchmark.md) |
 | Top-level charter | [sprint-76-dla-rationalisation-and-content-quality-consistency.md](sprint-76-dla-rationalisation-and-content-quality-consistency.md) |
 
-> **Sprint 76 is OPEN. P04 Gate A/B complete. P04 Gate C PASS (T-037). Next session: review T-037, then decide ordering among A–F. Do not implement P05/T-031/T-033 from this pointer. Settings follows later.**
-
-### Immediate task
-
-**S76-T-037 — DLA-P04 Gate C** — complete ([S76-T-037-dla-p04-gate-c-rebenchmark.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-037-dla-p04-gate-c-rebenchmark.md)). **P04 PASS.** Next session reviews that verdict then orders A–F. Do not implement P05/T-031/T-033. Do not diagnose new GAM findings from this pointer.
-
-### Benchmark roles
-
-| Subject | Role |
-| ------- | ---- |
-| Roman Roads | Control |
-| Lagrangian Multipliers | Challenge / diagnostic |
-
----
-
-## Following priority — after Sprint 76 decision gate
-
-**Settings** — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
+Live contract at close: **`76-DLA-PARTIAL-9`**. Unique DLA contract+shape **18,872**; Copy assembled ×2 **37,744**.
 
 ---
 
@@ -84,8 +82,6 @@ Sprint 74 architecture consolidation remains **COMPLETE / Closed**. Do not reope
 ## Planning principle
 
 > A backlog item should only enter a sprint when it has a concrete implementation approach, clear ownership and acceptance criteria.
-
-Sprint 76 Phase 1 diagnostic is **complete**. Do not prescribe DLA rewrites until Phase 2 is authorised. Problem register: **DLA-P01..P05**.
 
 ---
 

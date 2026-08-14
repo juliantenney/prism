@@ -1,6 +1,6 @@
 # Sprint 76 — Context
 
-**Status:** **OPEN** (opened 2026-08-13)  
+**Status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Role:** Durable investigation evidence and working hypotheses for DLA / content-quality work  
 **Charter:** [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) · **Plan:** [PLAN.md](PLAN.md)  
 **T-010 diagnostic SSOT:** [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md) (complete 2026-08-13). This file remains the **opening** evidence pack; where it conflicts with T-010, the audit report wins.
@@ -279,10 +279,10 @@ These are **blocking transition corrections**, not planned Sprint 76 feature wor
 | Architecture consolidation (74) | **COMPLETE / Closed** |
 | Immediate emphasis | DLA audit → rationalisation → control/challenge re-benchmarks |
 | Settings | Deferred (**PB-FA-005**) |
-| Prompt-engineering exit discipline | **Required before Sprint 76 closure** ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition)) — prevent **APPEND NOW → RATIONALISE LATER**; exact form is a sprint output informed by T-010 |
+| Prompt-engineering exit discipline | **Transferred** to Prompt Contract Architecture ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition) / [S76-D04](decisions.md#s76-d04--close-sprint-76-transfer-prompt-architecture-discipline-to-the-next-sprint)) |
 
 ---
 
 ## Last updated
 
-2026-08-13 — T-037 P04 Gate C PASS. RR 86; Lagrangian 76/69. P05/T-031/T-033 not implemented. New GAM findings recorded, not investigated. RECOVER remains a hypothesis.
+2026-08-14 — Sprint 76 CLOSED (T-049). Prompt Contract Architecture next. RECOVER remains a hypothesis.

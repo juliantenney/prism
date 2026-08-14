@@ -19,7 +19,7 @@ Sprint 75 delivered UX refinements across Create Workflow, My Workflows, Authori
 
 ## Immediate next work
 
-> **Sprint 75 is complete. Sprint 76 is OPEN — DLA audit / content-quality consistency. Settings follows later.**
+> **Sprint 75 is complete. Sprint 76 is COMPLETE / Closed. Next: Prompt Contract Architecture.**
 
 Live pack: [SPRINT-76-START-HERE.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md).
 

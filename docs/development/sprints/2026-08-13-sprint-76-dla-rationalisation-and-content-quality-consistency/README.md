@@ -1,6 +1,6 @@
 # Sprint 76 — README
 
-**Status:** **OPEN** (opened 2026-08-13)  
+**Status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Theme:** DLA rationalisation, task-material sufficiency, and content-quality consistency  
 **Predecessor:** Sprint 75 — **COMPLETE / Closed**  
 **Start here:** [SPRINT-76-START-HERE.md](SPRINT-76-START-HERE.md)  
@@ -28,9 +28,11 @@
 | **Generated-operand operational suitability** | [S76-T-030-generated-operand-operational-suitability-diagnostic.md](S76-T-030-generated-operand-operational-suitability-diagnostic.md) · [S76-T-031-generated-operand-operational-suitability-solution-design.md](S76-T-031-generated-operand-operational-suitability-solution-design.md) |
 | **A4 constructive alignment** | [S76-T-032-dla-a4-constructive-alignment-diagnostic.md](S76-T-032-dla-a4-constructive-alignment-diagnostic.md) · [S76-T-033-dla-lo-operation-coverage-solution-design.md](S76-T-033-dla-lo-operation-coverage-solution-design.md) |
 | **DLA-P04 evidence-guidance rationalisation** | [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md) · [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) · [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) · [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md) |
+| **P01-R1 A3 residual** | [S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md](S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md) · [S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md](S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md) · [S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md](S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md) · [S76-T-041-dla-p01-r1-intermediate-operand-implementation.md](S76-T-041-dla-p01-r1-intermediate-operand-implementation.md) · [S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md](S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md) **CLOSED** |
+| **T-033 / T-031 / close-out** | [T-045](S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md) · [T-048](S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md) · [T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) |
 
-## Programme posture (open)
+## Programme posture (closed)
 
-Sprint 76 is **OPEN**. Sprint 75 remains **CLOSED**. P01-R1 is **implemented**. P04 Gate A/B is **complete**. P04 Gate C is **PASS** (`76-DLA-PARTIAL-6`; RR **86**; Lagrangian **76/69**). T-031 / T-033 **designs are complete, not implemented**. P05 is **not started**. **RECOVER** remains a hypothesis.
+Sprint 76 is **COMPLETE / Closed**. P04 Gate C **PASS**. P01-R1 residual **CLOSED** (T-042). T-033 **CLOSED** (T-045). T-031 **CLOSED** (T-048; `76-DLA-PARTIAL-9`). P05 **deferred**. Next: **Prompt Contract Architecture**. **RECOVER** remains a hypothesis.
 
 Detail: [STATUS.md](STATUS.md).

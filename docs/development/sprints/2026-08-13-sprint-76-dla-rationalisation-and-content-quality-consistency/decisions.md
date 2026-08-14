@@ -1,6 +1,6 @@
 # Sprint 76 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-08-13)  
+**Sprint status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Inherited programme constraints are **linked, not duplicated** — [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md); Engineering Disciplines — [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md).
@@ -44,3 +44,13 @@ Sprint 75 remains **COMPLETE / Closed**. Run persistence **SETTLED** (`S75-D21`)
 - **Consequences:** Recorded in [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md) and [PLAN.md](PLAN.md) closure gate. T-010 remains diagnostic only and does **not** invent the discipline. Closure review must verify the discipline is documented.
 
 ---
+
+## S76-D04 Close Sprint 76; transfer prompt-architecture discipline to the next sprint
+
+- **Decision:** Sprint 76 is **CLOSED** (2026-08-14). The DLA semantic repair chain (P04, P01-R1, T-033, T-031) is complete. P05, GAM D/E, and Graphics are **not** started inside Sprint 76. [S76-D03](#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition) is **satisfied as a handover**: the next sprint’s working title is **Prompt Contract Architecture**, beginning with a diagnostic inventory, not a length-reduction implementation.
+
+- **Status:** **Accepted** (2026-08-14, operator close-out)
+
+- **Rationale:** Remaining work is instruction-architecture / maintainability (and separate GAM/Graphics defects), not unfinished local DLA semantics. Continuing P05 inside 76 would optimise accidental assembly before the desired architecture is known.
+
+- **Consequences:** [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not reopen T-031. Do not add a generic DLA “must be solvable” clause. Next programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).

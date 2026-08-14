@@ -1,14 +1,14 @@
 # Sprint 76 — Next-chat briefing
 
 **Audience:** Fresh session (coding agent or product conversation).  
-**Sprint status:** **OPEN** (opened 2026-08-13)  
+**Sprint status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Handover:** [HANDOVER.md](HANDOVER.md) · **Status:** [STATUS.md](STATUS.md) · **T-010:** [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md)
 
 ---
 
 ## Immediate instruction
 
-> **Sprint 76 is OPEN. P04 Gate A/B is complete. P04 Gate C is PASS ([T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md)). First review that verdict, then decide ordering among A–F. Do not implement P05, T-031, or T-033 from this briefing. Do not diagnose the new GAM findings from this briefing. Do not claim RECOVER. Settings follows later. Sprint 75 remains CLOSED.**
+> **Sprint 76 is CLOSED.** Next: **Prompt Contract Architecture** — first task is a model-visible prompt **inventory / diagnostic**. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md). Do not implement P05, GAM D/E, or Graphics from this briefing. Do not reopen T-031. Do not claim RECOVER. Sprint 75 remains CLOSED.
 
 ---
 
@@ -37,21 +37,45 @@ LO-operation coverage solution design: [S76-T-033-dla-lo-operation-coverage-solu
 P04 evidence-guidance rationalisation: [S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md](S76-T-034-dla-p04-evidence-guidance-rationalisation-solution-design.md)  
 P04 implementation plan: [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md)  
 P04 Gate A+B: [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md)  
-P04 Gate C: [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md)
+P04 Gate C: [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md)  
+P01-R1 A3 diagnostic: [S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md](S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md)  
+P01-R1 intermediate-operand design: [S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md](S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md)  
+P01-R1 intermediate-operand implementation plan: [S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md](S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md)  
+P01-R1 intermediate-operand Gate A+B: [S76-T-041-dla-p01-r1-intermediate-operand-implementation.md](S76-T-041-dla-p01-r1-intermediate-operand-implementation.md)  
+P01-R1 intermediate-operand Gate C: [S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md](S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md)  
+T-033 LO-operation coverage plan: [S76-T-043-dla-lo-operation-coverage-implementation-plan.md](S76-T-043-dla-lo-operation-coverage-implementation-plan.md)  
+T-033 LO-operation coverage Gate A+B: [S76-T-044-dla-lo-operation-coverage-implementation.md](S76-T-044-dla-lo-operation-coverage-implementation.md)  
+T-033 Gate C: [S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md](S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md)  
+T-031 operational suitability plan: [S76-T-046-generated-operand-operational-suitability-implementation-plan.md](S76-T-046-generated-operand-operational-suitability-implementation-plan.md)  
+T-031 operational suitability Gate A+B: [S76-T-047-generated-operand-operational-suitability-implementation.md](S76-T-047-generated-operand-operational-suitability-implementation.md)  
+T-031 Gate C: [S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md](S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md)  
+Close-out: [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md)
 
 Register:
 
 | ID | Problem |
 | -- | ------- |
-| **DLA-P01** | Task→material closure — **structurally contracted**; **P01-R1 implemented**; post-P04 Lagrangian **A2 held**, **A3 residual recurred** (queue A) — do not reopen structural validators |
+| **DLA-P01** | Task→material closure — **structurally contracted**; **P01-R1 intermediate-operand residual CLOSED** (T-042) |
 | **DLA-P02** | Evidence dependence — **contracted**; **P04 Gate C PASS** (RR P02 coherent; Lagrangian A2 false / A5 true) |
 | **DLA-P03** | Ordinary commissioning — **contracted at Gate B** |
 | **DLA-P04** | Evidence self-audit rationalisation — **Gate A/B complete; Gate C PASS** (`76-DLA-PARTIAL-6`) |
 | **DLA-P05** | Expanding DLA contract/shape is dual-injected on Copy — **open** (queue F) |
-| **T-030 / T-031** | Generated-operand operational suitability — design complete; **not implemented** (queue B) |
-| **T-032 / T-033** | A4 constructive alignment / LO-operation coverage — design complete; **not implemented** (queue C) |
+| **T-030 / T-031** | Generated-operand operational suitability — **CLOSED** (T-048) |
+| **T-032 / T-033** | A4 constructive alignment diagnosed; LO-operation coverage **CLOSED** (T-045) vs quoted LO3+LO4 |
 | **NEW D** | GAM pedagogical-function fulfilment — A4 worked_example structurally present, not actually worked — **not investigated** |
 | **NEW E** | GAM learner-facing corruption — A3 derivation mangling — **not investigated**; do not assume same cause as D |
+| **T-038** | P01-R1 A3 operand/workspace **diagnostic complete** — class B; residual **CLOSED** at T-042 |
+| **T-039** | P01-R1 intermediate-operand **solution design complete** — Option 2 |
+| **T-040** | P01-R1 intermediate-operand **implementation plan complete** |
+| **T-041** | P01-R1 intermediate-operand **Gate A+B complete** — `76-DLA-PARTIAL-7` |
+| **T-042** | P01-R1 intermediate-operand **Gate C PASS** — residual **CLOSED** |
+| **T-043** | T-033 LO-operation coverage **implementation plan complete** |
+| **T-044** | T-033 LO-operation coverage **Gate A+B complete** — `76-DLA-PARTIAL-8`; unique 18,562 |
+| **T-045** | T-033 **Gate C PASS** — LO-operation coverage **CLOSED** |
+| **T-046** | T-031 operational suitability **implementation plan complete** |
+| **T-047** | T-031 **Gate A+B complete** — `76-DLA-PARTIAL-9`; unique 18,872 |
+| **T-048** | T-031 **Gate C PASS** — operational suitability **CLOSED** |
+| **T-049** | Sprint 76 **close-out COMPLETE** — Prompt Contract Architecture next |
 
 GAM is bounded fulfilment, not a Sprint 76 redesign target. Queue D/E are recorded exhibits only.
 
@@ -73,13 +97,13 @@ Latest scores (operator-reported, JSON not in git): pre-T-028 RR **87**, Lagrang
 - Settings (**PB-FA-005**)  
 - Evidence rollback execution  
 - New workflow step (default no)  
-- P05 / T-031 / T-033 until ordered after T-037 review  
+- P05 until ordered  
 - Queue D/E GAM diagnostics until ordered  
 - Fresh generation unless the operator authorises another run  
 
-## Closure (not optional)
+## Closure
 
-Sprint 76 cannot close after a one-off DLA rationalisation alone. Before close: document durable prompt-engineering discipline preventing **APPEND NOW → RATIONALISE LATER** ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition)). T-010 documented the accretion pattern; it did not specify the mechanism.
+Sprint 76 **CLOSED** (T-049 / [S76-D04](decisions.md#s76-d04--close-sprint-76-transfer-prompt-architecture-discipline-to-the-next-sprint)). Durable prompt-engineering discipline ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition)) is **transferred** to Prompt Contract Architecture (inventory first).
 
 ---
 
@@ -92,7 +116,7 @@ Uncommitted fixes may exist for empty-capture false storage-full toast and DLA e
 ## Do not
 
 - Reopen Sprint 75 UX casually  
-- Implement P05, T-031, or T-033 without a decided order  
+- Implement P05 without a decided order; do not reopen T-031 with a generic DLA “must be solvable” add  
 - Diagnose A3/A4 GAM from this briefing  
 - Absorb T-032/T-033 into P04 or T-031  
 - Absorb Settings into this lane prematurely  

@@ -272,7 +272,12 @@ test("GAM v2 copy brief enforces canonical hydrated material rows", () => {
   assert.match(brief, /activity_id \(or parent_activity_id\)/i);
   assert.match(brief, /no missing IDs, no duplicates, no orphan materials/i);
   assert.match(brief, /treat specification as binding content bounds/i);
+  assert.match(brief, /Realised particulars must support the commissioned learner operation within those bounds/i);
+  assert.match(brief, /do not substitute a different method or extra unstated reasoning/i);
+  assert.match(brief, /do not invent pedagogical constraints the commission omits/i);
   assert.doesNotMatch(brief, /task_material_decision/);
+  assert.doesNotMatch(brief, /Lagrangian/);
+  assert.doesNotMatch(brief, /FINAL PRE-EMIT AUDIT/i);
   assert.match(brief, /do not leave generation_notes\.validation material_coverage\/self_containment\/activity_coverage in pending\/shell-only states/i);
 });
 

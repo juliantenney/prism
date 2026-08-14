@@ -13,7 +13,7 @@
 
 ## Outcome (summary)
 
-Sprint 75 refined PRISM’s author-facing UX across Create Workflow, My Workflows, Authoring handoffs, Run durability, Prompt Studio, and Prompt Library. Create now presents a simplified one-product brief, progressive assistant, and read-only Proposed workflow. My Workflows Run mode is clearer (orientation, capture relevance, execution bar, display-only segmented progress, persisted-output indication) with lifecycle fixes for Rename, Duplicate, Delete, and Import. Run captures are durably stored via IndexedDB resources (**SETTLED** under `S75-D21`). Prompt Studio offers Paste (default) and Generate modes with authoritative Library persistence. Prompt Library actions are grouped consistently in the header. Successor programme: **Sprint 76 OPEN** (2026-08-13).
+Sprint 75 refined PRISM’s author-facing UX across Create Workflow, My Workflows, Authoring handoffs, Run durability, Prompt Studio, and Prompt Library. Create now presents a simplified one-product brief, progressive assistant, and read-only Proposed workflow. My Workflows Run mode is clearer (orientation, capture relevance, execution bar, display-only segmented progress, persisted-output indication) with lifecycle fixes for Rename, Duplicate, Delete, and Import. Run captures are durably stored via IndexedDB resources (**SETTLED** under `S75-D21`). Prompt Studio offers Paste (default) and Generate modes with authoritative Library persistence. Prompt Library actions are grouped consistently in the header. Successor programme: **Sprint 76 COMPLETE / Closed** (2026-08-14). Next: **Prompt Contract Architecture**.
 
 Authoritative narrative: [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md).
 
@@ -21,6 +21,6 @@ Authoritative narrative: [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026
 
 ## Immediate next work
 
-> **Sprint 75 is complete. Sprint 76 is OPEN. Begin with S76-T-010 DLA audit when authorised. Settings follows after the Sprint 76 decision gate.**
+> **Sprint 75 is complete. Sprint 76 is COMPLETE / Closed. Next: Prompt Contract Architecture (inventory first).**
 
 See [Sprint 76 HANDOVER.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/HANDOVER.md).

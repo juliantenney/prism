@@ -1,7 +1,7 @@
 # Sprint 76 — START HERE
 
 **Sprint:** 76 — DLA Rationalisation and Content-Quality Consistency  
-**Status:** **OPEN** (opened 2026-08-13)  
+**Status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Predecessor:** [Sprint 75 — COMPLETE / Closed](../2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-START-HERE.md)  
 **Opening decision:** [S76-D01](decisions.md#s76-d01--open-sprint-76--dla-rationalisation-and-content-quality-consistency)  
 **Dashboard:** [STATUS.md](STATUS.md)  
@@ -13,7 +13,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first, then this pack’s [STATUS.md](STATUS.md) and [PLAN.md](PLAN.md).
 
-> **Sprint 76 is OPEN. P04 Gate A/B is complete. P04 Gate C is PASS ([T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md)). Next session: review that verdict, then decide ordering among A–F. Do not implement P05, T-031, or T-033 from this pack. Do not claim RECOVER.**
+> **Sprint 76 is CLOSED.** Next: **Prompt Contract Architecture** ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)). First task: prompt **inventory / diagnostic**. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not implement P05, GAM D/E, or Graphics from this pack. Do not reopen T-031. Do not claim RECOVER.
 
 ---
 
@@ -31,8 +31,8 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Review T-037 Gate C PASS — [S76-T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md) — then decide ordering among A–F |
-| **Not started / not ordered** | P05 · T-031 / T-033 live-prompt · GAM D/E diagnostics · Settings |
+| **Now** | Sprint 76 **CLOSED**. Next programme: Prompt Contract Architecture inventory |
+| **Deferred carry-forward** | P05 · GAM D/E · Graphics · Settings |
 | **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 
 ---
@@ -67,6 +67,18 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 | [S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md](S76-T-035-dla-p04-evidence-guidance-rationalisation-implementation-plan.md) | DLA-P04 evidence-guidance rationalisation implementation plan |
 | [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md) | DLA-P04 Gate A + Gate B implementation record |
 | [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md) | DLA-P04 Gate C rebenchmark (PASS) |
+| [S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md](S76-T-038-dla-p01-r1-a3-operand-workspace-diagnostic.md) | P01-R1 A3 operand/workspace diagnostic |
+| [S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md](S76-T-039-dla-p01-r1-intermediate-operand-solution-design.md) | P01-R1 intermediate-operand solution design |
+| [S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md](S76-T-040-dla-p01-r1-intermediate-operand-implementation-plan.md) | P01-R1 intermediate-operand implementation plan |
+| [S76-T-041-dla-p01-r1-intermediate-operand-implementation.md](S76-T-041-dla-p01-r1-intermediate-operand-implementation.md) | P01-R1 intermediate-operand Gate A+B implementation |
+| [S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md](S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md) | P01-R1 intermediate-operand Gate C closure |
+| [S76-T-043-dla-lo-operation-coverage-implementation-plan.md](S76-T-043-dla-lo-operation-coverage-implementation-plan.md) | T-033 LO-operation coverage implementation plan |
+| [S76-T-044-dla-lo-operation-coverage-implementation.md](S76-T-044-dla-lo-operation-coverage-implementation.md) | T-033 LO-operation coverage Gate A+B implementation |
+| [S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md](S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md) | T-033 Gate C PASS — LO-operation coverage CLOSED |
+| [S76-T-046-generated-operand-operational-suitability-implementation-plan.md](S76-T-046-generated-operand-operational-suitability-implementation-plan.md) | T-031 operational suitability implementation plan |
+| [S76-T-047-generated-operand-operational-suitability-implementation.md](S76-T-047-generated-operand-operational-suitability-implementation.md) | T-031 operational suitability Gate A+B implementation |
+| [S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md](S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md) | T-031 Gate C PASS — operational suitability CLOSED |
+| [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) | Sprint 76 close-out and next-sprint handover |
 
 Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)
 
@@ -74,7 +86,7 @@ Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-ar
 
 ## Do not
 
-- Implement P05, T-031, or T-033 from this pack without a decided order  
+- Implement P05 from this pack; do not reopen T-031 with a generic DLA “must be solvable” clause  
 - Diagnose queue D/E GAM issues from this pack  
 - Absorb T-032/T-033 into P04 implementation  
 - Add a new workflow step by default  

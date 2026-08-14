@@ -1,7 +1,7 @@
 # Sprint 76 — Charter
 
 **Sprint:** 76 — DLA Rationalisation and Content-Quality Consistency  
-**Status:** **OPEN** (opened 2026-08-13)  
+**Status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Opened:** 2026-08-13  
 **Predecessor:** Sprint 75 — COMPLETE / Closed (2026-08-12) — UX programme closed; do not reopen casually  
 **Type:** Content-quality / generation-contract investigation and rationalisation (audit-first)  

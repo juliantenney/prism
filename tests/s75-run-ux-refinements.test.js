@@ -92,6 +92,21 @@ test("DLA run guidance text is shown only for DLA steps", () => {
   assert.equal(nonDlaText, "");
 });
 
+test("live Design Page paste enables Continue to Authoring without leaving the step", () => {
+  const { api } = loadPrismTestApi();
+  api.setWorkflowsForTest([buildWorkflow("wf-a"), buildWorkflow("wf-b")]);
+  api.setSelectedWorkflowIdForTest("wf-a");
+
+  assert.equal(api.isWorkflowRunAuthoringReadyForTest("wf-a"), false);
+
+  api.setWorkflowRunCapturedOutputsForTest({
+    "step-page": JSON.stringify({ artifact_type: "page", schema_version: "2.0.0" })
+  });
+
+  assert.equal(api.isWorkflowRunAuthoringReadyForTest("wf-a"), true);
+  assert.equal(api.isWorkflowRunAuthoringReadyForTest("wf-b"), false);
+});
+
 test("Continue to Authoring readiness uses persisted Design Page state", () => {
   const { api, storage } = loadPrismTestApi();
   api.setWorkflowsForTest([buildWorkflow("wf-a"), buildWorkflow("wf-b")]);

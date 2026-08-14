@@ -7,7 +7,7 @@
 **Final report:** [SPRINT-75-FINAL-REPORT.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-FINAL-REPORT.md)  
 **Closure record:** [SPRINT-75-CLOSURE.md](../development/sprints/2026-08-10-sprint-75-prism-user-experience-and-interface/SPRINT-75-CLOSURE.md)  
 **Predecessor:** [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) — **Closed**  
-**Next:** [NEXT-SPRINT.md](NEXT-SPRINT.md) — Sprint 76 **OPEN** (DLA audit / content-quality consistency)
+**Next:** [sprint-76-closeout.md](sprint-76-closeout.md) (Sprint 76 **CLOSED**) · [sprint-77-closeout.md](sprint-77-closeout.md) (Sprint 77 **CLOSED**)
 
 ---
 

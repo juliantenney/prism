@@ -8,7 +8,7 @@
 
 ## Immediate instruction
 
-> **Sprint 76 is CLOSED.** Next: **Prompt Contract Architecture** — first task is a model-visible prompt **inventory / diagnostic**. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md). Do not implement P05, GAM D/E, or Graphics from this briefing. Do not reopen T-031. Do not claim RECOVER. Sprint 75 remains CLOSED.
+> **Sprint 76 is CLOSED.** Sprint 77 is also **CLOSED** — [sprint-77-closeout.md](../../../sprints/sprint-77-closeout.md). Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not reopen T-031. Do not claim RECOVER. Sprint 75 remains CLOSED.
 
 ---
 

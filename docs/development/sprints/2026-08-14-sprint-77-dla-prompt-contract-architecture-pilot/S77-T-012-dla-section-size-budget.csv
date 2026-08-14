@@ -1,0 +1,16 @@
+section,current_contributing_chars,target_range,uncertainty,savings_source
+PATH WRAPPER,PB-001+PB-002+PB-007 ~1.5–3k,1.5–3.0k,LOW,retain; thin what_to_check only
+§1 Role,PB-003 opening + wrapper identity ~0.4k,0.4–0.8k,LOW,may grow slightly for GAM/EP boundary clarity
+§2 Inputs,pack Context/Task consume-beats ~0.8–1.5k,0.6–1.2k,MEDIUM,drop duplicate consume after one statement
+§3 Sources,PB-003 attachment block ~1.8k + runner,0.8–1.4k unique,MEDIUM,retire PB-021 restatement on partial path
+§4 Learner production,PB-003 step1 + titles 925 + OUTPUT CONTRACT + scaffold,2.5–4.5k + gated scaffold,MEDIUM,title x4→1 (~2.8k assembled); scaffold stays gated
+§5 Task inputs,PB-003 step2 ~1.5k,1.2–2.0k,LOW,do not shrink P01-R1
+§6 Material commissioning,PB-003 step3 + checklist + PB-006 3282 + table module,2.5–5.0k gated table,MEDIUM,archetype out of shape blob
+§7 Evidence,PB-003 steps4–5 ~1.2k + notes,1.0–1.8k,LOW,drop pack notes duplicate
+§8 Provider authoring,PB-003 evidence-provider ~1.4k,1.2–2.0k,LOW,keep Sprint 72
+§9 Overlay,pack 14279 minus moved generics,6.0–10.0k when gated else 0,HIGH,largest unique cut
+§10 Output/shape,envelope+forbidden+schema line+math,1.5–2.5k + gated math,MEDIUM,retire 6698 blob and pack Output dialect
+§11 Examples,shape JSON + Marx + table GOOD,1.0–2.0k,MEDIUM,REPLACE Marx; REDUCE shape
+PATH FOOTER,PB-018+019,0.4–1.0k,LOW,once
+TOTAL unique (no second pair),~57118,38000–48000,HIGH on §9,see T-011 size model
+TOTAL Copy assembled,75991,40000–52000,HIGH,exact dup −18873 plus unique cuts

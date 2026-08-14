@@ -5,7 +5,7 @@
 **Opened:** 2026-08-13  
 **Closed:** 2026-08-14  
 **Predecessor:** Sprint 75 — **COMPLETE / Closed**  
-**Successor:** Prompt Contract Architecture — [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)  
+**Successor:** Sprint 77 — DLA Prompt Contract Architecture Pilot — [SPRINT-77-START-HERE.md](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)  
 **Charter:** [SPRINT-76-CHARTER.md](SPRINT-76-CHARTER.md)  
 **Decisions:** [S76-D01](decisions.md#s76-d01--open-sprint-76--dla-rationalisation-and-content-quality-consistency) · [S76-D02](decisions.md#s76-d02--sprint-71-known-good-historical-quality-baseline--recover--advance-framing) · [S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition) · [S76-D04](decisions.md#s76-d04--close-sprint-76-transfer-prompt-architecture-discipline-to-the-next-sprint)  
 **Close-out:** [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) · [sprint-76-closeout.md](../../../sprints/sprint-76-closeout.md)  
@@ -56,7 +56,7 @@
 | **Phase 2 DLA rationalisation** | Semantic chain **complete**. P05 **deferred** to Prompt Contract Architecture |
 | **Phase 5 decision gate** | **Closed by S76-D04** — remaining work is a new sprint class |
 | **Prompt-engineering exit discipline** | **Transferred** to next sprint ([S76-D03](decisions.md#s76-d03--durable-prompt-engineering-discipline-as-sprint-76-exit-condition) / [S76-D04](decisions.md#s76-d04--close-sprint-76-transfer-prompt-architecture-discipline-to-the-next-sprint)) |
-| **Current priority** | Sprint 76 **CLOSED**. Next: **Prompt Contract Architecture** inventory. Do not implement P05/GAM D–E/Graphics from this status. Do not claim RECOVER |
+| **Current priority** | Sprint 76 **CLOSED**. Live work: **Sprint 77** T-010 when authorised. Do not implement P05/GAM D–E/Graphics from this status. Do not claim RECOVER |
 | **Phase 3 Roman Roads control runs** | Post-P04 Gate C: QA **86 Strong** (T-037). First pre-P04 Gate C was **87**. Not a repeated Phase 3 programme |
 | **Phase 4 Lagrangian challenge runs** | Post-P04 Gate C: **76 / 69** (T-037). A3/A4 GAM Majors recorded, not investigated |
 | **Evidence-injection rollback experiment** | **Option only** — not executed |
@@ -68,7 +68,7 @@ Sprint 76 CLOSED (2026-08-14)
   → DONE: semantic chain P04 · P01-R1 · T-033 · T-031 (76-DLA-PARTIAL-9)
   → DONE: T-049 close-out
   → DEFERRED: P05 · GAM D/E · Graphics · Settings
-  → NEXT: Prompt Contract Architecture (inventory first)
+  → NEXT: Sprint 77 DLA Prompt Contract Architecture Pilot (T-010 when authorised)
 ```
 
 ---
@@ -96,4 +96,4 @@ Latest operator-reported scores (JSON not in git): pre-T-028 Roman Roads **87**,
 
 ## Last updated
 
-2026-08-14 — Sprint 76 CLOSED (T-049). Prompt Contract Architecture next. Do not claim RECOVER.
+2026-08-14 — Sprint 76 CLOSED. Sprint 77 CLOSED. Do not claim RECOVER.

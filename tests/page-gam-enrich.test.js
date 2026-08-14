@@ -105,6 +105,7 @@ function loadPrismTestApi() {
   windowStub.PRISM_PAGE_SHELL_CREATE = shellCreate;
   windowStub.PRISM_PAGE_DLA_ENRICH = dlaEnrich;
   windowStub.PRISM_PAGE_GAM_ENRICH = gamEnrich;
+  windowStub.PRISM_LD_GAM_PAGE_ENRICH_CONTRACT = require(path.join(repoRoot, "lib", "ld-gam-page-enrich-contract.js"));
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
@@ -174,9 +175,8 @@ function setupWorkflowCaptures(api, wf, lo) {
   });
 }
 
-function extractUpstreamDlaPageEmbedJson(promptText) {
+function extractFencedJsonAfterMarker(promptText, marker) {
   const text = String(promptText || "");
-  const marker = "### Upstream DLA page";
   const markerIdx = text.indexOf(marker);
   if (markerIdx < 0) return null;
   const fencedIdx = text.indexOf("```json", markerIdx);
@@ -191,6 +191,14 @@ function extractUpstreamDlaPageEmbedJson(promptText) {
   } catch (_) {
     return null;
   }
+}
+
+function extractUpstreamDlaPageEmbedJson(promptText) {
+  return extractFencedJsonAfterMarker(promptText, "### Upstream DLA page");
+}
+
+function extractAuthoritativeDlaCommissionJson(promptText) {
+  return extractFencedJsonAfterMarker(promptText, "### AUTHORITATIVE DLA MATERIAL COMMISSION");
 }
 
 function buildDlaPageFixtureWithFullActivityFields() {
@@ -239,6 +247,114 @@ function buildDlaPageFixtureWithFullActivityFields() {
   return page;
 }
 
+function buildDlaPageFixtureA1ToA4ForCommission() {
+  const page = buildDlaPageFixtureWithFullActivityFields();
+  page.activities = [
+    Object.assign({}, page.activities[0], {
+      required_materials: [
+        {
+          material_id: "A1-M1",
+          material_type: "scenario_set",
+          purpose: "Ground the system",
+          specification: "Two independent scenarios with given values.",
+          body: "MUST_NOT_EMBED_BODY_A1"
+        },
+        {
+          material_id: "A1-M2",
+          material_type: "text",
+          purpose: "Concept note",
+          specification: "Define the Lagrangian for the first system."
+        }
+      ]
+    }),
+    {
+      activity_id: "A2",
+      title: "Apply",
+      learner_task: "Solve the apply task.",
+      expected_output: "A solved apply artefact.",
+      instructional_archetype: "apply",
+      archetype_plan: { priority: 1, notes: "Worked then independent." },
+      required_materials: [
+        {
+          material_id: "A2-M1",
+          material_type: "problem_set",
+          purpose: "Independent apply",
+          specification: "One solvable problem with given data."
+        },
+        {
+          material_id: "A2-M2",
+          material_type: "checklist",
+          purpose: "Self-check",
+          specification: "Checklist of apply moves."
+        }
+      ],
+      evidence_decision: { required: true, reason: "must not project" },
+      episode_plan: { archetype: "apply", beats: [] },
+      materials: [{ material_id: "A2-M1", body: "MUST_NOT_EMBED_BODY_A2" }]
+    },
+    {
+      activity_id: "A3",
+      title: "Analyse",
+      required_materials: [
+        {
+          material_id: "A3-M1",
+          material_type: "equation_set",
+          purpose: "Identify FOCs",
+          specification: "Present equations with enough independent given information.",
+          evidence_requirement: {
+            provenance: "system_generated_simulation",
+            target: "identify the FOCs"
+          }
+        },
+        {
+          material_id: "A3-M2",
+          material_type: "text",
+          purpose: "Method reminder",
+          specification: "State the stationarity condition without giving the answer."
+        },
+        {
+          material_id: "A3-M3",
+          material_type: "checklist",
+          purpose: "Verification steps",
+          specification: "Three verification checks."
+        }
+      ]
+    },
+    {
+      activity_id: "A4",
+      title: "Evaluate",
+      evidence_requirement: { provenance: "conversation_attachment", target: "compare two solutions" },
+      required_materials: [
+        {
+          material_id: "A4-M1",
+          material_type: "problem_set",
+          purpose: "Evaluate a claimed solution",
+          specification: "Give a claimed result plus enough coherent independent data to verify it."
+        },
+        {
+          material_id: "A4-M2",
+          material_type: "text",
+          purpose: "Judgement frame",
+          specification: "Criteria for accepting or rejecting the claim."
+        },
+        {
+          material_id: "A4-M3",
+          material_type: "checklist",
+          purpose: "Evaluate checklist",
+          specification: "Checklist of evaluation moves."
+        }
+      ]
+    },
+    {
+      activity_id: "A5",
+      title: "Must not project — no required_materials",
+      learner_task: "Should not appear",
+      required_materials: []
+    }
+  ];
+  return page;
+}
+
 const api = loadPrismTestApi();
 
 let dlaBaseline;
@@ -273,12 +389,59 @@ test("GAM v2 copy brief enforces canonical hydrated material rows", () => {
   assert.match(brief, /no missing IDs, no duplicates, no orphan materials/i);
   assert.match(brief, /treat specification as binding content bounds/i);
   assert.match(brief, /Realised particulars must support the commissioned learner operation within those bounds/i);
+  assert.match(brief, /enough coherent information for that operation to be carried out/i);
+  assert.match(
+    brief,
+    /when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result/i
+  );
   assert.match(brief, /do not substitute a different method or extra unstated reasoning/i);
   assert.match(brief, /do not invent pedagogical constraints the commission omits/i);
+  assert.doesNotMatch(brief, /every material must have a unique solution/i);
+  assert.doesNotMatch(brief, /must be solvable/i);
+  assert.doesNotMatch(brief, /later activit/i);
   assert.doesNotMatch(brief, /task_material_decision/);
   assert.doesNotMatch(brief, /Lagrangian/);
   assert.doesNotMatch(brief, /FINAL PRE-EMIT AUDIT/i);
   assert.match(brief, /do not leave generation_notes\.validation material_coverage\/self_containment\/activity_coverage in pending\/shell-only states/i);
+});
+
+test("GAM Copy and Prompt Studio share ordinary markdown body-format rule", () => {
+  const wf = buildTestWorkflow({ partialPageOutputs: true, pageEnrichmentV2: true });
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const copy = api.buildWorkflowStepInstructions(
+    {
+      id: "gam_step_body_rule",
+      title: "Generate Activity Materials",
+      outputName: "page",
+      canonical_step_id: "step_generate_activity_materials"
+    },
+    3,
+    null
+  );
+  const studio = api.applyGamPageEnrichPromptBlockToDraftForTest(
+    "GAM STUDIO LIBRARY DRAFT",
+    {
+      title: "Generate Activity Materials",
+      canonical_step_id: "step_generate_activity_materials",
+      stepCanonicalStepId: "step_generate_activity_materials",
+      stepCanonicalTitle: "Generate Activity Materials"
+    },
+    wf
+  );
+  const schema = api.buildGamV2CopilotSchemaInstructions();
+  [copy, studio, schema].forEach((text) => {
+    assert.match(text, /Material body representation \(capture-binding\)/i);
+    assert.match(text, /Ordinary authored materials/i);
+    assert.match(text, /body_format must be "markdown"/i);
+    assert.match(text, /non-empty Markdown string/i);
+    assert.match(text, /Do not emit object-valued JSON bodies/i);
+    assert.match(text, /Specialised JSON body is capture-supported only for checklist materials/i);
+    assert.match(text, /guided_criteria/);
+    assert.match(text, /workspaces, scenario sets, worked problem sets, tables/i);
+  });
+  assert.match(copy, /exactly one hydrated material object per required_materials\.material_id/i);
+  assert.doesNotMatch(copy, /must be solvable/i);
 });
 
 test("GAM accepts a DLA-enriched vNext page as input", () => {
@@ -412,7 +575,9 @@ test("GAM copy prompt expects page input and page output under v2", () => {
   const instr = api.buildWorkflowStepInstructions(gamStep, 3, null);
   assert.match(instr, /STEP 4 OUTPUT: page/i);
   assert.match(instr, /Sprint 58 GAM partial output mode|partial page artefact/i);
-  assert.match(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.doesNotMatch(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.doesNotMatch(instr, /### Upstream DLA page/i);
+  assert.match(instr, /must not override the AUTHORITATIVE DLA MATERIAL COMMISSION/i);
   assert.match(instr, /Required payload: activities\[\] containing activity_id and materials\[\] only/i);
   assert.match(instr, /Material authoring guidance \(Sprint 56F v2/i);
   assert.doesNotMatch(instr, /Realise all required_materials as activity_materials/i);
@@ -443,7 +608,7 @@ test("GAM v2 copy prompt suppresses legacy catalog output-shape instructions", (
   assert.doesNotMatch(instr, /Here is the core prompt for this step:/i);
 });
 
-test("GAM regression fixture enforces partial-mode upstream omission with copy-forward guidance", () => {
+test("GAM regression fixture injects authoritative DLA commission not full-page embed", () => {
   const wf = buildTestWorkflow();
   const dlaFixture = buildDlaPageFixtureWithFullActivityFields();
   api.setWorkflowsForTest([wf]);
@@ -454,9 +619,110 @@ test("GAM regression fixture enforces partial-mode upstream omission with copy-f
   });
   const gamStep = wf.steps.find((s) => s.canonical_step_id === "step_generate_activity_materials");
   const instr = api.buildWorkflowStepInstructions(gamStep, 3, null);
-  assert.match(instr, /Upstream binding bodies are intentionally omitted/i);
+  assert.doesNotMatch(instr, /Upstream binding bodies are intentionally omitted/i);
   assert.match(instr, /Do not reconstruct or preserve non-owned stage fields/i);
   assert.equal(extractUpstreamDlaPageEmbedJson(instr), null);
+  const commission = extractAuthoritativeDlaCommissionJson(instr);
+  assert.ok(commission);
+  assert.equal(commission.kind, "gam_authoritative_dla_commission");
+  assert.equal(commission.activities.length, 1);
+  assert.equal(commission.activities[0].activity_id, "A1");
+  assert.equal(commission.activities[0].required_materials.length, 2);
+  assert.equal(JSON.stringify(commission).includes("learner_task"), false);
+  assert.equal(JSON.stringify(commission).includes("expected_output"), false);
+  assert.equal(JSON.stringify(commission).includes("evidence_decision"), false);
+});
+
+test("partial GAM Copy prompt binds stored DLA A1-A4 commission projection", () => {
+  const wf = buildTestWorkflow();
+  const dlaFixture = buildDlaPageFixtureA1ToA4ForCommission();
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  api.setWorkflowRunCapturedOutputsForTest({
+    lo_step: JSON.stringify(SAMPLE_LO, null, 2),
+    dla_step: JSON.stringify(dlaFixture, null, 2)
+  });
+  const gamStep = wf.steps.find((s) => s.canonical_step_id === "step_generate_activity_materials");
+  const embed = api.buildUpstreamDlaPageEmbedSectionForGamCopy(wf);
+  const instr = api.buildWorkflowStepInstructions(gamStep, 3, null);
+  const fromEmbed = extractAuthoritativeDlaCommissionJson(embed);
+  const commission = extractAuthoritativeDlaCommissionJson(instr);
+  assert.ok(fromEmbed);
+  assert.deepEqual(commission, fromEmbed);
+  assert.match(instr, /### AUTHORITATIVE DLA MATERIAL COMMISSION/);
+  assert.match(
+    instr,
+    /Preserve activity_id, material_id, and material_type/
+  );
+  assert.match(
+    instr,
+    /Do not add, delete, substitute, rename, or reassign commissioned material rows/
+  );
+  assert.match(
+    instr,
+    /Copilot conversation may provide contextual continuity but must not override this embedded commission/
+  );
+  assert.match(instr, /enough coherent information for that operation to be carried out/i);
+  assert.match(
+    instr,
+    /when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result/i
+  );
+  assert.match(instr, /do not substitute a different method or extra unstated reasoning/i);
+  assert.match(instr, /do not invent pedagogical constraints the commission omits/i);
+  assert.doesNotMatch(instr, /### Upstream DLA page/);
+  assert.equal(commission.kind, "gam_authoritative_dla_commission");
+  assert.deepEqual(
+    commission.activities.map((a) => a.activity_id),
+    ["A1", "A2", "A3", "A4"]
+  );
+  const rows = [];
+  commission.activities.forEach((act) => {
+    act.required_materials.forEach((rm) => rows.push(act.activity_id + ":" + rm.material_id));
+  });
+  assert.deepEqual(rows, [
+    "A1:A1-M1",
+    "A1:A1-M2",
+    "A2:A2-M1",
+    "A2:A2-M2",
+    "A3:A3-M1",
+    "A3:A3-M2",
+    "A3:A3-M3",
+    "A4:A4-M1",
+    "A4:A4-M2",
+    "A4:A4-M3"
+  ]);
+  const a1m1 = commission.activities[0].required_materials[0];
+  assert.equal(a1m1.material_id, "A1-M1");
+  assert.equal(a1m1.material_type, "scenario_set");
+  assert.equal(a1m1.purpose, "Ground the system");
+  assert.equal(a1m1.specification, "Two independent scenarios with given values.");
+  assert.equal("body" in a1m1, false);
+  assert.equal("instructional_archetype" in commission.activities[0], false);
+  assert.equal("archetype_plan" in commission.activities[0], false);
+  assert.equal(commission.activities[1].instructional_archetype, "apply");
+  assert.deepEqual(commission.activities[1].archetype_plan, {
+    priority: 1,
+    notes: "Worked then independent."
+  });
+  assert.equal("evidence_requirement" in commission.activities[1], false);
+  assert.deepEqual(commission.activities[2].required_materials[0].evidence_requirement, {
+    provenance: "system_generated_simulation",
+    target: "identify the FOCs"
+  });
+  assert.equal("evidence_requirement" in commission.activities[2].required_materials[1], false);
+  assert.deepEqual(commission.activities[3].evidence_requirement, {
+    provenance: "conversation_attachment",
+    target: "compare two solutions"
+  });
+  const serial = JSON.stringify(commission);
+  assert.equal(serial.includes("MUST_NOT_EMBED_BODY"), false);
+  assert.equal(serial.includes("learner_task"), false);
+  assert.equal(serial.includes("expected_output"), false);
+  assert.equal(serial.includes("evidence_decision"), false);
+  assert.equal(serial.includes("episode_plan"), false);
+  assert.equal(serial.includes("A5"), false);
+  assert.match(instr, /must not override the AUTHORITATIVE DLA MATERIAL COMMISSION/);
+  assert.doesNotMatch(instr, /Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode/);
 });
 
 test("GAM bindings use page artefact from Design Learning Activities", () => {

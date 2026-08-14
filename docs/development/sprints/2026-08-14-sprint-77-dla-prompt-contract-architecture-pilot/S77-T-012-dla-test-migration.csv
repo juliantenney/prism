@@ -1,0 +1,25 @@
+suite,file,protects,classification,notes
+DLA dual inject / TMD in shape,tests/page-dla-enrich.test.js,P05 current multiplicity; Copy instructions; capture,RETIRE OBSOLETE MULTIPLICITY ASSERTION + UPDATE EXPECTED LOCATION,assert.equal contractCallHits.length 2 → 1 assembler call; keep TMD/shape-or-§10 markers
+DLA evidence prompt (P04 P01-R1 T-033 T-031),tests/ld-dla-evidence-decision-consistency-prompt.test.js,P02 P01-R1 T-033 T-031 CONTRACT_VERSION,UPDATE EXPECTED LOCATION,search assembleDlaCanonicalContract or section builders not only buildDlaPageEnrichContractBlock
+P01 P02 P03 validators,tests/s76-dla-p01-p02-p03-contract.test.js,P01 P02 P03,KEEP UNCHANGED,validators unchanged
+Procedural P02,tests/s76-dla-procedural-task-evidence-validation.test.js,P01/P02 independence,KEEP UNCHANGED,
+S75 evidence FP,tests/s75-dla-evidence-decision-false-positive.test.js,P02 nouns,KEEP UNCHANGED,
+S75 activities missing FP,tests/s75-dla-activities-missing-false-positive.test.js,capture,KEEP UNCHANGED,
+Sprint 72 evidence slice,tests/sprint-72-evidence-centred-activity-slice.test.js,Sprint 72 sources/providers,UPDATE EXPECTED LOCATION,string search on canonical §3 §7 §8
+Sprint 72 UX,tests/sprint-72-dla-evidence-guidance-ux.test.js,runner source UX,KEEP UNCHANGED or REDUCE if runner thinned
+Titles,tests/ld-activity-title-contract.test.js,titles,UPDATE EXPECTED LOCATION,assert guidance once in §4; still in title module
+Archetype production,tests/ld-instructional-archetype-production-planning.test.js,PB-006,UPDATE EXPECTED LOCATION,§6 not only shape snippet
+Archetype mixed/eval/gam-copy,tests/ld-instructional-archetype-mixed-acceptance.test.js; tests/ld-instructional-archetype-evaluation-judgement.test.js; tests/ld-instructional-archetype-gam-copy-context.test.js,archetypes GAM,KEEP UNCHANGED for GAM; DLA planning location update if they read shape
+Bridge,tests/intellectual-coherence-bridge-coverage.test.js,cognition/bridge,UPDATE EXPECTED LOCATION,§4
+38L obligation smoke,tests/dla-38l-obligation-smoke.test.js,workbook/IFP,KEEP UNCHANGED until pack overlay; then UPDATE if pack strings move
+EP-DLA integration,tests/episode-plan-dla-integration.test.js,PB-020 legacy,KEEP UNCHANGED,legacy v2-off
+Sprint 56 SSOT / capture,tests/sprint-56-dla-ssot-rationalisation.test.js; tests/sprint-56-dla-capture-repair.test.js,output validity,KEEP UNCHANGED
+Framing capture gate,tests/workflow-dla-framing-capture-validation-gate.test.js,partial capture,KEEP UNCHANGED
+page-dla-enrich remainder,tests/page-dla-enrich.test.js,enrich merge,KEEP UNCHANGED except dual-inject test
+Studio assembly,Prompt Studio tests that call applyWorkflowStepRuntimePromptAugmentations / resolveStepPromptText,Studio contract,ADD ARCHITECTURE TEST equality vs Copy canonical,locate existing PS DLA tests at implement; add byte-identical §§1–11
+Copy injection count,tests/page-dla-enrich.test.js S76 Gate B,P05,RETIRE OBSOLETE MULTIPLICITY ASSERTION,replace with once + order
+NEW assembler order,tests/ld-dla-canonical-assembler.test.js (CREATE),architecture,ADD ARCHITECTURE TEST,sections once; order; overlay gate; no pack dialect; invariant markers
+NEW Copy/Studio equality,same or tests/ld-dla-copy-studio-canonical-equality.test.js,drift,ADD ARCHITECTURE TEST,use T-010 reconstructor successor
+NEW overlay purity,same,U-1/U-2,ADD ARCHITECTURE TEST,§9 must not contain T-033 load-bearing sentence or P01-R1 absence test
+NEW no Marx dialect,same,U-3 examples,ADD ARCHITECTURE TEST,forbid activities[].type as material dialect; require material_type
+Index pin,index.html,cache,UPDATE EXPECTED LOCATION at switch,bump ld-dla-page-enrich-contract.js?v=

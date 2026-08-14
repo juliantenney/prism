@@ -7,7 +7,7 @@
 **Predecessor:** [sprint-75-prism-user-experience-and-interface.md](sprint-75-prism-user-experience-and-interface.md) — **COMPLETE / Closed**  
 **Opening decision:** [S76-D01](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/decisions.md#s76-d01--open-sprint-76--dla-rationalisation-and-content-quality-consistency)  
 **Handover:** [HANDOVER.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/HANDOVER.md)  
-**Following:** [NEXT-SPRINT.md](NEXT-SPRINT.md) — **Prompt Contract Architecture**. Settings later — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
+**Following:** [sprint-77-dla-prompt-contract-architecture-pilot.md](sprint-77-dla-prompt-contract-architecture-pilot.md) — **COMPLETE / Closed**. Settings later — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
 
 ## Theme
 
@@ -15,7 +15,7 @@ DLA rationalisation, task–material sufficiency, and content-quality **consiste
 
 ## Immediate next work
 
-> **Sprint 76 is CLOSED.** Next: **Prompt Contract Architecture**. First task: prompt inventory / diagnostic. Close-out: [S76-T-049](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not implement P05, GAM D/E, or Graphics from this charter. Do not reopen T-031.
+> **Sprint 76 is CLOSED.** Sprint 77 is **COMPLETE / Closed** — DLA Prompt Contract Architecture Pilot. Close-out: [sprint-77-closeout.md](sprint-77-closeout.md). Do not reopen T-031 from this charter.
 
 ## Phase overview
 

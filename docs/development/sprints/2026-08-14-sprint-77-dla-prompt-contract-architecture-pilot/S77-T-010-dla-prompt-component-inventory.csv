@@ -1,0 +1,25 @@
+id,source,function,role,chars,dla_vs_shared,injection,multiplicity_copy,order_copy,contains
+DLA-PB-001,lib/workflow-pipeline-execution-directive.js (via app.js getPipelineExecutionOpeningDirective),PIPELINE_EXECUTION_OPENING_DIRECTIVE,autonomous execution mode,shared,Copy wrapper,1,01,workflow
+DLA-PB-002,app.js,buildWorkflowStepInstructions DLA branch,partial-mode + Copilot JSON fence/footer,DLA-specific,Copy wrapper,1,02,output protocol
+DLA-PB-003,lib/ld-dla-page-enrich-contract.js,buildDlaPageEnrichContractBlock,semantic+structural DLA contract 76-DLA-PARTIAL-9,12174,DLA-specific,buildDlaV2CopilotSchemaInstructions THEN applyEpisodePlanDlaPopulationPromptBlockToDraft,2,03 then 11,semantic authoring; schema; source/attachment; output protocol; validator-restatement
+DLA-PB-004,lib/ld-dla-page-enrich-contract.js,buildCanonicalDlaPageShapeSnippet,canonical JSON shape + nested title + archetype,6698,DLA-specific,same dual sites as PB-003,2,04 then 12,examples; schema; validator-restatement
+DLA-PB-005,lib/ld-activity-title-contract.js,buildDlaActivityTitleGuidance,activity title rules,925,DLA-specific,nested in PB-003 and PB-004 (x2 injections),4,nested,semantic authoring
+DLA-PB-006,lib/ld-dla-page-enrich-contract.js,buildInstructionalArchetypePlanningGuidance,Priority-1 archetype_plan,3282,DLA-specific,nested in PB-004 only,2,nested in shape,semantic authoring; schema
+DLA-PB-007,app.js,getRunnerInstructionsForStep,what this/expect/check from pack,652,DLA pack,Copy runner guidance,1,05,workflow/UI
+DLA-PB-008,domains/learning-design/domain-learning-design-step-patterns.md,promptFactory.promptTemplate,obligation population + DLA-WB + output keys,14279,DLA pack,resolveStepPromptText core prompt,1,06,semantic; workbook; schema; examples mixed
+DLA-PB-009,same pack,defaultPromptNotes,short runtime notes,1290,DLA pack,may appear in runner what_this_step_does fallback,0-1,05/06,semantic restatement
+DLA-PB-010,lib/ld-guided-learning-scaffold.js,buildLdGuidedLearningScaffoldPromptBlock,SSOT scaffold floors PRE-EMIT,DLA+Design Page,applyLdGuidedLearningScaffoldContractToDraft,1,07,semantic authoring
+DLA-PB-011,lib/educational-quality-framework-prompt.js,EQF DLA manifestation,journey/judgement quality overlay,shared LD,applyEducationalQualityFrameworkPromptBlockToDraft,1,08,semantic authoring
+DLA-PB-012,app.js,buildSelfDirectedTimelineSequencingAlignmentPromptBlock,sequencing unordered lists,DLA (self-directed),applySelfDirectedLearnerPageStepScaffoldsToDraft,1,09,semantic authoring
+DLA-PB-013,app.js,buildLearnerPageDlaOutputContractOverrideBlock,OUTPUT CONTRACT copy fields,DLA learner-page,same scaffolds,1,10,semantic; schema
+DLA-PB-014,app.js,buildSelfDirectedLearnerPageDlaOutputContractExampleBlock,Marx/compare JSON example,DLA learner-page,same scaffolds,1,10b,examples; EXAMPLE AS CONTRACT
+DLA-PB-015,app.js,LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE,activities[] schema line rewrite,DLA,augmentSelfDirectedDlaDraftOutputSection,1,rewrites pack Output,schema
+DLA-PB-016,app.js / lib/ld-table-fidelity.js,buildLdTableFidelityPromptBlock role dla,table spec fidelity,DLA+GAM,applyLdTableFidelityContractToDraft,1,13,semantic; examples
+DLA-PB-017,lib/ld-math-render.js,buildLdMathRenderPromptBlock,TeX notation,shared producers,applyMathSafeOutputContractToDraft,1,14,output protocol
+DLA-PB-018,lib/workflow-artefact-json-strict.js,strict JSON footer clauses,fence/footer,shared,Copy wrapper after core,1,15,output protocol
+DLA-PB-019,app.js,getPipelineExecutionCompletionDirective,stop after footer,shared,Copy wrapper end,1,16,workflow
+DLA-PB-020,lib/episode-plan-dla-integration.js,buildDlaPopulationOnlyPromptBlock,legacy 38S-3 population contract,1970,DLA,only if pageEnrichmentV2 false,0 on v2,n/a,LEGACY
+DLA-PB-021,app.js,buildUpstreamPageShellEmbedSectionForDlaCopy,enrich-in-place shell embed+evidence prose,DLA,Copy when NOT partial mode,0 on current default,n/a,LEGACY-LIVE
+DLA-PB-022,app.js,buildSelfDirectedLearnerPageMaterialShapePromptBlock,material shape,DLA,gated scaffold,0 on this Marx brief,n/a,conditional LIVE
+DLA-PB-023,app.js,buildPedagogicCognitionContractPromptBlock,cognition contract,DLA+GAM,gated on active cognition contract,0 this brief,n/a,conditional LIVE
+DLA-PB-024,app.js,PEL orientation/reasoning blocks,Sprint 30 PEC,DLA,gated,0 this brief,n/a,conditional LIVE

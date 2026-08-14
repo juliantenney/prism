@@ -13,10 +13,11 @@ Programme-facing sprint charters that are not only stored inside dated portable 
 | **73** | [sprint-73-closeout.md](sprint-73-closeout.md) · [sprint-73-workflow-resources.md](sprint-73-workflow-resources.md) — **COMPLETE / Closed** |
 | **75** | [sprint-75-closeout.md](sprint-75-closeout.md) · [sprint-75-prism-user-experience-and-interface.md](sprint-75-prism-user-experience-and-interface.md) — **COMPLETE / Closed** |
 | **76** | [sprint-76-closeout.md](sprint-76-closeout.md) · [sprint-76-dla-rationalisation-and-content-quality-consistency.md](sprint-76-dla-rationalisation-and-content-quality-consistency.md) · [SPRINT-76-START-HERE.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md) — **COMPLETE / Closed** |
+| **77** | [sprint-77-closeout.md](sprint-77-closeout.md) · [sprint-77-dla-prompt-contract-architecture-pilot.md](sprint-77-dla-prompt-contract-architecture-pilot.md) · [SPRINT-77-START-HERE.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md) — **COMPLETE / Closed** |
 | **74** | [sprint-74-architecture-consolidation-and-rationalisation.md](sprint-74-architecture-consolidation-and-rationalisation.md) · [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md) — **COMPLETE / Closed** (wrapper) |
 | **74A** | [sprint-74a-authoring-learner-export-path-integrity.md](sprint-74a-authoring-learner-export-path-integrity.md) · [sprint-74a-closeout.md](sprint-74a-closeout.md) — **COMPLETE / Closed** |
 | **74B** | [sprint-74b-generation-contract-capture-validator-hygiene.md](sprint-74b-generation-contract-capture-validator-hygiene.md) · [SPRINT-74B-START-HERE.md](../development/sprints/2026-08-07-sprint-74b-generation-contract-capture-validator-hygiene/SPRINT-74B-START-HERE.md) — see Sprint 74 programme |
-| **Next** | [NEXT-SPRINT.md](NEXT-SPRINT.md) — **Prompt Contract Architecture** (inventory first; Sprint 76 CLOSED) · Settings follows · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) |
+| **Next** | [NEXT-SPRINT.md](NEXT-SPRINT.md) — Sprint 77 **CLOSED**; next sprint **not selected** · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) · [PB-FA-010](../backlog/PRODUCT-BACKLOG.md#pb-fa-010--prompt-contract-architecture-method-after-dla-pilot) later |
 
 Portable packs (START HERE / briefing) remain under `docs/development/sprints/YYYY-MM-DD-sprint-N-…/`.
 

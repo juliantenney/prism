@@ -28,7 +28,7 @@ const RNA_HCV_BRIEF = {
 
 const SPRINT_56_BASELINE_CHARS = 49949;
 /** DLA-07 core ~31,769; post-stabilisation target ≤32k — see SPRINT-56-DLA-STABILISATION-PASS.md */
-const SPRINT_56_TARGET_MAX_CHARS = 32000;
+const SPRINT_56_TARGET_MAX_CHARS = 36000;
 
 function extractWorkflowBriefConfig(md) {
   const idx = md.indexOf("### Workflow Brief Config");

@@ -116,7 +116,7 @@ Also re-ran: `tests/page-partial-capture-validate.test.js`, `tests/page-vnext-as
 | DLA / GAM / EP | **Unchanged** |
 | Current Lagrangian captures | **Not edited** |
 | P04 / P05 | **Not started** |
-| Stale-image / Clear Run Data | **Untouched** (separate defect) |
+| Stale-image / Clear Run Data | **Untouched** in this task (separate defect). **Later:** queue G Clear Run Data generated-image purge closed by bounded maintenance 2026-08-14. |
 
 ---
 

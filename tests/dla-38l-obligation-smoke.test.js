@@ -91,10 +91,17 @@ function loadAugmentedDlaPrompt() {
     "ld-materials-copy.js",
     "ld-math-render.js",
     "ld-self-directed-rhetoric.js",
-    "ld-design-page-partial-contract.js"
+    "ld-design-page-partial-contract.js",
+    "ld-activity-title-contract.js",
+    "ld-dla-page-enrich-contract.js"
   ]) {
     vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", f), "utf8"), sandbox, {
       filename: f
+    });
+  }
+  if (sandbox.window) {
+    ["PRISM_LD_ACTIVITY_TITLE_CONTRACT", "PRISM_LD_DLA_PAGE_ENRICH_CONTRACT"].forEach((key) => {
+      if (sandbox[key]) sandbox.window[key] = sandbox[key];
     });
   }
   vm.runInContext(fs.readFileSync(path.join(repoRoot, "app.js"), "utf8"), sandbox, {

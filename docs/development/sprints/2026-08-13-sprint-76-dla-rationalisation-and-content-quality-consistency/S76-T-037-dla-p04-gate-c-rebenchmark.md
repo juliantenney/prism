@@ -230,7 +230,7 @@ Sprint 76 remains **OPEN**. **RECOVER** remains a hypothesis. P05, T-031, and T-
 | **D** | NEW — GAM material pedagogical-function fulfilment (A4 worked_example not actually worked) | OPEN — diagnostic needed; **not started** |
 | **E** | NEW / SEPARATE — GAM learner-facing content corruption (A3 derivation mangling) | OPEN — do not assume same root cause as D; **not started** |
 | **F** | P05 — remove duplicate Copy contract+shape injection | Not implemented |
-| **G** | Graphics/image lifecycle (stale images after Clear Run Data; unrelated generation-availability limit) | Keep separate from P04 |
+| **G** | Graphics/image lifecycle (stale images after Clear Run Data; unrelated generation-availability limit) | Keep separate from P04. **Later:** Clear Run Data stale generated-image slice closed by bounded maintenance 2026-08-14. |
 
 Do **not** start A–G from this artefact.
 

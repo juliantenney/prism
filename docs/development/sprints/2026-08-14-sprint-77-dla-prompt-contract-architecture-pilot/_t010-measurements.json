@@ -1,0 +1,166 @@
+{
+  "head": "0b5402dcd989299bd284076efa1398d65eee63b5",
+  "contractVersion": "77-DLA-CANONICAL-2",
+  "componentSizes": {
+    "contract": 12174,
+    "shape": 6698,
+    "pair": 18873,
+    "titleBlock": 925,
+    "archetype": 3282,
+    "packTemplate": 14279,
+    "packNotes": 1290,
+    "whatCheck": 213,
+    "whatDoes": 75,
+    "whatExpect": 364,
+    "legacyPop": 1970,
+    "copyAssembled": 37288,
+    "studioAssembled": 34709,
+    "enrichInPlaceEmbed": 235
+  },
+  "copyContractHits": 0,
+  "copyShapeHits": 0,
+  "studioContractHits": 0,
+  "studioShapeHits": 0,
+  "exactDupCharsCopy": 0,
+  "tokenEstimateCopy": 9322,
+  "tokenEstimateStudio": 8677,
+  "uniquePair": 18873,
+  "assembledPairContribution": 0,
+  "packTemplateInCopy": false,
+  "copyMap": [
+    {
+      "id": "pipeline_open",
+      "needle": "Execution mode: autonomous",
+      "firstIndex": 0,
+      "found": true
+    },
+    {
+      "id": "step_title",
+      "needle": "This step is titled:",
+      "firstIndex": 183,
+      "found": true
+    },
+    {
+      "id": "partial_mode",
+      "needle": "Sprint 58 DLA partial output mode",
+      "firstIndex": 233,
+      "found": true
+    },
+    {
+      "id": "copilot_output_contract",
+      "needle": "Copilot output contract: return one pretty-printed fenced JSON page artefact",
+      "firstIndex": 466,
+      "found": true
+    },
+    {
+      "id": "contract_v1",
+      "needle": "### Sprint 58 vNext DLA partial-page contract (required)",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "shape_v1",
+      "needle": "Canonical DLA partial activity shape (required fields per activity):",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "role_purpose",
+      "needle": "Role / purpose of this step:",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "runner_guidance",
+      "needle": "Runner guidance:",
+      "firstIndex": 35452,
+      "found": true
+    },
+    {
+      "id": "core_prompt_header",
+      "needle": "Here is the core prompt for this step:",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "pack_context",
+      "needle": "Context:\nYou are provided with learning_outcomes",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "contract_v2",
+      "needle": "### Sprint 58 vNext DLA partial-page contract (required)",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "shape_v2",
+      "needle": "Canonical DLA partial activity shape (required fields per activity):",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "eqf",
+      "needle": "EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied)",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "scaffold",
+      "needle": "LD-GUIDED-LEARNING-SCAFFOLD-CONTRACT (auto-applied)",
+      "firstIndex": 6304,
+      "found": true
+    },
+    {
+      "id": "math",
+      "needle": "LD-MATH-RENDER (auto-applied)",
+      "firstIndex": 32271,
+      "found": true
+    },
+    {
+      "id": "table",
+      "needle": "LD-TABLE-FIDELITY (auto-applied)",
+      "firstIndex": 18147,
+      "found": true
+    },
+    {
+      "id": "output_contract",
+      "needle": "OUTPUT CONTRACT (learner-facing copy fields",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "sd_example",
+      "needle": "Self-directed activity JSON example (authoritative shape",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "material_shape",
+      "needle": "self-directed learner-page material shape (auto-applied)",
+      "firstIndex": -1,
+      "found": false
+    },
+    {
+      "id": "timeline",
+      "needle": "Self-directed timeline sequencing alignment (auto-applied)",
+      "firstIndex": 10442,
+      "found": true
+    },
+    {
+      "id": "footer",
+      "needle": "STEP 3 OUTPUT: page",
+      "firstIndex": 682,
+      "found": true
+    },
+    {
+      "id": "pipeline_close",
+      "needle": "Pipeline completion rule:",
+      "firstIndex": 36917,
+      "found": true
+    }
+  ],
+  "firstContract": [],
+  "firstShape": []
+}

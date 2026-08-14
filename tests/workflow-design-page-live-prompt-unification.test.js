@@ -22,8 +22,8 @@ const PARTIAL_MARKER = /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i;
 const INVENTED_SCHEMA_PATTERNS = [
   /\b"action"\s*:\s*"generate"/i,
   /\b"visual_type"\s*:/i,
-  /\bvisual_need\b/i,
-  /\brecommendation\b.*visual/i
+  /\b"visual_need"\s*:/i,
+  /\b"recommendation"\s*:/i
 ];
 const OMIT_VA_PATTERNS = [
   /omit visual_affordance_schema_version/i,
@@ -182,6 +182,27 @@ test("Slice 1D: prompt assembly metrics — factory vs live", () => {
   assert.ok(api.sprint38VisualAffordanceMarkerPresent(livePrompt));
   assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(factoryPrompt), 1);
   assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(livePrompt), 1);
+});
+
+test("Copy and Studio Design Page prompts both fail-close on visual_affordances rationale", () => {
+  const api = loadPrismTestApi();
+  const wf = buildPartialDesignPageWorkflow(api);
+  const studio = api.applyWorkflowStepRuntimePromptAugmentations(
+    "Design Page partial.",
+    { canonical_step_id: "step_design_page", title: "Design Page" },
+    wf,
+    {}
+  );
+  const copy = liveDesignPageInstructions(api, wf);
+  for (const prompt of [studio, copy]) {
+    assert.match(prompt, /FAIL-CLOSED: every visual_affordances\[] row MUST include a non-empty rationale/i);
+    assert.match(prompt, /rationale \(mandatory on every row\)/i);
+    assert.match(prompt, /generate rows must include: affordance_id, scope, rationale/i);
+    assert.match(prompt, /defer rows: affordance_id, scope, visual_decision, defer_reason, rationale/i);
+    assert.match(prompt, /skip rows: affordance_id, scope, visual_decision, skip_reason, rationale/i);
+    assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(prompt), 1);
+  }
+  assert.match(copy, /Every visual_affordances\[] row must include non-empty rationale \(pedagogically warranted\)/i);
 });
 
 test("Slice 2A: factory and live prompts require learner-facing title and orientation hygiene", () => {

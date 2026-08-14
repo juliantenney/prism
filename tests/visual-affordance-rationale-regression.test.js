@@ -186,6 +186,101 @@ test("partial contract mentions rationale with figure fields", () => {
   const partial = require("../lib/ld-design-page-partial-contract.js");
   const block = partial.buildDesignPagePartialContractBlock();
   assert.match(block, /non-empty rationale/i);
+  assert.match(block, /FAIL-CLOSED: every visual_affordances\[] row MUST include a non-empty rationale/i);
+  assert.match(block, /pedagogically\/usefully warranted/i);
   assert.match(block, /alt_text/);
   assert.match(block, /detailed_description/);
+  const envelopeRequired = [
+    "affordance_id",
+    "scope",
+    "activity_id",
+    "region",
+    "visual_decision",
+    "rationale",
+    "subject",
+    "context",
+    "evidence_anchors"
+  ];
+  const generateRequired = [
+    "visual_slot",
+    "tier",
+    "purpose",
+    "preferred_representation",
+    "reasoning_supported",
+    "learner_stage",
+    "anti_spoiler",
+    "spoiler_boundary",
+    "representation_avoid",
+    "canonical_discipline_note",
+    "requires_exact_data_match",
+    "must_show",
+    "must_not_show",
+    "allowed_claims",
+    "disallowed_claims",
+    "source_basis",
+    "caption_intent",
+    "discipline_risk_level"
+  ];
+  for (const field of envelopeRequired.concat(generateRequired)) {
+    assert.match(block, new RegExp(field), "partial contract missing required child: " + field);
+  }
+  assert.match(block, /defer also requires defer_reason/i);
+  assert.match(block, /skip also requires skip_reason/i);
+});
+
+test("FAIL-CLOSED rationale is model-visible in Sprint 38 authoring contract", () => {
+  const appSource = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
+  assert.match(
+    appSource,
+    /FAIL-CLOSED: every visual_affordances\[] row MUST include a non-empty rationale explaining why that visual is pedagogically\/usefully warranted/i
+  );
+  assert.match(
+    appSource,
+    /Every visual_affordances\[] row must include non-empty rationale \(pedagogically warranted\) plus the Sprint 38 required children/i
+  );
+});
+
+test("validators and schema still fail-closed on rationale (unchanged)", () => {
+  const s38Src = fs.readFileSync(path.join(repoRoot, "lib", "sprint38-visual-affordances.js"), "utf8");
+  const vpcSrc = fs.readFileSync(path.join(repoRoot, "lib", "visual-planning-contract.js"), "utf8");
+  assert.match(s38Src, /var SCHEMA_VERSION = "38\.4"/);
+  assert.match(s38Src, /errors\.push\(prefix \+ "rationale is required"\)/);
+  assert.match(s38Src, /purpose/);
+  assert.match(s38Src, /preferred_representation/);
+  assert.match(s38Src, /canonical_discipline_note/);
+  assert.match(vpcSrc, /VPC_GENERATE_SUBJECT_REQUIRED/);
+  assert.match(vpcSrc, /evidence_anchors array is required for generate/);
+  const row = {
+    affordance_id: "va-x",
+    scope: "activity",
+    activity_id: "A1",
+    visual_decision: "generate",
+    visual_slot: "materials-entry",
+    tier: "valuable",
+    purpose: "classification",
+    preferred_representation: "classification_matrix",
+    subject: "Cues",
+    context: "Visual brief: compare families.",
+    evidence_anchors: ["A1.learner_task"],
+    reasoning_supported: "Classify.",
+    learner_stage: "pre_classification",
+    anti_spoiler: true,
+    spoiler_boundary: {
+      hide_answers: true,
+      hide_classification_keys: true,
+      hide_model_solution: true,
+      allow_structural_hint: true
+    },
+    representation_avoid: ["filled_worksheet"],
+    canonical_discipline_note: "Empty cues.",
+    requires_exact_data_match: false,
+    must_show: ["cue a"],
+    must_not_show: ["answers"],
+    allowed_claims: ["Families differ."],
+    disallowed_claims: ["All identical."],
+    source_basis: "A1.learner_task",
+    caption_intent: "Cues only.",
+    discipline_risk_level: "low"
+  };
+  assert.ok(s38.validateAffordanceEnvelope(row, 0).some((e) => /rationale is required/i.test(e)));
 });

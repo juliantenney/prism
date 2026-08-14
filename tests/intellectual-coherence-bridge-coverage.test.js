@@ -197,12 +197,12 @@ test("contract: DLA output contract requires intellectual_coherence_bridge on ev
   const scaffold = scaffoldLib.buildLdGuidedLearningScaffoldPromptBlock({
     includeDlaPreEmit: true
   });
-  const enrichContract = require("../lib/ld-dla-page-enrich-contract.js").buildDlaPageEnrichContractBlock();
-  assert.match(prompt, /mandatory on every activity including A1/i);
+  const enrichContract = require("../lib/ld-dla-page-enrich-contract.js").assembleDlaCanonicalContract().text;
+  assert.match(prompt, /REQUIRED on every activity including A1|mandatory on every activity including A1/i);
   assert.doesNotMatch(prompt, /Omit on the first activity/i);
-  assert.match(prompt, /activity-row learner copy|Activity-row learner copy/i);
-  assert.match(prompt, /"activity_id": "A2"/);
-  assert.match(prompt, /"intellectual_coherence_bridge":/);
+  assert.match(prompt, /intellectual_coherence_bridge/);
+  assert.match(enrichContract, /"activity_id": "A1"/);
+  assert.match(enrichContract, /"intellectual_coherence_bridge":/);
   assert.match(scaffold, /mandatory every activity including A1/i);
   assert.match(enrichContract, /intellectual_coherence_bridge REQUIRED on every activity including A1/i);
   assert.match(

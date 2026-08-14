@@ -99,6 +99,9 @@ function loadPrismTestApi() {
       "lib/episode-plan-population-contract.js"
     ])
   );
+  if (sandbox.PRISM_LD_DLA_PAGE_ENRICH_CONTRACT) {
+    windowStub.PRISM_LD_DLA_PAGE_ENRICH_CONTRACT = sandbox.PRISM_LD_DLA_PAGE_ENRICH_CONTRACT;
+  }
   patchDlaEnrichBridgeForTests(dlaEnrich);
   windowStub.PRISM_PAGE_SHELL_CREATE = shellCreate;
   windowStub.PRISM_PAGE_DLA_ENRICH = dlaEnrich;
@@ -295,23 +298,58 @@ test("DLA copy prompt expects page input and page output under v2", () => {
   assert.match(instr, /Upstream binding bodies are intentionally omitted|intellectual_coherence_bridge/i);
 });
 
-test("S76 Gate B: DLA contract+shape remain dual-injected; OUTPUT CONTRACT lists task_material_decision", () => {
+test("S77 Gate B: DLA canonical contract injected once on Copy; task_material_decision present", () => {
   const dlaContract = require(path.join(repoRoot, "lib", "ld-dla-page-enrich-contract.js"));
-  const contract = dlaContract.buildDlaPageEnrichContractBlock();
-  const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
-  assert.match(contract, /Activity commissioning order/i);
-  assert.match(contract, /task_material_decision/);
-  assert.match(shape, /task_material_decision/);
-  assert.match(shape, /"specification":/);
+  const assembled = dlaContract.assembleDlaCanonicalContract();
+  assert.match(assembled.sections.task_inputs, /task_material_decision/);
+  assert.match(assembled.sections.examples, /task_material_decision/);
   const appSrc = fs.readFileSync(appJsPath, "utf8");
-  const contractCallHits = appSrc.match(/buildDlaPageEnrichContractBlock\(\)/g) || [];
-  const shapeCallHits = appSrc.match(/buildCanonicalDlaPageShapeSnippet\(\)/g) || [];
-  assert.equal(contractCallHits.length, 2, "no third unique contract injection site");
-  assert.equal(shapeCallHits.length, 2, "no third unique shape injection site");
+  assert.match(appSrc, /assembleDlaCanonicalContract/);
+  assert.match(appSrc, /isDlaCanonicalAssemblerEnabled/);
+  const wf = buildTestWorkflow();
+  setupWorkflowCaptures(api, wf, SAMPLE_LO);
+  const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
+  const instr = api.buildWorkflowStepInstructions(dlaStep, 2, null);
+  assert.equal((instr.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
+  assert.doesNotMatch(instr, /### Sprint 58 vNext DLA partial-page contract/);
   assert.match(
     api.LEARNER_PAGE_DLA_ACTIVITIES_SCHEMA_OUTPUT_LINE,
     /task_material_decision\{ separate_inputs_required, task_input_material_ids\[\] \}/
   );
+});
+
+test("S77 Studio: canonical heading once; no legacy Sprint 58 pair", () => {
+  const wf = buildTestWorkflow();
+  setupWorkflowCaptures(api, wf, SAMPLE_LO);
+  const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
+  const studio = api.applyWorkflowStepRuntimePromptAugmentations(
+    "DLA pack body for studio assembly.",
+    dlaStep,
+    wf
+  );
+  assert.equal((studio.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
+  assert.doesNotMatch(studio, /### Sprint 58 vNext DLA partial-page contract/);
+  assert.doesNotMatch(studio, /Canonical DLA partial activity shape/);
+});
+
+test("S77 rollback: dlaCanonicalAssembler false restores Sprint 76 dual contract+shape", () => {
+  const wf = buildTestWorkflow({
+    dlaCanonicalAssembler: false,
+    workflowOutputSpec: {
+      pageEnrichmentV2: true,
+      partialPageOutputs: true,
+      dlaCanonicalAssembler: false
+    }
+  });
+  setupWorkflowCaptures(api, wf, SAMPLE_LO);
+  const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
+  const instr = api.buildWorkflowStepInstructions(dlaStep, 2, null);
+  assert.match(instr, /### Sprint 58 vNext DLA partial-page contract/);
+  assert.ok(
+    (instr.split("### Sprint 58 vNext DLA partial-page contract").length - 1) >= 2,
+    "legacy Copy should dual-inject"
+  );
+  assert.equal(api.isDlaCanonicalAssemblerEnabled(wf), false);
 });
 
 test("DLA bindings use page artefact from Design Episode Plan", () => {

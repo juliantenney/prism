@@ -1,0 +1,29 @@
+invariant,current_primary,current_secondary,target_canonical_home,local_reinforcement,example_needed,validator_overlap,behaviour_change
+DLA role/boundary,PB-003 + Copy wrapper,Pack obligation-population claim,§1 Role and authority,no,no,Partial capture,NO
+Mapped LO interpretation,PB-003 step 1,Pack IFP/AS; DLA-WB-02,§2 Inputs (LO as given) + §4 Production (operations),no,no,Mapping checks,NO
+Learner production,PB-003 step 1; pack AS-05,OUTPUT CONTRACT,§4 Learner production,scaffold SSOT may fill §4,yes dialect-aligned,Presence,NO
+T-033 LO-operation coverage,PB-003 step 1,Pack AS-02 / WB,§4 Learner production,no,no,Not full LO-ops validator,NO
+expected_output,PB-003; pack WB-19,OUTPUT CONTRACT,§4 Learner production,no,miniature in §11,Some length,NO
+learner_task,PB-003 step 1,Pack AS-02,§4 Learner production,no,§11,Presence,NO
+Activity titles,PB-005 ×4,Pack bullets,§4 Learner production,no,tiny forbid examples in §4,Length/patterns,NO
+P01 task→material closure,PB-003 step 2,Pack silent,§5 Task inputs,no,TMD in §11,TMD object,NO
+P01-R1 operand/workspace/intermediate/prior-product,PB-003 step 2,Shape contrast; Marx omits,§5 Task inputs,shape contrast as example only,yes,Structural TMD only,NO
+P01/P02 independence,PB-003 steps 2+4,Pack notes,§5 + pointer in §7,no,§11 contrast required false,Both objects present,NO
+P03 purpose/specification,PB-003 step 3,Pack types; WB depth_floor,§6 Material commissioning,WB depth in §9 overlay,spec string in §11,Non-empty spec,NO
+T-031 pedagogical operating bounds,PB-003 step 3,—,§6 Material commissioning,no,no,Non-empty only,NO
+DLA→GAM commissioning boundary,PB-003 GAM fulfils,Pack LD-MATERIALS-COPY,§6 Material commissioning,no,no,No bodies,NO
+Instructional archetypes,PB-006 in shape,Not in contract steps,§6 Material commissioning,no,field lists not full JSON,Plan completeness,NO
+P02 particulars-as-grounds,PB-003 steps 4–5,Pack notes; runner,§7 Evidence decision,runner one-liner,§11,evidence_decision object,NO
+evidence_decision ownership,PB-003,Pack notes,§7 Evidence decision,no,§11,Object present,NO
+provider_material_ids,PB-003 step 5,Shape,§7 Evidence decision,no,§11,When required,NO
+evidence_requirement,PB-003 provider section,Shape JSON,§8 Provider authoring,no,§11,Shape if present,NO
+learner_action,PB-003,Shape,§8 Provider authoring,no,§11,String if present,NO
+observable_features,PB-003,Shape,§8 Provider authoring,no,§11,Array if present,NO
+delayed disclosure,PB-003,Shape disclosure_constraint,§8 Provider authoring,no,§11,Optional field,NO
+provenance,PB-003,Shape; embed,§8 Provider authoring,no,§11,Enum if present,NO
+evidence layout,PB-003,Shape,§8 Provider authoring,no,§11,Layout enum,NO
+source/attachment behaviour,PB-003 opening,Runner; legacy embed,§3 Sources and attachments,Copy runner UX line,no,Optional generation_notes,NO
+body vs commission separation,PB-003 forbidden,Pack LD-MATERIALS-COPY,§1 + §6,no,no,Reject bodies,NO
+Workbook obligations,Pack PB-008,Notes,§9 Domain/workbook overlay,gated only,no,Some row types,NO (U-2 recorded)
+output shape/protocol,Wrapper+PB-003/004+pack Output,Dual shape; schema line,§10 Output + path footer,fence once in wrapper,one miniature §11,Partial page schema,NO (U-3 dialect alignment)
+cognition/bridge copy,OUTPUT CONTRACT; scaffold,Contract payload list,§4 Learner production,scaffold module fills §4,REPLACE Marx,Presence when learner-page,NO

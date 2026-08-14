@@ -53,4 +53,4 @@ Sprint 75 remains **COMPLETE / Closed**. Run persistence **SETTLED** (`S75-D21`)
 
 - **Rationale:** Remaining work is instruction-architecture / maintainability (and separate GAM/Graphics defects), not unfinished local DLA semantics. Continuing P05 inside 76 would optimise accidental assembly before the desired architecture is known.
 
-- **Consequences:** [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not reopen T-031. Do not add a generic DLA “must be solvable” clause. Next programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
+- **Consequences:** [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not reopen T-031. Do not add a generic DLA “must be solvable” clause. Opened as [Sprint 77](../../../sprints/sprint-77-dla-prompt-contract-architecture-pilot.md).

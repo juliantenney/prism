@@ -4,6 +4,7 @@
 **Status:** **COMPLETE / Closed** (opened 2026-08-13; closed 2026-08-14)  
 **Opened:** 2026-08-13  
 **Predecessor:** Sprint 75 — COMPLETE / Closed (2026-08-12) — UX programme closed; do not reopen casually  
+**Successor:** Sprint 77 — COMPLETE / Closed — [SPRINT-77-START-HERE.md](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)  
 **Type:** Content-quality / generation-contract investigation and rationalisation (audit-first)  
 **Start here:** [SPRINT-76-START-HERE.md](SPRINT-76-START-HERE.md)  
 **Opening decision:** [S76-D01](decisions.md#s76-d01--open-sprint-76--dla-rationalisation-and-content-quality-consistency)  

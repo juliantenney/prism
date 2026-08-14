@@ -108,6 +108,8 @@ function compliantMarxDlaCapture() {
       {
         activity_id: "A1",
         activity_preamble: "This timeline anchors Marx's life phases before deeper reading.",
+        intellectual_coherence_bridge:
+          "The page enquiry is Marx's life and works as a connected argument. This first activity uses that orientation to separate dated phases from interpretive claims.",
         reasoning_orientation: "Separate dated facts from interpretive claims.",
         learner_task: "Complete the timeline table with four life phases and one idea per phase.",
         expected_output: "Completed timeline table."
@@ -115,6 +117,8 @@ function compliantMarxDlaCapture() {
       {
         activity_id: "A2",
         activity_preamble: "Comparing major works clarifies how Marx's arguments evolved.",
+        intellectual_coherence_bridge:
+          "You placed Marx's life phases in sequence. This activity carries that historical grounding into a comparison of purpose across two major works.",
         self_explanation_prompt: "Explain the audience difference between the two works.",
         learner_task: "Fill the comparison table with purpose and key difference for each work.",
         expected_output: "Filled comparison table."

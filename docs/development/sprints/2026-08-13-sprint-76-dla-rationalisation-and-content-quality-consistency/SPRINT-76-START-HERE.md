@@ -13,7 +13,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first, then this pack’s [STATUS.md](STATUS.md) and [PLAN.md](PLAN.md).
 
-> **Sprint 76 is CLOSED.** Next: **Prompt Contract Architecture** ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)). First task: prompt **inventory / diagnostic**. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not implement P05, GAM D/E, or Graphics from this pack. Do not reopen T-031. Do not claim RECOVER.
+> **Sprint 76 is CLOSED.** Successor Sprint 77 is also **CLOSED** ([sprint-77-closeout.md](../../../sprints/sprint-77-closeout.md)). Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md). Do not reopen T-031. Do not claim RECOVER.
 
 ---
 
@@ -31,7 +31,7 @@ Strategic quality direction: move PRISM toward resources that benchmark in the *
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Sprint 76 **CLOSED**. Next programme: Prompt Contract Architecture inventory |
+| **Now** | Sprint 76 **CLOSED**. Live: **Sprint 77** T-010 when authorised |
 | **Deferred carry-forward** | P05 · GAM D/E · Graphics · Settings |
 | **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 

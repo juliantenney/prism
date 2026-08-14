@@ -6,7 +6,7 @@
 **Portable pack:** [docs/development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md)  
 **Close-out artefact:** [S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md)  
 **Predecessor:** [sprint-75-prism-user-experience-and-interface.md](sprint-75-prism-user-experience-and-interface.md) — **COMPLETE / Closed**  
-**Next:** [NEXT-SPRINT.md](NEXT-SPRINT.md) — **Prompt Contract Architecture** (not opened as a pack in this close-out)
+**Next:** [sprint-77-dla-prompt-contract-architecture-pilot.md](sprint-77-dla-prompt-contract-architecture-pilot.md) — **COMPLETE / Closed**
 
 ---
 
@@ -24,6 +24,6 @@ Authoritative narrative: [S76-T-049](../development/sprints/2026-08-13-sprint-76
 
 ## Immediate next work
 
-> **Sprint 76 is CLOSED. Next: Prompt Contract Architecture. First task: model-visible prompt inventory / diagnostic. Do not implement P05, GAM D/E, or Graphics from this closeout. Do not reopen T-031.**
+> **Sprint 76 is CLOSED. Sprint 77 is COMPLETE / Closed — DLA Prompt Contract Architecture Pilot. See [sprint-77-closeout.md](sprint-77-closeout.md). Do not reopen T-031 from this closeout.**
 
-See [NEXT-SPRINT.md](NEXT-SPRINT.md).
+See [NEXT-SPRINT.md](NEXT-SPRINT.md) · [SPRINT-77-START-HERE.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md).

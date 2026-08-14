@@ -10217,6 +10217,85 @@
     );
   }
 
+  function isDlaCanonicalAssemblerEnabled(wf) {
+    if (!wf || typeof wf !== "object" || Array.isArray(wf)) return true;
+    if (Object.prototype.hasOwnProperty.call(wf, "dlaCanonicalAssembler")) {
+      return wf.dlaCanonicalAssembler !== false;
+    }
+    var spec = wf.workflowOutputSpec;
+    if (spec && typeof spec === "object" && !Array.isArray(spec) && Object.prototype.hasOwnProperty.call(spec, "dlaCanonicalAssembler")) {
+      return spec.dlaCanonicalAssembler !== false;
+    }
+    return true;
+  }
+
+  function dlaCanonicalHeadingPresent(text) {
+    return /## 1\. DLA ROLE AND AUTHORITY/.test(String(text || ""));
+  }
+
+  function buildDlaCanonicalSlotContext(context, wf) {
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context);
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    var productionParts = [];
+    var commissioningParts = [];
+    var outputParts = [];
+    if (shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+      var scaffold = buildLdGuidedLearningScaffoldPromptBlock({
+        includeCompose: false,
+        includeDlaPreEmit: true,
+        composeOnly: false
+      });
+      if (scaffold) productionParts.push(String(scaffold));
+    }
+    if (shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base)) {
+      productionParts.push(buildSelfDirectedTimelineSequencingAlignmentPromptBlock());
+      commissioningParts.push(buildLdTableFidelityPromptBlock({ role: "dla" }));
+    }
+    try {
+      outputParts.push(buildLdMathRenderPromptBlock());
+    } catch (_) {}
+    var overlayOn = shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
+    var contractMod = resolveLdDlaPageEnrichContractLib();
+    var overlayText =
+      overlayOn && contractMod && typeof contractMod.buildDlaWorkbookOverlayBlock === "function"
+        ? contractMod.buildDlaWorkbookOverlayBlock()
+        : "";
+    return {
+      workbookOverlay: overlayOn,
+      overlayText: overlayText,
+      includeExamples: true,
+      productionSlot: productionParts.filter(Boolean).join("\n"),
+      commissioningSlot: commissioningParts.filter(Boolean).join("\n"),
+      outputSlot: outputParts.filter(Boolean).join("\n")
+    };
+  }
+
+  function assembleLiveDlaCanonicalPrompt(context, wf) {
+    var contractMod = resolveLdDlaPageEnrichContractLib();
+    if (!contractMod || typeof contractMod.assembleDlaCanonicalContract !== "function") {
+      return "";
+    }
+    var assembled = contractMod.assembleDlaCanonicalContract(
+      buildDlaCanonicalSlotContext(context, wf)
+    );
+    return assembled && assembled.text ? String(assembled.text) : "";
+  }
+
   function buildWorkflowStepIdentityContextFromRow(step) {
     return {
       stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
@@ -10642,7 +10721,19 @@
     return deriveDesignEpisodePlanCaptureJson(workflow);
   }
 
-  function buildDlaV2CopilotSchemaInstructions() {
+  function buildDlaV2CopilotSchemaInstructions(wf, step) {
+    if (isDlaCanonicalAssemblerEnabled(wf)) {
+      var ctx = enrichDlaLearnerPageAugmentContext(
+        buildWorkflowStepPromptAugmentContextFromStep(
+          step || {
+            canonical_step_id: "step_design_learning_activities",
+            canonicalStepId: "step_design_learning_activities"
+          },
+          wf
+        )
+      );
+      return assembleLiveDlaCanonicalPrompt(ctx, wf);
+    }
     var contractMod = resolveLdDlaPageEnrichContractLib();
     var contract =
       contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function"
@@ -11256,12 +11347,12 @@
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
-      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
+      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
       "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
       "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
       "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
-      "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
+      "Copilot conversation may provide contextual continuity of instructional intent; it must not override the AUTHORITATIVE DLA MATERIAL COMMISSION. PRISM does not embed the full upstream DLA page in this mode.",
       "Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.",
       "Do not reconstruct or preserve non-owned stage fields."
     ].join("\n");
@@ -11295,8 +11386,89 @@
     ].join("\n");
   }
 
+  var GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING = "### AUTHORITATIVE DLA MATERIAL COMMISSION";
+  var GAM_AUTHORITATIVE_DLA_COMMISSION_AUTHORITY =
+    "This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.";
+
+  function prismHasOwnField(obj, key) {
+    return !!(
+      obj &&
+      typeof obj === "object" &&
+      !Array.isArray(obj) &&
+      Object.prototype.hasOwnProperty.call(obj, key) &&
+      obj[key] !== undefined &&
+      obj[key] !== null
+    );
+  }
+
+  function copyOwnFieldIfPresent(src, dest, key) {
+    if (prismHasOwnField(src, key)) dest[key] = src[key];
+  }
+
+  function projectGamAuthoritativeDlaCommissionFromPage(page) {
+    var acts = Array.isArray(page && page.activities) ? page.activities : [];
+    var outActs = [];
+    var i;
+    var j;
+    for (i = 0; i < acts.length; i += 1) {
+      var act = acts[i];
+      if (!act || typeof act !== "object" || Array.isArray(act)) continue;
+      var rms = Array.isArray(act.required_materials) ? act.required_materials : [];
+      if (!rms.length) continue;
+      var proj = {};
+      copyOwnFieldIfPresent(act, proj, "activity_id");
+      copyOwnFieldIfPresent(act, proj, "instructional_archetype");
+      copyOwnFieldIfPresent(act, proj, "archetype_plan");
+      copyOwnFieldIfPresent(act, proj, "evidence_requirement");
+      var mats = [];
+      for (j = 0; j < rms.length; j += 1) {
+        var rm = rms[j];
+        if (!rm || typeof rm !== "object" || Array.isArray(rm)) continue;
+        var row = {};
+        copyOwnFieldIfPresent(rm, row, "material_id");
+        copyOwnFieldIfPresent(rm, row, "material_type");
+        copyOwnFieldIfPresent(rm, row, "purpose");
+        copyOwnFieldIfPresent(rm, row, "specification");
+        copyOwnFieldIfPresent(rm, row, "evidence_requirement");
+        mats.push(row);
+      }
+      proj.required_materials = mats;
+      outActs.push(proj);
+    }
+    return {
+      kind: "gam_authoritative_dla_commission",
+      activities: outActs
+    };
+  }
+
+  function buildAuthoritativeDlaMaterialCommissionSectionFromPage(page) {
+    var payload = projectGamAuthoritativeDlaCommissionFromPage(page);
+    var jsonText;
+    try {
+      jsonText = JSON.stringify(payload, null, 2);
+    } catch (_) {
+      return "";
+    }
+    return [
+      "",
+      GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING,
+      "",
+      GAM_AUTHORITATIVE_DLA_COMMISSION_AUTHORITY,
+      "",
+      "```json",
+      jsonText,
+      "```"
+    ].join("\n");
+  }
+
   function buildUpstreamDlaPageEmbedSectionForGamCopy(wf) {
-    if (isPartialPageOutputWorkflowEnabled(wf)) return "";
+    if (isPartialPageOutputWorkflowEnabled(wf)) {
+      var partialJson = resolveDlaEnrichedPageJsonForGamCopy(wf);
+      if (!partialJson || !String(partialJson).trim()) return "";
+      var partialPage = tryParseWorkflowArtefactJson(partialJson);
+      if (!partialPage) return "";
+      return buildAuthoritativeDlaMaterialCommissionSectionFromPage(partialPage);
+    }
     var json = resolveDlaEnrichedPageJsonForGamCopy(wf);
     if (!json || !String(json).trim()) {
       return [
@@ -12011,6 +12183,12 @@
     var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
     var appendParts = [];
     if (isPageEnrichmentV2WorkflowEnabled(workflow)) {
+      if (isDlaCanonicalAssemblerEnabled(workflow)) {
+        if (!dlaCanonicalHeadingPresent(draftBody)) {
+          var assembledCanonical = assembleLiveDlaCanonicalPrompt(context, workflow);
+          if (assembledCanonical) draftBody = assembledCanonical;
+        }
+      } else {
       var contractMod = resolveLdDlaPageEnrichContractLib();
       if (contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function") {
         var v2Block = contractMod.buildDlaPageEnrichContractBlock();
@@ -12031,6 +12209,7 @@
           appendParts.push(pageEmbed);
         }
       }
+      }
     } else {
       var block = buildEpisodePlanDlaPopulationPromptBlock();
       var episodePlans = resolveEpisodePlansForDlaPopulation({ workflow: workflow });
@@ -12050,7 +12229,10 @@
         appendParts.push(upstreamSection);
       }
     }
-    if (!/Learner-facing activity title \(required/i.test(draftBody + "\n" + appendParts.join("\n"))) {
+    if (
+      !isDlaCanonicalAssemblerEnabled(workflow) &&
+      !/Learner-facing activity title \(required/i.test(draftBody + "\n" + appendParts.join("\n"))
+    ) {
       var titleRoots = [
         typeof window !== "undefined" ? window : null,
         typeof globalThis !== "undefined" ? globalThis : null
@@ -14557,6 +14739,7 @@
     return [
       "",
       "Sprint 38 visual affordance authoring contract (auto-applied):",
+      "- FAIL-CLOSED: every visual_affordances[] row MUST include a non-empty rationale explaining why that visual is pedagogically/usefully warranted. Capture rejects omitted or empty rationale. alt_text, detailed_description, caption_intent, and pedagogical_added_value do not replace rationale.",
       "- visual_affordances[], activities_visual_review[], and visual_affordance_schema_version are additive page-root metadata only — they must not replace, summarise, or substitute for learning_activities.content[].materials (partial + assemble owns materials transport).",
       "- Visual opportunities are pedagogical opportunities (a reasoning move), not topic opportunities; hooks are not opportunities.",
       "- Every visual_affordances[] row requires affordance_id (unique string), scope (activity|page), rationale, subject, context, and evidence_anchors[] grounded in upstream content.",
@@ -15302,6 +15485,13 @@
     var ctx = enrichDlaLearnerPageAugmentContext(
       buildWorkflowStepPromptAugmentContextFromStep(step, wf)
     );
+    if (
+      isWorkflowStepDesignLearningActivities(ctx) &&
+      isDlaCanonicalAssemblerEnabled(wf) &&
+      isPageEnrichmentV2WorkflowEnabled(wf)
+    ) {
+      return applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
+    }
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     if (ctx.dlaLearnerPageScaffoldSsot) {
       draft = applyLdGuidedLearningScaffoldContractToDraft(draft, ctx);
@@ -24857,17 +25047,47 @@
     };
   }
 
+  function resetLiveGraphicsStateForClearedRun() {
+    state.workflowResourceRefs = [];
+    revokeAllVisualAssetObjectUrls();
+    state.utilitiesVisualAssetObjectUrlsByBriefId = {};
+    var ws = state.utilitiesOutputWorkspace;
+    if (ws && typeof ws === "object") {
+      ws.assetsByBriefId = {};
+      ws.assetErrorsByBriefId = {};
+      ws.rendererPlacementByBriefId = {};
+      ws.visualAssetManifest = {
+        manifest_version: "70.8",
+        schema_version: "",
+        assets: [],
+        missing_brief_ids: []
+      };
+    }
+  }
+
   function executeClearWorkflowRunData(workflowId) {
     var wid = String(workflowId || "").trim();
-    if (!wid) return;
-    clearWorkflowRunCaptureState({
-      workflowId: wid,
-      resetIndex: true,
-      clearDom: true
-    });
-    resetWorkflowRunNavigationState({ resetIndex: true });
-    updateWorkflowRunView();
-    showToast("Run data cleared.", "success");
+    if (!wid) return Promise.resolve();
+    var resourcesMod = getWorkflowResourcesMod();
+    var purgePromise =
+      resourcesMod && typeof resourcesMod.deleteGeneratedVisualJobImagesForWorkflow === "function"
+        ? resourcesMod.deleteGeneratedVisualJobImagesForWorkflow(wid)
+        : Promise.resolve({ ok: true, deleted_count: 0 });
+    return Promise.resolve(purgePromise)
+      .catch(function () {
+        return { ok: false };
+      })
+      .then(function () {
+        resetLiveGraphicsStateForClearedRun();
+        clearWorkflowRunCaptureState({
+          workflowId: wid,
+          resetIndex: true,
+          clearDom: true
+        });
+        resetWorkflowRunNavigationState({ resetIndex: true });
+        updateWorkflowRunView();
+        showToast("Run data cleared.", "success");
+      });
   }
 
   function requestClearWorkflowRunDataConfirmation(workflowName) {
@@ -24914,9 +25134,9 @@
     }
     var wf = findWorkflowById(workflowId);
     var workflowName = wf ? wf.name || "Untitled workflow" : "Untitled workflow";
-    requestClearWorkflowRunDataConfirmation(workflowName).then(function (confirmed) {
+    return requestClearWorkflowRunDataConfirmation(workflowName).then(function (confirmed) {
       if (!confirmed) return;
-      executeClearWorkflowRunData(workflowId);
+      return executeClearWorkflowRunData(workflowId);
     });
   }
 
@@ -25576,15 +25796,7 @@
   function workflowHasPersistedDesignPageResult(workflowId) {
     var wid = String(workflowId || "").trim();
     if (!wid) return false;
-    var wf = findWorkflowById(wid);
-    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) return false;
-    var designPageStep = wf.steps.find(function (step) {
-      return isWorkflowStepDesignPage({
-        stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
-        stepCanonicalTitle: step && (step.title || ""),
-        stepTitle: step && (step.title || "")
-      });
-    });
+    var designPageStep = findDesignPageStepForWorkflow(wid);
     if (!designPageStep || !designPageStep.id) return false;
     return workflowStepHasPersistedRunData(wid, designPageStep.id);
   }
@@ -25692,8 +25904,46 @@
     }
   }
 
+  function findDesignPageStepForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return null;
+    var wf = findWorkflowById(wid);
+    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) return null;
+    return (
+      wf.steps.find(function (step) {
+        return isWorkflowStepDesignPage({
+          stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+          stepCanonicalTitle: step && (step.title || ""),
+          stepTitle: step && (step.title || "")
+        });
+      }) || null
+    );
+  }
+
+  function workflowHasLiveDesignPageCapture(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid || wid !== String(state.selectedWorkflowId || "").trim()) return false;
+    var designPageStep = findDesignPageStepForWorkflow(wid);
+    if (!designPageStep || !designPageStep.id) return false;
+    var sid = String(designPageStep.id || "").trim();
+    var liveFinal =
+      state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid] != null
+        ? state.workflowRunCapturedOutputs[sid]
+        : "";
+    var liveRaw =
+      state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid] != null
+        ? state.workflowRunCapturedOutputsRaw[sid]
+        : "";
+    if (!workflowRunCaptureValueIsBlank(liveFinal)) return true;
+    if (!workflowRunCaptureValueIsBlank(liveRaw)) return true;
+    return false;
+  }
+
   function isWorkflowRunAuthoringReady(workflowId) {
-    return workflowHasPersistedDesignPageResult(workflowId);
+    return (
+      workflowHasPersistedDesignPageResult(workflowId) ||
+      workflowHasLiveDesignPageCapture(workflowId)
+    );
   }
 
   function handleContinueToAuthoring() {
@@ -32464,7 +32714,7 @@
             exactFooterLine +
             ". No other text after the footer line."
         );
-        var dlaContract = buildDlaV2CopilotSchemaInstructions();
+        var dlaContract = buildDlaV2CopilotSchemaInstructions(wfForChain, step);
         if (dlaContract) {
           lines.push("");
           lines.push(dlaContract);
@@ -32491,7 +32741,7 @@
         if (partialOutputsMode) {
           lines.push("Sprint 58 GAM partial output mode: return a partial page artefact containing only activity_id + materials.");
           lines.push(
-            "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
+            "PRISM does not embed the full upstream DLA page in this mode. The AUTHORITATIVE DLA MATERIAL COMMISSION is binding. Copilot conversation may provide contextual continuity but must not override that commission."
           );
         } else {
           lines.push(
@@ -32629,7 +32879,7 @@
               ". No other text after the footer line."
           );
           lines.push(
-            "Design Page v2 partial constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional sections[], assembly_state). Author a concise learner-facing title — do not copy the request/brief. Orientation bodies must not repeat renderer-owned headings (Overview, Welcome, Learning purpose, Knowledge summary, Study tips). Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
+            "Design Page v2 partial constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional sections[], assembly_state). Author a concise learner-facing title — do not copy the request/brief. Orientation bodies must not repeat renderer-owned headings (Overview, Welcome, Learning purpose, Knowledge summary, Study tips). Every visual_affordances[] row must include non-empty rationale (pedagogically warranted) plus the Sprint 38 required children for that visual_decision. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
           );
         } else {
           lines.push(
@@ -32760,10 +33010,18 @@
           lines.push(String(cap));
         });
       } else {
-        lines.push("");
-        lines.push(
-          "Upstream binding bodies are intentionally omitted for this step in partial page output mode. Use Copilot conversation context and referenced upstream step names only."
-        );
+        var skipOmittedBodiesForGamCommission = isWorkflowStepGenerateActivityMaterials({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || "",
+          stepOutputName: step.outputName || ""
+        });
+        if (!skipOmittedBodiesForGamCommission) {
+          lines.push("");
+          lines.push(
+            "Upstream binding bodies are intentionally omitted for this step in partial page output mode. Use Copilot conversation context and referenced upstream step names only."
+          );
+        }
       }
     }
 
@@ -32806,6 +33064,17 @@
       ? { text: buildLearningSequenceV2CopyAuthoringBrief(), sourceType: "ls_v2_copy_brief", error: "" }
       : resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
+    if (
+      promptBody &&
+      isWorkflowStepDesignLearningActivities({
+        stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+        stepCanonicalTitle: step.title || "",
+        stepTitle: step.title || ""
+      }) &&
+      isDlaCanonicalAssemblerEnabled(wfForPrompt)
+    ) {
+      promptBody = "";
+    }
     var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
     if (promptBody && strictJsonKindForBody && !gamV2CopyStep && !lsV2CopyStep) {
       // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
@@ -53655,6 +53924,7 @@
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
+    prismTestApi.applyGamPageEnrichPromptBlockToDraftForTest = applyGamPageEnrichPromptBlockToDraft;
     prismTestApi.getRunnerWhatToExpectForTest = getRunnerWhatToExpect;
     prismTestApi.buildWorkflowStepRunSummaryText = buildWorkflowStepRunSummaryText;
     prismTestApi.getWorkflowRunStepGuidanceTextForTest = getWorkflowRunStepGuidanceText;
@@ -54406,6 +54676,22 @@
     prismTestApi.getWorkflowResourceRefsForTest = function () {
       return Array.isArray(state.workflowResourceRefs) ? state.workflowResourceRefs.slice() : [];
     };
+    prismTestApi.setWorkflowResourceRefsForTest = function (refs) {
+      state.workflowResourceRefs = Array.isArray(refs) ? refs.slice() : [];
+    };
+    prismTestApi.getUtilitiesOutputWorkspaceForTest = function () {
+      return state.utilitiesOutputWorkspace;
+    };
+    prismTestApi.setUtilitiesOutputWorkspaceForTest = function (ws) {
+      state.utilitiesOutputWorkspace = ws && typeof ws === "object" ? ws : null;
+    };
+    prismTestApi.getUtilitiesVisualAssetObjectUrlsForTest = function () {
+      return Object.assign({}, state.utilitiesVisualAssetObjectUrlsByBriefId || {});
+    };
+    prismTestApi.setUtilitiesVisualAssetObjectUrlsForTest = function (map) {
+      state.utilitiesVisualAssetObjectUrlsByBriefId =
+        map && typeof map === "object" ? Object.assign({}, map) : {};
+    };
     prismTestApi.getWorkflowPageResourceRefsForTest = function () {
       return cloneWorkflowPageResourceRefs();
     };
@@ -54447,6 +54733,8 @@
     prismTestApi.resolveLearningOutcomesEmbeddedInEpisodePlanCapture =
       resolveLearningOutcomesEmbeddedInEpisodePlanCapture;
     prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
+    prismTestApi.isDlaCanonicalAssemblerEnabled = isDlaCanonicalAssemblerEnabled;
+    prismTestApi.assembleLiveDlaCanonicalPrompt = assembleLiveDlaCanonicalPrompt;
     prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;
     prismTestApi.resolvePartialPageCaptureStageFromStep = resolvePartialPageCaptureStageFromStep;
@@ -54482,6 +54770,10 @@
     prismTestApi.isGamPageEnrichmentV2CopyStep = isGamPageEnrichmentV2CopyStep;
     prismTestApi.buildUpstreamDlaPageEmbedSectionForGamCopy =
       buildUpstreamDlaPageEmbedSectionForGamCopy;
+    prismTestApi.projectGamAuthoritativeDlaCommissionFromPage =
+      projectGamAuthoritativeDlaCommissionFromPage;
+    prismTestApi.buildAuthoritativeDlaMaterialCommissionSectionFromPage =
+      buildAuthoritativeDlaMaterialCommissionSectionFromPage;
     prismTestApi.resolveGamEnrichedPageJsonForLearningSequenceCopy =
       resolveGamEnrichedPageJsonForLearningSequenceCopy;
     prismTestApi.isLearningSequencePageEnrichmentV2CopyStep =

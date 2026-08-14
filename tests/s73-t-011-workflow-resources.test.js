@@ -231,3 +231,61 @@ test("deleteResourcesForWorkflow removes only owned records", async function () 
   assert.equal((await resources.listActiveResources("wf-del-a")).length, 0);
   assert.equal((await resources.listActiveResources("wf-del-b")).length >= 1, true);
 });
+
+test("deleteGeneratedVisualJobImagesForWorkflow targets only current-workflow generated images", async function () {
+  const blob = makeBlob();
+  const a1 = await resources.putBinaryResource({
+    workflow_id: "wf-purge-a",
+    affordance_id: "va-a-1",
+    brief_id: "vb-a-1",
+    mime_type: "image/png",
+    payload_blob: blob,
+    byte_size: TINY_PNG_BYTES.length
+  });
+  const a2 = await resources.putBinaryResource({
+    workflow_id: "wf-purge-a",
+    affordance_id: "va-a-2",
+    brief_id: "vb-a-2",
+    mime_type: "image/png",
+    payload_blob: blob,
+    byte_size: TINY_PNG_BYTES.length
+  });
+  const extra = await resources.putBinaryFileResource({
+    workflow_id: "wf-purge-a",
+    filename: "handout.png",
+    mime_type: "image/png",
+    payload_blob: blob,
+    byte_size: TINY_PNG_BYTES.length
+  });
+  const video = await resources.putTextResource({
+    workflow_id: "wf-purge-a",
+    slot_key: "page_video_embed",
+    mime_type: "text/html",
+    text_payload: "<iframe></iframe>"
+  });
+  const other = await resources.putBinaryResource({
+    workflow_id: "wf-purge-b",
+    affordance_id: "va-b-1",
+    brief_id: "vb-b-1",
+    mime_type: "image/png",
+    payload_blob: blob,
+    byte_size: TINY_PNG_BYTES.length
+  });
+
+  assert.equal(resources.isRunGeneratedVisualJobImageRecord(a1.record, "wf-purge-a"), true);
+  assert.equal(resources.isRunGeneratedVisualJobImageRecord(extra.record, "wf-purge-a"), false);
+
+  const res = await resources.deleteGeneratedVisualJobImagesForWorkflow("wf-purge-a");
+  assert.equal(res.ok, true);
+  assert.equal(res.deleted_count, 2);
+
+  const remainingA = await resources.listActiveResources("wf-purge-a");
+  const ids = remainingA.map((row) => row.resource_id);
+  assert.equal(ids.includes(a1.resource_id), false);
+  assert.equal(ids.includes(a2.resource_id), false);
+  assert.equal(ids.includes(extra.resource_id), true);
+  assert.equal(ids.includes(video.resource_id), true);
+  const remainingB = await resources.listActiveResources("wf-purge-b");
+  assert.equal(remainingB.some((row) => row.resource_id === other.resource_id), true);
+});
+

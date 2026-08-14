@@ -1,14 +1,18 @@
 /**
- * DLA producer contract — P04 + P01-R1 + T-033 + T-031 operational suitability (76-DLA-PARTIAL-9).
+ * DLA producer contract — P04 + P01-R1 + T-033 + T-031 (live 77-DLA-CANONICAL-3).
  * Historical per-activity / PRE-EMIT / INVALID–VALID audits are deleted.
  */
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const dlaContract = require("../lib/ld-dla-page-enrich-contract.js");
 
+function liveText() {
+  return dlaContract.assembleDlaCanonicalContract().text;
+}
+
 test("S76 P04: commissioning order is production → inputs → commissions → evidence", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
-  assert.match(text, /Activity commissioning order/i);
+  const text = liveText();
+  assert.match(text, /## 4\. LEARNER PRODUCTION/);
   assert.match(text, /Define the learner production obligation/i);
   assert.match(text, /task_material_decision/i);
   assert.match(text, /non-empty purpose[\s\S]*non-empty specification/i);
@@ -21,7 +25,7 @@ test("S76 P04: commissioning order is production → inputs → commissions → 
 });
 
 test("S76: canonical DLA shape includes task_material_decision and specification", () => {
-  const snippet = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  const snippet = dlaContract.assembleDlaCanonicalContract().sections.examples;
   const taskIdx = snippet.indexOf("task_material_decision");
   const materialsIdx = snippet.indexOf('"required_materials"');
   const evidenceIdx = snippet.lastIndexOf("evidence_decision");
@@ -29,11 +33,11 @@ test("S76: canonical DLA shape includes task_material_decision and specification
   assert.ok(materialsIdx > taskIdx);
   assert.ok(evidenceIdx > materialsIdx);
   assert.match(snippet, /"specification":/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-9");
+  assert.equal(dlaContract.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
 });
 
 test("S76 P01-R1: commissioning order distinguishes operand from model/workspace/scaffold", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(text, /particular content upon which the learner performs the required operation/i);
   assert.match(text, /operand\/stimulus/i);
   assert.match(text, /model = shows how/i);
@@ -50,8 +54,8 @@ test("S76 P01-R1: commissioning order distinguishes operand from model/workspace
 });
 
 test("S76 P01-R1: intermediate object/state may be a system-supplied task input", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
-  const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  const text = liveText();
+  const shape = dlaContract.assembleDlaCanonicalContract().sections.examples;
   assert.match(text, /already-formed object or state/);
   assert.match(text, /this activity.s operation acts on/);
   assert.match(text, /when the system must supply it/);
@@ -72,7 +76,7 @@ test("S76 P01-R1: intermediate object/state may be a system-supplied task input"
 });
 
 test("S76 T-033: Step 1 requires load-bearing mapped-LO operations", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(
     text,
     /Completing it must require every load-bearing operation needed to demonstrate the mapped LO/
@@ -92,7 +96,7 @@ test("S76 T-033: Step 1 requires load-bearing mapped-LO operations", () => {
 });
 
 test("S76 P04: step 4 is the compact particulars-as-grounds definition", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(text, /DLA owns evidence_decision\.required/i);
   assert.match(text, /particulars-as-grounds/i);
   assert.match(text, /it does not mean no materials/i);
@@ -109,17 +113,17 @@ test("S76 P04: step 4 is the compact particulars-as-grounds definition", () => {
 });
 
 test("S76 P04: protected step 1 and step 3 openings survive", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(
     text,
-    /1\) Define the learner production obligation \(expected_output and learner_task intent\)\./
+    /Define the learner production obligation \(expected_output and learner_task intent\)\./
   );
   assert.match(text, /binding GAM bounds: content, load-bearing count\/variation\/constraints\/exclusions/);
   assert.match(text, /specification must not be only the material_type token/);
 });
 
 test("S76 P04: provider-authoring core retains Sprint 72 vocabulary", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(text, /Evidence-provider authoring \(only when evidence_decision\.required is true\)/i);
   assert.match(text, /evidence_requirement\.learner_action/);
   assert.match(text, /evidence_requirement\.observable_features/);
@@ -135,8 +139,8 @@ test("S76 P04: provider-authoring core retains Sprint 72 vocabulary", () => {
 });
 
 test("S76 P04: one attachment/source-use pre-step; no duplicate source-preference heading", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
-  assert.match(text, /Attachment inventory and source-use \(before designing activities\)/i);
+  const text = liveText();
+  assert.match(text, /## 3\. SOURCES AND ATTACHMENTS/);
   assert.match(text, /Inventory the source units actually available/i);
   assert.match(text, /Do not invent related but unattached works/i);
   assert.match(text, /Known boundary/i);
@@ -147,7 +151,7 @@ test("S76 P04: one attachment/source-use pre-step; no duplicate source-preferenc
 });
 
 test("S76 P04: redundant evidence self-audits and noun force-true are absent", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.doesNotMatch(text, /FINAL PRE-EMIT AUDIT/i);
   assert.doesNotMatch(text, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
   assert.doesNotMatch(text, /Invalid \/ valid contrast/i);
@@ -160,7 +164,7 @@ test("S76 P04: redundant evidence self-audits and noun force-true are absent", (
 });
 
 test("S76 T-031: Step 3 requires operational bounds for this commissioned operation", () => {
-  const text = dlaContract.buildDlaPageEnrichContractBlock();
+  const text = liveText();
   assert.match(
     text,
     /Include any pedagogically chosen method, condition, assumption, boundary, or exclusion the commissioned operation depends on/
@@ -184,10 +188,10 @@ test("S76 T-031: Step 3 requires operational bounds for this commissioned operat
   assert.doesNotMatch(text, /Bloom/);
   assert.doesNotMatch(text, /FINAL PRE-EMIT AUDIT/i);
   assert.doesNotMatch(text, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
-  assert.equal(dlaContract.CONTRACT_VERSION, "76-DLA-PARTIAL-9");
+  assert.equal(dlaContract.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
 });
 
-test("S76 P04: unique contract+shape stays inside the rationalisation size band", () => {
+test("S76 P04: unique legacy contract+shape stays inside the rationalisation size band", () => {
   const block = dlaContract.buildDlaPageEnrichContractBlock();
   const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
   const unique = block.length + shape.length;
@@ -196,10 +200,9 @@ test("S76 P04: unique contract+shape stays inside the rationalisation size band"
 });
 
 test("S76 P04: canonical shape keeps one evidence-true example and one P01-true/P02-false contrast", () => {
-  const snippet = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  const snippet = dlaContract.assembleDlaCanonicalContract().sections.examples;
   assert.match(snippet, /"learner_action"/);
   assert.match(snippet, /"observable_features"/);
-  assert.match(snippet, /"disclosure_constraint"/);
   assert.match(snippet, /"evidence_layout": "separate_provider"/);
   assert.match(
     snippet,

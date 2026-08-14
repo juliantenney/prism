@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — maturation / v1.0 stabilisation phase  
-**Last updated:** 2026-08-11 (Sprint 75 — `S75-D22` one-product Create + backlog consolidation)  
+**Last updated:** 2026-08-14 (GAM ordinary markdown-body output-contract repair closed as bounded maintenance; Sprint 77 remains CLOSED)  
 **Source migrations:** Sprint 72 cut-line (`S72-T-077`); Sprint 71 disposition audit; Sprint 73 closeout; Sprint 74 open; Sprint 75 Settings investigation + QA/review retirement + one-product Create (`S75-D22`); historical notes in `ideas.md`, `known-issues.md`, `future-directions.md` (see [README.md](README.md))
 
 ---
@@ -67,6 +67,8 @@ Coherent capabilities large enough to become a sprint. **No sprint numbers assig
 **Sprint 73 outcome (COMPLETE / Closed 2026-08-06):** Established the workflow-scoped Workflow Resources owner; IndexedDB-backed generated-image persistence with same-browser/profile rehydration; downloadable Additional Resources; one provider-supplied embedded video with page-owned presentation; authoring tabs and Orient-supporting learner presentation. See [SPRINT-73-FINAL-REPORT.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-FINAL-REPORT.md) · [SPRINT-73-CLOSURE.md](../development/sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-CLOSURE.md).
 
 **Remaining under this theme (not Sprint 73):** Conversation-attachment byte persistence (`S72-D10` / PB-R-001); orphan/mixed-data cleanup; cross-device/server sync; package re-import; central resource library. **Manually uploaded graphics** (non–visual-job images) are tracked separately as [PB-FA-004](#pb-fa-004--manually-uploaded-graphics).
+
+**Bounded maintenance (2026-08-14, not a sprint):** **Graphics / image lifecycle — stale images survive Clear Run Data** (queue G; S76-T-037 G; S76-T-029 out of scope) — **CLOSED**. Clear Run Data now purges current-workflow generated visual-job images (`binary` + `image/*` + non-empty `affordance_id`) and resets live Graphics state. Additional Resources, `page_video_embed`, and other workflows are preserved. This is **not** PB-FA-004, PB-R-008, or PB-FA-007.
 
 **Evidence basis:** `S72-D09`, `S72-D10`; Sprint 73 decisions `S73-D01`…`S73-D03` and implementation/verification notes in the Sprint 73 pack.
 
@@ -430,6 +432,31 @@ A product becomes first-class only when its contract is coherent across Create �
 
 **Readiness:** Problem framed from Sprint 75 Create investigations; **approach and acceptance criteria not yet written** — Future architecture candidate, **not sprint-allocated**.
 
+### PB-FA-010 — Prompt-contract architecture method (after DLA pilot)
+
+**Product problem:** Model-visible workflow prompts accrete competing authorities, duplicate contracts, and hard-to-trace defects. Sprint 77 proved a **method** on DLA; other stages (EP, GAM, Design Page, Graphics, QA, etc.) still have their own instruction-architecture debt.
+
+**Why it matters:** Maintainability and defect-to-instruction traceability. Size reduction is a **consequence** of architecture, not the primary objective.
+
+**Proven method (DLA reference implementation — do not copy DLA sections mechanically):**
+
+inventory → canonical ownership → equivalence ledger → assemble once → atomic switch → behavioural gate
+
+**Principles:**
+
+1. DLA is the reference for the **METHOD**, not a prompt template to clone.
+2. Each prompt retains its own semantic responsibilities.
+3. Seek: clear model-visible sections; canonical ownership of invariants; deterministic/single assembly where appropriate; controlled overlays; easy defect-to-instruction traceability; removal of duplicate or competing authorities.
+4. Do **not** begin a system-wide prompt rewrite as one programme.
+5. Rationalise prompts **individually** in later bounded work.
+6. **GAM prompt architecture** should be reconsidered in a later bounded item after GAM D/E diagnostics (now complete in Sprint 77: E1/Case 1 closed; GAM D no live repair; E2 wait-state). Do not start GAM prompt rewrite from this item.
+
+**Evidence:** Sprint 77 T-010–T-017 (canonical DLA `77-DLA-CANONICAL-2`; Gate D PASS; P05 resolved as architecture consequence). Phase D DLA legacy cleanup remains a **separate** authorised cleanup, not this backlog item.
+
+**Explicit non-scope now:** Starting EP/GAM/Design Page/QA rewrites; deleting DLA rollback; merging this item into GAM E.
+
+**Readiness:** Method documented; **not sprint-allocated**. Sprint 77 closed; do not treat this item as the next live workstream.
+
 ---
 
 ## 3. Research / design questions
@@ -472,6 +499,7 @@ Lightly formed possibilities. Concise only. **No task IDs, sprint allocation, or
 - Longer-horizon notes from [future-directions.md](future-directions.md): institutional deployment; collaborative authoring; domain-pack marketplaces — programme-level only
 - First-class Slideshow / pack-declared product catalogue / future composition — **promoted to [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test)** (`S75-D22`)
 - Research domain pack maturation — **promoted to [PB-FA-009](#pb-fa-009--research-domain-pack-maturation)** (`S75-D22`)
+- Prompt-contract architecture method after DLA pilot — **promoted to [PB-FA-010](#pb-fa-010--prompt-contract-architecture-method-after-dla-pilot)** (Sprint 77)
 - Stable release / development process — **see [PB-S-005](#pb-s-005--stable-release--development-process)** (expanded from cache-bust)
 
 ---
@@ -497,9 +525,9 @@ Completed 2026-08-05: [SPRINT-71-DISPOSITION-AUDIT.md](../development/sprints/20
 | — | **PB-FA-006** QA / refinement lifecycle | S75-D03 retired unsafe in-workflow path; Sprint 71 corpus QA is prior art; productised closed loop not started |
 | — | **PB-FA-007** User-controlled storage management | Sprint 75 evidence (quota failure + orphaned runstate); UX scope expanded post-D21; approach/AC not written |
 | — | **PB-FA-008** First-class Slideshow / product extensibility | Architecture test under `S75-D22` one-product rule; includes catalogue/composition direction |
-| — | **PB-FA-009** Research domain pack maturation | Research product model still immature post-D22 |
+| — | **PB-FA-010** Prompt-contract architecture method | DLA method proven Sprint 77; not a system-wide rewrite; GAM architecture after D/E |
 
-**Sprint 74** is **COMPLETE / Closed** — see [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md). **Sprint 75** is **COMPLETE / Closed** (2026-08-12). **Sprint 76** is **OPEN** (2026-08-13) — DLA rationalisation / task–material sufficiency / content-quality consistency; start [SPRINT-76-START-HERE.md](../development/sprints/2026-08-13-sprint-76-dla-rationalisation-and-content-quality-consistency/SPRINT-76-START-HERE.md). **Settings** → [PB-FA-005](#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) follows after the Sprint 76 decision gate. Other backlog lanes remain available via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) (QA → [PB-FA-006](#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle); storage → [PB-FA-007](#pb-fa-007--user-controlled-storage-management); Slideshow/catalogue → [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test); Research pack → [PB-FA-009](#pb-fa-009--research-domain-pack-maturation); release process → [PB-S-005](#pb-s-005--stable-release--development-process)). **Sprint 74A / 74B / 74C are not opened as separate live programmes.**
+**Sprint 74** is **COMPLETE / Closed** — see [SPRINT-74-START-HERE.md](../development/sprints/2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/SPRINT-74-START-HERE.md). **Sprint 75** is **COMPLETE / Closed** (2026-08-12). **Sprint 76** is **COMPLETE / Closed** (2026-08-14) — [sprint-76-closeout.md](../sprints/sprint-76-closeout.md). **Sprint 77** is **COMPLETE / Closed** (2026-08-14) — [sprint-77-closeout.md](../sprints/sprint-77-closeout.md). Next sprint is **not selected**. **Settings** → [PB-FA-005](#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) remains deferred. Other backlog lanes remain available via [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) (QA → [PB-FA-006](#pb-fa-006--qa--workflow-and-resource-refinement-lifecycle); storage → [PB-FA-007](#pb-fa-007--user-controlled-storage-management); Slideshow/catalogue → [PB-FA-008](#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test); Research pack → [PB-FA-009](#pb-fa-009--research-domain-pack-maturation); prompt-contract method → [PB-FA-010](#pb-fa-010--prompt-contract-architecture-method-after-dla-pilot); release process → [PB-S-005](#pb-s-005--stable-release--development-process)). **Sprint 74A / 74B / 74C are not opened as separate live programmes.**
 
 ---
 

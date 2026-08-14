@@ -33,6 +33,6 @@
 
 ## Programme posture (closed)
 
-Sprint 76 is **COMPLETE / Closed**. P04 Gate C **PASS**. P01-R1 residual **CLOSED** (T-042). T-033 **CLOSED** (T-045). T-031 **CLOSED** (T-048; `76-DLA-PARTIAL-9`). P05 **deferred**. Next: **Prompt Contract Architecture**. **RECOVER** remains a hypothesis.
+Sprint 76 is **COMPLETE / Closed**. Live programme: **Sprint 77**. P04 Gate C **PASS**. P01-R1 residual **CLOSED** (T-042). T-033 **CLOSED** (T-045). T-031 **CLOSED** (T-048; `76-DLA-PARTIAL-9`). P05 **deferred**. **RECOVER** remains a hypothesis.
 
 Detail: [STATUS.md](STATUS.md).

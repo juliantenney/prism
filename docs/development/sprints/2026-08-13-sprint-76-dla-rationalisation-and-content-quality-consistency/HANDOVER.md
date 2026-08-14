@@ -11,7 +11,7 @@
 
 ## Start here
 
-> **Sprint 76 is CLOSED.** Semantic chain complete (P04, P01-R1, T-033, T-031). Next: **Prompt Contract Architecture** — first task is a model-visible prompt **inventory / diagnostic**. Do not implement P05, GAM D/E, or Graphics from this handover. Do not reopen T-031. Do not claim RECOVER. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
+> **Sprint 76 is CLOSED.** Successor Sprint 77 is also **CLOSED** ([sprint-77-closeout.md](../../../sprints/sprint-77-closeout.md)). Do not reopen T-031. Do not claim RECOVER. Close-out: [S76-T-049](S76-T-049-sprint-76-closeout-and-prompt-architecture-handover.md).
 
 Diagnostic SSOT: [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md). P04 implementation: [S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md](S76-T-036-dla-p04-evidence-guidance-rationalisation-implementation.md). Gate C: [S76-T-037-dla-p04-gate-c-rebenchmark.md](S76-T-037-dla-p04-gate-c-rebenchmark.md). Opening investigation notes remain in [CONTEXT.md](CONTEXT.md).
 
@@ -21,7 +21,7 @@ Diagnostic SSOT: [S76-T-010-dla-audit-report.md](S76-T-010-dla-audit-report.md).
 
 | Priority | Work |
 | -------- | ---- |
-| **Next sprint** | **Prompt Contract Architecture** — diagnostic inventory of model-visible prompt construction ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)) |
+| **Next sprint** | **Sprint 77** — T-010 DLA inventory when authorised ([SPRINT-77-START-HERE.md](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)) |
 | **Do not start from 76** | P05 · GAM D/E · Graphics · generic DLA “must be solvable” |
 | **Later** | Settings — [PB-FA-005](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) |
 

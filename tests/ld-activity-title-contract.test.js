@@ -201,9 +201,15 @@ test("9e. Valid distinct sibling titles without IDs are accepted", () => {
 });
 
 test("10. Every active DLA route requires a title", () => {
+  const live = dlaContract.assembleDlaCanonicalContract().text;
   const block = dlaContract.buildDlaPageEnrichContractBlock();
   const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
   const legacy = integration.buildDlaPopulationOnlyPromptBlock();
+  assert.equal(
+    (live.split("Learner-facing activity title (required on every activities[] row):").length - 1),
+    1
+  );
+  assert.match(live, /never exceed 60 characters/i);
   assert.match(block, /activities\[\]\.title/);
   assert.match(block, /never exceed 60 characters/i);
   assert.match(block, /Do not include internal activity IDs/i);

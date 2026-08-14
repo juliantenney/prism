@@ -6,7 +6,7 @@
 **Depends on:** [T-037](S76-T-037-dla-p04-gate-c-rebenchmark.md) · [T-042](S76-T-042-dla-p01-r1-intermediate-operand-gate-c-closure.md) · [T-045](S76-T-045-dla-lo-operation-coverage-gate-c-diagnostic.md) · [T-047](S76-T-047-generated-operand-operational-suitability-implementation.md) · [T-048](S76-T-048-t031-dla-operational-bound-gate-c-diagnostic.md)
 
 Top-level closeout: [sprint-76-closeout.md](../../../sprints/sprint-76-closeout.md).  
-Next programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
+Next programme pointer: [sprint-77-dla-prompt-contract-architecture-pilot.md](../../../sprints/sprint-77-dla-prompt-contract-architecture-pilot.md).
 
 ---
 
@@ -73,7 +73,7 @@ Do **not** treat length alone as the cause of behavioural failure.
 | **P05** duplicate DLA contract/shape injection | **OPEN / DEFERRED** | Mechanical de-duplication is still desirable. Operator chose to understand desired prompt **architecture** first rather than optimise the accidental structure. |
 | **GAM D** pedagogical-function fulfilment | **OPEN** | Worked example can be structurally present without functioning as a worked example. Not diagnosed here. |
 | **GAM E** learner-facing corruption/mangling | **OPEN** | Separate from GAM D and T-031. T-031 may overlap at consequence if corruption makes an operand unusable; it does not explain the mechanism. |
-| **Graphics / image lifecycle** | **OPEN / SEPARATE** | Stale images after Clear Run Data (queue G). Do not absorb into prompt architecture automatically. |
+| **Graphics / image lifecycle** | **OPEN / SEPARATE** | Stale images after Clear Run Data (queue G). Do not absorb into prompt architecture automatically. **Later:** queue G Clear Run Data generated-image purge closed by bounded maintenance 2026-08-14 (not Sprint 76). |
 | **T-032** A4 constructive alignment | **OPEN (diagnostic only)** | EP evaluate-vs-solve tension vs this session’s LO4; T-033 closed against quoted LOs. Do not reopen T-033. Do not absorb into P05. |
 | **S76-D03** durable prompt-engineering discipline | **TRANSFERRED** | Next sprint’s architecture work, not an unimplemented 76 defect of the DLA semantic chain. |
 | **Settings (PB-FA-005)** | **DEFERRED** | After this quality / architecture lane unless re-prioritised. |

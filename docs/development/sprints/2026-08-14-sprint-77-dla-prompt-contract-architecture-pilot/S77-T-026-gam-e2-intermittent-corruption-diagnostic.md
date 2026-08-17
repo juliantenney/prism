@@ -206,3 +206,5 @@ Unrelated remaining queue (not E2 work): Graphics / T-032 — only if the operat
 **2026-08-14 — post–T-027 GAM (record only):** [S77-T-026-e2-recurrence-2026-08-14-post-t027-gam.md](S77-T-026-e2-recurrence-2026-08-14-post-t027-gam.md)
 
 Ordinary markdown bodies were followed (T-027). A2-M2 `reference_note` showed spliced prose/TeX (`carries[x+3yA maximise…`); math-integrity capture fail-closed as **detector**. Same response nested A4-M1/A4-M2 under A3 (output non-compliance; **E1 not reopened**). E2-family recurrence; no sanitiser; discard and regenerate GAM from the same DLA.
+
+**2026-08-17 — Sprint 78 Candidate 6 (record only; Sprint 77 remains CLOSED):** [S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md](../2026-08-17-sprint-78-learner-resource-quality-recovery/S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md). A1-M3 → A2-M1 splice at `links[`; Copilot-visible independent copy already malformed (**upstream of Prism capture**). Confirmed E2-family. No sanitiser. Remaining interval: model generation vs Copilot rendering.

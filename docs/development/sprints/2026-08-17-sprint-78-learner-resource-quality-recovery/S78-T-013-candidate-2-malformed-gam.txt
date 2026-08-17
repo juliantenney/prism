@@ -1,0 +1,215 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Objectives and Constraints in Optimisation",
+          "body_format": "markdown",
+          "body": "In a constrained optimisation problem, economists seek the best achievable outcome while recognising that choices are limited by scarce resources. The system has two connected parts. The objective function specifies what is being optimised, such as utility, profit, or output. The constraint identifies the limitation that prevents every desired outcome from being simultaneously achieved.\n\nThe relationship between these parts is important. The objective defines success, while the constraint determines which options are feasible. An optimal choice must satisfy both. A consumer may wish to maximise utility, but available income limits the combinations of goods that can be purchased. A firm may wish to maximise output, but available labour or capital restricts production possibilities.\n\nWithout a constraint, optimisation focuses only on finding the highest or lowest value of the objective function. With a constraint, some desirable outcomes become unattainable because they exceed available resources. The problem therefore changes from finding the best possible outcome to finding the best feasible outcome.\n\nThinking about optimisation as a connected system helps explain why constraints matter. The objective function provides direction, the constraint provides boundaries, and the optimal solution lies where the best attainable outcome is achieved within those boundaries."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "scenario",
+          "activity_id": "A1",
+          "title": "Simulated Optimisation Scenarios",
+          "body_format": "markdown",
+          "body": "**Simulated Evidence for Learning**\n\n### Scenario 1\nA student wants to achieve the highest possible examination score by allocating study hours across modules. The student has only 20 hours available this week.\n\n### Scenario 2\nA café owner wants to earn the greatest possible weekly profit from selling drinks and snacks. The business has a maximum ingredient budget of £1,500 for the week.\n\n### Scenario 3\nA manufacturing firm wants to produce as many units as possible during a production cycle. The factory has access to only 800 labour hours during that cycle."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "classification_table",
+          "activity_id": "A1",
+          "title": "Objective and Constraint Workspace",
+          "body_format": "markdown",
+          "body": "| Scenario | Objective Function (Learner completes) | Constraint (Learner completes) | Justification (Learner completes) |\n| --- | --- | --- | --- |\n| Scenario 1 | | | |\n| Scenario 2 | | | |\n| Scenario 3 | | | |"
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "worked_example",
+          "activity_id": "A2",
+          "title": "Worked Example: Constructing a Lagrangian",
+          "body_format": "markdown",
+          "body": "Consider a firm that wishes to maximise\n\n\\[\nQ(x,y)=xy\n\\]\n\nThe quantity function is the objective function because it represents the outcome being maximised. The equation \\(x+y=20\\) is the constraint because it limits the combinations of inputs that can be used.\n\nTo combine the objective and the constraint into a single expression, introduce the multiplier \\(\\lambda\\). The constraint is written in the form \\(20-x-y\\).\n\nSubstituting these elements into the Lagrangian structure gives:\n\n\\[\nL=xy+\\lambda(20-x-y)\n\\]\n\nThe completed Lagrangian contains the objective function, the constraint term, and the multiplier. Notice that this example uses a different optimisation problem from those that follow in the independent practice tasks."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "task_card",
+          "activity_id": "A2",
+          "title": "Independent Construction Problems",
+          "body_format": "markdown",
+          "body": "Construct a Lagrangian function for each problem.\n\n### Problem 1\nObjective function:\n\n\\[\nU(x,y)=x^{0.5}y^{0.5}\n\\]\n\nConstraint:\n\n\\[\n2x+y=100\n\\]\n\n### Problem 2\nObjective function:\n\n\\[\nP(a,b)=3a+4b\n\\]\n\nConstraint:\n\n\\[\na+2b=60\n\\]\n\n### Problem 3\nObjective function:\n\n\\[\nR(m,n)=mn^2\n\\]\n\nConstraint:\n\n\\[\n3m+n=90\n\\]"
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "template",
+          "activity_id": "A2",
+          "title": "Lagrangian Construction Template",
+          "body_format": "markdown",
+          "body": "### Problem 1\n- Objective function:\n- Constraint:\n- Multiplier term:\n- Final Lagrangian:\n\n### Problem 2\n- Objective function:\n- Constraint:\n- Multiplier term:\n- Final Lagrangian:\n\n### Problem 3\n- Objective function:\n- Constraint:\n- Multiplier term:\n- Final Lagrangian:"
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "worked_example",
+          "activity_id": "A3",
+          "title": "Worked Example: First-Order Conditions",
+          "body_format": "markdown",
+          "body": "Consider the Lagrangian\n\n\\[\n[\n3m+n=90\n\\3 Multiplier term:\n- Final Lagrangian:\n\n### Problem 2\n- Objective function:\n- Constraint:\n- Multiplier term:\n- Final Lagrangian:\n\n### Problem 3\n- Objective function:\n- Constraint:\n-",
+L=x^2y+\\lambda(12-x-y)\n\\]\n\nThe expression contains two decision variables, \\(x\\) and \\(y\\), and the multiplier \\(\\lambda\\).\n\nDifferentiating with respect to \\(x\\) gives:\n\n\\[\n\\frac{\\partialect to \\(\\lambda\\) gives:\n\n\\[\n\\frac{\\partial L}{\\partial \\lambda}=12-x-y\n\\]\n\nFor optimisation, each derivative is set equal to zero.\n\n\\[\n2xy-\\lambda=0\n\\]\n\n\\[\nx^2-\\lambda=0\n\\]\n\n\\[\n12-x-y=0\n\\]\n\nThese three equations are the first-order conditions associated with this Lagrangian. The example ends here and does not proceed to solving the system."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "task_card",
+          "activity_id": "A3",
+          "title": "Independent Derivation Problems",
+          "body_format": "markdown",
+          "body": "Derive the first-order conditions for each Lagrangian.\n\n### Problem 1\n\n\\[\nL=x^{0.5}y^{0.5}+\\lambda(100-2x-y)\n\\]\n\n### Problem 2\n\n\\[\nL=ab+\\lambda(50-a-3b)\n\\]"
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "template",
+          "activity_id": "A3",
+          "title": "First-Order Conditions Template",
+          "body_format": "markdown",
+          "body": "### Problem 1\n\n\\(\\partial L / \\partial x\\):\n\n\n\\(\\partial L / \\partial y\\):\n\n\n\\(\\partial L / \\partial \\lambda\\):\n\n\nFirst-order conditions:\n\n\n### Problem 2\n\n\\(\\partial L / \\partial a\\):\n\n\n\\(\\partial L / \\partial b\\):\n\n\n\\(\\partial L / \\partial \\lambda\\):\n\n\nFirst-order conditions:"
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "task_card",
+          "activity_id": "A4",
+          "title": "Constrained Optimisation Problem",
+          "body_format": "markdown",
+          "[\nL=ab+\\lambda(50-a-3b / \\partial x\\):\n\n\n\\(\\partial L / \\partial y\\):\n\n\n\\(\\partial L / \\partial \\lambda\\):\n\n\nFirst-order conditions:\n\n\n### Problem 2\n\n\\(\\partial L / \\partial a\\):\n\n\n\\(\\partial L / \\partial b\\):\n\n\n\\(\\partial L / \\partial \\lambda\\):body": "Solve the following optimisation problem.\n\nLagrangian:\n\n\\[\nL=xy
+          "material_type": "template",
+          "activity_id": "A4",
+          "title": "Solution Workspace",
+          "body_format": "markdown",
+          "body": "### Substitutions and Rearrangements\n\n\n\n### Using the Constraint\n\n\n\n### Optimal Value of x\n\n\n\n### Optimal Value of y\n\n\n\n### Check of Results\n\n\n"
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Solution Quality Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you used the constraint as part of the solution rather than treating it separately?",
+                "why_it_matters": "Ignoring the constraint can produce values that optimise the objective mathematically but are not feasible solutions.",
+                "features": [
+                  {
+                    "expected": "The constraint equation appears in the working.",
+                    "repair": "Insert the constraint explicitly into the solution process and show where it is used."
+                  },
+                  {
+                    "expected": "The final values satisfy the constraint.",
+                    "repair": "Substitute your final values back into the constraint and revise any values that do not satisfy it."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you applied the first-order conditions correctly?",
+                "why_it_matters": "Errors in the conditions lead to an incorrect optimisation system and affect every later result.",
+                "features": [
+                  {
+                    "expected": "Each first-order condition is used in the algebra.",
+                    "repair": "Return to the system and identify how each condition contributes to the solution."
+                  },
+                  {
+                    "expected": "Equivalent expressions are linked consistently.",
+                    "repair": "Check where variables are set equal through the first-order conditions and correct any mismatches."
+                  }
+                ]
+              },
+              {
+                "statement": "Does your working show the full reasoning process?",
+                "why_it_matters": "A correct answer without visible reasoning does not demonstrate how the optimisation result was obtained.",
+                "features": [
+                  {
+                    "expected": "Intermediate substitutions are shown.",
+                    "repair": "Add the substitution stages between the original equations and the final values."
+                  },
+                  {
+                    "expected": "The sequence of algebra is understandable.",
+                    "repair": "Reorder or annotate the calculations so each line follows clearly from the previous one."
+                  }
+                ]
+              },
+              {
+                "statement": "Are the reported optimal values consistent with all calculations?",
+                "why_it_matters": "Inconsistencies between working and answers make the optimisation outcome unreliable.",
+                "features": [
+                  {
+                    "expected": "The final values match those generated by the algebra.",
+                    "repair": "Compare your reported values with the last calculation step and correct any transcription errors."
+                  },
+                  {
+                    "expected": "Both decision variables are reported.",
+                    "repair": "State the value of every required decision variable, not only part of the solution."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A5",
+      "materials": [
+        {
+          "material_id": "A5-M1",
+          "material_type": "text",
+          "activity_id": "A5",
+          "title": "What a Shadow Price Represents",
+          "body_format": "markdown",
+          "body": "A constrained optimisation problem contains limits that restrict the outcomes available to a decision-maker. When a constraint is binding, it prevents access to some combinations that would otherwise improve the objective being pursued.\n\nIf that constraint were relaxed slightly, additional feasible choices would become available. Because more options can now be considered, the best attainable value of the objective function may increase. The size of this improvement depends on how restrictive the original constraint was.\n\nThe Lagrange multiplier measures this marginal change. Rather than describing the objective function itself, it indicates how much the optimal value would change if the constraint were loosened by one unit. For this reason, economists interpret the multiplier as a shadow price.\n\nA larger multiplier means that relaxing the constraint creates a larger improvement in the attainable objective value. A smaller multiplier means that an additional unit of the constrained resource has less effect. The multiplier therefore conveys the value of relaxing the constraint and provides information about the economic significance of scarcity."
+        },
+        {
+          "material_id": "A5-M2",
+          "material_type": "scenario",
+          "activity_id": "A5",
+          "title": "Simulated Shadow Price Cases",
+          "body_format": "markdown",
+          "body": "**Simulated Evidence for Learning**\n\n| Case | Constraint Description | Multiplier Value (λ) |\n| --- | --- | --- |\n| A | University study space is limited to 100 seats during revision week. | 0.4 |\n| B | A firm can access only 500 machine hours per month. | 3.2 |\n| C | A city programme is restricted to a fixed annual budget of £2 million. | 1.1 |"
+        },
+        {
+          "material_id": "A5-M3",
+          "material_type": "analysis_table",
+          "activity_id": "A5",
+          "title": "Shadow Price Interpretation Table",
+          "body_format": "markdown",
+          "body": "| Case | Multiplier Value | Interpretation (Learner completes) | Inferred Scarcity (Learner completes) | Justification (Learner completes) |\n| --- | --- | --- | --- | --- |\n| A | 0.4 | | | |\n| B | 3.2 | | | |\n| C | 1.1 | | | |"
+        }
+      ]
+    }
+  ]
+}

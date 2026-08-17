@@ -1,0 +1,233 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": ["dla"]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Why Constraints Matter",
+      "activity_preamble": "Economic choices are often limited by budgets, time, or resources. This activity introduces constrained optimisation and its role in economics.",
+      "intellectual_coherence_bridge": "The session begins by linking familiar economic decision-making situations to the need for optimisation methods that account for restrictions.",
+      "learner_task": "Read the introductory explanation and worked comparison of optimisation with and without constraints. Then compose a short explanation describing why a constraint changes the optimisation problem and identify the objective function and constraint in two supplied economic situations.",
+      "expected_output": "A concise explanation that correctly distinguishes unconstrained and constrained optimisation and accurately identifies both the objective function and constraint in each situation.",
+      "reasoning_orientation": "Focus on identifying the role each component plays before considering solution methods.",
+      "self_explanation_prompt": "How does the existence of a constraint change what counts as the best feasible solution?",
+      "task_material_decision": {
+        "separate_inputs_required": false,
+        "task_input_material_ids": []
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "purpose": "Introduce constrained optimisation and contrast it with unconstrained optimisation using economic contexts.",
+          "specification": "Brief explanation of optimisation, constrained optimisation, objective functions and constraints; include two simple economics-based situations; avoid procedural solution steps.",
+          "instructional_archetype": "mental_model_building",
+          "archetype_plan": {
+            "system": "Economic optimisation under constraints",
+            "key_relationships": [
+              "objective function defines the goal",
+              "constraint limits feasible options",
+              "optimal choice must satisfy the constraint"
+            ],
+            "governing_constraint": "Feasible solutions must meet the stated restriction.",
+            "contrast": {
+              "state_a": "optimisation without a constraint",
+              "state_b": "optimisation with a constraint"
+            }
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "prompt_set",
+          "purpose": "Provide a learner response surface for explaining constrained optimisation and identifying optimisation components.",
+          "specification": "Text-composition workspace requiring learner explanations and identification of objective functions and constraints in two economic situations; no model answers.",
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "binds_production_steps": [1]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": false,
+        "reason": "The activity focuses on conceptual explanation rather than inference from inspectable evidence.",
+        "provider_material_ids": []
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Build the Lagrangian",
+      "activity_preamble": "Having identified optimisation components, learners now combine them into a Lagrangian expression.",
+      "intellectual_coherence_bridge": "The concepts of objective function and constraint become operational by integrating them into a single Lagrangian function.",
+      "learner_task": "For each supplied optimisation problem, construct the corresponding Lagrangian function using the provided objective function and constraint. Record the completed expressions and identify the role of \\(\\lambda\\) in each case.",
+      "expected_output": "Correctly constructed Lagrangian functions with appropriate inclusion of the constraint term and a clear description of the role of \\(\\lambda\\).",
+      "reasoning_orientation": "Translate problem components systematically rather than attempting to solve the problem immediately.",
+      "self_explanation_prompt": "What purpose does the multiplier term serve in the combined expression?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": ["A2-M1"]
+      },
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "task_card",
+          "purpose": "Provide optimisation problems for Lagrangian construction.",
+          "specification": "Three simple equality-constrained optimisation problems appropriate for introductory undergraduate economics; include objective functions and constraints only; do not include solutions or derivative steps."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "worked_example",
+          "purpose": "Model the process of constructing a Lagrangian from an objective function and constraint.",
+          "specification": "One fully worked introductory example showing identification of objective function, constraint and construction of the Lagrangian; stop before solving first-order conditions.",
+          "instructional_archetype": "process_walkthrough",
+          "archetype_plan": {
+            "process_goal": "Construct a valid Lagrangian expression",
+            "stages": [
+              "identify objective function",
+              "identify constraint",
+              "introduce multiplier",
+              "combine terms into the Lagrangian"
+            ]
+          }
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "template",
+          "purpose": "Provide a learner workspace for recording constructed Lagrangians.",
+          "specification": "Editable completion table with rows for each problem and columns for objective function, constraint, Lagrangian expression and role of lambda; learners complete all response fields.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "table_complete",
+            "binds_production_steps": [1],
+            "allows_partial_exemplar": true
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": false,
+        "reason": "Learners apply a taught procedure to supplied operands rather than drawing conclusions from evidence.",
+        "provider_material_ids": []
+      }
+    },
+    {
+      "activity_id": "A3",
+      "title": "Solve a Utility Problem",
+      "activity_preamble": "The next step is to use a Lagrangian to obtain an optimal solution.",
+      "intellectual_coherence_bridge": "After constructing Lagrangians, learners extend the process by deriving first-order conditions and solving for optimal values.",
+      "learner_task": "Examine the supplied utility-maximisation problem. Derive the first-order conditions, solve the resulting equations and determine the optimal values of the decision variables. Record each stage of reasoning in the workspace.",
+      "expected_output": "A correct sequence of first-order conditions, accurate algebraic solution steps and a feasible optimal solution that satisfies the original constraint.",
+      "reasoning_orientation": "Track how each derivative contributes to the system of equations before solving.",
+      "self_explanation_prompt": "How does each first-order condition help narrow the solution to a single optimal allocation?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": ["A3-M1"]
+      },
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "scenario",
+          "purpose": "Provide the utility-maximisation problem to be solved.",
+          "specification": "One introductory utility-maximisation problem including objective function and equality budget constraint; values selected for straightforward algebraic solution."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "modelling_note",
+          "purpose": "Summarise the sequence of actions required to solve a constrained optimisation problem.",
+          "specification": "Concise reference outlining construction of Lagrangian, derivation of first-order conditions, solution of equations and checking of the constraint.",
+          "instructional_archetype": "process_walkthrough",
+          "archetype_plan": {
+            "process_goal": "Solve a constrained optimisation problem",
+            "stages": [
+              "construct the Lagrangian",
+              "derive first-order conditions",
+              "solve simultaneous equations",
+              "check constraint satisfaction",
+              "interpret result"
+            ]
+          }
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "analysis_table",
+          "purpose": "Provide a structured workspace for recording derivations and solutions.",
+          "specification": "Editable table with sections for Lagrangian, first-order conditions, algebraic substitutions, final values and constraint verification; learners complete all substantive entries.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "table_complete",
+            "binds_production_steps": [1],
+            "allows_partial_exemplar": true
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": false,
+        "reason": "The task requires procedural mathematical solution rather than interpretation of evidence as grounds for judgement.",
+        "provider_material_ids": []
+      }
+    },
+    {
+      "activity_id": "A4",
+      "title": "Interpret the Shadow Price",
+      "activity_preamble": "Mathematical solutions become more meaningful when connected to economic interpretation.",
+      "intellectual_coherence_bridge": "Having found an optimal solution, learners now interpret what the multiplier value tells them about the economic significance of the constraint.",
+      "learner_task": "Review the solved optimisation scenario and the reported multiplier value. Explain what the multiplier indicates about the effect of relaxing the constraint and relate this interpretation to the idea of a shadow price.",
+      "expected_output": "A clear economic interpretation that correctly links the multiplier to the value of relaxing the constraint and uses shadow-price terminology appropriately.",
+      "reasoning_orientation": "Move from calculation to economic meaning by explaining the consequence of a small change in the constraint.",
+      "self_explanation_prompt": "Why can the multiplier be viewed as a measure of the value of additional resources?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": ["A4-M1"]
+      },
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "scenario",
+          "purpose": "Provide a solved optimisation context including a multiplier value for interpretation.",
+          "specification": "One solved economic optimisation scenario showing final solution values and multiplier value; include no interpretation of the multiplier."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "text",
+          "purpose": "Explain the economic meaning of the multiplier as a shadow price.",
+          "specification": "Short explanation connecting constraint relaxation and shadow-price interpretation; avoid analysing the supplied scenario directly.",
+          "instructional_archetype": "mechanism_explanation",
+          "archetype_plan": {
+            "start": "A binding constraint limits the objective.",
+            "outcome": "The multiplier indicates the value of relaxing the constraint.",
+            "required_links": [
+              "constraint restricts feasible choices",
+              "small relaxation expands feasible choices",
+              "objective value changes as feasibility expands"
+            ]
+          }
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "prompt_set",
+          "purpose": "Provide a learner response surface for economic interpretation.",
+          "specification": "Text-composition workspace requiring explanation of shadow-price meaning and interpretation of the supplied multiplier value; no model interpretation.",
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "binds_production_steps": [1]
+          }
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "checklist",
+          "purpose": "Support review of the economic interpretation before submission.",
+          "specification": "Four diagnostic criteria: accuracy of shadow-price definition; correctness of link between multiplier and constraint relaxation; consistency with scenario values; clarity of economic explanation."
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect the supplied scenario and multiplier value before forming an interpretation.",
+        "provider_material_ids": ["A4-M1"]
+      }
+    }
+  ]
+}

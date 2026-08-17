@@ -1,0 +1,384 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Understanding Constrained Optimisation",
+          "body_format": "markdown",
+          "body": "## Understanding Constrained Optimisation\n\nEconomic optimisation involves choosing values that maximise or minimise an objective. The objective function represents the quantity of interest, such as utility, profit, or welfare. In real economic settings, decisions are rarely unrestricted. Budgets, production limits, and policy rules constrain what choices are possible.\n\nThe objective function and the constraint form a connected system. The objective determines what the decision-maker wants to achieve, while the constraint defines the feasible choices. An optimal solution must satisfy both.\n\nWhen optimisation is unconstrained, all possible values can be considered. When optimisation is constrained, only values within the feasible set are available. The introduction of a constraint can therefore change the location of the optimum.\n\nThis relationship is central to economics because scarce resources require decisions to be made within limits. Constrained optimisation provides a framework for finding the best feasible outcome rather than an unattainable ideal outcome."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "comparison_table",
+          "activity_id": "A1",
+          "title": "Optimisation Comparison Workspace",
+          "body_format": "markdown",
+          "body": "| Feature | Unconstrained Optimisation | Constrained Optimisation |\n| --- | --- | --- |\n| Objective function |  |  |\n| Presence of constraints |  |  |\n| Feasible set |  |  |\n| Method of finding an optimum |  |  |\n| Economic example |  |  |\n| Nature of the optimal solution |  |  |"
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Comparison Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you clearly distinguished constrained and unconstrained optimisation?",
+                "why_it_matters": "Without this distinction, the purpose of introducing Lagrangian methods remains unclear.",
+                "features": [
+                  {
+                    "expected": "The presence or absence of constraints is identified correctly.",
+                    "repair": "State explicitly whether a restriction applies in each optimisation setting."
+                  },
+                  {
+                    "expected": "The impact on available choices is described.",
+                    "repair": "Explain how constraints limit the feasible set of possible decisions."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you explained the role of the objective function accurately?",
+                "why_it_matters": "The objective function is the target being optimised and underpins the comparison.",
+                "features": [
+                  {
+                    "expected": "The objective function is linked to a quantity that is maximised or minimised.",
+                    "repair": "Identify the economic quantity represented by the objective function."
+                  },
+                  {
+                    "expected": "Its role is consistent across both optimisation types.",
+                    "repair": "Clarify that the optimisation target remains the same even when constraints are introduced."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you used optimisation terminology correctly?",
+                "why_it_matters": "Accurate terminology helps communicate economic reasoning precisely.",
+                "features": [
+                  {
+                    "expected": "Constraint is used correctly.",
+                    "repair": "Describe a constraint as a condition that restricts feasible choices."
+                  },
+                  {
+                    "expected": "Feasible set is used correctly.",
+                    "repair": "Explain that the feasible set contains all choices satisfying the constraint."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you linked the optimal solution to the constraint?",
+                "why_it_matters": "The constrained optimum must be understood as the best feasible outcome.",
+                "features": [
+                  {
+                    "expected": "The constrained optimum is described as satisfying the restriction.",
+                    "repair": "Include an explanation that feasibility is required for the optimum."
+                  },
+                  {
+                    "expected": "The unconstrained optimum is described without imposed limits.",
+                    "repair": "Clarify that all possible values are considered when no constraint exists."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "worked_example",
+          "activity_id": "A2",
+          "title": "Worked Example Construction",
+          "body_format": "markdown",
+          "body": "Consider maximising \\(U(a,b)=ab\\) subject to the constraint \\(a+b=12\\).\n\nThe quantity to be maximised is utility, represented by \\(ab\\). This objective function forms the starting point of the model.\n\nThe restriction is \\(a+b=12\\). Any acceptable solution must satisfy this condition, so it must be incorporated into the optimisation process.\n\nA Lagrange multiplier, \\(\\lambda\\), is introduced to connect the objective function and the constraint within a single expression. The multiplier creates a term based on the difference between the constraint limit and the constraint expression.\n\nCombining these elements produces:\n\n\\[\nL(a,b,\\lambda)=ab+\\lambda(12-a-b)\n\\]\n\nThe completed expression contains the objective function, the multiplier, and the constraint term. The Lagrangian is now ready for use in later optimisation procedures.\n\nThis worked example uses a different optimisation problem from the independent practice task."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "task_card",
+          "activity_id": "A2",
+          "title": "Independent Construction Problem",
+          "body_format": "markdown",
+          "body": "Construct a Lagrangian for the following problem.\n\nObjective function:\n\n\\[\nP(x,y)=4xy\n\\]\n\nConstraint:\n\n\\[\n2x+y=20\n\\]\n\nCreate a complete Lagrangian expression using a multiplier \\(\\lambda\\).\n\nDo not solve the optimisation problem."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "template",
+          "activity_id": "A2",
+          "title": "Construction Template",
+          "body_format": "markdown",
+          "body": "### Complete the Template\n\n**Objective function**\n\n\n\n**Constraint**\n\n\n\n**Multiplier term**\n\n\n\n**Final Lagrangian**\n\n\n"
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Lagrangian Construction Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you identified the correct objective function?",
+                "why_it_matters": "Using the wrong objective changes the optimisation problem being represented.",
+                "features": [
+                  {
+                    "expected": "The objective function matches the problem statement.",
+                    "repair": "Return to the original task and verify the expression being optimised."
+                  },
+                  {
+                    "expected": "The objective function appears unchanged in the final expression.",
+                    "repair": "Check that no terms from the objective have been altered unintentionally."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you incorporated the constraint correctly?",
+                "why_it_matters": "An incorrect constraint changes the feasible set of solutions.",
+                "features": [
+                  {
+                    "expected": "The full constraint appears within the multiplier term.",
+                    "repair": "Rewrite the complete constraint before combining it with the multiplier."
+                  },
+                  {
+                    "expected": "All coefficients and variables are retained.",
+                    "repair": "Compare each variable and coefficient against the original constraint."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you used the multiplier appropriately?",
+                "why_it_matters": "The multiplier links the objective function to the constraint.",
+                "features": [
+                  {
+                    "expected": "A multiplier term is included.",
+                    "repair": "Introduce a multiplier that applies to the constraint expression."
+                  },
+                  {
+                    "expected": "The multiplier is attached to the complete constraint component.",
+                    "repair": "Check that the entire constraint is contained within the multiplier term."
+                  }
+                ]
+              },
+              {
+                "statement": "Is the final Lagrangian complete?",
+                "why_it_matters": "The finished expression should contain every essential element of the model.",
+                "features": [
+                  {
+                    "expected": "The objective and constraint components appear together.",
+                    "repair": "Combine the objective function and multiplier expression into one equation."
+                  },
+                  {
+                    "expected": "No required element is missing.",
+                    "repair": "Verify the presence of the objective function, multiplier, and constraint representation."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "worked_example",
+          "activity_id": "A3",
+          "title": "Worked Solution Example",
+          "body_format": "markdown",
+          "body": "Consider maximising \\(U(m,n)=mn\\) subject to \\(m+n=8\\).\n\nThe Lagrangian is:\n\n\\[\nL=mn+\\lambda(8-m-n)\n\\]\n\nDifferentiation gives:\n\n\\[\n\\frac{\\partial L}{\\partial m}=n-\\lambda=0\n\\]\n\n\\[\n\\frac{\\partial L}{\\partial n}=m-\\lambda=0\n\\]\n\n\\[\n\\frac{\\partial L}{\\partial \\lambda}=8-m-n=0\n\\]\n\nBecause both \\(m\\) and \\(n\\) equal \\(\\lambda\\), it follows that \\(m=n\\).\n\nSubstituting into the constraint gives:\n\n\\[\n2m=8\n\\]\n\nwhich yields:\n\n\\[\nm=4\n\\]\n\nand therefore:\n\n\\[\nn=4\n\\]\n\nVerification using the original constraint shows:\n\n\\[\n4+4=8\n\\]\n\nThe values satisfy the constraint and therefore form a feasible solution.\n\nThis example demonstrates the solution process on a different optimisation problem from the independent task."
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "task_card",
+          "activity_id": "A3",
+          "title": "Independent Solution Problem",
+          "body_format": "markdown",
+          "body": "Maximise:\n\n\\[\nU(x,y)=xy\n\\]\n\nSubject to:\n\n\\[\nx+y=10\n\\]\n\nTasks:\n\n1. Construct the Lagrangian.\n2. Derive the first-order conditions.\n3. Solve the resulting equations.\n4. Obtain the optimal values.\n5. Verify the constraint."
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "template",
+          "activity_id": "A3",
+          "title": "Solution Workspace",
+          "body_format": "markdown",
+          "body": "### Record Your Solution\n\n**Lagrangian**\n\n\n\n**First-order conditions**\n\n\n\n**Working and substitutions**\n\n\n\n**Optimal values**\n\n\n\n**Constraint verification**\n\n\n"
+        },
+        {
+          "material_id": "A3-M4",
+          "material_type": "checklist",
+          "activity_id": "A3",
+          "title": "Optimisation Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you derived all required first-order conditions?",
+                "why_it_matters": "Missing conditions can leave the optimisation model incomplete.",
+                "features": [
+                  {
+                    "expected": "Conditions are present for each decision variable.",
+                    "repair": "Check that every optimisation variable has an associated derivative equation."
+                  },
+                  {
+                    "expected": "A multiplier condition is included.",
+                    "repair": "Differentiate with respect to the multiplier and record the resulting equation."
+                  }
+                ]
+              },
+              {
+                "statement": "Is your algebra consistent with the equations obtained?",
+                "why_it_matters": "Valid optimisation results depend on correct manipulation of the first-order conditions.",
+                "features": [
+                  {
+                    "expected": "Substitutions are justified by earlier equations.",
+                    "repair": "Trace each substitution back to the condition that supports it."
+                  },
+                  {
+                    "expected": "Intermediate calculations follow logically.",
+                    "repair": "Recheck any algebraic step that introduces a result not derived from a previous equation."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you stated feasible optimal values?",
+                "why_it_matters": "The final optimisation result must be clearly identified.",
+                "features": [
+                  {
+                    "expected": "Final values are reported explicitly.",
+                    "repair": "Write the values obtained after solving the equations."
+                  },
+                  {
+                    "expected": "The values correspond to the completed calculations.",
+                    "repair": "Match the final values against the equations solved in your working."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you verified the solution against the constraint?",
+                "why_it_matters": "Constraint verification confirms that the solution belongs to the feasible set.",
+                "features": [
+                  {
+                    "expected": "The solution is substituted into the original constraint.",
+                    "repair": "Replace the variables in the constraint with your calculated values."
+                  },
+                  {
+                    "expected": "The result is checked against the required total.",
+                    "repair": "Compare the substituted result with the constraint value given in the problem."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "scenario",
+          "activity_id": "A4",
+          "title": "Simulated Economic Evidence",
+          "body_format": "markdown",
+          "body": "## Simulated Evidence\n\n| Scenario | Objective Being Optimised | Resource Constraint | Multiplier Value |\n| --- | --- | --- | --- |\n| Consumer Choice | Utility from a bundle of goods | Monthly budget fixed at £500 | 2.4 |\n| Manufacturing Firm | Monthly profit | Machine hours limited to 1200 | 18 |\n| Public Health Programme | Health benefit score | Budget limited to £2 million | 0.8 |\n\nUse only the information provided above when forming your interpretation."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "analysis_table",
+          "activity_id": "A4",
+          "title": "Shadow Price Analysis Table",
+          "body_format": "markdown",
+          "body": "| Scenario | Observed Multiplier | Interpretation | Effect of Relaxing the Constraint |\n| --- | --- | --- | --- |\n| Consumer Choice | 2.4 |  |  |\n| Manufacturing Firm | 18 |  |  |\n| Public Health Programme | 0.8 |  |  |"
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "checklist",
+          "activity_id": "A4",
+          "title": "Interpretation Review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you based your interpretation on the evidence provided in each scenario?",
+                "why_it_matters": "Interpretations should emerge from the supplied particulars rather than generic statements.",
+                "features": [
+                  {
+                    "expected": "The optimisation objective is referenced.",
+                    "repair": "Relate the multiplier to the specific objective shown in the scenario."
+                  },
+                  {
+                    "expected": "The constrained resource is considered.",
+                    "repair": "Explain how the identified resource limit affects decision-making."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you explained what the multiplier represents?",
+                "why_it_matters": "The economic meaning of the multiplier is the core concept under review.",
+                "features": [
+                  {
+                    "expected": "The multiplier is linked to the value of a relaxed constraint.",
+                    "repair": "Describe how a small increase in the constrained resource could affect the objective."
+                  },
+                  {
+                    "expected": "The explanation focuses on marginal effects.",
+                    "repair": "Frame the interpretation around the effect of an additional unit of the resource."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you connected your interpretation to constraint relaxation?",
+                "why_it_matters": "Shadow prices are meaningful only in relation to constraints.",
+                "features": [
+                  {
+                    "expected": "The consequences of easing the constraint are discussed.",
+                    "repair": "State what could change if more of the scarce resource became available."
+                  },
+                  {
+                    "expected": "The explanation remains specific to the scenario.",
+                    "repair": "Tie the consequence directly to the named constraint in the case."
+                  }
+                ]
+              },
+              {
+                "statement": "Have you drawn economically relevant conclusions?",
+                "why_it_matters": "Interpretation should inform actual economic decision-making.",
+                "features": [
+                  {
+                    "expected": "A practical implication is identified.",
+                    "repair": "Add a consequence affecting consumers, firms, or policymakers."
+                  },
+                  {
+                    "expected": "The implication follows from the scenario evidence.",
+                    "repair": "Check that your conclusion is supported by the objective and constraint described."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

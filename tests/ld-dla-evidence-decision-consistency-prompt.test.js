@@ -1,5 +1,5 @@
 /**
- * DLA producer contract — P04 + P01-R1 + T-033 + T-031 (live 77-DLA-CANONICAL-3).
+ * DLA producer contract — P04 + P01-R1 + T-033 + T-031 + S78-WS-1 (live 78-DLA-WS-1).
  * Historical per-activity / PRE-EMIT / INVALID–VALID audits are deleted.
  */
 const test = require("node:test");
@@ -33,7 +33,7 @@ test("S76: canonical DLA shape includes task_material_decision and specification
   assert.ok(materialsIdx > taskIdx);
   assert.ok(evidenceIdx > materialsIdx);
   assert.match(snippet, /"specification":/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
+  assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
 });
 
 test("S76 P01-R1: commissioning order distinguishes operand from model/workspace/scaffold", () => {
@@ -188,7 +188,7 @@ test("S76 T-031: Step 3 requires operational bounds for this commissioned operat
   assert.doesNotMatch(text, /Bloom/);
   assert.doesNotMatch(text, /FINAL PRE-EMIT AUDIT/i);
   assert.doesNotMatch(text, /FINAL PER-ACTIVITY EVIDENCE-DECISION CONSISTENCY AUDIT/i);
-  assert.equal(dlaContract.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
+  assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
 });
 
 test("S76 P04: unique legacy contract+shape stays inside the rationalisation size band", () => {
@@ -196,7 +196,7 @@ test("S76 P04: unique legacy contract+shape stays inside the rationalisation siz
   const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
   const unique = block.length + shape.length;
   assert.ok(unique > 18700, "unique contract+shape " + unique + " below 18700 — possible over-deletion");
-  assert.ok(unique < 18950, "unique contract+shape " + unique + " above 18950 — possible leftover duplication");
+  assert.ok(unique < 19150, "unique contract+shape " + unique + " above 19150 — possible leftover duplication");
 });
 
 test("S76 P04: canonical shape keeps one evidence-true example and one P01-true/P02-false contrast", () => {
@@ -208,4 +208,40 @@ test("S76 P04: canonical shape keeps one evidence-true example and one P01-true/
     snippet,
     /practice operands remain in task_input_material_ids with evidence_decision\.required false and no evidence_requirement/i
   );
+});
+
+test("S78-T-009: §10 output surface requires provider rows MUST carry evidence_requirement", () => {
+  const output = dlaContract.assembleDlaCanonicalContract().sections.output;
+  assert.match(
+    output,
+    /when evidence_decision\.required is true, every material_id in evidence_decision\.provider_material_ids MUST identify a required_materials\[\] row carrying a complete evidence_requirement/i
+  );
+  assert.match(output, /task_material_decision\.task_input_material_ids/);
+  assert.doesNotMatch(
+    output,
+    /optional only on evidence-provider required_materials\[\] rows: evidence_requirement/
+  );
+});
+
+test("S78-T-009: §10 pre-output checklist includes explicit P02 closure check", () => {
+  const output = dlaContract.assembleDlaCanonicalContract().sections.output;
+  assert.match(output, /Pre-output deterministic capture checks/i);
+  assert.match(
+    output,
+    /for every provider_material_id, the matching required_materials\[\] row contains complete evidence_requirement/i
+  );
+  assert.doesNotMatch(output, /FINAL PRE-EMIT AUDIT/i);
+});
+
+test("S78-T-009: §7/§8/§10/§11 remain mutually consistent on P02", () => {
+  const assembled = dlaContract.assembleDlaCanonicalContract();
+  const evidence = assembled.sections.evidence;
+  const providers = assembled.sections.providers;
+  const output = assembled.sections.output;
+  const examples = assembled.sections.examples;
+  assert.match(evidence, /attach evidence_requirement on those rows/i);
+  assert.match(providers, /Evidence-provider authoring \(only when evidence_decision\.required is true\)/);
+  assert.match(output, /P02 provider-row closure/i);
+  assert.match(examples, /"evidence_requirement": \{/);
+  assert.match(examples, /"provider_material_ids": \["A1-M1"\]/);
 });

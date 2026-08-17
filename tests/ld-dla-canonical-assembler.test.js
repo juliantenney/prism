@@ -1,6 +1,6 @@
 /**
  * S77-T-013 Phase A — canonical DLA assembler (not live production).
- * Live Copy/Studio use 77-DLA-CANONICAL-3 via assembleDlaCanonicalContract once.
+ * Live Copy/Studio use 78-DLA-WS-3 via assembleDlaCanonicalContract once.
  */
 "use strict";
 
@@ -226,11 +226,11 @@ test("Phase A: examples use material_type not wrong type dialect", () => {
   assert.match(s, /evidence_decision/);
 });
 
-test("Phase C: assembler multiplicity 1; live version 77-DLA-CANONICAL-3", () => {
+test("Phase C: assembler multiplicity 1; live version 78-DLA-WS-3", () => {
   const out = dla.assembleDlaCanonicalContract();
   assert.equal(out.multiplicity, 1);
-  assert.equal(out.version, "77-DLA-CANONICAL-3");
-  assert.equal(dla.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
+  assert.equal(out.version, "78-DLA-WS-3");
+  assert.equal(dla.CONTRACT_VERSION, "78-DLA-WS-3");
   assert.equal(dla.LEGACY_CONTRACT_VERSION, "76-DLA-PARTIAL-9");
   assert.doesNotMatch(out.text, /### Sprint 58 vNext DLA partial-page contract/);
   assert.equal(headingCount(out.text, HEADINGS.role), 1);

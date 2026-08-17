@@ -57,7 +57,7 @@ test("handoff navigates via switchTab utilities and does not clear selection in 
   const { source } = loadPrismTestApi();
   const start = source.indexOf("function handleContinueToAuthoring");
   assert.ok(start > 0);
-  const body = source.slice(start, start + 500);
+  const body = source.slice(start, start + 2500);
   assert.match(body, /switchTab\("utilities"\)/);
   assert.doesNotMatch(body, /selectedWorkflowId\s*=\s*null/);
   assert.doesNotMatch(body, /clearWorkflowRunCaptureState/);

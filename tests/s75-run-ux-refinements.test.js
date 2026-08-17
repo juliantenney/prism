@@ -185,6 +185,7 @@ test("Previous/Next remain grouped together; Copy is a separate step action", ()
   const controls = html.slice(controlsStart, controlsEnd);
   assert.match(controls, /id="workflowPrevStepBtn"/);
   assert.match(controls, /id="workflowNextStepBtn"/);
+  assert.doesNotMatch(controls, /id="workflowContinueToAuthoringBtn"/);
   assert.doesNotMatch(controls, /id="workflowRunCopyBtn"/);
   assert.match(html, /id="workflowRunCopyBtn"/);
   assert.match(html, /id="workflowRunChromePark"/);

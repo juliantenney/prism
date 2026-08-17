@@ -40,7 +40,10 @@ const DEFAULT_LIBS = [
   "lib/utility-pedagogical-icons.js",
   "lib/utility-pedagogical-beats.js",
   "lib/educational-quality-framework-prompt.js",
-  "lib/instructional-pattern-prompt.js"
+  "lib/instructional-pattern-prompt.js",
+  "lib/gam-practice-independence-prompt.js",
+  "lib/gam-operational-suitability-prompt.js",
+  "lib/gam-operational-suitability-review.js"
 ];
 
 function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
@@ -76,6 +79,9 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_UTILITY_PEDAGOGICAL_BEATS",
       "PRISM_BEAT_MATERIAL_REGISTRY",
       "PRISM_INSTRUCTIONAL_PATTERN_PROMPT",
+      "PRISM_GAM_PRACTICE_INDEPENDENCE_PROMPT",
+      "PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT",
+      "PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_JOBS_PLANNER",

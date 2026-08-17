@@ -1,58 +1,53 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 77 **COMPLETE / CLOSED** (2026-08-14). Sprint 76 **COMPLETE / Closed**. **Next sprint is not selected.**  
-**Updated:** 2026-08-14
+**Status:** Sprint 78 **OPEN** (2026-08-17). Sprint 77 **COMPLETE / CLOSED**. Sprint 76 **COMPLETE / Closed**.  
+**Updated:** 2026-08-17
 
 ---
 
 ## Current programme
 
-Sprint 77 — DLA Prompt Contract Architecture Pilot — **CLOSED**.
+Sprint 78 — Learner Resource Quality Recovery — **OPEN**.
 
-**Close-out:** [sprint-77-closeout.md](sprint-77-closeout.md) · [S77-T-027](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/S77-T-027-sprint-77-closeout.md)
+**Charter:** [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md) · **Start here:** [SPRINT-78-START-HERE.md](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/SPRINT-78-START-HERE.md)
 
-**Pack (historical):** [SPRINT-77-START-HERE.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)
+**Immediate priority:** **Resume S78-T-013** — WS2 integration verification using Verify generated materials as **temporary instrumentation**. WS1 **CLOSED** (87/100). T-003 and T-019 queued. Sprint 77 **CLOSED**.
 
-This file does **not** open Sprint 78 or choose its first task. Operator selects the next sprint from the [product backlog](../backlog/PRODUCT-BACKLOG.md) when ready.
+**QA baseline (reference):** [POST-S77-lagrangian-qa-baseline-2026-08-14.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/POST-S77-lagrangian-qa-baseline-2026-08-14.md) — uncapped **70/100**; **2 Major**; F&S **30**; exit target fresh Lagrangian **≥ 90** uncapped; **0 Critical**; **0 Major**.
 
-### Monday queue (2026-08-14 QA baseline — diagnose later, do not implement Friday)
+### Sprint 78 workstreams
 
-Record: [POST-S77-lagrangian-qa-baseline-2026-08-14.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/POST-S77-lagrangian-qa-baseline-2026-08-14.md)
+1. **Do / workspace fulfilment** — **CLOSED** (T-001→T-009; fresh 87/100).
+2. **Worked-example → practice independence** — architecture complete; **T-013 OPEN** (do not conflate with operational suitability).
+3. **Check / revision architecture** — S78-T-003 queued (one activity-level diagnostic review hypothesis).
+4. **Activity timing / duration** — S78-T-019 queued diagnostic.
 
-QA v2.2: uncapped **70/100 Competent**; release **69/100 Adequate**; Feedback & Self-Regulation **30**; revision recommended. Strengths: progression, alignment, disciplinary quality, a11y, visual synthesis, shadow-price interpretation. Architecture is **not** failed.
+**Operational suitability:** T-014/T-015 general invariant; T-017–T-018 verifier is **temporary instrumentation** ([S78-D02](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)). **“Regenerate until it passes” is not acceptable.**
 
-1. **Do / workspace fulfilment** — why a commissioned learner-production workspace can become completed non-editable content (exhibit: Activity 1).
-2. **Worked-example → practice independence** — why modelling can use the identical problem later commissioned for independent practice (exhibit: Activity 3).
-3. **Check / revision architecture** — why Orient/Learn/Do appears without a substantive Check/revision mechanism (potentially architectural; do not assume GAM/DLA/assembler/renderer before diagnosis).
+**Moderate / presentation (lower priority):** Activity 3 math workspace; stray blank lines; missing HR; image path issues.
 
-### Transferred / deferred queue (not a next-sprint decision)
+### Out of sprint / wait states (unless blocking benchmark)
 
-1. **E2** — OPEN / intermittent (T-026 protocol; wait-state, not a workstream)
-2. **EP→DLA A5 topology-loss** — retain unresolved observation from earlier clean run (do not diagnose from Friday close)
-3. Graphics / image lifecycle — **queue G Clear Run Data stale generated images: CLOSED** (bounded maintenance 2026-08-14). Remaining graphics work (PB-FA-004, generation availability, etc.) stays separate.
-4. **GAM ordinary material body-format / body-shape** — **CLOSED** as post–Sprint-77 bounded output-contract repair (2026-08-14). Ordinary GAM materials must emit markdown string bodies; guided-review checklist JSON remains the specialised exception.
-5. T-032 — OPEN diagnostic residual (T-033 remains CLOSED)
-6. PB-FA-010 — later method application; not allocated
-7. Continue-to-Authoring async UI — OPEN / separate UX defect
-8. **DLA `material_type` presentation vocabulary** — **CLOSED** as post–Sprint-77 bounded prompt repair (2026-08-14). Canonical DLA §6 constrains `material_type` to live vNext renderer tokens (`77-DLA-CANONICAL-3`). T-023 unchanged.
+1. **E2** — OPEN / intermittent; Sprint 78 recurrence (T-013 Candidate 2); T-026 protocol; no sanitiser; do not reopen Sprint 77
+2. **EP→DLA A5 topology-loss** — retained observation
+3. Graphics — queue G Clear Run Data **CLOSED**; PB-FA-004 etc. separate
+4. **GAM ordinary material body-format** — **CLOSED** (2026-08-14)
+5. T-032 — OPEN diagnostic residual
+6. PB-FA-010 — later method application; not allocated unless diagnosis requires
+7. Continue-to-Authoring async UI — OPEN / separate
+8. **DLA `material_type` presentation vocabulary** — **CLOSED** (`77-DLA-CANONICAL-3`)
 9. PB-FA-005 Settings — deferred
 10. RECOVER — hypothesis only
 11. DLA Phase D legacy cleanup — not authorised
 12. Evidence-injection rollback — option only / not executed
-
-### Later architecture (not now)
-
-**[PB-FA-010](../backlog/PRODUCT-BACKLOG.md#pb-fa-010--prompt-contract-architecture-method-after-dla-pilot)** — apply the DLA-proven method individually:
-
-inventory → canonical ownership → equivalence ledger → assemble once → atomic switch → behavioural gate
-
-Do not schedule those rewrites from this pointer.
 
 ---
 
 ## Closed — Sprint 77
 
 **DLA Prompt Contract Architecture Pilot** — [sprint-77-closeout.md](sprint-77-closeout.md)
+
+**Successor:** Sprint 78 — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md)
 
 ---
 

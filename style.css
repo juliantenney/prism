@@ -1564,6 +1564,25 @@ textarea:focus {
   display: block;
 }
 
+.workflow-step-run-continue {
+  display: none;
+  margin: 12px 0 0;
+}
+
+.workflow-detail.run-mode .workflow-step-run-continue {
+  display: block;
+}
+
+.workflow-run-continue-host {
+  margin: 0;
+}
+
+.workflow-run-continue-host .btn {
+  display: inline-flex;
+  max-width: 100%;
+  white-space: normal;
+}
+
 .utilities-workflow-context {
   margin: 0 0 10px;
 }

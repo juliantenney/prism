@@ -134,7 +134,7 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
   assert.match(snippet, /task_material_decision/);
   assert.match(snippet, /"specification":/);
   assert.doesNotMatch(snippet, /system\/parts\/relationships/);
-  assert.equal(dlaContract.CONTRACT_VERSION, "77-DLA-CANONICAL-3");
+  assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
 });
 
 test("S60 Phase A: valid archetype DLA page routes to GAM with no S59 activation", () => {

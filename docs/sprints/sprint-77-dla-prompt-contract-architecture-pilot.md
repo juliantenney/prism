@@ -8,7 +8,7 @@
 **Opening decision:** [S77-D01](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/decisions.md#s77-d01--open-sprint-77--dla-prompt-contract-architecture-pilot)  
 **Handover:** [HANDOVER.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/HANDOVER.md)  
 **Close-out:** [sprint-77-closeout.md](sprint-77-closeout.md) · [S77-T-027](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/S77-T-027-sprint-77-closeout.md)  
-**Following:** next sprint **not selected**. Settings later — [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency)
+**Following:** Sprint 78 **OPEN** — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md)
 
 ## Theme
 
@@ -16,7 +16,7 @@ Make **DLA** model-visible instruction architecture comprehensible, traceable, a
 
 ## Immediate next work
 
-> **Sprint 77 is CLOSED.** Close-out: [sprint-77-closeout.md](sprint-77-closeout.md). Do not start Graphics, T-032, Settings, or PB-FA-010 from this charter. E2 remains OPEN / intermittent (protocol only). Next sprint is **not chosen here**.
+> **Sprint 77 is CLOSED.** Close-out: [sprint-77-closeout.md](sprint-77-closeout.md). Successor: Sprint 78 **OPEN** — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md). E2 OPEN (protocol). Phase D **not authorised**.
 
 ## Phase overview
 

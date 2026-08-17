@@ -91,7 +91,7 @@ test("1-6: Run chrome lives inside the current-step panel in working order", () 
   assert.ok(instructionsIdx > identityIdx, "heading before description/instructions");
   assert.ok(copyIdx > instructionsIdx, "Copy after description/instructions/guidance");
   assert.ok(captureIdx > copyIdx, "Copy before paste/capture controls");
-  assert.match(source, /syncWorkflowRunStepIdentityPlacement\(currentStepLi\)/);
+  assert.match(source, /syncWorkflowRunStepIdentityPlacement\(currentStepLi,\s*isFinalStep\)/);
   assert.match(source, /navTarget\.appendChild\(els\.workflowRunProgress\)/);
   assert.match(source, /navTarget\.appendChild\(els\.workflowRunButtons\)/);
   assert.match(source, /copyTarget\.appendChild\(els\.workflowRunCopyBtn\)/);
@@ -107,8 +107,10 @@ test("1-6: Run chrome lives inside the current-step panel in working order", () 
   const buttons = html.slice(buttonsStart, html.indexOf("</div>", buttonsStart));
   assert.match(buttons, /id="workflowPrevStepBtn"/);
   assert.match(buttons, /id="workflowNextStepBtn"/);
-  assert.match(buttons, /id="workflowContinueToAuthoringBtn"/);
+  assert.doesNotMatch(buttons, /id="workflowContinueToAuthoringBtn"/);
   assert.doesNotMatch(buttons, /id="workflowRunCopyBtn"/);
+  assert.match(html, /id="workflowRunContinueHost"/);
+  assert.match(html, /id="workflowContinueToAuthoringBtn"/);
 });
 
 test("6-7: Copy and Previous/Next behaviour remain unchanged", () => {
@@ -151,7 +153,8 @@ test("9-12: DLA guidance, capture persistence, and Continue-to-Authoring stay un
   assert.match(html, /id="workflowContinueToAuthoringBtn"/);
   const buttonsStart = html.indexOf('class="workflow-run-buttons"');
   const buttons = html.slice(buttonsStart, html.indexOf("</div>", buttonsStart));
-  assert.match(buttons, /id="workflowContinueToAuthoringBtn"/);
+  assert.doesNotMatch(buttons, /id="workflowContinueToAuthoringBtn"/);
+  assert.match(html, /id="workflowRunContinueHost"/);
   assert.match(source, /isWorkflowRunAuthoringReady\(/);
   assert.match(source, /workflowHasPersistedDesignPageResult\(/);
 });

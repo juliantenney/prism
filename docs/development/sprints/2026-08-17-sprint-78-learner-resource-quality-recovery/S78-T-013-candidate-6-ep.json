@@ -1,0 +1,482 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "title": "An introduction to Lagrangian Multipliers",
+  "audience": "Learners",
+  "page_profile": {
+    "profile_type": "learner"
+  },
+  "assembly_state": {
+    "enriched_by": [
+      "episode_plan"
+    ],
+    "current_stage": "episode_plan"
+  },
+  "page_synthesis": {},
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Explain the purpose of constrained optimisation and the role of Lagrangian multipliers in economic decision-making.",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO1"
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Construct a Lagrangian function from an objective function and a constraint.",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "revision"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO2"
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "title": "Apply first-order conditions to solve a simple constrained optimisation problem.",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO3"
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "title": "Interpret the economic meaning of the Lagrange multiplier as a shadow price.",
+      "learner_task": "—",
+      "expected_output": "—",
+      "activity_preamble": "—",
+      "required_materials": [],
+      "materials": [],
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "learning_outcome_ids": [
+        "LO4"
+      ]
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "outcome_id": "LO1",
+      "statement": "Explain the purpose of constrained optimisation and the role of Lagrangian multipliers in economic decision-making."
+    },
+    {
+      "outcome_id": "LO2",
+      "statement": "Construct a Lagrangian function from an objective function and a constraint."
+    },
+    {
+      "outcome_id": "LO3",
+      "statement": "Apply first-order conditions to solve a simple constrained optimisation problem."
+    },
+    {
+      "outcome_id": "LO4",
+      "statement": "Interpret the economic meaning of the Lagrange multiplier as a shadow price."
+    }
+  ],
+  "episode_plans": [
+    {
+      "activity_id": "A1",
+      "episode_plan": {
+        "archetype": "understand",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "example"
+          },
+          {
+            "function": "non_example"
+          },
+          {
+            "function": "misconception_confrontation"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO1"
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "episode_plan": {
+        "archetype": "apply",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "revision"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO2"
+      ]
+    },
+    {
+      "activity_id": "A3",
+      "episode_plan": {
+        "archetype": "analyse",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "explanation"
+          },
+          {
+            "function": "worked_thinking"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_practice"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO3"
+      ]
+    },
+    {
+      "activity_id": "A4",
+      "episode_plan": {
+        "archetype": "evaluate",
+        "beats": [
+          {
+            "function": "orientation"
+          },
+          {
+            "function": "framing"
+          },
+          {
+            "function": "activation"
+          },
+          {
+            "function": "perspective_construction"
+          },
+          {
+            "function": "criteria_exposition"
+          },
+          {
+            "function": "criteria_construction"
+          },
+          {
+            "function": "worked_judgement"
+          },
+          {
+            "function": "guided_inquiry"
+          },
+          {
+            "function": "guided_reasoning"
+          },
+          {
+            "function": "independent_performance"
+          },
+          {
+            "function": "evaluative_judgement"
+          },
+          {
+            "function": "verification"
+          },
+          {
+            "function": "reflection"
+          },
+          {
+            "function": "transfer"
+          },
+          {
+            "function": "transition"
+          }
+        ]
+      },
+      "mapped_learning_outcome_ids": [
+        "LO4"
+      ]
+    }
+  ],
+  "source_artefacts": [
+    {
+      "artefact_type": "learning_outcomes",
+      "source_label": "Learning Outcomes",
+      "role": "structural"
+    }
+  ],
+  "generation_notes": {
+    "validation": {
+      "activity_coverage": "shell_only",
+      "material_coverage": "pending_gam",
+      "episode_plan_attachment": "attached",
+      "self_containment": "shell_only",
+      "schema_compliance": "episode_plan_boundary",
+      "known_issues": [
+        "DLA pedagogy and GAM materials not yet populated"
+      ]
+    },
+    "notes": "Sprint 56F Episode Plan page shell (56F-EP-SHELL-2) — pending DLA, GAM, Learning Sequence, Assessment, and finalise_page enrichment"
+  }
+}

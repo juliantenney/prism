@@ -6,7 +6,7 @@
 **Portable pack:** [docs/development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)  
 **Close-out artefact:** [S77-T-027-sprint-77-closeout.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/S77-T-027-sprint-77-closeout.md)  
 **Predecessor:** [sprint-76-closeout.md](sprint-76-closeout.md) — **COMPLETE / Closed**  
-**Next sprint:** **not selected** in this close-out — see [NEXT-SPRINT.md](NEXT-SPRINT.md) · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
+**Next sprint:** Sprint 78 — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md) — see [NEXT-SPRINT.md](NEXT-SPRINT.md) · [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
 
 ---
 

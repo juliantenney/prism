@@ -192,6 +192,10 @@
     workflowRunEpisodePlanValidation: {},
     /** Run-mode: Design Page material closure validation errors per step id. */
     workflowRunPageMaterialsClosureValidation: {},
+    workflowRunGamSuitabilityReviewRaw: {},
+    workflowRunGamSuitabilityReviewValidation: {},
+    workflowRunGamVerificationCheck: {},
+    workflowRunGamVerificationPages: {},
     workflowDesignResult: null,
     /** @deprecated S75-D25: Create no longer twins Draft/Refined; kept null for compatibility. */
     workflowDesignVersions: null,
@@ -572,6 +576,7 @@
     els.workflowRunProgressSegments = document.getElementById("workflowRunProgressSegments");
     els.workflowRunButtons = document.getElementById("workflowRunButtons");
     els.workflowRunChromePark = document.getElementById("workflowRunChromePark");
+    els.workflowRunContinueHost = document.getElementById("workflowRunContinueHost");
     els.workflowPrevStepBtn = document.getElementById("workflowPrevStepBtn");
     els.workflowNextStepBtn = document.getElementById("workflowNextStepBtn");
     els.workflowRunCopyBtn = document.getElementById("workflowRunCopyBtn");
@@ -7973,6 +7978,28 @@
     );
   }
 
+  function findSelectedWorkflowStepRowById(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return null;
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf || !Array.isArray(wf.steps)) return null;
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      if (String(wf.steps[i].id || "").trim() === sid) return wf.steps[i];
+    }
+    return null;
+  }
+
+  function isGamMaterialGenerationStep(stepId, extra) {
+    var opts = extra && typeof extra === "object" ? extra : {};
+    if (opts.stepContext) {
+      return isWorkflowStepGenerateActivityMaterials(opts.stepContext);
+    }
+    var row = opts.stepRow || findSelectedWorkflowStepRowById(stepId);
+    if (!row) return false;
+    return isWorkflowStepGenerateActivityMaterials(buildWorkflowStepRecognitionContext(row, {}));
+  }
+
   function isWorkflowStepConstructLearningSequence(context) {
     var title = String(
       (context && (context.stepCanonicalTitle || context.stepTitle)) || ""
@@ -10355,7 +10382,10 @@
     if (stage === "gam") {
       var gamMod = resolvePageGamEnrichLib();
       if (gamMod && typeof gamMod.validateGamPartialPageCapture === "function") {
-        return gamMod.validateGamPartialPageCapture(parsed);
+        var gamBaseline = tryParseWorkflowArtefactJson(
+          resolveDlaEnrichedPageJsonForGamCopy(workflow) || ""
+        );
+        return gamMod.validateGamPartialPageCapture(parsed, { baseline: gamBaseline || null });
       }
     }
     if (stage === "learning_sequence") {
@@ -11347,7 +11377,7 @@
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
-      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. If required_materials[].evidence_requirement is present, material content must satisfy it and avoid pre-disclosing the target conclusion.",
+      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. When S78-OPERATIONAL-SUITABILITY (auto-applied) is present in AUTHORITATIVE DLA MATERIAL COMMISSION, follow its per-material obligations locally.",
       "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
       "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
@@ -11388,7 +11418,7 @@
 
   var GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING = "### AUTHORITATIVE DLA MATERIAL COMMISSION";
   var GAM_AUTHORITATIVE_DLA_COMMISSION_AUTHORITY =
-    "This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.";
+    "This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Honour response_fulfilment when present — preserve learner-completion bounds and blank response loci for commissioned workspace rows. Honour practice_independence when present on model rows. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.";
 
   function prismHasOwnField(obj, key) {
     return !!(
@@ -11430,6 +11460,9 @@
         copyOwnFieldIfPresent(rm, row, "purpose");
         copyOwnFieldIfPresent(rm, row, "specification");
         copyOwnFieldIfPresent(rm, row, "evidence_requirement");
+        copyOwnFieldIfPresent(rm, row, "response_fulfilment");
+        copyOwnFieldIfPresent(rm, row, "practice_independence");
+        copyOwnFieldIfPresent(rm, row, "diagnostic_review");
         mats.push(row);
       }
       proj.required_materials = mats;
@@ -11449,7 +11482,7 @@
     } catch (_) {
       return "";
     }
-    return [
+    var parts = [
       "",
       GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING,
       "",
@@ -11458,7 +11491,18 @@
       "```json",
       jsonText,
       "```"
-    ].join("\n");
+    ];
+    var ws2Lib = resolveGamPracticeIndependencePromptLib();
+    if (ws2Lib && typeof ws2Lib.buildS78Ws2OperandAwareAuthoringBlock === "function") {
+      var ws2Block = ws2Lib.buildS78Ws2OperandAwareAuthoringBlock(page);
+      if (ws2Block) parts.push(ws2Block);
+    }
+    var opsLib = resolveGamOperationalSuitabilityPromptLib();
+    if (opsLib && typeof opsLib.buildOperationalSuitabilityAuthoringBlock === "function") {
+      var opsBlock = opsLib.buildOperationalSuitabilityAuthoringBlock(page);
+      if (opsBlock) parts.push(opsBlock);
+    }
+    return parts.join("\n");
   }
 
   function buildUpstreamDlaPageEmbedSectionForGamCopy(wf) {
@@ -11508,7 +11552,12 @@
       gamMod
     ) {
       if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "gam") {
-        return gamMod.validateGamPartialPageCapture(parsed);
+        var gamPartialBaseline = tryParseWorkflowArtefactJson(
+          resolveDlaEnrichedPageJsonForGamCopy(workflow) || ""
+        );
+        return gamMod.validateGamPartialPageCapture(parsed, {
+          baseline: gamPartialBaseline || null
+        });
       }
       if (
         partialMode &&
@@ -11516,7 +11565,12 @@
         parsed.assembly_state &&
         parsed.assembly_state.current_stage === "gam"
       ) {
-        return gamMod.validateGamPartialPageCapture(parsed);
+        var gamStageBaseline = tryParseWorkflowArtefactJson(
+          resolveDlaEnrichedPageJsonForGamCopy(workflow) || ""
+        );
+        return gamMod.validateGamPartialPageCapture(parsed, {
+          baseline: gamStageBaseline || null
+        });
       }
       if (parsed.assembly_state && parsed.assembly_state.current_stage === "gam") {
         return gamMod.validateGamEnrichedPage(parsed, baseline || null);
@@ -14434,6 +14488,587 @@
     return String(draftText || "").trim();
   }
 
+  function resolveGamOperationalSuitabilityReviewLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW &&
+      typeof globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW.evaluateReviewGate === "function"
+    ) {
+      return globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/gam-operational-suitability-review.js");
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  var GAM_VERIFICATION_COPY = Object.freeze({
+    heading: "Verify generated materials",
+    intro:
+      "These materials include generated information that learners must rely on to complete their tasks. Run a short verification before continuing.",
+    copyPrompt: "Copy verification prompt",
+    pasteLabel: "Paste verification result",
+    checkAction: "Check verification",
+    pendingStatus: "Materials generated — verification required",
+    passedTitle: "Verification passed",
+    passedBody: "Generated materials are suitable for the commissioned learner tasks.",
+    failedTitle: "Verification found an issue",
+    failedNext: "Regenerate the activity materials from the same DLA prompt.",
+    unreadableTitle: "Verification result could not be read",
+    unreadableBody: "Run the verification prompt again and paste the complete JSON result.",
+    staleStatus: "Materials changed — verification must be run again."
+  });
+
+  function clearGamOperationalSuitabilityReviewGate(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    if (state.workflowRunGamSuitabilityReviewValidation) {
+      delete state.workflowRunGamSuitabilityReviewValidation[sid];
+    }
+    if (state.workflowRunGamVerificationCheck) {
+      delete state.workflowRunGamVerificationCheck[sid];
+    }
+    if (state.workflowRunGamVerificationPages) {
+      delete state.workflowRunGamVerificationPages[sid];
+    }
+  }
+
+  function collectGamVerificationFailItems(parsed) {
+    var items = [];
+    var verdicts = parsed && Array.isArray(parsed.verdicts) ? parsed.verdicts : [];
+    verdicts.forEach(function (row) {
+      if (!row || row.suitable !== false) return;
+      items.push({
+        label: String(row.material_id || row.activity_id || "Material").trim() || "Material",
+        reason: String(row.reason || "").trim()
+      });
+    });
+    return items;
+  }
+
+  function errorsIndicateStaleReview(errors) {
+    return (errors || []).some(function (err) {
+      return /S78_OPS2_STALE_REVIEW/.test(String(err || ""));
+    });
+  }
+
+  function rememberGamMaterialsVerificationPages(stepId, gamPage, dlaPage) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    state.workflowRunGamVerificationPages = state.workflowRunGamVerificationPages || {};
+    state.workflowRunGamVerificationPages[sid] = { gamPage: gamPage, dlaPage: dlaPage };
+  }
+
+  function resolveGamMaterialsPagesForStep(stepId, overridePages) {
+    if (overridePages && typeof overridePages === "object") {
+      if (overridePages.gamPage || overridePages.dlaPage) {
+        rememberGamMaterialsVerificationPages(stepId, overridePages.gamPage, overridePages.dlaPage);
+      }
+      return {
+        gamPage: overridePages.gamPage || null,
+        dlaPage: overridePages.dlaPage || null,
+        gamStructurallyOk:
+          overridePages.gamStructurallyOk == null ? true : !!overridePages.gamStructurallyOk
+      };
+    }
+    var sid = String(stepId || "").trim();
+    var remembered =
+      state.workflowRunGamVerificationPages && state.workflowRunGamVerificationPages[sid]
+        ? state.workflowRunGamVerificationPages[sid]
+        : null;
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var gamJson =
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+      "";
+    var gamPage = tryParseWorkflowArtefactJson(gamJson) || (remembered && remembered.gamPage) || null;
+    var dlaPage =
+      tryParseWorkflowArtefactJson(resolveDlaEnrichedPageJsonForGamCopy(wf) || "") ||
+      (remembered && remembered.dlaPage) ||
+      null;
+    var gamStructurallyOk = !(
+      sid &&
+      state.workflowRunGamPageValidation &&
+      state.workflowRunGamPageValidation[sid]
+    );
+    return { gamPage: gamPage, dlaPage: dlaPage, gamStructurallyOk: gamStructurallyOk };
+  }
+
+  function resolveGamMaterialsVerificationView(stepId, overridePages) {
+    var sid = String(stepId || "").trim();
+    var copy = GAM_VERIFICATION_COPY;
+    var empty = {
+      applies: false,
+      phase: "awaiting_gam",
+      complete: false,
+      nextBlocked: false,
+      showVerificationUi: false,
+      showCopyPrompt: false,
+      showCheckAction: false,
+      stepStatusText: "",
+      heading: copy.heading,
+      intro: copy.intro,
+      resultTitle: "",
+      resultBody: "",
+      failItems: [],
+      copyLabel: copy.copyPrompt,
+      checkLabel: copy.checkAction,
+      pasteLabel: copy.pasteLabel
+    };
+    if (!sid) return empty;
+    if (!isGamMaterialGenerationStep(sid, overridePages)) {
+      return Object.assign({}, empty, { phase: "not_gam" });
+    }
+    var reviewLib = resolveGamOperationalSuitabilityReviewLib();
+    var pages = resolveGamMaterialsPagesForStep(sid, overridePages);
+    if (!pages.gamPage) {
+      return empty;
+    }
+    if (!pages.gamStructurallyOk) {
+      return Object.assign({}, empty, { applies: true, phase: "gam_invalid" });
+    }
+    if (!reviewLib || typeof reviewLib.collectObligations !== "function") {
+      return Object.assign({}, empty, {
+        applies: true,
+        phase: "gam_valid_no_review_required",
+        complete: true
+      });
+    }
+    var obligations =
+      pages.dlaPage && typeof reviewLib.collectObligations === "function"
+        ? reviewLib.collectObligations(pages.dlaPage)
+        : [];
+    if (!obligations.length) {
+      return Object.assign({}, empty, {
+        applies: true,
+        phase: "gam_valid_no_review_required",
+        complete: true
+      });
+    }
+    var fingerprint =
+      pages.dlaPage && typeof reviewLib.fingerprintGamMaterials === "function"
+        ? reviewLib.fingerprintGamMaterials(pages.dlaPage, pages.gamPage)
+        : "";
+    var stored =
+      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
+        ? state.workflowRunGamVerificationCheck[sid]
+        : null;
+    var stale =
+      !!(stored && stored.stale) ||
+      !!(stored && stored.fingerprint && fingerprint && stored.fingerprint !== fingerprint);
+    var pendingView = {
+      applies: true,
+      phase: "gam_valid_review_required",
+      complete: false,
+      nextBlocked: true,
+      showVerificationUi: true,
+      showCopyPrompt: true,
+      showCheckAction: true,
+      stepStatusText: stale ? copy.staleStatus : copy.pendingStatus,
+      heading: copy.heading,
+      intro: copy.intro,
+      resultTitle: stale ? copy.staleStatus : "",
+      resultBody: stale ? copy.intro : "",
+      failItems: [],
+      copyLabel: copy.copyPrompt,
+      checkLabel: copy.checkAction,
+      pasteLabel: copy.pasteLabel
+    };
+    if (!stored || !stored.checked || stale) {
+      return pendingView;
+    }
+    if (stored.phase === "review_passed") {
+      return {
+        applies: true,
+        phase: "review_passed",
+        complete: true,
+        nextBlocked: false,
+        showVerificationUi: true,
+        showCopyPrompt: true,
+        showCheckAction: true,
+        stepStatusText: "Step complete",
+        heading: copy.heading,
+        intro: copy.intro,
+        resultTitle: copy.passedTitle,
+        resultBody: copy.passedBody,
+        failItems: [],
+        copyLabel: copy.copyPrompt,
+        checkLabel: copy.checkAction,
+        pasteLabel: copy.pasteLabel
+      };
+    }
+    if (stored.phase === "review_failed") {
+      return {
+        applies: true,
+        phase: "review_failed",
+        complete: false,
+        nextBlocked: true,
+        showVerificationUi: true,
+        showCopyPrompt: true,
+        showCheckAction: true,
+        stepStatusText: copy.pendingStatus,
+        heading: copy.heading,
+        intro: copy.intro,
+        resultTitle: copy.failedTitle,
+        resultBody: copy.failedNext,
+        failItems: Array.isArray(stored.failItems) ? stored.failItems.slice() : [],
+        copyLabel: copy.copyPrompt,
+        checkLabel: copy.checkAction,
+        pasteLabel: copy.pasteLabel
+      };
+    }
+    return {
+      applies: true,
+      phase: "review_invalid",
+      complete: false,
+      nextBlocked: true,
+      showVerificationUi: true,
+      showCopyPrompt: true,
+      showCheckAction: true,
+      stepStatusText: copy.pendingStatus,
+      heading: copy.heading,
+      intro: copy.intro,
+      resultTitle: copy.unreadableTitle,
+      resultBody: copy.unreadableBody,
+      failItems: [],
+      copyLabel: copy.copyPrompt,
+      checkLabel: copy.checkAction,
+      pasteLabel: copy.pasteLabel
+    };
+  }
+
+  function gamMaterialsVerificationBlocksAdvance(stepId, overridePages) {
+    var view = resolveGamMaterialsVerificationView(stepId, overridePages);
+    return !!(view && view.applies && view.nextBlocked);
+  }
+
+  function storeGamVerificationCheck(stepId, payload) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    state.workflowRunGamVerificationCheck = state.workflowRunGamVerificationCheck || {};
+    state.workflowRunGamVerificationCheck[sid] = payload;
+    state.workflowRunGamSuitabilityReviewValidation =
+      state.workflowRunGamSuitabilityReviewValidation || {};
+    if (payload && payload.phase === "review_passed") {
+      delete state.workflowRunGamSuitabilityReviewValidation[sid];
+      return;
+    }
+    if (payload && payload.phase === "review_failed") {
+      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.failedTitle;
+    } else if (payload && payload.phase === "review_invalid") {
+      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.unreadableTitle;
+    } else if (payload && payload.stale) {
+      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.staleStatus;
+    } else {
+      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.pendingStatus;
+    }
+    if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+      delete state.workflowRunStepCompleted[sid];
+    }
+  }
+
+  function syncGamMaterialsVerificationAfterCapture(stepId, gamPage, dlaPage) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    if (!isGamMaterialGenerationStep(sid)) {
+      if (state.workflowRunGamSuitabilityReviewValidation) {
+        delete state.workflowRunGamSuitabilityReviewValidation[sid];
+      }
+      return;
+    }
+    rememberGamMaterialsVerificationPages(sid, gamPage, dlaPage);
+    var reviewLib = resolveGamOperationalSuitabilityReviewLib();
+    var view = resolveGamMaterialsVerificationView(sid, {
+      gamPage: gamPage,
+      dlaPage: dlaPage,
+      gamStructurallyOk: true
+    });
+    if (!view.applies || view.phase === "gam_valid_no_review_required") {
+      if (state.workflowRunGamSuitabilityReviewValidation) {
+        delete state.workflowRunGamSuitabilityReviewValidation[sid];
+      }
+      return;
+    }
+    var fingerprint =
+      reviewLib && typeof reviewLib.fingerprintGamMaterials === "function"
+        ? reviewLib.fingerprintGamMaterials(dlaPage, gamPage)
+        : "";
+    var stored =
+      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
+        ? state.workflowRunGamVerificationCheck[sid]
+        : null;
+    if (stored && stored.fingerprint && fingerprint && stored.fingerprint !== fingerprint) {
+      state.workflowRunGamVerificationCheck[sid] = {
+        checked: false,
+        stale: true,
+        fingerprint: fingerprint,
+        phase: "gam_valid_review_required",
+        failItems: []
+      };
+    }
+    if (view.phase === "review_passed") {
+      if (state.workflowRunGamSuitabilityReviewValidation) {
+        delete state.workflowRunGamSuitabilityReviewValidation[sid];
+      }
+      return;
+    }
+    state.workflowRunGamSuitabilityReviewValidation =
+      state.workflowRunGamSuitabilityReviewValidation || {};
+    state.workflowRunGamSuitabilityReviewValidation[sid] = view.stepStatusText;
+    if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+      delete state.workflowRunStepCompleted[sid];
+    }
+  }
+
+  function submitGamMaterialsVerification(stepId, gamPage, dlaPage, reviewRaw) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return resolveGamMaterialsVerificationView(sid);
+    if (!isGamMaterialGenerationStep(sid)) {
+      return resolveGamMaterialsVerificationView(sid);
+    }
+    var reviewLib = resolveGamOperationalSuitabilityReviewLib();
+    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
+    state.workflowRunGamSuitabilityReviewRaw[sid] = String(reviewRaw || "");
+    if (!reviewLib || typeof reviewLib.evaluateReviewGate !== "function") {
+      storeGamVerificationCheck(sid, {
+        checked: true,
+        fingerprint: "",
+        phase: "review_invalid",
+        failItems: []
+      });
+      return resolveGamMaterialsVerificationView(sid, {
+        gamPage: gamPage,
+        dlaPage: dlaPage,
+        gamStructurallyOk: true
+      });
+    }
+    var result = reviewLib.evaluateReviewGate(dlaPage, gamPage, reviewRaw);
+    rememberGamMaterialsVerificationPages(sid, gamPage, dlaPage);
+    var fingerprint = result && result.fingerprint ? String(result.fingerprint) : "";
+    var parsed = null;
+    if (typeof reviewLib.parseReviewJson === "function") {
+      var parsedWrap = reviewLib.parseReviewJson(reviewRaw);
+      if (parsedWrap && parsedWrap.ok) parsed = parsedWrap.parsed;
+    }
+    var phase = "gam_valid_review_required";
+    if (!result.required) {
+      phase = "gam_valid_no_review_required";
+    } else if (result.accepted) {
+      phase = "review_passed";
+    } else if (errorsIndicateStaleReview(result.errors)) {
+      phase = "gam_valid_review_required";
+    } else if (result.errors && result.errors.some(function (err) {
+      return /S78_OPS2_REVIEW_FAIL/.test(String(err || ""));
+    })) {
+      phase = "review_failed";
+    } else {
+      phase = "review_invalid";
+    }
+    storeGamVerificationCheck(sid, {
+      checked: phase !== "gam_valid_review_required",
+      stale: phase === "gam_valid_review_required" && errorsIndicateStaleReview(result.errors),
+      fingerprint: fingerprint,
+      phase: phase,
+      failItems: collectGamVerificationFailItems(parsed)
+    });
+    return resolveGamMaterialsVerificationView(sid, {
+      gamPage: gamPage,
+      dlaPage: dlaPage,
+      gamStructurallyOk: true
+    });
+  }
+
+  function applyGamOperationalSuitabilityReviewGate(stepId, gamPage, dlaPage) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    if (!isGamMaterialGenerationStep(sid)) return;
+    var reviewRaw =
+      state.workflowRunGamSuitabilityReviewRaw && state.workflowRunGamSuitabilityReviewRaw[sid]
+        ? String(state.workflowRunGamSuitabilityReviewRaw[sid] || "")
+        : "";
+    if (!String(reviewRaw || "").trim()) {
+      syncGamMaterialsVerificationAfterCapture(sid, gamPage, dlaPage);
+      return;
+    }
+    submitGamMaterialsVerification(sid, gamPage, dlaPage, reviewRaw);
+  }
+
+  function syncGamSuitabilityReviewFromDom(li) {
+    if (!li) return;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    if (!isGamMaterialGenerationStep(sid)) return;
+    var ta = li.querySelector('[data-field="runStepSuitabilityReview"]');
+    if (!sid || !ta) return;
+    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
+    var nextRaw = String(ta.value || "");
+    var prevRaw = String(state.workflowRunGamSuitabilityReviewRaw[sid] || "");
+    state.workflowRunGamSuitabilityReviewRaw[sid] = nextRaw;
+    var stored =
+      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
+        ? state.workflowRunGamVerificationCheck[sid]
+        : null;
+    if (stored && stored.checked && nextRaw !== prevRaw) {
+      stored.checked = false;
+      stored.phase = "gam_valid_review_required";
+      stored.failItems = [];
+      state.workflowRunGamSuitabilityReviewValidation =
+        state.workflowRunGamSuitabilityReviewValidation || {};
+      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.pendingStatus;
+      if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+        delete state.workflowRunStepCompleted[sid];
+      }
+    }
+    updateRunStepOutputStatus(li);
+    refreshGamSuitabilityReviewUi(li);
+  }
+
+  function copyGamOperationalSuitabilityReviewPrompt(li) {
+    var sid = String((li && li.getAttribute("data-step-id")) || "").trim();
+    if (!isGamMaterialGenerationStep(sid)) return;
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var reviewLib = resolveGamOperationalSuitabilityReviewLib();
+    if (!reviewLib || typeof reviewLib.buildReviewPrompt !== "function") return;
+    var gamJson =
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+      "";
+    var gamPage = tryParseWorkflowArtefactJson(gamJson);
+    var dlaPage = tryParseWorkflowArtefactJson(resolveDlaEnrichedPageJsonForGamCopy(wf) || "");
+    if (!gamPage || !dlaPage) return;
+    var prompt = reviewLib.buildReviewPrompt(dlaPage, gamPage);
+    if (!prompt) return;
+    var copyBtn = li && li.querySelector('[data-role="run-step-suitability-copy"]');
+    function markCopied() {
+      if (copyBtn) copyBtn.textContent = "✓ Copied";
+      showToast("Verification prompt copied.", "success");
+      if (copyBtn) {
+        setTimeout(function () {
+          copyBtn.textContent = GAM_VERIFICATION_COPY.copyPrompt;
+        }, 1600);
+      }
+    }
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      navigator.clipboard.writeText(prompt).then(
+        markCopied,
+        function () {
+          showToast("Could not copy verification prompt.", "error");
+        }
+      );
+    }
+  }
+
+  function checkGamMaterialsVerificationFromDom(li) {
+    if (!li) return;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    if (!isGamMaterialGenerationStep(sid)) return;
+    var ta = li.querySelector('[data-field="runStepSuitabilityReview"]');
+    if (!sid) return;
+    var reviewRaw = ta ? String(ta.value || "") : "";
+    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
+    state.workflowRunGamSuitabilityReviewRaw[sid] = reviewRaw;
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var gamJson =
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+      "";
+    var gamPage = tryParseWorkflowArtefactJson(gamJson);
+    var dlaPage = tryParseWorkflowArtefactJson(resolveDlaEnrichedPageJsonForGamCopy(wf) || "");
+    if (gamPage && dlaPage) {
+      submitGamMaterialsVerification(sid, gamPage, dlaPage, reviewRaw);
+    }
+    updateRunStepOutputStatus(li);
+    refreshGamSuitabilityReviewUi(li);
+    if (
+      els.workflowModeRunBtn &&
+      els.workflowModeRunBtn.classList.contains("active") &&
+      els.workflowDetail &&
+      els.workflowDetail.classList.contains("run-mode")
+    ) {
+      updateWorkflowRunView();
+    }
+  }
+
+  function refreshGamSuitabilityReviewUi(li) {
+    if (!li) return;
+    var wrap = li.querySelector('[data-role="run-step-suitability-review-wrap"]');
+    if (!wrap) return;
+    var sid = String(li.getAttribute("data-step-id") || "").trim();
+    var view = resolveGamMaterialsVerificationView(sid);
+    wrap.classList.toggle("hidden", !view.showVerificationUi);
+    var headingEl = li.querySelector('[data-role="run-step-suitability-heading"]');
+    if (headingEl) headingEl.textContent = view.heading;
+    var introEl = li.querySelector('[data-role="run-step-suitability-intro"]');
+    if (introEl) introEl.textContent = view.intro;
+    var copyBtn = li.querySelector('[data-role="run-step-suitability-copy"]');
+    if (copyBtn) {
+      copyBtn.classList.toggle("hidden", !view.showCopyPrompt);
+      if (copyBtn.textContent !== "✓ Copied") copyBtn.textContent = view.copyLabel;
+    }
+    var checkBtn = li.querySelector('[data-role="run-step-suitability-check"]');
+    if (checkBtn) {
+      checkBtn.classList.toggle("hidden", !view.showCheckAction);
+      checkBtn.textContent = view.checkLabel;
+    }
+    var pasteLabel = li.querySelector('[data-role="run-step-suitability-paste-label"]');
+    if (pasteLabel) pasteLabel.textContent = view.pasteLabel;
+    var statusEl = li.querySelector('[data-role="run-step-suitability-review-status"]');
+    if (statusEl) {
+      var lines = [];
+      if (view.resultTitle) lines.push(view.resultTitle);
+      (view.failItems || []).forEach(function (item) {
+        var line = String((item && item.label) || "").trim();
+        var reason = String((item && item.reason) || "").trim();
+        if (line && reason) line += ": " + reason;
+        else line = line || reason;
+        if (line) lines.push(line);
+      });
+      if (view.resultBody) lines.push(view.resultBody);
+      var msg = lines.join("\n");
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("hidden", !msg);
+      statusEl.classList.toggle(
+        "workflow-run-step-output-status--error",
+        view.phase === "review_failed" || view.phase === "review_invalid"
+      );
+    }
+  }
+
+  function resolveGamPracticeIndependencePromptLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_GAM_PRACTICE_INDEPENDENCE_PROMPT &&
+      typeof globalThis.PRISM_GAM_PRACTICE_INDEPENDENCE_PROMPT
+        .buildS78Ws2OperandAwareAuthoringBlock === "function"
+    ) {
+      return globalThis.PRISM_GAM_PRACTICE_INDEPENDENCE_PROMPT;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/gam-practice-independence-prompt.js");
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function resolveGamOperationalSuitabilityPromptLib() {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT &&
+      typeof globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT
+        .buildOperationalSuitabilityAuthoringBlock === "function"
+    ) {
+      return globalThis.PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/gam-operational-suitability-prompt.js");
+      } catch (_) {}
+    }
+    return null;
+  }
+
   function resolveInstructionalPatternPromptLib() {
     if (
       typeof globalThis !== "undefined" &&
@@ -16234,6 +16869,10 @@
         state.workflowRunGamFormatValidation[sid]
       );
     }
+    if (gamMaterialsVerificationBlocksAdvance(sid)) {
+      var verificationView = resolveGamMaterialsVerificationView(sid);
+      return verificationView.stepStatusText || GAM_VERIFICATION_COPY.pendingStatus;
+    }
     return "";
   }
 
@@ -16497,8 +17136,10 @@
           if (state.workflowRunStepCompleted[stepId]) {
             delete state.workflowRunStepCompleted[stepId];
           }
+          clearGamOperationalSuitabilityReviewGate(stepId);
         } else {
           delete state.workflowRunGamPageValidation[stepId];
+          syncGamMaterialsVerificationAfterCapture(stepId, page, baseline);
         }
       }
       if (!gamCheck.ok) {
@@ -24895,6 +25536,7 @@
           runOutArea.placeholder = "";
         }
       }
+      refreshGamSuitabilityReviewUi(li);
       var instructionsLabelEl = li.querySelector('[data-role="notes-label"]');
       if (instructionsLabelEl) {
         instructionsLabelEl.textContent = "Instructions";
@@ -24905,6 +25547,7 @@
       fields.forEach(function (el) {
         if (el.tagName === "INPUT" && el.type === "button") return;
         if (String(el.getAttribute("data-field") || "") === "runStepOutput") return;
+        if (String(el.getAttribute("data-field") || "") === "runStepSuitabilityReview") return;
         if (el.tagName === "TEXTAREA") {
           el.readOnly = isRun;
           if (String(el.getAttribute("data-field") || "") === "notes") {
@@ -25011,6 +25654,9 @@
     state.workflowRunGamPageValidation = {};
     state.workflowRunGamFormatWarnings = {};
     state.workflowRunLearnerPageFramingValidation = {};
+    state.workflowRunGamSuitabilityReviewValidation = {};
+    state.workflowRunGamVerificationCheck = {};
+    state.workflowRunGamVerificationPages = {};
   }
 
   function clearWorkflowRunCaptureState(options) {
@@ -25019,6 +25665,7 @@
     state.workflowRunCapturedOutputsRaw = {};
     state.workflowRunCaptureRefs = {};
     state.workflowRunStepCompleted = {};
+    state.workflowRunGamSuitabilityReviewRaw = {};
     resetWorkflowRunValidationState();
     if (opts.resetIndex !== false) {
       state.currentWorkflowRunIndex = 0;
@@ -25029,6 +25676,8 @@
       getWorkflowStepElements().forEach(function (li) {
         var ta = li.querySelector('[data-field="runStepOutput"]');
         if (ta) ta.value = "";
+        var reviewTa = li.querySelector('[data-field="runStepSuitabilityReview"]');
+        if (reviewTa) reviewTa.value = "";
         updateRunStepOutputStatus(li);
       });
     }
@@ -25151,6 +25800,7 @@
         state.workflowRunPageMaterialsClosureValidation[sid]) ||
       (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
       (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
+      gamMaterialsVerificationBlocksAdvance(sid) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
   }
@@ -25694,17 +26344,28 @@
       sid && state.workflowRunGamFormatValidation
         ? state.workflowRunGamFormatValidation[sid]
         : "";
+    var gamSuitabilityErr =
+      sid && state.workflowRunGamSuitabilityReviewValidation
+        ? state.workflowRunGamSuitabilityReviewValidation[sid]
+        : "";
     var gamFormatWarn =
       sid && state.workflowRunGamFormatWarnings ? state.workflowRunGamFormatWarnings[sid] : "";
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
-    var hasBlockingErr = !!(
-      strictErr ||
-      episodePlanErr ||
-      pageErr ||
-      materialsClosureErr ||
-      learnerFramingErr ||
-      gamFormatErr
-    ) && body.length > 0;
+    var gamVerificationView = resolveGamMaterialsVerificationView(sid);
+    var gamVerificationPending = !!(
+      gamVerificationView.applies &&
+      gamVerificationView.nextBlocked &&
+      body.length > 0
+    );
+    var hasBlockingErr =
+      !!(
+        strictErr ||
+        episodePlanErr ||
+        pageErr ||
+        materialsClosureErr ||
+        learnerFramingErr ||
+        gamFormatErr
+      ) && body.length > 0;
     var blockingMessage = String(
       strictErr ||
       episodePlanErr ||
@@ -25719,6 +26380,8 @@
       text = blockingMessage
         ? "This result has validation errors: " + blockingMessage
         : "This result has validation errors.";
+    } else if (gamVerificationPending) {
+      text = gamVerificationView.stepStatusText || GAM_VERIFICATION_COPY.pendingStatus;
     } else {
       text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
       if (gamFormatWarn) {
@@ -25740,6 +26403,7 @@
       "workflow-run-step-output-status--warning",
       !hasBlockingErr && !!gamFormatWarn
     );
+    refreshGamSuitabilityReviewUi(li);
   }
 
   function refreshWorkflowRunStepOutputStatusDisplays() {
@@ -25763,6 +26427,12 @@
   function setWorkflowContinueToAuthoringVisible(visible) {
     if (!els.workflowContinueToAuthoringBtn) return;
     els.workflowContinueToAuthoringBtn.classList.toggle("hidden", !visible);
+  }
+
+  function setWorkflowRunNextButtonHidden(hidden) {
+    if (!els.workflowNextStepBtn) return;
+    els.workflowNextStepBtn.classList.toggle("hidden", !!hidden);
+    els.workflowNextStepBtn.setAttribute("aria-hidden", hidden ? "true" : "false");
   }
 
   function workflowStepHasPersistedRunData(workflowId, stepId) {
@@ -25875,7 +26545,7 @@
     });
   }
 
-  function syncWorkflowRunStepIdentityPlacement(currentStepLi) {
+  function syncWorkflowRunStepIdentityPlacement(currentStepLi, isFinalStep) {
     var park = els.workflowRunChromePark;
     var navHost =
       currentStepLi && currentStepLi.querySelector
@@ -25889,6 +26559,12 @@
       currentStepLi && currentStepLi.querySelector
         ? currentStepLi.querySelector('[data-role="run-step-copy"]')
         : null;
+    var continueHost =
+      currentStepLi &&
+      isFinalStep &&
+      currentStepLi.querySelector
+        ? currentStepLi.querySelector('[data-role="run-step-continue"]')
+        : null;
     var navTarget = navHost || park;
     if (navTarget) {
       if (els.workflowRunProgress) navTarget.appendChild(els.workflowRunProgress);
@@ -25901,6 +26577,10 @@
     var copyTarget = copyHost || park;
     if (copyTarget && els.workflowRunCopyBtn) {
       copyTarget.appendChild(els.workflowRunCopyBtn);
+    }
+    var continueTarget = continueHost || park;
+    if (continueTarget && els.workflowRunContinueHost) {
+      continueTarget.appendChild(els.workflowRunContinueHost);
     }
   }
 
@@ -25946,7 +26626,38 @@
     );
   }
 
+  function isWorkflowRunContinueToAuthoringEnabled(stepRow, stepId, wf, li, idx, total) {
+    if (!isWorkflowRunAtFinalStep(idx, total)) return false;
+    return isWorkflowRunStepCaptureReadyForAdvance(stepRow || {}, stepId, wf || {}, li);
+  }
+
   function handleContinueToAuthoring() {
+    var liSteps = getWorkflowStepElements();
+    var idx = state.currentWorkflowRunIndex;
+    var total = liSteps.length;
+    var currentLi = liSteps[idx] || null;
+    var sid = currentLi ? String(currentLi.getAttribute("data-step-id") || "").trim() : "";
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var stepRow = null;
+    if (wf && Array.isArray(wf.steps) && sid) {
+      stepRow =
+        wf.steps.find(function (row) {
+          return String(row && row.id ? row.id : "") === sid;
+        }) || null;
+    }
+    if (
+      total > 0 &&
+      !isWorkflowRunContinueToAuthoringEnabled(stepRow || {}, sid, wf || {}, currentLi, idx, total)
+    ) {
+      if (currentLi) updateRunStepOutputStatus(currentLi);
+      showToast(
+        sid && workflowRunStepHasBlockingCaptureErrors(sid)
+          ? "Fix validation errors in this step's output artefact before continuing."
+          : "Paste a valid output artefact for this step before continuing to Authoring.",
+        "error"
+      );
+      return;
+    }
     switchTab("utilities");
     refreshUtilitiesWorkflowContextUI();
     if (els.utilitiesAssembleCurrentRunBtn && typeof els.utilitiesAssembleCurrentRunBtn.focus === "function") {
@@ -26161,6 +26872,7 @@
       }
       if (els.workflowNextStepBtn) {
         els.workflowNextStepBtn.disabled = true;
+        setWorkflowRunNextButtonHidden(false);
       }
       if (els.workflowRunCopyBtn) {
         els.workflowRunCopyBtn.disabled = true;
@@ -26184,6 +26896,7 @@
     }
 
     var idx = state.currentWorkflowRunIndex;
+    var isFinalStep = isWorkflowRunAtFinalStep(idx, total);
     var currentStepLi = liSteps[idx] || null;
     var currentStepId = currentStepLi
       ? String(currentStepLi.getAttribute("data-step-id") || "")
@@ -26244,7 +26957,7 @@
       }),
       idx
     );
-    syncWorkflowRunStepIdentityPlacement(currentStepLi);
+    syncWorkflowRunStepIdentityPlacement(currentStepLi, isFinalStep);
 
     if (currentStepLi) {
       maybeAutoPopulateDesignEpisodePlanRunCapture(currentStepLi, wfRun, stepRowRun);
@@ -26264,7 +26977,30 @@
       els.workflowRunCopyBtn.textContent = shouldShowBarCopied ? "✓ Copied" : "Copy";
     }
     if (els.workflowNextStepBtn) {
-      var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
+      setWorkflowRunNextButtonHidden(isFinalStep);
+      if (isFinalStep) {
+        els.workflowNextStepBtn.disabled = true;
+        els.workflowNextStepBtn.removeAttribute("title");
+      } else {
+        var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
+          stepRowRun,
+          stepIdRun,
+          wfRun,
+          currentStepLi,
+          idx,
+          total
+        );
+        els.workflowNextStepBtn.disabled = !!nextDisabledReason;
+        if (nextDisabledReason) {
+          els.workflowNextStepBtn.setAttribute("title", nextDisabledReason);
+        } else {
+          els.workflowNextStepBtn.removeAttribute("title");
+        }
+      }
+    }
+    setWorkflowContinueToAuthoringVisible(isFinalStep);
+    if (els.workflowContinueToAuthoringBtn) {
+      var continueEnabled = isWorkflowRunContinueToAuthoringEnabled(
         stepRowRun,
         stepIdRun,
         wfRun,
@@ -26272,22 +27008,13 @@
         idx,
         total
       );
-      els.workflowNextStepBtn.disabled = !!nextDisabledReason;
-      if (nextDisabledReason) {
-        els.workflowNextStepBtn.setAttribute("title", nextDisabledReason);
-      } else {
-        els.workflowNextStepBtn.removeAttribute("title");
-      }
-    }
-    var isFinalStep = isWorkflowRunAtFinalStep(idx, total);
-    setWorkflowContinueToAuthoringVisible(isFinalStep);
-    if (els.workflowContinueToAuthoringBtn) {
-      var authoringReady = isWorkflowRunAuthoringReady(state.selectedWorkflowId || "");
-      els.workflowContinueToAuthoringBtn.disabled = !authoringReady;
-      if (isFinalStep && !authoringReady) {
+      els.workflowContinueToAuthoringBtn.disabled = !continueEnabled;
+      if (isFinalStep && !continueEnabled) {
         els.workflowContinueToAuthoringBtn.setAttribute(
           "title",
-          "Continue to Authoring is available after a persisted Design Page result exists."
+          stepIdRun && workflowRunStepHasBlockingCaptureErrors(stepIdRun)
+            ? "Fix validation errors in this step's output artefact before continuing."
+            : "Paste a valid result for this step before continuing to Authoring."
         );
       } else {
         els.workflowContinueToAuthoringBtn.removeAttribute("title");
@@ -26309,7 +27036,7 @@
 
     if (!els.workflowModeEditBtn || !els.workflowModeRunBtn) return;
 
-    if (!isRun) {
+      if (!isRun) {
       state.workflowRunStepCompleted = {};
       state.workflowRunStrictJsonValidation = {};
       state.workflowRunEpisodePlanValidation = {};
@@ -26318,6 +27045,9 @@
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamPageValidation = {};
       state.workflowRunGamFormatWarnings = {};
+      state.workflowRunGamSuitabilityReviewValidation = {};
+      state.workflowRunGamVerificationCheck = {};
+      state.workflowRunGamVerificationPages = {};
     }
 
     if (els.workflowModeRunBtn) {
@@ -30952,6 +31682,10 @@
     runCopy.className = "workflow-step-run-copy";
     runCopy.setAttribute("data-role", "run-step-copy");
 
+    var runContinue = document.createElement("div");
+    runContinue.className = "workflow-step-run-continue";
+    runContinue.setAttribute("data-role", "run-step-continue");
+
     var header = document.createElement("div");
     header.className = "workflow-step-header";
     var hiddenStepIdInput = document.createElement("input");
@@ -31886,6 +32620,62 @@
     userNotesWrap.appendChild(userNotesTextarea);
     userNotesWrap.appendChild(userNotesStatus);
 
+    var suitabilityWrap = document.createElement("div");
+    suitabilityWrap.className = "workflow-step-run-output-wrap hidden";
+    suitabilityWrap.setAttribute("data-role", "run-step-suitability-review-wrap");
+    var suitabilityHeading = document.createElement("div");
+    suitabilityHeading.className = "workflow-step-run-instructions-title";
+    suitabilityHeading.setAttribute("data-role", "run-step-suitability-heading");
+    suitabilityHeading.textContent = "Verify generated materials";
+    var suitabilityIntro = document.createElement("div");
+    suitabilityIntro.className = "helper-text";
+    suitabilityIntro.setAttribute("data-role", "run-step-suitability-intro");
+    suitabilityIntro.textContent =
+      "These materials include generated information that learners must rely on to complete their tasks. Run a short verification before continuing.";
+    var suitabilityCopyBtn = document.createElement("button");
+    suitabilityCopyBtn.type = "button";
+    suitabilityCopyBtn.className = "btn small";
+    suitabilityCopyBtn.setAttribute("data-role", "run-step-suitability-copy");
+    suitabilityCopyBtn.textContent = "Copy verification prompt";
+    suitabilityCopyBtn.addEventListener("click", function () {
+      copyGamOperationalSuitabilityReviewPrompt(li);
+    });
+    var suitabilityLabel = document.createElement("label");
+    suitabilityLabel.setAttribute("data-role", "run-step-suitability-paste-label");
+    suitabilityLabel.textContent = "Paste verification result";
+    var suitabilityTextarea = document.createElement("textarea");
+    suitabilityTextarea.rows = 4;
+    suitabilityTextarea.className = "workflow-step-run-output";
+    suitabilityTextarea.setAttribute("data-field", "runStepSuitabilityReview");
+    suitabilityTextarea.setAttribute("autocomplete", "off");
+    suitabilityTextarea.placeholder = "Paste the verification result here.";
+    suitabilityTextarea.value = String(
+      (state.workflowRunGamSuitabilityReviewRaw &&
+        state.workflowRunGamSuitabilityReviewRaw[stepIdForRun]) ||
+        ""
+    );
+    suitabilityTextarea.addEventListener("input", function () {
+      syncGamSuitabilityReviewFromDom(li);
+    });
+    var suitabilityCheckBtn = document.createElement("button");
+    suitabilityCheckBtn.type = "button";
+    suitabilityCheckBtn.className = "btn small";
+    suitabilityCheckBtn.setAttribute("data-role", "run-step-suitability-check");
+    suitabilityCheckBtn.textContent = "Check verification";
+    suitabilityCheckBtn.addEventListener("click", function () {
+      checkGamMaterialsVerificationFromDom(li);
+    });
+    var suitabilityStatus = document.createElement("div");
+    suitabilityStatus.setAttribute("data-role", "run-step-suitability-review-status");
+    suitabilityStatus.className = "workflow-step-run-output-status helper-text hidden";
+    suitabilityWrap.appendChild(suitabilityHeading);
+    suitabilityWrap.appendChild(suitabilityIntro);
+    suitabilityWrap.appendChild(suitabilityCopyBtn);
+    suitabilityWrap.appendChild(suitabilityLabel);
+    suitabilityWrap.appendChild(suitabilityTextarea);
+    suitabilityWrap.appendChild(suitabilityCheckBtn);
+    suitabilityWrap.appendChild(suitabilityStatus);
+
     li.appendChild(hiddenStepIdInput);
     li.appendChild(runNav);
     li.appendChild(runIdentity);
@@ -31894,6 +32684,10 @@
     li.appendChild(instructionsGroup);
     li.appendChild(runCopy);
     li.appendChild(userNotesWrap);
+    li.appendChild(runContinue);
+    if (isWorkflowStepGenerateActivityMaterials(buildWorkflowStepRecognitionContext(step, {}))) {
+      li.appendChild(suitabilityWrap);
+    }
     renderInputBindings();
     updateRunStepOutputStatus(li);
     decorateWorkflowStepSettingsDiscoverability(li, step, { context: "library" });
@@ -53971,6 +54765,7 @@
       pruneWorkflowSessionStateForDeletedWorkflow;
     prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
     prismTestApi.isWorkflowRunAtFinalStep = isWorkflowRunAtFinalStep;
+    prismTestApi.isWorkflowRunContinueToAuthoringEnabled = isWorkflowRunContinueToAuthoringEnabled;
     prismTestApi.workflowHasPersistedDesignPageResultForTest = workflowHasPersistedDesignPageResult;
     prismTestApi.workflowStepHasPersistedRunDataForTest = workflowStepHasPersistedRunData;
     prismTestApi.buildWorkflowRunProgressSegmentsForTest = buildWorkflowRunProgressSegments;
@@ -54774,6 +55569,76 @@
       projectGamAuthoritativeDlaCommissionFromPage;
     prismTestApi.buildAuthoritativeDlaMaterialCommissionSectionFromPage =
       buildAuthoritativeDlaMaterialCommissionSectionFromPage;
+    if (resolveGamPracticeIndependencePromptLib()) {
+      prismTestApi.resolveGamPracticeIndependencePromptLib =
+        resolveGamPracticeIndependencePromptLib;
+    }
+    if (resolveGamOperationalSuitabilityPromptLib()) {
+      prismTestApi.resolveGamOperationalSuitabilityPromptLib =
+        resolveGamOperationalSuitabilityPromptLib;
+    }
+    if (resolveGamOperationalSuitabilityReviewLib()) {
+      prismTestApi.resolveGamOperationalSuitabilityReviewLib =
+        resolveGamOperationalSuitabilityReviewLib;
+    }
+    prismTestApi.isGamMaterialGenerationStep = isGamMaterialGenerationStep;
+    prismTestApi.installGamVerificationScopeWorkflowForTest = function () {
+      state.workflows = [
+        {
+          id: "s78-t018a-scope-wf",
+          name: "S78 T-018A scope",
+          steps: [
+            {
+              id: "dla_step",
+              title: "Design Learning Activities",
+              canonical_step_id: "step_design_learning_activities",
+              outputName: "page"
+            },
+            {
+              id: "gam_step",
+              title: "Generate Activity Materials",
+              canonical_step_id: "step_generate_activity_materials",
+              outputName: "page"
+            }
+          ]
+        }
+      ];
+      state.selectedWorkflowId = "s78-t018a-scope-wf";
+    };
+    prismTestApi.applyGamOperationalSuitabilityReviewGate =
+      applyGamOperationalSuitabilityReviewGate;
+    prismTestApi.resolveGamMaterialsVerificationViewForTest = function (stepId, pages) {
+      return resolveGamMaterialsVerificationView(stepId, pages || {});
+    };
+    prismTestApi.submitGamMaterialsVerificationForTest = function (stepId, reviewRaw, gamPage, dlaPage) {
+      return submitGamMaterialsVerification(stepId, gamPage, dlaPage, reviewRaw);
+    };
+    prismTestApi.syncGamMaterialsVerificationAfterCaptureForTest = function (stepId, gamPage, dlaPage) {
+      syncGamMaterialsVerificationAfterCapture(stepId, gamPage, dlaPage);
+      return resolveGamMaterialsVerificationView(stepId, {
+        gamPage: gamPage,
+        dlaPage: dlaPage,
+        gamStructurallyOk: true
+      });
+    };
+    prismTestApi.GAM_VERIFICATION_COPY = GAM_VERIFICATION_COPY;
+    prismTestApi.setWorkflowRunGamSuitabilityReviewRawForTest = function (stepId, raw) {
+      var sid = String(stepId || "").trim();
+      state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
+      if (!sid) return;
+      state.workflowRunGamSuitabilityReviewRaw[sid] = String(raw || "");
+    };
+    prismTestApi.getWorkflowRunGamSuitabilityReviewValidationForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunGamSuitabilityReviewValidation) return "";
+      return state.workflowRunGamSuitabilityReviewValidation[sid] || "";
+    };
+    prismTestApi.resetGamOperationalSuitabilityReviewStateForTest = function () {
+      state.workflowRunGamSuitabilityReviewRaw = {};
+      state.workflowRunGamSuitabilityReviewValidation = {};
+      state.workflowRunGamVerificationCheck = {};
+      state.workflowRunGamVerificationPages = {};
+    };
     prismTestApi.resolveGamEnrichedPageJsonForLearningSequenceCopy =
       resolveGamEnrichedPageJsonForLearningSequenceCopy;
     prismTestApi.isLearningSequencePageEnrichmentV2CopyStep =

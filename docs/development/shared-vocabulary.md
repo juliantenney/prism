@@ -1,86 +1,88 @@
 # PRISM Shared Operational Vocabulary
 
-These phrases are lightweight operational shorthand used across PRISM development sessions involving:
+These phrases provide lightweight shorthand for PRISM development involving the project/design authority, ChatGPT, Copilot and Cursor.
 
-- Julian
-- ChatGPT
-- Cursor
+They are conventions, not strict commands.
 
-The goal is:
+Their purpose is to reduce conversational overhead while keeping work bounded, evidence-led and aligned with the current sprint and programme milestone.
 
-- continuity
-- consistency
-- bounded architectural work
-- reduced conversational overhead
-- coherent architectural traceability
+---
 
-These are conventions, not strict commands.
+# Development shorthand
 
-## "Close this chat down"
+## "Close this sprint" / "Close this phase"
 
 Meaning:
 
-Perform end-of-session workflow including:
+- record outcomes and verification evidence;
+- record unresolved issues;
+- prepare a coherent commit/checkpoint;
+- identify the next bounded focus if known;
+- run the sprint-closure Governance check;
+- update Governance only for programme-significant deltas.
 
-- docs updates
-- continuity updates
-- handover preparation
-- bootstrap preparation
-- next bounded task definition
-- commit/check-in preparation
+Do not create global handovers, chat bootstraps or rolling current-state updates.
 
-## "Prepare the next chat"
+---
 
-Meaning:
-
-Generate:
-
-- suggested next bounded task
-- bootstrap prompt
-- relevant file list
-- constraints/context for the next chat
-
-## "Prepare sprint folder"
+## "Prepare the next sprint"
 
 Meaning:
 
-Create one portable sprint folder for the next architectural chat including:
+Create or update the canonical sprint folder with:
 
-- `SPRINT-CONTEXT.md`
-- `GPT-BOOTSTRAP-PROMPT.md`
-- `CURRENT-STATE.md`
-- `HANDOVER.md`
-- `context-files/` bounded files only
+- bounded objective;
+- relevant context;
+- goals and non-goals;
+- known constraints;
+- expected evidence;
+- relevant Governance references;
+- initial investigation/implementation plan where appropriate.
 
-Clarification:
+There is no mandatory fixed sprint-file template.
 
-Sprint folders should remain intentionally minimal and tightly aligned to the next bounded task. They are not archives, backups, or full project exports.
+---
 
-Compatibility note:
-
-- "Prepare context pack" remains a valid legacy phrase from Sprint 01 and should be interpreted as "prepare sprint folder."
-
-## "Run continuity update"
+## "Prepare the next chat" / "Bootstrap this task"
 
 Meaning:
 
-Review and update:
+Prepare a **bounded context**, not a historical context pack.
 
-- `current-state.md`
-- decisions log (if needed)
-- handover docs/templates
-- relevant continuity information
+Include only what the next context needs:
 
-## "Bootstrap this task"
+- current bounded task;
+- relevant sprint files;
+- relevant Governance constraints;
+- necessary implementation/artefact files;
+- a concise starting prompt when useful.
+
+Load deeper history only if the task requires it.
+
+---
+
+## "Run Governance"
 
 Meaning:
 
-Create:
+Review the work at programme level using `docs/development/governance/`.
 
-- bounded task definition
-- recommended files
-- architectural constraints
-- suggested starting prompt
+At sprint opening, ask:
+
+- what milestone condition does this advance?
+- what evidence/decisions constrain it?
+- what architectural debt is relevant?
+- what evidence should exist at closure?
+
+At sprint closure, ask:
+
+> **What changed at programme level?**
+
+Promote only durable trajectory, evidence/decision, debt, milestone or retired-direction changes.
+
+Mid-sprint Governance requires a material trigger rather than routine approval.
+
+---
 
 ## "Consolidation pass"
 
@@ -88,17 +90,22 @@ Meaning:
 
 Focus on:
 
-- cleanup
-- clarification
-- rationalisation
-- consistency
-- stability
+- cleanup;
+- clarification;
+- rationalisation;
+- consistency;
+- ownership;
+- stability.
 
 Avoid:
 
-- major feature expansion
-- speculative redesign
-- unrelated refactors
+- speculative redesign;
+- unrelated feature expansion;
+- large conceptual rewrites without evidence.
+
+Use `ENGINEERING-DISCIPLINES.md` for consolidation/removal work.
+
+---
 
 ## "Architectural review"
 
@@ -106,13 +113,66 @@ Meaning:
 
 Prioritise:
 
-- conceptual clarity
-- semantics
-- responsibilities
-- system boundaries
-- contracts/schemas
+- conceptual clarity;
+- semantics;
+- responsibility/ownership;
+- system boundaries;
+- contracts and schemas;
+- current behavioural evidence.
 
-Implementation should remain secondary.
+Implementation proposals follow from the architectural finding rather than leading it.
+
+---
+
+## "Generation Forensics"
+
+Meaning:
+
+Investigate a generation defect from produced artefacts before launching a broad repository audit.
+
+Typical approach:
+
+1. preserve the run artefacts;
+2. compare expected and observed state;
+3. identify the likely first-loss boundary;
+4. use diagnostic model review where useful;
+5. formulate bounded repository questions;
+6. use Cursor/code inspection to verify or falsify those findings.
+
+Do not contaminate the run under investigation by priming the generating model with the hypothesis being tested.
+
+---
+
+## "First loss"
+
+Meaning:
+
+The earliest stage/boundary at which intended instructional or semantic state can be shown to have degraded.
+
+The point where a defect becomes visible is not automatically its cause.
+
+---
+
+## "Bounded Cursor check"
+
+Meaning:
+
+Use repository inspection to answer a specific evidence-led question rather than auditing a broad subsystem without a hypothesis.
+
+Typical output:
+
+```text
+CURRENT
+RELOCATED
+SUPERSEDED
+REMOVED DELIBERATELY
+REGRESSED
+UNKNOWN
+```
+
+plus supporting code/runtime evidence.
+
+---
 
 ## "Smoke-check"
 
@@ -120,15 +180,17 @@ Meaning:
 
 Perform lightweight runtime/path/UI verification without broad testing or refactoring.
 
+---
+
 ## "Bounded task"
 
 Meaning:
 
-A tightly scoped architectural or implementation objective suitable for a single coherent chat/session.
+A tightly scoped architectural, diagnostic or implementation objective suitable for one coherent development slice.
 
-Clarification:
+A sprint may contain several bounded tasks, but each should have clear ownership and evidence.
 
-Chats should generally focus on one bounded task at a time.
+---
 
 ## "Prepare check-in"
 
@@ -136,68 +198,137 @@ Meaning:
 
 Generate:
 
-- concise coherent commit/check-in message
-- summary of architectural significance
-- summary of major changes
-- reminder to verify checklist/docs continuity before commit
+- concise coherent commit/check-in message;
+- summary of architectural/product significance;
+- summary of major changes;
+- verification/evidence reminder where needed.
 
-Clarification:
-
-Check-ins should represent coherent architectural or consolidation progress, not arbitrary file edits.
+Check-ins represent coherent progress, not arbitrary file edits.
 
 ---
 
-## Workflow validation lifecycle (documentation vocabulary)
+# Evidence vocabulary
 
-Use this sequence when describing workflow-definition checks in prose:
+## "Current evidence"
 
-1. **Normalize** — Where owned (for example load/import via `normalizeWorkflowForV1`), reconcile stored shapes and legacy aliases into the current compatible representation. Normalization may record compatibility warnings; it is not the same step as validation.
+Evidence from the current implementation/run with explicit provenance.
+
+Examples:
+
+- current code revision;
+- browser observation;
+- current generated artefact;
+- focused test;
+- runtime trace.
+
+Historical artefacts are context, not current proof.
+
+---
+
+## "Historical intent"
+
+What earlier designs, sprint records or architecture documents show Prism was intended to do.
+
+Historical intent is valuable for detecting possible regression but does not prove current implementation.
+
+---
+
+## "First-pass suitable"
+
+Generated output is operationally usable without relying on a downstream repair mechanism to make the learner task viable.
+
+Diagnostic/verifier tooling may still inspect it.
+
+---
+
+## "Fail closed"
+
+Reject or preserve malformed authoritative output rather than silently converting it into plausible state.
+
+---
+
+# Workflow validation lifecycle
+
+Use this sequence when describing workflow-definition checks:
+
+1. **Normalize** — where owned (for example load/import via `normalizeWorkflowForV1`), reconcile stored shapes and legacy aliases into the current compatible representation. Normalization may record compatibility warnings; it is not validation.
 2. **Validate** — `validateWorkflow(wf)` evaluates a **snapshot** of the workflow definition and returns **warnings only**. It does **not** mutate the workflow object.
-3. **Surface warnings** — Callers decide how warnings appear (validation panel, toasts, import summary text). This is **caller-owned warning surfacing**.
+3. **Surface warnings** — callers decide how warnings appear. Warning surfacing is caller-owned.
 
 Stable phrases:
 
-- **Warning-only** — Validation never blocks save, import, or merge on its own; there is no “hard fail” gate from `validateWorkflow`.
-- **Non-mutating** — `validateWorkflow` does not alter the definition; callers hold the authoritative objects they pass in.
-- **Caller-owned warning surfacing** — Same validation result may be shown in different UI surfaces depending on context (editor draft vs save vs import).
+- **Warning-only** — validation does not itself block save/import/merge.
+- **Non-mutating** — `validateWorkflow` does not alter the definition.
+- **Caller-owned warning surfacing** — the same result may be presented differently according to context.
 
 Avoid implying:
 
-- **Blocking validation** — Not part of the current contract.
-- **Enforcement pipeline** — Misleading; describe observe → warn → surface instead.
-- **Migration or redesign** — Validation and normalization docs describe **compatibility-preserving** behavior, not future schema migrations.
+- blocking validation where none exists;
+- an enforcement pipeline;
+- schema migration/redesign when documenting compatibility behaviour.
 
-## Prompt attachment modes (workflow steps)
+---
 
-Stable mode labels (stored semantics):
+# Prompt attachment modes
 
-- **`library_prompt`** — Step uses a Prompt Library asset via `promptId` (optional trimmed `override_prompt_body` may coexist per compatibility rules).
-- **`local_override`** — Step uses inline body text (`override_prompt_body`); not library-linked for execution resolution in the same way as `library_prompt`.
-- **None / empty** — No runnable library link and no effective local body in the resolved shape; may still be a deliberate compatibility state.
+Stable stored semantics:
 
-Compatibility fields (intentionally preserved, not redundant “cleanup” targets in docs):
+- **`library_prompt`** — step uses a Prompt Library asset via `promptId`; an optional trimmed `override_prompt_body` may coexist under compatibility rules.
+- **`local_override`** — step uses inline `override_prompt_body`.
+- **None / empty** — no runnable library link and no effective local body in the resolved shape; may be a deliberate compatibility state.
 
-- **`prompt_source`** and **`prompt_source_type`** — Dual fields kept for **compatibility** across older data and import paths. Documentation should **not** imply a schema consolidation sprint or field removal.
+Compatibility fields:
 
-## Import/export bundles (documentation vocabulary)
+- **`prompt_source`** and **`prompt_source_type`** — dual fields retained for compatibility across older data/import paths unless an explicit future sprint changes that contract.
 
-When describing workflow export/import in documentation:
+Do not describe these as redundant cleanup targets without current evidence and explicit scope.
 
-- Behavior is **compatibility-preserving** relative to existing bundle shapes and merge rules.
-- Descriptions of bundle shape (`version`, `workflows`, `prompts`, array-vs-object wrappers) are **documentation-only** summaries of current behavior, not a redesign spec.
-- **Merge/import semantics** in code are unchanged unless a future sprint explicitly scopes behavior work.
-- Avoid wording that suggests contract migrations, replacement formats, or import/export **redesign** while describing current behavior.
+---
 
-## Workflow step identity (workflow definition vocabulary)
+# Import/export bundles
 
-- **`step.id`** — **Persisted workflow-step identity** within a workflow’s `steps` array; stable handle for bindings and storage.
-- **`canonical_step_id`** — **Semantic or catalog lineage** reference (pattern/catalog), not the primary persisted step identity.
-- **Editor DOM rows / run UI** — **Derived or transient projections** of the definition; not a second source of truth alongside `state.workflows`.
+When documenting workflow export/import:
 
-## Continuity artefacts (closure, pointers, sprint folders)
+- describe current behaviour as compatibility-preserving where that remains the implementation;
+- bundle-shape descriptions are documentation of current behaviour, not redesign specifications;
+- merge/import semantics remain unchanged unless explicitly scoped;
+- avoid language implying contract migration or replacement formats without an approved change.
 
-- **Closure notes** — Sprint check-in/closure notes under `docs/consolidation/` record scope, outcomes, and explicit non-goals (for example verification-only, docs-only).
-- **`current-state.md`** — Rolling snapshot; should point to the active sprint planning or closure doc as the single obvious “where we are” entry.
-- **Session handovers** — Should stay fresh when sprint phase changes; not a duplicate of every consolidation detail.
-- **Sprint folders** (`docs/development/sprints/...`) — **Portable snapshots** for chat bootstrap; **not** canonical replacements for `current-state`, consolidation docs, or handovers.
+---
 
+# Workflow step identity
+
+- **`step.id`** — persisted workflow-step identity within a workflow's `steps` array; stable handle for bindings/storage.
+- **`canonical_step_id`** — semantic/catalog lineage reference; not the primary persisted step identity.
+- **Editor DOM rows / run UI** — derived/transient projections, not independent sources of truth alongside `state.workflows`.
+
+---
+
+# Continuity vocabulary
+
+## "Sprint record"
+
+The canonical bounded development record under `docs/development/sprints/`.
+
+It owns sprint-specific plans, investigations, evidence, decisions and closure material.
+
+## "Governance"
+
+The curated programme-level layer under `docs/development/governance/`.
+
+It owns milestone alignment, durable evidence/decisions, programme-significant architectural debt and project trajectory.
+
+## "Archive"
+
+Historical documentation retained for provenance but no longer describing active development practice.
+
+## Retired terminology
+
+The following terms describe superseded process mechanisms and should not be used for new work:
+
+- `context pack`;
+- global `current-state.md`;
+- global session handover;
+- chat bootstrap folder/template as a mandatory continuity mechanism.
+
+When encountered in historical documents, interpret them in their historical context rather than recreating the old workflow.

@@ -2,147 +2,290 @@
 
 ## Purpose
 
-PRISM is now in a consolidation/stabilisation phase.
+PRISM is currently in **pre-Alpha hardening**.
 
-This protocol defines a lightweight, practical way of working that preserves architectural continuity, reduces conceptual drift, and supports smooth handovers between development sessions.
+This protocol defines a lightweight, evidence-led way of working that preserves architectural continuity, reduces conceptual drift, and keeps development aligned with the current programme milestone.
 
-## Core Principles
+The operating model is:
 
-- consolidation before expansion
-- architectural clarity over rapid feature growth
-- explicit workflow semantics
-- artefact-centric architecture
-- HTML-first philosophy
-- inspectability over hidden automation
-- domain packs as structured constraint systems
+```text
+bounded sprint work
++ canonical sprint records
++ programme-level Governance
++ repository / behavioural evidence
+```
 
-## Development Workflow
+The older global continuity model based on `current-state.md`, session handovers, chat bootstraps and context packs is retired.
 
-Typical cycle:
+---
 
-1. clarify architecture
-2. implement narrowly
-3. verify
-4. update docs
-5. record decisions
-6. perform continuity update
-7. check in coherent changes
+## Core principles
 
-## Sprint Transition Standard (Canonical)
+- milestone alignment before feature accumulation;
+- architectural clarity over speculative expansion;
+- explicit workflow and semantic ownership;
+- artefact-centric architecture;
+- deterministic work in deterministic code;
+- inspectability over hidden recovery;
+- evidence before architectural change;
+- bounded implementation and reversible commits;
+- preserve current intended behaviour, not obsolete pre-release states;
+- promote only programme-significant learning into Governance.
 
-Every sprint transition should produce one portable sprint folder:
+---
 
-`docs/development/sprints/YYYY-MM-DD-sprint-name/`
+## Development cycle
 
-Required files inside:
+A typical sprint cycle is:
 
-- `SPRINT-CONTEXT.md`
-- `GPT-BOOTSTRAP-PROMPT.md`
-- `CURRENT-STATE.md`
-- `HANDOVER.md`
-- `context-files/`
+1. **orient** — establish the milestone, relevant Governance constraints and bounded problem;
+2. **investigate** — gather current evidence and identify the owning layer;
+3. **plan** — define the smallest coherent implementation or diagnostic slice;
+4. **implement narrowly**;
+5. **verify behaviour** with explicit provenance;
+6. **document sprint evidence and decisions**;
+7. **curate Governance deltas** where programme-level knowledge changed;
+8. **commit a coherent slice**;
+9. **close or continue the sprint** based on evidence.
 
-`context-files/` rule:
+Do not turn routine implementation into programme Governance.
 
-- contain copied physical snapshots of bounded sprint files
-- do not use references/symlinks
-- keep set intentionally minimal and directly uploadable to fresh chats
+---
 
-Purpose:
+# Sprint folders
 
-- make fresh chat startup low-friction
-- preserve bounded continuity
-- avoid ad-hoc file selection each restart
+## Canonical location
 
-### Canonical vs Legacy
+Each sprint has a canonical folder under:
 
-Canonical continuity sources remain:
+`docs/development/sprints/`
 
-- `docs/development/current-state.md`
-- `docs/development/session-handovers/`
-- `docs/development/chat-bootstraps/`
-- `docs/consolidation/`
+The sprint folder is the authoritative bounded development record for that sprint.
 
-Sprint folders are portable snapshots for restart convenience.
+It may contain, as appropriate:
 
-Clarification (continuity discipline):
+- sprint definition / start-here document;
+- goals and non-goals;
+- investigation notes;
+- implementation plans;
+- decisions;
+- evidence and generated diagnostic artefacts;
+- QA or forensic reports;
+- closure / check-in notes;
+- bounded prompts used to continue or verify the work.
 
-- Canonical sources of truth remain `current-state.md`, `session-handovers/`, `docs/consolidation/`, and `shared-vocabulary.md`.
-- Sprint folders are **uploadable snapshots** for the next chat; they do **not** replace or supersede those canonical locations.
+There is no requirement for every sprint to contain an identical fixed set of files.
 
-Legacy/superseded pattern:
+The folder should contain what is necessary to understand, verify and continue the sprint without recreating a global rolling state document.
 
-- `docs/development/context-packs/` naming is now legacy terminology.
-- Existing context-pack artifacts remain valid historical references, but new sprint transitions should use sprint folders under `docs/development/sprints/`.
+---
 
-## Cursor / ChatGPT Collaboration Model
+## Sprint opening
 
-### ChatGPT
+At sprint opening:
 
-- architecture
-- synthesis
-- critique
-- continuity
-- conceptual modelling
+1. identify the current milestone in `governance/MILESTONES.md`;
+2. state which milestone condition or explicit investigation the sprint advances;
+3. review relevant entries in:
+   - `governance/EVIDENCE-AND-DECISIONS.md`;
+   - `governance/ARCHITECTURAL-DEBT.md`;
+4. load broader trajectory/history only if needed;
+5. define bounded goals, non-goals and expected evidence;
+6. identify the likely owning architectural layer before proposing changes.
 
-### Cursor
+A sprint may legitimately be exploratory, but the reason for exploration should be explicit.
 
-- implementation
-- refactoring
-- filesystem operations
-- runtime verification
-- targeted execution tasks
+---
 
-## Important Rules
+## During a sprint
 
-- avoid uncontrolled feature expansion
-- archive before delete
-- avoid large conceptual rewrites during implementation work
-- preserve manifest/runtime stability during consolidation
-- keep domain-pack filenames stable unless explicitly planned
+Keep work bounded and evidence-led.
 
-## Chat Lifecycle Model
+When a failure is observed:
 
-START CHAT
+1. preserve the produced artefacts;
+2. distinguish current evidence from historical intent;
+3. identify the earliest proven point of degradation;
+4. establish the owning layer;
+5. change the definitive owner rather than patching downstream symptoms.
 
-- bootstrap relevant context
-- define bounded task
+A mid-sprint Governance review is warranted when:
 
-WORK SESSION
+- evidence falsifies a major sprint assumption;
+- the proposed fix implies architectural change;
+- scope expands materially;
+- a blocker threatens the current milestone;
+- a retired direction is being reconsidered;
+- new evidence changes what counts as sufficient milestone quality.
 
-- architecture + implementation + verification
+Ordinary implementation choices do not require Governance review.
 
-STABILISE
+---
 
-- docs + decisions + continuity update
+## Sprint closure
 
-CHECK-IN
+At closure:
 
-- coherent commit/checkpoint
+1. record what was actually changed;
+2. record verification evidence and provenance;
+3. distinguish implemented behaviour from unverified intent;
+4. record unresolved sprint-local issues;
+5. prepare a coherent commit/checkpoint;
+6. ask:
 
-HANDOVER
+> **What changed at programme level?**
 
-- generate sprint bootstrap prompt
-- generate portable sprint folder
+Only update Governance when the sprint changes:
 
-NEW CHAT
+- programme trajectory;
+- durable evidence or decisions;
+- programme-significant architectural debt;
+- milestone evidence/blockers;
+- a retired/disproven direction.
 
-- continue bounded architectural task
+Most sprint detail remains in the sprint folder.
 
-## How to Start a Fresh Sprint Chat
+---
 
-1. Open a new chat.
-2. Open the latest sprint folder in `docs/development/sprints/`.
-3. Upload `context-files/` bounded files plus sprint snapshot docs as needed.
-4. Paste `GPT-BOOTSTRAP-PROMPT.md`.
-5. Start with architecture-first review before implementation edits.
+# Governance
 
-## Continuity and check-in discipline
+Programme-level Governance lives in:
 
-- **Closure notes** — For bounded sprints, add or update a consolidation closure/check-in note under `docs/consolidation/` (for example `sprint-NN-check-in-closure.md` or sprint-specific naming) that states scope, outcomes, and explicit non-goals (verification-only, docs-only, no behavior change).
-- **`current-state.md`** — After a sprint phase completes, update the **Next active focus** pointer and sprint status lines so the latest closure planning doc is one hop away.
-- **Session handovers** — Refresh when the phase changes (sprint closed, new sprint started); keep priorities and next actions aligned with `current-state`.
-- **Terminology** — Prefer vocabulary from `shared-vocabulary.md` for validation lifecycle, prompt attachment modes, import/export narrative, and step identity so consolidation docs stay aligned without implying redesign.
+`docs/development/governance/`
 
-Documentation-only descriptions of import/export bundles are **compatibility summaries** of current behavior, not proposals for format or merge **redesign**.
+Its operational authorities are:
 
+- `MILESTONES.md` — current target and exit evidence;
+- `EVIDENCE-AND-DECISIONS.md` — durable programme knowledge;
+- `ARCHITECTURAL-DEBT.md` — programme-significant unresolved/retired architecture;
+- `PROJECT-TRAJECTORY.md` — compressed architectural journey.
+
+`PRISM-PROGRAMME-SYNTHESIS-S28-78.md` is curated historical provenance, not routine sprint context.
+
+See `governance/README.md` for the Governance workflow and authority model.
+
+---
+
+# Evidence and implementation disciplines
+
+Architectural consolidation and removal work follows `ENGINEERING-DISCIPLINES.md`.
+
+In particular:
+
+- prove evidence provenance;
+- establish ownership before change;
+- baseline and inventory before removal;
+- prefer small reversible commits;
+- perform residue sweeps;
+- treat the production browser path as authoritative where relevant;
+- do not use historical artefacts as proof of current behaviour.
+
+---
+
+# Collaboration model
+
+PRISM development may use different tools for different roles.
+
+## Project/design authority
+
+Owns:
+
+- product vision;
+- milestone judgement;
+- architectural and educational decisions;
+- acceptance of evidence;
+- scope and priority.
+
+## ChatGPT
+
+Best suited to:
+
+- architecture and synthesis;
+- pedagogical/product reasoning;
+- programme curation and Governance;
+- diagnostic framing;
+- comparison of artefacts;
+- bounded prompts/investigation plans.
+
+## Copilot / model-visible diagnostic review
+
+Useful for:
+
+- inspecting produced generation artefacts;
+- identifying likely first-loss boundaries;
+- testing hypotheses about model-visible contracts;
+- narrowing questions before repository inspection.
+
+Diagnostic prompting must avoid contaminating the generation run being investigated.
+
+## Cursor
+
+Best suited to:
+
+- bounded repository verification;
+- implementation and refactoring;
+- code/path tracing;
+- runtime verification;
+- focused tests and residue sweeps.
+
+Prefer using repository inspection to **verify bounded hypotheses** rather than repeatedly performing broad audits where artefact-level diagnosis can narrow the search first.
+
+---
+
+# Fresh-chat / context loading
+
+There is no mandatory chat-bootstrap package.
+
+For a new development context:
+
+1. identify the active sprint folder;
+2. load only the sprint files relevant to the current bounded task;
+3. load `governance/MILESTONES.md`;
+4. load relevant Governance evidence/debt entries when they constrain the task;
+5. load implementation files only as needed.
+
+Broader historical context should be loaded progressively:
+
+```text
+current sprint
+→ operational Governance
+→ programme trajectory
+→ programme synthesis
+→ older sprint/archive evidence
+```
+
+Do not load large historical packs by default.
+
+---
+
+# Documentation ownership
+
+Use the narrowest appropriate authority:
+
+- **current sprint folder** — bounded work, evidence, decisions and closure;
+- **Governance** — durable programme-level knowledge and milestone alignment;
+- **development protocol** — how development work is conducted;
+- **engineering disciplines** — how evidence-led architectural consolidation is performed;
+- **shared vocabulary** — stable shorthand and semantic terminology;
+- **canonical architecture/schema documents** — specific current technical contracts;
+- **archive/Git history** — superseded process artefacts and historical implementation.
+
+Avoid creating another rolling `current-state.md`.
+
+---
+
+# Archive and deletion
+
+Archive historical documentation when it remains useful provenance but no longer describes current practice.
+
+Delete administrative artefacts when they have no continuing evidential or architectural value.
+
+Do not preserve obsolete active mechanisms solely for history; Git history remains the implementation archive.
+
+---
+
+# Lightweight rule
+
+Process exists to reduce cognitive load and protect architectural learning.
+
+If a process artefact starts accumulating routine history, duplicates another authority, or requires substantial archaeology to use, curate or retire it rather than allowing it to become another source of truth.

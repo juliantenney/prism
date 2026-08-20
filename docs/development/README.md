@@ -1,67 +1,138 @@
 # PRISM Development Docs
 
-Use these docs to keep PRISM development coherent across Cursor, ChatGPT, commits, and new chats.
+This directory contains the active documentation for **how PRISM is developed**, the canonical sprint history, and the programme-level Governance layer.
 
-## Files
+PRISM is currently in **pre-Alpha hardening**.
 
-- `development-protocol.md` — overall development workflow and Cursor/ChatGPT role split
-- `checkin-checklist.md` — checklist before committing coherent changes
-- `current-state.md` — rolling snapshot for bootstrapping future chats
-- `session-handover-template.md` — fillable template for closing a session
-- `end-of-session-protocol.md` — ritual for ending a chat/session cleanly
-- `chat-bootstrap-template.md` — template for preparing a new ChatGPT conversation
-- `shared-vocabulary.md` — operational shorthand and continuity phrases used across PRISM development sessions
-- `ENGINEERING-DISCIPLINES.md` — how architectural consolidation work is carried out safely (constraints define *what*; disciplines define *how*)
-- Canonical product backlog: [`docs/backlog/PRODUCT-BACKLOG.md`](../backlog/PRODUCT-BACKLOG.md) (maturation / v1.0 stabilisation phase)
-- Next sprint pointer: [`docs/sprints/NEXT-SPRINT.md`](../sprints/NEXT-SPRINT.md)
-- Current sprint pack: [`docs/development/sprints/2026-08-06-sprint-73-workflow-resources/`](sprints/2026-08-06-sprint-73-workflow-resources/SPRINT-73-START-HERE.md) — Sprint 73 **OPEN**
+---
 
-## Recommended Use
+## Active structure
 
-Before a commit:
+```text
+docs/development/
+├── governance/
+├── sprints/
+├── archive/
+├── README.md
+├── development-protocol.md
+├── ENGINEERING-DISCIPLINES.md
+├── shared-vocabulary.md
+└── DESIGN-PAGE-EPISODE-PLANS-SCHEMA.md
+```
 
-- check `checkin-checklist.md`
-- update `current-state.md`
-- record decisions where needed
-- prepare a coherent commit/check-in message as part of continuity workflow
+### `governance/`
 
-Before ending a chat:
+Programme-level memory and milestone alignment.
 
-- follow `end-of-session-protocol.md`
-- complete `session-handover-template.md`
-- prepare a new-chat prompt using `chat-bootstrap-template.md`
-- prepare a sprint folder under `docs/development/sprints/YYYY-MM-DD-sprint-name/`
+Start with:
 
-When starting a new chat:
+- `MILESTONES.md`
+- `EVIDENCE-AND-DECISIONS.md`
+- `ARCHITECTURAL-DEBT.md`
 
-- use the latest sprint folder in `docs/development/sprints/`
-- upload bounded copied files from `context-files/` plus sprint snapshot docs
-- paste `GPT-BOOTSTRAP-PROMPT.md`
-- keep the chat architecture-first and bounded
+Use `PROJECT-TRAJECTORY.md` for broader architectural context and the programme synthesis only when deeper historical provenance is needed.
 
-## Sprint Folder Standard (Official)
+See `governance/README.md`.
 
-Each sprint transition should produce one portable folder containing:
+### `sprints/`
 
-- `SPRINT-CONTEXT.md`
-- `GPT-BOOTSTRAP-PROMPT.md`
-- `CURRENT-STATE.md`
-- `HANDOVER.md`
-- `context-files/`
+Canonical bounded development history.
 
-`context-files/` should hold copied physical snapshot files (not references/symlinks) so sprint folders are directly uploadable.
+Each sprint folder contains the material needed to understand, verify and continue that sprint. Sprint structure may vary according to the work undertaken.
 
-Canonical continuity sources remain in their existing locations (`current-state`, `session-handovers`, `chat-bootstraps`, `consolidation` docs). Sprint folders are operational snapshots for low-friction restart.
+### `archive/`
 
-Legacy note:
+Superseded development-process artefacts and historical documentation retained for provenance.
 
-- `context-packs` naming remains as historical artifacts from Sprint 01.
-- New sprint transitions should use the sprint-folder workflow.
+Archived documents do not describe current operating practice unless explicitly revalidated.
 
-## Consolidation and Backlog
+---
 
-- `docs/consolidation/` defines current bounded consolidation sprint work.
-- `docs/backlog/` captures deferred ideas/issues to avoid scope drift during active consolidation.
+## Root documents
 
-Keep this lightweight. Do not introduce process beyond what supports continuity and consolidation.
+### `development-protocol.md`
 
+The current development workflow: sprint opening, evidence-led implementation, sprint closure, Governance curation, collaboration roles and context loading.
+
+### `ENGINEERING-DISCIPLINES.md`
+
+Evidence-led practices for safe architectural consolidation and removal.
+
+### `shared-vocabulary.md`
+
+Stable operational shorthand and current technical/documentation vocabulary.
+
+### `DESIGN-PAGE-EPISODE-PLANS-SCHEMA.md`
+
+A canonical technical architecture/schema document for portable Episode Plan data.
+
+Its current implementation status should be established through repository/runtime evidence when relevant; do not casually alter architectural authorities as part of process-document cleanup.
+
+---
+
+# Current operating model
+
+```text
+programme milestone / Governance
+            ↓
+      bounded sprint
+            ↓
+investigate → implement → verify
+            ↓
+   sprint evidence / closure
+            ↓
+programme-significant curation
+            ↓
+        Governance
+```
+
+The older continuity model based on global `current-state.md`, session handovers, chat bootstraps and context packs is retired.
+
+---
+
+# Starting or continuing work
+
+For routine development:
+
+1. open the active sprint folder;
+2. establish the bounded task;
+3. check the current milestone;
+4. load only relevant Governance evidence/debt;
+5. inspect current implementation/evidence as needed;
+6. work according to `development-protocol.md` and, for architectural consolidation, `ENGINEERING-DISCIPLINES.md`.
+
+Do not load the whole historical record by default.
+
+---
+
+# Closing sprint work
+
+Before declaring a bounded slice complete:
+
+- verify behaviour with explicit provenance;
+- record the evidence in the sprint;
+- prepare a coherent commit/checkpoint;
+- record unresolved issues;
+- ask whether anything changed at programme level.
+
+If nothing programme-significant changed, Governance does not need an update.
+
+If something did change, curate only the relevant delta into the appropriate Governance artefact.
+
+---
+
+# Other project authorities
+
+The product backlog remains separate from Governance.
+
+A backlog item is not automatically a milestone requirement.
+
+QA remains an evidence source for instructional quality; it does not by itself prove structural conformance, semantic lineage or completeness.
+
+Current code and fresh behavioural evidence outrank historical documentation for claims about present runtime behaviour.
+
+---
+
+Keep this directory small and truthful.
+
+Active documentation should describe **how PRISM is actually developed now**, not preserve every development method the project has used historically.

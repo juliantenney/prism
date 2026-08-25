@@ -54,3 +54,37 @@ Sprint 77 remains **COMPLETE / Closed**. Do not reopen the DLA architecture pilo
 - **Rationale:** T-015 Stage-1 salience improved authoring guidance but Candidate 4 showed it is not by itself sufficiently reliable. T-018 integrated the Copilot review as a coherent GAM sub-flow so Sprint 78 can gather evidence without treating the extra interaction as the product. Closing reliability by looping regeneration would hide generation defects.
 
 - **Consequences:** Resume **S78-T-013** using Verify generated materials as instrumentation, not as a substitute for first-pass GAM quality. Do not describe the verifier as final architecture or as rejected. Do not close operational suitability from unit tests or from a later PASS after an earlier FAIL on the same commission. See [STATUS.md](STATUS.md) and [S78-T-018](S78-T-018-operational-suitability-review-ux-workflow-integration.md).
+
+---
+
+## S78-D03 Disciplinary warrant authoring salience (S78-DP)
+
+- **Decision:** Adopt **S78-DP (disciplinary warrant)** as a cross-cutting **prompt/contract salience** invariant, distinct from operational suitability. Learner-facing content, including visuals, must not present a stronger disciplinary conclusion than stated assumptions, taught model class, and supplied evidence warrant; introductory simplifications must be appropriately visible rather than presented as unrestricted general results.
+
+  **Minimum ownership:** DLA commissioning claim-strength · GAM material-body warrant · Design Page `page_synthesis` and visual `allowed_claims` / `disallowed_claims` / `canonical_discipline_note` salience · small image-prompt projection. **EP, assembly/renderer, and the T-017/T-018 verifier are out of the minimal set.**
+
+  Implementation is **prompt/contract salience only**: **no** new schema, **no** verifier expansion, **no** deterministic disciplinary validation, **no** domain-specific solvers or banned-term lists. Residual detection remains independent QA (Benchmark Subject & Disciplinary Quality).
+
+- **Status:** **Accepted** (2026-08-25) — design: [S78-T-025](S78-T-025-disciplinary-precision-authoring-solution-design.md)
+
+- **Rationale:** Candidate 6 scored **88/100** with verifier **PASS** and Subject Quality **84**. Suitability asks whether particulars are usable; warrant asks whether claims/representations are appropriately strong. C6 FOC→optimum started in DLA; shadow-price under-scoping started in DLA; inequality notation came from Design Page → image generation. Expanding the temporary suitability verifier into shadow-QA would violate S78-D02 and freeze Lagrangian checks into instrumentation.
+
+- **Consequences:** Next implementation when authorised: **S78-T-026**. Do **not** reopen WS1–3 for this class. Do **not** close T-013 or Sprint 78 on design alone. Do **not** treat Evidence 78 as a blocker. E2/first-pass reliability remains a separate track.
+
+---
+
+## S78-D04 Page-closure ownership (GAM substance · Design Page transport)
+
+- **Decision:** Learner-resource **closure substance** is owned by **GAM** (consolidation / transfer / ### Closure–### Debrief material bodies within the commissioned activity set, bounded by DLA where needed). **Design Page** may only **transport** a designated upstream closure body into existing `page_synthesis.study_tips`; it must **not** synthesise instructional closure. Omit-when-none remains valid when no transportable body exists.
+
+  This affirms Sprint 56C / Assembly-Time **R-41** and rejects restoring Design Page fallback authorship (T-030 Option A) without a separate architecture reopen. It also rejects inventing `final_synthesis` / `next_steps` or renderer-only fixes.
+
+  The current gap after T-030 is **incomplete upstream packaging** (56C SQ-1/SQ-2 deferred), not a renderer defect and not a missing Design Page contract injection.
+
+  **Minimal future intervention (when authorised):** prompt/contract only — ensure a compact transportable culminating closure/consolidation body exists upstream, and clarify Design Page transport mapping into `study_tips`. **No** schema, **no** new page-synthesis fields, **no** renderer change, **no** activity redesign of A1–A5 as a set.
+
+- **Status:** **Accepted** (2026-08-25) — design: [S78-T-031](S78-T-031-page-closure-ownership-design-decision.md) · diagnostic: [S78-T-030](S78-T-030-missing-page-synthesis-closure-diagnostic.md)
+
+- **Rationale:** 56C removed DP study_tips synthesis because it caused wrong-stage instructional authoring, GAM paraphrase/hallucination risk (R-42), and thin-assembly violations. Historical owner of substance was always GAM. Latest 91/100 package was contract-compliant without `study_tips`; QA’s brief final-synthesis recommendation is best met by completing the deferred transport path, not by reopening DP as an instructional author.
+
+- **Consequences:** Do **not** implement Option A by default. **S78-T-032** implemented Option B packaging (prompt/contract). Do **not** start T-019. Do **not** close T-013 or Sprint 78 on this decision alone.

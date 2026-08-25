@@ -1,0 +1,115 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Adds a relational systems structure that prose alone does not make simultaneously inspectable. It supports discrimination between holding water and moving water without reproducing the learner's classification table.
+
+Audience:
+Learners working through an educational activity.
+
+Educational mode:
+Educational visual mode: activity learning support.
+Provide visual scaffolding that supports learner reasoning.
+Support learner investigation rather than replacing it.
+Minimise explanatory prose; prefer scaffold-style visual structure.
+The image should explain concepts while surrounding learner text carries the task.
+Do not supply completed interpretations or answer-key style diagrams.
+Pre-classification stage: expose concepts, structure and relationships for investigation.
+Do not provide completed interpretations, answer-key statements, final inferences, or a worked example.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Representation:
+Annotated System
+
+Subject:
+Water stores and transfer relationships
+
+Context:
+represent a generic hydrological system containing atmospheric, surface and subsurface locations connected by multiple possible water movements. Make the distinction between places where water can be held and movements between locations perceptually clear, while avoiding a completed classification of the ten task-card components. Emphasise branching pathways rather than one compulsory circular route.
+
+Concept boundary:
+Only depict the concepts supplied in this brief.
+Use only the concepts explicitly listed in the supplied brief.
+Do not introduce additional concepts, relationships, categories, examples, historical details, or outcomes.
+Do not invent additional concepts, subtopics, historical actors, locations, institutions, technologies, or consequences.
+
+Visual structure:
+A coherent central system or object with labels pointing to relevant components.
+Prefer: Concise callouts; clear leader lines; spatial or functional relationships.
+Avoid: Label clutter; unsupported components; paragraphs around the image.
+
+Show:
+- atmospheric, surface and subsurface parts of the system
+- locations capable of holding water
+- multiple directional movements between locations
+- at least one branching pathway
+
+Relationships:
+- Show relationships visually through arrows, grouping, hierarchy or spatial organisation.
+- Do not explain those relationships in prose or as a causal essay.
+- Make visible (do not write as completed inference): Distinguish storage from movement and recognise multiple connected pathways before classifying the supplied components.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- completed answers for the ten-component classification task
+- a single mandatory circular sequence
+- a filled learner worksheet
+- filled_worksheet
+- summary_table
+- generic_infographic
+- assessment_answer_visual
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+- Additional concepts not listed in this brief
+- Answer-key style completed interpretations
+- Explanatory paragraphs that finish learner reasoning
+- Moving learner exercises into the image itself
+
+Claim discipline:
+- Do not claim: All water follows one fixed sequence.
+- Do not claim: Every represented pathway operates identically under all conditions.
+- Supported claim boundary: Water can be held in stores.
+- Supported claim boundary: Transfers move water between stores.
+- Supported claim boundary: Water can follow multiple pathways through the hydrological system.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+
+Learner reasoning:
+Show the relevant concepts and relationships, but do not provide a completed written conclusion or fully worked learner response.
+Support learner investigation rather than replacing it.
+The learner should still need to interpret the visual.
+Do not reveal completed learner conclusions, answer keys, or model solutions.
+Structural hints are permitted where the brief allows.
+
+Caption guidance:
+Show the water cycle as interconnected storage locations and possible transfer pathways without classifying the learner's task items.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

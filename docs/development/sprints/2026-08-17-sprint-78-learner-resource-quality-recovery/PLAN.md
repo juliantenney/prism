@@ -34,13 +34,20 @@ S78-D01 (open Sprint 78) ✅ Accepted
   → S78-T-020 (final-step Continue to Authoring CTA placement) ✅ COMPLETE
   → S78-D02 (first-pass GAM reliability; verifier = temporary instrumentation) ✅ Accepted
   → S78-T-013 (WS2 integration verification) — OPEN (C6 attempt 2 QA 88/100; first-pass E2; not closed)
-  → S78-T-025 (disciplinary-precision authoring design) — DEFINED, not started
+  → S78-T-025 (disciplinary-precision authoring design) ✅ COMPLETE — [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp)
+  → S78-T-026 (disciplinary-precision salience implementation) ✅ COMPLETE
+  → S78-T-027 (GPT maths-authoring reliability diagnostic) ✅ COMPLETE — T-028 salience recommended
+  → S78-T-028 (LD-MATH-RENDER prose-inside-math salience implementation) ✅ COMPLETE
+  → S78-T-029 (restore LD-MATH-RENDER on live GAM V2 Copy prompt) ✅ COMPLETE
+  → S78-T-030 (missing page-synthesis closure / study-tips diagnostic) ✅ COMPLETE
+  → S78-T-031 (page-closure ownership design) ✅ COMPLETE — [S78-D04](decisions.md#s78-d04--page-closure-ownership-gam-substance--design-page-transport)
+  → S78-T-032 (GAM learner-closure packaging) ✅ COMPLETE — designated `### Page learner-resource closure` → DP `study_tips` transport
   → S78-T-003 (check / revision architecture diagnostic) ✅ COMPLETE
   → S78-T-021 (check / revision architecture solution design) ✅ COMPLETE
   → S78-T-022 (DLA diagnostic-review commissioning + capture) ✅ COMPLETE
   → S78-T-023 (GAM guided-review salience) — CONDITIONAL; do not open by default
   → S78-T-024 (WS3 integration / fresh benchmark) — QUEUED after T-022
-  → S78-T-019 (activity timing / duration diagnostic) — QUEUED
+  → S78-T-019 / T-036 / T-037 (learner timing) — T-037 COMPLETE (LS timeline projection)
   → Final Gate: fresh Lagrangian EP→package→QA (≥90 uncapped; 0 Critical; 0 Major)
 ```
 
@@ -302,11 +309,245 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Defined — not started** |
-| **Mode** | DESIGN ONLY when authorised |
+| **Status** | **Design complete** (2026-08-25) — [S78-T-025-disciplinary-precision-authoring-solution-design.md](S78-T-025-disciplinary-precision-authoring-solution-design.md) |
+| **Decision** | [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp) — S78-DP salience at DLA + GAM + Design Page/visual; no verifier/schema/domain solvers |
 | **Depends on** | [C6 disciplinary diagnostic](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md) |
-| **Scope** | One general epistemic-precision invariant; GAM + DLA wording + visual-commissioning salience; cross-disciplinary fixtures; no verifier expansion; no domain solvers; no new schema |
-| **Does not include** | Implementation · T-019 · E2 sanitiser · Lagrangian hand-tuning |
+| **Proposed next** | **S78-T-026** bounded salience implementation ✅ |
+
+---
+
+### S78-T-027 — GPT maths-authoring reliability diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-027-gpt-maths-authoring-reliability-diagnostic.md](S78-T-027-gpt-maths-authoring-reliability-diagnostic.md) |
+| **Trigger** | Post-T-026 GAM capture fail: A5-M1 `PROSE_INSIDE_MATH` — `\text{total programme expenditure}` inside `\[...\]` |
+| **Finding** | Validator correct; LD-MATH-RENDER salience gap on `\text{...}` instructional labels |
+| **Proposed next** | **S78-T-028** one-line shared contract salience + regression tests |
+
+---
+
+### S78-T-028 — LD-MATH-RENDER prose-inside-math salience implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-028-ld-math-render-prose-inside-math-salience-implementation.md](S78-T-028-ld-math-render-prose-inside-math-salience-implementation.md) |
+| **Scope** | Add one shared LD-MATH-RENDER salience line (`\text{...}` instructional prose outside delimiters), sync `app.js` fallback, and add fail/pass/tolerated + injection tests |
+| **Constraints upheld** | Validator heuristic unchanged; no schema changes; no domain-specific bans; no T-026 broadening |
+| **Next** | **S78-T-029** live V2 Copy injection ✅; then operator fresh Lagrangian regen; T-013 remains OPEN |
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-029-restore-ld-math-render-on-live-gam-v2-copy-prompt.md](S78-T-029-restore-ld-math-render-on-live-gam-v2-copy-prompt.md) |
+| **Scope** | Post-assembly `applyMathSafeOutputContractToDraft` on `buildWorkflowStepInstructions` V2 Copy path; Run Copy regression test |
+| **Constraints upheld** | T-028 wording unchanged; no brief duplication; no validator/schema changes |
+| **Next** | Operator fresh Lagrangian regen/benchmark; T-013 remains OPEN |
+
+---
+
+### S78-T-030 — Missing page-synthesis closure / study-tips diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-030-missing-page-synthesis-closure-diagnostic.md](S78-T-030-missing-page-synthesis-closure-diagnostic.md) |
+| **Finding** | Assembled `page_synthesis` lacks `study_tips` by design (transport-or-omit; no synthesis). Not renderer; not T-029-class live injection gap. No `final_synthesis`/`next_steps` schema. |
+| **Next** | Ownership decided in **S78-T-031** / [S78-D04](decisions.md#s78-d04--page-closure-ownership-gam-substance--design-page-transport) |
+
+---
+
+### S78-T-031 — Page-closure ownership historical/design decision
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Design/decision complete** (2026-08-25) — [S78-T-031-page-closure-ownership-design-decision.md](S78-T-031-page-closure-ownership-design-decision.md) |
+| **Decision** | [S78-D04](decisions.md#s78-d04--page-closure-ownership-gam-substance--design-page-transport) — **Option B**: GAM owns closure substance; Design Page transport-only into `study_tips`; reject Option A; C is interim compliance only |
+| **Minimal future change** | Prompt/contract packaging only (when authorised). No schema, renderer, or new page-synthesis fields |
+| **Next** | Implemented in **S78-T-032** |
+
+---
+
+### S78-T-032 — GAM learner-closure packaging implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-032-gam-learner-closure-packaging-implementation.md](S78-T-032-gam-learner-closure-packaging-implementation.md) |
+| **Decision** | [S78-D04](decisions.md#s78-d04--page-closure-ownership-gam-substance--design-page-transport) |
+| **Scope** | GAM commissions `### Page learner-resource closure`; Design Page transport-only into `study_tips`; live V2 Copy + partial DP salience; regressions |
+| **Next** | Fresh Lagrangian regen/benchmark; T-013 remains OPEN |
+
+---
+
+### S78-T-033 — Literal TeX learner-rendering diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-033-literal-tex-learner-rendering-diagnostic.md](S78-T-033-literal-tex-learner-rendering-diagnostic.md) |
+| **Exhibit** | Post–T-026/T-029 ~91/100 Lagrangian package: `\frac{U_x}{U_y}`, `\frac{p_x}{p_y}`, FOC lines show as literal TeX while partial-derivative blocks render |
+| **Root cause** | vNext `render-html-utils.js` applies Markdown underscore emphasis inside unprotected `\(...\)` / `\[...\]` spans — not GAM, transport, validator, or MathJax config |
+| **Proposed next** | **S78-T-034** — vNext math-delimiter protect/restore (legacy parity) + live-path regression |
+
+---
+
+### S78-T-034 — vNext math-delimiter protection implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-034-vnext-math-delimiter-protection-implementation.md](S78-T-034-vnext-math-delimiter-protection-implementation.md) |
+| **Implements** | [S78-T-033](S78-T-033-literal-tex-learner-rendering-diagnostic.md) |
+| **Scope** | Shared `math-delimiter-markdown-protection.js` + vNext `render-html-utils.js` protect/restore; 8 regressions incl. live `renderLearnerPageForTest` path |
+| **Next** | Fresh Lagrangian regen/benchmark + visual maths check; T-013 remains OPEN |
+
+---
+
+### S78-T-035 — Legacy renderer retirement / vNext parity diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-035-legacy-renderer-retirement-vnext-parity-diagnostic.md](S78-T-035-legacy-renderer-retirement-vnext-parity-diagnostic.md) |
+| **Decision** | **B** — obsolete **page** renderer retired (S74A); shared `app.js` markdown/orchestration residue + test targeting legacy helpers = unfinished hygiene, not live second renderer |
+| **Proposed follow-on** | T-036 parity audit · T-037 math-module consolidation · T-038 dead branch deletion (design only until opened) |
+
+---
+
+### S78-T-026 — General disciplinary-precision authoring salience implementation
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-026-disciplinary-precision-authoring-salience-implementation.md](S78-T-026-disciplinary-precision-authoring-salience-implementation.md) |
+| **Depends on** | S78-T-025 · S78-D03 |
+| **Scope** | DLA + GAM + Design Page/visual/image-prompt salience; prompt-contract tests; cross-disciplinary fixtures |
+| **Next** | Post-T-026 GAM math integrity fail — [T-027](S78-T-027-gpt-maths-authoring-reliability-diagnostic.md); **T-028** salience recommended; T-013 remains OPEN |
+
+---
+
+### S78-T-036 — Learner timing metadata regression diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-036-learner-timing-metadata-regression-diagnostic.md](S78-T-036-learner-timing-metadata-regression-diagnostic.md) |
+| **Supersedes** | S78-T-019 (queued placeholder) |
+| **Decision** | Missing `activities[].duration_minutes` upstream; vNext header sums activities only (ignores `learning_sequence.total_duration_minutes`); export/badge rendering intact. Operator later showed LS timeline **did** hold 8/14/16/11/11. |
+| **Implemented by** | [S78-T-037](S78-T-037-restore-learner-timing-metadata.md) — LS timeline projection + header fallback; **not** DLA salience |
+
+---
+
+### S78-T-037 — Restore learner timing metadata
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-037-restore-learner-timing-metadata.md](S78-T-037-restore-learner-timing-metadata.md) |
+| **Implements** | [S78-T-036](S78-T-036-learner-timing-metadata-regression-diagnostic.md) as revised by operator LS-timeline evidence |
+| **Scope** | Assemble: `timeline[].duration_minutes` → `activities[].duration_minutes` when absent; vNext header fallback to `learning_sequence.total_duration_minutes`; live-path tests |
+| **Not in scope** | DLA required-output salience · grouping projection · schema change |
+
+---
+
+### S78-T-038 — Learner composition and presentation regression diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-038-learner-composition-presentation-regression-diagnostic.md](S78-T-038-learner-composition-presentation-regression-diagnostic.md) |
+| **Exhibit** | Post–T-037 Lagrangian QA **94**; operator defects: no final transfer production; collapsed numbered tasks; guided-review `1. A.`; A3 bold workspace labels |
+| **Decision** | Four independent owners — do not merge; Study tips ≠ transfer task; P1 renderer → P2 parser → P3 DLA transfer → P4 workspace fidelity |
+| **Proposed follow-on** | T-039…T-042 **all complete** |
+
+---
+
+### S78-T-039 — Guided-review feature-list enumeration fix
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-039-guided-review-feature-list-enumeration-fix.md](S78-T-039-guided-review-feature-list-enumeration-fix.md) |
+| **Implements** | [S78-T-038](S78-T-038-learner-composition-presentation-regression-diagnostic.md) Defect 3 |
+| **Scope** | `renderGuidedFeatureLists` look-for `<ol>` → `<ul>`; preserve A/B keys and missing guidance |
+| **Not in scope** | Schema · A/B generation · global markdown lists · T-040+ |
+
+---
+
+### S78-T-040 — Numbered learner-task structure recovery
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-040-numbered-learner-task-structure-recovery.md](S78-T-040-numbered-learner-task-structure-recovery.md) |
+| **Implements** | [S78-T-038](S78-T-038-learner-composition-presentation-regression-diagnostic.md) Defect 2 |
+| **Scope** | `parseLearnerTask` consecutive mid-line `\d+[.)]\s+` split; false-positive guards |
+| **Not in scope** | DLA salience · schema · markdown lists · T-041+ |
+
+---
+
+### S78-T-041 — Restore culminating learner transfer production
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-041-restore-culminating-learner-transfer-production.md](S78-T-041-restore-culminating-learner-transfer-production.md) |
+| **Implements** | [S78-T-038](S78-T-038-learner-composition-presentation-regression-diagnostic.md) Defect 1 |
+| **Scope** | DLA + GAM salience for culminating `transfer_prompt`; live V2 Copy; Study tips remain consolidation |
+| **Not in scope** | New schema · DP authorship · Study tips as transfer · T-042 |
+
+---
+
+### S78-T-042 — Learner workspace authoring fidelity
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-042-learner-workspace-authoring-fidelity.md](S78-T-042-learner-workspace-authoring-fidelity.md) |
+| **Implements** | [S78-T-038](S78-T-038-learner-composition-presentation-regression-diagnostic.md) Defect 4 |
+| **Scope** | DLA + GAM salience for `template` `**Label:**` / table-family workspaces; live V2 Copy; no parser broaden; maths editor parked |
+| **Not in scope** | Editable maths · MathQuill/MathLive · bold-prose parser guess · schema |
+
+---
+
+### S78-T-044 — Final learner-renderer presentation snagging
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Complete** (2026-08-25) — [S78-T-044-final-learner-renderer-presentation-snagging.md](S78-T-044-final-learner-renderer-presentation-snagging.md) |
+| **Scope** | Look-for bullet CSS (authorised); Orient→A1 separator (existing convention); diagnose Activity N headings + grouping badges |
+| **Not in scope** | Content regen · pretty grouping labels · `Activity N:` heading restore · T-013 / sprint close |
+
+---
+
+### S78-T-045 — Image instructional-fidelity diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-045-image-instructional-fidelity-diagnostic.md](S78-T-045-image-instructional-fidelity-diagnostic.md) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Finding** | Synthesis claim inventions confirmed **B→D** (atmospheric inputs / upstream inflows / outflows to other basins); residence→direction **A**. Live human path omits Concept boundary + evidence. Hardening design-only (§11). |
+| **Not in scope** | Implementation · workspace redesign · T-013 / sprint close |
+
+---
+
+### S78-T-046 — Resource-level image consistency diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-046-resource-level-image-consistency-diagnostic.md](S78-T-046-resource-level-image-consistency-diagnostic.md) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Finding** | No page-level visual-style SSOT; artistic family is model-discretionary. Cheap harden via deterministic PRISM house-style block in human prompts; no schema/reference images; parallel jobs remain independent. Prefer **separate** impl from T-045 fidelity (**B**). |
+| **Not in scope** | Implementation · claim-boundary changes · Graphics workflow redesign · T-013 / sprint close |
+
+---
+
+### S78-T-047 — Harden image instructional fidelity for synthesis visuals
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-047-harden-image-instructional-fidelity-synthesis.md](S78-T-047-harden-image-instructional-fidelity-synthesis.md) |
+| **Mode** | Implementation |
+| **Change** | Synthesis Concept/claim boundary + live human authorised evidence; strengthened activity Concept boundary; DP/VA S78-VA synthesis commissioning salience |
+| **Not in scope** | T-046 house style · schema expansion · GAM visual ownership · EP→DLA→GAM regen · T-013 / sprint close |
+
+---
+
+### S78-T-048 — Harden resource-level image visual consistency
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-048-harden-resource-visual-consistency.md](S78-T-048-harden-resource-visual-consistency.md) |
+| **Mode** | Implementation |
+| **Change** | Deterministic PRISM `Resource visual language` house block in every live human image prompt (+ canonical mirror from same module); no schema; parallel jobs unchanged |
+| **Not in scope** | Claim/evidence changes · reference images · pixel validation · T-013 / sprint close |
 
 ---
 
@@ -314,13 +555,13 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Queued — not authorised** |
+| **Status** | **Superseded** by S78-T-036 (2026-08-25) |
 | **Mode** | **DIAGNOSTIC ONLY** when started |
 | **Exhibit** | Fresh learner resources omit expected activity time/duration |
 | **Diagnostic question** | Where should activity timing originate, and why is it absent from the learner-facing resource? |
 | **Trace** | expected duration/orientation → upstream planning → DLA/GAM if relevant → assembly → renderer/learner presentation |
 | **Do not assume** | Renderer ownership |
-| **Verification** | [S78-T-019-activity-timing-duration-diagnostic.md](S78-T-019-activity-timing-duration-diagnostic.md) |
+| **Verification** | [S78-T-019-activity-timing-duration-diagnostic.md](S78-T-019-activity-timing-duration-diagnostic.md) · executed under [T-036](S78-T-036-learner-timing-metadata-regression-diagnostic.md) |
 
 ---
 
@@ -328,12 +569,13 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 | Finding | Disposition |
 | ------- | ----------- |
-| Activity 3 solution workspace: free-text Markdown-like table scaffolding vs structured mathematical workspace | **Logged, lower priority.** Do not elevate above instructional/reliability workstreams unless a shared architectural cause is proven. |
+| Activity 3 solution workspace: free-text Markdown-like table scaffolding vs structured mathematical workspace | **T-042 complete** — `template`/`**Label:**` (or blank tables); maths editor still parked |
 | Stray blank lines above some response fields | Logged; lower priority. |
-| Missing horizontal rule / separator between activities | Logged; lower priority. |
+| Missing horizontal rule / separator between activities | **T-044** — Orient→A1 boundary restored to match A1→An; activity siblings already had separators |
 | Image mismatch / persistence / operator-path | Logged where relevant; lower priority. |
-| Activity time/duration not displayed | **In sprint as T-019** (queued diagnostic). Not renderer-assumed. |
-
+| Activity time/duration not displayed | **T-037 complete** — LS timeline → activity projection + header LS-total fallback |
+| Missing final transfer production; collapsed numbered tasks; `1. A.` diagnostics | **T-038 diagnostic complete** — T-039…T-042 all implemented; editable maths remains parked |
+| Post-94 look-for bullets; Orient→A1 gap; Activity N heading; grouping badges | **T-044 complete** — look-for CSS + Orient→A1; retain title-only headings; grouping badges when populated |
 ---
 
 ## Final Gate (sprint exit)

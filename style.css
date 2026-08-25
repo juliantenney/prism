@@ -2185,6 +2185,51 @@ textarea:focus {
   margin-top: 6px;
 }
 
+/* S78-T-043: GAM verification as a distinct secondary section under capture */
+.workflow-step-suitability-review {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 100%;
+}
+
+.workflow-step-suitability-review__title {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.workflow-step-suitability-review__intro {
+  margin: 0 0 0.75rem;
+  line-height: 1.45;
+  max-width: 72ch;
+  overflow-wrap: anywhere;
+}
+
+.workflow-step-suitability-review__copy {
+  align-self: flex-start;
+  margin: 0 0 0.9rem;
+}
+
+.workflow-step-suitability-review__paste-label {
+  display: block;
+  margin: 0 0 0.35rem;
+}
+
+.workflow-step-suitability-review__check {
+  align-self: flex-start;
+  margin: 0.65rem 0 0;
+}
+
+.workflow-step-suitability-review .workflow-step-run-output-status {
+  margin-top: 0.65rem;
+}
+
 .workflow-run-step-output-status--error {
   color: #b91c1c;
 }

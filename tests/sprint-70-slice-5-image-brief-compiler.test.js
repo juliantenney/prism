@@ -420,7 +420,9 @@ test("Slice 5: instruction has stable labelled section order and required conten
     "8. Claim boundaries",
     "9. Spoiler boundary",
     "10. Discipline guidance",
-    "11. Caption guidance"
+    "11. Caption guidance",
+    "12. Resource visual language",
+    "13. Learner-facing figure copy"
   ];
   let last = -1;
   markers.forEach((marker) => {
@@ -428,6 +430,8 @@ test("Slice 5: instruction has stable labelled section order and required conten
     assert.ok(idx > last, "missing or out of order: " + marker);
     last = idx;
   });
+  assert.match(text, /university-level educational illustration/i);
+  assert.match(text, /same visual family/i);
   assert.match(text, /classification/);
   assert.match(text, /Inflation mechanism classification cues/);
   assert.match(text, /demand-pull pathway cues/);

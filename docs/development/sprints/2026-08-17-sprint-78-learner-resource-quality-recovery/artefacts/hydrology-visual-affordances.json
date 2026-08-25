@@ -1,0 +1,321 @@
+[
+  {
+    "affordance_id": "va-A1-system-01",
+    "scope": "activity",
+    "activity_id": "A1",
+    "visual_decision": "generate",
+    "rationale": "Externalising stores as nodes and transfers as connecting movements helps learners distinguish functional roles and notice that several pathways can connect the same hydrological system before they classify individual components.",
+    "visual_slot": "materials-entry",
+    "tier": "essential",
+    "purpose": "distinction",
+    "preferred_representation": "annotated_system",
+    "pedagogical_added_value": "Adds a relational systems structure that prose alone does not make simultaneously inspectable. It supports discrimination between holding water and moving water without reproducing the learner's classification table.",
+    "subject": "Water stores and transfer relationships",
+    "context": "Visual brief: represent a generic hydrological system containing atmospheric, surface and subsurface locations connected by multiple possible water movements. Make the distinction between places where water can be held and movements between locations perceptually clear, while avoiding a completed classification of the ten task-card components. Emphasise branching pathways rather than one compulsory circular route.",
+    "evidence_anchors": ["A1.learner_task", "A1.materials.text", "A1.materials.task_card"],
+    "reasoning_supported": "Distinguish storage from movement and recognise multiple connected pathways before classifying the supplied components.",
+    "learner_stage": "pre_classification",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": ["filled_worksheet", "summary_table", "generic_infographic", "assessment_answer_visual"],
+    "canonical_discipline_note": "Represent the taught systems model only: water may occupy stores and move through multiple transfers; do not imply one compulsory pathway.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "atmospheric, surface and subsurface parts of the system",
+      "locations capable of holding water",
+      "multiple directional movements between locations",
+      "at least one branching pathway"
+    ],
+    "must_not_show": [
+      "completed answers for the ten-component classification task",
+      "a single mandatory circular sequence",
+      "a filled learner worksheet"
+    ],
+    "allowed_claims": [
+      "Water can be held in stores.",
+      "Transfers move water between stores.",
+      "Water can follow multiple pathways through the hydrological system."
+    ],
+    "disallowed_claims": [
+      "All water follows one fixed sequence.",
+      "Every represented pathway operates identically under all conditions."
+    ],
+    "source_basis": "A1.learner_task; A1.materials.text; A1.materials.task_card",
+    "caption_intent": "Show the water cycle as interconnected storage locations and possible transfer pathways without classifying the learner's task items.",
+    "alt_text": "Hydrological system with water held in connected atmospheric, surface and subsurface locations; detailed description follows.",
+    "detailed_description": "The figure presents atmospheric, surface and subsurface parts of a hydrological system as connected locations rather than a single circle. Directional links show that water can move between locations along several possible routes, including branching surface and subsurface pathways. The visual distinguishes the idea of water being held from water moving but does not provide the classification answers required in the activity.",
+    "discipline_risk_level": "low"
+  },
+  {
+    "affordance_id": "va-A2-pathway-01",
+    "scope": "activity",
+    "activity_id": "A2",
+    "visual_decision": "defer",
+    "defer_reason": "worked_example_sufficient_first",
+    "rationale": "The worked example already models store-transfer-store reasoning in a distinct pathway, so an additional pathway visual before independent practice could encourage learners to imitate a route rather than construct their own.",
+    "subject": "Connected hydrological pathway",
+    "context": "Visual brief: a pathway representation could later consolidate how successive stores and transfers connect, but learners should first study the existing worked example and independently trace the precipitation-over-vegetated-land pathway without being shown a visually privileged solution route.",
+    "evidence_anchors": [
+      "A2.learner_task",
+      "A2.materials.worked_example",
+      "A2.materials.task_card",
+      "A2.materials.template"
+    ]
+  },
+  {
+    "affordance_id": "va-A3-basin-system-01",
+    "scope": "activity",
+    "activity_id": "A3",
+    "visual_decision": "generate",
+    "rationale": "Making the drainage-basin boundary visible gives learners a spatial criterion for deciding whether water enters, remains within, moves within, or leaves the system, adding reasoning support beyond the blank classification table.",
+    "visual_slot": "materials-entry",
+    "tier": "valuable",
+    "purpose": "classification",
+    "preferred_representation": "annotated_system",
+    "pedagogical_added_value": "Adds the basin boundary as a decision cue for functional classification. The learner table lists components but does not itself externalise how crossing or remaining within the boundary distinguishes system roles.",
+    "subject": "Drainage-basin boundary and functional water movements",
+    "context": "Visual brief: show a generic drainage-basin boundary with water crossing into the system, being held or moving internally, and crossing out of the system. Use structural cues for boundary relationships without assigning the twelve task-card components to input, store, transfer or output categories.",
+    "evidence_anchors": [
+      "A3.learner_task",
+      "A3.materials.text",
+      "A3.materials.task_card",
+      "A3.materials.classification_table"
+    ],
+    "reasoning_supported": "Use relationship to the drainage-basin boundary as a criterion for functional classification.",
+    "learner_stage": "pre_classification",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": [
+      "filled_worksheet",
+      "summary_table",
+      "assessment_answer_visual",
+      "generic_infographic"
+    ],
+    "canonical_discipline_note": "Classification is relative to the defined drainage-basin boundary; the visual must provide boundary cues without completing the learner's component classifications.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "a clearly defined drainage-basin boundary",
+      "water movement crossing into the boundary",
+      "water held and moving within the boundary",
+      "water movement crossing out of the boundary"
+    ],
+    "must_not_show": [
+      "completed classifications for the twelve supplied components",
+      "a filled version of the learner classification table",
+      "a claim that functional categories are independent of system boundary"
+    ],
+    "allowed_claims": [
+      "A drainage basin can be modelled as an open hydrological system.",
+      "Functional classification depends on a component's role relative to the basin boundary."
+    ],
+    "disallowed_claims": [
+      "Every hydrological component has the same functional classification regardless of system boundary.",
+      "The figure supplies the correct classifications for the learner task."
+    ],
+    "source_basis": "A3.learner_task; A3.materials.text; A3.materials.task_card; A3.materials.classification_table",
+    "caption_intent": "Make the basin boundary a visible decision cue for reasoning about system roles without revealing task classifications.",
+    "alt_text": "Drainage-basin boundary showing water entering, remaining or moving within, and leaving; detailed description follows.",
+    "detailed_description": "A defined drainage-basin boundary separates the system from its surroundings. Directional cues show water crossing into the basin, locations and movements occurring inside it, and water crossing outward. The figure is organised around relationship to the boundary rather than completed category labels, so learners can use the boundary as a classification criterion in their own table.",
+    "discipline_risk_level": "low"
+  },
+  {
+    "affordance_id": "va-A4-balance-01",
+    "scope": "activity",
+    "activity_id": "A4",
+    "visual_decision": "generate",
+    "rationale": "After learners analyse the supplied basin values, a causal model can consolidate the distinction between the direction of storage change and the different timescales over which soil moisture and groundwater may express that change.",
+    "visual_slot": "materials-table-pair-between",
+    "tier": "valuable",
+    "purpose": "mechanism",
+    "preferred_representation": "causal_model",
+    "pedagogical_added_value": "Adds an explicit two-stage reasoning structure that separates balance-based inference from residence-time interpretation. This relationship is distributed across prose, scenario values and the analysis table but is not otherwise visible as one model.",
+    "subject": "Water balance, storage direction and residence time",
+    "context": "Visual brief: represent the taught qualitative reasoning sequence from comparison of hydrological inputs and outputs to direction of storage change, then separately connect residence-time differences to faster or slower expression of change in soil moisture and groundwater. Do not reproduce or solve the Alpha and Beta scenario values.",
+    "evidence_anchors": [
+      "A4.learner_task",
+      "A4.materials.text",
+      "A4.materials.scenario",
+      "A4.materials.analysis_table"
+    ],
+    "reasoning_supported": "Separate inference about whether storage rises or falls from reasoning about how rapidly different stores may respond.",
+    "learner_stage": "post_reasoning",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": [
+      "filled_worksheet",
+      "numeric_claim_without_source",
+      "assessment_answer_visual",
+      "duplicate_mechanism_and_evidence"
+    ],
+    "canonical_discipline_note": "Use the simplified taught water-balance model: relative inputs and outputs indicate storage direction over the stated period; residence time qualifies response timescale rather than reversing that direction.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "comparison of hydrological inputs and outputs",
+      "connection from balance to increasing or decreasing storage",
+      "separate residence-time branch",
+      "contrast between faster soil-moisture response and slower groundwater response"
+    ],
+    "must_not_show": [
+      "solutions for Basin Alpha or Basin Beta",
+      "invented numerical thresholds",
+      "residence time presented as determining storage direction"
+    ],
+    "allowed_claims": [
+      "Within the simplified model, inputs exceeding outputs are consistent with storage gain.",
+      "Within the simplified model, outputs exceeding inputs are consistent with storage depletion.",
+      "Different stores can express change over different timescales."
+    ],
+    "disallowed_claims": [
+      "Residence time determines whether total storage rises or falls.",
+      "All soil-moisture and groundwater responses occur at fixed universal rates."
+    ],
+    "source_basis": "A4.learner_task; A4.materials.text; A4.materials.scenario; A4.materials.analysis_table",
+    "caption_intent": "Separate balance-based storage-direction reasoning from residence-time reasoning without solving the supplied scenarios.",
+    "alt_text": "Causal model separating water-balance storage direction from residence-time response; detailed description follows.",
+    "detailed_description": "The model begins with comparison of hydrological inputs and outputs and branches to increasing or decreasing storage within the simplified basin model. A separate branch shows that residence time affects how rapidly change may appear in different stores, contrasting relatively responsive soil moisture with slower groundwater adjustment. No Alpha or Beta values or conclusions are displayed.",
+    "discipline_risk_level": "medium"
+  },
+  {
+    "affordance_id": "va-A5-causal-chain-01",
+    "scope": "activity",
+    "activity_id": "A5",
+    "visual_decision": "generate",
+    "rationale": "A blank causal-chain framework makes the required inferential structure visible so learners can connect observed catchment particulars to an intervening process and then to a store or flow without receiving scenario-specific conclusions.",
+    "visual_slot": "materials-entry",
+    "tier": "essential",
+    "purpose": "mechanism",
+    "preferred_representation": "causal_chain",
+    "pedagogical_added_value": "Adds an explicit reasoning scaffold for constructing bounded causal explanations. The scenario and analysis table supply evidence and response space, but neither isolates the condition-to-process-to-consequence logic as a reusable reasoning structure.",
+    "subject": "Catchment condition to hydrological consequence",
+    "context": "Visual brief: show an unfilled three-stage causal structure linking an observed physical control or human modification to a directly affected hydrological process and then to an affected water store or flow. Include prompts that encourage conditional reasoning under stated catchment circumstances but no scenario-specific answers.",
+    "evidence_anchors": [
+      "A5.learner_task",
+      "A5.materials.text",
+      "A5.materials.scenario",
+      "A5.materials.analysis_table",
+      "A5.materials.transfer_prompt"
+    ],
+    "reasoning_supported": "Construct explicit, evidence-grounded causal chains and transfer the same reasoning structure to a changed catchment context.",
+    "learner_stage": "pre_classification",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": [
+      "filled_worksheet",
+      "assessment_answer_visual",
+      "unsupported_causal_arrow",
+      "generic_infographic"
+    ],
+    "canonical_discipline_note": "Causal claims must remain conditional on the supplied catchment particulars and use only taught links among catchment conditions, hydrological processes, stores and flows.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "observed catchment condition as the first reasoning stage",
+      "intervening hydrological process as the second stage",
+      "affected store or flow as the third stage",
+      "conditional connection between the three stages"
+    ],
+    "must_not_show": [
+      "completed analyses of Catchments One, Two or Three",
+      "a completed answer to the transfer scenario",
+      "unconditional claims that one catchment characteristic always produces one outcome"
+    ],
+    "allowed_claims": [
+      "Physical controls and human modifications can alter hydrological processes under stated conditions.",
+      "Changes to hydrological processes can affect water stores or flows."
+    ],
+    "disallowed_claims": [
+      "A particular modification always produces the same hydrological response regardless of context.",
+      "Scenario conclusions not warranted by the supplied conditions."
+    ],
+    "source_basis": "A5.learner_task; A5.materials.text; A5.materials.scenario; A5.materials.analysis_table; A5.materials.transfer_prompt",
+    "caption_intent": "Provide a reusable condition-to-process-to-consequence reasoning scaffold without supplying scenario answers.",
+    "alt_text": "Blank causal chain from catchment condition through hydrological process to store or flow; detailed description follows.",
+    "detailed_description": "Three connected reasoning stages are shown: an observed physical control or human modification, the hydrological process directly affected, and the resulting change to a water store or flow. The links signal that each claim should be justified from stated catchment conditions. No specific scenario characteristics or completed causal conclusions are inserted.",
+    "discipline_risk_level": "medium"
+  },
+  {
+    "affordance_id": "va-page-knowledge-summary-01",
+    "scope": "page",
+    "region": "knowledge_summary",
+    "visual_decision": "generate",
+    "rationale": "A concept map can consolidate relationships distributed across the full resource by connecting stores and transfers, drainage-basin system roles, water-balance reasoning, residence time and catchment controls in one revisitable systems representation.",
+    "visual_slot": "knowledge-summary-after-content",
+    "tier": "essential",
+    "purpose": "synthesis",
+    "preferred_representation": "concept_map",
+    "pedagogical_added_value": "Adds cross-activity integration that individual materials do not provide. It helps learners see how the same systems model supports pathway tracing, basin classification, storage-change reasoning and bounded catchment analysis.",
+    "subject": "Integrated hydrological systems model",
+    "context": "Visual brief: synthesise the taught relationships among water stores and transfers, drainage-basin inputs and outputs, changing storage, residence-time differences, and physical or human controls on pathways. Show these as connected parts of one systems model from the learner perspective, while keeping causal claims conditional and avoiding new processes, quantitative claims or universal conclusions.",
+    "evidence_anchors": [
+      "page_synthesis.knowledge_summary",
+      "page_synthesis.learning_purpose",
+      "page_synthesis.study_tips"
+    ],
+    "reasoning_supported": "Connect the page's core systems concepts into a coherent model that can be revisited after completing the activity sequence.",
+    "learner_stage": "post_reasoning",
+    "anti_spoiler": true,
+    "spoiler_boundary": {
+      "hide_answers": true,
+      "hide_classification_keys": true,
+      "hide_model_solution": true,
+      "allow_structural_hint": true
+    },
+    "representation_avoid": [
+      "filled_worksheet",
+      "generic_infographic",
+      "assessment_answer_visual",
+      "numeric_claim_without_source"
+    ],
+    "canonical_discipline_note": "Synthesis must remain within the taught hydrological systems model and preserve conditionality of catchment-response claims.",
+    "requires_exact_data_match": false,
+    "must_show": [
+      "stores connected by transfers",
+      "drainage-basin inputs and outputs around the system",
+      "input-output balance linked to storage direction",
+      "residence time linked to response timescale",
+      "physical and human controls linked conditionally to processes and stores or flows"
+    ],
+    "must_not_show": [
+      "a single compulsory water-cycle pathway",
+      "scenario answer keys",
+      "new hydrological mechanisms not taught on the page",
+      "universal causal claims about catchment modifications"
+    ],
+    "allowed_claims": [
+      "The hydrological cycle can be modelled as interconnected stores and transfers.",
+      "Drainage basins can be analysed using inputs, stores, transfers and outputs.",
+      "Input-output balance can be used to reason about storage direction within the simplified model.",
+      "Residence time helps explain differences in response timescale.",
+      "Catchment controls can alter pathways and storage under stated conditions."
+    ],
+    "disallowed_claims": [
+      "All water follows one fixed route.",
+      "Residence time alone determines storage direction.",
+      "A physical control or human modification has one universal hydrological effect in every catchment."
+    ],
+    "source_basis": "page_synthesis.knowledge_summary; page_synthesis.learning_purpose; page_synthesis.study_tips",
+    "caption_intent": "Integrate the resource's systems reasoning from stores and transfers through drainage-basin change and catchment controls.",
+    "alt_text": "Concept map linking water stores, transfers, basin balance, residence time and catchment controls; detailed description follows.",
+    "detailed_description": "The concept map places interconnected water stores and transfers at its centre. Drainage-basin inputs and outputs connect to this system, with their balance linked to increasing or decreasing storage. Residence time branches separately to response timescale. Physical controls and human modifications connect conditionally through altered hydrological processes to affected stores or flows, preserving the bounded reasoning used throughout the resource.",
+    "discipline_risk_level": "medium"
+  }
+]

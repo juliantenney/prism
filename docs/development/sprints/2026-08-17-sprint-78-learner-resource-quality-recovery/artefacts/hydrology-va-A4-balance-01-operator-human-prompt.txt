@@ -1,0 +1,115 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Adds an explicit two-stage reasoning structure that separates balance-based inference from residence-time interpretation. This relationship is distributed across prose, scenario values and the analysis table but is not otherwise visible as one model.
+
+Audience:
+Learners working through an educational activity.
+
+Educational mode:
+Educational visual mode: activity learning support.
+Provide visual scaffolding that supports learner reasoning.
+Support learner investigation rather than replacing it.
+Minimise explanatory prose; prefer scaffold-style visual structure.
+The image should explain concepts while surrounding learner text carries the task.
+Do not supply completed interpretations or answer-key style diagrams.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Representation:
+Causal Model
+
+Subject:
+Water balance, storage direction and residence time
+
+Context:
+represent the taught qualitative reasoning sequence from comparison of hydrological inputs and outputs to direction of storage change, then separately connect residence-time differences to faster or slower expression of change in soil moisture and groundwater. Do not reproduce or solve the Alpha and Beta scenario values.
+
+Concept boundary:
+Only depict the concepts supplied in this brief.
+Use only the concepts explicitly listed in the supplied brief.
+Do not introduce additional concepts, relationships, categories, examples, historical details, or outcomes.
+Do not invent additional concepts, subtopics, historical actors, locations, institutions, technologies, or consequences.
+
+Visual structure:
+Clear directional causal or mechanism network among labelled concepts.
+Prefer: Concise cause/effect labels; visible arrow direction; distinction among causes, mechanisms and outcomes.
+Avoid: Unsupported causal steps; prose explanations replacing the causal structure; a completed written conclusion.
+
+Show:
+- comparison of hydrological inputs and outputs
+- connection from balance to increasing or decreasing storage
+- separate residence-time branch
+- contrast between faster soil-moisture response and slower groundwater response
+
+Relationships:
+- Show relationships visually through arrows, grouping, hierarchy or spatial organisation.
+- Do not explain those relationships in prose or as a causal essay.
+- Make visible (do not write as completed inference): Separate inference about whether storage rises or falls from reasoning about how rapidly different stores may respond.
+- Show mechanism relationships through layout rather than written inference.
+- Concise cause/effect labels; visible arrow direction; distinction among causes, mechanisms and outcomes.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- solutions for Basin Alpha or Basin Beta
+- invented numerical thresholds
+- residence time presented as determining storage direction
+- filled_worksheet
+- numeric_claim_without_source
+- assessment_answer_visual
+- duplicate_mechanism_and_evidence
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+- Additional concepts not listed in this brief
+- Answer-key style completed interpretations
+- Explanatory paragraphs that finish learner reasoning
+- Moving learner exercises into the image itself
+
+Claim discipline:
+- Do not claim: Residence time determines whether total storage rises or falls.
+- Do not claim: All soil-moisture and groundwater responses occur at fixed universal rates.
+- Supported claim boundary: Within the simplified model, inputs exceeding outputs are consistent with storage gain.
+- Supported claim boundary: Within the simplified model, outputs exceeding inputs are consistent with storage depletion.
+- Supported claim boundary: Different stores can express change over different timescales.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+
+Learner reasoning:
+Show the relevant concepts and relationships, but do not provide a completed written conclusion or fully worked learner response.
+Support learner investigation rather than replacing it.
+The learner should still need to interpret the visual.
+Do not reveal completed learner conclusions, answer keys, or model solutions.
+Structural hints are permitted where the brief allows.
+
+Caption guidance:
+Separate balance-based storage-direction reasoning from residence-time reasoning without solving the supplied scenarios.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

@@ -1,0 +1,72 @@
+1. Educational objective
+- purpose: synthesis
+- pedagogical_added_value: Adds cross-activity integration that individual materials do not provide. It helps learners see how the same systems model supports pathway tracing, basin classification, storage-change reasoning and bounded catchment analysis.
+- reasoning_supported: Connect the page's core systems concepts into a coherent model that can be revisited after completing the activity sequence.
+
+2. Representation
+- preferred_representation: concept_map
+- Show relationships among concepts as labelled links
+- Preserve hierarchy or network structure without inventing nodes
+- Keep link labels concise and source-supported
+- Avoid decorative connectors that invent relationships
+
+3. Subject
+- Integrated hydrological systems model
+
+4. Context
+- Visual brief: synthesise the taught relationships among water stores and transfers, drainage-basin inputs and outputs, changing storage, residence-time differences, and physical or human controls on pathways. Show these as connected parts of one systems model from the learner perspective, while keeping causal claims conditional and avoiding new processes, quantitative claims or universal conclusions.
+
+5. Evidence basis
+- [page_synthesis.knowledge_summary | knowledge_summary] The hydrological cycle can be modelled as an interconnected system in which water occupies stores and moves between them through transfers. At drainage-basin scale, precipitation supplies an input; water can be held in vegetation, soil, ...
+- [page_synthesis.learning_purpose | page_synthesis] The sequence moves from identifying hydrological components to explaining relationships and analysing change. Each activity reuses the systems reasoning established earlier, so complete the activities in order and use your own classifica...
+- [page_synthesis.study_tips | page_synthesis] - Treat the water cycle as a **system of stores and transfers**, not as one fixed circular route. - When analysing a drainage basin, use the functional sequence **input → storage and internal transfers → output**, while remembering that ...
+
+6. Required content
+- stores connected by transfers
+- drainage-basin inputs and outputs around the system
+- input-output balance linked to storage direction
+- residence time linked to response timescale
+- physical and human controls linked conditionally to processes and stores or flows
+
+7. Excluded content
+- a single compulsory water-cycle pathway
+- scenario answer keys
+- new hydrological mechanisms not taught on the page
+- universal causal claims about catchment modifications
+- representation_avoid:
+  - filled_worksheet
+  - generic_infographic
+  - assessment_answer_visual
+  - numeric_claim_without_source
+
+8. Claim boundaries
+- allowed_claims:
+  - The hydrological cycle can be modelled as interconnected stores and transfers.
+  - Drainage basins can be analysed using inputs, stores, transfers and outputs.
+  - Input-output balance can be used to reason about storage direction within the simplified model.
+  - Residence time helps explain differences in response timescale.
+  - Catchment controls can alter pathways and storage under stated conditions.
+- disallowed_claims:
+  - All water follows one fixed route.
+  - Residence time alone determines storage direction.
+  - A physical control or human modification has one universal hydrological effect in every catchment.
+
+9. Spoiler boundary
+- anti_spoiler: true
+- boundary.allow_structural_hint: true
+- boundary.hide_answers: true
+- boundary.hide_classification_keys: true
+- boundary.hide_model_solution: true
+- learner_stage: post_reasoning
+
+10. Discipline guidance
+- discipline_risk_level: medium
+- canonical_discipline_note: Synthesis must remain within the taught hydrological systems model and preserve conditionality of catchment-response claims.
+
+11. Caption guidance
+- Integrate the resource's systems reasoning from stores and transfers through drainage-basin change and catchment controls.
+
+12. Learner-facing figure copy (authored with this brief; do not invent style/camera language)
+- alt_text: Concept map linking water stores, transfers, basin balance, residence time and catchment controls; detailed description follows.
+- detailed_description: The concept map places interconnected water stores and transfers at its centre. Drainage-basin inputs and outputs connect to this system, with their balance linked to increasing or decreasing storage. Residence time branches separately to response timescale. Physical controls and human modifications connect conditionally through altered hydrological processes to affected stores or flows, preserving the bounded reasoning used throughout the resource.
+- Note: generation_instruction above is the image prompt only; learner HTML uses alt_text + detailed_description, not this prompt.

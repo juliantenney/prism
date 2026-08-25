@@ -298,7 +298,9 @@ Expected cross-disciplinary behaviour: fewer unscoped “therefore X is establis
 
 ## 16. Next implementation task (not started)
 
-**S78-T-025 — general disciplinary-precision authoring solution design** (DESIGN ONLY when authorised), then a bounded implementation task.
+**S78-T-025 — general disciplinary-precision authoring solution design** is **COMPLETE** — [record](S78-T-025-disciplinary-precision-authoring-solution-design.md) · [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp).
+
+Next implementation when authorised: **S78-T-026 — general disciplinary-precision authoring salience implementation**.
 
 Scope when implemented:
 

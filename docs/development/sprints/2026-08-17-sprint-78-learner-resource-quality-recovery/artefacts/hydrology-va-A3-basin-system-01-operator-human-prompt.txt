@@ -1,0 +1,115 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Adds the basin boundary as a decision cue for functional classification. The learner table lists components but does not itself externalise how crossing or remaining within the boundary distinguishes system roles.
+
+Audience:
+Learners working through an educational activity.
+
+Educational mode:
+Educational visual mode: activity learning support.
+Provide visual scaffolding that supports learner reasoning.
+Support learner investigation rather than replacing it.
+Minimise explanatory prose; prefer scaffold-style visual structure.
+The image should explain concepts while surrounding learner text carries the task.
+Do not supply completed interpretations or answer-key style diagrams.
+Pre-classification stage: expose concepts, structure and relationships for investigation.
+Do not provide completed interpretations, answer-key statements, final inferences, or a worked example.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Representation:
+Annotated System
+
+Subject:
+Drainage-basin boundary and functional water movements
+
+Context:
+show a generic drainage-basin boundary with water crossing into the system, being held or moving internally, and crossing out of the system. Use structural cues for boundary relationships without assigning the twelve task-card components to input, store, transfer or output categories.
+
+Concept boundary:
+Only depict the concepts supplied in this brief.
+Use only the concepts explicitly listed in the supplied brief.
+Do not introduce additional concepts, relationships, categories, examples, historical details, or outcomes.
+Do not invent additional concepts, subtopics, historical actors, locations, institutions, technologies, or consequences.
+
+Visual structure:
+A coherent central system or object with labels pointing to relevant components.
+Prefer: Concise callouts; clear leader lines; spatial or functional relationships.
+Avoid: Label clutter; unsupported components; paragraphs around the image.
+
+Show:
+- a clearly defined drainage-basin boundary
+- water movement crossing into the boundary
+- water held and moving within the boundary
+- water movement crossing out of the boundary
+
+Relationships:
+- Show relationships visually through arrows, grouping, hierarchy or spatial organisation.
+- Do not explain those relationships in prose or as a causal essay.
+- Make visible (do not write as completed inference): Use relationship to the drainage-basin boundary as a criterion for functional classification.
+- Show classification relationships through layout rather than written inference.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- completed classifications for the twelve supplied components
+- a filled version of the learner classification table
+- a claim that functional categories are independent of system boundary
+- filled_worksheet
+- summary_table
+- assessment_answer_visual
+- generic_infographic
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+- Additional concepts not listed in this brief
+- Answer-key style completed interpretations
+- Explanatory paragraphs that finish learner reasoning
+- Moving learner exercises into the image itself
+
+Claim discipline:
+- Do not claim: Every hydrological component has the same functional classification regardless of system boundary.
+- Do not claim: The figure supplies the correct classifications for the learner task.
+- Supported claim boundary: A drainage basin can be modelled as an open hydrological system.
+- Supported claim boundary: Functional classification depends on a component's role relative to the basin boundary.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+
+Learner reasoning:
+Show the relevant concepts and relationships, but do not provide a completed written conclusion or fully worked learner response.
+Support learner investigation rather than replacing it.
+The learner should still need to interpret the visual.
+Do not reveal completed learner conclusions, answer keys, or model solutions.
+Structural hints are permitted where the brief allows.
+
+Caption guidance:
+Make the basin boundary a visible decision cue for reasoning about system roles without revealing task classifications.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

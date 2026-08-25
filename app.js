@@ -9079,7 +9079,8 @@
               "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
               "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.",
               "- Math spans must be intact TeX only: never interleave numbered steps, instructional prose, or truncated symbols inside \\(...\\) or \\[...\\].",
-              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous."
+              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous.",
+              "- Labels, units, and explanations belong outside math delimiters; inside \\(...\\) and \\[...\\] use contiguous mathematical notation only — do not wrap instructional prose in \\text{...}. Write the label in surrounding Markdown and keep the math span to symbols, variables, and numeric expressions."
             ]
           : [
               "- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)",
@@ -9094,7 +9095,8 @@
               "- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.",
               "- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.",
               "- Math spans must be intact TeX only: never interleave numbered steps, instructional prose, or truncated symbols inside \\(...\\) or \\[...\\].",
-              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous."
+              "- Keep delimiters balanced (every \\[ has a matching \\]; every \\( has a matching \\)) and keep each equation contiguous.",
+              "- Labels, units, and explanations belong outside math delimiters; inside \\(...\\) and \\[...\\] use contiguous mathematical notation only — do not wrap instructional prose in \\text{...}. Write the label in surrounding Markdown and keep the math span to symbols, variables, and numeric expressions."
             ];
         return lines.join("\n");
       },
@@ -11378,10 +11380,14 @@
       "Required payload: activities[] containing activity_id and materials[] only.",
       "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
       "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. When S78-OPERATIONAL-SUITABILITY (auto-applied) is present in AUTHORITATIVE DLA MATERIAL COMMISSION, follow its per-material obligations locally.",
+      "S78-DP: realised instructional claims (including headings and checklist stems) must match warranted strength for the taught model class and evidence; do not upgrade necessary or intermediate results into unrestricted optima, general causal/policy conclusions, or broader representation classes than the commission and examples support. Prefer accurate scoped language over establishment slogans. Omit advanced theory freely; do not upgrade the strength of what remains.",
       "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
       "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
       "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
+      "S78-D04 page learner-resource closure: in the final activity's materials Markdown, include exactly one section headed \"### Page learner-resource closure\" (2–4 compact consolidation bullets; optional lightly signposted transfer without a worked answer; no new teaching/claims/model classes; honour S78-DP). Prefer consolidation/transfer/closure materials when commissioned as the host Markdown vessel; otherwise append to the last Markdown material of the final activity. Do not put this substance in page_synthesis. Design Page will transport that section verbatim into study_tips when present.",
+      "S78-T-041 transfer_prompt: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task on a meaningfully changed context (learner response required; no solution leak; no new teaching; honour S78-DP). Distinct from ### Page learner-resource closure / study_tips consolidation — do not substitute closure bullets for the transfer production.",
+      "S78-T-042 structured workspace fidelity: for template / structured response or derivation workspaces, author **Label:** sections (bold label with trailing colon) so each ordered prompt binds to a learner response location. Do not emit standalone bold labels without the colon as surrogate response fields. Keep genuine tables as tables with blank learner cells. Ordinary inline bold emphasis in prose is fine. Do not invent an equation editor.",
       "Copilot conversation may provide contextual continuity of instructional intent; it must not override the AUTHORITATIVE DLA MATERIAL COMMISSION. PRISM does not embed the full upstream DLA page in this mode.",
       "Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.",
       "Do not reconstruct or preserve non-owned stage fields."
@@ -15383,6 +15389,8 @@
       "- context: write as a visual brief (not a label). Specify relationships/comparisons to communicate, key concepts to include, learner perspective, educational purpose, and conceptual boundaries so later deterministic prompt building does not infer intent.",
       "- context must NOT include artistic style, rendering instructions, filenames, or runtime metadata.",
       "- must_show / must_not_show must use concrete educational constraints (e.g., widening residual spread, threshold boundaries, bidirectional causal links), not vague phrases such as \"important concepts\".",
+      "- S78-DP: allowed_claims, disallowed_claims, and canonical_discipline_note must encode taught model-class and claim-strength bounds (not filler). Do not commission visuals that broaden the taught representation class or upgrade procedure products into unrestricted disciplinary conclusions.",
+      "- S78-VA synthesis (page scope / purpose:synthesis): must_show and allowed_claims must enumerate taught entities, category membership, and relationships — not vague \"inputs and outputs around the system\". Preserve qualification/conditionality/claim strength. Put plausible out-of-model extensions in must_not_show / disallowed_claims. Synthesis integrates multiple AUTHORISED relationships only; do not commission peer categories, fluxes, or causal links absent from the taught model. Prefer evidence_anchors including page_synthesis.knowledge_summary when that is the consolidation source.",
       "- evidence_anchors: non-empty string array of canonical artefact references only. Each entry MUST be exactly activity_id.path (e.g. \"A3.learner_task\", \"A3.materials.scenarios\") or page_synthesis.field (overview|knowledge_summary|learning_purpose|study_tips). Forbidden: free-text labels, topic names, incomplete activity IDs without a path, source_basis prose, or object shapes.",
       "- Prefer citing every supporting location that grounds the row (learner_task + materials + page_synthesis) using those canonical forms.",
       "- activity scope rows require activity_id. page scope rows require region (currently knowledge_summary).",
@@ -32621,26 +32629,28 @@
     userNotesWrap.appendChild(userNotesStatus);
 
     var suitabilityWrap = document.createElement("div");
-    suitabilityWrap.className = "workflow-step-run-output-wrap hidden";
+    suitabilityWrap.className =
+      "workflow-step-run-output-wrap workflow-step-suitability-review hidden";
     suitabilityWrap.setAttribute("data-role", "run-step-suitability-review-wrap");
     var suitabilityHeading = document.createElement("div");
-    suitabilityHeading.className = "workflow-step-run-instructions-title";
+    suitabilityHeading.className = "workflow-step-suitability-review__title";
     suitabilityHeading.setAttribute("data-role", "run-step-suitability-heading");
     suitabilityHeading.textContent = "Verify generated materials";
     var suitabilityIntro = document.createElement("div");
-    suitabilityIntro.className = "helper-text";
+    suitabilityIntro.className = "helper-text workflow-step-suitability-review__intro";
     suitabilityIntro.setAttribute("data-role", "run-step-suitability-intro");
     suitabilityIntro.textContent =
       "These materials include generated information that learners must rely on to complete their tasks. Run a short verification before continuing.";
     var suitabilityCopyBtn = document.createElement("button");
     suitabilityCopyBtn.type = "button";
-    suitabilityCopyBtn.className = "btn small";
+    suitabilityCopyBtn.className = "btn small workflow-step-suitability-review__copy";
     suitabilityCopyBtn.setAttribute("data-role", "run-step-suitability-copy");
     suitabilityCopyBtn.textContent = "Copy verification prompt";
     suitabilityCopyBtn.addEventListener("click", function () {
       copyGamOperationalSuitabilityReviewPrompt(li);
     });
     var suitabilityLabel = document.createElement("label");
+    suitabilityLabel.className = "workflow-step-suitability-review__paste-label";
     suitabilityLabel.setAttribute("data-role", "run-step-suitability-paste-label");
     suitabilityLabel.textContent = "Paste verification result";
     var suitabilityTextarea = document.createElement("textarea");
@@ -32659,7 +32669,7 @@
     });
     var suitabilityCheckBtn = document.createElement("button");
     suitabilityCheckBtn.type = "button";
-    suitabilityCheckBtn.className = "btn small";
+    suitabilityCheckBtn.className = "btn small workflow-step-suitability-review__check";
     suitabilityCheckBtn.setAttribute("data-role", "run-step-suitability-check");
     suitabilityCheckBtn.textContent = "Check verification";
     suitabilityCheckBtn.addEventListener("click", function () {
@@ -32684,10 +32694,10 @@
     li.appendChild(instructionsGroup);
     li.appendChild(runCopy);
     li.appendChild(userNotesWrap);
-    li.appendChild(runContinue);
     if (isWorkflowStepGenerateActivityMaterials(buildWorkflowStepRecognitionContext(step, {}))) {
       li.appendChild(suitabilityWrap);
     }
+    li.appendChild(runContinue);
     renderInputBindings();
     updateRunStepOutputStatus(li);
     decorateWorkflowStepSettingsDiscoverability(li, step, { context: "library" });
@@ -33995,7 +34005,7 @@
     var assembledInstructions = lines.join("\n");
     // GAM V2 Copy uses buildGamV2CopyMaterialAuthoringBrief (not resolveStepPromptText),
     // which previously skipped applyWorkflowStepRuntimePromptAugmentations — inject
-    // archetype routing here so the Copilot-bound prompt matches Studio intent.
+    // archetype routing and LD-MATH-RENDER here so the Copilot-bound prompt matches Studio intent.
     // Pass shaped recognition context (not raw step) so isWorkflowStepGenerateActivityMaterials succeeds.
     var gamRecognition = buildWorkflowStepRecognitionContext(step, {
       li: domElement,
@@ -34007,6 +34017,14 @@
         gamRecognition,
         wfForChain
       );
+      // V2 Copy bypasses resolveStepPromptText → applyWorkflowStepRuntimePromptAugmentations;
+      // restore shared LD-MATH-RENDER via the same SSOT used by Studio (marker-deduped).
+      if (gamV2CopyStep) {
+        assembledInstructions = applyMathSafeOutputContractToDraft(
+          assembledInstructions,
+          gamRecognition
+        );
+      }
     }
     assembledInstructions = [
       assembledInstructions,
@@ -47525,6 +47543,8 @@
       ".util-learner-renderer-vnext .util-page-orientation .util-section-heading:first-child{margin-top:0}" +
       ".util-learner-renderer-vnext .util-activity{margin:0;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0}" +
       ".util-learner-renderer-vnext .util-activity+.util-activity{margin-top:4rem;padding-top:3rem;border-top:1px solid #e5e7eb}" +
+      /* S78-T-044: Orient→A1 uses the same activity boundary as A1→An (legacy generic cleanup had first-child; vNext CSS omitted it). */
+      ".util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:4rem;padding-top:3rem;border-top:1px solid #e5e7eb}" +
       ".util-learner-renderer-vnext .util-learning-activities>.util-activity:last-child{margin-bottom:var(--learner-space-5)}" +
       ".util-learner-renderer-vnext .util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--learner-space-2);flex-wrap:wrap;margin:0 0 var(--learner-space-3)}" +
       ".util-learner-renderer-vnext .util-activity-title{font-size:var(--learner-text-lg);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:0}" +
@@ -47586,6 +47606,7 @@
       ".util-learner-renderer-vnext .util-guided-review__section-label{margin:0 0 .35rem;font-size:var(--learner-text-sm);line-height:1.4;font-weight:650;color:#374151}" +
       ".util-learner-renderer-vnext .util-guided-review__why,.util-learner-renderer-vnext .util-guided-review__look-for,.util-learner-renderer-vnext .util-guided-review__missing{margin:0 0 var(--learner-space-3)}" +
       ".util-learner-renderer-vnext .util-guided-review__why p,.util-learner-renderer-vnext .util-guided-review__look-for li,.util-learner-renderer-vnext .util-guided-review__missing li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}" +
+      ".util-learner-renderer-vnext .util-guided-review__look-for ul{list-style:none;padding-left:0;margin-left:0}" +
       ".util-learner-renderer-vnext .util-guided-review__feature-key{font-weight:650;color:#374151}" +
       ".util-learner-renderer-vnext .util-guided-review__confirm{margin-top:var(--learner-space-2)}" +
       ".util-learner-renderer-vnext .util-guided-review__panel{margin:0 0 var(--learner-space-4);padding:0 0 var(--learner-space-3);border-bottom:1px solid #e5e7eb}" +
@@ -47616,10 +47637,10 @@
       getUtilityVnextCompositionMomentPresentationCss() +
       iconCss +
       "@media (max-width:700px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{grid-template-columns:44px minmax(0,1fr);grid-template-areas:\"btn current\" \"prev prev\" \"next next\";column-gap:.65rem;row-gap:.4rem;justify-content:stretch}.util-journey-all-btn{position:static;inset-inline-end:auto;top:auto;z-index:auto;grid-area:btn}.util-journey-current-wrap{grid-area:current;justify-items:center}.util-journey-adjacent--prev{grid-area:prev}.util-journey-adjacent--next{grid-area:next}.util-journey-adjacent--placeholder{display:none}.util-journey-all-panel{max-width:100%}}" +
-      "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .75rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-learner-renderer-vnext .util-activity+.util-activity{margin-top:2.5rem;padding-top:2rem}}" +
+      "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .75rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:2.5rem;padding-top:2rem}}" +
       "@media (max-width:390px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{column-gap:.5rem}}" +
       "@media (prefers-reduced-motion:reduce){.util-journey-nav,.util-journey-all-panel{scroll-behavior:auto}}" +
-      "@media print{.util-learning-header,.util-journey-nav{display:none!important}body.util-page-export--vnext{overflow:visible}.util-learner-page{width:100%;max-width:none;padding:0}.util-learner-renderer-vnext .util-activity+.util-activity{margin-top:1.5rem;padding-top:1rem;border-top-color:#d1d5db;break-before:auto}.util-learner-renderer-vnext .util-assessment-check{display:none}.util-learner-renderer-vnext .util-assessment-result{display:none}.util-learner-renderer-vnext .util-assessment-option__input{accent-color:#111}.util-learner-renderer-vnext .util-interactive-checklist__input{accent-color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}}"
+      "@media print{.util-learning-header,.util-journey-nav{display:none!important}body.util-page-export--vnext{overflow:visible}.util-learner-page{width:100%;max-width:none;padding:0}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:1.5rem;padding-top:1rem;border-top-color:#d1d5db;break-before:auto}.util-learner-renderer-vnext .util-assessment-check{display:none}.util-learner-renderer-vnext .util-assessment-result{display:none}.util-learner-renderer-vnext .util-assessment-option__input{accent-color:#111}.util-learner-renderer-vnext .util-interactive-checklist__input{accent-color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}}"
     );
   }
 

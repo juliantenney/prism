@@ -1,5 +1,6 @@
 /**
  * Sprint 70 Slice 7B — activity vs Knowledge Summary human-prompt modes.
+ * S78-T-047: synthesis now receives Concept / claim boundary + authorised evidence.
  */
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -51,9 +52,15 @@ test("Slice 7B: activity concept map receives activity-mode concept boundary", (
   );
   const prompt = workspace.buildVisualJobHumanPrompt(activityConceptMap);
   assert.match(prompt, /Educational visual mode: activity learning support/i);
-  assert.match(prompt, /Only depict the concepts supplied in this brief/i);
+  assert.match(
+    prompt,
+    /Only depict the concepts, processes, categories and relationships supplied in Show/i
+  );
   assert.match(prompt, /Do not invent additional concepts/i);
-  assert.match(prompt, /Do not introduce additional concepts/i);
+  assert.match(
+    prompt,
+    /Do not introduce additional concepts, processes, categories, relationships/i
+  );
   assert.match(prompt, /Support learner investigation rather than replacing it/i);
   assert.match(prompt, /answer-key/i);
   assert.match(prompt, /Show relationships visually through arrows, grouping, hierarchy/i);
@@ -63,17 +70,21 @@ test("Slice 7B: activity concept map receives activity-mode concept boundary", (
   assert.doesNotMatch(prompt, /Educational visual mode: knowledge synthesis/i);
 });
 
-test("Slice 7B: Knowledge Summary retains synthesis behaviour without activity-only restrictions", () => {
+test("Slice 7B: Knowledge Summary retains synthesis behaviour with claim boundary (not activity-only scaffolding)", () => {
   assert.equal(workspace.resolveHumanPromptMode(knowledgeSummary), "knowledge_synthesis");
   const prompt = workspace.buildVisualJobHumanPrompt(knowledgeSummary);
   assert.match(prompt, /Educational visual mode: knowledge synthesis/i);
   assert.match(prompt, /synthesis artefact/i);
   assert.match(prompt, /system organisation/i);
-  assert.doesNotMatch(prompt, /Only depict the concepts supplied in this brief/i);
-  assert.doesNotMatch(prompt, /Do not invent additional concepts, subtopics/i);
+  assert.match(prompt, /Concept \/ claim boundary:/i);
+  assert.match(prompt, /AUTHORISED relationships from Show/i);
   assert.doesNotMatch(prompt, /Support learner investigation rather than replacing it/i);
   assert.doesNotMatch(prompt, /Pre-classification stage/i);
   assert.doesNotMatch(prompt, /Educational visual mode: activity learning support/i);
+  assert.doesNotMatch(
+    prompt,
+    /Only depict the concepts, processes, categories and relationships supplied in Show/i
+  );
 });
 
 test("Slice 7B: activity diagnostics pass; synthesis diagnostics reflect synthesis mode", () => {
@@ -96,6 +107,8 @@ test("Slice 7B: activity diagnostics pass; synthesis diagnostics reflect synthes
   assert.equal(synthesisDiag.synthesis_mode, true);
   assert.equal(synthesisDiag.concept_boundary_present, true);
   assert.equal(synthesisDiag.no_extra_concepts_instruction_present, true);
+  assert.equal(synthesisDiag.authorised_evidence_present, true);
+  assert.equal(synthesisDiag.synthesis_integration_bounded, true);
   assert.equal(synthesisDiag.preclassification_boundary_present, true);
 });
 
@@ -110,15 +123,19 @@ test("Slice 7B: presentation includes mode diagnostics without mutating compiler
   );
 });
 
-test("Slice 7B: all activity briefs get concept boundary; page briefs do not", () => {
+test("Slice 7B: all activity and page briefs get an appropriate concept / claim boundary", () => {
   ws.compilerResult.briefs.forEach((brief) => {
     const prompt = workspace.buildVisualJobHumanPrompt(brief);
     if (brief.scope === "activity") {
       assert.match(prompt, /Concept boundary:/i);
-      assert.match(prompt, /Only depict the concepts supplied in this brief/i);
+      assert.match(
+        prompt,
+        /Only depict the concepts, processes, categories and relationships supplied in Show/i
+      );
     } else {
-      assert.doesNotMatch(prompt, /Concept boundary:/i);
+      assert.match(prompt, /Concept \/ claim boundary:/i);
       assert.match(prompt, /knowledge synthesis/i);
+      assert.match(prompt, /Authorised source evidence:/i);
     }
   });
 });

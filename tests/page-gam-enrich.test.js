@@ -444,6 +444,34 @@ test("GAM Copy and Prompt Studio share ordinary markdown body-format rule", () =
   assert.doesNotMatch(copy, /must be solvable/i);
 });
 
+test("S78-T-029: live GAM V2 Copy prompt includes shared LD-MATH-RENDER (Run Copy path)", () => {
+  const wf = buildTestWorkflow({ partialPageOutputs: true, pageEnrichmentV2: true });
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const copy = api.buildWorkflowStepInstructions(
+    {
+      id: "gam_step_math_render",
+      title: "Generate Activity Materials",
+      outputName: "page",
+      canonical_step_id: "step_generate_activity_materials"
+    },
+    3,
+    null
+  );
+  assert.match(copy, /LD-MATH-RENDER \(auto-applied\)/);
+  assert.match(copy, /Labels, units, and explanations belong outside math delimiters/);
+  assert.match(copy, /do not wrap instructional prose in \\text\{\.\.\.\}/);
+  assert.equal(
+    (copy.match(/LD-MATH-RENDER \(auto-applied\)/gi) || []).length,
+    1,
+    "LD-MATH-RENDER must appear once (marker dedupe)"
+  );
+  assert.doesNotMatch(
+    api.buildGamV2CopyMaterialAuthoringBrief(),
+    /LD-MATH-RENDER \(auto-applied\)/i
+  );
+});
+
 test("GAM accepts a DLA-enriched vNext page as input", () => {
   assert.doesNotThrow(() => {
     gamEnrichedPage = gamEnrich.enrichPageWithGam(dlaBaseline);

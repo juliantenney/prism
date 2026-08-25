@@ -1,7 +1,7 @@
 # S78-T-019 — Activity timing / duration diagnostic
 
 **Task:** S78-T-019  
-**Status:** **Queued — not authorised** (after T-013 / T-003 as scheduled in [PLAN.md](PLAN.md))  
+**Status:** **Superseded** — diagnostic executed under [S78-T-036](S78-T-036-learner-timing-metadata-regression-diagnostic.md) (2026-08-25). Do **not** execute separately.  
 **Mode:** **DIAGNOSTIC ONLY** when started  
 **Production / tests / schema / validators / prompts / renderer:** **UNCHANGED** until a later authorised repair
 

@@ -1,0 +1,106 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Adds cross-activity integration that individual materials do not provide. It helps learners see how the same systems model supports pathway tracing, basin classification, storage-change reasoning and bounded catchment analysis.
+
+Audience:
+Learners consolidating material after completing activity reasoning.
+
+Educational mode:
+Educational visual mode: knowledge synthesis.
+Produce a synthesis artefact that consolidates previously learned material.
+Reveal system organisation and integrate relationships across the lesson.
+Improve understanding through clear visual organisation.
+The image should explain concepts, not set learner tasks.
+Do not invent unsupported concepts beyond the authored Knowledge Summary brief.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Representation:
+Concept Map
+
+Subject:
+Integrated hydrological systems model
+
+Context:
+synthesise the taught relationships among water stores and transfers, drainage-basin inputs and outputs, changing storage, residence-time differences, and physical or human controls on pathways. Show these as connected parts of one systems model from the learner perspective, while keeping causal claims conditional and avoiding new processes, quantitative claims or universal conclusions.
+
+Visual structure:
+Connected concept nodes with visible relationships and clear hierarchy or central idea.
+Prefer: Arrows, lines, grouping and spatial arrangement; short node labels.
+Avoid: Paragraph boxes; an essay arranged in boxes; disconnected decorative icons; completed written conclusions.
+
+Show:
+- stores connected by transfers
+- drainage-basin inputs and outputs around the system
+- input-output balance linked to storage direction
+- residence time linked to response timescale
+- physical and human controls linked conditionally to processes and stores or flows
+
+Relationships:
+- Make visible: Connect the page's core systems concepts into a coherent model that can be revisited after completing the activity sequence.
+- Arrows, lines, grouping and spatial arrangement; short node labels.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- a single compulsory water-cycle pathway
+- scenario answer keys
+- new hydrological mechanisms not taught on the page
+- universal causal claims about catchment modifications
+- filled_worksheet
+- generic_infographic
+- assessment_answer_visual
+- numeric_claim_without_source
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+
+Claim discipline:
+- Do not claim: All water follows one fixed route.
+- Do not claim: Residence time alone determines storage direction.
+- Do not claim: A physical control or human modification has one universal hydrological effect in every catchment.
+- Supported claim boundary: The hydrological cycle can be modelled as interconnected stores and transfers.
+- Supported claim boundary: Drainage basins can be analysed using inputs, stores, transfers and outputs.
+- Supported claim boundary: Input-output balance can be used to reason about storage direction within the simplified model.
+- Supported claim boundary: Residence time helps explain differences in response timescale.
+- Supported claim boundary: Catchment controls can alter pathways and storage under stated conditions.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+
+Learner reasoning:
+Show the relevant concepts and relationships, but do not provide a completed written conclusion or fully worked learner response.
+The learner should still need to interpret the visual.
+Do not reveal completed learner conclusions, answer keys, or model solutions.
+Structural hints are permitted where the brief allows.
+
+Caption guidance:
+Integrate the resource's systems reasoning from stores and transfers through drainage-basin change and catchment controls.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

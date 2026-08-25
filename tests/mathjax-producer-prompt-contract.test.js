@@ -99,6 +99,8 @@ function assertLdMathRenderContractText(text) {
   assert.match(body, /Do NOT wrap equations in code spans/i);
   assert.match(body, /Do NOT HTML-escape math delimiters/i);
   assert.match(body, /presentational notation only/i);
+  assert.match(body, /Labels, units, and explanations belong outside math delimiters/i);
+  assert.match(body, /do not wrap instructional prose in \\text\{\.\.\.\}/i);
   assert.match(body, /LD-TABLE-FIDELITY/i);
 }
 

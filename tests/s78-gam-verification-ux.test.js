@@ -414,3 +414,27 @@ test("T-018A: GAM review-required behaviour is unchanged after DLA scope fix", (
   assert.equal(view.nextBlocked, true);
 });
 
+test("T-043: verification wrap is a distinct secondary section under capture", () => {
+  const source = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
+  const css = fs.readFileSync(path.join(repoRoot, "style.css"), "utf8");
+  assert.match(source, /workflow-step-suitability-review/);
+  assert.match(source, /workflow-step-suitability-review__title/);
+  assert.match(source, /workflow-step-suitability-review__intro/);
+  assert.match(source, /workflow-step-suitability-review__copy/);
+  assert.match(source, /workflow-step-suitability-review__paste-label/);
+  assert.match(source, /workflow-step-suitability-review__check/);
+  // Capture → verification → continue (verification grouped under materials, not after continue)
+  assert.match(
+    source,
+    /li\.appendChild\(userNotesWrap\);[\s\S]*?li\.appendChild\(suitabilityWrap\);[\s\S]*?li\.appendChild\(runContinue\);/
+  );
+  assert.match(css, /\.workflow-step-suitability-review\s*\{/);
+  assert.match(css, /border-top:\s*1px solid var\(--border-subtle\)/);
+  assert.match(css, /\.workflow-step-suitability-review__title\s*\{/);
+  assert.match(css, /\.workflow-step-suitability-review__copy\s*\{/);
+  // Behaviour roles unchanged
+  assert.match(source, /data-role", "run-step-suitability-copy"/);
+  assert.match(source, /data-role", "run-step-suitability-check"/);
+  assert.match(source, /data-field", "runStepSuitabilityReview"/);
+});
+

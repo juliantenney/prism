@@ -97,10 +97,31 @@ test("math integrity: clean quadratic formula and inline roots pass", () => {
   assert.equal(result.ok, true, JSON.stringify(result.issues));
 });
 
+test("math integrity: display math with instructional \\text label fails", () => {
+  const body = ["\\[", "\\text{total programme expenditure}=200{,}000", "\\]"].join("\n");
+  const result = mathRender.validateLearnerFacingMathIntegrity(body);
+  assert.equal(result.ok, false);
+  assert.ok(result.issues.some((issue) => issue.code === "PROSE_INSIDE_MATH"));
+});
+
+test("math integrity: label outside display math with bare numeric interior passes", () => {
+  const body = ["Total programme expenditure:", "", "\\[", "200{,}000", "\\]"].join("\n");
+  const result = mathRender.validateLearnerFacingMathIntegrity(body);
+  assert.equal(result.ok, true, JSON.stringify(result.issues));
+});
+
+test("math integrity: short formula label inside \\text remains tolerated", () => {
+  const body = ["\\[", "\\text{Inflation Rate}=\\frac{a}{b}", "\\]"].join("\n");
+  const result = mathRender.validateLearnerFacingMathIntegrity(body);
+  assert.equal(result.ok, true, JSON.stringify(result.issues));
+});
+
 test("LD-MATH-RENDER prompt block requires intact balanced math spans", () => {
   const block = mathRender.buildLdMathRenderPromptBlock();
   assert.match(block, /intact TeX only/i);
   assert.match(block, /Keep delimiters balanced/);
+  assert.match(block, /Labels, units, and explanations belong outside math delimiters/i);
+  assert.match(block, /do not wrap instructional prose in \\text\{\.\.\.\}/i);
 });
 
 test("GAM partial capture rejects corrupted A2-M1 math body", () => {

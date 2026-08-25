@@ -1,0 +1,116 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Adds an explicit reasoning scaffold for constructing bounded causal explanations. The scenario and analysis table supply evidence and response space, but neither isolates the condition-to-process-to-consequence logic as a reusable reasoning structure.
+
+Audience:
+Learners working through an educational activity.
+
+Educational mode:
+Educational visual mode: activity learning support.
+Provide visual scaffolding that supports learner reasoning.
+Support learner investigation rather than replacing it.
+Minimise explanatory prose; prefer scaffold-style visual structure.
+The image should explain concepts while surrounding learner text carries the task.
+Do not supply completed interpretations or answer-key style diagrams.
+Pre-classification stage: expose concepts, structure and relationships for investigation.
+Do not provide completed interpretations, answer-key statements, final inferences, or a worked example.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Representation:
+Causal Chain
+
+Subject:
+Catchment condition to hydrological consequence
+
+Context:
+show an unfilled three-stage causal structure linking an observed physical control or human modification to a directly affected hydrological process and then to an affected water store or flow. Include prompts that encourage conditional reasoning under stated catchment circumstances but no scenario-specific answers.
+
+Concept boundary:
+Only depict the concepts supplied in this brief.
+Use only the concepts explicitly listed in the supplied brief.
+Do not introduce additional concepts, relationships, categories, examples, historical details, or outcomes.
+Do not invent additional concepts, subtopics, historical actors, locations, institutions, technologies, or consequences.
+
+Visual structure:
+Ordered causal sequence with clear progression from earlier to later stages.
+Prefer: Directional sequence; concise stage labels; visible arrow direction.
+Avoid: Missing invented intermediate causes; prose replacing the chain; completed learner inference as text.
+
+Show:
+- observed catchment condition as the first reasoning stage
+- intervening hydrological process as the second stage
+- affected store or flow as the third stage
+- conditional connection between the three stages
+
+Relationships:
+- Show relationships visually through arrows, grouping, hierarchy or spatial organisation.
+- Do not explain those relationships in prose or as a causal essay.
+- Make visible (do not write as completed inference): Construct explicit, evidence-grounded causal chains and transfer the same reasoning structure to a changed catchment context.
+- Show mechanism relationships through layout rather than written inference.
+- Directional sequence; concise stage labels; visible arrow direction.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- completed analyses of Catchments One, Two or Three
+- a completed answer to the transfer scenario
+- unconditional claims that one catchment characteristic always produces one outcome
+- filled_worksheet
+- assessment_answer_visual
+- unsupported_causal_arrow
+- generic_infographic
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+- Additional concepts not listed in this brief
+- Answer-key style completed interpretations
+- Explanatory paragraphs that finish learner reasoning
+- Moving learner exercises into the image itself
+
+Claim discipline:
+- Do not claim: A particular modification always produces the same hydrological response regardless of context.
+- Do not claim: Scenario conclusions not warranted by the supplied conditions.
+- Supported claim boundary: Physical controls and human modifications can alter hydrological processes under stated conditions.
+- Supported claim boundary: Changes to hydrological processes can affect water stores or flows.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+
+Learner reasoning:
+Show the relevant concepts and relationships, but do not provide a completed written conclusion or fully worked learner response.
+Support learner investigation rather than replacing it.
+The learner should still need to interpret the visual.
+Do not reveal completed learner conclusions, answer keys, or model solutions.
+Structural hints are permitted where the brief allows.
+
+Caption guidance:
+Provide a reusable condition-to-process-to-consequence reasoning scaffold without supplying scenario answers.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

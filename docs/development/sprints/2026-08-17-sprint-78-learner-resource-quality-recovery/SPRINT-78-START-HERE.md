@@ -5,6 +5,8 @@
 **Predecessor:** [Sprint 77 — COMPLETE / Closed](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/SPRINT-77-START-HERE.md)  
 **Opening decision:** [S78-D01](decisions.md#s78-d01--open-sprint-78--learner-resource-quality-recovery)  
 **Reliability decision:** [S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)  
+**Disciplinary warrant decision:** [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp)  
+**Page-closure ownership:** [S78-D04](decisions.md#s78-d04--page-closure-ownership-gam-substance--design-page-transport)  
 **Dashboard:** [STATUS.md](STATUS.md)  
 **Plan:** [PLAN.md](PLAN.md) · **Handover:** [HANDOVER.md](HANDOVER.md) · **Briefing:** [next-chat-briefing.md](next-chat-briefing.md)
 
@@ -14,7 +16,7 @@
 
 Read **[HANDOVER.md](HANDOVER.md)** first, then [STATUS.md](STATUS.md) and [PLAN.md](PLAN.md).
 
-> **Sprint 78 is OPEN.** T-022 WS3 DLA implementation **complete**. **T-013 remains OPEN.** Next quality task: **S78-T-025** (not started). Do **not** reopen Sprint 77. Do **not** execute T-019.
+> **Sprint 78 is OPEN.** T-022 WS3 DLA implementation **complete**. **T-013 remains OPEN.** **S78-T-047 / T-048 complete** — image claim fidelity + house visual-language consistency. Do **not** reopen Sprint 77.
 
 ---
 
@@ -46,10 +48,10 @@ Candidate 6 (GAM attempt 2): **88/100**; F&S **92**; Subject **84**; all four ac
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Authorise **S78-T-025** disciplinary-precision design. E2 architecture diagnostic remains queued. Do not start T-019 |
-| **Complete** | T-022 WS3 DLA capture · T-021 Check/revision design · T-003 diagnostic · T-018A · WS1 **87/100** · C6 disciplinary diagnostic |
-| **Queued** | S78-T-024 (WS3 integration / benchmark) · S78-T-019 (activity timing) · E2 upstream-response architecture diagnostic |
-| **Do not start** | Sprint 77 reopen · Lagrangian hand-edits · T-023 by default · T-019 execution · E2 sanitiser · verifier expansion |
+| **Now** | Re-copy Graphics prompts / regenerate images (T-047 + T-048) |
+| **Complete** | T-048 house visual language · T-047 fidelity hardening · T-046 consistency diagnostic · T-045 fidelity diagnostic · T-044…T-038 presentation path · T-037 timing · T-032 closure · T-026 S78-DP · T-022 · T-018A · WS1 **87/100** · C6 disciplinary diagnostic |
+| **Queued** | S78-T-024 (WS3 integration / benchmark) · E2 upstream-response architecture diagnostic |
+| **Do not start** | Sprint 77 reopen · Lagrangian hand-edits · T-023 by default · E2 sanitiser · verifier expansion · editable maths input |
 
 ---
 
@@ -83,7 +85,9 @@ Fresh from-top Lagrangian EP → package → independent QA: **≥ 90** uncapped
 | [S78-T-013-candidate-5-operational-suitability-review-coverage-diagnostic.md](S78-T-013-candidate-5-operational-suitability-review-coverage-diagnostic.md) | Candidate 5: A4-only review PASS = collector under/over-coverage (diagnostic only) |
 | [S78-T-013-candidate-5-t015-collector-binding-repair.md](S78-T-013-candidate-5-t015-collector-binding-repair.md) | Candidate 5: T-015 collector binding repair ✅ (instrumentation only) |
 | [S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md) | Candidate 6: confirmed E2-family; Copilot-visible splice upstream of Prism |
-| [S78-T-013-candidate-6-disciplinary-precision-diagnostic.md](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md) | Candidate 6 attempt 2: QA 88/100; FOC/shadow-price/visual warrant gap; T-025 defined |
+| [S78-T-013-candidate-6-disciplinary-precision-diagnostic.md](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md) | Candidate 6 attempt 2: QA 88/100; FOC/shadow-price/visual warrant gap |
+| [S78-T-025-disciplinary-precision-authoring-solution-design.md](S78-T-025-disciplinary-precision-authoring-solution-design.md) | S78-DP design **complete** ([S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp)) |
+| [S78-T-026-disciplinary-precision-authoring-salience-implementation.md](S78-T-026-disciplinary-precision-authoring-salience-implementation.md) | S78-DP salience **complete**; next fresh benchmark |
 | [S78-T-016-operational-suitability-stage-2-enforcement-design.md](S78-T-016-operational-suitability-stage-2-enforcement-design.md) | Stage-2 enforcement design **complete** |
 | [S78-T-017-gam-operational-suitability-review-pass-implementation.md](S78-T-017-gam-operational-suitability-review-pass-implementation.md) | Review pass **complete** (temporary instrumentation) |
 | [S78-T-017A-operational-suitability-review-binding-hardening.md](S78-T-017A-operational-suitability-review-binding-hardening.md) | Review-scope fingerprint **complete** |
@@ -94,7 +98,16 @@ Fresh from-top Lagrangian EP → package → independent QA: **≥ 90** uncapped
 | [S78-T-003-check-revision-architecture-diagnostic.md](S78-T-003-check-revision-architecture-diagnostic.md) | WS3 diagnostic (**complete**) |
 | [S78-T-021-check-revision-architecture-solution-design.md](S78-T-021-check-revision-architecture-solution-design.md) | WS3 solution design (**complete**) |
 | [S78-T-022-dla-diagnostic-review-commissioning-implementation.md](S78-T-022-dla-diagnostic-review-commissioning-implementation.md) | WS3 DLA implementation (**complete**) |
-| [S78-T-019-activity-timing-duration-diagnostic.md](S78-T-019-activity-timing-duration-diagnostic.md) | Activity timing diagnostic (**queued**) |
+| [S78-T-019-activity-timing-duration-diagnostic.md](S78-T-019-activity-timing-duration-diagnostic.md) | Activity timing diagnostic (**superseded** by T-036/T-037) |
+| [S78-T-030-missing-page-synthesis-closure-diagnostic.md](S78-T-030-missing-page-synthesis-closure-diagnostic.md) | Page-synthesis study_tips diagnostic (**complete**) |
+| [S78-T-031-page-closure-ownership-design-decision.md](S78-T-031-page-closure-ownership-design-decision.md) | Page-closure ownership (**S78-D04** — Option B) |
+| [S78-T-032-gam-learner-closure-packaging-implementation.md](S78-T-032-gam-learner-closure-packaging-implementation.md) | GAM→study_tips packaging (**complete**) |
+| [S78-T-033-literal-tex-learner-rendering-diagnostic.md](S78-T-033-literal-tex-learner-rendering-diagnostic.md) | Literal TeX on subscript maths — vNext markdown defect (**diagnostic complete**) |
+| [S78-T-034-vnext-math-delimiter-protection-implementation.md](S78-T-034-vnext-math-delimiter-protection-implementation.md) | vNext math-delimiter protect/restore (**complete**) |
+| [S78-T-035-legacy-renderer-retirement-vnext-parity-diagnostic.md](S78-T-035-legacy-renderer-retirement-vnext-parity-diagnostic.md) | Legacy retirement / vNext parity (**diagnostic complete**) |
+| [S78-T-036-learner-timing-metadata-regression-diagnostic.md](S78-T-036-learner-timing-metadata-regression-diagnostic.md) | Learner timing metadata regression (**diagnostic complete**) |
+| [S78-T-037-restore-learner-timing-metadata.md](S78-T-037-restore-learner-timing-metadata.md) | Restore learner timing from LS timeline (**complete**) |
+| [S78-T-038-learner-composition-presentation-regression-diagnostic.md](S78-T-038-learner-composition-presentation-regression-diagnostic.md) | Composition/presentation defects after 94 QA (**diagnostic complete**) |
 
 Inherited constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md)
 

@@ -6,7 +6,7 @@
 **Depends on:** S78-T-011 · S78-T-012 · S78-T-015 · S78-T-016 · S78-T-017 · T-017A · **S78-T-018** (GAM verification UX)  
 **Does not include:** T-003 diagnostic · T-019 execution · Lagrangian hand-edits · E2 sanitiser · “regenerate until pass” as closure
 
-**Latest:** [Candidate 6 disciplinary-precision diagnostic](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md) (2026-08-17): GAM **attempt 2** + QA **88/100**, 0 C/M, F&S **92**, all four activities Check Strong; Subject **84**. Verifier PASS ≠ disciplinary warrant. Next quality task: **S78-T-025** (not started). [C6 E2](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md) remains a **separate** reliability track (attempt 1). T-013 stays **OPEN** (first-pass reliability; regen-until-pass is not closure). [Candidate 5 collector repair](S78-T-013-candidate-5-t015-collector-binding-repair.md) remains in force. [Candidate 4](S78-T-013-candidate-4-post-t015-operational-suitability-fail.md) remains historical **WS2 PASS + suitability FAIL**. Unit tests do **not** close T-013.
+**Latest:** [S78-T-026](S78-T-026-disciplinary-precision-authoring-salience-implementation.md) **implementation complete** (2026-08-25). S78-DP salience live at DLA + GAM + Design Page/visual. Next: fresh Lagrangian benchmark. [S78-T-025](S78-T-025-disciplinary-precision-authoring-solution-design.md) · [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp). [C6 E2](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md) remains a **separate** reliability track. T-013 stays **OPEN**. Unit tests do **not** close T-013.
 
 **Do not conflate** Workstream 2 (model/practice independence) with operational suitability.
 
@@ -186,6 +186,7 @@ One successful pair does **not** close WS2 if another fails.
 | 5 | Full pipeline + independent QA | **QA 88/100** | Operator-held (JSON not yet in pack) | T-003 exhibit (F&S 78; A5 Check Strong). **Does not close T-013** (WS2/suitability still open) |
 | 6a | DLA → GAM attempt 1 | **E2 STRUCTURAL FAIL** | [malformed GAM](S78-T-013-candidate-6-malformed-gam.txt) | [E2 diagnostic](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md); discard for content scoring |
 | 6b | Same DLA → GAM attempt 2 → assembly → QA | **QA 88/100** | [GAM](S78-T-013-candidate-6-gam-attempt-2.json) · [QA](S78-T-013-candidate-6-qa-report.md) | WS2 positive; suitability PASS; Check Strong; Subject 84 — [disciplinary diagnostic](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md). **Does not close T-013** |
+| 7 | Post-T-026 DLA → GAM capture | **MATH INTEGRITY FAIL** | Operator-held (not yet in pack) | A5-M1 `PROSE_INSIDE_MATH` — `\text{total programme expenditure}` in display math; [T-027 diagnostic](S78-T-027-gpt-maths-authoring-reliability-diagnostic.md); **T-028 salience recommended** |
 
 **On rejection:** preserve exact JSON + validation error + classify as correct fail-closed vs new defect.
 
@@ -266,7 +267,7 @@ A verifier FAIL is a **GAM generation failure**. Preserve the candidate. Classif
 2. **Do not run QA** on Candidate 4.  
 3. **Resume fresh generation:** EP → DLA → GAM → **Verify generated materials** (Check verification) → assembly → QA.  
 4. On verification FAIL: **preserve the candidate**; classify the failure class; trace to the earliest DLA→GAM owner where justified. Do **not** hand-edit Lagrangian. Do **not** close reliability by regenerating until PASS. Live T-018 copy may still tell the operator to regenerate GAM from the same DLA for that run — that recovery is **not** Sprint 78 reliability success.  
-5. T-021 / T-022 **complete**. T-019 remains queued. T-013 remains OPEN (first-pass reliability / E2). Candidate 6 attempt 2 is positive WS2/suitability/QA evidence, not closure. Next quality task when authorised: **S78-T-025**. Do not expand the verifier.
+5. T-021 / T-022 **complete**. T-025 / T-026 **complete**. T-019 remains queued. T-013 remains OPEN (first-pass reliability / E2). Next: fresh benchmark after T-026. Do not expand the verifier.
 
 ---
 

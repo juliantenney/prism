@@ -97,6 +97,8 @@ test("T-032: GAM enrich contract commissions designated page learner-resource cl
   assert.match(block, /worked answer/i);
   assert.match(block, /Do not write page_synthesis/i);
   assert.match(block, /Honour S78-DP disciplinary warrant/i);
+  assert.match(block, /NEVER host ### Page learner-resource closure inside a transfer_prompt/i);
+  assert.doesNotMatch(block, /Prefer a consolidation_summary, transfer_prompt/);
   assert.doesNotMatch(block, /final_synthesis|next_steps/i);
 });
 

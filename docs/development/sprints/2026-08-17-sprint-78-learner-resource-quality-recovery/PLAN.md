@@ -1,6 +1,6 @@
 # Sprint 78 — Plan
 
-**Status:** **OPEN** (opened 2026-08-17)  
+**Status:** **CLOSED** (closed 2026-08-25) — [S78-T-056](S78-T-056-sprint-78-closure.md) · [S78-D05](decisions.md#s78-d05--close-sprint-78)  
 **Opening decision:** [S78-D01](decisions.md#s78-d01--open-sprint-78--learner-resource-quality-recovery)  
 **Dashboard:** [STATUS.md](STATUS.md) · **Context:** [CONTEXT.md](CONTEXT.md)
 
@@ -33,7 +33,7 @@ S78-D01 (open Sprint 78) ✅ Accepted
   → S78-T-018A (DLA scope leak + fenced review JSON) ✅ COMPLETE
   → S78-T-020 (final-step Continue to Authoring CTA placement) ✅ COMPLETE
   → S78-D02 (first-pass GAM reliability; verifier = temporary instrumentation) ✅ Accepted
-  → S78-T-013 (WS2 integration verification) — OPEN (C6 attempt 2 QA 88/100; first-pass E2; not closed)
+  → S78-T-013 (WS2 integration verification) ✅ CLOSED (2026-08-25) — [T-056](S78-T-056-sprint-78-closure.md)
   → S78-T-025 (disciplinary-precision authoring design) ✅ COMPLETE — [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp)
   → S78-T-026 (disciplinary-precision salience implementation) ✅ COMPLETE
   → S78-T-027 (GPT maths-authoring reliability diagnostic) ✅ COMPLETE — T-028 salience recommended
@@ -45,10 +45,11 @@ S78-D01 (open Sprint 78) ✅ Accepted
   → S78-T-003 (check / revision architecture diagnostic) ✅ COMPLETE
   → S78-T-021 (check / revision architecture solution design) ✅ COMPLETE
   → S78-T-022 (DLA diagnostic-review commissioning + capture) ✅ COMPLETE
-  → S78-T-023 (GAM guided-review salience) — CONDITIONAL; do not open by default
-  → S78-T-024 (WS3 integration / fresh benchmark) — QUEUED after T-022
+  → S78-T-023 (GAM guided-review salience) — NOT OPENED
+  → S78-T-024 (WS3 integration / fresh benchmark) — SATISFIED / WAIVED ([T-056](S78-T-056-sprint-78-closure.md))
   → S78-T-019 / T-036 / T-037 (learner timing) — T-037 COMPLETE (LS timeline projection)
-  → Final Gate: fresh Lagrangian EP→package→QA (≥90 uncapped; 0 Critical; 0 Major)
+  → S78-T-052 / T-054 / T-055 / T-056 — closure readiness → snag fix → closure admin ✅
+  → Final Gate: fresh Lagrangian EP→package→QA (≥90 uncapped; 0 Critical; 0 Major) ✅ MET (94/100)
 ```
 
 **Present product rule ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)):** intended GAM experience is one step (valid capture → complete → Next). T-017–T-018 review is **temporary instrumentation**, not final architecture and not rejected. A verifier FAIL is a **generation failure**. **“Regenerate until it passes” is not an acceptable reliability outcome.**
@@ -159,7 +160,7 @@ S78-D01 (open Sprint 78) ✅ Accepted
 | **Status** | **Implementation complete** (2026-08-17) — [S78-T-012-gam-operand-aware-model-practice-independence-authoring.md](S78-T-012-gam-operand-aware-model-practice-independence-authoring.md) |
 | **Scope** | S78-WS-2 GAM Stage-1: post-commission WS2 block + SP-06/07 cross-references + prompt-contract tests G1–G8 |
 | **Prompt delta** | WS2 block +1,055 chars per binding; SP-06/07 one-line cross-references each |
-| **Proposed next** | **S78-T-013** integration verification (**OPEN**) |
+| **Proposed next** | **S78-T-013** integration verification — later **CLOSED** ([T-056](S78-T-056-sprint-78-closure.md)) |
 
 ---
 
@@ -167,12 +168,11 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **OPEN** (2026-08-17) — C6 attempt 2 QA **88/100**, suitability PASS, WS2 positive; attempt 1 E2. Not closed by regen-until-pass. [C6 disciplinary](S78-T-013-candidate-6-disciplinary-precision-diagnostic.md) · [C6 E2](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md) · C5 [collector repair](S78-T-013-candidate-5-t015-collector-binding-repair.md) ✅. |
+| **Status** | **CLOSED** (2026-08-25) — [S78-T-013](S78-T-013-workstream-2-integration-verification.md) · evidence matrix [T-056](S78-T-056-sprint-78-closure.md). Historical path: C6 attempt 2 QA **88/100**, suitability PASS, WS2 positive; attempt 1 E2. Not closed by regen-until-pass. |
 | **Scope** | Fresh Lagrangian EP→DLA→GAM→**Verify generated materials** (temporary instrumentation)→QA; semantic WS2 gate; WS1/P02 regression |
 | **Do not conflate** | WS2 independence vs operational suitability (C4: both can diverge) |
-| **Blocker** | Operator-led fresh run; unit tests do not close T-013; **“regenerate until pass” is not closure** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)) |
-| **QA already run this sprint** | T-008 **87/100** exists (WS1 closed; WS2 capability). T-013 **closure** QA is still pending. C4 correctly had no QA. |
-| **Proposed next on WS2 PASS** | **S78-T-003** Check/revision diagnostic |
+| **Closure** | Administrative close under T-056; E2 carry-forward; HR first-pass PASS/PASS regen 0 as signal only |
+| **QA on path** | T-008 **87**; C6 **88**; Lagrangian **94** (Final Gate); HR **92** (corroboration) |
 
 ---
 
@@ -287,21 +287,21 @@ S78-D01 (open Sprint 78) ✅ Accepted
 | **Depends on** | S78-T-021 complete |
 | **Mode** | DLA implementation |
 | **Delivered** | `78-DLA-WS-3`; `lib/dla-diagnostic-review.js`; capture gate; GAM projection; tests |
-| **Next** | **S78-T-024** integration verification — queued; **T-023** conditional only |
+| **Next** | **S78-T-024** — dispositioned SATISFIED/WAIVED at sprint close ([T-056](S78-T-056-sprint-78-closure.md)); **T-023** NOT OPENED |
 
 ### S78-T-023 — GAM guided-review salience (conditional)
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Not opened** — only if a post-T-022 exhibit shows the commissioned diagnostic checklist is not authored as `guided_criteria` |
+| **Status** | **NOT OPENED** — conditional trigger never met; confirmed at [T-056](S78-T-056-sprint-78-closure.md) |
 | **Depends on** | S78-T-022 + failing exhibit |
 
 ### S78-T-024 — WS3 integration verification / fresh benchmark
 
 | Field | Content |
 | ----- | ------- |
-| **Status** | **Queued** after T-022 (and T-023 only if opened) |
-| **Does not close** | T-013 · T-019 |
+| **Status** | **SATISFIED / WAIVED** (2026-08-25) — [S78-T-056](S78-T-056-sprint-78-closure.md); Check Strong evidence on C6 / Lagrangian 94 / HR Essentials |
+| **Does not reopen** | T-013 · Sprint 78 |
 
 ---
 
@@ -551,6 +551,83 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 ---
 
+### S78-T-049 — First-pass generation validation reliability diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-049-first-pass-generation-validation-reliability-diagnostic.md](S78-T-049-first-pass-generation-validation-reliability-diagnostic.md) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Finding** | Validators correct; DLA P02 residual stochastic post–T-009; GAM lacks high-salience silent role + quantitative pre-emit checks (OPS-2 catches). Decision **C**. |
+| **Not in scope** | Implementation · validator weakening · UX redesign · T-013 / sprint close |
+
+---
+
+### S78-T-050 — Harden DLA evidence-provider first-pass consistency
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-050-dla-evidence-provider-first-pass-hardening.md](S78-T-050-dla-evidence-provider-first-pass-hardening.md) |
+| **Mode** | Implementation |
+| **Change** | Ultra-short FINAL SILENT PRE-EMIT CHECK (P02) at end of live DLA §10; reinforces existing invariant; validator unchanged |
+| **Not in scope** | GAM hardening · schema/validator changes · auto-retry · T-013 / sprint close |
+
+---
+
+### S78-T-051 — Harden GAM first-pass semantic and quantitative consistency
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-051-gam-first-pass-consistency-hardening.md](S78-T-051-gam-first-pass-consistency-hardening.md) |
+| **Mode** | Implementation |
+| **Change** | Compact FINAL SILENT PRE-EMIT CONSISTENCY CHECK (role/status + conditional quantitative/derived) on live GAM V2 Copy; canonical contract constant; validators unchanged |
+| **Not in scope** | DLA T-050 edits · schema/validator changes · auto-retry · claiming stochastic improvement · T-013 / sprint close |
+
+---
+
+### S78-T-052 — Sprint 78 closure-readiness diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-052-sprint-78-closure-readiness-diagnostic.md](S78-T-052-sprint-78-closure-readiness-diagnostic.md) — **C** executed via T-056 |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Finding** | Recommend **C READY TO CLOSE**; T-054 snag cleared by T-055; closed by T-056 |
+| **Not in scope** | Production changes · regeneration · closing T-013 / Sprint 78 in this task |
+
+---
+
+### S78-T-054 — Transfer response Markdown / closure leakage diagnostic
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Diagnostic complete** (2026-08-25) — [S78-T-054-transfer-response-markdown-closure-leakage-diagnostic.md](S78-T-054-transfer-response-markdown-closure-leakage-diagnostic.md) |
+| **Mode** | DIAGNOSTIC ONLY |
+| **Finding** | PRIMARY A+D: GAM hosted closure in `transfer_prompt`; vNext used inline Markdown for transfer prompts. Cleared by T-055. |
+| **Not in scope** | Implementation · workspace redesign · T-013 / sprint close |
+
+---
+
+### S78-T-055 — Fix transfer/closure separation and transfer Markdown rendering
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **Implementation complete** (2026-08-25) — [S78-T-055-transfer-closure-markdown-fix.md](S78-T-055-transfer-closure-markdown-fix.md) |
+| **Mode** | IMPLEMENTATION |
+| **Finding** | Blocker **RESOLVED**. GAM: never host page closure in `transfer_prompt`; vNext: block Markdown for transfer workspace prompts; T-032/T-041 preserved. |
+| **Not in scope** | Pedagogy redesign · HR migration · T-013 / sprint close |
+
+---
+
+### S78-T-056 — Sprint 78 closure administration
+
+| Field | Content |
+| ----- | ------- |
+| **Status** | **COMPLETE** (2026-08-25) — [S78-T-056-sprint-78-closure.md](S78-T-056-sprint-78-closure.md) |
+| **Mode** | ADMINISTRATION |
+| **Outcome** | Sprint 78 **CLOSED** · T-013 **CLOSED** · WS2 **CLOSED** · Final Gate **MET** · T-054 blocker **RESOLVED** · T-024 satisfied/waived · T-023 NOT OPENED |
+| **Not in scope** | Production changes · further quality-improvement tasks |
+
+---
+
 ### S78-T-019 — Activity timing / duration diagnostic
 
 | Field | Content |
@@ -580,15 +657,17 @@ S78-D01 (open Sprint 78) ✅ Accepted
 
 ## Final Gate (sprint exit)
 
-| Criterion | Target |
-| --------- | ------ |
-| Path | Fresh top-to-bottom Lagrangian: EP → DLA → GAM → design/graphics → assembly → learner package |
-| QA | Independent QA, PRISM Resource Quality Benchmark v2.2 |
-| Uncapped score | **≥ 90/100** |
-| Critical defects | **0** |
-| Major defects | **0** |
+| Criterion | Target | Result |
+| --------- | ------ | ------ |
+| Path | Fresh top-to-bottom Lagrangian: EP → DLA → GAM → design/graphics → assembly → learner package | Post–T-037 Lagrangian package |
+| QA | Independent QA, PRISM Resource Quality Benchmark v2.2 | Operator independent QA |
+| Uncapped score | **≥ 90/100** | **94/100** |
+| Critical defects | **0** | **0** |
+| Major defects | **0** | **0** |
 
-Sprint 78 is **not** complete on diagnostic or unit-test pass alone. Exit must be achieved through **general architectural reliability**, not hand-tuning the Lagrangian resource.
+**Verdict (2026-08-25):** **MET** — [S78-T-056](S78-T-056-sprint-78-closure.md). Corroboration: HR Essentials **92/100** + first-pass PASS/PASS (regen 0). Lagrangian remains the primary Final Gate benchmark.
+
+Sprint 78 is **CLOSED**. Exit was achieved through **general architectural reliability**, not hand-tuning the Lagrangian resource.
 
 **“Regenerate until it passes” is not an acceptable reliability outcome** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)).
 

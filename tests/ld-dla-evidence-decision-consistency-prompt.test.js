@@ -230,7 +230,9 @@ test("S78-T-009: §10 pre-output checklist includes explicit P02 closure check",
     output,
     /for every provider_material_id, the matching required_materials\[\] row contains complete evidence_requirement/i
   );
+  // T-050 adds FINAL SILENT PRE-EMIT CHECK (P02); do not reintroduce obsolete FINAL PRE-EMIT AUDIT wording.
   assert.doesNotMatch(output, /FINAL PRE-EMIT AUDIT/i);
+  assert.match(output, /FINAL SILENT PRE-EMIT CHECK \(P02\)/i);
 });
 
 test("S78-T-009: §7/§8/§10/§11 remain mutually consistent on P02", () => {

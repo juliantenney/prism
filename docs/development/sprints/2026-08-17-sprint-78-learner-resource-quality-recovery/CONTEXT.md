@@ -1,9 +1,9 @@
 # Sprint 78 — Context
 
-**Sprint status:** **OPEN** (2026-08-17)  
-**Dashboard:** [STATUS.md](STATUS.md)
+**Sprint status:** **CLOSED** (opened 2026-08-17 · closed 2026-08-25)  
+**Dashboard:** [STATUS.md](STATUS.md) · **Closure:** [S78-T-056](S78-T-056-sprint-78-closure.md)
 
-**Present (2026-08-17):** WS1 **CLOSED** (87/100). WS2 architecture has positive evidence; T-013 **OPEN**. T-017–T-018 verifier is **temporary instrumentation** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)). T-003 and T-019 queued. Sprint 77 **CLOSED**.
+**Present (2026-08-25):** Sprint 78 **CLOSED**. Final Gate **MET** (Lagrangian **94**). T-013 / WS2 **CLOSED**. T-017–T-018 verifier remains temporary instrumentation ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)). Sprint 77 **CLOSED**. Pre-alpha carry-forwards in T-056.
 
 ---
 
@@ -91,10 +91,10 @@ Desired end state: first-pass suitable GAM; verifier no longer revealing systemi
 | Track | Status |
 | ----- | ------ |
 | WS1 | **CLOSED** — `response_fulfilment` + GAM response-space preservation; original pre-filled/non-editable workspace repaired; fresh **87/100** |
-| WS2 | Architecture **strong positive evidence**; T-013 **OPEN** because the integration path also exposed **separate** operational-suitability failures and malformed-output recurrences. C4: **WS2 PASS + suitability FAIL** |
-| Operational suitability | General commission-relative invariant (T-014/T-015). Stage-1 insufficient. Verifier = temporary instrumentation |
-| WS3 | T-003 queued (hypothesis above — not proven) |
-| Activity timing | T-019 queued — expected duration not displayed; do not assume renderer ownership |
+| WS2 | **CLOSED** (T-013 closed 2026-08-25) — see [T-056](S78-T-056-sprint-78-closure.md). Historical note: C4 showed WS2 PASS + suitability FAIL (do not conflate). |
+| Operational suitability | General commission-relative invariant (T-014/T-015). Verifier = temporary instrumentation; retirement = pre-alpha carry-forward |
+| WS3 | T-022 complete; T-024 satisfied/waived; T-023 NOT OPENED |
+| Activity timing | T-037 complete (T-019 superseded) |
 
 ---
 

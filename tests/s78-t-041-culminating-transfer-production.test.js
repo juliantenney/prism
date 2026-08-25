@@ -227,8 +227,11 @@ test("T-041 GAM enrich contract fulfils transfer_prompt as production distinct f
   assert.match(block, /S78-T-041 transfer_prompt fulfilment/i);
   assert.match(block, /meaningfully changed context/i);
   assert.match(block, /learner response/i);
-  assert.match(block, /Do not duplicate ### Page learner-resource closure/i);
+  assert.match(block, /Do not embed ### Page learner-resource closure/i);
   assert.match(block, /page learner-resource closure \/ study_tips is consolidation only/i);
+  assert.match(block, /Do not author boilerplate headings such as ### Transfer task/i);
+  assert.match(block, /NEVER host ### Page learner-resource closure inside a transfer_prompt/i);
+  assert.doesNotMatch(block, /Prefer a consolidation_summary, transfer_prompt/i);
   assert.doesNotMatch(block, /Lagrange|shadow price/i);
 });
 
@@ -238,7 +241,10 @@ test("T-041 live GAM V2 Copy / buildWorkflowStepInstructions receives transfer s
   assert.match(brief, /S78-T-041 transfer_prompt/i);
   assert.match(brief, /meaningfully changed context/i);
   assert.match(brief, /Distinct from ### Page learner-resource closure/i);
+  assert.match(brief, /NEVER host this section inside a transfer_prompt/i);
+  assert.match(brief, /Do not author ### Transfer task boilerplate/i);
   assert.match(brief, /S78-D04 page learner-resource closure/i);
+  assert.doesNotMatch(brief, /Prefer consolidation\/transfer\/closure materials/i);
 
   const wf = buildGamV2Workflow();
   api.setWorkflowsForTest([wf]);

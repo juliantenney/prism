@@ -8,7 +8,7 @@
 **Opening decision:** [S77-D01](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/decisions.md#s77-d01--open-sprint-77--dla-prompt-contract-architecture-pilot)  
 **Handover:** [HANDOVER.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/HANDOVER.md)  
 **Close-out:** [sprint-77-closeout.md](sprint-77-closeout.md) · [S77-T-027](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/S77-T-027-sprint-77-closeout.md)  
-**Following:** Sprint 78 **OPEN** — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md)
+**Following:** Sprint 78 **CLOSED** — [sprint-78-closeout.md](sprint-78-closeout.md) · [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md)
 
 ## Theme
 
@@ -16,7 +16,7 @@ Make **DLA** model-visible instruction architecture comprehensible, traceable, a
 
 ## Immediate next work
 
-> **Sprint 77 is CLOSED.** Close-out: [sprint-77-closeout.md](sprint-77-closeout.md). Successor: Sprint 78 **OPEN** — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md). E2 OPEN (protocol). Phase D **not authorised**.
+> **Sprint 77 is CLOSED.** Close-out: [sprint-77-closeout.md](sprint-77-closeout.md). Successor: Sprint 78 **CLOSED** — [sprint-78-closeout.md](sprint-78-closeout.md). E2 remains a known carry-forward (protocol). Phase D **not authorised**.
 
 ## Phase overview
 

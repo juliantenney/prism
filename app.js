@@ -11373,8 +11373,20 @@
     return { ok: false, errors: ["unrecognized Design Page capture shape"] };
   }
 
+  function resolveGamFinalSilentPreEmitConsistencyGate() {
+    var contractMod = resolveLdGamPageEnrichContractLib();
+    if (
+      contractMod &&
+      typeof contractMod.GAM_FINAL_SILENT_PRE_EMIT_CONSISTENCY_GATE === "string" &&
+      contractMod.GAM_FINAL_SILENT_PRE_EMIT_CONSISTENCY_GATE
+    ) {
+      return String(contractMod.GAM_FINAL_SILENT_PRE_EMIT_CONSISTENCY_GATE);
+    }
+    return "";
+  }
+
   function buildGamV2CopyMaterialAuthoringBrief() {
-    return [
+    var parts = [
       "Output contract: return a partial page artefact only (not a full-page replay).",
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
       "Required payload: activities[] containing activity_id and materials[] only.",
@@ -11385,13 +11397,17 @@
       "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
       "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
       "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
-      "S78-D04 page learner-resource closure: in the final activity's materials Markdown, include exactly one section headed \"### Page learner-resource closure\" (2–4 compact consolidation bullets; optional lightly signposted transfer without a worked answer; no new teaching/claims/model classes; honour S78-DP). Prefer consolidation/transfer/closure materials when commissioned as the host Markdown vessel; otherwise append to the last Markdown material of the final activity. Do not put this substance in page_synthesis. Design Page will transport that section verbatim into study_tips when present.",
-      "S78-T-041 transfer_prompt: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task on a meaningfully changed context (learner response required; no solution leak; no new teaching; honour S78-DP). Distinct from ### Page learner-resource closure / study_tips consolidation — do not substitute closure bullets for the transfer production.",
+      "S78-D04 page learner-resource closure: in the final activity's materials Markdown, include exactly one section headed \"### Page learner-resource closure\" (2–4 compact consolidation bullets; optional lightly signposted transfer without a worked answer; no new teaching/claims/model classes; honour S78-DP). Prefer consolidation_summary or culminating closure/debrief Markdown as the host vessel when commissioned; otherwise append to the last Markdown material of the final activity that is NOT a transfer_prompt. NEVER host this section inside a transfer_prompt body (S78-T-055). Do not put this substance in page_synthesis. Design Page will transport that section verbatim into study_tips when present.",
+      "S78-T-041 transfer_prompt: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task on a meaningfully changed context (learner response required; no solution leak; no new teaching; honour S78-DP). Distinct from ### Page learner-resource closure / study_tips consolidation — do not embed or substitute closure bullets in the transfer production. Do not author ### Transfer task boilerplate — the renderer supplies Transfer your learning / Transfer response.",
       "S78-T-042 structured workspace fidelity: for template / structured response or derivation workspaces, author **Label:** sections (bold label with trailing colon) so each ordered prompt binds to a learner response location. Do not emit standalone bold labels without the colon as surrogate response fields. Keep genuine tables as tables with blank learner cells. Ordinary inline bold emphasis in prose is fine. Do not invent an equation editor.",
       "Copilot conversation may provide contextual continuity of instructional intent; it must not override the AUTHORITATIVE DLA MATERIAL COMMISSION. PRISM does not embed the full upstream DLA page in this mode.",
       "Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.",
       "Do not reconstruct or preserve non-owned stage fields."
-    ].join("\n");
+    ];
+    // S78-T-051: final silent consistency gate at end of authoring brief (nearest emit among authoring lines).
+    var gate = resolveGamFinalSilentPreEmitConsistencyGate();
+    if (gate) parts.push("", gate);
+    return parts.join("\n");
   }
 
   function buildGamV2ActivityCountInvariantSection(pageJson) {
@@ -11623,6 +11639,17 @@
       if (pageEmbed && !/### Upstream DLA page/i.test(draftBody)) {
         appendParts.push(pageEmbed);
       }
+    }
+    // S78-T-051: Studio path — same canonical gate after contract/shape (skip if already present).
+    var gate = resolveGamFinalSilentPreEmitConsistencyGate();
+    if (
+      gate &&
+      !/FINAL SILENT PRE-EMIT CONSISTENCY CHECK/i.test(draftBody) &&
+      !appendParts.some(function (part) {
+        return /FINAL SILENT PRE-EMIT CONSISTENCY CHECK/i.test(String(part || ""));
+      })
+    ) {
+      appendParts.push(gate);
     }
     if (!appendParts.length) return draftBody;
     return (draftBody + "\n" + appendParts.join("\n")).trim();
@@ -33927,6 +33954,16 @@
       step && (step.canonical_step_id || step.canonicalStepId || "")
     ).trim();
     if (canonicalStepId === "step_generate_activity_materials") {
+      // S78-T-051: ensure final gate sits immediately before completion/emit override when missing.
+      var assembledSoFar = lines.join("\n");
+      var preEmitGate = resolveGamFinalSilentPreEmitConsistencyGate();
+      if (
+        preEmitGate &&
+        !/FINAL SILENT PRE-EMIT CONSISTENCY CHECK/i.test(assembledSoFar)
+      ) {
+        lines.push("");
+        lines.push(preEmitGate);
+      }
       lines.push("");
       lines.push(
         "GAM completion override: do NOT refuse, defer, or claim response/context/token limits."
@@ -55582,6 +55619,8 @@
     prismTestApi.buildGenerateAssessmentItemsV2CopyAuthoringBrief = buildGenerateAssessmentItemsV2CopyAuthoringBrief;
     prismTestApi.promptBodyLooksLikeLegacyAssessmentItemsContract = promptBodyLooksLikeLegacyAssessmentItemsContract;
     prismTestApi.buildGamV2CopyMaterialAuthoringBrief = buildGamV2CopyMaterialAuthoringBrief;
+    prismTestApi.resolveGamFinalSilentPreEmitConsistencyGate =
+      resolveGamFinalSilentPreEmitConsistencyGate;
     prismTestApi.buildGamV2ActivityCountInvariantSection = buildGamV2ActivityCountInvariantSection;
     prismTestApi.isGamPageEnrichmentV2CopyStep = isGamPageEnrichmentV2CopyStep;
     prismTestApi.buildUpstreamDlaPageEmbedSectionForGamCopy =

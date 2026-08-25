@@ -1,11 +1,11 @@
 # Sprint 78 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-08-17)  
+**Sprint status:** **CLOSED** (opened 2026-08-17 · closed 2026-08-25)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
 
 Inherited programme constraints: [ARCHITECTURAL-CONSTRAINTS.md](../2026-08-06-sprint-74-architecture-consolidation-and-rationalisation/ARCHITECTURAL-CONSTRAINTS.md) · [ENGINEERING-DISCIPLINES.md](../../ENGINEERING-DISCIPLINES.md).
 
-Sprint 77 remains **COMPLETE / Closed**. Do not reopen the DLA architecture pilot to absorb this sprint.
+Sprint 77 remains **COMPLETE / Closed**. Do not reopen the DLA architecture pilot.
 
 ---
 
@@ -88,3 +88,27 @@ Sprint 77 remains **COMPLETE / Closed**. Do not reopen the DLA architecture pilo
 - **Rationale:** 56C removed DP study_tips synthesis because it caused wrong-stage instructional authoring, GAM paraphrase/hallucination risk (R-42), and thin-assembly violations. Historical owner of substance was always GAM. Latest 91/100 package was contract-compliant without `study_tips`; QA’s brief final-synthesis recommendation is best met by completing the deferred transport path, not by reopening DP as an instructional author.
 
 - **Consequences:** Do **not** implement Option A by default. **S78-T-032** implemented Option B packaging (prompt/contract). Do **not** start T-019. Do **not** close T-013 or Sprint 78 on this decision alone.
+
+---
+
+## S78-D05 Close Sprint 78
+
+- **Decision:** Operator authorisation closes **Sprint 78 — Learner Resource Quality Recovery**. Closing administration is recorded in [S78-T-056](S78-T-056-sprint-78-closure.md).
+
+  Closing state:
+
+  - **T-013 CLOSED** against written WS2 criteria (evidence matrix in T-056); E2 is a pre-alpha carry-forward, not a T-013 blocker.
+  - **Workstream 2 CLOSED.**
+  - **Final Gate MET** on primary Lagrangian post–T-037 QA **94/100**, 0 Critical, 0 Major; HR Essentials **92/100** + first-pass PASS/PASS (regen 0) corroborates domain-shift/first-pass signal without replacing Lagrangian as primary benchmark.
+  - **T-054 blocker RESOLVED** by T-055.
+  - **T-024 SATISFIED / WAIVED**; **T-023 NOT OPENED.**
+  - Pre-alpha and optional/hygiene carry-forwards recorded in T-056; they do **not** keep Sprint 78 open.
+
+  No production code, prompt, schema, validator, renderer, or workflow change is authorised by this close. No further Sprint 78 improvement task is opened. Next sprint is **not** opened by this decision.
+
+- **Status:** **Accepted** (2026-08-25)
+
+- **Rationale:** T-052 recommended C READY TO CLOSE; the sole subsequent pre-closure blocker (T-054) was resolved by T-055. Written Final Gate and T-013 criteria are met without requiring another benchmark generation or statistical reliability campaign.
+
+- **Consequences:** Authoritative pack state is **CLOSED**. Do not reopen Sprint 78 for polish. Carry-forwards proceed only via future programme selection ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) / product backlog).
+

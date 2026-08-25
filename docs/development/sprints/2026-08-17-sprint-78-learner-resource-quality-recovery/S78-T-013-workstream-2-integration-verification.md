@@ -1,12 +1,13 @@
 # S78-T-013 — Workstream 2 integration verification
 
 **Task:** S78-T-013  
-**Status:** **OPEN** (2026-08-17) — WS2 independence has **positive evidence**; Candidate 4 post-T-015 **operational suitability FAIL**; T-017–T-018 verifier implemented as **temporary instrumentation** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)); blocked on fresh operator verification  
+**Status:** **CLOSED** (2026-08-25) — administrative close under [S78-T-056](S78-T-056-sprint-78-closure.md); Workstream 2 **CLOSED**; Final Gate **MET** separately on Lagrangian **94**  
+**Historical status (opened):** OPEN (2026-08-17) — WS2 independence had **positive evidence**; Candidate 4 post-T-015 **operational suitability FAIL**; T-017–T-018 verifier = **temporary instrumentation** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification))  
 **Mode:** Verification only — no production changes  
 **Depends on:** S78-T-011 · S78-T-012 · S78-T-015 · S78-T-016 · S78-T-017 · T-017A · **S78-T-018** (GAM verification UX)  
 **Does not include:** T-003 diagnostic · T-019 execution · Lagrangian hand-edits · E2 sanitiser · “regenerate until pass” as closure
 
-**Latest:** [S78-T-026](S78-T-026-disciplinary-precision-authoring-salience-implementation.md) **implementation complete** (2026-08-25). S78-DP salience live at DLA + GAM + Design Page/visual. Next: fresh Lagrangian benchmark. [S78-T-025](S78-T-025-disciplinary-precision-authoring-solution-design.md) · [S78-D03](decisions.md#s78-d03--disciplinary-warrant-authoring-salience-s78-dp). [C6 E2](S78-T-013-candidate-6-malformed-gam-e2-diagnostic.md) remains a **separate** reliability track. T-013 stays **OPEN**. Unit tests do **not** close T-013.
+**Closure note:** Final evidence matrix lives in [S78-T-056 §2](S78-T-056-sprint-78-closure.md). Accumulated evidence includes post–T-011 practice_independence behaviour, distinct model/attempt operands, preserved learner load-bearing reasoning, coherent near transfer, no Major model/practice defect on later packages (C6 / Lagrangian 94 / HR), and post–T-050/T-051 HR first-pass DLA/GAM PASS with regen 0 (**signal**, not statistical proof). E2 remains a known **carry-forward**, not a T-013 blocker. Do **not** conflate operational suitability with WS2 semantic acceptance.
 
 **Do not conflate** Workstream 2 (model/practice independence) with operational suitability.
 
@@ -257,17 +258,22 @@ A verifier FAIL is a **GAM generation failure**. Preserve the candidate. Classif
 
 ## 16. WS2 closure decision
 
-**Workstream 2:** **NOT CLOSED.** Independence architecture has **strong positive evidence** (T-011/T-012; C1/C4 distinct operands; T-008 QA praised worked-example → independent-practice separation). T-013 remains open because the integration path also exposed **separate** operational-suitability failures and malformed-output recurrences (E2 Candidate 2; truncation Candidate 3; C4 suitability FAIL).
+**Workstream 2:** **CLOSED** (2026-08-25) under [S78-T-056](S78-T-056-sprint-78-closure.md).
+
+**Historical note (pre-closure):** Independence architecture had **strong positive evidence** (T-011/T-012; C1/C4 distinct operands; T-008 QA praised separation). T-013 remained open for a period because the integration path also exposed **separate** operational-suitability failures and malformed-output recurrences (E2 Candidate 2; truncation Candidate 3; C4 suitability FAIL). Those were dispositioned as suitability track / E2 carry-forward — not as permanent WS2 semantic failure. See T-056 evidence matrix.
 
 ---
 
 ## 17. Operator next actions
 
+**Superseded by closure.** No further T-013 operator actions. See [S78-T-056](S78-T-056-sprint-78-closure.md) for final state and pre-alpha carry-forwards.
+
+*(Historical checklist retained for audit trail only.)*  
 1. Preserve Candidate 4 full DLA/GAM JSON in the sprint pack if still held.  
 2. **Do not run QA** on Candidate 4.  
-3. **Resume fresh generation:** EP → DLA → GAM → **Verify generated materials** (Check verification) → assembly → QA.  
-4. On verification FAIL: **preserve the candidate**; classify the failure class; trace to the earliest DLA→GAM owner where justified. Do **not** hand-edit Lagrangian. Do **not** close reliability by regenerating until PASS. Live T-018 copy may still tell the operator to regenerate GAM from the same DLA for that run — that recovery is **not** Sprint 78 reliability success.  
-5. T-021 / T-022 **complete**. T-025 / T-026 **complete**. T-019 remains queued. T-013 remains OPEN (first-pass reliability / E2). Next: fresh benchmark after T-026. Do not expand the verifier.
+3. Fresh generation path was used across later candidates / Lagrangian 94 / HR Essentials.  
+4. On verification FAIL: preserve candidate; do **not** treat regen-until-pass as reliability success.  
+5. T-021 / T-022 / T-025 / T-026 completed during the sprint.
 
 ---
 

@@ -1,45 +1,45 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 78 **OPEN** (2026-08-17). Sprint 77 **COMPLETE / CLOSED**. Sprint 76 **COMPLETE / Closed**.  
-**Updated:** 2026-08-17
+**Status:** Sprint 78 **CLOSED** (2026-08-25). Sprint 77 **COMPLETE / CLOSED**. Sprint 76 **COMPLETE / Closed**.  
+**Updated:** 2026-08-25
 
 ---
 
 ## Current programme
 
-Sprint 78 — Learner Resource Quality Recovery — **OPEN**.
+Sprint 78 — Learner Resource Quality Recovery — **CLOSED**.
 
-**Charter:** [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md) · **Start here:** [SPRINT-78-START-HERE.md](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/SPRINT-78-START-HERE.md)
+**Closeout:** [sprint-78-closeout.md](sprint-78-closeout.md) · **Pack:** [SPRINT-78-START-HERE.md](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/SPRINT-78-START-HERE.md) · **Admin record:** [S78-T-056](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/S78-T-056-sprint-78-closure.md)
 
-**Immediate priority:** **Resume S78-T-013** — WS2 integration verification using Verify generated materials as **temporary instrumentation**. WS1 **CLOSED** (87/100). T-003 and T-019 queued. Sprint 77 **CLOSED**.
+**Final Gate:** Lagrangian **94/100**, 0 Critical, 0 Major — **MET**.  
+**T-013 / Workstream 2:** **CLOSED**.
 
-**QA baseline (reference):** [POST-S77-lagrangian-qa-baseline-2026-08-14.md](../development/sprints/2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/POST-S77-lagrangian-qa-baseline-2026-08-14.md) — uncapped **70/100**; **2 Major**; F&S **30**; exit target fresh Lagrangian **≥ 90** uncapped; **0 Critical**; **0 Major**.
+**Immediate priority:** Next sprint is **not** selected here. See pre-alpha carry-forwards in [S78-T-056 §9–10](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/S78-T-056-sprint-78-closure.md) and [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
-### Sprint 78 workstreams
+### Sprint 78 final workstream disposition
 
 1. **Do / workspace fulfilment** — **CLOSED** (T-001→T-009; fresh 87/100).
-2. **Worked-example → practice independence** — architecture complete; **T-013 OPEN** (do not conflate with operational suitability).
-3. **Check / revision architecture** — S78-T-003 queued (one activity-level diagnostic review hypothesis).
-4. **Activity timing / duration** — S78-T-019 queued diagnostic.
+2. **Worked-example → practice independence** — **CLOSED** (T-013).
+3. **Check / revision architecture** — T-022 complete; T-024 satisfied/waived; T-023 NOT OPENED.
+4. **Activity timing / duration** — T-037 complete (T-019 superseded).
 
-**Operational suitability:** T-014/T-015 general invariant; T-017–T-018 verifier is **temporary instrumentation** ([S78-D02](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)). **“Regenerate until it passes” is not acceptable.**
+**Operational suitability:** T-017–T-018 verifier remains **temporary instrumentation** ([S78-D02](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)); retirement is evidence-gated pre-alpha carry-forward. **“Regenerate until it passes” is not acceptable.**
 
-**Moderate / presentation (lower priority):** Activity 3 math workspace; stray blank lines; missing HR; image path issues.
+### Pre-alpha carry-forwards (not unfinished S78)
 
-### Out of sprint / wait states (unless blocking benchmark)
+1. Learner-production workspace / interactivity architecture  
+2. E2 malformed-GAM / Copilot-visible splice (fail-closed; no sanitiser)  
+3. OPS verifier retirement criteria  
+4. Editable mathematical input (parked)  
+5. QA rubric applicability / weighting by resource type  
 
-1. **E2** — OPEN / intermittent; Sprint 78 recurrence (T-013 Candidate 2); T-026 protocol; no sanitiser; do not reopen Sprint 77
-2. **EP→DLA A5 topology-loss** — retained observation
-3. Graphics — queue G Clear Run Data **CLOSED**; PB-FA-004 etc. separate
-4. **GAM ordinary material body-format** — **CLOSED** (2026-08-14)
-5. T-032 — OPEN diagnostic residual
-6. PB-FA-010 — later method application; not allocated unless diagnosis requires
-7. Continue-to-Authoring async UI — OPEN / separate
-8. **DLA `material_type` presentation vocabulary** — **CLOSED** (`77-DLA-CANONICAL-3`)
-9. PB-FA-005 Settings — deferred
-10. RECOVER — hypothesis only
-11. DLA Phase D legacy cleanup — not authorised
-12. Evidence-injection rollback — option only / not executed
+---
+
+## Closed — Sprint 78
+
+**Learner Resource Quality Recovery** — [sprint-78-closeout.md](sprint-78-closeout.md)
+
+**Predecessor:** [sprint-77-closeout.md](sprint-77-closeout.md)
 
 ---
 
@@ -47,7 +47,7 @@ Sprint 78 — Learner Resource Quality Recovery — **OPEN**.
 
 **DLA Prompt Contract Architecture Pilot** — [sprint-77-closeout.md](sprint-77-closeout.md)
 
-**Successor:** Sprint 78 — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md)
+**Successor:** Sprint 78 — [sprint-78-learner-resource-quality-recovery.md](sprint-78-learner-resource-quality-recovery.md) — **CLOSED**
 
 ---
 

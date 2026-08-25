@@ -1,11 +1,13 @@
 # Sprint 78 — Charter
 
 **Sprint:** 78 — Learner Resource Quality Recovery  
-**Status:** **OPEN** (opened 2026-08-17)  
+**Status:** **CLOSED** (opened 2026-08-17 · closed 2026-08-25)  
 **Opened:** 2026-08-17  
+**Closed:** 2026-08-25  
 **Predecessor:** Sprint 77 — COMPLETE / Closed (2026-08-14) — DLA architecture pilot gated; do not reopen  
 **Type:** Instructional-relationship repair via diagnosis-first quality recovery  
 **Start here:** [SPRINT-78-START-HERE.md](SPRINT-78-START-HERE.md)  
+**Closure:** [S78-T-056](S78-T-056-sprint-78-closure.md) · [S78-D05](decisions.md#s78-d05--close-sprint-78)  
 **Opening decision:** [S78-D01](decisions.md#s78-d01--open-sprint-78--learner-resource-quality-recovery)  
 **Predecessor close-out:** [S77-T-027](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/S77-T-027-sprint-77-closeout.md)  
 **QA baseline:** [POST-S77-lagrangian-qa-baseline-2026-08-14.md](../2026-08-14-sprint-77-dla-prompt-contract-architecture-pilot/POST-S77-lagrangian-qa-baseline-2026-08-14.md)
@@ -95,7 +97,7 @@ Do **not** solve the quality problem by adding unnecessary content or interface 
 | # | Track | Fresh exhibit | First task |
 | - | ----- | ------------- | ---------- |
 | 1 | **Learner production / workspace fulfilment** | Activity 1: learners told to enter responses into a comparison table; table already completed and non-editable | **S78-T-001** (diagnostic — **complete**; WS1 **CLOSED**) |
-| 2 | **Modelling / practice independence** | Activity 3: complete worked solution to the **identical** constrained-optimisation problem immediately before independent practice | **S78-T-002** (diagnostic **complete**; T-013 **OPEN**) |
+| 2 | **Modelling / practice independence** | Activity 3: complete worked solution to the **identical** constrained-optimisation problem immediately before independent practice | **S78-T-002** (diagnostic **complete**; T-013 **CLOSED**) |
 | 3 | **Check / revision architecture** | All four activities lack substantive Check/revision; F&S score 30 | **S78-T-003** (**queued**) |
 
 **Moderate / presentation findings (logged, lower priority):** Activity 3 mathematical workspace form; stray blank lines above some response fields; missing horizontal rule between activities; image mismatch/persistence/operator-path where recorded. **Do not elevate** above instructional/reliability workstreams unless a shared architectural cause is proven.
@@ -144,6 +146,8 @@ Sprint 78 is **not** complete merely because T-001/T-002/T-003 diagnostics or un
 
 If the target is missed, inspect QA findings — **do not weaken the benchmark**. **Do not close reliability by regenerating until a verifier PASS.**
 
+**Closure result (2026-08-25):** Final Gate **MET** — Lagrangian **94/100**, 0 Critical, 0 Major. See [S78-T-056](S78-T-056-sprint-78-closure.md).
+
 ---
 
 ## Protected Sprint 77 baseline (do not reopen)
@@ -152,19 +156,21 @@ Sprint 77 DLA canonical architecture is **gated and closed**. Do not reopen Spri
 
 ---
 
-## Current disposition (2026-08-17 consolidation)
+## Final disposition (2026-08-25)
 
 | Track | Status |
 | ----- | ------ |
-| WS1 workspace fulfilment | **CLOSED** — T-001→T-009; fresh **87/100**; original pre-filled/non-editable workspace repaired |
-| WS2 model/practice independence | Architecture has **strong positive evidence** (T-011/T-012; distinct operands; QA praised separation). T-013 **OPEN** because the same path exposed **separate** operational-suitability failures and malformed-output recurrences. Candidate 4: **WS2 PASS + suitability FAIL**. |
-| Operational suitability | T-014/T-015 general commission-relative invariant. Stage-1 **insufficient**. T-017–T-018 = **temporary instrumentation** ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)). |
-| WS3 Check/revision | T-003 queued — hypothesis to test, not proven (one activity-level diagnostic review) |
-| Activity timing | T-019 queued diagnostic — do not assume renderer ownership |
+| WS1 workspace fulfilment | **CLOSED** |
+| WS2 model/practice independence | **CLOSED** (T-013 closed) |
+| Operational suitability | Temporary verifier retained; retirement = pre-alpha carry-forward ([S78-D02](decisions.md#s78-d02--gam-first-pass-reliability-and-temporary-semantic-verification)) |
+| WS3 Check/revision | T-022 complete; T-024 satisfied/waived; T-023 NOT OPENED |
+| Final Gate | **MET** (Lagrangian **94**) |
+| Sprint 78 | **CLOSED** |
 
-**GAM product contract:** intended steady state is Generate Activity Materials → valid capture → Step complete → Next. The extra verifier interaction is **not** the desired permanent mechanism. **“Regenerate until it passes” is not an acceptable reliability outcome.**
+**GAM product contract:** intended steady state remains Generate Activity Materials → valid capture → Step complete → Next. **“Regenerate until it passes” is not an acceptable reliability outcome.**
 
-**Exit:** unchanged — fresh from-top Lagrangian ≥ **90** uncapped; **0 Critical**; **0 Major**; via general architectural reliability, not Lagrangian hand-tuning.
+**Exit:** achieved — fresh from-top Lagrangian ≥ **90** uncapped; **0 Critical**; **0 Major**; via general architectural reliability, not Lagrangian hand-tuning.
+
 
 ---
 

@@ -229,6 +229,8 @@ test("LS timeline without duration_minutes does not fabricate activity duration"
   const ls = JSON.parse(JSON.stringify(lsPartial));
   delete ls.learning_sequence.timeline[0].duration_minutes;
   delete ls.learning_sequence.timeline[1].duration_minutes;
+  delete ls.learning_sequence.timeline[0].estimated_minutes;
+  delete ls.learning_sequence.timeline[1].estimated_minutes;
   const result = assemble.assembleVNextPageFromPartials({
     episode_plan: epShell,
     dla: dlaPartial,
@@ -239,6 +241,45 @@ test("LS timeline without duration_minutes does not fabricate activity duration"
   const a2 = result.page.activities.find((row) => row.activity_id === "A2");
   assert.equal(a1.duration_minutes, undefined);
   assert.equal(a2.duration_minutes, undefined);
+});
+
+test("LS timeline estimated_minutes project onto activities when duration_minutes absent", () => {
+  const ls = JSON.parse(JSON.stringify(lsPartial));
+  ls.learning_sequence.timeline[0] = {
+    activity_id: "A1",
+    estimated_minutes: 8
+  };
+  ls.learning_sequence.timeline[1] = {
+    activity_id: "A2",
+    estimated_minutes: 12
+  };
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    dla: dlaPartial,
+    learning_sequence: ls
+  });
+  assert.equal(result.ok, true);
+  const a1 = result.page.activities.find((row) => row.activity_id === "A1");
+  const a2 = result.page.activities.find((row) => row.activity_id === "A2");
+  assert.equal(a1.duration_minutes, 8);
+  assert.equal(a2.duration_minutes, 12);
+});
+
+test("timeline duration_minutes wins over estimated_minutes during assemble projection", () => {
+  const ls = JSON.parse(JSON.stringify(lsPartial));
+  ls.learning_sequence.timeline[0] = {
+    activity_id: "A1",
+    duration_minutes: 10,
+    estimated_minutes: 8
+  };
+  const result = assemble.assembleVNextPageFromPartials({
+    episode_plan: epShell,
+    dla: dlaPartial,
+    learning_sequence: ls
+  });
+  assert.equal(result.ok, true);
+  const a1 = result.page.activities.find((row) => row.activity_id === "A1");
+  assert.equal(a1.duration_minutes, 10);
 });
 
 test("EP + DP sets page_synthesis and sections", () => {

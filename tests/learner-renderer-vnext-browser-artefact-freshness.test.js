@@ -35,3 +35,18 @@ test("index.html loads the browser-loaded vNext artefact", function () {
     "index.html must load lib/learner-renderer-vnext-browser.js"
   );
 });
+
+test("index.html browser artefact cache-buster is not the pre-timing-projection token", function () {
+  var fs = require("node:fs");
+  var indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  var match = indexHtml.match(
+    /src=["']lib\/learner-renderer-vnext-browser\.js\?v=([^"']+)["']/
+  );
+  assert.ok(match, "index.html must load learner-renderer-vnext-browser.js with a ?v= cache token");
+  assert.notEqual(
+    match[1],
+    "20260729-s70-expandable-images",
+    "cache-buster must be refreshed after timing-projection / estimated_minutes support"
+  );
+  assert.match(match[1], /timing|202608/, "cache token should reflect the timing repair generation");
+});

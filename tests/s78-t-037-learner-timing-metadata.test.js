@@ -35,6 +35,15 @@ const LAGRANGIAN_TIMELINE_DURATIONS = Object.freeze({
   A5: 11
 });
 
+/** Actual S79-T-007 fresh Lagrangian LS timing shape (estimated_* aliases). */
+const T007_LAGRANGIAN_ESTIMATED_MINUTES = Object.freeze({
+  A1: 8,
+  A2: 12,
+  A3: 18,
+  A4: 10,
+  A5: 12
+});
+
 function createElementStub() {
   return {
     value: "",
@@ -127,10 +136,23 @@ function applyLagrangianTimingShape(page) {
   stripActivityDurations(page);
   page.learning_sequence = page.learning_sequence || {};
   page.learning_sequence.total_duration_minutes = 60;
+  delete page.learning_sequence.total_estimated_minutes;
   page.learning_sequence.timeline = ["A1", "A2", "A3", "A4", "A5"].map((activityId) => ({
     activity_id: activityId,
     duration_minutes: LAGRANGIAN_TIMELINE_DURATIONS[activityId]
   }));
+  return page;
+}
+
+function applyT007LagrangianEstimatedTimingShape(page) {
+  stripActivityDurations(page);
+  page.learning_sequence = {
+    timeline: ["A1", "A2", "A3", "A4", "A5"].map((activityId) => ({
+      activity_id: activityId,
+      estimated_minutes: T007_LAGRANGIAN_ESTIMATED_MINUTES[activityId]
+    })),
+    total_estimated_minutes: 60
+  };
   return page;
 }
 
@@ -223,8 +245,10 @@ test("no timing is invented when neither activity nor Learning Sequence timing e
   const page = stripActivityDurations(loadHeteroscedasticityPage());
   if (page.learning_sequence) {
     delete page.learning_sequence.total_duration_minutes;
+    delete page.learning_sequence.total_estimated_minutes;
     (page.learning_sequence.timeline || []).forEach((entry) => {
       delete entry.duration_minutes;
+      delete entry.estimated_minutes;
     });
   }
   const html = renderVnextExport(api, page);
@@ -232,5 +256,71 @@ test("no timing is invented when neither activity nor Learning Sequence timing e
   assert.ok(headerIntro);
   assert.doesNotMatch(headerIntro[0], /util-learning-header__duration/);
   assert.doesNotMatch(headerIntro[0], /\d+\s*mins?\./i);
+  assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
+});
+
+test("T-007 live LS shape: estimated_minutes project into models and export badges", () => {
+  const page = applyT007LagrangianEstimatedTimingShape(loadHeteroscedasticityPage());
+  const result = buildPageModel(page);
+  assert.equal(result.ok, true);
+  const byId = Object.fromEntries(
+    result.model.activities.map((activity) => [activity.id, activity.durationMinutes])
+  );
+  assert.deepEqual(byId, { ...T007_LAGRANGIAN_ESTIMATED_MINUTES });
+  assert.equal(result.model.header.durationMinutes, 60);
+
+  const { api } = loadPrismTestApi();
+  const html = renderVnextExport(api, applyT007LagrangianEstimatedTimingShape(loadHeteroscedasticityPage()));
+  const headerIntro = html.match(/<div class="util-learning-header__intro">[\s\S]*?<\/div>/);
+  assert.ok(headerIntro);
+  assert.match(
+    headerIntro[0],
+    /class="util-learning-header__duration">60 mins\.<\/span>/
+  );
+  Object.keys(T007_LAGRANGIAN_ESTIMATED_MINUTES).forEach((activityId) => {
+    const minutes = T007_LAGRANGIAN_ESTIMATED_MINUTES[activityId];
+    assert.match(
+      activityHtml(html, activityId),
+      new RegExp(`class="util-badge util-badge-time">${minutes} min</span>`)
+    );
+  });
+});
+
+test("explicit activities[].duration_minutes wins over timeline estimated_minutes", () => {
+  const { api } = loadPrismTestApi();
+  const page = applyT007LagrangianEstimatedTimingShape(loadHeteroscedasticityPage());
+  page.activities.find((row) => row.activity_id === "A1").duration_minutes = 9;
+  const html = renderVnextExport(api, page);
+  assert.match(activityHtml(html, "A1"), /class="util-badge util-badge-time">9 min<\/span>/);
+  assert.match(activityHtml(html, "A2"), /class="util-badge util-badge-time">12 min<\/span>/);
+});
+
+test("timeline duration_minutes wins over estimated_minutes on the same row", () => {
+  const page = applyT007LagrangianEstimatedTimingShape(loadHeteroscedasticityPage());
+  page.learning_sequence.timeline[0].duration_minutes = 10;
+  page.learning_sequence.timeline[0].estimated_minutes = 8;
+  const result = buildPageModel(page);
+  assert.equal(result.ok, true);
+  const a1 = result.model.activities.find((activity) => activity.id === "A1");
+  assert.equal(a1.durationMinutes, 10);
+});
+
+test("learning_sequence.total_estimated_minutes supplies header when totals use alias only", () => {
+  const { api } = loadPrismTestApi();
+  const page = stripActivityDurations(loadHeteroscedasticityPage());
+  page.learning_sequence = page.learning_sequence || {};
+  delete page.learning_sequence.total_duration_minutes;
+  page.learning_sequence.total_estimated_minutes = 60;
+  (page.learning_sequence.timeline || []).forEach((entry) => {
+    delete entry.duration_minutes;
+    delete entry.estimated_minutes;
+  });
+  const html = renderVnextExport(api, page);
+  const headerIntro = html.match(/<div class="util-learning-header__intro">[\s\S]*?<\/div>/);
+  assert.ok(headerIntro);
+  assert.match(
+    headerIntro[0],
+    /class="util-learning-header__duration">60 mins\.<\/span>/
+  );
   assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
 });

@@ -10,6 +10,7 @@ const DEFAULT_LIBS = [
   "lib/visual-planning-contract.js",
   "lib/prism-visual-jobs-planner.js",
   "lib/prism-house-visual-language.js",
+  "lib/prism-image-precision-fidelity.js",
   "lib/prism-image-brief-compiler.js",
   "lib/prism-visual-assets.js",
   "lib/prism-workflow-resources.js",

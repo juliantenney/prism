@@ -1,0 +1,19 @@
+{
+  "contractVersion": "78-DLA-WS-3",
+  "lengths": {
+    "canonicalBare": 30412,
+    "canonicalSlotted": 37286,
+    "liveCopy": 34335,
+    "liveStudio": 32187,
+    "liveAssemble": 32187
+  },
+  "sha256": {
+    "canonicalBare": "63d6aa89aecd480b4297c3beee995293527677ef5a3d747863444041853e85a9",
+    "canonicalSlotted": "0023ff226edbf1d858f3ec8cc0edb8e619fb4152dc7464c88fc6e8e18c09aade",
+    "liveCopy": "c3175daae6ed17aa10f2f759ec8404d8cb4188ac70b537a3c951fd3f5be7875c",
+    "liveStudio": "d291f7d57fe4b0ebe0cb6ba8a3922c9d2b1662f65fe3577c82816669592fe2e0",
+    "liveAssemble": "d291f7d57fe4b0ebe0cb6ba8a3922c9d2b1662f65fe3577c82816669592fe2e0"
+  },
+  "capturedAt": "2026-08-26T11:52:36.303Z",
+  "note": "Pre-delete Phase D canonical-only baseline. OLD path intentionally excluded."
+}

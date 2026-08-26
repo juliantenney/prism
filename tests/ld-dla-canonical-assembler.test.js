@@ -231,7 +231,6 @@ test("Phase C: assembler multiplicity 1; live version 78-DLA-WS-3", () => {
   assert.equal(out.multiplicity, 1);
   assert.equal(out.version, "78-DLA-WS-3");
   assert.equal(dla.CONTRACT_VERSION, "78-DLA-WS-3");
-  assert.equal(dla.LEGACY_CONTRACT_VERSION, "76-DLA-PARTIAL-9");
   assert.doesNotMatch(out.text, /### Sprint 58 vNext DLA partial-page contract/);
   assert.equal(headingCount(out.text, HEADINGS.role), 1);
 });
@@ -241,20 +240,20 @@ test("Phase A: includeExamples false leaves §11 heading only", () => {
   assert.equal(out.sections.examples, HEADINGS.examples);
 });
 
-test("Phase C: legacy builders retained for rollback", () => {
-  assert.equal(typeof dla.buildDlaPageEnrichContractBlock, "function");
-  assert.equal(typeof dla.buildCanonicalDlaPageShapeSnippet, "function");
-  const live = dla.buildDlaPageEnrichContractBlock();
-  assert.match(live, /### Sprint 58 vNext DLA partial-page contract/);
-  assert.match(live, /Completing it must require every load-bearing operation needed to demonstrate the mapped LO/);
+test("Phase D: obsolete Sprint 76 dual builders retired", () => {
+  assert.equal(typeof dla.buildDlaPageEnrichContractBlock, "undefined");
+  assert.equal(typeof dla.buildCanonicalDlaPageShapeSnippet, "undefined");
+  assert.equal(typeof dla.LEGACY_CONTRACT_VERSION, "undefined");
 });
 
-test("Phase C: app.js uses canonical assembler; rollback flag present", () => {
+test("Phase D: app.js uses canonical assembler only; rollback selector removed", () => {
   const appSrc = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
-  assert.match(appSrc, /function isDlaCanonicalAssemblerEnabled/);
+  assert.match(appSrc, /requireLdDlaPageEnrichContractLib/);
+  assert.match(appSrc, /Canonical DLA assembler unavailable/);
   assert.match(appSrc, /assembleDlaCanonicalContract/);
-  assert.ok((appSrc.match(/buildDlaPageEnrichContractBlock\(\)/g) || []).length >= 1);
-  assert.ok((appSrc.match(/buildCanonicalDlaPageShapeSnippet\(\)/g) || []).length >= 1);
+  assert.doesNotMatch(appSrc, /function isDlaCanonicalAssemblerEnabled/);
+  assert.doesNotMatch(appSrc, /buildDlaPageEnrichContractBlock\(\)/);
+  assert.doesNotMatch(appSrc, /buildCanonicalDlaPageShapeSnippet\(\)/);
 });
 
 test("Phase C: §9 overlay has no generic T-033/P01-R1/P02 constitution", () => {

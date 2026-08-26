@@ -1193,7 +1193,7 @@ test("S72: combined mode with empty fixed_observation_fields hard-fails shape", 
 });
 
 test("S72: DLA and GAM contracts include evidence-centred guidance and source-bound boundary", () => {
-  const dlaText = dlaContract.buildDlaPageEnrichContractBlock();
+  const dlaText = dlaContract.assembleDlaCanonicalContract().text;
   const gamText = gamContract.buildGamPageEnrichContractBlock();
   assert.match(dlaText, /evidence_requirement/i);
   assert.match(dlaText, /observable_features/i);
@@ -3725,7 +3725,7 @@ test("S72: partial textual excerpts without honest omission marking warn", () =>
 });
 
 test("S72: DLA contract requires source-native field on combined source-bound workspaces", () => {
-  const dlaText = dlaContract.buildDlaPageEnrichContractBlock();
+  const dlaText = dlaContract.assembleDlaCanonicalContract().text;
   assert.match(
     dlaText,
     /fixed_observation_fields must name the source-native evidence field|quotation, extract, value, observation/i

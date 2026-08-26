@@ -305,7 +305,10 @@ test("S77 Gate B: DLA canonical contract injected once on Copy; task_material_de
   assert.match(assembled.sections.examples, /task_material_decision/);
   const appSrc = fs.readFileSync(appJsPath, "utf8");
   assert.match(appSrc, /assembleDlaCanonicalContract/);
-  assert.match(appSrc, /isDlaCanonicalAssemblerEnabled/);
+  assert.match(appSrc, /requireLdDlaPageEnrichContractLib/);
+  assert.doesNotMatch(appSrc, /isDlaCanonicalAssemblerEnabled/);
+  assert.doesNotMatch(appSrc, /buildDlaPageEnrichContractBlock\(\)/);
+  assert.doesNotMatch(appSrc, /buildCanonicalDlaPageShapeSnippet\(\)/);
   const wf = buildTestWorkflow();
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
@@ -332,7 +335,7 @@ test("S77 Studio: canonical heading once; no legacy Sprint 58 pair", () => {
   assert.doesNotMatch(studio, /Canonical DLA partial activity shape/);
 });
 
-test("S77 rollback: dlaCanonicalAssembler false restores Sprint 76 dual contract+shape", () => {
+test("Phase D: dlaCanonicalAssembler false no longer restores Sprint 76 dual contract+shape", () => {
   const wf = buildTestWorkflow({
     dlaCanonicalAssembler: false,
     workflowOutputSpec: {
@@ -344,12 +347,9 @@ test("S77 rollback: dlaCanonicalAssembler false restores Sprint 76 dual contract
   setupWorkflowCaptures(api, wf, SAMPLE_LO);
   const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
   const instr = api.buildWorkflowStepInstructions(dlaStep, 2, null);
-  assert.match(instr, /### Sprint 58 vNext DLA partial-page contract/);
-  assert.ok(
-    (instr.split("### Sprint 58 vNext DLA partial-page contract").length - 1) >= 2,
-    "legacy Copy should dual-inject"
-  );
-  assert.equal(api.isDlaCanonicalAssemblerEnabled(wf), false);
+  assert.equal((instr.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
+  assert.doesNotMatch(instr, /### Sprint 58 vNext DLA partial-page contract/);
+  assert.equal(typeof api.isDlaCanonicalAssemblerEnabled, "undefined");
 });
 
 test("DLA bindings use page artefact from Design Episode Plan", () => {

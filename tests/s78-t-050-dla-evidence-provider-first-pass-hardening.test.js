@@ -81,7 +81,7 @@ test("T-050 gate requires correction before emission and forbids visible reasoni
 
 test("T-050 live assembled DLA prompt includes the final gate near emission", () => {
   assert.equal(typeof api.assembleLiveDlaCanonicalPrompt, "function");
-  const live = api.assembleLiveDlaCanonicalPrompt({}, { dlaCanonicalAssembler: true });
+  const live = api.assembleLiveDlaCanonicalPrompt({}, {});
   assert.match(live, /## 1\. DLA ROLE AND AUTHORITY/);
   assert.match(live, GATE_HEADING);
   assert.match(live, /Correct any inconsistency before emission/i);
@@ -99,8 +99,7 @@ test("T-050 live Copilot schema path includes the final gate", () => {
   assert.equal(typeof api.buildDlaV2CopilotSchemaInstructions, "function");
   const wf = {
     schema_version: "2.0.0",
-    workflowOutputSpec: { partialPageOutputs: true, pageEnrichmentV2: true },
-    dlaCanonicalAssembler: true
+    workflowOutputSpec: { partialPageOutputs: true, pageEnrichmentV2: true }
   };
   const schemaInstr = api.buildDlaV2CopilotSchemaInstructions(wf, {
     canonical_step_id: "step_design_learning_activities",

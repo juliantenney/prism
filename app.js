@@ -10283,20 +10283,16 @@
     );
   }
 
-  function isDlaCanonicalAssemblerEnabled(wf) {
-    if (!wf || typeof wf !== "object" || Array.isArray(wf)) return true;
-    if (Object.prototype.hasOwnProperty.call(wf, "dlaCanonicalAssembler")) {
-      return wf.dlaCanonicalAssembler !== false;
-    }
-    var spec = wf.workflowOutputSpec;
-    if (spec && typeof spec === "object" && !Array.isArray(spec) && Object.prototype.hasOwnProperty.call(spec, "dlaCanonicalAssembler")) {
-      return spec.dlaCanonicalAssembler !== false;
-    }
-    return true;
-  }
-
   function dlaCanonicalHeadingPresent(text) {
     return /## 1\. DLA ROLE AND AUTHORITY/.test(String(text || ""));
+  }
+
+  function requireLdDlaPageEnrichContractLib() {
+    var contractMod = resolveLdDlaPageEnrichContractLib();
+    if (!contractMod || typeof contractMod.assembleDlaCanonicalContract !== "function") {
+      throw new Error("Canonical DLA assembler unavailable");
+    }
+    return contractMod;
   }
 
   function buildDlaCanonicalSlotContext(context, wf) {
@@ -10352,14 +10348,15 @@
   }
 
   function assembleLiveDlaCanonicalPrompt(context, wf) {
-    var contractMod = resolveLdDlaPageEnrichContractLib();
-    if (!contractMod || typeof contractMod.assembleDlaCanonicalContract !== "function") {
-      return "";
-    }
+    var contractMod = requireLdDlaPageEnrichContractLib();
     var assembled = contractMod.assembleDlaCanonicalContract(
       buildDlaCanonicalSlotContext(context, wf)
     );
-    return assembled && assembled.text ? String(assembled.text) : "";
+    var text = assembled && assembled.text ? String(assembled.text) : "";
+    if (!text) {
+      throw new Error("Canonical DLA assembler unavailable");
+    }
+    return text;
   }
 
   function buildWorkflowStepIdentityContextFromRow(step) {
@@ -10791,28 +10788,16 @@
   }
 
   function buildDlaV2CopilotSchemaInstructions(wf, step) {
-    if (isDlaCanonicalAssemblerEnabled(wf)) {
-      var ctx = enrichDlaLearnerPageAugmentContext(
-        buildWorkflowStepPromptAugmentContextFromStep(
-          step || {
-            canonical_step_id: "step_design_learning_activities",
-            canonicalStepId: "step_design_learning_activities"
-          },
-          wf
-        )
-      );
-      return assembleLiveDlaCanonicalPrompt(ctx, wf);
-    }
-    var contractMod = resolveLdDlaPageEnrichContractLib();
-    var contract =
-      contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function"
-        ? contractMod.buildDlaPageEnrichContractBlock()
-        : "";
-    var canonical =
-      contractMod && typeof contractMod.buildCanonicalDlaPageShapeSnippet === "function"
-        ? contractMod.buildCanonicalDlaPageShapeSnippet()
-        : "";
-    return [contract, canonical].filter(Boolean).join("\n");
+    var ctx = enrichDlaLearnerPageAugmentContext(
+      buildWorkflowStepPromptAugmentContextFromStep(
+        step || {
+          canonical_step_id: "step_design_learning_activities",
+          canonicalStepId: "step_design_learning_activities"
+        },
+        wf
+      )
+    );
+    return assembleLiveDlaCanonicalPrompt(ctx, wf);
   }
 
   function buildUpstreamPageShellEmbedSectionForDlaCopy(wf) {
@@ -12166,32 +12151,8 @@
     var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
     var appendParts = [];
     if (isPageEnrichmentV2WorkflowEnabled(workflow)) {
-      if (isDlaCanonicalAssemblerEnabled(workflow)) {
-        if (!dlaCanonicalHeadingPresent(draftBody)) {
-          var assembledCanonical = assembleLiveDlaCanonicalPrompt(context, workflow);
-          if (assembledCanonical) draftBody = assembledCanonical;
-        }
-      } else {
-      var contractMod = resolveLdDlaPageEnrichContractLib();
-      if (contractMod && typeof contractMod.buildDlaPageEnrichContractBlock === "function") {
-        var v2Block = contractMod.buildDlaPageEnrichContractBlock();
-        if (v2Block && !/DLA partial-page contract|DLA enrich-in-place contract/i.test(draftBody)) {
-          appendParts.push(v2Block);
-        }
-      }
-      if (
-        contractMod &&
-        typeof contractMod.buildCanonicalDlaPageShapeSnippet === "function" &&
-        !/Canonical DLA(?:-enriched| partial) activity shape/i.test(draftBody)
-      ) {
-        appendParts.push(contractMod.buildCanonicalDlaPageShapeSnippet());
-      }
-      if (!isPartialPageOutputWorkflowEnabled(workflow)) {
-        var pageEmbed = buildUpstreamPageShellEmbedSectionForDlaCopy(workflow);
-        if (pageEmbed && !/### Upstream page shell \(Design Episode Plan/i.test(draftBody)) {
-          appendParts.push(pageEmbed);
-        }
-      }
+      if (!dlaCanonicalHeadingPresent(draftBody)) {
+        draftBody = assembleLiveDlaCanonicalPrompt(context, workflow);
       }
     } else {
       var block = buildEpisodePlanDlaPopulationPromptBlock();
@@ -12210,25 +12171,6 @@
       }
       if (upstreamSection && !draftHasAuthoritativeEpisodePlansUpstreamSection(draftBody)) {
         appendParts.push(upstreamSection);
-      }
-    }
-    if (
-      !isDlaCanonicalAssemblerEnabled(workflow) &&
-      !/Learner-facing activity title \(required/i.test(draftBody + "\n" + appendParts.join("\n"))
-    ) {
-      var titleRoots = [
-        typeof window !== "undefined" ? window : null,
-        typeof globalThis !== "undefined" ? globalThis : null
-      ];
-      var titleMod = null;
-      for (var ti = 0; ti < titleRoots.length; ti += 1) {
-        if (titleRoots[ti] && titleRoots[ti].PRISM_LD_ACTIVITY_TITLE_CONTRACT) {
-          titleMod = titleRoots[ti].PRISM_LD_ACTIVITY_TITLE_CONTRACT;
-          break;
-        }
-      }
-      if (titleMod && typeof titleMod.buildDlaActivityTitleGuidance === "function") {
-        appendParts.push("\n" + titleMod.buildDlaActivityTitleGuidance());
       }
     }
     if (appendParts.length) {
@@ -16053,7 +15995,6 @@
     );
     if (
       isWorkflowStepDesignLearningActivities(ctx) &&
-      isDlaCanonicalAssemblerEnabled(wf) &&
       isPageEnrichmentV2WorkflowEnabled(wf)
     ) {
       return applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
@@ -33884,9 +33825,9 @@
         stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
         stepCanonicalTitle: step.title || "",
         stepTitle: step.title || ""
-      }) &&
-      isDlaCanonicalAssemblerEnabled(wfForPrompt)
+      })
     ) {
+      // Phase D: pack body never co-owns V2 DLA normative text; canonical assembler is sole authority.
       promptBody = "";
     }
     var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
@@ -55558,7 +55499,8 @@
     prismTestApi.resolveLearningOutcomesEmbeddedInEpisodePlanCapture =
       resolveLearningOutcomesEmbeddedInEpisodePlanCapture;
     prismTestApi.isPageEnrichmentV2WorkflowEnabled = isPageEnrichmentV2WorkflowEnabled;
-    prismTestApi.isDlaCanonicalAssemblerEnabled = isDlaCanonicalAssemblerEnabled;
+    prismTestApi.requireLdDlaPageEnrichContractLib = requireLdDlaPageEnrichContractLib;
+    prismTestApi.resolveLdDlaPageEnrichContractLib = resolveLdDlaPageEnrichContractLib;
     prismTestApi.assembleLiveDlaCanonicalPrompt = assembleLiveDlaCanonicalPrompt;
     prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;

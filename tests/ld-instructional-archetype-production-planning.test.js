@@ -104,7 +104,7 @@ function pageFromMaterials(materialsByActivity) {
 
 test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype planning", () => {
   const guidance = dlaContract.buildInstructionalArchetypePlanningGuidance();
-  const snippet = dlaContract.buildCanonicalDlaPageShapeSnippet();
+  const assembled = dlaContract.assembleDlaCanonicalContract();
 
   assert.match(guidance, /instructional_archetype/);
   assert.match(guidance, /archetype_plan/);
@@ -128,12 +128,12 @@ test("S60 Phase A: DLA enrich-contract teaches production Priority-1 archetype p
   assert.doesNotMatch(guidance, /omit unless intentional/i);
   assert.doesNotMatch(guidance, /S59_/);
 
-  assert.match(snippet, /Instructional archetype planning on required_materials/);
-  assert.match(snippet, /key_relationships/);
-  assert.match(snippet, /evaluation_judgement/);
-  assert.match(snippet, /task_material_decision/);
-  assert.match(snippet, /"specification":/);
-  assert.doesNotMatch(snippet, /system\/parts\/relationships/);
+  assert.match(assembled.sections.commissioning, /Instructional archetype planning on required_materials/);
+  assert.match(assembled.sections.commissioning, /key_relationships/);
+  assert.match(assembled.sections.commissioning, /evaluation_judgement/);
+  assert.match(assembled.sections.examples, /task_material_decision/);
+  assert.match(assembled.sections.examples, /"specification":/);
+  assert.doesNotMatch(assembled.text, /system\/parts\/relationships/);
   assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
 });
 

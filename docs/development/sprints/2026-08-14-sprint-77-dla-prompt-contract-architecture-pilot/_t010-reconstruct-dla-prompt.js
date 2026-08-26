@@ -1,6 +1,12 @@
 /**
  * S77-T-010 diagnostic runner — reconstruct live DLA Copy + Studio prompts.
  * Does not modify production assembly.
+ *
+ * Historical note (Phase D): Sprint 76 dual builders
+ * (`buildDlaPageEnrichContractBlock` / `buildCanonicalDlaPageShapeSnippet`) were
+ * retired from production. Sections below that call those APIs document the
+ * pre-Phase-D inventory path and will throw if executed against current modules.
+ * Prefer `assembleDlaCanonicalContract` for current live reconstruction.
  */
 "use strict";
 

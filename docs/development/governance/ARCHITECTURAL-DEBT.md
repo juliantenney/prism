@@ -281,6 +281,18 @@ Prompt architecture must be intentionally owned and behaviourally gated.
 
 ---
 
+## R-008 — Standing temporary DLA rollback (Sprint 76 dual builders)
+
+**Status:** Retired (Phase D, post–Sprint 79 maintenance)
+
+Sprint 77 retained `buildDlaPageEnrichContractBlock` / `buildCanonicalDlaPageShapeSnippet` and `dlaCanonicalAssembler: false` as a temporary rollback rail after the canonical assembler switch. Canonical DLA later absorbed Sprint 78 commissioning; the rollback path became an obsolete normative fork.
+
+Phase D removed the production rollback selector, dual-inject/append paths, and obsolete builders. Live V2 DLA fails closed if `assembleDlaCanonicalContract` is unavailable. Historical sprint records retain the migration narrative.
+
+Do not reintroduce a standing temporary dual DLA constitution.
+
+---
+
 # D. Historical mechanisms not automatically considered debt
 
 Do not convert every superseded historical mechanism into backlog.

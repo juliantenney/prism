@@ -191,12 +191,10 @@ test("S76 T-031: Step 3 requires operational bounds for this commissioned operat
   assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
 });
 
-test("S76 P04: unique legacy contract+shape stays inside the rationalisation size band", () => {
-  const block = dlaContract.buildDlaPageEnrichContractBlock();
-  const shape = dlaContract.buildCanonicalDlaPageShapeSnippet();
-  const unique = block.length + shape.length;
-  assert.ok(unique > 18700, "unique contract+shape " + unique + " below 18700 — possible over-deletion");
-  assert.ok(unique < 19150, "unique contract+shape " + unique + " above 19150 — possible leftover duplication");
+test("S76 P04: canonical assembler stays inside the post-Phase-D size band", () => {
+  const text = dlaContract.assembleDlaCanonicalContract().text;
+  assert.ok(text.length > 28000, "canonical " + text.length + " below 28000 — possible over-deletion");
+  assert.ok(text.length < 34000, "canonical " + text.length + " above 34000 — possible leftover duplication");
 });
 
 test("S76 P04: canonical shape keeps one evidence-true example and one P01-true/P02-false contrast", () => {

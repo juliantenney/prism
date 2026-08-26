@@ -9688,6 +9688,43 @@
     return null;
   }
 
+  /**
+   * S79-T-005/T-008 — resolve canonical GAM assembler (live Run/Copy + Studio).
+   * Presence of PRISM_GAM_CANONICAL_ASSEMBLER is the live routing condition.
+   * LIVE_PRODUCTION on the module is a status marker only — not a switch (S79-T-006).
+   * Missing module fails closed (S79-T-008) — no OLD GAM assembly reactivation.
+   */
+  function resolveGamCanonicalAssemblerLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_GAM_CANONICAL_ASSEMBLER) {
+        return roots[i].PRISM_GAM_CANONICAL_ASSEMBLER;
+      }
+    }
+    return null;
+  }
+
+  function isGamCanonicalAssemblerLiveEnabled() {
+    var asm = resolveGamCanonicalAssemblerLib();
+    return !!(asm && typeof asm.assembleGamCanonicalPrompt === "function");
+  }
+
+  function requireGamCanonicalAssemblerLib() {
+    var asm = resolveGamCanonicalAssemblerLib();
+    if (
+      !asm ||
+      typeof asm.assembleGamCanonicalPrompt !== "function" ||
+      typeof asm.applyGamStudioGraft !== "function"
+    ) {
+      throw new Error("Canonical GAM assembler unavailable");
+    }
+    return asm;
+  }
+
   function resolveLdGamInstructionalDepthLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -11385,180 +11422,51 @@
     return "";
   }
 
+  /**
+   * S79-T-008 — thin wrappers to canonical assembler (single normative owner).
+   * Kept for test API / guided-review parity callers; text lives in assembler.
+   */
   function buildGamV2CopyMaterialAuthoringBrief() {
-    var parts = [
-      "Output contract: return a partial page artefact only (not a full-page replay).",
-      'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".',
-      "Required payload: activities[] containing activity_id and materials[] only.",
-      "For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).",
-      "Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. When S78-OPERATIONAL-SUITABILITY (auto-applied) is present in AUTHORITATIVE DLA MATERIAL COMMISSION, follow its per-material obligations locally.",
-      "S78-DP: realised instructional claims (including headings and checklist stems) must match warranted strength for the taught model class and evidence; do not upgrade necessary or intermediate results into unrestricted optima, general causal/policy conclusions, or broader representation classes than the commission and examples support. Prefer accurate scoped language over establishment slogans. Omit advanced theory freely; do not upgrade the strength of what remains.",
-      "If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.",
-      "If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.",
-      "Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.",
-      "Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.",
-      "S78-D04 page learner-resource closure: in the final activity's materials Markdown, include exactly one section headed \"### Page learner-resource closure\" (2–4 compact consolidation bullets; optional lightly signposted transfer without a worked answer; no new teaching/claims/model classes; honour S78-DP). Prefer consolidation_summary or culminating closure/debrief Markdown as the host vessel when commissioned; otherwise append to the last Markdown material of the final activity that is NOT a transfer_prompt. NEVER host this section inside a transfer_prompt body (S78-T-055). Do not put this substance in page_synthesis. Design Page will transport that section verbatim into study_tips when present.",
-      "S78-T-041 transfer_prompt: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task on a meaningfully changed context (learner response required; no solution leak; no new teaching; honour S78-DP). Distinct from ### Page learner-resource closure / study_tips consolidation — do not embed or substitute closure bullets in the transfer production. Do not author ### Transfer task boilerplate — the renderer supplies Transfer your learning / Transfer response.",
-      "S78-T-042 structured workspace fidelity: for template / structured response or derivation workspaces, author **Label:** sections (bold label with trailing colon) so each ordered prompt binds to a learner response location. Do not emit standalone bold labels without the colon as surrogate response fields. Keep genuine tables as tables with blank learner cells. Ordinary inline bold emphasis in prose is fine. Do not invent an equation editor.",
-      "Copilot conversation may provide contextual continuity of instructional intent; it must not override the AUTHORITATIVE DLA MATERIAL COMMISSION. PRISM does not embed the full upstream DLA page in this mode.",
-      "Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.",
-      "Do not reconstruct or preserve non-owned stage fields."
-    ];
-    // S78-T-051: final silent consistency gate at end of authoring brief (nearest emit among authoring lines).
-    var gate = resolveGamFinalSilentPreEmitConsistencyGate();
-    if (gate) parts.push("", gate);
-    return parts.join("\n");
-  }
-
-  function buildGamV2ActivityCountInvariantSection(pageJson) {
-    var parsed = tryParseWorkflowArtefactJson(String(pageJson || ""));
-    if (!parsed || !Array.isArray(parsed.activities) || !parsed.activities.length) {
-      return "";
-    }
-    var ids = parsed.activities
-      .map(function (row) {
-        return String((row && row.activity_id) || "").trim();
-      })
-      .filter(function (id) {
-        return !!id;
-      });
-    var count = parsed.activities.length;
-    var loCount = Array.isArray(parsed.learning_outcomes) ? parsed.learning_outcomes.length : 0;
-    var epCount = Array.isArray(parsed.episode_plans) ? parsed.episode_plans.length : 0;
-    var idList = ids.length ? ids.join(", ") : "(see embedded page)";
-    return [
-      "",
-      "### Activity count invariant (required)",
-      "",
-      "Input activities[] has " + count + " entries: " + idList + ".",
-      "Output activities[] must contain exactly " + count + " entries with the same activity_id values in the same order.",
-      "Do not stop after the first activities. Do not drop later activities due to length. Emit the full page through the final closing `}`.",
-      "Output learning_outcomes[] must contain exactly " + loCount + " entries (same as input).",
-      "Output episode_plans[] must contain exactly " + epCount + " entries (same as input)."
-    ].join("\n");
-  }
-
-  var GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING = "### AUTHORITATIVE DLA MATERIAL COMMISSION";
-  var GAM_AUTHORITATIVE_DLA_COMMISSION_AUTHORITY =
-    "This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Honour response_fulfilment when present — preserve learner-completion bounds and blank response loci for commissioned workspace rows. Honour practice_independence when present on model rows. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.";
-
-  function prismHasOwnField(obj, key) {
-    return !!(
-      obj &&
-      typeof obj === "object" &&
-      !Array.isArray(obj) &&
-      Object.prototype.hasOwnProperty.call(obj, key) &&
-      obj[key] !== undefined &&
-      obj[key] !== null
-    );
-  }
-
-  function copyOwnFieldIfPresent(src, dest, key) {
-    if (prismHasOwnField(src, key)) dest[key] = src[key];
+    var asm = requireGamCanonicalAssemblerLib();
+    return asm.buildSectionAuthoringBrief({
+      partialMode: true,
+      pageEnrichmentV2: true
+    });
   }
 
   function projectGamAuthoritativeDlaCommissionFromPage(page) {
-    var acts = Array.isArray(page && page.activities) ? page.activities : [];
-    var outActs = [];
-    var i;
-    var j;
-    for (i = 0; i < acts.length; i += 1) {
-      var act = acts[i];
-      if (!act || typeof act !== "object" || Array.isArray(act)) continue;
-      var rms = Array.isArray(act.required_materials) ? act.required_materials : [];
-      if (!rms.length) continue;
-      var proj = {};
-      copyOwnFieldIfPresent(act, proj, "activity_id");
-      copyOwnFieldIfPresent(act, proj, "instructional_archetype");
-      copyOwnFieldIfPresent(act, proj, "archetype_plan");
-      copyOwnFieldIfPresent(act, proj, "evidence_requirement");
-      var mats = [];
-      for (j = 0; j < rms.length; j += 1) {
-        var rm = rms[j];
-        if (!rm || typeof rm !== "object" || Array.isArray(rm)) continue;
-        var row = {};
-        copyOwnFieldIfPresent(rm, row, "material_id");
-        copyOwnFieldIfPresent(rm, row, "material_type");
-        copyOwnFieldIfPresent(rm, row, "purpose");
-        copyOwnFieldIfPresent(rm, row, "specification");
-        copyOwnFieldIfPresent(rm, row, "evidence_requirement");
-        copyOwnFieldIfPresent(rm, row, "response_fulfilment");
-        copyOwnFieldIfPresent(rm, row, "practice_independence");
-        copyOwnFieldIfPresent(rm, row, "diagnostic_review");
-        mats.push(row);
-      }
-      proj.required_materials = mats;
-      outActs.push(proj);
-    }
-    return {
-      kind: "gam_authoritative_dla_commission",
-      activities: outActs
-    };
+    var asm = requireGamCanonicalAssemblerLib();
+    return asm.projectGamAuthoritativeDlaCommissionFromPage(page);
   }
 
   function buildAuthoritativeDlaMaterialCommissionSectionFromPage(page) {
-    var payload = projectGamAuthoritativeDlaCommissionFromPage(page);
-    var jsonText;
-    try {
-      jsonText = JSON.stringify(payload, null, 2);
-    } catch (_) {
-      return "";
-    }
-    var parts = [
-      "",
-      GAM_AUTHORITATIVE_DLA_COMMISSION_HEADING,
-      "",
-      GAM_AUTHORITATIVE_DLA_COMMISSION_AUTHORITY,
-      "",
-      "```json",
-      jsonText,
-      "```"
-    ];
-    var ws2Lib = resolveGamPracticeIndependencePromptLib();
-    if (ws2Lib && typeof ws2Lib.buildS78Ws2OperandAwareAuthoringBlock === "function") {
-      var ws2Block = ws2Lib.buildS78Ws2OperandAwareAuthoringBlock(page);
-      if (ws2Block) parts.push(ws2Block);
-    }
-    var opsLib = resolveGamOperationalSuitabilityPromptLib();
-    if (opsLib && typeof opsLib.buildOperationalSuitabilityAuthoringBlock === "function") {
-      var opsBlock = opsLib.buildOperationalSuitabilityAuthoringBlock(page);
-      if (opsBlock) parts.push(opsBlock);
-    }
-    return parts.join("\n");
+    var asm = requireGamCanonicalAssemblerLib();
+    return asm.buildSectionCommission({
+      dlaPage: page,
+      partialMode: true,
+      pageEnrichmentV2: true
+    });
   }
 
   function buildUpstreamDlaPageEmbedSectionForGamCopy(wf) {
+    var asm = requireGamCanonicalAssemblerLib();
     if (isPartialPageOutputWorkflowEnabled(wf)) {
       var partialJson = resolveDlaEnrichedPageJsonForGamCopy(wf);
       if (!partialJson || !String(partialJson).trim()) return "";
       var partialPage = tryParseWorkflowArtefactJson(partialJson);
       if (!partialPage) return "";
-      return buildAuthoritativeDlaMaterialCommissionSectionFromPage(partialPage);
+      return asm.buildSectionCommission({
+        dlaPage: partialPage,
+        partialMode: true,
+        pageEnrichmentV2: true
+      });
     }
     var json = resolveDlaEnrichedPageJsonForGamCopy(wf);
-    if (!json || !String(json).trim()) {
-      return [
-        "",
-        "### Upstream DLA page (Design Learning Activities — required input)",
-        "",
-        "**Return the entire input page unchanged except for activities[].materials[]. Do not omit fields. Do not return a materials-only skeleton.**",
-        "",
-        "Locate STEP N OUTPUT: page from Design Learning Activities in this Copilot conversation. Return that full page with materials[] populated from required_materials[] — do not emit pack text, activity_materials, or a reduced activities-only JSON stub."
-      ].join("\n");
-    }
-    return [
-      "",
-      "### Upstream DLA page (Design Learning Activities — enrich in place)",
-      "",
-        "**Return the entire input page below unchanged except for activities[].materials[] and assembly_state. Treat this JSON as an immutable document — edit in place only. Do not regenerate, reconstruct, or rewrite any other field.**",
-        "",
-        "Input: the complete DLA-enriched vNext page below. Output: that SAME page with activities[].materials[] populated. Copy generation_notes, learning_outcomes, episode_plans, required_materials, learner_task, expected_output, and all cognition fields character-for-character. Do not empty required_materials[]. Do not truncate episode_plans[]. Emit every activity through the final `}` — do not stop after A3 or any early activity. Do not write page_synthesis or sections[].",
-      buildGamV2ActivityCountInvariantSection(json),
-      "",
-      "```json",
-      String(json).trim(),
-      "```"
-    ].join("\n");
+    return asm.buildSectionUpstreamFullEmbed({
+      upstreamDlaPageJson: json || "",
+      partialMode: false,
+      pageEnrichmentV2: true
+    });
   }
 
   function validateGamOrPageCapture(parsed, baseline, wf, step) {
@@ -11619,40 +11527,28 @@
     if (!isWorkflowStepGenerateActivityMaterials(context)) return draftBody;
     var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
     if (!isPageEnrichmentV2WorkflowEnabled(workflow)) return draftBody;
-    var appendParts = [];
-    var contractMod = resolveLdGamPageEnrichContractLib();
-    if (contractMod && typeof contractMod.buildGamPageEnrichContractBlock === "function") {
-      var v2Block = contractMod.buildGamPageEnrichContractBlock();
-      if (v2Block && !/GAM partial-page contract|GAM enrich-in-place contract/i.test(draftBody)) {
-        appendParts.push(v2Block);
+
+    // S79-T-008: Studio GAM graft — canonical only; fail closed if assembler missing.
+    var asm = requireGamCanonicalAssemblerLib();
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
+    var upstreamJson = "";
+    if (!partialMode) {
+      upstreamJson = String(resolveDlaEnrichedPageJsonForGamCopy(workflow) || "").trim();
+    }
+    return asm.applyGamStudioGraft(draftBody, {
+      profile: partialMode
+        ? asm.PROFILES.STUDIO_V2_PARTIAL
+        : asm.PROFILES.STUDIO_V2_NONPARTIAL,
+      partialMode: partialMode,
+      upstreamDlaPageJson: upstreamJson,
+      adapters: {
+        // Live contract/shape adapter preserves guided-review VM resolution parity.
+        // Pre-emit gate: assembler buildSectionPreEmitGate owns insertion (S79-T-006).
+        buildOutputContractAndShape: function () {
+          return buildGamV2CopilotSchemaInstructions();
+        }
       }
-    }
-    if (
-      contractMod &&
-      typeof contractMod.buildCanonicalGamMaterialShapeSnippet === "function" &&
-      !/Full-page preservation example/i.test(draftBody)
-    ) {
-      appendParts.push(contractMod.buildCanonicalGamMaterialShapeSnippet());
-    }
-    if (!isPartialPageOutputWorkflowEnabled(workflow)) {
-      var pageEmbed = buildUpstreamDlaPageEmbedSectionForGamCopy(workflow);
-      if (pageEmbed && !/### Upstream DLA page/i.test(draftBody)) {
-        appendParts.push(pageEmbed);
-      }
-    }
-    // S78-T-051: Studio path — same canonical gate after contract/shape (skip if already present).
-    var gate = resolveGamFinalSilentPreEmitConsistencyGate();
-    if (
-      gate &&
-      !/FINAL SILENT PRE-EMIT CONSISTENCY CHECK/i.test(draftBody) &&
-      !appendParts.some(function (part) {
-        return /FINAL SILENT PRE-EMIT CONSISTENCY CHECK/i.test(String(part || ""));
-      })
-    ) {
-      appendParts.push(gate);
-    }
-    if (!appendParts.length) return draftBody;
-    return (draftBody + "\n" + appendParts.join("\n")).trim();
+    });
   }
 
   function deriveDesignLearningActivitiesCaptureJson(wf) {
@@ -33448,6 +33344,112 @@
       .trim();
   }
 
+  /**
+   * S79-T-005/T-008 — live Run/Copy GAM V2 prompt via canonical assembler only.
+   * Fail closed if assembler unavailable (no OLD assembly path).
+   * Post-assembly: archetype (when plans present) then math then pipeline close.
+   */
+  function buildLiveGamV2CopyPromptViaCanonicalAssembler(step, index, domElement, wfForChain, outName) {
+    var asm = requireGamCanonicalAssemblerLib();
+    var workflow = wfForChain && typeof wfForChain === "object" ? wfForChain : resolveWorkflowForUpstreamArtefacts({});
+    var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
+    var profile = partialMode ? asm.PROFILES.COPY_V2_PARTIAL : asm.PROFILES.COPY_V2_NONPARTIAL;
+    var dlaJson = resolveDlaEnrichedPageJsonForGamCopy(workflow);
+    var dlaPage = dlaJson ? tryParseWorkflowArtefactJson(dlaJson) : null;
+    var upstreamJson = String(dlaJson || "").trim();
+
+    var kindLabel =
+      step && step.inputKind === "file"
+        ? "Upload file"
+        : step && step.inputKind === "url"
+        ? "Provide URL"
+        : step && step.inputKind === "none"
+        ? "None"
+        : "Paste text";
+
+    var runnerGuidanceLines = null;
+    var runnerInstructions = getRunnerInstructionsForStep(step);
+    if (runnerInstructions) {
+      runnerGuidanceLines = ["", "Runner guidance:"];
+      if (runnerInstructions.what_this_step_does) {
+        runnerGuidanceLines.push(
+          "- What this step does: " + runnerInstructions.what_this_step_does
+        );
+      }
+      if (runnerInstructions.what_to_expect) {
+        runnerGuidanceLines.push("- What to expect: " + runnerInstructions.what_to_expect);
+      }
+      if (runnerInstructions.what_to_check) {
+        runnerGuidanceLines.push("- What to check: " + runnerInstructions.what_to_check);
+      }
+    }
+
+    var inputArtefactLines = null;
+    var bindings = resolveEffectiveInputBindingsForPromptStep(step, domElement, workflow);
+    if (bindings && bindings.length) {
+      inputArtefactLines = [];
+      bindings.forEach(function (b) {
+        if (b.kind === "internal") {
+          var sourceTitle = getStepTitleById(b.sourceStepId) || "an earlier step";
+          inputArtefactLines.push(
+            '- "' + b.artifactName + '" from step "' + sourceTitle + '".'
+          );
+        } else {
+          inputArtefactLines.push('- External artefact: "' + b.artifactName + '".');
+        }
+      });
+    }
+
+    var visibleNotes = stripWorkflowStepParamBlock((step && step.notes) || "");
+    if (outName) {
+      visibleNotes = stripContradictoryWorkflowRunnerFooterFromNotes(visibleNotes);
+    }
+
+    var assembled = asm.assembleGamCanonicalPrompt({
+      profile: profile,
+      partialMode: partialMode,
+      pageEnrichmentV2: true,
+      dlaPage: dlaPage,
+      upstreamDlaPageJson: upstreamJson,
+      stepTitle: String((step && step.title) || "Generate Activity Materials").trim(),
+      stepIndex: index,
+      outputName: String(outName || "page").trim(),
+      notes: visibleNotes,
+      workflowSteps: Array.isArray(workflow.steps) ? workflow.steps : [],
+      inputArtefactLines: inputArtefactLines,
+      optionalInputKindLabel: kindLabel,
+      runnerGuidanceLines: runnerGuidanceLines,
+      includeCopyMath: false,
+      includePipelineClose: false,
+      adapters: {
+        // Live contract/shape adapter preserves guided-review VM resolution parity.
+        // Pre-emit gate: assembler buildSectionPreEmitGate owns insertion (S79-T-006).
+        buildOutputContractAndShape: function () {
+          return buildGamV2CopilotSchemaInstructions();
+        },
+        pipelineOpening: getPipelineExecutionOpeningDirective(),
+        pipelineCompletion: getPipelineExecutionCompletionDirective()
+      }
+    });
+    var text = assembled && assembled.text ? String(assembled.text) : "";
+    if (!text) {
+      throw new Error("Canonical GAM assembly produced empty prompt");
+    }
+
+    var gamRecognition = buildWorkflowStepRecognitionContext(step, {
+      li: domElement,
+      index: index
+    });
+    text = applyLdInstructionalArchetypeRoutingToDraft(text, gamRecognition, workflow);
+    text = applyMathSafeOutputContractToDraft(text, gamRecognition);
+    text = [text, "", getPipelineExecutionCompletionDirective()]
+      .filter(function (part) {
+        return part != null && String(part).length > 0;
+      })
+      .join("\n");
+    return text;
+  }
+
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -33476,6 +33478,18 @@
     if (!outName) {
       outName = String(step && step.outputName != null ? step.outputName : "").trim();
     }
+
+    // S79-T-008: Run/Copy GAM V2 — canonical only; fail closed (no OLD fallthrough).
+    if (isGamPageEnrichmentV2CopyStep(step, wfForChain)) {
+      return buildLiveGamV2CopyPromptViaCanonicalAssembler(
+        step,
+        index,
+        domElement,
+        wfForChain,
+        outName
+      );
+    }
+
     var stepNumForFooter =
       typeof index === "number" && !isNaN(index) && index >= 0 ? Math.floor(index) + 1 : 1;
     var exactFooterLine = outName
@@ -33567,40 +33581,12 @@
         stepOutputName: step.outputName || ""
       })
     ) {
+      // V2 Copy is handled exclusively by buildLiveGamV2CopyPromptViaCanonicalAssembler (S79-T-008).
+      // Non-V2 pack path remains for legacy page-enrichment-off workflows only.
       lines.push("");
-      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
-        if (partialOutputsMode) {
-          lines.push("Sprint 58 GAM partial output mode: return a partial page artefact containing only activity_id + materials.");
-          lines.push(
-            "PRISM does not embed the full upstream DLA page in this mode. The AUTHORITATIVE DLA MATERIAL COMMISSION is binding. Copilot conversation may provide contextual continuity but must not override that commission."
-          );
-        } else {
-          lines.push(
-            "**CRITICAL:** Treat the embedded DLA page as an immutable document. Edit in place only. Return the entire input page unchanged except for activities[].materials[] and assembly_state."
-          );
-          lines.push(
-            "Sprint 56F GAM enrich-in-place: emit the complete page JSON from `{` to `}` — all input activities, same count, same activity_id order. Do not stop after the first few activities or omit later ones due to length. Copy every other field character-for-character. GAM is not authorised to rewrite, shorten, paraphrase, summarise, normalise, improve, regenerate, reorder, compress, or reconstruct any non-owned field. For each activity object, replace only materials value and preserve all sibling fields. Do NOT emit compact { activity_id, materials } objects, partial pages, subsets, pack text, activity_materials, or skeleton stubs."
-          );
-        }
-        lines.push(
-          "Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation) containing every input activity — no ellipses, no comments, no continuation, no top-level note/message/warning fields, and no prose or explanations. If output is large, still emit the full JSON. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
-            exactFooterLine +
-            ". No other text after the footer line."
-        );
-        var gamContract = buildGamV2CopilotSchemaInstructions();
-        if (gamContract) {
-          lines.push("");
-          lines.push(gamContract);
-        }
-        var dlaPageEmbed = buildUpstreamDlaPageEmbedSectionForGamCopy(wfForChain);
-        if (dlaPageEmbed) {
-          lines.push(dlaPageEmbed);
-        }
-      } else {
-        lines.push(
-          "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
-        );
-      }
+      lines.push(
+        "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
+      );
     } else if (
       isWorkflowStepDesignAssessment({
         stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
@@ -33879,11 +33865,8 @@
       stepCanonicalTitle: step.title || "",
       stepTitle: step.title || ""
     });
-    var gamV2CopyStep = isGamPageEnrichmentV2CopyStep(step, wfForChain);
     var lsV2CopyStep = isLearningSequencePageEnrichmentV2CopyStep(step, wfForChain);
-    var resolvedPrompt = gamV2CopyStep
-      ? { text: buildGamV2CopyMaterialAuthoringBrief(), sourceType: "gam_v2_copy_brief", error: "" }
-      : daV2PartialStep
+    var resolvedPrompt = daV2PartialStep
       ? { text: buildDesignAssessmentV2CopyAuthoringBrief(), sourceType: "design_assessment_v2_partial_brief", error: "" }
       : gaiV2PartialStep
       ? {
@@ -33907,7 +33890,7 @@
       promptBody = "";
     }
     var strictJsonKindForBody = resolveStrictJsonWorkflowStepKind(step, wfForPrompt);
-    if (promptBody && strictJsonKindForBody && !gamV2CopyStep && !lsV2CopyStep) {
+    if (promptBody && strictJsonKindForBody && !lsV2CopyStep) {
       // Strip contradictory footer/JSON-only clauses from embedded core prompt text.
       // The authoritative footer contract is appended later with an exact literal line.
       promptBody = stripContradictoryWorkflowRunnerFooterClauses(promptBody);
@@ -33935,11 +33918,7 @@
 
     if (promptBody) {
       lines.push("");
-      if (gamV2CopyStep) {
-        lines.push(
-          "Material authoring guidance (Sprint 56F v2 — output shape is defined above):"
-        );
-      } else if (lsV2CopyStep) {
+      if (lsV2CopyStep) {
         lines.push(
           "Learning Sequence authoring guidance (Sprint 56F v2 — output shape is defined above):"
         );
@@ -34049,19 +34028,12 @@
       index: index
     });
     if (isWorkflowStepGenerateActivityMaterials(gamRecognition)) {
+      // Non-V2 GAM only (V2 Copy returns earlier via canonical assembler + path wrappers).
       assembledInstructions = applyLdInstructionalArchetypeRoutingToDraft(
         assembledInstructions,
         gamRecognition,
         wfForChain
       );
-      // V2 Copy bypasses resolveStepPromptText → applyWorkflowStepRuntimePromptAugmentations;
-      // restore shared LD-MATH-RENDER via the same SSOT used by Studio (marker-deduped).
-      if (gamV2CopyStep) {
-        assembledInstructions = applyMathSafeOutputContractToDraft(
-          assembledInstructions,
-          gamRecognition
-        );
-      }
     }
     assembledInstructions = [
       assembledInstructions,
@@ -55621,7 +55593,11 @@
     prismTestApi.buildGamV2CopyMaterialAuthoringBrief = buildGamV2CopyMaterialAuthoringBrief;
     prismTestApi.resolveGamFinalSilentPreEmitConsistencyGate =
       resolveGamFinalSilentPreEmitConsistencyGate;
-    prismTestApi.buildGamV2ActivityCountInvariantSection = buildGamV2ActivityCountInvariantSection;
+    prismTestApi.resolveGamCanonicalAssemblerLib = resolveGamCanonicalAssemblerLib;
+    prismTestApi.requireGamCanonicalAssemblerLib = requireGamCanonicalAssemblerLib;
+    prismTestApi.isGamCanonicalAssemblerLiveEnabled = isGamCanonicalAssemblerLiveEnabled;
+    prismTestApi.buildLiveGamV2CopyPromptViaCanonicalAssembler =
+      buildLiveGamV2CopyPromptViaCanonicalAssembler;
     prismTestApi.isGamPageEnrichmentV2CopyStep = isGamPageEnrichmentV2CopyStep;
     prismTestApi.buildUpstreamDlaPageEmbedSectionForGamCopy =
       buildUpstreamDlaPageEmbedSectionForGamCopy;

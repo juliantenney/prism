@@ -98,7 +98,10 @@ function loadPrismTestApi() {
       "lib/page-gam-enrich.js",
       "lib/page-vnext-assemble.js",
       "lib/episode-plan-v1-vocabulary.js",
-      "lib/episode-plan-population-contract.js"
+      "lib/episode-plan-population-contract.js",
+      "lib/gam-practice-independence-prompt.js",
+      "lib/gam-operational-suitability-prompt.js",
+      "lib/gam-canonical-assembler.js"
     ])
   );
   patchDlaEnrichBridgeForTests(dlaEnrich);

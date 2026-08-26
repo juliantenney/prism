@@ -374,7 +374,9 @@ test("S79-T-002: non-partial enrich-in-place embed path still available", () => 
 
 test("S79-T-002: production paths unchanged — no gamCanonicalAssembler flag introduced", () => {
   const appSrc = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
-  assert.doesNotMatch(appSrc, /gamCanonicalAssembler/);
+  // S79-T-005 routes live assembly through the canonical module without a product feature flag.
+  assert.doesNotMatch(appSrc, /gamCanonicalAssembler\s*[:=]/);
+  assert.doesNotMatch(appSrc, /workflowOutputSpec\.gamCanonicalAssembler/);
   assert.match(appSrc, /function buildGamV2CopyMaterialAuthoringBrief/);
   assert.match(appSrc, /function applyGamPageEnrichPromptBlockToDraft/);
   assert.match(appSrc, /function buildWorkflowStepInstructions/);

@@ -1,28 +1,34 @@
 # Sprint 79 — Handover
 
-**Kind:** Active sprint handover  
-**Sprint status:** OPEN  
+**Kind:** Closed sprint handover  
+**Sprint status:** **CLOSED** (2026-08-26)  
 **Dashboard:** [STATUS.md](STATUS.md)  
-**Plan:** [PLAN.md](PLAN.md)  
-**Start here:** [SPRINT-79-START-HERE.md](SPRINT-79-START-HERE.md)
+**Closure:** [S79-T-009](S79-T-009-final-regression-and-sprint-closure-gate.md) · [sprint-79-closeout.md](../../../sprints/sprint-79-closeout.md)
 
 ---
 
 ## Start here
 
-Read [S79-T-002](S79-T-002-canonical-gam-section-inventory-and-equivalence-baseline.md), then execute **S79-T-003** (off-path only).
+Sprint 79 is **CLOSED**. Do not reopen for polish.
 
-## Fixed so far
+Next programme item (not opened): **Settings architecture design sprint** (PB-FA-005) — see [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
 
-- Sprint 79 opened; T-001 diagnostic/target/plan complete; decision **A**.
-- Method includes T-004 equivalence gate and mandatory T-008 legacy retirement (DLA Phase D lesson).
-- **T-002 COMPLETE:** section inventory, live anatomies, golden baselines, equivalence classification.
-- Switch recommendation: **ATOMIC** Run/Copy + Studio (builder topology detail in T-003).
+## What shipped
 
-## What is not authorized yet
+- Canonical GAM assembler live for Run/Copy + Studio.
+- Temporary OLD GAM production fallbacks **retired** (fail-closed).
+- Singular pre-emit ownership; compatibility isolated; path wrappers retained.
+- Behavioural: Lagrangian **91/100** — no material GAM regression vs **94**.
+- Final deterministic gate: **203/203**.
 
-- Live production switch (T-005).
-- Settings / workspace-surface implementation.
-- DLA Phase D retirement.
-- Prompt semantic retune / quality improvement.
-- Leaving GAM temporary rollback as optional Phase D.
+## Deferred (not S79 reopen)
+
+- Image-generation precision fidelity diagnostic  
+- Final-render timing-badge regression  
+- Guided-review Node vs VM drift  
+- DLA Phase D legacy cleanup  
+
+## Do not
+
+- Implement Settings / Workspace Surfaces / DLA Phase D from this handover.
+- Retune GAM prompts as “closure polish.”

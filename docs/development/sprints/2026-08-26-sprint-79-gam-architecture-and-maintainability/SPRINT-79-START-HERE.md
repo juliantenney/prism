@@ -1,19 +1,21 @@
 # Sprint 79 — START HERE
 
 **Sprint:** 79 — GAM Architecture and Maintainability  
-**Status:** **OPEN** (opened 2026-08-26)  
+**Status:** **CLOSED** (opened 2026-08-26 · closed 2026-08-26)  
 **Predecessor:** [Sprint 78 — CLOSED](../2026-08-17-sprint-78-learner-resource-quality-recovery/SPRINT-78-START-HERE.md)  
 **Opening decision:** [S79-D01](decisions.md#s79-d01-open-sprint-79--gam-architecture-and-maintainability)  
+**Closure decision:** [S79-D07](decisions.md#s79-d07--close-sprint-79)  
 **Dashboard:** [STATUS.md](STATUS.md)  
+**Closure:** [S79-T-009](S79-T-009-final-regression-and-sprint-closure-gate.md) · [sprint-79-closeout.md](../../../sprints/sprint-79-closeout.md)  
 **Plan:** [PLAN.md](PLAN.md) · **Handover:** [HANDOVER.md](HANDOVER.md) · **Briefing:** [next-chat-briefing.md](next-chat-briefing.md)
 
 ---
 
 ## If you are starting a new session
 
-Read [S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md](S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md), then [STATUS.md](STATUS.md).
+> **Sprint 79 is CLOSED.** Do not reopen for polish. Do not implement Settings, Workspace Surfaces, DLA Phase D, image-gen fidelity, or timing-badge fixes from this pack.
 
-> Sprint 79 is a maintainability/architecture sprint for GAM with behavior preservation default. Sprint 78 remains CLOSED and must not be reopened.
+Read [S79-T-009](S79-T-009-final-regression-and-sprint-closure-gate.md) and [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
 
 ---
 
@@ -21,9 +23,8 @@ Read [S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementa
 
 | Priority | Work |
 | --- | --- |
-| **Now** | **S79-T-003** — off-path canonical GAM section-builder |
-| **Method** | T-002 ✅ → off-path → **T-004 equivalence gate** → live switch → benchmark → **T-008 legacy retirement** → closure |
-| **Do not start** | Live switch (T-005), Settings, workspace-surfaces, schema/validator redesign, DLA Phase D retirement |
+| **Now** | Programme pointer — **Settings architecture design** (PB-FA-005) — **not opened** |
+| **Do not start from S79** | Settings implementation; Workspace Surfaces; DLA Phase D; GAM prompt retune |
 
 ---
 
@@ -37,3 +38,10 @@ Read [S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementa
 - [next-chat-briefing.md](next-chat-briefing.md)
 - [S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md](S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md)
 - [S79-T-002-canonical-gam-section-inventory-and-equivalence-baseline.md](S79-T-002-canonical-gam-section-inventory-and-equivalence-baseline.md)
+- [S79-T-003-off-path-canonical-gam-section-builder.md](S79-T-003-off-path-canonical-gam-section-builder.md)
+- [S79-T-004-old-vs-target-equivalence-acceptance-gate.md](S79-T-004-old-vs-target-equivalence-acceptance-gate.md)
+- [S79-T-005-atomic-live-path-switch-to-canonical-gam-assembly.md](S79-T-005-atomic-live-path-switch-to-canonical-gam-assembly.md)
+- [S79-T-006-deterministic-integration-compatibility-isolation-pre-emit.md](S79-T-006-deterministic-integration-compatibility-isolation-pre-emit.md)
+- [S79-T-007-fresh-behavioural-benchmark.md](S79-T-007-fresh-behavioural-benchmark.md)
+- [S79-T-008-mandatory-temporary-rollback-legacy-retirement.md](S79-T-008-mandatory-temporary-rollback-legacy-retirement.md)
+- [S79-T-009-final-regression-and-sprint-closure-gate.md](S79-T-009-final-regression-and-sprint-closure-gate.md)

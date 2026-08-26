@@ -43,13 +43,13 @@ S79-T-001 Sprint open + diagnostic + target design + implementation plan ✅ COM
   -> S79-D01 Open Sprint 79 ✅ Accepted
   -> S79-T-002 Canonical GAM section inventory + byte-equivalence baseline ✅ COMPLETE
        (switch recommendation: ATOMIC; topology detail deferred to T-003)
-  -> S79-T-003 Introduce canonical section-builder module (off-path)
-  -> S79-T-004 OLD vs TARGET equivalence acceptance gate
-  -> S79-T-005 Live-path switch to canonical (Run/Copy + Studio)
-  -> S79-T-006 Deterministic integration + genuine compatibility isolation + pre-emit ownership
-  -> S79-T-007 Fresh behavioural benchmark
-  -> S79-T-008 Post-benchmark temporary rollback/legacy retirement  ← mandatory
-  -> S79-T-009 Final regression + closure gate
+  -> S79-T-003 Introduce canonical section-builder module (off-path) ✅ COMPLETE
+  -> S79-T-004 OLD vs TARGET equivalence acceptance gate ✅ COMPLETE — **ACCEPTED**
+  -> S79-T-005 Live-path switch to canonical (Run/Copy + Studio) ✅ COMPLETE
+  -> S79-T-006 Deterministic integration + genuine compatibility isolation + pre-emit ownership ✅ COMPLETE
+  -> S79-T-007 Fresh behavioural benchmark ✅ ACCEPTED (A — no material regression)
+  -> S79-T-008 Post-benchmark temporary rollback/legacy retirement ✅ COMPLETE
+  -> S79-T-009 Final regression + closure gate ✅ COMPLETE — Sprint 79 CLOSED
 ```
 
 ---
@@ -71,56 +71,51 @@ S79-T-001 Sprint open + diagnostic + target design + implementation plan ✅ COM
 
 ### S79-T-003 — Off-path canonical section-builder module
 
+- Status: **COMPLETE** — [S79-T-003](S79-T-003-off-path-canonical-gam-section-builder.md)
 - Mode: implementation off live path
-- Purpose: build canonical GAM assembler without switching production; consume T-002 ledger/goldens
-- Acceptance: unit/equivalence tests; live path still old; finalize shared-builder topology for atomic T-005
+- Delivered: `lib/gam-canonical-assembler.js`; Copy/Studio profiles; policy-ingress seam; OLD vs TARGET whole-prompt byte identity on T-002 baselines; atomic T-005 topology
+- Acceptance: MET
 
 ### S79-T-004 — OLD vs TARGET equivalence acceptance gate
 
-- Mode: gate (no production switch yet)
-- **Required before first production switch:**
-  - OLD vs TARGET section/invariant ledger;
-  - byte/text equivalence where strict preservation is expected;
-  - explicit ordering equivalence for high-salience sections;
-  - operator acceptance that protected GAM invariants are preserved
-- Acceptance: gate recorded as ACCEPTED before T-005
+- Status: **COMPLETE — ACCEPTED** — [S79-T-004](S79-T-004-old-vs-target-equivalence-acceptance-gate.md)
+- Mode: gate (no production switch)
+- Delivered: formal ledger; same-path whole-prompt byte identity; ordering; Studio scaffolds clarification; decision **ACCEPTED**
+- Acceptance: MET — T-005 authorized, not performed
 
 ### S79-T-005 — Live-path switch to canonical assembly
 
-- Mode: production switch
-- Scope: Run/Copy and Studio consume canonical GAM assembly (atomic or sequential per recorded decision)
-- Preconditions: T-004 ACCEPTED
-- Acceptance: both live paths on canonical assembly; temporary dual-path state (if any) bounded and time-limited — not indefinite
+- Status: **COMPLETE** — [S79-T-005](S79-T-005-atomic-live-path-switch-to-canonical-gam-assembly.md)
+- Mode: production switch (atomic)
+- Delivered: Run/Copy + Studio on `lib/gam-canonical-assembler.js`; live == T-002 goldens; Studio full scaffolds preserved; TEMPORARY fallbacks recorded for T-008
+- Acceptance: MET
 
 ### S79-T-006 — Deterministic integration + genuine compatibility isolation + pre-emit ownership
 
-- Mode: implementation / hardening
-- Purpose: deterministic regressions; isolate product-required compatibility adapters; consolidate final pre-emit ownership
-- Acceptance: Sprint 78 GAM regressions + prompt/contract suites pass; compatibility adapters clearly separated from temporary rollback
+- Status: **COMPLETE** — [S79-T-006](S79-T-006-deterministic-integration-compatibility-isolation-pre-emit.md)
+- Mode: integration hardening (no semantic retune; no T-008 retirement)
+- Delivered: live topology proof; `PRISM_GAM_CANONICAL_ASSEMBLER` classification; singular pre-emit ownership; compatibility isolation; T-008 inventory; T-006 tests
+- Acceptance: MET
 
 ### S79-T-007 — Fresh behavioural benchmark
 
-- Mode: benchmark evidence
-- Purpose: show no material learner-resource regression after live switch
-- Acceptance: selected benchmark evidence recorded (Lagrangian primary; HR corroborative as needed)
+- Status: **COMPLETE — ACCEPTED** — [S79-T-007](S79-T-007-fresh-behavioural-benchmark.md)
+- Result: Lagrangian **91/100** vs continuity **94/100**; Excellent; 0 Crit/Major; **A — NO MATERIAL REGRESSION**
+- Image fidelity: deferred (not GAM regression)
+- Authorizes T-008
 
 ### S79-T-008 — Post-benchmark temporary rollback / legacy retirement
 
-- Mode: mandatory cleanup (not optional Phase D)
-- Preconditions: T-005 complete; T-006 deterministic gates pass; T-007 benchmark shows no material regression
-- Must:
-  - remove or hard-disable temporary old GAM assembly / rollback path;
-  - remove duplicated normative owners made obsolete by the canonical path;
-  - retire or rewrite tests whose only purpose is rollback retention;
-  - preserve genuinely required compatibility adapters;
-  - run the relevant deterministic regression suite
-- Acceptance: no standing temporary dual GAM assembly path remains
+- Status: **COMPLETE** — [S79-T-008](S79-T-008-mandatory-temporary-rollback-legacy-retirement.md)
+- Delivered: Copy/Studio fail-closed; OLD normative owners removed/thin-wrapped; compat + wrappers retained; 203/203 tests
+- Acceptance: MET
 
 ### S79-T-009 — Final regression + closure gate
 
-- Mode: sprint closure gate
-- Purpose: final deterministic suite + closure readiness after retirement
-- Acceptance: criteria in [S79-T-001](S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md) §19 met
+- Status: **COMPLETE** — [S79-T-009](S79-T-009-final-regression-and-sprint-closure-gate.md)
+- Final suite: **203/203 pass**
+- Formal decision: **A — SPRINT 79 CLOSED** (2026-08-26)
+- Closeout: [sprint-79-closeout.md](../../../sprints/sprint-79-closeout.md)
 
 ---
 

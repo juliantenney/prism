@@ -45,7 +45,8 @@ const DEFAULT_LIBS = [
   "lib/instructional-pattern-prompt.js",
   "lib/gam-practice-independence-prompt.js",
   "lib/gam-operational-suitability-prompt.js",
-  "lib/gam-operational-suitability-review.js"
+  "lib/gam-operational-suitability-review.js",
+  "lib/gam-canonical-assembler.js"
 ];
 
 function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
@@ -85,6 +86,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
       "PRISM_GAM_PRACTICE_INDEPENDENCE_PROMPT",
       "PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT",
       "PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW",
+      "PRISM_GAM_CANONICAL_ASSEMBLER",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_JOBS_PLANNER",
